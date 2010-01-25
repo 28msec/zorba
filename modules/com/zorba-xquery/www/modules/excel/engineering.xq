@@ -27,14 +27,26 @@
  :)
 module namespace  excel-engineering = "http://www.zorba-xquery.com/modules/excel/engineering" ;
 
+(:~
+ : Use excel-err module functions for throwing errors.
+ :)
 import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/errors";
+
+(:~
+ : Import excel-text module functions.
+ :)
 import module namespace excel-text="http://www.zorba-xquery.com/modules/excel/text";
+
+(:~
+ : Import excel-math module functions.
+ :)
 import module namespace excel-math="http://www.zorba-xquery.com/modules/excel/math";
 
 (:~
- : Returns true if the passed $arg is a hexadecimal number, false otherwise.
+ : Tests if a string is a hexadecimal representation of a number.
  :
- : @param   $arg the string
+ : @param   $arg the string.
+ : @return  True if the passed $arg is a hexadecimal number, false otherwise.
  :)
 declare function excel-engineering:is-hex
     ($arg as xs:string) as xs:boolean {
@@ -47,9 +59,10 @@ declare function excel-engineering:is-hex
 };
 
 (:~
- : Returns true if the passed $arg is a octal number, false otherwise.
+ : Tests if a string is a octal representation of a number. 
  :
  : @param   $arg the string
+ : @return  True if the passed $arg is a octal number, false otherwise.
  :)
 declare function excel-engineering:is-oct
     ($arg as xs:string) as xs:boolean {
@@ -61,9 +74,10 @@ declare function excel-engineering:is-oct
 };
 
 (:~
- : Returns true if the passed $arg is a binary number, false otherwise.
+ : Tests if a string is a binary representation of a number.
  :
- : @param   $arg the string 
+ : @param   $arg the string.
+ : @return  True if the passed $arg is a binary number, false otherwise. 
  :)
 declare function excel-engineering:is-bin
     ($arg as xs:string) as xs:boolean {
@@ -77,8 +91,9 @@ declare function excel-engineering:is-bin
 (:~
  : Returns a binary representation of a number.
  :
- : @param   $number the number
- : @error   XQP0021(errValue) if provided value for $number is not numeric
+ : @param   $number the number.
+ : @error   XQP0021(errValue) if provided value for $number is not numeric.
+ : @return  A binary representation of a number.
  :)
 declare function excel-engineering:dec2hexUtil
     ($number as xs:anyAtomicType) as xs:string {
@@ -99,8 +114,9 @@ declare function excel-engineering:dec2hexUtil
 (:~
  : Returns an octal representation of a number.
  :
- : @param   $number the number
- : @error   XQP0021(errValue) if provided value for $number is not numeric
+ : @param   $number the number.
+ : @error   XQP0021(errValue) if provided value for $number is not numeric.
+ : @return  An octal representation of a number.
  :)
 declare function excel-engineering:dec2octUtil
     ($number as xs:anyAtomicType) as xs:string {
@@ -121,8 +137,9 @@ declare function excel-engineering:dec2octUtil
 (:~
  : Returns a binary representation of a number.
  :
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $number is not numeric
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $number is not numeric.
+ : @return  A binary representation of a number.
  :)
 declare function excel-engineering:dec2binUtil
     ($arg as xs:anyAtomicType) as xs:string {
@@ -143,8 +160,9 @@ declare function excel-engineering:dec2binUtil
 (:~
  : Returns a decimal representation of a number given it's hexadecimal representation.
  :
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided $arg is not a hexadecimal representation of a number
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided $arg is not a hexadecimal representation of a number.
+ : @return  A decimal representation of a number given it's hexadecimal representation.
  :)
 declare function excel-engineering:hex2decUtil
     ($arg as xs:string) as xs:integer* {
@@ -163,8 +181,9 @@ declare function excel-engineering:hex2decUtil
 (:~
  : Returns a decimal representation of a number given it's octal representation.
  :
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided $arg is not an octal representation of a number
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided $arg is not an octal representation of a number.
+ : @return  A decimal representation of a number given it's octal representation.
  :)
 declare function excel-engineering:oct2decUtil
     ($arg as xs:string) as xs:integer {
@@ -180,8 +199,9 @@ declare function excel-engineering:oct2decUtil
 (:~
  : Returns a decimal representation of a number given it's binary representation.
  :
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided $arg is not an binary representation of a number
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided $arg is not an binary representation of a number.
+ : @return  A decimal representation of a number given it's binary representation.
  :)
 declare function excel-engineering:bin2decUtil
     ($arg as xs:string) as xs:integer {
@@ -198,9 +218,10 @@ declare function excel-engineering:bin2decUtil
  : Converts a decimal number to hexadecimal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052090541033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not numeric
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not numeric.
  : @error   XQP0021(errNum) if provided value for $arg is smaller than -549755813888 or bigger than 549755813887
+ : @return  A hexadecimal representation of a number given it's decimal representation.
  :)
 declare function excel-engineering:dec2hex
     ($arg as xs:anyAtomicType) as xs:string {
@@ -227,13 +248,14 @@ declare function excel-engineering:dec2hex
  : Converts a decimal number to hexadecimal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052090541033.aspx?pid=CH062528241033
- : @param   $arg the number
+ : @param   $arg the number.
  : @param   $places is the number of characters to use. Places is useful for padding the return value with leading 0s (zeros).
- : @error   XQP0021(errValue) if provided value for $arg is not numeric
- : @error   XQP0021(errValue) if provided value for $places is not numeric
- : @error   XQP0021(errNum) if provided value for $places is zero or negative
- : @error   XQP0021(errNum) if provided value for $places is too small
- : @error   XQP0021(errNum) if provided value for $arg is smaller than -549755813888 or bigger than 549755813887
+ : @error   XQP0021(errValue) if provided value for $arg is not numeric.
+ : @error   XQP0021(errValue) if provided value for $places is not numeric.
+ : @error   XQP0021(errNum) if provided value for $places is zero or negative.
+ : @error   XQP0021(errNum) if provided value for $places is too small.
+ : @error   XQP0021(errNum) if provided value for $arg is smaller than -549755813888 or bigger than 549755813887.
+ : @return  A hexadecimal representation of a number given it's decimal representation.
  :)
 declare function excel-engineering:dec2hex
     ($arg as xs:anyAtomicType,
@@ -271,9 +293,10 @@ declare function excel-engineering:dec2hex
  : Converts a decimal number to octal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052090551033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not numeric
- : @error   XQP0021(errNum) if provided value for $arg is smaller than -536870912 or bigger than 536870911
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not numeric.
+ : @error   XQP0021(errNum) if provided value for $arg is smaller than -536870912 or bigger than 536870911.
+ : @return  An octal representation of a number given it's decimal representation.
  :)
 declare function excel-engineering:dec2oct
     ($arg as xs:anyAtomicType) as xs:string {
@@ -307,6 +330,7 @@ declare function excel-engineering:dec2oct
  : @error   XQP0021(errNum) if provided value for $places is zero or negative
  : @error   XQP0021(errNum) if provided value for $places is too small
  : @error   XQP0021(errNum) if provided value for $arg is smaller than -536870912 or bigger than 536870911
+ : @return  An octal representation of a number given it's decimal representation.
  :)
 declare function excel-engineering:dec2oct
     ($arg as xs:anyAtomicType,
@@ -344,9 +368,10 @@ declare function excel-engineering:dec2oct
  : Converts a decimal number to binary.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052090531033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not numeric
- : @error   XQP0021(errNum) if provided value for $arg is smaller than -512 or bigger than 511
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not numeric.
+ : @error   XQP0021(errNum) if provided value for $arg is smaller than -512 or bigger than 511.
+ : @return  A binary representation of a number given it's decimal representation.
  :)
 declare function excel-engineering:dec2bin
     ($arg as xs:anyAtomicType) as xs:string {
@@ -374,13 +399,14 @@ declare function excel-engineering:dec2bin
  : Converts a decimal number to binary.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052090531033.aspx?pid=CH062528241033
- : @param   $arg the number
+ : @param   $arg the number.
  : @param   $places is the number of characters to use. Places is useful for padding the return value with leading 0s (zeros).
- : @error   XQP0021(errValue) if provided value for $arg is not numeric
- : @error   XQP0021(errValue) if provided value for $places is not numeric
- : @error   XQP0021(errNum) if provided value for $places is zero or negative
- : @error   XQP0021(errNum) if provided value for $places is too small
- : @error   XQP0021(errNum) if provided value for $arg is smaller than -512 or bigger than 511
+ : @error   XQP0021(errValue) if provided value for $arg is not numeric.
+ : @error   XQP0021(errValue) if provided value for $places is not numeric.
+ : @error   XQP0021(errNum) if provided value for $places is zero or negative.
+ : @error   XQP0021(errNum) if provided value for $places is too small.
+ : @error   XQP0021(errNum) if provided value for $arg is smaller than -512 or bigger than 511.
+ : @return  A binary representation of a number given it's decimal representation.
  :)
 declare function excel-engineering:dec2bin
     ($arg as xs:anyAtomicType,
@@ -418,9 +444,10 @@ declare function excel-engineering:dec2bin
  : Converts an octal number to binary.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052092001033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not an octal representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not an octal representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @return  A binary representation of a number given it's octal representation.
  :)
 declare function excel-engineering:oct2bin
     ($arg as xs:anyAtomicType) as xs:string {
@@ -432,13 +459,14 @@ declare function excel-engineering:oct2bin
  : Converts an octal number to binary.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052092001033.aspx?pid=CH062528241033
- : @param   $arg the number
+ : @param   $arg the number.
  : @param   $places is the number of characters to use. Places is useful for padding the return value with leading 0s (zeros).
- : @error   XQP0021(errValue) if provided value for $arg is not an octal representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
- : @error   XQP0021(errValue) if provided value for $places is not numeric
- : @error   XQP0021(errNum) if provided value for $places is zero or negative
- : @error   XQP0021(errNum) if provided value for $places is too small
+ : @error   XQP0021(errValue) if provided value for $arg is not an octal representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @error   XQP0021(errValue) if provided value for $places is not numeric.
+ : @error   XQP0021(errNum) if provided value for $places is zero or negative.
+ : @error   XQP0021(errNum) if provided value for $places is too small.
+ : @return  A binary representation of a number given it's octal representation.
  :)
 declare function excel-engineering:oct2bin
     ($arg as xs:anyAtomicType,
@@ -451,9 +479,10 @@ declare function excel-engineering:oct2bin
  : Converts an octal number to decimal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052092011033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not an octal representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not an octal representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @return  A decimal representation of a number given it's octal representation.
  :)
 declare function excel-engineering:oct2dec
     ($arg as xs:anyAtomicType) as xs:integer {
@@ -475,9 +504,10 @@ declare function excel-engineering:oct2dec
  : Converts a binary number to decimal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052090021033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not a binary representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not a binary representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @return  A decimal representation of a number given it's binary representation.
  :)
 declare function excel-engineering:bin2dec
     ($arg as xs:anyAtomicType) as xs:integer {
@@ -499,9 +529,10 @@ declare function excel-engineering:bin2dec
  : Converts an octal number to hexadecimal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052092021033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not an octal representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not an octal representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @return  A hexadecimal representation of a number given it's octal representation.
  :)
 declare function excel-engineering:oct2hex
     ($arg as xs:anyAtomicType) as xs:string {
@@ -513,13 +544,14 @@ declare function excel-engineering:oct2hex
  : Converts an octal number to hexadecimal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052092021033.aspx?pid=CH062528241033
- : @param   $arg the number
+ : @param   $arg the number.
  : @param   $places is the number of characters to use. Places is useful for padding the return value with leading 0s (zeros).
- : @error   XQP0021(errValue) if provided value for $arg is not an octal representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
- : @error   XQP0021(errValue) if provided value for $places is not numeric
- : @error   XQP0021(errNum) if provided value for $places is zero or negative
- : @error   XQP0021(errNum) if provided value for $places is too small
+ : @error   XQP0021(errValue) if provided value for $arg is not an octal representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @error   XQP0021(errValue) if provided value for $places is not numeric.
+ : @error   XQP0021(errNum) if provided value for $places is zero or negative.
+ : @error   XQP0021(errNum) if provided value for $places is too small.
+ : @return  A hexadecimal representation of a number given it's octal representation.
  :)
 declare function excel-engineering:oct2hex
     ($arg as xs:anyAtomicType,
@@ -532,9 +564,10 @@ declare function excel-engineering:oct2hex
  : Converts a hexadecimal number to binary.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091101033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not a hexadecimal representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not a hexadecimal representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @return  A binary representation of a number given it's hexadecimal representation.
  :)
 declare function excel-engineering:hex2bin
     ($arg as xs:anyAtomicType) as xs:string {
@@ -546,13 +579,14 @@ declare function excel-engineering:hex2bin
  : Converts a hexadecimal number to binary.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091101033.aspx?pid=CH062528241033
- : @param   $arg the number
+ : @param   $arg the number.
  : @param   $places is the number of characters to use. Places is useful for padding the return value with leading 0s (zeros).
- : @error   XQP0021(errValue) if provided value for $arg is not a hexadecimal representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
- : @error   XQP0021(errValue) if provided value for $places is not numeric
- : @error   XQP0021(errNum) if provided value for $places is zero or negative
- : @error   XQP0021(errNum) if provided value for $places is too small
+ : @error   XQP0021(errValue) if provided value for $arg is not a hexadecimal representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @error   XQP0021(errValue) if provided value for $places is not numeric.
+ : @error   XQP0021(errNum) if provided value for $places is zero or negative.
+ : @error   XQP0021(errNum) if provided value for $places is too small.
+ : @return  A binary representation of a number given it's hexadecimal representation.
  :)
 declare function excel-engineering:hex2bin
     ($arg as xs:anyAtomicType,
@@ -565,9 +599,10 @@ declare function excel-engineering:hex2bin
  : Converts a hexadecimal number to octal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091121033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not a hexadecimal representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not a hexadecimal representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @return  A octal representation of a number given it's hexadecimal representation.
  :)
 declare function excel-engineering:hex2oct
     ($arg as xs:anyAtomicType) as xs:string {
@@ -579,13 +614,14 @@ declare function excel-engineering:hex2oct
  : Converts a hexadecimal number to octal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091121033.aspx?pid=CH062528241033
- : @param   $arg the number
+ : @param   $arg the number.
  : @param   $places is the number of characters to use. Places is useful for padding the return value with leading 0s (zeros).
- : @error   XQP0021(errValue) if provided value for $arg is not a hexadecimal representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
- : @error   XQP0021(errValue) if provided value for $places is not numeric
- : @error   XQP0021(errNum) if provided value for $places is zero or negative
- : @error   XQP0021(errNum) if provided value for $places is too small
+ : @error   XQP0021(errValue) if provided value for $arg is not a hexadecimal representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @error   XQP0021(errValue) if provided value for $places is not numeric.
+ : @error   XQP0021(errNum) if provided value for $places is zero or negative.
+ : @error   XQP0021(errNum) if provided value for $places is too small.
+ : @return  A octal representation of a number given it's hexadecimal representation.
  :)
 declare function excel-engineering:hex2oct
     ($arg as xs:anyAtomicType,
@@ -598,9 +634,10 @@ declare function excel-engineering:hex2oct
  : Converts a hexadecimal number to decimal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091111033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not a hexadecimal representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not a hexadecimal representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @return  A decimal representation of a number given it's hexadecimal representation.
  :)
 declare function excel-engineering:hex2dec
     ($arg as xs:string) as xs:integer {
@@ -622,9 +659,10 @@ declare function excel-engineering:hex2dec
  : Converts a binary number to octal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052090041033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not a binary representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not a binary representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @return  A octal representation of a number given it's binary representation.
  :)
 declare function excel-engineering:bin2oct
     ($arg as xs:anyAtomicType) as xs:string {
@@ -636,13 +674,14 @@ declare function excel-engineering:bin2oct
  : Converts a binary number to octal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052090041033.aspx?pid=CH062528241033
- : @param   $arg the number
+ : @param   $arg the number.
  : @param   $places is the number of characters to use. Places is useful for padding the return value with leading 0s (zeros).
- : @error   XQP0021(errValue) if provided value for $arg is not a binary representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
- : @error   XQP0021(errValue) if provided value for $places is not numeric
- : @error   XQP0021(errNum) if provided value for $places is zero or negative
- : @error   XQP0021(errNum) if provided value for $places is too small
+ : @error   XQP0021(errValue) if provided value for $arg is not a binary representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @error   XQP0021(errValue) if provided value for $places is not numeric.
+ : @error   XQP0021(errNum) if provided value for $places is zero or negative.
+ : @error   XQP0021(errNum) if provided value for $places is too small.
+ : @return  A octal representation of a number given it's binary representation.
  :)
 declare function excel-engineering:bin2oct
     ($arg as xs:anyAtomicType,
@@ -655,9 +694,10 @@ declare function excel-engineering:bin2oct
  : Converts a binary number to hexadecimal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052090031033.aspx?pid=CH062528241033
- : @param   $arg the number
- : @error   XQP0021(errValue) if provided value for $arg is not a binary representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
+ : @param   $arg the number.
+ : @error   XQP0021(errValue) if provided value for $arg is not a binary representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @return  A hexadecimal representation of a number given it's binary representation.
  :)
 declare function excel-engineering:bin2hex
     ($arg as xs:anyAtomicType) as xs:string {
@@ -669,13 +709,14 @@ declare function excel-engineering:bin2hex
  : Converts a binary number to hexadecimal.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052090031033.aspx?pid=CH062528241033
- : @param   $arg the number
+ : @param   $arg the number.
  : @param   $places is the number of characters to use. Places is useful for padding the return value with leading 0s (zeros).
- : @error   XQP0021(errValue) if provided value for $arg is not a binary representation of a number
- : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters
- : @error   XQP0021(errValue) if provided value for $places is not numeric
- : @error   XQP0021(errNum) if provided value for $places is zero or negative
- : @error   XQP0021(errNum) if provided value for $places is too small
+ : @error   XQP0021(errValue) if provided value for $arg is not a binary representation of a number.
+ : @error   XQP0021(errValue) if provided value for $arg contains more than 10 characters.
+ : @error   XQP0021(errValue) if provided value for $places is not numeric.
+ : @error   XQP0021(errNum) if provided value for $places is zero or negative.
+ : @error   XQP0021(errNum) if provided value for $places is too small.
+ : @return  A hexadecimal representation of a number given it's binary representation.
  :)
 declare function excel-engineering:bin2hex
     ($arg as xs:anyAtomicType,

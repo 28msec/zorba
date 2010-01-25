@@ -26,15 +26,22 @@
  :)
 module namespace  excel-information = "http://www.zorba-xquery.com/modules/excel/information" ;
 
+(:~
+ : Use excel-err module functions for throwing errors.
+ :)
 import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/errors";
+
+(:~
+ : Import excel-math module functions.
+ :)
 import module namespace excel-math = "http://www.zorba-xquery.com/modules/excel/math";
 
 (:~
- : If the value of $arg is the empty sequence, the function returns true;
- : otherwise, the function returns false.
+ : Test if the passed argument is empty of not.
  :
  : @see     http://www.w3.org/TR/xquery-operators/#func-empty
- : @param   $value the value
+ : @param   $value the value.
+ : @return  If the value of $arg is the empty sequence, the function returns true, otherwise the function returns false.   
  :)
 declare function excel-information:is-blank
   ( $value as xs:anyAtomicType? )  as xs:boolean {
@@ -42,11 +49,12 @@ declare function excel-information:is-blank
  };
 
 (:~
- : Returns TRUE if number is even, or FALSE if number is odd.
+ : Test is a number is even.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091481033.aspx
- : @param   $value the value
- : @error   XQP0021(errValue) if provided value is not a number
+ : @param   $value the value.
+ : @error   XQP0021(errValue) if provided value is not a number.
+ : @return  TRUE if number is even, FALSE if number is odd.
  :)
 declare function excel-information:is-even
   ( $value as xs:anyAtomicType? )  as xs:boolean {
@@ -58,11 +66,12 @@ declare function excel-information:is-even
  };
 
 (:~
- : Returns TRUE if number is odd, or FALSE if number is even.
+ : Test is a number is odd.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091491033.aspx
- : @param   $value the value
- : @error   XQP0021(errValue) if provided value is not a number
+ : @param   $value the value.
+ : @error   XQP0021(errValue) if provided value is not a number.
+ : @return  TRUE if number is odd, FALSE if number is even.
  :)
 declare function excel-information:is-odd
   ( $value as xs:anyAtomicType? )  as xs:boolean {
@@ -74,10 +83,11 @@ declare function excel-information:is-odd
  };
 
 (:~
- : Returns TRUE if $value refers to a logical value.
+ : Tests if the passed $value is a logical value.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091471033.aspx
- : @param   $value the value
+ : @param   $value the value.
+ : @return  TRUE if $value refers to a logical value.
  :)
 declare function excel-information:islogical
   ( $value as xs:anyAtomicType? )  as xs:boolean {
@@ -87,10 +97,11 @@ declare function excel-information:islogical
  };
 
 (:~
- : Returns TRUE if $value refers to a number.
+ : Tests if the passed $value is a number.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091471033.aspx
- : @param   $value the value
+ : @param   $value the value.
+ : @return  TRUE if $value refers to a number.
  :)
 declare function excel-information:isnumber
   ( $value as xs:anyAtomicType? )  as xs:boolean {
@@ -103,10 +114,11 @@ declare function excel-information:isnumber
  };
 
 (:~
- : Returns TRUE if $value refers to text.
+ : Tests if the passed $value is a string. 
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091471033.aspx
- : @param   $value the value
+ : @param   $value the value.
+ : @return  TRUE if $value refers to text.
  :)
 declare function excel-information:istext
   ( $value as xs:anyAtomicType? )  as xs:boolean {
@@ -116,10 +128,11 @@ declare function excel-information:istext
  };
 
 (:~
- : Returns a value converted to a number.
+ : Converts a $value to a number.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091871033.aspx
- : @param   $value the value
+ : @param   $value the value.
+ : @return  A $value converted to a number.
  :)
 declare function excel-information:n
   ( $value as xs:anyAtomicType? )  as xs:anyAtomicType {
@@ -130,9 +143,10 @@ declare function excel-information:n
  };
 
 (:~
- : Returns the error value #N/A. #N/A is the error value that means "no value is available."
+ : Returns the error value #N/A.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091881033.aspx
+ : @return  The error value #N/A. #N/A is the error value that means "no value is available."
  :)
 declare function excel-information:na
   ()  as xs:anyAtomicType {

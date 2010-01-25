@@ -29,14 +29,18 @@
 
 module namespace  excel-logical = "http://www.zorba-xquery.com/modules/excel/logical" ;
 
+(:~
+ : Use excel-err module functions for throwing errors.
+ :)
 import module namespace excel-err="http://www.zorba-xquery.com/modules/excel/errors";
 
 (:~
- : Returns TRUE if all its arguments are TRUE; returns FALSE if one or more argument is FALSE.
+ : Returns TRUE if all its arguments are TRUE; FALSE if one or more arguments are FALSE.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052089861033.aspx
- : @param   $arg1 the first argument
- : @param   $arg2 the second argument
+ : @param   $arg1 the first argument.
+ : @param   $arg2 the second argument.
+ : @return  TRUE if all its arguments are TRUE; FALSE if one or more arguments are FALSE.
  :)
 declare function excel-logical:and
   ( $arg1 as xs:anyAtomicType,
@@ -45,11 +49,12 @@ declare function excel-logical:and
  };
 
 (:~
- : Returns TRUE if all its arguments are TRUE; returns FALSE if one or more argument is FALSE.
+ : Returns TRUE if all its arguments are TRUE; FALSE if one or more arguments are FALSE.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052089861033.aspx
- : @param   $values the sequence of arguments
- : @error   XQP0021(errValue) provided sequence is empty
+ : @param   $values the sequence of arguments.
+ : @error   XQP0021(errValue) provided sequence is empty.
+ : @return  TRUE if all its arguments are TRUE; FALSE if one or more arguments are FALSE.
  :)
 declare function excel-logical:and
   ( $values as xs:anyAtomicType* )  as xs:boolean {
@@ -62,13 +67,13 @@ declare function excel-logical:and
  };
 
 (:~
- : Returns one value if a condition you specify evaluates to TRUE and another
- :value if it evaluates to FALSE.
+ : Returns one value if a condition you specify evaluates to TRUE and another value if it evaluates to FALSE.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052091181033.aspx
- : @param   $logical_test is any value or expression that can be evaluated to TRUE or FALSE
- : @param   $value_if_true the value that is returned if logical_test is TRUE
- : @param   $value_if_false the value that is returned if logical_test is FALSE
+ : @param   $logical_test is any value or expression that can be evaluated to TRUE or FALSE.
+ : @param   $value_if_true the value that is returned if logical_test is TRUE.
+ : @param   $value_if_false the value that is returned if logical_test is FALSE.
+ : @return  One value if a condition you specify evaluates to TRUE and another value if it evaluates to FALSE.
  :)
 declare function excel-logical:if
   ( $logical_test as xs:boolean,
@@ -81,11 +86,12 @@ declare function excel-logical:if
  };
 
 (:~
- : Returns TRUE if any argument is TRUE; returns FALSE if all arguments are FALSE.
+ : Returns TRUE if any argument is TRUE; FALSE if all arguments are FALSE.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052092091033.aspx
- : @param   $arg1 the first argument
- : @param   $arg2 the second argument
+ : @param   $arg1 the first argument.
+ : @param   $arg2 the second argument.
+ : @return  TRUE if any argument is TRUE; FALSE if all arguments are FALSE.
  :)
 declare function excel-logical:or
   ( $arg1 as xs:anyAtomicType,
@@ -94,11 +100,12 @@ declare function excel-logical:or
  };
 
 (:~
- : Returns TRUE if any argument is TRUE; returns FALSE if all arguments are FALSE.
+ : Returns TRUE if any argument is TRUE; FALSE if all arguments are FALSE.
  :
  : @see     http://office.microsoft.com/en-us/excel/HP052092091033.aspx
- : @param   $values the sequence of arguments
- : @error   XQP0021(errValue) provided sequence is empty
+ : @param   $values the sequence of arguments.
+ : @error   XQP0021(errValue) provided sequence is empty.
+ : @return  TRUE if any argument is TRUE; FALSE if all arguments are FALSE.
  :)
 declare function excel-logical:or
   ( $values as xs:anyAtomicType* )  as xs:boolean {

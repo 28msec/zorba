@@ -505,7 +505,7 @@
 module namespace smtp = "http://www.zorba-xquery.com/modules/email/smtp";
 
 (:~
- : This function sends an email.
+ : Send mail
  :
  : @param $to Receiver(s) of the email. The formatting of this string must comply with RFC 2822.
  : @param $cc Receiver(s) of the email. The formatting of this string must comply with RFC 2822.
@@ -545,7 +545,7 @@ declare sequential function smtp:send(
 };
 
 (:~
- : This function sends an email.
+ : Send mail
  :
  : @param $to Receiver(s) of the email. The formatting of this string must comply with RFC 2822.
  : @param $subject Subject of the email to be sent. The formatting of this string must comply with RFC 2047.
@@ -565,7 +565,7 @@ declare sequential function smtp:send(
 };
 
 (:~
- : This function sends an email.
+ : Send mail
  :
  : @param $arg Contains the envelope info (from, to, cc, bcc, subject) and the multipart message.
  : @return true if the email was set successfully, false otherwise.
