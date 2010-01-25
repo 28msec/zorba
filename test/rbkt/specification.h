@@ -175,10 +175,10 @@ public:
   }
 
   void trim(std::string& str) {
-    std::string::size_type  notwhite = str.find_first_not_of(" \t\n");
+    std::string::size_type  notwhite = str.find_first_not_of(" \t\n\r");
     str.erase(0,notwhite);
 
-    notwhite = str.find_last_not_of(" \t\n"); 
+    notwhite = str.find_last_not_of(" \t\n\r"); 
     str.erase(notwhite+1); 
   }
 
