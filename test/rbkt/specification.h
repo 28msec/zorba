@@ -232,8 +232,7 @@ public:
             // Just --indent for now
             if (*lIter == "--indent") {
               setUseIndent();
-            }
-            else {
+            } else {
               return false;
             }
           }

@@ -201,9 +201,9 @@ void SimpleLazyTempSeqIter::open()
 
 bool SimpleLazyTempSeqIter::next(store::Item_t& result)
 {
-  if (theCurPos < theEndPos && theTempSeq->containsItem(++theCurPos))
+  if (theCurPos < theEndPos && theTempSeq->containsItem(theCurPos+1))
   {
-    theTempSeq->getItem(theCurPos, result);
+    theTempSeq->getItem(++theCurPos, result);
     return true;
   }
   else
