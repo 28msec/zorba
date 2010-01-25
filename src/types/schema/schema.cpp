@@ -1223,45 +1223,61 @@ void Schema::addAnonymousTypeToCache(
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, strUri, lPrefix, lLocal);
   
-  if (xsTypeDef->getTypeCategory()!=XSTypeDefinition::COMPLEX_TYPE)
-    return;
   
-  // get content type
-  XSComplexTypeDefinition* xsComplexTypeDef =
-            static_cast<XSComplexTypeDefinition*> (xsTypeDef);
-  
-  XQType::content_kind_t contentType;
-  
-  switch (xsComplexTypeDef->getContentType())
+  switch( xsTypeDef->getTypeCategory() )
   {
-  case XSComplexTypeDefinition::CONTENTTYPE_MIXED :
-    contentType = XQType::MIXED_CONTENT_KIND;
+  case XSTypeDefinition::SIMPLE_TYPE:
+    {
+      xqtref_t xqType = createXQTypeFromTypeDefinition(typeManager, xsTypeDef);
+      addTypeToCache(xqType);
+    }
     break;
-  case XSComplexTypeDefinition::CONTENTTYPE_ELEMENT :
-    contentType = XQType::ELEMENT_ONLY_CONTENT_KIND;
+
+  case XSTypeDefinition::COMPLEX_TYPE:
+    {
+      // get content type
+      XSComplexTypeDefinition* xsComplexTypeDef =
+        static_cast<XSComplexTypeDefinition*> (xsTypeDef);
+      
+      XQType::content_kind_t contentType;
+      
+      switch (xsComplexTypeDef->getContentType())
+      {
+      case XSComplexTypeDefinition::CONTENTTYPE_MIXED :
+        contentType = XQType::MIXED_CONTENT_KIND;
+        break;
+      case XSComplexTypeDefinition::CONTENTTYPE_ELEMENT :
+        contentType = XQType::ELEMENT_ONLY_CONTENT_KIND;
+        break;
+      case XSComplexTypeDefinition::CONTENTTYPE_SIMPLE :
+        contentType = XQType::SIMPLE_CONTENT_KIND;
+        break;
+      case XSComplexTypeDefinition::CONTENTTYPE_EMPTY :
+        contentType = XQType::EMPTY_CONTENT_KIND;
+        break;
+      default:
+        ZORBA_ASSERT(false);
+      }
+      
+      xqtref_t xqType = 
+        xqtref_t(new UserDefinedXQType(typeManager,
+                                       qname,
+                                       baseXQType,
+                                       TypeConstants::QUANT_ONE,
+                                       UserDefinedXQType::COMPLEX_TYPE,
+                                       contentType));
+  
+      addTypeToCache(xqType);
+    
+      // check f0r it's containing annonymous types
+      checkForAnonymousTypesInType(typeManager, xsComplexTypeDef);
+    }
     break;
-  case XSComplexTypeDefinition::CONTENTTYPE_SIMPLE :
-    contentType = XQType::SIMPLE_CONTENT_KIND;
-    break;
-  case XSComplexTypeDefinition::CONTENTTYPE_EMPTY :
-    contentType = XQType::EMPTY_CONTENT_KIND;
-    break;
+
   default:
+    // no other known type category
     ZORBA_ASSERT(false);
   }
-  
-  xqtref_t xqType = 
-    xqtref_t(new UserDefinedXQType(typeManager,
-                                   qname,
-                                   baseXQType,
-                                   TypeConstants::QUANT_ONE,
-                                   UserDefinedXQType::COMPLEX_TYPE,
-                                   contentType));
-  
-  addTypeToCache(xqType);
-  
-  // check f0r it's containing annonymous types
-  checkForAnonymousTypesInType(typeManager, xsComplexTypeDef);
 }
 
 
