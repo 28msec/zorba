@@ -132,7 +132,8 @@ void ZorbaError::setQueryLocation(
 
 bool ZorbaError::hasQueryLocation()
 {
-  return (theQueryFileName.empty() && theQueryLine == 0 && theQueryColumn == 0);
+  return !(theQueryFileName.empty() && theQueryLine == 0 && 
+           theQueryColumn == 0);
 }
 
 
