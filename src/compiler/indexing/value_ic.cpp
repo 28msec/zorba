@@ -35,7 +35,7 @@ void ValueIC::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theSctx;
   ar & theName;
-  //ar & theICKind;
+  SERIALIZE_ENUM(store::IC::ICKind, theICKind);
   ar & theCollectionName;
   ar & theFromCollectionName;
   ar & theToCollectionName;

@@ -85,10 +85,10 @@ void context::serialize(::zorba::serialization::Archiver& ar)
   //serialize_baseclass(ar, (SimpleRCObject*)this);
   if(ar.is_serializing_out())
   {
-    ar.set_is_temp_field_one_level(true);
+    ar.set_is_temp_field(true);
     bool  parent_is_root = check_parent_is_root();//(
     ar & parent_is_root;
-    ar.set_is_temp_field_one_level(false);
+    ar.set_is_temp_field(false);
     if(!parent_is_root)
     {
       ar.dont_allow_delay();
@@ -103,10 +103,10 @@ void context::serialize(::zorba::serialization::Archiver& ar)
   else
   {
     //in serialization
-    ar.set_is_temp_field_one_level(true);
+    ar.set_is_temp_field(true);
     bool  parent_is_root;
     ar & parent_is_root;
-    ar.set_is_temp_field_one_level(false);
+    ar.set_is_temp_field(false);
     if(parent_is_root)
     {
       set_parent_as_root();
@@ -246,10 +246,10 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
 
     xqp_string lURI = Unmarshaller::getInternalString(module->getURI());
     xqpStringStore_t lURIStore = lURI.getStore();
-	  ar.set_is_temp_field_one_level(true);
+	  ar.set_is_temp_field(true);
     ar.dont_allow_delay();
     ar & lURIStore;
-	  ar.set_is_temp_field_one_level(false);
+	  ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
   }
   else
@@ -258,9 +258,9 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
     //               get the externalmodule from the user's
     //               registered serialization callback
     xqpStringStore_t lURIStore = 0;
-	  ar.set_is_temp_field_one_level(true);
+	  ar.set_is_temp_field(true);
     ar & lURIStore;
-	  ar.set_is_temp_field_one_level(false);
+	  ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
 
     if (dyn_loaded_module) 
@@ -505,20 +505,20 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
     lUserDocResolver = ((theDocResolver != NULL) && (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) == NULL));
     lUserColResolver = ((theColResolver != NULL) && (dynamic_cast<StandardCollectionURIResolver*>(theColResolver) == NULL));
 
-	  ar.set_is_temp_field_one_level(true);
+	  ar.set_is_temp_field(true);
     ar & lUserDocResolver;
     ar & lUserColResolver;
-	  ar.set_is_temp_field_one_level(false);
+	  ar.set_is_temp_field(false);
   } else {
     // serialize in: set the document and collection resolvers
     //               use one by the user or use the default
     //               if null is returned
     SerializationCallback* lCallback = ar.getUserCallback();
 
-	  ar.set_is_temp_field_one_level(true);
+	  ar.set_is_temp_field(true);
     ar & lUserDocResolver; // doc resolver passed by the user
     ar & lUserColResolver; // col resolver passed by the user
-	  ar.set_is_temp_field_one_level(false);
+	  ar.set_is_temp_field(false);
 
     // callback required but not available
     if ((lUserDocResolver || lUserColResolver) && !lCallback) {
@@ -562,17 +562,17 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
     // serialize out: remember whether the user registered a trace stream
     lUserTraceStream = (theTraceStream != 0);
 
-	  ar.set_is_temp_field_one_level(true);
+	  ar.set_is_temp_field(true);
     ar & lUserTraceStream;
-	  ar.set_is_temp_field_one_level(false);
+	  ar.set_is_temp_field(false);
   } else {
     // serialize in: set the trace stream from the user
     //               std::cerr is used if non was registered
     SerializationCallback* lCallback = ar.getUserCallback();
 
-	  ar.set_is_temp_field_one_level(true);
+	  ar.set_is_temp_field(true);
     ar & lUserTraceStream; // trace stream passed by the user
-	  ar.set_is_temp_field_one_level(false);
+	  ar.set_is_temp_field(false);
 
     // callback required but not available
     if (lUserTraceStream && !lCallback) {

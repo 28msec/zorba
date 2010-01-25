@@ -350,18 +350,17 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
     ar & thePrefix;
     xqpStringStore_t lTmp;
     lTmp = Unmarshaller::getInternalString(m_function->getLocalName());
-    ar.set_is_temp_field_one_level(true);
+    ar.set_is_temp_field(true);
     ar & lTmp;
-    ar.set_is_temp_field_one_level(false);
+    ar.set_is_temp_field(false);
   } else {
     // serializing in: get the function from the static context
     //                 using the serialized prefix/uri and localname 
     ar & thePrefix;
-
     xqpStringStore_t lLocalname;
-    ar.set_is_temp_field_one_level(true);
+    ar.set_is_temp_field(true);
     ar & lLocalname;
-    ar.set_is_temp_field_one_level(false);
+    ar.set_is_temp_field(false);
     xqp_string lURI;
     if(thePrefix.getStore())
     {

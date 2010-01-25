@@ -492,7 +492,8 @@ ExternalModule* StandardModuleURIResolver::getExternalModule(
     for (std::vector<std::string>::const_iterator ite = lModulePaths.begin();
         ite != lModulePaths.end(); ++ite) 
     {
-      std::string potentialModuleFile = (*ite) + lLibraryName;
+      std::string potentialModuleFile = (*ite);
+      potentialModuleFile += lLibraryName;
       std::auto_ptr<std::istream> modfile(new std::ifstream(potentialModuleFile.c_str()));
       if (modfile->good()) 
       {
