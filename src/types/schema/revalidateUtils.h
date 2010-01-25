@@ -25,6 +25,10 @@
 
 namespace zorba
 {
+bool typeHasValue(xqtref_t t);
+bool typeHasTypedValue(xqtref_t t);
+bool typeHasEmptyValue(xqtref_t t);
+
 
 class QueryLoc;
 class static_context;

@@ -29,6 +29,7 @@
 #include "types/schema/SchemaValidatorFilter.h"
 #include "types/schema/EventSchemaValidator.h"
 #include "types/schema/StrX.h"
+#include "types/schema/revalidateUtils.h"
 
 #include "zorbatypes/duration.h"
 #include "zorbatypes/datetime.h"
@@ -277,9 +278,23 @@ store::Item_t Validator::processElement(
   store::NsBindings bindings;
   element->getNamespaceBindings(bindings);
 
+  bool haveTypedValue = true;
+  bool haveEmptyValue = false;
+
+  if ( typeName!=NULL && typeManager!=NULL )
+  {
+    xqtref_t schemaType = typeManager->create_named_type(typeName);
+    
+    if ( schemaType!=NULL )
+    {
+      haveTypedValue = typeHasTypedValue(schemaType);
+      haveEmptyValue = typeHasEmptyValue(schemaType);
+    }
+  }
+
   store::Item_t elemName = element->getNodeName();
   GENV_ITEMFACTORY->createElementNode(newElem, parent, -1, elemName,
-                                      typeName, true, false, 
+                                      typeName, haveTypedValue, haveEmptyValue, 
                                       bindings, baseUri, isSubstitutionGroup);
   
   processAttributes(sctx,
