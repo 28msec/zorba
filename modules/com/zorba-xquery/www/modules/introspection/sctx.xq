@@ -38,15 +38,15 @@ declare function sctx:is-declared-collection($name as xs:QName) as xs:boolean ex
  : The function returns a sequence of QNames representing the collections that have
  : been previously created. The sequence will be empty if there are no collections.
  :
- : @return A sequence of QNames, one for each created collection, or emtpy sequence.
+ : @return A sequence of QNames, one for each created collection, or an emtpy sequence.
  :)
 declare function sctx:declared-collections() as xs:QName* external;
 
 (:~
- : The function returns true if an index with the given QName has been created.
+ : The function returns true if an index with the given QName has been declared.
  :
  : @param $name The QName of the index that is being checked.
- : @return true if the collection has been created and false otherwise.
+ : @return true if the index has been declared and false otherwise.
  :)
 declare function sctx:is-declared-index($name as xs:QName) as xs:boolean external;
 
