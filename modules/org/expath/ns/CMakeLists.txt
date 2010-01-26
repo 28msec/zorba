@@ -12,6 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# all external module libraries are generated in the directory
-# of the corresponding .xq file
-ADD_SUBDIRECTORY(ns)
+GENERATE_MODULE_LIBRARY(httpclientimpl "")
