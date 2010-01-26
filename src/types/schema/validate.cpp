@@ -66,17 +66,43 @@ bool Validator::effectiveValidationValue(
     static_context* sctx,
     const QueryLoc& loc) 
 {
-  //cout << "Starting Validation   typeManager: " << typeManager << endl; cout.flush();
-        
+  //cout << "Starting Validation   typeManager: " << typeManager <<
+  //endl; cout.flush();
+  try
+  {
+    return realValidationValue(result, sourceNode, typeName,
+                               typeManager, validationMode, sctx, loc);
+  }
+  catch (error::ZorbaError& e)
+  {
+    if (!e.hasQueryLocation())
+    {
+      e.setQueryLocation(loc.getLineBegin(),
+                         loc.getColumnBegin(),
+                         loc.getFilenameBegin());
+    }
+    throw e;
+  }
+}
+  
+bool Validator::realValidationValue(
+    store::Item_t& result,
+    const store::Item_t& sourceNode,
+    const store::Item_t& typeName,
+    TypeManager* typeManager,
+    ParseConstants::validation_mode_t validationMode,
+    static_context* sctx,
+    const QueryLoc& loc) 
+{
   xqtref_t type;
-
+  
   if (!sourceNode->isNode() || 
       !(sourceNode->getNodeKind()==store::StoreConsts::documentNode ||  
         sourceNode->getNodeKind()==store::StoreConsts::elementNode
        ) )
   {
     ZORBA_ERROR_LOC_DESC(XQTY0030, loc,
-                         "Argument in validate expression not a document or element node.");
+      "Argument in validate expression not a document or element node.");
   }
 
   // verify number of child elements when source is a document node
@@ -95,7 +121,7 @@ bool Validator::effectiveValidationValue(
         if (nr_child_elements)
         {
           ZORBA_ERROR_LOC_DESC(XQDY0061, loc, 
-                               "Document node has more than one element for validation.");
+            "Document node has more than one element for validation.");
         }
         nr_child_elements++;
       }
@@ -106,7 +132,7 @@ bool Validator::effectiveValidationValue(
 
   if ( !schema )
   {
-    //cout << "No schema: isNode() " << sourceNode->isNode() << "  nodeKind: " << 
+    //cout << "No schema: isNode() " << sourceNode->isNode() << "  nodeKind: "<<
     // sourceNode->getNodeKind() << endl;
     
     // no schema available - items remain the same
@@ -127,110 +153,114 @@ bool Validator::effectiveValidationValue(
   switch (sourceNode->getNodeKind())
   {
   case store::StoreConsts::documentNode:
-  {
-    //cout << "Validate document" << "\n"; cout.flush();
-    
-    if ( validationMode == ParseConstants::val_typename )
     {
-      //cout << "Validate type: " << typeName->getLocalName()->c_str()
-      //     << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
-      schemaValidator.startType(typeName);                
-    }
-    else
-    {
-      schemaValidator.startDoc();
-
-      // ask for the type of the root element to populate the cache with anonymous types
-      store::Iterator_t children = sourceNode->getChildren();
-      store::Item_t child;
-      while ( children->next(child) )
+      //cout << "Validate document" << "\n"; cout.flush();
+      
+      if ( validationMode == ParseConstants::val_typename )
       {
-        if ( child->isNode() && child->getNodeKind()==store::StoreConsts::elementNode )
+        //cout << "Validate type: " << typeName->getLocalName()->c_str()
+        //     << " @ " << typeName->getNamespace()->c_str() << "\n"; cout.flush();
+        schemaValidator.startType(typeName);                
+      }
+      else
+      {
+        schemaValidator.startDoc();
+        
+        // ask for the type of the root element to populate 
+        // the cache with anonymous types
+        store::Iterator_t children = sourceNode->getChildren();
+        store::Item_t child;
+        while ( children->next(child) )
         {
-           typeManager->getSchema()->
-             createXQTypeFromElementName(typeManager, child->getNodeName(), false);
-           break;
+          if ( child->isNode() && 
+               child->getNodeKind()==store::StoreConsts::elementNode )
+          {
+            typeManager->getSchema()->
+              createXQTypeFromElementName(typeManager, 
+                                          child->getNodeName(), 
+                                          false);
+            break;
+          }
         }
       }
+    
+      xqpStringStore_t docBaseUri = sourceNode->getBaseURI();
+      xqpStringStore_t docUri = sourceNode->getDocumentURI();
+      store::Item_t newDoc;
+      GENV_ITEMFACTORY->createDocumentNode(newDoc, docBaseUri, docUri);
+      
+      processChildren(sctx,
+                      typeManager,
+                      schemaValidator,
+                      newDoc,
+                      sourceNode->getChildren());
+      
+      if ( validationMode == ParseConstants::val_typename )
+      {
+        schemaValidator.endType();                
+        //cout << "End Validate type: " << typeName->getLocalName()->c_str()
+        //     << " @ " << typeName->getNamespace()->c_str() << "\n";
+        //cout.flush();
+      }
+      else
+      {
+        schemaValidator.endDoc();
+      }
+      
+      //cout << "End Validate doc" << "\n"; cout.flush();
+      
+      result = newDoc;
+      return true;
     }
-    
-    xqpStringStore_t docBaseUri = sourceNode->getBaseURI();
-    xqpStringStore_t docUri = sourceNode->getDocumentURI();
-    store::Item_t newDoc;
-    GENV_ITEMFACTORY->createDocumentNode(newDoc, docBaseUri, docUri);
-    
-    processChildren(sctx,
-                    typeManager,
-                    schemaValidator,
-                    newDoc,
-                    sourceNode->getChildren());
-    
-    if ( validationMode == ParseConstants::val_typename )
-    {
-      schemaValidator.endType();                
-      //cout << "End Validate type: " << typeName->getLocalName()->c_str()
-      //     << " @ " << typeName->getNamespace()->c_str() << "\n";
-      //cout.flush();
-    }
-    else
-    {
-      schemaValidator.endDoc();
-    }
-    
-    //cout << "End Validate doc" << "\n"; cout.flush();
-    
-    result = newDoc;
-    return true;
-  }
   case store::StoreConsts::elementNode: 
-  {
-    if ( validationMode == ParseConstants::val_typename )
     {
-      //cout << "Validate type: " << typeName->getLocalName()->c_str() << " @ "
-      //     << typeName->getNamespace()->c_str() << "\n"; cout.flush();
+      if ( validationMode == ParseConstants::val_typename )
+      {
+        //cout << "Validate type: " << typeName->getLocalName()->c_str() <<" @ "
+        //     << typeName->getNamespace()->c_str() << "\n"; cout.flush();
 
-      schemaValidator.startType(typeName);                
-    }
-    else
-    {
-      //cout << "Validate element" << "\n"; cout.flush();        
-      schemaValidator.startDoc();                    
+        schemaValidator.startType(typeName);                
+      }
+      else
+      {
+        //cout << "Validate element" << "\n"; cout.flush();        
+        schemaValidator.startDoc();                    
+        
+        // ask for the type of the root element to populate the cache
+        // with anonymous types
+        typeManager->getSchema()->
+          createXQTypeFromElementName(typeManager, sourceNode->getNodeName(), 
+                                      false);
+      }
 
-      // ask for the type of the root element to populate the cache
-      // with anonymous types
-      typeManager->getSchema()->
-        createXQTypeFromElementName(typeManager, sourceNode->getNodeName(), 
-                                    false);
+      store::Item_t newElem = processElement(sctx,
+                                             typeManager,
+                                             schemaValidator,
+                                             NULL,
+                                             sourceNode);
+      
+      if ( validationMode == ParseConstants::val_typename )
+      {
+        schemaValidator.endType();                
+        //cout << "End Validate type: " << typeName->getLocalName()->c_str()
+        //     <<" @ "<< typeName->getNamespace()->c_str() << "\n";cout.flush();
+      }
+      else
+      {
+        schemaValidator.endDoc();
+        //cout << "End Validate elem" << "\n"; cout.flush();
+      }
+      
+      result = newElem;
+      return true;
     }
-
-    store::Item_t newElem = processElement(sctx,
-                                           typeManager,
-                                           schemaValidator,
-                                           NULL,
-                                           sourceNode);
-    
-    if ( validationMode == ParseConstants::val_typename )
-    {
-      schemaValidator.endType();                
-      //cout << "End Validate type: " << typeName->getLocalName()->c_str()
-      //     << " @ " << typeName->getNamespace()->c_str() << "\n";cout.flush();
-    }
-    else
-    {
-      schemaValidator.endDoc();
-      //cout << "End Validate elem" << "\n"; cout.flush();
-    }
-    
-    result = newElem;
-    return true;
-  }
   default:
-  {
-    ZORBA_ERROR_LOC_DESC(XQTY0030, loc, 
-      "Argument in validate expression not a document or element node.");
-    result = NULL;
-    return false;
-  }
+    {
+      ZORBA_ERROR_LOC_DESC(XQTY0030, loc, 
+          "Argument in validate expression not a document or element node.");
+      result = NULL;
+      return false;
+    }
   }
 #endif // ZORBA_NO_XMLSCHEMA
 }

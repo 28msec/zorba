@@ -82,6 +82,16 @@ class Validator
         const store::Item_t& typeQName,
         xqpStringStore_t& textValue, 
         std::vector<store::Item_t> &resultList);
+
+private:
+  static bool realValidationValue (
+        store::Item_t& result,
+        const store::Item_t& sourceNode,
+        const store::Item_t& typeName,
+        TypeManager* typeManager,
+        ParseConstants::validation_mode_t validationMode,
+        static_context* sctx,
+        const QueryLoc& loc); 
 };
 
 } // namespace zorba
