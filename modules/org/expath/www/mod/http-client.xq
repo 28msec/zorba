@@ -12,7 +12,7 @@
  : WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  : See the License for the specific language governing permissions and
  : limitations under the License.
-:)
+ :)
 
 (:~
  : This module defines a set of functions to send HTTP and HTTPS requests
@@ -34,36 +34,38 @@ import schema namespace https = "http://www.expath.org/mod/http-client";
  : response. It supports HTTP multi-part messages.
  :
  : @param $request Contains the various parameters of the request. See the
- :  documentation of the type requestType in the schema definition.
+ :        documentation of the type requestType in the schema definition.
  : @param $href is the HTTP or HTTPS URI to send the request to. It is an
- :  xs:anyURI, but is declared as a string to be able to pass literal strings
- :  (without requiring to explicitly cast it to an xs:anyURI.)
+ :        xs:anyURI, but is declared as a string to be able to pass literal
+ :        strings (without requiring to explicitly cast it to an xs:anyURI.)
  : @param $content is the request body content, for HTTP methods that can
- :  contain a body in the request (POST and PUT.) It is an error, if this
- :  param is not the empty sequence for methods other then DELETE, GET, HEAD
- :  and OPTIONS.
+ :        contain a body in the request (POST and PUT.) It is an error, if this
+ :        param is not the empty sequence for methods other then DELETE, GET,
+ :        HEAD and OPTIONS.
+ : @param $serial
  : @return a sequence of items, where the first item is a element of type
- :  http:responseType and describes the response of the http request. If there
- :  is one (or several, in case of multipart) response body, the response bodies
- :  are the next items in the sequence.
-:)
+ :         http:responseType and describes the response of the http request.
+ :         If there is one (or several, in case of multipart) response body,
+ :         the response bodies are the next items in the sequence.
+ :)
 declare function http:send-request(
-    $request as element(https:request, https:requestType)?,
-    $href as xs:string?,
-    $content as item()?,
-    $serial as item()?) as item()+ {
-    if (fn:empty($href) and fn:empty($request)) then
-        fn:error(fn:QName("http://www.expath.org/mod/http-client", "WrongArgs"),
-            "Not all required arguments are set.")
+  $request as element(https:request, https:requestType)?,
+  $href as xs:string?,
+  $content as item()?,
+  $serial as item()?
+) as item()+ {
+  if (fn:empty($href) and fn:empty($request)) then
+    fn:error(fn:QName("http://www.expath.org/mod/http-client", "WrongArgs"),
+      "Not all required arguments are set.")
+  else
+    if ($href eq "") then
+      fn:error(fn:QName("http://www.expath.org/mod/http-client", "HrefEmpty"),
+        "The href value is set to the empty string")
     else
-        if ($href eq "") then
-            fn:error(fn:QName("http://www.expath.org/mod/http-client", "HrefEmpty"),
-                "The href value is set to the empty string")
-        else
-            httpclientimpl:http-send-request-impl($request,
-                $href,
-                $content,
-                $serial)
+      httpclientimpl:http-send-request-impl($request,
+        $href,
+        $content,
+        $serial)
 };
 
 (:~
@@ -73,13 +75,14 @@ declare function http:send-request(
  : @see http://www.expath.org/mod/http-client;send-request
  :
  : @param $request @see parameter $request of
- :  http://www.expath.org/mod/http-client;send-request
- : @return @see return of
- :  http://www.expath.org/mod/http-client;send-request
-:)
+ :        http://www.expath.org/mod/http-client;send-request
+ : @return see return of
+ :         http://www.expath.org/mod/http-client;send-request
+ :)
 declare function http:send-request (
-    $request as element(https:request, https:requestType)) as item()+ {
-    http:send-request($request,(),(),())
+  $request as element(https:request, https:requestType)
+) as item()+ {
+  http:send-request($request,(),(),())
 };
 
 (:~
@@ -88,17 +91,18 @@ declare function http:send-request (
  :
  : @see http://www.expath.org/mod/http-client;send-request
  :
- : @param $request @see parameter $request of
- :  http://www.expath.org/mod/http-client;send-request
- : @param href @see parameter $href of
- :  http://www.expath.org/mod/http-client;send-request
- : @return @see return of
- :  http://www.expath.org/mod/http-client;send-request
-:)
+ : @param $request see parameter $request of
+ :        http://www.expath.org/mod/http-client;send-request
+ : @param $href see parameter $href of
+ :        http://www.expath.org/mod/http-client;send-request
+ : @return see return of
+ :         http://www.expath.org/mod/http-client;send-request
+ :)
 declare function http:send-request(
-    $request as element(https:request, https:requestType)?,
-    $href as xs:string?) as item()+ {
-    http:send-request($request,$href,(),())  
+  $request as element(https:request, https:requestType)?,
+  $href as xs:string?
+) as item()+ {
+  http:send-request($request,$href,(),())  
 };
 
 (:~
@@ -107,18 +111,19 @@ declare function http:send-request(
  :
  : @see http://www.expath.org/mod/http-client;send-request
  :
- : @param $request @see parameter $request of
- :  http://www.expath.org/mod/http-client;send-request
- : @param $href @see parameter $href of
- :  http://www.expath.org/mod/http-client;send-request
- : @param $content @see parameter $content of
- :  http://www.expath.org/mod/http-client;send-request
- : @return @see return of
- :  http://www.expath.org/mod/http-client;send-request
-:)
+ : @param $request see parameter $request of
+ :        http://www.expath.org/mod/http-client;send-request
+ : @param $href see parameter $href of
+ :        http://www.expath.org/mod/http-client;send-request
+ : @param $content see parameter $content of
+ :        http://www.expath.org/mod/http-client;send-request
+ : @return see return of
+ :         http://www.expath.org/mod/http-client;send-request
+ :)
 declare function http:send-request(
-    $request as element(https:request, https:requestType)?,
-    $href as xs:string?,
-    $content as item()?) as item()+ {
-    http:send-request($request,$href,$content,())
+  $request as element(https:request, https:requestType)?,
+  $href as xs:string?,
+  $content as item()?
+) as item()+ {
+  http:send-request($request,$href,$content,())
 };

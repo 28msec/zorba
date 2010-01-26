@@ -779,7 +779,7 @@ declare function excel:radians($degree as xs:integer) as xs:decimal
  : @param $number A positive integer.
  : @return The roman string representation.
  : @error XQP0021(errNum) if the input integer is negative 
-:)
+ :)
 declare function excel:roman($number as xs:integer) as xs:string
 {
   if ($number lt 0) then

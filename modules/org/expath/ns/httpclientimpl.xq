@@ -26,7 +26,17 @@ module namespace httpclientimpl = 'http://expath.org/ns/httpclientimpl';
 
 import schema namespace http = "http://expath.org/ns/http-client";
 
+(:~
+ : Not documented.
+ :
+ : @param $request
+ : @param $href
+ : @param $bodies
+ : @return Not documented.
+ : @error
+ :)
 declare function httpclientimpl:http-send-request-impl (
-    $request as element(http:request, http:requestType)?,
-    $href as xs:string?,
-    $bodies as item()*) as item()+ external;
+  $request as element(http:request, http:requestType)?,
+  $href as xs:string?,
+  $bodies as item()*
+) as item()+ external;
