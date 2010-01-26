@@ -54,6 +54,15 @@ namespace zorba { namespace filemodule {
           int pos);
 
       static String
+      pathSeparator();
+
+      static String
+      pathToFullOSPath(const String& path);
+
+      static String
+      pathToOSPath(const String& path);
+
+      static String
       pathToUriString(const String& path);
 
     public:
@@ -65,6 +74,7 @@ namespace zorba { namespace filemodule {
 
   };
 
-} /* namespace filemodule */ } /* namespace zorba */
+} /* namespace filemodule */
+} /* namespace zorba */
 
 #endif /* ZORBA_FILEMODULE_FILEFUNCTION_H */

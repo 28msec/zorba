@@ -52,16 +52,10 @@ declare sequential function local:generateXQDocXml($modulesPath as xs:string, $t
             let $xqdocFileName := concat($targetPath, "/", $moduleName, ".xml")
             return
                 try {
-(: remove this block when bug 2896710 on SF is corrected :)
-block {
-(: ----------------------------------------------------- :)
                     file:mkdirs($targetPath, false());
-                    file:write($xqdocFileName, $xqdoc, "xml");
+                    file:write($xqdocFileName, $xqdoc, <s method="xml" indent="yes" />/@*);
                     concat("
 SUCCESS: ", $moduleUri, " (", $xqdocFileName, ")");
-(: remove this block when bug 2896710 on SF is corrected :)
-}
-(: ----------------------------------------------------- :)
                 } catch * ($error_code) {
                     concat("
 FAILED: ", $moduleUri, " (", $xqdocFileName, ")")
@@ -101,9 +95,6 @@ declare sequential function local:generateXQDocXhtml($xqdocPath as xs:string, $t
             let $xhtml := xqdg:doc($xqdoc)
             return
                 try {
-(: remove this block when bug 2896710 on SF is corrected :)
-block {
-(: ----------------------------------------------------- :)
                     let $fileRelativeToBuild := concat($targetPath, "/", $xhtmlFileName),
                         $fileRelativeToIndex := replace($fileRelativeToBuild, "^xhtml/", "")
                     return
@@ -113,12 +104,9 @@ block {
 
                     local:configure-xhtml($xhtml, $pathToIndex, $cssFileName);
 
-                    file:write($xhtmlFilePath, $xhtml, "xhtml");
+                    file:write($xhtmlFilePath, $xhtml, <s method="xhtml" indent="yes" />/@*);
                     concat("
 SUCCESS: ", $moduleUri, " (", $xhtmlFilePath, ")");
-(: remove this block when bug 2896710 on SF is corrected :)
-}
-(: ----------------------------------------------------- :)
                 } catch * ($error_code) {
                     concat("
 FAILED: ", $moduleUri, " (", $xhtmlFilePath, ")")

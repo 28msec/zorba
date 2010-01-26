@@ -33,7 +33,19 @@ Serializer::createSerializer(const Zorba_SerializerOptions_t& aOptions)
   return new SerializerImpl(aOptions);
 }
 
+Serializer_t
+Serializer::createSerializer(ItemSequence* aOptions)
+{
+  return new SerializerImpl(aOptions);
+}
+
 SerializerImpl::SerializerImpl(const Zorba_SerializerOptions_t& aOptions)
+  : theInternalSerializer(&theErrorManager)
+{
+  setSerializationParameters(theInternalSerializer, aOptions);
+}
+
+SerializerImpl::SerializerImpl(ItemSequence* aOptions)
   : theInternalSerializer(&theErrorManager)
 {
   setSerializationParameters(theInternalSerializer, aOptions);
@@ -135,6 +147,17 @@ SerializerImpl::setSerializationParameters(
     aInternalSerializer.setParameter("version", aSerializerOptions.version.c_str());
 }
 
-
+void
+SerializerImpl::setSerializationParameters(
+  serializer&   aInternalSerializer,
+  ItemSequence* aSerializerOptions)
+{
+  Item lItem;
+  while (aSerializerOptions->next(lItem)) {
+    Item lNodeName;
+    lItem.getNodeName(lNodeName);
+    aInternalSerializer.setParameter(lNodeName.getLocalName().c_str(), lItem.getStringValue().c_str());
+  }
+}
 
 } // namespace zorba

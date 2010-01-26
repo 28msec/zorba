@@ -178,6 +178,38 @@ namespace zorba {
 
 //*****************************************************************************
 
+  class PathSeparator : public FileFunction
+  {
+    public:
+      PathSeparator(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "path-separator"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
+  class PathToFullPathFunction : public FileFunction
+  {
+    public:
+      PathToFullPathFunction(const FileModule* aModule);
+
+      virtual String
+      getLocalName() const { return "path-to-full-path"; }
+  
+      virtual ItemSequence_t 
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+  };
+
+//*****************************************************************************
+
   class PathToUriFunction : public FileFunction
   {
     public:

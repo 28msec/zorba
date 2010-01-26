@@ -194,6 +194,27 @@ FileFunction::getFilePathString(
 }
 
 String
+FileFunction::pathSeparator() {
+  return File::getPathSeparator();
+}
+
+String
+FileFunction::pathToFullOSPath(const String& aPath) {
+  File_t lFile = File::createFile(aPath.c_str());
+  std::string lPath = lFile->getFilePath();
+
+  return String(lPath);
+}
+
+String
+FileFunction::pathToOSPath(const String& aPath) {
+  File_t lFile = File::createFile(aPath.c_str());
+  std::string lPath = lFile->getFilePath();
+
+  return String(lPath);
+}
+
+String
 FileFunction::pathToUriString(const String& aPath) {
   std::stringstream lErrorMessage;
 

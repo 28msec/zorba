@@ -36,7 +36,11 @@ namespace zorba {
         Serializable* object,
         std::ostream& stream) const = 0;
 
-      static Serializer_t createSerializer(const Zorba_SerializerOptions_t& options);
+      static Serializer_t
+      createSerializer(const Zorba_SerializerOptions_t& options);
+
+      static Serializer_t
+      createSerializer(ItemSequence* options);
 
   };
 

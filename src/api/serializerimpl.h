@@ -38,6 +38,8 @@ namespace zorba {
 
       SerializerImpl(const Zorba_SerializerOptions_t& options);
 
+      SerializerImpl(ItemSequence* options);
+
       virtual ~SerializerImpl() {}
 
       virtual void
@@ -49,6 +51,11 @@ namespace zorba {
       setSerializationParameters(
         serializer&                       serializer,
         const Zorba_SerializerOptions_t&  options);
+
+      static void
+      setSerializationParameters(
+        serializer&   serializer,
+        ItemSequence* options);
 
   };
 

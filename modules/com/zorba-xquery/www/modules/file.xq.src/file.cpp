@@ -319,6 +319,41 @@ MkdirsFunction::evaluate(
 
 //*****************************************************************************
 
+PathSeparator::PathSeparator(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+PathSeparator::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createAnyURI(FileFunction::pathSeparator())));
+}
+
+//*****************************************************************************
+
+PathToFullPathFunction::PathToFullPathFunction(const FileModule* aModule)
+  : FileFunction(aModule)
+{
+}
+  
+ItemSequence_t
+PathToFullPathFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  String lPathStr = FileFunction::getFilePathString(aSctxCtx, aArgs, 0);
+  String lResult = FileFunction::pathToOSPath(lPathStr);
+
+  return ItemSequence_t(new SingletonItemSequence(theModule->getItemFactory()->createString(lResult)));
+}
+
+//*****************************************************************************
+
 PathToUriFunction::PathToUriFunction(const FileModule* aModule)
   : FileFunction(aModule)
 {
@@ -476,22 +511,14 @@ WriteFunction::evaluate(
     lAppend = lAppendItem.getBooleanValue();
   }
   
-  // initialize serializer
-  Item lItem;
-  if (!aArgs[2]->next(lItem)) {
-    std::stringstream lErrorMessage;
-    lErrorMessage << "The serialization options parameter cannot be empty-sequence";
-    throwError(lErrorMessage.str(), XPTY0004);
-  }
-  const Zorba_SerializerOptions_t lOptions = createSerializerOptions(lItem);
-  Serializer_t s = Serializer::createSerializer(lOptions);
+  Serializer_t lSerializer = Serializer::createSerializer(aArgs.at(2));
 
   // open the output stream in the desired write mode
   std::ofstream lOutStream;
   lFile->openOutputStream(lOutStream, lAppend);
 
   // serialize the content
-  s->serialize((Serializable*)aArgs[1], lOutStream);
+  lSerializer->serialize((Serializable*)aArgs[1], lOutStream);
 
   lOutStream.close();
 

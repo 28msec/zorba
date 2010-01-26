@@ -83,10 +83,13 @@ declare function xhtml:annotations($comment) {
         return ( 
             <div class="subsubsection">{
               concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
-            }</div>,            
+            }</div>,    
+(: ********************************************************** :)
+(: this hack should be replaced with links everywhere in text :)
             (: replace the @see nodes that start with http:// with HTML a tag :)
-            if(($annName = "see") and fn:starts-with(fn:lower-case($annotation/node()), "http://")) then
+            if(($annName = "see") and fn:count($annotation/node()) eq 1 and fn:starts-with(fn:lower-case($annotation/node()), "http://")) then
               <p class="annotationText">{<a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a>}</p>
+(: ********************************************************** :)
             else
               <p class="annotationText">{$annotation/node()}</p>
         )
@@ -155,7 +158,7 @@ declare function xhtml:module-function-summary($functions)
                     <tr>
                         <td class="type">{$type}</td>
                         <td>
-                            <pre><a href="#{$name}-{$param-number}">{$name}</a>{$paramsAndReturn}</pre>
+                            <tt><a href="#{$name}-{$param-number}">{$name}</a>{$paramsAndReturn}</tt>
                         </td>
                     </tr>
         }</table>

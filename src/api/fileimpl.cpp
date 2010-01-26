@@ -82,6 +82,12 @@ File::createFile(const std::string& path)
   return new FileImpl(path);
 }
 
+const char*
+File::getPathSeparator()
+{
+  return filesystem_path::get_path_separator();
+}
+
 const std::string
 FileImpl::getFilePath() const
 {
@@ -210,7 +216,7 @@ FileImpl::remove()
     }
 
     if (theInternalFile->is_directory()) {
-      theInternalFile->rmdir();
+      theInternalFile->rmdir(false);
     } else {
       theInternalFile->remove();
     }

@@ -56,7 +56,7 @@ declare sequential function file:copy(
 ) as xs:boolean external;
 
 (:~
- : Tests if a path/URI is already used.
+ : Tests if a path/URI is already used in the file system
  :
  : @param $fileOrDir The path/URI to test for existance.
  : @return true if the path/URI points to an existing file system item.
@@ -67,8 +67,10 @@ declare sequential function file:exists(
 ) as xs:boolean external;
 
 (:~
- : Lists the file system items in a certain directory. No assumption should be
- : made on the order of the items. The "." and ".." items are not returned.
+ : Lists the file system items in a certain directory.
+ : The order of the items in the result is not defined.
+ : The "." and ".." items are not returned.
+ : The file paths are relative to the provided <tt>$path</tt>.
  :
  : @param $path The path/URI to retrieve the children from.
  : @return The sequence of names of the direct children. 
@@ -80,16 +82,15 @@ declare sequential function file:files(
 
 (:~
  : Lists all files matching the given pattern in a given directory.
- : The order of the result is not defined.
+ : The order of the items in the result is not defined.
  : The "." and ".." items are not considered for the match.
  : The result of this function is equivalent to the following call:
- : <tt>
- :  file:files($path, $pattern, fn:false())
- : </tt>
+ : <tt>file:files($path, $pattern, fn:false())</tt>
+ : The file paths are relative to the provided <tt>$path</tt>.
  : 
- : @param $path The path/URI to list the files of.
- : @param $pattern The filename condition to be checked.
- : @return A sequence of filenames matching the pattern.
+ : @param $path The path/URI to retrieve the children from.
+ : @param $pattern The file name condition to be checked.
+ : @return A sequence of file names matching the pattern.
  :)
 declare sequential function file:files(
   $path as xs:string,
@@ -99,17 +100,16 @@ declare sequential function file:files(
 };
 
 (:~
- : Lists all files matching the given pattern in a given directory
- : and all subdirectories if $recursive is specified.
- : The order of the result is not defined.
+ : Lists all files matching the given pattern in a given directory.
+ : The order of the items in the result is not defined.
  : The "." and ".." items are not considered for the match.
+ : The file paths are relative to the provided <tt>$path</tt>.
  : 
- : @param $path The path/URI to list the files of.
- : @param $pattern The filename condition to be checked.
- : @param $recursive A boolean indicating whether directories should
- :        be searched recursively.
- : @return A sequence of filenames matching the pattern.
- :
+ : @param $path The path/URI to retrieve the children from.
+ : @param $pattern The file name condition to be checked.
+ : @param $recursive A boolean flag indicating whether directories
+ :        should be searched recursively.
+ : @return A sequence of file names matching the pattern.
  :)
 declare sequential function file:files(
   $path as xs:string,
@@ -117,17 +117,16 @@ declare sequential function file:files(
   $recursive as xs:boolean
 ) as xs:string* {
   for $f in file:files($path)
-  let $full := fn:concat($path, "///", $f)
+  let $full := fn:concat($path, "/", $f)
   return
     if ($recursive and file:is-directory($full))
     then
-      file:files($full, $pattern, $recursive)
+      for $child in file:files($full, $pattern, $recursive)
+      return fn:concat($f, file:path-separator(), $child)
     else
       if (fn:matches($f, $pattern))
-      then 
-        $full
-      else
-        ()
+      then $f
+      else ()
 };
 
 (:~
@@ -228,14 +227,33 @@ declare sequential function file:mkdirs(
 ) as xs:boolean external;
 
 (:~
+ : This function returns the file path separator used by this operating system.
+ :
+ : @return The operating system file path separator.
+ :)
+declare function file:path-separator() as xs:string external;
+
+(:~
+ : Transforms a path/URI into a full operating system path. The URI must have
+ : the file:// scheme. The operation is performed redardless the existence
+ : of the provided path.
+ :
+ : @param $path The path/URI to transform.
+ : @return The operating system file path.
+ :)
+declare function file:path-to-full-path(
+  $path as xs:string
+) as xs:string external;
+
+(:~
  : Transforms a file system path into a URI with the file:// scheme. No checks
- : are performed redarding the existence of the provided file system path.
+ : are performed redardless of the existence of the provided file system path.
  :
  : @param $path The path to transform.
- : @return the file URI corresponding to the provided path.
+ : @return The file URI corresponding to the provided path.
  :)
-declare sequential function file:path-to-uri(
-  $file as xs:string
+declare function file:path-to-uri(
+  $path as xs:string
 ) as xs:anyURI external;
 
 (:~
@@ -243,7 +261,7 @@ declare sequential function file:path-to-uri(
  : content.
  :
  : @param $file The file to read.
- : @return the content of the file as Base64.
+ : @return The content of the file as Base64.
  : @error An error is thrown if IO or Security problems occur.
  :)
 declare sequential function file:read(
@@ -257,7 +275,7 @@ declare sequential function file:read(
  :
  : @param 
  : @param 
- : @return an XML document containing the tidy-ed HTML from $file
+ : @return An XML document containing the tidy-ed HTML from $file
  : @error The function returns an error if it cannot build a valid XML document
  :        after trying to "tidy" the file content. An error is also thrown if
  :        IO or Security problems occur.
@@ -272,7 +290,7 @@ declare sequential function file:read-html(
  : content.
  :
  : @param $file The file to read.
- : @return the content of the file as string.
+ : @return The content of the file as string.
  : @error An error is thrown if IO or Security problems occur.
  :)
 declare sequential function file:read-text(
@@ -284,7 +302,7 @@ declare sequential function file:read-text(
  : must be a valid XML otherwise an error will be thrown.
  :
  : @param $file The file path/URI to be read.
- : @return an XML document containing the content of the file.
+ : @return An XML document containing the content of the file.
  : @error An error is thrown if the does not contain a valid XML, or if IO or
  :        Security problems occur.
  :)
@@ -293,7 +311,8 @@ declare sequential function file:read-xml(
 ) as node() external;
 
 (:~
- : Delete a file or a directory from the file system.
+ : Delete a file or a directory from the file system. This operation is not
+ : recursive and it will fail for non-emty directories.
  :
  : @param $fileOrDir The path/URI of the file or directory to delete.
  : @return true is the operation is succeeds.
@@ -310,14 +329,17 @@ declare sequential function file:remove(
  : @param $file The file to write the content to.
  : @param $content The content to be serialized to the file.
  : @param $serializer-params Parameter to control the serialization of the
- :        content. See the description of the module for the accepted values.
- : @return emprty sequence
+ :        content. The semantics is the same with the <tt>$params</tt>
+ :        parameter of the <tt><a target="_blank"
+ :        href="http://www.w3.org/TR/xpath-functions-11/#func-serialize"
+ :        >fn:serialize</a></tt> function.
+ : @return The empty sequence
  : @error An error is thrown if IO or Security problems occur.
  :)
 declare sequential function file:write(
   $file as xs:string,
   $content as item()*,
-  $serializer-params as item()
+  $serializer-params as node()*
 ) external;
 
 (:~
@@ -329,14 +351,17 @@ declare sequential function file:write(
  : @param $file The file to write the content to.
  : @param $content The content to be serialized to the file.
  : @param $serializer-params Parameter to control the serialization of the
- :        content. See the description of the module for the accepted values.
+ :        content. The semantics is the same with the <tt>$params</tt>
+ :        parameter of the <tt><a target="_blank"
+ :        href="http://www.w3.org/TR/xpath-functions-11/#func-serialize"
+ :        >fn:serialize</a></tt> function.
  : @param $append Flag to specify if this is an append operation or not.
- : @return emprty sequence
+ : @return The empty sequence
  : @error An error is thrown if IO or Security problems occur.
  :)
 declare sequential function file:write(
   $file as xs:string,
   $content as item()*,
-  $serializer-params as item(),
+  $serializer-params as node()*,
   $append as xs:boolean
 ) external;

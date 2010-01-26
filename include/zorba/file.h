@@ -50,6 +50,8 @@ namespace zorba {
 
       static File_t createFile(const std::string& path);
 
+      static const char* getPathSeparator();
+
     public: // type, enums
 
 #ifdef WIN32

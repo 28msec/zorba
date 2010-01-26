@@ -1,1 +1,1 @@
-..///file///list.xq
+list.xq
