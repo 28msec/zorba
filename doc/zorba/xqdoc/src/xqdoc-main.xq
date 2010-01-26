@@ -64,6 +64,58 @@ FAILED: ", $moduleUri, " (", $xqdocFileName, ")")
         else ()
 };
 
+
+(:~
+ : This function removes the internal functionality from all the generated XQDoc XML.
+ :
+ : @param $xqdocPath where to search for XML XQDoc documents recursively.
+ :)
+declare sequential function local:removeInternalFunctionality($targetPath as xs:string) {
+
+  ()
+(:
+    let $absoluteXqdocPath := concat($xqdocBuildPath, "/", $targetPath)
+    
+    for $file in file:files($absoluteXqdocPath, "*\.xml&")
+    let $filePath := concat($absoluteXqdocPath, "/", $file)
+    return
+        if (file:is-directory($filePath))
+        then
+            let $newXqdocPath := concat($xqdocPath, "/", $file),
+                $newTargetPath := concat($targetPath, "/", $file),
+                $newPathToIndex := concat("../", $pathToIndex)
+            return local:generateXQDocXhtml($newXqdocPath, $newTargetPath, $newPathToIndex, $cssFileName)
+        else if (matches($file, "\.xq\.xml$")) then (
+            let $xqdoc := file:read-xml($filePath)/xqdoc:xqdoc
+            let $moduleDoc := $xqdoc/xqdoc:module
+            let $moduleName := $moduleDoc/xqdoc:name
+            let $moduleUri := $moduleDoc/xqdoc:uri
+            let $xhtmlFileName := replace($moduleName, "\.xq$", ".html"),
+                $xhtmlFilePath := concat($absoluteTargetPath, "/", $xhtmlFileName)
+            let $xhtml := xqdg:doc($xqdoc)
+            return
+                try {
+                    let $fileRelativeToBuild := concat($targetPath, "/", $xhtmlFileName),
+                        $fileRelativeToIndex := replace($fileRelativeToBuild, "^xhtml/", "")
+                    return
+                        local:collectModule($moduleDoc, $fileRelativeToIndex);
+
+                    file:mkdirs($absoluteTargetPath, false());
+
+                    local:configure-xhtml($xhtml, $pathToIndex, $cssFileName);
+
+                    file:write($xhtmlFilePath, $xhtml, <s method="xhtml" indent="yes" />/@*);
+                    concat("
+SUCCESS: ", $moduleUri, " (", $xhtmlFilePath, ")");
+                } catch * ($error_code) {
+                    concat("
+FAILED: ", $moduleUri, " (", $xhtmlFilePath, ")")
+                }
+        )
+        else ()
+:)
+};
+
 (:~
  : This function generates the XQDoc XHTML pages for all the XQDoc XML
  : documents found in $xqdocPath and writes the resulting pages to in
@@ -72,7 +124,12 @@ FAILED: ", $moduleUri, " (", $xqdocFileName, ")")
  : @param $xqdocPath where to search for XML XQDoc documents recursively.
  : @param $targetPath where to generate the XQDoc XHTML pages.
  :)
-declare sequential function local:generateXQDocXhtml($xqdocPath as xs:string, $targetPath as xs:string, $pathToIndex as xs:string, $cssFileName as xs:string) {
+declare sequential function local:generateXQDocXhtml(
+  $xqdocPath as xs:string,
+  $targetPath as xs:string,
+  $pathToIndex as xs:string,
+  $cssFileName as xs:string)
+{
     let $absoluteXqdocPath := concat($xqdocBuildPath, "/", $xqdocPath),
         $absoluteTargetPath := concat($xqdocBuildPath, "/", $targetPath)
     
@@ -185,8 +242,8 @@ declare sequential function local:configure-xhtml ($xhtml, $pathToIndex as xs:st
 (:~
  : This function reads, updates and returns the new index.html.
  :
- : @param $xqdocPath where to search for XML XQDoc documents recursively.
- : @return the content of the new index.html
+ : @param $xqdocPath Where to search for XML XQDoc documents recursively.
+ : @return The content of the new index.html.
  :)
 declare sequential function local:generateIndexHtml($indexPath as xs:string) as document-node() {
     let $indexHtmlDoc := file:read-xml($indexPath)
@@ -207,6 +264,12 @@ return
         local:generateXQDocXml($modulesPath, $xqdocXmlDir)
     else
         error()
+;
+
+(: remove the internal functions from the XQDoc XML :)
+let $xqdocXmlDir := concat($xqdocBuildPath, "/xml")
+return
+    local:removeInternalFunctionality($xqdocXmlDir)
 ;
 
 (: generate the XQDoc XHTML for all the modules :)

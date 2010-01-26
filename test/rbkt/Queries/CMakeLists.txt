@@ -140,7 +140,6 @@ ENDFOREACH(TESTFILE)
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue
 # !!! do not abuse this list or you will be prosecuted !!!
-EXPECTED_FAILURE(test/rbkt/zorba/xqdoc/moduleDocumentation 2901298)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 # --------------------------------------------------------------------------

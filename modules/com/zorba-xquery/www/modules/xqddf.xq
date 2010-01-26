@@ -442,8 +442,11 @@ declare updating function xqddf:delete-index($name as xs:QName) external;
  : this function is a NOP.
  :
  : @param $name The QName of the index to refresh.
+ : @return The result of the function is an empty XDM instance and a
+ :         pending update list that consists of a
+ :         <tt>upd:refresHindex($name)</tt> update primitive.
  : @error <tt></tt> If available indexes does not provide a mapping for
- :       the expanded QName <tt>$name</tt>.
+ :        the expanded QName <tt>$name</tt>.
  :)
 declare updating function xqddf:refresh-index($name as xs:QName) external;
 
@@ -453,6 +456,9 @@ declare updating function xqddf:refresh-index($name as xs:QName) external;
  : <tt>$name</tt> in the dynamic context.
  :
  : @param $name The QName of the integrity constraint to activate.
+ : @return The result of the function is an empty XDM instance and a
+ :         pending update list that consists of a
+ :         <tt>upd:activateIntegrityConstraint($name)</tt> update primitive.
  : @error <tt></tt> If available integrity constraints in the static context
  :        does not provide a mapping for the expanded QName <tt>$name</tt>.
  :)
@@ -465,6 +471,9 @@ declare updating function xqddf:activate-integrity-constraint(
  : <tt>$name</tt> in the dynamic context.
  :
  : @param $name The QName of the integrity constraint to deactivate.
+ : @return The result of the function is an empty XDM instance and a
+ :         pending update list that consists of a
+ :         <tt>upd:deActivateIntegrityConstraint($name)</tt> update primitive.
  : @error <tt></tt> If available integrity constraints in the static context
  :        does not provide a mapping for the expanded QName <tt>$name</tt>.
  :)
