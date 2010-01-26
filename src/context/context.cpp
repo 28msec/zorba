@@ -69,11 +69,12 @@ std::vector<xqp_string>* context::get_all_keymap_keys() const
 
 // Explicit template instantiation
 template bool context::context_value<context::ctx_value_t>(xqp_string key, context::ctx_value_t& val) const;
+
 template bool context::context_value<xqpString>(xqp_string key, xqpString& val) const;
 
 template<class V> bool context::context_value(xqp_string key, V &val) const
 {
-  if (lookup_once (key, val))
+  if (lookup_once(key, val))
     return true;
   else
     return parent == NULL ? false : parent->context_value (key, val);

@@ -3038,8 +3038,9 @@ void* begin_visit(const VFO_DeclList& v)
               << ") does not match the signature of the function that is "
               << "declared in the module.");
         }
-        // return because we don't add already built-in functions to the
-        // static context
+
+        // continue with the next declaration, because we don't add already
+        // built-in functions to the static context
         continue;
       }
 
@@ -4507,7 +4508,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   ValueIC_t vic;
   if ( v.getICKind() == IntegrityConstraintDecl::foreign_key )
   {
-    const ICForeignKey ic = dynamic_cast<const ICForeignKey&>(v);
+    const ICForeignKey& ic = dynamic_cast<const ICForeignKey&>(v);
 
     const QName* fromQname = ic.getFromCollName();
     store::Item_t fromQnameItem = 

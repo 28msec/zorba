@@ -126,15 +126,24 @@ void context::serialize(::zorba::serialization::Archiver& ar)
 
 function* context::lookup_fmap_func(xqp_string key, int arity) const
 {
-  ArityFMap *fmap = lookup_fmap (key);
+  ArityFMap* fmap = lookup_fmap(key);
   if (fmap == NULL)
     return NULL;
-  ArityFMap::iterator i = fmap->find (arity);
-  return i == fmap->end () ? NULL : (*i).second;
+
+  ArityFMap::iterator i = fmap->find(arity);
+
+  if (i == fmap->end())
+  {
+    return (parent == NULL ? NULL : parent->lookup_fmap_func(key, arity));
+  }
+  else
+  {
+    return (*i).second;
+  }
 }
 
 
-void context::bind_str (
+void context::bind_str(
     xqp_string key,
     xqp_string v,
     XQUERY_ERROR err)
@@ -926,25 +935,25 @@ bool static_context::bind_fn(
     int arity,
     bool allow_override)
 {
-  xqp_string key = fn_internal_key () + qname_internal_key (qname);
+  xqp_string key = fn_internal_key() + qname_internal_key(qname);
 
-  bool existed = lookup_fmap_func (key, arity) != NULL;
+  bool existed = lookup_fmap_func(key, arity) != NULL;
 
   if (! allow_override && existed)
     return false;
 
   ctx_value_t v(CTX_ARITY);
-  ArityFMap *fmap = NULL;
-  bool newMap = ! lookup_once (key, v);
+  ArityFMap* fmap = NULL;
+  bool newMap = ! lookup_once(key, v);
 
   fmap = newMap ? new ArityFMap : v.fmapValue;
 
-  (*fmap) [arity] = f;
+  (*fmap)[arity] = f;
 
   if (newMap)
   {
     v.fmapValue = fmap;
-    keymap.put (key, v, false);
+    keymap.put(key, v, false);
   }
 
   return ! existed;
@@ -996,7 +1005,7 @@ void static_context::find_functions (
 }
 
 
-void static_context::find_functions_int (
+void static_context::find_functions_int(
     xqp_string key,
     std::vector<function *>& functions,
     set<int> &found) const
@@ -1022,9 +1031,9 @@ void static_context::find_functions_int (
 }
 
 
-bool
-static_context::bind_external_module( ExternalModule* aModule,
-                                      bool aDynamicallyLoaded)
+bool static_context::bind_external_module(
+    ExternalModule* aModule,
+    bool aDynamicallyLoaded)
 {
   xqp_string lURI = Unmarshaller::getInternalString(aModule->getURI());
 
@@ -1032,8 +1041,7 @@ static_context::bind_external_module( ExternalModule* aModule,
 }
 
 
-StatelessExternalFunction*
-static_context::lookup_stateless_external_function(
+StatelessExternalFunction* static_context::lookup_stateless_external_function(
     const xqp_string& aURI,
     const xqp_string& aLocalName)
 {
