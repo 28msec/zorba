@@ -228,10 +228,11 @@ let_clause::let_clause(
     const QueryLoc& loc,
     varref_t varExpr,
     expr_t domainExpr,
-    varref_t scoreVarExpr)
+    bool lazy)
   :
   forletwin_clause(sctxid, loc, flwor_clause::let_clause, varExpr, domainExpr),
-  theScoreVarExpr(scoreVarExpr)
+  theScoreVarExpr(NULL),
+  theLazyEval(lazy)
 {
   if (theScoreVarExpr != NULL)
     theScoreVarExpr->set_flwor_clause(this);
@@ -266,6 +267,7 @@ void let_clause::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (forletwin_clause*)this);
   ar & theScoreVarExpr;
+  ar & theLazyEval;
 }
 
 
@@ -276,6 +278,7 @@ flwor_clause_t let_clause::clone(expr::substitution_t& subst) const
   varref_t varCopy(new var_expr(*theVarExpr));
   subst[theVarExpr.getp()] = varCopy.getp();
 
+#if 0
   varref_t scorevarCopy;
   var_expr* score_var_ptr = theScoreVarExpr.getp();
   if (score_var_ptr) 
@@ -283,8 +286,9 @@ flwor_clause_t let_clause::clone(expr::substitution_t& subst) const
     scorevarCopy = new var_expr(*score_var_ptr);
     subst[score_var_ptr] = scorevarCopy.getp();
   }
+#endif
 
-  return new let_clause(NULL, theContext, get_loc(), varCopy, domainCopy, scorevarCopy);
+  return new let_clause(NULL, theContext, get_loc(), varCopy, domainCopy, theLazyEval);
 }
 
 
@@ -300,12 +304,14 @@ window_clause::window_clause(
     varref_t varExpr,
     expr_t domainExpr,
     flwor_wincond_t winStart,
-    flwor_wincond_t winStop)
+    flwor_wincond_t winStop,
+    bool lazy)
   :
   forletwin_clause(sctxid, loc, flwor_clause::window_clause, varExpr, domainExpr),
   theWindowKind(winKind),
   theWinStartCond(winStart),
-  theWinStopCond(winStop)
+  theWinStopCond(winStop),
+  theLazyEval(lazy)
 {
   if (theWinStartCond != NULL)
     theWinStartCond->set_flwor_clause(this);
@@ -348,6 +354,7 @@ void window_clause::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(window_t, theWindowKind);
   ar & theWinStartCond;
   ar & theWinStopCond;
+  ar & theLazyEval;
 }
   
 
@@ -390,7 +397,8 @@ flwor_clause_t window_clause::clone(expr::substitution_t& subst) const
                            varCopy,
                            domainCopy,
                            cloneStartCond,
-                           cloneStopCond);
+                           cloneStopCond,
+                           theLazyEval);
 }
 
 

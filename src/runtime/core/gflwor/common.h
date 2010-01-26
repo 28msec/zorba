@@ -84,7 +84,7 @@ public:
   theInput     : A ForVarIter or LetVarIter referencing the FOR/LET variable
                  corresponding to this grouping variable in the input tuple 
                  stream.
-  theInnerVars : All references of this grouping variable in the output tuple
+  theVarRefs   : All references of this grouping variable in the output tuple
                  stream.
   theCollation : The collation to use when comparing values of this grouping
                  var (if the values are of type xs:string or subtype).
@@ -103,50 +103,43 @@ class GroupingSpec : public ::zorba::serialization::SerializeBaseClass
   
 protected:
   PlanIter_t                theInput;
-  std::vector<ForVarIter_t> theInnerVars;
+  std::vector<ForVarIter_t> theVarRefs;
   std::string               theCollation;
   XQPCollator             * theCollator;
 
 public:
   SERIALIZABLE_CLASS(GroupingSpec)
   SERIALIZABLE_CLASS_CONSTRUCTOR(GroupingSpec)
-  GroupingSpec() {theCollator = NULL;}
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theInput;
-    ar & theInnerVars;
-    ar & theCollation;
-    ar & theCollator;
-  }
-  virtual ~GroupingSpec() {}
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
+  GroupingSpec() { theCollator = NULL; }
+
   GroupingSpec(
         PlanIter_t inputVar,
-        const std::vector<PlanIter_t>& outputVarRefs,
+        const std::vector<PlanIter_t>& varRefs,
         const std::string& aCollation);
 
-  void accept ( PlanIterVisitor& ) const;
+  virtual ~GroupingSpec() {}
+
+  void accept(PlanIterVisitor&) const;
 
   uint32_t getStateSizeOfSubtree() const; 
 
-  void open ( PlanState& planState, uint32_t& offset );
-  void close ( PlanState& planState );
-  void reset ( PlanState& planState ) const;
+  void open(PlanState& planState, uint32_t& offset);
+  void close(PlanState& planState);
+  void reset(PlanState& planState) const;
 };
 
 
 /***************************************************************************//**
-  Wrapper for a GroupingOuterVar.
+  Wrapper for a NonGroupingSpec.
 
-  - Data Members:
-
-  theInput     : A ForVarIter or LetVarIter referencing the FOR/LET variable
-                 corresponding to this non-grouping variable in the input tuple
-                 stream.
-  theOuterVars : All references to this non-grouping variable in the output
-                 tuple stream.
+  theInput   : A ForVarIter or LetVarIter referencing the FOR/LET variable
+               corresponding to this non-grouping var in the input tuple stream.
+  theVarRefs : All references to this non-grouping var in the output tuple stream.
 ********************************************************************************/
-class GroupingOuterVar : public ::zorba::serialization::SerializeBaseClass
+class NonGroupingSpec : public ::zorba::serialization::SerializeBaseClass
 {
   friend class FLWORIterator;
   friend class GroupByIterator;
@@ -155,30 +148,29 @@ class GroupingOuterVar : public ::zorba::serialization::SerializeBaseClass
   
 protected:
   PlanIter_t                theInput;
-  std::vector<LetVarIter_t> theOuterVars;
+  std::vector<LetVarIter_t> theVarRefs;
   
 public:
-  SERIALIZABLE_CLASS(GroupingOuterVar)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(GroupingOuterVar)
-  GroupingOuterVar() {}
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theInput;
-    ar & theOuterVars;
-  }
-  virtual ~GroupingOuterVar() {}
+  SERIALIZABLE_CLASS(NonGroupingSpec)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(NonGroupingSpec)
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
-  GroupingOuterVar(
+  NonGroupingSpec() {}
+
+  NonGroupingSpec(
         PlanIter_t inputVar,
-        const std::vector<PlanIter_t>& outputVarRefs);
+        const std::vector<PlanIter_t>& varRefs);
+
+  virtual ~NonGroupingSpec() {}
 
   void accept(PlanIterVisitor& v) const;
 
   uint32_t getStateSizeOfSubtree() const; 
 
-  void open ( PlanState& planState, uint32_t& offset );
-  void reset ( PlanState& planState ) const;
-  void close ( PlanState& planState );
+  void open(PlanState& planState, uint32_t& offset);
+  void reset(PlanState& planState) const;
+  void close(PlanState& planState);
 };
 
 
@@ -244,7 +236,7 @@ typedef zorba::HashMap<GroupTuple*,
 /***************************************************************************//**
   Utility function -- is this item null or a NaN?
 ********************************************************************************/
-inline bool empty_item (const store::Item* s)
+inline bool empty_item(const store::Item* s)
 {
   return (s == 0) || (s->isNaN());
 }
@@ -440,16 +432,17 @@ inline void bindVariables(
 }
   
 
-inline void bindVariables (
+inline void bindVariables(
     const PlanIter_t& aInput,
     const std::vector<LetVarIter_t>& aLetVariables,
     PlanState& aPlanState,
-    const bool aNeedsMaterialization) 
+    bool lazyEval,
+    bool aNeedsMaterialization) 
 {
   if (aNeedsMaterialization) 
   {
     store::TempSeq_t lTempSeq;
-    createTempSeq(lTempSeq, aInput, aPlanState, true);
+    createTempSeq(lTempSeq, aInput, aPlanState, lazyEval);
 
     bindVariables(lTempSeq, aLetVariables, aPlanState);
   }
@@ -467,10 +460,10 @@ inline void bindVariables (
 }
 
 
-inline void bindVariables (
+inline void bindVariables(
     const store::Item_t& aItem,
     const std::vector<ForVarIter_t>& aForVariables,
-    PlanState& aPlanState ) 
+    PlanState& aPlanState) 
 {
   std::vector<ForVarIter_t>::const_iterator forIter = aForVariables.begin();
   std::vector<ForVarIter_t>::const_iterator forEnd = aForVariables.end();
@@ -488,15 +481,16 @@ inline void bindVariables (
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-inline bool evalToBool ( const PlanIter_t& checkIter, PlanState& planState )
+inline bool evalToBool(const PlanIter_t& checkIter, PlanState& planState)
 {
   store::Item_t boolValue;
-  if (!PlanIterator::consumeNext ( boolValue, checkIter.getp(), planState )){
-    checkIter->reset ( planState );
+  if (!PlanIterator::consumeNext(boolValue, checkIter.getp(), planState))
+  {
+    checkIter->reset(planState);
     return false;
   }
   bool value = boolValue->getBooleanValue();
-  checkIter->reset ( planState );
+  checkIter->reset(planState);
   return value;
 }
 

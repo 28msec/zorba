@@ -98,7 +98,7 @@ static expr_t translate_aux(
                                                                    \
   if (Properties::instance()->traceTranslator())                   \
     cout << string(++print_depth, ' ') << TRACE << ", stk size "   \
-         << nodestack.size() << ", tstk size: " << theTypeStack.size()   \
+         << theNodeStack.size() << ", tstk size: " << theTypeStack.size()   \
          << ", scope depth " << scope_depth << endl;
 
 
@@ -107,7 +107,7 @@ static expr_t translate_aux(
                                                                    \
   if (Properties::instance()->traceTranslator())                   \
     cout << string(print_depth--, ' ') << TRACE << ", stk size: "  \
-         << nodestack.size() << ", tstk size: " << theTypeStack.size()   \
+         << theNodeStack.size() << ", tstk size: " << theTypeStack.size()   \
          << ", scope depth " << scope_depth << endl;
 
 #else
@@ -259,7 +259,7 @@ public:
 
   PrologGraphVertex(const var_expr* v) : theKind(VAR)
   {
-    theKey.var =v;
+    theKey.var = v;
   }
 
   PrologGraphVertex(const function* f) : theKind(FUN)
@@ -273,9 +273,17 @@ public:
 
   Kind getKind() const { return theKind; }
 
-  const function* getFunction() const { return theKey.fun; }
+  const function* getFunction() const 
+  {
+    ZORBA_ASSERT(theKind == FUN);
+    return theKey.fun;
+  }
 
-  const var_expr* getVarExpr() const { return theKey.var; }
+  const var_expr* getVarExpr() const 
+  {
+    ZORBA_ASSERT(theKind == VAR);
+    return theKey.var;
+  }
 
   bool operator==(const PrologGraphVertex& other) const
   {
@@ -286,42 +294,6 @@ public:
   {
     return (theKey.var < other.theKey.var);
   }
-};
-
-
-/*******************************************************************************
-  Class to represent an edge in the dependency graph among var and udfs decls
-  in the prolog of a module. An edge is represented as a pair of vertices, where
-  the first vertex in the pair depends on the second vertex. 
-********************************************************************************/
-class PrologGraphEdge
-{
-public:
-  std::pair<PrologGraphVertex, PrologGraphVertex> theEdge;
-
-public:
-  PrologGraphEdge() : theEdge() { }
-
-  PrologGraphEdge(const PrologGraphVertex& v1, const PrologGraphVertex& v2)
-    :
-    theEdge(v1, v2)
-  {
-  }
-
-  bool operator==(const PrologGraphEdge& other) const
-  {
-    return (theEdge.first == other.theEdge.first &&
-            theEdge.second == other.theEdge.second);
-  }
-
-  bool startsAt(const PrologGraphVertex& v) const
-  {
-    return v == theEdge.first;
-  }
-
-  const PrologGraphVertex& getStart() const { return theEdge.first; }
-
-  const PrologGraphVertex& getEnd() const { return theEdge.second; }
 };
 
 
@@ -889,35 +861,55 @@ public:
 
   During the translation of a variable or function declaration in the prolog,
   theCurrentPrologVFDecl stores a ptr to associated var_expr or function obj,
-  respectively. It is used in building the thePrologGraph: if the theCurrentPrologVFDecl string
-  is not the empty, then the translator knows that it is in the scope of a var
+  respectively. It is used in building the thePrologGraph: if theCurrentPrologVFDecl
+  is not NULL, then the translator knows that it is in the scope of a var
   or function decl, and if that declaration references another var V or calls
   another function F, then it creates a dependency between the var or function
-  specified by theCurrentPrologVFDecl and V or F.
+  specified by theCurrentPrologVFDecl and V or F. The same mechanism is used to
+  detect "leaf" udfs, i.e., udfs that do not invoke other udfs. Such udfs are
+  inlined by the optimizer.
 
   theTempVarCounter :
-  -----------------
+  -------------------
 
   Counter used to generate names for internally generated variables. The names
   are unique within this translator.
 
-  nodestack            : If E is the expr that is currently being built, then
-                         nodestack contains all the ancestors (or ancestor
-                         place-holdres) of E in the expr tree.
+  theNodestack :
+  --------------
 
-  theTypeStack         : Stack of the static types for some of the exprs in the
-                         nodestack.
+  If E is the expr that is currently being built, then theNodeStack contains all
+  the ancestors (or ancestor place-holdres) of E in the expr tree.
+
+  theTypeStack :
+  --------------
+
+  Stack of the static types for some of the exprs in theNodeStack.
 
   theFlworClausesStack :
+  ----------------------
 
-  theNodeSortStack     :
+  theTryStack :
+  ------------------
 
-  theIndexDecl         : Used during the translation of an index declaration to
-                         hold the ValueIndex obj.
-  theIsInIndexDomain   : Set to true just before translating the domain expr, and
-                         set back to false right after the translation of the
-                         domain expr is finished. It is used to check that the
-                         domain expr does not reference any external context item.
+  Stack of try exprs. It is used to detect cases where a LET or window var is
+  referenced inside a try block, but defined outside that block. In such cases,
+  lazy materialization of the var must be disabled.
+ 
+  theNodeSortStack :
+  ------------------
+
+  theIndexDecl :
+  --------------
+
+  Used during the translation of an index declaration to hold the ValueIndex obj.
+
+  theIsInIndexDomain :
+  --------------------
+
+  Set to true just before translating the domain expr, and set back to false
+  right after the translation of the domain expr is finished. It is used to
+  check that the domain expr does not reference any external context item.
 
   hadBSpaceDecl        : Set to true if prolog has boundary space decl. Used to
                          check that such a decl does not appear more than once.
@@ -990,15 +982,15 @@ protected:
 
   int                                  theTempVarCounter;
 
-  stack<expr_t>                        nodestack;
+  std::vector<expr_t>                  theNodeStack;
 
   stack<xqtref_t>                      theTypeStack; 
 
   std::vector<flwor_clause_t>          theFlworClausesStack;
 
-  stack<NodeSortInfo>                  theNodeSortStack;
+  std::vector<const parsenode*>        theTryStack;
 
-  list<function *>                     fn_decl_stack;
+  stack<NodeSortInfo>                  theNodeSortStack;
 
   ValueIndex_t                         theIndexDecl;
   bool                                 theIsInIndexDomain;
@@ -1091,7 +1083,7 @@ TranslatorImpl(
 
 
 /*******************************************************************************
-  Pop the top n exprs from the nodestack and return the last expr that was popped.
+  Pop the top n exprs from theNodeStack and return the last expr that was popped.
 ********************************************************************************/
 expr_t pop_nodestack(int n = 1) 
 {
@@ -1101,9 +1093,10 @@ expr_t pop_nodestack(int n = 1)
 
   for (; n > 0; --n) 
   {
-    ZORBA_FATAL(! nodestack.empty(), "");
-    e_h = nodestack.top();
-    nodestack.pop();
+    ZORBA_FATAL(! theNodeStack.empty(), "");
+    e_h = theNodeStack.back();
+    theNodeStack.pop_back();
+
 #ifndef NDEBUG
     if (Properties::instance()->traceTranslator()) 
     {
@@ -1120,38 +1113,47 @@ expr_t pop_nodestack(int n = 1)
 
 
 /*******************************************************************************
-  Assert that the top expr in the nodestack is a var_expr and pop it.
+  Push the given expr into theNodeStack.
+********************************************************************************/
+inline void push_nodestack(const expr_t& e) 
+{
+  theNodeStack.push_back(e);
+}
+
+
+/*******************************************************************************
+  Assert that the top expr in theNodeStack is a var_expr and pop it.
 ********************************************************************************/
 var_expr_t pop_nodestack_var() 
 {
   expr_t e = pop_nodestack();
   assert (e == NULL || e->get_expr_kind() == var_expr_kind);
-  return static_cast<var_expr *> (e.getp());
+  return static_cast<var_expr *>(e.getp());
 }
 
 
 /*******************************************************************************
-  Return rchandle to the expr at the top of the nodestack, or NULL if the
-  nodestack is empty.
+  Return rchandle to the expr at the top of theNodeStack, or NULL if theNodeStack
+  is empty.
 ********************************************************************************/
 expr_t peek_nodestk_or_null() 
 {
-  return (nodestack.empty()) ? expr_t (NULL) : peek_stack(nodestack);
+  return (theNodeStack.empty()) ? expr_t(NULL) : theNodeStack.back();
 }
 
 
 /*******************************************************************************
-  Check if the top expr in thenodestack is an axis_step, and if so return
+  Check if the top expr in theNodeStack is an axis_step, and if so return
   rchandle to it (but do not pop). Otherwise, raise error.
 ********************************************************************************/
 rchandle<axis_step_expr> expect_axis_step_top() 
 {
   rchandle<axis_step_expr> axisExpr = peek_nodestk_or_null().dyn_cast<axis_step_expr>();
-  if (axisExpr == NULL) 
+  if (axisExpr == NULL)
   {
     cout << "Expecting axis step on top of stack; ";
-    if (nodestack.top() != NULL)
-      cout << "typeid(top()) = " << typeid(*nodestack.top()).name() << endl;
+    if (theNodeStack.back() != NULL)
+      cout << "typeid(top()) = " << typeid(*theNodeStack.back()).name() << endl;
     else
       cout << "top is null\n";
     ZORBA_ASSERT (false);
@@ -1375,7 +1377,7 @@ var_expr_t bind_var(
 /*******************************************************************************
   Create a var_expr for a variable with a given qname item, kind, and type.
   Then, create a binding in the given sctx between the var qname item and the
-  var_expr. Finally, push the var_expr to the nodestack. Raise error if a var
+  var_expr. Finally, push the var_expr to theNodeStack. Raise error if a var
   with the same expanded qname is already in the given context.
 ********************************************************************************/
 varref_t bind_var_and_push(
@@ -1384,8 +1386,8 @@ varref_t bind_var_and_push(
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  varref_t e = bind_var(loc, varname, kind, type);
-  nodestack.push(&*e);
+  var_expr_t e = bind_var(loc, varname, kind, type);
+  push_nodestack(e.getp());
   return e;
 }
 
@@ -1577,6 +1579,8 @@ expr_t wrap_in_atomization(expr* e)
 
     let_clause_t lc = wrap_in_letclause(e);
 
+    lc->setLazyEval(false);
+
     expr_t retExpr = new fo_expr(sctxid(),
                                  loc,
                                  GET_BUILTIN_FUNCTION(FN_DATA_1),
@@ -1586,7 +1590,7 @@ expr_t wrap_in_atomization(expr* e)
 
     flworExpr->set_return_expr(retExpr);
 
-    return flworExpr;
+    return flworExpr.getp();
   }
   else
   {
@@ -1763,11 +1767,14 @@ for_clause_t wrap_in_forclause(expr_t expr, bool add_posvar)
   return retExpr
 
 ********************************************************************************/
-rchandle<flwor_expr> wrap_in_let_flwor(expr_t domExpr, varref_t lv, expr_t retExpr) 
+rchandle<flwor_expr> wrap_in_let_flwor(
+    expr_t domExpr,
+    var_expr_t lv,
+    expr_t retExpr)
 {
   rchandle<flwor_expr> fe = new flwor_expr(sctxid(), lv->get_loc(), false);
 
-  fe->add_clause(wrap_in_letclause (domExpr, lv));
+  fe->add_clause(wrap_in_letclause(domExpr, lv));
 
   fe->set_return_expr(retExpr);
 
@@ -1789,7 +1796,9 @@ rchandle<flwor_expr> wrap_in_let_flwor(expr_t domExpr, varref_t lv, expr_t retEx
     for $$dot at $$pos in inputExpr
     .....
 ********************************************************************************/
-rchandle<flwor_expr> wrap_expr_in_flwor(expr* inputExpr, bool withContextSize)
+rchandle<flwor_expr> wrap_expr_in_flwor(
+    expr* inputExpr,
+    bool withContextSize)
 {
   const QueryLoc& loc = inputExpr->get_loc();
 
@@ -2071,7 +2080,7 @@ void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
   var_expr_t var = b.first;
   expr_t initExpr = b.second;
 
-  ulong sctxid = this->sctxid();
+  short sctxid = this->sctxid();
   const QueryLoc& loc = var->get_loc();
 
   xqpStringStore dot (".");
@@ -2233,10 +2242,10 @@ void end_visit(const LibraryModule& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   // Note: There is no real reason to put the expr returned by 
-  // wrap_in_globalvar_assign() in the nodestack. The only reason is for the
+  // wrap_in_globalvar_assign() in theNodeStack. The only reason is for the
   // translate_aux() function to be able to pick that expr from the stack in
   // order to print it.
-  nodestack.push(wrap_in_globalvar_assign(create_seq(loc)));
+  push_nodestack(wrap_in_globalvar_assign(create_seq(loc)));
 }
 
 
@@ -2837,7 +2846,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       static_context* moduleRootSctx = independent_sctx->create_child_context();
       moduleRootSctx->set_entity_retrieval_url(compURI);
       moduleRootSctx->set_module_namespace(targetNamespace);
-      ulong moduleRootSctxId = theCCB->theSctxMap->size() + 1;
+      short moduleRootSctxId = theCCB->theSctxMap->size() + 1;
       (*theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
       // Create an sctx where the imported module is going to register all the
@@ -3159,7 +3168,7 @@ void* begin_visit(const VarDecl& v)
     // TODO: create dep graph for local vars too
   }
 
-  nodestack.push(ve.getp());
+  push_nodestack(ve.getp());
   return no_state;
 }
 
@@ -3208,8 +3217,8 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   }
   else
   {
-    nodestack.push(ve.cast<expr>());
-    nodestack.push(initExpr);
+    push_nodestack(ve.getp());
+    push_nodestack(initExpr);
   }
 }
 
@@ -3294,8 +3303,6 @@ void* begin_visit(const FunctionDecl& v)
   thePrologGraph.addFuncVertex(f);
   theCurrentPrologVFDecl = PrologGraphVertex(f);
 
-  fn_decl_stack.push_front(f);
-
   return no_state;
 }
 
@@ -3305,8 +3312,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   TRACE_VISIT_OUT();
 
   theCurrentPrologVFDecl.setNull();
-
-  pop_stack(fn_decl_stack);
 
   expr_t body;
   ParseConstants::function_type_t lFuncType = v.get_type();
@@ -3322,14 +3327,14 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   // If function has any params, they have been wraped in a flwor expr. Set the
   // return clause of the flwor to the body expr of the function, and then make
   // this flwor be the actual body of the function.
-  int nargs = v.get_param_count();
+  ulong nargs = v.get_param_count();
   vector<varref_t> args;
   if (nargs > 0) 
   {
     rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr>();
     ZORBA_ASSERT(flwor != NULL);
 
-    for(int i = 0; i < nargs; ++i)
+    for(ulong i = 0; i < nargs; ++i)
     {
       const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
       var_expr* arg_var = dynamic_cast<var_expr*>(lc->get_expr());
@@ -3450,51 +3455,58 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 /*******************************************************************************
   [34] ParamList ::= Param ("," Param)*
 ********************************************************************************/
-void *begin_visit (const ParamList& v) 
+void* begin_visit(const ParamList& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   if (v.size() > 0) 
   {
-    nodestack.push(new flwor_expr(sctxid(), loc, false));
+    push_nodestack(new flwor_expr(sctxid(), loc, false));
   }
   return no_state;
 }
 
 
-void end_visit (const ParamList& v, void* /*visit_state*/) 
+void end_visit(const ParamList& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   [35] Param ::= "$" QName TypeDeclaration?
 ********************************************************************************/
-void *begin_visit (const Param& v) 
+void* begin_visit(const Param& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
 
-void end_visit (const Param& v, void* /*visit_state*/) 
+void end_visit(const Param& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
-  rchandle<flwor_expr> flwor = nodestack.top().cast<flwor_expr> ();
+  rchandle<flwor_expr> flwor = theNodeStack.back().cast<flwor_expr> ();
   ZORBA_ASSERT(flwor != NULL);
 
-  store::Item_t qname = sctx_p->lookup_qname ("", v.get_name(), v.get_location());
+  const function* f = theCurrentPrologVFDecl.getFunction();
+  ZORBA_ASSERT(f != NULL);
 
-  varref_t arg_var = create_var (loc, qname, var_expr::arg_var);
-  varref_t subst_var = bind_var (loc, qname, var_expr::let_var);
+  store::Item_t qname = sctx_p->lookup_qname("", v.get_name(), v.get_location());
 
-  flwor->add_clause(wrap_in_letclause(&*arg_var, subst_var));
+  varref_t arg_var = create_var(loc, qname, var_expr::arg_var);
+  varref_t subst_var = bind_var(loc, qname, var_expr::let_var);
 
-  if (v.get_typedecl () != NULL)  
+  let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
+
+  lc->setLazyEval(!f->isSequential());
+
+  flwor->add_clause(lc);
+
+  if (v.get_typedecl() != NULL) 
   {
-    arg_var->set_type (pop_tstack ());
+    arg_var->set_type(pop_tstack());
     subst_var->set_type(arg_var->get_type());
   }
 }
@@ -3746,7 +3758,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
   ValueIndex* index = theIndexDecl;
 
-  for(int i = numColumns - 1; i >= 0; --i) 
+  for(long i = numColumns - 1; i >= 0; --i) 
   {
     const IndexKeySpec* keySpec = v.getKeySpec(i);
     const OrderCollationSpec* collationSpec = keySpec->getCollationSpec();
@@ -3793,6 +3805,12 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
     expr_t keyExpr = pop_nodestack();
 
+    if (!keyExpr->is_simple())
+    {
+      ZORBA_ERROR_LOC_PARAM(XDST0033_INDEX_NON_SIMPLE_EXPR, keyExpr->get_loc(),
+                            index->getName()->getStringValue(), "");
+    }
+
     keyExpr = wrap_in_atomization(keyExpr);
     keyExpr = wrap_in_type_match(keyExpr, type, XDTY0011_INDEX_KEY_TYPE_ERROR);
 
@@ -3802,9 +3820,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     if (theCCB->theConfig.translate_cb != NULL)
       theCCB->theConfig.translate_cb(keyExpr.getp(), msg.str());
 
-    // Normalize and optimize the key expr
-    //normalize_expr_tree(msg.str().c_str(), theCCB, keyExpr, NULL);
-
+    // Optimize the key expr
     if (theCCB->theConfig.opt_level == CompilerCB::config::O1) 
     {
       RewriterContext rCtx(theCCB, keyExpr);
@@ -3932,7 +3948,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     flworExpr->add_clause(lc);     
     // flworExpr-> return clause to be set in end_visitor
 
-    nodestack.push(flworExpr.getp());      
+    push_nodestack(flworExpr.getp());      
   }
   break;
 
@@ -4034,9 +4050,9 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     // flworExpr->set_return_expr( andExpr ); done in end_visit
     
     // push evFlworExpr because where clause must be set
-    nodestack.push(evFlworExpr.getp());
+    push_nodestack(evFlworExpr.getp());
     // push the top expresion
-    nodestack.push(flworExpr.getp());
+    push_nodestack(flworExpr.getp());
   }
   break;
     
@@ -4103,7 +4119,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     
     //pop_scope();
     // end every
-    nodestack.push(evFlworExpr.getp());
+    push_nodestack(evFlworExpr.getp());
   }
   break;
   
@@ -4216,8 +4232,8 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                               fromVarExpr, NULL));
     
     
-    nodestack.push(someFlworExpr.getp());
-    nodestack.push(evFlworExpr.getp());      
+    push_nodestack(someFlworExpr.getp());
+    push_nodestack(evFlworExpr.getp());      
   }
   break;
   
@@ -4555,7 +4571,7 @@ void end_visit (const EnclosedExpr& v, void* /*visit_state*/)
 
   fo_expr* foExpr = new fo_expr(sctxid(), loc, op_enclosed, lContent);
 
-  nodestack.push(foExpr);
+  push_nodestack(foExpr);
 }
 
 
@@ -4574,7 +4590,7 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
 
   expr_t resultExpr = wrap_in_globalvar_assign(pop_nodestack());
 
-  nodestack.push(resultExpr);
+  push_nodestack(resultExpr);
 
   if (theModulesInfo->theCCB->isLoadPrologQuery())
     sctx_p->set_query_expr(resultExpr);
@@ -4625,7 +4641,7 @@ void end_visit(const Expr& v, void* /*visit_state*/)
                                        args);
     normalize_fo(concatExpr.getp());
 
-    nodestack.push(concatExpr.getp());
+    push_nodestack(concatExpr.getp());
   }
 }
 
@@ -4748,7 +4764,7 @@ void end_visit(const BlockBody& v, void* /*visit_state*/)
 
   reverse(stmts.begin(), stmts.end());
 
-  nodestack.push(new sequential_expr(sctxid(), loc, stmts));
+  push_nodestack(new sequential_expr(sctxid(), loc, stmts));
 
   pop_scope();
 }
@@ -4873,7 +4889,7 @@ void end_visit(const FLWORExpr& v, void* /*visit_state*/)
 
   theFlworClausesStack.resize(curClausePos);
 
-  nodestack.push(&*flwor);
+  push_nodestack(flwor.getp());
 }
 
 
@@ -4967,16 +4983,14 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  // debugger bugfix
-  // it's important to insert the debugger before
-  // the scope is pushed. Otherwise, the variable in
-  // question would already be in scope for the debugger
-  // but no value would be bound
   expr_t domainExpr = pop_nodestack();
 
   if (domainExpr->is_updating())
     ZORBA_ERROR_LOC(XUST0001, loc);
 
+  // it's important to insert the debugger before the scope is pushed.
+  // Otherwise, the variable in question would already be in scope for
+  // the debugger but no value would be bound
   wrap_in_debugger_expr(domainExpr);
 
   push_scope();
@@ -5014,45 +5028,45 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
 /*******************************************************************************
   PositionalVar ::= "at" "$"  VarName
 ********************************************************************************/
-void *begin_visit (const PositionalVar& v) 
+void* begin_visit(const PositionalVar& v) 
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const PositionalVar& v, void* /*visit_state*/) 
+void end_visit(const PositionalVar& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   LetClause ::= "let" "$" VarGetsDeclList | "let" "score $" VarGetsDeclList
 ********************************************************************************/
-void *begin_visit (const LetClause& v) 
+void* begin_visit(const LetClause& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const LetClause& v, void* /*visit_state*/) 
+void end_visit(const LetClause& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   VarGetsDeclList ::= VarGetsDecl | VarGetsDeclList ","  "$"  VarGetsDecl
 ********************************************************************************/
-void *begin_visit (const VarGetsDeclList& v) 
+void* begin_visit(const VarGetsDeclList& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const VarGetsDeclList& v, void* /*visit_state*/) 
+void end_visit(const VarGetsDeclList& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -5062,13 +5076,13 @@ void end_visit (const VarGetsDeclList& v, void* /*visit_state*/)
 
   Note: This ast node also represents EVAL external vars
 ********************************************************************************/
-void *begin_visit (const VarGetsDecl& v) 
+void* begin_visit(const VarGetsDecl& v) 
 {
   TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const VarGetsDecl& v, void* /*visit_state*/) 
+void end_visit(const VarGetsDecl& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT();
 
@@ -5076,16 +5090,14 @@ void end_visit (const VarGetsDecl& v, void* /*visit_state*/)
 
   if (v.get_kind() == VarGetsDecl::let_var)
   {
-    // debugger bugfix
-    // it's important to insert the debugger before
-    // the scope is pushed. Otherwise, the variable in
-    // question would already be in scope for the debugger
-    // but no value would be bound
     expr_t domainExpr = pop_nodestack();
 
     if (domainExpr->is_updating())
       ZORBA_ERROR_LOC(XUST0001, loc);
 
+    // it's important to insert the debugger before the scope is pushed.
+    // Otherwise, the variable in question would already be in scope for
+    // the debugger but no value would be bound
     wrap_in_debugger_expr(domainExpr);
 
     push_scope();
@@ -5103,7 +5115,7 @@ void end_visit (const VarGetsDecl& v, void* /*visit_state*/)
   else
   {
     push_scope();
-    nodestack.push(&*create_var(loc, v.get_varname(), var_expr::let_var, type));
+    push_nodestack(create_var(loc, v.get_varname(), var_expr::let_var, type).getp());
   }
 }
 
@@ -5259,28 +5271,28 @@ void bind_wincond_vars(const WindowVars& v, flwor_clause* windowClause, bool inp
   {
     posVarExpr = bind_var(pv->get_location(), pv->get_varname(), pvarKind);
     posVarExpr->set_flwor_clause(windowClause);
-    nodestack.push(posVarExpr.getp());
+    push_nodestack(posVarExpr.getp());
   }
 
   if (! v.get_curr().empty())
   {
     curVarExpr = bind_var(loc, v.get_curr(), varKind);
     curVarExpr->set_flwor_clause(windowClause);
-    nodestack.push(curVarExpr.getp());
+    push_nodestack(curVarExpr.getp());
   }
 
   if (! v.get_prev().empty())
   {
     prevVarExpr = bind_var(loc, v.get_prev(), varKind);
     prevVarExpr->set_flwor_clause(windowClause);
-    nodestack.push(prevVarExpr.getp());
+    push_nodestack(prevVarExpr.getp());
   }
 
   if (! v.get_next().empty())
   {
     nextVarExpr = bind_var(loc, v.get_next(), varKind);
     nextVarExpr->set_flwor_clause(windowClause);
-    nodestack.push(nextVarExpr.getp());
+    push_nodestack(nextVarExpr.getp());
   }
 }
 
@@ -5411,13 +5423,13 @@ void *begin_visit(const GroupByClause& v)
   // For each var_expr X that does not appear in the group-by clause, create
   // a new var_exp ngX and push ngX and X in the node stack.
 
-  nodestack.push(NULL);
+  push_nodestack(NULL);
 
   for (set<const var_expr *>::iterator i = non_group_vars.begin();
        i != non_group_vars.end();
        ++i)
   {
-    nodestack.push(const_cast<var_expr *>(*i));
+    push_nodestack(const_cast<var_expr *>(*i));
 
     push_scope();
 
@@ -5512,9 +5524,9 @@ void end_visit (const GroupSpecList& v, void* /*visit_state*/)
 /*******************************************************************************
   GroupSpec ::= "$" VarName ("collation" URILiteral)?
 ********************************************************************************/
-void *begin_visit(const GroupSpec& v) 
+void* begin_visit(const GroupSpec& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   var_expr* e = lookup_var (v.get_var_name());
   if (e == NULL)
@@ -5525,7 +5537,7 @@ void *begin_visit(const GroupSpec& v)
   // Push the var_exprs for both X and gX into the nodestack.
   push_scope();
 
-  nodestack.push(rchandle<expr>(e));
+  push_nodestack(e);
 
   bind_var_and_push(loc, v.get_var_name(), var_expr::groupby_var);
 
@@ -5785,7 +5797,7 @@ void* begin_visit(const QuantifiedExpr& v)
 
   flwor->set_return_expr(new const_expr(sctxid(), loc, true));
 
-  nodestack.push(flwor.getp());
+  push_nodestack(flwor.getp());
 
   return no_state;
 }
@@ -5826,7 +5838,7 @@ void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
                                         GET_BUILTIN_FUNCTION(FN_EMPTY_1) :
                                         GET_BUILTIN_FUNCTION(FN_EXISTS_1),
                                         flworExpr.getp());
-  nodestack.push(&*quant);
+  push_nodestack(quant.getp());
 }
 
 
@@ -5866,7 +5878,7 @@ void end_visit (const QVarInDecl& v, void* /*visit_state*/)
   expr_t domainExpr = pop_nodestack();
   var_expr_t varExpr = bind_var(loc, v.get_name(), var_expr::for_var, type);
 
-  flwor_expr* flworExpr = dynamic_cast<flwor_expr*>(nodestack.top().getp());
+  flwor_expr* flworExpr = dynamic_cast<flwor_expr*>(theNodeStack.back().getp());
   ZORBA_ASSERT(flworExpr != NULL);
 
   flworExpr->add_clause(wrap_in_forclause(domainExpr, varExpr, NULL));
@@ -5877,6 +5889,11 @@ void end_visit (const QVarInDecl& v, void* /*visit_state*/)
   [66] TypeswitchExpr ::= "typeswitch" "(" Expr ")"
                           CaseClauseList
                           "default" ("$" VarName)? "return" ExprSingle
+
+  CaseClauseList := CaseClause+
+
+  [67] CaseClause ::= "case" ("$" VarName "as")? SequenceType "return" ExprSingle
+
 
   A typeswitch expr is translated into a flwor expr. For example, a typeswitch of
   the following form:
@@ -5977,7 +5994,7 @@ void* begin_visit(const TypeswitchExpr& v)
                                         type,
                                         XPDY0050);
 
-      // clauseExpr = [let $caseVar := cast($sv, caseType) return NULL]
+      // clauseExpr = [let $caseVar := treat_as($sv, caseType) return NULL]
       clauseExpr = wrap_in_let_flwor(treatExpr, caseVar, NULL);
     }
 
@@ -5988,7 +6005,7 @@ void* begin_visit(const TypeswitchExpr& v)
     {
       pop_scope();
 
-      // clauseExpr = [let $caseVar := cast($sv, caseType) return NULL]
+      // clauseExpr = [let $caseVar := treat_as($sv, caseType) return NULL]
       static_cast<flwor_expr*>(clauseExpr.getp())->set_return_expr(caseExpr);
     }
     else
@@ -6008,7 +6025,7 @@ void* begin_visit(const TypeswitchExpr& v)
 
   static_cast<flwor_expr*>(flworExpr.getp())->set_return_expr(retExpr);
 
-  nodestack.push(flworExpr);
+  push_nodestack(flworExpr);
 
   // Return NULL so that TypeswitchExpr::accept() will not call accept() on the
   // children of the TypeswitchExpr parsenode.
@@ -6083,7 +6100,7 @@ void end_visit(const IfExpr& v, void* /*visit_state*/)
 
   if_expr* ifExpr = new if_expr(sctxid(), loc, sctx_p, c_h, t_h, e_h);
 
-  nodestack.push(ifExpr);
+  push_nodestack(ifExpr);
 }
 
 
@@ -6105,7 +6122,7 @@ void end_visit(const OrExpr& v, void* /*visit_state*/)
 
   fo_expr* fo = new fo_expr(sctxid(), loc, GET_BUILTIN_FUNCTION(OP_OR_2), e2, e1);
 
-  nodestack.push(fo);
+  push_nodestack(fo);
 }
 
 
@@ -6127,7 +6144,7 @@ void end_visit(const AndExpr& v, void* /*visit_state*/)
 
   fo_expr* fo = new fo_expr(sctxid(), loc, GET_BUILTIN_FUNCTION(OP_AND_2), e2, e1);
 
-  nodestack.push(fo);
+  push_nodestack(fo);
 }
 
 
@@ -6224,7 +6241,7 @@ void end_visit(const ComparisonExpr& v, void* /*visit_state*/)
 
   normalize_fo(fo);
 
-  nodestack.push(fo);
+  push_nodestack(fo);
 
 #undef M
 }
@@ -6295,7 +6312,7 @@ void end_visit(const RangeExpr& v, void* /*visit_state*/)
 
   normalize_fo(e);
 
-  nodestack.push(e);
+  push_nodestack(e);
 }
 
 
@@ -6331,7 +6348,7 @@ void end_visit(const AdditiveExpr& v, void* /*visit_state*/)
 
   normalize_fo(foExpr);
 
-  nodestack.push(foExpr);
+  push_nodestack(foExpr);
 }
 
 
@@ -6372,7 +6389,7 @@ void end_visit(const MultiplicativeExpr& v, void* /*visit_state*/)
 
   normalize_fo(foExpr);
 
-  nodestack.push(foExpr);
+  push_nodestack(foExpr);
 }
 
 
@@ -6398,7 +6415,7 @@ void end_visit(const UnionExpr& v, void* /*visit_state*/)
 
   // Union is implemented by a concat iterator, so we have to do node sorting
   // and duplicate elimi
-  nodestack.push(new fo_expr(sctxid(),
+  push_nodestack(new fo_expr(sctxid(),
                              loc,
                              GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1),
                              foExpr));
@@ -6437,7 +6454,7 @@ void end_visit(const IntersectExceptExpr& v, void* /*visit_state*/)
 
   normalize_fo(foExpr);
 
-  nodestack.push(new fo_expr(sctxid(),
+  push_nodestack(new fo_expr(sctxid(),
                              loc,
                              GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1),
                              foExpr));
@@ -6457,7 +6474,7 @@ void end_visit (const InstanceofExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  nodestack.push(new instanceof_expr(sctxid(),
+  push_nodestack(new instanceof_expr(sctxid(),
                                      loc,
                                      pop_nodestack(),
                                      pop_tstack()));
@@ -6477,7 +6494,7 @@ void end_visit(const TreatExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  nodestack.push(new treat_expr(sctxid(),
+  push_nodestack(new treat_expr(sctxid(),
                                 loc,
                                 pop_nodestack(),
                                 pop_tstack(),
@@ -6498,7 +6515,7 @@ void end_visit(const CastableExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  nodestack.push(create_cast_expr(loc, pop_nodestack(), pop_tstack(), false));
+  push_nodestack(create_cast_expr(loc, pop_nodestack(), pop_tstack(), false));
 }
 
 
@@ -6590,7 +6607,7 @@ void end_visit (const CastExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  nodestack.push(create_cast_expr(loc, pop_nodestack(), pop_tstack(), true));
+  push_nodestack(create_cast_expr(loc, pop_nodestack(), pop_tstack(), true));
 }
 
 
@@ -6617,7 +6634,7 @@ void end_visit(const UnaryExpr& v, void* /*visit_state*/)
                                 e1);
   normalize_fo(foExpr);
 
-  nodestack.push(foExpr);
+  push_nodestack(foExpr);
 }
 
 
@@ -6665,7 +6682,7 @@ void end_visit (const ValidateExpr& v, void* /*visit_state*/)
                                   v.get_type_name()->get_localname().c_str());
   }
 
-  nodestack.push(new validate_expr(sctxid(),
+  push_nodestack(new validate_expr(sctxid(),
                                    loc,
                                    v.get_valmode(),
                                    qname,
@@ -6875,7 +6892,7 @@ void *begin_visit (const PathExpr& v)
   rchandle<relpath_expr> path_expr = NULL;
 
   // Put a NULL in the stack to mark the beginning of a PathExp tree.
-  nodestack.push(NULL);
+  push_nodestack(NULL);
 
   theNodeSortStack.push(NodeSortInfo());
 
@@ -6946,7 +6963,7 @@ void *begin_visit (const PathExpr& v)
     }
   }
 
-  nodestack.push(result.getp());
+  push_nodestack(result.getp());
 
   return no_state;
 }
@@ -6969,7 +6986,7 @@ void end_visit(const PathExpr& v, void* /*visit_state*/)
       (nodeSortInfo.theNumSteps > 1 && !nodeSortInfo.theOnlyChildAxes))
   {
     // wrap in atomics_or_node_distinc_sort_asc
-    nodestack.push(wrap_in_dos_and_dupelim(arg2, true));
+    push_nodestack(wrap_in_dos_and_dupelim(arg2, true));
   }
   else
   {
@@ -6979,11 +6996,11 @@ void end_visit(const PathExpr& v, void* /*visit_state*/)
                   GET_BUILTIN_FUNCTION(OP_EITHER_NODES_OR_ATOMICS_1),
                   arg2);
 
-    nodestack.push(checkExpr.getp());
+    push_nodestack(checkExpr.getp());
   }
 #else
   // wrap in atomics_or_node_distinc_sort_asc
-  nodestack.push(wrap_in_dos_and_dupelim(arg2, true));
+  push_nodestack(wrap_in_dos_and_dupelim(arg2, true));
 #endif
 
   theNodeSortStack.pop();
@@ -7032,20 +7049,20 @@ void* begin_visit(const RelativePathExpr& v)
       if (axisStep->get_predicate_list() == NULL) 
       {
         // "axis::test/...." ==> push [ pathExpr(sourceExpr) ] to the nodestack. 
-        nodestack.push(pathExpr);
+        push_nodestack(pathExpr);
       }
       else 
       {
-        // "axis::test[pred]/...." ==> push [ for $dot at $pos in pathExpr(sourceExpr.) ]
+        // "axis::test[pred]/...." ==> push [ for $dot at $pos in pathExpr(sourceExpr) ]
         // to the nodestack.
         rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(pathExpr, false);
-        nodestack.push(flworExpr.getp());
+        push_nodestack(flworExpr.getp());
       }
     }
     // "source_expr/...." ==> push pathExpr() to the nodestack. 
     else 
     {
-      nodestack.push(pathExpr);
+      push_nodestack(pathExpr);
     }
   }
 
@@ -7053,7 +7070,7 @@ void* begin_visit(const RelativePathExpr& v)
   // back in the stack.
   else if (axisStep != NULL && axisStep->get_predicate_list() == NULL) 
   {
-    nodestack.push(pathExpr);
+    push_nodestack(pathExpr);
   }
 
   // Else, step-i is an axis step with predicates or a filter expr, and 
@@ -7067,7 +7084,7 @@ void* begin_visit(const RelativePathExpr& v)
   {
     expr_t inputExpr = wrap_in_dos_and_dupelim(pathExpr, false);
     rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputExpr, false);
-    nodestack.push(flworExpr.getp());
+    push_nodestack(flworExpr.getp());
   }
 
   return no_state;
@@ -7166,7 +7183,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
   if (child2.dyn_cast<RelativePathExpr>() != NULL ||
       (axisStep != NULL && axisStep->get_predicate_list() == NULL))
   {
-    nodestack.push(pathExpr);
+    push_nodestack(pathExpr);
   }
 
   // Else we have reached the last step of the Path Tree, and this step is a
@@ -7178,7 +7195,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
   {
     expr_t inputSeqExpr = wrap_in_dos_and_dupelim(pathExpr, false);
     rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, false);
-    nodestack.push(flworExpr.getp());
+    push_nodestack(flworExpr.getp());
   }
 }
 
@@ -7210,7 +7227,7 @@ void end_visit (const RelativePathExpr& v, void* /*visit_state*/)
     ZORBA_ASSERT(axisExpr != NULL);
 
     pathExpr->add_back(stepExpr);
-    nodestack.push(pathExpr);
+    push_nodestack(pathExpr);
   }
   else
   {
@@ -7220,7 +7237,7 @@ void end_visit (const RelativePathExpr& v, void* /*visit_state*/)
     flworExpr->set_return_expr(stepExpr);
     pop_scope();
 
-    nodestack.push(flworExpr);
+    push_nodestack(flworExpr);
   }
 }
 
@@ -7238,7 +7255,7 @@ void* begin_visit(const AxisStep& v)
   TRACE_VISIT ();
 
   rchandle<axis_step_expr> ase = new axis_step_expr(sctxid(), loc);
-  nodestack.push(ase.getp());
+  push_nodestack(ase.getp());
 
   theNodeSortStack.top().theNumSteps++;
 
@@ -7264,7 +7281,7 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
   // Nothing to do if there are no predicates
   if (pl == NULL || pl->size() == 0)
   {
-    nodestack.push(e);
+    push_nodestack(e);
     return;
   }
 
@@ -7314,8 +7331,8 @@ void post_axis_visit(const AxisStep& v, void* /*visit_state*/)
 
   flworExpr->add_clause(lcPredInput);
 
-  nodestack.push(flworExpr);
-  nodestack.push(lcPredInput->get_var());
+  push_nodestack(flworExpr);
+  push_nodestack(lcPredInput->get_var());
 }
 
 
@@ -7495,18 +7512,18 @@ void end_visit (const ReverseAxis& v, void* /*visit_state*/)
 /*******************************************************************************
   [102] NameTest ::= QName | Wildcard
 ********************************************************************************/
-void *begin_visit (const NameTest& v) 
+void* begin_visit (const NameTest& v) 
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit (const NameTest& v, void* /*visit_state*/) 
+void end_visit(const NameTest& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
 
-  expr* top = &*nodestack.top();
+  expr* top = theNodeStack.back().getp();
 
   axis_step_expr* axisExpr = NULL;
   trycatch_expr* tce = NULL;
@@ -7564,7 +7581,7 @@ void end_visit (const NameTest& v, void* /*visit_state*/)
   }
   else if ((tce = dynamic_cast<trycatch_expr *>(top)) != NULL) 
   {
-    catch_clause *cc = &*(*tce)[0];
+    catch_clause* cc = &*(*tce)[0];
     if (v.getQName() != NULL) 
     {
       string qname = v.getQName()->get_qname();
@@ -7653,8 +7670,8 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
 
     flworExpr->add_clause(lcPredSeq);
 
-    nodestack.push(flworExpr);
-    nodestack.push(lcPredSeq->get_var());
+    push_nodestack(flworExpr);
+    push_nodestack(lcPredSeq->get_var());
   }
 
   // Else, this filter expr is the very first step (i.e., the source expr) of
@@ -7664,8 +7681,8 @@ void post_primary_visit(const FilterExpr& v, void* /*visit_state*/)
      relpath_expr* pathExpr = e.dyn_cast<relpath_expr>();
      ZORBA_ASSERT(pathExpr != NULL && pathExpr->size() == 0);
 
-     nodestack.push(pathExpr);
-     nodestack.push(primaryExpr);
+     push_nodestack(pathExpr);
+     push_nodestack(primaryExpr);
   }
 }
 
@@ -7706,7 +7723,7 @@ void pre_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   //  for $$dot at $$pos in $$temp
   rchandle<flwor_expr> flworExpr = wrap_expr_in_flwor(inputSeqExpr, true);
 
-  nodestack.push(flworExpr.getp());
+  push_nodestack(flworExpr.getp());
 }
 
 
@@ -7715,7 +7732,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   // This method is called from PredicateList::accept(), after calling accept()
   // on each predicate in the list
 
-  ulong sctxid = this->sctxid();
+  short sctxid = this->sctxid();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   expr_t predExpr = pop_nodestack();
@@ -7726,6 +7743,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 
   const QueryLoc& loc = predExpr->get_loc();
 
+  // let $predVar := predExpr
   let_clause_t lcPred = wrap_in_letclause(predExpr);
   var_expr* predvar = lcPred->get_var();
 
@@ -7739,7 +7757,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   // then
   //   if (fn:boolean($dot_pos eq $predVar) then $dot else ()
   // else
-  //   if 
+  //   if (fn:boolean($predVar) then $dot else ()
 
   // Check if the pred expr returns a numeric result
   expr_t e1 = new instanceof_expr(sctxid, loc, predvar, rtm.DECIMAL_TYPE_ONE);
@@ -7775,7 +7793,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
 
   flworExpr->set_return_expr(ifExpr);
 
-  nodestack.push(flworExpr);
+  push_nodestack(flworExpr);
   
   pop_scope();
 }
@@ -7821,17 +7839,17 @@ void end_visit(const NumericLiteral& v, void* /*visit_state*/)
   {
   case ParseConstants::num_integer: 
   {
-    nodestack.push(new const_expr(sctxid(), loc, v.get<xqp_integer>()));
+    push_nodestack(new const_expr(sctxid(), loc, v.get<xqp_integer>()));
     break;
   }
   case ParseConstants::num_decimal: 
   {
-    nodestack.push(new const_expr(sctxid(), loc, v.get<xqp_decimal>()));
+    push_nodestack(new const_expr(sctxid(), loc, v.get<xqp_decimal>()));
     break;
   }
   case ParseConstants::num_double: 
   {
-    nodestack.push(new const_expr(sctxid(), loc, v.get<xqp_double>()));
+    push_nodestack(new const_expr(sctxid(), loc, v.get<xqp_double>()));
     break;
   }
   }
@@ -7867,7 +7885,7 @@ void *begin_visit (const StringLiteral& v)
 void end_visit (const StringLiteral& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT ();
-  nodestack.push(new const_expr(sctxid(), loc,v.get_strval()));
+  push_nodestack(new const_expr(sctxid(), loc,v.get_strval()));
 }
 
 
@@ -7895,7 +7913,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
     thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
   }
 
-  nodestack.push(new wrapper_expr(sctxid(), v.get_location(), rchandle<expr>(ve)));
+  push_nodestack(new wrapper_expr(sctxid(), v.get_location(), rchandle<expr>(ve)));
 }
 
 
@@ -7906,7 +7924,7 @@ void* begin_visit(const ParenthesizedExpr& v)
 {
   TRACE_VISIT();
 
-  nodestack.push(NULL);
+  push_nodestack(NULL);
   return no_state;
 }
 
@@ -7919,12 +7937,12 @@ void end_visit(const ParenthesizedExpr& v, void* /*visit_state*/)
   if (expr != NULL) 
   {
     pop_nodestack();
-    nodestack.push(expr);
+    push_nodestack(expr);
   }
   else 
   {
     fo_expr* lSeq = create_seq(loc);
-    nodestack.push(lSeq);
+    push_nodestack(lSeq);
   }
 }
 
@@ -7942,7 +7960,7 @@ void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  nodestack.push(DOT_REF);
+  push_nodestack(DOT_REF);
 }
 
 
@@ -7959,7 +7977,7 @@ void end_visit (const OrderedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  nodestack.push(new order_expr(sctxid(),
+  push_nodestack(new order_expr(sctxid(),
                                 loc,
                                 order_expr::ordered,
                                 pop_nodestack()));
@@ -7979,7 +7997,7 @@ void end_visit (const UnorderedExpr& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  nodestack.push(new order_expr(sctxid(),
+  push_nodestack(new order_expr(sctxid(),
                                 loc,
                                 order_expr::unordered,
                                 pop_nodestack()));
@@ -8009,7 +8027,7 @@ void* begin_visit(const FunctionCall& v)
       thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
   }
 
-  nodestack.push(NULL);
+  push_nodestack(NULL);
   return no_state;
 }
 
@@ -8044,12 +8062,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   {
     if (fname == "position" && numArgs == 0)  
     {
-      nodestack.push(lookup_ctx_var(DOT_POS_VARNAME, loc).getp());
+      push_nodestack(lookup_ctx_var(DOT_POS_VARNAME, loc).getp());
       return;
     }
     else if (fname == "last" && numArgs == 0)
     {
-      nodestack.push(lookup_ctx_var(LAST_IDX_VARNAME, loc).getp());
+      push_nodestack(lookup_ctx_var(LAST_IDX_VARNAME, loc).getp());
       return;
     }
     else if (fname == "number") 
@@ -8079,7 +8097,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       expr_t data_expr = wrap_in_atomization(arguments[0]);
 
-      nodestack.push(&*wrap_in_let_flwor(new treat_expr(sctxid(),
+      push_nodestack(&*wrap_in_let_flwor(new treat_expr(sctxid(),
                                                         loc,
                                                         data_expr,
                                                         theRTM.ANY_ATOMIC_TYPE_QUESTION,
@@ -8100,9 +8118,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       xqp_string baseuri = sctx_p->final_baseuri ();
       if (baseuri.empty())
-        nodestack.push(create_seq(loc));
+        push_nodestack(create_seq(loc));
       else
-        nodestack.push(new cast_expr(sctxid(),
+        push_nodestack(new cast_expr(sctxid(),
                                      loc,
                                      new const_expr(sctxid(), loc, baseuri),
                                      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
@@ -8201,7 +8219,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   {
     if (fname == "inline-xml" && numArgs == 1) 
     {
-      nodestack.push(new eval_expr(sctxid(),
+      push_nodestack(new eval_expr(sctxid(),
                                    loc,
                                    create_cast_expr(loc,
                                                     arguments[0],
@@ -8226,7 +8244,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       ZORBA_ERROR_LOC_PARAM(XPST0017, loc, prefix + ":" + fname, numArgs);
     }
 
-    nodestack.push(create_cast_expr(loc, arguments[0], type, true));
+    push_nodestack(create_cast_expr(loc, arguments[0], type, true));
   }
 
   // It is not a builtin constructor function
@@ -8237,7 +8255,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     {
       ZORBA_ERROR_LOC_PARAM(XPST0017,
                             loc,
-                            (prefix.empty () ? prefix : (prefix + ":")) + fname,
+                            (prefix.empty() ? prefix : (prefix + ":")) + fname,
                             to_string(numArgs));
     }
 
@@ -8245,9 +8263,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     // as a non-leaf function.
     if (NULL != dynamic_cast<user_function*>(f)) 
     {
-      if (! fn_decl_stack.empty()) 
+      if (! theCurrentPrologVFDecl.isNull() &&
+          theCurrentPrologVFDecl.getKind() == PrologGraphVertex::FUN) 
       {
-        user_function* udf = dynamic_cast<user_function *>(fn_decl_stack.back());
+        function* f1 = const_cast<function*>(theCurrentPrologVFDecl.getFunction());
+        user_function* udf = dynamic_cast<user_function*>(f1);
         ZORBA_ASSERT(udf != NULL);
         udf->setLeaf(false);
       }
@@ -8270,7 +8290,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                            foExpr);
     }
 
-    nodestack.push(foExpr.getp());
+    push_nodestack(foExpr.getp());
   }
 }
 
@@ -8344,7 +8364,7 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
                             sctx_p->lookup_elem_qname(v.get_elem_name()->get_qname(),
                                                       loc));
 
-  nodestack.push(new elem_expr(sctxid(),
+  push_nodestack(new elem_expr(sctxid(),
                                loc,
                                nameExpr,
                                attrExpr,
@@ -8362,7 +8382,7 @@ void* begin_visit(const DirAttributeList& v)
 {
   TRACE_VISIT();
 
-  nodestack.push(NULL);
+  push_nodestack(NULL);
 
   // visit namespace declaratrion attributes first
   for (int visitType = 0; visitType < 2; visitType++)
@@ -8400,7 +8420,7 @@ void* begin_visit(const DirAttributeList& v)
 
   if (attributes.size() == 1)
   {
-    nodestack.push(attributes[0].getp());
+    push_nodestack(attributes[0].getp());
   }
   else
   {
@@ -8419,7 +8439,7 @@ void* begin_visit(const DirAttributeList& v)
 
     normalize_fo(expr_list);
 
-    nodestack.push(expr_list);
+    push_nodestack(expr_list);
   }
 
   return NULL;  // reject visitor -- everything done
@@ -8439,7 +8459,7 @@ void* begin_visit(const DirAttr& v)
 {
   TRACE_VISIT();
   // boundary is needed because the value of an attribute might be empty
-  nodestack.push(NULL);
+  push_nodestack(NULL);
   return no_state;
 }
 
@@ -8452,7 +8472,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
   if (valueExpr != NULL) 
   {
     // delete boundary
-    nodestack.pop();
+    pop_nodestack();
   }
 
   QName* qname = v.get_name().getp();
@@ -8520,7 +8540,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
     expr_t attrExpr = new attr_expr(sctxid(), loc, nameExpr, valueExpr);
 
-    nodestack.push(attrExpr);
+    push_nodestack(attrExpr);
   }
 }
 
@@ -8533,7 +8553,7 @@ void* begin_visit(const DirElemContentList& v)
 {
   TRACE_VISIT();
 
-  nodestack.push(NULL);
+  push_nodestack(NULL);
   return no_state;
 }
 
@@ -8553,7 +8573,7 @@ void end_visit(const DirElemContentList& v, void* /*visit_state*/)
 
   if (args.size() == 1)
   {
-    nodestack.push(args[0]);
+    push_nodestack(args[0]);
   }
   else 
   {
@@ -8564,7 +8584,7 @@ void end_visit(const DirElemContentList& v, void* /*visit_state*/)
     
     normalize_fo(expr_list.getp());
 
-    nodestack.push(expr_list.getp());
+    push_nodestack(expr_list.getp());
   }
 }
 
@@ -8588,7 +8608,7 @@ void end_visit (const DirElemContent& v, void* /*visit_state*/) {
   } else {
     if (!v.isStripped()) {
       expr_t content = new const_expr (sctxid(), loc, v.get_elem_content());
-      nodestack.push (new text_expr(sctxid(), loc,
+      push_nodestack (new text_expr(sctxid(), loc,
                                     text_expr::text_constructor,
                                     content));
     }
@@ -8616,7 +8636,7 @@ void check_boundary_whitespace(const DirElemContent& v) {
   v.setIsStripped(false);
   if (sctx_p->boundary_space_mode() == StaticContextConsts::strip_space) {
     bool lPrevIsBoundary = pop_stack (theIsWSBoundaryStack);
-    const DirElemContent* lPrev = peek_stack (thePossibleWSContentStack);
+    const DirElemContent* lPrev = peek_stack(thePossibleWSContentStack);
     thePossibleWSContentStack.pop();
 
     if (v.get_direct_cons() != 0 || (v.get_common_content() != 0 && v.get_common_content()->get_expr() != 0)) {
@@ -8671,7 +8691,7 @@ void *begin_visit (const CDataSection& v) {
 void end_visit (const CDataSection& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   expr_t content = new const_expr (sctxid(), loc, v.get_cdata_content ());
-  nodestack.push (new text_expr (sctxid(), loc, text_expr::text_constructor, content));
+  push_nodestack (new text_expr (sctxid(), loc, text_expr::text_constructor, content));
 }
 
 
@@ -8701,7 +8721,7 @@ void attr_content_list(const QueryLoc& loc, void* /*visit_state*/)
 
   if (args.size() == 1)
   {
-    nodestack.push(args[0]);
+    push_nodestack(args[0]);
   }
   else if (args.size() > 1)
   {
@@ -8711,7 +8731,7 @@ void attr_content_list(const QueryLoc& loc, void* /*visit_state*/)
                                       args);
     normalize_fo(expr_list.getp());
 
-    nodestack.push(expr_list.getp());
+    push_nodestack(expr_list.getp());
   }
 }
 
@@ -8720,7 +8740,7 @@ void* begin_visit(const QuoteAttrContentList& v)
 {
   TRACE_VISIT();
 
-  nodestack.push(NULL);
+  push_nodestack(NULL);
   return no_state;
 }
 
@@ -8735,7 +8755,7 @@ void *begin_visit(const AposAttrContentList& v)
 {
   TRACE_VISIT ();
 
-  nodestack.push(NULL);
+  push_nodestack(NULL);
   return no_state;
 }
 
@@ -8750,7 +8770,7 @@ void attr_val_content (const QueryLoc& loc, const CommonContent *cc, xqpString c
 {
   if (cc == NULL) 
   {
-    nodestack.push(new const_expr (sctxid(), loc, content));
+    push_nodestack(new const_expr (sctxid(), loc, content));
   }
   else
   {
@@ -8828,7 +8848,7 @@ void end_visit (const CommonContent& v, void* /*visit_state*/)
     }
 
     expr_t lConstExpr = new const_expr(sctxid(), loc, content);
-    nodestack.push(lConstExpr);
+    push_nodestack(lConstExpr);
     break;
   }
   case ParseConstants::cont_escape_lbrace:
@@ -8837,7 +8857,7 @@ void end_visit (const CommonContent& v, void* /*visit_state*/)
     // the text node into its string value
     xqpString content("{");
     expr_t lConstExpr = new const_expr(sctxid(), loc, content);
-    nodestack.push ( lConstExpr );
+    push_nodestack ( lConstExpr );
     break;
   }
   case ParseConstants::cont_escape_rbrace:
@@ -8846,7 +8866,7 @@ void end_visit (const CommonContent& v, void* /*visit_state*/)
     // the text node into its string value
     xqpString content("}");
     expr_t lConstExpr = new const_expr(sctxid(), loc, content);
-    nodestack.push ( lConstExpr );
+    push_nodestack ( lConstExpr );
     break;
   }
   case ParseConstants::cont_expr:
@@ -8869,7 +8889,7 @@ void end_visit (const DirCommentConstructor& v, void* /*visit_state*/)
 
   xqpString str = v.get_comment();
   expr_t content = new const_expr (sctxid(), loc, str);
-  nodestack.push (new text_expr(sctxid(), loc,
+  push_nodestack (new text_expr(sctxid(), loc,
                                 text_expr::comment_constructor,
                                 content));
 }
@@ -8887,7 +8907,7 @@ void end_visit (const DirPIConstructor& v, void* /*visit_state*/) {
   expr_t
     target = new const_expr (sctxid(), loc, target_str),
     content = new const_expr (sctxid(), loc, v.get_pi_content ());
-  nodestack.push (new pi_expr (sctxid(), loc, target,  content));
+  push_nodestack (new pi_expr (sctxid(), loc, target,  content));
 }
 
 
@@ -8904,7 +8924,7 @@ void end_visit (const CompDocConstructor& v, void* /*visit_state*/)
 
   fo_expr* lEnclosed = new fo_expr(sctxid(), loc, op_enclosed, lContent);
 
-  nodestack.push(new doc_expr(sctxid(), loc, lEnclosed));
+  push_nodestack(new doc_expr(sctxid(), loc, lEnclosed));
 }
 
 
@@ -8944,7 +8964,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
     nameExpr = new name_cast_expr(sctxid(), loc, atomExpr.getp(), ns_ctx);
   }
 
-  nodestack.push (new elem_expr(sctxid(), loc, nameExpr, contentExpr, ns_ctx));
+  push_nodestack (new elem_expr(sctxid(), loc, nameExpr, contentExpr, ns_ctx));
 }
 
 
@@ -8989,7 +9009,7 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
 
   attrExpr = new attr_expr(sctxid(), loc, nameExpr, valueExpr);
 
-  nodestack.push(attrExpr);
+  push_nodestack(attrExpr);
 }
 
 
@@ -9011,7 +9031,7 @@ void end_visit(const CompCommentConstructor& v, void* /*visit_state*/)
                                   text_expr::comment_constructor,
                                   enclosedExpr.getp());
 
-  nodestack.push(textExpr);
+  push_nodestack(textExpr);
 }
 
 
@@ -9054,7 +9074,7 @@ void end_visit(const CompPIConstructor& v, void* /*visit_state*/)
               new pi_expr(sctxid(), loc, target, content) :
               new pi_expr(sctxid(), loc, new const_expr(sctxid(), loc, v.get_target()), content));
 
-  nodestack.push (e);
+  push_nodestack (e);
 }
 
 
@@ -9076,7 +9096,7 @@ void end_visit(const CompTextConstructor& v, void* /*visit_state*/)
                                   text_expr::text_constructor,
                                   enclosedExpr.getp());
 
-  nodestack.push(textExpr);
+  push_nodestack(textExpr);
 }
 
 
@@ -9633,7 +9653,7 @@ void end_visit(const DeleteExpr& v, void* /*visit_state*/)
   }
 
   expr_t aDelete = new delete_expr(sctxid(), loc, lTarget);
-  nodestack.push(aDelete);
+  push_nodestack(aDelete);
 }
 
 
@@ -9658,7 +9678,7 @@ void end_visit(const InsertExpr& v, void* /*visit_state*/)
   lSource = lEnclosed;
 
   expr_t lInsert = new insert_expr(sctxid(), loc, v.getType(), lSource, lTarget);
-  nodestack.push(lInsert);
+  push_nodestack(lInsert);
 }
 
 
@@ -9684,7 +9704,7 @@ void end_visit(const RenameExpr& v, void* /*visit_state*/)
 
   expr_t renameExpr = new rename_expr(sctxid(), loc, targetExpr, nameExpr);
 
-  nodestack.push(renameExpr);
+  push_nodestack(renameExpr);
 }
 
 
@@ -9715,7 +9735,7 @@ void end_visit(const ReplaceExpr& v, void* /*visit_state*/)
                                      v.getType(),
                                      lTarget,
                                      lReplacement);
-  nodestack.push(lReplace);
+  push_nodestack(lReplace);
 }
 
 
@@ -9742,7 +9762,7 @@ void* begin_visit(const TransformExpr& v)
                                                      loc,
                                                      NULL,
                                                      NULL);
-  nodestack.push(transformExpr);
+  push_nodestack(transformExpr);
 
   return no_state;
 }
@@ -9763,7 +9783,8 @@ void end_visit(const TransformExpr& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC(XUST0002, loc);
   }
 
-  transform_expr* transformExpr = dynamic_cast<transform_expr*>(nodestack.top().getp());
+  transform_expr* transformExpr = 
+  dynamic_cast<transform_expr*>(theNodeStack.back().getp());
   assert(transformExpr != NULL);
 
   transformExpr->setModifyExpr(modifyExpr);
@@ -9811,7 +9832,8 @@ void end_visit (const VarBinding& v, void*)
 
   var_expr_t varExpr = pop_nodestack_var();
 
-  transform_expr* transformExpr = dynamic_cast<transform_expr*>(nodestack.top().getp());
+  transform_expr* transformExpr = 
+  dynamic_cast<transform_expr*>(theNodeStack.back().getp());
   assert(transformExpr != NULL);
 
   copy_clause* copyClause = new copy_clause(varExpr, sourceExpr);
@@ -9830,15 +9852,23 @@ void end_visit (const VarBinding& v, void*)
 void* begin_visit(const TryExpr& v) 
 {
   TRACE_VISIT();
+
+  theTryStack.push_back(&v);
+
   return no_state;
 }
 
 void end_visit(const TryExpr& v, void* visit_state) 
 {
   TRACE_VISIT_OUT();
+
+  theTryStack.pop_back();
 }
 
 
+/*******************************************************************************
+  CatchClauseList := CatchClause+
+********************************************************************************/
 void* begin_visit(const CatchListExpr& v) 
 {
   TRACE_VISIT();
@@ -9847,7 +9877,7 @@ void* begin_visit(const CatchListExpr& v)
 
   trycatch_expr* tce = new trycatch_expr(sctxid(), loc, tryExpr);
 
-  nodestack.push(tce);
+  push_nodestack(tce);
 
   return no_state;
 }
@@ -9856,17 +9886,30 @@ void end_visit(const CatchListExpr& v, void* visit_state)
 {
   TRACE_VISIT_OUT();
   
-  trycatch_expr* tce = static_cast<trycatch_expr*>(nodestack.top().getp());
+  trycatch_expr* tce = static_cast<trycatch_expr*>(theNodeStack.back().getp());
 
   tce->compute_scripting_kind();
 }
 
 
+/*******************************************************************************
+  [172] CatchClause ::= "catch" CatchErrorList CatchVars? "{" Expr "}"
+
+  [173] CatchErrorList ::= NameTest ("|" NameTest)*
+
+  [174] CatchVars ::= "(" CatchErrorCode ("," CatchErrorDesc ("," CatchErrorVal)?)? ")"
+
+  [175] CatchErrorCode ::= "$" VarName
+
+  [176] CatchErrorDesc ::= "$" VarName
+
+  [177] CatchErrorVal ::= "$" VarName
+********************************************************************************/
 void* begin_visit(const CatchExpr& v) 
 {
   TRACE_VISIT();
 
-  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
+  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.back().getp());
 
   catch_clause_t cc = new catch_clause();
 
@@ -9912,7 +9955,7 @@ void end_visit(const CatchExpr& v, void* visit_state)
   TRACE_VISIT_OUT();
 
   expr_t ce = pop_nodestack();
-  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(&*nodestack.top());
+  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.back().getp());
 
   catch_clause* cc = &*(*tce)[0];
   cc->set_catch_expr(ce);
@@ -9922,7 +9965,7 @@ void end_visit(const CatchExpr& v, void* visit_state)
 
 
 
-void* begin_visit(const EvalExpr& v) 
+void* begin_visit(const EvalExpr& v)
 {
   TRACE_VISIT();
   if (sctx_p->xquery_version() < StaticContextConsts::xquery_version_1_1)
@@ -9944,30 +9987,30 @@ void end_visit(const EvalExpr& v, void* visit_state)
   
   for (size_t i = 0; i < vgdl->size(); i++) 
   {
-    varref_t ve = pop_nodestack ().dyn_cast<var_expr> ();
-    ve->set_kind (var_expr::eval_var);
-    expr_t val = pop_nodestack ();
+    varref_t ve = pop_nodestack().dyn_cast<var_expr> ();
+    ve->set_kind(var_expr::eval_var);
+    expr_t val = pop_nodestack();
 
-    if (ve->get_type () != NULL)
+    if (ve->get_type() != NULL)
       val = new treat_expr(sctxid(),
                            val->get_loc(),
                            val,
                            ve->get_type(),
                            XPTY0004);
 
-    result->add_var (eval_expr::eval_var (&*ve, val));
+    result->add_var(eval_expr::eval_var (&*ve, val));
 
-    pop_scope ();
+    pop_scope();
   }
 
-  nodestack.push (&*result);
+  push_nodestack(&*result);
 }
 
 
 
-void *begin_visit (const AssignExpr& v) 
+void* begin_visit(const AssignExpr& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
@@ -9984,7 +10027,7 @@ void end_visit(const AssignExpr& v, void* visit_state)
                                      ve->get_loc(),
                                      dynamic_context::var_key(&*ve));
 
-  nodestack.push(new fo_expr(sctxid(), loc, var_set, qname_expr, pop_nodestack()));
+  push_nodestack(new fo_expr(sctxid(), loc, var_set, qname_expr, pop_nodestack()));
 }
 
 
@@ -9997,7 +10040,7 @@ void* begin_visit(const ExitExpr& v)
 void end_visit(const ExitExpr& v, void* visit_state) 
 {
   TRACE_VISIT_OUT();
-  nodestack.push (new exit_expr(sctxid(), loc, pop_nodestack()));
+  push_nodestack (new exit_expr(sctxid(), loc, pop_nodestack()));
 }
 
 
@@ -10034,7 +10077,7 @@ void end_visit(const WhileExpr& v, void* visit_state)
                                   create_seq(loc),
                                   new flowctl_expr(sctxid(), loc, flowctl_expr::BREAK)));
 
-  nodestack.push(new while_expr(sctxid(), loc, seqBody));
+  push_nodestack(new while_expr(sctxid(), loc, seqBody));
 }
 
 
@@ -10058,7 +10101,7 @@ void end_visit (const FlowCtlStatement& v, void* visit_state)
   default:
     ZORBA_FATAL(false, "");
   }
-  nodestack.push (new flowctl_expr (sctxid(), loc, a));
+  push_nodestack (new flowctl_expr (sctxid(), loc, a));
 }
 
 /* full-text-related */
@@ -10444,45 +10487,48 @@ void end_visit (const FTWordsValue& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const FTMatchOptionProximity& v) {
-  TRACE_VISIT ();
+void* begin_visit(const FTMatchOptionProximity& v) 
+{
+  TRACE_VISIT();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit (const FTMatchOptionProximity& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
+void end_visit(const FTMatchOptionProximity& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
 }
 
 
 // Pass-thru -- nothing to be done
 
-void *begin_visit (const ParseErrorNode& v) 
+void* begin_visit(const ParseErrorNode& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const ParseErrorNode& v, void* /*visit_state*/) 
+void end_visit(const ParseErrorNode& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 public:
 
-expr_t result () 
+expr_t result()
 {
-  if (nodestack.size () != 1) 
+  if (theNodeStack.size() != 1) 
   {
     cout << "Error: extra nodes on translator stack:\n";
-    while (! nodestack.empty ()) 
+    while (! theNodeStack.empty()) 
     {
-      expr_t e_h = pop_nodestack ();
+      expr_t e_h = pop_nodestack();
 #ifndef NDEBUG
-      if (! Properties::instance()->traceTranslator()) {
+      if (! Properties::instance()->traceTranslator()) 
+      {
         if (e_h != NULL)
-          e_h->put (cout) << endl;
+          e_h->put(cout) << endl;
         else
           cout << "NULL" << endl;
       }
@@ -10491,15 +10537,15 @@ expr_t result ()
     ZORBA_ASSERT (false);
   }
 
-  ZORBA_ASSERT (theTypeStack.size () == 0);
+  ZORBA_ASSERT(theTypeStack.size() == 0);
 
   if (scope_depth != 0) 
   {
     cout << "Error: scope depth " << scope_depth << endl;
-    ZORBA_ASSERT (false);
+    ZORBA_ASSERT(false);
   }
 
-  return pop_nodestack ();
+  return pop_nodestack();
 }
 
 };

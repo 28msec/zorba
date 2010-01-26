@@ -28,7 +28,7 @@ SimpleTempSeq::SimpleTempSeq(store::Iterator_t iter, bool copy)
   store::CopyMode lCopyMode;
   store::Item_t curItem;
 
-  while ( iter->next(curItem) ) 
+  while (iter->next(curItem)) 
   {
     if (copy && curItem->isNode()) 
       curItem = curItem->copy(NULL, 0, lCopyMode);
@@ -36,6 +36,8 @@ SimpleTempSeq::SimpleTempSeq(store::Iterator_t iter, bool copy)
     theItems.push_back(NULL);
     theItems.back().transfer(curItem);
   }
+
+  iter->close();
 }
 
 
@@ -44,12 +46,6 @@ SimpleTempSeq::SimpleTempSeq(store::Iterator_t iter, bool copy)
 ********************************************************************************/
 SimpleTempSeq::~SimpleTempSeq()
 {
-//ulong numItems = theItems.size();
-//for (ulong i = 0; i < numItems; i++)
-//{
-//  store::Item* n = theItems[i];
-//  //n->removeReference(n->getSharedRefCounter() SYNC_PARAM2(n->getRCLock()));
-//}
 }
 
 
@@ -101,7 +97,7 @@ void SimpleTempSeq::getItem(ulong position, store::Item_t& res)
 ********************************************************************************/
 bool SimpleTempSeq::containsItem(ulong position)
 {
-  return  theItems.size() >= position;
+  return theItems.size() >= position;
 }
 
 
@@ -112,7 +108,8 @@ void SimpleTempSeq::append(store::Iterator_t iter, bool copy)
 {
   store::Item_t curItem;
   store::CopyMode lCopyMode;
-  while ( iter->next(curItem) )
+
+  while (iter->next(curItem))
   {
     if (copy && curItem->isNode())
       curItem = curItem->copy(NULL, 0, lCopyMode);
@@ -120,6 +117,8 @@ void SimpleTempSeq::append(store::Iterator_t iter, bool copy)
     theItems.push_back(NULL);
     theItems.back().transfer(curItem);
   }
+
+  iter->close();
 }
 
 

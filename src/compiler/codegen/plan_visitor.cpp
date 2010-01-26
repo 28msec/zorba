@@ -1110,7 +1110,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
                                   PREV_ITER,
                                   domainIter,
                                   varRefs,
-                                  true);
+                                  lc->lazyEval(),
+                                  true);  // materilize
   }
 
   //
@@ -1162,7 +1163,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
                                      var->get_name(),
                                      varRefs,
                                      *start_clause,
-                                     *end_clause);
+                                     *end_clause,
+                                     wc->lazyEval());
   }
 
   //
@@ -1266,11 +1268,11 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   else if (c.get_kind() == flwor_clause::group_clause) 
   {
     vector<flwor::GroupingSpec> gspecs;
-    vector<flwor::GroupingOuterVar> gouters;
+    vector<flwor::NonGroupingSpec> ngspecs;
 
-    generate_groupby(clauseVarMap, gspecs, gouters);
+    generate_groupby(clauseVarMap, gspecs, ngspecs);
 
-    return new flwor::GroupByIterator(sctx, c.get_loc(), PREV_ITER, gspecs, gouters);
+    return new flwor::GroupByIterator(sctx, c.get_loc(), PREV_ITER, gspecs, ngspecs);
   }
 
   ZORBA_ASSERT (false);
@@ -1341,11 +1343,11 @@ void flwor_codegen(const flwor_expr& flworExpr)
     else if (c.get_kind() == flwor_clause::group_clause)
     {
       vector<flwor::GroupingSpec> gspecs;
-      vector<flwor::GroupingOuterVar> gouters;
+      vector<flwor::NonGroupingSpec> ngspecs;
 
-      generate_groupby(clauseVarMap, gspecs, gouters);
+      generate_groupby(clauseVarMap, gspecs, ngspecs);
 
-      groupClause.reset(new flwor::GroupByClause(gspecs, gouters));
+      groupClause.reset(new flwor::GroupByClause(gspecs, ngspecs));
     }
 
     //
@@ -1410,7 +1412,8 @@ void flwor_codegen(const flwor_expr& flworExpr)
       forletClauses.push_back(flwor::ForLetClause(var->get_name(),
                                                   varRefs,
                                                   domainIter,
-                                                  true));
+                                                  lc->lazyEval(),
+                                                  true)); // materialize
     }
 
     else
@@ -1436,7 +1439,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
 void generate_groupby(
     const FlworClauseVarMap* clauseVarMap,
     vector<flwor::GroupingSpec>& gspecs,
-    vector<flwor::GroupingOuterVar>& gouters)
+    vector<flwor::NonGroupingSpec>& ngspecs)
 {
   const group_clause* gbc = static_cast<const group_clause*>(clauseVarMap->theClause);
   const group_clause::rebind_list_t& gvars = gbc->get_grouping_vars();
@@ -1452,7 +1455,7 @@ void generate_groupby(
         
     const vector<PlanIter_t>& varRefs = varRebind->theOutputVarRefs;
 
-    gouters.push_back(flwor::GroupingOuterVar(pop_itstack(), varRefs));
+    ngspecs.push_back(flwor::NonGroupingSpec(pop_itstack(), varRefs));
   }
 
   for (; i >= 0; --i) 
@@ -1470,7 +1473,7 @@ void generate_groupby(
 
 ********************************************************************************/
 
-bool begin_visit (promote_expr& v) 
+bool begin_visit(promote_expr& v) 
 {
   CODEGEN_TRACE_IN("");
   return true;

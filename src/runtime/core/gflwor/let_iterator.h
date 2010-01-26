@@ -46,6 +46,7 @@ class LetIterator : public BinaryBaseIterator<LetIterator, PlanIteratorState>
 private:
   store::Item_t             theVarName;
   std::vector<LetVarIter_t> theLetVars;
+    bool                    theLazyEval;
   bool                      theNeedsMat;
   
 public:
@@ -72,7 +73,8 @@ public:
         store::Item* aVarName, 
         PlanIter_t aTupleIter, 
         PlanIter_t aInputIter, 
-        const std::vector<PlanIter_t>& aLetVars, 
+        const std::vector<PlanIter_t>& aLetVars,
+        bool lazyEval,
         bool aNeedsMaterialization);
 
   ~LetIterator();

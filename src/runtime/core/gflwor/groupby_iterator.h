@@ -32,6 +32,9 @@ namespace flwor
 class GroupByIterator;
   
 
+/***************************************************************************//**
+
+********************************************************************************/
 class GroupByState : public PlanIteratorState 
 {
   friend class GroupByIterator;
@@ -48,58 +51,60 @@ public:
   void init(
         PlanState& aState,
         const TypeManager* tm,
-        std::vector<GroupingSpec>* groupingSpecs);
+        std::vector<GroupingSpec>* gspecs);
 
   void reset(PlanState& state);
 };
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 class GroupByIterator : public Batcher<GroupByIterator> 
 {
 private:
   PlanIter_t                    theTupleIter;
   std::vector<GroupingSpec>     theGroupingSpecs;
-  std::vector<GroupingOuterVar> theOuterVars;
+  std::vector<NonGroupingSpec>  theNonGroupingSpecs;
 
 public:
   SERIALIZABLE_CLASS(GroupByIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(GroupByIterator, Batcher<GroupByIterator>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (Batcher<GroupByIterator>*)this);
-    ar & theTupleIter;
-    ar & theGroupingSpecs;
-    ar & theOuterVars;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
   GroupByIterator(
         static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t aTupleIterator,
         std::vector<GroupingSpec> aGroupingSpecs,
-        std::vector<GroupingOuterVar> aOuterVars);
+        std::vector<NonGroupingSpec> aNonGroupingSpecs);
 
   ~GroupByIterator();
 
-  void openImpl ( PlanState& planState, uint32_t& offset );
-  bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
-  void resetImpl ( PlanState& planState ) const;
-  void closeImpl ( PlanState& planState );
+  uint32_t getStateSize() const;
 
-  virtual uint32_t getStateSize() const;
-  virtual uint32_t getStateSizeOfSubtree() const;
+  uint32_t getStateSizeOfSubtree() const;
 
-  virtual void accept(PlanIterVisitor&) const;
+  void accept(PlanIterVisitor&) const;
+
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
+  void resetImpl(PlanState& planState) const;
+
+  void closeImpl(PlanState& planState);
 
 private:
-  void matVarsAndGroupBy (
+  void matVarsAndGroupBy(
         GroupByState* aGroupByState,
-        PlanState& aPlanState ) const;
+        PlanState& aPlanState) const;
 
-  void bindGroupBy (
+  void bindGroupBy(
         GroupHashMap::iterator aGroupMapIter,
         GroupByState* aGroupByState,
-        PlanState& aPlanState ) const;
+        PlanState& aPlanState) const;
 };
 
 

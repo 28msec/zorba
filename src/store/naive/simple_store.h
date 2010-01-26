@@ -266,8 +266,8 @@ public:
 
   store::TempSeq_t createTempSeq(
         store::Iterator* iterator,
-        bool copyNodes = false,
-        bool lazy = true);
+        bool copyNodes ,
+        bool lazy);
 
   store::TempSeq_t createTempSeq(const std::vector<store::Item_t>& item_v);
 

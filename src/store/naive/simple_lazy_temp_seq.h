@@ -186,7 +186,7 @@ inline void SimpleLazyTempSeq::matNextItem()
 
   store::Item_t& lLocation = theItems.back();
 
-  if ( theIterator->next(lLocation)) 
+  if (theIterator->next(lLocation)) 
   {
     if (theCopy && lLocation->isNode()) 
     {
@@ -199,6 +199,7 @@ inline void SimpleLazyTempSeq::matNextItem()
     // We do not want to have an empty item materialized.
     theItems.pop_back();
     theMatFinished = true;
+    theIterator->close();
   }
 }
 

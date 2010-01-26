@@ -23,287 +23,67 @@
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
 #include <zorba/empty_sequence.h>
+#include <zorba/vector_item_sequence.h>
+#include <zorba/uri_resolvers.h>
 #include <simplestore/simplestore.h>
 
 
 using namespace zorba;
 
-/**
- * A first simple external function.
- * The function implements a concatenation of two sequences
- * passed as arguments.
- * The concatenation is done eagerly, i.e. the result is materialized
- */
-class MySimpleExternalFunction : public NonePureStatelessExternalFunction
-{
-  protected:
-    const ExternalModule* theModule;
 
-  public:
-    MySimpleExternalFunction(const ExternalModule* aModule)
-      : theModule(aModule) {}
+class MySimpleExternalFunction;
+class MyLazySimpleExternalFunction;
+class MyErrorReportingExternalFunction;
+class MyParametrizedExternalFunction;
 
-    virtual String
-    getURI() const { return theModule->getURI(); }
 
-    virtual String
-    getLocalName() const { return "bar1"; }
-
-    virtual ItemSequence_t 
-    evaluate(const StatelessExternalFunction::Arguments_t& args,
-             const StaticContext* sctx,
-             const DynamicContext* dctx) const 
-    {
-        std::cout << "namespace " 
-                  << sctx->getNamespaceURIByPrefix("foo") << std::endl; 
-        std::cout << "current datetime " 
-                  << dctx->getCurrentDateTime().getStringValue() << std::endl; 
-        iv_t vec;
-        for(int i = 0; i < 2; ++i) {
-            ItemSequence* iseq = args[i];
-            Item lItem;
-            while(iseq->next(lItem)) {
-                vec.push_back(lItem);
-            }
-        }
-        // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
-        return ItemSequence_t(new IteratorBackedItemSequence(vec));
-    }
-
-  private:
-    typedef std::vector<Item> iv_t;
-    typedef iv_t::iterator ii_t;
-
-    class IteratorBackedItemSequence : public ItemSequence {
-        public:
-            IteratorBackedItemSequence(iv_t& vec)
-                : m_vec(vec),
-                m_i(m_vec.begin()),
-                m_end(m_vec.end()) { }
-
-            bool next(Item& val)
-            {
-                if (m_i == m_end) {
-                    return false;
-                }
-                val = *m_i;
-                ++m_i;
-                return true;
-            }
-
-        private:
-            iv_t m_vec;
-            ii_t m_i;
-            ii_t m_end;
-    };
-};
-
-/**
- * A second simple external function.
- * The function implements a concatenation of two sequences
- * passed as arguments.
- * The concatenation is done lazily, i.e. the result is computed
- * on the fly
- */
-class MyLazySimpleExternalFunction : public PureStatelessExternalFunction
-{
-  protected:
-    const ExternalModule* theModule;
-
-  public:
-    MyLazySimpleExternalFunction(const ExternalModule* aModule)
-      : theModule(aModule) {}
-
-    virtual String
-    getURI() const { return theModule->getURI(); }
-
-    virtual String
-    getLocalName() const { return "bar2"; }
-
-    virtual ItemSequence_t 
-    evaluate(const Arguments_t& args) const
-    {
-      // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
-      return ItemSequence_t(new LazyConcatItemSequence(args));
-    }
-
-  private:
-    class LazyConcatItemSequence : public ItemSequence {
-        public:
-            LazyConcatItemSequence(const StatelessExternalFunction::Arguments_t& args)
-                : m_args(args),
-                m_i(0) { }
-
-            bool next(Item& i)
-            {
-                while(m_i < m_args.size() && !m_args[m_i]->next(i)) {
-                    ++m_i;
-                }
-                return !i.isNull();
-            }
-        private:
-            Arguments_t m_args;
-            size_t m_i;
-    };
-};
-
-class MyErrorReportingExternalFunction : public PureStatelessExternalFunction
-{
-  protected:
-    const ExternalModule* theModule;
-
-  public:
-    MyErrorReportingExternalFunction(const ExternalModule* aModule)
-      : theModule(aModule) {}
-
-    virtual String
-    getURI() const { return theModule->getURI(); }
-
-    virtual String
-    getLocalName() const { return "bar3"; }
-
-    virtual ItemSequence_t 
-    evaluate(const StatelessExternalFunction::Arguments_t& args) const
-    {
-        // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
-        return ItemSequence_t(new LazyErrorReportingItemSequence(args));
-    }
-
-  private:
-    class LazyErrorReportingItemSequence : public ItemSequence {
-      public:
-          LazyErrorReportingItemSequence(const StatelessExternalFunction::Arguments_t& args)
-              : m_args(args),
-              m_i(0) { }
-
-          bool next(Item& i)
-          {
-             if (!m_args[0]->next(i)) {
-              throw ExternalFunctionData::createZorbaException(XPTY0004, "First argument must not be the empty sequence.", __FILE__, __LINE__);
-             }
-             return true;
-          }
-      private:
-          StatelessExternalFunction::Arguments_t  m_args;
-          size_t m_i;
-    };
-};
-
-class MyParametrizedExternalFunction : public NonePureStatelessExternalFunction
-{
-  protected:
-    const ExternalModule* theModule;
-
-  public:
-    MyParametrizedExternalFunction(const ExternalModule* aModule)
-      : theModule(aModule) {}
-
-    virtual String
-    getURI() const { return theModule->getURI(); }
-
-    virtual String
-    getLocalName() const { return "bar4"; }
-
-    virtual ItemSequence_t 
-    evaluate(const StatelessExternalFunction::Arguments_t& args,
-             const StaticContext* sctx,
-             const DynamicContext* dctx) const 
-    {
-        void* lParam;
-        std::string lParamName("myparam");
-        if ( ! dctx->getExternalFunctionParam( lParamName, lParam ) ) {
-          assert(false); 
-        }
-        std::cout << "the function param: " << *static_cast<std::string*>(lParam) << std::endl;
-        return ItemSequence_t(new EmptySequence());
-    }
-};
-
+/***************************************************************************//**
+  External module with target namespace "urn:foo", storing 4 external function
+  objects.
+********************************************************************************/
 class MyExternalModule : public ExternalModule
 {
-  protected:
-    mutable MySimpleExternalFunction*         bar1;
-    mutable MyLazySimpleExternalFunction*     bar2;
-    mutable MyErrorReportingExternalFunction* bar3;
-    mutable MyParametrizedExternalFunction*   bar4;
+protected:
+  mutable MySimpleExternalFunction           * bar1;
+  mutable MyLazySimpleExternalFunction       * bar2;
+  mutable MyErrorReportingExternalFunction   * bar3;
+  mutable MyParametrizedExternalFunction     * bar4;
 
-  public:
-    MyExternalModule()
-      : bar1(0),
-        bar2(0),
-        bar3(0),
-        bar4(0) {}
+public:
+  MyExternalModule()
+    :
+    bar1(0),
+    bar2(0),
+    bar3(0),
+    bar4(0)
+  {
+  }
+  
+  ~MyExternalModule();
+  
+  String getURI() const { return "urn:foo"; }
 
-    virtual ~MyExternalModule()
-    {
-      delete bar1;
-      delete bar2;
-      delete bar3;
-      delete bar4;
-    }
-
-    virtual String
-    getURI() const { return "urn:foo"; }
-
-    virtual StatelessExternalFunction*
-    getExternalFunction(String aLocalname) const
-    {
-      if (aLocalname.equals("bar1")) {
-        if (!bar1) {
-          bar1 = new MySimpleExternalFunction(this);
-        } 
-        return bar1;
-      } else if (aLocalname.equals("bar2")) {
-        if (!bar2) {
-          bar2 = new MyLazySimpleExternalFunction(this);
-        } 
-        return bar2;
-      } else if (aLocalname.equals("bar3")) {
-        if (!bar3) {
-          bar3 = new MyErrorReportingExternalFunction(this);
-        } 
-        return bar3;
-      } else if (aLocalname.equals("bar4")) {
-        if (!bar3) {
-          bar4 = new MyParametrizedExternalFunction(this);
-        } 
-        return bar4;
-      }
-      return 0;
-    }
+  StatelessExternalFunction* getExternalFunction(String aLocalname) const;
 };
 
-bool
-func_example_1(Zorba* aZorba)
+
+/***************************************************************************//**
+  An example that shows that an external module cannot be registered more than
+  once.
+********************************************************************************/
+bool func_example_0(Zorba* aZorba)
 {
-	StaticContext_t sctx = aZorba->createStaticContext();
-
-  MyExternalModule lModule;
-  sctx->registerModule(&lModule);
-
-  std::ostringstream lText;
-  lText << "declare namespace foo=\"urn:foo\";" << std::endl
-        << "declare function foo:bar1($a1, $a2) external;" << std::endl
-        << "foo:bar1((1,2,3), (4,5,6))" << std::endl;
-
-	XQuery_t lQuery = aZorba->compileQuery(lText.str(), sctx); 
-  std::cout << lQuery << std::endl;
-
-	return true;
-}
-
-bool
-func_example_2(Zorba* aZorba)
-{
-  try {
+  try 
+  {
     StaticContext_t lContext = aZorba->createStaticContext();
 
     MyExternalModule lModule;
     
     lContext->registerModule(&lModule);
     lContext->registerModule(&lModule); // only allowed to register it once
-
-  } catch (ZorbaException &e) {
+  }
+  catch (ZorbaException &e) 
+  {
     std::cerr << "some exception " << e << std::endl;
     return true;
   }
@@ -311,29 +91,187 @@ func_example_2(Zorba* aZorba)
 	return false;
 }
 
-bool 
-func_example_3(Zorba* aZorba)
+
+/***************************************************************************//**
+  A first simple external function. 
+
+  declare function bar1($a1, $a2) external
+
+  The function implements a concatenation of two sequences passed as arguments.
+  The concatenation is done eagerly, i.e. the result is fully materialized before
+  any of its items are returned.
+********************************************************************************/
+class MySimpleExternalFunction : public NonePureStatelessExternalFunction
 {
-  StaticContext_t lContext = aZorba->createStaticContext();
+protected:
+  const ExternalModule* theModule;
 
-  MyExternalModule lModule;
+public:
+  MySimpleExternalFunction(const ExternalModule* aModule)
+    :
+    theModule(aModule)
+  {
+  }
+
+  String getURI() const { return theModule->getURI(); }
+
+  String getLocalName() const { return "bar1"; }
+
+  ItemSequence_t evaluate(
+        const StatelessExternalFunction::Arguments_t& args,
+        const StaticContext* sctx,
+        const DynamicContext* dctx) const 
+  {
+    std::cout << "namespace " << sctx->getNamespaceURIByPrefix("foo") << std::endl
+              << "current datetime " << dctx->getCurrentDateTime().getStringValue()
+              << std::endl; 
+
+    ItemVector vec;
+    for (int i = 0; i < 2; ++i) 
+    {
+      ItemSequence* iseq = args[i];
+      Item item;
+      while(iseq->next(item))
+      {
+        vec.push_back(item);
+      }
+    }
+
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    return ItemSequence_t(new IteratorBackedItemSequence(vec));
+  }
   
-  lContext->registerModule(&lModule);
+private:
+  typedef std::vector<Item> ItemVector;
+  typedef ItemVector::iterator ItemVectorIte;
 
-  std::ostringstream lText;
-  lText << "declare namespace foo=\"urn:foo\";" << std::endl
-        << "declare function foo:bar2($a1, $a2) external;" << std::endl
-        << "foo:bar2((1,2,3), (4,5,6))" << std::endl;
+  class IteratorBackedItemSequence : public ItemSequence
+  {
+  private:
+    ItemVector     theItems;
+    ItemVectorIte  theIte;
+    ItemVectorIte  theEnd;
 
-	XQuery_t lQuery = aZorba->compileQuery(lText.str(), lContext); 
+  public:
+    IteratorBackedItemSequence(ItemVector& vec)
+      :
+      theItems(vec),
+      theIte(theItems.begin()),
+      theEnd(theItems.end())
+    {
+    }
+    
+    bool next(Item& val)
+    {
+      if (theIte == theEnd) 
+      {
+        return false;
+      }
+      val = *theIte;
+      ++theIte;
+      return true;
+    }
+  };
+};
 
-  std::cout << lQuery << std::endl;
+
+bool func_example_1(Zorba* aZorba)
+{
+	StaticContext_t sctx = aZorba->createStaticContext();
+
+  MyExternalModule module;
+  sctx->registerModule(&module);
+
+  std::ostringstream queryText;
+  queryText << "declare namespace foo=\"urn:foo\";" << std::endl
+            << "declare function foo:bar1($a1, $a2) external;" << std::endl
+            << "foo:bar1((1,2,3), (4,5,6))" << std::endl;
+
+	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+  std::cout << query << std::endl;
 
 	return true;
 }
 
-bool
-func_example_4(Zorba* aZorba)
+
+/***************************************************************************//**
+  A second simple external function. 
+
+  declare function bar2($a1, $a2) external
+
+  The function implements a concatenation of two sequences passed as arguments.
+  The concatenation is done lazily, i.e. the result is computed on the fly.
+********************************************************************************/
+class MyLazySimpleExternalFunction : public PureStatelessExternalFunction
+{
+protected:
+  const ExternalModule* theModule;
+
+public:
+  MyLazySimpleExternalFunction(const ExternalModule* aModule)
+    :
+    theModule(aModule)
+  {
+  }
+
+  String getURI() const { return theModule->getURI(); }
+
+  String getLocalName() const { return "bar2"; }
+
+  ItemSequence_t evaluate(const Arguments_t& args) const
+  {
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    return ItemSequence_t(new LazyConcatItemSequence(args));
+  }
+
+private:
+  class LazyConcatItemSequence : public ItemSequence 
+  {
+  private:
+    Arguments_t theArgs;
+    size_t      theCurrentArg;
+
+  public:
+    LazyConcatItemSequence(const StatelessExternalFunction::Arguments_t& args)
+      : 
+      theArgs(args),
+      theCurrentArg(0)
+    {
+    }
+
+    bool next(Item& result)
+    {
+      while(theCurrentArg < 2 && !theArgs[theCurrentArg]->next(result)) 
+      {
+        ++theCurrentArg;
+      }
+      return !result.isNull();
+    }
+  };
+};
+
+
+bool func_example_2_1(Zorba* aZorba)
+{
+  StaticContext_t sctx = aZorba->createStaticContext();
+
+  MyExternalModule module;
+  sctx->registerModule(&module);
+
+  std::ostringstream queryText;
+  queryText << "declare namespace foo=\"urn:foo\";" << std::endl
+            << "declare function foo:bar2($a1, $a2) external;" << std::endl
+            << "foo:bar2((1,2,3), (4,5,6))" << std::endl;
+
+	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+
+  std::cout << query << std::endl;
+
+	return true;
+}
+
+
+bool func_example_2_2(Zorba* aZorba)
 {
 	StaticContext_t lContext = aZorba->createStaticContext();
 
@@ -356,29 +294,94 @@ func_example_4(Zorba* aZorba)
 }
 
 
-bool
-func_example_5(Zorba* aZorba)
+/***************************************************************************//**
+  A third simple external function. 
+
+  declare function bar3($a) external;
+
+  The function takes a single argument and checks if that argument is the empty
+  sequence. If so, it raises an error. Otherwise, it returns back the argument.
+********************************************************************************/
+class MyErrorReportingExternalFunction : public PureStatelessExternalFunction
 {
-	StaticContext_t lContext = aZorba->createStaticContext();
+protected:
+  const ExternalModule* theModule;
 
-  MyExternalModule lModule;
-  
-  lContext->registerModule(&lModule);
+public:
+  MyErrorReportingExternalFunction(const ExternalModule* aModule)
+    :
+    theModule(aModule)
+  {
+  }
 
-  std::ostringstream lText;
-  lText << "declare namespace foo=\"urn:foo\";" << std::endl
-        << "declare function foo:bar3($a1) external;" << std::endl
-        << "let $s1 := ()" << std::endl
-        << "for $x in 1 to 6 return (foo:bar3($s1))" << std::endl;
+  String getURI() const { return theModule->getURI(); }
+
+  String getLocalName() const { return "bar3"; }
+
+  ItemSequence_t evaluate(const StatelessExternalFunction::Arguments_t& args) const
+  {
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    return ItemSequence_t(new LazyErrorReportingItemSequence(args));
+  }
+
+private:
+  class LazyErrorReportingItemSequence : public ItemSequence 
+  {
+  private:
+    StatelessExternalFunction::Arguments_t  theArgs;
+    bool                                    theIsEmpty;
+
+  public:
+    LazyErrorReportingItemSequence(const StatelessExternalFunction::Arguments_t& args)
+      :
+      theArgs(args),
+      theIsEmpty(true)
+    {
+    }
     
-	XQuery_t lQuery = aZorba->compileQuery(lText.str(), lContext); 
+    bool next(Item& result)
+    {
+      bool done = !theArgs[0]->next(result);
+      if (done && theIsEmpty)
+      {
+        throw ExternalFunctionData::createZorbaException(
+                  XPTY0004,
+                  "Argument must not be the empty sequence.",
+                  __FILE__, __LINE__);
+      }
+      theIsEmpty = false;
+      return !done;
+    }
+  };
+};
 
-  try {
-    std::cout << lQuery << std::endl;
-  } catch (TypeException& te) {
+
+bool func_example_3_1(Zorba* aZorba)
+{
+	StaticContext_t sctx = aZorba->createStaticContext();
+
+  MyExternalModule module;
+  sctx->registerModule(&module);
+
+  std::ostringstream queryText;
+  queryText << "declare namespace foo=\"urn:foo\";" << std::endl
+            << "declare function foo:bar3($a1) external;" << std::endl
+            << "let $s1 := ()" << std::endl
+            << "for $x in 1 to 6 return (foo:bar3($s1))" << std::endl;
+    
+	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+
+  try 
+  {
+    std::cout << query << std::endl;
+  }
+  catch (TypeException& te) 
+  {
     std::cerr << te << std::endl;
     return true;
-  } catch (ZorbaException& ex) {
+  }
+  catch (ZorbaException& ex) 
+  {
     std::cerr << ex << std::endl;
     return false; // type exception expected
   }
@@ -386,57 +389,356 @@ func_example_5(Zorba* aZorba)
 	return false;
 }
 
-bool
-func_example_6(Zorba* aZorba)
+
+/***************************************************************************//**
+
+********************************************************************************/
+class MyParametrizedExternalFunction : public NonePureStatelessExternalFunction
 {
-	StaticContext_t lContext = aZorba->createStaticContext();
-
-  MyExternalModule lModule;
+protected:
+  const ExternalModule* theModule;
   
-  lContext->registerModule(&lModule);
+public:
+  MyParametrizedExternalFunction(const ExternalModule* aModule)
+    :
+    theModule(aModule)
+  {
+  }
 
-  std::ostringstream lText;
-  lText << "declare namespace foo=\"urn:foo\";" << std::endl
-        << "declare function foo:bar4() external;" << std::endl
-        << "for $x in 1 to 6 return (foo:bar4())" << std::endl;
+  String getURI() const { return theModule->getURI(); }
+
+  String getLocalName() const { return "bar4"; }
+
+  ItemSequence_t evaluate(
+        const StatelessExternalFunction::Arguments_t& args,
+        const StaticContext* sctx,
+        const DynamicContext* dctx) const 
+  {
+    void* lParam;
+    std::string lParamName("myparam");
+
+    if (!dctx->getExternalFunctionParam(lParamName, lParam)) 
+    {
+      assert(false); 
+    }
+    std::cout << "the function param: " << *static_cast<std::string*>(lParam)
+              << std::endl;
+
+    return ItemSequence_t(new EmptySequence());
+  }
+};
+
+
+bool func_example_4_1(Zorba* aZorba)
+{
+	StaticContext_t sctx = aZorba->createStaticContext();
+
+  MyExternalModule module;
+  sctx->registerModule(&module);
+
+  std::ostringstream queryText;
+  queryText << "declare namespace foo=\"urn:foo\";" << std::endl
+            << "declare function foo:bar4() external;" << std::endl
+            << "for $x in 1 to 6 return (foo:bar4())" << std::endl;
     
-	XQuery_t lQuery = aZorba->compileQuery(lText.str(), lContext); 
+	XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
 
-  DynamicContext* lDynContext = lQuery->getDynamicContext();
+  DynamicContext* lDynContext = query->getDynamicContext();
 
-  std::string lFunctionParam ("foo:bar");
+  std::string lFunctionParam("foo:bar");
 
   lDynContext->addExternalFunctionParam("myparam", &lFunctionParam);
 
-  std::cout << lQuery << std::endl;
+  try
+  {
+    std::cout << query << std::endl;
+  }
+  catch (StaticException& te) 
+  {
+    std::cerr << te << std::endl;
+    return true;
+  }
+  catch (ZorbaException& ex) 
+  {
+    std::cerr << ex << std::endl;
+    return false; // type exception expected
+  }
 
 	return true;
 }
 
-int 
-external_functions(int argc, char* argv[])
+
+/***************************************************************************//**
+
+********************************************************************************/
+MyExternalModule::~MyExternalModule()
+{
+  delete bar1;
+  delete bar2;
+  delete bar3;
+  delete bar4;
+}
+
+
+StatelessExternalFunction* MyExternalModule::getExternalFunction(String aLocalname) const
+{
+  if (aLocalname.equals("bar1")) 
+  {
+    if (!bar1) 
+    {
+      bar1 = new MySimpleExternalFunction(this);
+    } 
+    return bar1;
+  }
+  else if (aLocalname.equals("bar2"))
+  {
+    if (!bar2) 
+    {
+      bar2 = new MyLazySimpleExternalFunction(this);
+    } 
+    return bar2;
+  }
+  else if (aLocalname.equals("bar3"))
+  {
+    if (!bar3) 
+    {
+      bar3 = new MyErrorReportingExternalFunction(this);
+    } 
+    return bar3;
+  }
+  else if (aLocalname.equals("bar4")) 
+  {
+    if (!bar3) 
+    {
+      bar4 = new MyParametrizedExternalFunction(this);
+    } 
+    return bar4;
+  }
+  return 0;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+class MyModuleURIResolverResult : public ModuleURIResolverResult
+{
+  friend class MyModuleURIResolver2;
+
+protected:
+  std::istream             * theModule;
+  std::vector<std::string>   theComponentURIs;
+
+public:
+  std::istream* getModuleStream() const 
+  {
+    return theModule;
+  }
+
+  void getModuleURL(std::string& url) const
+  {
+  }
+
+  void getComponentURIs(std::vector<std::string>& uris) const 
+  {
+    uris = theComponentURIs;
+  }
+};
+
+
+class MyModuleURIResolver2 : public ModuleURIResolver
+{
+public:
+  ~MyModuleURIResolver2() {}
+
+  std::auto_ptr<ModuleURIResolverResult> resolveTargetNamespace(
+        const String& aTargetNamespaceURI,
+        const StaticContext& aStaticContext)
+  {
+    std::auto_ptr<MyModuleURIResolverResult>
+    lResult(new MyModuleURIResolverResult());
+
+    std::string compURI = aTargetNamespaceURI.c_str();
+    lResult->theComponentURIs.push_back(compURI);
+
+    return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+  }
+
+  std::auto_ptr<ModuleURIResolverResult> resolve(
+        const String& aURI,
+        const StaticContext& aStaticContext)
+  {
+    std::auto_ptr<MyModuleURIResolverResult> lResult(new MyModuleURIResolverResult());
+
+    if (aURI == "http://www.zorba-xquery.com/mymodule") 
+    {
+      // we have only one module
+      lResult->theModule = new std::istringstream(
+      "module namespace lm = 'http://www.zorba-xquery.com/mymodule'; \
+       declare function lm:foo() { 'foo' }; \
+       declare function lm:ext() external;");
+
+      lResult->setError(URIResolverResult::UR_NOERROR);
+    } 
+    else
+    {
+      lResult->setError(URIResolverResult::UR_XQST0046);
+      std::stringstream lErrorStream;
+      lErrorStream << "Module not found " << aURI;
+      lResult->setErrorDescription(lErrorStream.str());
+    }
+
+    return std::auto_ptr<ModuleURIResolverResult>(lResult.release());
+  }
+};
+
+
+class MyModuleExternalFunction;
+
+
+class MyModuleExternal : public ExternalModule
+{
+protected:
+  Zorba                    * theZorba;
+  MyModuleExternalFunction * theExtFunc;
+
+public:
+  MyModuleExternal(Zorba* aZorba) : theZorba(aZorba), theExtFunc(NULL) {}
+  
+  ~MyModuleExternal() {}
+  
+  ItemFactory* getItemFactory() const { return theZorba->getItemFactory(); }
+
+  String getURI() const 
+  {
+    return "http://www.zorba-xquery.com/mymodule";
+  }
+
+  void setExternalFunction(MyModuleExternalFunction* f)
+  {
+    theExtFunc = f;
+  }
+
+  StatelessExternalFunction* getExternalFunction(String aLocalname) const
+  {
+    if (aLocalname.equals("ext")) 
+    {
+      return reinterpret_cast<StatelessExternalFunction*>(theExtFunc);
+    }
+    return NULL;
+  }
+};
+
+
+class MyModuleExternalFunction : public PureStatelessExternalFunction
+{
+protected:
+  MyModuleExternal    * theModule;
+  std::vector<Item>     theItems;
+
+public:
+  MyModuleExternalFunction(MyModuleExternal* aModule)
+    :
+    theModule(aModule)
+  {
+    Item item = aModule->getItemFactory()->createString("ext");
+      
+    theItems.push_back(item);
+
+    theModule->setExternalFunction(this);
+  }
+
+  String getURI() const
+  {
+    return theModule->getURI();
+  }
+
+  String getLocalName() const
+  {
+    return "ext";
+  }
+
+  ItemSequence_t evaluate(const StatelessExternalFunction::Arguments_t& args) const
+  {
+    // transfer ownership of the IteratorBackedItemSequence to Zorba (using an auto_ptr)
+    return ItemSequence_t(new VectorItemSequence(theItems));
+  }
+};
+
+
+bool func_example_5(Zorba* aZorba)
+{
+	StaticContext_t sctx = aZorba->createStaticContext();
+
+  MyModuleURIResolver2 moduleResolver;
+  sctx->addModuleURIResolver(&moduleResolver);
+
+  MyModuleExternal lExternalModule(aZorba);
+  sctx->registerModule(&lExternalModule);
+
+  MyModuleExternalFunction lExtFunc(&lExternalModule);
+
+  std::ostringstream queryText;
+  queryText << "import module namespace lm=\"http://www.zorba-xquery.com/mymodule\";"
+            << "concat(lm:foo(), lm:ext())" << std::endl;
+
+  try
+  {    
+    XQuery_t query = aZorba->compileQuery(queryText.str(), sctx); 
+
+    std::cout << query << std::endl;
+  }
+  catch (StaticException& te) 
+  {
+    std::cerr << te << std::endl;
+    return false;
+  }
+  catch (ZorbaException& ex) 
+  {
+    std::cerr << ex << std::endl;
+    return false; // type exception expected
+  }
+
+	return true;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+int external_functions(int argc, char* argv[])
 {
   simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
 
-  std::cout << std::endl  << "executing simple external function test 1" << std::endl;
+  std::cout << std::endl  << "executing simple external function test 0" << std::endl;
+  res = func_example_0(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
+
+  std::cout << std::endl  << "executing simple external function test 1.1" << std::endl;
   res = func_example_1(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
 
-  std::cout << std::endl  << "executing simple external function test 2" << std::endl;
-  res = func_example_2(lZorba);
+  std::cout << std::endl  << "executing simple external function test 2.1" << std::endl;
+  res = func_example_2_1(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
 
-  std::cout << std::endl  << "executing simple external function test 3" << std::endl;
-  res = func_example_3(lZorba);
+  std::cout << std::endl  << "executing simple external function test 2.2" << std::endl;
+  res = func_example_2_2(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
 
-  std::cout << std::endl  << "executing simple external function test 4" << std::endl;
-  res = func_example_4(lZorba);
+  std::cout << std::endl  << "executing simple external function test 3.1" << std::endl;
+  res = func_example_3_1(lZorba);
+  if (!res) return 1; 
+  std::cout << std::endl;
+  
+  std::cout << std::endl  << "executing simple external function test 4.1" << std::endl;
+  res = func_example_4_1(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
 
@@ -444,13 +746,10 @@ external_functions(int argc, char* argv[])
   res = func_example_5(lZorba);
   if (!res) return 1; 
   std::cout << std::endl;
-  
-  std::cout << std::endl  << "executing simple external function test 6" << std::endl;
-  res = func_example_6(lZorba);
-  if (!res) return 1; 
-  std::cout << std::endl;
-  
+
+
   lZorba->shutdown();
   simplestore::SimpleStoreManager::shutdownStore(lStore);
   return 0;
 }
+

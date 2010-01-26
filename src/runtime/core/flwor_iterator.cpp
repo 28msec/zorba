@@ -81,6 +81,7 @@ ForLetClause::ForLetClause (
   theVarName(aVarName->getStringValue()),
   theType(FOR),
   theInput(aInput),
+  theDoLazyEval(true),
   theMaterialize(false)
 {
   castIterVector<ForVarIterator>(theForVarRefs, varRefs);
@@ -105,6 +106,7 @@ ForLetClause::ForLetClause (
   theVarName(aVarName->getStringValue()),
   theType(FOR),
   theInput(aInput),
+  theDoLazyEval(true),
   theMaterialize(false)
 {
   castIterVector<ForVarIterator>(theForVarRefs, varRefs);
@@ -122,17 +124,19 @@ ForLetClause::ForLetClause (
   @param needsMaterialization Indicates if it is necassary to materialize the
          LET variable. 
 ********************************************************************************/
-ForLetClause::ForLetClause (
+ForLetClause::ForLetClause(
     store::Item* aVarName,
     const std::vector<PlanIter_t>& aLetVars,
     PlanIter_t& aInput,
-    bool aNeedsMaterialization )
+    bool lazyEval,
+    bool aNeedsMaterialization)
   :
 #ifndef NDEBUG
   theVarName(aVarName->getStringValue()),
 #endif
   theType(LET),
   theInput(aInput),
+  theDoLazyEval(lazyEval),
   theMaterialize(aNeedsMaterialization)
 {
   castIterVector<LetVarIterator>(theLetVarRefs, aLetVars);
@@ -294,10 +298,10 @@ void OrderByClause::close(PlanState& planState)
 ********************************************************************************/
 GroupByClause::GroupByClause (
     std::vector<GroupingSpec> aGroupingSpecs,
-    std::vector<GroupingOuterVar> aOuterVars)
+    std::vector<NonGroupingSpec> aNonGroupingSpecs)
   :
-  theGroupingSpecs ( aGroupingSpecs ), 
-  theOuterVars ( aOuterVars )
+  theGroupingSpecs(aGroupingSpecs),
+  theNonGroupingSpecs(aNonGroupingSpecs)
 {
 }
 
@@ -309,19 +313,16 @@ void GroupByClause::accept(PlanIterVisitor& v) const
 { 
   v.beginVisitGroupByClause();
 
-  std::vector<GroupingSpec>::const_iterator groupIter = theGroupingSpecs.begin();
-  std::vector<GroupingSpec>::const_iterator groupEnd = theGroupingSpecs.end();
-  for (; groupIter != groupEnd; groupIter++ )
+  ulong numSpecs = theGroupingSpecs.size();
+  for (ulong i = 0; i < numSpecs; ++i)
   {
-    groupIter->accept(v);
+    theGroupingSpecs[i].accept(v);
   }
 
-  std::vector<GroupingOuterVar>::const_iterator iterOuterVars;
-  for ( iterOuterVars = theOuterVars.begin() ;
-        iterOuterVars != theOuterVars.end();
-        iterOuterVars++ )
+  numSpecs = theNonGroupingSpecs.size();
+  for (ulong i = 0; i < numSpecs; ++i)
   {
-    iterOuterVars->accept(v);
+    theNonGroupingSpecs[i].accept(v);
   }
 
   v.endVisitGroupByClause();
@@ -334,19 +335,17 @@ void GroupByClause::accept(PlanIterVisitor& v) const
 uint32_t GroupByClause::getStateSizeOfSubtree() const
 {
   uint32_t size = 0;
-  std::vector<GroupingSpec>::const_iterator groupIter = theGroupingSpecs.begin();
-  std::vector<GroupingSpec>::const_iterator groupEnd = theGroupingSpecs.end();
-  for (; groupIter != groupEnd; ++groupIter)
+
+  ulong numSpecs = theGroupingSpecs.size();
+  for (ulong i = 0; i < numSpecs; ++i)
   {
-    size += groupIter->getStateSizeOfSubtree();
+    size += theGroupingSpecs[i].getStateSizeOfSubtree();
   }
   
-  std::vector<GroupingOuterVar>::const_iterator iterOuterVars;
-  for ( iterOuterVars = theOuterVars.begin();
-        iterOuterVars != theOuterVars.end();
-        iterOuterVars++ )
+  numSpecs = theNonGroupingSpecs.size();
+  for (ulong i = 0; i < numSpecs; ++i)
   {
-    size += iterOuterVars->getStateSizeOfSubtree();
+    size += theNonGroupingSpecs[i].getStateSizeOfSubtree();
   }
 
   return size;
@@ -376,8 +375,8 @@ void GroupByClause::open(static_context* sctx, PlanState& planState, uint32_t& o
     }
   }
 
-  std::vector<GroupingOuterVar>::iterator nongroupIter = theOuterVars.begin();
-  std::vector<GroupingOuterVar>::iterator nongroupEnd = theOuterVars.end();
+  std::vector<NonGroupingSpec>::iterator nongroupIter = theNonGroupingSpecs.begin();
+  std::vector<NonGroupingSpec>::iterator nongroupEnd = theNonGroupingSpecs.end();
   for (; nongroupIter != nongroupEnd; ++nongroupIter)
   {
     nongroupIter->open(planState, offset);
@@ -397,8 +396,8 @@ void GroupByClause::reset(PlanState& planState)
     groupIter->reset(planState);
   }
 
-  std::vector<GroupingOuterVar>::iterator nongroupIter = theOuterVars.begin();
-  std::vector<GroupingOuterVar>::iterator nongroupEnd = theOuterVars.end();
+  std::vector<NonGroupingSpec>::iterator nongroupIter = theNonGroupingSpecs.begin();
+  std::vector<NonGroupingSpec>::iterator nongroupEnd = theNonGroupingSpecs.end();
   for (; nongroupIter != nongroupEnd; ++nongroupIter)
   {
     nongroupIter->reset(planState);
@@ -418,8 +417,8 @@ void GroupByClause::close(PlanState& planState)
     groupIter->close(planState);
   }
 
-  std::vector<GroupingOuterVar>::iterator nongroupIter = theOuterVars.begin();
-  std::vector<GroupingOuterVar>::iterator nongroupEnd = theOuterVars.end();
+  std::vector<NonGroupingSpec>::iterator nongroupIter = theNonGroupingSpecs.begin();
+  std::vector<NonGroupingSpec>::iterator nongroupEnd = theNonGroupingSpecs.end();
   for (; nongroupIter != nongroupEnd; ++nongroupIter)
   {
     nongroupIter->close(planState);
@@ -813,7 +812,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool FLWORIterator::bindVariable(
     int varNo,
     FlworState* iterState,
-    PlanState& planState ) const
+    PlanState& planState) const
 {
   const ForLetClause& lForLetClause = theForLetClauses[varNo];
 
@@ -876,7 +875,10 @@ bool FLWORIterator::bindVariable(
     // Depending on the query, we might need to materialize the LET-Binding
     if (lForLetClause.theMaterialize)
     {
-      store::TempSeq_t tmpSeq = GENV_STORE.createTempSeq(iterWrapper, false, true);
+      store::TempSeq_t tmpSeq =
+      GENV_STORE.createTempSeq(iterWrapper,
+                               false, // do not copy nodes
+                               lForLetClause.lazyEval());
 
       for (vrefIter = lForLetClause.theLetVarRefs.begin();
            vrefIter != end;
@@ -1035,11 +1037,11 @@ void FLWORIterator::materializeGroupResultForSort(
   yes, it appends to each of the temp sequences associated with T the current
   value of each non-grouping var.
 ********************************************************************************/
-void FLWORIterator::matVarsAndGroupBy (
+void FLWORIterator::matVarsAndGroupBy(
     FlworState* iterState,
-    PlanState& planState ) const
+    PlanState& planState) const
 {
-  ZORBA_ASSERT ( doGroupBy );
+  ZORBA_ASSERT(doGroupBy);
 
   GroupTuple* groupTuple = new GroupTuple();
   std::vector<store::Item_t>& lGroupTupleItems = groupTuple->theItems;
@@ -1083,7 +1085,7 @@ void FLWORIterator::matVarsAndGroupBy (
       store::Item_t temp;
       if (consumeNext(temp, lSpecIter->theInput, planState))
       {
-        ZORBA_ERROR_DESC ( XPTY0004, "Expected a singleton" );
+        ZORBA_ERROR_DESC(XPTY0004, "Expected a singleton");
       }
     }
 
@@ -1093,13 +1095,13 @@ void FLWORIterator::matVarsAndGroupBy (
 
   GroupHashMap* groupMap = iterState->theGroupMap;
 
-  std::vector<GroupingOuterVar> outerVars = theGroupByClause->theOuterVars;
+  std::vector<NonGroupingSpec> outerVars = theGroupByClause->theNonGroupingSpecs;
   std::vector<store::TempSeq_t>* outerVarSequences = 0;
-  long numOuterVars = outerVars.size();
+  long numNonGroupingSpecs = outerVars.size();
 
   if (groupMap->get(groupTuple, outerVarSequences))
   {
-    for (long i = 0; i < numOuterVars; ++i)
+    for (long i = 0; i < numNonGroupingSpecs; ++i)
     {
       store::Iterator_t iterWrapper = new PlanIteratorWrapper(outerVars[i].theInput,
                                                               planState);
@@ -1114,7 +1116,7 @@ void FLWORIterator::matVarsAndGroupBy (
   {
     outerVarSequences = new std::vector<store::TempSeq_t>();
 
-    for (long i = 0; i < numOuterVars; ++i)
+    for (long i = 0; i < numNonGroupingSpecs; ++i)
     {
       store::Iterator_t iterWrapper = new PlanIteratorWrapper(outerVars[i].theInput,
                                                               planState);
@@ -1149,8 +1151,8 @@ void FLWORIterator::bindGroupBy(
 
   while (specIter != specEnd)
   {
-    std::vector<ForVarIter_t>::const_iterator groupVarIter = specIter->theInnerVars.begin();
-    std::vector<ForVarIter_t>::const_iterator groupVarEnd = specIter->theInnerVars.end();
+    std::vector<ForVarIter_t>::const_iterator groupVarIter = specIter->theVarRefs.begin();
+    std::vector<ForVarIter_t>::const_iterator groupVarEnd = specIter->theVarRefs.end();
 
     while (groupVarIter != groupVarEnd)
     {
@@ -1165,21 +1167,21 @@ void FLWORIterator::bindGroupBy(
   // Bind non-grouping vars
   std::vector<store::TempSeq_t>* lVector = (*groupMapIter).second;
   std::vector<store::TempSeq_t>::const_iterator lOuterSeqIter = lVector->begin();
-  std::vector<GroupingOuterVar> lOuterVars = theGroupByClause->theOuterVars;
-  std::vector<GroupingOuterVar>::const_iterator lOuterVarsIter = lOuterVars.begin();
+  std::vector<NonGroupingSpec> lNonGroupingSpecs = theGroupByClause->theNonGroupingSpecs;
+  std::vector<NonGroupingSpec>::const_iterator lNonGroupingSpecsIter = lNonGroupingSpecs.begin();
 
-  while ( lOuterVarsIter != lOuterVars.end() )
+  while (lNonGroupingSpecsIter != lNonGroupingSpecs.end())
   {
-    std::vector<LetVarIter_t>::const_iterator lOuterVarBindingIter = lOuterVarsIter->theOuterVars.begin();
-    while ( lOuterVarBindingIter != lOuterVarsIter->theOuterVars.end() )
+    std::vector<LetVarIter_t>::const_iterator lOuterVarBindingIter = lNonGroupingSpecsIter->theVarRefs.begin();
+    while (lOuterVarBindingIter != lNonGroupingSpecsIter->theVarRefs.end())
     {
       store::TempSeq_t lTmpSeq = *lOuterSeqIter;
       store::Iterator_t lBindIterator = lTmpSeq->getIterator();
       lBindIterator->open();
-      ( *lOuterVarBindingIter )->bind ( lBindIterator , planState );
+      ( *lOuterVarBindingIter )->bind(lBindIterator , planState);
       ++lOuterVarBindingIter;
     }
-    ++lOuterVarsIter;
+    ++lNonGroupingSpecsIter;
     ++lOuterSeqIter;
   }
 }

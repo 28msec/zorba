@@ -230,7 +230,8 @@ public:
 
 
 /***************************************************************************//**
-
+  theScoreVarExpr :
+  theLazyEval     : Whether the window var can be materilized lazily or not.
 ********************************************************************************/
 class let_clause : public forletwin_clause 
 {
@@ -238,6 +239,7 @@ class let_clause : public forletwin_clause
 
 protected:
   var_expr_t  theScoreVarExpr;
+  bool        theLazyEval;
 
 public:
   SERIALIZABLE_CLASS(let_clause)
@@ -251,7 +253,7 @@ public:
         const QueryLoc& loc,
         var_expr_t varExpr,
         expr_t domainExpr,
-        var_expr_t scoreVarExpr = NULL);
+        bool lazy = false);
 
   ~let_clause();
 
@@ -265,6 +267,10 @@ public:
       theScoreVarExpr->set_flwor_clause(this); 
   }
 
+  void setLazyEval(bool v) { theLazyEval = v; }
+
+  bool lazyEval() const { return theLazyEval; }
+
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 
   std::ostream& put(std::ostream&) const;
@@ -272,7 +278,10 @@ public:
 
 
 /***************************************************************************//**
-
+  theWindowKind   :
+  theWinStartCond :
+  theWinStopCond  :
+  theLazyEval     : Whether the window var can be materilized lazily or not.
 ********************************************************************************/
 class window_clause : public forletwin_clause 
 {
@@ -285,6 +294,7 @@ protected:
   window_t          theWindowKind;
   flwor_wincond_t   theWinStartCond;
   flwor_wincond_t   theWinStopCond;
+  bool              theLazyEval;
 
 public:
   SERIALIZABLE_CLASS(window_clause)
@@ -300,7 +310,8 @@ public:
         var_expr_t varExpr,
         expr_t domainExpr,
         flwor_wincond_t winStart,
-        flwor_wincond_t winStop);
+        flwor_wincond_t winStop,
+        bool lazy = false);
 
   ~window_clause();
 
@@ -314,6 +325,10 @@ public:
   void set_win_start(flwor_wincond* cond);
 
   void set_win_stop(flwor_wincond* cond);
+
+  void setLazyEval(bool v) { theLazyEval = v; }
+
+  bool lazyEval() const { return theLazyEval; }
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 

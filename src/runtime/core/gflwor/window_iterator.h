@@ -26,6 +26,35 @@ namespace flwor
 {
 class WindowIterator;
 
+
+/***************************************************************************//**
+  Class WindowVars stores the ForVarIterators that represent the references to
+  the "start" or the "end" variables of a window clause (there are 2 instances
+  of WindowVars per window clause: one for the "start" vars and another for the
+  "end" vars).
+
+  theCurVars       : References to the variable storing the current item. The
+                     scope is only the WindowClause.
+  thePrevVars      : References to the variable storing the item before the
+                     current item. The scope is only the WindowClause.
+  theNextVars      : References to the variable storing the item after the
+                     current item. The scope is only the WindowClause.
+  thePosVars       : References to the variable storing the position of the
+                     current item within the domain sequence. The scope is
+                     only the WindowClause.
+
+  theCurOuterVars  : References to the variable storing the current item. The
+                     scope is everything after the WindowClause.
+  thePrevOuterVars : References to the variable storing the item before the
+                     current item. The scope is everything after the
+                     WindowClause.
+  theNextOuterVars : References to the variable storing the item after the
+                     current item. The scope is everything after the
+                     WindowClause.
+  thePosOuterVars  : References to the variable storing the position of the
+                     current item within the domain sequence. The scope is
+                     everything after the WindowClause.
+********************************************************************************/
 class WindowVars : public ::zorba::serialization::SerializeBaseClass
 {
   friend class WindowIterator;
@@ -33,20 +62,20 @@ class WindowVars : public ::zorba::serialization::SerializeBaseClass
   friend class EndClause;
 
 protected:
-  std::vector<ForVarIter_t > theCurVars;
-  std::vector<ForVarIter_t > thePrevVars;
-  std::vector<ForVarIter_t > theNextVars;
-  std::vector<ForVarIter_t > thePosVars;
+  std::vector<ForVarIter_t> theCurVars;
+  std::vector<ForVarIter_t> thePrevVars;
+  std::vector<ForVarIter_t> theNextVars;
+  std::vector<ForVarIter_t> thePosVars;
 
-  std::vector<ForVarIter_t > theCurOuterVars;
-  std::vector<ForVarIter_t > thePrevOuterVars;
-  std::vector<ForVarIter_t > theNextOuterVars;
-  std::vector<ForVarIter_t > thePosOuterVars;
+  std::vector<ForVarIter_t> theCurOuterVars;
+  std::vector<ForVarIter_t> thePrevOuterVars;
+  std::vector<ForVarIter_t> theNextOuterVars;
+  std::vector<ForVarIter_t> thePosOuterVars;
 
 public:
   SERIALIZABLE_CLASS(WindowVars)
   SERIALIZABLE_CLASS_CONSTRUCTOR(WindowVars)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     ar & theCurVars;
     ar & thePrevVars;
@@ -58,25 +87,10 @@ public:
     ar & theNextOuterVars;
     ar & thePosOuterVars;
   }
+
 public:
   WindowVars();
-  /**
-  * Method to construct the WindowVars.
-  *
-   * @param aCurVars Variables which refer the current item. The scope is only
-   *        the WindowClause.
-    * @param aPrevVars Previous item variables. The scope is only the WindowClause.
-    * @param aNextVars Next item variables. The scope is only the WindowClause.
-    * @param aPosVars  Position variables. The scope is only the WindowClause.
-   * @param aCurOuterVars Variables which refer the current item. The scope is
-   *        everything after the WindowClause.
-   * @param aPrevOuterVars Previous item variables. The scope is everything after
-   *        the WindowClause.
-   * @param aNextOuterVars Next item variables. The scope is everything after
-   *        the WindowClause.
-   * @param aPosOuterVars  Position variables. The scope is everything after
-   *        the WindowClause.
-         */
+
   WindowVars(
         const std::vector<PlanIter_t >& aCurVars,
         const std::vector<PlanIter_t >& aPrevVars,
@@ -90,36 +104,29 @@ public:
 
   virtual ~WindowVars();
 
-  void accept ( PlanIterVisitor& ) const;
+  void accept(PlanIterVisitor&) const;
 
-  /**
-   * Binds the variables inside the window clause.
-   *
-   * @param aPlanState The PlanState
-   * @param aInputSeq The underlying input sequence
-   * @param aPosition The relative position for all variables. Starts counting
-   *        with 0 (although the XQuery counting starts with 1).
-   */
   void bindIntern(
         PlanState& aPlanState,
         const store::TempSeq_t& aInputSeq,
-        const uint32_t aPosition ) const;
+        const ulong aPosition) const;
 
-        /**
-        * Binds the variables outside the window clause.
-        *
-        * @param aPlanState The PlanState
-        * @param aInputSeq The underlying input sequence
-   * @param aPosition The relative position for all variables. Starts counting
-   *        with 0 (although the XQuery counting starts with 1).
-        */
   void bindExtern(
         PlanState& aPlanState,
         const store::TempSeq_t& aInputSeq,
-        const uint32_t aPosition ) const;
+        const ulong aPosition) const;
 };
 
 
+/***************************************************************************//**
+  Represents the start condition of a window clause.
+
+  theStartClauseIter : The iterator evaluating the condition expression of "this"
+  theWindowVars      : Stores the iterators representing the references to the
+                       "start" variables of this window clause, both inside the
+                       condition expression of "this" and outside the window 
+                       clause.
+********************************************************************************/
 class StartClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class WindowIterator;
@@ -131,7 +138,7 @@ protected:
 public:
   SERIALIZABLE_CLASS(StartClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(StartClause)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     ar & theStartClauseIter;
     ar & theWindowVars;
@@ -143,31 +150,56 @@ public:
   virtual ~StartClause();
 
 protected:
-
-  void accept ( PlanIterVisitor& ) const;
-  void open ( PlanState& aPlanState, uint32_t& offset ) const;
-  void reset ( PlanState& aPlanState ) const;
-  void close ( PlanState& aPlanState ) const;
   uint32_t getStateSizeOfSubtree() const;
-  bool evaluate(PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition) const;
-  void bindIntern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const;
-  void bindExtern(PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition) const;
+
+  void accept(PlanIterVisitor&) const;
+
+  void open(PlanState& aPlanState, uint32_t& offset) const;
+  void reset(PlanState& aPlanState) const;
+  void close(PlanState& aPlanState) const;
+
+  bool evaluate(
+        PlanState& aPlanState,
+        const store::TempSeq_t& aInputSeq,
+        const ulong aPosition) const;
+
+  void bindIntern(
+        PlanState& aPlanState,
+        const store::TempSeq_t& aInputSeq,
+        const ulong aPosition) const;
+
+  void bindExtern(
+        PlanState& aPlanState,
+        const store::TempSeq_t& aInputSeq,
+        const ulong aPosition) const;
 };
 
 
+/***************************************************************************//**
+  Represents the end condition of a window clause.
+
+  theEndClauseIter : The iterator evaluating the condition expression of "this"
+  theWindowVars    : Stores the iterators representing the references to the
+                     "end" variables of this window clause, both inside the
+                     condition expression of "this" and outside the window clause.
+  theOnlyEnd       : Whether the end condition contains the "only" keyword or not.
+  theHasEndClause  : An EndClause instance is created even if the window clause
+                     has no end condition. For thie "dummy" EndClause obj, 
+                     theHasEndClause will be false; otherwise it will be true.
+********************************************************************************/
 class EndClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class WindowIterator;
 protected:
-  PlanIter_t theEndClauseIter;
-  WindowVars theWindowVars;
-  bool theOnlyEnd;
-  bool theHasEndClause;
+  PlanIter_t  theEndClauseIter;
+  WindowVars  theWindowVars;
+  bool        theOnlyEnd;
+  bool        theHasEndClause;
 
 public:
   SERIALIZABLE_CLASS(EndClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(EndClause)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     ar & theEndClauseIter;
     ar & theWindowVars;
@@ -176,59 +208,119 @@ public:
   }
 
 public:
-  /**
-   * If the EndClause is missing in the case of a tumbling window, this constructor should be used
-   */
-  EndClause ();
-  EndClause ( PlanIter_t aEndClauseIter,
-              WindowVars& theWindowVars,
-              bool aOnlyEnd
-            );
+  EndClause();
+
+  EndClause(
+        PlanIter_t aEndClauseIter,
+        WindowVars& theWindowVars,
+        bool aOnlyEnd);
+
   virtual ~EndClause();
 
 protected:
-  void accept ( PlanIterVisitor& ) const;
-  void open ( PlanState& aPlanState, uint32_t& offset ) const;
-  void reset ( PlanState& aPlanState ) const;
-  void close ( PlanState& aPlanState ) const;
   uint32_t getStateSizeOfSubtree() const;
-  bool evaluate(PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition) const;
-  void bindIntern ( PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition ) const;
-  void bindExtern(PlanState& aPlanState, const store::TempSeq_t& aInputSeq, const uint32_t aPosition) const;
+
+  void accept(PlanIterVisitor&) const;
+
+  void open(PlanState& aPlanState, uint32_t& offset) const;
+  void reset(PlanState& aPlanState) const;
+  void close(PlanState& aPlanState) const;
+
+  bool evaluate(
+        PlanState& aPlanState,
+        const store::TempSeq_t& aInputSeq,
+        const ulong aPosition) const;
+
+  void bindIntern(
+        PlanState& aPlanState,
+        const store::TempSeq_t& aInputSeq,
+        const ulong aPosition ) const;
+
+  void bindExtern(
+        PlanState& aPlanState,
+        const store::TempSeq_t& aInputSeq,
+        const ulong aPosition) const;
 };
 
 
-class WindowDef{
+/***************************************************************************//**
+  A simple class to store info about a "candidate" window. A candidate window
+  is one for which a quailifying starting item has been found within the domain
+  sequence, but no quailifying end item has been found yet. Instances of this class
+  are stored inside the WindowState::theOpenWindows vector until an item is found
+  that satisfies the end condition.
+
+  theStartPos : The position within the domain sequence of the item that marks
+                the start of the window.
+  theEndPos   : The position within the domain sequence of the item that marks
+                the end of the window. Once this is set, the window is not a
+                candidate anymore (it becomes a real window), and the WindowDef
+                obj is removed from the WindowState::theOpenWindows vector.
+********************************************************************************/
+class WindowDef
+{
 public:
+	ulong theStartPos;
+	ulong theEndPos;
+
+public:
+	WindowDef(ulong aStartPos);
+
 	~WindowDef();
-	WindowDef(uint32_t aStartPos);
-	uint32_t theStartPos;
-	uint32_t theEndPos;
 };
 
 
+/***************************************************************************//**
+  theDomainSeq   : A temp sequence where the result of the domain exspression is
+                   materialized into (lazily, if the WindowIterator was created
+                   with the lazy flag on).
+  theCurInputPos : 
+  theOpenWindows : A vector storing "candidate" windows, i.e., windows for which
+                   a quailifying starting item has been found within the domain
+                   sequence, but no quailifying end item has been found yet.
+  theCurWindow   : Iterator over theOpenWindows vector
+********************************************************************************/
 class WindowState : public PlanIteratorState
 {
   friend class WindowIterator;
+
 protected:
-  store::TempSeq_t theInputSeq;
-  ulong theCurInputPos;
-  std::vector<WindowDef> theOpenWindows;
+  store::TempSeq_t                 theDomainSeq;
+  ulong                            theCurInputPos;
+  std::vector<WindowDef>           theOpenWindows;
   std::vector<WindowDef>::iterator theCurWindow;
 
 public:
-  ~WindowState();
   WindowState();
-  void init ( PlanState& aState );
-  void reset ( PlanState& aState );
-  void tupleReset();
+
+  ~WindowState();
+
+  void init(PlanState& aState);
+
+  void reset(PlanState& aState);
 };
 
 
-class WindowIterator :public Batcher<WindowIterator>
+/***************************************************************************//**
+  theWindowType       : The kind of this window clause (tumbling or sliding)
+  theTupleIter        : The iterator producing the input tuple stream. In fact 
+                        it is the iterator representing the flwor clause that
+                        precedes this window clause in the flwor expression.
+  theInputIter        : The iterator producing the domain sequence for this
+                        window clause.
+  theVarName          : The name of the window var.
+  theVarRefs          : The LetVarIterators representing the references to the
+                        window var.
+  theStartClause      : Object representing the start cond of this window clause
+  theEndClause        : Object representing the end cond of this window clause
+  theLazyEval         : Whether to use an eager or a lazy temp sequence to
+                        buffer the domain sequence.
+  theMaxNeededHistory : This is relevant only if a lazy temp sequence is used.
+********************************************************************************/
+class WindowIterator : public Batcher<WindowIterator>
 {
 public:
-  static const uint32_t MAX_HISTORY; //TODO should be set platform dependent, but somebody hat comment out everything in platform.h!
+  static const ulong MAX_HISTORY;
 
   enum WindowType
   {
@@ -239,17 +331,17 @@ public:
 private:
   WindowType                 theWindowType;
 
-  PlanIter_t theTupleIter;
-  PlanIter_t theInputIter;
+  PlanIter_t                 theTupleIter;
+  PlanIter_t                 theInputIter;
 
   store::Item_t              theVarName;
-  std::vector<LetVarIter_t > theVarRefs;
+  std::vector<LetVarIter_t>  theVarRefs;
 
-  StartClause theStartClause;
-  EndClause theEndClause;
+  StartClause                theStartClause;
+  EndClause                  theEndClause;
 
-  bool theLazyEval;
-  uint32_t theMaxNeededHistory;
+  bool                       theLazyEval;
+  ulong                      theMaxNeededHistory;
 
 public:
   SERIALIZABLE_CLASS(WindowIterator);
@@ -259,7 +351,7 @@ public:
     Batcher<WindowIterator>(ar), theStartClause(ar) 
   {}
 
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (Batcher<WindowIterator>*)this);
     SERIALIZE_ENUM(WindowType, theWindowType);
@@ -274,27 +366,7 @@ public:
   }
 
 public:
-
-  /**
-   * Method to construct a WindowIterator.
-   *
-   * @param aTupleIterator The tuple triggering the window
-   * @param aInputIterator The window input
-   * @param aWindowType The window Type
-   * @param aStartclause The start clause. The iterator has to return a Boolean
-   *        Value or Null.
-   * @param aEndClause The end clause. The iterator has to return a Boolean
-   *        Value or Null.
-   * @param aLazyEval For Windowing the input sequence needs to be materialized.
-   *        Is it allowed to do this lazy?
-   * @param aMaxNeededHistory To allow Continous Queries we need to garbage
-   *        collect a possible infinite input sequence. But the Start, End and
-   *        other Clauses might require to look back from the start position of
-   *        a window. The MaxNeededHistory specifies how much it is required to
-   *        look back. If the value is MAX_HISTORY no Garbage Colleciton is performed.
-   *
-         */
-  WindowIterator (
+  WindowIterator(
         static_context* sctx,
         const QueryLoc& loc,
         WindowType windowType,
@@ -304,29 +376,30 @@ public:
         const std::vector<PlanIter_t >& varRefs,
         StartClause& startClause,
         EndClause& endClause,
-        bool lazyEval = true,
-        uint32_t maxNeededHistory = MAX_HISTORY);
+        bool lazyEval,
+        ulong maxNeededHistory = MAX_HISTORY);
 
   ~WindowIterator();
 
-  void openImpl ( PlanState& aPlanState, uint32_t& aOffset );
-  bool nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const;
-  void resetImpl ( PlanState& aPlanState ) const;
-  void closeImpl ( PlanState& aPlanState );
+  uint32_t getStateSize() const;
 
-  virtual uint32_t getStateSize() const;
-  virtual uint32_t getStateSizeOfSubtree() const;
+  uint32_t getStateSizeOfSubtree() const;
 
-  virtual void accept ( PlanIterVisitor& ) const;
+  void accept(PlanIterVisitor&) const;
+
+  void openImpl(PlanState& aPlanState, uint32_t& aOffset);
+  bool nextImpl(store::Item_t& aResult, PlanState& aPlanState) const;
+  void resetImpl(PlanState& aPlanState) const;
+  void closeImpl(PlanState& aPlanState);
 
 private:
   void bindVariable(
         PlanState& aPlanState,
         const store::TempSeq_t& aInputSeq,
-        const uint32_t aStartPos,
-        const uint32_t aEndPos ) const;
+        const ulong aStartPos,
+        const ulong aEndPos) const;
 
-        void doGarbageCollection(WindowState* lState) const;
+  void doGarbageCollection(WindowState* lState) const;
 };
 
 

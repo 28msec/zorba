@@ -237,11 +237,12 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 {
   store::Item_t lItem0, lItem1, tItem0, tItem1;
   bool c0Done = false, c1Done = false, done = false, found = false;
-  std::vector<store::Item_t> seq0, seq1;
+  std::vector<store::Item_t> seq0;
+  std::vector<store::Item_t> seq1;
   store::TempSeq_t tSeq0, tSeq1;
     
   PlanIteratorState* state;
-  DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
   
   if (theIsGeneralComparison) 
   {

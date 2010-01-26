@@ -580,15 +580,19 @@ StaticContextImpl::getRevalidationEnabled( ) const
 bool 
 StaticContextImpl::registerModule(ExternalModule* aModule)
 {
-  try {
-    if ( ! theCtx->bind_external_module(aModule) ) {
+  try 
+  {
+    if ( ! theCtx->bind_external_module(aModule) ) 
+    {
       xqpString lURI = Unmarshaller::getInternalString(aModule->getURI());
       xqpString lMsg = "The external module with URI " + lURI +" is already registered";
 
       // TODO rename error code to doule
       ZORBA_ERROR_DESC(API0019_FUNCTION_ALREADY_REGISTERED, String(lMsg.theStrStore));
     }
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
     return false;
   }

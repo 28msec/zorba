@@ -36,7 +36,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(OuterForIterator)
 // theChild0 --> TupleIterator
 // theChild1 --> InputIterator
 
-OuterForIterator::OuterForIterator (
+OuterForIterator::OuterForIterator(
     static_context* sctx,
     const QueryLoc& loc,
     store::Item* aVarName,
@@ -44,7 +44,10 @@ OuterForIterator::OuterForIterator (
     PlanIter_t aInput,
     const std::vector<PlanIter_t>& aOuterForVars) 
   :
-  BinaryBaseIterator<OuterForIterator, PlanIteratorState>(sctx, loc, aTupleIterator, aInput),
+  BinaryBaseIterator<OuterForIterator, PlanIteratorState>(sctx,
+                                                          loc,
+                                                          aTupleIterator,
+                                                          aInput),
   theVarName (aVarName)
 {
   castIterVector<ForVarIterator>(theOuterForVars, aOuterForVars);
@@ -56,7 +59,7 @@ OuterForIterator::~OuterForIterator()
 }
 
 
-bool OuterForIterator::nextImpl (store::Item_t& aResult, PlanState& aPlanState) const 
+bool OuterForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
 {
   store::Item_t lItem;
 
@@ -77,13 +80,15 @@ bool OuterForIterator::nextImpl (store::Item_t& aResult, PlanState& aPlanState) 
     }
     else
     {
-      bindVariables (lItem, theOuterForVars, aPlanState);
+      bindVariables(lItem, theOuterForVars, aPlanState);
       STACK_PUSH (true, lState);
     }
-    theChild1->reset (aPlanState);
+
+    theChild1->reset(aPlanState);
   }
-  STACK_PUSH (false, lState);
-  STACK_END (lState);
+
+  STACK_PUSH(false, lState);
+  STACK_END(lState);
 }
 
 

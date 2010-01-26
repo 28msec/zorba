@@ -48,21 +48,27 @@ END_SERIALIZABLE_CLASS_VERSIONS(GroupByIterator)
 /////////////////////////////////////////////////////////////////////////////////
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 GroupByState::GroupByState() 
   :
-  theGroupMap ( 0 )
+  theGroupMap(0)
 {
 }
 
 
+/***************************************************************************//**
+
+********************************************************************************/
 GroupByState::~GroupByState() 
 {
   GroupHashMap::iterator iter = theGroupMap->begin();
   GroupHashMap::iterator end = theGroupMap->end();
-  for (; iter != end; ++iter )
+  for (; iter != end; ++iter)
   {
-    delete ( *iter ).first;
-    delete ( *iter ).second;
+    delete (*iter).first;
+    delete (*iter).second;
   }
 
   delete theGroupMap;
@@ -70,28 +76,34 @@ GroupByState::~GroupByState()
 }
   
 
-void GroupByState::init (
+/***************************************************************************//**
+
+********************************************************************************/
+void GroupByState::init(
     PlanState& aState,
     const TypeManager* tm,
-    std::vector<GroupingSpec>* groupingSpecs) 
+    std::vector<GroupingSpec>* gspecs) 
 {
   PlanIteratorState::init(aState);
 
-  GroupTupleCmp cmp(aState.theRuntimeCB, tm, groupingSpecs);
+  GroupTupleCmp cmp(aState.theRuntimeCB, tm, gspecs);
   theGroupMap = new GroupHashMap(cmp, 1024, false);
 }
 
 
-void GroupByState::reset ( PlanState& aPlanState ) 
+/***************************************************************************//**
+
+********************************************************************************/
+void GroupByState::reset(PlanState& aPlanState) 
 {
-  PlanIteratorState::reset ( aPlanState );
+  PlanIteratorState::reset(aPlanState);
 
   GroupHashMap::iterator iter = theGroupMap->begin();
   GroupHashMap::iterator end = theGroupMap->end();
-  for (; iter != end; ++iter )
+  for (; iter != end; ++iter)
   {
-    delete ( *iter ).first;
-    delete ( *iter ).second;
+    delete (*iter).first;
+    delete (*iter).second;
   }
 
   theGroupMap->clear();
@@ -108,17 +120,17 @@ void GroupByState::reset ( PlanState& aPlanState )
 /***************************************************************************//**
 
 ********************************************************************************/
-GroupByIterator::GroupByIterator (
+GroupByIterator::GroupByIterator(
     static_context* sctx,
     const QueryLoc& aLoc,
     PlanIter_t aTupleIterator,
     std::vector<GroupingSpec> aGroupingSpecs,
-    std::vector<GroupingOuterVar> aOuterVars ) 
+    std::vector<NonGroupingSpec> aNonGroupingSpecs) 
   :
-  Batcher<GroupByIterator> ( sctx, aLoc ),
+  Batcher<GroupByIterator>(sctx, aLoc),
   theTupleIter(aTupleIterator),
-  theGroupingSpecs ( aGroupingSpecs ),
-  theOuterVars ( aOuterVars ) 
+  theGroupingSpecs(aGroupingSpecs),
+  theNonGroupingSpecs(aNonGroupingSpecs) 
 {
 }
   
@@ -134,272 +146,14 @@ GroupByIterator::~GroupByIterator()
 /***************************************************************************//**
 
 ********************************************************************************/
-bool GroupByIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const 
+void GroupByIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  GroupByState* lState;
-  DEFAULT_STACK_INIT ( GroupByState, lState, aPlanState );
-
-  while ( consumeNext ( aResult, theTupleIter, aPlanState ) ) 
-  {
-    try {
-    matVarsAndGroupBy ( lState, aPlanState );
-    }
-    catch (error::ZorbaError& lError)
-    {
-      ZORBA_ERROR_LOC_DESC(lError.theErrorCode, loc, lError.theDescription);
-    }
-  }
-
-  if ( !lState->theGroupMap->empty() ) 
-  {
-    lState->theGroupMapIter = lState->theGroupMap->begin();
-    while(lState->theGroupMapIter != lState->theGroupMap->end())
-    {
-      bindGroupBy(lState->theGroupMapIter, lState, aPlanState);
-      ++lState->theGroupMapIter;
-      STACK_PUSH ( true, lState );
-    }
-  }
-  STACK_PUSH ( false, lState );
-  STACK_END ( lState );
-}
-  
-
-/***************************************************************************//**
-
-********************************************************************************/
-void GroupByIterator::matVarsAndGroupBy (
-    GroupByState* aGroupByState,
-    PlanState& aPlanState ) const 
-{
-  GroupTuple* lGroupTuple = new GroupTuple();
-  std::vector<store::Item_t> lKey;
-  std::vector<store::Item_t> lTypedKey;
-  std::vector<GroupingSpec>::const_iterator lSpecIter = theGroupingSpecs.begin();
-  while ( lSpecIter != theGroupingSpecs.end() ) {
-    lKey.push_back ( NULL );
-    store::Item_t& location = lKey.back();
-    bool status = consumeNext ( location, lSpecIter->theInput.getp(), aPlanState );
-    //Getting the typed value
-    if ( !status ) {
-      lTypedKey.push_back ( NULL );
-    } else {
-      store::Item_t temp;
-      store::Iterator_t lTypedValueIter;
-      store::Item_t lTypedValue;
-      location->getTypedValue ( lTypedValue, lTypedValueIter );
-      if ( lTypedValueIter == NULL ) {
-        lTypedKey.push_back ( NULL );
-        lTypedKey.back().transfer ( lTypedValue );
-      } else {
-        lTypedValueIter->open();
-        lTypedKey.push_back ( NULL );
-        store::Item_t& typedItem = lTypedKey.back();
-        if ( lTypedValueIter->next ( typedItem ) ) {
-          if ( lTypedValueIter->next ( temp ) ) {
-            ZORBA_ERROR_DESC ( XPTY0004, "Expected a singleton (atomization has more than one value)" );
-          }
-        }
-      }
-    }
-
-    //check for more values
-    if ( status ) {
-      store::Item_t temp;
-      if ( consumeNext ( temp, lSpecIter->theInput.getp(), aPlanState ) ) {
-        ZORBA_ERROR_DESC ( XPTY0004, "Expected a singleton" );
-      }
-    }
-    lSpecIter->theInput->reset ( aPlanState );
-    ++lSpecIter;
-  }
-  lGroupTuple->theItems = lKey;
-  lGroupTuple->theTypedValues = lTypedKey;
-  
-  GroupHashMap* lGroupMap = aGroupByState->theGroupMap;
-  std::vector<store::TempSeq_t>* lOuterSeq = 0;
-  std::vector<GroupingOuterVar>::const_iterator lOuterVarIter = theOuterVars.begin();
-  if ( lGroupMap->get ( lGroupTuple, lOuterSeq ) ) {
-    assert ( lOuterSeq > 0 );
-    std::vector<store::TempSeq_t>::iterator lOuterSeqIter = lOuterSeq->begin();
-    while ( lOuterVarIter != theOuterVars.end() ) {
-      store::Iterator_t iterWrapper = new PlanIteratorWrapper ( lOuterVarIter->theInput, aPlanState );
-      ( *lOuterSeqIter )->append ( iterWrapper, false );//FIXME are those settings right? I think copy is correct 
-      lOuterVarIter->theInput->reset ( aPlanState );
-      ++lOuterSeqIter;
-      ++lOuterVarIter;
-    }
-    delete lGroupTuple;
-  } else {
-    lOuterSeq = new std::vector<store::TempSeq_t>();
-    while ( lOuterVarIter != theOuterVars.end() ) {
-      store::Iterator_t iterWrapper = new PlanIteratorWrapper ( lOuterVarIter->theInput, aPlanState );
-      store::TempSeq_t result = GENV_STORE.createTempSeq ( iterWrapper, false, false ); //FIXME are those settings right? 
-      lOuterSeq->push_back ( result );
-      lOuterVarIter->theInput->reset ( aPlanState );
-      ++lOuterVarIter;
-    }
-    lGroupMap->insert ( lGroupTuple, lOuterSeq );
-  }
+  serialize_baseclass(ar, (Batcher<GroupByIterator>*)this);
+  ar & theTupleIter;
+  ar & theGroupingSpecs;
+  ar & theNonGroupingSpecs;
 }
 
-
-/***************************************************************************//**
-
-********************************************************************************/
-void GroupByIterator::bindGroupBy (
-    GroupHashMap::iterator aGroupMapIter,
-    GroupByState* aGroupByState,
-    PlanState& aPlanState ) const 
-{
-      //Bind grouping vars
-      GroupTuple* lGroupTuple = ( *aGroupMapIter ).first;
-      std::vector<store::Item_t>::iterator lGroupTupleIter = lGroupTuple->theItems.begin();
-      std::vector<GroupingSpec>::const_iterator lSpecIter = theGroupingSpecs.begin();
-      while ( lSpecIter != theGroupingSpecs.end() ) {
-        std::vector<ForVarIter_t>::const_iterator lGroupVarIter = lSpecIter->theInnerVars.begin();
-        while ( lGroupVarIter != lSpecIter->theInnerVars.end() ) {
-          ( *lGroupVarIter )->bind ( *lGroupTupleIter, aPlanState );
-          ++lGroupVarIter;
-        }
-        ++lSpecIter;
-        ++lGroupTupleIter;
-      }
-
-      //Bind non-grouping vars
-      std::vector<store::TempSeq_t>* lVector = ( *aGroupMapIter ).second;
-      std::vector<store::TempSeq_t>::const_iterator lOuterSeqIter = lVector->begin();
-      std::vector<GroupingOuterVar>::const_iterator lOuterVarsIter = theOuterVars.begin();
-      while ( lOuterVarsIter != theOuterVars.end() ) {
-        std::vector<LetVarIter_t>::const_iterator lOuterVarBindingIter = lOuterVarsIter->theOuterVars.begin();
-        while ( lOuterVarBindingIter != lOuterVarsIter->theOuterVars.end() ) {
-          store::TempSeq_t lTmpSeq = *lOuterSeqIter;
-          store::Iterator_t lBindIterator = lTmpSeq->getIterator();
-          lBindIterator->open();
-          ( *lOuterVarBindingIter )->bind ( lBindIterator , aPlanState );
-          ++lOuterVarBindingIter;
-        }
-        ++lOuterVarsIter;
-        ++lOuterSeqIter;
-      }
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void GroupByIterator::openImpl ( PlanState& planState, uint32_t& aOffset ) 
-{
-  StateTraitsImpl <GroupByState>::createState(planState, theStateOffset, aOffset);
-
-  GroupByState* state = StateTraitsImpl<GroupByState>::getState(planState,
-                                                                theStateOffset);
-      
-  state->init(planState, theSctx->get_typemanager(), &theGroupingSpecs); 
-      
-  theTupleIter->open(planState, aOffset);
-
-  std::vector<GroupingSpec>::iterator iter = theGroupingSpecs.begin();
-  std::vector<GroupingSpec>::iterator end = theGroupingSpecs.end();
-  for (; iter != end; ++iter)
-  {
-    iter->open(planState, aOffset);
-
-    if (iter->theCollation.size() != 0) 
-    {
-      iter->theCollator = theSctx->get_collation_cache()->
-                          getCollator(iter->theCollation);
-    }
-    else
-    {
-      iter->theCollator = theSctx->get_collation_cache()->
-                          getDefaultCollator();
-    }
-  }
-
-  std::vector<GroupingOuterVar>::iterator iterOuterVars = theOuterVars.begin();
-  std::vector<GroupingOuterVar>::iterator outerEnd = theOuterVars.end();
-  for (; iterOuterVars != outerEnd; ++iterOuterVars)
-  {
-    iterOuterVars->open ( planState, aOffset );
-  }
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void GroupByIterator::resetImpl ( PlanState& planState ) const 
-{
-  std::vector<GroupingSpec>::const_iterator iter = theGroupingSpecs.begin();
-  std::vector<GroupingSpec>::const_iterator end = theGroupingSpecs.end();
-  for (; iter != end; ++iter)
-  {
-    iter->reset(planState);
-  }
-
-  std::vector<GroupingOuterVar>::const_iterator lOuterVarIter = theOuterVars.begin();
-  std::vector<GroupingOuterVar>::const_iterator outerEnd = theOuterVars.end();
-  for (; lOuterVarIter != outerEnd; ++lOuterVarIter)
-  {
-    lOuterVarIter->reset(planState);
-  }
-
-  theTupleIter->reset ( planState );
-  
-  StateTraitsImpl<GroupByState>::reset ( planState, theStateOffset );
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void GroupByIterator::closeImpl ( PlanState& planState ) 
-{
-  std::vector<GroupingSpec>::iterator iter =  theGroupingSpecs.begin();
-  std::vector<GroupingSpec>::iterator end = theGroupingSpecs.end();
-  for (; iter != end; ++iter)
-  {
-    iter->close(planState);
-  }
-
-  std::vector<GroupingOuterVar>::iterator lOuterVarIter = theOuterVars.begin();
-  std::vector<GroupingOuterVar>::iterator outerEnd = theOuterVars.end();
-  for (; lOuterVarIter != outerEnd; ++lOuterVarIter)
-  {
-    lOuterVarIter->close(planState);
-  }
-
-  theTupleIter->close ( planState );
-  
-  StateTraitsImpl<GroupByState>::destroyState ( planState, theStateOffset );
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-void GroupByIterator::accept(PlanIterVisitor& v) const 
-{
-  v.beginVisit(*this);
-      
-  theTupleIter->accept(v);
-      
-  std::vector<GroupingSpec>::const_iterator iter;
-  for (iter = theGroupingSpecs.begin(); iter != theGroupingSpecs.end(); ++iter) 
-  {
-    iter->accept(v);
-  }
-
-  std::vector<GroupingOuterVar>::const_iterator iterOuterVars;
-  for (iterOuterVars = theOuterVars.begin(); iterOuterVars != theOuterVars.end(); ++iterOuterVars) 
-  {
-    iterOuterVars->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-  
 
 /***************************************************************************//**
 
@@ -418,22 +172,344 @@ uint32_t GroupByIterator::getStateSizeOfSubtree() const
   int32_t size = this->getStateSize();
   size  += theTupleIter->getStateSizeOfSubtree();
 
-  std::vector<GroupingSpec>::const_iterator iter;
-  for (iter = theGroupingSpecs.begin(); iter != theGroupingSpecs.end(); iter++) 
+  ulong numSpecs = theGroupingSpecs.size();
+
+  for (ulong i = 0; i < numSpecs; ++i)
   {
-    size += iter->getStateSizeOfSubtree();
+    size += theGroupingSpecs[i].getStateSizeOfSubtree();
   }
 
-  std::vector<GroupingOuterVar>::const_iterator iterOuterVars;
-  for (iterOuterVars = theOuterVars.begin();
-       iterOuterVars != theOuterVars.end();
-       iterOuterVars++) 
+  numSpecs = theNonGroupingSpecs.size();
+
+  for (ulong i = 0; i < numSpecs; ++i)
   {
-    size += iterOuterVars->getStateSizeOfSubtree();
+    size += theNonGroupingSpecs[i].getStateSizeOfSubtree();
   }
   return size;
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
+void GroupByIterator::accept(PlanIterVisitor& v) const 
+{
+  v.beginVisit(*this);
+      
+  theTupleIter->accept(v);
+
+  ulong numSpecs = theGroupingSpecs.size();
+
+  for (ulong i = 0; i < numSpecs; ++i)
+  {
+    theGroupingSpecs[i].accept(v);
+  }
+
+  numSpecs = theNonGroupingSpecs.size();
+
+  for (ulong i = 0; i < numSpecs; ++i)
+  {
+    theNonGroupingSpecs[i].accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset) 
+{
+  StateTraitsImpl<GroupByState>::createState(planState, theStateOffset, aOffset);
+
+  GroupByState* state = StateTraitsImpl<GroupByState>::getState(planState,
+                                                                theStateOffset);
+      
+  state->init(planState, theSctx->get_typemanager(), &theGroupingSpecs); 
+      
+  theTupleIter->open(planState, aOffset);
+
+  ulong numSpecs = theGroupingSpecs.size();
+
+  for (ulong i = 0; i < numSpecs; ++i)
+  {
+    GroupingSpec& spec = theGroupingSpecs[i];
+
+    spec.open(planState, aOffset);
+
+    if (spec.theCollation.size() != 0) 
+    {
+      spec.theCollator = theSctx->get_collation_cache()->
+                         getCollator(spec.theCollation);
+    }
+    else
+    {
+      spec.theCollator = theSctx->get_collation_cache()->getDefaultCollator();
+    }
+  }
+
+  numSpecs = theNonGroupingSpecs.size();
+
+  for (ulong i = 0; i < numSpecs; ++i)
+  {
+    theNonGroupingSpecs[i].open(planState, aOffset);
+  }
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void GroupByIterator::closeImpl(PlanState& planState) 
+{
+  ulong numSpecs = theGroupingSpecs.size();
+
+  for (ulong i = 0; i < numSpecs; ++i)
+  {
+    theGroupingSpecs[i].close(planState);
+  }
+
+  numSpecs = theNonGroupingSpecs.size();
+
+  for (ulong i = 0; i < numSpecs; ++i)
+  {
+    theNonGroupingSpecs[i].close(planState);
+  }
+
+  theTupleIter->close(planState);
+  
+  StateTraitsImpl<GroupByState>::destroyState(planState, theStateOffset);
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void GroupByIterator::resetImpl(PlanState& planState) const 
+{
+  ulong numSpecs = theGroupingSpecs.size();
+
+  for (ulong i = 0; i < numSpecs; ++i)
+  {
+    theGroupingSpecs[i].reset(planState);
+  }
+
+  numSpecs = theNonGroupingSpecs.size();
+
+  for (ulong i = 0; i < numSpecs; ++i)
+  {
+    theNonGroupingSpecs[i].reset(planState);
+  }
+
+  theTupleIter->reset(planState);
+  
+  StateTraitsImpl<GroupByState>::reset(planState, theStateOffset);
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool GroupByIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
+{
+  GroupByState* lState;
+  DEFAULT_STACK_INIT(GroupByState, lState, aPlanState);
+
+  while (consumeNext(aResult, theTupleIter, aPlanState)) 
+  {
+    try 
+    {
+      matVarsAndGroupBy(lState, aPlanState);
+    }
+    catch (error::ZorbaError& lError)
+    {
+      ZORBA_ERROR_LOC_DESC(lError.theErrorCode, loc, lError.theDescription);
+    }
+  }
+
+  if (!lState->theGroupMap->empty()) 
+  {
+    lState->theGroupMapIter = lState->theGroupMap->begin();
+    while(lState->theGroupMapIter != lState->theGroupMap->end())
+    {
+      bindGroupBy(lState->theGroupMapIter, lState, aPlanState);
+
+      ++lState->theGroupMapIter;
+
+      STACK_PUSH(true, lState);
+    }
+  }
+
+  STACK_END(lState);
+}
+  
+
+/***************************************************************************//**
+
+********************************************************************************/
+void GroupByIterator::matVarsAndGroupBy(
+    GroupByState* aGroupByState,
+    PlanState& aPlanState) const 
+{
+  store::Item_t temp;
+
+  GroupTuple* groupTuple = new GroupTuple();
+  std::vector<store::Item_t>& groupTupleItems = groupTuple->theItems;
+  std::vector<store::Item_t>& groupTupleValues = groupTuple->theTypedValues;
+
+  ulong numVars = theGroupingSpecs.size();
+
+  // For each grouping variable
+  for (ulong i = 0; i < numVars; ++i)
+  {
+    groupTupleItems.push_back(NULL);
+    groupTupleValues.push_back(NULL);
+
+    // Get the 1st item in the value of the current grouping variable. Push this
+    // item into the groupTupleItems, and push the typed value of the item into
+    // groupTupleValues, making sure that the typed value of the item consists
+    // of a single item. 
+    store::Item_t& item = groupTupleItems.back();
+    bool status = consumeNext(item, theGroupingSpecs[i].theInput.getp(), aPlanState);
+
+    if (status)
+    {
+      // Check that the value of the current grouping var does not have more
+      // than 1 item.
+      if (consumeNext(temp, theGroupingSpecs[i].theInput.getp(), aPlanState)) 
+      {
+        ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                             "The value of a groupby variable has more than one items.");
+      }
+
+      store::Iterator_t typedValueIter;
+      store::Item_t typedValue;
+      item->getTypedValue(typedValue, typedValueIter);
+      if (typedValueIter == NULL)
+      {
+        groupTupleValues.back().transfer(typedValue);
+      }
+      else
+      {
+        typedValueIter->open();
+
+        try
+        {
+          if (typedValueIter->next(typedValue)) 
+          {
+            groupTupleValues.back().transfer(typedValue);
+            
+            if (typedValueIter->next(temp))
+            {
+              ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
+                                       "Atomization of a groupby variable produces "
+                                       << "more than one items.");
+            }
+          }
+        }
+        catch(...)
+        {
+          typedValueIter->close();
+          throw;
+        }
+
+        typedValueIter->close();
+      }
+    }
+
+    theGroupingSpecs[i].theInput->reset(aPlanState);
+  }
+
+  GroupHashMap* groupMap = aGroupByState->theGroupMap;
+
+  numVars = theNonGroupingSpecs.size();
+
+  std::vector<store::TempSeq_t>* nonGroupTuple = NULL;
+
+  if (groupMap->get(groupTuple, nonGroupTuple)) 
+  {
+    assert(nonGroupTuple != NULL);
+
+    for (ulong i = 0; i < numVars; ++i)
+    {
+      store::Iterator_t iterWrapper = 
+      new PlanIteratorWrapper(theNonGroupingSpecs[i].theInput, aPlanState);
+
+      // FIXME are those settings right? I think copy is correct 
+      (*nonGroupTuple)[i]->append(iterWrapper, false);
+
+      theNonGroupingSpecs[i].theInput->reset(aPlanState);
+    }
+
+    delete groupTuple;
+  }
+  else
+  {
+    nonGroupTuple = new std::vector<store::TempSeq_t>();
+
+    for (ulong i = 0; i < numVars; ++i)
+    {
+      store::Iterator_t iterWrapper = 
+      new PlanIteratorWrapper(theNonGroupingSpecs[i].theInput, aPlanState);
+
+      // FIXME are those settings (no-copy and no-lazy) right? 
+      store::TempSeq_t tempSeq = GENV_STORE.createTempSeq(iterWrapper, false, false); 
+
+      nonGroupTuple->push_back(tempSeq);
+
+      theNonGroupingSpecs[i].theInput->reset(aPlanState);
+    }
+
+    groupMap->insert(groupTuple, nonGroupTuple);
+  }
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void GroupByIterator::bindGroupBy(
+    GroupHashMap::iterator aGroupMapIter,
+    GroupByState* aGroupByState,
+    PlanState& aPlanState) const 
+{
+  // Bind grouping vars
+  ulong numVars = theGroupingSpecs.size();
+
+  GroupTuple* groupTuple = (*aGroupMapIter).first;
+
+  for (ulong i = 0; i < numVars; ++i)
+  {
+    ulong numVarRefs = theGroupingSpecs[i].theVarRefs.size();
+
+    for (ulong j = 0; j < numVarRefs; ++j)
+    {
+      theGroupingSpecs[i].theVarRefs[j]->bind(groupTuple->theItems[i], aPlanState);
+    }
+  }
+
+  // Bind non-grouping vars
+  numVars = theNonGroupingSpecs.size();
+
+  std::vector<store::TempSeq_t>* nonGroupTuple = (*aGroupMapIter).second;
+
+  for (ulong i = 0; i < numVars; ++i)
+  {
+    store::TempSeq* nonGroupVar = (*nonGroupTuple)[i].getp();
+
+    ulong numVarRefs = theNonGroupingSpecs[i].theVarRefs.size();
+
+    for (ulong j = 0; j < numVarRefs; ++j)
+    {
+      store::Iterator_t nonGroupVarIte = nonGroupVar->getIterator();
+      nonGroupVarIte->open();
+
+      theNonGroupingSpecs[i].theVarRefs[j]->bind(nonGroupVarIte, aPlanState);
+    }
+  }
+}
+  
 
 } //Namespace flwor
 }//Namespace zorba

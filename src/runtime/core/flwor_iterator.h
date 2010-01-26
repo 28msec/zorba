@@ -88,12 +88,13 @@ protected:
   std::vector<ForVarIter_t>  thePosVarRefs;
   std::vector<LetVarIter_t>  theLetVarRefs;
   PlanIter_t                 theInput;
+  bool                       theDoLazyEval;
   bool                       theMaterialize;
     
 public:
   SERIALIZABLE_CLASS(ForLetClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(ForLetClause)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     ar & theVarName;
     SERIALIZE_ENUM(ForLetType, theType)
@@ -101,6 +102,7 @@ public:
     ar & thePosVarRefs;
     ar & theLetVarRefs;
     ar & theInput;
+    ar & theDoLazyEval;
     ar & theMaterialize;
   }
 
@@ -122,6 +124,7 @@ public:
         store::Item* varName,
         const std::vector<PlanIter_t>& letVars,
         PlanIter_t& input,
+        bool lazyEval,
         bool needsMaterialization);
 
   virtual ~ForLetClause() {}
@@ -129,6 +132,8 @@ public:
   void accept (PlanIterVisitor&) const;
 
   xqpStringStore_t getVarName() const;
+
+  bool lazyEval() const { return theDoLazyEval; }
 };
 
 
@@ -164,7 +169,7 @@ public:
 public:
   SERIALIZABLE_CLASS(OrderByClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(OrderByClause)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     ar & theOrderSpecs;
     ar & theStable;
@@ -209,22 +214,22 @@ class GroupByClause : public ::zorba::serialization::SerializeBaseClass
   friend class PrinterVisitor;
   
 private:
-  std::vector<GroupingSpec>     theGroupingSpecs;
-  std::vector<GroupingOuterVar> theOuterVars;
+  std::vector<GroupingSpec>    theGroupingSpecs;
+  std::vector<NonGroupingSpec> theNonGroupingSpecs;
     
 public:
   SERIALIZABLE_CLASS(GroupByClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(GroupByClause)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     ar & theGroupingSpecs;
-    ar & theOuterVars;
+    ar & theNonGroupingSpecs;
   }
 
 public:
   GroupByClause(
         std::vector<GroupingSpec> aGroupingSpecs, 
-        std::vector<GroupingOuterVar> aOuterVars);
+        std::vector<NonGroupingSpec> aNonGroupingSpecs);
 
   ~GroupByClause() {}
 
@@ -335,7 +340,7 @@ public:
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2(FLWORIterator, Batcher<FLWORIterator>);
 
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (Batcher<FLWORIterator>*)this);
     ar & theForLetClauses;
@@ -357,7 +362,7 @@ public:
         GroupByClause*              aGroupByClause,
         OrderByClause*              orderByClause,
         PlanIter_t&                 returnClause,
-        bool                        aIsUpdating );
+        bool                        aIsUpdating);
     
   ~FLWORIterator();
 
@@ -369,6 +374,7 @@ public:
   void closeImpl(PlanState& planState);
 
   virtual uint32_t getStateSize() const;
+
   virtual uint32_t getStateSizeOfSubtree() const;
   
   void accept ( PlanIterVisitor& ) const;

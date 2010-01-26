@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
+#include "zorbaerrors/Assert.h"
+
 #include "store/api/item.h"
 #include "store/naive/simple_lazy_temp_seq.h"
-#include "common/shared_types.h"
 
 
 namespace zorba
@@ -84,6 +85,28 @@ void SimpleLazyTempSeq::append(store::Iterator_t iter, bool copy)
   theMatFinished = false;
   theIterator = iter;
   theCopy = copy;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleLazyTempSeq::purge()
+{
+  //Not supported
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleLazyTempSeq::purgeUpTo(ulong upTo)
+{
+  ZORBA_ASSERT(upTo >= thePurgedUpTo);
+  ZORBA_ASSERT(upTo - thePurgedUpTo <= theItems.size());
+
+  theItems.erase(theItems.begin(), (theItems.begin() + (upTo - thePurgedUpTo)));
+  thePurgedUpTo = upTo;
 }
 
 
@@ -156,29 +179,10 @@ store::Iterator_t SimpleLazyTempSeq::getIterator(
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleLazyTempSeq::purge()
-{
-  //Not supported
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleLazyTempSeq::purgeUpTo(ulong upTo)
-{
-  theItems.erase(theItems.begin(), (theItems.begin() + upTo));
-  thePurgedUpTo = upTo;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
 SimpleLazyTempSeqIter::SimpleLazyTempSeqIter(
     SimpleLazyTempSeq_t aTempSeq,
     ulong aStartPos,
-    ulong aEndPos )
+    ulong aEndPos)
   :
   theTempSeq(aTempSeq),
   theCurPos(aStartPos - 1),

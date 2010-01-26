@@ -30,8 +30,8 @@ namespace flwor
 SERIALIZABLE_CLASS_VERSIONS(GroupingSpec)
 END_SERIALIZABLE_CLASS_VERSIONS(GroupingSpec)
 
-SERIALIZABLE_CLASS_VERSIONS(GroupingOuterVar)
-END_SERIALIZABLE_CLASS_VERSIONS(GroupingOuterVar)
+SERIALIZABLE_CLASS_VERSIONS(NonGroupingSpec)
+END_SERIALIZABLE_CLASS_VERSIONS(NonGroupingSpec)
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -42,14 +42,23 @@ END_SERIALIZABLE_CLASS_VERSIONS(GroupingOuterVar)
 
 GroupingSpec::GroupingSpec(
     PlanIter_t inputVar,
-    const std::vector<PlanIter_t>& outputVarRefs,
+    const std::vector<PlanIter_t>& varRefs,
     const std::string& collation)
   :
   theInput(inputVar),
   theCollation(collation),
   theCollator(NULL)
 {
-  castIterVector<ForVarIterator>(theInnerVars, outputVarRefs);
+  castIterVector<ForVarIterator>(theVarRefs, varRefs);
+}
+
+
+void GroupingSpec::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theInput;
+  ar & theVarRefs;
+  ar & theCollation;
+  ar & theCollator;
 }
 
 
@@ -59,7 +68,7 @@ void GroupingSpec::accept(PlanIterVisitor& v) const
 
   theInput->accept(v);
 
-  v.beginVisitGroupVariable(theInnerVars);
+  v.beginVisitGroupVariable(theVarRefs);
   v.endVisitGroupVariable();
 
   v.endVisitGroupBySpec();
@@ -71,6 +80,7 @@ uint32_t GroupingSpec::getStateSizeOfSubtree() const
   return theInput->getStateSizeOfSubtree();
 }
 
+
 void GroupingSpec::open(PlanState& planState, uint32_t& offset)
 {
   theInput->open(planState, offset);
@@ -79,7 +89,7 @@ void GroupingSpec::open(PlanState& planState, uint32_t& offset)
 
 void GroupingSpec::reset(PlanState& planState) const 
 {
-  theInput->reset ( planState );
+  theInput->reset(planState);
 }
 
 
@@ -91,52 +101,59 @@ void GroupingSpec::close(PlanState& planState)
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  GroupingOuterVar                                                           //
+//  NonGroupingSpec                                                            //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-GroupingOuterVar::GroupingOuterVar(
+NonGroupingSpec::NonGroupingSpec(
     PlanIter_t inputVar, 
-    const std::vector<PlanIter_t>& outputVarRefs)
-  : 
+    const std::vector<PlanIter_t>& varRefs)
+  :
   theInput(inputVar)
 {
-  castIterVector<LetVarIterator>(theOuterVars, outputVarRefs);
+  castIterVector<LetVarIterator>(theVarRefs, varRefs);
 }
 
 
-void GroupingOuterVar::accept(PlanIterVisitor& v) const
+void NonGroupingSpec::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theInput;
+  ar & theVarRefs;
+}
+
+
+void NonGroupingSpec::accept(PlanIterVisitor& v) const
 {
   v.beginVisitGroupByOuter();
 
   theInput->accept(v);
 
-  v.beginVisitNonGroupVariable(theOuterVars);
+  v.beginVisitNonGroupVariable(theVarRefs);
   v.endVisitNonGroupVariable();
 
   v.endVisitGroupByOuter();
 }
 
 
-uint32_t GroupingOuterVar::getStateSizeOfSubtree() const 
+uint32_t NonGroupingSpec::getStateSizeOfSubtree() const 
 {
   return theInput->getStateSizeOfSubtree();
 }
 
 
-void GroupingOuterVar::open ( PlanState& planState, uint32_t& offset )
+void NonGroupingSpec::open(PlanState& planState, uint32_t& offset)
 {
   theInput->open(planState, offset);
 }
 
 
-void GroupingOuterVar::reset ( PlanState& planState ) const 
+void NonGroupingSpec::reset(PlanState& planState) const 
 {
-  theInput->reset ( planState );
+  theInput->reset(planState);
 }
 
 
-void GroupingOuterVar::close ( PlanState& planState )
+void NonGroupingSpec::close(PlanState& planState)
 {
   theInput->close(planState);
 }

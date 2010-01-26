@@ -73,8 +73,8 @@ public:
    */
   virtual TempSeq_t createTempSeq(
         Iterator* iterator,
-        bool copyNodes = false,
-        bool lazy = true) = 0;
+        bool copyNodes,
+        bool lazy) = 0;
 
   /**
    * Creates a new TempSeq that is initialized with the given vector.

@@ -37,10 +37,12 @@ LetIterator::LetIterator (
     PlanIter_t aTupleIter,
     PlanIter_t aInput,
     const std::vector<PlanIter_t>& aLetVars,
+    bool lazyEval,
     bool aNeedsMaterialization ) 
   :
   BinaryBaseIterator<LetIterator, PlanIteratorState>(sctx, aLoc, aTupleIter, aInput),
-  theVarName(aVarName), 
+  theVarName(aVarName),
+  theLazyEval(lazyEval), 
   theNeedsMat(aNeedsMaterialization) 
 {
   castIterVector<LetVarIterator>(theLetVars, aLetVars);
@@ -76,11 +78,13 @@ bool LetIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 
   while (consumeNext(aResult, theChild0, aPlanState)) 
   {
-    bindVariables(theChild1, theLetVars, aPlanState, theNeedsMat);
+    bindVariables(theChild1, theLetVars, aPlanState, theLazyEval, theNeedsMat);
+
     STACK_PUSH(true, lState);
+
     theChild1->reset(aPlanState);
   }
-  STACK_END ( lState );
+  STACK_END(lState);
 }
 
 
