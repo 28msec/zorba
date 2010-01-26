@@ -41,7 +41,11 @@ import schema namespace https = "http://www.expath.org/mod/http-client";
  : @param $content is the request body content, for HTTP methods that can
  :  contain a body in the request (POST and PUT.) It is an error, if this
  :  param is not the empty sequence for methods other then DELETE, GET, HEAD
- :  and OPTIONS. 
+ :  and OPTIONS.
+ : @return a sequence of items, where the first item is a element of type
+ :  http:responseType and describes the response of the http request. If there
+ :  is one (or several, in case of multipart) response body, the response bodies
+ :  are the next items in the sequence.
 :)
 declare function http:send-request(
     $request as element(https:request, https:requestType)?,
@@ -67,6 +71,11 @@ declare function http:send-request(
  : @see documentation of send-request with four parameters.
  :
  : @see http://www.expath.org/mod/http-client;send-request
+ :
+ : @param $request @see parameter $request of
+ :  http://www.expath.org/mod/http-client;send-request
+ : @return @see return of
+ :  http://www.expath.org/mod/http-client;send-request
 :)
 declare function http:send-request (
     $request as element(https:request, https:requestType)) as item()+ {
@@ -78,6 +87,13 @@ declare function http:send-request (
  : @see documentation of send-request with four parameters.
  :
  : @see http://www.expath.org/mod/http-client;send-request
+ :
+ : @param $request @see parameter $request of
+ :  http://www.expath.org/mod/http-client;send-request
+ : @param href @see parameter $href of
+ :  http://www.expath.org/mod/http-client;send-request
+ : @return @see return of
+ :  http://www.expath.org/mod/http-client;send-request
 :)
 declare function http:send-request(
     $request as element(https:request, https:requestType)?,
@@ -90,6 +106,15 @@ declare function http:send-request(
  : @see documentation of send-request with four parameters.
  :
  : @see http://www.expath.org/mod/http-client;send-request
+ :
+ : @param $request @see parameter $request of
+ :  http://www.expath.org/mod/http-client;send-request
+ : @param $href @see parameter $href of
+ :  http://www.expath.org/mod/http-client;send-request
+ : @param $content @see parameter $content of
+ :  http://www.expath.org/mod/http-client;send-request
+ : @return @see return of
+ :  http://www.expath.org/mod/http-client;send-request
 :)
 declare function http:send-request(
     $request as element(https:request, https:requestType)?,
