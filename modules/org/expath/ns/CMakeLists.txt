@@ -11,5 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+IF (CURL_FOUND AND LIBTIDY_FOUND)
+  GENERATE_MODULE_LIBRARY(httpclientimpl "")
+ENDIF (CURL_FOUND AND LIBTIDY_FOUND)
 
-GENERATE_MODULE_LIBRARY(httpclientimpl "")
