@@ -11,6 +11,24 @@
 #include <zorba/iterator.h>
 
 namespace zorba { namespace http_client {
+  class AttributesSequence : public ItemSequence {
+    std::vector<Item>& theItems;
+    unsigned thePosition;
+    unsigned theSize;
+  public:
+    AttributesSequence(std::vector<Item>& aItems)
+      : theItems(aItems), thePosition(0), theSize(aItems.size()) {}
+    virtual bool next(Item& aItem)
+    {
+      if (thePosition < theSize) {
+        aItem = theItems[thePosition++];
+        return true;
+      }
+      return false;
+    }
+    virtual bool
+    nextSerializableItem(Item& item) { return next(item); }
+  };
   bool RequestParser::parse(const Item& aItem)
   {
     theHandler->begin();
@@ -158,21 +176,21 @@ namespace zorba { namespace http_client {
     Iterator_t lIter = aItem.getAttributes();
     lIter->open();
     Item lItem;
+    std::vector<Item> lItems;
     while (lIter->next(lItem)) {
       Item lQName;
       lItem.getNodeName(lQName);
       String lLocalName = lQName.getLocalName();
       if (lLocalName == "content-type") {
         lContentType = lItem.getStringValue();
-      } else if (lLocalName == "encoding") {
-        lEncoding = lItem.getStringValue();
-      } else if (lLocalName == "id") {
-        lId = lItem.getStringValue();
       } else if (lLocalName == "src") {
         lSrc = lItem.getStringValue();
+      } else {
+        lItems.push_back(lItem);
       }
     }
-    theHandler->beginBody(lContentType, lEncoding, lId, lDescription, lSrc);
+    std::auto_ptr<AttributesSequence> lSequence(new AttributesSequence(lItems));
+    theHandler->beginBody(lContentType, lSrc, lSequence.get());
     lIter = aItem.getChildren();
     lIter->open();
     while (lIter->next(lItem)) {

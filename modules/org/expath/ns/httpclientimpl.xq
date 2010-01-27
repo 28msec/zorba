@@ -27,13 +27,17 @@ module namespace httpclientimpl = 'http://expath.org/ns/httpclientimpl';
 import schema namespace http = "http://expath.org/ns/http-client";
 
 (:~
- : Not documented.
+ : Helper function
  :
- : @param $request
- : @param $href
- : @param $bodies
- : @return Not documented.
- : @error
+ : Do not use this function directly but use http://www.expath.org/mod/http-client;send-request
+ : instead since this function does not all the error checking. So
+ : calling this function directly can let zorba crash!!
+ :
+ : @param $request @see http://www.expath.org/mod/http-client;send-request
+ : @param $href @see http://www.expath.org/mod/http-client;send-request
+ : @param $bodies @see http://www.expath.org/mod/http-client;send-request
+ :
+ : @return @see http://www.expath.org/mod/http-client;send-request
  :)
 declare function httpclientimpl:http-send-request-impl (
   $request as element(http:request, http:requestType)?,

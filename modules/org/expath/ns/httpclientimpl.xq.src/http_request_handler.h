@@ -24,6 +24,7 @@ namespace zorba { namespace http_client {
     struct curl_httppost* thePost;
     struct curl_httppost* theLast;
     String theCurrentContentType;
+    ItemSequence* theLastSerializerOptions;
 
   public: //Constructions
     HttpRequestHandler(CURL* aCurl,
@@ -62,10 +63,8 @@ namespace zorba { namespace http_client {
     virtual void header(String aName, String aValue);
     virtual void beginBody(
       String aContentType,
-      String aEncoding,
-      String aId,
-      String aDescription,
-      String aSrc);
+      String aSrc,
+      ItemSequence* aSerializerOptions);
     virtual void any(Item aItem);
 
     void serializeItem( Item aItem );

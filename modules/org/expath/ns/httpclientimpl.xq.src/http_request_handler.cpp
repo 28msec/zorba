@@ -129,27 +129,18 @@ namespace zorba { namespace http_client {
   }
 
   void HttpRequestHandler::beginBody(String aContentType,
-                                     String aEncoding,
-                                     String aId,
-                                     String aDescription,
-                                     String aSrc)
+                                     String aSrc,
+                                     ItemSequence* aSerializerOptions)
   {
+    theLastSerializerOptions = aSerializerOptions;
     theSerStream = new std::ostringstream();
-    std::string lValueId = "Content-ID: ";
-    lValueId += aId.c_str();
-    std::string lValueDescr = "Content-Description : ";
-    lValueDescr += aDescription.c_str();
     theCurrentContentType = aContentType;
     std::string lContentType = "Content-Type: ";
     lContentType += aContentType.c_str();
     if (!theInsideMultipart) {
-      theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValueId.c_str());
-      theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValueDescr.c_str());
       theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lContentType.c_str());
     } else {
       theHeaderLists.push_back(NULL);
-      theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), lValueId.c_str());
-      theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), lValueDescr.c_str());
       theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), lContentType.c_str());
     }
   }
@@ -242,7 +233,8 @@ namespace zorba { namespace http_client {
     } else if (theCurrentContentType.startsWith("text/")) {
       lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
     }
-    Serializer_t lSerializer = Serializer::createSerializer(lOptions);
+    Serializer_t lSerializer =
+      Serializer::createSerializer(theLastSerializerOptions);
     SingletonItemSequence lSequence(aItem);
     lSerializer->serialize(&lSequence, *theSerStream);
   }

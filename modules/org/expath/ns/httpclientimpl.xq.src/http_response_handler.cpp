@@ -115,10 +115,8 @@ namespace zorba { namespace http_client {
   }
 
   void HttpResponseHandler::beginBody(String aContentType,
-                                      String aEncoding,
-                                      String aId,
-                                      String aDescription,
-                                      String aSrc)
+                                      String aSrc,
+                                      ItemSequence* aSerializerOptions)
   {
     Item lParent = theIsInsideMultipart ? theMultipart : theResponse;
     Item lNullType;
@@ -126,22 +124,8 @@ namespace zorba { namespace http_client {
       theFactory->createQName(theNamespace, "body"), lNullType, false,
       true, std::vector<std::pair<String, String> >());
     theFactory->createAttributeNode(lElem,
-      theFactory->createQName("", "content-type"),
+      theFactory->createQName("", "media-type"),
       lNullType, theFactory->createString(aContentType));
-    if (aEncoding != "") {
-      theFactory->createAttributeNode(lElem,
-        theFactory->createQName("", "encoding"),
-        lNullType, theFactory->createString(aEncoding));
-    }
-    if (aId != "") {
-      theFactory->createAttributeNode(lElem, theFactory->createQName("", "id"),
-        lNullType, theFactory->createString(aId));
-    }
-    if (aDescription != "") {
-      theFactory->createAttributeNode(lElem,
-        theFactory->createQName("", "description"),
-        lNullType, theFactory->createString(aDescription));
-    }
   }
 
   void HttpResponseHandler::any(Item aItem)

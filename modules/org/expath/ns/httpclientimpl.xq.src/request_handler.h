@@ -4,6 +4,7 @@
 namespace zorba {
 class String;
 class Item;
+class ItemSequence;
 
 namespace http_client {
   class RequestHandler {
@@ -28,10 +29,8 @@ namespace http_client {
     virtual void header(String aName, String aValue) = 0;
     virtual void beginBody(
       String aContentType,
-      String aEncoding,
-      String aId,
-      String aDescription,
-      String aSrc) = 0;
+      String aSrc,
+      ItemSequence* aSerializerOptions) = 0;
     virtual void any(Item aItem) = 0;
     virtual void endBody() = 0;
     virtual void beginMultipart(String aContentType, String aBoundary) = 0;

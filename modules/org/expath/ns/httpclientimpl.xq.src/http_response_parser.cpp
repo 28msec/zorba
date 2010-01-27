@@ -85,7 +85,7 @@ namespace zorba { namespace http_client {
     for (lIter = theHeaders.begin(); lIter != theHeaders.end(); ++lIter) {
       theHandler.header(lIter->first, lIter->second);
     }
-    theHandler.beginBody(theCurrentContentType, "", theId, theDescription, "");
+    theHandler.beginBody(theCurrentContentType, "", NULL);
   }
 
   void HttpResponseParser::afterRead()

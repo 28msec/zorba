@@ -59,10 +59,8 @@ namespace http_client {
     virtual void header(String aName, String aValue);
     virtual void beginBody(
       String aContentType,
-      String aEncoding,
-      String aId,
-      String aDescription,
-      String aSrc);
+      String aSrc,
+      ItemSequence* aSerializerOptions);
     virtual void any(Item aItem);
     virtual void endBody();
     virtual void beginMultipart(String aContentType, String aBoundary);

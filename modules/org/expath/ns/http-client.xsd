@@ -14,9 +14,8 @@
  - See the License for the specific language governing permissions and
  - limitations under the License.
 -->
-<schema targetNamespace="http://expath.org/ns/http-client"
-        elementFormDefault="qualified" xmlns="http://www.w3.org/2001/XMLSchema"
-        xmlns:http="http://expath.org/ns/http-client">
+<schema targetNamespace="http://expath.org/ns/http-client" elementFormDefault="qualified"
+  xmlns="http://www.w3.org/2001/XMLSchema" xmlns:http="http://expath.org/ns/http-client">
   <annotation xml:lang="en">
     <documentation>
       This schema defines the type used by the XQuery http module
@@ -32,8 +31,7 @@
       </documentation>
     </annotation>
     <sequence>
-      <element name="header" type="http:headerType" minOccurs="0"
-        maxOccurs="unbounded">
+      <element name="header" type="http:headerType" minOccurs="0" maxOccurs="unbounded">
         <annotation xml:lang="en">
           <documentation>
             Several http headers can be defined inside a http request.
@@ -47,8 +45,7 @@
             normal request (postRequest).
           </documentation>
         </annotation>
-        <element name="multipart" type="http:multipartType" minOccurs="0"
-                 maxOccurs="1">
+        <element name="multipart" type="http:multipartType" minOccurs="0" maxOccurs="1">
           <annotation xml:lang="en">
             <documentation>
               Represents a multi-part body, either in a request or a response,
@@ -115,8 +112,7 @@
         </documentation>
       </annotation>
     </attribute>
-    <attribute name="send-authorization" type="boolean"
-      use="optional">
+    <attribute name="send-authorization" type="boolean" use="optional">
       <annotation xml:lang="en">
         <documentation>
           HTTP authentication when sending a request is controlled by the
@@ -138,8 +134,7 @@
         </documentation>
       </annotation>
     </attribute>
-    <attribute name="override-content-type" type="string"
-      use="optional">
+    <attribute name="override-content-type" type="string" use="optional">
       <annotation xml:lang="en">
         <documentation>
           Is a MIME type. It can be used only with http:request, and will
@@ -200,6 +195,7 @@
       </annotation>
     </attribute>
   </complexType>
+  <element name="header" type="http:headerType"/>
 
   <complexType name="bodyType" mixed="true">
     <annotation xml:lang="en">
@@ -210,14 +206,69 @@
       </documentation>
     </annotation>
     <sequence>
-      <any namespace="##any" minOccurs="0" maxOccurs="unbounded" processContents="skip"></any>
+      <any namespace="##any" minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
     </sequence>
-    <attribute name="content-type" type="string" use="required"/>
-    <attribute name="encoding" type="string" use="optional"/>
-    <attribute name="id" type="string" use="optional"/>
-    <attribute name="description" type="string" use="optional"/>
+    <attribute name="media-type" type="string" use="required"/>
     <attribute name="src" type="anyURI" use="optional"/>
+    <attribute name="method" use="optional">
+      <simpleType>
+        <union memberTypes="http:serialType http:qnameNotNCName"></union>
+      </simpleType>
+    </attribute>
+    <attribute name="byte-order-mark" use="optional">
+      <simpleType>
+        <restriction base="string">
+          <enumeration value="yes"/>
+          <enumeration value="no"/>
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute name="cdata-section-elements" use="optional">
+      <simpleType>
+        <list itemType="QName"></list>
+      </simpleType>
+    </attribute>
+    <attribute name="doctype-public" use="optional" type="string"/>
+    <attribute name="doctype-system" use="optional" type="string"/>
+    <attribute name="encoding" type="string" use="optional"/>
+    <attribute name="escape-uri-attributes" use="optional">
+      <simpleType>
+        <restriction base="string">
+          <enumeration value="yes"/>
+          <enumeration value="no"/>
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute name="indent" use="optional" type="http:yesNoType">
+    </attribute>
+    <attribute name="normalization-form" use="optional" type="NMTOKEN"/>
+    <attribute name="omit-xml-declaration" use="optional" type="http:yesNoType"/>
+    <attribute name="standalone" use="optional">
+      <simpleType>
+        <restriction base="string">
+          <enumeration value="yes"></enumeration>
+          <enumeration value="no"></enumeration>
+          <enumeration value="omit"></enumeration>
+        </restriction>
+      </simpleType>
+    </attribute>
+    <attribute name="suppress-indentation">
+      <simpleType>
+        <list itemType="QName"></list>
+      </simpleType>
+    </attribute>
+    <attribute name="undeclare-prefixes" type="http:yesNoType" use="optional"/>
+    <attribute name="version" type="NMTOKEN" use="optional">
+      <annotation xml:lang="en">
+        <documentation>
+          In the draft from 9 January 2010, this would be output-version. But since it is discussed to
+          change this to version in a future release and to make the implementation easier in zorba, this is
+          changed to version.
+        </documentation>
+      </annotation>
+    </attribute>
   </complexType>
+  <element name="body" type="http:bodyType"/>
 
   <complexType name="multipartType">
     <annotation xml:lang="en">
@@ -238,9 +289,10 @@
         <element name="body" type="http:bodyType" minOccurs="1" maxOccurs="1"/>
       </sequence>
     </sequence>
-    <attribute name="content-type" type="string" use="required"></attribute>
-    <attribute name="boundary" type="string" use="required"></attribute>
+    <attribute name="content-type" type="string" use="required"/>
+    <attribute name="boundary" type="string" use="required"/>
   </complexType>
+  <element name="multipart" type="http:multipartType"/>
 
   <complexType name="responseType">
     <annotation xml:lang="en">
@@ -254,19 +306,38 @@
       </documentation>
     </annotation>
     <sequence>
-      <element name="header" type="http:headerType" minOccurs="0"
-        maxOccurs="unbounded">
-      </element>
+      <element name="header" type="http:headerType" minOccurs="0" maxOccurs="unbounded"> </element>
       <choice>
-        <element name="multipart" type="http:multipartType" minOccurs="0"
-          maxOccurs="1">
-        </element>
-        <element name="body" type="http:bodyType" minOccurs="0" maxOccurs="1"></element>
+        <element name="multipart" type="http:multipartType" minOccurs="0" maxOccurs="1"> </element>
+        <element name="body" type="http:bodyType" minOccurs="0" maxOccurs="1"/>
       </choice>
     </sequence>
-    <attribute name="status" type="integer" use="required"></attribute>
-    <attribute name="message" type="string" use="required"></attribute>
+    <attribute name="status" type="integer" use="required"/>
+    <attribute name="message" type="string" use="required"/>
   </complexType>
 
   <element name="response" type="http:responseType"/>
+  
+  <simpleType name="yesNoType">
+    <restriction base="string">
+      <enumeration value="yes"/>
+      <enumeration value="no"/>
+    </restriction>
+  </simpleType>
+  
+  <simpleType name="serialType">
+    <restriction base="string">
+      <enumeration value="xml"/>
+      <enumeration value="html"/>
+      <enumeration value="xhtml"/>
+      <enumeration value="text"/>
+      <enumeration value="binary"/>
+    </restriction>
+  </simpleType>
+  
+  <simpleType name="qnameNotNCName">
+    <restriction base="QName">
+      <pattern value=".*:.*"></pattern>
+    </restriction>
+  </simpleType>
 </schema>

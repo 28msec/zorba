@@ -47,25 +47,25 @@ import schema namespace https = "http://expath.org/ns/http-client";
  :  http:responseType and describes the response of the http request. If there
  :  is one (or several, in case of multipart) response body, the response bodies
  :  are the next items in the sequence.
-:)
+ :)
 declare function http:send-request(
-    $request as element(https:request, https:requestType)?,
-    $href as xs:string?,
-    $bodies as item()*) as item()+ {
-    if (fn:empty($href) and fn:empty($request)) then
-      fn:error($err:HCV01,
-        "Not all required arguments are set.")
-    else if ($href eq "") then
-      fn:error($err:HCV01,
-        "The href value is set to the empty string")
-    else if (not(count($request//body[not(exists(node()))]) eq count($bodies))) then
-      fn:error($err:HCV01,
-        "The number of bodies without children is not equal the size of the bodies sequence")
-    else
-      let $result := httpclientimpl:http-send-request-impl($request,
-                                                           $href,
-                                                           $bodies)
-      return (validate {$result[1]}, fn:subsequence($result, 2))
+  $request as element(https:request, https:requestType)?,
+  $href as xs:string?,
+  $bodies as item()*) as item()+ {
+  if (fn:empty($href) and fn:empty($request)) then
+    fn:error($err:HCV01,
+      "Not all required arguments are set.")
+  else if ($href eq "") then
+    fn:error($err:HCV01,
+      "The href value is set to the empty string")
+  else if (not(count($request//body[not(exists(node()))]) eq count($bodies))) then
+    fn:error($err:HCV01,
+      "The number of bodies without children is not equal the size of the bodies sequence")
+  else
+    let $result := httpclientimpl:http-send-request-impl(http:set-content-type($request),
+                                                         $href,
+                                                         $bodies)
+    return (validate {$result[1]}, fn:subsequence($result, 2))
 };
 
 (:~
@@ -78,10 +78,10 @@ declare function http:send-request(
  :  http://www.expath.org/mod/http-client;send-request
  : @return @see return of
  :  http://www.expath.org/mod/http-client;send-request
-:)
+ :)
 declare function http:send-request (
-    $request as element(https:request, https:requestType)) as item()+ {
-    http:send-request($request,(),())
+  $request as element(https:request, https:requestType)) as item()+ {
+  http:send-request($request,(),())
 };
 
 (:~
@@ -96,9 +96,100 @@ declare function http:send-request (
  :  http://www.expath.org/mod/http-client;send-request
  : @return @see return of
  :  http://www.expath.org/mod/http-client;send-request
-:)
+ :)
 declare function http:send-request(
-    $request as element(https:request, https:requestType)?,
-    $href as xs:string?) as item()+ {
-    http:send-request($request,$href,())  
+  $request as element(https:request, https:requestType)?,
+  $href as xs:string?) as item()+ {
+  http:send-request($request,$href,())  
+};
+
+(:~
+ : Helper function.
+ :
+ : This function takes a https:body element, copies it and
+ : adds a method attribute to the copy if there is none
+ : in the original element.
+ :
+ : @param $body is the original https:body element
+ : @return a https:body element with a @method attribute 
+ :)
+declare function http:create-body (
+  $body as element(https:body, https:bodyType))
+    as element(https:body, https:bodyType) {
+  validate {
+    <https:body>{$body/@*}
+    {
+      if ($body/@method) then
+        ()
+      else
+        attribute method {
+          if ($body/@media-type eq "text/xml" or
+              $body/@media-type eq "application/xml" or
+              $body/@media-type eq "text/xml-external-parsed-entity" or
+              $body/@media-type eq "application/xml-external-parsed-entity") then
+                "xml"
+           else if ($body/@media-type eq "text/html") then "html"
+           else if (fn:starts-with($body/@media-type/data(.), "text/")) then "text"
+           else "binary"
+        }
+    }
+    {$body/node()}
+    </https:body>
+  }
+};
+
+(:~
+ : Helper function.
+ :
+ : This function takes a https:multipart element, copies it and
+ : adds a @method attribute to all body elements which don't have
+ : one.
+ :
+ : @param $multipart the original https:multipart
+ : @return a copy of $multipart with all $multipart/body/@method set 
+ :)
+declare function http:create-multipart (
+  $multipart as element(https:multipart, https:multipartType))
+    as element(https:multipart, https:multipartType) {
+  validate {
+    <https:multipart>{$multipart/@*}
+    {
+    for $x in $multipart/node()
+    return
+      typeswitch($x)
+        case element(https:body, https:bodyType) return http:create-body($x)
+        default return $x
+    }
+    </https:multipart>
+  }
+};
+
+
+(:~
+ : Helper function.
+ :
+ : This adds a default method attribute to all body elements which
+ : don't contain a method attribute.
+ :
+ : @param $request The request which need to be copied.
+ : @return A copy of $request with all request//body/@method set.
+ :)
+declare function http:set-content-type(
+  $request as element(https:request, https:requestType)?)
+    as element(https:request, https:requestType)? {
+  if ($request) then
+    validate
+    {
+      <http:request>{$request/@*}
+      {
+      for $x in $request/node()
+      return
+        typeswitch($x)
+          case element(https:body, https:bodyType) return http:create-body($x)
+          case element(https:multipart, https:multipartType) return http:create-multipart($x)
+          default return $x
+      }
+      </http:request>
+    }
+  else ()
 };
