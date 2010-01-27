@@ -784,7 +784,7 @@ declare function excel:sum_prob($prob_range as xs:anyAtomicType*) as xs:anyAtomi
  : @param $prob_range The sequence of probabilies associated to x values.
  : @param $range_lower_limit The lower limit of the range to compute the probability.
  : @param $upper_limit The upper limit of the range to compute the probability.
- : @return Not documented.
+ : @return the sum of probabilities
  : @error XQP0021(errValue) if any parameter is not castable to numeric.
  : @error XQP0021(errNum) if x_range and prob_range do not have the same number of values.
  :)
