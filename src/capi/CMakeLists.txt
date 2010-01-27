@@ -21,6 +21,7 @@ SET(CAPI_SRCS
     cexpression.cpp
     csequence.cpp
     cstatic_context.cpp
+    single_item_sequence.cpp
     user_item_sequence.cpp
     zorbac.cpp
    )

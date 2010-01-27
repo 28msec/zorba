@@ -147,6 +147,11 @@ public:
         store::Item_t& var_item,
         store::Iterator_t& var_iter);
 
+  bool get_variable(
+    const std::string& varname,
+    store::Item_t& var_item,
+    store::Iterator_t& var_iter);
+
   store::Index* getIndex(const store::Item* qname) const;
 
   void bindIndex(

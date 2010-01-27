@@ -16,8 +16,7 @@
 #ifndef ZORBA_RESULTITERATOR_H
 #define ZORBA_RESULTITERATOR_H
 
-#include <zorba/result_iterator.h>
-
+#include "zorba/iterator.h"
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
 
@@ -32,33 +31,32 @@ class XQueryImpl;
   iterator obj: it is created during the 1st invocation of the XQuery::iterator()
   method and destroyed when the query is closed.
 ********************************************************************************/
-class ResultIteratorImpl  : public ResultIterator 
+class ResultIteratorImpl  : public Iterator
 {
-  friend class XQueryImpl;
-  friend class Unmarshaller;
+    friend class XQueryImpl;
+    friend class Unmarshaller;
 
- protected:
-  XQueryImpl     * theQuery; 
-  PlanWrapper_t    thePlan;         
-  bool             theIsOpened;     
-  bool             theHaveLock;
+  protected:
+    XQueryImpl     * theQuery; 
+    PlanWrapper_t    thePlan;         
+    bool             theIsOpened;     
+    bool             theHaveLock;
 
- protected:
-  ResultIteratorImpl(XQueryImpl*, const PlanWrapper_t&);
+    ResultIteratorImpl(XQueryImpl*, const PlanWrapper_t&);
 
- public:
-  virtual ~ResultIteratorImpl();
+  public:
+    virtual ~ResultIteratorImpl();
 
-  virtual void 
-  open();
+    virtual void 
+    open();
 
-  virtual bool
-  next(Item&);
+    virtual bool
+    next(Item&);
 
-  virtual void 
-  close();
+    virtual void 
+    close();
 
-  bool isActive() const { return theHaveLock; }
+    bool isActive() const { return theHaveLock; }
 };
 
 

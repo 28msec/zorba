@@ -26,7 +26,6 @@
 #include <zorba/xquery.h>
 #include <zorba/static_context.h>
 #include <zorba/dynamic_context.h>
-#include <zorba/result_iterator.h>
 #include <zorba/item.h>
 #include <zorba/item_factory.h>
 #include <zorba/zorbastring.h>

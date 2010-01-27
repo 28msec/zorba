@@ -47,23 +47,23 @@ class Item {
   }
 }
 
-class ResultIterator {
+class Iterator {
   public $_cPtr=null;
 
   function open() {
-    ResultIterator_open($this->_cPtr);
+    Iterator_open($this->_cPtr);
   }
 
   function next($arg1) {
-    return ResultIterator_next($this->_cPtr,$arg1);
+    return Iterator_next($this->_cPtr,$arg1);
   }
 
   function close() {
-    ResultIterator_close($this->_cPtr);
+    Iterator_close($this->_cPtr);
   }
 
   function destroy() {
-    ResultIterator_destroy($this->_cPtr);
+    Iterator_destroy($this->_cPtr);
   }
 
   function __construct($cPtr) {
@@ -96,7 +96,7 @@ class XQuery {
 
   function iterator() {
     $r=XQuery_iterator($this->_cPtr);
-    return is_resource($r) ? new ResultIterator($r) : $r;
+    return is_resource($r) ? new Iterator($r) : $r;
   }
 
   function __construct($cPtr) {

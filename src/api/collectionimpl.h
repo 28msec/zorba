@@ -47,7 +47,7 @@ class CollectionImpl : public Collection
   addNode(Item& aNode);
 
   bool
-  addNodes(const ResultIterator* aResultIterator);
+  addNodes(const Iterator_t& aIterator);
 
   bool
   deleteNode(Item& aNode);

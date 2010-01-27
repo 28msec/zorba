@@ -754,7 +754,7 @@ void XQueryImpl::execute()
 
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-    ResultIterator_t lIter(new ResultIteratorImpl(this, lPlan));
+    Iterator_t lIter(new ResultIteratorImpl(this, lPlan));
   
     // call next once in order to apply updates
     // close is called in the destructor
@@ -815,7 +815,7 @@ void XQueryImpl::serialize(
 /*******************************************************************************
 
 ********************************************************************************/
-ResultIterator_t
+Iterator_t
 XQueryImpl::iterator()
 {
   ZORBA_TRY
@@ -826,18 +826,19 @@ XQueryImpl::iterator()
 
     ulong numIters = theResultIterators.size();
     theResultIterators.push_back(new ResultIteratorImpl(this, lPlan));
-    return ResultIterator_t(theResultIterators[numIters]);
+    return Iterator_t(theResultIterators[numIters]);
 
   ZORBA_CATCH
-  return ResultIterator_t();;
+  return Iterator_t();;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
+// QQQ?
 void
-XQueryImpl::removeResultIterator(const ResultIterator* iter)
+XQueryImpl::removeResultIterator(const ResultIteratorImpl* iter)
 {
   std::vector<ResultIteratorImpl*>::iterator it =
     std::find(theResultIterators.begin(),

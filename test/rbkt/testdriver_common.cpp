@@ -308,7 +308,7 @@ void createDynamicContext(
                                                       sctx,
                                                       getCompilerHints());
 
-    zorba::ResultIterator_t riter = inputQuery->iterator();
+    zorba::Iterator_t riter = inputQuery->iterator();
     dctx->setVariable(zorba::String("x"), riter);
   }
 }

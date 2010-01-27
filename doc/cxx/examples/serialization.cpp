@@ -147,7 +147,7 @@ serialization_example_7(Zorba* aZorba)
   Zorba_SerializerOptions_t lOptions;
   Serializer_t lSerializer = Serializer::createSerializer(lOptions);
 
-  ResultIterator_t lIterator = lQuery->iterator();
+  Iterator_t lIterator = lQuery->iterator();
 
   try {
     lIterator->open();

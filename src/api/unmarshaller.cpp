@@ -17,15 +17,57 @@
 
 #include <zorba/item.h>
 #include <zorba/zorbastring.h>
+#include <zorba/iterator.h>
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
-#include "api/resultiteratorimpl.h"
+#include "api/storeiteratorimpl.h"
 #include "api/collectionimpl.h"
 #include "store/api/collection.h"
-#include "runtime/api/plan_wrapper.h"
-
 
 namespace zorba {
+
+/**
+ * This class wraps a non-StoreIteratorImpl Iterator in order to
+ * convert its interface to the interface of the internal zorba
+ * iterators.
+ */
+  class NonStoreIteratorWrapper : public store::Iterator
+  {
+    private:
+      zorba::Iterator* theIter;
+
+    public:
+      NonStoreIteratorWrapper(zorba::Iterator* aIter)
+        : theIter(aIter)
+      {
+      }
+
+      virtual void open()
+      {
+        theIter->open();
+      }
+
+      virtual bool next(store::Item_t& result)
+      {
+        Item lItem;
+        while ( theIter->next(lItem) ) {
+          result = Unmarshaller::getInternalItem(lItem);
+          return true;
+        }
+        result = NULL;
+        return false;
+      }
+
+      virtual void reset()
+      {
+        theIter->close();
+      }
+
+      virtual void close()
+      {
+        theIter->close();
+      }
+  };
 
   store::Item*
   Unmarshaller::getInternalItem(const Item& aItem)
@@ -46,15 +88,19 @@ namespace zorba {
   }
 
   dynamic_context*
-  Unmarshaller::getInternalDynamicContext(const DynamicContext* aCtx)
+  Unmarshaller::getInternalDynamicContext(DynamicContext* aCtx)
   {
-    return static_cast<const DynamicContextImpl*>(aCtx)->theCtx; 
+    return static_cast<DynamicContextImpl*>(aCtx)->theCtx; 
   }
 
-  PlanWrapper_t
-  Unmarshaller::getInternalPlan(const ResultIterator* aResultIter)
+  store::Iterator_t
+  Unmarshaller::getInternalIterator(Iterator* aIter)
   {
-    return static_cast<const ResultIteratorImpl*>(aResultIter)->thePlan;
+    StoreIteratorImpl* lStoreIter = dynamic_cast<StoreIteratorImpl*> (aIter);
+    if (lStoreIter != NULL) {
+      return lStoreIter->theIterator;
+    }
+    return store::Iterator_t(new NonStoreIteratorWrapper(aIter));
   }
 
   store::Collection_t

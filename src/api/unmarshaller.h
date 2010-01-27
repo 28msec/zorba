@@ -17,6 +17,7 @@
 #define ZORBA_UNMARSHALLER_H
 
 #include <zorba/api_shared_types.h>
+#include "store/api/iterator.h"
 #include "common/shared_types.h"
 
 namespace zorba {
@@ -30,9 +31,9 @@ public:
 
   static static_context* getInternalStaticContext(const StaticContext_t& aContext);
 
-  static dynamic_context* getInternalDynamicContext(const DynamicContext* aContext);
+  static dynamic_context* getInternalDynamicContext(DynamicContext* aContext);
 
-  static PlanWrapper_t getInternalPlan(const ResultIterator* aResultIter);
+  static store::Iterator_t getInternalIterator(Iterator* aIter);
 
   static store::Collection_t getInternalCollection(const Collection_t& aCollection);
 };

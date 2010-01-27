@@ -21,6 +21,7 @@
 #include <zorba/zorba.h>
 #include "capi/csequence.h"
 #include "capi/error.h"
+#include "capi/single_item_sequence.h"
 
 using namespace zorba;
 using namespace std;
@@ -97,8 +98,21 @@ namespace zorbac {
   CDynamicContext::get_context_item
   (const XQC_DynamicContext* context, XQC_Sequence** value)
   {
-    // TODO
-    return XQC_NOT_IMPLEMENTED;
+    DC_TRY {
+      Item lItem;
+      if (! me->theContext->getContextItem(lItem)) {
+        return XQC_NO_CURRENT_ITEM;
+      }
+      std::auto_ptr<SingleItemSequence> lItemSeq(new SingleItemSequence(lItem));
+      // Wrap in a CSequence to produce an XQC_Sequence. We pass
+      // "true" to make CSequence assume memory-management
+      // responsibility for the SingleItemSequence.
+      std::auto_ptr<CSequence> lSeq(new CSequence(lItemSeq.get(), true, NULL));
+      lItemSeq.release();
+      (*value) = lSeq.release()->getXQC();
+      return XQC_NO_ERROR;
+    }
+    DC_CATCH;
   }
 
 //   XQC_Error
@@ -123,7 +137,7 @@ namespace zorbac {
   {
     DC_TRY {
       CSequence* lSeq = CSequence::get(seq);
-      ResultIterator_t lIter = lSeq->getCPPIterator();
+      Iterator_t lIter = lSeq->getCPPIterator();
 
       me->theContext->setVariable(uri == NULL ? "" : uri, name, lIter);
     }
@@ -135,8 +149,35 @@ namespace zorbac {
   (const XQC_DynamicContext* context, const char* uri, const char* name,
     XQC_Sequence** seq)
   {
-    // TODO
-    return XQC_NOT_IMPLEMENTED;
+    DC_TRY {
+      Item lItem;
+      Iterator_t lIter;
+      if (! me->theContext->getVariable(uri, name, lItem, lIter)) {
+        return XQC_INVALID_ARGUMENT;
+      }
+
+      // We could have gotten a single Item or an Iterator. We assume
+      // the Item takes precedence if not null.
+      if (! lItem.isNull()) {
+        std::auto_ptr<SingleItemSequence> lItemSeq
+          (new SingleItemSequence(lItem));
+        // Wrap in a CSequence to produce an XQC_Sequence. We pass
+        // "true" to make CSequence assume memory-management
+        // responsibility for the SingleItemSequence.
+        std::auto_ptr<CSequence> lSeq
+          (new CSequence(lItemSeq.get(), true, NULL));
+
+        lItemSeq.release();
+        (*seq) = lSeq.release()->getXQC();
+        return XQC_NO_ERROR;
+      }
+
+      // Otherwise, the Iterator must be the value.
+      std::auto_ptr<CSequence> lSeq (new CSequence(lIter, me->theErrorHandler));
+      (*seq) = lSeq.release()->getXQC();
+      return XQC_NO_ERROR;
+    }
+    DC_CATCH;
   }
   
 //   XQC_Error

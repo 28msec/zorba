@@ -16,7 +16,7 @@
 
 import org.zorbaxquery.api.Zorba;
 import org.zorbaxquery.api.XQuery;
-import org.zorbaxquery.api.ResultIterator;
+import org.zorbaxquery.api.Iterator;
 import org.zorbaxquery.api.Item;
 import org.zorbaxquery.api.XmlDataManager;
 import org.zorbaxquery.api.InMemoryStore;
@@ -42,7 +42,7 @@ public class Test_Zorba
   {
     XQuery lQuery = aZorba.compileQuery ("(1,2,3,4,5)" );
 
-    ResultIterator lIterator = lQuery.iterator();
+    Iterator lIterator = lQuery.iterator();
     lIterator.open();
 
     Item lItem = Item.createEmptyItem();

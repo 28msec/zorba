@@ -235,7 +235,7 @@ public:
   void
   execute();
 
-  ResultIterator_t
+  Iterator_t
   iterator();
 
   DynamicContext*
@@ -361,7 +361,7 @@ protected:
         void* aHandlerData,
         const Zorba_SerializerOptions_t* = NULL);
 
-  void removeResultIterator(const ResultIterator* iter);
+  void removeResultIterator(const ResultIteratorImpl* iter);
 
   // check whether the query is open, and if not, fire an error
   void checkNotClosed() const;

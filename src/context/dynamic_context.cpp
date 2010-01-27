@@ -153,17 +153,17 @@ dynamic_context::dynamic_context(dynamic_context* parent)
     GENV_ITEMFACTORY->createLong(current_time_millis, millis);
 #endif
 
-	  ctxt_position = 0;
-	}
-	else
-	{
-		current_date_time_item = parent->current_date_time_item;
-		theTimezone = parent->theTimezone;
-		default_collection_uri = parent->default_collection_uri;
-
-		ctxt_item = parent->ctxt_item;
-		ctxt_position = parent->ctxt_position;
-	}
+    ctxt_position = 0;
+  }
+  else
+  {
+    current_date_time_item = parent->current_date_time_item;
+    theTimezone = parent->theTimezone;
+    default_collection_uri = parent->default_collection_uri;
+    
+    ctxt_item = parent->ctxt_item;
+    ctxt_position = parent->ctxt_position;
+  }
 }
 
 
@@ -172,19 +172,19 @@ dynamic_context::dynamic_context(dynamic_context* parent)
 ********************************************************************************/
 dynamic_context::~dynamic_context()
 {
-	///free the pointers from ctx_value_t from keymap
-	checked_vector<hashmap<dctx_value_t>::entry>::iterator it;
-	const char* keybuff;;
+  ///free the pointers from ctx_value_t from keymap
+  checked_vector<hashmap<dctx_value_t>::entry>::iterator it;
+  const char* keybuff;;
 
-	for(it = keymap.begin(); it != keymap.end(); it++)
-	{
-		///it is an entry
-		keybuff = (*it).key.c_str();
-		if(strncmp(keybuff, "var:", 4) == 0)
-		{
-			destroy_dctx_value(&(*it).val);
-		}
-	}
+  for(it = keymap.begin(); it != keymap.end(); it++)
+  {
+    ///it is an entry
+    keybuff = (*it).key.c_str();
+    if(strncmp(keybuff, "var:", 4) == 0)
+    {
+      destroy_dctx_value(&(*it).val);
+    }
+  }
 
   if (theAvailableIndices)
     delete theAvailableIndices;
@@ -196,19 +196,19 @@ dynamic_context::~dynamic_context()
 ********************************************************************************/
 store::Item_t dynamic_context::get_default_collection()
 {
-	return default_collection_uri;
+  return default_collection_uri;
 }
 
 
 void dynamic_context::set_default_collection(const store::Item_t& default_collection_uri)
 {
-	this->default_collection_uri = default_collection_uri;
+  this->default_collection_uri = default_collection_uri;
 }
 
 
 void dynamic_context::set_implicit_timezone(long tzone_seconds)
 {
-	theTimezone = tzone_seconds;
+  theTimezone = tzone_seconds;
 }
 
 
@@ -218,21 +218,21 @@ long dynamic_context::get_implicit_timezone()
 }
 
 
-void	dynamic_context::set_current_date_time( const store::Item_t& aDateTimeItem )
+void dynamic_context::set_current_date_time( const store::Item_t& aDateTimeItem )
 {
   this->current_date_time_item = aDateTimeItem;
 }
 
 
-store::Item_t	dynamic_context::get_current_date_time()
+store::Item_t dynamic_context::get_current_date_time()
 {
-	return current_date_time_item;
+  return current_date_time_item;
 }
 
 
 store::Item_t dynamic_context::get_current_time_millis()
 {
-    return current_time_millis;
+  return current_time_millis;
 }
 
 
@@ -240,26 +240,26 @@ void dynamic_context::set_context_item(
     const store::Item_t& context_item,
     unsigned long position)
 {
-	this->ctxt_item = context_item;
-	this->ctxt_position = position;
+  this->ctxt_item = context_item;
+  this->ctxt_position = position;
 }
 
 
 store::Item_t dynamic_context::context_item() const
 {
-	return ctxt_item;
+  return ctxt_item;
 }
 
 
 unsigned long dynamic_context::context_position()
 {
-	return ctxt_position;
+  return ctxt_position;
 }
 
 
 xqtref_t dynamic_context::context_item_type() const
 {
-	return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
 }
 
 
@@ -402,9 +402,20 @@ bool dynamic_context::get_variable(
 {
   var_item = NULL;
   var_iter = NULL;
-	return lookup_var_value("var:" + varname->getStringValue()->str(),
-                          var_item,
-                          var_iter);
+  return lookup_var_value("var:" + varname->getStringValue()->str(),
+    var_item,
+    var_iter);
+}
+
+
+bool dynamic_context::get_variable(
+  const std::string& varname,
+  store::Item_t& var_item,
+  store::Iterator_t& var_iter)
+{
+  var_item = NULL;
+  var_iter = NULL;
+  return lookup_var_value("var:" + varname, var_item, var_iter);
 }
 
 
@@ -416,12 +427,12 @@ bool dynamic_context::lookup_var_value(
   dctx_value_t val;
 
   if(!keymap.get(key, val))
-	{
+  {
     if (theParent)
       return theParent->lookup_var_value(key, var_item, var_iter);
     else
       return false; // variable not found
-	}
+  }
 
   if (val.in_progress)
     ZORBA_ERROR (XQST0054);
@@ -624,4 +635,4 @@ std::vector<xqp_string>* dynamic_context::get_all_keymap_keys() const
   return keys.release();
 }
 
-}	/* namespace zorba */
+} /* namespace zorba */

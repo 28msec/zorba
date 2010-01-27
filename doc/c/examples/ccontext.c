@@ -26,12 +26,12 @@
 
 /**
  * Helper routine which verifies the results of a query.  In all
- * cases, it expects the results to be three xs:string items, each
+ * cases, it expects the results to be count xs:string items, each
  * with the specified value. Returns true value if an error is seen or
  * the values are wrong.
  */
 int
-check_triple_sequence(XQC_Sequence* seq, const char* value)
+check_sequence(XQC_Sequence* seq, const char* value, int count)
 {
   XQC_Error lError;
   int lCount = 0;
@@ -50,8 +50,8 @@ check_triple_sequence(XQC_Sequence* seq, const char* value)
     printf("Error %d reached before end of sequence\n", lError);
     return 1;
   }
-  if (lCount != 3) {
-    printf("Saw %d xs:string values, not 3\n", lCount);
+  if (lCount != count) {
+    printf("Saw %d xs:string values, not %d\n", lCount, count);
     return 1;
   }
   return 0;
@@ -67,6 +67,7 @@ ccontext_example_1(XQC_Implementation* impl)
   XQC_Expression*     lExpr;
   XQC_DynamicContext* lContext;
   XQC_Sequence*       lSeq;
+  XQC_Sequence*       lContextItem;
   XQC_Sequence*       lResult;
   static const char*         lZorba[] = { "Zorba" };
 
@@ -85,10 +86,15 @@ ccontext_example_1(XQC_Implementation* impl)
   lError = lContext->set_context_item(lContext, lSeq);
   if (check_error("set_context_item", lError)) return 0;
 
+  // Check the value of the context item
+  lError = lContext->get_context_item(lContext, &lContextItem);
+  if (check_error("get_context_item", lError)) return 0;
+  if (check_sequence(lContextItem, lZorba[0], 1)) return 0;
+
   // execute the query
   lError = lExpr->execute(lExpr, lContext, &lResult);
   if (check_error("execute", lError)) return 0;
-  if (check_triple_sequence(lResult, lZorba[0])) return 0;
+  if (check_sequence(lResult, lZorba[0], 3)) return 0;
 
   // free all resources
   lResult->free(lResult);
@@ -250,7 +256,7 @@ ccontext_example_5(XQC_Implementation* impl)
   // execute the query
   lError = lExpr->execute(lExpr, lContext, &lResult);
   if (check_error("execute", lError)) return 0;
-  if (check_triple_sequence(lResult, lZorba[0])) return 0;
+  if (check_sequence(lResult, lZorba[0], 3)) return 0;
 
   // free all resources
   lResult->free(lResult);
@@ -273,6 +279,8 @@ ccontext_example_6(XQC_Implementation* impl)
   XQC_DynamicContext* lContext2;
   XQC_Sequence*       lSeq1;
   XQC_Sequence*       lSeq2;
+  XQC_Sequence*       lVariable1;
+  XQC_Sequence*       lVariable2;
   XQC_Sequence*       lResult1;
   XQC_Sequence*       lResult2;
   static const char*  lZorba[] = { "Zorba" };
@@ -300,17 +308,29 @@ ccontext_example_6(XQC_Implementation* impl)
     "foo", lSeq2);
   if (check_error("set_variable 2", lError)) return 0;
 
+  // Check the variable binding on both contexts
+  lError = lContext1->get_variable(lContext1, "http://www.zorba-xquery.com/",
+    "foo", &lVariable1);
+  if (check_error("get_variable 1", lError)) return 0;
+  lError = lContext2->get_variable(lContext2, "http://www.zorba-xquery.com/",
+    "foo", &lVariable2);
+  if (check_error("get_variable 2", lError)) return 0;
+  if (check_sequence(lVariable1, lZorba[0], 1)) return 0;
+  if (check_sequence(lVariable2, lOther[0], 1)) return 0;
+
   // execute both queries
   lError = lExpr->execute(lExpr, lContext1, &lResult1);
   if (check_error("execute 1", lError)) return 0;
   lError = lExpr->execute(lExpr, lContext2, &lResult2);
   if (check_error("execute 2", lError)) return 0;
-  if (check_triple_sequence(lResult1, lZorba[0])) return 0;
-  if (check_triple_sequence(lResult2, lOther[0])) return 0;
+  if (check_sequence(lResult1, lZorba[0], 3)) return 0;
+  if (check_sequence(lResult2, lOther[0], 3)) return 0;
 
   // free all resources
   lResult1->free(lResult1);
   lResult2->free(lResult2);
+  lResult1->free(lVariable1);
+  lResult2->free(lVariable2);
   lContext1->free(lContext1);
   lContext2->free(lContext2);
   lExpr->free(lExpr);

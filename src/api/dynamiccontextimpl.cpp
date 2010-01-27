@@ -31,7 +31,7 @@
 #include "api/zorbaimpl.h"
 #include "api/xqueryimpl.h"
 #include "api/resultiteratorimpl.h"
-#include "api/resultiteratorchainer.h"
+#include "api/storeiteratorimpl.h"
 #include "api/dynamiccontextimpl.h"
 
 #include "compiler/parser/query_loc.h"
@@ -100,18 +100,17 @@ DynamicContextImpl::setVariable(
 bool
 DynamicContextImpl::setVariable(
     const String& aQName,
-    const ResultIterator_t& aResultIterator )
+    const Iterator_t& aIterator )
 {
   ZORBA_DCTX_TRY
   {
     checkNoIterators();
 
-    ResultIterator* lIter = &*aResultIterator;
+    Iterator* lIter = aIterator.get();
     if (!lIter)
-      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT,
-                       "Invalid ResultIterator given");
+      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
         
-    store::Iterator_t lRes = new store::ResultIteratorChainer(lIter);
+    store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
     xqpString lString (Unmarshaller::getInternalString(aQName));
     xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
@@ -128,18 +127,17 @@ DynamicContextImpl::setVariable(
 bool
 DynamicContextImpl::setVariable(
     const String& aNamespace, const String& aLocalname,
-    const ResultIterator_t& aResultIterator )
+    const Iterator_t& aIterator )
 {
   ZORBA_DCTX_TRY
   {
     checkNoIterators();
 
-    ResultIterator* lIter = &*aResultIterator;
+    Iterator* lIter = aIterator.get();
     if (!lIter)
-      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT,
-                       "Invalid ResultIterator given");
+      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
         
-    store::Iterator_t lRes = new store::ResultIteratorChainer(lIter);
+    store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
     xqpString lNamespace (Unmarshaller::getInternalString(aNamespace));
     xqpString lLocalname (Unmarshaller::getInternalString(aLocalname));
@@ -148,6 +146,35 @@ DynamicContextImpl::setVariable(
 
     theCtx->add_variable(lExpandedName, lRes);
 
+    return true;
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+
+bool
+DynamicContextImpl::getVariable(
+  const String& aNamespace, const String& aLocalname,
+  Item& aItem, Iterator_t& aIterator)
+{
+  ZORBA_DCTX_TRY
+  {
+    xqpString lNamespace (Unmarshaller::getInternalString(aNamespace));
+    xqpString lLocalname (Unmarshaller::getInternalString(aLocalname));
+    xqpString lExpandedName = theCtx->expand_varname
+      (theStaticContext, lNamespace, lLocalname);
+
+    store::Item_t lItem;
+    store::Iterator_t lIter;
+    theCtx->get_variable(lExpandedName, lItem, lIter);
+    if (! lItem.isNull()) {
+      aItem = lItem;
+    }
+    if (! lIter.isNull()) {
+      Iterator_t lIt(new StoreIteratorImpl(lIter, theQuery->theErrorHandler));
+      aIterator = lIt;
+    }
     return true;
   }
   ZORBA_DCTX_CATCH
@@ -354,6 +381,25 @@ DynamicContextImpl::setContextItemAsDocument (
       return false;
 
     return setContextItem ( Item(docItem) );
+  }
+  ZORBA_DCTX_CATCH
+  return false;
+}
+
+
+bool
+DynamicContextImpl::getContextItem (
+  Item& aItem)
+{
+  ZORBA_DCTX_TRY
+  {
+    checkNoIterators();
+
+    store::Item_t lItem = theCtx->context_item();
+    if (! lItem.isNull()) {
+      aItem = lItem;
+      return true;
+    }
   }
   ZORBA_DCTX_CATCH
   return false;

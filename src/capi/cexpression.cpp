@@ -187,7 +187,7 @@ namespace zorbac {
       // object's XQuery_t since it is the one which is associated
       // with the corresponding DynamicContext. If we are not given an
       // XQC_DynamicContext, we may execute the master XQuery_t.
-      ResultIterator_t lIter;
+      Iterator_t lIter;
       if (context == NULL) {
         SYNC_CODE(AutoMutex lock(&me->theMutex));
         lIter = me->theMasterQuery->iterator();
@@ -198,7 +198,6 @@ namespace zorbac {
         lIter = lCtx->getClonedXQuery()->iterator();
       }
 
-      lIter->open();
       XQC_ErrorHandler* lHandler;
       if (context) {
         context->get_error_handler(context, &lHandler);

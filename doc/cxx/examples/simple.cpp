@@ -37,7 +37,7 @@ example_2(Zorba* aZorba)
 {
 	XQuery_t lQuery = aZorba->compileQuery("1+2");
 
-  ResultIterator_t lIterator = lQuery->iterator();
+  Iterator_t lIterator = lQuery->iterator();
   lIterator->open();
 
   Item lItem;
@@ -152,7 +152,7 @@ example_10( Zorba * aZorba )
   XQuery_t lQuery1 = aZorba->compileQuery("declare variable $i external; 1 to $i");
   XQuery_t lQuery2 = lQuery1->clone();
 
-  ResultIterator_t lIterator1 = lQuery1->iterator();
+  Iterator_t lIterator1 = lQuery1->iterator();
   DynamicContext* lDynContext1 = lQuery1->getDynamicContext();
   lDynContext1->setVariable("i", aZorba->getItemFactory()->createInteger(5));
 
@@ -163,7 +163,7 @@ example_10( Zorba * aZorba )
     DynamicContext* lDynContext2 = lQuery2->getDynamicContext();
     lDynContext2->setVariable("i", lItem);
 
-    ResultIterator_t lIterator2 = lQuery2->iterator();
+    Iterator_t lIterator2 = lQuery2->iterator();
     
     lIterator2->open();
     while ( lIterator2->next(lItem) ) {
@@ -199,7 +199,7 @@ example_12(Zorba* aZorba)
 {
 	XQuery_t lQuery = aZorba->compileQuery("<a><b attr='1'/><b attr='2'/></a>");
 
-  ResultIterator_t lIterator = lQuery->iterator();
+  Iterator_t lIterator = lQuery->iterator();
   lIterator->open();
 
   Item lItem;

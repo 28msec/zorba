@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_ITERATOR_H
-#define ZORBA_ITERATOR_H
+#ifndef ZORBA_STOREITERATORIMPL_H
+#define ZORBA_STOREITERATORIMPL_H
 
 #include <zorba/iterator.h>
 #include "common/shared_types.h"
@@ -26,33 +26,33 @@ class ErrorHandler;
 /*******************************************************************************
   Iterator used for iterating over an internal store::Iterator_t.
 ********************************************************************************/
-class IteratorImpl  : public Iterator 
+class StoreIteratorImpl  : public Iterator
 {
-  friend class Unmarshaller;
-  friend class Item;
+    friend class Unmarshaller;
+    friend class Item;
+    friend class DynamicContextImpl;
 
-protected:
-  store::Iterator_t theIterator; 
-  ErrorHandler*     theErrorHandler;
-  bool              theIsOpened;     
-  bool              theHaveLock;
+  protected:
+    store::Iterator_t theIterator; 
+    ErrorHandler*     theErrorHandler;
+    bool              theIsOpened;     
+    bool              theHaveLock;
+    
+    StoreIteratorImpl(store::Iterator_t, ErrorHandler*);
 
-protected:
-  IteratorImpl(store::Iterator_t, ErrorHandler*);
-
-public:
-  virtual ~IteratorImpl();
-
-  virtual void 
-  open();
-
-  virtual bool
-  next(Item&);
-
-  virtual void 
-  close();
+  public:
+    virtual ~StoreIteratorImpl();
+    
+    virtual void 
+    open();
+    
+    virtual bool
+    next(Item&);
+    
+    virtual void 
+    close();
 };
-
+  
 } /* namespace zorba */
 
 #endif

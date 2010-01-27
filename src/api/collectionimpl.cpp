@@ -29,7 +29,6 @@
 
 #include "system/globalenv.h"
 
-#include "runtime/api/plan_wrapper.h"
 #include "runtime/util/flowctl_exception.h"
 
 #include "store/api/collection.h"
@@ -108,11 +107,15 @@ CollectionImpl::addNode(Item& aNode)
 
 
 bool
-CollectionImpl::addNodes(const ResultIterator* aResultIterator)
+CollectionImpl::addNodes(const Iterator_t& aIterator)
 {
   ZORBA_TRY
 
-    PlanWrapper_t lPlan = Unmarshaller::getInternalPlan(aResultIterator);
+    Iterator* lIter = aIterator.get();
+    if (!lIter)
+      ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
+
+    store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
     // Get the store lock to protect the nodes. Note: the result iterator
     // also holds the store lock in R mode.
@@ -120,7 +123,7 @@ CollectionImpl::addNodes(const ResultIterator* aResultIterator)
 
     store::CopyMode lCopyMode;
     store::Item_t node;
-    while (lPlan->next(node))
+    while (lRes->next(node))
     {
       store::Item* lCopy = node->copy(0, 0, lCopyMode);
       theCollection->addNode(lCopy, -1);

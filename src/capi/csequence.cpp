@@ -31,11 +31,11 @@ using namespace zorba;
 namespace zorbac {
 
   /**
-   * Utility class to turn an ItemSequence into a ResultIterator;
-   * ignores open/close. Performs no memory-management on the
-   * ItemSequence it holds!
+   * Utility class to turn an ItemSequence into an Iterator; ignores
+   * open/close. Performs no memory-management on the ItemSequence it
+   * holds!
    */
-  class ItemSequenceWrapper : public ResultIterator
+  class ItemSequenceWrapper : public Iterator
   {
     public:
       ItemSequenceWrapper(ItemSequence* items)
@@ -59,6 +59,10 @@ namespace zorbac {
       ItemSequence* theItems;
   };
 
+  /**
+   * Subclass of ItemSequenceWrapper which will delete the
+   * ItemSequence it holds when it is destroyed.
+   */
   class FreeingItemSequenceWrapper : public ItemSequenceWrapper
   {
     public:
@@ -72,15 +76,15 @@ namespace zorbac {
       }
   };
 
-  CSequence::CSequence(ResultIterator_t iter, XQC_ErrorHandler* handler)
+  CSequence::CSequence(Iterator_t iter, XQC_ErrorHandler* handler)
     : theIterator(iter), theErrorHandler(handler)
   {
+    theIterator->open();
     init_xqc();
   }
 
   /**
    * Create a CSequence around an ItemSequence.
-
    * @param free_when_done If true, the ItemSequence will be deleted
    * when the CSequence is deleted. If false, the ItemSequence will
    * never be deleted; client code must arrange to free it at an
@@ -90,9 +94,10 @@ namespace zorbac {
   (ItemSequence* items, bool free_when_done, XQC_ErrorHandler* handler)
     : theErrorHandler(handler)
   {
-    theIterator = ResultIterator_t
+    theIterator = Iterator_t
       (free_when_done ? new FreeingItemSequenceWrapper(items) :
         new ItemSequenceWrapper(items));
+    theIterator->open();
     init_xqc();
   }
 
@@ -125,7 +130,7 @@ namespace zorbac {
       (((char*)xqc) - CLASS_OFFSET(CSequence, theXQCSeq));
   }
 
-  ResultIterator_t
+  Iterator_t
   CSequence::getCPPIterator()
   {
     return theIterator;
@@ -149,7 +154,7 @@ namespace zorbac {
     SEQ_TRY {
       me->theStrings.clear();
 
-      ResultIterator_t lIter = me->getCPPIterator();
+      Iterator_t lIter = me->getCPPIterator();
       if ( ! lIter->next(me->theItem) ) {
         return XQC_END_OF_SEQUENCE;
       }

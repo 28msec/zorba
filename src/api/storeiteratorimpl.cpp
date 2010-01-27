@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "api/iteratorimpl.h"
+#include "api/storeiteratorimpl.h"
 
 #include <zorba/item.h>
 
@@ -27,9 +27,9 @@
 
 namespace zorba {
 
-#define RESULT_ITERATOR_TRY try {
+#define STORE_ITERATOR_TRY try {
  
-#define RESULT_ITERATOR_CATCH                                  \
+#define STORE_ITERATOR_CATCH                                  \
 } catch (error::ZorbaError& /*e*/)                             \
 {                                                              \
   SYNC_CODE(                                                   \
@@ -62,7 +62,8 @@ catch (...)                                                    \
 } 
 
 
-IteratorImpl::IteratorImpl(store::Iterator_t aIter, ErrorHandler* aErrorHandler)
+StoreIteratorImpl::StoreIteratorImpl
+(store::Iterator_t aIter, ErrorHandler* aErrorHandler)
   :
   theIterator(aIter),
   theErrorHandler(aErrorHandler),
@@ -72,7 +73,7 @@ IteratorImpl::IteratorImpl(store::Iterator_t aIter, ErrorHandler* aErrorHandler)
 }
 
 
-IteratorImpl::~IteratorImpl()
+StoreIteratorImpl::~StoreIteratorImpl()
 {
   if (theIsOpened)
     theIterator->close();
@@ -83,9 +84,9 @@ IteratorImpl::~IteratorImpl()
 }
 
 
-void IteratorImpl::open()
+void StoreIteratorImpl::open()
 {
-  RESULT_ITERATOR_TRY
+  STORE_ITERATOR_TRY
     SYNC_CODE(
     if (!theHaveLock)
     {
@@ -98,13 +99,13 @@ void IteratorImpl::open()
       theIterator->open();
       theIsOpened = true;
     }
-  RESULT_ITERATOR_CATCH
+  STORE_ITERATOR_CATCH
 }
 
 
-bool IteratorImpl::next(Item& aItem)
+bool StoreIteratorImpl::next(Item& aItem)
 {
-  RESULT_ITERATOR_TRY
+  STORE_ITERATOR_TRY
     if (!theIsOpened)  
     {
       ZORBA_ERROR_DESC(API0010_XQUERY_EXECUTION_NOT_STARTED,
@@ -126,14 +127,14 @@ bool IteratorImpl::next(Item& aItem)
     aItem = &*lItem;
     return true;
 
-  RESULT_ITERATOR_CATCH
+  STORE_ITERATOR_CATCH
   return false;
 }
 
 
-void IteratorImpl::close()
+void StoreIteratorImpl::close()
 {
-  RESULT_ITERATOR_TRY
+  STORE_ITERATOR_TRY
     if (theIsOpened) {
       theIterator->reset();
     }
@@ -144,8 +145,7 @@ void IteratorImpl::close()
       GENV_STORE.getGlobalLock().unlock();
       theHaveLock = false;
     })
-  RESULT_ITERATOR_CATCH
+  STORE_ITERATOR_CATCH
 }
-
 
 } /* namespace zorba */

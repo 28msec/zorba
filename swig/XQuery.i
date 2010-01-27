@@ -17,21 +17,9 @@ public:
 }; // class Iterator
 
 
-class ResultIterator : public Iterator
-{
-public:
-  ResultIterator() {}
-  ResultIterator(const ResultIterator& aResultIterator) 
-    : Iterator(dynamic_cast<const Iterator&>(aResultIterator))   {}
-  ResultIterator(zorba::ResultIterator_t aResultIterator)
-    : Iterator(zorba::Iterator_t(aResultIterator.get())) {}
-}; // class ResultIterator
-
-
 class Item 
 {
   friend class Iterator;
-  friend class ResultIterator;
   friend class StaticContext;
   friend class DocumentURIResolver;
 
@@ -159,7 +147,7 @@ public:
 #endif
 
   void destroy() { theQuery = 0; }
-  ResultIterator iterator() { return ResultIterator(theQuery->iterator()); }
+  Iterator iterator() { return Iterator(theQuery->iterator()); }
 }; // class XQuery
 
 
@@ -209,10 +197,6 @@ public:
 }; // class Iterator
 
 
-class ResultIterator : public Iterator
-{
-}; // class ResultIterator
-
 
 class XQuery 
 {
@@ -226,7 +210,7 @@ public:
 #endif
 
   void destroy();
-  ResultIterator iterator();
+  Iterator iterator();
   void setVariableAsDocument(const std::string& aVarName, 
                              const std::string& aURL, 
                              const std::string& aContent);

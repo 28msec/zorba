@@ -28,7 +28,6 @@ namespace zorba {
   class DynamicContext;
   class XmlDataManager;
   class Iterator;
-  class ResultIterator;
   class StatelessExternalFunction;
   class ExternalModule;
   class TypeIdentifier;
@@ -49,7 +48,6 @@ namespace zorba {
   // smart pointers
   typedef zorba::SmartPtr<XQuery>                     XQuery_t;
   typedef zorba::SmartPtr<StaticContext>              StaticContext_t;
-  typedef zorba::SmartPtr<ResultIterator>             ResultIterator_t;
   typedef zorba::SmartPtr<Iterator>                   Iterator_t;
   typedef zorba::SmartPtr<TypeIdentifier>             TypeIdentifier_t;
   typedef zorba::SmartPtr<Collection>                 Collection_t;

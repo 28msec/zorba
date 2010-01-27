@@ -23,6 +23,7 @@
 #include "capi/csequence.h"
 #include "capi/user_item_sequence.h"
 #include "capi/error.h"
+#include "capi/single_item_sequence.h"
 
 #include "api/staticcontextimpl.h"
 #include "api/xqueryimpl.h"
@@ -162,34 +163,6 @@ namespace zorbac {
     data.release();
     (*seq) = lSeq.release()->getXQC();
   }
-
-  /**
-   * Alternate custom ItemSequence for a singleton Item. This is used
-   * for the various parse_document() methods, not
-   * create_singleton_seqeunce().
-   */
-  class SingleItemSequence : public ItemSequence {
-    public:
-      SingleItemSequence(Item aItem) {
-        theItem = aItem;
-        done = false;
-      }
-
-      virtual bool
-      next(Item& i) {
-        if (done) {
-          return false;
-        }
-        i = theItem;
-        done = true;
-        return true;
-      }
-
-    private:
-      Item theItem;
-      bool done;
-  };
-
 
   /**
    * Utility method to read an XQC_InputStream to a std::stringstream.
@@ -403,7 +376,7 @@ namespace zorbac {
     std::auto_ptr<SingleItemSequence> lItemSeq(new SingleItemSequence(lDoc));
     // Wrap in a CSequence to produce an XQC_Sequence. We pass "true"
     // to make CSequence assume memory-management responsibility for
-    // the UserItemSequence.
+    // the SingleItemSequence.
     std::auto_ptr<CSequence> lSeq(new CSequence(lItemSeq.get(), true, NULL));
 
     lItemSeq.release();

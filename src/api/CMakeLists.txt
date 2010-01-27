@@ -31,12 +31,11 @@ SET(API_SRCS
     typeidentimpl.cpp
     unmarshaller.cpp
     xmldatamanagerimpl.cpp
-    resultiteratorchainer.cpp
     collectionimpl.cpp
     options.cpp
     functionimpl.cpp
     external_function_data.cpp
-    iteratorimpl.cpp
+    storeiteratorimpl.cpp
     vectoriterator.cpp
     debugger_event_handlerimpl.cpp
     default_debugger_event_handlerimpl.cpp

@@ -51,29 +51,29 @@ class ZORBA_DLL_PUBLIC DynamicContext
   setVariable( const String& aQName, const Item& aItem ) = 0;
   
   /** \brief Defines the external variable identified by an expanded QName and assigns it the sequence
-   *         that is returned by evaluating aResultIterator.
+   *         that is returned by evaluating aIterator.
    *
    * @param aNamespace the namespace URI of the variable's expanded QName
    * @param aLocalname the local name of the variable's expanded QName
-   * @param aResultIterator the ResultIterator producing the sequence that is assigned 
+   * @param aIterator the Iterator producing the sequence that is assigned 
    *        to the variable.
    * @return true if the variable has been set successfully, false otherwise.
-   * @throw ZorbaException if an error occured (e.g. the given ResultIterator is not valid).
+   * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
    */
   virtual bool
-  setVariable( const String& aNamespace, const String& aLocalname, const ResultIterator_t& aResultIterator ) = 0;
+  setVariable( const String& aNamespace, const String& aLocalname, const Iterator_t& aIterator ) = 0;
   
   /** \brief Defines the external variable identified by aQName and assigns it the sequence
-   *         that is returned by evaluating aResultIterator.
+   *         that is returned by evaluating aIterator.
    *
    * @param aQName the QName that identifies the external variable.
-   * @param aResultIterator the ResultIterator producing the sequence that is assigned 
+   * @param aIterator the Iterator producing the sequence that is assigned 
    *        to the variable.
    * @return true if the variable has been set successfully, false otherwise.
-   * @throw ZorbaException if an error occured (e.g. the given ResultIterator is not valid).
+   * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
    */
   virtual bool
-  setVariable( const String& aQName, const ResultIterator_t& aResultIterator ) = 0;
+  setVariable( const String& aQName, const Iterator_t& aIterator ) = 0;
   
   /** \brief Defines the external variable identified by aQName and assigns it the 
    *         the document that results from reading and parsing the given istream.
@@ -87,7 +87,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    *        be validated in strict or lax mode using the in-scope schema definitions
    *        that are found in the query's static context.
    * @return true if the variable has been set successfully, false otherwise.
-   * @throw ZorbaException if an error occured (e.g. the given ResultIterator
+   * @throw ZorbaException if an error occured (e.g. the given Iterator
    *        is not valid).
    */
   virtual bool
@@ -107,14 +107,31 @@ class ZORBA_DLL_PUBLIC DynamicContext
    *        be validated in strict or lax mode using the in-scope schema definitions
    *        that are found in the query's static context.
    * @return true if the variable has been set successfully, false otherwise.
-   * @throw ZorbaException if an error occured (e.g. the given ResultIterator 
+   * @throw ZorbaException if an error occured (e.g. the given Iterator 
    *        is not valid).
    */
   virtual bool
   setVariableAsDocument( const String& aQName,
                          const String& xml_uri,
                          validation_mode_t aMode = validate_skip) = 0;
-  
+
+  /** \brief Returns the current value of an external
+   * variable. Exactly one of the two return values (aItem or
+   * aIterator) will be non-null; that is, have isNull() == false.
+   *
+   * @param aNamespace the namespace URI of the variable's expanded QName
+   * @param aLocalname the local name of the variable's expanded QName
+   * @param aItem an Item representing the current (single-item) value of
+   *  the external variable.
+   * @param aIterator an Iterator representing the current (possibly
+   *  multi-item) value of the external variable.
+   * @return true if the variable has been retrieved successfully, false otherwise.
+   * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
+   */
+  virtual bool
+  getVariable( const String& aNamespace, const String& aLocalname,
+    Item& aItem, Iterator_t& aIterator) = 0;
+
   /** \brief Defines the context item.
    *
    * @param aItem the Item that is used as value for the context item.
@@ -149,6 +166,15 @@ class ZORBA_DLL_PUBLIC DynamicContext
   virtual bool
   setContextItemAsDocument ( const String& aDocURI ) = 0;
   
+  /** \brief Returns the current value of the context item.
+   *
+   * @param aItem an Item representing the current value of the context item.
+   * @return true if the variable has been retrieved successfully, false otherwise.
+   * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
+   */
+  virtual bool
+  getContextItem( Item& aItem ) = 0;
+
   /** \brief Defines the value of the current date time that can be accessed by the
    *         fn:current-dateTime() function at the time the query is executed.
    *

@@ -63,7 +63,7 @@ msdom_store_example_1(Zorba* aZorba)
   lCtx->setVariableAsDocument("var", "books.xml", lDocStream);
 
   try {
-    ResultIterator_t    result;
+    Iterator_t    result;
     //get an iterator over the result items
     //the actual execution will be performed when asking for the next item
     result = lQuery->iterator();

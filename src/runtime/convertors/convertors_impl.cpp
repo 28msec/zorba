@@ -1037,7 +1037,7 @@ bool csv_write_line(store::Item_t node,
     zorba::Item     node_item(node.getp());
     zorba::Item     column_item;
     store::Item*    store_column;
-    zorba::ResultIterator_t   result_it;
+    zorba::Iterator_t   result_it;
     for(xpaths_it = xpaths.begin(); xpaths_it != xpaths.end(); xpaths_it++)
     {
       xQuery = engine->createQuery();

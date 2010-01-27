@@ -81,7 +81,7 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
   addNode(Item& aNode) = 0;
   
   /** 
-   * \brief Adds copies of the nodes retrieved from the given ResultIterator to
+   * \brief Adds copies of the nodes retrieved from the given Iterator to
    * the Collection. The copy is deep, i.e., the whole tree rooted at each 
    * retrieved node is copied.
    *
@@ -89,12 +89,12 @@ class ZORBA_DLL_PUBLIC Collection : public SmartObject
    * - construction mode == preserve, 
    * - copy-namespace modes == preserve & inherit
    *
-   * @param aResultIterator the ResultIterator that produces the nodes to add.
-   * @return true if all the nodes of the given ResultIterator were added to
+   * @param aIterator the Iterator that produces the nodes to add.
+   * @return true if all the nodes of the given Iterator were added to
    * the Collection, false otherwise.
    */
   virtual bool
-  addNodes(const ResultIterator* aResultIterator) = 0;
+  addNodes(const Iterator_t& aIterator) = 0;
 
   /** 
    * \brief Removes the given node from the collection.

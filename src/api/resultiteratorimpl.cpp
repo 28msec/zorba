@@ -21,6 +21,7 @@
 #include "system/globalenv.h"
 
 #include "api/resultiteratorimpl.h"
+#include "api/unmarshaller.h"
 #include "api/xqueryimpl.h"
 #include "api/zorbaimpl.h"
 
@@ -30,10 +31,9 @@
 
 #include "store/api/item.h"
 #include "store/api/store.h"
-
+#include "common/shared_types.h"
 
 namespace zorba {
-
 
 #define RESULT_ITER_TRY try
  
@@ -173,6 +173,5 @@ ResultIteratorImpl::close()
   }
   RESULT_ITER_CATCH
 }
-
 
 } /* namespace zorba */

@@ -80,12 +80,17 @@ public:
   virtual bool
   setVariable(
         const String& aQName,
-        const ResultIterator_t& aResultIterator);
+        const Iterator_t& aIterator);
 
   virtual bool
   setVariable(
     const String& aNamespace, const String& aLocalname,
-        const ResultIterator_t& aResultIterator);
+    const Iterator_t& aIterator);
+
+  virtual bool
+  getVariable(
+    const String& aNamespace, const String& aLocalname, Item& aItem,
+    Iterator_t& aIterator);
 
   virtual bool
   setVariableAsDocument(
@@ -104,6 +109,9 @@ public:
 
   virtual bool
   setContextItemAsDocument(const String& aDocURI);
+
+  virtual bool
+  getContextItem(Item& aItem);
 
   virtual bool
   setCurrentDateTime( const Item& aDateTimeItem );

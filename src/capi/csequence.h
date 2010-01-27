@@ -17,7 +17,6 @@
 #define ZORBAC_CSEQUENCE_H
 
 #include <zorba/zorbac.h>
-#include <zorba/result_iterator.h>
 #include <zorba/item.h>
 #include <vector>
 
@@ -56,7 +55,7 @@ namespace zorbac {
       static void
       free(XQC_Sequence* sequence);
 
-      CSequence(ResultIterator_t iter, XQC_ErrorHandler* handler);
+      CSequence(Iterator_t iter, XQC_ErrorHandler* handler);
       CSequence(ItemSequence* items, bool free_when_done,
         XQC_ErrorHandler* handler);
 
@@ -65,7 +64,7 @@ namespace zorbac {
       static CSequence*
       get(const XQC_Sequence* sequence);
 
-      ResultIterator_t
+      Iterator_t
       getCPPIterator();
 
       Item
@@ -83,7 +82,7 @@ namespace zorbac {
       // they are valid until next() is called
       std::vector<zorba::String> theStrings;
       Item                       theItem;
-      ResultIterator_t           theIterator;
+      Iterator_t                 theIterator;
       XQC_ErrorHandler*          theErrorHandler;
   }; /* class Sequence */
 

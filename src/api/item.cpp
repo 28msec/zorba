@@ -26,7 +26,7 @@
 
 #include "api/zorbaimpl.h"
 #include "api/serialization/serializer.h"
-#include "api/iteratorimpl.h"
+#include "api/storeiteratorimpl.h"
 
 #include "store/api/item.h"
 #include "store/api/store.h"
@@ -338,7 +338,7 @@ Item::getChildren() const
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     // TODO, we should have an error handler here
-    return new IteratorImpl(m_item->getChildren(), 0);
+    return new StoreIteratorImpl(m_item->getChildren(), 0);
 
   ITEM_CATCH
   return NULL;
@@ -351,7 +351,7 @@ Item::getAttributes() const
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
     // TODO, we should have an error handler here
-    return new IteratorImpl(m_item->getAttributes(), 0);
+    return new StoreIteratorImpl(m_item->getAttributes(), 0);
 
   ITEM_CATCH
   return NULL;

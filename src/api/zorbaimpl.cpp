@@ -23,7 +23,6 @@
 #include "api/itemfactoryimpl.h"
 #include "api/unmarshaller.h"
 #include "api/xmldatamanagerimpl.h"
-#include "api/iteratorimpl.h"
 #include "api/vectoriterator.h"
 
 #include "zorbautils/fatal.h"

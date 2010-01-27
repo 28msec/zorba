@@ -144,10 +144,10 @@ namespace zorba {
 
       /** \brief Get an iterator for the result of the query.
         *
-        * @return ResultIterator iterator over the result sequence.
+        * @return Iterator iterator over the result sequence.
         * @throw ZorbaException if an error occurs (e.g. the query is closed or has not been compiled).
         */
-      virtual ResultIterator_t
+      virtual Iterator_t
       iterator() = 0;
 
       /** \brief Get the dynamic context of this query.
@@ -158,7 +158,7 @@ namespace zorba {
        * the default collation, or the current datetime.
        * It is only available if the query has been compiled, otherwise
        * an error is reported. Moreover, the context must not be modified during the
-       * execution of a query (i.e. if a ResultIterator is opened).
+       * execution of a query (i.e. if a Iterator is opened).
        * The lifetime of the context returned by this function is restricted
        * by the lifetime of the according query object.
        *
