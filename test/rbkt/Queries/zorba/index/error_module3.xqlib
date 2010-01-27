@@ -11,6 +11,6 @@ import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 declare collection idx:auctions as node()*;
 
 
-declare value range index idx:foo 
+declare value range manually maintained index idx:foo 
 on nodes (xqddf:collection(xs:QName("idx:auctions"))/site/people/person, "1")
 by fn:data(./@id) as xs:string;

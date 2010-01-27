@@ -52,11 +52,13 @@ An <strong>XQDDF collection</strong> is defined as an ordered set of documents t
 
 Like a W3C collection, an XQDDF collection can also be viewed as a sequence of nodes: it is the sequence containing the root nodes of the documents that belong to the collection (and as we will see later, the function xqddf:collection returns exactly this sequence of nodes). However, even when viewed as sequences of nodes, XQDDF collections differ from W3C collections in the following ways:
 
-  * They contain parent-less nodes only.
-  * They can not contain any duplicate nodes.
-  * Their nodes are in document order.
-  * A node can not be contained in more than one XQDDF collection.
-  * XQDDF collections are identified by QNames, whereas W3C collections are identified by URIs.
+<ul>
+  <li>They contain parent-less nodes only.</li>
+  <li>They can not contain any duplicate nodes.</li>
+  <li>Their nodes are in document order.</li>
+  <li>A node can not be contained in more than one XQDDF collection.</li>
+  <li>XQDDF collections are identified by QNames, whereas W3C collections are identified by URIs.</li>
+</ul>
 
 For brevity, in the remaining of this document we will the term "collection" to mean XQDDF collection. For backward compatibility with the W3C XQuery specification, Zorba 1.0 retains some basic support for W3C collections (see section \ref w3c_collections). However, users are encouraged to use XQDDF collections instead.
 
@@ -88,7 +90,7 @@ In this example, the declarations are placed inside the "news-data" library modu
   declare variable $news-data:months := xs:QName("news-data:months");
 \endcode
 
-Having been declared, the collections can now be created. <strong>Collection creation</strong> is illustrated by the "admin-script-1" script shown below. First, the collection descriptions must be made visible to the script. This is done by importing the "news-data" module that contains the collection declarations. Then, the collections are created by calling the xqddf:create-collection function. There are two versions of this function: the first takes a QName as input and the second takes both a QName and a node-producing expression. In the first version, an empty document container is created by Zorba's storage system and registered inside a <strong>collections table</strong> that maps collection names to document containers. In the second version, the given expression is evaluated first, and (deep) copies are made of the nodes in the result sequence. This way, a sequence of distinct documents is produced. This is called the "insertion sequence". Then, as in the first version of the function, the document container is created and registered. Finally, the container is populated with the documents in the insertion sequence. In "admin-script-1", this second version is used to create and initialize the months collection. In fact, months <u>must<u> be initialized during creation because it is a constant collection, so no documents can be added to it later. The months are inserted in the collection in the order from January to December, and since the collection was declared as ordered, this order is preserved by the associated document container.
+Having been declared, the collections can now be created. <strong>Collection creation</strong> is illustrated by the "admin-script-1" script shown below. First, the collection descriptions must be made visible to the script. This is done by importing the "news-data" module that contains the collection declarations. Then, the collections are created by calling the xqddf:create-collection function. There are two versions of this function: the first takes a QName as input and the second takes both a QName and a node-producing expression. In the first version, an empty document container is created by Zorba's storage system and registered inside a <strong>collections table</strong> that maps collection names to document containers. In the second version, the given expression is evaluated first, and (deep) copies are made of the nodes in the result sequence. This way, a sequence of distinct documents is produced. This is called the "insertion sequence". Then, as in the first version of the function, the document container is created and registered. Finally, the container is populated with the documents in the insertion sequence. In "admin-script-1", this second version is used to create and initialize the months collection. In fact, months must be initialized during creation because it is a constant collection, so no documents can be added to it later. The months are inserted in the collection in the order from January to December, and since the collection was declared as ordered, this order is preserved by the associated document container.
  
 \code
   (: "admin-script-1" :)
@@ -205,14 +207,18 @@ Creation of a collection involves creating an initially empty document container
 
 The function is evaluated as follows:
 
-  * If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].
-  * If the given expanded QName identifies a collection that is available already, an error is raised [err:XDDY0002]
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:createCollection($collectionName).
+  <ul>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
+  <li>If the given expanded QName identifies a collection that is available already, an error is raised [err:XDDY0002].</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:createCollection($collectionName).</li>
+  </ul>
 
 The update primitive is applied as follows:
 
-  * An empty document container is created.
-  * A entry is added to the collections table. The entry maps the collection's expanded QName to the document container.
+  <ul>
+  <li>An empty document container is created.</li>
+  <li>A entry is added to the collections table. The entry maps the collection's expanded QName to the document container.</li>
+  </ul>
 
 The second create-collection function creates the collection and populates it with an initial set of trees.
 
@@ -222,11 +228,13 @@ The second create-collection function creates the collection and populates it wi
 
 The function is evaluated as follows:
 
-  * If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].
-  * If the given expanded QName identifies a collection that is available already, an error is raised [err:XDDY0002]
-  * The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the root static type specified in the collection declaration, a type error is raised [err:XDTY0001]. 
-  * Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a root (parent-less) node that does not belong to any collection and is distinct from any other node in $nodes.
-  * The result of the function is an empty XDM instance and a pending update list that consists of the following update primitives: upd:createCollection($collectionName) and upd:insertNodesFirst($collectionName, $nodes)
+  <ul>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
+  <li>If the given expanded QName identifies a collection that is available already, an error is raised [err:XDDY0002].</li>
+  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the root static type specified in the collection declaration, a type error is raised [err:XDTY0001].</li>
+  <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a root (parent-less) node that does not belong to any collection and is distinct from any other node in $nodes.</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of the following update primitives: upd:createCollection($collectionName) and upd:insertNodesFirst($collectionName, $nodes)</li>
+  </ul>
 
 The upd:createCollection primitive was described above. The upd:insertNodesFirst will be described in \ref updating_collections, in the context of the xqddf:insert-nodes-first function.
 
@@ -240,9 +248,11 @@ To access the root nodes of a collection, XQDDF provides the xqddf:collection fu
 
 The function is evaluated as follows:
 
-  * If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].
-  * If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003]
-  * The result of the function is a sequence consisting of the root nodes in the collection. If the collection is declared as ordered, the ordering of the nodes in the result will reflect the order into which nodes were inserted in the collection by the XQDDF node insertion functions (see \ref updating_collections). If the collection is declared as unordered, the ordering of the nodes in the result is implementation-dependent. In both cases, the nodes in the sequence are, by definition, in document order. For unordered collections, this document ordering is guaranteed to be stable within a query snapshot (i.e., until the next time updates are applied). For ordered collections, the document ordering is stable "forever" (i.e., two root nodes in the collection will compare the same as long as the collection (and the nodes) exist).
+  <ul>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
+  <li>The result of the function is a sequence consisting of the root nodes in the collection. If the collection is declared as ordered, the ordering of the nodes in the result will reflect the order into which nodes were inserted in the collection by the XQDDF node insertion functions (see \ref updating_collections). If the collection is declared as unordered, the ordering of the nodes in the result is implementation-dependent. In both cases, the nodes in the sequence are, by definition, in document order. For unordered collections, this document ordering is guaranteed to be stable within a query snapshot (i.e., until the next time updates are applied). For ordered collections, the document ordering is stable "forever" (i.e., two root nodes in the collection will compare the same as long as the collection (and the nodes) exist).</li>
+  </ul>
 
 Another non-updating XQDDF function that accesses a collection implicitly, is the index-of function: 
 
@@ -252,11 +262,12 @@ declare function xqddf:index_of($collectionName as xs:QName, $node as node()) as
 
 The function is evaluated as follows:
 
-  * If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].
-  * If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].
-  * The expression that appears as the second argument in the function call is evaluated. The result of this evaluation must be a single node. If this node is not a root node of the collection, an error is raised [err:XDDY0011]
-  * The result of this function is the position as xs:integer of the given node within the specified collection.
-
+  <ul>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
+  <li>The expression that appears as the second argument in the function call is evaluated. The result of this evaluation must be a single node. If this node is not a root node of the collection, an error is raised [err:XDDY0011].</li>
+  <li>The result of this function is the position as xs:integer of the given node within the specified collection.</li>
+  </ul>
 
 \subsection updating_collections 1.5 Updating Collections
 
@@ -270,17 +281,21 @@ upd:insertIntoCollection($collectionName as xs:QName, $nodes as node()*)
 
 The insert-nodes function is evaluated as follows:
 
-  * If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].
-  * If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].
-  * If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0005, or err:XDDY0006, respectively].
-  * The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [err:XDTY0001].
-  * Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertIntoCollection($collectionName, $nodes).
+  <ul>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0005, or err:XDDY0006, respectively].</li>
+  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [err:XDTY0001].</li>
+  <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertIntoCollection($collectionName, $nodes).</li>
+  </ul>
 
 The update primitive is applied as follows: 
 
-  * The document container for the collection is found via the collections table. 
-  * The root nodes in $nodes are inserted into the container. If the collection is an ordered one, then all the nodes are inserted next to each other and in the same order as they appear in $nodes. The position of the first node to be inserted is implementation-dependent. The relative positions of pre-existing root nodes do not change as a result of the insertions. If the collection is an unordered one, each node is inserted in some implementation-dependent position. Furthermore, the relative positions of pre-existing root nodes may change as a result of the insertions.
+  <ul>
+  <li>The document container for the collection is found via the collections table.</li>
+  <li>The root nodes in $nodes are inserted into the container. If the collection is an ordered one, then all the nodes are inserted next to each other and in the same order as they appear in $nodes. The position of the first node to be inserted is implementation-dependent. The relative positions of pre-existing root nodes do not change as a result of the insertions. If the collection is an unordered one, each node is inserted in some implementation-dependent position. Furthermore, the relative positions of pre-existing root nodes may change as a result of the insertions.</li>
+  </ul>
 
 \code
 declare updating function xqddf:insert-nodes-first($collectionName as xs:QName, $nodes as node()*)
@@ -290,18 +305,22 @@ upd:insertFirstIntoCollection($collectionName as xs:QName, $nodes as node()*)
 
 The insert-nodes-first function is evaluated as follows:
 
-  * If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].
-  * If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].
-  * If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0005, or err:XDDY0006, respectively].
-  * If the collection is unordered, an error is raised [err:XDDY0012].
-  * The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [err:XDTY0001].
-  * Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertFirstIntoCollection($collectionName, $nodes).
+  <ul>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0005, or err:XDDY0006, respectively].</li>
+  <li>If the collection is unordered, an error is raised [err:XDDY0012].</li>
+  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [err:XDTY0001].</li>
+  <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertFirstIntoCollection($collectionName, $nodes).</li>
+  </ul>
 
 The update primitive is applied as follows: 
 
-  * The document container for the collection is found via the collections table. 
-  * The root nodes in $nodes are inserted at the "beginning" of the container. Specifically, the first node is inserted at position 1, and the rest of the nodes are inserted after the first one and in the same order as they appear in $nodes. 
+  <ul>
+  <li>The document container for the collection is found via the collections table. </li>
+  <li>The root nodes in $nodes are inserted at the "beginning" of the container. Specifically, the first node is inserted at position 1, and the rest of the nodes are inserted after the first one and in the same order as they appear in $nodes. </li>
+  </ul>
 
 \code
 declare updating function xqddf:insert-nodes-last($collectionName as xs:QName, $nodes as node()*)
@@ -311,13 +330,17 @@ upd:insertLastIntoCollection($collectionName as xs:QName, $nodes as node()*)
 
 The insert-nodes-last function is evaluated the same way as the insert-nodes-first function except:
 
-  * If the collection is append-only or queue, the insertion is allowed (i.e., the errors XDDY0005 or XDDY0006 are not raised).
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertLastIntoCollection($collectionName, $nodes).
+  <ul>
+  <li>If the collection is append-only or queue, the insertion is allowed (i.e., the errors XDDY0005 or XDDY0006 are not raised).</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertLastIntoCollection($collectionName, $nodes).</li>
+  </ul>
 
 The update primitive is applied as follows: 
 
-  * The document container for the collection is found via the collections table. 
-  * The root nodes in $nodes are inserted at the "end" of the container. Specifically, the first node is inserted after the last existing node, and rest of the nodes are inserted after the first one and in the same order as they appear in $nodes.
+  <ul>
+  <li>The document container for the collection is found via the collections table.</li>
+  <li>The root nodes in $nodes are inserted at the "end" of the container. Specifically, the first node is inserted after the last existing node, and rest of the nodes are inserted after the first one and in the same order as they appear in $nodes.</li>
+  </ul>
 
  \code
 declare updating function xqddf:insert-nodes-before($collectionName as xs:QName, $target as node(), $nodes as node()*)
@@ -327,19 +350,23 @@ upd:insertBeforeIntoCollection($collectionName as xs:QName, $target as node(), $
 
 The insert-nodes-before function is evaluated as follows:
 
-  * If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].
-  * If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].
-  * If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0005, or err:XDDY0006, respectively].
-  * If the collection is unordered, an error is raised [err:XDDY0012].
-  * The expression that appears as the second argument to the function call is evaluated. The expression must return a single node, called the target node. If the target node is not a root node that belongs to the collection, an error is raised [err:XDDY0011].
-  * The expression that is given as the third argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [err:XDTY0001].
-  * Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertBeforeIntoCollection($collectionName, $target, $nodes).
+  <ul>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0005, or err:XDDY0006, respectively].</li>
+  <li>If the collection is unordered, an error is raised [err:XDDY0012].</li>
+  <li>The expression that appears as the second argument to the function call is evaluated. The expression must return a single node, called the target node. If the target node is not a root node that belongs to the collection, an error is raised [err:XDDY0011].</li>
+  <li>The expression that is given as the third argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [err:XDTY0001].</li>
+  <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertBeforeIntoCollection($collectionName, $target, $nodes).</li>
+  </ul>
 
 The update primitive is applied as follows: 
 
-  * The document container for the collection is found via the collections table. 
-  * The root nodes in $nodes are inserted into the container before the given target node. Specifically, if the target node is at position K, the first node is inserted at position K, and rest of the nodes are inserted after the first one and in the same order as they appear in $nodes. After the insertion, the target node will at position K+N, where N is the number of nodes in $nodes.
+  <ul>
+  <li>The document container for the collection is found via the collections table.</li>
+  <li>The root nodes in $nodes are inserted into the container before the given target node. Specifically, if the target node is at position K, the first node is inserted at position K, and rest of the nodes are inserted after the first one and in the same order as they appear in $nodes. After the insertion, the target node will at position K+N, where N is the number of nodes in $nodes.</li>
+  </ul>
 
 \code
 declare updating function xqddf:insert-nodes-after($collectionName as xs:QName, $target as node(), $nodes as node()*)
@@ -349,12 +376,16 @@ upd:insertAfterIntoCollection($collectionName as xs:QName, $target as node(), $n
 
 The insert-nodes-after function is evaluated the same way as the insert-nodes-before function except:
 
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertAfterIntoCollection($collectionName, $target, $nodes).
+  <ul>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertAfterIntoCollection($collectionName, $target, $nodes).</li>
+  </ul>
 
 The update primitive is applied as follows: 
 
-  * The document container for the collection is found via the collections table. 
-  * The root nodes in $nodes are inserted into the container after the given target node. Specifically, if the target node is at position K, the first node is inserted at position K+1, and rest of the nodes are inserted after the first one and in the same order as they appear in $nodes.
+  <ul>
+  <li>The document container for the collection is found via the collections table.</li>
+  <li>The root nodes in $nodes are inserted into the container after the given target node. Specifically, if the target node is at position K, the first node is inserted at position K+1, and rest of the nodes are inserted after the first one and in the same order as they appear in $nodes.</li>
+  </ul>
 
 \code
 declare updating function xqddf:delete-nodes($collectionName as xs:QName, $nodes as xs:node()*)
@@ -364,16 +395,20 @@ upd:deleteFromCollection($collectionName as xs:QName, $nodes as xs:node()*)
 
 The delete-nodes function is evaluated as follows:
 
-  * If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].
-  * If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].
-  * If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0007, or errXDDY009 respectively].
-  * The expression that appears as the second argument to the function call is evaluated. The result of this evaluation is called the deletion sequence. If there is any node in the deletion sequence that is not a root node belonging to the collection, an error is raised [err:XDDY0011]. Let $nodes be the deletion sequence.
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).
+  <ul>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0007, or errXDDY009 respectively].</li>
+  <li>The expression that appears as the second argument to the function call is evaluated. The result of this evaluation is called the deletion sequence. If there is any node in the deletion sequence that is not a root node belonging to the collection, an error is raised [err:XDDY0011]. Let $nodes be the deletion sequence.</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).</li>
+  </ul>
 
 The update primitive is applied as follows: 
 
-  * The document container for the collection is found via the collections table. 
-  * Each document that is rooted at a node in $nodes is removed from the container, if it is still there (earlier delete primitives in the same PUL may have deleted the tree already). If there are no variables that are bound to any of the document's nodes, the document is destroyed. Otherwise, the document will be destroyed as soon as there are no variables bound to any of its nodes. 
+  <ul>
+  <li>The document container for the collection is found via the collections table. </li>
+  <li>Each document that is rooted at a node in $nodes is removed from the container, if it is still there (earlier delete primitives in the same PUL may have deleted the tree already). If there are no variables that are bound to any of the document's nodes, the document is destroyed. Otherwise, the document will be destroyed as soon as there are no variables bound to any of its nodes. </li>
+  </ul>
 
 \code
 declare updating function xqddf:delete-nodes-first($collectionName as xs:QName, $number as xs:unsignedLong)
@@ -381,13 +416,15 @@ declare updating function xqddf:delete-nodes-first($collectionName as xs:QName, 
 
 The delete-nodes-first function is evaluated as follows:
 
-  * If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].
-  * If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].
-  * If the update mode of the collection is const, or append-only, an error is raised [err:XDDY0004 or err:XDDY007, respectively].
-  * The expression that appears as the second argument to the function call is evaluated, producing a single positive integer. Let $number be that integer.
-  * If the collection has fewer than $number nodes, an error is raised [err:XDDY0011].
-  * Let $nodes be the sequence consisting of the first $number root nodes in the collection.
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).
+  <ul>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
+  <li>If the update mode of the collection is const, or append-only, an error is raised [err:XDDY0004 or err:XDDY007, respectively].</li>
+  <li>The expression that appears as the second argument to the function call is evaluated, producing a single positive integer. Let $number be that integer.</li>
+  <li>If the collection has fewer than $number nodes, an error is raised [err:XDDY0011].</li>
+  <li>Let $nodes be the sequence consisting of the first $number root nodes in the collection.</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).</li>
+  </ul>
 
 \code
 declare updating function xqddf:delete-node-first($collectionName as xs:QName)
@@ -401,13 +438,15 @@ declare updating function xqddf:delete-nodes-last($collectionName as xs:QName, $
 
 The delete-nodes-last function is evaluated as follows:
 
-  * If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].
-  * If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].
-  * If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY007, or err:XDDY0009, respectively].
-  * The expression that appears as the second argument to the function call is evaluated, producing a single positive integer. Let $number be that integer.
-  * If the collection has fewer than $number nodes, an error is raised [err:XDDY0011].
-  * Let $nodes be the sequence consisting of the last $number root nodes in the collection.
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).
+  <ul>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY007, or err:XDDY0009, respectively].</li>
+  <li>The expression that appears as the second argument to the function call is evaluated, producing a single positive integer. Let $number be that integer.</li>
+  <li>If the collection has fewer than $number nodes, an error is raised [err:XDDY0011].</li>
+  <li>Let $nodes be the sequence consisting of the last $number root nodes in the collection.</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).</li>
+  </ul>
 
 \code
 declare updating function xqddf:delete-node-last($collectionName as xs:QName)
@@ -428,19 +467,23 @@ To destroy a collection, XQDDF provides the delete-collection updating function.
 
 The delete-collection function is evaluated as follows:
 
-  * If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].
-  * If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteCollection($collectionName).
+  <ul>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteCollection($collectionName).</li>
+  </ul>
 
 The update primitive is applied as follows:
 
-  * If there is any available index whose domain expression or any of its key expressions reference the collection, an error is raised [err:XDDY0013].
-  * If there is any active integrity constraint on the collection, an error is raised [err:XDDY0014].
-  * If there is any in-scope variable that references any node in the collection, an error is raised [err:XDDY0016].
-  * The document container for the collection is found via the collections table. 
-  * All documents in the container are destroyed.
-  * The container itself is destroyed.
-  * The entry mapping the collection name to its container is removed from the collections table.
+  <ul>
+  <li>If there is any available index whose domain expression or any of its key expressions reference the collection, an error is raised [err:XDDY0013].</li>
+  <li>If there is any active integrity constraint on the collection, an error is raised [err:XDDY0014].</li>
+  <li>If there is any in-scope variable that references any node in the collection, an error is raised [err:XDDY0016].</li>
+  <li>The document container for the collection is found via the collections table.</li>
+  <li>All documents in the container are destroyed.</li>
+  <li>The container itself is destroyed.</li>
+  <li>The entry mapping the collection name to its container is removed from the collections table.</li>
+  </ul>
 
 \subsection w3c_collections 1.7 W3C Collections
 
@@ -633,16 +676,30 @@ The usage property specifies the kind of query expressions that may be optimized
 The maintenance mode specifies how index maintenance is done. Zorba 1.0 offers two maintenance modes: manual and automatic. For a <strong>manual index</strong>, maintenance is done only when the function ddf:refresh-index (described in \ref index_maintenance) is invoked inside a query. Essentially, in manual mode maintenance is in the control of the query programmers, and the index may become stale between two consecutive calls to the ddf:refresh-index function. In contrast, for an <strong>automatic index</strong>, Zorba guarantees that the index stays up-to-date at any given time.
 
 The index declaration syntax is very liberal with respect to the expressions that can appear as domain or key expressions. However, the following semantic restrictions are imposed by Zorba 1.0 on the domain expression and each of the key expressions:
-  * They must be deterministic expressions [err:XDST0028].
-  * They must be simple expressions (i.e., not updating or sequential) [err:XDST0033].
-  * They must not invoke any input functions other than xqddf:collection [err:XDST0029]. Moreover, the argument to each xqddf:collection call must be a constant expression returning a QName value [err:XDST0030]. (A constant expression is an expression that doesn't access the dynamic context).
-  * They must not reference and variables other than the ones defined inside the expressions themselves [err:XDST0031].
+  <ul>
+  <li>They must be deterministic expressions [err:XDST0028].</li>
+  <li>They must be simple expressions (i.e., not updating or sequential)
+      [err:XDST0033].</li>
+  <li>They must not invoke any input functions other than xqddf:collection
+      [err:XDST0029]. Moreover, the argument to each xqddf:collection call must
+      be a constant expression returning a QName value [err:XDST0030]. (A constant
+      expression is an expression that doesn't access the dynamic context).</li>
+  <li>They must not reference and variables other than the ones defined inside the
+      expressions themselves [err:XDST0031].</li>
+  <li>If the index is declared as "automatically maintained", an error is raised
+      [err:XDST0034] if the domain and/or the key expressions are too complex for
+      Zorba to perform index maintenance in an efficient manner (see \ref 
+      index_maintenance for details)
+  </ul>
 
-Furthermore, the domain expression must satisfy the following additional semantic restrictions:
+Furthermore, the domain expression must satisfy the following additional semantic
+restrictions:
 
-  * Its context item, context position, and context size are considered undefined, and as a result they must not be referenced [err:XDST0032].
-  * It must generate a sequence of nodes [err:XDTY0010].
-  * Each domain node in the domain sequence must belong to a collection that appears in the available collections of the module that contains the index declaration [err:XDDY0021].
+  <ul>
+  <li>Its context item, context position, and context size are considered undefined, and as a result they must not be referenced [err:XDST0032].</li>
+  <li>It must generate a sequence of nodes [err:XDTY0010].</li>
+  <li>Each domain node in the domain sequence must belong to a collection that appears in the available collections of the module that contains the index declaration [err:XDDY0021].</li>
+  </ul>
 
 With each key expression, an index declaration associates a key type and a key collation. The triplet IndexKeyExpr, IndexKeyTypeDecl, IndexKeyCollation is called a <strong>keyspec</strong>. The IndexKeyTypeDecl provides an atomic type that the result of the associated key expression (for each domain node) must match with according to the rules of sequence type matching. This atomic type must not be xs:untypedAtomic or xs:anyAtomicType [err:XDST0027]. Furthermore, if the index is a value range one, an ordering must exist among the values in the type domain [err:XDST0027] (this rules excludes the following atomic types and their subtypes: QName, NOTATION, hexBinary, hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). If the key type in a keyspec is xs:string (or subtype of), the IndexKeyCollation specifies the collation to use when comparing key values from this keyspec. If no collation is specified, the default collation from the static context of the declaring module is used.
 
@@ -662,22 +719,28 @@ Creation of an index involves creating an initially empty index entry container,
 
 The create-index function is evaluated as follows:
 
-  * If the given expanded QName does not identify an index among the statically known indexes in the static context of the invoking module, an error is raised [err:XDDY0021].
-  * If the given expanded QName identifies a collection that is available already, an error is raised [err:XDDY0022].
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:createIndex($indexName).
+  <ul>
+  <li>If the given expanded QName does not identify an index among the statically known indexes in the static context of the invoking module, an error is raised [err:XDDY0021].</li>
+  <li>If the given expanded QName identifies a collection that is available already, an error is raised [err:XDDY0022].</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:createIndex($indexName).</li>
+  </ul>
 
 The update primitive is applied as follows:
 
-  * An empty index entry container is created.
-  * The domain expression is evaluated first. If the result of the domain expression contains an item that is not a node, an error is raised [err:XDTY0010]. This result is then filtered to remove any duplicate nodes. The result of the domain expression after duplicate elimination is called the <strong>domain sequence</strong>.
-  * For each node D in the domain sequence, the IndexKeySpecs are evaluated in some implementation dependent order. An IndexKeySpec is evaluated as follows:
-    * The key expression in the IndexKeySpec is evaluated, with D serving as its context item.
-    * Atomization is applied to the result of the key expression. 
-    * The result of atomization is matched against the atomic type in the IndexKeyTypeDecl. In other words, the result of atomization is treated as the input to a "treat as" expression whose target type is type declared in the IndexKeyTypeDecl. If the type match fails, an error is raised [err:XDTY0011]. Otherwise, the result of this step will be a single atomic item. We call this item a <strong>key item</strong>.
-  * Let D<sub>i</sub> be the i-th domain node, and K<sub>ij</sub> be the key item computed for D<sub>i</sub> by the j-th IndexKeySpec (where the numbering of the IndexKeySpecs is done using their order of appearance in the index declaration). Let K<sub>i</sub> be the tuple [K<sub>i1</sub>, ..., K<sub>iM</sub>], where M is the number of IndexKeySpecs. The next step is to insert in the index a mapping from K<sub>i</sub> to D<sub>i</sub>. This step will be performed for each node in the domain sequence. The order in which the domain sequence is processed is implementation dependent.
-    * If the index is declared as unique, the relationship between between key tuples and domain nodes is one-to-one. In this case, if the index already contains an entry whose key tuple is equal to K<sub>i</sub>, an error is raised [err:XDDY0024]. Otherwise, the entry [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container.
-    * If the index is non-unique, it maps key tuples to sets of domain items. In this case, if the index already contains an entry whose key is equal to K<sub>i</sub>, D<sub>i</sub> is added to the set associated with K<sub>i</sub>. Otherwise, the entry [K<sub>i</sub>, { D<sub>i</sub> }] is inserted in the index.
-  * A entry is added to the indexes table. The entry maps the expanded QName of the index to the index entry container.  
+  <ul>
+  <li>An empty index entry container is created.</li>
+  <li>The domain expression is evaluated first. If the result of the domain expression contains an item that is not a node, an error is raised [err:XDTY0010]. This result is then filtered to remove any duplicate nodes. The result of the domain expression after duplicate elimination is called the <strong>domain sequence</strong>.</li>
+  <li>For each node D in the domain sequence, the IndexKeySpecs are evaluated in some implementation dependent order. An IndexKeySpec is evaluated as follows:</li>
+    <ul>
+    <li>The key expression in the IndexKeySpec is evaluated, with D serving as its context item.</li>
+    <li>Atomization is applied to the result of the key expression.</li>
+    <li>The result of atomization is matched against the atomic type in the IndexKeyTypeDecl. In other words, the result of atomization is treated as the input to a "treat as" expression whose target type is type declared in the IndexKeyTypeDecl. If the type match fails, an error is raised [err:XDTY0011]. Otherwise, the result of this step will be a single atomic item. We call this item a <strong>key item</strong>.</li>
+  <li>Let D<sub>i</sub> be the i-th domain node, and K<sub>ij</sub> be the key item computed for D<sub>i</sub> by the j-th IndexKeySpec (where the numbering of the IndexKeySpecs is done using their order of appearance in the index declaration). Let K<sub>i</sub> be the tuple [K<sub>i1</sub>, ..., K<sub>iM</sub>], where M is the number of IndexKeySpecs. The next step is to insert in the index a mapping from K<sub>i</sub> to D<sub>i</sub>. This step will be performed for each node in the domain sequence. The order in which the domain sequence is processed is implementation dependent.</li>
+    <li>If the index is declared as unique, the relationship between between key tuples and domain nodes is one-to-one. In this case, if the index already contains an entry whose key tuple is equal to K<sub>i</sub>, an error is raised [err:XDDY0024]. Otherwise, the entry [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container.</li>
+    <li>If the index is non-unique, it maps key tuples to sets of domain items. In this case, if the index already contains an entry whose key is equal to K<sub>i</sub>, D<sub>i</sub> is added to the set associated with K<sub>i</sub>. Otherwise, the entry [K<sub>i</sub>, { D<sub>i</sub> }] is inserted in the index.</li>
+    </ul>
+  <li>A entry is added to the indexes table. The entry maps the expanded QName of the index to the index entry container.</li>
+  </ul>
 
 \subsection index_deletion 2.4 Index deletion
 
@@ -691,16 +754,20 @@ To destroy an index, XQDDF provides the delete-index updating function. The func
 
 The delete-index function is evaluated as follows:
 
-  * If the given expanded QName does not identify an index among the statically known indexes in the static context of the invoking module, an error is raised [err:XDDY0021].
-  * If the given expanded QName does not identify an index among the available indexes in the dynamic context of the invoking module, an error is raised [err:XDDY0023].
-  * The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteIndex($indexName).
+  <ul>
+  <li>If the given expanded QName does not identify an index among the statically known indexes in the static context of the invoking module, an error is raised [err:XDDY0021].</li>
+  <li>If the given expanded QName does not identify an index among the available indexes in the dynamic context of the invoking module, an error is raised [err:XDDY0023].</li>
+  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteIndex($indexName).</li>
+  </ul>
 
 The update primitive is applied as follows:
 
-  * The index entry container for the index is found via the indexes table. 
-  * All entries in the container are destroyed.
-  * The container itself is destroyed.
-  * The entry mapping the index name to the index entry container is removed from the indexes table.
+  <ul>
+  <li>The index entry container for the index is found via the indexes table.</li>
+  <li>All entries in the container are destroyed.</li>
+  <li>The container itself is destroyed.</li>
+  <li>The entry mapping the index name to the index entry container is removed from the indexes table.</li>
+  </ul>
 
 \subsection index_probing 2.5 Index probing
 
@@ -733,12 +800,15 @@ For the probe-index-point function, the search condition is specified as a numbe
 \endcode
 
 The probe-index-range function can be invoked on value range indices only [err:XDDY0026]. To describe the semantics of this function, we start by defining the i<sup>th</sup> <strong>key column</strong> of an index as the set of key items produced by evaluating the i<sup>th</sup> keyspec of the index for every domain node. Then, the search condition of a range probe can be defined as a number of <strong>rangespecs</strong>, where a rangespec describes a constraint on the values of a key column. The first rangespec applies to the first key column, the second rangespec to the second key column, etc. The number of rangespecs must be less or equal to the number of keyspecs found in the declaration of the given index [err:XDDY0025]. Each rangespec consists of 6 values:
-  * rangeLowerBound : The lower bound in a range of key values.
-  * rangeUpperBound : The upper bound in a range of key values.
-  * rangeHaveLowerBound : If false, then there is no lower bound, or equivalently, the lower bound is -INFINITY (the actual rangeLowerBound value is ignored). Otherwise, the lower bound is the one given by the rangeLowerBound value. The <strong>effective lower bound</strong> of the range is either the rangeLowerBound if rangeHaveLowerBound is true, or -INFINITY if rangeHaveLowerBound is false.
-  * rangeHaveUpperBound : If false, then there is no upper bound, or equivalently, the upper bound is +INFINITY (the actual rangeUpperBound value is ignored). Otherwise, the upper bound is the one given by the rangeUpperBound value. The <strong>effective upper bound</strong> of the range is either the rangeUpperBound if rangeHaveUpperBound is true, or +INFINITY if rangeHaveUpperBound is false.
-  * rangeLowerBoundIncluded : If false, then the range is open from below, i.e., the rangeLowerBound value is not considered part of the range. Otherwise, the range is closed from below, i.e., the rangeLowerBound value is part of the range.
-  * rangeUpperBoundIncluded : If false, then the range is open from above, i.e., the rangeUpperBound value is not considered part of the range. Otherwise, the range is closed from above, i.e., the rangeUpperBound value is part of the range.
+  <ul>
+  <li>rangeLowerBound : The lower bound in a range of key values.</li>
+  <li>rangeUpperBound : The upper bound in a range of key values.</li>
+  <li>rangeHaveLowerBound : If false, then there is no lower bound, or equivalently, the lower bound is -INFINITY (the actual rangeLowerBound value is ignored). Otherwise, the lower bound is the one given by the rangeLowerBound value. The <strong>effective lower bound</strong> of the range is either the rangeLowerBound if rangeHaveLowerBound is true, or -INFINITY if rangeHaveLowerBound is false.</li>
+  <li>rangeHaveUpperBound : If false, then there is no upper bound, or equivalently, the upper bound is +INFINITY (the actual rangeUpperBound value is ignored). Otherwise, the upper bound is the one given by the rangeUpperBound value. The <strong>effective upper bound</strong> of the range is either the rangeUpperBound if rangeHaveUpperBound is true, or +INFINITY if rangeHaveUpperBound is false.</li>
+  <li>rangeLowerBoundIncluded : If false, then the range is open from below, i.e., the rangeLowerBound value is not considered part of the range. Otherwise, the range is closed from below, i.e., the rangeLowerBound value is part of the range.</li>
+  <li>rangeUpperBoundIncluded : If false, then the range is open from above, i.e., the rangeUpperBound value is not considered part of the range. Otherwise, the range is closed from above, i.e., the rangeUpperBound value is part of the range.</li>
+  </ul>
+
 If the number of rangespecs is less than the number of key columns, then the missing rangespecs are assumed to have the following value: [(), (), false, false, false, false].
 
 A key tuple K = [k<sub>1</sub>, ..., k<sub>M</sub>] satisfies a range search condition if for each i = 1, 2, ..., M the following is true:
@@ -747,17 +817,72 @@ effectiveLowerBound<sub>i</sub>  lOp  k<sub>i</sub>  uOp  effectiveUpperBound<su
 
 where lOp (uOp) is either the le operator if rangeLowerBoundIncluded<sub>i</sub> (rangeUpperBoundIncluded<sub>i</sub>) is true, or the lt operator if rangeLowerBoundIncluded<sub>i</sub> (rangeUpperBoundIncluded<sub>i</sub>) is false. The index-probe-range function finds all key tuples in the index that satisfy the given search condition, creates the union of the domain nodes associated with each such key tuple, puts the resulting sequence of nodes in document order, and finally returns this sequence to its caller.
 
+
 \subsection index_maintenance 2.6 Index maintenance
 
-Indices must be kept up-to-date when updates to the underlying data take place. This can be done either manually or automatically. If an index is declared as automatic, and the index appears in the available indices of an xquery program, the xquery processing system guarantees that for each invocation of the apply-updates function, the index is made up-to-date before the function returns. On the other hand, if an index is declared as manual, it is the responsibility of programmers to keep the index up-to-date. This can be done using the rebuild-index function:
+
+An index is said to be up-to-date if its contents reflect the index definition
+on the current data snapshot, i.e., the contents are the same as those that
+would be produced if the xqddf:create-index function was invoked on the same
+index and with the same underlying data. An index is said to be stale if it is
+not up-to-date. Indexes become stale when documents in collections are updated
+or when documents are inserted/removed in/from collections. <strong>Index
+maintenance</strong> is the operation by which stale index contents are updated
+so that the index becomes up-to-date. Zorba 1.0 offers two maintenance modes:
+manual and automatic. 
+
+If an index is declared as "automatically maintained", Zorba guarantees that
+every time a PUL is applied, the index is made up-to-date before the 
+upd:apply-updates function returns. Ideally, all indexes should be automatically
+maintained, but in general, index maintenance can be a very exprensive operation
+perormance-wise. As a result, Zorba will reject a declaration for an automatic
+index if it determines that it cannot maintain the index in an "efficient" way.
+The definition of efficiency with respect to index maintenance is implementation
+dependent, but in general, it means that the index can be maintained in some
+incremental way that is faster than simply re-creating the whole index from
+scratch. However, even incremental maintenance can have a high cost, which
+may make the manual mode described below the preferred choice.
+
+If an index is declared as "manually maintained", it is the responsibility of
+the programmers to keep the index up-to-date. This can be done using the 
+xqddf:refresh-index updating function described below. Since Zorba does not
+take any maintenance action during PUL applications, manually maintenained
+indexes may become stale in between calls to the xqddf:refresh-index function.
+Obviously, the manual mode must be used if an index cannot be maintained
+automatically. However, even for automatically maintainable indexes, the
+manual mode may be preferable if users can tolerate a stale index in return
+for better performance during updates. 
+
 
 \code
-  sequential function rebuild-index($indexURI as xs:anyURI) as ()
+  declare updating function xqddf:refresh-index($indexName as xs:QName)
+
+  upd:refreshIndex($indexName as xs:QName)
 \endcode
 
-The index URI passed as an argument to this function must exist in the statically available indices (err:TBD) and in the available indices (err:TBD). The effect of this function is to refresh the index contents so that they reflect the definition of the index over the current data (as if the build-index function was invoked with an empty index container).
+The refresh-index function is evaluated as follows:
 
-How the index is kept up-to-date is implementation dependent, for both manual and automatic indices. In general, index maintenance can be an expensive operation. It is for this reason that the manual mode is provided: programers can choose when it is most convenient to pay the price for maintenance at the expense of having an inconsistent index in between. However, depending on their definition, some indices may be efficiently maintainable, and for such indices, the automatic mode may be preferable.
+  <ul>
+  <li>If the given expanded QName does not identify an index among the statically
+      known indexes in the static context of the invoking module, an error is 
+      raised [err:XDDY0021].</li>
+  <li>If the given expanded QName does not identify an index among the available
+      indexes in the dynamic context of the invoking module, an error is raised
+      [err:XDDY0023].</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+      list that consists of a single update primitive: upd:refreshIndex($indexName).</li>
+  </ul>
+
+The update primitive is applied as follows:
+
+  <ul>
+  <li>The index entry container for the index is found via the indexes table.</li>
+  <li>The container is made up-to-date in some implementation dependent way. In
+      Zorba 1.0, this is done by discarding the current contents and rebuilding
+      the index from scratch (the same way as the create-index function populates
+      an empty index container).
+  </ul>
+
 
 \section integrity_constraints 3 Integrity Constraints in Zorba 1.0
 
@@ -891,8 +1016,12 @@ declare variable $news-data:AuthorName := xs:QName("news-data:AuthorNames");
 declare variable $news-data:ArticleEmployees := xs:QName("news-data:ArticleEmployees");
 \endcode
 
+
 \section extensions_xquf_updates_routines 4 Extensions to the XQUF updates routines
 
 
+\subsection upd_merge_updates upd:mergeUpdates
+
+\subsection upr_apply_updates upd:applyUpdates
 
 */

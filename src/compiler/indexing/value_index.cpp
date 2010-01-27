@@ -208,7 +208,7 @@ void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
   (a) is deterministic,
   (b) does not have any free variables,
   (c) does not reference any input functions other than dc:collection()
-  (d) the arg to each dc:collection is a const qname 
+  (d) the arg to each xqddf:collection is a const qname 
 ********************************************************************************/
 void ValueIndex::analyze()
 {
@@ -243,6 +243,13 @@ void ValueIndex::analyze()
   {
     if (getDomainExpr()->is_map(theDomainSourceExprs[0], theSctx))
       theMaintenanceMode = DOC_MAP;
+  }
+
+  if (theMaintenanceMode == REBUILD)
+  {
+    ZORBA_ERROR_LOC_PARAM(XDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE,
+                          getDomainExpr()->get_loc(),
+                          theName->getStringValue(), "");
   }
 }
 

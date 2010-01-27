@@ -307,11 +307,6 @@ DEF_ERR_CODE(XQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY, XQP0031,
              "Error transforming XQueryX to XQuery using XSLT engine.")
 
 
-DEF_ERR_CODE(XQP0035_MULTI_VALUED_INDEX_KEY, XQP0035,
-             "An index key has multiple values.")
-
-
-
 //
 // XPDY
 //
@@ -655,6 +650,8 @@ DEF_ERR_CODE(XDST0032_INDEX_REFERENCES_CTX_ITEM, XDST0032,
 DEF_ERR_CODE(XDST0033_INDEX_NON_SIMPLE_EXPR, XDST0033,
 "The declaration of index /s contains a non-simple expression.")
 
+DEF_ERR_CODE(XDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE, XDST0034,
+"Index /s cannot be automatically maintained.")
 
 DEF_ERR_CODE(XDST0041_IC_IS_ALREADY_DECLARED, XQP0041,
              "An integrity constraint with URI /s is declared already.")
