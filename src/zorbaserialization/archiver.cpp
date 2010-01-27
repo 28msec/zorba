@@ -128,7 +128,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
 
 
   this->only_for_eval = 0;
-  this->is_xquery_with_eval = false;
+  this->serialize_everything = false;
   loading_hardcoded_objects = false;
   allow_delay2 = ALLOW_DELAY;
 }
@@ -735,7 +735,7 @@ int Archiver::get_nr_ids()
 
 void Archiver::prepare_serialize_out()
 {
-  if(!xquery_with_eval())
+  if(!is_serialize_everything())
   {
     check_compound_fields(out_fields);
   }

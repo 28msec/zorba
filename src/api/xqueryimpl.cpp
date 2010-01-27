@@ -1023,7 +1023,7 @@ bool XQueryImpl::saveExecutionPlan(std::ostream &os,
     {
       zorba::serialization::XmlArchiver   xmlar(&os);
       if((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
-        xmlar.xquery_with_eval();
+        xmlar.set_serialize_everything();
       serialize(xmlar);
       xmlar.serialize_out();
     }
@@ -1031,7 +1031,7 @@ bool XQueryImpl::saveExecutionPlan(std::ostream &os,
     {
       zorba::serialization::BinArchiver   bin_ar(&os);
       if((save_options & 0x01) != DONT_SAVE_UNUSED_FUNCTIONS)
-        bin_ar.xquery_with_eval();
+        bin_ar.set_serialize_everything();
       serialize(bin_ar);
       bin_ar.serialize_out();
     }

@@ -73,7 +73,7 @@ PlanIter_t compile(
 
 void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  ar.set_xquery_with_eval();
+  ar.set_serialize_everything();
   serialize_baseclass(ar,
   (NaryBaseIterator<EvalIterator, EvalIteratorState>*)this);
 

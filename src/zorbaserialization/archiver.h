@@ -178,7 +178,7 @@ protected:
   std::stack< std::pair<int, bool> >   limit_temp_level_stack;
   bool  internal_archive;
   int   only_for_eval;
-  bool  is_xquery_with_eval;
+  bool  serialize_everything;
   bool  loading_hardcoded_objects;
   ENUM_ALLOW_DELAY  allow_delay2;
 
@@ -377,8 +377,8 @@ public:
 
   int get_nr_ids();
 
-  bool xquery_with_eval() {return this->is_xquery_with_eval;}
-  void set_xquery_with_eval() {this->is_xquery_with_eval = true;}
+  bool is_serialize_everything() {return this->serialize_everything;}
+  void set_serialize_everything() {this->serialize_everything = true;}
 
   int get_serialize_only_for_eval() {return only_for_eval;}
   void set_serialize_only_for_eval(bool evalonly)
