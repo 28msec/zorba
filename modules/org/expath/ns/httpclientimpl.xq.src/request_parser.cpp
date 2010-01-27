@@ -181,7 +181,7 @@ namespace zorba { namespace http_client {
       Item lQName;
       lItem.getNodeName(lQName);
       String lLocalName = lQName.getLocalName();
-      if (lLocalName == "content-type") {
+      if (lLocalName == "media-type") {
         lContentType = lItem.getStringValue();
       } else if (lLocalName == "src") {
         lSrc = lItem.getStringValue();

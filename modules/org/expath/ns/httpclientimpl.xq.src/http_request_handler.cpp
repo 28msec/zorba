@@ -162,15 +162,16 @@ namespace zorba { namespace http_client {
         serializeItem(lItem);
       }
     }
-    std::string lData = theSerStream->str();
+    thePostDataString = theSerStream->str();
+    thePostData = thePostDataString.c_str();
     if (!theInsideMultipart) {
-      curl_easy_setopt(theCurl, CURLOPT_POSTFIELDSIZE, lData.length());
-      //curl_easy_setopt(theCurl, CURLOPT_COPYPOSTFIELDS, lData.c_str());
+      curl_easy_setopt(theCurl, CURLOPT_POSTFIELDSIZE, thePostDataString.length());
+      curl_easy_setopt(theCurl, CURLOPT_POSTFIELDS, thePostData);
     } else {
       curl_formadd(&thePost, &theLast,
         CURLFORM_COPYNAME, "blub",
-        CURLFORM_COPYCONTENTS, lData.c_str(),
-        CURLFORM_CONTENTSLENGTH, lData.length(),
+        CURLFORM_COPYCONTENTS, thePostData,
+        CURLFORM_CONTENTSLENGTH, thePostDataString.length(),
         CURLFORM_CONTENTHEADER, theHeaderLists.back(),
         CURLFORM_END);
     }
@@ -215,27 +216,10 @@ namespace zorba { namespace http_client {
   void HttpRequestHandler::serializeItem( Item aItem )
   {
     theLastBodyHadContent = true;
-    Zorba_SerializerOptions_t lOptions;
-    lOptions.version = "1.1";
-    lOptions.undeclare_prefixes = ZORBA_UNDECLARE_PREFIXES_YES;
-    if (theCurrentContentType == "text/xml" ||
-      theCurrentContentType == "application/xml" ||
-      theCurrentContentType == "text/xml-external-parsed-entity" ||
-      theCurrentContentType == "application/xml-external-parsed-entity" ||
-      theCurrentContentType.endsWith("+xml"))
-    {
-      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
-      lOptions.version = "1.1";
-      lOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-    } else if (theCurrentContentType == "text/html") {
-      lOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_HTML;
-    } else if (theCurrentContentType.startsWith("text/")) {
-      lOptions.ser_method = ZORBA_SERIALIZATION_METHOD_TEXT;
-    }
     Serializer_t lSerializer =
       Serializer::createSerializer(theLastSerializerOptions);
     SingletonItemSequence lSequence(aItem);
     lSerializer->serialize(&lSequence, *theSerStream);
+    std::string ser = theSerStream->str();
   }
 }}

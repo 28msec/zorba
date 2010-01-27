@@ -25,6 +25,9 @@ namespace zorba { namespace http_client {
     struct curl_httppost* theLast;
     String theCurrentContentType;
     ItemSequence* theLastSerializerOptions;
+    std::string thePostDataString;
+    const char* thePostData;
+    long thePostDataSize;
 
   public: //Constructions
     HttpRequestHandler(CURL* aCurl,
