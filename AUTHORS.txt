@@ -9,6 +9,7 @@ The primary authors are:
   * William Candillon
   * Dana Florescu                                                                                       
   * David Graf
+  * Chris Hillery
   * Donald Kossmann 
   * Paul Kunz
   * Tim Kraska
