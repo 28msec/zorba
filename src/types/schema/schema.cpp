@@ -1044,12 +1044,16 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
   {
     result = GENV_TYPESYSTEM.NOTATION_TYPE_ONE;
   }
+  else if ( XMLString::equals(XMLChArray("language").get (), local) )
+  {
+    result = GENV_TYPESYSTEM.LANGUAGE_TYPE_ONE;
+  }
   // YearMonthDuration and DayTimeDuration are not in schema spec
   else
   {
     // type not covered  
-    //cout << "Assertion Error: Type unknown " << StrX(local).localForm() << 
-    //  "@" << Schema::XSD_NAMESPACE; cout.flush(); 
+    std::cout << "Assertion Error: Type unknown " << StrX(local).localForm() << 
+      "@" << Schema::XSD_NAMESPACE; std::cout.flush(); 
     ZORBA_ASSERT(false);
     result = NULL;
   }  
