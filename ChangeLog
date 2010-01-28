@@ -1,36 +1,46 @@
 Zorba - The XQuery Processor
-version 1.0 (coming)
+version 1.0
   * Changes in the C++ API
+    * Removed ResultIterator class. All public API methods use simply
+      Iterator.
     * Added a new class named ExternalModule.
       This class must be used for registering external functions.
       This change makes the external function API incompatible with
-      previous releases
+      previous releases.
     * Loading pre-compiled queries (using loadExecutionPlan) requires to pass
       a SerializationCallback which is used for
       retrieving registered uri resolvers or trace streams.
       Moreover, the callback is used for retrieving ExternalModules
       which have been used when compiling the query.
-		* Changed the append function in zorba::String to const. Now, the function
-		  does not change the String itself, but returns a new String. Furgthermore
-			zorba::String::append can now handle other zorba::String objects - not only
-			const char*. Also the operators + and += are defined on zorba::String.
-  * Resolving of modules is now enhanced by the so called "Zorba Module Path".
-    Moreover, multiple ModuleURIResolvers can be registered in one StaticContext.
-    See the documentation for more information.
+    * Changed the append function in zorba::String to const. Now, the
+      function does not change the String itself, but returns a new
+      String. Furgthermore zorba::String::append can now handle other
+      zorba::String objects - not only const char*. Also the operators
+      + and += are defined on zorba::String.
+  * Other language bindings (Java, PHP, python, ruby) also now use
+    simply Iterator; ResultIterator removed.
+  * XQC (C language binding) brought up-to-date with latest revision
+    of that spec (https://xqc.sourceforge.net).
+  * Resolving of modules is now enhanced by the so called "Zorba
+    Module Path".  Moreover, multiple ModuleURIResolvers can be
+    registered in one StaticContext.  See the documentation for more
+    information.
   * Added static and dynamic context introspection modules.
   * Added the excel library to the built-in modules.
     Implemented the most used excel functions.
-  * Added the math library to the built-in modules (the namespace has changed to 
-    Http://www.zorba-xquery.com/modules/math)
+  * Added the math library to the built-in modules (the namespace has
+    changed to http://www.zorba-xquery.com/modules/math)
   * Pass the Static- and DynamicContext as parameter to the evaluate function
     of external functions.
   * The XQuery class got a setTimeout option that allows the user to set a 
     maximum running time of a particular query execution.
-  * The StatelessExternalFunction is now non-pure by default. There is a
-    new subclass called PureStatelessExternalFunction which should be used instead.
-    PureStatelessExternalFunctions don't have access to the Static- and DynamicContext.
-  * Renamed XQuery::serialize to XQuery::execute. The new method also implements
-    the functionality of the XQuery::applyUpdates method (which was removed).
+  * The StatelessExternalFunction is now non-pure by default. There is
+    a new subclass called PureStatelessExternalFunction which should
+    be used instead. PureStatelessExternalFunctions don't have access
+    to the Static- and DynamicContext.
+  * Renamed XQuery::serialize to XQuery::execute. The new method also
+    implements the functionality of the XQuery::applyUpdates method
+    (which was removed).
   * Added the serialize library to the built-in modules. The function
     util:serialize-to-string has been removed.
   * The DynamicContext can be used to pass arbitrary name-value pairs
@@ -40,56 +50,72 @@ version 1.0 (coming)
     or formated text files and XML.
   * Changes in the email functionnality
     * implemented smtp:send functions as external functions
-    * added support for MIME messages (Text in character sets other than ASCII, Non-text attachments, Message bodies with multiple parts, Header information in non-ASCII character sets)
-  * most of the runtime iterators and functions are generated (see. https://sourceforge.net/apps/mediawiki/zorba/index.php?title=Creating_New_Runtime_Iterators_and_Functions)
+    * added support for MIME messages (Text in character sets other
+      than ASCII, Non-text attachments, Message bodies with multiple
+      parts, Header information in non-ASCII character sets)
+  * most of the runtime iterators and functions are generated
+    (see https://sourceforge.net/apps/mediawiki/zorba/index.php?title=Creating_New_Runtime_Iterators_and_Functions)
   * improved exception messages raised by the serializer
   * Json is now able to parse Unicode messages
   * improved functionality for java, php, python and ruby bindings.
 
 version 0.9.8-rev1 (2009.09.22)
   * bug fixes
-    * fixed a crash caused by converting long integers (> 1024 digits) to string
-    * the compile-only check reports the URI of the encapsulating entity in it's error report (used for XQDT semantic checking)
-    * fixed 'for $x in () return $x/test' to return the empty sequence instead of raising a static error
+    * fixed a crash caused by converting long integers (> 1024 digits)
+      to string
+    * the compile-only check reports the URI of the encapsulating
+      entity in it's error report (used for XQDT semantic checking)
+    * fixed 'for $x in () return $x/test' to return the empty sequence
+      instead of raising a static error
     * fixed build using Xerces-C 3.0.1
     * fixed build for Mac OS X 10.6 (Snow Leopard)
     * improved error reporting in the command line utility
-    * improved detection of the installed version of Xerces-C (raise an error if a wrong version is installed)
+    * improved detection of the installed version of Xerces-C (raise
+      an error if a wrong version is installed)
 
 version 0.9.8 (2009.08.26)
   * More XQuery Scripting Features
-		* default initialization for external variables
-		* block local variables
+    * default initialization for external variables
+    * block local variables
   * XQuery 1.1
-		* Support for the "validation as TypeName" feature
-		* changed the try/catch syntax as specified in XQuery 1.1 (except the try- and catch expressions are ExprSingle and not Expr).
-	* Examples for the Java API
-	* Function library
-  	* creating PDFs using XSL Formatting Objects (requires Java)
-		* util:parse function
-  	* converter functions to/from JSON or JsonML and XML
-  	* function for sending simple text emails
-  	* the util:tidy function returns a node instead of a string.
-  	* XQDoc module http://www.zorba-xquery.com/zorba/xqdoc-functions
-	* Added a loadProlog function to the static context.
+    * Support for the "validation as TypeName" feature
+    * Changed the try/catch syntax as specified in XQuery 1.1 (except
+      the try- and catch expressions are ExprSingle and not Expr).
+  * Examples for the Java API
+  * Function library
+  * creating PDFs using XSL Formatting Objects (requires Java)
+  * util:parse function
+  * converter functions to/from JSON or JsonML and XML
+  * function for sending simple text emails
+  * the util:tidy function returns a node instead of a string.
+  * XQDoc module http://www.zorba-xquery.com/zorba/xqdoc-functions
+  * Added a loadProlog function to the static context.
   * Added support for XQueryX and XQueryX Update
-	* Added compiled query persistence to the C++ API (XQuery::loadExecutionPlan() and XQuery::saveExecutionPlan())
+  * Added compiled query persistence to the C++ API
+    (XQuery::loadExecutionPlan() and XQuery::saveExecutionPlan())
   * Added a printPlan function to the XQuery class of the API.
-  * Added new option in the Zorba command line utility: compile-only, parse-only, lib-module, print-errors-as-xml.
-  * Added two plan printing function (printPlanAsXML and printPlanAsDOT) to the SWIG generated APIs.
+  * Added new option in the Zorba command line utility: compile-only,
+    parse-only, lib-module, print-errors-as-xml.
+  * Added two plan printing function (printPlanAsXML and
+    printPlanAsDOT) to the SWIG generated APIs.
   * Implemented 'declare option': options are set in the static context.
-  * fn:trace can be disabled by setting the option QName("http://www.zorba-xquery.org/option", "trace")  to "disable".
-  * Changed the scripting syntax of the exit expression from 'exit with' to 'exit returning'.
-  	This is due to an ambiguity in the grammar (see http://www.w3.org/Bugs/Public/show_bug.cgi?id=6852 for more information).
-  * Added accessor functions for node items to the Item class in the API (i.e. getChildren, getAttributes, and getNodeName).
-  * Added a UserException to the API which is raised if the user makes a call to the fn:error function.
-	* UTF8 support for the lexer
-	* bug fixes and performance improvements
+  * fn:trace can be disabled by setting the option
+    QName("http://www.zorba-xquery.org/option", "trace") to "disable".
+  * Changed the scripting syntax of the exit expression from 'exit
+    with' to 'exit returning'.This is due to an ambiguity in the
+    grammar (see http://www.w3.org/Bugs/Public/show_bug.cgi?id=6852
+    for more information).
+  * Added accessor functions for node items to the Item class in the
+    API (i.e. getChildren, getAttributes, and getNodeName).
+  * Added a UserException to the API which is raised if the user makes
+    a call to the fn:error function.
+  * UTF8 support for the lexer
+  * bug fixes and performance improvements
 
 version 0.9.5 (2008.02.17)
   * Unified the Tidy and Rest API's
   * Added new sinatures to zorba-util:tidy and zorba-util:tdoc that
-	allow setting of tidy functions
+    allow setting of tidy functions
   * Added Schema imports using target namespace or location hints
   * Added StaticContext::findFunctions and StaticContext::disableFunciton
   * Added Functions for collections 
@@ -97,9 +123,9 @@ version 0.9.5 (2008.02.17)
   * Improved error messages for regular expression processing
   * Added functions to return an item instead of xs:string
   * Added a new signature to zorba-util:random in order to be able to call
-	random within a loop and get different numbers each time.
+    random within a loop and get different numbers each time.
   * Corrected the types of some functions/operators (YM_DURATION or 
-	DT_DURATION instead of DURATION).
+    DT_DURATION instead of DURATION).
   * Now possible to pass empty sequence as collection URI.
   * Now cURL is set to follow an infinite number of redirects.
   * Added validate after update
@@ -111,17 +137,19 @@ version 0.9.5 (2008.02.17)
   * Added partial support for scripting (XQSE)
   * Added support "default element namespace" schema imports
   * Added support variable initializers that refer to forward variable
-	declarations.
+    declarations.
   * Various bug fixes and performance enhancements.
 
 version 0.9.4 (2008.10.06)
   * added General FLWOR (GFLWOR)
-  	- added Windowing functionality
-	- added ability to perform "outer" joins in the FLWOR with outer for clauses
-	- output numbering added to FLWOR
+    * added Windowing functionality
+    * added ability to perform "outer" joins in the FLWOR with outer
+      for clauses
+    * output numbering added to FLWOR
   * Added HTTP support to module import
   * fn:parse() is implemented as per the XQuery proposal
-  * Extended api to register user-defined URI resolvers for documents, collections, schemas, and modules
+  * Extended api to register user-defined URI resolvers for documents,
+    collections, schemas, and modules
   * boost dependencies removed
   * Added xquery debugging support
   * Added a store implementation based on Windows DOM.
@@ -129,7 +157,8 @@ version 0.9.4 (2008.10.06)
   * Added PHP bindings to zorba
   * Added tidy support to convert web pages into xhtml.
   * Added XML Schema support for validation
-  * Added the ability to revalidate XML data with respect to a Schema after applying updates
+  * Added the ability to revalidate XML data with respect to a Schema
+    after applying updates
 
 version 0.9.21-4303 (2008.06.26):
   * fixed installation problem for python and ruby language bindings
@@ -141,21 +170,23 @@ version 0.9.2-4251 (2008.06.19):
   * Removed boost shared pointers from the API
   * Performance improvements and bug fixes
   * C API (zorbac.h)
-  * Rudimentar SWIG interface for generating other language bindings (i.e. Ruby and Python)
+  * Rudimentary SWIG interface for generating other language bindings
+    (i.e. Ruby and Python)
   * Added support for running multiple queries in the command line utility
   * group by (as in the evolving W3C XQuery 1.1 recommendation)
   * try-catch (as in the evolving W3C recommendation)
   * eval facility to dynamically evaluate a string and execute it as a query
   * some math functions (e.g. sqrt, sin, cos, etc)
-  * Basic schema validation (without post schema validation and substitution groups)
+  * Basic schema validation (without post schema validation and
+    substitution groups)
   * Stabilized the Store API & build the simplestore as a separate library
 
 version 0.9.1 (2008.04.30):
   * Initial release supporting 
-   * XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) 
-     except modules and only limited support for schema validation
-   * XQuery Update Facility 1.0 (as in the evolving W3C recommendation)
-   * An In-Memory (replaceable) XML store 
-     (implements the XQuery Data Model (XDM) W3C recommendation)
+    * XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) 
+      except modules and only limited support for schema validation
+    * XQuery Update Facility 1.0 (as in the evolving W3C recommendation)
+    * An In-Memory (replaceable) XML store 
+      (implements the XQuery Data Model (XDM) W3C recommendation)
   * This release 0.9 passes 97.6% of the W3C tests of XQuery 1.0 test suite
     and 99.4% of the XQuery Update Facility test suite.
