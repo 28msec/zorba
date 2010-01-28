@@ -171,10 +171,11 @@ void validateAfterUpdate(
         return;
     }
         
-    EventSchemaValidator schemaValidator = EventSchemaValidator(typeManager,
-                                                        schema->getGrammarPool(),
-                                                        isLax,
-                                                        loc);
+    EventSchemaValidator schemaValidator = 
+      EventSchemaValidator(typeManager,
+                           schema->getGrammarPool(),
+                           isLax,
+                           loc);
         
     switch ( item->getNodeKind() )
     {

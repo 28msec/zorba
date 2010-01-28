@@ -145,10 +145,10 @@ bool Validator::realValidationValue(
   xqpStringStore_t baseUri = sctx->final_baseuri().getStore();
                 
   EventSchemaValidator schemaValidator = 
-  EventSchemaValidator(typeManager,
-                       schema->getGrammarPool(),
-                       validationMode == ParseConstants::val_lax,
-                       loc);
+    EventSchemaValidator(typeManager,
+                         schema->getGrammarPool(),
+                         validationMode == ParseConstants::val_lax,
+                         loc);
     
   switch (sourceNode->getNodeKind())
   {
@@ -623,25 +623,48 @@ void Validator::processTextValue (
   {
     if ( type->type_kind() == XQType::USER_DEFINED_KIND )
     {
-      const UserDefinedXQType udt = static_cast<const UserDefinedXQType&>(*type);
+      const UserDefinedXQType udt = 
+        static_cast<const UserDefinedXQType&>(*type);
       
       if ( udt.isList() || udt.isUnion() )
       {
-        typeManager->getSchema()->parseUserSimpleTypes(textValue, type, resultList);
+        typeManager->getSchema()->
+          parseUserSimpleTypes(textValue, type, resultList);
       }
       else if (udt.isAtomic())
       {
-        bool res = typeManager->getSchema()->parseUserAtomicTypes(textValue,
-                                                                  type.getp(),
-                                                                  result);
+        // workaround for validating NOTATION with Xerces
+        xqtref_t notationType = GENV_TYPESYSTEM.NOTATION_TYPE_ONE;
+        if ( udt.isSubTypeOf(*notationType.getp()) )
+        {
+          // textValue must be in the form of URI:LOCAL
+          int32_t colonIndex = textValue->indexOf(":");
+          xqpStringStore_t prefix = textValue->substr(0, colonIndex);
+          xqpStringStore_t local = textValue->substr(colonIndex+1, 
+                                                     textValue->size());
+          xqpStringStore_t uri;
+
+          if ( nsCtx.findBinding(prefix, uri) )
+            textValue = uri->append(":")->append(local);
+          else
+            ZORBA_ERROR_DESC_OSS(FORG0001, "Prefix '" << prefix->str() << 
+                                 "' not found in current namespace context.");
+        }
+
+        bool res = typeManager->getSchema()->
+          parseUserAtomicTypes(textValue, type.getp(), result);
+
         ZORBA_ASSERT(res);
         resultList.push_back(result);
       }
-      else if (udt.isComplex() && udt.content_kind()==XQType::SIMPLE_CONTENT_KIND )
+      else if (udt.isComplex() && 
+               udt.content_kind()==XQType::SIMPLE_CONTENT_KIND )
       {
-        // if complex type with simple content parse text by the base type which has to be simple
+        // if complex type with simple content parse text by the base
+        // type which has to be simple
         xqtref_t baseType = udt.getBaseType();
-        bool res = GenericCast::castToSimple(textValue, baseType.getp(), resultList);          
+        bool res = GenericCast::castToSimple(textValue, baseType.getp(), 
+                                             resultList);          
 
         // if this assert fails it means the validator and zorba casting code 
         // don't follow the same rules
@@ -650,7 +673,8 @@ void Validator::processTextValue (
     }
     else if (type->type_kind() == XQType::ATOMIC_TYPE_KIND)
     {
-      bool res = GenericCast::castToAtomic(result, textValue, type.getp(), &nsCtx);
+      bool res = GenericCast::castToAtomic(result, textValue, type.getp(), 
+                                           &nsCtx);
       ZORBA_ASSERT(res);
       resultList.push_back(result);
     }

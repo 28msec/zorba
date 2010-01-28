@@ -1430,7 +1430,7 @@ bool GenericCast::castToAtomic(
     store::Item_t& result,
     xqpStringStore_t& aStr,
     const XQType* aTargetType,
-    namespace_context* aNCtx)
+    namespace_context* aNsCtx)
 {
 #if 0
   return GENV_ITEMFACTORY->createString(result, aStr)
@@ -1489,7 +1489,7 @@ bool GenericCast::castToAtomic(
                          lItem,
                          aStr,
                          lFactory, 
-                         aNCtx,
+                         aNsCtx,
                          lErrorInfo);
   }
 
@@ -1648,7 +1648,8 @@ void castToUserDefinedType(
     throwError(FORG0001, lErrorInfo); 
   }
 
-  const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
+  const UserDefinedXQType* udt = 
+    static_cast<const UserDefinedXQType*>(aTargetType);
 
   switch ( udt->getTypeCategory() )
   {
@@ -1657,7 +1658,8 @@ void castToUserDefinedType(
     xqpStringStore_t strValue;
     aItem->getStringValue(strValue);
     store::Item_t baseItem;
-    bool hasResult = schema->parseUserAtomicTypes(strValue, aTargetType, baseItem);
+    bool hasResult = schema->parseUserAtomicTypes(strValue, aTargetType, 
+                                                  baseItem);
     
     if ( hasResult )
     {

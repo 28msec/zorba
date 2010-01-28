@@ -149,7 +149,7 @@ public:
     // user defined atomic types
   bool parseUserAtomicTypes(
         xqpStringStore_t& textValue,
-        const xqtref_t& aTargetType, 
+        const xqtref_t& aTargetType,
         store::Item_t& result);    
 
     // user defined list types
@@ -187,9 +187,11 @@ public:
 private:
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  XERCES_CPP_NAMESPACE::XSTypeDefinition* getTypeDefForElement(const store::Item* qname);
+  XERCES_CPP_NAMESPACE::XSTypeDefinition* 
+    getTypeDefForElement(const store::Item* qname);
 
-  XERCES_CPP_NAMESPACE::XSTypeDefinition* getTypeDefForAttribute(const store::Item* qname);
+  XERCES_CPP_NAMESPACE::XSTypeDefinition* 
+    getTypeDefForAttribute(const store::Item* qname);
 
   xqtref_t createXQTypeFromTypeDefinition(
         const TypeManager* typeManager,
@@ -197,16 +199,16 @@ private:
 
   xqtref_t createXQTypeFromTypeDefForBuiltinTypes(
         const TypeManager* typeManager,
-    xqpStringStore_t strUri, const XMLCh* local);
+        xqpStringStore_t strUri, const XMLCh* local);
 
   void checkForAnonymousTypes(const TypeManager* typeManager);
 
   void checkForAnonymousTypesInType(const TypeManager* typeManager,
-                                    XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
+      XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
   void checkForAnonymousTypesInParticle(const TypeManager* typeManager,
-                                        XERCES_CPP_NAMESPACE::XSParticle *xsParticle);
+      XERCES_CPP_NAMESPACE::XSParticle *xsParticle);
   void addAnonymousTypeToCache(const TypeManager* typeManager,
-                               XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
+      XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
   void addTypeToCache(xqtref_t itemXQType);
 #endif // ZORBA_NO_XMLSCHEMA
 

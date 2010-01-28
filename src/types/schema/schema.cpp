@@ -1454,7 +1454,7 @@ bool Schema::parseUserAtomicTypes(
                              << "' not found in current context.");
         wasError = true;
       }
-      
+
       XMLChArray xchTextValue (textValue);
       xsiTypeDV->validate(xchTextValue.get ());
     }
