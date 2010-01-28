@@ -44,6 +44,7 @@ version 1.0 (coming)
   * most of the runtime iterators and functions are generated (see. https://sourceforge.net/apps/mediawiki/zorba/index.php?title=Creating_New_Runtime_Iterators_and_Functions)
   * improved exception messages raised by the serializer
   * Json is now able to parse Unicode messages
+  * improved functionality for java, php, python and ruby bindings.
 
 version 0.9.8-rev1 (2009.09.22)
   * bug fixes
