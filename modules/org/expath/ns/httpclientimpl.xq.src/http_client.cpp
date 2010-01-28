@@ -47,7 +47,6 @@ namespace http_client {
 
       bool lReqSet = args[0]->next(lRequest);
       bool lHrefSet = args[1]->next(lHref);
-      bool lContentSet = args[2]->next(lContent);
 
       std::string lData;
 
