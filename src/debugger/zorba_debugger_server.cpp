@@ -50,6 +50,7 @@ ZorbaDebuggerServer::run()
          bool lTerminate = theRuntime->processMessage(lMessage.get());
          if (lTerminate) {
            theRuntime->terminate();
+           theCommunicator->sendReplyMessage(lMessage.get());
            break;
          }
       } 

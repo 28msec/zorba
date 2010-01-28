@@ -203,21 +203,25 @@ ZORBA_THREAD_RETURN listenEvents( void * aClient )
 
 bool ZorbaDebuggerClientImpl::isQueryRunning() const
 {
+  AutoLock lLock(theExecutionStatusLock, Lock::READ);
   return theExecutionStatus == QUERY_RUNNING;
 }
 
 bool ZorbaDebuggerClientImpl::isQueryIdle() const
 {
+  AutoLock lLock(theExecutionStatusLock, Lock::READ);
   return theExecutionStatus == QUERY_IDLE;
 }
 
 bool ZorbaDebuggerClientImpl::isQuerySuspended() const
 {
+  AutoLock lLock(theExecutionStatusLock, Lock::READ);
   return theExecutionStatus == QUERY_SUSPENDED;
 }
 
 bool ZorbaDebuggerClientImpl::isQueryTerminated() const
 {
+  AutoLock lLock(theExecutionStatusLock, Lock::READ);
   return theExecutionStatus == QUERY_TERMINATED;
 }
 
