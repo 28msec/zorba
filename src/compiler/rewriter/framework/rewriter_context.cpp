@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,16 +31,16 @@ RewriterContext::RewriterContext(CompilerCB* aCompilerCB, expr_t root)
   m_varid_map(NULL),
   m_idvar_map(NULL),
   m_exprvars_map(NULL)
-{ 
+{
 }
 
 
-RewriterContext::~RewriterContext() 
+RewriterContext::~RewriterContext()
 {
   delete m_varid_map;
 
   delete m_idvar_map;
-  
+
   delete m_exprvars_map;
 }
 

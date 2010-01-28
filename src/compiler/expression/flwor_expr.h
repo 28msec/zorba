@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@
 #include "compiler/expression/expr_utils.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 class order_modifier;
@@ -51,7 +51,7 @@ typedef rchandle<flwor_expr> flwor_expr_t;
 /***************************************************************************//**
 
 ********************************************************************************/
-class flwor_clause : public SimpleRCObject 
+class flwor_clause : public SimpleRCObject
 {
   friend class flwor_expr;
 
@@ -82,7 +82,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  flwor_clause(short sctx, const QueryLoc& loc, ClauseKind kind) 
+  flwor_clause(short sctx, const QueryLoc& loc, ClauseKind kind)
     :
     theContext(sctx),
     theLocation(loc),
@@ -128,7 +128,7 @@ public:
   TypeDeclaration ::= "as" SequenceType
 
 ********************************************************************************/
-class forletwin_clause : public flwor_clause 
+class forletwin_clause : public flwor_clause
 {
   friend class flwor_expr;
 
@@ -157,11 +157,11 @@ public:
 
   var_expr* get_var() const { return theVarExpr.getp(); }
 
-  void set_var(var_expr_t v) 
-  { 
+  void set_var(var_expr_t v)
+  {
     theVarExpr = v;
     if (theVarExpr != NULL)
-      theVarExpr->set_flwor_clause(this); 
+      theVarExpr->set_flwor_clause(this);
   }
 
   virtual const var_expr* get_pos_var() const { return NULL; }
@@ -173,7 +173,7 @@ public:
 /***************************************************************************//**
 
 ********************************************************************************/
-class for_clause : public forletwin_clause 
+class for_clause : public forletwin_clause
 {
   friend class flwor_expr;
 
@@ -209,18 +209,18 @@ public:
 
   var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
 
-  void set_pos_var(var_expr_t v) 
+  void set_pos_var(var_expr_t v)
   {
     thePosVarExpr = v;
     if (thePosVarExpr != NULL)
       thePosVarExpr->set_flwor_clause(this);
   }
 
-  void set_score_var(var_expr_t v) 
+  void set_score_var(var_expr_t v)
   {
     theScoreVarExpr = v;
     if (theScoreVarExpr != NULL)
-      theScoreVarExpr->set_flwor_clause(this); 
+      theScoreVarExpr->set_flwor_clause(this);
   }
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
@@ -233,7 +233,7 @@ public:
   theScoreVarExpr :
   theLazyEval     : Whether the window var can be materilized lazily or not.
 ********************************************************************************/
-class let_clause : public forletwin_clause 
+class let_clause : public forletwin_clause
 {
   friend class flwor_expr;
 
@@ -260,11 +260,11 @@ public:
 public:
   const var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
 
-  void set_score_var(var_expr_t v) 
+  void set_score_var(var_expr_t v)
   {
     theScoreVarExpr = v;
     if (theScoreVarExpr != NULL)
-      theScoreVarExpr->set_flwor_clause(this); 
+      theScoreVarExpr->set_flwor_clause(this);
   }
 
   void setLazyEval(bool v) { theLazyEval = v; }
@@ -283,7 +283,7 @@ public:
   theWinStopCond  :
   theLazyEval     : Whether the window var can be materilized lazily or not.
 ********************************************************************************/
-class window_clause : public forletwin_clause 
+class window_clause : public forletwin_clause
 {
   friend class flwor_expr;
 
@@ -339,7 +339,7 @@ public:
 /***************************************************************************//**
 
   Class flwor_wincond represents a start/stop condition of a window clause.
- 
+
   - Syntax:
 
   WindowStartCondition ::= "start" WindowVars "when" ExprSingle
@@ -361,7 +361,7 @@ public:
   theOutputVars: When the condition expr evaluates to true, the current values
                  of theInputVars are copied to theOutputVars. So, theOutputVars
                  describe the starting/ending point of an established window
-                 and they are visible to the rest of the query (i.e., they 
+                 and they are visible to the rest of the query (i.e., they
                  become columns in the output stream produced by the window
                  clause).
   theCondExpr  : The start/end condition expr.
@@ -371,7 +371,7 @@ class flwor_wincond : public SimpleRCObject
   friend class flwor_expr;
 
 public:
-  struct vars 
+  struct vars
   {
     var_expr_t posvar;
     var_expr_t curr;
@@ -381,7 +381,7 @@ public:
     void set_flwor_clause(flwor_clause* c);
 
     void clone(vars& cloneVars, expr::substitution_t& subst) const;
-      
+
     std::ostream& put(std::ostream&) const;
   };
 
@@ -440,9 +440,9 @@ public:
                     produces for Y in its output tuple stream. For each tuple
                     T produced by the groupby, gY is the concatenation of all
                     the Y values in the input tuples that were grouped into T.
-  theCollations   : The collations to use when comparing values for grouping. 
+  theCollations   : The collations to use when comparing values for grouping.
 ********************************************************************************/
-class group_clause : public flwor_clause 
+class group_clause : public flwor_clause
 {
   friend class flwor_expr;
 
@@ -475,7 +475,7 @@ public:
   const rebind_list_t& get_grouping_vars() const { return theGroupVars; }
 
   const rebind_list_t& get_nongrouping_vars() const { return theNonGroupVars; }
-  
+
   expr* get_input_for_group_var(const var_expr* var);
 
   expr* get_input_for_nongroup_var(const var_expr* var);
@@ -500,7 +500,7 @@ public:
                     ("collation" URILiteral)?
 
 ********************************************************************************/
-class orderby_clause : public flwor_clause 
+class orderby_clause : public flwor_clause
 {
 protected:
   friend class flwor_expr;
@@ -551,7 +551,7 @@ public:
 /***************************************************************************//**
   CountClause ::= "count" "$" VarName
 ********************************************************************************/
-class count_clause : public flwor_clause 
+class count_clause : public flwor_clause
 {
 protected:
   var_expr_t theVarExpr;
@@ -562,7 +562,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  count_clause(short sctx, const QueryLoc& loc, var_expr_t var) 
+  count_clause(short sctx, const QueryLoc& loc, var_expr_t var)
     :
     flwor_clause(sctx, loc, flwor_clause::count_clause),
     theVarExpr(var)
@@ -580,7 +580,7 @@ public:
 /***************************************************************************//**
    WhereClause ::= ExprSingle
 ********************************************************************************/
-class where_clause : public flwor_clause 
+class where_clause : public flwor_clause
 {
   friend class flwor_expr;
 
@@ -592,7 +592,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  where_clause(short sctx, const QueryLoc& loc, expr_t where) 
+  where_clause(short sctx, const QueryLoc& loc, expr_t where)
     :
     flwor_clause(sctx, loc, flwor_clause::where_clause),
     theWhereExpr(where)
@@ -618,7 +618,7 @@ public:
                          OrderByClause |
                          CountClause
 ********************************************************************************/
-class flwor_expr : public expr 
+class flwor_expr : public expr
 {
 public:
   typedef std::vector<rchandle<flwor_clause> > clause_list_t;
@@ -634,14 +634,14 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  flwor_expr(short sctx, const QueryLoc& loc, bool general) 
+  flwor_expr(short sctx, const QueryLoc& loc, bool general)
     :
     expr(sctx, loc),
     theIsGeneral(general)
   {
   }
 
-  expr_kind_t get_expr_kind() const 
+  expr_kind_t get_expr_kind() const
   {
     return (theIsGeneral ? gflwor_expr_kind : flwor_expr_kind);
   }

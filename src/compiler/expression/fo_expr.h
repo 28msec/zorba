@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,7 @@
 #include "zorbaserialization/class_serializer.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 class function;
@@ -33,11 +33,12 @@ class signature;
 /*******************************************************************************
   first-order expressions
 ********************************************************************************/
-class fo_expr : public expr 
+class fo_expr : public expr
 {
 protected:
   checked_vector<expr_t>   theArgs;
   function               * theFunction;
+  substitution_t           theSubst;
 
 public:
   SERIALIZABLE_CLASS(fo_expr)
@@ -96,6 +97,8 @@ public:
   void compute_scripting_kind() const;
 
   expr_t clone(substitution_t& s) const;
+
+  substitution_t get_substitution() const { return theSubst; }
 
   expr_iterator_data* make_iter();
 

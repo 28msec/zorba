@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@
 #include "zorbaserialization/serialization_engine.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(var_expr)
@@ -39,7 +39,7 @@ ulong var_expr::theVarCounter = 0; //used for giving var_exprs unique ids
 ********************************************************************************/
 std::string var_expr::decode_var_kind(enum var_kind k)
 {
-  switch (k) 
+  switch (k)
   {
   case for_var: return "FOR"; break;
   case let_var: return "LET"; break;
@@ -106,7 +106,7 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item* var_expr::get_name() const 
+store::Item* var_expr::get_name() const
 {
   return theName.getp();
 }
@@ -115,7 +115,7 @@ store::Item* var_expr::get_name() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t var_expr::get_type() const 
+xqtref_t var_expr::get_type() const
 {
   return theDeclaredType;
 }
@@ -124,7 +124,7 @@ xqtref_t var_expr::get_type() const
 /*******************************************************************************
 
 ********************************************************************************/
-void var_expr::set_type(xqtref_t t) 
+void var_expr::set_type(xqtref_t t)
 {
   theDeclaredType = t;
 }
@@ -133,9 +133,9 @@ void var_expr::set_type(xqtref_t t)
 /*******************************************************************************
 
 ********************************************************************************/
-const var_expr* var_expr::get_pos_var() const 
+const var_expr* var_expr::get_pos_var() const
 {
-  if (theKind == for_var) 
+  if (theKind == for_var)
   {
     return reinterpret_cast<for_clause*>(theFlworClause)->get_pos_var();
   }
@@ -184,7 +184,7 @@ expr* var_expr::get_domain_expr() const
 /*******************************************************************************
 
 ********************************************************************************/
-forletwin_clause* var_expr::get_forletwin_clause() const 
+forletwin_clause* var_expr::get_forletwin_clause() const
 {
   return dynamic_cast<forletwin_clause*>(theFlworClause);
 }
@@ -193,7 +193,7 @@ forletwin_clause* var_expr::get_forletwin_clause() const
 /*******************************************************************************
 
 ********************************************************************************/
-for_clause* var_expr::get_for_clause() const 
+for_clause* var_expr::get_for_clause() const
 {
   return dynamic_cast<for_clause*>(theFlworClause);
 }
@@ -205,14 +205,14 @@ for_clause* var_expr::get_for_clause() const
 void var_expr::compute_scripting_kind() const
 {
   theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;  
+  theCache.scripting_kind.valid = true;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t var_expr::return_type_impl(static_context* sctx) const 
+xqtref_t var_expr::return_type_impl(static_context* sctx) const
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -229,19 +229,19 @@ xqtref_t var_expr::return_type_impl(static_context* sctx) const
   }
   else if (theKind == for_var ||
            theKind == let_var ||
-           theKind == win_var || 
+           theKind == win_var ||
            theKind == wincond_in_var ||
            theKind == wincond_out_var ||
            theKind == groupby_var ||
            theKind == non_groupby_var ||
-           theKind == copy_var) 
+           theKind == copy_var)
   {
     domainExpr = get_domain_expr();
     ZORBA_ASSERT(domainExpr != NULL);
 
     xqtref_t domainType = domainExpr->return_type(sctx);
 
-    if (theKind == for_var) 
+    if (theKind == for_var)
     {
       derivedType = TypeOps::prime_type(*domainType);
     }
@@ -262,7 +262,7 @@ xqtref_t var_expr::return_type_impl(static_context* sctx) const
     }
   }
 
-  if (derivedType == NULL) 
+  if (derivedType == NULL)
   {
     return (theDeclaredType == NULL ? rtm.ITEM_TYPE_STAR : theDeclaredType);
   }
@@ -276,7 +276,7 @@ xqtref_t var_expr::return_type_impl(static_context* sctx) const
 /*******************************************************************************
 
 ********************************************************************************/
-void var_expr::next_iter(expr_iterator_data& v) 
+void var_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER();
   END_EXPR_ITER();
@@ -288,9 +288,9 @@ void var_expr::next_iter(expr_iterator_data& v)
 ********************************************************************************/
 expr::expr_t var_expr::clone(expr::substitution_t& subst) const
 {
-  expr::subst_iter_t i = subst.find(this);
+  expr::subst_iter_t i = subst->find(this);
 
-  if (i == subst.end()) 
+  if (i == subst->end())
     return const_cast<var_expr*>(this);
 
   return i->second;
@@ -305,7 +305,7 @@ void var_expr::accept(expr_visitor& v)
   if (v.begin_visit(*this))
     accept_children(v);
 
-  v.end_visit(*this); 
+  v.end_visit(*this);
 }
 
 

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,7 +27,7 @@
 
 using namespace std;
 
-namespace zorba 
+namespace zorba
 {
 
 static bool hoist_expressions(
@@ -63,7 +63,7 @@ static bool contains_updates(const expr*);
 /*******************************************************************************
   Used to implement a stack of flwor exprs.
 ********************************************************************************/
-struct flwor_holder 
+struct flwor_holder
 {
   struct flwor_holder  * prev;
   rchandle<flwor_expr>   flwor;
@@ -95,9 +95,9 @@ RULE_REWRITE_PRE(HoistExprsOutOfLoops)
   find_flwor_vars(node, varmap, freeset, freevarMap);
 
   struct flwor_holder root;
-  if (hoist_expressions(rCtx, node, varmap, freevarMap, &root)) 
+  if (hoist_expressions(rCtx, node, varmap, freevarMap, &root))
   {
-    if (root.flwor != NULL) 
+    if (root.flwor != NULL)
     {
       root.flwor->set_return_expr(node);
       return root.flwor.getp();
@@ -128,7 +128,7 @@ static bool hoist_expressions(
     struct flwor_holder* fholder)
 {
   bool status = false;
-  if (e->get_expr_kind() == flwor_expr_kind) 
+  if (e->get_expr_kind() == flwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
 
@@ -138,20 +138,20 @@ static bool hoist_expressions(
 
     ulong numForLetClauses = flwor->num_forlet_clauses();
     ulong i = 0;
-    while(i < numForLetClauses) 
+    while(i < numForLetClauses)
     {
       forletwin_clause* flc = static_cast<forletwin_clause*>(flwor->get_clause(i, true));
 
       expr* domainExpr = flc->get_expr();
 
       expr_t var = try_hoisting(rCtx, domainExpr, varmap, freevarMap, &curr_holder);
-      if (var != NULL) 
+      if (var != NULL)
       {
         flc->set_expr(var.getp());
         numForLetClauses = flwor->num_forlet_clauses();
         status = true;
       }
-      else 
+      else
       {
         status = hoist_expressions(rCtx, domainExpr, varmap, freevarMap, &curr_holder) ||
                  status;
@@ -166,10 +166,10 @@ static bool hoist_expressions(
     }
 
     expr_t we = flwor->get_where();
-    if (we != NULL) 
+    if (we != NULL)
     {
       expr_t wvar = try_hoisting(rCtx, we, varmap, freevarMap, &curr_holder);
-      if (wvar != NULL) 
+      if (wvar != NULL)
       {
         flwor->set_where(wvar.getp());
         status = true;
@@ -182,29 +182,29 @@ static bool hoist_expressions(
 
     expr_t re = flwor->get_return_expr(false);
     expr_t rvar = try_hoisting(rCtx, re, varmap, freevarMap, &curr_holder);
-    if (rvar != NULL) 
+    if (rvar != NULL)
     {
       flwor->set_return_expr(rvar.getp());
       status = true;
     }
-    else 
+    else
     {
       status = hoist_expressions(rCtx, re, varmap, freevarMap, &curr_holder) || status;
     }
   }
   else if (e->get_expr_kind() == sequential_expr_kind
            || e->is_updating()
-           || e->get_expr_kind() == gflwor_expr_kind) 
+           || e->get_expr_kind() == gflwor_expr_kind)
   {
     // do nothing
   }
   else
   {
     expr_iterator i = e->expr_begin();
-    while(!i.done()) 
+    while(!i.done())
     {
       expr *ce = &*(*i);
-      if (ce) 
+      if (ce)
       {
         expr_t var = try_hoisting(rCtx, ce, varmap, freevarMap, fholder);
         if (var != NULL)
@@ -235,9 +235,9 @@ static expr_t try_hoisting(
     const ExprVarsMap& freevarMap,
     struct flwor_holder* holder)
 {
-  if (non_hoistable (e) || 
+  if (non_hoistable (e) ||
       contains_node_construction(e) ||
-      is_enclosed_expr(e)) 
+      is_enclosed_expr(e))
   {
     return NULL;
   }
@@ -250,7 +250,7 @@ static expr_t try_hoisting(
   int i = 0;
   bool found = false;
 
-  while(h->prev != NULL && !found) 
+  while(h->prev != NULL && !found)
   {
     group_clause* gc = h->flwor->get_group_clause();
 
@@ -276,7 +276,7 @@ static expr_t try_hoisting(
 
       for(flwor_expr::clause_list_t::const_iterator iter = h->flwor->clause_begin();
           iter != h->flwor->clause_end();
-          ++iter) 
+          ++iter)
       {
         if ((*iter) != gc)
           continue;
@@ -292,18 +292,18 @@ static expr_t try_hoisting(
       }
     }
 
-    // Check whether expr e references any variables from the current flwor. If 
+    // Check whether expr e references any variables from the current flwor. If
     // not, then move to the previous (outer) flwor. If yes, then let V be the
     // inner-most var referenced by e. If there are any FOR vars after V, e can
-    // be hoisted out of any such FOR vars. Otherwise, e cannot be hoisted.  
-    for(i = h->clause_count - 1; i >= 0; --i) 
+    // be hoisted out of any such FOR vars. Otherwise, e cannot be hoisted.
+    for(i = h->clause_count - 1; i >= 0; --i)
     {
       const forletwin_clause* flc = reinterpret_cast<const forletwin_clause*>
                                     ((*h->flwor)[i]);
 
       if (contains_var(flc->get_var(), varmap, varset) ||
           contains_var(flc->get_pos_var(), varmap, varset) ||
-          contains_var(flc->get_score_var(), varmap, varset)) 
+          contains_var(flc->get_score_var(), varmap, varset))
       {
         found = true;
         break;
@@ -337,15 +337,15 @@ static expr_t try_hoisting(
 
   letvar->set_flwor_clause(flref.getp());
 
-  if (h->prev == NULL) 
+  if (h->prev == NULL)
   {
-    if (h->flwor == NULL) 
+    if (h->flwor == NULL)
     {
       h->flwor = new flwor_expr(e->get_sctx_id(), e->get_loc(), false);
     }
     h->flwor->add_clause(flref);
   }
-  else 
+  else
   {
     h->flwor->add_clause(i + 1, flref);
     ++h->clause_count;
@@ -369,13 +369,13 @@ static bool contains_var(
     const std::map<const var_expr *, int>& varmap,
     const DynamicBitset& varset)
 {
-  if (v == NULL) 
+  if (v == NULL)
   {
     return false;
   }
 
   std::map<const var_expr *, int>::const_iterator i = varmap.find(v);
-  if (i == varmap.end()) 
+  if (i == varmap.end())
   {
     return false;
   }
@@ -387,7 +387,7 @@ static bool contains_var(
 /*******************************************************************************
 
 ********************************************************************************/
-static bool non_hoistable(const expr* e) 
+static bool non_hoistable(const expr* e)
 {
   expr_kind_t k = e->get_expr_kind();
 
@@ -395,7 +395,7 @@ static bool non_hoistable(const expr* e)
           k == const_expr_kind ||
           k == axis_step_expr_kind ||
           k == match_expr_kind ||
-          (k == wrapper_expr_kind && 
+          (k == wrapper_expr_kind &&
            non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr()))  ||
           is_already_hoisted(e) ||
           e->get_scripting_kind() == SEQUENTIAL_EXPR);
@@ -407,9 +407,9 @@ static bool non_hoistable(const expr* e)
 ********************************************************************************/
 static bool is_already_hoisted(const expr* e)
 {
-  if (e->get_expr_kind() == fo_expr_kind) 
+  if (e->get_expr_kind() == fo_expr_kind)
   {
-    return static_cast<const fo_expr *>(e)->get_func()->getKind() == 
+    return static_cast<const fo_expr *>(e)->get_func()->getKind() ==
            FunctionConsts::OP_UNHOIST_1;
   }
   return false;
@@ -432,12 +432,12 @@ static bool contains_node_construction(const expr* e)
   }
 
   const_expr_iterator i = e->expr_begin_const();
-  while(!i.done()) 
+  while(!i.done())
   {
     const expr* ce = &*(*i);
-    if (ce) 
+    if (ce)
     {
-      if (contains_node_construction(ce)) 
+      if (contains_node_construction(ce))
       {
         return true;
       }
@@ -470,10 +470,10 @@ static bool contains_updates(const expr* e)
     return true;
 
   const_expr_iterator i = e->expr_begin_const();
-  while(!i.done()) 
+  while(!i.done())
   {
     const expr* ce = &*(*i);
-    if (ce) 
+    if (ce)
     {
       if (contains_updates(ce))
         return true;

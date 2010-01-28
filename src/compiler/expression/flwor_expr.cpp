@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@
 
 #include "zorbaserialization/serialization_engine.h"
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(flwor_clause)
@@ -100,7 +100,7 @@ forletwin_clause::forletwin_clause(
 }
 
 
-forletwin_clause::~forletwin_clause() 
+forletwin_clause::~forletwin_clause()
 {
   if (theVarExpr != NULL)
     theVarExpr->set_flwor_clause(NULL);
@@ -153,11 +153,11 @@ for_clause::for_clause(
       {
         xqtref_t promoteType = sctx->get_typemanager()->
                                create_type(*varType, TypeConstants::QUANT_STAR);
-    
+
         if (!TypeOps::is_subtype(*domainType, *promoteType))
         {
           domainExpr = new treat_expr(sctxid, loc, domainExpr, promoteType, XPTY0004);
-        
+
           set_expr(domainExpr);
         }
       }
@@ -166,7 +166,7 @@ for_clause::for_clause(
 }
 
 
-for_clause::~for_clause() 
+for_clause::~for_clause()
 {
   if (thePosVarExpr != NULL)
     thePosVarExpr->set_flwor_clause(NULL);
@@ -190,22 +190,22 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) const
   expr_t domainCopy = theDomainExpr->clone(subst);
 
   varref_t varCopy(new var_expr(*theVarExpr));
-  subst[theVarExpr.getp()] = varCopy.getp();
+  subst->get(theVarExpr.getp()) = varCopy.getp();
 
   varref_t posvarCopy;
   var_expr* pos_var_ptr = thePosVarExpr.getp();
-  if (pos_var_ptr) 
+  if (pos_var_ptr)
   {
     posvarCopy = new var_expr(*pos_var_ptr);
-    subst[pos_var_ptr] = posvarCopy.getp();
+    subst->get(pos_var_ptr) = posvarCopy.getp();
   }
 
   varref_t scorevarCopy;
   var_expr* score_var_ptr = theScoreVarExpr.getp();
-  if (score_var_ptr) 
+  if (score_var_ptr)
   {
     scorevarCopy = new var_expr(*score_var_ptr);
-    subst[score_var_ptr] = scorevarCopy.getp();
+    subst->get(score_var_ptr) = scorevarCopy.getp();
   }
 
   return new for_clause(NULL,
@@ -248,7 +248,7 @@ let_clause::let_clause(
           !TypeOps::is_subtype(*domainType, *varType))
       {
         domainExpr = new treat_expr(sctxid, loc, domainExpr, varType, XPTY0004);
-        
+
         set_expr(domainExpr);
       }
     }
@@ -256,7 +256,7 @@ let_clause::let_clause(
 }
 
 
-let_clause::~let_clause() 
+let_clause::~let_clause()
 {
   if (theScoreVarExpr != NULL)
     theScoreVarExpr->set_flwor_clause(NULL);
@@ -276,15 +276,15 @@ flwor_clause_t let_clause::clone(expr::substitution_t& subst) const
   expr_t domainCopy = theDomainExpr->clone(subst);
 
   varref_t varCopy(new var_expr(*theVarExpr));
-  subst[theVarExpr.getp()] = varCopy.getp();
+  subst->get(theVarExpr.getp()) = varCopy.getp();
 
 #if 0
   varref_t scorevarCopy;
   var_expr* score_var_ptr = theScoreVarExpr.getp();
-  if (score_var_ptr) 
+  if (score_var_ptr)
   {
     scorevarCopy = new var_expr(*score_var_ptr);
-    subst[score_var_ptr] = scorevarCopy.getp();
+    subst->get(score_var_ptr) = scorevarCopy.getp();
   }
 #endif
 
@@ -330,7 +330,7 @@ window_clause::window_clause(
           !TypeOps::is_subtype(*domainType, *varType))
       {
         domainExpr = new treat_expr(sctxid, loc, domainExpr, varType, XPTY0004);
-        
+
         set_expr(domainExpr);
       }
     }
@@ -338,7 +338,7 @@ window_clause::window_clause(
 }
 
 
-window_clause::~window_clause() 
+window_clause::~window_clause()
 {
   if (theWinStartCond != NULL)
     theWinStartCond->set_flwor_clause(NULL);
@@ -356,7 +356,7 @@ void window_clause::serialize(::zorba::serialization::Archiver& ar)
   ar & theWinStopCond;
   ar & theLazyEval;
 }
-  
+
 
 void window_clause::set_win_start(flwor_wincond* cond)
 {
@@ -379,7 +379,7 @@ flwor_clause_t window_clause::clone(expr::substitution_t& subst) const
   expr_t domainCopy = theDomainExpr->clone(subst);
 
   varref_t varCopy(new var_expr(*theVarExpr));
-  subst[theVarExpr.getp()] = varCopy.getp();
+  subst->get(theVarExpr.getp()) = varCopy.getp();
 
   flwor_wincond_t cloneStartCond;
   flwor_wincond_t cloneStopCond;
@@ -432,7 +432,7 @@ flwor_wincond::flwor_wincond(
 }
 
 
-void flwor_wincond::vars::set_flwor_clause(flwor_clause* c) 
+void flwor_wincond::vars::set_flwor_clause(flwor_clause* c)
 {
   if (posvar != NULL) posvar->set_flwor_clause(c);
   if (curr != NULL) curr->set_flwor_clause(c);
@@ -445,37 +445,37 @@ void flwor_wincond::vars::clone(
     flwor_wincond::vars& cloneVars,
     expr::substitution_t& subst) const
 {
-  if (posvar != NULL) 
+  if (posvar != NULL)
   {
     varref_t varCopy(new var_expr(*posvar));
-    subst[posvar.getp()] = varCopy.getp();
+    subst->get(posvar.getp()) = varCopy.getp();
     cloneVars.posvar = varCopy;
   }
- 
-  if (curr != NULL) 
+
+  if (curr != NULL)
   {
     varref_t varCopy(new var_expr(*curr));
-    subst[curr.getp()] = varCopy.getp();
+    subst->get(curr.getp()) = varCopy.getp();
     cloneVars.curr = varCopy;
   }
 
-  if (prev != NULL) 
+  if (prev != NULL)
   {
     varref_t varCopy(new var_expr(*prev));
-    subst[prev.getp()] = varCopy.getp();
+    subst->get(prev.getp()) = varCopy.getp();
     cloneVars.prev = varCopy;
   }
 
-  if (next != NULL) 
+  if (next != NULL)
   {
     varref_t varCopy(new var_expr(*next));
-    subst[next.getp()] = varCopy.getp();
+    subst->get(next.getp()) = varCopy.getp();
     cloneVars.next = varCopy;
   }
 }
 
 
-void flwor_wincond::set_flwor_clause(flwor_clause* c) 
+void flwor_wincond::set_flwor_clause(flwor_clause* c)
 {
   theInputVars.set_flwor_clause(c);
   theOutputVars.set_flwor_clause(c);
@@ -513,7 +513,7 @@ group_clause::group_clause(
 {
   ulong numGVars = theGroupVars.size();
   ulong numNGVars = theNonGroupVars.size();
-  
+
   for (ulong i = 0; i < numGVars; ++i)
     theGroupVars[i].second->set_flwor_clause(this);
 
@@ -522,11 +522,11 @@ group_clause::group_clause(
 }
 
 
-group_clause::~group_clause() 
+group_clause::~group_clause()
 {
   ulong numGVars = theGroupVars.size();
   ulong numNGVars = theNonGroupVars.size();
-  
+
   for (ulong i = 0; i < numGVars; ++i)
     theGroupVars[i].second->set_flwor_clause(NULL);
 
@@ -578,18 +578,18 @@ flwor_clause_t group_clause::clone(expr::substitution_t& subst) const
   rebind_list_t cloneGroupVars(numGroupVars);
   rebind_list_t cloneNonGroupVars(numNonGroupVars);
 
-  for (ulong i = 0; i < numGroupVars; ++i) 
+  for (ulong i = 0; i < numGroupVars; ++i)
   {
     cloneGroupVars[i].first = theGroupVars[i].first->clone(subst);
     cloneGroupVars[i].second = new var_expr(*theGroupVars[i].second);
-    subst[theGroupVars[i].second.getp()] = cloneGroupVars[i].second.getp();
+    subst->get(theGroupVars[i].second.getp()) = cloneGroupVars[i].second.getp();
   }
 
-  for (ulong i = 0; i < numNonGroupVars; ++i) 
+  for (ulong i = 0; i < numNonGroupVars; ++i)
   {
     cloneNonGroupVars[i].first = theNonGroupVars[i].first->clone(subst);
     cloneNonGroupVars[i].second = new var_expr(*theNonGroupVars[i].second);
-    subst[theNonGroupVars[i].second.getp()] = cloneNonGroupVars[i].second.getp();
+    subst->get(theNonGroupVars[i].second.getp()) = cloneNonGroupVars[i].second.getp();
   }
 
   return new group_clause(theContext,
@@ -634,7 +634,7 @@ flwor_clause_t orderby_clause::clone(expr::substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-count_clause::~count_clause() 
+count_clause::~count_clause()
 {
   if (theVarExpr != NULL)
     theVarExpr->set_flwor_clause(NULL);
@@ -651,7 +651,7 @@ void count_clause::serialize(::zorba::serialization::Archiver& ar)
 flwor_clause_t count_clause::clone(expr::substitution_t& subst) const
 {
   varref_t cloneVar = new var_expr(*theVarExpr);
-  subst[theVarExpr.getp()] = cloneVar;
+  subst->get(theVarExpr.getp()) = cloneVar;
 
   return new count_clause(theContext, get_loc(), cloneVar);
 }
@@ -678,7 +678,7 @@ flwor_clause_t where_clause::clone(expr::substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-class flwor_expr_iterator_data : public expr_iterator_data 
+class flwor_expr_iterator_data : public expr_iterator_data
 {
 public:
   flwor_expr::clause_list_t::iterator    theClausesIter;
@@ -712,7 +712,7 @@ void flwor_expr::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-expr* flwor_expr::get_return_expr(bool invalidate) 
+expr* flwor_expr::get_return_expr(bool invalidate)
 {
   if (invalidate) this->invalidate();
   return theReturnExpr.getp();
@@ -732,7 +732,7 @@ flwor_clause* flwor_expr::get_clause(ulong i, bool invalidate)
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::remove_clause(ulong pos) 
+void flwor_expr::remove_clause(ulong pos)
 {
   theClauses[pos]->theFlworExpr = NULL;
   theClauses.erase(theClauses.begin() + pos);
@@ -743,7 +743,7 @@ void flwor_expr::remove_clause(ulong pos)
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::add_clause(flwor_clause* c) 
+void flwor_expr::add_clause(flwor_clause* c)
 {
   theClauses.push_back(c);
   c->theFlworExpr = this;
@@ -754,7 +754,7 @@ void flwor_expr::add_clause(flwor_clause* c)
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::add_clause(ulong pos, flwor_clause* c) 
+void flwor_expr::add_clause(ulong pos, flwor_clause* c)
 {
   theClauses.insert(theClauses.begin() + pos, c);
   c->theFlworExpr = this;
@@ -765,7 +765,7 @@ void flwor_expr::add_clause(ulong pos, flwor_clause* c)
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::add_where(expr_t e) 
+void flwor_expr::add_where(expr_t e)
 {
   where_clause* whereClause = new where_clause(theSctxId, e->get_loc(), e);
 
@@ -777,14 +777,14 @@ void flwor_expr::add_where(expr_t e)
   For simple flwor only. If a where clause exists already, replace its expr
   with the given expr. Otherwise, add a where clause with the given expr.
 ********************************************************************************/
-void flwor_expr::set_where(expr* e) 
+void flwor_expr::set_where(expr* e)
 {
   ZORBA_ASSERT(e != NULL);
 
   unsigned numClauses = num_clauses();
   unsigned i;
 
-  for (i = 0; i < numClauses; ++i) 
+  for (i = 0; i < numClauses; ++i)
   {
     if (theClauses[i]->get_kind() != flwor_clause::for_clause &&
         theClauses[i]->get_kind() != flwor_clause::let_clause)
@@ -793,13 +793,13 @@ void flwor_expr::set_where(expr* e)
     }
   }
 
-  if (i == numClauses) 
+  if (i == numClauses)
   {
     add_where(e);
     return;
   }
 
-  if (theClauses[i]->get_kind() == flwor_clause::where_clause) 
+  if (theClauses[i]->get_kind() == flwor_clause::where_clause)
   {
     where_clause* wc = reinterpret_cast<where_clause*>(theClauses[i].getp());
     wc->set_expr(e);
@@ -817,7 +817,7 @@ void flwor_expr::set_where(expr* e)
 /*******************************************************************************
   For simple flwor only.
 ********************************************************************************/
-void flwor_expr::remove_where_clause() 
+void flwor_expr::remove_where_clause()
 {
   unsigned numClauses = num_clauses();
   for (unsigned i = 0; i < numClauses; ++i)
@@ -837,7 +837,7 @@ void flwor_expr::remove_where_clause()
 /*******************************************************************************
   For simple flwor only.
 ********************************************************************************/
-expr* flwor_expr::get_where() const 
+expr* flwor_expr::get_where() const
 {
   unsigned numClauses = num_clauses();
   for (unsigned i = 0; i < numClauses; ++i)
@@ -853,7 +853,7 @@ expr* flwor_expr::get_where() const
 /*******************************************************************************
   For simple flwor only.
 ********************************************************************************/
-group_clause* flwor_expr::get_group_clause() const 
+group_clause* flwor_expr::get_group_clause() const
 {
   ulong numClauses = num_clauses();
   for (ulong i = 0; i < numClauses; ++i)
@@ -869,14 +869,14 @@ group_clause* flwor_expr::get_group_clause() const
 /*******************************************************************************
   For simple flwor only.
 ********************************************************************************/
-ulong flwor_expr::num_forlet_clauses() 
+ulong flwor_expr::num_forlet_clauses()
 {
   ulong num = 0;
   ulong numClauses = num_clauses();
   for (ulong i = 0; i < numClauses; ++i)
   {
     const flwor_clause* c = theClauses[i];
-    
+
     if (c->get_kind() == flwor_clause::for_clause ||
         c->get_kind() == flwor_clause::let_clause)
     {
@@ -976,7 +976,7 @@ xqtref_t flwor_expr::return_type_impl(static_context* sctx) const
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::compute_scripting_kind() const 
+void flwor_expr::compute_scripting_kind() const
 {
   const expr* ret = get_return_expr();
   theCache.scripting_kind.kind = ret->get_scripting_kind();
@@ -1008,7 +1008,7 @@ expr_t flwor_expr::clone(substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-expr_iterator_data* flwor_expr::make_iter() 
+expr_iterator_data* flwor_expr::make_iter()
 {
   return new flwor_expr_iterator_data(this);
 }
@@ -1017,7 +1017,7 @@ expr_iterator_data* flwor_expr::make_iter()
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::next_iter(expr_iterator_data& v) 
+void flwor_expr::next_iter(expr_iterator_data& v)
 {
   flwor_clause* c = NULL;
   window_clause* wc = NULL;
@@ -1036,19 +1036,19 @@ void flwor_expr::next_iter(expr_iterator_data& v)
   {
     c = (iter.theClausesIter)->getp();
 
-    if (c->get_kind() == flwor_clause::for_clause) 
+    if (c->get_kind() == flwor_clause::for_clause)
     {
       ITER(static_cast<for_clause *>(c)->theDomainExpr);
     }
 
-    else if (c->get_kind() == flwor_clause::let_clause) 
+    else if (c->get_kind() == flwor_clause::let_clause)
     {
       ITER(static_cast<let_clause *>(c)->theDomainExpr);
     }
 
-    else if (c->get_kind() == flwor_clause::window_clause) 
+    else if (c->get_kind() == flwor_clause::window_clause)
     {
-      for (iter.theWincondIter = 0; iter.theWincondIter < 2; iter.theWincondIter++) 
+      for (iter.theWincondIter = 0; iter.theWincondIter < 2; iter.theWincondIter++)
       {
         wc = static_cast<window_clause *>((iter.theClausesIter)->getp());
 
@@ -1065,12 +1065,12 @@ void flwor_expr::next_iter(expr_iterator_data& v)
       ITER(wc->theDomainExpr);
     }
 
-    else if (c->get_kind() == flwor_clause::where_clause) 
+    else if (c->get_kind() == flwor_clause::where_clause)
     {
       ITER(static_cast<where_clause *>(c)->theWhereExpr);
     }
 
-    else if (c->get_kind() == flwor_clause::group_clause) 
+    else if (c->get_kind() == flwor_clause::group_clause)
     {
       gc = static_cast<group_clause *>(c);
 
@@ -1092,7 +1092,7 @@ void flwor_expr::next_iter(expr_iterator_data& v)
       }
     }
 
-    else if (c->get_kind() == flwor_clause::order_clause) 
+    else if (c->get_kind() == flwor_clause::order_clause)
     {
       oc = static_cast<orderby_clause *>(c);
 
@@ -1107,8 +1107,8 @@ void flwor_expr::next_iter(expr_iterator_data& v)
   }
 
   ITER(theReturnExpr);
-  
-  END_EXPR_ITER(); 
+
+  END_EXPR_ITER();
 }
 
 

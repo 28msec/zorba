@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,10 +30,10 @@
 #include "context/static_context_consts.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
-enum expr_kind_t 
+enum expr_kind_t
 {
   wrapper_expr_kind,
   sequential_expr_kind,
@@ -93,10 +93,10 @@ class expr_iterator;
   dynamically in the heap, whenever we need to iterate over the subexpressions of
   an expr. On the other hand, instances of expr_iterator are always allocated on
   the stack; they wrap corresponding instances of expr_iterator_data (always a
-  1:1 relationship) and provide an object-based, rather than pointer-based, 
-  iterator interface. 
+  1:1 relationship) and provide an object-based, rather than pointer-based,
+  iterator interface.
 ********************************************************************************/
-class expr_iterator 
+class expr_iterator
 {
 private:
   expr_iterator_data * theIter;
@@ -127,9 +127,9 @@ private:
 
 
 /*******************************************************************************
-  A const version of expr_iterator. 
+  A const version of expr_iterator.
 ********************************************************************************/
-class const_expr_iterator 
+class const_expr_iterator
 {
 private:
   expr_iterator_data * theIter;
@@ -157,19 +157,58 @@ private:
 };
 
 
+
 /*******************************************************************************
   Base class for the expression tree node hierarchy
 ********************************************************************************/
-class expr : public AnnotationHolder 
+class expr : public AnnotationHolder
 {
   friend class expr_iterator_data;
 
 public:
   typedef rchandle<expr> expr_t;
 
-  typedef std::map<const expr *, expr_t> substitution_t;
+  /*** Class to hold a substitution for function parameters ***/
+  class substitution : public SimpleRCObject
+  {
+  protected:
+    std::vector<expr_t> expr_key_holder;
+    std::map<const expr *, expr_t> subst_map;
 
-  typedef substitution_t::iterator subst_iter_t;
+  public:
+    typedef std::map<const expr *, expr_t>::iterator iterator;
+
+    expr_t& get(expr* key)
+    {
+      iterator it = subst_map.find(key);
+      if (it == subst_map.end())
+      {
+        expr_key_holder.push_back(key);
+        return subst_map[key];
+      }
+      else
+        return it->second;
+    }
+
+    iterator find(const expr* key)
+    {
+      return subst_map.find(key);
+    }
+
+    iterator end()
+    {
+      return subst_map.end();
+    }
+
+    void clear()
+    {
+      subst_map.clear();
+      expr_key_holder.clear();
+    }
+  }; // class substitution
+
+  typedef rchandle<substitution> substitution_t;
+  typedef substitution::iterator subst_iter_t;
 
 protected:
   // Pitfall when using the cache -- AVOID THIS SCENARIO:
@@ -179,13 +218,13 @@ protected:
   // (4) call P() again and get (possibly wrong) cached result
   struct Cache
   {
-    mutable struct 
+    mutable struct
     {
       bool             valid;
       xqtref_t         t;
     } type;
 
-    mutable struct 
+    mutable struct
     {
       bool               valid;
       expr_script_kind_t kind;
@@ -208,8 +247,8 @@ public:
 
 public:
   static expr_script_kind_t scripting_kind_anding(
-        expr_script_kind_t type1, 
-        expr_script_kind_t type2, 
+        expr_script_kind_t type1,
+        expr_script_kind_t type2,
         const QueryLoc& loc);
 
 public:
@@ -273,7 +312,7 @@ public:
   const store::Item* getQName(static_context* sctx) const;
 
 protected:
-  void invalidate() 
+  void invalidate()
   {
     theCache.type.valid = false;
     // theCache.upd_seq_kind.valid = false;
@@ -300,20 +339,20 @@ protected:
   pointers to its subexpressions. So, to make expr_iterator_data work with any
   kind of expr, the actual work of expr_iterator_data is done by the virtual
   expr::next_iter() method. Every concrete subclass of expr must defined its
-  own next_iter() method. 
+  own next_iter() method.
 ********************************************************************************/
-class expr_iterator_data 
+class expr_iterator_data
 {
 protected:
   expr   * theExpr;
-  
+
 public:
   expr_t * theCurrentChild;
   int      theState;
   bool     theInvalidate;
 
 public:
-  expr_iterator_data(expr* e) 
+  expr_iterator_data(expr* e)
     :
     theExpr(e),
     theCurrentChild(NULL),
@@ -334,7 +373,7 @@ public:
 
 /*******************************************************************************
   Iterator macros. These macros are used inside the expr::next_iter() method:
-  expr::next_iter(expr_iterator_data& v) 
+  expr::next_iter(expr_iterator_data& v)
 ********************************************************************************/
 
 #define BEGIN_EXPR_ITER() switch (v.theState) { case 0:

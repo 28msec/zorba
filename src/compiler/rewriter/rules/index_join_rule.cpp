@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,7 @@
 #include "util/properties.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 struct PredicateInfo;
@@ -64,7 +64,7 @@ struct PredicateInfo
 ********************************************************************************/
 expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
 {
-  if (node->get_expr_kind() != flwor_expr_kind) 
+  if (node->get_expr_kind() != flwor_expr_kind)
     return NULL;
 
   flwor_expr* flworExpr = static_cast<flwor_expr *>(node);
@@ -94,7 +94,7 @@ expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
     // TODO: Flatten the and-tree and test all conjuncts
     // TODO: consider multi-key indices
     expr_iterator i = whereExpr->expr_begin();
-    for(; !i.done(); ++i) 
+    for(; !i.done(); ++i)
     {
       PredicateInfo predInfo;
       predInfo.theFlworExpr = flworExpr;
@@ -126,7 +126,7 @@ expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
 expr_t IndexJoin::rewritePost(expr* node, RewriterContext& rCtx)
 {
   if (node->get_expr_kind() == flwor_expr_kind)
-  { 
+  {
     expr_t expr = rCtx.theFlworStack.back();
     rCtx.theFlworStack.pop_back();
 
@@ -141,7 +141,7 @@ expr_t IndexJoin::rewritePost(expr* node, RewriterContext& rCtx)
 
 
 /*******************************************************************************
-  Check whether the given predicate is a join predicate that can be conversted 
+  Check whether the given predicate is a join predicate that can be conversted
   to a hashjoin.
 ********************************************************************************/
 static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
@@ -224,7 +224,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     predInfo.theOuterVar = var2;
     predInfo.theOuterVarId = var2id;
     predInfo.theInnerOp = op1;
-    predInfo.theInnerVar = var1; 
+    predInfo.theInnerVar = var1;
     outerVarId = var2id;
     innerVarId = var1id;
   }
@@ -238,7 +238,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   // way we can be sure that the pred acts as a filter over the inner var).
   if (predInfo.theFlworExpr->defines_variable(predInfo.theInnerVar) < 0)
     return false;
-    
+
   // Type checks
   xqtref_t outerType = predInfo.theOuterOp->return_type(sctx);
   xqtref_t innerType = predInfo.theInnerOp->return_type(sctx);
@@ -283,7 +283,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
 /*******************************************************************************
   Check if "curExpr" references a single var and that var is a FOR var. If so,
-  return that FOR var and its prefix id; otherwise return NULL. 
+  return that FOR var and its prefix id; otherwise return NULL.
 ********************************************************************************/
 static const var_expr* findForVar(
     RewriterContext& rCtx,
@@ -314,7 +314,7 @@ static const var_expr* findForVar(
     {
       curExpr = var->get_forletwin_clause()->get_expr();
     }
-    else 
+    else
     {
       return NULL;
     }
@@ -361,7 +361,7 @@ static bool checkVarDependency(
 ********************************************************************************/
 static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 {
-  //std::cout << "!!!!! Found Join Index Predicate !!!!!" << std::endl << std::endl;
+  // std::cout << "!!!!! Found Join Index Predicate !!!!!" << std::endl << std::endl;
 
   const QueryLoc& loc = predInfo.thePredicate->get_loc();
   short sctxid = predInfo.thePredicate->get_sctx_id();
@@ -376,8 +376,8 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   // var (because the index must be built ouside the loop of the outer FOR var).
   // Note: must clone fc->get_expr() because expandVars modifies its input, but
   // fc->get_expr should not be modified, because we may discover later that the
-  // rewrite is not possible after all, 
-  expr::substitution_t subst;
+  // rewrite is not possible after all,
+  expr::substitution_t subst = new expr::substitution();
   expr_t domainExpr = fc->get_expr()->clone(subst);
   if (!expandVars(rCtx, domainExpr, predInfo.theOuterVarId, maxInnerVarId))
     return false;
@@ -441,13 +441,13 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
           break;
         }
       }
- 
+
       innerSeqExpr->add_at(arg, createExpr.getp());
     }
     else
     {
       innerSeqExpr = new sequential_expr(sctxid, loc);
-      
+
       innerSeqExpr->push_back(createExpr.getp());
       innerSeqExpr->push_back(returnExpr);
 
@@ -472,11 +472,11 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
                     outerPosInStack,
                     outerPosInSeq);
 
-    //  Build or adjust outer sequential expr 
+    //  Build or adjust outer sequential expr
     if (outerSeqExpr == NULL)
     {
       outerSeqExpr = new sequential_expr(sctxid, loc);
-      
+
       outerSeqExpr->push_back(createExpr.getp());
       outerSeqExpr->push_back(outerFlworExpr);
 
@@ -578,13 +578,13 @@ static bool expandVars(
           return false;
 #else
           // TODO: to expand a FOR var, we must make sure that the expr is a
-          // map w.r.t. that var. 
+          // map w.r.t. that var.
           wrapper->set_expr(var->get_forletwin_clause()->get_expr());
 
           return expandVars(rCtx, wrapper, outerVarId, maxVarId);
 #endif
         }
-        else 
+        else
         {
           return false;
         }
@@ -617,7 +617,7 @@ static bool expandVars(
 
 
 /*******************************************************************************
-  Find the flwor expr defining the given var. 
+  Find the flwor expr defining the given var.
 ********************************************************************************/
 static void findFlworForVar(
     RewriterContext& rCtx,

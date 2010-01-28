@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -127,7 +127,7 @@
 
 using namespace std;
 
-namespace zorba 
+namespace zorba
 {
 
 typedef rchandle<ForVarIterator> ForVarIter_t;
@@ -137,7 +137,7 @@ typedef rchandle<LetVarIterator> LetVarIter_t;
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
 
-template <typename T> T pop_stack (stack<T> &stk) 
+template <typename T> T pop_stack (stack<T> &stk)
 {
   assert (! stk.empty ());
   T x = stk.top ();
@@ -146,7 +146,7 @@ template <typename T> T pop_stack (stack<T> &stk)
 }
 
 
-template<class T> T &peek_stack (stack<T> &stk) 
+template<class T> T &peek_stack (stack<T> &stk)
 {
   ZORBA_ASSERT (! stk.empty ());
   return stk.top ();
@@ -154,7 +154,7 @@ template<class T> T &peek_stack (stack<T> &stk)
 
 
 template <typename V>
-struct vector_destroyer 
+struct vector_destroyer
 {
   void operator()(const struct hash64map<vector<V> *>::entry& entry)
   {
@@ -193,7 +193,7 @@ public:
   FlworClauseVarMap(const flwor_clause* cl, bool general)
     :
     theIsGeneral(general),
-    theClause(cl) 
+    theClause(cl)
   {
   }
 
@@ -226,7 +226,7 @@ protected:
 
 protected:
   uint32_t                               depth;
-  
+
   stack<PlanIter_t>                      itstack;
 
   stack<expr*>                           theConstructorsStack;
@@ -258,7 +258,7 @@ plan_visitor(CompilerCB* ccb, hash64map<vector<LetVarIter_t> *>* arg_var_map = N
 }
 
 
-~plan_visitor() 
+~plan_visitor()
 {
   for_each(catchvar_iter_map.begin(), catchvar_iter_map.end(), vector_destroyer<LetVarIter_t>());
   for_each(copy_var_iter_map.begin(), copy_var_iter_map.end(), vector_destroyer<ForVarIter_t>());
@@ -266,7 +266,7 @@ plan_visitor(CompilerCB* ccb, hash64map<vector<LetVarIter_t> *>* arg_var_map = N
 
 public:
 
-PlanIter_t pop_itstack() 
+PlanIter_t pop_itstack()
 {
   return pop_stack(itstack);
 }
@@ -301,13 +301,13 @@ static_context* get_sctx(short sctx)
 }
 
 
-bool is_enclosed_expr(expr* e) 
+bool is_enclosed_expr(expr* e)
 {
   fo_expr* foExpr = dynamic_cast<fo_expr*>(e);
   if (foExpr != NULL &&
       foExpr->get_func()->getKind() == FunctionConsts::OP_ENCLOSED_1)
     return true;
-  
+
   return false;
 }
 
@@ -321,7 +321,7 @@ void end_visit (expr& v) {
   CODEGEN_TRACE_OUT("");
 }
 
-bool begin_visit (debugger_expr& v) 
+bool begin_visit (debugger_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -333,15 +333,15 @@ bool begin_visit (debugger_expr& v)
   return true;
 }
 
-void end_visit (debugger_expr& v) 
+void end_visit (debugger_expr& v)
 {
-  CODEGEN_TRACE_OUT(""); 
+  CODEGEN_TRACE_OUT("");
   checked_vector<store::Item_t> varnames;
   checked_vector<string> var_keys;
   checked_vector<xqtref_t> vartypes;
   std::vector<PlanIter_t> argvEvalIter;
   std::vector<PlanIter_t> argv;
-  for (unsigned i = 0; i < v.var_count (); i++) 
+  for (unsigned i = 0; i < v.var_count (); i++)
   {
     varnames.push_back (v.var_at (i).varname);
     var_keys.push_back (v.var_at (i).var_key);
@@ -361,7 +361,7 @@ void end_visit (debugger_expr& v)
 
   // set the child of the debugger iterator
   argv.push_back(pop_itstack ());
-  argv.push_back(new EvalIterator(sctx, qloc, argvEvalIter, varnames, var_keys, 
+  argv.push_back(new EvalIterator(sctx, qloc, argvEvalIter, varnames, var_keys,
     vartypes));
   aDebugIterator->setChildren(argv);
 
@@ -376,13 +376,13 @@ void end_visit (debugger_expr& v)
 }
 
 
-bool begin_visit (wrapper_expr& v) 
+bool begin_visit (wrapper_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (wrapper_expr& v) 
+void end_visit (wrapper_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t iter = pop_itstack ();
@@ -391,13 +391,13 @@ void end_visit (wrapper_expr& v)
 }
 
 
-bool begin_visit(sequential_expr& v) 
+bool begin_visit(sequential_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit(sequential_expr& v) 
+void end_visit(sequential_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -422,14 +422,14 @@ void end_visit(sequential_expr& v)
   VarRef expr
 ********************************************************************************/
 
-bool begin_visit(var_expr& v) 
+bool begin_visit(var_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
 
-void end_visit(var_expr& v) 
+void end_visit(var_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -440,7 +440,7 @@ void end_visit(var_expr& v)
 template<class Iter>
 PlanIter_t base_var_codegen(
     const var_expr& var,
-    hash64map<vector<rchandle<Iter> > *>& varMap) 
+    hash64map<vector<rchandle<Iter> > *>& varMap)
 {
   vector<rchandle<Iter> >* varRefs = NULL;
   bool bound = varMap.get((uint64_t) &var, varRefs);
@@ -542,7 +542,7 @@ void general_var_codegen(const var_expr& var)
           varRebind->theInputVar = varIter;
           theClauseStack[i]->theVarExprs.push_back(&var);
           theClauseStack[i]->theVarRebinds.push_back(varRebind);
-          
+
           varIter = create_var_iter(var, isForVar);
 
           varRebind->theOutputVarRefs.push_back(varIter);
@@ -554,7 +554,7 @@ void general_var_codegen(const var_expr& var)
     break;
   }
 
-  case var_expr::arg_var: 
+  case var_expr::arg_var:
   {
     PlanIter_t iter = base_var_codegen(var, *arg_var_iter_map);
     push_itstack(iter);
@@ -575,11 +575,11 @@ void general_var_codegen(const var_expr& var)
     break;
   }
 
-  case var_expr::prolog_var: 
-  case var_expr::local_var: 
+  case var_expr::prolog_var:
+  case var_expr::local_var:
   {
     xqpString varname = var.get_name()->getStringValue().getp();
-    if (varname == DOT_VAR) 
+    if (varname == DOT_VAR)
     {
       vector<PlanIter_t> ctx_args;
       store::Item_t qname;
@@ -588,19 +588,19 @@ void general_var_codegen(const var_expr& var)
       ctx_args.push_back (new SingletonIterator (sctx, qloc, qname));
       push_itstack(new CtxVariableIterator (sctx, qloc, ctx_args));
     }
-    else if (varname == DOT_POS_VAR) 
+    else if (varname == DOT_POS_VAR)
     {
       store::Item_t i;
       ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
       push_itstack(new SingletonIterator (sctx, qloc, i));
     }
-    else if (varname == LAST_IDX_VAR) 
+    else if (varname == LAST_IDX_VAR)
     {
       store::Item_t i;
       ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
       push_itstack(new SingletonIterator (sctx, qloc, i));
     }
-    else 
+    else
     {
       expr_t lookup_expr = new fo_expr(var.get_sctx_id(),
                                        qloc,
@@ -610,7 +610,7 @@ void general_var_codegen(const var_expr& var)
                                                       dynamic_context::var_key(&var)));
       lookup_expr->accept(*this);
     }
- 
+
     break;
   }
 
@@ -625,7 +625,7 @@ void general_var_codegen(const var_expr& var)
 /*******************************************************************************
   FLWOR expr
 ********************************************************************************/
-bool begin_visit(flwor_expr& v) 
+bool begin_visit(flwor_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -633,23 +633,14 @@ bool begin_visit(flwor_expr& v)
 
   ulong numClauses = v.num_clauses();
 
-  for (ulong i = 0; i < numClauses; ++i) 
+  for (ulong i = 0; i < numClauses; ++i)
   {
     const flwor_clause* c = v[i];
 
-    switch (c->get_kind()) 
+    switch (c->get_kind())
     {
 
-    case flwor_clause::for_clause: 
-    {
-      visit_flwor_clause(c, isGeneral);
-
-      const for_clause* fc = reinterpret_cast<const for_clause*>(c);
-      fc->get_expr()->accept(*this);
-      break;
-    }
-
-    case flwor_clause::let_clause: 
+    case flwor_clause::for_clause:
     {
       visit_flwor_clause(c, isGeneral);
 
@@ -658,7 +649,16 @@ bool begin_visit(flwor_expr& v)
       break;
     }
 
-    case flwor_clause::window_clause: 
+    case flwor_clause::let_clause:
+    {
+      visit_flwor_clause(c, isGeneral);
+
+      const for_clause* fc = reinterpret_cast<const for_clause*>(c);
+      fc->get_expr()->accept(*this);
+      break;
+    }
+
+    case flwor_clause::window_clause:
     {
       visit_flwor_clause(c, isGeneral);
 
@@ -678,13 +678,13 @@ bool begin_visit(flwor_expr& v)
       break;
     }
 
-    case flwor_clause::group_clause: 
+    case flwor_clause::group_clause:
     {
       const group_clause* gc = reinterpret_cast<const group_clause*>(c);
 
       const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
       const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-      
+
       for (ulong i = 0; i < gvars.size(); ++i)
       {
         gvars[i].first->accept(*this);
@@ -700,7 +700,7 @@ bool begin_visit(flwor_expr& v)
       break;
     }
 
-    case flwor_clause::order_clause: 
+    case flwor_clause::order_clause:
     {
       const orderby_clause* oc = reinterpret_cast<const orderby_clause*>(c);
 
@@ -715,13 +715,13 @@ bool begin_visit(flwor_expr& v)
       break;
     }
 
-    case flwor_clause::count_clause: 
+    case flwor_clause::count_clause:
     {
       visit_flwor_clause(c, isGeneral);
       break;
     }
 
-    case flwor_clause::where_clause: 
+    case flwor_clause::where_clause:
     {
       const where_clause* wc = reinterpret_cast<const where_clause*>(c);
       wc->get_expr()->accept(*this);
@@ -735,7 +735,7 @@ bool begin_visit(flwor_expr& v)
   v.get_return_expr(false)->accept(*this);
 
   // Do not visit the children of this flwor expr; this was done already by
-  // this method 
+  // this method
   return false;
 }
 
@@ -771,11 +771,11 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
   case flwor_clause::for_clause:
   {
     const for_clause* fc = static_cast<const for_clause *>(c);
-    
+
     VarRebind_t varRebind = new VarRebind;
     clauseVarMap->theVarExprs.push_back(fc->get_var());
     clauseVarMap->theVarRebinds.push_back(varRebind);
-      
+
     if (fc->get_pos_var() != NULL)
     {
       varRebind = new VarRebind;
@@ -786,10 +786,10 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
     break;
   }
 
-  case flwor_clause::let_clause: 
+  case flwor_clause::let_clause:
   {
     const let_clause* lc = static_cast<const let_clause *>(c);
-    
+
     VarRebind_t varRebind = new VarRebind;
     clauseVarMap->theVarExprs.push_back(lc->get_var());
     clauseVarMap->theVarRebinds.push_back(varRebind);
@@ -797,7 +797,7 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
     break;
   }
 
-  case flwor_clause::window_clause: 
+  case flwor_clause::window_clause:
   {
     const window_clause* wc = static_cast<const window_clause *>(c);
 
@@ -811,7 +811,7 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
     break;
   }
 
-  case flwor_clause::group_clause: 
+  case flwor_clause::group_clause:
   {
     const group_clause* gbc = static_cast<const group_clause *>(c);
     const group_clause::rebind_list_t& grouping_vars = gbc->get_grouping_vars();
@@ -823,7 +823,7 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
       clauseVarMap->theVarExprs.push_back(grouping_vars[i].second.getp());
       clauseVarMap->theVarRebinds.push_back(varRebind);
     }
-    
+
     for (unsigned i = 0; i < nongrouping_vars.size(); i++)
     {
       VarRebind_t varRebind = new VarRebind;
@@ -833,7 +833,7 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
 
     break;
   }
-  
+
   case flwor_clause::order_clause:
   {
     break;
@@ -842,7 +842,7 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
   case flwor_clause::count_clause:
   {
     const count_clause* cl = static_cast<const count_clause *>(c);
-    
+
     VarRebind_t varRebind = new VarRebind;
     clauseVarMap->theVarExprs.push_back(cl->get_var());
     clauseVarMap->theVarRebinds.push_back(varRebind);
@@ -861,7 +861,7 @@ void visit_flwor_clause(const flwor_clause* c, bool general)
 
 void init_wincond_var_maps(
     const flwor_wincond* cond,
-    FlworClauseVarMap* clauseVarMap) 
+    FlworClauseVarMap* clauseVarMap)
 {
   if (cond == NULL)
     return;
@@ -927,7 +927,7 @@ void init_wincond_var_maps(
 }
 
 
-struct wincond_var_iters 
+struct wincond_var_iters
 {
   vector<PlanIter_t> * inPos;
   vector<PlanIter_t> * inCurr;
@@ -948,42 +948,42 @@ struct wincond_var_iters
     const flwor_wincond::vars& outVars = cond->get_out_vars();
 
     inPos = ((inVars.posvar != NULL) ?
-             &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+             &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs :
              &plan_visitor::no_var_iters);
 
     inCurr = (inVars.curr != NULL ?
-              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs :
               &plan_visitor::no_var_iters);
 
     inPrev = (inVars.prev != NULL ?
-              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs :
               &plan_visitor::no_var_iters);
 
     inNext = (inVars.next != NULL ?
-              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs :
               &plan_visitor::no_var_iters);
 
     outPos = (outVars.posvar != NULL ?
-              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+              &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs :
               &plan_visitor::no_var_iters);
 
     outCurr = (outVars.curr != NULL ?
-               &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+               &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs :
                &plan_visitor::no_var_iters);
 
     outPrev = (outVars.prev != NULL ?
-               &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+               &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs :
                &plan_visitor::no_var_iters);
 
     outNext = (outVars.next != NULL ?
-               &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs : 
+               &clauseVarMap->theVarRebinds[varPos++]->theOutputVarRefs :
                &plan_visitor::no_var_iters);
   }
 };
 
 
 bool nativeColumnSort(expr* colExpr)
-{ 
+{
   static_context* sctx = get_sctx(colExpr->get_sctx_id());
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -1005,7 +1005,7 @@ bool nativeColumnSort(expr* colExpr)
 }
 
 
-PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause) 
+PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 {
 #define PREV_ITER gflwor_codegen(flworExpr, currentClause - 1)
 
@@ -1022,7 +1022,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
   FlworClauseVarMap_t clauseVarMap;
 
-  if (c.get_kind() != flwor_clause::where_clause) 
+  if (c.get_kind() != flwor_clause::where_clause)
   {
     ZORBA_ASSERT(!theClauseStack.empty());
     ulong stackSize = theClauseStack.size();
@@ -1036,7 +1036,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   //
   // WHERE
   //
-  if (c.get_kind() == flwor_clause::where_clause) 
+  if (c.get_kind() == flwor_clause::where_clause)
   {
     PlanIter_t where = pop_itstack();
     PlanIter_t input = PREV_ITER;
@@ -1066,7 +1066,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
       posVarRefs = &clauseVarMap->theVarRebinds[1]->theOutputVarRefs;
     }
 
-    if (! fc->is_outer()) 
+    if (! fc->is_outer())
     {
       return new flwor::ForIterator(sctx,
                                     var->get_loc(),
@@ -1135,7 +1135,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
     {
       end_clause.reset(new flwor::EndClause);
     }
-    else 
+    else
     {
       wincond_var_iters wcv(cond, clauseVarMap, varPos);
 
@@ -1145,7 +1145,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
       end_clause.reset(new flwor::EndClause(pop_itstack(), wvars, cond->is_only()));
     }
 
-    if (NULL != (cond = wc->get_win_start())) 
+    if (NULL != (cond = wc->get_win_start()))
     {
       wincond_var_iters wcv(cond, clauseVarMap, varPos);
 
@@ -1170,7 +1170,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   //
   // COUNT
   //
-  else if (c.get_kind() == flwor_clause::count_clause) 
+  else if (c.get_kind() == flwor_clause::count_clause)
   {
     varref_t var = static_cast<const count_clause *>(&c)->get_var();
 
@@ -1188,7 +1188,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   //
   // ORDERBY
   //
-  else if (c.get_kind() == flwor_clause::order_clause) 
+  else if (c.get_kind() == flwor_clause::order_clause)
   {
     ulong numVars = clauseVarMap->theVarRebinds.size();
     ulong numForVars = 0;
@@ -1244,7 +1244,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
       bool emptyLeast = modifiers[i].theEmptyLeast;
       bool descending = !modifiers[i].theAscending;
 
-      orderSpecs[i] = flwor::OrderSpec(pop_itstack(), 
+      orderSpecs[i] = flwor::OrderSpec(pop_itstack(),
                                        emptyLeast,
                                        descending,
                                        nativeColumnSort(obc->get_column_expr(i)),
@@ -1265,7 +1265,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
   //
   // GROUPBY
   //
-  else if (c.get_kind() == flwor_clause::group_clause) 
+  else if (c.get_kind() == flwor_clause::group_clause)
   {
     vector<flwor::GroupingSpec> gspecs;
     vector<flwor::NonGroupingSpec> ngspecs;
@@ -1281,7 +1281,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 }
 
 
-void flwor_codegen(const flwor_expr& flworExpr) 
+void flwor_codegen(const flwor_expr& flworExpr)
 {
   flwor::FLWORIterator* flworIter;
   PlanIter_t returnIter;
@@ -1300,14 +1300,14 @@ void flwor_codegen(const flwor_expr& flworExpr)
 
     FlworClauseVarMap_t clauseVarMap;
 
-    if (c.get_kind() != flwor_clause::where_clause) 
+    if (c.get_kind() != flwor_clause::where_clause)
     {
       ZORBA_ASSERT(!theClauseStack.empty());
       ulong stackSize = theClauseStack.size();
-      
+
       clauseVarMap = theClauseStack[stackSize-1];
       theClauseStack.resize(stackSize - 1);
-      
+
       ZORBA_ASSERT(clauseVarMap->theClause == &c);
     }
 
@@ -1376,7 +1376,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
       if (fc->get_pos_var())
       {
         ZORBA_ASSERT(clauseVarMap->theVarRebinds.size() == 2);
-        
+
         vector<PlanIter_t>& posVarRefs = clauseVarMap->theVarRebinds[1]->theOutputVarRefs;
 
         forletClauses.push_back(flwor::ForLetClause(var->get_name(),
@@ -1408,7 +1408,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
       PlanIter_t domainIter = pop_itstack();
 
       vector<PlanIter_t>& varRefs = clauseVarMap->theVarRebinds[0]->theOutputVarRefs;
- 
+
       forletClauses.push_back(flwor::ForLetClause(var->get_name(),
                                                   varRefs,
                                                   domainIter,
@@ -1428,7 +1428,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
                                        flworExpr.get_loc(),
                                        forletClauses,
                                        whereIter,
-                                       groupClause.release(), 
+                                       groupClause.release(),
                                        orderClause.release(),
                                        returnIter,
                                        flworExpr.is_updating());
@@ -1449,21 +1449,21 @@ void generate_groupby(
   long numGroupVars = gvars.size();
   long i = numVars - 1;
 
-  for (; i >= numGroupVars; --i) 
+  for (; i >= numGroupVars; --i)
   {
     VarRebind* varRebind = clauseVarMap->theVarRebinds[i].getp();
-        
+
     const vector<PlanIter_t>& varRefs = varRebind->theOutputVarRefs;
 
     ngspecs.push_back(flwor::NonGroupingSpec(pop_itstack(), varRefs));
   }
 
-  for (; i >= 0; --i) 
+  for (; i >= 0; --i)
   {
     VarRebind* varRebind = clauseVarMap->theVarRebinds[i].getp();
-    
+
     const vector<PlanIter_t>& varRefs = varRebind->theOutputVarRefs;
-    
+
     gspecs.push_back(flwor::GroupingSpec(pop_itstack(), varRefs, collations[i]));
   }
 }
@@ -1473,13 +1473,13 @@ void generate_groupby(
 
 ********************************************************************************/
 
-bool begin_visit(promote_expr& v) 
+bool begin_visit(promote_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (promote_expr& v) 
+void end_visit (promote_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
@@ -1488,22 +1488,22 @@ void end_visit (promote_expr& v)
 }
 
 
-bool begin_visit(trycatch_expr& v) 
+bool begin_visit(trycatch_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
-  for(int i = v.clause_count() - 1; i >= 0; --i) 
+  for(int i = v.clause_count() - 1; i >= 0; --i)
   {
     catch_clause* cc = &*v[i];
-    if (cc->get_error_code_var() != NULL) 
+    if (cc->get_error_code_var() != NULL)
     {
       catchvar_iter_map.put((uint64_t)&*cc->get_error_code_var(), new vector<LetVarIter_t>());
     }
-    if (cc->get_error_desc_var() != NULL) 
+    if (cc->get_error_desc_var() != NULL)
     {
       catchvar_iter_map.put((uint64_t)&*cc->get_error_desc_var(), new vector<LetVarIter_t>());
     }
-    if (cc->get_error_item_var() != NULL) 
+    if (cc->get_error_item_var() != NULL)
     {
       catchvar_iter_map.put((uint64_t)&*cc->get_error_item_var(), new vector<LetVarIter_t>());
     }
@@ -1511,30 +1511,30 @@ bool begin_visit(trycatch_expr& v)
   return true;
 }
 
-void end_visit(trycatch_expr& v) 
+void end_visit(trycatch_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   vector<LetVarIter_t> *vec = NULL;
   vector<TryCatchIterator::CatchClause> rev_ccs;
-  for(int i = v.clause_count() - 1; i >= 0; --i) 
+  for(int i = v.clause_count() - 1; i >= 0; --i)
   {
     catch_clause* cc = &*v[i];
     TryCatchIterator::CatchClause rcc;
     rcc.node_names = cc->get_nametests();
     rcc.catch_expr = pop_itstack();
-    if (cc->get_error_code_var() != NULL) 
+    if (cc->get_error_code_var() != NULL)
     {
       bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_code_var(), vec);
       ZORBA_ASSERT(bound);
       rcc.errorcode_var = *vec;
     }
-    if (cc->get_error_desc_var() != NULL) 
+    if (cc->get_error_desc_var() != NULL)
     {
       bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_desc_var(), vec);
       ZORBA_ASSERT(bound);
       rcc.errordesc_var = *vec;
     }
-    if (cc->get_error_item_var() != NULL) 
+    if (cc->get_error_item_var() != NULL)
     {
       bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_item_var(), vec);
       ZORBA_ASSERT(bound);
@@ -1569,14 +1569,14 @@ void end_visit (eval_expr& v) {
 }
 
 
-bool begin_visit (if_expr& v) 
+bool begin_visit (if_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
 
-void end_visit (if_expr& v) 
+void end_visit (if_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t iterElse = pop_itstack();
@@ -1588,7 +1588,7 @@ void end_visit (if_expr& v)
 }
 
 
-bool begin_visit (insert_expr& v) 
+bool begin_visit (insert_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -1642,7 +1642,7 @@ bool begin_visit (insert_expr& v)
     {
       ZORBA_ERROR_LOC(XUTY0022, qloc);
     }
-    
+
     if (!TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
         !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR))
     {
@@ -1664,25 +1664,25 @@ bool begin_visit (insert_expr& v)
   return true;
 }
 
-void end_visit (insert_expr& v) 
+void end_visit (insert_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
   PlanIter_t lTarget = pop_itstack();
   PlanIter_t lSource = pop_itstack();
-  PlanIter_t lInsert = new InsertIterator(sctx, qloc, v.getType(), lSource, lTarget); 
+  PlanIter_t lInsert = new InsertIterator(sctx, qloc, v.getType(), lSource, lTarget);
   push_itstack(&*lInsert);
 }
 
 
-bool begin_visit (delete_expr& v) 
+bool begin_visit (delete_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
   return true;
 }
 
-void end_visit (delete_expr& v) 
+void end_visit (delete_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lTarget = pop_itstack();
@@ -1691,7 +1691,7 @@ void end_visit (delete_expr& v)
 }
 
 
-bool begin_visit (replace_expr& v) 
+bool begin_visit (replace_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -1704,7 +1704,7 @@ bool begin_visit (replace_expr& v)
   return true;
 }
 
-void end_visit (replace_expr& v) 
+void end_visit (replace_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lReplacement = pop_itstack();
@@ -1717,7 +1717,7 @@ void end_visit (replace_expr& v)
   push_itstack(&*lReplace);
 }
 
-bool begin_visit (rename_expr& v) 
+bool begin_visit (rename_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -1730,7 +1730,7 @@ bool begin_visit (rename_expr& v)
   return true;
 }
 
-void end_visit (rename_expr& v) 
+void end_visit (rename_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lName = pop_itstack();
@@ -1740,7 +1740,7 @@ void end_visit (rename_expr& v)
 }
 
 
-bool begin_visit (transform_expr& v) 
+bool begin_visit (transform_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -1761,7 +1761,7 @@ bool begin_visit (transform_expr& v)
   return true;
 }
 
-void end_visit (transform_expr& v) 
+void end_visit (transform_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -1773,14 +1773,14 @@ void end_visit (transform_expr& v)
   size_t lSize = v.size();
   for (size_t i = 0; i < lSize; ++i)
   {
-    lInputs.push(pop_itstack());  
+    lInputs.push(pop_itstack());
   }
 
   // Create a FOR var iterator into which the PUL produced by the modify
   // iterator will be bound.
   store::Item_t pulVarName;
   GENV_ITEMFACTORY->createQName(pulVarName, "", "", "pulHolder");
-  PlanIter_t pulHolderIter = new ForVarIterator(sctx, modifyIter->loc, pulVarName); 
+  PlanIter_t pulHolderIter = new ForVarIterator(sctx, modifyIter->loc, pulVarName);
 
   // Create an ApplyIterator to apply the above PUL
   PlanIter_t applyIter = new ApplyIterator(sctx, modifyIter->loc, pulHolderIter);
@@ -1802,7 +1802,7 @@ void end_visit (transform_expr& v)
                                                            modifyIter,
                                                            pulHolderIter,
                                                            applyIter,
-                                                           returnIter); 
+                                                           returnIter);
   push_itstack(transformIter);
 }
 
@@ -1854,7 +1854,7 @@ void end_visit (while_expr& v) {
 }
 
 
-bool begin_visit (fo_expr& v) 
+bool begin_visit (fo_expr& v)
 {
   CODEGEN_TRACE_IN ("");
 
@@ -1869,7 +1869,7 @@ bool begin_visit (fo_expr& v)
 }
 
 
-void end_visit(fo_expr& v) 
+void end_visit(fo_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -1881,15 +1881,22 @@ void end_visit(fo_expr& v)
 
   const QueryLoc& loc = qloc;
 
-  if (func->validate_args(argv)) 
+  if (func->validate_args(argv))
   {
     if (func->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
     {
       const const_expr* qnameExpr = static_cast<const const_expr*>(v.get_arg(0));
       const store::Item* qname = qnameExpr->get_val();
-
       ValueIndex* index = sctx->lookup_index(qname);
-      
+
+      expr::substitution_t subst = v.get_substitution();
+      if (subst.getp() != NULL)
+      {
+        // Find the index and clone it's domain expression, as the function might have been inlined
+        expr* domainExpr = index->getDomainExpr();
+        index->setDomainExpr(domainExpr->clone(subst));
+      }
+
       expr* buildExpr = index->getBuildExpr(theCCB, loc);
       buildExpr->accept(*this);
 
@@ -1904,7 +1911,7 @@ void end_visit(fo_expr& v)
       ZORBA_ASSERT(iter != NULL);
       push_itstack(iter);
 
-      if (is_enclosed_expr(&v)) 
+      if (is_enclosed_expr(&v))
       {
         expr* e = pop_stack(theConstructorsStack);
         ZORBA_ASSERT(e == &v);
@@ -1923,7 +1930,7 @@ void end_visit(fo_expr& v)
 }
 
 
-bool begin_visit(instanceof_expr& v) 
+bool begin_visit(instanceof_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
@@ -1970,7 +1977,7 @@ void end_visit (cast_expr& v) {
 }
 
 
-bool begin_visit(name_cast_expr& v) 
+bool begin_visit(name_cast_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -2003,13 +2010,13 @@ void end_visit(name_cast_expr& v)
 }
 
 
-bool begin_visit (validate_expr& v) 
+bool begin_visit (validate_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (validate_expr& v) 
+void end_visit (validate_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -2035,7 +2042,7 @@ bool begin_visit (extension_expr& v) {
   return true;
 }
 
-void end_visit (extension_expr& v) 
+void end_visit (extension_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -2066,7 +2073,7 @@ void end_visit (relpath_expr& v) {
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (axis_step_expr& v) 
+bool begin_visit (axis_step_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -2266,7 +2273,7 @@ void end_visit (axis_step_expr& v) {
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (match_expr& v) 
+bool begin_visit (match_expr& v)
 {
   CODEGEN_TRACE_IN ("");
 
@@ -2278,12 +2285,12 @@ bool begin_visit (match_expr& v)
 
   store::ItemFactory& iFactory = *(GENV.getStore().getItemFactory());
 
-  if (v.getTestKind() == match_name_test) 
+  if (v.getTestKind() == match_name_test)
   {
     match_wild_t wildKind = v.getWildKind();
 
     axisItep->setTestKind(match_name_test);
- 
+
     if (dynamic_cast<AttributeAxisIterator*>(axisIte.getp()) != NULL)
       axisItep->setNodeKind(store::StoreConsts::attributeNode);
     else
@@ -2303,7 +2310,7 @@ bool begin_visit (match_expr& v)
       axisItep->setQName(v.getQName());
     }
   }
-  else 
+  else
   {
     axisItep->setTestKind(v.getTestKind());
     axisItep->setDocTestKind(v.getDocTestKind());
@@ -2346,7 +2353,7 @@ bool begin_visit (doc_expr& v) {
 
 void end_visit (doc_expr& v) {
   CODEGEN_TRACE_OUT("");
-  
+
   PlanIter_t lContent = pop_itstack();
   PlanIter_t lContIter = new DocumentContentIterator(sctx, qloc, lContent);
   PlanIter_t lDocIter = new DocumentIterator(sctx, qloc, lContIter);
@@ -2358,7 +2365,7 @@ void end_visit (doc_expr& v) {
 }
 
 
-bool begin_visit(elem_expr& v) 
+bool begin_visit(elem_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
@@ -2369,7 +2376,7 @@ bool begin_visit(elem_expr& v)
 }
 
 
-void end_visit(elem_expr& v) 
+void end_visit(elem_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -2389,7 +2396,7 @@ void end_visit(elem_expr& v)
   theAttrContentStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
-  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())) 
+  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
   {
     isRoot = true;
   }
@@ -2421,16 +2428,16 @@ void end_visit (attr_expr& v) {
   PlanIter_t lQNameIter = 0;
   PlanIter_t lVarIter = 0;
   PlanIter_t lContentIter = 0;
-  
+
   if (v.getValueExpr() != 0) {
     lVarIter = pop_itstack();
   } else {
     lVarIter = new EmptyIterator(sctx, qloc);
   }
-  
+
   PlanIter_t lAttrIter = 0;
   lQNameIter = pop_itstack();
-  
+
   bool isRoot = false;
   theAttrContentStack.pop();
   expr* e = pop_stack(theConstructorsStack);
@@ -2440,7 +2447,7 @@ void end_visit (attr_expr& v) {
   }
 
   lAttrIter = new AttributeIterator(sctx, qloc, lQNameIter, lVarIter, isRoot);
-  
+
   push_itstack(lAttrIter);
 }
 
@@ -2493,7 +2500,7 @@ bool begin_visit (pi_expr& v) {
 }
 
 
-void end_visit (pi_expr& v) 
+void end_visit (pi_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
@@ -2511,13 +2518,13 @@ void end_visit (pi_expr& v)
 }
 
 
-bool begin_visit (const_expr& v) 
+bool begin_visit (const_expr& v)
 {
   CODEGEN_TRACE_IN ("");
   return true;
 }
 
-void end_visit (const_expr& v) 
+void end_visit (const_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t it = new SingletonIterator(sctx, qloc, v.get_val());
@@ -2525,13 +2532,13 @@ void end_visit (const_expr& v)
 }
 
 
-bool begin_visit (order_expr& v) 
+bool begin_visit (order_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (order_expr& v) 
+void end_visit (order_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -2542,25 +2549,25 @@ void end_visit (order_expr& v)
 ********************************************************************************/
 
 #if 0
-bool begin_visit (ft_select_expr& v) 
+bool begin_visit (ft_select_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (ft_select_expr& v) 
+void end_visit (ft_select_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
 
 
-bool begin_visit (ft_contains_expr& v) 
+bool begin_visit (ft_contains_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (ft_contains_expr& v) 
+void end_visit (ft_contains_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
@@ -2600,7 +2607,7 @@ PlanIter_t codegen(
     result = new ApplyIterator(result->theSctx, result->loc, result);
   }
 
-  if (result != NULL && 
+  if (result != NULL &&
       descr != NULL &&
       Properties::instance()->printIteratorTree() &&
       (xqp_string ("main query") == descr || ! Properties::instance()->iterPlanTest()))
@@ -2614,7 +2621,7 @@ PlanIter_t codegen(
     print_iter_plan (vp, result);
     os << endl;
   }
-	
+
   return result;
 }
 

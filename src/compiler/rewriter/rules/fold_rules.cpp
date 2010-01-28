@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -65,16 +65,16 @@ static expr_t partial_eval_eq (RewriterContext&, fo_expr&);
 static expr_t execute (
     CompilerCB* compilercb,
     expr_t node,
-    vector<store::Item_t>& result) 
+    vector<store::Item_t>& result)
 {
   PlanIter_t plan = codegen ("const-folded expr", node, compilercb);
   QueryLoc loc = LOC (node);
   store::Item_t item;
-  try 
+  try
   {
-    for (PlanWrapperHolder pw(new PlanWrapper(plan, compilercb, 0, NULL)); ; ) 
+    for (PlanWrapperHolder pw(new PlanWrapper(plan, compilercb, 0, NULL)); ; )
     {
-      if (!pw->next(item)) 
+      if (!pw->next(item))
       {
         break;
       }
@@ -82,7 +82,7 @@ static expr_t execute (
     }
     return NULL;
   }
-  catch (error::ZorbaError& /*e*/) 
+  catch (error::ZorbaError& /*e*/)
   {
     node->put_annotation (Annotations::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
     node->put_annotation (Annotations::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
@@ -90,7 +90,7 @@ static expr_t execute (
     // TODO:
     // we had to disable folding of errors because the FnErrorIterator
     // was erroneously used. It always raises a ZorbaUserError (which is not correct).
-    
+
     // XQUERY_ERROR lErrorCode = e.theErrorCode;
     // QueryLoc loc;
     // loc.setLineBegin(e.theQueryLine);
@@ -109,13 +109,13 @@ static expr_t execute (
 
 /*******************************************************************************
   If any of the subexprs of the given expr E has the given annotation k, then
-  set the k annotation on E as well. 
+  set the k annotation on E as well.
 ********************************************************************************/
-void propagate_any_child_up(expr* node, Annotations::Key k) 
+void propagate_any_child_up(expr* node, Annotations::Key k)
 {
-  for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) 
+  for(expr_iterator i = node->expr_begin(); ! i.done(); ++i)
   {
-    if ((*i)->get_annotation (k).getp() == TSVAnnotationValue::TRUE_VAL.getp()) 
+    if ((*i)->get_annotation (k).getp() == TSVAnnotationValue::TRUE_VAL.getp())
     {
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
       break;
@@ -129,24 +129,24 @@ void propagate_any_child_up(expr* node, Annotations::Key k)
   and its subexpressions.
 ********************************************************************************/
 
-RULE_REWRITE_PRE(MarkFreeVars) 
+RULE_REWRITE_PRE(MarkFreeVars)
 {
   return NULL;
 }
 
-RULE_REWRITE_POST(MarkFreeVars) 
+RULE_REWRITE_POST(MarkFreeVars)
 {
   VarSetAnnVal *freevars = new VarSetAnnVal;
   AnnotationValue_t new_ann = AnnotationValue_t (freevars);
-  
-  if (node->get_expr_kind () == var_expr_kind) 
+
+  if (node->get_expr_kind () == var_expr_kind)
   {
     varref_t v = dynamic_cast<var_expr *> (node);
     freevars->add (v);
   }
-  else 
+  else
   {
-    for(expr_iterator i = node->expr_begin(); ! i.done(); ++i) 
+    for(expr_iterator i = node->expr_begin(); ! i.done(); ++i)
     {
       expr *e = *i;
       const var_ptr_set &kfv = get_varset_annotation (e, Annotations::FREE_VARS);
@@ -154,7 +154,7 @@ RULE_REWRITE_POST(MarkFreeVars)
     }
 
     if (node->get_expr_kind () == flwor_expr_kind ||
-        node->get_expr_kind () == gflwor_expr_kind) 
+        node->get_expr_kind () == gflwor_expr_kind)
     {
       flwor_expr* flwor = dynamic_cast<flwor_expr *> (node);
       for (flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
@@ -206,7 +206,7 @@ RULE_REWRITE_POST(MarkFreeVars)
 
           const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
           unsigned numNonGroupVars = ngvars.size();
-        
+
           for (unsigned i = 0; i < numNonGroupVars; ++i)
           {
             freevars->varset.erase(ngvars[i].second.getp());
@@ -251,13 +251,13 @@ static void remove_wincond_vars(
   expensive exprs).
 ********************************************************************************/
 
-RULE_REWRITE_PRE(MarkExpensiveOps) 
+RULE_REWRITE_PRE(MarkExpensiveOps)
 {
   return NULL;
 }
-  
 
-RULE_REWRITE_POST(MarkExpensiveOps) 
+
+RULE_REWRITE_POST(MarkExpensiveOps)
 {
   Annotations::Key k = Annotations::EXPENSIVE_OP;
   switch (node->get_expr_kind ()) {
@@ -277,25 +277,25 @@ RULE_REWRITE_POST(MarkExpensiveOps)
   Mark the exprs that should not be folded
 ********************************************************************************/
 
-RULE_REWRITE_PRE(MarkUnfoldableExprs) 
+RULE_REWRITE_PRE(MarkUnfoldableExprs)
 {
   return NULL;
 }
 
 
-RULE_REWRITE_POST(MarkUnfoldableExprs) 
+RULE_REWRITE_POST(MarkUnfoldableExprs)
 {
   Annotations::Key k = Annotations::UNFOLDABLE_OP;
-  switch (node->get_expr_kind ()) 
+  switch (node->get_expr_kind ())
   {
-  case fo_expr_kind: 
+  case fo_expr_kind:
   {
     fo_expr* fo = static_cast<fo_expr *> (node);
     const function* f = fo->get_func();
 
     // Do not fold functions that always require access to the dynamic context,
     // or may need to access the implicit timezone (which is also in the dynamic
-    // constext). 
+    // constext).
     if (f->accessesDynCtx () ||
         dynamic_cast<const fn_error*>(f) != NULL ||
         maybe_needs_implicit_timezone(fo, rCtx.getStaticContext(node)) ||
@@ -304,7 +304,7 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
 
     break;
   }
-      
+
   case var_expr_kind:
   {
     var_expr::var_kind varKind = static_cast<var_expr *> (node)->get_kind();
@@ -340,7 +340,7 @@ RULE_REWRITE_POST(MarkUnfoldableExprs)
 }
 
 
-static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sctx) 
+static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sctx)
 {
   const function* f = fo->get_func();
   FunctionConsts::FunctionKind fkind = f->getKind();
@@ -368,10 +368,10 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sct
   expr.
 ********************************************************************************/
 
-RULE_REWRITE_PRE(FoldConst) 
+RULE_REWRITE_PRE(FoldConst)
 {
   xqtref_t rtype = node->return_type (rCtx.getStaticContext(node));
-  
+
   if (standalone_expr (node) &&
       ! already_folded (node, rCtx) &&
       get_varset_annotation (node, Annotations::FREE_VARS).empty () &&
@@ -382,7 +382,7 @@ RULE_REWRITE_PRE(FoldConst)
   {
     vector<store::Item_t> result;
     expr_t folded = execute (rCtx.getCompilerCB(), node, result);
-    if (folded == NULL) 
+    if (folded == NULL)
     {
       ZORBA_ASSERT (result.size () <= 1);
       folded = (result.size () == 1 ?
@@ -394,20 +394,20 @@ RULE_REWRITE_PRE(FoldConst)
   return NULL;
 }
 
-RULE_REWRITE_POST(FoldConst) 
+RULE_REWRITE_POST(FoldConst)
 {
   return NULL;
 }
 
 
-static bool standalone_expr (expr_t e) 
+static bool standalone_expr (expr_t e)
 {
   expr_kind_t k = e->get_expr_kind ();
   return k != match_expr_kind && k != axis_step_expr_kind;
 }
 
 
-static bool already_folded (expr_t e, RewriterContext& rCtx) 
+static bool already_folded (expr_t e, RewriterContext& rCtx)
 {
   if (e->get_expr_kind () == const_expr_kind)
     return true;
@@ -415,43 +415,43 @@ static bool already_folded (expr_t e, RewriterContext& rCtx)
     return false;
   const fo_expr *fo = e.dyn_cast<fo_expr>().getp ();
 
-  return (fo->get_func()->getKind() == FunctionConsts::OP_CONCATENATE_N && 
+  return (fo->get_func()->getKind() == FunctionConsts::OP_CONCATENATE_N &&
           fo->num_args() == 0);
 }
 
 
 /*******************************************************************************
   Some expressions can be computed (at leat partially) during compilation time
-  based on the static type of their argument. For example, count(E) can be 
+  based on the static type of their argument. For example, count(E) can be
   replaced by const 1 if the static type of E has quantifier 1. Also,
-  castable(E, target_type) can be replaced by const true if the static type of 
+  castable(E, target_type) can be replaced by const true if the static type of
   E is a subtype of target_type. However, E may have "side-effects", which
-  prevent such a replacement. For example, it may be a treat expr, whose 
+  prevent such a replacement. For example, it may be a treat expr, whose
   semantics is to return an error during runtime if the arg of the treat expr
   does not have the corect type. We call such exprs "impure", and flag them as
   non-discardable so that no (partial) evaluation of parent exprs is done.
 ********************************************************************************/
 
-RULE_REWRITE_PRE(MarkImpureExprs) 
+RULE_REWRITE_PRE(MarkImpureExprs)
 {
   return NULL;
 }
 
-RULE_REWRITE_POST(MarkImpureExprs) 
+RULE_REWRITE_POST(MarkImpureExprs)
 {
   // TODO: constructors cannot be cloned; but currently we never clone anyway.
   // TODO: propagate non-discardable prop for FLWOR vars (see nodeid_rules.cpp)
 
   Annotations::Key k = Annotations::NONDISCARDABLE_EXPR;
-  switch (node->get_expr_kind ()) 
+  switch (node->get_expr_kind ())
   {
   // TODO: update exprs probably non-discardable as well
-  case fo_expr_kind: 
+  case fo_expr_kind:
   {
     fo_expr* fo = static_cast<fo_expr *> (node);
     const function* f = fo->get_func();
 
-    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 || 
+    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 ||
         dynamic_cast<const fn_error*>(f) != NULL)
       node->put_annotation(k, TSVAnnotationValue::TRUE_VAL);
 
@@ -463,7 +463,7 @@ RULE_REWRITE_POST(MarkImpureExprs)
       node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
   }
   }
-  
+
   if (node->get_annotation(k) != TSVAnnotationValue::TRUE_VAL.getp())
     propagate_any_child_up (node, k);
 
@@ -483,12 +483,12 @@ RULE_REWRITE_POST(MarkImpureExprs)
 
   Replace "if (cond) then E1 else E2" with E1 or E2 if cond is a const expr whose
   EBV is true or false respectively.
- 
+
   Rewrite "and" or "or" exprs which have one or more operands that are constants.
   For example:
   E and false --> false
   E and true  --> E
- 
+
   Rewrite exprs of the form "count(E) = const" or "count(E) eq const".
   For example:
   count(E) = -1 --> false
@@ -501,10 +501,10 @@ RULE_REWRITE_POST(MarkImpureExprs)
 
 ********************************************************************************/
 
-RULE_REWRITE_PRE(PartialEval) 
+RULE_REWRITE_PRE(PartialEval)
 {
   const castable_base_expr* cbe;
-  if ((cbe = dynamic_cast<const castable_base_expr *>(node)) != NULL) 
+  if ((cbe = dynamic_cast<const castable_base_expr *>(node)) != NULL)
   {
     const expr* arg = cbe->get_input();
 
@@ -530,13 +530,13 @@ RULE_REWRITE_PRE(PartialEval)
     }
   }
 
-  switch (node->get_expr_kind()) 
+  switch (node->get_expr_kind())
   {
-  case if_expr_kind: 
+  case if_expr_kind:
   {
     if_expr* ite = dynamic_cast<if_expr *> (node);
     const const_expr* cond = dynamic_cast<const const_expr*>(ite->get_cond_expr());
-    if (cond != NULL) 
+    if (cond != NULL)
     {
       return (cond->get_val()->getBooleanValue() ?
               ite->get_then_expr(true) :
@@ -547,20 +547,20 @@ RULE_REWRITE_PRE(PartialEval)
 
   case fo_expr_kind:
     return partial_eval_fo(rCtx, dynamic_cast<fo_expr *> (node));
-    
+
   default: break;
   }
-  
+
   return NULL;
 }
 
-RULE_REWRITE_POST(PartialEval) 
+RULE_REWRITE_POST(PartialEval)
 {
   return NULL;
 }
 
 
-static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo) 
+static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
 {
   const function* f = fo->get_func();
   FunctionConsts::FunctionKind fkind = f->getKind();
@@ -578,10 +578,10 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   {
     return partial_eval_eq (rCtx, *fo);
   }
-  else if (fkind == FunctionConsts::FN_COUNT_1) 
+  else if (fkind == FunctionConsts::FN_COUNT_1)
   {
     expr_t arg = fo->get_arg(0, false);
-    if (arg->get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) 
+    if (arg->get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL)
     {
       int type_cnt = TypeOps::type_cnt(*arg->return_type(rCtx.getStaticContext(fo)));
       if (type_cnt != -1)
@@ -594,25 +594,25 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
 
 
 /*******************************************************************************
-  fo is a logical "and" or "or" expr. If "and" then the shortcircuit_val is 
+  fo is a logical "and" or "or" expr. If "and" then the shortcircuit_val is
   false, otherwise, shortcircuit_val is true.
 ********************************************************************************/
 static expr_t partial_eval_logic(
     fo_expr* fo,
     bool shortcircuit_val,
-    RewriterContext& rCtx) 
+    RewriterContext& rCtx)
 {
   long nonConst1 = -1;
   long nonConst2 = -1;
 
   ulong numArgs = fo->num_args();
 
-  for (ulong i = 0; i < numArgs; ++i) 
+  for (ulong i = 0; i < numArgs; ++i)
   {
     const expr* arg = fo->get_arg(i);
     const const_expr* constArg;
 
-    if ((constArg = dynamic_cast<const const_expr*>(arg)) != NULL) 
+    if ((constArg = dynamic_cast<const const_expr*>(arg)) != NULL)
     {
       if (constArg->get_val()->getEBV()->getBooleanValue() == shortcircuit_val)
         return new const_expr(fo->get_sctx_id(), LOC(fo), (xqp_boolean)shortcircuit_val);
@@ -623,7 +623,7 @@ static expr_t partial_eval_logic(
       {
         nonConst1 = i;
       }
-      else 
+      else
       {
         nonConst2 = i;
         break;  // no rewrite anyway
@@ -637,7 +637,7 @@ static expr_t partial_eval_logic(
     return new const_expr(fo->get_sctx_id(), LOC(fo), (xqp_boolean) ! shortcircuit_val);
   }
 
-  if (nonConst2 < 0) 
+  if (nonConst2 < 0)
   {
     // Only one of the args is a constant expr. The non-const arg is pointed
     // to by nonConst1.
@@ -663,13 +663,13 @@ static expr_t partial_eval_logic(
 /*******************************************************************************
   count(expr) = int_const
 ********************************************************************************/
-static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo) 
+static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 {
   int i;
   fo_expr* count_expr = NULL;
   const_expr* val_expr = NULL;
-  
-  for (i = 0; i < 2; i++) 
+
+  for (i = 0; i < 2; i++)
   {
     if (NULL != (val_expr = dynamic_cast<const_expr*>(fo.get_arg(i, false))) &&
         NULL != (count_expr = dynamic_cast<fo_expr*>(fo.get_arg(1-i, false))) &&
@@ -679,13 +679,13 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 
   if (i == 2)
     return NULL;
-  
+
   TypeManager* tm = rCtx.getStaticContext(&fo)->get_typemanager();
 
   store::Item* val = val_expr->get_val();
 
   if (TypeOps::is_subtype(*tm->create_named_type(val->getType()),
-                          *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)) 
+                          *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
   {
     xqp_integer ival = val->getIntegerValue();
     xqp_integer zero = xqp_integer::parseInt(0);
@@ -707,7 +707,7 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
                                          GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
                                          count_expr->get_arg(0, false)));
     }
-    else 
+    else
     {
       store::Item_t pVal;
       store::Item_t iVal = val;
@@ -733,7 +733,7 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
                                          subseq_expr));
     }
   }
-  
+
   return NULL;
 }
 
@@ -750,9 +750,10 @@ RULE_REWRITE_PRE(InlineFunctions)
 
 RULE_REWRITE_POST(InlineFunctions)
 {
-  if (node->get_expr_kind () == fo_expr_kind) 
+  if (node->get_expr_kind () == fo_expr_kind)
   {
     const fo_expr* fo = static_cast<const fo_expr *> (node);
+
     const user_function* udf = dynamic_cast<const user_function *>(fo->get_func());
     expr_t body;
 
@@ -760,22 +761,22 @@ RULE_REWRITE_POST(InlineFunctions)
         (NULL != (body = udf->get_body())))
     {
       const std::vector<var_expr_t>& udfArgs = udf->get_args();
-      expr::substitution_t subst;
+      expr::substitution_t subst = new expr::substitution();
 
-      for (unsigned i = 0; i < udfArgs.size(); ++i) 
+      for (unsigned i = 0; i < udfArgs.size(); ++i)
       {
         var_expr_t p = udfArgs[i];
-        subst[p] = fo->get_arg(i);
+        subst->get(p) = fo->get_arg(i);
       }
 
-      try 
+      try
       {
         expr_t body = udf->get_body();
         body = body->clone(subst);
         return body;
         // TODO: this is caught here, because clone is not implemented for all expressions
       }
-      catch (...) 
+      catch (...)
       {
       }
     }

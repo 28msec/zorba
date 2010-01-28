@@ -32,7 +32,7 @@
 #include "store/api/item_factory.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(ValueIndex)
@@ -53,9 +53,9 @@ ValueIndex::ValueIndex(
   theIsTemp(false),
   theMaintenanceMode(MANUAL),
   theContainerKind(HASH)
-{ 
+{
 }
-  
+
 
 /*******************************************************************************
 
@@ -108,13 +108,13 @@ store::Item* ValueIndex::getName() const
 /*******************************************************************************
 
 ********************************************************************************/
-expr* ValueIndex::getDomainExpr() const 
+expr* ValueIndex::getDomainExpr() const
 {
   return theDomainClause->get_expr();
 }
 
 
-void ValueIndex::setDomainExpr(expr_t domainExpr) 
+void ValueIndex::setDomainExpr(expr_t domainExpr)
 {
   if (theDomainClause == NULL)
     theDomainClause = new for_clause(NULL,
@@ -127,7 +127,7 @@ void ValueIndex::setDomainExpr(expr_t domainExpr)
 }
 
 
-var_expr* ValueIndex::getDomainVariable() const 
+var_expr* ValueIndex::getDomainVariable() const
 {
   return theDomainClause->get_var();
 }
@@ -146,13 +146,13 @@ void ValueIndex::setDomainVariable(var_expr_t domainVar)
 }
 
 
-var_expr* ValueIndex::getDomainPositionVariable() const 
+var_expr* ValueIndex::getDomainPositionVariable() const
 {
   return theDomainClause->get_pos_var();
 }
 
 
-void ValueIndex::setDomainPositionVariable(var_expr_t domainPosVar) 
+void ValueIndex::setDomainPositionVariable(var_expr_t domainPosVar)
 {
   theDomainClause->set_pos_var(domainPosVar);
 }
@@ -161,13 +161,13 @@ void ValueIndex::setDomainPositionVariable(var_expr_t domainPosVar)
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<expr_t>& ValueIndex::getKeyExpressions() const 
+const std::vector<expr_t>& ValueIndex::getKeyExpressions() const
 {
-  return theKeyExprs; 
+  return theKeyExprs;
 }
 
 
-void ValueIndex::setKeyExpressions(const std::vector<expr_t>& keyExprs) 
+void ValueIndex::setKeyExpressions(const std::vector<expr_t>& keyExprs)
 {
   theKeyExprs = keyExprs;
 }
@@ -176,13 +176,13 @@ void ValueIndex::setKeyExpressions(const std::vector<expr_t>& keyExprs)
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<xqtref_t>& ValueIndex::getKeyTypes() const 
+const std::vector<xqtref_t>& ValueIndex::getKeyTypes() const
 {
-  return theKeyTypes; 
+  return theKeyTypes;
 }
 
 
-void ValueIndex::setKeyTypes(const std::vector<xqtref_t>& keyTypes) 
+void ValueIndex::setKeyTypes(const std::vector<xqtref_t>& keyTypes)
 {
   theKeyTypes = keyTypes;
 }
@@ -204,11 +204,11 @@ void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 
 
 /*******************************************************************************
-  Check that the domain expr 
+  Check that the domain expr
   (a) is deterministic,
   (b) does not have any free variables,
   (c) does not reference any input functions other than dc:collection()
-  (d) the arg to each xqddf:collection is a const qname 
+  (d) the arg to each xqddf:collection is a const qname
 ********************************************************************************/
 void ValueIndex::analyze()
 {
@@ -330,7 +330,7 @@ void ValueIndex::analyzeExprInternal(
     }
   }
 
-  for(expr_iterator i = e->expr_begin(); !i.done(); ++i) 
+  for(expr_iterator i = e->expr_begin(); !i.done(); ++i)
   {
     analyzeExprInternal((*i), sourceNames, sourceExprs, varExprs, dotVar);
   }
@@ -341,16 +341,14 @@ void ValueIndex::analyzeExprInternal(
 
 ********************************************************************************/
 expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
-{ 
+{
   if (theBuildExpr != NULL)
     return theBuildExpr.getp();
 
   expr* domainExpr = getDomainExpr();
-  const var_expr* dot = getDomainVariable();
-  const var_expr* pos = getDomainPositionVariable();
-
+  var_expr* dot = getDomainVariable();
+  var_expr* pos = getDomainPositionVariable();
   short sctxid = domainExpr->get_sctx_id();
-
   const QueryLoc& dotloc = dot->get_loc();
 
   ulong numKeys = theKeyExprs.size();
@@ -359,10 +357,10 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   //
   // Clone the domain expr.
   //
-  expr::substitution_t subst;
-  
+  expr::substitution_t subst = new expr::substitution();
+
   expr_t newdom = domainExpr->clone(subst);
-  
+
   //
   // Clone the domain variable and the domain pos variable. These vars are
   // referenced by the key exprs.
@@ -374,10 +372,10 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // Clone the key exprs, replacing their references to the 2 domain variables
   // with the clones of these variables.
   //
-  subst[dot] = newdot;
-  subst[pos] = newpos;
+  subst->get(dot) = newdot;
+  subst->get(pos) = newpos;
 
-  for(ulong i = 0; i < numKeys; ++i) 
+  for(ulong i = 0; i < numKeys; ++i)
   {
     clonedExprs[i+1] = theKeyExprs[i]->clone(subst);
   }
@@ -386,7 +384,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // Create flwor expr:
   //
   // for $newdot at $newpos in new_domain_expr
-  // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr) 
+  // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr)
   //
 
   for_clause* fc = new for_clause(NULL, sctxid, dotloc, newdot, newdom, newpos);
@@ -394,7 +392,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   expr_t domainVarExpr(new wrapper_expr(sctxid, loc, newdot.getp()));
 
   clonedExprs[0] = domainVarExpr;
-  
+
   function* f = theSctx->lookup_resolved_fn(XQUERY_OP_NS,
                                             "index-entry-builder",
                                             VARIADIC_SIG_SIZE);
@@ -421,7 +419,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 
 ********************************************************************************/
 PlanIterator* ValueIndex::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
-{ 
+{
   if (theBuildPlan != NULL)
     return theBuildPlan.getp();
 
@@ -437,7 +435,7 @@ PlanIterator* ValueIndex::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
 
 ********************************************************************************/
 DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
-{ 
+{
   if (theDocIndexer != NULL)
     return theDocIndexer.getp();
 
@@ -445,8 +443,8 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
     return NULL;
 
   expr* domainExpr = getDomainExpr();
-  const var_expr* dot = getDomainVariable();
-  const var_expr* pos = getDomainPositionVariable();
+  var_expr* dot = getDomainVariable();
+  var_expr* pos = getDomainPositionVariable();
 
   short sctxid = domainExpr->get_sctx_id();
 
@@ -460,7 +458,7 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   // reference to a new temp variable that will be bound to a set of docs
   // during the apply-updates.
   //
-  
+
   std::stringstream ss;
   ss << "$$idx_temp_" << this;
   std::string varname = ss.str();
@@ -469,9 +467,9 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   var_expr_t tempVar = new var_expr(sctxid, dot->get_loc(), var_expr::prolog_var, qname);
   expr_t wrapperExpr = new wrapper_expr(sctxid, dot->get_loc(), tempVar.getp());
 
-  expr::substitution_t subst;
+  expr::substitution_t subst = new expr::substitution();
 
-  subst[theDomainSourceExprs[0]] = wrapperExpr;
+  subst->get(theDomainSourceExprs[0]) = wrapperExpr;
 
   expr_t newdom = domainExpr->clone(subst);
 
@@ -486,11 +484,11 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   // Clone the key exprs, replacing their references to the 2 domain variables
   // with the clones of these variables.
   //
-  for(ulong i = 0; i < numKeys; ++i) 
+  for(ulong i = 0; i < numKeys; ++i)
   {
-    subst.clear();
-    subst[dot] = newdot;
-    subst[pos] = newpos;
+    subst->clear();
+    subst->get(dot) = newdot;
+    subst->get(pos) = newpos;
 
     clonedExprs[i+1] = theKeyExprs[i]->clone(subst);
   }
@@ -499,7 +497,7 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   // Create flwor expr:
   //
   // for $newdot at $newpos in new_domain_expr
-  // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr) 
+  // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr)
   //
 
   for_clause* fc = new for_clause(NULL, sctxid, dotloc, newdot, newdom, newpos);
@@ -512,7 +510,7 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
                                             "index-entry-builder",
                                             VARIADIC_SIG_SIZE);
   ZORBA_ASSERT(f!=NULL);
-  
+
   fo_expr_t returnExpr =  new fo_expr(sctxid, loc, f, clonedExprs);
 
   flwor_expr_t flworExpr = new flwor_expr(sctxid, loc, false);
