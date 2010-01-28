@@ -17,6 +17,7 @@ version 1.0 (coming)
   * Resolving of modules is now enhanced by the so called "Zorba Module Path".
     Moreover, multiple ModuleURIResolvers can be registered in one StaticContext.
     See the documentation for more information.
+  * Added static and dynamic context introspection modules.
   * Added the excel library to the built-in modules.
     Implemented the most used excel functions.
   * Added the math library to the built-in modules (the namespace has changed to 
