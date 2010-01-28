@@ -1,5 +1,5 @@
 a {
-    color: #cc0000;
+    color: #CC0000;
 }
 
 div.section {
@@ -9,11 +9,11 @@ div.section {
     margin-bottom: 12px;
     padding-left: 10px;
     font-size: 16pt;
-	font-weight: bold;
+    font-weight: bold;
 }
 div.subsection {
     font-size: 13pt;
-	font-weight: bold;
+    font-weight: bold;
     margin-top: 6px;
 }
 
@@ -21,7 +21,13 @@ div.subsubsection {
     font-size: 11pt;
     margin-bottom: 6px;
     margin-top: 6px;
-	font-weight: bold;
+    font-weight: bold;
+}
+
+span.deprecated {
+    font-style: italic;
+    font-weight: bold;
+    color: #CC0000
 }
 
 a:link , a:visited {

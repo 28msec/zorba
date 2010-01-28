@@ -48,6 +48,7 @@ declare sequential function file:copy(
  :        destination file already exists.
  : @return true if the copy operation was successful
  : @error An error is thrown if IO or Security problems occur.
+ : @deprecated Asdsadsadas <b>asda</b> adasda.
  :)
 declare sequential function file:copy(
   $sourceFile as xs:string,

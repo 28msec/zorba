@@ -76,7 +76,7 @@ declare function xhtml:errors($comment) {
 };
 
 declare function xhtml:annotations($comment) {
-    let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error")))]
+    let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated")))]
     return
         for $annotation in $annotations
         let $annName := local-name($annotation)
@@ -143,7 +143,8 @@ declare function xhtml:module-function-summary($functions)
             for $function in $functions/xqdoc:function
             let $name := $function/xqdoc:name/text(),
                 $signature := $function/xqdoc:signature/text(),
-                $param-number := count(tokenize($signature, "\$")) - 1
+                $param-number := count(tokenize($signature, "\$")) - 1,
+                $isDeprecated := fn:exists($function/xqdoc:comment/xqdoc:deprecated)
             order by $name, $param-number 
             return
                 let $type := normalize-space(substring-after(substring-before($signature, "function"), "declare")),
@@ -158,7 +159,12 @@ declare function xhtml:module-function-summary($functions)
                     <tr>
                         <td class="type">{$type}</td>
                         <td>
-                            <tt><a href="#{$name}-{$param-number}">{$name}</a>{$paramsAndReturn}</tt>
+                            <tt>{
+                                if ($isDeprecated) then
+                                    <del><a href="#{$name}-{$param-number}">{$name}</a></del>
+                                else
+                                    <a href="#{$name}-{$param-number}">{$name}</a>
+                            }{$paramsAndReturn}</tt>
                         </td>
                     </tr>
         }</table>
@@ -173,9 +179,24 @@ declare function xhtml:module-functions($functions) {
         let $name := $function/xqdoc:name/text(),
             $signature := $function/xqdoc:signature/text(),
             $param-number := count(tokenize($signature, "\$")) - 1,
-            $comment := $function/xqdoc:comment
+            $comment := $function/xqdoc:comment,
+            $isDeprecated := fn:exists($comment/xqdoc:deprecated)
         return (
-            <div class="subsection" id="{$name}-{$param-number}">{$name}</div>,
+            <div class="subsection" id="{$name}-{$param-number}">{
+                if ($isDeprecated) then
+                    <del>{$name}</del>
+                else
+                    $name
+            }</div>,
+            if ($isDeprecated) then
+                <p><span class="deprecated">Deprecated</span>{
+                    if (exists($comment/xqdoc:deprecated/node())) then
+                        (" - ", $comment/xqdoc:deprecated/node())
+                    else
+                        ()
+                }</p>
+            else
+                (),
             <pre class="signature">{xhtml:split-function-signature($signature)}</pre>,
             xhtml:description($comment),
             xhtml:parameters($comment),

@@ -1,0 +1,20 @@
+module namespace mymod="http://www.28msec.com/modules/mymodule";
+
+(:~
+ : This function contains some unordered annotations.
+ : They should be ordered in the resulting XQDoc XML
+ : according to the XQDoc schema:
+ : description author version param return error deprecated see since 
+ :
+ : @deprecated
+ : @return Place of no return
+ : @error Do we throw errors?
+ : @since The beginning of the world.
+ : @param $one A dummy param.
+ : @see This should be almost at the end
+ : @param $two One param.
+ :)
+declare function mymod:foo($one, $two)
+{
+  ($one, $two)
+};

@@ -53,67 +53,110 @@ private:
 
   void print_comment(ostream& os, const XQDocComment* aComment)
   {
-    if (aComment == 0) return;
+    if (aComment == 0) {
+      return;
+    }
     list<XQDocAnnotation> lAnnotations = aComment->getAnnotations();
     list<XQDocAnnotation>::const_iterator lIt;
 
     if (!aComment->getDescription().empty() ||
-        lAnnotations.begin()!=lAnnotations.end() ||
+        lAnnotations.begin() != lAnnotations.end() ||
         aComment->hasVersion() ||
         aComment->hasReturn() ||
         aComment->isDeprecated()) {
-      os << "<xqdoc:comment>" << endl;
-       
-      if (!aComment->getDescription().empty()) {
-        // wrap all text (except tags) into CDATA sections
-        xqpString lDescription(aComment->getDescription().c_str());
-        xqpString lRes = lDescription.replace("(.*?)(<.*?>)", "<![CDATA[$1]]>$2", "");  
-        os << "<xqdoc:description>";
-        // if the description didn't contain tags
-        if (lRes.size() == lDescription.size()) {
-          os << "<![CDATA[";
-        }
-        os << lRes.trim();
-        if (lRes.size() == lDescription.size()) {
-          os << "]]>";
-        }
-        os << "</xqdoc:description>" << endl ;
-      }
+
+      list<XQDocAnnotation> lAuthorAnn;
+      list<XQDocAnnotation> lParamAnn;
+      list<XQDocAnnotation> lErrorAnn;
+      list<XQDocAnnotation> lSeeAnn;
+      list<XQDocAnnotation> lSinceAnn;
+
       for (lIt = lAnnotations.begin(); lIt != lAnnotations.end(); ++lIt) {
         const XQDocAnnotation lAnnotation = *lIt;
-        string lNamespace = "xqdoc";
-        xqpString lValue(lAnnotation.getValue().c_str());
-        os << "<" << lNamespace << ":" << lAnnotation.getName() << ">";
-        xqpString lRes = lValue.replace("(.*?)(<.*?>)", "<![CDATA[$1]]>$2", "");  
-        if (lRes.size() == lValue.size()) {
-          os << "<![CDATA[";
+        if (lAnnotation.getName() == "param") {
+          lParamAnn.push_back(lAnnotation);
+        } else if (lAnnotation.getName() == "error") {
+          lErrorAnn.push_back(lAnnotation);
+        } else if (lAnnotation.getName() == "see") {
+          lSeeAnn.push_back(lAnnotation);
+        } else if (lAnnotation.getName() == "author") {
+          lAuthorAnn.push_back(lAnnotation);
+        } else if (lAnnotation.getName() == "since") {
+          lSinceAnn.push_back(lAnnotation);
         }
-        os << lValue.trim();
-        if (lRes.size() == lValue.size()) {
-          os << "]]>";
-        }
-        os << "</" << lNamespace << ":" << lAnnotation.getName() << '>' << endl;  
       }
+
+      os << "<xqdoc:comment>" << endl;
       
+      // description
+      if (!aComment->getDescription().empty()) {
+        printCommentFragment(os, aComment->getDescription(), "xqdoc:description");
+      }
+
+      // author
+      for (lIt = lAuthorAnn.begin(); lIt != lAuthorAnn.end(); ++lIt) {
+        const XQDocAnnotation lAnnotation = *lIt;
+        printCommentFragment(os, lAnnotation.getValue(), "xqdoc:author");
+      }
+
+      // version
       if (aComment->hasVersion()) {
-        os << "<xqdoc:version>" << aComment->getVersion() << "</xqdoc:version>" << endl;
+        printCommentFragment(os, aComment->getVersion(), "xqdoc:version");
       }
-    
+
+      // param
+      for (lIt = lParamAnn.begin(); lIt != lParamAnn.end(); ++lIt) {
+        const XQDocAnnotation lAnnotation = *lIt;
+        printCommentFragment(os, lAnnotation.getValue(), "xqdoc:param");
+      }
+
+      // return
       if (aComment->hasReturn()) {
-        os << "<xqdoc:return>" << aComment->getReturn() << "</xqdoc:return>" << endl;
+        printCommentFragment(os, aComment->getReturn(), "xqdoc:return");
       }
-    
+
+      // error
+      for (lIt = lErrorAnn.begin(); lIt != lErrorAnn.end(); ++lIt) {
+        const XQDocAnnotation lAnnotation = *lIt;
+        printCommentFragment(os, lAnnotation.getValue(), "xqdoc:error");
+      }
+
+      // deprecated
       if (aComment->isDeprecated()) {
-        os << "<xqdoc:deprecated";
-        if (aComment->getDeprecatedComment().empty()) {
-          os << " />" << endl; 
-        } else {
-          os << ">" << aComment->getDeprecatedComment() << "</xqdoc:deprecated>" << endl; 
-        }
+        printCommentFragment(os, aComment->getDeprecatedComment(), "xqdoc:deprecated");
       }
-      
+
+      // see
+      for (lIt = lSeeAnn.begin(); lIt != lSeeAnn.end(); ++lIt) {
+        const XQDocAnnotation lAnnotation = *lIt;
+        printCommentFragment(os, lAnnotation.getValue(), "xqdoc:see");
+      }
+
+      // since
+      for (lIt = lSinceAnn.begin(); lIt != lSinceAnn.end(); ++lIt) {
+        const XQDocAnnotation lAnnotation = *lIt;
+        printCommentFragment(os, lAnnotation.getValue(), "xqdoc:since");
+      }
+
       os << "</xqdoc:comment>" << endl; 
     }
+  }
+
+  void printCommentFragment(ostream& os, std::string aString, std::string aTag)
+  {
+    os << "<" << aTag << ">";
+    // wrap all text (except tags) into CDATA sections
+    xqpString lString(aString.c_str());
+    xqpString lRes = lString.replace("(.*?)(<.*?>)", "<![CDATA[$1]]>$2", "");  
+    // if the description didn't contain tags
+    if (lRes.size() == lString.size()) {
+      os << "<![CDATA[";
+    }
+    os << lRes.trim();
+    if (lRes.size() == lString.size()) {
+      os << "]]>";
+    }
+    os << "</" << aTag << ">" << endl ;
   }
 
 protected:
