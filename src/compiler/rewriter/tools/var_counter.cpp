@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,28 +16,29 @@
 #include "compiler/expression/expr.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/abstract_expr_visitor.h"
+#include "compiler/indexing/value_index.h"
 
 namespace zorba {
 
-class var_counter : public abstract_expr_visitor 
+class var_counter : public abstract_expr_visitor
 {
 private:
   const var_expr * m_var;
   int              m_counter;
   int              m_limit;
-  
+
 public:
   var_counter(const var_expr* var, int limit) : m_var(var), m_counter(0), m_limit (0) { }
-  
+
   int get_counter() { return m_counter; }
-  
+
   using abstract_expr_visitor::begin_visit;
   using abstract_expr_visitor::end_visit;
 
   bool begin_visit(var_expr& v)
   {
     if (m_limit > 0 && m_counter >= m_limit) return false;
-    if (&v == m_var) 
+    if (&v == m_var)
     {
       ++m_counter;
     }
@@ -45,10 +46,11 @@ public:
   }
 };
 
-  
+
 bool count_variable_uses_rec(
     const expr* e,
     const var_expr* var,
+    RewriterContext* rCtx,
     int limit,
     int& count)
 {
@@ -62,10 +64,31 @@ bool count_variable_uses_rec(
     ++count;
     return true;
   }
+  else
+  {
+    // TODO: ugly hack
+    const fo_expr* fo = dynamic_cast<const fo_expr*>(e);
+    if (fo != NULL && rCtx != NULL && fo->get_func()->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
+    {
+      const const_expr* qnameExpr = static_cast<const const_expr*>(fo->get_arg(0));
+      const store::Item* qname = qnameExpr->get_val();
+      static_context* sctx = rCtx->getStaticContext(fo);
+      ValueIndex* index = sctx->lookup_index(qname);
+      expr::substitution_t subst = fo->get_substitution();
+
+      if (subst.getp() != NULL)
+      {
+        expr* domainExpr = index->getDomainExpr();
+        expr_t clone = domainExpr->clone(subst);
+        if (!count_variable_uses_rec(clone, var, rCtx, limit, count))
+          return false;
+      }
+    }
+  }
 
   for (const_expr_iterator iter = e->expr_begin_const(); !iter.done(); ++iter)
   {
-    if (!count_variable_uses_rec((*iter), var, limit, count))
+    if (!count_variable_uses_rec((*iter), var, rCtx, limit, count))
       return false;
   }
 
@@ -73,7 +96,7 @@ bool count_variable_uses_rec(
 }
 
 
-int count_variable_uses(const expr* root, const var_expr* var, int limit = 0)
+int count_variable_uses(const expr* root, const var_expr* var, RewriterContext* rCtx, int limit = 0)
 {
 #if 0
   var_counter c(var, limit);
@@ -82,7 +105,7 @@ int count_variable_uses(const expr* root, const var_expr* var, int limit = 0)
 #endif
   int count = 0;
 
-  count_variable_uses_rec(root, var, limit, count);
+  count_variable_uses_rec(root, var, rCtx, limit, count);
 
   return count;
 }

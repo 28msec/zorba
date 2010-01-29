@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,7 +30,7 @@
 #include <memory>
 
 
-namespace zorba 
+namespace zorba
 {
 
 static void collect_flw_vars(const flwor_expr& flwor, VarSetAnnVal& vars);
@@ -50,7 +50,7 @@ static bool refactor_index_pred(RewriterContext&, const expr*, const var_expr*&,
 /*******************************************************************************
 
 ********************************************************************************/
-class SubstVars : public RewriteRule 
+class SubstVars : public RewriteRule
 {
 protected:
   const var_expr   * theVarExpr;
@@ -58,11 +58,11 @@ protected:
   std::string        theRuleName;
 
 public:
-  SubstVars(const var_expr* var, expr* subst) 
+  SubstVars(const var_expr* var, expr* subst)
     :
     theVarExpr(var),
     theSubstExpr(subst),
-    theRuleName("SubstVars") 
+    theRuleName("SubstVars")
   {
   }
 
@@ -73,13 +73,13 @@ public:
 };
 
 
-RULE_REWRITE_PRE(SubstVars) 
+RULE_REWRITE_PRE(SubstVars)
 {
   return (node == theVarExpr) ? theSubstExpr : NULL;
 }
-  
 
-RULE_REWRITE_POST(SubstVars) 
+
+RULE_REWRITE_POST(SubstVars)
 {
   return NULL;
 }
@@ -88,7 +88,7 @@ RULE_REWRITE_POST(SubstVars)
 /*******************************************************************************
   Replace all references to var "var" inside the expr "root" with expr "subst"
 ********************************************************************************/
-expr_t subst_vars(RewriterContext rCtx0, expr_t root, const var_expr* var, expr* subst) 
+expr_t subst_vars(RewriterContext rCtx0, expr_t root, const var_expr* var, expr* subst)
 {
   RewriterContext rCtx (rCtx0.getCompilerCB(), root);
 
@@ -97,7 +97,7 @@ expr_t subst_vars(RewriterContext rCtx0, expr_t root, const var_expr* var, expr*
   rw->rewrite(rCtx);
 
 #if 0  // debug substitutions
-  cout << "After subst " << var << ":" << endl; rCtx.getRoot()->put (cout) << endl;
+  std::cout << "After subst " << var << ":" << std::endl; rCtx.getRoot()->put (std::cout) << std::endl;
 #endif
   return rCtx.getRoot();
 }
@@ -110,7 +110,7 @@ expr_t subst_vars(RewriterContext rCtx0, expr_t root, const var_expr* var, expr*
 RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
   flwor_expr* flworp = dynamic_cast<flwor_expr *>(node);
-  
+
   if (flworp == NULL || flworp->is_general())
     return NULL;
 
@@ -139,8 +139,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // "if E then flwor else ()", where flwor is the original flwor expr without the
   // where clause.
   expr* whereExpr;
-  if ((whereExpr = flwor.get_where()) != NULL && 
-      flwor.get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL) 
+  if ((whereExpr = flwor.get_where()) != NULL &&
+      flwor.get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL)
   {
     const var_ptr_set& whereVars = get_varset_annotation(whereExpr,
                                                          Annotations::FREE_VARS);
@@ -148,7 +148,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     set_intersection(myVars.varset.begin(), myVars.varset.end(),
                      whereVars.begin(), whereVars.end(),
                      inserter(diff, diff.begin()));
-    if (diff.empty()) 
+    if (diff.empty())
     {
       expr_t oldWhere = whereExpr;
       flwor.remove_where_clause();
@@ -186,7 +186,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       const var_expr* pvar = (is_let ? NULL : fc->get_pos_var());
       int quant_cnt = 2;  // cardinality of FOR clause: 0, 1 or more
 
-      if (pvar != NULL && count_variable_uses(&flwor, pvar, 1) == 0)
+      if (pvar != NULL && count_variable_uses(&flwor, pvar, &rCtx, 1) == 0)
       {
         MODIFY(fc->set_pos_var(NULL));
         pvar = NULL;
@@ -198,14 +198,14 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         continue;
       }
 
-      if (! is_let) 
+      if (! is_let)
       {
         xqtref_t domainType = domainExpr->return_type(sctx);
         quant_cnt = TypeOps::type_max_cnt(*domainType);
       }
 
       // Cannot substitute a FOR var whose domain might contain more than 1 items.
-      if (is_let || quant_cnt < 2) 
+      if (is_let || quant_cnt < 2)
       {
         if (quant_cnt == 0)
         {
@@ -223,10 +223,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
                                            xqp_integer::parseInt(1))));
         }
 
-        int uses = count_variable_uses(&flwor, var, 2);
+        int uses = count_variable_uses(&flwor, var, &rCtx, 2);
         if (uses > 1)
         {
-          if (is_trivial_expr(domainExpr)) 
+          if (is_trivial_expr(domainExpr))
           {
             subst_vars(rCtx, node, var, domainExpr);
             MODIFY(flwor.remove_clause(i));
@@ -239,8 +239,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
           }
         }
         else // uses == 1 or 0
-        {  
-          if (uses == 1) 
+        {
+          if (uses == 1)
           {
             if (is_trivial_expr(domainExpr) || safe_to_fold_single_use(var, flwor, sctx))
             {
@@ -254,8 +254,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
               ++i;
             }
           }
-          else // uses == 0 
-          {  
+          else // uses == 0
+          {
             if (domainExpr->get_annotation(Annotations::NONDISCARDABLE_EXPR) !=
                 TSVAnnotationValue::TRUE_VAL)
             {
@@ -282,7 +282,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   }
 
   // FLWOR with no remaining clauses
-  if (numForLetClauses == 0) 
+  if (numForLetClauses == 0)
   {
     expr_t result = flwor.get_return_expr(false);
     expr* whereExpr;
@@ -304,7 +304,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 }
 
 
-RULE_REWRITE_POST(EliminateUnusedLetVars) 
+RULE_REWRITE_POST(EliminateUnusedLetVars)
 {
   return NULL;
 }
@@ -314,9 +314,9 @@ RULE_REWRITE_POST(EliminateUnusedLetVars)
   Returns a set containing all variables (including positional) defined by the
   FOR, LET, or WINDOW clauses of a flwor expr.
 ********************************************************************************/
-static void collect_flw_vars(const flwor_expr& flwor, VarSetAnnVal& vars) 
+static void collect_flw_vars(const flwor_expr& flwor, VarSetAnnVal& vars)
 {
-  for (uint32_t i = 0; i < flwor.num_clauses(); ++i) 
+  for (uint32_t i = 0; i < flwor.num_clauses(); ++i)
   {
     const flwor_clause& c = *flwor[i];
 
@@ -372,15 +372,15 @@ static void collect_flw_vars(const flwor_expr& flwor, VarSetAnnVal& vars)
 /*******************************************************************************
   Cannot throw exception that can be caught by a try block
 ********************************************************************************/
-static bool is_trivial_expr(const expr* e) 
+static bool is_trivial_expr(const expr* e)
 {
-  switch (e->get_expr_kind()) 
+  switch (e->get_expr_kind())
   {
   case const_expr_kind: // ????
   {
     return true;
   }
-  case var_expr_kind: 
+  case var_expr_kind:
   {
     enum var_expr::var_kind vk = static_cast<const var_expr*>(e)->get_kind();
     return vk != var_expr::arg_var;
@@ -406,7 +406,7 @@ static bool safe_to_fold_single_use(
   bool declared = false;
   expr_t referencingExpr = NULL;
 
-  for (unsigned i = 0; i < flwor.num_clauses(); ++i) 
+  for (unsigned i = 0; i < flwor.num_clauses(); ++i)
   {
     const flwor_clause& c = *flwor[i];
 
@@ -422,7 +422,7 @@ static bool safe_to_fold_single_use(
         continue;
       }
 
-      if (count_variable_uses(flc.get_expr(), v, 1) == 1) 
+      if (count_variable_uses(flc.get_expr(), v, NULL, 1) == 1)
       {
         referencingExpr = flc.get_expr();
         break;
@@ -438,21 +438,21 @@ static bool safe_to_fold_single_use(
       }
     }
   }
-         
+
   if (flwor.get_where() != NULL &&
       referencingExpr == NULL &&
-      count_variable_uses(flwor.get_where(), v, 1) == 1)
+      count_variable_uses(flwor.get_where(), v, NULL, 1) == 1)
   {
     referencingExpr = flwor.get_where();
   }
 
   if (referencingExpr == NULL &&
-      count_variable_uses(flwor.get_return_expr(), v, 1) == 1)
+      count_variable_uses(flwor.get_return_expr(), v, NULL, 1) == 1)
   {
     referencingExpr = flwor.get_return_expr();
   }
 
-  if (referencingExpr == NULL) 
+  if (referencingExpr == NULL)
   {
     return false;
   }
@@ -467,26 +467,26 @@ static bool safe_to_fold_single_use(
 static bool var_in_try_block_or_in_loop(
     static_context* sctx,
     const var_expr* v,
-    const expr* e, 
+    const expr* e,
     bool in_try_block_or_in_loop)
 {
-  if (e->get_expr_kind() == trycatch_expr_kind) 
+  if (e->get_expr_kind() == trycatch_expr_kind)
   {
     const trycatch_expr* tce = dynamic_cast<const trycatch_expr *>(e);
 
-    if (var_in_try_block_or_in_loop(sctx, v, tce->get_try_expr(), true)) 
+    if (var_in_try_block_or_in_loop(sctx, v, tce->get_try_expr(), true))
     {
       return true;
     }
 
     std::vector<catch_clause_t>::const_iterator i = tce->begin();
     std::vector<catch_clause_t>::const_iterator end = tce->end();
-    while(i != end) 
+    while(i != end)
     {
       if (var_in_try_block_or_in_loop(sctx,
                                       v,
                                       (*i)->get_catch_expr(),
-                                      in_try_block_or_in_loop)) 
+                                      in_try_block_or_in_loop))
       {
         return true;
       }
@@ -494,13 +494,13 @@ static bool var_in_try_block_or_in_loop(
     }
     return false;
   }
-  else if (e->get_expr_kind() == flwor_expr_kind) 
+  else if (e->get_expr_kind() == flwor_expr_kind)
   {
     const flwor_expr& flwor = *static_cast<const flwor_expr *>(e);
-    
+
 		expr_t referencingExpr = NULL;
 
-    for (uint32_t i = 0; i < flwor.num_clauses(); i++) 
+    for (uint32_t i = 0; i < flwor.num_clauses(); i++)
     {
       const flwor_clause& c = *flwor[i];
 
@@ -509,7 +509,7 @@ static bool var_in_try_block_or_in_loop(
       {
         const forletwin_clause& flc = *static_cast<const forletwin_clause *>(&c);;
 
-        if (count_variable_uses(flc.get_expr(), v, 1) == 1) 
+        if (count_variable_uses(flc.get_expr(), v, NULL, 1) == 1)
         {
           referencingExpr = flc.get_expr();
           break;
@@ -523,23 +523,23 @@ static bool var_in_try_block_or_in_loop(
       }
     }
 
-		if (referencingExpr == NULL) 
+		if (referencingExpr == NULL)
     {
 			referencingExpr = flwor.get_return_expr();
 		}
 
 		return var_in_try_block_or_in_loop(sctx, v, &*referencingExpr, in_try_block_or_in_loop);
-  } 
-  else if (e == v) 
+  }
+  else if (e == v)
   {
     return in_try_block_or_in_loop;
   }
 
   // Or else navigate down all children
   const_expr_iterator ei = e->expr_begin_const();
-  while(!ei.done()) 
+  while(!ei.done())
   {
-    if (var_in_try_block_or_in_loop(sctx, v, &*(*ei), in_try_block_or_in_loop)) 
+    if (var_in_try_block_or_in_loop(sctx, v, &*(*ei), in_try_block_or_in_loop))
     {
       return true;
     }
@@ -552,11 +552,11 @@ static bool var_in_try_block_or_in_loop(
 /*******************************************************************************
 
 ********************************************************************************/
-RULE_REWRITE_PRE(RefactorPredFLWOR) 
+RULE_REWRITE_PRE(RefactorPredFLWOR)
 {
   flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
 
-  if (flwor == NULL || flwor->is_general()) 
+  if (flwor == NULL || flwor->is_general())
     return NULL;
 
   static_context* sctx = rCtx.getStaticContext(node);
@@ -564,7 +564,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   if_expr* ifReturnExpr = dynamic_cast<if_expr*>(flwor->get_return_expr(true));
   expr* whereExpr = flwor->get_where();
 
-  // "for $x in ... return if (ce) then te else ()" --> 
+  // "for $x in ... return if (ce) then te else ()" -->
   // "for $x in ... where ce return te"
   if (ifReturnExpr != NULL &&
       whereExpr == NULL &&
@@ -580,12 +580,12 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 
   rchandle<const_expr> pos;
   const var_expr* pvar;
-  
+
   // '... for $x at $p in E ... where $p = const ... return ...' -->
   // '... for $x in fn:subsequence(E, const, 1) ... return ...
   if (whereExpr != NULL &&
       refactor_index_pred(rCtx, whereExpr, pvar, pos) &&
-      count_variable_uses(flwor, pvar, 2) <= 1) 
+      count_variable_uses(flwor, pvar, &rCtx, 2) <= 1)
   {
     function* subseq = GET_BUILTIN_FUNCTION(FN_SUBSEQUENCE_3);
     expr* domainExpr = pvar->get_for_clause()->get_expr();
@@ -614,7 +614,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
 }
 
 
-RULE_REWRITE_POST(RefactorPredFLWOR) 
+RULE_REWRITE_POST(RefactorPredFLWOR)
 {
   return NULL;
 }
@@ -629,7 +629,7 @@ static bool refactor_index_pred(
     RewriterContext& rCtx,
     const expr* cond,
     const var_expr*& pvar,
-    rchandle<const_expr>& pos_expr) 
+    rchandle<const_expr>& pos_expr)
 {
   const const_expr* pos;
 
@@ -648,17 +648,17 @@ static bool refactor_index_pred(
   TypeManager* tm = sctx->get_typemanager();
 
   int i;
-  for (i = 0; i < 2; i++) 
+  for (i = 0; i < 2; i++)
   {
     if (NULL != (pvar = dynamic_cast<const var_expr*>(fo->get_arg(i))) &&
         pvar->get_kind() == var_expr::pos_var &&
-        NULL != (pos = dynamic_cast<const const_expr*>(fo->get_arg(1 - i)))) 
+        NULL != (pos = dynamic_cast<const const_expr*>(fo->get_arg(1 - i))))
     {
       const store::Item* val = pos->get_val();
 
       if (TypeOps::is_subtype(*tm->create_named_type(val->getType()),
                               *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)
-          && val->getIntegerValue() >= xqp_integer::parseInt(1)) 
+          && val->getIntegerValue() >= xqp_integer::parseInt(1))
       {
         store::Item_t iVal = const_cast<store::Item*>(val);
         store::Item_t pVal;

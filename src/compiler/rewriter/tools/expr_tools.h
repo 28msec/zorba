@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -56,12 +56,12 @@
 
 
 
-namespace zorba 
+namespace zorba
 {
 
-int count_variable_uses(const expr* root, const var_expr* var, int limit);
+int count_variable_uses(const expr* root, const var_expr* var, RewriterContext* rCtx, int limit);
 
-expr_t fix_annotations(expr_t new_expr, const expr* old_expr = NULL); 
+expr_t fix_annotations(expr_t new_expr, const expr* old_expr = NULL);
 
 
 /*******************************************************************************
@@ -81,7 +81,7 @@ void replace_var(expr*, const var_expr* oldVar, var_expr* newVar);
 typedef std::set<const var_expr *> var_ptr_set;
 
 
-class VarSetAnnVal : public AnnotationValue 
+class VarSetAnnVal : public AnnotationValue
 {
 public:
   var_ptr_set varset;
@@ -92,12 +92,12 @@ public:
 
   void add(const var_expr* v) { varset.insert(varset.begin(), v); }
 };
-  
+
 
 const var_ptr_set& get_varset_annotation(const expr *e, Annotations::Key k);
 
 
-inline expr_t fix_if_annotations(rchandle<if_expr> ite) 
+inline expr_t fix_if_annotations(rchandle<if_expr> ite)
 {
   fix_annotations(&*ite, ite->get_cond_expr());
   fix_annotations(&*ite, ite->get_then_expr());
