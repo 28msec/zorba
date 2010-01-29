@@ -34,8 +34,6 @@
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
 #include "store/api/store.h"
-#include "store/naive/atomic_items.h"
-#include "store/naive/simple_store.h"
 
 
 namespace zorba {
@@ -353,26 +351,24 @@ bool StaticallyKnownDocumentsIterator::nextImpl(
     PlanState& aPlanState) const
 {
   PlanIteratorState* state;
-  store::Item_t root, lName;
-  xqpString temp, temp_ns, ns, prefix;
-  const simplestore::QNameItem* qname = NULL;
-  std::auto_ptr<std::vector<xqpString> > string_keys;
+  store::Item_t lName;
+  xqpString temp_str;
+  xqtref_t type;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
-
-  root = GENV_STORE.getDocument(lName->getStringValue());
-  if (root.getp() != NULL)
-    qname = dynamic_cast<simplestore::QNameItem*>(root->getType());
-
-  if (root.getp() == NULL || (root.getp() != NULL && qname == NULL))
+  type = theSctx->get_document_type(xqpString(lName->getStringValue()));
+  if (type.getp() == NULL)
   {
-    temp = "document-node()?"; // as per http://www.w3.org/TR/xquery/#dt-known-docs
-    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), state);
+    temp_str = "document-node()?"; // as per http://www.w3.org/TR/xquery/#dt-known-docs
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp_str.theStrStore), state);
   }
   else
   {
+    STACK_PUSH(type->get_qname(), state);
+
+    /*
     ns = qname->getNamespace();
     prefix = qname->getPrefix();
 
@@ -390,8 +386,9 @@ bool StaticallyKnownDocumentsIterator::nextImpl(
         }
       }
     }
+    */
 
-    STACK_PUSH( GENV_ITEMFACTORY->createQName(aResult, ns.theStrStore, prefix.theStrStore, qname->getLocalName()), state);
+    // STACK_PUSH( GENV_ITEMFACTORY->createQName(aResult, ns.theStrStore, prefix.theStrStore, qname->getLocalName()), state);
   }
 
   STACK_END (state);
@@ -663,10 +660,11 @@ bool InScopeSchemaTypesIterator::nextImpl(
 {
   InScopeSchemaTypesIteratorState* state;
   store::Item_t temp;
-  const simplestore::QNameItem* temp_qname;
+  // const simplestore::QNameItem* temp_qname;
 
   DEFAULT_STACK_INIT(InScopeSchemaTypesIteratorState, state, aPlanState);
 
+  /*
   for (state->position = 0;
        state->position < ((simplestore::SimpleStore*)&GENV_STORE)->theSchemaTypeNames.size();
        state->position++)
@@ -676,6 +674,7 @@ bool InScopeSchemaTypesIterator::nextImpl(
     if (temp_qname != NULL)
       STACK_PUSH( GENV_ITEMFACTORY->createQName(aResult, temp_qname->getNamespace(), temp_qname->getPrefix(), temp_qname->getLocalName()), state);
   }
+  */
 
   STACK_END (state);
 }

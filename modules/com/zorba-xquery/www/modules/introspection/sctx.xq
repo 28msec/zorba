@@ -170,7 +170,7 @@ declare function sctx:function-names() as xs:QName* external;
  :)
 declare function sctx:function-arguments-count($function as xs:QName) as xs:int* external;
 
-(:~
+(:
  : The function returns a sequence of QNames, one for each type definition,
  : including the predefined schema types.
  :
@@ -178,7 +178,8 @@ declare function sctx:function-arguments-count($function as xs:QName) as xs:int*
  :
  : @see http://www.w3.org/TR/xquery/#dt-is-types
  :)
-declare function sctx:in-scope-schema-types() as xs:QName* external;
+(: Function not available in this release. TODO:
+(: declare function sctx:in-scope-schema-types() as xs:QName* external; :)
 
 (:~
  : The function returns the potential static type of the result of fn:doc(),

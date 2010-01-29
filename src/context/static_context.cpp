@@ -249,7 +249,7 @@ void context::set_parent_as_root()
 
 void context::ctx_module_t::serialize(serialization::Archiver &ar)
 {
-  if(ar.is_serializing_out()) 
+  if(ar.is_serializing_out())
   {
     // serialize out: the uri of the module that is used in this plan
 
@@ -272,7 +272,7 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
 	  ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
 
-    if (dyn_loaded_module) 
+    if (dyn_loaded_module)
     {
       InternalModuleURIResolver* lStandardModuleResolver
         = GENV.getModuleURIResolver();
@@ -281,7 +281,7 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
                   lURIStore->str(), GENV_ROOT_STATIC_CONTEXT);
 
       // no way to get the module
-      if (!module) 
+      if (!module)
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
@@ -294,7 +294,7 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
     {
       // class registered by the user
       SerializationCallback* lCallback = ar.getUserCallback();
-      if (!lCallback) 
+      if (!lCallback)
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
@@ -305,7 +305,7 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
 
       // the life-cycle of the module is managed by the user
       module = lCallback->getExternalModule(lURIStore.getp());
-      if (!module) 
+      if (!module)
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
@@ -1052,7 +1052,7 @@ StatelessExternalFunction* static_context::lookup_stateless_external_function(
 
   // if the module is not yet in the static context
   // we try to get it from the URI resolver
-  if (!lRes) 
+  if (!lRes)
   {
     InternalModuleURIResolver* lStandardModuleResolver = GENV.getModuleURIResolver();
     lModule = lStandardModuleResolver->getExternalModule(
@@ -1109,6 +1109,16 @@ xqtref_t static_context::lookup_type2( const char *key1, xqp_string key2)
 }
 
 
+xqtref_t static_context::lookup_type2_no_assert( const char *key1, xqp_string key2)
+{
+  ctx_value_t val(CTX_XQTYPE);
+  if (context_value2 (key1, key2, val))
+    return val.typeValue;
+  else
+    return NULL;
+}
+
+
 void static_context::set_context_item_static_type(xqtref_t t)
 {
   bind_type("type:context:", t);
@@ -1128,7 +1138,7 @@ void static_context::set_document_type(xqp_string docURI, xqtref_t t)
 
 xqtref_t static_context::get_document_type(const xqp_string docURI)
 {
-  return lookup_type2("type:doc:", docURI);
+  return lookup_type2_no_assert("type:doc:", docURI);
 }
 
 
@@ -1740,7 +1750,7 @@ static_context::add_schema_uri_resolver(InternalSchemaURIResolver* aSchemaResolv
 void static_context::get_schema_uri_resolvers(
     std::vector<InternalSchemaURIResolver*>& aResolvers)
 {
-  if (parent != NULL) 
+  if (parent != NULL)
   {
     static_cast<static_context*>(parent)->get_schema_uri_resolvers(aResolvers);
   }
@@ -1761,7 +1771,7 @@ void static_context::add_module_uri_resolver(
 void static_context::get_module_uri_resolvers(
     std::vector<InternalModuleURIResolver*>& lResolvers) const
 {
-  if (parent!=NULL) 
+  if (parent!=NULL)
   {
     static_cast<static_context*>(parent)->get_module_uri_resolvers(lResolvers);
   }
@@ -1776,7 +1786,7 @@ void static_context::remove_module_uri_resolver(
     InternalModuleURIResolver* aResolver)
 {
   std::vector<InternalModuleURIResolver*>::iterator ite;
-  for (ite = theModuleResolvers.begin(); ite != theModuleResolvers.end(); ++ite) 
+  for (ite = theModuleResolvers.begin(); ite != theModuleResolvers.end(); ++ite)
   {
     if (aResolver == *ite)
     {

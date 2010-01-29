@@ -72,7 +72,7 @@ template <class V> class ItemPointerHashMap;
 
   theTypemgr :
 
-  theDocResolver : 
+  theDocResolver :
   URI resolver used for retrieving documents (used by fn:doc and fn:doc-available).
 
   theColResolver :
@@ -102,7 +102,7 @@ template <class V> class ItemPointerHashMap;
   Note: URI resolvers are not serialized if the plan is serialized. Instead,
   they are set again if the query is loaded. If the user has provided a resolver
   before, he needs to make sure that the resolver is available using the
-  SerializationCallback class. The latter also yields for ExternalModules and 
+  SerializationCallback class. The latter also yields for ExternalModules and
   the TraceStream.
 
 ********************************************************************************/
@@ -365,6 +365,9 @@ public:
 
   xqtref_t
   lookup_type2(const char* key1, xqp_string key2);
+
+  xqtref_t
+  lookup_type2_no_assert(const char* key1, xqp_string key2);
 
 	void
   set_context_item_static_type(xqtref_t t);
