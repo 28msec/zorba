@@ -55,18 +55,6 @@ void IsDeclaredCollectionIterator::accept(PlanIterVisitor& v) const {
 
 IsDeclaredCollectionIterator::~IsDeclaredCollectionIterator() {}
 
-IsDeclaredCollectionIteratorState::IsDeclaredCollectionIteratorState() {}
-
-IsDeclaredCollectionIteratorState::~IsDeclaredCollectionIteratorState() {}
-
-
-void IsDeclaredCollectionIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-
-void IsDeclaredCollectionIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
 // </IsDeclaredCollectionIterator>
 
 
@@ -125,18 +113,6 @@ void IsDeclaredIndexIterator::accept(PlanIterVisitor& v) const {
 
 IsDeclaredIndexIterator::~IsDeclaredIndexIterator() {}
 
-IsDeclaredIndexIteratorState::IsDeclaredIndexIteratorState() {}
-
-IsDeclaredIndexIteratorState::~IsDeclaredIndexIteratorState() {}
-
-
-void IsDeclaredIndexIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-
-void IsDeclaredIndexIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
 // </IsDeclaredIndexIterator>
 
 
@@ -656,18 +632,6 @@ void IsDeclaredICIterator::accept(PlanIterVisitor& v) const {
 
 IsDeclaredICIterator::~IsDeclaredICIterator() {}
 
-IsDeclaredICIteratorState::IsDeclaredICIteratorState() {}
-
-IsDeclaredICIteratorState::~IsDeclaredICIteratorState() {}
-
-
-void IsDeclaredICIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-}
-
-void IsDeclaredICIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-}
 // </IsDeclaredICIterator>
 
 

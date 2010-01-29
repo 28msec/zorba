@@ -104,7 +104,7 @@ bool DeclaredCollectionsIterator::nextImpl(
   DeclaredCollectionsIteratorState* lState;
   DEFAULT_STACK_INIT(DeclaredCollectionsIteratorState, lState, aPlanState);
 
-  for ((lState->nameItState = theSctx->list_collection_names())->open();
+  for ((lState->nameItState = theSctx->collection_names())->open();
        lState->nameItState->next(lName); )
   {
     aResult = lName;
@@ -177,7 +177,7 @@ bool DeclaredIndexesIterator::nextImpl(
   DeclaredIndexesIteratorState* lState;
   DEFAULT_STACK_INIT(DeclaredIndexesIteratorState, lState, aPlanState);
 
-  for ((lState->nameItState = theSctx->list_index_names())->open();
+  for ((lState->nameItState = theSctx->index_names())->open();
        lState->nameItState->next(lName); )
   {
     aResult = lName;
@@ -712,7 +712,7 @@ DeclaredICsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState)
 
   DEFAULT_STACK_INIT(DeclaredICsIteratorState, lState, aPlanState);
 
-  for ((lState->nameItState = theSctx->list_ic_names())->open ();
+  for ((lState->nameItState = theSctx->ic_names())->open ();
        lState->nameItState->next(lName); )
   {
     aResult = lName;

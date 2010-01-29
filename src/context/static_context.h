@@ -139,6 +139,16 @@ protected:
   std::ostream                  * theTraceStream;
   CollationCache                * theCollationCache;
 
+protected:
+  CollectionMap*
+  collection_map() const { return theCollectionMap; }
+
+  IndexMap*
+  index_map() const { return theIndexMap; }
+
+  ICMap*
+  ic_map() const { return theICMap; }
+
 public:
   SERIALIZABLE_CLASS(static_context);
   static_context(::zorba::serialization::Archiver& ar);
@@ -400,7 +410,7 @@ public:
 
   const StaticallyKnownCollection* lookup_collection(const store::Item* aName) const;
 
-  store::Iterator_t list_collection_names() const;
+  store::Iterator_t collection_names() const;
 
   //
   // Index
@@ -409,7 +419,7 @@ public:
 
   ValueIndex* lookup_index(const store::Item* qname) const;
 
-  store::Iterator_t list_index_names() const;
+  store::Iterator_t index_names() const;
 
 
   //
@@ -419,7 +429,7 @@ public:
 
   ValueIC_t lookup_ic(const store::Item* qname) const;
 
-  store::Iterator_t list_ic_names() const;
+  store::Iterator_t ic_names() const;
 
 
   //

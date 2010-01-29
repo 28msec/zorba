@@ -20,11 +20,6 @@
       sc:is-declared-collection
     </zorba:description>
 
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="store::Iterator_t" name="nameItState"
-                    brief="the current iterator"/>
-    </zorba:state>
-
     <zorba:function>
       <zorba:signature localname="is-declared-collection"
                        prefix="fn-zorba-introspect-sctx">
@@ -64,11 +59,6 @@
     <zorba:description author="Zorba Team">
       sc:is-declared-index
     </zorba:description>
-
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="store::Iterator_t" name="nameItState"
-                    brief="the current iterator"/>
-    </zorba:state>
 
     <zorba:function>
       <zorba:signature localname="is-declared-index"
@@ -403,11 +393,6 @@
     <zorba:description author="Zorba Team">
       sc:is-declared-integrity-constraint
     </zorba:description>
-
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="store::Iterator_t" name="nameItState"
-                    brief="the current iterator"/>
-    </zorba:state>
 
     <zorba:function>
       <zorba:signature localname="is-declared-integrity-constraint"

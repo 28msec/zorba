@@ -27,7 +27,7 @@
 #include "context/standard_uri_resolvers.h"
 #include "context/decimal_format.h"
 #include "context/statically_known_collection.h"
-
+#include "context/sctx_map_iterator.h"
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
@@ -1200,62 +1200,14 @@ const StaticallyKnownCollection* static_context::lookup_collection(
 }
 
 
-template < typename T>
-class NameIterator : public store::Iterator
+
+store::Iterator_t static_context::collection_names() const
 {
-private:
-  ItemPointerHashMap<rchandle<T> >*                   theItems;
-  typename ItemPointerHashMap<rchandle<T> >::iterator theIterator;
-
-public:
-  NameIterator(ItemPointerHashMap<rchandle<T> >* aItems)
-    :
-    theItems(aItems)
-  {
-  }
-
-  virtual ~NameIterator() { close(); }
-
-  virtual void open()
-  {
-    if (theItems) {
-      theIterator = theItems->begin();
-    }
-  }
-
-  virtual bool next(store::Item_t& aResult)
-  {
-    if (!theItems) {
-      return false;
-    }
-
-    if (theIterator == theItems->end())
-    {
-      aResult = NULL;
-      return false;
-    }
-    else
-    {
-      aResult = (*theIterator).first;
-      ++theIterator;
-      return true;
-    }
-  }
-
-  virtual void reset()
-  {
-    if (theItems) {
-      theIterator = theItems->begin();
-    }
-  }
-
-  virtual void close() {}
-};
-
-
-store::Iterator_t static_context::list_collection_names() const
-{
-  return new NameIterator<StaticallyKnownCollection>(theCollectionMap);
+  return
+    new SctxMapIterator<StaticallyKnownCollection>(
+          this,
+          &static_context::collection_map
+        );
 }
 
 
@@ -1291,9 +1243,13 @@ ValueIndex* static_context::lookup_index(const store::Item* qname) const
 }
 
 
-store::Iterator_t static_context::list_index_names() const
+store::Iterator_t static_context::index_names() const
 {
-  return new NameIterator<ValueIndex>(theIndexMap);
+  return
+    new SctxMapIterator<ValueIndex>(
+          this,
+          &static_context::index_map
+        );
 }
 
 
@@ -1329,9 +1285,13 @@ ValueIC_t static_context::lookup_ic(const store::Item* qname) const
 }
 
 
-store::Iterator_t static_context::list_ic_names() const
+store::Iterator_t static_context::ic_names() const
 {
-  return new NameIterator<ValueIC>(theICMap);
+  return
+    new SctxMapIterator<ValueIC>(
+          this,
+          &static_context::ic_map
+        );
 }
 
 
@@ -1861,6 +1821,7 @@ static_context::getVariables(std::vector<var_expr_t>& aResult) const
     }
   }
 }
+
 
 } /* namespace zorba */
 

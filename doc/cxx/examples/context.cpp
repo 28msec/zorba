@@ -358,8 +358,13 @@ public:
 
     if (aURI == "http://www.zorba-xquery.com/mymodule") 
     {
+      std::auto_ptr<std::stringstream> lQuery(new std::stringstream());
+
+      (*lQuery) << "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
+                << "declare variable $mymodule:var  := 'myvar';" << std::endl
+                << "declare collection mymodule:collection;" << std::endl;
       // we have only one module
-      lResult->theModule = new std::istringstream("module namespace mymodule = 'http://www.zorba-xquery.com/mymodule'; declare variable $mymodule:var  := 'myvar';");
+      lResult->theModule = lQuery.release();
       lResult->setError(URIResolverResult::UR_NOERROR);
     } 
 
@@ -367,7 +372,14 @@ public:
   }
 };
 
-
+/**
+ * test to demonstrate the loadProlog functionality that uses
+ * a query to populate a static context.
+ * The resulting context is used in order to compile another
+ * (main) query. 
+ * The prolog contains a variable, a collection, and a function
+ * declaration.
+ */
 bool
 context_example_11(Zorba* aZorba)
 {
@@ -377,18 +389,37 @@ context_example_11(Zorba* aZorba)
 
   try {
     Zorba_CompilerHints_t hints;
-    lContext->loadProlog("import module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';", hints);
+    std::stringstream lProlog;
+    lProlog << "import module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
+            << "import module namespace sctx = 'http://www.zorba-xquery.com/modules/introspection/sctx';"
+            << std::endl
+            << "declare function local:collections() { " << std::endl
+            << "  sctx:declared-collections()" << std::endl
+            << "};" << std::endl;
+    lContext->loadProlog(lProlog.str(), hints);
 
-    XQuery_t aQuery = aZorba->compileQuery("$mymodule:var", lContext);
+    // compile the main query using the populated static context
+    XQuery_t lQuery = aZorba->compileQuery("$mymodule:var, local:collections()", lContext);
 
-    std::cout << aQuery << std::endl;
-    return true;
+    // execute the query and make sure that the result is correct
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    std::stringstream lResult;
+    lQuery->execute(lResult, &lSerOptions);
+    std::cout << "result " << lResult.str() << std::endl;
+
+    if (lResult.str().compare("myvar mymodule:collection") == 0) {
+      return true;
+    } else {
+      std::cerr << "result doesn't match expected result (myvar mymodule:collection)"
+                << std::endl;
+      return false;
+    }
 
   } catch (QueryException &e) {
     std::cerr << e << std::endl;
     return false;
   }
-
 	return false;
 }
 

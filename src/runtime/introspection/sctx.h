@@ -39,31 +39,18 @@ namespace zorba {
  *    
  * Author: Zorba Team
  */
-class IsDeclaredCollectionIteratorState : public PlanIteratorState
-{
-public:
-  store::Iterator_t nameItState; //the current iterator
-
-  IsDeclaredCollectionIteratorState();
-
-  ~IsDeclaredCollectionIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class IsDeclaredCollectionIterator : public NaryBaseIterator<IsDeclaredCollectionIterator, IsDeclaredCollectionIteratorState>
+class IsDeclaredCollectionIterator : public NaryBaseIterator<IsDeclaredCollectionIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(IsDeclaredCollectionIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsDeclaredCollectionIterator,
-    NaryBaseIterator<IsDeclaredCollectionIterator, IsDeclaredCollectionIteratorState>);
+    NaryBaseIterator<IsDeclaredCollectionIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<IsDeclaredCollectionIterator, IsDeclaredCollectionIteratorState>*)this);
+    (NaryBaseIterator<IsDeclaredCollectionIterator, PlanIteratorState>*)this);
   }
 
   IsDeclaredCollectionIterator(
@@ -71,7 +58,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<IsDeclaredCollectionIterator, IsDeclaredCollectionIteratorState>(sctx, loc, children)
+    NaryBaseIterator<IsDeclaredCollectionIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
   virtual ~IsDeclaredCollectionIterator();
@@ -137,31 +124,18 @@ public:
  *    
  * Author: Zorba Team
  */
-class IsDeclaredIndexIteratorState : public PlanIteratorState
-{
-public:
-  store::Iterator_t nameItState; //the current iterator
-
-  IsDeclaredIndexIteratorState();
-
-  ~IsDeclaredIndexIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class IsDeclaredIndexIterator : public NaryBaseIterator<IsDeclaredIndexIterator, IsDeclaredIndexIteratorState>
+class IsDeclaredIndexIterator : public NaryBaseIterator<IsDeclaredIndexIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(IsDeclaredIndexIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsDeclaredIndexIterator,
-    NaryBaseIterator<IsDeclaredIndexIterator, IsDeclaredIndexIteratorState>);
+    NaryBaseIterator<IsDeclaredIndexIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<IsDeclaredIndexIterator, IsDeclaredIndexIteratorState>*)this);
+    (NaryBaseIterator<IsDeclaredIndexIterator, PlanIteratorState>*)this);
   }
 
   IsDeclaredIndexIterator(
@@ -169,7 +143,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<IsDeclaredIndexIterator, IsDeclaredIndexIteratorState>(sctx, loc, children)
+    NaryBaseIterator<IsDeclaredIndexIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
   virtual ~IsDeclaredIndexIterator();
@@ -858,31 +832,18 @@ public:
  *    
  * Author: Zorba Team
  */
-class IsDeclaredICIteratorState : public PlanIteratorState
-{
-public:
-  store::Iterator_t nameItState; //the current iterator
-
-  IsDeclaredICIteratorState();
-
-  ~IsDeclaredICIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class IsDeclaredICIterator : public NaryBaseIterator<IsDeclaredICIterator, IsDeclaredICIteratorState>
+class IsDeclaredICIterator : public NaryBaseIterator<IsDeclaredICIterator, PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(IsDeclaredICIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsDeclaredICIterator,
-    NaryBaseIterator<IsDeclaredICIterator, IsDeclaredICIteratorState>);
+    NaryBaseIterator<IsDeclaredICIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<IsDeclaredICIterator, IsDeclaredICIteratorState>*)this);
+    (NaryBaseIterator<IsDeclaredICIterator, PlanIteratorState>*)this);
   }
 
   IsDeclaredICIterator(
@@ -890,7 +851,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<IsDeclaredICIterator, IsDeclaredICIteratorState>(sctx, loc, children)
+    NaryBaseIterator<IsDeclaredICIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
   virtual ~IsDeclaredICIterator();

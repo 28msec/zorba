@@ -30,6 +30,7 @@ SET(CONTEXT_SRCS
     context.cpp
     statically_known_collection.cpp
     dynamic_loader.cpp
+    sctx_map_iterator.cpp
     )
 
 SET(CONTEXT_BUILD_SRCS
