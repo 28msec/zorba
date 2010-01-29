@@ -41,29 +41,38 @@
 namespace zorba {
 
 /*******************************************************************************
+
 ********************************************************************************/
-bool
-IsDeclaredCollectionIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+bool IsDeclaredCollectionIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
-  PlanIteratorState *lState;
   store::Item_t      lName;
 
+  PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+
   consumeNext(lName, theChildren[0].getp(), aPlanState);
-  if (theSctx->lookup_collection(lName.getp()) == 0) {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( aResult, false ), lState);
+
+  if (theSctx->lookup_collection(lName.getp()) == 0) 
+  {
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, false), lState);
   }
-  else {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( aResult, true ), lState);
+  else 
+  {
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, true), lState);
   }
   STACK_END (lState);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 DeclaredCollectionsIteratorState::~DeclaredCollectionsIteratorState()
 {
-  if ( nameItState != NULL ) {
+  if ( nameItState != NULL ) 
+  {
     nameItState->close();
     nameItState = NULL;
   }
@@ -80,79 +89,70 @@ void DeclaredCollectionsIteratorState::init(PlanState& planState)
 void DeclaredCollectionsIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  if ( nameItState != NULL ) {
+  if ( nameItState != NULL ) 
+  {
     nameItState->close();
     nameItState = NULL;
   }
 }
 
-/*******************************************************************************
-********************************************************************************/
-bool
-DeclaredCollectionsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  DeclaredCollectionsIteratorState* lState;
-  store::Item_t              lName;
 
+bool DeclaredCollectionsIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  store::Item_t lName;
+
+  DeclaredCollectionsIteratorState* lState;
   DEFAULT_STACK_INIT(DeclaredCollectionsIteratorState, lState, aPlanState);
 
-  for ((lState->nameItState = theSctx->list_collection_names())->open ();
+  for ((lState->nameItState = theSctx->list_collection_names())->open();
        lState->nameItState->next(lName); )
   {
     aResult = lName;
-    STACK_PUSH( true, lState);
+    STACK_PUSH(true, lState);
   }
 
   lState->nameItState->close();
 
-  STACK_END (lState);
+  STACK_END(lState);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
-bool
-IsDeclaredIndexIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+bool IsDeclaredIndexIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
-  PlanIteratorState *lState;
   store::Item_t      lName;
 
+  PlanIteratorState* lState;
   DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+
   consumeNext(lName, theChildren[0].getp(), aPlanState);
-  if (theSctx->lookup_index(lName.getp()) == 0) {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( aResult, false ), lState);
+
+  if (theSctx->lookup_index(lName.getp()) == 0) 
+  {
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, false), lState);
   }
-  else {
-    STACK_PUSH (GENV_ITEMFACTORY->createBoolean ( aResult, true ), lState);
+  else 
+  {
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, true), lState);
   }
-  STACK_END (lState);
+
+  STACK_END(lState);
 }
 
 
 /*******************************************************************************
+
 ********************************************************************************/
-bool
-DeclaredIndexesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  DeclaredIndexesIteratorState * lState;
-  store::Item_t              lName;
-
-  DEFAULT_STACK_INIT(DeclaredIndexesIteratorState, lState, aPlanState);
-
-  for ((lState->nameItState = theSctx->list_index_names())->open ();
-       lState->nameItState->next(lName); )
-  {
-    aResult = lName;
-    STACK_PUSH( true, lState);
-  }
-
-  lState->nameItState->close();
-
-  STACK_END (lState);
-}
-
 DeclaredIndexesIteratorState::~DeclaredIndexesIteratorState()
 {
-  if ( nameItState != NULL ) {
+  if (nameItState != NULL) 
+  {
     nameItState->close();
     nameItState = NULL;
   }
@@ -162,20 +162,60 @@ DeclaredIndexesIteratorState::~DeclaredIndexesIteratorState()
 void DeclaredIndexesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  if ( nameItState != NULL ) {
+  if (nameItState != NULL) 
+  {
     nameItState->close();
     nameItState = NULL;
   }
 }
 
+
+bool DeclaredIndexesIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  store::Item_t lName;
+
+  DeclaredIndexesIteratorState* lState;
+  DEFAULT_STACK_INIT(DeclaredIndexesIteratorState, lState, aPlanState);
+
+  for ((lState->nameItState = theSctx->list_index_names())->open();
+       lState->nameItState->next(lName); )
+  {
+    aResult = lName;
+    STACK_PUSH(true, lState);
+  }
+
+  lState->nameItState->close();
+
+  STACK_END(lState);
+}
+
+
 /*******************************************************************************
+
 ********************************************************************************/
-bool StaticNamespacesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+StaticNamespacesIteratorState::~StaticNamespacesIteratorState()
+{
+}
+
+
+void StaticNamespacesIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  position = 0;
+}
+
+
+bool StaticNamespacesIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
   StaticNamespacesIteratorState* lState;
   xqpString temp;
 
   DEFAULT_STACK_INIT(StaticNamespacesIteratorState, lState, aPlanState);
+
   lState->string_keys.reset(theSctx->get_all_str_keys());
   lState->position = 0;
 
@@ -184,7 +224,8 @@ bool StaticNamespacesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlan
     if (lState->string_keys->at(lState->position).indexOf("ns:") == 0)
     {
       temp = lState->string_keys->at(lState->position).substr(3);
-      STACK_PUSH( GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), lState);
+
+      STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), lState);
     }
     lState->position++;
   }
@@ -192,44 +233,56 @@ bool StaticNamespacesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlan
   STACK_END (lState);
 }
 
-StaticNamespacesIteratorState::~StaticNamespacesIteratorState()
+
+/*******************************************************************************
+
+********************************************************************************/
+bool StaticNamespaceBindingIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  store::Item_t lName;
+  xqpString temp;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+
+  if (theSctx->lookup_ns(xqpString(lName->getStringValue()), temp))
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), state);
+
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+InscopeVariablesIteratorState::~InscopeVariablesIteratorState()
 {
 }
 
-void StaticNamespacesIteratorState::reset(PlanState& planState)
+
+void InscopeVariablesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
   position = 0;
 }
 
-/*******************************************************************************
-********************************************************************************/
-bool StaticNamespaceBindingIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+
+bool InscopeVariablesIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
-  PlanIteratorState* state;
-  store::Item_t lName;
-  xqpString temp;
-
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-  consumeNext(lName, theChildren[0].getp(), aPlanState);
-
-  if (theSctx->lookup_ns(xqpString(lName->getStringValue()), temp))
-    STACK_PUSH( GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), state);
-
-  STACK_END (state);
-}
-
-/*******************************************************************************
-********************************************************************************/
-bool InscopeVariablesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  InscopeVariablesIteratorState* lState;
   xqpString name, ns;
 
+  InscopeVariablesIteratorState* lState;
   DEFAULT_STACK_INIT(InscopeVariablesIteratorState, lState, aPlanState);
 
   lState->keymap.reset(theSctx->get_all_keymap_keys());
   lState->position = 0;
+
   while (lState->position < lState->keymap->size())
   {
     name = lState->keymap->at(lState->position);
@@ -241,27 +294,63 @@ bool InscopeVariablesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlan
         ns = name.substr(name.indexOf(":") + 1);
         name = name.substr(0, name.indexOf(":"));
       }
-      STACK_PUSH( GENV_ITEMFACTORY->createQName(aResult, ns.theStrStore, xqpString().theStrStore,  name.theStrStore ), lState);
+      STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult,
+                                               ns.theStrStore,
+                                               xqpString().theStrStore,
+                                               name.theStrStore),
+                 lState);
     }
+
     lState->position++;
   }
 
-  STACK_END (lState);
+  STACK_END(lState);
 }
 
-InscopeVariablesIteratorState::~InscopeVariablesIteratorState()
-{
-}
-
-void InscopeVariablesIteratorState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  position = 0;
-}
 
 /*******************************************************************************
+
 ********************************************************************************/
-bool StaticallyKnownDocumentsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+bool DefaultCollectionTypeIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  store::Item_t lName;
+  xqpString type_string;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  type_string = theSctx->lookup_type("type:defcollection:")->toStdString();
+
+  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, type_string.theStrStore), state);
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool XPath10CompatModeIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult,
+                                             theSctx->xpath1_0compatib_mode() == StaticContextConsts::xpath1_0_only), state);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool StaticallyKnownDocumentsIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
   PlanIteratorState* state;
   store::Item_t root, lName;
@@ -270,7 +359,9 @@ bool StaticallyKnownDocumentsIterator::nextImpl(store::Item_t& aResult, PlanStat
   std::auto_ptr<std::vector<xqpString> > string_keys;
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
   consumeNext(lName, theChildren[0].getp(), aPlanState);
+
   root = GENV_STORE.getDocument(lName->getStringValue());
   if (root.getp() != NULL)
     qname = dynamic_cast<simplestore::QNameItem*>(root->getType());
@@ -306,40 +397,59 @@ bool StaticallyKnownDocumentsIterator::nextImpl(store::Item_t& aResult, PlanStat
   STACK_END (state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
-bool XPath10CompatModeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+StaticallyKnownCollationsIteratorState::~StaticallyKnownCollationsIteratorState()
 {
-  PlanIteratorState* state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  STACK_PUSH( GENV_ITEMFACTORY->createBoolean(aResult,
-              theSctx->xpath1_0compatib_mode() == StaticContextConsts::xpath1_0_only), state);
-
-  STACK_END (state);
 }
 
-/*******************************************************************************
-********************************************************************************/
-bool DefaultCollectionTypeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+void StaticallyKnownCollationsIteratorState::reset(PlanState& planState)
 {
-  PlanIteratorState* state;
-  store::Item_t lName;
-  xqpString type_string;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  type_string = theSctx->lookup_type("type:defcollection:")->toStdString();
-
-  STACK_PUSH( GENV_ITEMFACTORY->createString(aResult, type_string.theStrStore), state);
-  STACK_END (state);
+  PlanIteratorState::reset(planState);
+  position = 0;
 }
 
-/*******************************************************************************
-********************************************************************************/
-bool ConstructionModeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+
+bool StaticallyKnownCollationsIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
-  PlanIteratorState* state;
   xqpString temp;
+
+  StaticallyKnownCollationsIteratorState* lState;
+  DEFAULT_STACK_INIT(StaticallyKnownCollationsIteratorState, lState, aPlanState);
+
+  lState->keymap.reset(theSctx->get_all_str_keys());
+  lState->position = 0;
+
+  while (lState->position < lState->keymap->size())
+  {
+    temp = lState->keymap->at(lState->position);
+    if (temp.indexOf("coll:") == 0 && temp.indexOf("coll:default") == -1)
+    {
+      temp = temp.substr(5, temp.size());
+      STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), lState);
+    }
+
+    lState->position++;
+  }
+
+  STACK_END(lState);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool ConstructionModeIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  xqpString temp;
+
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   if (theSctx->construction_mode() == StaticContextConsts::cons_preserve)
@@ -347,13 +457,17 @@ bool ConstructionModeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlan
   else
     temp = "strip";
 
-  STACK_PUSH( GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), state);
-  STACK_END (state);
+  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), state);
+  STACK_END(state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
-bool OrderingModeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+bool OrderingModeIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
   PlanIteratorState* state;
   xqpString temp;
@@ -364,16 +478,42 @@ bool OrderingModeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanStat
   else
     temp = "unordered";
 
-  STACK_PUSH( GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), state);
-  STACK_END (state);
+  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), state);
+  STACK_END(state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
-bool BoundarySpacePolicyIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+bool DefaultOrderIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
   PlanIteratorState* state;
   xqpString temp;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
+
+  if (theSctx->order_empty_mode() == StaticContextConsts::empty_greatest)
+    temp = "greatest";
+  else
+    temp = "least";
+
+  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), state);
+  STACK_END(state);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool BoundarySpacePolicyIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  xqpString temp;
+
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   if (theSctx->boundary_space_mode() == StaticContextConsts::preserve_space)
@@ -385,9 +525,13 @@ bool BoundarySpacePolicyIterator::nextImpl(store::Item_t& aResult, PlanState& aP
   STACK_END (state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
-bool CopyNamespacesModeIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+bool CopyNamespacesModeIterator::nextImpl(
+    store::Item_t& aResult, 
+    PlanState& aPlanState) const
 {
   PlanIteratorState* state;
   xqpString inherit, preserve;
@@ -403,31 +547,29 @@ bool CopyNamespacesModeIterator::nextImpl(store::Item_t& aResult, PlanState& aPl
     preserve = "no-preserve";
 
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-  STACK_PUSH( GENV_ITEMFACTORY->createString(aResult, inherit.theStrStore), state);
-  STACK_PUSH( GENV_ITEMFACTORY->createString(aResult, preserve.theStrStore), state);
-  STACK_END (state);
+  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, inherit.theStrStore), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, preserve.theStrStore), state);
+  STACK_END(state);
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
-bool DefaultOrderIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+FunctionNamesIteratorState::~FunctionNamesIteratorState()
 {
-  PlanIteratorState* state;
-  xqpString temp;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
-
-  if (theSctx->order_empty_mode() == StaticContextConsts::empty_greatest)
-    temp = "greatest";
-  else
-    temp = "least";
-
-  STACK_PUSH( GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), state);
-  STACK_END (state);
 }
 
-/*******************************************************************************
-********************************************************************************/
-bool FunctionNamesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+void FunctionNamesIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  position = 0;
+}
+
+
+bool FunctionNamesIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
   FunctionNamesIteratorState* lState;
   xqpString temp, ns;
@@ -436,6 +578,7 @@ bool FunctionNamesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanSta
 
   lState->keymap.reset(theSctx->get_all_keymap_keys());
   lState->position = 0;
+
   while (lState->position < lState->keymap->size())
   {
     temp = lState->keymap->at(lState->position);
@@ -447,26 +590,26 @@ bool FunctionNamesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanSta
         ns = temp.substr(temp.indexOf(":")+1);
         temp = temp.substr(0, temp.indexOf(":"));
       }
-      STACK_PUSH( GENV_ITEMFACTORY->createQName(aResult, ns.theStrStore, xqpString().theStrStore, temp.theStrStore), lState);
+      STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult,
+                                               ns.theStrStore,
+                                               xqpString().theStrStore,
+                                               temp.theStrStore),
+                  lState);
     }
+
     lState->position++;
   }
 
-  STACK_END (lState);}
-
-  FunctionNamesIteratorState::~FunctionNamesIteratorState()
-{
+  STACK_END(lState);
 }
 
-void FunctionNamesIteratorState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  position = 0;
-}
 
 /*******************************************************************************
+
 ********************************************************************************/
-bool FunctionArgumentsCountIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+bool FunctionArgumentsCountIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
 {
   FunctionArgumentsCountIteratorState* lState;
   store::Item_t lName;
@@ -499,27 +642,10 @@ void FunctionArgumentsCountIteratorState::reset(PlanState& planState)
   position = 0;
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
-bool InScopeSchemaTypesIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  InScopeSchemaTypesIteratorState* state;
-  store::Item_t temp;
-  const simplestore::QNameItem* temp_qname;
-
-  DEFAULT_STACK_INIT(InScopeSchemaTypesIteratorState, state, aPlanState);
-
-  for (state->position = 0; state->position < ((simplestore::SimpleStore*)&GENV_STORE)->theSchemaTypeNames.size(); state->position++)
-  {
-    temp = ((simplestore::SimpleStore*)&GENV_STORE)->theSchemaTypeNames[state->position];
-    temp_qname = dynamic_cast<simplestore::QNameItem*>(temp.getp());
-    if (temp_qname != NULL)
-      STACK_PUSH( GENV_ITEMFACTORY->createQName(aResult, temp_qname->getNamespace(), temp_qname->getPrefix(), temp_qname->getLocalName()), state);
-  }
-
-  STACK_END (state);
-}
-
 InScopeSchemaTypesIteratorState::~InScopeSchemaTypesIteratorState()
 {
 }
@@ -530,39 +656,31 @@ void InScopeSchemaTypesIteratorState::reset(PlanState& planState)
   position = 0;
 }
 
-/*******************************************************************************
-********************************************************************************/
-bool StaticallyKnownCollationsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
-{
-  StaticallyKnownCollationsIteratorState* lState;
-  xqpString temp;
 
-  DEFAULT_STACK_INIT(StaticallyKnownCollationsIteratorState, lState, aPlanState);
-  lState->keymap.reset(theSctx->get_all_str_keys());
-  lState->position = 0;
-  while (lState->position < lState->keymap->size())
+bool InScopeSchemaTypesIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  InScopeSchemaTypesIteratorState* state;
+  store::Item_t temp;
+  const simplestore::QNameItem* temp_qname;
+
+  DEFAULT_STACK_INIT(InScopeSchemaTypesIteratorState, state, aPlanState);
+
+  for (state->position = 0;
+       state->position < ((simplestore::SimpleStore*)&GENV_STORE)->theSchemaTypeNames.size();
+       state->position++)
   {
-    temp = lState->keymap->at(lState->position);
-    if (temp.indexOf("coll:") == 0 && temp.indexOf("coll:default") == -1)
-    {
-      temp = temp.substr(5, temp.size());
-      STACK_PUSH( GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), lState);
-    }
-    lState->position++;
+    temp = ((simplestore::SimpleStore*)&GENV_STORE)->theSchemaTypeNames[state->position];
+    temp_qname = dynamic_cast<simplestore::QNameItem*>(temp.getp());
+    if (temp_qname != NULL)
+      STACK_PUSH( GENV_ITEMFACTORY->createQName(aResult, temp_qname->getNamespace(), temp_qname->getPrefix(), temp_qname->getLocalName()), state);
   }
 
-  STACK_END (lState);
+  STACK_END (state);
 }
 
-StaticallyKnownCollationsIteratorState::~StaticallyKnownCollationsIteratorState()
-{
-}
 
-void StaticallyKnownCollationsIteratorState::reset(PlanState& planState)
-{
-  PlanIteratorState::reset(planState);
-  position = 0;
-}
 
 /*******************************************************************************
 *******************************************************************************/
