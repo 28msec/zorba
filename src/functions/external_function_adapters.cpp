@@ -19,6 +19,9 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(stateless_external_function_adapter)
+END_SERIALIZABLE_CLASS_VERSIONS(stateless_external_function_adapter)
+
 stateless_external_function_adapter::stateless_external_function_adapter(
     const signature& sig,
     StatelessExternalFunction *function, 

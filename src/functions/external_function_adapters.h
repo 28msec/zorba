@@ -34,6 +34,18 @@ private:
   xqp_string                  thePrefix;
 
 public:
+  SERIALIZABLE_CLASS(stateless_external_function_adapter)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(stateless_external_function_adapter, external_function)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    zorba::serialization::serialize_baseclass(ar, (external_function*)this);
+    if(!ar.is_serializing_out())
+      m_function = NULL;//don't serialize this for now
+    SERIALIZE_ENUM(expr_script_kind_t, theUpdateType);
+    ar & thePrefix;
+  }
+
+public:
   stateless_external_function_adapter(
         const signature& sig, 
         StatelessExternalFunction *function,

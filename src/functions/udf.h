@@ -130,6 +130,13 @@ public:
 class external_function : public function 
 {
 public:
+  SERIALIZABLE_ABSTRACT_CLASS(external_function)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(external_function, function)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    zorba::serialization::serialize_baseclass(ar, (function*)this);
+  }
+public:
   external_function(const signature& sig) 
     :
     function(sig, FunctionConsts::FN_UNKNOWN)

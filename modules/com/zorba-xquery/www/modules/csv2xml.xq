@@ -84,7 +84,7 @@ declare function zorba-csv:txt-to-xml( $csv as xs:string,
 (:                                 
 declare function zorba-csv:csv-to-xml($csv as xs:string) as node()*
 {
-  zorba-csv:csv2xml($csv, fn:false(), ",", '"', '""', 
+  zorba-csv:csv-to-xml($csv, fn:false(), ",", '"', '""', 
                     fn:QName("", "row"),
                     fn:QName("", "column"))
                     

@@ -31,6 +31,8 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(user_function)
 END_SERIALIZABLE_CLASS_VERSIONS(user_function)
 
+SERIALIZABLE_CLASS_VERSIONS(external_function)
+END_SERIALIZABLE_CLASS_VERSIONS(external_function)
 
 /*******************************************************************************
 
