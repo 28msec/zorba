@@ -317,7 +317,7 @@ store::Item_t Validator::processElement(
     
     if ( schemaType!=NULL )
     {
-      haveTypedValue = typeHasTypedValue(schemaType);
+      haveTypedValue = typeHasValue(schemaType);
       haveEmptyValue = typeHasEmptyValue(schemaType);
     }
   }

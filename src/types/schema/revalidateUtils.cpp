@@ -598,7 +598,8 @@ store::Item_t findAttributeItem(const store::Item *parent, store::Item_t &attQNa
 bool typeHasValue(xqtref_t t)
 {
   return (t->content_kind()==XQType::MIXED_CONTENT_KIND ||
-          t->content_kind()==XQType::SIMPLE_CONTENT_KIND);
+          t->content_kind()==XQType::SIMPLE_CONTENT_KIND ||
+          t->content_kind()==XQType::EMPTY_CONTENT_KIND);
 }
 
 /**
@@ -611,9 +612,7 @@ bool typeHasValue(xqtref_t t)
 bool typeHasTypedValue(xqtref_t t)
 {
   return t->content_kind()==XQType::SIMPLE_CONTENT_KIND &&
-         !( TypeOps::is_equal(*t, *GENV_TYPESYSTEM.UNTYPED_TYPE) ||
-            TypeOps::is_equal(*t, *GENV_TYPESYSTEM.ANY_TYPE) ||
-            TypeOps::is_equal(*t, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) );
+         !TypeOps::is_equal(*t, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE );
 }
 
 /**
