@@ -699,11 +699,11 @@ EvaluatedEvent::EvaluatedEvent( int aId, xqpString anExpr, list<pair<xqpString, 
   {
     xqpString lFirst(it->first);
     xqpString lSecond(it->second);
-    lFirst = lFirst.replace("\\\"", "&quot;", "");
+    lFirst = lFirst.replace("\"", "\\\\\"", "");
     lFirst = lFirst.replace("\\n", "\\\\n", "");
     lFirst = lFirst.replace("\\r", "\\\\r", "");
     lFirst = lFirst.replace("\\t", "\\\\t", "");
-    lSecond = lSecond.replace("\\\"", "&quot;", "");
+    lSecond = lSecond.replace("\"", "\\\\\"", "");
     lSecond = lSecond.replace("\\n", "\\\\n", "");
     lSecond = lSecond.replace("\\r", "\\\\r", "");
     lSecond = lSecond.replace("\\t", "\\\\t", "");
@@ -809,12 +809,12 @@ Byte * EvaluatedEvent::serialize( Length &aLength ) const
 xqpString EvaluatedEvent::getData() const
 {
   xqpString lExpr = theExpr;
-  lExpr = lExpr.replace("\"", "&quot;", "");
+  lExpr = lExpr.replace("\"", "\\\\\"", "");
   lExpr = lExpr.replace("\\n", "\\\\n", "");
   lExpr = lExpr.replace("\\r", "\\\\r", "");
   lExpr = lExpr.replace("\\t", "\\\\t", "");
   xqpString lErr = theError;
-  lErr = lErr.replace("\"", "&quot;", "");
+  lErr = lErr.replace("\"", "\\\\\"", "");
   lErr = lErr.replace("\\n", "\\\\n", "");
   lErr = lErr.replace("\\r", "\\\\r", "");
   lErr = lErr.replace("\\t", "\\\\t", "");
