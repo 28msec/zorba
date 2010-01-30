@@ -628,7 +628,7 @@ void XQueryImpl::doCompile(
   theStaticContext->set_entity_retrieval_url(xqp_string(&*URI::encode_file_URI(theFileName)));
 
   theCompilerCB->theRootSctx = theStaticContext;
-  ulong sctxid = theCompilerCB->theSctxMap->size() + 1;
+  const short sctxid = theCompilerCB->theSctxMap->size() + 1;
   (*theCompilerCB->theSctxMap)[sctxid] = theStaticContext;
 
   // Set the compiler config.

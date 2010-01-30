@@ -307,7 +307,7 @@ namespace zorba{
   {
     std::cerr << "Test eval event" << std::endl;
     std::list<std::pair<xqpString, xqpString> > lList;
-    EvaluatedEvent evt("()", lList);
+    EvaluatedEvent evt(0, "()", lList);
     evt.setId(5);
     bool lResult = test_packet<EvaluatedEvent>(&evt);
     if (!lResult) return false;

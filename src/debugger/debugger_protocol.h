@@ -588,9 +588,9 @@ class ZORBA_DLL_PUBLIC EvaluatedEvent: public AbstractCommandMessage
     std::list< std::pair<xqpString, xqpString> > theValuesAndTypes;
  
   public:
-    EvaluatedEvent( xqpString anExpr, std::list<std::pair<xqpString, xqpString> > valuesAndTypes );
+    EvaluatedEvent( int aId, xqpString anExpr, std::list<std::pair<xqpString, xqpString> > valuesAndTypes );
 
-    EvaluatedEvent( xqpString anExpr, xqpString anError );
+    EvaluatedEvent(  int aId, xqpString anExpr, xqpString anError );
 
     EvaluatedEvent( Byte * aMessage, const unsigned int aLength );
 

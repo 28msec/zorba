@@ -678,30 +678,41 @@ ResumedEvent::~ResumedEvent(){}
 /**
  * Evaluated Engine Event
  */
-EvaluatedEvent::EvaluatedEvent( xqpString anExpr, xqpString anError ):
+EvaluatedEvent::EvaluatedEvent( int aId, xqpString anExpr, xqpString anError ):
   AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theError( anError )
 {
-    unsigned int l = MESSAGE_SIZE + getData().length();
-    setLength( l );
-    checkIntegrity();
+  setId(aId);
+  
+  unsigned int l = MESSAGE_SIZE + getData().length();
+  setLength( l );
+  checkIntegrity();
 }
 
-EvaluatedEvent::EvaluatedEvent( xqpString anExpr, list<pair<xqpString, xqpString> > valuesAndTypes ):
+EvaluatedEvent::EvaluatedEvent( int aId, xqpString anExpr, list<pair<xqpString, xqpString> > valuesAndTypes ):
   AbstractCommandMessage( ENGINE_EVENT, EVALUATED ), theExpr( anExpr ), theValuesAndTypes(valuesAndTypes)
 {
-    list<pair<xqpString, xqpString> > lValues;
-    list<pair<xqpString, xqpString> >::iterator it;
-    for(it=theValuesAndTypes.begin(); it!=theValuesAndTypes.end(); it++)
-    {
-      xqpString lFirst(it->first);
-      xqpString lSecond(it->second);
-      lValues.push_back(std::make_pair(lFirst.replace("\\\"", "&quot;", ""), 
-                                    lSecond.replace("\\\"", "&quot;", "")));
-    }
-    theValuesAndTypes = lValues;
-    unsigned int l = MESSAGE_SIZE + getData().length();
-    setLength( l );
-    checkIntegrity();
+  setId(aId);
+
+  list<pair<xqpString, xqpString> > lValues;
+  list<pair<xqpString, xqpString> >::iterator it;
+  for(it=theValuesAndTypes.begin(); it!=theValuesAndTypes.end(); it++)
+  {
+    xqpString lFirst(it->first);
+    xqpString lSecond(it->second);
+    lFirst = lFirst.replace("\\\"", "&quot;", "");
+    lFirst = lFirst.replace("\\n", "\\\\n", "");
+    lFirst = lFirst.replace("\\r", "\\\\r", "");
+    lFirst = lFirst.replace("\\t", "\\\\t", "");
+    lSecond = lSecond.replace("\\\"", "&quot;", "");
+    lSecond = lSecond.replace("\\n", "\\\\n", "");
+    lSecond = lSecond.replace("\\r", "\\\\r", "");
+    lSecond = lSecond.replace("\\t", "\\\\t", "");
+    lValues.push_back(std::make_pair(lFirst, lSecond));
+  }
+  theValuesAndTypes = lValues;
+  unsigned int l = MESSAGE_SIZE + getData().length();
+  setLength( l );
+  checkIntegrity();
 }
 
 EvaluatedEvent::EvaluatedEvent( Byte* aMessage, const unsigned int aLength ):
@@ -799,11 +810,17 @@ xqpString EvaluatedEvent::getData() const
 {
   xqpString lExpr = theExpr;
   lExpr = lExpr.replace("\"", "&quot;", "");
+  lExpr = lExpr.replace("\\n", "\\\\n", "");
+  lExpr = lExpr.replace("\\r", "\\\\r", "");
+  lExpr = lExpr.replace("\\t", "\\\\t", "");
   xqpString lErr = theError;
   lErr = lErr.replace("\"", "&quot;", "");
+  lErr = lErr.replace("\\n", "\\\\n", "");
+  lErr = lErr.replace("\\r", "\\\\r", "");
+  lErr = lErr.replace("\\t", "\\\\t", "");
   std::stringstream lJSONString;
   lJSONString << "{";
-  lJSONString << "\"id\":\"" << theHeaderContent->theId << "\",";
+  lJSONString << "\"id\":\"" << uint_swap(theHeaderContent->theId) << "\",";
   lJSONString << "\"expr\":\"" << lExpr << "\",";
   lJSONString << "\"results\":[";
   list<pair<xqpString, xqpString> >::const_iterator it = theValuesAndTypes.begin();

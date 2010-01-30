@@ -82,13 +82,17 @@ namespace zorba {
 
       try {
         lEvent.reset(
-          new EvaluatedEvent(theEvalString,
-          theCommons->eval(theEvalString, theSerOpts)));
+          new EvaluatedEvent(
+            theId,
+            theEvalString,
+            theCommons->eval(theEvalString, theSerOpts)));
       } catch (error::ZorbaError& lError) {
         lEvent.reset(
-          new EvaluatedEvent(theEvalString, lError.toString()));
+          new EvaluatedEvent(
+            theId,
+            theEvalString,
+            lError.toString()));
       }
-      lEvent->setId(theId);
       theCommunicator->sendEvent(lEvent.get());
     }
 

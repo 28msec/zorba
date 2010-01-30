@@ -1530,12 +1530,12 @@ xqpString::replace(xqpString pattern, xqpString replacement, xqpString flags)
       return "";
     }
 
-    if((replacement.indexOf("$") != -1 && !replacement.matches("\\$[0-9]",""))||
-        (replacement.indexOf("\\") != -1 && !replacement.matches("\\$[0-9]","")))
-    {
-      throw zorbatypesException("", ZorbatypesError::FORX0004);
-      return "";
-    }
+    //if((replacement.indexOf("$") != -1 && !replacement.matches("\\$[0-9]",""))||
+    //    (replacement.indexOf("\\") != -1 && !replacement.matches("\\$[0-9]","")))
+    //{
+    //  throw zorbatypesException("", ZorbatypesError::FORX0004);
+    //  return "";
+    //}
 
     UnicodeString result = matcher.replaceAll (getUnicodeString(replacement.getStore()), status);
     if (U_FAILURE(status)) {
