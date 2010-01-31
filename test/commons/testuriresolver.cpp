@@ -199,7 +199,7 @@ void TestModuleURIResolver::initialize()
   {
     uris = pfx + uris;
     pos = uris.find_first_of (':');
-    assert (pos != std::string::npos);
+    assert(pos != std::string::npos);
 
     if (uris.substr(0, pos) != theTest)
       continue;
@@ -208,7 +208,11 @@ void TestModuleURIResolver::initialize()
 
     std::string::size_type eq = uris.find('=');
     std::string uri(uris.substr(0, eq));
+#ifdef WIN32
     std::string file("file://");
+#else
+    std::string file("file:///");
+#endif
     file.append(path);
     file = file.append("/");
     file = file.append(uris.substr(eq+1).c_str());
@@ -270,8 +274,12 @@ std::auto_ptr<ModuleURIResolverResult> TestModuleURIResolver::resolve(
 
   std::auto_ptr<TestModuleURIResolverResult> result(new TestModuleURIResolverResult());
 
-  std::string filename = uri.c_str(); 
+  std::string filename = uri.c_str();
+#ifdef WIN32
+  filename = filename.substr(8); // strip the "file:///" prefix
+#else
   filename = filename.substr(7); // strip the "file://" prefix
+#endif
 
   result->theModule = new std::ifstream(filename.c_str());
 
