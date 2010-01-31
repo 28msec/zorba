@@ -338,6 +338,20 @@ int xqpStringStore::compare(const xqpStringStore* src, const XQPCollator* coll) 
 }
 
 
+// Returns true if every single character in the string is a whitespace
+bool xqpStringStore::is_whitespace() const
+{
+  const char* mystr = c_str();
+  std::string::size_type i = 0;
+  std::string::size_type mylen = bytes();
+
+  for (i=0; i<mylen; i++, mystr++)
+    if (*mystr != 0x20 && *mystr != 0x9 && *mystr != 0xD && *mystr != 0xA)
+      return false;
+
+  return true;
+}
+
 /*******************************************************************************
   Locate in "this" the first occurrence of the "pattern" substring. Return the
   offset into this of the start of "pattern", or -1 if not found.
@@ -1785,27 +1799,38 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
 //  return result;
 //}
 
-  //wchar_t * xqpString::getWCS(xqpString source) const
-  //{
-  //  int32_t destCapacity =  source.length()*2 + 1;
-  //  wchar_t* destWCS;
-  //  destWCS = new wchar_t[destCapacity];
-  //  int32_t destLen;
+  wchar_t * xqpString::getWCS(xqpString source)
+  {//more of a workaround
+    int32_t destCapacity =  source.length();
+    wchar_t* destWCS;
+    destWCS = new wchar_t[destCapacity + 1];
+    const char *cs = source.c_str();
+    int i=0;
+    while(cs[i])
+    {
+      destWCS[i] = cs[i];
+      i++;
+    }
+    destWCS[i] = 0;
+    return destWCS;
+  }
 
-  //  UnicodeString unicodeStr = source.theStrStore->getUnicodeString();
-  //  int32_t srcLen = unicodeStr.length();
-  //  UChar* srcBuf = unicodeStr.getBuffer(srcLen);
-  //  UErrorCode status = U_ZERO_ERROR;
+  wchar_t *
+  xqpString::getWCS(const char * aSrc, const unsigned int aSrcLen, int32_t *aDestLen)
+  {//more of a workaround
+    wchar_t* destWCS;
+    destWCS = new wchar_t[aSrcLen + 1];
+    int i=0;
+    while(aSrc[i])
+    {
+      destWCS[i] = aSrc[i];
+      i++;
+    }
+    destWCS[i] = 0;
+    *aDestLen = aSrcLen;
+    return destWCS;
+  }
 
-  //  wchar_t* ret =  u_strToWCS(destWCS, destCapacity, &destLen, srcBuf, srcLen, &status);
-
-  //  if(U_FAILURE(status))
-  //  {
-  //    assert(false);
-  //  }
-
-  //  return ret;
-  //}
 
 void xqpString::append_in_place(const char c)
 {

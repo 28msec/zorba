@@ -172,6 +172,10 @@ public:
   int
   compare(const xqpStringStore* src, const XQPCollator* coll = 0) const;
   
+  // Returns true if every single character in the string is a whitespace
+  bool
+  is_whitespace() const;
+
   int32_t
   indexOf(const char* pattern, unsigned int pos = 0) const;
 
@@ -676,8 +680,11 @@ public:
 
       /**  Return a sequence of wchar_t units given a xqpString (UTF-8 encoded)
        */
-      //wchar_t *
-      //getWCS(xqpString source) const;
+      static wchar_t *
+      getWCS(xqpString source);
+
+      static wchar_t *
+      getWCS(const char * aSrc, const unsigned int aSrcLen, int32_t *aDestLen);
 
 public:
       static xqpString concat(const char *s1, 
