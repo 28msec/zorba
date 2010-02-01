@@ -168,10 +168,10 @@ namespace zorba{
 	bool TestDebuggerSerialization::testStepIntoMessage()
 	{
 		std::cerr << "Test step into message" << std::endl;
-		StepMessage msg( STEP_INTO );
+		StepMessage msg(STEP_INTO);
 		bool lResult = test_packet<StepMessage>( &msg );
-		if(!lResult) return false;
-		const char * lBinary =  "\0\0\0\xc\0\0\0\5\0\xf1\5\1"; 
+		if (!lResult) return false;
+    const char* lBinary =  "\0\0\0\x19\0\0\0\5\0\xf1\5{\"stepType\":1}"; 
 		Length length;
 		ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
 		return msgcmp( lBmsg.get(), lBinary, length );
@@ -180,10 +180,10 @@ namespace zorba{
 	bool TestDebuggerSerialization::testStepOutMessage()
 	{
 		std::cerr << "Test step out message" << std::endl;
-		StepMessage msg( STEP_OUT );
+		StepMessage msg(STEP_OUT);
 		bool lResult = test_packet<StepMessage>( &msg );
-		if(!lResult) return false;
-		const char * lBinary =  "\0\0\0\xc\0\0\0\6\0\xf1\5\2"; 
+		if (!lResult) return false;
+    const char* lBinary =  "\0\0\0\x19\0\0\0\6\0\xf1\5{\"stepType\":2}";
 		Length length;
 		ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
 		return msgcmp( lBmsg.get(), lBinary, length );
@@ -192,10 +192,10 @@ namespace zorba{
 	bool TestDebuggerSerialization::testStepOverMessage()
 	{
 		std::cerr << "Test step over message" << std::endl;
-		StepMessage msg( STEP_OVER );
+		StepMessage msg(STEP_OVER);
 		bool lResult = test_packet<StepMessage>( &msg );
-		if(!lResult) return false;
-		const char * lBinary =  "\0\0\0\xc\0\0\0\7\0\xf1\5\3"; 
+		if (!lResult) return false;
+    const char* lBinary =  "\0\0\0\x19\0\0\0\7\0\xf1\5{\"stepType\":3}";
 		Length length;
 		ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize( length ));
 		return msgcmp( lBmsg.get(), lBinary, length );
@@ -244,9 +244,9 @@ namespace zorba{
 		Length length;
 		ZorbaArrayAutoPointer<Byte> lBmsg(msg.serialize(length));
 		ZorbaArrayAutoPointer<char> lBinary(new char[length]);
-		memcpy( lBinary.get(), "\0\0\0\x070\0\0\0\xa\0\xf8\3", MESSAGE_SIZE );
+		memcpy( lBinary.get(), "\0\0\0\x070\0\0\0\xa\0\xf8\3", MESSAGE_HEADER_SIZE );
 		const char * lJSONString = "{\"cause\":1,\"location\":{\"fileName\":\"data.xq\",\"lineBegin\":1,\"columnBegin\":1,\"lineEnd\":1,\"columnEnd\":1}}";
-		memcpy( lBinary.get() + MESSAGE_SIZE, lJSONString, length - MESSAGE_SIZE );
+		memcpy( lBinary.get() + MESSAGE_HEADER_SIZE, lJSONString, length - MESSAGE_HEADER_SIZE );
 		return  msgcmp( lBmsg.get(), lBinary.get(), length );
 	}
 

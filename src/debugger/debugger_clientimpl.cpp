@@ -281,7 +281,7 @@ bool ZorbaDebuggerClientImpl::terminate()
 
 bool ZorbaDebuggerClientImpl::stepInto()
 {
-  StepMessage lMessage( STEP_INTO );
+  StepMessage lMessage(STEP_INTO);
   //TODO: check reply message
   std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
@@ -289,7 +289,7 @@ bool ZorbaDebuggerClientImpl::stepInto()
 
 bool ZorbaDebuggerClientImpl::stepOver()
 {
-  StepMessage lMessage( STEP_OVER );
+  StepMessage lMessage(STEP_OVER);
   //TODO: check reply message
   std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
@@ -297,7 +297,7 @@ bool ZorbaDebuggerClientImpl::stepOver()
 
 bool ZorbaDebuggerClientImpl::stepOut()
 {
-  StepMessage lMessage( STEP_OUT );
+  StepMessage lMessage(STEP_OUT);
   //TODO: check reply message
   std::auto_ptr<ReplyMessage> lReply(send((&lMessage)));
   return true;
