@@ -34,6 +34,7 @@
       <li> \ref ic_life_cycle</li>
     </ul>
     <li> \ref extensions_xquf_updates_routines </li>
+    <li> \ref error_summary </li>
   </ul>
 </ul>
 
@@ -46,23 +47,23 @@ As part of the XQDDF implementation, Zorba 1.0 includes a new "built-in" module 
 
 \section collections 1 Collections in Zorba 1.0
 
-The current W3C XQuery specification defines collections simply as sequences of nodes that are accessible via the fn:collection function. Everything else about collections is implementation-dependent. For example, XQuery programmers have no direct way to control the contents or the life-cycle of collections. XQDDF attempts to close this gap by making explicit most of the collection-related issues that are left as implementation-dependent by W3C. This way, XQuery developers can manipulate collections directly from XQuery programs, rather than relying in some external hosting environment or application. As explained below, collections as defined by XQDDF have some important differences from collections as defined by the W3C specification. As a result, in the remainder of the this document we will use the terms "XQDDF collection" and "W3C Collection" to make clear the distinction between the two kinds of collections. We will also use the term <strong>"document"</strong> to refer to any XML tree whose root is a parent-less node of any kind (not necessarily a document node).
+The current W3C XQuery specification defines collections simply as sequences of nodes that are accessible via the fn:collection function. Everything else about collections is implementation-dependent. For example, XQuery programmers have no direct way to control the contents or the life-cycle of collections. XQDDF attempts to close this gap by making explicit most of the collection-related issues that are left as implementation-dependent by W3C. This way, XQuery developers can manipulate collections directly from XQuery programs, rather than relying in some external hosting environment or application. As explained below, collections as defined by XQDDF have some important differences from collections as defined by the W3C specification. As a result, in the remainder of the this document we will use the terms <a href="#xqddf_collection">"XQDDF collection"</a> and "W3C Collection" to make clear the distinction between the two kinds of collections. We will also use the term <strong>"document"</strong> to refer to any XML tree whose root is a parent-less node of any kind (not necessarily a document node).
 
-An <strong>XQDDF collection</strong> is defined as an ordered set of documents that is disjoint from any other collection and is uniquely identified by a QName. Furthermore, with respect to document order, the relative order of two nodes belonging to different documents within the same collection is defined to be the same as the relative position of their containing documents within the collection. We will say that a node belongs to a collection if it is inside a document that belongs to that collection.
+<h3><a name="xqddf_collection">An XQDDF collection</a></h3> is defined as an ordered set of documents that is disjoint from any other collection and is uniquely identified by a QName. Furthermore, with respect to document order, the relative order of two nodes belonging to different documents within the same collection is defined to be the same as the relative position of their containing documents within the collection. We will say that a node belongs to a collection if it is inside a document that belongs to that collection.
 
-Like a W3C collection, an XQDDF collection can also be viewed as a sequence of nodes: it is the sequence containing the root nodes of the documents that belong to the collection (and as we will see later, the function xqddf:collection returns exactly this sequence of nodes). However, even when viewed as sequences of nodes, XQDDF collections differ from W3C collections in the following ways:
+Like a W3C collection, an <a href="#xqddf_collection">XQDDF collection</a> can also be viewed as a sequence of nodes: it is the sequence containing the root nodes of the documents that belong to the collection (and as we will see later, the function xqddf:collection returns exactly this sequence of nodes). However, even when viewed as sequences of nodes, <a href="#xqddf_collection">XQDDF collections</a> differ from W3C collections in the following ways:
 
 <ul>
   <li>They contain parent-less nodes only.</li>
   <li>They can not contain any duplicate nodes.</li>
   <li>Their nodes are in document order.</li>
-  <li>A node can not be contained in more than one XQDDF collection.</li>
+  <li>A node can not be contained in more than one <a href="#xqddf_collection">XQDDF collection</a>.</li>
   <li>XQDDF collections are identified by QNames, whereas W3C collections are identified by URIs.</li>
 </ul>
 
-For brevity, in the remaining of this document we will the term "collection" to mean XQDDF collection. For backward compatibility with the W3C XQuery specification, Zorba 1.0 retains some basic support for W3C collections (see section \ref w3c_collections). However, users are encouraged to use XQDDF collections instead.
+For brevity, in the remaining of this document we will the term "collection" to mean <a href="#xqddf_collection">XQDDF collection</a>. For backward compatibility with the W3C XQuery specification, Zorba 1.0 retains some basic support for W3C collections (see section \ref w3c_collections). However, users are encouraged to use <a href="#xqddf_collection">XQDDF collections</a> instead.
 
-Zorba 1.0 supports five kinds of operations on collections: <strong>collection declaration</strong>, <strong>collection creation</strong>, <strong>collection deletion</strong>, <strong>collection update</strong>, and <strong>node retrieval</strong>. These are explained briefly in the following simple example. Full details for each operation are provided in the subsequent chapters.
+Zorba 1.0 supports five kinds of operations on collections: <a href="#collection_declaration">collection declaration</a>, <a href="#creating_collections">collection creation</a>, <a href="#destroying_collections">collection deletion</a>, <a href="#updating_collections">collection update</a>, and <a href="#accessing_collections">node retrieval</a>. These are explained briefly in the following simple example. Full details for each operation are provided in the subsequent chapters.
 
 \subsection collections_in_action 1.1 Collections in action - A simple example
 
@@ -181,15 +182,15 @@ CollectionTypeDeclaration := 'as' KindTest OccurenceIndicator?
 NodeModifier := ('read-only' | 'mutable')
 \endcode
 
-Collections are defined by <strong>collection declaration statements</strong>, which specify a unique name for a collection as a QName, a set of collection properties, the collection's static type, and whether the collection nodes can be modified or not. Syntactically, collection declarations are placed inside module prologs. The Prolog syntax is extended accordingly, as shown above. An additional constraint (not expressible syntactically) is that only library modules may contain collection declarations [err:XDST0003]. This is because library modules can be shared among queries, whereas if a collection was declared inside a main module, then every other query that would like to use this collection would have to redeclared it in its main module. Worse, allowing collection declarations in "user" queries can lead to "data leaks": a collection declared and created by a user query and not destroyed by the same query will be unknown to the rest of the application, and may stay in the database indefinitely. In contrast, library modules containing XQDDF declarations are expected to be under the jurisdiction of a system administrator who makes sure that queries see the data that they must see, and no data inconsistencies or leaks can arise.
+Collections are defined by <strong>collection declaration statements</strong>, which specify a unique name for a collection as a QName, a set of collection properties, the collection's static type, and whether the collection nodes can be modified or not. Syntactically, collection declarations are placed inside module prologs. The Prolog syntax is extended accordingly, as shown above. An additional constraint (not expressible syntactically) is that only library modules may contain collection declarations [<a href="#ERRXDST0003" title="err:XDST0003">err:XDST0003</a>]. This is because library modules can be shared among queries, whereas if a collection was declared inside a main module, then every other query that would like to use this collection would have to redeclared it in its main module. Worse, allowing collection declarations in "user" queries can lead to "data leaks": a collection declared and created by a user query and not destroyed by the same query will be unknown to the rest of the application, and may stay in the database indefinitely. In contrast, library modules containing XQDDF declarations are expected to be under the jurisdiction of a system administrator who makes sure that queries see the data that they must see, and no data inconsistencies or leaks can arise.
 
-To accommodate collection declarations, XQDDF extends the static context with a component called the <strong>statically known collections</strong>. This is a map whose entries associate an expanded QName with an implementation-dependent representation of the information contained in a collection declaration with the same QName. The effect of a collection declaration is to add an entry to the statically known collections of the module containing the declaration. If the expanded QName of the collection is equal (as defined by the eq operator) to the expanded QName of another collection in the statically known collections of the same module, a static error is raised [err:XDST0001]. Like variables and functions, the statically known collections of a module that is imported by another module are copied into the statically known collections of the importing module. It is a static error [err:XDST0002] if the expanded QName of a collection declared in an imported module is equal (as defined by the eq operator) to the expanded QName of a collection declared in the importing module or in another imported module (even if the declarations are consistent).
+To accommodate collection declarations, XQDDF extends the static context with a component called the <strong>statically known collections</strong>. This is a map whose entries associate an expanded QName with an implementation-dependent representation of the information contained in a collection declaration with the same QName. The effect of a collection declaration is to add an entry to the statically known collections of the module containing the declaration. If the expanded QName of the collection is equal (as defined by the eq operator) to the expanded QName of another collection in the statically known collections of the same module, a static error is raised [<a href="#ERRXDST0001" title="err:XDST0001">err:XDST0001</a>]. Like variables and functions, the statically known collections of a module that is imported by another module are copied into the statically known collections of the importing module. It is a static error [<a href="#ERRXDST0002" title="err:XDST0002">err:XDST0002</a>] if the expanded QName of a collection declared in an imported module is equal (as defined by the eq operator) to the expanded QName of a collection declared in the importing module or in another imported module (even if the declarations are consistent).
 
-Zorba 1.0 defines two collection properties: <strong>update mode</strong> (with possible values 'const', 'mutable', 'append-only', or 'queue') and <strong>ordering mode</strong> (with possible values 'ordered' or 'unordered'). The syntax allows the values for these properties to be listed in any order or not be specified at all. If not specified, the default values for update and ordering mode are 'mutable' and 'unordered', respectively. It is a static error [err:XDST004] if a collection declaration contains more than one value for the same property. An <strong>ordered collection</strong> is a collection into which the ordering of documents is assumed to be meaningful for the application, and as a result, programmers can explicitly control the placement of documents via appropriate updating functions. In contrast, the ordering of documents inside <strong>unordered collections</strong> is implementation dependent, but stable (see \ref accessing_collections for details). A <strong>constant collection</strong> is one that is created with an initial set of documents and does not allow any subsequent insertions to or deletions from this initial set. An <strong>append-only collection</strong> does not allow any deletions at all and restricts insertions to take place at the "end" only, i.e., all new documents must be inserted after all existing ones. This implies a user-visible document ordering, and as a result, an append-only collection must also be declared as ordered [err:XDST0005]. A <strong>queue collection</strong> forbids both insertions and deletions in/from the "middle"; only documents at the front of the collection may be deleted, and new documents can be inserted only at the collection's end. Like append-only, queue collections must be declared as ordered [err:XDST0005].
+Zorba 1.0 defines two collection properties: <strong>update mode</strong> (with possible values 'const', 'mutable', 'append-only', or 'queue') and <strong>ordering mode</strong> (with possible values 'ordered' or 'unordered'). The syntax allows the values for these properties to be listed in any order or not be specified at all. If not specified, the default values for update and ordering mode are 'mutable' and 'unordered', respectively. It is a static error [<a href="#ERRXDST0004" title="err:XDST0004">err:XDST0004</a>] if a collection declaration contains more than one value for the same property. An <strong>ordered collection</strong> is a collection into which the ordering of documents is assumed to be meaningful for the application, and as a result, programmers can explicitly control the placement of documents via appropriate updating functions. In contrast, the ordering of documents inside <strong>unordered collections</strong> is implementation dependent, but stable (see \ref accessing_collections for details). A <strong>constant collection</strong> is one that is created with an initial set of documents and does not allow any subsequent insertions to or deletions from this initial set. An <strong>append-only collection</strong> does not allow any deletions at all and restricts insertions to take place at the "end" only, i.e., all new documents must be inserted after all existing ones. This implies a user-visible document ordering, and as a result, an append-only collection must also be declared as ordered [<a href="#ERRXDST0005" title="err:XDST0005">err:XDST0005</a>]. A <strong>queue collection</strong> forbids both insertions and deletions in/from the "middle"; only documents at the front of the collection may be deleted, and new documents can be inserted only at the collection's end. Like append-only, queue collections must be declared as ordered [<a href="#ERRXDST0005" title="err:XDST0005">err:XDST0005</a>].
 
 In addition to the two properties described above, a collection declaration also specifies the <strong>collection static type</strong>, i.e., the static type for the result of the xqddf:collection function. This is specified as a sequence type that adheres to the syntax and semantics of a KindTest plus an (optional) occurrence indicator. If no static type is specified, it is assumed to be document-node(element(*, xs:untyped))*. The static type without the occurrence indicator is the static type of the collection's root nodes.
 
-The final component of a collection declaration is the <strong>document update mode</strong>. Possible values for this property are 'read-only' or 'mutable', with 'mutable' being the default value if none is specified. If the document update mode for a collection is 'read-only', then an error is raised [err:XDDY0010] every time a node of the collection appears as the target node of an updating expression; otherwise, no such error is raised.
+The final component of a collection declaration is the <strong>document update mode</strong>. Possible values for this property are 'read-only' or 'mutable', with 'mutable' being the default value if none is specified. If the document update mode for a collection is 'read-only', then an error is raised [<a href="#ERRXDDY0010" title="err:XDDY0010">err:XDDY0010</a>] every time a node of the collection appears as the target node of an updating expression; otherwise, no such error is raised.
 
 \subsection creating_collections 1.3 Creating Collections
 
@@ -208,8 +209,8 @@ Creation of a collection involves creating an initially empty document container
 The function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
-  <li>If the given expanded QName identifies a collection that is available already, an error is raised [err:XDDY0002].</li>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName identifies a collection that is available already, an error is raised [<a href="#ERRXDDY0002" title="err:XDDY0002">err:XDDY0002</a>].</li>
   <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:createCollection($collectionName).</li>
   </ul>
 
@@ -229,9 +230,9 @@ The second create-collection function creates the collection and populates it wi
 The function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
-  <li>If the given expanded QName identifies a collection that is available already, an error is raised [err:XDDY0002].</li>
-  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the root static type specified in the collection declaration, a type error is raised [err:XDTY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName identifies a collection that is available already, an error is raised [<a href="#ERRXDDY0002" title="err:XDDY0002">err:XDDY0002</a>].</li>
+  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the root static type specified in the collection declaration, a type error is raised [<a href="#ERRXDTY0001" title="err:XDTY0001">err:XDTY0001</a>].</li>
   <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a root (parent-less) node that does not belong to any collection and is distinct from any other node in $nodes.</li>
   <li>The result of the function is an empty XDM instance and a pending update list that consists of the following update primitives: upd:createCollection($collectionName) and upd:insertNodesFirst($collectionName, $nodes)</li>
   </ul>
@@ -249,8 +250,8 @@ To access the root nodes of a collection, XQDDF provides the xqddf:collection fu
 The function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
   <li>The result of the function is a sequence consisting of the root nodes in the collection. If the collection is declared as ordered, the ordering of the nodes in the result will reflect the order into which nodes were inserted in the collection by the XQDDF node insertion functions (see \ref updating_collections). If the collection is declared as unordered, the ordering of the nodes in the result is implementation-dependent. In both cases, the nodes in the sequence are, by definition, in document order. For unordered collections, this document ordering is guaranteed to be stable within a query snapshot (i.e., until the next time updates are applied). For ordered collections, the document ordering is stable "forever" (i.e., two root nodes in the collection will compare the same as long as the collection (and the nodes) exist).</li>
   </ul>
 
@@ -263,9 +264,9 @@ declare function xqddf:index_of($collectionName as xs:QName, $node as node()) as
 The function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
-  <li>The expression that appears as the second argument in the function call is evaluated. The result of this evaluation must be a single node. If this node is not a root node of the collection, an error is raised [err:XDDY0011].</li>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>The expression that appears as the second argument in the function call is evaluated. The result of this evaluation must be a single node. If this node is not a root node of the collection, an error is raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
   <li>The result of this function is the position as xs:integer of the given node within the specified collection.</li>
   </ul>
 
@@ -282,10 +283,10 @@ upd:insertIntoCollection($collectionName as xs:QName, $nodes as node()*)
 The insert-nodes function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
-  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0005, or err:XDDY0006, respectively].</li>
-  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [err:XDTY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>], [<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
+  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [<a href="#ERRXDTY0001" title="err:XDTY0001">err:XDTY0001</a>].</li>
   <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.</li>
   <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertIntoCollection($collectionName, $nodes).</li>
   </ul>
@@ -306,11 +307,11 @@ upd:insertFirstIntoCollection($collectionName as xs:QName, $nodes as node()*)
 The insert-nodes-first function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
-  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0005, or err:XDDY0006, respectively].</li>
-  <li>If the collection is unordered, an error is raised [err:XDDY0012].</li>
-  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [err:XDTY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>], [<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
+  <li>If the collection is unordered, an error is raised [<a href="#ERRXDDY0012" title="err:XDDY0012">err:XDDY0012</a>].</li>
+  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [<a href="#ERRXDTY0001" title="err:XDTY0001">err:XDTY0001</a>].</li>
   <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.</li>
   <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertFirstIntoCollection($collectionName, $nodes).</li>
   </ul>
@@ -351,12 +352,12 @@ upd:insertBeforeIntoCollection($collectionName as xs:QName, $target as node(), $
 The insert-nodes-before function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
-  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0005, or err:XDDY0006, respectively].</li>
-  <li>If the collection is unordered, an error is raised [err:XDDY0012].</li>
-  <li>The expression that appears as the second argument to the function call is evaluated. The expression must return a single node, called the target node. If the target node is not a root node that belongs to the collection, an error is raised [err:XDDY0011].</li>
-  <li>The expression that is given as the third argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [err:XDTY0001].</li>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>], [<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
+  <li>If the collection is unordered, an error is raised [<a href="#ERRXDDY0012" title="err:XDDY0012">err:XDDY0012</a>].</li>
+  <li>The expression that appears as the second argument to the function call is evaluated. The expression must return a single node, called the target node. If the target node is not a root node that belongs to the collection, an error is raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
+  <li>The expression that is given as the third argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [<a href="#ERRXDTY0001" title="err:XDTY0001">err:XDTY0001</a>].</li>
   <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.</li>
   <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertBeforeIntoCollection($collectionName, $target, $nodes).</li>
   </ul>
@@ -396,10 +397,10 @@ upd:deleteFromCollection($collectionName as xs:QName, $nodes as xs:node()*)
 The delete-nodes function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
-  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY0007, or errXDDY009 respectively].</li>
-  <li>The expression that appears as the second argument to the function call is evaluated. The result of this evaluation is called the deletion sequence. If there is any node in the deletion sequence that is not a root node belonging to the collection, an error is raised [err:XDDY0011]. Let $nodes be the deletion sequence.</li>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>], [<a href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>], or [<a href="#ERRXDDY009" title="err:XDDY009">err:XDDY009</a>], respectively.</li>
+  <li>The expression that appears as the second argument to the function call is evaluated. The result of this evaluation is called the deletion sequence. If there is any node in the deletion sequence that is not a root node belonging to the collection, an error is raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>]. Let $nodes be the deletion sequence.</li>
   <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).</li>
   </ul>
 
@@ -417,11 +418,11 @@ declare updating function xqddf:delete-nodes-first($collectionName as xs:QName, 
 The delete-nodes-first function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
-  <li>If the update mode of the collection is const, or append-only, an error is raised [err:XDDY0004 or err:XDDY007, respectively].</li>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, or append-only, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>] or [<a href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>] respectively.</li>
   <li>The expression that appears as the second argument to the function call is evaluated, producing a single positive integer. Let $number be that integer.</li>
-  <li>If the collection has fewer than $number nodes, an error is raised [err:XDDY0011].</li>
+  <li>If the collection has fewer than $number nodes, an error is raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
   <li>Let $nodes be the sequence consisting of the first $number root nodes in the collection.</li>
   <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).</li>
   </ul>
@@ -439,11 +440,11 @@ declare updating function xqddf:delete-nodes-last($collectionName as xs:QName, $
 The delete-nodes-last function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
-  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [err:XDDY0004, err:XDDY007, or err:XDDY0009, respectively].</li>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>], [<a href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>], or [<a href="#ERRXDDY009" title="err:XDDY009">err:XDDY009</a>], respectively.</li>
   <li>The expression that appears as the second argument to the function call is evaluated, producing a single positive integer. Let $number be that integer.</li>
-  <li>If the collection has fewer than $number nodes, an error is raised [err:XDDY0011].</li>
+  <li>If the collection has fewer than $number nodes, an error is raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
   <li>Let $nodes be the sequence consisting of the last $number root nodes in the collection.</li>
   <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).</li>
   </ul>
@@ -468,16 +469,16 @@ To destroy a collection, XQDDF provides the delete-collection updating function.
 The delete-collection function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [err:XDDY0001].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [err:XDDY0003].</li>
+  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
   <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteCollection($collectionName).</li>
   </ul>
 
 The update primitive is applied as follows:
 
   <ul>
-  <li>If there is any available index whose domain expression or any of its key expressions reference the collection, an error is raised [err:XDDY0013].</li>
-  <li>If there is any active integrity constraint on the collection, an error is raised [err:XDDY0014].</li>
+  <li>If there is any available index whose domain expression or any of its key expressions reference the collection, an error is raised [<a href="#ERRXDDY0013" title="err:XDDY0013">err:XDDY0013</a>].</li>
+  <li>If there is any active integrity constraint on the collection, an error is raised [<a href="#ERRXDDY0014" title="err:XDDY0014">err:XDDY0014</a>].</li>
   <li>If there is any in-scope variable that references any node in the collection, an error is raised [err:XDDY0016].</li>
   <li>The document container for the collection is found via the collections table.</li>
   <li>All documents in the container are destroyed.</li>
@@ -663,11 +664,11 @@ AtomicType := QName
 IndexKeyCollation := ('collation' UriLiteral)?
 \endcode
 
-Syntactically, each index is defined by an index declaration statement, which specifies a unique name for the index as a QName, the index domain expression, a number of key specifications, and a set of index properties. Index declarations must be placed inside module prologs. The Prolog syntax is extended accordingly, as shown above. An additional constraint (not expressible syntactically) is that only library modules may contain index declarations [err:XDST0023]. The reasons for this rule are the same as those for collections (see \ref collection_declaration).
+Syntactically, each index is defined by an index declaration statement, which specifies a unique name for the index as a QName, the index domain expression, a number of key specifications, and a set of index properties. Index declarations must be placed inside module prologs. The Prolog syntax is extended accordingly, as shown above. An additional constraint (not expressible syntactically) is that only library modules may contain index declarations [<a href="#ERRXDST0023" title="err:XDST0023">err:XDST0023</a>]. The reasons for this rule are the same as those for collections (see \ref collection_declaration).
 
-To accommodate index declarations, XQDDF extends the static context with a component called the <strong>statically known indexes</strong>. This is a map whose entries associate an expanded QName with an implementation-dependent representation of the information contained in an index declaration with the same QName. Each index declaration adds an entry to the statically known indexes of the module containing the declaration. If the expanded QName of the index is equal (as defined by the eq operator) to the expanded QName of another index in the statically known indexes of the same module, a static error is raised [err:XDST0021]. Like the statically known collections, the statically known indexes of a module that is imported by another module are copied into the statically known indexes of the importing module. It is a static error [err:XDST0022] if the expanded QName of an index declared in an imported module is equal (as defined by the eq operator) to the expanded QName of an index declared in the importing module or in another imported module (even if the declarations are consistent).
+To accommodate index declarations, XQDDF extends the static context with a component called the <strong>statically known indexes</strong>. This is a map whose entries associate an expanded QName with an implementation-dependent representation of the information contained in an index declaration with the same QName. Each index declaration adds an entry to the statically known indexes of the module containing the declaration. If the expanded QName of the index is equal (as defined by the eq operator) to the expanded QName of another index in the statically known indexes of the same module, a static error is raised [<a href="#ERRXDST0021" title="err:XDST0021">err:XDST0021</a>]. Like the statically known collections, the statically known indexes of a module that is imported by another module are copied into the statically known indexes of the importing module. It is a static error [<a href="#ERRXDST0022" title="err:XDST0022">err:XDST0022</a>] if the expanded QName of an index declared in an imported module is equal (as defined by the eq operator) to the expanded QName of an index declared in the importing module or in another imported module (even if the declarations are consistent).
 
-Zorba 1.0 defines three index properties: <strong>uniqueness</strong> (with possible values 'unique' or 'non unique'), <strong>usage</strong> (with possible values 'value range' or 'value equality'), and <strong>maintenance mode</strong> (with possible values 'manually maintained' or 'automatically maintained'). The syntax allows the values for these properties to be listed in any order or not be specified at all. If not specified, the default values for uniqueness, usage, and maintenance mode are 'non unique', 'value equality', and 'automatically maintained', respectively. It is a static error [err:XDST0024] if more than one value is listed in an index declaration for any of these properties.
+Zorba 1.0 defines three index properties: <strong>uniqueness</strong> (with possible values 'unique' or 'non unique'), <strong>usage</strong> (with possible values 'value range' or 'value equality'), and <strong>maintenance mode</strong> (with possible values 'manually maintained' or 'automatically maintained'). The syntax allows the values for these properties to be listed in any order or not be specified at all. If not specified, the default values for uniqueness, usage, and maintenance mode are 'non unique', 'value equality', and 'automatically maintained', respectively. It is a static error [<a href="#ERRXDST0024" title="err:XDST0024">err:XDST0024</a>] if more than one value is listed in an index declaration for any of these properties.
 
 The uniqueness property determines the kind of relationship between a keys (or key tuples, more generaly) and domain nodes: If the relationship is one-to-one, the index may be declared as unique; otherwise (one-to-N relationship), the index must be declared as non-unique. As we will see, a unique index actually enforces the one-to-one relationship between keys and domain nodes.
  
@@ -677,17 +678,17 @@ The maintenance mode specifies how index maintenance is done. Zorba 1.0 offers t
 
 The index declaration syntax is very liberal with respect to the expressions that can appear as domain or key expressions. However, the following semantic restrictions are imposed by Zorba 1.0 on the domain expression and each of the key expressions:
   <ul>
-  <li>They must be deterministic expressions [err:XDST0028].</li>
+  <li>They must be deterministic expressions [<a href="#ERRXDST0028" title="err:XDST0028">err:XDST0028</a>].</li>
   <li>They must be simple expressions (i.e., not updating or sequential)
-      [err:XDST0033].</li>
+      [<a href="#ERRXDST0033" title="err:XDST0033">err:XDST0033</a>].</li>
   <li>They must not invoke any input functions other than xqddf:collection
-      [err:XDST0029]. Moreover, the argument to each xqddf:collection call must
-      be a constant expression returning a QName value [err:XDST0030]. (A constant
+      [<a href="#ERRXDST0029" title="err:XDST0029">err:XDST0029</a>]. Moreover, the argument to each xqddf:collection call must
+      be a constant expression returning a QName value [<a href="#ERRXDST0030" title="err:XDST0030">err:XDST0030</a>]. (A constant
       expression is an expression that doesn't access the dynamic context).</li>
   <li>They must not reference and variables other than the ones defined inside the
-      expressions themselves [err:XDST0031].</li>
+      expressions themselves [<a href="#ERRXDST0031" title="err:XDST0031">err:XDST0031</a>].</li>
   <li>If the index is declared as "automatically maintained", an error is raised
-      [err:XDST0034] if the domain and/or the key expressions are too complex for
+      [<a href="#ERRXDST0034" title="err:XDST0034">err:XDST0034</a>] if the domain and/or the key expressions are too complex for
       Zorba to perform index maintenance in an efficient manner (see \ref 
       index_maintenance for details)
   </ul>
@@ -696,12 +697,12 @@ Furthermore, the domain expression must satisfy the following additional semanti
 restrictions:
 
   <ul>
-  <li>Its context item, context position, and context size are considered undefined, and as a result they must not be referenced [err:XDST0032].</li>
-  <li>It must generate a sequence of nodes [err:XDTY0010].</li>
-  <li>Each domain node in the domain sequence must belong to a collection that appears in the available collections of the module that contains the index declaration [err:XDDY0021].</li>
+  <li>Its context item, context position, and context size are considered undefined, and as a result they must not be referenced [<a href="#ERRXDST0032" title="err:XDST0032">err:XDST0032</a>].</li>
+  <li>It must generate a sequence of nodes [<a href="#ERRXDTY0010" title="err:XDTY0010">err:XDTY0010</a>].</li>
+  <li>Each domain node in the domain sequence must belong to a collection that appears in the available collections of the module that contains the index declaration [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
   </ul>
 
-With each key expression, an index declaration associates a key type and a key collation. The triplet IndexKeyExpr, IndexKeyTypeDecl, IndexKeyCollation is called a <strong>keyspec</strong>. The IndexKeyTypeDecl provides an atomic type that the result of the associated key expression (for each domain node) must match with according to the rules of sequence type matching. This atomic type must not be xs:untypedAtomic or xs:anyAtomicType [err:XDST0027]. Furthermore, if the index is a value range one, an ordering must exist among the values in the type domain [err:XDST0027] (this rules excludes the following atomic types and their subtypes: QName, NOTATION, hexBinary, hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). If the key type in a keyspec is xs:string (or subtype of), the IndexKeyCollation specifies the collation to use when comparing key values from this keyspec. If no collation is specified, the default collation from the static context of the declaring module is used.
+With each key expression, an index declaration associates a key type and a key collation. The triplet IndexKeyExpr, IndexKeyTypeDecl, IndexKeyCollation is called a <strong>keyspec</strong>. The IndexKeyTypeDecl provides an atomic type that the result of the associated key expression (for each domain node) must match with according to the rules of sequence type matching. This atomic type must not be xs:untypedAtomic or xs:anyAtomicType [<a href="#ERRXDST0027" title="err:XDST0027">err:XDST0027</a>]. Furthermore, if the index is a value range one, an ordering must exist among the values in the type domain [<a href="#ERRXDST0027" title="err:XDST0027">err:XDST0027</a>] (this rules excludes the following atomic types and their subtypes: QName, NOTATION, hexBinary, hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). If the key type in a keyspec is xs:string (or subtype of), the IndexKeyCollation specifies the collation to use when comparing key values from this keyspec. If no collation is specified, the default collation from the static context of the declaring module is used.
 
 \subsection index_creation 2.3 Index creation
 
@@ -720,8 +721,8 @@ Creation of an index involves creating an initially empty index entry container,
 The create-index function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify an index among the statically known indexes in the static context of the invoking module, an error is raised [err:XDDY0021].</li>
-  <li>If the given expanded QName identifies a collection that is available already, an error is raised [err:XDDY0022].</li>
+  <li>If the given expanded QName does not identify an index among the statically known indexes in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
+  <li>If the given expanded QName identifies a collection that is available already, an error is raised [<a href="#ERRXDDY0022" title="err:XDDY0022">err:XDDY0022</a>].</li>
   <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:createIndex($indexName).</li>
   </ul>
 
@@ -729,14 +730,14 @@ The update primitive is applied as follows:
 
   <ul>
   <li>An empty index entry container is created.</li>
-  <li>The domain expression is evaluated first. If the result of the domain expression contains an item that is not a node, an error is raised [err:XDTY0010]. This result is then filtered to remove any duplicate nodes. The result of the domain expression after duplicate elimination is called the <strong>domain sequence</strong>.</li>
+  <li>The domain expression is evaluated first. If the result of the domain expression contains an item that is not a node, an error is raised [<a href="#ERRXDTY0010" title="err:XDTY0010">err:XDTY0010</a>]. This result is then filtered to remove any duplicate nodes. The result of the domain expression after duplicate elimination is called the <strong>domain sequence</strong>.</li>
   <li>For each node D in the domain sequence, the IndexKeySpecs are evaluated in some implementation dependent order. An IndexKeySpec is evaluated as follows:</li>
     <ul>
     <li>The key expression in the IndexKeySpec is evaluated, with D serving as its context item.</li>
     <li>Atomization is applied to the result of the key expression.</li>
-    <li>The result of atomization is matched against the atomic type in the IndexKeyTypeDecl. In other words, the result of atomization is treated as the input to a "treat as" expression whose target type is type declared in the IndexKeyTypeDecl. If the type match fails, an error is raised [err:XDTY0011]. Otherwise, the result of this step will be a single atomic item. We call this item a <strong>key item</strong>.</li>
+    <li>The result of atomization is matched against the atomic type in the IndexKeyTypeDecl. In other words, the result of atomization is treated as the input to a "treat as" expression whose target type is type declared in the IndexKeyTypeDecl. If the type match fails, an error is raised [<a href="#ERRXDTY0011" title="err:XDTY0011">err:XDTY0011</a>]. Otherwise, the result of this step will be a single atomic item. We call this item a <strong>key item</strong>.</li>
   <li>Let D<sub>i</sub> be the i-th domain node, and K<sub>ij</sub> be the key item computed for D<sub>i</sub> by the j-th IndexKeySpec (where the numbering of the IndexKeySpecs is done using their order of appearance in the index declaration). Let K<sub>i</sub> be the tuple [K<sub>i1</sub>, ..., K<sub>iM</sub>], where M is the number of IndexKeySpecs. The next step is to insert in the index a mapping from K<sub>i</sub> to D<sub>i</sub>. This step will be performed for each node in the domain sequence. The order in which the domain sequence is processed is implementation dependent.</li>
-    <li>If the index is declared as unique, the relationship between between key tuples and domain nodes is one-to-one. In this case, if the index already contains an entry whose key tuple is equal to K<sub>i</sub>, an error is raised [err:XDDY0024]. Otherwise, the entry [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container.</li>
+    <li>If the index is declared as unique, the relationship between between key tuples and domain nodes is one-to-one. In this case, if the index already contains an entry whose key tuple is equal to K<sub>i</sub>, an error is raised [<a href="#ERRXDDY0024" title="err:XDDY0024">err:XDDY0024</a>]. Otherwise, the entry [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container.</li>
     <li>If the index is non-unique, it maps key tuples to sets of domain items. In this case, if the index already contains an entry whose key is equal to K<sub>i</sub>, D<sub>i</sub> is added to the set associated with K<sub>i</sub>. Otherwise, the entry [K<sub>i</sub>, { D<sub>i</sub> }] is inserted in the index.</li>
     </ul>
   <li>A entry is added to the indexes table. The entry maps the expanded QName of the index to the index entry container.</li>
@@ -755,8 +756,8 @@ To destroy an index, XQDDF provides the delete-index updating function. The func
 The delete-index function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify an index among the statically known indexes in the static context of the invoking module, an error is raised [err:XDDY0021].</li>
-  <li>If the given expanded QName does not identify an index among the available indexes in the dynamic context of the invoking module, an error is raised [err:XDDY0023].</li>
+  <li>If the given expanded QName does not identify an index among the statically known indexes in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
+  <li>If the given expanded QName does not identify an index among the available indexes in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0023" title="err:XDDY0023">err:XDDY0023</a>].</li>
   <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteIndex($indexName).</li>
   </ul>
 
@@ -780,7 +781,7 @@ Probing an index means retrieving the domain nodes associated with a particular 
                           $keyM     as xs:anyAtomic) as node()*
 \endcode
 
-For the probe-index-point function, the search condition is specified as a number of atomic (or empty) items comprising a key tuple. This number must be equal to the number of indexspecs found in the index declaration [err:XDDY0025]. If the index contains an entry with the given key tuple, the associated domain nodes are returned. Otherwise, the empty sequence is returned.
+For the probe-index-point function, the search condition is specified as a number of atomic (or empty) items comprising a key tuple. This number must be equal to the number of indexspecs found in the index declaration [<a href="#ERRXDDY0025" title="err:XDDY0025">err:XDDY0025</a>]. If the index contains an entry with the given key tuple, the associated domain nodes are returned. Otherwise, the empty sequence is returned.
   
 \code
   probe-index-range($indexUri                 as xs:QName,
@@ -799,7 +800,7 @@ For the probe-index-point function, the search condition is specified as a numbe
                     $rangeupperBoundIncludedM as xs:boolean) as node()*
 \endcode
 
-The probe-index-range function can be invoked on value range indices only [err:XDDY0026]. To describe the semantics of this function, we start by defining the i<sup>th</sup> <strong>key column</strong> of an index as the set of key items produced by evaluating the i<sup>th</sup> keyspec of the index for every domain node. Then, the search condition of a range probe can be defined as a number of <strong>rangespecs</strong>, where a rangespec describes a constraint on the values of a key column. The first rangespec applies to the first key column, the second rangespec to the second key column, etc. The number of rangespecs must be less or equal to the number of keyspecs found in the declaration of the given index [err:XDDY0025]. Each rangespec consists of 6 values:
+The probe-index-range function can be invoked on value range indices only [<a href="#ERRXDDY0026" title="err:XDDY0026">err:XDDY0026</a>]. To describe the semantics of this function, we start by defining the i<sup>th</sup> <strong>key column</strong> of an index as the set of key items produced by evaluating the i<sup>th</sup> keyspec of the index for every domain node. Then, the search condition of a range probe can be defined as a number of <strong>rangespecs</strong>, where a rangespec describes a constraint on the values of a key column. The first rangespec applies to the first key column, the second rangespec to the second key column, etc. The number of rangespecs must be less or equal to the number of keyspecs found in the declaration of the given index [<a href="#ERRXDDY0025" title="err:XDDY0025">err:XDDY0025</a>]. Each rangespec consists of 6 values:
   <ul>
   <li>rangeLowerBound : The lower bound in a range of key values.</li>
   <li>rangeUpperBound : The upper bound in a range of key values.</li>
@@ -865,10 +866,10 @@ The refresh-index function is evaluated as follows:
   <ul>
   <li>If the given expanded QName does not identify an index among the statically
       known indexes in the static context of the invoking module, an error is 
-      raised [err:XDDY0021].</li>
+      raised [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
   <li>If the given expanded QName does not identify an index among the available
       indexes in the dynamic context of the invoking module, an error is raised
-      [err:XDDY0023].</li>
+      [<a href="#ERRXDDY0023" title="err:XDDY0023">err:XDDY0023</a>].</li>
   <li>The result of the function is an empty XDM instance and a pending update
       list that consists of a single update primitive: upd:refreshIndex($indexName).</li>
   </ul>
@@ -1011,14 +1012,82 @@ the activate-integrity-constraint in the importing admin-script module (see abov
 For the ICs from the section above, those variables are declared as follows:
 
 \code
-declare variable $news-data:UniqueId := xs:QName("news-data:UniqueId");                                              
-declare variable $news-data:AuthorName := xs:QName("news-data:AuthorNames");                                         
+declare variable $news-data:UniqueId := xs:QName("news-data:UniqueId");
+declare variable $news-data:AuthorName := xs:QName("news-data:AuthorNames");
 declare variable $news-data:ArticleEmployees := xs:QName("news-data:ArticleEmployees");
 \endcode
 
 
 \section extensions_xquf_updates_routines 4 Extensions to the XQUF updates routines
 
+\section error_summary Appendix 1 Error Summary
+
+<p>XQuery Data Definition Facility - Static Errors</p><br/>
+<strong>
+  <a name="ERRXDST0001" id="ERRXDST0001"></a>err:XDST0001, A collection with name is already declared in the same module. <br/>
+  <a name="ERRXDST0002" id="ERRXDST0002"></a>err:XDST0002, A collection with name that is imported from module is already declared in the importing module.<br/>
+  <a name="ERRXDST0003" id="ERRXDST0003"></a>err:XDST0003, A collection declaration cannot appear in a main module.<br/>
+  <a name="ERRXDST0004" id="ERRXDST0004"></a>err:XDST0004, The declaration for collection specifies multiple values for the same property.<br/>
+  <a name="ERRXDST0005" id="ERRXDST0005"></a>err:XDST0005, The declaration for collection specifies conflicting property values.<br/>
+  <a name="ERRXDST0006" id="ERRXDST0006"></a>err:XDST0006, The declaratrion for collection contains an invalid property value.<br/>
+  <a name="ERRXDST0021" id="ERRXDST0021"></a>err:XDST0021, An index with name is already declared in the same module.<br/>
+  <a name="ERRXDST0022" id="ERRXDST0022"></a>err:XDST0022, An index with name that is imported from module /s is already declared in the importing module.<br/>
+  <a name="ERRXDST0023" id="ERRXDST0023"></a>err:XDST0023, An index declaration cannot appear in a main module.<br/>
+  <a name="ERRXDST0024" id="ERRXDST0024"></a>err:XDST0024, The declaration for index specifies multiple values for the same property.<br/>
+  <a name="ERRXDST0025" id="ERRXDST0025"></a>err:XDST0025, The declaration for index specifies conflicting property values.<br/>
+  <a name="ERRXDST0026" id="ERRXDST0026"></a>err:XDST0026, The declaration for index contains an invalid property value.<br/>
+  <a name="ERRXDST0027" id="ERRXDST0027"></a>err:XDST0027, The index has an invalid index key type.<br/>
+  <a name="ERRXDST0028" id="ERRXDST0028"></a>err:XDST0028, The index has a non deterministic definition.<br/>
+  <a name="ERRXDST0029" id="ERRXDST0029"></a>err:XDST0029, The index references a data source that is not a XQDDF collection.<br/>
+  <a name="ERRXDST0030" id="ERRXDST0030"></a>err:XDST0030, The index references a collection with a non-const QName.<br/>
+  <a name="ERRXDST0031" id="ERRXDST0031"></a>err:XDST0031, The index has free variables in its definition.<br/>
+  <a name="ERRXDST0032" id="ERRXDST0032"></a>err:XDST0032, The domain expression of index references the context item.<br/>
+  <a name="ERRXDST0033" id="ERRXDST0033"></a>err:XDST0033, The declaration of index contains a non-simple expression.<br/>
+  <a name="ERRXDST0034" id="ERRXDST0034"></a>err:XDST0034, Index cannot be automatically maintained.<br/>
+  <a name="ERRXQP0041" id="ERRXQP0041"></a>err:XQP0041, An integrity constraint with URI is declared already.<br/>
+  <a name="ERRXDST0042" id="ERRXDST0042"></a>err:XDST0042, An integrity constraint key has multiple values.<br/>
+  <a name="ERRXQP0043" id="ERRXQP0043"></a>err:XQP0043, An integrity constraint key has a non-atomic value.<br/>
+  <a name="ERRXDST0045" id="ERRXDST0045"></a>err:XDST0045, The integrity constraint cannot be declared in a main module.<br/>
+  <a name="ERRXDST0046" id="ERRXDST0046"></a>err:XDST0046, The integrity constraint with URI has free variables in its definition.<br/>
+  <a name="ERRXDST0047" id="ERRXDST0047"></a>err:XDST0047, The integrity constraint with URI references a data source that is not a collection among the statically known collections.<br/>
+  <a name="ERRXDST0048" id="ERRXDST0048"></a>err:XDST0048,The integrity constraint with URI has a non deterministic definition.<br/>
+</strong>
+
+<p>XQuery Data Definition Facility - Type Errors</p><br/>
+<strong>
+  <a name="ERRXDTY0001" id="ERRXDTY0001"></a>err:XDTY0001, Collection cannot contain a node of certain type.<br/>
+  <a name="ERRXDTY0010" id="ERRXDTY0010"></a>err:XDTY0010, The domain expression of index produces an item that is not a node.<br/>
+  <a name="ERRXDTY0011" id="ERRXDTY0011"></a>err:XDTY0011, The result of some key expression of index does not match its declared type.<br/>
+</strong>
+
+<p>XQuery Data Definition Facility - Dynamic Errors</p><br/>
+<strong>
+  <a name="ERRXDDY0001" id="ERRXDDY0001"></a>err:XDDY0001, Collection is not declared in the static context.<br/>
+  <a name="ERRXDDY0002" id="ERRXDDY0002"></a>err:XDDY0002, Collection exists already.<br/>
+  <a name="ERRXDDY0003" id="ERRXDDY0003"></a>err:XDDY0003, Collection does not exist.<br/>
+  <a name="ERRXDDY0004" id="ERRXDDY0004"></a>err:XDDY0004, Cannot update const collection.<br/>
+  <a name="ERRXDDY0005" id="ERRXDDY0005"></a>err:XDDY0005, Illegal insert in append-only collection.<br/>
+  <a name="ERRXDDY0006" id="ERRXDDY0006"></a>err:XDDY0006, Illegal insert in queue collection.<br/>
+  <a name="ERRXDDY0007" id="ERRXDDY0007"></a>err:XDDY0007, Illegal delete from append-only collection.<br/>
+  <a name="ERRXDDY0008" id="ERRXDDY0008"></a>err:XDDY0008, Illegal delete from queue collection.<br/>
+  <a name="ERRXDDY0009" id="ERRXDDY0009"></a>err:XDDY0009, Not all the nodes to delete are at the beginning of queue collection.<br/>
+  <a name="ERRXDDY0010" id="ERRXDDY0010"></a>err:XDDY0010, Illegal update of node in collection, whose nodes are read-only.<br/>
+  <a name="ERRXDDY0011" id="ERRXDDY0011"></a>err:XDDY0011, Node is not contained in collection.<br/>
+  <a name="ERRXDDY0012" id="ERRXDDY0012"></a>err:XDDY0012, Illegal insert in unordered collection.<br/>
+  <a name="ERRXDDY0013" id="ERRXDDY0013"></a>err:XDDY0013, Cannot delete collection because there are indexes that reference it.<br/>
+  <a name="ERRXDDY0014" id="ERRXDDY0014"></a>err:XDDY0014, Cannot delete collection because there are integrity constraints that reference it.<br/>
+  <a name="ERRXDDY0015" id="ERRXDDY0015"></a>err:XDDY0015, Cannot delete collection because there are references on its nodes.<br/>
+  <a name="ERRXDDY0020" id="ERRXDDY0020"></a>err:XDDY0020, The domain expression of index produces nodes that are not in collection.<br/>
+  <a name="ERRXDDY0021" id="ERRXDDY0021"></a>err:XDDY0021, Index is not declared in the static context.<br/>
+  <a name="ERRXDDY0022" id="ERRXDDY0022"></a>err:XDDY0022, Index exists already.<br/>
+  <a name="ERRXDDY0023" id="ERRXDDY0023"></a>err:XDDY0023, Index does not exist.<br/>
+  <a name="ERRXDDY0024" id="ERRXDDY0024"></a>err:XDDY0024, The uniqueness property of index is violated.<br/>
+  <a name="ERRXDDY0025" id="ERRXDDY0025"></a>err:XDDY0025, Invalid number of arguments in probe of index.<br/>
+  <a name="ERRXDDY0026" id="ERRXDDY0026"></a>err:XDDY0026, Index does not support range probes.<br/>
+  <a name="ERRXDDY0031" id="ERRXDDY0031"></a>err:XDDY0031, An integrity constraint with URI is not declared.<br/>
+  <a name="ERRXDDY0032" id="ERRXDDY0032"></a>err:XDDY0032, An integrity constraint with URI is not declared.<br/>
+  <a name="ERRXDDY0033" id="ERRXDDY0033"></a>err:XDDY0033, Conditions for integrity constraint were not met on collection.<br/>
+</strong>
 
 \subsection upd_merge_updates upd:mergeUpdates
 
