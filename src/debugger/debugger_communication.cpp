@@ -119,8 +119,6 @@ zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 void zorba::DebuggerCommunicator::sendEvent( AbstractCommandMessage* aMessage )
 {
 	Length length;
-  if (aMessage->getCommand() == EVALUATED || aMessage->getCommand() == SUSPENDED)
-    int i = 1 + 1;
 	ZorbaArrayAutoPointer<Byte> lMessage(aMessage->serialize(length));
 	try
 	{

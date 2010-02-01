@@ -124,7 +124,6 @@ void deserializeString(std::string& aString)
     lPos = aString.find("\\n", lBegin);
   }
   lRes += aString.substr(lBegin, std::string::npos);
-  replaceAllInString(lRes, "&quot;", "\"");
   aString = lRes;
 }
 
@@ -866,9 +865,9 @@ EvalMessage::EvalMessage( Byte * aMessage, const unsigned int aLength ):
     std::string lString( lWString->begin()+1, lWString->end()-1 );
     delete lWString;
     theExpr = lString;
-    theExpr = theExpr.replace("&quot;", "\"", "");
+    theExpr = theExpr.replace("\\\\\"", "\"", "");
   } else {
-    throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
+    throw MessageFormatException("Invalid JSON format for eval command message.");
   }
   checkIntegrity();
 }
@@ -878,7 +877,7 @@ EvalMessage::~EvalMessage(){}
 xqpString EvalMessage::getData() const
 {
   xqpString lExpr = theExpr;
-  lExpr = lExpr.replace("\"", "&quot;", "");
+  lExpr = lExpr.replace("\"", "\\\\\"", "");
   std::stringstream lJSONString;
   lJSONString << "{";
   lJSONString << "\"expr\":\"" << lExpr << "\"";
