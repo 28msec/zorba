@@ -47,21 +47,21 @@ As part of the XQDDF implementation, Zorba 1.0 includes a new "built-in" module 
 
 \section collections 1 Collections in Zorba 1.0
 
-The current W3C XQuery specification defines collections simply as sequences of nodes that are accessible via the fn:collection function. Everything else about collections is implementation-dependent. For example, XQuery programmers have no direct way to control the contents or the life-cycle of collections. XQDDF attempts to close this gap by making explicit most of the collection-related issues that are left as implementation-dependent by W3C. This way, XQuery developers can manipulate collections directly from XQuery programs, rather than relying in some external hosting environment or application. As explained below, collections as defined by XQDDF have some important differences from collections as defined by the W3C specification. As a result, in the remainder of the this document we will use the terms <a href="#xqddf_collection">"XQDDF collection"</a> and "W3C Collection" to make clear the distinction between the two kinds of collections. We will also use the term <strong>"document"</strong> to refer to any XML tree whose root is a parent-less node of any kind (not necessarily a document node).
+The current W3C XQuery specification defines collections simply as sequences of nodes that are accessible via the fn:collection function. Everything else about collections is implementation-dependent. For example, XQuery programmers have no direct way to control the contents or the life-cycle of collections. XQDDF attempts to close this gap by making explicit most of the collection-related issues that are left as implementation-dependent by W3C. This way, XQuery developers can manipulate collections directly from XQuery programs, rather than relying in some external hosting environment or application. As explained below, collections as defined by XQDDF have some important differences from collections as defined by the W3C specification. As a result, in the remainder of the this document we will use the terms <a href="#collection">"XQDDF collection"</a> and "W3C Collection" to make clear the distinction between the two kinds of collections. We will also use the term <strong>"document"</strong> to refer to any XML tree whose root is a parent-less node of any kind (not necessarily a document node).
 
-<h3><a name="xqddf_collection">An XQDDF collection</a></h3> is defined as an ordered set of documents that is disjoint from any other collection and is uniquely identified by a QName. Furthermore, with respect to document order, the relative order of two nodes belonging to different documents within the same collection is defined to be the same as the relative position of their containing documents within the collection. We will say that a node belongs to a collection if it is inside a document that belongs to that collection.
+<h3><a name="collection">An XQDDF collection</a></h3> is defined as an ordered set of documents that is disjoint from any other collection and is uniquely identified by a QName. Furthermore, with respect to document order, the relative order of two nodes belonging to different documents within the same collection is defined to be the same as the relative position of their containing documents within the collection. We will say that a node belongs to a collection if it is inside a document that belongs to that collection.
 
-Like a W3C collection, an <a href="#xqddf_collection">XQDDF collection</a> can also be viewed as a sequence of nodes: it is the sequence containing the root nodes of the documents that belong to the collection (and as we will see later, the function xqddf:collection returns exactly this sequence of nodes). However, even when viewed as sequences of nodes, <a href="#xqddf_collection">XQDDF collections</a> differ from W3C collections in the following ways:
+Like a W3C collection, an <a href="#collection">XQDDF collection</a> can also be viewed as a sequence of nodes: it is the sequence containing the root nodes of the documents that belong to the collection (and as we will see later, the function <a href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a> returns exactly this sequence of nodes). However, even when viewed as sequences of nodes, <a href="#collection">XQDDF collections</a> differ from W3C collections in the following ways:
 
 <ul>
   <li>They contain parent-less nodes only.</li>
   <li>They can not contain any duplicate nodes.</li>
   <li>Their nodes are in document order.</li>
-  <li>A node can not be contained in more than one <a href="#xqddf_collection">XQDDF collection</a>.</li>
+  <li>A node can not be contained in more than one <a href="#collection">XQDDF collection</a>.</li>
   <li>XQDDF collections are identified by QNames, whereas W3C collections are identified by URIs.</li>
 </ul>
 
-For brevity, in the remaining of this document we will the term "collection" to mean <a href="#xqddf_collection">XQDDF collection</a>. For backward compatibility with the W3C XQuery specification, Zorba 1.0 retains some basic support for W3C collections (see section \ref w3c_collections). However, users are encouraged to use <a href="#xqddf_collection">XQDDF collections</a> instead.
+For brevity, in the remaining of this document we will the term "collection" to mean <a href="#collection">XQDDF collection</a>. For backward compatibility with the W3C XQuery specification, Zorba 1.0 retains some basic support for W3C collections (see section \ref w3c_collections). However, users are encouraged to use <a href="#collection">XQDDF collections</a> instead.
 
 Zorba 1.0 supports five kinds of operations on collections: <a href="#collection_declaration">collection declaration</a>, <a href="#creating_collections">collection creation</a>, <a href="#destroying_collections">collection deletion</a>, <a href="#updating_collections">collection update</a>, and <a href="#accessing_collections">node retrieval</a>. These are explained briefly in the following simple example. Full details for each operation are provided in the subsequent chapters.
 
@@ -113,7 +113,7 @@ The next script ("user-script-1") shows how collections may be used. First the n
 
 In this example, the employees collection is populated by a single call to the xqddf:insert-nodes function, whose source expression is a concatenation of explicitly constructed documents. The articles collection is populated using the xqddf:insert-nodes function as well, but in a slightly different fashion: The article documents are assumed to exist already, either as text files in the local filesystem, or at various web sites. As a result, the articles collection is populated via a concatenation of xqddf:insert-function calls, each reading and parsing a single XML document and inserting the generated XML tree in the collection. Although there is one function call per article, the articles will be inserted all together in an atomic (all-or-nothing) operation, when the ";" at line 16 is processed. This is because, as explained in \ref updating_collections, the xqddf:insert-nodes function (and all other xqddf functions that create, delete, or update collections) is an //updating function//, that is, rather than applying the insertion immediately, it produces an updating primitive that becomes part of a pending updates list (PUL), which is applied atomically when the next ";" appears in the program.
 
-After populating the two collections, "user-script-1" runs a query expression that uses the xqddf:collection function to access their root nodes. The expression returns, for each journalist, the articles authored by that journalist ordered by their date.
+After populating the two collections, "user-script-1" runs a query expression that uses the <a href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a> function to access their root nodes. The expression returns, for each journalist, the articles authored by that journalist ordered by their date.
 
 Finally, "user-script-1" uses the xqddf:remove-nodes function to remove from the articles collection all articles that were published before 2000. Like xqddf:insert-nodes, xqddf:remove-nodes takes as input the QName of a collection and a node-producing source expression. The source nodes must be parent-less nodes that belong to the collection. The function looks up the collection declaration and the collection container, and removes the source nodes from the collection container.
 
@@ -188,7 +188,7 @@ To accommodate collection declarations, XQDDF extends the static context with a 
 
 Zorba 1.0 defines two collection properties: <strong>update mode</strong> (with possible values 'const', 'mutable', 'append-only', or 'queue') and <strong>ordering mode</strong> (with possible values 'ordered' or 'unordered'). The syntax allows the values for these properties to be listed in any order or not be specified at all. If not specified, the default values for update and ordering mode are 'mutable' and 'unordered', respectively. It is a static error [<a href="#ERRXDST0004" title="err:XDST0004">err:XDST0004</a>] if a collection declaration contains more than one value for the same property. An <strong>ordered collection</strong> is a collection into which the ordering of documents is assumed to be meaningful for the application, and as a result, programmers can explicitly control the placement of documents via appropriate updating functions. In contrast, the ordering of documents inside <strong>unordered collections</strong> is implementation dependent, but stable (see \ref accessing_collections for details). A <strong>constant collection</strong> is one that is created with an initial set of documents and does not allow any subsequent insertions to or deletions from this initial set. An <strong>append-only collection</strong> does not allow any deletions at all and restricts insertions to take place at the "end" only, i.e., all new documents must be inserted after all existing ones. This implies a user-visible document ordering, and as a result, an append-only collection must also be declared as ordered [<a href="#ERRXDST0005" title="err:XDST0005">err:XDST0005</a>]. A <strong>queue collection</strong> forbids both insertions and deletions in/from the "middle"; only documents at the front of the collection may be deleted, and new documents can be inserted only at the collection's end. Like append-only, queue collections must be declared as ordered [<a href="#ERRXDST0005" title="err:XDST0005">err:XDST0005</a>].
 
-In addition to the two properties described above, a collection declaration also specifies the <strong>collection static type</strong>, i.e., the static type for the result of the xqddf:collection function. This is specified as a sequence type that adheres to the syntax and semantics of a KindTest plus an (optional) occurrence indicator. If no static type is specified, it is assumed to be document-node(element(*, xs:untyped))*. The static type without the occurrence indicator is the static type of the collection's root nodes.
+In addition to the two properties described above, a collection declaration also specifies the <strong>collection static type</strong>, i.e., the static type for the result of the <a href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a> function. This is specified as a sequence type that adheres to the syntax and semantics of a KindTest plus an (optional) occurrence indicator. If no static type is specified, it is assumed to be document-node(element(*, xs:untyped))*. The static type without the occurrence indicator is the static type of the collection's root nodes.
 
 The final component of a collection declaration is the <strong>document update mode</strong>. Possible values for this property are 'read-only' or 'mutable', with 'mutable' being the default value if none is specified. If the document update mode for a collection is 'read-only', then an error is raised [<a href="#ERRXDDY0010" title="err:XDDY0010">err:XDDY0010</a>] every time a node of the collection appears as the target node of an updating expression; otherwise, no such error is raised.
 
@@ -241,7 +241,7 @@ The upd:createCollection primitive was described above. The upd:insertNodesFirst
 
 \subsection accessing_collections 1.4 Accessing Collections
 
-To access the root nodes of a collection, XQDDF provides the xqddf:collection function.
+To access the root nodes of a collection, XQDDF provides the <strong><a name="xqddf_collection" id="xqddf_collection"></a>xqddf:collection</strong> function.
 
 \code
   declare function xqddf:collection($collectionName as xs:QName) as node()*
@@ -681,8 +681,8 @@ The index declaration syntax is very liberal with respect to the expressions tha
   <li>They must be deterministic expressions [<a href="#ERRXDST0028" title="err:XDST0028">err:XDST0028</a>].</li>
   <li>They must be simple expressions (i.e., not updating or sequential)
       [<a href="#ERRXDST0033" title="err:XDST0033">err:XDST0033</a>].</li>
-  <li>They must not invoke any input functions other than xqddf:collection
-      [<a href="#ERRXDST0029" title="err:XDST0029">err:XDST0029</a>]. Moreover, the argument to each xqddf:collection call must
+  <li>They must not invoke any input functions other than <a href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a> 
+      [<a href="#ERRXDST0029" title="err:XDST0029">err:XDST0029</a>]. Moreover, the argument to each <a href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a> call must
       be a constant expression returning a QName value [<a href="#ERRXDST0030" title="err:XDST0030">err:XDST0030</a>]. (A constant
       expression is an expression that doesn't access the dynamic context).</li>
   <li>They must not reference and variables other than the ones defined inside the
@@ -1022,7 +1022,7 @@ declare variable $news-data:ArticleEmployees := xs:QName("news-data:ArticleEmplo
 
 \section error_summary Appendix 1 Error Summary
 
-<p>XQuery Data Definition Facility - Static Errors</p><br/>
+<p>XQuery Data Definition Facility - Static Errors:</p><br/>
 <strong>
   <a name="ERRXDST0001" id="ERRXDST0001"></a>err:XDST0001, A collection with name is already declared in the same module. <br/>
   <a name="ERRXDST0002" id="ERRXDST0002"></a>err:XDST0002, A collection with name that is imported from module is already declared in the importing module.<br/>
@@ -1053,14 +1053,14 @@ declare variable $news-data:ArticleEmployees := xs:QName("news-data:ArticleEmplo
   <a name="ERRXDST0048" id="ERRXDST0048"></a>err:XDST0048,The integrity constraint with URI has a non deterministic definition.<br/>
 </strong>
 
-<p>XQuery Data Definition Facility - Type Errors</p><br/>
+<p>XQuery Data Definition Facility - Type Errors:</p><br/>
 <strong>
   <a name="ERRXDTY0001" id="ERRXDTY0001"></a>err:XDTY0001, Collection cannot contain a node of certain type.<br/>
   <a name="ERRXDTY0010" id="ERRXDTY0010"></a>err:XDTY0010, The domain expression of index produces an item that is not a node.<br/>
   <a name="ERRXDTY0011" id="ERRXDTY0011"></a>err:XDTY0011, The result of some key expression of index does not match its declared type.<br/>
 </strong>
 
-<p>XQuery Data Definition Facility - Dynamic Errors</p><br/>
+<p>XQuery Data Definition Facility - Dynamic Errors:</p><br/>
 <strong>
   <a name="ERRXDDY0001" id="ERRXDDY0001"></a>err:XDDY0001, Collection is not declared in the static context.<br/>
   <a name="ERRXDDY0002" id="ERRXDDY0002"></a>err:XDDY0002, Collection exists already.<br/>
