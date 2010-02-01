@@ -1,4 +1,4 @@
-/** \page ddl The Zorba 1.0 Data Definition Facility
+/** \page XQDDF The Zorba 1.0 Data Definition Facility
 
 <ul>
   <li> Table of Contents </li>
@@ -272,7 +272,7 @@ The function is evaluated as follows:
 
 \subsection updating_collections 1.5 Updating Collections
 
-A <strong>collection update</strong> is an operation that either inserts or deletes a number of root nodes (and their subtrees) to/from a collection. XQDDF provides 5 functions that insert root nodes, and another 5 functions that delete root nodes. All of these functions are //updating functions// (in the terminology of the XQUF). As a result, rather than applying the update immediately, they produce an updating primitive that becomes part of a pending updates list (PUL), which is applied atomically when the next ”;” appears in a script. The signature and semantics of each function and its associated update primitive are described in this section. The order in which the various update primitives are applied and constraints in how update primitives may be combined in a PUL are described in \ref extensions_xquf_updates_routines.
+A <strong>collection update</strong> is an operation that either inserts or deletes a number of root nodes (and their subtrees) to/from a collection. XQDDF provides 5 functions that insert root nodes, and another 5 functions that delete root nodes. All of these functions are //updating functions// (in the terminology of the XQUF). As a result, rather than applying the update immediately, they produce an updating primitive that becomes part of a pending updates list (PUL), which is applied atomically when the next â;â appears in a script. The signature and semantics of each function and its associated update primitive are described in this section. The order in which the various update primitives are applied and constraints in how update primitives may be combined in a PUL are described in \ref extensions_xquf_updates_routines.
 
 \code
 declare updating function xqddf:insert-nodes($collectionName as xs:QName, $nodes as node()*)
@@ -479,7 +479,7 @@ The update primitive is applied as follows:
   <ul>
   <li>If there is any available index whose domain expression or any of its key expressions reference the collection, an error is raised [<a href="#ERRXDDY0013" title="err:XDDY0013">err:XDDY0013</a>].</li>
   <li>If there is any active integrity constraint on the collection, an error is raised [<a href="#ERRXDDY0014" title="err:XDDY0014">err:XDDY0014</a>].</li>
-  <li>If there is any in-scope variable that references any node in the collection, an error is raised [err:XDDY0016].</li>
+  <li>If there is any in-scope variable that references any node in the collection, an error is raised [<a href="#ERRXDDY0015" title="err:XDDY0015">err:XDDY0015</a>].</li>
   <li>The document container for the collection is found via the collections table.</li>
   <li>All documents in the container are destroyed.</li>
   <li>The container itself is destroyed.</li>
@@ -706,11 +706,11 @@ With each key expression, an index declaration associates a key type and a key c
 
 \subsection index_creation 2.3 Index creation
 
-As explained already, indexes are just sets of index entries, mapping key tuples to domain nodes. In terms of the XQuery language, these sets “live” in the dynamic context. In particular, XQDDF extends the dynamic context with a component called the <strong>available indexes</strong>. This is a map whose entries associate the expanded QName of an index with the entry set of the index. If an entry for an index appears in the available indexes of a module, the index is said to be available to that module.
+As explained already, indexes are just sets of index entries, mapping key tuples to domain nodes. In terms of the XQuery language, these sets âliveâ in the dynamic context. In particular, XQDDF extends the dynamic context with a component called the <strong>available indexes</strong>. This is a map whose entries associate the expanded QName of an index with the entry set of the index. If an entry for an index appears in the available indexes of a module, the index is said to be available to that module.
 
 In practice, the available indexes component is implemented by Zorba's storage system. To begin with, each index entry set is implemented by some appropriate data structure that acts as an index entry container. The description of potential data structures is beyond the scope of this document, but the typical choices are either some sort of hash table (for equality indexes) or some kind of ordered tree (for range indexes). In addition to managing the index entry containers, the store maintains an <strong>indexes table</strong>, which maps index names to index entry containers. The indexes table is accessible by all queries, so once an entry is added to the table, the associated index is assumed to be available to every query and every module that participates in the execution of that query.
 
-Creation of an index involves creating an initially empty index entry container, populating that container with the entries computed by the domain and key expressions of the index, and “registering” that container in the indexes table. All this is done by the xqddf:create-index function that is described below. In fact, xqddf:create-index is an updating function, so instead of actually creating the index, it generates a pending update primitive that becomes part of a pending update list (PUL) to be applied at a later time (see Extensions to the XQUF updates routines). The update primitive is also described below.
+Creation of an index involves creating an initially empty index entry container, populating that container with the entries computed by the domain and key expressions of the index, and âregisteringâ that container in the indexes table. All this is done by the xqddf:create-index function that is described below. In fact, xqddf:create-index is an updating function, so instead of actually creating the index, it generates a pending update primitive that becomes part of a pending update list (PUL) to be applied at a later time (see Extensions to the XQUF updates routines). The update primitive is also described below.
 
 \code
   declare updating function xqddf:create-index($indexName as xs:QName)
@@ -881,7 +881,7 @@ The update primitive is applied as follows:
   <li>The container is made up-to-date in some implementation dependent way. In
       Zorba 1.0, this is done by discarding the current contents and rebuilding
       the index from scratch (the same way as the create-index function populates
-      an empty index container).
+      an empty index container).</li>
   </ul>
 
 
@@ -982,9 +982,9 @@ is not the case for any node in the source collection. This semantics is
 equivalent to the following XQuery expression.
 
 \code
-every $x in xqddf:collection(xs:QName(”news-data:articles”))
+every $x in xqddf:collection(xs:QName(ânews-data:articlesâ))
 satisfies
-  some $y in xqddf:collection(xs:QName(”news-data:employees”))
+  some $y in xqddf:collection(xs:QName(ânews-data:employeesâ))
   satisfies $y/id eq $x//sale/empid
 \endcode
 
@@ -1020,77 +1020,150 @@ declare variable $news-data:ArticleEmployees := xs:QName("news-data:ArticleEmplo
 
 \section extensions_xquf_updates_routines 4 Extensions to the XQUF updates routines
 
-\section error_summary Appendix 1 Error Summary
-
-<p>XQuery Data Definition Facility - Static Errors:</p><br/>
-<strong>
-  <a name="ERRXDST0001" id="ERRXDST0001"></a>err:XDST0001, A collection with name is already declared in the same module. <br/>
-  <a name="ERRXDST0002" id="ERRXDST0002"></a>err:XDST0002, A collection with name that is imported from module is already declared in the importing module.<br/>
-  <a name="ERRXDST0003" id="ERRXDST0003"></a>err:XDST0003, A collection declaration cannot appear in a main module.<br/>
-  <a name="ERRXDST0004" id="ERRXDST0004"></a>err:XDST0004, The declaration for collection specifies multiple values for the same property.<br/>
-  <a name="ERRXDST0005" id="ERRXDST0005"></a>err:XDST0005, The declaration for collection specifies conflicting property values.<br/>
-  <a name="ERRXDST0006" id="ERRXDST0006"></a>err:XDST0006, The declaratrion for collection contains an invalid property value.<br/>
-  <a name="ERRXDST0021" id="ERRXDST0021"></a>err:XDST0021, An index with name is already declared in the same module.<br/>
-  <a name="ERRXDST0022" id="ERRXDST0022"></a>err:XDST0022, An index with name that is imported from module /s is already declared in the importing module.<br/>
-  <a name="ERRXDST0023" id="ERRXDST0023"></a>err:XDST0023, An index declaration cannot appear in a main module.<br/>
-  <a name="ERRXDST0024" id="ERRXDST0024"></a>err:XDST0024, The declaration for index specifies multiple values for the same property.<br/>
-  <a name="ERRXDST0025" id="ERRXDST0025"></a>err:XDST0025, The declaration for index specifies conflicting property values.<br/>
-  <a name="ERRXDST0026" id="ERRXDST0026"></a>err:XDST0026, The declaration for index contains an invalid property value.<br/>
-  <a name="ERRXDST0027" id="ERRXDST0027"></a>err:XDST0027, The index has an invalid index key type.<br/>
-  <a name="ERRXDST0028" id="ERRXDST0028"></a>err:XDST0028, The index has a non deterministic definition.<br/>
-  <a name="ERRXDST0029" id="ERRXDST0029"></a>err:XDST0029, The index references a data source that is not a XQDDF collection.<br/>
-  <a name="ERRXDST0030" id="ERRXDST0030"></a>err:XDST0030, The index references a collection with a non-const QName.<br/>
-  <a name="ERRXDST0031" id="ERRXDST0031"></a>err:XDST0031, The index has free variables in its definition.<br/>
-  <a name="ERRXDST0032" id="ERRXDST0032"></a>err:XDST0032, The domain expression of index references the context item.<br/>
-  <a name="ERRXDST0033" id="ERRXDST0033"></a>err:XDST0033, The declaration of index contains a non-simple expression.<br/>
-  <a name="ERRXDST0034" id="ERRXDST0034"></a>err:XDST0034, Index cannot be automatically maintained.<br/>
-  <a name="ERRXDST0041" id="ERRXDST0041"></a>err:XDST0041, An integrity constraint with URI is declared already.<br/>
-  <a name="ERRXDST0042" id="ERRXDST0042"></a>err:XDST0042, An integrity constraint key has multiple values.<br/>
-  <a name="ERRXDST0043" id="ERRXDST0043"></a>err:XDST0043, An integrity constraint key has a non-atomic value.<br/>
-  <a name="ERRXDST0045" id="ERRXDST0045"></a>err:XDST0045, The integrity constraint cannot be declared in a main module.<br/>
-  <a name="ERRXDST0046" id="ERRXDST0046"></a>err:XDST0046, The integrity constraint with URI has free variables in its definition.<br/>
-  <a name="ERRXDST0047" id="ERRXDST0047"></a>err:XDST0047, The integrity constraint with URI references a data source that is not a collection among the statically known collections.<br/>
-  <a name="ERRXDST0048" id="ERRXDST0048"></a>err:XDST0048,The integrity constraint with URI has a non deterministic definition.<br/>
-</strong>
-
-<p>XQuery Data Definition Facility - Type Errors:</p><br/>
-<strong>
-  <a name="ERRXDTY0001" id="ERRXDTY0001"></a>err:XDTY0001, Collection cannot contain a node of certain type.<br/>
-  <a name="ERRXDTY0010" id="ERRXDTY0010"></a>err:XDTY0010, The domain expression of index produces an item that is not a node.<br/>
-  <a name="ERRXDTY0011" id="ERRXDTY0011"></a>err:XDTY0011, The result of some key expression of index does not match its declared type.<br/>
-</strong>
-
-<p>XQuery Data Definition Facility - Dynamic Errors:</p><br/>
-<strong>
-  <a name="ERRXDDY0001" id="ERRXDDY0001"></a>err:XDDY0001, Collection is not declared in the static context.<br/>
-  <a name="ERRXDDY0002" id="ERRXDDY0002"></a>err:XDDY0002, Collection exists already.<br/>
-  <a name="ERRXDDY0003" id="ERRXDDY0003"></a>err:XDDY0003, Collection does not exist.<br/>
-  <a name="ERRXDDY0004" id="ERRXDDY0004"></a>err:XDDY0004, Cannot update const collection.<br/>
-  <a name="ERRXDDY0005" id="ERRXDDY0005"></a>err:XDDY0005, Illegal insert in append-only collection.<br/>
-  <a name="ERRXDDY0006" id="ERRXDDY0006"></a>err:XDDY0006, Illegal insert in queue collection.<br/>
-  <a name="ERRXDDY0007" id="ERRXDDY0007"></a>err:XDDY0007, Illegal delete from append-only collection.<br/>
-  <a name="ERRXDDY0008" id="ERRXDDY0008"></a>err:XDDY0008, Illegal delete from queue collection.<br/>
-  <a name="ERRXDDY0009" id="ERRXDDY0009"></a>err:XDDY0009, Not all the nodes to delete are at the beginning of queue collection.<br/>
-  <a name="ERRXDDY0010" id="ERRXDDY0010"></a>err:XDDY0010, Illegal update of node in collection, whose nodes are read-only.<br/>
-  <a name="ERRXDDY0011" id="ERRXDDY0011"></a>err:XDDY0011, Node is not contained in collection.<br/>
-  <a name="ERRXDDY0012" id="ERRXDDY0012"></a>err:XDDY0012, Illegal insert in unordered collection.<br/>
-  <a name="ERRXDDY0013" id="ERRXDDY0013"></a>err:XDDY0013, Cannot delete collection because there are indexes that reference it.<br/>
-  <a name="ERRXDDY0014" id="ERRXDDY0014"></a>err:XDDY0014, Cannot delete collection because there are integrity constraints that reference it.<br/>
-  <a name="ERRXDDY0015" id="ERRXDDY0015"></a>err:XDDY0015, Cannot delete collection because there are references on its nodes.<br/>
-  <a name="ERRXDDY0020" id="ERRXDDY0020"></a>err:XDDY0020, The domain expression of index produces nodes that are not in collection.<br/>
-  <a name="ERRXDDY0021" id="ERRXDDY0021"></a>err:XDDY0021, Index is not declared in the static context.<br/>
-  <a name="ERRXDDY0022" id="ERRXDDY0022"></a>err:XDDY0022, Index exists already.<br/>
-  <a name="ERRXDDY0023" id="ERRXDDY0023"></a>err:XDDY0023, Index does not exist.<br/>
-  <a name="ERRXDDY0024" id="ERRXDDY0024"></a>err:XDDY0024, The uniqueness property of index is violated.<br/>
-  <a name="ERRXDDY0025" id="ERRXDDY0025"></a>err:XDDY0025, Invalid number of arguments in probe of index.<br/>
-  <a name="ERRXDDY0026" id="ERRXDDY0026"></a>err:XDDY0026, Index does not support range probes.<br/>
-  <a name="ERRXDDY0031" id="ERRXDDY0031"></a>err:XDDY0031, An integrity constraint with URI is not declared.<br/>
-  <a name="ERRXDDY0032" id="ERRXDDY0032"></a>err:XDDY0032, An integrity constraint with URI is not declared.<br/>
-  <a name="ERRXDDY0033" id="ERRXDDY0033"></a>err:XDDY0033, Conditions for integrity constraint were not met on collection.<br/>
-</strong>
-
 \subsection upd_merge_updates upd:mergeUpdates
 
+The XQuery Update Facility specification lists a number of errors that may be raised
+by the upd:mergeUpdates routine. XQDDF adds the following error conditions to this list:
+
+<ul>
+<li>An error is raised [<a href="#ERRXDDY0016" title="err:XDDY0016">err:XDDY0016</a>]
+    if two or more upd:createCollection primitives having the same QName as argument
+    appear in the merged list.</li>
+<li>An error is raised [<a href="#ERRXDDY0027" title="err:XDDY0027">err:XDDY0027</a>]
+    if two or more upd:createIndex primitives having the same QName as argument appear
+    in the merged list.</li>
+</ul>
+
+
 \subsection upr_apply_updates upd:applyUpdates
+
+
+\section error_summary Appendix 1 Error Summary
+
+<p>XQuery Data Definition Facility - Static Errors:</p>
+
+<strong>
+  <a name="ERRXDST0001" id="ERRXDST0001"></a>err:XDST0001, A collection with name is already declared in the same module.
+
+  <a name="ERRXDST0002" id="ERRXDST0002"></a>err:XDST0002, A collection with name that is imported from module is already declared in the importing module.
+
+  <a name="ERRXDST0003" id="ERRXDST0003"></a>err:XDST0003, A collection declaration cannot appear in a main module.
+
+  <a name="ERRXDST0004" id="ERRXDST0004"></a>err:XDST0004, The declaration for collection specifies multiple values for the same property.
+
+  <a name="ERRXDST0005" id="ERRXDST0005"></a>err:XDST0005, The declaration for collection specifies conflicting property values.
+
+  <a name="ERRXDST0006" id="ERRXDST0006"></a>err:XDST0006, The declaratrion for collection contains an invalid property value.
+
+  <a name="ERRXDST0021" id="ERRXDST0021"></a>err:XDST0021, An index with name is already declared in the same module.
+
+  <a name="ERRXDST0022" id="ERRXDST0022"></a>err:XDST0022, An index with name that is imported from module /s is already declared in the importing module.
+
+  <a name="ERRXDST0023" id="ERRXDST0023"></a>err:XDST0023, An index declaration cannot appear in a main module.
+
+  <a name="ERRXDST0024" id="ERRXDST0024"></a>err:XDST0024, The declaration for index specifies multiple values for the same property.
+
+  <a name="ERRXDST0025" id="ERRXDST0025"></a>err:XDST0025, The declaration for index specifies conflicting property values.
+
+  <a name="ERRXDST0026" id="ERRXDST0026"></a>err:XDST0026, The declaration for index contains an invalid property value.
+
+  <a name="ERRXDST0027" id="ERRXDST0027"></a>err:XDST0027, The index has an invalid index key type.
+
+  <a name="ERRXDST0028" id="ERRXDST0028"></a>err:XDST0028, The index has a non deterministic definition.
+
+  <a name="ERRXDST0029" id="ERRXDST0029"></a>err:XDST0029, The index references a data source that is not a XQDDF collection.
+
+  <a name="ERRXDST0030" id="ERRXDST0030"></a>err:XDST0030, The index references a collection with a non-const QName.
+
+  <a name="ERRXDST0031" id="ERRXDST0031"></a>err:XDST0031, The index has free variables in its definition.
+
+  <a name="ERRXDST0032" id="ERRXDST0032"></a>err:XDST0032, The domain expression of index references the context item.
+
+  <a name="ERRXDST0033" id="ERRXDST0033"></a>err:XDST0033, The declaration of index contains a non-simple expression.
+
+  <a name="ERRXDST0034" id="ERRXDST0034"></a>err:XDST0034, Index cannot be automatically maintained.
+
+  <a name="ERRXDST0041" id="ERRXDST0041"></a>err:XDST0041, An integrity constraint with URI is declared already.
+
+  <a name="ERRXDST0042" id="ERRXDST0042"></a>err:XDST0042, An integrity constraint key has multiple values.
+
+  <a name="ERRXDST0043" id="ERRXDST0043"></a>err:XDST0043, An integrity constraint key has a non-atomic value.
+
+  <a name="ERRXDST0045" id="ERRXDST0045"></a>err:XDST0045, The integrity constraint cannot be declared in a main module.
+
+  <a name="ERRXDST0046" id="ERRXDST0046"></a>err:XDST0046, The integrity constraint with URI has free variables in its definition.
+
+  <a name="ERRXDST0047" id="ERRXDST0047"></a>err:XDST0047, The integrity constraint with URI references a data source that is not a collection among the statically known collections.
+
+  <a name="ERRXDST0048" id="ERRXDST0048"></a>err:XDST0048,The integrity constraint with URI has a non deterministic definition.
+</strong>
+
+<p>XQuery Data Definition Facility - Type Errors:</p>
+
+<strong>
+  <a name="ERRXDTY0001" id="ERRXDTY0001"></a>err:XDTY0001, Collection cannot contain a node of certain type.
+
+  <a name="ERRXDTY0010" id="ERRXDTY0010"></a>err:XDTY0010, The domain expression of index produces an item that is not a node.
+
+  <a name="ERRXDTY0011" id="ERRXDTY0011"></a>err:XDTY0011, The result of some key expression of index does not match its declared type.
+</strong>
+
+<p>XQuery Data Definition Facility - Dynamic Errors:</p>
+
+<strong>
+  <a name="ERRXDDY0001" id="ERRXDDY0001"></a>err:XDDY0001, Collection is not declared in the static context.
+
+  <a name="ERRXDDY0002" id="ERRXDDY0002"></a>err:XDDY0002, Collection exists already.
+
+  <a name="ERRXDDY0003" id="ERRXDDY0003"></a>err:XDDY0003, Collection does not exist.
+
+  <a name="ERRXDDY0004" id="ERRXDDY0004"></a>err:XDDY0004, Cannot update const collection.
+
+  <a name="ERRXDDY0005" id="ERRXDDY0005"></a>err:XDDY0005, Illegal insert in append-only collection.
+
+  <a name="ERRXDDY0006" id="ERRXDDY0006"></a>err:XDDY0006, Illegal insert in queue collection.
+
+  <a name="ERRXDDY0007" id="ERRXDDY0007"></a>err:XDDY0007, Illegal delete from append-only collection.
+
+  <a name="ERRXDDY0008" id="ERRXDDY0008"></a>err:XDDY0008, Illegal delete from queue collection.
+
+  <a name="ERRXDDY0009" id="ERRXDDY0009"></a>err:XDDY0009, Not all the nodes to delete are at the beginning of queue collection.
+
+  <a name="ERRXDDY0010" id="ERRXDDY0010"></a>err:XDDY0010, Illegal update of node in collection, whose nodes are read-only.
+
+  <a name="ERRXDDY0011" id="ERRXDDY0011"></a>err:XDDY0011, Node is not contained in collection.
+
+  <a name="ERRXDDY0012" id="ERRXDDY0012"></a>err:XDDY0012, Illegal insert in unordered collection.
+
+  <a name="ERRXDDY0013" id="ERRXDDY0013"></a>err:XDDY0013, Cannot delete collection because there are indexes that reference it.
+
+  <a name="ERRXDDY0014" id="ERRXDDY0014"></a>err:XDDY0014, Cannot delete collection because there are integrity constraints that reference it.
+
+  <a name="ERRXDDY0015" id="ERRXDDY0015"></a>err:XDDY0015, Cannot delete collection because there are references on its nodes.
+
+<a name="ERRXDDY0016" id="ERRXDDY0016"></a>err:XDDY0016, Cannot invoke the create-collection function multiple times with the same QName in the same snapshot.
+
+  <a name="ERRXDDY0020" id="ERRXDDY0020"></a>err:XDDY0020, The domain expression of index produces nodes that are not in collection.
+
+  <a name="ERRXDDY0021" id="ERRXDDY0021"></a>err:XDDY0021, Index is not declared in the static context.
+
+  <a name="ERRXDDY0022" id="ERRXDDY0022"></a>err:XDDY0022, Index exists already.
+
+  <a name="ERRXDDY0023" id="ERRXDDY0023"></a>err:XDDY0023, Index does not exist.
+
+  <a name="ERRXDDY0024" id="ERRXDDY0024"></a>err:XDDY0024, The uniqueness property of index is violated.
+
+  <a name="ERRXDDY0025" id="ERRXDDY0025"></a>err:XDDY0025, Invalid number of arguments in probe of index.
+
+  <a name="ERRXDDY0026" id="ERRXDDY0026"></a>err:XDDY0026, Index does not support range probes.
+
+<a name="ERRXDDY0027" id="ERRXDDY0027"></a>err:XDDY0027, Cannot invoke the create-index function multiple times with the same QName in the same snapshot.
+
+  <a name="ERRXDDY0031" id="ERRXDDY0031"></a>err:XDDY0031, An integrity constraint with URI is not declared.
+
+  <a name="ERRXDDY0032" id="ERRXDDY0032"></a>err:XDDY0032, An integrity constraint with URI is not declared.
+
+  <a name="ERRXDDY0033" id="ERRXDDY0033"></a>err:XDDY0033, Conditions for integrity constraint were not met on collection.
+</strong>
 
 */
