@@ -1044,9 +1044,9 @@ declare variable $news-data:ArticleEmployees := xs:QName("news-data:ArticleEmplo
   <a name="ERRXDST0032" id="ERRXDST0032"></a>err:XDST0032, The domain expression of index references the context item.<br/>
   <a name="ERRXDST0033" id="ERRXDST0033"></a>err:XDST0033, The declaration of index contains a non-simple expression.<br/>
   <a name="ERRXDST0034" id="ERRXDST0034"></a>err:XDST0034, Index cannot be automatically maintained.<br/>
-  <a name="ERRXQP0041" id="ERRXQP0041"></a>err:XQP0041, An integrity constraint with URI is declared already.<br/>
+  <a name="ERRXDST0041" id="ERRXDST0041"></a>err:XDST0041, An integrity constraint with URI is declared already.<br/>
   <a name="ERRXDST0042" id="ERRXDST0042"></a>err:XDST0042, An integrity constraint key has multiple values.<br/>
-  <a name="ERRXQP0043" id="ERRXQP0043"></a>err:XQP0043, An integrity constraint key has a non-atomic value.<br/>
+  <a name="ERRXDST0043" id="ERRXDST0043"></a>err:XDST0043, An integrity constraint key has a non-atomic value.<br/>
   <a name="ERRXDST0045" id="ERRXDST0045"></a>err:XDST0045, The integrity constraint cannot be declared in a main module.<br/>
   <a name="ERRXDST0046" id="ERRXDST0046"></a>err:XDST0046, The integrity constraint with URI has free variables in its definition.<br/>
   <a name="ERRXDST0047" id="ERRXDST0047"></a>err:XDST0047, The integrity constraint with URI references a data source that is not a collection among the statically known collections.<br/>

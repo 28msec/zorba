@@ -653,25 +653,25 @@ DEF_ERR_CODE(XDST0033_INDEX_NON_SIMPLE_EXPR, XDST0033,
 DEF_ERR_CODE(XDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE, XDST0034,
 "Index /s cannot be automatically maintained.")
 
-DEF_ERR_CODE(XDST0041_IC_IS_ALREADY_DECLARED, XQP0041,
+DEF_ERR_CODE(XDST0041_IC_IS_ALREADY_DECLARED, XDST0041,
              "An integrity constraint with URI /s is declared already.")
 
 DEF_ERR_CODE(XDST0042_MULTI_VALUED_IC_KEY, XDST0042,
              "An integrity constraint key has multiple values.")
 
-DEF_ERR_CODE(XDST0043_NON_ATOMIC_IC_KEY, XQP0043,
+DEF_ERR_CODE(XDST0043_NON_ATOMIC_IC_KEY, XDST0043,
              "An integrity constraint key has a non-atomic value.")
 
-DEF_ERR_CODE(XDST0044_IC_DECL_IN_MAIN_MODULE, XDST0045,
+DEF_ERR_CODE(XDST0044_IC_DECL_IN_MAIN_MODULE, XDST0044,
              "The integrity constraint /s cannot be declared in a main module.")
 
-DEF_ERR_CODE(XDST0045_IC_HAS_FREE_VARS, XDST0046,
+DEF_ERR_CODE(XDST0045_IC_HAS_FREE_VARS, XDST0045,
              "The integrity constraint with URI /s has free variables in its definition.")
 
-DEF_ERR_CODE(XDST0046_IC_HAS_INVALID_DATA_SOURCE, XDST0047,
+DEF_ERR_CODE(XDST0046_IC_HAS_INVALID_DATA_SOURCE, XDST0046,
              "The integrity constraint with URI /s references a data source that is not a collection among the statically known collections.")
 
-DEF_ERR_CODE(XDST0047_IC_NOT_DETERMINISTIC, XDST0048,
+DEF_ERR_CODE(XDST0047_IC_NOT_DETERMINISTIC, XDST0047,
              "The integrity constraint with URI /s has a non deterministic definition.")
 
 
