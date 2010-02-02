@@ -295,7 +295,7 @@ protected:
 
 public:
   QueryLoc           loc;
-  static_context   * theSctx; // no need to serialize this
+  static_context   * theSctx;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(PlanIterator);

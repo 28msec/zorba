@@ -445,7 +445,12 @@ void operator&(Archiver &ar, MAPM &obj)
       if(*tail == '.')
         tail++;
       if(e_ptr)
-        strcpy(tail+1, e_ptr);
+      {
+        int i;
+        for(i=0;e_ptr[i];i++)
+          tail[i+1] = e_ptr[i];
+        tail[i+1] = 0;
+      }
       else
         tail[1] = 0;
     }
