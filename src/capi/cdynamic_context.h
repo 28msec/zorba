@@ -16,6 +16,7 @@
 #ifndef ZORBAC_CDYNAMIC_CONTEXT_H
 #define ZORBAC_CDYNAMIC_CONTEXT_H
 
+#include <vector>
 #include <zorba/zorbac.h>
 #include <zorba/dynamic_context.h>
 #include "zorbautils/mutex.h"
@@ -89,6 +90,7 @@ namespace zorbac {
        */
       XQuery_t                            theCloneQuery;
       XQC_ErrorHandler*                   theErrorHandler;
+      std::vector<XQC_Sequence*>          theBoundVariables;
       SYNC_CODE(mutable Mutex theMutex;)
       SYNC_CODE(friend class CExpression;)
   }; /* class DynamicContext */

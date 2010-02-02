@@ -93,6 +93,9 @@ namespace zorbac {
          ++lIter) {
       delete lIter->second;
     }
+
+    // theStrings will be destructed here, destroying all strings that
+    // were put into it automatically.
   }
 
   CStaticContext*

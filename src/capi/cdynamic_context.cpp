@@ -51,6 +51,10 @@ namespace zorbac {
 
   CDynamicContext::~CDynamicContext()
   {
+    vector<XQC_Sequence*>::iterator it;
+    for (it = theBoundVariables.begin(); it < theBoundVariables.end(); it++) {
+      (*it)->free(*it);
+    }
   }
 
   CDynamicContext*
@@ -140,6 +144,11 @@ namespace zorbac {
       Iterator_t lIter = lSeq->getCPPIterator();
 
       me->theContext->setVariable(uri == NULL ? "" : uri, name, lIter);
+
+      // XQC claims that the XQC_DynamicContext takes ownership,
+      // memory allocation-wise, of any XQC_Sequences passed to
+      // set_variable(). This seems weird, but hey.
+      me->theBoundVariables.push_back(seq);
     }
     DC_CATCH;
   }

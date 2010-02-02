@@ -83,6 +83,7 @@ cerror_example_1(XQC_Implementation* impl)
   // no need to free the query
   // because it was not successfully created
   free(lErrorHandler);
+  lCtx->free(lCtx);
 
   return gError == XQC_STATIC_ERROR ? 1 : 0;
 }
@@ -113,6 +114,7 @@ cerror_example_2(XQC_Implementation* impl)
   // release all resources
   lResult->free(lResult);
   lExpr->free(lExpr);
+  lCtx->free(lCtx);
   free(lErrorHandler);
 
   return gError == XQC_DYNAMIC_ERROR ? 1 : 0;
@@ -149,6 +151,7 @@ cerror_example_3(XQC_Implementation* impl)
   free(lErrorHandler);
   lResult->free(lResult);
   lExpr->free(lExpr);
+  lCtx->free(lCtx);
 
   return gError == XQC_DYNAMIC_ERROR ? 1 : 0;
 }
