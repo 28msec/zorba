@@ -992,7 +992,7 @@ void PULImpl::mergeUpdates(store::Item* other)
   mergeUpdateList(NULL,
                   theCreateIndexList,
                   otherp->theCreateIndexList,
-                  UP_LIST_NONE);
+                  UP_LIST_CREATE_INDEX);
 
   mergeUpdateList(NULL,
                   theDeleteIndexList,
@@ -1028,14 +1028,31 @@ void PULImpl::mergeUpdateList(
     if (listKind == UP_LIST_CREATE_COLLECTION) 
     {
       UpdCreateCollection* otherUpd = static_cast<UpdCreateCollection*>(otherList[i]);
-      for (size_t j = 0; j < myList.size(); ++j) 
+      for (ulong j = 0; j < myList.size(); ++j) 
       {
         if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_COLLECTION) 
         {
           UpdCreateCollection* upd = static_cast<UpdCreateCollection*>(myList[j]);
           if (upd->getName()->equals(otherUpd->getName())) 
           {
-            ZORBA_ERROR(XDDY0013);
+            ZORBA_ERROR_PARAM(XDDY0016_COLLECTION_MULTIPLE_CREATES,
+                              upd->getName()->getStringValue(), "");
+          }
+        }
+      }
+    }
+    else if (listKind == UP_LIST_CREATE_INDEX) 
+    {
+      UpdCreateIndex* otherUpd = static_cast<UpdCreateIndex*>(otherList[i]);
+      for (ulong j = 0; j < myList.size(); ++j) 
+      {
+        if (myList[j]->getKind() == store::UpdateConsts::UP_CREATE_INDEX) 
+        {
+          UpdCreateIndex* upd = static_cast<UpdCreateIndex*>(myList[j]);
+          if (upd->getName()->equals(otherUpd->getName())) 
+          {
+            ZORBA_ERROR_PARAM(XDDY0027_INDEX_MULTIPLE_CREATES,
+                              upd->getName()->getStringValue(), "");
           }
         }
       }

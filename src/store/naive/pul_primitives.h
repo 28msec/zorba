@@ -1090,6 +1090,8 @@ public:
     return store::UpdateConsts::UP_CREATE_INDEX;
   }
 
+  const store::Item* getName() const { return theQName.getp(); }
+
   void apply();
   void undo();
 };
@@ -1149,6 +1151,13 @@ public:
   void apply();
   void undo();
 };
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Integrity Constraints Primitives                                           //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
@@ -1220,9 +1229,9 @@ class UpdDeActivateIC : public  UpdatePrimitive
 
 protected:
   const store::Item_t  theQName;
-  store::Item_t  theFromCollectionName;
-  store::Item_t  theToCollectionName;
-  store::IC::ICKind theICKind;
+  store::Item_t        theFromCollectionName;
+  store::Item_t        theToCollectionName;
+  store::IC::ICKind    theICKind;
 
 public:
   UpdDeActivateIC(

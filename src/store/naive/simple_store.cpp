@@ -363,48 +363,6 @@ XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 #endif
 }
 
-void SimpleStore::populateIndex(
-    const store::Index_t& aIndex,
-    store::Iterator* aSourceIter,
-    ulong aNumColumns)
-{
-  store::Item_t domainItem;
-  store::IndexKey* key = NULL;
-
-  IndexImpl* index = static_cast<IndexImpl*>(aIndex.getp());
-
-  aSourceIter->open();
-
-  try
-  {
-    while (aSourceIter->next(domainItem))
-    {
-      key = new store::IndexKey(aNumColumns);
-
-      for (ulong i = 0; i < aNumColumns; ++i)
-      {
-        if (!aSourceIter->next((*key)[i]))
-        {
-          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR, "Incomplete key during index build");
-        }
-      }
-
-      index->insert(key, domainItem);
-
-      key = NULL; // ownership of the key obj passes to the index.
-    }
-  }
-  catch(...)
-  {
-    if (key != NULL)
-      delete key;
-
-    aSourceIter->close();
-    throw;
-  }
-
-  aSourceIter->close();
-}
 
 /*******************************************************************************
   Create an index with a given URI and return an rchandle to the index object.
@@ -441,6 +399,61 @@ store::Index_t SimpleStore::createIndex(
   }
 
   return index;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::populateIndex(
+    const store::Index_t& aIndex,
+    store::Iterator* aSourceIter,
+    ulong aNumColumns)
+{
+  store::Item_t domainItem;
+  store::IndexKey* key = NULL;
+
+  IndexImpl* index = static_cast<IndexImpl*>(aIndex.getp());
+
+  aSourceIter->open();
+
+  try
+  {
+    while (aSourceIter->next(domainItem))
+    {
+      if (domainItem->isNode() &&
+          domainItem->getCollection() == NULL &&
+          !index->isTemporary())
+      {
+        ZORBA_ERROR_PARAM(XDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+                          index->getName()->getStringValue(), "");
+      }
+
+      key = new store::IndexKey(aNumColumns);
+
+      for (ulong i = 0; i < aNumColumns; ++i)
+      {
+        if (!aSourceIter->next((*key)[i]))
+        {
+          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR, "Incomplete key during index build");
+        }
+      }
+
+      index->insert(key, domainItem);
+
+      key = NULL; // ownership of the key obj passes to the index.
+    }
+  }
+  catch(...)
+  {
+    if (key != NULL)
+      delete key;
+
+    aSourceIter->close();
+    throw;
+  }
+
+  aSourceIter->close();
 }
 
 

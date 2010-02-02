@@ -20,33 +20,6 @@
 
 namespace zorba {
 
-class var_counter : public abstract_expr_visitor
-{
-private:
-  const var_expr * m_var;
-  int              m_counter;
-  int              m_limit;
-
-public:
-  var_counter(const var_expr* var, int limit) : m_var(var), m_counter(0), m_limit (0) { }
-
-  int get_counter() { return m_counter; }
-
-  using abstract_expr_visitor::begin_visit;
-  using abstract_expr_visitor::end_visit;
-
-  bool begin_visit(var_expr& v)
-  {
-    if (m_limit > 0 && m_counter >= m_limit) return false;
-    if (&v == m_var)
-    {
-      ++m_counter;
-    }
-    return true;
-  }
-};
-
-
 bool count_variable_uses_rec(
     const expr* e,
     const var_expr* var,
@@ -68,14 +41,17 @@ bool count_variable_uses_rec(
   {
     // TODO: ugly hack
     const fo_expr* fo = dynamic_cast<const fo_expr*>(e);
-    if (fo != NULL && rCtx != NULL && fo->get_func()->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
+
+    if (fo != NULL &&
+        rCtx != NULL &&
+        fo->get_func()->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
     {
       const const_expr* qnameExpr = static_cast<const const_expr*>(fo->get_arg(0));
       const store::Item* qname = qnameExpr->get_val();
       static_context* sctx = rCtx->getStaticContext(fo);
       ValueIndex* index = sctx->lookup_index(qname);
-      expr::substitution_t subst = fo->get_substitution();
 
+      expr::substitution_t subst = fo->get_substitution();
       if (subst.getp() != NULL)
       {
         expr* domainExpr = index->getDomainExpr();
@@ -96,13 +72,12 @@ bool count_variable_uses_rec(
 }
 
 
-int count_variable_uses(const expr* root, const var_expr* var, RewriterContext* rCtx, int limit = 0)
+int count_variable_uses(
+    const expr* root,
+    const var_expr* var,
+    RewriterContext* rCtx,
+    int limit = 0)
 {
-#if 0
-  var_counter c(var, limit);
-  root->accept(c);
-  return c.get_counter();
-#endif
   int count = 0;
 
   count_variable_uses_rec(root, var, rCtx, limit, count);

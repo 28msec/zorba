@@ -172,7 +172,6 @@ public:
   class substitution : public SimpleRCObject
   {
   protected:
-    std::vector<expr_t> expr_key_holder;
     std::map<const expr *, expr_t> subst_map;
 
   public:
@@ -183,7 +182,6 @@ public:
       iterator it = subst_map.find(key);
       if (it == subst_map.end())
       {
-        expr_key_holder.push_back(key);
         return subst_map[key];
       }
       else
@@ -203,7 +201,6 @@ public:
     void clear()
     {
       subst_map.clear();
-      expr_key_holder.clear();
     }
   }; // class substitution
 

@@ -738,6 +738,9 @@ DEF_ERR_CODE(XDDY0014_COLLECTION_BAD_DESTROY_ICS, XDDY0014,
 DEF_ERR_CODE(XDDY0015_COLLECTION_BAD_DESTROY_NODES, XDDY0015,
 "Cannot delete collection /s because there are references on its nodes.")
 
+DEF_ERR_CODE(XDDY0016_COLLECTION_MULTIPLE_CREATES, XDDY0016, 
+"Multiple calls to create-collection function in the same snapshot for collection /s.")
+
 
 DEF_ERR_CODE(XDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION, XDDY0020,
 "The domain expression of index /s produces nodes that are not in collection.")
@@ -760,6 +763,9 @@ DEF_ERR_CODE(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, XDDY0025,
 DEF_ERR_CODE(XDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, XDDY0026,
 "Index /s does not support range probes.")
 
+DEF_ERR_CODE(XDDY0027_INDEX_MULTIPLE_CREATES, XDDY0027, 
+"Multiple calls to create-index function in the same snapshot for index /s.")
+
 
 DEF_ERR_CODE(XDDY0031_IC_IS_NOT_DECLARED, XDDY0031,
              "An integrity constraint with URI /s is not declared.")
@@ -769,11 +775,6 @@ DEF_ERR_CODE(XDDY0032_IC_IS_NOT_ACTIVATED, XDDY0032,
 
 DEF_ERR_CODE(XDDY0033_IC_NOT_MET, XDDY0033,
              "Conditions for integrity constraint /s were not met on collection /s.")
-
-
-
-DEF_ERR_CODE(XDDY0013, XDDY0013, 
-"Multiple calls to create-collection in the same snapshot have the same QName as first parameter.")
 
 
 #undef DEF_ERR_CODE

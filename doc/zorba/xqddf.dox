@@ -699,14 +699,14 @@ restrictions:
   <ul>
   <li>Its context item, context position, and context size are considered undefined, and as a result they must not be referenced [<a href="#ERRXDST0032" title="err:XDST0032">err:XDST0032</a>].</li>
   <li>It must generate a sequence of nodes [<a href="#ERRXDTY0010" title="err:XDTY0010">err:XDTY0010</a>].</li>
-  <li>Each domain node in the domain sequence must belong to a collection that appears in the available collections of the module that contains the index declaration [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
+  <li>Each node in the domain sequence must belong to a collection that appears in the available collections of the module that contains the index declaration [<a href="#ERRXDDY0020" title="err:XDDY0020">err:XDDY0020</a>].</li>
   </ul>
 
 With each key expression, an index declaration associates a key type and a key collation. The triplet IndexKeyExpr, IndexKeyTypeDecl, IndexKeyCollation is called a <strong>keyspec</strong>. The IndexKeyTypeDecl provides an atomic type that the result of the associated key expression (for each domain node) must match with according to the rules of sequence type matching. This atomic type must not be xs:untypedAtomic or xs:anyAtomicType [<a href="#ERRXDST0027" title="err:XDST0027">err:XDST0027</a>]. Furthermore, if the index is a value range one, an ordering must exist among the values in the type domain [<a href="#ERRXDST0027" title="err:XDST0027">err:XDST0027</a>] (this rules excludes the following atomic types and their subtypes: QName, NOTATION, hexBinary, hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). If the key type in a keyspec is xs:string (or subtype of), the IndexKeyCollation specifies the collation to use when comparing key values from this keyspec. If no collation is specified, the default collation from the static context of the declaring module is used.
 
 \subsection index_creation 2.3 Index creation
 
-As explained already, indexes are just sets of index entries, mapping key tuples to domain nodes. In terms of the XQuery language, these sets âliveâ in the dynamic context. In particular, XQDDF extends the dynamic context with a component called the <strong>available indexes</strong>. This is a map whose entries associate the expanded QName of an index with the entry set of the index. If an entry for an index appears in the available indexes of a module, the index is said to be available to that module.
+As explained already, indexes are just sets of index entries, mapping key tuples to domain nodes. In terms of the XQuery language, these sets "live" in the dynamic context. In particular, XQDDF extends the dynamic context with a component called the <strong>available indexes</strong>. This is a map whose entries associate the expanded QName of an index with the entry set of the index. If an entry for an index appears in the available indexes of a module, the index is said to be available to that module.
 
 In practice, the available indexes component is implemented by Zorba's storage system. To begin with, each index entry set is implemented by some appropriate data structure that acts as an index entry container. The description of potential data structures is beyond the scope of this document, but the typical choices are either some sort of hash table (for equality indexes) or some kind of ordered tree (for range indexes). In addition to managing the index entry containers, the store maintains an <strong>indexes table</strong>, which maps index names to index entry containers. The indexes table is accessible by all queries, so once an entry is added to the table, the associated index is assumed to be available to every query and every module that participates in the execution of that query.
 
@@ -728,10 +728,19 @@ The create-index function is evaluated as follows:
 
 The update primitive is applied as follows:
 
-  <ul>
-  <li>An empty index entry container is created.</li>
-  <li>The domain expression is evaluated first. If the result of the domain expression contains an item that is not a node, an error is raised [<a href="#ERRXDTY0010" title="err:XDTY0010">err:XDTY0010</a>]. This result is then filtered to remove any duplicate nodes. The result of the domain expression after duplicate elimination is called the <strong>domain sequence</strong>.</li>
-  <li>For each node D in the domain sequence, the IndexKeySpecs are evaluated in some implementation dependent order. An IndexKeySpec is evaluated as follows:</li>
+<ul>
+<li>An empty index entry container is created.</li>
+<li>The domain expression is evaluated first. If the result of the domain
+    expression contains an item that is not a node, an error is raised 
+    [<a href="#ERRXDTY0010" title="err:XDTY0010">err:XDTY0010</a>]. This result
+    is then filtered to remove any duplicate nodes. The result of the domain
+    expression after duplicate elimination is called the <strong>domain sequence
+    </strong>. If the domain sequence contains a node that does not belong to a
+    collection, an error is raised [<a href="#ERRXDDY0020" title="err:XDDY0020">
+    err:XDDY0020</a>] (the purpose of this rule is to prevent nodes constructed
+    by node construction expression to appear as domain nodes).</li>
+<li>For each node D in the domain sequence, the IndexKeySpecs are evaluated in
+     some implementation dependent order. An IndexKeySpec is evaluated as follows:</li>
     <ul>
     <li>The key expression in the IndexKeySpec is evaluated, with D serving as its context item.</li>
     <li>Atomization is applied to the result of the key expression.</li>
@@ -740,8 +749,9 @@ The update primitive is applied as follows:
     <li>If the index is declared as unique, the relationship between between key tuples and domain nodes is one-to-one. In this case, if the index already contains an entry whose key tuple is equal to K<sub>i</sub>, an error is raised [<a href="#ERRXDDY0024" title="err:XDDY0024">err:XDDY0024</a>]. Otherwise, the entry [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container.</li>
     <li>If the index is non-unique, it maps key tuples to sets of domain items. In this case, if the index already contains an entry whose key is equal to K<sub>i</sub>, D<sub>i</sub> is added to the set associated with K<sub>i</sub>. Otherwise, the entry [K<sub>i</sub>, { D<sub>i</sub> }] is inserted in the index.</li>
     </ul>
-  <li>A entry is added to the indexes table. The entry maps the expanded QName of the index to the index entry container.</li>
-  </ul>
+<li>A entry is added to the indexes table. The entry maps the expanded QName of
+    the index to the index entry container.</li>
+</ul>
 
 \subsection index_deletion 2.4 Index deletion
 
