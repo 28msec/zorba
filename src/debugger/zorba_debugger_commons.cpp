@@ -282,10 +282,17 @@ std::string ZorbaDebuggerCommons::getFilepathOfURI(const std::string& aUri) cons
 
 void ZorbaDebuggerCommons::clearBreakpoint( unsigned int aId )
 {
-  std::map<DebugLocation_t, bool, DebugLocation>::iterator lIter;
-  lIter = theLocationMap.find(theBreakpoints.find(aId)->second);
-  if (lIter != theLocationMap.end()) {
-    lIter->second = false;
+  std::map<DebugLocation_t, bool, DebugLocation>::iterator lLocation;
+  std::map<unsigned int, DebugLocation_t>::iterator lBreakpoint;
+
+  lBreakpoint = theBreakpoints.find(aId);
+  if (lBreakpoint == theBreakpoints.end()) {
+    return;
+  }
+ 
+  lLocation = theLocationMap.find(lBreakpoint->second);
+  if (lLocation != theLocationMap.end()) {
+    lLocation->second = false;
   }
 }
 
