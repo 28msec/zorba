@@ -117,7 +117,7 @@ After populating the two collections, "user-script-1" runs a query expression th
 
 Finally, "user-script-1" uses the xqddf:remove-nodes function to remove from the articles collection all articles that were published before 2000. Like xqddf:insert-nodes, xqddf:remove-nodes takes as input the QName of a collection and a node-producing source expression. The source nodes must be parent-less nodes that belong to the collection. The function looks up the collection declaration and the collection container, and removes the source nodes from the collection container.
 
-Notice that the whole user-script-1 is organised as a concatenation of three block expressions. Only the second block produces an actual result, the other two are purely updating blocks (their result is the empty sequence). Writing the query as a concatenation of blocks (instead of a single sequential expression), allows the result of the script to be the concatenation of the results of each block (instead of the result of just the last expression in the sequential expression).   
+Notice that the whole user-script-1 is organized as a concatenation of three block expressions. Only the second block produces an actual result, the other two are purely updating blocks (their result is the empty sequence). Writing the query as a concatenation of blocks (instead of a single sequential expression), allows the result of the script to be the concatenation of the results of each block (instead of the result of just the last expression in the sequential expression).
 
 \code
   (: "user-script-1":)
@@ -606,7 +606,7 @@ Now, let us consider what happens when the data on which an index is built gets 
 
 In this example, the CityEmp index was declared as automatic. The "index-maintenance" query shown below transfers the employee with id "007" from his current city, say Paris, to Beijing. Since index CityEmp is automatic, after the update is applied, Zorba will initiate a maintenance operation on the index, whereby the employee node will be removed from the node set associated with Paris and inserted into the node set associated with Beijing (if there is no other employee stationed in Beijing already, an entry for it will be created first). Notice that although the index is not explicitly referenced anywhere in this query, its definition must still be available to the query because it is needed to perform the index maintenance. In this example, the query imports the "news-data" module because it contains the declaration for the employees collection, which is referenced by the query.  But the "news-data" module contains the index declaration as well, so index maintenance can find the index definition. In general, it is a best practice to declare an index in the same module as the collections that are referenced by the index.
 
-The ArtCountEmp index is more complex than the CityEmp index, so the system may not be able to maintain it in an efficient way. Furthermore, the index contains "statistical" information, so it may be acceptable if its contects are not always in sync with the undelying data. For these reasons, the ArtCountEmp index was declared as "manually maintained".
+The ArtCountEmp index is more complex than the CityEmp index, so the system may not be able to maintain it in an efficient way. Furthermore, the index contains "statistical" information, so it may be acceptable if its contents are not always in sync with the underlying data. For these reasons, the ArtCountEmp index was declared as "manually maintained".
 
 \code
   (: The "index-maintenance" query :)
@@ -619,7 +619,7 @@ The ArtCountEmp index is more complex than the CityEmp index, so the system may 
   with "Beijing"
 \endcode
 
-Fianlly, we conclude this example with a query that shows how to destroy an index. As shown in "admin-script-4" below, <strong>index deletion</strong> is done via the xqddf:delete-index function. The function simply destroys the index container and removes the mapping between the index name and the index container from the indexes table. After the index is deleted, any query that tries to access the index will receive an error.
+Finally, we conclude this example with a query that shows how to destroy an index. As shown in "admin-script-4" below, <strong>index deletion</strong> is done via the xqddf:delete-index function. The function simply destroys the index container and removes the mapping between the index name and the index container from the indexes table. After the index is deleted, any query that tries to access the index will receive an error.
 
 \code
   (: The "admin-script-4" query :)
@@ -1063,7 +1063,7 @@ by the upd:mergeUpdates routine. XQDDF adds the following error conditions to th
 
   <a name="ERRXDST0005" id="ERRXDST0005"></a>err:XDST0005, The declaration for collection specifies conflicting property values.
 
-  <a name="ERRXDST0006" id="ERRXDST0006"></a>err:XDST0006, The declaratrion for collection contains an invalid property value.
+  <a name="ERRXDST0006" id="ERRXDST0006"></a>err:XDST0006, The declaration for collection contains an invalid property value.
 
   <a name="ERRXDST0021" id="ERRXDST0021"></a>err:XDST0021, An index with name is already declared in the same module.
 
