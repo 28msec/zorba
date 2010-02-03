@@ -321,7 +321,7 @@ class ZORBA_DLL_PUBLIC AbstractCommandMessage: public AbstractMessage
       Command theCommand;
     };
 
-    CommandContent * theCommandContent;
+    CommandContent* theCommandContent;
 
     void setCommandSet( CommandSet aCommandSet ){ theCommandContent->theCommandSet = aCommandSet; }
 

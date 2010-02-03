@@ -263,19 +263,17 @@ AbstractCommandMessage::getNextId()
 }
 
 AbstractCommandMessage::AbstractCommandMessage( const CommandSet aCommandSet, const Command aCommand, const Flags flags )
-: AbstractMessage( getNextId(), flags ), theReply(0)
+: AbstractMessage( getNextId(), flags ), theReply(0), theCommandContent(new CommandContent())
 {
-  theCommandContent = new CommandContent();
   setCommandSet( aCommandSet );
   setCommand( aCommand );
   setLength( MESSAGE_HEADER_SIZE );
 }
 
 AbstractCommandMessage::AbstractCommandMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractMessage( aMessage ), theReply(0)
+  AbstractMessage( aMessage ), theReply(0), theCommandContent(new CommandContent())
 {
   CommandContent * lmsg =  reinterpret_cast< CommandContent *>( aMessage + SIZE_OF_HEADER_CONTENT );
-  theCommandContent = new CommandContent();
   memcpy( theCommandContent, lmsg, sizeof( CommandContent ) );
   checkIntegrity();
 }

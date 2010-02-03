@@ -38,6 +38,9 @@ zorba::Runnable::Runnable()
     theMutex(),
     theCondition(theMutex),
     theDeleteAfterRun(false)
+#ifdef ZORBA_HAVE_PTHREAD_H
+    ,theCalledTerminate(false)
+#endif
 {
 }
 
@@ -62,6 +65,9 @@ void zorba::Runnable::start()
 void zorba::Runnable::terminate()
 {
   theMutex.lock();
+#ifdef ZORBA_HAVE_PTHREAD_H
+  theCalledTerminate = true;
+#endif
 
   if (theStatus == SUSPENDED) {
 #ifdef WIN32
@@ -183,6 +189,11 @@ void zorba::Runnable::finishImpl()
   theFinishCalled = true;
   theStatus = TERMINATED;
   theMutex.unlock();
+#ifdef ZORBA_HAVE_PTHREAD_H
+  if (!theCalledTerminate) {
+    pthread_detach(theThread);
+  }
+#endif
   if (theDeleteAfterRun) {
     delete this;
   }

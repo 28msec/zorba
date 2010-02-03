@@ -16,6 +16,7 @@
 #include <string>
 #include <sstream>
 #include <assert.h>
+#include <iostream>
 
 #include <zorba/item_factory.h>
 #include <zorba/item.h>
@@ -33,12 +34,12 @@ namespace zorba { namespace http_client {
   
 
   HttpResponseParser::HttpResponseParser(RequestHandler& aHandler, CURL* aCurl,
-    std::string aOverridenContentType)
+    CURLM* aCurlM, std::string aOverridenContentType)
     : 
-  theHandler(aHandler), theCurl(aCurl), theStatus(-1), theStreamBuffer(0),
-    theInsideRead(false), theOverridenContentType(aOverridenContentType)
+  theHandler(aHandler), theCurl(aCurl), theMulti(aCurlM), theStatus(-1),
+    theStreamBuffer(0), theInsideRead(false),
+    theOverridenContentType(aOverridenContentType)
   {
-    theMulti = curl_multi_init();
     curl_multi_add_handle(theMulti, theCurl);
     theStreamBuffer = new CurlStreamBuffer(theMulti, theCurl);
     registerHandler();
@@ -127,8 +128,12 @@ namespace zorba { namespace http_client {
     }
     lParser->theInsideRead = false;
     const char* lDataChar = (const char*) ptr;
-    while (lDataChar[lSize - 1] == 10 || lDataChar[lSize - 1] == 13) {
+    while (lSize != 0 && (lDataChar[lSize - 1] == 10
+          || lDataChar[lSize - 1] == 13)) {
       lSize--;
+    }
+    if (lSize == 0) {
+      return lResult;
     }
     std::string lData(lDataChar, lSize);
 
@@ -268,6 +273,11 @@ namespace zorba { namespace http_client {
     std::string lResult((char*) output.bp, output.size);
     lResult = replaceCodes(lResult);
     std::istringstream lStream(lResult);
+
+    tidyBufFree(&output);
+    tidyBufFree(&errbuf);
+    tidyRelease(tDoc);
+    delete[] lInput;
     XmlDataManager* lDM = Zorba::getInstance(0)->getXmlDataManager();
     try {
       return lDM->parseDocument(lStream);

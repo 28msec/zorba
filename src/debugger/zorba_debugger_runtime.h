@@ -198,6 +198,7 @@ namespace zorba {
     std::set<ZorbaDebugIterator*>     theBreakpoints;
     bool                              theNotSendTerminateEvent;
     bool                              thePlanIsOpen;
+    serializer*                       theSerializer;
   };
 }
 

@@ -22,6 +22,8 @@ using namespace zorba;
 
 int test_debugger_protocol( int argc, char* argv[] )
 {
+  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  Zorba *lZorba = Zorba::getInstance(lStore);
 	bool lResult;
 	zorba::TestDebuggerSerialization * test = new zorba::TestDebuggerSerialization();
 	lResult = test->testReplyMessage();
@@ -59,6 +61,8 @@ int test_debugger_protocol( int argc, char* argv[] )
 	lResult = test->testVariableMessage();
 	if(!lResult) return 1;
 	delete test;
+  lZorba->shutdown();
+  simplestore::SimpleStoreManager::shutdownStore(lStore);
 	return 0;
 }
 
