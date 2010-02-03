@@ -211,6 +211,8 @@ void GlobalEnvironment::destroy()
   delete m_globalEnv->m_schema_resolver;
   delete m_globalEnv->m_module_resolver;
 
+  serialization::ClassSerializer::getInstance()->destroyArchiverForHardcodedObjects();
+
   delete m_globalEnv->m_compilerSubSys;
   m_globalEnv->m_compilerSubSys = 0;
 
@@ -261,8 +263,6 @@ void GlobalEnvironment::destroy()
 
 void GlobalEnvironment::destroyStatics()
 {
-  serialization::ClassSerializer::getInstance()->destroyArchiverForHardcodedObjects();
-
 #ifndef ZORBA_NO_BIGNUMBERS
   // release resources aquired by the mapm library
   // this will force zorba users to reinit mapm
