@@ -37,6 +37,14 @@
 
 namespace zorba {
 
+class ZorbaImplStatics
+{
+public:
+  ~ZorbaImplStatics()
+  {
+    GlobalEnvironment::destroyStatics();
+  }
+}g_zorbaImplStaticsDestroyer;
 
 ZorbaImpl::ZorbaImpl() : theIsInitialized(false)
 {
@@ -58,13 +66,13 @@ ZorbaImpl::~ZorbaImpl()
 void
 ZorbaImpl::shutdown()
 {
-  if ( ! theIsInitialized )
-    return;
-
-  Loki::DeletableSingleton<ItemFactoryImpl>::GracefulDelete();
-  Loki::DeletableSingleton<XmlDataManagerImpl>::GracefulDelete();
-  GlobalEnvironment::destroy();
-  theIsInitialized = false;
+  if (theIsInitialized )
+  {
+    Loki::DeletableSingleton<ItemFactoryImpl>::GracefulDelete();
+    Loki::DeletableSingleton<XmlDataManagerImpl>::GracefulDelete();
+    GlobalEnvironment::destroy();
+    theIsInitialized = false;
+  }
 }
 
 

@@ -52,6 +52,7 @@ class ZORBA_DLL_PUBLIC GlobalEnvironment
  public:
   static void init(store::Store* store);
   static void destroy();
+  static void destroyStatics();
   static GlobalEnvironment& getInstance()
   {
     assert(m_globalEnv);
@@ -77,7 +78,7 @@ private:
   store::Store*                          m_store;
   root_static_context*                   m_rootStaticContext;
 #ifndef ZORBA_NO_BIGNUMBERS
-  M_APM                                  m_mapm; // this is a pointer type
+//  M_APM                                  m_mapm; // this is a pointer type
 #endif
   XQueryCompilerSubsystem*               m_compilerSubSys;
 

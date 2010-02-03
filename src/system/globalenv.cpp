@@ -147,7 +147,7 @@ void GlobalEnvironment::init(store::Store* store)
 
 #ifndef ZORBA_NO_BIGNUMBERS
   // initialize mapm for bignum handling
-  m_globalEnv->m_mapm = m_apm_init();
+//  m_globalEnv->m_mapm = m_apm_init();
 #endif
 
 
@@ -211,8 +211,6 @@ void GlobalEnvironment::destroy()
   delete m_globalEnv->m_schema_resolver;
   delete m_globalEnv->m_module_resolver;
 
-  serialization::ClassSerializer::getInstance()->destroyArchiverForHardcodedObjects();
-
   delete m_globalEnv->m_compilerSubSys;
   m_globalEnv->m_compilerSubSys = 0;
 
@@ -233,9 +231,8 @@ void GlobalEnvironment::destroy()
   // release resources aquired by the mapm library
   // this will force zorba users to reinit mapm
   // if they shutdown zorba but want to use mapm beyond
-  m_apm_free(m_globalEnv->m_mapm);
-  m_apm_free_all_mem();
-  m_globalEnv->m_mapm = 0;
+//  m_apm_free(m_globalEnv->m_mapm);
+//  m_globalEnv->m_mapm = 0;
 #endif
 
 
@@ -262,6 +259,17 @@ void GlobalEnvironment::destroy()
 
 }
 
+void GlobalEnvironment::destroyStatics()
+{
+  serialization::ClassSerializer::getInstance()->destroyArchiverForHardcodedObjects();
+
+#ifndef ZORBA_NO_BIGNUMBERS
+  // release resources aquired by the mapm library
+  // this will force zorba users to reinit mapm
+  // if they shutdown zorba but want to use mapm beyond
+  m_apm_free_all_mem();
+#endif
+}
 
 GlobalEnvironment::GlobalEnvironment()
   :
