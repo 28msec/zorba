@@ -16,12 +16,20 @@
 #include <iostream>
 #include <string.h>
 
+#include <simplestore/simplestore.h>
+#include <zorba/zorba.h>
 #include <zorba/util/path.h>
 
 using namespace std;
 using namespace zorba;
 
 int main (int argc, const char **argv) {
+
+  // initialize and deinitialize zorba in order to avoid
+  // valgrind showing still reachables
+  zorba::simplestore::SimpleStore* store =
+      zorba::simplestore::SimpleStoreManager::getStore();
+  zorba::Zorba * engine = zorba::Zorba::getInstance(store);     
 
   if (strcmp (argv [1], "--branch-path") == 0) 
   {
@@ -43,6 +51,9 @@ int main (int argc, const char **argv) {
   } else if (strcmp (argv [1], "--path") == 0) {
     cout << filesystem_path (argv [2]).get_path () << endl;
   }
+
+  engine->shutdown(); 
+  simplestore::SimpleStoreManager::shutdownStore(store);
 
   return 0;
 }
