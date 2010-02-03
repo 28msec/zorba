@@ -431,7 +431,7 @@ The delete-nodes-first function is evaluated as follows:
 declare updating function xqddf:delete-node-first($collectionName as xs:QName)
 \endcode
 
-The delete-node-first function is a special case of the delete-nodes-first function. Specifically, delete-node-first($collectionName) is equivalent to delete-nodes-fist($collectionName, 1).
+The delete-node-first function is a special case of the delete-nodes-first function. Specifically, delete-node-first($collectionName) is equivalent to delete-nodes-first($collectionName, 1).
 
 \code
 declare updating function xqddf:delete-nodes-last($collectionName as xs:QName, $number as xs:unsignedLong)
