@@ -672,7 +672,7 @@ Zorba 1.0 defines three index properties: <strong>uniqueness</strong> (with poss
 
 The uniqueness property determines the kind of relationship between keys (or key tuples, more generaly) and domain nodes: if the relationship is one-to-one, the index may be declared as unique; otherwise (one-to-N relationship), the index must be declared as non-unique. As we will see, a unique index actually enforces the one-to-one relationship between keys and domain nodes.
  
-The usage property specifies the kind of query expressions that may be optimized by using the index. A <strong>value equality index</strong> can optimize expressions involving value equality predicates only. The "probe-1" and "no-probe-1" queries in \ref indexes_in_action are an example of such usage. As shown there, a value equality index supports the xqddf:index-probe-point function.  A value range index can optimize expressions involving any kind of value comparison. The "probe-2" and "no-probe-2" queries in \ref indexes_in_action are an example of such usage. A <strong>value range index</strong> supports both the xqddf:index-probe-point and the xqddf:index-probe-point functions.
+The usage property specifies the kind of query expressions that may be optimized by using the index. A <strong>value equality index</strong> can optimize expressions involving value equality predicates only. The "probe-1" and "no-probe-1" queries in \ref indexes_in_action are an example of such usage. As shown there, a value equality index supports the xqddf:probe-index-point function.  A value range index can optimize expressions involving any kind of value comparison. The "probe-2" and "no-probe-2" queries in \ref indexes_in_action are an example of such usage. A <strong>value range index</strong> supports both the xqddf:probe-index-point and the xqddf:probe-index-range functions.
 
 The maintenance mode specifies how index maintenance is done. Zorba 1.0 offers two maintenance modes: manual and automatic. For a <strong>manual index</strong>, maintenance is done only when the function ddf:refresh-index (described in \ref index_maintenance) is invoked inside a query. Essentially, in manual mode maintenance is in the control of the query programmers, and the index may become stale between two consecutive calls to the ddf:refresh-index function. In contrast, for an <strong>automatic index</strong>, Zorba guarantees that the index stays up-to-date at any given time.
 
@@ -791,7 +791,7 @@ Probing an index means retrieving the domain nodes associated with a particular 
                           $keyM     as xs:anyAtomic) as node()*
 \endcode
 
-For the probe-index-point function, the search condition is specified as a number of atomic (or empty) items comprising a key tuple. This number must be equal to the number of indexspecs found in the index declaration [<a href="#ERRXDDY0025" title="err:XDDY0025">err:XDDY0025</a>]. If the index contains an entry with the given key tuple, the associated domain nodes are returned. Otherwise, the empty sequence is returned.
+For the probe-index-point function, the search condition is specified as a number of atomic items comprising a key tuple. This number must be equal to the number of indexspecs found in the index declaration [<a href="#ERRXDDY0025" title="err:XDDY0025">err:XDDY0025</a>]. If the index contains an entry with the given key tuple, the associated domain nodes are returned. Otherwise, the empty sequence is returned.
   
 \code
   probe-index-range($indexUri                 as xs:QName,
