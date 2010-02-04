@@ -80,14 +80,14 @@ In this example, the declarations are placed inside the "news-data" library modu
 
   import schema namespace news-schemas = "http://www.news.org/schemas";
 
-  declare collection news-data:employees as schema-element(news-schema:employee))*;
+  declare collection news-data:employees as schema-element(news-schema:employee)*;
 
   declare collection news-data:articles as node()*;
 
   declare const ordered collection news-data:months as schema-element(news-schema:month)* with read-only nodes;
 
   declare variable $news-data:employees := xs:QName("news-data:employees");
-  declare variable $news-data:articles : xs:QName("news-data:articles");
+  declare variable $news-data:articles := xs:QName("news-data:articles");
   declare variable $news-data:months := xs:QName("news-data:months");
 \endcode
 
@@ -509,7 +509,7 @@ In this example, the index declaration is placed inside the "news-data" library 
 
   import schema namespace news-schemas = "http://www.news.org/schemas";
 
-  declare collection news-data:employees as schema-element(news-schema:employee))*;
+  declare collection news-data:employees as schema-element(news-schema:employee)*;
 
   declare collection news-data:articles as node()*;
 
@@ -526,7 +526,7 @@ In this example, the index declaration is placed inside the "news-data" library 
            return $art) as xs:integer;
 
   declare variable $news-data:employees := xs:QName("news-data:employees");
-  declare variable $news-data:articles : xs:QName("news-data:articles");
+  declare variable $news-data:articles := xs:QName("news-data:articles");
   declare variable $news-data:months := xs:QName("news-data:months");
   declare variable $news-data:CityEmp := xs:QName("news-data:CityEmp");
   declare variable $news-data:ArtCountEmp := xs:QName("news-data:ArtCountEmp");
@@ -697,7 +697,7 @@ Furthermore, the domain expression must satisfy the following additional semanti
 restrictions:
 
   <ul>
-  <li>Its context item, context position, and context size are considered undefined, and as a result they must not be referenced [<a href="#ERRXDST0032" title="err:XDST0032">err:XDST0032</a>].</li>
+  <li>Its context item, context position, and context size are considered undefined, and as a result they must not be referenced [<a href="#ERRXDST0032" title="err:XDST0032">err:XDST0032</a>].</li>
   <li>It must generate a sequence of nodes [<a href="#ERRXDTY0010" title="err:XDTY0010">err:XDTY0010</a>].</li>
   <li>Each node in the domain sequence must belong to a collection that appears in the available collections of the module that contains the index declaration [<a href="#ERRXDDY0020" title="err:XDDY0020">err:XDDY0020</a>].</li>
   </ul>
