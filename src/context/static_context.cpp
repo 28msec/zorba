@@ -86,7 +86,7 @@ void context::serialize(::zorba::serialization::Archiver& ar)
   if(ar.is_serializing_out())
   {
     ar.set_is_temp_field(true);
-    bool  parent_is_root = check_parent_is_root();//(
+    bool  parent_is_root = check_parent_is_root();
     ar & parent_is_root;
     ar.set_is_temp_field(false);
     if(!parent_is_root)
@@ -116,11 +116,15 @@ void context::serialize(::zorba::serialization::Archiver& ar)
     if(parent)
       parent->addReference(parent->getSharedRefCounter() SYNC_PARAM2(parent->getRCLock()));
   }
-  ar & str_keymap;
-  ar & keymap;
+  if(!ar.is_serializing_out())
+  {
+    assert(modulemap.size() == 0);
+  }
   ar & modulemap;
   ar & module_paths;
   ar & theDefaultFunctionNamespace;
+  ar & str_keymap;
+  ar & keymap;
 }
 
 
@@ -278,7 +282,7 @@ void context::ctx_module_t::serialize(serialization::Archiver &ar)
         = GENV.getModuleURIResolver();
 
       module = lStandardModuleResolver->getExternalModule(
-                  lURIStore->str(), GENV_ROOT_STATIC_CONTEXT);
+              lURIStore->str(), GENV_ROOT_STATIC_CONTEXT);
 
       // no way to get the module
       if (!module)
@@ -1062,7 +1066,7 @@ StatelessExternalFunction* static_context::lookup_stateless_external_function(
     // no way to get the module
     if (!lModule) {
       return NULL;
-    }
+    }~
 
     // remember the module for future use
     bind_external_module(lModule, true);
