@@ -33,6 +33,7 @@
 #include "store/naive/nsbindings.h"
 #include "store/naive/item_iterator.h"
 #include "store/naive/dataguide.h"
+#include "store/naive/node_factory.h"
 
 
 
@@ -709,9 +710,10 @@ XmlNode* DocumentNode::copyInternal(
 
   try
   {
-    tree = new XmlTree(NULL, GET_STORE().createTreeId());
+    tree = NodeFactory::instance().createXmlTree();
 
-    copyNode = new DocumentNode(tree, getBaseUri(), getDocUri());
+    copyNode = NodeFactory::instance().createDocumentNode(
+                tree, getBaseURI(), getDocUri());
 
     ulong numChildren = this->numChildren();
     for (ulong i = 0; i < numChildren; i++)
@@ -776,7 +778,7 @@ store::Item* DocumentNode::getType() const
 void DocumentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   xqpStringStore_t rch = getStringValue();
-  val = new UntypedAtomicItemImpl(rch);
+  GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
   iter = NULL;
 }
 
@@ -787,7 +789,9 @@ void DocumentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) co
 store::Item_t DocumentNode::getAtomizationValue() const
 {
   xqpStringStore_t rch = getStringValue();
-  return new UntypedAtomicItemImpl(rch);
+  store::Item_t val;
+  GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
+  return val;
 }
 
 
@@ -1058,14 +1062,16 @@ XmlNode* ElementNode::copyInternal(
   try
   {
     if (parent == NULL)
-      tree = new XmlTree(NULL, GET_STORE().createTreeId());
+      tree = NodeFactory::instance().createXmlTree();
 
     pos = (parent == rootParent ? pos : -1);
 
-    copyNode = new ElementNode(tree, parent, pos, nodeName, typeName,
-                               haveValue, haveEmptyValue, inSubstGroup,
-                               NULL, // local bindings 
-                               baseUri);
+    copyNode = NodeFactory::instance().createElementNode(
+                 tree, parent, pos, nodeName, typeName,
+                 haveValue, haveEmptyValue, inSubstGroup,
+                 NULL, // local bindings 
+                 baseUri);
+
     if (rootCopy == NULL)
       rootCopy = copyNode;
 
@@ -1369,7 +1375,7 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
     else
     {
       xqpStringStore_t rch = getStringValue();
-      val = new UntypedAtomicItemImpl(rch);
+      GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
     }
   }
   else
@@ -1388,7 +1394,9 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
 store::Item_t ElementNode::getAtomizationValue() const
 {
   xqpStringStore_t rch = getStringValue();
-  return new UntypedAtomicItemImpl(rch);
+  store::Item_t val;
+  GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
+  return val;
 }
 
 
@@ -1453,9 +1461,13 @@ void ElementNode::getStringValue(std::string& buf) const
 ********************************************************************************/
 store::Item_t ElementNode::getNilled() const
 {
+  store::Item_t val;
+
   if (theTypeName == NULL ||
-      theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]))
-    return new BooleanItemNaive(false);
+      theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED])) {
+    GET_STORE().getItemFactory()->createBoolean(val, false);
+    return val;
+  }
 
   bool nilled = true;
   ulong numChildren = this->numChildren();
@@ -1469,8 +1481,10 @@ store::Item_t ElementNode::getNilled() const
     }
   }
 
-  if (!nilled)
-    return new BooleanItemNaive(false);
+  if (!nilled) {
+    GET_STORE().getItemFactory()->createBoolean(val, false);
+    return val;
+  }
 
   nilled = false;
 
@@ -1489,7 +1503,8 @@ store::Item_t ElementNode::getNilled() const
     }
   }
 
-  return new BooleanItemNaive(nilled);
+  GET_STORE().getItemFactory()->createBoolean(val, nilled);
+  return val;
 }
 
 
@@ -1845,7 +1860,7 @@ void ElementNode::addBaseUriProperty(
   store::Item_t typedValue;
   if (relUri == NULL)
   {
-    typedValue = new AnyUriItemImpl(absUri);
+    GET_STORE().getItemFactory()->createAnyURI(typedValue, absUri);
   }
   else
   { 
@@ -1861,19 +1876,24 @@ void ElementNode::addBaseUriProperty(
       resolvedUriString.transfer(relUri);
     }
 
-    typedValue = new AnyUriItemImpl(resolvedUriString);
+    GET_STORE().getItemFactory()->createAnyURI(typedValue, resolvedUriString);
   }
 
   checkUniqueAttr(qname.getp());
 
-  new AttributeNode(NULL,  // xml tree 
-                    this,  // parent
-                    0,     // position
-                    qname, 
-                    typeName,
-                    typedValue,
-                    false, // isListVale
-                    true); // hidden
+  // this might look like a nop but it isn't
+  // the this pointer is used in the constructor to
+  // attach it to the parent
+  GET_STORE().getNodeFactory().createAttributeNode(
+    NULL,  // xml tree 
+    this,  // parent
+    0,     // position
+    qname, 
+    typeName,
+    typedValue,
+    false, // isListVale
+    true); // hidden
+
   setHaveBaseUri();
 }
 
@@ -1895,7 +1915,7 @@ void ElementNode::adjustBaseUriProperty(
   store::Item_t typedValue;
   if (relUri == NULL)
   {
-    typedValue = new AnyUriItemImpl(absUri);
+    GET_STORE().getItemFactory()->createAnyURI(typedValue, absUri);
   }
   else
   { 
@@ -1907,7 +1927,7 @@ void ElementNode::adjustBaseUriProperty(
     } catch (error::ZorbaError& e) {
       ZORBA_FATAL(e.theErrorCode, e.theDescription);
     }
-    typedValue = new AnyUriItemImpl(resolvedUriString);
+    GET_STORE().getItemFactory()->createAnyURI(typedValue, resolvedUriString);
   }
 
   attr->setTypedValue(typedValue);
@@ -2156,24 +2176,24 @@ XmlNode* AttributeNode::copyInternal(
     else
     {
       xqpStringStore_t rch = getStringValue();
-      typedValue = new UntypedAtomicItemImpl(rch);
+      GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, rch);
     }
   }
   
   try
   {
     if (parent == NULL)
-      tree = new XmlTree(NULL, store.createTreeId());
+      tree = GET_STORE().getNodeFactory().createXmlTree();
     
     else if (parent == rootParent)
       reinterpret_cast<ElementNode*>(parent)->checkUniqueAttr(nodeName);
 
-    copyNode = new AttributeNode(tree,
-                                 reinterpret_cast<ElementNode*>(parent),
-                                 pos,
-                                 nodeName,
-                                 typeName, typedValue, isListValue,
-                                 false); // hidden
+    copyNode = GET_STORE().getNodeFactory().createAttributeNode(
+                 tree, static_cast<ElementNode*>(parent),
+                 pos,
+                 nodeName,
+                 typeName, typedValue, isListValue,
+                 false); // hidden
   }
   catch (...)
   {
@@ -2457,10 +2477,11 @@ XmlNode* TextNode::copyInternal(
   {
     if (parent == NULL)
     {
-      tree = new XmlTree(NULL, GET_STORE().createTreeId());
+      tree = NodeFactory::instance().createXmlTree();
 
       textContent = getStringValue();
-      copyNode = new TextNode(tree, NULL, pos, textContent);
+      copyNode = NodeFactory::instance().createTextNode(
+                   tree, NULL, pos, textContent);
     }
     else
     {
@@ -2497,12 +2518,14 @@ XmlNode* TextNode::copyInternal(
         else if (isTyped())
         {
           textContent = getValue()->getStringValue();
-          copyNode = new TextNode(NULL, parent, pos, textContent);
+          copyNode = NodeFactory::instance().createTextNode(
+                       NULL, parent, pos, textContent);
         }
         else
         {
           textContent = getText();
-          copyNode = new TextNode(NULL, parent, pos, textContent);
+          copyNode = NodeFactory::instance().createTextNode(
+                       NULL, parent, pos, textContent);
         }
       }
       else if (isTyped())
@@ -2510,18 +2533,21 @@ XmlNode* TextNode::copyInternal(
         if (copymode.theTypePreserve)
         {
           typedContent = getValue();
-          copyNode = new TextNode(parent, typedContent, haveListValue());
+          copyNode = NodeFactory::instance().createTextNode(
+                       parent, typedContent, haveListValue());
         }
         else
         {
           textContent = getValue()->getStringValue();
-          copyNode = new TextNode(NULL, parent, pos, textContent);
+          copyNode = NodeFactory::instance().createTextNode(
+                       NULL, parent, pos, textContent);
         }
       }
       else
       {
         textContent = getText();
-        copyNode = new TextNode(NULL, parent, pos, textContent);
+        copyNode = NodeFactory::instance().createTextNode(
+                     NULL, parent, pos, textContent);
       }
     }
   }
@@ -2606,12 +2632,12 @@ void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
   if (isTyped())
   {
     rch = getValue()->getStringValue();
-    val = new UntypedAtomicItemImpl(rch);
+    GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
   }
   else
   {
     rch = getText(); 
-    val = new UntypedAtomicItemImpl(rch);
+    GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
   }
   iter = NULL;
 }
@@ -2620,17 +2646,18 @@ void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 store::Item_t TextNode::getAtomizationValue() const
 {
   xqpStringStore_t rch;
+  store::Item_t val;
 
   if (isTyped())
   {
     rch = getValue()->getStringValue();
-    return new UntypedAtomicItemImpl(rch);
   }
   else
   {
     rch = getText(); 
-    return new UntypedAtomicItemImpl(rch);
   }
+  GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
+  return val;
 }
 
 
@@ -2809,17 +2836,19 @@ XmlNode* PiNode::copyInternal(
   {
     if (parent == NULL)
     {
-      tree = new XmlTree(NULL, GET_STORE().createTreeId());
+      tree = NodeFactory::instance().createXmlTree();
 
       target = theTarget;
       content = theContent;
-      copyNode = new PiNode(tree, NULL, pos, target, content);
+      copyNode = NodeFactory::instance().createPiNode(
+                   tree, NULL, pos, target, content);
     }
     else
     {
       target = theTarget;
       content = theContent;
-      copyNode = new PiNode(tree, parent, pos, target, content);
+      copyNode = NodeFactory::instance().createPiNode(
+                   tree, parent, pos, target, content);
     }
   }
   catch (...)
@@ -2848,7 +2877,7 @@ store::Item* PiNode::getType() const
 void PiNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   xqpStringStore_t rch = theContent; 
-  val = new StringItemNaive(rch);
+  GET_STORE().getItemFactory()->createString(val, rch);
   iter = NULL;
 }
 
@@ -2856,7 +2885,9 @@ void PiNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 store::Item_t PiNode::getAtomizationValue() const
 {
   xqpStringStore_t rch = theContent; 
-  return new StringItemNaive(rch);
+  store::Item_t val;
+  GET_STORE().getItemFactory()->createString(val, rch);
+  return val;
 }
 
 
@@ -2938,15 +2969,17 @@ XmlNode* CommentNode::copyInternal(
   {
     if (parent == NULL)
     {
-      tree = new XmlTree(NULL, GET_STORE().createTreeId());
+      tree = GET_STORE().getNodeFactory().createXmlTree();
 
       content = theContent;
-      copyNode = new CommentNode(tree, NULL, pos, content);
+      copyNode = GET_STORE().getNodeFactory().createCommentNode(
+                   tree, NULL, pos, content);
     }
     else
     {
       content = theContent;
-      copyNode = new CommentNode(tree, parent, pos, content);
+      copyNode = GET_STORE().getNodeFactory().createCommentNode(
+                   tree, parent, pos, content);
     }
   }
   catch (...)
@@ -2976,7 +3009,7 @@ store::Item* CommentNode::getType() const
 void CommentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   xqpStringStore_t rch = theContent; 
-  val = new StringItemNaive(rch);
+  GET_STORE().getItemFactory()->createString(val, rch);
   iter = NULL;
 }
 
@@ -2984,7 +3017,9 @@ void CommentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
 store::Item_t CommentNode::getAtomizationValue() const
 {
   xqpStringStore_t rch = theContent; 
-  return new StringItemNaive(rch);
+  store::Item_t val;
+  GET_STORE().getItemFactory()->createString(val, rch);
+  return val;
 }
 
 

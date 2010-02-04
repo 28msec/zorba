@@ -115,6 +115,7 @@ public:
 
   bool createUnsignedByte(store::Item_t& result, xqp_ubyte value);
 
+  bool createDateTime(store::Item_t& result, const xqp_date* date, const xqp_time* time);
 
   bool createDateTime(store::Item_t& result, const xqp_dateTime* value);
  

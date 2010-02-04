@@ -30,7 +30,7 @@
 #include "store/naive/simple_pul.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/string_pool.h"
-//#include "store/naive/tupleimpl.h"
+#include "store/naive/node_factory.h"
 
 
 namespace zorba { namespace simplestore {
@@ -346,6 +346,19 @@ bool BasicItemFactory::createDateTime(store::Item_t& result, const xqp_dateTime*
   return true;
 }
 
+bool BasicItemFactory::createDateTime(
+    store::Item_t& result,
+    const xqp_date* date,
+    const xqp_time* time)
+{
+  std::auto_ptr<DateTimeItemNaive> dtin(new DateTimeItemNaive());
+  int err = DateTime::createDateTime(date, time, dtin->theValue);
+  result = dtin.get();
+  if (err == 0) {
+    dtin.release();
+  } // destroy object if error occured
+  return err == 0;
+}
 
 bool BasicItemFactory::createDateTime(
     store::Item_t& result,
@@ -429,9 +442,7 @@ bool BasicItemFactory::createDateTime(
   } 
   else
   {
-    if (2 == DateTimeItemNaive::createFromDateAndTime(&date->getDateValue(),
-                                                      &time->getTimeValue(),
-                                                      result))
+    if (! createDateTime(result, &date->getDateValue(), &time->getTimeValue())) 
       ZORBA_ERROR(FORG0008);
     
     return true;
@@ -854,9 +865,9 @@ bool BasicItemFactory::createDocumentNode(
 
   try
   {
-    xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
+    xmlTree = GET_STORE().getNodeFactory().createXmlTree();
 
-    n = new DocumentNode(xmlTree, baseUri, docUri);
+    n = GET_STORE().getNodeFactory().createDocumentNode(xmlTree, baseUri, docUri);
   }
   catch (...)
   {
@@ -929,9 +940,10 @@ bool BasicItemFactory::createElementNode(
   try
   {
     if (parent == NULL)
-      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
+      xmlTree = GET_STORE().getNodeFactory().createXmlTree();
 
-    n = new ElementNode(xmlTree,
+    n = GET_STORE().getNodeFactory().createElementNode(
+                        xmlTree,
                         pnode,
                         pos,
                         nodeName,
@@ -989,14 +1001,15 @@ bool BasicItemFactory::createAttributeNode(
   {
     if (parent == NULL)
     {
-      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
+      xmlTree = GET_STORE().getNodeFactory().createXmlTree();
     }
     else
     {
       pnode->checkUniqueAttr(nodeName.getp());
     }
 
-    n = new AttributeNode(xmlTree,
+    n = GET_STORE().getNodeFactory().createAttributeNode(
+                          xmlTree,
                           pnode,
                           pos,
                           nodeName,
@@ -1049,7 +1062,7 @@ bool BasicItemFactory::createAttributeNode(
   {
     if (parent == NULL)
     {
-      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
+      xmlTree = GET_STORE().getNodeFactory().createXmlTree();
     }
     else
     {
@@ -1058,7 +1071,7 @@ bool BasicItemFactory::createAttributeNode(
 
     store::Item_t typedValue = new ItemVector(typedValueV);
  
-    node = new AttributeNode(xmlTree,
+    node = GET_STORE().getNodeFactory().createAttributeNode(xmlTree,
                              pnode,
                              pos,
                              nodeName,
@@ -1106,9 +1119,9 @@ bool BasicItemFactory::createTextNode(
   {
     if (parent == NULL)
     {
-      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
+      xmlTree = GET_STORE().getNodeFactory().createXmlTree();
 
-      n = new TextNode(xmlTree, pnode, pos, content);
+      n = GET_STORE().getNodeFactory().createTextNode(xmlTree, pnode, pos, content);
     }
     else
     {
@@ -1145,7 +1158,7 @@ bool BasicItemFactory::createTextNode(
       }
       else
       {
-        n = new TextNode(xmlTree, pnode, pos, content);
+        n = GET_STORE().getNodeFactory().createTextNode(xmlTree, pnode, pos, content);
       }
     }
   }
@@ -1177,7 +1190,7 @@ bool BasicItemFactory::createTextNode(
   ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
 
   // Note: the TextNode constructor asserts that the parent has 0 children
-  result = new TextNode(pnode, content, false);
+  result = GET_STORE().getNodeFactory().createTextNode(pnode, content, false);
   return true;
 }
 
@@ -1191,7 +1204,7 @@ bool BasicItemFactory::createTextNode(
   ElementNode* pnode = reinterpret_cast<ElementNode*>(parent);
 
   store::Item_t typedValue = new ItemVector(content);
-  result = new TextNode(pnode, typedValue, true);
+  result = GET_STORE().getNodeFactory().createTextNode(pnode, typedValue, true);
   return true;
 }
 
@@ -1229,9 +1242,9 @@ bool BasicItemFactory::createPiNode(
   try
   {
     if (parent == NULL)
-      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
+      xmlTree = GET_STORE().getNodeFactory().createXmlTree();
 
-    n = new PiNode(xmlTree, pnode, pos, target, content);
+    n = GET_STORE().getNodeFactory().createPiNode(xmlTree, pnode, pos, target, content);
   }
   catch (...)
   {
@@ -1273,9 +1286,9 @@ bool BasicItemFactory::createCommentNode(
   try
   {
     if (parent == NULL)
-      xmlTree = new XmlTree(NULL, GET_STORE().createTreeId());
+      xmlTree = GET_STORE().getNodeFactory().createXmlTree();
 
-    n = new CommentNode(xmlTree, pnode, pos, content);
+    n = GET_STORE().getNodeFactory().createCommentNode(xmlTree, pnode, pos, content);
   }
   catch (...)
   {

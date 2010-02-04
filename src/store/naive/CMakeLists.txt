@@ -23,6 +23,7 @@ SET(ZORBA_STORE_IMPL_SRCS
     item_vector.cpp
     node_vector.cpp
     node_items.cpp
+    node_factory.cpp
     node_updates.cpp
     simple_pul.cpp
     pul_primitives.cpp

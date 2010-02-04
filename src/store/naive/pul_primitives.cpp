@@ -22,6 +22,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_collection.h"
+#include "store/naive/node_factory.h"
 
 #include "store/api/iterator.h"
 #include "store/api/copymode.h"
@@ -606,7 +607,7 @@ void UpdPut::apply()
 
       ElementNode* elem =  static_cast<ElementNode*>(theTarget.getp());
 
-      DocumentNode* doc = new DocumentNode();
+      DocumentNode* doc = GET_STORE().getNodeFactory().createDocumentNode();
       doc->setTree(elem->getTree());
       doc->setOrdPath(NULL, 1, store::StoreConsts::documentNode);
       

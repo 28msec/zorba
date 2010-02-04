@@ -468,18 +468,6 @@ xqp_string ENTITYItemImpl::show() const
 /*******************************************************************************
   class DateTimeItem
 ********************************************************************************/
-int DateTimeItemNaive::createFromDateAndTime(
-    const xqp_date* date,
-    const xqp_time* time,
-    store::Item_t& item)
-{
-  DateTimeItemNaive* dtin = new DateTimeItemNaive();
-  int result = DateTime::createDateTime(date, time, dtin->theValue);
-  item = dtin;
-  return result;
-}
-
-
 xqpStringStore_t DateTimeItemNaive::getStringValue() const
 {
   return theValue.toString().getStore();
@@ -1553,6 +1541,6 @@ xqp_string ErrorItemNaive::show() const
 
 
 
-} // namespace store
+} // namespace simplestore
 } // namespace zorba
 

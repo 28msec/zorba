@@ -38,13 +38,13 @@ namespace error
 namespace store 
 {
   class Item;
-  class ItemFactory;
 }
 
 
 namespace simplestore 
 {
 
+class BasicItemFactory;
 class ElementNode;
 
 
@@ -74,7 +74,7 @@ protected:
 
   char                             theBuffer[INPUT_CHUNK_SIZE];
 
-  store::ItemFactory             * theFactory;
+  BasicItemFactory               * theFactory;
 
   error::ErrorManager            * theErrorManager;
 
@@ -87,7 +87,7 @@ protected:
 
 public:
   XmlLoader(
-        store::ItemFactory* factory,
+        BasicItemFactory* factory,
         error::ErrorManager* errorManager,
         bool dataguide)
     :
@@ -225,7 +225,7 @@ protected:
 
 public:
   FastXmlLoader(
-        store::ItemFactory* factory,
+        BasicItemFactory* factory,
         error::ErrorManager* errorManager,
         bool dataguide);
 

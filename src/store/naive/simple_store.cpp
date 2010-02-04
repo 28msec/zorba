@@ -47,6 +47,7 @@
 #include "store/naive/simple_iterator_factory.h"
 #include "store/naive/query_context.h"
 #include "store/naive/item_iterator.h"
+#include "store/naive/node_factory.h"
 
 #ifdef ZORBA_STORE_MSDOM
 #include "store/naive/msdom_addon/import_msdom.h"
@@ -139,6 +140,7 @@ SimpleStore::SimpleStore()
   theQNamePool(NULL),
   theItemFactory(NULL),
   theIteratorFactory(NULL),
+  theNodeFactory(NULL),
   theDocuments(Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(),
   theUriCollections(Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
@@ -180,6 +182,8 @@ void SimpleStore::init()
     theItemFactory = new BasicItemFactory(theNamespacePool, theQNamePool);
 
     theIteratorFactory = new SimpleIteratorFactory();
+
+    theNodeFactory = new NodeFactory();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
@@ -323,6 +327,15 @@ void SimpleStore::shutdown()
 #endif
 
   theIsInitialized = false;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+store::ItemFactory*
+SimpleStore::getItemFactory() const
+{
+  return theItemFactory;
 }
 
 
@@ -943,8 +956,7 @@ bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
 
   xqpStringStore_t str(new xqpStringStore(stream.str()));
 
-  result = new AnyUriItemImpl(str);
-  return true;
+  return theItemFactory->createAnyURI(result, str);
 }
 
 

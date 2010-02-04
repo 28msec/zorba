@@ -34,6 +34,7 @@
 #include "store/naive/simple_pul.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_item_factory.h"
+#include "store/naive/node_factory.h"
 
 
 namespace zorba { namespace simplestore {
@@ -306,7 +307,8 @@ void XmlNode::detach() throw()
     ulong refcount = 0;
 
     XmlTree* oldTree = getTree();
-    XmlTree* newTree = new XmlTree(this, GET_STORE().createTreeId());
+    XmlTree* newTree = GET_STORE().getNodeFactory().createXmlTree();
+    newTree->setRoot(this);
 
     store::StoreConsts::NodeKind nodeKind = getNodeKind();
 
@@ -1246,7 +1248,8 @@ void AttributeNode::replaceValue(UpdReplaceAttrValue& upd)
 {
   upd.theOldValue.transfer(theTypedValue);
 
-  store::Item_t newValue = new UntypedAtomicItemImpl(upd.theNewValue);
+  store::Item_t newValue;
+  GET_STORE().getItemFactory()->createUntypedAtomic(newValue, upd.theNewValue);
   theTypedValue.transfer(newValue);
 
   removeType(upd);
@@ -1302,7 +1305,8 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
   {
     // We must convert the current typed value to an untyped one.
     xqpStringStore_t strvalue = theTypedValue->getStringValue();
-    store::Item_t newValue = new UntypedAtomicItemImpl(strvalue);
+    store::Item_t newValue;
+    GET_STORE().getItemFactory()->createUntypedAtomic(newValue, strvalue);
 
     upd.theOldValue.transfer(theTypedValue);
     theTypedValue.transfer(newValue);

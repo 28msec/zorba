@@ -25,6 +25,7 @@
 #include "store/naive/ordpath.h"
 #include "store/naive/node_vector.h"
 #include "store/naive/store_config.h"
+#include "store/naive/nsbindings.h" // TODO remove by introducing explicit destructors
 
 #ifdef ZORBA_STORE_MSDOM
 #include "msdom_addon/msdom_node_items.h"
@@ -163,9 +164,11 @@ protected:
   bool                      theIsValidated;
   bool                      theIsRecursive;
 
-public:
+  // make sure that only created by the factory
+  friend class NodeFactory;
   XmlTree(XmlNode* root, ulong id);
 
+public:
   ~XmlTree() { theRootNode = 0; }
 
   void free() throw();
@@ -274,7 +277,8 @@ protected:
   InternalNode    * theParent;
   uint32_t          theFlags;
 
-public:
+  // make sure that only created by the factory
+  friend class NodeFactory;
   XmlNode(store::StoreConsts::NodeKind nodeKind)
     :
     Item(),
@@ -289,6 +293,7 @@ public:
         long                         pos,
         store::StoreConsts::NodeKind nodeKind);
 
+public:
 #ifndef NDEBUG
   virtual ~XmlNode();
 #else
@@ -449,7 +454,7 @@ protected:
   NodeVector  theChildren;
   NodeVector  theAttributes;
 
-public:
+  // make sure that only created by subclasses
   InternalNode(store::StoreConsts::NodeKind nodeKind) : XmlNode(nodeKind) { }
 
   InternalNode(
@@ -462,6 +467,7 @@ public:
   {
   }
 
+public:
   //
   // SimpleStore Methods
   // 
@@ -506,9 +512,10 @@ protected:
 ********************************************************************************/
 class DocumentNode : public InternalNode
 {
-  friend class FastXmlLoader;
+  //friend class FastXmlLoader;
 
-public:
+  // make sure that only created by the factory
+  friend class NodeFactory;
   DocumentNode();
 
   DocumentNode(
@@ -516,6 +523,7 @@ public:
         const xqpStringStore_t& baseUri,
         const xqpStringStore_t& docUri);
 
+public:
   //
   // Item methods
   //
@@ -575,7 +583,8 @@ protected:
   store::Item_t         theTypeName;
   NsBindingsContext_t   theNsContext;
 
-public:
+  // make sure that only created by the factory
+  friend class NodeFactory;
   ElementNode(
         store::Item_t& nodeName,
         ulong          numBindings,
@@ -593,6 +602,7 @@ public:
         const store::NsBindings*    localBindings,
         xqpStringStore_t&           baseUri);
 
+public:
   //
   // Item methods
   //
@@ -746,7 +756,8 @@ protected:
   store::Item_t   theTypeName;
   store::Item_t   theTypedValue;
 
-public:
+  // make sure that only created by the factory
+  friend class NodeFactory;
   AttributeNode(store::Item_t&  attrName);
 
   AttributeNode(
@@ -759,6 +770,7 @@ public:
         bool                        isListValue,
         bool                        hidden);
 
+public:
   //
   // Item methods
   //
@@ -841,7 +853,8 @@ class TextNode : public XmlNode
 protected:
   TextNodeContent theContent;
 
-public:
+  // make sure that only created by the factory
+  friend class NodeFactory;
   TextNode(xqpStringStore_t& content);
 
   TextNode(
@@ -855,6 +868,7 @@ public:
         store::Item_t&    content,
         bool              isListValue);
 
+public:
   ~TextNode()
   {
     if (isTyped())
@@ -938,7 +952,8 @@ class PiNode : public XmlNode
 
   store::Item_t    theName;
 
-public:
+  // make sure that only created by the factory
+  friend class NodeFactory;
   PiNode(xqpStringStore_t& target, xqpStringStore_t& content);
 
   PiNode(
@@ -948,6 +963,7 @@ public:
         xqpStringStore_t& target,
         xqpStringStore_t& content);
 
+public:
   XmlNode* copyInternal(
         InternalNode*          rootParent,
         InternalNode*          parent,
@@ -989,7 +1005,8 @@ class CommentNode : public XmlNode
 protected:
   xqpStringStore_t theContent;
 
-public:
+  // make sure that only created by the factory
+  friend class NodeFactory;
   CommentNode(xqpStringStore_t& content);
 
   CommentNode(
@@ -998,6 +1015,7 @@ public:
         long              pos,
         xqpStringStore_t& content);
 
+public:
   XmlNode* copyInternal(
         InternalNode*          rootParent,
         InternalNode*          parent,

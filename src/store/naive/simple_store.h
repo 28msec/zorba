@@ -58,6 +58,8 @@ class QNamePool;
 class XmlLoader;
 class FastXmlLoader;
 class Index;
+class BasicItemFactory;
+class NodeFactory;
 
 typedef rchandle<XmlNode> XmlNode_t;
 
@@ -81,6 +83,7 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
 
   theItemFactory       : Factory to create items.
   theIteratorFactory   : Factory to create iterators.
+  theNodeFactory       : Factory to create node items.
 
   theDocuments         : A hashmap that for each xml tree that does not belong
                          to any collection, maps the URI of the tree to the root
@@ -129,8 +132,9 @@ protected:
   StringPool                  * theNamespacePool;
   QNamePool                   * theQNamePool;
 
-  store::ItemFactory          * theItemFactory;
+  BasicItemFactory            * theItemFactory;
   store::IteratorFactory      * theIteratorFactory;
+  NodeFactory                 * theNodeFactory;
 
   DocumentSet                   theDocuments;
   Collections                   theCollections;
@@ -142,7 +146,7 @@ protected:
 
   long                          theTraceLevel;
 
-private:
+protected:
   SimpleStore();
 
   virtual ~SimpleStore();
@@ -153,9 +157,11 @@ private:
 public:
   void shutdown();
 
-  store::ItemFactory* getItemFactory() const { return theItemFactory; }
+  store::ItemFactory* getItemFactory() const;
 
   store::IteratorFactory* getIteratorFactory() const { return theIteratorFactory; }
+
+  NodeFactory& getNodeFactory() const { return *theNodeFactory; }
 
   StringPool& getNamespacePool() const { return *theNamespacePool; }
 
