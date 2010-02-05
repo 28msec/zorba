@@ -29,6 +29,7 @@ namespace zorba {
   class ErrorHandler;
   class static_context;
   class ModuleURIResolverWrapper;
+  class SchemaURIResolverWrapper;
 
 /*******************************************************************************
 
@@ -56,7 +57,9 @@ class StaticContextImpl : public StaticContext
   // remeber all the resolver wrappers that this
   // context has created
   std::map<ModuleURIResolver*,
-           ModuleURIResolverWrapper*> theWrappers;
+           ModuleURIResolverWrapper*> theModuleWrappers;
+  std::map<SchemaURIResolver*,
+           SchemaURIResolverWrapper*> theSchemaWrappers;
 
  private:
   StaticContextImpl(const StaticContextImpl&);
@@ -191,6 +194,9 @@ class StaticContextImpl : public StaticContext
 
   virtual void
   addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver);
+
+  virtual void
+  removeSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver);
 
   virtual std::vector<SchemaURIResolver*>
   getSchemaURIResolvers() const;

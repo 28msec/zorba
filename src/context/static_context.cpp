@@ -1724,6 +1724,20 @@ void static_context::get_schema_uri_resolvers(
                     theSchemaResolvers.end());
 }
 
+void static_context::remove_schema_uri_resolver(
+    InternalSchemaURIResolver* aResolver)
+{
+  std::vector<InternalSchemaURIResolver*>::iterator ite;
+  for (ite = theSchemaResolvers.begin(); ite != theSchemaResolvers.end(); ++ite)
+  {
+    if (aResolver == *ite)
+    {
+      theSchemaResolvers.erase(ite);
+      return; // no duplicates in the vector
+    }
+  }
+}
+
 
 void static_context::add_module_uri_resolver(
     InternalModuleURIResolver* aModuleResolver)

@@ -543,6 +543,9 @@ public:
   get_schema_uri_resolvers(std::vector<InternalSchemaURIResolver*>& lResolvers);
 
   void
+  remove_schema_uri_resolver(InternalSchemaURIResolver*);
+
+  void
   add_module_uri_resolver(InternalModuleURIResolver*);
 
   void

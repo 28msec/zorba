@@ -101,9 +101,14 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   RCHelper::addReference (theCtx);
 
   for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::const_iterator
-        lIter = aStaticContext.theWrappers.begin();
-        lIter != aStaticContext. theWrappers.end(); ++lIter) {
+        lIter = aStaticContext.theModuleWrappers.begin();
+        lIter != aStaticContext. theModuleWrappers.end(); ++lIter) {
     addModuleURIResolver(lIter->first);
+  }
+  for (std::map<SchemaURIResolver*, SchemaURIResolverWrapper*>::const_iterator
+        lIter = aStaticContext.theSchemaWrappers.begin();
+        lIter != aStaticContext. theSchemaWrappers.end(); ++lIter) {
+    addSchemaURIResolver(lIter->first);
   }
 }
 
@@ -111,11 +116,19 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
 StaticContextImpl::~StaticContextImpl()
 {
   for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::iterator
-        lIter = theWrappers.begin(); lIter != theWrappers.end(); ++lIter) {
+        lIter = theModuleWrappers.begin();
+        lIter != theModuleWrappers.end(); ++lIter) {
       theCtx->remove_module_uri_resolver(lIter->second);
       delete lIter->second;
   }
-  theWrappers.clear();
+  theModuleWrappers.clear();
+  for (std::map<SchemaURIResolver*, SchemaURIResolverWrapper*>::iterator
+        lIter = theSchemaWrappers.begin();
+        lIter != theSchemaWrappers.end(); ++lIter) {
+      theCtx->remove_schema_uri_resolver(lIter->second);
+      delete lIter->second;
+  }
+  theSchemaWrappers.clear();
 
   if ( ! theUserStaticContext )
     RCHelper::removeReference (theCtx);
@@ -723,7 +736,7 @@ StaticContextImpl::addModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
   try 
   {
     // do nothing if the resolver is already registered
-    if (theWrappers[aModuleUriResolver]) 
+    if (theModuleWrappers[aModuleUriResolver]) 
     {
       return;
     }
@@ -732,7 +745,7 @@ StaticContextImpl::addModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
     new ModuleURIResolverWrapper(aModuleUriResolver);
 
     // put the wrapper in the map (ownership of the wrapper belongs to "this")
-    theWrappers[aModuleUriResolver] = lWrapper;
+    theModuleWrappers[aModuleUriResolver] = lWrapper;
 
     // register the wrapper in the internal context
     theCtx->add_module_uri_resolver(lWrapper);
@@ -789,11 +802,12 @@ StaticContextImpl::removeModuleURIResolver(ModuleURIResolver* aModuleUriResolver
     // (2) delete the wrapper
     // (3) remove the entry from the map
     for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::iterator
-          lIter = theWrappers.begin(); lIter != theWrappers.end(); ++lIter) {
+          lIter = theModuleWrappers.begin();
+          lIter != theModuleWrappers.end(); ++lIter) {
       if (lIter->first == aModuleUriResolver) { // pointer equality
         theCtx->remove_module_uri_resolver(lIter->second);
         delete lIter->second;
-        theWrappers.erase(lIter);
+        theModuleWrappers.erase(lIter);
         return;
       }
     }
@@ -835,7 +849,20 @@ void
 StaticContextImpl::addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver)
 {
   try {
-    theCtx->add_schema_uri_resolver(new SchemaURIResolverWrapper(aSchemaUriResolver));
+    // do nothing if the resolver is already registered
+    if (theSchemaWrappers[aSchemaUriResolver]) 
+    {
+      return;
+    }
+
+    SchemaURIResolverWrapper* lWrapper =
+      new SchemaURIResolverWrapper(aSchemaUriResolver);
+
+    // put the wrapper in the map (ownership of the wrapper belongs to "this")
+    theSchemaWrappers[aSchemaUriResolver] = lWrapper;
+
+    // register the wrapper in the internal context
+    theCtx->add_schema_uri_resolver(lWrapper);
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -845,10 +872,38 @@ StaticContextImpl::addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver)
 /*******************************************************************************
 
 ********************************************************************************/
+void
+StaticContextImpl::removeSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver)
+{
+  try {
+    // look for a resolver, if found
+    // (1) remove it from the internal context
+    // (2) delete the wrapper
+    // (3) remove the entry from the map
+    for (std::map<SchemaURIResolver*, SchemaURIResolverWrapper*>::iterator
+          lIter = theSchemaWrappers.begin();
+          lIter != theSchemaWrappers.end(); ++lIter) {
+      if (lIter->first == aSchemaUriResolver) { // pointer equality
+        theCtx->remove_schema_uri_resolver(lIter->second);
+        delete lIter->second;
+        theSchemaWrappers.erase(lIter);
+        return;
+      }
+    }
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
+
+/*******************************************************************************
+
+********************************************************************************/
 bool
 StaticContextImpl::containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const
 {
-    const function *fn = theCtx->lookup_resolved_fn(Unmarshaller::getInternalString(aFnNameUri), Unmarshaller::getInternalString(aFnNameLocal), arity);
+    const function *fn = theCtx->lookup_resolved_fn(
+        Unmarshaller::getInternalString(aFnNameUri),
+        Unmarshaller::getInternalString(aFnNameLocal), arity);
     if (fn == NULL) {
         return false;
     }
