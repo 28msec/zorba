@@ -17,8 +17,6 @@
 #define ZORBA_CONFIG_H
 
 
-#include <vld.h>
-
 /* This header is configured by Zorba's build process.  */
 
 /* Zorba Configuration */
