@@ -314,6 +314,9 @@ private:
   std::vector<const var_expr*>   theVarDecls;
   std::vector<const function*>   theFuncDecls;
 
+  void
+  reportCycle(const QueryLoc& loc, const PrologGraphVertex* v);
+
 public:
   static void addEdge(
         GraphImpl& graph,
@@ -366,6 +369,30 @@ public:
   void reorder_globals(std::list<global_binding>& prologVarBindings);
 };
 
+void
+PrologGraph::reportCycle(const QueryLoc& loc, const PrologGraphVertex* v)
+{
+  std::string moduleNS = theModuleSctx->get_module_namespace();
+  std::ostringstream msg;
+  msg << "Cyclic dendencies found among the declaration in the prolog of ";
+  if (!moduleNS.empty())
+  {
+    msg << "module " << moduleNS;
+  }
+  else
+  {
+    msg << "the main module";
+  }
+
+  if (v) {
+    msg << " (variable $" << v->getVarExpr()->get_name()->getStringValue() 
+        << " is using a function which depends on this variable).";
+  } else {
+    msg << ".";
+  }
+  ZORBA_ERROR_LOC_DESC(XQST0054, loc, msg.str());
+}
+
 
 /*******************************************************************************
   This method is part of the mechanism for detecting cycles in the dependency
@@ -403,18 +430,6 @@ public:
 ********************************************************************************/
 void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
 {
-  std::string moduleNS = theModuleSctx->get_module_namespace();
-  std::string msg(" Cyclic dendencies found among the declaration in the prolog of ");
-  if (!moduleNS.empty())
-  {
-    msg += "module ";
-    msg += moduleNS;
-  }
-  else
-  {
-    msg += "the main module.";
-  }
-
   GraphImpl::const_iterator g_ite;
   GraphImpl::const_iterator g_end = theGraph.end();
 
@@ -507,7 +522,7 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
           {
             if (v2 == v1)
             {
-              ZORBA_ERROR_DESC(XQST0054, msg);
+              reportCycle(v2.getVarExpr()->get_loc(), &v2);
             }
             
             addEdge(v1, v2);
@@ -575,7 +590,7 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
 
     if (var == NULL)
     {
-      ZORBA_ERROR_DESC(XQST0054, msg);
+      reportCycle((*varDecls.begin())->get_loc(), 0);
     }
 
     for (g_ite = v_graph.begin(); g_ite != g_end; ++g_ite)
