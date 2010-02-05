@@ -120,7 +120,7 @@ public:
 //[346] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTAnd]
 class ft_and_expr : public expr
 /*______________________________________________________________________
-|	::=	FTMildnot ( '&&' FTMildNot )*
+|	::=	FTMildNot ( '&&' FTMildNot )*
 |_______________________________________________________________________*/
 {
 protected:
@@ -161,7 +161,7 @@ public:
 
 
 
-//[347] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMildnot]
+//[347] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMildNot]
 class ft_mildnot_expr : public expr
 /*______________________________________________________________________
 |	::=	FTUnaryNot ( "not" "in" FTUnaryNot )*

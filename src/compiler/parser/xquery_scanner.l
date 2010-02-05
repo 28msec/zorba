@@ -477,10 +477,10 @@ typedef zorba::xquery_parser::token token;
      | FT tokens
      |______________________________________________________________________*/
 
-"&&" { return token::FTAND; }
-"!" { return token::FTNOT; }
-"||" { return token::FTOR; }
-"not" { return token::FTNOT; }
+"ftcontains" { return token::FTCONTAINS; }
+"ftand" { return token::FTAND; }
+"ftnot" { return token::FTNOT; }
+"ftor" { return token::FTOR; }
 "in" { return token::_IN; }
 "all" { return token::ALL; }
 "words" { return token::WORDS; }
@@ -599,7 +599,6 @@ typedef zorba::xquery_parser::token token;
 "ascending" { return token::ASCENDING; }
 "descending" { return token::DESCENDING; }
 "encoding" { return token::ENCODING; }
-"ftcontains" { return token::FTCONTAINS; }
 
 
   /* TODO: fix 'if (1) then 2 else processing-instruction' */

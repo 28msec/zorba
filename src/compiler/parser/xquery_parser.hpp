@@ -42,6 +42,10 @@
 /* Line 35 of lalr1.cc  */
 #line 31 "/Users/pjl/src/flwor/zorba/trunk/src/compiler/parser/xquery_parser.y"
 
+#include <list>
+#include <string>
+#include <vector>
+
 #include "compiler/parsetree/parsenodes.h"
 
 #ifdef __GNUC__
@@ -60,11 +64,15 @@ namespace zorba {
 class xquery_driver;
 }
 
+typedef std::list<std::string> string_list_t;
+typedef std::pair<std::string,std::string> string_pair_t;
+
+
 
 
 
 /* Line 35 of lalr1.cc  */
-#line 68 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 76 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -78,7 +86,7 @@ class xquery_driver;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 82 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 90 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -88,7 +96,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 92 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 100 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -136,7 +144,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 140 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 148 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -148,27 +156,31 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 135 "/Users/pjl/src/flwor/zorba/trunk/src/compiler/parser/xquery_parser.y"
+#line 145 "/Users/pjl/src/flwor/zorba/trunk/src/compiler/parser/xquery_parser.y"
 
-  zorba::parsenode * node;
-  zorba::exprnode * expr;
-  zorba::FunctionSig *fnsig;
-  zorba::VarNameAndType *varnametype;
-  off_t sval;
-  const char *strval;
-    xqp_integer* ival;
-    xqp_double* dval;
-    xqp_decimal* decval;
-  XQUERY_ERROR err;
-  std::vector<std::pair<std::string, std::string> >* pair_vector;
-  std::pair<std::string, std::string>* pair;
-  CatchExpr::NameTestList *name_test_list;
-  int intval;
+    zorba::parsenode *node;
+    zorba::exprnode *expr;
+    zorba::FunctionSig *fnsig;
+    zorba::VarNameAndType *varnametype;
+    off_t sval;
+    const char *strval;
+    xqp_integer *ival;
+    xqp_double *dval;
+    xqp_decimal *decval;
+    XQUERY_ERROR err;
+    string_list_t *strlist;
+    string_pair_t *strpair;
+    std::vector<string_pair_t> *vstrpair;
+    CatchExpr::NameTestList *name_test_list;
+    FTStopWordOption::incl_excl_list_t *incl_excl_list;
+    FTSelection::pos_filter_list_t *pos_filter_list;
+    FTThesaurusOption::thesaurus_id_list_t *thesaurus_id_list;
+    ParseConstants::ft_anyall_option_t ft_anyall_option;
 
 
 
 /* Line 35 of lalr1.cc  */
-#line 172 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 184 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -402,12 +414,12 @@ namespace zorba {
      MODIFY = 479,
      COPY = 480,
      WITH = 481,
-     RETURNING = 482,
-     BLOCK = 483,
-     EXIT = 484,
-     BREAK = 485,
+     BLOCK = 482,
+     BREAK = 483,
+     CONTINUE = 484,
+     EXIT = 485,
      LOOP = 486,
-     CONTINUE = 487,
+     RETURNING = 487,
      WHILE = 488,
      TRY = 489,
      CATCH = 490,
@@ -664,7 +676,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 668 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
+#line 680 "/Users/pjl/src/flwor/zorba/trunk/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

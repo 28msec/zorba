@@ -2568,8 +2568,7 @@ void ValidateExpr::accept(parsenode_visitor& v) const
 }
 
 
-// [65] ExtensionExpr
-// ------------------
+// [65]
 ExtensionExpr::ExtensionExpr(
   const QueryLoc& loc_,
   rchandle<PragmaList> _pragma_list_h,
@@ -4498,19 +4497,18 @@ void EvalExpr::accept(parsenode_visitor& v) const
  *
  */
 
-// [344] FTSelection
-// -----------------
+// [344]
 FTSelection::FTSelection(
   const QueryLoc& loc_,
-  rchandle<FTOr> _ftor_h,
-  rchandle<FTMatchOptionProximityList> _option_list_h,
-  rchandle<RangeExpr> _weight_expr_h)
+  rchandle<FTOr> _ftor,
+  pos_filter_list_t *_pos_filter_list)
 :
   parsenode(loc_),
-  ftor_h(_ftor_h),
-  option_list_h(_option_list_h),
-  weight_expr_h(_weight_expr_h)
-{}
+  ftor(_ftor)
+{
+    if ( _pos_filter_list )
+        pos_filter_list.swap( *_pos_filter_list );
+}
 
 
 //-FTSelection::
@@ -4518,74 +4516,10 @@ FTSelection::FTSelection(
 void FTSelection::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (ftor_h);
-  ACCEPT (option_list_h);
-  ACCEPT (weight_expr_h);
+  ACCEPT (ftor);
   END_VISITOR ();
 }
 
-
-// [344a] FTMatchOptionProximityList
-// ---------------------------------
-FTMatchOptionProximityList::FTMatchOptionProximityList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
-
-
-//-FTMatchOptionProximityList::
-
-void FTMatchOptionProximityList::accept(parsenode_visitor& v) const
-{
-  BEGIN_VISITOR ();
-  vector<rchandle<FTMatchOptionProximity> >::const_reverse_iterator it =
-    opt_prox_hv.rbegin();
-  for (; it!=opt_prox_hv.rend(); ++it) {
-    const parsenode *e_p = &**it;
-    ACCEPT_CHK (e_p);
-  }
-  END_VISITOR ();
-}
-
-
-// [344b] FTMatchOptionProximity
-// -----------------------------
-FTMatchOptionProximity::FTMatchOptionProximity(
-  rchandle<FTMatchOption> _opt_h,
-  const QueryLoc& loc_)
-:
-  parsenode(loc_),
-  opt_h(_opt_h),
-  prox_h(NULL)
-{}
-
-FTMatchOptionProximity::FTMatchOptionProximity(
-  rchandle<FTProximity> _prox_h,
-  const QueryLoc& loc_)
-:
-  parsenode(loc_),
-  opt_h(NULL),
-  prox_h(_prox_h)
-{}
-
-FTMatchOptionProximity::FTMatchOptionProximity(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_),
-  opt_h(NULL),
-  prox_h(NULL)
-{}
-
-
-//-FTMatchOptionProximity::
-
-void FTMatchOptionProximity::accept(parsenode_visitor& v) const
-{
-  BEGIN_VISITOR ();
-  ACCEPT (opt_h);
-  END_VISITOR ();
-}
 
 
 // [345] FTOr
@@ -4617,7 +4551,7 @@ void FTOr::accept(parsenode_visitor& v) const
 FTAnd::FTAnd(
   const QueryLoc& loc_,
   rchandle<FTAnd> _ftand_h,
-  rchandle<FTMildnot> _ftmild_not_h)
+  rchandle<FTMildNot> _ftmild_not_h)
 :
   parsenode(loc_),
   ftand_h(_ftand_h),
@@ -4636,11 +4570,11 @@ void FTAnd::accept(parsenode_visitor& v) const
 }
 
 
-// [347] FTMildnot
+// [347] FTMildNot
 // ---------------
-FTMildnot::FTMildnot(
+FTMildNot::FTMildNot(
   const QueryLoc& loc_,
-  rchandle<FTMildnot> _ftmild_not_h,
+  rchandle<FTMildNot> _ftmild_not_h,
   rchandle<FTUnaryNot> _ftunary_not_h)
 :
   parsenode(loc_),
@@ -4649,9 +4583,9 @@ FTMildnot::FTMildnot(
 {}
 
 
-//-FTMildnot::
+//-FTMildNot::
 
-void FTMildnot::accept(parsenode_visitor& v) const
+void FTMildNot::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   ACCEPT (ftmild_not_h);
@@ -4664,12 +4598,10 @@ void FTMildnot::accept(parsenode_visitor& v) const
 // ----------------
 FTUnaryNot::FTUnaryNot(
   const QueryLoc& loc_,
-  rchandle<FTWordsSelection> _words_selection_h,
-  bool _not_b)
+  rchandle<FTPrimaryWithOptions> _words_selection_h)
 :
   parsenode(loc_),
-  words_selection_h(_words_selection_h),
-  not_b(_not_b)
+  words_selection_h(_words_selection_h)
 {}
 
 
@@ -4683,29 +4615,80 @@ void FTUnaryNot::accept(parsenode_visitor& v) const
 }
 
 
-// [349] FTWordsSelection
-// ----------------------
-FTWordsSelection::FTWordsSelection(
+// [150]
+FTPrimaryWithOptions::FTPrimaryWithOptions(
   const QueryLoc& loc_,
-  rchandle<FTWords> _words_h,
-  rchandle<FTTimes> _times_h,
-  rchandle<FTSelection> _selection_h)
+  rchandle<FTPrimary> _primary,
+  rchandle<FTMatchOptions> _match_options,
+  rchandle<FTWeight> _weight)
 :
   parsenode(loc_),
-  words_h(_words_h),
-  times_h(_times_h),
-  selection_h(_selection_h)
+  primary(_primary),
+  match_options(_match_options),
+  weight(_weight)
 {}
 
 
-//-FTWordsSelection::
+//-FTPrimaryWithOptions::
 
-void FTWordsSelection::accept(parsenode_visitor& v) const
+void FTPrimaryWithOptions::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (words_h);
-  ACCEPT (times_h);
-  ACCEPT (selection_h);
+  ACCEPT (primary);
+  ACCEPT (match_options);
+  ACCEPT (weight);
+  END_VISITOR ();
+}
+
+
+// [151]
+FTPrimary::FTPrimary(
+  const QueryLoc& loc_,
+  rchandle<FTWords> _words,
+  rchandle<FTTimes> _times)
+:
+  parsenode(loc_),
+  words(_words),
+  times(_times)
+{}
+
+
+//-FTPrimary::
+
+void FTPrimary::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT (words);
+  ACCEPT (times);
+  END_VISITOR ();
+}
+
+FTMatchOptions::FTMatchOptions(
+    const QueryLoc &loc_)
+:
+    parsenode( loc_ )
+{
+}
+
+void FTMatchOptions::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  END_VISITOR ();
+}
+
+FTWeight::FTWeight(
+    const QueryLoc &loc_,
+    RangeExpr *_range_expr)
+:
+    parsenode( loc_ ),
+    range_expr( range_expr )
+{
+}
+
+void FTWeight::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT (range_expr);
   END_VISITOR ();
 }
 
@@ -4714,8 +4697,8 @@ void FTWordsSelection::accept(parsenode_visitor& v) const
 // -------------
 FTWords::FTWords(
   const QueryLoc& loc_,
-  rchandle<FTWordsValue> _words_val_h,
-  rchandle<FTAnyallOption> _any_all_option_h)
+  FTWordsValue* _words_val_h,
+  FTAnyallOption* _any_all_option_h)
 :
   parsenode(loc_),
   words_val_h(_words_val_h),
@@ -4738,8 +4721,8 @@ void FTWords::accept(parsenode_visitor& v) const
 // ------------------
 FTWordsValue::FTWordsValue(
   const QueryLoc& loc_,
-  rchandle<StringLiteral> _lit_h,
-  rchandle<exprnode> _expr_h)
+  StringLiteral* _lit_h,
+  exprnode* _expr_h)
 :
   parsenode(loc_),
   lit_h(_lit_h),
@@ -4758,36 +4741,36 @@ void FTWordsValue::accept(parsenode_visitor& v) const
 }
 
 
-// [352] FTProximity
+// [352] FTPosFilter
 // -----------------
-FTProximity::FTProximity(
+FTPosFilter::FTPosFilter(
   const QueryLoc& loc_)
 :
   parsenode(loc_)
 {}
 
 
-//-FTProximity::
+//-FTPosFilter::
 
-void FTProximity::accept(parsenode_visitor& v) const
+void FTPosFilter::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   END_VISITOR ();
 }
 
 
-// [353] FTOrderedIndicator
+// [353] FTOrder
 // ------------------------
-FTOrderedIndicator::FTOrderedIndicator(
+FTOrder::FTOrder(
   const QueryLoc& loc_)
 :
-  FTProximity(loc_)
+  FTPosFilter(loc_)
 {}
 
 
-//-FTOrderedIndicator::
+//-FTOrder::
 
-void FTOrderedIndicator::accept(parsenode_visitor& v) const
+void FTOrder::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   END_VISITOR ();
@@ -4872,21 +4855,20 @@ void FTStemOption::accept(parsenode_visitor& v) const
 }
 
 
-// [358] FTThesaurusOption
-// -----------------------
+// [358]
 FTThesaurusOption::FTThesaurusOption(
   const QueryLoc& loc_,
-  rchandle<FTThesaurusID> _thesaurusid_h,
-  rchandle<FTThesaurusList> _thesaurus_list_h,
-  bool _default_b,
-  bool _without_b)
+  thesaurus_id_list_t *_thesaurus_id_list,
+  bool _includes_default,
+  bool _without)
 :
   FTMatchOption(loc_),
-  thesaurusid_h(_thesaurusid_h),
-  thesaurus_list_h(_thesaurus_list_h),
-  default_b(_default_b),
-  without_b(_without_b)
-{}
+  incl_default(_includes_default),
+  without(_without)
+{
+    if ( _thesaurus_id_list )
+        thesaurus_id_list.swap( *_thesaurus_id_list );
+}
 
 
 //-FTThesaurusOption::
@@ -4894,33 +4876,9 @@ FTThesaurusOption::FTThesaurusOption(
 void FTThesaurusOption::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (thesaurusid_h);
-  ACCEPT (thesaurus_list_h);
   END_VISITOR ();
 }
 
-
-// [358a] FTThesaurusList
-// ----------------------
-FTThesaurusList::FTThesaurusList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
-
-
-//-FTThesaurusList::
-
-void FTThesaurusList::accept(parsenode_visitor& v) const
-{
-  BEGIN_VISITOR ();
-  vector<rchandle<FTThesaurusID> >::const_reverse_iterator it = thesaurus_hv.rbegin();
-  for (; it!=thesaurus_hv.rend(); ++it) {
-    const parsenode *e_p = &**it;
-    ACCEPT_CHK (e_p);
-  }
-  END_VISITOR ();
-}
 
 
 // [359] FTThesaurusID
@@ -4948,120 +4906,74 @@ void FTThesaurusID::accept(parsenode_visitor& v) const
 }
 
 
-// [360] FTStopwordOption
-// ----------------------
-FTStopwordOption::FTStopwordOption(
+// [360]
+FTStopWordOption::FTStopWordOption(
   const QueryLoc& loc_,
-  rchandle<FTRefOrList> _refor_list_h,
-  rchandle<FTInclExclStringLiteralList> _incl_excl_list_h,
-  ParseConstants::stop_words_mode_t _mode)
+  rchandle<FTStopWords> _stop_words,
+  incl_excl_list_t *_incl_excl_list,
+  ParseConstants::ft_stop_words_mode_t _mode)
 :
   FTMatchOption(loc_),
-  refor_list_h(_refor_list_h),
-  incl_excl_list_h(_incl_excl_list_h),
+  stop_words(_stop_words),
   mode(_mode)
-{}
+{
+    if ( _incl_excl_list )
+        incl_excl_list.swap( *_incl_excl_list );
+}
 
 
-//-FTStopwordOption::
+//-FTStopWordOption::
 
-void FTStopwordOption::accept(parsenode_visitor& v) const
+void FTStopWordOption::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (refor_list_h);
-  ACCEPT (incl_excl_list_h);
+  ACCEPT (stop_words);
   END_VISITOR ();
 }
 
 
-// [360a] FTInclExclStringLiteralList
-// ----------------------------------
-FTInclExclStringLiteralList::FTInclExclStringLiteralList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
-
-
-//-FTInclExclStringLiteralList::
-
-void FTInclExclStringLiteralList::accept(parsenode_visitor& v) const
-{
-  BEGIN_VISITOR ();
-  vector<rchandle<FTInclExclStringLiteral> >::const_reverse_iterator it =
-    incl_excl_lit_hv.rbegin();
-  for (; it!=incl_excl_lit_hv.rend(); ++it) {
-    const parsenode *e_p = &**it;
-    ACCEPT_CHK (e_p);
-  }
-  END_VISITOR ();
-}
-
-
-// [361] FTRefOrList
-// -----------------
-FTRefOrList::FTRefOrList(
+// [361]
+FTStopWords::FTStopWords(
   const QueryLoc& loc_,
-  std::string _at_str,
-  rchandle<FTStringLiteralList> _stringlit_list_h)
+  std::string _uri,
+  list_type_t* _stringlit_list)
 :
   parsenode(loc_),
-  at_str(_at_str),
-  stringlit_list_h(_stringlit_list_h)
-{}
+  uri(_uri)
+{
+    if ( _stringlit_list )
+        stringlit_list.swap( *_stringlit_list );
+}
 
 
-//-FTRefOrList::
+//-FTStopWords::
 
-void FTRefOrList::accept(parsenode_visitor& v) const
+void FTStopWords::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (stringlit_list_h);
   END_VISITOR ();
 }
 
 
-// [361a] FTStringLiteralList
-// --------------------------
-FTStringLiteralList::FTStringLiteralList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
-
-
-//-FTStringLiteralList::
-
-void FTStringLiteralList::accept(parsenode_visitor& v) const
-{
-  BEGIN_VISITOR ();
-  vector<string>::const_reverse_iterator it = strlit_v.rbegin();
-  for (; it!=strlit_v.rend(); ++it) {
-    // ..do something useful..
-  }
-  END_VISITOR ();
-}
-
-
-// [362] FTInclExclStringLiteral
+// [362] FTStopWordsInclExcl
 // -----------------------------
-FTInclExclStringLiteral::FTInclExclStringLiteral(
+FTStopWordsInclExcl::FTStopWordsInclExcl(
   const QueryLoc& loc_,
-  rchandle<FTRefOrList> _ref_or_list_h,
-  ParseConstants::intex_op_t _mode)
+  rchandle<FTStopWords> _stop_words,
+  ParseConstants::ft_stop_words_unex_t _mode)
 :
   parsenode(loc_),
-  ref_or_list_h(_ref_or_list_h),
+  stop_words(_stop_words),
   mode(_mode)
 {}
 
 
-//-FTInclExclStringLiteral::
+//-FTStopWordsInclExcl::
 
-void FTInclExclStringLiteral::accept(parsenode_visitor& v) const
+void FTStopWordsInclExcl::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  ACCEPT (ref_or_list_h);
+  ACCEPT (stop_words);
   END_VISITOR ();
 }
 
@@ -5086,9 +4998,9 @@ void FTLanguageOption::accept(parsenode_visitor& v) const
 }
 
 
-// [364] FTWildcardOption
+// [364] FTWildCardOption
 // ----------------------
-FTWildcardOption::FTWildcardOption(
+FTWildCardOption::FTWildCardOption(
   const QueryLoc& loc_,
   bool _with_b)
 :
@@ -5097,9 +5009,9 @@ FTWildcardOption::FTWildcardOption(
 {}
 
 
-//-FTWildcardOption::
+//-FTWildCardOption::
 
-void FTWildcardOption::accept(parsenode_visitor& v) const
+void FTWildCardOption::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   END_VISITOR ();
@@ -5112,7 +5024,7 @@ FTContent::FTContent(
   const QueryLoc& loc_,
   ParseConstants::ft_content_mode_t _mode)
 :
-  FTProximity(loc_),
+  FTPosFilter(loc_),
   mode(_mode)
 {}
 
@@ -5179,7 +5091,7 @@ FTDistance::FTDistance(
   rchandle<FTRange> _dist_h,
   rchandle<FTUnit> _unit_h)
 :
-  FTProximity(loc_),
+  FTPosFilter(loc_),
   dist_h(_dist_h),
   unit_h(_unit_h)
 {}
@@ -5195,6 +5107,39 @@ void FTDistance::accept(parsenode_visitor& v) const
   END_VISITOR ();
 }
 
+FTExtensionOption::FTExtensionOption(
+    const QueryLoc &loc_,
+    rchandle<QName> _qname,
+    std::string const &_val)
+:
+    FTMatchOption( loc_ ),
+    qname( _qname ),
+    val( _val )
+{
+}
+
+
+void FTExtensionOption::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  END_VISITOR ();
+}
+
+FTExtensionSelection::FTExtensionSelection(
+    const QueryLoc &loc_,
+    PragmaList *_pragma_list)
+:
+    parsenode( loc_ ),
+    pragma_list( _pragma_list )
+{
+}
+
+void FTExtensionSelection::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  END_VISITOR ();
+}
+
 
 // [369] FTWindow
 // --------------
@@ -5203,7 +5148,7 @@ FTWindow::FTWindow(
   rchandle<UnionExpr> _window_h,
   rchandle<FTUnit> _unit_h)
 :
-  FTProximity(loc_),
+  FTPosFilter(loc_),
   window_h(_window_h),
   unit_h(_unit_h)
 {}
@@ -5245,10 +5190,11 @@ void FTTimes::accept(parsenode_visitor& v) const
 // -------------
 FTScope::FTScope(
   const QueryLoc& loc_,
-  ParseConstants::ft_scope_t _scope)
+  ParseConstants::ft_scope_t _scope,
+  FTBigUnit *_big_unit)
 :
-  FTProximity(loc_),
-  scope(_scope)
+  FTPosFilter(loc_),
+  scope(_scope), big_unit( _big_unit )
 {}
 
 
@@ -5373,3 +5319,4 @@ void FTOptionDecl::accept(parsenode_visitor& v) const
 } /* namespace zorba */
 
 
+/* vim:set et sw=4 ts=4: */

@@ -10187,6 +10187,26 @@ void end_visit (const FTDistance& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
+void *begin_visit (const FTExtensionOption& v) {
+  TRACE_VISIT ();
+  ZORBA_NOT_SUPPORTED ("full text");
+  return no_state;
+}
+
+void end_visit (const FTExtensionOption& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit (const FTExtensionSelection& v) {
+  TRACE_VISIT ();
+  ZORBA_NOT_SUPPORTED ("full text");
+  return no_state;
+}
+
+void end_visit (const FTExtensionSelection& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+}
+
 void *begin_visit (const FTIgnoreOption& v) {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
@@ -10197,23 +10217,23 @@ void end_visit (const FTIgnoreOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const FTInclExclStringLiteral& v) {
+void *begin_visit (const FTStopWords& v) {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit (const FTInclExclStringLiteral& v, void* /*visit_state*/) {
+void end_visit (const FTStopWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const FTInclExclStringLiteralList& v) {
+void *begin_visit (const FTStopWordsInclExcl& v) {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit (const FTInclExclStringLiteralList& v, void* /*visit_state*/) {
+void end_visit (const FTStopWordsInclExcl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -10237,24 +10257,23 @@ void end_visit (const FTMatchOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-
-void *begin_visit (const FTMatchOptionProximityList& v) {
+void *begin_visit (const FTMatchOptions& v) {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit (const FTMatchOptionProximityList& v, void* /*visit_state*/) {
+void end_visit (const FTMatchOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const FTMildnot& v) {
+void *begin_visit (const FTMildNot& v) {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit (const FTMildnot& v, void* /*visit_state*/) {
+void end_visit (const FTMildNot& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -10278,23 +10297,23 @@ void end_visit (const FTOr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const FTOrderedIndicator& v) {
+void *begin_visit (const FTOrder& v) {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit (const FTOrderedIndicator& v, void* /*visit_state*/) {
+void end_visit (const FTOrder& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const FTProximity& v) {
+void *begin_visit (const FTPosFilter& v) {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit (const FTProximity& v, void* /*visit_state*/) {
+void end_visit (const FTPosFilter& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -10305,16 +10324,6 @@ void *begin_visit (const FTRange& v) {
 }
 
 void end_visit (const FTRange& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTRefOrList& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTRefOrList& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -10358,23 +10367,13 @@ void end_visit (const FTStemOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const FTStopwordOption& v) {
+void *begin_visit (const FTStopWordOption& v) {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit (const FTStopwordOption& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTStringLiteralList& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTStringLiteralList& v, void* /*visit_state*/) {
+void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -10385,16 +10384,6 @@ void *begin_visit (const FTThesaurusID& v) {
 }
 
 void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTThesaurusList& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTThesaurusList& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -10438,13 +10427,23 @@ void end_visit (const FTUnit& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const FTWildcardOption& v) {
+void *begin_visit (const FTWeight& v) {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit (const FTWildcardOption& v, void* /*visit_state*/) {
+void end_visit (const FTWeight& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit (const FTWildCardOption& v) {
+  TRACE_VISIT ();
+  ZORBA_NOT_SUPPORTED ("full text");
+  return no_state;
+}
+
+void end_visit (const FTWildCardOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -10468,13 +10467,23 @@ void end_visit (const FTWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
-void *begin_visit (const FTWordsSelection& v) {
+void *begin_visit (const FTPrimary& v) {
   TRACE_VISIT ();
   ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
-void end_visit (const FTWordsSelection& v, void* /*visit_state*/) {
+void end_visit (const FTPrimary& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit (const FTPrimaryWithOptions& v) {
+  TRACE_VISIT ();
+  ZORBA_NOT_SUPPORTED ("full text");
+  return no_state;
+}
+
+void end_visit (const FTPrimaryWithOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
 
@@ -10487,19 +10496,6 @@ void *begin_visit (const FTWordsValue& v) {
 void end_visit (const FTWordsValue& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 }
-
-void* begin_visit(const FTMatchOptionProximity& v) 
-{
-  TRACE_VISIT();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit(const FTMatchOptionProximity& v, void* /*visit_state*/) 
-{
-  TRACE_VISIT_OUT();
-}
-
 
 // Pass-thru -- nothing to be done
 

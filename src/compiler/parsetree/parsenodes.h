@@ -37,7 +37,6 @@
 
 namespace zorba {
 
-
 class AbbrevForwardStep;
 class AdditiveExpr;
 class AndExpr;
@@ -50,26 +49,27 @@ class AttributeTest;
 class AxisStep;
 class BaseURIDecl;
 class BoundarySpaceDecl;
-class CDataSection;
-class CaseClauseList;
 class CaseClause;
-class CastExpr;
+class CaseClauseList;
 class CastableExpr;
+class CastExpr;
 class CatchExpr;
 class CatchListExpr;
+class CDataSection;
+class CollectionModifier;
 class CommentTest;
 class CommonContent;
+class ComparisonExpr;
 class CompAttrConstructor;
 class CompCommentConstructor;
 class CompDocConstructor;
 class CompElemConstructor;
 class CompPIConstructor;
 class CompTextConstructor;
-class ComparisonExpr;
 class ConstructionDecl;
 class ContextItemExpr;
-class DeclProperty;
 class CopyNamespacesDecl;
+class DeclProperty;
 class DefaultCollationDecl;
 class DefaultNamespaceDecl;
 class DeleteExpr;
@@ -86,6 +86,9 @@ class ElementTest;
 class EnclosedExpr;
 class Expr;
 class ExtensionExpr;
+class FilterExpr;
+class ForwardAxis;
+class ForwardStep;
 class FTAnd;
 class FTAnyallOption;
 class FTBigUnit;
@@ -94,59 +97,56 @@ class FTContainsExpr;
 class FTContent;
 class FTDiacriticsOption;
 class FTDistance;
+class FTExtensionOption;
+class FTExtensionSelection;
 class FTIgnoreOption;
-class FTInclExclStringLiteral;
-class FTInclExclStringLiteralList;
 class FTLanguageOption;
 class FTMatchOption;
-class FTMatchOptionProximity;
-class FTMatchOptionProximityList;
-class FTMildnot;
+class FTMatchOptions;
+class FTMildNot;
+class FTOptionDecl;
 class FTOr;
-class FTOrderedIndicator;
-class FTProximity;
+class FTOrder;
+class FTPosFilter;
+class FTPrimary;
+class FTPrimaryWithOptions;
 class FTRange;
-class FTRefOrList;
 class FTScope;
 class FTScoreVar;
 class FTSelection;
 class FTStemOption;
-class FTStopwordOption;
-class FTStringLiteralList;
+class FTStopWordOption;
+class FTStopWords;
+class FTStopWordsInclExcl;
 class FTThesaurusID;
-class FTThesaurusList;
 class FTThesaurusOption;
 class FTTimes;
 class FTUnaryNot;
 class FTUnit;
-class FTWildcardOption;
+class FTWeight;
+class FTWildCardOption;
 class FTWindow;
 class FTWords;
-class FTWordsSelection;
 class FTWordsValue;
-class FilterExpr;
-class ForwardAxis;
-class ForwardStep;
 class FunctionCall;
 class FunctionDecl;
 class GeneralComp;
-class CollectionModifier;
-class NodeModifier;
+class IfExpr;
 class IndexKeyList;
 class IndexKeySpec;
-class IndexPropertyList;
 class IndexProperty;
-class IfExpr;
+class IndexPropertyList;
 class InsertExpr;
 class InstanceofExpr;
-class IntersectExceptExpr;
 class IntegrityConstraintDecl;
+class IntersectExceptExpr;
 class ItemType;
 class ModuleDecl;
 class MultiplicativeExpr;
-class NameTest;
 class NamespaceDecl;
+class NameTest;
 class NodeComp;
+class NodeModifier;
 class NumericLiteral;
 class OccurrenceIndicator;
 class OptionDecl;
@@ -570,14 +570,16 @@ public:
 class DecimalFormatNode : public parsenode
 {
 public:
+  typedef std::vector<std::pair<std::string,std::string> > param_list_t;
+
   bool is_default;
   std::string format_name;
-  std::vector<std::pair<std::string, std::string > > param_list;
+  param_list_t param_list;
 
   DecimalFormatNode(
     const QueryLoc& _loc,
     const std::string& qname,
-    std::vector<std::pair<std::string, std::string> >* param_list_)
+    param_list_t* param_list_)
     :
     parsenode(_loc),
     is_default(false),
@@ -588,7 +590,7 @@ public:
 
   DecimalFormatNode(
     const QueryLoc& _loc,
-    std::vector<std::pair<std::string, std::string> >* param_list_)
+    param_list_t* param_list_)
     :
     parsenode(_loc),
     is_default(true)
@@ -917,12 +919,12 @@ protected:
 public:
   OptionDecl(
     const QueryLoc&,
-    rchandle<QName> qname_h,
-    std::string const& val);
+    rchandle<QName>,
+    std::string const&);
 
   rchandle<QName> get_qname() const { return qname_h; }
 
-  std::string get_val() const { return val; }
+  std::string const& get_val() const { return val; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -5458,93 +5460,38 @@ public:
 
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Full-text productions                                                      //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+//                                                                           //
+//  Full-text productions                                                    //
+//                                                                           //
+///////////////////////////////////////////////////////////////////////////////
 
 
 class FTSelection : public parsenode
 /*______________________________________________________________________
 |
-|  ::=  FTOr
-|      |  FTOr  FTMatchOptionProximityList
-|      |  FTOr  WEIGHT  RangeExpr
-|      |  FTOr  FTMatchOptionProximityList  WEIGHT  RangeExpr
+|  ::=  FTOr FTPosFilter*
 |_______________________________________________________________________*/
 {
-protected:
-  rchandle<FTOr> ftor_h;
-  rchandle<FTMatchOptionProximityList> option_list_h;
-  rchandle<RangeExpr> weight_expr_h;
-
 public:
-  FTSelection(
-    const QueryLoc&,
-    rchandle<FTOr>,
-    rchandle<FTMatchOptionProximityList>,
-    rchandle<RangeExpr>);
+    typedef std::list< rchandle<FTPosFilter> > pos_filter_list_t;
 
-  rchandle<FTOr> get_ftor() const
-    { return ftor_h; }
+    FTSelection(
+        const QueryLoc&,
+        rchandle<FTOr>,
+        pos_filter_list_t*);
 
-  rchandle<FTMatchOptionProximityList> get_option_list() const
-    { return option_list_h; }
+    rchandle<FTOr> get_ftor() const { return ftor; }
 
-  rchandle<RangeExpr> get_weight_expr() const
-    { return weight_expr_h; }
+    pos_filter_list_t const& get_pos_filter_list() const {
+        return pos_filter_list;
+    }
 
-  void accept(parsenode_visitor&) const;
-};
+    void accept(parsenode_visitor&) const;
 
-
-class FTMatchOptionProximityList : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  FTMatchOptionProximity
-|      | FTMatchOptionProximityList  FTMatchOptionProximity
-|_______________________________________________________________________*/
-{
-protected:
-  std::vector<rchandle<FTMatchOptionProximity> > opt_prox_hv;
-
-public:
-  FTMatchOptionProximityList(const QueryLoc&);
-
-  void push_back(rchandle<FTMatchOptionProximity> opt_prox_h)
-    { opt_prox_hv.push_back(opt_prox_h); }
-
-  rchandle<FTMatchOptionProximity> operator[](int i)
-    { return opt_prox_hv[i]; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-class FTMatchOptionProximity : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  FTMatchOption | FTProximity
-|_______________________________________________________________________*/
-{
-protected:
-  rchandle<FTMatchOption> opt_h;
-  rchandle<FTProximity> prox_h;
-
-public:
-  FTMatchOptionProximity(
-    rchandle<FTMatchOption>,
-    const QueryLoc&);
-
-  FTMatchOptionProximity(
-    rchandle<FTProximity>,
-    const QueryLoc&);
-
-  FTMatchOptionProximity(
-    const QueryLoc&);
-
-  void accept(parsenode_visitor&) const;
+private:
+  rchandle<FTOr> ftor;
+  pos_filter_list_t pos_filter_list;
 };
 
 
@@ -5575,45 +5522,45 @@ public:
 class FTAnd : public parsenode
 /*______________________________________________________________________
 |
-|  ::=  FTMildnot
-|      |  FTAnd  FTAND  FTMildnot
+|  ::=  FTMildNot
+|      |  FTAnd  FTAND  FTMildNot
 |_______________________________________________________________________*/
 {
 protected:
   rchandle<FTAnd> ftand_h;
-  rchandle<FTMildnot> ftmild_not_h;
+  rchandle<FTMildNot> ftmild_not_h;
 
 public:
   FTAnd(
     const QueryLoc&,
     rchandle<FTAnd>,
-    rchandle<FTMildnot>);
+    rchandle<FTMildNot>);
   
   rchandle<FTAnd> get_ftand() const { return ftand_h; }
-  rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
+  rchandle<FTMildNot> get_ftmild_not() const { return ftmild_not_h; }
 
   void accept(parsenode_visitor&) const;
 };
 
 
-class FTMildnot : public parsenode
+class FTMildNot : public parsenode
 /*______________________________________________________________________
 |
 |  ::=  FTUnaryNot
-|      |  FTMildnot  FTNOT_IN  FTUnaryNot
+|      |  FTMildNot  FTNOT_IN  FTUnaryNot
 |_______________________________________________________________________*/
 {
 protected:
-  rchandle<FTMildnot> ftmild_not_h;
+  rchandle<FTMildNot> ftmild_not_h;
   rchandle<FTUnaryNot> ftunary_not_h;
 
 public:
-  FTMildnot(
+  FTMildNot(
     const QueryLoc&,
-    rchandle<FTMildnot>,
+    rchandle<FTMildNot>,
     rchandle<FTUnaryNot>);
 
-  rchandle<FTMildnot> get_ftmild_not() const { return ftmild_not_h; }
+  rchandle<FTMildNot> get_ftmild_not() const { return ftmild_not_h; }
   rchandle<FTUnaryNot> get_ftunary_not() const { return ftunary_not_h; }
 
   void accept(parsenode_visitor&) const;
@@ -5623,55 +5570,103 @@ public:
 class FTUnaryNot : public parsenode
 /*______________________________________________________________________
 |
-|  ::=  FTWordsSelection
-|      |  FTNOT  FTWordsSelection
+|  ::=  FTPrimaryWithOptions
+|      |  FTNOT  FTPrimaryWithOptions
 |_______________________________________________________________________*/
 {
 protected:
-  rchandle<FTWordsSelection> words_selection_h;
-  bool not_b;
+  rchandle<FTPrimaryWithOptions> words_selection_h;
 
 public:
   FTUnaryNot(
     const QueryLoc&,
-    rchandle<FTWordsSelection>,
-    bool not_b);
+    rchandle<FTPrimaryWithOptions>);
 
-  rchandle<FTWordsSelection> get_words_selection() const
+  rchandle<FTPrimaryWithOptions> get_words_selection() const
     { return words_selection_h; }
-
-  bool get_not_bit() const
-    { return not_b; }
 
   void accept(parsenode_visitor&) const;
 };
 
 
-class FTWordsSelection : public parsenode
+class FTPrimaryWithOptions : public parsenode
 /*______________________________________________________________________
 |
-|  ::=  FTWords
-|      |  FTWords FTTimes
-|      | LPAR  FTSelection  RPAR
+|  ::=  FTPrimary FTMatchOptions? FTWeight?
 |_______________________________________________________________________*/
 {
 protected:
-  rchandle<FTWords> words_h;
-  rchandle<FTTimes> times_h;
-  rchandle<FTSelection> selection_h;
+  rchandle<FTPrimary> primary;
+  rchandle<FTMatchOptions> match_options;
+  rchandle<FTWeight> weight;
 
 public:
-  FTWordsSelection(
+  FTPrimaryWithOptions(
     const QueryLoc&,
-    rchandle<FTWords>,
-    rchandle<FTTimes>,
-    rchandle<FTSelection>);
+    rchandle<FTPrimary>,
+    rchandle<FTMatchOptions>,
+    rchandle<FTWeight>);
 
-  rchandle<FTWords> get_words() const { return words_h; }
-  rchandle<FTTimes> get_times() const { return times_h; }
-  rchandle<FTSelection> get_selection() const { return selection_h; }
+  rchandle<FTPrimary> get_primary() const { return primary; }
+  rchandle<FTMatchOptions> get_match_options() const { return match_options; }
+  rchandle<FTWeight> get_weight() const { return weight; }
 
   void accept(parsenode_visitor&) const;
+};
+
+
+class FTPrimary : public parsenode
+{
+public:
+    FTPrimary(
+        const QueryLoc&,
+        rchandle<FTWords>,
+        rchandle<FTTimes>);
+
+    rchandle<FTWords> get_words() const { return words; }
+    rchandle<FTTimes> get_times() const { return times; }
+
+  void accept(parsenode_visitor&) const;
+
+protected:
+    rchandle<FTWords> words;
+    rchandle<FTTimes> times;
+};
+
+
+class FTMatchOptions : public parsenode
+{
+public:
+    typedef std::list< rchandle<FTMatchOption> > match_option_list_t;
+
+    FTMatchOptions(
+        const QueryLoc&
+    );
+
+    match_option_list_t const& get_match_options() const {
+        return match_options;
+    }
+
+    void push_back( FTMatchOption *mo ) {
+        match_options.push_back( mo );
+    }
+
+  void accept(parsenode_visitor&) const;
+
+protected:
+    match_option_list_t match_options;
+};
+
+class FTWeight : public parsenode
+{
+public:
+    rchandle<RangeExpr> range_expr;
+
+    FTWeight( const QueryLoc&, RangeExpr* );
+
+    rchandle<RangeExpr> get_range() const { return range_expr; }
+
+    void accept(parsenode_visitor&) const;
 };
 
 
@@ -5689,8 +5684,8 @@ protected:
 public:
   FTWords(
     const QueryLoc&,
-    rchandle<FTWordsValue>,
-    rchandle<FTAnyallOption>);
+    FTWordsValue*,
+    FTAnyallOption*);
 
   rchandle<FTWordsValue> get_words_val() const
     { return words_val_h; }
@@ -5716,8 +5711,8 @@ protected:
 public:
   FTWordsValue(
     const QueryLoc&,
-    rchandle<StringLiteral>,
-    rchandle<exprnode>);
+    StringLiteral*,
+    exprnode*);
 
   rchandle<StringLiteral> get_lit() const { return lit_h; }
   rchandle<exprnode> get_expr() const { return expr_h; }
@@ -5726,10 +5721,10 @@ public:
 };
 
 
-class FTProximity : public parsenode
+class FTPosFilter : public parsenode
 /*______________________________________________________________________
 |
-|  ::=  FTOrderedIndicator
+|  ::=  FTOrder
 |      | FTWindow
 |      | FTDistance
 |      | FTScope
@@ -5737,20 +5732,20 @@ class FTProximity : public parsenode
 |_______________________________________________________________________*/
 {
 public:
-  FTProximity(const QueryLoc&);
+  FTPosFilter(const QueryLoc&);
 
   void accept(parsenode_visitor&) const;
 };
 
 
-class FTOrderedIndicator : public FTProximity
+class FTOrder : public FTPosFilter
 /*______________________________________________________________________
 |
 |  ::=  ORDERED
 |_______________________________________________________________________*/
 {
 public:
-  FTOrderedIndicator(const QueryLoc&);
+  FTOrder(const QueryLoc&);
 
   void accept(parsenode_visitor&) const;
 };
@@ -5763,9 +5758,9 @@ class FTMatchOption : public parsenode
 |      | FTDiacriticsOption
 |      | FTStemOption
 |      | FTThesaurusOption
-|      | FTStopwordOption
+|      | FTStopWordOption
 |      | FTLanguageOption
-|      | FTWildcardOption
+|      | FTWildCardOption
 |_______________________________________________________________________*/
 {
 public:
@@ -5853,54 +5848,28 @@ class FTThesaurusOption : public FTMatchOption
 |      | WITHOUT_THESAURUS
 |_______________________________________________________________________*/
 {
-protected:
-  rchandle<FTThesaurusID> thesaurusid_h;
-  rchandle<FTThesaurusList> thesaurus_list_h;
-  bool default_b;
-  bool without_b;
-
 public:
+    typedef std::list< rchandle<FTThesaurusID> > thesaurus_id_list_t;
+
   FTThesaurusOption(
     const QueryLoc&,
-    rchandle<FTThesaurusID>,
-    rchandle<FTThesaurusList>,
-    bool default_b,
-    bool without_b);
+    thesaurus_id_list_t*,
+    bool includes_default,
+    bool without = false);
 
-  rchandle<FTThesaurusID> get_thesaurusid() const
-    { return thesaurusid_h; }
+  thesaurus_id_list_t const& get_thesaurus_id_list() const
+    { return thesaurus_id_list; }
 
-  rchandle<FTThesaurusList> get_thesaurus_list() const
-    { return thesaurus_list_h; }
+  bool includes_default() const { return incl_default; }
 
-  bool get_default_bit() const { return default_b; }
-
-  bool get_without_bit() const { return without_b; }
+  bool is_without() const { return without; }
 
   void accept(parsenode_visitor&) const;
-};
 
-
-class FTThesaurusList : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  FTThesaurusID
-|      | FTThesaurusList  COMMA  FTThesaurusID
-|_______________________________________________________________________*/
-{
-protected:
-  std::vector<rchandle<FTThesaurusID> > thesaurus_hv;
-
-public:
-  FTThesaurusList(const QueryLoc&);
-
-  void push_back(rchandle<FTThesaurusID> thesaurus_h)
-    { thesaurus_hv.push_back(thesaurus_h); }
-
-  rchandle<FTThesaurusID> operator[](int i) const
-    { return thesaurus_hv[i]; }
-
-  void accept(parsenode_visitor&) const;
+private:
+  thesaurus_id_list_t thesaurus_id_list;
+  bool incl_default;
+  bool without;
 };
 
 
@@ -5933,131 +5902,88 @@ public:
 };
 
 
-class FTStopwordOption : public FTMatchOption
+class FTStopWordOption : public FTMatchOption
 /*______________________________________________________________________
 |
-|  ::=  WITH_STOP_WORDS  FTRefOrList
-|      |  WITH_STOP_WORDS  FTRefOrList  FTInclExclStringLiteralList
-|      | WITH_DEFAULT_STOP_WORDS
-|      | WITH_DEFAULT_STOP_WORDS  FTInclExclStringLiteralList
-|      | WITHOUT_STOP_WORDS
+|  ::=   WITH STOP WORDS FTStopWords FTStopWordsInclExcl*
+|      | WITH DEFAULT STOP WORDS FTStopWordsInclExcl*
+|      | WITHOUT STOP WORDS
 |_______________________________________________________________________*/
 {
-protected:
-  rchandle<FTRefOrList> refor_list_h;
-  rchandle<FTInclExclStringLiteralList> incl_excl_list_h;
-  ParseConstants::stop_words_mode_t mode;
-
 public:
-  FTStopwordOption(
+  typedef std::list< rchandle<FTStopWordsInclExcl> > incl_excl_list_t;
+
+  FTStopWordOption(
     const QueryLoc&,
-    rchandle<FTRefOrList>,
-    rchandle<FTInclExclStringLiteralList>,
-    ParseConstants::stop_words_mode_t);
+    rchandle<FTStopWords>,
+    incl_excl_list_t*,
+    ParseConstants::ft_stop_words_mode_t);
 
-  rchandle<FTRefOrList> get_refor_list() const
-    { return refor_list_h; }
+  rchandle<FTStopWords> get_stop_words() const
+    { return stop_words; }
 
-  rchandle<FTInclExclStringLiteralList> get_incl_excl_list() const
-    { return incl_excl_list_h; }
+  incl_excl_list_t const& get_incl_excl_list() const
+    { return incl_excl_list; }
 
-  ParseConstants::stop_words_mode_t get_mode() const
+  ParseConstants::ft_stop_words_mode_t get_mode() const
     { return mode; }
 
   void accept(parsenode_visitor&) const;
-};
 
-
-class FTInclExclStringLiteralList : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  FTInclExclStringLiteral
-|      | FTInclExclStringLiteralList  FTInclExclStringLiteral
-|_______________________________________________________________________*/
-{
 protected:
-  std::vector<rchandle<FTInclExclStringLiteral> > incl_excl_lit_hv;
-
-public:
-  FTInclExclStringLiteralList(const QueryLoc&);
-
-  void push_back(rchandle<FTInclExclStringLiteral> incl_excl_lit_h)
-    { incl_excl_lit_hv.push_back(incl_excl_lit_h); }
-
-  rchandle<FTInclExclStringLiteral> operator[](int i) const
-    { return incl_excl_lit_hv[i]; }
-
-  void accept(parsenode_visitor&) const;
+  rchandle<FTStopWords> stop_words;
+  incl_excl_list_t incl_excl_list;
+  ParseConstants::ft_stop_words_mode_t mode;
 };
 
 
-class FTRefOrList : public parsenode
+class FTStopWords : public parsenode
 /*______________________________________________________________________
 |
 |  ::=  AT  STRING_LITERAL
-|      | LPAR  FTStringLiteralList  RPAR
+|      | '('  STRING_LITERAL (',' STRING_LITERAL)* ')'
 |_______________________________________________________________________*/
 {
 protected:
-  std::string at_str;
-  rchandle<FTStringLiteralList> stringlit_list_h;
+  typedef std::list<std::string> list_type_t;
+
+  std::string uri;
+  list_type_t stringlit_list;
 
 public:
-  FTRefOrList(
+  FTStopWords(
     const QueryLoc&,
-    std::string at_str,
-    rchandle<FTStringLiteralList>);
+    std::string uri,
+    list_type_t*);
 
+  std::string get_uri() const { return uri; }
 
-  std::string get_at_str() const { return at_str; }
-
-  rchandle<FTStringLiteralList> get_stringlit_list() const { return stringlit_list_h; }
+  list_type_t const& get_stringlit_list() const { return stringlit_list; }
 
   void accept(parsenode_visitor&) const;
 };
 
 
-class FTStringLiteralList : public parsenode
+class FTStopWordsInclExcl : public parsenode
 /*______________________________________________________________________
 |
-|  ::=  STRING_LITERAL
-|      |  FTStringLiteralList  STRING_LITERAL
+|  ::=  UNION  FTStopWords
+|      |  EXCEPT  FTStopWords
 |_______________________________________________________________________*/
 {
 protected:
-  std::vector<std::string> strlit_v;
+  rchandle<FTStopWords> stop_words;
+  ParseConstants::ft_stop_words_unex_t mode;
 
 public:
-  FTStringLiteralList(const QueryLoc&);
-
-  void push_back(std::string strlit) { strlit_v.push_back(strlit); }
-
-  std::string operator[](int i) const { return strlit_v[i]; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-class FTInclExclStringLiteral : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  UNION  FTRefOrList
-|      |  EXCEPT  FTRefOrList
-|_______________________________________________________________________*/
-{
-protected:
-  rchandle<FTRefOrList> ref_or_list_h;
-  ParseConstants::intex_op_t mode;
-
-public:
-  FTInclExclStringLiteral(
+  FTStopWordsInclExcl(
     const QueryLoc&,
-    rchandle<FTRefOrList>,
-    ParseConstants::intex_op_t);
+    rchandle<FTStopWords>,
+    ParseConstants::ft_stop_words_unex_t);
 
-  rchandle<FTRefOrList> get_ref_or_list() const { return ref_or_list_h; }
+  rchandle<FTStopWords> get_stop_words() const { return stop_words; }
 
-  ParseConstants::intex_op_t get_mode() const { return mode; }
+  ParseConstants::ft_stop_words_unex_t get_mode() const { return mode; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -6086,7 +6012,7 @@ public:
 };
 
 
-class FTWildcardOption : public FTMatchOption
+class FTWildCardOption : public FTMatchOption
 /*______________________________________________________________________
 |
 |  ::=  WITH_WILDCARDS
@@ -6097,7 +6023,7 @@ protected:
   bool with_b;
 
 public:
-  FTWildcardOption(
+  FTWildCardOption(
     const QueryLoc&,
     bool with_b);
 
@@ -6107,7 +6033,7 @@ public:
 };
 
 
-class FTContent : public FTProximity
+class FTContent : public FTPosFilter
 /*______________________________________________________________________
 |
 |  ::=  AT_START
@@ -6190,7 +6116,7 @@ public:
 };
 
 
-class FTDistance : public FTProximity
+class FTDistance : public FTPosFilter
 /*______________________________________________________________________
 |
 |  ::=  DISTANCE  FTRange  FTUnit
@@ -6213,7 +6139,42 @@ public:
 };
 
 
-class FTWindow : public FTProximity
+class FTExtensionOption : public FTMatchOption
+{
+public:
+    FTExtensionOption(
+        const QueryLoc&,
+        rchandle<QName>,
+        std::string const&);
+
+  rchandle<QName> get_qname() const { return qname; }
+
+  std::string const& get_val() const { return val; }
+
+  void accept(parsenode_visitor&) const;
+
+private:
+  rchandle<QName> qname;
+  std::string val;
+};
+
+class FTExtensionSelection : public parsenode
+{
+public:
+    FTExtensionSelection(
+        const QueryLoc&,
+        PragmaList*);
+
+    rchandle<PragmaList> get_pragma_list() const { return pragma_list; }
+
+	void accept(parsenode_visitor&) const;
+
+private:
+    rchandle<PragmaList> pragma_list;
+};
+
+
+class FTWindow : public FTPosFilter
 /*______________________________________________________________________
 |
 |  ::=  WINDOW  UnionExpr  FTUnit
@@ -6257,7 +6218,7 @@ public:
 };
 
 
-class FTScope : public FTProximity
+class FTScope : public FTPosFilter
 /*______________________________________________________________________
 |
 |  ::=  SAME  FTBigUnit
@@ -6266,13 +6227,16 @@ class FTScope : public FTProximity
 {
 protected:
   ParseConstants::ft_scope_t scope;
+  rchandle<FTBigUnit> big_unit;
 
 public:
   FTScope(
     const QueryLoc&,
-    ParseConstants::ft_scope_t);
+    ParseConstants::ft_scope_t,
+    FTBigUnit*);
 
-  enum ParseConstants::ft_scope_t get_scope() const { return scope; }
+  ParseConstants::ft_scope_t get_scope() const { return scope; }
+  rchandle<FTBigUnit> get_big_unit() const { return big_unit; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -6359,3 +6323,4 @@ public:
  * mode: c++
  * End:
  */
+ /* vim:set et sw=4 ts=4: */

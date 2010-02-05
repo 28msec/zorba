@@ -57,7 +57,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       p->accept(*this);
       return this;
     }
-    
+
     void* begin_visit(const AbbrevForwardStep& n)
     {
       if(n.get_attr_bit())
@@ -68,14 +68,14 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT(AbbrevForwardStep)
 
-  	DEFAULT_BEGIN_VISIT (AnyKindTest)
-  	void end_visit(const AnyKindTest& n, void* state)
+    DEFAULT_BEGIN_VISIT (AnyKindTest)
+    void end_visit(const AnyKindTest& n, void* state)
     {
       os << "node()";
     }
-    
+
     DEFAULT_VISIT (AposAttrContentList)
-  	
+
     void* begin_visit(const AposAttrValueContent& n)
     {
       if(!n.get_apos_atcontent().empty())
@@ -87,7 +87,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (AposAttrValueContent)
-  	
+
     void* begin_visit(const ArgList& n)
     {
       for (int i=0; i<n.size(); ++i) {
@@ -101,9 +101,9 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (ArgList)
-  	
+
     DEFAULT_BEGIN_VISIT (AtomicType)
-  	void end_visit(const AtomicType& n, void* state)
+    void end_visit(const AtomicType& n, void* state)
     {
       os << n.get_qname()->get_qname();
     }
@@ -124,8 +124,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << "declare base-uri \"" << n.get_base_uri() << "\";";
       return no_state;
     }
-  	DEFAULT_END_VISIT (BaseURIDecl);
-  	
+    DEFAULT_END_VISIT (BaseURIDecl);
+
     void* begin_visit(const BoundarySpaceDecl& n)
     {
       os << "declare boundary-space ";
@@ -142,7 +142,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return no_state;
     }
     DEFAULT_END_VISIT (BoundarySpaceDecl)
-  	
+
     void* begin_visit(const CaseClause& n)
     {
       os << "case ";
@@ -157,15 +157,15 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (CaseClause)
 
-  	DEFAULT_VISIT (CaseClauseList) //@checked
+    DEFAULT_VISIT (CaseClauseList) //@checked
 
     void* begin_visit(const CommentTest& n)
     {
       os << "comment()";
       return no_state;
     }
-  	DEFAULT_END_VISIT (CommentTest);
-  	
+    DEFAULT_END_VISIT (CommentTest);
+
     void* begin_visit(const ConstructionDecl& n)
     {
       os << "declare construction ";
@@ -206,8 +206,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (CopyNamespacesDecl)
-  	
+    DEFAULT_END_VISIT (CopyNamespacesDecl)
+
     void* begin_visit(const DefaultCollationDecl& n)
     {
       os << "declare default collation " << n.get_collation();
@@ -231,7 +231,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << n.get_default_namespace();
       return 0;
     }
-  	DEFAULT_END_VISIT (DefaultNamespaceDecl)
+    DEFAULT_END_VISIT (DefaultNamespaceDecl)
 
     void* begin_visit(const DirAttr& n)
     {
@@ -240,10 +240,10 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       n.get_value()->accept(*this);
       return 0;
     }
-  	DEFAULT_END_VISIT (DirAttr)
+    DEFAULT_END_VISIT (DirAttr)
 
-  	DEFAULT_VISIT (DirAttributeList) //@checked
-  	
+    DEFAULT_VISIT (DirAttributeList) //@checked
+
     void* begin_visit(const DirAttributeValue& n)
     { 
       if(n.get_quot_attr_content())
@@ -259,9 +259,9 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (DirAttributeValue)
-  	
+
     DEFAULT_VISIT (DirElemContentList) //@checked
-  	
+
     void* begin_visit(const DocumentTest& n)
     {
       os << "document(";
@@ -271,7 +271,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     {
       os << ')';
     }
-  	
+
     void* begin_visit(const ElementTest& n)
     {
       os << "element(";
@@ -289,7 +289,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return no_state;
     }
     DEFAULT_END_VISIT (ElementTest)
-  	
+
     void* begin_visit(const EmptyOrderDecl& n)
     {
       os << "declare default order empty ";
@@ -312,10 +312,10 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       n.get_vardecl_list()->accept(*this);
       return 0;
     }
-  	DEFAULT_END_VISIT (ForClause)
+    DEFAULT_END_VISIT (ForClause)
 
-  	DEFAULT_VISIT (FLWORClauseList) //@checked
-  	
+    DEFAULT_VISIT (FLWORClauseList) //@checked
+
     void* begin_visit(const ForwardAxis& n)
     {
       switch(n.get_axis())
@@ -346,7 +346,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return no_state;
     }
     DEFAULT_END_VISIT (ForwardAxis)
-  	
+
     DEFAULT_VISIT (ForwardStep)//@checked
 
     void* begin_visit(const FunctionDecl& n)
@@ -403,8 +403,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       theFunctionIndex.insert(make_pair(n.get_name()->get_qname(), lParameters));
       return 0;
     }
-  	DEFAULT_END_VISIT (FunctionDecl)
-  	
+    DEFAULT_END_VISIT (FunctionDecl)
+
     void* begin_visit(const GeneralComp& n)
     {
       switch(n.get_type())
@@ -431,7 +431,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return no_state;
     }
     DEFAULT_END_VISIT (GeneralComp)
-  	
+
     void* begin_visit(const ItemType& n)
     {
       os << "item()";
@@ -452,21 +452,21 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return no_state;
     }
-  	DEFAULT_END_VISIT (LetClause)
+    DEFAULT_END_VISIT (LetClause)
 
-  	DEFAULT_VISIT (LibraryModule) //@checked
-  	
+    DEFAULT_VISIT (LibraryModule) //@checked
+
     DEFAULT_VISIT (MainModule) //@checked
 
-  	DEFAULT_VISIT (Module) //@checked
+    DEFAULT_VISIT (Module) //@checked
 
     void* begin_visit(const ModuleDecl& n)
     {
       os << "module namespace " << n.get_prefix() << "=" << n.get_target_namespace() << ';';
       return 0;
     }
-  	DEFAULT_END_VISIT (ModuleDecl)
-  	
+    DEFAULT_END_VISIT (ModuleDecl)
+
     void* begin_visit(const ModuleImport& n)
     {
       os << "import module ";
@@ -482,7 +482,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (ModuleImport)
-  	
+
     void* begin_visit(const NameTest& n)
     {
       if(n.getQName() != 0)
@@ -495,7 +495,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (NameTest)
 
-  	DEFAULT_VISIT (NamespaceDecl)
+    DEFAULT_VISIT (NamespaceDecl)
 
     void* begin_visit(const NodeComp& n)
     {
@@ -513,8 +513,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return no_state;
     }
-  	DEFAULT_END_VISIT (NodeComp)
-  	
+    DEFAULT_END_VISIT (NodeComp)
+
     void* begin_visit(const OccurrenceIndicator& n)
     {
       switch(n.get_type())
@@ -536,14 +536,14 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return no_state;
     }
     DEFAULT_END_VISIT (OccurrenceIndicator)
-  	
+
     void* begin_visit(const OptionDecl& n)
     {
       os << "declare option " << n.get_qname()->get_qname() << ' ' << n.get_val() << ';';
       return 0;
     }
     DEFAULT_END_VISIT (OptionDecl)
-    
+
     void* begin_visit(const GroupByClause& n)
     {
       os << "group by ";
@@ -561,7 +561,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (GroupSpecList)
-    
+
     void* begin_visit(const GroupSpec& n)
     {
       os << "$" << n.get_var_name();
@@ -571,7 +571,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     DEFAULT_END_VISIT (GroupSpec)
 
     DEFAULT_VISIT (GroupCollationSpec)
-  	
+
     void* begin_visit(const OrderByClause& n)
     {
       if(n.get_stable_bit())
@@ -589,7 +589,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << "collation " << n.get_uri();
       return 0;
     }
-  	DEFAULT_END_VISIT (OrderCollationSpec)
+    DEFAULT_END_VISIT (OrderCollationSpec)
 
 
     void* begin_visit(const OrderDirSpec& n)
@@ -605,8 +605,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (OrderDirSpec)
-  	
+    DEFAULT_END_VISIT (OrderDirSpec)
+
     void* begin_visit(const OrderEmptySpec& n)
     {
       os << "empty ";
@@ -622,9 +622,9 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (OrderEmptySpec)
-  	
+
     DEFAULT_VISIT (OrderModifierPN)//@checked
-  	
+
     DEFAULT_VISIT (OrderSpec) //@checked
 
     void* begin_visit(const OrderSpecList& n)
@@ -640,8 +640,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (OrderSpecList)
-  	
+    DEFAULT_END_VISIT (OrderSpecList)
+
     void* begin_visit(const PITest& n)
     {
       os << "processing-instruction(";
@@ -649,8 +649,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << ")";
       return no_state;
     }
-  	DEFAULT_END_VISIT (PITest);
-    
+    DEFAULT_END_VISIT (PITest);
+
     void* begin_visit(const OrderingModeDecl& n)
     {
       os << "declare ordering";
@@ -666,7 +666,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (OrderingModeDecl)
-  	
+
     void* begin_visit(const Param& n)
     {
       os << '$';
@@ -678,7 +678,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return no_state;
     }
     DEFAULT_END_VISIT (Param)
-  	
+
     void* begin_visit(const ParamList& n)
     {
       for (vector<rchandle<Param> >::const_iterator it = n.begin();
@@ -704,18 +704,18 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << "at $" << n.get_varname();
       return 0;
     }
-  	DEFAULT_END_VISIT (PositionalVar)\
-    
+    DEFAULT_END_VISIT (PositionalVar)\
+
     void* begin_visit(const Pragma& n)
     {
       os << "(#" << n.get_name()->get_qname() << ' ' << n.get_pragma_lit();
       return 0;
     }
-  	DEFAULT_END_VISIT (Pragma)
+    DEFAULT_END_VISIT (Pragma)
 
-  	DEFAULT_VISIT (PragmaList) //@checked
-  	DEFAULT_VISIT (PredicateList)//@checked
-  	DEFAULT_VISIT (Prolog)//@checked
+    DEFAULT_VISIT (PragmaList) //@checked
+    DEFAULT_VISIT (PredicateList)//@checked
+    DEFAULT_VISIT (Prolog)//@checked
 
     void* begin_visit(const QVarInDecl& n)
     {
@@ -725,7 +725,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       n.get_val()->accept(*this);
       return 0;
     }
-  	DEFAULT_END_VISIT (QVarInDecl)
+    DEFAULT_END_VISIT (QVarInDecl)
 
     void* begin_visit(const QVarInDeclList& n)
     {
@@ -741,10 +741,10 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (QVarInDeclList)
-  	
+    DEFAULT_END_VISIT (QVarInDeclList)
+
     DEFAULT_VISIT (QuoteAttrValueContent)
-  	
+
     DEFAULT_VISIT (QuoteAttrContentList)
 
     void* begin_visit(const ReverseAxis& n)
@@ -770,18 +770,18 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << "::";
       return no_state;
     }
-  	DEFAULT_END_VISIT (ReverseAxis);
- 
+    DEFAULT_END_VISIT (ReverseAxis);
+
     DEFAULT_VISIT (ReverseStep)
-  	DEFAULT_VISIT (SIND_DeclList)
-  	
+    DEFAULT_VISIT (SIND_DeclList)
+
     void* begin_visit(const SchemaAttributeTest& n)
     {
       os << "schema-attribute(" << n.get_attr()->get_qname() << ")";
       return 0;
     }
     DEFAULT_END_VISIT (SchemaAttributeTest);
-  	
+
     void* begin_visit(const SchemaElementTest& n)
     {
       os << "schema-element(" << n.get_elem()->get_qname() << ")";
@@ -799,8 +799,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (SchemaPrefix)
-  	
+    DEFAULT_END_VISIT (SchemaPrefix)
+
     void* begin_visit(const SchemaImport& n)
     {
       os << "import schema ";
@@ -813,7 +813,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;  
     }
     DEFAULT_END_VISIT (SchemaImport)
-  	
+
     void* begin_visit(const SequenceType& n)
     {
       if(n.get_itemtype() == 0)
@@ -823,7 +823,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return no_state;
     }
     DEFAULT_END_VISIT (SequenceType)
-  	
+
     void* begin_visit(const SignList& n)
     {
       if(n.get_sign())
@@ -835,9 +835,9 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (SignList)
-  	
+
     DEFAULT_BEGIN_VISIT (SingleType)
-  	void end_visit(const SingleType& n, void*)
+    void end_visit(const SingleType& n, void*)
     {
       if(n.get_hook_bit())
       {
@@ -851,7 +851,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (TextTest)
-  	
+
     void* begin_visit(const TypeName& n)
     {
       os << n.get_name()->get_qname();
@@ -871,8 +871,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (URILiteralList)
-  	
+    DEFAULT_END_VISIT (URILiteralList)
+
     void* begin_visit(const ValueComp& n)
     {
       switch(n.get_type())
@@ -900,7 +900,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (ValueComp)
 
-  	void* begin_visit(const CtxItemDecl& n)
+    void* begin_visit(const CtxItemDecl& n)
     {
       os << "declare context item ";
       if(n.get_type())
@@ -920,14 +920,14 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (CtxItemDecl);
-  	
+
     DEFAULT_VISIT (CollectionDecl)
     DEFAULT_VISIT (NodeModifier)
     DEFAULT_VISIT (IndexDecl)
-  	DEFAULT_VISIT (IndexKeySpec)
-  	DEFAULT_VISIT (IndexKeyList)
+    DEFAULT_VISIT (IndexKeySpec)
+    DEFAULT_VISIT (IndexKeyList)
     DEFAULT_VISIT (IntegrityConstraintDecl)
-  	
+
     void* begin_visit(const VarDecl& n)
     {
       os << "declare variable $" << n.get_varname();
@@ -961,7 +961,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (VarGetsDecl);
+    DEFAULT_END_VISIT (VarGetsDecl);
 
     void* begin_visit(const VarGetsDeclList& n)
     {
@@ -976,8 +976,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (VarGetsDeclList)
-  	
+    DEFAULT_END_VISIT (VarGetsDeclList)
+
     void* begin_visit(const VarInDecl& n)
     {
       os << n.get_varname() << ' ';
@@ -1000,7 +1000,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (VarInDecl)
 
-  	void* begin_visit(const VarInDeclList& n)
+    void* begin_visit(const VarInDeclList& n)
     {
       for(unsigned int i=0; i < n.size(); ++i)
       {
@@ -1015,7 +1015,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (VarInDeclList)
 
-  	void* begin_visit(const VersionDecl& n)
+    void* begin_visit(const VersionDecl& n)
     {
       os << "xquery version" << n.get_version();
       if(!n.get_encoding().empty())
@@ -1026,9 +1026,9 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (VersionDecl)
-  	
+
     DEFAULT_VISIT (VFO_DeclList)
-  	
+
     void* begin_visit(const WhereClause& n)
     {
       os << "where ";
@@ -1042,8 +1042,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << "count $" << n.get_varname();
       return 0;
     }
-  	DEFAULT_END_VISIT (CountClause)
-  	
+    DEFAULT_END_VISIT (CountClause)
+
     void* begin_visit(const Wildcard& n)
     {
       switch(n.getKind())
@@ -1070,7 +1070,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     DEFAULT_END_VISIT (QName)
 
     DEFAULT_VISIT (DecimalFormatNode);
-  
+
     /* expressions */
     void* begin_visit(const AdditiveExpr& n)
     {
@@ -1087,8 +1087,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       n.get_mult_expr()->accept(*this);
       return 0;
     }
-  	DEFAULT_END_VISIT (AdditiveExpr)
-   
+    DEFAULT_END_VISIT (AdditiveExpr)
+
     void* begin_visit(const AndExpr& n)
     {
       n.get_and_expr()->accept(*this);
@@ -1098,8 +1098,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (AndExpr)
 
-  	DEFAULT_VISIT (AxisStep)
-  	
+    DEFAULT_VISIT (AxisStep)
+
     void* begin_visit(const CDataSection& n)
     {
       os << "<![CDATA[" << n.get_cdata_content() << "]]>";
@@ -1117,7 +1117,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       n.get_singletype()->accept(*this);
       return 0;
     }
-  	DEFAULT_END_VISIT (CastExpr)
+    DEFAULT_END_VISIT (CastExpr)
 
     void* begin_visit(const CastableExpr& n)
     {
@@ -1129,7 +1129,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (CastableExpr)
+    DEFAULT_END_VISIT (CastableExpr)
 
     void* begin_visit(const CommonContent& n)
     {
@@ -1149,10 +1149,10 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (CommonContent)
-    
+    DEFAULT_END_VISIT (CommonContent)
+
     DEFAULT_VISIT (ComparisonExpr)
-  	
+
     void* begin_visit(const CompAttrConstructor& n)
     {
       os << "attribute" ;
@@ -1187,8 +1187,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << '}';
       return 0;
     }
-  	DEFAULT_END_VISIT (CompCommentConstructor)
-    
+    DEFAULT_END_VISIT (CompCommentConstructor)
+
     void* begin_visit(const CompDocConstructor& n)
     {
       os << "document{ ";
@@ -1196,7 +1196,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << '}';
       return 0;
     }
-  	DEFAULT_END_VISIT (CompDocConstructor)
+    DEFAULT_END_VISIT (CompDocConstructor)
 
     void* begin_visit(const CompElemConstructor& n)
     {
@@ -1223,7 +1223,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (CompElemConstructor)
-  
+
     void* begin_visit(const CompPIConstructor& n)
     {
       os << "processing-instruction";
@@ -1244,7 +1244,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (CompPIConstructor)
-  	
+
     void* begin_visit(const CompTextConstructor& n)
     {
       os << "text {";
@@ -1259,15 +1259,15 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << '.';
       return 0;
     }
-  	DEFAULT_END_VISIT (ContextItemExpr)
+    DEFAULT_END_VISIT (ContextItemExpr)
 
     void* begin_visit(const DirCommentConstructor& n)
     {
       os << "<!-- " << n.get_comment() << " -->";
       return 0;
     }
-  	DEFAULT_END_VISIT (DirCommentConstructor);
-  	
+    DEFAULT_END_VISIT (DirCommentConstructor);
+
     void* begin_visit(const DirElemConstructor& n)
     {
       os << '<';
@@ -1290,14 +1290,14 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (DirElemConstructor)
 
-  	DEFAULT_VISIT (DirElemContent)
+    DEFAULT_VISIT (DirElemContent)
 
     void* begin_visit(const DirPIConstructor& n)
     {
       os << "<? " << n.get_pi_target() << " " << n.get_pi_content() << " ?>"; 
       return 0;
     }
-  	DEFAULT_END_VISIT (DirPIConstructor)
+    DEFAULT_END_VISIT (DirPIConstructor)
 
     void* begin_visit(const EnclosedExpr& n)
     {
@@ -1306,10 +1306,10 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << '}';
       return 0;
     }
-  	DEFAULT_END_VISIT (EnclosedExpr);
-  	
+    DEFAULT_END_VISIT (EnclosedExpr);
+
     DEFAULT_VISIT (BlockBody)
-  	DEFAULT_VISIT (Expr)
+    DEFAULT_VISIT (Expr)
 
     void* begin_visit(const ExtensionExpr& n)
     {
@@ -1319,8 +1319,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << " }";
       return 0;
     }
-  	DEFAULT_END_VISIT (ExtensionExpr)
-  	
+    DEFAULT_END_VISIT (ExtensionExpr)
+
     void* begin_visit(const FLWORExpr& n)
     {
       n.get_clause_list()->accept(*this);
@@ -1331,12 +1331,12 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     DEFAULT_END_VISIT (FLWORExpr)
 
 
-  	DEFAULT_VISIT (WindowClause)
-  	DEFAULT_VISIT (WindowVarDecl)
-  	DEFAULT_VISIT (FLWORWinCond)
-  	DEFAULT_VISIT (WindowVars)
-  	DEFAULT_VISIT (FilterExpr) //@checked
-  	
+    DEFAULT_VISIT (WindowClause)
+    DEFAULT_VISIT (WindowVarDecl)
+    DEFAULT_VISIT (FLWORWinCond)
+    DEFAULT_VISIT (WindowVars)
+    DEFAULT_VISIT (FilterExpr) //@checked
+
     void* begin_visit(const FunctionCall& n)
     {
       n.get_fname()->accept(*this);
@@ -1350,7 +1350,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (FunctionCall)
 
-  	void* begin_visit(const IfExpr& n)
+    void* begin_visit(const IfExpr& n)
     {
       os << "if(";
       n.get_cond_expr()->accept(*this);
@@ -1361,7 +1361,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (IfExpr)
-  	
+
     void* begin_visit(const InstanceofExpr& n)
     {
       n.get_treat_expr()->accept(*this);
@@ -1374,8 +1374,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (InstanceofExpr)
 
-  	DEFAULT_VISIT (IntersectExceptExpr)
-  	
+    DEFAULT_VISIT (IntersectExceptExpr)
+
     void* begin_visit(const MultiplicativeExpr& n)
     {
       n.get_mult_expr()->accept(*this);
@@ -1398,14 +1398,14 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (MultiplicativeExpr)
-  	
+
     void* begin_visit(const NumericLiteral& n)
     {
       os << n.toString();
       return 0;
     }
     DEFAULT_END_VISIT (NumericLiteral)
-    
+
     void* begin_visit(const OrExpr& n)
     {
       n.get_or_expr()->accept(*this);
@@ -1422,8 +1422,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << " } ";
       return 0;
     }
-  	DEFAULT_END_VISIT (OrderedExpr);
-  	
+    DEFAULT_END_VISIT (OrderedExpr);
+
     void* begin_visit(const ParenthesizedExpr& n)
     {
       os << ')';
@@ -1434,7 +1434,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     {
       os << ')';
     }
-  	
+
     void* begin_visit(const PathExpr& n)
     {
       switch(n.get_type())
@@ -1470,10 +1470,10 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       n.get_expr()->accept(*this);
       return 0;
     }
-  	DEFAULT_END_VISIT (QuantifiedExpr)
+    DEFAULT_END_VISIT (QuantifiedExpr)
 
-  	DEFAULT_VISIT (QueryBody) //@checked
-  	
+    DEFAULT_VISIT (QueryBody) //@checked
+
     void* begin_visit(const RangeExpr& n)
     {
       n.get_from_expr()->accept(*this);
@@ -1503,14 +1503,14 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       n.get_relpath_expr()->accept(*this);
       return 0;
     }
-  	DEFAULT_END_VISIT (RelativePathExpr)
+    DEFAULT_END_VISIT (RelativePathExpr)
 
     void* begin_visit(const StringLiteral& n)
     {
       os << "\"" << n.get_strval() << '"';
       return 0;
     }
-  	DEFAULT_END_VISIT (StringLiteral);
+    DEFAULT_END_VISIT (StringLiteral);
 
     void* begin_visit(const TreatExpr& n)
     {
@@ -1522,7 +1522,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (TreatExpr)
+    DEFAULT_END_VISIT (TreatExpr)
 
 
     void* begin_visit(const TypeswitchExpr& n)
@@ -1540,10 +1540,10 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       n.get_default_clause()->accept(*this);
       return 0;
     }
-  	DEFAULT_END_VISIT (TypeswitchExpr)
+    DEFAULT_END_VISIT (TypeswitchExpr)
 
-  	DEFAULT_VISIT (UnaryExpr) //@checked
-  	
+    DEFAULT_VISIT (UnaryExpr) //@checked
+
     void* begin_visit(const UnionExpr& n)
     {
       if(n.union_expr())
@@ -1563,8 +1563,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << " }";
       return 0;
     }
-  	DEFAULT_END_VISIT (UnorderedExpr)
-  
+    DEFAULT_END_VISIT (UnorderedExpr)
+
     void* begin_visit(const ValidateExpr& n)
     {
       os << " validate";
@@ -1585,14 +1585,14 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (ValidateExpr)
 
-  	void* begin_visit(const VarRef& n)
+    void* begin_visit(const VarRef& n)
     {
       os << '$';
       os << n.get_varname();
       return 0;
     }
     DEFAULT_END_VISIT (VarRef)
-  
+
     /* update-related */
     void* begin_visit(const DeleteExpr& n)
     {
@@ -1600,7 +1600,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       n.getTargetExpr()->accept(*this);
       return 0;
     }
-  	DEFAULT_END_VISIT (DeleteExpr);
+    DEFAULT_END_VISIT (DeleteExpr);
 
     void* begin_visit(const InsertExpr& n)
     {
@@ -1626,8 +1626,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       }
       return 0;
     }
-  	DEFAULT_END_VISIT (InsertExpr)
-  	
+    DEFAULT_END_VISIT (InsertExpr)
+
     void* begin_visit(const RenameExpr& n)
     {
       os << "insert nodes ";
@@ -1655,8 +1655,8 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       n.getReplaceExpr()->accept(*this);
       return 0;
     }
-  	DEFAULT_END_VISIT (ReplaceExpr)
-  	
+    DEFAULT_END_VISIT (ReplaceExpr)
+
     void* begin_visit(const RevalidationDecl& n)
     {
       os << "declare revalidation ";
@@ -1686,10 +1686,10 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       n.get_target_expr()->accept(*this);
       return 0;
     }
-  	DEFAULT_END_VISIT (TransformExpr)
+    DEFAULT_END_VISIT (TransformExpr)
 
-  	DEFAULT_VISIT (CopyVarList) //@checked
-    
+    DEFAULT_VISIT (CopyVarList) //@checked
+
     void* begin_visit(const VarBinding& n)
     {
       os << "$" << n.get_varname();
@@ -1698,7 +1698,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (VarBinding)
-  
+
     /* try-catch-related */
     void* begin_visit(const TryExpr& n)
     {
@@ -1738,7 +1738,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (CatchExpr);
-  
+
     // eval
     void* begin_visit(const EvalExpr& n)
     {
@@ -1753,53 +1753,53 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       return 0;
     }
     DEFAULT_END_VISIT (EvalExpr);
-  
+
   /* full-text-related */
-  	DEFAULT_VISIT (FTAnd);
-  	DEFAULT_VISIT (FTAnyallOption);
-  	DEFAULT_VISIT (FTBigUnit);
-  	DEFAULT_VISIT (FTCaseOption);
-  	DEFAULT_VISIT (FTContainsExpr);
-  	DEFAULT_VISIT (FTContent);
-  	DEFAULT_VISIT (FTDiacriticsOption);
-  	DEFAULT_VISIT (FTDistance);
-  	DEFAULT_VISIT (FTIgnoreOption);
-  	DEFAULT_VISIT (FTInclExclStringLiteral);
-  	DEFAULT_VISIT (FTInclExclStringLiteralList);
-  	DEFAULT_VISIT (FTLanguageOption);
-  	DEFAULT_VISIT (FTMatchOption);
-  	DEFAULT_VISIT (FTMatchOptionProximityList);
-  	DEFAULT_VISIT (FTMildnot);
-  	DEFAULT_VISIT (FTOptionDecl);
-  	DEFAULT_VISIT (FTOr);
-  	DEFAULT_VISIT (FTOrderedIndicator);
-  	DEFAULT_VISIT (FTProximity);
-  	DEFAULT_VISIT (FTRange);
-  	DEFAULT_VISIT (FTRefOrList);
-  	DEFAULT_VISIT (FTScope);
-  	DEFAULT_VISIT (FTScoreVar);
-  	DEFAULT_VISIT (FTSelection);
-  	DEFAULT_VISIT (FTStemOption);
-  	DEFAULT_VISIT (FTStopwordOption);
-  	DEFAULT_VISIT (FTStringLiteralList);
-  	DEFAULT_VISIT (FTThesaurusID);
-  	DEFAULT_VISIT (FTThesaurusList);
-  	DEFAULT_VISIT (FTThesaurusOption);
-  	DEFAULT_VISIT (FTTimes);
-  	DEFAULT_VISIT (FTUnaryNot);
-  	DEFAULT_VISIT (FTUnit);
-  	DEFAULT_VISIT (FTWildcardOption);
-  	DEFAULT_VISIT (FTWindow);
-  	DEFAULT_VISIT (FTWords);
-  	DEFAULT_VISIT (FTWordsSelection);
-  	DEFAULT_VISIT (FTWordsValue);
-  	DEFAULT_VISIT (FTMatchOptionProximity);
-  
+    DEFAULT_VISIT (FTAnd);
+    DEFAULT_VISIT (FTAnyallOption);
+    DEFAULT_VISIT (FTBigUnit);
+    DEFAULT_VISIT (FTCaseOption);
+    DEFAULT_VISIT (FTContainsExpr);
+    DEFAULT_VISIT (FTContent);
+    DEFAULT_VISIT (FTDiacriticsOption);
+    DEFAULT_VISIT (FTDistance);
+    DEFAULT_VISIT (FTExtensionOption);
+    DEFAULT_VISIT (FTExtensionSelection);
+    DEFAULT_VISIT (FTIgnoreOption);
+    DEFAULT_VISIT (FTLanguageOption);
+    DEFAULT_VISIT (FTMatchOption);
+    DEFAULT_VISIT (FTMatchOptions);
+    DEFAULT_VISIT (FTMildNot);
+    DEFAULT_VISIT (FTOptionDecl);
+    DEFAULT_VISIT (FTOr);
+    DEFAULT_VISIT (FTOrder);
+    DEFAULT_VISIT (FTPosFilter);
+    DEFAULT_VISIT (FTPrimary);
+    DEFAULT_VISIT (FTPrimaryWithOptions);
+    DEFAULT_VISIT (FTRange);
+    DEFAULT_VISIT (FTScope);
+    DEFAULT_VISIT (FTScoreVar);
+    DEFAULT_VISIT (FTSelection);
+    DEFAULT_VISIT (FTStemOption);
+    DEFAULT_VISIT (FTStopWordOption);
+    DEFAULT_VISIT (FTStopWords);
+    DEFAULT_VISIT (FTStopWordsInclExcl);
+    DEFAULT_VISIT (FTThesaurusID);
+    DEFAULT_VISIT (FTThesaurusOption);
+    DEFAULT_VISIT (FTTimes);
+    DEFAULT_VISIT (FTUnaryNot);
+    DEFAULT_VISIT (FTUnit);
+    DEFAULT_VISIT (FTWeight);
+    DEFAULT_VISIT (FTWildCardOption);
+    DEFAULT_VISIT (FTWindow);
+    DEFAULT_VISIT (FTWords);
+    DEFAULT_VISIT (FTWordsValue);
+
     DEFAULT_VISIT (AssignExpr);
     DEFAULT_VISIT (ExitExpr);
     DEFAULT_VISIT (WhileExpr);
     DEFAULT_VISIT (FlowCtlStatement);
-  
+
     DEFAULT_VISIT (ParseErrorNode);
 };
 
@@ -1809,3 +1809,4 @@ FunctionIndex print_parsetree_xquery(ostream& os, const parsenode* p)
   return v.print(p)->getFunctionIndex();
 }
 }//end of namespace
+/* vim:set et sw=4 ts=4: */
