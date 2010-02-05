@@ -956,6 +956,11 @@ int _tmain(int argc, _TCHAR* argv[])
                     << std::endl;
           return 10;
         }
+        
+        std::string lHost = lProperties.debugServerHost();
+        if (lHost == "") {
+          lHost = "127.0.0.1";
+        }
 
         if (lProperties.debugServer() || lProperties.debug()) {
           Zorba_SerializerOptions lSerOptions = 
@@ -965,6 +970,7 @@ int _tmain(int argc, _TCHAR* argv[])
           lServer.reset(new zorba::DebuggerServerRunnable(
                             lQuery,
                             *lOutputStream,                                                          
+                            lHost,
                             lProperties.getRequestPort(),
                             lProperties.getEventPort(),
                             lSerOptions));
@@ -973,7 +979,7 @@ int _tmain(int argc, _TCHAR* argv[])
           }
           lServer->start();
         }
-        
+                
         if (lProperties.debug()) {
           if (!lProperties.hasNoLogo() ) {
             std::cout << "Zorba XQuery Debugger\n" << copyright_str << std::endl;
@@ -984,7 +990,8 @@ int _tmain(int argc, _TCHAR* argv[])
             try {
               // wait 1 second before trying to reconnect
               sleep(1);
-              lClient.reset(ZorbaDebuggerClient::createClient(lProperties.getRequestPort(), lProperties.getEventPort()));
+              lClient.reset(ZorbaDebuggerClient::createClient(
+                lHost, lProperties.getRequestPort(), lProperties.getEventPort()));
               lHandler.reset(new DebuggerHandler(lZorbaInstance, lClient.get(), lFileName));
               lClient->registerEventHandler( lHandler.get() );
               break;

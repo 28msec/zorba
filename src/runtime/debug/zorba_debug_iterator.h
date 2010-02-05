@@ -44,7 +44,7 @@ namespace zorba {
     protected:
 
       checked_vector<store::Item_t> varnames;
-      checked_vector<std::string> var_keys;  
+      checked_vector<std::string> var_keys;
       checked_vector<xqtref_t> vartypes;
 
     private:

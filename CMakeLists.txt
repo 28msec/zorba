@@ -75,6 +75,7 @@ INCLUDE(ExpectedFailure)
 SET(requiredlibs)
 SET(requiredlibs-store)
 
+SET(requiredlibs ${requiredlibs} "vld.lib")
 #
 # TcMalloc support
 #
