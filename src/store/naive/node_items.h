@@ -169,6 +169,8 @@ protected:
   XmlTree(XmlNode* root, ulong id);
 
 public:
+  XmlTree();
+
   ~XmlTree() { theRootNode = 0; }
 
   void free() throw();
@@ -179,6 +181,8 @@ public:
   void removeReference()   { --theRefCount; }
 
   SYNC_CODE(RCLock& getRCLock() const { return theRCLock; })
+
+  void setId(ulong id) { theId = id; }
 
   ulong getId() const { return theId; }
 
@@ -292,6 +296,8 @@ protected:
         InternalNode*                parent,
         long                         pos,
         store::StoreConsts::NodeKind nodeKind);
+
+  XmlNode() {}
 
 public:
 #ifndef NDEBUG
@@ -424,6 +430,9 @@ public:
   void insertSiblingsBefore(UpdInsertChildren& upd);
   void insertSiblingsAfter(UpdInsertChildren& upd);
 
+  uint32_t getFlags() { return theFlags; }
+  void setFlags(uint32_t flags) { theFlags = flags; }
+
 protected:
   virtual xqpStringStore_t getBaseURIInternal(bool& local) const;
 
@@ -466,6 +475,8 @@ protected:
     XmlNode(tree, parent, pos, nodeKind)
   {
   }
+
+  InternalNode() {}
 
 public:
   //
@@ -512,16 +523,16 @@ protected:
 ********************************************************************************/
 class DocumentNode : public InternalNode
 {
+protected:
   //friend class FastXmlLoader;
-
   // make sure that only created by the factory
   friend class NodeFactory;
-  DocumentNode();
-
   DocumentNode(
         XmlTree*                tree,
         const xqpStringStore_t& baseUri,
         const xqpStringStore_t& docUri);
+
+  DocumentNode();
 
 public:
   //
@@ -601,6 +612,8 @@ protected:
         bool                        isInSubstGroup,
         const store::NsBindings*    localBindings,
         xqpStringStore_t&           baseUri);
+
+  ElementNode() {}
 
 public:
   //
@@ -770,6 +783,8 @@ protected:
         bool                        isListValue,
         bool                        hidden);
 
+  AttributeNode() {}
+
 public:
   //
   // Item methods
@@ -868,6 +883,8 @@ protected:
         store::Item_t&    content,
         bool              isListValue);
 
+  TextNode() {}
+
 public:
   ~TextNode()
   {
@@ -963,6 +980,8 @@ class PiNode : public XmlNode
         xqpStringStore_t& target,
         xqpStringStore_t& content);
 
+  PiNode() {}
+
 public:
   XmlNode* copyInternal(
         InternalNode*          rootParent,
@@ -1014,6 +1033,8 @@ protected:
         InternalNode*     parent,
         long              pos,
         xqpStringStore_t& content);
+
+  CommentNode() {}
 
 public:
   XmlNode* copyInternal(

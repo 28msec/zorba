@@ -177,13 +177,15 @@ void SimpleStore::init()
 
     theQNamePool = new QNamePool(QNamePool::MAX_CACHE_SIZE, theNamespacePool);
 
-    initTypeNames();
+    // createItemFactory uses theNamespacePool and theQNamePool
+    // they have to be created before this function is called
+    theItemFactory = createItemFactory();
 
-    theItemFactory = new BasicItemFactory(theNamespacePool, theQNamePool);
+    initTypeNames();
 
     theIteratorFactory = new SimpleIteratorFactory();
 
-    theNodeFactory = new NodeFactory();
+    theNodeFactory = createNodeFactory();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
@@ -202,64 +204,102 @@ void SimpleStore::initTypeNames()
 {
   theSchemaTypeNames.resize(XS_LAST);
 
-  theSchemaTypeNames[0]  = theQNamePool->insert(XS_URI, "", "untyped");
-  theSchemaTypeNames[1]  = theQNamePool->insert(XS_URI, "", "untypedAtomic");
-  theSchemaTypeNames[2]  = theQNamePool->insert(XS_URI, "", "anyType");
-  theSchemaTypeNames[3]  = theQNamePool->insert(XS_URI, "", "anySimpleType");
-  theSchemaTypeNames[4]  = theQNamePool->insert(XS_URI, "", "anyAtomicType");
+  theItemFactory->createQName(theSchemaTypeNames[0], XS_URI, "", "untyped");
+  theItemFactory->createQName(theSchemaTypeNames[1], XS_URI, "", "untypedAtomic");
+  theItemFactory->createQName(theSchemaTypeNames[2], XS_URI, "", "anyType");
+  theItemFactory->createQName(theSchemaTypeNames[3], XS_URI, "", "anySimpleType");
+  theItemFactory->createQName(theSchemaTypeNames[4], XS_URI, "", "anyAtomicType");
 
-  theSchemaTypeNames[5]  = theQNamePool->insert(XS_URI, "", "string");
-  theSchemaTypeNames[6]  = theQNamePool->insert(XS_URI, "", "normalizedString");
-  theSchemaTypeNames[7]  = theQNamePool->insert(XS_URI, "", "language");
-  theSchemaTypeNames[8]  = theQNamePool->insert(XS_URI, "", "token");
-  theSchemaTypeNames[9]  = theQNamePool->insert(XS_URI, "", "NMTOKEN");
+  theItemFactory->createQName(theSchemaTypeNames[5], XS_URI, "", "string");
+  theItemFactory->createQName(theSchemaTypeNames[6], XS_URI, "", "normalizedString");
+  theItemFactory->createQName(theSchemaTypeNames[7], XS_URI, "", "language");
+  theItemFactory->createQName(theSchemaTypeNames[8], XS_URI, "", "token");
+  theItemFactory->createQName(theSchemaTypeNames[9], XS_URI, "", "NMTOKEN");
 
-  theSchemaTypeNames[10] = theQNamePool->insert(XS_URI, "", "anyURI");
-  theSchemaTypeNames[11] = theQNamePool->insert(XS_URI, "", "Name");
-  theSchemaTypeNames[12] = theQNamePool->insert(XS_URI, "", "NCName");
-  theSchemaTypeNames[13] = theQNamePool->insert(XS_URI, "", "QName");
-  theSchemaTypeNames[14] = theQNamePool->insert(XS_URI, "", "notation");
+  theItemFactory->createQName(theSchemaTypeNames[10], XS_URI, "", "anyURI");
+  theItemFactory->createQName(theSchemaTypeNames[11], XS_URI, "", "Name");
+  theItemFactory->createQName(theSchemaTypeNames[12], XS_URI, "", "NCName");
+  theItemFactory->createQName(theSchemaTypeNames[13], XS_URI, "", "QName");
+  theItemFactory->createQName(theSchemaTypeNames[14], XS_URI, "", "notation");
 
-  theSchemaTypeNames[15] = theQNamePool->insert(XS_URI, "", "ID");
-  theSchemaTypeNames[16] = theQNamePool->insert(XS_URI, "", "IDREF");
+  theItemFactory->createQName(theSchemaTypeNames[15], XS_URI, "", "ID");
+  theItemFactory->createQName(theSchemaTypeNames[16], XS_URI, "", "IDREF");
 
-  theSchemaTypeNames[17] = theQNamePool->insert(XS_URI, "", "ENTITY");
+  theItemFactory->createQName(theSchemaTypeNames[17], XS_URI, "", "ENTITY");
 
-  theSchemaTypeNames[18] = theQNamePool->insert(XS_URI, "", "dateTime");
-  theSchemaTypeNames[19] = theQNamePool->insert(XS_URI, "", "date");
-  theSchemaTypeNames[20] = theQNamePool->insert(XS_URI, "", "time");
-  theSchemaTypeNames[21] = theQNamePool->insert(XS_URI, "", "duration");
-  theSchemaTypeNames[22] = theQNamePool->insert(XS_URI, "", "dayTimeDuration");
-  theSchemaTypeNames[23] = theQNamePool->insert(XS_URI, "", "yearMonthDuration");
+  theItemFactory->createQName(theSchemaTypeNames[18], XS_URI, "", "dateTime");
+  theItemFactory->createQName(theSchemaTypeNames[19], XS_URI, "", "date");
+  theItemFactory->createQName(theSchemaTypeNames[20], XS_URI, "", "time");
+  theItemFactory->createQName(theSchemaTypeNames[21], XS_URI, "", "duration");
+  theItemFactory->createQName(theSchemaTypeNames[22], XS_URI, "", "dayTimeDuration");
+  theItemFactory->createQName(theSchemaTypeNames[23], XS_URI, "", "yearMonthDuration");
 
-  theSchemaTypeNames[24] = theQNamePool->insert(XS_URI, "", "float");
-  theSchemaTypeNames[25] = theQNamePool->insert(XS_URI, "", "double");
-  theSchemaTypeNames[26] = theQNamePool->insert(XS_URI, "", "decimal");
-  theSchemaTypeNames[27] = theQNamePool->insert(XS_URI, "", "integer");
-  theSchemaTypeNames[28] = theQNamePool->insert(XS_URI, "", "nonPositiveInteger");
-  theSchemaTypeNames[29] = theQNamePool->insert(XS_URI, "", "nonNegativeInteger");
-  theSchemaTypeNames[30] = theQNamePool->insert(XS_URI, "", "negativeInteger");
-  theSchemaTypeNames[31] = theQNamePool->insert(XS_URI, "", "positiveInteger");
+  theItemFactory->createQName(theSchemaTypeNames[24], XS_URI, "", "float");
+  theItemFactory->createQName(theSchemaTypeNames[25], XS_URI, "", "double");
+  theItemFactory->createQName(theSchemaTypeNames[26], XS_URI, "", "decimal");
+  theItemFactory->createQName(theSchemaTypeNames[27], XS_URI, "", "integer");
+  theItemFactory->createQName(theSchemaTypeNames[28], XS_URI, "", "nonPositiveInteger");
+  theItemFactory->createQName(theSchemaTypeNames[29], XS_URI, "", "nonNegativeInteger");
+  theItemFactory->createQName(theSchemaTypeNames[30], XS_URI, "", "negativeInteger");
+  theItemFactory->createQName(theSchemaTypeNames[31], XS_URI, "", "positiveInteger");
 
-  theSchemaTypeNames[32] = theQNamePool->insert(XS_URI, "", "long");
-  theSchemaTypeNames[33] = theQNamePool->insert(XS_URI, "", "int");
-  theSchemaTypeNames[34] = theQNamePool->insert(XS_URI, "", "short");
-  theSchemaTypeNames[35] = theQNamePool->insert(XS_URI, "", "byte");
-  theSchemaTypeNames[36] = theQNamePool->insert(XS_URI, "", "unsignedLong");
-  theSchemaTypeNames[37] = theQNamePool->insert(XS_URI, "", "unsignedInt");
-  theSchemaTypeNames[38] = theQNamePool->insert(XS_URI, "", "unsignedShort");
-  theSchemaTypeNames[39] = theQNamePool->insert(XS_URI, "", "unsignedByte");
+  theItemFactory->createQName(theSchemaTypeNames[32], XS_URI, "", "long");
+  theItemFactory->createQName(theSchemaTypeNames[33], XS_URI, "", "int");
+  theItemFactory->createQName(theSchemaTypeNames[34], XS_URI, "", "short");
+  theItemFactory->createQName(theSchemaTypeNames[35], XS_URI, "", "byte");
+  theItemFactory->createQName(theSchemaTypeNames[36], XS_URI, "", "unsignedLong");
+  theItemFactory->createQName(theSchemaTypeNames[37], XS_URI, "", "unsignedInt");
+  theItemFactory->createQName(theSchemaTypeNames[38], XS_URI, "", "unsignedShort");
+  theItemFactory->createQName(theSchemaTypeNames[39], XS_URI, "", "unsignedByte");
 
-  theSchemaTypeNames[40] = theQNamePool->insert(XS_URI, "", "gYearMonth");
-  theSchemaTypeNames[41] = theQNamePool->insert(XS_URI, "", "gYear");
-  theSchemaTypeNames[42] = theQNamePool->insert(XS_URI, "", "gMonthDay");
-  theSchemaTypeNames[43] = theQNamePool->insert(XS_URI, "", "gDay");
-  theSchemaTypeNames[44] = theQNamePool->insert(XS_URI, "", "gMonth");
+  theItemFactory->createQName(theSchemaTypeNames[40], XS_URI, "", "gYearMonth");
+  theItemFactory->createQName(theSchemaTypeNames[41], XS_URI, "", "gYear");
+  theItemFactory->createQName(theSchemaTypeNames[42], XS_URI, "", "gMonthDay");
+  theItemFactory->createQName(theSchemaTypeNames[43], XS_URI, "", "gDay");
+  theItemFactory->createQName(theSchemaTypeNames[44], XS_URI, "", "gMonth");
 
-  theSchemaTypeNames[45] = theQNamePool->insert(XS_URI, "", "base64Binary");
-  theSchemaTypeNames[46] = theQNamePool->insert(XS_URI, "", "hexBinary");
-  theSchemaTypeNames[47] = theQNamePool->insert(XS_URI, "", "boolean");
-  theSchemaTypeNames[48] = theQNamePool->insert(ZXSE_URI, "zxse", "tuple");
+  theItemFactory->createQName(theSchemaTypeNames[45], XS_URI, "", "base64Binary");
+  theItemFactory->createQName(theSchemaTypeNames[46], XS_URI, "", "hexBinary");
+  theItemFactory->createQName(theSchemaTypeNames[47], XS_URI, "", "boolean");
+  theItemFactory->createQName(theSchemaTypeNames[48], ZXSE_URI, "zxse", "tuple");
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+NodeFactory*
+SimpleStore::createNodeFactory() const
+{
+  return new NodeFactory();
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+void SimpleStore::destroyNodeFactory(NodeFactory* f) const
+{
+  delete f;
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+BasicItemFactory*
+SimpleStore::createItemFactory() const
+{
+  return new BasicItemFactory(theNamespacePool, theQNamePool);
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+void SimpleStore::destroyItemFactory(BasicItemFactory* f) const
+{
+  delete f;
 }
 
 
@@ -285,9 +325,15 @@ void SimpleStore::shutdown()
 
   theDocuments.clear();
 
+  if (theNodeFactory != NULL)
+  {
+    destroyNodeFactory(theNodeFactory);
+    theNodeFactory = NULL;
+  }
+
   if (theItemFactory != NULL)
   {
-    delete theItemFactory;
+    destroyItemFactory(theItemFactory);
     theItemFactory = NULL;
   }
 

@@ -38,6 +38,7 @@ namespace simplestore
 
 class StringPool;
 typedef StringPool UriPool;
+class QNamePool;
 
 
 class BasicItemFactory : public store::ItemFactory

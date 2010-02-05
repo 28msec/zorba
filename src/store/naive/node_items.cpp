@@ -51,6 +51,8 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
+XmlTree::XmlTree() {}
+
 XmlTree::XmlTree(XmlNode* root, ulong id)
   :
   theRefCount(0),

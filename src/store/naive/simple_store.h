@@ -154,6 +154,20 @@ protected:
   void init();
   void initTypeNames();
 
+  // function to create the node and item factory
+  // those functions are called from init and 
+  // shutdown, respectively.
+  // Having this functionality factorized allows
+  // other to derive from the SimpleStore and
+  // provide their own factories
+  virtual NodeFactory* createNodeFactory() const;
+
+  virtual void destroyNodeFactory(NodeFactory*) const;
+
+  virtual BasicItemFactory* createItemFactory() const;
+
+  virtual void destroyItemFactory(BasicItemFactory*) const;
+
 public:
   void shutdown();
 

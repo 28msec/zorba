@@ -31,11 +31,6 @@ namespace zorba
 namespace simplestore
 {
 
-class QNameItemNorm;
-
-typedef rchandle<QNameItemNorm> NormalizedQName_t;
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -86,6 +81,8 @@ protected:
     theBaseItem.transfer(baseItem);
     theTypeName.transfer(typeName);
   }
+
+  UserTypedAtomicItemImpl() {}
 
 public:
   const store::Item* getBaseItem() const { return theBaseItem; }
@@ -208,6 +205,8 @@ protected:
   friend class BasicItemFactory;
   UntypedAtomicItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
 
+  UntypedAtomicItemImpl() {}
+
 public:
   store::Item* getType( ) const;
 
@@ -241,10 +240,9 @@ class QNameItem : public AtomicItem
 {
   friend class QNamePool;
 
-private:
+protected:
   static xqpStringStore_t theEmptyPrefix;
 
-private:
   xqpStringStore_t    theNamespace;
   xqpStringStore_t    thePrefix;
 
@@ -349,6 +347,8 @@ protected:
   friend class BasicItemFactory;
   AnyUriItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
 
+  AnyUriItemImpl() {}
+
 public:
   store::Item* getType( ) const;
 
@@ -395,6 +395,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   StringItemNaive(xqpStringStore_t& value) { theValue.transfer(value); }
+
+  StringItemNaive() {}
   
 public:
   virtual store::Item* getType( ) const;
@@ -635,6 +637,8 @@ protected:
   friend class BasicItemFactory;
   DurationItemNaive(const xqp_duration* aValue) : theValue(*aValue) { };
 
+  DurationItemNaive() {}
+
 public:
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
@@ -683,6 +687,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
 	DoubleItemNaive(const xqp_double& aValue) : theValue( aValue ) {}
+
+  DoubleItemNaive() {}
 
 public:
 	const xqp_double& getDoubleValue() const { return theValue; }
@@ -734,6 +740,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   FloatItemNaive(const xqp_float& aValue) : theValue ( aValue ) {}
+
+  FloatItemNaive() {}
 
 public:
   const xqp_float& getFloatValue() const { return theValue; }
@@ -800,13 +808,14 @@ public:
 ********************************************************************************/
 class DecimalItemNaive : public AtomicItem
 {
-private:
+protected:
   xqp_decimal theValue;
 
-protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   DecimalItemNaive(const xqp_decimal& aValue) : theValue(aValue) {}
+
+  DecimalItemNaive() {}
 
 public:
   xqp_decimal getDecimalValue() const { return theValue; }
@@ -858,6 +867,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   IntegerItemNaive(const xqp_integer& aValue) : theValue ( aValue ) {}
+
+  IntegerItemNaive() {}
 
 public:
   xqp_integer getIntegerValue() const { return theValue; }
@@ -921,6 +932,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   NonPositiveIntegerItemNaive(const xqp_integer& aValue) : IntegerItemNaive(aValue) {}
+
+  NonPositiveIntegerItemNaive() {}
     
 public:
   store::Item* getType() const;
@@ -938,6 +951,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   NegativeIntegerItemNaive(const xqp_integer& aValue) : IntegerItemNaive(aValue) {}
+
+  NegativeIntegerItemNaive() {}
     
 public:
   store::Item* getType() const;
@@ -958,6 +973,8 @@ protected:
   friend class BasicItemFactory;
   NonNegativeIntegerItemNaive(const xqp_uinteger& aValue) : IntegerItemNaive(aValue) {}
 
+  NonNegativeIntegerItemNaive() {}
+
 public:
   xqp_uinteger getUnsignedIntegerValue() const { return theValue; }
 
@@ -976,6 +993,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   PositiveIntegerItemNaive(const xqp_uinteger& aValue) : IntegerItemNaive(aValue) { }
+
+  PositiveIntegerItemNaive() {}
 
 public:
   xqp_uinteger getUnsignedIntegerValue() const { return theValue; }
@@ -998,6 +1017,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   LongItemNaive(xqp_long aValue) : theValue(aValue) {}
+
+  LongItemNaive() {}
 
 public:
   xqp_decimal getDecimalValue() const;
@@ -1068,6 +1089,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   IntItemNaive(xqp_int aValue) : theValue(aValue) {}
+
+  IntItemNaive() {}
 
 public:
   bool isNaN() const { return false; }
@@ -1140,6 +1163,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   ShortItemNaive ( xqp_short aValue)  : theValue(aValue) {}
+
+  ShortItemNaive() {}
 
 public:
   xqp_decimal getDecimalValue() const;
@@ -1214,6 +1239,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   ByteItemNaive(xqp_byte aValue) : theValue(aValue) {}
+
+  ByteItemNaive() {}
 
 public:
   xqp_decimal getDecimalValue() const;
@@ -1291,6 +1318,8 @@ protected:
   friend class BasicItemFactory;
   UnsignedLongItemNaive(xqp_ulong aValue) : theValue(aValue) {}
 
+  UnsignedLongItemNaive() {}
+
  public:
   bool isNaN() const { return false; }
 
@@ -1364,6 +1393,8 @@ protected:
   friend class BasicItemFactory;
   UnsignedIntItemNaive(xqp_uint aValue) : theValue(aValue) {}
 
+  UnsignedIntItemNaive() {}
+
 public:
   bool isNaN() const { return false; }
 
@@ -1434,9 +1465,12 @@ class UnsignedShortItemNaive : public AtomicItem
 protected:
   xqp_ushort theValue;
   
+protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   UnsignedShortItemNaive ( xqp_ushort aValue) : theValue(aValue) {}
+
+  UnsignedShortItemNaive() {}
 
 public:
   xqp_decimal getDecimalValue() const;
@@ -1513,6 +1547,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   UnsignedByteItemNaive(xqp_ubyte aValue) : theValue(aValue) {}
+
+  UnsignedByteItemNaive() {}
 
 public:
   xqp_decimal getDecimalValue() const;
@@ -1592,6 +1628,8 @@ protected:
   friend class BasicItemFactory;
   BooleanItemNaive(xqp_boolean aValue) : theValue(aValue) {}
 
+  BooleanItemNaive() {}
+
 public:
   xqp_boolean getBooleanValue() const { return theValue; }
 
@@ -1639,6 +1677,8 @@ protected:
   friend class BasicItemFactory;
   Base64BinaryItemNaive(xqp_base64Binary aValue) : theValue(aValue) {}
 
+  Base64BinaryItemNaive() {}
+
 public:
   xqp_base64Binary getBase64BinaryValue() const { return theValue; }
 
@@ -1673,6 +1713,8 @@ protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   HexBinaryItemNaive(xqp_hexBinary aValue) : theValue(aValue) {}
+
+  HexBinaryItemNaive() {}
 
 public:
   xqp_hexBinary getHexBinaryValue() const { return theValue; }
@@ -1731,7 +1773,7 @@ public:
 
   xqp_string show() const;
 
-private:
+protected:
   // Disable copy
   ErrorItemNaive(const ErrorItemNaive& other);
   ErrorItemNaive& operator=(const ErrorItemNaive& other);
