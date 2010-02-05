@@ -48,6 +48,7 @@ namespace http_client {
     HttpResponseParser(
       RequestHandler& aHandler,
       CURL* aCurl,
+      CURLM* aCurlM,
       std::string aOverridenContentType = "");
     virtual ~HttpResponseParser();
     int parse();

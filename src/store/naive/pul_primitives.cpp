@@ -22,6 +22,7 @@
 #include "store/naive/node_items.h"
 #include "store/naive/atomic_items.h"
 #include "store/naive/simple_collection.h"
+#include "store/naive/node_factory.h"
 
 #include "store/api/iterator.h"
 #include "store/api/copymode.h"
@@ -606,7 +607,7 @@ void UpdPut::apply()
 
       ElementNode* elem =  static_cast<ElementNode*>(theTarget.getp());
 
-      DocumentNode* doc = new DocumentNode();
+      DocumentNode* doc = GET_STORE().getNodeFactory().createDocumentNode();
       doc->setTree(elem->getTree());
       doc->setOrdPath(NULL, 1, store::StoreConsts::documentNode);
       
@@ -724,13 +725,21 @@ void UpdDeleteCollection::apply()
 {
   theCollection = GET_STORE().getCollection(theName);
   assert(theCollection);
-  SimpleCollection* collection = static_cast<SimpleCollection*>(theCollection.getp());
+  SimpleCollection* collection = 
+    static_cast<SimpleCollection*>(theCollection.getp());
 
   std::vector<store::Index*> indexes;
   collection->getIndexes(indexes);
 
   if (!indexes.empty())
     ZORBA_ERROR_PARAM(XDDY0013_COLLECTION_BAD_DESTROY_INDEXES,
+                      collection->getName()->getStringValue(), "");
+
+  std::vector<store::IC*> activeICs;
+  collection->getActiveICs(activeICs);
+
+  if (!activeICs.empty())
+    ZORBA_ERROR_PARAM(XDDY0014_COLLECTION_BAD_DESTROY_ICS,
                       collection->getName()->getStringValue(), "");
 
   ulong size = collection->size();

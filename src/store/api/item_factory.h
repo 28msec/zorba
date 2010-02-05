@@ -209,6 +209,11 @@ public:
         const xqp_dateTime* value) = 0;
 
   virtual bool createDateTime(
+        store::Item_t& result,
+        const xqp_date* date,
+        const xqp_time* time) = 0;
+
+  virtual bool createDateTime(
         Item_t& result,  
         short year,
         short month,

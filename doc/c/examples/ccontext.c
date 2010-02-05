@@ -98,6 +98,7 @@ ccontext_example_1(XQC_Implementation* impl)
 
   // free all resources
   lResult->free(lResult);
+  lContextItem->free(lContextItem);
   lContext->free(lContext);
   lExpr->free(lExpr);
   // Must free lSeq also since it was bound to the context item, not a variable
@@ -217,7 +218,7 @@ ccontext_example_4(XQC_Implementation* impl)
   lExpr2->free(lExpr2);
   lContext->free(lContext);
 
-  lSequence1->free(lSequence1);
+  // Do not free lSequence1 as it was passed to set_variable()
   lExpr1->free(lExpr1);
 
   return 1;
@@ -329,8 +330,8 @@ ccontext_example_6(XQC_Implementation* impl)
   // free all resources
   lResult1->free(lResult1);
   lResult2->free(lResult2);
-  lResult1->free(lVariable1);
-  lResult2->free(lVariable2);
+  lVariable1->free(lVariable1);
+  lVariable2->free(lVariable2);
   lContext1->free(lContext1);
   lContext2->free(lContext2);
   lExpr->free(lExpr);

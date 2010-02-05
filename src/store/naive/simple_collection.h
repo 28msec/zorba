@@ -111,6 +111,11 @@ public:
   void adjustTreePositions();
 
   void getIndexes(std::vector<store::Index*>& indexes);
+
+  /**
+     Returns active integrity constraints referencing this collection.
+  */
+  void getActiveICs(std::vector<store::IC*>& ics);
 };
 
 } // namespace store

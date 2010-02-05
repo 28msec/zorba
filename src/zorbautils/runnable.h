@@ -121,6 +121,7 @@ private:
     bool theDeleteAfterRun;
 
 #ifdef ZORBA_HAVE_PTHREAD_H
+    bool theCalledTerminate;
     pthread_t         theThread;
 
     static void

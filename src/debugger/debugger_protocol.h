@@ -106,25 +106,35 @@ const ErrorCode DEBUGGER_ERROR_INVALID_COMMAND         = 12;
 const ErrorCode DEBUGGER_ERROR_COMMAND_NOT_IMPLEMENTED = 13;
 
 /**
- * The header of the packet (containning the length of the whole packet) 
- * is set in 4 bytes
+ * The header of the packet is always 11 bytes:
+ * LLLLIIIIFKC
+ *   LLLL – is the 4-byte length of the entire packet. This gives
+ *          an upper bound on the length of the packet sent;
+ *   IIII – is the 4-byte ID of the meaage;
+ *   F    – 1-byte used for flags;
+ *   K    – 1-byte identifying the command set;
+ *   C    – 1-byte identifying the command
  */
-const unsigned char MESSAGE_HEADER_SIZE = 4;
-/* The minimum packet size is 7 bytes (+ 4 bytes of the header) */
-const unsigned char MESSAGE_BODY_SIZE = 7;
-/* The size of a message without data */
-const unsigned char MESSAGE_SIZE = MESSAGE_HEADER_SIZE + MESSAGE_BODY_SIZE;
-/* The packet id is set in 4 bytes */
-const unsigned short MESSAGE_ID = 4;
+const unsigned short MESSAGE_LENGTH_FIELD_SIZE = 4;
+const unsigned short MESSAGE_ID_FIELD_SIZE = 4;
+const unsigned short MESSAGE_FLAGS_FIELD_SIZE = 1;
+const unsigned short MESSAGE_COMMAND_SET_FIELD_SIZE = 1;
+const unsigned short MESSAGE_COMMAND_FIELD_SIZE = 1;
 
-/* The Flag is set at the index 4 of the message */
-const unsigned short MESSAGE_FLAGS = 4;
-/* The Command Sets is at the index 5 of the packet */
-const unsigned short MESSAGE_COMMAND_SET = 5;
-/* The Command is at the index 6 of the packet */
-const unsigned short MESSAGE_COMMAND = 6;
-/* The data starts at the index 7 of the packet */
-const unsigned short MESSAGE_DATA = 7;
+/* The index in the header of each header field */
+const unsigned short MESSAGE_LENGTH_FIELD_INDEX = 0;
+const unsigned short MESSAGE_ID_FIELD_INDEX = MESSAGE_LENGTH_FIELD_SIZE;
+const unsigned short MESSAGE_FLAGS_FIELD_INDEX = MESSAGE_ID_FIELD_INDEX + MESSAGE_ID_FIELD_SIZE;
+const unsigned short MESSAGE_COMMAND_SET_FIELD_INDEX = MESSAGE_FLAGS_FIELD_INDEX + MESSAGE_COMMAND_SET_FIELD_SIZE;
+const unsigned short MESSAGE_COMMAND_FIELD_INDEX = MESSAGE_COMMAND_SET_FIELD_INDEX + MESSAGE_COMMAND_SET_FIELD_SIZE;
+
+/* The message header size, or the size of a message without data payload */
+const unsigned short MESSAGE_HEADER_SIZE =
+    MESSAGE_LENGTH_FIELD_SIZE +
+    MESSAGE_ID_FIELD_SIZE +
+    MESSAGE_FLAGS_FIELD_SIZE +
+    MESSAGE_COMMAND_SET_FIELD_SIZE +
+    MESSAGE_COMMAND_FIELD_SIZE;
 
 /* deals with endianness */
 // exported for unit testing only
@@ -271,7 +281,7 @@ class ZORBA_DLL_PUBLIC ReplyMessage: public AbstractMessage
 
     void setData( xqpString lData )
     {
-      setLength( MESSAGE_SIZE + lData.length() );
+      setLength( MESSAGE_HEADER_SIZE + lData.length() );
       theData = lData;
     }
     
@@ -311,7 +321,7 @@ class ZORBA_DLL_PUBLIC AbstractCommandMessage: public AbstractMessage
       Command theCommand;
     };
 
-    CommandContent * theCommandContent;
+    CommandContent* theCommandContent;
 
     void setCommandSet( CommandSet aCommandSet ){ theCommandContent->theCommandSet = aCommandSet; }
 
@@ -428,6 +438,8 @@ class ZORBA_DLL_PUBLIC StepMessage: public AbstractCommandMessage
 
     bool isValidMessage() const;
 
+    std::string getData() const;
+
 	public:
 	  StepMessage( const StepCommand aKind);
     
@@ -459,7 +471,7 @@ class ZORBA_DLL_PUBLIC SetMessage: public AbstractCommandMessage
     void addExpr( unsigned int anId, xqpString &anExpr )
     {
       theExprs.insert( std::make_pair( anId,  anExpr ) );
-      setLength( MESSAGE_SIZE + getData().length() );
+      setLength( MESSAGE_HEADER_SIZE + getData().length() );
     }
 
     std::map<unsigned int, xqpString> getExprs()
@@ -470,7 +482,7 @@ class ZORBA_DLL_PUBLIC SetMessage: public AbstractCommandMessage
     void addLocation( unsigned int anId, QueryLoc &aLocation )
     {
       theLocations.insert( std::make_pair( anId, aLocation ) );
-      setLength( MESSAGE_SIZE + getData().length() );
+      setLength( MESSAGE_HEADER_SIZE + getData().length() );
     }
 
     std::map<unsigned int, QueryLoc> getLocations()
@@ -500,7 +512,7 @@ class ZORBA_DLL_PUBLIC ClearMessage: public AbstractCommandMessage
     void addId( unsigned int id )
     {
       theIds.push_back( id );
-      setLength( MESSAGE_SIZE + getData().length() );
+      setLength( MESSAGE_HEADER_SIZE + getData().length() );
     }
 
     std::vector<unsigned int> getIds()

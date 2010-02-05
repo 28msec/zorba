@@ -160,8 +160,6 @@ class ParseConstants
     };
 
     enum ft_diacritics_mode_t {
-      ft_diacritics_with,
-      ft_diacritics_without,
       ft_diacritics_senstive,
       ft_diacritics_insensitive
     };
@@ -171,10 +169,15 @@ class ParseConstants
       ft_stemmode_without
     };
 
-    enum stop_words_mode_t {
-      ft_stopmode_with,
-      ft_stopmode_with_default,
-      ft_stopmode_without
+    enum ft_stop_words_mode_t {
+      ft_stop_words_with,
+      ft_stop_words_with_default,
+      ft_stop_words_without
+    };
+
+    enum ft_stop_words_unex_t {
+      ft_stop_words_union,
+      ft_stop_words_except,
     };
 
     enum ft_content_mode_t {
@@ -204,9 +207,9 @@ class ParseConstants
     };
 
     enum ft_unit_t {
-      ft_unit_word,
-      ft_unit_sentence,
-      ft_unit_paragraph
+      ft_unit_words,
+      ft_unit_sentences,
+      ft_unit_paragraphs
     };
 
     enum ft_big_unit_t {
@@ -270,3 +273,4 @@ class ParseConstants
  * mode: c++
  * End:
  */
+ /* vim:set et sw=4 ts=4: */

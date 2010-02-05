@@ -80,9 +80,9 @@ std::ostream& operator << ( std::ostream &os, const AbstractMessage * message )
 
 json::value* getValue(Byte* aMessage, const unsigned int aLength)
 {
-  char* lMessage = reinterpret_cast<char *>(aMessage+MESSAGE_SIZE);
+  char* lMessage = reinterpret_cast<char *>(aMessage+MESSAGE_HEADER_SIZE);
   json::parser lParser;
-  json::value* lValue = lParser.parse(lMessage, aLength-MESSAGE_SIZE);
+  json::value* lValue = lParser.parse(lMessage, aLength-MESSAGE_HEADER_SIZE);
   return lValue;
 }
 
@@ -190,7 +190,7 @@ ReplyMessage::ReplyMessage( const Id aId, const ErrorCode aErrorCode ):
 {
   theReplyContent = new ReplyContent();
   setErrorCode( aErrorCode );
-  setLength( MESSAGE_SIZE );
+  setLength( MESSAGE_HEADER_SIZE );
 }
 
 ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  AbstractMessage( aMessage )
@@ -198,11 +198,11 @@ ReplyMessage::ReplyMessage( Byte * aMessage, const unsigned int aLength ):  Abst
   ErrorCode * lmsg =  reinterpret_cast< ErrorCode * >( aMessage + SIZE_OF_HEADER_CONTENT );
   theReplyContent = new ReplyContent();
   memcpy( theReplyContent, lmsg, SIZE_OF_REPLY_CONTENT );
-  if ( aLength - MESSAGE_SIZE > 0 )
+  if ( aLength - MESSAGE_HEADER_SIZE > 0 )
   {
-    ZorbaArrayAutoPointer<char> lData(new char[ aLength - MESSAGE_SIZE + 1 ]);
-    memset(lData.get(), '\0', aLength - MESSAGE_SIZE + 1);
-    memcpy(lData.get(), aMessage + MESSAGE_SIZE, aLength - MESSAGE_SIZE );
+    ZorbaArrayAutoPointer<char> lData(new char[ aLength - MESSAGE_HEADER_SIZE + 1 ]);
+    memset(lData.get(), '\0', aLength - MESSAGE_HEADER_SIZE + 1);
+    memcpy(lData.get(), aMessage + MESSAGE_HEADER_SIZE, aLength - MESSAGE_HEADER_SIZE );
     theData = xqpString(lData.get());
   }
   checkIntegrity();
@@ -263,19 +263,17 @@ AbstractCommandMessage::getNextId()
 }
 
 AbstractCommandMessage::AbstractCommandMessage( const CommandSet aCommandSet, const Command aCommand, const Flags flags )
-: AbstractMessage( getNextId(), flags ), theReply(0)
+: AbstractMessage( getNextId(), flags ), theReply(0), theCommandContent(new CommandContent())
 {
-  theCommandContent = new CommandContent();
   setCommandSet( aCommandSet );
   setCommand( aCommand );
-  setLength( MESSAGE_SIZE );
+  setLength( MESSAGE_HEADER_SIZE );
 }
 
 AbstractCommandMessage::AbstractCommandMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractMessage( aMessage ), theReply(0)
+  AbstractMessage( aMessage ), theReply(0), theCommandContent(new CommandContent())
 {
   CommandContent * lmsg =  reinterpret_cast< CommandContent *>( aMessage + SIZE_OF_HEADER_CONTENT );
-  theCommandContent = new CommandContent();
   memcpy( theCommandContent, lmsg, sizeof( CommandContent ) );
   checkIntegrity();
 }
@@ -288,7 +286,7 @@ Byte * AbstractCommandMessage::serialize( Length & aLength ) const
   Byte * lMsg = new Byte[ SIZE_OF_HEADER_CONTENT + sizeof( CommandContent ) ];
   memcpy( lMsg, lHeader, SIZE_OF_HEADER_CONTENT );
   memcpy( lMsg + SIZE_OF_HEADER_CONTENT, lCommand, sizeof( CommandContent ) );
-  aLength = MESSAGE_SIZE;
+  aLength = MESSAGE_HEADER_SIZE;
   return lMsg;
 }
 
@@ -388,35 +386,53 @@ ResumeMessage::~ResumeMessage(){}
 /**
  * Step message
  */
-StepMessage::StepMessage( StepCommand aKind ):
-  AbstractCommandMessage( EXECUTION, STEP ), theKind( aKind ){
-  setLength( MESSAGE_SIZE + 1 );
+StepMessage::StepMessage(StepCommand aKind):
+  AbstractCommandMessage(EXECUTION, STEP), theKind(aKind)
+{
+  setLength(MESSAGE_HEADER_SIZE + getData().length());
   checkIntegrity();
 }
 
-StepMessage::StepMessage( Byte * aMessage, const unsigned int aLength ):
-  AbstractCommandMessage( aMessage, aLength )
+StepMessage::StepMessage(Byte* aMessage, const unsigned int aLength):
+  AbstractCommandMessage(aMessage, aLength)
 {
-  theKind = aMessage[11];
+  std::auto_ptr<json::value> lData(getValue(aMessage, aLength));
+  json::value* lStepType = getValue(lData.get(), "stepType");
+  if (lStepType != 0) {
+    theKind = (StepCommand)lStepType->getinteger();
+  }
   checkIntegrity();
 }
 
 StepMessage::~StepMessage(){}
 
-Byte * StepMessage::serialize( Length & aLength ) const
+Byte* StepMessage::serialize(Length& aLength) const
 {
   ZorbaArrayAutoPointer<Byte> lHeader(AbstractCommandMessage::serialize(aLength));
-  Byte * lMsg = new Byte[ MESSAGE_SIZE + 1 ];
-  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
-  lMsg[ 11 ] = theKind;
+  std::string lJSONString = getData();
+  Byte* lMsg = new Byte[getLength() + 1];
+  memset(lMsg, '\0', getLength() + 1);
+  memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
+  const char* s = lJSONString.c_str();
+  unsigned int l = lJSONString.length();
+  memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg; 
 }
 
+std::string StepMessage::getData() const
+{
+  std::stringstream lJSONString;
+  lJSONString << "{\"stepType\":" << (int)theKind << "}";
+  return lJSONString.str();
+}
+
 bool StepMessage::isValidMessage() const
 {
-  return AbstractCommandMessage::isValidMessage() &&
-    ( theKind == STEP_INTO || theKind == STEP_OUT || theKind == STEP_OVER );
+  return AbstractCommandMessage::isValidMessage() && (
+      theKind == STEP_INTO ||
+      theKind == STEP_OUT ||
+      theKind == STEP_OVER);
 }
 
 StepCommand StepMessage::getStepKind() const
@@ -477,10 +493,10 @@ Byte * SetMessage::serialize( Length & aLength ) const
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
 }
@@ -540,10 +556,10 @@ Byte * ClearMessage::serialize( Length & aLength ) const
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
 }
@@ -596,7 +612,7 @@ TerminatedEvent::~TerminatedEvent(){}
 SuspendedEvent::SuspendedEvent( const QueryLoc &aLocation, const SuspensionCause aCause ):
   AbstractCommandMessage( ENGINE_EVENT, SUSPENDED ), theLocation( aLocation ), theCause( aCause ) 
 {
-  unsigned int l = MESSAGE_SIZE + getData().length();
+  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
   setLength( l );
   checkIntegrity();
 }
@@ -632,10 +648,10 @@ Byte * SuspendedEvent::serialize( Length & aLength ) const
   std::string lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '\0', getLength()+1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
 }
@@ -682,7 +698,7 @@ EvaluatedEvent::EvaluatedEvent( int aId, xqpString anExpr, xqpString anError ):
 {
   setId(aId);
   
-  unsigned int l = MESSAGE_SIZE + getData().length();
+  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
   setLength( l );
   checkIntegrity();
 }
@@ -709,7 +725,7 @@ EvaluatedEvent::EvaluatedEvent( int aId, xqpString anExpr, list<pair<xqpString, 
     lValues.push_back(std::make_pair(lFirst, lSecond));
   }
   theValuesAndTypes = lValues;
-  unsigned int l = MESSAGE_SIZE + getData().length();
+  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
   setLength( l );
   checkIntegrity();
 }
@@ -797,10 +813,10 @@ Byte * EvaluatedEvent::serialize( Length &aLength ) const
   xqpString lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
 }
@@ -849,7 +865,7 @@ void EvaluatedEvent::setId(Id aId)
 EvalMessage::EvalMessage( xqpString anExpr ):
   AbstractCommandMessage( DYNAMIC, EVAL ), theExpr( anExpr )
 {
-    unsigned int l = MESSAGE_SIZE + getData().length();
+    unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
     setLength( l );
     checkIntegrity();
 }
@@ -892,10 +908,10 @@ Byte * EvalMessage::serialize( Length & aLength ) const
   xqpString lJSONString = getData();
   Byte * lMsg = new Byte[ getLength() + 1 ];
   memset(lMsg, '0', getLength()+1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
 }
@@ -914,7 +930,7 @@ AbstractCommandMessage( DYNAMIC, VARIABLES, dataFlag ? VARIABLE_DATA_FLAG : NULL
 VariableMessage::VariableMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength )
   {
-    theDataFlag = aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] == VARIABLE_DATA_FLAG;
+    theDataFlag = aMessage[MESSAGE_FLAGS_FIELD_INDEX] == VARIABLE_DATA_FLAG;
   }
 
 VariableMessage::~VariableMessage(){}
@@ -937,7 +953,7 @@ FrameReply::FrameReply(const Id anId, const ErrorCode aErrorCode,
   : ReplyMessage(anId, aErrorCode), theStack(aStack)
 {
   setFlags(REPLY_FRAME_FLAG);
-  unsigned int l = MESSAGE_SIZE + getData().length();
+  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
   setLength(l);
   checkIntegrity();
 }
@@ -998,10 +1014,10 @@ Byte* FrameReply::serialize(Length& aLength) const
   xqpString lJSON = getData();
   const char* s = lJSON.c_str();
   unsigned int l = lJSON.length();
-  Byte* lMsg = new Byte[MESSAGE_SIZE+l+1];
-  memset(lMsg, '0', MESSAGE_SIZE+l+1);
-  memcpy(lMsg, lHeader.get(), MESSAGE_SIZE);
-  memcpy(lMsg+MESSAGE_SIZE, s, l);
+  Byte* lMsg = new Byte[MESSAGE_HEADER_SIZE + l + 1];
+  memset(lMsg, '0', MESSAGE_HEADER_SIZE + l + 1);
+  memcpy(lMsg, lHeader.get(), MESSAGE_HEADER_SIZE);
+  memcpy(lMsg + MESSAGE_HEADER_SIZE, s, l);
   aLength = getLength();
   return lMsg;
 }
@@ -1014,7 +1030,7 @@ SetReply::SetReply(const Id anId, const ErrorCode aErrorCode):
   ReplyMessage(anId, aErrorCode)
 {
   setFlags(REPLY_SET_FLAG);
-  unsigned int l = MESSAGE_SIZE + getData().length();
+  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
   setLength(l);
   checkIntegrity();
 }
@@ -1072,10 +1088,10 @@ Byte* SetReply::serialize(Length& aLength) const
   xqpString lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  Byte * lMsg = new Byte[ MESSAGE_SIZE + l + 1 ];
-  memset(lMsg, '0', MESSAGE_SIZE + l + 1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
-  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
+  memset(lMsg, '0', MESSAGE_HEADER_SIZE + l + 1);
+  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
+  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
 }
@@ -1093,7 +1109,7 @@ VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode, bool co
   ReplyMessage( anId, aErrorCode ), theContainsData(containsData)
 {
   setFlags(theContainsData ? REPLY_VARIABLE_FLAG | VARIABLE_DATA_FLAG : REPLY_VARIABLE_FLAG);
-  unsigned int l = MESSAGE_SIZE + getData().length();
+  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
   setLength(l);
   checkIntegrity();
 }
@@ -1101,7 +1117,7 @@ VariableReply::VariableReply( const Id anId, const ErrorCode aErrorCode, bool co
 VariableReply::VariableReply( Byte * aMessage, const unsigned int aLength ):
   ReplyMessage( aMessage, aLength ), theContainsData(false)
 {
-  theContainsData = (aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] & VARIABLE_DATA_FLAG) != 0;
+  theContainsData = (aMessage[MESSAGE_FLAGS_FIELD_INDEX] & VARIABLE_DATA_FLAG) != 0;
   setFlags( REPLY_VARIABLE_FLAG );
   std::auto_ptr<json::value> lValue(getValue(aMessage, aLength));
   json::value* globals = getValue(lValue.get(), "globals");
@@ -1281,10 +1297,10 @@ Byte * VariableReply::serialize( Length & aLength ) const
   xqpString lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  Byte * lMsg = new Byte[ MESSAGE_SIZE + l + 1 ];
-  memset(lMsg, '0', MESSAGE_SIZE + l + 1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
-  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
+  memset(lMsg, '0', MESSAGE_HEADER_SIZE + l + 1);
+  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
+  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
 }
@@ -1350,27 +1366,27 @@ std::map<std::pair<xqpString, xqpString>, std::list<std::pair<xqpString, xqpStri
 void VariableReply::addGlobal( xqpString aVariable, xqpString aType )
 {
   theGlobals.insert( std::make_pair( aVariable, aType ) );
-  setLength( MESSAGE_SIZE + getData().length() );
+  setLength( MESSAGE_HEADER_SIZE + getData().length() );
 }
 
 void VariableReply::addGlobal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val )
 {
   theGlobals.insert( std::make_pair( aVariable, aType ) );
   theGlobalData.push_back(val);
-  setLength( MESSAGE_SIZE + getData().length() );
+  setLength( MESSAGE_HEADER_SIZE + getData().length() );
 }
 
 void VariableReply::addLocal( xqpString aVariable, xqpString aType )
 {
   theLocals.insert( std::make_pair( aVariable, aType ) );
-  setLength( MESSAGE_SIZE + getData().length() );
+  setLength( MESSAGE_HEADER_SIZE + getData().length() );
 }
 
 void VariableReply::addLocal( xqpString aVariable, xqpString aType, std::list<std::pair<xqpString, xqpString> > val )
 {
   theLocals.insert( std::make_pair( aVariable, aType ) );
   theLocalData.push_back(val);
-  setLength( MESSAGE_SIZE + getData().length() );
+  setLength( MESSAGE_HEADER_SIZE + getData().length() );
 }
 
 /**
@@ -1422,7 +1438,7 @@ theFilename(aFilename),
 theFirstLine(aFirstline),
 theLastLine(aLastline)
 {
-  unsigned int l = MESSAGE_SIZE + getData().length();
+  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
   setLength(l);
   checkIntegrity();
 }
@@ -1438,10 +1454,10 @@ Byte* ListCommand::serialize( Length& aLength ) const
   std::string lJSONString = getData();
   Byte* lMsg = new Byte[getLength() + 1];
   memset(lMsg, '0', getLength() + 1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
+  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg;
 }
@@ -1489,7 +1505,7 @@ ListReply::ListReply(const Id aId,
 ReplyMessage(aId, aErrorCode), theString(aCode)
 {
   setFlags(REPLY_LIST_FLAG);
-  unsigned int l = MESSAGE_SIZE + getData().length();
+  unsigned int l = MESSAGE_HEADER_SIZE + getData().length();
   setLength(l);
   checkIntegrity();
 }
@@ -1518,10 +1534,10 @@ Byte* ListReply::serialize( Length &aLength ) const
   xqpString lJSONString = getData();
   const char * s = lJSONString.c_str();
   unsigned int l = lJSONString.length();
-  Byte * lMsg = new Byte[ MESSAGE_SIZE + l + 1 ];
-  memset(lMsg, '0', MESSAGE_SIZE + l + 1);
-  memcpy( lMsg, lHeader.get(), MESSAGE_SIZE );
-  memcpy( lMsg + MESSAGE_SIZE, s, l );
+  Byte * lMsg = new Byte[ MESSAGE_HEADER_SIZE + l + 1 ];
+  memset(lMsg, '0', MESSAGE_HEADER_SIZE + l + 1);
+  memcpy( lMsg, lHeader.get(), MESSAGE_HEADER_SIZE );
+  memcpy( lMsg + MESSAGE_HEADER_SIZE, s, l );
   aLength = getLength();
   return lMsg; 
 }

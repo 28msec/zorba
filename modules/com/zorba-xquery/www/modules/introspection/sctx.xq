@@ -171,20 +171,6 @@ declare function sctx:function-names() as xs:QName* external;
 declare function sctx:function-arguments-count($function as xs:QName) as xs:int* external;
 
 (:~
- : The function returns the potential static type of the result of fn:doc(),
- : if it would be invoked with the given $uri. If the argument to fn:doc() is
- : string literal that is not present in statically known documents, then the
- : static type of fn:doc is "document-node()?"
- :
- : @param $uri The URI of the document that is being checked.
- : @return The static type of a potential result of fn:doc() invoked with the
- : given URI.
- :
- : @see http://www.w3.org/TR/xquery/#dt-known-docs
- :)
-declare function sctx:statically-known-documents($uri as xs:string) as xs:QName external;
-
-(:~
  : The function returns true or false depending on whether rules for
  : compatibility with XPath 1.0 are in effect. XQuery set the value
  : of this component to false.

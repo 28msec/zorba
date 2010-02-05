@@ -52,6 +52,12 @@ CollationCache::~CollationCache()
   }
 }
   
+void CollationCache::serialize(::zorba::serialization::Archiver &ar)
+{
+  ar & theStaticContext;
+  ar & theMap;
+  ar & theDefaultCollator;
+}
 
 XQPCollator*
 CollationCache::getCollator(const std::string& aURI)

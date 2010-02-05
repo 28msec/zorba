@@ -653,25 +653,25 @@ DEF_ERR_CODE(XDST0033_INDEX_NON_SIMPLE_EXPR, XDST0033,
 DEF_ERR_CODE(XDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE, XDST0034,
 "Index /s cannot be automatically maintained.")
 
-DEF_ERR_CODE(XDST0041_IC_IS_ALREADY_DECLARED, XQP0041,
+DEF_ERR_CODE(XDST0041_IC_IS_ALREADY_DECLARED, XDST0041,
              "An integrity constraint with URI /s is declared already.")
 
 DEF_ERR_CODE(XDST0042_MULTI_VALUED_IC_KEY, XDST0042,
              "An integrity constraint key has multiple values.")
 
-DEF_ERR_CODE(XDST0043_NON_ATOMIC_IC_KEY, XQP0043,
+DEF_ERR_CODE(XDST0043_NON_ATOMIC_IC_KEY, XDST0043,
              "An integrity constraint key has a non-atomic value.")
 
-DEF_ERR_CODE(XDST0044_IC_DECL_IN_MAIN_MODULE, XDST0045,
+DEF_ERR_CODE(XDST0044_IC_DECL_IN_MAIN_MODULE, XDST0044,
              "The integrity constraint /s cannot be declared in a main module.")
 
-DEF_ERR_CODE(XDST0045_IC_HAS_FREE_VARS, XDST0046,
+DEF_ERR_CODE(XDST0045_IC_HAS_FREE_VARS, XDST0045,
              "The integrity constraint with URI /s has free variables in its definition.")
 
-DEF_ERR_CODE(XDST0046_IC_HAS_INVALID_DATA_SOURCE, XDST0047,
+DEF_ERR_CODE(XDST0046_IC_HAS_INVALID_DATA_SOURCE, XDST0046,
              "The integrity constraint with URI /s references a data source that is not a collection among the statically known collections.")
 
-DEF_ERR_CODE(XDST0047_IC_NOT_DETERMINISTIC, XDST0048,
+DEF_ERR_CODE(XDST0047_IC_NOT_DETERMINISTIC, XDST0047,
              "The integrity constraint with URI /s has a non deterministic definition.")
 
 
@@ -738,6 +738,9 @@ DEF_ERR_CODE(XDDY0014_COLLECTION_BAD_DESTROY_ICS, XDDY0014,
 DEF_ERR_CODE(XDDY0015_COLLECTION_BAD_DESTROY_NODES, XDDY0015,
 "Cannot delete collection /s because there are references on its nodes.")
 
+DEF_ERR_CODE(XDDY0016_COLLECTION_MULTIPLE_CREATES, XDDY0016, 
+"Multiple calls to create-collection function in the same snapshot for collection /s.")
+
 
 DEF_ERR_CODE(XDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION, XDDY0020,
 "The domain expression of index /s produces nodes that are not in collection.")
@@ -760,6 +763,9 @@ DEF_ERR_CODE(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, XDDY0025,
 DEF_ERR_CODE(XDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, XDDY0026,
 "Index /s does not support range probes.")
 
+DEF_ERR_CODE(XDDY0027_INDEX_MULTIPLE_CREATES, XDDY0027, 
+"Multiple calls to create-index function in the same snapshot for index /s.")
+
 
 DEF_ERR_CODE(XDDY0031_IC_IS_NOT_DECLARED, XDDY0031,
              "An integrity constraint with URI /s is not declared.")
@@ -769,11 +775,6 @@ DEF_ERR_CODE(XDDY0032_IC_IS_NOT_ACTIVATED, XDDY0032,
 
 DEF_ERR_CODE(XDDY0033_IC_NOT_MET, XDDY0033,
              "Conditions for integrity constraint /s were not met on collection /s.")
-
-
-
-DEF_ERR_CODE(XDDY0013, XDDY0013, 
-"Multiple calls to create-collection in the same snapshot have the same QName as first parameter.")
 
 
 #undef DEF_ERR_CODE

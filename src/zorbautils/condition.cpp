@@ -39,9 +39,9 @@ Condition::Condition(Mutex& m) : theMutex(m)
 
 Condition::~Condition()
 {
-  int ret = pthread_cond_destroy(&theCondition); 
+  //int ret = pthread_cond_destroy(&theCondition); 
 
-  ZORBA_FATAL(!ret, "Failed to destroy condition variable. Error code = " << ret);
+  //ZORBA_FATAL(!ret, "Failed to destroy condition variable. Error code = " << ret);
 }
 
 

@@ -458,7 +458,19 @@ void serialize_array(Archiver &ar, unsigned char *obj, int len);//like char p[20
   }
 */
 #define  SERIALIZE_FUNCTION(f)    ar & f;
-
+/*
+#define SERIALIZE_RAW_PTR(ptr)                      \
+  if(!ar.is_serializing_out())                      \
+     ptr = NULL;                                    \
+  try{                                              \
+    ar & ptr;                                       \
+  }catch(...)                                       \
+  {                                                 \
+    if(!ar.is_serializing_out())                    \
+     delete ptr;                                    \
+    throw;                                          \
+  } 
+*/
   void report_error(   XQUERY_ERROR        aErrorCode,
                       const std::string&   aDesc, 
                       const std::string&   aFileName,

@@ -168,5 +168,5 @@ void StringPool::garbageCollect()
   }
 }
 
-} // namespace store
+} // namespace simplestore
 } // namespace zorba

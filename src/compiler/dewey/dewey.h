@@ -480,7 +480,7 @@ class DeweyClassification: public parsenode_visitor
   	DECL_CONCRETE_VISIT (FTLanguageOption);
   	DECL_CONCRETE_VISIT (FTMatchOption);
   	DECL_CONCRETE_VISIT (FTMatchOptionProximityList);
-  	DECL_CONCRETE_VISIT (FTMildnot);
+  	DECL_CONCRETE_VISIT (FTMildNot);
   	DECL_CONCRETE_VISIT (FTOptionDecl);
   	DECL_CONCRETE_VISIT (FTOr);
   	DECL_CONCRETE_VISIT (FTOrderedIndicator);

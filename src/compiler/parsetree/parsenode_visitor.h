@@ -90,10 +90,10 @@ public:
 	DECL_PARSENODE_VISIT_METHODS (NodeComp);
 	DECL_PARSENODE_VISIT_METHODS (OccurrenceIndicator);
 	DECL_PARSENODE_VISIT_METHODS (OptionDecl);
-  DECL_PARSENODE_VISIT_METHODS (GroupByClause);
-  DECL_PARSENODE_VISIT_METHODS (GroupSpecList);
-  DECL_PARSENODE_VISIT_METHODS (GroupSpec);
-  DECL_PARSENODE_VISIT_METHODS (GroupCollationSpec);
+    DECL_PARSENODE_VISIT_METHODS (GroupByClause);
+    DECL_PARSENODE_VISIT_METHODS (GroupSpecList);
+    DECL_PARSENODE_VISIT_METHODS (GroupSpec);
+    DECL_PARSENODE_VISIT_METHODS (GroupCollationSpec);
 	DECL_PARSENODE_VISIT_METHODS (OrderByClause);
 	DECL_PARSENODE_VISIT_METHODS (OrderCollationSpec);
 	DECL_PARSENODE_VISIT_METHODS (OrderDirSpec);
@@ -129,8 +129,8 @@ public:
 	DECL_PARSENODE_VISIT_METHODS (URILiteralList);
 	DECL_PARSENODE_VISIT_METHODS (ValueComp);
 	DECL_PARSENODE_VISIT_METHODS (CtxItemDecl);
-  DECL_PARSENODE_VISIT_METHODS (CollectionDecl);
-  DECL_PARSENODE_VISIT_METHODS (NodeModifier);
+    DECL_PARSENODE_VISIT_METHODS (CollectionDecl);
+    DECL_PARSENODE_VISIT_METHODS (NodeModifier);
 	DECL_PARSENODE_VISIT_METHODS (IndexDecl);
 	DECL_PARSENODE_VISIT_METHODS (IndexKeySpec);
 	DECL_PARSENODE_VISIT_METHODS (IndexKeyList);
@@ -145,8 +145,8 @@ public:
 	DECL_PARSENODE_VISIT_METHODS (WhereClause);
 	DECL_PARSENODE_VISIT_METHODS (CountClause);
 	DECL_PARSENODE_VISIT_METHODS (Wildcard);
-  DECL_PARSENODE_VISIT_METHODS (QName);
-  DECL_PARSENODE_VISIT_METHODS (DecimalFormatNode);
+    DECL_PARSENODE_VISIT_METHODS (QName);
+    DECL_PARSENODE_VISIT_METHODS (DecimalFormatNode);
 
 /* expressions */
 	DECL_PARSENODE_VISIT_METHODS (AdditiveExpr);
@@ -209,15 +209,15 @@ public:
 	DECL_PARSENODE_VISIT_METHODS (RevalidationDecl);
 	DECL_PARSENODE_VISIT_METHODS (TransformExpr);
 	DECL_PARSENODE_VISIT_METHODS (CopyVarList);
-  DECL_PARSENODE_VISIT_METHODS (VarBinding);
+    DECL_PARSENODE_VISIT_METHODS (VarBinding);
 
 /* try-catch-related */
-  DECL_PARSENODE_VISIT_METHODS (TryExpr);
-  DECL_PARSENODE_VISIT_METHODS (CatchListExpr);
-  DECL_PARSENODE_VISIT_METHODS (CatchExpr);
+    DECL_PARSENODE_VISIT_METHODS (TryExpr);
+    DECL_PARSENODE_VISIT_METHODS (CatchListExpr);
+    DECL_PARSENODE_VISIT_METHODS (CatchExpr);
 
-  // eval
-  DECL_PARSENODE_VISIT_METHODS (EvalExpr);
+    // eval
+    DECL_PARSENODE_VISIT_METHODS (EvalExpr);
 
 /* full-text-related */
 	DECL_PARSENODE_VISIT_METHODS (FTAnd);
@@ -229,64 +229,65 @@ public:
 	DECL_PARSENODE_VISIT_METHODS (FTDiacriticsOption);
 	DECL_PARSENODE_VISIT_METHODS (FTDistance);
 	DECL_PARSENODE_VISIT_METHODS (FTIgnoreOption);
-	DECL_PARSENODE_VISIT_METHODS (FTInclExclStringLiteral);
-	DECL_PARSENODE_VISIT_METHODS (FTInclExclStringLiteralList);
 	DECL_PARSENODE_VISIT_METHODS (FTLanguageOption);
 	DECL_PARSENODE_VISIT_METHODS (FTMatchOption);
-	DECL_PARSENODE_VISIT_METHODS (FTMatchOptionProximityList);
-	DECL_PARSENODE_VISIT_METHODS (FTMildnot);
+	DECL_PARSENODE_VISIT_METHODS (FTMatchOptions);
+	DECL_PARSENODE_VISIT_METHODS (FTMildNot);
 	DECL_PARSENODE_VISIT_METHODS (FTOptionDecl);
 	DECL_PARSENODE_VISIT_METHODS (FTOr);
-	DECL_PARSENODE_VISIT_METHODS (FTOrderedIndicator);
-	DECL_PARSENODE_VISIT_METHODS (FTProximity);
+	DECL_PARSENODE_VISIT_METHODS (FTOrder);
+	DECL_PARSENODE_VISIT_METHODS (FTPosFilter);
+	DECL_PARSENODE_VISIT_METHODS (FTPrimary);
+	DECL_PARSENODE_VISIT_METHODS (FTPrimaryWithOptions);
 	DECL_PARSENODE_VISIT_METHODS (FTRange);
-	DECL_PARSENODE_VISIT_METHODS (FTRefOrList);
 	DECL_PARSENODE_VISIT_METHODS (FTScope);
 	DECL_PARSENODE_VISIT_METHODS (FTScoreVar);
 	DECL_PARSENODE_VISIT_METHODS (FTSelection);
 	DECL_PARSENODE_VISIT_METHODS (FTStemOption);
-	DECL_PARSENODE_VISIT_METHODS (FTStopwordOption);
-	DECL_PARSENODE_VISIT_METHODS (FTStringLiteralList);
+	DECL_PARSENODE_VISIT_METHODS (FTStopWordOption);
+	DECL_PARSENODE_VISIT_METHODS (FTStopWords);
+	DECL_PARSENODE_VISIT_METHODS (FTStopWordsInclExcl);
 	DECL_PARSENODE_VISIT_METHODS (FTThesaurusID);
-	DECL_PARSENODE_VISIT_METHODS (FTThesaurusList);
 	DECL_PARSENODE_VISIT_METHODS (FTThesaurusOption);
 	DECL_PARSENODE_VISIT_METHODS (FTTimes);
 	DECL_PARSENODE_VISIT_METHODS (FTUnaryNot);
 	DECL_PARSENODE_VISIT_METHODS (FTUnit);
-	DECL_PARSENODE_VISIT_METHODS (FTWildcardOption);
+	DECL_PARSENODE_VISIT_METHODS (FTWeight);
+	DECL_PARSENODE_VISIT_METHODS (FTWildCardOption);
 	DECL_PARSENODE_VISIT_METHODS (FTWindow);
 	DECL_PARSENODE_VISIT_METHODS (FTWords);
-	DECL_PARSENODE_VISIT_METHODS (FTWordsSelection);
 	DECL_PARSENODE_VISIT_METHODS (FTWordsValue);
-	DECL_PARSENODE_VISIT_METHODS (FTMatchOptionProximity);
+    DECL_PARSENODE_VISIT_METHODS (FTExtensionOption);
+    DECL_PARSENODE_VISIT_METHODS (FTExtensionSelection);
 
-  DECL_PARSENODE_VISIT_METHODS (AssignExpr);
-  DECL_PARSENODE_VISIT_METHODS (ExitExpr);
-  DECL_PARSENODE_VISIT_METHODS (WhileExpr);
-  DECL_PARSENODE_VISIT_METHODS (FlowCtlStatement);
+    DECL_PARSENODE_VISIT_METHODS (AssignExpr);
+    DECL_PARSENODE_VISIT_METHODS (ExitExpr);
+    DECL_PARSENODE_VISIT_METHODS (WhileExpr);
+    DECL_PARSENODE_VISIT_METHODS (FlowCtlStatement);
 
-  DECL_PARSENODE_VISIT_METHODS (ParseErrorNode);
+    DECL_PARSENODE_VISIT_METHODS (ParseErrorNode);
 
     /* Methods that deviate from the visitor pattern that are
      * needed in various situations.
      */
 
-	virtual void intermediate_visit(RelativePathExpr const&, void* /*visit_state*/) { }
-  virtual void post_primary_visit(FilterExpr const&, void * /*visit_state*/) { }
-  virtual void post_axis_visit(AxisStep const&, void * /*visit_state*/) { }
-  virtual void pre_predicate_visit(PredicateList const&, void* /*visit_state*/) { }
-  virtual void post_predicate_visit(PredicateList const&, void* /*visit_state*/) { }
+	virtual void intermediate_visit(RelativePathExpr const&, void*) { }
+    virtual void post_primary_visit(FilterExpr const&, void *) { }
+    virtual void post_axis_visit(AxisStep const&, void *) { }
+    virtual void pre_predicate_visit(PredicateList const&, void*) { }
+    virtual void post_predicate_visit(PredicateList const&, void*) { }
 
-  virtual void intermediate_visit(WindowClause const&, void* /*visit_state*/) { }
+    virtual void intermediate_visit(WindowClause const&, void*) { }
 
-  /**
-   * Methods are used in the translator to check if a DirElemContent is boundary whitespace.
-   */
-  virtual void begin_check_boundary_whitespace() {}
-  virtual void check_boundary_whitespace(const DirElemContent&) {}
-  virtual void end_check_boundary_whitespace() {}
+    /**
+     * Methods are used in the translator to check if a DirElemContent is
+     * boundary whitespace.
+     */
+    virtual void begin_check_boundary_whitespace() {}
+    virtual void check_boundary_whitespace(const DirElemContent&) {}
+    virtual void end_check_boundary_whitespace() {}
 
-  virtual bool is_root_rpe(const RelativePathExpr*) { return true; }
+    virtual bool is_root_rpe(const RelativePathExpr*) { return true; }
 
 #undef DECL_PARSENODE_VISIT_METHODS
 
@@ -300,3 +301,4 @@ public:
  * mode: c++
  * End:
  */
+ /* vim:set et sw=4 ts=4: */

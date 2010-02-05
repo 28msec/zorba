@@ -47,6 +47,7 @@
 #include "store/naive/simple_iterator_factory.h"
 #include "store/naive/query_context.h"
 #include "store/naive/item_iterator.h"
+#include "store/naive/node_factory.h"
 
 #ifdef ZORBA_STORE_MSDOM
 #include "store/naive/msdom_addon/import_msdom.h"
@@ -139,6 +140,7 @@ SimpleStore::SimpleStore()
   theQNamePool(NULL),
   theItemFactory(NULL),
   theIteratorFactory(NULL),
+  theNodeFactory(NULL),
   theDocuments(Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(),
   theUriCollections(Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
@@ -180,6 +182,8 @@ void SimpleStore::init()
     theItemFactory = new BasicItemFactory(theNamespacePool, theQNamePool);
 
     theIteratorFactory = new SimpleIteratorFactory();
+
+    theNodeFactory = new NodeFactory();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
@@ -312,6 +316,12 @@ void SimpleStore::shutdown()
     theIteratorFactory = NULL;
   }
 
+  if (theNodeFactory != NULL)
+  {
+    delete theNodeFactory;
+    theNodeFactory = NULL;
+  }
+
   // do cleanup of the libxml2 library
   // however, after that, a user will have to call
   // LIBXML_TEST_VERSION if he wants to use libxml2
@@ -323,6 +333,15 @@ void SimpleStore::shutdown()
 #endif
 
   theIsInitialized = false;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+store::ItemFactory*
+SimpleStore::getItemFactory() const
+{
+  return theItemFactory;
 }
 
 
@@ -363,48 +382,6 @@ XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
 #endif
 }
 
-void SimpleStore::populateIndex(
-    const store::Index_t& aIndex,
-    store::Iterator* aSourceIter,
-    ulong aNumColumns)
-{
-  store::Item_t domainItem;
-  store::IndexKey* key = NULL;
-
-  IndexImpl* index = static_cast<IndexImpl*>(aIndex.getp());
-
-  aSourceIter->open();
-
-  try
-  {
-    while (aSourceIter->next(domainItem))
-    {
-      key = new store::IndexKey(aNumColumns);
-
-      for (ulong i = 0; i < aNumColumns; ++i)
-      {
-        if (!aSourceIter->next((*key)[i]))
-        {
-          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR, "Incomplete key during index build");
-        }
-      }
-
-      index->insert(key, domainItem);
-
-      key = NULL; // ownership of the key obj passes to the index.
-    }
-  }
-  catch(...)
-  {
-    if (key != NULL)
-      delete key;
-
-    aSourceIter->close();
-    throw;
-  }
-
-  aSourceIter->close();
-}
 
 /*******************************************************************************
   Create an index with a given URI and return an rchandle to the index object.
@@ -441,6 +418,61 @@ store::Index_t SimpleStore::createIndex(
   }
 
   return index;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::populateIndex(
+    const store::Index_t& aIndex,
+    store::Iterator* aSourceIter,
+    ulong aNumColumns)
+{
+  store::Item_t domainItem;
+  store::IndexKey* key = NULL;
+
+  IndexImpl* index = static_cast<IndexImpl*>(aIndex.getp());
+
+  aSourceIter->open();
+
+  try
+  {
+    while (aSourceIter->next(domainItem))
+    {
+      if (domainItem->isNode() &&
+          domainItem->getCollection() == NULL &&
+          !index->isTemporary())
+      {
+        ZORBA_ERROR_PARAM(XDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+                          index->getName()->getStringValue(), "");
+      }
+
+      key = new store::IndexKey(aNumColumns);
+
+      for (ulong i = 0; i < aNumColumns; ++i)
+      {
+        if (!aSourceIter->next((*key)[i]))
+        {
+          ZORBA_ERROR_DESC(XQP0019_INTERNAL_ERROR, "Incomplete key during index build");
+        }
+      }
+
+      index->insert(key, domainItem);
+
+      key = NULL; // ownership of the key obj passes to the index.
+    }
+  }
+  catch(...)
+  {
+    if (key != NULL)
+      delete key;
+
+    aSourceIter->close();
+    throw;
+  }
+
+  aSourceIter->close();
 }
 
 
@@ -930,8 +962,7 @@ bool SimpleStore::getReference(store::Item_t& result, const store::Item* node)
 
   xqpStringStore_t str(new xqpStringStore(stream.str()));
 
-  result = new AnyUriItemImpl(str);
-  return true;
+  return theItemFactory->createAnyURI(result, str);
 }
 
 

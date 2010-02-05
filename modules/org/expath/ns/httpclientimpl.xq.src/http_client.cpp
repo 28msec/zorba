@@ -55,6 +55,7 @@ namespace http_client {
       const 
     {
       CURL* lCURL = curl_easy_init();
+      CURLM* lCURLM = curl_multi_init();
       
       Item lRequest;
       Item lHref;
@@ -83,7 +84,7 @@ namespace http_client {
       String lOverrideContentType;
       if (lHandler.get())
         lHandler->getOverrideContentType(lOverrideContentType);
-      HttpResponseParser lRespParser(lRespHandler, lCURL,
+      HttpResponseParser lRespParser(lRespHandler, lCURL, lCURLM,
         lOverrideContentType.c_str());
       lRespParser.parse();
 

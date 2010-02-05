@@ -933,6 +933,7 @@ std::ostream& operator<<(std::ostream& os, const IndexPointConditionImpl& cond)
 /////////////////////////////////////////////////////////////////////////////////
 
 
+// TODO: proper initialization order is not guaranteed => use factory instead
 store::Item_t IndexBoxConditionImpl::theNegInf(new AtomicItem);
 store::Item_t IndexBoxConditionImpl::thePosInf(new AtomicItem);
 

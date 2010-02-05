@@ -222,7 +222,8 @@ public:
     UP_LIST_REPLACE_CONTENT,
     UP_LIST_DELETE,
     UP_LIST_PUT,
-    UP_LIST_CREATE_COLLECTION
+    UP_LIST_CREATE_COLLECTION,
+    UP_LIST_CREATE_INDEX
   };
 
   typedef std::map<const QNameItem*, CollectionPul*> CollectionPulMap;

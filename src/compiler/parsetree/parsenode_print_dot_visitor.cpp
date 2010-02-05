@@ -1954,35 +1954,32 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTDistance &n)
 }
 
 
+void *ParseNodePrintDOTVisitor::begin_visit(const FTExtensionOption &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"FTExtensionOption\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+
+void *ParseNodePrintDOTVisitor::begin_visit(const FTExtensionSelection &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"FTExtensionSelection\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
 
 void *ParseNodePrintDOTVisitor::begin_visit(const FTIgnoreOption &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
           << "label=\"FTIgnoreOption\\n[" 
-          << n.get_location() << "]" << "\"]" << std::endl;
-
-    NL;
-    return no_state;
-}
-
-
-
-void *ParseNodePrintDOTVisitor::begin_visit(const FTInclExclStringLiteral &n)
-{
-    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTInclExclStringLiteral\\n[" 
-          << n.get_location() << "]" << "\"]" << std::endl;
-
-    NL;
-    return no_state;
-}
-
-
-
-void *ParseNodePrintDOTVisitor::begin_visit(const FTInclExclStringLiteralList &n)
-{
-    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTInclExclStringLiteralList\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
 
     NL;
@@ -2015,10 +2012,10 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTMatchOption &n)
 
 
 
-void *ParseNodePrintDOTVisitor::begin_visit(const FTMatchOptionProximityList &n)
+void *ParseNodePrintDOTVisitor::begin_visit(const FTMatchOptions &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTMatchOptionProximityList\\n[" 
+          << "label=\"FTMatchOptions\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
 
     NL;
@@ -2027,10 +2024,10 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTMatchOptionProximityList &n)
 
 
 
-void *ParseNodePrintDOTVisitor::begin_visit(const FTMildnot &n)
+void *ParseNodePrintDOTVisitor::begin_visit(const FTMildNot &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTMildnot\\n[" 
+          << "label=\"FTMildNot\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
 
     NL;
@@ -2063,10 +2060,10 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTOr &n)
 
 
 
-void *ParseNodePrintDOTVisitor::begin_visit(const FTOrderedIndicator &n)
+void *ParseNodePrintDOTVisitor::begin_visit(const FTOrder &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTOrderedIndicator\\n[" 
+          << "label=\"FTOrder\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
 
     NL;
@@ -2075,10 +2072,32 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTOrderedIndicator &n)
 
 
 
-void *ParseNodePrintDOTVisitor::begin_visit(const FTProximity &n)
+void *ParseNodePrintDOTVisitor::begin_visit(const FTPosFilter &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTProximity\\n[" 
+          << "label=\"FTPosFilter\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+
+void *ParseNodePrintDOTVisitor::begin_visit(const FTPrimary &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"FTPrimary\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+
+void *ParseNodePrintDOTVisitor::begin_visit(const FTPrimaryWithOptions &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"FTPrimaryWithOptions\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
 
     NL;
@@ -2091,18 +2110,6 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTRange &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
           << "label=\"FTRange\\n[" 
-          << n.get_location() << "]" << "\"]" << std::endl;
-
-    NL;
-    return no_state;
-}
-
-
-
-void *ParseNodePrintDOTVisitor::begin_visit(const FTRefOrList &n)
-{
-    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTRefOrList\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
 
     NL;
@@ -2159,10 +2166,10 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTStemOption &n)
 
 
 
-void *ParseNodePrintDOTVisitor::begin_visit(const FTStopwordOption &n)
+void *ParseNodePrintDOTVisitor::begin_visit(const FTStopWordOption &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTStopwordOption\\n[" 
+          << "label=\"FTStopWordOption\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
 
     NL;
@@ -2170,11 +2177,21 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTStopwordOption &n)
 }
 
 
-
-void *ParseNodePrintDOTVisitor::begin_visit(const FTStringLiteralList &n)
+void *ParseNodePrintDOTVisitor::begin_visit(const FTStopWords &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTStringLiteralList\\n[" 
+          << "label=\"FTStopWords\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+
+void *ParseNodePrintDOTVisitor::begin_visit(const FTStopWordsInclExcl &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"FTStopWordsInclExcl\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
 
     NL;
@@ -2187,18 +2204,6 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTThesaurusID &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
           << "label=\"FTThesaurusID\\n[" 
-          << n.get_location() << "]" << "\"]" << std::endl;
-
-    NL;
-    return no_state;
-}
-
-
-
-void *ParseNodePrintDOTVisitor::begin_visit(const FTThesaurusList &n)
-{
-    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTThesaurusList\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
 
     NL;
@@ -2255,10 +2260,10 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTUnit &n)
 
 
 
-void *ParseNodePrintDOTVisitor::begin_visit(const FTWildcardOption &n)
+void *ParseNodePrintDOTVisitor::begin_visit(const FTWildCardOption &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTWildcardOption\\n[" 
+          << "label=\"FTWildCardOption\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
 
     NL;
@@ -2291,18 +2296,6 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTWords &n)
 
 
 
-void *ParseNodePrintDOTVisitor::begin_visit(const FTWordsSelection &n)
-{
-    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTWordsSelection\\n[" 
-          << n.get_location() << "]" << "\"]" << std::endl;
-
-    NL;
-    return no_state;
-}
-
-
-
 void *ParseNodePrintDOTVisitor::begin_visit(const FTWordsValue &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
@@ -2315,13 +2308,13 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTWordsValue &n)
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const parsenode& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const parsenode&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const AbbrevForwardStep &n, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const AbbrevForwardStep &n, void*)
 {
     if (n.get_node_test() != NULL)
       os << reinterpret_cast<intptr_t>(&n) << " -> " 
@@ -2329,138 +2322,138 @@ void ParseNodePrintDOTVisitor::end_visit(const AbbrevForwardStep &n, void* /*vis
 }
 
 
-void ParseNodePrintDOTVisitor::end_visit(const AnyKindTest& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const AnyKindTest&, void*)
 {
 }
 
 
-void ParseNodePrintDOTVisitor::end_visit(const AposAttrContentList& /*n*/, void* /*visit_state*/)
-{
-}
-
-
-
-void ParseNodePrintDOTVisitor::end_visit(const AposAttrValueContent& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const AposAttrContentList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ArgList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const AposAttrValueContent&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const AtomicType& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ArgList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const AttributeTest& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const AtomicType&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const BaseURIDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const AttributeTest&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const BoundarySpaceDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const BaseURIDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CaseClause& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const BoundarySpaceDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CaseClauseList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CaseClause&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CommentTest& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CaseClauseList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ConstructionDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CommentTest&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CopyNamespacesDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ConstructionDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DefaultCollationDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CopyNamespacesDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DefaultNamespaceDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DefaultCollationDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DirAttr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DefaultNamespaceDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DirAttributeList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DirAttr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DirAttributeValue& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DirAttributeList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DirElemContentList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DirAttributeValue&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DocumentTest& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DirElemContentList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ElementTest& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DocumentTest&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const EmptyOrderDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ElementTest&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ForClause& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const EmptyOrderDecl&, void*)
+{
+}
+
+
+
+void ParseNodePrintDOTVisitor::end_visit(const ForClause&, void*)
 {
 }
 
@@ -2477,20 +2470,20 @@ void ParseNodePrintDOTVisitor::end_visit(const ForClause& /*n*/, void* /*visit_s
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ForLetClauseList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ForLetClauseList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ForwardAxis& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ForwardAxis&, void*)
 {
 
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ForwardStep &n, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ForwardStep &n, void*)
 {
     if (n.get_forward_axis() != NULL)
       os << reinterpret_cast<intptr_t>(&n) << " -> " 
@@ -2508,31 +2501,31 @@ void ParseNodePrintDOTVisitor::end_visit(const ForwardStep &n, void* /*visit_sta
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FunctionDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FunctionDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const GeneralComp& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const GeneralComp&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ItemType& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ItemType&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const LetClause& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const LetClause&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const LibraryModule &n, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const LibraryModule &n, void*)
 {
     os << reinterpret_cast<intptr_t>(&n) << " -> " 
           << reinterpret_cast<intptr_t>(&*n.get_decl());
@@ -2544,7 +2537,7 @@ void ParseNodePrintDOTVisitor::end_visit(const LibraryModule &n, void* /*visit_s
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const MainModule  &n, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const MainModule  &n, void*)
 {
     if (n.get_prolog() != NULL)
         os << reinterpret_cast<intptr_t>(&n) << " -> " 
@@ -2557,13 +2550,13 @@ void ParseNodePrintDOTVisitor::end_visit(const MainModule  &n, void* /*visit_sta
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const Module& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const Module&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ModuleDecl &n, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ModuleDecl &n, void*)
 {
     
     os << reinterpret_cast<intptr_t>(&n) << " -> " 
@@ -2574,37 +2567,37 @@ void ParseNodePrintDOTVisitor::end_visit(const ModuleDecl &n, void* /*visit_stat
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ModuleImport& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ModuleImport&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const NameTest& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const NameTest&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const NamespaceDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const NamespaceDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const NodeComp& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const NodeComp&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OccurrenceIndicator& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OccurrenceIndicator&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OptionDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OptionDecl&, void*)
 {
 }
 
@@ -2625,293 +2618,293 @@ void ParseNodePrintDOTVisitor::end_visit(const LetClauseList&, void*)
 {}
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OrderByClause& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OrderByClause&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OrderCollationSpec& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OrderCollationSpec&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OrderDirSpec& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OrderDirSpec&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OrderEmptySpec& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OrderEmptySpec&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OrderModifier& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OrderModifier&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OrderSpec& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OrderSpec&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OrderSpecList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OrderSpecList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OrderingModeDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OrderingModeDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const PITest& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const PITest&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const Param& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const Param&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ParamList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ParamList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const PositionalVar& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const PositionalVar&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const Pragma& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const Pragma&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const PragmaList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const PragmaList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const PredicateList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const PredicateList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const Prolog& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const Prolog&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const QVarInDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const QVarInDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const QVarInDeclList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const QVarInDeclList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const QuoteAttrValueContent& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const QuoteAttrValueContent&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const QuoteAttrContentList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const QuoteAttrContentList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ReverseAxis& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ReverseAxis&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ReverseStep& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ReverseStep&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const SIND_DeclList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const SIND_DeclList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const SchemaAttributeTest& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const SchemaAttributeTest&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const SchemaElementTest& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const SchemaElementTest&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const SchemaImport& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const SchemaImport&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const SchemaPrefix& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const SchemaPrefix&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const SequenceType& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const SequenceType&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const SignList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const SignList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const SingleType& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const SingleType&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const TextTest& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const TextTest&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const TypeDeclaration& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const TypeDeclaration&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const TypeName& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const TypeName&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const URILiteralList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const URILiteralList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ValueComp& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ValueComp&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const VarDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const VarDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const VarGetsDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const VarGetsDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const VarGetsDeclList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const VarGetsDeclList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const VarInDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const VarInDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const VarInDeclList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const VarInDeclList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const VersionDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const VersionDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const VFO_DeclList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const VFO_DeclList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const WhereClause& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const WhereClause&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const Wildcard& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const Wildcard&, void*)
 {
 }
 
 
-void ParseNodePrintDOTVisitor::end_visit(const QName& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const QName&, void*)
 {
 }
 
 
-void ParseNodePrintDOTVisitor::end_visit(const exprnode& /*n*/, void* /*visit_state*/)
-{
-}
-
-
-
-void ParseNodePrintDOTVisitor::end_visit(const AdditiveExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const exprnode&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const AndExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const AdditiveExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const AxisStep &n, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const AndExpr&, void*)
+{
+}
+
+
+
+void ParseNodePrintDOTVisitor::end_visit(const AxisStep &n, void*)
 {
     if (n.get_forward_step() != NULL)
         os << reinterpret_cast<intptr_t>(&n) << " -> " 
@@ -2928,109 +2921,109 @@ void ParseNodePrintDOTVisitor::end_visit(const AxisStep &n, void* /*visit_state*
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CDataSection& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CDataSection&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CastExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CastExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CastableExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CastableExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CommonContent& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CommonContent&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ComparisonExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ComparisonExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CompAttrConstructor& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CompAttrConstructor&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CompCommentConstructor& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CompCommentConstructor&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CompDocConstructor& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CompDocConstructor&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CompElemConstructor& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CompElemConstructor&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CompPIConstructor& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CompPIConstructor&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const CompTextConstructor& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const CompTextConstructor&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ContextItemExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ContextItemExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DirCommentConstructor& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DirCommentConstructor&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DirElemConstructor& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DirElemConstructor&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DirElemContent& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DirElemContent&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DirPIConstructor& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DirPIConstructor&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const EnclosedExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const EnclosedExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const Expr &n, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const Expr &n, void*)
 {
    for (int i = 0; i < n.numberOfChildren(); ++i)
    {
@@ -3052,79 +3045,79 @@ void ParseNodePrintDOTVisitor::end_visit(const Expr &n, void* /*visit_state*/)
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ExtensionExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ExtensionExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FLWORExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FLWORExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FilterExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FilterExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FunctionCall& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FunctionCall&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const IfExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const IfExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const InstanceofExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const InstanceofExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const IntersectExceptExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const IntersectExceptExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const MultiplicativeExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const MultiplicativeExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const NumericLiteral& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const NumericLiteral&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OrExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OrExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const OrderedExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const OrderedExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ParenthesizedExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ParenthesizedExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const PathExpr &n, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const PathExpr &n, void*)
 {
     if (n.get_relpath_expr() != NULL)
         os << reinterpret_cast<intptr_t>(&n) << " -> " 
@@ -3133,13 +3126,13 @@ void ParseNodePrintDOTVisitor::end_visit(const PathExpr &n, void* /*visit_state*
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const QuantifiedExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const QuantifiedExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const QueryBody &n, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const QueryBody &n, void*)
 {
     if (n.get_expr() != NULL)
         os << reinterpret_cast<intptr_t>(&n) << " -> " 
@@ -3148,349 +3141,337 @@ void ParseNodePrintDOTVisitor::end_visit(const QueryBody &n, void* /*visit_state
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const RangeExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const RangeExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const RelativePathExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const RelativePathExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const StringLiteral& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const StringLiteral&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const TreatExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const TreatExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const TypeswitchExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const TypeswitchExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const UnaryExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const UnaryExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const UnionExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const UnionExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const UnorderedExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const UnorderedExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ValidateExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ValidateExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const VarRef& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const VarRef&, void*)
 {
 }
 
 
-void ParseNodePrintDOTVisitor::end_visit(const DeleteExpr& /*n*/, void* /*visit_state*/)
-{
-}
-
-
-
-void ParseNodePrintDOTVisitor::end_visit(const InsertExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const DeleteExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const RenameExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const InsertExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const ReplaceExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const RenameExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const RevalidationDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const ReplaceExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const TransformExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const RevalidationDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const VarNameList& /*n*/, void* /*visit_state*/)
-{
-}
-
-
-void ParseNodePrintDOTVisitor::end_visit(const VarBinding& /*n*/, void* /*visit_state*/)
-{
-}
-
-
-void ParseNodePrintDOTVisitor::end_visit(const TryExpr& /*n*/, void* /*visit_state*/)
-{
-}
-
-
-void ParseNodePrintDOTVisitor::end_visit(const CatchListExpr& /*n*/, void* /*visit_state*/)
-{
-}
-
-
-void ParseNodePrintDOTVisitor::end_visit(const CatchExpr& /*n*/, void* /*visit_state*/)
-{
-}
-
-
-void ParseNodePrintDOTVisitor::end_visit(const FTAnd& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const TransformExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTAnyallOption& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const VarNameList&, void*)
+{
+}
+
+
+void ParseNodePrintDOTVisitor::end_visit(const VarBinding&, void*)
+{
+}
+
+
+void ParseNodePrintDOTVisitor::end_visit(const TryExpr&, void*)
+{
+}
+
+
+void ParseNodePrintDOTVisitor::end_visit(const CatchListExpr&, void*)
+{
+}
+
+
+void ParseNodePrintDOTVisitor::end_visit(const CatchExpr&, void*)
+{
+}
+
+
+void ParseNodePrintDOTVisitor::end_visit(const FTAnd&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTBigUnit& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTAnyallOption&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTCaseOption& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTBigUnit&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTContainsExpr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTCaseOption&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTContent& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTContainsExpr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTDiacriticsOption& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTContent&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTDistance& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTDiacriticsOption&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTIgnoreOption& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTDistance&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTInclExclStringLiteral& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTIgnoreOption&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTInclExclStringLiteralList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTStopWordsInclExcl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTLanguageOption& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTLanguageOption&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTMatchOption& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTMatchOption&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTMatchOptionProximityList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTMildNot&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTMildnot& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTOptionDecl&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTOptionDecl& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTOr&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTOr& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTOrderedIndicator&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTOrderedIndicator& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTProximity&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTProximity& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTRange&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTRange& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTRefOrList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTRefOrList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTScope&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTScope& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTScoreVar&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTScoreVar& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTSelection&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTSelection& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTStemOption&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTStemOption& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTStopwordOption&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTStopwordOption& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTStringLiteralList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTStringLiteralList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTThesaurusID&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTThesaurusID& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTThesaurusList&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTThesaurusList& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTThesaurusOption&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTThesaurusOption& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTTimes&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTTimes& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTUnaryNot&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTUnaryNot& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTUnit&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTUnit& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTWildcardOption&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTWildcardOption& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTWindow&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTWindow& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTWords&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTWords& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTWordsSelection&, void*)
 {
 }
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTWordsSelection& /*n*/, void* /*visit_state*/)
-{
-}
-
-
-
-void ParseNodePrintDOTVisitor::end_visit(const FTWordsValue& /*n*/, void* /*visit_state*/)
+void ParseNodePrintDOTVisitor::end_visit(const FTWordsValue&, void*)
 {
 }
 

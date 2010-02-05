@@ -19,6 +19,7 @@
 
 #include "store/naive/simple_collection.h"
 #include "store/naive/simple_index.h"
+#include "store/api/ic.h"
 #include "store/naive/loader.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
@@ -419,6 +420,44 @@ void SimpleCollection::getIndexes(std::vector<store::Index*>& indexes)
       }
     }
   }
+}
+
+/*******************************************************************************
+
+*******************************************************************************/
+void SimpleCollection::getActiveICs(std::vector<store::IC*>& ics)
+{
+  store::Iterator_t activeICNames = GET_STORE().listActiveICNames();
+
+  store::Item_t activeICName;
+  activeICNames->open();
+
+  while ( activeICNames->next(activeICName) )
+  {
+
+    store::IC* activeIC = GET_STORE().getIC(activeICName);
+
+    switch( activeIC->getICKind() )
+    {
+    case store::IC::ic_collection:
+      if ( activeIC->getCollectionName()->equals(getName()) )
+        ics.push_back(activeIC);
+      break;
+
+    case store::IC::ic_foreignkey:
+      if ( activeIC->getToCollectionName()->equals(getName()) )
+        ics.push_back(activeIC);
+
+      if ( activeIC->getFromCollectionName()->equals(getName()) )
+        ics.push_back(activeIC);
+      break;
+
+    default:
+      ZORBA_ASSERT(false);
+    }
+  }
+
+  activeICNames->close();
 }
 
 

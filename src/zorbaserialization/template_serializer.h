@@ -553,6 +553,7 @@ void operator&(Archiver &ar, T *&obj)
       obj = dynamic_cast<T*>(new_obj);
       if(!obj)
       {
+        delete new_obj;obj=NULL;
         ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id << " type " << type << " class " << typeid(T).name());
       }
 
@@ -560,6 +561,7 @@ void operator&(Archiver &ar, T *&obj)
       int v;
       if(version > obj->get_classversion(obj->get_version_count()-1).class_version)
       {
+        delete new_obj;obj=NULL;
         ZORBA_SER_ERROR_DESC_OSS(SRL0005_CLASS_VERSION_IS_TOO_NEW, "Class version for " << obj->get_class_name_str() << " is " << version  << "while the version supported is " << obj->get_classversion(obj->get_version_count()-1).class_version);
       }
       for(v = obj->get_version_count()-1; v >= 0; v--)
@@ -578,6 +580,7 @@ void operator&(Archiver &ar, T *&obj)
           if(oldv < 0)
             oldv = 0;
           
+          delete new_obj;obj=NULL;
           ZORBA_SER_ERROR_DESC_OSS(SRL0006_CLASS_VERSION_IS_TOO_OLD, 
                           "Class version for " << obj->get_class_name_str() << " is " << version 
                           << " while the minimal supported version is " << ver.class_version 
@@ -588,7 +591,13 @@ void operator&(Archiver &ar, T *&obj)
 
 
       ar.register_reference(id, field_treat, new_obj);
+      try{
       new_obj->serialize_internal(ar);
+      }catch(...)
+      {
+        delete new_obj;obj=NULL;
+        throw;
+      }
       ar.read_end_current_level();
     }
     else if(field_treat == ARCHIVE_FIELD_IS_BASECLASS)

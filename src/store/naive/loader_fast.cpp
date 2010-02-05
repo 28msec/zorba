@@ -30,6 +30,8 @@
 #include "store/naive/dataguide.h"
 #include "store/naive/nsbindings.h"
 #include "store/naive/loader.h"
+#include "store/naive/simple_item_factory.h"
+#include "store/naive/node_factory.h"
 
 #include "zorbatypes/datetime.h"
 
@@ -69,7 +71,7 @@ namespace zorba { namespace simplestore {
 
 ********************************************************************************/
 FastXmlLoader::FastXmlLoader(
-    store::ItemFactory* factory,
+    BasicItemFactory* factory,
     error::ErrorManager* errorManager,
     bool dataguide)
   :
@@ -227,7 +229,7 @@ store::Item_t FastXmlLoader::loadXml(
 {
   xmlParserCtxtPtr ctxt = NULL;
 
-  theTree = new XmlTree(NULL, GET_STORE().createTreeId());
+  theTree = GET_STORE().getNodeFactory().createXmlTree();
 
   if (uri == NULL)
   {
@@ -353,7 +355,7 @@ void FastXmlLoader::startDocument(void * ctx)
 
   try
   {
-    XmlNode* docNode = new DocumentNode();
+    XmlNode* docNode = GET_STORE().getNodeFactory().createDocumentNode();
 
     loader.setRoot(docNode);
     loader.theNodeStack.push(docNode);
@@ -516,9 +518,10 @@ void FastXmlLoader::startElement(
                                            reinterpret_cast<const char*>(lname));
     
     // Create the element node and push it to the node stack
-    ElementNode* elemNode = new ElementNode(nodeName,
-                                            numBindings,
-                                            numAttributes);
+    ElementNode* elemNode = GET_STORE().getNodeFactory().createElementNode(
+                                          nodeName,
+                                          numBindings,
+                                          numAttributes);
     if (nodeStack.empty())
       loader.setRoot(elemNode);
 
@@ -640,9 +643,11 @@ void FastXmlLoader::startElement(
         store::Item_t qname = qnpool.insert(uri, prefix, lname);
 
         xqpStringStore_t value = new xqpStringStore(valueBegin, valueEnd);
-        store::Item_t typedValue = new UntypedAtomicItemImpl(value);
+        store::Item_t typedValue;
+        GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, value);
 
-        AttributeNode* attrNode = new AttributeNode(qname);
+        AttributeNode* attrNode = 
+            GET_STORE().getNodeFactory().createAttributeNode(qname);
         attrNode->theParent = elemNode;
         attrNode->setId(loader.theTree, &loader.theOrdPath);
         attrNode->theTypedValue.transfer(typedValue);
@@ -813,7 +818,7 @@ void FastXmlLoader::characters(void * ctx, const xmlChar * ch, int len)
     const char* charp = reinterpret_cast<const char*>(ch);
     xqpStringStore_t content(new xqpStringStore(charp, len));
 
-    XmlNode* textNode = new TextNode(content);
+    XmlNode* textNode = GET_STORE().getNodeFactory().createTextNode(content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(textNode);
@@ -861,7 +866,7 @@ void FastXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     const char* charp = reinterpret_cast<const char*>(ch);
     xqpStringStore_t content(new xqpStringStore(charp, len));
 
-    XmlNode* cdataNode = new TextNode(content);
+    XmlNode* cdataNode = GET_STORE().getNodeFactory().createTextNode(content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(cdataNode);
@@ -909,7 +914,8 @@ void FastXmlLoader::processingInstruction(
     xqpStringStore_t content = new xqpStringStore(reinterpret_cast<const char*>(data));
     xqpStringStore_t target = new xqpStringStore(reinterpret_cast<const char*>(targetp));
 
-    XmlNode* piNode = new PiNode(target, content);
+    XmlNode* piNode 
+      = GET_STORE().getNodeFactory().createPiNode(target, content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(piNode);
@@ -954,7 +960,8 @@ void FastXmlLoader::comment(void * ctx, const xmlChar * ch)
     const char* charp = reinterpret_cast<const char*>(ch);
     xqpStringStore_t content(new xqpStringStore(charp));
 
-    XmlNode* commentNode = new CommentNode(content);
+    XmlNode* commentNode = 
+        GET_STORE().getNodeFactory().createCommentNode(content);
 
     if (loader.theNodeStack.empty())
       loader.setRoot(commentNode);

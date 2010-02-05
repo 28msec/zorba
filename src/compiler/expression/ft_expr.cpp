@@ -140,7 +140,7 @@ ostream& ft_and_expr::put(ostream& os) const
 
 
 
-//[347] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMildnot]
+//[347] [http://www.w3.org/TR/xquery-full-text/#prod-xquery-FTMildNot]
 
 ft_mildnot_expr::ft_mildnot_expr(
   short sctx,

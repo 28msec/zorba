@@ -121,12 +121,14 @@ ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
     theExecStatus(QUERY_IDLE),
     theCurrentMessage(0),
     theNotSendTerminateEvent(false),
-    thePlanIsOpen(false)
+    thePlanIsOpen(false),
+    theSerializer(0)
 {
 }
 
 ZorbaDebuggerRuntime::~ZorbaDebuggerRuntime()
 {
+  delete theSerializer;
 }
 
 // this is the main loop of the thread
@@ -137,8 +139,9 @@ ZorbaDebuggerRuntime::run()
   theWrapper->open();
   thePlanIsOpen = true;
 
-  StartedEvent lStarted;
-  theCommunicator->sendEvent(&lStarted);
+  std::auto_ptr<StartedEvent> lStarted(new StartedEvent());
+  theCommunicator->sendEvent(lStarted.get());
+  lStarted.reset(0);
 
   runQuery();
 }
@@ -208,13 +211,16 @@ void ZorbaDebuggerRuntime::runQuery()
     theWrapper->theStateBlock->theDebuggerCommons->setRuntime(this);
     theLock.unlock();
 
-    serializer lSerializer(theQuery->theErrorManager);
-    SerializerImpl::setSerializationParameters(lSerializer, theSerializerOptions);
+    delete theSerializer;
+    theSerializer = new serializer(theQuery->theErrorManager);
+    SerializerImpl::setSerializationParameters(*theSerializer, theSerializerOptions);
 
-    lSerializer.serialize((intern::Serializable*)theWrapper, theOStream);
+    theSerializer->serialize((intern::Serializable*)theWrapper, theOStream);
     
     theOStream.flush();
-  } catch(error::ZorbaError& e){
+  } catch (FlowCtlException&) {
+    // Runtime correctly terminated by user interrupt
+  } catch (error::ZorbaError& e){
     // this does not rethrow but only print the error message
     ZorbaImpl::notifyError(&lErrorHandler, e);
   }
@@ -337,8 +343,9 @@ void ZorbaDebuggerRuntime::suspendRuntime( QueryLoc aLocation, SuspensionCause a
 {
   theLock.wlock();
   theExecStatus = QUERY_SUSPENDED;
-  SuspendedEvent lMessage( aLocation, aCause );
-  theCommunicator->sendEvent( &lMessage );
+  std::auto_ptr<SuspendedEvent> lMessage(new SuspendedEvent(aLocation, aCause));
+  theCommunicator->sendEvent(lMessage.get());
+  lMessage.reset(0);
   theLock.unlock();
   suspend();
 }
@@ -364,11 +371,18 @@ void ZorbaDebuggerRuntime::resumeRuntime()
 void ZorbaDebuggerRuntime::terminateRuntime()
 {
   AutoLock lLock(theLock, Lock::WRITE);
-  theExecStatus = QUERY_TERMINATED;
 #ifndef NDEBUG
   TerminateMessage* lMessage = dynamic_cast<TerminateMessage*>(theCurrentMessage);
   assert(lMessage);
 #endif
+  theWrapper->theStateBlock->theHasToQuit = true;
+  if (theExecStatus == QUERY_SUSPENDED) {
+    resume();
+  } else if (theExecStatus == QUERY_IDLE) {
+    TerminatedEvent lEvent;
+    theCommunicator->sendEvent(&lEvent);
+  }
+  theExecStatus = QUERY_TERMINATED;
 }
 
 ReplyMessage* ZorbaDebuggerRuntime::getAllVariables()

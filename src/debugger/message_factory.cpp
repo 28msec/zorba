@@ -21,40 +21,40 @@ namespace zorba {
   {
     try
     {
-      switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND_SET ] )
+      switch ( aMessage[ MESSAGE_COMMAND_SET_FIELD_INDEX ] )
       {
       case 0:
         {
-          if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_FLAG )
+          if ( aMessage[ MESSAGE_FLAGS_FIELD_INDEX ] == REPLY_FLAG )
           {
             return true;
           }
 
           // Ignore the variable data flag at this point
-          if ( (aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ]  == REPLY_VARIABLE_FLAG)
-            || (aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ]  == (REPLY_VARIABLE_FLAG | VARIABLE_DATA_FLAG)) )
+          if ( (aMessage[ MESSAGE_FLAGS_FIELD_INDEX ]  == REPLY_VARIABLE_FLAG)
+            || (aMessage[ MESSAGE_FLAGS_FIELD_INDEX ]  == (REPLY_VARIABLE_FLAG | VARIABLE_DATA_FLAG)) )
           {
             return true;
           }
 
-          if( aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS]  == REPLY_SET_FLAG )
+          if( aMessage[MESSAGE_FLAGS_FIELD_INDEX]  == REPLY_SET_FLAG )
           {
             return true;
           }
 
-          if( aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] == REPLY_FRAME_FLAG )
+          if( aMessage[MESSAGE_FLAGS_FIELD_INDEX] == REPLY_FRAME_FLAG )
           {
             return true;
           }
 
-          if(aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] == REPLY_LIST_FLAG)
+          if(aMessage[MESSAGE_FLAGS_FIELD_INDEX] == REPLY_LIST_FLAG)
           {
             return true;
           }
         }
       case EXECUTION:
         {
-          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          switch ( aMessage[ MESSAGE_COMMAND_FIELD_INDEX ] )
           {
           case RUN:
             return true;
@@ -70,7 +70,7 @@ namespace zorba {
         }
       case BREAKPOINTS:
         {
-          switch( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          switch( aMessage[ MESSAGE_COMMAND_FIELD_INDEX ] )
           {
           case CLEAR:
             return true;
@@ -80,7 +80,7 @@ namespace zorba {
         }
       case ENGINE_EVENT:
         {
-          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          switch ( aMessage[ MESSAGE_COMMAND_FIELD_INDEX ] )
           {
           case STARTED:
             return true;
@@ -96,7 +96,7 @@ namespace zorba {
         }
       case STATIC:
         {
-          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          switch ( aMessage[ MESSAGE_COMMAND_FIELD_INDEX ] )
           {
           case LIST:
             return true;
@@ -104,7 +104,7 @@ namespace zorba {
         }
       case DYNAMIC:
         {
-          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          switch ( aMessage[ MESSAGE_COMMAND_FIELD_INDEX ] )
           {
           case VARIABLES:
             return true;
@@ -122,86 +122,93 @@ namespace zorba {
     }
   }
 
-  AbstractMessage* MessageFactory::buildMessage( TCPSocket * aSocket )
-  {
-    ZorbaArrayAutoPointer<Byte> lBody(new Byte[ MESSAGE_SIZE ]);
-    memset(lBody.get(), '\0', MESSAGE_SIZE);
-    AbstractMessage* lMessage = 0;
-    try
-    {
-      //read the packet length and write it into lLength
-      if (aSocket->recv( lBody.get(), MESSAGE_SIZE ) == 0) {
-        return 0;
-      }
+AbstractMessage* MessageFactory::buildMessage(TCPSocket * aSocket)
+{
+  ZorbaArrayAutoPointer<Byte> lBody(new Byte[MESSAGE_HEADER_SIZE]);
+  memset(lBody.get(), '\0', MESSAGE_HEADER_SIZE);
+  AbstractMessage* lMessage = 0;
+  try {
+    //read the packet length and write it into lLength
+    if (aSocket->recv(lBody.get(), MESSAGE_HEADER_SIZE) == 0) {
+      return 0;
+    }
 
-      if(!checkMessage(lBody.get()))
-      {
-        return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
-      }
-      Length length;
-      if( is_little_endian() ){
-        length = lBody[3] | (lBody[2]<<8) |
-          (lBody[1]<<16) | (lBody[0]<<24);
-      } else {
-        length = lBody[0] | (lBody[1]<<8) |
-          (lBody[2]<<16) | (lBody[3]<<24);
-      }
-      length -= MESSAGE_HEADER_SIZE;
-      //allocate memory for the whole packet
-      ZorbaArrayAutoPointer<Byte> lPacket(new Byte[ length + MESSAGE_SIZE + 1 ]);
-      memset( lPacket.get(), '\0', length+MESSAGE_HEADER_SIZE+1 );
-      memcpy( lPacket.get(), lBody.get(), MESSAGE_SIZE );
-      //read the command packet
-      if(length+MESSAGE_HEADER_SIZE > MESSAGE_SIZE)
-      {
-        aSocket->recv ( lPacket.get()+MESSAGE_SIZE, length );
-      }
-      //unserialize the packet
-      lMessage =  MessageFactory::buildMessage( lPacket.get(), length + MESSAGE_HEADER_SIZE );
-    } catch ( DebuggerSocketException &e ) {
-      synchronous_logger::cerr << e.what() << "\n";
+    if(!checkMessage(lBody.get())) {
       return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
     }
-    return lMessage;
+
+    Length length;
+    if (is_little_endian()) {
+      length = 
+          lBody[3] |
+          lBody[2] << 8 |
+          lBody[1] << 16 |
+          lBody[0] << 24;
+    } else {
+      length =
+          lBody[0] |
+          lBody[1] << 8 |
+          lBody[2] << 16 |
+          lBody[3] << 24;
+    }
+    // allocate memory for the whole packet
+    ZorbaArrayAutoPointer<Byte> lPacket(new Byte[length + 1]);
+    memset(lPacket.get(), '\0', length + 1);
+    memcpy(lPacket.get(), lBody.get(), MESSAGE_HEADER_SIZE);
+
+    // read the data payload
+    if (length > MESSAGE_HEADER_SIZE) {
+      aSocket->recv(lPacket.get() + MESSAGE_HEADER_SIZE,
+          length - MESSAGE_HEADER_SIZE);
+    }
+
+    // unserialize the packet
+    lMessage =  MessageFactory::buildMessage(lPacket.get(), length);
+
+  } catch (DebuggerSocketException &e) {
+    synchronous_logger::cerr << e.what() << "\n";
+    return new ReplyMessage(0, DEBUGGER_ERROR_INVALID_MESSAGE_FORMAT);
   }
+  return lMessage;
+}
 
   AbstractMessage * MessageFactory::buildMessage( Byte * aMessage, const unsigned int aLength )
   {
     try
     {
-      switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND_SET ] )
+      switch ( aMessage[ MESSAGE_COMMAND_SET_FIELD_INDEX ] )
       {
       case 0:
         {
-          if ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_FLAG )
+          if ( aMessage[ MESSAGE_FLAGS_FIELD_INDEX ] == REPLY_FLAG )
           {
             return new ReplyMessage( aMessage, aLength );
           }
 
-          if ( (aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ] == REPLY_VARIABLE_FLAG)
-            || (aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_FLAGS ]  == (REPLY_VARIABLE_FLAG | VARIABLE_DATA_FLAG)) )
+          if ( (aMessage[ MESSAGE_FLAGS_FIELD_INDEX ] == REPLY_VARIABLE_FLAG)
+            || (aMessage[ MESSAGE_FLAGS_FIELD_INDEX ]  == (REPLY_VARIABLE_FLAG | VARIABLE_DATA_FLAG)) )
           {
             return new VariableReply( aMessage, aLength );
           }
 
-          if( aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS]  == REPLY_SET_FLAG )
+          if( aMessage[MESSAGE_FLAGS_FIELD_INDEX]  == REPLY_SET_FLAG )
           {
             return new SetReply(aMessage, aLength);
           }
 
-          if( aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] == REPLY_FRAME_FLAG )
+          if( aMessage[MESSAGE_FLAGS_FIELD_INDEX] == REPLY_FRAME_FLAG )
           {
             return new FrameReply(aMessage, aLength);
           }
 
-          if (aMessage[MESSAGE_HEADER_SIZE + MESSAGE_FLAGS] == REPLY_LIST_FLAG)
+          if (aMessage[MESSAGE_FLAGS_FIELD_INDEX] == REPLY_LIST_FLAG)
           {
             return new ListReply(aMessage, aLength);
           }
         }
       case EXECUTION:
         {
-          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          switch ( aMessage[ MESSAGE_COMMAND_FIELD_INDEX ] )
           {
           case RUN:
             return new RunMessage( aMessage, aLength );
@@ -217,7 +224,7 @@ namespace zorba {
         }
       case BREAKPOINTS:
         {
-          switch( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          switch( aMessage[ MESSAGE_COMMAND_FIELD_INDEX ] )
           {
           case CLEAR:
             return new ClearMessage( aMessage, aLength );
@@ -227,7 +234,7 @@ namespace zorba {
         }
       case ENGINE_EVENT:
         {
-          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          switch ( aMessage[ MESSAGE_COMMAND_FIELD_INDEX ] )
           {
           case STARTED:
             return new StartedEvent( aMessage, aLength );
@@ -243,7 +250,7 @@ namespace zorba {
         }
       case STATIC:
         {
-          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          switch ( aMessage[ MESSAGE_COMMAND_FIELD_INDEX ] )
           {
           case LIST:
             return new ListCommand(aMessage, aLength);
@@ -251,7 +258,7 @@ namespace zorba {
         }
       case DYNAMIC:
         {
-          switch ( aMessage[ MESSAGE_HEADER_SIZE + MESSAGE_COMMAND ] )
+          switch ( aMessage[ MESSAGE_COMMAND_FIELD_INDEX ] )
           {
           case VARIABLES:
             return new VariableMessage( aMessage, aLength );

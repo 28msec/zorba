@@ -346,7 +346,15 @@ namespace zorbac {
         // derivative types. For other types, we attempt to convert
         // the string value to an int manually.
         if (qe.getErrorCode() == STR0040_TYPE_ERROR) {
-          const char* strvalue = me->theItem.getStringValue().c_str();
+          // Note: The return value of getStringValue() is a
+          // reference-counted object. The return value of c_str() is
+          // a pointer to internals of this reference-counted
+          // object. Thus, it is critical that we keep the
+          // lStringValue reference alive until we are done with the
+          // const char*, or else the const char* will point to
+          // de-allocated memory.
+          String lStringValue = me->theItem.getStringValue();
+          const char* strvalue = lStringValue.c_str();
           xqp_int intvalue;
           if ( ! NumConversions::starCharToInt(strvalue, intvalue)) {
             return XQC_TYPE_ERROR;
@@ -377,7 +385,15 @@ namespace zorbac {
         // and derivative types. For other types, we attempt to
         // convert the string value to a double manually.
         if (qe.getErrorCode() == STR0040_TYPE_ERROR) {
-          const char* strvalue = me->theItem.getStringValue().c_str();
+          // Note: The return value of getStringValue() is a
+          // reference-counted object. The return value of c_str() is
+          // a pointer to internals of this reference-counted
+          // object. Thus, it is critical that we keep the
+          // lStringValue reference alive until we are done with the
+          // const char*, or else the const char* will point to
+          // de-allocated memory.
+          String lStringValue = me->theItem.getStringValue();
+          const char* strvalue = lStringValue.c_str();
           xqp_double doublevalue;
           if ( ! NumConversions::starCharToDouble(strvalue, doublevalue)) {
             return XQC_TYPE_ERROR;

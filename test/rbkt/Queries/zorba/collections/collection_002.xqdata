@@ -1,0 +1,5 @@
+module namespace ns = "http://www.example.com/example";
+
+declare collection ns:collection as node()*;
+
+declare function ns:test2() { () };

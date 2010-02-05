@@ -33,12 +33,8 @@ namespace zorba {
     public:
       SERIALIZABLE_CLASS(CollationCache)
       SERIALIZABLE_CLASS_CONSTRUCTOR(CollationCache)
-      void serialize(::zorba::serialization::Archiver &ar)
-      {
-        ar & theStaticContext;
-        ar & theMap;
-        ar & theDefaultCollator;
-      }
+      void serialize(::zorba::serialization::Archiver &ar);
+
       friend class static_context;
     private:
       CollationCache(static_context* aStaticContext);

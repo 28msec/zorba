@@ -47,7 +47,7 @@ void operator&(Archiver &ar, std::map<int, rchandle<function> >* &obj);//ArityFM
 //void serialize_qname(Archiver &ar, store::Item_t &qname);
 
 #define SERIALIZE_TYPEMANAGER(type_mgr_type, type_mgr)                             \
-  bool is_root_type_mgr = (!GENV.isRootStaticContextInitialized() || ((TypeManager*)type_mgr == (TypeManager*)&GENV_TYPESYSTEM));            \
+  bool is_root_type_mgr = ar.is_serializing_out() && (!GENV.isRootStaticContextInitialized() || ((TypeManager*)type_mgr == (TypeManager*)&GENV_TYPESYSTEM));            \
   ar.set_is_temp_field_one_level(true);                             \
   ar & is_root_type_mgr;                                            \
   ar.set_is_temp_field_one_level(false);                            \
