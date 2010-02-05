@@ -470,7 +470,15 @@ namespace zorba {
       virtual void
       debug(std::ostream& aOutStream,
             Zorba_SerializerOptions& aSerOptions,
-            unsigned short aCommandPort = 8000, unsigned short anEventPort = 9000) = 0;
+            unsigned short aCommandPort = 8000,
+            unsigned short anEventPort = 9000) = 0;
+
+      virtual void
+        debug(std::ostream& aOutStream,
+        Zorba_SerializerOptions& aSerOptions,
+        const std::string& aHost,
+        unsigned short aCommandPort = 8000,
+        unsigned short anEventPort = 9000) = 0;
   };
 
   // xml serialization of the query (equiv to calling serialize(os) 

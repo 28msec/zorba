@@ -30,11 +30,23 @@ ZorbaDebuggerServer::ZorbaDebuggerServer(XQueryImpl* aQuery,
                                          std::ostream& anOstream,
                                          unsigned short requestPort /*= 8000*/,
                                          unsigned short eventPort /*= 9000*/)
-  : theRequestPort(requestPort),
-    theEventPort(eventPort)
 {
-  theCommunicator = new DebuggerCommunicator(theRequestPort, theEventPort);
-  theRuntime = new ZorbaDebuggerRuntime(aQuery, anOstream, serializerOption, theCommunicator);
+  ZorbaDebuggerServer(aQuery, serializerOption, anOstream, "127.0.0.1",
+    requestPort, eventPort);
+}
+
+ZorbaDebuggerServer::ZorbaDebuggerServer(XQueryImpl* aQuery,
+                                         Zorba_SerializerOptions& serializerOption,
+                                         std::ostream& anOstream,
+                                         std::string aHost,
+                                         unsigned short requestPort /*= 8000*/,
+                                         unsigned short eventPort /*= 9000*/)
+                                         : theRequestPort(requestPort),
+                                           theEventPort(eventPort)
+{
+  theCommunicator = new DebuggerCommunicator(aHost, theRequestPort, theEventPort);
+  theRuntime = new ZorbaDebuggerRuntime(aQuery, anOstream, serializerOption,
+    theCommunicator);
 }
 
 ZorbaDebuggerServer::~ZorbaDebuggerServer()

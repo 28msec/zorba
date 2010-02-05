@@ -956,27 +956,37 @@ void XQueryImpl::checkIsDebugMode() const
 
 void XQueryImpl::debug( unsigned short aCommandPort, unsigned short anEventPort )
 {
-  ZORBA_TRY
-    Zorba_SerializerOptions lSerOptions;
-    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;  
-    debug(std::cout, lSerOptions, aCommandPort, anEventPort);
-  ZORBA_CATCH
+  Zorba_SerializerOptions lSerOptions;
+  lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;  
+  debug(std::cout, lSerOptions, aCommandPort, anEventPort);
 }
 
 void XQueryImpl::debug(std::ostream& aOutStream,
-                        Zorba_SerializerOptions& aSerOptions,
-                        unsigned short aCommandPort, unsigned short anEventPort)
+                       Zorba_SerializerOptions& aSerOptions,
+                       unsigned short aCommandPort,
+                       unsigned short anEventPort)
+{
+  std::string lHost = "127.0.0.1";
+  debug(aOutStream, aSerOptions, lHost, aCommandPort, anEventPort);
+}
+
+void
+XQueryImpl::debug(std::ostream& aOutStream,
+                  Zorba_SerializerOptions& aSerOptions,
+                  const std::string& aHost,
+                  unsigned short aCommandPort,
+                  unsigned short anEventPort)
 {
   SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
-  ZORBA_TRY
+    ZORBA_TRY
     //check if the query is compiled and not closed
     checkCompiled();
     checkNotClosed();
     //check if the debug mode is enabled
     checkIsDebugMode();
     ZorbaDebuggerServer aDebuggerServer(this, aSerOptions, 
-                                        aOutStream, aCommandPort,
-                                        anEventPort);
+      aOutStream, aCommandPort,
+      anEventPort);
     aDebuggerServer.run();
   ZORBA_CATCH
 }

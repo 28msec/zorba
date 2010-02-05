@@ -22,7 +22,8 @@
 namespace zorba {
 	class DebuggerCommunicator {
 	public:
-		DebuggerCommunicator(unsigned short aCommandPort, unsigned short aEventPort);
+    DebuggerCommunicator(std::string aHost, unsigned short aCommandPort,
+      unsigned short aEventPort);
 		virtual ~DebuggerCommunicator();
 
 	public:

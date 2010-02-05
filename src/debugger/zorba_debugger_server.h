@@ -52,6 +52,12 @@ namespace zorba {
                         std::ostream& anOstream,
                         unsigned short requestPort = 8000,
                         unsigned short eventPort = 9000);
+    ZorbaDebuggerServer(XQueryImpl* aQuery,
+      Zorba_SerializerOptions& serializerOption,
+      std::ostream& anOstream,
+      std::string aHost,
+      unsigned short requestPort = 8000,
+      unsigned short eventPort = 9000);
     virtual ~ZorbaDebuggerServer();
   public:
     //************************************

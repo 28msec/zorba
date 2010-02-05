@@ -26,6 +26,7 @@
 ("debug-ports,p", po::value<std::string>()->default_value("28028:28029"), "Specify the ports for zorba debugger. The format is requestPort:eventPort.")
 ("debug,d", "Launch the Zorba command line debugger.")
 ("debug-server", "Launch the Zorba debugger server and wait for incomming client connections.")
+("debug-server-host", po::value<std::string>(), "Set the host, on which the debugger server is run")
 ("no-colors", "Use no colors in the debugger client.")
 ("no-logo", "Print no logo when starting the debugger client or server.")
 ("timeout", po::value<long>()->default_value(-1), "Specify a timeout in seconds. After the specified time, the execution of the query will be aborted.")

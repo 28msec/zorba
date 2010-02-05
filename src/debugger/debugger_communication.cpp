@@ -25,11 +25,15 @@
 #define sleep(s) Sleep(1000*s)
 #endif
 
-zorba::DebuggerCommunicator::DebuggerCommunicator( unsigned short aCommandPort, unsigned short aEventPort )
+zorba::DebuggerCommunicator::DebuggerCommunicator(
+  std::string aHost,
+  unsigned short aCommandPort,
+  unsigned short aEventPort)
 :
 m_commandSocket(0), m_eventSocket(0)
 {
-	std::auto_ptr<TCPServerSocket> srvSocket(new TCPServerSocket(aCommandPort));
+	std::auto_ptr<TCPServerSocket> srvSocket(
+    new TCPServerSocket(aHost, aCommandPort));
 	m_commandSocket = srvSocket->accept();
 	ZORBA_ASSERT(m_commandSocket);
 #ifndef NDEBUG
@@ -66,54 +70,32 @@ void zorba::DebuggerCommunicator::handshake()
 
 zorba::AbstractCommandMessage* zorba::DebuggerCommunicator::handleTCPClient()
 {
-	ZorbaArrayAutoPointer<Byte> lByteMessage;
-	std::auto_ptr<AbstractMessage> lMessage;
-	//ReplyMessage* lReplyMessage;
-	try
-	{
-		lMessage.reset(MessageFactory::buildMessage( m_commandSocket ));
+  ZorbaArrayAutoPointer<Byte> lByteMessage;
+  std::auto_ptr<AbstractMessage> lMessage;
+  try
+  {
+    lMessage.reset(MessageFactory::buildMessage( m_commandSocket ));
     if (lMessage.get() == 0) {
 #ifdef DEBUG
       synchronous_logger::clog << "[Server Thread] The connection with the client is closed\n";
 #endif
       return NULL;
     }
-
-		AbstractCommandMessage* lCommandMessage = dynamic_cast< AbstractCommandMessage * >(lMessage.get());
+    AbstractCommandMessage* lCommandMessage = dynamic_cast< AbstractCommandMessage * >(lMessage.get());
     assert(lCommandMessage);
-//  if ( lCommandMessage )
-//	{
-			lMessage.release();
-			return lCommandMessage;
-    // the following happened if the client sent a quit message
-    // see debugger_clientimpl.cpp:168
-//  } else {
-//#ifndef NDEBUG
-//			synchronous_logger::clog << "[Server Thread] Received something wrong\n";
-//#endif
-//			//If something goes wrong, buildMessage() receive a Reply Message containing the error description
-//			//Send it back to the client right away
-//			lReplyMessage = dynamic_cast<ReplyMessage *>(lMessage.get());
-//			if( lReplyMessage != 0 ){
-//	      Length length;
-//				lByteMessage.reset(lReplyMessage->serialize( length ));
-//				m_commandSocket->send( lByteMessage.get(), length );
-//			} else {
-//				synchronous_logger::cerr << "[Server Thread] Internal error occured. Couldn't send the error message.\n";
-//			}
-//			return NULL;
-//		}
+    lMessage.release();
+    return lCommandMessage;
 #ifndef NDEBUG
-	} catch ( std::exception &e ) {
-		synchronous_logger::clog << "[Server Thread] The connection with the client is closed\n";
-		synchronous_logger::clog <<  e.what() << "\n";
+  } catch ( std::exception &e ) {
+    synchronous_logger::clog << "[Server Thread] The connection with the client is closed\n";
+    synchronous_logger::clog <<  e.what() << "\n";
 #else
-	} catch ( std::exception &/*e*/ ) {
+  } catch ( std::exception &/*e*/ ) {
 #endif
-	} catch(...) {
-		synchronous_logger::clog << "[Server Thread] unknown exception\n";
-	}
-	return NULL;
+  } catch(...) {
+    synchronous_logger::clog << "[Server Thread] unknown exception\n";
+  }
+  return NULL;
 }
 
 void zorba::DebuggerCommunicator::sendEvent( AbstractCommandMessage* aMessage )

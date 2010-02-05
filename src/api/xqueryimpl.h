@@ -328,6 +328,13 @@ public:
         Zorba_SerializerOptions& aSerOptions,
         unsigned short aCommandPort, unsigned short anEventPort);
 
+  void
+  debug(std::ostream& aOutStream,
+    Zorba_SerializerOptions& aSerOptions,
+    const std::string& aHost,
+    unsigned short aCommandPort,
+    unsigned short anEventPort);
+
 protected:
     
   XQueryImpl();
