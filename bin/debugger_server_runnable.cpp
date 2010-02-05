@@ -24,17 +24,20 @@ namespace zorba {
 
 DebuggerServerRunnable::DebuggerServerRunnable(const XQuery_t& aQuery,
                                                std::ostream&   aOutStream,
+                                               const std::string& aHost,
                                                unsigned short  aRequestPort,
                                                unsigned short  aEventPort,
                                                const Zorba_SerializerOptions& 
                                                 aSerOpts)
   : theQuery(aQuery),
     theOutStream(aOutStream),
+    theHost(aHost),
     theRequestPort(aRequestPort),
     theEventPort(aEventPort),
     theSerializerOptions(aSerOpts)
 {
 }
+
 
 DebuggerServerRunnable::~DebuggerServerRunnable()
 {

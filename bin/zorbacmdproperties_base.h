@@ -33,7 +33,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--no-colors", "--no-logo", "--timeout", "--module-path", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--debug-server-host", "--no-colors", "--no-logo", "--timeout", "--module-path", NULL };
     return result;
   }
   bool theTiming;
@@ -64,6 +64,7 @@ protected:
   std::string theDebugPorts;
   bool theDebug;
   bool theDebugServer;
+  std::string theDebugServerHost;
   bool theNoColors;
   bool theNoLogo;
   long theTimeout;
@@ -121,6 +122,7 @@ public:
   const std::string &debugPorts () const { return theDebugPorts; }
   const bool &debug () const { return theDebug; }
   const bool &debugServer () const { return theDebugServer; }
+  const std::string &debugServerHost () const { return theDebugServerHost; }
   const bool &noColors () const { return theNoColors; }
   const bool &noLogo () const { return theNoLogo; }
   const long &timeout () const { return theTimeout; }
@@ -245,6 +247,11 @@ public:
       else if (strcmp (*argv, "--debug-server") == 0) {
         theDebugServer = true;
       }
+      else if (strcmp (*argv, "--debug-server-host") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --debug-server-host option"; break; }        init_val (*argv, theDebugServerHost, d);
+      }
       else if (strcmp (*argv, "--no-colors") == 0) {
         theNoColors = true;
       }
@@ -305,6 +312,7 @@ public:
 "--debug-ports, -p\nSpecify the ports for zorba debugger. The format is requestPort:eventPort.\n\n"
 "--debug, -d\nLaunch the Zorba command line debugger.\n\n"
 "--debug-server\nLaunch the Zorba debugger server and wait for incomming client connections.\n\n"
+"--debug-server-host\nSet the host, on which the debugger server is run\n\n"
 "--no-colors\nUse no colors in the debugger client.\n\n"
 "--no-logo\nPrint no logo when starting the debugger client or server.\n\n"
 "--timeout\nSpecify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
