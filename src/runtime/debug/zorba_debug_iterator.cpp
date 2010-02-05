@@ -41,7 +41,7 @@ ZorbaDebugIterator::ZorbaDebugIterator(
   static_context*           sctx,
   const QueryLoc&           loc,
   std::vector<PlanIter_t>&  aChildvector )
-  : NaryBaseIterator<ZorbaDebugIterator, PlanIteratorState> (
+  : NaryBaseIterator<ZorbaDebugIterator, DebuggerState> (
       sctx,
       loc,
       aChildvector),
@@ -75,39 +75,22 @@ ZorbaDebugIterator::nextImpl(
   store::Item_t&  result,
   PlanState&      planState) const
 {
-  SuspensionCause lCause          = 0;
-  ZorbaDebuggerCommons* lCommons  = planState.theDebuggerCommons;
-
   PlanWrapper_t   lWrapper = 0;
 
-  PlanIteratorState* lState = 0;
-  DEFAULT_STACK_INIT(PlanIteratorState, lState, planState);
+  DebuggerState* lState = 0;
+  DEFAULT_STACK_INIT(DebuggerState, lState, planState);
 
   while (consumeNext(result, theChildren[0], planState)) {
-
-    // check whether we have to suspend 
-    // (determined by location, iterator, or some other cause)
-    if (lCommons->hasToBreakAt(loc) || lCommons->hasToBreakAt(this) ||
-        lCommons->hasToBreak(&lCause)) {
-        try {
-          lCause = lCause == 0 ? CAUSE_BREAKPOINT : lCause;
-          
-          // tell everybody that we are the iterator who suspended
-          lCommons->setCurrentIterator(this);
-          lCommons->setCurrentStaticContext(getStaticContext(planState));
-          lCommons->setCurrentDynamicContext(planState.dctx());
-          lCommons->setBreak(false);
-          lCommons->setPlanState(&planState);
-
-          // suspend
-          lCommons->getRuntime()->suspendRuntime(loc, lCause);
-          lCause = 0;
-        } catch (...) {
-          throw;
-        }
-    }
+    lState->notEmptySequence = true;
+    checkBreak(planState);
     // this iterator is the identity
     STACK_PUSH(true, lState);
+  }
+  // If the child of this iterator is an empty sequence (i.e. consumeNext
+  // returns false the first time invoked), we have to check if we have to
+  // suspend here.
+  if (!lState->notEmptySequence) {
+    checkBreak(planState);
   }
   STACK_END(lState);
 }
@@ -208,4 +191,36 @@ ZorbaDebugIterator::eval(
   return lResult;
 }
 
+void ZorbaDebugIterator::checkBreak(PlanState& planState) const
+{
+  ZorbaDebuggerCommons* lCommons  = planState.theDebuggerCommons;
+  SuspensionCause lCause = 0;
+
+  // check whether we have to suspend 
+  // (determined by location, iterator, or some other cause)
+  if (lCommons->hasToBreakAt(loc) || lCommons->hasToBreakAt(this) ||
+    lCommons->hasToBreak(&lCause)) {
+      try {
+        lCause = lCause == 0 ? CAUSE_BREAKPOINT : lCause;
+
+        // tell everybody that we are the iterator who suspended
+        lCommons->setCurrentIterator(this);
+        lCommons->setCurrentStaticContext(getStaticContext(planState));
+        lCommons->setCurrentDynamicContext(planState.dctx());
+        lCommons->setBreak(false);
+        lCommons->setPlanState(&planState);
+
+        // suspend
+        lCommons->getRuntime()->suspendRuntime(loc, lCause);
+        lCause = 0;
+      } catch (...) {
+        throw;
+      }
+  }
+}
+
+DebuggerState::DebuggerState()
+: notEmptySequence(false)
+{
+}
 }/* namespace zorba */
