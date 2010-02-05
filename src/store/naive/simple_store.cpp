@@ -316,6 +316,12 @@ void SimpleStore::shutdown()
     theIteratorFactory = NULL;
   }
 
+  if (theNodeFactory != NULL)
+  {
+    delete theNodeFactory;
+    theNodeFactory = NULL;
+  }
+
   // do cleanup of the libxml2 library
   // however, after that, a user will have to call
   // LIBXML_TEST_VERSION if he wants to use libxml2
