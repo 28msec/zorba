@@ -47,7 +47,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAvailableCollectionIterator,
     NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<IsAvailableCollectionIterator, PlanIteratorState>*)this);
@@ -96,7 +96,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(AvailableCollectionsIterator,
     NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<AvailableCollectionsIterator, AvailableCollectionsIteratorState>*)this);
@@ -132,7 +132,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsAvailableIndexIterator,
     NaryBaseIterator<IsAvailableIndexIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<IsAvailableIndexIterator, PlanIteratorState>*)this);
@@ -181,7 +181,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(AvailableIndexesIterator,
     NaryBaseIterator<AvailableIndexesIterator, AvailableIndexesIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<AvailableIndexesIterator, AvailableIndexesIteratorState>*)this);
@@ -217,7 +217,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IsActivatedICIterator,
     NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<IsActivatedICIterator, PlanIteratorState>*)this);
@@ -266,7 +266,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ActivatedICsIterator,
     NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ActivatedICsIterator, ActivatedICsIteratorState>*)this);

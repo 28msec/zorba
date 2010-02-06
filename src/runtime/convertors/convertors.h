@@ -62,7 +62,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonParseIterator,
     NaryBaseIterator<ZorbaJsonParseIterator, ZorbaJsonParseIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaJsonParseIterator, ZorbaJsonParseIteratorState>*)this);
@@ -96,7 +96,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonSerializeIterator,
     NaryBaseIterator<ZorbaJsonSerializeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaJsonSerializeIterator, PlanIteratorState>*)this);
@@ -143,7 +143,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonMLParseIterator,
     NaryBaseIterator<ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>*)this);
@@ -177,7 +177,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonMLSerializeIterator,
     NaryBaseIterator<ZorbaJsonMLSerializeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaJsonMLSerializeIterator, PlanIteratorState>*)this);
@@ -233,7 +233,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCSV2XMLIterator,
     NaryBaseIterator<ZorbaCSV2XMLIterator, ZorbaCSV2XMLIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaCSV2XMLIterator, ZorbaCSV2XMLIteratorState>*)this);
@@ -287,7 +287,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaTXT2XMLIterator,
     NaryBaseIterator<ZorbaTXT2XMLIterator, ZorbaTXT2XMLIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaTXT2XMLIterator, ZorbaTXT2XMLIteratorState>*)this);
@@ -343,7 +343,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCSV2XMLFromFileIterator,
     NaryBaseIterator<ZorbaCSV2XMLFromFileIterator, ZorbaCSV2XMLFromFileIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaCSV2XMLFromFileIterator, ZorbaCSV2XMLFromFileIteratorState>*)this);
@@ -397,7 +397,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaTXT2XMLFromFileIterator,
     NaryBaseIterator<ZorbaTXT2XMLFromFileIterator, ZorbaTXT2XMLFromFileIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaTXT2XMLFromFileIterator, ZorbaTXT2XMLFromFileIteratorState>*)this);
@@ -431,7 +431,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2CSVIterator,
     NaryBaseIterator<ZorbaXML2CSVIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaXML2CSVIterator, PlanIteratorState>*)this);
@@ -465,7 +465,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2CSVFILEIterator,
     NaryBaseIterator<ZorbaXML2CSVFILEIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaXML2CSVFILEIterator, PlanIteratorState>*)this);
@@ -499,7 +499,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2TXTIterator,
     NaryBaseIterator<ZorbaXML2TXTIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaXML2TXTIterator, PlanIteratorState>*)this);
@@ -533,7 +533,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2TXTFILEIterator,
     NaryBaseIterator<ZorbaXML2TXTFILEIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaXML2TXTFILEIterator, PlanIteratorState>*)this);

@@ -18,9 +18,17 @@
 #define ZORBA_DEBUGGER_UTILS_H
 
 #include <functional>
+#include <zorbatypes/xqpstring.h>
+#include <compiler/parser/query_loc.h>
+#include "json/value.h"
 
 namespace zorba
 {
+  namespace debugger {
+    xqpString queryLocToJSON(const QueryLoc& aLoc);
+    QueryLoc fromJSONToQueryLoc(json::value *obj);
+  }
+
   template<class T> 
   struct destroyer: public std::unary_function<T, void>
   {

@@ -45,7 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(AbsIterator,
     NaryBaseIterator<AbsIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<AbsIterator, PlanIteratorState>*)this);
@@ -79,7 +79,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CeilingIterator,
     NaryBaseIterator<CeilingIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<CeilingIterator, PlanIteratorState>*)this);
@@ -113,7 +113,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FloorIterator,
     NaryBaseIterator<FloorIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<FloorIterator, PlanIteratorState>*)this);
@@ -147,7 +147,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RoundIterator,
     NaryBaseIterator<RoundIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<RoundIterator, PlanIteratorState>*)this);
@@ -181,7 +181,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RoundHalfToEvenIterator,
     NaryBaseIterator<RoundHalfToEvenIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<RoundHalfToEvenIterator, PlanIteratorState>*)this);
@@ -215,7 +215,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FormatNumberIterator,
     NaryBaseIterator<FormatNumberIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<FormatNumberIterator, PlanIteratorState>*)this);

@@ -49,7 +49,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CodepointsToStringIterator,
     NaryBaseIterator<CodepointsToStringIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<CodepointsToStringIterator, PlanIteratorState>*)this);
@@ -99,7 +99,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringToCodepointsIterator,
     NaryBaseIterator<StringToCodepointsIterator, StringToCodepointsIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<StringToCodepointsIterator, StringToCodepointsIteratorState>*)this);
@@ -135,7 +135,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CompareStrIterator,
     NaryBaseIterator<CompareStrIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<CompareStrIterator, PlanIteratorState>*)this);
@@ -171,7 +171,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CodepointEqualIterator,
     NaryBaseIterator<CodepointEqualIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<CodepointEqualIterator, PlanIteratorState>*)this);
@@ -207,7 +207,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ConcatStrIterator,
     NaryBaseIterator<ConcatStrIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ConcatStrIterator, PlanIteratorState>*)this);
@@ -243,7 +243,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringJoinIterator,
     NaryBaseIterator<StringJoinIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<StringJoinIterator, PlanIteratorState>*)this);
@@ -279,7 +279,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SubstringIterator,
     NaryBaseIterator<SubstringIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<SubstringIterator, PlanIteratorState>*)this);
@@ -315,7 +315,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StringLengthIterator,
     NaryBaseIterator<StringLengthIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<StringLengthIterator, PlanIteratorState>*)this);
@@ -351,7 +351,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NormalizeSpaceIterator,
     NaryBaseIterator<NormalizeSpaceIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<NormalizeSpaceIterator, PlanIteratorState>*)this);
@@ -387,7 +387,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NormalizeUnicodeIterator,
     NaryBaseIterator<NormalizeUnicodeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<NormalizeUnicodeIterator, PlanIteratorState>*)this);
@@ -423,7 +423,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(UpperCaseIterator,
     NaryBaseIterator<UpperCaseIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<UpperCaseIterator, PlanIteratorState>*)this);
@@ -459,7 +459,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(LowerCaseIterator,
     NaryBaseIterator<LowerCaseIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<LowerCaseIterator, PlanIteratorState>*)this);
@@ -495,7 +495,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TranslateIterator,
     NaryBaseIterator<TranslateIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<TranslateIterator, PlanIteratorState>*)this);
@@ -531,7 +531,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(EncodeForUriIterator,
     NaryBaseIterator<EncodeForUriIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<EncodeForUriIterator, PlanIteratorState>*)this);
@@ -567,7 +567,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IriToUriIterator,
     NaryBaseIterator<IriToUriIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<IriToUriIterator, PlanIteratorState>*)this);
@@ -603,7 +603,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(EscapeHtmlUriIterator,
     NaryBaseIterator<EscapeHtmlUriIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<EscapeHtmlUriIterator, PlanIteratorState>*)this);
@@ -639,7 +639,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ContainsIterator,
     NaryBaseIterator<ContainsIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ContainsIterator, PlanIteratorState>*)this);
@@ -675,7 +675,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StartsWithIterator,
     NaryBaseIterator<StartsWithIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<StartsWithIterator, PlanIteratorState>*)this);
@@ -711,7 +711,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(EndsWithIterator,
     NaryBaseIterator<EndsWithIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<EndsWithIterator, PlanIteratorState>*)this);
@@ -747,7 +747,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SubstringBeforeIterator,
     NaryBaseIterator<SubstringBeforeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<SubstringBeforeIterator, PlanIteratorState>*)this);
@@ -783,7 +783,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SubstringAfterIterator,
     NaryBaseIterator<SubstringAfterIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<SubstringAfterIterator, PlanIteratorState>*)this);
@@ -819,7 +819,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnMatchesIterator,
     NaryBaseIterator<FnMatchesIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnMatchesIterator, PlanIteratorState>*)this);
@@ -855,7 +855,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnReplaceIterator,
     NaryBaseIterator<FnReplaceIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnReplaceIterator, PlanIteratorState>*)this);
@@ -908,7 +908,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnTokenizeIterator,
     NaryBaseIterator<FnTokenizeIterator, FnTokenizeIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnTokenizeIterator, FnTokenizeIteratorState>*)this);

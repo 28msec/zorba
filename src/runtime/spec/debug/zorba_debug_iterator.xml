@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+  <zorba:header>
+    <zorba:include form="Angle-bracket">vector</zorba:include>
+    <zorba:include form="Angle-bracket">map</zorba:include>
+    <zorba:include form="Angle-bracket">string</zorba:include>
+    <zorba:include form="Quoted">runtime/util/plan_wrapper_holder.h</zorba:include>
+    <zorba:include form="Quoted">zorba/options.h</zorba:include>
+    <zorba:include form="Quoted">store/api/item.h</zorba:include>
+    <zorba:include form="Quoted">types/typeimpl.h</zorba:include>
+  </zorba:header>
+
+  <zorba:iterator name="ZorbaDebugIterator">
+    <zorba:description author="Zorba Team">
+      This iterator wrapps iterators in which represents breakable expression
+      if the query is compiled in debug mode. It is used to break expressions,
+      interrupt the execution and evaluate expressions while the engine is
+      suspended.
+    </zorba:description>
+    <zorba:state>
+      <zorba:member type="bool" name="notEmptySequence" defaultValue="false"/>
+    </zorba:state>
+    <zorba:member type="checked_vector&lt;store::Item_t&gt;" name="varnames"/>
+    <zorba:member type="checked_vector&lt;std::string&gt;" name="var_keys"/>
+    <zorba:member type="checked_vector&lt;xqtref_t&gt;" name="vartypes"/>
+    <zorba:member type="std::vector&lt;ZorbaDebugIterator*&gt;" name="theDebuggerChildren"/>
+    <zorba:member type="ZorbaDebugIterator*" name="theDebuggerParent"/>
+    
+    <zorba:method return="const ZorbaDebugIterator*" name="getParent" const="true"/>
+    <zorba:method return="const ZorbaDebugIterator*" name="getOverIterator" const="true"/>
+    <zorba:method return="QueryLoc" name="getQueryLocation" const="true"/>
+    <zorba:method return="std::list&lt;std::pair&lt;xqpString, xqpString&gt; &gt;"
+      name="eval" const="true">
+      <zorba:param type="PlanState*" name="aState"/>
+      <zorba:param type="Zorba_SerializerOptions*" name="aSerOptions"/>
+    </zorba:method>
+    <zorba:method return="void" name="checkBreak" const="true">
+      <zorba:param type="PlanState*" name="aState"/>
+    </zorba:method>
+    <zorba:method return="void" name="setParent">
+      <zorba:param type="ZorbaDebugIterator*" name="aParent"/>
+    </zorba:method>
+    <zorba:method return="void" name="addChild">
+      <zorba:param type="ZorbaDebugIterator*" name="aChild"/>
+    </zorba:method>
+    <zorba:method return="void" name="setChildren">
+      <zorba:param type="std::vector&lt;PlanIter_t&gt;*" name="args"/>
+    </zorba:method>
+    <zorba:method return="void" name="setVariables">
+      <zorba:param type="checked_vector&lt;store::Item_t&gt;" name="aVarNames"/>
+      <zorba:param type="checked_vector&lt;std::string&gt;" name="aVarKeys"/>
+      <zorba:param type="checked_vector&lt;xqtref_t&gt;" name="aVarTypes"/>
+    </zorba:method>
+  </zorba:iterator>
+</zorba:iterators>

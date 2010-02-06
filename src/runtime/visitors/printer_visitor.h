@@ -185,6 +185,9 @@ namespace zorba {
     void beginVisit( const PrintIterator& );
     void endVisit  ( const PrintIterator& );
 
+    void beginVisit( const ZorbaDebugIterator& );
+    void endVisit  ( const ZorbaDebugIterator& );
+
     void beginVisit( const YearsFromDurationIterator& );
     void endVisit  ( const YearsFromDurationIterator& );
 

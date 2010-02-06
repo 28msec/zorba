@@ -45,7 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentDateTimeIterator,
     NaryBaseIterator<CurrentDateTimeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<CurrentDateTimeIterator, PlanIteratorState>*)this);
@@ -79,7 +79,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentDateIterator,
     NaryBaseIterator<CurrentDateIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<CurrentDateIterator, PlanIteratorState>*)this);
@@ -113,7 +113,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CurrentTimeIterator,
     NaryBaseIterator<CurrentTimeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<CurrentTimeIterator, PlanIteratorState>*)this);
@@ -147,7 +147,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ImplicitTimezoneIterator,
     NaryBaseIterator<ImplicitTimezoneIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ImplicitTimezoneIterator, PlanIteratorState>*)this);
@@ -181,7 +181,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DefaultCollationIterator,
     NaryBaseIterator<DefaultCollationIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<DefaultCollationIterator, PlanIteratorState>*)this);

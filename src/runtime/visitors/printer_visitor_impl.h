@@ -192,7 +192,6 @@
   DECLARE_VISITOR (RenameIterator);
   DECLARE_VISITOR (TransformIterator);
   DECLARE_VISITOR (ApplyIterator);
-  DECLARE_VISITOR (ZorbaDebugIterator);
   DECLARE_VISITOR (DebuggerSingletonIterator);
   DECLARE_VISITOR (HoistIterator);
   DECLARE_VISITOR (UnhoistIterator);

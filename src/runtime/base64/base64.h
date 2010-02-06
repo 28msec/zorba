@@ -45,7 +45,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(Base64DecodeIterator,
     NaryBaseIterator<Base64DecodeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<Base64DecodeIterator, PlanIteratorState>*)this);
@@ -79,7 +79,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(Base64EncodeIterator,
     NaryBaseIterator<Base64EncodeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<Base64EncodeIterator, PlanIteratorState>*)this);

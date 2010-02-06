@@ -460,7 +460,7 @@ SetMessage::SetMessage( Byte * aMessage, const unsigned int aLength ):
     {
       if ( getValue(*it, "location") != 0 )
       {
-        QueryLoc loc = QueryLoc::fromJSON(getValue(*it, "location"));
+        QueryLoc loc = debugger::fromJSONToQueryLoc(getValue(*it, "location"));
         if ( getValue(*it, "id") == 0 )
         {
           throw MessageFormatException("Invalid JSON format for Set breakpoint message.");
@@ -512,7 +512,8 @@ std::string SetMessage::getData() const
     {
       lJSONString << ',';
     }
-    lJSONString << "{\"id\":" << it->first << ",\"location\":" << it->second.toJSON() << "}";
+    lJSONString << "{\"id\":" << it->first << ",\"location\":"
+      << debugger::queryLocToJSON(it->second) << "}";
   }
 
   std::map<unsigned int, xqpString>::const_iterator it2;
@@ -633,7 +634,7 @@ SuspendedEvent::SuspendedEvent( Byte * aMessage, const unsigned int aLength ):
   
   if ( location  != 0 )
   {
-    theLocation = QueryLoc::fromJSON( location );
+    theLocation = debugger::fromJSONToQueryLoc( location );
   } else {
     throw MessageFormatException("Invalid JSON format for SuspendedEvent message.");
   }
@@ -671,7 +672,7 @@ std::string SuspendedEvent::getData() const
   std::stringstream lJSONString;
   lJSONString << "{";
   lJSONString << "\"cause\":" << theCause << ",";
-  lJSONString << "\"location\":" << theLocation.toJSON();
+  lJSONString << "\"location\":" << debugger::queryLocToJSON(theLocation);
   lJSONString << "}";
   return lJSONString.str();
 }
@@ -972,7 +973,7 @@ FrameReply::FrameReply(Byte* aMessage, const unsigned int aLength)
     {
       if(getValue(*it, "location") != 0)
       {
-        QueryLoc loc = QueryLoc::fromJSON(getValue(*it, "location"));
+        QueryLoc loc = debugger::fromJSONToQueryLoc(getValue(*it, "location"));
         if(getValue(*it, "label") == 0)
         {
           throw MessageFormatException("Invalid JSON format for Stack");
@@ -1001,7 +1002,8 @@ xqpString FrameReply::getData() const
       lJSONString << ",";
     }
     std::pair<std::string, QueryLoc> it = lStack.top();
-    lJSONString << "{\"label\":\"" << it.first << "\",\"location\":" << it.second.toJSON() << "}";
+    lJSONString << "{\"label\":\"" << it.first << "\",\"location\":"
+      << debugger::queryLocToJSON(it.second) << "}";
     lStack.pop();
   }
   lJSONString << "]}";
@@ -1048,7 +1050,7 @@ SetReply::SetReply(Byte* aMessage, const unsigned int aLength): ReplyMessage(aMe
     {
       if(getValue(*it, "location") != 0)
       {
-        QueryLoc loc = QueryLoc::fromJSON(getValue(*it, "location"));
+        QueryLoc loc = debugger::fromJSONToQueryLoc(getValue(*it, "location"));
         if(getValue(*it, "id") == 0)
         {
           throw MessageFormatException("Invalid JSON format for Set breakpoint reply message.");
@@ -1076,7 +1078,8 @@ xqpString SetReply::getData() const
     {
       lJSONString << ',';
     }
-    lJSONString << "{\"id\":" << it->first << ",\"location\":" << it->second.toJSON() << "}";
+    lJSONString << "{\"id\":" << it->first << ",\"location\":"
+      << debugger::queryLocToJSON(it->second) << "}";
   }
   lJSONString << "]}";
   return lJSONString.str();

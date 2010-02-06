@@ -20,54 +20,28 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
-#ifndef ZORBA_RUNTIME_FNPUT_FNPUT_H
-#define ZORBA_RUNTIME_FNPUT_FNPUT_H
+
+
+#ifndef ZORBA_FUNCTIONS_ZORBA_DEBUG_ITERATOR_H
+#define ZORBA_FUNCTIONS_ZORBA_DEBUG_ITERATOR_H
 
 
 #include "common/shared_types.h"
-
-
-
-#include "runtime/base/narybase.h"
+#include "functions/function_impl.h"
 
 
 namespace zorba {
 
-/**
- * fn:put
- * Author: Zorba Team
- */
-class FnPutIterator : public NaryBaseIterator<FnPutIterator, PlanIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(FnPutIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnPutIterator,
-    NaryBaseIterator<FnPutIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<FnPutIterator, PlanIteratorState>*)this);
-  }
-
-  FnPutIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<FnPutIterator, PlanIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~FnPutIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
+void populate_context_zorba_debug_iterator(static_context* sctx);
 
 
-}
+
+
+
+} //namespace zorba
+
+
 #endif
 /*
  * Local variables:

@@ -66,7 +66,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CreateIndexIterator,
     UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>*)this);
@@ -107,7 +107,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeleteIndexIterator,
     UnaryBaseIterator<DeleteIndexIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (UnaryBaseIterator<DeleteIndexIterator, PlanIteratorState>*)this);
@@ -158,7 +158,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CreateInternalIndexIterator,
     UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>*)this);
@@ -205,7 +205,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RefreshIndexIterator,
     UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>*)this);
@@ -253,7 +253,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexEntryBuilderIterator,
     NaryBaseIterator<IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>*)this);
@@ -307,7 +307,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexPointProbeIterator,
     NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>*)this);
@@ -371,7 +371,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexRangeProbeIterator,
     NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>*)this);

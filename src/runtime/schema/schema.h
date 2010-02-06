@@ -51,7 +51,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ValidateIterator,
     UnaryBaseIterator<ValidateIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar);
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   ValidateIterator(
     static_context* sctx,
@@ -88,7 +88,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaSchemaTypeIterator,
     NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaSchemaTypeIterator, PlanIteratorState>*)this);

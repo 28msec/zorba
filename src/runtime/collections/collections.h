@@ -61,7 +61,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FnCollectionIterator,
     NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<FnCollectionIterator, FnCollectionIteratorState>*)this);
@@ -111,7 +111,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCollectionIterator,
     NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaCollectionIterator, ZorbaCollectionIteratorState>*)this);
@@ -147,7 +147,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaIndexOfIterator,
     NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaIndexOfIterator, PlanIteratorState>*)this);
@@ -183,7 +183,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaCreateCollectionIterator,
     NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaCreateCollectionIterator, PlanIteratorState>*)this);
@@ -219,7 +219,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteCollectionIterator,
     NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaDeleteCollectionIterator, PlanIteratorState>*)this);
@@ -255,7 +255,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesIterator,
     NaryBaseIterator<ZorbaInsertNodesIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaInsertNodesIterator, PlanIteratorState>*)this);
@@ -291,7 +291,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesFirstIterator,
     NaryBaseIterator<ZorbaInsertNodesFirstIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaInsertNodesFirstIterator, PlanIteratorState>*)this);
@@ -327,7 +327,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesLastIterator,
     NaryBaseIterator<ZorbaInsertNodesLastIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaInsertNodesLastIterator, PlanIteratorState>*)this);
@@ -363,7 +363,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesBeforeIterator,
     NaryBaseIterator<ZorbaInsertNodesBeforeIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaInsertNodesBeforeIterator, PlanIteratorState>*)this);
@@ -399,7 +399,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaInsertNodesAfterIterator,
     NaryBaseIterator<ZorbaInsertNodesAfterIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaInsertNodesAfterIterator, PlanIteratorState>*)this);
@@ -435,7 +435,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesIterator,
     NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaDeleteNodesIterator, PlanIteratorState>*)this);
@@ -471,7 +471,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesFirstIterator,
     NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaDeleteNodesFirstIterator, PlanIteratorState>*)this);
@@ -507,7 +507,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaDeleteNodesLastIterator,
     NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ZorbaDeleteNodesLastIterator, PlanIteratorState>*)this);

@@ -24,6 +24,7 @@ SET(DEBUGGER_SRCS
     profiler.cpp
     synchronous_logger.cpp
     message_factory.cpp
+    utils.cpp
     zorba_debugger_commons.cpp
     zorba_debugger_runtime.cpp
     zorba_debugger_server.cpp

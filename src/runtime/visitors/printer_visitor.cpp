@@ -41,6 +41,7 @@
 #include "runtime/context/context.h"
 #include "runtime/convertors/convertors.h"
 #include "runtime/debug/debug.h"
+#include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
 #include "runtime/eval/eval.h"
 #include "runtime/fnerror/fnerror.h"
@@ -746,6 +747,20 @@ void PrinterVisitor::endVisit ( const PrintIterator& ) {
   thePrinter.endEndVisit();
 }
 // </PrintIterator>
+
+
+// <ZorbaDebugIterator>
+void PrinterVisitor::beginVisit ( const ZorbaDebugIterator& a) {
+  thePrinter.startBeginVisit("ZorbaDebugIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const ZorbaDebugIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </ZorbaDebugIterator>
 
 
 // <YearsFromDurationIterator>

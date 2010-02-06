@@ -321,7 +321,6 @@
 	PLAN_ITER_VISITOR(ZorbaFopIterator);
 #endif // ZORBA_WITH_FOP
 
-  PLAN_ITER_VISITOR ( ZorbaDebugIterator );
   PLAN_ITER_VISITOR ( DebuggerSingletonIterator );
 
 #ifdef ZORBA_WITH_REST

@@ -363,7 +363,7 @@ void end_visit (debugger_expr& v)
   argv.push_back(pop_itstack ());
   argv.push_back(new EvalIterator(sctx, qloc, argvEvalIter, varnames, var_keys,
     vartypes));
-  aDebugIterator->setChildren(argv);
+  aDebugIterator->setChildren(&argv);
 
   aDebugIterator->setVariables(varnames, var_keys, vartypes);
 

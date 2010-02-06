@@ -60,7 +60,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(NumGenIterator,
     NoaryBaseIterator<NumGenIterator, NumGenIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NoaryBaseIterator<NumGenIterator, NumGenIteratorState>*)this);
@@ -93,7 +93,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RandomIterator,
     NaryBaseIterator<RandomIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<RandomIterator, PlanIteratorState>*)this);
@@ -127,7 +127,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(UuidIterator,
     NaryBaseIterator<UuidIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<UuidIterator, PlanIteratorState>*)this);

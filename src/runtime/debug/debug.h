@@ -60,7 +60,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(TraceIterator,
     NaryBaseIterator<TraceIterator, TraceIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<TraceIterator, TraceIteratorState>*)this);
@@ -94,7 +94,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ReadLineIterator,
     NaryBaseIterator<ReadLineIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<ReadLineIterator, PlanIteratorState>*)this);
@@ -130,7 +130,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(PrintIterator,
     NaryBaseIterator<PrintIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<PrintIterator, PlanIteratorState>*)this);

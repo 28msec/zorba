@@ -152,7 +152,7 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     gen:indent(), 'SERIALIZABLE_CLASS_CONSTRUCTOR2T(', $name,',',
     $gen:newline,
     gen:indent(2), $base, ');', $gen:newline, $gen:newline,
-    gen:indent(), 'void serialize(::zorba::serialization::Archiver&amp; ar)',
+    gen:indent(), 'void serialize( ::zorba::serialization::Archiver&amp; ar)',
     if ( not(exists($iter/@generateSerialize)) or
          $iter/@generateSerialize eq 'true')
     then concat(
@@ -175,11 +175,43 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     local:add-destructor($iter),
     local:add-getter($iter),
     local:add-setter($iter),
+    if ($iter/zorba:method) then
+      local:add-methods($iter)
+    else (),
     $gen:indent,'void accept(PlanIterVisitor&amp; v) const;',$gen:newline,$gen:newline,
     $gen:indent,'bool nextImpl(store::Item_t&amp; result, PlanState&amp; aPlanState) const;',$gen:newline,'};',$gen:newline,$gen:newline
     )
 };
 
+declare function local:add-methods ($iter) as xs:string?
+{
+  fn:concat("public:", $gen:newline,
+    fn:string-join(
+      for $method in $iter/zorba:method
+      return fn:concat(
+        $gen:indent,
+        $method/@return,
+        " ",
+        $method/@name,
+        "(",
+        local:get-method-arguments($method),
+        ")",
+        if ($method/@const eq "true") then
+          " const;"
+        else ";"), $gen:newline),
+      $gen:newline)
+};
+
+declare function local:get-method-arguments($method) as xs:string?
+{
+  fn:string-join(
+    for $param in $method/zorba:param
+    return fn:concat(
+      $param/@type,
+      " ",
+      $param/@name),
+    ", ")
+};
 
 declare function local:add-destructor($iter) as xs:string?
 {

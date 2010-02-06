@@ -1111,7 +1111,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(RenameIterator);
   PRINTER_VISITOR_DEFINITION(TransformIterator);
   PRINTER_VISITOR_DEFINITION(ApplyIterator);
-  PRINTER_VISITOR_DEFINITION(ZorbaDebugIterator);
   PRINTER_VISITOR_DEFINITION(DebuggerSingletonIterator);
   PRINTER_VISITOR_DEFINITION(HoistIterator);
   PRINTER_VISITOR_DEFINITION(UnhoistIterator);

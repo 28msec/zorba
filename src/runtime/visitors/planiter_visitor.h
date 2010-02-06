@@ -120,6 +120,8 @@ namespace zorba{
 
     class PrintIterator;
 
+    class ZorbaDebugIterator;
+
     class YearsFromDurationIterator;
 
     class MonthsFromDurationIterator;
@@ -598,6 +600,9 @@ public:
 
     virtual void beginVisit ( const PrintIterator& ) = 0;
     virtual void endVisit   ( const PrintIterator& ) = 0;
+
+    virtual void beginVisit ( const ZorbaDebugIterator& ) = 0;
+    virtual void endVisit   ( const ZorbaDebugIterator& ) = 0;
 
     virtual void beginVisit ( const YearsFromDurationIterator& ) = 0;
     virtual void endVisit   ( const YearsFromDurationIterator& ) = 0;

@@ -46,7 +46,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(SequentialIterator,
     NaryBaseIterator<SequentialIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<SequentialIterator, PlanIteratorState>*)this);
@@ -80,7 +80,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(LoopIterator,
     NaryBaseIterator<LoopIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<LoopIterator, PlanIteratorState>*)this);
@@ -116,7 +116,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(FlowCtlIterator,
     NaryBaseIterator<FlowCtlIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar);
+  void serialize( ::zorba::serialization::Archiver& ar);
 
   FlowCtlIterator(
     static_context* sctx,

@@ -20,8 +20,6 @@
 
 #include "zorbatypes/xqpstring.h"
 
-#include "json/value.h"
-
 namespace zorba {
 
 /**
@@ -80,10 +78,6 @@ public:
   }
 
   std::string getFunctionName() const { return theFunctionName; }
-
-  xqpString toJSON() const;
-
-  static QueryLoc fromJSON(json::value *obj);
  
   bool equals(const QueryLoc& loc) const;
 

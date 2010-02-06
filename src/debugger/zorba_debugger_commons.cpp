@@ -29,6 +29,8 @@
 
 #include "zorbatypes/URI.h"
 
+#include "types/typeimpl.h"
+
 namespace zorba {
 
 ZorbaDebuggerCommons::ZorbaDebuggerCommons(static_context* sctx)
@@ -247,7 +249,7 @@ ZorbaDebuggerCommons::eval(const xqpString& aExpr,
   GlobalEnvironment::getInstance().getItemFactory()->createString(theEvalItem,
     lStore);
   std::list<std::pair<xqpString, xqpString> > lRes =
-    theCurrentIterator->eval(*thePlanState, aSerOpts);
+    theCurrentIterator->eval(thePlanState, &aSerOpts);
   theExecEval = false;
   return lRes;
 }

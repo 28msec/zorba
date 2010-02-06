@@ -53,7 +53,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ActivateICIterator,
     UnaryBaseIterator<ActivateICIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (UnaryBaseIterator<ActivateICIterator, PlanIteratorState>*)this);
@@ -95,7 +95,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeactivateICIterator,
     UnaryBaseIterator<DeactivateICIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (UnaryBaseIterator<DeactivateICIterator, PlanIteratorState>*)this);
@@ -136,7 +136,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CheckICIterator,
     UnaryBaseIterator<CheckICIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (UnaryBaseIterator<CheckICIterator, PlanIteratorState>*)this);
