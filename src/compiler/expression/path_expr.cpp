@@ -95,6 +95,7 @@ relpath_expr::relpath_expr(short sctx, const QueryLoc& loc)
   :
   expr(sctx, loc)
 {
+  theTargetPos = 0;
 }
 
 
