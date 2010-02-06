@@ -95,7 +95,6 @@ relpath_expr::relpath_expr(short sctx, const QueryLoc& loc)
   :
   expr(sctx, loc)
 {
-  theTargetPos = 0;
 }
 
 
@@ -103,7 +102,6 @@ void relpath_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theSteps;
-  ar & theTargetPos;
 }
 
 

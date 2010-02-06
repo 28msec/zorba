@@ -52,7 +52,6 @@ class relpath_expr : public expr
 {
 protected:
   std::vector<expr_t> theSteps;
-  long                theTargetPos;
 
 public:
   SERIALIZABLE_CLASS(relpath_expr)
@@ -79,10 +78,6 @@ public:
   std::vector<expr_t>::const_iterator begin() const { return theSteps.begin(); }
 
   std::vector<expr_t>::const_iterator end() const { return theSteps.end(); }
-
-  void setTargetPosition(long pos) { theTargetPos = pos; }
-
-  long getTargetPosition() const { return theTargetPos; }
 
   void compute_scripting_kind() const;
 

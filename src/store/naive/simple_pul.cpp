@@ -1673,7 +1673,9 @@ void CollectionPul::refreshIndices()
 
       for (ulong j = 0; j < numEntries; ++j)
       {
-        index->insert(keys[j], domainNodes[j]);
+        std::auto_ptr<store::IndexKey> lKey(keys[j]);
+        if (!index->insert(keys[j], domainNodes[j]))
+          lKey.release();
       }
     }
 
