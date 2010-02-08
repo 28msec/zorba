@@ -1624,8 +1624,8 @@ void CollectionPul::refreshIndices()
         if (!keyCmp.equal(beforeKey, afterKey))
         {
           index->remove(beforeKey, beforeNode);
-          index->insert(afterKey, afterNode);
-          (*afterIte).second = NULL; // ownership of the key was passed to the index
+          if (!index->insert(afterKey, afterNode))
+            (*afterIte).second = NULL; // ownership of the key was passed to the index
         }
 
         ++beforeIte;
@@ -1638,8 +1638,8 @@ void CollectionPul::refreshIndices()
       }
       else
       {
-        index->insert(afterKey, afterNode);
-        (*afterIte).second = NULL; // ownership of the key was passed to the index
+        if (!index->insert(afterKey, afterNode))
+          (*afterIte).second = NULL; // ownership of the key was passed to the index
         ++afterIte;
       }
     }
@@ -1652,8 +1652,8 @@ void CollectionPul::refreshIndices()
 
     while (afterIte != afterEnd)
     {
-      index->insert((*afterIte).second, (*afterIte).first);
-      (*afterIte).second = NULL; // ownership of the key was passed to the index
+      if (!index->insert((*afterIte).second, (*afterIte).first))
+        (*afterIte).second = NULL; // ownership of the key was passed to the index
       ++afterIte;
     }
 
@@ -1673,9 +1673,8 @@ void CollectionPul::refreshIndices()
 
       for (ulong j = 0; j < numEntries; ++j)
       {
-        std::auto_ptr<store::IndexKey> lKey(keys[j]);
-        if (!index->insert(keys[j], domainNodes[j]))
-          lKey.release();
+        if (index->insert(keys[j], domainNodes[j]))
+          delete keys[j];
       }
     }
 
@@ -1696,6 +1695,7 @@ void CollectionPul::refreshIndices()
       for (ulong j = 0; j < numEntries; ++j)
       {
         index->remove(keys[j], domainNodes[j]);
+        delete keys[j];
       }
     }
   }
