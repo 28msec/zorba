@@ -35,3 +35,4 @@ The primary authors are:
   * Daniel Turcanu
   * Markos Zaharioudakis
   * Gabriel Petrovay
+  * Markus Pilman
