@@ -22,6 +22,7 @@ SET(ZORBA_WORKS)
 # the Zorba will fail running the test query if the file API dll
 # is not found in the correct location
 IF (EXISTS ${ZORBA_RUNTIME_GENERATOR})
+  SET(ENV{LD_LIBRARY_PATH} ${CMAKE_BINARY_DIR}/src)
   EXECUTE_PROCESS(COMMAND ${ZORBA_RUNTIME_GENERATOR}
                           "-q" "import module namespace file = 'http://www.zorba-xquery.com/modules/file';
                                 file:exists( 'a non existant file' )"
@@ -66,7 +67,7 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
      MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
                            "-e" "\"${PARAM1}\"" "-e" "\"${PARAM2}\""
                            "-o" "\"${CPP_OUTPUT_BINARY_DIR}\""
@@ -80,7 +81,7 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
 
      MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
                            "-e" "\"${PARAM1}\"" "-e" "\"${PARAM2}\""
                            "-o" "\"${H_OUTPUT_BINARY_DIR}\""
@@ -104,7 +105,7 @@ MACRO(PRINTER_VISITOR_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILES OUTPUT PARAM1 
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
      MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
                            "-o" "\"${CPP_OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""
@@ -119,7 +120,7 @@ MACRO(PRINTER_VISITOR_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILES OUTPUT PARAM1 
 
      MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
                            "-o" "\"${H_OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""
@@ -142,7 +143,7 @@ MACRO(PLANINTER_VISITOR_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1 ZORBA_WO
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
      MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
                            "-o" "\"${H_OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""
@@ -165,7 +166,7 @@ MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2 Z
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
      MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
                            "-o" "\"${CPP_OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""
@@ -182,7 +183,7 @@ MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2 Z
 
      MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
                            "-o" "\"${H_OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""
@@ -205,7 +206,7 @@ MACRO(FUNCTION_ENUM_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1 ZORBA_WORKS)
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
      MESSAGE(STATUS "Added for generation: ${OUTPUT_BINARY_DIR}")
      ADD_CUSTOM_COMMAND(OUTPUT "${OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
                            "-o" "\"${OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""

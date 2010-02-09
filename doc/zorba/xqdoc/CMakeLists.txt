@@ -36,7 +36,7 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/U.gif
 # finally, add the xqdoc command
 # therefore, a working zorba cmd is required
 ADD_CUSTOM_TARGET(xqdoc
-  ${ZORBA_RUNTIME_GENERATOR}
+  ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR}
     --omit-xml-declaration
     -f
     -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main.xq\""

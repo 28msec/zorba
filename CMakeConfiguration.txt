@@ -167,6 +167,10 @@ ELSE (MSVC AND NOT ZORBA_BUILD_STATIC_LIBRARY)
   SET(ZORBA_WIN_DLL   OFF)
 ENDIF (MSVC AND NOT ZORBA_BUILD_STATIC_LIBRARY)
 
+# We need the path to the zorba executable because it will be used during the
+# build to generate source code and documentation.
+# We also need to set the path to the library for the generator command in case
+# the RPATH is not set (for example in Release mode)
 IF (WIN32)
   IF (MSVC_IDE)
     SET(ZORBA_RUNTIME_GENERATOR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/zorba.exe" 
@@ -175,7 +179,14 @@ IF (WIN32)
     SET(ZORBA_RUNTIME_GENERATOR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/zorba.exe" 
         CACHE STRING "executable used for generating the runtime")
   ENDIF (MSVC_IDE)
+  SET(ZORBA_RUNTIME_GENERATOR_LIB_PATH)
 ELSE (WIN32)
+  IF (UNIX)
+    SET(ZORBA_RUNTIME_GENERATOR_LIB_PATH "LD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src")
+  ENDIF (UNIX)
+  IF (APPLE)
+    SET(ZORBA_RUNTIME_GENERATOR_LIB_PATH "DYLD_LIBRARY_PATH=${CMAKE_BINARY_DIR}/src")
+  ENDIF (APPLE)
   SET(ZORBA_RUNTIME_GENERATOR "${CMAKE_BINARY_DIR}/bin/zorba"
         CACHE STRING "executable used for generating the runtime")
 ENDIF (WIN32)
