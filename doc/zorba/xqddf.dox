@@ -341,13 +341,13 @@ associated the collection, and finally destroys the document container itself.
   Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)* 
              ((VarDecl | ContextItemDecl | FunctionDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
 
-  CollectionDecl := 'declare' CollectionProperties 'collection' QName CollectionTypeDecl? ('with' NodeModifier 'nodes)?
+  CollectionDecl ::= 'declare' CollectionProperties 'collection' QName CollectionTypeDecl? ('with' NodeModifier 'nodes)?
 
-  CollectionProperties := ('const' | 'mutable' | 'append-only' | 'queue' | 'ordered' | 'unordered')*
+  CollectionProperties ::= ('const' | 'mutable' | 'append-only' | 'queue' | 'ordered' | 'unordered')*
 
-  CollectionTypeDeclaration := 'as' KindTest OccurenceIndicator?
+  CollectionTypeDeclaration ::= 'as' KindTest OccurenceIndicator?
 
-  NodeModifier := ('read-only' | 'mutable')
+  NodeModifier ::= ('read-only' | 'mutable')
 \endcode
 
 Collections are defined by <strong>collection declaration statements</strong>,
@@ -1312,30 +1312,30 @@ receive an error.
   Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)*
              ((VarDecl | ContextItemDecl | FunctionDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
 
-  IndexDecl := 'declare' IndexProperties 'index' IndexName
+  IndexDecl ::= 'declare' IndexProperties 'index' IndexName
                'on' 'nodes' IndexDomainExpr
                'by' IndexKeySpec (',' IndexKeySpec)*
 
-  IndexName := QName
+  IndexName ::= QName
 
-  IndexProperties := ('unique' |
+  IndexProperties ::= ('unique' |
                       'non' 'unique' |
                       'value' 'range' |
                       'value' 'equality' |
                       'automatically' 'maintained' |
                       'manually' 'maintained')*
 
-  IndexDomainExpr := PathExpr
+  IndexDomainExpr ::= PathExpr
 
-  IndexKeySpec := IndexKeyExpr IndexKeyTypeDecl IndexKeyCollation
+  IndexKeySpec ::= IndexKeyExpr IndexKeyTypeDecl IndexKeyCollation
 
-  IndexKeyExpr := PathExpr
+  IndexKeyExpr ::= PathExpr
 
-  IndexKeyTypeDecl := 'as' AtomicType
+  IndexKeyTypeDecl ::= 'as' AtomicType
 
-  AtomicType := QName
+  AtomicType ::= QName
 
-  IndexKeyCollation := ('collation' UriLiteral)?
+  IndexKeyCollation ::= ('collation' UriLiteral)?
 \endcode
 
 Syntactically, each index is defined by an <a href="#index_declaration"
@@ -1937,8 +1937,7 @@ For the ICs from the section above, those variables are declared as follows:
 \code
   declare variable $news-data:UniqueId := xs:QName("news-data:UniqueId");
   declare variable $news-data:AuthorName := xs:QName("news-data:AuthorNames");
-  declare variable $news-data:ArticleEmployees :=
-  xs:QName("news-data:ArticleEmployees");
+  declare variable $news-data:ArticleEmployees := xs:QName("news-data:ArticleEmployees");
 \endcode
 
 
