@@ -15,7 +15,7 @@
  */
 
 %{  // start Implementation
-
+ 
 class Store 
 {
 public:
@@ -41,7 +41,7 @@ public:
   virtual ~InMemoryStore() {}
 
   static InMemoryStore getInstance() 
-  { return InMemoryStore(zorba::simplestore::SimpleStoreManager::getStore()); }
+  { return InMemoryStore(zorba::StoreManager::getStore()); }
 
   InMemoryStore& operator=(const InMemoryStore& aStore) 
   {
@@ -50,7 +50,7 @@ public:
   }
 
   static void shutdown(InMemoryStore& aStore)
-  { zorba::simplestore::SimpleStoreManager::shutdownStore(aStore.theStore); }
+  { zorba::StoreManager::shutdownStore(aStore.theStore); }
 
   virtual zorba::simplestore::SimpleStore* getStore() const
   { return theStore; }

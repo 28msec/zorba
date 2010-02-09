@@ -28,7 +28,7 @@
 #include <zorba/zorba.h>
 #include <zorba/debugger_client.h>
 #include <zorba/debugger_default_event_handler.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 #ifdef WIN32
 #include <windows.h>
@@ -150,7 +150,7 @@ bool debugger_example_1(Zorba *aZorba)
 int debugger( int argc, char *argv[] )
 {
   thePorts = getRandomPorts();
-  simplestore::SimpleStore *lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore *lStore = zorba::StoreManager::getStore();
   Zorba *lZorba = Zorba::getInstance( lStore );
   bool res = false;
   {
@@ -177,7 +177,7 @@ int debugger( int argc, char *argv[] )
   }
 
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }
 

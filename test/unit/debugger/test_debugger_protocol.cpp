@@ -14,7 +14,7 @@
 * limitations under the License.
 */
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 #include "test_debugger_protocol.h"
 
@@ -22,7 +22,7 @@ using namespace zorba;
 
 int test_debugger_protocol( int argc, char* argv[] )
 {
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
   Zorba *lZorba = Zorba::getInstance(lStore);
 	bool lResult;
 	zorba::TestDebuggerSerialization * test = new zorba::TestDebuggerSerialization();
@@ -62,7 +62,7 @@ int test_debugger_protocol( int argc, char* argv[] )
 	if(!lResult) return 1;
 	delete test;
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  zorba::StoreManager::shutdownStore(lStore);
 	return 0;
 }
 

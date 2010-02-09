@@ -20,7 +20,7 @@
 #include <string.h>
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 
 
@@ -64,23 +64,23 @@ testMultipleFactoryInitilizations()
   Zorba* zorba = NULL;
   simplestore::SimpleStore* store = NULL;
 
-  store = simplestore::SimpleStoreManager::getStore();
+  store = zorba::StoreManager::getStore();
   zorba = Zorba::getInstance(store);
 
   ItemFactory* factory = zorba->getItemFactory();
   factory->createString( "" );
 
   zorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(store);
+  zorba::StoreManager::shutdownStore(store);
 
-  store = simplestore::SimpleStoreManager::getStore();
+  store = zorba::StoreManager::getStore();
   zorba = Zorba::getInstance(store);
 
   factory = zorba->getItemFactory();
   factory->createString( "" ); // <-- zorba crashes here
 
   zorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(store);
+  zorba::StoreManager::shutdownStore(store);
 }
 
 int
@@ -93,7 +93,7 @@ itemfactory(int argc, char* argv[])
     return 1;
   }
 
-  Zorba* lZorba = Zorba::getInstance(simplestore::SimpleStoreManager::getStore());
+  Zorba* lZorba = Zorba::getInstance(zorba::StoreManager::getStore());
 
   ItemFactory* lFactory = lZorba->getItemFactory();
 

@@ -34,7 +34,7 @@
 
 #include <zorbautils/strutil.h>
 
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 #include "zorbautils/mutex.h"
 
@@ -834,7 +834,7 @@ main(int argc, char** argv)
   // Start the store and zorba
   //
   zorba::simplestore::SimpleStore* store =
-  zorba::simplestore::SimpleStoreManager::getStore();
+  zorba::StoreManager::getStore();
 
   zorba::Zorba* zorba = zorba::Zorba::getInstance(store);
 
@@ -898,7 +898,7 @@ main(int argc, char** argv)
   delete [] threads;
   queries.clear();
   zorba->shutdown();
-  zorba::simplestore::SimpleStoreManager::shutdownStore(store);
+  zorba::StoreManager::shutdownStore(store);
 
   if (queries.theHaveErrors)
     return 1;

@@ -20,7 +20,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/default_error_handler.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 using namespace zorba;
 
@@ -105,7 +105,7 @@ chaining_example_2(Zorba* aZorba)
 int 
 chaining(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
 
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
@@ -121,6 +121,6 @@ chaining(int argc, char* argv[])
   std::cout << std::endl;
 
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }

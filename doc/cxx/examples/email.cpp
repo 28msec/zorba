@@ -19,7 +19,7 @@
 #include <sstream>
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 
 using namespace zorba;
@@ -50,7 +50,7 @@ email_example_1(Zorba* aZorba)
 int 
 email(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
 
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
@@ -61,6 +61,6 @@ email(int argc, char* argv[])
   std::cout << std::endl;
 
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }

@@ -19,7 +19,7 @@
 #include "timer.h"
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 #include "zorbaerrors/errors.h"
 #include "store/naive/atomic_items.h"
@@ -93,7 +93,7 @@ int main(int argc, const char * argv[])
   //
   // Store initialization
   //
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = StoreManager::getStore();
 
   //
   // Test boost::shared_ptr

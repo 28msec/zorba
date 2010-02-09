@@ -21,9 +21,10 @@ IF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
   INCLUDE(${SWIG_USE_FILE})
 
   # Adding all *.i files of the current directory to swig dependencies
-  # Important: This can done here for all modules because all modules have the same name (zorba_api)
+  # Important: This can done here for all modules because all modules have the same name (zorba_api or libzorba_api)
   FILE(GLOB SWIG_FILES "${CMAKE_CURRENT_SOURCE_DIR}/*.i")
   SET(SWIG_MODULE_zorba_api_EXTRA_DEPS ${SWIG_FILES})
+  SET(SWIG_MODULE_libzorba_api_EXTRA_DEPS ${SWIG_FILES})
 
   ADD_SUBDIRECTORY(python)
   ADD_SUBDIRECTORY(php)

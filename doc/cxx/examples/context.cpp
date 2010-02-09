@@ -19,7 +19,7 @@
 #include <sstream>
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 #include <zorba/uri_resolvers.h>
 
 
@@ -463,7 +463,7 @@ context_example_12(Zorba* aZorba)
 int 
 context(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
 
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
@@ -529,6 +529,6 @@ context(int argc, char* argv[])
   std::cout << std::endl;
 
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }

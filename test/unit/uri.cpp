@@ -17,7 +17,7 @@
 #include "zorbatypes/URI.h"
 #include "zorbaerrors/error_manager.h"
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 struct URITestEntry
 {
@@ -39,7 +39,7 @@ using namespace zorba;
 
 int uri(int argc, char* argv[]) 
 {
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
   Zorba *lZorba = Zorba::getInstance(lStore);
 
   zorba::xqpString foo("/b");
@@ -653,7 +653,7 @@ int uri(int argc, char* argv[])
   std::cout << "decoded " << lEncoded.decodeFromUri() << std::endl;
 
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  zorba::StoreManager::shutdownStore(lStore);
   return 0;
 
 }

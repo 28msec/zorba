@@ -18,7 +18,7 @@
 #include <sstream>
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 using namespace zorba;
 
@@ -130,7 +130,7 @@ datamanager_example_4(Zorba* aZorba, XmlDataManager* aDataManager)
 int 
 datamanager(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
   XmlDataManager* lDataManager = lZorba->getXmlDataManager();
   bool res = false;
@@ -156,6 +156,6 @@ datamanager(int argc, char* argv[])
   std::cout << std::endl;
 
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }

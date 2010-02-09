@@ -16,7 +16,7 @@
 #include <iostream>
 #include <string.h>
 
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 #include <zorba/zorba.h>
 #include <zorba/util/path.h>
 
@@ -28,7 +28,7 @@ int main (int argc, const char **argv) {
   // initialize and deinitialize zorba in order to avoid
   // valgrind showing still reachables
   zorba::simplestore::SimpleStore* store =
-      zorba::simplestore::SimpleStoreManager::getStore();
+      zorba::StoreManager::getStore();
   zorba::Zorba * engine = zorba::Zorba::getInstance(store);     
 
   if (strcmp (argv [1], "--branch-path") == 0) 
@@ -53,7 +53,7 @@ int main (int argc, const char **argv) {
   }
 
   engine->shutdown(); 
-  simplestore::SimpleStoreManager::shutdownStore(store);
+  zorba::StoreManager::shutdownStore(store);
 
   return 0;
 }

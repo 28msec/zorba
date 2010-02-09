@@ -35,7 +35,7 @@
 
 #include <zorbautils/strutil.h>
 
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 using namespace zorba;
 
@@ -372,7 +372,7 @@ main(int argc, char** argv)
   printFile(std::cout, lQueryFile.get_path());
   std::cout << std::endl;
 
-  zorba::Zorba *engine = zorba::Zorba::getInstance(zorba::simplestore::SimpleStoreManager::getStore());
+  zorba::Zorba *engine = zorba::Zorba::getInstance(zorba::StoreManager::getStore());
 
   TestErrorHandler errHandler;
   std::stringstream lResult;

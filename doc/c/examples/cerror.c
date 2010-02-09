@@ -19,7 +19,7 @@
 #include <string.h>
 
 #include <zorba/zorbac.h>
-#include <simplestore/simplestorec.h>
+#include <zorba/store_manager_c.h>
 
 XQC_Error gError;
 
@@ -162,7 +162,7 @@ cerror(int argc, char** argv)
   int res = 0; 
   XQC_Implementation* impl;
 
-  void* store = create_simple_store();
+  void* store = create_store();
 
   if ( zorba_implementation(&impl, store) != XQC_NO_ERROR)
     return 1;
@@ -183,7 +183,7 @@ cerror(int argc, char** argv)
   printf("\n");
 
   impl->free(impl);
-  shutdown_simple_store(store);
+  shutdown_store(store);
 
   return 0;
 }

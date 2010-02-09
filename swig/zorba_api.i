@@ -37,7 +37,7 @@
 %{  // Implementations
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 #include <string>
 #include <sstream>
 #include <iostream>

@@ -16,7 +16,7 @@
 #ifndef ZORBA_SIMPLE_STORE_STORE_DEFS_H
 #define ZORBA_SIMPLE_STORE_STORE_DEFS_H
 
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 namespace zorba { 
 
@@ -24,7 +24,7 @@ namespace simplestore {
 
 
 #define GET_STORE() \
-  (*simplestore::SimpleStoreManager::getStore())
+  (*zorba::StoreManager::getStore())
 
 #define GET_FACTORY() \
   (*(reinterpret_cast<BasicItemFactory*>(GET_STORE().getItemFactory())))

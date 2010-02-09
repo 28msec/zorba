@@ -18,7 +18,7 @@
 #include <iostream>
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 /**
  * This is a example which demonstrates, how one can use item handlers.
@@ -65,7 +65,7 @@ bool item_handler_example(Zorba* aZorba)
 
 int item_handler(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
 
   Zorba* lZorba = Zorba::getInstance(lStore);
   if (!item_handler_example(lZorba)) return 1;

@@ -21,7 +21,7 @@
 #include <string.h>
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 
 
@@ -35,7 +35,7 @@ testMultipleDataMgrInitilizations()
   Zorba* zorba = NULL;
   simplestore::SimpleStore* store = NULL;
 
-  store = simplestore::SimpleStoreManager::getStore();
+  store = zorba::StoreManager::getStore();
   zorba = Zorba::getInstance(store);
 
   XmlDataManager* mgr = zorba->getXmlDataManager();
@@ -46,9 +46,9 @@ testMultipleDataMgrInitilizations()
   }
 
   zorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(store);
+  zorba::StoreManager::shutdownStore(store);
 
-  store = simplestore::SimpleStoreManager::getStore();
+  store = zorba::StoreManager::getStore();
   zorba = Zorba::getInstance(store);
 
   mgr = zorba->getXmlDataManager();
@@ -59,7 +59,7 @@ testMultipleDataMgrInitilizations()
   }
 
   zorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(store);
+  zorba::StoreManager::shutdownStore(store);
 }
 
 int

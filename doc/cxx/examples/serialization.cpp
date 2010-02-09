@@ -20,7 +20,7 @@
 #include <zorba/serializer.h>
 #include <zorba/singleton_item_sequence.h>
 
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 using namespace zorba;
 
@@ -172,7 +172,7 @@ serialization_example_7(Zorba* aZorba)
 int 
 serialization(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
 
@@ -212,6 +212,6 @@ serialization(int argc, char* argv[])
   std::cout << std::endl;
 
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }

@@ -19,7 +19,7 @@
 #include <sstream>
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 using namespace zorba;
 
@@ -79,8 +79,8 @@ multithread_stress_example_1(Zorba* aZorba)
 int
 multithread_stress_test(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
-  Zorba*                    lZorba = Zorba::getInstance(simplestore::SimpleStoreManager::getStore());
+  simplestore::SimpleStore* lStore = StoreManager::getStore();
+  Zorba*                    lZorba = Zorba::getInstance(StoreManager::getStore());
   bool                      res = false;
 
   std::cout << std::endl  << "executing multithread test 1 : ";
@@ -88,13 +88,13 @@ multithread_stress_test(int argc, char* argv[])
   if (!res) {
     std::cout << "Failed" << std::endl;
     lZorba->shutdown();
-    simplestore::SimpleStoreManager::shutdownStore(lStore);
+    StoreManager::shutdownStore(lStore);
     return 1;
   }
   else std::cout << "Passed" << std::endl;
 
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  StoreManager::shutdownStore(lStore);
   return 0;
 }
 

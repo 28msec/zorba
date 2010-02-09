@@ -21,7 +21,7 @@
 #include <zorba/external_module.h>
 #include <zorba/external_function.h>
 #include <zorba/serialization_callback.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 using namespace zorba;
 
@@ -231,7 +231,7 @@ execution_plan_example_3(Zorba* aZorba)
 int
 execution_plans(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
   Zorba *lZorba = Zorba::getInstance(lStore);
 
   bool res = false;
@@ -252,7 +252,7 @@ execution_plans(int argc, char* argv[])
   std::cout << std::endl;
 
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }
 

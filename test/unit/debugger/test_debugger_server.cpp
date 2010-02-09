@@ -18,7 +18,7 @@
 #include "DebuggerTestHandler.h"
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 #include <string>
 #include <iostream>
@@ -518,7 +518,7 @@ namespace zorba {
 } /* namespace zorba */
 
 int test_debugger_server (int argc, char* argv[]) {
-  zorba::simplestore::SimpleStore* store = zorba::simplestore::SimpleStoreManager::getStore();
+  zorba::simplestore::SimpleStore* store = zorba::StoreManager::getStore();
   Zorba* lZorba = zorba::Zorba::getInstance(store);
 
   std::cout << "executing test_run" << std::endl;

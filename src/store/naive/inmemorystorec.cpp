@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-#include <simplestore/simplestorec.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager_c.h>
+#include <zorba/store_manager.h>
 #include "store/naive/simple_store.h"
 
 void* 
-create_simple_store()
+create_store()
 {
-  return zorba::simplestore::SimpleStoreManager::getStore();
+  return zorba::StoreManager::getStore();
 }
 
 
 void 
-shutdown_simple_store(void* aStore)
+shutdown_store(void* aStore)
 {
   static_cast<zorba::simplestore::SimpleStore*>(aStore)->shutdown();
 }

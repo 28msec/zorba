@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-// telling the compiler where the original file is
-#line 19 "@CMAKE_CURRENT_SOURCE_DIR@/apitest.cpp.in"
-
 #include <zorba/zorba.h>
 
 #include <fstream>
@@ -35,7 +32,7 @@
 #include "store/api/item.h"
 #include "zorba_test_setting.h"
 #ifndef ZORBA_MINIMAL_STORE
-#include <@ZORBA_STORE_NAME@/@ZORBA_STORE_NAME@.h>
+#include <zorba/store_manager.h>
 #else
 #include "store/minimal/min_store.h"
 #endif
@@ -138,8 +135,7 @@ int _tmain(int argc, _TCHAR* argv[])
   zorba::storeminimal::SimpleStore* store = 
         zorba::storeminimal::SimpleStore::getInstance();
 #else
-  zorba::@ZORBA_STORE_NAME@::SimpleStore* store = 
-        zorba::@ZORBA_STORE_NAME@::SimpleStoreManager::getStore();
+  zorba::simplestore::SimpleStore* store = zorba::StoreManager::getStore();
 #endif
       
   // Set the g_abort_on_exception flag in error_manager.cpp
@@ -208,7 +204,7 @@ int _tmain(int argc, _TCHAR* argv[])
     } catch (ZorbaException &e) {
       query->close();
       zengine->shutdown();
-      zorba::@ZORBA_STORE_NAME@::SimpleStoreManager::shutdownStore(store);
+      zorba::StoreManager::shutdownStore(store);
       cerr << "Execution error: ";
       if (dynamic_cast<QueryException *> (&e) != NULL)
         cerr << (QueryException &) e;
@@ -221,6 +217,6 @@ int _tmain(int argc, _TCHAR* argv[])
 
   query->close();
   zengine->shutdown();
-  zorba::@ZORBA_STORE_NAME@::SimpleStoreManager::shutdownStore(store);
+  zorba::StoreManager::shutdownStore(store);
   return 0;
 }

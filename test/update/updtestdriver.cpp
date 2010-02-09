@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-// telling the compiler where the original file is
-#line 19 "@CMAKE_CURRENT_SOURCE_DIR@/updtestdriver.cpp.in"
-
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -41,7 +38,7 @@
 
 #include <zorbautils/strutil.h>
 
-#include <@ZORBA_STORE_NAME@/@ZORBA_STORE_NAME@.h>
+#include <zorba/store_manager.h>
 
 #include "util/properties.h"
 #include "testdriver_comparator.h"
@@ -202,7 +199,7 @@ main(int argc, char** argv)
 
   zorba::Properties::load (NULL, NULL);
 
-  zorba::Zorba* engine = zorba::Zorba::getInstance(zorba::@ZORBA_STORE_NAME@::SimpleStoreManager::getStore());
+  zorba::Zorba* engine = zorba::Zorba::getInstance(zorba::StoreManager::getStore());
 
   Specification lSpec;
   int flags = zorba::file::CONVERT_SLASHES | zorba::file::RESOLVE;

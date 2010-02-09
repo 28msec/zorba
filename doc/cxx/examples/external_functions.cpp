@@ -25,7 +25,7 @@
 #include <zorba/empty_sequence.h>
 #include <zorba/vector_item_sequence.h>
 #include <zorba/uri_resolvers.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 
 using namespace zorba;
@@ -708,7 +708,7 @@ bool func_example_5(Zorba* aZorba)
 ********************************************************************************/
 int external_functions(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
 
@@ -749,7 +749,7 @@ int external_functions(int argc, char* argv[])
 
 
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }
 

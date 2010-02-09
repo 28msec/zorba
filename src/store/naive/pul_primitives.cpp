@@ -587,7 +587,7 @@ void UpdReplaceCommentValue::undo()
 ********************************************************************************/
 void UpdPut::apply()
 {
-  SimpleStore* store = SimpleStoreManager::getStore();
+  SimpleStore* store = &GET_STORE();
 
   try
   {
@@ -640,7 +640,7 @@ void UpdPut::apply()
 
 void UpdPut::undo()
 {
-  SimpleStore* store = SimpleStoreManager::getStore();
+  SimpleStore* store = &GET_STORE();
 
   store->deleteDocument(theTargetUri->getStringValue());
   store->addNode(theTargetUri->getStringValue(), theOldDocument);
@@ -725,8 +725,7 @@ void UpdDeleteCollection::apply()
 {
   theCollection = GET_STORE().getCollection(theName);
   assert(theCollection);
-  SimpleCollection* collection = 
-    static_cast<SimpleCollection*>(theCollection.getp());
+  SimpleCollection* collection = static_cast<SimpleCollection*>(theCollection.getp());
 
   std::vector<store::Index*> indexes;
   collection->getIndexes(indexes);
@@ -1020,7 +1019,7 @@ UpdCreateIndex::UpdCreateIndex(
 
 void UpdCreateIndex::apply()
 {
-  SimpleStore* store = SimpleStoreManager::getStore();
+  SimpleStore* store = &GET_STORE();
 
   theIndex = store->createIndex(theQName, theSpec, theSourceIter);
 
@@ -1032,7 +1031,7 @@ void UpdCreateIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = SimpleStoreManager::getStore();
+    SimpleStore* store = &GET_STORE();
 
     store->deleteIndex(theQName);
   }
@@ -1052,7 +1051,7 @@ UpdDeleteIndex::UpdDeleteIndex(PULImpl* pul, const store::Item_t& qname)
 
 void UpdDeleteIndex::apply()
 {
-  SimpleStore* store = SimpleStoreManager::getStore();
+  SimpleStore* store = &GET_STORE();
 
   if ((theIndex = store->getIndex(theQName)) == NULL)
   {
@@ -1070,7 +1069,7 @@ void UpdDeleteIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = SimpleStoreManager::getStore();
+    SimpleStore* store = &GET_STORE();
 
     store->addIndex(theIndex);
   }
@@ -1099,7 +1098,7 @@ UpdRefreshIndex::~UpdRefreshIndex()
 
 void UpdRefreshIndex::apply()
 {
-  SimpleStore* store = SimpleStoreManager::getStore();
+  SimpleStore* store = &GET_STORE();
 
   if ((theIndex = store->getIndex(theQName)) == NULL)
   {
@@ -1127,7 +1126,7 @@ void UpdRefreshIndex::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = SimpleStoreManager::getStore();
+    SimpleStore* store = &GET_STORE();
     store->deleteIndex(theQName);
     store->addIndex(theIndex);
   }
@@ -1156,7 +1155,7 @@ UpdActivateIC::~UpdActivateIC()
 
 void UpdActivateIC::apply()
 {
-  SimpleStore* store = SimpleStoreManager::getStore();
+  SimpleStore* store = &GET_STORE();
   store->activateIC(theQName, theCollectionName);
   theIsApplied = true;
 }
@@ -1166,7 +1165,7 @@ void UpdActivateIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = SimpleStoreManager::getStore();
+    SimpleStore* store = &GET_STORE();
     store->deactivateIC(theQName);
     theIsApplied = false;
   }
@@ -1197,7 +1196,7 @@ UpdActivateForeignKeyIC::~UpdActivateForeignKeyIC()
 
 void UpdActivateForeignKeyIC::apply()
 {
-  SimpleStore* store = SimpleStoreManager::getStore();
+  SimpleStore* store = &GET_STORE();
   store->activateForeignKeyIC(theQName, theFromCollectionName, theToCollectionName);
   theIsApplied = true;
 }
@@ -1207,7 +1206,7 @@ void UpdActivateForeignKeyIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = SimpleStoreManager::getStore();
+    SimpleStore* store = &GET_STORE();
     store->deactivateIC(theQName);
     theIsApplied = false;
   }
@@ -1234,7 +1233,7 @@ UpdDeActivateIC::~UpdDeActivateIC()
 
 void UpdDeActivateIC::apply()
 {
-  SimpleStore* store = SimpleStoreManager::getStore();
+  SimpleStore* store = &GET_STORE();
   store::IC_t ic = store->deactivateIC(theQName);
   theICKind = ic->getICKind();
   switch (theICKind) {
@@ -1256,7 +1255,7 @@ void UpdDeActivateIC::undo()
 {
   if (theIsApplied)
   {
-    SimpleStore* store = SimpleStoreManager::getStore();
+    SimpleStore* store = &GET_STORE();
     switch (theICKind) {
       case store::IC::ic_collection:
         store->activateIC(theQName, theFromCollectionName);

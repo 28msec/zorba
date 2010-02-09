@@ -18,7 +18,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/default_content_handler.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 using namespace zorba;
 
@@ -77,7 +77,7 @@ int sax2( int argc, char * argv[] )
   // create a SAX content handler that prints all events to standard out
   XMLSerializer lContentHandler( std::cout );
 
-  simplestore::SimpleStore* lStore = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
 
   // initialize the Zorba engine and get a pointer to it
   Zorba* lZorba = Zorba::getInstance(lStore);
@@ -100,7 +100,7 @@ int sax2( int argc, char * argv[] )
   }
 
   lZorba->shutdown();
-  simplestore::SimpleStoreManager::shutdownStore(lStore);
+  zorba::StoreManager::shutdownStore(lStore);
   return 0;
 }
 

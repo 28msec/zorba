@@ -16,7 +16,7 @@
 
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 #include "zorbaerrors/errors.h"
 #include "store/api/item.h"
@@ -132,7 +132,7 @@ int main(int argc, const char * argv[])
   //
   // Store initialization
   //
-  simplestore::SimpleStore* store = simplestore::SimpleStoreManager::getStore();
+  simplestore::SimpleStore* store = StoreManager::getStore();
 
   store::ItemFactory* f = store->getItemFactory();
   store::IteratorFactory* iteFactory = store->getIteratorFactory();

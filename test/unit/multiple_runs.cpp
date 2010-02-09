@@ -17,7 +17,7 @@
 #include <sstream>
 
 #include <zorba/zorba.h>
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 
 using namespace zorba;
 
@@ -25,7 +25,7 @@ bool
 test_1()
 {
   for (int i = 0; i < 4; ++i) {
-    Zorba* lZorba = Zorba::getInstance(simplestore::SimpleStoreManager::getStore());
+    Zorba* lZorba = Zorba::getInstance(StoreManager::getStore());
     try {
       std::ostringstream q;
       q << "<a>Hello World</a>";
@@ -37,7 +37,7 @@ test_1()
       return false;
     }
     lZorba->shutdown();
-    zorba::simplestore::SimpleStoreManager::shutdownStore(zorba::simplestore::SimpleStoreManager::getStore());
+    zorba::StoreManager::shutdownStore(zorba::StoreManager::getStore());
   }
   return true;
 }
@@ -46,7 +46,7 @@ bool
 test_2()
 {
   for (int i = 0; i < 4; ++i) {
-    Zorba* lZorba = Zorba::getInstance(simplestore::SimpleStoreManager::getStore());
+    Zorba* lZorba = Zorba::getInstance(StoreManager::getStore());
     try {
       std::ostringstream q;
       if (i % 2 == 0) 
@@ -64,7 +64,7 @@ test_2()
       return false;
     }
     lZorba->shutdown();
-    zorba::simplestore::SimpleStoreManager::shutdownStore(zorba::simplestore::SimpleStoreManager::getStore());
+    zorba::StoreManager::shutdownStore(zorba::StoreManager::getStore());
   }
   return true;
 } 

@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-#include <simplestore/simplestore.h>
+#include <zorba/store_manager.h>
 #include "store/naive/simple_store.h"
 
 namespace zorba { 
 
-namespace simplestore {
-
-SimpleStore*
-SimpleStoreManager::getStore()
+simplestore::SimpleStore*
+StoreManager::getStore()
 {
-  static SimpleStore lInstance;
+  static simplestore::SimpleStore lInstance;
 
   if ( ! lInstance.theIsInitialized )
     lInstance.init();
@@ -34,9 +32,9 @@ SimpleStoreManager::getStore()
 
 
 void
-SimpleStoreManager::shutdownStore(SimpleStore* aStore)
+StoreManager::shutdownStore(simplestore::SimpleStore* aStore)
 {
   aStore->shutdown();
 }
 
-}}
+}

@@ -37,6 +37,7 @@
 
 namespace zorba
 {
+  class StoreManager;
 
 namespace error
 {
@@ -52,7 +53,6 @@ namespace store
 namespace simplestore
 {
 
-class SimpleStoreManager;
 class StringPool;
 class QNamePool;
 class XmlLoader;
@@ -99,7 +99,7 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
 ********************************************************************************/
 class SimpleStore : public store::Store
 {
-  friend class simplestore::SimpleStoreManager;
+  friend class zorba::StoreManager;
 
 public:
   static const char* XS_URI;

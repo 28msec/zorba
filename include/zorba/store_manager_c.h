@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_SIMPLESTORE_SIMPLESTOREC_H
-#define ZORBA_SIMPLESTORE_SIMPLESTOREC_H
+#ifndef ZORBA_STORE_STORE_MANAGER_C_H
+#define ZORBA_STORE_STORE_MANAGER_C_H
 
 #include <zorba/config.h>
 
@@ -22,12 +22,13 @@
 extern "C" {
 #endif
 
-ZORBA_DLL_PUBLIC void* create_simple_store();
-ZORBA_DLL_PUBLIC void shutdown_simple_store(void*);
+ZORBA_DLL_PUBLIC void* create_store();
+ZORBA_DLL_PUBLIC void shutdown_store(void*);
 
 #ifdef __cplusplus
 }
 #endif
 
 #endif
+
 

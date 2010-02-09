@@ -14,9 +14,6 @@
  * limitations under the License.
  */
 
-// telling the compiler where the original file is
-#line 19 "@CMAKE_CURRENT_SOURCE_DIR@/testdriver.cpp.in"
-
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -41,7 +38,7 @@
 #include "zorba_test_setting.h"
 
 #ifndef ZORBA_MINIMAL_STORE
-#include <@ZORBA_STORE_NAME@/@ZORBA_STORE_NAME@.h>
+#include <zorba/store_manager.h>
 #else
 #include "store/minimal/min_store.h"
 #endif
@@ -109,8 +106,7 @@ main(int argc, char** argv)
   zorba::storeminimal::SimpleStore* store =
   zorba::storeminimal::SimpleStore::getInstance();
 #else
-  zorba::@ZORBA_STORE_NAME@::SimpleStore* store =
-  zorba::@ZORBA_STORE_NAME@::SimpleStoreManager::getStore();
+  zorba::simplestore::SimpleStore* store = zorba::StoreManager::getStore();
 #endif
   if (store == NULL) return 20;
 
