@@ -41,38 +41,136 @@
 
 \section intro The Zorba 1.0 Data Definition Facility
 
-Zorba 1.0 extends the XQuery language with support for collections, indexes, and integrity constraints. This is accomplished via a combination of new Prolog declarations, new kinds of expressions or extensions to existing expressions, and new built-in functions. Furthermore, both the static and the dynamic contexts are extended with new components that store information about collections, indexes, and integrity constraints. Collectively, all these extensions are called the <strong>XQuery Data Definition Facility</strong> (XQDDF). XQDDF is an extension of <a href="http://www.w3.org/TR/xquery-11/" target="_blank">XQuery 1.1</a>, <a href="http://www.w3.org/TR/xquery-update-10/" target="_blank">XQuery Update Facility</a>, and <a href="http://www.w3.org/TR/xquery-sx-10/" target="_blank">XQuery Scripting Facility</a>.
+Zorba 1.0 extends the XQuery language with support for collections, indexes, and
+ integrity constraints. This is accomplished via a combination of new Prolog
+declarations, new kinds of expressions or extensions to existing expressions,
+and new built-in functions. Furthermore, both the static and the dynamic
+contexts are extended with new components that store information about
+collections, indexes, and integrity constraints. Collectively, all these
+extensions are called the <strong>XQuery Data Definition Facility</strong>
+(XQDDF). XQDDF is an extension of <a href="http://www.w3.org/TR/xquery-11/"
+target="_blank">XQuery 1.1</a>, <a href="http://www.w3.org/TR/xquery-update-10/"
+target="_blank">XQuery Update Facility</a>, and <a
+href="http://www.w3.org/TR/xquery-sx-10/" target="_blank">XQuery Scripting
+Facility</a>.
 
-As part of the XQDDF implementation, Zorba 1.0 includes a new "built-in" module that contains the declarations of all the new built-in functions introduced by XQDDF to manipulate collections, indexes, and integrity constraints. The module is located at <zorba-root-directory>/modules/com/zorba-xquery/www/modules/xqddf.xq and its namespace is "http://www.zorba-xquery.com/modules/xqddf". In the remaining of this document, we will refer to this module as the "xqddf" module, and the functions in it as the "xqddf" functions. As usual, the xqddf module must be imported by any other module that wants to invoke any xqddf functions. 
+As part of the XQDDF implementation, Zorba 1.0 includes a new "built-in" module
+that contains the declarations of all the new built-in functions introduced by
+XQDDF to manipulate collections, indexes, and integrity constraints. The module
+is located at
+<zorba-root-directory>/modules/com/zorba-xquery/www/modules/xqddf.xq and its
+namespace is "http://www.zorba-xquery.com/modules/xqddf". In the remaining of
+this document, we will refer to this module as the "xqddf" module, and the
+functions in it as the "xqddf" functions. As usual, the xqddf module must be
+imported by any other module that wants to invoke any xqddf functions.
 
 \section collections 1 Collections in Zorba 1.0
 
-The current W3C XQuery specification defines collections simply as sequences of nodes that are accessible via the fn:collection function. Everything else about collections is implementation-dependent. For example, XQuery programmers have no direct way to control the contents or the life-cycle of collections. XQDDF attempts to close this gap by making explicit most of the collection-related issues that are left as implementation-dependent by W3C. This way, XQuery developers can manipulate collections directly from XQuery programs, rather than relying in some external hosting environment or application. As explained below, collections as defined by XQDDF have some important differences from collections as defined by the W3C specification. As a result, in the remainder of the this document we will use the terms <a href="#collection">"XQDDF collection"</a> and "W3C Collection" to make clear the distinction between the two kinds of collections. We will also use the term <strong>"document"</strong> to refer to any XML tree whose root is a parent-less node of any kind (not necessarily a document node).
+The current W3C XQuery specification defines collections simply as sequences of
+nodes that are accessible via the fn:collection function. Everything else about
+collections is implementation-dependent. For example, XQuery programmers have no
+direct way to control the contents or the life-cycle of collections. XQDDF
+attempts to close this gap by making explicit most of the collection-related
+issues that are left as implementation-dependent by W3C. This way, XQuery
+developers can manipulate collections directly from XQuery programs, rather than
+relying in some external hosting environment or application. As explained below,
+collections as defined by XQDDF have some important differences from collections
+as defined by the W3C specification. As a result, in the remainder of the this
+document we will use the terms <a href="#collection">"XQDDF collection"</a> and
+"W3C Collection" to make clear the distinction between the two kinds of
+collections. We will also use the term <strong>"document"</strong> to refer to
+any XML tree whose root is a parent-less node of any kind (not necessarily a
+document node).
 
-<h3><a name="collection">An XQDDF collection</a></h3> is defined as an ordered set of documents that is disjoint from any other collection and is uniquely identified by a QName. Furthermore, with respect to document order, the relative order of two nodes belonging to different documents within the same collection is defined to be the same as the relative position of their containing documents within the collection. We will say that a node belongs to a collection if it is inside a document that belongs to that collection.
+<h3><a name="collection">An XQDDF collection</a></h3> is defined as an ordered
+set of documents that is disjoint from any other collection and is uniquely
+identified by a QName. Furthermore, with respect to document order, the relative
+order of two nodes belonging to different documents within the same collection
+is defined to be the same as the relative position of their containing documents
+within the collection. We will say that a node belongs to a collection if it is
+inside a document that belongs to that collection.
 
-Like a W3C collection, an <a href="#collection">XQDDF collection</a> can also be viewed as a sequence of nodes: it is the sequence containing the root nodes of the documents that belong to the collection (and as we will see later, the function <a href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a> returns exactly this sequence of nodes). However, even when viewed as sequences of nodes, <a href="#collection">XQDDF collections</a> differ from W3C collections in the following ways:
+Like a W3C collection, an <a href="#collection">XQDDF collection</a> can also be
+viewed as a sequence of nodes: it is the sequence containing the root nodes of
+the documents that belong to the collection (and as we will see later, the
+function <a href="#xqddf_collection"
+title="xqddf:collection">xqddf:collection</a> returns exactly this sequence of
+nodes). However, even when viewed as sequences of nodes, <a
+href="#collection">XQDDF collections</a> differ from W3C collections in the
+following ways:
 
 <ul>
   <li>They contain parent-less nodes only.</li>
   <li>They can not contain any duplicate nodes.</li>
   <li>Their nodes are in document order.</li>
-  <li>A node can not be contained in more than one <a href="#collection">XQDDF collection</a>.</li>
-  <li>XQDDF collections are identified by QNames, whereas W3C collections are identified by URIs.</li>
+  <li>A node can not be contained in more than one <a href="#collection">XQDDF
+collection</a>.</li>
+  <li>XQDDF collections are identified by QNames, whereas W3C collections are
+identified by URIs.</li>
 </ul>
 
-For brevity, in the remaining of this document we will the term "collection" to mean <a href="#collection">XQDDF collection</a>. For backward compatibility with the W3C XQuery specification, Zorba 1.0 retains some basic support for W3C collections (see section \ref w3c_collections). However, users are encouraged to use <a href="#collection">XQDDF collections</a> instead.
+For brevity, in the remaining of this document we will the term "collection" to
+mean <a href="#collection">XQDDF collection</a>. For backward compatibility with
+the W3C XQuery specification, Zorba 1.0 retains some basic support for W3C
+collections (see section \ref w3c_collections). However, users are encouraged to
+use <a href="#collection">XQDDF collections</a> instead.
 
-Zorba 1.0 supports five kinds of operations on collections: <a href="#collection_declaration">collection declaration</a>, <a href="#creating_collections">collection creation</a>, <a href="#destroying_collections">collection deletion</a>, <a href="#updating_collections">collection update</a>, and <a href="#accessing_collections">node retrieval</a>. These are explained briefly in the following simple example. Full details for each operation are provided in the subsequent chapters.
+Zorba 1.0 supports five kinds of operations on collections: <a
+href="#collection_declaration">collection declaration</a>, <a
+href="#creating_collections">collection creation</a>, <a
+href="#destroying_collections">collection deletion</a>, <a
+href="#updating_collections">collection update</a>, and <a
+href="#accessing_collections">node retrieval</a>. These are explained briefly in
+the following simple example. Full details for each operation are provided in
+the subsequent chapters.
 
 \subsection collections_in_action 1.1 Collections in action - A simple example
 
-Let us assume an application that models a news organization. The application models its data as XML documents grouped into collections of logically related entities. In this example, we show how three such collections may be created and used; the first collection contains employee data, the second contains news articles, and the third contains information about the months of the year (e.g., the name, number of days, and fixed holidays for each month).
+Let us assume an application that models a news organization. The application
+models its data as XML documents grouped into collections of logically related
+entities. In this example, we show how three such collections may be created and
+used; the first collection contains employee data, the second contains news
+articles, and the third contains information about the months of the year (e.g.,
+the name, number of days, and fixed holidays for each month).
 
-Before a collection can be created, it must be declared. A <strong>collection declaration</strong> describes the collection by providing a unique name for it and specifying certain properties for the collection itself and for the documents in the collection. As explained in \ref collection_declaration, collections must be declared inside library modules. In terms of the XQuery language, collection declarations become part of a module's static context.
+Before a collection can be created, it must be declared. A <strong>collection
+declaration</strong> describes the collection by providing a unique name for it
+and specifying certain properties for the collection itself and for the
+documents in the collection. As explained in \ref collection_declaration,
+collections must be declared inside library modules. In terms of the XQuery
+language, collection declarations become part of a module's static context.
 
-In this example, the declarations are placed inside the "news-data" library module (shown below). The declarations assign the names news-data:employees, news-data:articles, and news-data:months to the three collections, respectively. Documents in both the employees and the months collections are assumed to have a well-known structure, which is reflected in an XML schema ("news-schema"). The schema declares two global elements for employees and months respectively. Accordingly, the collection declarations for employees and months specify that their root nodes are elements whose name and type matches the name and type of the corresponding global element declarations in "news-schema". In contrast, articles may come from various sources (including external ones), and as a result, article documents do not have any particular schema. Therefore, the declaration for the articles collection specifies node() as the type of the root nodes. Both employee and article documents may be updated during their lifetime. Instead, the months-related information is fixed (can not change), so the nodes of the months collection are declared as "read-only". Furthermore, the collection itself is declared "const", meaning that no months may be added to or deleted from this collection after it is created and initialized. Finally, we want the order of the month documents within their containing collection to be the same as the actual order of the months within the year. To achieve this, we have to declare the collection as "ordered", so that when we later insert the month documents in the collection, the system will store and return them in the same order as their insertion order. In contrast, the position of employees or articles inside their respective collections does not have any special meaning for the application, so the corresponding declarations do not specify any ordering property. This allows the system to store and access the contents of these collections in what it considers as the most optimal order.
+In this example, the declarations are placed inside the <a
+href="#lib_module_news_data_collections" title="news-data">"news-data"</a>
+library module (shown below). The declarations assign the names
+news-data:employees, news-data:articles, and news-data:months to the three
+collections, respectively. Documents in both the employees and the months
+collections are assumed to have a well-known structure, which is reflected in an
+XML schema ("news-schema"). The schema declares two global elements for
+employees and months respectively. Accordingly, the collection declarations for
+employees and months specify that their root nodes are elements whose name and
+type matches the name and type of the corresponding global element declarations
+in "news-schema". In contrast, articles may come from various sources (including
+external ones), and as a result, article documents do not have any particular
+schema. Therefore, the declaration for the articles collection specifies node()
+as the type of the root nodes. Both employee and article documents may be
+updated during their lifetime. Instead, the months-related information is fixed
+(can not change), so the nodes of the months collection are declared as
+"read-only". Furthermore, the collection itself is declared "const", meaning
+that no months may be added to or deleted from this collection after it is
+created and initialized. Finally, we want the order of the month documents
+within their containing collection to be the same as the actual order of the
+months within the year. To achieve this, we have to declare the collection as
+"ordered", so that when we later insert the month documents in the collection,
+the system will store and return them in the same order as their insertion
+order. In contrast, the position of employees or articles inside their
+respective collections does not have any special meaning for the application, so
+the corresponding declarations do not specify any ordering property. This allows
+the system to store and access the contents of these collections in what it
+considers as the most optimal order.
 
+<a name="lib_module_news_data_collections"
+id="lib_module_news_data_collections"></a>
 \code
   (: The "news-data" Library Module :)
 
@@ -91,8 +189,29 @@ In this example, the declarations are placed inside the "news-data" library modu
   declare variable $news-data:months := xs:QName("news-data:months");
 \endcode
 
-Having been declared, the collections can now be created. <strong>Collection creation</strong> is illustrated by the "admin-script-1" script shown below. First, the collection descriptions must be made visible to the script. This is done by importing the "news-data" module that contains the collection declarations. Then, the collections are created by calling the xqddf:create-collection function. There are two versions of this function: the first takes a QName as input and the second takes both a QName and a node-producing expression. In the first version, an empty document container is created by Zorba's storage system and registered inside a <strong>collections table</strong> that maps collection names to document containers. In the second version, the given expression is evaluated first, and (deep) copies are made of the nodes in the result sequence. This way, a sequence of distinct documents is produced. This is called the "insertion sequence". Then, as in the first version of the function, the document container is created and registered. Finally, the container is populated with the documents in the insertion sequence. In "admin-script-1", this second version is used to create and initialize the months collection. In fact, months must be initialized during creation because it is a constant collection, so no documents can be added to it later. The months are inserted in the collection in the order from January to December, and since the collection was declared as ordered, this order is preserved by the associated document container.
- 
+Having been declared, the collections can now be created. <strong>Collection
+creation</strong> is illustrated by the "admin-script-1" script shown below.
+First, the collection descriptions must be made visible to the script. This is
+done by importing the <a href="#lib_module_news_data_collections"
+title="news-data">"news-data"</a> library module that contains the collection
+declarations. Then, the collections are created by calling the
+xqddf:create-collection function. There are two versions of this function: the
+first takes a QName as input and the second takes both a QName and a
+node-producing expression. In the first version, an empty document container is
+created by Zorba's storage system and registered inside a <strong>collections
+table</strong> that maps collection names to document containers. In the second
+version, the given expression is evaluated first, and (deep) copies are made of
+the nodes in the result sequence. This way, a sequence of distinct documents is
+produced. This is called the "insertion sequence". Then, as in the first version
+of the function, the document container is created and registered. Finally, the
+container is populated with the documents in the insertion sequence. In
+"admin-script-1", this second version is used to create and initialize the
+months collection. In fact, months must be initialized during creation because
+it is a constant collection, so no documents can be added to it later. The
+months are inserted in the collection in the order from January to December, and
+since the collection was declared as ordered, this order is preserved by the
+associated document container.
+
 \code
   (: "admin-script-1" :)
 
@@ -109,15 +228,60 @@ Having been declared, the collections can now be created. <strong>Collection cre
   xqddf:create-collection($news-data:months, (<month name="Jan">...</month>, ..., <month name="Dec">...</month>)));
 \endcode
 
-The next script ("user-script-1") shows how collections may be used. First the necessary modules and schemas are imported. Next, the employees collection is populated using the xqddf:insert-nodes function. The first argument to this function is the QName of a collection, and the second is a node-producing expression (called the source expression). The QName is used to lookup the collection declaration and the collection itself (i.e., its document container). Then, the nodes produced by the source expression (source nodes) are copied and the copies are added to the document container, making sure that the actual type of each node matches the static type found in the collection declaration. Copying the source nodes (and their sub-trees) guarantees that the nodes in the insertion sequence are indeed parent-less nodes that do not belong to any other collection already and are distinct from each other. Notice that the need to validate the root nodes against the type specified in the collection declaration is the reason why the "news-schema" must be imported, even though no type defined by the schema is referenced explicitly in the query.
+The next script ("user-script-1") shows how collections may be used. First the
+necessary modules and schemas are imported. Next, the employees collection is
+populated using the xqddf:insert-nodes function. The first argument to this
+function is the QName of a collection, and the second is a node-producing
+expression (called the source expression). The QName is used to lookup the
+collection declaration and the collection itself (i.e., its document container).
+Then, the nodes produced by the source expression (source nodes) are copied and
+the copies are added to the document container, making sure that the actual type
+of each node matches the static type found in the collection declaration.
+Copying the source nodes (and their sub-trees) guarantees that the nodes in the
+insertion sequence are indeed parent-less nodes that do not belong to any other
+collection already and are distinct from each other. Notice that the need to
+validate the root nodes against the type specified in the collection declaration
+is the reason why the "news-schema" must be imported, even though no type
+defined by the schema is referenced explicitly in the query.
 
-In this example, the employees collection is populated by a single call to the xqddf:insert-nodes function, whose source expression is a concatenation of explicitly constructed documents. The articles collection is populated using the xqddf:insert-nodes function as well, but in a slightly different fashion: The article documents are assumed to exist already, either as text files in the local filesystem, or at various web sites. As a result, the articles collection is populated via a concatenation of xqddf:insert-function calls, each reading and parsing a single XML document and inserting the generated XML tree in the collection. Although there is one function call per article, the articles will be inserted all together in an atomic (all-or-nothing) operation, when the ";" at line 16 is processed. This is because, as explained in \ref updating_collections, the xqddf:insert-nodes function (and all other xqddf functions that create, delete, or update collections) is an //updating function//, that is, rather than applying the insertion immediately, it produces an updating primitive that becomes part of a pending updates list (PUL), which is applied atomically when the next ";" appears in the program.
+In this example, the employees collection is populated by a single call to the
+xqddf:insert-nodes function, whose source expression is a concatenation of
+explicitly constructed documents. The articles collection is populated using the
+xqddf:insert-nodes function as well, but in a slightly different fashion: The
+article documents are assumed to exist already, either as text files in the
+local filesystem, or at various web sites. As a result, the articles collection
+is populated via a concatenation of xqddf:insert-function calls, each reading
+and parsing a single XML document and inserting the generated XML tree in the
+collection. Although there is one function call per article, the articles will
+be inserted all together in an atomic (all-or-nothing) operation, when the ";"
+at line 16 is processed. This is because, as explained in \ref
+updating_collections, the xqddf:insert-nodes function (and all other xqddf
+functions that create, delete, or update collections) is an //updating
+function//, that is, rather than applying the insertion immediately, it produces
+an updating primitive that becomes part of a pending updates list (PUL), which
+is applied atomically when the next ";" appears in the program.
 
-After populating the two collections, "user-script-1" runs a query expression that uses the <a href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a> function to access their root nodes. The expression returns, for each journalist, the articles authored by that journalist ordered by their date.
+After populating the two collections, "user-script-1" runs a query expression
+that uses the <a href="#xqddf_collection"
+title="xqddf:collection">xqddf:collection</a> function to access their root
+nodes. The expression returns, for each journalist, the articles authored by
+that journalist ordered by their date.
 
-Finally, "user-script-1" uses the xqddf:remove-nodes function to remove from the articles collection all articles that were published before 2000. Like xqddf:insert-nodes, xqddf:remove-nodes takes as input the QName of a collection and a node-producing source expression. The source nodes must be parent-less nodes that belong to the collection. The function looks up the collection declaration and the collection container, and removes the source nodes from the collection container.
+Finally, "user-script-1" uses the xqddf:remove-nodes function to remove from the
+articles collection all articles that were published before 2000. Like
+xqddf:insert-nodes, xqddf:remove-nodes takes as input the QName of a collection
+and a node-producing source expression. The source nodes must be parent-less
+nodes that belong to the collection. The function looks up the collection
+declaration and the collection container, and removes the source nodes from the
+collection container.
 
-Notice that the whole user-script-1 is organized as a concatenation of three block expressions. Only the second block produces an actual result, the other two are purely updating blocks (their result is the empty sequence). Writing the query as a concatenation of blocks (instead of a single sequential expression), allows the result of the script to be the concatenation of the results of each block (instead of the result of just the last expression in the sequential expression).
+Notice that the whole user-script-1 is organized as a concatenation of three
+block expressions. Only the second block produces an actual result, the other
+two are purely updating blocks (their result is the empty sequence). Writing the
+query as a concatenation of blocks (instead of a single sequential expression),
+allows the result of the script to be the concatenation of the results of each
+block (instead of the result of just the last expression in the sequential
+expression).
 
 \code
   (: "user-script-1":)
@@ -151,7 +315,11 @@ Notice that the whole user-script-1 is organized as a concatenation of three blo
   }
 \endcode
 
-We conclude this example with the "admin-script-2" script, which simply destroys the collections using the xqddf:delete-collection function. The function de-registers the collection from the collections table, destroys all the documents in the collection and all the indexes and integrity constraints associated the collection, and finally destroys the document container itself.
+We conclude this example with the "admin-script-2" script, which simply destroys
+the collections using the xqddf:delete-collection function. The function
+de-registers the collection from the collections table, destroys all the
+documents in the collection and all the indexes and integrity constraints
+associated the collection, and finally destroys the document container itself.
 
 \code
   (: admin-script2 :)
@@ -170,36 +338,128 @@ We conclude this example with the "admin-script-2" script, which simply destroys
 \subsection collection_declaration 1.2 Collection Declaration
 
 \code
-Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)* 
-           ((VarDecl | ContextItemDecl | FunctionDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
+  Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)* 
+             ((VarDecl | ContextItemDecl | FunctionDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
 
-CollectionDecl := 'declare' CollectionProperties 'collection' QName CollectionTypeDecl? ('with' NodeModifier 'nodes)?
+  CollectionDecl := 'declare' CollectionProperties 'collection' QName CollectionTypeDecl? ('with' NodeModifier 'nodes)?
 
-CollectionProperties := ('const' | 'mutable' | 'append-only' | 'queue' | 'ordered' | 'unordered')*
+  CollectionProperties := ('const' | 'mutable' | 'append-only' | 'queue' | 'ordered' | 'unordered')*
 
-CollectionTypeDeclaration := 'as' KindTest OccurenceIndicator?
+  CollectionTypeDeclaration := 'as' KindTest OccurenceIndicator?
 
-NodeModifier := ('read-only' | 'mutable')
+  NodeModifier := ('read-only' | 'mutable')
 \endcode
 
-Collections are defined by <strong>collection declaration statements</strong>, which specify a unique name for a collection as a QName, a set of collection properties, the collection's static type, and whether the collection nodes can be modified or not. Syntactically, collection declarations are placed inside module prologs. The Prolog syntax is extended accordingly, as shown above. An additional constraint (not expressible syntactically) is that only library modules may contain collection declarations [<a href="#ERRXDST0003" title="err:XDST0003">err:XDST0003</a>]. This is because library modules can be shared among queries, whereas if a collection was declared inside a main module, then every other query that would like to use this collection would have to redeclared it in its main module. Worse, allowing collection declarations in "user" queries can lead to "data leaks": a collection declared and created by a user query and not destroyed by the same query will be unknown to the rest of the application, and may stay in the database indefinitely. In contrast, library modules containing XQDDF declarations are expected to be under the jurisdiction of a system administrator who makes sure that queries see the data that they must see, and no data inconsistencies or leaks can arise.
+Collections are defined by <strong>collection declaration statements</strong>,
+which specify a unique name for a collection as a QName, a set of collection
+properties, the collection's static type, and whether the collection nodes can
+be modified or not. Syntactically, collection declarations are placed inside
+module prologs. The Prolog syntax is extended accordingly, as shown above. An
+additional constraint (not expressible syntactically) is that only library
+modules may contain collection declarations [<a href="#ERRXDST0003"
+title="err:XDST0003">err:XDST0003</a>]. This is because library modules can be
+shared among queries, whereas if a collection was declared inside a main module,
+then every other query that would like to use this collection would have to
+redeclared it in its main module. Worse, allowing collection declarations in
+"user" queries can lead to "data leaks": a collection declared and created by a
+user query and not destroyed by the same query will be unknown to the rest of
+the application, and may stay in the database indefinitely. In contrast, library
+modules containing XQDDF declarations are expected to be under the jurisdiction
+of a system administrator who makes sure that queries see the data that they
+must see, and no data inconsistencies or leaks can arise.
 
-To accommodate collection declarations, XQDDF extends the static context with a component called the <strong>statically known collections</strong>. This is a map whose entries associate an expanded QName with an implementation-dependent representation of the information contained in a collection declaration with the same QName. The effect of a collection declaration is to add an entry to the statically known collections of the module containing the declaration. If the expanded QName of the collection is equal (as defined by the eq operator) to the expanded QName of another collection in the statically known collections of the same module, a static error is raised [<a href="#ERRXDST0001" title="err:XDST0001">err:XDST0001</a>]. Like variables and functions, the statically known collections of a module that is imported by another module are copied into the statically known collections of the importing module. It is a static error [<a href="#ERRXDST0002" title="err:XDST0002">err:XDST0002</a>] if the expanded QName of a collection declared in an imported module is equal (as defined by the eq operator) to the expanded QName of a collection declared in the importing module or in another imported module (even if the declarations are consistent).
+To accommodate collection declarations, XQDDF extends the static context with a
+component called the <strong>statically known collections</strong>. This is a
+map whose entries associate an expanded QName with an implementation-dependent
+representation of the information contained in a collection declaration with the
+same QName. The effect of a collection declaration is to add an entry to the
+statically known collections of the module containing the declaration. If the
+expanded QName of the collection is equal (as defined by the eq operator) to the
+expanded QName of another collection in the statically known collections of the
+same module, a static error is raised [<a href="#ERRXDST0001"
+title="err:XDST0001">err:XDST0001</a>]. Like variables and functions, the
+statically known collections of a module that is imported by another module are
+copied into the statically known collections of the importing module. It is a
+static error [<a href="#ERRXDST0002" title="err:XDST0002">err:XDST0002</a>] if
+the expanded QName of a collection declared in an imported module is equal (as
+defined by the eq operator) to the expanded QName of a collection declared in
+the importing module or in another imported module (even if the declarations are
+consistent).
 
-Zorba 1.0 defines two collection properties: <strong>update mode</strong> (with possible values 'const', 'mutable', 'append-only', or 'queue') and <strong>ordering mode</strong> (with possible values 'ordered' or 'unordered'). The syntax allows the values for these properties to be listed in any order or not be specified at all. If not specified, the default values for update and ordering mode are 'mutable' and 'unordered', respectively. It is a static error [<a href="#ERRXDST0004" title="err:XDST0004">err:XDST0004</a>] if a collection declaration contains more than one value for the same property. An <strong>ordered collection</strong> is a collection into which the ordering of documents is assumed to be meaningful for the application, and as a result, programmers can explicitly control the placement of documents via appropriate updating functions. In contrast, the ordering of documents inside <strong>unordered collections</strong> is implementation dependent, but stable (see \ref accessing_collections for details). A <strong>constant collection</strong> is one that is created with an initial set of documents and does not allow any subsequent insertions to or deletions from this initial set. An <strong>append-only collection</strong> does not allow any deletions at all and restricts insertions to take place at the "end" only, i.e., all new documents must be inserted after all existing ones. This implies a user-visible document ordering, and as a result, an append-only collection must also be declared as ordered [<a href="#ERRXDST0005" title="err:XDST0005">err:XDST0005</a>]. A <strong>queue collection</strong> forbids both insertions and deletions in/from the "middle"; only documents at the front of the collection may be deleted, and new documents can be inserted only at the collection's end. Like append-only, queue collections must be declared as ordered [<a href="#ERRXDST0005" title="err:XDST0005">err:XDST0005</a>].
+Zorba 1.0 defines two collection properties: <strong>update mode</strong> (with
+possible values 'const', 'mutable', 'append-only', or 'queue') and
+<strong>ordering mode</strong> (with possible values 'ordered' or 'unordered').
+The syntax allows the values for these properties to be listed in any order or
+not be specified at all. If not specified, the default values for update and
+ordering mode are 'mutable' and 'unordered', respectively. It is a static error
+[<a href="#ERRXDST0004" title="err:XDST0004">err:XDST0004</a>] if a collection
+declaration contains more than one value for the same property. An
+<strong>ordered collection</strong> is a collection into which the ordering of
+documents is assumed to be meaningful for the application, and as a result,
+programmers can explicitly control the placement of documents via appropriate
+updating functions. In contrast, the ordering of documents inside
+<strong>unordered collections</strong> is implementation dependent, but stable
+(see \ref accessing_collections for details). A <strong>constant
+collection</strong> is one that is created with an initial set of documents and
+does not allow any subsequent insertions to or deletions from this initial set.
+An <strong>append-only collection</strong> does not allow any deletions at all
+and restricts insertions to take place at the "end" only, i.e., all new
+documents must be inserted after all existing ones. This implies a user-visible
+document ordering, and as a result, an append-only collection must also be
+declared as ordered [<a href="#ERRXDST0005"
+title="err:XDST0005">err:XDST0005</a>]. A <strong>queue collection</strong>
+forbids both insertions and deletions in/from the "middle"; only documents at
+the front of the collection may be deleted, and new documents can be inserted
+only at the collection's end. Like append-only, queue collections must be
+declared as ordered [<a href="#ERRXDST0005"
+title="err:XDST0005">err:XDST0005</a>].
 
-In addition to the two properties described above, a collection declaration also specifies the <strong>collection static type</strong>, i.e., the static type for the result of the <a href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a> function. This is specified as a sequence type that adheres to the syntax and semantics of a KindTest plus an (optional) occurrence indicator. If no static type is specified, it is assumed to be document-node(element(*, xs:untyped))*. The static type without the occurrence indicator is the static type of the collection's root nodes.
+In addition to the two properties described above, a collection declaration also
+specifies the <strong>collection static type</strong>, i.e., the static type for
+the result of the <a href="#xqddf_collection"
+title="xqddf:collection">xqddf:collection</a> function. This is specified as a
+sequence type that adheres to the syntax and semantics of a KindTest plus an
+(optional) occurrence indicator. If no static type is specified, it is assumed
+to be document-node(element(*, xs:untyped))*. The static type without the
+occurrence indicator is the static type of the collection's root nodes.
 
-The final component of a collection declaration is the <strong>document update mode</strong>. Possible values for this property are 'read-only' or 'mutable', with 'mutable' being the default value if none is specified. If the document update mode for a collection is 'read-only', then an error is raised [<a href="#ERRXDDY0010" title="err:XDDY0010">err:XDDY0010</a>] every time a node of the collection appears as the target node of an updating expression; otherwise, no such error is raised.
+The final component of a collection declaration is the <strong>document update
+mode</strong>. Possible values for this property are 'read-only' or 'mutable',
+with 'mutable' being the default value if none is specified. If the document
+update mode for a collection is 'read-only', then an error is raised [<a
+href="#ERRXDDY0010" title="err:XDDY0010">err:XDDY0010</a>] every time a node of
+the collection appears as the target node of an updating expression; otherwise,
+no such error is raised.
 
 \subsection creating_collections 1.3 Creating Collections
 
-As explained already, collections are just sets of parent-less XML trees (called "documents" in XQDDF terminology). In terms of the XQuery language, these sets "live" in the dynamic context. In particular, XQDDF extends the dynamic context with a component called the <strong>available collections</strong>. This is a map whose entries associate the expanded QName of a collection with the collection's document set. If an entry for a collection appears in the available collections of a module, the collection is said to be available to that module.
+As explained already, collections are just sets of parent-less XML trees (called
+"documents" in XQDDF terminology). In terms of the XQuery language, these sets
+"live" in the dynamic context. In particular, XQDDF extends the dynamic context
+with a component called the <strong>available collections</strong>. This is a
+map whose entries associate the expanded QName of a collection with the
+collection's document set. If an entry for a collection appears in the available
+collections of a module, the collection is said to be available to that module.
 
-In practice, the available collections component is implemented by Zorba's storage system. To begin with, each document set is implemented by some appropriate data structure that acts as a document container. The description of potential data structures is beyond the scope of this document, but the choice will, in general, depend on the properties of the collection and the contained documents. In addition to managing the document containers, the store maintains a <strong>collections table</strong>, which maps collection names to document containers. The collections table is accessible by all queries, so once an entry is added to the table, the associated collection is assumed to be available to every query and every module that participates in the execution of that query.
+In practice, the available collections component is implemented by Zorba's
+storage system. To begin with, each document set is implemented by some
+appropriate data structure that acts as a document container. The description of
+potential data structures is beyond the scope of this document, but the choice
+will, in general, depend on the properties of the collection and the contained
+documents. In addition to managing the document containers, the store maintains
+a <strong>collections table</strong>, which maps collection names to document
+containers. The collections table is accessible by all queries, so once an entry
+is added to the table, the associated collection is assumed to be available to
+every query and every module that participates in the execution of that query.
 
-Creation of a collection involves creating an initially empty document container and "registering" that container in the collections table. XQDDF provides two functions for creating collections. Both are updating functions, so instead of actually performing the updates, they generate pending update primitives that become part of a pending update list (PUL) to be applied at a later time (see \ref extensions_xquf_updates_routines). The functions and their associated update primitives are described below:
- 
+Creation of a collection involves creating an initially empty document container
+and "registering" that container in the collections table. XQDDF provides two
+functions for creating collections. Both are updating functions, so instead of
+actually performing the updates, they generate pending update primitives that
+become part of a pending update list (PUL) to be applied at a later time (see
+\ref extensions_xquf_updates_routines). The functions and their associated
+update primitives are described below:
+
 \code
   declare updating function xqddf:create_collection($collectionName as xs:QName)
 
@@ -209,19 +469,28 @@ Creation of a collection involves creating an initially empty document container
 The function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
-  <li>If the given expanded QName identifies a collection that is available already, an error is raised [<a href="#ERRXDDY0002" title="err:XDDY0002">err:XDDY0002</a>].</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:createCollection($collectionName).</li>
+  <li>If the given expanded QName does not identify a collection among the
+statically known collections in the static context of the invoking module, an
+error is raised [<a href="#ERRXDDY0001"
+title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName identifies a collection that is available
+already, an error is raised [<a href="#ERRXDDY0002"
+title="err:XDDY0002">err:XDDY0002</a>].</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:createCollection($collectionName).</li>
   </ul>
 
 The update primitive is applied as follows:
 
   <ul>
   <li>An empty document container is created.</li>
-  <li>A entry is added to the collections table. The entry maps the collection's expanded QName to the document container.</li>
+  <li>A entry is added to the collections table. The entry maps the collection's
+expanded QName to the document container.</li>
   </ul>
 
-The second create-collection function creates the collection and populates it with an initial set of trees.
+The second create-collection function creates the collection and populates it
+with an initial set of trees.
 
 \code
   declare updating function xqddf:create_collection($collectionName as xs:QName, $nodes as node()*)
@@ -230,18 +499,41 @@ The second create-collection function creates the collection and populates it wi
 The function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
-  <li>If the given expanded QName identifies a collection that is available already, an error is raised [<a href="#ERRXDDY0002" title="err:XDDY0002">err:XDDY0002</a>].</li>
-  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the root static type specified in the collection declaration, a type error is raised [<a href="#ERRXDTY0001" title="err:XDTY0001">err:XDTY0001</a>].</li>
-  <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a root (parent-less) node that does not belong to any collection and is distinct from any other node in $nodes.</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of the following update primitives: upd:createCollection($collectionName) and upd:insertNodesFirst($collectionName, $nodes)</li>
+  <li>If the given expanded QName does not identify a collection among the
+statically known collections in the static context of the invoking module, an
+error is raised [<a href="#ERRXDDY0001"
+title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName identifies a collection that is available
+already, an error is raised [<a href="#ERRXDDY0002"
+title="err:XDDY0002">err:XDDY0002</a>].</li>
+  <li>The expression that is given as the second argument to the function call
+is evaluated. The result of the evaluation is called the source sequence. If the
+source sequence contains an item that is not a node, or a node whose actual type
+does not match the root static type specified in the collection declaration, a
+type error is raised [<a href="#ERRXDTY0001"
+title="err:XDTY0001">err:XDTY0001</a>].</li>
+  <li>Each of the nodes in the source sequence is copied as if it was a node
+returned by an enclosed expression in a direct element constructor (see
+http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces
+modes used during the copy operation are the ones in the static context of the
+invoking module. Let $nodes be the sequence containing the copied nodes. Every
+node in $nodes is a root (parent-less) node that does not belong to any
+collection and is distinct from any other node in $nodes.</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of the following update primitives:
+upd:createCollection($collectionName) and upd:insertNodesFirst($collectionName,
+$nodes)</li>
   </ul>
 
-The upd:createCollection primitive was described above. The upd:insertNodesFirst will be described in \ref updating_collections, in the context of the xqddf:insert-nodes-first function.
+The upd:createCollection primitive was described above. The upd:insertNodesFirst
+will be described in \ref updating_collections, in the context of the
+xqddf:insert-nodes-first function.
 
 \subsection accessing_collections 1.4 Accessing Collections
 
-To access the root nodes of a collection, XQDDF provides the <strong><a name="xqddf_collection" id="xqddf_collection"></a>xqddf:collection</strong> function.
+To access the root nodes of a collection, XQDDF provides the <strong><a
+name="xqddf_collection" id="xqddf_collection"></a>xqddf:collection</strong>
+function.
 
 \code
   declare function xqddf:collection($collectionName as xs:QName) as node()*
@@ -250,218 +542,406 @@ To access the root nodes of a collection, XQDDF provides the <strong><a name="xq
 The function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
-  <li>The result of the function is a sequence consisting of the root nodes in the collection. If the collection is declared as ordered, the ordering of the nodes in the result will reflect the order into which nodes were inserted in the collection by the XQDDF node insertion functions (see \ref updating_collections). If the collection is declared as unordered, the ordering of the nodes in the result is implementation-dependent. In both cases, the nodes in the sequence are, by definition, in document order. For unordered collections, this document ordering is guaranteed to be stable within a query snapshot (i.e., until the next time updates are applied). For ordered collections, the document ordering is stable "forever" (i.e., two root nodes in the collection will compare the same as long as the collection (and the nodes) exist).</li>
+  <li>If the given expanded QName does not identify a collection among the
+statically known collections in the static context of the invoking module, an
+error is raised [<a href="#ERRXDDY0001"
+title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the
+available collections in the dynamic context of the invoking module, an error is
+raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>The result of the function is a sequence consisting of the root nodes in
+the collection. If the collection is declared as ordered, the ordering of the
+nodes in the result will reflect the order into which nodes were inserted in the
+collection by the XQDDF node insertion functions (see \ref
+updating_collections). If the collection is declared as unordered, the ordering
+of the nodes in the result is implementation-dependent. In both cases, the nodes
+in the sequence are, by definition, in document order. For unordered
+collections, this document ordering is guaranteed to be stable within a query
+snapshot (i.e., until the next time updates are applied). For ordered
+collections, the document ordering is stable "forever" (i.e., two root nodes in
+the collection will compare the same as long as the collection (and the nodes)
+exist).</li>
   </ul>
 
-Another non-updating XQDDF function that accesses a collection implicitly, is the index-of function: 
+Another non-updating XQDDF function that accesses a collection implicitly, is
+the index-of function:
 
 \code
-declare function xqddf:index_of($collectionName as xs:QName, $node as node()) as xs:integer
+  declare function xqddf:index_of($collectionName as xs:QName, $node as node()) as xs:integer
 \endcode
 
 The function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
-  <li>The expression that appears as the second argument in the function call is evaluated. The result of this evaluation must be a single node. If this node is not a root node of the collection, an error is raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
-  <li>The result of this function is the position as xs:integer of the given node within the specified collection.</li>
+  <li>If the given expanded QName does not identify a collection among the
+statically known collections in the static context of the invoking module, an
+error is raised [<a href="#ERRXDDY0001"
+title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the
+available collections in the dynamic context of the invoking module, an error is
+raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>The expression that appears as the second argument in the function call is
+evaluated. The result of this evaluation must be a single node. If this node is
+not a root node of the collection, an error is raised [<a href="#ERRXDDY0011"
+title="err:XDDY0011">err:XDDY0011</a>].</li>
+  <li>The result of this function is the position as xs:integer of the given
+node within the specified collection.</li>
   </ul>
 
 \subsection updating_collections 1.5 Updating Collections
 
-A <strong>collection update</strong> is an operation that either inserts or deletes a number of root nodes (and their subtrees) to/from a collection. XQDDF provides 5 functions that insert root nodes, and another 5 functions that delete root nodes. All of these functions are //updating functions// (in the terminology of the XQUF). As a result, rather than applying the update immediately, they produce an updating primitive that becomes part of a pending updates list (PUL), which is applied atomically when the next â;â appears in a script. The signature and semantics of each function and its associated update primitive are described in this section. The order in which the various update primitives are applied and constraints in how update primitives may be combined in a PUL are described in \ref extensions_xquf_updates_routines.
+A <strong>collection update</strong> is an operation that either inserts or
+deletes a number of root nodes (and their subtrees) to/from a collection. XQDDF
+provides 5 functions that insert root nodes, and another 5 functions that delete
+root nodes. All of these functions are //updating functions// (in the
+terminology of the XQUF). As a result, rather than applying the update
+immediately, they produce an updating primitive that becomes part of a pending
+updates list (PUL), which is applied atomically when the next ";" appears in a
+script. The signature and semantics of each function and its associated update
+primitive are described in this section. The order in which the various update
+primitives are applied and constraints in how update primitives may be combined
+in a PUL are described in \ref extensions_xquf_updates_routines.
 
 \code
-declare updating function xqddf:insert-nodes($collectionName as xs:QName, $nodes as node()*)
+  declare updating function xqddf:insert-nodes($collectionName as xs:QName, $nodes as node()*)
 
-upd:insertIntoCollection($collectionName as xs:QName, $nodes as node()*)
+  upd:insertIntoCollection($collectionName as xs:QName, $nodes as node()*)
 \endcode
 
 The insert-nodes function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
-  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>], [<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
-  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [<a href="#ERRXDTY0001" title="err:XDTY0001">err:XDTY0001</a>].</li>
-  <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertIntoCollection($collectionName, $nodes).</li>
+  <li>If the given expanded QName does not identify a collection among the
+statically known collections in the static context of the invoking module, an
+error is raised [<a href="#ERRXDDY0001"
+title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the
+available collections in the dynamic context of the invoking module, an error is
+raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an
+error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>],
+[<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a
+href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
+  <li>The expression that is given as the second argument to the function call
+is evaluated. The result of the evaluation is called the source sequence. If the
+source sequence contains an item that is not a node, or a node whose actual type
+does not match the KindTest specified in the collection declaration, a type
+error is raised [<a href="#ERRXDTY0001"
+title="err:XDTY0001">err:XDTY0001</a>].</li>
+  <li>Each of the nodes in the source sequence is copied as if it was a node
+returned by an enclosed expression in a direct element constructor (see
+http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces
+modes used during the copy operation are the ones in the static context of the
+invoking module. Let $nodes be the sequence containing the copied nodes. Every
+node in $nodes is a parent-less root node that does not belong to any collection
+and is distinct from any other node in $nodes.</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:insertIntoCollection($collectionName, $nodes).</li>
   </ul>
 
 The update primitive is applied as follows: 
 
   <ul>
-  <li>The document container for the collection is found via the collections table.</li>
-  <li>The root nodes in $nodes are inserted into the container. If the collection is an ordered one, then all the nodes are inserted next to each other and in the same order as they appear in $nodes. The position of the first node to be inserted is implementation-dependent. The relative positions of pre-existing root nodes do not change as a result of the insertions. If the collection is an unordered one, each node is inserted in some implementation-dependent position. Furthermore, the relative positions of pre-existing root nodes may change as a result of the insertions.</li>
+  <li>The document container for the collection is found via the collections
+table.</li>
+  <li>The root nodes in $nodes are inserted into the container. If the
+collection is an ordered one, then all the nodes are inserted next to each other
+and in the same order as they appear in $nodes. The position of the first node
+to be inserted is implementation-dependent. The relative positions of
+pre-existing root nodes do not change as a result of the insertions. If the
+collection is an unordered one, each node is inserted in some
+implementation-dependent position. Furthermore, the relative positions of
+pre-existing root nodes may change as a result of the insertions.</li>
   </ul>
 
 \code
-declare updating function xqddf:insert-nodes-first($collectionName as xs:QName, $nodes as node()*)
+  declare updating function xqddf:insert-nodes-first($collectionName as xs:QName, $nodes as node()*)
 
-upd:insertFirstIntoCollection($collectionName as xs:QName, $nodes as node()*)
+  upd:insertFirstIntoCollection($collectionName as xs:QName, $nodes as node()*)
 \endcode
 
 The insert-nodes-first function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
-  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>], [<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
-  <li>If the collection is unordered, an error is raised [<a href="#ERRXDDY0012" title="err:XDDY0012">err:XDDY0012</a>].</li>
-  <li>The expression that is given as the second argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [<a href="#ERRXDTY0001" title="err:XDTY0001">err:XDTY0001</a>].</li>
-  <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertFirstIntoCollection($collectionName, $nodes).</li>
+  <li>If the given expanded QName does not identify a collection among the
+statically known collections in the static context of the invoking module, an
+error is raised [<a href="#ERRXDDY0001"
+title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the
+available collections in the dynamic context of the invoking module, an error is
+raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an
+error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>],
+[<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a
+href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
+  <li>If the collection is unordered, an error is raised [<a href="#ERRXDDY0012"
+title="err:XDDY0012">err:XDDY0012</a>].</li>
+  <li>The expression that is given as the second argument to the function call
+is evaluated. The result of the evaluation is called the source sequence. If the
+source sequence contains an item that is not a node, or a node whose actual type
+does not match the KindTest specified in the collection declaration, a type
+error is raised [<a href="#ERRXDTY0001"
+title="err:XDTY0001">err:XDTY0001</a>].</li>
+  <li>Each of the nodes in the source sequence is copied as if it was a node
+returned by an enclosed expression in a direct element constructor (see
+http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces
+modes used during the copy operation are the ones in the static context of the
+invoking module. Let $nodes be the sequence containing the copied nodes. Every
+node in $nodes is a parent-less root node that does not belong to any collection
+and is distinct from any other node in $nodes.</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:insertFirstIntoCollection($collectionName, $nodes).</li>
   </ul>
 
 The update primitive is applied as follows: 
 
   <ul>
-  <li>The document container for the collection is found via the collections table. </li>
-  <li>The root nodes in $nodes are inserted at the "beginning" of the container. Specifically, the first node is inserted at position 1, and the rest of the nodes are inserted after the first one and in the same order as they appear in $nodes. </li>
+  <li>The document container for the collection is found via the collections
+table. </li>
+  <li>The root nodes in $nodes are inserted at the "beginning" of the container.
+Specifically, the first node is inserted at position 1, and the rest of the
+nodes are inserted after the first one and in the same order as they appear in
+$nodes. </li>
   </ul>
 
 \code
-declare updating function xqddf:insert-nodes-last($collectionName as xs:QName, $nodes as node()*)
+  declare updating function xqddf:insert-nodes-last($collectionName as xs:QName, $nodes as node()*)
 
-upd:insertLastIntoCollection($collectionName as xs:QName, $nodes as node()*)
+  upd:insertLastIntoCollection($collectionName as xs:QName, $nodes as node()*)
 \endcode
 
-The insert-nodes-last function is evaluated the same way as the insert-nodes-first function except:
+The insert-nodes-last function is evaluated the same way as the
+insert-nodes-first function except:
 
   <ul>
-  <li>If the collection is append-only or queue, the insertion is allowed (i.e., the errors XDDY0005 or XDDY0006 are not raised).</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertLastIntoCollection($collectionName, $nodes).</li>
+  <li>If the collection is append-only or queue, the insertion is allowed (i.e.,
+the errors XDDY0005 or XDDY0006 are not raised).</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:insertLastIntoCollection($collectionName, $nodes).</li>
   </ul>
 
 The update primitive is applied as follows: 
 
   <ul>
-  <li>The document container for the collection is found via the collections table.</li>
-  <li>The root nodes in $nodes are inserted at the "end" of the container. Specifically, the first node is inserted after the last existing node, and rest of the nodes are inserted after the first one and in the same order as they appear in $nodes.</li>
+  <li>The document container for the collection is found via the collections
+table.</li>
+  <li>The root nodes in $nodes are inserted at the "end" of the container.
+Specifically, the first node is inserted after the last existing node, and rest
+of the nodes are inserted after the first one and in the same order as they
+appear in $nodes.</li>
   </ul>
 
- \code
-declare updating function xqddf:insert-nodes-before($collectionName as xs:QName, $target as node(), $nodes as node()*)
+\code
+  declare updating function xqddf:insert-nodes-before($collectionName as xs:QName, $target as node(), $nodes as node()*)
 
-upd:insertBeforeIntoCollection($collectionName as xs:QName, $target as node(), $nodes as node()*)
+  upd:insertBeforeIntoCollection($collectionName as xs:QName, $target as node(), $nodes as node()*)
 \endcode
 
 The insert-nodes-before function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
-  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>], [<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
-  <li>If the collection is unordered, an error is raised [<a href="#ERRXDDY0012" title="err:XDDY0012">err:XDDY0012</a>].</li>
-  <li>The expression that appears as the second argument to the function call is evaluated. The expression must return a single node, called the target node. If the target node is not a root node that belongs to the collection, an error is raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
-  <li>The expression that is given as the third argument to the function call is evaluated. The result of the evaluation is called the source sequence. If the source sequence contains an item that is not a node, or a node whose actual type does not match the KindTest specified in the collection declaration, a type error is raised [<a href="#ERRXDTY0001" title="err:XDTY0001">err:XDTY0001</a>].</li>
-  <li>Each of the nodes in the source sequence is copied as if it was a node returned by an enclosed expression in a direct element constructor (see http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces modes used during the copy operation are the ones in the static context of the invoking module. Let $nodes be the sequence containing the copied nodes. Every node in $nodes is a parent-less root node that does not belong to any collection and is distinct from any other node in $nodes.</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertBeforeIntoCollection($collectionName, $target, $nodes).</li>
+  <li>If the given expanded QName does not identify a collection among the
+statically known collections in the static context of the invoking module, an
+error is raised [<a href="#ERRXDDY0001"
+title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the
+available collections in the dynamic context of the invoking module, an error is
+raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an
+error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>],
+[<a href="#ERRXDDY0005" title="err:XDDY0005">err:XDDY0005</a>], or [<a
+href="#ERRXDDY0006" title="err:XDDY0006">err:XDDY0006</a>], respectively.</li>
+  <li>If the collection is unordered, an error is raised [<a href="#ERRXDDY0012"
+title="err:XDDY0012">err:XDDY0012</a>].</li>
+  <li>The expression that appears as the second argument to the function call is
+evaluated. The expression must return a single node, called the target node. If
+the target node is not a root node that belongs to the collection, an error is
+raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
+  <li>The expression that is given as the third argument to the function call is
+evaluated. The result of the evaluation is called the source sequence. If the
+source sequence contains an item that is not a node, or a node whose actual type
+does not match the KindTest specified in the collection declaration, a type
+error is raised [<a href="#ERRXDTY0001"
+title="err:XDTY0001">err:XDTY0001</a>].</li>
+  <li>Each of the nodes in the source sequence is copied as if it was a node
+returned by an enclosed expression in a direct element constructor (see
+http://www.w3.org/TR/xquery/#id-content). The construction and copy-namespaces
+modes used during the copy operation are the ones in the static context of the
+invoking module. Let $nodes be the sequence containing the copied nodes. Every
+node in $nodes is a parent-less root node that does not belong to any collection
+and is distinct from any other node in $nodes.</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:insertBeforeIntoCollection($collectionName, $target, $nodes).</li>
   </ul>
 
 The update primitive is applied as follows: 
 
   <ul>
-  <li>The document container for the collection is found via the collections table.</li>
-  <li>The root nodes in $nodes are inserted into the container before the given target node. Specifically, if the target node is at position K, the first node is inserted at position K, and rest of the nodes are inserted after the first one and in the same order as they appear in $nodes. After the insertion, the target node will at position K+N, where N is the number of nodes in $nodes.</li>
+  <li>The document container for the collection is found via the collections
+table.</li>
+  <li>The root nodes in $nodes are inserted into the container before the given
+target node. Specifically, if the target node is at position K, the first node
+is inserted at position K, and rest of the nodes are inserted after the first
+one and in the same order as they appear in $nodes. After the insertion, the
+target node will at position K+N, where N is the number of nodes in $nodes.</li>
   </ul>
 
 \code
-declare updating function xqddf:insert-nodes-after($collectionName as xs:QName, $target as node(), $nodes as node()*)
+  declare updating function xqddf:insert-nodes-after($collectionName as xs:QName, $target as node(), $nodes as node()*)
 
-upd:insertAfterIntoCollection($collectionName as xs:QName, $target as node(), $nodes as node()*)
+  upd:insertAfterIntoCollection($collectionName as xs:QName, $target as node(), $nodes as node()*)
 \endcode
 
-The insert-nodes-after function is evaluated the same way as the insert-nodes-before function except:
+The insert-nodes-after function is evaluated the same way as the
+insert-nodes-before function except:
 
   <ul>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:insertAfterIntoCollection($collectionName, $target, $nodes).</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:insertAfterIntoCollection($collectionName, $target, $nodes).</li>
   </ul>
 
 The update primitive is applied as follows: 
 
   <ul>
-  <li>The document container for the collection is found via the collections table.</li>
-  <li>The root nodes in $nodes are inserted into the container after the given target node. Specifically, if the target node is at position K, the first node is inserted at position K+1, and rest of the nodes are inserted after the first one and in the same order as they appear in $nodes.</li>
+  <li>The document container for the collection is found via the collections
+table.</li>
+  <li>The root nodes in $nodes are inserted into the container after the given
+target node. Specifically, if the target node is at position K, the first node
+is inserted at position K+1, and rest of the nodes are inserted after the first
+one and in the same order as they appear in $nodes.</li>
   </ul>
 
 \code
-declare updating function xqddf:delete-nodes($collectionName as xs:QName, $nodes as xs:node()*)
+  declare updating function xqddf:delete-nodes($collectionName as xs:QName, $nodes as xs:node()*)
 
-upd:deleteFromCollection($collectionName as xs:QName, $nodes as xs:node()*)
+  upd:deleteFromCollection($collectionName as xs:QName, $nodes as xs:node()*)
 \endcode
 
 The delete-nodes function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
-  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>], [<a href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>], or [<a href="#ERRXDDY009" title="err:XDDY009">err:XDDY009</a>], respectively.</li>
-  <li>The expression that appears as the second argument to the function call is evaluated. The result of this evaluation is called the deletion sequence. If there is any node in the deletion sequence that is not a root node belonging to the collection, an error is raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>]. Let $nodes be the deletion sequence.</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).</li>
+  <li>If the given expanded QName does not identify a collection among the
+statically known collections in the static context of the invoking module, an
+error is raised [<a href="#ERRXDDY0001"
+title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the
+available collections in the dynamic context of the invoking module, an error is
+raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an
+error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>],
+[<a href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>], or [<a
+href="#ERRXDDY009" title="err:XDDY009">err:XDDY009</a>], respectively.</li>
+  <li>The expression that appears as the second argument to the function call is
+evaluated. The result of this evaluation is called the deletion sequence. If
+there is any node in the deletion sequence that is not a root node belonging to
+the collection, an error is raised [<a href="#ERRXDDY0011"
+title="err:XDDY0011">err:XDDY0011</a>]. Let $nodes be the deletion
+sequence.</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:deleteFromCollection($collectionName, $nodes).</li>
   </ul>
 
 The update primitive is applied as follows: 
 
   <ul>
-  <li>The document container for the collection is found via the collections table. </li>
-  <li>Each document that is rooted at a node in $nodes is removed from the container, if it is still there (earlier delete primitives in the same PUL may have deleted the tree already). If there are no variables that are bound to any of the document's nodes, the document is destroyed. Otherwise, the document will be destroyed as soon as there are no variables bound to any of its nodes. </li>
+  <li>The document container for the collection is found via the collections
+table. </li>
+  <li>Each document that is rooted at a node in $nodes is removed from the
+container, if it is still there (earlier delete primitives in the same PUL may
+have deleted the tree already). If there are no variables that are bound to any
+of the document's nodes, the document is destroyed. Otherwise, the document will
+be destroyed as soon as there are no variables bound to any of its nodes. </li>
   </ul>
 
 \code
-declare updating function xqddf:delete-nodes-first($collectionName as xs:QName, $number as xs:unsignedLong)
+  declare updating function xqddf:delete-nodes-first($collectionName as xs:QName, $number as xs:unsignedLong)
 \endcode
 
 The delete-nodes-first function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
-  <li>If the update mode of the collection is const, or append-only, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>] or [<a href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>] respectively.</li>
-  <li>The expression that appears as the second argument to the function call is evaluated, producing a single positive integer. Let $number be that integer.</li>
-  <li>If the collection has fewer than $number nodes, an error is raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
-  <li>Let $nodes be the sequence consisting of the first $number root nodes in the collection.</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).</li>
+  <li>If the given expanded QName does not identify a collection among the
+statically known collections in the static context of the invoking module, an
+error is raised [<a href="#ERRXDDY0001"
+title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the
+available collections in the dynamic context of the invoking module, an error is
+raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, or append-only, an error is
+raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>] or [<a
+href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>] respectively.</li>
+  <li>The expression that appears as the second argument to the function call is
+evaluated, producing a single positive integer. Let $number be that
+integer.</li>
+  <li>If the collection has fewer than $number nodes, an error is raised [<a
+href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
+  <li>Let $nodes be the sequence consisting of the first $number root nodes in
+the collection.</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:deleteFromCollection($collectionName, $nodes).</li>
   </ul>
 
 \code
-declare updating function xqddf:delete-node-first($collectionName as xs:QName)
+  declare updating function xqddf:delete-node-first($collectionName as xs:QName)
 \endcode
 
-The delete-node-first function is a special case of the delete-nodes-first function. Specifically, delete-node-first($collectionName) is equivalent to delete-nodes-first($collectionName, 1).
+The delete-node-first function is a special case of the delete-nodes-first
+function. Specifically, delete-node-first($collectionName) is equivalent to
+delete-nodes-first($collectionName, 1).
 
 \code
-declare updating function xqddf:delete-nodes-last($collectionName as xs:QName, $number as xs:unsignedLong)
+  declare updating function xqddf:delete-nodes-last($collectionName as xs:QName, $number as xs:unsignedLong)
 \endcode
 
 The delete-nodes-last function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
-  <li>If the update mode of the collection is const, append-only, or queue, an error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>], [<a href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>], or [<a href="#ERRXDDY009" title="err:XDDY009">err:XDDY009</a>], respectively.</li>
-  <li>The expression that appears as the second argument to the function call is evaluated, producing a single positive integer. Let $number be that integer.</li>
-  <li>If the collection has fewer than $number nodes, an error is raised [<a href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
-  <li>Let $nodes be the sequence consisting of the last $number root nodes in the collection.</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteFromCollection($collectionName, $nodes).</li>
+  <li>If the given expanded QName does not identify a collection among the
+statically known collections in the static context of the invoking module, an
+error is raised [<a href="#ERRXDDY0001"
+title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the
+available collections in the dynamic context of the invoking module, an error is
+raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>If the update mode of the collection is const, append-only, or queue, an
+error is raised [<a href="#ERRXDDY0004" title="err:XDDY0004">err:XDDY0004</a>],
+[<a href="#ERRXDDY0007" title="err:XDDY0007">err:XDDY0007</a>], or [<a
+href="#ERRXDDY009" title="err:XDDY009">err:XDDY009</a>], respectively.</li>
+  <li>The expression that appears as the second argument to the function call is
+evaluated, producing a single positive integer. Let $number be that
+integer.</li>
+  <li>If the collection has fewer than $number nodes, an error is raised [<a
+href="#ERRXDDY0011" title="err:XDDY0011">err:XDDY0011</a>].</li>
+  <li>Let $nodes be the sequence consisting of the last $number root nodes in
+the collection.</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:deleteFromCollection($collectionName, $nodes).</li>
   </ul>
 
 \code
-declare updating function xqddf:delete-node-last($collectionName as xs:QName)
+  declare updating function xqddf:delete-node-last($collectionName as xs:QName)
 \endcode
 
-The delete-node-last function is a special case of the delete-nodes-lasst function. Specifically, delete-node-last($collectionName) is equivalent to delete-nodes-last($collectionName, 1).
+The delete-node-last function is a special case of the delete-nodes-lasst
+function. Specifically, delete-node-last($collectionName) is equivalent to
+delete-nodes-last($collectionName, 1).
 
 
 \subsection destroying_collections 1.6 Destroying Collections
 
-To destroy a collection, XQDDF provides the delete-collection updating function. The function itself and its associated update primitive are described below.
+To destroy a collection, XQDDF provides the delete-collection updating function.
+The function itself and its associated update primitive are described below.
 
 \code
-  declare updating function xqddf:delete-collection($collectionName as xs :QName)
+  declare updating function xqddf:delete-collection($collectionName as xs:QName)
 
   upd:deleteCollection($collectionName as xs :QName)
 \endcode
@@ -469,39 +949,110 @@ To destroy a collection, XQDDF provides the delete-collection updating function.
 The delete-collection function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify a collection among the statically known collections in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0001" title="err:XDDY0001">err:XDDY0001</a>].</li>
-  <li>If the given expanded QName does not identify a collection among the available collections in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteCollection($collectionName).</li>
+  <li>If the given expanded QName does not identify a collection among the
+statically known collections in the static context of the invoking module, an
+error is raised [<a href="#ERRXDDY0001"
+title="err:XDDY0001">err:XDDY0001</a>].</li>
+  <li>If the given expanded QName does not identify a collection among the
+available collections in the dynamic context of the invoking module, an error is
+raised [<a href="#ERRXDDY0003" title="err:XDDY0003">err:XDDY0003</a>].</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:deleteCollection($collectionName).</li>
   </ul>
 
 The update primitive is applied as follows:
 
   <ul>
-  <li>If there is any available index whose domain expression or any of its key expressions reference the collection, an error is raised [<a href="#ERRXDDY0013" title="err:XDDY0013">err:XDDY0013</a>].</li>
-  <li>If there is any active integrity constraint on the collection, an error is raised [<a href="#ERRXDDY0014" title="err:XDDY0014">err:XDDY0014</a>].</li>
-  <li>If there is any in-scope variable that references any node in the collection, an error is raised [<a href="#ERRXDDY0015" title="err:XDDY0015">err:XDDY0015</a>].</li>
-  <li>The document container for the collection is found via the collections table.</li>
+  <li>If there is any available index whose domain expression or any of its key
+expressions reference the collection, an error is raised [<a href="#ERRXDDY0013"
+title="err:XDDY0013">err:XDDY0013</a>].</li>
+  <li>If there is any active integrity constraint on the collection, an error is
+raised [<a href="#ERRXDDY0014" title="err:XDDY0014">err:XDDY0014</a>].</li>
+  <li>If there is any in-scope variable that references any node in the
+collection, an error is raised [<a href="#ERRXDDY0015"
+title="err:XDDY0015">err:XDDY0015</a>].</li>
+  <li>The document container for the collection is found via the collections
+table.</li>
   <li>All documents in the container are destroyed.</li>
   <li>The container itself is destroyed.</li>
-  <li>The entry mapping the collection name to its container is removed from the collections table.</li>
+  <li>The entry mapping the collection name to its container is removed from the
+collections table.</li>
   </ul>
 
 \subsection w3c_collections 1.7 W3C Collections
 
 \section indexes 2 Indexes in Zorba 1.0
 
-Zorba 1.0 introduces support for value indexes. A <strong>value index</strong> is a set whose contents (called <strong>index entries</strong>) are defined by a "domain" expression and a number of "key" expressions. Informally, an index is created by evaluating its domain expression first, resulting in a sequence of nodes (called the index <strong>domain sequence</strong>). Then, for each node D in the domain sequence, the key expressions are evaluated with node D serving as their context node. Each key expression must not return more than one value. If a value returned by a key expression is not atomic, it is converted to an atomic value via atomization. Thus, for each domain node D, an associated <strong>key tuple</strong> K of N atomic values is constructed, where N is the number of key expressions. The purpose of the index is to map key tuples to domain nodes. In general, the relationship from key tuples to domain nodes is 1:N (i.e., a key tuple may be produced from more than one domain nodes). As a result, each index entry is a pair consisting of a key tuple and the set of domain nodes that produced the key tuple.
+Zorba 1.0 introduces support for value indexes. A <strong>value index</strong>
+is a set whose contents (called <strong>index entries</strong>) are defined by a
+"domain" expression and a number of "key" expressions. Informally, an index is
+created by evaluating its domain expression first, resulting in a sequence of
+nodes (called the index <strong>domain sequence</strong>). Then, for each node D
+in the domain sequence, the key expressions are evaluated with node D serving as
+their context node. Each key expression must not return more than one value. If
+a value returned by a key expression is not atomic, it is converted to an atomic
+value via atomization. Thus, for each domain node D, an associated <strong>key
+tuple</strong> K of N atomic values is constructed, where N is the number of key
+expressions. The purpose of the index is to map key tuples to domain nodes. In
+general, the relationship from key tuples to domain nodes is 1:N (i.e., a key
+tuple may be produced from more than one domain nodes). As a result, each index
+entry is a pair consisting of a key tuple and the set of domain nodes that
+produced the key tuple.
 
-Zorba 1.0 supports five index-related operations: <strong>index declaration</strong>, <strong>index creation</strong>, <strong>index deletion</strong>, <strong>index probing</strong>, and <strong>index maintenance</strong>. These are explained briefly in the following simple example. Full details for each operation are provided in the subsequent chapters.
+Zorba 1.0 supports five index-related operations:
+<a href="#index_declaration" title="index declaration">index declaration</a>,
+<a href="#index_creation" title="index creation">index creation</a>,
+<a href="#index_deletion" title="index deletion">index deletion</a>,
+<a href="#index_probing" title="index probing">index probing</a> and
+<a href="#index_maintenance" title="index maintenance">index maintenance</a>.
+These are explained briefly in the following simple example. Full details for
+each operation are provided in the subsequent chapters.
 
 \subsection indexes_in_action 2.1 Indexes in action - A simple example
 
-Let us assume the same news application we used in \ref collections_in_action. In this section we will how to create and use indexes on the collections of the news organization. First, let us assume that each employee has a city where he/she is currently stationed at. We want to create an index that maps city names to the employees that are stationed in those cities. The index will contain one entry for each city where at least one employee is stationed in. Let us also assume that we want to search for journalists based on the number of articles they have written. For this, we will create an index that maps article counts to the employees who are journalists and have produced that number of articles.
+Let us assume the same news application we used in \ref collections_in_action.
+In this section we will how to create and use indexes on the collections of the
+news organization. First, let us assume that each employee has a city where
+he/she is currently stationed at. We want to create an index that maps city
+names to the employees that are stationed in those cities. The index will
+contain one entry for each city where at least one employee is stationed in. Let
+us also assume that we want to search for journalists based on the number of
+articles they have written. For this, we will create an index that maps article
+counts to the employees who are journalists and have produced that number of
+articles.
 
-Before an index can be created, it must be declared. An <strong>index declaration</strong> describes the index by providing its domain expression, its key expressions, and certain index properties; it also specifies a name for referencing the index in subsequent operations. Like collections, indexes must be declared inside the prolog of library modules. In terms of the XQuery language, index declarations become part of a module's static context.
+Before an index can be created, it must be declared. An <a
+href="#index_declaration" title="index declaration">index declaration</a>
+describes the index by providing its domain expression, its key expressions, and
+certain index properties; it also specifies a name for referencing the index in
+subsequent operations. Like collections, indexes must be declared inside the
+prolog of library modules. In terms of the XQuery language, index declarations
+become part of a module's static context.
 
-In this example, the index declaration is placed inside the "news-data" library module shown below (same as the module we saw in \ref collections_in_action, except for the additional index declarations). The first index declaration assigns the name news-data:CityEmp to the index. It uses the "on nodes" and "by" keywords to specify the domain and key expressions respectively. The "as" keyword specifies a target atomic data type which the results of the key expression must match with (after atomization). The index is declared as a "value equality" index. This means that it can be used to find the employees in a particular city, but not in a "range" of cities. In other words, the index is not aware of any ordering among city names. Finally, the maintenance property of the index is set to "automatically maintained". Briefly, an automatically maintained index is one whose maintenance is the responsibility of Zorba rather than the xquery programmers. The second index declaration assigns the name news-data:ArtCountEmp to the index. Its domain expression selects all employees who are journalists. Its key expression computes the number of articles written by the "current" journalist. This index is declared as a "value range" index, which means that it can be used to find journalists whose article count is within a given range. Finally, the index is also declared as "manually maintained", which means that programmers must explicitly request that the index be synchronized with the underlying data.
+In this example, the index declaration is placed inside the <a
+href="#lib_module_news_data_indexes" title="news-data">"news-data"</a> library
+module shown below (same as the module we saw in \ref collections_in_action,
+except for the additional index declarations). The first index declaration
+assigns the name news-data:CityEmp to the index. It uses the "on nodes" and "by"
+keywords to specify the domain and key expressions respectively. The "as"
+keyword specifies a target atomic data type which the results of the key
+expression must match with (after atomization). The index is declared as a
+"value equality" index. This means that it can be used to find the employees in
+a particular city, but not in a "range" of cities. In other words, the index is
+not aware of any ordering among city names. Finally, the maintenance property of
+the index is set to "automatically maintained". Briefly, an automatically
+maintained index is one whose maintenance is the responsibility of Zorba rather
+than the xquery programmers. The second index declaration assigns the name
+news-data:ArtCountEmp to the index. Its domain expression selects all employees
+who are journalists. Its key expression computes the number of articles written
+by the "current" journalist. This index is declared as a "value range" index,
+which means that it can be used to find journalists whose article count is
+within a given range. Finally, the index is also declared as "manually
+maintained", which means that programmers must explicitly request that the index
+be synchronized with the underlying data.
 
+<a name="lib_module_news_data_indexes" id="lib_module_news_data_indexes"></a>
 \code
   (: The "news-data" Library Module :)
 
@@ -532,10 +1083,37 @@ In this example, the index declaration is placed inside the "news-data" library 
   declare variable $news-data:ArtCountEmp := xs:QName("news-data:ArtCountEmp");
 \endcode
 
-Having declared the indexes in a library module, they can now be created. This is done by the "admin-script-3" script shown below. The script must first import the "news-data" module. As far as indexes are concerned, the effect of this import is to create two entriesin the static context of the main module, mapping the index names to the index definitions (domain expression, key specification, and properties). Then, the query creates the indexes by invoking the ddf:create-index function, passing the name of the index as input. 
+Having declared the indexes in a library module, they can now be created. This
+is done by the <a href="#admin_script_3"
+title="admin-script-3">"admin-script-3"</a> script shown below. The script must
+first import the <a href="#lib_module_news_data_indexes"
+title="news-data">"news-data"</a> module. As far as indexes are concerned, the
+effect of this import is to create two entries in the static context of the main
+module, mapping the index names to the index definitions (domain expression, key
+specification, and properties). Then, the query creates the indexes by invoking
+the <a href="#create_index" title="xqddf:create-index">xqddf:create-index</a>
+function, passing the name of the index as input.
 
-Let us consider the creation of the CityEmp index (the process is the same for the ArtCountEmp index). <strong>Index creation</strong> starts with retrieving the index definition from the static context, using the index name. Then, an index container is created, whose entries will be pairs associating a city name with a set of employees. Next, the index container is populated using the process outlined above: The domain expression is evaluated, and for each employee node E in the domain sequence, the name of the city C where the employee is currently stationed in is retrieved by evaluating the key expression, atomizing its result, and checking that the atomic value matches the specified target type. Finally, the pair [E, C] is inserted in the index: if an entry for C exists already, E is inserted in the set associated with C; otherwise, an new entry is created mapping C to the set { E }. The last step in index creation involves registering the index inside an <strong>indexes table</strong> that maps index names to index containers. The index container will remain registered until it is destroyed by a call to the ddf:delete-index function (see the "admin-script-4" script below).
+Let us consider the creation of the CityEmp index (the process is the same for
+the ArtCountEmp index). <a href="#index_creation" title="index creation">Index
+creation</a> starts with retrieving the index definition from the static
+context, using the index name. Then, an index container is created, whose
+entries will be pairs associating a city name with a set of employees. Next, the
+index container is populated using the process outlined above: The domain
+expression is evaluated, and for each employee node E in the domain sequence,
+the name of the city C where the employee is currently stationed in is retrieved
+by evaluating the key expression, atomizing its result, and checking that the
+atomic value matches the specified target type. Finally, the pair [E, C] is
+inserted in the index: if an entry for C exists already, E is inserted in the
+set associated with C; otherwise, an new entry is created mapping C to the set {
+E }. The last step in index creation involves registering the index inside an
+<strong>indexes table</strong> that maps index names to index containers. The
+index container will remain registered until it is destroyed by a call to the <a
+href="#delete_index" title="xqddf:delete-index">xqddf:delete-index</a> function
+(see the <a href="#admin_script_4" title="admin-script-4">"admin-script-4"</a>
+script below).
 
+<a name="admin_script_3" id="admin_script_3"></a>
 \code
   (: The "admin-script-3" script :)
 
@@ -548,16 +1126,65 @@ Let us consider the creation of the CityEmp index (the process is the same for t
   xqddf:create-index($news-data:ArtCountEmp);
 \endcode
 
-The next step in this example is to show how the index can be used to to optimize query performance, which of course, is the primary motivation for supporting indexes in any data-processing system. XQDDF provides two functions for <strong>index probing</strong>: probe-index-point and probe-index-range. The probe-index-range function is available only for indexes declared as "value range".
+The next step in this example is to show how the index can be used to to
+optimize query performance, which of course, is the primary motivation for
+supporting indexes in any data-processing system. XQDDF provides two functions
+for <a href="#index_probing" title="index probing">index probing</a>: <a
+href="#probe_index_point"
+title="xqddf:probe-index-point">xqddf:probe-index-point</a> and <a
+href="#probe_index_range"
+title="xqddf:probe-index-range">xqddf:probe-index-range</a>. The <a
+href="#probe_index_range"
+title="xqddf:probe-index-range">xqddf:probe-index-range</a> function is
+available only for indexes declared as "value range".
 
-The "probe-1" query illustrates the use of xqddf:probe-index-point. The query returns the names of all employees stationed in Paris. As shown, the xqddf:probe-index-point function takes the index name and the keyword "Paris" as inputs. It uses the index name to find the index container via the indexes tables, looks-up the entry for "Paris" inside this container, and returns all the associated employee nodes.  
+The <a href="#query_probe_1" title="probe-1">"probe-1"</a> query illustrates the
+use of xqddf:probe-index-point. The query returns the names of all employees
+stationed in Paris. As shown, the xqddf:probe-index-point function takes the
+index name and the keyword "Paris" as inputs. It uses the index name to find the
+index container via the indexes tables, looks-up the entry for "Paris" inside
+this container, and returns all the associated employee nodes.
 
-The "probe-2" query illustrates index probing via the xqddf:probe-index-range function. The query returns all journalists who have written more than 100 articles. As shown, the first parameter of the xqddf:probe-index-range function is the index name, followed by 6 parameters per key expression. The 6 parameters specify a range of value for the key values: the first 2 are the lower and upper values of the range, the next two are booleans that specify whether the range does indeed have a lower and/or upper bound, and the last 2 are also booleans that specify whether the range is open or closed from below or above (i.e., whether the lower/upper bound are included in the range or not).
+The <a href="#query_probe_2" title="probe-2">"probe-2"</a> query illustrates
+index probing via the xqddf:probe-index-range function. The query returns all
+journalists who have written more than 100 articles. As shown, the first
+parameter of the xqddf:probe-index-range function is the index name, followed by
+6 parameters per key expression. The 6 parameters specify a range of value for
+the key values: the first 2 are the lower and upper values of the range, the
+next two are booleans that specify whether the range does indeed have a lower
+and/or upper bound, and the last 2 are also booleans that specify whether the
+range is open or closed from below or above (i.e., whether the lower/upper bound
+are included in the range or not).
 
-The "no-probe-1" and "no-probe-2" queries return the same results as the "probe-1" and "probe-2" queries, respectively, but without using any index. Normally, the performance of the probe queries will be much better than that of the corresponding no-probe queries. This is because, in general, indexes organize their entries in ways that make the execution of the probe functions very efficient. Typically, some kind of a hash table (for value equality indexes) or ordered tree (for value range indexes) data structure is employed, and as we will see, Zorba support both kinds of indexes. So, for example, the "probe-1" query does not have to access every entry in the index until it finds the one for Paris, whereas the "no-probe-1" query has to access every employee in the collection and check his/her city.
+The <a href="#query_no_probe_1" title="no-probe-1">"no-probe-1"</a> and
+<a href="#query_no_probe_2" title="no-probe-2">"no-probe-2"</a> queries return
+the same results as the
+<a href="#query_probe_1" title="probe-1">"probe-1"</a> and
+<a href="#query_probe_2" title="probe-2">"probe-2"</a> queries, respectively,
+but without using any index. Normally, the performance of the probe queries will
+be much better than that of the corresponding no-probe queries. This is because,
+in general, indexes organize their entries in ways that make the execution of
+the probe functions very efficient. Typically, some kind of a hash table (for
+value equality indexes) or ordered tree (for value range indexes) data structure
+is employed, and as we will see, Zorba support both kinds of indexes. So, for
+example, the <a href="#query_probe_1" title="probe-1">"probe-1"</a> query does
+not have to access every entry in the index until it finds the one for Paris,
+whereas the <a href="#query_no_probe_1" title="no-probe-1">"no-probe-1"</a>
+query has to access every employee in the collection and check his/her city.
 
-People familiar with SQL and modern relational DBMSs would probably expect the query optimizer to be able to automatically rewrite queries like "no-probe-1" and "no-probe-2" to queries like "probe-1" and "probe-2". Unfortunately, in Zorba 1.0 the query optimizer is not yet smart enough with respect to indexes. Although we do plan to offer automatic index-related rewrites in the near future, we also expect the probing functions to remain useful for manual rewrites because both the XQuery language and the kind of indexes that are allowed in Zorba 1.0 can be much more complex than their relational counterparts.
+People familiar with SQL and modern relational DBMSs would probably expect the
+query optimizer to be able to automatically rewrite queries like <a
+href="#query_no_probe_1" title="no-probe-1">"no-probe-1"</a> and <a
+href="#query_no_probe_2" title="no-probe-2">"no-probe-2"</a> to queries like <a
+href="#query_probe_1" title="probe-1">"probe-1"</a> and <a href="#query_probe_2"
+title="probe-2">"probe-2"</a>. Unfortunately, in Zorba 1.0 the query optimizer
+is not yet smart enough with respect to indexes. Although we do plan to offer
+automatic index-related rewrites in the near future, we also expect the probing
+functions to remain useful for manual rewrites because both the XQuery language
+and the kind of indexes that are allowed in Zorba 1.0 can be much more complex
+than their relational counterparts.
 
+<a name="query_probe_1" id="query_probe_1"></a>
 \code
   (: The "probe-1" query :)
 
@@ -568,6 +1195,7 @@ People familiar with SQL and modern relational DBMSs would probably expect the q
   xqddf:probe-index-point($news-data:CityEmp, "Paris")
 \endcode
 
+<a name="query_probe_2" id="query_probe_2"></a>
 \code
   (: The "probe-2" query :)
 
@@ -578,6 +1206,7 @@ People familiar with SQL and modern relational DBMSs would probably expect the q
   xqddf:probe-index-range($news-data:ArtCountEmp, 100, (), true, false, true, false)
 \endcode
 
+<a name="query_no_probe_1" id="query_no_probe_1"></a>
 \code
   (: The "no-probe-1" query :)
 
@@ -588,6 +1217,7 @@ People familiar with SQL and modern relational DBMSs would probably expect the q
   xqddf:collection($news-data:employees)/employee[.//station/city eq "Paris"]
 \endcode
 
+<a name="query_no_probe_2" id="query_no_probe_2"></a>
 \code
   (: The "no-probe-2" query :)
 
@@ -602,12 +1232,47 @@ People familiar with SQL and modern relational DBMSs would probably expect the q
   return $emp
 \endcode
 
-Now, let us consider what happens when the data on which an index is built gets updated. In general, <strong>index maintenance</strong> is the operation where the index contents are updated so that they reflect the index definition with respect to the current snapshot of the data. Zorba 1.0 offers two maintenance modes: manual and automatic. If an index is declared as "manually maintained", index maintenance is done only when the function ddf:refresh-index (described in \ref index_maintenance) is invoked inside a query. Essentially, in manual mode maintenance is in the control of the query programmers, and the index may become stale between two consecutive calls to the ddf:refresh-index function. In contrast, if an index is declared as "automatically maintained", Zorba guarantees that the index stays up-to-date at any given time.
+Now, let us consider what happens when the data on which an index is built gets
+updated. In general, <a href="#index_maintenance" title="index
+maintenance">index maintenance</a> is the operation where the index contents are
+updated so that they reflect the index definition with respect to the current
+snapshot of the data. Zorba 1.0 offers two maintenance modes: manual and
+automatic. If an index is declared as "manually maintained", index maintenance
+is done only when the function <a href="#refresh_index"
+title="xqddf:refresh-index">xqddf:refresh-index</a> (described in \ref
+index_maintenance) is invoked inside a query. Essentially, in manual mode
+maintenance is in the control of the query programmers, and the index may become
+stale between two consecutive calls to the <a href="#refresh_index"
+title="xqddf:refresh-index">xqddf:refresh-index</a> function. In contrast, if an
+index is declared as "automatically maintained", Zorba guarantees that the index
+stays up-to-date at any given time.
 
-In this example, the CityEmp index was declared as automatic. The "index-maintenance" query shown below transfers the employee with id "007" from his current city, say Paris, to Beijing. Since index CityEmp is automatic, after the update is applied, Zorba will initiate a maintenance operation on the index, whereby the employee node will be removed from the node set associated with Paris and inserted into the node set associated with Beijing (if there is no other employee stationed in Beijing already, an entry for it will be created first). Notice that although the index is not explicitly referenced anywhere in this query, its definition must still be available to the query because it is needed to perform the index maintenance. In this example, the query imports the "news-data" module because it contains the declaration for the employees collection, which is referenced by the query.  But the "news-data" module contains the index declaration as well, so index maintenance can find the index definition. In general, it is a best practice to declare an index in the same module as the collections that are referenced by the index.
+In this example, the CityEmp index was declared as automatic. The <a
+href="#query_index_maintenance"
+title="index-maintenance">"index-maintenance"</a> query shown below transfers
+the employee with id "007" from his current city, say Paris, to Beijing. Since
+index CityEmp is automatic, after the update is applied, Zorba will initiate a
+maintenance operation on the index, whereby the employee node will be removed
+from the node set associated with Paris and inserted into the node set
+associated with Beijing (if there is no other employee stationed in Beijing
+already, an entry for it will be created first). Notice that although the index
+is not explicitly referenced anywhere in this query, its definition must still
+be available to the query because it is needed to perform the index maintenance.
+In this example, the query imports the <a href="#lib_module_news_data_indexes"
+title="news-data">"news-data"</a> module because it contains the declaration for
+the employees collection, which is referenced by the query.  But the <a
+href="#lib_module_news_data_indexes" title="news-data">"news-data"</a> module
+contains the index declaration as well, so index maintenance can find the index
+definition. In general, it is a best practice to declare an index in the same
+module as the collections that are referenced by the index.
 
-The ArtCountEmp index is more complex than the CityEmp index, so the system may not be able to maintain it in an efficient way. Furthermore, the index contains "statistical" information, so it may be acceptable if its contents are not always in sync with the underlying data. For these reasons, the ArtCountEmp index was declared as "manually maintained".
+The ArtCountEmp index is more complex than the CityEmp index, so the system may
+not be able to maintain it in an efficient way. Furthermore, the index contains
+"statistical" information, so it may be acceptable if its contents are not
+always in sync with the underlying data. For these reasons, the ArtCountEmp
+index was declared as "manually maintained".
 
+<a name="query_index_maintenance" id="query_index_maintenance"></a>
 \code
   (: The "index-maintenance" query :)
 
@@ -619,8 +1284,17 @@ The ArtCountEmp index is more complex than the CityEmp index, so the system may 
   with "Beijing"
 \endcode
 
-Finally, we conclude this example with a query that shows how to destroy an index. As shown in "admin-script-4" below, <strong>index deletion</strong> is done via the xqddf:delete-index function. The function simply destroys the index container and removes the mapping between the index name and the index container from the indexes table. After the index is deleted, any query that tries to access the index will receive an error.
+Finally, we conclude this example with a query that shows how to destroy an
+index. As shown in
+<a href="#admin_script_4" title="admin-script-4">"admin-script-4"</a> below,
+<a href="#index_deletion" title="index deletion">index deletion</a> is done via
+the <a href="#delete_index" title="xqddf:delete-index">xqddf:delete-index</a>
+function. The function simply destroys the index container and removes the
+mapping between the index name and the index container from the indexes table.
+After the index is deleted, any query that tries to access the index will
+receive an error.
 
+<a name="admin_script_4" id="admin_script_4"></a>
 \code
   (: The "admin-script-4" query :)
 
@@ -628,90 +1302,208 @@ Finally, we conclude this example with a query that shows how to destroy an inde
 
   import module namespace news-data = "http://www.news.org/data" at "news_data.xqlib";
 
-  ddf:delete-index($news-data:CityEmp); 
+  ddf:delete-index($news-data:CityEmp);
 \endcode
 
 
 \subsection index_declaration  2.2 Index declaration
 
 \code
-Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)* 
-           ((VarDecl | ContextItemDecl | FunctionDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
+  Prolog ::= ((DefaultNamespaceDecl | Setter | NamespaceDecl | Import) Separator)*
+             ((VarDecl | ContextItemDecl | FunctionDecl | OptionDecl | CollectionDecl | IndexDecl | ICDecl) Separator)*
 
-IndexDecl := 'declare' IndexProperties 'index' IndexName
-             'on' 'nodes' IndexDomainExpr
-             'by' IndexKeySpec (',' IndexKeySpec)*
+  IndexDecl := 'declare' IndexProperties 'index' IndexName
+               'on' 'nodes' IndexDomainExpr
+               'by' IndexKeySpec (',' IndexKeySpec)*
 
-IndexName := QName
+  IndexName := QName
 
-IndexProperties := ('unique' |
-                    'non' 'unique' |
-                    'value' 'range' |
-                    'value' 'equality' |
-                    'automatically' 'maintained' |
-                    'manually' 'maintained')*
+  IndexProperties := ('unique' |
+                      'non' 'unique' |
+                      'value' 'range' |
+                      'value' 'equality' |
+                      'automatically' 'maintained' |
+                      'manually' 'maintained')*
 
-IndexDomainExpr := PathExpr
+  IndexDomainExpr := PathExpr
 
-IndexKeySpec := IndexKeyExpr IndexKeyTypeDecl IndexKeyCollation
+  IndexKeySpec := IndexKeyExpr IndexKeyTypeDecl IndexKeyCollation
 
-IndexKeyExpr := PathExpr
+  IndexKeyExpr := PathExpr
 
-IndexKeyTypeDecl := 'as' AtomicType
+  IndexKeyTypeDecl := 'as' AtomicType
 
-AtomicType := QName
+  AtomicType := QName
 
-IndexKeyCollation := ('collation' UriLiteral)?
+  IndexKeyCollation := ('collation' UriLiteral)?
 \endcode
 
-Syntactically, each index is defined by an index declaration statement, which specifies a unique name for the index as a QName, the index domain expression, a number of key specifications, and a set of index properties. Index declarations must be placed inside module prologs. The Prolog syntax is extended accordingly, as shown above. An additional constraint (not expressible syntactically) is that only library modules may contain index declarations [<a href="#ERRXDST0023" title="err:XDST0023">err:XDST0023</a>]. The reasons for this rule are the same as those for collections (see \ref collection_declaration).
+Syntactically, each index is defined by an <a href="#index_declaration"
+title="index declaration">index declaration</a> statement, which specifies a
+unique name for the index as a QName, the index domain expression, a number of
+key specifications, and a set of index properties. Index declarations must be
+placed inside module prologs. The Prolog syntax is extended accordingly, as
+shown above. An additional constraint (not expressible syntactically) is that
+only library modules may contain index declarations [<a href="#ERRXDST0023"
+title="err:XDST0023">err:XDST0023</a>]. The reasons for this rule are the same
+as those for collections (see \ref collection_declaration).
 
-To accommodate index declarations, XQDDF extends the static context with a component called the <strong>statically known indexes</strong>. This is a map whose entries associate an expanded QName with an implementation-dependent representation of the information contained in an index declaration with the same QName. Each index declaration adds an entry to the statically known indexes of the module containing the declaration. If the expanded QName of the index is equal (as defined by the eq operator) to the expanded QName of another index in the statically known indexes of the same module, a static error is raised [<a href="#ERRXDST0021" title="err:XDST0021">err:XDST0021</a>]. Like the statically known collections, the statically known indexes of a module that is imported by another module are copied into the statically known indexes of the importing module. It is a static error [<a href="#ERRXDST0022" title="err:XDST0022">err:XDST0022</a>] if the expanded QName of an index declared in an imported module is equal (as defined by the eq operator) to the expanded QName of an index declared in the importing module or in another imported module (even if the declarations are consistent).
+To accommodate index declarations, XQDDF extends the static context with a
+component called the <strong>statically known indexes</strong>. This is a map
+whose entries associate an expanded QName with an implementation-dependent
+representation of the information contained in an index declaration with the
+same QName. Each index declaration adds an entry to the statically known indexes
+of the module containing the declaration. If the expanded QName of the index is
+equal (as defined by the eq operator) to the expanded QName of another index in
+the statically known indexes of the same module, a static error is raised [<a
+href="#ERRXDST0021" title="err:XDST0021">err:XDST0021</a>]. Like the statically
+known collections, the statically known indexes of a module that is imported by
+another module are copied into the statically known indexes of the importing
+module. It is a static error [<a href="#ERRXDST0022"
+title="err:XDST0022">err:XDST0022</a>] if the expanded QName of an index
+declared in an imported module is equal (as defined by the eq operator) to the
+expanded QName of an index declared in the importing module or in another
+imported module (even if the declarations are consistent).
 
-Zorba 1.0 defines three index properties: <strong>uniqueness</strong> (with possible values 'unique' or 'non unique'), <strong>usage</strong> (with possible values 'value range' or 'value equality'), and <strong>maintenance mode</strong> (with possible values 'manually maintained' or 'automatically maintained'). The syntax allows the values for these properties to be listed in any order or not be specified at all. If not specified, the default values for uniqueness, usage, and maintenance mode are 'non unique', 'value equality', and 'automatically maintained', respectively. It is a static error [<a href="#ERRXDST0024" title="err:XDST0024">err:XDST0024</a>] if more than one value is listed in an index declaration for any of these properties.
+Zorba 1.0 defines three index properties: <strong>uniqueness</strong> (with
+possible values 'unique' or 'non unique'), <strong>usage</strong> (with possible
+values 'value range' or 'value equality'), and <strong>maintenance mode</strong>
+(with possible values 'manually maintained' or 'automatically maintained'). The
+syntax allows the values for these properties to be listed in any order or not
+be specified at all. If not specified, the default values for uniqueness, usage,
+and maintenance mode are 'non unique', 'value equality', and 'automatically
+maintained', respectively. It is a static error [<a href="#ERRXDST0024"
+title="err:XDST0024">err:XDST0024</a>] if more than one value is listed in an
+index declaration for any of these properties.
 
-The uniqueness property determines the kind of relationship between keys (or key tuples, more generaly) and domain nodes: if the relationship is one-to-one, the index may be declared as unique; otherwise (one-to-N relationship), the index must be declared as non-unique. As we will see, a unique index actually enforces the one-to-one relationship between keys and domain nodes.
- 
-The usage property specifies the kind of query expressions that may be optimized by using the index. A <strong>value equality index</strong> can optimize expressions involving value equality predicates only. The "probe-1" and "no-probe-1" queries in \ref indexes_in_action are an example of such usage. As shown there, a value equality index supports the xqddf:probe-index-point function.  A value range index can optimize expressions involving any kind of value comparison. The "probe-2" and "no-probe-2" queries in \ref indexes_in_action are an example of such usage. A <strong>value range index</strong> supports both the xqddf:probe-index-point and the xqddf:probe-index-range functions.
+The uniqueness property determines the kind of relationship between keys (or key
+tuples, more generaly) and domain nodes: if the relationship is one-to-one, the
+index may be declared as unique; otherwise (one-to-N relationship), the index
+must be declared as non-unique. As we will see, a unique index actually enforces
+the one-to-one relationship between keys and domain nodes.
 
-The maintenance mode specifies how index maintenance is done. Zorba 1.0 offers two maintenance modes: manual and automatic. For a <strong>manual index</strong>, maintenance is done only when the function ddf:refresh-index (described in \ref index_maintenance) is invoked inside a query. Essentially, in manual mode maintenance is in the control of the query programmers, and the index may become stale between two consecutive calls to the ddf:refresh-index function. In contrast, for an <strong>automatic index</strong>, Zorba guarantees that the index stays up-to-date at any given time.
+The usage property specifies the kind of query expressions that may be optimized
+by using the index. A <strong>value equality index</strong> can optimize
+expressions involving value equality predicates only. The <a
+href="#query_probe_1" title="probe-1">"probe-1"</a> and <a
+href="#query_no_probe_1" title="no-probe-1">"no-probe-1"</a> queries in \ref
+indexes_in_action are an example of such usage. As shown there, a value equality
+index supports the <a href="#probe_index_point"
+title="xqddf:probe-index-point">xqddf:probe-index-point</a> function.  A value
+range index can optimize expressions involving any kind of value comparison. The
+<a href="#query_probe_2" title="probe-2">"probe-2"</a> and <a
+href="#query_no_probe_2" title="no-probe-2">"no-probe-2"</a> queries in \ref
+indexes_in_action are an example of such usage. A <strong>value range
+index</strong> supports both the <a href="#probe_index_point"
+title="xqddf:probe-index-point">xqddf:probe-index-point</a> and the <a
+href="#probe_index_range"
+title="xqddf:probe-index-range">xqddf:probe-index-range</a> functions.
 
-The index declaration syntax is very liberal with respect to the expressions that can appear as domain or key expressions. However, the following semantic restrictions are imposed by Zorba 1.0 on the domain expression and each of the key expressions:
+The maintenance mode specifies how index maintenance is done. Zorba 1.0 offers
+two maintenance modes: manual and automatic. For a <strong>manual
+index</strong>, maintenance is done only when the function <a
+href="#refresh_index" title="xqddf:refresh-index">xqddf:refresh-index</a>
+(described in \ref index_maintenance) is invoked inside a query. Essentially, in
+manual mode maintenance is in the control of the query programmers, and the
+index may become stale between two consecutive calls to the <a
+href="#refresh_index" title="xqddf:refresh-index">xqddf:refresh-index</a>
+function. In contrast, for an <strong>automatic index</strong>, Zorba guarantees
+that the index stays up-to-date at any given time.
+
+The index declaration syntax is very liberal with respect to the expressions
+that can appear as domain or key expressions. However, the following semantic
+restrictions are imposed by Zorba 1.0 on the domain expression and each of the
+key expressions:
   <ul>
-  <li>They must be deterministic expressions [<a href="#ERRXDST0028" title="err:XDST0028">err:XDST0028</a>].</li>
+  <li>They must be deterministic expressions [<a href="#ERRXDST0028"
+title="err:XDST0028">err:XDST0028</a>].</li>
   <li>They must be simple expressions (i.e., not updating or sequential)
       [<a href="#ERRXDST0033" title="err:XDST0033">err:XDST0033</a>].</li>
-  <li>They must not invoke any input functions other than <a href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a> 
-      [<a href="#ERRXDST0029" title="err:XDST0029">err:XDST0029</a>]. Moreover, the argument to each <a href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a> call must
-      be a constant expression returning a QName value [<a href="#ERRXDST0030" title="err:XDST0030">err:XDST0030</a>]. (A constant
+  <li>They must not invoke any input functions other than <a
+href="#xqddf_collection" title="xqddf:collection">xqddf:collection</a>
+      [<a href="#ERRXDST0029" title="err:XDST0029">err:XDST0029</a>]. Moreover,
+the argument to each <a href="#xqddf_collection"
+title="xqddf:collection">xqddf:collection</a> call must
+      be a constant expression returning a QName value [<a href="#ERRXDST0030"
+title="err:XDST0030">err:XDST0030</a>]. (A constant
       expression is an expression that doesn't access the dynamic context).</li>
-  <li>They must not reference and variables other than the ones defined inside the
-      expressions themselves [<a href="#ERRXDST0031" title="err:XDST0031">err:XDST0031</a>].</li>
+  <li>They must not reference and variables other than the ones defined inside
+the
+      expressions themselves [<a href="#ERRXDST0031"
+title="err:XDST0031">err:XDST0031</a>].</li>
   <li>If the index is declared as "automatically maintained", an error is raised
-      [<a href="#ERRXDST0034" title="err:XDST0034">err:XDST0034</a>] if the domain and/or the key expressions are too complex for
+      [<a href="#ERRXDST0034" title="err:XDST0034">err:XDST0034</a>] if the
+domain and/or the key expressions are too complex for
       Zorba to perform index maintenance in an efficient manner (see \ref 
       index_maintenance for details)
   </ul>
 
-Furthermore, the domain expression must satisfy the following additional semantic
+Furthermore, the domain expression must satisfy the following additional
+semantic
 restrictions:
 
   <ul>
-  <li>Its context item, context position, and context size are considered undefined, and as a result they must not be referenced [<a href="#ERRXDST0032" title="err:XDST0032">err:XDST0032</a>].</li>
-  <li>It must generate a sequence of nodes [<a href="#ERRXDTY0010" title="err:XDTY0010">err:XDTY0010</a>].</li>
-  <li>Each node in the domain sequence must belong to a collection that appears in the available collections of the module that contains the index declaration [<a href="#ERRXDDY0020" title="err:XDDY0020">err:XDDY0020</a>].</li>
+  <li>Its context item, context position, and context size are considered
+undefined, and as a result they must not be referenced [<a href="#ERRXDST0032"
+title="err:XDST0032">err:XDST0032</a>].</li>
+  <li>It must generate a sequence of nodes [<a href="#ERRXDTY0010"
+title="err:XDTY0010">err:XDTY0010</a>].</li>
+  <li>Each node in the domain sequence must belong to a collection that appears
+in the available collections of the module that contains the index declaration
+[<a href="#ERRXDDY0020" title="err:XDDY0020">err:XDDY0020</a>].</li>
   </ul>
 
-With each key expression, an index declaration associates a key type and a key collation. The triplet IndexKeyExpr, IndexKeyTypeDecl, IndexKeyCollation is called a <strong>keyspec</strong>. The IndexKeyTypeDecl provides an atomic type that the result of the associated key expression (for each domain node) must match with according to the rules of sequence type matching. This atomic type must not be xs:untypedAtomic or xs:anyAtomicType [<a href="#ERRXDST0027" title="err:XDST0027">err:XDST0027</a>]. Furthermore, if the index is a value range one, an ordering must exist among the values in the type domain [<a href="#ERRXDST0027" title="err:XDST0027">err:XDST0027</a>] (this rules excludes the following atomic types and their subtypes: QName, NOTATION, hexBinary, hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). If the key type in a keyspec is xs:string (or subtype of), the IndexKeyCollation specifies the collation to use when comparing key values from this keyspec. If no collation is specified, the default collation from the static context of the declaring module is used.
+With each key expression, an index declaration associates a key type and a key
+collation. The triplet IndexKeyExpr, IndexKeyTypeDecl, IndexKeyCollation is
+called a <strong>keyspec</strong>. The IndexKeyTypeDecl provides an atomic type
+that the result of the associated key expression (for each domain node) must
+match with according to the rules of sequence type matching. This atomic type
+must not be xs:untypedAtomic or xs:anyAtomicType [<a href="#ERRXDST0027"
+title="err:XDST0027">err:XDST0027</a>]. Furthermore, if the index is a value
+range one, an ordering must exist among the values in the type domain [<a
+href="#ERRXDST0027" title="err:XDST0027">err:XDST0027</a>] (this rules excludes
+the following atomic types and their subtypes: QName, NOTATION, hexBinary,
+hex64Binary, gYearMonth, gYear, gMonthDay, gMonth, and gDay). If the key type in
+a keyspec is xs:string (or subtype of), the IndexKeyCollation specifies the
+collation to use when comparing key values from this keyspec. If no collation is
+specified, the default collation from the static context of the declaring module
+is used.
 
 \subsection index_creation 2.3 Index creation
 
-As explained already, indexes are just sets of index entries, mapping key tuples to domain nodes. In terms of the XQuery language, these sets "live" in the dynamic context. In particular, XQDDF extends the dynamic context with a component called the <strong>available indexes</strong>. This is a map whose entries associate the expanded QName of an index with the entry set of the index. If an entry for an index appears in the available indexes of a module, the index is said to be available to that module.
+As explained already, indexes are just sets of index entries, mapping key tuples
+to domain nodes. In terms of the XQuery language, these sets "live" in the
+dynamic context. In particular, XQDDF extends the dynamic context with a
+component called the <strong>available indexes</strong>. This is a map whose
+entries associate the expanded QName of an index with the entry set of the
+index. If an entry for an index appears in the available indexes of a module,
+the index is said to be available to that module.
 
-In practice, the available indexes component is implemented by Zorba's storage system. To begin with, each index entry set is implemented by some appropriate data structure that acts as an index entry container. The description of potential data structures is beyond the scope of this document, but the typical choices are either some sort of hash table (for equality indexes) or some kind of ordered tree (for range indexes). In addition to managing the index entry containers, the store maintains an <strong>indexes table</strong>, which maps index names to index entry containers. The indexes table is accessible by all queries, so once an entry is added to the table, the associated index is assumed to be available to every query and every module that participates in the execution of that query.
+In practice, the available indexes component is implemented by Zorba's storage
+system. To begin with, each index entry set is implemented by some appropriate
+data structure that acts as an index entry container. The description of
+potential data structures is beyond the scope of this document, but the typical
+choices are either some sort of hash table (for equality indexes) or some kind
+of ordered tree (for range indexes). In addition to managing the index entry
+containers, the store maintains an <strong>indexes table</strong>, which maps
+index names to index entry containers. The indexes table is accessible by all
+queries, so once an entry is added to the table, the associated index is assumed
+to be available to every query and every module that participates in the
+execution of that query.
 
-Creation of an index involves creating an initially empty index entry container, populating that container with the entries computed by the domain and key expressions of the index, and âregisteringâ that container in the indexes table. All this is done by the xqddf:create-index function that is described below. In fact, xqddf:create-index is an updating function, so instead of actually creating the index, it generates a pending update primitive that becomes part of a pending update list (PUL) to be applied at a later time (see Extensions to the XQUF updates routines). The update primitive is also described below.
+Creation of an index involves creating an initially empty index entry container,
+populating that container with the entries computed by the domain and key
+expressions of the index, and "registering" that container in the indexes table.
+All this is done by the <a href="#create_index"
+title="xqddf:create-index">xqddf:create-index</a> function that is described
+below. In fact, <a href="#create_index"
+title="xqddf:create-index">xqddf:create-index</a> is an updating function, so
+instead of actually creating the index, it generates a pending update primitive
+that becomes part of a pending update list (PUL) to be applied at a later time
+(see Extensions to the XQUF updates routines). The update primitive is also
+described below.
 
+<a name="create_index" id="create_index"></a>
 \code
   declare updating function xqddf:create-index($indexName as xs:QName)
 
@@ -721,9 +1513,15 @@ Creation of an index involves creating an initially empty index entry container,
 The create-index function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify an index among the statically known indexes in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
-  <li>If the given expanded QName identifies a collection that is available already, an error is raised [<a href="#ERRXDDY0022" title="err:XDDY0022">err:XDDY0022</a>].</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:createIndex($indexName).</li>
+  <li>If the given expanded QName does not identify an index among the
+statically known indexes in the static context of the invoking module, an error
+is raised [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
+  <li>If the given expanded QName identifies a collection that is available
+already, an error is raised [<a href="#ERRXDDY0022"
+title="err:XDDY0022">err:XDDY0022</a>].</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:createIndex($indexName).</li>
   </ul>
 
 The update primitive is applied as follows:
@@ -740,14 +1538,37 @@ The update primitive is applied as follows:
     err:XDDY0020</a>] (the purpose of this rule is to prevent nodes constructed
     by node construction expression to appear as domain nodes).</li>
 <li>For each node D in the domain sequence, the IndexKeySpecs are evaluated in
-     some implementation dependent order. An IndexKeySpec is evaluated as follows:</li>
+     some implementation dependent order. An IndexKeySpec is evaluated as
+follows:</li>
     <ul>
-    <li>The key expression in the IndexKeySpec is evaluated, with D serving as its context item.</li>
+    <li>The key expression in the IndexKeySpec is evaluated, with D serving as
+its context item.</li>
     <li>Atomization is applied to the result of the key expression.</li>
-    <li>The result of atomization is matched against the atomic type in the IndexKeyTypeDecl. In other words, the result of atomization is treated as the input to a "treat as" expression whose target type is type declared in the IndexKeyTypeDecl. If the type match fails, an error is raised [<a href="#ERRXDTY0011" title="err:XDTY0011">err:XDTY0011</a>]. Otherwise, the result of this step will be a single atomic item. We call this item a <strong>key item</strong>.</li>
-  <li>Let D<sub>i</sub> be the i-th domain node, and K<sub>ij</sub> be the key item computed for D<sub>i</sub> by the j-th IndexKeySpec (where the numbering of the IndexKeySpecs is done using their order of appearance in the index declaration). Let K<sub>i</sub> be the tuple [K<sub>i1</sub>, ..., K<sub>iM</sub>], where M is the number of IndexKeySpecs. The next step is to insert in the index a mapping from K<sub>i</sub> to D<sub>i</sub>. This step will be performed for each node in the domain sequence. The order in which the domain sequence is processed is implementation dependent.</li>
-    <li>If the index is declared as unique, the relationship between between key tuples and domain nodes is one-to-one. In this case, if the index already contains an entry whose key tuple is equal to K<sub>i</sub>, an error is raised [<a href="#ERRXDDY0024" title="err:XDDY0024">err:XDDY0024</a>]. Otherwise, the entry [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container.</li>
-    <li>If the index is non-unique, it maps key tuples to sets of domain items. In this case, if the index already contains an entry whose key is equal to K<sub>i</sub>, D<sub>i</sub> is added to the set associated with K<sub>i</sub>. Otherwise, the entry [K<sub>i</sub>, { D<sub>i</sub> }] is inserted in the index.</li>
+    <li>The result of atomization is matched against the atomic type in the
+IndexKeyTypeDecl. In other words, the result of atomization is treated as the
+input to a "treat as" expression whose target type is type declared in the
+IndexKeyTypeDecl. If the type match fails, an error is raised [<a
+href="#ERRXDTY0011" title="err:XDTY0011">err:XDTY0011</a>]. Otherwise, the
+result of this step will be a single atomic item. We call this item a
+<strong>key item</strong>.</li>
+  <li>Let D<sub>i</sub> be the i-th domain node, and K<sub>ij</sub> be the key
+item computed for D<sub>i</sub> by the j-th IndexKeySpec (where the numbering of
+the IndexKeySpecs is done using their order of appearance in the index
+declaration). Let K<sub>i</sub> be the tuple [K<sub>i1</sub>, ...,
+K<sub>iM</sub>], where M is the number of IndexKeySpecs. The next step is to
+insert in the index a mapping from K<sub>i</sub> to D<sub>i</sub>. This step
+will be performed for each node in the domain sequence. The order in which the
+domain sequence is processed is implementation dependent.</li>
+    <li>If the index is declared as unique, the relationship between between key
+tuples and domain nodes is one-to-one. In this case, if the index already
+contains an entry whose key tuple is equal to K<sub>i</sub>, an error is raised
+[<a href="#ERRXDDY0024" title="err:XDDY0024">err:XDDY0024</a>]. Otherwise, the
+entry [K<sub>i</sub>, D<sub>i</sub>] is inserted in the index container.</li>
+    <li>If the index is non-unique, it maps key tuples to sets of domain items.
+In this case, if the index already contains an entry whose key is equal to
+K<sub>i</sub>, D<sub>i</sub> is added to the set associated with K<sub>i</sub>.
+Otherwise, the entry [K<sub>i</sub>, { D<sub>i</sub> }] is inserted in the
+index.</li>
     </ul>
 <li>A entry is added to the indexes table. The entry maps the expanded QName of
     the index to the index entry container.</li>
@@ -755,8 +1576,10 @@ The update primitive is applied as follows:
 
 \subsection index_deletion 2.4 Index deletion
 
-To destroy an index, XQDDF provides the delete-index updating function. The function itself and its associated update primitive are described below.
+To destroy an index, XQDDF provides the delete-index updating function. The
+function itself and its associated update primitive are described below.
 
+<a name="delete_index" id="delete_index"></a>
 \code
   declare updating function xqddf:delete-index($indexName as xs :QName)
 
@@ -766,24 +1589,40 @@ To destroy an index, XQDDF provides the delete-index updating function. The func
 The delete-index function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify an index among the statically known indexes in the static context of the invoking module, an error is raised [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
-  <li>If the given expanded QName does not identify an index among the available indexes in the dynamic context of the invoking module, an error is raised [<a href="#ERRXDDY0023" title="err:XDDY0023">err:XDDY0023</a>].</li>
-  <li>The result of the function is an empty XDM instance and a pending update list that consists of a single update primitive: upd:deleteIndex($indexName).</li>
+  <li>If the given expanded QName does not identify an index among the
+statically known indexes in the static context of the invoking module, an error
+is raised [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
+  <li>If the given expanded QName does not identify an index among the available
+indexes in the dynamic context of the invoking module, an error is raised [<a
+href="#ERRXDDY0023" title="err:XDDY0023">err:XDDY0023</a>].</li>
+  <li>The result of the function is an empty XDM instance and a pending update
+list that consists of a single update primitive:
+upd:deleteIndex($indexName).</li>
   </ul>
 
 The update primitive is applied as follows:
 
   <ul>
-  <li>The index entry container for the index is found via the indexes table.</li>
+  <li>The index entry container for the index is found via the indexes
+table.</li>
   <li>All entries in the container are destroyed.</li>
   <li>The container itself is destroyed.</li>
-  <li>The entry mapping the index name to the index entry container is removed from the indexes table.</li>
+  <li>The entry mapping the index name to the index entry container is removed
+from the indexes table.</li>
   </ul>
 
 \subsection index_probing 2.5 Index probing
 
-Probing an index means retrieving the domain nodes associated with a particular search condition, which is either a single key tuple, or a "range" of key tuples. Probing can be done via the xqddf functions probe-index-point or probe-index-range. Both functions accept a variable number of arguments. The first argument is always a QName identifying an index. The rest of the arguments specify the search condition. For both functions, the index must exist in both the statically known indexes and the available indexes of the invoking module; otherwise error XDDY0021 or XDDY0023 is raised, respectively.
+Probing an index means retrieving the domain nodes associated with a particular
+search condition, which is either a single key tuple, or a "range" of key
+tuples. Probing can be done via the xqddf functions xqddf:probe-index-point or
+probe-index-range. Both functions accept a variable number of arguments. The
+first argument is always a QName identifying an index. The rest of the arguments
+specify the search condition. For both functions, the index must exist in both
+the statically known indexes and the available indexes of the invoking module;
+otherwise error XDDY0021 or XDDY0023 is raised, respectively.
 
+<a name="probe_index_point" id="probe_index_point"></a>
 \code
   xqddf:probe-index-point($indexUri as xs:QName,
                           $key1     as xs:anyAtomic,
@@ -791,8 +1630,14 @@ Probing an index means retrieving the domain nodes associated with a particular 
                           $keyM     as xs:anyAtomic) as node()*
 \endcode
 
-For the probe-index-point function, the search condition is specified as a number of atomic items comprising a key tuple. This number must be equal to the number of indexspecs found in the index declaration [<a href="#ERRXDDY0025" title="err:XDDY0025">err:XDDY0025</a>]. If the index contains an entry with the given key tuple, the associated domain nodes are returned. Otherwise, the empty sequence is returned.
-  
+For the probe-index-point function, the search condition is specified as a
+number of atomic items comprising a key tuple. This number must be equal to the
+number of indexspecs found in the index declaration [<a href="#ERRXDDY0025"
+title="err:XDDY0025">err:XDDY0025</a>]. If the index contains an entry with the
+given key tuple, the associated domain nodes are returned. Otherwise, the empty
+sequence is returned.
+
+<a name="probe_index_range" id="probe_index_range"></a>
 \code
   probe-index-range($indexUri                 as xs:QName,
                     $rangeLowerBound1         as xs:anyAtomic?,
@@ -810,23 +1655,60 @@ For the probe-index-point function, the search condition is specified as a numbe
                     $rangeupperBoundIncludedM as xs:boolean) as node()*
 \endcode
 
-The probe-index-range function can be invoked on value range indices only [<a href="#ERRXDDY0026" title="err:XDDY0026">err:XDDY0026</a>]. To describe the semantics of this function, we start by defining the i<sup>th</sup> <strong>key column</strong> of an index as the set of key items produced by evaluating the i<sup>th</sup> keyspec of the index for every domain node. Then, the search condition of a range probe can be defined as a number of <strong>rangespecs</strong>, where a rangespec describes a constraint on the values of a key column. The first rangespec applies to the first key column, the second rangespec to the second key column, etc. The number of rangespecs must be less or equal to the number of keyspecs found in the declaration of the given index [<a href="#ERRXDDY0025" title="err:XDDY0025">err:XDDY0025</a>]. Each rangespec consists of 6 values:
+The probe-index-range function can be invoked on value range indices only [<a
+href="#ERRXDDY0026" title="err:XDDY0026">err:XDDY0026</a>]. To describe the
+semantics of this function, we start by defining the i<sup>th</sup> <strong>key
+column</strong> of an index as the set of key items produced by evaluating the
+i<sup>th</sup> keyspec of the index for every domain node. Then, the search
+condition of a range probe can be defined as a number of
+<strong>rangespecs</strong>, where a rangespec describes a constraint on the
+values of a key column. The first rangespec applies to the first key column, the
+second rangespec to the second key column, etc. The number of rangespecs must be
+less or equal to the number of keyspecs found in the declaration of the given
+index [<a href="#ERRXDDY0025" title="err:XDDY0025">err:XDDY0025</a>]. Each
+rangespec consists of 6 values:
   <ul>
   <li>rangeLowerBound : The lower bound in a range of key values.</li>
   <li>rangeUpperBound : The upper bound in a range of key values.</li>
-  <li>rangeHaveLowerBound : If false, then there is no lower bound, or equivalently, the lower bound is -INFINITY (the actual rangeLowerBound value is ignored). Otherwise, the lower bound is the one given by the rangeLowerBound value. The <strong>effective lower bound</strong> of the range is either the rangeLowerBound if rangeHaveLowerBound is true, or -INFINITY if rangeHaveLowerBound is false.</li>
-  <li>rangeHaveUpperBound : If false, then there is no upper bound, or equivalently, the upper bound is +INFINITY (the actual rangeUpperBound value is ignored). Otherwise, the upper bound is the one given by the rangeUpperBound value. The <strong>effective upper bound</strong> of the range is either the rangeUpperBound if rangeHaveUpperBound is true, or +INFINITY if rangeHaveUpperBound is false.</li>
-  <li>rangeLowerBoundIncluded : If false, then the range is open from below, i.e., the rangeLowerBound value is not considered part of the range. Otherwise, the range is closed from below, i.e., the rangeLowerBound value is part of the range.</li>
-  <li>rangeUpperBoundIncluded : If false, then the range is open from above, i.e., the rangeUpperBound value is not considered part of the range. Otherwise, the range is closed from above, i.e., the rangeUpperBound value is part of the range.</li>
+  <li>rangeHaveLowerBound : If false, then there is no lower bound, or
+equivalently, the lower bound is -INFINITY (the actual rangeLowerBound value is
+ignored). Otherwise, the lower bound is the one given by the rangeLowerBound
+value. The <strong>effective lower bound</strong> of the range is either the
+rangeLowerBound if rangeHaveLowerBound is true, or -INFINITY if
+rangeHaveLowerBound is false.</li>
+  <li>rangeHaveUpperBound : If false, then there is no upper bound, or
+equivalently, the upper bound is +INFINITY (the actual rangeUpperBound value is
+ignored). Otherwise, the upper bound is the one given by the rangeUpperBound
+value. The <strong>effective upper bound</strong> of the range is either the
+rangeUpperBound if rangeHaveUpperBound is true, or +INFINITY if
+rangeHaveUpperBound is false.</li>
+  <li>rangeLowerBoundIncluded : If false, then the range is open from below,
+i.e., the rangeLowerBound value is not considered part of the range. Otherwise,
+the range is closed from below, i.e., the rangeLowerBound value is part of the
+range.</li>
+  <li>rangeUpperBoundIncluded : If false, then the range is open from above,
+i.e., the rangeUpperBound value is not considered part of the range. Otherwise,
+the range is closed from above, i.e., the rangeUpperBound value is part of the
+range.</li>
   </ul>
 
-If the number of rangespecs is less than the number of key columns, then the missing rangespecs are assumed to have the following value: [(), (), false, false, false, false].
+If the number of rangespecs is less than the number of key columns, then the
+missing rangespecs are assumed to have the following value: [(), (), false,
+false, false, false].
 
-A key tuple K = [k<sub>1</sub>, ..., k<sub>M</sub>] satisfies a range search condition if for each i = 1, 2, ..., M the following is true:
+A key tuple K = [k<sub>1</sub>, ..., k<sub>M</sub>] satisfies a range search
+condition if for each i = 1, 2, ..., M the following is true:
 
-effectiveLowerBound<sub>i</sub>  lOp  k<sub>i</sub>  uOp  effectiveUpperBound<sub>i</sub>
+effectiveLowerBound<sub>i</sub>  lOp  k<sub>i</sub>  uOp 
+effectiveUpperBound<sub>i</sub>
 
-where lOp (uOp) is either the le operator if rangeLowerBoundIncluded<sub>i</sub> (rangeUpperBoundIncluded<sub>i</sub>) is true, or the lt operator if rangeLowerBoundIncluded<sub>i</sub> (rangeUpperBoundIncluded<sub>i</sub>) is false. The index-probe-range function finds all key tuples in the index that satisfy the given search condition, creates the union of the domain nodes associated with each such key tuple, puts the resulting sequence of nodes in document order, and finally returns this sequence to its caller.
+where lOp (uOp) is either the le operator if rangeLowerBoundIncluded<sub>i</sub>
+(rangeUpperBoundIncluded<sub>i</sub>) is true, or the lt operator if
+rangeLowerBoundIncluded<sub>i</sub> (rangeUpperBoundIncluded<sub>i</sub>) is
+false. The index-probe-range function finds all key tuples in the index that
+satisfy the given search condition, creates the union of the domain nodes
+associated with each such key tuple, puts the resulting sequence of nodes in
+document order, and finally returns this sequence to its caller.
 
 
 \subsection index_maintenance 2.6 Index maintenance
@@ -834,13 +1716,14 @@ where lOp (uOp) is either the le operator if rangeLowerBoundIncluded<sub>i</sub>
 
 An index is said to be up-to-date if its contents reflect the index definition
 on the current data snapshot, i.e., the contents are the same as those that
-would be produced if the xqddf:create-index function was invoked on the same
-index and with the same underlying data. An index is said to be stale if it is
-not up-to-date. Indexes become stale when documents in collections are updated
-or when documents are inserted/removed in/from collections. <strong>Index
-maintenance</strong> is the operation by which stale index contents are updated
-so that the index becomes up-to-date. Zorba 1.0 offers two maintenance modes:
-manual and automatic. 
+would be produced if the
+<a href="#create_index" title="xqddf:create-index">xqddf:create-index</a>
+function was invoked on the same index and with the same underlying data.
+An index is said to be stale if it is not up-to-date. Indexes become stale when
+documents in collections are updated or when documents are inserted/removed
+in/from collections. <strong>Index maintenance</strong> is the operation by
+which stale index contents are updated so that the index becomes up-to-date.
+Zorba 1.0 offers two maintenance modes: manual and automatic.
 
 If an index is declared as "automatically maintained", Zorba guarantees that
 every time a PUL is applied, the index is made up-to-date before the 
@@ -864,7 +1747,7 @@ automatically. However, even for automatically maintainable indexes, the
 manual mode may be preferable if users can tolerate a stale index in return
 for better performance during updates. 
 
-
+<a name="refresh_index" id="refresh_index"></a>
 \code
   declare updating function xqddf:refresh-index($indexName as xs:QName)
 
@@ -874,56 +1757,77 @@ for better performance during updates.
 The refresh-index function is evaluated as follows:
 
   <ul>
-  <li>If the given expanded QName does not identify an index among the statically
+  <li>If the given expanded QName does not identify an index among the
+statically
       known indexes in the static context of the invoking module, an error is 
-      raised [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
+      raised [<a href="#ERRXDDY0021"
+title="err:XDDY0021">err:XDDY0021</a>].</li>
   <li>If the given expanded QName does not identify an index among the available
       indexes in the dynamic context of the invoking module, an error is raised
       [<a href="#ERRXDDY0023" title="err:XDDY0023">err:XDDY0023</a>].</li>
   <li>The result of the function is an empty XDM instance and a pending update
-      list that consists of a single update primitive: upd:refreshIndex($indexName).</li>
+      list that consists of a single update primitive:
+upd:refreshIndex($indexName).</li>
   </ul>
 
 The update primitive is applied as follows:
 
   <ul>
-  <li>The index entry container for the index is found via the indexes table.</li>
+  <li>The index entry container for the index is found via the indexes
+table.</li>
   <li>The container is made up-to-date in some implementation dependent way. In
       Zorba 1.0, this is done by discarding the current contents and rebuilding
-      the index from scratch (the same way as the create-index function populates
-      an empty index container).</li>
+      the index from scratch (the same way as the
+<a href="#create_index" title="xqddf:create-index">xqddf:create-index</a>
+function populates an empty index container).</li>
   </ul>
 
 
 \section integrity_constraints 3 Integrity Constraints in Zorba 1.0
 
 Analogously to collections and indexes, XQDDF defines an additional extension to
-XQuery library modules which allows the declaration of (static) integrity constraints
-(ICs). Static ICs can be used to ensure that, in every moment in time, all data which is
-stored in collections is accurate and consistent according to the semantics of an
+XQuery library modules which allows the declaration of (static) integrity
+constraints
+(ICs). Static ICs can be used to ensure that, in every moment in time, all data
+which is
+stored in collections is accurate and consistent according to the semantics of
+an
 application.
 Note that XQDDF doesn't define any dynamic integrity constraints which check
 the validity of a particular update.
 As in the relational world, XQDDF defines several types of ICs: Entity,
-Domain, and Referential ICs. Entity ICs check for the accuracy and consistency of all
-nodes in a collection. For instance, a special case of the Entity IC is the IC that
-checks for unique keys among all nodes in a collection. The Domain IC validates that
-each node in a collection satisfies a given expression. The Referential IC is used to
+Domain, and Referential ICs. Entity ICs check for the accuracy and consistency
+of all
+nodes in a collection. For instance, a special case of the Entity IC is the IC
+that
+checks for unique keys among all nodes in a collection. The Domain IC validates
+that
+each node in a collection satisfies a given expression. The Referential IC is
+used to
 ensure a foreign key relationship between the nodes in two collections.
 
-In this section, we describe how such ICs are declared in a library module and how a
-particular IC can be (de-)activated. All ICs are described using examples for the news
-application. Specifically, we declare ICs for the data stored in the news-data:employees
+In this section, we describe how such ICs are declared in a library module and
+how a
+particular IC can be (de-)activated. All ICs are described using examples for
+the news
+application. Specifically, we declare ICs for the data stored in the
+news-data:employees
 and the news-data:articles collections.
 
 \subsection ic_declaration 3.1 Declaration
 
-As for collections and indexes, ICs must be declared before the user can activate
-them. An IC declaration specifies (1) the name of the IC for being used by function
-call to (de-)activate it (see next section), (2) the name of the collection(s) whose
-data should be validated, and (3) the expression(s) that guarantee the accuracy and
-consistency of the data. Analogously to indexes, ICs are declared inside the prolog
-of the library module that declares the collection(s) which is/are referenced by the
+As for collections and indexes, ICs must be declared before the user can
+activate
+them. An IC declaration specifies (1) the name of the IC for being used by
+function
+call to (de-)activate it (see next section), (2) the name of the collection(s)
+whose
+data should be validated, and (3) the expression(s) that guarantee the accuracy
+and
+consistency of the data. Analogously to indexes, ICs are declared inside the
+prolog
+of the library module that declares the collection(s) which is/are referenced by
+the
 IC.
 
 \subsubsection ic_entity_integrity Entity Integrity
@@ -933,9 +1837,9 @@ states that the value of the id attribute of each employee is unique among all
 other nodes in the news-data:employees collection.
 
 \code
-declare integrity constraint news-data:UniqueId
-  on collection news-data:employees
-  node $id check unique key $id/@id;
+  declare integrity constraint news-data:UniqueId
+    on collection news-data:employees
+    node $id check unique key $id/@id;
 \endcode
 
 The name of the collection is specified after the "on collection" keyword. The
@@ -955,9 +1859,9 @@ of an article is not the zero length string. This can be particularly useful
 since there is no XML schema for articles.
 
 \code
-declare integrity constraint news-data:AuthorNames
-  on collection news-data:article
-  foreach node $article check fn:string-length($article/author/name) != 0;
+  declare integrity constraint news-data:AuthorNames
+    on collection news-data:article
+    foreach node $article check fn:string-length($article/author/name) != 0;
 \endcode
 
 The name of the IC is news-data:AuthorNames and it is defined on nodes
@@ -977,10 +1881,10 @@ IC. In the following example, this IC is given the name
 news-data:ArticleEmployees.
 
 \code
-declare integrity constraint news-data:ArticleEmployees
-  foreign key
-    from collection news-data:articles node $x key $x/empid
-    to   collection news-data:employees node $y key fn:data($y/@id);
+  declare integrity constraint news-data:ArticleEmployees
+    foreign key
+      from collection news-data:articles node $x key $x/empid
+      to   collection news-data:employees node $y key fn:data($y/@id);
 \endcode
 
 The QName following the "from collection" and "to collection" keywords specify
@@ -992,55 +1896,72 @@ is not the case for any node in the source collection. This semantics is
 equivalent to the following XQuery expression.
 
 \code
-every $x in xqddf:collection(xs:QName(ânews-data:articlesâ))
-satisfies
-  some $y in xqddf:collection(xs:QName(ânews-data:employeesâ))
-  satisfies $y/id eq $x//sale/empid
+  every $x in xqddf:collection(xs:QName("news-data:articles"))
+  satisfies
+    some $y in xqddf:collection(xs:QName("news-data:employees"))
+    satisfies $y/id eq $x//sale/empid
 \endcode
 
 \subsection ic_life_cycle 3.2 Life Cycle Management
 
-ICs can be checked manually (if requested by the user) or automatically on updates
+ICs can be checked manually (if requested by the user) or automatically on
+updates
 apply time, after validation and indexes are computed. In order to be checked
 automatically, an IC needs to be active. ICs can be (de-)activated using the two
 updating functions xqddf:activate-integrity-constraint and
-xqddf:deactivate-integrity-constraint, respectively. Each function takes the name of
-the IC to (de-)activate as parameter. The flag indicating whether an IC is active or
+xqddf:deactivate-integrity-constraint, respectively. Each function takes the
+name of
+the IC to (de-)activate as parameter. The flag indicating whether an IC is
+active or
 not is stored in the dynamic context.
 
 Deactivating an IC might be useful if the corresponding check is expensive and,
 hence, inconsistency of the data might be acceptable and only checked (and fixed
-manually) from time to time. To check an IC manually, the XQDDF defines an updating
-function called check-integrity-constraint which triggers the IC, identified by a
+manually) from time to time. To check an IC manually, the XQDDF defines an
+updating
+function called check-integrity-constraint which triggers the IC, identified by
+a
 QName passed as parameter, to be checked.
 
-Similar to collections and indexes, the module declaring the integrity constraints
+Similar to collections and indexes, the module declaring the integrity
+constraints
 (i.e. with namespace http://www.news.org/data) can also declare variables whoes
-values are the QNames of the ICs. This allows their names to be easily referenced by
-subsequent expressions. For example, such a variable can be passed as a parameter to
-the activate-integrity-constraint in the importing admin-script module (see above).
+values are the QNames of the ICs. This allows their names to be easily
+referenced by
+subsequent expressions. For example, such a variable can be passed as a
+parameter to
+the activate-integrity-constraint in the importing admin-script module (see
+above).
 For the ICs from the section above, those variables are declared as follows:
 
 \code
-declare variable $news-data:UniqueId := xs:QName("news-data:UniqueId");
-declare variable $news-data:AuthorName := xs:QName("news-data:AuthorNames");
-declare variable $news-data:ArticleEmployees := xs:QName("news-data:ArticleEmployees");
+  declare variable $news-data:UniqueId := xs:QName("news-data:UniqueId");
+  declare variable $news-data:AuthorName := xs:QName("news-data:AuthorNames");
+  declare variable $news-data:ArticleEmployees :=
+  xs:QName("news-data:ArticleEmployees");
 \endcode
 
 
-\section extensions_xquf_updates_routines 4 Extensions to the XQUF updates routines
+\section extensions_xquf_updates_routines 4 Extensions to the XQUF updates
+routines
 
 \subsection upd_merge_updates upd:mergeUpdates
 
-The XQuery Update Facility specification lists a number of errors that may be raised
-by the upd:mergeUpdates routine. XQDDF adds the following error conditions to this list:
+The XQuery Update Facility specification lists a number of errors that may be
+raised
+by the upd:mergeUpdates routine. XQDDF adds the following error conditions to
+this list:
 
 <ul>
-<li>An error is raised [<a href="#ERRXDDY0016" title="err:XDDY0016">err:XDDY0016</a>]
-    if two or more upd:createCollection primitives having the same QName as argument
+<li>An error is raised [<a href="#ERRXDDY0016"
+title="err:XDDY0016">err:XDDY0016</a>]
+    if two or more upd:createCollection primitives having the same QName as
+argument
     appear in the merged list.</li>
-<li>An error is raised [<a href="#ERRXDDY0027" title="err:XDDY0027">err:XDDY0027</a>]
-    if two or more upd:createIndex primitives having the same QName as argument appear
+<li>An error is raised [<a href="#ERRXDDY0027"
+title="err:XDDY0027">err:XDDY0027</a>]
+    if two or more upd:createIndex primitives having the same QName as argument
+appear
     in the merged list.</li>
 </ul>
 
@@ -1053,127 +1974,184 @@ by the upd:mergeUpdates routine. XQDDF adds the following error conditions to th
 <p>XQuery Data Definition Facility - Static Errors:</p>
 
 <strong>
-  <a name="ERRXDST0001" id="ERRXDST0001"></a>err:XDST0001, A collection with name is already declared in the same module.
+  <a name="ERRXDST0001" id="ERRXDST0001"></a>err:XDST0001, A collection with
+name is already declared in the same module.
 
-  <a name="ERRXDST0002" id="ERRXDST0002"></a>err:XDST0002, A collection with name that is imported from module is already declared in the importing module.
+  <a name="ERRXDST0002" id="ERRXDST0002"></a>err:XDST0002, A collection with
+name that is imported from module is already declared in the importing module.
 
-  <a name="ERRXDST0003" id="ERRXDST0003"></a>err:XDST0003, A collection declaration cannot appear in a main module.
+  <a name="ERRXDST0003" id="ERRXDST0003"></a>err:XDST0003, A collection
+declaration cannot appear in a main module.
 
-  <a name="ERRXDST0004" id="ERRXDST0004"></a>err:XDST0004, The declaration for collection specifies multiple values for the same property.
+  <a name="ERRXDST0004" id="ERRXDST0004"></a>err:XDST0004, The declaration for
+collection specifies multiple values for the same property.
 
-  <a name="ERRXDST0005" id="ERRXDST0005"></a>err:XDST0005, The declaration for collection specifies conflicting property values.
+  <a name="ERRXDST0005" id="ERRXDST0005"></a>err:XDST0005, The declaration for
+collection specifies conflicting property values.
 
-  <a name="ERRXDST0006" id="ERRXDST0006"></a>err:XDST0006, The declaration for collection contains an invalid property value.
+  <a name="ERRXDST0006" id="ERRXDST0006"></a>err:XDST0006, The declaration for
+collection contains an invalid property value.
 
-  <a name="ERRXDST0021" id="ERRXDST0021"></a>err:XDST0021, An index with name is already declared in the same module.
+  <a name="ERRXDST0021" id="ERRXDST0021"></a>err:XDST0021, An index with name is
+already declared in the same module.
 
-  <a name="ERRXDST0022" id="ERRXDST0022"></a>err:XDST0022, An index with name that is imported from module /s is already declared in the importing module.
+  <a name="ERRXDST0022" id="ERRXDST0022"></a>err:XDST0022, An index with name
+that is imported from module /s is already declared in the importing module.
 
-  <a name="ERRXDST0023" id="ERRXDST0023"></a>err:XDST0023, An index declaration cannot appear in a main module.
+  <a name="ERRXDST0023" id="ERRXDST0023"></a>err:XDST0023, An index declaration
+cannot appear in a main module.
 
-  <a name="ERRXDST0024" id="ERRXDST0024"></a>err:XDST0024, The declaration for index specifies multiple values for the same property.
+  <a name="ERRXDST0024" id="ERRXDST0024"></a>err:XDST0024, The declaration for
+index specifies multiple values for the same property.
 
-  <a name="ERRXDST0025" id="ERRXDST0025"></a>err:XDST0025, The declaration for index specifies conflicting property values.
+  <a name="ERRXDST0025" id="ERRXDST0025"></a>err:XDST0025, The declaration for
+index specifies conflicting property values.
 
-  <a name="ERRXDST0026" id="ERRXDST0026"></a>err:XDST0026, The declaration for index contains an invalid property value.
+  <a name="ERRXDST0026" id="ERRXDST0026"></a>err:XDST0026, The declaration for
+index contains an invalid property value.
 
-  <a name="ERRXDST0027" id="ERRXDST0027"></a>err:XDST0027, The index has an invalid index key type.
+  <a name="ERRXDST0027" id="ERRXDST0027"></a>err:XDST0027, The index has an
+invalid index key type.
 
-  <a name="ERRXDST0028" id="ERRXDST0028"></a>err:XDST0028, The index has a non deterministic definition.
+  <a name="ERRXDST0028" id="ERRXDST0028"></a>err:XDST0028, The index has a non
+deterministic definition.
 
-  <a name="ERRXDST0029" id="ERRXDST0029"></a>err:XDST0029, The index references a data source that is not a XQDDF collection.
+  <a name="ERRXDST0029" id="ERRXDST0029"></a>err:XDST0029, The index references
+a data source that is not a XQDDF collection.
 
-  <a name="ERRXDST0030" id="ERRXDST0030"></a>err:XDST0030, The index references a collection with a non-const QName.
+  <a name="ERRXDST0030" id="ERRXDST0030"></a>err:XDST0030, The index references
+a collection with a non-const QName.
 
-  <a name="ERRXDST0031" id="ERRXDST0031"></a>err:XDST0031, The index has free variables in its definition.
+  <a name="ERRXDST0031" id="ERRXDST0031"></a>err:XDST0031, The index has free
+variables in its definition.
 
-  <a name="ERRXDST0032" id="ERRXDST0032"></a>err:XDST0032, The domain expression of index references the context item.
+  <a name="ERRXDST0032" id="ERRXDST0032"></a>err:XDST0032, The domain expression
+of index references the context item.
 
-  <a name="ERRXDST0033" id="ERRXDST0033"></a>err:XDST0033, The declaration of index contains a non-simple expression.
+  <a name="ERRXDST0033" id="ERRXDST0033"></a>err:XDST0033, The declaration of
+index contains a non-simple expression.
 
-  <a name="ERRXDST0034" id="ERRXDST0034"></a>err:XDST0034, Index cannot be automatically maintained.
+  <a name="ERRXDST0034" id="ERRXDST0034"></a>err:XDST0034, Index cannot be
+automatically maintained.
 
-  <a name="ERRXDST0041" id="ERRXDST0041"></a>err:XDST0041, An integrity constraint with URI is declared already.
+  <a name="ERRXDST0041" id="ERRXDST0041"></a>err:XDST0041, An integrity
+constraint with URI is declared already.
 
-  <a name="ERRXDST0042" id="ERRXDST0042"></a>err:XDST0042, An integrity constraint key has multiple values.
+  <a name="ERRXDST0042" id="ERRXDST0042"></a>err:XDST0042, An integrity
+constraint key has multiple values.
 
-  <a name="ERRXDST0043" id="ERRXDST0043"></a>err:XDST0043, An integrity constraint key has a non-atomic value.
+  <a name="ERRXDST0043" id="ERRXDST0043"></a>err:XDST0043, An integrity
+constraint key has a non-atomic value.
 
-  <a name="ERRXDST0045" id="ERRXDST0045"></a>err:XDST0045, The integrity constraint cannot be declared in a main module.
+  <a name="ERRXDST0045" id="ERRXDST0045"></a>err:XDST0045, The integrity
+constraint cannot be declared in a main module.
 
-  <a name="ERRXDST0046" id="ERRXDST0046"></a>err:XDST0046, The integrity constraint with URI has free variables in its definition.
+  <a name="ERRXDST0046" id="ERRXDST0046"></a>err:XDST0046, The integrity
+constraint with URI has free variables in its definition.
 
-  <a name="ERRXDST0047" id="ERRXDST0047"></a>err:XDST0047, The integrity constraint with URI references a data source that is not a collection among the statically known collections.
+  <a name="ERRXDST0047" id="ERRXDST0047"></a>err:XDST0047, The integrity
+constraint with URI references a data source that is not a collection among the
+statically known collections.
 
-  <a name="ERRXDST0048" id="ERRXDST0048"></a>err:XDST0048,The integrity constraint with URI has a non deterministic definition.
+  <a name="ERRXDST0048" id="ERRXDST0048"></a>err:XDST0048,The integrity
+constraint with URI has a non deterministic definition.
 </strong>
 
 <p>XQuery Data Definition Facility - Type Errors:</p>
 
 <strong>
-  <a name="ERRXDTY0001" id="ERRXDTY0001"></a>err:XDTY0001, Collection cannot contain a node of certain type.
+  <a name="ERRXDTY0001" id="ERRXDTY0001"></a>err:XDTY0001, Collection cannot
+contain a node of certain type.
 
-  <a name="ERRXDTY0010" id="ERRXDTY0010"></a>err:XDTY0010, The domain expression of index produces an item that is not a node.
+  <a name="ERRXDTY0010" id="ERRXDTY0010"></a>err:XDTY0010, The domain expression
+of index produces an item that is not a node.
 
-  <a name="ERRXDTY0011" id="ERRXDTY0011"></a>err:XDTY0011, The result of some key expression of index does not match its declared type.
+  <a name="ERRXDTY0011" id="ERRXDTY0011"></a>err:XDTY0011, The result of some
+key expression of index does not match its declared type.
 </strong>
 
 <p>XQuery Data Definition Facility - Dynamic Errors:</p>
 
 <strong>
-  <a name="ERRXDDY0001" id="ERRXDDY0001"></a>err:XDDY0001, Collection is not declared in the static context.
+  <a name="ERRXDDY0001" id="ERRXDDY0001"></a>err:XDDY0001, Collection is not
+declared in the static context.
 
-  <a name="ERRXDDY0002" id="ERRXDDY0002"></a>err:XDDY0002, Collection exists already.
+  <a name="ERRXDDY0002" id="ERRXDDY0002"></a>err:XDDY0002, Collection exists
+already.
 
-  <a name="ERRXDDY0003" id="ERRXDDY0003"></a>err:XDDY0003, Collection does not exist.
+  <a name="ERRXDDY0003" id="ERRXDDY0003"></a>err:XDDY0003, Collection does not
+exist.
 
-  <a name="ERRXDDY0004" id="ERRXDDY0004"></a>err:XDDY0004, Cannot update const collection.
+  <a name="ERRXDDY0004" id="ERRXDDY0004"></a>err:XDDY0004, Cannot update const
+collection.
 
-  <a name="ERRXDDY0005" id="ERRXDDY0005"></a>err:XDDY0005, Illegal insert in append-only collection.
+  <a name="ERRXDDY0005" id="ERRXDDY0005"></a>err:XDDY0005, Illegal insert in
+append-only collection.
 
-  <a name="ERRXDDY0006" id="ERRXDDY0006"></a>err:XDDY0006, Illegal insert in queue collection.
+  <a name="ERRXDDY0006" id="ERRXDDY0006"></a>err:XDDY0006, Illegal insert in
+queue collection.
 
-  <a name="ERRXDDY0007" id="ERRXDDY0007"></a>err:XDDY0007, Illegal delete from append-only collection.
+  <a name="ERRXDDY0007" id="ERRXDDY0007"></a>err:XDDY0007, Illegal delete from
+append-only collection.
 
-  <a name="ERRXDDY0008" id="ERRXDDY0008"></a>err:XDDY0008, Illegal delete from queue collection.
+  <a name="ERRXDDY0008" id="ERRXDDY0008"></a>err:XDDY0008, Illegal delete from
+queue collection.
 
-  <a name="ERRXDDY0009" id="ERRXDDY0009"></a>err:XDDY0009, Not all the nodes to delete are at the beginning of queue collection.
+  <a name="ERRXDDY0009" id="ERRXDDY0009"></a>err:XDDY0009, Not all the nodes to
+delete are at the beginning of queue collection.
 
-  <a name="ERRXDDY0010" id="ERRXDDY0010"></a>err:XDDY0010, Illegal update of node in collection, whose nodes are read-only.
+  <a name="ERRXDDY0010" id="ERRXDDY0010"></a>err:XDDY0010, Illegal update of
+node in collection, whose nodes are read-only.
 
-  <a name="ERRXDDY0011" id="ERRXDDY0011"></a>err:XDDY0011, Node is not contained in collection.
+  <a name="ERRXDDY0011" id="ERRXDDY0011"></a>err:XDDY0011, Node is not contained
+in collection.
 
-  <a name="ERRXDDY0012" id="ERRXDDY0012"></a>err:XDDY0012, Illegal insert in unordered collection.
+  <a name="ERRXDDY0012" id="ERRXDDY0012"></a>err:XDDY0012, Illegal insert in
+unordered collection.
 
-  <a name="ERRXDDY0013" id="ERRXDDY0013"></a>err:XDDY0013, Cannot delete collection because there are indexes that reference it.
+  <a name="ERRXDDY0013" id="ERRXDDY0013"></a>err:XDDY0013, Cannot delete
+collection because there are indexes that reference it.
 
-  <a name="ERRXDDY0014" id="ERRXDDY0014"></a>err:XDDY0014, Cannot delete collection because there are integrity constraints that reference it.
+  <a name="ERRXDDY0014" id="ERRXDDY0014"></a>err:XDDY0014, Cannot delete
+collection because there are integrity constraints that reference it.
 
-  <a name="ERRXDDY0015" id="ERRXDDY0015"></a>err:XDDY0015, Cannot delete collection because there are references on its nodes.
+  <a name="ERRXDDY0015" id="ERRXDDY0015"></a>err:XDDY0015, Cannot delete
+collection because there are references on its nodes.
 
-<a name="ERRXDDY0016" id="ERRXDDY0016"></a>err:XDDY0016, Cannot invoke the create-collection function multiple times with the same QName in the same snapshot.
+<a name="ERRXDDY0016" id="ERRXDDY0016"></a>err:XDDY0016, Cannot invoke the
+create-collection function multiple times with the same QName in the same
+snapshot.
 
-  <a name="ERRXDDY0020" id="ERRXDDY0020"></a>err:XDDY0020, The domain expression of index produces nodes that are not in collection.
+  <a name="ERRXDDY0020" id="ERRXDDY0020"></a>err:XDDY0020, The domain expression
+of index produces nodes that are not in collection.
 
-  <a name="ERRXDDY0021" id="ERRXDDY0021"></a>err:XDDY0021, Index is not declared in the static context.
+  <a name="ERRXDDY0021" id="ERRXDDY0021"></a>err:XDDY0021, Index is not declared
+in the static context.
 
   <a name="ERRXDDY0022" id="ERRXDDY0022"></a>err:XDDY0022, Index exists already.
 
   <a name="ERRXDDY0023" id="ERRXDDY0023"></a>err:XDDY0023, Index does not exist.
 
-  <a name="ERRXDDY0024" id="ERRXDDY0024"></a>err:XDDY0024, The uniqueness property of index is violated.
+  <a name="ERRXDDY0024" id="ERRXDDY0024"></a>err:XDDY0024, The uniqueness
+property of index is violated.
 
-  <a name="ERRXDDY0025" id="ERRXDDY0025"></a>err:XDDY0025, Invalid number of arguments in probe of index.
+  <a name="ERRXDDY0025" id="ERRXDDY0025"></a>err:XDDY0025, Invalid number of
+arguments in probe of index.
 
-  <a name="ERRXDDY0026" id="ERRXDDY0026"></a>err:XDDY0026, Index does not support range probes.
+  <a name="ERRXDDY0026" id="ERRXDDY0026"></a>err:XDDY0026, Index does not
+support range probes.
 
-<a name="ERRXDDY0027" id="ERRXDDY0027"></a>err:XDDY0027, Cannot invoke the create-index function multiple times with the same QName in the same snapshot.
+<a name="ERRXDDY0027" id="ERRXDDY0027"></a>err:XDDY0027, Cannot invoke the
+create-index function multiple times with the same QName in the same snapshot.
 
-  <a name="ERRXDDY0031" id="ERRXDDY0031"></a>err:XDDY0031, An integrity constraint with URI is not declared.
+  <a name="ERRXDDY0031" id="ERRXDDY0031"></a>err:XDDY0031, An integrity
+constraint with URI is not declared.
 
-  <a name="ERRXDDY0032" id="ERRXDDY0032"></a>err:XDDY0032, An integrity constraint with URI is not declared.
+  <a name="ERRXDDY0032" id="ERRXDDY0032"></a>err:XDDY0032, An integrity
+constraint with URI is not declared.
 
-  <a name="ERRXDDY0033" id="ERRXDDY0033"></a>err:XDDY0033, Conditions for integrity constraint were not met on collection.
+  <a name="ERRXDDY0033" id="ERRXDDY0033"></a>err:XDDY0033, Conditions for
+integrity constraint were not met on collection.
 </strong>
 
 */
