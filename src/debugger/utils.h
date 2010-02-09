@@ -20,7 +20,11 @@
 #include <functional>
 #include <zorbatypes/xqpstring.h>
 #include <compiler/parser/query_loc.h>
-#include "json/value.h"
+
+// Forward declaration
+namespace json {
+  class value;
+}
 
 namespace zorba
 {

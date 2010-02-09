@@ -13,6 +13,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+#include <json/value.h>
 #include "utils.h"
 
 namespace zorba { namespace debugger {
