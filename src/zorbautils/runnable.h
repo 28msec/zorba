@@ -119,6 +119,7 @@ private:
     Condition         theCondition;
 
     bool theDeleteAfterRun;
+    bool theJoining;
 
 #ifdef ZORBA_HAVE_PTHREAD_H
     bool theCalledTerminate;

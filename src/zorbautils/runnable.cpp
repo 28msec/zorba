@@ -15,7 +15,6 @@
  */
 #include "runnable.h"
 
-#include <iostream>
 #include <cassert>
 
 #include "zorbaerrors/Assert.h"
@@ -37,7 +36,8 @@ zorba::Runnable::Runnable()
     theFinishCalled(false),
     theMutex(),
     theCondition(theMutex),
-    theDeleteAfterRun(false)
+    theDeleteAfterRun(false),
+    theJoining(false)
 #ifdef ZORBA_HAVE_PTHREAD_H
     ,theCalledTerminate(false)
 #endif
@@ -152,6 +152,7 @@ void zorba::Runnable::join()
     theMutex.unlock();
     return;
   }
+  theJoining = true;
   theMutex.unlock();
 #ifdef WIN32
   WaitForSingleObject( theThread, INFINITE );
@@ -190,7 +191,7 @@ void zorba::Runnable::finishImpl()
   theStatus = TERMINATED;
   theMutex.unlock();
 #ifdef ZORBA_HAVE_PTHREAD_H
-  if (!theCalledTerminate) {
+  if (!theCalledTerminate && !theJoining) {
     pthread_detach(theThread);
   }
 #endif
