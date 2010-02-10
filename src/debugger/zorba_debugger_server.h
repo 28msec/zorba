@@ -27,6 +27,7 @@ namespace zorba {
   class XQueryImpl;
   class DebuggerCommunicator;
   class ZorbaDebuggerRuntime;
+  typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
 
   class ZorbaDebuggerServer {
   public: // Creation and destruction
@@ -50,14 +51,11 @@ namespace zorba {
     ZorbaDebuggerServer(XQueryImpl* aQuery,
                         Zorba_SerializerOptions& serializerOption,
                         std::ostream& anOstream,
+                        itemHandler aHandler,
+                        void* aCallBackData,
+                        std::string aHost,
                         unsigned short requestPort = 8000,
                         unsigned short eventPort = 9000);
-    ZorbaDebuggerServer(XQueryImpl* aQuery,
-      Zorba_SerializerOptions& serializerOption,
-      std::ostream& anOstream,
-      std::string aHost,
-      unsigned short requestPort = 8000,
-      unsigned short eventPort = 9000);
     virtual ~ZorbaDebuggerServer();
   public:
     //************************************
@@ -76,6 +74,8 @@ namespace zorba {
     unsigned short                    theEventPort;
     DebuggerCommunicator*             theCommunicator;
     ZorbaDebuggerRuntime*             theRuntime;
+    itemHandler*                      theHandler;
+    void*                             theCallBackData;
   };
 }
 

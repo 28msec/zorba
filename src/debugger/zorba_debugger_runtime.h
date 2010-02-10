@@ -39,6 +39,7 @@ namespace zorba {
   class DebuggerCommunicator;
   class ZorbaDebugIterator;
   class ReplyMessage;
+  typedef Zorba_SerializerOptions_t* (*itemHandler)(void* aUserData);
 
   class ZorbaDebuggerRuntime : public Runnable {
   public: // Creation and destruction
@@ -56,7 +57,9 @@ namespace zorba {
       XQueryImpl* xqueryImpl,
       std::ostream& oStream,
       Zorba_SerializerOptions&  serializerOptions,
-      DebuggerCommunicator* communicator);
+      DebuggerCommunicator* communicator,
+      itemHandler aHandler,
+      void* aCallBackData);
     virtual ~ZorbaDebuggerRuntime();
   public:
     //************************************
@@ -199,6 +202,8 @@ namespace zorba {
     bool                              theNotSendTerminateEvent;
     bool                              thePlanIsOpen;
     serializer*                       theSerializer;
+    itemHandler                       theItemHandler;
+    void*                             theCallbackData;
   };
 }
 

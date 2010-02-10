@@ -335,6 +335,15 @@ public:
     unsigned short aCommandPort,
     unsigned short anEventPort);
 
+  void
+  debug(std::ostream& aOutStream,
+    itemHandler aCallbackFunction,
+    void* aCallbackData,
+    Zorba_SerializerOptions& aSerOptions,
+    const std::string& aHost,
+    unsigned short aCommandPort = 8000,
+    unsigned short anEventPort = 9000);
+
 protected:
     
   XQueryImpl();

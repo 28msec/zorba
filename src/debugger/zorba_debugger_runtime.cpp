@@ -112,7 +112,9 @@ ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
   XQueryImpl* xqueryImpl,
   std::ostream& oStream,
   Zorba_SerializerOptions& serializerOptions,
-  DebuggerCommunicator* communicator)
+  DebuggerCommunicator* communicator,
+  itemHandler aHandler,
+  void* aCallBackData)
   : theQuery(xqueryImpl),
     theOStream(oStream),
     theSerializerOptions(serializerOptions),
@@ -122,7 +124,9 @@ ZorbaDebuggerRuntime::ZorbaDebuggerRuntime(
     theCurrentMessage(0),
     theNotSendTerminateEvent(false),
     thePlanIsOpen(false),
-    theSerializer(0)
+    theSerializer(0),
+    theItemHandler(aHandler),
+    theCallbackData(aCallBackData)
 {
 }
 
@@ -213,9 +217,14 @@ void ZorbaDebuggerRuntime::runQuery()
 
     delete theSerializer;
     theSerializer = new serializer(theQuery->theErrorManager);
-    SerializerImpl::setSerializationParameters(*theSerializer, theSerializerOptions);
-
-    theSerializer->serialize((intern::Serializable*)theWrapper, theOStream);
+    SerializerImpl::setSerializationParameters(
+      *theSerializer, theSerializerOptions);
+    if (theItemHandler) {
+      theSerializer->serialize((intern::Serializable*)theWrapper, theOStream,
+        theItemHandler, theCallbackData);
+    } else {
+      theSerializer->serialize((intern::Serializable*)theWrapper, theOStream);
+    }
     
     theOStream.flush();
   } catch (FlowCtlException&) {

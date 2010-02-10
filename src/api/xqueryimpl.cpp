@@ -977,6 +977,17 @@ XQueryImpl::debug(std::ostream& aOutStream,
                   unsigned short aCommandPort,
                   unsigned short anEventPort)
 {
+  debug(aOutStream, 0, 0, aSerOptions, aHost, aCommandPort, anEventPort);
+}
+
+void XQueryImpl::debug(std::ostream& aOutStream,
+                       itemHandler aCallbackFunction,
+                       void* aCallbackData,
+                       Zorba_SerializerOptions& aSerOptions,
+                       const std::string& aHost,
+                       unsigned short aCommandPort /*= 8000*/,
+                       unsigned short anEventPort /*= 9000*/)
+{
   SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
     ZORBA_TRY
     //check if the query is compiled and not closed
@@ -984,8 +995,8 @@ XQueryImpl::debug(std::ostream& aOutStream,
     checkNotClosed();
     //check if the debug mode is enabled
     checkIsDebugMode();
-    ZorbaDebuggerServer aDebuggerServer(this, aSerOptions, 
-      aOutStream, aCommandPort,
+    ZorbaDebuggerServer aDebuggerServer(this, aSerOptions,
+      aOutStream, aCallbackFunction, aCallbackData, aHost, aCommandPort,
       anEventPort);
     aDebuggerServer.run();
   ZORBA_CATCH

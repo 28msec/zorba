@@ -27,6 +27,7 @@ SET (API_EXAMPLES
   uri_resolvers.cpp
   execution_plans.cpp
   item_handler.cpp
+  callback.cpp
   )
 
 SET(API_EXAMPLES ${API_EXAMPLES} debugger.cpp)
