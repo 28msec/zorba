@@ -141,6 +141,84 @@ void operator&(Archiver &ar, std::vector<T> &obj)
 }
 
 template<typename T>
+void operator&(Archiver &ar, std::vector<T> *obj)
+{
+  if(ar.is_serializing_out())
+  {
+    if((obj == NULL))
+    {
+      ar.add_compound_field("NULL", 
+                            1 ,//class_version
+                            !FIELD_IS_CLASS, "NULL", 
+                            NULL,//(SerializeBaseClass*)obj, 
+                            ARCHIVE_FIELD_IS_NULL);
+      return;
+    }
+    char  strtemp[20];
+    sprintf(strtemp, "%d", (int)obj->size());
+    bool is_ref;
+    is_ref = ar.add_compound_field("std::vector<T>*", 0, !FIELD_IS_CLASS, strtemp, obj, ARCHIVE_FIELD_IS_PTR);
+    if(!is_ref)
+    {
+      typename std::vector<T>::iterator  it;
+      for(it=obj->begin(); it != obj->end(); it++)
+      {
+        ar & (*it);
+      }
+      ar.add_end_compound_field();
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    enum  ArchiveFieldTreat field_treat;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "std::vector<T>*", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
+    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    {
+      obj = NULL;
+      ar.read_end_current_level();
+      return;
+    }
+    void *new_obj;
+    if(field_treat == ARCHIVE_FIELD_IS_PTR)
+    {
+      obj = new std::vector<T>;
+      ar.register_reference(id, field_treat, obj);
+
+      int size;
+      sscanf(value.c_str(), "%d", &size);
+      obj->resize(size);
+      typename std::vector<T>::iterator  it;
+      for(it=obj->begin(); it != obj->end(); it++)
+      {
+        ar & (*it);
+      }
+      ar.read_end_current_level();
+    }
+    else if((new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    {
+      obj = (std::vector<T>*)new_obj;
+      if(!obj)
+      {
+        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+      }
+    }
+    else
+      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "std::vector<T>*", referencing);
+  }
+}
+
+template<typename T>
 void operator&(Archiver &ar, std::vector<T*> &obj)
 {
   if(ar.is_serializing_out())
