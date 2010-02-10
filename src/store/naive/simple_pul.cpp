@@ -1737,7 +1737,8 @@ void CollectionPul::applyUpdates()
     // Revalidate the updated docs
     if (thePul->theValidator != NULL)
     {
-      rchandle<store::PUL> validationPul = new PULImpl();
+      rchandle<store::PUL> validationPul =
+          GET_STORE().getItemFactory()->createPendingUpdateList();
       
       thePul->theValidator->validate(theValidationNodes, *validationPul.getp());
 
