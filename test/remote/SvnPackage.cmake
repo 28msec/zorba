@@ -130,7 +130,9 @@ endmacro (svn_package)
 #   changefile - a changes.tgz file from package_svn
 #   svndir - directory to check out SVN into and apply changes
 #   tmpdir - directory to temporarily unpack changefile into
-macro (svn_unpackage changefile svndir tmpdir)
+#   svnlogfile - file to output SVN checkout messages into
+#   changeslogfile - file to output change-application log messages into
+macro (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile)
   find_prereqs ()
 
   # Unpack changes.tgz into working dir
@@ -148,9 +150,11 @@ macro (svn_unpackage changefile svndir tmpdir)
                    --context-item "${chgdir}/svn-info.xml"
                    OUTPUT_VARIABLE svnrev)
   execute_process (COMMAND "${svn}" checkout
-                   -r "${svnrev}" "${svnroot}" "${svndir}")
+                   -r "${svnrev}" "${svnroot}" "${svndir}"
+                   OUTPUT_FILE "${svnlogfile}" ERROR_FILE "${svnlogfile}")
 
   # Copy modified/added files on top of svn directory
+  file (WRITE "${changeslogfile}" "Copying added/modified files...\n")
   execute_process (COMMAND "${CMAKE_COMMAND}" -E copy_directory
                    "${chgdir}/files" "${svndir}")
 
@@ -167,7 +171,9 @@ macro (svn_unpackage changefile svndir tmpdir)
   foreach (filepath ${deletefiles})
     # These are absolute paths from the client; convert to relative paths
     file (RELATIVE_PATH relpath "${clientroot}" "${filepath}")
-    execute_process (COMMAND "${svn}" delete "${svndir}/${relpath}")
+    execute_process (COMMAND "${svn}" delete "${svndir}/${relpath}"
+      OUTPUT_VARIABLE output ERROR_VARIABLE output)
+    file (APPEND "${changeslogfile}" "${output}")
   endforeach (filepath ${deletefiles})
 
   # Now add any new files, using the local output of "svn status" to
@@ -178,7 +184,9 @@ macro (svn_unpackage changefile svndir tmpdir)
                    OUTPUT_FILE "${chgdir}/svn-status.xml")
   get_files_with_status (addfiles "${chgdir}/svn-status.xml" "" unversioned)
   foreach (filepath ${addfiles})
-    execute_process (COMMAND "${svn}" add "${filepath}")
+    execute_process (COMMAND "${svn}" add "${filepath}"
+      OUTPUT_VARIABLE output ERROR_VARIABLE output)
+    file (APPEND "${changeslogfile}" "${output}")
   endforeach (filepath ${addfiles})
 
   # Remove temporary unpackaged workingset
