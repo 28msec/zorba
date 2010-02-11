@@ -35,6 +35,7 @@
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_lazy_temp_seq.h"
 #include "store/naive/simple_collection.h"
+#include "store/naive/collection_set.h"
 #include "store/naive/simple_index.h"
 #include "store/naive/simple_ic.h"
 #include "store/naive/qname_pool.h"
@@ -48,6 +49,7 @@
 #include "store/naive/query_context.h"
 #include "store/naive/item_iterator.h"
 #include "store/naive/node_factory.h"
+#include "store/naive/name_iterator.h"
 
 #ifdef ZORBA_STORE_MSDOM
 #include "store/naive/msdom_addon/import_msdom.h"
@@ -61,58 +63,6 @@ namespace simplestore
 {
 
 typedef rchandle<store::TempSeq> TempSeq_t;
-
-
-/*******************************************************************************
-  Iterator to return Index and Collection Names
-********************************************************************************/
-template < typename T >
-class NameIterator : public store::Iterator
-{
-private:
-  T*                   theItems;
-  typename T::iterator theIterator;
-
-public:
-  NameIterator(T& aItems)
-  {
-    theItems = &aItems;
-  }
-
-  virtual ~NameIterator()
-  {
-    close();
-  }
-
-  virtual void open()
-  {
-    theIterator = theItems->begin();
-  }
-
-  virtual bool next(store::Item_t& aResult)
-  {
-    if (theIterator == theItems->end())
-    {
-       aResult = NULL;
-      return false;
-    }
-    else
-    {
-      aResult = (*theIterator).first;
-      ++theIterator;
-      return true;
-    }
-  }
-
-  virtual void reset()
-  {
-    theIterator = theItems->begin();
-  }
-
-  virtual void close()
-  {
-  }
-};
 
 
 /*******************************************************************************
@@ -141,11 +91,11 @@ SimpleStore::SimpleStore()
   theItemFactory(NULL),
   theIteratorFactory(NULL),
   theNodeFactory(NULL),
-  theDocuments(Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
-  theCollections(),
-  theUriCollections(Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
-  theIndices(0, NULL, Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
-  theICs(0, NULL, Collections::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theDocuments(CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theCollections(0),
+  theUriCollections(CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theIndices(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
+  theICs(0, NULL, CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theTraceLevel(0)
 {
 }
@@ -188,6 +138,8 @@ void SimpleStore::init()
     theNodeFactory = createNodeFactory();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
+
+    theCollections = createCollectionSet();
 
 #ifdef ZORBA_STORE_MSDOM
     CoInitialize(NULL);
@@ -305,6 +257,26 @@ void SimpleStore::destroyItemFactory(BasicItemFactory* f) const
 
 /*******************************************************************************
 
+*******************************************************************************/
+CollectionSet*
+SimpleStore::createCollectionSet() const
+{
+  return new CollectionSet();
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+void
+SimpleStore::destroyCollectionSet(CollectionSet* c) const
+{
+  delete c;
+}
+
+
+/*******************************************************************************
+
 ********************************************************************************/
 SimpleStore::~SimpleStore()
 {
@@ -317,10 +289,15 @@ SimpleStore::~SimpleStore()
 ********************************************************************************/
 void SimpleStore::shutdown()
 {
+  if (!theIsInitialized)
+    return;
+
   theIndices.clear();
   theICs.clear();
 
-  theCollections.clear();
+  theCollections->clear();
+  destroyCollectionSet(theCollections);
+
   theUriCollections.clear();
 
   theDocuments.clear();
@@ -723,7 +700,7 @@ store::Collection_t SimpleStore::createCollection(store::Item_t& aName)
 
   const store::Item* lName = collection->getName();
 
-  bool inserted = theCollections.insert(lName, collection);
+  bool inserted = theCollections->insert(lName, collection);
 
   if (!inserted)
   {
@@ -742,7 +719,7 @@ void SimpleStore::addCollection(store::Collection_t& collection)
 {
   const store::Item* lName = collection->getName();
 
-  bool inserted = theCollections.insert(lName, collection);
+  bool inserted = theCollections->insert(lName, collection);
 
   if (!inserted)
   {
@@ -761,7 +738,7 @@ store::Collection_t SimpleStore::getCollection(const store::Item* aName)
     return NULL;
 
   store::Collection_t collection;
-  if (theCollections.get(aName, collection) )
+  if (theCollections->get(aName, collection) )
     return collection.getp();
   else
     return NULL;
@@ -777,7 +754,7 @@ void SimpleStore::deleteCollection(const store::Item* aName)
   if (aName == NULL)
     return;
 
-  if (!theCollections.remove(aName))
+  if (!theCollections->remove(aName))
   {
     ZORBA_ERROR_PARAM(STR0009_COLLECTION_NOT_FOUND, aName->getStringValue(), "");
   }
@@ -789,7 +766,7 @@ void SimpleStore::deleteCollection(const store::Item* aName)
 ********************************************************************************/
 store::Iterator_t SimpleStore::listCollectionNames()
 {
-  return theCollections.names();
+  return theCollections->names();
 }
 
 
@@ -1127,19 +1104,25 @@ bool SimpleStore::getNodeByReference(store::Item_t& result, const store::Item* u
     // Look for the collection
     SimpleCollection* collection;
 
-    Collections::iterator it = theCollections.begin();
-    Collections::iterator end = theCollections.end();
+    CollectionIterator_t lIter = theCollections->collections();
+    lIter->open();
 
-    for (; it != end; ++it)
+    store::Collection_t lCollection;
+    bool lFound = false;
+
+    // earch the collection
+    while (lIter->next(lCollection))
     {
-      collection = static_cast<SimpleCollection*>((*it).getp());
+      collection = static_cast<SimpleCollection*>(lCollection.getp());
 
-      if (collection->getId() == collectionId)
+      if (collection->getId() == collectionId) {
+        lFound = true;
         break;
+      }
     }
 
     // If collection found, look for the tree
-    if (it != end)
+    if (lFound)
     {
       store::Item_t rootItem = collection->nodeAt(treePos);
 

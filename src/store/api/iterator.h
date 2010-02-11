@@ -210,7 +210,6 @@ public:
   virtual void close() = 0;
 };
 
-
 } /* namespace store */
 } /* namespace zorba */
 #endif

@@ -30,6 +30,10 @@ namespace store
 namespace simplestore 
 {
 
+class CollectionSet;
+class CollectionIterator;
+typedef rchandle<CollectionIterator> CollectionIterator_t;
+
 class XmlTree;
 typedef rchandle<XmlTree> XmlTree_t;
 

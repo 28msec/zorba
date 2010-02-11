@@ -17,16 +17,12 @@
 #define ZORBA_STORE_IC
 
 #include "store/api/shared_types.h"
-#include "store/util/item_vector.h"
-#include "zorbatypes/xqpstring.h"
 
 namespace zorba 
 {
 
 namespace store 
 {
-
-
 
 class IC;
 

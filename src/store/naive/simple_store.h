@@ -18,7 +18,6 @@
 
 #include "store/naive/store_config.h"
 #include "store/naive/shared_types.h"
-#include "store/naive/collections.h"
 
 #if (defined (WIN32) || defined (WINCE))
 #include "store/naive/node_items.h"
@@ -137,7 +136,7 @@ protected:
   NodeFactory                 * theNodeFactory;
 
   DocumentSet                   theDocuments;
-  Collections                   theCollections;
+  CollectionSet*                theCollections;
   UriCollectionSet              theUriCollections;
   IndexSet                      theIndices;
   ICSet                         theICs;
@@ -167,6 +166,10 @@ protected:
   virtual BasicItemFactory* createItemFactory() const;
 
   virtual void destroyItemFactory(BasicItemFactory*) const;
+
+  virtual CollectionSet* createCollectionSet() const;
+
+  virtual void destroyCollectionSet(CollectionSet*) const;
 
 public:
   void shutdown();
