@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET (CTEST_DROP_METHOD http) 
-SET (CTEST_PROJECT_NAME "zorba") 
+SET (CTEST_PROJECT_NAME "Zorba") 
 SET (CTEST_NIGHTLY_START_TIME "00:00:00 GMT") 
-SET (CTEST_DROP_SITE "dbisdart.inf.ethz.ch") 
-SET (CTEST_DROP_LOCATION "/cdash/submit.php?project=zorba") 
+SET (CTEST_DROP_SITE "zorbatest.lambda.nu:8080") 
+SET (CTEST_DROP_LOCATION "/cdash/submit.php?project=Zorba") 
 SET (CTEST_DROP_SITE_CDASH TRUE)
 SET (CTEST_CUSTOM_WARNING_EXCEPTION
     ${CTEST_CUSTOM_WARNING_EXCEPTION}
     "Warning: GNU Bison.*"
     "Warning: using repository file.*"
     "Warning: urning: GNU Flex.*")
-# SET (CTEST_COMPRESS_SUBMISSION ON)
+SET (CTEST_COMPRESS_SUBMISSION ON)
