@@ -56,7 +56,7 @@ public:
 
 #ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
   SERIALIZABLE_TEMPLATE_CLASS(HASHENTRY)
-  entry(::zorba::serialization::Archiver &ar) {}
+  HASHENTRY(::zorba::serialization::Archiver &ar) {}
   void serialize(::zorba::serialization::Archiver &ar)
   {
     ar & theIsFree;
@@ -125,6 +125,9 @@ public:
 ********************************************************************************/
 template <class T, class V, class C> 
 class HASHMAP
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+    : public ::zorba::serialization::SerializeBaseClass
+#endif
 {
 public:
 
