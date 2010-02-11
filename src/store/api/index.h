@@ -137,6 +137,12 @@ public:
 
 
 /***************************************************************************//**
+  An index delta is a set of [domain-node, associated-key] pairs. 
+********************************************************************************/
+typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
+
+
+/***************************************************************************//**
 
   Abstract value index class.
 
@@ -358,22 +364,16 @@ public:
 
 
 /*******************************************************************************
- An abstract class that provides callback methods for the store to call in order
- to perform index maintenance.  is used to compute (key, domain_item) pairs for a
- given node that has a certain relationship to the domain expression.
+ An abstract class that provides a callback method for the store to call in order
+ to perform index maintenance.  The method computes [domain_item, associated-key]
+ pairs for a given node that has some relationship to the domain expression.
 ********************************************************************************/
 class IndexEntryCreator : public SimpleRCObject
 {
 public:
   virtual ~IndexEntryCreator() { }
 
-  /**
-   * Generate index entries for the given item.
-   */
-  virtual void createIndexEntries(
-        store::Item* item,
-        std::vector<Item_t>& domainNodes,
-        std::vector<IndexKey*>& keyTuples) = 0;
+  virtual void createIndexEntries(Item* item, IndexDelta& delta) = 0;
 };
 
 

@@ -56,10 +56,10 @@ inline void cleanList(std::vector<UpdatePrimitive*> aVector)
 /*******************************************************************************
 
 ********************************************************************************/
-inline void cleanIndexDelta(CollectionPul::IndexDelta& delta)
+inline void cleanIndexDelta(store::IndexDelta& delta)
 {
-  CollectionPul::IndexDelta::iterator ite = delta.begin();
-  CollectionPul::IndexDelta::iterator end = delta.end();
+  store::IndexDelta::iterator ite = delta.begin();
+  store::IndexDelta::iterator end = delta.end();
 
   for (; ite != end; ++ite)
   {
@@ -1540,7 +1540,7 @@ static bool cmp(const std::pair<store::Item_t, store::IndexKey*>& e1,
   modified by this pul, compute the index entries for I and D, and insert them
   into the given deltas vector
 ********************************************************************************/
-void CollectionPul::computeIndexDeltas(std::vector<IndexDelta>& deltas)
+void CollectionPul::computeIndexDeltas(std::vector<store::IndexDelta>& deltas)
 {
   ulong numIncrementalIndices = theIncrementalIndices.size();
 
@@ -1557,28 +1557,15 @@ void CollectionPul::computeIndexDeltas(std::vector<IndexDelta>& deltas)
     for (ulong i = 0; i < numIncrementalIndices; ++i)
     {
       store::IndexEntryCreator* docIndexer = theIndexEntryCreators[i].getp();
-      IndexDelta& indexDelta = deltas[i];
+      store::IndexDelta& indexDelta = deltas[i];
 
-      std::vector<store::Item_t> domainNodes;
-      std::vector<store::IndexKey*> keys;
-
-      docIndexer->createIndexEntries((*docIte), domainNodes, keys);
-
-      ulong numEntries = domainNodes.size();
-
-      indexDelta.resize(numEntries);
-
-      for (ulong j = 0; j < numEntries; ++j)
-      {
-        indexDelta[j].first.transfer(domainNodes[j]);
-        indexDelta[j].second = keys[j];
-      }
+      docIndexer->createIndexEntries((*docIte), indexDelta);
     }
   }
 
   for (ulong i = 0; i < numIncrementalIndices; ++i)
   {
-    IndexDelta& indexDelta = deltas[i];
+    store::IndexDelta& indexDelta = deltas[i];
 
     std::sort(indexDelta.begin(), indexDelta.end(), cmp);
   }
@@ -1604,13 +1591,13 @@ void CollectionPul::refreshIndices()
                                       index->getTimezone(),
                                       index->getCollators());
 
-    IndexDelta& beforeDelta = theBeforeIndexDeltas[idx];
-    IndexDelta& afterDelta = theAfterIndexDeltas[idx];
+    store::IndexDelta& beforeDelta = theBeforeIndexDeltas[idx];
+    store::IndexDelta& afterDelta = theAfterIndexDeltas[idx];
 
-    IndexDelta::iterator beforeIte = beforeDelta.begin();
-    IndexDelta::iterator beforeEnd = beforeDelta.end();
-    IndexDelta::iterator afterIte = afterDelta.begin();
-    IndexDelta::iterator afterEnd = afterDelta.end();
+    store::IndexDelta::iterator beforeIte = beforeDelta.begin();
+    store::IndexDelta::iterator beforeEnd = beforeDelta.end();
+    store::IndexDelta::iterator afterIte = afterDelta.begin();
+    store::IndexDelta::iterator afterEnd = afterDelta.end();
 
     while (beforeIte != beforeEnd && afterIte != afterEnd)
     {
@@ -1664,18 +1651,27 @@ void CollectionPul::refreshIndices()
 
     for (ulong i = 0; i < numDocs; ++i)
     {
-      std::vector<store::Item_t> domainNodes;
-      std::vector<store::IndexKey*> keys;
+      store::IndexDelta delta;
 
-      docIndexer->createIndexEntries(theInsertedDocs[i], domainNodes, keys);
-
-      ulong numEntries = domainNodes.size();
-
-      for (ulong j = 0; j < numEntries; ++j)
+      try
       {
-        if (index->insert(keys[j], domainNodes[j]))
-          delete keys[j];
+        docIndexer->createIndexEntries(theInsertedDocs[i], delta);
+
+        ulong numEntries = delta.size();
+
+        for (ulong j = 0; j < numEntries; ++j)
+        {
+          if (!index->insert(delta[j].second, delta[j].first))
+            delta[j].second = NULL; // ownership of the key was passed to the index
+        }
       }
+      catch (...)
+      {
+        cleanIndexDelta(delta);
+        throw;
+      }
+
+      cleanIndexDelta(delta);
     }
 
     //
@@ -1685,18 +1681,26 @@ void CollectionPul::refreshIndices()
 
     for (ulong i = 0; i < numDocs; ++i)
     {
-      std::vector<store::Item_t> domainNodes;
-      std::vector<store::IndexKey*> keys;
+      store::IndexDelta delta;
 
-      docIndexer->createIndexEntries(theDeletedDocs[i], domainNodes, keys);
-
-      ulong numEntries = domainNodes.size();
-
-      for (ulong j = 0; j < numEntries; ++j)
+      try
       {
-        index->remove(keys[j], domainNodes[j]);
-        delete keys[j];
+        docIndexer->createIndexEntries(theDeletedDocs[i], delta);
+
+        ulong numEntries = delta.size();
+
+        for (ulong j = 0; j < numEntries; ++j)
+        {
+          index->remove(delta[j].second, delta[j].first);
+        }
       }
+      catch (...)
+      {
+        cleanIndexDelta(delta);
+        throw;
+      }
+
+      cleanIndexDelta(delta);
     }
   }
 }

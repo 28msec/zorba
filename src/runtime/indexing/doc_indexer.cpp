@@ -74,9 +74,8 @@ void DocIndexer::setup(CompilerCB* ccb, dynamic_context* dctx)
 
 ********************************************************************************/
 void DocIndexer::createIndexEntries(
-     store::Item* docNode,
-     std::vector<store::Item_t>& domainNodes,
-     std::vector<store::IndexKey*>& keyTuples)
+    store::Item* docNode,
+    store::IndexDelta& delta)
 {
   store::Item_t tmp = docNode;
   theDctx->set_variable(theDctx->var_key(theNodeVar), tmp);
@@ -91,6 +90,8 @@ void DocIndexer::createIndexEntries(
     {
       key = new store::IndexKey(theNumColumns);
 
+      //std::cout << domainNode.getp() << "  " << key << std::endl;
+
       for (ulong i = 0; i < theNumColumns; ++i)
       {
         if (!thePlanWrapper->next((*key)[i]))
@@ -99,10 +100,9 @@ void DocIndexer::createIndexEntries(
         }
       }
       
-      domainNodes.resize(numEntries + 1);
-      keyTuples.resize(numEntries + 1);
-      domainNodes[numEntries].transfer(domainNode); 
-      keyTuples[numEntries] = key;
+      delta.resize(numEntries + 1);
+      delta[numEntries].first.transfer(domainNode); 
+      delta[numEntries].second = key;
       key = NULL;
       ++numEntries;
     }
@@ -112,15 +112,17 @@ void DocIndexer::createIndexEntries(
     if (key != NULL)
       delete key;
 
-    for (ulong i = 0; i < keyTuples.size(); ++i)
+    for (ulong i = 0; i < delta.size(); ++i)
     {
-      delete keyTuples[i];
+      delete delta[i].second;
     }
 
     thePlanWrapper->reset();
 
     throw;
   }
+
+  //std::cout << std::endl << std::endl;
 
   thePlanWrapper->reset();
 }

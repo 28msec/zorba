@@ -46,10 +46,7 @@ public:
 
   void setup(CompilerCB* ccb, dynamic_context* dctx);
 
-  void createIndexEntries(
-        store::Item* docNode,
-        std::vector<store::Item_t>& domainNodes,
-        std::vector<store::IndexKey*>& keyTuples);
+  void createIndexEntries(store::Item* docNode, store::IndexDelta& delta);
 };
 
 

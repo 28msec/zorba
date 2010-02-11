@@ -21,6 +21,7 @@
 #include "store/naive/shared_types.h"
 
 #include "store/api/pul.h"
+#include "store/api/index.h"
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"
@@ -124,10 +125,6 @@ class CollectionPul
   friend class ElementNode;
   friend class AttributeNode;
 
-public:
-
-  typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
-
 protected:
   // Bookeeping
   SimpleCollection                 * theCollection;
@@ -166,8 +163,8 @@ protected:
 
   std::vector<IndexEntryCreator_t>   theIndexEntryCreators;
 
-  std::vector<IndexDelta>            theBeforeIndexDeltas;
-  std::vector<IndexDelta>            theAfterIndexDeltas;
+  std::vector<store::IndexDelta>     theBeforeIndexDeltas;
+  std::vector<store::IndexDelta>     theAfterIndexDeltas;
 
 public:
   CollectionPul(PULImpl* pul, SimpleCollection* collection);
@@ -180,7 +177,7 @@ public:
 
   void undoUpdates();
 
-  void computeIndexDeltas(std::vector<IndexDelta>& deltas);
+  void computeIndexDeltas(std::vector<store::IndexDelta>& deltas);
 
   void refreshIndices();
 
