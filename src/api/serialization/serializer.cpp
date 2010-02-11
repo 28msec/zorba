@@ -59,9 +59,9 @@ static void toHexString(unsigned char ch, char result[])
 
 
 static void tokenize(
-    const xqpStringStore& str,
-    const xqpStringStore& separators,
-    std::vector<xqpStringStore_t>& tokens)
+  const xqpStringStore& str,
+  const xqpStringStore& separators,
+  std::vector<xqpStringStore_t>& tokens)
 {
   unsigned int start = 0;
 
@@ -87,11 +87,11 @@ static void tokenize(
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Default emitter                                                            //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  Default emitter                                                           //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 serializer::emitter::emitter(serializer *the_serializer, transcoder& the_transcoder)
   :
@@ -140,8 +140,8 @@ void serializer::emitter::releaseChildIter(store::ChildrenIterator* iter)
 
 
 void serializer::emitter::emit_expanded_string(
-    const xqpStringStore * str,
-    bool emit_attribute_value = false )
+  const xqpStringStore * str,
+  bool emit_attribute_value = false )
 {
   tr << expand_string(str, emit_attribute_value).c_str();
 }
@@ -150,18 +150,18 @@ void serializer::emitter::emit_expanded_string(
 // emit_attribute_value is set to true if the string expansion is performed
 // on a value of an attribute
 std::string serializer::emitter::expand_string(
-    const xqpStringStore* str,
-    bool emit_attribute_value = false)
+  const xqpStringStore* str,
+  bool emit_attribute_value = false)
 {
   std::stringstream lStringStream;
   transcoder lTranscoder( lStringStream );
-	const unsigned char* chars = (const unsigned char*)str->c_str();
+  const unsigned char* chars = (const unsigned char*)str->c_str();
   const unsigned char* chars_end  = chars + str->bytes();
 
-	int skip = 0;
+  int skip = 0;
 
-	for (; chars < chars_end; chars++ )
-	{
+  for (; chars < chars_end; chars++ )
+  {
     // the input string is UTF-8
 #ifndef ZORBA_NO_UNICODE
     if (*chars < 0x80)
@@ -200,13 +200,13 @@ std::string serializer::emitter::expand_string(
     }
 #endif//ZORBA_NO_UNICODE
 
-    /*
-      In addition, the non-whitespace control characters #x1 through #x1F and
-      #x7F through #x9F in text nodes and attribute nodes MUST be output as
-      character references.
-    */
+      /*
+        In addition, the non-whitespace control characters #x1 through #x1F and
+        #x7F through #x9F in text nodes and attribute nodes MUST be output as
+        character references.
+      */
     if ((*chars >= 0x1 && *chars <= 0x1F) ||
-        (*chars >= 0x7F && *chars <= 0x9F))
+      (*chars >= 0x7F && *chars <= 0x9F))
     {
       if ((!emit_attribute_value) && (*chars == 0xA || *chars == 0x9))
       {
@@ -220,89 +220,55 @@ std::string serializer::emitter::expand_string(
       }
     }
     else switch (*chars)
-		{
-		case '<':
-      /*
-        The HTML output method MUST NOT escape "<" characters occurring in
-        attribute values.
-      */
-      if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
-        lTranscoder << *chars;
-      else
-        lTranscoder << "&lt;";
-			break;
-
-		case '>':
-			lTranscoder << "&gt;";
-			break;
-
-    case '"':
-      if (emit_attribute_value)
-        lTranscoder << "&quot;";
-      else
-        lTranscoder << *chars;
-			break;
-
-		case '&':
-      /*
-        The HTML output method MUST NOT escape a & character occurring in an
-        attribute value immediately followed by a { character (see Section
-        B.7.1 of the HTML Recommendation [HTML]).
-      */
-      if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
-      {
-        if (chars_end - chars > 1
-            &&
-            (*(chars+1) == '{'))
+    {
+      case '<':
+        /*
+          The HTML output method MUST NOT escape "<" characters occurring in
+          attribute values.
+        */
+        if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
           lTranscoder << *chars;
         else
-          lTranscoder << "&amp;";
-      }
-      else
-      {
-        int is_quote = 0;
-        for (int j = 1; j < chars_end - chars; j++)
+          lTranscoder << "&lt;";
+        break;
+
+      case '>':
+        lTranscoder << "&gt;";
+        break;
+
+      case '"':
+        if (emit_attribute_value)
+          lTranscoder << "&quot;";
+        else
+          lTranscoder << *chars;
+        break;
+
+      case '&':
+        /*
+          The HTML output method MUST NOT escape a & character occurring in an
+          attribute value immediately followed by a { character (see Section
+          B.7.1 of the HTML Recommendation [HTML]).
+        */
+        if (ser && ser->method == PARAMETER_VALUE_HTML && emit_attribute_value)
         {
-          if (j == 1 && *(chars+j) != '#')
-            break;
+          if (chars_end - chars > 1
+            &&
+            (*(chars+1) == '{'))
+            lTranscoder << *chars;
+          else
+            lTranscoder << "&amp;";
+        }
+        else
+        {
+          lTranscoder << "&amp;";
+        }
+        break;
 
-				  if ( ! ((*(chars+j) >= 'a' && *(chars+j) <= 'f')
-            ||
-            (*(chars+j) >= 'A' && *(chars+j) <= 'F')
-            ||
-            (*(chars+j) >= '0' && *(chars+j) <= '9')
-            ||
-            *(chars+j) == '#'
-            ||
-            *(chars+j) == ';'))
-				  {
-            break;
-				  }
-
-				  if (*(chars+j) == ';')
-		  		{
-            if (j>1)
-              is_quote = 1;
-            break;
-				  }
-			 }
-
-			 if (is_quote)
-			   lTranscoder << *chars;
-          //{
-          //  tr << std::string(chars, j+1);
-          //  chars += j;
-          //}
-			 else
-				 lTranscoder << "&amp;";
-      }
-      break;
-
-		default:
-			lTranscoder << *chars;
-			break;
-		}
-	}
+      default:
+        lTranscoder << *chars;
+        break;
+    }
+  }
 
   return lStringStream.str();
 }
@@ -316,7 +282,7 @@ void serializer::emitter::emit_text_node(const store::Item* node)
   const store::Item* parent = node->getParent();
 
   if (parent == NULL ||
-      parent->getNodeKind() != store::StoreConsts::elementNode)
+    parent->getNodeKind() != store::StoreConsts::elementNode)
   {
     emit_expanded_string(text.getp());
     return;
@@ -362,9 +328,9 @@ void serializer::emitter::emit_indentation(int depth)
 
 
 int serializer::emitter::emit_node_children(
-    const store::Item* item,
-    int depth,
-    bool perform_escaping = true)
+  const store::Item* item,
+  int depth,
+  bool perform_escaping = true)
 {
   store::Item* child;
   store::Item* attr;
@@ -388,7 +354,7 @@ int serializer::emitter::emit_node_children(
     closed_parent_tag = 1;
   }
 
-	// output all the other nodes
+  // output all the other nodes
   store::StoreConsts::NodeKind prev_node_kind = store::StoreConsts::anyNode;
   store::ChildrenIterator* iter = getChildIter();
   store::Item_t tmp = const_cast<store::Item*>(item);
@@ -396,17 +362,17 @@ int serializer::emitter::emit_node_children(
   iter->open();
 
   while ((child = iter->next()) != NULL)
-	{
+  {
     if (closed_parent_tag == 0)
-		{
+    {
       tr << ">";
       closed_parent_tag = 1;
     }
 
     if (ser->indent &&
-        (child->getNodeKind() == store::StoreConsts::elementNode ||
-         child->getNodeKind() == store::StoreConsts::commentNode) &&
-        (prev_node_kind != store::StoreConsts::textNode))
+      (child->getNodeKind() == store::StoreConsts::elementNode ||
+        child->getNodeKind() == store::StoreConsts::commentNode) &&
+      (prev_node_kind != store::StoreConsts::textNode))
     {
       if (depth > 0)
         tr << ser->END_OF_LINE;
@@ -422,8 +388,8 @@ int serializer::emitter::emit_node_children(
   }
 
   if (ser->indent &&
-      (prev_node_kind == store::StoreConsts::elementNode ||
-       prev_node_kind == store::StoreConsts::commentNode))
+    (prev_node_kind == store::StoreConsts::elementNode ||
+      prev_node_kind == store::StoreConsts::commentNode))
   {
     tr << ser->END_OF_LINE;
     emit_indentation(depth-1);
@@ -487,7 +453,7 @@ bool serializer::emitter::emit_bindings(const store::Item* item)
 
 
 bool serializer::emitter::haveBinding(
-    std::pair<xqpStringStore_t, xqpStringStore_t>& nsBinding) const
+  std::pair<xqpStringStore_t, xqpStringStore_t>& nsBinding) const
 {
   for (ulong i = 0; i < theBindings.size(); ++i)
   {
@@ -496,7 +462,7 @@ bool serializer::emitter::haveBinding(
     for (ulong j = 0; j < nsBindings.size(); ++j)
     {
       if (nsBindings[j].first->byteEqual(*nsBinding.first.getp()) &&
-          nsBindings[j].second->byteEqual(*nsBinding.second.getp()))
+        nsBindings[j].second->byteEqual(*nsBinding.second.getp()))
         return true;
     }
   }
@@ -523,15 +489,15 @@ bool serializer::emitter::havePrefix(const xqpStringStore* pre) const
 
 
 void serializer::emitter::emit_node(
-    const store::Item* item,
-    int depth)
+  const store::Item* item,
+  int depth)
 {
-	if( item->getNodeKind() == store::StoreConsts::documentNode )
-	{
-		emit_node_children(item, depth);
-	}
-	else if (item->getNodeKind() == store::StoreConsts::elementNode)
-	{
+  if( item->getNodeKind() == store::StoreConsts::documentNode )
+  {
+    emit_node_children(item, depth);
+  }
+  else if (item->getNodeKind() == store::StoreConsts::elementNode)
+  {
     store::Item* qname = item->getNodeName();
     xqpStringStore* prefix = qname->getPrefix();
 
@@ -570,9 +536,9 @@ void serializer::emitter::emit_node(
     }
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
-	}
-	else if (item->getNodeKind() == store::StoreConsts::attributeNode )
-	{
+  }
+  else if (item->getNodeKind() == store::StoreConsts::attributeNode )
+  {
     store::Item* qname = item->getNodeName();
     xqpStringStore* prefix = qname->getPrefix();
 
@@ -581,34 +547,34 @@ void serializer::emitter::emit_node(
     else
       tr << " " << prefix->c_str() << ":" << qname->getLocalName()->c_str() << "=\"";
 
-	  emit_expanded_string(item->getStringValue(), true);
+    emit_expanded_string(item->getStringValue(), true);
 
-	  tr << "\"";
+    tr << "\"";
 
-	  previous_item = PREVIOUS_ITEM_WAS_NODE;
-	}
-	else if (item->getNodeKind() == store::StoreConsts::textNode)
-	{
+    previous_item = PREVIOUS_ITEM_WAS_NODE;
+  }
+  else if (item->getNodeKind() == store::StoreConsts::textNode)
+  {
     emit_text_node(item);
     if (!item->getStringValue()->is_whitespace()) // ignore whitespace text nodes when doing indentation
       previous_item = PREVIOUS_ITEM_WAS_TEXT;
-	}
-	else if (item->getNodeKind() == store::StoreConsts::commentNode)
-	{
+  }
+  else if (item->getNodeKind() == store::StoreConsts::commentNode)
+  {
     tr << "<!--" << item->getStringValueP()->c_str() << "-->";
     previous_item = PREVIOUS_ITEM_WAS_NODE;
-	}
-	else if (item->getNodeKind() == store::StoreConsts::piNode )
-	{
+  }
+  else if (item->getNodeKind() == store::StoreConsts::piNode )
+  {
     tr << "<?" << item->getTarget()->c_str() << " "
        << item->getStringValueP()->c_str() << "?>";
 
     previous_item = PREVIOUS_ITEM_WAS_NODE;
-	}
-	else
-	{
-		tr << "node of type: " << item->getNodeKind();
-	}
+  }
+  else
+  {
+    tr << "node of type: " << item->getNodeKind();
+  }
 }
 
 
@@ -665,15 +631,15 @@ void serializer::emitter::emit_doctype(const xqpStringStore* elementName)
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  XML Emitter                                                                //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  XML Emitter                                                               //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 serializer::xml_emitter::xml_emitter(
-    serializer* the_serializer,
-    transcoder& the_transcoder)
+  serializer* the_serializer,
+  transcoder& the_transcoder)
   :
   emitter(the_serializer, the_transcoder)
 {
@@ -734,15 +700,15 @@ void serializer::xml_emitter::emit_doctype(const xqpStringStore* elementName)
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  HTML Emitter                                                               //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  HTML Emitter                                                              //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 serializer::html_emitter::html_emitter(
-    serializer* the_serializer,
-    transcoder& the_transcoder)
+  serializer* the_serializer,
+  transcoder& the_transcoder)
   :
   emitter(the_serializer, the_transcoder)
 {
@@ -793,7 +759,7 @@ int is_content_type_meta(const store::Item* item, const store::Item* element_par
   xqpStringStore_t iname = item->getNodeName()->getStringValue();
 
   if (pname->lowercase()->byteEqual("head") &&
-      iname->lowercase()->byteEqual("meta"))
+    iname->lowercase()->byteEqual("meta"))
   {
     // iterate through attributes
     store::Iterator_t it = item->getAttributes();
@@ -804,7 +770,7 @@ int is_content_type_meta(const store::Item* item, const store::Item* element_par
       xqpStringStore_t cname = child->getNodeName()->getStringValue();
       xqpStringStore_t cvalue = child->getStringValue();
       if (cname->lowercase()->byteEqual("http-equiv") &&
-          cvalue->lowercase()->byteEqual("content-type"))
+        cvalue->lowercase()->byteEqual("content-type"))
         return 1;
     }
   }
@@ -821,18 +787,18 @@ static bool is_html_empty_content_model_element(const store::Item* item)
   xqpStringStore_t str = item->getNodeName()->getStringValue()->lowercase();
 
   if (str->byteEqual("area") ||
-      str->byteEqual("base") ||
-      str->byteEqual("basefont") ||
-      str->byteEqual("br") ||
-      str->byteEqual("col") ||
-      str->byteEqual("frame") ||
-      str->byteEqual("hr") ||
-      str->byteEqual("img") ||
-      str->byteEqual("input") ||
-      str->byteEqual("isindex") ||
-      str->byteEqual("link") ||
-      str->byteEqual("meta") ||
-      str->byteEqual("param"))
+    str->byteEqual("base") ||
+    str->byteEqual("basefont") ||
+    str->byteEqual("br") ||
+    str->byteEqual("col") ||
+    str->byteEqual("frame") ||
+    str->byteEqual("hr") ||
+    str->byteEqual("img") ||
+    str->byteEqual("input") ||
+    str->byteEqual("isindex") ||
+    str->byteEqual("link") ||
+    str->byteEqual("meta") ||
+    str->byteEqual("param"))
     return true;
   else
     return false;
@@ -850,8 +816,8 @@ static bool is_html_no_empty_tags_element(const store::Item* item)
   xqpStringStore_t str = item->getNodeName()->getStringValue()->lowercase();
 
   if (str->byteEqual("script") ||
-      str->byteEqual("textarea") ||
-      str->byteEqual("div"))
+    str->byteEqual("textarea") ||
+    str->byteEqual("div"))
     return true;
   else
     return false;
@@ -863,17 +829,17 @@ static bool is_html_boolean_attribute(const xqpStringStore_t& attribute)
   xqpStringStore_t str = attribute->lowercase();
 
   if (str->byteEqual("compact") ||
-      str->byteEqual("nowrap") ||
-      str->byteEqual("ismap") ||
-      str->byteEqual("declare") ||
-      str->byteEqual("noshade") ||
-      str->byteEqual("checked") ||
-      str->byteEqual("disabled") ||
-      str->byteEqual("readonly") ||
-      str->byteEqual("multiple") ||
-      str->byteEqual("selected") ||
-      str->byteEqual("noresize") ||
-      str->byteEqual("defer"))
+    str->byteEqual("nowrap") ||
+    str->byteEqual("ismap") ||
+    str->byteEqual("declare") ||
+    str->byteEqual("noshade") ||
+    str->byteEqual("checked") ||
+    str->byteEqual("disabled") ||
+    str->byteEqual("readonly") ||
+    str->byteEqual("multiple") ||
+    str->byteEqual("selected") ||
+    str->byteEqual("noresize") ||
+    str->byteEqual("defer"))
     return true;
   else
     return false;
@@ -881,8 +847,8 @@ static bool is_html_boolean_attribute(const xqpStringStore_t& attribute)
 
 
 void serializer::html_emitter::emit_node(
-    const store::Item* item,
-    int depth)
+  const store::Item* item,
+  int depth)
 {
   const store::Item* element_parent = item->getParent();
 
@@ -908,10 +874,10 @@ void serializer::html_emitter::emit_node(
       MUST be discarded.
     */
     if (ser->include_content_type == PARAMETER_VALUE_YES
-        &&
-        element_parent != NULL
-        &&
-        is_content_type_meta(item, element_parent))
+      &&
+      element_parent != NULL
+      &&
+      is_content_type_meta(item, element_parent))
     {
       // do not emit this element
       return;
@@ -932,8 +898,8 @@ void serializer::html_emitter::emit_node(
       specifying the character encoding actually used.
     */
     if (ser->include_content_type == PARAMETER_VALUE_YES
-        &&
-        item->getNodeName()->getStringValue()->lowercase()->str() == "head")
+      &&
+      item->getNodeName()->getStringValue()->lowercase()->str() == "head")
     {
       tr << ">";
       if (ser->indent)
@@ -971,10 +937,10 @@ void serializer::html_emitter::emit_node(
       /*
         The HTML 4.01 spec says that both tags (begin and end tags) are REQUIRED
         for script, textarea and div tags.
-       */
+      */
       if (is_html_no_empty_tags_element(item)
-          ||
-          (ser->include_content_type == PARAMETER_VALUE_YES
+        ||
+        (ser->include_content_type == PARAMETER_VALUE_YES
           &&
           item->getNodeName()->getStringValue()->lowercase()->str() == "head"))
       {
@@ -993,7 +959,7 @@ void serializer::html_emitter::emit_node(
           MUST be output as <br>.
         */
         if (is_html_empty_content_model_element(item) &&
-            ser->version->byteEqual("4.0"))
+          ser->version->byteEqual("4.0"))
           tr << ">";
         else
           tr << "/>";
@@ -1038,8 +1004,8 @@ void serializer::html_emitter::emit_node(
     }
 
     /* commented out
-      if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
-        tr << " ";
+       if (previous_item == PREVIOUS_ITEM_WAS_TEXT)
+       tr << " ";
     */
     if (expand)
       emit_expanded_string(item->getStringValue());
@@ -1067,26 +1033,26 @@ void serializer::html_emitter::emit_node(
   }
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  XHTML Emitter                                                              //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  XHTML Emitter                                                             //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 serializer::xhtml_emitter::xhtml_emitter(
-    serializer* the_serializer,
-    transcoder& the_transcoder)
+  serializer* the_serializer,
+  transcoder& the_transcoder)
   :
   xml_emitter(the_serializer, the_transcoder)
 {
 }
 
 void serializer::xhtml_emitter::emit_node(
-    const store::Item* item,
-    int depth)
+  const store::Item* item,
+  int depth)
 {
-	if (item->getNodeKind() == store::StoreConsts::elementNode)
-	{
+  if (item->getNodeKind() == store::StoreConsts::elementNode)
+  {
     const store::Item* element_parent = item->getParent();
     unsigned closed_parent_tag = 0;
 
@@ -1102,10 +1068,10 @@ void serializer::xhtml_emitter::emit_node(
       MUST be discarded.
     */
     if (ser->include_content_type == PARAMETER_VALUE_YES
-        &&
-        element_parent != NULL
-        &&
-        is_content_type_meta(item, element_parent))
+      &&
+      element_parent != NULL
+      &&
+      is_content_type_meta(item, element_parent))
     {
       // do not emit this element
       return;
@@ -1120,8 +1086,8 @@ void serializer::xhtml_emitter::emit_node(
       specifying the character encoding actually used.
     */
     if (ser->include_content_type == PARAMETER_VALUE_YES
-        &&
-        item->getNodeName()->getStringValue()->lowercase()->str() == "head")
+      &&
+      item->getNodeName()->getStringValue()->lowercase()->str() == "head")
     {
       tr << ">";
       if (ser->indent)
@@ -1184,16 +1150,16 @@ void serializer::xhtml_emitter::emit_node(
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  SAX2 Emitter                                                               //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  SAX2 Emitter                                                              //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 serializer::sax2_emitter::sax2_emitter(
-    serializer * the_serializer,
-    transcoder & the_transcoder,
-    SAX2_ContentHandler * aSAX2ContentHandler )
+  serializer * the_serializer,
+  transcoder & the_transcoder,
+  SAX2_ContentHandler * aSAX2ContentHandler )
   :
   emitter(the_serializer, the_transcoder),
   theSAX2ContentHandler( aSAX2ContentHandler ),
@@ -1207,11 +1173,11 @@ void serializer::sax2_emitter::emit_node_children( const store::Item* item )
 {
   store::Iterator_t it;
   store::Item_t child;
-	// output all the other nodes
-	it = item->getChildren();
+  // output all the other nodes
+  it = item->getChildren();
   it->open();
-	while (it->next(child))
-	{
+  while (it->next(child))
+  {
     if (child->getNodeKind() != store::StoreConsts::attributeNode)
     {
       emit_node(&*child);
@@ -1239,8 +1205,8 @@ bool serializer::sax2_emitter::emit_bindings( const store::Item * item )
 
 
 void serializer::sax2_emitter::emit_node(
-    const store::Item * item,
-    int depth)
+  const store::Item * item,
+  int depth)
 {
   emit_node( item, 0);
 }
@@ -1254,12 +1220,12 @@ int serializer::sax2_emitter::emit_node_children( const store::Item* item, int d
 
 void serializer::sax2_emitter::emit_node( store::Item* item )
 {
-	if( item->getNodeKind() == store::StoreConsts::documentNode )
-	{
-		emit_node_children(item);
-	}
-	else if (item->getNodeKind() == store::StoreConsts::elementNode)
-	{
+  if( item->getNodeKind() == store::StoreConsts::documentNode )
+  {
+    emit_node_children(item);
+  }
+  else if (item->getNodeKind() == store::StoreConsts::elementNode)
+  {
     NsBindings local_nsBindings;
     store::Item_t item_qname;
     std::vector<xqpStringStore_t> aNSList;
@@ -1275,7 +1241,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
     if(theSAX2ContentHandler)
     {
       item->getNamespaceBindings(local_nsBindings,
-                                 store::StoreConsts::ONLY_LOCAL_NAMESPACES);//only local namespaces
+        store::StoreConsts::ONLY_LOCAL_NAMESPACES);//only local namespaces
 
       SAX2AttributesImpl attrs(item);
       ns_size = local_nsBindings.size();
@@ -1312,7 +1278,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
       theSAX2ContentHandler->startElement( lNS, lLocalName, lStringValue, attrs );
     }
 
-		emit_node_children(item);
+    emit_node_children(item);
 
     if(theSAX2ContentHandler)
     {
@@ -1335,38 +1301,38 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
       }
       //emit_endPrefixMapping( local_nsBindings );
     }
-	}
-	else if (item->getNodeKind() == store::StoreConsts::textNode)
-	{
-		//TODO: if CDATA
-    emit_expanded_string(item->getStringValue().getp());
-	  //TODO: if CDATA
   }
-	else if (item->getNodeKind() == store::StoreConsts::commentNode)
-	{
+  else if (item->getNodeKind() == store::StoreConsts::textNode)
+  {
+    //TODO: if CDATA
+    emit_expanded_string(item->getStringValue().getp());
+    //TODO: if CDATA
+  }
+  else if (item->getNodeKind() == store::StoreConsts::commentNode)
+  {
     if ( theSAX2LexicalHandler )
     {
       String lComment ( item->getStringValue().getp() );
       theSAX2LexicalHandler->comment( lComment );
     }
-	}
-	else if (item->getNodeKind() == store::StoreConsts::piNode )
-	{
+  }
+  else if (item->getNodeKind() == store::StoreConsts::piNode )
+  {
     if(theSAX2ContentHandler){
       String lTarget( item->getTarget() );
       String lStringValue( item->getStringValue().getp() );
       theSAX2ContentHandler->processingInstruction( lTarget, lStringValue );
     }
-	}
+  }
 //TODO: unimplemented error handling
 //	else
-	//{
+  //{
 //		tr << "node of type: " << item->getNodeKind();
-    //SAX2_ParseException   saxx("Unknown node type", &theLocator);
-    //if(error_handler)
-    //  error_handler->fatalError(saxx);
-    //throw saxx;
-	//}
+  //SAX2_ParseException   saxx("Unknown node type", &theLocator);
+  //if(error_handler)
+  //  error_handler->fatalError(saxx);
+  //throw saxx;
+  //}
 }
 
 
@@ -1393,8 +1359,8 @@ void serializer::sax2_emitter::emit_item(const store::Item* item)
 
 
 void serializer::sax2_emitter::emit_expanded_string(
-    const xqpStringStore * aStrStore,
-    bool aEmitAttributeValue )
+  const xqpStringStore * aStrStore,
+  bool aEmitAttributeValue )
 {
   if ( theSAX2ContentHandler )
   {
@@ -1406,15 +1372,15 @@ void serializer::sax2_emitter::emit_expanded_string(
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Text Emitter                                                               //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  Text Emitter                                                              //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 serializer::text_emitter::text_emitter(
-    serializer* the_serializer,
-    transcoder& the_transcoder)
+  serializer* the_serializer,
+  transcoder& the_transcoder)
   :
   emitter(the_serializer, the_transcoder)
 {
@@ -1445,8 +1411,8 @@ void serializer::text_emitter::emit_item(const store::Item* item)
 }
 
 void serializer::text_emitter::emit_node(
-    const store::Item* item,
-    int depth)
+  const store::Item* item,
+  int depth)
 {
   if( item->getNodeKind() == store::StoreConsts::documentNode )
   {
@@ -1484,9 +1450,9 @@ void serializer::text_emitter::emit_node(
 }
 
 int serializer::text_emitter::emit_node_children(
-                                            const store::Item* item,
-                                            int depth,
-                                            bool perform_escaping)
+  const store::Item* item,
+  int depth,
+  bool perform_escaping)
 {
   store::Item* child;
 
@@ -1506,11 +1472,11 @@ int serializer::text_emitter::emit_node_children(
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Json Emitter                                                               //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  Json Emitter                                                              //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 serializer::json_emitter::json_emitter(serializer* the_serializer, transcoder& the_transcoder)
   :
@@ -1528,23 +1494,23 @@ void serializer::json_emitter::emit_item(const store::Item* item)
 
   if(!item->isNode() || item->getNodeKind () != store::StoreConsts::elementNode)
     ZORBA_ERROR_PARAM_OSS(API0062_CONV_JSON_PARAM,
-                          item->getStringValue(),
-                          NULL);
+      item->getStringValue(),
+      NULL);
 
   if (JSON_serialize(item, result, error_log))
     tr << result->c_str();
   else
     ZORBA_ERROR_PARAM_OSS(API0061_CONV_JSON_SERIALIZE,
-                          item->getStringValue(),
-                          error_log);
+      item->getStringValue(),
+      error_log);
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  JsonML Emitter                                                             //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  JsonML Emitter                                                            //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 serializer::jsonml_emitter::jsonml_emitter(serializer* the_serializer, transcoder& the_transcoder)
   :
@@ -1562,23 +1528,23 @@ void serializer::jsonml_emitter::emit_item(const store::Item* item)
 
   if(!item->isNode() || item->getNodeKind () != store::StoreConsts::elementNode)
     ZORBA_ERROR_PARAM_OSS(API0065_CONV_JSON_ML_PARAM,
-                          item->getStringValue(),
-                          NULL);
+      item->getStringValue(),
+      NULL);
 
   if (JSON_ML_serialize(item, result, error_log))
     tr << result->c_str();
   else
     ZORBA_ERROR_PARAM_OSS(API0064_CONV_JSON_ML_SERIALIZE,
-                          item->getStringValue(),
-                          error_log);
+      item->getStringValue(),
+      error_log);
 }
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Serializer                                                                 //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  Serializer                                                                //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 const char serializer::END_OF_LINE = '\n';
 
@@ -1656,8 +1622,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else
     {
       ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-          << "> can not be set with value <" << aValue
-          << ">. Accepted values are yes/no.");
+        << "> can not be set with value <" << aValue
+        << ">. Accepted values are yes/no.");
     }
   }
   else if (!strcmp(aName, "standalone"))
@@ -1671,8 +1637,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else
     {
       ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-          << "> can not be set with value <" << aValue
-          << ">. Accepted values are yes/no/omit.");
+        << "> can not be set with value <" << aValue
+        << ">. Accepted values are yes/no/omit.");
     }
   }
   else if (!strcmp(aName, "omit-xml-declaration"))
@@ -1684,8 +1650,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else
     {
       ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-          << "> can not be set with value <" << aValue
-          <<">. Accepted values are yes/no.");
+        << "> can not be set with value <" << aValue
+        <<">. Accepted values are yes/no.");
     }
   }
   else if (!strcmp(aName, "byte-order-mark"))
@@ -1697,8 +1663,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else
     {
       ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-          << "> can not be set with value <" << aValue
-          <<">. Accepted values are yes/no.");
+        << "> can not be set with value <" << aValue
+        <<">. Accepted values are yes/no.");
     }
   }
   else if (!strcmp(aName, "undeclare-prefixes"))
@@ -1710,8 +1676,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else
     {
       ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-          << "> can not be set with value <" << aValue
-          <<">. Accepted values are yes/no.");
+        << "> can not be set with value <" << aValue
+        <<">. Accepted values are yes/no.");
     }
   }
   else if (!strcmp(aName, "method"))
@@ -1733,8 +1699,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else
     {
       ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-          << "> can not be set with value <" << aValue
-          <<">. Accepted values are xml/html/xhtml/text/json/jsonml/binary.");
+        << "> can not be set with value <" << aValue
+        <<">. Accepted values are xml/html/xhtml/text/json/jsonml/binary.");
     }
   }
   else if (!strcmp(aName, "include-content-type"))
@@ -1745,9 +1711,9 @@ void serializer::setParameter(const char* aName, const char* aValue)
       include_content_type = PARAMETER_VALUE_NO;
     else
     {
-       ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-          << "> can not be set with value <" << aValue
-          <<">. Accepted values are yes/no.");
+      ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
+        << "> can not be set with value <" << aValue
+        <<">. Accepted values are yes/no.");
     }
   }
   else if (!strcmp(aName, "encoding"))
@@ -1761,8 +1727,8 @@ void serializer::setParameter(const char* aName, const char* aValue)
     else
     {
       ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-          << "> can not be set with value <" << aValue
-          <<">. Accepted values are UTF-8/UTF-16.");
+        << "> can not be set with value <" << aValue
+        <<">. Accepted values are UTF-8/UTF-16.");
     }
   }
   else if (!strcmp(aName, "media-type"))
@@ -1789,7 +1755,7 @@ void serializer::setParameter(const char* aName, const char* aValue)
   else
   {
     ZORBA_ERROR_DESC_OSS(SEPM0016,"Parameter <" << aName
-          << "> can not be set with value <" << aValue <<">.");
+      << "> can not be set with value <" << aValue <<">.");
   }
 }
 
@@ -1859,8 +1825,8 @@ bool serializer::setup(std::ostream& os)
   if (!cdata_section_elements->empty())
   {
     tokenize(*cdata_section_elements.getp(),
-             xqpStringStore("; "),
-             cdata_section_elements_tokens);
+      xqpStringStore("; "),
+      cdata_section_elements_tokens);
   }
 
   return true;
@@ -1892,8 +1858,8 @@ serializer::serialize(
   if (aHandler) {
     // only allow XML-based methods for SAX notifications
     if (method != PARAMETER_VALUE_XML &&
-        method != PARAMETER_VALUE_XHTML &&
-        method != PARAMETER_VALUE_JSONML) {
+      method != PARAMETER_VALUE_XHTML &&
+      method != PARAMETER_VALUE_JSONML) {
       ZORBA_ERROR(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX);
     }
     // it's OK now, build a SAX emmiter
@@ -1927,9 +1893,9 @@ serializer::serialize(
 }
 
 void serializer::serialize(intern::Serializable* object,
-                           std::ostream& stream,
-                           itemHandler aHandler,
-                           void* aHandlerData)
+  std::ostream& stream,
+  itemHandler aHandler,
+  void* aHandlerData)
 {
   // used for Json and JsonML serialization only
   bool firstItem = true;
@@ -1946,9 +1912,9 @@ void serializer::serialize(intern::Serializable* object,
     // JSON serialization only alows one single item to be serialized
     // so throw an error if we get to a second item
     if (!firstItem && (
-      method == PARAMETER_VALUE_JSON ||
-      method == PARAMETER_VALUE_JSONML)) {
-        ZORBA_ERROR(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
+        method == PARAMETER_VALUE_JSON ||
+        method == PARAMETER_VALUE_JSONML)) {
+      ZORBA_ERROR(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
     }
 
     // PUL's cannot be serialized
@@ -1972,17 +1938,17 @@ void serializer::serialize(intern::Serializable* object,
   e->emit_declaration_end();
 }
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  binary emitter                                                             //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  binary emitter                                                            //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 serializer::binary_emitter::binary_emitter(
   serializer* the_serializer,
   transcoder& the_transcoder)
   :
-emitter(the_serializer, the_transcoder)
+  emitter(the_serializer, the_transcoder)
 {}
 
 void serializer::binary_emitter::emit_item(const store::Item* item)
@@ -1992,9 +1958,9 @@ void serializer::binary_emitter::emit_item(const store::Item* item)
   lValue.decode(lDecodedData);
 
   for (std::vector<char>::const_iterator lIter = lDecodedData.begin();
-    lIter != lDecodedData.end();
-    ++lIter) {
-      tr << *lIter;
+       lIter != lDecodedData.end();
+       ++lIter) {
+    tr << *lIter;
   }
 }
 

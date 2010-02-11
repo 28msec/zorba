@@ -1382,7 +1382,7 @@ Example: <strong>y/n, yes/no, t/f, true/false, 1/0</strong></td>
 <td colspan="2">This option specifies if Tidy should output "
 characters as &amp;quot; as is preferred by some editing
 environments. The apostrophe character ' is written out as
-&#39; since many web browsers don't yet support
+&amp;#39; since many web browsers don't yet support
 &amp;apos;.</td>
 </tr>
 <tr>
