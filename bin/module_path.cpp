@@ -74,11 +74,7 @@ ModulePath::getInstalledModulePath(
   const std::string&        aInstallPath,
   std::vector<std::string>& aResult)
 {
-#ifdef WIN32
-  std::string lSeparator("\\");
-#else
-  std::string lSeparator("/");
-#endif
+  std::string lSeparator(filesystem_path::get_path_separator());
   std::string::size_type lLastSep = aInstallPath.find_last_of(lSeparator);
   // zorba root is one level higher than the zorba executable
   // -3 = jump over the "bin" directory
