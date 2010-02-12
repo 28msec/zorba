@@ -69,6 +69,7 @@ protected:
   bool theNoLogo;
   long theTimeout;
   std::string theModulePath;
+  std::string theInstallPath;
 
   void initialize () {
     theTiming = false;
@@ -126,10 +127,13 @@ public:
   const bool &noColors () const { return theNoColors; }
   const bool &noLogo () const { return theNoLogo; }
   const long &timeout () const { return theTimeout; }
+  const std::string &installPath () const { return theInstallPath; }
   const std::string &modulePath () const { return theModulePath; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
+
+    init_val(*argv, theInstallPath, 0);
 
     std::string result;
     for (++argv; *argv != NULL; ++argv) {

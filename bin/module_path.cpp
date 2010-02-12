@@ -47,8 +47,9 @@ ModulePath::getEnvironmentModulePath()
 }
 
 void
-ModulePath::convertVector(const std::vector<std::string>& aSource,
-                          std::vector<String>& aDest)
+ModulePath::convertVector(
+  const std::vector<std::string>& aSource,
+  std::vector<String>&            aDest)
 {
   for (std::vector<std::string>::const_iterator lIter = aSource.begin();
        lIter != aSource.end(); ++lIter) {
@@ -57,8 +58,9 @@ ModulePath::convertVector(const std::vector<std::string>& aSource,
 }
 
 void
-ModulePath::tokenizeModulePath(const std::string& aModulePath,
-                               std::vector<std::string>& aResult)
+ModulePath::tokenizeModulePath(
+  const std::string&        aModulePath,
+  std::vector<std::string>& aResult)
 {
 #ifdef WIN32
   Util::tokenize(aModulePath, ";", aResult);
@@ -68,8 +70,30 @@ ModulePath::tokenizeModulePath(const std::string& aModulePath,
 }
 
 void
-ModulePath::getModulePaths(const ZorbaCMDProperties& aProperties,
-                           std::vector<String>& aModulePaths)
+ModulePath::getInstalledModulePath(
+  const std::string&        aInstallPath,
+  std::vector<std::string>& aResult)
+{
+#ifdef WIN32
+  std::string lSeparator("\\");
+#else
+  std::string lSeparator("/");
+#endif
+  std::string::size_type lLastSep = aInstallPath.find_last_of(lSeparator);
+  // zorba root is one level higher than the zorba executable
+  // -3 = jump over the "bin" directory
+  std::string lZorbaRoot = aInstallPath.substr(0,  lLastSep - 3);
+
+  // in the zorba root directory the modules are in: include/zorba/modules
+  std::stringstream lRes;
+  lRes << lZorbaRoot << "include" << lSeparator << "zorba" << lSeparator << "modules";
+  aResult.push_back(lRes.str());
+}
+
+void
+ModulePath::getModulePaths(
+  const ZorbaCMDProperties& aProperties,
+  std::vector<String>&      aModulePaths)
 {
   std::vector<std::string> lModulePaths; // result vector
   std::string lModulePath; // temporary variable for collections paths
@@ -88,9 +112,11 @@ ModulePath::getModulePaths(const ZorbaCMDProperties& aProperties,
   filesystem_path lCWD;
   lModulePaths.push_back(lCWD.get_path());
 
+  // 4. add the modules directory from the installation directory
+  getInstalledModulePath(aProperties.installPath(), lModulePaths);
+
   // convert std::string to zorba::String
   convertVector(lModulePaths, aModulePaths);
 }
-
 
 } /* namespace zorba */

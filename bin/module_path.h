@@ -38,6 +38,10 @@ namespace zorba {
     tokenizeModulePath(const std::string& aModulePath,
                        std::vector<std::string>& aResult);
 
+    static void
+    getInstalledModulePath(const std::string& aModulePath,
+                       std::vector<std::string>& aResult);
+
   public:
     static void
     getModulePaths(const ZorbaCMDProperties& aProperties,

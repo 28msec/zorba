@@ -27,16 +27,16 @@ CONFIGURE_FILE(testdriverconfig.h.in ${CMAKE_CURRENT_BINARY_DIR}/testdriverconfi
 # Compile and build the testdriver executable
 #
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-INCLUDE_DIRECTORIES(${ZORBA_SOURCE_DIR}/test/commons)
+INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/test/commons)
 
 SET (TESTDRIVER_SRCS
   testdriver_common.cpp
-  ${ZORBA_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
-  ${ZORBA_SOURCE_DIR}/test/commons/testuriresolver.cpp
+  ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
+  ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp
   )
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
-INCLUDE(${ZORBA_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake)
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake)
 ZORBA_GENERATE_STORE_SPECIFIC_EXES("testdriver" "${TESTDRIVER_SRCS}" "" "")
 
 
@@ -67,8 +67,8 @@ ENDIF (NOT Boost_FOUND)
 SET (TESTDRIVER_MT_SRCS
   testdriver_mt.cpp
   testdriver_common.cpp
-  ${ZORBA_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
-  ${ZORBA_SOURCE_DIR}/test/commons/testuriresolver.cpp
+  ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
+  ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp
   )
 
 ADD_EXECUTABLE(testdriver_mt ${TESTDRIVER_MT_SRCS})

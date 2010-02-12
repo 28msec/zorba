@@ -11,9 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-INCLUDE(${ZORBA_SOURCE_DIR}/cmake_modules/CMakeUseBison.cmake)
-INCLUDE(${ZORBA_SOURCE_DIR}/cmake_modules/CMakeUseFlex.cmake)
-INCLUDE(${ZORBA_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeUseBison.cmake)
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeUseFlex.cmake)
+INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/CMakeCompareVersionStrings.cmake)
 
 SET(PARSER_SRCS
     symbol_table.cpp
@@ -48,7 +48,7 @@ COMPARE_BISON_VERSION("${BISON_VERSION_FULL}" "2.4")
 IF (GENERATE_BISON_FILES)
 	SET(BISON_GENERATE_DEFINES TRUE)
 	BISON_FILE(compiler/parser/xquery_parser.y)
-	LIST(APPEND PARSER_BUILD_SRCS ${ZORBA_BINARY_DIR}/src/compiler/parser/xquery_parser.cpp)
+	LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/xquery_parser.cpp)
 ELSE (GENERATE_BISON_FILES)
 	IF (BISON_EXECUTABLE)
 		MESSAGE(STATUS "Warning: GNU Bison's version " ${BISON_VERSION_FULL} " is less than required (2.4) -- the parser will not be regenerated")
@@ -85,7 +85,7 @@ IF (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
 	SET(FLEX_PREFIX_OUTPUTS TRUE)
 	FLEX_FILE(compiler/parser/xquery_scanner.l)
 	ADD_DEFINITIONS(-DFLEX_FILES_REGENERATED)
-	LIST(APPEND PARSER_BUILD_SRCS ${ZORBA_BINARY_DIR}/src/compiler/parser/xquery_scanner.cpp)
+	LIST(APPEND PARSER_BUILD_SRCS ${CMAKE_BINARY_DIR}/src/compiler/parser/xquery_scanner.cpp)
 ELSE (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
 	IF (NOT ZORBA_HAVE_FLEXLEXER_H)
     	MESSAGE(STATUS "Warning: FlexLexer.h has not been found -- the lexer will not be regenerated")
@@ -103,5 +103,5 @@ ENDIF (GENERATE_FLEX_FILES AND ZORBA_HAVE_FLEXLEXER_H)
 # generate a script that copies the generated parser and scanner files from the build
 # directory into the source directory
 # this script should be used before commiting if one modified the parser/scanner
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake ${ZORBA_BINARY_DIR}/copyparser.sh)
-MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake -->${ZORBA_BINARY_DIR}/copyparser.sh")
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake ${CMAKE_BINARY_DIR}/copyparser.sh)
+MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/compiler/parser/copyparser.sh.cmake -->${CMAKE_BINARY_DIR}/copyparser.sh")
