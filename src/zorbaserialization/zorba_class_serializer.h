@@ -42,7 +42,7 @@ void operator&(Archiver &ar, MAPM &obj);
 
 void operator&(Archiver &ar, XQPCollator *&obj);
 void operator&(Archiver &ar, store::Item* &obj);
-void operator&(Archiver &ar, std::map<int, rchandle<function> >* &obj);//ArityFMap
+//void operator&(Archiver &ar, std::vector<rchandle<function> >*& obj);
 
 //void serialize_qname(Archiver &ar, store::Item_t &qname);
 

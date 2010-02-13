@@ -527,7 +527,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
       buf += valueItem->getStringValue()->str();
     }
     if (!buf.empty())
-      lexicalValue = lexicalValue->append(buf);
+      lexicalValue = lexicalValue->append(buf.c_str());
   }
   else
   {
@@ -604,7 +604,7 @@ bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
               valueItem->getAtomizationValue()->getStringValue()->str());
     }
     if (!buf.empty())
-      content = content->append(buf);
+      content = content->append(buf.c_str());
 
     ZORBA_FATAL(theIsRoot || !path.empty(), "");
 
@@ -691,7 +691,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (! lFirst) buf += " ";
 
     xqpStringStore_t strvalue = lItem->getStringValue();
-    if (strvalue->indexOf("?>") >= 0)
+    if (strvalue->bytePositionOf("?>", 2, 0) >= 0)
       ZORBA_ERROR_LOC(XQDY0026, loc);
 
     buf += strvalue->str();
@@ -759,7 +759,7 @@ bool CommentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   if (!content->empty())
   {
-    if (content->byteAt(content->bytes()-1) == '-' || content->indexOf("--") >= 0)
+    if (content->byteAt(content->bytes()-1) == '-' || content->bytePositionOf("--") >= 0)
       ZORBA_ERROR_LOC(XQDY0072, loc);
   }
 
@@ -885,7 +885,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
           }
 
           if (!buf.empty())
-            strval = strval->append(buf);
+            strval = strval->append(buf.c_str());
         }
 
         factory->createString(result, strval);
@@ -951,7 +951,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
             }
 
             if (!buf.empty())
-              strval = strval->append(buf);
+              strval = strval->append(buf.c_str());
           }
 
           if (!strval->empty())

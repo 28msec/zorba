@@ -42,7 +42,7 @@ public:
   public:
     static bool equal(const xqpStringStore* s1, const xqpStringStore* s2)
     {
-      return s1->byteEqual(*s2);
+      return s1->byteEqual(s2);
     }
 
     static uint32_t hash(const xqpStringStore* s)

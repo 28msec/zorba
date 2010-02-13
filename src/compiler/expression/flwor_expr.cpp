@@ -190,14 +190,14 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) const
   expr_t domainCopy = theDomainExpr->clone(subst);
 
   varref_t varCopy(new var_expr(*theVarExpr));
-  subst->get(theVarExpr.getp()) = varCopy.getp();
+  subst[theVarExpr.getp()] = varCopy.getp();
 
   varref_t posvarCopy;
   var_expr* pos_var_ptr = thePosVarExpr.getp();
   if (pos_var_ptr)
   {
     posvarCopy = new var_expr(*pos_var_ptr);
-    subst->get(pos_var_ptr) = posvarCopy.getp();
+    subst[pos_var_ptr] = posvarCopy.getp();
   }
 
   varref_t scorevarCopy;
@@ -205,7 +205,7 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) const
   if (score_var_ptr)
   {
     scorevarCopy = new var_expr(*score_var_ptr);
-    subst->get(score_var_ptr) = scorevarCopy.getp();
+    subst[score_var_ptr] = scorevarCopy.getp();
   }
 
   return new for_clause(NULL,
@@ -276,7 +276,7 @@ flwor_clause_t let_clause::clone(expr::substitution_t& subst) const
   expr_t domainCopy = theDomainExpr->clone(subst);
 
   varref_t varCopy(new var_expr(*theVarExpr));
-  subst->get(theVarExpr.getp()) = varCopy.getp();
+  subst[theVarExpr.getp()] = varCopy.getp();
 
 #if 0
   varref_t scorevarCopy;
@@ -379,7 +379,7 @@ flwor_clause_t window_clause::clone(expr::substitution_t& subst) const
   expr_t domainCopy = theDomainExpr->clone(subst);
 
   varref_t varCopy(new var_expr(*theVarExpr));
-  subst->get(theVarExpr.getp()) = varCopy.getp();
+  subst[theVarExpr.getp()] = varCopy.getp();
 
   flwor_wincond_t cloneStartCond;
   flwor_wincond_t cloneStopCond;
@@ -448,28 +448,28 @@ void flwor_wincond::vars::clone(
   if (posvar != NULL)
   {
     varref_t varCopy(new var_expr(*posvar));
-    subst->get(posvar.getp()) = varCopy.getp();
+    subst[posvar.getp()] = varCopy.getp();
     cloneVars.posvar = varCopy;
   }
 
   if (curr != NULL)
   {
     varref_t varCopy(new var_expr(*curr));
-    subst->get(curr.getp()) = varCopy.getp();
+    subst[curr.getp()] = varCopy.getp();
     cloneVars.curr = varCopy;
   }
 
   if (prev != NULL)
   {
     varref_t varCopy(new var_expr(*prev));
-    subst->get(prev.getp()) = varCopy.getp();
+    subst[prev.getp()] = varCopy.getp();
     cloneVars.prev = varCopy;
   }
 
   if (next != NULL)
   {
     varref_t varCopy(new var_expr(*next));
-    subst->get(next.getp()) = varCopy.getp();
+    subst[next.getp()] = varCopy.getp();
     cloneVars.next = varCopy;
   }
 }
@@ -582,14 +582,14 @@ flwor_clause_t group_clause::clone(expr::substitution_t& subst) const
   {
     cloneGroupVars[i].first = theGroupVars[i].first->clone(subst);
     cloneGroupVars[i].second = new var_expr(*theGroupVars[i].second);
-    subst->get(theGroupVars[i].second.getp()) = cloneGroupVars[i].second.getp();
+    subst[theGroupVars[i].second.getp()] = cloneGroupVars[i].second.getp();
   }
 
   for (ulong i = 0; i < numNonGroupVars; ++i)
   {
     cloneNonGroupVars[i].first = theNonGroupVars[i].first->clone(subst);
     cloneNonGroupVars[i].second = new var_expr(*theNonGroupVars[i].second);
-    subst->get(theNonGroupVars[i].second.getp()) = cloneNonGroupVars[i].second.getp();
+    subst[theNonGroupVars[i].second.getp()] = cloneNonGroupVars[i].second.getp();
   }
 
   return new group_clause(theContext,
@@ -651,7 +651,7 @@ void count_clause::serialize(::zorba::serialization::Archiver& ar)
 flwor_clause_t count_clause::clone(expr::substitution_t& subst) const
 {
   varref_t cloneVar = new var_expr(*theVarExpr);
-  subst->get(theVarExpr.getp()) = cloneVar;
+  subst[theVarExpr.getp()] = cloneVar;
 
   return new count_clause(theContext, get_loc(), cloneVar);
 }

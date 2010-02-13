@@ -262,17 +262,21 @@ bool   csv_read_line(unicode_codepoint_iterator *csv_it, //IN-OUT
   return line.size() > 00;
 }
 
-xqpString compute_absolute_filename(xqpString csv_filename, 
-                                    xqpString query_path)
+
+xqpString compute_absolute_filename(
+    xqpString csv_filename, 
+    xqpString query_path)
 {
   xqpString abs_filename;
   //compute the absolute file name from csv file name and xq location
-  const char  *fnstring = csv_filename.c_str();
+  const char* fnstring = csv_filename.c_str();
   if(strstr(fnstring, "://"))
   {
     //is an URI
-    xqpStringStore_t    csv_store = csv_filename.getStore();
-    abs_filename = URI::decode_file_URI(csv_store).getp();
+    xqpStringStore_t csv_store = csv_filename.getStore();
+    xqpStringStore_t tmp;
+    URI::decode_file_URI(csv_store, tmp);
+    abs_filename = tmp.getp();
   }
   else
   {
@@ -1113,7 +1117,7 @@ xqpString csv_quote_field(xqpString &field,
         result.append_in_place(*field_cp);
       ++field_cp;
     }
-    result.append_in_place(quote_char);
+    result.append_in_place(quote_char.c_str());
     return result;
   }
   else
@@ -1174,12 +1178,12 @@ void txt_write_line_to_string(checked_vector<xqpString> &line,
     {
       std::string padded_field(field.c_str());
       padded_field.append(column_length - field_length, ' ');
-      result_string.append_in_place(padded_field);
+      result_string.append_in_place(padded_field.c_str());
     }
     else if(field_length == column_length)
-      result_string.append_in_place(field);
+      result_string.append_in_place(field.c_str());
     else
-      result_string.append_in_place(field.substr(0, column_length));
+      result_string.append_in_place(field.substr(0, column_length).c_str());
   }
   result_string.append_in_place('\n');
 }

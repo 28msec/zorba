@@ -217,11 +217,14 @@ protected:
 
 public:
 #ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+
   SERIALIZABLE_TEMPLATE_CLASS(serializable_HashMap)
-  serializable_HashMap(::zorba::serialization::Archiver &ar) : ::zorba::serialization::SerializeBaseClass()
+
+  serializable_HashMap(::zorba::serialization::Archiver& ar) : ::zorba::serialization::SerializeBaseClass()
   {
   }
-  void serialize(::zorba::serialization::Archiver &ar)
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     ar & theNumEntries;
     ar & theHashTabSize;
@@ -243,20 +246,18 @@ public:
     ar & numCollisions;
   }
 #endif
-protected:
-
-ulong computeTabSize(ulong size)
-{
-  return size + 32 + size/5; 
-}
-
 
 public:
 
-/*******************************************************************************
+/***************************************************************************//**
   Constructor: Allocates the hash table. Its initial size is the given size,
   plus an initial number of free entries (= 32 + 10% of the given size). These
   free entries are placed in a free list.
+
+  This constructor takes as input a comparison-function obj. This is needed
+  when the C::hash() and C::equal() methods are not static, i.e., their operation
+  depends on some parametrs (e.g. the collation or timezone). These parameters
+  are provided as data members of the given comparison-function obj.
 ********************************************************************************/
 HASHMAP(const C& compFunction, ulong size, bool sync, bool useTransfer = false) 
   :
@@ -275,6 +276,16 @@ HASHMAP(const C& compFunction, ulong size, bool sync, bool useTransfer = false)
 }
 
 
+/***************************************************************************//**
+  Constructor: Allocates the hash table. Its initial size is the given size,
+  plus an initial number of free entries (= 32 + 10% of the given size). These
+  free entries are placed in a free list.
+
+  This constructor does not take a comparison-function obj as input. It should
+  be used when the C::hash() and C::equal() methods are static. In this case,
+  theCompareFunction data member is initialized with the default constructor
+  of the C class.
+********************************************************************************/
 HASHMAP(ulong size, bool sync, bool useTransfer = false) 
   :
   theNumEntries(0),
@@ -596,6 +607,16 @@ bool removeNoSync(const T& item, ulong hval)
 
 
 protected:
+
+
+/*******************************************************************************
+
+********************************************************************************/
+ulong computeTabSize(ulong size)
+{
+  return size + 32 + size/5; 
+}
+
 
 /*******************************************************************************
 

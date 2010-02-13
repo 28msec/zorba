@@ -73,7 +73,7 @@ static void tokenize(
       {
         if (start < i)
         {
-          tokens.push_back(str.substr(start, i-start));
+          tokens.push_back(str.byteSubstr(start, i-start));
         }
         start = i+1;
       }
@@ -82,7 +82,7 @@ static void tokenize(
 
   if (start < str.bytes())
   {
-    tokens.push_back(str.substr(start, str.bytes()-start));
+    tokens.push_back(str.byteSubstr(start, str.bytes()-start));
   }
 }
 
@@ -295,14 +295,14 @@ void serializer::emitter::emit_text_node(const store::Item* node)
 
     for (unsigned int i = 0; i < ser->cdata_section_elements_tokens.size(); i++)
     {
-      if (ser->cdata_section_elements_tokens[i]->byteEqual(*name.getp()))
+      if (ser->cdata_section_elements_tokens[i]->byteEqual(name.getp()))
       {
         while (1)
         {
-          int pos = text->indexOf("]]>");
+          int pos = text->bytePositionOf("]]>", 3, 0);
           if ( pos > -1)
           {
-            tr << "<![CDATA[" << text->substr(0, pos+2)->c_str() << "]]>";
+            tr << "<![CDATA[" << text->byteSubstr(0, pos+2)->c_str() << "]]>";
             text = text->substr(pos+2);
           }
           else
@@ -461,8 +461,8 @@ bool serializer::emitter::haveBinding(
 
     for (ulong j = 0; j < nsBindings.size(); ++j)
     {
-      if (nsBindings[j].first->byteEqual(*nsBinding.first.getp()) &&
-        nsBindings[j].second->byteEqual(*nsBinding.second.getp()))
+      if (nsBindings[j].first->byteEqual(nsBinding.first.getp()) &&
+          nsBindings[j].second->byteEqual(nsBinding.second.getp()))
         return true;
     }
   }
@@ -479,7 +479,7 @@ bool serializer::emitter::havePrefix(const xqpStringStore* pre) const
 
     for (unsigned long j = 0; j < nsBindings.size(); ++j)
     {
-      if (nsBindings[j].first->byteEqual(*pre))
+      if (nsBindings[j].first->byteEqual(pre))
         return true;
     }
   }
@@ -758,8 +758,8 @@ int is_content_type_meta(const store::Item* item, const store::Item* element_par
   xqpStringStore_t pname = element_parent->getNodeName()->getStringValue();
   xqpStringStore_t iname = item->getNodeName()->getStringValue();
 
-  if (pname->lowercase()->byteEqual("head") &&
-    iname->lowercase()->byteEqual("meta"))
+  if (pname->lowercase()->byteEqual("head", 4) &&
+      iname->lowercase()->byteEqual("meta", 4))
   {
     // iterate through attributes
     store::Iterator_t it = item->getAttributes();
@@ -769,8 +769,8 @@ int is_content_type_meta(const store::Item* item, const store::Item* element_par
     {
       xqpStringStore_t cname = child->getNodeName()->getStringValue();
       xqpStringStore_t cvalue = child->getStringValue();
-      if (cname->lowercase()->byteEqual("http-equiv") &&
-        cvalue->lowercase()->byteEqual("content-type"))
+      if (cname->lowercase()->byteEqual("http-equiv", 10) &&
+          cvalue->lowercase()->byteEqual("content-type", 12))
         return 1;
     }
   }
@@ -786,19 +786,19 @@ static bool is_html_empty_content_model_element(const store::Item* item)
 
   xqpStringStore_t str = item->getNodeName()->getStringValue()->lowercase();
 
-  if (str->byteEqual("area") ||
-    str->byteEqual("base") ||
-    str->byteEqual("basefont") ||
-    str->byteEqual("br") ||
-    str->byteEqual("col") ||
-    str->byteEqual("frame") ||
-    str->byteEqual("hr") ||
-    str->byteEqual("img") ||
-    str->byteEqual("input") ||
-    str->byteEqual("isindex") ||
-    str->byteEqual("link") ||
-    str->byteEqual("meta") ||
-    str->byteEqual("param"))
+  if (str->byteEqual("area", 4) ||
+      str->byteEqual("base", 4) ||
+      str->byteEqual("basefont", 8) ||
+      str->byteEqual("br", 2) ||
+      str->byteEqual("col", 3) ||
+      str->byteEqual("frame", 5) ||
+      str->byteEqual("hr", 2) ||
+      str->byteEqual("img", 3) ||
+      str->byteEqual("input", 5) ||
+      str->byteEqual("isindex", 7) ||
+      str->byteEqual("link", 4) ||
+      str->byteEqual("meta", 4) ||
+      str->byteEqual("param", 5))
     return true;
   else
     return false;
@@ -815,9 +815,9 @@ static bool is_html_no_empty_tags_element(const store::Item* item)
 
   xqpStringStore_t str = item->getNodeName()->getStringValue()->lowercase();
 
-  if (str->byteEqual("script") ||
-    str->byteEqual("textarea") ||
-    str->byteEqual("div"))
+  if (str->byteEqual("script", 6) ||
+      str->byteEqual("textarea", 8) ||
+      str->byteEqual("div", 3))
     return true;
   else
     return false;
@@ -828,18 +828,18 @@ static bool is_html_boolean_attribute(const xqpStringStore_t& attribute)
 {
   xqpStringStore_t str = attribute->lowercase();
 
-  if (str->byteEqual("compact") ||
-    str->byteEqual("nowrap") ||
-    str->byteEqual("ismap") ||
-    str->byteEqual("declare") ||
-    str->byteEqual("noshade") ||
-    str->byteEqual("checked") ||
-    str->byteEqual("disabled") ||
-    str->byteEqual("readonly") ||
-    str->byteEqual("multiple") ||
-    str->byteEqual("selected") ||
-    str->byteEqual("noresize") ||
-    str->byteEqual("defer"))
+  if (str->byteEqual("compact", 7) ||
+      str->byteEqual("nowrap", 6) ||
+      str->byteEqual("ismap", 5) ||
+      str->byteEqual("declare", 7) ||
+      str->byteEqual("noshade", 7) ||
+      str->byteEqual("checked", 7) ||
+      str->byteEqual("disabled", 8) ||
+      str->byteEqual("readonly", 8) ||
+      str->byteEqual("multiple", 8) ||
+      str->byteEqual("selected", 8) ||
+      str->byteEqual("noresize", 8) ||
+      str->byteEqual("defer", 5))
     return true;
   else
     return false;
@@ -959,7 +959,7 @@ void serializer::html_emitter::emit_node(
           MUST be output as <br>.
         */
         if (is_html_empty_content_model_element(item) &&
-          ser->version->byteEqual("4.0"))
+            ser->version->byteEqual("4.0", 3))
           tr << ">";
         else
           tr << "/>";
@@ -999,7 +999,7 @@ void serializer::html_emitter::emit_node(
       xqpStringStore_t iname = element_parent->getNodeName()->getStringValue();
       iname = iname->lowercase();
 
-      if (iname->byteEqual("script") || iname->byteEqual("style"))
+      if (iname->byteEqual("script", 6) || iname->byteEqual("style", 5))
         expand = false;
     }
 
@@ -1251,7 +1251,7 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
         bool is_declared = false;
         for ( unsigned long j = 0; j < ans_size; j++ )
         {
-          if ( theNameSpaces.at(j)->byteEqual(*local_nsBindings[i].second.getp()))
+          if ( theNameSpaces.at(j)->byteEqual(local_nsBindings[i].second.getp()))
           {
             is_declared = true;
             break;
@@ -1775,7 +1775,7 @@ void serializer::validate_parameters(void)
     // Default value for "version" when method is HTML is "4.0"
     if (version_has_default_value)
       version = new xqpStringStore("4.0");
-    else if ( !(version->byteEqual("4.0") || version->byteEqual("4.01")) )
+    else if ( !(version->byteEqual("4.0", 3) || version->byteEqual("4.01", 4)) )
     {
       // Only HTML versions 4.0 and 4.01 are supported
       ZORBA_ERROR_DESC(SESU0013, "Unsupported HTML serialization version. Accepted values are 4.0/4.01 .");

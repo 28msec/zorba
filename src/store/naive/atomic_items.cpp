@@ -301,7 +301,7 @@ bool StringItemNaive::equals(
     const XQPCollator* aCollation) const
 {
   if (aCollation == NULL || aCollation->doMemCmp())
-    return theValue->byteEqual(other->getString()->str());
+    return theValue->byteEqual(other->getString());
 
   return (theValue->compare(other->getString(), aCollation) == 0);
 }
@@ -313,7 +313,7 @@ long StringItemNaive::compare(
     const XQPCollator* aCollation) const
 {
   if (aCollation == NULL || aCollation->doMemCmp())
-    return theValue->byteCompare(other->getString()->str());
+    return theValue->byteCompare(other->getString());
 
   return theValue->compare(other->getString(), aCollation);
 }

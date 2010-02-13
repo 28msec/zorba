@@ -35,13 +35,18 @@
 #include "zorbaerrors/error_manager.h"
 
 using namespace std;
-namespace zorba {
+
+namespace zorba 
+{
 
 xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
-    : symtab(initial_heapsize),
-      expr_p (NULL),
-      theCompilerCB(aCompilerCB)
-{ }
+  :
+  symtab(initial_heapsize),
+  expr_p (NULL),
+  theCompilerCB(aCompilerCB)
+{ 
+}
+
 
 bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 {
@@ -106,10 +111,9 @@ void xquery_driver::set_expr(parsenode* e_p)
 QueryLoc xquery_driver::createQueryLoc(const zorba::location& aLoc) 
 {
   QueryLoc lLoc;
-  lLoc.setFilenameBegin(aLoc.begin.filename);
+  lLoc.setFilename(aLoc.begin.filename);
   lLoc.setLineBegin(aLoc.begin.line);
   lLoc.setColumnBegin(aLoc.begin.column);
-  lLoc.setFilenameEnd(aLoc.end.filename);
   lLoc.setLineEnd(aLoc.end.line);
   lLoc.setColumnEnd(aLoc.end.column);
   return lLoc;

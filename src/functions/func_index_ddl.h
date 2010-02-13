@@ -80,7 +80,7 @@ class op_create_internal_index : public function
 public:
   op_create_internal_index(const signature& sig)
     :
-    function(sig, FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
+    function(sig, FunctionConsts::OP_CREATE_INTERNAL_INDEX_2)
   {
   }
 

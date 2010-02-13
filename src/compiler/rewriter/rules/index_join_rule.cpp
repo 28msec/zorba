@@ -37,11 +37,11 @@ static bool isIndexJoinPredicate(RewriterContext&, PredicateInfo&);
 
 static bool rewriteJoin(RewriterContext&, PredicateInfo&);
 
-static const var_expr* findForVar(RewriterContext&, const expr*, int&);
+static const var_expr* findForVar(RewriterContext&, const expr*, ulong&);
 
-static bool checkVarDependency(RewriterContext&, expr*, int);
+static bool checkVarDependency(RewriterContext&, expr*, ulong);
 
-  static bool expandVars(RewriterContext&, expr*, int, int&);
+static bool expandVars(RewriterContext&, expr*, ulong, int&);
 
 static void findFlworForVar(RewriterContext&, const var_expr*, flwor_expr*&,
                             sequential_expr*&, ulong&, ulong&);
@@ -53,14 +53,16 @@ struct PredicateInfo
   expr           * thePredicate;
   const expr     * theOuterOp;
   const var_expr * theOuterVar;
-  int              theOuterVarId;
+  ulong            theOuterVarId;
   const expr     * theInnerOp;
   const var_expr * theInnerVar;
 };
 
 
 /*******************************************************************************
-
+  This rule analyzes the where clause of flwor exprs to deterimne whether any
+  predicate in the clause is a join predicate and whether the associated join
+  can be converted into a hashjoin using an index that is built on-th-fly. 
 ********************************************************************************/
 expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
 {
@@ -141,7 +143,7 @@ expr_t IndexJoin::rewritePost(expr* node, RewriterContext& rCtx)
 
 
 /*******************************************************************************
-  Check whether the given predicate is a join predicate that can be conversted
+  Check whether the given predicate is a join predicate that can be converted 
   to a hashjoin.
 ********************************************************************************/
 static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
@@ -176,27 +178,30 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   const expr* op1 = foExpr->get_arg(0);
   const expr* op2 = foExpr->get_arg(1);
 
-  if (rCtx.m_varid_map == NULL)
+  if (rCtx.theVarIdMap == NULL)
   {
-    rCtx.m_varid_map = new VarIdMap;
-    rCtx.m_idvar_map = new IdVarMap;
-    rCtx.m_exprvars_map = new ExprVarsMap;
+    rCtx.theVarIdMap = new VarIdMap;
+    rCtx.theIdVarMap = new IdVarMap;
+    rCtx.theExprVarsMap = new ExprVarsMap;
 
-    int numVars = 0;
-    index_flwor_vars(rCtx.getRoot(), numVars, *rCtx.m_varid_map, rCtx.m_idvar_map);
+    ulong numVars = 0;
+    index_flwor_vars(rCtx.getRoot(), numVars, *rCtx.theVarIdMap, rCtx.theIdVarMap);
 
     DynamicBitset freeset(numVars);
-    find_flwor_vars(rCtx.getRoot(), *rCtx.m_varid_map, freeset, *rCtx.m_exprvars_map);
+    build_expr_to_vars_map(rCtx.getRoot(),
+                           *rCtx.theVarIdMap,
+                           freeset,
+                           *rCtx.theExprVarsMap);
   }
 
   // Analyze each operand of the eq to see if it depends on a single for
   // variable. If that is not true, we reject this predicate.
-  int var1id;
+  ulong var1id;
   const var_expr* var1 = findForVar(rCtx, op1, var1id);
   if (var1 == NULL)
     return false;
 
-  int var2id;
+  ulong var2id;
   const var_expr* var2 = findForVar(rCtx, op2, var2id);
   if (var2 == NULL)
     return false;
@@ -205,8 +210,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     return false;
 
   // Determine the outer and inner side of the join
-  int outerVarId;
-  int innerVarId;
+  ulong outerVarId;
+  ulong innerVarId;
 
   if (var1id < var2id)
   {
@@ -260,14 +265,12 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
       outerQuant != TypeConstants::QUANT_QUESTION)
     return false;
 
-  if (TypeOps::is_equal(*primeOuterType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
-    return false;
-
-  if (TypeOps::is_equal(*primeInnerType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
-    return false;
-
   // The type of the outer/inner operands in the join predicate must not be
-  // xs:anyAtomic.
+  // xs:untypedAtomic or xs:anyAtomic.
+  if (TypeOps::is_equal(*primeOuterType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) ||
+      TypeOps::is_equal(*primeInnerType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+    return false;
+
   if (TypeOps::is_equal(*primeOuterType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE) ||
       TypeOps::is_equal(*primeInnerType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
     return false;
@@ -288,15 +291,15 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 static const var_expr* findForVar(
     RewriterContext& rCtx,
     const expr* curExpr,
-    int& varid)
+    ulong& varid)
 {
   const var_expr* var = NULL;
 
   while (true)
   {
-    std::vector<int> varidSet;
+    std::vector<ulong> varidSet;
 
-    const DynamicBitset& bitset = (*rCtx.m_exprvars_map)[curExpr];
+    const DynamicBitset& bitset = (*rCtx.theExprVarsMap)[curExpr];
 
     bitset.getSet(varidSet);
 
@@ -304,7 +307,7 @@ static const var_expr* findForVar(
       return NULL;
 
     varid = varidSet[0];
-    var = (*rCtx.m_idvar_map)[varid];
+    var = (*rCtx.theIdVarMap)[varid];
 
     if (var->get_kind() == var_expr::for_var)
     {
@@ -332,20 +335,20 @@ static const var_expr* findForVar(
 static bool checkVarDependency(
     RewriterContext& rCtx,
     expr* curExpr,
-    int searchVarId)
+    ulong searchVarId)
 {
-  const DynamicBitset& bitset = (*rCtx.m_exprvars_map)[curExpr];
+  const DynamicBitset& bitset = (*rCtx.theExprVarsMap)[curExpr];
 
   if (bitset.get(searchVarId))
     return true;
 
-  std::vector<int> varidSet;
+  std::vector<ulong> varidSet;
   bitset.getSet(varidSet);
 
   ulong numVars = varidSet.size();
   for (ulong i = 0; i < numVars; ++i)
   {
-    const var_expr* var = (*rCtx.m_idvar_map)[varidSet[i]];
+    const var_expr* var = (*rCtx.theIdVarMap)[varidSet[i]];
     curExpr = var->get_forletwin_clause()->get_expr();
 
     if (checkVarDependency(rCtx, curExpr, searchVarId))
@@ -377,7 +380,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   // Note: must clone fc->get_expr() because expandVars modifies its input, but
   // fc->get_expr should not be modified, because we may discover later that the
   // rewrite is not possible after all,
-  expr::substitution_t subst = new expr::substitution();
+  expr::substitution_t subst;
   expr_t domainExpr = fc->get_expr()->clone(subst);
   if (!expandVars(rCtx, domainExpr, predInfo.theOuterVarId, maxInnerVarId))
     return false;
@@ -392,21 +395,24 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   GENV_ITEMFACTORY->createQName(qname, "", "", os.str().c_str());
 
   expr_t qnameExpr(new const_expr(sctxid, loc, qname));
+  expr_t buildExpr;
 
   fo_expr_t createExpr = new fo_expr(sctxid,
                                      loc,
-                                     GET_BUILTIN_FUNCTION(OP_CREATE_INTERNAL_INDEX_1),
-                                     qnameExpr);
+                                     GET_BUILTIN_FUNCTION(OP_CREATE_INTERNAL_INDEX_2),
+                                     qnameExpr,
+                                     buildExpr);
 
   //
   // Find where to place the create-index expr
   //
   if (maxInnerVarId >= 0)
   {
-    // Find the flwor expr defining the inner-most var referenced by the domain
-    // expr of the index. Then create the index in the return expr of that
-    // flwor expr.
-    const var_expr* mostInnerVar = (*rCtx.m_idvar_map)[maxInnerVarId];
+    // The domain expr depends on some flwor var that is defined before the outer
+    // var. In this case, we find the flwor expr defining the inner-most var
+    // referenced by the domain expr of the index and then create the index in
+    // the return expr of that flwor expr.
+    const var_expr* mostInnerVar = (*rCtx.theIdVarMap)[maxInnerVarId];
 
     flwor_expr* innerFlworExpr = NULL;
     sequential_expr* innerSeqExpr;
@@ -422,6 +428,8 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
     if (innerFlworExpr->defines_variable(predInfo.theOuterVar) >= 0)
     {
+      // TODO: create a let clause between the mostInnerVar and theOuterVar
+      // and make the domain expr of that let clause build the index. 
       return false;
     }
 
@@ -436,7 +444,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
       for (arg = 0; arg < numArgs; ++arg)
       {
         if ((*innerSeqExpr)[arg]->get_function_kind() !=
-            FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
+            FunctionConsts::OP_CREATE_INTERNAL_INDEX_2)
         {
           break;
         }
@@ -534,6 +542,13 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   sctx->bind_index(qname, idx, loc);
 
+  buildExpr = idx->getBuildExpr(rCtx.getCompilerCB(), loc);
+
+  createExpr->set_arg(1, buildExpr);
+
+  idx->setDomainExpr(NULL);
+  idx->setDomainVariable(NULL);
+
   if (Properties::instance()->printIntermediateOpt())
   {
     std::cout << std::endl << idx->toString() << std::endl;
@@ -552,7 +567,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 static bool expandVars(
     RewriterContext& rCtx,
     expr* subExpr,
-    int outerVarId,
+    ulong outerVarId,
     int& maxVarId)
 {
   if (subExpr->get_expr_kind() == wrapper_expr_kind)
@@ -562,7 +577,7 @@ static bool expandVars(
     if (wrapper->get_expr()->get_expr_kind() == var_expr_kind)
     {
       const var_expr* var = reinterpret_cast<const var_expr*>(wrapper->get_expr());
-      int varid = (*rCtx.m_varid_map)[var];
+      ulong varid = (*rCtx.theVarIdMap)[var];
 
       if (varid > outerVarId)
       {
@@ -591,7 +606,7 @@ static bool expandVars(
       }
       else
       {
-        if (varid > maxVarId)
+        if ((long)varid > maxVarId)
           maxVarId = varid;
 
         return true;

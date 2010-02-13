@@ -16,6 +16,8 @@
 #include "context/namespace_context.h"
 #include "context/static_context.h"
 
+#include "compiler/parser/query_loc.h"
+
 
 namespace zorba {
 
@@ -44,7 +46,9 @@ void namespace_context::serialize(::zorba::serialization::Archiver &ar)
 }
   
     
-void namespace_context::bind_ns(xqpStringStore_t& prefix, xqpStringStore_t& ns)
+void namespace_context::bind_ns(
+    const xqpStringStore_t& prefix,
+    const xqpStringStore_t& ns)
 {
   m_bindings.push_back(std::pair<xqpStringStore_t, xqpStringStore_t>(prefix, ns));
 }
@@ -58,7 +62,7 @@ bool namespace_context::findBinding(
   bindings_t::const_iterator lEnd = m_bindings.end();
   for (; lIter != lEnd ; ++lIter)
   {
-    if ( (*lIter).first->byteEqual(*aPrefix.getp()))
+    if ( (*lIter).first->byteEqual(aPrefix.getp()))
     {
       if ((*lIter).second->empty())
       {
@@ -77,9 +81,17 @@ bool namespace_context::findBinding(
   }
   else
   {
-    xqpString ns;
-    bool found = m_sctx->lookup_elem_ns(aPrefix.getp(), ns);
-    aNamespace = ns.getStore();
+    QueryLoc loc;
+    bool found = m_sctx->lookup_ns(aNamespace, aPrefix, loc, MAX_ZORBA_ERROR_CODE);
+
+    if (!found && aPrefix->empty())
+    {
+      aNamespace = m_sctx->default_elem_type_ns();
+
+      if (!aNamespace->empty())
+        found = true;
+    }
+
     return found;
   }
 }

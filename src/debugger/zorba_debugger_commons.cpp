@@ -90,10 +90,12 @@ bool ZorbaDebuggerCommons::addBreakpoint(DebugLocation_t& aLocation,
   lIter = theLocationMap.find(aLocation);
   // if the location could not be found, try it again with the encoded file uri.
   if (lIter == theLocationMap.end()) {
-    std::string lTmp = aLocation.theFileName;
-    aLocation.theFileName = URI::encode_file_URI(aLocation.theFileName)->str();
+    xqpStringStore_t filename = new xqpStringStore(aLocation.theFileName);
+    xqpStringStore_t url;
+    URI::encode_file_URI(filename, url);
+    aLocation.theFileName = url->str();
     lIter = theLocationMap.find(aLocation);
-    aLocation.theFileName = lTmp;
+    aLocation.theFileName = filename->str();
   }
   if (lIter != theLocationMap.end()) {
     aLocation.theQueryLocation = lIter->first.theQueryLocation;
@@ -278,8 +280,9 @@ std::string ZorbaDebuggerCommons::getFilepathOfURI(const std::string& aUri) cons
   } else {
     lString = new xqpStringStore(lIter->second);
   }
-  std::string lRes = URI::decode_file_URI(lString)->c_str();
-  return lRes;
+  xqpStringStore_t lRes;
+  URI::decode_file_URI(lString, lRes);
+  return lRes->str();
 }
 
 void ZorbaDebuggerCommons::clearBreakpoint( unsigned int aId )

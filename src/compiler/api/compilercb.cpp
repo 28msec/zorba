@@ -15,7 +15,7 @@
  */
 
 #include "compiler/api/compilercb.h"
-//#include "compiler/expression/expr_base.h"
+#include "compiler/expression/expr_base.h"
 
 #include "context/static_context.h"
 

@@ -333,20 +333,21 @@ void *begin_visit(const SchemaImport &n)
 
 void *begin_visit (const URILiteralList &n)
 {
-    INDENT;
+  INDENT;
 
-    os << "<URILiteralList" << IDS;
+  os << "<URILiteralList" << IDS;
 
-    os << ">";
+  os << ">";
 
-    INDENT_INC; NL;
+  INDENT_INC; NL;
     
-    for (int i = 0; i < n.size (); i++) {
-      INDENT;
-      os << "<URI>" << n [i] << "</URI>" << "\n";
-    }
-
-    return no_state;
+  for (ulong i = 0; i < n.size(); i++) 
+  {
+    INDENT;
+    os << "<URI>" << n [i] << "</URI>" << "\n";
+  }
+  
+  return no_state;
 }
 
 void *begin_visit(const ValueComp &n)
@@ -367,7 +368,8 @@ void *begin_visit(const VarDecl &n)
 {
     INDENT;
 
-    os << "<VarDecl pos='" << n.get_location() << "' var='" << n.get_varname () << "' ptr='" << &n << "'";
+    os << "<VarDecl pos='" << n.get_location() << "' var='"
+       << n.get_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
 
@@ -379,7 +381,8 @@ void *begin_visit(const VarGetsDecl &n)
 {
     INDENT;
 
-    os << "<VarGetsDecl pos='" << n.get_location() << "' var='" << n.get_varname () << "' ptr='" << &n << "'";
+    os << "<VarGetsDecl pos='" << n.get_location() << "' var='"
+       << n.get_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
 
@@ -391,7 +394,8 @@ void *begin_visit(const VarInDecl &n)
 {
     INDENT;
 
-    os << "<VarInDecl pos='" << n.get_location() << "' var='" << n.get_varname () << "' ptr='" << &n << "'";
+    os << "<VarInDecl pos='" << n.get_location() << "' var='"
+       << n.get_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
 

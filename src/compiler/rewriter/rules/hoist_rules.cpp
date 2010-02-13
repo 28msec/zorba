@@ -33,14 +33,14 @@ namespace zorba
 static bool hoist_expressions(
     RewriterContext&,
     expr*,
-    const std::map<const var_expr*, int>&,
+    const VarIdMap&,
     const ExprVarsMap&,
     struct flwor_holder*);
 
 static expr_t try_hoisting(
     RewriterContext&,
     expr*,
-    const std::map<const var_expr*, int>&,
+    const VarIdMap&,
     const ExprVarsMap&,
     struct flwor_holder*);
 
@@ -50,7 +50,7 @@ static bool is_already_hoisted(const expr*);
 
 static bool contains_var(
     const var_expr*,
-    const std::map<const var_expr*, int>&,
+    const VarIdMap&,
     const DynamicBitset&);
 
 static bool contains_node_construction(const expr*);
@@ -85,14 +85,14 @@ RULE_REWRITE_PRE(HoistExprsOutOfLoops)
   if (contains_updates(node))
     return NULL;
 
-  int numVars = 0;
-  std::map<const var_expr *, int> varmap;
+  ulong numVars = 0;
+  std::map<const var_expr *, ulong> varmap;
 
   index_flwor_vars(node, numVars, varmap, NULL);
 
   ExprVarsMap freevarMap;
   DynamicBitset freeset(numVars);
-  find_flwor_vars(node, varmap, freeset, freevarMap);
+  build_expr_to_vars_map(node, varmap, freeset, freevarMap);
 
   struct flwor_holder root;
   if (hoist_expressions(rCtx, node, varmap, freevarMap, &root))
@@ -123,7 +123,7 @@ RULE_REWRITE_POST(HoistExprsOutOfLoops)
 static bool hoist_expressions(
     RewriterContext& rCtx,
     expr* e,
-    const std::map<const var_expr *, int>& varmap,
+    const VarIdMap& varmap,
     const ExprVarsMap& freevarMap,
     struct flwor_holder* fholder)
 {
@@ -231,7 +231,7 @@ static bool hoist_expressions(
 static expr_t try_hoisting(
     RewriterContext& rCtx,
     expr* e,
-    const std::map<const var_expr*, int>& varmap,
+    const VarIdMap& varmap,
     const ExprVarsMap& freevarMap,
     struct flwor_holder* holder)
 {
@@ -366,7 +366,7 @@ static expr_t try_hoisting(
 ********************************************************************************/
 static bool contains_var(
     const var_expr* v,
-    const std::map<const var_expr *, int>& varmap,
+    const VarIdMap& varmap,
     const DynamicBitset& varset)
 {
   if (v == NULL)
@@ -374,7 +374,7 @@ static bool contains_var(
     return false;
   }
 
-  std::map<const var_expr *, int>::const_iterator i = varmap.find(v);
+  VarIdMap::const_iterator i = varmap.find(v);
   if (i == varmap.end())
   {
     return false;

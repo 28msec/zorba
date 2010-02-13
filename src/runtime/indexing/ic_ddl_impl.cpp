@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "system/globalenv.h"
+
 #include "store/api/store.h"        // for checking if index exists
 #include "store/api/item_factory.h" // for creating pul
 #include "store/api/iterator_factory.h" // for creating the probe iterator

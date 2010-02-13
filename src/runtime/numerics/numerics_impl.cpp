@@ -467,13 +467,15 @@ public:
 
 
 // returns an error if there are two or more instances of the given pattern in the string
-template <typename T>
-static void errorIfTwoOrMore(xqpStringStore& part, T sep, QueryLoc& loc)
+static void errorIfTwoOrMore(xqpStringStore& part, const char* sep, QueryLoc& loc)
 {
-  int pos = part.indexOf(sep);
+  long pos = part.bytePositionOf(sep);
+
   if (pos != -1)
-    if (part.indexOf(sep, pos+1) != -1)
+  {
+    if (part.bytePositionOf(sep, strlen(sep), pos+1) != -1)
       ZORBA_ERROR_LOC(XTDE1310, loc);
+  }
 }
 
 
@@ -489,11 +491,17 @@ static void parsePart(
   errorIfTwoOrMore(str, info.percent->c_str(), info.loc);
   errorIfTwoOrMore(str, info.per_mille->c_str(), info.loc);
 
-  if (str.indexOf(info.percent->c_str()) != -1 && str.indexOf(info.per_mille->c_str()) != -1)
+  if (str.bytePositionOf(info.percent->c_str()) != -1 &&
+      str.bytePositionOf(info.per_mille->c_str()) != -1)
+  {
     ZORBA_ERROR_LOC(XTDE1310, info.loc);
+  }
 
-  if (str.indexOf(info.digit_sign->c_str()) == -1 && str.indexOf(info.zero_digit->c_str()) == -1)
+  if (str.bytePositionOf(info.digit_sign->c_str()) == -1 &&
+      str.bytePositionOf(info.zero_digit->c_str()) == -1)
+  {
     ZORBA_ERROR_LOC(XTDE1310, info.loc);
+  }
 
   // get grouping separators
   int digit_signs = 0;
@@ -544,8 +552,12 @@ static void parsePart(
   }
  
   part.minimum_size = zero_signs;
-  if (!fractional && zero_signs == 0 && str.indexOf(info.decimal_separator->c_str()) == -1)
+  if (!fractional &&
+      zero_signs == 0 &&
+      str.bytePositionOf(info.decimal_separator->c_str()) == -1)
+  {
     part.minimum_size = 1;
+  }
 
   if (fractional)
     part.maximum_size = digit_signs + zero_signs;
@@ -562,11 +574,11 @@ static void parseSubpicture(
     return;
 
   errorIfTwoOrMore(str, info.decimal_separator->c_str(), info.loc);
-  int pos = str.indexOf(info.decimal_separator->c_str());
+  int pos = str.bytePositionOf(info.decimal_separator->c_str());
   if (pos != -1)
   {
-    sub_picture.integer_part.str = str.substr(0, pos);
-    sub_picture.fractional_part.str = str.substr(pos+1, str.size()-pos);
+    sub_picture.integer_part.str = str.byteSubstr(0, pos);
+    sub_picture.fractional_part.str = str.byteSubstr(pos+1, str.size()-pos);
   }
   else
     sub_picture.integer_part.str = &str;
@@ -583,7 +595,7 @@ static void parseSubpicture(
     if (*info.decimal_separator == ch || *info.grouping_separator == ch || *info.zero_digit == ch 
       || *info.digit_sign == ch || *info.pattern_separator == ch || i == chars-1)
     {
-      sub_picture.prefix = temp->substr(0, i);
+      sub_picture.prefix = temp->byteSubstr(0, i);
       break;
     }
   }
@@ -596,7 +608,7 @@ static void parseSubpicture(
     if (*info.decimal_separator == ch || *info.grouping_separator == ch || *info.zero_digit == ch 
       || *info.digit_sign == ch || *info.pattern_separator == ch || i == 0)
     {
-      sub_picture.suffix = temp->substr(i+1, chars-i-1);
+      sub_picture.suffix = temp->byteSubstr(i+1, chars-i-1);
       break;
     }
   }
@@ -606,11 +618,11 @@ static void parsePicture(xqpStringStore& picture, FormatNumberInfo& info)
 {
   errorIfTwoOrMore(picture, info.pattern_separator->c_str(), info.loc);
 
-  int pos = picture.indexOf(info.pattern_separator->c_str());
+  int pos = picture.bytePositionOf(info.pattern_separator->c_str());
   if (pos != -1)
   {
-    info.pos_subpicture.str = picture.substr(0, pos);
-    info.neg_subpicture.str = picture.substr(pos+1, picture.size() - pos);
+    info.pos_subpicture.str = picture.byteSubstr(0, pos);
+    info.neg_subpicture.str = picture.byteSubstr(pos+1, picture.size() - pos);
   }
   else 
     info.pos_subpicture.str = &picture;
@@ -747,9 +759,9 @@ static void formatNumber(
   }
 
   xqp_double adjusted = doubleItem->getDoubleValue();
-  if (sub_picture.str->indexOf(info.percent->c_str()) != -1)
+  if (sub_picture.str->bytePositionOf(info.percent->c_str()) != -1)
     adjusted = adjusted * Double::parseInt(100);
-  else if (sub_picture.str->indexOf(info.per_mille->c_str()) != -1)
+  else if (sub_picture.str->bytePositionOf(info.per_mille->c_str()) != -1)
     adjusted = adjusted * Double::parseInt(1000);
 
   adjusted = adjusted.roundHalfToEven(Integer::parseInt(sub_picture.fractional_part.maximum_size));
@@ -757,7 +769,7 @@ static void formatNumber(
   
   // process min sizes
   xqpStringStore_t integer_part, fractional_part;
-  int pos = converted->indexOf(".");
+  int pos = converted->bytePositionOf(".");
   if (pos == -1)
   {
     integer_part = converted;
@@ -765,8 +777,8 @@ static void formatNumber(
   }
   else
   {
-    integer_part = converted->substr(0, pos);
-    fractional_part = converted->substr(pos+1, converted->numChars() - pos + 1);
+    integer_part = converted->byteSubstr(0, pos);
+    fractional_part = converted->byteSubstr(pos+1, converted->numChars() - pos + 1);
   }
 
   // Add zeros

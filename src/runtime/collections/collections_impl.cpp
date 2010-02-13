@@ -40,6 +40,8 @@
 #include "store/api/collection.h"
 
 #include "types/typeops.h"
+#include "types/typeimpl.h"
+
 
 namespace zorba {
 

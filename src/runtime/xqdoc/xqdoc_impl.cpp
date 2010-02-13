@@ -92,7 +92,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     // retrieve the xqdoc elements as string and parse them
     // TODO: this could be done more efficiently if Items are returned immediately
     lCompiler.xqdoc(*lFile.get(),
-                    lFileName.theStrStore->str(),
+                    lFileName.theStrStore,
                     lOutput,
                     planState.dctx()->get_current_date_time());
 

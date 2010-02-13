@@ -16,7 +16,7 @@
 
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/xqpstring.h"
-#include "context/context.h"
+#include "context/static_context.h"
 #include "common/shared_types.h"
 #include "types/typeimpl.h"
 #define ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP_WITH_SERIALIZATION
@@ -44,17 +44,19 @@ END_SERIALIZABLE_CLASS_VERSIONS(SimpleRCObject)
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<context::ctx_value_t>, 1)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<static_context::ctx_value_t>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<xqp_string>, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<xqtref_t>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<context::ctx_module_t>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<static_context::ctx_module_t>, 4)
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap_entry)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap_entry)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<context::ctx_value_t>::entry, 1)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<static_context::ctx_value_t>::entry, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqp_string>::entry, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqtref_t>::entry, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<context::ctx_module_t>::entry, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<static_context::ctx_module_t>::entry, 4)
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashEntry)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashEntry)

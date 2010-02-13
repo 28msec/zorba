@@ -65,19 +65,22 @@ void slurp_file (
 
   if(sstr.find("$RBKT_SRC_DIR",0) != std::string::npos)
   {
-    std::string rbkt_src_uri = zorba::URI::encode_file_URI (rbkt_src_dir)->str ();
+    std::string rbkt_src_uri= zorba::URI::encode_file_URI(rbkt_src_dir);
+
 #ifdef ZORBA_TEST_XQUERYX
     zorba::str_replace_all(rbkt_src_uri, "%3A", ":");
 #endif
     zorba::str_replace_all(sstr, "$RBKT_SRC_DIR", rbkt_src_uri);
 #ifdef MY_D_WIN32
-    zorba::str_replace_all(sstr, "w3c_testsuite/Queries/w3c_testsuite", "w3c_testsuite/Queries");
+    zorba::str_replace_all(sstr,
+                           "w3c_testsuite/Queries/w3c_testsuite",
+                           "w3c_testsuite/Queries");
 #endif
   }
 
   if(sstr.find("$RBKT_BINARY_DIR",0) != std::string::npos)
   {
-    std::string rbkt_bin_uri = zorba::URI::encode_file_URI(rbkt_bin_dir)->str();
+    std::string rbkt_bin_uri = zorba::URI::encode_file_URI(rbkt_bin_dir);
     zorba::str_replace_all(sstr, "$RBKT_BINARY_DIR", rbkt_bin_uri);
   }
 
@@ -191,7 +194,7 @@ zorba::Item createItem(std::string strValue)
 
   if(pos == std::string::npos)
   {
-    strValue = zorba::URI::encode_file_URI (strValue)->str ();
+    strValue = zorba::URI::encode_file_URI(strValue);
     return  itemfactory->createString(strValue);
   }
   else

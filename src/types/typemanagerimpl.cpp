@@ -187,7 +187,7 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
   // If the type name is an XML Schema builtin type, then it cannot be an atomic
   // type (because, otherwise it would have been found above). So we return NULL.
-  if (qname->getNamespace()->byteEqual(XML_SCHEMA_NS))
+  if (qname->getNamespace()->byteEqual(XML_SCHEMA_NS, strlen(XML_SCHEMA_NS)))
     return NULL;
 
 #ifndef ZORBA_NO_XMLSCHEMA

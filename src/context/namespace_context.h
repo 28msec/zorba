@@ -66,7 +66,7 @@ public:
 
   static_context* get_context() const { return m_sctx; }
   
-  void bind_ns(xqpStringStore_t& prefix, xqpStringStore_t& ns);
+  void bind_ns(const xqpStringStore_t& prefix, const xqpStringStore_t& ns);
 
   const bindings_t& get_bindings() const { return m_bindings; }
 

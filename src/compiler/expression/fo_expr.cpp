@@ -167,6 +167,9 @@ void fo_expr::compute_scripting_kind() const
 
     for (ulong i = 0; i < numArgs; ++i)
     {
+      if (theArgs[i] == NULL)
+        continue;
+
       expr_script_kind_t argKind = theArgs[i]->get_scripting_kind();
 
       kind = scripting_kind_anding(kind, argKind, theArgs[i]->get_loc());
@@ -178,6 +181,9 @@ void fo_expr::compute_scripting_kind() const
   {
     for (ulong i = 0; i < numArgs; ++i)
     {
+      if (theArgs[i] == NULL)
+        continue;
+
       expr_script_kind_t argKind = theArgs[i]->get_scripting_kind();
 
       if (argKind == UPDATE_EXPR)
@@ -192,6 +198,9 @@ void fo_expr::compute_scripting_kind() const
 
     for (ulong i = 0; i < numArgs; ++i)
     {
+      if (theArgs[i] == NULL)
+        continue;
+
       expr_script_kind_t argKind = theArgs[i]->get_scripting_kind();
 
       if (argKind == UPDATE_EXPR || argKind == SEQUENTIAL_EXPR)
@@ -244,16 +253,13 @@ expr_t fo_expr::clone(substitution_t& subst) const
 {
   if (get_func()->getKind() == FunctionConsts::FN_ZORBA_DDL_COLLECTION_1)
   {
-    expr::subst_iter_t i = subst->find(this);
+    expr::subst_iter_t i = subst.find(this);
 
-     if (i != subst->end())
+     if (i != subst.end())
        return i->second;
   }
 
   std::auto_ptr<fo_expr> fo(new fo_expr(theSctxId, get_loc(), get_func()));
-
-  if (get_func()->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
-    fo->theSubst = subst;
 
   for (unsigned i = 0; i < theArgs.size(); ++i)
     fo->theArgs.push_back(theArgs[i]->clone(subst));

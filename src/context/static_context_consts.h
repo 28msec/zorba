@@ -25,32 +25,68 @@ class StaticContextConsts
 {
  public:
 
-  enum xpath1_0compatib_mode_t { xpath2_0, xpath1_0_only     };
+  enum xquery_version_t
+  {
+    xquery_version_unknown = 0,
+    xquery_version_1_0 = 100,
+    xquery_version_1_1 = 110
+  };
 
-  enum construction_mode_t     { cons_preserve, cons_strip   };
 
-  enum ordering_mode_t         { ordered, unordered          };
+  enum xpath_compatibility_t 
+  {
+    xpath_unknown,
+    xpath2_0,
+    xpath1_0_only
+  };
 
-  enum order_empty_mode_t      { empty_greatest, empty_least };
+  enum construction_mode_t   
+  {
+    cons_unknown,
+    cons_preserve,
+    cons_strip
+  };
 
-  enum boundary_space_mode_t   { preserve_space, strip_space };
+  enum inherit_mode_t
+  {
+    inherit_unknown,
+    inherit_ns,
+    no_inherit_ns
+  };
 
-  enum inherit_mode_t          { inherit_ns, no_inherit_ns   };
+  enum preserve_mode_t
+  { 
+    preserve_unknown,
+    preserve_ns,
+    no_preserve_ns
+  };
 
-  enum preserve_mode_t         { preserve_ns, no_preserve_ns };
+  enum ordering_mode_t
+  {
+    ordering_unknown,
+    ordered,
+    unordered 
+  };
+
+  enum order_empty_mode_t
+  {
+    order_empty_unknown,
+    empty_greatest,
+    empty_least
+  };
+
+  enum boundary_space_mode_t
+  {
+    boundary_space_unknown,
+    preserve_space, 
+    strip_space 
+  };
 
   enum validation_mode_t
   {
     strict_validation,
     lax_validation,
     skip_validation
-  };
-
-  enum xquery_version_t
-  {
-    xquery_version_unknown = 0,
-    xquery_version_1_0 = 100,
-    xquery_version_1_1 = 110
   };
 
   enum declaration_property_t

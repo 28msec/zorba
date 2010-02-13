@@ -108,6 +108,7 @@ void populate_context_index_ddl(static_context* sctx)
   DECL(sctx, op_create_internal_index,
       (createQName("http://www.w3.org/2005/xpath-functions","op","create-internal-index"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.EMPTY_TYPE));
 
 

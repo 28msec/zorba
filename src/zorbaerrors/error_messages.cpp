@@ -439,40 +439,58 @@ DEF_ERR_CODE (XQST0067, XQST0067, "Prolog contains more than one construction de
 
 DEF_ERR_CODE (XQST0068, XQST0068, "Prolog contains more than one boundary-space declaration.")
 
-DEF_ERR_CODE (XQST0069, XQST0069, "Prolog contains more than one empty order declaration.")
+DEF_ERR_CODE (XQST0069, XQST0069, 
+"Prolog contains more than one empty order declaration.")
 
-DEF_ERR_CODE (XQST0070, XQST0070, "Namespace URI is bound to a predefined prefix")
+DEF_ERR_CODE (XQST0070, XQST0070, 
+"Namespace URI is bound to a predefined prefix")
 
-DEF_ERR_CODE (XQST0071, XQST0071, "Namespace declaration attributes of a direct element constructor do not have distinct names.")
+DEF_ERR_CODE (XQST0071, XQST0071, 
+"Namespace declaration attributes of a direct element constructor do not have distinct names.")
 
-DEF_ERR_CODE (XQST0073, XQST0073, "The graph of module imports contains a cycle.")
+DEF_ERR_CODE (XQST0073, XQST0073, 
+"The graph of module imports contains a cycle.")
 
-DEF_ERR_CODE (XQST0075, XQST0075, "An implementation that does not support the Validation Feature must raise a static error if it encounters a validate expression.")
+DEF_ERR_CODE (XQST0075, XQST0075, 
+"An implementation that does not support the Validation Feature must raise a static error if it encounters a validate expression.")
 
-DEF_ERR_CODE (XQST0076, XQST0076, "A collation subclause in an order by clause of a FLWOR expression does not identify a collation that is present in statically known collations.")
+DEF_ERR_CODE (XQST0076, XQST0076, 
+"A collation subclause in an order by clause of a FLWOR expression does not identify a collation that is present in statically known collations.")
 
-DEF_ERR_CODE (XQST0079, XQST0079, "An extension expression contains neither a pragma that is recognized by the implementation nor an expression enclosed in curly braces.")
+DEF_ERR_CODE (XQST0079, XQST0079, 
+"An extension expression contains neither a pragma that is recognized by the implementation nor an expression enclosed in curly braces.")
 
-DEF_ERR_CODE (XQST0085, XQST0085, "The namespace URI in a namespace declaration attribute is a zero-length string, and the implementation does not support [XML Names 1.1].")
+DEF_ERR_CODE (XQST0085, XQST0085, 
+"The namespace URI in a namespace declaration attribute is a zero-length string, and the implementation does not support [XML Names 1.1].")
 
-DEF_ERR_CODE (XQST0087, XQST0087, "the encoding specified in a Version Declaration does not conform to the definition of EncName specified in [XML 1.0].")
+DEF_ERR_CODE (XQST0087, XQST0087, 
+"the encoding specified in a Version Declaration does not conform to the definition of EncName specified in [XML 1.0].")
 
-DEF_ERR_CODE (XQST0088, XQST0088, "The literal that specifies the target namespace in a module import or a module declaration is of zero length.")
+DEF_ERR_CODE (XQST0088, XQST0088, 
+"The literal that specifies the target namespace in a module import or a module declaration is of zero length.")
 
-DEF_ERR_CODE (XQST0089, XQST0089, "A variable bound in a for clause of a FLWOR expression, and its associated positional variable, do not have distinct names.")
+DEF_ERR_CODE (XQST0089, XQST0089,
+"A variable bound in a for clause of a FLWOR expression, and its associated positional variable, do not have distinct names.")
 
-DEF_ERR_CODE (XQST0090, XQST0090, "A character reference does not identify a valid character in the version of XML that is in use.")
+DEF_ERR_CODE (XQST0090, XQST0090,
+"A character reference does not identify a valid character in the version of XML that is in use.")
+
+DEF_ERR_CODE(XQST0096, XQST0096,
+"It is a static error for a query prolog to contain two decimal formats with the same name, or to contain two default decimal formats.")
 
 
 //
 // XQTY
 //
 
-DEF_ERR_CODE (XQTY0030, XQTY0030, "The argument of a validate expression does not evaluate to exactly one document or element node.")
+DEF_ERR_CODE (XQTY0030, XQTY0030, 
+"The argument of a validate expression does not evaluate to exactly one document or element node.")
 
-DEF_ERR_CODE (XQTY0086, XQTY0086, "The typed value of a copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve.")
+DEF_ERR_CODE (XQTY0086, XQTY0086, 
+"The typed value of a copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve.")
 
-DEF_ERR_CODE (XQTY0024, XQTY0024, "It is a type error if the content sequence in an element constructor contains an attribute node following a node that is not an attribute node.")
+DEF_ERR_CODE (XQTY0024, XQTY0024, 
+"It is a type error if the content sequence in an element constructor contains an attribute node following a node that is not an attribute node.")
 
 
 //

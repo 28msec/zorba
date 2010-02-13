@@ -31,7 +31,7 @@
 
 #include "functions/function.h"
 
-#include "context/context.h"
+#include "context/static_context.h"
 
 #include <zorba/store_consts.h>
 
@@ -1096,8 +1096,8 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
       //  store::simplestore::ElementNode *elem_node = dynamic_cast<store::simplestore::ElementNode*>(obj);
       //  haveTypedValue = elem_node->haveTypedValue();
       //  haveEmptyValue = elem_node->haveEmptyValue();
-        if(!name_of_type->getNamespace()->byteEqual("http://www.w3.org/2001/XMLSchema") ||
-            !name_of_type->getLocalName()->byteEqual("untyped"))
+        if(!name_of_type->getNamespace()->byteEqual("http://www.w3.org/2001/XMLSchema", 32) ||
+           !name_of_type->getLocalName()->byteEqual("untyped", 7))
           haveTypedValue = true;
       }
       ar & haveTypedValue;
@@ -1195,96 +1195,14 @@ void serialize_node_tree(Archiver &ar, store::Item *&obj, bool all_tree)
 
 }
 
-void operator&(Archiver &ar, std::map<int, rchandle<function> > *&obj)
-{
-  if(ar.is_serializing_out())
-  {
-    if((obj == NULL))
-    {
-      ar.add_compound_field("NULL", 
-                            1 ,//class_version
-                            !FIELD_IS_CLASS, "NULL", 
-                            NULL,//(SerializeBaseClass*)obj, 
-                            ARCHIVE_FIELD_IS_NULL);
-      return;
-    }
-    bool is_ref;
-    is_ref = ar.add_compound_field("context::ArityFMap*", 0, !FIELD_IS_CLASS, "", &obj, ARCHIVE_FIELD_IS_PTR);
-    if(!is_ref)
-    {
-      ar.set_is_temp_field_one_level(true);
-      int s = (int)obj->size();
-      ar & s;
-      context::ArityFMap::iterator  it;
-      function *f;
-      int i1;
-      for(it=obj->begin(); it != obj->end(); it++)
-      {
-        i1 = (*it).first;
-        ar & i1;
-        f = (*it).second.getp();
-        ar.dont_allow_delay();
-        SERIALIZE_FUNCTION(f);
-      }
-      ar.set_is_temp_field_one_level(false);
-      ar.add_end_compound_field();
-    }
-  }
-  else
-  {
-    char  *type;
-    std::string value;
-    int   id;
-    int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
-    int   referencing;
-    bool  retval;
-    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
-    if(!retval && ar.get_read_optional_field())
-      return;
-    ar.check_nonclass_field(retval, type, "context::ArityFMap*", is_simple, is_class, field_treat, ARCHIVE_FIELD_IS_PTR, id);
-    if(field_treat == ARCHIVE_FIELD_IS_NULL)
-    {
-      obj = NULL;
-      ar.read_end_current_level();
-      return;
-    }
-    void *new_obj;
-    if(field_treat == ARCHIVE_FIELD_IS_PTR)
-    {
-      obj = new context::ArityFMap;
-      ar.register_reference(id, field_treat, obj);
 
-      ar.set_is_temp_field_one_level(true);
-      int s;
-      ar & s;
-      context::ArityFMap::iterator  it;
-      //std::pair<int, rchandle<function>>   p;
-      int a1;
-      function *a2;
-      for(int i=0;i<s;i++)
-      {
-        ar & a1;
-        SERIALIZE_FUNCTION(a2);
-        obj->insert(std::pair<int, rchandle<function> >(a1, a2));
-      }
-      ar.set_is_temp_field_one_level(false);
-      ar.read_end_current_level();
-    }
-    else if((new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
-    {
-      obj = (context::ArityFMap*)new_obj;
-      if(!obj)
-      {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
-      }
-    }
-    else
-      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "context::ArityFMap*", referencing);
-  }
+#if 0
+void operator&(Archiver &ar, std::vector<rchandle<function> >*& obj)
+{
+
 }
+#endif
+
 
 void operator&(Archiver &ar, zorba::store::TempSeq *obj)
 {

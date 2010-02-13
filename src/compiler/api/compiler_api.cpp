@@ -54,18 +54,18 @@ namespace zorba
 static void print_ast_tree(const parsenode *n, const std::string& name) 
 {
   std::cout << "AST for " << name << "\n";
-  print_parsetree_xml (std::cout, n);
+  print_parsetree_xml(std::cout, n);
   std::cout << std::endl;
 }
 
 
 static void print_xqdoc_tree(
-    const parsenode *n,
-    std::string name,
+    const parsenode* n,
+    const xqpStringStore_t& name,
     std::ostream& anOutput,
     store::Item_t aDateTime) 
 {
-  print_parsetree_xqdoc (anOutput, n, name, aDateTime);
+  print_parsetree_xqdoc(anOutput, n, name->str(), aDateTime);
 }
 
 
@@ -92,7 +92,9 @@ XQueryCompiler::~XQueryCompiler()
 /*******************************************************************************
 
 ********************************************************************************/
-void XQueryCompiler::parseOnly(std::istream& aXQuery, const xqpString& aFileName)
+void XQueryCompiler::parseOnly(
+    std::istream& aXQuery,
+    const xqpStringStore_t& aFileName)
 {
   parsenode_t pn = parse(aXQuery, aFileName);
 }
@@ -124,7 +126,7 @@ PlanIter_t XQueryCompiler::compile(parsenode_t ast)
 ********************************************************************************/
 void XQueryCompiler::xqdoc(
     std::istream& aXQuery,
-    const xqpString& aFileName,
+    const xqpStringStore_t& aFileName,
     std::ostream& anOutput,
     const store::Item_t& aDateTime)
 {
@@ -137,7 +139,9 @@ void XQueryCompiler::xqdoc(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t XQueryCompiler::compile(std::istream& aXQuery, const xqpString & aFileName)
+PlanIter_t XQueryCompiler::compile(
+    std::istream& aXQuery,
+    const xqpStringStore_t& aFileName)
 {
   parsenode_t lAST = parse(aXQuery, aFileName);
 
@@ -152,7 +156,9 @@ PlanIter_t XQueryCompiler::compile(std::istream& aXQuery, const xqpString & aFil
 /*******************************************************************************
 
 ********************************************************************************/
-parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFileName)
+parsenode_t XQueryCompiler::parse(
+    std::istream& aXQuery,
+    const xqpStringStore_t& aFileName)
 {
   // TODO: move these out
   if (Properties::instance()->printAst()) 
@@ -200,7 +206,7 @@ parsenode_t XQueryCompiler::parse(std::istream& aXQuery, const xqpString & aFile
 #endif
 
   xquery_driver lDriver(&*theCompilerCB);
-  lDriver.parse_stream(*xquery_stream, aFileName);
+  lDriver.parse_stream(*xquery_stream, aFileName.getp());
 
 #ifdef ZORBA_XQUERYX
   delete xquery_stream;
@@ -262,45 +268,47 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
 /*******************************************************************************
   Create a dummy main module to wrap a library module.
 ********************************************************************************/
-parsenode_t
-XQueryCompiler::createMainModule(
+parsenode_t XQueryCompiler::createMainModule(
     parsenode_t aLibraryModule,
     std::istream& aXQuery,
-    const xqpString & aFileName)
+    const xqpStringStore_t& aFileName)
 {
   //get the namespace from the LibraryModule
   LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*aLibraryModule);
   if (mod_ast == NULL)
   {
     ZORBA_ERROR_DESC_OSS(API0002_COMPILE_FAILED,
-                        "given library module is not a valid module, e.g. the module declaration is missing");
+                        "given library module is not a valid module, e.g. "
+                         << "the module declaration is missing");
 
   }
 
-  std::string lib_namespace = mod_ast->get_decl()->get_target_namespace();
+  const xqpStringStore_t& lib_namespace = mod_ast->get_decl()->get_target_namespace();
 
   // bugfix for #2934414
-  // check the library module's URI for validity
-  // raise an error with the location of the module declaration
-  // if the URI is not valid
-  try {
-    URI lURI(lib_namespace);
-  } catch (error::ZorbaError& e) {
+  // Check the library module's URI for validity. Raise an error with the
+  // location of the module declaration if the URI is not valid.
+  try 
+  {
+    URI lURI(lib_namespace.getp());
+  }
+  catch (error::ZorbaError& e) 
+  {
     ZORBA_ERROR_LOC_DESC(XQST0046,
                          mod_ast->get_decl()->get_location(),
                          e.theDescription);
   }
 
-  //create a dummy main module
+  // create a dummy main module
   std::stringstream lDocStream;
-  lDocStream << "import module namespace m = '" << lib_namespace << "'; 1";
+  lDocStream << "import module namespace m = '" << lib_namespace->c_str() << "'; 1";
 
   aXQuery.clear();
   aXQuery.seekg(0);
 
   theResolver = new StandardLibraryModuleURIResolver(aXQuery,
-                                                     lib_namespace,
-                                                     aFileName.c_str());
+                                                     lib_namespace->str(),
+                                                     aFileName->c_str());
 
   theCompilerCB->theRootSctx->add_module_uri_resolver(theResolver);
 

@@ -24,6 +24,9 @@
 
 #include "store/api/update_consts.h"
 
+#include "zorbaerrors/Assert.h"
+
+
 #define DEFAULT_BEGIN_VISIT(type)                    \
   void* begin_visit(const type&){ return no_state; } 
 
@@ -40,198 +43,247 @@ namespace zorba {
 
 class ParseNodePrintXQueryVisitor: public parsenode_visitor
 {
-  private:
-    std::ostream& os;
-    FunctionIndex theFunctionIndex;
+private:
+  std::ostream& os;
+  FunctionIndex theFunctionIndex;
 
-  public:
-    ParseNodePrintXQueryVisitor(std::ostream& aStream): os(aStream){}
+public:
 
-    FunctionIndex& getFunctionIndex()
-    {
-      return theFunctionIndex;
-    }
+ParseNodePrintXQueryVisitor(std::ostream& aStream): os(aStream)
+{
+}
 
-    ParseNodePrintXQueryVisitor* print(const parsenode* p)
-    {
-      p->accept(*this);
-      return this;
-    }
 
-    void* begin_visit(const AbbrevForwardStep& n)
-    {
-      if(n.get_attr_bit())
-      {
-        os << '@';
+FunctionIndex& getFunctionIndex()
+{
+  return theFunctionIndex;
+}
+
+
+ParseNodePrintXQueryVisitor* print(const parsenode* p)
+{
+  p->accept(*this);
+  return this;
+}
+
+
+void* begin_visit(const AbbrevForwardStep& n)
+{
+  if(n.get_attr_bit())
+  {
+    os << '@';
+  }
+  return no_state;
+}
+
+
+DEFAULT_END_VISIT(AbbrevForwardStep)
+  
+
+DEFAULT_BEGIN_VISIT (AnyKindTest)
+
+
+void end_visit(const AnyKindTest& n, void* state)
+{
+  os << "node()";
+}
+
+
+DEFAULT_VISIT (AposAttrContentList)
+
+
+void* begin_visit(const AposAttrValueContent& n)
+{
+  if(!n.get_apos_atcontent().empty())
+  {
+    os << n.get_apos_atcontent();
+  } 
+  else
+  {
+    n.get_common_content()->accept(*this);
       }
-      return no_state;
-    }
-    DEFAULT_END_VISIT(AbbrevForwardStep)
+  return 0;
+}
 
-    DEFAULT_BEGIN_VISIT (AnyKindTest)
-    void end_visit(const AnyKindTest& n, void* state)
+
+DEFAULT_END_VISIT (AposAttrValueContent)
+
+
+void* begin_visit(const ArgList& n)
+{
+  for (int i=0; i<n.size(); ++i) {
+    if(i > 0)
     {
-      os << "node()";
+      os << ", ";
     }
+    const exprnode* e_p = &*(n[i]);
+    e_p->accept(*this);
+  } 
+  return 0;
+}
+  
 
-    DEFAULT_VISIT (AposAttrContentList)
+DEFAULT_END_VISIT (ArgList)
 
-    void* begin_visit(const AposAttrValueContent& n)
-    {
-      if(!n.get_apos_atcontent().empty())
-      {
-        os << n.get_apos_atcontent();
-      } else {
-        n.get_common_content()->accept(*this);
-      }
-      return 0;
-    }
-    DEFAULT_END_VISIT (AposAttrValueContent)
+DEFAULT_BEGIN_VISIT (AtomicType)
 
-    void* begin_visit(const ArgList& n)
-    {
-      for (int i=0; i<n.size(); ++i) {
-        if(i > 0)
-        {
-          os << ", ";
-        }
-        const exprnode* e_p = &*(n[i]);
-        e_p->accept(*this);
-      } 
-      return 0;
-    }
-    DEFAULT_END_VISIT (ArgList)
 
-    DEFAULT_BEGIN_VISIT (AtomicType)
-    void end_visit(const AtomicType& n, void* state)
-    {
-      os << n.get_qname()->get_qname();
-    }
+void end_visit(const AtomicType& n, void* state)
+{
+  os << n.get_qname()->get_qname();
+}
+  
+  
+void* begin_visit(const AttributeTest& n)
+{
+  os << "attribute(";
+  return no_state;
+}
+  
+  
+void end_visit(const AttributeTest& n, void*)
+{
+  os << ")";
+}
 
-    void* begin_visit(const AttributeTest& n)
-    {
-      os << "attribute(";
-      return no_state;
-    }
 
-    void end_visit(const AttributeTest& n, void*)
-    {
-      os << ")";
-    }
+void* begin_visit(const BaseURIDecl& n)
+{
+  os << "declare base-uri \"" << n.get_base_uri() << "\";";
+  return no_state;
+}
 
-    void* begin_visit(const BaseURIDecl& n)
-    {
-      os << "declare base-uri \"" << n.get_base_uri() << "\";";
-      return no_state;
-    }
-    DEFAULT_END_VISIT (BaseURIDecl);
 
-    void* begin_visit(const BoundarySpaceDecl& n)
-    {
-      os << "declare boundary-space ";
-      switch(n.get_boundary_space_mode())
-      {
-        case StaticContextConsts::preserve_space:
-          os << "preserve";
-          break;
-        case StaticContextConsts::strip_space:
-          os << "strip";
-          break;
-      }
-      os << ';';
-      return no_state;
-    }
-    DEFAULT_END_VISIT (BoundarySpaceDecl)
+DEFAULT_END_VISIT (BaseURIDecl);
+  	
+  
+void* begin_visit(const BoundarySpaceDecl& n)
+{
+  os << "declare boundary-space ";
+  switch(n.get_boundary_space_mode())
+  {
+  case StaticContextConsts::preserve_space:
+    os << "preserve";
+    break;
+  case StaticContextConsts::strip_space:
+    os << "strip";
+    break;
+  default:
+    ZORBA_ASSERT(false);
+  }
+  os << ';';
+  return no_state;
+}
 
-    void* begin_visit(const CaseClause& n)
-    {
-      os << "case ";
-      if(!n.get_varname().empty())
-      {
-        os << "$" << n.get_varname() << " as ";
-      }
-      n.get_type()->accept(*this);
-      os << "return ";
-      n.get_expr()->accept(*this);
-      return no_state;
-    }
-    DEFAULT_END_VISIT (CaseClause)
+DEFAULT_END_VISIT (BoundarySpaceDecl)
+  
 
-    DEFAULT_VISIT (CaseClauseList) //@checked
+void* begin_visit(const CaseClause& n)
+{
+  os << "case ";
+  if(n.get_varname())
+  {
+    os << "$" << n.get_varname()->get_qname() << " as ";
+  }
+  n.get_type()->accept(*this);
+  os << "return ";
+  n.get_expr()->accept(*this);
+  return no_state;
+}
 
-    void* begin_visit(const CommentTest& n)
-    {
-      os << "comment()";
-      return no_state;
-    }
-    DEFAULT_END_VISIT (CommentTest);
 
-    void* begin_visit(const ConstructionDecl& n)
-    {
-      os << "declare construction ";
-      switch(n.get_mode())
-      {
-        case StaticContextConsts::cons_preserve:
-          os << "preserve";
-          break;
-        case StaticContextConsts::cons_strip:
-          os << "strip";
-          break;
-      }
-      os << ';';
-      return no_state;
-    }
-    DEFAULT_END_VISIT (ConstructionDecl)
+DEFAULT_END_VISIT (CaseClause)
+  
 
-    void* begin_visit(const CopyNamespacesDecl& n)
-    {
-      os << "declare copy-namespaces ";
-      switch(n.get_preserve_mode())
-      {
-        case StaticContextConsts::preserve_ns:
-          os << "preserve,";
-          break;
-        case StaticContextConsts::no_preserve_ns:
-          os << "no-preserve,";
-          break;
-      }
-      switch(n.get_inherit_mode())
-      {
-        case StaticContextConsts::inherit_ns:
-          os << "inherit";
-          break;
-        case StaticContextConsts::no_inherit_ns:
-          os << "no-inherit";
-          break;
-      }
-      return 0;
-    }
-    DEFAULT_END_VISIT (CopyNamespacesDecl)
+DEFAULT_VISIT (CaseClauseList) //@checked
 
-    void* begin_visit(const DefaultCollationDecl& n)
-    {
-      os << "declare default collation " << n.get_collation();
-      return 0;
-    }
-    DEFAULT_END_VISIT (DefaultCollationDecl)
 
-    void* begin_visit(const DefaultNamespaceDecl& n)
-    {
-      os << "declare default ";
-      switch(n.get_mode())
-      {
-        case ParseConstants::ns_element_default:
-          os << "element ";
-          break;
-        case ParseConstants::ns_function_default:
-          os << "function ";
-          break;
-      }
-      os << "namespace ";
-      os << n.get_default_namespace();
-      return 0;
-    }
-    DEFAULT_END_VISIT (DefaultNamespaceDecl)
+void* begin_visit(const CommentTest& n)
+{
+  os << "comment()";
+  return no_state;
+}
+  
+
+DEFAULT_END_VISIT (CommentTest);
+
+void* begin_visit(const ConstructionDecl& n)
+{
+  os << "declare construction ";
+  switch(n.get_mode())
+  {
+  case StaticContextConsts::cons_preserve:
+    os << "preserve";
+    break;
+  case StaticContextConsts::cons_strip:
+    os << "strip";
+    break;
+  default:
+    ZORBA_ASSERT(false);
+  }
+  os << ';';
+  return no_state;
+}
+
+DEFAULT_END_VISIT (ConstructionDecl)
+
+void* begin_visit(const CopyNamespacesDecl& n)
+{
+  os << "declare copy-namespaces ";
+  switch(n.get_preserve_mode())
+  {
+  case StaticContextConsts::preserve_ns:
+    os << "preserve,";
+    break;
+  case StaticContextConsts::no_preserve_ns:
+    os << "no-preserve,";
+    break;
+  default:
+    ZORBA_ASSERT(false);
+  }
+
+  switch(n.get_inherit_mode())
+  {
+  case StaticContextConsts::inherit_ns:
+    os << "inherit";
+    break;
+  case StaticContextConsts::no_inherit_ns:
+    os << "no-inherit";
+    break;
+  default:
+    ZORBA_ASSERT(false);
+  }
+  return 0;
+}
+
+DEFAULT_END_VISIT (CopyNamespacesDecl)
+  
+void* begin_visit(const DefaultCollationDecl& n)
+{
+  os << "declare default collation " << n.get_collation();
+  return 0;
+}
+
+DEFAULT_END_VISIT (DefaultCollationDecl)
+
+void* begin_visit(const DefaultNamespaceDecl& n)
+{
+  os << "declare default ";
+  switch(n.get_mode())
+  {
+  case ParseConstants::ns_element_default:
+    os << "element ";
+    break;
+  case ParseConstants::ns_function_default:
+    os << "function ";
+    break;
+  }
+  os << "namespace ";
+  os << n.get_default_namespace();
+  return 0;
+}
+
+DEFAULT_END_VISIT (DefaultNamespaceDecl)
 
     void* begin_visit(const DirAttr& n)
     {
@@ -290,21 +342,25 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (ElementTest)
 
-    void* begin_visit(const EmptyOrderDecl& n)
-    {
-      os << "declare default order empty ";
-      switch(n.get_mode())
-      {
-        case StaticContextConsts::empty_greatest:
-          os << "greatest";
-          break;
-        case StaticContextConsts::empty_least:
-          os << "least";
-          break;
-      }
-      return 0;
-    }
-    DEFAULT_END_VISIT (EmptyOrderDecl)
+void* begin_visit(const EmptyOrderDecl& n)
+{
+  os << "declare default order empty ";
+  switch(n.get_mode())
+  {
+  case StaticContextConsts::empty_greatest:
+    os << "greatest";
+    break;
+  case StaticContextConsts::empty_least:
+    os << "least";
+    break;
+  default:
+    ZORBA_ASSERT(false);
+  }
+  return 0;
+}
+  
+
+DEFAULT_END_VISIT (EmptyOrderDecl)
 
     void* begin_visit(const ForClause& n)
     {
@@ -349,88 +405,97 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
 
     DEFAULT_VISIT (ForwardStep)//@checked
 
-    void* begin_visit(const FunctionDecl& n)
-    { 
-      Parameters lParameters;
-      os << "declare ";
-      switch(n.get_type()) {
-        case ParseConstants::fn_update:
-        case ParseConstants::fn_extern_update:
-          os << "updating ";
-          break;
-        case ParseConstants::fn_sequential:
-        case ParseConstants::fn_extern_sequential:
-          os << "sequential ";
-          break;
-        default:
-          break;
-      }
-      os << "function ";
-      n.get_name()->accept(*this);
-      os << '(';
-      if(n.get_paramlist()) {
-        n.get_paramlist()->accept(*this);
-      }
-      os << ')';
-      if(n.get_return_type()) {
-        os << " as ";
-        stringstream lReturnType;
-        print_parsetree_xquery(lReturnType, n.get_return_type().getp());
-        //n.get_return_type()->accept(*this);
-        os << lReturnType.str();
-        lParameters.push(lReturnType.str());
-      }
-      if(n.get_body()) { 
-        os << '{';
-        n.get_body()->accept(*this);
-        os << '}';
-      } else if(n.get_type() == ParseConstants::fn_extern ||
-          n.get_type() == ParseConstants::fn_extern_update ||
-          n.get_type() == ParseConstants::fn_extern_sequential) {
-        os << " external";
-      }
 
-      if(n.get_paramlist()) {
-        const rchandle<ParamList> paramList = n.get_paramlist();
-        for (vector<rchandle<Param> >::const_iterator it = paramList->begin();
-             it != paramList->end(); ++it) {
-          const Param* param = &**it;
-          stringstream lParamString;
-          print_parsetree_xquery(lParamString, param);
-          lParameters.push(lParamString.str());
-        }
-      }
-      theFunctionIndex.insert(make_pair(n.get_name()->get_qname(), lParameters));
-      return 0;
-    }
-    DEFAULT_END_VISIT (FunctionDecl)
-
-    void* begin_visit(const GeneralComp& n)
+void* begin_visit(const FunctionDecl& n)
+{ 
+  Parameters lParameters;
+  os << "declare ";
+  switch(n.get_type()) {
+  case ParseConstants::fn_update:
+  case ParseConstants::fn_extern_update:
+    os << "updating ";
+    break;
+  case ParseConstants::fn_sequential:
+  case ParseConstants::fn_extern_sequential:
+    os << "sequential ";
+    break;
+  default:
+    break;
+  }
+  os << "function ";
+  n.get_name()->accept(*this);
+  os << '(';
+  if(n.get_paramlist()) {
+    n.get_paramlist()->accept(*this);
+  }
+  os << ')';
+  if(n.get_return_type()) {
+    os << " as ";
+    stringstream lReturnType;
+    print_parsetree_xquery(lReturnType, n.get_return_type().getp());
+    //n.get_return_type()->accept(*this);
+    os << lReturnType.str();
+    lParameters.push(lReturnType.str());
+  }
+  if(n.get_body()) { 
+    os << '{';
+    n.get_body()->accept(*this);
+    os << '}';
+  } else if(n.get_type() == ParseConstants::fn_extern ||
+            n.get_type() == ParseConstants::fn_extern_update ||
+            n.get_type() == ParseConstants::fn_extern_sequential) {
+    os << " external";
+  }
+  
+  if(n.get_paramlist()) 
+  {
+    const rchandle<ParamList> paramList = n.get_paramlist();
+    for (vector<rchandle<Param> >::const_iterator it = paramList->begin();
+         it != paramList->end();
+         ++it) 
     {
-      switch(n.get_type())
-      {
-        case ParseConstants::op_eq:
-          os << '=';
-          break;
-        case ParseConstants::op_ne:
-          os << "!=";
-          break;
-        case ParseConstants::op_lt:
-          os << '<';
-          break;
-        case ParseConstants::op_le:
-          os << "<=";
-          break;
-        case ParseConstants::op_gt:
-          os << '>';
-          break;
-        case ParseConstants::op_ge:
-          os << ">=";
-          break;
-      }
-      return no_state;
+      const Param* param = &**it;
+      stringstream lParamString;
+      print_parsetree_xquery(lParamString, param);
+      lParameters.push(lParamString.str());
     }
-    DEFAULT_END_VISIT (GeneralComp)
+  }
+  theFunctionIndex.insert(make_pair(n.get_name()->get_qname(), lParameters));
+  return 0;
+}
+  
+
+DEFAULT_END_VISIT (FunctionDecl)
+  
+
+void* begin_visit(const GeneralComp& n)
+{
+  switch(n.get_type())
+  {
+  case ParseConstants::op_eq:
+    os << '=';
+    break;
+  case ParseConstants::op_ne:
+    os << "!=";
+    break;
+  case ParseConstants::op_lt:
+    os << '<';
+    break;
+  case ParseConstants::op_le:
+    os << "<=";
+    break;
+  case ParseConstants::op_gt:
+    os << '>';
+    break;
+  case ParseConstants::op_ge:
+    os << ">=";
+    break;
+  }
+  return no_state;
+}
+  
+
+DEFAULT_END_VISIT (GeneralComp)
 
     void* begin_visit(const ItemType& n)
     {
@@ -470,14 +535,14 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     void* begin_visit(const ModuleImport& n)
     {
       os << "import module ";
-      if(!n.get_prefix().empty())
+      if(!n.get_prefix()->empty())
       {
-        os << "namespace " << n.get_prefix() << "=";
+        os << "namespace " << n.get_prefix()->c_str() << "=";
       }
       os << n.get_uri();
-      if(n.get_uri_list())
+      if(n.get_at_list())
       {
-        n.get_uri_list()->accept(*this); 
+        n.get_at_list()->accept(*this); 
       }
       return 0;
     }
@@ -607,25 +672,29 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (OrderDirSpec)
 
-    void* begin_visit(const OrderEmptySpec& n)
-    {
-      os << "empty ";
-      switch(n.getValue())
-      {
-        case StaticContextConsts::empty_greatest:
-          os << "greatest ";
-          break;
-        case StaticContextConsts::empty_least:
-          os << "least ";
-          break;
-      }
-      return 0;
-    }
-    DEFAULT_END_VISIT (OrderEmptySpec)
 
-    DEFAULT_VISIT (OrderModifierPN)//@checked
+void* begin_visit(const OrderEmptySpec& n)
+{
+  os << "empty ";
+  switch(n.getValue())
+  {
+  case StaticContextConsts::empty_greatest:
+    os << "greatest ";
+    break;
+  case StaticContextConsts::empty_least:
+    os << "least ";
+    break;
+  default:
+    ZORBA_ASSERT(false);
+  }
+  return 0;
+}
+  
+DEFAULT_END_VISIT (OrderEmptySpec)
 
-    DEFAULT_VISIT (OrderSpec) //@checked
+DEFAULT_VISIT (OrderModifierPN)//@checked
+
+DEFAULT_VISIT (OrderSpec) //@checked
 
     void* begin_visit(const OrderSpecList& n)
     {
@@ -651,57 +720,70 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
     }
     DEFAULT_END_VISIT (PITest);
 
-    void* begin_visit(const OrderingModeDecl& n)
-    {
-      os << "declare ordering";
-      switch(n.get_mode())
-      {
-        case StaticContextConsts::ordered:
-          os << "ordered ";
-          break;
-        case StaticContextConsts::unordered:
-          os << "unordered ";
-          break;
-      }
-      return 0;
-    }
-    DEFAULT_END_VISIT (OrderingModeDecl)
+void* begin_visit(const OrderingModeDecl& n)
+{
+  os << "declare ordering";
+  switch(n.get_mode())
+  {
+  case StaticContextConsts::ordered:
+    os << "ordered ";
+    break;
+  case StaticContextConsts::unordered:
+    os << "unordered ";
+    break;
+  default:
+    ZORBA_ASSERT(false);
+  }
+  return 0;
+}
 
-    void* begin_visit(const Param& n)
-    {
-      os << '$';
-      os << n.get_name();
-      if(n.get_typedecl())
-      {
-        os << " as ";
-      }
-      return no_state;
-    }
-    DEFAULT_END_VISIT (Param)
 
-    void* begin_visit(const ParamList& n)
+DEFAULT_END_VISIT (OrderingModeDecl)
+
+
+void* begin_visit(const Param& n)
+{
+  os << '$';
+  os << n.get_name()->get_qname();
+
+  if(n.get_typedecl())
+  {
+    os << " as ";
+  }
+
+  return no_state;
+}
+
+
+DEFAULT_END_VISIT (Param)
+  	
+
+
+void* begin_visit(const ParamList& n)
+{
+  for (vector<rchandle<Param> >::const_iterator it = n.begin();
+       it != n.end();
+       ++it)
+  {
+    if(it != n.begin())
     {
-      for (vector<rchandle<Param> >::const_iterator it = n.begin();
-            it != n.end();
-            ++it)
-      {
-        if(it != n.begin())
-        {
-          os << ", ";
-        }
-        const parsenode *e_p = &**it;
-        if(e_p)
-        {
-          e_p->accept(*this);
-        }
-      }
-      return 0;
+      os << ", ";
     }
-    DEFAULT_END_VISIT (ParamList)
+    const parsenode *e_p = &**it;
+    if(e_p)
+    {
+      e_p->accept(*this);
+    }
+  }
+  return 0;
+}
+
+
+DEFAULT_END_VISIT (ParamList)
 
     void* begin_visit(const PositionalVar& n)
     {
-      os << "at $" << n.get_varname();
+      os << "at $" << n.get_name()->get_qname();
       return 0;
     }
     DEFAULT_END_VISIT (PositionalVar)\
@@ -861,7 +943,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
 
     void* begin_visit(const URILiteralList& n)
     {
-      for(int i=0; i<n.size(); i++)
+      for(ulong i = 0; i < n.size(); i++)
       {
         if(i!=0)
         {
@@ -930,7 +1012,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
 
     void* begin_visit(const VarDecl& n)
     {
-      os << "declare variable $" << n.get_varname();
+      os << "declare variable $" << n.get_name()->get_qname();
       if(n.get_typedecl())
       {
         n.get_typedecl()->accept(*this);
@@ -948,7 +1030,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
 
     void* begin_visit(const VarGetsDecl& n)
     {
-      os << "$" << n.get_varname() << " "; 
+      os << "$" << n.get_name()->get_qname() << " "; 
       if(n.get_typedecl())
       {
         os << "as ";
@@ -980,7 +1062,7 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
 
     void* begin_visit(const VarInDecl& n)
     {
-      os << n.get_varname() << ' ';
+      os << n.get_name()->get_qname() << ' ';
       if(n.get_typedecl())
       {
         os << "as ";
@@ -1532,9 +1614,9 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       os << ')';
       n.get_clause_list()->accept(*this);
       os << " default";
-      if(!n.get_default_varname().empty())
+      if(n.get_default_varname())
       {
-        os << " $" << n.get_default_varname();
+        os << " $" << n.get_default_varname()->get_qname();
       }
       os << " return";
       n.get_default_clause()->accept(*this);
@@ -1720,17 +1802,20 @@ class ParseNodePrintXQueryVisitor: public parsenode_visitor
       {
         (*i)->accept(*this);
       }
-      if(!n.getVarErrorCode().empty())
+
+      if(n.getVarErrorCode())
       {
-        os << "($" << n.getVarErrorCode();
+        os << "($" << n.getVarErrorCode()->get_qname();
       }
-      if(!n.getVarErrorDescr().empty())
+
+      if(n.getVarErrorDescr())
       {
-        os << ", $" << n.getVarErrorDescr();
+        os << ", $" << n.getVarErrorDescr()->get_qname();
       }
-      if(!n.getVarErrorVal().empty())
+
+      if(n.getVarErrorVal())
       {
-        os << ", $" << n.getVarErrorVal();
+        os << ", $" << n.getVarErrorVal()->get_qname();
       }
       os << "){";
       n.getExprSingle()->accept(*this);

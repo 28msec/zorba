@@ -28,19 +28,9 @@ using namespace std;
 
 namespace zorba {
 
-class ParseNodePrintXQDocVisitor : public parsenode_visitor {
-
+class ParseNodePrintXQDocVisitor : public parsenode_visitor 
+{
 private:
-  string getLocalName(const string& aQName)
-  {
-    string::size_type lIndex = aQName.find(':');
-    if (lIndex == string::npos) {
-      return aQName;
-    } else {
-      return aQName.substr(lIndex+1);
-    }
-  }
-
   string getFileName(const string& aFileName)
   {
     string::size_type lIndex = aFileName.find_last_of("/\\");
@@ -278,7 +268,8 @@ void* begin_visit(const VarDecl&)
 
 void end_visit(const VarDecl& n, void*)
 {
-  theVariables << "<xqdoc:uri>" << getLocalName(n.get_varname()) << "</xqdoc:uri>" ;
+  theVariables << "<xqdoc:uri>" << n.get_name()->get_localname()->c_str()
+               << "</xqdoc:uri>" ;
   print_comment(theVariables, n.getComment());
   
   theVariables << "</xqdoc:variable>" << endl ;

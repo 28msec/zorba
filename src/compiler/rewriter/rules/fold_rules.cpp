@@ -761,12 +761,13 @@ RULE_REWRITE_POST(InlineFunctions)
         (NULL != (body = udf->get_body())))
     {
       const std::vector<var_expr_t>& udfArgs = udf->get_args();
-      expr::substitution_t subst = new expr::substitution();
+
+      expr::substitution_t subst;
 
       for (unsigned i = 0; i < udfArgs.size(); ++i)
       {
         var_expr_t p = udfArgs[i];
-        subst->get(p) = fo->get_arg(i);
+        subst[p] = fo->get_arg(i);
       }
 
       try

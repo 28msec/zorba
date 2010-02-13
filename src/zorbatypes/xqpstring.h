@@ -34,7 +34,10 @@
 
 namespace zorba {
 
-// exported for testing only
+
+/*******************************************************************************
+  Wraps an std::string and adds UTF-8 support and thread-safe reference counting
+********************************************************************************/
 class ZORBA_DLL_PUBLIC xqpStringStore : public RCObject
 {
   friend class xqpString;
@@ -43,6 +46,7 @@ class ZORBA_DLL_PUBLIC xqpStringStore : public RCObject
 
 public:
   typedef ptrdiff_t distance_type;
+
   typedef uint32_t char_type;
 
 protected:
@@ -51,45 +55,39 @@ protected:
   std::string               theString;
 
 public:
-  SERIALIZABLE_CLASS(xqpStringStore);
+  static bool is_whitespace(uint32_t cp);
 
-  xqpStringStore(::zorba::serialization::Archiver &ar);
+  static bool is_contained(const char* start, uint16_t length, uint32_t cp);
 
-  void serialize(::zorba::serialization::Archiver &ar);
+  static bool is_unreservedCP(uint32_t cp);
+
+  static bool is_ucscharCP(uint32_t cp);
+
+  static bool is_iprivateCP(uint32_t cp);
+
+  static bool is_printableASCII(uint32_t cp);
+
+  static bool is_Invalid_in_IRI(uint32_t cp);
+
+  static uint32_t hash(const char* str);
 
 public:
-  static bool
-  is_whitespace(uint32_t cp);
+  SERIALIZABLE_CLASS(xqpStringStore);
 
-  static uint32_t
-  hash(const char* str);
+  xqpStringStore(::zorba::serialization::Archiver& ar);
 
-  static bool
-  is_contained(const char* start, uint16_t length, uint32_t cp);
-
-  static bool
-  is_unreservedCP(uint32_t cp);
-
-  static bool
-  is_ucscharCP(uint32_t cp);
-
-  static bool
-  is_iprivateCP(uint32_t cp);
-
-  static bool
-  is_printableASCII(uint32_t cp);
-
-  static bool
-  is_Invalid_in_IRI(uint32_t cp);
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   xqpStringStore() { }
 
   xqpStringStore(const char* start, const char* end) : theString(start, end) {}
 
-  xqpStringStore(const char* start, long len) : theString(start, len) {}
+  xqpStringStore(const char* start, ulong len) : theString(start, len) {}
 
-  xqpStringStore(const std::string& other);
+  xqpStringStore(const char* other) : theString(other) {}
+
+  xqpStringStore(const std::string& other) : theString(other) {}
 
   xqpStringStore(const xqpStringStore& other)
     :
@@ -104,6 +102,10 @@ public:
 
   long* getSharedRefCounter() const { return NULL; }
 
+  //
+  // Const methods
+  //
+
   const std::string& str() const { return theString; }
 
   std::string& str() { return theString; }
@@ -112,198 +114,174 @@ public:
 
   bool empty() const { return theString.empty(); }
 
-  std::string::size_type bytes() const { return theString.size(); }
+  ulong bytes() const { return theString.size(); }
 
-  std::string::size_type size() const { return theString.size(); }
+  ulong size() const { return theString.size(); }
 
-  std::string::size_type numChars() const;
+  ulong numChars() const;
 
-  // This function should be rewritten to work in an iterator-style
-  char_type charAt(std::string::size_type pos) const;
+  char_type charAt(ulong charPos) const;
 
-  char byteAt (std::string::size_type i) const { return str () [i]; }
+  char byteAt(ulong bytePos) const { return theString[bytePos]; }
 
-  char operator[](std::string::size_type i) const { return str()[i]; }
+  char operator[](ulong bytePos) const { return theString[bytePos]; }
 
-  uint32_t
-  hash(const XQPCollator* = 0) const;
+  checked_vector<uint32_t> getCodepoints() const;
 
-  bool
-  operator==(char_type ch) const;
+  bool is_whitespace() const;
 
-  bool
-  byteEqual(const xqpStringStore& src) const;
+  uint32_t hash(const XQPCollator* = 0) const;
 
-  bool
-  byteEqual(const char* src, uint32_t srcBytes) const;
+  bool operator==(char_type cp) const;
 
-  bool
-  byteEqual(const char* src) const;
+  bool operator==(const char* other) const { return byteEqual(other, strlen(other)); }
 
-  int byteCompare(const std::string& s)
+  bool operator==(const xqpStringStore& other) const { return byteEqual(&other); }
+
+  bool operator!=(const xqpStringStore& other) const { return !byteEqual(&other); }
+
+  bool byteEqual(const char* other, ulong otherLen) const;
+
+  bool byteEqual(const xqpStringStore* other) const;
+
+  long byteCompare(const char* other, ulong otherLen)
   {
-    int res = theString.compare(0, theString.size(), s);
+    long res = theString.compare(0, theString.size(), other, otherLen);
     return (res < 0 ? -1 : (res > 0 ? 1 : 0));
   }
 
-  // Three-way lexicographical comparison of s and a substring of *this
-  int byteCompare(
-        std::string::size_type pos,
-        std::string::size_type n,
-        const std::string& s)
+  long byteCompare(const xqpStringStore* other)
   {
-   int res = theString.compare(pos, n, s);
-   return (res < 0 ? -1 : (res > 0 ? 1 : 0));
+    return byteCompare(other->c_str(), other->bytes());
   }
 
-  // Three-way lexicographical comparison of a substring of s and a substring of *this
-  int byteCompare(
-        std::string::size_type pos,
-        std::string::size_type n,
-        const std::string& s,
-        std::string::size_type pos1,
-        std::string::size_type n1)
+  long byteCompare(ulong bytePos, ulong numBytes, const char* other)
   {
-    int res = theString.compare(pos, n, s, pos1, n1);
+    int res = theString.compare(bytePos, numBytes, other);
     return (res < 0 ? -1 : (res > 0 ? 1 : 0));
   }
 
-  bool
-  equals(const xqpStringStore* src) const
+  long byteCompare(
+        ulong bytePos,
+        ulong numBytes,
+        const std::string& other,
+        ulong bytePosOther,
+        ulong numBytesOther)
   {
-    return ((this == src) || (compare(src, 0) == 0));
+    long res = theString.compare(bytePos, numBytes, other, bytePosOther, numBytesOther);
+    return (res < 0 ? -1 : (res > 0 ? 1 : 0));
   }
 
-  int
-  compare(const xqpStringStore* src, const XQPCollator* coll = 0) const;
-
-  // Returns true if every single character in the string is a whitespace
-  bool
-  is_whitespace() const;
-
-  int32_t
-  indexOf(const char* pattern, unsigned int pos = 0) const;
-
-  int32_t
-  indexOf(const xqpStringStore* pattern, XQPCollator* col) const;
-
-  int32_t
-  lastIndexOf(const char* pattern) const;
-
-  int32_t
-  lastIndexOf(const xqpStringStore* pattern, XQPCollator* coll) const;
-
-  bool byteStartsWith(const std::string &s)
+  bool byteStartsWith(const char* prefix, ulong prefixLen)
   {
-    return byteCompare (0, s.size (), s) == 0;
+    return byteCompare(0, prefixLen, prefix) == 0;
   }
 
-  bool
-  endsWith(const char* pattern) const;
+  bool byteEndsWith(const char* suffix, ulong suffixLen) const;
 
-  bool
-  endsWith(const xqpStringStore* pattern, XQPCollator* col) const;
+  long bytePositionOf(const char* substr) const
+  {
+    return bytePositionOf(substr, strlen(substr), 0);
+  }
 
-  xqpStringStore_t
-  append(const xqpStringStore_t& suffix) const;
+  long bytePositionOf(const char* substr, ulong substrLen, ulong bytePos) const;
 
-  xqpStringStore_t
-  append(const std::string& suffix) const;
+  long byteLastPositionOf(const char* substr, ulong substrLen) const;
 
-  xqpStringStore_t
-  append(const char* suffix) const;
+  xqpStringStore_t byteSubstr(ulong bytePos, ulong length) const;
 
-  xqpStringStore_t
-  substr(std::string::size_type index, std::string::size_type length) const;
+  bool equals(const xqpStringStore* src, const XQPCollator* coll = 0) const
+  {
+    return ((this == src) || (compare(src, coll) == 0));
+  }
 
-  xqpStringStore_t
-  substr(xqpStringStore::distance_type index) const;
+  long compare(const xqpStringStore* other, const XQPCollator* coll = 0) const;
 
-  xqpStringStore_t
-  reverse() const;
+  bool endsWith(const xqpStringStore* pattern, XQPCollator* col) const;
 
-  xqpStringStore_t
-  uppercase() const;
+  long positionOf(const xqpStringStore* substr, XQPCollator* col) const;
 
-  xqpStringStore_t
-  lowercase() const;
+  long lastPositionOf(const xqpStringStore* substr, XQPCollator* coll) const;
 
-  xqpStringStore_t
-  normalizeSpace() const;
+  bool matches(
+        const char* pattern,
+        std::string::size_type patternLen,
+        const char* regexFlags) const;
 
-  xqpStringStore_t trimL() const {
+  xqpStringStore_t substr(xqpStringStore::distance_type charPos) const;
+
+  //
+  // Copy-on-write methods
+  //
+  xqpStringStore_t reverse() const;
+
+  xqpStringStore_t uppercase() const;
+
+  xqpStringStore_t lowercase() const;
+
+  xqpStringStore_t trimL(const char* start, ulong len) const;
+
+  xqpStringStore_t trimR(const char* start, ulong len) const;
+
+  xqpStringStore_t trim(const char* start, ulong len) const;
+
+  xqpStringStore_t trimL() const 
+  {
     static char seq = ' ';
     return trimL( &seq, 1 );
   }
 
-  xqpStringStore_t
-  trimL(const char* start, uint16_t len) const;
-
-  xqpStringStore_t trimR() const {
+  xqpStringStore_t trimR() const 
+  {
     static char seq = ' ';
     return trimR( &seq, 1 );
   }
 
-  xqpStringStore_t
-  trimR(const char* start, uint16_t len) const;
+  xqpStringStore_t trim() const;
 
-  /** \brief Removes leading and trailing whitespace.
-   *
-   * @note whitespace is any of the following: ' ', '\n', '\r', '\t'
-   */
-  xqpStringStore_t
-  trim() const;
+  void replace(
+        xqpStringStore_t& result,
+        const xqpStringStore* pattern,
+        const xqpStringStore* replacement,
+        const char* regexFlags) const;
 
-  /** \brief Removes leading and trailing characters from this string.
-   *
-   * @param chars An array containing the characters to be trimmed.
-   * @param lengthOfChars The length of the chars array.
-   */
-  xqpStringStore_t
-  trim(const char* chars, uint16_t lengthOfChars) const;
+  xqpStringStore_t append(const xqpStringStore* suffix) const;
 
-  xqpStringStore_t
-  formatAsXML() const;
+  xqpStringStore_t append(const char* suffix) const;
 
-  xqpStringStore_t
-  escapeHtmlUri() const;
+  xqpStringStore_t normalizeSpace() const;
 
-  xqpStringStore_t
-  iriToUri() const;
+  xqpStringStore_t normalize(const xqpStringStore* normMode) const;
 
-  xqpStringStore_t
-  encodeForUri(const char* start = NULL, uint16_t length = 0) const;
+  xqpStringStore_t formatAsXML() const;
 
-  xqpStringStore_t
-  decodeFromUri() const;
+  xqpStringStore_t escapeHtmlUri() const;
 
-  xqpStringStore_t
-  normalize(const xqpStringStore* normMode) const;
+  xqpStringStore_t iriToUri() const;
 
-//   UnicodeString getUnicodeString() const;
+  void encodeForUri(
+        xqpStringStore_t& result,
+        const char* start = NULL,
+        ulong length = 0) const;
 
-  checked_vector<uint32_t>
-  getCodepoints() const;
+  void decodeFromUri(xqpStringStore_t& result) const;
 
-
-  // in-place methods break string immutability
-
+  //
+  // In-place update methods
+  //
   void clear();
 
   void append_in_place(const char c);
 
-  void append_in_place(uint32_t c);
+  void append_in_place(uint32_t cp);
 
-  void append_in_place(const xqpStringStore *suffix);
+  void append_in_place(const xqpStringStore* suffix);
 
-  void append_in_place(const xqpStringStore *suffix, const char *s2);
+  void append_in_place(const xqpStringStore* suffix, const char* s2);
 
-  void append_in_place(const char *str);
+  void append_in_place(const char* str);
 
-  void append_in_place(const char *str, int len);
-
-  void append_in_place(const std::string &str);
-
+  void append_in_place(const char* str, ulong len);
 };
 
 #ifdef ZORBA_WIN_DLL
@@ -408,8 +386,6 @@ public:
 
   void append_in_place(const char *str, int len);
 
-  void append_in_place(const std::string &str);
-
   bool
   operator==(xqpString src) const
   {
@@ -468,7 +444,7 @@ public:
   bool
   byteEqual(xqpString src) const
   {
-    return theStrStore->byteEqual(*src.getStore());
+    return theStrStore->byteEqual(src.getStore());
   }
 
   bool
@@ -515,7 +491,7 @@ public:
   int32_t
   indexOf(xqpString pattern, XQPCollator* col = 0) const
   {
-    return theStrStore->indexOf(pattern.getStore(), col);
+    return theStrStore->positionOf(pattern.getStore(), col);
   }
 
   /**Locate in this the last occurrence in the range [0, length) of the characters in pattern using the "Default collation".
@@ -525,7 +501,7 @@ public:
   int32_t
   lastIndexOf(xqpString pattern, XQPCollator* coll = 0) const
   {
-    return theStrStore->lastIndexOf(pattern.getStore(), coll);
+    return theStrStore->lastPositionOf(pattern.getStore(), coll);
   }
 
   /**Determine if this ends with the characters in pattern in the range [0, length).
@@ -589,22 +565,23 @@ public:
   xqpString
   normalize(xqpString normMode);
 
-  // escape all characters except for those :
-  // Upper and lowercase letters A-Z
-  // digits 0-9, HYPHEN-MINUS ("-"), LOW LINE ("_"), FULL STOP ".", and TILDE "~"
-  // and also the characters defined by 'start' and 'length'
   xqpString
   encodeForUri(const char* start = NULL, uint16_t length = 0) const
   {
-    return theStrStore->encodeForUri(start, length).getp();
+    xqpStringStore_t res;
+    theStrStore->encodeForUri(res, start, length);
+    return res.getp();
   }
 
   // revert encodeForUri("/",1)
   xqpString
   decodeFromUri() const
   {
-    return theStrStore->decodeFromUri().getp();
+    xqpStringStore_t res;
+    theStrStore->decodeFromUri(res);
+    return res.getp();
   }
+
 
   //This function converts an xs:string containing an IRI into a URI according to the
   //rules spelled out in Section 3.1 of http://www.ietf.org/rfc/rfc3987.txt

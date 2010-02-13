@@ -1612,13 +1612,31 @@ expr_t wrapper_expr::clone(substitution_t& subst) const
 /***************************************************************************//**
 
 ********************************************************************************/
-const_expr::const_expr(short sctx, const QueryLoc& loc, xqpString v)
+const_expr::const_expr(short sctx, const QueryLoc& loc, xqpStringStore_t& v)
   :
   expr(sctx, loc)
 {
-  xqpStringStore_t tmp = v.getStore();
+  GENV_ITEMFACTORY->createString(theValue, v); 
+}
+
+
+const_expr::const_expr(short sctx, const QueryLoc& loc, const std::string& v)
+  :
+  expr(sctx, loc)
+{
+  xqpStringStore_t tmp = new xqpStringStore(v);
   GENV_ITEMFACTORY->createString(theValue, tmp); 
 }
+
+
+const_expr::const_expr(short sctx, const QueryLoc& loc, const char* v)
+  :
+  expr(sctx, loc)
+{
+  xqpStringStore_t tmp = new xqpStringStore(v);
+  GENV_ITEMFACTORY->createString(theValue, tmp); 
+}
+
 
 const_expr::const_expr(short sctx, const QueryLoc& loc, xqp_integer v)
   :

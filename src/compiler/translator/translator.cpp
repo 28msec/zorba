@@ -84,6 +84,7 @@ class ModulesInfo;
 
 
 static expr_t translate_aux(
+    TranslatorImpl* rootTranslator,
     const parsenode& root,
     static_context* rootSctx,
     short rootSctxId,
@@ -123,13 +124,6 @@ static expr_t translate_aux(
 
 
 /*******************************************************************************
-  Lookup in the sctx the function object for a function with a given prefix
-  local name and arity. Return NULL if such a function is not found 
-********************************************************************************/
-#define LOOKUP_FN( pfx, local, arity ) (sctx_p->lookup_fn (pfx, local, arity))
-
-
-/*******************************************************************************
   Set/get chached pointers to function objs for certain commonly-used function
   and operators (to avoid looking them up in the sctx all the time).
 ********************************************************************************/
@@ -149,17 +143,17 @@ do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 ********************************************************************************/
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-#define CTXTS sctx_p->get_typemanager ()
+#define CTXTS sctx_p->get_typemanager()
 
 
 /*******************************************************************************
   Internal names for certain implicit vars
 ********************************************************************************/
-#define DOT_VARNAME "$$dot"
-#define DOT_POS_VARNAME "$$pos"
-#define LAST_IDX_VARNAME "$$last-idx"
+#define DOT_VARNAME getDotVarName()
+#define DOT_POS_VARNAME getDotPosVarName()
+#define LAST_IDX_VARNAME getLastIdxVarName()
 
-#define DOT_VAR lookup_ctx_var(DOT_VARNAME, loc).getp()
+#define DOT_VAR lookup_ctx_var(DOT_VARNAME->get_localname().getp(), loc).getp()
 
 #define DOT_REF new wrapper_expr(this->sctxid(), loc, DOT_VAR)
 
@@ -956,6 +950,8 @@ public:
 class TranslatorImpl : public parsenode_visitor
 {
 protected:
+  TranslatorImpl                     * theRootTranslator;
+
   RootTypeManager                    & theRTM;
 
   CompilerCB                         * theCCB;
@@ -963,8 +959,8 @@ protected:
   ModulesInfo                        * theModulesInfo;
   set<string>                          theModulesStack;
   set<string>                          theImportedModules;
-  string                               theModuleNamespace;
-  string                               theModulePrefix;
+  xqpStringStore_t                     theModuleNamespace;
+  xqpStringStore_t                     theModulePrefix;
   set<string>                          theBuiltInModules;
 
   set<string>                          theImportedSchemas;
@@ -983,7 +979,7 @@ protected:
 
   rchandle<namespace_context>          ns_ctx;
 
-  uint32_t                             print_depth;
+  ulong                                print_depth;
   int                                  scope_depth;
 
   varref_t                             theDotVar;
@@ -1030,16 +1026,24 @@ protected:
   function                           * var_set;
   function                           * var_get;
   function                           * var_exists;
+
+  rchandle<QName>                      theDotVarName;
+  rchandle<QName>                      theDotPosVarName;
+  rchandle<QName>                      theLastIdxVarName;
   
+  xqpStringStore_t                     theEmptyString;
+
 public:
 
 TranslatorImpl(
+    TranslatorImpl* rootTranslator,
     static_context* rootSctx,
     short rootSctxId,
     ModulesInfo* minfo,
     set<string> mod_stack,
     bool isLibModule)
   :
+  theRootTranslator(rootTranslator),
   theRTM(GENV_TYPESYSTEM),
   theCCB(minfo->theCCB),
   theModulesInfo(minfo),
@@ -1094,7 +1098,53 @@ TranslatorImpl(
   theBuiltInModules.insert (ZORBA_FOP_FN_NS);
   
   ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
+
+  if (rootTranslator == NULL)
+  {
+    QueryLoc loc;
+    theDotVarName = new QName(loc, "$$dot");
+    theDotPosVarName = new QName(loc, "$$pos");
+    theLastIdxVarName = new QName(loc, "$$last-idx");
+
+    theEmptyString = new xqpStringStore("");
+
+    theModuleNamespace = theEmptyString;
+    theModulePrefix = theEmptyString;
+  }
 }
+
+
+const xqpStringStore_t& getEmptyString() const
+{
+  return (theRootTranslator == NULL ?
+          theEmptyString :
+          theRootTranslator->theEmptyString);
+}
+
+
+const QName* getDotVarName() const
+{
+  return (theRootTranslator == NULL ?
+          theDotVarName.getp() :
+          theRootTranslator->theDotVarName.getp());
+}
+
+
+const QName* getDotPosVarName() const
+{
+  return (theRootTranslator == NULL ?
+          theDotPosVarName.getp() :
+          theRootTranslator->theDotPosVarName.getp());
+}
+
+
+const QName* getLastIdxVarName() const
+{
+  return (theRootTranslator == NULL ?
+          theLastIdxVarName.getp() :
+          theRootTranslator->theLastIdxVarName.getp());
+}
+
 
 
 /*******************************************************************************
@@ -1275,15 +1325,56 @@ void pop_elem_scope()
 
 
 /*******************************************************************************
-  Create a name to be used for an internally generated variable. The name is
-  unique within this translator.
+  Convert a lexical qname identifying a function to an expanded qname item.
+  If the lexical qname does not have a prefix, the default function namespace
+  (if any) will be used to build the expanded qname item.
 ********************************************************************************/
-xqpString tempname() 
+void expand_function_qname(
+    store::Item_t& qnameItem,
+    const QName* qname,
+    const QueryLoc& loc) const
 {
-  return "$$temp" + to_string(theTempVarCounter++);
+  sctx_p->expand_qname(qnameItem,
+                       sctx_p->default_function_ns(),
+                       qname->get_prefix(),
+                       qname->get_localname(),
+                       loc);
 }
-  
-    
+
+
+/*******************************************************************************
+  Convert a lexical qname representing an element tag name or a type name to an
+  expanded qname item. If the lexical qname does not have a prefix, the default
+  element namespace (if any) will be used to build the expanded qname item.
+********************************************************************************/
+void expand_elem_qname(
+    store::Item_t& qnameItem,
+    const QName* qname,
+    const QueryLoc& loc) const
+{
+  sctx_p->expand_qname(qnameItem,
+                       sctx_p->default_elem_type_ns(),
+                       qname->get_prefix(),
+                       qname->get_localname(),
+                       loc);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+void expand_no_default_qname(
+    store::Item_t& qnameItem,
+    const QName* qname,
+    const QueryLoc& loc) const
+{
+  sctx_p->expand_qname(qnameItem,
+                       getEmptyString(),
+                       qname->get_prefix(),
+                       qname->get_localname(),
+                       loc);
+}
+
+
 /*******************************************************************************
   Create a var_expr for a variable with a given qname item, kind, and type
 ********************************************************************************/
@@ -1293,7 +1384,7 @@ var_expr_t create_var(
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  varref_t e = new var_expr(sctxid(), loc, kind, qname);
+  var_expr_t e = new var_expr(sctxid(), loc, kind, qname);
 
   if (kind == var_expr::pos_var ||
       kind == var_expr::count_var ||
@@ -1307,36 +1398,42 @@ var_expr_t create_var(
   return e;
 }
 
-  
+
 /*******************************************************************************
-  Create a var_expr for a variable with a given qname, kind, and type.
-  The given qname is resolved to a qname item. An error is raised if the
-  resolution fails.
+  Create a var_expr for a variable with a given qname, kind, and type. The
+  given qname is expanded to a qname item. An error is raised if the qname
+  expansion fails (because there is no namespace binding for the given prefix).
 ********************************************************************************/
-varref_t create_var(
+var_expr_t create_var(
     const QueryLoc& loc,
-    string varname,
+    const QName* qname,
     var_expr::var_kind kind, 
     xqtref_t type = NULL) 
 {
-  store::Item_t qname = sctx_p->lookup_var_qname (varname, loc);
-  return create_var(loc, qname, kind, type);
+  store::Item_t qnameItem;
+  expand_no_default_qname(qnameItem, qname, loc);
+  return create_var(loc, qnameItem, kind, type);
 }
-  
+
 
 /*******************************************************************************
-  Create a var_expr for an internal variable with a given kind.
+  Create a var_expr for an internal variable with a given kind. The name to be
+  used for the internally generated variable is unique within this translator.
 ********************************************************************************/
-varref_t tempvar(const QueryLoc& loc, var_expr::var_kind kind)
+varref_t create_temp_var(const QueryLoc& loc, var_expr::var_kind kind)
 {
-  xqpString lname(tempname());
-  return create_var(loc, lname, kind);
+  std::string localName = "$$temp" + to_string(theTempVarCounter++);
+
+  store::Item_t qnameItem;
+  GENV_ITEMFACTORY->createQName(qnameItem, "", "", localName.c_str());
+
+  return create_var(loc, qnameItem, kind);
 }
 
 
 /*******************************************************************************
   Create a binding in the given sctx between a var qname item and a var_expr.
-  Raise error if a var with the same expanded qname item is already in the given
+  Raise error if a var with the same expanded qname is already in the given
   sctx obj.
 ********************************************************************************/
 void bind_var(var_expr_t e, static_context* sctx) 
@@ -1367,7 +1464,7 @@ void bind_var(var_expr_t e, static_context* sctx)
 ********************************************************************************/
 var_expr_t bind_var(
     const QueryLoc& loc,
-    string varname,
+    store::Item* varname,
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
@@ -1377,43 +1474,21 @@ var_expr_t bind_var(
 }
 
 
+/*******************************************************************************
+  Create a var_expr for a variable with a given qname, kind, and type. Then,
+  create a binding in the given sctx between the var qname item and the var_expr.
+  Raise error if a var with the same expanded qname item is already in the
+  given sctx obj or if the expansion of the given qname to a qname item fails.
+********************************************************************************/
 var_expr_t bind_var(
     const QueryLoc& loc,
-    store::Item* varname,
+    const QName* qname,
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  varref_t e = create_var(loc, varname, kind, type);
+  var_expr_t e = create_var(loc, qname, kind, type);
   bind_var(e, sctx_p);
   return e;
-}
-
-
-/*******************************************************************************
-  Create a var_expr for a variable with a given qname item, kind, and type.
-  Then, create a binding in the given sctx between the var qname item and the
-  var_expr. Finally, push the var_expr to theNodeStack. Raise error if a var
-  with the same expanded qname is already in the given context.
-********************************************************************************/
-varref_t bind_var_and_push(
-    const QueryLoc& loc,
-    store::Item* varname,
-    var_expr::var_kind kind,
-    xqtref_t type = NULL) 
-{
-  var_expr_t e = bind_var(loc, varname, kind, type);
-  push_nodestack(e.getp());
-  return e;
-}
-
-
-varref_t bind_var_and_push(
-    const QueryLoc& loc,
-    string varname,
-    var_expr::var_kind kind,
-    xqtref_t type = NULL) 
-{
-  return bind_var_and_push(loc, sctx_p->lookup_var_qname(varname, loc), kind, type);
 }
 
 
@@ -1424,7 +1499,7 @@ varref_t bind_var_and_push(
 
   The first method raises error if var not found, the other 2 methods return NULL.
 ********************************************************************************/
-varref_t lookup_ctx_var(xqp_string name, const QueryLoc& loc) 
+var_expr_t lookup_ctx_var(xqp_string name, const QueryLoc& loc) 
 {
   expr* ve = sctx_p->lookup_var(name);
   if (ve != NULL)
@@ -1456,44 +1531,41 @@ var_expr* lookup_var(const store::Item* varname)
 
 
 /*******************************************************************************
-  Create a binding in the given sctx obj between the given (function qname item,
-  arity) pair and the given function object. Raise error if such a binding
-  exists already in the sctx.
-********************************************************************************/
-void bind_udf(
-    store::Item_t qname,
-    function* f,
-    int nargs,
-    static_context* sctx,
-    const QueryLoc& loc) 
-{
-  if (! sctx->bind_fn(qname, f, nargs))
-  {
-    ZORBA_ERROR_LOC_PARAM(XQST0034, loc,
-                          qname->getStringValue(),
-                          loc.getFilenameBegin());
-  }
-}
-  
-
-/*******************************************************************************
   Create a binding between the given (function qname item, arity) pair and the
   given function object. The binding is created in (a) the current sctx of this 
   module, (b) the query-level sctx that gathers all declaration of functions and
   variables from all modules, and (c) the export_sctx (if any). Raise error if 
   such a binding exists already in any of these sctxs.
 ********************************************************************************/
-void bind_udf(store::Item_t qname, function* f, int nargs, const QueryLoc& loc) 
+void bind_fn(
+    store::Item_t& qnameItem,
+    function_t& f,
+    ulong nargs, 
+    const QueryLoc& loc) 
 {
-  bind_udf(qname, f, nargs, sctx_p, loc);
-  bind_udf(qname, f, nargs, theModulesInfo->globals.get (), loc);
+  sctx_p->bind_fn(qnameItem, f, nargs, loc);
+
+  theModulesInfo->globals->bind_fn(qnameItem, f, nargs, loc);
 
   if (export_sctx != NULL) 
   {
-    bind_udf(qname, f, nargs, export_sctx, loc);
+    export_sctx->bind_fn(qnameItem, f, nargs, loc);
   }
 }
   
+
+/*******************************************************************************
+  Lookup in the sctx the function object for a function with a given prefix
+  local name and arity. Return NULL if such a function is not found 
+********************************************************************************/
+function* lookup_fn(const QName* qname, ulong arity, const QueryLoc& loc)
+{
+  store::Item_t qnameItem;
+  expand_function_qname(qnameItem, qname, loc);
+
+  return sctx_p->lookup_fn(qnameItem, arity);
+}
+
 
 /*******************************************************************************
   Create an fn:concatenate() expr
@@ -1708,9 +1780,12 @@ let_clause_t wrap_in_letclause(expr_t e, var_expr_t lv)
   local sctx obj. Then, create a LET clause for this new var_expr, with the given
   expr "e" as its defining expression.
 ********************************************************************************/
-let_clause_t wrap_in_letclause(expr_t e, const QueryLoc& loc, string name) 
+let_clause_t wrap_in_letclause(
+    expr_t e, 
+    const QueryLoc& loc,
+    const QName* qname)
 {
-  return wrap_in_letclause(e, bind_var(loc, name, var_expr::let_var));
+  return wrap_in_letclause(e, bind_var(loc, qname, var_expr::let_var));
 }
 
 
@@ -1721,7 +1796,7 @@ let_clause_t wrap_in_letclause(expr_t e, const QueryLoc& loc, string name)
 ********************************************************************************/
 let_clause_t wrap_in_letclause(expr_t e) 
 {
-  return wrap_in_letclause(e, tempvar(e->get_loc(), var_expr::let_var));
+  return wrap_in_letclause(e, create_temp_var(e->get_loc(), var_expr::let_var));
 }
 
 
@@ -1729,7 +1804,7 @@ let_clause_t wrap_in_letclause(expr_t e)
   Create a FOR clause for the given FOR variable "fv" and its associated POS var
   "pv" (pv may be NULL). Use the given expr "e" as the defining expr for "fv". 
 ********************************************************************************/
-for_clause_t wrap_in_forclause(expr_t e, varref_t fv, varref_t pv) 
+for_clause_t wrap_in_forclause(expr_t e, var_expr_t fv, var_expr_t pv) 
 {
   assert(fv->get_kind () == var_expr::for_var);
   if (pv != NULL)
@@ -1750,12 +1825,12 @@ for_clause_t wrap_in_forclause(expr_t e, varref_t fv, varref_t pv)
 for_clause_t wrap_in_forclause(
     expr_t expr,
     const QueryLoc& loc,
-    string fv_name,
-    string pv_name)
+    const QName* fv_qname,
+    const QName* pv_qname)
 {
   return wrap_in_forclause(expr,
-                           bind_var(loc, fv_name, var_expr::for_var),
-                           bind_var(loc, pv_name, var_expr::pos_var));
+                           bind_var(loc, fv_qname, var_expr::for_var),
+                           bind_var(loc, pv_qname, var_expr::pos_var));
 }
 
 
@@ -1766,10 +1841,12 @@ for_clause_t wrap_in_forclause(
 ********************************************************************************/
 for_clause_t wrap_in_forclause(expr_t expr, bool add_posvar) 
 {
-  varref_t fv = tempvar(expr->get_loc(), var_expr::for_var);
+  var_expr_t fv = create_temp_var(expr->get_loc(), var_expr::for_var);
 
-  varref_t pv = (add_posvar ? tempvar(expr->get_loc(), var_expr::pos_var) : 
-                                varref_t (NULL));
+  var_expr_t pv = (add_posvar ?
+                   create_temp_var(expr->get_loc(), var_expr::pos_var) : 
+                   varref_t (NULL));
+
   return wrap_in_forclause(expr, fv, pv);
 }
 
@@ -1954,7 +2031,7 @@ void collect_flwor_vars (
       const VarInDeclList &lV = *(static_cast<const ForClause *>(&c)->get_vardecl_list());
       for (int j =  lV.size() - 1; j >= 0; --j) 
       {
-        vars.insert (lookup_var (lV[j]->get_varname()));
+        vars.insert(lookup_var(lV[j]->get_name()->get_qname()));
       }
     }
     else if (typeid (c) == typeid (LetClause)) 
@@ -1962,13 +2039,13 @@ void collect_flwor_vars (
       const VarGetsDeclList &lV = *(static_cast<const LetClause *>(&c)->get_vardecl_list());
       for (int j =  lV.size() - 1; j >= 0; --j) 
       {
-        vars.insert(lookup_var(lV[j]->get_varname()));
+        vars.insert(lookup_var(lV[j]->get_name()->get_qname()));
       }
     }
     else if (typeid(c) == typeid(WindowClause)) 
     {
       const WindowClause& wc = *static_cast<const WindowClause *>(&c);
-      vars.insert(lookup_var(wc.get_var()->get_varname()));
+      vars.insert(lookup_var(wc.get_var()->get_name()->get_qname()));
       for (int j = 1; j >= 0; j--) 
       {
         const FLWORWinCond* cond = &*wc[j];
@@ -1977,23 +2054,23 @@ void collect_flwor_vars (
           const WindowVars* wv = &*cond->get_winvars();
           if (wv != NULL) 
           {
-            if (! wv->get_next ().empty ())
-              vars.insert (lookup_var (wv->get_next()));
-            if (! wv->get_prev ().empty ())
-              vars.insert (lookup_var (wv->get_prev()));
-            if (! wv->get_curr ().empty ())
-              vars.insert (lookup_var (wv->get_curr()));
-            if (wv->get_posvar () != NULL)
-              vars.insert(lookup_var(wv->get_posvar()->get_varname()));
+            if (wv->get_next())
+              vars.insert(lookup_var(wv->get_next()->get_qname()));
+            if (wv->get_prev())
+              vars.insert(lookup_var(wv->get_prev()->get_qname()));
+            if (wv->get_curr())
+              vars.insert(lookup_var(wv->get_curr()->get_qname()));
+            if (wv->get_posvar() != NULL)
+              vars.insert(lookup_var(wv->get_posvar()->get_name()->get_qname()));
           }
         }
       }
     }
-    else if (typeid (c) == typeid (CountClause)) 
+    else if (typeid(c) == typeid(CountClause)) 
     {
-      vars.insert(lookup_var(static_cast<const CountClause *>(&c)->get_varname()));
+      vars.insert(lookup_var(static_cast<const CountClause*>(&c)->get_varname()->get_qname()));
     }
-    else if (typeid (c) == typeid (OrderByClause))
+    else if (typeid(c) == typeid(OrderByClause))
     {
       // Nothing to do; orderby does not define any vars.
     }
@@ -2103,7 +2180,7 @@ void declare_var(const global_binding& b, std::vector<expr_t>& stmts)
   expr_t qnameExpr = new const_expr(sctxid,
                                     loc,
                                     var->get_name()->getStringValue()->equals(&dot) ?
-                                    "." : dynamic_context::var_key(&*var));
+                                    "." : dynamic_context::var_key(&*var).c_str());
 
   expr_t declExpr = new fo_expr(sctxid, loc, var_decl, qnameExpr->clone());
   
@@ -2280,13 +2357,13 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   theModulePrefix = v.get_prefix();
   theModuleNamespace = v.get_target_namespace();
 
-  if (theModuleNamespace.empty())
-    ZORBA_ERROR_LOC (XQST0088, loc);
+  if (theModuleNamespace->empty())
+    ZORBA_ERROR_LOC(XQST0088, loc);
 
-  if (theModulePrefix == "xml" || theModulePrefix == "xmlns")
-    ZORBA_ERROR_LOC (XQST0070, loc);
+  if (*theModulePrefix == "xml" || *theModulePrefix == "xmlns")
+    ZORBA_ERROR_LOC(XQST0070, loc);
 
-  sctx_p->bind_ns(theModulePrefix, theModuleNamespace);
+  sctx_p->bind_ns(theModulePrefix, theModuleNamespace, loc);
 
   static_context_t lTmpCtx;
   bool found = theModulesInfo->mod_sctx_map.get(sctx_p->entity_retrieval_url(), lTmpCtx);
@@ -2450,24 +2527,15 @@ void* begin_visit(const DecimalFormatNode& v)
   // cout << "Got DecimalFormat declaration: " << std::endl;
   TRACE_VISIT();
 
-  store::Item_t qname;
+  store::Item_t qnameItem;
+
   if (!v.is_default)
   {
-    string::size_type pos = v.format_name.find(":");
-
-    xqpStringStore_t prefix =
-    new xqpStringStore(v.format_name.substr(0, pos == string::npos ? 0 : pos));
-
-    string name = v.format_name.substr(pos == string::npos ? 0 : pos+1);
-
-    xqpStringStore_t ns;
-    ns_ctx->findBinding(prefix, ns);
-
-    GENV_ITEMFACTORY->createQName(qname, ns->c_str(), prefix->c_str(), name.c_str());
+    expand_no_default_qname(qnameItem, v.format_name, loc);
   }
   
-  DecimalFormat_t df = new DecimalFormat(v.is_default, qname, v.param_list);
-  sctx_p->add_decimal_format(df);
+  DecimalFormat_t df = new DecimalFormat(v.is_default, qnameItem, v.param_list);
+  sctx_p->add_decimal_format(df, loc);
     
   return no_state;
 }
@@ -2526,39 +2594,42 @@ void end_visit (const BaseURIDecl& v, void* /*visit_state*/)
   [31] ConstructionDecl ::= DECLARE_CONSTRUCTION  PRESERVE
                             DECLARE_CONSTRUCTION  STRIP
 ********************************************************************************/
-void *begin_visit (const ConstructionDecl& v) 
+void* begin_visit(const ConstructionDecl& v) 
 {
-  TRACE_VISIT ();
-  CHK_SINGLE_DECL (hadConstrDecl, XQST0067);
+  TRACE_VISIT();
+
+  CHK_SINGLE_DECL(hadConstrDecl, XQST0067);
   sctx_p->set_construction_mode(v.get_mode());
   return NULL;
 }
 
 void end_visit (const ConstructionDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   [10] NamespaceDecl ::= ::= DECLARE_NAMESPACE  NCNAME  EQ  URI_LITERAL
 ********************************************************************************/
-void *begin_visit (const NamespaceDecl& v) 
+void* begin_visit(const NamespaceDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
-  xqp_string pre = v.get_prefix (), uri = v.get_uri ();
-  if (pre == "xml" || pre == "xmlns" || uri == XML_NS)
-    ZORBA_ERROR_LOC (XQST0070, loc);
+  xqpStringStore_t pre = v.get_prefix();
+  xqpStringStore_t uri = v.get_uri();
 
-  sctx_p->bind_ns (pre, uri);
+  if (*pre == "xml" || *pre == "xmlns" || *uri == XML_NS)
+    ZORBA_ERROR_LOC(XQST0070, loc);
+
+  sctx_p->bind_ns(pre, uri, loc);
 
   return NULL;
 }
 
-void end_visit (const NamespaceDecl& v, void* /*visit_state*/) 
+void end_visit(const NamespaceDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -2573,11 +2644,10 @@ void* begin_visit(DefaultNamespaceDecl const& v)
   switch (v.get_mode()) 
   {
   case ParseConstants::ns_element_default:
-    sctx_p->set_default_elem_type_ns(v.get_default_namespace());
+    sctx_p->set_default_elem_type_ns(v.get_default_namespace(), loc);
     break;
   case ParseConstants::ns_function_default:
-    sctx_p->set_default_function_ns(v.get_default_namespace().c_str(),
-                                    &v.get_location());
+    sctx_p->set_default_function_ns(v.get_default_namespace(), loc);
     break;
   }
   return NULL;
@@ -2598,62 +2668,59 @@ void end_visit(const DefaultNamespaceDecl& v, void* /*visit_state*/)
   [23] SchemaImport ::= "import" "schema" SchemaPrefix? URILiteral
                         ("at"  URILiteralList)?
 ********************************************************************************/
-void *begin_visit (const SchemaImport& v) 
+void* begin_visit(const SchemaImport& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
 #ifndef ZORBA_NO_XMLSCHEMA
 
-  SchemaPrefix* prefix = &*v.get_prefix();
-  string target_ns = v.get_uri();
+  const SchemaPrefix* prefix = v.get_prefix();
+  xqpStringStore_t targetNS = v.get_uri();
 
-  if (! theImportedSchemas.insert(target_ns).second)
-    ZORBA_ERROR_LOC (XQST0058, loc);
+  if (! theImportedSchemas.insert(targetNS->str()).second)
+    ZORBA_ERROR_LOC(XQST0058, loc);
 
   if (prefix != NULL) 
   {
-    if (!prefix->get_default_bit() && target_ns.size() == 0)
+    if (!prefix->get_default_bit() && targetNS->empty())
+    {
       ZORBA_ERROR_LOC_PARAM(XQST0057, loc,
                             "(no target namespace uri specified)",
-                            target_ns);
+                            targetNS->c_str());
+    }
 
-    string pfx = prefix->get_prefix();
+    xqpStringStore_t pfx = prefix->get_prefix();
 
-    if (pfx == "xml" || pfx == "xmlns")
-      ZORBA_ERROR_LOC (XQST0070, loc);
+    if (*pfx == "xml" || *pfx == "xmlns")
+      ZORBA_ERROR_LOC(XQST0070, loc);
 
     if (prefix->get_default_bit()) 
-      sctx_p->set_default_elem_type_ns (target_ns);
+      sctx_p->set_default_elem_type_ns(targetNS, loc);
 
-    if (! pfx.empty())
-      sctx_p->bind_ns (pfx, target_ns, XQST0033);
+    if (! pfx->empty())
+      sctx_p->bind_ns(pfx, targetNS, loc, XQST0033);
   }
 
-  store::Item_t lTargetNamespace = NULL;
-  ITEM_FACTORY->createAnyURI(lTargetNamespace, target_ns.c_str());
-  ZORBA_ASSERT(lTargetNamespace != NULL);
+  store::Item_t targetNSItem = NULL;
+  xqpStringStore_t tmp = targetNS;
+  ITEM_FACTORY->createAnyURI(targetNSItem, tmp);
+  ZORBA_ASSERT(targetNSItem != NULL);
 
-  rchandle<URILiteralList> atlist = v.get_at_list();
-  std::vector<store::Item_t> lAtURIList;
+  const URILiteralList* atlist = v.get_at_list();
+  std::vector<store::Item_t> atUriItemList;
 
   if (atlist != NULL) 
   {
-    for (int i = 0; i < atlist->size(); ++i) 
+    for (ulong i = 0; i < atlist->size(); ++i) 
     {
       // If current uri is relative, turn it to an absolute one, using the
       // base uri from the sctx.
-      string at = sctx_p->resolve_relative_uri((*atlist)[i], xqpString());
+      string at = sctx_p->resolve_relative_uri((*atlist)[i].getp(), xqpString());
 
-      store::Item_t lAtURIItem;
-      ITEM_FACTORY->createAnyURI(lAtURIItem, at.c_str());
-      ZORBA_ASSERT(lAtURIItem != NULL);
-      lAtURIList.push_back(lAtURIItem);
-#if 0
-      string pfx = prefix == NULL ? "" : prefix->get_prefix();
-      cout << "SchemaImport: " << pfx << " : " << target_ns
-           << " @ " << at << endl;
-      cout << " Context: " << CTXTS << "\n";
-#endif
+      store::Item_t atUriItem;
+      ITEM_FACTORY->createAnyURI(atUriItem, at.c_str());
+      ZORBA_ASSERT(atUriItem != NULL);
+      atUriItemList.push_back(atUriItem);
     }
   }
   
@@ -2662,8 +2729,7 @@ void *begin_visit (const SchemaImport& v)
   try 
   {
     std::string lSchemaUri;
-    lSchemaUri = lSchemaResolver->resolve(lTargetNamespace, sctx_p,
-      lAtURIList);
+    lSchemaUri = lSchemaResolver->resolve(targetNSItem, sctx_p, atUriItemList);
 
     // Create a Schema obj and register it in the typemanger, if the typemanager
     // does not have a schema obj already
@@ -2672,8 +2738,9 @@ void *begin_visit (const SchemaImport& v)
 
     // Make Xerxes load and parse the xsd file and create a Xerces
     // representaton of it.
-    schema_p->registerXSD(lTargetNamespace->getStringValue()->c_str(),
-      lSchemaUri, loc);
+    schema_p->registerXSD(targetNSItem->getStringValue()->c_str(),
+                          lSchemaUri,
+                          loc);
   }
   catch (error::ZorbaError& e) 
   {
@@ -2697,30 +2764,30 @@ void end_visit (const SchemaImport& v, void* /*visit_state*/)
 /******************************************************************************
   [23a] URLLiteralList ::= URI_LITERAL | URILiteralList  COMMA  URI_LITERAL
 ********************************************************************************/
-void *begin_visit (const URILiteralList& v) 
+void* begin_visit(const URILiteralList& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const URILiteralList& v, void* /*visit_state*/) 
+void end_visit(const URILiteralList& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /******************************************************************************
   [24] SchemaPrefix ::=	("namespace" NCName "=") | ("default" "element" "namespace")
 ********************************************************************************/
-void *begin_visit (const SchemaPrefix& v) 
+void* begin_visit(const SchemaPrefix& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const SchemaPrefix& v, void* /*visit_state*/) 
+void end_visit(const SchemaPrefix& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -2739,46 +2806,43 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  std::string pfx = v.get_prefix();
-  std::string targetNamespace = v.get_uri();
+  xqpStringStore_t pfx = v.get_prefix();
+  xqpStringStore_t targetNS = v.get_uri();
 
   // The namespace prefix specified in a module import must not be xml or xmlns
   // [err:XQST0070]
-  if (pfx == "xml" || pfx == "xmlns")
+  if (pfx != NULL && (*pfx == "xml" || *pfx == "xmlns"))
     ZORBA_ERROR_LOC(XQST0070, loc);
 
   // The first URILiteral in a module import must be of nonzero length [err:XQST0088]
-  if (targetNamespace.empty())
+  if (targetNS->empty())
     ZORBA_ERROR_LOC(XQST0088, loc);
 
   // It is a static error [err:XQST0047] if more than one module import in a
   // Prolog specifies the same target namespace
-  if (! theImportedModules.insert(targetNamespace).second)
+  if (! theImportedModules.insert(targetNS->str()).second)
     ZORBA_ERROR_LOC(XQST0047, loc);
 
   // The namespace prefix specified in a module import must not be the same as
   // any namespace prefix bound in the same module by another module import, 
   // a schema import, a namespace declaration, or a module declaration with a
   // different target namespace [err:XQST0033].
-  if (! (pfx.empty() ||
-         (pfx == theModulePrefix && targetNamespace == theModuleNamespace) ) ) 
+  if (pfx != NULL &&
+      ! pfx->empty() && 
+      ! (pfx->byteEqual(theModulePrefix) &&
+         targetNS->byteEqual(theModuleNamespace)) ) 
   {
-    try 
-    {
-      sctx_p->bind_ns(pfx, targetNamespace, XQST0033);
-    }
-    catch (error::ZorbaError& e)
-    {
-      // rethrow with current location
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-    }
+    sctx_p->bind_ns(pfx, targetNS, loc, XQST0033);
   }
 
-  rchandle<URILiteralList> ats = v.get_uri_list();
+  const URILiteralList* atlist = v.get_at_list();
 
   // Handle pre-defined modules
-  if (ats == NULL && theBuiltInModules.find(targetNamespace) != theBuiltInModules.end())
+  if (atlist == NULL &&
+      theBuiltInModules.find(targetNS->str()) != theBuiltInModules.end())
+  {
     return;
+  }
 
   InternalModuleURIResolver* standardModuleResolver = GENV.getModuleURIResolver();
 
@@ -2791,15 +2855,15 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   // are listed there are converted to absolute ones, using the base uri from the
   // sctx.
   vector<std::string> compURIs;
-  if (ats == NULL || ats->size() == 0)
+  if (atlist == NULL || atlist->size() == 0)
   {
-    standardModuleResolver->resolveTargetNamespace(targetNamespace, *sctx_p, compURIs);
+    standardModuleResolver->resolveTargetNamespace(targetNS->str(), *sctx_p, compURIs);
   }
   else
   {
-    for (int i = 0; i < ats->size(); ++i) 
+    for (ulong i = 0; i < atlist->size(); ++i) 
     {
-      compURIs.push_back(sctx_p->resolve_relative_uri((*ats)[i], xqp_string()).getStore()->str());
+      compURIs.push_back(sctx_p->resolve_relative_uri((*atlist)[i].getp(), xqp_string()).getStore()->str());
     }
   }
 
@@ -2810,26 +2874,27 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
        ++ite) 
   {
     // Get the location uri for the module to import.
-    // out of it.
     const std::string& compURI = *ite;
 
     // Make sure that there are no cycles in a chain of module imports.
     set<string> mod_stk1 = theModulesStack;
     if (! mod_stk1.insert(compURI).second)
-      ZORBA_ERROR_LOC (XQST0073, loc);
+      ZORBA_ERROR_LOC(XQST0073, loc);
     
-    string imported_ns; // the target namespace of the imported module
-    static_context_t imported_sctx = NULL;
+    // importedNS is the target namespace of the imported module, as declared
+    // inside the module itself.
+    string importedNS;
+    static_context_t importedSctx = NULL;
 
     // Check whether we have already imported a module component from the current 
     // uri. If so, check that the target ns of what we imported before is the
     // same as what we are trying to import now.
-    if (theModulesInfo->mod_ns_map.get(compURI, imported_ns)) 
+    if (theModulesInfo->mod_ns_map.get(compURI, importedNS)) 
     {
-      if (imported_ns != targetNamespace)
-        ZORBA_ERROR_LOC_PARAM (XQST0059, loc, compURI, targetNamespace);
+      if (importedNS != targetNS->str())
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS->c_str());
 
-      bool found = theModulesInfo->mod_sctx_map.get(compURI, imported_sctx);
+      bool found = theModulesInfo->mod_sctx_map.get(compURI, importedSctx);
       ZORBA_ASSERT(found);
     } 
 
@@ -2848,19 +2913,19 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       if (modfile.get() == NULL || ! *modfile) 
       {
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNamespace);
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS->c_str());
       }
 
       // Get the query-level sctx. This is the user-specified sctx (if any) or
       // the zorba default (root) sctx (if no user-specified sctx).
-      static_context_t independent_sctx = 
+      static_context_t independentSctx = 
       static_cast<static_context *>(theCCB->theRootSctx->get_parent());
 
       // Create the root sctx for the imported module as a child of the
       // query-level sctx. Register this sctx in the query-level sctx map.
-      static_context* moduleRootSctx = independent_sctx->create_child_context();
+      static_context* moduleRootSctx = independentSctx->create_child_context();
       moduleRootSctx->set_entity_retrieval_url(compURI);
-      moduleRootSctx->set_module_namespace(targetNamespace);
+      moduleRootSctx->set_module_namespace(targetNS->str());
       short moduleRootSctxId = theCCB->theSctxMap->size() + 1;
       (*theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
@@ -2868,22 +2933,26 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // variable and function declarations that appear in its prolog. After the
       // translation of the imported module is done, this sctx will be merged
       // with the sctx of the importing module.
-      imported_sctx = independent_sctx->create_child_context();
-      imported_sctx->set_module_namespace(imported_ns);
+      importedSctx = independentSctx->create_child_context();
+      importedSctx->set_module_namespace(targetNS->str());
 
       // Register the imported_sctx in theModulesInfo->mod_sctx_map so that it is
       // accessible by both the importing and the imported modules.
-      theModulesInfo->mod_sctx_map.put(compURI, imported_sctx);
+      theModulesInfo->mod_sctx_map.put(compURI, importedSctx);
 
       // Parse the imported module
       XQueryCompiler xqc(theCCB);
-      xqpString lFileName(compURI);
+      xqpStringStore_t fileURL;
       if (compURL.size() != 0) 
       {
-        lFileName = compURL.c_str();
+        fileURL = new xqpStringStore(compURL);
+      }
+      else
+      {
+        fileURL = new xqpStringStore(compURI);
       }
 
-      rchandle<parsenode> ast = xqc.parse(*modfile, lFileName);
+      rchandle<parsenode> ast = xqc.parse(*modfile, fileURL);
 
       // Get the target namespace that appears in the module declaration
       // of the imported module and check that this ns is the same as the
@@ -2891,18 +2960,19 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Also make sure that the imported module is a library module
       LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*ast);
       if (mod_ast == NULL)
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNamespace);
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS->c_str());
 
-      imported_ns = mod_ast->get_decl()->get_target_namespace();
+      importedNS = mod_ast->get_decl()->get_target_namespace()->str();
       
-      if (imported_ns.empty())
+      if (importedNS.empty())
         ZORBA_ERROR_LOC(XQST0088, loc);
 
-      if (imported_ns != targetNamespace)
-        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNamespace);
+      if (importedNS != targetNS->str())
+        ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS->c_str());
 
       // translate the imported module
-      translate_aux(*ast,
+      translate_aux(theRootTranslator,
+                    *ast,
                     moduleRootSctx, 
                     moduleRootSctxId,
                     theModulesInfo,
@@ -2911,14 +2981,14 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       // Register the mapping between the current location uri and the
       // target namespace.
-      theModulesInfo->mod_ns_map.put(compURI, imported_ns);
+      theModulesInfo->mod_ns_map.put(compURI, importedNS);
 
       // If we compile in debug mode, we add the namespace uri into a map, that
       // allows the debugger to set breakpoints at a namespace uri and line
       // number
       if (theCCB->theDebuggerCommons) 
       {
-        theCCB->theDebuggerCommons->addModuleUriMapping(imported_ns,
+        theCCB->theDebuggerCommons->addModuleUriMapping(importedNS,
                                                         compURL.c_str());
       }
     }
@@ -2927,7 +2997,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // current module. Note: We catch duplicate functions / vars in 
     // theModulesInfo->globals. We can safely ignore the return value. We might even
     // be able to assert() here (not sure though).
-    sctx_p->import_module(imported_sctx.getp(), loc);
+    sctx_p->import_module(importedSctx.getp(), loc);
 
   } // for (vector<std::string>::iterator ite = lURIs.begin();
 }
@@ -3002,30 +3072,31 @@ void* begin_visit(const VFO_DeclList& v)
     }
 
     // Expand the function qname (error is raised if qname resolution fails).
-    store::Item_t qname = sctx_p->lookup_fn_qname(func_decl->get_name()->get_prefix(),
-                                                  func_decl->get_name()->get_localname(),
-                                                  func_decl->get_name()->get_location());
+    const QName* fname = func_decl->get_name().getp();
+    store::Item_t qnameItem;
+    expand_function_qname(qnameItem, fname, fname->get_location());
+
+    const xqpStringStore* ns = qnameItem->getNamespace();
+
+    // function must be declared in a non-NULL namespace
+    if(ns->empty())
+      ZORBA_ERROR_LOC (XQST0060, loc);
+
+    // Function must not be in any of the reserved namespaces
+    if (*ns == XQUERY_FN_NS || *ns == XML_NS || *ns == XML_SCHEMA_NS || *ns == XSI_NS)
     {
-      xqp_string ns = qname->getNamespace();
-
-      // function must be declared in a non-NULL namespace
-      if(ns.empty())
-        ZORBA_ERROR_LOC (XQST0060, loc);
-
-      // Function must not be in any of the reserved namespaces
-      if (ns == XQUERY_FN_NS || ns == XML_NS || ns == XML_SCHEMA_NS || ns == XSI_NS)
-        ZORBA_ERROR_LOC_PARAM(XQST0045, func_decl->get_location(),
-                              qname->getLocalName()->str(), "");
-
-      // In a module, all exports must be inside the target ns
-      if (! theModuleNamespace.empty() && ns != theModuleNamespace)
-        ZORBA_ERROR_LOC(XQST0048, loc);
+      ZORBA_ERROR_LOC_PARAM(XQST0045, func_decl->get_location(),
+                            qnameItem->getLocalName()->str(), "");
     }
 
-    // Create the function object.
-    signature sig(qname, arg_types, return_type);
+    // In a module, all exports must be inside the target ns
+    if (! theModuleNamespace->empty() && *ns != *theModuleNamespace)
+      ZORBA_ERROR_LOC(XQST0048, loc);
 
-    rchandle<function> f;
+    // Create the function object.
+    signature sig(qnameItem, arg_types, return_type);
+
+    function_t f;
 
     switch(func_decl->get_type()) 
     {
@@ -3034,9 +3105,8 @@ void* begin_visit(const VFO_DeclList& v)
     case ParseConstants::fn_extern_sequential:
     {
       // 1. lookup if the function is a built-in function
-      f = sctx_p->lookup_resolved_fn(qname->getNamespace(),
-                                     qname->getLocalName(),
-                                     nargs);
+      f = sctx_p->lookup_fn(qnameItem, nargs);
+
       if (f.getp() != 0) 
       {
         // in debug mode, we make sure that the types of the functions
@@ -3048,8 +3118,8 @@ void* begin_visit(const VFO_DeclList& v)
           ZORBA_ERROR_LOC_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
               loc,
               "The signature of the (registered) function ("
-              << qname->getNamespace()->str() 
-              << ":" << qname->getLocalName()->str()
+              << qnameItem->getNamespace()->str() 
+              << ":" << qnameItem->getLocalName()->str()
               << ") does not match the signature of the function that is "
               << "declared in the module.");
         }
@@ -3064,13 +3134,12 @@ void* begin_visit(const VFO_DeclList& v)
       StatelessExternalFunction* ef = 0;
       try 
       {
-        ef = sctx_p->lookup_stateless_external_function(qname->getNamespace(),
-                                                        qname->getLocalName());
+        ef = sctx_p->lookup_stateless_external_function(qnameItem->getNamespace(),
+                                                        qnameItem->getLocalName());
       }
       catch (error::ZorbaError& e) 
       {
-        ZORBA_ERROR_LOC_DESC(e.theErrorCode,
-                             loc, e.theDescription);
+        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
       // The external function must be registered already in the static context
       // via the StaticContextImpl::registerExternalModule() user api.
@@ -3078,15 +3147,18 @@ void* begin_visit(const VFO_DeclList& v)
       {
         ZORBA_ERROR_LOC_PARAM(XQP0028_FUNCTION_IMPL_NOT_FOUND,
                               loc,
-                              qname->getNamespace()->str(),
-                              qname->getLocalName()->str());
+                              qnameItem->getNamespace()->str(),
+                              qnameItem->getLocalName()->str());
       }
 
       ZORBA_ASSERT(ef != NULL);
 
       bool updating = (func_decl->get_type() == ParseConstants::fn_extern_update);
 
-      f = new stateless_external_function_adapter(sig, ef, updating, qname->getPrefix());
+      f = new stateless_external_function_adapter(sig,
+                                                  ef,
+                                                  updating,
+                                                  qnameItem->getPrefix());
       break;
     }
     case ParseConstants::fn_sequential:
@@ -3107,7 +3179,7 @@ void* begin_visit(const VFO_DeclList& v)
     // Create bindings between (function qname item, arity) and function obj
     // in the current sctx of this module and, if this is a lib module, in its
     // export sctx as well.
-    bind_udf(qname, f, nargs, loc);
+    bind_fn(qnameItem, f, nargs, loc);
   }
 
   return no_state;
@@ -3131,10 +3203,11 @@ void* begin_visit(const OptionDecl& v)
 
   //check if namespace for option is valid
   rchandle<QName> qn = v.get_qname();
-  xqpString option_ns = sctx_p->lookup_ns(qn->get_prefix(), loc);
+  xqpStringStore_t option_ns;
+  sctx_p->lookup_ns(option_ns, qn->get_prefix(), loc);
 
   // ignore if an error occurs
-  sctx_p->bind_option(option_ns, qn->get_localname(), v.get_val());
+  sctx_p->bind_option(option_ns.getp(), qn->get_localname().getp(), v.get_val());
 
   return no_state;
 }
@@ -3167,7 +3240,8 @@ void* begin_visit(const VarDecl& v)
 {
   TRACE_VISIT();
 
-  store::Item_t qnameItem = sctx_p->lookup_var_qname(v.get_varname(), loc);
+  store::Item_t qnameItem;
+  expand_no_default_qname(qnameItem, v.get_name(), loc);
   var_expr_t ve;
 
   if (v.is_global()) 
@@ -3217,9 +3291,11 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
   if (v.is_global()) 
   {
     // All vars declared in a module must be in the same namespace as the module
-    if (! theModuleNamespace.empty() &&
-        ve->get_name()->getNamespace()->str() != theModuleNamespace)
+    if (! theModuleNamespace->empty() &&
+        *ve->get_name()->getNamespace() != *theModuleNamespace)
+    {
       ZORBA_ERROR_LOC(XQST0048, loc);
+    }
 
     // Make sure that there is no other prolog var with the same name in any of
     // modules transalted so far.
@@ -3268,8 +3344,9 @@ void end_visit(const CtxItemDecl& v, void* /*visit_state*/)
   if (v.get_type() != NULL || v.get_expr() != NULL) 
   {
     store::Item_t dotname;
-    varref_t var = create_var (loc, ".", var_expr::prolog_var, ctx_item_type);
-    global_binding b (var, ctx_item_default, true);
+    GENV_ITEMFACTORY->createQName(dotname, "", "", ".");
+    var_expr_t var = create_var(loc, dotname, var_expr::prolog_var, ctx_item_type);
+    global_binding b(var, ctx_item_default, true);
 
     declare_var(b, theModulesInfo->init_exprs);
   }
@@ -3312,9 +3389,7 @@ void* begin_visit(const FunctionDecl& v)
 
   // Get function obj out of function qname (will raise error if prefix in qname
   // is not bound to a namespace).
-  function* f = sctx_p->lookup_fn(v.get_name()->get_prefix(),
-                                  v.get_name()->get_localname(),
-                                  v.get_param_count());
+  function* f = lookup_fn(v.get_name(), v.get_param_count(), loc);
 
   thePrologGraph.addFuncVertex(f);
   theCurrentPrologVFDecl = PrologGraphVertex(f);
@@ -3409,9 +3484,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     } 
 
     user_function* udf = dynamic_cast<user_function *>(
-                         LOOKUP_FN(v.get_name()->get_prefix(),
-                                   v.get_name()->get_localname(),
-                                   nargs));
+                         lookup_fn(v.get_name(), nargs, loc));
     ZORBA_ASSERT(udf != NULL);
 
     // Optimize the function body. This has to be done here because
@@ -3509,10 +3582,11 @@ void end_visit(const Param& v, void* /*visit_state*/)
   const function* f = theCurrentPrologVFDecl.getFunction();
   ZORBA_ASSERT(f != NULL);
 
-  store::Item_t qname = sctx_p->lookup_qname("", v.get_name(), v.get_location());
+  store::Item_t qnameItem;
+  expand_no_default_qname(qnameItem, v.get_name(), v.get_location());
 
-  varref_t arg_var = create_var(loc, qname, var_expr::arg_var);
-  varref_t subst_var = bind_var(loc, qname, var_expr::let_var);
+  varref_t arg_var = create_var(loc, qnameItem, var_expr::arg_var);
+  varref_t subst_var = bind_var(loc, qnameItem, var_expr::let_var);
 
   let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
@@ -3560,9 +3634,8 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   const QName* lName = v.getName();
 
   // Expand the collection qname (error is raised if qname resolution fails).
-  store::Item_t lExpandedQName = sctx_p->lookup_fn_qname(lName->get_prefix(),
-                                                         lName->get_localname(),
-                                                         lName->get_location());
+  store::Item_t lExpandedQName;
+  expand_function_qname(lExpandedQName, lName, lName->get_location());
   // Get the static type of the root nodes  
   xqtref_t lNodeType;
   xqtref_t lCollectionType;
@@ -3672,9 +3745,8 @@ void* begin_visit(const IndexDecl& v)
   }
 
   // Expand the index qname (error is raised if qname resolution fails).
-  store::Item_t qnameItem = sctx_p->lookup_fn_qname(qname->get_prefix(),
-                                                    qname->get_localname(),
-                                                    qname->get_location());
+  store::Item_t qnameItem;
+  expand_function_qname(qnameItem, qname, qname->get_location());
 
   ValueIndex_t index = new ValueIndex(sctx_p, loc, qnameItem);
   index->setUnique(v.isUnique());
@@ -3757,7 +3829,9 @@ void* begin_visit(const IndexKeyList& v)
 
   index->setDomainVariable(bind_var(loc, DOT_VARNAME, var_expr::for_var));
 
-  index->setDomainPositionVariable(bind_var(loc, DOT_POS_VARNAME, var_expr::pos_var));
+  index->setDomainPositionVariable(bind_var(loc,
+                                            DOT_POS_VARNAME,
+                                            var_expr::pos_var));
 
   return no_state;
 }
@@ -3926,13 +4000,13 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     
     // "example:coll1"
     expr_t qnameStrExpr = new const_expr(sctxid(), loc, 
-                                         ic.getCollName()->get_qname() );
+                                         ic.getCollName()->get_qname());
       
-    string prefixStr = ic.getCollName()->get_prefix();
-    xqp_string uriStr = sctx_p->lookup_ns(prefixStr);
-      
+    const xqpStringStore_t& prefixStr = ic.getCollName()->get_prefix();
+    xqpStringStore_t uriStr;
+    sctx_p->lookup_ns(uriStr, prefixStr, loc);
 
-    expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
+    expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr);
       
     // fn:QName("uri", "example:coll1")
     fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
@@ -3940,9 +4014,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                       uriStrExpr, qnameStrExpr);
 
     // dc:collection(xs:QName("example:coll1"))
-    function* fn_collection = sctx_p->lookup_resolved_fn(
-        xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
-        xqp_string("collection"), 1);
+    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr_t> argColl;      
     argColl.push_back(qnameExpr.getp());
@@ -3950,8 +4022,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     
     // $x 
     const QName* varQName = ic.getCollVarName();
-    var_expr_t varExpr = bind_var(loc, varQName->get_qname(), 
-                                  var_expr::let_var, NULL);
+    var_expr_t varExpr = bind_var(loc, varQName, var_expr::let_var, NULL);
 
     // let $x := dc:collection(xs:QName("example:coll1")) 
     let_clause* lc = new let_clause(sctx_p,
@@ -4001,13 +4072,15 @@ void* begin_visit(const IntegrityConstraintDecl& v)
       dynamic_cast<const ICCollUniqueKeyCheck&>(v);
 
     // "org:employees"
-    expr_t qnameStrExpr = new const_expr(sctxid(), loc,
-                                         ic.getCollName()->get_qname() );
+    expr_t qnameStrExpr = new const_expr(sctxid(),
+                                         loc,
+                                         ic.getCollName()->get_qname());
     
-    string prefixStr = ic.getCollName()->get_prefix();
-    xqp_string uriStr = sctx_p->lookup_ns(prefixStr);
+    const xqpStringStore_t& prefixStr = ic.getCollName()->get_prefix();
+    xqpStringStore_t uriStr;
+    sctx_p->lookup_ns(uriStr, prefixStr, loc);
 
-    expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
+    expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr);
 
     // fn:QName("org-uri", "org:employees")
     fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
@@ -4015,10 +4088,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                       uriStrExpr, qnameStrExpr);
 
     // dc:collection(xs:QName("org:employees"))
-    function* fn_collection = sctx_p->lookup_resolved_fn(
-        xqp_string("http://www.zorba-xquery.com/modules/xqddf"),
-        xqp_string("collection"),
-        1);
+    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr_t> argColl;
     argColl.push_back(qnameExpr.getp());
@@ -4026,9 +4096,8 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     
     // $x 
     const QName* varQName = ic.getNodeVarName();
-    store::Item_t varItem = sctx_p->lookup_fn_qname(varQName->get_prefix(),
-                                                    varQName->get_localname(), 
-                                                    varQName->get_location());
+    store::Item_t varItem;
+    expand_no_default_qname(varItem, varQName, varQName->get_location());
     
     // every $x_ in $x satisfies exists ...
     // every is implemented as a flowr expr
@@ -4038,8 +4107,9 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     
     // $x_ in dc:collection( xs:QName("org:employees") )      
     var_expr_t evVarExpr = bind_var(loc, 
-                                    varQName->get_qname()/*varItem.getp()*/, 
-                                    var_expr::for_var, NULL);
+                                    varItem, 
+                                    var_expr::for_var,
+                                    NULL);
     
     // maybe make one more collExpr?
     evFlworExpr->add_clause(wrap_in_forclause(collExpr.getp(), evVarExpr, NULL));
@@ -4049,8 +4119,9 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     
     // let $x := dc:collection(xs:QName("org:employees")) 
     //   return 
-    var_expr_t varExpr = bind_var(loc, varQName->get_qname()
-                                  /*varItem.getp()*/, var_expr::let_var, 
+    var_expr_t varExpr = bind_var(loc,
+                                  varItem.getp(),
+                                  var_expr::let_var, 
                                   NULL);
     
     let_clause* letClause = new let_clause(sctx_p,
@@ -4094,12 +4165,13 @@ void* begin_visit(const IntegrityConstraintDecl& v)
 
     // "org:transactions"
     expr_t qnameStrExpr = new const_expr(sctxid(), loc, 
-                                         ic.getCollName()->get_qname() );
+                                         ic.getCollName()->get_qname());
     
-    string prefixStr = ic.getCollName()->get_prefix();
-    xqp_string uriStr = sctx_p->lookup_ns(prefixStr);
+    const xqpStringStore_t& prefixStr = ic.getCollName()->get_prefix();
+    xqpStringStore_t uriStr;
+    sctx_p->lookup_ns(uriStr, prefixStr, loc);
     
-    expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr );
+    expr_t uriStrExpr = new const_expr(sctxid(), loc, uriStr);
     
     // fn:QName("org-uri", "org:transactions")
     fo_expr_t qnameExpr = new fo_expr(sctxid(), loc,
@@ -4107,10 +4179,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                       uriStrExpr, qnameStrExpr);
     
     // dc:collection(xs:QName("org:transactions"))
-    function* fn_collection = sctx_p->lookup_resolved_fn(
-                                                         xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
-                                                         xqp_string("collection"), 
-                                                         1);
+    function* fn_collection = GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_COLLECTION_1);
     ZORBA_ASSERT(fn_collection != NULL);
     std::vector<expr_t> argColl;      
     argColl.push_back(qnameExpr.getp());
@@ -4126,11 +4195,11 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     const QName* varQName = ic.getCollVarName();
     
     // $x_ in dc:collection( xs:QName("org:employees") )      
-    var_expr_t evVarExpr = bind_var(loc, varQName->get_qname(), 
-                                    var_expr::for_var, NULL);
+    var_expr_t evVarExpr = bind_var(loc, varQName, var_expr::for_var, NULL);
     
     // maybe make one more collExpr?
-    evFlworExpr->add_clause(wrap_in_forclause(collExpr.getp(), evVarExpr, 
+    evFlworExpr->add_clause(wrap_in_forclause(collExpr.getp(),
+                                              evVarExpr, 
                                               NULL));
     
     //pop_scope();
@@ -4168,11 +4237,12 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     // TO part
     // "org:employees"
     expr_t toQnameStrExpr = new const_expr(sctxid(), loc, 
-                                           ic.getToCollName()->get_qname() );
-    string toPrefixStr = ic.getToCollName()->get_prefix();
-    xqp_string toUriStr = sctx_p->lookup_ns(toPrefixStr);
+                                           ic.getToCollName()->get_qname());
+    const xqpStringStore_t& toPrefixStr = ic.getToCollName()->get_prefix();
+    xqpStringStore_t toUriStr;
+    sctx_p->lookup_ns(toUriStr, toPrefixStr, loc);
     
-    expr_t toUriStrExpr = new const_expr(sctxid(), loc, toUriStr );
+    expr_t toUriStrExpr = new const_expr(sctxid(), loc, toUriStr);
       
     // xs:QName("org:employees")
     fo_expr_t toQnameExpr = new fo_expr(sctxid(), loc,
@@ -4180,10 +4250,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                         toUriStrExpr, toQnameStrExpr);
     
     // dc:collection(xs:QName("org:employees"))
-    function* toFnCollection = sctx_p->lookup_resolved_fn(
-                                                          xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
-                                                          xqp_string("collection"), 
-                                                          1);
+    function* toFnCollection = GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_COLLECTION_1);
     ZORBA_ASSERT(toFnCollection != NULL);
     std::vector<expr_t> toArgColl;      
     toArgColl.push_back(toQnameExpr.getp());
@@ -4198,21 +4265,22 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     
     // $y 
     const QName* toVarQName = ic.getToNodeVarName();
-    var_expr_t toVarExpr = bind_var(loc, toVarQName->get_qname(), 
-                                    var_expr::for_var, NULL);
+    var_expr_t toVarExpr = bind_var(loc, toVarQName, var_expr::for_var, NULL);
     
     // for $y in dc:collection(xs:QName("org:employees")) 
-    someFlworExpr->add_clause(wrap_in_forclause(toCollExpr.getp(), toVarExpr,
+    someFlworExpr->add_clause(wrap_in_forclause(toCollExpr.getp(),
+                                                toVarExpr,
                                                 NULL));
     
     
     // FROM part
     // "org:transactions"
     expr_t fromQnameStrExpr = new const_expr(sctxid(), loc, 
-                                             ic.getFromCollName()->get_qname() );
+                                             ic.getFromCollName()->get_qname());
     
-    string fromPrefixStr = ic.getFromCollName()->get_prefix();
-    xqp_string fromUriStr = sctx_p->lookup_ns(fromPrefixStr);
+    const xqpStringStore_t& fromPrefixStr = ic.getFromCollName()->get_prefix();
+    xqpStringStore_t fromUriStr;
+    sctx_p->lookup_ns(fromUriStr, fromPrefixStr, loc);
     
     expr_t fromUriStrExpr = new const_expr(sctxid(), loc, fromUriStr );
     
@@ -4222,14 +4290,13 @@ void* begin_visit(const IntegrityConstraintDecl& v)
                                           fromUriStrExpr, fromQnameStrExpr);
     
     // dc:collection(xs:QName("org:transactions"))
-    function* fromFnCollection = sctx_p->lookup_resolved_fn(
-                                                            xqp_string("http://www.zorba-xquery.com/modules/xqddf"), 
-                                                            xqp_string("collection"), 
-                                                            1);
+    function* fromFnCollection = GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_COLLECTION_1);
     ZORBA_ASSERT(fromFnCollection != NULL);
     std::vector<expr_t> fromArgColl;      
     fromArgColl.push_back(fromQnameExpr.getp());
-    fo_expr_t fromCollExpr = new fo_expr(sctxid(), loc, fromFnCollection, 
+    fo_expr_t fromCollExpr = new fo_expr(sctxid(),
+                                         loc,
+                                         fromFnCollection, 
                                          fromArgColl);
     
     // every $x in dc:collection( xs:QName("org:transactions") )
@@ -4240,8 +4307,7 @@ void* begin_visit(const IntegrityConstraintDecl& v)
     
     // $x
     const QName* fromVarQName = ic.getFromNodeVarName();
-    var_expr_t fromVarExpr = bind_var(loc, fromVarQName->get_qname(), 
-                                      var_expr::for_var, NULL);
+    var_expr_t fromVarExpr = bind_var(loc, fromVarQName, var_expr::for_var, NULL);
     
     // for $x in dc:collection(xs:QName("org:transactions")) 
     evFlworExpr->add_clause(wrap_in_forclause(fromCollExpr.getp(), 
@@ -4448,12 +4514,10 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       expr_t fromKeyExpr = wrap_in_atomization(pop_nodestack());
       
       // result expr
-      flwor_expr_t evFlworExpr = 
-        dynamic_cast<flwor_expr*>(pop_nodestack().getp());
+      flwor_expr_t evFlworExpr = dynamic_cast<flwor_expr*>(pop_nodestack().getp());
 
       // some flwor expr
-      flwor_expr_t someFlworExpr = 
-        dynamic_cast<flwor_expr*>(pop_nodestack().getp());
+      flwor_expr_t someFlworExpr = dynamic_cast<flwor_expr*>(pop_nodestack().getp());
 
 
       // maybe add fn:data ?
@@ -4473,10 +4537,6 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
       fo_expr_t fnExistsExpr = new fo_expr(sctxid(), loc,
                                            GET_BUILTIN_FUNCTION(FN_EXISTS_1),
                                            someFlworExpr.getp());
-      
-
-
-
       // fn:not()
       fo_expr_t evFnNotExpr = new fo_expr(sctxid(),
                                           loc,
@@ -4504,7 +4564,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
 
 
   std::string msg = "entry-creator expr for integrity constraint " + 
-    qname->get_localname();
+    qname->get_localname()->str();
   
   if (theCCB->theConfig.optimize_cb != NULL)
     theCCB->theConfig.optimize_cb(body.getp(), msg);
@@ -4515,9 +4575,8 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     new PlanWrapper(icIter, theCCB, NULL /*dctx*/, NULL);
 
   // Update static context
-  store::Item_t qnameItem = sctx_p->lookup_fn_qname(qname->get_prefix(),
-                                                    qname->get_localname(),
-                                                    qname->get_location());
+  store::Item_t qnameItem;
+  expand_function_qname(qnameItem, qname, qname->get_location());
 
 
   ValueIC_t vic;
@@ -4526,17 +4585,15 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     const ICForeignKey& ic = dynamic_cast<const ICForeignKey&>(v);
 
     const QName* fromQname = ic.getFromCollName();
-    store::Item_t fromQnameItem = 
-      sctx_p->lookup_fn_qname(fromQname->get_prefix(), 
-                              fromQname->get_localname(),
-                              fromQname->get_location());
+
+    store::Item_t fromQnameItem; 
+    expand_function_qname(fromQnameItem, fromQname, fromQname->get_location());
 
     const QName* toQname = ic.getToCollName();
-    store::Item_t toQnameItem = 
-      sctx_p->lookup_fn_qname(toQname->get_prefix(), 
-                              toQname->get_localname(),
-                              toQname->get_location());
 
+    store::Item_t toQnameItem;
+    expand_function_qname(toQnameItem, toQname, toQname->get_location());
+    
     vic = new ValueIC(sctx_p, qnameItem, fromQnameItem, toQnameItem, 
                       icPlanWrapper);
   }
@@ -4545,10 +4602,8 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     const ICColl* ic = dynamic_cast<const ICColl*>(&v);
 
     const QName* collQname = ic->getCollName();
-    store::Item_t collQnameItem = 
-      sctx_p->lookup_fn_qname(collQname->get_prefix(), 
-                              collQname->get_localname(),
-                              collQname->get_location());
+    store::Item_t collQnameItem;
+    expand_function_qname(collQnameItem, collQname, collQname->get_location());
 
     vic = new ValueIC(sctx_p, qnameItem, collQnameItem, icPlanWrapper);
   }   
@@ -5011,21 +5066,19 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
 
   push_scope();
 
-  xqp_string varname = v.get_varname();
-  store::Item_t varQName = sctx_p->lookup_var_qname(varname, loc);
-
   xqtref_t type = (v.get_typedecl() == NULL ? NULL : pop_tstack());
 
-  var_expr_t varExpr = bind_var(loc, varQName, var_expr::for_var, type);
+  var_expr_t varExpr = bind_var(loc, v.get_name(), var_expr::for_var, type);
   var_expr_t posVarExpr;
 
   const PositionalVar* pv = v.get_posvar();
   if (pv != NULL) 
   {
-    xqp_string pvarname = pv->get_varname();
-    store::Item_t pvarQName = sctx_p->lookup_var_qname(pvarname, loc);
-    if (pvarQName->equals(varQName.getp()))
-      ZORBA_ERROR_LOC (XQST0089, loc);
+    store::Item_t pvarQName;
+    expand_no_default_qname(pvarQName, pv->get_name(), loc);
+
+    if (pvarQName->equals(varExpr->get_name()))
+      ZORBA_ERROR_LOC(XQST0089, loc);
 
     posVarExpr = bind_var(pv->get_location(), pvarQName, var_expr::pos_var);
   }
@@ -5118,7 +5171,7 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
 
     push_scope();
 
-    var_expr_t varExpr = bind_var(loc, v.get_varname(), var_expr::let_var, type);
+    var_expr_t varExpr = bind_var(loc, v.get_name(), var_expr::let_var, type);
 
     let_clause* clause = new let_clause(sctx_p,
                                         sctxid(),
@@ -5131,7 +5184,7 @@ void end_visit(const VarGetsDecl& v, void* /*visit_state*/)
   else
   {
     push_scope();
-    push_nodestack(create_var(loc, v.get_varname(), var_expr::let_var, type).getp());
+    push_nodestack(create_var(loc, v.get_name(), var_expr::let_var, type).getp());
   }
 }
 
@@ -5285,28 +5338,32 @@ void bind_wincond_vars(const WindowVars& v, flwor_clause* windowClause, bool inp
   rchandle<PositionalVar> pv = v.get_posvar();
   if (pv != NULL)
   {
-    posVarExpr = bind_var(pv->get_location(), pv->get_varname(), pvarKind);
+    posVarExpr = bind_var(pv->get_location(), pv->get_name(), pvarKind);
+
     posVarExpr->set_flwor_clause(windowClause);
     push_nodestack(posVarExpr.getp());
   }
 
-  if (! v.get_curr().empty())
+  if (v.get_curr())
   {
     curVarExpr = bind_var(loc, v.get_curr(), varKind);
+
     curVarExpr->set_flwor_clause(windowClause);
     push_nodestack(curVarExpr.getp());
   }
 
-  if (! v.get_prev().empty())
+  if (v.get_prev())
   {
     prevVarExpr = bind_var(loc, v.get_prev(), varKind);
+
     prevVarExpr->set_flwor_clause(windowClause);
     push_nodestack(prevVarExpr.getp());
   }
 
-  if (! v.get_next().empty())
+  if (v.get_next())
   {
     nextVarExpr = bind_var(loc, v.get_next(), varKind);
+
     nextVarExpr->set_flwor_clause(windowClause);
     push_nodestack(nextVarExpr.getp());
   }
@@ -5317,13 +5374,13 @@ void pop_wincond_vars(rchandle<WindowVars> node, flwor_wincond::vars& vars)
 {
   if (node != NULL) 
   {
-    if (! node->get_next().empty())
+    if (node->get_next())
       vars.next = pop_nodestack_var();
 
-    if (! node->get_prev().empty())
+    if (node->get_prev())
       vars.prev = pop_nodestack_var();
 
-    if (! node->get_curr().empty())
+    if (node->get_curr())
       vars.curr = pop_nodestack_var();
 
     if (node->get_posvar() != NULL)
@@ -5354,7 +5411,8 @@ void end_visit(const WindowVarDecl& v, void* /*visit_state*/)
 
   xqtref_t type = (v.get_typedecl() == NULL ? NULL : pop_tstack());
 
-  bind_var_and_push(loc, v.get_varname(), var_expr::win_var, type);
+  var_expr_t ve = bind_var(loc, v.get_name(), var_expr::win_var, type);
+  push_nodestack(ve.getp());
 }
 
 
@@ -5423,8 +5481,8 @@ void *begin_visit(const GroupByClause& v)
   for (size_t i = 0; i < lList->size(); ++i) 
   {
     GroupSpec* spec = (*lList)[i];
-    string varname = spec->get_var_name();
-    const var_expr* ve = lookup_var(varname);
+    const QName* varname = spec->get_var_name();
+    const var_expr* ve = lookup_var(varname->get_qname());
     if (ve == NULL)
       ZORBA_ERROR_LOC_PARAM( XPST0008, loc, varname, "");
 
@@ -5449,7 +5507,8 @@ void *begin_visit(const GroupByClause& v)
 
     push_scope();
 
-    bind_var_and_push(loc, (*i)->get_name(), var_expr::non_groupby_var);
+    var_expr_t ve = bind_var(loc, (*i)->get_name(), var_expr::non_groupby_var);
+    push_nodestack(ve.getp());
   }
 
   return no_state;
@@ -5544,7 +5603,7 @@ void* begin_visit(const GroupSpec& v)
 {
   TRACE_VISIT();
 
-  var_expr* e = lookup_var (v.get_var_name());
+  var_expr* e = lookup_var(v.get_var_name()->get_qname());
   if (e == NULL)
     ZORBA_ERROR_LOC_PARAM(XPST0008, loc, v.get_var_name(), "");
 
@@ -5555,7 +5614,8 @@ void* begin_visit(const GroupSpec& v)
 
   push_nodestack(e);
 
-  bind_var_and_push(loc, v.get_var_name(), var_expr::groupby_var);
+  var_expr_t ve = bind_var(loc, v.get_var_name(), var_expr::groupby_var);
+  push_nodestack(ve.getp());
 
   return no_state;
 }
@@ -5569,15 +5629,15 @@ void end_visit(const GroupSpec& v, void* /*visit_state*/)
 /*******************************************************************************
 
 ********************************************************************************/
-void *begin_visit(const GroupCollationSpec& v) 
+void* begin_visit(const GroupCollationSpec& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const GroupCollationSpec& v, void* /*visit_state*/) 
+void end_visit(const GroupCollationSpec& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -5861,30 +5921,30 @@ void end_visit(const QuantifiedExpr& v, void* /*visit_state*/)
 /*******************************************************************************
   QVarInDeclList := QVarInDecl ("," QVarInDecl)*
 ********************************************************************************/
-void *begin_visit (const QVarInDeclList& v) 
+void* begin_visit(const QVarInDeclList& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const QVarInDeclList& v, void* /*visit_state*/) 
+void end_visit(const QVarInDeclList& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   QVarInDecl := "$" VarName TypeDeclaration? "in" ExprSingle
 ********************************************************************************/
-void *begin_visit (const QVarInDecl& v) 
+void* begin_visit(const QVarInDecl& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const QVarInDecl& v, void* /*visit_state*/) 
+void end_visit(const QVarInDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   push_scope();
   xqtref_t type;
@@ -5937,7 +5997,7 @@ void* begin_visit(const TypeswitchExpr& v)
 {
   TRACE_VISIT();
 
-  var_expr_t sv = tempvar(v.get_switch_expr()->get_location(), var_expr::let_var);
+  var_expr_t sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
 
   v.get_switch_expr()->accept(*this);
 
@@ -5952,10 +6012,10 @@ void* begin_visit(const TypeswitchExpr& v)
   expr_t retExpr;
   expr_t flworExpr = wrap_in_let_flwor(se, sv, retExpr);
 
-  string defvar_name = v.get_default_varname();
+  const QName* defvar_name = v.get_default_varname();
   var_expr_t defvar;
 
-  if (! defvar_name.empty())
+  if (defvar_name)
   {
     push_scope();
     defvar = bind_var(v.get_default_clause()->get_location(),
@@ -5970,7 +6030,7 @@ void* begin_visit(const TypeswitchExpr& v)
 
   expr_t defExpr = pop_nodestack();
 
-  if (!defvar_name.empty()) 
+  if (defvar_name) 
   {
     pop_scope();
 
@@ -5995,10 +6055,10 @@ void* begin_visit(const TypeswitchExpr& v)
     caseClause->get_type()->accept(*this);
     xqtref_t type = pop_tstack();
 
-    string varname = caseClause->get_varname();
+    const QName* varname = caseClause->get_varname();
     varref_t caseVar;
 
-    if (! varname.empty())
+    if (varname)
     {
       push_scope();
 
@@ -6017,7 +6077,7 @@ void* begin_visit(const TypeswitchExpr& v)
     caseClause->get_expr()->accept(*this);
     expr_t caseExpr = pop_nodestack();
 
-    if (! varname.empty()) 
+    if (varname) 
     {
       pop_scope();
 
@@ -6564,7 +6624,7 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
           if(e.theQueryLine == 0)
           {
             e.theQueryColumn = loc.getColumnBegin();
-            e.theQueryFileName = loc.getFilenameBegin();
+            e.theQueryFileName = loc.getFilename();
             e.theQueryLine = loc.getLineBegin();
           }
           throw e;
@@ -6688,14 +6748,14 @@ void end_visit (const ValidateExpr& v, void* /*visit_state*/)
   store::Item_t qname;
   if (v.get_type_name() != NULL)
   {
-    xqpStringStore_t prefix = new xqpStringStore(v.get_type_name()->get_prefix());
+    const xqpStringStore_t& prefix = v.get_type_name()->get_prefix();
     xqpStringStore_t ns;
     ns_ctx->findBinding(prefix, ns);
 
     GENV_ITEMFACTORY->createQName(qname,
                                   ns->c_str(),
                                   prefix->c_str(),
-                                  v.get_type_name()->get_localname().c_str());
+                                  v.get_type_name()->get_localname()->c_str());
   }
 
   push_nodestack(new validate_expr(sctxid(),
@@ -6743,17 +6803,19 @@ void end_visit (const PragmaList& v, void* /*visit_state*/)
   [89] Pragma ::= "(#" S? QName (S PragmaContents)? "#)"  // ws: explicitXQ
   [90] PragmaContents ::= (Char* - (Char* '#)' Char*))
 ********************************************************************************/
-void *begin_visit (const Pragma& v) 
+void* begin_visit(const Pragma& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const Pragma& v, void* /*visit_state*/) 
+void end_visit(const Pragma& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
- // may raise XPST0081
- sctx_p->lookup_ns (v.get_name ()->get_prefix (), loc);
+  TRACE_VISIT_OUT();
+
+  // may raise XPST0081
+  xqpStringStore_t ns;
+  sctx_p->lookup_ns(ns, v.get_name()->get_prefix(), loc);
 }
 
 
@@ -7137,7 +7199,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
       if (stepExpr->get_expr_kind() == wrapper_expr_kind)
       {
         wrapper_expr* tmp = static_cast<wrapper_expr*>(stepExpr.getp());
-        if (tmp->get_expr() == lookup_var(DOT_VARNAME))
+        if (tmp->get_expr() == lookup_var(DOT_VARNAME->get_localname()->str()))
           errCode = XPTY0020;
       }
 
@@ -7552,11 +7614,18 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
 
     if (v.getQName() != NULL) 
     {
-      string qname = v.getQName()->get_qname();
-      store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
-                            sctx_p->lookup_qname("", qname, v.getQName()->get_location()) :
-                            sctx_p->lookup_elem_qname(qname, v.getQName()->get_location()));
-      matchExpr->setQName(qn_h);
+      store::Item_t qnItem;
+
+      if (axisExpr->getAxis() == axis_kind_attribute)
+      {
+        expand_no_default_qname(qnItem, v.getQName(), v.getQName()->get_location());
+      }
+      else
+      {
+        expand_elem_qname(qnItem, v.getQName(), v.getQName()->get_location());
+      }
+
+      matchExpr->setQName(qnItem);
     }
     else 
     {
@@ -7575,12 +7644,29 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
         matchExpr->setWildKind(match_name_wild);
         matchExpr->setWildName(wildcard->getPrefix());
 
-        string qname = wildcard->getPrefix() + ":wildcard";
+        xqpStringStore_t localname = new xqpStringStore(":wildcard");
 
-        store::Item_t qn_h = (axisExpr->getAxis () == axis_kind_attribute ?
-                              sctx_p->lookup_qname("", qname, wildcard->get_location()) :
-                              sctx_p->lookup_elem_qname(qname, wildcard->get_location()));
-        matchExpr->setQName(qn_h);
+        store::Item_t qnItem;
+
+        if (axisExpr->getAxis() == axis_kind_attribute)
+        {
+          sctx_p->expand_qname(qnItem,
+                               getEmptyString(),
+                               wildcard->getPrefix(),
+                               localname,
+                               wildcard->get_location());
+        }
+        else
+        {
+          sctx_p->expand_qname(qnItem,
+                               sctx_p->default_elem_type_ns(),
+                               wildcard->getPrefix(),
+                               localname,
+                               wildcard->get_location());
+        }
+
+        matchExpr->setQName(qnItem);
+
         break;
       }
       case ParseConstants::wild_prefix:
@@ -7600,9 +7686,10 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
     catch_clause* cc = &*(*tce)[0];
     if (v.getQName() != NULL) 
     {
-      string qname = v.getQName()->get_qname();
-      store::Item_t qn_h = sctx_p->lookup_elem_qname (qname, loc);
-      cc->add_nametest_h(new NodeNameTest(qn_h));
+      store::Item_t qnItem;
+      expand_elem_qname(qnItem, v.getQName(), loc);
+
+      cc->add_nametest_h(new NodeNameTest(qnItem));
     }
     else
     {
@@ -7615,10 +7702,10 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
           cc->add_nametest_h(new NodeNameTest(NULL, NULL));
           break;
         case ParseConstants::wild_elem:
-          cc->add_nametest_h(new NodeNameTest(NULL, wildcard->getPrefix().theStrStore));
+          cc->add_nametest_h(new NodeNameTest(NULL, wildcard->getPrefix()));
           break;
         case ParseConstants::wild_prefix:
-          cc->add_nametest_h(new NodeNameTest(wildcard->getLocalName().theStrStore, NULL));
+          cc->add_nametest_h(new NodeNameTest(wildcard->getLocalName(), NULL));
           break;
       }
     }
@@ -7633,16 +7720,16 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
 /*******************************************************************************
   [103] Wildcard ::= "*" | (NCName ":" "*") | ("*" ":" NCName)
 ********************************************************************************/
-void *begin_visit (const Wildcard& v) 
+void* begin_visit(const Wildcard& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
 
-void end_visit (const Wildcard& v, void* /*visit_state*/) 
+void end_visit(const Wildcard& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -7789,7 +7876,8 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   fo_expr_t eqExpr = new fo_expr(sctxid,
                                  loc,
                                  GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2),
-                                 lookup_ctx_var(DOT_POS_VARNAME, loc).getp(),
+                                 lookup_ctx_var(DOT_POS_VARNAME->get_localname().getp(),
+                                                loc).getp(),
                                  predvar);
   normalize_fo(eqExpr);
 
@@ -8027,17 +8115,15 @@ void* begin_visit(const FunctionCall& v)
 {
   TRACE_VISIT();
 
-  rchandle<QName> qn_h = v.get_fname();
-  string prefix = qn_h->get_prefix();
-  string fname = qn_h->get_localname();
-
   if (!theCurrentPrologVFDecl.isNull())
   {
+    rchandle<QName> qname = v.get_fname();
+
     ulong numArgs = 0;
     if (v.get_arg_list() != NULL)
       numArgs = v.get_arg_list()->size();
 
-    function* f = LOOKUP_FN(prefix, fname, numArgs);
+    function* f = lookup_fn(qname, numArgs, loc);
 
     if (f != NULL && dynamic_cast<user_function*>(f) != NULL)
       thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
@@ -8054,7 +8140,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   // Collect the arguments of this function in reverse order
   std::vector<expr_t> arguments;
 
-  while (true) 
+  while (true)
   {
     expr_t argExpr = pop_nodestack();
 
@@ -8066,27 +8152,28 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
   ulong numArgs = arguments.size();
 
-  rchandle<QName> qn_h = v.get_fname();
-  string prefix = qn_h->get_prefix();
-  string fname = qn_h->get_localname();
+  rchandle<QName> qname = v.get_fname();
+  const xqpStringStore_t& localName = qname->get_localname();
 
-  store::Item_t fn_qname = sctx_p->lookup_fn_qname(prefix, fname, loc);
-  const xqpStringStore* fn_ns = fn_qname->getNamespace();
+  store::Item_t qnameItem;
+  expand_function_qname(qnameItem, qname, loc);
+
+  const xqpStringStore* fn_ns = qnameItem->getNamespace();
 
   // Some special processing is required for certain "fn" functions
-  if (fn_ns->byteEqual(XQUERY_FN_NS)) 
+  if (fn_ns->byteEqual(XQUERY_FN_NS, strlen(XQUERY_FN_NS))) 
   {
-    if (fname == "position" && numArgs == 0)  
+    if (*localName == "position" && numArgs == 0)  
     {
-      push_nodestack(lookup_ctx_var(DOT_POS_VARNAME, loc).getp());
+      push_nodestack(lookup_ctx_var(DOT_POS_VARNAME->get_localname().getp(), loc).getp());
       return;
     }
-    else if (fname == "last" && numArgs == 0)
+    else if (*localName == "last" && numArgs == 0)
     {
-      push_nodestack(lookup_ctx_var(LAST_IDX_VARNAME, loc).getp());
+      push_nodestack(lookup_ctx_var(LAST_IDX_VARNAME->get_localname().getp(), loc).getp());
       return;
     }
-    else if (fname == "number") 
+    else if (*localName == "number") 
     {
       switch (numArgs) 
       {
@@ -8101,7 +8188,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         ZORBA_ERROR_LOC_PARAM(XPST0017, loc, "fn:number", numArgs);
       }
 
-      varref_t tv = tempvar(loc, var_expr::let_var);
+      varref_t tv = create_temp_var(loc, var_expr::let_var);
 
       expr_t nanExpr = new const_expr(sctxid(), loc, xqp_double::nan());
 
@@ -8123,11 +8210,11 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       return;
     }
     else if (numArgs == 0 &&
-             xquery_fns_def_dot.find(fname) != xquery_fns_def_dot.end()) 
+             xquery_fns_def_dot.find(localName->str()) != xquery_fns_def_dot.end()) 
     {
       arguments.push_back(DOT_REF);
     }
-    else if (fname == "static-base-uri") 
+    else if (*localName == "static-base-uri") 
     {
       if (numArgs != 0)
         ZORBA_ERROR_LOC_PARAM(XPST0017, loc, "fn:static-base-uri", numArgs);
@@ -8142,7 +8229,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
       return;
     }
-    else if (fname == "id")
+    else if (*localName == "id")
     {
       if (numArgs == 1)
       {
@@ -8179,46 +8266,45 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       arguments[1] = flworExpr;
     }
-    else if (numArgs == 1 && fname == "idref")
+    else if (numArgs == 1 && *localName == "idref")
     {
       arguments.insert(arguments.begin(), DOT_REF);
     } 
-    else if (numArgs == 1 && fname == "lang") 
+    else if (numArgs == 1 && *localName == "lang") 
     {
       arguments.insert(arguments.begin(), DOT_REF);
     } 
-    else if (numArgs == 1 && fname == "resolve-uri") 
+    else if (numArgs == 1 && *localName == "resolve-uri") 
     {
       arguments.insert(arguments.begin(), new const_expr(sctxid(), loc, sctx_p->final_baseuri()));
     }
-    else if (numArgs == 1 && fname == "parse") 
+    else if (numArgs == 1 && *localName == "parse") 
     {
       arguments.insert(arguments.begin(), new const_expr(sctxid(), loc, sctx_p->final_baseuri()));
     }
-    else if (fname == "concat")
+    else if (*localName == "concat")
     {
       if (numArgs < 2)
         ZORBA_ERROR_LOC_PARAM (XPST0017, loc, "concat", to_string(numArgs));
     }
-    else if (fname == "doc")
+    else if (*localName == "doc")
     {
       if (numArgs > 0) 
       {
         expr_t  doc_uri = arguments[0];
+
         //validate uri
         if(doc_uri->get_expr_kind() == const_expr_kind)
         {
           const_expr* const_uri = reinterpret_cast<const_expr*>(doc_uri.getp());
           const store::Item* uri_value = const_uri->get_val();
           xqpStringStore_t uri_string = uri_value->getStringValue();
+
           try
           {
-            xqpString xqp_uri_string(uri_string);
-            //xqpString   xqp_base_uri("http://website/");
-            //URI   baseURI(xqp_base_uri, false);
-            if(uri_string->indexOf(":/") >= 0)
+            if(uri_string->bytePositionOf(":/", 3, 0) >= 0)
             {
-              URI docURI(xqp_uri_string, true);//with validate`
+              URI docURI(uri_string.getp(), true);//with validate
             }
           }
           catch(error::ZorbaError &e)
@@ -8231,9 +8317,9 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   }
 
   //  Some special processing is required for certain "zorba" functions
-  else if (fn_ns->byteEqual(ZORBA_OP_NS)) 
+  else if (fn_ns->byteEqual(ZORBA_OP_NS, strlen(ZORBA_OP_NS))) 
   {
-    if (fname == "inline-xml" && numArgs == 1) 
+    if (*localName == "inline-xml" && numArgs == 1) 
     {
       push_nodestack(new eval_expr(sctxid(),
                                    loc,
@@ -8248,7 +8334,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   numArgs = arguments.size();  // recompute size
 
   // Check if this is a call to a builtin constructor function
-  xqtref_t type = CTXTS->create_named_type(sctx_p->lookup_elem_qname(prefix, fname, loc),
+  xqtref_t type = CTXTS->create_named_type(qnameItem,
                                            TypeConstants::QUANT_QUESTION);
 
   if (type != NULL) 
@@ -8257,7 +8343,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
         TypeOps::is_equal(*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION) ||
         TypeOps::is_equal(*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
     {
-      ZORBA_ERROR_LOC_PARAM(XPST0017, loc, prefix + ":" + fname, numArgs);
+      ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), numArgs);
     }
 
     push_nodestack(create_cast_expr(loc, arguments[0], type, true));
@@ -8266,13 +8352,10 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   // It is not a builtin constructor function
   else 
   {
-    function* f = LOOKUP_FN(prefix, fname, numArgs);
+    function* f = lookup_fn(qname, numArgs, loc);
     if (f == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XPST0017,
-                            loc,
-                            (prefix.empty() ? prefix : (prefix + ":")) + fname,
-                            to_string(numArgs));
+      ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), to_string(numArgs));
     }
 
     // If this is a udf that is invoked from another udf, mark that other udf
@@ -8362,7 +8445,7 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
   expr_t contentExpr;
 
   rchandle<QName> end_tag = v.get_end_name();
-  rchandle<QName> start_tag = v.get_elem_name ();
+  rchandle<QName> start_tag = v.get_elem_name();
 
   if (end_tag != NULL && start_tag->get_qname() != end_tag->get_qname ())
     ZORBA_ERROR_LOC_DESC_OSS(XPST0003, loc,
@@ -8375,10 +8458,10 @@ void end_visit(const DirElemConstructor& v, void* /*visit_state*/)
   if (v.get_attr_list() != NULL)
     attrExpr = pop_nodestack();
 
-  nameExpr = new const_expr(sctxid(),
-                            loc,
-                            sctx_p->lookup_elem_qname(v.get_elem_name()->get_qname(),
-                                                      loc));
+  store::Item_t qnameItem;
+  expand_elem_qname(qnameItem, v.get_elem_name(), loc);
+
+  nameExpr = new const_expr(sctxid(), loc, qnameItem);
 
   push_nodestack(new elem_expr(sctxid(),
                                loc,
@@ -8407,7 +8490,7 @@ void* begin_visit(const DirAttributeList& v)
     {
       const DirAttr* attr = v[i];
       const QName* qname = attr->get_name().getp();
-      bool isPrefix = qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns";
+      bool isPrefix = qname->get_qname() == "xmlns" || *qname->get_prefix() == "xmlns";
 
       if ((isPrefix && visitType == 0) || (! isPrefix && visitType == 1))
         attr->accept(*this);
@@ -8493,20 +8576,15 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
 
   QName* qname = v.get_name().getp();
 
-  if (qname->get_qname() == "xmlns" || qname->get_prefix() == "xmlns") 
+  if (qname->get_qname() == "xmlns" || *qname->get_prefix() == "xmlns") 
   {
-    xqpStringStore_t prefix;
+    xqpStringStore_t prefix = getEmptyString();
 
     if (qname->get_qname() != "xmlns") 
     {
-      prefix = new xqpStringStore(qname->get_localname());
-      if (prefix->byteEqual("xmlns"))
+      prefix = qname->get_localname();
+      if (prefix->byteEqual("xmlns", 5))
         ZORBA_ERROR_LOC (XQST0070, loc);
-    }
-    else
-    {
-      // else we have a defult-namespace declaration
-      prefix = new xqpStringStore("");
     }
 
     const_expr* constValueExpr = valueExpr.dyn_cast<const_expr>().getp();
@@ -8514,34 +8592,40 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     {
       xqpStringStore_t uri = constValueExpr->get_val()->getStringValue();
 
-      if (prefix->byteEqual("xml") && !uri->byteEqual(XML_NS))
+      if (prefix->byteEqual("xml", 3) && !uri->byteEqual(XML_NS, strlen(XML_NS)))
         ZORBA_ERROR_LOC (XQST0070, loc);
 
-      sctx_p->bind_ns(prefix.getp(), uri.getp(), XQST0071);
+      sctx_p->bind_ns(prefix, uri, loc, XQST0071);
       ns_ctx->bind_ns(prefix, uri);
+
+      if (prefix->empty())
+        sctx_p->set_default_elem_type_ns(uri, loc);
     }
     else if (valueExpr == NULL)
     {
-      if (prefix->byteEqual("xml"))
+      if (prefix->byteEqual("xml", 3))
         ZORBA_ERROR_LOC(XQST0070, loc);
 
       // unbind the prefix
-      xqpStringStore_t uri = new xqpStringStore("");
-      sctx_p->bind_ns(prefix.getp(), "", XQST0071);
-      ns_ctx->bind_ns(prefix, uri);
+      xqpStringStore_t empty1 = getEmptyString();
+      xqpStringStore_t empty2 = getEmptyString();
+      sctx_p->bind_ns(prefix, empty1, loc, XQST0071);
+      ns_ctx->bind_ns(prefix, empty2);
+
+      if (prefix->empty())
+        sctx_p->set_default_elem_type_ns(empty1, loc);
     }
     else
     {
-      ZORBA_ERROR_LOC( XQST0022, loc);
+      ZORBA_ERROR_LOC(XQST0022, loc);
     }
   }
   else
   {
-    expr_t nameExpr = new const_expr(sctxid(),
-                                     loc,
-                                     sctx_p->lookup_qname("",
-                                                          qname->get_qname(),
-                                                          qname->get_location()));
+    store::Item_t qnameItem;
+    expand_no_default_qname(qnameItem, qname, qname->get_location());
+
+    expr_t nameExpr = new const_expr(sctxid(), loc, qnameItem);
 
     fo_expr* foExpr;
     if ((foExpr = dynamic_cast<fo_expr*>(valueExpr.getp())) != NULL &&
@@ -8944,15 +9028,15 @@ void end_visit (const CompDocConstructor& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const CompElemConstructor& v) 
+void* begin_visit(const CompElemConstructor& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
 void end_visit(const CompElemConstructor& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   expr_t nameExpr;
   expr_t contentExpr;
@@ -8965,12 +9049,14 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
     contentExpr = lEnclosed;
   }
 
-  QName* constQName = v.get_qname_expr().dyn_cast<QName> ().getp();
+  QName* constQName = v.get_qname_expr().dyn_cast<QName>().getp();
 
   if (constQName != NULL) 
   {
-    nameExpr = new const_expr(sctxid(), loc,
-                              sctx_p->lookup_elem_qname(constQName->get_qname(), loc));
+    store::Item_t qnameItem;
+    expand_elem_qname(qnameItem, constQName, loc);
+
+    nameExpr = new const_expr(sctxid(), loc, qnameItem);
   }
   else 
   {
@@ -8986,7 +9072,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
 
 void* begin_visit(const CompAttrConstructor& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
@@ -9011,10 +9097,10 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
 
   if (constQName != NULL)
   {
-    nameExpr = new const_expr(sctxid(), loc,
-                              sctx_p->lookup_qname("",
-                                                   constQName->get_qname(),
-                                                   constQName->get_location()));
+    store::Item_t qnameItem;
+    expand_no_default_qname(qnameItem, constQName, constQName->get_location());
+
+    nameExpr = new const_expr(sctxid(), loc, qnameItem);
   }
   else
   {
@@ -9194,27 +9280,28 @@ void *begin_visit (const OccurrenceIndicator& v) {
   return no_state;
 }
 
-void end_visit (const OccurrenceIndicator& v, void* /*visit_state*/) 
+void end_visit(const OccurrenceIndicator& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
-void *begin_visit (const AtomicType& v) 
+void* begin_visit(const AtomicType& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const AtomicType& v, void* /*visit_state*/) 
+void end_visit(const AtomicType& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
-  rchandle<QName> qname = v.get_qname ();
-  xqtref_t t =
-    CTXTS->create_named_atomic_type(sctx_p->lookup_elem_qname(qname->get_prefix (),
-                                                              qname->get_localname (),
-                                                              loc),
-                                    TypeConstants::QUANT_ONE);
+  TRACE_VISIT_OUT();
+
+  rchandle<QName> qname = v.get_qname();
+  store::Item_t qnameItem;
+  expand_elem_qname(qnameItem, qname, loc);
+  
+  xqtref_t t = CTXTS->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
+
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
   if (t == NULL)
@@ -9224,13 +9311,15 @@ void end_visit (const AtomicType& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const ItemType& v) {
-  TRACE_VISIT ();
+void* begin_visit(const ItemType& v) 
+{
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const ItemType& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
+void end_visit(const ItemType& v, void* /*visit_state*/) 
+{
+  TRACE_VISIT_OUT();
   theTypeStack.push (GENV_TYPESYSTEM.ITEM_TYPE_ONE);
 }
 
@@ -9360,10 +9449,10 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
   store::Item_t typeNameItem;
 
   if (elemName != NULL)
-    elemNameItem = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
+    expand_elem_qname(elemNameItem, elemName.getp(), loc);
 
   if (typeName != NULL)
-    typeNameItem = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), loc);
+    expand_elem_qname(typeNameItem, typeName->get_name(), loc);
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
@@ -9407,7 +9496,7 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
   ElementDeclaration ::= ElementName
 
 ********************************************************************************/
-void *begin_visit (const SchemaElementTest& v) 
+void* begin_visit(const SchemaElementTest& v) 
 {
   TRACE_VISIT ();
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -9415,7 +9504,8 @@ void *begin_visit (const SchemaElementTest& v)
   rchandle<QName> elemName = v.get_elem();
   ZORBA_ASSERT(elemName != NULL);
 
-  store::Item_t elemQNameItem = sctx_p->lookup_elem_qname(elemName->get_qname(), loc);
+  store::Item_t elemQNameItem;
+  expand_elem_qname(elemQNameItem, elemName, loc);
 
   if (axisExpr != NULL) 
   {
@@ -9431,11 +9521,14 @@ void *begin_visit (const SchemaElementTest& v)
   }
   else
   {
-    try {
+    try 
+    {
       xqtref_t seqmatch = CTXTS->create_schema_element_type(elemQNameItem,
-          TypeConstants::QUANT_ONE);
+                                                            TypeConstants::QUANT_ONE);
       theTypeStack.push(seqmatch);
-    } catch (error::ZorbaError& e) {
+    }
+    catch (error::ZorbaError& e) 
+    {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, v.get_location(), e.theDescription);
     }
   }
@@ -9446,20 +9539,20 @@ void *begin_visit (const SchemaElementTest& v)
 }
 
 
-void end_visit (const SchemaElementTest& v, void* /*visit_state*/) 
+void end_visit(const SchemaElementTest& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
-void *begin_visit (const AttributeTest& v) 
+void* begin_visit(const AttributeTest& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
 
-void end_visit (const AttributeTest& v, void* /*visit_state*/) 
+void end_visit(const AttributeTest& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT();
 
@@ -9474,10 +9567,18 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/)
     match->setTestKind(match_attr_test);
 
     if (attrName != NULL)
-      match->setQName(sctx_p->lookup_qname("", attrName->get_qname(), attrName->get_location()));
+    {
+      store::Item_t qnameItem;
+      expand_no_default_qname(qnameItem, attrName,  attrName->get_location());
+      match->setQName(qnameItem);
+    }
 
     if (typeName != NULL)
-      match->setTypeName(sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), typeName->get_location()));
+    {
+      store::Item_t qnameItem;
+      expand_elem_qname(qnameItem, typeName->get_name(), typeName->get_location());
+      match->setTypeName(qnameItem);
+    }
 
     axisExpr->setTest(match);
   }
@@ -9486,16 +9587,17 @@ void end_visit (const AttributeTest& v, void* /*visit_state*/)
     store::Item_t attrNameItem;
     xqtref_t contentType;
 
-    if (attrName != NULL) 
+    if (attrName != NULL)
     {
-      attrNameItem = sctx_p->lookup_qname("", attrName->get_qname(), attrName->get_location());
+      expand_no_default_qname(attrNameItem, attrName,  attrName->get_location());
     }
 
     if (typeName != NULL) 
     {
-      store::Item_t tname = sctx_p->lookup_elem_qname(typeName->get_name()->get_qname(), typeName->get_location());
+      store::Item_t qnameItem;
+      expand_elem_qname(qnameItem, typeName->get_name(), typeName->get_location());
 
-      contentType = CTXTS->create_named_type(tname, TypeConstants::QUANT_ONE);
+      contentType = CTXTS->create_named_type(qnameItem, TypeConstants::QUANT_ONE);
     }
 
     xqtref_t seqmatch = CTXTS->create_node_type(store::StoreConsts::attributeNode,
@@ -9519,7 +9621,8 @@ void *begin_visit (const SchemaAttributeTest& v)
   rchandle<QName> attrName = v.get_attr();
   ZORBA_ASSERT(attrName != NULL);
 
-  store::Item_t attrQNameItem = sctx_p->lookup_qname("", attrName->get_qname(), attrName->get_location());
+  store::Item_t attrQNameItem;
+  expand_no_default_qname(attrQNameItem, attrName, attrName->get_location());
 
   if (axisExpr != NULL) 
   {
@@ -9831,7 +9934,8 @@ void* begin_visit(const VarBinding& v)
   TRACE_VISIT();
 
   push_scope();
-  bind_var_and_push(loc, v.get_varname(), var_expr::copy_var);
+  var_expr_t ve = bind_var(loc, v.get_varname(), var_expr::copy_var);
+  push_nodestack(ve.getp());
 
   return no_state;
 }
@@ -9931,30 +10035,30 @@ void* begin_visit(const CatchExpr& v)
 
   push_scope();
 
-  if (v.getVarErrorCode() != "") 
+  if (v.getVarErrorCode()) 
   {
-    varref_t ev = bind_var(loc,
-                           v.getVarErrorCode(),
-                           var_expr::catch_var,
-                           theRTM.QNAME_TYPE_QUESTION);
+    var_expr_t ev = bind_var(loc,
+                             v.getVarErrorCode(),
+                             var_expr::catch_var,
+                             theRTM.QNAME_TYPE_QUESTION);
 
     cc->set_error_code_var(ev);
 
-    if (v.getVarErrorDescr() != "") 
+    if (v.getVarErrorDescr()) 
     {
-      varref_t dv = bind_var(loc,
-                             v.getVarErrorDescr(),
-                             var_expr::catch_var,
-                             theRTM.STRING_TYPE_QUESTION);
+      var_expr_t dv = bind_var(loc,
+                               v.getVarErrorDescr(),
+                               var_expr::catch_var,
+                               theRTM.STRING_TYPE_QUESTION);
 
       cc->set_error_desc_var(dv);
 
-      if (v.getVarErrorVal() != "") 
+      if (v.getVarErrorVal()) 
       {
-        varref_t vv = bind_var(loc,
-                               v.getVarErrorVal(), 
-                               var_expr::catch_var,
-                               theRTM.ITEM_TYPE_QUESTION);
+        var_expr_t vv = bind_var(loc,
+                                 v.getVarErrorVal(), 
+                                 var_expr::catch_var,
+                                 theRTM.ITEM_TYPE_QUESTION);
 
         cc->set_error_item_var(vv);
       }
@@ -10567,6 +10671,7 @@ expr_t result()
   Translate a module.
 ********************************************************************************/
 expr_t translate_aux(
+    TranslatorImpl* rootTranslator,
     const parsenode& root,
     static_context* rootSctx,
     short rootSctxId,
@@ -10574,7 +10679,8 @@ expr_t translate_aux(
     set<string> mod_stack,
     bool isLibModule) 
 {
-  auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootSctx,
+  auto_ptr<TranslatorImpl> t(new TranslatorImpl(rootTranslator,
+                                                rootSctx,
                                                 rootSctxId,
                                                 minfo,
                                                 mod_stack,
@@ -10605,7 +10711,8 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
 
   ModulesInfo minfo(ccb);
 
-  return translate_aux(root,
+  return translate_aux(NULL,
+                       root,
                        ccb->theRootSctx,
                        ccb->theSctxMap->size(),
                        &minfo,

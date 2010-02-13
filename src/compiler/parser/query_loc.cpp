@@ -18,73 +18,93 @@
 
 #include <ostream>
 
-namespace zorba {
+namespace zorba 
+{
+
 SERIALIZABLE_CLASS_VERSIONS(QueryLoc)
 END_SERIALIZABLE_CLASS_VERSIONS(QueryLoc)
 
 QueryLoc QueryLoc::null;
 
+
 QueryLoc::QueryLoc()
- : theFilenameBegin (""),
-   theLineBegin (0),
-   theColumnBegin (0),
-   theFilenameEnd (""),
-   theLineEnd (0),
-   theColumnEnd (0)
-{}
+ :
+  theFilename(""),
+  theLineBegin (0),
+  theColumnBegin (0),
+  theLineEnd (0),
+  theColumnEnd (0)
+{
+}
+
 
 QueryLoc::QueryLoc(const QueryLoc& aQueryLoc) 
- : ::zorba::serialization::SerializeBaseClass(),
-   theFilenameBegin (aQueryLoc.theFilenameBegin),
-   theLineBegin (aQueryLoc.theLineBegin),
-   theColumnBegin (aQueryLoc.theColumnBegin),
-   theFilenameEnd (aQueryLoc.theFilenameEnd),
-   theLineEnd (aQueryLoc.theLineEnd),
-   theColumnEnd (aQueryLoc.theColumnEnd),
-   theFunctionName(aQueryLoc.theFunctionName)
-{}
+ :
+  ::zorba::serialization::SerializeBaseClass(),
+  theFilename(aQueryLoc.theFilename),
+  theLineBegin (aQueryLoc.theLineBegin),
+  theColumnBegin (aQueryLoc.theColumnBegin),
+  theLineEnd (aQueryLoc.theLineEnd),
+  theColumnEnd (aQueryLoc.theColumnEnd),
+  theFunctionName(aQueryLoc.theFunctionName)
+{
+}
+
 
 void QueryLoc::serialize(::zorba::serialization::Archiver &ar)
 {
-  ar & theFilenameBegin;
+  ar & theFilename;
   ar & theLineBegin;
   ar & theColumnBegin;
-  ar & theFilenameEnd;
   ar & theLineEnd;
   ar & theColumnEnd;
 }
 
-std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc) {
-  if ( !aQueryLoc.getFilenameBegin().empty() ) {
-    std::string lStr = aQueryLoc.getFilenameBegin();
+
+std::ostream& operator<<(std::ostream& aOstr, const QueryLoc& aQueryLoc) 
+{
+  if ( !aQueryLoc.getFilename().empty() ) 
+  {
+    std::string lStr = aQueryLoc.getFilename();
     aOstr << lStr << ":";
   }
-  aOstr << aQueryLoc.getLineBegin() << "." << aQueryLoc.getColumnBegin() << "-" << aQueryLoc.getColumnEnd();
+
+  aOstr << aQueryLoc.getLineBegin() << "."
+        << aQueryLoc.getColumnBegin() << "-"
+        << aQueryLoc.getColumnEnd();
+
   return aOstr;
 }
 
- bool QueryLoc::equals(const QueryLoc& loc) const
+
+bool QueryLoc::equals(const QueryLoc& loc) const
+{
+  std::stringstream lFile;
+  lFile << theFilename;
+  std::string lFile1(lFile.str());
+  std::string lFile2;
+  std::string::iterator it;
+
+  for(it = lFile1.begin(); it != lFile1.end(); ++it)
   {
-    std::stringstream lFile;
-    lFile << theFilenameBegin;
-    std::string lFile1(lFile.str());
-    std::string lFile2;
-    std::string::iterator it;
-    for(it=lFile1.begin(); it!=lFile1.end(); ++it)
+    if(*it == '\\')
     {
+      lFile2.append(1, *it);
+      ++it;
       if(*it == '\\')
       {
-        lFile2.append(1, *it);
-        ++it;
-        if(*it == '\\')
-        {
-          continue;
-        }
+        continue;
       }
-      lFile2.append(1, *it);
     }
-    return loc.getFilenameBegin() == lFile2 &&
-           theColumnBegin==loc.getColumnBegin() && theColumnEnd==loc.getColumnEnd() &&
-           theLineBegin==loc.getLineBegin() && theLineEnd==loc.getLineEnd();
+    lFile2.append(1, *it);
   }
+
+  return (loc.getFilename() == lFile2 &&
+          theColumnBegin==loc.getColumnBegin() &&
+          theColumnEnd==loc.getColumnEnd() &&
+          theLineBegin==loc.getLineBegin() &&
+          theLineEnd==loc.getLineEnd());
+}
+
+
 } // namespace zorba

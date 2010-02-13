@@ -336,8 +336,8 @@ inline bool str_aURI(store::Item_t& result, const store::Item* aItem, xqpStringS
 inline bool str_QN(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqpStringStore_t str = doTrim(strval);
-  int32_t idx = str->indexOf(":");
-  int32_t lidx = str->lastIndexOf(":");
+  int32_t idx = str->bytePositionOf(":");
+  int32_t lidx = str->byteLastPositionOf(":", 1);
   if (idx != lidx)
     throwError(FORG0001, aErrorInfo);
 
@@ -352,7 +352,7 @@ inline bool str_QN(store::Item_t& result, const store::Item* aItem, xqpStringSto
   }
   else 
   {
-    lPrefix = str->substr(0, idx);
+    lPrefix = str->byteSubstr(0, idx);
 
     if (!GenericCast::instance()->castableToNCName(lPrefix))
       throwError(FORG0001, aErrorInfo);

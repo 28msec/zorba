@@ -191,25 +191,25 @@ String::byteEqual(const char* aString, unsigned int aBytes) const
 int
 String::indexOf(const char* pattern) const
 {
-  return m_string->indexOf( pattern );
+  return m_string->bytePositionOf(pattern, strlen(pattern), 0);
 }
 
 int
 String::lastIndexOf(const char* pattern) const
 {
-  return m_string->lastIndexOf( pattern );
+  return m_string->byteLastPositionOf(pattern, strlen(pattern));
 }
 
 bool
 String::endsWith(const char* pattern) const
 {
-  return m_string->endsWith( pattern );
+  return m_string->byteEndsWith(pattern, strlen(pattern));
 }
 
 bool
 String::startsWith(const char* pattern) const
 {
-  return m_string->byteStartsWith( pattern );
+  return m_string->byteStartsWith(pattern, strlen(pattern));
 }
 
 char
@@ -227,7 +227,7 @@ String::substring(unsigned aIndex) const
 String
 String::substring(unsigned int aIndex, unsigned int aLength) const
 {
-  return String(m_string->substr( aIndex, aLength ));
+  return String(m_string->byteSubstr(aIndex, aLength));
 }
 
 String
@@ -358,12 +358,15 @@ const String&
 String::escapeHtmlUri()
 {
   xqpStringStore_t res = m_string->escapeHtmlUri();
-  if (m_string != res) {
-    if (m_string != NULL) {
+  if (m_string != res) 
+  {
+    if (m_string != NULL) 
+    {
       RCHelper::removeReference(m_string);
     }
     m_string = res;
-    if (m_string != NULL) {
+    if (m_string != NULL) 
+    {
       RCHelper::addReference(m_string);
     }
   }
@@ -374,12 +377,15 @@ const String&
 String::iriToUri()
 {
   xqpStringStore_t res = m_string->iriToUri();
-  if (m_string != res) {
-    if (m_string != NULL) {
+  if (m_string != res) 
+  {
+    if (m_string != NULL) 
+    {
       RCHelper::removeReference(m_string);
     }
     m_string = res;
-    if (m_string != NULL) {
+    if (m_string != NULL) 
+    {
       RCHelper::addReference(m_string);
     }
   }
@@ -389,13 +395,17 @@ String::iriToUri()
 const String&
 String::encodeForUri()
 {
-  xqpStringStore_t res = m_string->encodeForUri();
-  if (m_string != res) {
-    if (m_string != NULL) {
+  xqpStringStore_t res;
+  m_string->encodeForUri(res);
+  if (m_string != res) 
+  {
+    if (m_string != NULL)
+    {
       RCHelper::removeReference(m_string);
     }
     m_string = res;
-    if (m_string != NULL) {
+    if (m_string != NULL)
+    {
       RCHelper::addReference(m_string);
     }
   }
@@ -405,9 +415,12 @@ String::encodeForUri()
 const String&
 String::decodeFromUri()
 {
-  xqpStringStore_t res = m_string->decodeFromUri();
-  if (m_string != res) {
-    if (m_string != NULL) {
+  xqpStringStore_t res;
+  m_string->decodeFromUri(res);
+  if (m_string != res) 
+  {
+    if (m_string != NULL) 
+    {
       RCHelper::removeReference(m_string);
     }
     m_string = res;

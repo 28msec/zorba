@@ -13,18 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "types/root_typemanager.h"
 #include "context/root_static_context.h"
 #include "context/namespace_context.h"
 #include "context/uri_resolver_wrapper.h"
 #include "context/standard_uri_resolvers.h"
+
+#include "types/root_typemanager.h"
+
 #include "system/globalenv.h"
+
+#include "compiler/parser/query_loc.h"
+
 #include "common/common.h"
 
 namespace zorba 
 {
 
-static const char *default_ns_initializers [] = 
+static const char* default_ns_initializers [] = 
 {
   "fn", XQUERY_FN_NS,
   "xml", XML_NS,
@@ -44,20 +49,28 @@ root_static_context::root_static_context() : static_context()
 
 void root_static_context::init() 
 {
+  QueryLoc loc;
+
   // must be initialized or there be assertions
   set_current_absolute_baseuri ("");
 
   // default xquery version is 1.1
   set_xquery_version(StaticContextConsts::xquery_version_1_1);
-  set_xpath1_0compatib_mode(StaticContextConsts::xpath2_0);
+  set_xpath_compatibility(StaticContextConsts::xpath2_0);
 
   const char** p = default_ns_initializers;
   for (; *p != NULL; p += 2)
-    bind_ns(p[0], p[1]);
+  {
+    xqpStringStore_t pfx = new xqpStringStore(p[0]);
+    xqpStringStore_t ns = new xqpStringStore(p[1]);
+    bind_ns(pfx, ns, loc);
+  }
 
-  set_default_elem_type_ns("");		
+  xqpStringStore_t elem_ns = new xqpStringStore("");
+  set_default_elem_type_ns(elem_ns, loc);		
 
-  set_default_function_ns(XQUERY_FN_NS);
+  xqpStringStore_t fn_ns = new xqpStringStore(XQUERY_FN_NS);
+  set_default_function_ns(fn_ns, loc);
 
   set_context_item_static_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
   set_default_collation_uri (W3C_CODEPT_COLLATION_NS);

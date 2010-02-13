@@ -186,16 +186,16 @@ static void format_number(xqpStringStore_t& str, long number, Modifier& modifier
 
   if (modifier.presentation_modifier->bytes() > 0 && modifier.presentation_modifier->byteAt(0) == '0')
   {
-    temp.append_in_place(NumConversions::longToStr(number));
+    temp.append_in_place(NumConversions::longToStr(number).c_str());
     while (temp.bytes() < modifier.presentation_modifier->bytes())
       temp = "0" + temp;
   }
   else // "1" or fallback
   {
-    temp.append_in_place(NumConversions::longToStr(number));
+    temp.append_in_place(NumConversions::longToStr(number).c_str());
   }
 
-  if (modifier.second_modifier->byteEqual("o"))
+  if (modifier.second_modifier->byteEqual("o", 1))
   {
     if ((number % 10) == 1 && (number % 100) != 11)
       temp.append_in_place("st");
@@ -211,7 +211,7 @@ static void format_number(xqpStringStore_t& str, long number, Modifier& modifier
     while (temp.bytes() < (unsigned int)modifier.min_width_modifier)
 	  temp = "0" + temp;
 
-  str->append_in_place(temp);
+  str->append_in_place(temp.c_str());
 }
 
 
@@ -233,14 +233,15 @@ static bool format_string(
     Modifier& modifier)
 {
   xqpString temp;
-  if (modifier.presentation_modifier->bytes() == 0 || modifier.presentation_modifier->byteEqual("n"))
+  if (modifier.presentation_modifier->bytes() == 0 ||
+      modifier.presentation_modifier->byteEqual("n", 1))
     temp.append_in_place(source.lowercase());
-  else if (modifier.presentation_modifier->byteEqual("N"))
+  else if (modifier.presentation_modifier->byteEqual("N", 1))
     temp.append_in_place(source.uppercase());
-  else if (modifier.presentation_modifier->byteEqual("Nn"))
+  else if (modifier.presentation_modifier->byteEqual("Nn", 2))
   {
-    temp.append_in_place(source.substr(0, 1)->uppercase());
-    temp.append_in_place(source.substr(1,source.size()-1)->lowercase());
+    temp.append_in_place(source.byteSubstr(0, 1)->uppercase());
+    temp.append_in_place(source.byteSubstr(1,source.size()-1)->lowercase());
   }
   else
     return false;
@@ -312,9 +313,10 @@ static void parse_presentation_modifier(
   xqpString modifier = xqpString("");
 
   if (position+2 < str->bytes() &&
-      (str->substr(position+1, 2)->byteEqual("Ww") ||  str->substr(position+1, 2)->byteEqual("Nn")))
+      (str->byteSubstr(position+1, 2)->byteEqual("Ww", 2) ||
+       str->byteSubstr(position+1, 2)->byteEqual("Nn", 2)))
   {
-    modifier.append_in_place(str->substr(position+1, 2));
+    modifier.append_in_place(str->byteSubstr(position+1, 2));
     position += 2;
   }
   else if (str->byteAt(position+1) == '1' || str->byteAt(position+1) == 'i' || str->byteAt(position+1) == 'I'

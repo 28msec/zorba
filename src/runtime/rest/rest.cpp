@@ -638,13 +638,20 @@ static xqpString buildKeyValuePair(Item_t& payload_data)
     return result;
   }
 
-  result = result + xqpString(name->getStringValue()->encodeForUri());
+  xqpStringStore_t tmp;
+  name->getStringValue()->encodeForUri(tmp);
+
+  result = result + xqpString(tmp);
 
   it = payload_data->getChildren();
   it->open();
   it->next(child);
+
   if (child && (child->getNodeKind() == store::StoreConsts::textNode))
-    result += "=" + xqpString(child->getStringValue()->encodeForUri());
+  {
+    child->getStringValue()->encodeForUri(tmp);
+    result += "=" + xqpString(tmp);
+  }
 
   return result;
 }

@@ -27,7 +27,6 @@ SET(CONTEXT_SRCS
     root_static_context.cpp
     standard_uri_resolvers.cpp
     uri_resolver_wrapper.cpp
-    context.cpp
     statically_known_collection.cpp
     dynamic_loader.cpp
     sctx_map_iterator.cpp

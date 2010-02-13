@@ -44,6 +44,7 @@
 
 #include "types/casting.h"
 #include "types/typeops.h"
+#include "types/typeimpl.h"
 
 #include "store/api/store.h"
 #include "store/api/iterator.h"

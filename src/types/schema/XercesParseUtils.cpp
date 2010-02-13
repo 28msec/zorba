@@ -1340,7 +1340,7 @@ bool XercesParseUtils::parseXSQName(
     xqpStringStore_t lPrefix;
     xqpStringStore_t lLocal;
 
-    int32_t lIndex = textValue2->indexOf(":");
+    int32_t lIndex = textValue2->bytePositionOf(":");
     
     if (lIndex == 0) 
     {
@@ -1349,8 +1349,8 @@ bool XercesParseUtils::parseXSQName(
     }
     else if ( lIndex > 0 )
     {
-      lPrefix = textValue2->substr(0, lIndex);
-      lLocal = textValue2->substr(lIndex + 1, textValue2->bytes());
+      lPrefix = textValue2->byteSubstr(0, lIndex);
+      lLocal = textValue2->byteSubstr(lIndex + 1, textValue2->bytes());
     } 
     
     return factory->createQName(result, lNamespace, lPrefix, lLocal);

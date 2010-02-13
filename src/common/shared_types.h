@@ -49,7 +49,10 @@ class XQPCollator;
 class QueryLoc;
 
 class function;
+typedef rchandle<function> function_t;
+
 class user_function;
+
 class ItemIterator;
 
 class CompilerCB;

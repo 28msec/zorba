@@ -22,9 +22,14 @@
 
 namespace zorba {
 
-DecimalFormat::DecimalFormat(bool _isDefault, store::Item_t _formatName, const param_vector_type& _paramVector)
+DecimalFormat::DecimalFormat(
+    bool isDefault,
+    const store::Item_t& qname,
+    const param_vector_type& params)
   :
-  isDefault(_isDefault), formatName(_formatName), paramVector(_paramVector)
+  theIsDefault(isDefault),
+  theName(qname),
+  theParams(params)
 {
 }
 

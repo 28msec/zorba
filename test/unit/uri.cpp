@@ -21,18 +21,18 @@
 
 struct URITestEntry
 {
-  zorba::xqpString base;
-  zorba::xqpString uri;
-  zorba::xqpString text;
-  zorba::xqpString scheme;
-  int              port;
-  zorba::xqpString fragment;
-  zorba::xqpString host;
-  zorba::xqpString regbased_authority;
-  zorba::xqpString path;
-  zorba::xqpString userinfo;
-  zorba::xqpString query;
-  zorba::xqpString path_notation;
+  zorba::xqpStringStore base;
+  zorba::xqpStringStore uri;
+  zorba::xqpStringStore text;
+  zorba::xqpStringStore scheme;
+  int                   port;
+  zorba::xqpStringStore fragment;
+  zorba::xqpStringStore host;
+  zorba::xqpStringStore regbased_authority;
+  zorba::xqpStringStore path;
+  zorba::xqpStringStore userinfo;
+  zorba::xqpStringStore query;
+  zorba::xqpStringStore path_notation;
 };
 
 using namespace zorba;
@@ -47,7 +47,6 @@ int uri(int argc, char* argv[])
     std::cout << foo << " ends with " << "/.." << std::endl;
   if (foo.endsWith("/\\.\\."))
     std::cout << foo << " ends with " << "/\\.\\." << std::endl;
-
 
   URITestEntry tests[] = 
   {
@@ -574,74 +573,134 @@ int uri(int argc, char* argv[])
 
 
   const unsigned int test_count = sizeof(tests) / sizeof(tests[0]);
-  try {
-    for (unsigned int i = 0; i < test_count; ++i) {
-      std::cout << "executing test number " << i << " with uri " << tests[i].uri << std::endl;
+
+  try 
+  {
+    for (unsigned int i = 0; i < test_count; ++i)
+    {
+      std::cout << "executing test number " << i << " with uri "
+                << tests[i].uri.c_str() << std::endl;
 
       zorba::URI uri;
       zorba::URI relativized;
       zorba::URI base;
-      if (tests[i].base.empty()) {
-        uri = zorba::URI(tests[i].uri);
-      } else  {
-        base = zorba::URI(tests[i].base);
-        uri = zorba::URI(base, tests[i].uri);
+
+      if (tests[i].base.empty()) 
+      {
+        uri = zorba::URI(&tests[i].uri);
+      }
+      else
+      {
+        base = zorba::URI(&tests[i].base);
+        uri = zorba::URI(base, &tests[i].uri);
         relativized = zorba::URI(uri, base);
       }
-      if (uri.toString() != tests[i].text)  {
-        std::cerr << "uri text " << uri.toString() << " is not equal to " << tests[i].text << std::endl;
+
+      if (!uri.toString()->byteEqual(&tests[i].text))  
+      {
+        std::cerr << "uri text " << uri.toString()->c_str() << " is not equal to "
+                  << tests[i].text.c_str() << std::endl;
         return 2;
       }
-      if (uri.get_scheme() != tests[i].scheme)
+
+      xqpStringStore_t scheme = uri.get_scheme();
+      if (!scheme->byteEqual(&tests[i].scheme))
         return 3;
-      if (uri.get_port() != tests[i].port) {
-        std::cerr << "port " << uri.get_port() << " is not equal to " << tests[i].port << std::endl;
+
+      if (uri.get_port() != tests[i].port) 
+      {
+        std::cerr << "port " << uri.get_port() << " is not equal to "
+                  << tests[i].port << std::endl;
         return 4;
       }
-      if (uri.get_fragment() != tests[i].fragment) {
-        std::cerr << "fragment " << uri.get_fragment() << " is not equal to " << tests[i].fragment << std::endl;
+
+      xqpStringStore_t frag;
+      uri.get_fragment(frag);
+      if (!frag->byteEqual(&tests[i].fragment)) 
+      {
+        std::cerr << "fragment " << frag->c_str() << " is not equal to "
+                  << tests[i].fragment.c_str() << std::endl;
         return 5;
       }
-      if (uri.get_host() != tests[i].host) {
-        std::cerr << "host " << uri.get_host() << " is not equal to " << tests[i].host << std::endl;
+
+      if (!uri.get_host()->byteEqual(&tests[i].host)) 
+      {
+        std::cerr << "host " << uri.get_host()->c_str() << " is not equal to "
+                  << tests[i].host.c_str() << std::endl;
         return 6;
       }
-      if (uri.get_reg_based_authority() != tests[i].regbased_authority) {
-        std::cerr << "regbased_authority " << uri.get_reg_based_authority() << " is not equal to " 
-                  << tests[i].regbased_authority << std::endl;
+
+      xqpStringStore_t auth;
+      uri.get_reg_based_authority(auth);
+      if (!auth->byteEqual(&tests[i].regbased_authority)) 
+      {
+        std::cerr << "regbased_authority " << auth->c_str()
+                  << " is not equal to " 
+                  << tests[i].regbased_authority.c_str() << std::endl;
         return 7;
       }
-      if (uri.get_user_info() != tests[i].userinfo) {
-        std::cerr << "userinfo " << uri.get_user_info() << " is not equal to " << tests[i].userinfo << std::endl;
+
+      xqpStringStore_t user;
+      uri.get_user_info(user);
+      if (! user->byteEqual(&tests[i].userinfo)) 
+      {
+        std::cerr << "userinfo " << user->c_str() << " is not equal to "
+                  << tests[i].userinfo.c_str() << std::endl;
         return 8;
       }
-      if (uri.get_path() != tests[i].path) {
-        std::cerr << "path " << uri.get_path() << " is not equal to " << tests[i].path << std::endl;
+
+      xqpStringStore_t path;
+      uri.get_path(path);
+      if (!path->byteEqual(&tests[i].path)) 
+      {
+        std::cerr << "path " << path->c_str() << " is not equal to "
+                  << tests[i].path.c_str() << std::endl;
         return 9;
       }
-      if (uri.get_query() != tests[i].query) {
-        std::cerr << "query " << uri.get_query() << " is not equal to " << tests[i].query << std::endl;
+
+      xqpStringStore_t query;
+      uri.get_query(query);
+      if (!query->byteEqual(&tests[i].query))
+      {
+        std::cerr << "query " << query->c_str() << " is not equal to "
+                  << tests[i].query.c_str() << std::endl;
         return 10;
       }
-      if (!tests[i].base.empty() && uri.get_path().indexOf(base.get_path()) == 0) {
-        if (relativized.toString() != tests[i].uri) {
-          std::cerr << "relativized uri " << relativized.toString() << " is not equal to relative " << tests[i].uri 
-                    << " which was relativized using base " << tests[i].base << std::endl;
+
+      xqpStringStore_t base_path;
+      base.get_path(base_path);
+
+      if (!tests[i].base.empty() && path->positionOf(base_path, NULL) == 0) 
+      {
+        if (!relativized.toString()->byteEqual(&tests[i].uri)) 
+        {
+          std::cerr << "relativized uri " << relativized.toString()->c_str()
+                    << " is not equal to relative " << tests[i].uri.c_str() 
+                    << " which was relativized using base " << tests[i].base.c_str()
+                    << std::endl;
           return 11;
-        } else {
-          std::cerr << "relativized uri " << relativized.toString() << std::endl;
+        }
+        else
+        {
+          std::cerr << "relativized uri " << relativized.toString()->c_str()
+                    << std::endl;
         }
       }
-      if (uri.toPathNotation() != tests[i].path_notation) {
-        std::cerr << "path notation " << uri.toPathNotation() << " is not equal to " 
-                  << tests[i].path_notation << std::endl;
+
+      if (!uri.toPathNotation()->byteEqual(&tests[i].path_notation)) 
+      {
+        std::cerr << "path notation " << uri.toPathNotation()->c_str()
+                  << " is not equal to " 
+                  << tests[i].path_notation.c_str() << std::endl;
         return 12;
       }
-      std::cout << "result: " << uri.toString() << std::endl;
-      std::cout << "path notation: " << uri.toPathNotation() << std::endl;
+      std::cout << "result: " << uri.toString()->c_str() << std::endl;
+      std::cout << "path notation: " << uri.toPathNotation()->c_str() << std::endl;
       std::cout << "--------------------------------------------------" << std::endl;
     }
-  } catch (zorba::error::ZorbaError & e) {
+  }
+  catch (zorba::error::ZorbaError & e)
+  {
     std::cerr << e.theDescription << std::endl;
     return 11;
   }

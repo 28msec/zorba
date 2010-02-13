@@ -353,8 +353,9 @@ bool BasicItemFactory::createDateTime(
 {
   std::auto_ptr<DateTimeItemNaive> dtin(new DateTimeItemNaive());
   int err = DateTime::createDateTime(date, time, dtin->theValue);
-  result = dtin.get();
-  if (err == 0) {
+  if (err == 0) 
+  {
+    result = dtin.get();
     dtin.release();
   } // destroy object if error occured
   return err == 0;

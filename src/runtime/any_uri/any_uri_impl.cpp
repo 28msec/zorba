@@ -91,7 +91,7 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       try 
       {
         resolvedURI = URI(baseURI, &*strRelative, true); // resolve with baseURI or return strRelative if it's a valid absolute URI
-        strResult = resolvedURI.toString().getStore();
+        strResult = resolvedURI.toString();
       }
       catch (error::ZorbaError& e) 
       {

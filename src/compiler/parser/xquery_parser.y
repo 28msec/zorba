@@ -1126,35 +1126,34 @@ VFO_Decl
     |   OptionDecl
     ;
 
-// [6e]
-DecimalFormatDecl
-    :   DECLARE DEFAULT DECIMAL_FORMAT DecimalFormatParamList
-        {
-            $$ = new DecimalFormatNode( LOC(@$), $4 );
-            delete $4;
-        }
-    |   DECLARE DECIMAL_FORMAT QNAME DecimalFormatParamList
-        {
-            $$ = new DecimalFormatNode(
-                LOC(@$), static_cast<QName*>($3)->get_qname(), $4
-            );
-            delete $3;
-            delete $4;
-        }
-    ;
+
+// [6e] 
+DecimalFormatDecl 
+    :  DECLARE  DEFAULT  DECIMAL_FORMAT  DecimalFormatParamList
+       {
+         $$ = new DecimalFormatNode(LOC(@$), $4);
+         delete $4;
+       }
+    |  DECLARE  DECIMAL_FORMAT  QNAME  DecimalFormatParamList
+       {
+         $$ = new DecimalFormatNode(LOC(@$), static_cast<QName*>($3), $4);
+         delete $4;
+       }
+;
+
 
 DecimalFormatParamList
     :   DecimalFormatParam
         {
-            $$ = new vector<string_pair_t>();
-            $$->push_back( *$1 );
-            delete $1;
+          $$ = new vector<string_pair_t>();
+          $$->push_back( *$1 );
+          delete $1;
         }
     |   DecimalFormatParamList DecimalFormatParam
         {
-            $1->push_back( *$2 );
-            delete $2;
-            $$ = $1;
+          $1->push_back( *$2 );
+          delete $2;
+          $$ = $1;
         }
     ;
 
@@ -1218,13 +1217,13 @@ NamespaceDecl
 BoundarySpaceDecl
     :   DECLARE BOUNDARY_SPACE PRESERVE
         {
-            $$ = new BoundarySpaceDecl(
+          $$ = new BoundarySpaceDecl(
                 LOC(@$), StaticContextConsts::preserve_space
             );
         }
     |   DECLARE BOUNDARY_SPACE STRIP
         {
-            $$ = new BoundarySpaceDecl(
+          $$ = new BoundarySpaceDecl(
                 LOC(@$), StaticContextConsts::strip_space
             );
         }
@@ -1234,13 +1233,13 @@ BoundarySpaceDecl
 DefaultNamespaceDecl
     :   DECLARE DEFAULT ELEMENT NAMESPACE URI_LITERAL
         {
-            $$ = new DefaultNamespaceDecl(
+          $$ = new DefaultNamespaceDecl(
                 LOC(@$), ParseConstants::ns_element_default, SYMTAB($5)
             );
         }
     |   DECLARE DEFAULT FUNCTION NAMESPACE URI_LITERAL
         {
-            $$ = new DefaultNamespaceDecl(
+          $$ = new DefaultNamespaceDecl(
                 LOC(@$), ParseConstants::ns_function_default, SYMTAB($5)
             );
         }
@@ -1250,7 +1249,7 @@ DefaultNamespaceDecl
 OptionDecl
     :   DECLARE OPTION QNAME STRING_LITERAL
         {
-            $$ = new OptionDecl(
+          $$ = new OptionDecl(
                 LOC(@$), static_cast<QName*>($3), SYMTAB($4)
             );
         }
@@ -1260,7 +1259,7 @@ OptionDecl
 FTOptionDecl
     :   DECLARE FT_OPTION FTMatchOptions
         {
-            $$ = new FTOptionDecl( LOC(@$), $3 );
+          $$ = new FTOptionDecl( LOC(@$), $3 );
         }
     ;
 
@@ -1268,13 +1267,13 @@ FTOptionDecl
 OrderingModeDecl
     :   DECLARE ORDERING ORDERED
         {
-            $$ = new OrderingModeDecl(
+          $$ = new OrderingModeDecl(
                 LOC(@$), StaticContextConsts::ordered
             );
         }
     |   DECLARE ORDERING UNORDERED
         {
-            $$ = new OrderingModeDecl(
+          $$ = new OrderingModeDecl(
                 LOC(@$), StaticContextConsts::unordered
             );
         }
@@ -1285,12 +1284,12 @@ OrderingModeDecl
 EmptyOrderDecl
     :   DECLARE DEFAULT ORDER _EMPTY GREATEST
         {
-            $$ = new EmptyOrderDecl( LOC(@$),
+          $$ = new EmptyOrderDecl( LOC(@$),
                                 StaticContextConsts::empty_greatest);
         }
     |   DECLARE DEFAULT ORDER _EMPTY LEAST
         {
-            $$ = new EmptyOrderDecl( LOC(@$),
+          $$ = new EmptyOrderDecl( LOC(@$),
                                 StaticContextConsts::empty_least);
         }
     ;
@@ -1300,25 +1299,25 @@ EmptyOrderDecl
 CopyNamespacesDecl :
         DECLARE COPY_NAMESPACES  PRESERVE  COMMA  INHERIT
         {
-            $$ = new CopyNamespacesDecl( LOC(@$),
+          $$ = new CopyNamespacesDecl( LOC(@$),
                                 StaticContextConsts::preserve_ns,
                                 StaticContextConsts::inherit_ns);
         }
     | DECLARE COPY_NAMESPACES  PRESERVE  COMMA  NO_INHERIT
         {
-            $$ = new CopyNamespacesDecl( LOC(@$),
+          $$ = new CopyNamespacesDecl( LOC(@$),
                                 StaticContextConsts::preserve_ns,
                                 StaticContextConsts::no_inherit_ns);
         }
     | DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  INHERIT
         {
-            $$ = new CopyNamespacesDecl( LOC(@$),
+          $$ = new CopyNamespacesDecl( LOC(@$),
                                 StaticContextConsts::no_preserve_ns,
                                 StaticContextConsts::inherit_ns);
         }
     | DECLARE COPY_NAMESPACES  NO_PRESERVE  COMMA  NO_INHERIT
         {
-            $$ = new CopyNamespacesDecl( LOC(@$),
+          $$ = new CopyNamespacesDecl( LOC(@$),
                                 StaticContextConsts::no_preserve_ns,
                                 StaticContextConsts::no_inherit_ns);
         }
@@ -1335,7 +1334,7 @@ CopyNamespacesDecl :
 DefaultCollationDecl
     :   DECLARE DEFAULT COLLATION URI_LITERAL
         {
-            $$ = new DefaultCollationDecl( LOC(@$), SYMTAB($4) );
+          $$ = new DefaultCollationDecl( LOC(@$), SYMTAB($4) );
         }
     ;
 
@@ -1343,7 +1342,7 @@ DefaultCollationDecl
 BaseURIDecl
     :   DECLARE BASE_URI URI_LITERAL
         {
-            $$ = new BaseURIDecl( LOC(@$), SYMTAB($3) );
+          $$ = new BaseURIDecl( LOC(@$), SYMTAB($3) );
         }
     ;
 
@@ -1351,11 +1350,11 @@ BaseURIDecl
 SchemaImport
     :   IMPORT SCHEMA URI_LITERAL
         {
-            $$ = new SchemaImport( LOC(@$), NULL, SYMTAB($3), NULL );
+          $$ = new SchemaImport( LOC(@$), NULL, SYMTAB($3), NULL );
         }
     |   IMPORT SCHEMA SchemaPrefix URI_LITERAL
         {
-            $$ = new SchemaImport(
+          $$ = new SchemaImport(
                 LOC(@$),
                 dynamic_cast<SchemaPrefix*>($3),
                 SYMTAB($4),
@@ -1364,7 +1363,7 @@ SchemaImport
         }
     |   IMPORT SCHEMA URI_LITERAL AT URILiteralList
         {
-            $$ = new SchemaImport(
+          $$ = new SchemaImport(
                 LOC(@$),
                 NULL,
                 SYMTAB($3),
@@ -1373,7 +1372,7 @@ SchemaImport
         }
     |   IMPORT SCHEMA SchemaPrefix URI_LITERAL AT URILiteralList
         {
-            $$ = new SchemaImport(
+          $$ = new SchemaImport(
                 LOC(@$),
                 dynamic_cast<SchemaPrefix*>($3),
                 SYMTAB($4),
@@ -1413,36 +1412,32 @@ SchemaPrefix
 
 // [23]
 ModuleImport :
-        IMPORT MODULE URI_LITERAL
-        {
-            $$ = new ModuleImport(
-                LOC(@$), false, SYMTAB($3), NULL
-            );
-            dynamic_cast<ModuleImport*>($$)->setComment( SYMTAB($2) );
-        }
-    |   IMPORT MODULE NAMESPACE NCNAME EQUALS URI_LITERAL
-        {
-            $$ = new ModuleImport(
-                LOC(@$), false, SYMTAB($4), SYMTAB($6), NULL
-            );
-            dynamic_cast<ModuleImport*>($$)->setComment( SYMTAB($2) );
-        }
-    |   IMPORT MODULE URI_LITERAL AT URILiteralList
-        {
-            $$ = new ModuleImport(
-                LOC(@$), false, SYMTAB($3), dynamic_cast<URILiteralList*>($5)
-            );
-            dynamic_cast<ModuleImport*>($$)->setComment( SYMTAB($2) );
-        }
-    |   IMPORT MODULE NAMESPACE NCNAME EQUALS URI_LITERAL AT URILiteralList
-        {
-            $$ = new ModuleImport(
-                LOC(@$), false, SYMTAB($4), SYMTAB($6),
-                dynamic_cast<URILiteralList*>($8)
-            );
-            dynamic_cast<ModuleImport*>($$)->setComment( SYMTAB($2) );
-        }
-    ;
+    IMPORT MODULE  URI_LITERAL
+    {
+      $$ = new ModuleImport(LOC(@$), SYMTAB($3), NULL);
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+    }
+  | IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL
+    {
+      $$ = new ModuleImport(LOC(@$), SYMTAB($4), SYMTAB($6), NULL);
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+    }
+  | IMPORT MODULE URI_LITERAL AT URILiteralList
+    {
+      $$ = new ModuleImport(LOC(@$), 
+                            SYMTAB($3),
+                            dynamic_cast<URILiteralList*>($5));
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+    }
+  | IMPORT MODULE  NAMESPACE  NCNAME  EQUALS  URI_LITERAL  AT  URILiteralList
+    {
+      $$ = new ModuleImport(LOC(@$),
+                            SYMTAB($4),
+                            SYMTAB($6),
+                            dynamic_cast<URILiteralList*>($8));
+      dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
+    }
+;
 
 // ContextItemDecl
 
@@ -1494,44 +1489,38 @@ CtxItemDecl4
 // [24] VarDecl
 // ------------
 
-VarNameAndType
-    :   DOLLAR QNAME
-        {
-            $$ = new VarNameAndType(
-                static_cast<QName*>($2)->get_qname(), NULL
-            );
-            delete $2;
-        }
-    |   DOLLAR QNAME TypeDeclaration
-        {
-            $$ = new VarNameAndType(
-                static_cast<QName*>($2)->get_qname(),
-                dynamic_cast<SequenceType*>($3)
-            );
-            delete $2;
-        }
-    ;
+VarNameAndType :
+    DOLLAR QNAME
+    {
+      $$ = new VarNameAndType(static_cast<QName*>($2), NULL);
+    }
+  | DOLLAR QNAME TypeDeclaration
+    {
+      $$ = new VarNameAndType(static_cast<QName*>($2),
+                              dynamic_cast<SequenceType *>($3));
+    }
+  ;
 
-VarDecl
-    :   DECLARE VARIABLE VarNameAndType GETS ExprSingle
-        {
-            std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType*>($3));
-            $$ = new VarDecl( LOC(@$), nt->name, nt->type, $5 );
-            dynamic_cast<VarDecl*>($$)->setComment( SYMTAB($1) );
-        }
-    |   DECLARE VARIABLE VarNameAndType EXTERNAL
-        {
-            std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType*>($3));
-            $$ = new VarDecl( LOC(@$), nt->name, nt->type, NULL, true );
-            dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1) );
-        }
-    |   DECLARE VARIABLE VarNameAndType EXTERNAL GETS ExprSingle
-        {
-            std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType*>($3));
-            $$ = new VarDecl( LOC(@$), nt->name, nt->type, $6, true );
-            dynamic_cast<VarDecl*>($$)->setComment( SYMTAB($1) );
-        }
-    ;
+VarDecl :
+    DECLARE VARIABLE VarNameAndType GETS ExprSingle
+    {
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
+      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, $5);
+      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+    }
+|   DECLARE  VARIABLE  VarNameAndType EXTERNAL
+    {
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
+      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, NULL, true);
+      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+    }
+|   DECLARE  VARIABLE  VarNameAndType EXTERNAL GETS ExprSingle
+    {
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
+      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, $6, true);
+      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+    }
+;
 
 DeclPropertyList
     :   DeclProperty
@@ -1892,22 +1881,24 @@ BlockVarDeclList
         }
     ;
 
-BlockVarDecl
-    :   VarNameAndType
-        {
-            std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType*>($1));
-            VarDecl *vd = new VarDecl( LOC(@$), nt->name, nt->type, NULL );
-            vd->set_global( false );
-            $$ = vd;
-        }
-    |   VarNameAndType GETS ExprSingle
-        {
-            std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType*>($1));
-            VarDecl *vd = new VarDecl( LOC(@$), nt->name, nt->type, $3 );
-            vd->set_global( false );
-            $$ = vd;
+
+BlockVarDecl:
+    VarNameAndType
+    {
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
+      VarDecl* vd = new VarDecl(LOC(@$), nt->theName, nt->theType, NULL);
+      vd->set_global(false);
+      $$ = vd;
+    }
+  | VarNameAndType GETS ExprSingle
+    {
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
+      VarDecl* vd = new VarDecl(LOC(@$), nt->theName, nt->theType, $3);
+      vd->set_global(false);
+      $$ = vd;
         }
     ;
+
 
 AssignExpr
     :   SET DOLLAR QNAME GETS ExprSingle
@@ -1969,103 +1960,100 @@ FunctionDecl
         }
   ;
 
-FunctionDecl2
-    :   FunctionDecl3
-        {
-            $$ = $1;
-        }
-    |   SIMPLE FunctionDecl3
-        {
-            $$ = $2;
-        }
-    |   UPDATING FunctionDeclUpdating
-        {
-            FunctionDecl *fd = dynamic_cast<FunctionDecl*>($2);
-            fd->type = fd->type == ParseConstants::fn_extern ?
-                ParseConstants::fn_extern_update :
-                ParseConstants::fn_update;
-            $$ = fd;
-        }
-    |   SEQUENTIAL FunctionDecl4
-        {
-            $$ = $2;
-        }
-    ;
+FunctionDecl2 :
+    FunctionDecl3
+    {
+      $$ = $1;
+    }
+  | SIMPLE FunctionDecl3
+    {
+      $$ = $2;
+    }
+  | UPDATING FunctionDeclUpdating
+    {
+      FunctionDecl *fd = dynamic_cast<FunctionDecl*>($2);
+      fd->type = (fd->type == ParseConstants::fn_extern ?
+                  ParseConstants::fn_extern_update :
+                  ParseConstants::fn_update);
+      $$ = fd;
+    }
+  | SEQUENTIAL FunctionDecl4
+    {
+      $$ = $2;
+    }
+;
 
-FunctionDecl3
-    :   FUNCTION QNAME FunctionSig BracedExpr
-        {
-            $$ = new FunctionDecl(
-                LOC(@$),
-                    static_cast<QName*>($2),
-                    &* $3->param, &* $3->ret,
-                    $4,
-                    ParseConstants::fn_read
-                );
-            delete $3;
-        }
-    |   FUNCTION QNAME FunctionSig EXTERNAL
-        {
-            $$ = new FunctionDecl(
-                LOC(@$),
-                static_cast<QName*>($2),
-                &* $3->param, &* $3->ret,
-                NULL,
-                ParseConstants::fn_extern
-            );
-            delete $3;
-        }
-    ;
 
-FunctionDeclUpdating
-    :   FUNCTION QNAME FunctionSig LBRACE ConcatExpr RBRACE
-        {
-            $$ = new FunctionDecl(
-                LOC(@$),
-                static_cast<QName*>($2),
-                &* $3->param, &* $3->ret,
-                $5,
-                ParseConstants::fn_read
-            );
-            delete $3;
-        }
-    |   FUNCTION QNAME FunctionSig EXTERNAL
-        {
-            $$ = new FunctionDecl(
-                LOC(@$),
-                static_cast<QName*>($2),
-                &* $3->param, &* $3->ret,
-                NULL,
-                ParseConstants::fn_extern
-            );
-            delete $3;
-        }
-    ;
-
-FunctionDecl4
-    :   FUNCTION QNAME FunctionSig Block
-        {
-            $$ = new FunctionDecl(
-                LOC(@$),
-                static_cast<QName*>($2),
-                &* $3->param, &* $3->ret,
-                $4,
-                ParseConstants::fn_sequential
-            );
-            delete $3;
-        }
-    |   FUNCTION QNAME FunctionSig EXTERNAL
-        {
-            $$ = new FunctionDecl(
-                LOC(@$),
-                static_cast<QName*>($2),
-                &* $3->param, &* $3->ret,
-                NULL,
-                ParseConstants::fn_extern_sequential
-            );
-            delete $3;
-        }
+FunctionDecl3 :
+    FUNCTION QNAME FunctionSig BracedExpr
+    {
+      $$ = new FunctionDecl(LOC (@$),
+                            static_cast<QName*>($2),
+                            &* $3->param,
+                            &* $3->ret,
+                            $4,
+                            ParseConstants::fn_read);
+      delete $3;
+    }
+  | FUNCTION QNAME FunctionSig EXTERNAL
+    {
+      $$ = new FunctionDecl(LOC (@$),
+                            static_cast<QName*>($2),
+                            &* $3->param,
+                            &* $3->ret,
+                            NULL,
+                            ParseConstants::fn_extern);
+      delete $3;
+    }
   ;
+
+
+FunctionDecl4 :
+    FUNCTION QNAME FunctionSig Block
+    {
+      $$ = new FunctionDecl(LOC (@$),
+                            static_cast<QName*>($2),
+                            &* $3->param,
+                            &* $3->ret,
+                            $4,
+                            ParseConstants::fn_sequential);
+      delete $3;
+    }
+  | FUNCTION QNAME FunctionSig EXTERNAL
+    {
+      $$ = new FunctionDecl(LOC (@$),
+                            static_cast<QName*>($2),
+                            &* $3->param,
+                            &* $3->ret,
+                            NULL,
+                            ParseConstants::fn_extern_sequential);
+      delete $3;
+    }
+  ;
+
+
+FunctionDeclUpdating :
+    FUNCTION QNAME FunctionSig LBRACE ConcatExpr RBRACE
+    {
+      $$ = new FunctionDecl(LOC (@$),
+                            static_cast<QName*>($2),
+                            &* $3->param, &* $3->ret,
+                            $5,
+                            ParseConstants::fn_read);
+      delete $3;
+    }
+  | FUNCTION QNAME FunctionSig EXTERNAL
+    {
+      $$ = new FunctionDecl(LOC (@$),
+                            static_cast<QName*>($2),
+                            &* $3->param,
+                            &* $3->ret,
+                            NULL,
+                            ParseConstants::fn_extern);
+      delete $3;
+    }
+  ;
+
 
 // [27]
 ParamList
@@ -2083,25 +2071,22 @@ ParamList
         }
     ;
 
-// [28]
-Param
-    :   DOLLAR QNAME
-        {
-            $$ = new Param(
-                LOC(@$), static_cast<QName*>($2)->get_qname(), NULL
-            );
-        delete $2;
-        }
-    |   DOLLAR QNAME TypeDeclaration
-        {
-            $$ = new Param(
-                LOC(@$),
-                static_cast<QName*>($2)->get_qname(),
-                dynamic_cast<SequenceType*>($3)
-            );
-            delete $2;
-        }
-    ;
+
+// [28] Param
+// ----------
+Param :
+    DOLLAR  QNAME
+    {
+      $$ = new Param(LOC(@$), static_cast<QName*>($2), NULL);
+    }
+  | DOLLAR  QNAME  TypeDeclaration
+    {
+      $$ = new Param(LOC(@$),
+                     static_cast<QName*>($2),
+                     dynamic_cast<SequenceType *>($3));
+    }
+;
+
 
 // [29]
 EnclosedExpr
@@ -2273,44 +2258,39 @@ FLWORWinCond
                 $1 == parser::the_start, $1 == parser::the_only_end
             );
         }
-    ;
+;
 
-WindowClause
-    :   FOR WindowType WindowVarDecl FLWORWinCond FLWORWinCond
-        {
-            $$ = new WindowClause(
-                LOC(@$),
-                ($2 == parser::the_tumbling) ?
-                    WindowClause::tumbling_window :
-                    WindowClause::sliding_window,
-                dynamic_cast<WindowVarDecl*>($3),
-                dynamic_cast<FLWORWinCond*>($4),
-                dynamic_cast<FLWORWinCond*>($5)
-            );
-        }
-    |   FOR WindowType WindowVarDecl FLWORWinCond
-        {
-            $$ = new WindowClause(
-                LOC(@$),
-                ($2 == parser::the_tumbling) ?
-                    WindowClause::tumbling_window :
-                    WindowClause::sliding_window,
-                dynamic_cast<WindowVarDecl*>($3),
-                dynamic_cast<FLWORWinCond*>($4),
-                NULL
-            );
-        }
-    ;
 
-CountClause
-    :   COUNT DOLLAR QNAME
-        {
-            $$ = new CountClause(
-                LOC(@$), static_cast<QName*>($3)->get_qname()
-            );
-            delete $3;
-        }
-    ;
+WindowClause :
+    FOR WindowType WindowVarDecl FLWORWinCond FLWORWinCond
+    {
+      $$ = new WindowClause (LOC (@$),
+                             ($2 == parser::the_tumbling ?
+                              WindowClause::tumbling_window :
+                              WindowClause::sliding_window),
+                             dynamic_cast<WindowVarDecl *> ($3),
+                             dynamic_cast<FLWORWinCond *> ($4),
+                             dynamic_cast<FLWORWinCond *> ($5));
+    }
+  | FOR WindowType WindowVarDecl FLWORWinCond
+    {
+      $$ = new WindowClause (LOC (@$),
+                             ($2 == parser::the_tumbling ?
+                              WindowClause::tumbling_window :
+                              WindowClause::sliding_window),
+                             dynamic_cast<WindowVarDecl *> ($3),
+                             dynamic_cast<FLWORWinCond *> ($4), NULL);
+    }
+;
+
+
+CountClause :
+    COUNT DOLLAR QNAME
+    {
+      $$ = new CountClause(LOC(@$), static_cast<QName*>($3));
+    }
+;
+
 
 // [33b]
 ForLetWinClause
@@ -2378,122 +2358,98 @@ VarInDeclList
         }
     ;
 
-// [34b]
-VarInDecl
-    :   QNAME _IN ExprSingle
-        {
-            $$ = new VarInDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(), NULL, NULL, NULL, $3
-            );
-            delete $1;
-        }
-    |   QNAME TypeDeclaration _IN ExprSingle
-        {
-            $$ = new VarInDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                dynamic_cast<SequenceType*>($2),
-                NULL, NULL,
-                $4
-            );
-            delete $1;
-        }
-    |   QNAME PositionalVar _IN ExprSingle
-        {
-            $$ = new VarInDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                NULL,
-                dynamic_cast<PositionalVar*>($2),
-                NULL,
-                $4
-            );
-            delete $1;
-        }
-    |   QNAME TypeDeclaration PositionalVar _IN ExprSingle
-        {
-            $$ = new VarInDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                dynamic_cast<SequenceType *>($2),
-                dynamic_cast<PositionalVar*>($3),
-                NULL,
-                $5
-            );
-            delete $1;
-        }
-    /* full-text extensions */
-    |   QNAME FTScoreVar _IN ExprSingle
-        {
-            $$ = new VarInDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                NULL, NULL,
-                dynamic_cast<FTScoreVar*>($2),
-                $4
-            );
-            delete $1;
-        }
-    |   QNAME TypeDeclaration FTScoreVar _IN ExprSingle
-        {
-            $$ = new VarInDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                dynamic_cast<SequenceType *>($2),
-                NULL,
-                dynamic_cast<FTScoreVar*>($3),
-                $5
-            );
-        delete $1;
-        }
-    |   QNAME PositionalVar FTScoreVar _IN ExprSingle
-        {
-            $$ = new VarInDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                NULL,
-                dynamic_cast<PositionalVar*>($2),
-                dynamic_cast<FTScoreVar*>($3),
-                $5
-            );
-        delete $1;
-        }
-    |   QNAME TypeDeclaration PositionalVar FTScoreVar _IN ExprSingle
-        {
-            $$ = new VarInDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                dynamic_cast<SequenceType*>($2),
-                dynamic_cast<PositionalVar*>($3),
-                dynamic_cast<FTScoreVar*>($4),
-                $6
-            );
-            delete $1;
-        }
-    ;
 
-// [35]
-PositionalVar
-    :   AT DOLLAR QNAME
-        {
-            $$ = new PositionalVar(
-                LOC(@$), static_cast<QName*>($3)->get_qname()
-            );
-            delete $3;
-        }
-    ;
+// [34b] VarInDecl
+// ---------------
+VarInDecl :
+    QNAME  _IN  ExprSingle
+    {
+      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), NULL, NULL, NULL, $3);
+    }
+  | QNAME  TypeDeclaration  _IN  ExprSingle
+    {
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         dynamic_cast<SequenceType *>($2),
+                         NULL,NULL,
+                         $4);
+    }
+  | QNAME  PositionalVar  _IN  ExprSingle
+    {
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         NULL,
+                         dynamic_cast<PositionalVar*>($2),
+                         NULL,
+                         $4);
+    }
+  | QNAME  TypeDeclaration  PositionalVar  _IN  ExprSingle
+    {
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<PositionalVar*>($3),
+                         NULL,
+                         $5);
+    }
+/* full-text extensions */
+    |   QNAME FTScoreVar _IN ExprSingle
+    {
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         NULL,NULL,
+                         dynamic_cast<FTScoreVar*>($2),
+                         $4);
+    }
+  | QNAME  TypeDeclaration  FTScoreVar  _IN  ExprSingle
+    {
+      $$ = new VarInDecl(LOC(@$),
+                         static_cast<QName*>($1),
+                         dynamic_cast<SequenceType *>($2),
+                         NULL,
+                         dynamic_cast<FTScoreVar*>($3),
+                         $5);
+    }
+  | QNAME  PositionalVar  FTScoreVar  _IN  ExprSingle
+    {
+      $$ = new VarInDecl(LOC (@$),
+                         static_cast<QName*>($1),
+                         NULL,
+                         dynamic_cast<PositionalVar*>($2),
+                         dynamic_cast<FTScoreVar*>($3),
+                         $5);
+    }
+  | QNAME  TypeDeclaration  PositionalVar  FTScoreVar  _IN  ExprSingle
+    {
+      $$ = new VarInDecl(LOC (@$),
+                         static_cast<QName*>($1),
+                         dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<PositionalVar*>($3),
+                         dynamic_cast<FTScoreVar*>($4),
+                         $6);
+    }
+;
+
+
+// [35] PositionalVar
+// ------------------
+PositionalVar :
+    AT  DOLLAR  QNAME
+    {
+      $$ = new PositionalVar(LOC(@$), static_cast<QName*>($3));
+    }
+;
+
 
 // [37]
-FTScoreVar
-    :   SCORE DOLLAR QNAME
-        {
-            $$ = new FTScoreVar(
-                LOC (@$), static_cast<QName*>($3)->get_qname()
-            );
-            delete $3;
-        }
-    ;
+FTScoreVar :
+    SCORE DOLLAR QNAME
+    {
+      $$ = new FTScoreVar(LOC(@$), static_cast<QName*>($3)->get_qname());
+      delete $3;
+    }
+;
+
 
 // [36]
 LetClause
@@ -2534,166 +2490,135 @@ EvalVarDeclList :
         }
     ;
 
-// [36b]
-VarGetsDecl
-    :   QNAME GETS ExprSingle
-        {
-            $$ = new VarGetsDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                NULL,
-                NULL,
-                $3
-            );
-            delete $1;
-        }
-    |   QNAME TypeDeclaration GETS ExprSingle
-        {
-            $$ = new VarGetsDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                dynamic_cast<SequenceType *>($2),
-                NULL,
-                $4
-            );
-            delete $1;
-        }
+
+// [36b] VarGetsDecl
+// ------------------
+VarGetsDecl :
+    QNAME  GETS  ExprSingle
+    {
+      $$ = new VarGetsDecl(LOC (@$),
+                           static_cast<QName*>($1),
+                           NULL,
+                           NULL,
+                           $3);
+    }
+  | QNAME  TypeDeclaration  GETS  ExprSingle
+    {
+      $$ = new VarGetsDecl(LOC (@$),
+                           static_cast<QName*>($1),
+                           dynamic_cast<SequenceType *>($2),
+                           NULL,
+                           $4);
+    }
+
     /* full-text extensions */
-    |   QNAME FTScoreVar GETS ExprSingle
-        {
-            $$ = new VarGetsDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                NULL,
-                dynamic_cast<FTScoreVar*>($2),
-                $4
-            );
-            delete $1;
-        }
-    |   QNAME TypeDeclaration FTScoreVar GETS ExprSingle
-        {
-            $$ = new VarGetsDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                dynamic_cast<SequenceType *>($2),
-                dynamic_cast<FTScoreVar*>($3),
-                $5
-            );
-            delete $1;
-        }
-    ;
+  | QNAME  FTScoreVar  GETS  ExprSingle
+    {
+      $$ = new VarGetsDecl(LOC (@$),
+                           static_cast<QName*>($1),
+                           NULL,
+                           dynamic_cast<FTScoreVar*>($2),
+                           $4);
+     }
+  | QNAME  TypeDeclaration  FTScoreVar  GETS  ExprSingle
+    {
+      $$ = new VarGetsDecl(LOC (@$),
+                           static_cast<QName*>($1),
+                           dynamic_cast<SequenceType *>($2),
+                           dynamic_cast<FTScoreVar*>($3),
+                           $5);
+     }
+;
 
-WindowVarDecl
-    :   DOLLAR QNAME _IN  ExprSingle
-        {
-            $$ = new WindowVarDecl(
-                LOC(@$), static_cast<QName*>($2)->get_qname(), NULL, $4
-            );
-            delete $2;
-        }
-    |   DOLLAR QNAME TypeDeclaration _IN ExprSingle
-        {
-            $$ = new WindowVarDecl(
-                LOC(@$),
-                static_cast<QName*>($2)->get_qname(),
-                dynamic_cast<SequenceType *>($3),
-                $5
-            );
-            delete $2;
-        }
-    ;
 
-WindowVars
-    :   WindowVars3
-    |   DOLLAR QNAME
-        {
-            $$ = new WindowVars(
-                LOC(@$), NULL, static_cast<QName*>($2)->get_qname(), "", ""
-            );
-            delete $2;
-        }
-    |   DOLLAR QNAME WindowVars3
-        {
-            WindowVars *wv = dynamic_cast<WindowVars*>($3);
-            wv->set_curr( static_cast<QName*>($2)->get_qname() );
-            $$ = wv;
-            delete $2;
-        }
-    ;
+WindowVarDecl :
+    DOLLAR QNAME  _IN  ExprSingle
+    {
+      $$ = new WindowVarDecl(LOC (@$),
+                             static_cast<QName*>($2),
+                             NULL, $4);
+    }
+  | DOLLAR QNAME  TypeDeclaration  _IN  ExprSingle
+    {
+      $$ = new WindowVarDecl(LOC (@$),
+                             static_cast<QName*>($2),
+                             dynamic_cast<SequenceType *>($3),
+                             $5);
+    }
+;
 
-WindowVars3
-    :   PositionalVar
-        {
-            $$ = new WindowVars(
-                LOC(@$), dynamic_cast<PositionalVar *> ($1), "", "", ""
-            );
-        }
-    |   PositionalVar WindowVars2
-        {
-            PositionalVar *pv = dynamic_cast<PositionalVar*>($1);
-            WindowVars *wv = dynamic_cast<WindowVars*>($2);
-            wv->set_posvar( pv );
-            $$ = wv;
-        }
-    |   WindowVars2
-    ;
 
-WindowVars2
-    :   PREVIOUS DOLLAR QNAME NEXT DOLLAR QNAME
-        {
-            $$ = new WindowVars(
-                LOC(@$),
-                NULL, "",
-                static_cast<QName*>($3)->get_qname(),
-                static_cast<QName*>($6)->get_qname()
-            );
-            delete $3;
-            delete $6;
-        }
-  |     NEXT DOLLAR QNAME
-        {
-            $$ = new WindowVars(
-                LOC(@$), NULL, "", "",
-                static_cast<QName*>($3)->get_qname()
-            );
-        delete $3;
-        }
-  |     PREVIOUS DOLLAR QNAME
-        {
-            $$ = new WindowVars(
-                LOC(@$), NULL, "", static_cast<QName*>($3)->get_qname(), ""
-            );
-            delete $3;
-        }
-    ;
+WindowVars :
+    WindowVars3
 
-EvalVarDecl
-    :   QNAME
-        {
-            std::string name = static_cast<QName*>($1)->get_qname();
-            $$ = new VarGetsDecl(
-                LOC(@$),
-                name, NULL, NULL,
-                new VarRef( LOC(@$), name ),
-                VarGetsDecl::eval_var
-            );
-            delete $1;
-        }
-    ;
+  | DOLLAR QNAME
+    {
+      $$ = new WindowVars(LOC(@$), NULL, static_cast<QName*>($2), NULL, NULL);
+    }
+  | DOLLAR QNAME WindowVars3
+    {
+      $$ = $3;
+      dynamic_cast<WindowVars *>($$)->set_curr(static_cast<QName*>($2));
+    }
+  ;
 
-// [37]
-WhereClause
-    :   WHERE ExprSingle
-        {
-            $$ = new WhereClause( LOC(@$), $2 );
-        }
-    ;
+WindowVars3 :
+    PositionalVar
+    {
+      $$ = new WindowVars(LOC(@$), dynamic_cast<PositionalVar*>($1), NULL, NULL, NULL);
+    }
+  | PositionalVar WindowVars2
+    {
+      $$ = $2;
+      dynamic_cast<WindowVars *>($$)->set_posvar(dynamic_cast<PositionalVar*>($1));
+    }
+  | WindowVars2
+  ;
 
-GroupByClause
-    :   GROUP BY GroupSpecList
-        {
-            $$ = new GroupByClause( LOC(@$), dynamic_cast<GroupSpecList*>($3) );
-        }
+WindowVars2 :
+    PREVIOUS DOLLAR QNAME NEXT DOLLAR QNAME
+    {
+      $$ = new WindowVars(LOC(@$), NULL, NULL, static_cast<QName*>($3), static_cast<QName*>($6));
+    }
+  | NEXT DOLLAR QNAME
+    {
+      $$ = new WindowVars(LOC(@$), NULL, NULL, NULL, static_cast<QName*>($3));
+    }
+  | PREVIOUS DOLLAR QNAME
+    {
+      $$ = new WindowVars(LOC(@$), NULL, NULL, static_cast<QName*>($3), NULL);
+    }
+;
+
+
+EvalVarDecl :
+    QNAME
+    {
+      std::string name = static_cast<QName*>($1)->get_qname();
+      $$ = new VarGetsDecl(LOC(@$),
+                           static_cast<QName*>($1),
+                           NULL, NULL,
+                           new VarRef(LOC(@$), name),
+                           VarGetsDecl::eval_var);
+    }
+;
+
+
+// [37] WhereClause
+// ----------------
+WhereClause :
+    WHERE  ExprSingle
+    {
+      $$ = new WhereClause(LOC (@$), $2);
+    }
+;
+
+
+GroupByClause :
+    GROUP BY GroupSpecList
+    {
+      $$ = new GroupByClause(LOC(@$), dynamic_cast<GroupSpecList*>($3));
+    }
   ;
 
 GroupSpecList
@@ -2712,23 +2637,18 @@ GroupSpecList
         }
   ;
 
-GroupSpec
-    :   DOLLAR QNAME
-        {
-            $$ = new GroupSpec(
-                LOC(@$), static_cast<QName*>($2)->get_qname(), NULL
-            );
-            delete $2;
-        }
-  |     DOLLAR QNAME GroupCollationSpec
-        {
-            $$ = new GroupSpec(
-                LOC(@$),
-                static_cast<QName*>($2)->get_qname(),
-                dynamic_cast<GroupCollationSpec*>($3)
-            );
-            delete $2;
-        }
+
+GroupSpec :
+    DOLLAR QNAME
+    {
+      $$ = new GroupSpec(LOC(@$), static_cast<QName*>($2), NULL);
+    }
+  | DOLLAR QNAME GroupCollationSpec
+    {
+      $$ = new GroupSpec(LOC(@$),
+                         static_cast<QName*>($2),
+                         dynamic_cast<GroupCollationSpec*>($3));
+    }
   ;
 
 GroupCollationSpec
@@ -2918,109 +2838,101 @@ QVarInDeclList
     ;
 
 
-// [42b]
-QVarInDecl
-    :   QNAME _IN ExprSingle
-        {
-            $$ = new QVarInDecl(
-                LOC(@$), static_cast<QName*>($1)->get_qname(), $3
-            );
-            delete $1;
-        }
-    |   QNAME TypeDeclaration _IN ExprSingle
-        {
-            $$ = new QVarInDecl(
-                LOC(@$),
-                static_cast<QName*>($1)->get_qname(),
-                dynamic_cast<SequenceType*>($2),
-                $4
-            );
-            delete $1;
-        }
-    ;
+// [42b] QVarInDecl
+// ----------------
+QVarInDecl :
+    QNAME _IN  ExprSingle
+    {
+      $$ = new QVarInDecl(LOC(@$), static_cast<QName*>($1), $3);
+    }
+  | QNAME TypeDeclaration _IN  ExprSingle
+    {
+      $$ = new QVarInDecl(LOC(@$),
+                          static_cast<QName*>($1),
+                          dynamic_cast<SequenceType *>($2),
+                          $4);
+    }
+;
 
-// [43]
-TypeswitchExpr
-    :   TYPESWITCH LPAR Expr RPAR CaseClauseList DEFAULT RETURN ExprSingle
-        {
-            $$ = new TypeswitchExpr(
-                LOC(@$),
-                $3,
-                dynamic_cast<CaseClauseList*>($5),
-                $8
-            );
-        }
-    |   TYPESWITCH LPAR Expr RPAR CaseClauseList DEFAULT DOLLAR QNAME RETURN ExprSingle
-        {
-            $$ = new TypeswitchExpr(
-                LOC(@$),
-                $3,
-                dynamic_cast<CaseClauseList*>($5),
-                static_cast<QName*>($8)->get_qname(),
-                $10
-            );
-            delete $8;
-        }
-    ;
+
+// [43] TypeswitchExpr
+// -------------------
+TypeswitchExpr :
+    TYPESWITCH LPAR  Expr  RPAR  CaseClauseList  DEFAULT  RETURN  ExprSingle
+    {
+      $$ = new TypeswitchExpr(LOC(@$),
+                              $3,
+                              dynamic_cast<CaseClauseList*>($5),
+                              $8);
+    }
+  | TYPESWITCH LPAR Expr RPAR CaseClauseList DEFAULT DOLLAR QNAME RETURN ExprSingle
+    {
+      $$ = new TypeswitchExpr(LOC (@$),
+                              $3,
+                              dynamic_cast<CaseClauseList*>($5),
+                              static_cast<QName*>($8),
+                              $10);
+    }
+;
+
 
 // [43a]
 CaseClauseList :
-        CaseClause
-        {
-            CaseClauseList *ccl = new CaseClauseList( LOC(@$));
-            ccl->push_back( dynamic_cast<CaseClause*>($1) );
-            $$ = ccl;
-        }
-    |   CaseClauseList CaseClause
-        {
-            CaseClauseList *ccl = dynamic_cast<CaseClauseList*>($1);
-            ccl->push_back( dynamic_cast<CaseClause*>($2) );
-            $$ = $1;
-        }
-    ;
+    CaseClause
+    {
+      CaseClauseList* cc_list_p = new CaseClauseList(LOC (@$));
+      cc_list_p->push_back(dynamic_cast<CaseClause*>($1));
+      $$ = cc_list_p;
+    }
+  | CaseClauseList  CaseClause
+    {
+      CaseClauseList* cc_list_p = dynamic_cast<CaseClauseList*>($1);
+      cc_list_p->push_back(dynamic_cast<CaseClause*>($2));
+      $$ = $1;
+    }
+;
 
 
-// [44]
-CaseClause
-    :   CASE SequenceType RETURN ExprSingle
-        {
-            $$ = new CaseClause(
-                LOC(@$), dynamic_cast<SequenceType*>($2), $4
-            );
-        }
-    |   CASE DOLLAR QNAME AS SequenceType RETURN ExprSingle
-        {
-            $$ = new CaseClause(
-                LOC(@$),
-                static_cast<QName*>($3)->get_qname(),
-                dynamic_cast<SequenceType*>($5),
-                $7
-            );
-            delete $3;
-        }
-    ;
+// [44] CaseClause
+// ---------------
+CaseClause :
+    CASE  SequenceType  RETURN  ExprSingle
+    {
+      $$ = new CaseClause(LOC (@$),
+                          dynamic_cast<SequenceType*>($2),
+                          $4);
+    }
+  | CASE  DOLLAR  QNAME  AS  SequenceType  RETURN  ExprSingle
+    {
+      $$ = new CaseClause(LOC (@$),
+                          static_cast<QName*>($3),
+                          dynamic_cast<SequenceType*>($5),
+                          $7);
+     }
+;
 
 
 // [45]
-IfExpr
-    :   IF LPAR Expr RPAR THEN ExprSingle ELSE ExprSingle
-        {
-            $$ = new IfExpr( LOC(@$), $3, $6, $8 );
-        }
-    ;
+IfExpr :
+    IF LPAR Expr RPAR THEN ExprSingle ELSE ExprSingle
+    {
+      $$ = new IfExpr(LOC (@$), $3, $6, $8);
+    }
+;
 
 
 // [46]
-OrExpr
-    :   AndExpr
-        {
-            $$ = $1;
-        }
-    |   OrExpr OR AndExpr
-        {
-            $$ = new OrExpr( LOC(@$), $1, $3 );
-        }
-    ;
+OrExpr :
+    AndExpr
+    {
+      $$ = $1;
+    }
+  | OrExpr OR AndExpr
+    {
+      $$ = new OrExpr( LOC(@$), $1, $3 );
+    }
+;
+
 
 // [47]
 AndExpr
@@ -3733,25 +3645,24 @@ NameTest
         }
     ;
 
-// [79]
-Wildcard
-    :   STAR
-        {
-            $$ = new Wildcard( LOC(@$), "", "", ParseConstants::wild_all );
-        }
-    |   ELEM_WILDCARD
-        {
-            $$ = new Wildcard(
-                LOC(@$), SYMTAB($1), "", ParseConstants::wild_elem
-            );
-        }
-    |   PREFIX_WILDCARD                 /* ws: explicitXQ */
-        {
-            $$ = new Wildcard(
-                LOC(@$), "", SYMTAB($1), ParseConstants::wild_prefix
-            );
-        }
-    ;
+
+// [79] Wildcard
+// -------------
+Wildcard :
+    STAR
+    {
+      $$ = new Wildcard(LOC(@$), "", "", ParseConstants::wild_all);
+    }
+  | ELEM_WILDCARD
+    {
+      $$ = new Wildcard(LOC(@$), SYMTAB($1), "", ParseConstants::wild_elem);
+    }
+  | PREFIX_WILDCARD   /* ws: explicitXQ */
+    {
+      $$ = new Wildcard(LOC(@$), "", SYMTAB($1), ParseConstants::wild_prefix);
+    }
+;
+
 
 // [80]
 FilterExpr
@@ -4987,41 +4898,42 @@ RenameExpr
 // NewNameExpr
 // folded into [245] RenameExpr
 
-// [249]
-TransformExpr
-    :   COPY DOLLAR VarNameList MODIFY ExprSingle RETURN ExprSingle
-        {
-            CopyVarList *cvl = dynamic_cast<CopyVarList*>($3);
-            $$ = new TransformExpr( LOC(@$), cvl, $5, $7 );
-        }
-    ;
+
+// [249] TransformExpr
+// -------------------
+TransformExpr :
+    COPY DOLLAR VarNameList MODIFY ExprSingle RETURN ExprSingle
+    {
+      CopyVarList *cvl = dynamic_cast<CopyVarList*>($3);
+      $$ = new TransformExpr( LOC(@$), cvl, $5, $7 );
+    }
+;
 
 // [249a]
 VarNameList
     : VarNameDecl
-        {
-            CopyVarList *cvl = new CopyVarList( LOC(@$) );
-            cvl->push_back( dynamic_cast<VarBinding*>($1) );
-            $$ = cvl;
-        }
-    |   VarNameList COMMA DOLLAR VarNameDecl
-        {
-            CopyVarList *cvl = dynamic_cast<CopyVarList*>($1);
-            VarBinding *vb = dynamic_cast<VarBinding*>($4);
-            cvl->push_back( vb );
-            $$ = cvl;
-        }
-    ;
+    {
+      CopyVarList* lList = new CopyVarList(LOC(@$));
+      lList->push_back (dynamic_cast<VarBinding*> ($1));
+      $$ = lList;
+    }
+  | VarNameList  COMMA  DOLLAR  VarNameDecl
+    {
+      CopyVarList* lList = dynamic_cast<CopyVarList*>($1);
+      VarBinding* lBinding = dynamic_cast<VarBinding*>($4);
+      lList->push_back(lBinding);
+      $$ = lList;
+    }
+;
 
-// [249b]
-VarNameDecl
-    :   QNAME GETS ExprSingle
-        {
-            $$ = new VarBinding(
-                LOC(@$), static_cast<QName*>($1)->get_qname(), $3
-            );
-            delete $1;
-        }
+
+// [249b] VarNameElem
+// ------------------
+VarNameDecl :
+    QNAME GETS ExprSingle
+    {
+       $$ = new VarBinding(LOC(@$), static_cast<QName*>($1), $3);
+    }
   ;
 
 /*_______________________________________________________________________
@@ -5054,46 +4966,38 @@ CatchListExpr
         }
   ;
 
-CatchExpr
-    :   CATCH NameTestList BracedExpr
-        {
-            $$ = new CatchExpr( LOC(@$), *$2, $3 );
-            delete $2;
-        }
-    |   CATCH NameTestList LPAR DOLLAR QNAME RPAR BracedExpr
-        {
-            $$ = new CatchExpr(
-                LOC(@$), *$2, static_cast<QName*>($5)->get_qname(), $7
-            );
-            delete $5;
-            delete $2;
-        }
-    |   CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
-        {
-            $$ = new CatchExpr(
-                LOC(@$), *$2,
-                static_cast<QName*>($5)->get_qname(),
-                static_cast<QName*>($8)->get_qname(),
-                $10
-            );
-            delete $5;
-            delete $8;
-            delete $2;
-        }
-    |   CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
-        {
-            $$ = new CatchExpr(
-                LOC(@$), *$2,
-                static_cast<QName*>($5)->get_qname(),
-                static_cast<QName*>($8)->get_qname(),
-                static_cast<QName*>($11)->get_qname(),
-                $13
-            );
-            delete $5;
-            delete $8;
-            delete $11;
-            delete $2;
-        }
+CatchExpr :
+    CATCH NameTestList BracedExpr
+    {
+       $$ = new CatchExpr(LOC(@$), *$2, NULL, NULL, NULL, $3);
+       delete $2;
+    }
+  | CATCH NameTestList LPAR DOLLAR QNAME RPAR BracedExpr
+    {
+      $$ = new CatchExpr(LOC(@$),*$2, static_cast<QName*>($5), NULL, NULL, $7);
+       delete $2;
+    }
+  |
+    CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
+    {
+       $$ = new CatchExpr(LOC(@$),
+                          *$2,
+                          static_cast<QName*>($5),
+                          static_cast<QName*>($8),
+                          NULL,
+                          $10);
+       delete $2;
+    }
+  | CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
+    {
+       $$ = new CatchExpr(LOC (@$),
+                          *$2,
+                          static_cast<QName*>($5),
+                          static_cast<QName*>($8),
+                          static_cast<QName*>($11),
+                          $13);
+       delete $2;
+    }
   ;
 
 NameTestList

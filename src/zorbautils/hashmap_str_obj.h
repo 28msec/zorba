@@ -34,22 +34,33 @@ public:
   }
 };
 
+
 template<class class_name>
 class HashCharPtrObjPtr : public HashMap<const char *, class_name*, CompareCharPtr>
 {
 public:
-  HashCharPtrObjPtr() : HashMap<const char *, class_name*, CompareCharPtr>(1024, true) {}
-  virtual ~HashCharPtrObjPtr() {freeAll();}
+  HashCharPtrObjPtr()
+    :
+    HashMap<const char *, class_name*, CompareCharPtr>(1024, true)
+  {
+  }
+
+  virtual ~HashCharPtrObjPtr() { freeAll(); }
+
   void freeAll()
-  {//free all allocated FloatImpls
+  {
+    //free all allocated FloatImpls
     typename HashMap<const char *, class_name*, CompareCharPtr>::iterator  it;
-    for(it=HashMap<const char *, class_name*, CompareCharPtr>::begin(); it != HashMap<const char *, class_name*, CompareCharPtr>::end(); ++it)
+    for(it = HashMap<const char *, class_name*, CompareCharPtr>::begin();
+        it != HashMap<const char *, class_name*, CompareCharPtr>::end();
+        ++it)
     {
       free((void*)(*it).first);
       delete (*it).second;
     }
   }
 };
+
 
 template<class class_name>
 class HashCharPtrObjPtrLimited : public HashCharPtrObjPtr<class_name>
@@ -60,15 +71,16 @@ public:
 
   bool get(const char * item, class_name*& value)
   {
-    if(HashMap<const char *, class_name*, CompareCharPtr>::get(item, value))
+    if (HashMap<const char *, class_name*, CompareCharPtr>::get(item, value))
     {
       //nr_missed = 0;
       return true;
     }
+
     //nr_missed++;
-    if((HashMap<const char *, class_name*, CompareCharPtr>::theNumEntries >= 20*1024))// && (nr_missed > 50))
+    if( (this->theNumEntries >= 20*1024))// && (nr_missed > 50))
     {
-      //restart hashing
+      // restart hashing
       HashCharPtrObjPtr<class_name>::freeAll();
       HashMap<const char *, class_name*, CompareCharPtr>::clear();
     }
@@ -77,16 +89,25 @@ public:
 
 };
 
+
 template<class class_name>
 class HashCharPtrObj : public HashMap<const char *, class_name, CompareCharPtr>
 {
 public:
-  HashCharPtrObj() : HashMap<const char *, class_name, CompareCharPtr>(1024, true) {}
-  virtual ~HashCharPtrObj() {freeAll();}
+  HashCharPtrObj() 
+    :
+    HashMap<const char *, class_name, CompareCharPtr>(1024, true)
+  {
+  }
+
+  virtual ~HashCharPtrObj() { freeAll(); }
+
   void freeAll()
-  {//free all allocated FloatImpls
+  {
     typename HashMap<const char *, class_name, CompareCharPtr>::iterator  it;
-    for(it=HashMap<const char *, class_name, CompareCharPtr>::begin(); it != HashMap<const char *, class_name, CompareCharPtr>::end(); ++it)
+    for(it = HashMap<const char *, class_name, CompareCharPtr>::begin();
+        it != HashMap<const char *, class_name, CompareCharPtr>::end();
+        ++it)
     {
       free((void*)(*it).first);
     }
@@ -97,3 +118,9 @@ public:
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

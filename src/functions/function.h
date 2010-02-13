@@ -68,7 +68,9 @@ public:
 
   const signature& get_signature() const { return theSignature; }
 
-  int get_arity() const { return theSignature.arg_count(); }
+  ulong get_arity() const { return theSignature.arg_count(); }
+
+  bool is_variadic() const { return theSignature.is_variadic(); }
 
   void setFlag(FunctionConsts::AnnotationFlags flag) 
   {

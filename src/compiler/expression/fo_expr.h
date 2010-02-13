@@ -38,7 +38,6 @@ class fo_expr : public expr
 protected:
   checked_vector<expr_t>   theArgs;
   function               * theFunction;
-  substitution_t           theSubst;
 
 public:
   SERIALIZABLE_CLASS(fo_expr)
@@ -97,8 +96,6 @@ public:
   void compute_scripting_kind() const;
 
   expr_t clone(substitution_t& s) const;
-
-  substitution_t get_substitution() const { return theSubst; }
 
   expr_iterator_data* make_iter();
 

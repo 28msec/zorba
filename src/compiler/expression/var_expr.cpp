@@ -288,9 +288,9 @@ void var_expr::next_iter(expr_iterator_data& v)
 ********************************************************************************/
 expr::expr_t var_expr::clone(expr::substitution_t& subst) const
 {
-  expr::subst_iter_t i = subst->find(this);
+  expr::subst_iter_t i = subst.find(this);
 
-  if (i == subst->end())
+  if (i == subst.end())
     return const_cast<var_expr*>(this);
 
   return i->second;

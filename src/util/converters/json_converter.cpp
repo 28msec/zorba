@@ -115,7 +115,7 @@ namespace zorba
 
     xqpStringStore_t lName = aElement->getNodeName()->getStringValue();
 
-    if( lName->byteCompare("json") != 0 )
+    if( lName->byteCompare("json", 4) != 0 )
     {
       aErrorLog = new xqpStringStore("This is not a JSON element.");
       return false;
@@ -286,7 +286,7 @@ namespace zorba
             lType = new xqpStringStore("string");
           else if ((*aValue)->getdatatype() == json::datatype::_literal)
           {
-            if( lVal->byteCompare("null")==0 )
+            if( lVal->byteCompare("null", 4)==0 )
             {
               lVal = NULL;
               lType = new xqpStringStore("null");
@@ -363,7 +363,7 @@ namespace zorba
           xqpStringStore_t lText = xqpString((*lWtmp).c_str()).getStore();
           delete lWtmp;
 
-          if( lText->byteCompare("null") != 0 )
+          if( lText->byteCompare("null", 4) != 0 )
             GENV_ITEMFACTORY->createTextNode(lTextValue, aParent, -1, lText);
           break;
       }
@@ -386,15 +386,15 @@ namespace zorba
     {
       if (lAttr->getNodeKind() == store::StoreConsts::attributeNode)
       {
-        if(lAttr->getNodeName()->getStringValue()->byteCompare("type") == 0)
+        if(lAttr->getNodeName()->getStringValue()->byteCompare("type", 4) == 0)
           lType = lAttr->getStringValue();
-        else if(lAttr->getNodeName()->getStringValue()->byteCompare("name") == 0)
+        else if(lAttr->getNodeName()->getStringValue()->byteCompare("name", 4) == 0)
           lName = lAttr->getStringValue();
       }
     }
     lAttrIt->close();
 
-    if(lType->byteCompare("object") == 0)
+    if(lType->byteCompare("object", 6) == 0)
     {
       aJsonString->append_in_place('"');
       aJsonString->append_in_place(lName->c_str());
@@ -403,7 +403,7 @@ namespace zorba
       lResult = parse_child(aElement, aJsonString, aErrorLog);
       aJsonString->append_in_place('}');
     }
-    else if(lType->byteCompare("array") == 0)
+    else if(lType->byteCompare("array", 5) == 0)
     {
       aJsonString->append_in_place('"');
       aJsonString->append_in_place(lName->c_str());
@@ -412,11 +412,11 @@ namespace zorba
       lResult = parse_child(aElement, aJsonString, aErrorLog);
       aJsonString->append_in_place(']');
     }
-    else if(lType->byteCompare("string") == 0)
+    else if(lType->byteCompare("string", 6) == 0)
     {
       xqpStringStore_t lValue;
       get_value(aElement, lValue);
-      if(aElement->getNodeName()->getStringValue()->byteCompare("pair") == 0)
+      if(aElement->getNodeName()->getStringValue()->byteCompare("pair", 4) == 0)
       {
         aJsonString->append_in_place('"');
         aJsonString->append_in_place(lName->c_str());
@@ -426,9 +426,9 @@ namespace zorba
       aJsonString->append_in_place(lValue->c_str());
       aJsonString->append_in_place('"');
     }
-    else if(lType->byteCompare("null") == 0)
+    else if(lType->byteCompare("null", 4) == 0)
     {
-      if(aElement->getNodeName()->getStringValue()->byteCompare("pair") == 0)
+      if(aElement->getNodeName()->getStringValue()->byteCompare("pair", 4) == 0)
       {
         aJsonString->append_in_place('"');
         aJsonString->append_in_place(lName->c_str());
@@ -440,7 +440,7 @@ namespace zorba
     {
       xqpStringStore_t lValue;
       get_value(aElement, lValue);
-      if(aElement->getNodeName()->getStringValue()->byteCompare("pair") == 0)
+      if(aElement->getNodeName()->getStringValue()->byteCompare("pair", 4) == 0)
       {
         aJsonString->append_in_place('"');
         aJsonString->append_in_place(lName->c_str());
@@ -616,7 +616,7 @@ namespace zorba
 
     xqpStringStore_t lName = aElement->getNodeName()->getStringValue();
 
-    if( lName->byteCompare("json") == 0 )
+    if( lName->byteCompare("json", 4) == 0 )
     {
       aErrorLog = new xqpStringStore("This is not a Json ML element.");
       return false;

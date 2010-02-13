@@ -245,7 +245,7 @@ public:
   rchandle<ParamList> param;
   rchandle<SequenceType> ret;
 
-  FunctionSig (ParamList *param_, SequenceType *ret_ = NULL)
+  FunctionSig(ParamList* param_, SequenceType* ret_ = NULL)
     :
     param (param_), ret (ret_)
   {
@@ -256,13 +256,14 @@ public:
 class VarNameAndType 
 {
 public:
-  std::string name;
-  rchandle<SequenceType> type;
+  rchandle<QName>        theName;
+  rchandle<SequenceType> theType;
 
 
-  VarNameAndType (std::string name_, rchandle<SequenceType> type_)
+  VarNameAndType(rchandle<QName> name, rchandle<SequenceType> type)
     :
-    name (name_), type (type_)
+    theName(name),
+    theType(type)
   {
   }
 };
@@ -375,8 +376,8 @@ public:
 class ModuleDecl : public XQDocumentable
 {
 protected:
-  std::string prefix;
-  std::string target_namespace;
+  xqpStringStore_t thePrefix;
+  xqpStringStore_t theTargetNamespace;
 
 public:
   ModuleDecl(
@@ -384,8 +385,10 @@ public:
     std::string const& prefix,
     std::string const& target_namespace);
 
-  std::string get_prefix() const { return prefix; }
-  std::string get_target_namespace() const { return target_namespace; }
+  const xqpStringStore_t& get_prefix() const { return thePrefix; }
+
+  const xqpStringStore_t& get_target_namespace() const { return theTargetNamespace; }
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -573,19 +576,19 @@ public:
   typedef std::vector<std::pair<std::string,std::string> > param_list_t;
 
   bool is_default;
-  std::string format_name;
+  rchandle<QName> format_name;
   param_list_t param_list;
 
   DecimalFormatNode(
     const QueryLoc& _loc,
-    const std::string& qname,
+    rchandle<QName> qname,
     param_list_t* param_list_)
     :
     parsenode(_loc),
     is_default(false),
     format_name(qname)
   {
-    param_list.swap (*param_list_);
+    param_list.swap(*param_list_);
   }
 
   DecimalFormatNode(
@@ -595,7 +598,7 @@ public:
     parsenode(_loc),
     is_default(true)
   {
-    param_list.swap (*param_list_);
+    param_list.swap(*param_list_);
   }
 
   void accept(parsenode_visitor&) const;
@@ -666,18 +669,18 @@ public:
 class NamespaceDecl : public parsenode
 {
 protected:
-  std::string thePrefix;
-  std::string theUri;
+  xqpStringStore_t thePrefix;
+  xqpStringStore_t theUri;
 
 public:
   NamespaceDecl(
     const QueryLoc&,
-    std::string const& prefix,
-    std::string const& uri);
+    const std::string& prefix,
+    const std::string& uri);
 
-  std::string get_prefix() const { return thePrefix; }
+  const xqpStringStore_t& get_prefix() const { return thePrefix; }
 
-  std::string get_uri() const { return theUri; }
+  const xqpStringStore_t& get_uri() const { return theUri; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -690,18 +693,18 @@ public:
 class DefaultNamespaceDecl : public parsenode
 {
 protected:
-  enum ParseConstants::default_namespace_mode_t mode;
-  std::string default_namespace;
+  enum ParseConstants::default_namespace_mode_t theMode;
+  xqpStringStore_t theUri;
 
 public:
   DefaultNamespaceDecl(
     const QueryLoc&,
     enum ParseConstants::default_namespace_mode_t mode,
-    std::string const& default_namespace);
+    const std::string& uri);
 
-  enum ParseConstants::default_namespace_mode_t get_mode() const { return mode; }
+  enum ParseConstants::default_namespace_mode_t get_mode() const { return theMode; }
 
-  std::string get_default_namespace() const { return default_namespace; }
+  const xqpStringStore_t& get_default_namespace() const { return theUri; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -719,9 +722,9 @@ public:
 class SchemaImport : public parsenode
 {
 protected:
-  rchandle<SchemaPrefix> prefix_h;
-  std::string uri;
-  rchandle<URILiteralList> at_list_h;
+  rchandle<SchemaPrefix>   thePrefix;
+  xqpStringStore_t         theUri;
+  rchandle<URILiteralList> theAtList;
 
 public:
   SchemaImport(
@@ -730,11 +733,11 @@ public:
     std::string const& uri,
     rchandle<URILiteralList>);
 
-  rchandle<SchemaPrefix> get_prefix() const { return prefix_h; }
+  const SchemaPrefix* get_prefix() const { return thePrefix; }
 
-  std::string get_uri() const { return uri; }
+  const xqpStringStore_t& get_uri() const { return theUri; }
 
-  rchandle<URILiteralList> get_at_list() const { return at_list_h; }
+  const URILiteralList* get_at_list() const { return theAtList; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -746,16 +749,19 @@ public:
 class URILiteralList : public parsenode
 {
 protected:
-  std::vector<std::string> uri_v;
+  std::vector<xqpStringStore_t> theUris;
 
 public:
   URILiteralList(const QueryLoc&);
 
-  void push_back(std::string const& uri) { uri_v.push_back(uri); }
+  void push_back(const std::string& uri) 
+  {
+    theUris.push_back(new xqpStringStore(uri)); 
+  }
 
-  std::string operator[](int i) const { return uri_v[i]; }
+  const xqpStringStore_t& operator[](int i) const { return theUris[i]; }
 
-  int size() const { return uri_v.size (); }
+  ulong size() const { return theUris.size(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -767,21 +773,17 @@ public:
 class SchemaPrefix : public parsenode
 {
 protected:
-  std::string prefix;
-  bool default_b;
+  xqpStringStore_t thePrefix;
+  bool             theIsDefault;
 
 public:
-  SchemaPrefix(
-    const QueryLoc&,
-    bool default_b);
+  SchemaPrefix(const QueryLoc& loc, bool isDefault);
 
-  SchemaPrefix(
-    const QueryLoc&,
-    std::string const& prefix);
+  SchemaPrefix(const QueryLoc& loc, const std::string& prefix);
 
-  std::string get_prefix() const { return prefix; }
+  const xqpStringStore_t& get_prefix() const { return thePrefix; }
 
-  bool get_default_bit() const { return default_b; }
+  bool get_default_bit() const { return theIsDefault; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -794,32 +796,27 @@ public:
 class ModuleImport : public XQDocumentable
 {
 protected:
-  bool imports_data_module_h;
-  std::string prefix;
-  std::string uri;
-  rchandle<URILiteralList> uri_list_h;
+  xqpStringStore_t         thePrefix;
+  xqpStringStore_t         theUri;
+  rchandle<URILiteralList> theAtList;
 
 public:
   ModuleImport(
     const QueryLoc&,
-    bool imports_data_module,
-    std::string const& uri,
-    rchandle<URILiteralList>);
+    const std::string& uri,
+    rchandle<URILiteralList> atlist);
 
   ModuleImport(
     const QueryLoc&,
-    bool imports_data_module,
-    std::string const& prefix,
-    std::string const& uri,
-    rchandle<URILiteralList>);
+    const std::string& prefix,
+    const std::string& uri,
+    rchandle<URILiteralList> atlist);
 
-  bool imports_data_module() const { return imports_data_module_h; }
+  const xqpStringStore_t& get_prefix() const { return thePrefix; }
 
-  std::string get_prefix() const { return prefix; }
+  const xqpStringStore_t& get_uri() const { return theUri; }
 
-  std::string get_uri() const { return uri; }
-
-  rchandle<URILiteralList> get_uri_list() const { return uri_list_h; }
+  const URILiteralList* get_at_list() const { return theAtList; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -952,21 +949,21 @@ public:
 class VarDeclBase : public XQDocumentable
 {
 protected:
-  std::string varname;
-  rchandle<SequenceType> typedecl_h;
+  rchandle<QName>        theName;
+  rchandle<SequenceType> theType;
 
 public:
-  VarDeclBase(const QueryLoc& loc_, std::string varname_, rchandle<SequenceType> td_)
+  VarDeclBase(const QueryLoc& loc,  rchandle<QName> name, rchandle<SequenceType> type)
     :
-    XQDocumentable(loc_),
-    varname (varname_),
-    typedecl_h (td_)
+    XQDocumentable(loc),
+    theName(name),
+    theType(type)
   {
   }
 
-  std::string get_varname() const { return varname; }
+  const QName* get_name() const { return theName; }
 
-  rchandle<SequenceType> get_typedecl() const { return typedecl_h; }
+  rchandle<SequenceType> get_typedecl() const { return theType; }
 };
 
 
@@ -981,7 +978,7 @@ protected:
 public:
   VarDeclWithInit(
     const QueryLoc& loc,
-    std::string varname,
+    rchandle<QName> varname,
     rchandle<SequenceType> type_decl,
     rchandle<exprnode> init_expr)
     :
@@ -1006,7 +1003,7 @@ protected:
 public:
   VarDecl(
     const QueryLoc& loc,
-    std::string varname,
+    rchandle<QName> varname,
     rchandle<SequenceType> type_decl,
     rchandle<exprnode> init_expr,
     bool external = false);
@@ -1134,18 +1131,18 @@ public:
 class Param : public parsenode
 {
 protected:
-  std::string name;
-  rchandle<SequenceType> typedecl_h;
+  rchandle<QName>        theName;
+  rchandle<SequenceType> theType;
 
 public:
   Param(
-    const QueryLoc&,
-    std::string name,
-    rchandle<SequenceType>);
+    const QueryLoc& loc, 
+    rchandle<QName> name,
+    rchandle<SequenceType> type);
 
-  std::string get_name() const { return name; }
+  const QName* get_name() const { return theName.getp(); }
 
-  rchandle<SequenceType> get_typedecl() const { return typedecl_h; }
+  rchandle<SequenceType> get_typedecl() const { return theType; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1375,23 +1372,24 @@ public:
         ICKind icKind);
 
   const QName* getName() const { return theICName.getp(); }
-  ICKind       getICKind() const { return theICKind; }
+
+  ICKind getICKind() const { return theICKind; }
 
   virtual void accept(parsenode_visitor&) const = 0;
 };
 
 
-class ICColl
-  : public IntegrityConstraintDecl
+class ICColl : public IntegrityConstraintDecl
 {
 protected:
-  rchandle<QName>        theCollName;
+  rchandle<QName> theCollName;
 
 public:
-  ICColl ( const QueryLoc& loc, 
-           QName* name, 
-           ICKind icKind,
-           QName* collName)
+  ICColl(
+        const QueryLoc& loc, 
+        QName* name, 
+        ICKind icKind,
+        QName* collName)
     :
     IntegrityConstraintDecl(loc, name, icKind), 
     theCollName(collName) 
@@ -1402,19 +1400,19 @@ public:
 };
 
 
-class ICCollSimpleCheck
-  : public ICColl
+class ICCollSimpleCheck : public ICColl
 {
 protected:
-  rchandle<QName>        theCollVarName;
-  rchandle<exprnode>     theExprSingle;  // make type exprnode_t
+  rchandle<QName>     theCollVarName;
+  rchandle<exprnode>  theExprSingle;  // make type exprnode_t
 
 public:
-  ICCollSimpleCheck ( const QueryLoc& loc, 
-                      QName* name, 
-                      QName* collName,
-                      QName* collVarName,
-                      rchandle<exprnode> exprSingle)
+  ICCollSimpleCheck(
+        const QueryLoc& loc, 
+        QName* name, 
+        QName* collName,
+        QName* collVarName,
+        rchandle<exprnode> exprSingle)
     :
     ICColl(loc,
            name, 
@@ -1426,6 +1424,7 @@ public:
   }
   
   const QName* getCollVarName() const { return theCollVarName.getp(); }
+
   const exprnode* getExpr() const { return theExprSingle.getp(); }
 
   virtual void accept(parsenode_visitor&) const;
@@ -1906,7 +1905,7 @@ protected:
 public:
   VarInDecl(
     const QueryLoc&,
-    std::string varname,
+    rchandle<QName> varname,
     rchandle<SequenceType>,
     rchandle<PositionalVar>,
     rchandle<FTScoreVar>,
@@ -1926,12 +1925,12 @@ public:
 class PositionalVar : public parsenode
 {
 protected:
-  std::string varname;
+  rchandle<QName> theName;
 
 public:
-  PositionalVar(const QueryLoc&, std::string const& varname);
+  PositionalVar(const QueryLoc&, rchandle<QName> varname);
 
-  std::string get_varname() const { return varname; }
+  const QName* get_name() const { return theName.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1998,15 +1997,15 @@ protected:
 
 public:
   VarGetsDecl(
-    const QueryLoc& loc_,
-    std::string varname_,
-    rchandle<SequenceType> typedecl_h_,
-    rchandle<FTScoreVar> ftscorevar_h_,
-    rchandle<exprnode> valexpr_h_,
+    const QueryLoc& loc,
+    rchandle<QName> varname,
+    rchandle<SequenceType> typedecl_h,
+    rchandle<FTScoreVar> ftscorevar_h,
+    rchandle<exprnode> valexpr_h,
     enum var_kind kind_ = let_var)
     :
-    VarDeclWithInit (loc_, varname_, typedecl_h_, valexpr_h_),
-    ftscorevar_h(ftscorevar_h_),
+    VarDeclWithInit(loc, varname, typedecl_h, valexpr_h),
+    ftscorevar_h(ftscorevar_h),
     kind (kind_)
   {
   }
@@ -2104,16 +2103,16 @@ public:
 class GroupSpec : public parsenode
 {
 protected:
-  std::string                  var_name_h;
+  rchandle<QName>              var_name_h;
   rchandle<GroupCollationSpec> group_coll_spec_h;
 
 public:
   GroupSpec(
     const QueryLoc&,
-    std::string,
+    rchandle<QName>,
     rchandle<GroupCollationSpec>);
 
-  std::string get_var_name() const  { return var_name_h; }
+  const QName* get_var_name() const { return var_name_h.getp(); }
 
   rchandle<GroupCollationSpec> group_coll_spec() const { return group_coll_spec_h; }
 
@@ -2365,7 +2364,7 @@ class WindowVarDecl : public VarDeclWithInit
 public:
   WindowVarDecl (
         const QueryLoc& loc_,
-        std::string varname_,
+        rchandle<QName> varname_,
         rchandle<SequenceType> td_,
         rchandle<exprnode> init_)
     :
@@ -2422,33 +2421,37 @@ public:
 class WindowVars : public parsenode 
 {
   rchandle<PositionalVar> posvar;
-  std::string curr;
-  std::string prev;
-  std::string next;
+  rchandle<QName> curr;
+  rchandle<QName> prev;
+  rchandle<QName> next;
 
 public:
   WindowVars(
-        const QueryLoc& loc_,
+        const QueryLoc& loc,
         rchandle<PositionalVar> posvar_,
-        std::string curr_,
-        std::string prev_,
-        std::string next_)
+        rchandle<QName> curr_,
+        rchandle<QName> prev_,
+        rchandle<QName> next_)
     : 
-    parsenode (loc_),
-    posvar (posvar_),
-    curr (curr_),
-    prev (prev_),
-    next (next_)
+    parsenode(loc),
+    posvar(posvar_),
+    curr(curr_),
+    prev(prev_),
+    next(next_)
   {
   }
 
-  rchandle<PositionalVar> get_posvar () const { return posvar; }
-  std::string get_curr () const { return curr; }
-  std::string get_prev () const { return prev; }
-  std::string get_next () const { return next; }
+  rchandle<PositionalVar> get_posvar() const { return posvar; }
 
-  void set_curr (std::string curr_) { curr = curr_; }
-  void set_posvar (rchandle<PositionalVar> posvar_) { posvar = posvar_; }
+  const QName* get_curr() const { return curr.getp(); }
+
+  const QName* get_prev() const { return prev.getp(); }
+
+  const QName* get_next() const { return next.getp(); }
+
+  void set_curr(rchandle<QName> curr_) { curr = curr_; }
+
+  void set_posvar(rchandle<PositionalVar> posvar_) { posvar = posvar_; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -2459,15 +2462,18 @@ public:
 ********************************************************************************/
 class CountClause : public FLWORClause
 {
-  std::string varname;
+  rchandle<QName> varname;
 
 public:
-  CountClause (const QueryLoc &loc_, std::string varname_)
-    : FLWORClause (loc_), varname (varname_)
-  {}
-  std::string get_varname () const { return varname; }
+  CountClause (const QueryLoc& loc, rchandle<QName> varname_)
+    :
+    FLWORClause(loc),
+    varname(varname_)
+  {
+  }
 
-public:
+  const QName* get_varname() const { return varname.getp(); }
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -2527,23 +2533,23 @@ public:
 class QVarInDecl : public parsenode
 {
 protected:
-  std::string name;
+  rchandle<QName> name;
   rchandle<SequenceType> typedecl_h;
   rchandle<exprnode> val_h;
 
 public:
   QVarInDecl(
     const QueryLoc&,
-    std::string name,
+    rchandle<QName> name,
     rchandle<exprnode>);
 
   QVarInDecl(
     const QueryLoc&,
-    std::string name,
+    rchandle<QName> name,
     rchandle<SequenceType>,
     rchandle<exprnode>);
 
-  std::string get_name() const { return name; }
+  const QName* get_name() const { return name.getp(); }
 
   rchandle<SequenceType> get_typedecl() const { return typedecl_h; }
 
@@ -2563,7 +2569,7 @@ class TypeswitchExpr : public exprnode
 protected:
   rchandle<exprnode> switch_expr_h;
   rchandle<CaseClauseList> clause_list_h;
-  std::string default_varname;
+  rchandle<QName> default_varname;
   rchandle<exprnode> default_clause_h;
 
 public:
@@ -2577,14 +2583,14 @@ public:
     const QueryLoc&,
     rchandle<exprnode>,
     rchandle<CaseClauseList>,
-    std::string default_varname,
+    rchandle<QName> default_varname,
     rchandle<exprnode>);
 
 	rchandle<exprnode> get_switch_expr() const { return switch_expr_h; }
 
 	rchandle<CaseClauseList> get_clause_list() const { return clause_list_h; }
 
-	std::string get_default_varname() const { return default_varname; }
+	const QName* get_default_varname() const { return default_varname.getp(); }
 
 	rchandle<exprnode> get_default_clause() const { return default_clause_h; }
 
@@ -2634,14 +2640,14 @@ public:
 class CaseClause : public parsenode
 {
 protected:
-  std::string varname;
+  rchandle<QName> varname;
   rchandle<SequenceType> type_h;
   rchandle<exprnode> val_h;
 
 public:
   CaseClause(
     const QueryLoc&,
-    std::string varname,
+    rchandle<QName> varname,
     rchandle<SequenceType>,
     rchandle<exprnode>);
     
@@ -2650,7 +2656,7 @@ public:
     rchandle<SequenceType>,
     rchandle<exprnode>);
 
-  std::string get_varname() const { return varname; }
+  const QName* get_varname() const { return varname.getp(); }
 
   rchandle<SequenceType> get_type() const { return type_h; }
 
@@ -3518,21 +3524,21 @@ class Wildcard : public parsenode
 {
 protected:
 	enum ParseConstants::wildcard_t theKind;
-	xqp_string      thePrefix;
-  xqp_string      theLocalName;
+	xqpStringStore_t                thePrefix;
+  xqpStringStore_t                theLocalName;
 	
 public:
 	Wildcard(
 		const QueryLoc& loc_,
-    const xqp_string& prefix,
-    const xqp_string& lname,
+    const std::string& prefix,
+    const std::string& lname,
 		enum ParseConstants::wildcard_t type);
 
 	enum ParseConstants::wildcard_t getKind() const { return theKind; }
 
-	const xqp_string& getPrefix() const { return thePrefix; }
+	const xqpStringStore_t& getPrefix() const { return thePrefix; }
 
-	const xqp_string& getLocalName() const { return theLocalName; }
+	const xqpStringStore_t& getLocalName() const { return theLocalName; }
 
 	void accept(parsenode_visitor&) const;
 };
@@ -4977,60 +4983,19 @@ public:
   typedef std::vector<rchandle<NameTest> > NameTestList;
 
 protected:
-  NameTestList theNameTests;
-  std::string theVarErrorCode;
-  std::string theVarErrorDescr;
-  std::string theVarErrorVal;
+  NameTestList        theNameTests;
+  rchandle<QName>     theVarErrorCode;
+  rchandle<QName>     theVarErrorDescr;
+  rchandle<QName>     theVarErrorVal;
   rchandle<parsenode> theExprSingle;
 
 public:
   CatchExpr(
     const QueryLoc& aQueryLoc,
-    NameTestList &aNameTest,
-    rchandle<parsenode> aExprSingle)
-  : exprnode(aQueryLoc),
-    theNameTests(aNameTest),
-    theVarErrorCode(""),
-    theVarErrorDescr(""),
-    theVarErrorVal(""),
-    theExprSingle(aExprSingle)
-  {}
-
-  CatchExpr(
-    const QueryLoc& aQueryLoc,
-    NameTestList &aNameTest,
-    const std::string& aVarErrorCode,
-    rchandle<parsenode> aExprSingle)
-  :
-    exprnode(aQueryLoc),
-    theNameTests(aNameTest),
-    theVarErrorCode(aVarErrorCode),
-    theVarErrorDescr(""),
-    theVarErrorVal(""),
-    theExprSingle(aExprSingle)
-  {}
-
-  CatchExpr(
-    const QueryLoc& aQueryLoc,
-    NameTestList &aNameTest,
-    const std::string& aVarErrorCode,
-    const std::string& aVarErrorDescr,
-    rchandle<parsenode> aExprSingle)
-  :
-    exprnode(aQueryLoc),
-    theNameTests(aNameTest),
-    theVarErrorCode(aVarErrorCode),
-    theVarErrorDescr(aVarErrorDescr),
-    theVarErrorVal(""),
-    theExprSingle(aExprSingle)
-  {}
-
-  CatchExpr(
-    const QueryLoc& aQueryLoc,
-    NameTestList &aNameTest,
-    const std::string& aVarErrorCode,
-    const std::string& aVarErrorDescr,
-    const std::string& aVarErrorVal,
+    NameTestList& aNameTest,
+    rchandle<QName> aVarErrorCode,
+    rchandle<QName> aVarErrorDescr,
+    rchandle<QName> aVarErrorVal,
     rchandle<parsenode> aExprSingle)
   :
     exprnode(aQueryLoc),
@@ -5039,15 +5004,16 @@ public:
     theVarErrorDescr(aVarErrorDescr),
     theVarErrorVal(aVarErrorVal),
     theExprSingle(aExprSingle)
-  {}
+  {
+  }
 
   const NameTestList &getNameTests() const { return theNameTests; }
 
-  const std::string& getVarErrorCode() const { return theVarErrorCode; }
+  const QName* getVarErrorCode() const { return theVarErrorCode.getp(); }
 
-  const std::string& getVarErrorDescr() const { return theVarErrorDescr; }
+  const QName* getVarErrorDescr() const { return theVarErrorDescr.getp(); }
 
-  const std::string& getVarErrorVal() const { return theVarErrorVal; }
+  const QName* getVarErrorVal() const { return theVarErrorVal.getp(); }
 
   rchandle<parsenode> getExprSingle() const { return theExprSingle; }
 
@@ -5066,16 +5032,18 @@ public:
 class QName : public exprnode
 {
 protected:
-  std::string qname;
+  std::string       theQName;
+  xqpStringStore_t  thePrefix;
+  xqpStringStore_t  theLocalName;
 
 public:
   QName(const QueryLoc&, const std::string& qname);
 
-  std::string get_qname() const { return qname; }
+  const std::string& get_qname() const { return theQName; }
 
-  std::string get_localname() const;
+  const xqpStringStore_t& get_localname() const { return theLocalName; }
 
-  std::string get_prefix() const;
+  const xqpStringStore_t& get_prefix() const { return thePrefix; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -5443,16 +5411,17 @@ public:
 class VarBinding : public exprnode
 {
 protected:
-  std::string var_name;
+  rchandle<QName> var_name;
   rchandle<exprnode> expr;
 
 public:
   VarBinding(
     const QueryLoc& loc,
-    std::string varname,
+    rchandle<QName> varname,
     rchandle<exprnode> expr);
 
-  const std::string& get_varname() const { return var_name; }
+  const QName* get_varname() const { return var_name.getp(); }
+
   rchandle<exprnode> get_expr() const { return expr; }
 
   void accept(parsenode_visitor&) const;

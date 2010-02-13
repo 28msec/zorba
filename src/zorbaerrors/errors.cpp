@@ -91,7 +91,7 @@ ZorbaError::ZorbaError(
   theDebug(false)
 {
   // compute err code from qname
-  if (aErrNamespace.getStore()->byteEqual(XQUERY_ERR_NS))
+  if (aErrNamespace.getStore()->byteEqual(XQUERY_ERR_NS, strlen(XQUERY_ERR_NS)))
     theErrorCode = ErrorMessages::getErrorCodeForName(aErrLocalName.getStore()->c_str());
   else
     theErrorCode = XQP0021_USER_ERROR;

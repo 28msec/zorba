@@ -46,10 +46,10 @@ NodeNameTest::NodeNameTest(const store::Item_t& qname)
 bool NodeNameTest::operator==(const NodeNameTest& other) const
 {
   if (m_uri == other.m_uri ||
-      (m_uri != NULL && other.m_uri != NULL &&  other.m_uri->byteEqual(*m_uri)))
+      (m_uri != NULL && other.m_uri != NULL &&  other.m_uri->byteEqual(m_uri)))
   {
     if (m_local == other.m_local ||
-        (m_local != NULL && other.m_local != NULL &&  other.m_local->byteEqual(*m_local)))
+        (m_local != NULL && other.m_local != NULL &&  other.m_local->byteEqual(m_local)))
       return true;
   }
 
@@ -59,17 +59,17 @@ bool NodeNameTest::operator==(const NodeNameTest& other) const
 
 bool NodeNameTest::is_subname_of(const NodeNameTest& other) const
 {
-  return ((other.m_uri == NULL || other.m_uri->byteEqual(*m_uri))
+  return ((other.m_uri == NULL || other.m_uri->byteEqual(m_uri))
           &&
-          (other.m_local == NULL || other.m_local->byteEqual(*m_local)));
+          (other.m_local == NULL || other.m_local->byteEqual(m_local)));
 }
 
 
 bool NodeNameTest::matches(const store::Item* qname) const
 {
-  return ((m_uri == NULL || m_uri->byteEqual(*qname->getNamespace()))
+  return ((m_uri == NULL || m_uri->byteEqual(qname->getNamespace()))
           &&
-          (m_local == NULL || m_local->byteEqual(*qname->getLocalName())));
+          (m_local == NULL || m_local->byteEqual(qname->getLocalName())));
 }
 
 
@@ -77,9 +77,9 @@ bool NodeNameTest::matches(
     const xqpStringStore* lname,
     const xqpStringStore* ns) const
 {
-  return ((m_uri == NULL || m_uri->byteEqual(*ns))
+  return ((m_uri == NULL || m_uri->byteEqual(ns))
           &&
-          (m_local == NULL || m_local->byteEqual(*lname)));
+          (m_local == NULL || m_local->byteEqual(lname)));
 }
 
 }

@@ -149,13 +149,13 @@ public:
   } while (0)
  
 
-#define ZORBA_ERROR_LOC(code, loc)                                       \
-  do                                                                     \
-  {                                                                      \
+#define ZORBA_ERROR_LOC(code, loc)                                      \
+  do                                                                    \
+  {                                                                     \
     throw error::ErrorManager::createException(code, __FILE__, __LINE__, \
-                                               (loc).getLineBegin(),     \
-                                               (loc).getColumnBegin(),   \
-                                               (loc).getFilenameBegin());\
+                                               (loc).getLineBegin(),    \
+                                               (loc).getColumnBegin(),  \
+                                               (loc).getFilename());    \
   } while (0 )
 
 
@@ -174,17 +174,17 @@ public:
   ZORBA_ERROR_DESC_OSS (code, (desc))
 
 
-#define ZORBA_ERROR_LOC_DESC_OSS(code, loc, descr)                        \
-  do                                                                      \
-  {                                                                       \
-    std::ostringstream lOStringStream;                                    \
-    lOStringStream << descr;                                              \
-    throw error::ErrorManager::createException(code,                      \
-                                               lOStringStream.str(),      \
-                                               __FILE__, __LINE__,        \
-                                               (loc).getLineBegin(),      \
-                                               (loc).getColumnBegin(),    \
-                                               (loc).getFilenameBegin()); \
+#define ZORBA_ERROR_LOC_DESC_OSS(code, loc, descr)                      \
+  do                                                                    \
+  {                                                                     \
+    std::ostringstream lOStringStream;                                  \
+    lOStringStream << descr;                                            \
+    throw error::ErrorManager::createException(code,                    \
+                                               lOStringStream.str(),    \
+                                               __FILE__, __LINE__,      \
+                                               (loc).getLineBegin(),    \
+                                               (loc).getColumnBegin(),  \
+                                               (loc).getFilename());    \
   } while (0) 
 
 #define ZORBA_ERROR_LOC_DESC(code, loc, desc) \
@@ -208,19 +208,19 @@ public:
   } while (0) 
 
 
-#define ZORBA_ERROR_LOC_PARAM_OSS(code, loc, param1, param2)              \
-  do                                                                      \
-  {                                                                       \
-    std::ostringstream lOStringStream1, lOStringStream2;                  \
-    lOStringStream1 << param1;                                            \
-    lOStringStream2 << param2;                                            \
-    throw error::ErrorManager::createException(code,                      \
-                                               lOStringStream1.str(),     \
-                                               lOStringStream2.str(),     \
-                                               __FILE__, __LINE__,        \
-                                               (loc).getLineBegin(),      \
-                                               (loc).getColumnBegin(),    \
-                                               (loc).getFilenameBegin()); \
+#define ZORBA_ERROR_LOC_PARAM_OSS(code, loc, param1, param2)            \
+  do                                                                    \
+  {                                                                     \
+    std::ostringstream lOStringStream1, lOStringStream2;                \
+    lOStringStream1 << param1;                                          \
+    lOStringStream2 << param2;                                          \
+    throw error::ErrorManager::createException(code,                    \
+                                               lOStringStream1.str(),   \
+                                               lOStringStream2.str(),   \
+                                               __FILE__, __LINE__,      \
+                                               (loc).getLineBegin(),    \
+                                               (loc).getColumnBegin(),  \
+                                               (loc).getFilename());    \
   } while (0) 
 
 
@@ -272,7 +272,7 @@ public:
                             __FILE__, __LINE__,                         \
                             (loc).getLineBegin(),                       \
                             (loc).getColumnBegin(),                     \
-                            (loc).getFilenameBegin());                  \
+                            (loc).getFilename());                       \
   } while (0) 
 
 
@@ -294,7 +294,7 @@ public:
     manager->addWarning(ZorbaWarning::code, desc, __FILE__, __LINE__,   \
                         (loc).getLineBegin(),                           \
                         (loc).getColumnBegin(),                         \
-                        (loc).getFilenameBegin());                      \
+                        (loc).getFilename());                           \
   } while (0) 
 
 

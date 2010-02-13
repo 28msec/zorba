@@ -408,6 +408,10 @@ typedef enum
   // the next module in the sequence (informally, if M1, depends on itself
   // through some chain of module dependencies.)
 
+  XQST0096,
+  // It is a static error for a query prolog to contain two decimal formats with
+  // the same name, or to contain two default decimal formats.
+
   //
   // XQuery Type erros
   //

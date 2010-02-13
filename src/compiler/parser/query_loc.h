@@ -37,45 +37,49 @@ public:
   static QueryLoc null;
 
 private:
-  xqpString    theFilenameBegin;
+  xqpString    theFilename;
   unsigned int theLineBegin;
   unsigned int theColumnBegin;
-  xqpString    theFilenameEnd;
   unsigned int theLineEnd;
   unsigned int theColumnEnd;
-  std::string theFunctionName;
+  std::string  theFunctionName;
 
 public:
   SERIALIZABLE_CLASS(QueryLoc)
   SERIALIZABLE_CLASS_CONSTRUCTOR(QueryLoc)
-  void serialize(::zorba::serialization::Archiver &ar);
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   QueryLoc();
+
   QueryLoc(const QueryLoc& aQueryLoc);
-  virtual ~QueryLoc(){}
+
+  virtual ~QueryLoc() {}
 
 public:
-  xqpString    getFilenameBegin() const { return theFilenameBegin; } 
-  unsigned int getLineBegin() const     { return theLineBegin; }     
-  unsigned int getColumnBegin() const   { return theColumnBegin; }   
-  xqpString    getFilenameEnd() const   { return theFilenameEnd; }   
-  unsigned int getLineEnd() const       { return theLineEnd; }       
-  unsigned int getColumnEnd() const     { return theColumnEnd; }     
+  xqpString getFilename() const { return theFilename; }
+ 
+  void setFilename(std::string* aFilename) { theFilename = *aFilename; }
 
-  void setFilenameBegin ( std::string* aFilenameBegin ) { theFilenameBegin = *aFilenameBegin; }
-  void setLineBegin     ( unsigned int aLineBegin )     { theLineBegin = aLineBegin; }
-  void setColumnBegin   ( unsigned int aColumnBegin )   { theColumnBegin = aColumnBegin; }
-  void setFilenameEnd   ( std::string* aFilenameEnd )   { theFilenameEnd = *aFilenameEnd; }
-  void setLineEnd       ( unsigned int aLineEnd )       { theLineEnd = aLineEnd; }
-  void setColumnEnd     ( unsigned int aColumnEnd )     { theColumnEnd = aColumnEnd; }
-  xqpString getFilename() const { return getFilenameBegin(); }
+  unsigned int getLineBegin() const { return theLineBegin; }  
+   
+  void setLineBegin(unsigned int aLineBegin) { theLineBegin = aLineBegin; }
+
+  unsigned int getLineEnd() const { return theLineEnd; }    
+
+  void setLineEnd(unsigned int aLineEnd) { theLineEnd = aLineEnd; }
+
+  unsigned int getColumnBegin() const { return theColumnBegin; }
+   
+  unsigned int getColumnEnd() const { return theColumnEnd; }     
+
+  void setColumnBegin(unsigned int aColumnBegin) { theColumnBegin = aColumnBegin; }
+
+  void setColumnEnd(unsigned int aColumnEnd) { theColumnEnd = aColumnEnd; }
+
   unsigned int getLineno() const { return getLineBegin(); }
  
-  void setFunctionName(std::string aName)
-  { 
-    theFunctionName = aName;
-  }
+  void setFunctionName(std::string aName) { theFunctionName = aName; }
 
   std::string getFunctionName() const { return theFunctionName; }
  
@@ -91,6 +95,7 @@ public:
     return theLineBegin < loc.getLineBegin();
   }
 };
+
 
 std::ostream& operator<< (std::ostream& aOstr, const QueryLoc& aQueryLoc);
 

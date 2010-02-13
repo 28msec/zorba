@@ -111,7 +111,9 @@ XQueryImpl::XQueryImpl()
   theTimeout(-1),
   theIsDebugMode(false),
   theProfileName("xquery_profile.out")
-{ 
+{
+  theFileName = new xqpStringStore("");
+
   // TODO ideally, we will have to move the error handler into the error manager
   //      however, this is not possible yet because not all components of the system
   //      have a control block available.
@@ -302,10 +304,11 @@ XQueryImpl::resetErrorHandler()
  * Set the filename
  */
 void
-XQueryImpl::setFileName( const String& aFileName )
+XQueryImpl::setFileName(const String& aFileName)
 {
-  xqpString lFileName = Unmarshaller::getInternalString( aFileName );
-  theFileName = lFileName;
+  theFileName = Unmarshaller::getInternalString(aFileName);
+  if (theFileName == NULL)
+    theFileName = new xqpStringStore("");
 }
 
 /**
@@ -456,7 +459,10 @@ XQueryImpl::parse(std::istream& aQuery)
     }
     RCHelper::addReference (theStaticContext);
 
-    theStaticContext->set_entity_retrieval_url(xqp_string(&*URI::encode_file_URI(theFileName)));
+    xqpStringStore_t url;
+    URI::encode_file_URI(theFileName, url);
+
+    theStaticContext->set_entity_retrieval_url(url.getp());
 
     theCompilerCB->theRootSctx = theStaticContext;
 
@@ -625,7 +631,10 @@ void XQueryImpl::doCompile(
 
   RCHelper::addReference(theStaticContext);
 
-  theStaticContext->set_entity_retrieval_url(xqp_string(&*URI::encode_file_URI(theFileName)));
+  xqpStringStore_t url;
+  URI::encode_file_URI(theFileName, url);
+
+  theStaticContext->set_entity_retrieval_url(url.getp());
 
   theCompilerCB->theRootSctx = theStaticContext;
   const short sctxid = theCompilerCB->theSctxMap->size() + 1;

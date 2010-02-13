@@ -22,6 +22,8 @@
 #include <zorba/typeident.h>
 #include <zorba/util/path.h>
 
+#include "store/api/item_factory.h"
+
 #include "zorbatypes/xqpstring.h"
 #include "zorbaerrors/error_manager.h"
 
@@ -41,6 +43,7 @@
 
 #include "runtime/util/flowctl_exception.h"
 
+#include "compiler/parser/query_loc.h"
 
 namespace zorba {
 
@@ -61,7 +64,8 @@ StaticContextImpl::StaticContextImpl(ErrorHandler* aErrorHandler)
 {
   theCtx = GENV.getRootStaticContext().create_child_context();
   RCHelper::addReference (theCtx);
-  if ( ! theErrorHandler ) {
+  if ( ! theErrorHandler ) 
+  {
     theErrorHandler = new DefaultErrorHandler();
     theUserErrorHandler = false;
   }
@@ -81,7 +85,8 @@ StaticContextImpl::StaticContextImpl(static_context* aCtx, ErrorHandler* aErrorH
   theErrorHandler(aErrorHandler),
   theUserErrorHandler(true)
 {
-  if ( ! theErrorHandler ) {
+  if ( ! theErrorHandler ) 
+  {
     theErrorHandler = new DefaultErrorHandler();
     theUserErrorHandler = false;
   }
@@ -101,8 +106,9 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   RCHelper::addReference (theCtx);
 
   for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::const_iterator
-        lIter = aStaticContext.theModuleWrappers.begin();
-        lIter != aStaticContext. theModuleWrappers.end(); ++lIter) {
+         lIter = aStaticContext.theModuleWrappers.begin();
+       lIter != aStaticContext. theModuleWrappers.end(); ++lIter) 
+  {
     addModuleURIResolver(lIter->first);
   }
   for (std::map<SchemaURIResolver*, SchemaURIResolverWrapper*>::const_iterator
@@ -157,9 +163,10 @@ bool
 StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
 {
   ZORBA_TRY
-    xqpString lPrefix = Unmarshaller::getInternalString(aPrefix);
-    xqpString lURI = Unmarshaller::getInternalString(aURI);
-    theCtx->bind_ns(lPrefix, lURI);
+    xqpStringStore_t lPrefix = Unmarshaller::getInternalString(aPrefix);
+    xqpStringStore_t lURI = Unmarshaller::getInternalString(aURI);
+    QueryLoc loc;
+    theCtx->bind_ns(lPrefix, lURI, loc);
     return true;
   ZORBA_CATCH
   return false;
@@ -169,12 +176,20 @@ StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
 String   
 StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
 {
-  try {
-    xqpString lPrefix = Unmarshaller::getInternalString(aPrefix);
-    return &*theCtx->lookup_ns(lPrefix).theStrStore;
-  } catch (error::ZorbaError& e) {
+  try 
+  {
+    xqpStringStore_t lPrefix = Unmarshaller::getInternalString(aPrefix);
+    QueryLoc loc;
+    xqpStringStore_t ns;
+    theCtx->lookup_ns(ns, lPrefix, loc);
+    return ns.getp();
+  }
+  catch (error::ZorbaError& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
+  }
+  catch (std::exception& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return "";
@@ -185,9 +200,10 @@ bool
 StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
 {
   ZORBA_TRY
-      xqpString lURI = Unmarshaller::getInternalString(aURI);
-      theCtx->set_default_elem_type_ns(lURI);
-      return true;
+    xqpStringStore_t lURI = Unmarshaller::getInternalString(aURI);
+    QueryLoc loc;
+    theCtx->set_default_elem_type_ns(lURI, loc);
+    return true;
   ZORBA_CATCH
   return false;
 }
@@ -198,7 +214,7 @@ StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
 {
   try 
   {
-    return &*theCtx->default_elem_type_ns().theStrStore;
+    return theCtx->default_elem_type_ns().getp();
   }
   catch (error::ZorbaError& e)
   {
@@ -216,8 +232,9 @@ bool
 StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
 {
   ZORBA_TRY
-    xqpStringStore* lURI = Unmarshaller::getInternalString(aURI);
-    theCtx->set_default_function_ns(lURI->c_str());
+    xqpStringStore_t lURI = Unmarshaller::getInternalString(aURI);
+    QueryLoc loc;
+    theCtx->set_default_function_ns(lURI, loc);
     return true;
   ZORBA_CATCH
   return false;
@@ -229,7 +246,7 @@ StaticContextImpl::getDefaultFunctionNamespace( ) const
 {
   try 
   {
-    return theCtx->default_function_ns();
+    return theCtx->default_function_ns().getp();
   }
   catch (error::ZorbaError& e) 
   {
@@ -315,9 +332,9 @@ StaticContextImpl::setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode )
 {
   ZORBA_TRY
     if ( mode == xpath1_0)
-      theCtx->set_xpath1_0compatib_mode(StaticContextConsts::xpath1_0_only);
+      theCtx->set_xpath_compatibility(StaticContextConsts::xpath1_0_only);
     else
-      theCtx->set_xpath1_0compatib_mode(StaticContextConsts::xpath2_0);
+      theCtx->set_xpath_compatibility(StaticContextConsts::xpath2_0);
     return true;
   ZORBA_CATCH
   return false;
@@ -327,12 +344,18 @@ StaticContextImpl::setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode )
 xpath1_0compatib_mode_t  
 StaticContextImpl::getXPath1_0CompatibMode( ) const
 {
-  try {
-    return theCtx->xpath1_0compatib_mode()==StaticContextConsts::xpath1_0_only?
-      xpath1_0:xpath2_0;
-  } catch (error::ZorbaError& e) {
+  try 
+  {
+    return (theCtx->xpath_compatibility() == StaticContextConsts::xpath1_0_only?
+            xpath1_0 :
+            xpath2_0);
+  }
+  catch (error::ZorbaError& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
+  }
+  catch (std::exception& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return xpath2_0;
@@ -899,15 +922,22 @@ StaticContextImpl::removeSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver
 
 ********************************************************************************/
 bool
-StaticContextImpl::containsFunction(const String& aFnNameUri, const String& aFnNameLocal, int arity) const
+StaticContextImpl::containsFunction(
+    const String& aFnNameUri,
+    const String& aFnNameLocal, 
+    int arity) const
 {
-    const function *fn = theCtx->lookup_resolved_fn(
-        Unmarshaller::getInternalString(aFnNameUri),
-        Unmarshaller::getInternalString(aFnNameLocal), arity);
-    if (fn == NULL) {
-        return false;
-    }
-    return true;
+  xqpStringStore_t prefix = new xqpStringStore("");
+
+  store::Item_t qnameItem;
+  GENV_ITEMFACTORY->createQName(qnameItem,
+                                Unmarshaller::getInternalString(aFnNameUri),
+                                prefix,
+                                Unmarshaller::getInternalString(aFnNameLocal));
+
+  const function* fn = theCtx->lookup_fn(qnameItem, arity);
+
+  return fn != NULL;
 }
 
 
@@ -945,7 +975,7 @@ StaticContextImpl::disableFunction(const Function_t& aFunction)
 void
 StaticContextImpl::disableFunction(const Item& aQName, int arity)
 {
-  theCtx->bind_fn(Unmarshaller::getInternalItem(aQName), NULL, arity, true);
+  theCtx->unbind_fn(Unmarshaller::getInternalItem(aQName), arity);
 }
 
 void

@@ -1,5 +1,5 @@
 /*
- * Copyright 2006-2008 The FLWOR Foundation.
+ * copyright 2006-2008 The FLWOR Foundation.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -1164,7 +1164,7 @@ XmlNode* ElementNode::copyInternal(
           ns2 = rootNsContext->findBinding(prefix);
         }
 
-        if (ns2 == NULL || !ns->byteEqual(*ns2))
+        if (ns2 == NULL || !ns->byteEqual(ns2))
           ctx->addBinding(prefix, ns);
       }
 
@@ -1188,7 +1188,7 @@ XmlNode* ElementNode::copyInternal(
             ns2 = rootNsContext->findBinding(prefix);
           }
 
-          if (ns2 == NULL || !ns->byteEqual(*ns2))
+          if (ns2 == NULL || !ns->byteEqual(ns2))
             ctx->addBinding(prefix, ns);
         }
       }
@@ -1567,7 +1567,7 @@ void ElementNode::getNamespaceBindings(
         ulong j;
         for (j = 0; j < currSize; j++)
         {
-          if (bindings[j].first->byteEqual(*parentBindings[i].first.getp()))
+          if (bindings[j].first->byteEqual(parentBindings[i].first.getp()))
             break;
         }
 
@@ -1644,7 +1644,7 @@ bool ElementNode::addBindingForQName(
 
   // If ns is empty, then prefix must be empty
   ZORBA_FATAL(!ns->empty() || prefix->empty(),
-              "prefix = " << prefix->str() << "ns = " << ns->str());
+              "prefix = " << prefix->str() << " ns = " << ns->str());
 
   // No ns binding is implied by an attribute qname whose ns uri is empty
   if (ns->empty() && isAttr)
@@ -1662,7 +1662,7 @@ bool ElementNode::addBindingForQName(
         return true;
       }
     }
-    else if (!ns2->byteEqual(*ns))
+    else if (!ns2->byteEqual(ns))
     {
       if (replacePrefix)
       {
@@ -1713,7 +1713,7 @@ void ElementNode::addBindingForQName2(const store::Item* qname)
       if (!ns->empty())
         addLocalBinding(prefix, ns);
     }
-    else if (!ns2->byteEqual(*ns))
+    else if (!ns2->byteEqual(ns))
     {
       ZORBA_FATAL(0, "");
     }
@@ -1782,7 +1782,7 @@ void ElementNode::checkNamespaceConflict(
                          << prefix->str() << ", \"\"" << "]");
   }
 
-  if (ns2 != NULL && !ns2->byteEqual(*ns))
+  if (ns2 != NULL && !ns2->byteEqual(ns))
   {
     ZORBA_ERROR_DESC_OSS(ecode,
                          "The implied namespace binding of " << qname->show()
@@ -1871,7 +1871,7 @@ void ElementNode::addBaseUriProperty(
     {
       URI absoluteURI(&*absUri);
       URI resolvedURI(absoluteURI, &*relUri);
-      resolvedUriString = resolvedURI.toString().getStore();
+      resolvedUriString = resolvedURI.toString();
     }
     catch (error::ZorbaError&) 
     {
@@ -1922,11 +1922,14 @@ void ElementNode::adjustBaseUriProperty(
   else
   { 
     xqpStringStore_t resolvedUriString;
-    try {
+    try
+    {
       URI lAbsoluteUri(&*absUri);
       URI lResolvedUri(lAbsoluteUri, &*relUri);
-      resolvedUriString = lResolvedUri.toString().getStore();
-    } catch (error::ZorbaError& e) {
+      resolvedUriString = lResolvedUri.toString();
+    }
+    catch (error::ZorbaError& e)
+    {
       ZORBA_FATAL(e.theErrorCode, e.theDescription);
     }
     GET_STORE().getItemFactory()->createAnyURI(typedValue, resolvedUriString);

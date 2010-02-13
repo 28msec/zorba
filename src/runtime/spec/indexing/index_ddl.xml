@@ -131,6 +131,7 @@
 
       <zorba:signature localname="create-internal-index" prefix="op">
         <zorba:param>xs:QName</zorba:param>
+       <zorba:param>item()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 

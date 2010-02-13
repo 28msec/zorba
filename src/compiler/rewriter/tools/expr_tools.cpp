@@ -20,13 +20,13 @@
 namespace zorba
 {
 
-static void add_wincond_vars(const flwor_wincond*, int&, VarIdMap&, IdVarMap*);
+static void add_wincond_vars(const flwor_wincond*, ulong&, VarIdMap&, IdVarMap*);
 
-static void add_var(const var_expr*, int&, VarIdMap&, IdVarMap*);
+static void add_var(const var_expr*, ulong&, VarIdMap&, IdVarMap*);
 
 static void remove_wincond_vars(const flwor_wincond*, const VarIdMap&, DynamicBitset&);
 
-static void set_bit(const var_expr*, const std::map<const var_expr*, int>&, DynamicBitset&, bool);
+static void set_bit(const var_expr*, const VarIdMap&, DynamicBitset&, bool);
 
 
 /*******************************************************************************
@@ -115,7 +115,7 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
 ********************************************************************************/
 void index_flwor_vars(
     expr* e,
-    int& numVars,
+    ulong& numVars,
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {
@@ -207,7 +207,7 @@ void index_flwor_vars(
 ********************************************************************************/
 static void add_wincond_vars(
     const flwor_wincond* cond,
-    int& numVars,
+    ulong& numVars,
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {
@@ -231,7 +231,7 @@ static void add_wincond_vars(
 ********************************************************************************/
 static void add_var(
     const var_expr* v,
-    int& numVars,
+    ulong& numVars,
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
 {
@@ -251,7 +251,7 @@ static void add_var(
   size of FV(e) and whose i-th bit is on iff the var with prefix id i belongs
   to V(E). The mapping between E and V(E) is stored in "freevarMap".  
 ********************************************************************************/
-void find_flwor_vars(
+void build_expr_to_vars_map(
     expr* e,
     const VarIdMap& varmap,
     DynamicBitset& freeset,
@@ -263,7 +263,7 @@ void find_flwor_vars(
     return;
   }
 
-  int numVars = freeset.size();
+  ulong numVars = freeset.size();
 
   DynamicBitset eFreeset(numVars);
   expr_iterator i = e->expr_begin();
@@ -273,7 +273,7 @@ void find_flwor_vars(
     if (ce) 
     {
       eFreeset.reset();
-      find_flwor_vars(ce, varmap, eFreeset, freevarMap);
+      build_expr_to_vars_map(ce, varmap, eFreeset, freevarMap);
       freeset.set_union(eFreeset);
     }
     ++i;
@@ -391,7 +391,7 @@ static void set_bit(
   if (v == NULL)
     return;
 
-  std::map<const var_expr *, int>::const_iterator i = varmap.find(v);
+  VarIdMap::const_iterator i = varmap.find(v);
   if (i != varmap.end())
     freeset.set(i->second, value);
 }

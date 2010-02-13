@@ -28,20 +28,20 @@ RewriterContext::RewriterContext(CompilerCB* aCompilerCB, expr_t root)
   theRoot(root),
   m_tempvarCounter(0),
   m_tempIndexCounter(0),
-  m_varid_map(NULL),
-  m_idvar_map(NULL),
-  m_exprvars_map(NULL)
+  theVarIdMap(NULL),
+  theIdVarMap(NULL),
+  theExprVarsMap(NULL)
 {
 }
 
 
 RewriterContext::~RewriterContext()
 {
-  delete m_varid_map;
+  delete theVarIdMap;
 
-  delete m_idvar_map;
+  delete theIdVarMap;
 
-  delete m_exprvars_map;
+  delete theExprVarsMap;
 }
 
 

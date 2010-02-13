@@ -345,7 +345,8 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
                                   StatelessExtFunctionCallIterator,
                                   StatelessExtFunctionCallIteratorState>*>(this));
   ar.dont_allow_delay_for_plan_sctx = false;
-  if (ar.is_serializing_out()) {
+  if (ar.is_serializing_out()) 
+  {
     // serialize out: serialize prefix and localname of the function
     ar & thePrefix;
     xqpStringStore_t lTmp;
@@ -353,7 +354,9 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
     ar.set_is_temp_field(true);
     ar & lTmp;
     ar.set_is_temp_field(false);
-  } else {
+  }
+  else
+  {
     // serializing in: get the function from the static context
     //                 using the serialized prefix/uri and localname 
     ar & thePrefix;
@@ -361,13 +364,15 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
     ar.set_is_temp_field(true);
     ar & lLocalname;
     ar.set_is_temp_field(false);
-    xqp_string lURI;
+    xqpStringStore_t lURI;
     if(thePrefix.getStore())
     {
-      theSctx->lookup_ns(thePrefix, lURI);
-      m_function = theSctx->lookup_stateless_external_function(lURI,
+      QueryLoc loc;
+      theSctx->lookup_ns(lURI, thePrefix.getStore(), loc);
+      m_function = theSctx->lookup_stateless_external_function(lURI.getp(),
                                                                lLocalname.getp());
-      if (!m_function) {
+      if (!m_function) 
+      {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because "
                              << " the external function with URI " << lURI
@@ -452,7 +457,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
                                                e.getFileLineNumber(), 
                                                loc.getLineBegin(),
                                                loc.getColumnBegin(),
-                                               loc.getFilenameBegin());
+                                               loc.getFilename());
   }
   while (true)
   {
@@ -469,7 +474,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
                                                  e.getFileLineNumber(), 
                                                  loc.getLineBegin(),
                                                  loc.getColumnBegin(),
-                                                 loc.getFilenameBegin());
+                                                 loc.getFilename());
     }
     result = Unmarshaller::getInternalItem(lOutsideItem);
     if (theIsUpdating)

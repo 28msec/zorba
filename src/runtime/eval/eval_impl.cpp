@@ -39,10 +39,11 @@ PlanIter_t compile(
 {
   XQueryCompiler compiler(ccb);
   istringstream os(query);
-  parsenode_t ast = compiler.parse(os);
+  xqpStringStore_t dummyname = new xqpStringStore("");
+  parsenode_t ast = compiler.parse(os, dummyname);
   QueryLoc loc;
 
-  rchandle<MainModule> mm = ast.dyn_cast<MainModule> ();
+  rchandle<MainModule> mm = ast.dyn_cast<MainModule>();
   if (mm == NULL)
     ZORBA_ERROR_LOC(XPST0003, loc);
 
@@ -61,11 +62,13 @@ PlanIter_t compile(
   }
 
   for (int i = (int) varnames.size() - 1; i >= 0; i--)
+  {
     vfo->push_front(new VarDecl(loc,
-                                xqp_string(varnames[i]->getStringValue()),
+                                new QName(loc, varnames[i]->getStringValue()->str()),
                                 NULL,
                                 NULL,
                                 true));
+  }
   // TODO: give eval'ed code the types of the variables (for optimization)
   
   return compiler.compile(ast);

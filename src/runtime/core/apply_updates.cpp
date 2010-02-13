@@ -146,7 +146,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         e.setQueryLocation(loc.getLineBegin(),
                            loc.getColumnBegin(),
-                           loc.getFilenameBegin());
+                           loc.getFilename());
       }
       throw e;
     }

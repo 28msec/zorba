@@ -27,6 +27,7 @@
   <zorba:cpp>
     <zorba:include form="Quoted">system/globalenv.h</zorba:include>
     <zorba:include form="Quoted">types/typeops.h</zorba:include>
+    <zorba:include form="Quoted">compiler/expression/expr_base.h</zorba:include>
   </zorba:cpp>
 </zorba:codegen>
 

@@ -734,10 +734,12 @@ EncodeForUriIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(item, theChildren [0].getp(), planState)) {
-    resStr = item->getStringValue()->encodeForUri();
+  if (consumeNext(item, theChildren [0].getp(), planState)) 
+  {
+    item->getStringValue()->encodeForUri(resStr);
   }
-  else {
+  else 
+  {
     resStr = new xqpStringStore("");
   }
 
@@ -866,7 +868,7 @@ ContainsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
     {
       if( theChildren.size() == 2 )
       {
-        resBool = (arg1->indexOf(arg2, NULL) != -1);
+        resBool = (arg1->positionOf(arg2, NULL) != -1);
       }
       else
       {
@@ -875,13 +877,16 @@ ContainsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
         {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
-          try {
+          try
+          {
             coll = theSctx->get_collation_cache()->getCollator(itemColl->getStringValue()->str());
-          } catch (error::ZorbaError& e) {
+          }
+          catch (error::ZorbaError& e) 
+          {
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
           }
-          resBool = (arg1->indexOf(arg2, coll) != -1);
+          resBool = (arg1->positionOf(arg2, coll) != -1);
         }
       }
       STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -948,7 +953,7 @@ StartsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
     {
       if( theChildren.size() == 2 )
       {
-        resBool = (arg1->indexOf(arg2, NULL) == 0);
+        resBool = (arg1->positionOf(arg2, NULL) == 0);
       }
       else
       { //theChildren.size() ==3
@@ -962,7 +967,7 @@ StartsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
           }
-          resBool = (arg1->indexOf(arg2, coll) == 0);
+          resBool = (arg1->positionOf(arg2, coll) == 0);
         }
       }
       STACK_PUSH( GENV_ITEMFACTORY->createBoolean(result, resBool), state );
@@ -1108,7 +1113,7 @@ SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     {
       if( theChildren.size() == 2 )
       {
-        index = arg1->indexOf(arg2, NULL);
+        index = arg1->positionOf(arg2, NULL);
       }
       else
       {
@@ -1123,7 +1128,7 @@ SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
           }
-          index = arg1->indexOf(arg2, coll);
+          index = arg1->positionOf(arg2, coll);
         }
       }
 
@@ -1191,7 +1196,7 @@ SubstringAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     {
       if( theChildren.size() == 2 )
       {
-        startPos = arg1->indexOf(arg2, NULL);
+        startPos = arg1->positionOf(arg2, NULL);
       }
       else
       {
@@ -1206,7 +1211,7 @@ SubstringAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) co
             // rethrow the error with a location argument
             ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
           }
-          startPos = arg1->indexOf( arg2, coll );
+          startPos = arg1->positionOf( arg2, coll );
         }
       }
 

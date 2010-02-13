@@ -217,7 +217,7 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return theValue->byteEqual(other->getString()->str());
+    return theValue->byteEqual(other->getString());
   }
 
   store::Item_t getEBV( ) const;
@@ -359,7 +359,7 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return item->getString()->byteEqual(theValue->str());
+    return item->getString()->byteEqual(theValue.getp());
   }
 
   long compare(
@@ -367,12 +367,13 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return theValue->byteCompare(other->getString()->str());
+    xqpStringStore* otherStr = other->getString();
+    return theValue->byteCompare(otherStr->c_str(), otherStr->bytes());
   }
 
   store::Item_t getEBV( ) const;
 
-  xqpStringStore_t getStringValue( ) const { return theValue.getp(); }
+  xqpStringStore_t getStringValue() const { return theValue.getp(); }
   xqpStringStore* getStringValueP() const  { return theValue.getp(); }
   void getStringValue(xqpStringStore_t& strval) const { strval = theValue; }
   void getStringValue(std::string& buf) const { buf += theValue->str(); }

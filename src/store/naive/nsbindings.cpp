@@ -61,7 +61,7 @@ xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) con
 
     for (ulong i = 0; i < numBindings; i++)
     {
-      if (bindings[i].first->byteEqual(*prefix))
+      if (bindings[i].first->byteEqual(prefix))
         return bindings[i].second.getp();
     }
 
@@ -80,11 +80,11 @@ void NsBindingsContext::addBinding(
 
   for (ulong i = 0; i < numBindings; i++)
   {
-    if (theBindings[i].first->byteEqual(*prefix))
+    if (theBindings[i].first->byteEqual(prefix))
     {
-      if(!theBindings[i].second->byteEqual(*ns))
+      if(!theBindings[i].second->byteEqual(ns))
       {
-        ZORBA_FATAL(theBindings[i].second->byteEqual(*ns), "");
+        ZORBA_FATAL(theBindings[i].second->byteEqual(ns), "");
       }
       return;
     }
@@ -102,9 +102,9 @@ void NsBindingsContext::removeBinding(
 
   for (ulong i = 0; i < numBindings; i++)
   {
-    if (theBindings[i].first->byteEqual(*prefix))
+    if (theBindings[i].first->byteEqual(prefix))
     {
-      ZORBA_FATAL(theBindings[i].second->byteEqual(*ns), "");
+      ZORBA_FATAL(theBindings[i].second->byteEqual(ns), "");
 
       theBindings.erase(theBindings.begin() + i);
       return;

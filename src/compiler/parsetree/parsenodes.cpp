@@ -153,11 +153,11 @@ LibraryModule::LibraryModule(
 
 void LibraryModule::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (version_decl_h);
-  ACCEPT (decl_h);
-  ACCEPT (prolog_h);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT(version_decl_h);
+  ACCEPT(decl_h);
+  ACCEPT(prolog_h);
+  END_VISITOR();
 }
 
 
@@ -165,21 +165,21 @@ void LibraryModule::accept(parsenode_visitor& v) const
   [5] ModuleDecl ::= MODULE NAMESPACE  NCNAME  EQ  URI_LITERAL  SEMI
 ********************************************************************************/
 ModuleDecl::ModuleDecl(
-    const QueryLoc& loc_,
-    std::string const& _prefix,
-    std::string const& _target_namespace)
+    const QueryLoc& loc,
+    std::string const& prefix,
+    std::string const& target_namespace)
   :
-  XQDocumentable(loc_),
-  prefix(_prefix),
-  target_namespace(_target_namespace)
+  XQDocumentable(loc),
+  thePrefix(new xqpStringStore(prefix)),
+  theTargetNamespace(new xqpStringStore(target_namespace))
 {
 }
 
 
 void ModuleDecl::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -432,8 +432,8 @@ ConstructionDecl::ConstructionDecl(
 
 void ConstructionDecl::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -442,20 +442,20 @@ void ConstructionDecl::accept(parsenode_visitor& v) const
 ********************************************************************************/
 NamespaceDecl::NamespaceDecl(
     const QueryLoc& loc,
-    std::string const& prefix,
-    std::string const& uri)
+    const std::string& prefix,
+    const std::string& uri)
   :
   parsenode(loc),
-  thePrefix(prefix),
-  theUri(uri)
+  thePrefix(new xqpStringStore(prefix)),
+  theUri(new xqpStringStore(uri))
 {
 }
 
 
 void NamespaceDecl::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -464,21 +464,21 @@ void NamespaceDecl::accept(parsenode_visitor& v) const
                                 DECLARE DEFAULT FUNCTION NAMESPACE URILiteral
 ********************************************************************************/
 DefaultNamespaceDecl::DefaultNamespaceDecl(
-    const QueryLoc& loc_,
-    enum ParseConstants::default_namespace_mode_t _mode,
-    std::string const& _default_namespace)
+    const QueryLoc& loc,
+    enum ParseConstants::default_namespace_mode_t mode,
+    const std::string& uri)
   :
-  parsenode(loc_),
-  mode(_mode),
-  default_namespace(_default_namespace)
+  parsenode(loc),
+  theMode(mode),
+  theUri(new xqpStringStore(uri))
 {
 }
 
 
 void DefaultNamespaceDecl::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -487,49 +487,48 @@ void DefaultNamespaceDecl::accept(parsenode_visitor& v) const
                         ("at"  URILiteralList)?
 ********************************************************************************/
 SchemaImport::SchemaImport(
-    const QueryLoc& loc_,
-    rchandle<SchemaPrefix> _prefix_h,
-    std::string const& _uri,
-    rchandle<URILiteralList> _at_list_h)
+    const QueryLoc& loc,
+    rchandle<SchemaPrefix> prefix,
+    const std::string& uri,
+    rchandle<URILiteralList> at_list)
   :
-  parsenode(loc_),
-  prefix_h(_prefix_h),
-  uri(_uri),
-  at_list_h(_at_list_h)
+  parsenode(loc),
+  thePrefix(prefix),
+  theUri(new xqpStringStore(uri)),
+  theAtList(at_list)
 {
 }
 
 
 void SchemaImport::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (prefix_h);
-  ACCEPT (at_list_h);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT(thePrefix);
+  ACCEPT(theAtList);
+  END_VISITOR();
 }
 
 
 /******************************************************************************
   [23a] URLLiteralList ::= URI_LITERAL | URILiteralList  COMMA  URI_LITERAL
 ********************************************************************************/
-URILiteralList::URILiteralList(
-    const QueryLoc& loc_)
+URILiteralList::URILiteralList(const QueryLoc& loc)
   :
-  parsenode(loc_)
+  parsenode(loc)
 {
 }
 
 
 void URILiteralList::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
 #if 0
   vector<string>::const_reverse_iterator it = uri_v.rbegin();
   for (; it!=uri_v.rend(); ++it) {
     // ..do something useful
   }
 #endif
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -537,31 +536,31 @@ void URILiteralList::accept(parsenode_visitor& v) const
   [24] SchemaPrefix ::=	("namespace" NCName "=") | ("default" "element" "namespace")
 ********************************************************************************/
 SchemaPrefix::SchemaPrefix(
-    const QueryLoc& loc_,
-    bool _default_b)
+    const QueryLoc& loc,
+    bool isDefault)
   :
-  parsenode(loc_),
-  prefix(""),
-  default_b(_default_b)
+  parsenode(loc),
+  thePrefix(new xqpStringStore("")),
+  theIsDefault(isDefault)
 {
 }
 
 
 SchemaPrefix::SchemaPrefix(
-    const QueryLoc& loc_,
-    std::string const& _prefix)
+    const QueryLoc& loc,
+    const std::string& prefix)
   :
-  parsenode(loc_),
-  prefix(_prefix),
-  default_b(false)
+  parsenode(loc),
+  thePrefix(new xqpStringStore(prefix)),
+  theIsDefault(false)
 {
 }
 
 
 void SchemaPrefix::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -570,40 +569,36 @@ void SchemaPrefix::accept(parsenode_visitor& v) const
                         ("at" URILiteralList)?
 ********************************************************************************/
 ModuleImport::ModuleImport(
-    const QueryLoc& loc_,
-    bool imports_data_module,
-    std::string const& _uri,
-    rchandle<URILiteralList> _uri_list_h)
+    const QueryLoc& loc,
+    const std::string& uri,
+    rchandle<URILiteralList> atlist)
   :
-  XQDocumentable(loc_),
-  imports_data_module_h(imports_data_module),
-  uri (_uri),
-  uri_list_h(_uri_list_h)
+  XQDocumentable(loc),
+  theUri(new xqpStringStore(uri)),
+  theAtList(atlist)
 {
 }
 
 
 ModuleImport::ModuleImport(
-    const QueryLoc& loc_,
-    bool imports_data_module,
-    std::string const& _prefix,
-    std::string const& _uri,
-    rchandle<URILiteralList> _uri_list_h)
+    const QueryLoc& loc,
+    const std::string& prefix,
+    const std::string& uri,
+    rchandle<URILiteralList> atlist)
   :
-  XQDocumentable(loc_),
-  imports_data_module_h(imports_data_module),
-  prefix(_prefix),
-  uri(_uri),
-  uri_list_h(_uri_list_h)
+  XQDocumentable(loc),
+  thePrefix(new xqpStringStore(prefix)),
+  theUri(new xqpStringStore(uri)),
+  theAtList(atlist)
 {
 }
 
 
 void ModuleImport::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (uri_list_h);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT(theAtList);
+  END_VISITOR();
 }
 
 
@@ -669,7 +664,7 @@ void OptionDecl::accept(parsenode_visitor& v) const
 ********************************************************************************/
 VarDecl::VarDecl(
     const QueryLoc& loc,
-    std::string varname,
+    rchandle<QName> varname,
     rchandle<SequenceType> type_decl,
     rchandle<exprnode> init_expr,
     bool external)
@@ -683,10 +678,10 @@ VarDecl::VarDecl(
 
 void VarDecl::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (typedecl_h);
-  ACCEPT (initexpr_h);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT(theType);
+  ACCEPT(initexpr_h);
+  END_VISITOR();
 }
 
 
@@ -797,13 +792,13 @@ void ParamList::accept(parsenode_visitor& v) const
   [35] Param ::= "$" QName TypeDeclaration?
 ********************************************************************************/
 Param::Param(
-    const QueryLoc& loc_,
-    std::string _name,
-    rchandle<SequenceType> _typedecl_h)
+    const QueryLoc& loc,
+    rchandle<QName> name,
+    rchandle<SequenceType> type)
   :
-  parsenode(loc_),
-  name(_name),
-  typedecl_h(_typedecl_h)
+  parsenode(loc),
+  theName(name),
+  theType(type)
 {
 }
 
@@ -811,7 +806,7 @@ Param::Param(
 void Param::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR();
-  ACCEPT(typedecl_h);
+  ACCEPT(theType);
   END_VISITOR();
 }
 
@@ -1378,7 +1373,7 @@ void WindowClause::accept(parsenode_visitor& v) const
 void WindowVarDecl::accept(parsenode_visitor& v) const 
 {
   BEGIN_VISITOR();
-  ACCEPT(typedecl_h);
+  ACCEPT(theType);
   // The domain expr has been translated already. 
   END_VISITOR();
 }
@@ -1405,18 +1400,18 @@ void FLWORWinCond::accept(parsenode_visitor& v) const
 ********************************************************************************/
 void WindowVars::accept(parsenode_visitor& v) const 
 {
-  BEGIN_VISITOR ();
-  ACCEPT (posvar);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT(posvar);
+  END_VISITOR();
 }
 
-// [33a] FLWORClauseList
-// ----------------------
-FLWORClauseList::FLWORClauseList(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
+
+
+FLWORClauseList::FLWORClauseList(const QueryLoc& loc)
+  :
+  parsenode(loc)
+{
+}
 
 
 void FLWORClauseList::accept(parsenode_visitor& v) const
@@ -1484,44 +1479,42 @@ void VarInDeclList::accept(parsenode_visitor& v) const
 // [34b] VarInDecl
 // ---------------
 VarInDecl::VarInDecl(
-  const QueryLoc& loc_,
-  std::string _varname,
-  rchandle<SequenceType> _typedecl_h,
+  const QueryLoc& loc,
+  rchandle<QName> varname,
+  rchandle<SequenceType> typedecl_h,
   rchandle<PositionalVar> _posvar_h,
   rchandle<FTScoreVar> _ftscorevar_h,
-  rchandle<exprnode> _valexpr_h)
+  rchandle<exprnode> valexpr_h)
 :
-  VarDeclWithInit (loc_, _varname, _typedecl_h, _valexpr_h),
+  VarDeclWithInit (loc, varname, typedecl_h, valexpr_h),
   posvar_h(_posvar_h),
   ftscorevar_h(_ftscorevar_h)
-{}
+{
+}
 
-
-//-VarInDecl::
 
 void VarInDecl::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (typedecl_h);
-  ACCEPT (posvar_h);
-  ACCEPT (ftscorevar_h);
-  ACCEPT (get_initexpr ());
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT(theType);
+  ACCEPT(posvar_h);
+  ACCEPT(ftscorevar_h);
+  ACCEPT(get_initexpr());
+  END_VISITOR();
 }
 
 
 // [35] PositionalVar
 // ------------------
 PositionalVar::PositionalVar(
-  const QueryLoc& loc_,
-  std::string const& _varname)
+  const QueryLoc& loc,
+  rchandle<QName> varname)
 :
-  parsenode(loc_),
-  varname(_varname)
-{}
+  parsenode(loc),
+  theName(varname)
+{
+}
 
-
-//-PositionalVar::
 
 void PositionalVar::accept(parsenode_visitor& v) const
 {
@@ -1540,8 +1533,6 @@ LetClause::LetClause(
   vardecl_list_h(_vardecl_list_h)
 {}
 
-
-//-LetClause::
 
 void LetClause::accept(parsenode_visitor& v) const
 {
@@ -1562,13 +1553,12 @@ VarGetsDeclList::VarGetsDeclList(
 {}
 
 
-//-VarGetsDeclList::
-
 void VarGetsDeclList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
   vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
-  for (; it!=vardecl_hv.end(); ++it) {
+  for (; it!=vardecl_hv.end(); ++it) 
+  {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
@@ -1581,11 +1571,11 @@ void VarGetsDeclList::accept(parsenode_visitor& v) const
 
 void VarGetsDecl::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (typedecl_h);
-  ACCEPT (ftscorevar_h);
-  ACCEPT (get_initexpr ());
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT(theType);
+  ACCEPT(ftscorevar_h);
+  ACCEPT(get_initexpr());
+  END_VISITOR();
 }
 
 
@@ -1667,7 +1657,7 @@ void GroupSpecList::accept(parsenode_visitor& v) const
 
 GroupSpec::GroupSpec(
   const QueryLoc& loc_,
-  std::string _var_name_h,
+  rchandle<QName> _var_name_h,
   rchandle<GroupCollationSpec> _group_coll_spec_h)
 :
   parsenode(loc_),
@@ -1886,8 +1876,6 @@ QVarInDeclList::QVarInDeclList(
 {}
 
 
-//-QVarInDeclList::
-
 void QVarInDeclList::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
@@ -1900,18 +1888,20 @@ void QVarInDeclList::accept(parsenode_visitor& v) const
 // ----------------
 QVarInDecl::QVarInDecl(
   const QueryLoc& loc_,
-  std::string _name,
+  rchandle<QName> _name,
   rchandle<exprnode> _val_h)
-:
+  :
   parsenode(loc_),
   name(_name),
   typedecl_h(NULL),
   val_h(_val_h)
-{}
+{
+}
+
 
 QVarInDecl::QVarInDecl(
   const QueryLoc& loc_,
-  std::string _name,
+  rchandle<QName> _name,
   rchandle<SequenceType> _typedecl_h,
   rchandle<exprnode> _val_h)
 :
@@ -1919,10 +1909,9 @@ QVarInDecl::QVarInDecl(
   name(_name),
   typedecl_h(_typedecl_h),
   val_h(_val_h)
-{}
+{
+}
 
-
-//-QVarInDecl::
 
 void QVarInDecl::accept(parsenode_visitor& v) const
 {
@@ -1952,7 +1941,7 @@ TypeswitchExpr::TypeswitchExpr(
   const QueryLoc& loc_,
   rchandle<exprnode> _switch_expr_h,
   rchandle<CaseClauseList> _clause_list_h,
-  std::string _default_varname,
+  rchandle<QName> _default_varname,
   rchandle<exprnode> _default_clause_h)
 :
   exprnode(loc_),
@@ -2002,7 +1991,7 @@ void CaseClauseList::accept(parsenode_visitor& v) const
 // ---------------
 CaseClause::CaseClause(
   const QueryLoc& loc_,
-  std::string _varname,
+  rchandle<QName> _varname,
   rchandle<SequenceType> _type_h,
   rchandle<exprnode> _val_h)
 :
@@ -2019,7 +2008,7 @@ CaseClause::CaseClause(
   rchandle<exprnode> _val_h)
 :
   parsenode(loc_),
-  varname(""),
+  varname(NULL),
   type_h(_type_h),
   val_h(_val_h)
 {
@@ -2972,23 +2961,22 @@ void NameTest::accept(parsenode_visitor& v) const
 ********************************************************************************/
 Wildcard::Wildcard(
   const QueryLoc& loc,
-  const xqp_string& prefix,
-  const xqp_string& lname,
+  const std::string& prefix,
+  const std::string& lname,
   enum ParseConstants::wildcard_t kind)
   :
   parsenode(loc),
   theKind(kind),
-  thePrefix(prefix),
-  theLocalName(lname)
-{}
-
-
+  thePrefix(new xqpStringStore(prefix)),
+  theLocalName(new xqpStringStore(lname))
+{
+}
 
 
 void Wildcard::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -4217,33 +4205,31 @@ void StringLiteral::accept(parsenode_visitor& v) const
 // [154] QName
 // -----------
 QName::QName(
-  const QueryLoc& loc_,
-  const string& _qname)
-:
-  exprnode(loc_),
-  qname(_qname)
-{}
-
-
-string QName::get_localname() const
+  const QueryLoc& loc,
+  const std::string& qname)
+  :
+  exprnode(loc),
+  theQName(qname)
 {
-  string::size_type n = qname.find(':');
-  return (n != string::npos ? qname.substr(n+1) : qname);
+  std::string::size_type n = qname.find(':');
+
+  if (n == std::string::npos)
+  {
+    theLocalName = new xqpStringStore(qname);
+    thePrefix = new xqpStringStore("");
+  }
+  else
+  {
+    theLocalName = new xqpStringStore(qname.substr(n+1));
+    thePrefix = new xqpStringStore(qname.substr(0, n));
+  }
 }
 
-string QName::get_prefix() const
-{
-  string::size_type n = qname.find(':');
-  return (n != string::npos ? qname.substr(0,n) : "");
-}
-
-
-//-QName::
 
 void QName::accept(parsenode_visitor& v) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -4427,7 +4413,7 @@ void CopyVarList::accept(parsenode_visitor& v) const
 
 VarBinding::VarBinding(
   const QueryLoc& loc,
-  std::string varname,
+  rchandle<QName> varname,
   rchandle<exprnode> expr_h)
   :
   exprnode(loc),

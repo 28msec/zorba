@@ -1021,7 +1021,11 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  const_expr(short sctx, const QueryLoc&, xqpString sval);
+  const_expr(short sctx, const QueryLoc&, xqpStringStore_t& sval);
+
+  const_expr(short sctx, const QueryLoc&, const std::string& sval);
+
+  const_expr(short sctx, const QueryLoc&, const char* sval);
 
   const_expr(short sctx, const QueryLoc&, xqp_integer);
 

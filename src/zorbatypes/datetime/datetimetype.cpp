@@ -739,7 +739,7 @@ xqpString DateTime::toString() const
   {
     if (FACET_MEMBERS[facet][i])
     {
-      result.append_in_place(to_string(abs<int>(data[i]), min_length[i]));
+      result.append_in_place(to_string(abs<int>(data[i]), min_length[i]).c_str());
       if (FACET_MEMBERS[facet][i+1] && i<=4)
         result.append_in_place(separators[i]);
     }
@@ -763,7 +763,7 @@ xqpString DateTime::toString() const
     while (temp%10 == 0 && temp > 0)
       temp = temp / 10;
     
-    result.append_in_place(to_string(temp));
+    result.append_in_place(to_string(temp).c_str());
   }
   
   result.append_in_place(the_time_zone.toString().getStore());

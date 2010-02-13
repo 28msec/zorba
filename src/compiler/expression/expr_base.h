@@ -168,44 +168,9 @@ class expr : public AnnotationHolder
 public:
   typedef rchandle<expr> expr_t;
 
-  /*** Class to hold a substitution for function parameters ***/
-  class substitution : public SimpleRCObject
-  {
-  protected:
-    std::map<const expr *, expr_t> subst_map;
+  typedef std::map<const expr *, expr_t> substitution_t;
 
-  public:
-    typedef std::map<const expr *, expr_t>::iterator iterator;
-
-    expr_t& get(expr* key)
-    {
-      iterator it = subst_map.find(key);
-      if (it == subst_map.end())
-      {
-        return subst_map[key];
-      }
-      else
-        return it->second;
-    }
-
-    iterator find(const expr* key)
-    {
-      return subst_map.find(key);
-    }
-
-    iterator end()
-    {
-      return subst_map.end();
-    }
-
-    void clear()
-    {
-      subst_map.clear();
-    }
-  }; // class substitution
-
-  typedef rchandle<substitution> substitution_t;
-  typedef substitution::iterator subst_iter_t;
+  typedef substitution_t::iterator subst_iter_t;
 
 protected:
   // Pitfall when using the cache -- AVOID THIS SCENARIO:

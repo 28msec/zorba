@@ -1883,27 +1883,16 @@ void end_visit(fo_expr& v)
 
   if (func->validate_args(argv))
   {
-    if (func->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
+    if (func->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_2)
     {
-      expr::substitution_t subst = v.get_substitution();
-
       const const_expr* qnameExpr = static_cast<const const_expr*>(v.get_arg(0));
       const store::Item* qname = qnameExpr->get_val();
-      ValueIndex* index = sctx->lookup_index(qname);
 
-      // Find the index and clone it's domain expression, as the function might
-      // have been inlined
-      if (subst.getp() != NULL)
-      {
-        expr* domainExpr = index->getDomainExpr();
-        index->setDomainExpr(domainExpr->clone(subst));
-      }
+      PlanIter_t buildIter = argv[1];
 
-      expr* buildExpr = index->getBuildExpr(theCCB, loc);
-      buildExpr->accept(*this);
-
-      PlanIter_t buildIter = pop_itstack();
-      PlanIter_t iter = new CreateInternalIndexIterator(sctx, loc, buildIter,
+      PlanIter_t iter = new CreateInternalIndexIterator(sctx,
+                                                        loc,
+                                                        buildIter,
                                                         const_cast<store::Item*>(qname));
       push_itstack(iter);
     }
@@ -2303,12 +2292,14 @@ bool begin_visit (match_expr& v)
     if (wildKind == match_no_wild) {
       axisItep->setQName(v.getQName());
     }
-    else if (wildKind == match_prefix_wild) {
-      iFactory.createQName(qname, "", "wildcard", v.getWildName().c_str());
+    else if (wildKind == match_prefix_wild) 
+    {
+      iFactory.createQName(qname, "", "wildcard", v.getWildName()->c_str());
 
       axisItep->setQName(qname);
     }
-    else if (wildKind == match_name_wild) {
+    else if (wildKind == match_name_wild) 
+    {
       axisItep->setQName(v.getQName());
     }
   }
@@ -2330,7 +2321,8 @@ bool begin_visit (match_expr& v)
 }
 
 
-void end_visit (match_expr& v) {
+void end_visit (match_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 }
 

@@ -186,7 +186,7 @@ namespace zorba {
       theCurrent = theRoot;
     }
     stringstream lFile;
-    lFile << aQueryLoc.getFilenameBegin();
+    lFile << aQueryLoc.getFilename();
     FnCallEntry* lCall = new FnCallEntry( aFnName,
                                           lFile.str(),
                                           aQueryLoc.getLineBegin()

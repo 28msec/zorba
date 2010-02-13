@@ -240,15 +240,15 @@ bool StaticNamespaceBindingIterator::nextImpl(
     PlanState& aPlanState) const
 {
   store::Item_t lName;
-  xqpString temp;
+  xqpStringStore_t ns;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_ns(xqpString(lName->getStringValue()), temp))
-    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), state);
+  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc))
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, ns), state);
 
   STACK_END(state);
 }
@@ -337,7 +337,7 @@ bool XPath10CompatModeIterator::nextImpl(
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult,
-                                             theSctx->xpath1_0compatib_mode() == StaticContextConsts::xpath1_0_only), state);
+                                             theSctx->xpath_compatibility() == StaticContextConsts::xpath1_0_only), state);
 
   STACK_END (state);
 }

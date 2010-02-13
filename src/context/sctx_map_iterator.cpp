@@ -7,6 +7,8 @@
 #include "compiler/indexing/value_index.h"
 #include "compiler/indexing/value_ic.h"
 
+#include "types/typeimpl.h"
+
 #define ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP_WITH_SERIALIZATION
 #include "zorbautils/hashmap_itemp.h"
 #undef ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP_WITH_SERIALIZATION

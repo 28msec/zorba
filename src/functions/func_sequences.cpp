@@ -26,6 +26,7 @@
 #include "functions/func_sequences.h"
 #include "system/globalenv.h"
 #include "types/typeops.h"
+#include "compiler/expression/expr_base.h"
 
 
 namespace zorba{

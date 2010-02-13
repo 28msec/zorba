@@ -79,7 +79,7 @@ bool Validator::effectiveValidationValue(
     {
       e.setQueryLocation(loc.getLineBegin(),
                          loc.getColumnBegin(),
-                         loc.getFilenameBegin());
+                         loc.getFilename());
     }
     throw e;
   }
@@ -638,10 +638,10 @@ void Validator::processTextValue (
         if ( udt.isSubTypeOf(*notationType.getp()) )
         {
           // textValue must be in the form of URI:LOCAL
-          int32_t colonIndex = textValue->indexOf(":");
-          xqpStringStore_t prefix = textValue->substr(0, colonIndex);
-          xqpStringStore_t local = textValue->substr(colonIndex+1, 
-                                                     textValue->size());
+          int32_t colonIndex = textValue->bytePositionOf(":");
+          xqpStringStore_t prefix = textValue->byteSubstr(0, colonIndex);
+          xqpStringStore_t local = textValue->byteSubstr(colonIndex+1, 
+                                                         textValue->size());
           xqpStringStore_t uri;
 
           if ( nsCtx.findBinding(prefix, uri) )

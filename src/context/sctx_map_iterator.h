@@ -34,8 +34,7 @@ namespace zorba {
     bool                                                theIsClosed;
   
     // function pointer for retrieving the map in question
-    ItemPointerHashMap<rchandle<T> >*
-    (static_context::*theMapGetter)() const;
+    ItemPointerHashMap<rchandle<T> >* (static_context::*theMapGetter)() const;
   
   public:
     SctxMapIterator(
@@ -55,8 +54,7 @@ namespace zorba {
   
     virtual void open();
   
-    virtual bool
-    next(store::Item_t& aResult);
+    virtual bool next(store::Item_t& aResult);
   
     virtual void reset();
   

@@ -18,6 +18,7 @@
 #include "types/typeops.h"
 
 #include "functions/function.h"
+#include "functions/library.h"
 
 #include "compiler/indexing/value_index.h"
 #include "compiler/api/compilercb.h"
@@ -357,8 +358,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   //
   // Clone the domain expr.
   //
-  expr::substitution_t subst = new expr::substitution();
-
+  expr::substitution_t subst;
   expr_t newdom = domainExpr->clone(subst);
 
   //
@@ -372,8 +372,8 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // Clone the key exprs, replacing their references to the 2 domain variables
   // with the clones of these variables.
   //
-  subst->get(dot) = newdot;
-  subst->get(pos) = newpos;
+  subst[dot] = newdot;
+  subst[pos] = newpos;
 
   for(ulong i = 0; i < numKeys; ++i)
   {
@@ -393,9 +393,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 
   clonedExprs[0] = domainVarExpr;
 
-  function* f = theSctx->lookup_resolved_fn(XQUERY_OP_NS,
-                                            "index-entry-builder",
-                                            VARIADIC_SIG_SIZE);
+  function* f = GET_BUILTIN_FUNCTION(OP_INDEX_ENTRY_BUILDER_N);
   ZORBA_ASSERT(f != NULL);
 
   fo_expr_t returnExpr =  new fo_expr(sctxid, loc, f, clonedExprs);
@@ -467,9 +465,9 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   var_expr_t tempVar = new var_expr(sctxid, dot->get_loc(), var_expr::prolog_var, qname);
   expr_t wrapperExpr = new wrapper_expr(sctxid, dot->get_loc(), tempVar.getp());
 
-  expr::substitution_t subst = new expr::substitution();
+  expr::substitution_t subst;
 
-  subst->get(theDomainSourceExprs[0]) = wrapperExpr;
+  subst[theDomainSourceExprs[0]] = wrapperExpr;
 
   expr_t newdom = domainExpr->clone(subst);
 
@@ -486,9 +484,9 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   //
   for(ulong i = 0; i < numKeys; ++i)
   {
-    subst->clear();
-    subst->get(dot) = newdot;
-    subst->get(pos) = newpos;
+    subst.clear();
+    subst[dot] = newdot;
+    subst[pos] = newpos;
 
     clonedExprs[i+1] = theKeyExprs[i]->clone(subst);
   }
@@ -506,10 +504,8 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
 
   clonedExprs[0] = domainVarExpr;
 
-  function* f = theSctx->lookup_resolved_fn(XQUERY_OP_NS,
-                                            "index-entry-builder",
-                                            VARIADIC_SIG_SIZE);
-  ZORBA_ASSERT(f!=NULL);
+  function* f = GET_BUILTIN_FUNCTION(OP_INDEX_ENTRY_BUILDER_N);
+  ZORBA_ASSERT(f != NULL);
 
   fo_expr_t returnExpr =  new fo_expr(sctxid, loc, f, clonedExprs);
 

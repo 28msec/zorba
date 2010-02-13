@@ -19,7 +19,8 @@
 #include <vector>
 #include "common/shared_types.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 class DecimalFormat : public SimpleRCObject
 {
@@ -27,19 +28,31 @@ public:
   typedef std::vector<std::pair<std::string, std::string> > param_vector_type;
 
 protected:
-  bool isDefault;
-  store::Item_t formatName;
-  param_vector_type paramVector;
+  bool              theIsDefault;
+  store::Item_t     theName;
+  param_vector_type theParams;
 
 public:  
-  DecimalFormat(bool _isDefault, store::Item_t _formatName, const param_vector_type& _paramVector);
+  DecimalFormat(
+        bool isDefault,
+        const store::Item_t& qname,
+        const param_vector_type& params);
 
-  bool isDefaultFormat() const { return isDefault; };
-  const store::Item_t getFormatName() const { return formatName; };
-  const param_vector_type* getParamVector() const { return &paramVector; }
+  bool isDefault() const { return theIsDefault; }
+
+  const store::Item* getName() const { return theName.getp(); }
+
+  const param_vector_type* getParamVector() const { return &theParams; }
 };
+
 
 typedef rchandle<DecimalFormat> DecimalFormat_t;
 
 } /* namespace zorba */
 #endif /* ZORBA_DECIMAL_FORMAT_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

@@ -28,15 +28,36 @@
 namespace zorba 
 {
 
-typedef std::map<const var_expr *, int> VarIdMap;
+typedef std::map<const var_expr *, ulong> VarIdMap;
 typedef std::vector<const var_expr*> IdVarMap;
 typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
 
 
 /*******************************************************************************
 
+  theVarIdMap        : Maps a var_expr to its unique "prefix" id. The "prefix"
+                       id has the follwoing property: for 2 vars v1 and v2,
+                       v1 is defined before v2 if and only if prefix-id(v1) <
+                       prefix-id(v2). See index_flwor_vars() function in
+                       tools/expr_tools.cpp for more details.
+
+  theIdVarMap        : This is the reverse mapping of theVarIdMap.
+
+  theExprVarsMap     : An entry into this map maps an expression to the variables
+                       that are referenced by that expr and/or its sub-exprs.
+                       (Note: given that the domain expr of a var $x is not
+                       considered a sub-expr of $x, if $x is referenced by an
+                       expr E and the domain expr of $x references another var
+                       $y, $y is NOT considered to be referenced by E). Only
+                       variables that have been assigned a prolog id (i.e., the
+                       ones that appear in theVarIdMap) are considered. The set
+                       of vars referenced by an expr is implemented by a bitset
+                       that is indexed by prolog var ids and whose size (in
+                       number of bits) is equal to the size of theVarIdMap.
+
   theFlworStack      : The current "in-scope" flwor exprs, ie., flwor exprs that
                        the rule has entered but but not exited yet.
+
   theIsModifiedStack : A stack of bools to remember whether a flwor expr in
                        theFlworStack has been modified or replaced by the rule.
 ********************************************************************************/
@@ -48,9 +69,9 @@ public:
   int                    m_tempvarCounter;
   int                    m_tempIndexCounter;
 
-  VarIdMap             * m_varid_map;
-  IdVarMap             * m_idvar_map;
-  ExprVarsMap          * m_exprvars_map;
+  VarIdMap             * theVarIdMap;
+  IdVarMap             * theIdVarMap;
+  ExprVarsMap          * theExprVarsMap;
   std::vector<expr_t>    theFlworStack;
   std::vector<bool>      theIsModifiedStack;
 

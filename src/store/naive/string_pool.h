@@ -30,7 +30,7 @@ namespace zorba { namespace simplestore {
  public:
    static bool equal(const xqpStringStore_t& s1, const xqpStringStore_t& s2)
    {
-     return s1->byteEqual(*s2);
+     return s1->byteEqual(s2);
    }
 
    static uint32_t hash(const xqpStringStore_t& s)

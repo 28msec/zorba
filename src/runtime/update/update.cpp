@@ -501,7 +501,7 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
                 lWith->getAtomizationValue()->getStringValue()->str());
       }
       if (!buf.empty())
-        content = content->append(buf);
+        content = content->append(buf.c_str());
     }
 
     if (lTargetKind == store::StoreConsts::elementNode)
@@ -521,12 +521,12 @@ ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
         content = new xqpStringStore("");
 
       if (lTargetKind == store::StoreConsts::commentNode &&
-          (content->indexOf("--") >= 0 || content->endsWith("-")))
+          (content->bytePositionOf("--") >= 0 || content->byteEndsWith("-", 1)))
       {
         ZORBA_ERROR_LOC(XQDY0072, loc);
       }
       else if (lTargetKind == store::StoreConsts::piNode &&
-               content->indexOf("?>") >= 0)
+               content->bytePositionOf("?>") >= 0)
       {
         ZORBA_ERROR_LOC(XQDY0026, loc);
       }

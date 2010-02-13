@@ -37,30 +37,6 @@ bool count_variable_uses_rec(
     ++count;
     return true;
   }
-  else
-  {
-    // TODO: ugly hack
-    const fo_expr* fo = dynamic_cast<const fo_expr*>(e);
-
-    if (fo != NULL &&
-        rCtx != NULL &&
-        fo->get_func()->getKind() == FunctionConsts::OP_CREATE_INTERNAL_INDEX_1)
-    {
-      const const_expr* qnameExpr = static_cast<const const_expr*>(fo->get_arg(0));
-      const store::Item* qname = qnameExpr->get_val();
-      static_context* sctx = rCtx->getStaticContext(fo);
-      ValueIndex* index = sctx->lookup_index(qname);
-
-      expr::substitution_t subst = fo->get_substitution();
-      if (subst.getp() != NULL)
-      {
-        expr* domainExpr = index->getDomainExpr();
-        expr_t clone = domainExpr->clone(subst);
-        if (!count_variable_uses_rec(clone, var, rCtx, limit, count))
-          return false;
-      }
-    }
-  }
 
   for (const_expr_iterator iter = e->expr_begin_const(); !iter.done(); ++iter)
   {

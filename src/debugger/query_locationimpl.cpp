@@ -21,7 +21,7 @@ QueryLocationImpl::QueryLocationImpl( const QueryLoc & aLocation ): theLocation(
 
 String QueryLocationImpl::getFileName() const
 {
-  return String( theLocation.getFilenameBegin() );
+  return String( theLocation.getFilename() );
 }
 
 unsigned int QueryLocationImpl::getLineBegin() const

@@ -28,6 +28,8 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 
+#include "types/typeimpl.h"
+
 
 namespace zorba 
 {

@@ -44,27 +44,31 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   xqpStringStore_t resNs;
   xqpStringStore_t resPre;
   xqpStringStore_t resLocal;
-  int32_t index = -1;
+  long index = -1;
   std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NamespaceBindings;
   std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > ::const_iterator iter;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemQName, theChild0.getp(), planState )) {
+  if (consumeNext(itemQName, theChild0.getp(), planState )) 
+  {
     itemQName = itemQName->getAtomizationValue();
 
     qname = itemQName->getStringValue()->trim();
-    index = qname->indexOf(":");
+    index = qname->bytePositionOf(":", 1, 0);
 
-    if(-1 != index) {
+    if(-1 != index) 
+    {
       resPre = new xqpStringStore(qname->str().substr(0, index));
       resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
 
       // must check for FOCA0002 first
       if (!GENV_GCAST.castableToNCName (resPre) || ! GENV_GCAST.castableToNCName (resLocal))
         ZORBA_ERROR_LOC (FOCA0002, loc);
-    } else {
+    } 
+    else
+    {
       resNs = new xqpStringStore("");
       resPre = new xqpStringStore("");
       resLocal = qname;
@@ -72,22 +76,23 @@ ResolveQNameIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         ZORBA_ERROR_LOC (FOCA0002, loc);
     }
       
-      if (consumeNext(itemElem, theChild1, planState )) 
+    if (consumeNext(itemElem, theChild1, planState )) 
+    {
+      itemElem->getNamespaceBindings(NamespaceBindings);
+      for (iter = NamespaceBindings.begin();
+           iter != NamespaceBindings.end();
+           ++iter)
       {
-        itemElem->getNamespaceBindings(NamespaceBindings);
-        for (iter = NamespaceBindings.begin();
-             iter != NamespaceBindings.end();
-             ++iter)
-          {
-          if ((*iter).first->byteEqual(*resPre)) {
-            resNs = (*iter).second;
-            break;
-          }
-          }
-        if (resNs == NULL)
-          ZORBA_ERROR_LOC (FONS0004, loc);
+        if ((*iter).first->byteEqual(resPre)) 
+        {
+          resNs = (*iter).second;
+          break;
+        }
       }
-
+      if (resNs == NULL)
+        ZORBA_ERROR_LOC (FONS0004, loc);
+    }
+    
     GENV_ITEMFACTORY->createQName(result, resNs, resPre, resLocal);
 
     STACK_PUSH(true, state );
@@ -111,10 +116,13 @@ QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(itemURI, theChild0.getp(), planState )) {
+  if (consumeNext(itemURI, theChild0.getp(), planState )) 
+  {
     itemURI = itemURI->getAtomizationValue();
     resNs = itemURI->getStringValue()->trim();
-  } else {
+  }
+  else
+  {
     resNs = new xqpStringStore("");
   }
 
@@ -122,15 +130,18 @@ QNameIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   itemQName = itemQName->getAtomizationValue();
   qname = itemQName->getStringValue()->trim();
   
-  index = qname->indexOf(":");
+  index = qname->bytePositionOf(":", 1, 0);
 
-  if( -1 != index ) {
+  if( -1 != index ) 
+  {
     if (resNs->empty ())
       ZORBA_ERROR_LOC (FOCA0002, loc);
 
     resPre = new xqpStringStore(qname->str().substr(0, index));
     resLocal = new xqpStringStore(qname->str().substr(index+1, qname->bytes() - index));
-  } else {
+  } 
+  else
+  {
     resPre = new xqpStringStore("");
     resLocal = qname;
   }
@@ -250,11 +261,13 @@ NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planSt
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (!consumeNext(itemPrefix, theChildren[0].getp(), planState ))
-    resNs = theSctx->default_elem_type_ns().getStore();
-  else {
+    resNs = theSctx->default_elem_type_ns();
+  else 
+  {
     if (!consumeNext(itemElem, theChildren[1].getp(), planState ))
-      resNs = theSctx->default_elem_type_ns().getStore();
-    else {
+      resNs = theSctx->default_elem_type_ns();
+    else 
+    {
       itemElem->getNamespaceBindings(NamespaceBindings);
       for (
             iter = NamespaceBindings.begin();
@@ -262,7 +275,7 @@ NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planSt
             ++iter
           )
       {
-        if( (*iter).first->byteEqual(*itemPrefix->getStringValue()->trim())) {
+        if( (*iter).first->byteEqual(itemPrefix->getStringValue()->trim())) {
           resNs = (*iter).second;
           break;
         }

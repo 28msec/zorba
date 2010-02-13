@@ -172,15 +172,15 @@ public:
 class match_expr : public expr 
 {
 protected:
-  match_test_t  theTestKind;
-  match_test_t  theDocTestKind;
+  match_test_t      theTestKind;
+  match_test_t      theDocTestKind;
 
-  match_wild_t  theWildKind;
-  xqp_string    theWildName;
+  match_wild_t      theWildKind;
+  xqpStringStore_t  theWildName;
 
-  store::Item_t theQName;
-  store::Item_t theTypeName;
-  bool          theNilledAllowed;
+  store::Item_t     theQName;
+  store::Item_t     theTypeName;
+  bool              theNilledAllowed;
 
 public:
   SERIALIZABLE_CLASS(match_expr)
@@ -204,9 +204,9 @@ public:
 
   void setWildKind(enum match_wild_t v) { theWildKind = v; }
 
-  const xqp_string& getWildName() const { return theWildName; }
+  const xqpStringStore_t& getWildName() const { return theWildName; }
 
-  void setWildName(const xqp_string& v) { theWildName = v; } 
+  void setWildName(const xqpStringStore_t& v) { theWildName = v; } 
 
   store::Item* getQName() const { return theQName.getp(); }
 
