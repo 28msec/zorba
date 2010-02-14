@@ -300,6 +300,7 @@ mv XQTSCatalog.xml "$SRC/test/rbkt/Queries/w3c_testsuite/"
 find "TestSources" -name '*.xq' -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}i" \;
 find "TestSources" -type f -exec mv "{}" "$SRC/test/rbkt/Queries/w3c_testsuite/{}" \;
 mv "XQTSCatalog.xsd" "$SRC/test/rbkt/Queries/w3c_testsuite/"
+mv "ReportingResults" "$SRC/test/rbkt/Scripts/w3c/w3c_reportingresults"
 
 echo "Cleaning up work directory...$orig_pwd $unzip_dir"
 

@@ -1,5 +1,5 @@
 (: Schema for results :)
-import schema default element namespace "http://www.w3.org/2005/02/query-test-XQTSResult" at "w3c_update_reportingresults/XQTSResult.xsd";
+import schema default element namespace "http://www.w3.org/2005/02/query-test-XQTSResult" at "w3c_reportingresults/XQTSResult.xsd";
 
 (: Test.xml file from ctest :)
 declare variable $ctests as document-node() external;
@@ -68,7 +68,7 @@ else
        <syntax>XQuery</syntax>
 
        <test-run dateRun="2010-02-14">
-          <test-suite version="1.0.0"/>
+          <test-suite version="1.0.6"/>
           <transformation><p>Standard</p></transformation>
           <comparison><p>Standard</p></comparison>
           <otherComments><p>None</p></otherComments>

@@ -14,11 +14,11 @@
 #
 To generate a report for submitting to the W3C:
 
-1. Import XQUTS.
+1. Import XQTS.
 
 2. Run a CTest dashboard from your build directory:
 
-  ctest -T test -R w3c_update_testsuite
+  ctest -T test -R w3c_testsuite
 
 3. From this directory (test/rbkt/Scripts/w3c), modify
    generate-submission.xq to reflect:
@@ -26,18 +26,18 @@ To generate a report for submitting to the W3C:
    - The version of Zorba and the svn revision tested
    - The date run and the test suite version
 
-4. From this directory (test/update/Scripts), run
+4. From this directory (test/rbkt/Scripts/w3c), run
 
-  cmake -P Submit.cmake > zorba-xquts-submission.xml
+  cmake -P Submit.cmake > zorba-xqts-submission.xml
 
-   Note that this assumes your build directory is ../../../build. If
+   Note that this assumes your build directory is ../../../../build. If
    that is not true, specify the path to your build directory:
 
   cmake -D ZORBA_BUILD_DIR=/path/to/build -P Submit.cmake
 
-   The script depends on the XQUTS schema being located in
+   The script depends on the XQTS schema being located in
 
-  w3c_update_reportingresults/XQTSResult.xsd
+  w3c_reportingresults/XQTSResult.xsd
 
    The XQUTS import script puts this in place appropriately. If you do
    not run the import script, just copy the "ReportingResults"
