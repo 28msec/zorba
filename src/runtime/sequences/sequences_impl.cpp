@@ -53,7 +53,6 @@
 #include "store/util/hashset_node_handle.h"
 
 #include "context/static_context.h"
-#include "context/collation_cache.h"
 #include "context/internal_uri_resolvers.h"
 
 
@@ -85,7 +84,7 @@ getCollator(
     
   xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type(lCollationItem);
 
-  return sctx->get_collation_cache()->getCollator(lCollationItem->getStringValue()->str());
+  return sctx->get_collator(lCollationItem->getStringValue()->str(), loc);
 }
 
 
@@ -663,7 +662,7 @@ bool DeepEqual(
     long timezone = theRuntimeCB->theDynamicContext->get_implicit_timezone();
 
     if (collator == NULL)
-      collator = sctx->get_collation_cache()->getDefaultCollator();
+      collator = sctx->get_default_collator(QueryLoc::null);
 
     // check NaN
     xqtref_t type1 = typemgr->create_value_type(item1.getp());

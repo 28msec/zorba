@@ -47,7 +47,6 @@
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-#include "context/collation_cache.h"
 #include "context/namespace_context.h"
 
 

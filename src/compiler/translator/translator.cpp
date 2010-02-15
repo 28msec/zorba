@@ -2461,7 +2461,7 @@ void end_visit(const BoundarySpaceDecl& v, void* /*visit_state*/)
 void* begin_visit(const OrderingModeDecl& v) 
 {
   TRACE_VISIT();
-  CHK_SINGLE_DECL (hadOrdModeDecl, XQST0065);
+  CHK_SINGLE_DECL(hadOrdModeDecl, XQST0065);
   sctx_p->set_ordering_mode(v.get_mode());
   return NULL;
 }
@@ -2480,12 +2480,14 @@ void end_visit(const OrderingModeDecl& v, void* /*visit_state*/)
 void* begin_visit(const EmptyOrderDecl& v) 
 {
   TRACE_VISIT();
-  CHK_SINGLE_DECL (hadEmptyOrdDecl, XQST0069);
-  sctx_p->set_order_empty_mode(v.get_mode());
+
+  CHK_SINGLE_DECL(hadEmptyOrdDecl, XQST0069);
+
+  sctx_p->set_empty_order_mode(v.get_mode());
   return no_state;
 }
 
-void end_visit (const EmptyOrderDecl& v, void* /*visit_state*/) 
+void end_visit(const EmptyOrderDecl& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT();
 }
@@ -2507,8 +2509,8 @@ void* begin_visit(const CopyNamespacesDecl& v)
 void end_visit(const CopyNamespacesDecl& v, void* /*visit_state*/) 
 {
   TRACE_VISIT_OUT();
- sctx_p->set_inherit_mode(v.get_inherit_mode ());
- sctx_p->set_preserve_mode(v.get_preserve_mode ());
+  sctx_p->set_inherit_mode(v.get_inherit_mode ());
+  sctx_p->set_preserve_mode(v.get_preserve_mode ());
 }
 
 
@@ -2555,7 +2557,7 @@ void* begin_visit(DefaultCollationDecl const& v)
   TRACE_VISIT();
 
   string uri = v.get_collation();
-  sctx_p->set_default_collation_uri(uri);
+  sctx_p->set_default_collation(uri, loc);
   return NULL;
 }
 
@@ -3879,19 +3881,19 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
     keyTypes[i] = type;
 
-    string collation = sctx_p->default_collation_uri();
+    std::string collationUri = sctx_p->get_default_collation(loc);
 
     if (collationSpec != NULL)
     {
-      collation = collationSpec->get_uri();
+      collationUri = collationSpec->get_uri();
 
-      if (! sctx_p->has_collation_uri(collation))
+      if (! sctx_p->is_known_collation(collationUri))
         ZORBA_ERROR_LOC(XQST0076, keySpec->get_location());
     }
 
     keyModifiers[i].theAscending = true;
     keyModifiers[i].theEmptyLeast = true;
-    keyModifiers[i].theCollation = collation;
+    keyModifiers[i].theCollation = collationUri;
 
     expr_t keyExpr = pop_nodestack();
 
@@ -5670,16 +5672,17 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
     if (mod && mod->get_dir_spec() != NULL)
       dirSpec = mod->get_dir_spec()->getValue();
 
-    StaticContextConsts::order_empty_mode_t emptySpec = sctx_p->order_empty_mode();
+    StaticContextConsts::empty_order_mode_t emptySpec = sctx_p->empty_order_mode();
     if (mod && mod->get_empty_spec() != NULL)
       emptySpec = mod->get_empty_spec()->getValue();
 
-    string collation = sctx_p->default_collation_uri();
+    std::string collationUri = sctx_p->get_default_collation(loc);
+
     if (mod && mod->get_collation_spec() != NULL)
     {
-      collation = mod->get_collation_spec()->get_uri();
+      collationUri = mod->get_collation_spec()->get_uri();
 
-      if (! sctx_p->has_collation_uri(collation))
+      if (! sctx_p->is_known_collation(collationUri))
         ZORBA_ERROR_LOC(XQST0076, loc);
     }
 
@@ -5692,7 +5695,7 @@ void end_visit(const OrderByClause& v, void* /*visit_state*/)
 
     modifiers[i].theAscending = (dirSpec == ParseConstants::dir_ascending);
     modifiers[i].theEmptyLeast = (emptySpec == StaticContextConsts::empty_least);
-    modifiers[i].theCollation = collation;
+    modifiers[i].theCollation = collationUri;
 
     orderExprs[i] = orderExpr;
   }

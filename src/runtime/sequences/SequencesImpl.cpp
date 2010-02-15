@@ -52,7 +52,6 @@
 #include "store/util/hashset_node_handle.h"
 
 #include "context/static_context.h"
-#include "context/collation_cache.h"
 #include "context/internal_uri_resolvers.h"
 
 
@@ -98,7 +97,7 @@ getCollator(
     
   xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type(lCollationItem);
 
-  return sctx->get_collation_cache()->getCollator(lCollationItem->getStringValue()->str());
+  return sctx->get_collator(lCollationItem->getStringValue()->str(), loc);
 }
 
 
@@ -151,7 +150,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     lCollator = getCollator(planState.theRuntimeCB, theSctx, loc,
                             planState, theChildren[1].getp());
   else
-    lCollator = theSctx->get_collation_cache()->getDefaultCollator();
+    lCollator = theSctx->get_default_collator(loc);
 
   if (consumeNext(lRunningItem, theChildren[0].getp(), planState))
   {

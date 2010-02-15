@@ -43,7 +43,6 @@ class NodeNameTest;
 typedef const_rchandle<XQType> xqtref_t;
 typedef rchandle<NodeNameTest> NodeNameTest_t;
 
-class CollationCache;
 class XQPCollator;
 
 class QueryLoc;

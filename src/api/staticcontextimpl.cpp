@@ -260,38 +260,39 @@ StaticContextImpl::getDefaultFunctionNamespace( ) const
 }
 
 
-bool   
+void
 StaticContextImpl::addCollation( const String& URI )
 {
   ZORBA_TRY
-    xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
-    theCtx->add_collation(lURI);
-    return true;
+    xqpStringStore* lURI = Unmarshaller::getInternalString(URI);
+    theCtx->add_collation(lURI->str(), QueryLoc::null);
   ZORBA_CATCH
-  return false;
 }
 
 
-bool   
+void   
 StaticContextImpl::setDefaultCollation( const String& URI )
 {
   ZORBA_TRY
-    xqpString lURI = xqpString(Unmarshaller::getInternalString(URI));
-    theCtx->set_default_collation_uri(lURI); 
-    return true;
+    xqpStringStore* lURI = Unmarshaller::getInternalString(URI);
+    theCtx->set_default_collation(lURI->str(), QueryLoc::null); 
   ZORBA_CATCH
-  return false;
 }
 
 
 String 
 StaticContextImpl::getDefaultCollation() const
 {
-  try {
-    return &*theCtx->default_collation_uri().theStrStore;
-  } catch (error::ZorbaError& e) {
+  try 
+  {
+    return theCtx->get_default_collation(QueryLoc::null);
+  }
+  catch (error::ZorbaError& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
+  }
+  catch (std::exception& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return "";
@@ -420,13 +421,13 @@ StaticContextImpl::getOrderingMode( ) const
 
 
 bool   
-StaticContextImpl::setDefaultOrderForEmptySequences( order_empty_mode_t mode )
+StaticContextImpl::setDefaultOrderForEmptySequences(order_empty_mode_t mode )
 {
   ZORBA_TRY
     if ( mode == empty_greatest)
-      theCtx->set_order_empty_mode(StaticContextConsts::empty_greatest);
+      theCtx->set_empty_order_mode(StaticContextConsts::empty_greatest);
     else
-      theCtx->set_order_empty_mode(StaticContextConsts::empty_least);
+      theCtx->set_empty_order_mode(StaticContextConsts::empty_least);
       return true;
   ZORBA_CATCH
   return false;
@@ -437,7 +438,7 @@ order_empty_mode_t
 StaticContextImpl::getDefaultOrderForEmptySequences( ) const
 {
   try {
-    return theCtx->order_empty_mode()==StaticContextConsts::empty_greatest?
+    return theCtx->empty_order_mode()==StaticContextConsts::empty_greatest?
       empty_greatest:empty_least;
   } catch (error::ZorbaError& e) {
     ZorbaImpl::notifyError(theErrorHandler, e);
@@ -578,37 +579,6 @@ StaticContextImpl::setRevalidationMode(validation_mode_t aMode)
   ZORBA_CATCH
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-bool   
-StaticContextImpl::setRevalidationEnabled( bool enabled)
-{
-  ZORBA_TRY
-    theCtx->set_revalidation_enabled (enabled);
-    return true;
-  ZORBA_CATCH
-  return false;
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-bool
-StaticContextImpl::getRevalidationEnabled( ) const
-{
-  try {
-    return theCtx->revalidation_enabled ();
-  } catch (error::ZorbaError& e) {
-    ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
-    ZorbaImpl::notifyError(theErrorHandler, e.what());
-  }
-  return false;
-}
-  
 
 /*******************************************************************************
 

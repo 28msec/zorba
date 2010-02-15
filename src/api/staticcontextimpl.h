@@ -94,10 +94,10 @@ class StaticContextImpl : public StaticContext
   virtual String   
   getDefaultFunctionNamespace( ) const;
 
-  virtual bool   
+  virtual void   
   addCollation( const String& URI );
 
-  virtual bool   
+  virtual void   
   setDefaultCollation( const String& URI );
 
   virtual String 
@@ -158,12 +158,6 @@ class StaticContextImpl : public StaticContext
 
   virtual void
   setRevalidationMode(validation_mode_t aMode);
-
-  virtual bool
-  setRevalidationEnabled ( bool enabled );
-
-  virtual bool
-  getRevalidationEnabled( ) const;
 
   virtual bool 
   registerModule(ExternalModule* aModule);

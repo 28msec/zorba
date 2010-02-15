@@ -519,14 +519,14 @@ public:
 class EmptyOrderDecl : public parsenode
 {
 protected:
-  StaticContextConsts::order_empty_mode_t mode;
+  StaticContextConsts::empty_order_mode_t mode;
 
 public:
   EmptyOrderDecl(
     const QueryLoc&,
-    StaticContextConsts::order_empty_mode_t);
+    StaticContextConsts::empty_order_mode_t);
 
-  StaticContextConsts::order_empty_mode_t get_mode() const { return mode; }
+  StaticContextConsts::empty_order_mode_t get_mode() const { return mode; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -2259,14 +2259,14 @@ public:
 class OrderEmptySpec : public parsenode
 {
 protected:
-  StaticContextConsts::order_empty_mode_t empty_order_spec;
+  StaticContextConsts::empty_order_mode_t empty_order_spec;
 
 public:
   OrderEmptySpec(
         const QueryLoc&,
-        StaticContextConsts::order_empty_mode_t empty_order_spec);
+        StaticContextConsts::empty_order_mode_t empty_order_spec);
 
-  StaticContextConsts::order_empty_mode_t getValue() const
+  StaticContextConsts::empty_order_mode_t getValue() const
   {
     return empty_order_spec;
   }

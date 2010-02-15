@@ -153,21 +153,20 @@ namespace zorba {
        * and http://www.icu-project.org/apiref/icu4c/classLocale.html
        * 
        * @param aURI the URI of the collation.
-       * @return true if the collation was added, false otherwise (e.g. the URI was not
-       *         a valid collation URI).
-       * @throw ZorbaException if an error occured.
+       * @throw ZorbaException if an error occured (e.g. the URI was not a valid
+       *        collation URI).
        */
-      virtual bool   
+      virtual void   
       addCollation( const String& aURI ) = 0;
 
       /** \brief Set the URI of the default collation.
        *         (see http://www.w3.org/TR/xquery/#static_context)
        *
        * @param aURI URI of the default collation.
-       * @return true if the default collation URI has been set, false otherwise.
-       * @throw ZorbaException if an error occured.
+       * @throw ZorbaException if an error occured (e.g., the URI does not 
+       *        identify a collation among the statically known collations.
        */
-      virtual bool   
+      virtual void   
       setDefaultCollation( const String& aURI ) = 0;
 
       /** \brief Get the URI of the default collation
@@ -329,12 +328,6 @@ namespace zorba {
        */
       virtual void
       setRevalidationMode(validation_mode_t aMode) = 0;
-
-      virtual bool
-      setRevalidationEnabled ( bool enabled ) = 0;
-
-      virtual bool
-      getRevalidationEnabled( ) const = 0;
 
       /** \brief Register a module providing access to external functions.
        *

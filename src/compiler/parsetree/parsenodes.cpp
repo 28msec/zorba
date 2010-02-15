@@ -319,7 +319,7 @@ void OrderingModeDecl::accept(parsenode_visitor& v) const
 ********************************************************************************/
 EmptyOrderDecl::EmptyOrderDecl(
     const QueryLoc& loc_,
-    StaticContextConsts::order_empty_mode_t _mode)
+    StaticContextConsts::empty_order_mode_t _mode)
   :
   parsenode(loc_),
   mode(_mode)
@@ -1805,7 +1805,7 @@ void OrderDirSpec::accept(parsenode_visitor& v) const
 // --------------------
 OrderEmptySpec::OrderEmptySpec(
   const QueryLoc& loc_,
-  StaticContextConsts::order_empty_mode_t _empty_order_spec)
+  StaticContextConsts::empty_order_mode_t _empty_order_spec)
 :
   parsenode(loc_),
   empty_order_spec(_empty_order_spec)

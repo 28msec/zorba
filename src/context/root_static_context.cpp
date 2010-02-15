@@ -73,15 +73,21 @@ void root_static_context::init()
   set_default_function_ns(fn_ns, loc);
 
   set_context_item_static_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
-  set_default_collation_uri (W3C_CODEPT_COLLATION_NS);
-  add_collation(ZORBA_DEF_COLLATION_NS);
-  add_collation(W3C_CODEPT_COLLATION_NS);
+
+  add_collation(ZORBA_DEF_COLLATION_NS, QueryLoc::null);
+  add_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
+  set_default_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
+
   set_construction_mode(StaticContextConsts::cons_preserve);
-  set_ordering_mode(StaticContextConsts::ordered);
-  set_order_empty_mode(StaticContextConsts::empty_greatest);
-  set_boundary_space_mode(StaticContextConsts::strip_space);
   set_inherit_mode(StaticContextConsts::inherit_ns);
   set_preserve_mode(StaticContextConsts::preserve_ns);
+
+  set_ordering_mode(StaticContextConsts::ordered);
+
+  set_empty_order_mode(StaticContextConsts::empty_greatest);
+
+  set_boundary_space_mode(StaticContextConsts::strip_space);
+
   set_default_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
 
   // TODO move into globalenv

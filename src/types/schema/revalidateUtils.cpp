@@ -34,7 +34,6 @@
 #include "types/typeops.h"
 
 #include "context/static_context.h"
-#include "context/collation_cache.h"
 #include "context/namespace_context.h"
 
 #include "system/globalenv.h"

@@ -21,7 +21,6 @@
 
 #include "system/globalenv.h"
 
-#include "context/collation_cache.h"
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
@@ -254,8 +253,8 @@ void OrderByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
 
     if (! theOrderSpecs[i].theCollation.empty())
     {
-      theOrderSpecs[i].theCollator = theSctx->get_collation_cache()->
-                                     getCollator(theOrderSpecs[i].theCollation);
+      theOrderSpecs[i].theCollator = 
+      theSctx->get_collator(theOrderSpecs[i].theCollation, loc);
     }
   }
   

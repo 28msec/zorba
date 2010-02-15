@@ -39,9 +39,9 @@ class XQPCollator
   friend class xqpStringStore;
 
  protected:
-  void * theCollator;
-  const std::string uri;
-  bool   theDoMemCmp;
+  void             * theCollator;
+  const std::string  uri;
+  bool               theDoMemCmp;
 
  private:
   XQPCollator(void* Collator, const std::string& aCollationURI, bool doMemCmp = false);
@@ -58,7 +58,7 @@ class XQPCollator
 class CollationFactory 
 {
  protected:
-  XQPCollator* theRootCollator;
+  XQPCollator * theRootCollator;
 
  public:
   CollationFactory();
@@ -84,15 +84,13 @@ class CollationFactory
    *
    * @returns 0 if no collator could be found.
    */
-  static XQPCollator*
-  createCollator(const std::string& aCollationURI);
+  static XQPCollator* createCollator(const std::string& aCollationURI);
 
   /**
    * Creates a collator for the english language, US country and
    * a PRIMARY collation strength.
    */
-  static XQPCollator*
-  createCollator();
+  static XQPCollator* createCollator();
 };
 
 

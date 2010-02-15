@@ -334,8 +334,6 @@ public:
 
   static_context* getStaticContext(PlanState& planState) const { return theSctx; }
 
-  CollationCache* collationCache(PlanState& planState);
-
   /**
    * Accept method for the PlanIterator-Tree-Visitor
    * 

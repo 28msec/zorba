@@ -21,7 +21,6 @@
 #include "context/static_context_consts.h"
 #include "context/static_context.h"
 #include "context/namespace_context.h"
-#include "context/collation_cache.h"
 #include "context/context_impl.h"
 #include "context/uri_resolver_wrapper.h"
 #include "context/standard_uri_resolvers.h"
@@ -77,7 +76,7 @@ SERIALIZABLE_CLASS_VERSIONS(static_context)
 END_SERIALIZABLE_CLASS_VERSIONS(static_context)
 
 
-pair<xqp_string, xqp_string> parse_qname(xqp_string qname)
+static pair<xqp_string, xqp_string> parse_qname(xqp_string qname)
 {
   std::string::size_type n = static_cast<std::string> (qname).find (':');
   return (n == string::npos)
@@ -231,20 +230,6 @@ void static_context::bind_str(
 }
 
 
-void static_context::bind_str2 (
-    const char *key1,
-    xqp_string key2,
-    xqp_string v,
-    XQUERY_ERROR err)
-{
-  if (str_keymap.put2 (key1, key2, v))
-  {
-    if (err != MAX_ZORBA_ERROR_CODE)
-      ZORBA_ERROR(err);
-  }
-}
-
-
 bool static_context::bind_expr (xqp_string key, expr *e)
 {
   ctx_value_t v(CTX_EXPR);
@@ -339,14 +324,19 @@ static_context::static_context()
   theCollectionMap(0),
   theIndexMap(NULL),
   theICMap(NULL),
+  theCollationMap(NULL),
+  theDefaultCollation(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
   theInheritMode(StaticContextConsts::inherit_unknown),
   thePreserveMode(StaticContextConsts::preserve_unknown),
+  theOrderingMode(StaticContextConsts::ordering_unknown),
+  theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
+  theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
+  theValidationMode(StaticContextConsts::validation_unknown),
   theDecimalFormats(NULL),
-  theTraceStream(0),
-  theCollationCache(0)
+  theTraceStream(0)
 {
   set_encapsulating_entity_baseuri ("");
   set_entity_retrieval_url ("");
@@ -367,14 +357,19 @@ static_context::static_context(static_context* parent)
   theCollectionMap(0),
   theIndexMap(NULL),
   theICMap(NULL),
+  theCollationMap(NULL),
+  theDefaultCollation(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
   theInheritMode(StaticContextConsts::inherit_unknown),
   thePreserveMode(StaticContextConsts::preserve_unknown),
+  theOrderingMode(StaticContextConsts::ordering_unknown),
+  theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
+  theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
+  theValidationMode(StaticContextConsts::validation_unknown),
   theDecimalFormats(NULL),
-  theTraceStream(0),
-  theCollationCache(0)
+  theTraceStream(0)
 {
   if (theParent != NULL)
     RCHelper::addReference(theParent);
@@ -397,14 +392,19 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theCollectionMap(0),
   theIndexMap(0),
   theICMap(0),
+  theCollationMap(NULL),
+  theDefaultCollation(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
   theInheritMode(StaticContextConsts::inherit_unknown),
   thePreserveMode(StaticContextConsts::preserve_unknown),
+  theOrderingMode(StaticContextConsts::ordering_unknown),
+  theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
+  theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
+  theValidationMode(StaticContextConsts::validation_unknown),
   theDecimalFormats(NULL),
-  theTraceStream(0),
-  theCollationCache(0)
+  theTraceStream(0)
 {
 }
 
@@ -414,8 +414,6 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 static_context::~static_context()
 {
-  delete theCollationCache;
-
   ///free the pointers from ctx_value_t from keymap
   checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
   const char* keybuff;
@@ -468,11 +466,8 @@ static_context::~static_context()
     delete theFunctionArityMap;
   }
 
-  if (theCollectionMap) 
-  {
+  if (theCollectionMap)
     delete theCollectionMap;
-    theCollectionMap = 0;
-  }
 
   if (theIndexMap)
     delete theIndexMap;
@@ -482,6 +477,22 @@ static_context::~static_context()
 
   if (theNamespaceBindings)
     delete theNamespaceBindings;
+
+  if (theDefaultCollation)
+    delete theDefaultCollation;
+
+  if (theCollationMap) 
+  {
+    CollationMap::iterator ite = theCollationMap->begin();
+    CollationMap::iterator end = theCollationMap->end();
+    for ( ; ite != end ; ++ite)
+    {
+      delete ite->second;
+    }
+
+    delete theCollationMap;
+    theCollationMap = 0;
+  }
 
   if (theDecimalFormats)
     delete theDecimalFormats;
@@ -612,6 +623,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
     bool  parent_is_root = check_parent_is_root();//(
     ar & parent_is_root;
     ar.set_is_temp_field(false);
+
     if(!parent_is_root)
     {
       ar.dont_allow_delay();
@@ -630,19 +642,23 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
     bool  parent_is_root;
     ar & parent_is_root;
     ar.set_is_temp_field(false);
+
     if(parent_is_root)
     {
       set_parent_as_root();
     }
     else
       ar & theParent;
+
     if(theParent)
       theParent->addReference(theParent->getSharedRefCounter() SYNC_PARAM2(theParent->getRCLock()));
   }
+
   if(!ar.is_serializing_out())
   {
     assert(modulemap.size() == 0);
   }
+
   ar & modulemap;
   ar & str_keymap;
   ar & keymap;
@@ -654,7 +670,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theModulePaths;
 
-  //ar & theNamespaceBindings;
+  ar & theNamespaceBindings;
   ar & theDefaultElementNamespace;
   ar & theDefaultFunctionNamespace;
 
@@ -665,14 +681,19 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theIndexMap;
   ar & theICMap;
 
+  ar & theCollationMap;
+  //ar & theDefaultCollation;
+
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
   SERIALIZE_ENUM(StaticContextConsts::xpath_compatibility_t, theXPathCompatibility);
   SERIALIZE_ENUM(StaticContextConsts::construction_mode_t, theConstructionMode);
   SERIALIZE_ENUM(StaticContextConsts::inherit_mode_t, theInheritMode);
   SERIALIZE_ENUM(StaticContextConsts::preserve_mode_t, thePreserveMode);
+  SERIALIZE_ENUM(StaticContextConsts::ordering_mode_t, theOrderingMode);
+  SERIALIZE_ENUM(StaticContextConsts::empty_order_mode_t, theEmptyOrderMode);
+  SERIALIZE_ENUM(StaticContextConsts::boundary_space_mode_t, theBoundarySpaceMode);
+  SERIALIZE_ENUM(StaticContextConsts::validation_mode_t, theValidationMode);
   // TODO serialize decimal format
-
-  ar & theCollationCache;
 }
 
 
@@ -1431,6 +1452,147 @@ store::Iterator_t static_context::ic_names() const
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
+//  Collations                                                                 //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/***************************************************************************//**
+  This method may be called only on the the zorba root sctx or an application-
+  created sctx.
+********************************************************************************/
+void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
+{
+  if (is_known_collation(uri))
+    return;
+
+  std::string resolvedURI = resolve_relative_uri(uri, xqp_string()).getStore()->str();
+
+  XQPCollator* collator = CollationFactory::createCollator(resolvedURI);
+
+  if (collator == NULL)
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(FOCH0002, loc, 
+                             "Collation " << uri << " not supported.");
+  }
+  else
+  {
+    if (theCollationMap == NULL)
+      theCollationMap = new CollationMap();
+    
+    (*theCollationMap)[resolvedURI] = collator;
+  }
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool static_context::is_known_collation(const std::string& uri)
+{
+  std::string resolvedURI = resolve_relative_uri(uri, xqp_string()).getStore()->str();
+
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theCollationMap != NULL &&
+        sctx->theCollationMap->find(resolvedURI) != sctx->theCollationMap->end())
+    {
+      return true;
+    }
+
+    sctx = sctx->theParent;
+  }
+
+  return false;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+XQPCollator* static_context::get_collator(
+     const std::string& uri,
+     const QueryLoc& loc)
+{
+  std::string resolvedURI = resolve_relative_uri(uri, xqp_string()).getStore()->str();
+
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theCollationMap != NULL)
+    {
+      CollationMap::iterator ite = sctx->theCollationMap->find(uri);
+
+      if (ite != sctx->theCollationMap->end())
+      {
+        return ite->second;
+      }
+    }
+
+    sctx = sctx->theParent;
+  }
+  
+  ZORBA_ERROR_LOC_DESC_OSS(FOCH0002, loc,
+                           "Collation " << uri << " not found in static context.");
+  return NULL;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_default_collation(
+    const std::string& uri,
+    const QueryLoc& loc)
+{
+  if (theDefaultCollation != NULL || !is_known_collation(uri))
+  {
+    ZORBA_ERROR_LOC(XQST0038, loc);
+  }
+
+  xqp_string resolvedUri = resolve_relative_uri(uri, xqp_string());
+
+  theDefaultCollation = new std::string(resolvedUri.c_str());
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+const std::string& static_context::get_default_collation(const QueryLoc& loc) const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theDefaultCollation != NULL)
+    {
+      return *sctx->theDefaultCollation;
+    }
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return *theDefaultCollation;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+XQPCollator* static_context::get_default_collator(const QueryLoc& loc)
+{
+  const std::string& default_collation = get_default_collation(loc);
+  return get_collator(default_collation, loc);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
 //  Miscellaneous                                                              //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
@@ -1519,6 +1681,204 @@ void static_context::set_xpath_compatibility(StaticContextConsts::xpath_compatib
 /***************************************************************************//**
 
 ********************************************************************************/
+StaticContextConsts::construction_mode_t static_context::construction_mode() const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theConstructionMode != StaticContextConsts::cons_unknown)
+      return sctx->theConstructionMode;
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return StaticContextConsts::cons_unknown;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_construction_mode(StaticContextConsts::construction_mode_t v)
+{
+  theConstructionMode = v;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+StaticContextConsts::inherit_mode_t static_context::inherit_mode() const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theInheritMode != StaticContextConsts::inherit_unknown)
+      return sctx->theInheritMode;
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return StaticContextConsts::inherit_unknown;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_inherit_mode(StaticContextConsts::inherit_mode_t v)
+{
+  theInheritMode = v;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+StaticContextConsts::preserve_mode_t static_context::preserve_mode() const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->thePreserveMode != StaticContextConsts::preserve_unknown)
+      return sctx->thePreserveMode;
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return StaticContextConsts::preserve_unknown;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_preserve_mode(StaticContextConsts::preserve_mode_t v)
+{
+  thePreserveMode = v;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+StaticContextConsts::ordering_mode_t static_context::ordering_mode() const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theOrderingMode != StaticContextConsts::ordering_unknown)
+      return sctx->theOrderingMode;
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return StaticContextConsts::ordering_unknown;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_ordering_mode(StaticContextConsts::ordering_mode_t v)
+{
+  theOrderingMode = v;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+StaticContextConsts::empty_order_mode_t static_context::empty_order_mode() const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theEmptyOrderMode != StaticContextConsts::empty_order_unknown)
+      return sctx->theEmptyOrderMode;
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return StaticContextConsts::empty_order_unknown;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_empty_order_mode(StaticContextConsts::empty_order_mode_t v)
+{
+  theEmptyOrderMode = v;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+StaticContextConsts::boundary_space_mode_t static_context::boundary_space_mode() const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theBoundarySpaceMode != StaticContextConsts::boundary_space_unknown)
+      return sctx->theBoundarySpaceMode;
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return StaticContextConsts::boundary_space_unknown;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_boundary_space_mode(StaticContextConsts::boundary_space_mode_t v)
+{
+  theBoundarySpaceMode = v;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+StaticContextConsts::validation_mode_t static_context::validation_mode() const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theValidationMode != StaticContextConsts::validation_unknown)
+      return sctx->theValidationMode;
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return StaticContextConsts::validation_unknown;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_validation_mode(StaticContextConsts::validation_mode_t v)
+{
+  theValidationMode = v;
+}
 
 
 /***************************************************************************//**
@@ -1577,16 +1937,6 @@ DecimalFormat_t static_context::get_decimal_format(const store::Item_t& qname)
 /*******************************************************************************
   Methods for setting and retrieving certain "simple" context properties
 ********************************************************************************/
-DECL_ENUM_PARAM (static_context, construction_mode)
-DECL_ENUM_PARAM (static_context, order_empty_mode)
-DECL_ENUM_PARAM (static_context, boundary_space_mode)
-DECL_ENUM_PARAM (static_context, inherit_mode)
-DECL_ENUM_PARAM (static_context, preserve_mode)
-DECL_ENUM_PARAM (static_context, ordering_mode)
-DECL_ENUM_PARAM (static_context, validation_mode)
-
-DECL_INT_PARAM (static_context, revalidation_enabled, bool)
-
 DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
 
 DECL_STR_PARAM_TRIGGER (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
@@ -1792,77 +2142,6 @@ xqtref_t static_context::get_collection_type(const xqp_string collURI)
 }
 
 
-/*******************************************************************************
-
-  collation management
-
-********************************************************************************/
-bool static_context::has_collation_uri(const xqp_string& aURI) const
-{
-  return lookup_collation(aURI);
-}
-
-
-xqp_string static_context::default_collation_uri() const
-{
-  xqp_string lURI;
-  if (!lookup_default_collation(lURI))
-  {
-    lURI = ZORBA_DEF_COLLATION_NS;
-  }
-  return lURI;
-}
-
-
-void static_context::set_default_collation_uri(const xqp_string& aURI)
-{
-  xqp_string lURI = resolve_relative_uri(aURI, xqp_string());
-
-  XQPCollator* lCollator = CollationFactory::createCollator(lURI);
-
-  if (lCollator == 0)
-  {
-    ZORBA_ERROR_DESC_OSS( XQST0038, "invalid collation uri " << lURI);
-  }
-  else
-  {
-    delete lCollator;
-    bind_default_collation(lURI);
-  }
-}
-
-
-void static_context::add_collation(const xqp_string& aURI)
-{
-  xqp_string lURI = resolve_relative_uri(aURI, xqp_string());
-
-  XQPCollator* lCollator = CollationFactory::createCollator(lURI);
-
-  if (lCollator == 0)
-  {
-    ZORBA_ERROR_DESC( XQST0038, "invalid collation uri");
-  }
-  else
-  {
-    delete lCollator;
-    bind_collation(lURI);
-  }
-}
-
-
-XQPCollator* static_context::create_collator(const xqp_string& aURI)
-{
-  return CollationFactory::createCollator(aURI);
-}
-
-
-CollationCache* static_context::get_collation_cache()
-{
-  if (!theCollationCache)
-    theCollationCache = new CollationCache(this);
-
-  return  theCollationCache;
-}
 
 
 /*******************************************************************************

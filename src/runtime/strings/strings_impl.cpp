@@ -27,7 +27,6 @@
 #include "system/globalenv.h"
 
 #include "context/static_context.h"
-#include "context/collation_cache.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -173,7 +172,8 @@ CompareStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(n0, theChildren[0].getp(), planState )) {
+  if (consumeNext(n0, theChildren[0].getp(), planState )) 
+  {
     if (consumeNext(n1, theChildren[1].getp(), planState ))
     {
       n0 = n0->getAtomizationValue();
@@ -184,24 +184,15 @@ CompareStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
         if (consumeNext(n2, theChildren[2].getp(), planState ))
           n2 = n2->getAtomizationValue();
           XQPCollator* coll = 0;
-          try {
-            coll = theSctx->get_collation_cache()->getCollator(n2->getStringValue()->str());
-          } catch (error::ZorbaError& e) {
-            // rethrow the error with a location argument
-            ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-          }
+          coll = theSctx->get_collator(n2->getStringValue()->str(), loc);
           GENV_ITEMFACTORY->createInteger(
                   result,
                   Integer::parseInt((xqp_int)n0->getStringValue()->compare(n1->getStringValue(), coll)));
       }
-      else {
+      else 
+      {
         XQPCollator* coll = 0;
-        try {
-          coll = theSctx->get_collation_cache()->getDefaultCollator();
-        } catch (error::ZorbaError& e) {
-          // rethrow the error with a location argument
-          ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-        }
+        coll = theSctx->get_default_collator(loc);
         GENV_ITEMFACTORY->createInteger(
                 result,
                 Integer::parseInt((xqp_int)n0->getStringValue()->compare(n1->getStringValue(), coll)));
@@ -877,15 +868,7 @@ ContainsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
         {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
-          try
-          {
-            coll = theSctx->get_collation_cache()->getCollator(itemColl->getStringValue()->str());
-          }
-          catch (error::ZorbaError& e) 
-          {
-            // rethrow the error with a location argument
-            ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-          }
+          coll = theSctx->get_collator(itemColl->getStringValue()->str(), loc);
           resBool = (arg1->positionOf(arg2, coll) != -1);
         }
       }
@@ -961,12 +944,7 @@ StartsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
         {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
-          try {
-            coll = theSctx->get_collation_cache()->getCollator(itemColl->getStringValue()->str());
-          } catch (error::ZorbaError& e) {
-            // rethrow the error with a location argument
-            ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-          }
+          coll = theSctx->get_collator(itemColl->getStringValue()->str(), loc);
           resBool = (arg1->positionOf(arg2, coll) == 0);
         }
       }
@@ -1042,12 +1020,7 @@ EndsWithIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
         {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
-          try {
-            coll = theSctx->get_collation_cache()->getCollator(itemColl->getStringValue()->str());
-          } catch (error::ZorbaError& e) {
-            // rethrow the error with a location argument
-            ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-          }
+          coll = theSctx->get_collator(itemColl->getStringValue()->str(), loc);
           resBool = arg1->endsWith(arg2, coll);
         }
       }
@@ -1122,12 +1095,7 @@ SubstringBeforeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
         {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
-          try {
-            coll = theSctx->get_collation_cache()->getCollator(itemColl->getStringValue()->str());
-          } catch (error::ZorbaError& e) {
-            // rethrow the error with a location argument
-            ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-          }
+          coll = theSctx->get_collator(itemColl->getStringValue()->str(), loc);
           index = arg1->positionOf(arg2, coll);
         }
       }
@@ -1205,12 +1173,7 @@ SubstringAfterIterator::nextImpl(store::Item_t& result, PlanState& planState) co
         {
           itemColl = itemColl->getAtomizationValue();
           XQPCollator* coll = 0;
-          try {
-            coll = theSctx->get_collation_cache()->getCollator(itemColl->getStringValue()->str());
-          } catch (error::ZorbaError& e) {
-            // rethrow the error with a location argument
-            ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
-          }
+          coll = theSctx->get_collator(itemColl->getStringValue()->str(), loc);
           startPos = arg1->positionOf( arg2, coll );
         }
       }

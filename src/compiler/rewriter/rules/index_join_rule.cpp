@@ -530,7 +530,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   columnTypes[0] = predInfo.theInnerOp->return_type(sctx);
   modifiers[0].theAscending = true;
   modifiers[0].theEmptyLeast = true;
-  modifiers[0].theCollation = sctx->default_collation_uri().c_str();
+  modifiers[0].theCollation = sctx->get_default_collation(QueryLoc::null);
 
   replace_var(columnExprs[0], predInfo.theInnerVar, idx->getDomainVariable());
 

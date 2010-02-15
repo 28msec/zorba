@@ -163,6 +163,7 @@ class OrderByClause : public ::zorba::serialization::SerializeBaseClass
   friend class FLWORIterator;
   
 public:
+  QueryLoc               theLocation;
   std::vector<OrderSpec> theOrderSpecs;
   bool                   theStable;
   
@@ -178,7 +179,10 @@ public:
 public:
   OrderByClause() {}
 
-  OrderByClause(const std::vector<OrderSpec>& orderSpecs, bool stable);
+  OrderByClause(
+        const QueryLoc& loc,
+        const std::vector<OrderSpec>& orderSpecs,
+        bool stable);
 
   ~OrderByClause() {}
 
@@ -214,6 +218,7 @@ class GroupByClause : public ::zorba::serialization::SerializeBaseClass
   friend class PrinterVisitor;
   
 private:
+  QueryLoc                     theLocation;
   std::vector<GroupingSpec>    theGroupingSpecs;
   std::vector<NonGroupingSpec> theNonGroupingSpecs;
     
@@ -228,6 +233,7 @@ public:
 
 public:
   GroupByClause(
+        const QueryLoc& loc,
         std::vector<GroupingSpec> aGroupingSpecs, 
         std::vector<NonGroupingSpec> aNonGroupingSpecs);
 
@@ -353,6 +359,7 @@ public:
     ar & theIsUpdating;
     ar & theNumBindings; //Number of FORs and LETs (overall) 
   }
+
 public:
   FLWORIterator(
         static_context*             sctx,
@@ -377,7 +384,7 @@ public:
 
   virtual uint32_t getStateSizeOfSubtree() const;
   
-  void accept ( PlanIterVisitor& ) const;
+  void accept(PlanIterVisitor&) const;
 
 private:
   bool bindVariable(int varNb, FlworState* flworState, PlanState& planState) const;

@@ -34,8 +34,8 @@ public:
   StaticContext(zorba::StaticContext_t aStaticContext) : 
     theStaticContext(aStaticContext) {}
 
-  virtual bool addColation(const std::string& aURI)
-  { return theStaticContext->addCollation(aURI); }
+  virtual void addColation(const std::string& aURI)
+  { theStaticContext->addCollation(aURI); }
 
   virtual bool addNamespace(const std::string& aPrefix, 
                             const std::string& aURI)
@@ -121,9 +121,6 @@ public:
   long 	getRefCount () const
   { return theStaticContext->getRefCount(); }
 
-  virtual bool 	getRevalidationEnabled () const
-  { return theStaticContext->getRevalidationEnabled(); }
-
   virtual validation_mode_t getRevalidationMode ()
   { return theStaticContext->getRevalidationMode(); }		
 
@@ -165,8 +162,8 @@ public:
     inherit_mode_t aInherit)
   { return theStaticContext->setCopyNamespacesMode(aPreserve, aInherit); }   
 
-  virtual bool 	setDefaultCollation (const std::string &aURI)
-  { return theStaticContext->setDefaultCollation(aURI); }
+  virtual void setDefaultCollation (const std::string &aURI)
+  { theStaticContext->setDefaultCollation(aURI); }
 
   virtual bool 	setDefaultElementAndTypeNamespace (const std::string &aURI)
   { return theStaticContext->setDefaultElementAndTypeNamespace(aURI); }
@@ -183,9 +180,6 @@ public:
 
   virtual bool 	setOrderingMode (ordering_mode_t aMode)
   { return theStaticContext->setOrderingMode(aMode); } 
-
-  virtual bool 	setRevalidationEnabled (bool enabled)
-  { return theStaticContext->setRevalidationEnabled(enabled); }
 
   virtual void 	setRevalidationMode (validation_mode_t aMode)
   { return theStaticContext->setRevalidationMode(aMode); } 
@@ -255,7 +249,7 @@ public:
 class StaticContext 
 {
  public:
-  virtual bool addColation(const std::string& aURI);  
+  virtual void addColation(const std::string& aURI);  
   virtual bool addNamespace(const std::string& aPrefix, 
                             const std::string& aURI);
   void addReference() const;
@@ -294,7 +288,6 @@ class StaticContext
   virtual bool getOption(const Item &aQName, std::string &aOptionValue) const;
   virtual ordering_mode_t getOrderingMode() const;
   long 	getRefCount() const;
-  virtual bool 	getRevalidationEnabled() const;
   virtual validation_mode_t getRevalidationMode();
   //virtual SchemaURIResolver * 	getSchemaURIResolver () const =0;
   virtual xpath1_0compatib_mode_t 	getXPath1_0CompatibMode () const;
@@ -317,7 +310,7 @@ class StaticContext
 
   virtual bool 	setCopyNamespacesMode (preserve_mode_t aPreserve, 
                                        inherit_mode_t aInherit);
-  virtual bool 	setDefaultCollation (const std::string &aURI);
+  virtual void 	setDefaultCollation (const std::string &aURI);
   virtual bool 	setDefaultElementAndTypeNamespace (const std::string &aURI);
   virtual bool 	setDefaultFunctionNamespace (const std::string &aURI);
   virtual bool 	setDefaultOrderForEmptySequences (order_empty_mode_t aMode);
@@ -327,7 +320,6 @@ class StaticContext
   //virtual void 	setModuleURIResolver (ModuleURIResolver *aModuleUriResolver)=0
 
   virtual bool 	setOrderingMode (ordering_mode_t aMode);
-  virtual bool 	setRevalidationEnabled (bool enabled);
   virtual void 	setRevalidationMode (validation_mode_t aMode);
 
   //virtual void 	setSchemaURIResolver (SchemaURIResolver *aSchemaUriResolver)=0

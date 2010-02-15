@@ -491,7 +491,7 @@ bool DefaultOrderIterator::nextImpl(
   xqpString temp;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  if (theSctx->order_empty_mode() == StaticContextConsts::empty_greatest)
+  if (theSctx->empty_order_mode() == StaticContextConsts::empty_greatest)
     temp = "greatest";
   else
     temp = "least";

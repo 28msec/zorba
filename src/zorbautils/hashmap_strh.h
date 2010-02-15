@@ -16,13 +16,16 @@
 #ifndef ZORBA_HASHMAP_STRING_HANDLE
 #define ZORBA_HASHMAP_STRING_HANDLE
 
+#define ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 #include "zorbautils/hashmap.h"
+#undef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+
 #include "zorbatypes/xqpstring.h"
 
 namespace zorba
 {
 
-class HashMapStrHandleCmp
+class HashMapStrHandleCmp : public ::zorba::serialization::SerializeBaseClass
 {
 public:
   static uint32_t hash(const xqpStringStore_t& str)
@@ -34,16 +37,48 @@ public:
   {
     return s1->byteEqual(s2.getp());
   }
+
+public:
+  SERIALIZABLE_CLASS(HashMapStrHandleCmp);
+
+  HashMapStrHandleCmp(::zorba::serialization::Archiver& ar)
+  {
+  }
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+  }
+
+  HashMapStrHandleCmp()
+  {
+  }
 };
 
 
 template<class V>
-class HashMapStrHandle : public HashMap<xqpStringStore_t, V, HashMapStrHandleCmp>
+class HashMapStrHandle : public serializable_HashMap<xqpStringStore_t,
+                                                     V,
+                                                     HashMapStrHandleCmp>
 {
+public:
+  SERIALIZABLE_TEMPLATE_CLASS(HashMapStrHandle)
+
+  HashMapStrHandle(::zorba::serialization::Archiver& ar)
+    :
+    serializable_HashMap<xqpStringStore_t, V, HashMapStrHandleCmp>(ar)
+  {
+  }
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, 
+    (serializable_HashMap<xqpStringStore_t, V, HashMapStrHandleCmp>*)this);
+  }
+
 public:
   HashMapStrHandle(ulong size, bool sync)
     :
-    HashMap<xqpStringStore_t, V, HashMapStrHandleCmp>(size, sync)
+    serializable_HashMap<xqpStringStore_t, V, HashMapStrHandleCmp>(size, sync)
   {
   }
 

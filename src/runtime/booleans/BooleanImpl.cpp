@@ -25,7 +25,6 @@
 
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-#include "context/collation_cache.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -228,7 +227,7 @@ void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
   BinaryBaseIterator<CompareIterator, PlanIteratorState>::openImpl(planState, offset);
 
   theTypeManager = theSctx->get_typemanager();
-  theCollation = theSctx->get_collation_cache()->getDefaultCollator();
+  theCollation = theSctx->get_default_collator(loc);
   theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
 }
 
@@ -827,7 +826,7 @@ void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& of
   ::openImpl(planState, offset);
 
   theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
-  theCollation = this->theSctx->get_collation_cache()->getDefaultCollator();
+  theCollation = this->theSctx->get_default_collator(this->loc);
 }
 
 
@@ -841,9 +840,10 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
 
-  if (CONSUME (lItem0, 0) && CONSUME (lItem1, 1)) {
-
-    switch (theCompType) {
+  if (CONSUME (lItem0, 0) && CONSUME (lItem1, 1)) 
+  {
+    switch (theCompType) 
+    {
     case CompareConsts::VALUE_NOT_EQUAL:
       neq = true;
     case CompareConsts::VALUE_EQUAL:
@@ -852,11 +852,12 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
       if (neq) bRes = ! bRes;
       break;
 
-    default: {
-
+    default: 
+    {
       cmp = lItem0->compare (lItem1, theTimezone, theCollation);
 
-      switch (theCompType) {
+      switch (theCompType) 
+      {
       case CompareConsts::VALUE_LESS:
         if ((nonempty = (cmp > -2))) bRes = (cmp == -1);
         break;
@@ -876,7 +877,9 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
     }
     if (nonempty)
       STACK_PUSH (GENV_ITEMFACTORY->createBoolean (result, bRes), state);
-    if (CONSUME (lItem0, 0) || CONSUME (lItem1, 1)) {
+
+    if (CONSUME (lItem0, 0) || CONSUME (lItem1, 1)) 
+    {
       ZORBA_ERROR_LOC_DESC(XPTY0004, this->loc, 
                            "Value comparisons must not be made with sequences longer than one item.");
     }

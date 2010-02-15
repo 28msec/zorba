@@ -68,9 +68,9 @@ class StaticContextConsts
     unordered 
   };
 
-  enum order_empty_mode_t
+  enum empty_order_mode_t
   {
-    order_empty_unknown,
+    empty_order_unknown,
     empty_greatest,
     empty_least
   };
@@ -84,6 +84,7 @@ class StaticContextConsts
 
   enum validation_mode_t
   {
+    validation_unknown,
     strict_validation,
     lax_validation,
     skip_validation

@@ -31,6 +31,9 @@
 
 #include "store/api/iterator.h"
 
+#include "types/typeimpl.h"
+
+
 namespace zorba 
 {
 

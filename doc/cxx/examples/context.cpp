@@ -212,7 +212,7 @@ context_example_7(Zorba* aZorba)
 
     std::cout << lQuery << std::endl;
 
-  } catch (StaticException &e) {
+  } catch (QueryException &e) {
     std::cerr << e << std::endl;
     return true;
   }

@@ -28,7 +28,6 @@
 #include "runtime/core/gflwor/common.h"
 
 #include "system/globalenv.h"
-#include "context/collation_cache.h"
 
 using namespace zorba;
 
@@ -240,12 +239,11 @@ void GroupByIterator::openImpl(PlanState& planState, uint32_t& aOffset)
 
     if (spec.theCollation.size() != 0) 
     {
-      spec.theCollator = theSctx->get_collation_cache()->
-                         getCollator(spec.theCollation);
+      spec.theCollator = theSctx->get_collator(spec.theCollation, loc);
     }
     else
     {
-      spec.theCollator = theSctx->get_collation_cache()->getDefaultCollator();
+      spec.theCollator = theSctx->get_default_collator(loc);
     }
   }
 

@@ -28,7 +28,6 @@ namespace store
 
 class static_context;
 class dynamic_context;
-class CollationCache;
 class XQueryImpl;
  
 

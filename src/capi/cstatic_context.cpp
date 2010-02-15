@@ -575,26 +575,6 @@ namespace zorbac {
   }
 
   XQC_Error
-  CStaticContext::set_revalidation_enabled
-  (XQC_StaticContext* context, bool enabled)
-  {
-    SC_TRY {
-      me->theContext.get()->setRevalidationEnabled(enabled);
-    }
-    SC_CATCH;
-  }
-
-  XQC_Error
-  CStaticContext::get_revalidation_enabled
-  (XQC_StaticContext* context, bool *enabled)
-  {
-    SC_TRY {
-      (*enabled) = me->theContext.get()->getRevalidationEnabled ();
-    }
-    SC_CATCH;
-  }
-
-  XQC_Error
   CStaticContext::set_error_handler
   (XQC_StaticContext* context, XQC_ErrorHandler* handler)
   {

@@ -191,10 +191,12 @@ xqpStringStore_t ForLetClause::getVarName() const
 /***************************************************************************//**
 
 ********************************************************************************/
-OrderByClause::OrderByClause (
+OrderByClause::OrderByClause(
+    const QueryLoc& loc,
     const std::vector<OrderSpec>& orderSpecs,
     bool stable)
   :
+  theLocation(loc),
   theOrderSpecs(orderSpecs),
   theStable(stable)
 {
@@ -246,13 +248,11 @@ void OrderByClause::open(static_context* sctx, PlanState& planState, uint32_t& o
 
     if (iter->theCollation.size() != 0) 
     {
-      iter->theCollator = sctx->get_collation_cache()->
-                          getCollator(iter->theCollation);
+      iter->theCollator = sctx->get_collator(iter->theCollation, theLocation);
     }
     else
     {
-      iter->theCollator = sctx->get_collation_cache()->
-                          getDefaultCollator();
+      iter->theCollator = sctx->get_default_collator(theLocation);
     }
   }
 }
@@ -296,10 +296,12 @@ void OrderByClause::close(PlanState& planState)
 /***************************************************************************//**
 
 ********************************************************************************/
-GroupByClause::GroupByClause (
+GroupByClause::GroupByClause(
+    const QueryLoc& loc,
     std::vector<GroupingSpec> aGroupingSpecs,
     std::vector<NonGroupingSpec> aNonGroupingSpecs)
   :
+  theLocation(loc),
   theGroupingSpecs(aGroupingSpecs),
   theNonGroupingSpecs(aNonGroupingSpecs)
 {
@@ -365,13 +367,11 @@ void GroupByClause::open(static_context* sctx, PlanState& planState, uint32_t& o
 
     if (groupIter->theCollation.size() != 0) 
     {
-      groupIter->theCollator = sctx->get_collation_cache()->
-                               getCollator(groupIter->theCollation);
+      groupIter->theCollator = sctx->get_collator(groupIter->theCollation, theLocation);
     }
     else
     {
-      groupIter->theCollator = sctx->get_collation_cache()->
-                               getDefaultCollator();
+      groupIter->theCollator = sctx->get_default_collator(theLocation);
     }
   }
 

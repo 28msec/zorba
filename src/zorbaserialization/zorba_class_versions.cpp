@@ -58,21 +58,33 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqtref_t>::entry, 3)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<static_context::ctx_module_t>::entry, 4)
 
+
+//
+// HashMap serialization
+//
+
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashEntry)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashEntry)
-//SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, rchandle<ValueIndex> >, 1)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, xqpStringStore_t>, 1)
+
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMap)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMap)
-//SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, rchandle<ValueIndex>, serializable_ItemPointerHashMap<rchandle<ValueIndex> >::serializable_CompareFunction>, 1)
 
-//SERIALIZABLE_TEMPLATE_VERSIONS(serializable_ItemPointerHashMap)
-//END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_ItemPointerHashMap)
-//SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<rchandle<ValueIndex> >, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, xqpStringStore_t, HashMapStrHandleCmp>, 1)
 
-//SERIALIZABLE_TEMPLATE_VERSIONS(serializable_CompareFunction)
-//END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_CompareFunction)
-//SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_CompareFunction, serializable_ItemPointerHashMap<rchandle<ValueIndex> >::serializable_CompareFunction, 1)
+
+SERIALIZABLE_CLASS_VERSIONS(HashMapStrHandleCmp)
+END_SERIALIZABLE_CLASS_VERSIONS(HashMapStrHandleCmp)
+
+SERIALIZABLE_TEMPLATE_VERSIONS(HashMapStrHandle)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(HashMapStrHandle)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(HashMapStrHandle, HashMapStrHandle<xqpStringStore_t>, 1)
+
+
+
 
 /*SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<ElementIterator>)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(Batcher, Batcher<FLWORIterator>)

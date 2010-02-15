@@ -1334,7 +1334,9 @@ void flwor_codegen(const flwor_expr& flworExpr)
                                          modifiers[i].theCollation);
       }
 
-      orderClause.reset(new flwor::OrderByClause(orderSpecs, obc->is_stable()));
+      orderClause.reset(new flwor::OrderByClause(obc->get_loc(),
+                                                 orderSpecs,
+                                                 obc->is_stable()));
     }
 
     //
@@ -1347,7 +1349,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
 
       generate_groupby(clauseVarMap, gspecs, ngspecs);
 
-      groupClause.reset(new flwor::GroupByClause(gspecs, ngspecs));
+      groupClause.reset(new flwor::GroupByClause(c.get_loc(), gspecs, ngspecs));
     }
 
     //

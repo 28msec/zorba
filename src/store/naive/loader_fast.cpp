@@ -518,7 +518,7 @@ void FastXmlLoader::startElement(
                                            reinterpret_cast<const char*>(lname));
     
     // Create the element node and push it to the node stack
-    ElementNode* elemNode = GET_STORE().getNodeFactory().createElementNode(
+    ElementNode* elemNode = store.getNodeFactory().createElementNode(
                                           nodeName,
                                           numBindings,
                                           numAttributes);

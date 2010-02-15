@@ -17,11 +17,11 @@
 #define ZORBA_RUNTIME_HANDLE_HAHSET_ITEM_VALUE_H
 
 #include "zorbautils/hashset.h"
+
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/api/runtimecb.h"
 
 #include "context/dynamic_context.h"
-#include "context/collation_cache.h"
 
 namespace zorba 
 { 
@@ -38,7 +38,7 @@ public:
     theRuntimeCB(aRuntimeCB),
     theTypeManager(sctx->get_typemanager()),
     theTimezone(theRuntimeCB->theDynamicContext->get_implicit_timezone()),
-    theCollator(sctx->get_collation_cache()->getDefaultCollator()) 
+      theCollator(sctx->get_default_collator(QueryLoc::null)) 
   {
   }
 

@@ -22,27 +22,26 @@
 
 #include <zorba/api_shared_types.h>
 
-#include "store/api/item.h" // TODO remove by moving all functions into the cpp file
-
-//#ifdef WIN32
+#ifdef WIN32
+#include "store/api/item.h" 
 #include "compiler/expression/expr_base.h"
-//#endif
+#endif
 
 #include "context/static_context_consts.h"
 #include "context/decimal_format.h"
-#include "context/collation_cache.h"
 #include "context/internal_uri_resolvers.h"
 
 #include "types/typemanager.h"
 
 #include "zorbaerrors/Assert.h"
-#include "zorbautils/hashmap_strh.h"
 
-#include "common/shared_types.h"
+#include "zorbautils/hashmap_strh.h"
 
 #define ZORBA_HASHMAP_WITH_SERIALIZATION
 #include "util/hashmap.h"
 #undef ZORBA_HASHMAP_WITH_SERIALIZATION
+
+#include "common/shared_types.h"
 
 
 namespace zorba 
@@ -58,6 +57,7 @@ class QueryLoc;
 class namespace_node;
 class user_function;
 class TypeManager;
+class XQPCollator;
 
 template <class V> class serializable_ItemPointerHashMap;
 
@@ -248,9 +248,6 @@ template <class V> class ItemPointerHashMap;
   Output stream that is used by the fn:trace function. std::cerr is the default
   if the user didn't provide one. For serialization: see note above.
 
-  theCollationCache :
-  -------------------
-
 
   Note: All URI resolvers have standard implementations in the classes
   Standard*URIResolver. Optionally, the user can provide resolvers which are
@@ -277,6 +274,8 @@ class static_context : public SimpleRCObject
   typedef ItemPointerHashMap<std::vector<function_t>* > FunctionArityMap;
 
   typedef HashMapStrHandle<xqpStringStore_t> NamespaceBindings;
+
+  typedef std::map<std::string, XQPCollator*> CollationMap;
 
 public:
 
@@ -330,36 +329,39 @@ public:
   };
 
 protected:
-  static_context                     * theParent;
+  static_context                       * theParent;
 
 	serializable_hashmap<ctx_value_t>   keymap;     // maps strings to ctx_values
 	serializable_hashmap<ctx_module_t>  modulemap;  // uris to external modules
 	serializable_hashmap<xqp_string>    str_keymap; // maps strings to strings
 
-  expr_t                             theQueryExpr;
+  expr_t                                 theQueryExpr;
 
-  std::string                        theModuleNamespace;
+  std::string                            theModuleNamespace;
 
-  InternalDocumentURIResolver        * theDocResolver;
-  InternalCollectionURIResolver      * theColResolver;
+  InternalDocumentURIResolver          * theDocResolver;
+  InternalCollectionURIResolver        * theColResolver;
 
   std::vector<InternalModuleURIResolver*> theModuleResolvers;
   std::vector<InternalSchemaURIResolver*> theSchemaResolvers;
 
-  checked_vector<std::string>          theModulePaths;
+  checked_vector<std::string>            theModulePaths;
 
-  rchandle<TypeManager>                theTypemgr;
+  rchandle<TypeManager>                  theTypemgr;
+  
+  NamespaceBindings                    * theNamespaceBindings;
+  xqpStringStore_t                       theDefaultElementNamespace;
+  xqpStringStore_t                       theDefaultFunctionNamespace;
 
-  NamespaceBindings                  * theNamespaceBindings;
-  xqpStringStore_t                     theDefaultElementNamespace;
-  xqpStringStore_t                     theDefaultFunctionNamespace;
+  FunctionMap                          * theFunctionMap;
+  FunctionArityMap                     * theFunctionArityMap;
 
-  FunctionMap                        * theFunctionMap;
-  FunctionArityMap                   * theFunctionArityMap;
+  CollectionMap                        * theCollectionMap;
+  IndexMap                             * theIndexMap;
+  ICMap                                * theICMap;
 
-  CollectionMap                      * theCollectionMap;
-  IndexMap                           * theIndexMap;
-  ICMap                              * theICMap;
+  CollationMap                         * theCollationMap;
+  std::string                          * theDefaultCollation;
 
   StaticContextConsts::xquery_version_t      theXQueryVersion;
 
@@ -371,11 +373,17 @@ protected:
 
   StaticContextConsts::preserve_mode_t       thePreserveMode;
 
-  std::vector<DecimalFormat_t>       * theDecimalFormats;
+  StaticContextConsts::ordering_mode_t       theOrderingMode;
+
+  StaticContextConsts::empty_order_mode_t    theEmptyOrderMode;
+
+  StaticContextConsts::boundary_space_mode_t theBoundarySpaceMode;
+
+  StaticContextConsts::validation_mode_t     theValidationMode;
+
+  std::vector<DecimalFormat_t>             * theDecimalFormats;
 
   std::ostream                       * theTraceStream;
-
-  CollationCache                     * theCollationCache;
 
 public:
   SERIALIZABLE_CLASS(static_context);
@@ -531,6 +539,22 @@ public:
 
 
   //
+  // Collations
+  //
+	void add_collation(const std::string& uri, const QueryLoc& loc);
+
+  bool is_known_collation(const std::string& uri);
+
+  XQPCollator* get_collator(const std::string& uri, const QueryLoc& loc);
+
+  void set_default_collation(const std::string& uri, const QueryLoc& loc);
+
+  const std::string& get_default_collation(const QueryLoc& loc) const;
+
+  XQPCollator* get_default_collator(const QueryLoc& loc);
+
+
+  //
   //  Misc
   //
   StaticContextConsts::xquery_version_t xquery_version() const;
@@ -545,39 +569,35 @@ public:
 
 	StaticContextConsts::construction_mode_t construction_mode() const;
 
+	void set_construction_mode(StaticContextConsts::construction_mode_t v);
+
 	StaticContextConsts::inherit_mode_t inherit_mode() const;
+
+  void set_inherit_mode(StaticContextConsts::inherit_mode_t v);
 
 	StaticContextConsts::preserve_mode_t preserve_mode() const;
 
+  void set_preserve_mode(StaticContextConsts::preserve_mode_t v);
+
 	StaticContextConsts::ordering_mode_t ordering_mode() const;
 
-	StaticContextConsts::order_empty_mode_t order_empty_mode() const;
+	void set_ordering_mode(StaticContextConsts::ordering_mode_t v);
+
+	StaticContextConsts::empty_order_mode_t empty_order_mode() const;
+
+	void set_empty_order_mode(StaticContextConsts::empty_order_mode_t v);
 
 	StaticContextConsts::boundary_space_mode_t boundary_space_mode() const;
+
+	void set_boundary_space_mode(StaticContextConsts::boundary_space_mode_t v);
+
+  StaticContextConsts::validation_mode_t validation_mode() const;
+
+  void set_validation_mode(StaticContextConsts::validation_mode_t v);
 
   void add_decimal_format(const DecimalFormat_t& format, const QueryLoc& loc);
 
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
-
-  StaticContextConsts::validation_mode_t validation_mode() const;
-
-  bool revalidation_enabled() const;
-
-	void set_construction_mode(StaticContextConsts::construction_mode_t v);
-
-	void set_order_empty_mode(StaticContextConsts::order_empty_mode_t v);
-
-	void set_boundary_space_mode(StaticContextConsts::boundary_space_mode_t v);
-
-	void set_inherit_mode(StaticContextConsts::inherit_mode_t v);
-
-	void set_preserve_mode(StaticContextConsts::preserve_mode_t v);
-
-	void set_ordering_mode(StaticContextConsts::ordering_mode_t v);
-
-  void set_validation_mode(StaticContextConsts::validation_mode_t v);
-
-  void set_revalidation_enabled (bool);
 
   // Returns all the keys in the str_keymap hashtable, used by instrospection
   std::vector<xqp_string>* get_all_str_keys() const;
@@ -678,44 +698,6 @@ public:
 
 
   //
-  // Collations
-  //
-  void bind_collation(const xqp_string& aCollURI)
-  {
-    bind_str2("coll:", aCollURI, "");
-  }
-
-  bool lookup_collation(const xqp_string& aCollURI) const
-  {
-    // TODO better use a hashmap for collation itself
-    xqpString lTmp;
-    return context_value2<xqp_string>("coll:", aCollURI, lTmp);
-  }
-
-  void bind_default_collation(const xqp_string& aCollURI)
-  {
-    bind_str("coll:default:", aCollURI, XQST0038);
-  }
-
-  bool lookup_default_collation(xqp_string& aCollURI) const
-  {
-    return context_value<xqp_string>("coll:default:", aCollURI);
-  }
-
-  bool has_collation_uri(const xqp_string& aURI) const;
-
-  xqp_string default_collation_uri() const;
-
-  void set_default_collation_uri(const xqp_string& uri);
-
-	void add_collation(const xqp_string& uri);
-
-  CollationCache* get_collation_cache();
-
-  XQPCollator* create_collator(const xqp_string& aURI);
-
-
-  //
   // Base uri
   //
   xqp_string
@@ -755,8 +737,10 @@ public:
   static xqp_string
   make_absolute_uri(xqp_string uri, xqp_string base_uri, bool validate = true);
 
-  xqp_string
-  resolve_relative_uri( xqp_string uri, xqp_string abs_base_uri, bool validate = true);
+  xqp_string resolve_relative_uri(
+        xqp_string uri,
+        xqp_string abs_base_uri,
+        bool validate = true);
 
   //
   // Options
@@ -877,12 +861,6 @@ protected:
 
   void bind_str(xqp_string key, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR);
 
-  void bind_str2(
-        const char *key1,
-        xqp_string key2,
-        xqp_string v,
-        XQUERY_ERROR err = XQP0019_INTERNAL_ERROR);
-
   bool bind_expr (xqp_string key, expr *e);
 
   bool bind_expr2 (const char *key1, xqp_string key2, expr *e);
@@ -891,11 +869,9 @@ protected:
 
   //serialization helpers
   bool check_parent_is_root();
+
   void set_parent_as_root();
 };
-
-
-std::pair<xqp_string, xqp_string> parse_qname (xqp_string qname);
 
 
 /* Debugging purposes */

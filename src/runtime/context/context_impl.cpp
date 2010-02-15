@@ -119,7 +119,7 @@ DefaultCollationIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  strColUri = theSctx->default_collation_uri().getStore();
+  strColUri = new xqpStringStore(theSctx->get_default_collation(loc));
 
   STACK_PUSH(GENV_ITEMFACTORY->createString(result, strColUri), state );
 

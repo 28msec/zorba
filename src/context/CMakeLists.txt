@@ -18,7 +18,6 @@ MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/context/root_static_conte
                ${CMAKE_CURRENT_BINARY_DIR}/context/root_static_context_init.cpp")
 
 SET(CONTEXT_SRCS
-    collation_cache.cpp
     decimal_format.cpp
     dynamic_context.cpp
     static_context.cpp

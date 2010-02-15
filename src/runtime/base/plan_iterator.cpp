@@ -90,12 +90,6 @@ void PlanIterator::serialize(::zorba::serialization::Archiver &ar)
 }
 
 
-CollationCache* PlanIterator::collationCache(PlanState& planState)
-{
-  return theSctx->get_collation_cache();
-}
-
-
 #ifndef NDEBUG
 
 bool PlanIterator::consumeNext(
