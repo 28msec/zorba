@@ -597,7 +597,11 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                         else {
                             // the type is derived from ancestor
                             if (((SchemaElementDecl*)elemDef)->getBlockSet() == SchemaSymbols::XSD_RESTRICTION) {
+#if _XERCES_VERSION >= 30100
+                                emitError(XMLValid::ElemNoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
+#else
                                 emitError(XMLValid::NoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
+#endif
                                 fErrorOccurred = true;
                             }
                             if (elemDef->hasAttDefs()) {
@@ -659,7 +663,11 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                                 else {
                                     int derivationMethod = typeInfo->getDerivedBy();
                                     if ((((SchemaElementDecl*)elemDef)->getBlockSet() & derivationMethod) != 0) {
+#if _XERCES_VERSION >= 30100
+                                        emitError(XMLValid::ElemNoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
+#else
                                         emitError(XMLValid::NoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
+#endif
                                         fErrorOccurred = true;
                                     }
                                 }
@@ -700,7 +708,11 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                             else {
                                 // the type is derived from ancestor
                                 if (((SchemaElementDecl*)elemDef)->getBlockSet() == SchemaSymbols::XSD_RESTRICTION) {
+#if _XERCES_VERSION >= 30100
+                                    emitError(XMLValid::ElemNoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
+#else
                                     emitError(XMLValid::NoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
+#endif
                                     fErrorOccurred = true;
                                 }
                                 if (elemDef->hasAttDefs()) {
