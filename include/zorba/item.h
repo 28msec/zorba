@@ -295,18 +295,6 @@ public:
   int
   getNodeKind() const;
 
-
-  /** \brief Serialize the Item using the XML output method. 	 
-   * 	 
-   * The function writes the result of serializing the Item as XML to 	 
-   * the given output stream. 	 
-   * Note that this function is available for all types of Items. 	 
-   * 	 
-   * @throw ZorbaException if an error occured. 	 
-   */ 	 
-  void 	 
-  serialize(std::ostream&) const;
-
 private:
   friend class Unmarshaller;
 
