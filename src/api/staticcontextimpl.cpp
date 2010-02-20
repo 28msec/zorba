@@ -644,7 +644,9 @@ StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
   if (type != NULL) {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
-  theCtx->set_document_type(Unmarshaller::getInternalString(aDocUri), xqType);
+
+  xqpStringStore_t uri = Unmarshaller::getInternalString(aDocUri);
+  theCtx->bind_document(uri, xqType);
 }
 
 
@@ -654,7 +656,7 @@ StaticContextImpl::setDocumentType(const String& aDocUri, TypeIdentifier_t type)
 TypeIdentifier_t
 StaticContextImpl::getDocumentType(const String& aDocUri) const
 {
-  xqtref_t xqType = theCtx->get_document_type(Unmarshaller::getInternalString(aDocUri));
+  xqtref_t xqType = theCtx->lookup_document(Unmarshaller::getInternalString(aDocUri));
   TypeIdentifier_t type = NULL;
   if (xqType == NULL) {
     return NULL;
@@ -698,10 +700,12 @@ void
 StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifier_t type)
 {
   xqtref_t xqType = NULL;
-  if (type != NULL) {
+  if (type != NULL) 
+  {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
-  theCtx->set_collection_type(Unmarshaller::getInternalString(aCollectionUri), xqType);
+  xqpStringStore_t uri = Unmarshaller::getInternalString(aCollectionUri);
+  theCtx->bind_w3c_collection(uri, xqType);
 }
 
 
@@ -711,9 +715,10 @@ StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifie
 TypeIdentifier_t
 StaticContextImpl::getCollectionType(const String& aCollectionUri) const
 {
-  xqtref_t xqType = theCtx->get_collection_type(Unmarshaller::getInternalString(aCollectionUri));
+  const XQType* xqType = theCtx->lookup_w3c_collection(Unmarshaller::getInternalString(aCollectionUri));
   TypeIdentifier_t type = NULL;
-  if (xqType == NULL) {
+  if (xqType == NULL) 
+  {
     return NULL;
   }
   return TypeOps::get_type_identifier(*xqType);
@@ -955,13 +960,13 @@ StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
   if (type != NULL) {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
-  theCtx->set_context_item_static_type(xqType);
+  theCtx->set_context_item_type(xqType);
 }
 
 TypeIdentifier_t
 StaticContextImpl::getContextItemStaticType() const
 {
-  xqtref_t type = theCtx->context_item_static_type();
+  xqtref_t type = theCtx->get_context_item_type();
   if (type == NULL) {
     return NULL;
   }
@@ -980,38 +985,48 @@ StaticContextImpl::resetTraceStream()
   theCtx->set_trace_stream(std::cerr);
 }
 
+
 bool
-StaticContextImpl::getOption( const Item& aQName, String& aOptionValue ) const
+StaticContextImpl::getOption(const Item& aQName, String& aOptionValue) const
 {
-  try {
-    store::Item* lQName = Unmarshaller::getInternalItem(aQName);
-    xqp_string lOption;
-    if (theCtx->lookup_option(lQName->getNamespace(), lQName->getLocalName(), lOption)) {
-      aOptionValue = String(lOption.c_str());
+  try 
+  {
+    const store::Item* lQName = Unmarshaller::getInternalItem(aQName);
+    xqpStringStore_t lOption;
+    if (theCtx->lookup_option(lQName, lOption)) 
+    {
+      aOptionValue = String(lOption);
       return true;
-    } else {
+    } 
+    else
+    {
       return false;
     }
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
   return false;
 }
 
+
 void
-StaticContextImpl::declareOption( const Item& aQName, const String& aOptionValue)
+StaticContextImpl::declareOption(const Item& aQName, const String& aOptionValue)
 {
-  try {
-    store::Item* lQName = Unmarshaller::getInternalItem(aQName);
-    xqp_string lOptionValue = Unmarshaller::getInternalString(aOptionValue)->c_str();
-    xqp_string lNamespae(lQName->getNamespace());
-    xqp_string lLocalName(lQName->getLocalName());
+  try 
+  {
+    const store::Item* lQName = Unmarshaller::getInternalItem(aQName);
+    xqpStringStore_t lOptionValue = Unmarshaller::getInternalString(aOptionValue);
     
-    theCtx->bind_option(lNamespae, lLocalName, lOptionValue);
-  } catch (error::ZorbaError& e) {
+    theCtx->bind_option(lQName, lOptionValue);
+  }
+  catch (error::ZorbaError& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
 }
+
 
 void
 StaticContextImpl::loadProlog(const String& prolog, const Zorba_CompilerHints_t& hints)

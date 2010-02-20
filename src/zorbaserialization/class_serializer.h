@@ -198,7 +198,7 @@ virtual int get_version_count() const                                  \
 }                                                                      \
                                                                        \
                                                                        \
-virtual const char* get_class_name_str() { return class_name_str; }    \
+virtual const char* get_class_name_str() const { return class_name_str; } \
                                                                        \
 static const char* get_class_name_str_static() {return class_name_str;}
 
@@ -254,7 +254,7 @@ virtual int get_version_count() const                                   \
   return g_##class_name##_class_versions_count;                         \
 }                                                                       \
                                                                         \
-virtual const char *get_class_name_str() {return #class_name;}          \
+virtual const char *get_class_name_str() const {return #class_name;}    \
                                                                         \
 static const char *get_class_name_str_static() {return #class_name;}
 

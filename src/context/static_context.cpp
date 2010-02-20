@@ -18,6 +18,14 @@
 #include <zorba/external_module.h>
 #include <zorba/serialization_callback.h>
 
+#include "zorbaserialization/serialization_engine.h"
+
+#include "zorbautils/strutil.h"
+#include "zorbautils/hashmap_strh.h"
+#define ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+#include "zorbautils/hashmap_itemp.h"
+#undef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+
 #include "context/static_context_consts.h"
 #include "context/static_context.h"
 #include "context/namespace_context.h"
@@ -25,18 +33,13 @@
 #include "context/uri_resolver_wrapper.h"
 #include "context/standard_uri_resolvers.h"
 #include "context/decimal_format.h"
-#include "context/statically_known_collection.h"
 #include "context/sctx_map_iterator.h"
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
-#include "compiler/indexing/value_index.h"
-#include "compiler/indexing/value_ic.h"
-
-#include "zorbautils/strutil.h"
-#define ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP_WITH_SERIALIZATION
-#include "zorbautils/hashmap_itemp.h"
-#undef ZORBA_ZORBAUTILS_ITEM_POINTER_HASHMAP_WITH_SERIALIZATION
+#include "compiler/xqddf/collection_decl.h"
+#include "compiler/xqddf/value_index.h"
+#include "compiler/xqddf/value_ic.h"
 
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/URI.h"
@@ -112,10 +115,6 @@ void static_context::ctx_value_t::serialize(::zorba::serialization::Archiver& ar
   case CTX_INT:
     ar & intValue;
     break;
-  case CTX_BOOL:
-    ar & boolValue;
-    break;
-  case CTX_XQTYPE:
   default:
     if(!ar.is_serializing_out())
       typeValue = NULL;//don't serialize this
@@ -267,18 +266,6 @@ bool static_context::bind_module(xqp_string uri, ExternalModule* m,
   return !modulemap.put (uri, v, false);
 }
 
-bool static_context::check_parent_is_root()
-{
-  return theParent == &GENV_ROOT_STATIC_CONTEXT;
-}
-
-
-void static_context::set_parent_as_root()
-{
-  theParent = &GENV_ROOT_STATIC_CONTEXT;
-}
-
-
 
 std::vector<xqp_string>* static_context::get_all_str_keys() const
 {
@@ -316,16 +303,19 @@ std::vector<xqp_string>* static_context::get_all_keymap_keys() const
 static_context::static_context()
   :
   theParent(NULL),
+  theTraceStream(NULL),
   theDocResolver(0),
   theColResolver(0),
   theNamespaceBindings(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theCollectionMap(0),
+  theW3CCollectionMap(NULL),
+  theCollectionMap(NULL),
   theIndexMap(NULL),
   theICMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
+  theOptionMap(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
@@ -335,8 +325,7 @@ static_context::static_context()
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL),
-  theTraceStream(0)
+  theDecimalFormats(NULL)
 {
   set_encapsulating_entity_baseuri ("");
   set_entity_retrieval_url ("");
@@ -349,16 +338,19 @@ static_context::static_context()
 static_context::static_context(static_context* parent)
   :
   theParent(parent),
+  theTraceStream(NULL),
   theDocResolver(0),
   theColResolver(0),
   theNamespaceBindings(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
+  theW3CCollectionMap(NULL),
   theCollectionMap(0),
   theIndexMap(NULL),
   theICMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
+  theOptionMap(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
@@ -368,8 +360,7 @@ static_context::static_context(static_context* parent)
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL),
-  theTraceStream(0)
+  theDecimalFormats(NULL)
 {
   if (theParent != NULL)
     RCHelper::addReference(theParent);
@@ -384,16 +375,19 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   SimpleRCObject(ar),
   keymap(ar),
   str_keymap(ar),
+  theTraceStream(NULL),
   theDocResolver(0),
   theColResolver(0),
   theNamespaceBindings(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
+  theW3CCollectionMap(NULL),
   theCollectionMap(0),
   theIndexMap(0),
   theICMap(0),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
+  theOptionMap(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
@@ -403,8 +397,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL),
-  theTraceStream(0)
+  theDecimalFormats(NULL)
 {
 }
 
@@ -466,6 +459,9 @@ static_context::~static_context()
     delete theFunctionArityMap;
   }
 
+  if (theW3CCollectionMap)
+    delete theW3CCollectionMap;
+
   if (theCollectionMap)
     delete theCollectionMap;
 
@@ -493,6 +489,9 @@ static_context::~static_context()
     delete theCollationMap;
     theCollationMap = 0;
   }
+
+  if (theOptionMap)
+    delete theOptionMap;
 
   if (theDecimalFormats)
     delete theDecimalFormats;
@@ -677,12 +676,15 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theFunctionMap;
   ar & theFunctionArityMap;
 
+  ar & theW3CCollectionMap;
   ar & theCollectionMap;
   ar & theIndexMap;
   ar & theICMap;
 
   ar & theCollationMap;
   //ar & theDefaultCollation;
+
+  ar & theOptionMap;
 
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
   SERIALIZE_ENUM(StaticContextConsts::xpath_compatibility_t, theXPathCompatibility);
@@ -718,18 +720,233 @@ bool static_context::is_global_root_sctx() const
 /***************************************************************************//**
 
 ********************************************************************************/
+bool static_context::check_parent_is_root()
+{
+  return theParent == &GENV_ROOT_STATIC_CONTEXT;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_parent_as_root()
+{
+  theParent = &GENV_ROOT_STATIC_CONTEXT;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 expr_t static_context::get_query_expr() const
 {
   return theQueryExpr;
 }
 
 
-/*******************************************************************************
+/***************************************************************************//**
 
 ********************************************************************************/
 void static_context::set_query_expr(expr_t expr)
 {
   theQueryExpr = expr;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_trace_stream(std::ostream& os)
+{
+  theTraceStream = &os;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+std::ostream* static_context::get_trace_stream() const
+{
+  if (theTraceStream)
+    return theTraceStream;
+
+  return (theParent == NULL ?
+          &std::cerr :
+          dynamic_cast<static_context*>(theParent)->get_trace_stream());
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Base URI                                                                   //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/*******************************************************************************
+  Base Uri Computation
+
+  int:from_prolog_baseuri          --> uri
+  int:baseuri                      --> uri
+  int:encapsulating_entity_baseuri --> uri
+  int:entity_retrieval_url         --> uri
+
+  int:current_absolute_baseuri     --> uri
+
+  The from_prolog_baseuri is the one declared in the prolog. The baseuri is set
+  explicitly from the C++/C api. If both the from_prolog_baseuri and the baseuri
+  are set, the from_prolog_baseuri hides the baseuri.
+
+  The entity_retrieval_url is set by default to the name of file containing the
+  query we are running. It may also be set explicitly from the C++/C api.
+********************************************************************************/
+xqp_string static_context::final_baseuri()
+{
+  // cached value
+  std::string abs_base_uri = current_absolute_baseuri();
+
+  if(abs_base_uri.empty())
+  {
+    compute_current_absolute_baseuri();
+    abs_base_uri = current_absolute_baseuri();
+  }
+
+  // won't happen -- we default to a non-empty URI
+  if(abs_base_uri.empty())
+  {
+    ZORBA_ERROR_DESC( XPST0001, "empty base URI");
+    return "";
+  }
+
+  return abs_base_uri;
+}
+
+
+void static_context::compute_current_absolute_baseuri()
+{
+  //if base Uri is present, compute absolute base Uri
+  //else if encapsulating_entity_baseuri is present, use that
+  //else if entity_retrieval_url is present, use that
+  //else do not set the absolute baseuri (and hope there are no relative uris)
+
+  xqp_string    prolog_baseuri;
+  xqp_string    ee_baseuri;
+  xqp_string    loaded_uri;
+
+  prolog_baseuri = baseuri();
+
+  if (!prolog_baseuri.empty())
+  {
+    try
+    {
+      URI lCheckValid(prolog_baseuri.getStore());
+      // is already absolute baseuri
+      set_current_absolute_baseuri(lCheckValid.toString().getp());
+      return; // valid (absolute) uri
+    }
+    catch (error::ZorbaError&)
+    {
+      // assume it's relative and go on
+    }
+  }
+
+  if (!prolog_baseuri.empty())
+  {
+    /// is relative, needs to be resolved
+    ee_baseuri = encapsulating_entity_baseuri();
+    if(!ee_baseuri.empty())
+    {
+      set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, ee_baseuri));
+      return;
+    }
+
+    loaded_uri = entity_retrieval_url();
+    if(!loaded_uri.empty())
+    {
+      set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, loaded_uri));
+      return;
+    }
+
+    set_current_absolute_baseuri (make_absolute_uri(prolog_baseuri, implementation_baseuri()));
+    return;
+  }
+
+  ee_baseuri = encapsulating_entity_baseuri();
+  if(!ee_baseuri.empty())
+  {
+    set_current_absolute_baseuri(ee_baseuri);
+    return;
+  }
+
+  loaded_uri = entity_retrieval_url();
+  if(!loaded_uri.empty())
+  {
+    set_current_absolute_baseuri(loaded_uri);
+    return;
+  }
+
+  set_current_absolute_baseuri (implementation_baseuri());
+  return;
+}
+
+
+xqp_string static_context::baseuri () const
+{
+  xqp_string val;
+  if(!context_value ("int:" "from_prolog_baseuri", val))  // if not found val remains ""
+  {
+    context_value("int:" "baseuri", val);
+  }
+  return val;
+}
+
+
+void static_context::set_baseuri (xqp_string val, bool from_prolog)
+{
+  if (from_prolog)
+    // throw XQST0032 if from_prolog_baseuri is already defined
+    bind_str ("int:" "from_prolog_baseuri", val, XQST0032);
+  else
+    // overwite existing value of baseuri, if any
+    str_keymap.put ("int:" "baseuri", val);
+
+  compute_current_absolute_baseuri ();
+}
+
+
+xqp_string static_context::entity_retrieval_url() const
+{
+  xqp_string val;
+  GET_CONTEXT_VALUE(entity_retrieval_url, val);
+  return val;
+}
+
+
+void static_context::set_entity_retrieval_url(xqp_string val)
+{
+  bind_str("int:entity_retrieval_url", val, MAX_ZORBA_ERROR_CODE);
+  set_current_absolute_baseuri ("");
+}
+
+
+xqp_string static_context::resolve_relative_uri(
+    xqp_string uri,
+    xqp_string abs_base_uri,
+    bool validate)
+{
+  return make_absolute_uri (uri,
+                            abs_base_uri.empty () ? final_baseuri () : abs_base_uri,
+                            validate);
+}
+
+
+xqp_string static_context::make_absolute_uri(
+    xqp_string uri,
+    xqp_string base_uri,
+    bool validate)
+{
+  URI resolved_uri(base_uri.getStore(), uri.getStore(), validate);
+  return resolved_uri.toString().getp();
 }
 
 
@@ -1134,6 +1351,39 @@ void static_context::expand_qname(
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
+//  Variables                                                                  //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_context_item_type(xqtref_t& t)
+{
+  theCtxItemType = t;
+}
+
+/***************************************************************************//**
+
+********************************************************************************/
+const XQType* static_context::get_context_item_type()
+{
+  static_context* sctx = this;
+  while (sctx != NULL)
+  {
+    if (theCtxItemType != NULL)
+      return theCtxItemType.getp();
+
+    sctx = sctx->theParent;
+  }
+
+  return NULL;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
 //  Functions                                                                  //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
@@ -1155,6 +1405,8 @@ void static_context::bind_fn(
                           loc.getFilename());
   }
 
+  store::Item* qname2 = const_cast<store::Item*>(qname);
+
   if (theFunctionMap == NULL)
   {
     ulong size = (is_global_root_sctx() ? 500 : 32);
@@ -1163,7 +1415,7 @@ void static_context::bind_fn(
 
   function_t f_save = f;
 
-  if (!theFunctionMap->insert(qname, f))
+  if (!theFunctionMap->insert(qname2, f))
   {
     f = f_save;
 
@@ -1176,7 +1428,7 @@ void static_context::bind_fn(
 
     std::vector<function_t>* functions;
 
-    if (theFunctionArityMap->get(qname, functions))
+    if (theFunctionArityMap->get(qname2, functions))
     {
       functions->push_back(f);
     }
@@ -1184,7 +1436,7 @@ void static_context::bind_fn(
     {
       functions = new std::vector<function_t>(1);
       (*functions)[0] = f;
-      theFunctionArityMap->insert(qname, functions);
+      theFunctionArityMap->insert(qname2, functions);
     }
   }
 }
@@ -1200,18 +1452,19 @@ void static_context::unbind_fn(
     ulong arity)
 {
   function_t f;
+  store::Item* qname2 = const_cast<store::Item*>(qname);
 
-  if (theFunctionMap != NULL && theFunctionMap->get(qname, f))
+  if (theFunctionMap != NULL && theFunctionMap->get(qname2, f))
   {
     if (f->get_arity() == arity)
     {
-      theFunctionMap->remove(qname);
+      theFunctionMap->remove(qname2);
       return;
     }
 
     std::vector<function_t>* fv;
 
-    if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname, fv))
+    if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
     {
       ulong numFunctions = fv->size();
       for (ulong i = 0; i < numFunctions; ++i)
@@ -1226,7 +1479,7 @@ void static_context::unbind_fn(
   }
 
   if (theParent != NULL)
-    theParent->unbind_fn(qname, arity);
+    theParent->unbind_fn(qname2, arity);
 }
 
 
@@ -1240,15 +1493,16 @@ function* static_context::lookup_fn(
     ulong arity)
 {
   function_t f;
+  store::Item* qname2 = const_cast<store::Item*>(qname);
 
-  if (theFunctionMap != NULL && theFunctionMap->get(qname, f))
+  if (theFunctionMap != NULL && theFunctionMap->get(qname2, f))
   {
     if (f->get_arity() == arity || f->is_variadic())
       return f.getp();
 
     std::vector<function_t>* fv;
 
-    if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname, fv))
+    if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
     {
       ulong numFunctions = fv->size();
       for (ulong i = 0; i < numFunctions; ++i)
@@ -1259,7 +1513,7 @@ function* static_context::lookup_fn(
     }
   }
 
-  return (theParent != NULL ? theParent->lookup_fn(qname, arity) : NULL);
+  return (theParent != NULL ? theParent->lookup_fn(qname2, arity) : NULL);
 }
 
 
@@ -1271,15 +1525,16 @@ void static_context::find_functions(
     std::vector<function *>& functions) const
 {
   function_t f;
+  store::Item* qname2 = const_cast<store::Item*>(qname);
 
-  if (theFunctionMap != NULL && theFunctionMap->get(qname, f))
+  if (theFunctionMap != NULL && theFunctionMap->get(qname2, f))
   {
     functions.push_back(f.getp());
   }
 
   std::vector<function_t>* fv;
 
-  if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname, fv))
+  if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
   {
     ulong numFunctions = fv->size();
     for (ulong i = 0; i < numFunctions; ++i)
@@ -1289,9 +1544,117 @@ void static_context::find_functions(
   }
   
   if (theParent != NULL)
-    theParent->find_functions(qname, functions);
+    theParent->find_functions(qname2, functions);
 }
 
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Documents                                                                  //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/***************************************************************************//**
+  This method may be called only on an application-created sctx.
+********************************************************************************/
+void static_context::bind_document(xqpStringStore_t& uri, xqtref_t& type)
+{
+  if (theDocumentMap == NULL)
+  {
+    theDocumentMap = new DocumentMap(16, false);
+  }
+
+  if (!theDocumentMap->update(uri, type))
+  {
+    theDocumentMap->insert(uri, type);
+  }
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+const XQType* static_context::lookup_document(const xqpStringStore_t& uri)
+{
+  xqtref_t type;
+
+  static_context* sctx = this;
+  while (sctx != NULL)
+  {
+    if (theDocumentMap && theDocumentMap->get(uri, type))
+      return type.getp();
+
+    sctx = sctx->theParent;
+  }
+
+  return NULL;
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  W3C Collections                                                            //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/***************************************************************************//**
+  This method may be called only on an application-created sctx.
+********************************************************************************/
+void static_context::bind_w3c_collection(xqpStringStore_t& uri, xqtref_t& type)
+{
+  if (theW3CCollectionMap == NULL)
+  {
+    theW3CCollectionMap = new W3CCollectionMap(16, false);
+  }
+
+  if (!theW3CCollectionMap->update(uri, type))
+  {
+    theW3CCollectionMap->insert(uri, type);
+  }
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+const XQType* static_context::lookup_w3c_collection(const xqpStringStore_t& uri)
+{
+  xqtref_t type;
+
+  if (theW3CCollectionMap && theW3CCollectionMap->get(uri, type))
+    return type.getp();
+  else
+    return (theParent == NULL ? 0 : theParent->lookup_w3c_collection(uri));
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_default_w3c_collection_type(xqtref_t& t)
+{
+  theDefaultW3CCollectionType = t;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+const XQType* static_context::get_default_w3c_collection_type()
+{
+  static_context* sctx = this;
+  while (sctx != NULL)
+  {
+    if (theDefaultW3CCollectionType != NULL)
+      return theDefaultW3CCollectionType.getp();
+
+    sctx = sctx->theParent;
+  }
+
+  return NULL;
+}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -1317,7 +1680,9 @@ void static_context::bind_collection(
   if (theCollectionMap == 0)
     theCollectionMap = new CollectionMap(0, NULL, 8, false);
 
-  theCollectionMap->insert(aCollection->getName(), aCollection);
+  store::Item* qname = const_cast<store::Item*>(aCollection->getName());
+
+  theCollectionMap->insert(qname, aCollection);
 
 }
 
@@ -1326,14 +1691,15 @@ void static_context::bind_collection(
 
 ********************************************************************************/
 const StaticallyKnownCollection* static_context::lookup_collection(
-    const store::Item* aName) const
+    const store::Item* qname) const
 {
   StaticallyKnownCollection_t lColl;
+  store::Item* qname2 = const_cast<store::Item*>(qname);
 
-  if (theCollectionMap && theCollectionMap->get(aName, lColl))
+  if (theCollectionMap && theCollectionMap->get(qname2, lColl))
     return lColl.getp();
   else
-    return (theParent == NULL ? 0 : theParent->lookup_collection(aName));
+    return (theParent == NULL ? 0 : theParent->lookup_collection(qname));
 }
 
 
@@ -1369,10 +1735,12 @@ void static_context::bind_index(
                           qname->getStringValue(),  "");
   }
 
+  store::Item* qname2 = const_cast<store::Item*>(qname);
+
   if (theIndexMap == NULL)
     theIndexMap = new IndexMap(0, NULL, 8, false);
 
-  theIndexMap->insert((store::Item*)qname, index);
+  theIndexMap->insert(qname2, index);
 }
 
 
@@ -1382,8 +1750,9 @@ void static_context::bind_index(
 ValueIndex* static_context::lookup_index(const store::Item* qname) const
 {
   ValueIndex_t index;
+  store::Item* qname2 = const_cast<store::Item*>(qname);
 
-  if (theIndexMap && theIndexMap->get(qname, index))
+  if (theIndexMap && theIndexMap->get(qname2, index))
     return index.getp();
   else
     return (theParent == NULL ? NULL : theParent->lookup_index(qname));
@@ -1420,10 +1789,12 @@ void static_context::bind_ic(
                           qname->getStringValue(),  "");
   }
 
+  store::Item* qname2 = const_cast<store::Item*>(qname);
+
   if (theICMap == NULL)
     theICMap = new ICMap(0, NULL, 8, false);
 
-  theICMap->insert((store::Item*)qname, vic);
+  theICMap->insert(qname2, vic);
 }
 
 
@@ -1433,8 +1804,9 @@ void static_context::bind_ic(
 ValueIC_t static_context::lookup_ic(const store::Item* qname) const
 {
   ValueIC_t vic;
+  store::Item* qname2 = const_cast<store::Item*>(qname);
 
-  if (theICMap != NULL && theICMap->get(qname, vic))
+  if (theICMap != NULL && theICMap->get(qname2, vic))
     return vic;
   else
     return (theParent == NULL ? NULL : theParent->lookup_ic(qname));
@@ -1588,6 +1960,56 @@ XQPCollator* static_context::get_default_collator(const QueryLoc& loc)
 {
   const std::string& default_collation = get_default_collation(loc);
   return get_collator(default_collation, loc);
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Options                                                                    //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::bind_option(
+    const store::Item* qname,
+    const xqpStringStore_t& option)
+{
+  if (theOptionMap == NULL)
+  {
+    theOptionMap = new OptionMap(0, NULL, 8, false);
+  }
+
+  store::Item* qname2 = const_cast<store::Item*>(qname);
+
+  if (!theOptionMap->update(qname2, option))
+  {
+    xqpStringStore_t tmp = option;
+    theOptionMap->insert(qname2, tmp);
+  }
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+bool static_context::lookup_option(
+    const store::Item* qname,
+    xqpStringStore_t& option) const
+{
+  store::Item* qname2 = const_cast<store::Item*>(qname);
+  const static_context* sctx = this;
+  while (sctx != NULL)
+  {
+    if (theOptionMap && theOptionMap->get(qname2, option))
+      return true;
+
+    sctx = sctx->theParent;
+  }
+
+  return false;
 }
 
 
@@ -2049,294 +2471,6 @@ StatelessExternalFunction* static_context::lookup_stateless_external_function(
 }
 
 
-/*******************************************************************************
-
-  Type Management : Entity Name --> Type
-  where entity may be variable, the context item, function, document, collection
-
-********************************************************************************/
-void static_context::bind_type(xqp_string key, xqtref_t t)
-{
-  ctx_value_t v(CTX_XQTYPE);
-  v.typeValue = &*t;
-  keymap.put (key, v);
-  RCHelper::addReference (const_cast<XQType *> (t.getp ()));
-}
-
-
-xqtref_t static_context::lookup_type( xqp_string key)
-{
-  ctx_value_t val(CTX_XQTYPE);
-  ZORBA_ASSERT(context_value (key, val));
-  return val.typeValue;
-}
-
-
-xqtref_t static_context::lookup_type2( const char *key1, xqp_string key2)
-{
-  ctx_value_t val(CTX_XQTYPE);
-  ZORBA_ASSERT(context_value2 (key1, key2, val));
-  return val.typeValue;
-}
-
-
-xqtref_t static_context::lookup_type2_no_assert( const char *key1, xqp_string key2)
-{
-  ctx_value_t val(CTX_XQTYPE);
-  if (context_value2 (key1, key2, val))
-    return val.typeValue;
-  else
-    return NULL;
-}
-
-
-void static_context::set_context_item_static_type(xqtref_t t)
-{
-  bind_type("type:context:", t);
-}
-
-
-xqtref_t static_context::context_item_static_type()
-{
-  return lookup_type("type:context:");
-}
-
-void static_context::set_document_type(xqp_string docURI, xqtref_t t)
-{
-  bind_type("type:doc:" + docURI, t);
-}
-
-
-xqtref_t static_context::get_document_type(const xqp_string docURI)
-{
-  return lookup_type2_no_assert("type:doc:", docURI);
-}
-
-
-/*******************************************************************************
-
-  collection management
-
-********************************************************************************/
-void static_context::set_default_collection_type(xqtref_t t)
-{
-  bind_type("type:defcollection:", t);
-}
-
-
-xqtref_t static_context::default_collection_type()
-{
-  return lookup_type("type:defcollection:");
-}
-
-
-void static_context::set_collection_type(xqp_string collURI, xqtref_t t)
-{
-  bind_type("type:collection:" + collURI, t);
-}
-
-
-xqtref_t static_context::get_collection_type(const xqp_string collURI)
-{
-  return lookup_type2("type:collection:", collURI);
-}
-
-
-
-
-/*******************************************************************************
-
-  option management
-
-********************************************************************************/
-bool static_context::lookup_option(
-    const xqp_string& ns,
-    const xqp_string& localname,
-    xqp_string& option) const
-{
-  xqp_string s = ns + localname;
-  if (lookup_once2("option:", s, option))
-    return true;
-  return theParent == NULL ? false : dynamic_cast<static_context*>(theParent)->lookup_option(ns, localname, option);
-}
-
-
-bool static_context::bind_option(
-    const xqp_string& ns,
-    const xqp_string& localname,
-    const xqp_string& option)
-{
-  xqp_string s = ns + localname;
-  return str_keymap.put2("option:", s, option);
-}
-
-
-/*******************************************************************************
-  Base Uri Computation
-
-  int:from_prolog_baseuri          --> uri
-  int:baseuri                      --> uri
-  int:encapsulating_entity_baseuri --> uri
-  int:entity_retrieval_url         --> uri
-
-  int:current_absolute_baseuri     --> uri
-
-  The from_prolog_baseuri is the one declared in the prolog. The baseuri is set
-  explicitly from the C++/C api. If both the from_prolog_baseuri and the baseuri
-  are set, the from_prolog_baseuri hides the baseuri.
-
-  The entity_retrieval_url is set by default to the name of file containing the
-  query we are running. It may also be set explicitly from the C++/C api.
-********************************************************************************/
-xqp_string static_context::final_baseuri ()
-{
-  // cached value
-  string abs_base_uri = current_absolute_baseuri();
-
-  if(abs_base_uri.empty())
-  {
-    compute_current_absolute_baseuri();
-    abs_base_uri = current_absolute_baseuri();
-  }
-
-  // won't happen -- we default to a non-empty URI
-  if(abs_base_uri.empty())
-  {
-    ZORBA_ERROR_DESC( XPST0001, "empty base URI");
-    return "";
-  }
-
-  return abs_base_uri;
-}
-
-
-void static_context::compute_current_absolute_baseuri()
-{
-  //if base Uri is present, compute absolute base Uri
-  //else if encapsulating_entity_baseuri is present, use that
-  //else if entity_retrieval_url is present, use that
-  //else do not set the absolute baseuri (and hope there are no relative uris)
-
-  xqp_string    prolog_baseuri;
-  xqp_string    ee_baseuri;
-  xqp_string    loaded_uri;
-
-  prolog_baseuri = baseuri();
-
-  if (!prolog_baseuri.empty())
-  {
-    try
-    {
-      URI lCheckValid(prolog_baseuri.getStore());
-      // is already absolute baseuri
-      set_current_absolute_baseuri(lCheckValid.toString().getp());
-      return; // valid (absolute) uri
-    }
-    catch (error::ZorbaError&)
-    {
-      // assume it's relative and go on
-    }
-  }
-
-  if (!prolog_baseuri.empty())
-  {
-    /// is relative, needs to be resolved
-    ee_baseuri = encapsulating_entity_baseuri();
-    if(!ee_baseuri.empty())
-    {
-      set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, ee_baseuri));
-      return;
-    }
-
-    loaded_uri = entity_retrieval_url();
-    if(!loaded_uri.empty())
-    {
-      set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, loaded_uri));
-      return;
-    }
-
-    set_current_absolute_baseuri (make_absolute_uri(prolog_baseuri, implementation_baseuri()));
-    return;
-  }
-
-  ee_baseuri = encapsulating_entity_baseuri();
-  if(!ee_baseuri.empty())
-  {
-    set_current_absolute_baseuri(ee_baseuri);
-    return;
-  }
-
-  loaded_uri = entity_retrieval_url();
-  if(!loaded_uri.empty())
-  {
-    set_current_absolute_baseuri(loaded_uri);
-    return;
-  }
-
-  set_current_absolute_baseuri (implementation_baseuri());
-  return;
-}
-
-
-xqp_string static_context::baseuri () const
-{
-  xqp_string val;
-  if(!context_value ("int:" "from_prolog_baseuri", val))  // if not found val remains ""
-  {
-    context_value("int:" "baseuri", val);
-  }
-  return val;
-}
-
-
-void static_context::set_baseuri (xqp_string val, bool from_prolog)
-{
-  if (from_prolog)
-    // throw XQST0032 if from_prolog_baseuri is already defined
-    bind_str ("int:" "from_prolog_baseuri", val, XQST0032);
-  else
-    // overwite existing value of baseuri, if any
-    str_keymap.put ("int:" "baseuri", val);
-
-  compute_current_absolute_baseuri ();
-}
-
-
-xqp_string static_context::entity_retrieval_url() const
-{
-  xqp_string val;
-  GET_CONTEXT_VALUE(entity_retrieval_url, val);
-  return val;
-}
-
-
-void static_context::set_entity_retrieval_url(xqp_string val)
-{
-  bind_str("int:entity_retrieval_url", val, MAX_ZORBA_ERROR_CODE);
-  set_current_absolute_baseuri ("");
-}
-
-
-xqp_string static_context::resolve_relative_uri(
-    xqp_string uri,
-    xqp_string abs_base_uri,
-    bool validate)
-{
-  return make_absolute_uri (uri,
-                            abs_base_uri.empty () ? final_baseuri () : abs_base_uri,
-                            validate);
-}
-
-
-xqp_string static_context::make_absolute_uri(
-    xqp_string uri,
-    xqp_string base_uri,
-    bool validate)
-{
-  URI resolved_uri(base_uri.getStore(), uri.getStore(), validate);
-  return resolved_uri.toString().getp();
-}
-
 
 /*******************************************************************************
   Merge the static context of a module with this static context. Only functions
@@ -2415,7 +2549,7 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
     CollectionMap::iterator coll_end = module->theCollectionMap->end();
     for (; coll_iter != coll_end; ++ coll_iter)
     {
-      std::pair<const store::Item*, StaticallyKnownCollection_t > pair = (*coll_iter);
+      std::pair<store::Item*, StaticallyKnownCollection_t > pair = (*coll_iter);
 
       if (!theCollectionMap->insert(pair.first, pair.second))
       {
@@ -2437,9 +2571,9 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
     IndexMap::iterator idx_end = module->theIndexMap->end();
     for (; idx_iter != idx_end; ++idx_iter)
     {
-      std::pair<const store::Item*, rchandle<ValueIndex> > pair = (*idx_iter);
+      std::pair<store::Item*, rchandle<ValueIndex> > pair = (*idx_iter);
 
-      if (!theIndexMap->insert((store::Item*)pair.first, pair.second))
+      if (!theIndexMap->insert(pair.first, pair.second))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0022_INDEX_ALREADY_IMPORTED, loc,
                               pair.first->getStringValue(),
@@ -2459,9 +2593,9 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
     ICMap::iterator ic_end = module->theICMap->end();
     for (; ic_iter != ic_end; ++ic_iter)
     {
-      std::pair<const store::Item*, rchandle<ValueIC> > pair = (*ic_iter);
+      std::pair<store::Item*, rchandle<ValueIC> > pair = (*ic_iter);
 
-      if (!theICMap->insert((store::Item*)pair.first, pair.second))
+      if (!theICMap->insert(pair.first, pair.second))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0041_IC_IS_ALREADY_DECLARED, loc,
                               pair.first->getStringValue()->c_str(), "");
@@ -2470,23 +2604,6 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
   }
 
   return true;
-}
-
-
-void static_context::set_trace_stream(std::ostream& os)
-{
-  theTraceStream = &os;
-}
-
-
-std::ostream* static_context::get_trace_stream() const
-{
-  if (theTraceStream)
-    return theTraceStream;
-
-  return (theParent == NULL ?
-          &std::cerr :
-          dynamic_cast<static_context*>(theParent)->get_trace_stream());
 }
 
 

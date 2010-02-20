@@ -21,13 +21,15 @@
 #include "system/globalenv.h"
 
 #include "context/static_context.h"
-#include "context/statically_known_collection.h"
 #include "context/static_context_consts.h"
 #include "context/dynamic_context.h"
 #include "context/static_context_consts.h"
 
-#include "compiler/indexing/value_ic.h"
+#include "compiler/xqddf/collection_decl.h"
+#include "compiler/xqddf/value_ic.h"
+
 #include "runtime/introspection/sctx.h"
+
 #include "functions/function.h"
 
 #include "store/api/item_factory.h"
@@ -314,14 +316,14 @@ bool DefaultCollectionTypeIterator::nextImpl(
     PlanState& aPlanState) const
 {
   store::Item_t lName;
-  xqpString type_string;
+  xqpStringStore_t typeString;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
-  type_string = theSctx->lookup_type("type:defcollection:")->toStdString();
+  typeString = new xqpStringStore(theSctx->get_default_w3c_collection_type()->toSchemaString());
 
-  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, type_string.theStrStore), state);
+  STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, typeString), state);
   STACK_END(state);
 }
 
@@ -358,7 +360,7 @@ bool StaticallyKnownDocumentsIterator::nextImpl(
   DEFAULT_STACK_INIT(PlanIteratorState, state, aPlanState);
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
-  type = theSctx->get_document_type(xqpString(lName->getStringValue()));
+  type = theSctx->lookup_document(lName->getStringValue());
   if (type.getp() == NULL)
   {
     temp_str = "document-node()?"; // as per http://www.w3.org/TR/xquery/#dt-known-docs

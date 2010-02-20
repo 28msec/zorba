@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "runtime/collections/collections.h"
-
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_messages.h"
 
@@ -26,10 +24,12 @@
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 #include "context/internal_uri_resolvers.h"
-#include "context/statically_known_collection.h"
 #include "context/static_context_consts.h"
 
+#include "compiler/xqddf/collection_decl.h"
+
 #include "runtime/api/runtimecb.h"
+#include "runtime/collections/collections.h"
 
 #include "store/api/pul.h"
 #include "store/api/copymode.h"

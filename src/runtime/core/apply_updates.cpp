@@ -23,8 +23,8 @@
 #include "runtime/core/apply_updates.h"
 #include "runtime/indexing/doc_indexer.h"
 
-#include "compiler/indexing/value_index.h"
-#include "compiler/indexing/value_ic.h"
+#include "compiler/xqddf/value_index.h"
+#include "compiler/xqddf/value_ic.h"
 
 #include "context/static_context.h"
 

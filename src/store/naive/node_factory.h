@@ -21,66 +21,63 @@
 #include <vector>
 
 
-namespace zorba {
+namespace zorba 
+{
 
-  namespace store {
-    typedef std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NsBindings;
-  }
+namespace store 
+{
+  typedef std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > NsBindings;
+}
 
-  namespace simplestore {
+namespace simplestore 
+{
+  class XmlTree;
+  class XmlNode;
+  class InternalNode;
+  class DocumentNode;
+  class ElementNode;
+  class AttributeNode;
+  class TextNode;
+  class PiNode;
+  class CommentNode;
 
-    class XmlTree;
-    class XmlNode;
-    class InternalNode;
-    class DocumentNode;
-    class ElementNode;
-    class AttributeNode;
-    class TextNode;
-    class PiNode;
-    class CommentNode;
 
-    /** 
-     * This class implements the Abstract Factory Pattern and
-     * is responsible for creating node items of the SimpleStore.
-     * Having a factory for node items allows other stores
-     * to derive from the node items of the SimpleStore without
-     * modifying a lot of code (e.g. of the loader).
-     * The class can only be instantiated by the SimpleStore.
-     */
-    class NodeFactory {
+/** 
+ * This class implements the Abstract Factory Pattern and is responsible for
+ * creating node items of the SimpleStore. Having a factory for node items
+ * allows other stores to derive from the node items of the SimpleStore without
+ * modifying a lot of code (e.g. of the loader). The class can only be
+ * instantiated by the SimpleStore.
+ */
+class NodeFactory 
+{
+ protected:
+  // prevent instantion from anybody
+  // except the SimpleStore and subclasses
+  friend class SimpleStore;
 
-    protected:
-      // prevent instantion from anybody
-      // except the SimpleStore and subclasses
-      friend class SimpleStore;
-      NodeFactory();
+  NodeFactory();
+  
+public:
+  static NodeFactory& instance();
 
-    public:
-      static NodeFactory&
-      instance();
-
-      virtual ~NodeFactory();
+  virtual ~NodeFactory();
         
-      virtual XmlTree*
-      createXmlTree();
+  virtual XmlTree* createXmlTree();
 
-      virtual DocumentNode*
-      createDocumentNode();
+  virtual DocumentNode* createDocumentNode();
 
-      virtual DocumentNode*
-      createDocumentNode(
+  virtual DocumentNode* createDocumentNode(
         XmlTree*          tree,
         const xqpStringStore_t& baseUri,
         const xqpStringStore_t& docUri);
 
-      virtual ElementNode*
-      createElementNode(
+  virtual ElementNode* createElementNode(
         store::Item_t&  nodeName,
         ulong           numBindings,
         ulong           numAttributes);
 
-      virtual ElementNode*
-      createElementNode(
+  virtual ElementNode* createElementNode(
         XmlTree*                    tree,
         InternalNode*               parent,
         long                        pos,
@@ -92,13 +89,10 @@ namespace zorba {
         const store::NsBindings*    localBindings,
         xqpStringStore_t&           baseUri);
 
-      virtual AttributeNode*
-      createAttributeNode(
-        store::Item_t&  qname
-      );
+  virtual AttributeNode* createAttributeNode(
+        store::Item_t&  qname);
 
-      virtual AttributeNode*
-      createAttributeNode(
+  virtual AttributeNode* createAttributeNode(
         XmlTree*                    tree,
         ElementNode*                parent,
         long                        pos,
@@ -108,51 +102,50 @@ namespace zorba {
         bool                        isListValue,
         bool                        hidden);
 
-      virtual TextNode*
-      createTextNode(
+  virtual TextNode* createTextNode(
         xqpStringStore_t& content);
 
-      virtual TextNode*
-      createTextNode(
+  virtual TextNode* createTextNode(
         InternalNode*     parent,
         store::Item_t&    content,
         bool              isListValue);
 
-      virtual TextNode*
-      createTextNode(
+  virtual TextNode* createTextNode(
         XmlTree*          tree,
         InternalNode*     parent,
         long              pos,
         xqpStringStore_t& content);
 
-      virtual PiNode*
-      createPiNode(
+  virtual PiNode* createPiNode(
         xqpStringStore_t& target,
         xqpStringStore_t& content);
 
-      virtual PiNode*
-      createPiNode(
+  virtual PiNode* createPiNode(
         XmlTree*          tree,
         InternalNode*     parent,
         long              pos,
         xqpStringStore_t& target,
         xqpStringStore_t& content);
 
-      virtual CommentNode*
-      createCommentNode(
+  virtual CommentNode* createCommentNode(
         xqpStringStore_t& content);
 
-      virtual CommentNode*
-      createCommentNode(
+  virtual CommentNode* createCommentNode(
         XmlTree*          tree,
         InternalNode*     parent,
         long              pos,
         xqpStringStore_t& content);
+}; /* class NodeFactory */
 
-    }; /* class NodeFactory */
 
-  } /* namespace simplestore */
+} /* namespace simplestore */
 
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

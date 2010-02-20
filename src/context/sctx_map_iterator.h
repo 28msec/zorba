@@ -18,48 +18,54 @@
 
 #include "store/api/iterator.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-  class static_context;
-  template< typename T> class ItemPointerHashMap;
+class static_context;
+template< typename T> class serializable_ItemPointerHashMap;
 
-  template < typename T >
-  class SctxMapIterator : public store::Iterator
-  {
-  private:
-    const static_context*                               theSctx;
-    const static_context*                               theCurSctx;
-    ItemPointerHashMap<rchandle<T> >*                   theItems;
-    typename ItemPointerHashMap<rchandle<T> >::iterator theIterator;
-    bool                                                theIsClosed;
+template < typename T >
+class SctxMapIterator : public store::Iterator
+{
+private:
+  const static_context                                           * theSctx;
+  const static_context                                           * theCurSctx;
+  serializable_ItemPointerHashMap<rchandle<T> >*                   theItems;
+  typename serializable_ItemPointerHashMap<rchandle<T> >::iterator theIterator;
+  bool                                                             theIsClosed;
   
-    // function pointer for retrieving the map in question
-    ItemPointerHashMap<rchandle<T> >* (static_context::*theMapGetter)() const;
+  // function pointer for retrieving the map in question
+  serializable_ItemPointerHashMap<rchandle<T> >* (static_context::*theMapGetter)() const;
   
-  public:
-    SctxMapIterator(
+public:
+  SctxMapIterator(
         const static_context* aSctx,
-        ItemPointerHashMap<rchandle<T> >*
-        (static_context::*aMapGetter)() const
-    );
+        serializable_ItemPointerHashMap<rchandle<T> >*
+        (static_context::*aMapGetter)() const);
   
-    virtual ~SctxMapIterator();
+  virtual ~SctxMapIterator();
   
-    /**
-     * get the map out of theCurSctx
-     * and set theIterator to the beginning of the map
-     * @return true if the map exists, false otherwise
-     */
-    virtual bool resetIterator();
+  /**
+   * get the map out of theCurSctx
+   * and set theIterator to the beginning of the map
+   * @return true if the map exists, false otherwise
+   */
+  virtual bool resetIterator();
   
-    virtual void open();
+  virtual void open();
   
-    virtual bool next(store::Item_t& aResult);
+  virtual bool next(store::Item_t& aResult);
   
-    virtual void reset();
+  virtual void reset();
   
-    virtual void close();
-  };
+  virtual void close();
+};
 
 } /* namespace zorba */
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

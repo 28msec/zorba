@@ -36,7 +36,6 @@
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/parser/parse_constants.h"
-#include "compiler/indexing/value_index.h"
 
 #include "context/namespace_context.h"
 #include "context/static_context.h"

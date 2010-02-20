@@ -18,9 +18,9 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/xqddf/collection_decl.h"
 
 #include "context/static_context.h"
-#include "context/statically_known_collection.h"
 
 #include "functions/library.h"
 #include "functions/function.h"

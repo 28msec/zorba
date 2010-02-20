@@ -317,8 +317,7 @@ public:
 
   virtual std::string toString() const;
 
-  // Attempt to output the type as a string closer to the xs: representation
-  virtual std::string toStdString() const;
+  virtual std::string toSchemaString() const;
 
 protected:
   XQType(
@@ -333,7 +332,8 @@ protected:
     theIsBuiltin(builtin)
   {
     if(theIsBuiltin)
-    {//register this hardcoded object to help plan serialization
+    {
+      //register this hardcoded object to help plan serialization
       XQType  *this_ptr = this;
       *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects() & this_ptr;
     }

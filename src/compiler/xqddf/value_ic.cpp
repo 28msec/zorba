@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-#include "compiler/indexing/value_ic.h"
+#include "store/api/iterator.h"
+
+#include "compiler/xqddf/value_ic.h"
+
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
-#include "store/api/iterator.h"
+
 #include "zorbaserialization/class_serializer.h"
 
 

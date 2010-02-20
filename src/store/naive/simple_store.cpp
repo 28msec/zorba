@@ -416,9 +416,10 @@ store::Index_t SimpleStore::createIndex(
     const store::IndexSpecification& spec,
     store::Iterator* sourceIter)
 {
+  store::Item* qname2 = const_cast<store::Item*>(qname.getp());
   store::Index_t index;
 
-  if (!spec.theIsTemp && theIndices.get(qname, index))
+  if (!spec.theIsTemp && theIndices.get(qname.getp(), index))
   {
     ZORBA_ERROR_PARAM(STR0001_INDEX_ALREADY_EXISTS,
                       qname->getStringValue()->c_str(), "");
@@ -437,7 +438,7 @@ store::Index_t SimpleStore::createIndex(
 
   if (!spec.theIsTemp)
   {
-    theIndices.insert(qname.getp(), index);
+    theIndices.insert(qname2, index);
   }
 
   return index;
@@ -507,7 +508,9 @@ void SimpleStore::addIndex(store::Index_t& index)
   if (index == NULL)
     return;
 
-  theIndices.insert(static_cast<IndexImpl*>(index.getp())->getName(), index);
+  store::Item* qname = const_cast<store::Item*>(index->getName());
+
+  theIndices.insert(qname, index);
 }
 
 
@@ -519,8 +522,10 @@ store::Index* SimpleStore::getIndex(const store::Item* qname)
   if (qname == NULL)
     return NULL;
 
+  store::Item* qname2 = const_cast<store::Item*>(qname);
   store::Index_t index;
-  if (theIndices.get(qname, index))
+
+  if (theIndices.get(qname2, index))
     return index.getp();
 
   return NULL;
@@ -535,7 +540,9 @@ void SimpleStore::deleteIndex(const store::Item* qname)
   if (qname == NULL)
     return;
 
-  theIndices.remove(qname);
+  store::Item* qname2 = const_cast<store::Item*>(qname);
+
+  theIndices.remove(qname2);
 }
 
 
@@ -557,17 +564,19 @@ store::IC_t SimpleStore::activateIC(
 {
   ZORBA_ASSERT(icQName != NULL);
 
+  store::Item* qname = icQName.getp();
+
   store::IC_t ic;
 
-  if (theICs.get(icQName, ic))
+  if (theICs.get(qname, ic))
   {
     ZORBA_ERROR_PARAM(STR0015_IC_ALREADY_EXISTS,
-                      icQName->getStringValue()->c_str(), "");
+                      qname->getStringValue()->c_str(), "");
   }
 
   ic = new ICCollectionImpl(icQName, collectionQName);
 
-  theICs.insert(static_cast<ICCollectionImpl*>(ic.getp())->getICName(), ic);
+  theICs.insert(qname, ic);
 
   return ic;
 }
@@ -583,17 +592,19 @@ store::IC_t SimpleStore::activateForeignKeyIC(
 {
   ZORBA_ASSERT(icQName != NULL);
 
+  store::Item* qname = const_cast<store::Item*>(icQName.getp());
+
   store::IC_t ic;
 
-  if (theICs.get(icQName, ic))
+  if (theICs.get(qname, ic))
   {
     ZORBA_ERROR_PARAM(STR0015_IC_ALREADY_EXISTS,
-                      icQName->getStringValue()->c_str(), "");
+                      qname->getStringValue()->c_str(), "");
   }
 
-  ic = new ICForeignKeyImpl(icQName, fromCollectionQName, toCollectionQName);
+  ic = new ICForeignKeyImpl(qname, fromCollectionQName, toCollectionQName);
 
-  theICs.insert(static_cast<ICForeignKeyImpl*>(ic.getp())->getICName(), ic);
+  theICs.insert(qname, ic);
 
   return ic;
 }
@@ -625,8 +636,9 @@ store::Iterator_t SimpleStore::listActiveICNames()
 
 store::IC* SimpleStore::getIC(const store::Item* icQName)
 {
+  store::Item* qname = const_cast<store::Item*>(icQName);
   store::IC_t ic;
-  theICs.get(icQName, ic);
+  theICs.get(qname, ic);
 
   return ic.getp();
 }

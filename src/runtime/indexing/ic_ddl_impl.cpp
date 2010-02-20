@@ -25,7 +25,7 @@
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 
-#include "compiler/indexing/value_ic.h"
+#include "compiler/xqddf/value_ic.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"

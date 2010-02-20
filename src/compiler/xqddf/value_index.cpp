@@ -20,7 +20,7 @@
 #include "functions/function.h"
 #include "functions/library.h"
 
-#include "compiler/indexing/value_index.h"
+#include "compiler/xqddf/value_index.h"
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/fo_expr.h"

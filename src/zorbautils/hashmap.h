@@ -22,7 +22,9 @@
 
 
 #include <zorba/config.h>
+
 #include "common/common.h"
+
 #include "zorbautils/fatal.h"
 #include "zorbautils/checked_vector.h"
 #include "zorbautils/mutex.h"
@@ -30,6 +32,7 @@
 
 namespace zorba 
 { 
+
 #ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
 #define HASHMAP    serializable_HashMap
 #define HASHENTRY  serializable_HashEntry
@@ -509,14 +512,32 @@ bool insert(T& item, V& value)
   item, return false. Otherwise, set the value associated with I to the given
   value and return true,
 ********************************************************************************/
-bool update(T& item, const V& value)
+bool update(const T& item, const V& value)
 {
-  bool found;
+  bool found = false;
   ulong hval = hash(item);
 
   SYNC_CODE(AutoMutex lock(theMutexp);)
 
-  HASHENTRY<T, V>* entry = hashInsert(item, hval, found);
+  HASHENTRY<T, V>* headEntry = bucket(hval);
+  HASHENTRY<T, V>* entry;
+
+  if (! headEntry->isFree())
+  {
+    // Search the hash bucket looking for the given item.
+    entry = headEntry;
+
+    while (entry != NULL)
+    {
+      if (equal(entry->theItem, item))
+      {
+        found = true;
+        break;
+      }
+      
+      entry = entry->getNext();
+    }
+  }
 
   if (!found)
   {

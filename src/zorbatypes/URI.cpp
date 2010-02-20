@@ -117,7 +117,7 @@ void URI::decode_file_URI(
       ((uri->byteCompare(9, 1, ":") == 0) || (uri->byteCompare(9, 4, "%3A/") == 0))) 
   {
     xqpStringStore_t tmp = new xqpStringStore(uri->c_str() + 8);
-    tmp.decodeFromUri(filepath);
+    tmp->decodeFromUri(filepath);
   }
   else
 #endif
@@ -158,12 +158,14 @@ void URI::encode_file_URI(
   uri = new xqpStringStore("file:///");
 
   xqpStringStore_t tmp1;
-  filepath->replace(tmp1, "\\\\", "/", "");
+  xqpStringStore_t pattern = new xqpStringStore("\\\\");
+  xqpStringStore_t replacement = new xqpStringStore("/");
+  filepath->replace(tmp1, pattern, replacement, "");
 
   xqpStringStore_t tmp2;
   tmp1->encodeForUri(tmp2, "/", 1);
 
-  uri->append_in_place(tmp);
+  uri->append_in_place(tmp2);
 
 #else
   uri = new xqpStringStore("file:///");
@@ -1609,7 +1611,7 @@ void URI::build_ascii_full_text() const
 
       lURI << theHost->c_str();
 #ifdef WIN32
-      if(theScheme->byteEqual("file"))
+      if(theScheme->byteEqual("file", 4))
         lURI << "/";
 #endif
 

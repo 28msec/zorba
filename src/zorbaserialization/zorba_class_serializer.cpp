@@ -382,7 +382,7 @@ void operator&(Archiver &ar, const XQType *&obj)
     obj = (const XQType*)obj2;
 }
 
-void operator&(Archiver &ar, XQPCollator *&obj)
+void operator&(Archiver &ar, XQPCollator*& obj)
 {
   if(ar.is_serializing_out())
   {

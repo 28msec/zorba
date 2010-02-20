@@ -25,7 +25,7 @@ SET (API_EXAMPLES
   external_functions.cpp
   datamanager.cpp
   uri_resolvers.cpp
-  execution_plans.cpp
+#  execution_plans.cpp
   item_handler.cpp
   callback.cpp
   )

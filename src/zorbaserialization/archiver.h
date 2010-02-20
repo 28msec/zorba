@@ -164,7 +164,7 @@ protected:
 
   class archive_field  *out_fields;
   class archive_field  *current_compound_field;
-  HashMap<SIMPLE_HASHOUT_FIELD, archive_field*, SimpleHashoutFieldCompare>    *simple_hashout_fields;//for simple types
+  HashMap<SIMPLE_HASHOUT_FIELD, archive_field*, SimpleHashoutFieldCompare> *simple_hashout_fields;//for simple types
   hash64map<archive_field*>       *hash_out_fields;//key is ptr, value is archive_field*, for non-simple types
   std::vector<archive_field*>     orphan_fields;
 

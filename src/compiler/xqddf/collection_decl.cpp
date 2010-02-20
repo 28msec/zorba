@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "context/statically_known_collection.h"
+#include "compiler/xqddf/collection_decl.h"
+
 #include "store/api/item.h"
+
 #include "types/typeimpl.h"
 
 namespace zorba {

@@ -72,7 +72,7 @@ void root_static_context::init()
   xqpStringStore_t fn_ns = new xqpStringStore(XQUERY_FN_NS);
   set_default_function_ns(fn_ns, loc);
 
-  set_context_item_static_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
+  set_context_item_type(GENV_TYPESYSTEM.ITEM_TYPE_ONE);
 
   add_collation(ZORBA_DEF_COLLATION_NS, QueryLoc::null);
   add_collation(W3C_CODEPT_COLLATION_NS, QueryLoc::null);
@@ -88,7 +88,7 @@ void root_static_context::init()
 
   set_boundary_space_mode(StaticContextConsts::strip_space);
 
-  set_default_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+  set_default_w3c_collection_type(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
 
   // TODO move into globalenv
   set_document_uri_resolver(new StandardDocumentURIResolver());

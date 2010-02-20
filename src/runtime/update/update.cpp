@@ -30,9 +30,10 @@
 
 #include "types/root_typemanager.h"
 
+#include "compiler/xqddf/collection_decl.h"
+
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
-#include "context/statically_known_collection.h"
 #include "context/static_context_consts.h"
 
 #include "system/globalenv.h"

@@ -152,24 +152,11 @@ public:
     store::Item_t& var_item,
     store::Iterator_t& var_iter);
 
-  store::Index* getIndex(const store::Item* qname) const;
+  store::Index* getIndex(store::Item* qname) const;
 
-  void bindIndex(
-        const store::Item* qname,
-        store::Index_t& index);
+  void bindIndex(store::Item* qname, store::Index_t& index);
 
-  void unbindIndex(const store::Item* qname);
-
-#if 0
-  void activateIC(const store::Item_t& qname,
-                  const store::Item_t& collectionQName);
-
-  void activateForeignKeyIC(const store::Item_t& qname,
-                            const store::Item_t& fromCollectionQName,
-                            const store::Item_t& toCollectionQName);
-
-  void deactivateIC(const store::Item* qname);
-#endif
+  void unbindIndex(store::Item* qname);
 
   /**
    * Lists all active integrity constraints.

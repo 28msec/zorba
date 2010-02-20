@@ -136,6 +136,8 @@ public:
 
   bool operator==(const char* other) const { return byteEqual(other, strlen(other)); }
 
+  bool operator!=(const char* other) const { return !byteEqual(other, strlen(other)); }
+
   bool operator==(const xqpStringStore& other) const { return byteEqual(&other); }
 
   bool operator!=(const xqpStringStore& other) const { return !byteEqual(&other); }

@@ -17,7 +17,6 @@
 #define ZORBA_CONTEXT_STATIC_CONTEXT_H
 
 #include <memory>
-#include <list>
 #include <set>
 
 #include <zorba/api_shared_types.h>
@@ -25,17 +24,14 @@
 #ifdef WIN32
 #include "store/api/item.h" 
 #include "compiler/expression/expr_base.h"
+#include "types/typemanager.h"
 #endif
 
 #include "context/static_context_consts.h"
 #include "context/decimal_format.h"
 #include "context/internal_uri_resolvers.h"
 
-#include "types/typemanager.h"
-
 #include "zorbaerrors/Assert.h"
-
-#include "zorbautils/hashmap_strh.h"
 
 #define ZORBA_HASHMAP_WITH_SERIALIZATION
 #include "util/hashmap.h"
@@ -60,6 +56,7 @@ class TypeManager;
 class XQPCollator;
 
 template <class V> class serializable_ItemPointerHashMap;
+template <class V> class HashMapStrHandle;
 
 class ValueIndex;
 typedef rchandle<ValueIndex> ValueIndex_t;
@@ -69,9 +66,6 @@ typedef rchandle<ValueIC> ValueIC_t;
 
 class StaticallyKnownCollection;
 typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
-
-
-template <class V> class ItemPointerHashMap;
 
 
 /***************************************************************************//**
@@ -263,17 +257,23 @@ template <class V> class ItemPointerHashMap;
 
 class static_context : public SimpleRCObject
 {
-  typedef ItemPointerHashMap<StaticallyKnownCollection_t> CollectionMap;
+  typedef serializable_ItemPointerHashMap<StaticallyKnownCollection_t> CollectionMap;
 
-  typedef ItemPointerHashMap<ValueIndex_t> IndexMap;
+  typedef serializable_ItemPointerHashMap<ValueIndex_t> IndexMap;
 
-  typedef ItemPointerHashMap<ValueIC_t> ICMap;
+  typedef serializable_ItemPointerHashMap<ValueIC_t> ICMap;
 
-  typedef ItemPointerHashMap<function_t> FunctionMap;
+  typedef serializable_ItemPointerHashMap<function_t> FunctionMap;
 
-  typedef ItemPointerHashMap<std::vector<function_t>* > FunctionArityMap;
+  typedef serializable_ItemPointerHashMap<std::vector<function_t>* > FunctionArityMap;
+
+  typedef serializable_ItemPointerHashMap<xqpStringStore_t> OptionMap;
 
   typedef HashMapStrHandle<xqpStringStore_t> NamespaceBindings;
+
+  typedef HashMapStrHandle<xqtref_t> DocumentMap;
+
+  typedef HashMapStrHandle<xqtref_t> W3CCollectionMap;
 
   typedef std::map<std::string, XQPCollator*> CollationMap;
 
@@ -281,7 +281,7 @@ public:
 
   enum ctx_value_type
   {
-    CTX_EXPR, CTX_INT, CTX_BOOL, CTX_XQTYPE, CTX_MODULE
+    CTX_EXPR, CTX_INT, CTX_MODULE
   };
 
   typedef xqp_string (* str_param_t)();
@@ -329,39 +329,50 @@ public:
   };
 
 protected:
-  static_context                       * theParent;
+  static_context                        * theParent;
 
 	serializable_hashmap<ctx_value_t>   keymap;     // maps strings to ctx_values
 	serializable_hashmap<ctx_module_t>  modulemap;  // uris to external modules
 	serializable_hashmap<xqp_string>    str_keymap; // maps strings to strings
 
-  expr_t                                 theQueryExpr;
+  std::ostream                          * theTraceStream;
 
-  std::string                            theModuleNamespace;
+  expr_t                                  theQueryExpr;
 
-  InternalDocumentURIResolver          * theDocResolver;
-  InternalCollectionURIResolver        * theColResolver;
+  std::string                             theModuleNamespace;
+
+  InternalDocumentURIResolver           * theDocResolver;
+  InternalCollectionURIResolver         * theColResolver;
 
   std::vector<InternalModuleURIResolver*> theModuleResolvers;
   std::vector<InternalSchemaURIResolver*> theSchemaResolvers;
 
-  checked_vector<std::string>            theModulePaths;
+  checked_vector<std::string>             theModulePaths;
 
-  rchandle<TypeManager>                  theTypemgr;
+  rchandle<TypeManager>                   theTypemgr;
   
-  NamespaceBindings                    * theNamespaceBindings;
-  xqpStringStore_t                       theDefaultElementNamespace;
-  xqpStringStore_t                       theDefaultFunctionNamespace;
+  NamespaceBindings                     * theNamespaceBindings;
+  xqpStringStore_t                        theDefaultElementNamespace;
+  xqpStringStore_t                        theDefaultFunctionNamespace;
 
-  FunctionMap                          * theFunctionMap;
-  FunctionArityMap                     * theFunctionArityMap;
+  FunctionMap                           * theFunctionMap;
+  FunctionArityMap                      * theFunctionArityMap;
 
-  CollectionMap                        * theCollectionMap;
-  IndexMap                             * theIndexMap;
-  ICMap                                * theICMap;
+  xqtref_t                                theCtxItemType;
 
-  CollationMap                         * theCollationMap;
-  std::string                          * theDefaultCollation;
+  W3CCollectionMap                      * theW3CCollectionMap;
+  xqtref_t                                theDefaultW3CCollectionType;
+
+  CollectionMap                         * theCollectionMap;
+  IndexMap                              * theIndexMap;
+  ICMap                                 * theICMap;
+
+  DocumentMap                           * theDocumentMap;
+
+  CollationMap                          * theCollationMap;
+  std::string                           * theDefaultCollation;
+
+  OptionMap                             * theOptionMap;
 
   StaticContextConsts::xquery_version_t      theXQueryVersion;
 
@@ -383,8 +394,6 @@ protected:
 
   std::vector<DecimalFormat_t>             * theDecimalFormats;
 
-  std::ostream                       * theTraceStream;
-
 public:
   SERIALIZABLE_CLASS(static_context);
 
@@ -399,6 +408,8 @@ public:
 
   ~static_context();
 
+  static_context* get_parent() const { return theParent; }
+
   static_context* create_child_context();
 
   bool is_global_root_sctx() const;
@@ -407,11 +418,47 @@ public:
 
   void set_query_expr(expr_t expr);
 
-  static_context* get_parent() const { return theParent; }
+  void set_trace_stream(std::ostream&);
+
+  std::ostream* get_trace_stream() const;
 
   void set_module_namespace(std::string& ns) { theModuleNamespace = ns; }
 
   const std::string& get_module_namespace() const { return theModuleNamespace; }
+
+  //
+  // Base uri
+  //
+  xqp_string final_baseuri();
+
+  xqp_string current_absolute_baseuri() const;
+
+  void set_current_absolute_baseuri(xqp_string);
+
+	void compute_current_absolute_baseuri();
+
+  xqp_string baseuri() const;
+
+  void set_baseuri(xqp_string, bool from_prolog = true);
+
+  xqp_string encapsulating_entity_baseuri() const;
+
+  void set_encapsulating_entity_baseuri(xqp_string);
+
+  xqp_string entity_retrieval_url() const;
+
+  void set_entity_retrieval_url(xqp_string);
+
+  xqp_string implementation_baseuri() const { return "http://www.zorba-xquery.com/"; }
+
+  // TODO: move this method to URI class in zorbatypes
+  static xqp_string
+  make_absolute_uri(xqp_string uri, xqp_string base_uri, bool validate = true);
+
+  xqp_string resolve_relative_uri(
+        xqp_string uri,
+        xqp_string abs_base_uri,
+        bool validate = true);
 
   //
   // URI Resolution 
@@ -482,6 +529,13 @@ public:
         const QueryLoc& loc) const;
 
   //
+  // Variables
+  //
+	void set_context_item_type(xqtref_t& t);
+
+	const XQType* get_context_item_type();
+
+  //
   // Functions
   //
   void bind_fn(
@@ -508,6 +562,24 @@ public:
   StatelessExternalFunction* lookup_stateless_external_function(
         const xqp_string& prefix,
         const xqp_string& local);
+
+  //
+  // Documents
+  //
+	void bind_document(xqpStringStore_t& uri, xqtref_t& t);
+
+  const XQType* lookup_document(const xqpStringStore_t& uri);
+
+  //
+  // W3C Collections
+  //
+	void bind_w3c_collection(xqpStringStore_t& uri, xqtref_t& t);
+
+  const XQType* lookup_w3c_collection(const xqpStringStore_t& uri);
+
+	void set_default_w3c_collection_type(xqtref_t& t);
+
+	const XQType* get_default_w3c_collection_type();
 
   //
   // XQDDF Collections
@@ -555,6 +627,14 @@ public:
 
 
   //
+  // Options
+  //
+  void bind_option(const store::Item* qname, const xqpStringStore_t& option);
+
+  bool lookup_option(const store::Item* qname, xqpStringStore_t& option) const;
+
+
+  //
   //  Misc
   //
   StaticContextConsts::xquery_version_t xquery_version() const;
@@ -598,6 +678,7 @@ public:
   void add_decimal_format(const DecimalFormat_t& format, const QueryLoc& loc);
 
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
+
 
   // Returns all the keys in the str_keymap hashtable, used by instrospection
   std::vector<xqp_string>* get_all_str_keys() const;
@@ -656,112 +737,11 @@ public:
     return e;
   }
 
-  //
-  // Type Management : Entity Name --> Type
-  // where entity may be variable, the context item, function, document, collection
-  //
-  void
-  bind_type( xqp_string key, xqtref_t t);
-
-  xqtref_t
-  lookup_type (xqp_string key);
-
-  xqtref_t
-  lookup_type2(const char* key1, xqp_string key2);
-
-  xqtref_t
-  lookup_type2_no_assert(const char* key1, xqp_string key2);
-
-	void
-  set_context_item_static_type(xqtref_t t);
-
-	xqtref_t
-	context_item_static_type();
-
-	void
-  set_document_type(xqp_string docURI, xqtref_t t);
-
-  xqtref_t
-  get_document_type(const xqp_string);
-
-	void
-  set_default_collection_type(xqtref_t t);
-
-	xqtref_t
-  default_collection_type();
-
-	void
-  set_collection_type(xqp_string collURI, xqtref_t t);
-
-  xqtref_t
-  get_collection_type(const xqp_string);
-
-
-  //
-  // Base uri
-  //
-  xqp_string
-  final_baseuri ();
-
-  xqp_string
-  current_absolute_baseuri() const;
-
-  void
-  set_current_absolute_baseuri(xqp_string);
-
-	void
-  compute_current_absolute_baseuri();
-
-  xqp_string
-  baseuri() const;
-
-  void
-  set_baseuri(xqp_string, bool from_prolog = true);
-
-  xqp_string
-  encapsulating_entity_baseuri() const;
-
-  void
-  set_encapsulating_entity_baseuri(xqp_string);
-
-  xqp_string
-  entity_retrieval_url() const;
-
-  void
-  set_entity_retrieval_url(xqp_string);
-
-  xqp_string
-  implementation_baseuri () const { return "http://www.zorba-xquery.com/"; }
-
-  // TODO: move this method to URI class in zorbatypes
-  static xqp_string
-  make_absolute_uri(xqp_string uri, xqp_string base_uri, bool validate = true);
-
-  xqp_string resolve_relative_uri(
-        xqp_string uri,
-        xqp_string abs_base_uri,
-        bool validate = true);
-
-  //
-  // Options
-  //
-  bool
-  lookup_option(const xqp_string& prefix, const xqp_string& localname, xqp_string& option) const;
-
-  bool
-  bind_option(const xqp_string& prefix, const xqp_string& localname, const xqp_string& option);
 
   //
   // Merge in the static context of a module
   //
   bool import_module (const static_context* module, const QueryLoc& loc);
-
-  //
-  //
-  //
-  void set_trace_stream(std::ostream&);
-
-  std::ostream* get_trace_stream() const;
 
   /**
   * @brief This method gets all variable names from this static context

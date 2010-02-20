@@ -20,16 +20,21 @@
 namespace zorba { namespace simplestore {
 
 /*******************************************************************************
+
 ********************************************************************************/
 CollectionIterator::CollectionIterator(CollectionSet::Set* aCollections) 
-  : theCollections(aCollections),
-    theOpened(false)
-{ }
+  : 
+  theCollections(aCollections),
+  theOpened(false)
+{ 
+}
+
 
 CollectionIterator::~CollectionIterator()
 {
   close();
 }
+
 
 void
 CollectionIterator::open()
@@ -37,6 +42,7 @@ CollectionIterator::open()
   theIterator = theCollections->begin();
   theOpened = true;
 }
+
 
 bool
 CollectionIterator::next(store::Collection_t& aResult) 
@@ -54,11 +60,13 @@ CollectionIterator::next(store::Collection_t& aResult)
   }
 }
 
+
 void
 CollectionIterator::reset()
 {
   theIterator = theCollections->begin();
 }
+
 
 void
 CollectionIterator::close()
@@ -69,7 +77,9 @@ CollectionIterator::close()
   theOpened = false;
 }
 
+
 /*******************************************************************************
+
 ********************************************************************************/
 const ulong CollectionSet::DEFAULT_COLLECTION_MAP_SIZE = 32;
 
@@ -87,21 +97,23 @@ void CollectionSet::clear()
 }
 
 
-bool CollectionSet::insert(const store::Item* aName, store::Collection_t& aCollection )
+bool CollectionSet::insert(const store::Item* aName, store::Collection_t& aCollection)
 {
-  return theCollections.insert(aName, aCollection);
+  store::Item* qname = const_cast<store::Item*>(aName);
+
+  return theCollections.insert(qname, aCollection);
 }
 
 
-bool CollectionSet::get(const store::Item* aName, store::Collection_t& aCollection ) 
+bool CollectionSet::get(const store::Item* aName, store::Collection_t& aCollection) 
 {
-  return theCollections.get(aName, aCollection);
+  return theCollections.get(const_cast<store::Item*>(aName), aCollection);
 }
 
 
-bool CollectionSet::remove(const store::Item* aName ) 
+bool CollectionSet::remove(const store::Item* aName) 
 {
-  return theCollections.remove(aName);
+  return theCollections.remove(const_cast<store::Item*>(aName));
 }
 
 

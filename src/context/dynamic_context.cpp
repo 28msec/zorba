@@ -35,7 +35,7 @@
 #include "context/namespace_context.h"
 
 #include "compiler/expression/var_expr.h"
-#include "compiler/indexing/value_index.h"
+#include "compiler/xqddf/value_index.h"
 
 #include "types/root_typemanager.h"
 
@@ -474,7 +474,7 @@ void dynamic_context::destroy_dctx_value(dctx_value_t* val)
 /*******************************************************************************
 
 ********************************************************************************/
-store::Index* dynamic_context::getIndex(const store::Item* qname) const
+store::Index* dynamic_context::getIndex(store::Item* qname) const
 {
   if (theAvailableIndices == NULL)
     return NULL;
@@ -500,7 +500,7 @@ store::Index* dynamic_context::getIndex(const store::Item* qname) const
 
 ********************************************************************************/
 void dynamic_context::bindIndex(
-    const store::Item* qname,
+    store::Item* qname,
     store::Index_t& index)
 {
   if (theAvailableIndices == NULL)
@@ -516,7 +516,7 @@ void dynamic_context::bindIndex(
 /*******************************************************************************
 
 ********************************************************************************/
-void dynamic_context::unbindIndex(const store::Item* qname)
+void dynamic_context::unbindIndex(store::Item* qname)
 {
   if (!theAvailableIndices->remove(qname))
   {
@@ -526,41 +526,6 @@ void dynamic_context::unbindIndex(const store::Item* qname)
     }
   }
 }
-
-
-#if 0
-/*******************************************************************************
-
-********************************************************************************/
-void dynamic_context::activateIC(
-    const store::Item_t& qname, 
-    const store::Item_t& collectionQName)
-{
-  GENV_STORE.activateIC(qname, collectionQName);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void dynamic_context::activateForeignKeyIC(
-    const store::Item_t& qname,
-    const store::Item_t& fromCollectionQName,
-    const store::Item_t& toCollectionQName)
-{
-  GENV_STORE.activateForeignKeyIC(qname, fromCollectionQName,
-                                  toCollectionQName);
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void dynamic_context::deactivateIC(const store::Item* qname)
-{
-  GENV_STORE.deactivateIC(qname);
-}
-#endif
 
 
 /*******************************************************************************

@@ -19,240 +19,125 @@
 #include "zorbautils/hashfun.h"
 #include "zorbautils/hashmap.h"
 
+#include "zorbatypes/collation_manager.h"
+
 #include "store/api/item.h"
 
 namespace zorba 
 { 
 
-
-/*******************************************************************************
-
-  A hash-based map container mapping item pointers to values of type V. 
-  Equality is based on the Item::equals() method.
-
+/***************************************************************************//**
+  Class to privide the equality and hash functions for the ItemPointerHashMap
+  class defined below.
 *******************************************************************************/
-template <class V>
-class ItemPointerHashMap
+class ItemPointerHashMapCmp : public ::zorba::serialization::SerializeBaseClass
 {
-public:
+protected:
+  long          theTimeZone;
+  XQPCollator * theCollator;
 
-  class CompareFunction
+public:
+  SERIALIZABLE_CLASS(ItemPointerHashMapCmp);
+  SERIALIZABLE_CLASS_CONSTRUCTOR(ItemPointerHashMapCmp);
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
-  protected:
-    long               theTimeZone;
-    const XQPCollator* theCollation;
-
-  public:
-    CompareFunction(long tmz, const XQPCollator* collation) 
-      :
-      theTimeZone(tmz),
-      theCollation(collation)
-    {
-    }
-
-    bool equal(const store::Item* t1, const store::Item* t2)
-    {
-      return t1->equals(t2, theTimeZone, theCollation);
-    }
-
-    uint32_t hash(const store::Item* t)
-    {
-      return t->hash(theTimeZone, theCollation);
-    }
-
-    long get_timezone() { return theTimeZone; }
-
-    const XQPCollator* get_collation() { return theCollation; }
-  };
-
-  typedef typename HashMap<const store::Item*, V, CompareFunction>::iterator iterator;
-
-private:
-  HashMap<const store::Item*, V, CompareFunction>  theMap;
+    ar & theTimeZone;
+    ar & theCollator;
+  }
 
 public:
-  ItemPointerHashMap(
-        long timezone,
-        const XQPCollator* collation,
-        ulong size,
-        bool sync) 
+  ItemPointerHashMapCmp()
     :
-    theMap(CompareFunction(timezone, collation), size, sync)
+    theTimeZone(0),
+    theCollator(NULL)
   {
   }
 
-  ulong capacity() const { return theMap.capacity(); }
-
-  iterator begin() const { return theMap.begin(); }
-
-  iterator end() const { return theMap.end(); }
-
-  bool empty() const { return theMap.empty(); }
-
-  void clear() { theMap.clear(); }
-
-  bool get(const store::Item* key, V& value) { return theMap.get(key, value); }
-
-  bool find(const store::Item* key) { return theMap.find(key); }
-
-  bool insert(const store::Item* key, V& value) { return theMap.insert(key, value); }
-
-  bool update(const store::Item* key, V& value) { return theMap.update(key, value); }
-
-  bool remove(const store::Item* key) { return theMap.remove(key); }
-
-
-  // helpers for serialization
-  ulong get_size() { return theMap.capacity(); }
-
-  bool  get_sync() { return theMap.has_sync(); }
-
-  ulong object_count() { return theMap.object_count(); }
-
-  long  get_timezone() { return theMap.get_compare_function().get_timezone(); }
-
-  const XQPCollator* get_collation() 
+  ItemPointerHashMapCmp(long tmz, XQPCollator* collator) 
+    :
+    theTimeZone(tmz),
+    theCollator(collator)
   {
-    return theMap.get_compare_function().get_collation();
+  }
+
+  bool equal(const store::Item* t1, const store::Item* t2)
+  {
+    return t1->equals(t2, theTimeZone, theCollator);
+  }
+
+  uint32_t hash(const store::Item* t)
+  {
+    return t->hash(theTimeZone, theCollator);
+  }
+
+  long get_timezone() { return theTimeZone; }
+  
+  const XQPCollator* get_collator() { return theCollator; }
+};
+
+
+/*******************************************************************************
+  A hash-based map container mapping item pointers to values of type V. 
+  Equality is based on the Item::equals() method.
+*******************************************************************************/
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+
+template <class V>
+class serializable_ItemPointerHashMap : public serializable_HashMap<store::Item*,
+                                                                    V,
+                                                                    ItemPointerHashMapCmp>
+{
+public:
+
+  SERIALIZABLE_TEMPLATE_CLASS(serializable_ItemPointerHashMap)
+
+  serializable_ItemPointerHashMap(::zorba::serialization::Archiver& ar)
+    :
+    serializable_HashMap<store::Item*, V, ItemPointerHashMapCmp>(ar)
+  {
+  }
+
+public:
+  serializable_ItemPointerHashMap(
+        long timezone,
+        XQPCollator* collation,
+        ulong size,
+        bool sync) 
+    :
+    serializable_HashMap<store::Item*, V, ItemPointerHashMapCmp>(
+           ItemPointerHashMapCmp(timezone, collation),
+           size,
+           sync)
+  {
+  }
+};
+
+#else
+
+template <class V>
+class ItemPointerHashMap : public HashMap<store::Item*,
+                                          V,
+                                          ItemPointerHashMapCmp>
+{
+public:
+  ItemPointerHashMap(
+        long timezone,
+        XQPCollator* collation,
+        ulong size,
+        bool sync) 
+    :
+    HashMap<store::Item*, V, ItemPointerHashMapCmp>(
+            ItemPointerHashMapCmp(timezone, collation),
+            size,
+            sync)
+  {
   }
 };
 
 
-namespace serialization
-{
-
-template<class T>
-void operator&(Archiver& ar, ItemPointerHashMap<T>*& obj)
-{
-#if 1
-  if(ar.is_serializing_out())
-  {
-    if(obj == NULL)
-    {
-      ar.add_compound_field("NULL", 
-                            1 ,//class_version
-                            !FIELD_IS_CLASS, "NULL", 
-                            NULL,//(SerializeBaseClass*)obj, 
-                            ARCHIVE_FIELD_IS_NULL);
-      return;
-    }
-
-    bool is_ref = ar.add_compound_field("ItemPointerHashMap<T>*",
-                                        0,
-                                        !FIELD_IS_CLASS,
-                                        "",
-                                        obj,
-                                        ARCHIVE_FIELD_IS_PTR);
-    if(!is_ref)
-    {
-      typename ItemPointerHashMap<T>::iterator obj_it;
-      ar.set_is_temp_field_one_level(true);
-      ulong obj_count = obj->object_count();
-      ar & obj_count;
-      long timezone = obj->get_timezone();
-      ar & timezone;
-      XQPCollator* collation = (XQPCollator*)obj->get_collation();
-      ar & collation;
-      ulong size = obj->get_size();
-      ar & size;
-      bool sync = obj->get_sync();
-      ar & sync;
-      for(obj_it = obj->begin(); obj_it != obj->end(); ++obj_it)
-      {
-        store::Item* key_item = (store::Item *)(*obj_it).first;
-        ar.dont_allow_delay();
-        ar & key_item;
-        ar.dont_allow_delay();
-        T t_value = (T)(*obj_it).second;
-        ar & t_value;
-      }
-      ar.set_is_temp_field_one_level(false);
-      ar.add_end_compound_field();
-    }
-  }
-  else
-  {
-    char* type;
-    std::string value;
-    int   id;
-    int   version;
-    bool  is_simple;
-    bool  is_class;
-    enum  ArchiveFieldTreat field_treat;
-    int   referencing;
-
-    bool  retval = ar.read_next_field(&type, &value, &id, &version,
-                                      &is_simple, &is_class,
-                                      &field_treat, &referencing);
-
-    if(!retval && ar.get_read_optional_field())
-      return;
-
-    ar.check_nonclass_field(retval, type, "ItemPointerHashMap<T>*", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
-
-    if(field_treat == ARCHIVE_FIELD_IS_NULL)
-    {
-      obj = NULL;
-      ar.read_end_current_level();
-      return;
-    }
-
-    void* new_obj;
-
-    if(field_treat == ARCHIVE_FIELD_IS_PTR)
-    {
-      ar.set_is_temp_field_one_level(true);
-      ulong obj_count, i;
-      ar & obj_count;
-      long timezone;
-      ar & timezone;
-      XQPCollator* collation;
-      ar & collation;
-      ulong size;
-      ar & size;
-      bool sync;
-      ar & sync;
-      obj = new ItemPointerHashMap<T>(timezone, collation, size, sync);
-      ar.register_reference(id, field_treat, obj);
-
-      for(i = 0; i < obj_count; i++)
-      {
-        store::Item* key_item;
-        ar & key_item;
-        T t_value;
-        ar & t_value;
-
-        obj->insert(key_item, t_value);
-      }
-      ar.set_is_temp_field_one_level(false);
-
-      ar.read_end_current_level();
-    }
-
-    // ARCHIVE_FIELD_IS_REFERENCING
-    else if ((new_obj = ar.get_reference_value(referencing)))
-    {
-      obj = (ItemPointerHashMap<T>*)new_obj;
-      if(!obj)
-      {
-        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
-      }
-    }
-    else
-    {
-      ar.register_delay_reference((void**)&obj,
-                                  !FIELD_IS_CLASS,
-                                  "ItemPointerHashMap<T>*",
-                                  referencing);
-    }
-
-  }
 #endif
-}
 
-
-
-}//end namespace serialization
 
 } // namespace zorba
 

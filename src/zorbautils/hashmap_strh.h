@@ -25,6 +25,10 @@
 namespace zorba
 {
 
+/***************************************************************************//**
+  Class to privide the equality and hash functions for the HashMapStrHandle
+  class defined below.
+*******************************************************************************/
 class HashMapStrHandleCmp : public ::zorba::serialization::SerializeBaseClass
 {
 public:
@@ -55,6 +59,10 @@ public:
 };
 
 
+/*******************************************************************************
+  A hash-based map container mapping xqpStringStore rchandles to values of type
+  V. Equality is based on the xqpStringStore::byteEqual() method.
+*******************************************************************************/
 template<class V>
 class HashMapStrHandle : public serializable_HashMap<xqpStringStore_t,
                                                      V,

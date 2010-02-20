@@ -19,153 +19,161 @@
 #include "store/naive/simple_store.h"
 #include "store/naive/store_defs.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-  namespace simplestore {
+namespace simplestore 
+{
 
-    NodeFactory::NodeFactory() { }
 
-    NodeFactory&
-    NodeFactory::instance()
-    {
-      return GET_STORE().getNodeFactory();
-    }
+NodeFactory& NodeFactory::instance()
+{
+  return GET_STORE().getNodeFactory();
+}
 
-    NodeFactory::~NodeFactory() { }
+
+NodeFactory::NodeFactory() 
+{
+}
+
+
+NodeFactory::~NodeFactory() 
+{ 
+}
       
-    XmlTree*
-    NodeFactory::createXmlTree()
-    {
-      return new XmlTree(NULL, GET_STORE().createTreeId());
-    }
 
-    DocumentNode*
-    NodeFactory::createDocumentNode()
-    {
-      return new DocumentNode();  
-    }
+XmlTree* NodeFactory::createXmlTree()
+{
+  return new XmlTree(NULL, GET_STORE().createTreeId());
+}
 
-    DocumentNode*
-    NodeFactory::createDocumentNode(
-      XmlTree*          tree,
-      const xqpStringStore_t& baseUri,
-      const xqpStringStore_t& docUri)
-    {
-      return new DocumentNode(tree, baseUri, docUri);
-    }
 
-    ElementNode*
-    NodeFactory::createElementNode(
-      store::Item_t&  nodeName,
-      ulong           numBindings,
-      ulong           numAttributes)
-    {
-      return new ElementNode(nodeName, numBindings, numAttributes);
-    }
+DocumentNode* NodeFactory::createDocumentNode()
+{
+  return new DocumentNode();  
+}
 
-    ElementNode*
-    NodeFactory::createElementNode(
-      XmlTree*                    tree,
-      InternalNode*               parent,
-      long                        pos,
-      store::Item_t&              nodeName,
-      store::Item_t&              typeName,
-      bool                        haveTypedValue,
-      bool                        haveEmptyValue,
-      bool                        isInSubstGroup,
-      const store::NsBindings*    localBindings,
-      xqpStringStore_t&           baseUri)
-    {
-      return new ElementNode(tree, parent, pos, nodeName, typeName,
-                             haveTypedValue, haveEmptyValue, isInSubstGroup,
-                             localBindings, baseUri);
-    }
 
-    AttributeNode*
-    NodeFactory::createAttributeNode(
-      store::Item_t&  qname
-    )
-    {
-      return new AttributeNode(qname);
-    }
+DocumentNode* NodeFactory::createDocumentNode(
+    XmlTree*          tree,
+    const xqpStringStore_t& baseUri,
+    const xqpStringStore_t& docUri)
+{
+  return new DocumentNode(tree, baseUri, docUri);
+}
+  
 
-    AttributeNode*
-    NodeFactory::createAttributeNode(
-      XmlTree*                    tree,
-      ElementNode*                parent,
-      long                        pos,
-      store::Item_t&              attrName,
-      store::Item_t&              typeName,
-      store::Item_t&              typedValue,
-      bool                        isListValue,
-      bool                        hidden)
-    {
-      return new AttributeNode(tree, parent, pos, attrName,
-                               typeName, typedValue, isListValue, hidden);
-    }
+ElementNode* NodeFactory::createElementNode(
+    store::Item_t&  nodeName,
+    ulong           numBindings,
+    ulong           numAttributes)
+{
+  return new ElementNode(nodeName, numBindings, numAttributes);
+}
 
-    TextNode*
-    NodeFactory::createTextNode(
-      xqpStringStore_t& content)
-    {
-      return new TextNode(content);
-    }
 
-    TextNode*
-    NodeFactory::createTextNode(
-      InternalNode*     parent,
-      store::Item_t&    content,
-      bool              isListValue)
-    {
-      return new TextNode(parent, content, isListValue);
-    }
+ElementNode* NodeFactory::createElementNode(
+    XmlTree*                    tree,
+    InternalNode*               parent,
+    long                        pos,
+    store::Item_t&              nodeName,
+    store::Item_t&              typeName,
+    bool                        haveTypedValue,
+    bool                        haveEmptyValue,
+    bool                        isInSubstGroup,
+    const store::NsBindings*    localBindings,
+    xqpStringStore_t&           baseUri)
+{
+  return new ElementNode(tree, parent, pos, nodeName, typeName,
+                         haveTypedValue, haveEmptyValue, isInSubstGroup,
+                         localBindings, baseUri);
+}
+  
+  
+AttributeNode* NodeFactory::createAttributeNode(
+    store::Item_t&  qname)
+{
+  return new AttributeNode(qname);
+}
+  
+  
+AttributeNode* NodeFactory::createAttributeNode(
+    XmlTree*                    tree,
+    ElementNode*                parent,
+    long                        pos,
+    store::Item_t&              attrName,
+    store::Item_t&              typeName,
+    store::Item_t&              typedValue,
+    bool                        isListValue,
+    bool                        hidden)
+{
+  return new AttributeNode(tree, parent, pos, attrName,
+                           typeName, typedValue, isListValue, hidden);
+}
+  
+  
+TextNode* NodeFactory::createTextNode(
+    xqpStringStore_t& content)
+{
+  return new TextNode(content);
+}
 
-    TextNode*
-    NodeFactory::createTextNode(
-      XmlTree*          tree,
-      InternalNode*     parent,
-      long              pos,
-      xqpStringStore_t& content)
-    {
-      return new TextNode(tree, parent, pos, content);
-    }
 
-    PiNode*
-    NodeFactory::createPiNode(
-      xqpStringStore_t& target,
-      xqpStringStore_t& content)
-    {
-      return new PiNode(target, content);
-    }
+TextNode* NodeFactory::createTextNode(
+    InternalNode*     parent,
+    store::Item_t&    content,
+    bool              isListValue)
+{
+  return new TextNode(parent, content, isListValue);
+}
+  
+  
+TextNode* NodeFactory::createTextNode(
+    XmlTree*          tree,
+    InternalNode*     parent,
+    long              pos,
+    xqpStringStore_t& content)
+{
+  return new TextNode(tree, parent, pos, content);
+}
 
-    PiNode*
-    NodeFactory::createPiNode(
-      XmlTree*          tree,
-      InternalNode*     parent,
-      long              pos,
-      xqpStringStore_t& target,
-      xqpStringStore_t& content)
-    {
-      return new PiNode(tree, parent, pos, target, content);
-    }
 
-    CommentNode*
-    NodeFactory::createCommentNode(
-      xqpStringStore_t& content)
-    {
-      return new CommentNode(content);
-    }
+PiNode* NodeFactory::createPiNode(
+    xqpStringStore_t& target,
+    xqpStringStore_t& content)
+{
+  return new PiNode(target, content);
+}
+  
+  
+PiNode* NodeFactory::createPiNode(
+    XmlTree*          tree,
+    InternalNode*     parent,
+    long              pos,
+    xqpStringStore_t& target,
+    xqpStringStore_t& content)
+{
+  return new PiNode(tree, parent, pos, target, content);
+}
+  
+  
+CommentNode* NodeFactory::createCommentNode(
+    xqpStringStore_t& content)
+{
+  return new CommentNode(content);
+}
 
-    CommentNode*
-    NodeFactory::createCommentNode(
-      XmlTree*          tree,
-      InternalNode*     parent,
-      long              pos,
-      xqpStringStore_t& content)
-    {
-      return new CommentNode(tree, parent, pos, content);
-    }
 
-  } /* namespace simplestore */
+CommentNode* NodeFactory::createCommentNode(
+    XmlTree*          tree,
+    InternalNode*     parent,
+    long              pos,
+    xqpStringStore_t& content)
+{
+  return new CommentNode(tree, parent, pos, content);
+}
+  
+
+} /* namespace simplestore */
 
 } /* namespace store */

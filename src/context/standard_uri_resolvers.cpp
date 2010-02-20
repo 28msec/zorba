@@ -159,7 +159,7 @@ StandardDocumentURIResolver::resolve(
   {
     xqpString   q;
 #ifdef WIN32
-    if(lURI.get_scheme().size() == 1)
+    if(lURI.get_scheme()->size() == 1)
     {
       q = "Did you miss the \"file:///\" ahead of the absolute path?";
     }

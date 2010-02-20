@@ -152,6 +152,10 @@ std::string XQType::contentKindStr(content_kind_t contentKind)
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 std::string XQType::toString() const
 {
   std::ostringstream os;
@@ -160,26 +164,47 @@ std::string XQType::toString() const
   return lResult;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 std::ostream& XQType::serialize_ostream(std::ostream& os) const
 {
   return os << "[XQType " << KIND_STRINGS[type_kind()]
             << TypeOps::decode_quantifier(get_quantifier()) << "]";
 }
 
-// Attempt to output the type as a string closer to the xs: representation
-std::string XQType::toStdString() const
+
+/*******************************************************************************
+  Attempt to output the type as a string closer to the xs: representation
+********************************************************************************/
+std::string XQType::toSchemaString() const
 {
-  std::string result = "";
+  std::string result;
 
   switch (type_kind())
   {
-  case EMPTY_KIND:            result += "empty-sequence()"; break;
-  case ATOMIC_TYPE_KIND:      result += "xs:anyAtomicType()"; break;
-  case ITEM_KIND:             result += "item()"; break;
-  case NODE_TYPE_KIND:        result += "node()"; break;
-  case ANY_TYPE_KIND:         result += "xs:anyType"; break;
-  case ANY_SIMPLE_TYPE_KIND:  result += "xs:anySimpleType"; break;
-  case UNTYPED_KIND:          result += "xs:untyped"; break;
+  case EMPTY_KIND:
+    result = "empty-sequence()";
+    break;
+  case ATOMIC_TYPE_KIND:
+    result = "xs:anyAtomicType()";
+    break;
+  case ITEM_KIND:
+    result = "item()";
+    break;
+  case NODE_TYPE_KIND:
+    result = "node()";
+    break;
+  case ANY_TYPE_KIND:
+    result = "xs:anyType";
+    break;
+  case ANY_SIMPLE_TYPE_KIND:
+    result = "xs:anySimpleType";
+    break;
+  case UNTYPED_KIND:
+    result = "xs:untyped";
+    break;
   default:
       return toString();
       break;

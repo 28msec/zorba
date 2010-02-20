@@ -33,14 +33,17 @@ PlanIter_t fn_trace::codegen(
     AnnotationHolder &ann) const
 {
   // tracing can be disabled  using declare option exq:trace "disable";
-  xqp_string lOption;
-  bool lOptionFound = sctx->lookup_option("http://www.zorba-xquery.org/options",
-                                          "trace",
-                                          lOption);
+  xqpStringStore_t lOption;
+  store::Item_t optionName;
+  GENV_ITEMFACTORY->createQName(optionName,
+                                "http://www.zorba-xquery.org/options",
+                                "",
+                                "trace");
+  bool lOptionFound = sctx->lookup_option(optionName, lOption);
 
-  if (!lOptionFound || (lOptionFound && lOption != "disable"))
+  if (!lOptionFound || (lOptionFound && *lOption != "disable"))
   {
-    return new TraceIterator ( sctx, loc, argv );
+    return new TraceIterator( sctx, loc, argv );
   }
   else
   {

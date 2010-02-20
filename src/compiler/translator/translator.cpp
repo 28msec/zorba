@@ -54,10 +54,9 @@
 #include "compiler/expression/path_expr.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
-#include "compiler/indexing/value_index.h"
-#include "compiler/indexing/value_ic.h"
-
-#include "context/statically_known_collection.h"
+#include "compiler/xqddf/value_index.h"
+#include "compiler/xqddf/value_ic.h"
+#include "compiler/xqddf/collection_decl.h"
 
 #include "system/globalenv.h"
 
@@ -3203,13 +3202,12 @@ void* begin_visit(const OptionDecl& v)
 {
   TRACE_VISIT();
 
-  //check if namespace for option is valid
-  rchandle<QName> qn = v.get_qname();
-  xqpStringStore_t option_ns;
-  sctx_p->lookup_ns(option_ns, qn->get_prefix(), loc);
+  store::Item_t qnameItem;
+  xqpStringStore_t value = new xqpStringStore(v.get_val());
 
-  // ignore if an error occurs
-  sctx_p->bind_option(option_ns.getp(), qn->get_localname().getp(), v.get_val());
+  expand_no_default_qname(qnameItem, v.get_qname(), loc);
+
+  sctx_p->bind_option(qnameItem, value);
 
   return no_state;
 }

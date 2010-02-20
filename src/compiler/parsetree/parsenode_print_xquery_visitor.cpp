@@ -1753,6 +1753,8 @@ DEFAULT_END_VISIT (ParamList)
         case StaticContextConsts::skip_validation:
           os << "skip ";
           break;
+      default:
+        ZORBA_ASSERT(false);
       }
       return 0;
     }
