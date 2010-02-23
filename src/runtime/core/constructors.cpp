@@ -94,7 +94,7 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   // Note: baseUri has to be rchandle because if createDocumentNode throws
   // an exception, we don't know if the exception was thrown before or after
   // the ownership of the uri was transfered to the doc node.
-  xqpStringStore_t baseUri = theSctx->final_baseuri().getStore();
+  xqpStringStore_t baseUri = theSctx->get_base_uri();
   xqpStringStore_t docUri;
 
   std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
@@ -334,7 +334,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     // uris that may appear in the children. If theAttributesIter does produce
     // an explicit base-uri attribute, then the base-uri added here will be
     // replaced with the explicit one.
-    state->baseUri = theSctx->final_baseuri().getStore();
+    state->baseUri = theSctx->get_base_uri();
     if (state->baseUri->empty())
       ZORBA_ERROR_LOC(XPST0001, loc);
   }

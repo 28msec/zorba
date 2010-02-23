@@ -27,7 +27,6 @@
 #include "zorbatypes/zorbatypes_decl.h"
 
 #include "zorbaserialization/serialization_engine.h"
-#include "zorbautils/hashmap_str_obj.h"
 
 
 namespace zorba {

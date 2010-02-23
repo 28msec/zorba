@@ -123,8 +123,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     try 
     {
       tt = lURI->getStringValue();
-      resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValueP(),
-                                                        xqp_string()).getStore();
+      resolvedURIString = theSctx->resolve_relative_uri(lURI->getStringValueP());
 
       GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
     }

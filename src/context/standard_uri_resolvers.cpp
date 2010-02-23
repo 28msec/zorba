@@ -203,7 +203,7 @@ StandardCollectionURIResolver::resolve(
     lURI = URI(&*lUriString);
     if (!lURI.is_absolute()) 
     {
-      URI lBaseURI(aStaticContext->final_baseuri().getStore());
+      URI lBaseURI(aStaticContext->get_base_uri());
       lURI = URI(lBaseURI, &*lUriString); 
     }
   }

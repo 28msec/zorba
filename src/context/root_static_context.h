@@ -20,19 +20,25 @@
 
 namespace zorba {
 
-class root_static_context : public static_context {
-  private:
-    root_static_context();
-    void init();
-    virtual ~root_static_context();
+class root_static_context : public static_context 
+{
+  friend class GlobalEnvironment;
+  friend class static_context;
 
-    const char**
-    get_builtin_module_paths() const { return theBuiltInModulePaths; }
-    
-    friend class GlobalEnvironment;
+protected:
+  static const char* theBuiltInModulePaths[];
 
-  protected:
-    static const char* theBuiltInModulePaths[];
+protected:
+  xqpStringStore_t theImplementationBaseUri;
+
+private:
+  root_static_context();
+
+  virtual ~root_static_context();
+
+  void init();
+
+  const char** get_builtin_module_paths() const { return theBuiltInModulePaths; }
 };
 
 }

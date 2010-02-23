@@ -514,20 +514,25 @@ StaticContextImpl::getCopyNamespacesMode( preserve_mode_t& preserve,
 bool   
 StaticContextImpl::setBaseURI( const String& aBaseURI )
 {
-  try {
+  try 
+  {
     xqpStringStore_t lBaseURI = Unmarshaller::getInternalString(aBaseURI);
     xqpStringStore_t lBaseURI2 = lBaseURI;
     
-    if(!GenericCast::instance()->isCastable(lBaseURI, &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) {
+    if(!GenericCast::instance()->isCastable(lBaseURI,
+                                            &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) 
+    {
       ZORBA_ERROR_DESC(XQP0020_INVALID_URI, lBaseURI);
     }
-    theCtx->set_baseuri(lBaseURI2.getp(), false);
+    theCtx->set_base_uri(lBaseURI2, false);
   }
-  catch (error::ZorbaError& e) {
+  catch (error::ZorbaError& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
     return false;
   }
-  catch (std::exception& e) {
+  catch (std::exception& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
     return false;
   }
@@ -541,12 +546,17 @@ StaticContextImpl::setBaseURI( const String& aBaseURI )
 String   
 StaticContextImpl::getBaseURI( ) const
 {
-  try {
-    xqpString lBaseURI = theCtx->baseuri();
-    return &*lBaseURI.theStrStore;
-  } catch (error::ZorbaError& e) {
+  try 
+  {
+    xqpStringStore_t lBaseURI = theCtx->get_base_uri();
+    return lBaseURI.getp();
+  }
+  catch (error::ZorbaError& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
+  }
+  catch (std::exception& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return "";
@@ -1100,14 +1110,16 @@ StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) c
   }
 }
 
+
 String
-StaticContextImpl::resolve( const String& aBaseUri, const String& aRelativeURI ) const {
-  xqpString lBaseUri = Unmarshaller::getInternalString(aBaseUri);
-  xqpString lRelativeUri = Unmarshaller::getInternalString(aRelativeURI);
+StaticContextImpl::resolve(const String& aBaseUri, const String& aRelativeURI) const 
+{
+  xqpStringStore_t lBaseUri = Unmarshaller::getInternalString(aBaseUri);
+  xqpStringStore_t lRelativeUri = Unmarshaller::getInternalString(aRelativeURI);
 
-  xqpString lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri);
+  xqpStringStore_t lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri);
 
-  return &*lResolved.theStrStore;
+  return lResolved.getp();
 }
 
 } /* namespace zorba */

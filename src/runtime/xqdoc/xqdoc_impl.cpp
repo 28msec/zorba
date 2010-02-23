@@ -75,7 +75,7 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   // resolve the uri in the surrounding static context and use
   // the URI resolver to retrieve the module
   lSctx = theSctx;
-  lURI = lSctx->resolve_relative_uri(lItem->getStringValueP(), xqp_string()).getStore();
+  lURI = lSctx->resolve_relative_uri(lItem->getStringValue());
   if (!GENV_ITEMFACTORY->createAnyURI(lURIItem, lURI))
       ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "URI is not valid " << lURI);
 

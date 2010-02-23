@@ -64,7 +64,7 @@ ResolveUriIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         if (theChildren.size() == 1) 
         {
           // use base-uri from static context
-          strBase = theSctx->baseuri().getStore();
+          strBase = theSctx->get_base_uri();
           if (strBase->empty()) 
           {
             ZORBA_ERROR_LOC_DESC(FONS0005, loc,

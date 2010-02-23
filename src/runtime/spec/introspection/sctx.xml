@@ -101,9 +101,9 @@
     </zorba:description>
 
     <zorba:state generateInit="true" generateReset="false" generateDestructor="false">
-      <zorba:member type="std::auto_ptr&lt;std::vector&lt;xqpString&gt; &gt;" name="string_keys"
-                    brief="vector of string keys"/>
-      <zorba:member type="unsigned int" name="position" brief="current position"/>
+      <zorba:member type="std::vector&lt;std::pair&lt;xqpStringStore_t, xqpStringStore_t&gt; &gt;" name="theBindings"
+                    brief="vector of namespace bindings"/>
+      <zorba:member type="ulong" name="thePosition" brief="current position"/>
     </zorba:state>
 
     <zorba:function>
@@ -225,9 +225,9 @@
   </zorba:function>
 
   <zorba:state generateInit="true" generateReset="false" generateDestructor="false">
-    <zorba:member type="std::auto_ptr&lt;std::vector&lt;xqpString&gt; &gt;" name="keymap"
-                  brief="vector of keys"/>
-    <zorba:member type="unsigned int" name="position" brief="current position"/>
+    <zorba:member type="std::vector&lt;std::string&gt;" name="theCollations"
+                  brief="vector of collation uris"/>
+    <zorba:member type="ulong" name="thePosition" brief="current position"/>
   </zorba:state>
 </zorba:iterator>
 

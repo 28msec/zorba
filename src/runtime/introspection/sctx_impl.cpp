@@ -203,7 +203,8 @@ StaticNamespacesIteratorState::~StaticNamespacesIteratorState()
 void StaticNamespacesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  position = 0;
+  thePosition = 0;
+  theBindings.clear();
 }
 
 
@@ -212,22 +213,20 @@ bool StaticNamespacesIterator::nextImpl(
     PlanState& aPlanState) const
 {
   StaticNamespacesIteratorState* lState;
-  xqpString temp;
+  xqpStringStore_t prefix;
 
   DEFAULT_STACK_INIT(StaticNamespacesIteratorState, lState, aPlanState);
 
-  lState->string_keys.reset(theSctx->get_all_str_keys());
-  lState->position = 0;
+  theSctx->get_namespace_bindings(lState->theBindings);
+  lState->thePosition = 0;
 
-  while (lState->position < lState->string_keys->size())
+  while (lState->thePosition < lState->theBindings.size())
   {
-    if (lState->string_keys->at(lState->position).indexOf("ns:") == 0)
-    {
-      temp = lState->string_keys->at(lState->position).substr(3);
+    prefix = lState->theBindings.at(lState->thePosition).first;
 
-      STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), lState);
-    }
-    lState->position++;
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, prefix), lState);
+
+    ++lState->thePosition;
   }
 
   STACK_END (lState);
@@ -407,7 +406,8 @@ StaticallyKnownCollationsIteratorState::~StaticallyKnownCollationsIteratorState(
 void StaticallyKnownCollationsIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  position = 0;
+  thePosition = 0;
+  theCollations.clear();
 }
 
 
@@ -415,27 +415,23 @@ bool StaticallyKnownCollationsIterator::nextImpl(
     store::Item_t& aResult,
     PlanState& aPlanState) const
 {
-  xqpString temp;
+  xqpStringStore_t temp;
 
-  StaticallyKnownCollationsIteratorState* lState;
-  DEFAULT_STACK_INIT(StaticallyKnownCollationsIteratorState, lState, aPlanState);
+  StaticallyKnownCollationsIteratorState* state;
+  DEFAULT_STACK_INIT(StaticallyKnownCollationsIteratorState, state, aPlanState);
 
-  lState->keymap.reset(theSctx->get_all_str_keys());
-  lState->position = 0;
+  theSctx->get_collations(state->theCollations);
+  state->thePosition = 0;
 
-  while (lState->position < lState->keymap->size())
+  while (state->thePosition < state->theCollations.size())
   {
-    temp = lState->keymap->at(lState->position);
-    if (temp.indexOf("coll:") == 0 && temp.indexOf("coll:default") == -1)
-    {
-      temp = temp.substr(5, temp.size());
-      STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp.theStrStore), lState);
-    }
+    temp = new xqpStringStore(state->theCollations.at(state->thePosition));
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp), state);
 
-    lState->position++;
+    ++state->thePosition;
   }
 
-  STACK_END(lState);
+  STACK_END(state);
 }
 
 

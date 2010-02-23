@@ -85,43 +85,56 @@ ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 bool
 ZorbaTDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t     uriItem, itemOpt;
-  xqp_string        uriString;
-  xqpStringStore_t  resolvedURIString;
-  store::Item_t     resolvedURIItem;
+  store::Item_t uriItem, itemOpt;
+  xqpStringStore_t uriString;
+  xqpStringStore_t resolvedURIString;
+  store::Item_t resolvedURIItem;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  if (consumeNext(uriItem, theChildren[0].getp(), planState)) {
-
-    uriString = uriItem->getStringValueP();
+  if (consumeNext(uriItem, theChildren[0].getp(), planState)) 
+  {
+    uriString = uriItem->getStringValue();
 
     if(theChildren.size() > 1)
       consumeNext(itemOpt, theChildren[1].getp(), planState);
 
-    try {
+    try 
+    {
       // maybe the document is stored with the uri that is given by the user
-      result = GENV_STORE.getDocument(uriString.getStore());
-    } catch (error::ZorbaError& e) {
+      result = GENV_STORE.getDocument(uriString);
+    }
+    catch (error::ZorbaError& e) 
+    {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
-    if (result != NULL) {
+
+    if (result != NULL) 
+    {
       STACK_PUSH(true, state);
-    } else {
-      try {
-        resolvedURIString = theSctx->resolve_relative_uri(uriString, xqp_string(), false).getStore();
+    } 
+    else
+    {
+      try 
+      {
+        resolvedURIString = theSctx->resolve_relative_uri(uriString, false);
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
-      } catch (error::ZorbaError& e) {
+      }
+      catch (error::ZorbaError& e)
+      {
         ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
       }
-      try {
+      try
+      {
         result = theSctx->get_document_uri_resolver()->resolve(resolvedURIItem,
                                                                theSctx,
                                                                false,
                                                                true,
                                                                (theChildren.size() > 1 ? itemOpt : NULL));
-      } catch (error::ZorbaError& e) {
+      }
+      catch (error::ZorbaError& e)
+      {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
 

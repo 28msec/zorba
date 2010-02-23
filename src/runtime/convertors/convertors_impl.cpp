@@ -47,7 +47,7 @@ ZorbaJsonParseIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   DEFAULT_STACK_INIT(ZorbaJsonParseIteratorState, state, planState);
 
   if( state->theBaseUri.empty() )
-    state->theBaseUri = theSctx->final_baseuri();
+    state->theBaseUri = theSctx->get_base_uri().getp();
 
   while (consumeNext(strItem, theChildren[0].getp(), planState))
   {
@@ -120,7 +120,7 @@ ZorbaJsonMLParseIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   DEFAULT_STACK_INIT(ZorbaJsonMLParseIteratorState, state, planState);
 
   if( state->theBaseUri.empty() )
-    state->theBaseUri = theSctx->final_baseuri();
+    state->theBaseUri = theSctx->get_base_uri().getp();
 
   while (consumeNext(strItem, theChildren[0].getp(), planState))
   {
@@ -399,11 +399,7 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                           "Missing param default_column_node", "");
   }
 
-  
-  {
-    xqpString  strBaseUri = theSctx->final_baseuri();
-    state->baseUri = strBaseUri.getStore();
-  }
+  state->baseUri = theSctx->get_base_uri().getp();
 
   if(state->first_row_is_header)
   {
@@ -580,11 +576,7 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
                           "Missing param default_column_node", "");
   }
 
-  
-  {
-    xqpString  strBaseUri = theSctx->final_baseuri();
-    state->baseUri = strBaseUri.getStore();
-  }
+  state->baseUri = theSctx->get_base_uri().getp();
 
   if(state->first_row_is_header)
   {
@@ -780,11 +772,7 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
                           "Missing param default_column_node", "");
   }
 
-  
-  {
-    xqpString  strBaseUri = theSctx->final_baseuri();//state->theCompilerCB->getStaticContext(
-    state->baseUri = strBaseUri.getStore();
-  }
+  state->baseUri = theSctx->get_base_uri().getp();
 
   if(state->first_row_is_header)
   {
@@ -941,11 +929,7 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
                           "Missing param default_column_node", "");
   }
 
-  
-  {
-    xqpString  strBaseUri = theSctx->final_baseuri();//state->theCompilerCB->getStaticContext(
-    state->baseUri = strBaseUri.getStore();
-  }
+  state->baseUri = theSctx->get_base_uri().getp();
 
   if(state->first_row_is_header)
   {

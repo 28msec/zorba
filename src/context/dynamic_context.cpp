@@ -42,6 +42,7 @@
 #include "runtime/api/plan_wrapper.h"
 
 #include "zorbautils/strutil.h"
+#include "zorbautils/hashmap_itemp.h"
 
 using namespace std;
 

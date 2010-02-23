@@ -59,8 +59,8 @@ public:
 
 #ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
   SERIALIZABLE_TEMPLATE_CLASS(HASHENTRY)
-  HASHENTRY(::zorba::serialization::Archiver &ar) {}
-  void serialize(::zorba::serialization::Archiver &ar)
+  HASHENTRY(::zorba::serialization::Archiver& ar) {}
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     ar & theIsFree;
     ar & theItem;
@@ -70,9 +70,6 @@ public:
 #endif
   HASHENTRY() : theIsFree(true), theNext(0) { }
 
-#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
-  virtual
-#endif
   ~HASHENTRY() 
   { 
     theIsFree = true;
@@ -223,11 +220,13 @@ public:
 
   SERIALIZABLE_TEMPLATE_CLASS(serializable_HashMap)
 
-  serializable_HashMap(::zorba::serialization::Archiver& ar) : ::zorba::serialization::SerializeBaseClass()
+  serializable_HashMap(zorba::serialization::Archiver& ar) 
+    :
+    zorba::serialization::SerializeBaseClass()
   {
   }
 
-  void serialize(::zorba::serialization::Archiver& ar)
+  void serialize(zorba::serialization::Archiver& ar)
   {
     ar & theNumEntries;
     ar & theHashTabSize;
@@ -345,17 +344,6 @@ ulong capacity() const
   return theHashTab.size();
 }
 
-/*******************************************************************************
-
-********************************************************************************/
-bool has_sync()
-{
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY
-  return theMutexp!=NULL;
-#else
-  return true;
-#endif
-}
 
 /*******************************************************************************
 

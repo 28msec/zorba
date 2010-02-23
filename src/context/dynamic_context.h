@@ -17,12 +17,12 @@
 #define ZORBA_DYNAMIC_CONTEXT_H
 
 #include "util/hashmap.h"
-#include "zorbautils/hashmap_itemp.h"
 
 #include "common/shared_types.h"
 
 #include "store/api/shared_types.h"
 
+#include "zorbatypes/xqpstring.h"
 
 namespace zorba {
 
@@ -96,9 +96,9 @@ protected:
 public:
   static std::string var_key(const void* var);
 
-  static xqp_string expand_varname(static_context* sctx, xqpString& qname);
+  static xqpString expand_varname(static_context* sctx, xqpString& qname);
 
-  static xqp_string expand_varname(
+  static xqpString expand_varname(
         static_context* sctx,
         xqpString& ns,
         xqpString& localname);
@@ -175,7 +175,7 @@ public:
   bool
   getExternalFunctionParam ( const std::string& aName, void*& aValue) const;
 
-  std::vector<xqp_string>* get_all_keymap_keys() const;
+  std::vector<xqpString>* get_all_keymap_keys() const;
 
 protected:
   bool lookup_once(const std::string& key, dctx_value_t& val) const

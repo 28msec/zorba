@@ -25,10 +25,16 @@
 #include "functions/function.h"
 #include "store/api/item.h"
 
-namespace zorba{
-  namespace serialization{
+#include "zorbautils/hashmap.h"
 
-    #define   ARCHIVER_LATEST_VERSION   0x3 //current latest version
+
+namespace zorba
+{
+
+namespace serialization
+{
+
+#define  ARCHIVER_LATEST_VERSION   0x3 //current latest version
 
 
 /////////////////////////////////////////

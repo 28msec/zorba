@@ -75,17 +75,17 @@ class ZORBA_DLL_PUBLIC GlobalEnvironment
 private:
   GlobalEnvironment();
 
-  store::Store*                          m_store;
-  root_static_context*                   m_rootStaticContext;
+  store::Store                         * m_store;
+  root_static_context                  * m_rootStaticContext;
 #ifndef ZORBA_NO_BIGNUMBERS
 //  M_APM                                  m_mapm; // this is a pointer type
 #endif
-  XQueryCompilerSubsystem*               m_compilerSubSys;
+  XQueryCompilerSubsystem              * m_compilerSubSys;
 
   static GlobalEnvironment             * m_globalEnv;
 
 #ifdef ZORBA_XQUERYX
-  XQueryXConvertor                      *xqueryx_convertor;
+  XQueryXConvertor                     * xqueryx_convertor;
 #endif
 
   StandardModuleURIResolver*            m_module_resolver;

@@ -186,7 +186,7 @@ bool createNodeHelper(store::Item_t parent,
 {
   store::Item_t qname, temp_result, type_qname;
   store::NsBindings bindings;
-  xqpStringStore_t baseUri = sctx->final_baseuri().getStore();
+  xqpStringStore_t baseUri = sctx->get_base_uri();
   createQNameHelper(qname, name);
   createTypeHelper(type_qname, "untyped");
   bool status = GENV_ITEMFACTORY->createElementNode(

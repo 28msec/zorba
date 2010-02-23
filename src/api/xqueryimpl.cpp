@@ -462,7 +462,7 @@ XQueryImpl::parse(std::istream& aQuery)
     xqpStringStore_t url;
     URI::encode_file_URI(theFileName, url);
 
-    theStaticContext->set_entity_retrieval_url(url.getp());
+    theStaticContext->set_entity_retrieval_uri(url);
 
     theCompilerCB->theRootSctx = theStaticContext;
 
@@ -634,7 +634,7 @@ void XQueryImpl::doCompile(
   xqpStringStore_t url;
   URI::encode_file_URI(theFileName, url);
 
-  theStaticContext->set_entity_retrieval_url(url.getp());
+  theStaticContext->set_entity_retrieval_uri(url);
 
   theCompilerCB->theRootSctx = theStaticContext;
   const short sctxid = theCompilerCB->theSctxMap->size() + 1;

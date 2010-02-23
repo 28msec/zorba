@@ -141,7 +141,7 @@ bool Validator::realValidationValue(
   
 #ifndef ZORBA_NO_XMLSCHEMA
 
-  xqpStringStore_t baseUri = sctx->final_baseuri().getStore();
+  xqpStringStore_t baseUri = sctx->get_base_uri();
                 
   EventSchemaValidator schemaValidator = 
     EventSchemaValidator(typeManager,

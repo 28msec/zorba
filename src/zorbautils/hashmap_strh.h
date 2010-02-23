@@ -64,14 +64,14 @@ public:
   V. Equality is based on the xqpStringStore::byteEqual() method.
 *******************************************************************************/
 template<class V>
-class HashMapStrHandle : public serializable_HashMap<xqpStringStore_t,
-                                                     V,
-                                                     HashMapStrHandleCmp>
+class serializable_HashMapStrHandle : public serializable_HashMap<xqpStringStore_t,
+                                                                  V,
+                                                                  HashMapStrHandleCmp>
 {
 public:
-  SERIALIZABLE_TEMPLATE_CLASS(HashMapStrHandle)
+  SERIALIZABLE_TEMPLATE_CLASS(serializable_HashMapStrHandle)
 
-  HashMapStrHandle(::zorba::serialization::Archiver& ar)
+  serializable_HashMapStrHandle(::zorba::serialization::Archiver& ar)
     :
     serializable_HashMap<xqpStringStore_t, V, HashMapStrHandleCmp>(ar)
   {
@@ -79,18 +79,18 @@ public:
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, 
+    serialize_baseclass(ar,
     (serializable_HashMap<xqpStringStore_t, V, HashMapStrHandleCmp>*)this);
   }
 
 public:
-  HashMapStrHandle(ulong size, bool sync)
+  serializable_HashMapStrHandle(ulong size, bool sync)
     :
     serializable_HashMap<xqpStringStore_t, V, HashMapStrHandleCmp>(size, sync)
   {
   }
 
-  virtual ~HashMapStrHandle() {  }
+  virtual ~serializable_HashMapStrHandle() {  }
 };
 
 

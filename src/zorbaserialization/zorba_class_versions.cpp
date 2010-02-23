@@ -139,12 +139,12 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_Hash
 SERIALIZABLE_CLASS_VERSIONS(HashMapStrHandleCmp)
 END_SERIALIZABLE_CLASS_VERSIONS(HashMapStrHandleCmp)
 
-SERIALIZABLE_TEMPLATE_VERSIONS(HashMapStrHandle)
-END_SERIALIZABLE_TEMPLATE_VERSIONS(HashMapStrHandle)
+SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMapStrHandle)
+END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMapStrHandle)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(HashMapStrHandle, HashMapStrHandle<xqpStringStore_t>, 1)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<xqpStringStore_t>, 1)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(HashMapStrHandle, HashMapStrHandle<xqtref_t>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<xqtref_t>, 2)
 
 
 

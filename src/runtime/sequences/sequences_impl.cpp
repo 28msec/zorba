@@ -1393,7 +1393,7 @@ static void fillTime (
 bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     uriItem;
-  xqpString         uriString;
+  xqpStringStore_t  uriString;
   xqpStringStore_t  resolvedURIString;
   store::Item_t     resolvedURIItem;
   RuntimeCB        *runtimeCB;
@@ -1405,14 +1405,17 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   runtimeCB = planState.theRuntimeCB;
 
-  if (consumeNext(uriItem, theChildren[0].getp(), planState)) {
+  if (consumeNext(uriItem, theChildren[0].getp(), planState)) 
+  {
+    uriString = uriItem->getStringValue();
 
-    uriString = uriItem->getStringValueP();
-
-    try {
+    try 
+    {
       // maybe the document is stored with the uri that is given by the user
-      result = GENV_STORE.getDocument(uriString.getStore());
-    } catch (error::ZorbaError& e) {
+      result = GENV_STORE.getDocument(uriString);
+    }
+    catch (error::ZorbaError& e) 
+    {
       ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
 
@@ -1425,7 +1428,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       try 
       {
-        resolvedURIString = theSctx->resolve_relative_uri(uriString, xqp_string(), true).getStore();
+        resolvedURIString = theSctx->resolve_relative_uri(uriString, true);
         GENV_ITEMFACTORY->createAnyURI(resolvedURIItem, resolvedURIString);
       }
       catch (error::ZorbaError& e) 

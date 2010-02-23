@@ -212,8 +212,8 @@ public:
 class StaticNamespacesIteratorState : public PlanIteratorState
 {
 public:
-  std::auto_ptr<std::vector<xqpString> > string_keys; //vector of string keys
-  unsigned int position; //current position
+  std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> > theBindings; //vector of namespace bindings
+  ulong thePosition; //current position
 
   StaticNamespacesIteratorState();
 
@@ -456,8 +456,8 @@ public:
 class StaticallyKnownCollationsIteratorState : public PlanIteratorState
 {
 public:
-  std::auto_ptr<std::vector<xqpString> > keymap; //vector of keys
-  unsigned int position; //current position
+  std::vector<std::string> theCollations; //vector of collation uris
+  ulong thePosition; //current position
 
   StaticallyKnownCollationsIteratorState();
 

@@ -38,9 +38,9 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t node;
   store::Item_t uriItem;
-  xqpString uriString;
+  xqpStringStore_t uriString;
   xqpStringStore_t resolvedUriString;
-  URI           lTargetUri;
+  URI lTargetUri;
   store::Item_t resolvedUriItem;
   std::auto_ptr<store::PUL> pul;
 
@@ -57,13 +57,18 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   consumeNext(uriItem, theChildren[1].getp(), planState);
 
-  uriString = uriItem->getStringValueP();
+  uriString = uriItem->getStringValue();
 
-  resolvedUriString = theSctx->resolve_relative_uri(uriString, xqp_string(), false).getStore();
+  resolvedUriString = theSctx->resolve_relative_uri(uriString, false);
+
   GENV_ITEMFACTORY->createAnyURI(resolvedUriItem, resolvedUriString);
-  try {
-    lTargetUri = URI( resolvedUriString.getp() );
-  } catch (error::ZorbaError& e) {
+
+  try 
+  {
+    lTargetUri = URI(resolvedUriString.getp());
+  }
+  catch (error::ZorbaError& e)
+  {
     ZORBA_ERROR_LOC_DESC(FOUP0002, loc, e.theDescription);
   }
 

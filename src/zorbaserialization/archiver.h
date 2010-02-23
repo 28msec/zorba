@@ -18,19 +18,26 @@
 #define ZORBA_BINARY_SERIALIZATION_ARCHIVER
 
 #include "util/hashmap32.h"
-#include "zorbautils/hashmap.h"
+//#include "zorbautils/hashmap.h"
 #include <stack>
 
 #include "zorbaserialization/class_serializer.h"
 
 namespace zorba{
-namespace store{
+
+namespace store
+{
 class Item;
 }
-class CompilerCB;
-  class SerializationCallback;
 
-  namespace serialization{
+
+class CompilerCB;
+class SerializationCallback;
+
+template <class T, class V, class C> class HashMap;
+ 
+namespace serialization
+{
 
 #define   FIELD_IS_SIMPLE      true
 #define   FIELD_IS_CLASS       true

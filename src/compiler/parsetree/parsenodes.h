@@ -637,7 +637,7 @@ public:
     const QueryLoc&,
     std::string const& base_uri);
 
-  std::string get_base_uri() const { return base_uri; }
+  const std::string& get_base_uri() const { return base_uri; }
 
   void accept(parsenode_visitor&) const;
 };

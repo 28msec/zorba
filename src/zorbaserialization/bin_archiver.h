@@ -21,8 +21,11 @@
 #include "zorbaserialization/archiver.h"
 #include "zorbautils/hashmap_str_obj.h"
 
-namespace zorba{
-  namespace serialization{
+namespace zorba
+{
+
+namespace serialization
+{
 
 class BinArchiver : public Archiver
 {

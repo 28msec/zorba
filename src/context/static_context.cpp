@@ -28,8 +28,8 @@
 
 #include "context/static_context_consts.h"
 #include "context/static_context.h"
+#include "context/root_static_context.h"
 #include "context/namespace_context.h"
-#include "context/context_impl.h"
 #include "context/uri_resolver_wrapper.h"
 #include "context/standard_uri_resolvers.h"
 #include "context/decimal_format.h"
@@ -47,6 +47,7 @@
 #include "api/unmarshaller.h"
 
 #include "zorbaerrors/error_manager.h"
+
 #include "system/globalenv.h"
 
 #include "types/typemanager.h"
@@ -111,9 +112,6 @@ void static_context::ctx_value_t::serialize(::zorba::serialization::Archiver& ar
     ar & exprValue;
     if(!ar.is_serializing_out() && exprValue)
       RCHelper::addReference (exprValue);
-    break;
-  case CTX_INT:
-    ar & intValue;
     break;
   default:
     if(!ar.is_serializing_out())
@@ -211,23 +209,6 @@ template bool static_context::context_value<static_context::ctx_value_t>(
     xqp_string key,
     static_context::ctx_value_t& val) const;
 
-template bool static_context::context_value<xqpString>(
-    xqp_string key,
-    xqpString& val) const;
-
-
-void static_context::bind_str(
-    xqp_string key,
-    xqp_string v,
-    XQUERY_ERROR err)
-{
-  if (str_keymap.put(key, v))
-  {
-    if (err != MAX_ZORBA_ERROR_CODE)
-      ZORBA_ERROR(err);
-  }
-}
-
 
 bool static_context::bind_expr (xqp_string key, expr *e)
 {
@@ -267,20 +248,6 @@ bool static_context::bind_module(xqp_string uri, ExternalModule* m,
 }
 
 
-std::vector<xqp_string>* static_context::get_all_str_keys() const
-{
-  std::auto_ptr<std::vector<xqp_string> > keys;
-  if (theParent != NULL)
-    keys.reset(theParent->get_all_str_keys());
-  else
-    keys.reset(new std::vector<xqp_string>);
-
-  for (unsigned int i=0; i<str_keymap.size(); i++)
-    keys->push_back(str_keymap.getentryKey(i));
-
-  return keys.release();
-}
-
 std::vector<xqp_string>* static_context::get_all_keymap_keys() const
 {
   std::auto_ptr<std::vector<xqp_string> > keys;
@@ -304,6 +271,7 @@ static_context::static_context()
   :
   theParent(NULL),
   theTraceStream(NULL),
+  theBaseUriInfo(NULL),
   theDocResolver(0),
   theColResolver(0),
   theNamespaceBindings(NULL),
@@ -327,8 +295,6 @@ static_context::static_context()
   theValidationMode(StaticContextConsts::validation_unknown),
   theDecimalFormats(NULL)
 {
-  set_encapsulating_entity_baseuri ("");
-  set_entity_retrieval_url ("");
 }
 
 
@@ -339,6 +305,7 @@ static_context::static_context(static_context* parent)
   :
   theParent(parent),
   theTraceStream(NULL),
+  theBaseUriInfo(NULL),
   theDocResolver(0),
   theColResolver(0),
   theNamespaceBindings(NULL),
@@ -374,8 +341,8 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   :
   SimpleRCObject(ar),
   keymap(ar),
-  str_keymap(ar),
   theTraceStream(NULL),
+  theBaseUriInfo(NULL),
   theDocResolver(0),
   theColResolver(0),
   theNamespaceBindings(NULL),
@@ -496,6 +463,9 @@ static_context::~static_context()
   if (theDecimalFormats)
     delete theDecimalFormats;
 
+  if (theBaseUriInfo)
+    delete theBaseUriInfo;
+
   if (theParent)
     RCHelper::removeReference(theParent);
 }
@@ -532,7 +502,8 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
 	  ar.set_is_temp_field(false);
 
     // callback required but not available
-    if ((lUserDocResolver || lUserColResolver) && !lCallback) {
+    if ((lUserDocResolver || lUserColResolver) && !lCallback) 
+    {
       ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                            "Couldn't load pre-compiled query because"
                            << " a document or collection resolver"
@@ -580,7 +551,9 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
 	  ar.set_is_temp_field(true);
     ar & lUserTraceStream;
 	  ar.set_is_temp_field(false);
-  } else {
+  } 
+  else 
+  {
     // serialize in: set the trace stream from the user
     //               std::cerr is used if non was registered
     SerializationCallback* lCallback = ar.getUserCallback();
@@ -590,7 +563,8 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
 	  ar.set_is_temp_field(false);
 
     // callback required but not available
-    if (lUserTraceStream && !lCallback) {
+    if (lUserTraceStream && !lCallback) 
+    {
       ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                            "Couldn't load pre-compiled query because "
                            << " a trace stream"
@@ -659,15 +633,23 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   }
 
   ar & modulemap;
-  ar & str_keymap;
   ar & keymap;
 
-  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypemgr);
+  if (theBaseUriInfo)
+  {
+    ar & theBaseUriInfo->thePrologBaseUri;
+    ar & theBaseUriInfo->theApplicationBaseUri;
+    ar & theBaseUriInfo->theEntityRetrievalUri;
+    ar & theBaseUriInfo->theEncapsulatingEntityUri;
+    ar & theBaseUriInfo->theBaseUri;
+  }
 
   serialize_resolvers(ar);
   serialize_tracestream(ar);
 
   ar & theModulePaths;
+
+  SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypemgr);
 
   ar & theNamespaceBindings;
   ar & theDefaultElementNamespace;
@@ -783,171 +765,270 @@ std::ostream* static_context::get_trace_stream() const
 /////////////////////////////////////////////////////////////////////////////////
 
 
-/*******************************************************************************
+/***************************************************************************//**
+
+********************************************************************************/
+xqpStringStore_t static_context::get_implementation_baseuri() const 
+{
+  return reinterpret_cast<root_static_context*>(&GENV_ROOT_STATIC_CONTEXT)->theImplementationBaseUri;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+xqpStringStore_t static_context::get_encapsulating_entity_uri() const
+{
+  const static_context* sctx = this;
+  while (sctx != NULL)
+  {
+    if (sctx->theBaseUriInfo != NULL &&
+        sctx->theBaseUriInfo->theEncapsulatingEntityUri != NULL)
+    {
+      return sctx->theBaseUriInfo->theEncapsulatingEntityUri;
+    }
+
+    sctx = sctx->theParent;
+  }
+
+  return NULL;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_encapsulating_entity_uri(const xqpStringStore_t& uri)
+{
+  if (theBaseUriInfo == NULL)
+  {
+    theBaseUriInfo = new BaseUriInfo;
+  }
+
+  theBaseUriInfo->theEncapsulatingEntityUri = uri;
+
+  compute_base_uri();
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+xqpStringStore_t static_context::get_entity_retrieval_uri() const
+{
+  const static_context* sctx = this;
+  while (sctx != NULL)
+  {
+    if (sctx->theBaseUriInfo != NULL &&
+        sctx->theBaseUriInfo->theEntityRetrievalUri != NULL)
+    {
+      return sctx->theBaseUriInfo->theEntityRetrievalUri;
+    }
+
+    sctx = sctx->theParent;
+  }
+
+  return NULL;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_entity_retrieval_uri(const xqpStringStore_t& uri)
+{
+  if (theBaseUriInfo == NULL)
+  {
+    theBaseUriInfo = new BaseUriInfo;
+  }
+
+  theBaseUriInfo->theEntityRetrievalUri = uri;
+
+  compute_base_uri();
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+xqpStringStore_t static_context::get_base_uri() const
+{
+  const static_context* sctx = this;
+  while (sctx != NULL)
+  {
+    if (sctx->theBaseUriInfo != NULL &&
+        sctx->theBaseUriInfo->theBaseUri != NULL)
+    {
+      return sctx->theBaseUriInfo->theBaseUri;
+    }
+
+    sctx = sctx->theParent;
+  }
+
+  ZORBA_ASSERT(false);
+  return NULL;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_base_uri(const xqpStringStore_t& uri, bool from_prolog)
+{
+  if (theBaseUriInfo == NULL)
+  {
+    theBaseUriInfo = new BaseUriInfo;
+  }
+
+  if (from_prolog)
+  {
+    if (theBaseUriInfo->thePrologBaseUri != NULL)
+    {
+      ZORBA_ERROR(XQST0032);
+    }
+
+    theBaseUriInfo->thePrologBaseUri = uri;
+  }
+  else
+  {
+    // overwite existing value of application baseuri, if any
+    theBaseUriInfo->theApplicationBaseUri = uri;
+  }
+
+  compute_base_uri();
+}
+
+
+/***************************************************************************//**
   Base Uri Computation
 
-  int:from_prolog_baseuri          --> uri
-  int:baseuri                      --> uri
-  int:encapsulating_entity_baseuri --> uri
-  int:entity_retrieval_url         --> uri
+  from_prolog_baseuri          --> uri
+  baseuri                      --> uri
+  encapsulating_entity_baseuri --> uri
+  entity_retrieval_url         --> uri
 
-  int:current_absolute_baseuri     --> uri
+  current_absolute_baseuri     --> uri
 
   The from_prolog_baseuri is the one declared in the prolog. The baseuri is set
   explicitly from the C++/C api. If both the from_prolog_baseuri and the baseuri
   are set, the from_prolog_baseuri hides the baseuri.
 
-  The entity_retrieval_url is set by default to the name of file containing the
-  query we are running. It may also be set explicitly from the C++/C api.
+  For the main module, the entity_retrieval_url is set by default to the name
+  of file containing the query we are running. For library modules, it is set
+  to the location uri of each module component. It may also be set explicitly from the C++/C api.
 ********************************************************************************/
-xqp_string static_context::final_baseuri()
+void static_context::compute_base_uri()
 {
-  // cached value
-  std::string abs_base_uri = current_absolute_baseuri();
-
-  if(abs_base_uri.empty())
+  if (theBaseUriInfo == NULL)
   {
-    compute_current_absolute_baseuri();
-    abs_base_uri = current_absolute_baseuri();
+    theBaseUriInfo = new BaseUriInfo;
   }
 
-  // won't happen -- we default to a non-empty URI
-  if(abs_base_uri.empty())
+  xqpStringStore_t userBaseUri;
+  xqpStringStore_t encapsulatingUri;
+  xqpStringStore_t entityUri;
+
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
   {
-    ZORBA_ERROR_DESC( XPST0001, "empty base URI");
-    return "";
+    if (sctx->theBaseUriInfo != NULL &&
+        sctx->theBaseUriInfo->thePrologBaseUri != NULL)
+    {
+      userBaseUri = sctx->theBaseUriInfo->thePrologBaseUri;
+      break;
+    }
+
+    sctx = sctx->theParent;
   }
 
-  return abs_base_uri;
-}
+  if (userBaseUri == NULL)
+  {
+    sctx = this;
 
+    while (sctx != NULL)
+    {
+      if (sctx->theBaseUriInfo != NULL &&
+          sctx->theBaseUriInfo->theApplicationBaseUri != NULL)
+      {
+        userBaseUri = sctx->theBaseUriInfo->theApplicationBaseUri;
+        break;
+      }
+      
+      sctx = sctx->theParent;
+    }
+  }
 
-void static_context::compute_current_absolute_baseuri()
-{
-  //if base Uri is present, compute absolute base Uri
-  //else if encapsulating_entity_baseuri is present, use that
-  //else if entity_retrieval_url is present, use that
-  //else do not set the absolute baseuri (and hope there are no relative uris)
-
-  xqp_string    prolog_baseuri;
-  xqp_string    ee_baseuri;
-  xqp_string    loaded_uri;
-
-  prolog_baseuri = baseuri();
-
-  if (!prolog_baseuri.empty())
+  if (userBaseUri != NULL)
   {
     try
     {
-      URI lCheckValid(prolog_baseuri.getStore());
+      URI lCheckValid(userBaseUri);
       // is already absolute baseuri
-      set_current_absolute_baseuri(lCheckValid.toString().getp());
+      theBaseUriInfo->theBaseUri = lCheckValid.toString();
       return; // valid (absolute) uri
     }
     catch (error::ZorbaError&)
     {
       // assume it's relative and go on
     }
-  }
 
-  if (!prolog_baseuri.empty())
-  {
     /// is relative, needs to be resolved
-    ee_baseuri = encapsulating_entity_baseuri();
-    if(!ee_baseuri.empty())
+    encapsulatingUri = get_encapsulating_entity_uri();
+    if (encapsulatingUri != NULL)
     {
-      set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, ee_baseuri));
+      URI base(encapsulatingUri);
+      URI resolvedURI(base, userBaseUri);
+      theBaseUriInfo->theBaseUri = resolvedURI.toString();
       return;
     }
 
-    loaded_uri = entity_retrieval_url();
-    if(!loaded_uri.empty())
+    entityUri = get_entity_retrieval_uri();
+    if (entityUri != NULL)
     {
-      set_current_absolute_baseuri(make_absolute_uri(prolog_baseuri, loaded_uri));
+      URI base(entityUri);
+      URI resolvedURI(base, userBaseUri);
+      theBaseUriInfo->theBaseUri = resolvedURI.toString();
       return;
     }
 
-    set_current_absolute_baseuri (make_absolute_uri(prolog_baseuri, implementation_baseuri()));
+    URI base(get_implementation_baseuri());
+    URI resolvedURI(base, userBaseUri);
+    theBaseUriInfo->theBaseUri = resolvedURI.toString();
     return;
   }
 
-  ee_baseuri = encapsulating_entity_baseuri();
-  if(!ee_baseuri.empty())
+  encapsulatingUri = get_encapsulating_entity_uri();
+  if (encapsulatingUri != NULL)
   {
-    set_current_absolute_baseuri(ee_baseuri);
+    theBaseUriInfo->theBaseUri = encapsulatingUri;
     return;
   }
 
-  loaded_uri = entity_retrieval_url();
-  if(!loaded_uri.empty())
+  entityUri = get_entity_retrieval_uri();
+  if (entityUri != NULL)
   {
-    set_current_absolute_baseuri(loaded_uri);
+    theBaseUriInfo->theBaseUri = entityUri;
     return;
   }
 
-  set_current_absolute_baseuri (implementation_baseuri());
+  theBaseUriInfo->theBaseUri = get_implementation_baseuri();
   return;
 }
 
 
-xqp_string static_context::baseuri () const
-{
-  xqp_string val;
-  if(!context_value ("int:" "from_prolog_baseuri", val))  // if not found val remains ""
-  {
-    context_value("int:" "baseuri", val);
-  }
-  return val;
-}
+/***************************************************************************//**
 
-
-void static_context::set_baseuri (xqp_string val, bool from_prolog)
-{
-  if (from_prolog)
-    // throw XQST0032 if from_prolog_baseuri is already defined
-    bind_str ("int:" "from_prolog_baseuri", val, XQST0032);
-  else
-    // overwite existing value of baseuri, if any
-    str_keymap.put ("int:" "baseuri", val);
-
-  compute_current_absolute_baseuri ();
-}
-
-
-xqp_string static_context::entity_retrieval_url() const
-{
-  xqp_string val;
-  GET_CONTEXT_VALUE(entity_retrieval_url, val);
-  return val;
-}
-
-
-void static_context::set_entity_retrieval_url(xqp_string val)
-{
-  bind_str("int:entity_retrieval_url", val, MAX_ZORBA_ERROR_CODE);
-  set_current_absolute_baseuri ("");
-}
-
-
-xqp_string static_context::resolve_relative_uri(
-    xqp_string uri,
-    xqp_string abs_base_uri,
+********************************************************************************/
+xqpStringStore_t static_context::resolve_relative_uri(
+    const xqpStringStore_t& uri,
     bool validate)
 {
-  return make_absolute_uri (uri,
-                            abs_base_uri.empty () ? final_baseuri () : abs_base_uri,
-                            validate);
+  URI base(get_base_uri());
+  URI resolved_uri(base, uri, validate);
+  return resolved_uri.toString();
 }
 
-
-xqp_string static_context::make_absolute_uri(
-    xqp_string uri,
-    xqp_string base_uri,
-    bool validate)
-{
-  URI resolved_uri(base_uri.getStore(), uri.getStore(), validate);
-  return resolved_uri.toString().getp();
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -957,7 +1038,7 @@ xqp_string static_context::make_absolute_uri(
 /////////////////////////////////////////////////////////////////////////////////
 
 
-/*******************************************************************************
+/***************************************************************************//**
 
 ********************************************************************************/
 void static_context::set_document_uri_resolver(InternalDocumentURIResolver* aDocResolver)
@@ -1090,7 +1171,7 @@ void static_context::get_module_uri_resolvers(
 {
   if (theParent != NULL) 
   {
-    static_cast<static_context*>(theParent)->get_module_uri_resolvers(lResolvers);
+    theParent->get_module_uri_resolvers(lResolvers);
   }
 
   lResolvers.insert(lResolvers.end(),
@@ -1124,7 +1205,7 @@ void static_context::get_full_module_paths(std::vector<std::string>& paths) cons
 {
   if (theParent != NULL) 
   {
-    static_cast<const static_context*>(theParent)->get_full_module_paths(paths);
+    theParent->get_full_module_paths(paths);
   }
 
   get_module_paths(paths);
@@ -1345,6 +1426,42 @@ void static_context::expand_qname(
     xqpStringStore_t ns;
     lookup_ns(ns, prefix, loc);
     ITEM_FACTORY->createQName(qname, ns, prefix, local);
+  }
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::get_namespace_bindings(
+    std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> >& bindings) const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (theNamespaceBindings != NULL)
+    {
+      NamespaceBindings::iterator ite = theNamespaceBindings->begin();
+      NamespaceBindings::iterator end = theNamespaceBindings->end();
+      for (; ite !=  end; ++ite)
+      {
+        std::pair<xqpStringStore_t, xqpStringStore_t> binding = (*ite);
+        xqpStringStore* prefix = binding.first.getp();
+        ulong numBindings = bindings.size();
+        ulong i = 0;
+        for (; i < numBindings; ++i)
+        {
+          if (bindings[i].first->byteEqual(prefix))
+            break;
+        }
+
+        if (i == numBindings)
+          bindings.push_back(binding);
+      }
+    }
+
+    sctx = sctx->theParent;
   }
 }
 
@@ -1838,7 +1955,8 @@ void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
   if (is_known_collation(uri))
     return;
 
-  std::string resolvedURI = resolve_relative_uri(uri, xqp_string()).getStore()->str();
+  xqpStringStore_t tmp = new xqpStringStore(uri);
+  std::string resolvedURI = resolve_relative_uri(tmp)->str();
 
   XQPCollator* collator = CollationFactory::createCollator(resolvedURI);
 
@@ -1862,7 +1980,8 @@ void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
 ********************************************************************************/
 bool static_context::is_known_collation(const std::string& uri)
 {
-  std::string resolvedURI = resolve_relative_uri(uri, xqp_string()).getStore()->str();
+  xqpStringStore_t tmp = new xqpStringStore(uri);
+  std::string resolvedURI = resolve_relative_uri(tmp)->str();
 
   const static_context* sctx = this;
 
@@ -1888,7 +2007,8 @@ XQPCollator* static_context::get_collator(
      const std::string& uri,
      const QueryLoc& loc)
 {
-  std::string resolvedURI = resolve_relative_uri(uri, xqp_string()).getStore()->str();
+  xqpStringStore_t tmp = new xqpStringStore(uri);
+  std::string resolvedURI = resolve_relative_uri(tmp)->str();
 
   const static_context* sctx = this;
 
@@ -1925,9 +2045,10 @@ void static_context::set_default_collation(
     ZORBA_ERROR_LOC(XQST0038, loc);
   }
 
-  xqp_string resolvedUri = resolve_relative_uri(uri, xqp_string());
+  xqpStringStore_t tmp = new xqpStringStore(uri);
+  xqpStringStore_t resolvedUri = resolve_relative_uri(tmp);
 
-  theDefaultCollation = new std::string(resolvedUri.c_str());
+  theDefaultCollation = new std::string(resolvedUri->c_str());
 }
 
 
@@ -1960,6 +2081,30 @@ XQPCollator* static_context::get_default_collator(const QueryLoc& loc)
 {
   const std::string& default_collation = get_default_collation(loc);
   return get_collator(default_collation, loc);
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::get_collations(std::vector<std::string>& collations) const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (theCollationMap != NULL)
+    {
+      CollationMap::const_iterator ite = theCollationMap->begin();
+      CollationMap::const_iterator end = theCollationMap->end();
+      for (; ite !=  end; ++ite)
+      {
+        collations.push_back(ite->first);
+      }
+    }
+
+    sctx = sctx->theParent;
+  }
 }
 
 
@@ -2355,13 +2500,6 @@ DecimalFormat_t static_context::get_decimal_format(const store::Item_t& qname)
   return (theParent == NULL ? NULL : theParent->get_decimal_format(qname));
 }
 
-
-/*******************************************************************************
-  Methods for setting and retrieving certain "simple" context properties
-********************************************************************************/
-DECL_STR_PARAM (static_context, current_absolute_baseuri, MAX_ZORBA_ERROR_CODE)
-
-DECL_STR_PARAM_TRIGGER (static_context, encapsulating_entity_baseuri, MAX_ZORBA_ERROR_CODE, set_current_absolute_baseuri (""))
 
 
 /*******************************************************************************

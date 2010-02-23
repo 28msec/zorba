@@ -2365,7 +2365,8 @@ void end_visit(const ModuleDecl& v, void* /*visit_state*/)
   sctx_p->bind_ns(theModulePrefix, theModuleNamespace, loc);
 
   static_context_t lTmpCtx;
-  bool found = theModulesInfo->mod_sctx_map.get(sctx_p->entity_retrieval_url(), lTmpCtx);
+  bool found = theModulesInfo->mod_sctx_map.get(sctx_p->get_entity_retrieval_uri()->str(),
+                                                lTmpCtx);
   ZORBA_ASSERT (found);
 
   export_sctx = lTmpCtx.getp();
@@ -2569,25 +2570,28 @@ void end_visit(const DefaultCollationDecl& v, void* /*visit_state*/)
 /*******************************************************************************
   [22] BaseURIDecl ::= DECLARE_BASE_URI  URI_LITERAL
 ********************************************************************************/
-void *begin_visit (const BaseURIDecl& v) 
+void* begin_visit(const BaseURIDecl& v) 
 {
-  TRACE_VISIT ();
-  CHK_SINGLE_DECL (hadBUriDecl, XQST0032);
+  TRACE_VISIT();
+
+  CHK_SINGLE_DECL(hadBUriDecl, XQST0032);
+
   try 
   {
-    sctx_p->set_baseuri(v.get_base_uri());
+    xqpStringStore_t uri = new xqpStringStore(v.get_base_uri());
+    sctx_p->set_base_uri(uri);
   }
   catch (error::ZorbaError&) 
   {
-    // assume it's a relative uri and we will resolve it later.
-    // It's currently a problem if the uri is absolute but invalid
+    ZORBA_ERROR_LOC(XQST0046, loc);
   }
   return NULL;
 }
 
-void end_visit (const BaseURIDecl& v, void* /*visit_state*/) 
+
+void end_visit(const BaseURIDecl& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -2716,10 +2720,10 @@ void* begin_visit(const SchemaImport& v)
     {
       // If current uri is relative, turn it to an absolute one, using the
       // base uri from the sctx.
-      string at = sctx_p->resolve_relative_uri((*atlist)[i].getp(), xqpString());
+      xqpStringStore_t at = sctx_p->resolve_relative_uri((*atlist)[i].getp());
 
       store::Item_t atUriItem;
-      ITEM_FACTORY->createAnyURI(atUriItem, at.c_str());
+      ITEM_FACTORY->createAnyURI(atUriItem, at);
       ZORBA_ASSERT(atUriItem != NULL);
       atUriItemList.push_back(atUriItem);
     }
@@ -2864,7 +2868,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
   {
     for (ulong i = 0; i < atlist->size(); ++i) 
     {
-      compURIs.push_back(sctx_p->resolve_relative_uri((*atlist)[i].getp(), xqp_string()).getStore()->str());
+      compURIs.push_back(sctx_p->resolve_relative_uri((*atlist)[i])->str());
     }
   }
 
@@ -2907,6 +2911,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // TODO: we have to find a way to tell user defined resolvers when their
       // input stream can be freed. The current solution might leed to problems
       // on Windows.
+      xqpStringStore_t compURI2 = new xqpStringStore(compURI);
       std::string compURL;
       auto_ptr<istream> modfile;
       
@@ -2925,7 +2930,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       // Create the root sctx for the imported module as a child of the
       // query-level sctx. Register this sctx in the query-level sctx map.
       static_context* moduleRootSctx = independentSctx->create_child_context();
-      moduleRootSctx->set_entity_retrieval_url(compURI);
+      moduleRootSctx->set_entity_retrieval_uri(compURI2);
       moduleRootSctx->set_module_namespace(targetNS->str());
       short moduleRootSctxId = theCCB->theSctxMap->size() + 1;
       (*theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
@@ -3206,6 +3211,11 @@ void* begin_visit(const OptionDecl& v)
   xqpStringStore_t value = new xqpStringStore(v.get_val());
 
   expand_no_default_qname(qnameItem, v.get_qname(), loc);
+
+  if (qnameItem->getPrefix()->empty())
+  {
+    ZORBA_ERROR_LOC(XPST0081, loc);
+  }
 
   sctx_p->bind_option(qnameItem, value);
 
@@ -8220,8 +8230,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       if (numArgs != 0)
         ZORBA_ERROR_LOC_PARAM(XPST0017, loc, "fn:static-base-uri", numArgs);
 
-      xqp_string baseuri = sctx_p->final_baseuri ();
-      if (baseuri.empty())
+      xqpStringStore_t baseuri = sctx_p->get_base_uri();
+      if (baseuri == NULL || baseuri->empty())
         push_nodestack(create_seq(loc));
       else
         push_nodestack(new cast_expr(sctxid(),
@@ -8277,11 +8287,13 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
     } 
     else if (numArgs == 1 && *localName == "resolve-uri") 
     {
-      arguments.insert(arguments.begin(), new const_expr(sctxid(), loc, sctx_p->final_baseuri()));
+      xqpStringStore_t baseUri = sctx_p->get_base_uri();
+      arguments.insert(arguments.begin(), new const_expr(sctxid(), loc, baseUri));
     }
     else if (numArgs == 1 && *localName == "parse") 
     {
-      arguments.insert(arguments.begin(), new const_expr(sctxid(), loc, sctx_p->final_baseuri()));
+      xqpStringStore_t baseUri = sctx_p->get_base_uri();
+      arguments.insert(arguments.begin(), new const_expr(sctxid(), loc, baseUri));
     }
     else if (*localName == "concat")
     {

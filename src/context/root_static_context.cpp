@@ -51,8 +51,8 @@ void root_static_context::init()
 {
   QueryLoc loc;
 
-  // must be initialized or there be assertions
-  set_current_absolute_baseuri ("");
+  theImplementationBaseUri = new xqpStringStore("http://www.zorba-xquery.com/");
+  compute_base_uri();
 
   // default xquery version is 1.1
   set_xquery_version(StaticContextConsts::xquery_version_1_1);

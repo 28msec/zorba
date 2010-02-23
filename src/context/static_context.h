@@ -56,7 +56,7 @@ class TypeManager;
 class XQPCollator;
 
 template <class V> class serializable_ItemPointerHashMap;
-template <class V> class HashMapStrHandle;
+template <class V> class serializable_HashMapStrHandle;
 
 class ValueIndex;
 typedef rchandle<ValueIndex> ValueIndex_t;
@@ -66,6 +66,34 @@ typedef rchandle<ValueIC> ValueIC_t;
 
 class StaticallyKnownCollection;
 typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
+
+
+/*******************************************************************************
+  Base Uri Computation
+
+  from_prolog_baseuri          --> uri
+  baseuri                      --> uri
+  encapsulating_entity_baseuri --> uri
+  entity_retrieval_url         --> uri
+
+  current_absolute_baseuri     --> uri
+
+  The from_prolog_baseuri is the one declared in the prolog. The baseuri is set
+  explicitly from the C++/C api. If both the from_prolog_baseuri and the baseuri
+  are set, the from_prolog_baseuri hides the baseuri.
+
+  The entity_retrieval_url is set by default to the name of file containing the
+  query we are running. It may also be set explicitly from the C++/C api.
+********************************************************************************/
+struct BaseUriInfo
+{
+  xqpStringStore_t thePrologBaseUri;
+  xqpStringStore_t theApplicationBaseUri;
+  xqpStringStore_t theEntityRetrievalUri;
+  xqpStringStore_t theEncapsulatingEntityUri;
+
+  xqpStringStore_t theBaseUri;
+};
 
 
 /***************************************************************************//**
@@ -269,11 +297,11 @@ class static_context : public SimpleRCObject
 
   typedef serializable_ItemPointerHashMap<xqpStringStore_t> OptionMap;
 
-  typedef HashMapStrHandle<xqpStringStore_t> NamespaceBindings;
+  typedef serializable_HashMapStrHandle<xqpStringStore_t> NamespaceBindings;
 
-  typedef HashMapStrHandle<xqtref_t> DocumentMap;
+  typedef serializable_HashMapStrHandle<xqtref_t> DocumentMap;
 
-  typedef HashMapStrHandle<xqtref_t> W3CCollectionMap;
+  typedef serializable_HashMapStrHandle<xqtref_t> W3CCollectionMap;
 
   typedef std::map<std::string, XQPCollator*> CollationMap;
 
@@ -281,7 +309,7 @@ public:
 
   enum ctx_value_type
   {
-    CTX_EXPR, CTX_INT, CTX_MODULE
+    CTX_EXPR, CTX_MODULE
   };
 
   typedef xqp_string (* str_param_t)();
@@ -333,13 +361,14 @@ protected:
 
 	serializable_hashmap<ctx_value_t>   keymap;     // maps strings to ctx_values
 	serializable_hashmap<ctx_module_t>  modulemap;  // uris to external modules
-	serializable_hashmap<xqp_string>    str_keymap; // maps strings to strings
 
   std::ostream                          * theTraceStream;
 
   expr_t                                  theQueryExpr;
 
   std::string                             theModuleNamespace;
+
+  BaseUriInfo                           * theBaseUriInfo;
 
   InternalDocumentURIResolver           * theDocResolver;
   InternalCollectionURIResolver         * theColResolver;
@@ -429,35 +458,24 @@ public:
   //
   // Base uri
   //
-  xqp_string final_baseuri();
+  xqpStringStore_t get_implementation_baseuri() const;
 
-  xqp_string current_absolute_baseuri() const;
+  xqpStringStore_t get_encapsulating_entity_uri() const;
 
-  void set_current_absolute_baseuri(xqp_string);
+  void set_encapsulating_entity_uri(const xqpStringStore_t& uri);
 
-	void compute_current_absolute_baseuri();
+  xqpStringStore_t get_entity_retrieval_uri() const;
 
-  xqp_string baseuri() const;
+  void set_entity_retrieval_uri(const xqpStringStore_t& uri);
 
-  void set_baseuri(xqp_string, bool from_prolog = true);
+  xqpStringStore_t get_base_uri() const;
 
-  xqp_string encapsulating_entity_baseuri() const;
+  void set_base_uri(const xqpStringStore_t& uri, bool from_prolog = true);
 
-  void set_encapsulating_entity_baseuri(xqp_string);
+  void compute_base_uri();
 
-  xqp_string entity_retrieval_url() const;
-
-  void set_entity_retrieval_url(xqp_string);
-
-  xqp_string implementation_baseuri() const { return "http://www.zorba-xquery.com/"; }
-
-  // TODO: move this method to URI class in zorbatypes
-  static xqp_string
-  make_absolute_uri(xqp_string uri, xqp_string base_uri, bool validate = true);
-
-  xqp_string resolve_relative_uri(
-        xqp_string uri,
-        xqp_string abs_base_uri,
+  xqpStringStore_t resolve_relative_uri(
+        const xqpStringStore_t& uri,
         bool validate = true);
 
   //
@@ -527,6 +545,9 @@ public:
         const xqpStringStore_t& pfx,
         const xqpStringStore_t& local,
         const QueryLoc& loc) const;
+
+  void get_namespace_bindings(
+        std::vector<std::pair<xqpStringStore_t, xqpStringStore_t> >& bindings) const;
 
   //
   // Variables
@@ -625,6 +646,8 @@ public:
 
   XQPCollator* get_default_collator(const QueryLoc& loc);
 
+  void get_collations(std::vector<std::string>& collations) const;
+
 
   //
   // Options
@@ -679,9 +702,6 @@ public:
 
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
 
-
-  // Returns all the keys in the str_keymap hashtable, used by instrospection
-  std::vector<xqp_string>* get_all_str_keys() const;
 
   // Returns all the keys in the keymap hashtable, used by instrospection
   std::vector<xqp_string>* get_all_keymap_keys() const;
@@ -789,16 +809,6 @@ protected:
   ICMap* ic_map() const { return theICMap; }
 
 
-  bool lookup_once(xqp_string key, xqp_string& val) const
-  {
-    return str_keymap.get(key, val);
-  }
-
-  bool lookup_once2(const char* key1, xqp_string key2, xqp_string& val) const
-  {
-    return str_keymap.get2(key1, key2, val);
-  }
-
   bool lookup_once (xqp_string key, ctx_value_t &val) const
   {
     return keymap.get (key, val);
@@ -838,8 +848,6 @@ protected:
     ctx_value_t val(CTX_EXPR);
     return context_value2 (key1, key2, val) ? val.exprValue : NULL;
   }
-
-  void bind_str(xqp_string key, xqp_string v, XQUERY_ERROR err = XQP0019_INTERNAL_ERROR);
 
   bool bind_expr (xqp_string key, expr *e);
 
