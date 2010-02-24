@@ -1787,32 +1787,29 @@ function populates an empty index container).</li>
 
 Analogously to collections and indexes, XQDDF defines an additional extension to
 XQuery library modules which allows the declaration of (static) integrity
-constraints
-(ICs). Static ICs can be used to ensure that, in every moment in time, all data
-which is
-stored in collections is accurate and consistent according to the semantics of
-an
-application.
+constraints (ICs). Static ICs can be used to ensure that, in every moment in
+time, all data which is stored in collections is accurate and consistent
+according to the semantics of an application.
 Note that XQDDF doesn't define any dynamic integrity constraints which check
 the validity of a particular update.
-As in the relational world, XQDDF defines several types of ICs: Entity,
-Domain, and Referential ICs. Entity ICs check for the accuracy and consistency
-of all
-nodes in a collection. For instance, a special case of the Entity IC is the IC
-that
-checks for unique keys among all nodes in a collection. The Domain IC validates
-that
-each node in a collection satisfies a given expression. The Referential IC is
-used to
-ensure a foreign key relationship between the nodes in two collections.
+As in the relational world, XQDDF defines several types of ICs:
+<a href="#ic_entity_integrity" title="Entity">Entity</a>,
+<a href="#ic_domain_integrity" title="Domain">Domain</a> and
+<a href="#ic_referential_integrity" title="Referential">Referential</a> ICs.
+
+<a href="#ic_entity_integrity" title="Entity">Entity</a> ICs check for the accuracy
+and consistency of all nodes in a collection. For instance, a special case of
+the Entity IC is the IC that checks for unique keys among all nodes in a
+collection.
+The <a href="#ic_domain_integrity" title="Domain">Domain</a> IC validates that
+each node in a collection satisfies a given expression.
+The <a href="#ic_referential_integrity" title="Referential">Referential</a> IC
+is used to ensure a foreign key relationship between the nodes in two collections.
 
 In this section, we describe how such ICs are declared in a library module and
-how a
-particular IC can be (de-)activated. All ICs are described using examples for
-the news
-application. Specifically, we declare ICs for the data stored in the
-news-data:employees
-and the news-data:articles collections.
+how a particular IC can be (de-)activated. All ICs are described using examples
+for the news application. Specifically, we declare ICs for the data stored in
+the news-data:employees and the news-data:articles collections.
 
 \subsection ic_declaration 3.1 Declaration
 
@@ -1830,6 +1827,7 @@ of the library module that declares the collection(s) which is/are referenced by
 the
 IC.
 
+<a name="ic_entity_integrity" id="ic_entity_integrity"></a>
 \subsubsection ic_entity_integrity Entity Integrity
 An Entity IC is used to state the uniqueness of a key among all nodes of a
 collection. For example, the IC (named news-data:UniqueId) in the example below
@@ -1849,6 +1847,7 @@ is wrapped to return an atomic value. The variable $id is successively bound to
 each node of the news-data:employees collection and available in the check
 expression.
 
+<a name="ic_domain_integrity" id="ic_domain_integrity"></a>
 \subsubsection ic_domain_integrity Domain Integrity
 The Domain IC allows the user to specify constraints that a particular node in
 a collection must satisfy. Domain ICs can be use in addition to XML Schema types
@@ -1871,6 +1870,7 @@ collection. For each such node, the check expression is executed. For each node,
 the boolean effective value of the result of this expression must be equal to
 true.
 
+<a name="ic_referential_integrity" id="ic_referential_integrity"></a>
 \subsubsection ic_referential_integrity Referential Integrity
 
 The Referential IC requires every value of a node in a collection to exist as
@@ -1955,13 +1955,11 @@ this list:
 <li>An error is raised [<a href="#ERRXDDY0016"
 title="err:XDDY0016">err:XDDY0016</a>]
     if two or more upd:createCollection primitives having the same QName as
-argument
-    appear in the merged list.</li>
+argument appear in the merged list.</li>
 <li>An error is raised [<a href="#ERRXDDY0027"
 title="err:XDDY0027">err:XDDY0027</a>]
     if two or more upd:createIndex primitives having the same QName as argument
-appear
-    in the merged list.</li>
+appear in the merged list.</li>
 </ul>
 
 
