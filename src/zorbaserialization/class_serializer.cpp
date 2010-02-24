@@ -610,6 +610,49 @@ void operator&(Archiver &ar, std::string &obj)
   }
 }
 
+void operator&(Archiver &ar, std::string* &obj)
+{
+  if(ar.is_serializing_out())
+  {
+    ar.add_simple_field("std::string*", obj ? obj->c_str() : NULL, 
+                        obj, 
+                        obj ? ARCHIVE_FIELD_IS_PTR : ARCHIVE_FIELD_IS_NULL);
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    enum  ArchiveFieldTreat field_treat;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_simple_field(retval, type, "std::string*", is_simple, field_treat, (ArchiveFieldTreat)-1, id);
+    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    {
+      obj = NULL;
+      return;
+    }
+    if((field_treat != ARCHIVE_FIELD_IS_PTR) && (field_treat != ARCHIVE_FIELD_IS_REFERENCING))
+    {
+      ZORBA_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+    }
+    if(field_treat == ARCHIVE_FIELD_IS_PTR)
+    {
+      obj = new std::string(value);
+      ar.register_reference(id, field_treat, obj);
+    }
+    else if((obj = (std::string*)ar.get_reference_value(referencing)) == NULL)// ARCHIVE_FIELD_IS_REFERENCING
+      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, NULL, referencing);
+  }
+}
+
+
 void operator&(Archiver &ar, char* &obj)//like char *p=strdup("io");
 {
   if(ar.is_serializing_out())
@@ -630,7 +673,7 @@ void operator&(Archiver &ar, char* &obj)//like char *p=strdup("io");
     retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
     if(!retval && ar.get_read_optional_field())
       return;
-    ar.check_simple_field(retval, type, "char*", is_simple, (ArchiveFieldTreat)0, (ArchiveFieldTreat)0, id);
+    ar.check_simple_field(retval, type, "char*", is_simple, field_treat, (ArchiveFieldTreat)-1, id);
     if(field_treat == ARCHIVE_FIELD_IS_NULL)
     {
       obj = NULL;

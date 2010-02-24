@@ -22,6 +22,9 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(DecimalFormat)
+END_SERIALIZABLE_CLASS_VERSIONS(DecimalFormat)
+
 DecimalFormat::DecimalFormat(
     bool isDefault,
     const store::Item_t& qname,

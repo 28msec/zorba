@@ -664,7 +664,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theICMap;
 
   ar & theCollationMap;
-  //ar & theDefaultCollation;
+  ar & theDefaultCollation;
 
   ar & theOptionMap;
 
@@ -677,7 +677,8 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(StaticContextConsts::empty_order_mode_t, theEmptyOrderMode);
   SERIALIZE_ENUM(StaticContextConsts::boundary_space_mode_t, theBoundarySpaceMode);
   SERIALIZE_ENUM(StaticContextConsts::validation_mode_t, theValidationMode);
-  // TODO serialize decimal format
+
+  ar & theDecimalFormats;
 }
 
 

@@ -18,6 +18,7 @@
 
 #include <vector>
 #include "common/shared_types.h"
+#include "zorbaserialization/serialization_engine.h"
 
 namespace zorba 
 {
@@ -31,6 +32,16 @@ protected:
   bool              theIsDefault;
   store::Item_t     theName;
   param_vector_type theParams;
+
+public:
+  SERIALIZABLE_CLASS(DecimalFormat)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(DecimalFormat, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    ar & theIsDefault;
+    ar & theName;
+    ar & theParams;
+  }
 
 public:  
   DecimalFormat(

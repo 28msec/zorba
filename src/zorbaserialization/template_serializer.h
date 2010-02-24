@@ -141,7 +141,7 @@ void operator&(Archiver &ar, std::vector<T> &obj)
 }
 
 template<typename T>
-void operator&(Archiver &ar, std::vector<T> *obj)
+void operator&(Archiver &ar, std::vector<T> *&obj)
 {
   if(ar.is_serializing_out())
   {

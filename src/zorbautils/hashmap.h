@@ -29,6 +29,9 @@
 #include "zorbautils/checked_vector.h"
 #include "zorbautils/mutex.h"
 
+#ifdef ZORBA_UTILS_HASHMAP_WITH_SERIALIZATION
+#include "zorbaserialization/serialization_engine.h"
+#endif
 
 namespace zorba 
 { 
@@ -63,8 +66,11 @@ public:
   void serialize(::zorba::serialization::Archiver& ar)
   {
     ar & theIsFree;
-    ar & theItem;
-    ar & theValue;
+    if(!theIsFree)
+    {
+      ar & theItem;
+      ar & theValue;
+    }
     ar & theNext;
   }
 #endif
@@ -228,7 +234,7 @@ public:
 
   void serialize(zorba::serialization::Archiver& ar)
   {
-    ar & theNumEntries;
+/*    ar & theNumEntries;
     ar & theHashTabSize;
     ar & theInitialSize;
     ar & theHashTab;
@@ -242,10 +248,72 @@ public:
     {
       SYNC_CODE(sync = (theMutexp == &theMutex));
     }
+    ar.set_is_temp_field(true);
     ar & sync;
+    ar.set_is_temp_field(false);
     SYNC_CODE(theMutexp = (sync ? &theMutex : NULL);)
 
     ar & numCollisions;
+*/
+    ar & theHashTabSize;
+    ar & theCompareFunction;
+    bool sync = false;
+    if(ar.is_serializing_out())
+    {
+      SYNC_CODE(sync = (theMutexp == &theMutex));
+    }
+    ar.set_is_temp_field(true);
+    ar & sync;
+    ar.set_is_temp_field(false);
+    ar & theUseTransfer;
+    
+    if(!ar.is_serializing_out())
+    {
+      //simulate constructor
+      theNumEntries = 0;
+      theInitialSize = theHashTabSize;
+      theHashTab = computeTabSize(theHashTabSize);
+      theLoadFactor = DEFAULT_LOAD_FACTOR;
+      numCollisions = 0;
+      
+      formatCollisionArea();
+
+      SYNC_CODE(theMutexp = (sync ? &theMutex : NULL);)
+    }
+
+    ulong   num_entries = theNumEntries;
+    ar.set_is_temp_field(true);
+    ar & num_entries;
+    ar.set_is_temp_field(false);
+
+    if(ar.is_serializing_out())
+    {
+      iterator it;
+      ar.set_is_temp_field_one_level(true);
+      for(it=begin(); it!=end(); ++it)
+      {
+        T t = (*it).first;
+        V v = (*it).second;
+        ar & t;
+        ar & v;
+      }
+      ar.set_is_temp_field_one_level(false);
+    }
+    else
+    {
+      ar.set_is_temp_field_one_level(true);
+      for(ulong i=0;i<num_entries;i++)
+      {
+        T t;
+        V v;
+        ar & t;
+        ar & v;
+        bool insert_ret = insert(t, v);
+        assert(insert_ret);
+      }
+      ar.set_is_temp_field_one_level(false);
+    }
+
   }
 #endif
 
