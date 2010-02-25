@@ -87,7 +87,7 @@ Bool setZorbaOptions(TidyDoc& tdoc)
   return ok;
 }
 
-Bool setUserOptions(TidyDoc& tdoc, const char* options)  throw()
+Bool setUserOptions(TidyDoc& tdoc, const char* options, std::string& aOption)  throw()
 {
   Bool          ok = yes;
   std::string   option, value;
@@ -99,42 +99,153 @@ Bool setUserOptions(TidyDoc& tdoc, const char* options)  throw()
     for(lIter=tokens.begin(); lIter!=tokens.end() && ok; ++lIter) {
       size_t pos = (*lIter).substr(1,(*lIter).length() -2).find('=');
       if(pos != std::string::npos) {
-        option = (*lIter).substr(1, pos);
-        value = (*lIter).substr(pos + 2, (*lIter).length() - pos - 3);
+       option = (*lIter).substr(1, pos);
+       value = (*lIter).substr(pos + 2, (*lIter).length() - pos - 3);
       }
       else {
         option = (*lIter).substr(1, (*lIter).length() - 2);
         value = "true";
       }
 
-      TidyOptionId  toID = tidyOptGetIdForName(option.c_str());
-      ok = tidyOptSetValue(tdoc, toID, value.c_str());
+      TidyOptionId toID = tidyOptGetIdForName(option.c_str());
 
-//       if(!ok)
-//         ZORBA_ERROR_PARAM(API0037_TIDY_ERROR_SET_OPTION, option.c_str(), value.c_str());
-    }
+      if(toID < N_TIDY_OPTIONS)
+        ok = tidyOptSetValue(tdoc, toID, value.c_str());
+      else
+      {
+        ok = no;
+        aOption = option;
+      }
+     }
   }
   return ok;
 }
-
-#endif 
 
 int tidy(const char* input,
          xqp_string& result,
          xqp_string& diagnostics,
          const char* userOpt) throw()
 {
-  ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "");
-  return 0;
+  TidyDoc     tdoc;
+  Bool        ok;
+  int         rc = -1;
+  TidyBuffer  output, errbuf;
+  tidyBufInit( &output );
+  tidyBufInit( &errbuf );
+  xqpStringStore_t    buf, err;
+  std::string option;
+
+  tdoc = tidyCreate();
+
+  ok = tidyOptSetBool( tdoc, TidyXhtmlOut, yes );  // Convert to XHTML
+  if ( ok )
+    rc = tidySetErrorBuffer( tdoc, &errbuf );      // Capture diagnostics
+  if ( rc >= 0 )
+    rc = tidyParseString( tdoc, input );           // Parse the input
+  if ( rc >= 0 )
+    ok = setZorbaOptions(tdoc);
+  if(ok)
+    ok = setUserOptions(tdoc, userOpt, option);
+  if( ok )
+  {
+    rc = tidyCleanAndRepair( tdoc );                 // Tidy it up!
+    if ( rc >= 0 )
+      rc = tidyRunDiagnostics( tdoc );               // Kvetch
+    if ( rc > 1 )                                    // If error, force output.
+      rc = ( tidyOptSetBool(tdoc, TidyForceOutput, yes) ? rc : -1 );
+    if ( rc >= 0 )
+      rc = tidySaveBuffer( tdoc, &output );          // Pretty Print
+
+    if ( rc >= 0 ) {
+      result = new xqpStringStore((char*)output.bp, output.size);
+      if ( rc > 0 )
+        diagnostics = new xqpStringStore((char*)errbuf.bp, errbuf.size);
+    }
+  }
+  else
+  {
+    rc = -1;
+    diagnostics = new xqpStringStore("couldn't set the Tidy option <" + option + ">");
+  }
+
+  tidyBufFree( &output );
+  tidyBufFree( &errbuf );
+  tidyRelease( tdoc );
+  return rc;
 }
 
 int tidy(const std::istream& stream,
-           std::iostream& result,
-           xqp_string& diagnostics,
-           const char* userOpt)
+         std::iostream& result,
+         xqp_string& diagnostics,
+         const char* userOpt)
 {
-  ZORBA_ERROR_PARAM(  XQP0004_SYSTEM_NOT_SUPPORTED, "HTTP GET" , "");
-  return 0;
+  int             rc = -1;
+  TidyDoc         tdoc;
+  Bool            ok;
+  std::streambuf* pbuf;
+  uint            size;
+  std::string option;
+
+  if (stream == NULL || result == NULL)
+    return rc;
+
+  pbuf = stream.rdbuf();
+  size = (uint)pbuf->pubseekoff(0,std::ios::end, std::ios::in);
+  pbuf->pubseekpos(0, std::ios::in);
+  TidyBuffer inputBuf;
+  tidyBufAlloc(&inputBuf, size+1);
+  
+#ifdef WIN32
+  pbuf->_Sgetn_s((char*)inputBuf.bp, size, size);
+#else
+  pbuf->sgetn((char*)inputBuf.bp, size);
+#endif
+  
+  inputBuf.size = size;
+  
+  TidyBuffer output, errbuf;
+  tidyBufInit( &output );
+  tidyBufInit( &errbuf );
+
+  tdoc = tidyCreate();
+
+  ok = tidyOptSetBool( tdoc, TidyXhtmlOut, yes );   // Convert to XHTML
+  if ( ok )
+    rc = tidySetErrorBuffer( tdoc, &errbuf );       // Capture diagnostics
+  if ( rc >= 0 )
+    rc = tidyParseBuffer( tdoc, &inputBuf );        // Parse the input
+  if ( rc >= 0 )
+    ok = setZorbaOptions(tdoc);
+  if(ok)
+    ok = setUserOptions(tdoc, userOpt, option);
+  if( ok )
+  {
+    rc = tidyCleanAndRepair( tdoc );                 // Tidy it up!
+    if ( rc >= 0 )
+      rc = tidyRunDiagnostics( tdoc );               // Kvetch
+    if ( rc > 1 )                                    // If error, force output.
+      rc = ( tidyOptSetBool(tdoc, TidyForceOutput, yes) ? rc : -1 );
+    if ( rc >= 0 )
+      rc = tidySaveBuffer( tdoc, &output );          // Pretty Print
+
+    if ( rc >= 0 ) {
+      result << output.bp;
+      if ( rc > 0 )
+        diagnostics = new xqpStringStore((char*)errbuf.bp, errbuf.size);
+    }
+  }
+    else
+  {
+    rc = -1;
+    diagnostics = new xqpStringStore("couldn't set the Tidy option <" + option + ">");
+  }
+
+  tidyBufFree( &inputBuf );
+  tidyBufFree( &output );
+  tidyBufFree( &errbuf );
+  tidyRelease( tdoc );
+  return rc;
 }
 
+#endif 
 } // namespace zorba
