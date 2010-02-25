@@ -289,6 +289,7 @@ public:
     if(ar.is_serializing_out())
     {
       iterator it;
+      ulong i = 0;
       ar.set_is_temp_field_one_level(true);
       for(it=begin(); it!=end(); ++it)
       {
@@ -296,8 +297,10 @@ public:
         V v = (*it).second;
         ar & t;
         ar & v;
+        i++;
       }
       ar.set_is_temp_field_one_level(false);
+      assert(i == num_entries);
     }
     else
     {

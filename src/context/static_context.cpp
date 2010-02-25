@@ -70,6 +70,9 @@ namespace zorba
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
 
+SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
+END_SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
+
 SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_value_t)
 END_SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_value_t)
 
@@ -635,14 +638,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & modulemap;
   ar & keymap;
 
-  if (theBaseUriInfo)
-  {
-    ar & theBaseUriInfo->thePrologBaseUri;
-    ar & theBaseUriInfo->theApplicationBaseUri;
-    ar & theBaseUriInfo->theEntityRetrievalUri;
-    ar & theBaseUriInfo->theEncapsulatingEntityUri;
-    ar & theBaseUriInfo->theBaseUri;
-  }
+  ar & theBaseUriInfo;
 
   serialize_resolvers(ar);
   serialize_tracestream(ar);

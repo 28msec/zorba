@@ -85,7 +85,7 @@ typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
   The entity_retrieval_url is set by default to the name of file containing the
   query we are running. It may also be set explicitly from the C++/C api.
 ********************************************************************************/
-struct BaseUriInfo
+struct BaseUriInfo : public ::zorba::serialization::SerializeBaseClass
 {
   xqpStringStore_t thePrologBaseUri;
   xqpStringStore_t theApplicationBaseUri;
@@ -93,6 +93,20 @@ struct BaseUriInfo
   xqpStringStore_t theEncapsulatingEntityUri;
 
   xqpStringStore_t theBaseUri;
+public:
+  SERIALIZABLE_CLASS(BaseUriInfo)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(BaseUriInfo)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    ar & thePrologBaseUri;
+    ar & theApplicationBaseUri;
+    ar & theEntityRetrievalUri;
+    ar & theEncapsulatingEntityUri;
+
+    ar & theBaseUri;
+  }
+public:
+  BaseUriInfo() {}
 };
 
 
