@@ -105,6 +105,14 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   theCtx = aStaticContext.theCtx->create_child_context();
   RCHelper::addReference (theCtx);
 
+  // bugfix
+  // if it's a default error handler, we need to create a new
+  // one since every context has it's own non-user error handler
+  // which he also needs to delete
+  if ( ! theUserErrorHandler ) {
+    theErrorHandler = new DefaultErrorHandler();
+  }
+
   for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::const_iterator
          lIter = aStaticContext.theModuleWrappers.begin();
        lIter != aStaticContext. theModuleWrappers.end(); ++lIter) 
@@ -1120,6 +1128,14 @@ StaticContextImpl::resolve(const String& aBaseUri, const String& aRelativeURI) c
   xqpStringStore_t lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri);
 
   return lResolved.getp();
+}
+
+void
+StaticContextImpl::setDeclaredCollectionCallback (
+    CollectionCallback aCallbackFunction,
+    void* aCallbackData )
+{
+  theCtx->set_collection_callback(aCallbackFunction, aCallbackData);
 }
 
 } /* namespace zorba */

@@ -2915,7 +2915,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       std::string compURL;
       auto_ptr<istream> modfile;
       
+      try {
       modfile.reset(standardModuleResolver->resolve(compURI, *sctx_p, compURL));
+      } catch (error::ZorbaError& e) {
+        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      }
 
       if (modfile.get() == NULL || ! *modfile) 
       {
@@ -3691,6 +3695,9 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
                                             lCollectionType);
 
   sctx_p->bind_collection(lColl, v.get_location());
+  // inform the c++ api about the declaration if the
+  // user has registered a callback
+  sctx_p->call_collection_callback(lColl);
 
   assert(export_sctx);
   export_sctx->bind_collection(lColl, v.get_location());

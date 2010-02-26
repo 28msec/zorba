@@ -69,5 +69,9 @@ namespace zorba {
   class SchemaURIResolver;
   class ModuleURIResolver;
 
+  struct DeclaredCollection;
+  typedef void (*CollectionCallback)(const DeclaredCollection& aCollection,
+                                     void* aCallbackData);
+
 } /* namespace zorba */
 #endif

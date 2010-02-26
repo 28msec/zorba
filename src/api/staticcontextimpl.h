@@ -246,6 +246,10 @@ class StaticContextImpl : public StaticContext
   virtual String
   resolve( const String& aBaseUri, const String& aRelativeURI ) const;
 
+  virtual void
+  setDeclaredCollectionCallback ( CollectionCallback aCallbackFunction,
+                                  void* aCallbackData );
+
 };
 
 } /* namespace zorba */

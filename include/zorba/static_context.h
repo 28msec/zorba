@@ -459,6 +459,10 @@ namespace zorba {
        */
       virtual String
       resolve( const String& aBaseUri, const String& aRelativeURI) const = 0;
+
+      virtual void
+      setDeclaredCollectionCallback ( CollectionCallback aCallbackFunction,
+                                      void* aCallbackData ) = 0;
   };
 } /* namespace zorba */
 #endif

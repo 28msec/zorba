@@ -401,12 +401,15 @@ protected:
   FunctionMap                           * theFunctionMap;
   FunctionArityMap                      * theFunctionArityMap;
 
+  CollectionMap                        * theCollectionMap;
+  CollectionCallback                     theCollectionCallback;
+  void                                 * theCollectionCallbackData;
+
   xqtref_t                                theCtxItemType;
 
   W3CCollectionMap                      * theW3CCollectionMap;
   xqtref_t                                theDefaultW3CCollectionType;
 
-  CollectionMap                         * theCollectionMap;
   IndexMap                              * theIndexMap;
   ICMap                                 * theICMap;
 
@@ -810,6 +813,10 @@ public:
   *  scope from the current static context.
   */
   void getVariables(std::vector<var_expr_t>& aVarialeList) const;
+
+  void set_collection_callback (CollectionCallback aCallbackFunction, void* aCallbackData);
+
+  void call_collection_callback(const StaticallyKnownCollection_t& coll);
 
 protected:
   static_context();

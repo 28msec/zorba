@@ -17,6 +17,7 @@
 
 #include <zorba/external_module.h>
 #include <zorba/serialization_callback.h>
+#include <zorba/declared_collection.h>
 
 #include "zorbaserialization/serialization_engine.h"
 
@@ -280,8 +281,10 @@ static_context::static_context()
   theNamespaceBindings(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theW3CCollectionMap(NULL),
   theCollectionMap(NULL),
+  theCollectionCallback(0),
+  theCollectionCallbackData(0),
+  theW3CCollectionMap(NULL),
   theIndexMap(NULL),
   theICMap(NULL),
   theCollationMap(NULL),
@@ -314,8 +317,10 @@ static_context::static_context(static_context* parent)
   theNamespaceBindings(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theW3CCollectionMap(NULL),
   theCollectionMap(0),
+  theCollectionCallback(0),
+  theCollectionCallbackData(0),
+  theW3CCollectionMap(NULL),
   theIndexMap(NULL),
   theICMap(NULL),
   theCollationMap(NULL),
@@ -351,8 +356,10 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theNamespaceBindings(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
-  theW3CCollectionMap(NULL),
   theCollectionMap(0),
+  theCollectionCallback(0),
+  theCollectionCallbackData(0),
+  theW3CCollectionMap(NULL),
   theIndexMap(0),
   theICMap(0),
   theCollationMap(NULL),
@@ -1795,9 +1802,65 @@ void static_context::bind_collection(
     theCollectionMap = new CollectionMap(0, NULL, 8, false);
 
   store::Item* qname = const_cast<store::Item*>(aCollection->getName());
-
   theCollectionMap->insert(qname, aCollection);
+}
 
+collection_update_property_t
+to_collection_update_property(const StaticContextConsts::declaration_property_t& p)
+{
+  collection_update_property_t lRes;
+  switch (p) {
+    case StaticContextConsts::decl_const: lRes = coll_const; break;
+    case StaticContextConsts::decl_append_only: lRes = coll_append_only; break;
+    case StaticContextConsts::decl_queue: lRes = coll_queue; break;
+    case StaticContextConsts::decl_mutable: lRes = coll_mutable; break;
+    default:
+      ZORBA_ASSERT(false);
+  }
+  return lRes;
+}
+
+collection_order_property_t
+to_collection_order_property(const StaticContextConsts::declaration_property_t& p)
+{
+  collection_order_property_t lRes;
+  switch (p) {
+    case StaticContextConsts::decl_ordered: lRes = coll_ordered; break;
+    case StaticContextConsts::decl_unordered: lRes = coll_unordered; break;
+    default:
+      ZORBA_ASSERT(false);
+  }
+  return lRes;
+}
+
+collection_node_modifier_t
+to_collection_node_modifier(const StaticContextConsts::node_modifier_t& p)
+{
+  collection_node_modifier_t lRes;
+  switch (p) {
+    case StaticContextConsts::read_only: lRes = coll_node_const; break;
+    case StaticContextConsts::mutable_node: lRes = coll_node_mutable; break;
+    default:
+      ZORBA_ASSERT(false);
+  }
+  return lRes;
+}
+
+void static_context::call_collection_callback(const StaticallyKnownCollection_t& aColl)
+{
+  if (theCollectionCallback) {
+    // wrap the collection information into an object known in the api
+    DeclaredCollection lDeclaredColl;
+    lDeclaredColl.theName = aColl->getName();
+    lDeclaredColl.theUpdateProperty = to_collection_update_property(aColl->getUpdateProperty());
+    lDeclaredColl.theOrderProperty = to_collection_order_property(aColl->getOrderProperty());
+    lDeclaredColl.theNodeModifier = to_collection_node_modifier(aColl->getNodeModifier());
+    theCollectionCallback(lDeclaredColl, theCollectionCallbackData);
+  } else {
+    if (theParent) {
+      theParent->call_collection_callback(aColl);
+    }
+  }
 }
 
 
@@ -2800,6 +2863,14 @@ void static_context::getVariables(std::vector<var_expr_t>& aResult) const
       aResult.push_back(static_cast<var_expr*>((*it).val.exprValue));
     }
   }
+}
+
+void static_context::set_collection_callback (
+    CollectionCallback aCallbackFunction,
+    void* aCallbackData)
+{
+  theCollectionCallback = aCallbackFunction;
+  theCollectionCallbackData = aCallbackData;
 }
 
 
