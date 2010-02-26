@@ -42,7 +42,7 @@ declare variable $xqdocXhtmlPath as xs:string := fn:concat($xqdocBuildPath, file
  : This variable points to the CSS file to use when generating the XHTML.
  : The path is relative to the taget path of the index.html.
  :)
-declare variable $cssFileName as xs:string := "css/zorba.css";
+declare variable $cssFileName as xs:string external;
 
 declare variable $stepBacks as xs:string := "../../../../../../../../../../../../../../../../../../../../";
 
@@ -64,12 +64,13 @@ declare variable $indexCollector := <modules/>;
  :)
 declare sequential function local:generateXQDocXml() as xs:string*
 {
-  for $file in file:files($modulesPath, "\.xq$", fn:true())
-  let $filePath := fn:concat($modulesPath, file:path-separator(), $file)
+  for $filedirs in tokenize($modulesPath, ":")
+  for $file in file:files($filedirs, "\.xq$", fn:true())
+  let $filePath := fn:concat($filedirs, file:path-separator(), $file)
   let $xqdoc := xqd:xqdoc(file:path-to-uri($filePath))
   let $moduleDoc := $xqdoc/xqdoc:xqdoc/xqdoc:module
   let $moduleName := $moduleDoc/xqdoc:name
-  let $moduleUri := $   moduleDoc/xqdoc:uri
+  let $moduleUri := $moduleDoc/xqdoc:uri
   let $xqdocFileDir := fn:concat($xqdocXmlPath, file:path-separator(), $file)
   let $xqdocFileName := fn:concat($xqdocFileDir, file:path-separator(), "xqdoc.xml")
   return
