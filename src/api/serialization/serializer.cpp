@@ -1897,24 +1897,46 @@ void serializer::serialize(intern::Serializable* object,
   itemHandler aHandler,
   void* aHandlerData)
 {
-  // used for Json and JsonML serialization only
-  bool firstItem = true;
+  store::Item_t lItem;
+  if (object->nextSerializableItem(lItem)) {
+    // first, we notify the caller, that everything that we wanted to 
+    // (e.g. computed by side-effecting scripting functions is now available).
+    //  He can, for example, decide on the serialization method
+      Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
+      if (lSerParams) {
+        SerializerImpl::setSerializationParameters(*this, *lSerParams);
+      }
+  } else {
+    return;
+  }
 
   validate_parameters();
+
   if (!setup(stream)) {
     return;
   }
 
   e->emit_declaration();
 
-  store::Item_t lItem;
-  while (object->nextSerializableItem(lItem)) {
-    // JSON serialization only alows one single item to be serialized
-    // so throw an error if we get to a second item
-    if (!firstItem && (
-        method == PARAMETER_VALUE_JSON ||
-        method == PARAMETER_VALUE_JSONML)) {
-      ZORBA_ERROR(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
+  // used for Json and JsonML serialization only
+  bool firstItem = true;
+
+  do {
+    if (!firstItem) {
+      Zorba_SerializerOptions_t* lSerParams = aHandler(aHandlerData);
+      if (lSerParams) {
+        SerializerImpl::setSerializationParameters(*this, *lSerParams);
+        if (!setup(stream)) {
+          return;
+        }
+      }
+        
+      // JSON serialization only alows one single item to be serialized
+      // so throw an error if we get to a second item
+      if (method == PARAMETER_VALUE_JSON ||
+          method == PARAMETER_VALUE_JSONML) {
+        ZORBA_ERROR(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED);
+      }
     }
 
     // PUL's cannot be serialized
@@ -1922,18 +1944,11 @@ void serializer::serialize(intern::Serializable* object,
       ZORBA_ERROR(API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
     }
 
-    Zorba_SerializerOptions_t* lOptions = aHandler(aHandlerData);
-    if (lOptions != NULL) {
-      SerializerImpl::setSerializationParameters(*this, *lOptions);
-      if (!setup(stream)) {
-        return;
-      }
-    }
     e->emit_item(&*lItem);
 
     // used for Json and JsonML serialization only
     firstItem = false;
-  }
+  } while (object->nextSerializableItem(lItem));
 
   e->emit_declaration_end();
 }
