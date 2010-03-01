@@ -73,5 +73,9 @@ namespace zorba {
   typedef void (*CollectionCallback)(const DeclaredCollection& aCollection,
                                      void* aCallbackData);
 
+  struct DeclaredIndex;
+  typedef void (*IndexCallback)(const DeclaredIndex& aIndex,
+                                void* aCallbackData);
+
 } /* namespace zorba */
 #endif

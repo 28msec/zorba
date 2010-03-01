@@ -250,6 +250,10 @@ class StaticContextImpl : public StaticContext
   setDeclaredCollectionCallback ( CollectionCallback aCallbackFunction,
                                   void* aCallbackData );
 
+  virtual void
+  setDeclaredIndexCallback ( IndexCallback aCallbackFunction,
+                             void* aCallbackData );
+
 };
 
 } /* namespace zorba */

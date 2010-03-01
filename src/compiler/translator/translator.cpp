@@ -3793,6 +3793,8 @@ void end_visit(const IndexDecl& v, void* /*visit_state*/)
   // If this is a library module, register the index in the exported sctx as well.
   if (export_sctx != NULL)
     export_sctx->bind_index(index->getName(), index, loc);
+
+  sctx_p->call_index_callback(index);
 }
 
 

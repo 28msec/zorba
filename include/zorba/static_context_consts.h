@@ -72,4 +72,14 @@ typedef enum { coll_ordered, coll_unordered } collection_order_property_t;
  */
 typedef enum { coll_node_const, coll_node_mutable } collection_node_modifier_t;
 
+/** \brief Maintenance mode of an index as defined
+ *         in the XQuery Data Definition Facility
+ */
+typedef enum { index_automatic, index_manual } index_maintenance_mode_t;
+
+/** \brief Container kind of an index as defined
+ *         in the XQuery Data Definition Facility
+ */
+typedef enum { index_hash, index_tree } index_container_kind_t;
+
 #endif

@@ -1138,4 +1138,12 @@ StaticContextImpl::setDeclaredCollectionCallback (
   theCtx->set_collection_callback(aCallbackFunction, aCallbackData);
 }
 
+void
+StaticContextImpl::setDeclaredIndexCallback (
+    IndexCallback aCallbackFunction,
+    void* aCallbackData )
+{
+  theCtx->set_index_callback(aCallbackFunction, aCallbackData);
+}
+
 } /* namespace zorba */

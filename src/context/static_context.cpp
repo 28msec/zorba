@@ -18,6 +18,7 @@
 #include <zorba/external_module.h>
 #include <zorba/serialization_callback.h>
 #include <zorba/declared_collection.h>
+#include <zorba/declared_index.h>
 
 #include "zorbaserialization/serialization_engine.h"
 
@@ -286,6 +287,8 @@ static_context::static_context()
   theCollectionCallbackData(0),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
+  theIndexCallback(0),
+  theIndexCallbackData(0),
   theICMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
@@ -322,6 +325,8 @@ static_context::static_context(static_context* parent)
   theCollectionCallbackData(0),
   theW3CCollectionMap(NULL),
   theIndexMap(NULL),
+  theIndexCallback(0),
+  theIndexCallbackData(0),
   theICMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
@@ -361,6 +366,8 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theCollectionCallbackData(0),
   theW3CCollectionMap(NULL),
   theIndexMap(0),
+  theIndexCallback(0),
+  theIndexCallbackData(0),
   theICMap(0),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
@@ -1920,6 +1927,55 @@ void static_context::bind_index(
   theIndexMap->insert(qname2, index);
 }
 
+/******************************************************************************
+
+********************************************************************************/
+index_maintenance_mode_t
+to_index_maintenance_mode(const ValueIndex::MaintenanceMode& mode)
+{
+  index_maintenance_mode_t lRes;
+  switch (mode) {
+    case ValueIndex::MANUAL: lRes = index_manual; break;
+    case ValueIndex::REBUILD: lRes = index_automatic; break;
+    case ValueIndex::DOC_MAP: lRes = index_manual; break; // TODO
+  }
+  return lRes;
+}
+
+/******************************************************************************
+
+********************************************************************************/
+index_container_kind_t
+to_index_container_kind(const ValueIndex::ContainerKind& kind)
+{
+  index_container_kind_t lRes;
+  switch (kind) {
+    case ValueIndex::HASH: lRes = index_hash; break;
+    case ValueIndex::TREE: lRes = index_tree; break;
+    default: ZORBA_ASSERT(false);
+  }
+  return lRes;
+}
+
+/******************************************************************************
+
+********************************************************************************/
+void static_context::call_index_callback(const ValueIndex_t& index)
+{
+  if (theIndexCallback) {
+    DeclaredIndex lDeclaredIndex;
+    lDeclaredIndex.theName = index->getName();
+    lDeclaredIndex.theMaintenanceMode =
+      to_index_maintenance_mode(index->getMaintenanceMode());
+    lDeclaredIndex.theContainerKind =
+      to_index_container_kind(index->getMethod());
+    theIndexCallback(lDeclaredIndex, theIndexCallbackData);
+  } else {
+    if (theParent) {
+      static_cast<static_context*>(theParent)->call_index_callback(index);
+    }
+  }
+}
 
 /***************************************************************************//**
 
@@ -2871,6 +2927,14 @@ void static_context::set_collection_callback (
 {
   theCollectionCallback = aCallbackFunction;
   theCollectionCallbackData = aCallbackData;
+}
+
+void static_context::set_index_callback(
+    IndexCallback aCallbackFunction,
+    void* aCallbackData)
+{
+  theIndexCallback = aCallbackFunction;
+  theIndexCallbackData = aCallbackData;
 }
 
 

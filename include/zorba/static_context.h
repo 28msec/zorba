@@ -463,6 +463,10 @@ namespace zorba {
       virtual void
       setDeclaredCollectionCallback ( CollectionCallback aCallbackFunction,
                                       void* aCallbackData ) = 0;
+
+      virtual void
+      setDeclaredIndexCallback ( IndexCallback aCallbackFunction,
+                                 void* aCallbackData ) = 0;
   };
 } /* namespace zorba */
 #endif

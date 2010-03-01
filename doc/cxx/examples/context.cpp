@@ -22,6 +22,7 @@
 #include <zorba/store_manager.h>
 #include <zorba/uri_resolvers.h>
 #include <zorba/declared_collection.h>
+#include <zorba/declared_index.h>
 
 
 using namespace zorba;
@@ -362,8 +363,12 @@ public:
       std::auto_ptr<std::stringstream> lQuery(new std::stringstream());
 
       (*lQuery) << "module namespace mymodule = 'http://www.zorba-xquery.com/mymodule';" << std::endl
+                << "import module namespace xqddf = 'http://www.zorba-xquery.com/modules/xqddf';" << std::endl
                 << "declare variable $mymodule:var  := 'myvar';" << std::endl
-                << "declare collection mymodule:collection;" << std::endl;
+                << "declare collection mymodule:collection;" << std::endl
+                << "declare automatically maintained value equality index mymodule:index" << std::endl
+                << "  on nodes xqddf:collection(xs:QName('mymodule:collection'))" << std::endl
+                << "  by ./foo as xs:string;" << std::endl;
       // we have only one module
       lResult->theModule = lQuery.release();
       lResult->setError(URIResolverResult::UR_NOERROR);
@@ -474,6 +479,14 @@ collection_callback(const DeclaredCollection& coll, void* data)
   static_cast<callback_data*>(data)->b = true;
 }
 
+void
+index_callback(const DeclaredIndex& index, void* data)
+{
+  std::cout << "index callback function was called for index " 
+            << index.theName.getStringValue() << std::endl;
+  static_cast<callback_data*>(data)->b = true;
+}
+
 bool
 context_example_13(Zorba* aZorba)
 {
@@ -481,10 +494,12 @@ context_example_13(Zorba* aZorba)
   PrologModuleURIResolver lResolver;
   lContext->addModuleURIResolver(&lResolver);
 
-  callback_data c;
+  callback_data c, i;
   c.b = false;
+  i.b = false;
 
   lContext->setDeclaredCollectionCallback(collection_callback, (void*)&c);
+  lContext->setDeclaredIndexCallback(index_callback, (void*)&i);
 
   try {
     Zorba_CompilerHints_t hints;
@@ -498,7 +513,7 @@ context_example_13(Zorba* aZorba)
     std::stringstream lResult;
     lQuery->execute(lResult);
 
-    return c.b;
+    return c.b && i.b;
 
   } catch (QueryException &e) {
     std::cerr << e << std::endl;

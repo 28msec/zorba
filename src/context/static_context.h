@@ -411,6 +411,8 @@ protected:
   xqtref_t                                theDefaultW3CCollectionType;
 
   IndexMap                              * theIndexMap;
+  IndexCallback                           theIndexCallback;
+  void                                  * theIndexCallbackData;
   ICMap                                 * theICMap;
 
   DocumentMap                           * theDocumentMap;
@@ -814,9 +816,17 @@ public:
   */
   void getVariables(std::vector<var_expr_t>& aVarialeList) const;
 
-  void set_collection_callback (CollectionCallback aCallbackFunction, void* aCallbackData);
+  void set_collection_callback (
+      CollectionCallback aCallbackFunction,
+      void* aCallbackData);
 
   void call_collection_callback(const StaticallyKnownCollection_t& coll);
+
+  void set_index_callback(
+      IndexCallback aCallbackFunction,
+      void* aCallbackData);
+
+  void call_index_callback(const ValueIndex_t& index);
 
 protected:
   static_context();
