@@ -1,0 +1,14 @@
+import module namespace xqddf-test = "http://www.zorba-xquery.com/modules/xqddf/test" at "xqddf_prolog.xqlib";
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+
+
+xqddf:create-collection($xqddf-test:white-collection);
+for $i in fn:doc("auction.xml")//item
+return 
+    xqddf:insert-nodes($xqddf-test:white-collection, (copy $copyi := $i modify () return $copyi));
+
+
+xqddf:create-index($xqddf-test:index1);
+(:xqddf:collection($xqddf-test:white-collection);:)
+
+xqddf:probe-index-point($xqddf-test:index1, "United States")[1]; 
