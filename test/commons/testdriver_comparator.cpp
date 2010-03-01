@@ -367,6 +367,10 @@ printFile(std::ostream& os, const std::string &aInFile)
 {
   std::ifstream lInFileStream(aInFile.c_str());
   assert(lInFileStream.good());
+  if(!lInFileStream.good())
+  {
+    exit(1);
+  }
 
   char buf[1024];
   while (!lInFileStream.eof()) {
