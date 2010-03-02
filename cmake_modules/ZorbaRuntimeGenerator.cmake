@@ -22,31 +22,38 @@ SET(ZORBA_WORKS)
 # the Zorba will fail running the test query if the file API dll
 # is not found in the correct location
 IF (EXISTS ${ZORBA_RUNTIME_GENERATOR})
-  IF (WIN32)
-    SET(ENV{PATH} "${ZORBA_REQUIRED_DLLS_PATH};$ENV{PATH}")
-  ENDIF (WIN32)
-  IF (UNIX)
-    SET(ENV{LD_LIBRARY_PATH} ${CMAKE_BINARY_DIR}/src)
-  ENDIF (UNIX)
-  IF (APPLE)
-    SET(ENV{DYLD_LIBRARY_PATH} ${CMAKE_BINARY_DIR}/src)
-  ENDIF (APPLE)
-  EXECUTE_PROCESS(COMMAND ${ZORBA_RUNTIME_GENERATOR}
-                          "-q" "import module namespace file = 'http://www.zorba-xquery.com/modules/file';
-                                file:exists( 'a non existant file' )"
-                  RESULT_VARIABLE ZORBA_WORKS_RES
-                  OUTPUT_VARIABLE ZORBA_WORKS_FOO)
-  IF (NOT ZORBA_WORKS_RES EQUAL 0)
+  IF (WIN32 AND NOT ZORBA_REQUIRED_DLLS_PATH)
     SET(ZORBA_WORKS FALSE)
-    MESSAGE(STATUS "Zorba Command Line Utility at \"${ZORBA_RUNTIME_GENERATOR}\ "
-                   "does not work properly and cannot generate the runtime source files. "
-                   "This will cause the repository version of thiese files to be used.")
-  ELSE (NOT ZORBA_WORKS_RES EQUAL 0)
-    SET(ZORBA_WORKS TRUE)
-  ENDIF (NOT ZORBA_WORKS_RES EQUAL 0)
+    MESSAGE(STATUS "[WARNING] Zorba Command Line Utility can only run if the ZORBA_REQUIRED_DLLS_PATH "
+                   "variable points to a directory containing the necessary dynamic library "
+                   "dependencies. See the Zorba building documentation for more information.")
+  ELSE (WIN32 AND NOT ZORBA_REQUIRED_DLLS_PATH)
+    IF (WIN32)
+      SET(ENV{PATH} "${ZORBA_REQUIRED_DLLS_PATH};$ENV{PATH}")
+    ENDIF (WIN32)
+    IF (UNIX)
+      SET(ENV{LD_LIBRARY_PATH} ${CMAKE_BINARY_DIR}/src)
+    ENDIF (UNIX)
+    IF (APPLE)
+      SET(ENV{DYLD_LIBRARY_PATH} ${CMAKE_BINARY_DIR}/src)
+    ENDIF (APPLE)
+    EXECUTE_PROCESS(COMMAND ${ZORBA_RUNTIME_GENERATOR}
+                            "-q" "import module namespace file = 'http://www.zorba-xquery.com/modules/file';
+                                  file:exists( 'a non existant file' )"
+                    RESULT_VARIABLE ZORBA_WORKS_RES
+                    OUTPUT_VARIABLE ZORBA_WORKS_FOO)
+    IF (NOT ZORBA_WORKS_RES EQUAL 0)
+      SET(ZORBA_WORKS FALSE)
+      MESSAGE(STATUS "[WARNING] Zorba Command Line Utility at \"${ZORBA_RUNTIME_GENERATOR}\ "
+                     "does not work properly and cannot generate the runtime source files. "
+                     "This will cause the repository version of thiese files to be used.")
+    ELSE (NOT ZORBA_WORKS_RES EQUAL 0)
+      SET(ZORBA_WORKS TRUE)
+    ENDIF (NOT ZORBA_WORKS_RES EQUAL 0)
+  ENDIF (WIN32 AND NOT ZORBA_REQUIRED_DLLS_PATH)    
 ELSE (EXISTS ${ZORBA_RUNTIME_GENERATOR})
   SET(ZORBA_WORKS FALSE)
-  MESSAGE(STATUS "Zorba Command Line Utility was not found at \"${ZORBA_RUNTIME_GENERATOR}\".")
+  MESSAGE(STATUS "[WARNING] Zorba Command Line Utility was not found at \"${ZORBA_RUNTIME_GENERATOR}\".")
 ENDIF (EXISTS ${ZORBA_RUNTIME_GENERATOR})
 
 MACRO(CHECK_OUTPUT_EXISTS OUTPUT BINARY_DIR_OUTPUT)
@@ -74,8 +81,10 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
 
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
      MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
+     # - on WIN32 ZORBA_RUNTIME_GENERATOR_LIB_PATH is empty
+     # - on UNIX ZORBA_RUNTIME_GENERATOR_SCRIPT = ZORBA_RUNTIME_GENERATOR
      ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR_SCRIPT} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
                            "-e" "\"${PARAM1}\"" "-e" "\"${PARAM2}\""
                            "-o" "\"${CPP_OUTPUT_BINARY_DIR}\""
@@ -88,8 +97,10 @@ MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZO
                                  "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq") # cpp always depends on .h
 
      MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
+     # - on WIN32 ZORBA_RUNTIME_GENERATOR_LIB_PATH is empty
+     # - on UNIX ZORBA_RUNTIME_GENERATOR_SCRIPT = ZORBA_RUNTIME_GENERATOR
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR_SCRIPT} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
                            "-e" "\"${PARAM1}\"" "-e" "\"${PARAM2}\""
                            "-o" "\"${H_OUTPUT_BINARY_DIR}\""
@@ -112,8 +123,10 @@ MACRO(PRINTER_VISITOR_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILES OUTPUT PARAM1 
   SET(H_OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
      MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
+     # - on WIN32 ZORBA_RUNTIME_GENERATOR_LIB_PATH is empty
+     # - on UNIX ZORBA_RUNTIME_GENERATOR_SCRIPT = ZORBA_RUNTIME_GENERATOR
      ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR_SCRIPT} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
                            "-o" "\"${CPP_OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""
@@ -127,8 +140,10 @@ MACRO(PRINTER_VISITOR_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILES OUTPUT PARAM1 
                                  "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
 
      MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
+     # - on WIN32 ZORBA_RUNTIME_GENERATOR_LIB_PATH is empty
+     # - on UNIX ZORBA_RUNTIME_GENERATOR_SCRIPT = ZORBA_RUNTIME_GENERATOR
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR_SCRIPT} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
                            "-o" "\"${H_OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""
@@ -150,8 +165,10 @@ MACRO(PLANINTER_VISITOR_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1 ZORBA_WO
   SET(H_OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
      MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
+     # - on WIN32 ZORBA_RUNTIME_GENERATOR_LIB_PATH is empty
+     # - on UNIX ZORBA_RUNTIME_GENERATOR_SCRIPT = ZORBA_RUNTIME_GENERATOR
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR_SCRIPT} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
                            "-o" "\"${H_OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""
@@ -173,8 +190,10 @@ MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2 Z
   SET(H_OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
      MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
+     # - on WIN32 ZORBA_RUNTIME_GENERATOR_LIB_PATH is empty
+     # - on UNIX ZORBA_RUNTIME_GENERATOR_SCRIPT = ZORBA_RUNTIME_GENERATOR
      ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR_SCRIPT} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
                            "-o" "\"${CPP_OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""
@@ -190,8 +209,10 @@ MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2 Z
                        )
 
      MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
+     # - on WIN32 ZORBA_RUNTIME_GENERATOR_LIB_PATH is empty
+     # - on UNIX ZORBA_RUNTIME_GENERATOR_SCRIPT = ZORBA_RUNTIME_GENERATOR
      ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR_SCRIPT} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
                            "-o" "\"${H_OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""
@@ -213,8 +234,10 @@ MACRO(FUNCTION_ENUM_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1 ZORBA_WORKS)
   SET(OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}")
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
      MESSAGE(STATUS "Added for generation: ${OUTPUT_BINARY_DIR}")
+     # - on WIN32 ZORBA_RUNTIME_GENERATOR_LIB_PATH is empty
+     # - on UNIX ZORBA_RUNTIME_GENERATOR_SCRIPT = ZORBA_RUNTIME_GENERATOR
      ADD_CUSTOM_COMMAND(OUTPUT "${OUTPUT_BINARY_DIR}"
-                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR} 
+                        COMMAND ${ZORBA_RUNTIME_GENERATOR_LIB_PATH} ${ZORBA_RUNTIME_GENERATOR_SCRIPT} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
                            "-o" "\"${OUTPUT_BINARY_DIR}\""
                            "-e" "\"${PARAM1}\""

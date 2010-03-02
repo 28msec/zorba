@@ -179,6 +179,20 @@ IF (WIN32)
     SET(ZORBA_RUNTIME_GENERATOR "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/zorba.exe" 
         CACHE STRING "executable used for generating the runtime")
   ENDIF (MSVC_IDE)
+
+  FILE(TO_NATIVE_PATH ${ZORBA_RUNTIME_GENERATOR} ZORBA_RUNTIME_GENERATOR_NATIVE)
+
+  IF (ZORBA_REQUIRED_DLLS_PATH)
+    FILE(TO_NATIVE_PATH ${ZORBA_REQUIRED_DLLS_PATH} ZORBA_REQUIRED_DLLS_PATH_NATIVE)
+    CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/scripts/zorba_generator.bat.in
+                   ${CMAKE_CURRENT_BINARY_DIR}/scripts/zorba_generator.bat)
+  ENDIF (ZORBA_REQUIRED_DLLS_PATH)
+  
+  SET(ZORBA_RUNTIME_GENERATOR_SCRIPT "${CMAKE_CURRENT_BINARY_DIR}/scripts/zorba_generator.bat" 
+      CACHE STRING "script wrapping zorba.exe used for generating parts of the build system")
+
+  # Set this variable to an empty one since it is used only on UNIX-based platforms.
+  # Using is on Windows will cause build errors.
   SET(ZORBA_RUNTIME_GENERATOR_LIB_PATH)
 ELSE (WIN32)
   IF (UNIX)
@@ -189,8 +203,11 @@ ELSE (WIN32)
   ENDIF (APPLE)
   SET(ZORBA_RUNTIME_GENERATOR "${CMAKE_BINARY_DIR}/bin/zorba"
         CACHE STRING "executable used for generating the runtime")
+  SET(ZORBA_RUNTIME_GENERATOR_SCRIPT "${ZORBA_RUNTIME_GENERATOR}" 
+      CACHE STRING "placeholder for ZORBA_RUNTIME_GENERATOR on UNIX platforms to unify CMake code with WIN32")
 ENDIF (WIN32)
 MESSAGE(STATUS "ZORBA_RUNTIME_GENERATOR:        " ${ZORBA_RUNTIME_GENERATOR})
+MESSAGE(STATUS "ZORBA_RUNTIME_GENERATOR_SCRIPT: " ${ZORBA_RUNTIME_GENERATOR_SCRIPT})
 
 # flags for debugging the parser
 SET(ZORBA_DEBUG_PARSER OFF CACHE BOOL "debug the parser")
