@@ -50,7 +50,7 @@ void PrintSchema::printInfo(bool excludeBuiltIn, XMLGrammarPool* grammarPool)
       {
         std::cout << StrX(nameSpace);
         char * nsCh = XMLString::transcode(nameSpace);
-	if ( XMLString::equals(Schema::XSD_NAMESPACE, nsCh ) )
+	    if ( XMLString::equals(Schema::XSD_NAMESPACE, nsCh ) )
         {
           std::cout << std::endl;
           XMLString::release(&nsCh);

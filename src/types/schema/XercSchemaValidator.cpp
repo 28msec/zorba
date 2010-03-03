@@ -597,7 +597,7 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                         else {
                             // the type is derived from ancestor
                             if (((SchemaElementDecl*)elemDef)->getBlockSet() == SchemaSymbols::XSD_RESTRICTION) {
-#if _XERCES_VERSION >= 30100
+#if _XERCES_VERSION >= 31000
                                 emitError(XMLValid::ElemNoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
 #else
                                 emitError(XMLValid::NoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
@@ -663,7 +663,7 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                                 else {
                                     int derivationMethod = typeInfo->getDerivedBy();
                                     if ((((SchemaElementDecl*)elemDef)->getBlockSet() & derivationMethod) != 0) {
-#if _XERCES_VERSION >= 30100
+#if _XERCES_VERSION >= 31000
                                         emitError(XMLValid::ElemNoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
 #else
                                         emitError(XMLValid::NoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
@@ -708,7 +708,7 @@ void XercSchemaValidator::validateElement(const   XMLElementDecl*  elemDef)
                             else {
                                 // the type is derived from ancestor
                                 if (((SchemaElementDecl*)elemDef)->getBlockSet() == SchemaSymbols::XSD_RESTRICTION) {
-#if _XERCES_VERSION >= 30100
+#if _XERCES_VERSION >= 31000
                                     emitError(XMLValid::ElemNoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());
 #else
                                     emitError(XMLValid::NoSubforBlock, fXsiType->getRawName(), elemDef->getFullName());

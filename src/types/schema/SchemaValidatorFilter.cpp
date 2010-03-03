@@ -1129,12 +1129,12 @@ unsigned int SchemaValidatorFilter::resolveQName(
   else 
   {
     prefixBuf.set(qName, prefixColonPos);
-      
+
     if( XMLString::equals(prefixBuf.getRawBuffer(), XMLUni::fgXMLNSString)) 
     {
       if(mode == ElemStack::Mode_Element)
         emitError(XMLErrs::NoXMLNSAsElementPrefix, qName);
-      
+
       return fXMLNSNamespaceId;
     }
     else if( XMLString::equals(prefixBuf.getRawBuffer(), XMLUni::fgXMLString)) 
@@ -1144,7 +1144,8 @@ unsigned int SchemaValidatorFilter::resolveQName(
     else 
     {
       bool unknown = false;
-#if _XERCES_VERSION >= 30100
+
+#if _XERCES_VERSION >= 31000
       unsigned int uriId = fElemStack.mapPrefixToURI(prefixBuf.getRawBuffer(), unknown);
 #else
       unsigned int uriId = fElemStack.mapPrefixToURI(prefixBuf.getRawBuffer(),
@@ -1153,7 +1154,7 @@ unsigned int SchemaValidatorFilter::resolveQName(
 
       if(unknown)
         emitError(XMLErrs::UnknownPrefix, prefixBuf.getRawBuffer());
-      
+
       return uriId;
     }
   }
