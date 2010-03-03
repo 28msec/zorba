@@ -17,7 +17,9 @@
 (:~
  : This module implements some Excel lookup functions. 
  :
- : @see <a href="http://office.microsoft.com/en-us/excel/CH062528281033.aspx">Excel Documentation</a>
+ : @see <a href="http://office.microsoft.com/en-us/excel/CH062528281033.aspx"
+ : target="_blank">Excel Documentation: Lookup Functions</a>
+ :
  : @spec XQuery Specification: January 2007
  : @author Daniel Turcanu
  : @version 1.0 

@@ -18,7 +18,9 @@
  : This is a library module offering the same set of statistical functions
  : defined by Microsoft Excel.
  :
- : @see <a href="http://office.microsoft.com/en-us/excel/CH062528311033.aspx">Excel Documentation</a>
+ : @see <a href="http://office.microsoft.com/en-us/excel/CH062528311033.aspx"
+ : target="_blank">Excel Documentation: Statistical Functions</a>
+ :
  : @spec XQuery Specification: January 2007
  : @author Daniel Turcanu
  : @version 1.0 

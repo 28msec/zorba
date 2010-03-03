@@ -19,7 +19,8 @@
  : and handle responses. This is quite a low-level functionality, allowing
  : one to deal with most aspects of the HTTP protocol.
  :
- : @see <a href="http://www.expath.org/modules/http-client/">http://www.expath.org/modules/http-client/</a>
+ : @see <a href="http://www.expath.org/modules/http-client/" target="_blank">
+ : http://www.expath.org/modules/http-client/</a>
  : @version Candidate 9 January 2010
  : @author Markus Pilman
  :)

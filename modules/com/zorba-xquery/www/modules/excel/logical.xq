@@ -21,8 +21,8 @@
  : @author Sorin Nasoi
  : @version 1.0
  :
- : @see <a href="http://office.microsoft.com/en-us/excel/CH062528271033.aspx">
- : Excel Documentation: Logical Functions </a>
+ : @see <a href="http://office.microsoft.com/en-us/excel/CH062528271033.aspx"
+ : target="_blank">Excel Documentation: Logical Functions</a>
  :
  :)
 (:  for False,Not and True use fn:false(), fn:not(), fn:true() :)

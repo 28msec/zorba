@@ -21,8 +21,8 @@
  : @author Sorin Nasoi
  : @version 1.0
  :
- : @see <a href="http://office.microsoft.com/en-us/excel/CH062528241033.aspx">
- : Excel Documentation: Engineering Functions </a>
+ : @see <a href="http://office.microsoft.com/en-us/excel/CH062528241033.aspx"
+ : target="_blank">Excel Documentation: Engineering Functions</a>
  :
  :)
 module namespace  excel-engineering = "http://www.zorba-xquery.com/modules/excel/engineering" ;

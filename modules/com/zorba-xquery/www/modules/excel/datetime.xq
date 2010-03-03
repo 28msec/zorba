@@ -18,7 +18,9 @@
  : This is a library module offering the same set of functions
  : defined by Microsoft Excel.
  :
- : @see <a href="http://office.microsoft.com/en-us/excel/CH062528231033.aspx">Excel Documentation</a>
+ : @see <a href="http://office.microsoft.com/en-us/excel/CH062528231033.aspx"
+ : target="_blank">Excel Documentation: Datetime Functions</a>
+ :
  : @spec XQuery Specification: January 2007
  : @author Sorin Nasoi
  : @version 1.0 

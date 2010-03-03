@@ -20,7 +20,9 @@
  : but with 1 to 30 parameters.
  : Each parameter can be a sequence of infinite length.
  :
- : @see <a href="http://office.microsoft.com/en-us/excel/HP052092931033.aspx">Excel Documentation</a>
+ : @see <a href="http://office.microsoft.com/en-us/excel/HP052092931033.aspx"
+ : target="_blank">Excel Documentation: Math-sumproduct Functions</a>
+ :
  : @spec XQuery Specification: January 2007
  : @author Daniel Turcanu
  : @version 1.0 

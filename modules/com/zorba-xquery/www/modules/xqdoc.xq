@@ -17,7 +17,7 @@
 (:~
  : This library module provides XQDoc utility functions.
  :
- : @see <a href="http://xqdoc.org/">http://xqdoc.org/</a>
+ : @see <a href="http://xqdoc.org/" target="_blank">http://xqdoc.org/</a>
  : @author Gabriel Petrovay
  : @version 1.0
  :)
