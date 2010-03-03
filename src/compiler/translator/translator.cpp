@@ -3595,7 +3595,7 @@ void* begin_visit(const ParamList& v)
         flwor->add_clause(lc);
       }
     }
-    push_nodestack(flwor);
+    push_nodestack(flwor.getp());
   }
   return no_state;
 }
@@ -10826,7 +10826,7 @@ void end_visit(const InlineFunction& v, void* aState)
   std::auto_ptr<user_function> lFunction(new user_function(
       loc,
       lSignature,
-      flwor,
+      flwor.getp(),
       ParseConstants::fn_read,
       false));
   lFunction->set_args(lFunctionArgs);
