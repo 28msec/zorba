@@ -19,3 +19,31 @@ by fn:count(.//category) as xs:integer;
 
 declare variable $xqddf-test:index1 := xs:QName("xqddf-test:index1");
 declare variable $xqddf-test:index2 := xs:QName("xqddf-test:index2");
+
+declare integrity constraint xqddf-test:eic1 
+        on collection xqddf-test:white-collection
+        node $i check unique key fn:string(($i/description/parlist/listitem/text)[1]);
+
+declare integrity constraint xqddf-test:eic2 
+        on collection xqddf-test:white-collection
+        node $i check unique key $i/name;
+
+declare integrity constraint xqddf-test:dic1
+        on collection xqddf-test:white-collection
+        foreach node $i check fn:string-length($i/name) != 0;
+        
+declare integrity constraint xqddf-test:dic2
+        on collection xqddf-test:white-collection
+        foreach node $i check fn:string($i/location) = "United States";
+        
+declare integrity constraint xqddf-test:ric1
+        foreign key
+        from collection xqddf-test:white-collection node $w key $w/name
+        to collection xqddf-test:blue-collection node $b key $b/name;
+        
+declare variable $xqddf-test:eic1 := xs:QName("xqddf-test:eic1");
+declare variable $xqddf-test:eic2 := xs:QName("xqddf-test:eic2");
+declare variable $xqddf-test:dic1 := xs:QName("xqddf-test:dic1");
+declare variable $xqddf-test:dic2 := xs:QName("xqddf-test:dic2");
+declare variable $xqddf-test:ric1 := xs:QName("xqddf-test:ric1");
+        

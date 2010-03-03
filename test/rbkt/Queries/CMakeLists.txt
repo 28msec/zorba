@@ -164,4 +164,8 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/i3 0)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/i4 0)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/i5 0)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/t5 0)
+EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic1 0)
+EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic3 0)
+EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic4 0)
+#EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/ric3 0)
 # --------------------------------------------------------------------------
