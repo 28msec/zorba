@@ -5302,6 +5302,56 @@ void FTOptionDecl::accept(parsenode_visitor& v) const
   END_VISITOR ();
 }
 
+
+void LiteralFunctionItem::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  END_VISITOR ();
+}
+
+void InlineFunction::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  ACCEPT (theReturnType);
+  ACCEPT (theParamList);
+  ACCEPT (theEnclosedExpr);
+  END_VISITOR ();
+}
+
+void AnyFunctionTest::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  END_VISITOR ();
+}
+
+void TypeList::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  vector<rchandle<parsenode> >::const_iterator it = theTypes.begin();
+  for (; it!=theTypes.end(); ++it) {
+    const parsenode* e_p = &**it;
+    ACCEPT_CHK (e_p);
+  }
+  END_VISITOR ();
+}
+
+void TypedFunctionTest::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR ();
+  if(theArgTypes != 0) ACCEPT (theArgTypes);
+  ACCEPT (theReturnType);
+  END_VISITOR ();
+}
+
+void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
+  ACCEPT(thePrimaryExpr);
+  if(theArgList != 0) ACCEPT(theArgList);
+  END_VISITOR();  
+}
+
+
 } /* namespace zorba */
 
 

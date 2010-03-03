@@ -312,11 +312,12 @@ public:
   // Item methods
   //
 
-  bool isNode() const    { return true; }
-  bool isAtomic() const  { return false; }
-  bool isPul() const     { return false; }
-  bool isTuple() const   { return false; }
-  bool isError() const   { return false; }
+  bool isNode() const     { return true; }
+  bool isAtomic() const   { return false; }
+  bool isPul() const      { return false; }
+  bool isTuple() const    { return false; }
+  bool isError() const    { return false; }
+  bool isFunction() const { return false; }
 
   store::StoreConsts::NodeKind getNodeKind() const
   {

@@ -20,6 +20,7 @@
 #include "zorbautils/fatal.h"
 #include "zorbautils/strutil.h"
 #include "zorbatypes/URI.h"
+#include "zorbatypes/numconversions.h"
 #include "zorbaerrors/error_manager.h"
 
 #include "common/common.h"
@@ -52,6 +53,7 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
+#include "compiler/expression/function_item_expr.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/rewriter/framework/rewriter.h"
 #include "compiler/xqddf/value_index.h"
@@ -1032,6 +1034,9 @@ protected:
   
   xqpStringStore_t                     theEmptyString;
 
+  bool                                 isInlineFunction;
+  checked_vector<expr_t>               theScopedVars;
+
 public:
 
 TranslatorImpl(
@@ -1064,7 +1069,8 @@ TranslatorImpl(
   hadDefNSDecl(false),
   hadEmptyOrdDecl(false),
   hadOrdModeDecl(false),
-  hadRevalDecl(false)
+  hadRevalDecl(false),
+  isInlineFunction(false)
 {
   xquery_fns_def_dot.insert ("string-length");
   xquery_fns_def_dot.insert ("normalize-space");
@@ -3564,7 +3570,32 @@ void* begin_visit(const ParamList& v)
 
   if (v.size() > 0) 
   {
-    push_nodestack(new flwor_expr(sctxid(), loc, false));
+    rchandle<flwor_expr> flwor = new flwor_expr(sctxid(), loc, false);
+    if(isInlineFunction)
+    {
+      //Get the in-scoped variable referenced in the inline function body
+      checked_vector<var_expr_t> lScopedVars;
+      sctx_p->getVariables(lScopedVars);
+      checked_vector<var_expr_t>::iterator lIter = lScopedVars.begin();
+      for(; lIter != lScopedVars.end(); ++lIter)
+      {
+        store::Item_t qname = (*lIter)->get_name();
+        std::string lVarName(qname->getStringValue()->c_str());
+        //TODO: skip unreferenced variables
+        //    theReferencedVariables.find(lVarName) == theReferencedVariables.end()) 
+        if(lVarName == "$$dot")
+        {
+          continue;
+        }
+        theScopedVars.push_back(lookup_var(qname));
+        varref_t arg_var = create_var(loc, qname, var_expr::arg_var);
+        varref_t subst_var = bind_var(loc, qname, var_expr::let_var);
+        let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
+        lc->setLazyEval(true);
+        flwor->add_clause(lc);
+      }
+    }
+    push_nodestack(flwor);
   }
   return no_state;
 }
@@ -3593,8 +3624,8 @@ void end_visit(const Param& v, void* /*visit_state*/)
   rchandle<flwor_expr> flwor = theNodeStack.back().cast<flwor_expr> ();
   ZORBA_ASSERT(flwor != NULL);
 
-  const function* f = theCurrentPrologVFDecl.getFunction();
-  ZORBA_ASSERT(f != NULL);
+  const function* f = isInlineFunction?0:theCurrentPrologVFDecl.getFunction();
+  ZORBA_ASSERT(isInlineFunction || f != NULL);
 
   store::Item_t qnameItem;
   expand_no_default_qname(qnameItem, v.get_name(), v.get_location());
@@ -3604,7 +3635,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
 
   let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
-  lc->setLazyEval(!f->isSequential());
+  lc->setLazyEval(f==0?true:!f->isSequential());
 
   flwor->add_clause(lc);
 
@@ -10635,6 +10666,223 @@ void *begin_visit (const FTWordsValue& v) {
 }
 
 void end_visit (const FTWordsValue& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+}
+
+//Function items exprs
+void *begin_visit(const DynamicFunctionInvocation& v)
+{
+  TRACE_VISIT();
+  return no_state;  
+}
+
+void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+  //Collect the arguments of the dynamic function invocation
+  std::vector<expr_t> arguments;
+  if(v.getArgList() != 0)
+  {
+    for(int i=0; i<v.getArgList()->size(); i++)
+    {
+      expr_t argExpr = pop_nodestack();
+      ZORBA_ASSERT(argExpr != 0);
+      arguments.push_back(argExpr);
+    }
+    reverse(arguments.begin(), arguments.end());
+  }
+  //Get the function item expr
+  expr_t lItem = pop_nodestack();
+  ZORBA_ASSERT(lItem != 0);
+  expr_t lDynFuncInvocation = new dynamic_function_invocation_expr(
+                                    sctxid(), 
+                                    loc,
+                                    lItem,
+                                    arguments);
+  push_nodestack(lDynFuncInvocation);
+}
+
+void* begin_visit(const LiteralFunctionItem& n)
+{
+  return no_state;
+}
+
+void end_visit(const LiteralFunctionItem& n, void* /*visit_state*/)
+{
+  const QueryLoc& loc = n.get_location();
+  rchandle<QName> lQName = n.getQName();
+  const xqpStringStore_t& lPfx = lQName->get_prefix();
+  const xqpStringStore_t& lLocal = lQName->get_localname();
+  xqp_uint aArity;
+
+  if(!NumConversions::integerToUInt(n.getArity(), aArity))
+  {
+    //TODO: compile error if the arity is too big
+    ZORBA_ASSERT(false);
+  }
+
+  //If the QName in the literal function item has no namespace prefix, it is considered to be in the default function namespace.
+  xqpStringStore_t lNs;
+  sctx_p->lookup_ns(lNs, lPfx, loc);
+  //Get function implementation
+  function* fn = lookup_fn(lQName, aArity, loc);
+  //If the expanded QName and arity in a literal function item do not match the name and arity of a function signature in the static context, a static error is raised [err:XPST0017].
+  if(fn == 0)
+  {
+    
+    ZORBA_ERROR_LOC_PARAM(XPST0017, loc, lQName->get_qname(), to_string(aArity));
+  }
+
+  store::Item_t lQNameItem;
+  GENV_ITEMFACTORY->createQName(lQNameItem, lNs, lPfx, lLocal);
+  expr_t lExpr = new function_item_expr(sctxid(), loc, lQNameItem, fn);
+
+  push_nodestack(lExpr.getp());
+}
+
+void* begin_visit(const InlineFunction& v)
+{
+  TRACE_VISIT();
+  push_scope();
+  isInlineFunction = true; 
+  return no_state;
+}
+
+/**
+ * 1. Add parameters to the new static context
+ *    Scoped variables are already in the static context
+ *    Parameters mask scoped variables
+ * 2. Create the function_item_expr
+ *   2.1 Collection in-scope variable values
+ *   2.2 create the signature for the inline function
+ *   2.3 create the function itself
+ *       (passing it the in-copse variables and the signature)
+ */
+void end_visit(const InlineFunction& v, void* aState)
+{
+  TRACE_VISIT_OUT();
+ 
+  //List of the function arguments
+  vector<var_expr_t> lFunctionArgs;
+
+  //Get the inline function body
+  expr_t lBody = pop_nodestack(); 
+  ZORBA_ASSERT(lBody != 0);
+  
+  //Parameters have been wrapped into a flwor expression
+  //We need to add them to the function_item_expr expr so
+  //they can be bound at runtime 
+  rchandle<flwor_expr> flwor = pop_nodestack().cast<flwor_expr>(); 
+  for(int i=0; i<flwor->num_clauses(); i++)
+  {
+    const flwor_clause* lClause = (*flwor)[i];
+    const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
+    ZORBA_ASSERT(letClause != 0);
+    const var_expr_t lVarExpr = dynamic_cast<var_expr*>(letClause->get_expr());
+    lFunctionArgs.push_back(lVarExpr);
+  }
+  //Set the function body has the return expr of the flwor
+  flwor->set_return_expr(lBody);
+  
+  //Translate the type declarations for the args and the return value
+  //of the inline function
+  vector<xqtref_t> lArgTypes;
+  xqtref_t lReturnType = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  rchandle<ParamList> lParams = v.getParamList();
+  rchandle<SequenceType> lReturn = v.getReturnType();
+  if(lParams != 0)
+  {
+    vector<rchandle<Param> >::const_iterator lIt = lParams->begin();
+    for(; lIt != lParams->end(); ++lIt)
+    {
+      const Param* param = lIt->getp();
+      const SequenceType* param_type = param->get_typedecl().getp();
+      if(param_type == 0)
+      {
+        lArgTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+      } else {
+        param_type->accept(*this);
+        lArgTypes.push_back(pop_tstack());
+      }
+    }
+  }
+  if(lReturn != 0)
+  {
+    lReturnType = pop_tstack();
+  }
+
+
+  signature lSignature(0, lArgTypes, lReturnType);
+  if (TypeOps::is_builtin_simple(*lReturnType)) 
+  {
+    lBody = wrap_in_atomization(lBody);
+    lBody = wrap_in_type_promotion(lBody, lReturnType);
+  }
+  else 
+  {
+    lBody = wrap_in_type_match(lBody, lReturnType);
+  }
+ 
+  std::auto_ptr<user_function> lFunction(new user_function(
+      loc,
+      lSignature,
+      flwor,
+      ParseConstants::fn_read,
+      false));
+  lFunction->set_args(lFunctionArgs);
+  // finalize step 2
+  //Store the expr of in scoped variables
+  expr_t lExpr(new function_item_expr(
+      sctxid(),
+      loc,
+      lFunction.release(), theScopedVars));
+
+  push_nodestack(lExpr);
+  isInlineFunction = false;
+  pop_scope();
+}
+
+void* begin_visit(const AnyFunctionTest& v)
+{
+  TRACE_VISIT ();
+  //Nothing to do here
+  return no_state;
+}
+
+void end_visit(const AnyFunctionTest& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+  
+  // if the top of the stack is an axis step expr, add a node test expr to it.
+  //axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
+  //if (axisExpr != NULL) {
+  //  rchandle<match_expr> me = new match_expr(sctxid(), loc);
+  //  me->setTestKind(match_anyfunction_test);
+  //  axisExpr->setTest(me);
+  //} else {
+  //  theTypeStack.push(GENV_TYPESYSTEM.FUNCTION_ITEM_TYPE_ONE);
+  //}
+}
+
+void* begin_visit(const TypeList& v)
+{
+  TRACE_VISIT ();
+  return no_state;
+}
+
+void end_visit(const TypeList& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+}
+
+void *begin_visit(const TypedFunctionTest& v)
+{
+  TRACE_VISIT ();
+  return no_state;  
+}
+
+void end_visit(const TypedFunctionTest& v, void* /*visit_state*/)
+{
   TRACE_VISIT_OUT ();
 }
 

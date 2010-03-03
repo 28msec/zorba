@@ -56,6 +56,7 @@ public:
   bool isPul() const    { return false; }
   bool isTuple() const  { return false; }
   bool isError() const  { return false; }
+  bool isFunction() const { return false; }
 
   store::Item_t getAtomizationValue() const;
 

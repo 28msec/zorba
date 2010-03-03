@@ -333,6 +333,7 @@ typedef zorba::xquery_parser::token token;
 "?" { return token::HOOK; }
 "]" { return token::RBRACK; }
 "$" { return token::DOLLAR; }
+"#" { return token::HASH; }
 
 "if" { return token::IF; }
 "returning" { return token::RETURNING; }

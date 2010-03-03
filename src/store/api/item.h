@@ -35,7 +35,7 @@ namespace error
   class ZorbaError;
 };
 
-
+class signature;
 class serializer;
 
 namespace store
@@ -118,6 +118,12 @@ public:
    */
   virtual bool
   isError() const = 0;
+
+  /**
+   * @return "true" if the item is a function.
+   */
+  virtual bool
+  isFunction() const = 0;
 
   /**
    *  @return  (dynamic) XQuery type of the item
@@ -562,6 +568,31 @@ public:
    */
   virtual xqpStringStore*
   getTarget() const;
+
+  /**
+   *  Accessor for the name of the function item.
+   *  Returns null for anonymous functions.
+   */
+  virtual const Item_t
+  getFunctionName() const;
+
+  /**
+   *  Accessor for the name of the function item variables.
+   */
+  virtual void
+  getFunctionVariables(std::vector<Iterator_t>&) const;
+  
+  /**
+   * Accessor for the implementation of the function item
+   */
+  virtual const Iterator_t
+  getFunctionImplementation() const;
+
+  /**
+   * Accessor for the signature of the function item
+   */
+  virtual const signature
+  getFunctionSignature() const;
 
   /**
    * Make a copy of the xml tree rooted at this node and place the copied

@@ -291,6 +291,19 @@ public:
   bool createError(
           store::Item_t& result,
           error::ZorbaError* inError);
+
+  bool createFunction(
+          store::Item_t&,
+          const store::Item_t&,
+          const signature&,
+          const store::Iterator_t&);
+
+  bool createFunction(
+          store::Item_t&,
+          const std::vector<store::Iterator_t>&,
+          const signature&,
+          const store::Iterator_t&);
+
 };
 
 } // namespace simplestore

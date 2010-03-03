@@ -73,6 +73,8 @@ public:
   EXPR_VISITOR_METHODS (while_expr);
   EXPR_VISITOR_METHODS (flowctl_expr);
 
+  EXPR_VISITOR_METHODS (function_item_expr);
+  EXPR_VISITOR_METHODS (dynamic_function_invocation_expr);
 #undef EXPR_VISITOR_METHODS
 };
 

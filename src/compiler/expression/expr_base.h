@@ -71,6 +71,8 @@ enum expr_kind_t
   transform_expr_kind,
   eval_expr_kind,
   debugger_expr_kind,
+  dynamic_function_invocation_expr_kind,
+  function_item_expr_kind,
   unknown_expr_kind
 };
 

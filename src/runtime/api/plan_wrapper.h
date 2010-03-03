@@ -45,6 +45,7 @@ class Mutex;
 ********************************************************************************/
 class PlanWrapper : public store::Iterator, public intern::Serializable
 {
+  friend class DynamicFunctionInvocationIterator;
   friend class ZorbaDebuggerRuntime;
 
 protected:

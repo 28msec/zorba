@@ -267,6 +267,13 @@ public:
 
     DECL_PARSENODE_VISIT_METHODS (ParseErrorNode);
 
+    DECL_PARSENODE_VISIT_METHODS(LiteralFunctionItem);
+    DECL_PARSENODE_VISIT_METHODS(InlineFunction);
+    DECL_PARSENODE_VISIT_METHODS(AnyFunctionTest); 
+    DECL_PARSENODE_VISIT_METHODS(TypeList);
+    DECL_PARSENODE_VISIT_METHODS(TypedFunctionTest);
+    DECL_PARSENODE_VISIT_METHODS(DynamicFunctionInvocation);
+
     /* Methods that deviate from the visitor pattern that are
      * needed in various situations.
      */

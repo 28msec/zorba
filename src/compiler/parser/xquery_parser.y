@@ -336,6 +336,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token GETS                             "':='"
 %token GT                               "'>'"
 %token HOOK                             "'?'"
+%token HASH                             "'#'"
 %token IDIV                             "'idiv'"
 %token _IN                              "'in'"
 %token INHERIT                          "'inherit'"
@@ -724,6 +725,15 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> QNAME
 //%type <sval> QNAME                          "'QName'"
 
+%type <expr> FunctionItemExpr
+%type <expr> LiteralFunctionItem
+%type <expr> InlineFunction
+%type <node> FunctionTest
+%type <node> TypedFunctionTest
+%type <node> AnyFunctionTest
+%type <node> TypeList
+%type <node> ParenthesizedItemType
+
 /* update-related */
 /* -------------- */
 %type <expr> DeleteExpr
@@ -833,7 +843,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDeclUpdating FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl
+%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDeclUpdating FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
@@ -3670,11 +3680,19 @@ FilterExpr
         {
             $$ = $1;
         }
-    |   PrimaryExpr PredicateList
+    |   FilterExpr PredicateList
         {
             $$ = new FilterExpr(
                 LOC(@$), $1, dynamic_cast<PredicateList*>($2)
             );
+        }
+    |   FilterExpr LPAR RPAR
+        {
+            $$ = new DynamicFunctionInvocation(LOC (@$), $1);
+        }
+    |   FilterExpr LPAR ArgList RPAR
+        {
+            $$ = new DynamicFunctionInvocation(LOC (@$), $1, dynamic_cast<ArgList*>($3));
         }
     ;
 
@@ -3735,6 +3753,10 @@ PrimaryExpr
     |   UnorderedExpr
         {
             $$ = $1;
+        }
+    |   FunctionItemExpr
+        {
+          $$ = $1;
         }
     ;
 
@@ -4496,7 +4518,30 @@ ItemType
         {
             $$ = new ItemType( LOC(@$),true );
         }
+    |   FunctionTest
+        {
+          $$ = $1;
+        }
+    |   ParenthesizedItemType
+        {
+          $$ = $1;
+        }
     ;
+
+TypeList:
+        SequenceType
+        {
+          TypeList* aTypeList = new TypeList(LOC (@$));
+          aTypeList->push_back($1);
+          $$ = aTypeList;
+        }
+    |   TypeList COMMA SequenceType
+        {
+          TypeList* aTypeList = dynamic_cast<TypeList *>($1);
+          if (aTypeList) aTypeList->push_back($3);
+          $$ = $1;
+        }
+;
 
 // [120]
 AtomicType
@@ -4758,6 +4803,88 @@ StringLiteral
 // [157] NCName
 // [158] S  (WS)
 // [159] Char
+
+/*_______________________________________________________________________
+ *                                                                       *
+ *  XQuery 1.1 productions                                               *
+ *  [http://www.w3.org/TR/xquery-11/]                                    *
+ *                                                                       *
+ *_______________________________________________________________________*/
+
+// [161] FunctionItemExpr
+// ------------
+FunctionItemExpr :
+        LiteralFunctionItem
+        {
+            $$ = $1;
+        }
+    |   InlineFunction
+        {
+            $$ = $1;
+        }
+    ;
+
+// [162] FunctionItemExpr
+// ------------
+LiteralFunctionItem :
+        QNAME HASH INTEGER_LITERAL
+        {
+          $$ = new LiteralFunctionItem(LOC (@$), dynamic_cast<QName*>($1), *$3);
+        }
+    ;
+
+// [163] InlineFunction
+// ------------
+InlineFunction :
+        FUNCTION FunctionSig EnclosedExpr
+        {
+          $$ = new InlineFunction(LOC (@$), &*$2->param, &*$2->ret, dynamic_cast<EnclosedExpr *>($3));
+        }
+    ;
+
+// [189] FunctionTest
+// ------------
+FunctionTest :
+        AnyFunctionTest
+        {
+            $$ = $1;
+        }
+    |   TypedFunctionTest
+        {
+           $$ = $1;
+        }
+    ;
+
+// [190] FunctionTest
+// ------------
+AnyFunctionTest : 
+        FUNCTION LPAR STAR RPAR
+        {
+            $$ = new AnyFunctionTest(LOC(@$));
+        }
+    ;
+
+// [191] FunctionTest
+// ------------
+TypedFunctionTest :
+        FUNCTION LPAR  RPAR AS SequenceType
+        {
+          $$ = new TypedFunctionTest(LOC (@$), dynamic_cast<SequenceType *>($5));
+        }
+    |   FUNCTION LPAR TypeList RPAR AS SequenceType
+        {
+          $$ = new TypedFunctionTest(LOC (@$), dynamic_cast<TypeList *>($3), dynamic_cast<SequenceType *>($6));
+        }
+    ;
+
+// [192] ParenthesizedItemType
+// ------------
+ParenthesizedItemType :
+        LPAR ItemType RPAR
+        {
+           $$ = $2;
+        }
+    ;
 
 
 /*_______________________________________________________________________

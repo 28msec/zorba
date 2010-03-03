@@ -487,6 +487,13 @@ XQDOC_NO_BEGIN_END_TAG (WindowClause)
 XQDOC_NO_BEGIN_END_TAG (WindowVarDecl)
 XQDOC_NO_BEGIN_END_TAG (WindowVars)
 
+XQDOC_NO_BEGIN_END_TAG (LiteralFunctionItem)
+XQDOC_NO_BEGIN_END_TAG (InlineFunction)
+XQDOC_NO_BEGIN_END_TAG (AnyFunctionTest)
+XQDOC_NO_BEGIN_END_TAG (TypeList)
+XQDOC_NO_BEGIN_END_TAG (TypedFunctionTest)
+XQDOC_NO_BEGIN_END_TAG (DynamicFunctionInvocation)
+
 };
 
 void print_parsetree_xqdoc(

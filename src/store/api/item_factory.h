@@ -31,6 +31,7 @@ namespace error
   class ZorbaError;
 }
 
+class signature;
 
 namespace store {
 
@@ -659,6 +660,27 @@ public:
   virtual bool createError(
           store::Item_t& result,
           error::ZorbaError* inError) = 0;
+
+
+  /**
+   * Creates a litteral FunctionItem
+   */
+  virtual bool createFunction(
+    store::Item_t&,
+    const store::Item_t&,
+    const signature&,
+    const store::Iterator_t&
+  ) = 0;
+
+  /**
+   * Creates an inline FunctionItem
+   */
+  virtual bool createFunction(
+    store::Item_t&,
+    const std::vector<store::Iterator_t>&,
+    const signature&,
+    const store::Iterator_t&
+  ) = 0;
 };
 
 } // namespace store

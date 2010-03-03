@@ -34,6 +34,7 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
+#include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/parser/parse_constants.h"
 
@@ -74,6 +75,8 @@
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/eval/eval.h"
 #include "runtime/collections/collections.h"
+#include "runtime/function_item/store_iterator.h"
+#include "runtime/function_item/function_item_iter.h"
 
 #include "debugger/zorba_debugger_commons.h"
 
@@ -318,6 +321,52 @@ bool begin_visit (expr& v) {
 
 void end_visit (expr& v) {
   CODEGEN_TRACE_OUT("");
+}
+
+bool begin_visit (function_item_expr& v)
+{
+    CODEGEN_TRACE_IN("");
+    return true;
+}
+
+void end_visit(function_item_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  store::Item_t lQName = v.get_qname(), fitem;
+  bool isInline = lQName == 0;
+  store::Iterator_t lImpl = new store::FunctionItemIterator(theCCB, sctx, v, isInline);
+  if (!isInline) { // literal function item
+    ITEM_FACTORY->createFunction (fitem, lQName, v.get_function()->get_signature(), lImpl);
+  } else { // inline function
+    vector<store::Iterator_t> lVariableValues;
+    const checked_vector<expr_t>& lVars = v.get_vars();
+    checked_vector<expr_t>::const_iterator lIt = lVars.begin();
+    for(; lIt != lVars.end(); ++lIt)
+    {
+      store::Iterator_t lVar = new PlanWrapper(pop_itstack(), theCCB, 0, 0);
+      lVariableValues.push_back(lVar);
+    }
+    ITEM_FACTORY->createFunction (fitem, lVariableValues, v.get_function()->get_signature(), lImpl);
+  }
+  push_itstack(new SingletonIterator (sctx, qloc, fitem));
+}
+
+bool begin_visit(dynamic_function_invocation_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(dynamic_function_invocation_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  checked_vector<PlanIter_t> lItem;
+  checked_vector<PlanIter_t> lArgs(v.get_args().size());
+  generate (lArgs.rbegin(), lArgs.rend(), stack_to_generator(itstack));
+  
+  lItem.push_back(pop_itstack());
+  
+  push_itstack(new DynamicFunctionInvocationIterator(sctx, qloc, lItem, lArgs));
 }
 
 bool begin_visit (debugger_expr& v)

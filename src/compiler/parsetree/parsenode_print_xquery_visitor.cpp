@@ -1886,6 +1886,13 @@ DEFAULT_END_VISIT (ParamList)
     DEFAULT_VISIT (ExitExpr);
     DEFAULT_VISIT (WhileExpr);
     DEFAULT_VISIT (FlowCtlStatement);
+  
+    DEFAULT_VISIT (LiteralFunctionItem);
+    DEFAULT_VISIT (InlineFunction);
+    DEFAULT_VISIT (AnyFunctionTest);
+    DEFAULT_VISIT (TypeList);
+    DEFAULT_VISIT (TypedFunctionTest);
+    DEFAULT_VISIT (DynamicFunctionInvocation);
 
     DEFAULT_VISIT (ParseErrorNode);
 };

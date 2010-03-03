@@ -42,7 +42,10 @@ function::function(const signature& sig)
   theKind(FunctionConsts::FN_UNKNOWN),
   theFlags(0)
 {
-  if(getName()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
+  const store::Item* lName = getName();
+  //lName may be null for inlined functions
+  if(lName != 0 && 
+     getName()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
     setFlag(FunctionConsts::hasFnNamespace);
 
   zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();

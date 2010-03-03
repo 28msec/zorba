@@ -46,6 +46,7 @@
 #include "runtime/eval/eval.h"
 #include "runtime/fnerror/fnerror.h"
 #include "runtime/fnput/fnput.h"
+#include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/indexing/index_ddl.h"
 #include "runtime/introspection/dctx.h"
@@ -1111,6 +1112,20 @@ void PrinterVisitor::endVisit ( const FnPutIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnPutIterator>
+
+
+// <DynamicFunctionInvocationIterator>
+void PrinterVisitor::beginVisit ( const DynamicFunctionInvocationIterator& a) {
+  thePrinter.startBeginVisit("DynamicFunctionInvocationIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DynamicFunctionInvocationIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DynamicFunctionInvocationIterator>
 
 
 // <ActivateICIterator>

@@ -576,6 +576,73 @@ void *begin_visit(const VarBinding &n)
     return no_state;
 }
 
+
+void* begin_visit(const LiteralFunctionItem& n)
+{
+  os << "<LiteralFunctionItem " << "arity=\"" << n.getArity() << "\" ";
+  os << "' npos='" << n.get_location() << "' ptr='" << &n << "'";
+  os << ">";
+  INDENT_INC; NL;
+  return no_state;
+}
+
+END_TAG(LiteralFunctionItem)
+
+void* begin_visit(const InlineFunction& n)
+{
+  os << "<InlineFunction ";
+  os << "' npos='" << n.get_location() << "' ptr='" << &n << "'";
+  os << ">";
+  INDENT_INC; NL;
+  return no_state;
+}
+
+END_TAG(InlineFunction)
+
+void* begin_visit(const AnyFunctionTest& n)
+{
+  os << "<AnyFunctionTest />";
+  NL;
+  return 0;
+}
+
+void end_visit(const AnyFunctionTest& n, void* /*visit_state*/){}
+
+void* begin_visit(const TypeList& n)
+{
+  os << "<TypeList ";
+  os << "' npos='" << n.get_location() << "' ptr='" << &n << "'";
+  os << ">";
+  INDENT_INC; NL;
+  return no_state;
+}
+
+END_TAG(TypeList)
+
+void *begin_visit(const TypedFunctionTest& n)
+{
+  os << "<TypedFunctionTest ";
+  os << "' npos='" << n.get_location() << "' ptr='" << &n << "'";
+  os << ">";
+  INDENT_INC; NL;
+  return no_state;  
+}
+
+END_TAG(TypedFunctionTest)
+
+
+void *begin_visit(const DynamicFunctionInvocation& n)
+{
+  os << "<DynamicFunctionInvocation ";
+  os << "' npos='" << n.get_location() << "' ptr='" << &n << "'";
+  os << ">";
+  INDENT_INC; NL;
+  return no_state;
+}
+
+END_TAG(DynamicFunctionInvocation)
+
+
 END_TAG (AbbrevForwardStep)
 BEGIN_END_TAG (AdditiveExpr)
 BEGIN_END_TAG (AndExpr)

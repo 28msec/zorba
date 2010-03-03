@@ -172,8 +172,10 @@ PlanIter_t user_function::get_plan(CompilerCB *ccb) const
     {
       param_map.put((uint64_t)&*m_args[i], &param_iter_vec[i]);
     }
-
-    m_plan = zorba::codegen(getName()->getStringValue()->c_str (),
+    
+    const store::Item* lName = getName();
+    //lName may be null of inlined functions
+    m_plan = zorba::codegen(lName==0?0:lName->getStringValue()->c_str (),
                             &*m_expr_body,
                             ccb,
                             &param_map);

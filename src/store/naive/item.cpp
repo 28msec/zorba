@@ -24,6 +24,7 @@
 #include "store/api/iterator.h"
 #include "store/naive/store_defs.h"
 
+#include "functions/signature.h"
 
 namespace zorba 
 { 
@@ -775,6 +776,29 @@ error::ZorbaError* Item::getError() const
                         __FUNCTION__, "ErrorItem");
 }
 
+const Item_t Item::getFunctionName() const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    __FUNCTION__, "FunctionItem");  
+}
+
+void Item::getFunctionVariables(std::vector<Iterator_t>&) const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    __FUNCTION__, "FunctionItem");  
+}
+
+const Iterator_t Item::getFunctionImplementation() const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    __FUNCTION__, "FunctionItem");
+}
+
+const signature Item::getFunctionSignature() const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+    __FUNCTION__, "FunctionItem");
+}
 
 } // namespace store
 } // namespace zorba

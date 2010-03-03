@@ -6283,6 +6283,123 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
+/*
+ * LiteralFunctionItem := QName "#" IntegerLiteral
+ */
+class LiteralFunctionItem: public exprnode
+{
+  private:
+    rchandle<QName> theQName;
+    Integer& theArity;
+
+  public:
+    LiteralFunctionItem(const QueryLoc& loc_, rchandle<QName> aQName, Integer& aArity):
+      exprnode(loc_), theQName(aQName), theArity(aArity){}
+
+      rchandle<QName> getQName() const { return theQName; }
+      const Integer& getArity() const { return theArity; }
+
+    void accept(parsenode_visitor&) const;
+};
+
+/*
+ * InlineFunction := "function" "(" ParamList? ")" ("as" SequenceType)? EnclosedExpr
+ */
+class InlineFunction: public exprnode
+{
+  private:
+  rchandle<ParamList> theParamList;
+  rchandle<SequenceType> theReturnType;
+  rchandle<EnclosedExpr> theEnclosedExpr;
+
+  public:
+  InlineFunction(const QueryLoc& loc_, rchandle<ParamList> aParamList, rchandle<SequenceType> aReturnType, rchandle<EnclosedExpr> aEnclosedExpr):
+    exprnode(loc_), theParamList(aParamList), theReturnType(aReturnType), theEnclosedExpr(aEnclosedExpr){}
+
+  rchandle<ParamList> getParamList() const { return theParamList; }
+  rchandle<SequenceType> getReturnType() const { return theReturnType; }
+  rchandle<EnclosedExpr> getEnclosedExpr() const { return theEnclosedExpr; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+/*
+ * AnyFunctionTest := "function" "(" "*" ")"
+ */
+class AnyFunctionTest: public parsenode
+{
+public:
+  AnyFunctionTest(const QueryLoc& loc_): parsenode(loc_){}
+  void accept(parsenode_visitor&) const;
+};
+
+/*
+ * TypedFunctionTest := "(" (SequenceType ("," SequenceType)*)? ")"
+ */
+class TypeList: public parsenode
+{
+protected:
+  std::vector<rchandle<parsenode> > theTypes;
+
+public:
+  TypeList(const QueryLoc& loc_): parsenode(loc_){}
+
+  void push_back(rchandle<parsenode> aType) { theTypes.push_back(aType); }
+
+  rchandle<parsenode> operator[](int i) const { return theTypes[i]; }
+
+  int size() const { return theTypes.size (); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+/**
+ * TypedFunctionTest := "function" "(" TypeList? ")"  "as" SequenceType
+ */
+class TypedFunctionTest: public parsenode
+{
+private:
+  rchandle<TypeList> theArgTypes;
+  rchandle<SequenceType> theReturnType;
+  
+public:
+   TypedFunctionTest(const QueryLoc& loc_, rchandle<SequenceType> aReturnType):
+     parsenode(loc_), theArgTypes(0), theReturnType(aReturnType){}
+  TypedFunctionTest(const QueryLoc& loc_, rchandle<TypeList> aTypeList, rchandle<SequenceType> aReturnType):
+     parsenode(loc_), theArgTypes(aTypeList), theReturnType(aReturnType){}
+  
+  rchandle<TypeList> getArgumentTypes() const { return theArgTypes; }
+  rchandle<SequenceType> getReturnType() const { return theReturnType; }
+
+    void accept(parsenode_visitor&) const;
+};
+
+/**
+ * DynamicFunctionInvocation := FilterExpr LPAR ArgList RPAR
+ */
+class DynamicFunctionInvocation: public exprnode
+{
+private:
+  rchandle<exprnode> thePrimaryExpr;
+  rchandle<ArgList>     theArgList;
+
+public:
+  DynamicFunctionInvocation(
+    const QueryLoc& loc_,
+    rchandle<exprnode> aPrimaryExpr
+  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(0){}
+  
+  DynamicFunctionInvocation(
+    const QueryLoc& loc_,
+    rchandle<exprnode> aPrimaryExpr,
+    rchandle<ArgList> aArgList
+  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(aArgList){}
+  
+  rchandle<exprnode> getPrimaryExpr() const { return thePrimaryExpr; }
+  rchandle<ArgList> getArgList() const { return theArgList; }
+
+    void accept(parsenode_visitor&) const;
+};
 
 }  /* namespace zorba */
 #endif	/*  ZORBA_PARSENODES_H */
