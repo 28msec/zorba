@@ -135,7 +135,7 @@ IF(LIBXSLT_FOUND)
     SET(CXXFLAGS ${CXXFLAGS} ${LIBXSLT_DEFINITONS})
 
 ELSE(LIBXSLT_FOUND)
-    MESSAGE(FATAL_ERROR "The libslt library is required in order to build zorba with xqueryx capabilities.")
+    MESSAGE(FATAL_ERROR "The libxslt library is required in order to build zorba with xqueryx capabilities.")
 ENDIF(LIBXSLT_FOUND)
 ENDIF(ZORBA_XQUERYX)
 
