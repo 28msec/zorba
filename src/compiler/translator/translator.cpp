@@ -1264,7 +1264,7 @@ ftexpr* pop_ftstack(int n = 1)
     if ( Properties::instance()->traceTranslator() ) {
       cout << "Popped from ftnode stack:\n";
       if ( e )
-        cout << *e << endl;
+        ;//cout << *e << endl;
       else
         cout << "NULL" << endl;
     }
@@ -10614,8 +10614,8 @@ void *begin_visit (const FTRange& v) {
 void end_visit (const FTRange& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 
-  additive_expr_t e1 = pop_nodestack();
-  additive_expr_t e2 = pop_nodestack();
+  additive_expr_t e1 = dynamic_cast<additive_expr*>(pop_nodestack().getp());
+  additive_expr_t e2 = dynamic_cast<additive_expr*>(pop_nodestack().getp());
   if ( e2 )
     pop_nodestack(); // pop the sentinel
 
@@ -10834,7 +10834,7 @@ void *begin_visit (const FTWindow& v) {
 void end_visit (const FTWindow& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   ftwindow_expr *const w = new ftwindow_expr(
-    v.get_location(), pop_nodestack(), v.get_unit()->get_unit()
+    v.get_location(), dynamic_cast<additive_expr*>(pop_nodestack().getp()), v.get_unit()->get_unit()
   );
   push_ftstack( w );
 }
