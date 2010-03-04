@@ -124,7 +124,7 @@ ft_expr::ft_expr( short sctx, QueryLoc const &loc ) :
 ft_expr::~ft_expr() {
 }
 
-ostream& ft_expr::put(ostream& os) const {
+ostream& ft_expr::put( ostream &os ) const {
   return os << "ft_expr\n";
 }
 
