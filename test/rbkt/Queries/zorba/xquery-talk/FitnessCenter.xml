@@ -1,0 +1,14 @@
+<FitnessCenter>
+	<Member Level="platinum">
+		<Name>Jeff</Name>
+		<FavoriteColor>lightgrey</FavoriteColor>
+	</Member>
+	<Member Level="gold">
+		<Name>David</Name>
+		<FavoriteColor>lightblue</FavoriteColor>
+	</Member>
+	<Member Level="platinum">
+		<Name>Roger</Name>
+		<FavoriteColor>lightyellow</FavoriteColor>
+	</Member>
+</FitnessCenter>
