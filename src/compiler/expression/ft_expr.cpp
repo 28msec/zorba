@@ -144,6 +144,10 @@ ftcontains_expr::ftcontains_expr(
 {
 }
 
+void ftcontains_expr::accept( expr_visitor &v ) {
+  // TODO
+}
+
 void ftcontains_expr::serialize( serialization::Archiver &ar )
 {
   serialize_baseclass( ar, (expr*)this );
@@ -187,21 +191,26 @@ void ftexpr::serialize( serialization::Archiver &ar ) {
   ar & loc_;
 }
 
-void ftand_expr::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftexpr*)this );
-  ar & list_;
-}
-
 ftand_expr::ftand_expr(
-  QueryLoc const &loc, ftexpr_list_t &r
+  QueryLoc const &loc,
+  ftexpr_list_t &list
 ) :
   ftexpr( loc )
 {
-  list_.swap( r );
+  list_.swap( list );
 }
 
 ftand_expr::~ftand_expr() {
   delete_ptr_container( list_ );
+}
+
+void ftand_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
+void ftand_expr::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass( ar, (ftexpr*)this );
+  ar & list_;
 }
 
 ftcase_option_expr::ftcase_option_expr(
@@ -211,6 +220,10 @@ ftcase_option_expr::ftcase_option_expr(
   ftmatch_option_expr( loc ),
   mode_( mode )
 {
+}
+
+void ftcase_option_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftcase_option_expr::serialize( serialization::Archiver &ar ) {
@@ -226,6 +239,10 @@ ftcontent_expr::ftcontent_expr(
 {
 }
 
+void ftcontent_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
 ftdiacritics_option_expr::ftdiacritics_option_expr(
   QueryLoc const &loc,
   ft_diacritics_mode::type mode
@@ -233,6 +250,10 @@ ftdiacritics_option_expr::ftdiacritics_option_expr(
   ftmatch_option_expr( loc ),
   mode_( mode )
 {
+}
+
+void ftdiacritics_option_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftdiacritics_option_expr::serialize( serialization::Archiver &ar ) {
@@ -249,6 +270,10 @@ ftdistance_expr::ftdistance_expr(
   range_( range ),
   unit_( unit )
 {
+}
+
+void ftdistance_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftdistance_expr::serialize( serialization::Archiver &ar ) {
@@ -268,6 +293,10 @@ ftextension_selection_expr::ftextension_selection_expr(
 {
 }
 
+void ftextension_selection_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
 void ftextension_selection_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftexpr*)this );
 }
@@ -281,6 +310,10 @@ ftextension_option_expr::ftextension_option_expr(
   qname_( qname ),
   val_( val )
 {
+}
+
+void ftextension_option_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftextension_option_expr::serialize( serialization::Archiver &ar ) {
@@ -297,17 +330,35 @@ ftlanguage_option_expr::ftlanguage_option_expr(
 {
 }
 
+void ftlanguage_option_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
 void ftlanguage_option_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftmatch_option_expr*)this );
   ar & language_;
+}
+
+void ftmatch_option_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftmatch_option_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftexpr*)this );
 }
 
+ftmild_not_expr::ftmild_not_expr( QueryLoc const &loc, ftexpr_list_t &r ) :
+  ftexpr( loc )
+{
+  list_.swap( r );
+}
+
 ftmild_not_expr::~ftmild_not_expr() {
   delete_ptr_container( list_ );
+}
+
+void ftmild_not_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftmild_not_expr::serialize( serialization::Archiver &ar ) {
@@ -319,12 +370,28 @@ ftor_expr::~ftor_expr() {
   delete_ptr_container( list_ );
 }
 
+ftor_expr::ftor_expr( QueryLoc const &loc, ftexpr_list_t &list ) :
+  ftexpr( loc )
+{
+  list_.swap( list );
+}
+
+void ftor_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
 void ftor_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftexpr*)this );
   ar & list_;
 }
 
-ftorder_expr::ftorder_expr( QueryLoc const &loc ) : ftpos_filter_expr( loc ) {
+ftorder_expr::ftorder_expr( QueryLoc const &loc ) :
+  ftpos_filter_expr( loc )
+{
+}
+
+void ftorder_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftorder_expr::serialize( serialization::Archiver &ar ) {
@@ -361,6 +428,10 @@ ftprimary_with_options_expr::~ftprimary_with_options_expr() {
   delete wild_card_option_;
 }
 
+void ftprimary_with_options_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
 void ftprimary_with_options_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftexpr*)this );
   ar & case_option_;
@@ -388,6 +459,10 @@ ftrange_expr::ftrange_expr(
 {
 }
 
+void ftrange_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
 void ftrange_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftexpr*)this );
   SERIALIZE_ENUM(ft_range_mode::type,mode_);
@@ -402,6 +477,10 @@ ftscope_expr::ftscope_expr(
   scope_( scope ),
   unit_( unit )
 {
+}
+
+void ftscope_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftscope_expr::serialize( serialization::Archiver &ar ) {
@@ -425,6 +504,10 @@ ftselection_expr::~ftselection_expr() {
   delete_ptr_container( list_ );
 }
 
+void ftselection_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
 void ftselection_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftexpr*)this );
   ar & list_;
@@ -438,6 +521,10 @@ ftstem_option_expr::ftstem_option_expr(
   ftmatch_option_expr( loc ),
   mode_( mode )
 {
+}
+
+void ftstem_option_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftstem_option_expr::serialize( serialization::Archiver &ar ) {
@@ -456,6 +543,10 @@ ftstop_words_expr::ftstop_words_expr(
   list_( stop_word_list ),
   mode_( mode )
 {
+}
+
+void ftstop_words_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftstop_words_expr::serialize( serialization::Archiver &ar ) {
@@ -485,6 +576,10 @@ ftstop_word_option_expr::ftstop_word_option_expr(
   stop_words_.swap( stop_word_list );
 }
 
+void ftstop_word_option_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
 void ftstop_word_option_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftmatch_option_expr*)this );
   // TODO: ar & stop_words_;
@@ -502,6 +597,10 @@ ftthesaurus_id_expr::ftthesaurus_id_expr(
   relationship_( relationship_ ),
   levels_( levels )
 {
+}
+
+void ftthesaurus_id_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftthesaurus_id_expr::serialize( serialization::Archiver &ar ) {
@@ -528,6 +627,10 @@ ftthesaurus_option_expr::~ftthesaurus_option_expr() {
   delete_ptr_container( thesaurus_id_list_ );
 }
 
+void ftthesaurus_option_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
 void ftthesaurus_option_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftmatch_option_expr*)this );
   ar & thesaurus_id_list_;
@@ -544,6 +647,10 @@ ftunary_not_expr::~ftunary_not_expr() {
   delete subexpr_;
 }
 
+void ftunary_not_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
 void ftunary_not_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftexpr*)this );
   ar & subexpr_;
@@ -556,6 +663,10 @@ ftwild_card_option_expr::ftwild_card_option_expr(
   ftmatch_option_expr( loc ),
   mode_( mode )
 {
+}
+
+void ftwild_card_option_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftwild_card_option_expr::serialize( serialization::Archiver &ar ) {
@@ -574,6 +685,10 @@ ftwindow_expr::ftwindow_expr(
 {
 }
 
+void ftwindow_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
+}
+
 void ftwindow_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftpos_filter_expr*)this );
   ar & window_;
@@ -589,6 +704,10 @@ ftwords_expr::ftwords_expr(
   expr_( expr ),
   mode_( mode )
 {
+}
+
+void ftwords_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftwords_expr::serialize( serialization::Archiver &ar ) {
@@ -611,6 +730,10 @@ ftwords_times_expr::ftwords_times_expr(
 ftwords_times_expr::~ftwords_times_expr() {
   delete ftwords_;
   delete fttimes_;
+}
+
+void ftwords_times_expr::accept( ftexpr_visitor &v ) const {
+  // TODO
 }
 
 void ftwords_times_expr::serialize( serialization::Archiver &ar ) {

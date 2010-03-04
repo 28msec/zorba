@@ -5958,23 +5958,23 @@ opt_levels
 
 // [173]
 FTStopWordOption
-    :   WITH STOP WORDS FTStopWords opt_FTStopWordsInclExcl_list
+    :   STOP WORDS FTStopWords opt_FTStopWordsInclExcl_list
         {
             $$ = new FTStopWordOption(
                 LOC(@$),
-                dynamic_cast<FTStopWords*>($4), $5,
+                dynamic_cast<FTStopWords*>($3), $4,
                 ft_stop_words_mode::with
             );
-            delete $5;
+            delete $4;
         }
-    |   WITH DEFAULT STOP WORDS opt_FTStopWordsInclExcl_list
+    |   STOP WORDS DEFAULT opt_FTStopWordsInclExcl_list
         {
             $$ = new FTStopWordOption(
-                LOC(@$), NULL, $5, ft_stop_words_mode::with_default
+                LOC(@$), NULL, $4, ft_stop_words_mode::with_default
             );
-            delete $5;
+            delete $4;
         }
-    |   WITHOUT STOP WORDS
+    |   NO STOP WORDS
         {
             $$ = new FTStopWordOption(
                 LOC(@$), NULL, NULL, ft_stop_words_mode::without
@@ -6066,11 +6066,11 @@ FTLanguageOption
 
 // [177]
 FTWildCardOption
-    :   WITH WILDCARDS
+    :   WILDCARDS
         {
             $$ = new FTWildCardOption( LOC(@$), ft_wild_card_mode::with );
         }
-    |   WITHOUT WILDCARDS
+    |   NO WILDCARDS
         {
             $$ = new FTWildCardOption( LOC(@$), ft_wild_card_mode::without );
         }
