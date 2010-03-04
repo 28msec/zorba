@@ -160,7 +160,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
     FTStopWordOption::incl_excl_list_t *incl_excl_list;
     FTSelection::pos_filter_list_t *pos_filter_list;
     FTThesaurusOption::thesaurus_id_list_t *thesaurus_id_list;
-    ParseConstants::ft_anyall_option_t ft_anyall_option;
+    ft_anyall_mode::type ft_anyall_value;
 };
 
 
@@ -220,49 +220,50 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %token BLANK                            "<blank>"
 
-%token VALIDATE                         "'validate'"
-%token TYPESWITCH                       "'typeswitch'"
-%token ELEMENT                          "'element'"
-%token DOCUMENT                         "'document'"
-%token TEXT                             "'text'"
+%token BASE_URI                         "'base-uri'"
+%token BOUNDARY_SPACE                   "'boundary-space'"
 %token COMMENT                          "'comment'"
-%token FUNCTION                         "'function'"
-%token UPDATING                         "'updating'"
-%token SEQUENTIAL                       "'sequential'"
-%token DETERMINISTIC                    "'deterministic'"
-%token NONDETERMINISTIC                 "'nondeterministic'"
-%token SIMPLE                           "'simple'"
-%token IF                               "'if'"
-%token IMPORT                           "'import'"
-%token PROCESSING_INSTRUCTION           "'processing-instruction'"
-%token MOST                             "'most'"
-%token SOME                             "'some'"
-%token STABLE                           "'stable'"
-%token OPTION                           "'option'"
-%token WORD                             "'word'"
-%token SCHEMA                           "'schema'"
-%token SPACE                            "'space'"
-%token SET                              "'set'"
-%token LET                              "'let'"
 %token CONSTRUCTION                     "'construction'"
+%token COPY_NAMESPACES                  "'copy-namespaces'"
+%token COUNT                            "'count'"
+%token DETERMINISTIC                    "'deterministic'"
+%token DOCUMENT                         "'document'"
+%token DOCUMENT_NODE                    "'document-node'"
+%token ELEMENT                          "'element'"
 %token EVAL                             "'eval'"
 %token FOR                              "'for'"
-%token OUTER                            "'outer'"
-%token SLIDING                          "'sliding'"
-%token TUMBLING                         "'tumbling'"
-%token PREVIOUS                         "'previous'"
-%token NEXT                             "'next'"
-%token ONLY                             "'only'"
-%token WHEN                             "'when'"
-%token COUNT                            "'count'"
-%token ORDERING                         "'ordering'"
-%token BASE_URI                         "'base-uri'"
-%token SCHEMA_ELEMENT                   "'schema-element'"
-%token DOCUMENT_NODE                    "'document-node'"
-%token COPY_NAMESPACES                  "'copy-namespaces'"
+%token FUNCTION                         "'function'"
+%token IF                               "'if'"
+%token IMPORT                           "'import'"
 %token INSTANCE                         "'instance'"
+%token LET                              "'let'"
+%token MOST                             "'most'"
+%token NEXT                             "'next'"
+%token NO                               "'no'"
+%token NONDETERMINISTIC                 "'nondeterministic'"
+%token ONLY                             "'only'"
+%token OPTION                           "'option'"
+%token ORDERING                         "'ordering'"
+%token OUTER                            "'outer'"
+%token PREVIOUS                         "'previous'"
+%token PROCESSING_INSTRUCTION           "'processing-instruction'"
+%token SCHEMA                           "'schema'"
 %token SCHEMA_ATTRIBUTE                 "'schema-attribute'"
-%token BOUNDARY_SPACE                   "'boundary-space'"
+%token SCHEMA_ELEMENT                   "'schema-element'"
+%token SEQUENTIAL                       "'sequential'"
+%token SET                              "'set'"
+%token SIMPLE                           "'simple'"
+%token SLIDING                          "'sliding'"
+%token SOME                             "'some'"
+%token SPACE                            "'space'"
+%token STABLE                           "'stable'"
+%token TEXT                             "'text'"
+%token TUMBLING                         "'tumbling'"
+%token TYPESWITCH                       "'typeswitch'"
+%token UPDATING                         "'updating'"
+%token VALIDATE                         "'validate'"
+%token WHEN                             "'when'"
+%token WORD                             "'word'"
 
 %token DECIMAL_FORMAT                   "'decimal-format'"
 %token DECIMAL_SEPARATOR                "'decimal-separator'"
@@ -776,7 +777,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* ----------------- */
 %type <node> FTAnd
 %type <node> FTAnyallOption opt_FTAnyallOption
-%type <ft_anyall_option> opt_word opt_words
+%type <ft_anyall_value> opt_word opt_words
 %type <node> FTBigUnit
 %type <node> FTCaseOption
 %type <expr> FTContainsExpr
@@ -800,7 +801,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> FTRange
 %type <node> FTScope
 %type <node> FTScoreVar
-%type <node> FTSelection
+%type <node> FTSelection opt_FTSelection
 %type <node> FTStemOption
 %type <node> FTStopWords
 %type <node> FTStopWordOption
@@ -3040,7 +3041,7 @@ ComparisonExpr
         }
     ;
 
-// [51] FTContainsExpr
+// [51]
 FTContainsExpr
     :   RangeExpr %prec FTCONTAINS_REDUCE
         {
@@ -3049,7 +3050,8 @@ FTContainsExpr
     |   RangeExpr FTCONTAINS FTSelection opt_FTIgnoreOption
         {
             $$ = new FTContainsExpr(
-                LOC(@$), $1,
+                LOC(@$),
+                dynamic_cast<FTRange*>($1),
                 dynamic_cast<FTSelection*>($3),
                 dynamic_cast<FTIgnoreOption*>($4)
             );
@@ -5539,9 +5541,9 @@ opt_FTWeight
 
 // [145]
 FTWeight
-    :   WEIGHT RangeExpr
+    :   WEIGHT LBRACE Expr RBRACE
         {
-            $$ = new FTWeight( LOC(@$), dynamic_cast<RangeExpr*>($2) );
+            $$ = new FTWeight( LOC(@$), dynamic_cast<exprnode*>($3) );
         }
     ;
 
@@ -5549,7 +5551,7 @@ FTWeight
 FTPrimary
     :   FTWords opt_FTTimes
         {
-            $$ = new FTPrimary(
+            $$ = new FTWordsTimes(
                 LOC(@$),
                 dynamic_cast<FTWords*>($1),
                 dynamic_cast<FTTimes*>($2)
@@ -5578,7 +5580,22 @@ opt_FTTimes
 
 // [154]
 FTExtensionSelection
-    :   Pragma_list
+    :   Pragma_list LBRACE opt_FTSelection RBRACE
+        {
+            $$ = new FTExtensionSelection(
+                LOC(@$),
+                dynamic_cast<PragmaList*>($1),
+                dynamic_cast<FTSelection*>($3)
+            );
+        }
+    ;
+
+opt_FTSelection
+    :   /* empty */
+        {
+            $$ = NULL;
+        }
+    |   FTSelection
         {
             $$ = $1;
         }
@@ -5606,14 +5623,16 @@ FTWordsValue
         }
     |   LBRACE Expr RBRACE
         {
-            $$ = new FTWordsValue( LOC(@$), NULL, dynamic_cast<exprnode*>($2) );
+            $$ = new FTWordsValue(
+                LOC(@$), NULL, dynamic_cast<exprnode*>($2)
+            );
         }
     ;
 
 opt_FTAnyallOption
     :   /* empty */
         {
-            $$ = new FTAnyallOption( LOC(@$), ParseConstants::ft_opt_any );
+            $$ = new FTAnyallOption( LOC(@$), ft_anyall_mode::any );
         }
     |   FTAnyallOption
         {
@@ -5633,29 +5652,29 @@ FTAnyallOption
         }
     |   PHRASE
         {
-            $$ = new FTAnyallOption( LOC(@$), ParseConstants::ft_opt_phrase );
+            $$ = new FTAnyallOption( LOC(@$), ft_anyall_mode::phrase );
         }
     ;
 
 opt_word
     :   /* empty */
         {
-            $$ = ParseConstants::ft_opt_any;
+            $$ = ft_anyall_mode::any;
         }
     |   WORD
         {
-            $$ = ParseConstants::ft_opt_any_word;
+            $$ = ft_anyall_mode::any_word;
         }
     ;
 
 opt_words
     :   /* empty */
         {
-            $$ = ParseConstants::ft_opt_all;
+            $$ = ft_anyall_mode::all;
         }
     |   WORDS
         {
-            $$ = ParseConstants::ft_opt_all_words;
+            $$ = ft_anyall_mode::all_words;
         }
     ;
 
@@ -5697,7 +5716,7 @@ FTWindow
         {
             $$ = new FTWindow(
                 LOC(@$),
-                static_cast<UnionExpr*>($2),
+                static_cast<AdditiveExpr*>($2),
                 static_cast<FTUnit*>($3)
             );
         }
@@ -5719,30 +5738,30 @@ FTDistance
 FTUnit
     :   WORDS
         {
-            $$ = new FTUnit( LOC(@$), ParseConstants::ft_unit_words );
+            $$ = new FTUnit( LOC(@$), ft_unit::words );
         }
     |   SENTENCES
         {
-            $$ = new FTUnit( LOC(@$), ParseConstants::ft_unit_sentences );
+            $$ = new FTUnit( LOC(@$), ft_unit::sentences );
         }
     |   PARAGRAPHS
         {
-            $$ = new FTUnit( LOC(@$), ParseConstants::ft_unit_paragraphs );
+            $$ = new FTUnit( LOC(@$), ft_unit::paragraphs );
         }
     ;
 
 // [166]
 FTMatchOptions
-    :   FTMatchOption
+    :   USING FTMatchOption
         {
             FTMatchOptions *mo = new FTMatchOptions( LOC(@$) );
-            mo->push_back( dynamic_cast<FTMatchOption*>($1) );
+            mo->push_back( dynamic_cast<FTMatchOption*>($2) );
             $$ = mo;
         }
-    |   FTMatchOptions FTMatchOption
+    |   FTMatchOptions USING FTMatchOption
         {
             FTMatchOptions *mo = dynamic_cast<FTMatchOptions*>($1);
-            mo->push_back( dynamic_cast<FTMatchOption*>($2) );
+            mo->push_back( dynamic_cast<FTMatchOption*>($3) );
             $$ = $1;
         }
     ;
@@ -5787,23 +5806,19 @@ FTMatchOption
 FTCaseOption
     :   CASE SENSITIVE
         {
-            $$ = new FTCaseOption(
-                LOC(@$), ParseConstants::ft_case_sensitive
-            );
+            $$ = new FTCaseOption( LOC(@$), ft_case_mode::sensitive );
         }
     |   CASE INSENSITIVE
         {
-            $$ = new FTCaseOption(
-                LOC(@$), ParseConstants::ft_case_insensitive
-            );
+            $$ = new FTCaseOption( LOC(@$), ft_case_mode::insensitive );
         }
     |   LOWERCASE
         {
-            $$ = new FTCaseOption( LOC(@$), ParseConstants::ft_case_lower );
+            $$ = new FTCaseOption( LOC(@$), ft_case_mode::lower );
         }
     |   UPPERCASE
         {
-            $$ = new FTCaseOption( LOC(@$), ParseConstants::ft_case_upper );
+            $$ = new FTCaseOption( LOC(@$), ft_case_mode::upper );
         }
     ;
 
@@ -5812,13 +5827,13 @@ FTDiacriticsOption
     :   DIACRITICS SENSITIVE
         {
             $$ = new FTDiacriticsOption(
-                LOC(@$), ParseConstants::ft_diacritics_senstive
+                LOC(@$), ft_diacritics_mode::senstive
             );
         }
     |   DIACRITICS INSENSITIVE
         {
             $$ = new FTDiacriticsOption(
-                LOC(@$), ParseConstants::ft_diacritics_insensitive
+                LOC(@$), ft_diacritics_mode::insensitive
             );
         }
     ;
@@ -5835,44 +5850,40 @@ FTExtensionOption
 
 // [170]
 FTStemOption
-    :   WITH STEMMING
+    :   STEMMING
         {
-            $$ = new FTStemOption(
-                LOC(@$), ParseConstants::ft_stemmode_with
-            );
+            $$ = new FTStemOption( LOC(@$), ft_stem_mode::with );
         }
-    |   WITHOUT STEMMING
+    |   NO STEMMING
         {
-            $$ = new FTStemOption(
-                LOC(@$), ParseConstants::ft_stemmode_without
-            );
+            $$ = new FTStemOption( LOC(@$), ft_stem_mode::without );
         }
     ;
 
 // [171]
 FTThesaurusOption
-    :   WITH THESAURUS FTThesaurusID_or_default
+    :   THESAURUS FTThesaurusID_or_default
         {
             FTThesaurusOption::thesaurus_id_list_t *til = NULL;
-            if ( $3 ) {
+            if ( $2 ) {
                 til = new FTThesaurusOption::thesaurus_id_list_t;
-                til->push_back( dynamic_cast<FTThesaurusID*>($3) );
+                til->push_back( dynamic_cast<FTThesaurusID*>($2) );
             }
             $$ = new FTThesaurusOption( LOC(@$), til, !til );
             delete til;
         }
-    |   WITH THESAURUS LPAR FTThesaurusID_or_default opt_FTThesaurus_list RPAR
+    |   THESAURUS LPAR FTThesaurusID_or_default opt_FTThesaurus_list RPAR
         {
-            FTThesaurusOption::thesaurus_id_list_t *til = $5;
-            if ( $4 ) {
+            FTThesaurusOption::thesaurus_id_list_t *til = $4;
+            if ( $3 ) {
                 if ( !til )
                     til = new FTThesaurusOption::thesaurus_id_list_t;
-                til->push_back( dynamic_cast<FTThesaurusID*>($4) );
+                til->push_back( dynamic_cast<FTThesaurusID*>($3) );
             }
-            $$ = new FTThesaurusOption( LOC(@$), til, !$4 );
+            $$ = new FTThesaurusOption( LOC(@$), til, !$3 );
             delete til;
         }
-    |   WITHOUT THESAURUS
+    |   NO THESAURUS
         {
             $$ = new FTThesaurusOption( LOC(@$), NULL, false, true );
         }
@@ -5952,21 +5963,21 @@ FTStopWordOption
             $$ = new FTStopWordOption(
                 LOC(@$),
                 dynamic_cast<FTStopWords*>($4), $5,
-                ParseConstants::ft_stop_words_with
+                ft_stop_words_mode::with
             );
             delete $5;
         }
     |   WITH DEFAULT STOP WORDS opt_FTStopWordsInclExcl_list
         {
             $$ = new FTStopWordOption(
-                LOC(@$), NULL, $5, ParseConstants::ft_stop_words_with_default
+                LOC(@$), NULL, $5, ft_stop_words_mode::with_default
             );
             delete $5;
         }
     |   WITHOUT STOP WORDS
         {
             $$ = new FTStopWordOption(
-                LOC(@$), NULL, NULL, ParseConstants::ft_stop_words_without
+                LOC(@$), NULL, NULL, ft_stop_words_mode::without
             );
         }
     ;
@@ -6032,7 +6043,7 @@ FTStopWordsInclExcl
             $$ = new FTStopWordsInclExcl(
                 LOC(@$),
                 dynamic_cast<FTStopWords*>($2),
-                ParseConstants::ft_stop_words_union
+                ft_stop_words_unex::union_
             );
         }
     |   EXCEPT FTStopWords
@@ -6040,7 +6051,7 @@ FTStopWordsInclExcl
             $$ = new FTStopWordsInclExcl(
                 LOC(@$),
                 dynamic_cast<FTStopWords*>($2),
-                ParseConstants::ft_stop_words_except
+                ft_stop_words_unex::except
             );
         }
     ;
@@ -6057,11 +6068,11 @@ FTLanguageOption
 FTWildCardOption
     :   WITH WILDCARDS
         {
-            $$ = new FTWildCardOption( LOC(@$), true );
+            $$ = new FTWildCardOption( LOC(@$), ft_wild_card_mode::with );
         }
     |   WITHOUT WILDCARDS
         {
-            $$ = new FTWildCardOption( LOC(@$), false );
+            $$ = new FTWildCardOption( LOC(@$), ft_wild_card_mode::without );
         }
     ;
 
@@ -6069,21 +6080,15 @@ FTWildCardOption
 FTContent
     :   AT START
         {
-            $$ = new FTContent(
-                LOC(@$), ParseConstants::ft_contentmode_at_start
-            );
+            $$ = new FTContent( LOC(@$), ft_content_mode::at_start );
         }
     |   AT END
         {
-            $$ = new FTContent(
-                LOC(@$), ParseConstants::ft_contentmode_at_end
-            );
+            $$ = new FTContent( LOC(@$), ft_content_mode::at_end );
         }
     |   ENTIRE CONTENT
         {
-            $$ = new FTContent(
-                LOC(@$), ParseConstants::ft_contentmode_entire
-            );
+            $$ = new FTContent( LOC(@$), ft_content_mode::entire );
         }
     ;
 
@@ -6099,19 +6104,19 @@ FTTimes
 FTRange
     :   EXACTLY AdditiveExpr
         {
-            $$ = new FTRange( LOC(@$), FTRange::exactly, $2 );
+            $$ = new FTRange( LOC(@$), ft_range_mode::exactly, $2 );
         }
     |   AT LEAST AdditiveExpr
         {
-            $$ = new FTRange( LOC(@$), FTRange::at_least, $3 );
+            $$ = new FTRange( LOC(@$), ft_range_mode::at_least, $3 );
         }
     |   AT MOST AdditiveExpr
         {
-            $$ = new FTRange( LOC(@$), FTRange::at_most, $3 );
+            $$ = new FTRange( LOC(@$), ft_range_mode::at_most, $3 );
         }
     |   FROM AdditiveExpr TO AdditiveExpr
         {
-            $$ = new FTRange( LOC(@$), FTRange::from_to, $2, $4 );
+            $$ = new FTRange( LOC(@$), ft_range_mode::from_to, $2, $4 );
         }
     ;
 
@@ -6121,7 +6126,7 @@ FTScope
         {
             $$ = new FTScope(
                 LOC(@$),
-                ParseConstants::ft_scope_same,
+                ft_scope::same,
                 dynamic_cast<FTBigUnit*>($2)
             );
         }
@@ -6129,7 +6134,7 @@ FTScope
         {
             $$ = new FTScope(
                 LOC(@$),
-                ParseConstants::ft_scope_different,
+                ft_scope::different,
                 dynamic_cast<FTBigUnit*>($2)
             );
         }
@@ -6139,11 +6144,11 @@ FTScope
 FTBigUnit
     :   SENTENCE
         {
-            $$ = new FTBigUnit( LOC(@$), ParseConstants::ft_bigunit_sentence );
+            $$ = new FTBigUnit( LOC(@$), ft_big_unit::sentence );
         }
     |   PARAGRAPH
         {
-            $$ = new FTBigUnit( LOC(@$), ParseConstants::ft_bigunit_paragraph );
+            $$ = new FTBigUnit( LOC(@$), ft_big_unit::paragraph );
         }
     ;
 

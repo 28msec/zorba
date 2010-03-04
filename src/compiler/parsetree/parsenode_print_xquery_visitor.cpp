@@ -155,7 +155,7 @@ void* begin_visit(const BaseURIDecl& n)
 
 
 DEFAULT_END_VISIT (BaseURIDecl);
-  	
+    
   
 void* begin_visit(const BoundarySpaceDecl& n)
 {
@@ -756,7 +756,7 @@ void* begin_visit(const Param& n)
 
 
 DEFAULT_END_VISIT (Param)
-  	
+    
 
 
 void* begin_visit(const ParamList& n)
@@ -1842,50 +1842,48 @@ DEFAULT_END_VISIT (ParamList)
     DEFAULT_END_VISIT (EvalExpr);
 
   /* full-text-related */
-    DEFAULT_VISIT (FTAnd);
-    DEFAULT_VISIT (FTAnyallOption);
-    DEFAULT_VISIT (FTBigUnit);
-    DEFAULT_VISIT (FTCaseOption);
-    DEFAULT_VISIT (FTContainsExpr);
-    DEFAULT_VISIT (FTContent);
-    DEFAULT_VISIT (FTDiacriticsOption);
-    DEFAULT_VISIT (FTDistance);
-    DEFAULT_VISIT (FTExtensionOption);
-    DEFAULT_VISIT (FTExtensionSelection);
-    DEFAULT_VISIT (FTIgnoreOption);
-    DEFAULT_VISIT (FTLanguageOption);
-    DEFAULT_VISIT (FTMatchOption);
-    DEFAULT_VISIT (FTMatchOptions);
-    DEFAULT_VISIT (FTMildNot);
-    DEFAULT_VISIT (FTOptionDecl);
-    DEFAULT_VISIT (FTOr);
-    DEFAULT_VISIT (FTOrder);
-    DEFAULT_VISIT (FTPosFilter);
-    DEFAULT_VISIT (FTPrimary);
-    DEFAULT_VISIT (FTPrimaryWithOptions);
-    DEFAULT_VISIT (FTRange);
-    DEFAULT_VISIT (FTScope);
-    DEFAULT_VISIT (FTScoreVar);
-    DEFAULT_VISIT (FTSelection);
-    DEFAULT_VISIT (FTStemOption);
-    DEFAULT_VISIT (FTStopWordOption);
-    DEFAULT_VISIT (FTStopWords);
-    DEFAULT_VISIT (FTStopWordsInclExcl);
-    DEFAULT_VISIT (FTThesaurusID);
-    DEFAULT_VISIT (FTThesaurusOption);
-    DEFAULT_VISIT (FTTimes);
-    DEFAULT_VISIT (FTUnaryNot);
-    DEFAULT_VISIT (FTUnit);
-    DEFAULT_VISIT (FTWeight);
-    DEFAULT_VISIT (FTWildCardOption);
-    DEFAULT_VISIT (FTWindow);
-    DEFAULT_VISIT (FTWords);
-    DEFAULT_VISIT (FTWordsValue);
+  DEFAULT_VISIT (FTAnd);
+  DEFAULT_VISIT (FTAnyallOption);
+  DEFAULT_VISIT (FTBigUnit);
+  DEFAULT_VISIT (FTCaseOption);
+  DEFAULT_VISIT (FTContainsExpr);
+  DEFAULT_VISIT (FTContent);
+  DEFAULT_VISIT (FTDiacriticsOption);
+  DEFAULT_VISIT (FTDistance);
+  DEFAULT_VISIT (FTExtensionOption);
+  DEFAULT_VISIT (FTExtensionSelection);
+  DEFAULT_VISIT (FTIgnoreOption);
+  DEFAULT_VISIT (FTLanguageOption);
+  DEFAULT_VISIT (FTMatchOptions);
+  DEFAULT_VISIT (FTMildNot);
+  DEFAULT_VISIT (FTOptionDecl);
+  DEFAULT_VISIT (FTOr);
+  DEFAULT_VISIT (FTOrder);
+  DEFAULT_VISIT (FTPrimaryWithOptions);
+  DEFAULT_VISIT (FTRange);
+  DEFAULT_VISIT (FTScope);
+  DEFAULT_VISIT (FTScoreVar);
+  DEFAULT_VISIT (FTSelection);
+  DEFAULT_VISIT (FTStemOption);
+  DEFAULT_VISIT (FTStopWordOption);
+  DEFAULT_VISIT (FTStopWords);
+  DEFAULT_VISIT (FTStopWordsInclExcl);
+  DEFAULT_VISIT (FTThesaurusID);
+  DEFAULT_VISIT (FTThesaurusOption);
+  DEFAULT_VISIT (FTTimes);
+  DEFAULT_VISIT (FTUnaryNot);
+  DEFAULT_VISIT (FTUnit);
+  DEFAULT_VISIT (FTWeight);
+  DEFAULT_VISIT (FTWildCardOption);
+  DEFAULT_VISIT (FTWindow);
+  DEFAULT_VISIT (FTWords);
+  DEFAULT_VISIT (FTWordsTimes);
+  DEFAULT_VISIT (FTWordsValue);
 
-    DEFAULT_VISIT (AssignExpr);
-    DEFAULT_VISIT (ExitExpr);
-    DEFAULT_VISIT (WhileExpr);
-    DEFAULT_VISIT (FlowCtlStatement);
+  DEFAULT_VISIT (AssignExpr);
+  DEFAULT_VISIT (ExitExpr);
+  DEFAULT_VISIT (WhileExpr);
+  DEFAULT_VISIT (FlowCtlStatement);
   
     DEFAULT_VISIT (LiteralFunctionItem);
     DEFAULT_VISIT (InlineFunction);
@@ -1894,7 +1892,7 @@ DEFAULT_END_VISIT (ParamList)
     DEFAULT_VISIT (TypedFunctionTest);
     DEFAULT_VISIT (DynamicFunctionInvocation);
 
-    DEFAULT_VISIT (ParseErrorNode);
+  DEFAULT_VISIT (ParseErrorNode);
 };
 
 FunctionIndex print_parsetree_xquery(ostream& os, const parsenode* p)
@@ -1903,4 +1901,4 @@ FunctionIndex print_parsetree_xquery(ostream& os, const parsenode* p)
   return v.print(p)->getFunctionIndex();
 }
 }//end of namespace
-/* vim:set et sw=4 ts=4: */
+/* vim:set et sw=2 ts=2: */

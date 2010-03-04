@@ -212,7 +212,6 @@ public:
     void *begin_visit(const FTIgnoreOption &);
     void *begin_visit(const FTStopWordsInclExcl &);
     void *begin_visit(const FTLanguageOption &);
-    void *begin_visit(const FTMatchOption &);
     void *begin_visit(const FTMildNot &);
     void *begin_visit(const FTOptionDecl &);
     void *begin_visit(const FTOr &);
@@ -409,7 +408,6 @@ public:
     void end_visit(const FTDistance&, void *visit_state);
     void end_visit(const FTIgnoreOption&, void *visit_state);
     void end_visit(const FTLanguageOption&, void *visit_state);
-    void end_visit(const FTMatchOption&, void *visit_state);
     void end_visit(const FTMildNot&, void *visit_state);
     void end_visit(const FTOptionDecl&, void *visit_state);
     void end_visit(const FTOr&, void *visit_state);

@@ -45,8 +45,7 @@ public:
   EXPR_VISITOR_METHODS (eval_expr);
   EXPR_VISITOR_METHODS (if_expr);
   EXPR_VISITOR_METHODS (fo_expr);
-  //EXPR_VISITOR_METHODS (ft_select_expr);
-  //EXPR_VISITOR_METHODS (ft_contains_expr);
+  EXPR_VISITOR_METHODS (ftcontains_expr);
   EXPR_VISITOR_METHODS (instanceof_expr);
   EXPR_VISITOR_METHODS (treat_expr);
   EXPR_VISITOR_METHODS (castable_expr);

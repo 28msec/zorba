@@ -36,54 +36,50 @@ public:
 
 public:
 
-#define EXPR_VISITOR_METHODS( e )               \
-                                                \
-  virtual bool begin_visit(e&) { return true; } \
-                                                \
-  virtual void end_visit(e&) { }
+#define EXPR_VISITOR_METHODS( EXPR_CLASS )                  \
+  virtual bool begin_visit( EXPR_CLASS& ) { return true; }  \
+  virtual void end_visit( EXPR_CLASS& ) { }
 
-
-  EXPR_VISITOR_METHODS (expr);
-  EXPR_VISITOR_METHODS (debugger_expr);
-  EXPR_VISITOR_METHODS (wrapper_expr);
-  EXPR_VISITOR_METHODS (sequential_expr);
-  EXPR_VISITOR_METHODS (var_expr);
-  EXPR_VISITOR_METHODS (order_modifier);
-  EXPR_VISITOR_METHODS (flwor_expr);
+  EXPR_VISITOR_METHODS (attr_expr);
+  EXPR_VISITOR_METHODS (axis_step_expr);
   EXPR_VISITOR_METHODS (case_clause);
-  EXPR_VISITOR_METHODS (promote_expr);
-  EXPR_VISITOR_METHODS (trycatch_expr);
-  EXPR_VISITOR_METHODS (eval_expr);
-  EXPR_VISITOR_METHODS (if_expr);
-  EXPR_VISITOR_METHODS (fo_expr);
-  //EXPR_VISITOR_METHODS (ft_select_expr);
-  //EXPR_VISITOR_METHODS (ft_contains_expr);
-  EXPR_VISITOR_METHODS (instanceof_expr);
-  EXPR_VISITOR_METHODS (treat_expr);
   EXPR_VISITOR_METHODS (castable_expr);
   EXPR_VISITOR_METHODS (cast_expr);
-  EXPR_VISITOR_METHODS (name_cast_expr);
-  EXPR_VISITOR_METHODS (validate_expr);
-  EXPR_VISITOR_METHODS (extension_expr);
-  EXPR_VISITOR_METHODS (relpath_expr);
-  EXPR_VISITOR_METHODS (axis_step_expr);
-  EXPR_VISITOR_METHODS (match_expr);
   EXPR_VISITOR_METHODS (const_expr);
-  EXPR_VISITOR_METHODS (order_expr);
-  EXPR_VISITOR_METHODS (elem_expr);
-  EXPR_VISITOR_METHODS (doc_expr);
-  EXPR_VISITOR_METHODS (attr_expr);
-  EXPR_VISITOR_METHODS (text_expr);
-  EXPR_VISITOR_METHODS (pi_expr);
-  EXPR_VISITOR_METHODS (function_def_expr);
-  EXPR_VISITOR_METHODS (insert_expr);
+  EXPR_VISITOR_METHODS (debugger_expr);
   EXPR_VISITOR_METHODS (delete_expr);
+  EXPR_VISITOR_METHODS (doc_expr);
+  EXPR_VISITOR_METHODS (elem_expr);
+  EXPR_VISITOR_METHODS (eval_expr);
+  EXPR_VISITOR_METHODS (exit_expr);
+  EXPR_VISITOR_METHODS (expr);
+  EXPR_VISITOR_METHODS (extension_expr);
+  EXPR_VISITOR_METHODS (flowctl_expr);
+  EXPR_VISITOR_METHODS (flwor_expr);
+  EXPR_VISITOR_METHODS (fo_expr);
+  EXPR_VISITOR_METHODS (ftcontains_expr);
+  EXPR_VISITOR_METHODS (function_def_expr);
+  EXPR_VISITOR_METHODS (if_expr);
+  EXPR_VISITOR_METHODS (insert_expr);
+  EXPR_VISITOR_METHODS (instanceof_expr);
+  EXPR_VISITOR_METHODS (match_expr);
+  EXPR_VISITOR_METHODS (name_cast_expr);
+  EXPR_VISITOR_METHODS (order_expr);
+  EXPR_VISITOR_METHODS (order_modifier);
+  EXPR_VISITOR_METHODS (pi_expr);
+  EXPR_VISITOR_METHODS (promote_expr);
+  EXPR_VISITOR_METHODS (relpath_expr);
   EXPR_VISITOR_METHODS (rename_expr);
   EXPR_VISITOR_METHODS (replace_expr);
+  EXPR_VISITOR_METHODS (sequential_expr);
+  EXPR_VISITOR_METHODS (text_expr);
   EXPR_VISITOR_METHODS (transform_expr);
-  EXPR_VISITOR_METHODS (exit_expr);
+  EXPR_VISITOR_METHODS (treat_expr);
+  EXPR_VISITOR_METHODS (trycatch_expr);
+  EXPR_VISITOR_METHODS (validate_expr);
+  EXPR_VISITOR_METHODS (var_expr);
   EXPR_VISITOR_METHODS (while_expr);
-  EXPR_VISITOR_METHODS (flowctl_expr);
+  EXPR_VISITOR_METHODS (wrapper_expr);
 
 #undef EXPR_VISITOR_METHODS
 
@@ -91,3 +87,4 @@ public:
 
 } /* namespace zorba */
 #endif /* ZORBA_ABSTRACT_EXPR_VISITOR_H */
+/* vim:set et sw=2 ts=2: */

@@ -31,6 +31,7 @@
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/ft_expr.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
@@ -2592,30 +2593,16 @@ void end_visit (order_expr& v)
 
 ********************************************************************************/
 
-#if 0
-bool begin_visit (ft_select_expr& v)
+bool begin_visit (ftcontains_expr& v)
 {
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (ft_select_expr& v)
+void end_visit (ftcontains_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 }
-
-
-bool begin_visit (ft_contains_expr& v)
-{
-  CODEGEN_TRACE_IN("");
-  return true;
-}
-
-void end_visit (ft_contains_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-}
-#endif
 
 
 /*******************************************************************************

@@ -152,72 +152,6 @@ class ParseConstants
       occurs_one_or_more
     };
 
-    enum ft_case_mode_t {
-      ft_case_lower,
-      ft_case_upper,
-      ft_case_sensitive,
-      ft_case_insensitive
-    };
-
-    enum ft_diacritics_mode_t {
-      ft_diacritics_senstive,
-      ft_diacritics_insensitive
-    };
-
-    enum ft_stem_mode_t {
-      ft_stemmode_with,
-      ft_stemmode_without
-    };
-
-    enum ft_stop_words_mode_t {
-      ft_stop_words_with,
-      ft_stop_words_with_default,
-      ft_stop_words_without
-    };
-
-    enum ft_stop_words_unex_t {
-      ft_stop_words_union,
-      ft_stop_words_except,
-    };
-
-    enum ft_content_mode_t {
-      ft_contentmode_at_start,
-      ft_contentmode_at_end,
-      ft_contentmode_entire
-    };
-
-    enum ft_anyall_option_t {
-      ft_opt_any,
-      ft_opt_any_word,
-      ft_opt_all,
-      ft_opt_all_words,
-      ft_opt_phrase
-    };
-
-    enum ft_range_mode_t {
-      ft_range_exactly,
-      ft_range_at_least,
-      ft_range_at_most,
-      ft_range_from_to
-    };
-
-    enum ft_scope_t {
-      ft_scope_same,
-      ft_scope_different
-    };
-
-    enum ft_unit_t {
-      ft_unit_words,
-      ft_unit_sentences,
-      ft_unit_paragraphs
-    };
-
-    enum ft_big_unit_t {
-      ft_bigunit_sentence,
-      ft_bigunit_paragraph
-    };
-
-
 
   static const char *decode_numeric_type (enum numeric_type_t t) {
     switch (t) {
@@ -267,10 +201,4 @@ class ParseConstants
 
 } /* namespace zorba */
 #endif /* ZORBA_PARSE_CONSTANTS_H */
-
-/*
- * Local variables:
- * mode: c++
- * End:
- */
- /* vim:set et sw=4 ts=4: */
+/* vim:set et sw=2 ts=2: */

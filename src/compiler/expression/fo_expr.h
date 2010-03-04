@@ -51,23 +51,23 @@ public:
   fo_expr(short sctx, const QueryLoc& loc, const function* f);
 
   fo_expr(
-        short sctx,
-        const QueryLoc& loc,
-        const function* f,
-        const expr* arg);
+    short sctx,
+    const QueryLoc& loc,
+    const function* f,
+    const expr* arg);
 
   fo_expr(
-        short sctx,
-        const QueryLoc& loc,
-        const function* f,
-        const expr* arg1,
-        const expr* arg2);
+    short sctx,
+    const QueryLoc& loc,
+    const function* f,
+    const expr* arg1,
+    const expr* arg2);
 
   fo_expr(
-        short sctx,
-        const QueryLoc& loc,
-        const function* f,
-        const std::vector<expr_t>& args);
+    short sctx,
+    const QueryLoc& loc,
+    const function* f,
+    const std::vector<expr_t>& args);
 
   expr_kind_t get_expr_kind() const { return fo_expr_kind; }
 
@@ -106,15 +106,42 @@ public:
   std::ostream& put(std::ostream&) const;
 };
 
+////////// The following expressions in the AST "decay" into an fo_expr ///////
 
-}
+typedef fo_expr additive_expr;
+typedef rchandle<additive_expr> additive_expr_t;
+
+typedef fo_expr and_expr;
+typedef rchandle<and_expr> and_expr_t;
+
+typedef fo_expr comparison_expr;
+typedef rchandle<comparison_expr> comparison_expr_t;
+
+typedef fo_expr enclosed_expr;
+typedef rchandle<enclosed_expr> enclosed_expr_t;
+
+typedef fo_expr intersect_except_expr;
+typedef rchandle<intersect_except_expr> intersect_except_expr_t;
+
+typedef fo_expr multiplicative_expr;
+typedef rchandle<multiplicative_expr> multiplicative_expr_t;
+
+typedef fo_expr or_expr;
+typedef rchandle<or_expr> or_expr_t;
+
+typedef fo_expr quantified_expr;
+typedef rchandle<quantified_expr> quantified_expr_t;
+
+typedef fo_expr range_expr;
+typedef rchandle<range_expr> range_expr_t;
+
+typedef fo_expr unary_expr;
+typedef rchandle<unary_expr> unary_expr_t;
+
+typedef fo_expr union_expr;
+typedef rchandle<union_expr> union_expr_t;
+
+} // namespace zorba
 
 #endif
-
-/*
- * Local variables:
- * mode: c++
- * End:
- */
-/* vim:set ts=2 sw=2: */
-
+/* vim:set et sw=2 ts=2: */

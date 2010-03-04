@@ -2000,18 +2000,6 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTLanguageOption &n)
 
 
 
-void *ParseNodePrintDOTVisitor::begin_visit(const FTMatchOption &n)
-{
-    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTMatchOption\\n[" 
-          << n.get_location() << "]" << "\"]" << std::endl;
-
-    NL;
-    return no_state;
-}
-
-
-
 void *ParseNodePrintDOTVisitor::begin_visit(const FTMatchOptions &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
@@ -2072,21 +2060,10 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTOrder &n)
 
 
 
-void *ParseNodePrintDOTVisitor::begin_visit(const FTPosFilter &n)
+void *ParseNodePrintDOTVisitor::begin_visit(const FTWordsTimes &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTPosFilter\\n[" 
-          << n.get_location() << "]" << "\"]" << std::endl;
-
-    NL;
-    return no_state;
-}
-
-
-void *ParseNodePrintDOTVisitor::begin_visit(const FTPrimary &n)
-{
-    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTPrimary\\n[" 
+          << "label=\"FTWordsTimes\\n[" 
           << n.get_location() << "]" << "\"]" << std::endl;
 
     NL;
@@ -3322,12 +3299,6 @@ void ParseNodePrintDOTVisitor::end_visit(const FTStopWordsInclExcl&, void*)
 
 
 void ParseNodePrintDOTVisitor::end_visit(const FTLanguageOption&, void*)
-{
-}
-
-
-
-void ParseNodePrintDOTVisitor::end_visit(const FTMatchOption&, void*)
 {
 }
 

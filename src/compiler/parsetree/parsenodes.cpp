@@ -16,6 +16,7 @@
 
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbautils/container_util.h"
 
 #include "types/typemanager.h"
 
@@ -60,6 +61,9 @@ ostringstream __oss;
 #define ACCEPT( m ) do { if ((m) != NULL) (m)->accept (v); } while (0)
 #define ACCEPT_CHK( m ) do { ZORBA_ASSERT ((m) != NULL);  (m)->accept (v); } while (0)
 
+#define ACCEPT_SEQ(T,S) \
+  for ( T::const_iterator i = S.begin(); i != S.end(); ++i ) \
+    ACCEPT( *i );
 
 #define DECLARE_VISITOR_FUNCTOR( name, type, body)                      \
   class name : public unary_function<rchandle<parsenode>, void> {       \
@@ -77,10 +81,10 @@ DECLARE_VISITOR_FUNCTOR(visitor_functor, rchandle<parsenode>, { ACCEPT(e); });
   [1] Module ::= 	VersionDecl? (LibraryModule | MainModule)
 ********************************************************************************/
 
-void Module::accept(parsenode_visitor& v) const
+void Module::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -101,10 +105,10 @@ VersionDecl::VersionDecl(
 }
 
 
-void VersionDecl::accept(parsenode_visitor& v) const
+void VersionDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -124,13 +128,13 @@ MainModule::MainModule(
 }
 
 
-void MainModule::accept(parsenode_visitor& v) const
+void MainModule::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (version_decl_h);
   ACCEPT (prolog_h);
   ACCEPT (query_body_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -151,7 +155,7 @@ LibraryModule::LibraryModule(
 }
 
 
-void LibraryModule::accept(parsenode_visitor& v) const
+void LibraryModule::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(version_decl_h);
@@ -176,7 +180,7 @@ ModuleDecl::ModuleDecl(
 }
 
 
-void ModuleDecl::accept(parsenode_visitor& v) const
+void ModuleDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -241,12 +245,12 @@ bool Prolog::set_list(parsenode* list)
 }
 
 
-void Prolog::accept(parsenode_visitor& v) const
+void Prolog::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (sind_list_h);
   ACCEPT (vfo_list_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -260,16 +264,16 @@ SIND_DeclList::SIND_DeclList(const QueryLoc& loc_)
 }
 
 
-void SIND_DeclList::accept(parsenode_visitor& v) const
+void SIND_DeclList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
 
   for (vector<rchandle<parsenode> >::const_iterator it = sind_hv.begin();
        it!=sind_hv.end(); ++it)
   {
     ACCEPT_CHK ((*it));
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -286,10 +290,10 @@ BoundarySpaceDecl::BoundarySpaceDecl(
 }
 
 
-void BoundarySpaceDecl::accept(parsenode_visitor& v) const
+void BoundarySpaceDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -306,10 +310,10 @@ OrderingModeDecl::OrderingModeDecl(
 }
 
 
-void OrderingModeDecl::accept(parsenode_visitor& v) const
+void OrderingModeDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -327,10 +331,10 @@ EmptyOrderDecl::EmptyOrderDecl(
 }
 
 
-void EmptyOrderDecl::accept(parsenode_visitor& v) const
+void EmptyOrderDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -352,10 +356,10 @@ CopyNamespacesDecl::CopyNamespacesDecl(
 }
 
 
-void CopyNamespacesDecl::accept(parsenode_visitor& v) const
+void CopyNamespacesDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -369,10 +373,10 @@ void CopyNamespacesDecl::accept(parsenode_visitor& v) const
                           "per-mille" | "zero-digit" | "digit" |
                           "pattern-separator"
 ********************************************************************************/
-void DecimalFormatNode::accept(parsenode_visitor& v) const
+void DecimalFormatNode::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -389,10 +393,10 @@ DefaultCollationDecl::DefaultCollationDecl(
 }
 
 
-void DefaultCollationDecl::accept(parsenode_visitor& v) const
+void DefaultCollationDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -409,10 +413,10 @@ BaseURIDecl::BaseURIDecl(
 }
 
 
-void BaseURIDecl::accept(parsenode_visitor& v) const
+void BaseURIDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -430,7 +434,7 @@ ConstructionDecl::ConstructionDecl(
 }
 
 
-void ConstructionDecl::accept(parsenode_visitor& v) const
+void ConstructionDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -452,7 +456,7 @@ NamespaceDecl::NamespaceDecl(
 }
 
 
-void NamespaceDecl::accept(parsenode_visitor& v) const
+void NamespaceDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -475,7 +479,7 @@ DefaultNamespaceDecl::DefaultNamespaceDecl(
 }
 
 
-void DefaultNamespaceDecl::accept(parsenode_visitor& v) const
+void DefaultNamespaceDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -500,7 +504,7 @@ SchemaImport::SchemaImport(
 }
 
 
-void SchemaImport::accept(parsenode_visitor& v) const
+void SchemaImport::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(thePrefix);
@@ -519,7 +523,7 @@ URILiteralList::URILiteralList(const QueryLoc& loc)
 }
 
 
-void URILiteralList::accept(parsenode_visitor& v) const
+void URILiteralList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 #if 0
@@ -557,7 +561,7 @@ SchemaPrefix::SchemaPrefix(
 }
 
 
-void SchemaPrefix::accept(parsenode_visitor& v) const
+void SchemaPrefix::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -594,7 +598,7 @@ ModuleImport::ModuleImport(
 }
 
 
-void ModuleImport::accept(parsenode_visitor& v) const
+void ModuleImport::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(theAtList);
@@ -615,9 +619,9 @@ VFO_DeclList::VFO_DeclList(
 }
 
 
-void VFO_DeclList::accept(parsenode_visitor& v) const
+void VFO_DeclList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
 
   for (vector<rchandle<parsenode> >::const_iterator it = vfo_hv.begin();
        it != vfo_hv.end();
@@ -625,7 +629,7 @@ void VFO_DeclList::accept(parsenode_visitor& v) const
   {
     ACCEPT_CHK (*it);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -644,11 +648,11 @@ OptionDecl::OptionDecl(
 }
 
 
-void OptionDecl::accept(parsenode_visitor& v) const
+void OptionDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   //qname_h->accept(v);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -676,7 +680,7 @@ VarDecl::VarDecl(
 }
 
 
-void VarDecl::accept(parsenode_visitor& v) const
+void VarDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(theType);
@@ -690,12 +694,12 @@ void VarDecl::accept(parsenode_visitor& v) const
                            ((":=" VarValue) |
                             ("external" (":=" VarDefaultValue)?))
 ********************************************************************************/
-void CtxItemDecl::accept(parsenode_visitor& v) const
+void CtxItemDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (type);
   ACCEPT (expr);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -746,13 +750,13 @@ FunctionDecl::FunctionDecl(
 }
 
 
-void FunctionDecl::accept(parsenode_visitor& v) const
+void FunctionDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (paramlist_h);
   ACCEPT (return_type_h);
   ACCEPT (body_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -773,9 +777,9 @@ ParamList::ParamList(
 }
 
 
-void ParamList::accept(parsenode_visitor& v) const
+void ParamList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
 
   for (vector<rchandle<Param> >::const_iterator it = param_hv.begin();
        it != param_hv.end();
@@ -784,7 +788,7 @@ void ParamList::accept(parsenode_visitor& v) const
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -803,7 +807,7 @@ Param::Param(
 }
 
 
-void Param::accept(parsenode_visitor& v) const
+void Param::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(theType);
@@ -891,7 +895,7 @@ CollectionDecl::CollectionDecl(
 }
 
 
-void CollectionDecl::accept(parsenode_visitor& v) const
+void CollectionDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(theTypeDecl);
@@ -903,7 +907,7 @@ void CollectionDecl::accept(parsenode_visitor& v) const
 /*******************************************************************************
   [*] NodeModifier   ::=   ("read-only" | "mutable " )
 ********************************************************************************/
-void NodeModifier::accept(parsenode_visitor& v) const
+void NodeModifier::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -1001,7 +1005,7 @@ IndexDecl::IndexDecl(
 }
 
 
-void IndexDecl::accept(parsenode_visitor& v) const
+void IndexDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
@@ -1015,7 +1019,7 @@ void IndexDecl::accept(parsenode_visitor& v) const
 /***************************************************************************//**
   IndexKeyList ::= IndexKeySpec ("," IndexKeySpec)*
 ********************************************************************************/
-void IndexKeyList::accept(parsenode_visitor& v) const
+void IndexKeyList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
@@ -1039,7 +1043,7 @@ void IndexKeyList::accept(parsenode_visitor& v) const
 
   OrderCollationSpec ::= "collation" URILiteral
 ********************************************************************************/
-void IndexKeySpec::accept(parsenode_visitor& v) const
+void IndexKeySpec::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
@@ -1078,39 +1082,39 @@ IntegrityConstraintDecl::IntegrityConstraintDecl (
 {
 }
 
-/*void IntegrityConstraintDecl::accept(parsenode_visitor& v) const
+/*void IntegrityConstraintDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
   }*/
 
-void ICCollSimpleCheck::accept(parsenode_visitor& v) const
+void ICCollSimpleCheck::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT_CHK(getExpr());
-  END_VISITOR ();
+  END_VISITOR();
 }
 
-void ICCollUniqueKeyCheck::accept(parsenode_visitor& v) const
+void ICCollUniqueKeyCheck::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT_CHK(getExpr());
-  END_VISITOR ();
+  END_VISITOR();
 }
 
-void ICCollForeachNode::accept(parsenode_visitor& v) const
+void ICCollForeachNode::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT_CHK(getExpr());
-  END_VISITOR ();
+  END_VISITOR();
 }
 
-void ICForeignKey::accept(parsenode_visitor& v) const
+void ICForeignKey::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT_CHK(getFromExpr());
   ACCEPT_CHK(getToExpr());
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1127,11 +1131,11 @@ EnclosedExpr::EnclosedExpr(
 }
 
 
-void EnclosedExpr::accept(parsenode_visitor& v) const
+void EnclosedExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1152,16 +1156,16 @@ void EnclosedExpr::accept(parsenode_visitor& v) const
         an Expr node if BlockDecls is empty, or a BlockBody node whose "decls"
         data member stores the var declarations.
 ********************************************************************************/
-void BlockBody::accept (parsenode_visitor& v) const 
+void BlockBody::accept ( parsenode_visitor &v ) const 
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
 
   ACCEPT (decls);
 
   for (int i = 0; i < size (); i++)
     (*this) [i]->accept (v);
 
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1178,11 +1182,11 @@ QueryBody::QueryBody(
 }
 
 
-void QueryBody::accept(parsenode_visitor& v) const
+void QueryBody::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1196,7 +1200,7 @@ Expr::Expr(const QueryLoc& loc_)
 }
 
 
-void Expr::accept(parsenode_visitor& v) const
+void Expr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
@@ -1250,12 +1254,12 @@ FLWORExpr::FLWORExpr(
 }
 
 
-void FLWORExpr::accept(parsenode_visitor& v) const
+void FLWORExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (clauses);
   ACCEPT (return_val_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1350,7 +1354,7 @@ void FLWORExpr::compute_general ()
   SlidingWindowClause ::= "sliding" "window" WindowVarDecl
                           WindowStartCondition WindowEndCondition
 ********************************************************************************/
-void WindowClause::accept(parsenode_visitor& v) const
+void WindowClause::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
@@ -1370,7 +1374,7 @@ void WindowClause::accept(parsenode_visitor& v) const
 /*******************************************************************************
   WindowVarDecl ::= "$" VarName TypeDeclaration? "in"  ExprSingle
 ********************************************************************************/
-void WindowVarDecl::accept(parsenode_visitor& v) const 
+void WindowVarDecl::accept( parsenode_visitor &v ) const 
 {
   BEGIN_VISITOR();
   ACCEPT(theType);
@@ -1384,7 +1388,7 @@ void WindowVarDecl::accept(parsenode_visitor& v) const
 
   WindowEndCondition ::= "only"? "end" WindowVars "when" ExprSingle
 ********************************************************************************/
-void FLWORWinCond::accept(parsenode_visitor& v) const
+void FLWORWinCond::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(get_winvars());
@@ -1398,7 +1402,7 @@ void FLWORWinCond::accept(parsenode_visitor& v) const
                  ("previous" "$" PreviousItem)?
                  ("next" "$" NextItem)?
 ********************************************************************************/
-void WindowVars::accept(parsenode_visitor& v) const 
+void WindowVars::accept( parsenode_visitor &v ) const 
 {
   BEGIN_VISITOR();
   ACCEPT(posvar);
@@ -1414,16 +1418,16 @@ FLWORClauseList::FLWORClauseList(const QueryLoc& loc)
 }
 
 
-void FLWORClauseList::accept(parsenode_visitor& v) const
+void FLWORClauseList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<FLWORClause> >::const_iterator it = theClauses.begin();
   for (; it != theClauses.end(); ++it) 
   {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1443,11 +1447,11 @@ ForClause::ForClause(
 
 //-ForClause::
 
-void ForClause::accept(parsenode_visitor& v) const
+void ForClause::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (vardecl_list_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 int ForClause::get_decl_count () const { return vardecl_list_h->size (); }
@@ -1464,15 +1468,15 @@ VarInDeclList::VarInDeclList(
 
 //-VarInDeclList::
 
-void VarInDeclList::accept(parsenode_visitor& v) const
+void VarInDeclList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<VarInDecl> >::const_iterator it = vardecl_hv.begin();
   for (; it!=vardecl_hv.end(); ++it) {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1493,7 +1497,7 @@ VarInDecl::VarInDecl(
 }
 
 
-void VarInDecl::accept(parsenode_visitor& v) const
+void VarInDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(theType);
@@ -1516,10 +1520,10 @@ PositionalVar::PositionalVar(
 }
 
 
-void PositionalVar::accept(parsenode_visitor& v) const
+void PositionalVar::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -1534,11 +1538,11 @@ LetClause::LetClause(
 {}
 
 
-void LetClause::accept(parsenode_visitor& v) const
+void LetClause::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (vardecl_list_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 int LetClause::get_decl_count () const { return vardecl_list_h->size (); }
@@ -1553,23 +1557,23 @@ VarGetsDeclList::VarGetsDeclList(
 {}
 
 
-void VarGetsDeclList::accept(parsenode_visitor& v) const
+void VarGetsDeclList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
   for (; it!=vardecl_hv.end(); ++it) 
   {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
 // [36b] VarGetsDecl
 // ------------------
 
-void VarGetsDecl::accept(parsenode_visitor& v) const
+void VarGetsDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(theType);
@@ -1590,10 +1594,10 @@ FTScoreVar::FTScoreVar(
 {}
 
 
-void FTScoreVar::accept(parsenode_visitor& v) const
+void FTScoreVar::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -1608,18 +1612,18 @@ WhereClause::WhereClause(
 {}
 
 
-void WhereClause::accept(parsenode_visitor& v) const
+void WhereClause::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (predicate_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
-void CountClause::accept(parsenode_visitor& v) const
+void CountClause::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 GroupByClause::GroupByClause(
@@ -1631,11 +1635,11 @@ GroupByClause::GroupByClause(
 {
 }
 
-void GroupByClause::accept(parsenode_visitor& v) const
+void GroupByClause::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (spec_list_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 GroupSpecList::GroupSpecList(
@@ -1644,15 +1648,15 @@ GroupSpecList::GroupSpecList(
   parsenode(loc_)
 {}
 
-void GroupSpecList::accept(parsenode_visitor& v) const
+void GroupSpecList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<GroupSpec> >::const_iterator it = spec_hv.begin();
   for (; it!=spec_hv.end(); ++it) {
     const GroupSpec *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 GroupSpec::GroupSpec(
@@ -1665,11 +1669,11 @@ GroupSpec::GroupSpec(
   group_coll_spec_h(_group_coll_spec_h)
 {}
 
-void GroupSpec::accept(parsenode_visitor& v) const
+void GroupSpec::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (group_coll_spec_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 GroupCollationSpec::GroupCollationSpec (
@@ -1680,7 +1684,7 @@ GroupCollationSpec::GroupCollationSpec (
   uri(_uri)
 {}
 
-void GroupCollationSpec::accept(parsenode_visitor& v) const
+void GroupCollationSpec::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -1701,7 +1705,7 @@ OrderByClause::OrderByClause(
 }
 
 
-void OrderByClause::accept(parsenode_visitor& v) const
+void OrderByClause::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(spec_list_h);
@@ -1718,15 +1722,15 @@ OrderSpecList::OrderSpecList(
 {}
 
 
-void OrderSpecList::accept(parsenode_visitor& v) const
+void OrderSpecList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<OrderSpec> >::const_iterator it = spec_hv.begin();
   for (; it!=spec_hv.end(); ++it) {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1744,12 +1748,12 @@ OrderSpec::OrderSpec(
 }
 
 
-void OrderSpec::accept(parsenode_visitor& v) const
+void OrderSpec::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (spec_h);
   ACCEPT (modifier_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1769,13 +1773,13 @@ OrderModifierPN::OrderModifierPN(
 }
 
 
-void OrderModifierPN::accept(parsenode_visitor& v) const
+void OrderModifierPN::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (dir_spec_h);
   ACCEPT (empty_spec_h);
   ACCEPT (collation_spec_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1794,10 +1798,10 @@ OrderDirSpec::OrderDirSpec(
 
 //-OrderDirSpec::
 
-void OrderDirSpec::accept(parsenode_visitor& v) const
+void OrderDirSpec::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -1814,10 +1818,10 @@ OrderEmptySpec::OrderEmptySpec(
 
 //-OrderEmptySpec::
 
-void OrderEmptySpec::accept(parsenode_visitor& v) const
+void OrderEmptySpec::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -1834,10 +1838,10 @@ OrderCollationSpec::OrderCollationSpec(
 
 //-OrderCollationSpec::
 
-void OrderCollationSpec::accept(parsenode_visitor& v) const
+void OrderCollationSpec::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -1858,12 +1862,12 @@ QuantifiedExpr::QuantifiedExpr(
 
 //-QuantifiedExpr::
 
-void QuantifiedExpr::accept(parsenode_visitor& v) const
+void QuantifiedExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (decl_list_h);
   ACCEPT (expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1876,11 +1880,11 @@ QVarInDeclList::QVarInDeclList(
 {}
 
 
-void QVarInDeclList::accept(parsenode_visitor& v) const
+void QVarInDeclList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   std::for_each (qvar_decl_hv.begin (), qvar_decl_hv.end (), visitor_functor (v));
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1913,12 +1917,12 @@ QVarInDecl::QVarInDecl(
 }
 
 
-void QVarInDecl::accept(parsenode_visitor& v) const
+void QVarInDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (val_h);
   ACCEPT (typedecl_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1954,14 +1958,14 @@ TypeswitchExpr::TypeswitchExpr(
 
 //-TypeswitchExpr::
 
-void TypeswitchExpr::accept(parsenode_visitor& v) const
+void TypeswitchExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT_CHK (switch_expr_h);
   ACCEPT_CHK (default_clause_h);
   ACCEPT_CHK (clause_list_h);
 
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -1975,15 +1979,15 @@ CaseClauseList::CaseClauseList(
 }
 
 
-void CaseClauseList::accept(parsenode_visitor& v) const
+void CaseClauseList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<CaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
   for (; it!=clause_hv.rend(); ++it) {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2015,12 +2019,12 @@ CaseClause::CaseClause(
 }
 
 
-void CaseClause::accept(parsenode_visitor& v) const
+void CaseClause::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (type_h);
   ACCEPT (val_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2041,13 +2045,13 @@ IfExpr::IfExpr(
 
 //-IfExpr::
 
-void IfExpr::accept(parsenode_visitor& v) const
+void IfExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (cond_expr_h);
   ACCEPT (then_expr_h);
   ACCEPT (else_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2066,12 +2070,12 @@ OrExpr::OrExpr(
 
 //-OrExpr::
 
-void OrExpr::accept(parsenode_visitor& v) const
+void OrExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (or_expr_h);
   ACCEPT (and_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2090,12 +2094,12 @@ AndExpr::AndExpr(
 
 //-AndExpr::
 
-void AndExpr::accept(parsenode_visitor& v) const
+void AndExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (and_expr_h);
   ACCEPT (comp_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2146,15 +2150,15 @@ ComparisonExpr::ComparisonExpr(
 
 //-ComparisonExpr::
 
-void ComparisonExpr::accept(parsenode_visitor& v) const
+void ComparisonExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (gencomp_h);
   ACCEPT (nodecomp_h);
   ACCEPT (valcomp_h);
   ACCEPT (left_h);
   ACCEPT (right_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2162,26 +2166,26 @@ void ComparisonExpr::accept(parsenode_visitor& v) const
 // --------------------
 FTContainsExpr::FTContainsExpr(
   const QueryLoc& loc_,
-  rchandle<exprnode> _range_expr_h,
-  rchandle<FTSelection> _ftselect_h,
+  rchandle<FTRange> _range_h,
+  rchandle<FTSelection> _ftselection_h,
   rchandle<FTIgnoreOption> _ftignore_h)
 :
   exprnode(loc_),
-  range_expr_h(_range_expr_h),
-  ftselect_h(_ftselect_h),
+  range_h(_range_h),
+  ftselection_h(_ftselection_h),
   ftignore_h(_ftignore_h)
 {}
 
 
 //-FTContainsExpr::
 
-void FTContainsExpr::accept(parsenode_visitor& v) const
+void FTContainsExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (range_expr_h);
-  ACCEPT (ftselect_h);
+  BEGIN_VISITOR();
+  ACCEPT (range_h);
+  ACCEPT (ftselection_h);
   ACCEPT (ftignore_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2200,12 +2204,12 @@ RangeExpr::RangeExpr(
 
 //-RangeExpr::
 
-void RangeExpr::accept(parsenode_visitor& v) const
+void RangeExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (from_expr_h);
   ACCEPT (to_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2226,12 +2230,12 @@ AdditiveExpr::AdditiveExpr(
 
 //-AdditiveExpr::
 
-void AdditiveExpr::accept(parsenode_visitor& v) const
+void AdditiveExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (add_expr_h);
   ACCEPT (mult_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2252,12 +2256,12 @@ MultiplicativeExpr::MultiplicativeExpr(
 
 //-MultiplicativeExpr::
 
-void MultiplicativeExpr::accept(parsenode_visitor& v) const
+void MultiplicativeExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (mult_expr_h);
   ACCEPT (union_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2276,12 +2280,12 @@ UnionExpr::UnionExpr(
 
 //-UnionExpr::
 
-void UnionExpr::accept(parsenode_visitor& v) const
+void UnionExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (union_expr_h);
   ACCEPT (intex_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2302,12 +2306,12 @@ IntersectExceptExpr::IntersectExceptExpr(
 
 //-IntersectExceptExpr::
 
-void IntersectExceptExpr::accept(parsenode_visitor& v) const
+void IntersectExceptExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (intex_expr_h);
   ACCEPT (instof_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2326,12 +2330,12 @@ InstanceofExpr::InstanceofExpr(
 
 //-InstanceofExpr::
 
-void InstanceofExpr::accept(parsenode_visitor& v) const
+void InstanceofExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (treat_expr_h);
   ACCEPT (seqtype_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2350,12 +2354,12 @@ TreatExpr::TreatExpr(
 
 //-TreatExpr::
 
-void TreatExpr::accept(parsenode_visitor& v) const
+void TreatExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (castable_expr_h);
   ACCEPT (seqtype_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2374,12 +2378,12 @@ CastableExpr::CastableExpr(
 
 //-CastableExpr::
 
-void CastableExpr::accept(parsenode_visitor& v) const
+void CastableExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (cast_expr_h);
   ACCEPT (singletype_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2398,12 +2402,12 @@ CastExpr::CastExpr(
 
 //-CastExpr::
 
-void CastExpr::accept(parsenode_visitor& v) const
+void CastExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (unary_expr_h);
   ACCEPT (singletype_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2422,12 +2426,12 @@ UnaryExpr::UnaryExpr(
 
 //-UnaryExpr::
 
-void UnaryExpr::accept(parsenode_visitor& v) const
+void UnaryExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (signlist_h);
   ACCEPT (value_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2444,10 +2448,10 @@ SignList::SignList(
 
 //-SignList::
 
-void SignList::accept(parsenode_visitor& v) const
+void SignList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -2468,10 +2472,10 @@ GeneralComp::GeneralComp(
 
 //-GeneralComp::
 
-void GeneralComp::accept(parsenode_visitor& v) const
+void GeneralComp::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -2488,10 +2492,10 @@ ValueComp::ValueComp(
 
 //-ValueComp::
 
-void ValueComp::accept(parsenode_visitor& v) const
+void ValueComp::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -2508,10 +2512,10 @@ NodeComp::NodeComp(
 
 //-NodeComp::
 
-void NodeComp::accept(parsenode_visitor& v) const
+void NodeComp::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -2549,11 +2553,11 @@ ValidateExpr::ValidateExpr(
 
 //-ValidateExpr::
 
-void ValidateExpr::accept(parsenode_visitor& v) const
+void ValidateExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2571,12 +2575,12 @@ ExtensionExpr::ExtensionExpr(
 
 //-ExtensionExpr::
 
-void ExtensionExpr::accept(parsenode_visitor& v) const
+void ExtensionExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (pragma_list_h);
   ACCEPT (expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2591,15 +2595,15 @@ PragmaList::PragmaList(
 
 //-PragmaList::
 
-void PragmaList::accept(parsenode_visitor& v) const
+void PragmaList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<Pragma> >::const_reverse_iterator it = pragma_hv.rbegin();
   for (; it!=pragma_hv.rend(); ++it) {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2618,11 +2622,11 @@ Pragma::Pragma(
 
 //-Pragma::
 
-void Pragma::accept(parsenode_visitor& v) const
+void Pragma::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   //name->accept(v);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2649,11 +2653,11 @@ PathExpr::PathExpr(
 {}
 
 
-void PathExpr::accept(parsenode_visitor& v) const
+void PathExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (relpath_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2703,7 +2707,7 @@ RelativePathExpr::RelativePathExpr(
 }
 
 
-void RelativePathExpr::accept(parsenode_visitor& v) const
+void RelativePathExpr::accept( parsenode_visitor &v ) const
 {
   void* visitor_state = v.begin_visit(*this);
 
@@ -2715,7 +2719,7 @@ void RelativePathExpr::accept(parsenode_visitor& v) const
   ACCEPT (step_expr_h);
   v.intermediate_visit(*this, visitor_state);
   ACCEPT (relpath_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2755,9 +2759,9 @@ AxisStep::AxisStep(
 {}
 
 
-void AxisStep::accept(parsenode_visitor& v) const
+void AxisStep::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
 
   if (forward_step_h != NULL) forward_step_h->accept(v);
   if (reverse_step_h != NULL) reverse_step_h->accept(v);
@@ -2766,7 +2770,7 @@ void AxisStep::accept(parsenode_visitor& v) const
 
   if (predicate_list_h != NULL) predicate_list_h->accept(v);
 
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2800,13 +2804,13 @@ ForwardStep::ForwardStep(
 }
 
 
-void ForwardStep::accept(parsenode_visitor& v) const
+void ForwardStep::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   if (forward_axis_h!=NULL) forward_axis_h->accept(v);
   if (node_test_h!=NULL) node_test_h->accept(v);
   if (abbrev_step_h!=NULL) abbrev_step_h->accept(v);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2825,10 +2829,10 @@ ForwardAxis::ForwardAxis(
 }
 
 
-void ForwardAxis::accept(parsenode_visitor& v) const
+void ForwardAxis::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -2849,11 +2853,11 @@ AbbrevForwardStep::AbbrevForwardStep(
 }
 
 
-void AbbrevForwardStep::accept(parsenode_visitor& v) const
+void AbbrevForwardStep::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   if (node_test_h!=NULL) node_test_h->accept(v);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2878,12 +2882,12 @@ ReverseStep::ReverseStep(
 }
 
 
-void ReverseStep::accept(parsenode_visitor& v) const
+void ReverseStep::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   if (axis_h!=NULL) axis_h->accept(v);
   if (node_test_h!=NULL) node_test_h->accept(v);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -2903,10 +2907,10 @@ ReverseAxis::ReverseAxis(
 
 
 
-void ReverseAxis::accept(parsenode_visitor& v) const
+void ReverseAxis::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -2947,10 +2951,10 @@ NameTest::NameTest(const QueryLoc& loc, rchandle<Wildcard> wild)
 
 
 
-void NameTest::accept(parsenode_visitor& v) const
+void NameTest::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -2973,7 +2977,7 @@ Wildcard::Wildcard(
 }
 
 
-void Wildcard::accept(parsenode_visitor& v) const
+void Wildcard::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -2998,15 +3002,15 @@ FilterExpr::FilterExpr(
 {}
 
 
-void FilterExpr::accept(parsenode_visitor& v) const
+void FilterExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
 
   ACCEPT (primary_h);
   v.post_primary_visit(*this, visitor_state);
   ACCEPT (pred_list_h);
 
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3019,9 +3023,9 @@ PredicateList::PredicateList(
 {}
 
 
-void PredicateList::accept(parsenode_visitor& v) const
+void PredicateList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   
   for (vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
        it!=pred_hv.end(); ++it) 
@@ -3032,7 +3036,7 @@ void PredicateList::accept(parsenode_visitor& v) const
     e_p->accept(v);
     v.post_predicate_visit(*this, visitor_state);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3048,10 +3052,10 @@ void PredicateList::accept(parsenode_visitor& v) const
 
 // [86] NumericLiteral
 // -------------------
-void NumericLiteral::accept(parsenode_visitor& v) const
+void NumericLiteral::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -3068,10 +3072,10 @@ VarRef::VarRef(
 
 //-VarRef::
 
-void VarRef::accept(parsenode_visitor& v) const
+void VarRef::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -3092,11 +3096,11 @@ ParenthesizedExpr::ParenthesizedExpr(
 
 //-ParenthesizedExpr::
 
-void ParenthesizedExpr::accept(parsenode_visitor& v) const
+void ParenthesizedExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3112,10 +3116,10 @@ ContextItemExpr::ContextItemExpr(
 
 //-ContextItemExpr::
 
-void ContextItemExpr::accept(parsenode_visitor& v) const
+void ContextItemExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -3133,11 +3137,11 @@ OrderedExpr::OrderedExpr(
 
 //-OrderedExpr::
 
-void OrderedExpr::accept(parsenode_visitor& v) const
+void OrderedExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3154,11 +3158,11 @@ UnorderedExpr::UnorderedExpr(
 
 //-UnorderedExpr::
 
-void UnorderedExpr::accept(parsenode_visitor& v) const
+void UnorderedExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3178,12 +3182,12 @@ FunctionCall::FunctionCall(
 
 //-FunctionCall::
 
-void FunctionCall::accept(parsenode_visitor& v) const
+void FunctionCall::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   //fname_h->accept(v);
   ACCEPT (arg_list_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3198,15 +3202,15 @@ ArgList::ArgList(
 
 //-ArgList::
 
-void ArgList::accept(parsenode_visitor& v) const
+void ArgList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<exprnode> >::const_iterator it = arg_hv.begin();
   for (; it!=arg_hv.end(); ++it) {
     const exprnode* e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3237,9 +3241,9 @@ DirElemConstructor::DirElemConstructor(
 
 //-DirElemConstructor::
 
-void DirElemConstructor::accept(parsenode_visitor& v) const
+void DirElemConstructor::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   //open_name_h->accept(v);
   //close_name_h->accept(v);
 
@@ -3247,7 +3251,7 @@ void DirElemConstructor::accept(parsenode_visitor& v) const
       attr_list_h->accept(v);
 
   ACCEPT (dir_content_list_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3262,9 +3266,9 @@ DirElemContentList::DirElemContentList(
 
 //-DirElemContentList::
 
-void DirElemContentList::accept(parsenode_visitor& v) const
+void DirElemContentList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<DirElemContent> >::const_reverse_iterator it = dir_content_hv.rbegin();
   const DirElemContent* lPrev = 0;
   // To find out if a DirElemContent is boundary whitespace, the current item cannot be accepted till
@@ -3283,7 +3287,7 @@ void DirElemContentList::accept(parsenode_visitor& v) const
   if (lPrev != 0) {
     ACCEPT_CHK(lPrev);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3296,16 +3300,16 @@ DirAttributeList::DirAttributeList(
 {}
 
 
-void DirAttributeList::accept(parsenode_visitor& v) const
+void DirAttributeList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<DirAttr> >::const_iterator it = theAttributes.begin();
   for (; it != theAttributes.end(); ++it)
   {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3322,11 +3326,11 @@ DirAttr::DirAttr(
 {}
 
 
-void DirAttr::accept(parsenode_visitor& v) const
+void DirAttr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT(theValue);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3353,12 +3357,12 @@ DirAttributeValue::DirAttributeValue(
 
 //-DirAttributeValue::
 
-void DirAttributeValue::accept(parsenode_visitor& v) const
+void DirAttributeValue::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (quot_attr_content_h);
   ACCEPT (apos_attr_content_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3373,16 +3377,16 @@ QuoteAttrContentList::QuoteAttrContentList(
 
 //-QuoteAttrContentList::
 
-void QuoteAttrContentList::accept(parsenode_visitor& v) const
+void QuoteAttrContentList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<QuoteAttrValueContent> >::const_reverse_iterator it =
     quot_atval_content_hv.rbegin();
   for (; it!=quot_atval_content_hv.rend(); ++it) {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3397,16 +3401,16 @@ AposAttrContentList::AposAttrContentList(
 
 //-AposAttrContentList::
 
-void AposAttrContentList::accept(parsenode_visitor& v) const
+void AposAttrContentList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<AposAttrValueContent> >::const_reverse_iterator it =
     apos_atval_content_hv.rbegin();
   for (; it!=apos_atval_content_hv.rend(); ++it) {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3433,11 +3437,11 @@ QuoteAttrValueContent::QuoteAttrValueContent(
 
 //-QuoteAttrValueContent::
 
-void QuoteAttrValueContent::accept(parsenode_visitor& v) const
+void QuoteAttrValueContent::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (common_content_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3464,11 +3468,11 @@ AposAttrValueContent::AposAttrValueContent(
 
 //-AposAttrValueContent::
 
-void AposAttrValueContent::accept(parsenode_visitor& v) const
+void AposAttrValueContent::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (common_content_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3509,16 +3513,16 @@ DirElemContent::DirElemContent(
 
 //-DirElemContent::
 
-void DirElemContent::accept(parsenode_visitor& v) const
+void DirElemContent::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
 
   ACCEPT (direct_cons_h);
 
   ACCEPT (cdata_h);
 
   ACCEPT (common_content_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3558,11 +3562,11 @@ CommonContent::CommonContent(
 
 //-CommonContent::
 
-void CommonContent::accept(parsenode_visitor& v) const
+void CommonContent::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3579,10 +3583,10 @@ DirCommentConstructor::DirCommentConstructor(
 
 //-DirCommentConstructor::
 
-void DirCommentConstructor::accept(parsenode_visitor& v) const
+void DirCommentConstructor::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -3615,10 +3619,10 @@ DirPIConstructor::DirPIConstructor(
 
 //-DirPIConstructor::
 
-void DirPIConstructor::accept(parsenode_visitor& v) const
+void DirPIConstructor::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -3640,10 +3644,10 @@ CDataSection::CDataSection(
 
 //-CDataSection::
 
-void CDataSection::accept(parsenode_visitor& v) const
+void CDataSection::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -3667,11 +3671,11 @@ CompDocConstructor::CompDocConstructor(
 {}
 
 
-void CompDocConstructor::accept(parsenode_visitor& v) const
+void CompDocConstructor::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3688,7 +3692,7 @@ CompElemConstructor::CompElemConstructor(
 {}
 
 
-void CompElemConstructor::accept(parsenode_visitor& v) const
+void CompElemConstructor::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   if (dynamic_cast<QName*>(qname_expr_h.getp()) == NULL)
@@ -3711,7 +3715,7 @@ CompAttrConstructor::CompAttrConstructor(
 {}
 
 
-void CompAttrConstructor::accept(parsenode_visitor& v) const
+void CompAttrConstructor::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   if (dynamic_cast<QName*>(qname_expr_h.getp()) == NULL)
@@ -3732,11 +3736,11 @@ CompTextConstructor::CompTextConstructor(
 {}
 
 
-void CompTextConstructor::accept(parsenode_visitor& v) const
+void CompTextConstructor::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (text_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3753,11 +3757,11 @@ CompCommentConstructor::CompCommentConstructor(
 
 //-CompCommentConstructor::
 
-void CompCommentConstructor::accept(parsenode_visitor& v) const
+void CompCommentConstructor::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (comment_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3788,12 +3792,12 @@ CompPIConstructor::CompPIConstructor(
 
 //-CompPIConstructor::
 
-void CompPIConstructor::accept(parsenode_visitor& v) const
+void CompPIConstructor::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (target_expr_h);
   ACCEPT (content_expr_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3810,11 +3814,11 @@ SingleType::SingleType(
 {}
 
 
-void SingleType::accept(parsenode_visitor& v) const
+void SingleType::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (atomic_type_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3833,12 +3837,12 @@ SequenceType::SequenceType(
 
 //-SequenceType::
 
-void SequenceType::accept(parsenode_visitor& v) const
+void SequenceType::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (itemtype_h);
   ACCEPT (occur_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3855,10 +3859,10 @@ OccurrenceIndicator::OccurrenceIndicator(
 
 //-OccurrenceIndicator::
 
-void OccurrenceIndicator::accept(parsenode_visitor& v) const
+void OccurrenceIndicator::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -3882,10 +3886,10 @@ ItemType::ItemType(
 
 //-ItemType::
 
-void ItemType::accept(parsenode_visitor& v) const
+void ItemType::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -3902,11 +3906,11 @@ AtomicType::AtomicType(
 
 //-AtomicType::
 
-void AtomicType::accept(parsenode_visitor& v) const
+void AtomicType::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   //qname_h->accept(v);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3923,10 +3927,10 @@ AnyKindTest::AnyKindTest(
 {}
 
 
-void AnyKindTest::accept(parsenode_visitor& v) const
+void AnyKindTest::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -3959,12 +3963,12 @@ DocumentTest::DocumentTest(
 }
 
 
-void DocumentTest::accept(parsenode_visitor& v) const
+void DocumentTest::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT(elem_test_h);
   ACCEPT(schema_elem_test_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -3977,10 +3981,10 @@ TextTest::TextTest(
 {}
 
 
-void TextTest::accept(parsenode_visitor& v) const
+void TextTest::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -3993,10 +3997,10 @@ CommentTest::CommentTest(
 {}
 
 
-void CommentTest::accept(parsenode_visitor& v) const
+void CommentTest::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -4012,10 +4016,10 @@ PITest::PITest(
 {}
 
 
-void PITest::accept(parsenode_visitor& v) const
+void PITest::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -4032,7 +4036,7 @@ AttributeTest::AttributeTest(
 {}
 
 
-void AttributeTest::accept(parsenode_visitor& v) const
+void AttributeTest::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -4055,11 +4059,11 @@ SchemaAttributeTest::SchemaAttributeTest(
 
 //-SchemaAttributeTest::
 
-void SchemaAttributeTest::accept(parsenode_visitor& v) const
+void SchemaAttributeTest::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   //if (attr_h!=NULL) attr_h->accept(v);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4084,10 +4088,10 @@ ElementTest::ElementTest(
 {}
 
 
-void ElementTest::accept(parsenode_visitor& v) const
+void ElementTest::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -4104,11 +4108,11 @@ SchemaElementTest::SchemaElementTest(
 
 //-SchemaElementTest::
 
-void SchemaElementTest::accept(parsenode_visitor& v) const
+void SchemaElementTest::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   //if (elem_h!=NULL) elem_h->accept(v);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4146,11 +4150,11 @@ TypeName::TypeName(
 
 //-TypeName::
 
-void TypeName::accept(parsenode_visitor& v) const
+void TypeName::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   //if (qname_h!=NULL) qname_h->accept(v);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4175,10 +4179,10 @@ StringLiteral::StringLiteral(
 
 //-StringLiteral::
 
-void StringLiteral::accept(parsenode_visitor& v) const
+void StringLiteral::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -4226,7 +4230,7 @@ QName::QName(
 }
 
 
-void QName::accept(parsenode_visitor& v) const
+void QName::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -4245,10 +4249,10 @@ void QName::accept(parsenode_visitor& v) const
 
 //-RevalidationDecl::
 
-void RevalidationDecl::accept(parsenode_visitor& v) const
+void RevalidationDecl::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -4269,12 +4273,12 @@ InsertExpr::InsertExpr(
 
 //-InsertExpr::
 
-void InsertExpr::accept(parsenode_visitor& v) const
+void InsertExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT(theSourceExpr);
   ACCEPT(theTargetExpr);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4291,11 +4295,11 @@ DeleteExpr::DeleteExpr(
 
 //-DeleteExpr::
 
-void DeleteExpr::accept(parsenode_visitor& v) const
+void DeleteExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (theTargetExpr);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4316,12 +4320,12 @@ ReplaceExpr::ReplaceExpr(
 
 //-ReplaceExpr::
 
-void ReplaceExpr::accept(parsenode_visitor& v) const
+void ReplaceExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (theTargetExpr);
   ACCEPT (theReplaceExpr);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4340,12 +4344,12 @@ RenameExpr::RenameExpr(
 
 //-RenameExpr::
 
-void RenameExpr::accept(parsenode_visitor& v) const
+void RenameExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (theTargetExpr);
   ACCEPT (theNameExpr);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4381,13 +4385,13 @@ TransformExpr::TransformExpr(
 }
 
 
-void TransformExpr::accept(parsenode_visitor& v) const
+void TransformExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (var_list);
   ACCEPT (source_expr);
   ACCEPT (target_expr);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4398,16 +4402,16 @@ CopyVarList::CopyVarList(const QueryLoc& loc)
 }
 
 
-void CopyVarList::accept(parsenode_visitor& v) const
+void CopyVarList::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   vector<rchandle<VarBinding> >::const_iterator it;
   for (it = var_bindings.begin(); it != var_bindings.end(); ++it)
   {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
   }
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4423,17 +4427,17 @@ VarBinding::VarBinding(
 }
 
 
-void VarBinding::accept(parsenode_visitor& v) const
+void VarBinding::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (expr);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
 // TryExpr
 // ---
-void TryExpr::accept(parsenode_visitor& v) const
+void TryExpr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(theExprSingle);
@@ -4443,7 +4447,7 @@ void TryExpr::accept(parsenode_visitor& v) const
 
 // CatchListExpr
 // -------------
-void CatchListExpr::accept(parsenode_visitor& v) const
+void CatchListExpr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   vector<rchandle<CatchExpr> >::const_reverse_iterator it = theCatchExprs.rbegin();
@@ -4455,7 +4459,7 @@ void CatchListExpr::accept(parsenode_visitor& v) const
 
 // CatchExpr
 // -----
-void CatchExpr::accept(parsenode_visitor& v) const
+void CatchExpr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
@@ -4468,7 +4472,7 @@ void CatchExpr::accept(parsenode_visitor& v) const
 }
 
 
-void EvalExpr::accept(parsenode_visitor& v) const
+void EvalExpr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT (vgdl);
@@ -4485,25 +4489,26 @@ void EvalExpr::accept(parsenode_visitor& v) const
 
 // [344]
 FTSelection::FTSelection(
-  const QueryLoc& loc_,
-  rchandle<FTOr> _ftor,
-  pos_filter_list_t *_pos_filter_list)
+  QueryLoc const &loc,
+  rchandle<FTOr> ftor,
+  pos_filter_list_t *pos_filter_list )
 :
-  parsenode(loc_),
-  ftor(_ftor)
+  FTPrimary( loc ),
+  ftor_( ftor )
 {
-    if ( _pos_filter_list )
-        pos_filter_list.swap( *_pos_filter_list );
+  if ( pos_filter_list )
+    pos_filter_list_.swap( *pos_filter_list );
 }
 
 
 //-FTSelection::
 
-void FTSelection::accept(parsenode_visitor& v) const
+void FTSelection::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (ftor);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT( ftor_ );
+  ACCEPT_SEQ( pos_filter_list_t, pos_filter_list_ );
+  END_VISITOR();
 }
 
 
@@ -4523,12 +4528,12 @@ FTOr::FTOr(
 
 //-FTOr::
 
-void FTOr::accept(parsenode_visitor& v) const
+void FTOr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (ftor_h);
   ACCEPT (ftand_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4547,12 +4552,12 @@ FTAnd::FTAnd(
 
 //-FTAnd::
 
-void FTAnd::accept(parsenode_visitor& v) const
+void FTAnd::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (ftand_h);
   ACCEPT (ftmild_not_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4571,12 +4576,12 @@ FTMildNot::FTMildNot(
 
 //-FTMildNot::
 
-void FTMildNot::accept(parsenode_visitor& v) const
+void FTMildNot::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (ftmild_not_h);
   ACCEPT (ftunary_not_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4593,11 +4598,11 @@ FTUnaryNot::FTUnaryNot(
 
 //-FTUnaryNot::
 
-void FTUnaryNot::accept(parsenode_visitor& v) const
+void FTUnaryNot::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (words_selection_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -4617,37 +4622,15 @@ FTPrimaryWithOptions::FTPrimaryWithOptions(
 
 //-FTPrimaryWithOptions::
 
-void FTPrimaryWithOptions::accept(parsenode_visitor& v) const
+void FTPrimaryWithOptions::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (primary);
   ACCEPT (match_options);
   ACCEPT (weight);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
-
-// [151]
-FTPrimary::FTPrimary(
-  const QueryLoc& loc_,
-  rchandle<FTWords> _words,
-  rchandle<FTTimes> _times)
-:
-  parsenode(loc_),
-  words(_words),
-  times(_times)
-{}
-
-
-//-FTPrimary::
-
-void FTPrimary::accept(parsenode_visitor& v) const
-{
-  BEGIN_VISITOR ();
-  ACCEPT (words);
-  ACCEPT (times);
-  END_VISITOR ();
-}
 
 FTMatchOptions::FTMatchOptions(
     const QueryLoc &loc_)
@@ -4656,498 +4639,481 @@ FTMatchOptions::FTMatchOptions(
 {
 }
 
-void FTMatchOptions::accept(parsenode_visitor& v) const
+void FTMatchOptions::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT_SEQ( match_option_list_t, match_options );
+  END_VISITOR();
 }
 
 FTWeight::FTWeight(
-    const QueryLoc &loc_,
-    RangeExpr *_range_expr)
-:
-    parsenode( loc_ ),
-    range_expr( range_expr )
+  const QueryLoc &loc,
+  exprnode *expr
+) :
+  parsenode( loc ),
+  expr_( expr )
 {
 }
 
-void FTWeight::accept(parsenode_visitor& v) const
+void FTWeight::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (range_expr);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT( expr_ );
+  END_VISITOR();
 }
 
 
 // [350] FTWords
 // -------------
 FTWords::FTWords(
-  const QueryLoc& loc_,
-  FTWordsValue* _words_val_h,
-  FTAnyallOption* _any_all_option_h)
+  QueryLoc const &loc,
+  FTWordsValue const *words_value,
+  FTAnyallOption const *any_all_option )
 :
-  parsenode(loc_),
-  words_val_h(_words_val_h),
-  any_all_option_h(_any_all_option_h)
-{}
-
-
-//-FTWords::
-
-void FTWords::accept(parsenode_visitor& v) const
+  parsenode(loc),
+  words_value_( words_value ),
+  any_all_option_( any_all_option )
 {
-  BEGIN_VISITOR ();
-  ACCEPT (words_val_h);
-  ACCEPT (any_all_option_h);
-  END_VISITOR ();
+}
+
+FTWords::~FTWords() {
+  delete words_value_;
+  delete any_all_option_;
+}
+
+void FTWords::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT( words_value_ );
+  ACCEPT( any_all_option_ );
+  END_VISITOR();
+}
+
+FTWordsTimes::FTWordsTimes(
+  QueryLoc const &loc,
+  FTWords const *words,
+  FTTimes const *times
+) :
+  FTPrimary( loc ),
+  words_( words ),
+  times_( times )
+{
+}
+
+FTWordsTimes::~FTWordsTimes() {
+  delete words_;
+  delete times_;
+}
+
+void FTWordsTimes::accept( parsenode_visitor &v ) const {
+  BEGIN_VISITOR();
+  ACCEPT( words_ );
+  ACCEPT( times_ );
+  END_VISITOR();
 }
 
 
-// [351] FTWordsValue
-// ------------------
 FTWordsValue::FTWordsValue(
-  const QueryLoc& loc_,
-  StringLiteral* _lit_h,
-  exprnode* _expr_h)
-:
-  parsenode(loc_),
-  lit_h(_lit_h),
-  expr_h(_expr_h)
-{}
-
-
-//-FTWordsValue::
-
-void FTWordsValue::accept(parsenode_visitor& v) const
+  QueryLoc const &loc,
+  StringLiteral *literal,
+  exprnode *expr
+) :
+  parsenode( loc ),
+  literal_( literal ),
+  expr_( expr )
 {
-  BEGIN_VISITOR ();
-  ACCEPT (lit_h);
-  ACCEPT (expr_h);
-  END_VISITOR ();
 }
 
-
-// [352] FTPosFilter
-// -----------------
-FTPosFilter::FTPosFilter(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
-
-
-//-FTPosFilter::
-
-void FTPosFilter::accept(parsenode_visitor& v) const
+void FTWordsValue::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT( literal_ );
+  ACCEPT( expr_ );
+  END_VISITOR();
 }
 
 
 // [353] FTOrder
 // ------------------------
 FTOrder::FTOrder(
-  const QueryLoc& loc_)
-:
-  FTPosFilter(loc_)
-{}
+  QueryLoc const &loc 
+) :
+  FTPosFilter( loc )
+{
+}
 
 
 //-FTOrder::
 
-void FTOrder::accept(parsenode_visitor& v) const
+void FTOrder::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
 // [354] FTMatchOption
 // -------------------
 FTMatchOption::FTMatchOption(
-  const QueryLoc& loc_)
-:
-  parsenode(loc_)
-{}
-
-
-//-FTMatchOption::
-
-void FTMatchOption::accept(parsenode_visitor& v) const
+  const QueryLoc &loc
+) :
+  parsenode( loc )
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
 }
 
 
 // [355] FTCaseOption
 // ------------------
 FTCaseOption::FTCaseOption(
-  const QueryLoc& loc_,
-  ParseConstants::ft_case_mode_t _mode)
-:
-  FTMatchOption(loc_),
-  mode(_mode)
-{}
-
-
-//-FTCaseOption::
-
-void FTCaseOption::accept(parsenode_visitor& v) const
+  QueryLoc const &loc,
+  ft_case_mode::type mode
+) :
+  FTMatchOption( loc ),
+  mode_( mode )
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+}
+
+void FTCaseOption::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
-// [356] FTDiacriticsOption
-// ------------------------
 FTDiacriticsOption::FTDiacriticsOption(
-  const QueryLoc& loc_,
-  ParseConstants::ft_diacritics_mode_t _mode)
-:
-  FTMatchOption(loc_),
-  mode(_mode)
-{}
-
-
-//-FTDiacriticsOption::
-
-void FTDiacriticsOption::accept(parsenode_visitor& v) const
+  QueryLoc const &loc,
+  ft_diacritics_mode::type mode
+) :
+  FTMatchOption( loc ),
+  mode_( mode )
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+}
+
+void FTDiacriticsOption::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
-// [357] FTStemOption
-// ------------------
 FTStemOption::FTStemOption(
-  const QueryLoc& loc_,
-  ParseConstants::ft_stem_mode_t _mode)
-:
-  FTMatchOption(loc_),
-  mode(_mode)
-{}
-
-
-//-FTStemOption::
-
-void FTStemOption::accept(parsenode_visitor& v) const
+  QueryLoc const &loc,
+  ft_stem_mode::type mode
+) :
+  FTMatchOption( loc ),
+  mode_( mode )
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+}
+
+void FTStemOption::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
-// [358]
 FTThesaurusOption::FTThesaurusOption(
-  const QueryLoc& loc_,
-  thesaurus_id_list_t *_thesaurus_id_list,
-  bool _includes_default,
-  bool _without)
-:
-  FTMatchOption(loc_),
-  incl_default(_includes_default),
-  without(_without)
+  QueryLoc const &loc,
+  thesaurus_id_list_t *thesaurus_id_list,
+  bool includes_default,
+  bool no_thesaurus
+) :
+  FTMatchOption( loc ),
+  includes_default_( includes_default ),
+  no_thesaurus_( no_thesaurus )
 {
-    if ( _thesaurus_id_list )
-        thesaurus_id_list.swap( *_thesaurus_id_list );
+  if ( thesaurus_id_list )
+    thesaurus_id_list_.swap( *thesaurus_id_list );
+}
+
+FTThesaurusOption::~FTThesaurusOption() {
+  delete_ptr_container( thesaurus_id_list_ );
 }
 
 
-//-FTThesaurusOption::
-
-void FTThesaurusOption::accept(parsenode_visitor& v) const
+void FTThesaurusOption::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT_SEQ( thesaurus_id_list_t, thesaurus_id_list_ );
+  END_VISITOR();
 }
 
 
 
-// [359] FTThesaurusID
-// -------------------
 FTThesaurusID::FTThesaurusID(
-  const QueryLoc& loc_,
-  std::string _thesaurus_name,
-  std::string _relationship_name,
-  rchandle<FTRange> _levels_h)
-:
-  parsenode(loc_),
-  thesaurus_name(_thesaurus_name),
-  relationship_name(_relationship_name),
-  levels_h(_levels_h)
-{}
-
-
-//-FTThesaurusID::
-
-void FTThesaurusID::accept(parsenode_visitor& v) const
+  QueryLoc const &loc,
+  std::string const &uri,
+  std::string const &relationship,
+  FTRange const *levels
+) :
+  parsenode( loc ),
+  uri_( uri ),
+  relationship_( relationship_ ),
+  levels_( levels )
 {
-  BEGIN_VISITOR ();
-  ACCEPT (levels_h);
-  END_VISITOR ();
+}
+
+FTThesaurusID::~FTThesaurusID() {
+  delete levels_;
 }
 
 
-// [360]
+void FTThesaurusID::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT( levels_ );
+  END_VISITOR();
+}
+
+
 FTStopWordOption::FTStopWordOption(
-  const QueryLoc& loc_,
-  rchandle<FTStopWords> _stop_words,
-  incl_excl_list_t *_incl_excl_list,
-  ParseConstants::ft_stop_words_mode_t _mode)
+  QueryLoc const &loc,
+  FTStopWords const *stop_words,
+  incl_excl_list_t *incl_excl_list,
+  ft_stop_words_mode::type mode)
 :
-  FTMatchOption(loc_),
-  stop_words(_stop_words),
-  mode(_mode)
+  FTMatchOption( loc ),
+  stop_words_( stop_words ),
+  mode_( mode )
 {
-    if ( _incl_excl_list )
-        incl_excl_list.swap( *_incl_excl_list );
+  if ( incl_excl_list )
+    incl_excl_list_.swap( *incl_excl_list );
+}
+
+FTStopWordOption::~FTStopWordOption() {
+  delete stop_words_;
+  delete_ptr_container( incl_excl_list_ );
 }
 
 
-//-FTStopWordOption::
-
-void FTStopWordOption::accept(parsenode_visitor& v) const
+void FTStopWordOption::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (stop_words);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT( stop_words_ );
+  ACCEPT_SEQ( incl_excl_list_t, incl_excl_list_ );
+  END_VISITOR();
 }
 
 
-// [361]
 FTStopWords::FTStopWords(
-  const QueryLoc& loc_,
-  std::string _uri,
-  list_type_t* _stringlit_list)
-:
-  parsenode(loc_),
-  uri(_uri)
+  QueryLoc const &loc,
+  std::string const &uri,
+  stop_word_list_t *stop_words
+) :
+  parsenode( loc ),
+  uri_( uri )
 {
-    if ( _stringlit_list )
-        stringlit_list.swap( *_stringlit_list );
+  if ( stop_words )
+    stop_words_.swap( *stop_words );
 }
 
 
-//-FTStopWords::
-
-void FTStopWords::accept(parsenode_visitor& v) const
+void FTStopWords::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
-// [362] FTStopWordsInclExcl
-// -----------------------------
 FTStopWordsInclExcl::FTStopWordsInclExcl(
-  const QueryLoc& loc_,
-  rchandle<FTStopWords> _stop_words,
-  ParseConstants::ft_stop_words_unex_t _mode)
-:
-  parsenode(loc_),
-  stop_words(_stop_words),
-  mode(_mode)
-{}
-
-
-//-FTStopWordsInclExcl::
-
-void FTStopWordsInclExcl::accept(parsenode_visitor& v) const
+  QueryLoc const &loc,
+  FTStopWords const *stop_words,
+  ft_stop_words_unex::type mode
+) :
+  parsenode( loc ),
+  stop_words_( stop_words ),
+  mode_( mode )
 {
-  BEGIN_VISITOR ();
-  ACCEPT (stop_words);
-  END_VISITOR ();
+}
+
+FTStopWordsInclExcl::~FTStopWordsInclExcl() {
+  delete stop_words_;
 }
 
 
-// [363] FTLanguageOption
-// ----------------------
+void FTStopWordsInclExcl::accept( parsenode_visitor &v ) const {
+  BEGIN_VISITOR();
+  ACCEPT( stop_words_ );
+  END_VISITOR();
+}
+
+
 FTLanguageOption::FTLanguageOption(
-  const QueryLoc& loc_,
-  std::string _lang)
-:
-  FTMatchOption(loc_),
-  lang(_lang)
-{}
-
-
-//-FTLanguageOption::
-
-void FTLanguageOption::accept(parsenode_visitor& v) const
+  QueryLoc const &loc,
+  std::string const &language
+) :
+  FTMatchOption( loc ),
+  language_( language )
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
 }
 
 
-// [364] FTWildCardOption
-// ----------------------
+void FTLanguageOption::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
 FTWildCardOption::FTWildCardOption(
-  const QueryLoc& loc_,
-  bool _with_b)
-:
-  FTMatchOption(loc_),
-  with_b(_with_b)
-{}
-
-
-//-FTWildCardOption::
-
-void FTWildCardOption::accept(parsenode_visitor& v) const
+  QueryLoc const &loc,
+  ft_wild_card_mode::type mode
+) :
+  FTMatchOption( loc ),
+  mode_( mode )
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
 }
 
 
-// [365]  FTContent
-// ---------------
+void FTWildCardOption::accept( parsenode_visitor &v ) const {
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
 FTContent::FTContent(
-  const QueryLoc& loc_,
-  ParseConstants::ft_content_mode_t _mode)
-:
-  FTPosFilter(loc_),
-  mode(_mode)
-{}
-
-
-//-FTContent::
-
-void FTContent::accept(parsenode_visitor& v) const
+  QueryLoc const &loc,
+  ft_content_mode::type mode
+) :
+  FTPosFilter( loc ),
+  mode_( mode )
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
 }
 
 
-// [366]  FTAnyallOption
-// --------------------
-FTAnyallOption::FTAnyallOption(
-  const QueryLoc& loc_,
-  ParseConstants::ft_anyall_option_t _option)
-:
-  parsenode(loc_),
-  option(_option)
-{}
-
-
-//-FTAnyallOption::
-
-void FTAnyallOption::accept(parsenode_visitor& v) const
+void FTContent::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
+FTAnyallOption::FTAnyallOption(
+  const QueryLoc& loc,
+  ft_anyall_mode::type option)
+:
+  parsenode(loc),
+  option_(option)
+{
+}
+
+void FTAnyallOption::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
 // [367] FTRange
 // -------------
 FTRange::FTRange(
-  const QueryLoc& loc_,
-  FTRange::ft_range_mode_t _mode,
-  rchandle<exprnode> _src_expr_h,
-  rchandle<exprnode> _dst_expr_h)
+  const QueryLoc& loc,
+  ft_range_mode::type mode,
+  rchandle<exprnode> expr1,
+  rchandle<exprnode> expr2)
 :
-  parsenode(loc_),
-  mode (_mode),
-  src_expr_h(_src_expr_h),
-  dst_expr_h(_dst_expr_h)
-{}
+  parsenode(loc),
+  mode_(mode),
+  expr1_(expr1),
+  expr2_(expr2)
+{
+}
 
 
 //-FTRange::
 
-void FTRange::accept(parsenode_visitor& v) const
+void FTRange::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (src_expr_h);
-  ACCEPT (dst_expr_h);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT (expr1_);
+  ACCEPT (expr2_);
+  END_VISITOR();
 }
 
 
-// [368] FTDistance
-// ----------------
 FTDistance::FTDistance(
-  const QueryLoc& loc_,
-  rchandle<FTRange> _dist_h,
-  rchandle<FTUnit> _unit_h)
-:
-  FTPosFilter(loc_),
-  dist_h(_dist_h),
-  unit_h(_unit_h)
-{}
-
-
-//-FTDistance::
-
-void FTDistance::accept(parsenode_visitor& v) const
+  QueryLoc const &loc,
+  FTRange const *distance,
+  FTUnit const *unit
+) :
+  FTPosFilter( loc ),
+  distance_( distance ),
+  unit_( unit )
 {
-  BEGIN_VISITOR ();
-  ACCEPT (dist_h);
-  ACCEPT (unit_h);
-  END_VISITOR ();
+}
+
+FTDistance::~FTDistance() {
+  delete distance_;
+  delete unit_;
+}
+
+void FTDistance::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT( distance_ );
+  ACCEPT( unit_ );
+  END_VISITOR();
 }
 
 FTExtensionOption::FTExtensionOption(
-    const QueryLoc &loc_,
-    rchandle<QName> _qname,
-    std::string const &_val)
+  const QueryLoc &loc,
+  QName *qname,
+  std::string const &val)
 :
-    FTMatchOption( loc_ ),
-    qname( _qname ),
-    val( _val )
+    FTMatchOption( loc ),
+    qname_( qname ),
+    val_( val )
 {
 }
 
 
-void FTExtensionOption::accept(parsenode_visitor& v) const
+void FTExtensionOption::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 FTExtensionSelection::FTExtensionSelection(
-    const QueryLoc &loc_,
-    PragmaList *_pragma_list)
-:
-    parsenode( loc_ ),
-    pragma_list( _pragma_list )
+  QueryLoc const &loc,
+  PragmaList *pragma_list,
+  FTSelection *ftselection
+) :
+  FTPrimary( loc ),
+  pragma_list_( pragma_list ),
+  ftselection_( ftselection )
 {
 }
 
-void FTExtensionSelection::accept(parsenode_visitor& v) const
+void FTExtensionSelection::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT( pragma_list_ );
+  END_VISITOR();
 }
 
 
 // [369] FTWindow
 // --------------
 FTWindow::FTWindow(
-  const QueryLoc& loc_,
-  rchandle<UnionExpr> _window_h,
-  rchandle<FTUnit> _unit_h)
+  const QueryLoc& loc,
+  AdditiveExpr *window,
+  FTUnit *unit)
 :
-  FTPosFilter(loc_),
-  window_h(_window_h),
-  unit_h(_unit_h)
-{}
+  FTPosFilter(loc),
+  window_(window),
+  unit_(unit)
+{
+}
 
 
 //-FTWindow::
 
-void FTWindow::accept(parsenode_visitor& v) const
+void FTWindow::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  ACCEPT (window_h);
-  ACCEPT (unit_h);
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  ACCEPT (window_);
+  ACCEPT (unit_);
+  END_VISITOR();
 }
 
 
@@ -5164,11 +5130,11 @@ FTTimes::FTTimes(
 
 //-FTTimes::
 
-void FTTimes::accept(parsenode_visitor& v) const
+void FTTimes::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (range_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
 
@@ -5176,7 +5142,7 @@ void FTTimes::accept(parsenode_visitor& v) const
 // -------------
 FTScope::FTScope(
   const QueryLoc& loc_,
-  ParseConstants::ft_scope_t _scope,
+  ft_scope::type _scope,
   FTBigUnit *_big_unit)
 :
   FTPosFilter(loc_),
@@ -5186,30 +5152,31 @@ FTScope::FTScope(
 
 //-FTScope::
 
-void FTScope::accept(parsenode_visitor& v) const
+void FTScope::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
 // [372] FTUnit
 // ------------
 FTUnit::FTUnit(
-  const QueryLoc& loc_,
-  ParseConstants::ft_unit_t _unit)
+  const QueryLoc& loc,
+  ft_unit::type unit)
 :
-  parsenode(loc_),
-  unit(_unit)
-{}
+  parsenode(loc),
+  unit_(unit)
+{
+}
 
 
 //-FTUnit::
 
-void FTUnit::accept(parsenode_visitor& v) const
+void FTUnit::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -5217,7 +5184,7 @@ void FTUnit::accept(parsenode_visitor& v) const
 // ---------------
 FTBigUnit::FTBigUnit(
   const QueryLoc& loc_,
-  enum ParseConstants::ft_big_unit_t _unit)
+  ft_big_unit::type _unit)
 :
   parsenode(loc_),
   unit(_unit)
@@ -5226,10 +5193,10 @@ FTBigUnit::FTBigUnit(
 
 //-FTBigUnit::
 
-void FTBigUnit::accept(parsenode_visitor& v) const
+void FTBigUnit::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
@@ -5246,60 +5213,57 @@ FTIgnoreOption::FTIgnoreOption(
 
 //-FTIgnoreOption::
 
-void FTIgnoreOption::accept(parsenode_visitor& v) const
+void FTIgnoreOption::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (union_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
-void AssignExpr::accept(parsenode_visitor& v) const
+void AssignExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (value_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
-void ExitExpr::accept(parsenode_visitor& v) const
+void ExitExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (value_h);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
-void WhileExpr::accept(parsenode_visitor& v) const
+void WhileExpr::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
+  BEGIN_VISITOR();
   ACCEPT (cond);
   ACCEPT (body);
-  END_VISITOR ();
+  END_VISITOR();
 }
 
-void FlowCtlStatement::accept(parsenode_visitor& v) const
+void FlowCtlStatement::accept( parsenode_visitor &v ) const
 {
-  BEGIN_VISITOR ();
-  END_VISITOR ();
+  BEGIN_VISITOR();
+  END_VISITOR();
 }
 
 
-// [13a] FTOptionDecl
-// ------------------
 FTOptionDecl::FTOptionDecl(
-  const QueryLoc& loc_,
-  rchandle<parsenode> _match_option_h)
+  QueryLoc const &loc,
+  rchandle<parsenode> match_option)
 :
-  parsenode(loc_),
-  match_option_h(_match_option_h)
-{}
-
-
-//-FTOptionDecl::
-
-void FTOptionDecl::accept(parsenode_visitor& v) const
+  parsenode( loc ),
+  match_option_( match_option )
 {
-  BEGIN_VISITOR ();
-  ACCEPT (match_option_h);
-  END_VISITOR ();
+}
+
+
+void FTOptionDecl::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT( match_option_ );
+  END_VISITOR();
 }
 
 
@@ -5355,4 +5319,4 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
 } /* namespace zorba */
 
 
-/* vim:set et sw=4 ts=4: */
+/* vim:set et sw=2 ts=2: */

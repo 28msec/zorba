@@ -317,8 +317,7 @@ DEF_VISIT_METHODS (flowctl_expr)
 
 DEF_VISIT_METHODS (function_def_expr)
 
-//DEF_VISIT_METHODS (ft_select_expr)
-//DEF_VISIT_METHODS (ft_contains_expr)
+//DEF_VISIT_METHODS (ftcontains_expr)
 
 };
 

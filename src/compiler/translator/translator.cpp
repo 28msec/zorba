@@ -16,6 +16,7 @@
 
 #include <sstream>
 #include <iterator>
+#include <stack>
 
 #include "zorbautils/fatal.h"
 #include "zorbautils/strutil.h"
@@ -50,6 +51,7 @@
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/ft_expr.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
@@ -994,7 +996,8 @@ protected:
 
   int                                  theTempVarCounter;
 
-  std::vector<expr_t>                  theNodeStack;
+  stack<expr_t>                        theNodeStack;
+  stack<ftexpr*>                       theFTNodeStack;
 
   stack<xqtref_t>                      theTypeStack; 
 
@@ -1159,20 +1162,20 @@ expr_t pop_nodestack(int n = 1)
 {
   ZORBA_ASSERT(n >= 0);
 
-  rchandle<expr> e_h;
+  expr_t e_h;
 
   for (; n > 0; --n) 
   {
     ZORBA_FATAL(! theNodeStack.empty(), "");
-    e_h = theNodeStack.back();
-    theNodeStack.pop_back();
+    e_h = theNodeStack.top();
+    theNodeStack.pop();
 
 #ifndef NDEBUG
     if (Properties::instance()->traceTranslator()) 
     {
       cout << "Popped from nodestack:\n";
       if (e_h != NULL)
-        e_h->put (cout) << endl;
+        e_h->put( cout ) << endl;
       else
         cout << "NULL" << endl;
     }
@@ -1181,13 +1184,17 @@ expr_t pop_nodestack(int n = 1)
   return e_h;
 }
 
+expr_t top_nodestack() {
+  ZORBA_FATAL( !theNodeStack.empty(), "" );
+  return theNodeStack.top();
+}
 
 /*******************************************************************************
   Push the given expr into theNodeStack.
 ********************************************************************************/
 inline void push_nodestack(const expr_t& e) 
 {
-  theNodeStack.push_back(e);
+  theNodeStack.push(e);
 }
 
 
@@ -1208,7 +1215,7 @@ var_expr_t pop_nodestack_var()
 ********************************************************************************/
 expr_t peek_nodestk_or_null() 
 {
-  return (theNodeStack.empty()) ? expr_t(NULL) : theNodeStack.back();
+  return (theNodeStack.empty()) ? expr_t(NULL) : theNodeStack.top();
 }
 
 
@@ -1222,8 +1229,8 @@ rchandle<axis_step_expr> expect_axis_step_top()
   if (axisExpr == NULL)
   {
     cout << "Expecting axis step on top of stack; ";
-    if (theNodeStack.back() != NULL)
-      cout << "typeid(top()) = " << typeid(*theNodeStack.back()).name() << endl;
+    if (theNodeStack.top() != NULL)
+      cout << "typeid(top()) = " << typeid(*theNodeStack.top()).name() << endl;
     else
       cout << "top is null\n";
     ZORBA_ASSERT (false);
@@ -1238,6 +1245,45 @@ rchandle<axis_step_expr> expect_axis_step_top()
 xqtref_t pop_tstack()
 {
   return pop_stack(theTypeStack); 
+}
+
+/*******************************************************************************
+  Pop the top n ftexprs from theFTNodeStack and return the last expr that was popped.
+********************************************************************************/
+ftexpr* pop_ftstack(int n = 1) 
+{
+  ZORBA_ASSERT(n >= 0);
+
+  ftexpr *e = NULL;
+  while ( n-- > 0 ) {
+    ZORBA_FATAL( !theFTNodeStack.empty(), "" );
+    e = theFTNodeStack.top();
+    theFTNodeStack.pop();
+
+#ifndef NDEBUG
+    if ( Properties::instance()->traceTranslator() ) {
+      cout << "Popped from ftnode stack:\n";
+      if ( e )
+        cout << *e << endl;
+      else
+        cout << "NULL" << endl;
+    }
+#endif
+  }
+  return e;
+}
+
+
+/******************************************************************************
+  Push the given expr into theFTNodeStack.
+ ******************************************************************************/
+inline void push_ftstack( ftexpr *e ) {
+  theFTNodeStack.push( e );
+}
+
+inline ftexpr* top_ftstack() {
+  ZORBA_FATAL( !theFTNodeStack.empty(), "" );
+  return theFTNodeStack.top();
 }
 
 
@@ -3621,7 +3667,7 @@ void end_visit(const Param& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  rchandle<flwor_expr> flwor = theNodeStack.back().cast<flwor_expr> ();
+  rchandle<flwor_expr> flwor = theNodeStack.top().cast<flwor_expr> ();
   ZORBA_ASSERT(flwor != NULL);
 
   const function* f = isInlineFunction?0:theCurrentPrologVFDecl.getFunction();
@@ -6005,7 +6051,7 @@ void end_visit(const QVarInDecl& v, void* /*visit_state*/)
   expr_t domainExpr = pop_nodestack();
   var_expr_t varExpr = bind_var(loc, v.get_name(), var_expr::for_var, type);
 
-  flwor_expr* flworExpr = dynamic_cast<flwor_expr*>(theNodeStack.back().getp());
+  flwor_expr* flworExpr = dynamic_cast<flwor_expr*>(theNodeStack.top().getp());
   ZORBA_ASSERT(flworExpr != NULL);
 
   flworExpr->add_clause(wrap_in_forclause(domainExpr, varExpr, NULL));
@@ -7652,7 +7698,7 @@ void end_visit(const NameTest& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT ();
 
-  expr* top = theNodeStack.back().getp();
+  expr* top = theNodeStack.top().getp();
 
   axis_step_expr* axisExpr = NULL;
   trycatch_expr* tce = NULL;
@@ -9956,7 +10002,7 @@ void end_visit(const TransformExpr& v, void* /*visit_state*/)
   }
 
   transform_expr* transformExpr = 
-  dynamic_cast<transform_expr*>(theNodeStack.back().getp());
+  dynamic_cast<transform_expr*>(theNodeStack.top().getp());
   assert(transformExpr != NULL);
 
   transformExpr->setModifyExpr(modifyExpr);
@@ -10006,7 +10052,7 @@ void end_visit (const VarBinding& v, void*)
   var_expr_t varExpr = pop_nodestack_var();
 
   transform_expr* transformExpr = 
-  dynamic_cast<transform_expr*>(theNodeStack.back().getp());
+  dynamic_cast<transform_expr*>(theNodeStack.top().getp());
   assert(transformExpr != NULL);
 
   copy_clause* copyClause = new copy_clause(varExpr, sourceExpr);
@@ -10059,7 +10105,7 @@ void end_visit(const CatchListExpr& v, void* visit_state)
 {
   TRACE_VISIT_OUT();
   
-  trycatch_expr* tce = static_cast<trycatch_expr*>(theNodeStack.back().getp());
+  trycatch_expr* tce = static_cast<trycatch_expr*>(theNodeStack.top().getp());
 
   tce->compute_scripting_kind();
 }
@@ -10082,7 +10128,7 @@ void* begin_visit(const CatchExpr& v)
 {
   TRACE_VISIT();
 
-  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.back().getp());
+  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.top().getp());
 
   catch_clause_t cc = new catch_clause();
 
@@ -10128,7 +10174,7 @@ void end_visit(const CatchExpr& v, void* visit_state)
   TRACE_VISIT_OUT();
 
   expr_t ce = pop_nodestack();
-  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.back().getp());
+  trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.top().getp());
 
   catch_clause* cc = &*(*tce)[0];
   cc->set_catch_expr(ce);
@@ -10277,396 +10323,565 @@ void end_visit (const FlowCtlStatement& v, void* visit_state)
   push_nodestack (new flowctl_expr (sctxid(), loc, a));
 }
 
-/* full-text-related */
+////////// full-text-related //////////////////////////////////////////////////
+
 void *begin_visit (const FTAnd& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  ZORBA_ASSERT (false);
+  push_ftstack( NULL ); // sentinel
   return no_state;
 }
 
 void end_visit (const FTAnd& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+
+  ftand_expr::ftexpr_list_t list;
+  while ( true ) {
+    ftexpr *const e = pop_ftstack();
+    if ( !e )
+      break;
+    list.push_back( e );
+  }
+  push_ftstack( new ftand_expr( v.get_location(), list ) );
 }
 
 void *begin_visit (const FTAnyallOption& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTAnyallOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  // nothing to do
 }
 
 void *begin_visit (const FTBigUnit& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTBigUnit& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  // nothing to do
 }
 
 void *begin_visit (const FTCaseOption& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTCaseOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  push_ftstack( new ftcase_option_expr( v.get_location(), v.get_mode() ) );
 }
 
 void *begin_visit (const FTContainsExpr& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTContainsExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+
+  union_expr_t ftignore = NULL;
+  if ( v.get_ignore() )
+    ftignore = pop_nodestack().dyn_cast<union_expr>();
+
+  ftselection_expr *const ftselection =
+    dynamic_cast<ftselection_expr*>( pop_ftstack() );
+
+  range_expr_t range = pop_nodestack().dyn_cast<range_expr>();
+
+  ftcontains_expr *const e = new ftcontains_expr(
+    sctxid(), v.get_location(), range, ftselection, ftignore
+  );
+  push_nodestack( e );
 }
 
 void *begin_visit (const FTContent& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTContent& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  push_ftstack( new ftcontent_expr( v.get_location(), v.get_mode() ) );
 }
 
 void *begin_visit (const FTDiacriticsOption& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTDiacriticsOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  ftdiacritics_option_expr *const d =
+    new ftdiacritics_option_expr( v.get_location(), v.get_mode() );
+  push_ftstack( d );
 }
 
 void *begin_visit (const FTDistance& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTDistance& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  ftdistance_expr *const d = new ftdistance_expr(
+    v.get_location(),
+    dynamic_cast<ftrange_expr*>( pop_ftstack() ),
+    v.get_unit()->get_unit()
+  );
+  push_ftstack( d );
 }
 
 void *begin_visit (const FTExtensionOption& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTExtensionOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  ftextension_option_expr *const eo =
+    new ftextension_option_expr( v.get_location(), v.get_qname(), v.get_val() );
+  push_ftstack( eo );
 }
 
 void *begin_visit (const FTExtensionSelection& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // TODO
   return no_state;
 }
 
 void end_visit (const FTExtensionSelection& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  ftselection_expr *const s = dynamic_cast<ftselection_expr*>( top_ftstack() );
+  if ( s )
+    pop_ftstack();
+  ftextension_selection_expr *const es = new ftextension_selection_expr(
+    v.get_location(), /* TODO: pragma_list, */ s
+  );
+  push_ftstack( es );
 }
 
 void *begin_visit (const FTIgnoreOption& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTIgnoreOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  // nothing to do
 }
 
 void *begin_visit (const FTStopWords& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTStopWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  ftstop_words_expr *const sw =
+    new ftstop_words_expr( v.get_location(), v.get_uri(), v.get_stop_words() );
+  push_ftstack( sw );
 }
 
 void *begin_visit (const FTStopWordsInclExcl& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTStopWordsInclExcl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  FTStopWords const *const stop_words = v.get_stop_words();
+  ftstop_words_expr *const sw = new ftstop_words_expr(
+    v.get_location(),
+    stop_words->get_uri(),
+    stop_words->get_stop_words(),
+    v.get_mode()
+  );
+  push_ftstack( sw );
 }
 
 void *begin_visit (const FTLanguageOption& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTLanguageOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTMatchOption& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTMatchOption& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
+  push_ftstack( new ftlanguage_option_expr( loc, v.get_language() ) );
 }
 
 void *begin_visit (const FTMatchOptions& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTMatchOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  // nothing to do
 }
 
 void *begin_visit (const FTMildNot& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  push_ftstack( NULL ); // sentinel
   return no_state;
 }
 
 void end_visit (const FTMildNot& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+
+  ftmild_not_expr::ftexpr_list_t list;
+  while ( true ) {
+    ftexpr *const e = pop_ftstack();
+    if ( !e )
+      break;
+    list.push_back( e );
+  }
+  push_ftstack( new ftmild_not_expr( v.get_location(), list ) );
 }
 
 void *begin_visit (const FTOptionDecl& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
   return no_state;
 }
 
 void end_visit (const FTOptionDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  // TODO
 }
 
 void *begin_visit (const FTOr& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  push_ftstack( NULL );
   return no_state;
 }
 
 void end_visit (const FTOr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+
+  ftor_expr::ftexpr_list_t list;
+  while ( true ) {
+    ftexpr *const e = pop_ftstack();
+    if ( !e )
+      break;
+    list.push_back( e );
+  }
+  push_ftstack( new ftor_expr( v.get_location(), list ) );
 }
 
 void *begin_visit (const FTOrder& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTOrder& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTPosFilter& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTPosFilter& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTRange& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTRange& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTScope& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTScope& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTScoreVar& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTScoreVar& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTSelection& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTSelection& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTStemOption& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTStemOption& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTStopWordOption& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTThesaurusID& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTThesaurusOption& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTTimes& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTTimes& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTUnaryNot& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTUnaryNot& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTUnit& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTUnit& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTWeight& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTWeight& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTWildCardOption& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTWildCardOption& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTWindow& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTWindow& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTWords& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTWords& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-}
-
-void *begin_visit (const FTPrimary& v) {
-  TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
-  return no_state;
-}
-
-void end_visit (const FTPrimary& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
+  push_ftstack( new ftorder_expr( v.get_location() ) );
 }
 
 void *begin_visit (const FTPrimaryWithOptions& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  push_ftstack( new ftprimary_with_options_expr( v.get_location() ) );
   return no_state;
 }
 
 void end_visit (const FTPrimaryWithOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  // nothing to do
+}
+
+void *begin_visit (const FTRange& v) {
+  TRACE_VISIT ();
+  push_nodestack( NULL ); // sentinel
+  return no_state;
+}
+
+void end_visit (const FTRange& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+
+  additive_expr_t e1 = pop_nodestack();
+  additive_expr_t e2 = pop_nodestack();
+  if ( e2 )
+    pop_nodestack(); // pop the sentinel
+
+  ftrange_expr *const r = new ftrange_expr(
+    v.get_location(), v.get_mode(), e1, e2
+  );
+  push_ftstack( r );
+}
+
+void *begin_visit (const FTScope& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTScope& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  ftscope_expr *const s = new ftscope_expr(
+    v.get_location(), v.get_scope(), v.get_big_unit()->get_unit()
+  );
+  push_ftstack( s );
+}
+
+void *begin_visit (const FTScoreVar& v) {
+  TRACE_VISIT ();
+  // TODO
+  return no_state;
+}
+
+void end_visit (const FTScoreVar& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  // TODO
+}
+
+void *begin_visit (const FTSelection& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTSelection& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+
+  ftselection_expr::ftpos_filter_list_t list;
+  while ( true ) {
+    ftexpr *const e = pop_ftstack();
+    if ( ftpos_filter_expr *const pfe = dynamic_cast<ftpos_filter_expr*>( e ) )
+      list.push_back( pfe );
+    else {
+      push_ftstack( new ftselection_expr( v.get_location(), e, list ) );
+      break;
+    }
+  }
+}
+
+void *begin_visit (const FTStemOption& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTStemOption& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  ftprimary_with_options_expr *const pwo =
+    dynamic_cast<ftprimary_with_options_expr*>( top_ftstack() );
+  ftstem_option_expr *so =
+    new ftstem_option_expr( v.get_location(), v.get_mode() );
+  pwo->set_stem_option( so );
+}
+
+void *begin_visit (const FTStopWordOption& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+
+  if ( v.get_mode() == ft_stop_words_mode::without )
+    return;
+
+  ftstop_word_option_expr::stop_word_list_t stop_words;
+  while ( true ) {
+    ftexpr *const e = top_ftstack();
+    if ( ftstop_words_expr *const sw = dynamic_cast<ftstop_words_expr*>( e ) ) {
+      stop_words.push_back( *sw );
+      pop_ftstack();
+    } else
+      break;
+  }
+
+  ftstop_word_option_expr *swo = new ftstop_word_option_expr(
+    v.get_location(),
+    stop_words,
+    v.get_mode()
+  );
+
+  ftprimary_with_options_expr *const pwo =
+    dynamic_cast<ftprimary_with_options_expr*>( top_ftstack() );
+  pwo->set_stop_word_option( swo );
+}
+
+void *begin_visit (const FTThesaurusID& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  ftthesaurus_id_expr *const ti = new ftthesaurus_id_expr(
+    v.get_location(),
+    v.get_uri(),
+    v.get_relationship(),
+    v.get_levels() ? dynamic_cast<ftrange_expr*>( pop_ftstack() ) : NULL
+  );
+  push_ftstack( ti );
+}
+
+void *begin_visit (const FTThesaurusOption& v) {
+  TRACE_VISIT ();
+  push_ftstack( NULL ); // sentinel
+  return no_state;
+}
+
+void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+
+  ftthesaurus_option_expr::thesaurus_id_list_t list;
+  while ( true ) {
+    ftthesaurus_id_expr *const ti =
+      dynamic_cast<ftthesaurus_id_expr*>( pop_ftstack() );
+    if ( ti )
+      list.push_back( ti );
+    else
+      break;
+  }
+  ftthesaurus_option_expr *const to = new ftthesaurus_option_expr(
+    v.get_location(), list, v.includes_default(), v.no_thesaurus()
+  );
+
+  ftprimary_with_options_expr *const pwo =
+    dynamic_cast<ftprimary_with_options_expr*>( top_ftstack() );
+
+  pwo->set_thesaurus_option( to );
+}
+
+void *begin_visit (const FTTimes& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTTimes& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  // nothing to do
+}
+
+void *begin_visit (const FTUnaryNot& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTUnaryNot& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  push_ftstack( new ftunary_not_expr( v.get_location(), pop_ftstack() ) );
+}
+
+void *begin_visit (const FTUnit& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTUnit& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  // nothing to do
+}
+
+void *begin_visit (const FTWeight& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTWeight& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  ftprimary_with_options_expr *const pwo =
+    dynamic_cast<ftprimary_with_options_expr*>( top_ftstack() );
+  pwo->set_weight( v.get_expr() );
+}
+
+void *begin_visit (const FTWildCardOption& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTWildCardOption& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  ftprimary_with_options_expr *const pwo =
+    dynamic_cast<ftprimary_with_options_expr*>( top_ftstack() );
+  ftwild_card_option_expr *const wco =
+    new ftwild_card_option_expr( v.get_location(), v.get_mode() );
+  pwo->set_wild_card( wco );
+}
+
+void *begin_visit (const FTWindow& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTWindow& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  ftwindow_expr *const w = new ftwindow_expr(
+    v.get_location(), pop_nodestack(), v.get_unit()->get_unit()
+  );
+  push_ftstack( w );
+}
+
+void *begin_visit (const FTWords& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTWords& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  ftwords_expr *const w = new ftwords_expr(
+    v.get_location(),
+    pop_nodestack(),
+    v.get_any_all_option()->get_option()
+  );
+  push_ftstack( w );
+}
+
+void *begin_visit (const FTWordsTimes& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTWordsTimes& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+
+  ftrange_expr *const fttimes = dynamic_cast<ftrange_expr*>( top_ftstack() );
+  if ( fttimes )
+    pop_ftstack();
+  ftwords_expr *const ftwords = dynamic_cast<ftwords_expr*>( pop_ftstack() );
+  ftwords_times_expr *const wt =
+    new ftwords_times_expr( v.get_location(), ftwords, fttimes );
+  push_ftstack( wt );
 }
 
 void *begin_visit (const FTWordsValue& v) {
   TRACE_VISIT ();
-  ZORBA_NOT_SUPPORTED ("full text");
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTWordsValue& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  // nothing to do
 }
 
 //Function items exprs
@@ -10991,4 +11206,4 @@ expr_t translate(const parsenode& root, CompilerCB* ccb)
 }
 
 } /* namespace zorba */
-
+/* vim:set et sw=2 ts=2: */

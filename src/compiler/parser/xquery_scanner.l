@@ -505,6 +505,7 @@ typedef zorba::xquery_parser::token token;
 "language" { return token::LANGUAGE; }
 "levels" { return token::LEVELS; }
 "lowercase" { return token::LOWERCASE; }
+"no" { return token::NO; }
 "occurs" { return token::OCCURS; }
 "paragraph" { return token::PARAGRAPH; }
 "phrase" { return token::PHRASE; }
