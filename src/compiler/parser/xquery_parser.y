@@ -457,6 +457,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* ----------------- */
 %token ALL                              "'all'"
 %token ANY                              "'any'"
+%token CONTAINS                         "'contains'"
 %token CONTENT                          "'content'"
 %token DIACRITICS                       "'diacritics'"
 %token DIFFERENT                        "'different'"
@@ -466,7 +467,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token EXACTLY                          "'exactly'"
 %token FROM                             "'from'"
 %token FTAND                            "'ftand'"
-%token FTCONTAINS                       "'ftcontains'"
 %token FTNOT                            "'not'"
 %token FT_OPTION                        "'ft-option'"
 %token FTOR                             "'ftor'"
@@ -859,14 +859,6 @@ template<typename T> inline void release_hack( T *ref ) {
  *
  *  Precedence
  *_____________________________________________________________________*/
-
-/*_____________________________________________________________________
- *
- * resolve shift-reduce conflict for
- * [48a] FTContainsExpr ::= RangeExpr ( "ftcontains" FTSelection FTIgnoreOption? )?
- *_____________________________________________________________________*/
-%nonassoc FTCONTAINS_REDUCE
-%left FTCONTAINS
 
 /*_____________________________________________________________________
  *
@@ -3039,17 +3031,17 @@ ComparisonExpr
 
 // [51]
 FTContainsExpr
-    :   RangeExpr %prec FTCONTAINS_REDUCE
+    :   RangeExpr
         {
             $$ = $1;
         }
-    |   RangeExpr FTCONTAINS FTSelection opt_FTIgnoreOption
+    |   RangeExpr CONTAINS TEXT FTSelection opt_FTIgnoreOption
         {
             $$ = new FTContainsExpr(
                 LOC(@$),
                 dynamic_cast<FTRange*>($1),
-                dynamic_cast<FTSelection*>($3),
-                dynamic_cast<FTIgnoreOption*>($4)
+                dynamic_cast<FTSelection*>($4),
+                dynamic_cast<FTIgnoreOption*>($5)
             );
         }
     ;
@@ -5313,7 +5305,7 @@ KEYWORD
     |   MODULE { $$ = SYMTAB_PUT("module"); }
     |   FUNCTION { $$ = SYMTAB_PUT("function"); }
     |   SCORE { $$ = SYMTAB_PUT("score"); }
-    |   FTCONTAINS { $$ = SYMTAB_PUT("ftcontains"); }
+    |   CONTAINS { $$ = SYMTAB_PUT("contains"); }
     |   WEIGHT { $$ = SYMTAB_PUT("weight"); }
     |   WINDOW { $$ = SYMTAB_PUT("window"); }
     |   DISTANCE { $$ = SYMTAB_PUT("distance"); }

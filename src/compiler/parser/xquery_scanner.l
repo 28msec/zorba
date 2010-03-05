@@ -478,7 +478,7 @@ typedef zorba::xquery_parser::token token;
      | FT tokens
      |______________________________________________________________________*/
 
-"ftcontains" { return token::FTCONTAINS; }
+"contains" { return token::CONTAINS; }
 "ftand" { return token::FTAND; }
 "ftnot" { return token::FTNOT; }
 "ftor" { return token::FTOR; }
