@@ -213,7 +213,21 @@ void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 ********************************************************************************/
 void ValueIndex::analyze()
 {
-  expr* dotVar = theSctx->lookup_var("$$dot");
+  store::Item_t dotQName;
+  GENV_ITEMFACTORY->createQName(dotQName, "", "", "$$dot");
+  expr* dotVar = NULL;
+
+  try
+  {
+    theSctx->lookup_var(dotQName, QueryLoc::null, XPST0008);
+  }
+  catch (error::ZorbaError& e)
+  {
+    if (e.theErrorCode != XPST0008)
+    {
+      throw e;
+    }
+  }
 
   std::vector<var_expr*> varExprs;
 
@@ -257,7 +271,7 @@ void ValueIndex::analyze()
 
 void ValueIndex::analyzeExprInternal(
     expr* e,
-    std::vector</*const */store::Item*>& sourceNames,
+    std::vector<store::Item*>& sourceNames,
     std::vector<expr*>& sourceExprs,
     std::vector<var_expr*>& varExprs,
     expr* dotVar)
@@ -304,7 +318,7 @@ void ValueIndex::analyzeExprInternal(
       ZORBA_ASSERT(qnameExpr != NULL);
       store::Item* qname = qnameExpr->get_val();
 
-      var_expr* varExpr = static_cast<var_expr*>(theSctx->lookup_var(qname));
+      var_expr* varExpr = theSctx->lookup_var(qname, e->get_loc(), XPST0008);
       ZORBA_ASSERT(varExpr->get_kind() == var_expr::local_var);
 
       varExprs.push_back(varExpr);

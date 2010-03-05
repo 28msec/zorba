@@ -9,6 +9,7 @@
 
 <zorba:source>
     <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
+    <zorba:include  form="Quoted">compiler/expression/var_expr.h</zorba:include>
 </zorba:source>
 
 <!--
@@ -137,14 +138,15 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="InscopeVariablesIterator">
+
   <zorba:description author="Zorba Team">
     sc:in-scope-variables
   </zorba:description>
 
   <zorba:state generateInit="true" generateReset="false" generateDestructor="false">
-    <zorba:member type="std::auto_ptr&lt;std::vector&lt;xqpString&gt; &gt;" name="keymap"
-                  brief="vector of keys"/>
-    <zorba:member type="unsigned int" name="position" brief="current position"/>
+    <zorba:member type="std::vector&lt;var_expr_t&gt;" name="theVariables"
+                  brief="vector of variables"/>
+    <zorba:member type="ulong" name="thePosition" brief="current position"/>
   </zorba:state>
 
   <zorba:function>
@@ -153,6 +155,7 @@
       <zorba:output>xs:QName*</zorba:output>
     </zorba:signature>
   </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -333,9 +336,9 @@
   </zorba:function>
 
   <zorba:state generateInit="true" generateReset="false" generateDestructor="false">
-    <zorba:member type="std::auto_ptr&lt;std::vector&lt;xqpString&gt; &gt;" name="keymap"
-                  brief="vector of keys"/>
-    <zorba:member type="unsigned int" name="position" brief="current position"/>
+    <zorba:member type="std::vector&lt;function*&gt;" name="theFunctions"
+                  brief="vector of functions"/>
+    <zorba:member type="ulong" name="thePosition" brief="current position"/>
   </zorba:state>
 </zorba:iterator>
 

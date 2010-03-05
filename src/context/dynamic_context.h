@@ -96,12 +96,14 @@ protected:
 public:
   static std::string var_key(const void* var);
 
-  static xqpString expand_varname(static_context* sctx, xqpString& qname);
+  static xqpString expand_varname(
+        static_context* sctx,
+        const xqpStringStore_t& qname);
 
   static xqpString expand_varname(
         static_context* sctx,
-        xqpString& ns,
-        xqpString& localname);
+        const xqpStringStore_t& ns,
+        const xqpStringStore_t& localname);
 
 public:
   dynamic_context(dynamic_context* parent = NULL);

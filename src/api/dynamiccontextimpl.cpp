@@ -42,6 +42,7 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#include "zorbaerrors/Assert.h"
 
 
 namespace zorba {
@@ -83,8 +84,8 @@ DynamicContextImpl::setVariable(
     // unmarshall the string and the item
     store::Item_t lItem(Unmarshaller::getInternalItem(aItem));
     ZorbaImpl::checkItem(lItem);
-    xqpString lString (Unmarshaller::getInternalString(aQName));
 
+    xqpStringStore_t lString = Unmarshaller::getInternalString(aQName);
     xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
     // add it to the internal context
@@ -112,7 +113,7 @@ DynamicContextImpl::setVariable(
         
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
-    xqpString lString (Unmarshaller::getInternalString(aQName));
+    xqpStringStore_t lString = Unmarshaller::getInternalString(aQName);
     xqpString lExpandedName = theCtx->expand_varname(theStaticContext, lString);
 
     theCtx->add_variable(lExpandedName, lRes);
@@ -126,7 +127,8 @@ DynamicContextImpl::setVariable(
 
 bool
 DynamicContextImpl::setVariable(
-    const String& aNamespace, const String& aLocalname,
+    const String& aNamespace, 
+    const String& aLocalname,
     const Iterator_t& aIterator )
 {
   ZORBA_DCTX_TRY
@@ -139,10 +141,11 @@ DynamicContextImpl::setVariable(
         
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
-    xqpString lNamespace (Unmarshaller::getInternalString(aNamespace));
-    xqpString lLocalname (Unmarshaller::getInternalString(aLocalname));
-    xqpString lExpandedName = theCtx->expand_varname
-      (theStaticContext, lNamespace, lLocalname);
+    xqpStringStore_t lNamespace = Unmarshaller::getInternalString(aNamespace);
+    xqpStringStore_t lLocalname = Unmarshaller::getInternalString(aLocalname);
+    xqpString lExpandedName = theCtx->expand_varname(theStaticContext,
+                                                     lNamespace,
+                                                     lLocalname);
 
     theCtx->add_variable(lExpandedName, lRes);
 
@@ -155,20 +158,24 @@ DynamicContextImpl::setVariable(
 
 bool
 DynamicContextImpl::getVariable(
-  const String& aNamespace, const String& aLocalname,
-  Item& aItem, Iterator_t& aIterator)
+  const String& aNamespace,
+  const String& aLocalname,
+  Item& aItem,
+  Iterator_t& aIterator)
 {
   ZORBA_DCTX_TRY
   {
-    xqpString lNamespace (Unmarshaller::getInternalString(aNamespace));
-    xqpString lLocalname (Unmarshaller::getInternalString(aLocalname));
-    xqpString lExpandedName = theCtx->expand_varname
-      (theStaticContext, lNamespace, lLocalname);
+    xqpStringStore_t lNamespace = Unmarshaller::getInternalString(aNamespace);
+    xqpStringStore_t lLocalname = Unmarshaller::getInternalString(aLocalname);
+    xqpString lExpandedName = theCtx->expand_varname(theStaticContext,
+                                                     lNamespace,
+                                                     lLocalname);
 
     store::Item_t lItem;
     store::Iterator_t lIter;
     theCtx->get_variable(lExpandedName, lItem, lIter);
-    if (! lItem.isNull()) {
+    if (! lItem.isNull()) 
+    {
       aItem = lItem;
     }
     if (! lIter.isNull()) {

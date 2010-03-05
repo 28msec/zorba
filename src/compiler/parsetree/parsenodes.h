@@ -3728,14 +3728,12 @@ public:
 class VarRef : public exprnode
 {
 protected:
-  std::string varname;
+	rchandle<QName> theName;
 
 public:
-  VarRef(
-    const QueryLoc&,
-    std::string varname);
+	VarRef(const QueryLoc&, rchandle<QName> name);
 
-  std::string get_varname() const { return varname; }
+	const QName* get_name() const { return theName.getp(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -5061,13 +5059,19 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ExitExpr : public exprnode {
+class ExitExpr : public exprnode 
+{
   rchandle<exprnode> value_h;
 public:
+
   ExitExpr (const QueryLoc& loc_, rchandle<exprnode> val_)
-    : exprnode (loc_), value_h (val_)
+    :
+    exprnode (loc_),
+    value_h (val_)
   {}
+
   rchandle<exprnode> get_value () { return value_h; }
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -5075,16 +5079,24 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class AssignExpr : public exprnode {
-  std::string varname;
+class AssignExpr : public exprnode 
+{
+  rchandle<QName>    theName;
   rchandle<exprnode> value_h;
 
 public:
-  AssignExpr (const QueryLoc& loc_, std::string varname_, rchandle<exprnode> val_)
-    : exprnode (loc_), varname (varname_), value_h (val_)
-  {}
-  const std::string& get_varname() const { return varname; }
+  AssignExpr (const QueryLoc& loc, rchandle<QName> name, rchandle<exprnode> val)
+    :
+    exprnode(loc),
+    theName(name),
+    value_h(val)
+  {
+  }
+
+  const QName* get_name() const { return theName.getp(); }
+
   rchandle<exprnode> get_value () const { return value_h; }
+
   void accept(parsenode_visitor&) const;
 };
 

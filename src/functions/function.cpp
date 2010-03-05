@@ -25,6 +25,9 @@
 
 #include "types/typeops.h"
 
+#include "zorbaerrors/Assert.h"
+
+
 using namespace std;
 
 namespace zorba {

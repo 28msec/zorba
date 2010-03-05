@@ -75,9 +75,6 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
 END_SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
 
-SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_value_t)
-END_SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_value_t)
-
 SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
 END_SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
 
@@ -85,44 +82,17 @@ SERIALIZABLE_CLASS_VERSIONS(static_context)
 END_SERIALIZABLE_CLASS_VERSIONS(static_context)
 
 
-static pair<xqp_string, xqp_string> parse_qname(xqp_string qname)
-{
-  std::string::size_type n = static_cast<std::string> (qname).find (':');
-  return (n == string::npos)
-    ? pair<xqp_string, xqp_string> ("", qname)
-    : pair<xqp_string, xqp_string> (qname.substr (0, n), qname.substr (n+1));
-}
-
-
-/***************************************************************************//**
- Debugging purposes
-********************************************************************************/
-std::ostream& operator<<(std::ostream& stream, const static_context::ctx_value_t& object)
-{
-  stream << (int)object.type;
-  return stream;
-}
-
-
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::ctx_value_t::serialize(::zorba::serialization::Archiver& ar)
+void BaseUriInfo::serialize(::zorba::serialization::Archiver& ar)
 {
-  SERIALIZE_ENUM(enum ctx_value_type, type);
-  switch(type)
-  {
-  case CTX_EXPR:
-    ar.dont_allow_delay();
-    ar & exprValue;
-    if(!ar.is_serializing_out() && exprValue)
-      RCHelper::addReference (exprValue);
-    break;
-  default:
-    if(!ar.is_serializing_out())
-      typeValue = NULL;//don't serialize this
-    break;
-  }
+  ar & thePrologBaseUri;
+  ar & theApplicationBaseUri;
+  ar & theEntityRetrievalUri;
+  ar & theEncapsulatingEntityUri;
+  
+  ar & theBaseUri;
 }
 
 
@@ -156,11 +126,9 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 
     if (dyn_loaded_module)
     {
-      InternalModuleURIResolver* lStandardModuleResolver
-        = GENV.getModuleURIResolver();
+      StandardModuleURIResolver* moduleResolver = GENV.getModuleURIResolver();
 
-      module = lStandardModuleResolver->getExternalModule(
-              lURIStore->str(), GENV_ROOT_STATIC_CONTEXT);
+      module = moduleResolver->getExternalModule(lURIStore, GENV_ROOT_STATIC_CONTEXT);
 
       // no way to get the module
       if (!module)
@@ -200,75 +168,6 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 }
 
 
-template<class V> bool static_context::context_value(xqp_string key, V &val) const
-{
-  if (lookup_once(key, val))
-    return true;
-  else
-    return theParent == NULL ? false : theParent->context_value (key, val);
-}
-
-
-// Explicit template instantiation
-template bool static_context::context_value<static_context::ctx_value_t>(
-    xqp_string key,
-    static_context::ctx_value_t& val) const;
-
-
-bool static_context::bind_expr (xqp_string key, expr *e)
-{
-  ctx_value_t v(CTX_EXPR);
-  v.exprValue = e;
-
-  // return false if the key was in the map already
-  if (keymap.put (key, v, false))
-    return false;
-
-  RCHelper::addReference (e);
-  return true;
-}
-
-
-bool static_context::bind_expr2 (const char *key1, xqp_string key2, expr *e)
-{
-  ctx_value_t v(CTX_EXPR);
-  v.exprValue = e;
-
-  // return false if the key was in the map already
-  if (keymap.put2 (key1, key2, v, false))
-    return false;
-
-  RCHelper::addReference (e);
-  return true;
-}
-
-
-bool static_context::bind_module(xqp_string uri, ExternalModule* m,
-                          bool dyn_loaded)
-{
-  ctx_module_t v;
-  v.module = m;
-  v.dyn_loaded_module = dyn_loaded;
-  return !modulemap.put (uri, v, false);
-}
-
-
-std::vector<xqp_string>* static_context::get_all_keymap_keys() const
-{
-  std::auto_ptr<std::vector<xqp_string> > keys;
-  if (theParent != NULL)
-    keys.reset(theParent->get_all_keymap_keys());
-  else
-    keys.reset(new std::vector<xqp_string>);
-
-  for (unsigned int i=0; i<keymap.size(); i++)
-    keys->push_back(keymap.getentryKey(i));
-
-  return keys.release();
-}
-
-
-
 /***************************************************************************//**
   Default Constructor.
 ********************************************************************************/
@@ -279,7 +178,9 @@ static_context::static_context()
   theBaseUriInfo(NULL),
   theDocResolver(0),
   theColResolver(0),
+  theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
+  theVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
   theCollectionMap(NULL),
@@ -317,7 +218,9 @@ static_context::static_context(static_context* parent)
   theBaseUriInfo(NULL),
   theDocResolver(0),
   theColResolver(0),
+  theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
+  theVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
   theCollectionMap(0),
@@ -353,12 +256,13 @@ static_context::static_context(static_context* parent)
 static_context::static_context(::zorba::serialization::Archiver& ar)
   :
   SimpleRCObject(ar),
-  keymap(ar),
   theTraceStream(NULL),
   theBaseUriInfo(NULL),
   theDocResolver(0),
   theColResolver(0),
+  theExternalModulesMap(NULL),
   theNamespaceBindings(NULL),
+  theVariablesMap(NULL),
   theFunctionMap(NULL),
   theFunctionArityMap(NULL),
   theCollectionMap(0),
@@ -391,42 +295,27 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 static_context::~static_context()
 {
-  ///free the pointers from ctx_value_t from keymap
-  checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
-  const char* keybuff;
-
-  //keybuff[sizeof(keybuff)-1] = 0;
-  for(it = keymap.begin(); it != keymap.end(); it++)
+  if (theExternalModulesMap)
   {
-    ///it is an entry
-    //keymap.getentryKey(*it, keybuff, sizeof(keybuff)-1);
-    keybuff = (*it).key.c_str();
-    const ctx_value_t *val = &(*it).val;
-    if(val->exprValue)
+    ExternalModuleMap::iterator ite = theExternalModulesMap->begin();
+    ExternalModuleMap::iterator end = theExternalModulesMap->end();
+    for(; ite != end; ++ite)
     {
-      if (0 == strncmp(keybuff, "type:", 5)) 
+      const ctx_module_t& val = ite.getValue();
+      if (val.dyn_loaded_module) 
       {
-        RCHelper::removeReference (const_cast<XQType *> (val->typeValue));
-      }
-      else if (0 == strncmp(keybuff, "var:", 4)) 
-      {
-        RCHelper::removeReference (const_cast<expr *> (val->exprValue));
+        val.module->destroy();
       }
     }
-  }
 
-  checked_vector<serializable_hashmap<ctx_module_t>::entry>::const_iterator it2;
-  for(it2 = modulemap.begin(); it2 != modulemap.end(); it2++)
-  {
-    const ctx_module_t *val = &(*it2).val;
-    if (val->dyn_loaded_module) 
-    {
-      val->module->destroy();
-    }
+    delete theExternalModulesMap;
   }
 
   set_document_uri_resolver(0);
   set_collection_uri_resolver(0);
+
+  if (theVariablesMap)
+    delete theVariablesMap;
 
   if (theFunctionMap)
     delete theFunctionMap;
@@ -610,7 +499,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   if (ar.is_serializing_out())
   {
     ar.set_is_temp_field(true);
-    bool  parent_is_root = check_parent_is_root();//(
+    bool  parent_is_root = check_parent_is_root();
     ar & parent_is_root;
     ar.set_is_temp_field(false);
 
@@ -644,14 +533,6 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
       theParent->addReference(theParent->getSharedRefCounter() SYNC_PARAM2(theParent->getRCLock()));
   }
 
-  if(!ar.is_serializing_out())
-  {
-    assert(modulemap.size() == 0);
-  }
-
-  ar & modulemap;
-  ar & keymap;
-
   ar & theBaseUriInfo;
 
   serialize_resolvers(ar);
@@ -659,11 +540,15 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theModulePaths;
 
+  ar & theExternalModulesMap;
+
   SERIALIZE_TYPEMANAGER_RCHANDLE(TypeManager, theTypemgr);
 
   ar & theNamespaceBindings;
   ar & theDefaultElementNamespace;
   ar & theDefaultFunctionNamespace;
+
+  ar & theVariablesMap;
 
   ar & theFunctionMap;
   ar & theFunctionArityMap;
@@ -1487,10 +1372,164 @@ void static_context::get_namespace_bindings(
 /***************************************************************************//**
 
 ********************************************************************************/
+void static_context::bind_var(
+    const store::Item* qname,
+    var_expr_t& varExpr,
+    const QueryLoc& loc,
+    const XQUERY_ERROR& err)
+{
+  if (theVariablesMap == NULL)
+  {
+    theVariablesMap = new VariableMap(0, NULL, 8, false);
+  }
+
+  store::Item* qname2 = const_cast<store::Item*>(qname);
+
+  if (!theVariablesMap->insert(qname2, varExpr))
+  {
+    ZORBA_ERROR_LOC_PARAM(err,loc, qname->getStringValue(), "");
+  }
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+var_expr* static_context::lookup_var(
+    const store::Item* qname,
+    const QueryLoc& loc,
+    const XQUERY_ERROR& err) const
+{
+  store::Item* qname2 = const_cast<store::Item*>(qname);
+
+  const static_context* sctx = this;
+  var_expr_t varExpr;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theVariablesMap != NULL &&
+        sctx->theVariablesMap->get(qname2, varExpr))
+    {
+      return varExpr.getp();
+    }
+
+    sctx = sctx->theParent;
+  }
+
+  if (err != MAX_ZORBA_ERROR_CODE)
+  {
+    ZORBA_ERROR_LOC_PARAM(err, loc, qname->getStringValue()->c_str(), "");
+  }
+
+  return NULL;
+}
+
+
+/***************************************************************************//**
+  This method is used by the debuger
+********************************************************************************/
+void static_context::getVariables(std::vector<std::string>& aResult) const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theVariablesMap != NULL)
+    {
+      VariableMap::iterator ite = sctx->theVariablesMap->begin();
+      VariableMap::iterator end = sctx->theVariablesMap->end();
+
+      for (; ite != end; ++ite)
+      {
+        const var_expr* lExpr = ite.getValue();
+        var_expr::var_kind lKind = lExpr->get_kind();
+
+        if (lKind == var_expr::prolog_var) 
+        {
+          aResult.push_back("global");
+        }
+        else 
+        {
+          aResult.push_back("local");
+        }
+
+        std::string lType;
+        if (lExpr->get_type() == NULL || lExpr->get_type()->get_qname() == NULL) 
+        {
+          lType = "anyType:http://www.w3.org/2001/XMLSchema";
+        }
+        else
+        {
+          store::Item_t lQname = lExpr->get_type()->get_qname();
+          lType = lQname->getLocalName()->c_str();
+          lType += ":";
+          lType += lQname->getNamespace()->c_str();
+        }
+
+        if (lExpr->is_sequential()) 
+        {
+          lType += "*";
+        }
+
+        aResult.push_back(lType);
+
+        std::string varName = lExpr->get_name()->getLocalName()->str();
+        if (! lExpr->get_name()->getNamespace()->empty())
+        {
+          varName += ":";
+          varName += lExpr->get_name()->getNamespace()->str();
+        }
+        aResult.push_back(varName);
+      }
+    }
+
+    sctx = sctx->theParent;
+  }
+}
+
+
+/***************************************************************************//**
+  This method is used by introspection. 
+********************************************************************************/
+void static_context::getVariables(std::vector<var_expr_t>& vars) const
+{
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theVariablesMap != NULL)
+    {
+      VariableMap::iterator ite = sctx->theVariablesMap->begin();
+      VariableMap::iterator end = sctx->theVariablesMap->end();
+
+      for (; ite != end; ++ite)
+      {
+        ulong numVars = vars.size();
+        ulong i = 0;
+        for (; i < numVars; ++i)
+        {
+          if (vars[i]->get_name()->equals((*ite).first))
+            break;
+        }
+
+        if (i == numVars)
+          vars.push_back((*ite).second);
+      }
+    }
+
+    sctx = sctx->theParent;
+  }
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
 void static_context::set_context_item_type(xqtref_t& t)
 {
   theCtxItemType = t;
 }
+
 
 /***************************************************************************//**
 
@@ -1646,6 +1685,47 @@ function* static_context::lookup_fn(
 
 
 /***************************************************************************//**
+  Find all the functions in this sctx and its ancestors.
+********************************************************************************/
+void static_context::get_functions(
+    std::vector<function *>& functions) const
+{
+  if (theFunctionMap != NULL)
+  {
+    FunctionMap::iterator ite = theFunctionMap->begin();
+    FunctionMap::iterator end = theFunctionMap->end();
+
+    for (; ite != end; ++ite)
+    {
+      functions.push_back((*ite).second);
+    }
+  }
+
+  std::vector<function_t>* fv;
+
+  if (theFunctionArityMap != NULL)
+  {
+    FunctionArityMap::iterator ite = theFunctionArityMap->begin();
+    FunctionArityMap::iterator end = theFunctionArityMap->end();
+
+    for (; ite != end; ++ite)
+    {
+      fv = (*ite).second;
+
+      ulong numFunctions = fv->size();
+      for (ulong i = 0; i < numFunctions; ++i)
+      {
+        functions.push_back((*fv)[i].getp());
+      }
+    }
+  }
+  
+  if (theParent != NULL)
+    theParent->get_functions(functions);
+}
+
+
+/***************************************************************************//**
   Find all the functions with the given qname.
 ********************************************************************************/
 void static_context::find_functions(
@@ -1673,6 +1753,92 @@ void static_context::find_functions(
   
   if (theParent != NULL)
     theParent->find_functions(qname2, functions);
+}
+
+
+/***************************************************************************//**
+  Register an external module.  This module can be used to retrieve external
+  functions defined in the target namespace of the module.
+
+  If aDynamicallyLoaded is false, then the external module to register has been
+  created and is provided directly by the application. Otherwise, it is an 
+  external module that is created and loaded dynamically by zorba from a lib
+  file that is stored somewhere in the in-scope module paths (see
+  StandardModuleURIResolver::getExternalModule method). 
+********************************************************************************/
+void static_context::bind_external_module(
+    ExternalModule* aModule,
+    bool aDynamicallyLoaded)
+{
+  if (theExternalModulesMap == NULL)
+  {
+    theExternalModulesMap = new ExternalModuleMap(8, false);
+  }
+
+  xqpStringStore_t uri = Unmarshaller::getInternalString(aModule->getURI());
+  ctx_module_t modinfo;
+  modinfo.module = aModule;
+  modinfo.dyn_loaded_module = aDynamicallyLoaded;
+
+  if (!theExternalModulesMap->insert(uri, modinfo))
+  {
+    ZORBA_ERROR_DESC_OSS(API0019_FUNCTION_ALREADY_REGISTERED,
+                         "The external module with URI "
+                         << Unmarshaller::getInternalString(aModule->getURI())->str()
+                         << " is already registered");
+  }
+}
+
+
+/***************************************************************************//**
+  Find and return the implementation of an external function, given its namespace
+  URI and local name.
+********************************************************************************/
+StatelessExternalFunction* static_context::lookup_stateless_external_function(
+    const xqpStringStore_t& aURI,
+    const xqpStringStore_t& aLocalName)
+{
+  // get the module for the given namespace
+  bool found = false;
+  ctx_module_t modinfo;
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
+  {
+    if (sctx->theExternalModulesMap != NULL &&
+        sctx->theExternalModulesMap->get(aURI, modinfo))
+    {
+      found = true;
+      break;
+    }
+
+    sctx = sctx->theParent;
+  }
+
+  ExternalModule* lModule = 0;
+
+  // If the module is not yet in the static context we try to get it from the
+  // URI resolver
+  if (!found)
+  {
+    StandardModuleURIResolver* moduleResolver = GENV.getModuleURIResolver();
+    lModule = moduleResolver->getExternalModule(aURI, *this);
+
+    // no way to get the module
+    if (!lModule)
+      return NULL;
+
+    // remember the module for future use
+    bind_external_module(lModule, true);
+  }
+  else
+  {
+    lModule = modinfo.module;
+  }
+
+  // get the function from this module.
+  // return 0 if not found
+  return lModule->getExternalFunction(aLocalName.getp());
 }
 
 
@@ -1827,6 +1993,34 @@ to_collection_update_property(const StaticContextConsts::declaration_property_t&
   return lRes;
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
+const StaticallyKnownCollection* static_context::lookup_collection(
+    const store::Item* qname) const
+{
+  StaticallyKnownCollection_t lColl;
+  store::Item* qname2 = const_cast<store::Item*>(qname);
+
+  if (theCollectionMap && theCollectionMap->get(qname2, lColl))
+    return lColl.getp();
+  else
+    return (theParent == NULL ? 0 : theParent->lookup_collection(qname));
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+store::Iterator_t static_context::collection_names() const
+{
+  return new SctxMapIterator<StaticallyKnownCollection>(
+             this,
+             &static_context::collection_map);
+}
+
+
 collection_order_property_t
 to_collection_order_property(const StaticContextConsts::declaration_property_t& p)
 {
@@ -1853,9 +2047,14 @@ to_collection_node_modifier(const StaticContextConsts::node_modifier_t& p)
   return lRes;
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
 void static_context::call_collection_callback(const StaticallyKnownCollection_t& aColl)
 {
-  if (theCollectionCallback) {
+  if (theCollectionCallback) 
+  {
     // wrap the collection information into an object known in the api
     DeclaredCollection lDeclaredColl;
     lDeclaredColl.theName = aColl->getName();
@@ -1863,8 +2062,11 @@ void static_context::call_collection_callback(const StaticallyKnownCollection_t&
     lDeclaredColl.theOrderProperty = to_collection_order_property(aColl->getOrderProperty());
     lDeclaredColl.theNodeModifier = to_collection_node_modifier(aColl->getNodeModifier());
     theCollectionCallback(lDeclaredColl, theCollectionCallbackData);
-  } else {
-    if (theParent) {
+  }
+  else
+  {
+    if (theParent) 
+    {
       theParent->call_collection_callback(aColl);
     }
   }
@@ -1874,27 +2076,12 @@ void static_context::call_collection_callback(const StaticallyKnownCollection_t&
 /***************************************************************************//**
 
 ********************************************************************************/
-const StaticallyKnownCollection* static_context::lookup_collection(
-    const store::Item* qname) const
+void static_context::set_collection_callback(
+    CollectionCallback aCallbackFunction,
+    void* aCallbackData)
 {
-  StaticallyKnownCollection_t lColl;
-  store::Item* qname2 = const_cast<store::Item*>(qname);
-
-  if (theCollectionMap && theCollectionMap->get(qname2, lColl))
-    return lColl.getp();
-  else
-    return (theParent == NULL ? 0 : theParent->lookup_collection(qname));
-}
-
-
-/***************************************************************************//**
-
-********************************************************************************/
-store::Iterator_t static_context::collection_names() const
-{
-  return new SctxMapIterator<StaticallyKnownCollection>(
-             this,
-             &static_context::collection_map);
+  theCollectionCallback = aCallbackFunction;
+  theCollectionCallbackData = aCallbackData;
 }
 
 
@@ -1927,55 +2114,6 @@ void static_context::bind_index(
   theIndexMap->insert(qname2, index);
 }
 
-/******************************************************************************
-
-********************************************************************************/
-index_maintenance_mode_t
-to_index_maintenance_mode(const ValueIndex::MaintenanceMode& mode)
-{
-  index_maintenance_mode_t lRes;
-  switch (mode) {
-    case ValueIndex::MANUAL: lRes = index_manual; break;
-    case ValueIndex::REBUILD: lRes = index_automatic; break;
-    case ValueIndex::DOC_MAP: lRes = index_manual; break; // TODO
-  }
-  return lRes;
-}
-
-/******************************************************************************
-
-********************************************************************************/
-index_container_kind_t
-to_index_container_kind(const ValueIndex::ContainerKind& kind)
-{
-  index_container_kind_t lRes;
-  switch (kind) {
-    case ValueIndex::HASH: lRes = index_hash; break;
-    case ValueIndex::TREE: lRes = index_tree; break;
-    default: ZORBA_ASSERT(false);
-  }
-  return lRes;
-}
-
-/******************************************************************************
-
-********************************************************************************/
-void static_context::call_index_callback(const ValueIndex_t& index)
-{
-  if (theIndexCallback) {
-    DeclaredIndex lDeclaredIndex;
-    lDeclaredIndex.theName = index->getName();
-    lDeclaredIndex.theMaintenanceMode =
-      to_index_maintenance_mode(index->getMaintenanceMode());
-    lDeclaredIndex.theContainerKind =
-      to_index_container_kind(index->getMethod());
-    theIndexCallback(lDeclaredIndex, theIndexCallbackData);
-  } else {
-    if (theParent) {
-      static_cast<static_context*>(theParent)->call_index_callback(index);
-    }
-  }
-}
 
 /***************************************************************************//**
 
@@ -1998,6 +2136,76 @@ ValueIndex* static_context::lookup_index(const store::Item* qname) const
 store::Iterator_t static_context::index_names() const
 {
   return new SctxMapIterator<ValueIndex>(this, &static_context::index_map);
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+index_maintenance_mode_t
+to_index_maintenance_mode(const ValueIndex::MaintenanceMode& mode)
+{
+  index_maintenance_mode_t lRes;
+  switch (mode) 
+  {
+    case ValueIndex::MANUAL: lRes = index_manual; break;
+    case ValueIndex::REBUILD: lRes = index_automatic; break;
+    case ValueIndex::DOC_MAP: lRes = index_manual; break; // TODO
+  }
+  return lRes;
+}
+
+/******************************************************************************
+
+********************************************************************************/
+index_container_kind_t
+to_index_container_kind(const ValueIndex::ContainerKind& kind)
+{
+  index_container_kind_t lRes;
+  switch (kind) 
+  {
+    case ValueIndex::HASH: lRes = index_hash; break;
+    case ValueIndex::TREE: lRes = index_tree; break;
+    default: ZORBA_ASSERT(false);
+  }
+  return lRes;
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void static_context::set_index_callback(
+    IndexCallback aCallbackFunction,
+    void* aCallbackData)
+{
+  theIndexCallback = aCallbackFunction;
+  theIndexCallbackData = aCallbackData;
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
+void static_context::call_index_callback(const ValueIndex_t& index)
+{
+  if (theIndexCallback) 
+  {
+    DeclaredIndex lDeclaredIndex;
+    lDeclaredIndex.theName = index->getName();
+    lDeclaredIndex.theMaintenanceMode =
+      to_index_maintenance_mode(index->getMaintenanceMode());
+    lDeclaredIndex.theContainerKind =
+      to_index_container_kind(index->getMethod());
+    theIndexCallback(lDeclaredIndex, theIndexCallbackData);
+  }
+  else 
+  {
+    if (theParent) 
+    {
+      static_cast<static_context*>(theParent)->call_index_callback(index);
+    }
+  }
 }
 
 
@@ -2617,135 +2825,36 @@ DecimalFormat_t static_context::get_decimal_format(const store::Item_t& qname)
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Module Import                                                              //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-/*******************************************************************************
 
-  Methods to create normalized qname stings from prefix and local-name pairs, or
-  qname items. Normalized qname stings are strings of the form:
-
-  <local name>:<namespace uri>
-
+/***************************************************************************//**
+  Merge the static context of a module with this static context. Only functions
+  and variables defined in the module are included in this static context. 
 ********************************************************************************/
-xqp_string qname_internal_key2 (xqp_string ns, xqp_string local)
+void static_context::import_module(const static_context* module, const QueryLoc& loc)
 {
-  return xqpString::concat(local, ":", ns);
-}
-
-
-xqp_string static_context::qname_internal_key (const store::Item *qname)
-{
-    return qname_internal_key2 (qname->getNamespace (), qname->getLocalName ());
-}
-
-
-xqp_string static_context::qname_internal_key(
-    xqp_string default_ns, 
-    xqp_string prefix,
-    xqp_string local) const
-{
-  if (prefix.empty())
+  if (module->theVariablesMap)
   {
-    return qname_internal_key2(default_ns, local);
-  }
-  else
-  {
-    QueryLoc loc;
-    xqpStringStore_t ns;
-    lookup_ns(ns, prefix.getStore(), loc);
-    return qname_internal_key2(ns.getp(), local);
-  }
-}
-
-
-xqp_string static_context::qname_internal_key (xqp_string default_ns, xqp_string qname) const
-{
-  pair<xqp_string, xqp_string> rqname = parse_qname(qname);
-  return qname_internal_key (default_ns, rqname.first, rqname.second);
-}
-
-
-pair<xqp_string, xqp_string> decode_qname_internal_key (xqp_string key)
-{
-  pair<xqp_string, xqp_string> result;
-  string skey (key);
-  int pos = skey.find (':');
-  result.first = key.substr (0, pos);
-  result.second = key.substr (pos + 1);
-  return result;
-}
-
-
-
-
-
-bool static_context::bind_external_module(
-    ExternalModule* aModule,
-    bool aDynamicallyLoaded)
-{
-  xqp_string lURI = Unmarshaller::getInternalString(aModule->getURI());
-
-  return bind_module(lURI, aModule, aDynamicallyLoaded);
-}
-
-
-StatelessExternalFunction* static_context::lookup_stateless_external_function(
-    const xqp_string& aURI,
-    const xqp_string& aLocalName)
-{
-  // get the module for the given namespace
-  ctx_module_t v;
-  bool lRes = lookup_module(aURI, v);
-  ExternalModule* lModule = 0;
-
-  // if the module is not yet in the static context
-  // we try to get it from the URI resolver
-  if (!lRes)
-  {
-    InternalModuleURIResolver* lStandardModuleResolver = GENV.getModuleURIResolver();
-    lModule = lStandardModuleResolver->getExternalModule(
-                //entity_retrieval_url().getStore(), this);
-                                                         aURI.getStore()->str(), *this);
-
-    // no way to get the module
-    if (!lModule) {
-      return NULL;
+    if (theVariablesMap == NULL)
+    {
+      theVariablesMap = new VariableMap(0,
+                                        NULL,
+                                        module->theVariablesMap->capacity(),
+                                        false);
     }
 
-    // remember the module for future use
-    bind_external_module(lModule, true);
-  }
-  else
-  {
-    lModule = v.module;
-  }
-
-  // get the function from this module.
-  // return 0 if not found
-  return lModule->getExternalFunction(aLocalName.theStrStore.getp());
-}
-
-
-
-/*******************************************************************************
-  Merge the static context of a module with this static context. Only functions
-  and variables defined in te module are included in this static context. If
-  a module variable or function already appears in this context, the method
-  returns false.
-********************************************************************************/
-bool static_context::import_module(const static_context* module, const QueryLoc& loc)
-{
-  checked_vector<serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
-  const char* keybuff;
-
-  for(it = module->keymap.begin(); it != module->keymap.end(); ++it)
-  {
-    keybuff = (*it).key.c_str();
-    const ctx_value_t* val = &(*it).val;
-
-    if (0 == strncmp(keybuff, "var:", 4) && 0 != strncmp(keybuff, "var:$$", 6))
+    VariableMap::iterator ite = module->theVariablesMap->begin();
+    VariableMap::iterator end = module->theVariablesMap->end();
+    for (; ite != end; ++ite)
     {
-      if (! bind_expr (keybuff, val->exprValue))
-        return false;
+      const store::Item* qname = ite.getKey();
+      var_expr_t ve = ite.getValue();
+      bind_var(qname, ve, loc, XQST0049);
     }
   }
 
@@ -2764,7 +2873,7 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
     for (; ite != end; ++ite)
     {
       function_t f = (*ite).second;
-      bind_fn((*ite).first, f, f->get_arity(), loc);
+      bind_fn(ite.getKey(), f, f->get_arity(), loc);
     }
   }
 
@@ -2856,86 +2965,8 @@ bool static_context::import_module(const static_context* module, const QueryLoc&
       }
     }
   }
-
-  return true;
 }
 
-
-void static_context::getVariables(std::vector<std::string>& aResult) const
-{
-  if (theParent)
-    static_cast<static_context*>(theParent)->getVariables(aResult);
-
-  std::vector<zorba::serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
-  for (it = keymap.begin(); it != keymap.end(); it++) 
-  {
-    const std::string& lKey = (*it).key;
-    ctx_value_t lVal = (*it).val;
-    if (lKey.find("var:") == 0) 
-    {
-      ZORBA_ASSERT(dynamic_cast<var_expr*>(lVal.exprValue));
-      var_expr* lExpr = static_cast<var_expr*>(lVal.exprValue);
-      var_expr::var_kind lKind = lExpr->get_kind();
-      if (lKind == var_expr::prolog_var) 
-      {
-        aResult.push_back("global");
-      }
-      else 
-      {
-        aResult.push_back("local");
-      }
-      std::string lType;
-      if (lExpr->get_type() == NULL || lExpr->get_type()->get_qname() == NULL) 
-      {
-        lType = "anyType:http://www.w3.org/2001/XMLSchema";
-      }
-      else
-      {
-        store::Item_t lQname = lExpr->get_type()->get_qname();
-        lType = lQname->getLocalName()->c_str();
-        lType += ":";
-        lType += lQname->getNamespace()->c_str();
-      }
-      if (lExpr->is_sequential()) 
-      {
-        lType += "*";
-      }
-      aResult.push_back(lType);
-      aResult.push_back(lKey.substr(4, lKey.size() - 5));
-    }
-  }
-}
-
-
-void static_context::getVariables(std::vector<var_expr_t>& aResult) const
-{
-  if (theParent)
-    static_cast<static_context*>(theParent)->getVariables(aResult);
-
-  std::vector<zorba::serializable_hashmap<ctx_value_t>::entry>::const_iterator it;
-  for (it = keymap.begin(); it != keymap.end(); it++) {
-    const std::string& lKey = (*it).key;
-    if (lKey.find("var:") == 0) {
-      aResult.push_back(static_cast<var_expr*>((*it).val.exprValue));
-    }
-  }
-}
-
-void static_context::set_collection_callback (
-    CollectionCallback aCallbackFunction,
-    void* aCallbackData)
-{
-  theCollectionCallback = aCallbackFunction;
-  theCollectionCallbackData = aCallbackData;
-}
-
-void static_context::set_index_callback(
-    IndexCallback aCallbackFunction,
-    void* aCallbackData)
-{
-  theIndexCallback = aCallbackFunction;
-  theIndexCallbackData = aCallbackData;
-}
 
 
 } /* namespace zorba */

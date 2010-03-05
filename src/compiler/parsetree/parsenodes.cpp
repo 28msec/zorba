@@ -3062,15 +3062,14 @@ void NumericLiteral::accept( parsenode_visitor &v ) const
 // [87] VarRef
 // -----------
 VarRef::VarRef(
-  const QueryLoc& loc_,
-  std::string _varname)
+  const QueryLoc& loc,
+  rchandle<QName> name)
 :
-  exprnode(loc_),
-  varname(_varname)
-{}
+  exprnode(loc),
+  theName(name)
+{
+}
 
-
-//-VarRef::
 
 void VarRef::accept( parsenode_visitor &v ) const
 {

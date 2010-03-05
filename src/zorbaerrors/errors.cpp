@@ -24,22 +24,11 @@ SERIALIZABLE_CLASS_VERSIONS(ZorbaError)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaError)
 
 
-std::string 
-ZorbaError::toString(const XQUERY_ERROR& code) 
+std::string ZorbaError::toString(const XQUERY_ERROR& code) 
 {
   return ErrorMessages::getNameForErrorCode(code);
 }
 
-
-ZorbaError::~ZorbaError()
-{
-}
-
-
-void ZorbaError::free() 
-{ 
-  delete this; 
-}
 
 
 ZorbaError::ZorbaError(
@@ -116,6 +105,34 @@ ZorbaError::ZorbaError(const ZorbaError& other)
   theLineNumber(other.theLineNumber),
   theDebug(other.theDebug)
 {
+}
+
+
+ZorbaError::~ZorbaError()
+{
+}
+
+
+void ZorbaError::free() 
+{ 
+  delete this; 
+}
+
+
+void ZorbaError::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theLocalName;
+  ar & thePrefix;
+  ar & theNamespace;
+  SERIALIZE_ENUM(XQUERY_ERROR, theErrorCode);
+  ar & theDescription;
+  ar & theQueryLine;
+  ar & theQueryColumn;
+  ar & theQueryFileName; // the name of the file where the error occured
+  ar & theFileName; // source file
+  ar & theLineNumber; // line number in the source file
+  if(!ar.is_serializing_out())
+    theDebug = false;
 }
 
 

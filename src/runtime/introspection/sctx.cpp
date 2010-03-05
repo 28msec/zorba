@@ -27,6 +27,7 @@
 
 
 #include "store/api/iterator.h"
+#include "compiler/expression/var_expr.h"
 
 namespace zorba {
 

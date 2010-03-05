@@ -55,24 +55,10 @@ public:
 public:
   SERIALIZABLE_CLASS(ZorbaError)
   SERIALIZABLE_CLASS_CONSTRUCTOR(ZorbaError)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theLocalName;
-    ar & thePrefix;
-    ar & theNamespace;
-    SERIALIZE_ENUM(XQUERY_ERROR, theErrorCode);
-    ar & theDescription;
-    ar & theQueryLine;
-    ar & theQueryColumn;
-    ar & theQueryFileName; // the name of the file where the error occured
-    ar & theFileName; // source file
-    ar & theLineNumber; // line number in the source file
-    if(!ar.is_serializing_out())
-      theDebug = false;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
-  static std::string
-  toString(const XQUERY_ERROR& code);
+  static std::string toString(const XQUERY_ERROR& code);
 
 public:
   ZorbaError(
@@ -101,8 +87,7 @@ public:
 
   virtual void free();
 
-  virtual std::string
-  toString();
+  virtual std::string toString();
 
   void setQueryLocation(
         unsigned int line,
@@ -198,8 +183,11 @@ public:
         int                aLineNumber);  
 };
 
-class ZORBA_DLL_PUBLIC ZorbaInternalException {
+
+class ZORBA_DLL_PUBLIC ZorbaInternalException 
+{
 };
+
 
 } /* namespace error */
 } /* namespace zorba */

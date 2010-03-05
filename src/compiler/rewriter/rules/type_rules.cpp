@@ -30,6 +30,9 @@
 
 #include "util/properties.h"
 
+#include "zorbaerrors/Assert.h"
+
+
 using namespace std;
 
 namespace zorba 

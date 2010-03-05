@@ -40,7 +40,7 @@
 
 #include "zorbaerrors/error_messages.h"
 #include "zorbaerrors/errors.h"
-
+#include "zorbaerrors/Assert.h"
 
 namespace zorba
 {

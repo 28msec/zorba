@@ -27,6 +27,7 @@
 
 #include "compiler/xqddf/collection_decl.h"
 #include "compiler/xqddf/value_ic.h"
+#include "compiler/expression/var_expr.h"
 
 #include "runtime/introspection/sctx.h"
 
@@ -266,7 +267,8 @@ InscopeVariablesIteratorState::~InscopeVariablesIteratorState()
 void InscopeVariablesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  position = 0;
+  theVariables.clear();
+  thePosition = 0;
 }
 
 
@@ -274,36 +276,20 @@ bool InscopeVariablesIterator::nextImpl(
     store::Item_t& aResult,
     PlanState& aPlanState) const
 {
-  xqpString name, ns;
+  InscopeVariablesIteratorState* state;
+  DEFAULT_STACK_INIT(InscopeVariablesIteratorState, state, aPlanState);
 
-  InscopeVariablesIteratorState* lState;
-  DEFAULT_STACK_INIT(InscopeVariablesIteratorState, lState, aPlanState);
+  theSctx->getVariables(state->theVariables);
+  state->thePosition = 0;
 
-  lState->keymap.reset(theSctx->get_all_keymap_keys());
-  lState->position = 0;
-
-  while (lState->position < lState->keymap->size())
+  while (state->thePosition < state->theVariables.size())
   {
-    name = lState->keymap->at(lState->position);
-    if (name.indexOf("var:") == 0 && name.indexOf("var:$$") == -1)
-    {
-      name = name.substr(4);
-      if (name.indexOf(":") != -1)
-      {
-        ns = name.substr(name.indexOf(":") + 1);
-        name = name.substr(0, name.indexOf(":"));
-      }
-      STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult,
-                                               ns.theStrStore,
-                                               xqpString().theStrStore,
-                                               name.theStrStore),
-                 lState);
-    }
+    STACK_PUSH(state->theVariables[state->thePosition]->get_name(), state);
 
-    lState->position++;
+    ++state->thePosition;
   }
 
-  STACK_END(lState);
+  STACK_END(state);
 }
 
 
@@ -555,10 +541,12 @@ FunctionNamesIteratorState::~FunctionNamesIteratorState()
 {
 }
 
+
 void FunctionNamesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  position = 0;
+  theFunctions.clear();
+  thePosition = 0;
 }
 
 
@@ -566,36 +554,20 @@ bool FunctionNamesIterator::nextImpl(
     store::Item_t& aResult,
     PlanState& aPlanState) const
 {
-  FunctionNamesIteratorState* lState;
-  xqpString temp, ns;
+  FunctionNamesIteratorState* state;
+  DEFAULT_STACK_INIT(FunctionNamesIteratorState, state, aPlanState);
 
-  DEFAULT_STACK_INIT(FunctionNamesIteratorState, lState, aPlanState);
+  theSctx->get_functions(state->theFunctions);
+  state->thePosition = 0;
 
-  lState->keymap.reset(theSctx->get_all_keymap_keys());
-  lState->position = 0;
-
-  while (lState->position < lState->keymap->size())
+  while (state->thePosition < state->theFunctions.size())
   {
-    temp = lState->keymap->at(lState->position);
-    if (temp.indexOf("fmap:") == 0)
-    {
-      temp = temp.substr(5);
-      if (temp.indexOf(":") >= 0)
-      {
-        ns = temp.substr(temp.indexOf(":")+1);
-        temp = temp.substr(0, temp.indexOf(":"));
-      }
-      STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult,
-                                               ns.theStrStore,
-                                               xqpString().theStrStore,
-                                               temp.theStrStore),
-                  lState);
-    }
+    STACK_PUSH(state->theFunctions[state->thePosition]->getName(), state);
 
-    lState->position++;
+    ++state->thePosition;
   }
 
-  STACK_END(lState);
+  STACK_END(state);
 }
 
 

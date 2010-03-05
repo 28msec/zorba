@@ -121,7 +121,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       // TODO: is saving an open iterator efficient?
       // Then again if we close theChildren [1] here,
       // we won't be able to re-open it later via the PlanIteratorWrapper
-      state->dctx->add_variable(dynamic_context::var_key(state->ccb->theRootSctx->lookup_var(varnames[i])), lIter);
+      state->dctx->add_variable(dynamic_context::var_key(state->ccb->theRootSctx->lookup_var(varnames[i], loc, XPST0008)), lIter);
     }
   }
 

@@ -16,13 +16,19 @@
 #ifndef ZORBA_GET_CURRENT_LIB_SUFFIX_H
 #define ZORBA_GET_CURRENT_LIB_SUFFIX_H
 
-namespace zorba {
-  /* Helper function to get the suffix of the library for which the file is compiled. The content
-   * is filled by code in src/CMakeLists.txt
-   */
-  const char* get_current_lib_suffix() {
-@GET_CURRENT_LIB_SUFFIX_CODE@
-  }
+namespace zorba 
+{
+
+/**
+ * Helper function to get the suffix of the library for which the file is
+ * compiled. The content is filled by code in src/CMakeLists.txt
+ */
+const char* get_current_lib_suffix() 
+{
+  @GET_CURRENT_LIB_SUFFIX_CODE@
+}
+
+
 }
 
 #endif

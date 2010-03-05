@@ -553,7 +553,7 @@ void *begin_visit(const VarRef &n)
 {
     INDENT;
 
-    os << "<VarRef" << IDS << " var='" << n.get_varname () << "'";
+    os << "<VarRef" << IDS << " var='" << n.get_name()->get_qname() << "'";
 
     os << "/>";
 

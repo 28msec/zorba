@@ -18,6 +18,7 @@
 #include "compiler/xqddf/collection_decl.h"
 #include "compiler/xqddf/value_index.h"
 #include "compiler/xqddf/value_ic.h"
+#include "compiler/expression/var_expr.h"
 
 #include "context/static_context.h"
 
@@ -59,18 +60,14 @@ END_SERIALIZABLE_CLASS_VERSIONS(SimpleRCObject)
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<static_context::ctx_value_t>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<xqp_string>, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<xqtref_t>, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap, serializable_hashmap<static_context::ctx_module_t>, 4)
 
 SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap_entry)
 END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_hashmap_entry)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<static_context::ctx_value_t>::entry, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqp_string>::entry, 2)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<xqtref_t>::entry, 3)
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_hashmap_entry, serializable_hashmap<static_context::ctx_module_t>::entry, 4)
 
 
 //
@@ -96,6 +93,8 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_Ha
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, xqpStringStore_t>, 6)
 
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, var_expr_t>, 7)
+
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, StaticallyKnownCollection_t, ItemPointerHashMapCmp>, 1)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, ValueIndex_t, ItemPointerHashMapCmp>, 2)
@@ -107,6 +106,8 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_Hash
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, std::vector<function_t>*, ItemPointerHashMapCmp>, 5)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, xqpStringStore_t, ItemPointerHashMapCmp>, 6)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, var_expr_t, ItemPointerHashMapCmp>, 7)
 
 SERIALIZABLE_CLASS_VERSIONS(ItemPointerHashMapCmp)
 END_SERIALIZABLE_CLASS_VERSIONS(ItemPointerHashMapCmp)
@@ -126,15 +127,21 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, seriali
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<xqpStringStore_t>, 6)
 
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<var_expr_t>, 7)
 
-// HashMapStrHandleCmp
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, xqpStringStore_t>, 7)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, xqtref_t>, 8)
+// HashMapStrHandle
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, xqpStringStore_t>, 8)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, xqpStringStore_t, HashMapStrHandleCmp>, 7)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, xqtref_t>, 9)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, xqtref_t, HashMapStrHandleCmp>, 8)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<xqpStringStore_t, static_context::ctx_module_t>, 10)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, xqpStringStore_t, HashMapStrHandleCmp>, 8)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, xqtref_t, HashMapStrHandleCmp>, 9)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<xqpStringStore_t, static_context::ctx_module_t, HashMapStrHandleCmp>, 10)
 
 SERIALIZABLE_CLASS_VERSIONS(HashMapStrHandleCmp)
 END_SERIALIZABLE_CLASS_VERSIONS(HashMapStrHandleCmp)
@@ -145,6 +152,8 @@ END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMapStrHandle)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<xqpStringStore_t>, 1)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<xqtref_t>, 2)
+
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<static_context::ctx_module_t>, 3)
 
 
 

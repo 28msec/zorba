@@ -156,7 +156,7 @@ do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 #define DOT_POS_VARNAME getDotPosVarName()
 #define LAST_IDX_VARNAME getLastIdxVarName()
 
-#define DOT_VAR lookup_ctx_var(DOT_VARNAME->get_localname().getp(), loc).getp()
+#define DOT_VAR lookup_ctx_var(DOT_VARNAME, loc).getp()
 
 #define DOT_REF new wrapper_expr(this->sctxid(), loc, DOT_VAR)
 
@@ -1493,16 +1493,13 @@ void bind_var(var_expr_t e, static_context* sctx)
 
   const store::Item* qname = e->get_name();
 
-  if (! sctx->bind_var(qname, e.getp()))
+  if(e->get_kind() == var_expr::let_var)
   {
-    if(e->get_kind() == var_expr::let_var)
-    {
-      ZORBA_ERROR_LOC_PARAM(XQST0039, e->get_loc(), qname->getStringValue(), "");
-    }
-    else
-    {
-      ZORBA_ERROR_LOC_PARAM(XQST0049, e->get_loc(), qname->getStringValue(), "");
-    }
+    sctx->bind_var(qname, e, e->get_loc(), XQST0039);
+  }
+  else
+  {
+    sctx->bind_var(qname, e, e->get_loc(), XQST0049);
   }
 }
 
@@ -1515,11 +1512,11 @@ void bind_var(var_expr_t e, static_context* sctx)
 ********************************************************************************/
 var_expr_t bind_var(
     const QueryLoc& loc,
-    store::Item* varname,
+    store::Item* qname,
     var_expr::var_kind kind,
     xqtref_t type = NULL) 
 {
-  var_expr_t e = create_var(loc, varname, kind, type);
+  var_expr_t e = create_var(loc, qname, kind, type);
   bind_var(e, sctx_p);
   return e;
 }
@@ -1550,33 +1547,50 @@ var_expr_t bind_var(
 
   The first method raises error if var not found, the other 2 methods return NULL.
 ********************************************************************************/
-var_expr_t lookup_ctx_var(xqp_string name, const QueryLoc& loc) 
+var_expr_t lookup_ctx_var(const QName* qname, const QueryLoc& loc) 
 {
-  expr* ve = sctx_p->lookup_var(name);
-  if (ve != NULL)
-    return (var_expr *) ve;
-
   if (theIsInIndexDomain)
   {
-    ZORBA_ERROR_LOC_PARAM(XDST0032_INDEX_REFERENCES_CTX_ITEM, loc, 
-                          theIndexDecl->getName()->getStringValue(), "");
+    try
+    {
+      return lookup_var(qname, loc, XPDY0002);
+    }
+    catch (error::ZorbaError& e)
+    {
+      if (e.theErrorCode == XPDY0002)
+      {
+        ZORBA_ERROR_LOC_PARAM(XDST0032_INDEX_REFERENCES_CTX_ITEM, loc, 
+                              theIndexDecl->getName()->getStringValue(), "");
+      }
+
+      throw e;
+    }
   }
   else
   {
-    ZORBA_ERROR_LOC_PARAM(XPDY0002, loc, name, "");
+    return lookup_var(qname, loc, XPDY0002);
   }
 }
 
 
-var_expr* lookup_var(string varname) 
+var_expr* lookup_var(
+    const QName* qname,
+    const QueryLoc& loc,
+    const XQUERY_ERROR& err) 
 {
-  return static_cast<var_expr *>(sctx_p->lookup_var(varname));
+  store::Item_t qnameItem;
+  expand_no_default_qname(qnameItem, qname, loc);
+
+  return sctx_p->lookup_var(qnameItem.getp(), loc, err);
 }
 
 
-var_expr* lookup_var(const store::Item* varname) 
+var_expr* lookup_var(
+    const store::Item* qname,
+    const QueryLoc& loc,
+    const XQUERY_ERROR& err)
 {
-  return static_cast<var_expr *>(sctx_p->lookup_var(varname));
+  return sctx_p->lookup_var(qname, loc, err);
 }
 
 
@@ -2023,7 +2037,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
          ++lIter) 
     {
       store::Item* lVarname = (*lIter)->get_name();
-      if (std::string(lVarname->getStringValue()->c_str()) == "$$dot") 
+      if (lVarname->getStringValue()->str() == "$$dot") 
       {
         continue;
       }
@@ -2033,7 +2047,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
                                  var_expr::eval_var,
                                  NULL).dyn_cast<var_expr>();
 
-      var_expr* lVe = lookup_var(ve->get_name());
+      var_expr* lVe = lookup_var(ve->get_name(), QueryLoc::null, XPST0008);
 
       expr_t val = new wrapper_expr(sctxid(),
                                     lLocation.theQueryLocation,
@@ -2055,18 +2069,17 @@ void collect_flwor_vars (
     set<const var_expr *>& vars,
     const FLWORClause* start,
     const FLWORClause* end,
-    bool inclusive) 
+    const QueryLoc& loc) 
 {
   const FLWORClauseList& clauses = *e.get_clause_list();
 
-  // Find the ordinal number of the "end" clause, or the "end-1" clause, if
-  // inclusive is false.
+  // Find the ordinal number of the "end-1" clause.
   int i;
   for (i = clauses.size () - 1; i >= 0; --i) 
   {
     if (&*clauses [i] == end) 
     {
-      if (! inclusive) --i;
+      --i;
       break;
     }
   }
@@ -2079,24 +2092,24 @@ void collect_flwor_vars (
 
     if (typeid (c) == typeid (ForClause)) 
     {
-      const VarInDeclList &lV = *(static_cast<const ForClause *>(&c)->get_vardecl_list());
+      const VarInDeclList& lV = *(static_cast<const ForClause*>(&c)->get_vardecl_list());
       for (int j =  lV.size() - 1; j >= 0; --j) 
       {
-        vars.insert(lookup_var(lV[j]->get_name()->get_qname()));
+        vars.insert(lookup_var(lV[j]->get_name(), loc, XPST0008));
       }
     }
     else if (typeid (c) == typeid (LetClause)) 
     {
-      const VarGetsDeclList &lV = *(static_cast<const LetClause *>(&c)->get_vardecl_list());
+      const VarGetsDeclList& lV = *(static_cast<const LetClause*>(&c)->get_vardecl_list());
       for (int j =  lV.size() - 1; j >= 0; --j) 
       {
-        vars.insert(lookup_var(lV[j]->get_name()->get_qname()));
+        vars.insert(lookup_var(lV[j]->get_name(), loc, XPST0008));
       }
     }
     else if (typeid(c) == typeid(WindowClause)) 
     {
       const WindowClause& wc = *static_cast<const WindowClause *>(&c);
-      vars.insert(lookup_var(wc.get_var()->get_name()->get_qname()));
+      vars.insert(lookup_var(wc.get_var()->get_name(), loc, XPST0008));
       for (int j = 1; j >= 0; j--) 
       {
         const FLWORWinCond* cond = &*wc[j];
@@ -2106,20 +2119,22 @@ void collect_flwor_vars (
           if (wv != NULL) 
           {
             if (wv->get_next())
-              vars.insert(lookup_var(wv->get_next()->get_qname()));
+              vars.insert(lookup_var(wv->get_next(), loc, XPST0008));
             if (wv->get_prev())
-              vars.insert(lookup_var(wv->get_prev()->get_qname()));
+              vars.insert(lookup_var(wv->get_prev(), loc, XPST0008));
             if (wv->get_curr())
-              vars.insert(lookup_var(wv->get_curr()->get_qname()));
+              vars.insert(lookup_var(wv->get_curr(), loc, XPST0008));
             if (wv->get_posvar() != NULL)
-              vars.insert(lookup_var(wv->get_posvar()->get_name()->get_qname()));
+              vars.insert(lookup_var(wv->get_posvar()->get_name(), loc, XPST0008));
           }
         }
       }
     }
     else if (typeid(c) == typeid(CountClause)) 
     {
-      vars.insert(lookup_var(static_cast<const CountClause*>(&c)->get_varname()->get_qname()));
+      vars.insert(lookup_var(static_cast<const CountClause*>(&c)->get_varname(),
+                             loc,
+                             XPST0008));
     }
     else if (typeid(c) == typeid(OrderByClause))
     {
@@ -2135,7 +2150,7 @@ void collect_flwor_vars (
       // both iX and oX  use the same var name. So, we can collect all the oX 
       // var_exprs by going through all the clauses that appear before this GB
       // and looking up, by name, all the vars defined by those clauses.
-      collect_flwor_vars (e, vars, &*clauses [0], &c, false);
+      collect_flwor_vars(e, vars, &*clauses [0], &c, loc);
       break;
     }
 
@@ -3633,7 +3648,7 @@ void* begin_visit(const ParamList& v)
         {
           continue;
         }
-        theScopedVars.push_back(lookup_var(qname));
+        theScopedVars.push_back(lookup_var(qname, loc, XPST0008));
         varref_t arg_var = create_var(loc, qname, var_expr::arg_var);
         varref_t subst_var = bind_var(loc, qname, var_expr::let_var);
         let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
@@ -5557,9 +5572,9 @@ void end_visit(const WindowVars& v, void* /*visit_state*/)
 /*******************************************************************************
   GroupByClause ::= "group" "by" GroupingSpecList
 ********************************************************************************/
-void *begin_visit(const GroupByClause& v) 
+void* begin_visit(const GroupByClause& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
   const FLWORExpr& flwor = *v.get_flwor ();
   const FLWORClauseList& clauses = *flwor.get_clause_list ();
@@ -5570,7 +5585,7 @@ void *begin_visit(const GroupByClause& v)
 
   // Collect the var_exprs for all the vars that have been defined by all
   // clauses before this GroupByClause.
-  collect_flwor_vars (flwor, all_vars, &*clauses[0], &v, false);
+  collect_flwor_vars(flwor, all_vars, &*clauses[0], &v, loc);
 
   // Collect the var_exprs for all the grouping vars specified in this GroupByClause.
   GroupSpecList* lList = v.get_spec_list();
@@ -5578,10 +5593,7 @@ void *begin_visit(const GroupByClause& v)
   {
     GroupSpec* spec = (*lList)[i];
     const QName* varname = spec->get_var_name();
-    const var_expr* ve = lookup_var(varname->get_qname());
-    if (ve == NULL)
-      ZORBA_ERROR_LOC_PARAM( XPST0008, loc, varname, "");
-
+    const var_expr* ve = lookup_var(varname, loc, XPST0008);
     group_vars.insert(ve);
   }
 
@@ -5699,9 +5711,7 @@ void* begin_visit(const GroupSpec& v)
 {
   TRACE_VISIT();
 
-  var_expr* e = lookup_var(v.get_var_name()->get_qname());
-  if (e == NULL)
-    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, v.get_var_name(), "");
+  var_expr* e = lookup_var(v.get_var_name(), loc, XPST0008);
 
   // Create a new var_expr gX, corresponding to the input-stream var X that 
   // is referenced by this group spec. gX represents X in the output stream.
@@ -7296,7 +7306,8 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
       if (stepExpr->get_expr_kind() == wrapper_expr_kind)
       {
         wrapper_expr* tmp = static_cast<wrapper_expr*>(stepExpr.getp());
-        if (tmp->get_expr() == lookup_var(DOT_VARNAME->get_localname()->str()))
+        var_expr* dotVar = lookup_var(DOT_VARNAME, loc, MAX_ZORBA_ERROR_CODE);
+        if (tmp->get_expr() == dotVar)
           errCode = XPTY0020;
       }
 
@@ -7973,8 +7984,7 @@ void post_predicate_visit(const PredicateList& v, void* /*visit_state*/)
   fo_expr_t eqExpr = new fo_expr(sctxid,
                                  loc,
                                  GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2),
-                                 lookup_ctx_var(DOT_POS_VARNAME->get_localname().getp(),
-                                                loc).getp(),
+                                 lookup_ctx_var(DOT_POS_VARNAME, loc),
                                  predvar);
   normalize_fo(eqExpr);
 
@@ -8077,15 +8087,16 @@ void end_visit(const NumericLiteral& v, void* /*visit_state*/)
 
   [190] CharRef ::= [http://www.w3.org/TR/REC-xml#NT-CharRef]
 ********************************************************************************/
-void *begin_visit (const StringLiteral& v) 
+void* begin_visit(const StringLiteral& v) 
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
-void end_visit (const StringLiteral& v, void* /*visit_state*/) 
+void end_visit(const StringLiteral& v, void* /*visit_state*/) 
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
+
   push_nodestack(new const_expr(sctxid(), loc,v.get_strval()));
 }
 
@@ -8104,10 +8115,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  var_expr* ve = lookup_var(v.get_varname());
-
-  if (ve == NULL)
-    ZORBA_ERROR_LOC_PARAM (XPST0008, loc, v.get_varname (), "");
+  var_expr* ve = lookup_var(v.get_name(), loc, XPST0008);
 
   if (ve->get_kind() == var_expr::prolog_var && !theCurrentPrologVFDecl.isNull()) 
   {
@@ -8262,12 +8270,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   {
     if (*localName == "position" && numArgs == 0)  
     {
-      push_nodestack(lookup_ctx_var(DOT_POS_VARNAME->get_localname().getp(), loc).getp());
+      push_nodestack(lookup_ctx_var(DOT_POS_VARNAME, loc));
       return;
     }
     else if (*localName == "last" && numArgs == 0)
     {
-      push_nodestack(lookup_ctx_var(LAST_IDX_VARNAME->get_localname().getp(), loc).getp());
+      push_nodestack(lookup_ctx_var(LAST_IDX_VARNAME, loc));
       return;
     }
     else if (*localName == "number") 
@@ -10238,9 +10246,10 @@ void end_visit(const AssignExpr& v, void* visit_state)
   TRACE_VISIT_OUT();
 
   // TODO: add treat_expr to check var type
-  varref_t ve = lookup_ctx_var (v.get_varname (), loc);
+  var_expr_t ve = lookup_var(v.get_name(), loc, XPST0008);
+
   if (ve->get_kind() != var_expr::local_var && ve->get_kind() != var_expr::prolog_var)
-    ZORBA_ERROR_LOC (XPST0003, loc);
+    ZORBA_ERROR_LOC(XPST0003, loc);
 
   expr_t qname_expr = new const_expr(sctxid(),
                                      ve->get_loc(),
@@ -10988,7 +10997,7 @@ void end_visit(const InlineFunction& v, void* aState)
   //We need to add them to the function_item_expr expr so
   //they can be bound at runtime 
   rchandle<flwor_expr> flwor = pop_nodestack().cast<flwor_expr>(); 
-  for(int i=0; i<flwor->num_clauses(); i++)
+  for(ulong i = 0; i < flwor->num_clauses(); i++)
   {
     const flwor_clause* lClause = (*flwor)[i];
     const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);

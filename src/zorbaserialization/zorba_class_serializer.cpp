@@ -33,6 +33,8 @@
 
 #include "context/static_context.h"
 
+#include "zorbaerrors/errors.h"
+
 #include <zorba/store_consts.h>
 
 namespace zorba{

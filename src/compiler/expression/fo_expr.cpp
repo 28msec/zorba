@@ -25,6 +25,8 @@
 #include "functions/library.h"
 #include "functions/function.h"
 
+#include "zorbaerrors/Assert.h"
+
 namespace zorba
 {
 

@@ -1914,10 +1914,7 @@ BlockVarDecl:
 AssignExpr
     :   SET DOLLAR QNAME GETS ExprSingle
         {
-            $$ = new AssignExpr(
-                LOC(@$), static_cast<QName*>($3)->get_qname(), $5
-            );
-            delete $3;
+            $$ = new AssignExpr(LOC(@$), static_cast<QName*>($3), $5);
         }
     ;
 
@@ -2605,11 +2602,10 @@ WindowVars2 :
 EvalVarDecl :
     QNAME
     {
-      std::string name = static_cast<QName*>($1)->get_qname();
       $$ = new VarGetsDecl(LOC(@$),
                            static_cast<QName*>($1),
                            NULL, NULL,
-                           new VarRef(LOC(@$), name),
+                           new VarRef(LOC(@$), static_cast<QName*>($1)),
                            VarGetsDecl::eval_var);
     }
 ;
@@ -3803,8 +3799,7 @@ NumericLiteral
 VarRef
     :   DOLLAR QNAME
         {
-            $$ = new VarRef( LOC(@$), static_cast<QName*>($2)->get_qname() );
-            delete $2;
+            $$ = new VarRef(LOC(@$), static_cast<QName*>($2));
         }
     ;
 

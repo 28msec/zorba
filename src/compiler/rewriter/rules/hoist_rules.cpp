@@ -25,6 +25,9 @@
 
 #include "util/dynamic_bitset.h"
 
+#include "zorbaerrors/Assert.h"
+
+
 using namespace std;
 
 namespace zorba

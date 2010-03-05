@@ -298,8 +298,8 @@ public:
 class InscopeVariablesIteratorState : public PlanIteratorState
 {
 public:
-  std::auto_ptr<std::vector<xqpString> > keymap; //vector of keys
-  unsigned int position; //current position
+  std::vector<var_expr_t> theVariables; //vector of variables
+  ulong thePosition; //current position
 
   InscopeVariablesIteratorState();
 
@@ -686,8 +686,8 @@ public:
 class FunctionNamesIteratorState : public PlanIteratorState
 {
 public:
-  std::auto_ptr<std::vector<xqpString> > keymap; //vector of keys
-  unsigned int position; //current position
+  std::vector<function*> theFunctions; //vector of functions
+  ulong thePosition; //current position
 
   FunctionNamesIteratorState();
 

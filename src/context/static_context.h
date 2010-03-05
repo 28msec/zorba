@@ -31,12 +31,6 @@
 #include "context/decimal_format.h"
 #include "context/internal_uri_resolvers.h"
 
-#include "zorbaerrors/Assert.h"
-
-#define ZORBA_HASHMAP_WITH_SERIALIZATION
-#include "util/hashmap.h"
-#undef ZORBA_HASHMAP_WITH_SERIALIZATION
-
 #include "common/shared_types.h"
 
 
@@ -93,18 +87,12 @@ struct BaseUriInfo : public ::zorba::serialization::SerializeBaseClass
   xqpStringStore_t theEncapsulatingEntityUri;
 
   xqpStringStore_t theBaseUri;
+
 public:
   SERIALIZABLE_CLASS(BaseUriInfo)
   SERIALIZABLE_CLASS_CONSTRUCTOR(BaseUriInfo)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & thePrologBaseUri;
-    ar & theApplicationBaseUri;
-    ar & theEntityRetrievalUri;
-    ar & theEncapsulatingEntityUri;
+  void serialize(::zorba::serialization::Archiver& ar);
 
-    ar & theBaseUri;
-  }
 public:
   BaseUriInfo() {}
 };
@@ -128,7 +116,7 @@ public:
   wrapper of the internal static_context class). All application-created sctx
   objs are created as children of the zorba root sctx.
 
-  For a particular query, its root sctx may be (a) a child of an application
+  For a particular query, its root sctx may be (a) a child of an application-
   created sctx obj, or (b) if the query is a load-prolog query, the application
   created sctx obj itself, or (c) if the app did not provide any sctx, a child
   of zorba's root sctx. In cases (a) and (b) the application provides its sctx
@@ -146,7 +134,7 @@ public:
 
   Additional sctx objs may be created under the query or module root sctxs. Such
   expression-level sctx objs provide scoping contextes for variables, namespace
-  bindings, etc. The both inherit and hide information from their ancestor sctxs.
+  bindings, etc. They both inherit and hide information from their ancestor sctxs.
 
   Expression-level sctx objs are created and maintained only during the 
   translation of a module; afterwards they are discarded. In contrast, query
@@ -162,6 +150,12 @@ public:
  
   Pointer to the parent sctx object in the sctx hierarchy.
 
+  theTraceStream :
+  ----------------
+
+  Output stream that is used by the fn:trace function. std::cerr is the default
+  if the user didn't provide one. 
+
   theQueryExpr :
   --------------
 
@@ -174,6 +168,12 @@ public:
 
   If this is the root sctx of a library module, theModuleNamespace stores the
   target namespace URI of that module. 
+
+  theBaseUriInfo :
+  ----------------
+
+  Stores various URIs that participate in the computation of the module's base
+  URI, as described in the W3C spec.
 
   theDocResolver :
   ----------------
@@ -206,7 +206,10 @@ public:
 
   Vector of absolute directory pathnames for directories that contain module 
   and/or schema files. The Zorba root sctx stores a number of predefined paths.
-  applications may register additional paths in their own sctx objs. 
+  Applications may register additional paths in their own sctx objs. These
+  directory pathnames are used by the StandardModuleURIResolver and the
+  StandardSchemaURIResolver, which implement the full resulution protocol for
+  modules and schemas, respectively.
  
   theTypemgr :
   ------------
@@ -278,16 +281,6 @@ public:
   is the union of all decimal foramts in "this" and its ancestors, minus the
   decimal foramts that are hidden by inner-scope decimal formats.
 
-  theTraceStream :
-  ----------------
-
-  Output stream that is used by the fn:trace function. std::cerr is the default
-  if the user didn't provide one. For serialization: see note above.
-
-
-  Note: All URI resolvers have standard implementations in the classes
-  Standard*URIResolver. Optionally, the user can provide resolvers which are
-  wrapped by the *URIResolverWrapper classes.
 
   Note: URI resolvers are not serialized if the plan is serialized. Instead,
   they are set again if the query is loaded. If the user has provided a resolver
@@ -305,6 +298,8 @@ class static_context : public SimpleRCObject
 
   typedef serializable_ItemPointerHashMap<ValueIC_t> ICMap;
 
+  typedef serializable_ItemPointerHashMap<var_expr_t> VariableMap;
+
   typedef serializable_ItemPointerHashMap<function_t> FunctionMap;
 
   typedef serializable_ItemPointerHashMap<std::vector<function_t>* > FunctionArityMap;
@@ -319,41 +314,8 @@ class static_context : public SimpleRCObject
 
   typedef std::map<std::string, XQPCollator*> CollationMap;
 
+
 public:
-
-  enum ctx_value_type
-  {
-    CTX_EXPR, CTX_MODULE
-  };
-
-  typedef xqp_string (* str_param_t)();
-
-
-  struct ctx_value_t : public ::zorba::serialization::SerializeBaseClass
-  {
-    enum ctx_value_type type;
-
-    union
-    {
-      expr             * exprValue;
-      int                intValue;
-      bool               boolValue;
-		  const XQType     * typeValue; ///do manual ref counting on this
-    };
-
-  public:
-    SERIALIZABLE_CLASS(ctx_value_t)
-    SERIALIZABLE_CLASS_CONSTRUCTOR(ctx_value_t)
-    void serialize(::zorba::serialization::Archiver& ar);
-
-    ctx_value_t(enum ctx_value_type type = (enum ctx_value_type)-1)
-    {
-      this->type = type;
-    }
-
-    virtual ~ctx_value_t() {}
-  };
-
 
   struct ctx_module_t : public ::zorba::serialization::SerializeBaseClass
   {
@@ -370,11 +332,10 @@ public:
     virtual ~ctx_module_t() {}
   };
 
+  typedef serializable_HashMapStrHandle<ctx_module_t> ExternalModuleMap;
+
 protected:
   static_context                        * theParent;
-
-	serializable_hashmap<ctx_value_t>   keymap;     // maps strings to ctx_values
-	serializable_hashmap<ctx_module_t>  modulemap;  // uris to external modules
 
   std::ostream                          * theTraceStream;
 
@@ -385,18 +346,24 @@ protected:
   BaseUriInfo                           * theBaseUriInfo;
 
   InternalDocumentURIResolver           * theDocResolver;
+
   InternalCollectionURIResolver         * theColResolver;
 
-  std::vector<InternalModuleURIResolver*> theModuleResolvers;
   std::vector<InternalSchemaURIResolver*> theSchemaResolvers;
 
+  std::vector<InternalModuleURIResolver*> theModuleResolvers;
+
   checked_vector<std::string>             theModulePaths;
+
+	ExternalModuleMap                     * theExternalModulesMap;
 
   rchandle<TypeManager>                   theTypemgr;
   
   NamespaceBindings                     * theNamespaceBindings;
   xqpStringStore_t                        theDefaultElementNamespace;
   xqpStringStore_t                        theDefaultFunctionNamespace;
+
+  VariableMap                           * theVariablesMap;
 
   FunctionMap                           * theFunctionMap;
   FunctionArityMap                      * theFunctionArityMap;
@@ -571,9 +538,25 @@ public:
   //
   // Variables
   //
+  void bind_var(
+        const store::Item* qname,
+        var_expr_t& expr,
+        const QueryLoc& loc,
+        const XQUERY_ERROR& err);
+
+  var_expr* lookup_var(
+        const store::Item* qname,
+        const QueryLoc& loc,
+        const XQUERY_ERROR& err) const;
+
+  void getVariables(std::vector<std::string>& aVarialeList) const;
+
+  void getVariables(std::vector<var_expr_t>& aVarialeList) const;
+
 	void set_context_item_type(xqtref_t& t);
 
 	const XQType* get_context_item_type();
+
 
   //
   // Functions
@@ -588,20 +571,20 @@ public:
 
   function* lookup_fn(const store::Item* qname, ulong arity);
 
+  void get_functions(std::vector<function*>& functions) const;
+
   void find_functions(
         const store::Item* qname,
         std::vector<function*>& functions) const;
 
-  // bind a module registered by the user
-  // this module can be used to retrieve external functions defined
-  // in the namespace of the module
-  bool bind_external_module(
+  void bind_external_module(
         ExternalModule* aModule,
         bool aDynamicallyLoaded = false);
 
   StatelessExternalFunction* lookup_stateless_external_function(
-        const xqp_string& prefix,
-        const xqp_string& local);
+        const xqpStringStore_t& prefix,
+        const xqpStringStore_t& local);
+
 
   //
   // Documents
@@ -722,99 +705,10 @@ public:
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
 
 
-  // Returns all the keys in the keymap hashtable, used by instrospection
-  std::vector<xqp_string>* get_all_keymap_keys() const;
-
-  //
-  // Normalized qname construction
-  //
-  static xqp_string
-  qname_internal_key(const store::Item* qname);
-
-  xqp_string
-  qname_internal_key(xqp_string default_ns, xqp_string prefix, xqp_string local) const;
-
-  xqp_string
-  qname_internal_key(xqp_string default_ns, xqp_string qname) const;
-
-  static std::pair<xqp_string /*local*/, xqp_string /*uri*/>
-  decode_qname_internal_key (xqp_string key);
-
-
-  //
-  // Var QName --> Var Expr
-  //
-  bool
-  bind_var(const store::Item* qname, expr* expr)
-  {
-    return bind_expr2 ("var:", qname_internal_key (qname), expr);
-  }
-
-  expr*
-  lookup_var(xqp_string qname) const
-  {
-    return lookup_expr2("var:", qname_internal_key("", qname));
-  }
-
-  expr*
-  lookup_var(xqp_string ns, xqp_string localname) const
-  {
-    return lookup_expr2("var:", qname_internal_key(ns, "", localname));
-  }
-
-  expr*
-  lookup_var(const store::Item* qname)
-  {
-    return lookup_expr2("var:", qname_internal_key(qname));
-  }
-
-  expr*
-  lookup_var_nofail (xqp_string qname) const
-  {
-    expr* e = lookup_var(qname);
-    ZORBA_ASSERT (e != NULL);
-    return e;
-  }
-
-
   //
   // Merge in the static context of a module
   //
-  bool import_module (const static_context* module, const QueryLoc& loc);
-
-  /**
-  * @brief This method gets all variable names from this static context
-  * and its parents.
-  *
-  * This method gets all variables in the scope of this static context.
-  * Therefore it gets recursively all variables names from its parent,
-  * adds them to aVariableList and then adds the variables saved in the
-  * asked static context to aVariableList.
-  *
-  * @sa getVariables::getVariables(std::vector<var_expr_t>& aVarialeList)
-  * @param aVariableList a vector of strings, where the variable names
-  *  are put into.
-  * @post aVariableList contains all variable names reachable from the
-  *  scope from the current static context.
-  */
-  void getVariables(std::vector<std::string>& aVarialeList) const;
-
-  /**
-  * @brief This method gets all variable expressions from this static
-  * context and its parents.
-  *
-  * This method gets all variables in the scope of this static context.
-  * Therefore it gets recursively all variables expressions from its parent,
-  * adds them to aVariableList and then adds the variables saved in the
-  * asked static context to aVariableList.
-  *
-  * @sa getVariables::getVariables(std::vector<std::string>& aVarialeList)
-  * @param aVariableList a vector of variable expressions, where the
-  *  variable names are put into.
-  * @post aVariableList contains all variable expressions reachable from the
-  *  scope from the current static context.
-  */
-  void getVariables(std::vector<var_expr_t>& aVarialeList) const;
+  void import_module (const static_context* module, const QueryLoc& loc);
 
   void set_collection_callback (
       CollectionCallback aCallbackFunction,
@@ -839,62 +733,11 @@ protected:
 
   ICMap* ic_map() const { return theICMap; }
 
-
-  bool lookup_once (xqp_string key, ctx_value_t &val) const
-  {
-    return keymap.get (key, val);
-  }
-
-  bool lookup_once2 (const char *key1, xqp_string key2, ctx_value_t& val) const
-  {
-    return keymap.get2 (key1, key2, val);
-  }
-
-	template<class V> bool context_value(xqp_string key, V &val) const; 
-
-	template<class V> bool context_value2(const char *key1, xqp_string key2, V& val) const
-	{
-		if (lookup_once2 (key1, key2, val))
-      return true;
-    else
-      return theParent == NULL ? false : theParent->context_value2 (key1, key2, val);
-	}
-
-  bool lookup_module(xqp_string key, ctx_module_t& val) const
-  {
-    if (modulemap.get (key, val))
-      return true;
-    else
-      return theParent == NULL ? false : theParent->lookup_module (key, val);
-  }
-
-  expr* lookup_expr (xqp_string key) const
-  {
-    ctx_value_t val(CTX_EXPR);
-    return context_value (key, val) ? val.exprValue : NULL;
-  }
-
-  expr* lookup_expr2 (const char *key1, xqp_string key2) const
-  {
-    ctx_value_t val(CTX_EXPR);
-    return context_value2 (key1, key2, val) ? val.exprValue : NULL;
-  }
-
-  bool bind_expr (xqp_string key, expr *e);
-
-  bool bind_expr2 (const char *key1, xqp_string key2, expr *e);
-
-  bool bind_module(xqp_string uri, ExternalModule* m, bool dyn_loaded = false);
-
   //serialization helpers
   bool check_parent_is_root();
 
   void set_parent_as_root();
 };
-
-
-/* Debugging purposes */
-std::ostream& operator<<(std::ostream& stream, const static_context::ctx_value_t& object);
 
 
 }

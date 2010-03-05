@@ -21,30 +21,52 @@
 
 namespace zorba {
 
-  class ZORBA_DLL_PUBLIC ExternalModule : public ExternalFunctionData
-  {
-    public:
-      virtual ~ExternalModule() {}
 
-      virtual String
-      getURI() const = 0;
+/***************************************************************************//**
+  An external module represent a group of external functions, all belonging to
+  the same target namespace. Class ExternalModule provides the interface for
+  retrieving the target namespace URI and/or the implementation of each contained
+  external function by function name. 
 
-      virtual StatelessExternalFunction*
-      getExternalFunction(String aLocalname) const = 0;
+  An external module can be a library module by itself, or be a component of
+  a library module.
+ 
+  Instances of this class must be implemented by the application and provide 
+  storage for the implementations of the external functions. The instances must
+  be registered in the static context in order for the functions to be accessible
+  by a query (see StaticContext::registerModule method). 
+********************************************************************************/
+class ZORBA_DLL_PUBLIC ExternalModule : public ExternalFunctionData
+{
+ public:
+  virtual ~ExternalModule() {}
 
-      /**
-       * \brief Function used for destroying the ExternalModule object
-       *        passed as parameter.
-       *
-       * The user needs to override this function if the module
-       * passed as parameter was created using the createModule function
-       * which is used for dynamically loading modules from a shared
-       * library.
-       */
-      virtual void
-      destroy() {}
+  /**
+   * @return the target namespace URI of the module.
+   */
+  virtual String
+  getURI() const = 0;
 
-  };
+  /**
+   * @return the implementation of the function with the given name.
+   */
+  virtual StatelessExternalFunction*
+  getExternalFunction(String aLocalname) const = 0;
+
+  /**
+   * \brief Function used for destroying the ExternalModule object
+   *        passed as parameter.
+   *
+   * The user needs to override this function if the module
+   * passed as parameter was created using the createModule function
+   * which is used for dynamically loading modules from a shared
+   * library.
+   */
+  virtual void
+  destroy() {}
+
+};
+
 
 } /* namespace zorba */
 

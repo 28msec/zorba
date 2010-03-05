@@ -1670,7 +1670,7 @@ DEFAULT_END_VISIT (ParamList)
     void* begin_visit(const VarRef& n)
     {
       os << '$';
-      os << n.get_varname();
+      os << n.get_name()->get_qname();
       return 0;
     }
     DEFAULT_END_VISIT (VarRef)

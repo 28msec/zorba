@@ -49,6 +49,7 @@
 #include "context/static_context.h"
 #include "context/namespace_context.h"
 
+#include "zorbaerrors/Assert.h"
 
 //using namespace std;
 

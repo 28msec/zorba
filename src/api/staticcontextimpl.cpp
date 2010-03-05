@@ -606,14 +606,7 @@ StaticContextImpl::registerModule(ExternalModule* aModule)
 {
   try 
   {
-    if ( ! theCtx->bind_external_module(aModule) ) 
-    {
-      xqpString lURI = Unmarshaller::getInternalString(aModule->getURI());
-      xqpString lMsg = "The external module with URI " + lURI +" is already registered";
-
-      // TODO rename error code to doule
-      ZORBA_ERROR_DESC(API0019_FUNCTION_ALREADY_REGISTERED, String(lMsg.theStrStore));
-    }
+    theCtx->bind_external_module(aModule);
   }
   catch (error::ZorbaError& e)
   {
@@ -630,9 +623,12 @@ StaticContextImpl::registerModule(ExternalModule* aModule)
 void
 StaticContextImpl::setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver)
 {
-  try {
+  try 
+  {
     theCtx->set_document_uri_resolver(new DocumentURIResolverWrapper(aDocumentURIResolver));
-  } catch (error::ZorbaError& e) {
+  } 
+  catch (error::ZorbaError& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
 }
@@ -911,6 +907,7 @@ StaticContextImpl::removeSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver
   }
 }
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -948,7 +945,8 @@ StaticContextImpl::findFunctions(const Item& aQName, std::vector<Function_t>& aF
     theCtx->find_functions(lQName, lInternalFunctions);
 
     for (std::vector<function*>::const_iterator lIter = lInternalFunctions.begin();
-         lIter != lInternalFunctions.end(); ++lIter) {
+         lIter != lInternalFunctions.end(); ++lIter) 
+    {
       Function_t lFunc(new FunctionImpl(*lIter, theErrorHandler));
       aFunctions.push_back(lFunc);
     }
@@ -959,17 +957,20 @@ StaticContextImpl::findFunctions(const Item& aQName, std::vector<Function_t>& aF
   }
 }
 
+
 void
 StaticContextImpl::disableFunction(const Function_t& aFunction)
 {
   disableFunction(aFunction->getFunctionName(), aFunction->getArity());
 }
 
+
 void
 StaticContextImpl::disableFunction(const Item& aQName, int arity)
 {
   theCtx->unbind_fn(Unmarshaller::getInternalItem(aQName), arity);
 }
+
 
 void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
@@ -981,6 +982,7 @@ StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
   theCtx->set_context_item_type(xqType);
 }
 
+
 TypeIdentifier_t
 StaticContextImpl::getContextItemStaticType() const
 {
@@ -991,11 +993,13 @@ StaticContextImpl::getContextItemStaticType() const
   return TypeOps::get_type_identifier(*type);
 }
 
+
 void
 StaticContextImpl::setTraceStream(std::ostream& os)
 {
   theCtx->set_trace_stream(os);
 }
+
 
 void
 StaticContextImpl::resetTraceStream()

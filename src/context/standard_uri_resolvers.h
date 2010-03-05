@@ -102,7 +102,7 @@ public:
         std::string& url);
 
   virtual ExternalModule* getExternalModule(
-        const std::string& aFileUri,
+        const xqpStringStore_t& aFileUri,
         static_context& sctx);
 
 protected:

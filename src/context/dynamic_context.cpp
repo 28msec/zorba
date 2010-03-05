@@ -36,6 +36,7 @@
 
 #include "compiler/expression/var_expr.h"
 #include "compiler/xqddf/value_index.h"
+#include "compiler/parsetree/parsenodes.h"
 
 #include "types/root_typemanager.h"
 
@@ -43,6 +44,8 @@
 
 #include "zorbautils/strutil.h"
 #include "zorbautils/hashmap_itemp.h"
+
+#include "zorbaerrors/Assert.h"
 
 using namespace std;
 
@@ -69,7 +72,7 @@ std::string dynamic_context::var_key(const void* var)
 ********************************************************************************/
 xqp_string dynamic_context::expand_varname(
     static_context* sctx,
-    xqpString& qname)
+    const xqpStringStore_t& qnameStr)
 {
   if(!sctx)
   {
@@ -78,7 +81,19 @@ xqp_string dynamic_context::expand_varname(
     return (const char*)NULL;
   }
 
-  void* var = static_cast<void*>(sctx->lookup_var(qname));
+  xqpStringStore_t default_ns = new xqpStringStore("");
+
+  rchandle<QName> qname = new QName(QueryLoc::null, qnameStr->str());
+  store::Item_t qnameItem;
+  sctx->expand_qname(qnameItem,
+                     default_ns,
+                     qname->get_prefix(),
+                     qname->get_localname(),
+                     QueryLoc::null);
+
+  void* var = static_cast<void*>(sctx->lookup_var(qnameItem,
+                                                  QueryLoc::null,
+                                                  MAX_ZORBA_ERROR_CODE));
   return var_key(var);
 }
 
@@ -88,17 +103,22 @@ xqp_string dynamic_context::expand_varname(
 ********************************************************************************/
 xqp_string dynamic_context::expand_varname(
     static_context* sctx,
-    xqpString& ns,
-    xqpString& localname)
+    const xqpStringStore_t& ns,
+    const xqpStringStore_t& localname)
 {
   if(!sctx)
   {
     ///actually the whole static context is missing
-    ZORBA_ERROR_PARAM( XPST0001, "entire static context", "");
+    ZORBA_ERROR_PARAM(XPST0001, "entire static context", "");
     return (const char*)NULL;
   }
 
-  var_expr* var = static_cast<var_expr*>(sctx->lookup_var(ns, localname));
+  xqpStringStore_t pfx = new xqpStringStore("");
+
+  store::Item_t qname;
+  GENV_ITEMFACTORY->createQName(qname, ns, pfx, localname);
+
+  var_expr* var = sctx->lookup_var(qname, QueryLoc::null, MAX_ZORBA_ERROR_CODE);
   return var_key(var);
 }
 

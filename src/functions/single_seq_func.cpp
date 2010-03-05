@@ -21,6 +21,9 @@
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
 
+#include "zorbaerrors/Assert.h"
+
+
 namespace zorba 
 {
 

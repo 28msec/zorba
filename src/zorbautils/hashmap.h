@@ -199,6 +199,24 @@ public:
 
       return std::pair<T, V>(entry.theItem, entry.theValue);
     }
+
+    const T& getKey() const
+    {
+      ZORBA_FATAL(thePos < theHashTab->size(), "");
+      
+      const HASHENTRY<T, V>& entry = (*theHashTab)[thePos];
+
+      return entry.theItem;
+    }
+
+    const V& getValue() const
+    {
+      ZORBA_FATAL(thePos < theHashTab->size(), "");
+      
+      const HASHENTRY<T, V>& entry = (*theHashTab)[thePos];
+
+      return entry.theValue;
+    }
   };
 
 
@@ -234,27 +252,6 @@ public:
 
   void serialize(zorba::serialization::Archiver& ar)
   {
-/*    ar & theNumEntries;
-    ar & theHashTabSize;
-    ar & theInitialSize;
-    ar & theHashTab;
-    ar & theLoadFactor;
-    ar & theCompareFunction;
-
-    ar & theUseTransfer;
-
-    bool sync = false;
-    if(ar.is_serializing_out())
-    {
-      SYNC_CODE(sync = (theMutexp == &theMutex));
-    }
-    ar.set_is_temp_field(true);
-    ar & sync;
-    ar.set_is_temp_field(false);
-    SYNC_CODE(theMutexp = (sync ? &theMutex : NULL);)
-
-    ar & numCollisions;
-*/
     ar & theHashTabSize;
     ar & theCompareFunction;
     bool sync = false;
@@ -281,7 +278,7 @@ public:
       SYNC_CODE(theMutexp = (sync ? &theMutex : NULL);)
     }
 
-    ulong   num_entries = theNumEntries;
+    ulong num_entries = theNumEntries;
     ar.set_is_temp_field(true);
     ar & num_entries;
     ar.set_is_temp_field(false);

@@ -16,6 +16,8 @@
 
 #include "functions/func_index_ddl.h"
 
+#include "zorbaerrors/Assert.h"
+
 namespace zorba 
 {
 
@@ -24,7 +26,7 @@ PlanIter_t op_create_internal_index::codegen(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& argv,
-    AnnotationHolder &ann) const
+    AnnotationHolder& ann) const
 {
   // There is no single iterator that implements this function. Instead, a
   // whole sub-plan is generated to build the index. This is done in 

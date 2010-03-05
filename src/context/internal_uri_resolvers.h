@@ -91,13 +91,14 @@ public:
         const std::string& uri,
         static_context& sctx,
         std::string& url) = 0;
-
+#if 0
   virtual ExternalModule* getExternalModule(
         const std::string& aFileUri,
         static_context& sctx)
   {
     return NULL;
   }
+#endif
 };
 
 } /* namespace zorba */

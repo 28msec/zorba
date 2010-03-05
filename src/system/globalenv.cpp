@@ -54,6 +54,8 @@
 #include <libxml/parser.h>
 #endif
 
+#include "zorbaerrors/Assert.h"
+
 using namespace zorba;
 
 
