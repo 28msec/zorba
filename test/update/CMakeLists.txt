@@ -31,7 +31,7 @@ SET(UPDTESTDRIVER_SRCS
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake)
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("updtestdriver" "${UPDTESTDRIVER_SRCS}" "" "")
+ZORBA_GENERATE_STORE_SPECIFIC_EXES("updtestdriver" "${UPDTESTDRIVER_SRCS}" "" "" "")
 
 # collect all spec files (suffix .spec) in all subdirectories of the Queries dir
 FILE(GLOB_RECURSE TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}/Queries/ FOLLOW_SYMLINKS "*.spec")

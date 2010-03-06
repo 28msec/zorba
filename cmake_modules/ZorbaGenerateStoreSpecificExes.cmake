@@ -36,9 +36,11 @@
 #     DEPEND_SRCS - additional source files which will be compiled and linked to the created libraries
 #     DEPEND_LIBS - libraries (exception zorba-store libs) to which the created libraries depend on
 #     NEW_NAME - If this variable is not equal "", the executables will be renamed to NEW_NAME
+#     INSTALL_DESTINATION - if non empty string, the created executable(s) is(are) installed to 
+#                           the passed destination
 #
 #
-MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NAME)
+MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NAME INSTALL_DESTINATION)
 	# We need to change the CMAKE_CFG_INTDIR from the default value (a VS macro)
 	# otherwise this will make CMake fail when searching for the zorba.exe, because
 	# it does not know how to expand VS macros like $(OutDir).
@@ -65,7 +67,9 @@ MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NA
       SET_TARGET_PROPERTIES("${EXE_NAME}${SUFFIX}" PROPERTIES OUTPUT_NAME "${NEW_NAME}${SUFFIX}")
     ENDIF (NOT ${NEW_NAME} STREQUAL "")
 
-    INSTALL(TARGETS ${EXE_NAME}${SUFFIX} DESTINATION bin)
+    IF (NOT ${INSTALL_DESTINATION} STREQUAL "")
+      INSTALL(TARGETS ${EXE_NAME}${SUFFIX} DESTINATION ${INSTALL_DESTINATION})
+    ENDIF (NOT ${INSTALL_DESTINATION} STREQUAL "")
 
     IF (ZORBA_BUILD_STATIC_LIBRARY)
       ADD_EXECUTABLE("${EXE_NAME}${SUFFIX}_static" ${SRCS})
@@ -76,6 +80,9 @@ MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NA
       IF (NOT ${NEW_NAME} STREQUAL "")
         SET_TARGET_PROPERTIES("${EXE_NAME}${SUFFIX}_static" PROPERTIES OUTPUT_NAME "${NEW_NAME}${SUFFIX}_static")
       ENDIF (NOT ${NEW_NAME} STREQUAL "")
+      IF (INSTALL_DESTINATION)
+        INSTALL(TARGETS "${EXE_NAME}${SUFFIX}_static" DESTINATION ${INSTALL_DESTINATION})
+      ENDIF (INSTALL_DESTINATION)
     ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
   ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})

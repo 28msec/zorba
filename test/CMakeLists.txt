@@ -48,7 +48,7 @@ ENDIF(ZORBA_USE_SEPARATE_WINCE_SVN)
 # apitest
 #
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake)
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("apitest" "" "" "")
+ZORBA_GENERATE_STORE_SPECIFIC_EXES("apitest" "" "" "" "")
 
 
 IF (BUILDING_SIMPLESTORE)

@@ -1145,7 +1145,7 @@ unsigned int SchemaValidatorFilter::resolveQName(
     {
       bool unknown = false;
 
-#if _XERCES_VERSION >= 31000
+#if _XERCES_VERSION >= 30100
       unsigned int uriId = fElemStack.mapPrefixToURI(prefixBuf.getRawBuffer(), unknown);
 #else
       unsigned int uriId = fElemStack.mapPrefixToURI(prefixBuf.getRawBuffer(),

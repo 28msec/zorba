@@ -24,7 +24,7 @@ SET(SRCS
   debugger_server_runnable.cpp
 )
 
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("zorbacmd" "${SRCS}" "" "zorba")
+ZORBA_GENERATE_STORE_SPECIFIC_EXES("zorbacmd" "${SRCS}" "" "zorba" "bin")
 
 
 IF(UNIX)
