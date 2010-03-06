@@ -16,23 +16,20 @@
 # compiled and linked for each registered store). This macro iterates through the CMake variable 
 # ZORBA_STORE_NAMES and creates one executable for each store name.
 # Per convention, the source file that contains the main function of the executable must be located in 
-# the directory where this macro is executabed and must the following name: 'EXE_NAME.cpp.in'. 
-# To enable store dependent code in the source file, the macro sets the cmake variable ZORBA_STORE_NAME. 
-# This variable can be used in the source file by adding the replacement @ZORBA_STORE_NAME@. Logically, 
-# all other available cmake variables can be used from this source file because the cmake command
-# CONFIGURE_FILE is used to generate the store specific sources.
-# The resulting libraries are named by the following convention: Executables that are linked agains a store lib
-# other than simplestore contain the suffix '_${ZORBA_STORE_NAME}'.
-# If the cmake variable ZORBA_BUILD_STATIC_LIBRARY is set to "ON", the macro produces static libraries and add
-# the additional suffix '_static' to them.
+# the directory where this macro is executabed and must the following name: '${EXE_NAME}.cpp'. 
+# If the cmake variable ZORBA_BUILD_STATIC_LIBRARY is set to "ON", the macro produces additinally a 
+# static executable.
+#
+# The resulting executable has the name ${EXE_NAME}_${ZORBA_STORE_NAME} or 
+# ${EXE_NAME}_${ZORBA_STORE_NAME}_static if the store name is not equal "simplestore". Otherwise, 
+# the name is ${EXE_NAME} or ${EXE_NAME}_static.
 #
 # Synatx:
 # 
 #   ZORBA_GENERATE_STORE_SPECIFIC_EXES(EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NAME) 
 #   
 #     EXE_NAME - the name of the executable. Per convention, the file that contains the main function 
-#                and the CMake replacement @ZORBA_STORE_NAME@ must have the name EXE_NAME.cpp.in and
-#                must be located in the directory where the invocation of this function is located.
+#                and must be located in the directory where the invocation of this function is located.
 #     DEPEND_SRCS - additional source files which will be compiled and linked to the created libraries
 #     DEPEND_LIBS - libraries (exception zorba-store libs) to which the created libraries depend on
 #     NEW_NAME - If this variable is not equal "", the executables will be renamed to NEW_NAME
