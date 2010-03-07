@@ -5442,6 +5442,127 @@ public:
 };
 
 
+/*
+ * LiteralFunctionItem := QName "#" IntegerLiteral
+ */
+class LiteralFunctionItem: public exprnode
+{
+  private:
+    rchandle<QName> theQName;
+    Integer& theArity;
+
+  public:
+    LiteralFunctionItem(const QueryLoc& loc_, rchandle<QName> aQName, Integer& aArity):
+      exprnode(loc_), theQName(aQName), theArity(aArity){}
+
+      rchandle<QName> getQName() const { return theQName; }
+      const Integer& getArity() const { return theArity; }
+
+    void accept(parsenode_visitor&) const;
+};
+
+/*
+ * InlineFunction := "function" "(" ParamList? ")" ("as" SequenceType)? EnclosedExpr
+ */
+class InlineFunction: public exprnode
+{
+  private:
+  rchandle<ParamList> theParamList;
+  rchandle<SequenceType> theReturnType;
+  rchandle<EnclosedExpr> theEnclosedExpr;
+
+  public:
+  InlineFunction(const QueryLoc& loc_, rchandle<ParamList> aParamList, rchandle<SequenceType> aReturnType, rchandle<EnclosedExpr> aEnclosedExpr):
+    exprnode(loc_), theParamList(aParamList), theReturnType(aReturnType), theEnclosedExpr(aEnclosedExpr){}
+
+  rchandle<ParamList> getParamList() const { return theParamList; }
+  rchandle<SequenceType> getReturnType() const { return theReturnType; }
+  rchandle<EnclosedExpr> getEnclosedExpr() const { return theEnclosedExpr; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*
+ * AnyFunctionTest := "function" "(" "*" ")"
+ */
+class AnyFunctionTest: public parsenode
+{
+public:
+  AnyFunctionTest(const QueryLoc& loc_): parsenode(loc_){}
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*
+ * TypedFunctionTest := "(" (SequenceType ("," SequenceType)*)? ")"
+ */
+class TypeList: public parsenode
+{
+protected:
+  std::vector<rchandle<parsenode> > theTypes;
+
+public:
+  TypeList(const QueryLoc& loc_): parsenode(loc_){}
+
+  void push_back(rchandle<parsenode> aType) { theTypes.push_back(aType); }
+
+  rchandle<parsenode> operator[](int i) const { return theTypes[i]; }
+
+  int size() const { return theTypes.size (); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+/**
+ * TypedFunctionTest := "function" "(" TypeList? ")"  "as" SequenceType
+ */
+class TypedFunctionTest: public parsenode
+{
+private:
+  rchandle<TypeList> theArgTypes;
+  rchandle<SequenceType> theReturnType;
+  
+public:
+   TypedFunctionTest(const QueryLoc& loc_, rchandle<SequenceType> aReturnType):
+     parsenode(loc_), theArgTypes(0), theReturnType(aReturnType){}
+  TypedFunctionTest(const QueryLoc& loc_, rchandle<TypeList> aTypeList, rchandle<SequenceType> aReturnType):
+     parsenode(loc_), theArgTypes(aTypeList), theReturnType(aReturnType){}
+  
+  rchandle<TypeList> getArgumentTypes() const { return theArgTypes; }
+  rchandle<SequenceType> getReturnType() const { return theReturnType; }
+
+    void accept(parsenode_visitor&) const;
+};
+
+
+/**
+ * DynamicFunctionInvocation := FilterExpr LPAR ArgList RPAR
+ */
+class DynamicFunctionInvocation: public exprnode
+{
+private:
+  rchandle<exprnode> thePrimaryExpr;
+  rchandle<ArgList>     theArgList;
+
+public:
+  DynamicFunctionInvocation(
+    const QueryLoc& loc_,
+    rchandle<exprnode> aPrimaryExpr
+  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(0){}
+  
+  DynamicFunctionInvocation(
+    const QueryLoc& loc_,
+    rchandle<exprnode> aPrimaryExpr,
+    rchandle<ArgList> aArgList
+  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(aArgList){}
+  
+  rchandle<exprnode> getPrimaryExpr() const { return thePrimaryExpr; }
+  rchandle<ArgList> getArgList() const { return theArgList; }
+
+    void accept(parsenode_visitor&) const;
+};
+
 
 ///////////////////////////////////////////////////////////////////////////////
 //                                                                           //
@@ -5450,46 +5571,23 @@ public:
 ///////////////////////////////////////////////////////////////////////////////
 
 
-class FTOr : public parsenode {
-public:
-  FTOr(
-    QueryLoc const&,
-    rchandle<FTOr>,
-    rchandle<FTAnd>
-  );
-
-  rchandle<FTOr> get_ftor() const { return ftor_h; }
-  rchandle<FTAnd> get_ftand() const { return ftand_h; }
-
-  void accept(parsenode_visitor&) const;
-
-private:
-  rchandle<FTOr> ftor_h;
-  rchandle<FTAnd> ftand_h;
-};
-
-
-class FTAnd : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  FTMildNot
-|      |  FTAnd  FTAND  FTMildNot
-|_______________________________________________________________________*/
-{
-protected:
-  rchandle<FTAnd> ftand_h;
-  rchandle<FTMildNot> ftmild_not_h;
-
+class FTAnd : public parsenode {
 public:
   FTAnd(
-    const QueryLoc&,
-    rchandle<FTAnd>,
-    rchandle<FTMildNot>);
+    QueryLoc const&,
+    FTAnd const*,
+    FTMildNot const*
+  );
+  ~FTAnd();
   
-  rchandle<FTAnd> get_ftand() const { return ftand_h; }
-  rchandle<FTMildNot> get_ftmild_not() const { return ftmild_not_h; }
+  FTAnd const* get_ftand() const { return ftand_; }
+  FTMildNot const* get_ftmild_not() const { return ftmild_not_; }
 
-  void accept(parsenode_visitor&) const;
+  void accept( parsenode_visitor& ) const;
+
+private:
+  FTAnd const *const ftand_;
+  FTMildNot const *const ftmild_not_;
 };
 
 
@@ -5509,152 +5607,215 @@ private:
 };
 
 
-class FTMildNot : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  FTUnaryNot
-|      |  FTMildNot  FTNOT_IN  FTUnaryNot
-|_______________________________________________________________________*/
-{
-protected:
-  rchandle<FTMildNot> ftmild_not_h;
-  rchandle<FTUnaryNot> ftunary_not_h;
-
+class FTBigUnit : public parsenode {
 public:
-  FTMildNot(
-    const QueryLoc&,
-    rchandle<FTMildNot>,
-    rchandle<FTUnaryNot>);
-
-  rchandle<FTMildNot> get_ftmild_not() const { return ftmild_not_h; }
-  rchandle<FTUnaryNot> get_ftunary_not() const { return ftunary_not_h; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-class FTUnaryNot : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  FTPrimaryWithOptions
-|      |  FTNOT  FTPrimaryWithOptions
-|_______________________________________________________________________*/
-{
-protected:
-  rchandle<FTPrimaryWithOptions> words_selection_h;
-
-public:
-  FTUnaryNot(
-    const QueryLoc&,
-    rchandle<FTPrimaryWithOptions>);
-
-  rchandle<FTPrimaryWithOptions> get_words_selection() const
-    { return words_selection_h; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-class FTPrimaryWithOptions : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  FTPrimary FTMatchOptions? FTWeight?
-|_______________________________________________________________________*/
-{
-protected:
-  rchandle<FTPrimary> primary;
-  rchandle<FTMatchOptions> match_options;
-  rchandle<FTWeight> weight;
-
-public:
-  FTPrimaryWithOptions(
-    const QueryLoc&,
-    rchandle<FTPrimary>,
-    rchandle<FTMatchOptions>,
-    rchandle<FTWeight>);
-
-  rchandle<FTPrimary> get_primary() const { return primary; }
-  rchandle<FTMatchOptions> get_match_options() const { return match_options; }
-  rchandle<FTWeight> get_weight() const { return weight; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-class FTPrimary : public parsenode {
-protected:
-  FTPrimary( QueryLoc const &loc ) : parsenode( loc ) { }
-};
-
-
-class FTSelection : public FTPrimary {
-public:
-  typedef std::list< rchandle<FTPosFilter> > pos_filter_list_t;
-
-  FTSelection(
+  FTBigUnit(
     QueryLoc const&,
-    rchandle<FTOr>,
-    pos_filter_list_t*);
+    ft_big_unit::type
+  );
 
-  rchandle<FTOr> get_ftor() const { return ftor_; }
-
-  pos_filter_list_t const& get_pos_filter_list() const {
-    return pos_filter_list_;
-  }
+  ft_big_unit::type get_unit() const { return unit_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  rchandle<FTOr> ftor_;
-  pos_filter_list_t pos_filter_list_;
+  ft_big_unit::type const unit_;
 };
 
 
-class FTWordsTimes : public FTPrimary {
+class FTIgnoreOption : public parsenode {
 public:
-  FTWordsTimes(
+  FTIgnoreOption(
     QueryLoc const&,
-    FTWords const*,
-    FTTimes const*
+    UnionExpr const*
   );
-  ~FTWordsTimes();
+  ~FTIgnoreOption();
 
-  FTWords const* get_words() const { return words_; }
-  FTTimes const* get_times() const { return times_; }
+  UnionExpr const* get_union() const { return expr_; }
 
   void accept( parsenode_visitor& ) const;
 
-protected:
-  FTWords const *words_;
-  FTTimes const *times_;
+private:
+  UnionExpr const *const expr_;
 };
 
 
-class FTMatchOptions : public parsenode
-{
+class FTMatchOptions : public parsenode {
 public:
-  typedef std::list< rchandle<FTMatchOption> > match_option_list_t;
+  typedef std::list<FTMatchOption const*> match_option_list_t;
 
-  FTMatchOptions( const QueryLoc& );
+  FTMatchOptions( QueryLoc const& );
+  ~FTMatchOptions();
 
   match_option_list_t const& get_match_options() const {
-    return match_options;
+    return match_options_;
   }
 
-  void push_back( FTMatchOption *mo ) {
-    match_options.push_back( mo );
+  void push_back( FTMatchOption const *mo ) {
+    match_options_.push_back( mo );
   }
 
   void accept( parsenode_visitor& ) const;
 
 protected:
-  match_option_list_t match_options;
+  match_option_list_t match_options_;
 };
 
-class FTWeight : public parsenode
-{
+
+class FTMildNot : public parsenode {
 public:
-  FTWeight( const QueryLoc&, exprnode* );
+  FTMildNot(
+    QueryLoc const&,
+    FTMildNot const*,
+    FTUnaryNot const*
+  );
+  ~FTMildNot();
+
+  FTMildNot const* get_ftmild_not() const { return ftmild_not_; }
+  FTUnaryNot const* get_ftunary_not() const { return ftunary_not_; }
+
+  void accept( parsenode_visitor& ) const;
+
+private:
+  FTMildNot const *const ftmild_not_;
+  FTUnaryNot const *const ftunary_not_;
+};
+
+
+class FTOptionDecl : public parsenode {
+public:
+  FTOptionDecl(
+    QueryLoc const&,
+    FTMatchOptions const*
+  );
+  ~FTOptionDecl();
+
+  FTMatchOptions const* get_match_option() const { return match_options_; }
+
+  void accept( parsenode_visitor& ) const;
+
+private:
+  FTMatchOptions const *const match_options_;
+};
+
+
+class FTOr : public parsenode {
+public:
+  FTOr(
+    QueryLoc const&,
+    FTOr const*,
+    FTAnd const*
+  );
+  ~FTOr();
+
+  FTOr const* get_ftor() const { return ftor_; }
+  FTAnd const* get_ftand() const { return ftand_; }
+
+  void accept( parsenode_visitor& ) const;
+
+private:
+  FTOr const *const ftor_;
+  FTAnd const *const ftand_;
+};
+
+
+class FTPrimaryWithOptions : public parsenode {
+public:
+  FTPrimaryWithOptions(
+    QueryLoc const&,
+    FTPrimary const*,
+    FTMatchOptions const*,
+    FTWeight const*
+  );
+  ~FTPrimaryWithOptions();
+
+  FTPrimary const* get_primary() const { return primary_; }
+  FTMatchOptions const* get_match_options() const { return match_options_; }
+  FTWeight const* get_weight() const { return weight_; }
+
+  void accept( parsenode_visitor& ) const;
+
+private:
+  FTPrimary const *const primary_;
+  FTMatchOptions const *const match_options_;
+  FTWeight const *const weight_;
+};
+
+
+class FTRange : public parsenode {
+public:
+  FTRange(
+    QueryLoc const&,
+    ft_range_mode::type,
+    AdditiveExpr const*,
+    AdditiveExpr const* = NULL
+  );
+  ~FTRange();
+
+  AdditiveExpr const* get_expr1() const { return expr1_; }
+  AdditiveExpr const* get_expr2() const { return expr2_; }
+  ft_range_mode::type get_mode() const { return mode_; }
+
+  void accept( parsenode_visitor& ) const;
+
+private:
+  ft_range_mode::type mode_;
+  AdditiveExpr const *const expr1_;
+  AdditiveExpr const *const expr2_;
+};
+
+
+class FTTimes : public parsenode {
+public:
+  FTTimes(
+    QueryLoc const&,
+    FTRange const*
+  );
+  ~FTTimes();
+
+  FTRange const* get_range() const { return range_; }
+
+  void accept( parsenode_visitor& ) const;
+
+private:
+  FTRange const *const range_;
+};
+
+
+class FTUnaryNot : public parsenode {
+public:
+  FTUnaryNot(
+    QueryLoc const&,
+    FTPrimaryWithOptions const*
+  );
+  ~FTUnaryNot();
+
+  FTPrimaryWithOptions const* get_primary_with_options() const
+    { return primary_with_options_; }
+
+  void accept( parsenode_visitor& ) const;
+
+private:
+  FTPrimaryWithOptions const *const primary_with_options_;
+};
+
+
+class FTUnit : public parsenode {
+public:
+  FTUnit( QueryLoc const&, ft_unit::type );
+
+  ft_unit::type get_unit() const { return unit_; }
+
+  void accept( parsenode_visitor& ) const;
+
+private:
+  ft_unit::type const unit_;
+};
+
+
+class FTWeight : public parsenode {
+public:
+  FTWeight( QueryLoc const&, exprnode* );
 
   rchandle<exprnode> get_expr() const { return expr_; }
 
@@ -5665,13 +5826,7 @@ private:
 };
 
 
-class FTWords : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  FTWordsValue
-|      |  FTWordsValue  FTAnyallOption
-|_______________________________________________________________________*/
-{
+class FTWords : public parsenode {
 public:
   FTWords(
     QueryLoc const&,
@@ -5710,20 +5865,80 @@ private:
 };
 
 
-class FTPosFilter : public parsenode {
+////////// FTPrimary & derived classes ////////////////////////////////////////
+
+class FTPrimary : public parsenode {
 protected:
-  FTPosFilter( QueryLoc const &loc ) : parsenode( loc ) { }
+  FTPrimary( QueryLoc const &loc ) : parsenode( loc ) { }
 };
 
 
-class FTOrder : public FTPosFilter {
+class FTSelection : public FTPrimary {
 public:
-  FTOrder( QueryLoc const& );
+  typedef std::list<FTPosFilter*> pos_filter_list_t;
+
+  FTSelection(
+    QueryLoc const&,
+    FTOr const*,
+    pos_filter_list_t*
+  );
+  ~FTSelection();
+
+  FTOr const* get_ftor() const { return ftor_; }
+
+  pos_filter_list_t const& get_pos_filter_list() const {
+    return pos_filter_list_;
+  }
 
   void accept( parsenode_visitor& ) const;
+
+private:
+  FTOr const *const ftor_;
+  pos_filter_list_t pos_filter_list_;
 };
 
-////////// FTMatchOptions /////////////////////////////////////////////////////
+
+class FTExtensionSelection : public FTPrimary {
+public:
+  FTExtensionSelection(
+    QueryLoc const&,
+    PragmaList const*,
+    FTSelection const*
+  );
+  ~FTExtensionSelection();
+
+  PragmaList const* get_pragma_list() const { return pragma_list_; }
+  FTSelection const* get_selectionI() const { return ftselection_; }
+
+  void accept( parsenode_visitor& ) const;
+
+private:
+  PragmaList const *const pragma_list_;
+  FTSelection const *const ftselection_;
+};
+
+
+class FTWordsTimes : public FTPrimary {
+public:
+  FTWordsTimes(
+    QueryLoc const&,
+    FTWords const*,
+    FTTimes const*
+  );
+  ~FTWordsTimes();
+
+  FTWords const* get_words() const { return words_; }
+  FTTimes const* get_times() const { return times_; }
+
+  void accept( parsenode_visitor& ) const;
+
+protected:
+  FTWords const *words_;
+  FTTimes const *times_;
+};
+
+
+////////// FTMatchOption & derived classes ////////////////////////////////////
 
 class FTMatchOption : public parsenode {
 protected:
@@ -5743,7 +5958,7 @@ public:
   void accept( parsenode_visitor& ) const;
 
 private:
-  ft_case_mode::type mode_;
+  ft_case_mode::type const mode_;
 };
 
 
@@ -5759,7 +5974,42 @@ public:
   void accept( parsenode_visitor& ) const;
 
 private:
-  ft_diacritics_mode::type mode_;
+  ft_diacritics_mode::type const mode_;
+};
+
+
+class FTExtensionOption : public FTMatchOption {
+public:
+  FTExtensionOption(
+    QueryLoc const&,
+    QName*,
+    std::string const &value
+  );
+
+  rchandle<QName> get_qname() const { return qname_; }
+  std::string const& get_val() const { return value_; }
+
+  void accept( parsenode_visitor& ) const;
+
+private:
+  rchandle<QName> qname_;
+  std::string const value_;
+};
+
+
+class FTLanguageOption : public FTMatchOption {
+public:
+  FTLanguageOption(
+    QueryLoc const&,
+    std::string const &language
+  );
+
+  std::string const& get_language() const { return language_; }
+
+  void accept( parsenode_visitor& ) const;
+
+private:
+  std::string const language_;
 };
 
 
@@ -5775,7 +6025,7 @@ public:
   void accept( parsenode_visitor& ) const;
 
 private:
-  ft_stem_mode::type mode_;
+  ft_stem_mode::type const mode_;
 };
 
 
@@ -5850,7 +6100,7 @@ public:
 private:
   FTStopWords const *const stop_words_;
   incl_excl_list_t incl_excl_list_;
-  ft_stop_words_mode::type mode_;
+  ft_stop_words_mode::type const mode_;
 };
 
 
@@ -5870,7 +6120,7 @@ public:
   void accept( parsenode_visitor& ) const;
 
 private:
-  std::string uri_;
+  std::string const uri_;
   stop_word_list_t stop_words_;
 };
 
@@ -5895,23 +6145,6 @@ private:
 };
 
 
-
-class FTLanguageOption : public FTMatchOption {
-public:
-  FTLanguageOption(
-    QueryLoc const&,
-    std::string const &language
-  );
-
-  std::string const& get_language() const { return language_; }
-
-  void accept( parsenode_visitor& ) const;
-
-private:
-  std::string const language_;
-};
-
-
 class FTWildCardOption : public FTMatchOption {
 public:
   FTWildCardOption(
@@ -5927,7 +6160,13 @@ private:
   ft_wild_card_mode::type const mode_;
 };
 
-////////// FTPosFilter ////////////////////////////////////////////////////////
+////////// FTPosFilter & derived classes //////////////////////////////////////
+
+class FTPosFilter : public parsenode {
+protected:
+  FTPosFilter( QueryLoc const &loc ) : parsenode( loc ) { }
+};
+
 
 class FTContent : public FTPosFilter {
 public:
@@ -5938,7 +6177,7 @@ public:
 
   ft_content_mode::type get_mode() const { return mode_; }
 
-  void accept(parsenode_visitor&) const;
+  void accept( parsenode_visitor& ) const;
 
 private:
   ft_content_mode::type const mode_;
@@ -5953,7 +6192,7 @@ public:
   FTRange const* get_distance() const { return distance_; }
   FTUnit const* get_unit() const { return unit_; }
 
-  void accept(parsenode_visitor&) const;
+  void accept( parsenode_visitor& ) const;
 
 private:
   FTRange const *const distance_;
@@ -5961,333 +6200,54 @@ private:
 };
 
 
-
-class FTRange : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  EXACTLY  UnionExpr
-|      | AT_LEAST  UnionExpr
-|      | AT_MOST  UnionExpr
-|      | FROM  UnionExpr  TO  UnionExpr
-|_______________________________________________________________________*/
-{
+class FTOrder : public FTPosFilter {
 public:
-  FTRange(
-    const QueryLoc&,
-    ft_range_mode::type,
-    rchandle<exprnode> expr1,
-    rchandle<exprnode> expr2 = NULL);
-
-  rchandle<AdditiveExpr> get_expr1() const {
-    return expr1_.cast<AdditiveExpr>();
-  }
-
-  rchandle<AdditiveExpr> get_expr2() const {
-    return expr2_.cast<AdditiveExpr>();
-  }
-
-  ft_range_mode::type get_mode() const { return mode_; }
-
-  void accept(parsenode_visitor&) const;
-
-private:
-  ft_range_mode::type mode_;
-  rchandle<exprnode> expr1_;
-  rchandle<exprnode> expr2_;
-};
-
-class FTExtensionOption : public FTMatchOption
-{
-public:
-  FTExtensionOption(
-    const QueryLoc&,
-    QName*,
-    std::string const&);
-
-  rchandle<QName> get_qname() const { return qname_; }
-  std::string const& get_val() const { return val_; }
+  FTOrder( QueryLoc const& );
 
   void accept( parsenode_visitor& ) const;
-
-private:
-  rchandle<QName> qname_;
-  std::string val_;
-};
-
-class FTExtensionSelection : public FTPrimary
-{
-public:
-  FTExtensionSelection(
-    QueryLoc const&,
-    PragmaList*,
-    FTSelection*);
-
-  rchandle<PragmaList> get_pragma_list() const { return pragma_list_; }
-  rchandle<FTSelection> get_selectionI() const { return ftselection_; }
-
-  void accept( parsenode_visitor& ) const;
-
-private:
-    rchandle<PragmaList> pragma_list_;
-    rchandle<FTSelection> ftselection_;
 };
 
 
-class FTWindow : public FTPosFilter
-/*______________________________________________________________________
-|
-|  ::=  WINDOW  UnionExpr  FTUnit
-|_______________________________________________________________________*/
-{
-public:
-  FTWindow(
-    const QueryLoc&,
-    AdditiveExpr *window,
-    FTUnit *unit);
-
-  rchandle<FTUnit> get_unit() const { return unit_; }
-  rchandle<AdditiveExpr> get_window() const { return window_; }
-
-  void accept( parsenode_visitor& ) const;
-
-private:
-  rchandle<AdditiveExpr> window_;
-  rchandle<FTUnit> unit_;
-};
-
-
-class FTTimes : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  OCCURS  FTRange  TIMES
-|_______________________________________________________________________*/
-{
-protected:
-  rchandle<FTRange> range_h;
-
-public:
-  FTTimes(
-    const QueryLoc&,
-    rchandle<FTRange>);
-
-  rchandle<FTRange> get_range() const { return range_h; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-class FTScope : public FTPosFilter
-/*______________________________________________________________________
-|
-|  ::=  SAME  FTBigUnit
-|      |  DIFFERENT  FTBigUnit
-|_______________________________________________________________________*/
-{
-protected:
-  ft_scope::type scope;
-  rchandle<FTBigUnit> big_unit;
-
+class FTScope : public FTPosFilter {
 public:
   FTScope(
-    const QueryLoc&,
-    ft_scope::type,
-    FTBigUnit*);
-
-  ft_scope::type get_scope() const { return scope; }
-  rchandle<FTBigUnit> get_big_unit() const { return big_unit; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-class FTUnit : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  WORDS | SENTENCES | PARAGRAPH
-|_______________________________________________________________________*/
-{
-protected:
-  ft_unit::type unit_;
-
-public:
-  FTUnit( const QueryLoc&, ft_unit::type );
-
-  ft_unit::type get_unit() const { return unit_; }
-
-  void accept( parsenode_visitor& ) const;
-};
-
-
-class FTBigUnit : public parsenode
-/*______________________________________________________________________
-|
-|  ::=  SENTENCE | PARAGRAPH
-|_______________________________________________________________________*/
-{
-protected:
-  ft_big_unit::type unit;
-
-public:
-  FTBigUnit(
-    const QueryLoc&,
-    ft_big_unit::type);
-
-  ft_big_unit::type get_unit() const { return unit; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-
-
-class FTOptionDecl : public parsenode
-{
-public:
-  FTOptionDecl(
     QueryLoc const&,
-    rchandle<parsenode>);
+    ft_scope::type,
+    FTBigUnit const*
+  );
+  ~FTScope();
 
-  rchandle<parsenode> get_match_option() const { return match_option_; }
-
-  void accept(parsenode_visitor&) const;
-
-private:
-  rchandle<parsenode> match_option_;
-};
-
-
-class FTIgnoreOption : public parsenode
-{
-public:
-  FTIgnoreOption(
-    const QueryLoc&,
-    rchandle<UnionExpr> );
-
-  rchandle<UnionExpr> get_union() const { return union_h; }
+  ft_scope::type get_scope() const { return scope_; }
+  FTBigUnit const* get_big_unit() const { return big_unit_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  rchandle<UnionExpr> union_h;
+  ft_scope::type const scope_;
+  FTBigUnit const *const big_unit_;
 };
 
-/*
- * LiteralFunctionItem := QName "#" IntegerLiteral
- */
-class LiteralFunctionItem: public exprnode
-{
-  private:
-    rchandle<QName> theQName;
-    Integer& theArity;
 
-  public:
-    LiteralFunctionItem(const QueryLoc& loc_, rchandle<QName> aQName, Integer& aArity):
-      exprnode(loc_), theQName(aQName), theArity(aArity){}
-
-      rchandle<QName> getQName() const { return theQName; }
-      const Integer& getArity() const { return theArity; }
-
-    void accept(parsenode_visitor&) const;
-};
-
-/*
- * InlineFunction := "function" "(" ParamList? ")" ("as" SequenceType)? EnclosedExpr
- */
-class InlineFunction: public exprnode
-{
-  private:
-  rchandle<ParamList> theParamList;
-  rchandle<SequenceType> theReturnType;
-  rchandle<EnclosedExpr> theEnclosedExpr;
-
-  public:
-  InlineFunction(const QueryLoc& loc_, rchandle<ParamList> aParamList, rchandle<SequenceType> aReturnType, rchandle<EnclosedExpr> aEnclosedExpr):
-    exprnode(loc_), theParamList(aParamList), theReturnType(aReturnType), theEnclosedExpr(aEnclosedExpr){}
-
-  rchandle<ParamList> getParamList() const { return theParamList; }
-  rchandle<SequenceType> getReturnType() const { return theReturnType; }
-  rchandle<EnclosedExpr> getEnclosedExpr() const { return theEnclosedExpr; }
-
-  void accept(parsenode_visitor&) const;
-};
-
-/*
- * AnyFunctionTest := "function" "(" "*" ")"
- */
-class AnyFunctionTest: public parsenode
-{
+class FTWindow : public FTPosFilter {
 public:
-  AnyFunctionTest(const QueryLoc& loc_): parsenode(loc_){}
-  void accept(parsenode_visitor&) const;
-};
+  FTWindow(
+    QueryLoc const&,
+    AdditiveExpr const *window,
+    FTUnit const *unit
+  );
+  ~FTWindow();
 
-/*
- * TypedFunctionTest := "(" (SequenceType ("," SequenceType)*)? ")"
- */
-class TypeList: public parsenode
-{
-protected:
-  std::vector<rchandle<parsenode> > theTypes;
+  FTUnit const* get_unit() const { return unit_; }
+  AdditiveExpr const* get_window() const { return window_; }
 
-public:
-  TypeList(const QueryLoc& loc_): parsenode(loc_){}
+  void accept( parsenode_visitor& ) const;
 
-  void push_back(rchandle<parsenode> aType) { theTypes.push_back(aType); }
-
-  rchandle<parsenode> operator[](int i) const { return theTypes[i]; }
-
-  int size() const { return theTypes.size (); }
-
-  void accept(parsenode_visitor&) const;
-};
-
-/**
- * TypedFunctionTest := "function" "(" TypeList? ")"  "as" SequenceType
- */
-class TypedFunctionTest: public parsenode
-{
 private:
-  rchandle<TypeList> theArgTypes;
-  rchandle<SequenceType> theReturnType;
-  
-public:
-   TypedFunctionTest(const QueryLoc& loc_, rchandle<SequenceType> aReturnType):
-     parsenode(loc_), theArgTypes(0), theReturnType(aReturnType){}
-  TypedFunctionTest(const QueryLoc& loc_, rchandle<TypeList> aTypeList, rchandle<SequenceType> aReturnType):
-     parsenode(loc_), theArgTypes(aTypeList), theReturnType(aReturnType){}
-  
-  rchandle<TypeList> getArgumentTypes() const { return theArgTypes; }
-  rchandle<SequenceType> getReturnType() const { return theReturnType; }
-
-    void accept(parsenode_visitor&) const;
+  AdditiveExpr const *const window_;
+  FTUnit const *const unit_;
 };
 
-/**
- * DynamicFunctionInvocation := FilterExpr LPAR ArgList RPAR
- */
-class DynamicFunctionInvocation: public exprnode
-{
-private:
-  rchandle<exprnode> thePrimaryExpr;
-  rchandle<ArgList>     theArgList;
 
-public:
-  DynamicFunctionInvocation(
-    const QueryLoc& loc_,
-    rchandle<exprnode> aPrimaryExpr
-  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(0){}
-  
-  DynamicFunctionInvocation(
-    const QueryLoc& loc_,
-    rchandle<exprnode> aPrimaryExpr,
-    rchandle<ArgList> aArgList
-  ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(aArgList){}
-  
-  rchandle<exprnode> getPrimaryExpr() const { return thePrimaryExpr; }
-  rchandle<ArgList> getArgList() const { return theArgList; }
-
-    void accept(parsenode_visitor&) const;
-};
-
-}  /* namespace zorba */
+} // namespace zorba
 #endif  /*  ZORBA_PARSENODES_H */
- /* vim:set et sw=2 ts=2: */
+/* vim:set et sw=2 ts=2: */

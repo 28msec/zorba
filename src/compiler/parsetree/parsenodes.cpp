@@ -4486,10 +4486,9 @@ void EvalExpr::accept( parsenode_visitor &v ) const
  *
  */
 
-// [344]
 FTSelection::FTSelection(
   QueryLoc const &loc,
-  rchandle<FTOr> ftor,
+  FTOr const *ftor,
   pos_filter_list_t *pos_filter_list )
 :
   FTPrimary( loc ),
@@ -4499,8 +4498,10 @@ FTSelection::FTSelection(
     pos_filter_list_.swap( *pos_filter_list );
 }
 
-
-//-FTSelection::
+FTSelection::~FTSelection() {
+  delete ftor_;
+  delete_ptr_container( pos_filter_list_ );
+}
 
 void FTSelection::accept( parsenode_visitor &v ) const
 {
@@ -4511,42 +4512,46 @@ void FTSelection::accept( parsenode_visitor &v ) const
 }
 
 
-
-// [345] FTOr
-// ----------
 FTOr::FTOr(
-  const QueryLoc& loc_,
-  rchandle<FTOr> _ftor_h,
-  rchandle<FTAnd> _ftand_h)
-:
-  parsenode(loc_),
-  ftor_h(_ftor_h),
-  ftand_h(_ftand_h)
-{}
+  QueryLoc const &loc,
+  FTOr const *ftor,
+  FTAnd const *ftand
+) :
+  parsenode( loc ),
+  ftor_( ftor ),
+  ftand_( ftand )
+{
+}
 
-
-//-FTOr::
+FTOr::~FTOr() {
+  delete ftor_;
+  delete ftand_;
+}
 
 void FTOr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (ftor_h);
-  ACCEPT (ftand_h);
+  ACCEPT( ftor_ );
+  ACCEPT( ftand_ );
   END_VISITOR();
 }
 
 
-// [346] FTAnd
-// -----------
 FTAnd::FTAnd(
-  const QueryLoc& loc_,
-  rchandle<FTAnd> _ftand_h,
-  rchandle<FTMildNot> _ftmild_not_h)
-:
-  parsenode(loc_),
-  ftand_h(_ftand_h),
-  ftmild_not_h(_ftmild_not_h)
-{}
+  QueryLoc const &loc,
+  FTAnd const *ftand,
+  FTMildNot const *ftmild_not
+) :
+  parsenode( loc ),
+  ftand_( ftand ),
+  ftmild_not_( ftmild_not )
+{
+}
+
+FTAnd::~FTAnd() {
+  delete ftand_;
+  delete ftmild_not_;
+}
 
 
 //-FTAnd::
@@ -4554,94 +4559,102 @@ FTAnd::FTAnd(
 void FTAnd::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (ftand_h);
-  ACCEPT (ftmild_not_h);
+  ACCEPT( ftand_ );
+  ACCEPT( ftmild_not_ );
   END_VISITOR();
 }
 
 
-// [347] FTMildNot
-// ---------------
 FTMildNot::FTMildNot(
-  const QueryLoc& loc_,
-  rchandle<FTMildNot> _ftmild_not_h,
-  rchandle<FTUnaryNot> _ftunary_not_h)
-:
-  parsenode(loc_),
-  ftmild_not_h(_ftmild_not_h),
-  ftunary_not_h(_ftunary_not_h)
-{}
+  QueryLoc const &loc,
+  FTMildNot const *ftmild_not,
+  FTUnaryNot const *ftunary_not
+) :
+  parsenode( loc ),
+  ftmild_not_( ftmild_not ),
+  ftunary_not_( ftunary_not )
+{
+}
 
-
-//-FTMildNot::
+FTMildNot::~FTMildNot() {
+  delete ftmild_not_;
+  delete ftunary_not_;
+}
 
 void FTMildNot::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (ftmild_not_h);
-  ACCEPT (ftunary_not_h);
+  ACCEPT( ftmild_not_ );
+  ACCEPT( ftunary_not_ );
   END_VISITOR();
 }
 
 
-// [348] FTUnaryNot
-// ----------------
 FTUnaryNot::FTUnaryNot(
-  const QueryLoc& loc_,
-  rchandle<FTPrimaryWithOptions> _words_selection_h)
-:
-  parsenode(loc_),
-  words_selection_h(_words_selection_h)
-{}
+  QueryLoc const &loc,
+  FTPrimaryWithOptions const *primary_with_options
+) :
+  parsenode( loc ),
+  primary_with_options_( primary_with_options )
+{
+}
 
-
-//-FTUnaryNot::
+FTUnaryNot::~FTUnaryNot() {
+  delete primary_with_options_;
+}
 
 void FTUnaryNot::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (words_selection_h);
+  ACCEPT( primary_with_options_ );
   END_VISITOR();
 }
 
 
-// [150]
 FTPrimaryWithOptions::FTPrimaryWithOptions(
-  const QueryLoc& loc_,
-  rchandle<FTPrimary> _primary,
-  rchandle<FTMatchOptions> _match_options,
-  rchandle<FTWeight> _weight)
-:
-  parsenode(loc_),
-  primary(_primary),
-  match_options(_match_options),
-  weight(_weight)
-{}
+  QueryLoc const &loc,
+  FTPrimary const *primary,
+  FTMatchOptions const *match_options,
+  FTWeight const *weight
+) :
+  parsenode( loc ),
+  primary_( primary ),
+  match_options_( match_options ),
+  weight_( weight )
+{
+}
 
-
-//-FTPrimaryWithOptions::
+FTPrimaryWithOptions::~FTPrimaryWithOptions() {
+  delete primary_;
+  delete match_options_;
+  delete weight_;
+}
 
 void FTPrimaryWithOptions::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (primary);
-  ACCEPT (match_options);
-  ACCEPT (weight);
+  ACCEPT( primary_ );
+  ACCEPT( match_options_ );
+  ACCEPT( weight_ );
   END_VISITOR();
 }
 
 
 FTMatchOptions::FTMatchOptions(
-    const QueryLoc &loc_)
-:
-    parsenode( loc_ )
+  QueryLoc const &loc
+) :
+  parsenode( loc )
 {
+}
+
+FTMatchOptions::~FTMatchOptions() {
+  delete_ptr_container( match_options_ );
 }
 
 void FTMatchOptions::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT_SEQ( match_option_list_t, match_options );
+  ACCEPT_SEQ( match_option_list_t, match_options_ );
   END_VISITOR();
 }
 
@@ -4662,14 +4675,12 @@ void FTWeight::accept( parsenode_visitor &v ) const
 }
 
 
-// [350] FTWords
-// -------------
 FTWords::FTWords(
   QueryLoc const &loc,
   FTWordsValue const *words_value,
-  FTAnyallOption const *any_all_option )
-:
-  parsenode(loc),
+  FTAnyallOption const *any_all_option
+) :
+  parsenode( loc ),
   words_value_( words_value ),
   any_all_option_( any_all_option )
 {
@@ -5003,29 +5014,29 @@ void FTAnyallOption::accept( parsenode_visitor &v ) const
 }
 
 
-// [367] FTRange
-// -------------
 FTRange::FTRange(
-  const QueryLoc& loc,
+  QueryLoc const &loc,
   ft_range_mode::type mode,
-  rchandle<exprnode> expr1,
-  rchandle<exprnode> expr2)
-:
-  parsenode(loc),
-  mode_(mode),
-  expr1_(expr1),
-  expr2_(expr2)
+  AdditiveExpr const *expr1,
+  AdditiveExpr const *expr2
+) :
+  parsenode( loc ),
+  mode_( mode ),
+  expr1_( expr1 ),
+  expr2_( expr2 )
 {
 }
 
-
-//-FTRange::
+FTRange::~FTRange() {
+  delete expr1_;
+  delete expr2_;
+}
 
 void FTRange::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (expr1_);
-  ACCEPT (expr2_);
+  ACCEPT( expr1_ );
+  ACCEPT( expr2_ );
   END_VISITOR();
 }
 
@@ -5057,11 +5068,11 @@ void FTDistance::accept( parsenode_visitor &v ) const
 FTExtensionOption::FTExtensionOption(
   const QueryLoc &loc,
   QName *qname,
-  std::string const &val)
-:
-    FTMatchOption( loc ),
-    qname_( qname ),
-    val_( val )
+  std::string const &value
+) :
+  FTMatchOption( loc ),
+  qname_( qname ),
+  value_( value )
 {
 }
 
@@ -5069,13 +5080,14 @@ FTExtensionOption::FTExtensionOption(
 void FTExtensionOption::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
+  ACCEPT( qname_ );
   END_VISITOR();
 }
 
 FTExtensionSelection::FTExtensionSelection(
   QueryLoc const &loc,
-  PragmaList *pragma_list,
-  FTSelection *ftselection
+  PragmaList const *pragma_list,
+  FTSelection const *ftselection
 ) :
   FTPrimary( loc ),
   pragma_list_( pragma_list ),
@@ -5083,94 +5095,97 @@ FTExtensionSelection::FTExtensionSelection(
 {
 }
 
+FTExtensionSelection::~FTExtensionSelection() {
+  delete pragma_list_;
+  delete ftselection_;
+}
+
 void FTExtensionSelection::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT( pragma_list_ );
+  ACCEPT( ftselection_ );
   END_VISITOR();
 }
 
 
-// [369] FTWindow
-// --------------
 FTWindow::FTWindow(
-  const QueryLoc& loc,
-  AdditiveExpr *window,
-  FTUnit *unit)
-:
-  FTPosFilter(loc),
-  window_(window),
-  unit_(unit)
+  QueryLoc const &loc,
+  AdditiveExpr const *window,
+  FTUnit const *unit
+) :
+  FTPosFilter( loc ),
+  window_( window ),
+  unit_( unit )
 {
 }
 
-
-//-FTWindow::
+FTWindow::~FTWindow() {
+  delete window_;
+  delete unit_;
+}
 
 void FTWindow::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (window_);
-  ACCEPT (unit_);
+  ACCEPT( window_ );
+  ACCEPT( unit_ );
   END_VISITOR();
 }
 
 
-// [370] FTTimes
-// -------------
 FTTimes::FTTimes(
-  const QueryLoc& loc_,
-  rchandle<FTRange> _range_h)
-:
-  parsenode(loc_),
-  range_h(_range_h)
-{}
+  QueryLoc const &loc,
+  FTRange const *range
+) :
+  parsenode( loc ),
+  range_( range )
+{
+}
 
-
-//-FTTimes::
+FTTimes::~FTTimes() {
+  delete range_;
+}
 
 void FTTimes::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (range_h);
+  ACCEPT( range_ );
   END_VISITOR();
 }
 
 
-// [371] FTScope
-// -------------
 FTScope::FTScope(
-  const QueryLoc& loc_,
-  ft_scope::type _scope,
-  FTBigUnit *_big_unit)
-:
-  FTPosFilter(loc_),
-  scope(_scope), big_unit( _big_unit )
-{}
+  QueryLoc const &loc,
+  ft_scope::type scope,
+  FTBigUnit const *big_unit
+) :
+  FTPosFilter( loc ),
+  scope_( scope ),
+  big_unit_( big_unit )
+{
+}
 
-
-//-FTScope::
+FTScope::~FTScope() {
+  delete big_unit_;
+}
 
 void FTScope::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
+  ACCEPT( big_unit_ );
   END_VISITOR();
 }
 
 
-// [372] FTUnit
-// ------------
 FTUnit::FTUnit(
-  const QueryLoc& loc,
-  ft_unit::type unit)
-:
-  parsenode(loc),
-  unit_(unit)
+  QueryLoc const &loc,
+  ft_unit::type unit
+) :
+  parsenode( loc ),
+  unit_( unit )
 {
 }
-
-
-//-FTUnit::
 
 void FTUnit::accept( parsenode_visitor &v ) const
 {
@@ -5179,18 +5194,14 @@ void FTUnit::accept( parsenode_visitor &v ) const
 }
 
 
-// [373] FTBigUnit
-// ---------------
 FTBigUnit::FTBigUnit(
-  const QueryLoc& loc_,
-  ft_big_unit::type _unit)
-:
-  parsenode(loc_),
-  unit(_unit)
-{}
-
-
-//-FTBigUnit::
+  QueryLoc const &loc,
+  ft_big_unit::type unit
+) :
+  parsenode( loc ),
+  unit_( unit )
+{
+}
 
 void FTBigUnit::accept( parsenode_visitor &v ) const
 {
@@ -5199,23 +5210,23 @@ void FTBigUnit::accept( parsenode_visitor &v ) const
 }
 
 
-// [374] FTIgnoreOption
-// --------------------
 FTIgnoreOption::FTIgnoreOption(
-  const QueryLoc& loc_,
-  rchandle<UnionExpr> _union_h)
-:
-  parsenode(loc_),
-  union_h(_union_h)
-{}
+  QueryLoc const &loc,
+  UnionExpr const *expr
+) :
+  parsenode( loc ),
+  expr_( expr )
+{
+}
 
-
-//-FTIgnoreOption::
+FTIgnoreOption::~FTIgnoreOption() {
+  delete expr_;
+}
 
 void FTIgnoreOption::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (union_h);
+  ACCEPT( expr_ );
   END_VISITOR();
 }
 
@@ -5250,18 +5261,21 @@ void FlowCtlStatement::accept( parsenode_visitor &v ) const
 
 FTOptionDecl::FTOptionDecl(
   QueryLoc const &loc,
-  rchandle<parsenode> match_option)
-:
+  FTMatchOptions const *match_options
+) :
   parsenode( loc ),
-  match_option_( match_option )
+  match_options_( match_options )
 {
 }
 
+FTOptionDecl::~FTOptionDecl() {
+  delete match_options_;
+}
 
 void FTOptionDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT( match_option_ );
+  ACCEPT( match_options_ );
   END_VISITOR();
 }
 
