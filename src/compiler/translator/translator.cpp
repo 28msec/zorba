@@ -10947,7 +10947,11 @@ void end_visit(const LiteralFunctionItem& n, void* /*visit_state*/)
 
   //If the QName in the literal function item has no namespace prefix, it is considered to be in the default function namespace.
   xqpStringStore_t lNs;
-  sctx_p->lookup_ns(lNs, lPfx, loc);
+  try {
+    sctx_p->lookup_ns(lNs, lPfx, loc);
+  } catch(...) {
+    lNs = sctx_p->default_function_ns();
+  }
   //Get function implementation
   function* fn = lookup_fn(lQName, aArity, loc);
   //If the expanded QName and arity in a literal function item do not match the name and arity of a function signature in the static context, a static error is raised [err:XPST0017].
