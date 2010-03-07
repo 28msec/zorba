@@ -96,6 +96,13 @@ public:
   {
   }
 
+  xqpStringStore(checked_vector<uint32_t> &aCpVector)
+  {
+    xqpStringStore(aCpVector, 0, aCpVector.size());
+  }
+
+  xqpStringStore(checked_vector<uint32_t> &aCpVector, ulong aStart, ulong aSize);
+
   ~xqpStringStore();
 
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })

@@ -41,7 +41,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(xqpStringStore)
 SERIALIZABLE_CLASS_VERSIONS(xqpString)
 END_SERIALIZABLE_CLASS_VERSIONS(xqpString)
 
-
 /*******************************************************************************
   Return a xqpStringStore (UTF-8 encoded) given an UnicodeString (UTF-16 encoded)
 ********************************************************************************/
@@ -140,6 +139,19 @@ static uint32_t parse_regex_flags(const char* flag_cstr)
   return flags;
 }
 
+xqpStringStore::xqpStringStore(checked_vector<uint32_t> &aCpVector, ulong aStart, ulong aSize)
+{
+  char lSeq[5];
+  checked_vector<uint32_t>::iterator it;
+
+  for(it=aCpVector.begin()+aStart ; it < aCpVector.begin()+aStart+aSize; it++)
+  {
+    memset(lSeq, 0, sizeof(lSeq));
+    UTF8Encode(*it, lSeq);
+    theString += lSeq;
+  }
+  theString += "\0";
+}
 
 /*******************************************************************************
   whitespace = " \t\r\n" meaning (#x20) (#x9) (#xD) (#xA)

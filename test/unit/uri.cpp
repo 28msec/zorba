@@ -557,17 +557,17 @@ int uri(int argc, char* argv[])
     },
     {
       "file://localhost",
-      "/a/b/c",
-      "file://localhost/a/b/c",
+      "/Ångström/b/c",
+      "file://localhost/Ångström/b/c",
       "file",
       0,
       "",
       "localhost",
       "",
-      "/a/b/c",
+      "/Ångström/b/c",
       "",
       "",
-      "localhost/a/b/c" // path notation
+      "localhost/Ångström/b/c" // path notation
     }
   }; // URITestEntry tests[]
 

@@ -29,7 +29,7 @@ namespace zorba {
 /*******************************************************************************
   is the given char a hex allowed one
 ********************************************************************************/
-bool URI::is_hex(char c)
+bool URI::is_hex(uint32_t c)
 {
   return (is_digit(c) || (c >= 'a'&& c <= 'f') || (c >= 'A'&& c <= 'F'));
 }
@@ -38,7 +38,7 @@ bool URI::is_hex(char c)
 /*******************************************************************************
 
 ********************************************************************************/
-bool URI::is_alpha(char c)
+bool URI::is_alpha(uint32_t c)
 {
   if ((( c >= 'a' ) && ( c <= 'z' )) || (( c >= 'A' ) && ( c <= 'Z' )) )
     return true;
@@ -50,7 +50,7 @@ bool URI::is_alpha(char c)
 /*******************************************************************************
 
 ********************************************************************************/
-bool URI::is_digit(char c)
+bool URI::is_digit(uint32_t c)
 {
   if (( c >= '0' ) && ( c <= '9' ))
     return true;
@@ -62,7 +62,7 @@ bool URI::is_digit(char c)
 /*******************************************************************************
 
 ********************************************************************************/
-bool URI::is_alphanum(char c)
+bool URI::is_alphanum(uint32_t c)
 {
   return (is_alpha(c) || is_digit(c));
 }
@@ -71,32 +71,33 @@ bool URI::is_alphanum(char c)
 /*******************************************************************************
 
 ********************************************************************************/
-bool URI::is_unreserved_char(char c)
+bool URI::is_unreserved_char(uint32_t c)
 {
   std::string lMarkCharacter("-_.!~*'{}");
-  return (is_alphanum(c) || (c == ' ') || lMarkCharacter.find(c) != std::string::npos);
+  return (is_alphanum(c) || (c == ' ') || (c > 127 ) ||
+    ((c<128) && lMarkCharacter.find((char)c) != std::string::npos));
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool URI::is_path_character(char c)
+bool URI::is_path_character(uint32_t c)
 {
   std::string lPathChracters(";/:@&=+$,");
-  return (lPathChracters.find(c) != std::string::npos);
+  return ((c<128) && lPathChracters.find((char)c) != std::string::npos);
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-bool URI::is_reservered_or_unreserved_char(char c)
+bool URI::is_reservered_or_unreserved_char(uint32_t c)
 {
   std::string lMarkOrReservedChars("-_.!~*'();/?:@&=+$,[]");
   return (is_alphanum(c) ||
           (c == ' ') ||
-          lMarkOrReservedChars.find(c) != std::string::npos);
+          ((c<128) && lMarkOrReservedChars.find((char)c) != std::string::npos));
 }
 
 
@@ -915,10 +916,12 @@ bool URI::is_valid_server_based_authority(
 ********************************************************************************/
 void URI::initializePath(const xqpStringStore* uri)
 {
+  checked_vector<uint32_t> lCodepoints = uri->getCodepoints();
+
   ulong lIndex = 0;
   ulong lStart = 0;
-  ulong lEnd = uri->bytes();
-  char c = 0;
+  ulong lEnd = lCodepoints.size();
+  uint32_t lCp = 0;
 
   if(uri->empty())
   {
@@ -928,95 +931,98 @@ void URI::initializePath(const xqpStringStore* uri)
   }
 
   // path - everything up to query string or fragment
-  if ( lStart < lEnd ) 
+  if ( lStart < lEnd )
   {
     // RFC 2732 only allows '[' and ']' to appear in the opaque part.
-    if ( ! is_set(Scheme) || uri->str().at(lStart) == '/') 
+    if ( ! is_set(Scheme) || lCodepoints[lStart] == '/')
     {
       // Scan path.
       // abs_path = "/"  path_segments
       // rel_path = rel_segment [ abs_path ]
-      while ( lIndex < lEnd ) 
+      while ( lIndex < lEnd )
       {
-        c = uri->str().at(lIndex);
-        if ( c == '?' || c == '#' )
+        lCp = lCodepoints[lIndex];
+        if ( lCp == '?' || lCp == '#' )
           break;
 
-        if ( c == '%' ) 
+        if ( lCp == '%' )
         {
-          if ( lIndex + 2 >= lEnd ) 
+          if ( lIndex + 2 >= lEnd )
           {
             // TODO check hex and throw errors
           }
         }
-        else if (!is_unreserved_char(c) && !is_path_character(c) && valid) 
+        else if (!is_unreserved_char(lCp) && !is_path_character(lCp) && valid)
         {
-         ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char '" << c << "' in URI path " << uri);
+         ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char with codepoint '" << lCp << "' in URI path " << uri->str());
         }
         ++lIndex;
       }
     }
-    else 
+    else
     {
-      while ( lIndex < lEnd ) 
+      while ( lIndex < lEnd )
       {
-        c = uri->str().at(lIndex);
-        if ( c == '?' || c == '#' )
+        lCp = lCodepoints[lIndex];
+        if ( lCp == '?' || lCp == '#' )
           break;
 
-        if ( c == '%' ) 
+        if ( lCp == '%' )
         {
           // TODO check errors
-        } 
-        else if (!is_reservered_or_unreserved_char(c) && valid) 
+        }
+        else if (!is_reservered_or_unreserved_char(lCp) && valid)
         {
-         ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char '" << c << "' in URI path " << uri);
-        } 
+         ZORBA_ERROR_DESC_OSS(XQST0046, "Invalid char with codepoint '" << lCp << "' in URI path " << uri->str());
+        }
         ++lIndex;
       }
     }
 
   } // lStart < lEnd
 
-  thePath = uri->byteSubstr(lStart, lIndex - lStart);
+  thePath = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
+
   set_state(Path);
 
   // query - starts with ? and up to fragment or end
-  if ( c == '?' ) 
+  if ( lCp == '?' )
   {
     ++lIndex;
     lStart = lIndex;
-    while ( lIndex < lEnd ) 
+    while ( lIndex < lEnd )
     {
-      c = uri->str().at(lIndex);
-      if ( c == '#' )
+      lCp = lCodepoints[lIndex];
+      if ( lCp == '#' )
         break;
 
       // TODO check conformance
       ++lIndex;
     } /* lIndex < lEnd */
 
-    theQueryString = uri->byteSubstr(lStart, lIndex - lStart);
+
+    theQueryString = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
+
     set_state(QueryString);
   }
 
   // fragment - starts with #
-  if ( c == '#' ) 
+  if ( lCp == '#' )
   {
     ++lIndex;
     lStart = lIndex;
-    while ( lIndex < lEnd ) 
+    while ( lIndex < lEnd )
     {
-      c = uri->str().at(lIndex);
-
+      lCp = lCodepoints[lIndex];
       // TODO check conformance
 
       ++lIndex;
     } /* lIndex < lEnd */
 
-    if ( lIndex > lStart) 
+    if ( lIndex > lStart)
     {
-      theFragment = uri->byteSubstr(lStart, lIndex - lStart);
+      theFragment = new xqpStringStore(lCodepoints, lStart, lIndex - lStart);
+
       set_state(Fragment);
     }
     else
@@ -1024,6 +1030,7 @@ void URI::initializePath(const xqpStringStore* uri)
       // fragment is not set
     }
   }
+
 }
 
 
