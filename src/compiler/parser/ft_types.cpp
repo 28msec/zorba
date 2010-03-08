@@ -51,7 +51,7 @@ namespace zorba {
       ENUM_STR( at_start ),
       ENUM_STR( at_end ),
       ENUM_STR( entire )
-    }
+    };
   };
 
   namespace ft_diacritics_mode {
