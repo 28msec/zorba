@@ -5315,8 +5315,8 @@ void TypeList::accept(parsenode_visitor& v) const
 void TypedFunctionTest::accept(parsenode_visitor& v) const
 {
   BEGIN_VISITOR ();
-  if(theArgTypes != 0) ACCEPT (theArgTypes);
-  ACCEPT (theReturnType);
+  //if(theArgTypes != 0) ACCEPT (theArgTypes);
+  //ACCEPT (theReturnType);
   END_VISITOR ();
 }
 

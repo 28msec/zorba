@@ -11106,6 +11106,9 @@ void end_visit(const TypeList& v, void* /*visit_state*/)
 void *begin_visit(const TypedFunctionTest& v)
 {
   TRACE_VISIT ();
+  //TODO: this is a temporary fix since typing for 
+  //function items is not implemented yet
+  theTypeStack.push (GENV_TYPESYSTEM.ITEM_TYPE_STAR);
   return no_state;  
 }
 
