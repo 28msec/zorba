@@ -386,7 +386,7 @@ namespace zorba
       SAX2_ContentHandler * theSAX2ContentHandler;
       SAX2_LexicalHandler * theSAX2LexicalHandler;
 
-      std::vector<xqpStringStore_t> theNameSpaces;
+      NsBindings            theNameSpaces;
 
     public:
       sax2_emitter(

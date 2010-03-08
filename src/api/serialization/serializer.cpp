@@ -1228,7 +1228,8 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
   {
     NsBindings local_nsBindings;
     store::Item_t item_qname;
-    std::vector<xqpStringStore_t> aNSList;
+    //std::vector<xqpStringStore_t> aNSList;
+    unsigned long namespaces_emited = 0;
     NsBindings::size_type ns_size = 0;
 
     if (isFirstElementNode)
@@ -1251,7 +1252,8 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
         bool is_declared = false;
         for ( unsigned long j = 0; j < ans_size; j++ )
         {
-          if ( theNameSpaces.at(j)->byteEqual(local_nsBindings[i].second.getp()))
+          if ( theNameSpaces.at(j).second->byteEqual(local_nsBindings[i].second.getp()) && 
+              theNameSpaces.at(j).first->byteEqual(local_nsBindings[i].first.getp()))
           {
             is_declared = true;
             break;
@@ -1260,12 +1262,13 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
 
         if ( ! is_declared )
         {
-          aNSList.push_back(local_nsBindings[i].second);
-          theNameSpaces.push_back(local_nsBindings[i].second);
+          //aNSList.push_back(local_nsBindings[i].second);
+          theNameSpaces.push_back(local_nsBindings[i]);
 
           String lFirst( local_nsBindings[i].first );
           String lSecond( local_nsBindings[i].second );
           theSAX2ContentHandler->startPrefixMapping( lFirst, lSecond );
+          namespaces_emited++;
         }
       }
 
@@ -1288,16 +1291,11 @@ void serializer::sax2_emitter::emit_node( store::Item* item )
       String lStringValue( item_qname->getStringValue().getp() );
       theSAX2ContentHandler->endElement( lNS, lLocalName, lStringValue );
 
-      for ( unsigned long i = 0; i < ns_size; i++ )
+      for ( unsigned long i = 0; i < namespaces_emited; i++ )
       {
-        for ( unsigned long j = 0; j < aNSList.size(); j++ )
-        {
-          if ( aNSList.at( j ) == local_nsBindings[ i ].second )
-          {
-            String lFirst( local_nsBindings[i].first );
-            theSAX2ContentHandler->endPrefixMapping( lFirst );
-          }
-        }
+        String lFirst( theNameSpaces.back().first );
+        theSAX2ContentHandler->endPrefixMapping( lFirst );
+        theNameSpaces.resize(theNameSpaces.size()-1);
       }
       //emit_endPrefixMapping( local_nsBindings );
     }
