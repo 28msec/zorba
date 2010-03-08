@@ -203,7 +203,8 @@ static_context::static_context()
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL)
+  theDecimalFormats(NULL),
+  theDocumentMap(NULL)
 {
 }
 
@@ -243,7 +244,8 @@ static_context::static_context(static_context* parent)
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL)
+  theDecimalFormats(NULL),
+  theDocumentMap(NULL)
 {
   if (theParent != NULL)
     RCHelper::addReference(theParent);
@@ -285,7 +287,8 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL)
+  theDecimalFormats(NULL),
+  theDocumentMap(NULL)
 {
 }
 
@@ -1941,8 +1944,8 @@ const XQType* static_context::get_default_w3c_collection_type()
   static_context* sctx = this;
   while (sctx != NULL)
   {
-    if (theDefaultW3CCollectionType != NULL)
-      return theDefaultW3CCollectionType.getp();
+    if (sctx->theDefaultW3CCollectionType != NULL)
+      return sctx->theDefaultW3CCollectionType.getp();
 
     sctx = sctx->theParent;
   }
