@@ -19,53 +19,48 @@
 #include "functions/signature.h"
 
 #include "store/api/iterator.h"
+#include "runtime/function_item/store_iterator.h"
+#include "runtime/base/plan_iterator.h"
+#include "zorbaserialization/serialization_engine.h"
 
 namespace zorba {
 
 namespace simplestore {
 
-#ifdef ZORBA_FOR_ONE_THREAD_ONLY
-  FunctionItem::FunctionItem(
-          const std::vector<store::Iterator_t>& aVariableValues,
-          const signature& aSignature,
-          const store::Iterator_t& aImplementation)
+SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
+END_SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
+
+FunctionItem::FunctionItem(
+      const std::vector<store::Iterator_t>& aVariableValues,
+      const signature& aSignature,
+      const store::Iterator_t& aImplementation)
   : store::Item(),
     theName(0),
     theVariableValues(aVariableValues),
     theSignature(aSignature),
-    theImplementation(aImplementation){}
-    
-    Function::FunctionItem(const store::Item_t& aName,
-          const signature& aSignature,
-          const store::Iterator_t& aImplementation)
-  : store::Item(),
-    theName(aName),
-    theSignature(aSignature),
-    theImplementation(aImplementation){}
+    theImplementation(aImplementation)
+{ SYNC_CODE(theRCLockPtr = &theRCLock;) }
+  
+FunctionItem::FunctionItem(const store::Item_t& aName,
+      const signature& aSignature,
+      const store::Iterator_t& aImplementation)
+: store::Item(),
+  theName(aName),
+  theVariableNames(),
+  theVariableValues(),
+  theSignature(aSignature),
+  theImplementation(aImplementation)
+{ SYNC_CODE(theRCLockPtr = &theRCLock;) }
 
-#else
-    FunctionItem::FunctionItem(
-          const std::vector<store::Iterator_t>& aVariableValues,
-          const signature& aSignature,
-          const store::Iterator_t& aImplementation)
-    : store::Item(),
-      theName(0),
-      theVariableValues(aVariableValues),
-      theSignature(aSignature),
-      theImplementation(aImplementation)
-    { SYNC_CODE(theRCLockPtr = &theRCLock;) }
-    
-    FunctionItem::FunctionItem(const store::Item_t& aName,
-          const signature& aSignature,
-          const store::Iterator_t& aImplementation)
-  : store::Item(),
-    theName(aName),
-    theVariableNames(),
-    theVariableValues(),
-    theSignature(aSignature),
-    theImplementation(aImplementation){ SYNC_CODE(theRCLockPtr = &theRCLock;) }
 
-#endif
+void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theName;
+  ar & theVariableNames;
+  ar & theVariableValues;
+  ar & theSignature;
+  ar & theImplementation;
+}
 
 void FunctionItem::getFunctionVariables(std::vector<store::Iterator_t>& aResult) const
 {
@@ -77,7 +72,10 @@ void FunctionItem::getFunctionVariables(std::vector<store::Iterator_t>& aResult)
 }
 
 const store::Iterator_t FunctionItem::getFunctionImplementation() const
-{ return theImplementation; }
+{ 
+  store::FunctionItemIterator  *func_iter = dynamic_cast<store::FunctionItemIterator*>(theImplementation.getp());
+  return new store::FunctionItemIterator(*func_iter);//make a copy for runtime use 
+}
 
 const signature FunctionItem::getFunctionSignature() const
 { return theSignature; }

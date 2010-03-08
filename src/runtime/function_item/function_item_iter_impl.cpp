@@ -78,15 +78,17 @@ DynamicFunctionInvocationIterator::nextImpl(
     vector<store::Iterator_t>::const_iterator lIter = lScopedVariables.begin();
     for(; lIter != lScopedVariables.end(); ++lIter)
     {
-      PlanWrapper* lWrapper = dynamic_cast<PlanWrapper *>((*lIter).getp());  
-      lFuncIter->addArg(lWrapper->theIterator);
+      PlanIterator_StoreIteratorWrapper* lWrapper = dynamic_cast<PlanIterator_StoreIteratorWrapper *>((*lIter).getp());  
+      lFuncIter->addArg(lWrapper->getPlanIterator());
     }
 
     //We bind the args
+    
     vector<PlanIter_t>::const_iterator lIt = theArgs.begin();
     for(; lIt != theArgs.end(); ++lIt) {
       lFuncIter->addArg(*lIt); 
     }
+    
   }
   
   state->thePlan->open();

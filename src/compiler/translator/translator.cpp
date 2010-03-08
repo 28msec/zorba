@@ -8270,12 +8270,12 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   {
     if (*localName == "position" && numArgs == 0)  
     {
-      push_nodestack(lookup_ctx_var(DOT_POS_VARNAME, loc));
+      push_nodestack(lookup_ctx_var(DOT_POS_VARNAME, loc).getp());
       return;
     }
     else if (*localName == "last" && numArgs == 0)
     {
-      push_nodestack(lookup_ctx_var(LAST_IDX_VARNAME, loc));
+      push_nodestack(lookup_ctx_var(LAST_IDX_VARNAME, loc).getp());
       return;
     }
     else if (*localName == "number") 

@@ -28,6 +28,7 @@
 #include "context/static_context.h"
 
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/base/plan_iterator.h"
 
 #include "store/api/item.h"
 #include "store/api/store.h"

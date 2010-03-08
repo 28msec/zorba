@@ -40,6 +40,17 @@ xqpStringStore::xqpStringStore(serialization::Archiver &ar)
 
 xqpStringStore::xqpStringStore(const std::string& other) : theString(other) {}
 
+xqpString::xqpString(checked_vector<uint32_t> &aCpVector, ulong aStart, ulong aSize)
+{
+  checked_vector<uint32_t>::iterator it;
+
+  for(it=aCpVector.begin()+aStart ; it < aCpVector.begin()+aStart+aSize; it++)
+  {
+    theString += (char)*it;
+  }
+  theString += "\0";
+}
+
 xqpStringStore::~xqpStringStore() {}
 
 void xqpStringStore::serialize(serialization::Archiver &ar)

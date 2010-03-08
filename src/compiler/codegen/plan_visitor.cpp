@@ -344,9 +344,10 @@ void end_visit(function_item_expr& v)
     checked_vector<expr_t>::const_iterator lIt = lVars.begin();
     for(; lIt != lVars.end(); ++lIt)
     {
-      store::Iterator_t lVar = new PlanWrapper(pop_itstack(), theCCB, 0, 0);
+      store::Iterator_t lVar = new PlanIterator_StoreIteratorWrapper(pop_itstack());//new PlanWrapper(pop_itstack(), theCCB, 0, 0);
       lVariableValues.push_back(lVar);
     }
+   
     ITEM_FACTORY->createFunction (fitem, lVariableValues, v.get_function()->get_signature(), lImpl);
   }
   push_itstack(new SingletonIterator (sctx, qloc, fitem));

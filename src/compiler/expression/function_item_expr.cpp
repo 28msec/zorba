@@ -77,6 +77,14 @@ public:
 
 function_item_expr::~function_item_expr(){}
 
+void function_item_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theQName;
+  ar & theFunction;
+  ar & theScopedVariables;
+}
+
 void function_item_expr::compute_scripting_kind() const 
 {
   theCache.scripting_kind.kind = SIMPLE_EXPR;

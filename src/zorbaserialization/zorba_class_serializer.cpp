@@ -30,6 +30,7 @@
 #include "zorbatypes/collation_manager.h"
 
 #include "functions/function.h"
+#include "runtime/function_item/function_item.h"
 
 #include "context/static_context.h"
 
@@ -585,6 +586,7 @@ void operator&(Archiver &ar, store::Item* &obj)
   int  is_pul = 0;
   int  is_tuple = 0;
   int  is_error = 0;
+  int  is_function = 0;
   
   int   id;
   enum  ArchiveFieldTreat field_treat;
@@ -607,13 +609,14 @@ void operator&(Archiver &ar, store::Item* &obj)
     is_pul = obj->isPul();
     is_tuple = obj->isTuple();
     is_error = obj->isError();
-    assert(is_node || is_atomic || is_pul || is_tuple || is_error);
-    sprintf(strtemp, "n%da%dp%dt%de%d",
-                    is_node, is_atomic, is_pul, is_tuple, is_error);
-    if(is_node)
+    is_function = obj->isFunction();
+    assert(is_node || is_atomic || is_pul || is_tuple || is_error || is_function);
+    sprintf(strtemp, "n%da%dp%dt%de%df%d",
+                    is_node, is_atomic, is_pul, is_tuple, is_error, is_function);
+    if(is_node || is_function)
       ar.set_is_temp_field(true);
     is_ref = ar.add_compound_field("store::Item*", 0, FIELD_IS_CLASS, strtemp, obj, ARCHIVE_FIELD_IS_PTR);
-    if(is_node)
+    if(is_node || is_function)
       ar.set_is_temp_field(false);
 
   }
@@ -643,8 +646,8 @@ void operator&(Archiver &ar, store::Item* &obj)
     is_ref = (field_treat == ARCHIVE_FIELD_IS_REFERENCING);
     if(!is_ref)
     {
-      sscanf(value.c_str(), "n%da%dp%dt%de%d",
-                    &is_node, &is_atomic, &is_pul, &is_tuple, &is_error);
+      sscanf(value.c_str(), "n%da%dp%dt%de%df%d",
+                    &is_node, &is_atomic, &is_pul, &is_tuple, &is_error, &is_function);
     }
   }
 
@@ -965,6 +968,26 @@ EndAtomicItem:;
       FINALIZE_SERIALIZE(createTuple, (result, tuple_fields_in));
     }
 #endif
+    else if(is_function)
+    {
+      simplestore::FunctionItem   *fitem = NULL;
+      if(ar.is_serializing_out())
+      {
+        fitem = dynamic_cast<simplestore::FunctionItem*>(obj);
+      }
+      ar.dont_allow_delay();
+      ar.set_is_temp_field(false);                    
+      ar & fitem;
+      if(!ar.is_serializing_out())
+      {
+        assert(fitem);
+        obj = fitem;
+        if(obj)                                         
+          obj->addReference(obj->getSharedRefCounter() SYNC_PARAM2(obj->getRCLock()));     
+        ar.register_reference(id, ARCHIVE_FIELD_IS_PTR, obj);                
+      }
+      ar.set_is_temp_field(true);                    
+    }
     else
     {
       ZORBA_SER_ERROR_DESC_OSS(SRL0010_ITEM_TYPE_NOT_SERIALIZABLE, "Not atomic, node, tuple, pul or error");

@@ -41,6 +41,7 @@
 #include "types/root_typemanager.h"
 
 #include "runtime/api/plan_wrapper.h"
+#include "runtime/base/plan_iterator.h"
 
 #include "zorbautils/strutil.h"
 #include "zorbautils/hashmap_itemp.h"

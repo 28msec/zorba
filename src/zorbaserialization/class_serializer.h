@@ -47,6 +47,7 @@ class ClassFactoriesMap;
 
 #define   BACKWARD_COMPATIBLE     true
 #define   ZORBA_VERSION_0_9_5     0x000905
+#define   ZORBA_VERSION_1_0_0     0x010000
 
 
 /*******************************************************************************
@@ -268,7 +269,7 @@ static const char *get_class_name_str_static() {return #class_name;}
 #define SERIALIZABLE_CLASS_VERSIONS(class_name)                         \
 const char* class_name::class_name_str = #class_name;                   \
 class_name::class_factory<class_name> class_name::g_class_factory;      \
-const serialization::ClassVersion class_name::class_versions[] = {{ 1, ZORBA_VERSION_0_9_5, !BACKWARD_COMPATIBLE}
+const serialization::ClassVersion class_name::class_versions[] = {{ 1, ZORBA_VERSION_1_0_0, !BACKWARD_COMPATIBLE}
 
 
 #define CLASS_VERSION(class_version, zorba_version, compatibility, description) \
@@ -284,7 +285,7 @@ const int class_name::class_versions_count = sizeof(class_name::class_versions)/
 //////////////////////define the template class versions
 
 #define SERIALIZABLE_TEMPLATE_VERSIONS(template_name) \
-  extern const ::zorba::serialization::ClassVersion g_##template_name##_class_versions[] = {{ 1, ZORBA_VERSION_0_9_5, !BACKWARD_COMPATIBLE}
+  extern const ::zorba::serialization::ClassVersion g_##template_name##_class_versions[] = {{ 1, ZORBA_VERSION_1_0_0, !BACKWARD_COMPATIBLE}
 
 //add CLASS_VERSION here
 

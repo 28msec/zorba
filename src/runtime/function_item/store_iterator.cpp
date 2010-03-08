@@ -16,6 +16,7 @@
 #include "runtime/function_item/store_iterator.h"
 
 #include "compiler/codegen/plan_visitor.h"
+#include "compiler/api/compilercb.h"
 
 #include "functions/udf.h"
 
@@ -27,6 +28,20 @@ namespace zorba
 
 namespace store
 {
+
+SERIALIZABLE_CLASS_VERSIONS(FunctionItemIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FunctionItemIterator)
+
+void FunctionItemIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (Iterator*)this);
+  ar & theCCB;
+  ar & theSctx;
+  ar & theExpr;
+  ar & isInline;
+  //ar & theImplementation;
+  //ar & theArguments;
+}
 
 void FunctionItemIterator::open()
 {

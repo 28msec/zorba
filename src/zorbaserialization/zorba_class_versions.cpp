@@ -154,6 +154,8 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializa
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<xqtref_t>, 2)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_HashMapStrHandle, serializable_HashMapStrHandle<static_context::ctx_module_t>, 3)
+SERIALIZABLE_CLASS_VERSIONS(store::Iterator)
+END_SERIALIZABLE_CLASS_VERSIONS(store::Iterator)
 
 
 

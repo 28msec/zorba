@@ -79,23 +79,15 @@ public:
 
 class function_item_expr: public expr
 {
-	
-public:
-  SERIALIZABLE_CLASS(function_item_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(function_item_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (expr*)this);
-    ar & theQName;
-    ar & theFunction;
-    ar & theScopedVariables;
-  }
-
 private:
   store::Item_t theQName;
 	function* theFunction;
   checked_vector<expr_t> theScopedVariables;
 
+public:
+  SERIALIZABLE_CLASS(function_item_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(function_item_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
 public:
 	function_item_expr(short sctx, const QueryLoc& loc,
                      store::Item_t aQName, function* f)

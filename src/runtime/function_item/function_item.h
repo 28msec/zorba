@@ -36,12 +36,16 @@ namespace simplestore
 class FunctionItem : public store::Item
 {
 private:
-    const store::Item_t theName;
+    /*const*/ store::Item_t theName;
     std::vector<store::Item_t> theVariableNames;
     std::vector<store::Iterator_t> theVariableValues;
-    const signature theSignature;
-    const store::Iterator_t theImplementation;
+    /*const*/ signature theSignature;
+    /*const*/ store::Iterator_t theImplementation;
 
+public:
+  SERIALIZABLE_CLASS(FunctionItem)
+  FunctionItem(::zorba::serialization::Archiver& ar) : theSignature(ar) {}
+  void serialize(::zorba::serialization::Archiver& ar);
 public:
   FunctionItem(const std::vector<store::Iterator_t>& aVariableValues,
           const signature& aSignature,
@@ -51,10 +55,8 @@ public:
           const signature& aSignature,
           const store::Iterator_t& aImplementation);
 
-#ifndef ZORBA_FOR_ONE_THREAD_ONLY 
 protected:
   SYNC_CODE(RCLock  theRCLock;)
-#endif
 
   ~FunctionItem() {}
 

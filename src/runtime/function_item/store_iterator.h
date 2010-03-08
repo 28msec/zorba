@@ -39,9 +39,15 @@ class FunctionItemIterator: public Iterator
     static_context* theSctx;
     function_item_expr theExpr;
     bool isInline;
+    
+    //runtime members:
     store::Iterator_t theImplementation;
     std::vector<PlanIter_t> theArguments;
     
+  public:
+    SERIALIZABLE_CLASS(FunctionItemIterator)
+    FunctionItemIterator(::zorba::serialization::Archiver& ar) : Iterator(ar), theExpr(ar) {}
+    void serialize(::zorba::serialization::Archiver& ar);
   public:
     FunctionItemIterator(CompilerCB* aCCB, 
         static_context* aSctx,
@@ -76,6 +82,7 @@ class FunctionItemIterator: public Iterator
     {
       return theArguments;
     }
+
 };
 }//end of namespace store
 }//end of namespace zorba
