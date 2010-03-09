@@ -27,12 +27,18 @@ ELSE( NOT PHP5_FOUND )
     SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore)
   ENDIF(APPLE)
 
+  # The following fix was added because of the changes in CMake 2.8, which have the
+  # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
+  IF ( LINUX OR CYGWIN )
+    SET_TARGET_PROPERTIES( ${SWIG_MODULE_zorba_api_REAL_NAME} PROPERTIES PREFIX "" )
+  ENDIF ( LINUX OR CYGWIN )
+
   STRING(REPLACE ${CMAKE_INSTALL_PREFIX} "" PHP5_INSTALL_PATH ${PHP5_EXTENSION_DIR})
   SET(PHP5_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}${PHP5_INSTALL_PATH})
   MESSAGE(STATUS "PHP module install path: " ${PHP5_INSTALL_PATH})
 
   INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_wrapper.php
-                  ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.so
+                  ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
             DESTINATION ${PHP5_INSTALL_PATH} )
   ###
   # Start PHP proxy generation

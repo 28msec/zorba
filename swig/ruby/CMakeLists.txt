@@ -32,14 +32,22 @@ ELSE(${RUBY_LIBS_NOT_FOUND} OR ${RUBY_INCL_NOT_FOUND})
   IF ( APPLE )
     set_target_properties( zorba_api PROPERTIES SUFFIX .bundle )
   ENDIF ( APPLE )
+
+  # The following fix was added because of the changes in CMake 2.8, which have the
+  # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
+  IF ( LINUX OR CYGWIN )
+    SET_TARGET_PROPERTIES( ${SWIG_MODULE_zorba_api_REAL_NAME} PROPERTIES PREFIX "" )
+  ENDIF ( LINUX OR CYGWIN )
+
   EXECUTE_PROCESS(COMMAND ${RUBY_EXECUTABLE} -r rbconfig -e "print Config::CONFIG['sitearchdir']"
 48 	  OUTPUT_VARIABLE RUBY_SITEARCH_DIR)
   STRING(REPLACE "/usr/" "" RUBY_SITEARCH_DIR "${RUBY_SITEARCH_DIR}" )
+
   IF ( APPLE )
     INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.bundle
-	  DESTINATION ${RUBY_SITEARCH_DIR} )
+    DESTINATION ${RUBY_SITEARCH_DIR} )
   ELSE ( APPLE )
-    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.so
-	  DESTINATION ${RUBY_SITEARCH_DIR} )
+    INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
+    DESTINATION ${RUBY_SITEARCH_DIR} )
   ENDIF ( APPLE )
 ENDIF(${RUBY_LIBS_NOT_FOUND} OR ${RUBY_INCL_NOT_FOUND})

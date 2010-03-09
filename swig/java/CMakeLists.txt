@@ -47,7 +47,7 @@ IF ( JNI_FOUND )
   # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
   IF ( LINUX OR CYGWIN )
     SET_TARGET_PROPERTIES( ${SWIG_MODULE_libzorba_api_REAL_NAME} PROPERTIES PREFIX "" )
-  ENDIF ( LINUX )
+  ENDIF ( LINUX OR CYGWIN )
 
   IF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
     SET (JAVA_SITEARCH_DIR "/usr/share/java")
