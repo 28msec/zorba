@@ -150,7 +150,7 @@ CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }        
     
     // run iterator
-    store::Iterator* iter = vic->getIterator();
+    store::Iterator_t iter = vic->getIterator();
     
     iter->open();
     iter->next(result);

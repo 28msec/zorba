@@ -50,7 +50,8 @@ private:
   store::Item_t                   theCollectionName;
   store::Item_t                   theFromCollectionName;
   store::Item_t                   theToCollectionName;
-  store::Iterator_t               thePlanWrapper;
+  PlanIter_t                      thePlan;
+  CompilerCB                      *theCcb;
 
 public:
   SERIALIZABLE_CLASS(ValueIC)
@@ -60,25 +61,28 @@ public:
 
 public:
   ValueIC(static_context* sctx, const store::Item_t& name,
-          const store::Item_t& collName, store::Iterator_t icPlanWrapper)
+          const store::Item_t& collName, 
+          PlanIter_t icPlan, CompilerCB *ccb)
   :
     theSctx(sctx),
     theName(name),
     theICKind(store::IC::ic_collection),
     theCollectionName(collName),
-    thePlanWrapper(icPlanWrapper)
+    thePlan(icPlan),
+    theCcb(ccb)
   {}
 
   ValueIC(static_context* sctx, const store::Item_t& name,
           const store::Item_t& fromCollName, const store::Item_t& toCollName, 
-          store::Iterator_t icPlanWrapper)
+          PlanIter_t icPlan, CompilerCB *ccb)
   :
     theSctx(sctx),
     theName(name),
     theICKind(store::IC::ic_foreignkey),
     theFromCollectionName(fromCollName),
     theToCollectionName(toCollName),
-    thePlanWrapper(icPlanWrapper)
+    thePlan(icPlan),
+    theCcb(ccb)
   {}
 
 
@@ -114,10 +118,7 @@ public:
     return theICKind; 
   }
   
-  store::Iterator* getIterator() const
-  {
-    return thePlanWrapper.getp();
-  }
+  store::Iterator_t getIterator() const;
 
   //void analyze();
 

@@ -21,6 +21,10 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
+#include "runtime/api/plan_wrapper.h"
+#include "compiler/api/compilercb.h"
+
+
 #include "zorbaserialization/class_serializer.h"
 
 
@@ -36,7 +40,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(ValueIC)
 *******************************************************************************/
 void ValueIC::serialize(::zorba::serialization::Archiver& ar)
 {
-  ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE, "ValueIC");
+  //ZORBA_SER_ERROR_DESC_OSS(SRL0009_CLASS_NOT_SERIALIZABLE, "ValueIC");
 
   ar & theSctx;
   ar & theName;
@@ -44,7 +48,8 @@ void ValueIC::serialize(::zorba::serialization::Archiver& ar)
   ar & theCollectionName;
   ar & theFromCollectionName;
   ar & theToCollectionName;
-  ar & thePlanWrapper;
+  ar & thePlan;
+  ar & theCcb;
 }
 
 
@@ -59,6 +64,10 @@ void ValueIC::serialize(::zorba::serialization::Archiver& ar)
 //{
 //}
 
+store::Iterator_t ValueIC::getIterator() const
+{
+  return new PlanWrapper(thePlan, theCcb, NULL /*dctx*/, NULL);;
+}
 
 
 std::string ValueIC::toString()
@@ -138,7 +147,7 @@ void ICCheckerImpl::actualCheck(const store::Item* collName,
     ValueIC* vic = theSctx->lookup_ic(icName);
     
     store::Item_t partialRes;
-    store::Iterator* iter = vic->getIterator();
+    store::Iterator_t iter = vic->getIterator();
     
     iter->open();
 

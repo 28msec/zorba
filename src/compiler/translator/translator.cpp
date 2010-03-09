@@ -4682,8 +4682,8 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
  
   PlanIter_t icIter = codegen("integrity constraint", body, theCCB);
 
-  store::Iterator_t icPlanWrapper = 
-    new PlanWrapper(icIter, theCCB, NULL /*dctx*/, NULL);
+  //store::Iterator_t icPlanWrapper = 
+  //  new PlanWrapper(icIter, theCCB, NULL /*dctx*/, NULL);
 
   // Update static context
   store::Item_t qnameItem;
@@ -4706,7 +4706,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     expand_function_qname(toQnameItem, toQname, toQname->get_location());
     
     vic = new ValueIC(sctx_p, qnameItem, fromQnameItem, toQnameItem, 
-                      icPlanWrapper);
+                      icIter, theCCB);
   }
   else
   {
@@ -4716,7 +4716,7 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     store::Item_t collQnameItem;
     expand_function_qname(collQnameItem, collQname, collQname->get_location());
 
-    vic = new ValueIC(sctx_p, qnameItem, collQnameItem, icPlanWrapper);
+    vic = new ValueIC(sctx_p, qnameItem, collQnameItem, icIter, theCCB);
   }   
 
   sctx_p->bind_ic(qnameItem, vic, loc);     
