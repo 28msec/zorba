@@ -156,6 +156,10 @@ EXPECTED_FAILURE(test/rbkt/zorba/collections/delete_nodes_last/delete_nodes_coll
 EXPECTED_FAILURE(test/rbkt/zorba/collections/delete_nodes_last/delete_nodes_collection_const_2 2945271)
 EXPECTED_FAILURE(test/rbkt/zorba/collections/delete_nodes_last/delete_nodes_collection_append_only_2 2945271)
 
+EXPECTED_FAILURE(test/rbkt/zorba/string/ReplaceFunc/replace11 2965838)
+EXPECTED_FAILURE(test/rbkt/zorba/string/ReplaceFunc/replace13 2965838)
+EXPECTED_FAILURE(test/rbkt/zorba/string/ReplaceFunc/replace16 2965838)
+
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/i3 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/i4 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/i5 2962715)
