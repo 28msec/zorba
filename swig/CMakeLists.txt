@@ -39,7 +39,7 @@ IF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
     ADD_SUBDIRECTORY(ruby)
   ENDIF ( APPLE AND UNIVERSAL )
 
-  ELSE(SWIG_FOUND)
-    MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
+ELSE(SWIG_FOUND)
+  MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
 
 ENDIF (SWIG_FOUND AND BUILDING_SIMPLESTORE)

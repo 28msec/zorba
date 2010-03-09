@@ -27,13 +27,12 @@ ELSE( NOT PHP5_FOUND )
     SWIG_LINK_LIBRARIES(zorba_api zorba_simplestore)
   ENDIF(APPLE)
 
-  
   STRING(REPLACE ${CMAKE_INSTALL_PREFIX} "" PHP5_INSTALL_PATH ${PHP5_EXTENSION_DIR})
   SET(PHP5_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}${PHP5_INSTALL_PATH})
   MESSAGE(STATUS "PHP module install path: " ${PHP5_INSTALL_PATH})
 
   INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_wrapper.php
-                  ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so
+                  ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.so
             DESTINATION ${PHP5_INSTALL_PATH} )
   ###
   # Start PHP proxy generation
@@ -52,8 +51,7 @@ ELSE( NOT PHP5_FOUND )
   )
   ADD_CUSTOM_TARGET(php_wrapper ALL
     DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_wrapper.php
-  ) 
+  )
   ### End PHP proxy generation
-  
-ENDIF( NOT PHP5_FOUND )
 
+ENDIF( NOT PHP5_FOUND )

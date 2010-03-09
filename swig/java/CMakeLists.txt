@@ -23,28 +23,31 @@ IF ( JNI_FOUND )
   include (CMakeJavaInformation )
   MESSAGE(STATUS "Generating Java API")
 
-  EXECUTE_PROCESS ( COMMAND ${JAVA_RUNTIME} -version OUTPUT_VARIABLE JAVA_VERSION )
+  EXECUTE_PROCESS( COMMAND ${JAVA_RUNTIME} -version OUTPUT_VARIABLE JAVA_VERSION )
   MESSAGE(STATUS "JNI found at ${JNI_INCLUDE_PATH}" )
 
-  SET_SOURCE_FILES_PROPERTIES(zorba_api.i PROPERTIES CPLUSPLUS ON)
-  INCLUDE_DIRECTORIES ( ${JAVA_INCLUDE_PATH} )
+  SET_SOURCE_FILES_PROPERTIES( zorba_api.i PROPERTIES CPLUSPLUS ON )
+  INCLUDE_DIRECTORIES( ${JAVA_INCLUDE_PATH} )
 
   # Apple put jni_md.h at same level as jni.h
   IF ( NOT APPLE )
     # Following for jni_md.h
-    INCLUDE_DIRECTORIES ( ${JAVA_INCLUDE_PATH2} )
+    INCLUDE_DIRECTORIES( ${JAVA_INCLUDE_PATH2} )
   ENDIF ( NOT APPLE )
 
   SET( CMAKE_SWIG_FLAGS -package org.zorbaxquery.api)
-  
 
-  SWIG_ADD_MODULE ( libzorba_api java zorba_api.i)
-  SWIG_LINK_LIBRARIES(libzorba_api zorba_simplestore ${JAVA_LIBRARY})
+  SWIG_ADD_MODULE( libzorba_api java zorba_api.i )
+  SWIG_LINK_LIBRARIES( libzorba_api zorba_simplestore ${JAVA_LIBRARY} )
   IF ( APPLE )
     set_target_properties( libzorba_api PROPERTIES SUFFIX .jnilib )
   ENDIF ( APPLE )
 
-
+  # The following fix was added because of the changes in CMake 2.8, which have the
+  # result of naming the java binding library "liblibzorba_api.so" instead of "libzorba_api.so"
+  IF ( LINUX OR CYGWIN )
+    SET_TARGET_PROPERTIES( ${SWIG_MODULE_libzorba_api_REAL_NAME} PROPERTIES PREFIX "" )
+  ENDIF ( LINUX )
 
   IF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
     SET (JAVA_SITEARCH_DIR "/usr/share/java")
@@ -53,7 +56,7 @@ IF ( JNI_FOUND )
   ENDIF (${CMAKE_INSTALL_PREFIX} EQUAL "/usr/local")
 
   MESSAGE(STATUS "Java module install path: " ${JAVA_SITEARCH_DIR})
-  
+
   IF ( APPLE )
     INSTALL(FILES ${CMAKE_CURRENT_BINARY_DIR}/libzorba_api.jnilib DESTINATION ${JAVA_SITEARCH_DIR})
   ELSE ( APPLE )
