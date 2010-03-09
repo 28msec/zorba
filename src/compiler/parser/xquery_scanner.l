@@ -115,6 +115,11 @@ typedef zorba::xquery_parser::token_type token_type;
   Comments would be treated equally.
 */
 std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION */
+
+#ifdef YY_USER_ACTION
+#undef YY_USER_ACTION
+#endif
+
 #define YY_USER_ACTION \
 { \
   if (yy_flex_debug) { \
