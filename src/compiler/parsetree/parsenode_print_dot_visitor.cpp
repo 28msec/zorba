@@ -2060,17 +2060,6 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTOrder &n)
 
 
 
-void *ParseNodePrintDOTVisitor::begin_visit(const FTWordsTimes &n)
-{
-    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
-          << "label=\"FTWordsTimes\\n[" 
-          << n.get_location() << "]" << "\"]" << std::endl;
-
-    NL;
-    return no_state;
-}
-
-
 void *ParseNodePrintDOTVisitor::begin_visit(const FTPrimaryWithOptions &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
@@ -2237,6 +2226,18 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTUnit &n)
 
 
 
+void *ParseNodePrintDOTVisitor::begin_visit(const FTWeight &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"FTWeight\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
+
+
+
 void *ParseNodePrintDOTVisitor::begin_visit(const FTWildCardOption &n)
 {
     os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
@@ -2271,6 +2272,17 @@ void *ParseNodePrintDOTVisitor::begin_visit(const FTWords &n)
     return no_state;
 }
 
+
+
+void *ParseNodePrintDOTVisitor::begin_visit(const FTWordsTimes &n)
+{
+    os << reinterpret_cast<intptr_t>(&n) << "[" << std::endl
+          << "label=\"FTWordsTimes\\n[" 
+          << n.get_location() << "]" << "\"]" << std::endl;
+
+    NL;
+    return no_state;
+}
 
 
 void *ParseNodePrintDOTVisitor::begin_visit(const FTWordsValue &n)
@@ -3322,25 +3334,7 @@ void ParseNodePrintDOTVisitor::end_visit(const FTOr&, void*)
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTOrderedIndicator&, void*)
-{
-}
-
-
-
-void ParseNodePrintDOTVisitor::end_visit(const FTProximity&, void*)
-{
-}
-
-
-
 void ParseNodePrintDOTVisitor::end_visit(const FTRange&, void*)
-{
-}
-
-
-
-void ParseNodePrintDOTVisitor::end_visit(const FTRefOrList&, void*)
 {
 }
 
@@ -3370,7 +3364,7 @@ void ParseNodePrintDOTVisitor::end_visit(const FTStemOption&, void*)
 
 
 
-void ParseNodePrintDOTVisitor::end_visit(const FTStopwordOption&, void*)
+void ParseNodePrintDOTVisitor::end_visit(const FTStopWordOption&, void*)
 {
 }
 

@@ -704,43 +704,6 @@ BEGIN_END_TAG (FLWORWinCond)
 BEGIN_END_TAG (ForClause)
 END_TAG (ForwardAxis)
 BEGIN_END_TAG (ForwardStep)
-BEGIN_END_TAG (FTAnd)
-BEGIN_END_TAG (FTAnyallOption)
-BEGIN_END_TAG (FTBigUnit)
-BEGIN_END_TAG (FTCaseOption)
-BEGIN_END_TAG (FTContainsExpr)
-BEGIN_END_TAG (FTContent)
-BEGIN_END_TAG (FTDiacriticsOption)
-BEGIN_END_TAG (FTDistance)
-BEGIN_END_TAG (FTExtensionOption)
-BEGIN_END_TAG (FTExtensionSelection)
-BEGIN_END_TAG (FTIgnoreOption)
-BEGIN_END_TAG (FTLanguageOption)
-BEGIN_END_TAG (FTMatchOptions)
-BEGIN_END_TAG (FTMildNot)
-BEGIN_END_TAG (FTOptionDecl)
-BEGIN_END_TAG (FTOr)
-BEGIN_END_TAG (FTOrder)
-BEGIN_END_TAG (FTPrimaryWithOptions)
-BEGIN_END_TAG (FTRange)
-BEGIN_END_TAG (FTScope)
-BEGIN_END_TAG (FTScoreVar)
-BEGIN_END_TAG (FTSelection)
-BEGIN_END_TAG (FTStemOption)
-BEGIN_END_TAG (FTStopWordOption)
-BEGIN_END_TAG (FTStopWords)
-BEGIN_END_TAG (FTStopWordsInclExcl)
-BEGIN_END_TAG (FTThesaurusID)
-BEGIN_END_TAG (FTThesaurusOption)
-BEGIN_END_TAG (FTTimes)
-BEGIN_END_TAG (FTUnaryNot)
-BEGIN_END_TAG (FTUnit)
-BEGIN_END_TAG (FTWeight)
-BEGIN_END_TAG (FTWildCardOption)
-BEGIN_END_TAG (FTWindow)
-BEGIN_END_TAG (FTWords)
-BEGIN_END_TAG (FTWordsTimes)
-BEGIN_END_TAG (FTWordsValue)
 BEGIN_END_TAG (FunctionCall)
 END_TAG (FunctionDecl)
 END_TAG (GroupByClause)
@@ -839,6 +802,193 @@ BEGIN_END_TAG (WindowClause)
 BEGIN_END_TAG (WindowVarDecl)
 BEGIN_END_TAG (WindowVars)
 
+////////// Full-text //////////////////////////////////////////////////////////
+
+BEGIN_END_TAG( FTAnd )
+
+void* begin_visit( FTAnyallOption const &n ) {
+  INDENT;
+  os  << "<FTAnyallOption" << IDS
+      << " mode='" << ft_anyall_mode::string_of[ n.get_option() ] << "'"
+      << "/>";
+  return no_state;
+}
+NO_END_TAG( FTAnyallOption )
+
+void* begin_visit( FTBigUnit const &n ) {
+  INDENT;
+  os  << "<FTBigUnit" << IDS
+      << " unit='" << ft_big_unit::string_of[ n.get_unit() ] << "'"
+      << "/>";
+  return no_state;
+}
+NO_END_TAG( FTBigUnit )
+
+void* begin_visit( FTCaseOption const &n ) {
+  INDENT;
+  os  << "<FTCaseOption" << IDS
+      << " mode='" << ft_case_mode::string_of[ n.get_mode() ] << "'"
+      << "/>";
+  return no_state;
+}
+NO_END_TAG( FTCaseOption )
+
+BEGIN_END_TAG(FTContainsExpr)
+
+void* begin_visit( FTContent const &n ) {
+  INDENT;
+  os  << "<FTContent" << IDS
+      << " mode='" << ft_content_mode::string_of[ n.get_mode() ] << "'"
+      << "/>";
+  return no_state;
+}
+NO_END_TAG( FTContent )
+
+void* begin_visit( FTDiacriticsOption const &n ) {
+  INDENT;
+  os  << "<FTDiacriticsOption" << IDS
+      << " mode='" << ft_diacritics_mode::string_of[ n.get_mode() ] << "'"
+      << "/>";
+  return no_state;
+}
+NO_END_TAG( FTDiacriticsOption )
+
+BEGIN_END_TAG( FTDistance )
+BEGIN_END_TAG( FTExtensionOption )
+BEGIN_END_TAG( FTExtensionSelection )
+BEGIN_END_TAG( FTIgnoreOption )
+
+void* begin_visit( FTLanguageOption const &n ) {
+  INDENT;
+  os  << "<FTLanguageOption" << IDS
+      << " lang='" << n.get_language() << "'"
+      << "/>";
+  return no_state;
+}
+NO_END_TAG(FTLanguageOption)
+
+BEGIN_END_TAG( FTMatchOptions )
+BEGIN_END_TAG( FTMildNot )
+BEGIN_END_TAG( FTOptionDecl )
+BEGIN_END_TAG( FTOr )
+BEGIN_END_TAG( FTOrder )
+BEGIN_END_TAG( FTPrimaryWithOptions )
+
+void* begin_visit( FTRange const &n ) {
+  INDENT;
+  os  << "<FTRange" << IDS
+      << " mode='" << ft_range_mode::string_of[ n.get_mode() ] << "'"
+      << ">";
+  INDENT_INC; NL;
+  return no_state;
+}
+END_TAG( FTRange )
+
+void* begin_visit( FTScope const &n ) {
+  INDENT;
+  os  << "<FTScope" << IDS
+      << " scope='" << ft_scope::string_of[ n.get_scope() ] << "'"
+      << ">";
+  return no_state;
+}
+END_TAG( FTScope )
+
+void* begin_visit( FTScoreVar const &n ) {
+  INDENT;
+  os  << "<FTScoreVar" << IDS
+      << " varname='" << n.get_varname() << "'"
+      << "/>";
+  return no_state;
+}
+NO_END_TAG( FTScoreVar )
+
+BEGIN_END_TAG( FTSelection )
+
+void* begin_visit( FTStemOption const &n ) {
+  INDENT;
+  os  << "<FTStemOption" << IDS
+      << " mode='" << ft_stem_mode::string_of[ n.get_mode() ] << "'"
+      << "/>";
+  return no_state;
+}
+NO_END_TAG( FTStemOption )
+
+void* begin_visit( FTStopWordOption const &n ) {
+  INDENT;
+  os  << "<FTStopWordOption" << IDS
+      << " mode='" << ft_stop_words_mode::string_of[ n.get_mode() ] << "'"
+      << "/>";
+  return no_state;
+}
+NO_END_TAG( FTStopWordOption )
+
+void* begin_visit( FTStopWords const &n ) {
+  INDENT;
+  os  << "<FTStopWords" << IDS
+      << " uri='" << n.get_uri() << "'"
+      << ">";
+  INDENT_INC; NL;
+  return no_state;
+}
+END_TAG( FTStopWords )
+
+void* begin_visit( FTStopWordsInclExcl const &n ) {
+  INDENT;
+  os  << "<FTStopWordsInclExcl" << IDS
+      << " mode='" << ft_stop_words_unex::string_of[ n.get_mode() ] << "'"
+      << ">";
+  return no_state;
+}
+END_TAG( FTStopWordsInclExcl )
+
+void* begin_visit( FTThesaurusID const &n ) {
+  INDENT;
+  os  << "<FTThesaurusID" << IDS
+      << " uri='" << n.get_uri() << "'"
+      << " relationship='" << n.get_relationship() << "'"
+      << ">";
+  return no_state;
+}
+END_TAG( FTThesaurusID )
+
+void* begin_visit( FTThesaurusOption const &n ) {
+  INDENT;
+  os  << "<FTThesaurusOption" << IDS
+      << " includes-default='" << (n.includes_default() ? 'T' : 'F') << "'"
+      << " no-thesaurus='" << (n.no_thesaurus() ? 'T' : 'F') << "'"
+      << ">";
+  return no_state;
+}
+END_TAG( FTThesaurusOption )
+
+BEGIN_END_TAG( FTTimes )
+BEGIN_END_TAG( FTUnaryNot )
+
+void* begin_visit( FTUnit const &n ) {
+  INDENT;
+  os  << "<FTUnit" << IDS
+      << " unit='" << ft_unit::string_of[ n.get_unit() ] << "'"
+      << "/>";
+  return no_state;
+}
+NO_END_TAG( FTUnit )
+
+BEGIN_END_TAG( FTWeight )
+
+void* begin_visit( FTWildCardOption const &n ) {
+  INDENT;
+  os  << "<FTWildCardOption" << IDS
+      << " mode='" << ft_wild_card_mode::string_of[ n.get_mode() ] << "'"
+      << "/>";
+  return no_state;
+}
+NO_END_TAG( FTWildCardOption )
+
+BEGIN_END_TAG( FTWindow )
+BEGIN_END_TAG( FTWords )
+BEGIN_END_TAG( FTWordsTimes )
+BEGIN_END_TAG( FTWordsValue )
+
 };
 
 void print_parsetree_xml (ostream &os, const parsenode *p) {
@@ -847,3 +997,4 @@ void print_parsetree_xml (ostream &os, const parsenode *p) {
 }
 
 } // end namespace
+/* vim:set et sw=2 ts=2: */

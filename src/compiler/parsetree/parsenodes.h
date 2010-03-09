@@ -166,7 +166,6 @@ class PositionalVar;
 class LetClause;
 class VarGetsDeclList;
 class VarGetsDecl;
-class FTScoreVar;
 class WhereClause;
 class GroupByClause;
 class GroupSpecList;
@@ -2027,15 +2026,18 @@ public:
 ********************************************************************************/
 class FTScoreVar : public parsenode
 {
-protected:
-  std::string varname;
-
 public:
-  FTScoreVar(const QueryLoc&, std::string varname);
+  FTScoreVar(
+    QueryLoc const&,
+    std::string const &varname
+  );
 
-  std::string get_varname() const { return varname; }
+  std::string const& get_varname() const { return varname_; }
 
-  void accept(parsenode_visitor&) const;
+  void accept( parsenode_visitor& ) const;
+
+private:
+  std::string const varname_;
 };
 
 
@@ -2856,25 +2858,26 @@ public:
 /*******************************************************************************
   FTContainsExpr := RangeExpr (FTCONTAINS FTSelection FTIgnoreOption?)?
 ********************************************************************************/
-class FTContainsExpr : public exprnode
-{
-protected:
-  rchandle<FTRange> range_h;
-  rchandle<FTSelection> ftselection_h;
-  rchandle<FTIgnoreOption> ftignore_h;
-
+class FTContainsExpr : public exprnode {
 public:
   FTContainsExpr(
-    const QueryLoc&,
-    rchandle<FTRange>,
-    rchandle<FTSelection>,
-    rchandle<FTIgnoreOption>);
+    QueryLoc const&,
+    FTRange const*,
+    FTSelection const*,
+    FTIgnoreOption const*
+  );
+  ~FTContainsExpr();
 
-  rchandle<FTRange> get_range() const { return range_h; }
-  rchandle<FTSelection> get_selection() const { return ftselection_h; }
-  rchandle<FTIgnoreOption> get_ignore() const { return ftignore_h; }
+  FTRange const* get_range() const { return range_; }
+  FTSelection const* get_selection() const { return ftselection_; }
+  FTIgnoreOption const* get_ignore() const { return ftignore_; }
 
-  virtual void accept(parsenode_visitor&) const;
+  virtual void accept( parsenode_visitor& ) const;
+
+private:
+  FTRange const *const range_;
+  FTSelection const *const ftselection_;
+  FTIgnoreOption const *const ftignore_;
 };
 
 
@@ -6031,7 +6034,7 @@ private:
 
 class FTThesaurusOption : public FTMatchOption {
 public:
-  typedef std::list<FTThesaurusID*> thesaurus_id_list_t;
+  typedef std::list<FTThesaurusID const*> thesaurus_id_list_t;
 
   FTThesaurusOption(
     QueryLoc const&,
@@ -6081,17 +6084,19 @@ private:
 
 class FTStopWordOption : public FTMatchOption {
 public:
-  typedef std::list<FTStopWordsInclExcl*> incl_excl_list_t;
+  typedef std::list<FTStopWordsInclExcl const*> incl_excl_list_t;
 
   FTStopWordOption(
-    const QueryLoc&,
+    QueryLoc const&,
     FTStopWords const*,
     incl_excl_list_t*,
     ft_stop_words_mode::type = ft_stop_words_mode::DEFAULT
   );
   ~FTStopWordOption();
 
-  incl_excl_list_t const& get_incl_excl_list() const { return incl_excl_list_; }
+  incl_excl_list_t const& get_incl_excl_list() const
+    { return incl_excl_list_; }
+
   ft_stop_words_mode::type get_mode() const { return mode_; }
   FTStopWords const* get_stop_words() const { return stop_words_; }
 
@@ -6186,7 +6191,11 @@ private:
 
 class FTDistance : public FTPosFilter {
 public:
-  FTDistance( const QueryLoc&, FTRange const*, FTUnit const* );
+  FTDistance(
+    QueryLoc const&,
+    FTRange const *distance,
+    FTUnit const*
+  );
   ~FTDistance();
 
   FTRange const* get_distance() const { return distance_; }

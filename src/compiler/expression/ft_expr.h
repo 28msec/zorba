@@ -127,9 +127,9 @@ protected:
     br_no_end       = 0x02,
   };
 
-# define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C) \
-  virtual begin_result begin_visit( C& ) = 0; \
-  virtual void end_visit( C& ) = 0
+# define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C)       \
+  virtual begin_result begin_visit( C const& ) = 0; \
+  virtual void end_visit( C const& ) = 0
 
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option_expr );
@@ -160,8 +160,22 @@ protected:
 
 # undef DECL_FTEXPR_VISITOR_VISIT_MEM_FNS
 # define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C) \
-  virtual begin_result begin_visit( C& );     \
-  virtual void end_visit( C& )
+  begin_result begin_visit( C const& );       \
+  void end_visit( C const& )
+
+# define DEF_FTEXPR_VISITOR_BEGIN_VISIT(C)                                \
+  ftexpr_visitor::begin_result ftexpr_visitor::begin_visit( C const& ) {  \
+    return br_continue;                                                   \
+  }
+
+# define DEF_FTEXPR_VISITOR_END_VISIT(C)        \
+  void ftexpr_visitor::end_visit( C const& ) {  \
+  }
+
+# define DEF_FTEXPR_VISITOR_VISIT_MEM_FNS(C)  \
+  DEF_FTEXPR_VISITOR_BEGIN_VISIT(C)           \
+  DEF_FTEXPR_VISITOR_END_VISIT(C)
+
 };
 
 /**

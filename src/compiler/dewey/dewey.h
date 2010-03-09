@@ -53,7 +53,7 @@ class Node
 
   public:
     Node(const QueryLoc& aLocation): theLocation(aLocation), theParent(0){}
-    
+
     Node(const QueryLoc& aLocation, std::stack<unsigned int> aDecimal)
       : theDecimal(aDecimal), theLocation(aLocation), theParent(0){}
 
@@ -77,7 +77,7 @@ class Node
     {
       return theParent;
     }
-    
+
     std::list<Node*> getChildren()
     {
       return theChildren;
@@ -146,7 +146,7 @@ class DeweyClassification: public parsenode_visitor
         theParent = theParent->getParent();
       }
     }
-  
+
   public:
     DeweyClassification(): theRoot(0), theParent(0){}
 
@@ -208,7 +208,7 @@ class DeweyClassification: public parsenode_visitor
     {
       pop();
     }
-    
+
     void* begin_visit(const FunctionDecl& v)
     {
       if(!v.get_body().isNull())
@@ -234,7 +234,7 @@ class DeweyClassification: public parsenode_visitor
     }
 
     void end_visit(const FunctionCall& v, void* /* visit state */){}
-    
+
     void* begin_visit(const VarGetsDecl& v)
     {
       add(v.get_initexpr()->get_location());
@@ -393,7 +393,7 @@ class DeweyClassification: public parsenode_visitor
     DECL_CONCRETE_VISIT (CountClause);
     DECL_CONCRETE_VISIT (Wildcard);
     DECL_CONCRETE_VISIT (QName);
-  
+
   /* expressions */
     DECL_CONCRETE_VISIT (AdditiveExpr);
     DECL_CONCRETE_VISIT (AndExpr);
@@ -446,7 +446,7 @@ class DeweyClassification: public parsenode_visitor
     DECL_CONCRETE_VISIT (UnorderedExpr);
     DECL_CONCRETE_VISIT (ValidateExpr);
     DECL_CONCRETE_VISIT (VarRef);
-  
+
   /* update-related */
     DECL_CONCRETE_VISIT (DeleteExpr);
     DECL_CONCRETE_VISIT (InsertExpr);
@@ -456,15 +456,15 @@ class DeweyClassification: public parsenode_visitor
     DECL_CONCRETE_VISIT (TransformExpr);
     DECL_CONCRETE_VISIT (CopyVarList);
     DECL_CONCRETE_VISIT (VarBinding);
-  
+
   /* try-catch-related */
     DECL_CONCRETE_VISIT (TryExpr);
     DECL_CONCRETE_VISIT (CatchListExpr);
     DECL_CONCRETE_VISIT (CatchExpr);
-  
+
     // eval
     DECL_CONCRETE_VISIT (EvalExpr);
-  
+
   /* full-text-related */
     DECL_CONCRETE_VISIT (FTAnd);
     DECL_CONCRETE_VISIT (FTAnyallOption);
@@ -474,41 +474,40 @@ class DeweyClassification: public parsenode_visitor
     DECL_CONCRETE_VISIT (FTContent);
     DECL_CONCRETE_VISIT (FTDiacriticsOption);
     DECL_CONCRETE_VISIT (FTDistance);
+    DECL_CONCRETE_VISIT (FTExtensionOption);
+    DECL_CONCRETE_VISIT (FTExtensionSelection);
     DECL_CONCRETE_VISIT (FTIgnoreOption);
-    DECL_CONCRETE_VISIT (FTInclExclStringLiteral);
-    DECL_CONCRETE_VISIT (FTInclExclStringLiteralList);
     DECL_CONCRETE_VISIT (FTLanguageOption);
-    DECL_CONCRETE_VISIT (FTMatchOptionProximityList);
+    DECL_CONCRETE_VISIT (FTMatchOptions);
     DECL_CONCRETE_VISIT (FTMildNot);
     DECL_CONCRETE_VISIT (FTOptionDecl);
     DECL_CONCRETE_VISIT (FTOr);
-    DECL_CONCRETE_VISIT (FTOrderedIndicator);
-    DECL_CONCRETE_VISIT (FTProximity);
+    DECL_CONCRETE_VISIT (FTOrder);
     DECL_CONCRETE_VISIT (FTRange);
-    DECL_CONCRETE_VISIT (FTRefOrList);
+    DECL_CONCRETE_VISIT (FTPrimaryWithOptions);
     DECL_CONCRETE_VISIT (FTScope);
     DECL_CONCRETE_VISIT (FTScoreVar);
     DECL_CONCRETE_VISIT (FTSelection);
     DECL_CONCRETE_VISIT (FTStemOption);
-    DECL_CONCRETE_VISIT (FTStopwordOption);
-    DECL_CONCRETE_VISIT (FTStringLiteralList);
+    DECL_CONCRETE_VISIT (FTStopWordOption);
+    DECL_CONCRETE_VISIT (FTStopWords);
+    DECL_CONCRETE_VISIT (FTStopWordsInclExcl);
     DECL_CONCRETE_VISIT (FTThesaurusID);
-    DECL_CONCRETE_VISIT (FTThesaurusList);
     DECL_CONCRETE_VISIT (FTThesaurusOption);
     DECL_CONCRETE_VISIT (FTTimes);
     DECL_CONCRETE_VISIT (FTUnaryNot);
-  	DECL_CONCRETE_VISIT (FTUnit);
+    DECL_CONCRETE_VISIT (FTUnit);
+    DECL_CONCRETE_VISIT (FTWeight);
     DECL_CONCRETE_VISIT (FTWildcardOption);
     DECL_CONCRETE_VISIT (FTWindow);
     DECL_CONCRETE_VISIT (FTWords);
-    DECL_CONCRETE_VISIT (FTWordsSelection);
+    DECL_CONCRETE_VISIT (FTWordsTimes);
     DECL_CONCRETE_VISIT (FTWordsValue);
-    DECL_CONCRETE_VISIT (FTMatchOptionProximity);
-  
+
     DECL_CONCRETE_VISIT (ExitExpr);
     DECL_CONCRETE_VISIT (WhileExpr);
     DECL_CONCRETE_VISIT (FlowCtlStatement);
-  
+
     DECL_CONCRETE_VISIT (ParseErrorNode);
     DECL_CONCRETE_VISIT (DecimalFormatNode);
 };

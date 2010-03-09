@@ -1583,15 +1583,14 @@ void VarGetsDecl::accept( parsenode_visitor &v ) const
 }
 
 
-// [36c] FTScoreVar
-// ----------------
 FTScoreVar::FTScoreVar(
-  const QueryLoc& loc_,
-  std::string _varname)
-:
-  parsenode(loc_),
-  varname(_varname)
-{}
+  QueryLoc const &loc,
+  std::string const &varname
+) :
+  parsenode( loc ),
+  varname_( varname )
+{
+}
 
 
 void FTScoreVar::accept( parsenode_visitor &v ) const
@@ -2162,29 +2161,31 @@ void ComparisonExpr::accept( parsenode_visitor &v ) const
 }
 
 
-// [48a] FTContainsExpr
-// --------------------
 FTContainsExpr::FTContainsExpr(
-  const QueryLoc& loc_,
-  rchandle<FTRange> _range_h,
-  rchandle<FTSelection> _ftselection_h,
-  rchandle<FTIgnoreOption> _ftignore_h)
-:
-  exprnode(loc_),
-  range_h(_range_h),
-  ftselection_h(_ftselection_h),
-  ftignore_h(_ftignore_h)
-{}
+  QueryLoc const &loc,
+  FTRange const *range,
+  FTSelection const *ftselection,
+  FTIgnoreOption const *ftignore
+) :
+  exprnode( loc ),
+  range_( range ),
+  ftselection_( ftselection ),
+  ftignore_( ftignore )
+{
+}
 
-
-//-FTContainsExpr::
+FTContainsExpr::~FTContainsExpr() {
+  delete range_;
+  delete ftselection_;
+  delete ftignore_;
+}
 
 void FTContainsExpr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT (range_h);
-  ACCEPT (ftselection_h);
-  ACCEPT (ftignore_h);
+  ACCEPT( range_ );
+  ACCEPT( ftselection_ );
+  ACCEPT( ftignore_ );
   END_VISITOR();
 }
 
@@ -4880,8 +4881,8 @@ FTStopWordOption::FTStopWordOption(
   QueryLoc const &loc,
   FTStopWords const *stop_words,
   incl_excl_list_t *incl_excl_list,
-  ft_stop_words_mode::type mode)
-:
+  ft_stop_words_mode::type mode
+) :
   FTMatchOption( loc ),
   stop_words_( stop_words ),
   mode_( mode )
