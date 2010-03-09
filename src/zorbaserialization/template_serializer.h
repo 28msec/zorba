@@ -48,7 +48,7 @@ void operator&(Archiver &ar, std::list<T> &obj)
   if(ar.is_serializing_out())
   {
     char  strtemp[20];
-    sprintf(strtemp, "%d", obj.size());
+    sprintf(strtemp, "%d", (int)obj.size());
     bool is_ref;
     is_ref = ar.add_compound_field("std::list<T>", 0, !FIELD_IS_CLASS, strtemp, &obj, ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
