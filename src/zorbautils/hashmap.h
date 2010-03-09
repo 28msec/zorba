@@ -310,6 +310,7 @@ public:
         ar & v;
         bool insert_ret = insert(t, v);
         assert(insert_ret);
+        insert_ret = insert_ret; // Added the line to keep the compiler happy. It should have no effect on the final optimized code, as it's a no-op.
       }
       ar.set_is_temp_field_one_level(false);
     }
