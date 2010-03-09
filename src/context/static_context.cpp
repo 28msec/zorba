@@ -191,6 +191,7 @@ static_context::static_context()
   theIndexCallback(0),
   theIndexCallbackData(0),
   theICMap(NULL),
+  theDocumentMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
@@ -203,8 +204,7 @@ static_context::static_context()
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL),
-  theDocumentMap(NULL)
+  theDecimalFormats(NULL)
 {
 }
 
@@ -232,6 +232,7 @@ static_context::static_context(static_context* parent)
   theIndexCallback(0),
   theIndexCallbackData(0),
   theICMap(NULL),
+  theDocumentMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
@@ -244,8 +245,7 @@ static_context::static_context(static_context* parent)
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL),
-  theDocumentMap(NULL)
+  theDecimalFormats(NULL)
 {
   if (theParent != NULL)
     RCHelper::addReference(theParent);
@@ -275,6 +275,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theIndexCallback(0),
   theIndexCallbackData(0),
   theICMap(0),
+  theDocumentMap(NULL),
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
@@ -287,8 +288,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theEmptyOrderMode(StaticContextConsts::empty_order_unknown),
   theBoundarySpaceMode(StaticContextConsts::boundary_space_unknown),
   theValidationMode(StaticContextConsts::validation_unknown),
-  theDecimalFormats(NULL),
-  theDocumentMap(NULL)
+  theDecimalFormats(NULL)
 {
 }
 
@@ -1632,7 +1632,7 @@ void static_context::unbind_fn(
       return;
     }
 
-    std::vector<function_t>* fv;
+    std::vector<function_t>* fv = NULL;
 
     if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
     {
@@ -1670,7 +1670,7 @@ function* static_context::lookup_fn(
     if (f->get_arity() == arity || f->is_variadic())
       return f.getp();
 
-    std::vector<function_t>* fv;
+    std::vector<function_t>* fv = NULL;
 
     if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
     {
@@ -1704,8 +1704,6 @@ void static_context::get_functions(
     }
   }
 
-  std::vector<function_t>* fv;
-
   if (theFunctionArityMap != NULL)
   {
     FunctionArityMap::iterator ite = theFunctionArityMap->begin();
@@ -1713,7 +1711,7 @@ void static_context::get_functions(
 
     for (; ite != end; ++ite)
     {
-      fv = (*ite).second;
+      std::vector<function_t>* fv = (*ite).second;
 
       ulong numFunctions = fv->size();
       for (ulong i = 0; i < numFunctions; ++i)
@@ -1722,7 +1720,7 @@ void static_context::get_functions(
       }
     }
   }
-  
+
   if (theParent != NULL)
     theParent->get_functions(functions);
 }
@@ -1743,7 +1741,7 @@ void static_context::find_functions(
     functions.push_back(f.getp());
   }
 
-  std::vector<function_t>* fv;
+  std::vector<function_t>* fv = NULL;
 
   if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
   {
