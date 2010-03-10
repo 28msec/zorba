@@ -1,0 +1,30 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    xmlns="http://www.news.org/schemas"
+    targetNamespace="http://www.news.org/schemas"
+    elementFormDefault="qualified">
+           
+ <!-- importing the XML namespace makes xml:id an ID attribute under lax validation -->
+ <xs:import namespace="http://www.w3.org/XML/1998/namespace"/>          
+ <xs:element name="employee">
+   <xs:complexType>
+     <xs:sequence>
+       <xs:element name="position" minOccurs="0"/>
+       <xs:element name="name" minOccurs="0"/>
+       <xs:element name="station" type="stationType"/>
+     </xs:sequence>
+     <xs:attribute name="id" type="xs:integer"/>
+   </xs:complexType>
+ </xs:element>
+
+ <xs:complexType name="stationType">
+   <xs:sequence>
+     <xs:element name="city" type="xs:string"/>
+   </xs:sequence>
+ </xs:complexType>
+
+
+ <xs:element name="month">
+ </xs:element>
+    
+</xs:schema>
+
