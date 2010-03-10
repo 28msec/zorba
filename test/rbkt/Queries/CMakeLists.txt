@@ -12,6 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+IF(COMMAND cmake_policy)
+  CMAKE_POLICY(SET CMP0009 NEW)
+ENDIF(COMMAND cmake_policy)
+
 MESSAGE(STATUS "Adding tests for CTest")
 INCLUDE(ZorbaAddTest)
 
