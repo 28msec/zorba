@@ -34,6 +34,21 @@ import schema namespace https = "http://expath.org/ns/http-client";
 (:~
  : This function sends an HTTP request and returns the corresponding 
  : response. It supports HTTP multi-part messages.
+ : If the content type of a request is html, http-client will tidy it
+ : automatically. If you want to prevent that, you can also set your
+ : own by settin the override-media-type attribute in the http:request
+ : element.
+ : When tidying, it will use the follwong tidy options:
+ : - TidyXmlOut=yes
+ : - TidyDoctypeMode=TidyDoctypeOmit
+ : - TidyQuoteNbsp=yes
+ : - TidyCharEncoding="utf8"
+ : - TidyNewline="LF"
+ : Please also referr to the official documentation at
+ : <a href="http://expath.org/modules/http-client.html">expath.org</a>
+ : For further information (especially about the http:request and
+ : http:response elements) see also the xml schema and its annotations
+ : (located in $zorba_install_dir/modules/org/expath/ns/).
  :
  : @param $request Contains the various parameters of the request. See the
  :  documentation of the type requestType in the schema definition.
@@ -73,12 +88,10 @@ declare function http:send-request(
  : Function for convenience.
  : @see documentation of send-request with four parameters.
  :
- : @see http://www.expath.org/mod/http-client;send-request
- :
- : @param $request @see parameter $request of
- :  http://www.expath.org/mod/http-client;send-request
- : @return @see return of
- :  http://www.expath.org/mod/http-client;send-request
+ : @param $request see request parameter of 
+ :  <a href="#send-request-3">send-request#3</a>
+ : @return see return value of
+ :  <a href="#send-request-3">send-request#3</a>
  :)
 declare function http:send-request (
   $request as element(https:request, https:requestType)) as item()+ {
@@ -89,14 +102,12 @@ declare function http:send-request (
  : Function for convenience.
  : @see documentation of send-request with four parameters.
  :
- : @see http://www.expath.org/mod/http-client;send-request
- :
- : @param $request @see parameter $request of
- :  http://www.expath.org/mod/http-client;send-request
- : @param href @see parameter $href of
- :  http://www.expath.org/mod/http-client;send-request
- : @return @see return of
- :  http://www.expath.org/mod/http-client;send-request
+ : @param $request see parameter $request of
+ :  <a href="#send-request-3">send-request#3</a>
+ : @param href see parameter $href of
+ :  <a href="#send-request-3">send-request#3</a>
+ : @return see return of
+ :  <a href="#send-request-3">send-request#3</a>
  :)
 declare function http:send-request(
   $request as element(https:request, https:requestType)?,
