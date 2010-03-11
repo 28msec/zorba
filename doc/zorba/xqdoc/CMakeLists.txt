@@ -14,6 +14,10 @@
 
 SET(XQDOC_DEPENDS)
 
+IF(NOT ZORBA_WITH_FILE_ACCESS)
+  MESSAGE(WARNING "Can not build XQDoc documentation because 'File' module is not present")
+ELSE(NOT ZORBA_WITH_FILE_ACCESS)
+
 # find all files required for xqdoc generation
 # i.e. modules, templates, and xquery generator queries
 FILE(GLOB_RECURSE XQ_MODULES ${CMAKE_SOURCE_DIR}/modules/*.xq)
@@ -51,3 +55,5 @@ ADD_CUSTOM_TARGET(xqdoc
     ${XQDOC_DEPENDS}
 )
 SET_TARGET_PROPERTIES(xqdoc PROPERTIES EXCLUDE_FROM_DEFAULT_BUILD 1)
+
+ENDIF(NOT ZORBA_WITH_FILE_ACCESS)
