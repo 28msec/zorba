@@ -33,12 +33,8 @@ class ft_expr : public expr {
 public:
   SERIALIZABLE_ABSTRACT_CLASS(ft_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_expr,expr)
-  void serialize( serialization::Archiver &ar )
-  {
-    serialize_baseclass( ar, (expr*)this );
-  }
+  void serialize( serialization::Archiver& );
 
-public:
   ~ft_expr();
 
   virtual std::ostream& put( std::ostream& ) const;
@@ -53,7 +49,6 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcontains_expr,ft_expr)
   void serialize( serialization::Archiver& );
 
-public:
   ftcontains_expr(
     short sctx,
     QueryLoc const&,
@@ -77,9 +72,9 @@ public:
   void next_iter( expr_iterator_data& );
   void accept( expr_visitor& );
 
-  std::ostream& put(std::ostream&) const;
+  std::ostream& put( std::ostream& ) const;
 
-protected:
+private:
   range_expr_t range_;
   ftexpr *ftselection_;
   union_expr_t ftignore_;
@@ -88,14 +83,15 @@ protected:
 ///////////////////////////////////////////////////////////////////////////////
 
 class ftand_expr;
-class ftcase_option_expr;
+class ftcase_option;
 class ftcontent_expr;
-class ftdiacritics_option_expr;
+class ftdiacritics_option;
 class ftdistance_expr;
-class ftextension_option_expr;
+class ftextension_option;
 class ftextension_selection_expr;
-class ftlanguage_option_expr;
-class ftmatch_option_expr;
+class ftlanguage_option;
+class ftmatch_option;
+class ftmatch_options;
 class ftmild_not_expr;
 class ftorder_expr;
 class ftor_expr;
@@ -105,13 +101,13 @@ class ftprimary_with_options_expr;
 class ftrange_expr;
 class ftscope_expr;
 class ftselection_expr;
-class ftstem_option_expr;
-class ftstop_word_option_expr;
+class ftstem_option;
+class ftstop_word_option;
 class ftstop_words;
-class ftthesaurus_id_expr;
-class ftthesaurus_option_expr;
+class ftthesaurus_id;
+class ftthesaurus_option;
 class ftunary_not_expr;
-class ftwild_card_option_expr;
+class ftwild_card_option;
 class ftwindow_expr;
 class ftwords_expr;
 class ftwords_times_expr;
@@ -132,14 +128,14 @@ protected:
   virtual void end_visit( C const& ) = 0
 
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcontent_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdistance_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_option_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmild_not_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftorder_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftor_expr );
@@ -147,13 +143,13 @@ protected:
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftrange_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftscope_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftselection_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_words );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_id_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_option_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftunary_not_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwindow_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_times_expr );
@@ -201,25 +197,23 @@ private:
 
 ////////// FTMatchOptions /////////////////////////////////////////////////////
 
-class ftmatch_option_expr : public ftexpr {
+class ftmatch_option : public ftexpr {
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(ftmatch_option_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmatch_option_expr,ftexpr)
+  SERIALIZABLE_ABSTRACT_CLASS(ftmatch_option)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmatch_option,ftexpr)
   void serialize( serialization::Archiver& );
-  
-  void accept( ftexpr_visitor& ) const;
 
 protected:
-  ftmatch_option_expr( QueryLoc const &loc ) : ftexpr( loc ) { }
+  ftmatch_option( QueryLoc const &loc ) : ftexpr( loc ) { }
 };
 
-class ftcase_option_expr : public ftmatch_option_expr {
+class ftcase_option : public ftmatch_option {
 public:
-  SERIALIZABLE_CLASS(ftcase_option_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcase_option_expr,ftmatch_option_expr)
+  SERIALIZABLE_CLASS(ftcase_option)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcase_option,ftmatch_option)
   void serialize( serialization::Archiver& );
 
-  ftcase_option_expr(
+  ftcase_option(
     QueryLoc const&,
     ft_case_mode::type = ft_case_mode::DEFAULT
   );
@@ -231,13 +225,13 @@ private:
   ft_case_mode::type mode_;
 };
 
-class ftdiacritics_option_expr : public ftmatch_option_expr {
+class ftdiacritics_option : public ftmatch_option {
 public:
-  SERIALIZABLE_CLASS(ftdiacritics_option_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftdiacritics_option_expr,ftmatch_option_expr)
+  SERIALIZABLE_CLASS(ftdiacritics_option)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftdiacritics_option,ftmatch_option)
   void serialize( serialization::Archiver& );
 
-  ftdiacritics_option_expr(
+  ftdiacritics_option(
     QueryLoc const&,
     ft_diacritics_mode::type = ft_diacritics_mode::DEFAULT
   );
@@ -249,13 +243,13 @@ private:
   ft_diacritics_mode::type mode_;
 };
 
-class ftextension_option_expr : public ftmatch_option_expr {
+class ftextension_option : public ftmatch_option {
 public:
-  SERIALIZABLE_CLASS(ftextension_option_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftextension_option_expr,ftmatch_option_expr)
+  SERIALIZABLE_CLASS(ftextension_option)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftextension_option,ftmatch_option)
   void serialize( serialization::Archiver& );
 
-  ftextension_option_expr(
+  ftextension_option(
     QueryLoc const&,
     rchandle<QName>,
     std::string const &val
@@ -270,13 +264,13 @@ private:
   std::string val_;
 };
 
-class ftlanguage_option_expr : public ftmatch_option_expr {
+class ftlanguage_option : public ftmatch_option {
 public:
-  SERIALIZABLE_CLASS(ftlanguage_option_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftlanguage_option_expr,ftmatch_option_expr)
+  SERIALIZABLE_CLASS(ftlanguage_option)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftlanguage_option,ftmatch_option)
   void serialize( serialization::Archiver& );
 
-  ftlanguage_option_expr(
+  ftlanguage_option(
     QueryLoc const&,
     std::string const &language
   );
@@ -288,13 +282,13 @@ private:
   std::string language_;
 };
 
-class ftstem_option_expr : public ftmatch_option_expr {
+class ftstem_option : public ftmatch_option {
 public:
-  SERIALIZABLE_CLASS(ftstem_option_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftstem_option_expr,ftmatch_option_expr)
+  SERIALIZABLE_CLASS(ftstem_option)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftstem_option,ftmatch_option)
   void serialize( serialization::Archiver& );
 
-  ftstem_option_expr(
+  ftstem_option(
     QueryLoc const&,
     ft_stem_mode::type = ft_stem_mode::DEFAULT
   );
@@ -306,15 +300,15 @@ private:
   ft_stem_mode::type mode_;
 };
 
-class ftstop_words_expr : public ftexpr {
+class ftstop_words : public ftexpr {
 public:
-  SERIALIZABLE_CLASS(ftstop_words_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftstop_words_expr,ftexpr)
+  SERIALIZABLE_CLASS(ftstop_words)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftstop_words,ftexpr)
   void serialize( serialization::Archiver& );
 
   typedef std::list<std::string> list_t;
 
-  ftstop_words_expr(
+  ftstop_words(
     QueryLoc const&,
     std::string const &uri,
     list_t const&,
@@ -332,20 +326,20 @@ private:
   ft_stop_words_unex::type mode_;
 };
 
-class ftstop_word_option_expr : public ftmatch_option_expr {
+class ftstop_word_option : public ftmatch_option {
 public:
-  SERIALIZABLE_CLASS(ftstop_word_option_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftstop_word_option_expr,ftmatch_option_expr)
+  SERIALIZABLE_CLASS(ftstop_word_option)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftstop_word_option,ftmatch_option)
   void serialize( serialization::Archiver& );
 
-  typedef std::list<ftstop_words_expr> stop_word_list_t;
+  typedef std::list<ftstop_words> stop_word_list_t;
 
-  ftstop_word_option_expr(
+  ftstop_word_option(
     QueryLoc const&,
     ft_stop_words_mode::type = ft_stop_words_mode::DEFAULT
   );
 
-  ftstop_word_option_expr(
+  ftstop_word_option(
     QueryLoc const&,
     stop_word_list_t&,
     ft_stop_words_mode::type = ft_stop_words_mode::DEFAULT
@@ -360,18 +354,19 @@ private:
   ft_stop_words_mode::type mode_;
 };
 
-class ftthesaurus_id_expr : public ftexpr {
+class ftthesaurus_id : public ftexpr {
 public:
-  SERIALIZABLE_CLASS(ftthesaurus_id_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftthesaurus_id_expr,ftexpr)
+  SERIALIZABLE_CLASS(ftthesaurus_id)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftthesaurus_id,ftexpr)
   void serialize( serialization::Archiver& );
 
-  ftthesaurus_id_expr(
+  ftthesaurus_id(
     QueryLoc const&,
     std::string const &uri,
     std::string const &relationship,
     ftrange_expr *levels
   );
+  ~ftthesaurus_id();
 
   void accept( ftexpr_visitor& ) const;
   std::string const& get_uri() const { return uri_; }
@@ -384,21 +379,21 @@ private:
   ftrange_expr *levels_;
 };
 
-class ftthesaurus_option_expr : public ftmatch_option_expr {
+class ftthesaurus_option : public ftmatch_option {
 public:
-  SERIALIZABLE_CLASS(ftthesaurus_option_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftthesaurus_option_expr,ftmatch_option_expr)
+  SERIALIZABLE_CLASS(ftthesaurus_option)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftthesaurus_option,ftmatch_option)
   void serialize( serialization::Archiver& );
 
-  typedef std::list<ftthesaurus_id_expr*> thesaurus_id_list_t;
+  typedef std::list<ftthesaurus_id*> thesaurus_id_list_t;
 
-  ftthesaurus_option_expr(
+  ftthesaurus_option(
     QueryLoc const&,
     thesaurus_id_list_t&,
     bool includes_default,
     bool no_thesaurus
   );
-  ~ftthesaurus_option_expr();
+  ~ftthesaurus_option();
 
   thesaurus_id_list_t const& get_thesaurus_id_list() const
     { return thesaurus_id_list_; }
@@ -413,13 +408,13 @@ private:
   bool no_thesaurus_;
 };
 
-class ftwild_card_option_expr : public ftmatch_option_expr {
+class ftwild_card_option : public ftmatch_option {
 public:
-  SERIALIZABLE_CLASS(ftwild_card_option_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftwild_card_option_expr,ftmatch_option_expr)
+  SERIALIZABLE_CLASS(ftwild_card_option)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftwild_card_option,ftmatch_option)
   void serialize( serialization::Archiver& );
 
-  ftwild_card_option_expr(
+  ftwild_card_option(
     QueryLoc const&,
     ft_wild_card_mode::type = ft_wild_card_mode::DEFAULT
   );
@@ -429,6 +424,90 @@ public:
 
 private:
   ft_wild_card_mode::type mode_;
+};
+
+class ftmatch_options : public ftexpr {
+public:
+  SERIALIZABLE_CLASS(ftmatch_options)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmatch_options,ftexpr)
+  void serialize( serialization::Archiver& );
+
+  ftmatch_options( QueryLoc const& );
+  ~ftmatch_options();
+
+  void accept( ftexpr_visitor& ) const;
+
+  ftcase_option const* get_case_option() const { return case_option_; }
+
+  ftdiacritics_option const* get_diacritics_option() const
+    { return diacritics_option_; }
+
+  ftextension_option const* get_extension_option() const
+    { return extension_option_; }
+
+  ftlanguage_option const* get_language_option() const
+    { return language_option_; }
+
+  ftstem_option const* get_stem_option() const { return stem_option_; }
+
+  ftstop_word_option const* get_stop_word_option() const
+    { return stop_word_option_; }
+
+  ftthesaurus_option const* get_thesaurus_option() const
+    { return thesaurus_option_; }
+
+  ftwild_card_option const* get_wild_card_option() const
+    { return wild_card_option_; }
+
+  void set_case_option( ftcase_option *o ) {
+    delete case_option_;
+    case_option_ = o;
+  }
+
+  void set_diacritics_option( ftdiacritics_option *o ) {
+    delete diacritics_option_;
+    diacritics_option_ = o;
+  }
+
+  void set_extension_option( ftextension_option *o ) {
+    delete extension_option_;
+    extension_option_ = o;
+  }
+
+  void set_language_option( ftlanguage_option *o ) {
+    delete language_option_;
+    language_option_ = o;
+  }
+
+  void set_stem_option( ftstem_option *o ) {
+    delete stem_option_;
+    stem_option_ = o;
+  }
+
+  void set_stop_word_option( ftstop_word_option *o ) {
+    delete stop_word_option_;
+    stop_word_option_ = o;
+  }
+
+  void set_thesaurus_option( ftthesaurus_option *o ) {
+    delete thesaurus_option_;
+    thesaurus_option_ = o;
+  }
+
+  void set_wild_card_option( ftwild_card_option *o ) {
+    delete wild_card_option_;
+    wild_card_option_ = o;
+  }
+
+private:
+  ftcase_option *case_option_;
+  ftdiacritics_option *diacritics_option_;
+  ftextension_option *extension_option_;
+  ftlanguage_option *language_option_;
+  ftstem_option *stem_option_;
+  ftstop_word_option *stop_word_option_;
+  ftthesaurus_option *thesaurus_option_;
+  ftwild_card_option *wild_card_option_;
 };
 
 ////////// FTPrimary //////////////////////////////////////////////////////////
@@ -516,15 +595,10 @@ class ftpos_filter_expr : public ftexpr {
 public:
   SERIALIZABLE_ABSTRACT_CLASS(ftpos_filter_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftpos_filter_expr,ftexpr)
-  void serialize( serialization::Archiver &ar ) {
-    serialize_baseclass( ar, (ftexpr*)this );
-  }
+  void serialize( serialization::Archiver& );
 
 protected:
-  ftpos_filter_expr( QueryLoc const &loc ) :
-    ftexpr( loc )
-  {
-  }
+  ftpos_filter_expr( QueryLoc const& );
 };
 
 class ftcontent_expr : public ftpos_filter_expr {
@@ -667,67 +741,28 @@ public:
 
   void accept( ftexpr_visitor& ) const;
 
-  void set_case_option( ftcase_option_expr *e ) {
-    delete case_option_;
-    case_option_ = e;
+  ftprimary_expr const* get_primary() const { return primary_; }
+  ftmatch_options const* get_match_options() const { return match_options_; }
+  expr_t get_weight() const { return weight_; }
+
+  void set_match_options( ftmatch_options *o ) {
+    delete match_options_;
+    match_options_ = o;
   }
 
-  void set_diacritics( ftdiacritics_option_expr *e ) {
-    delete diacritics_option_;
-    diacritics_option_ = e;
-  }
-
-  void set_extension_option( ftextension_option_expr *e ) {
-    delete extension_option_;
-    extension_option_ = e;
-  }
-
-  void set_language( ftlanguage_option_expr *e ) {
-    delete language_option_;
-    language_option_ = e;
-  }
-
-  void set_primary( ftexpr *e ) {
+  void set_primary( ftprimary_expr *e ) {
     delete primary_;
     primary_ = e;
   }
 
-  void set_stem_option( ftstem_option_expr *e ) {
-    delete stem_option_;
-    stem_option_ = e;
-  }
-
-  void set_stop_word_option( ftstop_word_option_expr *e ) {
-    delete stop_word_option_;
-    stop_word_option_ = e;
-  }
-
-  void set_thesaurus_option( ftthesaurus_option_expr *e ) {
-    delete thesaurus_option_;
-    thesaurus_option_ = e;
-  }
-
-  void set_weight( exprnode *e ) {
-    delete weight_;
+  void set_weight( expr_t e ) {
     weight_ = e;
   }
 
-  void set_wild_card( ftwild_card_option_expr *e ) {
-    delete wild_card_option_;
-    wild_card_option_ = e;
-  }
-
 private:
-  ftcase_option_expr *case_option_;
-  ftdiacritics_option_expr *diacritics_option_;
-  ftextension_option_expr *extension_option_;
-  ftlanguage_option_expr *language_option_;
-  ftexpr *primary_;
-  ftstem_option_expr *stem_option_;
-  ftstop_word_option_expr *stop_word_option_;
-  ftthesaurus_option_expr *thesaurus_option_;
-  exprnode *weight_;
-  ftwild_card_option_expr *wild_card_option_;
+  ftprimary_expr *primary_;
+  ftmatch_options *match_options_;
+  expr_t weight_;
 };
 
 class ftrange_expr : public ftexpr {

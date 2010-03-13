@@ -10383,7 +10383,10 @@ void *begin_visit (const FTCaseOption& v) {
 
 void end_visit (const FTCaseOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  push_ftstack( new ftcase_option_expr( v.get_location(), v.get_mode() ) );
+  ftcase_option *const c = new ftcase_option( v.get_location(), v.get_mode() );
+  ftmatch_options *const m = dynamic_cast<ftmatch_options*>( top_ftstack() );
+  ZORBA_ASSERT( m );
+  m->set_case_option( c );
 }
 
 void *begin_visit (const FTContainsExpr& v) {
@@ -10429,9 +10432,11 @@ void *begin_visit (const FTDiacriticsOption& v) {
 
 void end_visit (const FTDiacriticsOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  ftdiacritics_option_expr *const d =
-    new ftdiacritics_option_expr( v.get_location(), v.get_mode() );
-  push_ftstack( d );
+  ftdiacritics_option *const d =
+    new ftdiacritics_option( v.get_location(), v.get_mode() );
+  ftmatch_options *const m = dynamic_cast<ftmatch_options*>( top_ftstack() );
+  ZORBA_ASSERT( m );
+  m->set_diacritics_option( d );
 }
 
 void *begin_visit (const FTDistance& v) {
@@ -10458,9 +10463,11 @@ void *begin_visit (const FTExtensionOption& v) {
 
 void end_visit (const FTExtensionOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  ftextension_option_expr *const eo =
-    new ftextension_option_expr( v.get_location(), v.get_qname(), v.get_val() );
-  push_ftstack( eo );
+  ftextension_option *const e =
+    new ftextension_option( v.get_location(), v.get_qname(), v.get_val() );
+  ftmatch_options *const m = dynamic_cast<ftmatch_options*>( top_ftstack() );
+  ZORBA_ASSERT( m );
+  m->set_extension_option( e );
 }
 
 void *begin_visit (const FTExtensionSelection& v) {
@@ -10499,9 +10506,9 @@ void *begin_visit (const FTStopWords& v) {
 
 void end_visit (const FTStopWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  ftstop_words_expr *const sw =
-    new ftstop_words_expr( v.get_location(), v.get_uri(), v.get_stop_words() );
-  push_ftstack( sw );
+  ftstop_words *const s =
+    new ftstop_words( v.get_location(), v.get_uri(), v.get_stop_words() );
+  push_ftstack( s );
 }
 
 void *begin_visit (const FTStopWordsInclExcl& v) {
@@ -10513,13 +10520,13 @@ void *begin_visit (const FTStopWordsInclExcl& v) {
 void end_visit (const FTStopWordsInclExcl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   FTStopWords const *const stop_words = v.get_stop_words();
-  ftstop_words_expr *const sw = new ftstop_words_expr(
+  ftstop_words *const s = new ftstop_words(
     v.get_location(),
     stop_words->get_uri(),
     stop_words->get_stop_words(),
     v.get_mode()
   );
-  push_ftstack( sw );
+  push_ftstack( s );
 }
 
 void *begin_visit (const FTLanguageOption& v) {
@@ -10530,18 +10537,26 @@ void *begin_visit (const FTLanguageOption& v) {
 
 void end_visit (const FTLanguageOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  push_ftstack( new ftlanguage_option_expr( loc, v.get_language() ) );
+  ftlanguage_option *const l = new ftlanguage_option( loc, v.get_language() );
+  ftmatch_options *const m = dynamic_cast<ftmatch_options*>( top_ftstack() );
+  ZORBA_ASSERT( m );
+  m->set_language_option( l );
 }
 
 void *begin_visit (const FTMatchOptions& v) {
   TRACE_VISIT ();
-  // nothing to do
+  ftmatch_options *const m = new ftmatch_options( v.get_location() );
+  ftprimary_with_options_expr *const p =
+    dynamic_cast<ftprimary_with_options_expr*>( top_ftstack() );
+  ZORBA_ASSERT( p );
+  p->set_match_options( m );
+  push_ftstack( m );
   return no_state;
 }
 
 void end_visit (const FTMatchOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  // nothing to do
+  pop_ftstack();
 }
 
 void *begin_visit (const FTMildNot& v) {
@@ -10688,11 +10703,10 @@ void *begin_visit (const FTStemOption& v) {
 
 void end_visit (const FTStemOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  ftprimary_with_options_expr *const pwo =
-    dynamic_cast<ftprimary_with_options_expr*>( top_ftstack() );
-  ftstem_option_expr *so =
-    new ftstem_option_expr( v.get_location(), v.get_mode() );
-  pwo->set_stem_option( so );
+  ftstem_option *const s = new ftstem_option( v.get_location(), v.get_mode() );
+  ftmatch_options *const m = dynamic_cast<ftmatch_options*>( top_ftstack() );
+  ZORBA_ASSERT( m );
+  m->set_stem_option( s );
 }
 
 void *begin_visit (const FTStopWordOption& v) {
@@ -10707,25 +10721,22 @@ void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
   if ( v.get_mode() == ft_stop_words_mode::without )
     return;
 
-  ftstop_word_option_expr::stop_word_list_t stop_words;
+  ftstop_word_option::stop_word_list_t stop_words;
   while ( true ) {
     ftexpr *const e = top_ftstack();
-    if ( ftstop_words_expr *const sw = dynamic_cast<ftstop_words_expr*>( e ) ) {
-      stop_words.push_back( *sw );
+    if ( ftstop_words *const s = dynamic_cast<ftstop_words*>( e ) ) {
+      stop_words.push_back( *s );
       pop_ftstack();
     } else
       break;
   }
 
-  ftstop_word_option_expr *swo = new ftstop_word_option_expr(
-    v.get_location(),
-    stop_words,
-    v.get_mode()
+  ftstop_word_option *const s = new ftstop_word_option(
+    v.get_location(), stop_words, v.get_mode()
   );
-
-  ftprimary_with_options_expr *const pwo =
-    dynamic_cast<ftprimary_with_options_expr*>( top_ftstack() );
-  pwo->set_stop_word_option( swo );
+  ftmatch_options *const m = dynamic_cast<ftmatch_options*>( top_ftstack() );
+  ZORBA_ASSERT( m );
+  m->set_stop_word_option( s );
 }
 
 void *begin_visit (const FTThesaurusID& v) {
@@ -10736,7 +10747,7 @@ void *begin_visit (const FTThesaurusID& v) {
 
 void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  ftthesaurus_id_expr *const ti = new ftthesaurus_id_expr(
+  ftthesaurus_id *const ti = new ftthesaurus_id(
     v.get_location(),
     v.get_uri(),
     v.get_relationship(),
@@ -10754,23 +10765,20 @@ void *begin_visit (const FTThesaurusOption& v) {
 void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 
-  ftthesaurus_option_expr::thesaurus_id_list_t list;
+  ftthesaurus_option::thesaurus_id_list_t list;
   while ( true ) {
-    ftthesaurus_id_expr *const ti =
-      dynamic_cast<ftthesaurus_id_expr*>( pop_ftstack() );
+    ftthesaurus_id *const ti = dynamic_cast<ftthesaurus_id*>( pop_ftstack() );
     if ( ti )
       list.push_back( ti );
     else
       break;
   }
-  ftthesaurus_option_expr *const to = new ftthesaurus_option_expr(
+  ftthesaurus_option *const t = new ftthesaurus_option(
     v.get_location(), list, v.includes_default(), v.no_thesaurus()
   );
-
-  ftprimary_with_options_expr *const pwo =
-    dynamic_cast<ftprimary_with_options_expr*>( top_ftstack() );
-
-  pwo->set_thesaurus_option( to );
+  ftmatch_options *const m = dynamic_cast<ftmatch_options*>( top_ftstack() );
+  ZORBA_ASSERT( m );
+  m->set_thesaurus_option( t );
 }
 
 void *begin_visit (const FTTimes& v) {
@@ -10816,7 +10824,7 @@ void end_visit (const FTWeight& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   ftprimary_with_options_expr *const pwo =
     dynamic_cast<ftprimary_with_options_expr*>( top_ftstack() );
-  pwo->set_weight( v.get_expr() );
+  pwo->set_weight( pop_nodestack() );
 }
 
 void *begin_visit (const FTWildCardOption& v) {
@@ -10827,11 +10835,11 @@ void *begin_visit (const FTWildCardOption& v) {
 
 void end_visit (const FTWildCardOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  ftprimary_with_options_expr *const pwo =
-    dynamic_cast<ftprimary_with_options_expr*>( top_ftstack() );
-  ftwild_card_option_expr *const wco =
-    new ftwild_card_option_expr( v.get_location(), v.get_mode() );
-  pwo->set_wild_card( wco );
+  ftwild_card_option *const w =
+    new ftwild_card_option( v.get_location(), v.get_mode() );
+  ftmatch_options *const m = dynamic_cast<ftmatch_options*>( top_ftstack() );
+  ZORBA_ASSERT( m );
+  m->set_wild_card_option( w );
 }
 
 void *begin_visit (const FTWindow& v) {
