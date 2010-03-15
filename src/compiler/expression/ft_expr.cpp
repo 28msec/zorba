@@ -174,9 +174,9 @@ ftcontains_expr::ftcontains_expr(
 }
 
 void ftcontains_expr::accept( expr_visitor &v ) {
-  accept_unless_null( range_, v );
+  accept_unless_null( range_.getp(), v );
   // pass_thru_visitor v2( v );
-  accept_unless_null( ftignore_, v );
+  accept_unless_null( ftignore_.getp(), v );
 }
 
 void ftcontains_expr::serialize( serialization::Archiver &ar )
