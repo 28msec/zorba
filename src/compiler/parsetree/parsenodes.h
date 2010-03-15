@@ -2862,20 +2862,20 @@ class FTContainsExpr : public exprnode {
 public:
   FTContainsExpr(
     QueryLoc const&,
-    FTRange const*,
+    exprnode const *range_expr,
     FTSelection const*,
     FTIgnoreOption const*
   );
   ~FTContainsExpr();
 
-  FTRange const* get_range() const { return range_; }
+  exprnode const* get_range_expr() const { return range_expr_; }
   FTSelection const* get_selection() const { return ftselection_; }
   FTIgnoreOption const* get_ignore() const { return ftignore_; }
 
   virtual void accept( parsenode_visitor& ) const;
 
 private:
-  FTRange const *const range_;
+  exprnode const *const range_expr_;
   FTSelection const *const ftselection_;
   FTIgnoreOption const *const ftignore_;
 };
@@ -5578,19 +5578,19 @@ class FTAnd : public parsenode {
 public:
   FTAnd(
     QueryLoc const&,
-    FTAnd const*,
-    FTMildNot const*
+    parsenode const*,
+    parsenode const*
   );
   ~FTAnd();
-  
-  FTAnd const* get_ftand() const { return ftand_; }
-  FTMildNot const* get_ftmild_not() const { return ftmild_not_; }
+
+  parsenode const* get_ftand() const { return ftand_; }
+  parsenode const* get_ftmild_not() const { return ftmild_not_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  FTAnd const *const ftand_;
-  FTMildNot const *const ftmild_not_;
+  parsenode const *const ftand_;
+  parsenode const *const ftmild_not_;
 };
 
 
@@ -5630,16 +5630,16 @@ class FTIgnoreOption : public parsenode {
 public:
   FTIgnoreOption(
     QueryLoc const&,
-    UnionExpr const*
+    exprnode const*
   );
   ~FTIgnoreOption();
 
-  UnionExpr const* get_union() const { return expr_; }
+  exprnode const* get_union() const { return expr_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  UnionExpr const *const expr_;
+  exprnode const *const expr_;
 };
 
 
@@ -5669,19 +5669,19 @@ class FTMildNot : public parsenode {
 public:
   FTMildNot(
     QueryLoc const&,
-    FTMildNot const*,
-    FTUnaryNot const*
+    parsenode const*,
+    parsenode const*
   );
   ~FTMildNot();
 
-  FTMildNot const* get_ftmild_not() const { return ftmild_not_; }
-  FTUnaryNot const* get_ftunary_not() const { return ftunary_not_; }
+  parsenode const* get_ftmild_not() const { return ftmild_not_; }
+  parsenode const* get_ftunary_not() const { return ftunary_not_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  FTMildNot const *const ftmild_not_;
-  FTUnaryNot const *const ftunary_not_;
+  parsenode const *const ftmild_not_;
+  parsenode const *const ftunary_not_;
 };
 
 
@@ -5706,19 +5706,19 @@ class FTOr : public parsenode {
 public:
   FTOr(
     QueryLoc const&,
-    FTOr const*,
-    FTAnd const*
+    parsenode const*,
+    parsenode const*
   );
   ~FTOr();
 
-  FTOr const* get_ftor() const { return ftor_; }
-  FTAnd const* get_ftand() const { return ftand_; }
+  parsenode const* get_ftor() const { return ftor_; }
+  parsenode const* get_ftand() const { return ftand_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  FTOr const *const ftor_;
-  FTAnd const *const ftand_;
+  parsenode const *const ftor_;
+  parsenode const *const ftand_;
 };
 
 
@@ -5750,21 +5750,21 @@ public:
   FTRange(
     QueryLoc const&,
     ft_range_mode::type,
-    AdditiveExpr const*,
-    AdditiveExpr const* = NULL
+    exprnode const*,
+    exprnode const* = NULL
   );
   ~FTRange();
 
-  AdditiveExpr const* get_expr1() const { return expr1_; }
-  AdditiveExpr const* get_expr2() const { return expr2_; }
+  exprnode const* get_expr1() const { return expr1_; }
+  exprnode const* get_expr2() const { return expr2_; }
   ft_range_mode::type get_mode() const { return mode_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
   ft_range_mode::type mode_;
-  AdditiveExpr const *const expr1_;
-  AdditiveExpr const *const expr2_;
+  exprnode const *const expr1_;
+  exprnode const *const expr2_;
 };
 
 
@@ -5882,12 +5882,12 @@ public:
 
   FTSelection(
     QueryLoc const&,
-    FTOr const*,
+    parsenode const*,
     pos_filter_list_t*
   );
   ~FTSelection();
 
-  FTOr const* get_ftor() const { return ftor_; }
+  parsenode const* get_ftor() const { return ftor_; }
 
   pos_filter_list_t const& get_pos_filter_list() const {
     return pos_filter_list_;
@@ -5896,7 +5896,7 @@ public:
   void accept( parsenode_visitor& ) const;
 
 private:
-  FTOr const *const ftor_;
+  parsenode const *const ftor_;
   pos_filter_list_t pos_filter_list_;
 };
 

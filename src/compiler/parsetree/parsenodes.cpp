@@ -2163,19 +2163,20 @@ void ComparisonExpr::accept( parsenode_visitor &v ) const
 
 FTContainsExpr::FTContainsExpr(
   QueryLoc const &loc,
-  FTRange const *range,
+  exprnode const *range_expr,
   FTSelection const *ftselection,
   FTIgnoreOption const *ftignore
 ) :
   exprnode( loc ),
-  range_( range ),
+  range_expr_( range_expr ),
   ftselection_( ftselection ),
   ftignore_( ftignore )
 {
+  ZORBA_ASSERT( range_expr );
 }
 
 FTContainsExpr::~FTContainsExpr() {
-  delete range_;
+  delete range_expr_;
   delete ftselection_;
   delete ftignore_;
 }
@@ -2183,7 +2184,7 @@ FTContainsExpr::~FTContainsExpr() {
 void FTContainsExpr::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT( range_ );
+  ACCEPT( range_expr_ );
   ACCEPT( ftselection_ );
   ACCEPT( ftignore_ );
   END_VISITOR();
@@ -4489,12 +4490,13 @@ void EvalExpr::accept( parsenode_visitor &v ) const
 
 FTSelection::FTSelection(
   QueryLoc const &loc,
-  FTOr const *ftor,
+  parsenode const *ftor,
   pos_filter_list_t *pos_filter_list )
 :
   FTPrimary( loc ),
   ftor_( ftor )
 {
+  ZORBA_ASSERT( ftor );
   if ( pos_filter_list )
     pos_filter_list_.swap( *pos_filter_list );
 }
@@ -4515,13 +4517,15 @@ void FTSelection::accept( parsenode_visitor &v ) const
 
 FTOr::FTOr(
   QueryLoc const &loc,
-  FTOr const *ftor,
-  FTAnd const *ftand
+  parsenode const *ftor,
+  parsenode const *ftand
 ) :
   parsenode( loc ),
   ftor_( ftor ),
   ftand_( ftand )
 {
+  ZORBA_ASSERT( ftor );
+  ZORBA_ASSERT( ftand );
 }
 
 FTOr::~FTOr() {
@@ -4540,22 +4544,21 @@ void FTOr::accept( parsenode_visitor &v ) const
 
 FTAnd::FTAnd(
   QueryLoc const &loc,
-  FTAnd const *ftand,
-  FTMildNot const *ftmild_not
+  parsenode const *ftand,
+  parsenode const *ftmild_not
 ) :
   parsenode( loc ),
   ftand_( ftand ),
   ftmild_not_( ftmild_not )
 {
+  ZORBA_ASSERT( ftand );
+  ZORBA_ASSERT( ftmild_not );
 }
 
 FTAnd::~FTAnd() {
   delete ftand_;
   delete ftmild_not_;
 }
-
-
-//-FTAnd::
 
 void FTAnd::accept( parsenode_visitor &v ) const
 {
@@ -4568,13 +4571,15 @@ void FTAnd::accept( parsenode_visitor &v ) const
 
 FTMildNot::FTMildNot(
   QueryLoc const &loc,
-  FTMildNot const *ftmild_not,
-  FTUnaryNot const *ftunary_not
+  parsenode const *ftmild_not,
+  parsenode const *ftunary_not
 ) :
   parsenode( loc ),
   ftmild_not_( ftmild_not ),
   ftunary_not_( ftunary_not )
 {
+  ZORBA_ASSERT( ftmild_not );
+  ZORBA_ASSERT( ftunary_not );
 }
 
 FTMildNot::~FTMildNot() {
@@ -4598,6 +4603,7 @@ FTUnaryNot::FTUnaryNot(
   parsenode( loc ),
   primary_with_options_( primary_with_options )
 {
+  ZORBA_ASSERT( primary_with_options );
 }
 
 FTUnaryNot::~FTUnaryNot() {
@@ -4623,6 +4629,7 @@ FTPrimaryWithOptions::FTPrimaryWithOptions(
   match_options_( match_options ),
   weight_( weight )
 {
+  ZORBA_ASSERT( primary );
 }
 
 FTPrimaryWithOptions::~FTPrimaryWithOptions() {
@@ -4666,6 +4673,7 @@ FTWeight::FTWeight(
   parsenode( loc ),
   expr_( expr )
 {
+  ZORBA_ASSERT( expr );
 }
 
 void FTWeight::accept( parsenode_visitor &v ) const
@@ -4685,6 +4693,7 @@ FTWords::FTWords(
   words_value_( words_value ),
   any_all_option_( any_all_option )
 {
+  ZORBA_ASSERT( words_value );
 }
 
 FTWords::~FTWords() {
@@ -4709,6 +4718,7 @@ FTWordsTimes::FTWordsTimes(
   words_( words ),
   times_( times )
 {
+  ZORBA_ASSERT( words );
 }
 
 FTWordsTimes::~FTWordsTimes() {
@@ -4733,6 +4743,7 @@ FTWordsValue::FTWordsValue(
   literal_( literal ),
   expr_( expr )
 {
+  ZORBA_ASSERT( literal || expr );
 }
 
 void FTWordsValue::accept( parsenode_visitor &v ) const
@@ -4744,17 +4755,12 @@ void FTWordsValue::accept( parsenode_visitor &v ) const
 }
 
 
-// [353] FTOrder
-// ------------------------
 FTOrder::FTOrder(
   QueryLoc const &loc 
 ) :
   FTPosFilter( loc )
 {
 }
-
-
-//-FTOrder::
 
 void FTOrder::accept( parsenode_visitor &v ) const
 {
@@ -4763,8 +4769,6 @@ void FTOrder::accept( parsenode_visitor &v ) const
 }
 
 
-// [354] FTMatchOption
-// -------------------
 FTMatchOption::FTMatchOption(
   const QueryLoc &loc
 ) :
@@ -4773,8 +4777,6 @@ FTMatchOption::FTMatchOption(
 }
 
 
-// [355] FTCaseOption
-// ------------------
 FTCaseOption::FTCaseOption(
   QueryLoc const &loc,
   ft_case_mode::type mode
@@ -4848,7 +4850,6 @@ void FTThesaurusOption::accept( parsenode_visitor &v ) const
   ACCEPT_SEQ( thesaurus_id_list_t, thesaurus_id_list_ );
   END_VISITOR();
 }
-
 
 
 FTThesaurusID::FTThesaurusID(
@@ -4935,6 +4936,7 @@ FTStopWordsInclExcl::FTStopWordsInclExcl(
   stop_words_( stop_words ),
   mode_( mode )
 {
+  ZORBA_ASSERT( stop_words );
 }
 
 FTStopWordsInclExcl::~FTStopWordsInclExcl() {
@@ -4958,7 +4960,6 @@ FTLanguageOption::FTLanguageOption(
 {
 }
 
-
 void FTLanguageOption::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -4975,7 +4976,6 @@ FTWildCardOption::FTWildCardOption(
 {
 }
 
-
 void FTWildCardOption::accept( parsenode_visitor &v ) const {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -4991,7 +4991,6 @@ FTContent::FTContent(
 {
 }
 
-
 void FTContent::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -5000,11 +4999,11 @@ void FTContent::accept( parsenode_visitor &v ) const
 
 
 FTAnyallOption::FTAnyallOption(
-  const QueryLoc& loc,
-  ft_anyall_mode::type option)
-:
-  parsenode(loc),
-  option_(option)
+  QueryLoc const &loc,
+  ft_anyall_mode::type option
+) :
+  parsenode( loc ),
+  option_( option )
 {
 }
 
@@ -5018,14 +5017,15 @@ void FTAnyallOption::accept( parsenode_visitor &v ) const
 FTRange::FTRange(
   QueryLoc const &loc,
   ft_range_mode::type mode,
-  AdditiveExpr const *expr1,
-  AdditiveExpr const *expr2
+  exprnode const *expr1,
+  exprnode const *expr2
 ) :
   parsenode( loc ),
   mode_( mode ),
   expr1_( expr1 ),
   expr2_( expr2 )
 {
+  ZORBA_ASSERT( expr1 );
 }
 
 FTRange::~FTRange() {
@@ -5051,6 +5051,8 @@ FTDistance::FTDistance(
   distance_( distance ),
   unit_( unit )
 {
+  ZORBA_ASSERT( distance );
+  ZORBA_ASSERT( unit );
 }
 
 FTDistance::~FTDistance() {
@@ -5075,8 +5077,8 @@ FTExtensionOption::FTExtensionOption(
   qname_( qname ),
   value_( value )
 {
+  ZORBA_ASSERT( qname );
 }
-
 
 void FTExtensionOption::accept( parsenode_visitor &v ) const
 {
@@ -5094,6 +5096,7 @@ FTExtensionSelection::FTExtensionSelection(
   pragma_list_( pragma_list ),
   ftselection_( ftselection )
 {
+  ZORBA_ASSERT( pragma_list );
 }
 
 FTExtensionSelection::~FTExtensionSelection() {
@@ -5119,6 +5122,7 @@ FTWindow::FTWindow(
   window_( window ),
   unit_( unit )
 {
+  ZORBA_ASSERT( window );
 }
 
 FTWindow::~FTWindow() {
@@ -5142,6 +5146,7 @@ FTTimes::FTTimes(
   parsenode( loc ),
   range_( range )
 {
+  ZORBA_ASSERT( range );
 }
 
 FTTimes::~FTTimes() {
@@ -5165,6 +5170,7 @@ FTScope::FTScope(
   scope_( scope ),
   big_unit_( big_unit )
 {
+  ZORBA_ASSERT( big_unit );
 }
 
 FTScope::~FTScope() {
@@ -5213,11 +5219,12 @@ void FTBigUnit::accept( parsenode_visitor &v ) const
 
 FTIgnoreOption::FTIgnoreOption(
   QueryLoc const &loc,
-  UnionExpr const *expr
+  exprnode const *expr
 ) :
   parsenode( loc ),
   expr_( expr )
 {
+  ZORBA_ASSERT( expr );
 }
 
 FTIgnoreOption::~FTIgnoreOption() {
@@ -5230,6 +5237,7 @@ void FTIgnoreOption::accept( parsenode_visitor &v ) const
   ACCEPT( expr_ );
   END_VISITOR();
 }
+
 
 void AssignExpr::accept( parsenode_visitor &v ) const
 {

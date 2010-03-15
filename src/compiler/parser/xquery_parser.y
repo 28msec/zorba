@@ -3039,7 +3039,7 @@ FTContainsExpr
         {
             $$ = new FTContainsExpr(
                 LOC(@$),
-                dynamic_cast<FTRange*>($1),
+                $1,
                 dynamic_cast<FTSelection*>($4),
                 dynamic_cast<FTIgnoreOption*>($5)
             );
@@ -3057,7 +3057,6 @@ opt_FTIgnoreOption
         }
     ;
 
-// [49]
 RangeExpr
     :   AdditiveExpr %prec RANGE_REDUCE
         {
@@ -5401,11 +5400,10 @@ KEYWORD
  *                                                                       *
  *_______________________________________________________________________*/
 
-// [144]
 FTSelection
     :   FTOr opt_FTPosFilter_list
         {
-            $$ = new FTSelection( LOC(@$), dynamic_cast<FTOr*>($1), $2 );
+            $$ = new FTSelection( LOC(@$), $1, $2 );
             delete $2;
         }
     ;
@@ -5434,7 +5432,6 @@ FTPosFilter_list
         }
     ;
 
-// [146]
 FTOr
     :   FTAnd
         {
@@ -5442,13 +5439,10 @@ FTOr
         }
     |   FTOr FTOR FTAnd
         {
-            $$ = new FTOr(
-                LOC(@$), dynamic_cast<FTOr*>($1), dynamic_cast<FTAnd*>($3)
-            );
+            $$ = new FTOr( LOC(@$), $1, $3 );
         }
     ;
 
-// [147]
 FTAnd
     :   FTMildNot
         {
@@ -5456,13 +5450,10 @@ FTAnd
         }
     |   FTAnd FTAND FTMildNot
         {
-            $$ = new FTAnd(
-                LOC(@$), dynamic_cast<FTAnd*>($1), dynamic_cast<FTMildNot*>($3)
-            );
+            $$ = new FTAnd( LOC(@$), $1, $3 );
         }
     ;
 
-// [148]
 FTMildNot
     :   FTUnaryNot
         {
@@ -5470,14 +5461,10 @@ FTMildNot
         }
     |   FTMildNot FTNOT _IN FTUnaryNot
         {
-            $$ = new FTMildNot(
-                LOC(@$),
-                dynamic_cast<FTMildNot*>($1), dynamic_cast<FTUnaryNot*>($4)
-            );
+            $$ = new FTMildNot( LOC(@$), $1, $4 );
         }
     ;
 
-// [149]
 FTUnaryNot
     :   FTPrimaryWithOptions
         {
@@ -5491,7 +5478,6 @@ FTUnaryNot
         }
     ;
 
-// [150]
 FTPrimaryWithOptions
     :   FTPrimary opt_FTMatchOptions opt_FTWeight
         {

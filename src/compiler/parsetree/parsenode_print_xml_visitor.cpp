@@ -811,6 +811,7 @@ void* begin_visit( FTAnyallOption const &n ) {
   os  << "<FTAnyallOption" << IDS
       << " mode='" << ft_anyall_mode::string_of[ n.get_option() ] << "'"
       << "/>";
+  NL;
   return no_state;
 }
 NO_END_TAG( FTAnyallOption )
@@ -820,6 +821,7 @@ void* begin_visit( FTBigUnit const &n ) {
   os  << "<FTBigUnit" << IDS
       << " unit='" << ft_big_unit::string_of[ n.get_unit() ] << "'"
       << "/>";
+  NL;
   return no_state;
 }
 NO_END_TAG( FTBigUnit )
@@ -829,6 +831,7 @@ void* begin_visit( FTCaseOption const &n ) {
   os  << "<FTCaseOption" << IDS
       << " mode='" << ft_case_mode::string_of[ n.get_mode() ] << "'"
       << "/>";
+  NL;
   return no_state;
 }
 NO_END_TAG( FTCaseOption )
@@ -840,6 +843,7 @@ void* begin_visit( FTContent const &n ) {
   os  << "<FTContent" << IDS
       << " mode='" << ft_content_mode::string_of[ n.get_mode() ] << "'"
       << "/>";
+  NL;
   return no_state;
 }
 NO_END_TAG( FTContent )
@@ -849,6 +853,7 @@ void* begin_visit( FTDiacriticsOption const &n ) {
   os  << "<FTDiacriticsOption" << IDS
       << " mode='" << ft_diacritics_mode::string_of[ n.get_mode() ] << "'"
       << "/>";
+  NL;
   return no_state;
 }
 NO_END_TAG( FTDiacriticsOption )
@@ -863,6 +868,7 @@ void* begin_visit( FTLanguageOption const &n ) {
   os  << "<FTLanguageOption" << IDS
       << " lang='" << n.get_language() << "'"
       << "/>";
+  NL;
   return no_state;
 }
 NO_END_TAG(FTLanguageOption)
@@ -889,6 +895,7 @@ void* begin_visit( FTScope const &n ) {
   os  << "<FTScope" << IDS
       << " scope='" << ft_scope::string_of[ n.get_scope() ] << "'"
       << ">";
+  INDENT_INC; NL;
   return no_state;
 }
 END_TAG( FTScope )
@@ -898,6 +905,7 @@ void* begin_visit( FTScoreVar const &n ) {
   os  << "<FTScoreVar" << IDS
       << " varname='" << n.get_varname() << "'"
       << "/>";
+  NL;
   return no_state;
 }
 NO_END_TAG( FTScoreVar )
@@ -909,6 +917,7 @@ void* begin_visit( FTStemOption const &n ) {
   os  << "<FTStemOption" << IDS
       << " mode='" << ft_stem_mode::string_of[ n.get_mode() ] << "'"
       << "/>";
+  NL;
   return no_state;
 }
 NO_END_TAG( FTStemOption )
@@ -918,6 +927,7 @@ void* begin_visit( FTStopWordOption const &n ) {
   os  << "<FTStopWordOption" << IDS
       << " mode='" << ft_stop_words_mode::string_of[ n.get_mode() ] << "'"
       << "/>";
+  NL;
   return no_state;
 }
 NO_END_TAG( FTStopWordOption )
@@ -937,6 +947,7 @@ void* begin_visit( FTStopWordsInclExcl const &n ) {
   os  << "<FTStopWordsInclExcl" << IDS
       << " mode='" << ft_stop_words_unex::string_of[ n.get_mode() ] << "'"
       << ">";
+  INDENT_INC; NL;
   return no_state;
 }
 END_TAG( FTStopWordsInclExcl )
@@ -947,6 +958,7 @@ void* begin_visit( FTThesaurusID const &n ) {
       << " uri='" << n.get_uri() << "'"
       << " relationship='" << n.get_relationship() << "'"
       << ">";
+  INDENT_INC; NL;
   return no_state;
 }
 END_TAG( FTThesaurusID )
@@ -957,6 +969,7 @@ void* begin_visit( FTThesaurusOption const &n ) {
       << " includes-default='" << (n.includes_default() ? 'T' : 'F') << "'"
       << " no-thesaurus='" << (n.no_thesaurus() ? 'T' : 'F') << "'"
       << ">";
+  INDENT_INC; NL;
   return no_state;
 }
 END_TAG( FTThesaurusOption )
@@ -969,6 +982,7 @@ void* begin_visit( FTUnit const &n ) {
   os  << "<FTUnit" << IDS
       << " unit='" << ft_unit::string_of[ n.get_unit() ] << "'"
       << "/>";
+  NL;
   return no_state;
 }
 NO_END_TAG( FTUnit )
@@ -980,6 +994,7 @@ void* begin_visit( FTWildCardOption const &n ) {
   os  << "<FTWildCardOption" << IDS
       << " mode='" << ft_wild_card_mode::string_of[ n.get_mode() ] << "'"
       << "/>";
+  NL;
   return no_state;
 }
 NO_END_TAG( FTWildCardOption )

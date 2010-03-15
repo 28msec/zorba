@@ -37,7 +37,7 @@ public:
 
   ~ft_expr();
 
-  virtual std::ostream& put( std::ostream& ) const;
+  std::ostream& put( std::ostream& ) const;
 
 protected:
   ft_expr( short sctx, const QueryLoc& );
