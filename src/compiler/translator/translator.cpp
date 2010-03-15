@@ -10421,7 +10421,7 @@ void *begin_visit (const FTContent& v) {
 
 void end_visit (const FTContent& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  push_ftstack( new ftcontent_expr( v.get_location(), v.get_mode() ) );
+  push_ftstack( new ftcontent_filter( v.get_location(), v.get_mode() ) );
 }
 
 void *begin_visit (const FTDiacriticsOption& v) {
@@ -10447,7 +10447,7 @@ void *begin_visit (const FTDistance& v) {
 
 void end_visit (const FTDistance& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  ftdistance_expr *const d = new ftdistance_expr(
+  ftdistance_filter *const d = new ftdistance_filter(
     v.get_location(),
     dynamic_cast<ftrange_expr*>( pop_ftstack() ),
     v.get_unit()->get_unit()
@@ -10615,7 +10615,7 @@ void *begin_visit (const FTOrder& v) {
 
 void end_visit (const FTOrder& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  push_ftstack( new ftorder_expr( v.get_location() ) );
+  push_ftstack( new ftorder_filter( v.get_location() ) );
 }
 
 void *begin_visit (const FTPrimaryWithOptions& v) {
@@ -10657,7 +10657,7 @@ void *begin_visit (const FTScope& v) {
 
 void end_visit (const FTScope& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  ftscope_expr *const s = new ftscope_expr(
+  ftscope_filter *const s = new ftscope_filter(
     v.get_location(), v.get_scope(), v.get_big_unit()->get_unit()
   );
   push_ftstack( s );
@@ -10686,7 +10686,7 @@ void end_visit (const FTSelection& v, void* /*visit_state*/) {
   ftselection_expr::ftpos_filter_list_t list;
   while ( true ) {
     ftexpr *const e = pop_ftstack();
-    if ( ftpos_filter_expr *const pfe = dynamic_cast<ftpos_filter_expr*>( e ) )
+    if ( ftpos_filter *const pfe = dynamic_cast<ftpos_filter*>( e ) )
       list.push_back( pfe );
     else {
       push_ftstack( new ftselection_expr( v.get_location(), e, list ) );
@@ -10850,8 +10850,9 @@ void *begin_visit (const FTWindow& v) {
 
 void end_visit (const FTWindow& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  ftwindow_expr *const w = new ftwindow_expr(
-    v.get_location(), dynamic_cast<additive_expr*>(pop_nodestack().getp()), v.get_unit()->get_unit()
+  ftwindow_filter *const w = new ftwindow_filter(
+    v.get_location(), dynamic_cast<additive_expr*>(pop_nodestack().getp()),
+    v.get_unit()->get_unit()
   );
   push_ftstack( w );
 }

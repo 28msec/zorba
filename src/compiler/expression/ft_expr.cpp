@@ -33,8 +33,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftand_expr)
 SERIALIZABLE_CLASS_VERSIONS(ftexpr)
 END_SERIALIZABLE_CLASS_VERSIONS(ftexpr)
 
-SERIALIZABLE_CLASS_VERSIONS(ftcontent_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(ftcontent_expr)
+SERIALIZABLE_CLASS_VERSIONS(ftcontent_filter)
+END_SERIALIZABLE_CLASS_VERSIONS(ftcontent_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftcase_option)
 END_SERIALIZABLE_CLASS_VERSIONS(ftcase_option)
@@ -42,8 +42,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftcase_option)
 SERIALIZABLE_CLASS_VERSIONS(ftdiacritics_option)
 END_SERIALIZABLE_CLASS_VERSIONS(ftdiacritics_option)
 
-SERIALIZABLE_CLASS_VERSIONS(ftdistance_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(ftdistance_expr)
+SERIALIZABLE_CLASS_VERSIONS(ftdistance_filter)
+END_SERIALIZABLE_CLASS_VERSIONS(ftdistance_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftextension_option)
 END_SERIALIZABLE_CLASS_VERSIONS(ftextension_option)
@@ -66,11 +66,11 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftmild_not_expr)
 SERIALIZABLE_CLASS_VERSIONS(ftor_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(ftor_expr)
 
-SERIALIZABLE_CLASS_VERSIONS(ftorder_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(ftorder_expr)
+SERIALIZABLE_CLASS_VERSIONS(ftorder_filter)
+END_SERIALIZABLE_CLASS_VERSIONS(ftorder_filter)
 
-SERIALIZABLE_CLASS_VERSIONS(ftpos_filter_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(ftpos_filter_expr)
+SERIALIZABLE_CLASS_VERSIONS(ftpos_filter)
+END_SERIALIZABLE_CLASS_VERSIONS(ftpos_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftprimary_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(ftprimary_expr)
@@ -81,8 +81,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftprimary_with_options_expr)
 SERIALIZABLE_CLASS_VERSIONS(ftrange_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(ftrange_expr)
 
-SERIALIZABLE_CLASS_VERSIONS(ftscope_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(ftscope_expr)
+SERIALIZABLE_CLASS_VERSIONS(ftscope_filter)
+END_SERIALIZABLE_CLASS_VERSIONS(ftscope_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftselection_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(ftselection_expr)
@@ -108,8 +108,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftunary_not_expr)
 SERIALIZABLE_CLASS_VERSIONS(ftwild_card_option)
 END_SERIALIZABLE_CLASS_VERSIONS(ftwild_card_option)
 
-SERIALIZABLE_CLASS_VERSIONS(ftwindow_expr)
-END_SERIALIZABLE_CLASS_VERSIONS(ftwindow_expr)
+SERIALIZABLE_CLASS_VERSIONS(ftwindow_filter)
+END_SERIALIZABLE_CLASS_VERSIONS(ftwindow_filter)
 
 SERIALIZABLE_CLASS_VERSIONS(ftwords_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(ftwords_expr)
@@ -262,15 +262,15 @@ void ftcase_option::serialize( serialization::Archiver &ar ) {
   SERIALIZE_ENUM(ft_case_mode::type,mode_);
 }
 
-ftcontent_expr::ftcontent_expr(
+ftcontent_filter::ftcontent_filter(
   QueryLoc const &loc, ft_content_mode::type mode
 ) :
-  ftpos_filter_expr( loc ),
+  ftpos_filter( loc ),
   mode_( mode_ )
 {
 }
 
-void ftcontent_expr::accept( ftexpr_visitor &v ) const {
+void ftcontent_filter::accept( ftexpr_visitor &v ) const {
   // TODO
 }
 
@@ -292,23 +292,23 @@ void ftdiacritics_option::serialize( serialization::Archiver &ar ) {
   SERIALIZE_ENUM(ft_diacritics_mode::type,mode_);
 }
 
-ftdistance_expr::ftdistance_expr(
+ftdistance_filter::ftdistance_filter(
   QueryLoc const &loc,
   ftrange_expr *range,
   ft_unit::type unit
 ) :
-  ftpos_filter_expr( loc ),
+  ftpos_filter( loc ),
   range_( range ),
   unit_( unit )
 {
 }
 
-void ftdistance_expr::accept( ftexpr_visitor &v ) const {
+void ftdistance_filter::accept( ftexpr_visitor &v ) const {
   // TODO
 }
 
-void ftdistance_expr::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftpos_filter_expr*)this );
+void ftdistance_filter::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass( ar, (ftpos_filter*)this );
   ar & range_;
   SERIALIZE_ENUM(ft_unit::type,unit_);
 }
@@ -451,25 +451,25 @@ void ftor_expr::serialize( serialization::Archiver &ar ) {
   ar & list_;
 }
 
-ftorder_expr::ftorder_expr( QueryLoc const &loc ) :
-  ftpos_filter_expr( loc )
+ftorder_filter::ftorder_filter( QueryLoc const &loc ) :
+  ftpos_filter( loc )
 {
 }
 
-void ftorder_expr::accept( ftexpr_visitor &v ) const {
+void ftorder_filter::accept( ftexpr_visitor &v ) const {
   // TODO
 }
 
-void ftorder_expr::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftpos_filter_expr*)this );
+void ftorder_filter::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass( ar, (ftpos_filter*)this );
 }
 
-ftpos_filter_expr::ftpos_filter_expr( QueryLoc const &loc ) :
+ftpos_filter::ftpos_filter( QueryLoc const &loc ) :
   ftexpr( loc )
 {
 }
 
-void ftpos_filter_expr::serialize( serialization::Archiver &ar ) {
+void ftpos_filter::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftexpr*)this );
 }
 
@@ -524,21 +524,21 @@ void ftrange_expr::serialize( serialization::Archiver &ar ) {
   ar & expr2_;
 }
 
-ftscope_expr::ftscope_expr(
+ftscope_filter::ftscope_filter(
   QueryLoc const &loc, ft_scope::type scope, ft_big_unit::type unit
 ) :
-  ftpos_filter_expr( loc ),
+  ftpos_filter( loc ),
   scope_( scope ),
   unit_( unit )
 {
 }
 
-void ftscope_expr::accept( ftexpr_visitor &v ) const {
+void ftscope_filter::accept( ftexpr_visitor &v ) const {
   // TODO
 }
 
-void ftscope_expr::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftpos_filter_expr*)this );
+void ftscope_filter::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass( ar, (ftpos_filter*)this );
   SERIALIZE_ENUM(ft_scope::type,scope_);
   SERIALIZE_ENUM(ft_big_unit::type,unit_);
 }
@@ -732,23 +732,23 @@ void ftwild_card_option::serialize( serialization::Archiver &ar ) {
   SERIALIZE_ENUM(ft_wild_card_mode::type,mode_);
 }
 
-ftwindow_expr::ftwindow_expr(
+ftwindow_filter::ftwindow_filter(
   QueryLoc const &loc,
   rchandle<additive_expr> window,
   ft_unit::type unit )
 :
-  ftpos_filter_expr( loc ),
+  ftpos_filter( loc ),
   window_( window ),
   unit_( unit )
 {
 }
 
-void ftwindow_expr::accept( ftexpr_visitor &v ) const {
+void ftwindow_filter::accept( ftexpr_visitor &v ) const {
   // TODO ACCEPT( window_, v );
 }
 
-void ftwindow_expr::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftpos_filter_expr*)this );
+void ftwindow_filter::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass( ar, (ftpos_filter*)this );
   ar & window_;
   SERIALIZE_ENUM(ft_unit::type,unit_);
 }

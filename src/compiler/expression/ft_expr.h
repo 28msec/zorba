@@ -29,6 +29,11 @@ class ftexpr;
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * An ft_expr is-an expr that is the abstract base class for all full-text
+ * expressions.  It is also the interface between the expr tree and the ftexpr
+ * tree.
+ */
 class ft_expr : public expr {
 public:
   SERIALIZABLE_ABSTRACT_CLASS(ft_expr)
@@ -43,6 +48,9 @@ protected:
   ft_expr( short sctx, const QueryLoc& );
 };
 
+/**
+ * An ftcontains_expr is-an ft_expr for the FTContainsExpr.
+ */
 class ftcontains_expr : public ft_expr {
 public:
   SERIALIZABLE_ABSTRACT_CLASS(ftcontains_expr)
@@ -84,22 +92,22 @@ private:
 
 class ftand_expr;
 class ftcase_option;
-class ftcontent_expr;
+class ftcontent_filter;
 class ftdiacritics_option;
-class ftdistance_expr;
+class ftdistance_filter;
 class ftextension_option;
 class ftextension_selection_expr;
 class ftlanguage_option;
 class ftmatch_option;
 class ftmatch_options;
 class ftmild_not_expr;
-class ftorder_expr;
+class ftorder_filter;
 class ftor_expr;
-class ftpos_filter_expr;
+class ftpos_filter;
 class ftprimary;
 class ftprimary_with_options_expr;
 class ftrange_expr;
-class ftscope_expr;
+class ftscope_filter;
 class ftselection_expr;
 class ftstem_option;
 class ftstop_word_option;
@@ -108,10 +116,13 @@ class ftthesaurus_id;
 class ftthesaurus_option;
 class ftunary_not_expr;
 class ftwild_card_option;
-class ftwindow_expr;
+class ftwindow_filter;
 class ftwords_expr;
 class ftwords_times_expr;
 
+/**
+ * An ftexpr_visitor is used to visit the nodes of an ftexpr tree.
+ */
 class ftexpr_visitor {
 public:
   virtual ~ftexpr_visitor();
@@ -128,31 +139,35 @@ protected:
   virtual void end_visit( C const& ) = 0
 
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcontent_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdistance_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmild_not_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftorder_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftor_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftprimary_with_options_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftrange_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftscope_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftselection_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftunary_not_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_times_expr );
+
+  // FTPosFilters
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcontent_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdistance_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftorder_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftscope_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwindow_filter );
+
+  // FTMatchOptions
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_words );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftunary_not_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwindow_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_times_expr );
 
 # undef DECL_FTEXPR_VISITOR_VISIT_MEM_FNS
 # define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C) \
@@ -549,7 +564,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftselection_expr,ftprimary_expr)
   void serialize( serialization::Archiver& );
 
-  typedef std::list<ftpos_filter_expr*> ftpos_filter_list_t;
+  typedef std::list<ftpos_filter*> ftpos_filter_list_t;
 
   ftselection_expr(
     QueryLoc const&,
@@ -591,25 +606,25 @@ private:
 
 //////// FTPosFilter //////////////////////////////////////////////////////////
 
-class ftpos_filter_expr : public ftexpr {
+class ftpos_filter : public ftexpr {
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(ftpos_filter_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftpos_filter_expr,ftexpr)
+  SERIALIZABLE_ABSTRACT_CLASS(ftpos_filter)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftpos_filter,ftexpr)
   void serialize( serialization::Archiver& );
 
 protected:
-  ftpos_filter_expr( QueryLoc const& );
+  ftpos_filter( QueryLoc const& );
 };
 
-class ftcontent_expr : public ftpos_filter_expr {
+class ftcontent_filter : public ftpos_filter {
 public:
-  SERIALIZABLE_CLASS(ftcontent_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcontent_expr,ftpos_filter_expr)
+  SERIALIZABLE_CLASS(ftcontent_filter)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcontent_filter,ftpos_filter)
   void serialize( serialization::Archiver &ar ) {
-    serialize_baseclass( ar, (ftpos_filter_expr*)this );
+    serialize_baseclass( ar, (ftpos_filter*)this );
   }
 
-  ftcontent_expr( QueryLoc const&, ft_content_mode::type );
+  ftcontent_filter( QueryLoc const&, ft_content_mode::type );
 
   void accept( ftexpr_visitor& ) const;
   ft_content_mode::type get_mode() const { return mode_; }
@@ -618,13 +633,13 @@ private:
   ft_content_mode::type mode_;
 };
 
-class ftdistance_expr : public ftpos_filter_expr {
+class ftdistance_filter : public ftpos_filter {
 public:
-  SERIALIZABLE_CLASS(ftdistance_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftdistance_expr,ftpos_filter_expr)
+  SERIALIZABLE_CLASS(ftdistance_filter)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftdistance_filter,ftpos_filter)
   void serialize( serialization::Archiver& );
 
-  ftdistance_expr( QueryLoc const&, ftrange_expr*, ft_unit::type );
+  ftdistance_filter( QueryLoc const&, ftrange_expr*, ft_unit::type );
 
   void accept( ftexpr_visitor& ) const;
   ftrange_expr const* get_range() const { return range_; }
@@ -635,23 +650,23 @@ private:
   ft_unit::type unit_;
 };
 
-class ftorder_expr : public ftpos_filter_expr {
+class ftorder_filter : public ftpos_filter {
 public:
-  SERIALIZABLE_CLASS(ftorder_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftorder_expr,ftpos_filter_expr)
+  SERIALIZABLE_CLASS(ftorder_filter)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftorder_filter,ftpos_filter)
   void serialize( serialization::Archiver& );
 
   void accept( ftexpr_visitor& ) const;
-  ftorder_expr( QueryLoc const& );
+  ftorder_filter( QueryLoc const& );
 };
 
-class ftscope_expr : public ftpos_filter_expr {
+class ftscope_filter : public ftpos_filter {
 public:
-  SERIALIZABLE_CLASS(ftscope_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftscope_expr,ftpos_filter_expr)
+  SERIALIZABLE_CLASS(ftscope_filter)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftscope_filter,ftpos_filter)
   void serialize( serialization::Archiver& );
 
-  ftscope_expr( QueryLoc const&, ft_scope::type, ft_big_unit::type );
+  ftscope_filter( QueryLoc const&, ft_scope::type, ft_big_unit::type );
 
   void accept( ftexpr_visitor& ) const;
 
@@ -660,13 +675,13 @@ private:
   ft_big_unit::type unit_;
 };
 
-class ftwindow_expr : public ftpos_filter_expr {
+class ftwindow_filter : public ftpos_filter {
 public:
-  SERIALIZABLE_CLASS(ftwindow_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftwindow_expr,ftpos_filter_expr)
+  SERIALIZABLE_CLASS(ftwindow_filter)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftwindow_filter,ftpos_filter)
   void serialize( serialization::Archiver& );
 
-  ftwindow_expr( QueryLoc const&, additive_expr_t, ft_unit::type );
+  ftwindow_filter( QueryLoc const&, additive_expr_t, ft_unit::type );
 
   void accept( ftexpr_visitor& ) const;
   ft_unit::type get_unit() const { return unit_; }
