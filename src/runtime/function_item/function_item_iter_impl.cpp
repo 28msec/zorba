@@ -95,10 +95,17 @@ DynamicFunctionInvocationIterator::nextImpl(
   while(state->thePlan->next(r)) {
     STACK_PUSH(true, state);
   }
-  state->thePlan->close();
-  state->thePlan = 0;
 
   STACK_END(state);
 };
 
+void DynamicFunctionInvocationIterator::closeImpl(PlanState& planState)
+{
+  DynamicFunctionInvocationIteratorState* state = StateTraitsImpl<DynamicFunctionInvocationIteratorState>::
+  getState(planState, theStateOffset);
+  state->thePlan->close();
+  state->thePlan = 0;
+  NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>::
+  closeImpl(planState);
+}
 }//zorba namespace

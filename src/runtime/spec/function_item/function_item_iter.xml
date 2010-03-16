@@ -22,7 +22,7 @@
  Dynamic Function Invocation
 ********************************************************************************/
 -->
-<z:iterator name="DynamicFunctionInvocationIterator">
+<z:iterator name="DynamicFunctionInvocationIterator" generateCloseImpl="true">
   <z:description author="Zorba Team">TODO: notes from the spec</z:description>
 
   <z:member type="checked_vector&lt;PlanIter_t>" name="theArgs" />
