@@ -14,10 +14,11 @@
 
 INCLUDE(${CMAKE_MODULE_PATH}/FindPHP5.cmake)
 FIND_PACKAGE(PHP5)
+
 IF( NOT PHP5_FOUND )
-  MESSAGE(STATUS "PHP5 binding not generated because library and include file not installed.")
+  MESSAGE(STATUS "SWIG PHP: PHP5 binding not generated because library and include file not installed.")
 ELSE( NOT PHP5_FOUND )
-  MESSAGE(STATUS "Generating PHP5 API")
+  MESSAGE(STATUS "SWIG PHP: Generating PHP5 API")
   SET_SOURCE_FILES_PROPERTIES(zorba_api.i PROPERTIES CPLUSPLUS ON)
   INCLUDE_DIRECTORIES(${PHP5_INCLUDES})
   SWIG_ADD_MODULE(zorba_api php5 zorba_api.i)
@@ -35,7 +36,7 @@ ELSE( NOT PHP5_FOUND )
 
   STRING(REPLACE ${CMAKE_INSTALL_PREFIX} "" PHP5_INSTALL_PATH ${PHP5_EXTENSION_DIR})
   SET(PHP5_INSTALL_PATH ${CMAKE_INSTALL_PREFIX}${PHP5_INSTALL_PATH})
-  MESSAGE(STATUS "PHP module install path: " ${PHP5_INSTALL_PATH})
+  MESSAGE(STATUS "SWIG PHP: PHP module install path: " ${PHP5_INSTALL_PATH})
 
   INSTALL ( FILES ${CMAKE_CURRENT_BINARY_DIR}/zorba_api_wrapper.php
                   ${CMAKE_CURRENT_BINARY_DIR}/zorba_api.so

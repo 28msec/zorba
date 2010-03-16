@@ -29,74 +29,74 @@
 
 # Look for the header file.
 find_path(
-	ICU_INCLUDE
-	NAMES unicode/utypes.h
-	PATHS ${ICU_INCLUDE_DIR}
-	DOC "Include directory for the ICU library")
+  ICU_INCLUDE
+  NAMES unicode/utypes.h
+  PATHS ${ICU_INCLUDE_DIR}
+  DOC "Include directory for the ICU library")
 mark_as_advanced(ICU_INCLUDE)
 
 # Look for the library.
 find_library(
-	ICU_LIBRARY
-	NAMES icuuc cygicuuc cygicuuc32 cygicuuc38
-	PATHS ${ICU_LIBRARY_DIR}
-	DOC "Libraries to link against for the common parts of ICU (icuuc, cygicuuc, cygicuuc32 or cygicuuc38)")
+  ICU_LIBRARY
+  NAMES icuuc cygicuuc cygicuuc32 cygicuuc38
+  PATHS ${ICU_LIBRARY_DIR}
+  DOC "Libraries to link against for the common parts of ICU (icuuc, cygicuuc, cygicuuc32 or cygicuuc38)")
 mark_as_advanced(ICU_LIBRARY)
 
 if (ICU_LIBRARY)
-	MESSAGE("-- Found ICU library -- " ${ICU_LIBRARY})
+  MESSAGE(STATUS "Found ICU library -- " ${ICU_LIBRARY})
 else (ICU_LIBRARY)
-	MESSAGE("-- Could not find ICU library")
+  MESSAGE(STATUS "Could not find ICU library")
 endif (ICU_LIBRARY)
 
 
 # Copy the results to the output variables.
 if(ICU_INCLUDE AND ICU_LIBRARY)
-	set(ICU_FOUND 1)
-	set(ICU_LIBRARIES ${ICU_LIBRARY})
-	set(ICU_INCLUDE_DIRS ${ICU_INCLUDE})
+  set(ICU_FOUND 1)
+  set(ICU_LIBRARIES ${ICU_LIBRARY})
+  set(ICU_INCLUDE_DIRS ${ICU_INCLUDE})
 
-	# Look for the ICU internationalization libraries
-	find_library(
-		ICU_I18N_LIBRARY
-		NAMES icuin icui18n cygicuin cygicuin32 cygicuin38
-		PATHS ${ICU_LIBRARY_DIR}
-		DOC "Libraries to link against for ICU internationalization (icuin, icui18n, cygicuin, cygicuin32 or cygicuin38)")
-	mark_as_advanced(ICU_I18N_LIBRARY)
-	if (ICU_I18N_LIBRARY)
-		MESSAGE("-- Found ICU internationalization library -- " ${ICU_I18N_LIBRARY})
-		set(ICU_I18N_FOUND 1)
-		set(ICU_I18N_LIBRARIES ${ICU_I18N_LIBRARY})
-	else (ICU_I18N_LIBRARY)
-		MESSAGE("-- Could not find ICU internationalization library")
-		set(ICU_I18N_FOUND 0)
-		set(ICU_I18N_LIBRARIES)
-	endif (ICU_I18N_LIBRARY)
+  # Look for the ICU internationalization libraries
+  find_library(
+    ICU_I18N_LIBRARY
+    NAMES icuin icui18n cygicuin cygicuin32 cygicuin38
+    PATHS ${ICU_LIBRARY_DIR}
+    DOC "Libraries to link against for ICU internationalization (icuin, icui18n, cygicuin, cygicuin32 or cygicuin38)")
+  mark_as_advanced(ICU_I18N_LIBRARY)
+  if (ICU_I18N_LIBRARY)
+    MESSAGE(STATUS "Found ICU internationalization library -- " ${ICU_I18N_LIBRARY})
+    set(ICU_I18N_FOUND 1)
+    set(ICU_I18N_LIBRARIES ${ICU_I18N_LIBRARY})
+  else (ICU_I18N_LIBRARY)
+    MESSAGE(STATUS "Could not find ICU internationalization library")
+    set(ICU_I18N_FOUND 0)
+    set(ICU_I18N_LIBRARIES)
+  endif (ICU_I18N_LIBRARY)
 
-	# On cygwin, the data library is called icudt
-	if (CYGWIN OR MSVC)
-		SET (ICU_DATA_NAMES icudt cygicudt cygicudt38)
-	else (CYGWIN OR MSVC)
-		SET (ICU_DATA_NAMES icudata)
-	endif (CYGWIN OR MSVC)
+  # On cygwin, the data library is called icudt
+  if (CYGWIN OR MSVC)
+    SET (ICU_DATA_NAMES icudt cygicudt cygicudt38)
+  else (CYGWIN OR MSVC)
+    SET (ICU_DATA_NAMES icudata)
+  endif (CYGWIN OR MSVC)
 
-	# Look for ICU data library
-	find_library(
-		ICU_DATA_LIBRARY
-		NAMES ${ICU_DATA_NAMES}
-		PATHS ${ICU_LIBRARY_DIR}
-		DOC "icudata library (icudt, cygicudt or cygicudt38)")
-	mark_as_advanced(ICU_DATA_LIBRARY)
-	if (ICU_DATA_LIBRARY)
-		MESSAGE("-- Found ICU data library -- " ${ICU_DATA_LIBRARY})
-		SET(ICU_DATA_FOUND 1)
-		SET(ICU_DATA_LIBRARIES ${ICU_DATA_LIBRARY})
-	else (ICU_DATA_LIBRARY)
-		MESSAGE("-- Could not find ICU data library")
-		SET(ICU_DATA_FOUND 0)
-		SET(ICU_DATA_LIBRARIES)
-	endif (ICU_DATA_LIBRARY)
-	
+  # Look for ICU data library
+  find_library(
+    ICU_DATA_LIBRARY
+    NAMES ${ICU_DATA_NAMES}
+    PATHS ${ICU_LIBRARY_DIR}
+    DOC "icudata library (icudt, cygicudt or cygicudt38)")
+  mark_as_advanced(ICU_DATA_LIBRARY)
+  if (ICU_DATA_LIBRARY)
+    MESSAGE(STATUS "Found ICU data library -- " ${ICU_DATA_LIBRARY})
+    SET(ICU_DATA_FOUND 1)
+    SET(ICU_DATA_LIBRARIES ${ICU_DATA_LIBRARY})
+  else (ICU_DATA_LIBRARY)
+    MESSAGE(STATUS "Could not find ICU data library")
+    SET(ICU_DATA_FOUND 0)
+    SET(ICU_DATA_LIBRARIES)
+  endif (ICU_DATA_LIBRARY)
+  
 else(ICU_INCLUDE AND ICU_LIBRARY)
   set(ICU_FOUND 0)
   set(ICU_I18N_FOUND 0)
