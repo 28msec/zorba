@@ -179,7 +179,15 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
       local:add-methods($iter)
     else (),
     $gen:indent,'void accept(PlanIterVisitor&amp; v) const;',$gen:newline,$gen:newline,
-    $gen:indent,'bool nextImpl(store::Item_t&amp; result, PlanState&amp; aPlanState) const;',$gen:newline,'};',$gen:newline,$gen:newline
+    $gen:indent,'bool nextImpl(store::Item_t&amp; result, PlanState&amp; aPlanState) const;',$gen:newline,
+    if( $iter/@generateResetImpl eq 'true') then
+      concat($gen:newline, gen:indent(), 'void resetImpl(PlanState&amp;) const;', $gen:newline)
+    else (),
+    if( $iter/@generateCloseImpl eq 'true') then
+      concat($gen:newline, gen:indent(), 'void closeImpl(PlanState&amp;);', $gen:newline)
+    else (),
+    '};',
+    $gen:newline,$gen:newline
     )
 };
 
