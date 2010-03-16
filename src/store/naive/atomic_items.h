@@ -876,6 +876,8 @@ public:
   xqp_integer getIntegerValue() const { return theValue; }
   xqp_decimal getDecimalValue() const;
 
+  virtual xqp_long getLongValue() const;
+
   virtual store::Item* getType() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const

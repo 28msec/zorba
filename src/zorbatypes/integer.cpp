@@ -173,7 +173,8 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger)
   }
 }
 
-bool Integer::parseStringUnsigned(const char* aStarChar, Integer& aUInteger) {
+bool Integer::parseStringUnsigned(const char* aStarChar, Integer& aUInteger) 
+{
   // correctness check
   const char* lCur = aStarChar;
   bool lStop = false;
@@ -208,8 +209,10 @@ bool Integer::parseStringUnsigned(const char* aStarChar, Integer& aUInteger) {
 #endif
   }
 }
+
   
-bool Integer::parseDouble(const Double& aDouble, Integer& aInteger) {
+bool Integer::parseDouble(const Double& aDouble, Integer& aInteger) 
+{
   if (aDouble.isFinite()) {
     aInteger.theInteger = floatingToInteger(aDouble.theFloating);
     return true;
@@ -219,7 +222,9 @@ bool Integer::parseDouble(const Double& aDouble, Integer& aInteger) {
   }
 }
 
-bool Integer::parseFloat(const Float& aFloat, Integer& aInteger) {
+
+bool Integer::parseFloat(const Float& aFloat, Integer& aInteger) 
+{
   if (aFloat.isFinite()) {
     aInteger.theInteger = floatingToInteger(aFloat.theFloating);
     return true;
@@ -229,65 +234,82 @@ bool Integer::parseFloat(const Float& aFloat, Integer& aInteger) {
   }
 }
 
-Integer Integer::parseDecimal(const Decimal& aDecimal) {
+
+Integer Integer::parseDecimal(const Decimal& aDecimal) 
+{
   Integer lInteger(floatingToInteger(aDecimal.theDecimal));
   return lInteger;
 }
 
-Integer Integer::parseLongLong(long long aLong) {
+
+Integer Integer::parseLongLong(long long aLong) 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpString lStrRep = NumConversions::longLongToStr(aLong);
-  MAPM lMAPM = lStrRep.c_str();
+  xqpStringStore_t lStrRep = NumConversions::longLongToStr(aLong);
+  MAPM lMAPM = lStrRep->c_str();
   return Integer(lMAPM);
 #else
   return Integer((IMAPM)aLong);
 #endif
 }
 
-Integer Integer::parseULongLong(unsigned long long aULong) {
+
+Integer Integer::parseULongLong(unsigned long long aULong) 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpString lStrRep = NumConversions::ulongLongToStr(aULong);
-  MAPM lMAPM = lStrRep.c_str();
+  xqpStringStore_t lStrRep = NumConversions::ulongLongToStr(aULong);
+  MAPM lMAPM = lStrRep->c_str();
   return Integer(lMAPM);
 #else
   return Integer((IMAPM)aULong);
 #endif
 }
 
-Integer Integer::parseInt(int32_t aInt) {
+
+Integer Integer::parseInt(int32_t aInt) 
+{
   MAPM lMAPM = aInt;
   Integer lInteger(lMAPM);
   return lInteger;
 }
 
-Integer Integer::parseUInt(uint32_t aUInt) {
+
+Integer Integer::parseUInt(uint32_t aUInt) 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpString lStrRep = NumConversions::uintToStr(aUInt);
-  MAPM lMAPM = lStrRep.c_str();
+  xqpStringStore_t lStrRep = NumConversions::uintToStr(aUInt);
+  MAPM lMAPM = lStrRep->c_str();
   return Integer(lMAPM);
 #else
   return Integer((IMAPM)aUInt);
 #endif
 }
 
-Integer Integer::parseLong(long aLong) { 
+
+Integer Integer::parseLong(long aLong) 
+{ 
   MAPM lNumber = aLong;
   return Integer(lNumber);
 }
 
-Integer Integer::parseULong(unsigned long aULong) {
+
+Integer Integer::parseULong(unsigned long aULong) 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpString lStrRep = NumConversions::ulongLongToStr(aULong);
-  MAPM lNumber = lStrRep.c_str();
+  xqpStringStore_t lStrRep = NumConversions::ulongLongToStr(aULong);
+  MAPM lNumber = lStrRep->c_str();
   return Integer(lNumber);
 #else
   return Integer((IMAPM)aULong);
 #endif
 }
-Integer Integer::parseSizeT(size_t aSizeT) {
+
+
+Integer Integer::parseSizeT(size_t aSizeT) 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpString lStrRep = NumConversions::sizetToStr(aSizeT);
-  MAPM lNumber = lStrRep.c_str();
+  xqpStringStore_t lStrRep = NumConversions::sizetToStr(aSizeT);
+  MAPM lNumber = lStrRep->c_str();
   return Integer(lNumber);
 #else
   return Integer((IMAPM)aSizeT);
@@ -295,19 +317,22 @@ Integer Integer::parseSizeT(size_t aSizeT) {
 }
 
 
-Integer& Integer::operator=(const Integer& aInteger) {
+Integer& Integer::operator=(const Integer& aInteger) 
+{
   theInteger = aInteger.theInteger;
   return *this;
 }
 
-MAPM Integer::longlongToMAPM(long long aLong) {
+MAPM Integer::longlongToMAPM(long long aLong) 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpString lStrRep = NumConversions::longLongToStr(aLong);
-  return MAPM(lStrRep.c_str());
+  xqpStringStore_t lStrRep = NumConversions::longLongToStr(aLong);
+  return MAPM(lStrRep->c_str());
 #else
   return (MAPM)aLong;
 #endif
 }
+
 
 IMAPM Integer::floatingToInteger(MAPM theFloating) 
 {
@@ -323,90 +348,123 @@ IMAPM Integer::floatingToInteger(MAPM theFloating)
 }
 
 
-Integer Integer::operator+(const Integer& aInteger) const {
+Integer Integer::operator+(const Integer& aInteger) const 
+{
   return Integer(theInteger + aInteger.theInteger);
 }
 
-Decimal Integer::operator+(const Decimal& aDecimal) const {
+
+Decimal Integer::operator+(const Decimal& aDecimal) const 
+{
   return Decimal(theInteger + aDecimal.theDecimal);
 }
 
-Integer& Integer::operator+=(const Integer& aInteger) {
+
+Integer& Integer::operator+=(const Integer& aInteger) 
+{
   theInteger += aInteger.theInteger;
   return *this;
 }
 
-Integer Integer::operator-(const Integer& aInteger) const {
+
+Integer Integer::operator-(const Integer& aInteger) const 
+{
   return Integer(theInteger - aInteger.theInteger);
 }
 
-Decimal Integer::operator-(const Decimal& aDecimal) const {
+
+Decimal Integer::operator-(const Decimal& aDecimal) const 
+{
   return Decimal(theInteger - aDecimal.theDecimal);
 }
 
-Integer& Integer::operator-=(const Integer& aInteger) {
+
+Integer& Integer::operator-=(const Integer& aInteger) 
+{
   theInteger -= aInteger.theInteger;
   return *this;
 }
 
-Integer Integer::operator*(const Integer& aInteger) const {
+
+Integer Integer::operator*(const Integer& aInteger) const 
+{
   return Integer(theInteger * aInteger.theInteger);
 }
 
-Decimal Integer::operator*(const Decimal& aDecimal) const {
+
+Decimal Integer::operator*(const Decimal& aDecimal) const 
+{
   return Decimal(theInteger * aDecimal.theDecimal);
 }
 
-Integer& Integer::operator*=(const Integer& aInteger) {
+
+Integer& Integer::operator*=(const Integer& aInteger) 
+{
   theInteger *= aInteger.theInteger;
   return *this;
 }
 
-Integer Integer::operator/(const Integer& aInteger) const {
+
+Integer Integer::operator/(const Integer& aInteger) const 
+{
   MAPM lRes = (MAPM)theInteger / aInteger.theInteger;
   lRes = floatingToInteger(lRes);
   return Integer(lRes);
 }
 
-Decimal Integer::operator/(const Decimal& aDecimal) const {
+
+Decimal Integer::operator/(const Decimal& aDecimal) const 
+{
   MAPM lRes = (MAPM)theInteger / aDecimal.theDecimal;
   return Decimal(lRes);
 }
 
-Integer& Integer::operator/=(const Integer& aInteger) {
+
+Integer& Integer::operator/=(const Integer& aInteger) 
+{
   theInteger /= (MAPM)aInteger.theInteger;
   theInteger = floatingToInteger(theInteger);
   return *this;
 }
 
-Integer Integer::operator%(const Integer& aInteger) const {
+
+Integer Integer::operator%(const Integer& aInteger) const 
+{
   MAPM lRes = theInteger % aInteger.theInteger;
   return Integer(lRes);
 }
 
-Decimal Integer::operator%(const Decimal& aDecimal) const {
+
+Decimal Integer::operator%(const Decimal& aDecimal) const 
+{
   MAPM lRes = theInteger % (IMAPM)aDecimal.theDecimal;
   return Decimal(lRes);
 }
 
-Integer& Integer::operator%=(const Integer& aInteger) {
+
+Integer& Integer::operator%=(const Integer& aInteger) 
+{
   theInteger %= aInteger.theInteger;
   return *this;
 }
 
+
 Integer Integer::operator-() const {
   return Integer(-theInteger);
 }
+
 
 Integer& Integer::operator++() {
   ++theInteger;
   return *this;
 }
 
+
 Integer& Integer::operator--() {
   --theInteger;
   return *this;
 }
+
 
 Integer Integer::operator++(int) {
   Integer lRes(theInteger);
@@ -414,27 +472,35 @@ Integer Integer::operator++(int) {
   return lRes;
 }
 
+
 Integer Integer::operator--(int) {
   Integer lRes(theInteger);
   --theInteger;
   return lRes;
 }
 
-Integer Integer::round(Integer aPrecision) const {
+
+Integer Integer::round(Integer aPrecision) const 
+{
   return Integer(Decimal::round(theInteger, aPrecision.theInteger));
 }
 
-Integer Integer::roundHalfToEven(Integer aPrecision) const {
+
+Integer Integer::roundHalfToEven(Integer aPrecision) const 
+{
   return Integer(Decimal::roundHalfToEven(theInteger, aPrecision.theInteger));
 }
 
-Integer Integer::sqrt () const {
+
+Integer Integer::sqrt () const 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
   return Integer (theInteger.sqrt ());
 #else
   return Integer(::sqrt((double)theInteger));
 #endif
 }
+
 
 Double  Integer::pow(Integer p) const
 {
@@ -451,51 +517,69 @@ Double  Integer::pow(Integer p) const
 #endif
 }
 
-bool Integer::operator==(const Decimal& aDecimal) const {
+bool Integer::operator==(const Decimal& aDecimal) const 
+{
   return theInteger == aDecimal.theDecimal;
 }
 
-bool Integer::operator!=(const Decimal& aDecimal) const {
+
+bool Integer::operator!=(const Decimal& aDecimal) const 
+{
   return theInteger != aDecimal.theDecimal;
 }
 
-bool Integer::operator<(const Decimal& aDecimal) const {
+
+bool Integer::operator<(const Decimal& aDecimal) const 
+{
   return theInteger < aDecimal.theDecimal;
 }
 
-bool Integer::operator<=(const Decimal& aDecimal) const {
+
+bool Integer::operator<=(const Decimal& aDecimal) const 
+{
   return theInteger <= aDecimal.theDecimal;
 }
 
-bool Integer::operator<=(const Double& aDouble) const {
+
+bool Integer::operator<=(const Double& aDouble) const 
+{
     return theInteger <= aDouble.theFloating;
 }
 
-bool Integer::operator>(const Decimal& aDecimal) const {
+
+bool Integer::operator>(const Decimal& aDecimal) const 
+{
   return theInteger > aDecimal.theDecimal;
 }
 
-bool Integer::operator>=(const Decimal& aDecimal) const {
+
+bool Integer::operator>=(const Decimal& aDecimal) const 
+{
   return theInteger >= aDecimal.theDecimal;
 }
 
-bool Integer::operator>=(const Double& aDouble) const {
+
+bool Integer::operator>=(const Double& aDouble) const 
+{
   return theInteger >= aDouble.theFloating;
 }
 
-xqpString Integer::toString() const {
+
+xqpStringStore_t Integer::toString() const 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
   char* lBuffer = new char[theInteger.exponent()+3];
   theInteger.toIntegerString(lBuffer);
-  xqpString lResult = lBuffer;
+  xqpStringStore* lResult = new xqpStringStore(lBuffer);
   delete[] lBuffer;
   return lResult;
 #else
   char lBuffer[124];
   sprintf(lBuffer, "%d", theInteger);
-  return xqpString(lBuffer);
+  return new xqpStringStore(lBuffer);
 #endif
 }
+
 
 uint32_t Integer::hash() const
 {
@@ -511,8 +595,10 @@ uint32_t Integer::hash() const
 #endif
 }
 
-std::ostream& operator<<(std::ostream& os, const Integer& aInteger) {
-  os << aInteger.toString();
+
+std::ostream& operator<<(std::ostream& os, const Integer& aInteger) 
+{
+  os << aInteger.toString()->str();
   return os;
 }
 

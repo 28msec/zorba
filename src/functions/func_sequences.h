@@ -192,6 +192,28 @@ public:
 };
 
 
+//fn-zorba:int-subsequence
+class fn_zorba_int_subsequence : public function
+{
+public:
+  fn_zorba_int_subsequence(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INT_SUBSEQUENCE_3)
+  {
+  }
+
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+
+  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
+
+  bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
+
+  COMPUTE_ANNOTATION_DECL();
+
+  CODEGEN_DECL();
+};
+
+
 //fn:zero-or-one
 class fn_zero_or_one : public function
 {

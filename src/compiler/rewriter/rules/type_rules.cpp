@@ -301,7 +301,7 @@ RULE_REWRITE_POST(SpecializeOperations)
     fo_expr* fo = static_cast<fo_expr *>(node);
     const function* fn = fo->get_func();
 
-    if (! fn->specializable ())
+    if (! fn->specializable())
       return NULL;
 
     if (fn->getKind() == FunctionConsts::FN_SUM_1 ||
@@ -327,6 +327,21 @@ RULE_REWRITE_POST(SpecializeOperations)
           fo->set_arg(0, promoteExpr);
         }
 
+        return node;
+      }
+    }
+    else if (fn->getKind() == FunctionConsts::OP_UNARY_MINUS_1 ||
+             fn->getKind() == FunctionConsts::OP_UNARY_PLUS_1)
+    {
+      expr_t argExpr = fo->get_arg(0, false);
+      xqtref_t argType = argExpr->return_type(sctx);
+      std::vector<xqtref_t> argTypes;  
+      argTypes.push_back(argType);
+
+      function* replacement = fn->specialize(sctx, argTypes);
+      if (replacement != NULL)
+      {
+        fo->set_func(replacement);
         return node;
       }
     }
@@ -482,7 +497,7 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
   xqtref_t aType = 
   TypeOps::arithmetic_type(*t0,
                            *t1,
-                           fn->arithmetic_kind() == ArithmeticConsts::DIVISION);
+                           fn->arithmeticKind() == ArithmeticConsts::DIVISION);
   
   if (!TypeOps::is_numeric(*aType))
   {

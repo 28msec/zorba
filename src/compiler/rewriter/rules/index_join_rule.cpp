@@ -174,7 +174,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     break;
   }
 
-  if (fn->comparison_kind() != CompareConsts::VALUE_EQUAL)
+  if (fn->comparisonKind() != CompareConsts::VALUE_EQUAL)
     return false;
 
   const expr* op1 = foExpr->get_arg(0);

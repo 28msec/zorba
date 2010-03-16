@@ -278,7 +278,7 @@ public:
   bool
   operator>=(const Double&) const;
 
-  xqpString
+  xqpStringStore_t
   toString() const;
 
   uint32_t 

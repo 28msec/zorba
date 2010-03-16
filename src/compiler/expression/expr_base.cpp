@@ -568,6 +568,29 @@ bool expr::contains_expr(const expr* e) const
 
 
 /*******************************************************************************
+  If "this" is a var_expr or a wrapper_expr over a var_expr, return the var_expr;
+  otherwise return NULL.
+********************************************************************************/
+const var_expr* expr::get_var() const
+{
+  expr_kind_t kind = get_expr_kind();
+
+  if (kind == wrapper_expr_kind)
+  {
+    const wrapper_expr* wrapperExpr = static_cast<const wrapper_expr*>(this);
+
+    if (wrapperExpr->get_expr()->get_expr_kind() == var_expr_kind)
+      return static_cast<const var_expr*>(wrapperExpr->get_expr());
+  }
+
+  if (kind == var_expr_kind)
+    return static_cast<const var_expr*>(this);
+
+  return NULL;
+}
+
+
+/*******************************************************************************
   This method tries to see if "this" is a map with respect to the given expr.
 
   Let E1 be an expr and E2 be a sub-expr of E1, Then, E1 is a map w.r.t. E2 iff

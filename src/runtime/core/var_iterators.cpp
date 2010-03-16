@@ -30,6 +30,7 @@
 #include "store/api/iterator.h"
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
+#include "store/api/temp_seq.h"
 
 
 namespace zorba
@@ -260,11 +261,13 @@ bool ForVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   ForVarState* state;
   DEFAULT_STACK_INIT(ForVarState, state, planState);
+
   if ((result = state->theValue) != NULL)
   {
     STACK_PUSH(true, state);
   }
-  STACK_END (state);
+
+  STACK_END(state);
 }
 
 
@@ -293,6 +296,7 @@ LetVarState::~LetVarState()
 void LetVarState::reset(PlanState& planState) 
 { 
   PlanIteratorState::reset(planState); 
+
   if (theSourceIter != NULL) 
     theSourceIter->reset();
 }
@@ -304,8 +308,17 @@ LetVarIterator::LetVarIterator(
     store::Item* name)
   :
   NoaryBaseIterator<LetVarIterator, LetVarState>(sctx, loc),
-  theVarName(name)
+  theVarName(name),
+  theTargetPos(0)
 {
+}
+
+
+void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (NoaryBaseIterator<LetVarIterator, LetVarState>*)this);
+  ar & theVarName;
+  ar & theTargetPos;
 }
 
 
@@ -318,17 +331,117 @@ void LetVarIterator::bind(store::Iterator_t& it, PlanState& planState)
 }
 
 
-bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
 {
   LetVarState* state;
   state = StateTraitsImpl<LetVarState>::getState(planState, theStateOffset);
 
-  ZORBA_ASSERT (state->theSourceIter != NULL);
-  return state->theSourceIter->next(result);
+  state->theTempSeq = value;
+
+  if (theTargetPos > 0)
+  {
+    value->getItem(theTargetPos, state->theItem);
+  }
+  else if (theTargetPosIter == NULL)
+  {
+    state->theSourceIter = state->theTempSeq->getIterator();
+    state->theSourceIter->open();
+  }
 }
 
 
-NOARY_ACCEPT(LetVarIterator);
+void LetVarIterator::openImpl(
+    PlanState& planState,
+    uint32_t& offset)
+{
+  NoaryBaseIterator<LetVarIterator, LetVarState>::openImpl(planState, offset);
+
+  if (theTargetPosIter != NULL)
+    theTargetPosIter->open(planState, offset);
+}
+
+
+void LetVarIterator::resetImpl(PlanState& planState) const
+{
+  NoaryBaseIterator<LetVarIterator, LetVarState>::resetImpl(planState);
+
+  if (theTargetPosIter != NULL)
+    theTargetPosIter->reset(planState);
+}
+
+
+void LetVarIterator::closeImpl(PlanState& planState)
+{
+  NoaryBaseIterator<LetVarIterator, LetVarState>::closeImpl(planState);
+
+  if (theTargetPosIter != NULL)
+    theTargetPosIter->close(planState);
+}
+
+
+bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t posItem;
+  xqp_long pos;
+
+  LetVarState* state;
+  DEFAULT_STACK_INIT(LetVarState, state, planState);
+
+  if (theTargetPos > 0)
+  {
+    result = state->theItem;
+    if (result)
+      STACK_PUSH(true, state);
+  }
+  else if (theTargetPosIter != NULL)
+  {
+    if (!consumeNext(posItem, theTargetPosIter, planState))
+    {
+      ZORBA_ASSERT(false);
+    }
+
+    pos = posItem->getLongValue();
+
+    state->theTempSeq->getItem(pos, result);
+
+    if (result)
+      STACK_PUSH(true, state);
+  }
+  else
+  {
+    assert(state->theSourceIter != NULL);
+    while (state->theSourceIter->next(result))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
+
+  STACK_END(state);
+}
+
+
+uint32_t LetVarIterator::getStateSizeOfSubtree() const
+{
+  if (theTargetPosIter != NULL)
+  {
+    return theTargetPosIter->getStateSizeOfSubtree() + getStateSize();
+  }
+  else
+  {
+    return getStateSize(); 
+  }
+}
+
+
+void LetVarIterator::accept(PlanIterVisitor& v) const
+{
+  v.beginVisit(*this);
+
+  if (theTargetPosIter != NULL)
+    theTargetPosIter->accept(v);
+
+  v.endVisit(*this);
+}
 
 
 } /* namespace zorba */

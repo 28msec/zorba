@@ -446,9 +446,9 @@ void Duration::setFacet(FACET_TYPE a_facet)
   normalize();
 }
   
-int Duration::parseYearMonthDuration(const xqpString& s, Duration& d)
+int Duration::parseYearMonthDuration(const xqpStringStore_t& s, Duration& d)
 {
-  std::string ss = s.getStore()->str();
+  std::string ss = s->str();
   bool negative = false;
   unsigned int position = 0;
   long result, months = 0;
@@ -632,9 +632,12 @@ static bool parse_hms_string(std::string ss, unsigned int& position, long& hours
 }
 
 // Parse a 'PnDTnHnMnS' dateTime duration
-int Duration::parseDayTimeDuration(const xqpString& s, Duration& d, bool dont_check_letter_p)
+int Duration::parseDayTimeDuration(
+    const xqpStringStore_t& s,
+    Duration& d,
+    bool dont_check_letter_p)
 {
-  std::string ss = s.getStore()->str();
+  std::string ss = s->str();
   bool negative = false;
   unsigned int position = 0;
   long days = 0, hours = 0, minutes = 0, seconds = 0, frac_seconds = 0;
@@ -701,15 +704,15 @@ int Duration::parseDayTimeDuration(const xqpString& s, Duration& d, bool dont_ch
 }
 
 
-int Duration::parseDuration(const xqpString& s, Duration& d)
+int Duration::parseDuration(const xqpStringStore_t& s, Duration& d)
 {
   int pos, t_pos;
   Duration dtd;
 
-  t_pos = s.indexOf("T");
-  pos = s.indexOf("M");
+  t_pos = s->bytePositionOf("T");
+  pos = s->bytePositionOf("M");
   if (pos == -1)
-    pos = s.indexOf("Y");
+    pos = s->bytePositionOf("Y");
   else if (t_pos != -1 && t_pos < pos)
     pos = -1;
 
@@ -717,15 +720,17 @@ int Duration::parseDuration(const xqpString& s, Duration& d)
   if (pos != -1)
   {
     Duration ymd;
-    if (0 != Duration::parseYearMonthDuration(s.substr(0, pos+1), ymd))
+    if (0 != Duration::parseYearMonthDuration(s->byteSubstr(0, pos+1), ymd))
       return 1;
+
     d = Duration(ymd);
     
-    if ((unsigned int)pos+1 < s.size())
+    if ((unsigned int)pos+1 < s->size())
     {
-      if (0 != Duration::parseDayTimeDuration(s.substr(pos+1), dtd, true))
+      if (0 != Duration::parseDayTimeDuration(s->substr(pos+1), dtd, true))
         return 1;
-      for (int i=DAY_DATA; i<=FRACSECONDS_DATA; i++)
+
+      for (int i = DAY_DATA; i <= FRACSECONDS_DATA; i++)
         d.data[i] = dtd.data[i];
     }
   }
@@ -734,6 +739,7 @@ int Duration::parseDuration(const xqpString& s, Duration& d)
     // No month or year -- parse DayTime
     if (0 != Duration::parseDayTimeDuration(s, dtd))
       return 1;
+
     d = dtd;
   }
 
@@ -742,64 +748,86 @@ int Duration::parseDuration(const xqpString& s, Duration& d)
 }
 
 
-xqpString Duration::toString() const
+xqpStringStore_t Duration::toString() const
 {
-  xqpString result;
+  xqpStringStore_t result;
   
   if (isZero())
   {
     if (facet == YEARMONTHDURATION_FACET)
-      return "P0M";
+      return new xqpStringStore("P0M");
     else
-      return "PT0S";
+      return new xqpStringStore("PT0S");
   }
 
   if (is_negative)
-    result += "-";
-
-  result += "P";
+  {
+    result = new xqpStringStore("-");
+    *result += "P";
+  }
+  else
+  {
+    result = new xqpStringStore("P");
+  }
 
   if (facet != DAYTIMEDURATION_FACET)
   {
     if (data[YEAR_DATA] != 0)
-      result = result + NumConversions::longToStr(data[YEAR_DATA]) + "Y";
+    {
+      *result += NumConversions::longToStr(data[YEAR_DATA]);
+      *result += "Y";
+    }
 
     if (data[MONTH_DATA] != 0)
-      result = result + NumConversions::longToStr(data[MONTH_DATA]) + "M";
+    {
+      *result += NumConversions::longToStr(data[MONTH_DATA]);
+      *result += "M";
+    }
   }
 
   if (facet != YEARMONTHDURATION_FACET)
   {
     if (data[DAY_DATA] != 0)
-      result = result + NumConversions::longToStr(data[DAY_DATA]) + "D";
+    {
+      *result += NumConversions::longToStr(data[DAY_DATA]);
+      *result += "D";
+    }
 
     for (int i=HOUR_DATA; i<=FRACSECONDS_DATA; i++)
+    {
       if (data[i] != 0)
       {
-        result += "T";
+        *result += "T";
         break;
       }
+    }
 
     if (data[HOUR_DATA] != 0)
-      result = result + NumConversions::longToStr(data[HOUR_DATA]) + "H";
-    
+    {     
+      *result += NumConversions::longToStr(data[HOUR_DATA]);
+      *result += "H";
+    }
+
     if (data[MINUTE_DATA] != 0)
-      result = result + NumConversions::longToStr(data[MINUTE_DATA]) + "M";
+    {
+      *result += NumConversions::longToStr(data[MINUTE_DATA]);
+      *result += "M";
+    }
 
     if (data[SECONDS_DATA] != 0 || data[FRACSECONDS_DATA] != 0)
     {
-      result += NumConversions::intToStr(data[SECONDS_DATA]);
+      *result += NumConversions::intToStr(data[SECONDS_DATA]);
 
       if ( data[FRACSECONDS_DATA] != 0 )
       {
         int frac_seconds = data[FRACSECONDS_DATA];
-        result += ".";
+        *result += ".";
       
         // print leading 0s, if any
         int temp = FRAC_SECONDS_UPPER_LIMIT / 10;
         while (temp > frac_seconds && temp > 0)
         {
-          result += '0';
+          *result += "0";
           temp /= 10;
         }
       
@@ -807,10 +835,10 @@ xqpString Duration::toString() const
         while (frac_seconds%10 == 0 && frac_seconds > 0)
           frac_seconds = frac_seconds / 10;
       
-        result += to_string(frac_seconds);
+        *result += to_string(frac_seconds).c_str();
       }
 
-      result += "S";
+      *result += "S";
     }
   }
   

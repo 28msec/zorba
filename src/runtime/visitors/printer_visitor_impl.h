@@ -160,6 +160,7 @@
   DECLARE_VISITOR (InstanceOfIterator)
   DECLARE_VISITOR (EitherNodesOrAtomicsIterator)
   DECLARE_VISITOR (OpNumericUnaryIterator)
+  DECLARE_VISITOR (OpDoubleUnaryIterator)
   DECLARE_VISITOR (FnIdIterator)
   DECLARE_VISITOR (FnIdRefIterator)
   DECLARE_VISITOR (TextIterator)

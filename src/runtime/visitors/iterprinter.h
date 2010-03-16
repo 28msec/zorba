@@ -21,8 +21,11 @@
 #include <stack>
 
 #include "common/common.h"
+#include "zorbatypes/representations.h"
 
-namespace yy {
+
+namespace yy 
+{
   class location;
 }
 
@@ -45,6 +48,8 @@ public:
   virtual void endBeginVisit(int aAddr) = 0;
 
   virtual void addAttribute(const std::string& aName, const std::string& aValue) = 0;
+
+  virtual void addAttribute(const std::string& aName, xqp_long aValue) = 0;
 
   virtual void startEndVisit() = 0;
   virtual void endEndVisit() = 0;
@@ -76,6 +81,8 @@ public:
 
   virtual void addAttribute(const std::string& aName, const std::string& aValue);
 
+  virtual void addAttribute(const std::string& aName, xqp_long aValue);
+
   virtual void startEndVisit();
   virtual void endEndVisit();
 }; /* class XMLVisitorPrinter */
@@ -101,6 +108,8 @@ public:
   virtual void endBeginVisit(int aAddr);
 
   virtual void addAttribute(const std::string& aName, const std::string& aValue);
+
+  virtual void addAttribute(const std::string& aName, xqp_long aValue);
 
   virtual void startEndVisit();
   virtual void endEndVisit();

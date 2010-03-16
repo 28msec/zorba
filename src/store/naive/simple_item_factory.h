@@ -174,7 +174,7 @@ public:
 
   bool createDuration(store::Item_t& result, xqp_duration* value);
   
-  bool createDuration(store::Item_t& result, const xqp_string& value);
+  bool createDuration(store::Item_t& result, const xqpStringStore_t& value);
 
   bool createDuration(store::Item_t& result, short years, short months, short days, short hours, short minutes, double seconds);
 

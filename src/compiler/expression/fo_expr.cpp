@@ -220,7 +220,11 @@ xqtref_t fo_expr::return_type_impl(static_context* sctx) const
 {
   const function* func = get_func();
 
-  if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_COLLECTION_1)
+  FunctionConsts::FunctionKind funcKind = func->getKind();
+
+  switch (funcKind) 
+  {
+  case FunctionConsts::FN_ZORBA_DDL_COLLECTION_1:
   {
     const store::Item* qname = theArgs[0]->getQName(sctx);
 
@@ -237,15 +241,49 @@ xqtref_t fo_expr::return_type_impl(static_context* sctx) const
                               qname->getStringValue(), "");
       }
     }
+    break;
+  }
+  case FunctionConsts::FN_SUBSEQUENCE_3:
+  {
+    const_expr* lenExpr = dynamic_cast<const_expr*>(theArgs[2].getp());
+
+    if (lenExpr != NULL)
+    {
+      store::Item* val = lenExpr->get_val();
+      xqp_double len = val->getDoubleValue();
+      if (len == 1.0)
+      {
+        return sctx->get_typemanager()->create_type(*theArgs[0]->return_type(sctx),
+                                                    TypeConstants::QUANT_QUESTION);
+      }
+    }
+    break;
+  }
+  case FunctionConsts::FN_ZORBA_INT_SUBSEQUENCE_3:
+  {
+    const_expr* lenExpr = dynamic_cast<const_expr*>(theArgs[2].getp());
+
+    if (lenExpr != NULL)
+    {
+      store::Item* val = lenExpr->get_val();
+      xqp_long len = val->getLongValue();
+      if (len == 1)
+      {
+        return sctx->get_typemanager()->create_type(*theArgs[0]->return_type(sctx),
+                                                    TypeConstants::QUANT_QUESTION);
+      }
+    }
+    break;
+  }
+  default:
+    break;
   }
 
-  std::vector<xqtref_t> types;
+  ulong numArgs = theArgs.size();
+  std::vector<xqtref_t> types(numArgs);
 
-  std::vector<expr_t>::const_iterator i = theArgs.begin();
-  std::vector<expr_t>::const_iterator end = theArgs.end();
-
-  for (; i != end; ++i)
-    types.push_back((*i)->return_type(sctx));
+  for (ulong i = 0; i < numArgs; ++i)
+    types[i] = theArgs[i]->return_type(sctx);
 
   return theFunction->getReturnType(types);
 }

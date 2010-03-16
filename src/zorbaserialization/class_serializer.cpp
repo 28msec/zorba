@@ -481,10 +481,10 @@ void operator&(Archiver &ar, float &obj)
   {
     //+char  strtemp[100];
     //+sprintf(strtemp, "%.7e", (double)obj);
-    FloatImpl<float>    zorba_float(obj);
-    xqpString   float_str = zorba_float.toString();
+    FloatImpl<float> zorba_float(obj);
+    xqpStringStore_t float_str = zorba_float.toString();
 
-    ar.add_simple_field("float", float_str.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("float", float_str->c_str(), &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {
@@ -517,9 +517,9 @@ void operator&(Archiver &ar, double &obj)
     //+char  strtemp[100];
     //+sprintf(strtemp, "%.16e", obj);
     FloatImpl<double>    zorba_double(obj);
-    xqpString   double_str = zorba_double.toString();
+    xqpStringStore_t   double_str = zorba_double.toString();
 
-    ar.add_simple_field("double", double_str.c_str(), &obj, ARCHIVE_FIELD_NORMAL);
+    ar.add_simple_field("double", double_str->c_str(), &obj, ARCHIVE_FIELD_NORMAL);
   }
   else
   {

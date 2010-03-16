@@ -66,7 +66,7 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
     {
       item = item->getAtomizationValue();
       {
-        xqp_string lUtf8Code = item->getIntegerValue().toString();
+        xqpStringStore_t lUtf8Code = item->getIntegerValue().toString();
         xqp_uint lCode;
         if (NumConversions::strToUInt(lUtf8Code, lCode)) 
         {
@@ -278,7 +278,7 @@ ConcatStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 
   STACK_END (state);
 }
-/* end class ConcatStrIterator */
+
 
 /**
   *______________________________________________________________________
@@ -288,7 +288,6 @@ ConcatStrIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
   * fn:string-join($arg1 as xs:string*,
   *                $arg2 as xs:string) as xs:string
   *_______________________________________________________________________*/
-/* begin class StringJoinIterator */
 bool
 StringJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -301,7 +300,7 @@ StringJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  consumeNext(item, theChildren [1].getp(), planState);
+  consumeNext(item, theChildren[1].getp(), planState);
 
   separator = item->getStringValue();
 
@@ -309,16 +308,15 @@ StringJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     while(true)
     {
-      if (consumeNext(item, theChildren [0].getp(), planState ))
+      if (consumeNext(item, theChildren[0].getp(), planState))
       {
-        item = item->getAtomizationValue();
         buf += item->getStringValue()->str();
       }
       else
       {
         resStr = new xqpStringStore(buf);
         GENV_ITEMFACTORY->createString(result, resStr);
-        STACK_PUSH(true, state );
+        STACK_PUSH(true, state);
         break;
       }
     }
@@ -326,11 +324,11 @@ StringJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   else
   {
     lFirst = true;
+
     while(true)
     {
-      if (consumeNext(item, theChildren [0].getp(), planState ))
+      if (consumeNext(item, theChildren[0].getp(), planState))
       {
-        item = item->getAtomizationValue();
         if (!lFirst)
         {
           buf += separator->str();
@@ -345,7 +343,7 @@ StringJoinIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         resStr = new xqpStringStore(buf);
         GENV_ITEMFACTORY->createString(result, resStr);
-        STACK_PUSH(true, state );
+        STACK_PUSH(true, state);
         break;
       }
     }

@@ -787,7 +787,9 @@ bool BasicItemFactory::createDuration(
 }
 
 
-bool BasicItemFactory::createDuration (store::Item_t& result,  const xqp_string& value )
+bool BasicItemFactory::createDuration(
+    store::Item_t& result,
+    const xqpStringStore_t& value)
 {
   Duration d;
   if (Duration::parseDuration(value, d))
@@ -816,7 +818,9 @@ bool BasicItemFactory::createDuration (
 }
 
 
-bool BasicItemFactory::createYearMonthDuration(store::Item_t& result, xqp_yearMonthDuration* value )
+bool BasicItemFactory::createYearMonthDuration(
+    store::Item_t& result,
+    xqp_yearMonthDuration* value )
 {
   result = new DurationItemNaive(value);
   return true;

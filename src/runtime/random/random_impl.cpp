@@ -46,9 +46,9 @@ NumGenIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
 bool
 RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t item;
-  xqp_string    seed;
-  xqp_uint      seedInt;
+  store::Item_t    item;
+  xqpStringStore_t seed;
+  xqp_uint         seedInt;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -61,7 +61,9 @@ RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     std::srand((unsigned int)seedInt);
   }
   else
+  {
     std::srand((unsigned int)(time(NULL)));
+  }
 
   GENV_ITEMFACTORY->createInteger(result, Integer::parseInt (std::rand()));
   STACK_PUSH (true, state);

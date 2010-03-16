@@ -371,6 +371,8 @@ namespace zorba{
 
     class FnSubsequenceIterator;
 
+    class IntSubsequenceIterator;
+
     class FnZeroOrOneIterator;
 
     class FnOneOrMoreIterator;
@@ -978,6 +980,9 @@ public:
 
     virtual void beginVisit ( const FnSubsequenceIterator& ) = 0;
     virtual void endVisit   ( const FnSubsequenceIterator& ) = 0;
+
+    virtual void beginVisit ( const IntSubsequenceIterator& ) = 0;
+    virtual void endVisit   ( const IntSubsequenceIterator& ) = 0;
 
     virtual void beginVisit ( const FnZeroOrOneIterator& ) = 0;
     virtual void endVisit   ( const FnZeroOrOneIterator& ) = 0;

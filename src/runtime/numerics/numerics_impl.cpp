@@ -765,7 +765,7 @@ static void formatNumber(
     adjusted = adjusted * Double::parseInt(1000);
 
   adjusted = adjusted.roundHalfToEven(Integer::parseInt(sub_picture.fractional_part.maximum_size));
-  xqpStringStore_t converted = adjusted.toString(true).theStrStore;
+  xqpStringStore_t converted = adjusted.toString(true);
   
   // process min sizes
   xqpStringStore_t integer_part, fractional_part;

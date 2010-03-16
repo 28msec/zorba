@@ -608,7 +608,8 @@ void PrinterVisitor::endVisit ( const SpecificNumArithIterator<ModOperation,
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit ( const FnMinMaxIterator& a){
+void PrinterVisitor::beginVisit ( const FnMinMaxIterator& a)
+{
   thePrinter.startBeginVisit("FnMinMaxIterator", ++theId);
   thePrinter.addAttribute("type",
       ((a.getType() == FnMinMaxIterator::MIN) != 0 ? std::string("min") :
@@ -616,7 +617,9 @@ void PrinterVisitor::beginVisit ( const FnMinMaxIterator& a){
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
-void PrinterVisitor::endVisit ( const FnMinMaxIterator& ){
+
+void PrinterVisitor::endVisit ( const FnMinMaxIterator& )
+{
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
@@ -638,7 +641,12 @@ void PrinterVisitor::endVisit(const ForVarIterator& )
 void PrinterVisitor::beginVisit(const LetVarIterator& a) 
 {
   thePrinter.startBeginVisit("LetVarIterator", ++theId);
+
   thePrinter.addAttribute("varname", a.getVarName()->getStringValue()->c_str());
+
+  if (a.getTargetPos() > 0)
+    thePrinter.addAttribute("targetPos", a.getTargetPos());
+
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
@@ -1079,6 +1087,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (InstanceOfIterator)
   PRINTER_VISITOR_DEFINITION (EitherNodesOrAtomicsIterator)
   PRINTER_VISITOR_DEFINITION (OpNumericUnaryIterator)
+  PRINTER_VISITOR_DEFINITION (OpDoubleUnaryIterator)
   PRINTER_VISITOR_DEFINITION (FnIdIterator)
   PRINTER_VISITOR_DEFINITION (FnIdRefIterator)
   PRINTER_VISITOR_DEFINITION (TextIterator)

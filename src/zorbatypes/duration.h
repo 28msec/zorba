@@ -27,7 +27,7 @@ namespace zorba
 {
 
 
-  class ZORBA_DLL_PUBLIC Duration : public ::zorba::serialization::SerializeBaseClass
+class ZORBA_DLL_PUBLIC Duration : public ::zorba::serialization::SerializeBaseClass
 {
 public:
   typedef enum
@@ -42,7 +42,7 @@ public:
 public:
   Duration();
 
-  virtual ~Duration() {} ;
+  virtual ~Duration() {}
   
   Duration(FACET_TYPE facet_type);
 
@@ -70,19 +70,19 @@ public:
    * Returns 0 on success
    */
   static int
-  parseYearMonthDuration(const xqpString& s, Duration& d);
+  parseYearMonthDuration(const xqpStringStore_t& s, Duration& d);
   
   /**
    * Returns 0 on success
    */
   static int
-  parseDayTimeDuration(const xqpString& s, Duration& d, bool dont_check_letter_p = false);
+  parseDayTimeDuration(const xqpStringStore_t& s, Duration& d, bool dont_check_letter_p = false);
 
   /**
    * Returns 0 on success
    */
   static int
-  parseDuration(const xqpString& s, Duration& d);
+  parseDuration(const xqpStringStore_t& s, Duration& d);
 
   /**
    * Returns 0 on success
@@ -93,14 +93,11 @@ public:
   bool 
   operator==(const Duration& d) const;
       
-  int
-  compare(const Duration& d, bool ignore_sign = false) const;
+  int compare(const Duration& d, bool ignore_sign = false) const;
       
-  xqpString
-  toString() const;
+  xqpStringStore_t toString() const;
       
-  Duration*
-  toDuration() const;
+  Duration* toDuration() const;
       
   Duration*
   toNegDuration() const;
@@ -209,3 +206,10 @@ public:
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+

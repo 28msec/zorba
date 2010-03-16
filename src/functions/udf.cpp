@@ -161,14 +161,14 @@ std::vector<LetVarIter_t>& user_function::get_param_iters() const
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t user_function::get_plan(CompilerCB *ccb) const
+PlanIter_t user_function::get_plan(CompilerCB* ccb) const
 {
   if (m_plan == NULL) 
   {
     std::vector<std::vector<LetVarIter_t> > param_iter_vec(m_args.size());
     hash64map<std::vector<LetVarIter_t> *> param_map;
 
-    for(uint32_t i = 0; i < m_args.size(); ++i)
+    for(ulong i = 0; i < m_args.size(); ++i)
     {
       param_map.put((uint64_t)&*m_args[i], &param_iter_vec[i]);
     }
@@ -180,10 +180,11 @@ PlanIter_t user_function::get_plan(CompilerCB *ccb) const
                             ccb,
                             &param_map);
 
-    for(uint32_t i = 0; i < param_iter_vec.size(); ++i) 
+    for(ulong i = 0; i < param_iter_vec.size(); ++i) 
     {
       std::vector<LetVarIter_t>& vec = param_iter_vec[i];
-      switch(vec.size()) {
+      switch(vec.size()) 
+      {
         case 0:
           m_param_iters.push_back(NULL);
           break;
@@ -193,7 +194,7 @@ PlanIter_t user_function::get_plan(CompilerCB *ccb) const
           break;
 
         default:
-          ZORBA_ASSERT (false);
+          ZORBA_ASSERT(false);
           break;
       }
     }

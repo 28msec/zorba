@@ -48,7 +48,6 @@ namespace zorba
   m_args        : The internally generated arg vars (the $xi_ vars described above)
 
   theUpdateType : The update type of this udf.
-  sequential    :
   deterministic :
   leaf          :
 
@@ -97,7 +96,7 @@ public:
 
   bool isDeterministic() const { return deterministic; }
 
-  void setLeaf(bool leaf_) { leaf = leaf_; }
+  void setLeaf(bool v) { leaf = v; }
 
   bool isLeaf() const { return leaf; }
 

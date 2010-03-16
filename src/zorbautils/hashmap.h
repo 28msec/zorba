@@ -302,7 +302,7 @@ public:
     else
     {
       ar.set_is_temp_field_one_level(true);
-      for(ulong i=0;i<num_entries;i++)
+      for(ulong i = 0; i < num_entries; i++)
       {
         T t;
         V v;
@@ -310,7 +310,7 @@ public:
         ar & v;
         bool insert_ret = insert(t, v);
         assert(insert_ret);
-        insert_ret = insert_ret; // Added the line to keep the compiler happy. It should have no effect on the final optimized code, as it's a no-op.
+        (void)insert_ret;
       }
       ar.set_is_temp_field_one_level(false);
     }

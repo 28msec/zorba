@@ -679,7 +679,7 @@ xqtref_t TypeManagerImpl::create_type(
   {
     return create_builtin_atomic_type(
                   static_cast<const AtomicXQType*>(&type)->get_type_code(),
-                              quantifier);
+                  quantifier);
   }
 
   case XQType::NODE_TYPE_KIND:
@@ -688,9 +688,9 @@ xqtref_t TypeManagerImpl::create_type(
     if (type.is_builtin())
     {
       return create_builtin_node_type(nt.get_node_kind(),
-                            quantifier,
+                                      quantifier,
                                       nt.is_untyped());
-  }
+    }
     else
     {
       return new NodeXQType(nt, quantifier);

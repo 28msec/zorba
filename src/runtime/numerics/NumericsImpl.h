@@ -173,6 +173,43 @@ public:
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
+
+class OpDoubleUnaryIterator : public UnaryBaseIterator<OpDoubleUnaryIterator,
+                                                       PlanIteratorState>
+{
+private:
+  bool thePlus;
+
+public:
+  SERIALIZABLE_CLASS(OpDoubleUnaryIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  OpDoubleUnaryIterator,
+  UnaryBaseIterator<OpDoubleUnaryIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, 
+    (UnaryBaseIterator<OpDoubleUnaryIterator, PlanIteratorState>*)this);
+
+    ar & thePlus;
+  }
+
+public:
+  OpDoubleUnaryIterator(
+        static_context* sctx,
+        const QueryLoc&,
+        PlanIter_t& aChild,
+        bool aPlus);
+
+  virtual ~OpDoubleUnaryIterator();
+  
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
+
 }
 #endif
 

@@ -195,37 +195,44 @@ bool Decimal::parseNativeDouble(double aDouble, Decimal& aDecimal) {
   }
 }
 
-Decimal Decimal::parseLong(long aLong) {
+
+Decimal Decimal::parseLong(long aLong) 
+{
   MAPM lNumber = aLong;
   return Decimal(lNumber);
 }
 
-Decimal Decimal::parseULong(unsigned long aULong) {
+Decimal Decimal::parseULong(unsigned long aULong) 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
-  MAPM lNumber = NumConversions::ulongToStr(aULong).c_str();
+  MAPM lNumber = NumConversions::ulongToStr(aULong)->c_str();
 #else
   MAPM lNumber = aULong;
 #endif
   return Decimal(lNumber);
 }
 
-Decimal Decimal::parseInteger(const Integer& aInteger) {
+Decimal Decimal::parseInteger(const Integer& aInteger) 
+{
   Decimal lDecimal;
   lDecimal.theDecimal = aInteger.theInteger;
   return lDecimal;
 }
 
-Decimal Decimal::parseInt(int32_t aInt) {
+Decimal Decimal::parseInt(int32_t aInt) 
+{
   Decimal lDecimal;
   lDecimal.theDecimal = aInt;
   return lDecimal;
 }
 
-Decimal Decimal::parseUInt(uint32_t aUInt) {
+
+Decimal Decimal::parseUInt(uint32_t aUInt) 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpString lStrRep = NumConversions::uintToStr(aUInt);
+  xqpStringStore_t lStrRep = NumConversions::uintToStr(aUInt);
   Decimal lDecimal;
-  lDecimal.theDecimal = lStrRep.c_str();
+  lDecimal.theDecimal = lStrRep->c_str();
   return lDecimal;
 #else
   Decimal lDecimal;
@@ -234,11 +241,13 @@ Decimal Decimal::parseUInt(uint32_t aUInt) {
 #endif
 }
 
-Decimal Decimal::parseLongLong(long long aLong) {
+
+Decimal Decimal::parseLongLong(long long aLong) 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpString lStrRep = NumConversions::longLongToStr(aLong);
+  xqpStringStore_t lStrRep = NumConversions::longLongToStr(aLong);
   Decimal lDecimal;
-  lDecimal.theDecimal = lStrRep.c_str();
+  lDecimal.theDecimal = lStrRep->c_str();
   return lDecimal;
 #else
   Decimal lDecimal;
@@ -247,11 +256,13 @@ Decimal Decimal::parseLongLong(long long aLong) {
 #endif
 }
 
-Decimal Decimal::parseULongLong(unsigned long long aULong) {
+
+Decimal Decimal::parseULongLong(unsigned long long aULong) 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpString lStrRep = NumConversions::ulongLongToStr(aULong);
+  xqpStringStore_t lStrRep = NumConversions::ulongLongToStr(aULong);
   Decimal lDecimal;
-  lDecimal.theDecimal = lStrRep.c_str();
+  lDecimal.theDecimal = lStrRep->c_str();
   return lDecimal;
 #else
   Decimal lDecimal;
@@ -259,6 +270,7 @@ Decimal Decimal::parseULongLong(unsigned long long aULong) {
   return lDecimal;
 #endif
 }
+
 
 bool Decimal::parseFloat(const Float& aFloat, Decimal& aDecimal)
 {
@@ -270,6 +282,7 @@ bool Decimal::parseFloat(const Float& aFloat, Decimal& aDecimal)
     return false;
   }
 }
+
 
 bool Decimal::parseDouble(const Double& aDouble, Decimal& aDecimal)
 {
@@ -500,37 +513,51 @@ Decimal Decimal::sqrt() const {
 #endif
 }
 
-bool Decimal::operator==(const Integer& aInteger) const { 
+
+bool Decimal::operator==(const Integer& aInteger) const 
+{ 
   return theDecimal == aInteger.theInteger;
 }
 
-bool Decimal::operator!=(const Integer& aInteger) const { 
+
+bool Decimal::operator!=(const Integer& aInteger) const 
+{ 
   return theDecimal != aInteger.theInteger;
 }
 
-bool Decimal::operator<(const Integer& aInteger) const { 
+
+bool Decimal::operator<(const Integer& aInteger) const 
+{ 
   return theDecimal < aInteger.theInteger;
 }
 
-bool Decimal::operator<=(const Integer& aInteger) const { 
+
+bool Decimal::operator<=(const Integer& aInteger) const 
+{ 
   return theDecimal <= aInteger.theInteger;
 }
 
-bool Decimal::operator>(const Integer& aInteger) const { 
+
+bool Decimal::operator>(const Integer& aInteger) const 
+{ 
   return theDecimal > aInteger.theInteger;
 }
 
-bool Decimal::operator>=(const Integer& aInteger) const { 
+
+bool Decimal::operator>=(const Integer& aInteger) const 
+{ 
   return theDecimal >= aInteger.theInteger;
 }
 
-xqpString Decimal::decimalToString(MAPM theValue, int precision) {
+
+xqpStringStore_t Decimal::decimalToString(MAPM theValue, int precision) 
+{
   bool do_reduce = false;
 #ifndef ZORBA_NO_BIGNUMBERS
   char lBuffer[1024];
- theValue.toFixPtString(lBuffer, precision);
- if(precision < ZORBA_FLOAT_POINT_PRECISION)
-   do_reduce = true;
+  theValue.toFixPtString(lBuffer, precision);
+  if(precision < ZORBA_FLOAT_POINT_PRECISION)
+    do_reduce = true;
 #else
   char lBuffer[174];
   if(theValue == 0)
@@ -545,15 +572,17 @@ xqpString Decimal::decimalToString(MAPM theValue, int precision) {
   // Note in the canonical representation the decimal point is required
   // and there must be at least one digit to the right and one digit to 
   // the left of the decimal point (which may be 0)
-  if(strchr(lBuffer,'.')!=0) {
+  if(strchr(lBuffer,'.') != 0) 
+  {
     // remove trailing 0's
     char* lastChar=lBuffer+strlen(lBuffer)-1;
-    while(*lastChar=='0') {
+    while(*lastChar == '0') 
+    {
       *lastChar--=0;
     }
     // remove decimal point, if there are no digits after it
-    if(*lastChar=='.')
-      *lastChar=0;
+    if(*lastChar == '.')
+      *lastChar = 0;
   }
   //+debug
 /*
@@ -577,8 +606,8 @@ xqpString Decimal::decimalToString(MAPM theValue, int precision) {
 
   if(do_reduce)
     Decimal::reduceFloatingPointString(lBuffer);
-  xqpString lResult = lBuffer;
-  return lResult;
+
+  return new xqpStringStore(lBuffer);
 }
 
 /*
@@ -696,11 +725,15 @@ nextDigit:
   }
 }
 
-xqpString Decimal::toString() const {
+
+xqpStringStore_t Decimal::toString() const 
+{
   return decimalToString(theDecimal);
 }
 
-xqpString Decimal::toIntegerString() const {
+
+xqpStringStore_t Decimal::toIntegerString() const 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
   char lBuffer[1024];
   theDecimal.toIntegerString(lBuffer);
@@ -708,11 +741,12 @@ xqpString Decimal::toIntegerString() const {
   char lBuffer[124];
   sprintf(lBuffer, "%d", (int)theDecimal);
 #endif
-  xqpString lResult = lBuffer;
-  return lResult;
+  return new xqpStringStore(lBuffer);
 }
 
+
 MAPM mapm_65535(65535);
+
 uint32_t Decimal::hash() const
 {
 #ifndef ZORBA_NO_BIGNUMBERS
@@ -728,16 +762,18 @@ uint32_t Decimal::hash() const
 #endif
 }
 
-std::ostream& operator<<(std::ostream& os, const Decimal& aDecimal) {
-  os << aDecimal.toString();
+
+std::ostream& operator<<(std::ostream& os, const Decimal& aDecimal) 
+{
+  os << aDecimal.toString()->str();
   return os;
 }
 
+
 int Decimal::getValueAsInt()
 {
-  xqpString   strtemp;
-  strtemp = toIntegerString();
-  return atoi(strtemp.c_str());
+  xqpStringStore_t strtemp = toIntegerString();
+  return atoi(strtemp->c_str());
 }
 
 } // namespace zorba

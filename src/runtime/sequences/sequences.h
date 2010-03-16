@@ -501,6 +501,55 @@ public:
 
 /**
  * 
+ *    zorbaop:int-subsequence
+ *  
+ * Author: Zorba Team
+ */
+class IntSubsequenceIteratorState : public PlanIteratorState
+{
+public:
+  xqp_long theRemaining; //
+
+  IntSubsequenceIteratorState();
+
+  ~IntSubsequenceIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class IntSubsequenceIterator : public NaryBaseIterator<IntSubsequenceIterator, IntSubsequenceIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(IntSubsequenceIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IntSubsequenceIterator,
+    NaryBaseIterator<IntSubsequenceIterator, IntSubsequenceIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<IntSubsequenceIterator, IntSubsequenceIteratorState>*)this);
+  }
+
+  IntSubsequenceIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<IntSubsequenceIterator, IntSubsequenceIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~IntSubsequenceIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      fn:zero-or-one
  *    
  * Author: Zorba Team

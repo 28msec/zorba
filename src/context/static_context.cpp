@@ -105,11 +105,10 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
   {
     // serialize out: the uri of the module that is used in this plan
 
-    xqp_string lURI = Unmarshaller::getInternalString(module->getURI());
-    xqpStringStore_t lURIStore = lURI.getStore();
+    xqpStringStore_t lURI = Unmarshaller::getInternalString(module->getURI());
 	  ar.set_is_temp_field(true);
     ar.dont_allow_delay();
-    ar & lURIStore;
+    ar & lURI;
 	  ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
   }
@@ -1667,7 +1666,7 @@ function* static_context::lookup_fn(
 
   if (theFunctionMap != NULL && theFunctionMap->get(qname2, f))
   {
-    if (f->get_arity() == arity || f->is_variadic())
+    if (f->get_arity() == arity || f->isVariadic())
       return f.getp();
 
     std::vector<function_t>* fv = NULL;
@@ -2149,9 +2148,10 @@ to_index_maintenance_mode(const ValueIndex::MaintenanceMode& mode)
   index_maintenance_mode_t lRes;
   switch (mode) 
   {
-    case ValueIndex::MANUAL: lRes = index_manual; break;
-    case ValueIndex::REBUILD: lRes = index_automatic; break;
-    case ValueIndex::DOC_MAP: lRes = index_manual; break; // TODO
+  case ValueIndex::MANUAL: lRes = index_manual; break;
+  case ValueIndex::REBUILD: lRes = index_automatic; break;
+  case ValueIndex::DOC_MAP: lRes = index_manual; break; // TODO
+  default: ZORBA_ASSERT(false);
   }
   return lRes;
 }

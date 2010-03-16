@@ -199,36 +199,6 @@ template <typename T> T pop_stack(list<T> &stk)
 
 
 /*******************************************************************************
-  Wrapper for ref-counted std::set
-********************************************************************************/
-template <class T> class RCSet : public SimpleRCObject 
-{
-public:
-  typedef set<string>::iterator iterator;
-
-  set<T> theSet;
-  
-    
-  iterator begin () { return theSet.begin (); }
-
-  iterator begin () const { return theSet.begin (); }
-
-  iterator end () { return theSet.end (); }
-
-  iterator end () const { return theSet.end (); }
-
-  void insert (const T &val) { theSet.insert (val); }
-
-  void insert (iterator p0, iterator p1) { theSet.insert (p0, p1); }
-
-  iterator find (const T &val) { return theSet.find (val); }
-
-  unsigned size () const { return theSet.size (); }
-};
-
-
-
-/*******************************************************************************
   Class to represent a vertex in the dependency graph among var and udfs decls
   in the prolog of a module. A vertex is represented as a pointer to either a
   var_expr (if var decl) or a function obj (if udf decl).
@@ -366,8 +336,8 @@ public:
   void reorder_globals(std::list<global_binding>& prologVarBindings);
 };
 
-void
-PrologGraph::reportCycle(const QueryLoc& loc, const PrologGraphVertex* v)
+
+void PrologGraph::reportCycle(const QueryLoc& loc, const PrologGraphVertex* v)
 {
   std::string moduleNS = theModuleSctx->get_module_namespace();
   std::ostringstream msg;
@@ -381,12 +351,16 @@ PrologGraph::reportCycle(const QueryLoc& loc, const PrologGraphVertex* v)
     msg << "the main module";
   }
 
-  if (v) {
+  if (v) 
+  {
     msg << " (variable $" << v->getVarExpr()->get_name()->getStringValue() 
         << " is using a function which depends on this variable).";
-  } else {
+  }
+  else 
+  {
     msg << ".";
   }
+
   ZORBA_ERROR_LOC_DESC(XQST0054, loc, msg.str());
 }
 

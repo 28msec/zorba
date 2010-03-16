@@ -63,11 +63,11 @@ public:
     return getStateSize(); 
   }
 
-  void openImpl(PlanState&, uint32_t& offset);
+  virtual void openImpl(PlanState&, uint32_t& offset);
 
-  void resetImpl(PlanState& planState) const;
+  virtual void resetImpl(PlanState& planState) const;
 
-  void closeImpl(PlanState& planState);
+  virtual void closeImpl(PlanState& planState);
 };
 
 

@@ -111,7 +111,7 @@ ZORBA_DLL_PUBLIC inline double parse_frac(std::string& s, unsigned int& position
 ZORBA_DLL_PUBLIC inline std::string to_string(int value, int min_digits = 0)
 {
   std::string zeros = "";
-  std::string temp = NumConversions::longToStr(value);
+  std::string temp = NumConversions::longToStr(value)->str();
   
   for (int i=temp.size(); i<min_digits; i++)
     zeros += '0';
@@ -192,3 +192,9 @@ ZORBA_DLL_PUBLIC int get_last_day(int year, int month);
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

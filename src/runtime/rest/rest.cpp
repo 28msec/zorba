@@ -328,8 +328,8 @@ int processReply(const QueryLoc& aLoc,
     }
   }
 
-  xqpString temp = NumConversions::intToStr(reply_code);
-  GENV_ITEMFACTORY->createTextNode(text_code, status_code, -1, temp.theStrStore);
+  xqpStringStore_t temp = NumConversions::intToStr(reply_code);
+  GENV_ITEMFACTORY->createTextNode(text_code, status_code, -1, temp);
 
   // Always add payload to response (not only in case of a successful request)
   // Payload in case of errors usually contains detailed error message

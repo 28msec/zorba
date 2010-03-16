@@ -377,6 +377,48 @@ void FnSubsequenceIteratorState::reset(PlanState& planState) {
 // </FnSubsequenceIterator>
 
 
+// <IntSubsequenceIterator>
+const char* IntSubsequenceIterator::class_name_str = "IntSubsequenceIterator";
+IntSubsequenceIterator::class_factory<IntSubsequenceIterator>
+IntSubsequenceIterator::g_class_factory;
+
+const serialization::ClassVersion 
+IntSubsequenceIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int IntSubsequenceIterator::class_versions_count =
+sizeof(IntSubsequenceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void IntSubsequenceIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+IntSubsequenceIterator::~IntSubsequenceIterator() {}
+
+IntSubsequenceIteratorState::IntSubsequenceIteratorState() {}
+
+IntSubsequenceIteratorState::~IntSubsequenceIteratorState() {}
+
+
+void IntSubsequenceIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  theRemaining = 0;
+}
+
+void IntSubsequenceIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  theRemaining = 0;
+}
+// </IntSubsequenceIterator>
+
+
 // <FnZeroOrOneIterator>
 const char* FnZeroOrOneIterator::class_name_str = "FnZeroOrOneIterator";
 FnZeroOrOneIterator::class_factory<FnZeroOrOneIterator>

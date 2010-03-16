@@ -9,13 +9,11 @@ Iterator tree for main query:
   </ForVariable>
   <LetVariable name="$$opt_temp_0" materialize="true">
     <HoistIterator>
-      <HoistIterator>
-        <FnStringIterator>
-          <NodeNameIterator>
-            <ForVarIterator varname="ancestor"/>
-          </NodeNameIterator>
-        </FnStringIterator>
-      </HoistIterator>
+      <FnStringIterator>
+        <NodeNameIterator>
+          <ForVarIterator varname="ancestor"/>
+        </NodeNameIterator>
+      </FnStringIterator>
     </HoistIterator>
   </LetVariable>
   <ReturnClause>
@@ -42,9 +40,7 @@ Iterator tree for main query:
                 </NodeNameIterator>
               </FnStringIterator>
               <UnhoistIterator>
-                <UnhoistIterator>
-                  <LetVarIterator varname="$$opt_temp_0"/>
-                </UnhoistIterator>
+                <LetVarIterator varname="$$opt_temp_0"/>
               </UnhoistIterator>
             </TypedValueCompareIterator_STRING>
           </WhereClause>

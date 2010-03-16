@@ -442,11 +442,20 @@ bool AttributeAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
     {
       if (nameOrKindTest(attr, planState))
       {
-        result = attr;
-        STACK_PUSH(true, state);
-
-        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
-          break;
+        if (theTargetPos >= 0)
+        {
+          if (state->theCurrentPos++ == theTargetPos)
+          {
+            result = attr;
+            STACK_PUSH(true, state);
+            break;
+          }
+        }
+        else
+        {
+          result = attr;
+          STACK_PUSH(true, state);
+        }
       }
     }
 
@@ -574,11 +583,20 @@ bool AncestorReverseAxisIterator::nextImpl(
       {
         state->theCurrentAnc = ancestor;
 
-        result = ancestor;
-        STACK_PUSH(true, state);
-
-        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
-          break;
+        if (theTargetPos >= 0)
+        {
+          if (state->theCurrentPos++ == theTargetPos)
+          {
+            result = ancestor;
+            STACK_PUSH(true, state);
+            break;
+          }
+        }
+        else
+        {
+          result = ancestor;
+          STACK_PUSH(true, state);
+        }
 
         ancestor = state->theCurrentAnc->getParent();
       }
@@ -627,6 +645,7 @@ bool AncestorSelfAxisIterator::nextImpl(
         if (theTargetPos == -2 || state->theCurrentPos++ == theTargetPos)
           state->theAncestors.push_back(ancestor);
       }
+
       ancestor = ancestor->getParent();
     }
 
@@ -674,13 +693,22 @@ bool AncestorSelfReverseAxisIterator::nextImpl(
     {
       if (nameOrKindTest(state->theCurrentAnc, planState))
       {
-        result = state->theCurrentAnc;
-        STACK_PUSH(true, state);
-
-        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
-          break;
+        if (theTargetPos >= 0)
+        {
+          if (state->theCurrentPos++ == theTargetPos)
+          {
+            result = state->theCurrentAnc;
+            STACK_PUSH(true, state);
+            break;
+          }
+        }
+        else
+        {
+          result = state->theCurrentAnc;
+          STACK_PUSH(true, state);
+        }
       }
-      
+
       state->theCurrentAnc = state->theCurrentAnc->getParent();
     }
   }
@@ -747,11 +775,20 @@ bool RSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     {
       if (nameOrKindTest(sibling, planState))
       {
-        result = sibling;
-        STACK_PUSH(true, state);
-
-        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
-          break;
+        if (theTargetPos >= 0)
+        {
+          if (state->theCurrentPos++ == theTargetPos)
+          {
+            result = sibling;
+            STACK_PUSH(true, state);
+            break;
+          }
+        }
+        else
+        {
+          result = sibling;
+          STACK_PUSH(true, state);
+        }
       }
     }
 
@@ -803,11 +840,20 @@ bool LSiblingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
     {
       if (nameOrKindTest(sibling, planState))
       {
-        result = sibling;
-        STACK_PUSH(true, state);
-
-        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
-          break;
+        if (theTargetPos >= 0)
+        {
+          if (state->theCurrentPos++ == theTargetPos)
+          {
+            result = sibling;
+            STACK_PUSH(true, state);
+            break;
+          }
+        }
+        else
+        {
+          result = sibling;
+          STACK_PUSH(true, state);
+        }
       }
     }
     
@@ -877,11 +923,20 @@ bool LSiblingReverseAxisIterator::nextImpl(
     {
       if (nameOrKindTest(sibling, planState))
       {
-        result = sibling;
-        STACK_PUSH(true, state);
-
-        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
-          break;
+        if (theTargetPos >= 0)
+        {
+          if (state->theCurrentPos++ == theTargetPos)
+          {
+            result = sibling;
+            STACK_PUSH(true, state);
+            break;
+          }
+        }
+        else
+        {
+          result = sibling;
+          STACK_PUSH(true, state);
+        }
       }
     }
     
@@ -942,11 +997,20 @@ bool ChildAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) co
     {
       if (nameOrKindTest(child, planState)) 
       {
-        result = child;
-        STACK_PUSH(true, state);
-
-        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
-          break;
+        if (theTargetPos >= 0)
+        {
+          if (state->theCurrentPos++ == theTargetPos)
+          {
+            result = child;
+            STACK_PUSH(true, state);
+            break;
+          }
+        }
+        else
+        {
+          result = child;
+          STACK_PUSH(true, state);
+        }
       }
     }
 
@@ -1048,11 +1112,20 @@ bool DescendantAxisIterator::nextImpl(store::Item_t& result, PlanState& planStat
           state->push(desc);
         }
 
-        result = desc;
-        STACK_PUSH(true, state);
-
-        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
-          break;
+        if (theTargetPos >= 0)
+        {
+          if (state->theCurrentPos++ == theTargetPos)
+          {
+            result = desc;
+            STACK_PUSH(true, state);
+            break;
+          }
+        }
+        else
+        {
+          result = desc;
+          STACK_PUSH(true, state);
+        }
       }
       else if (desc->getNodeKind() == store::StoreConsts::elementNode)
       {
@@ -1126,11 +1199,20 @@ bool DescendantSelfAxisIterator::nextImpl(
           state->push(desc);
         }
 
-        result = desc;
-        STACK_PUSH(true, state);
-
-        if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
-          break;
+        if (theTargetPos >= 0) 
+        {
+          if (state->theCurrentPos++ == theTargetPos)
+          {
+            result = desc;
+            STACK_PUSH(true, state);
+            break;
+          }
+        }
+        else
+        {
+          result = desc;
+          STACK_PUSH(true, state);
+        }
       }
       else if ((descKind == store::StoreConsts::elementNode ||
                 descKind == store::StoreConsts::documentNode) &&
@@ -1235,13 +1317,20 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
         {
           if (nameOrKindTest(child, planState))
           {
-            result = child;
-            STACK_PUSH(true, state);
-
-            if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
+            if (theTargetPos >= 0) 
             {
-              getNextContextNode = true;
-              break;
+              if (state->theCurrentPos++ == theTargetPos)
+              {
+                result = child;
+                STACK_PUSH(true, state);
+                getNextContextNode = true;
+                break;
+              }
+            }
+            else
+            {
+              result = child;
+              STACK_PUSH(true, state);
             }
           }
           
@@ -1262,13 +1351,20 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
           }
           else
           {
-            result = child;
-            STACK_PUSH(true, state);
-
-            if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
+            if (theTargetPos >= 0) 
             {
-              getNextContextNode = true;
-              break;
+              if (state->theCurrentPos++ == theTargetPos)
+              {
+                result = child;
+                STACK_PUSH(true, state);
+                getNextContextNode = true;
+                break;
+              }
+            }
+            else
+            {
+              result = child;
+              STACK_PUSH(true, state);
             }
 
             continue;
@@ -1295,13 +1391,20 @@ bool PrecedingAxisIterator::nextImpl(store::Item_t& result, PlanState& planState
               state->push(desc);
             }
 
-            result = desc;            
-            STACK_PUSH(true, state);
-              
-            if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
+            if (theTargetPos >= 0) 
             {
-              getNextContextNode = true;
-              break;
+              if (state->theCurrentPos++ == theTargetPos)
+              {
+                result = desc;
+                STACK_PUSH(true, state);
+                getNextContextNode = true;
+                break;
+              }
+            }
+            else
+            {
+              result = desc;            
+              STACK_PUSH(true, state);
             }
           }
           else if (desc->getNodeKind() == store::StoreConsts::elementNode)
@@ -1625,13 +1728,20 @@ bool FollowingAxisIterator::nextImpl(
         {
           if (nameOrKindTest(child, planState))
           {
-            result = child;
-            STACK_PUSH(true, state);
-
-            if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
+            if (theTargetPos >= 0) 
             {
-              getNextContextNode = true;
-              break;
+              if (state->theCurrentPos++ == theTargetPos)
+              {
+                result = child;
+                STACK_PUSH(true, state);
+                getNextContextNode = true;
+                break;
+              }
+            }
+            else
+            {
+              result = child;
+              STACK_PUSH(true, state);
             }
           }
           
@@ -1652,13 +1762,20 @@ bool FollowingAxisIterator::nextImpl(
           }
           else
           {
-            result = child;
-            STACK_PUSH(true, state);
-
-            if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
+            if (theTargetPos >= 0) 
             {
-              getNextContextNode = true;
-              break;
+              if (state->theCurrentPos++ == theTargetPos)
+              {
+                result = child;
+                STACK_PUSH(true, state);
+                getNextContextNode = true;
+                break;
+              }
+            }
+            else
+            {
+              result = child;
+              STACK_PUSH(true, state);
             }
 
             continue;
@@ -1684,14 +1801,21 @@ bool FollowingAxisIterator::nextImpl(
             {
               state->push(desc);
             }
-            
-            result = desc;
-            STACK_PUSH(true, state);
 
-            if (theTargetPos >= 0 && state->theCurrentPos++ == theTargetPos)
+            if (theTargetPos >= 0) 
             {
-              getNextContextNode = true;
-              break;
+              if (state->theCurrentPos++ == theTargetPos)
+              {
+                result = desc;
+                STACK_PUSH(true, state);
+                getNextContextNode = true;
+                break;
+              }
+            }
+            else
+            {            
+              result = desc;
+              STACK_PUSH(true, state);
             }
           }
           else if (desc->getNodeKind() == store::StoreConsts::elementNode)

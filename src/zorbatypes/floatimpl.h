@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FLOATIMPL_H
-#define ZORBA_FLOATIMPL_H
+#ifndef ZORBA_ZORBATYPES_FLOATIMPL_H
+#define ZORBA_ZORBATYPES_FLOATIMPL_H
 
 #include <zorba/config.h>
 #include "common/common.h"
@@ -22,16 +22,17 @@
 #include "zorbatypes/zorbatypes_decl.h"
 #include "zorbatypes/xqpstring.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 class FloatCommons 
 {
  public:
-  static const xqpString& get_INF_POS_STR();
-  static const xqpString& get_INF_NEG_STR();
-  static const xqpString& get_NOT_A_NUM_STR();
+  static const xqpStringStore_t& get_INF_POS_STR();
+  static const xqpStringStore_t& get_INF_NEG_STR();
+  static const xqpStringStore_t& get_NOT_A_NUM_STR();
 
   static Double
   parseFloat(const Float&);
@@ -56,22 +57,19 @@ private:
   FloatType             theFloating;
   unsigned short        precision;
 
-
-
-public:
-  SERIALIZABLE_TEMPLATE_CLASS(FloatImpl)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(FloatImpl)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theFloating;
-    ar & precision;
-  }
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
 public:
   static  HashCharPtrObjPtrLimited<FloatImpl>  parsed_floats;
 #endif
+
 public:
-  FloatImpl() : theFloating(0) { precision = max_precision();}
+  SERIALIZABLE_TEMPLATE_CLASS(FloatImpl)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(FloatImpl)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  FloatImpl() : theFloating(0) { precision = max_precision(); }
+
   FloatImpl(FloatType aFloating) 
     :
     theFloating(aFloating)
@@ -86,7 +84,10 @@ public:
     precision(aFloatImpl.precision)
   {
   }
+
   virtual ~FloatImpl() {}
+
+  FloatType getNumber() const { return theFloating; }
 
 public:
   /**
@@ -130,12 +131,6 @@ public:
    */
   static FloatImpl<FloatType>&
   inf_neg();
-
-  /**
-   * @return mapm number
-   */
-  FloatType
-  getNumber() const { return theFloating; }
 
   /**
    * Checks if the passed number in string format is NaN, inf, 
@@ -262,69 +257,55 @@ public:
   FloatImpl<FloatType> atanh() const;
 
   FloatImpl<FloatType> atan2(FloatImpl<FloatType> x) const;
+
   FloatImpl<FloatType> pow(FloatImpl<FloatType> p) const;
+
   FloatImpl<FloatType> fmod(FloatImpl<FloatType> p) const;
-  void frexp(FloatImpl<FloatType> &out_mantissa, Integer &out_exponent) const;
-  void modf(FloatImpl<FloatType> &out_fraction, FloatImpl<FloatType> &out_integer) const;
 
-  bool 
-  isNaN() const;
+  void frexp(FloatImpl<FloatType>& out_mantissa, Integer& out_exponent) const;
 
-  bool 
-  isFinite() const;
+  void modf(FloatImpl<FloatType>& out_fraction, FloatImpl<FloatType>& out_integer) const;
 
-  bool 
-  isPosInf() const;
+  bool isNaN() const;
 
-  bool
-  isNegInf() const;
+  bool isFinite() const;
 
-  bool 
-  isNeg() const;
+  bool isPosInf() const;
 
-  bool
-  isPos() const;
+  bool isNegInf() const;
 
-  bool 
-  isZero() const;
+  bool isNeg() const;
 
-  bool
-  isPosZero() const;
+  bool isPos() const;
 
-  bool
-  isNegZero() const;
+  bool isZero() const;
 
-  bool 
-  operator==(const FloatImpl& aFloatImpl) const;
+  bool isPosZero() const;
 
-  bool 
-  operator!=(const FloatImpl& aFloatImpl) const;
+  bool isNegZero() const;
 
-  bool 
-  operator<(const FloatImpl& aFloatImpl) const;
+  bool operator==(const FloatImpl& aFloatImpl) const;
 
-  bool 
-  operator<=(const FloatImpl& aFloatImpl) const;
+  bool operator!=(const FloatImpl& aFloatImpl) const;
 
-  bool 
-  operator>(const FloatImpl& aFloatImpl) const;
+  bool operator<(const FloatImpl& aFloatImpl) const;
 
-  bool 
-  operator>=(const FloatImpl& aFloatImpl) const;
+  bool operator<=(const FloatImpl& aFloatImpl) const;
+
+  bool operator>(const FloatImpl& aFloatImpl) const;
+
+  bool operator>=(const FloatImpl& aFloatImpl) const;
 
   long compare(const FloatImpl& aFloatImpl) const
   {
     return (*this < aFloatImpl ? -1 : (*this == aFloatImpl ? 0 : 1));
   }
 
-  xqpString 
-  toIntegerString() const;
+  xqpStringStore_t toIntegerString() const;
   
-  xqpString 
-  toString(bool no_scientific_mode = false) const;
+  xqpStringStore_t  toString(bool no_scientific_mode = false) const;
 
-  uint32_t
-  hash() const;
+  uint32_t hash() const;
 
 }; // class FloatImpl
 

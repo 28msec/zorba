@@ -1,6 +1,6 @@
 Iterator tree for main query:
 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,d)" typename="*" nill allowed="0">
-  <FnSubsequenceIterator>
+  <IntSubsequenceIterator>
     <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,c)" typename="*" nill allowed="0">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
         <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,a)" typename="*" nill allowed="0">
@@ -47,8 +47,8 @@ Iterator tree for main query:
         </ChildAxisIterator>
       </ChildAxisIterator>
     </ChildAxisIterator>
-    <SingletonIterator value="xs:double(2)"/>
-    <SingletonIterator value="xs:double(1)"/>
-  </FnSubsequenceIterator>
+    <SingletonIterator value="xs:integer(2)"/>
+    <SingletonIterator value="xs:integer(1)"/>
+  </IntSubsequenceIterator>
 </ChildAxisIterator>
 

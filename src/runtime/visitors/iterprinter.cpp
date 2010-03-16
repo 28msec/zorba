@@ -60,6 +60,13 @@ void XMLIterPrinter::addAttribute(const std::string& aName, const std::string& a
 }
 
 
+void XMLIterPrinter::addAttribute(const std::string& aName, xqp_long aValue)
+{
+  assert(theOpenStart);
+  theOStream << " " << aName << "=\"" << aValue << "\"";
+}
+
+
 void XMLIterPrinter::startEndVisit() 
 {
   assert(!theNameStack.empty());
@@ -134,6 +141,12 @@ void DOTIterPrinter::addAttribute(const std::string& aName, const std::string& a
     zorba::str_replace_all(mvalue, "\n", " \\n ");
 
   theOStream << "\\n" << aName << "=" << mvalue;
+}
+
+void DOTIterPrinter::addAttribute(const std::string& aName, xqp_long aValue)
+{
+  printSpaces(theIndent);
+  theOStream << "\\n" << aName << "=" << aValue;
 }
 
 

@@ -884,9 +884,7 @@ bool FLWORIterator::bindVariable(
            vrefIter != end;
            ++vrefIter)
       {
-        store::Iterator_t iter = tmpSeq->getIterator();
-        iter->open();
-        (*vrefIter)->bind(iter, planState);
+        (*vrefIter)->bind(tmpSeq, planState);
       }
     }
     else

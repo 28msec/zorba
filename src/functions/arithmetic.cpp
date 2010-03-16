@@ -71,7 +71,7 @@ xqtref_t binary_arith_func::getReturnType(const std::vector<xqtref_t>& arg_types
   {
     return TypeOps::arithmetic_type(*arg_types[0],
                                     *arg_types[1],
-                                    arithmetic_kind() == ArithmeticConsts::DIVISION);
+                                    arithmeticKind() == ArithmeticConsts::DIVISION);
   }
 
   if (TypeOps::is_empty(*arg_types [0]))
@@ -147,7 +147,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::ADDITION;
   }
@@ -168,7 +168,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::SUBTRACTION;
   }
@@ -189,7 +189,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmetiKind() const 
   {
     return ArithmeticConsts::MULTIPLICATION;
   }
@@ -210,7 +210,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::DIVISION;
   }
@@ -231,7 +231,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::INTEGER_DIVISION;
   }
@@ -252,7 +252,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::MODULO;
   }

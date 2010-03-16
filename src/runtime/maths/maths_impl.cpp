@@ -42,12 +42,6 @@ SqrtIterator::nextImpl (store::Item_t& result, PlanState& planState) const
   {
     GENV_ITEMFACTORY->createDouble(result, result->getDoubleValue().sqrt());
 
-    if ( consumeNext(item, theChild.getp(), planState ))
-    {
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "fn:sqrt has a sequence longer than one as an operator.");
-    }
-
     STACK_PUSH (true, state);
   }
   STACK_END (state);

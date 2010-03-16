@@ -39,9 +39,9 @@ static bool is_trivial_expr(const expr* e);
 
 static bool safe_to_fold_single_use(var_expr*, const flwor_expr&, static_context*);
 
-static bool var_in_try_block_or_in_loop(static_context*, const var_expr*, const expr*, bool);
+  static bool var_in_try_block_or_in_loop(static_context*, const var_expr*, const expr*, bool, ulong&);
 
-static bool refactor_index_pred(RewriterContext&, const expr*, const var_expr*&, rchandle<const_expr>&);
+static bool is_subseq_pred(RewriterContext&, const flwor_expr*, const expr*, var_expr_t&, expr_t&);
 
 
 #define MODIFY( expr ) do { modified = true; expr; } while (0)
@@ -168,7 +168,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // (a) Remove, if possible, FOR/LET vars that are not referenced anywhere
   // (b) Replace, if possible, FOR/LET vars that are referenced only once, with
   //     their domain expr.
-  for (unsigned i = 0; i < numClauses; )
+  for (ulong i = 0; i < numClauses; )
   {
     flwor_clause& c = *flwor.get_clause(i, false);
 
@@ -406,7 +406,7 @@ static bool safe_to_fold_single_use(
   bool declared = false;
   expr_t referencingExpr = NULL;
 
-  for (unsigned i = 0; i < flwor.num_clauses(); ++i)
+  for (ulong i = 0; i < flwor.num_clauses(); ++i)
   {
     const flwor_clause& c = *flwor[i];
 
@@ -457,7 +457,8 @@ static bool safe_to_fold_single_use(
     return false;
   }
 
-  return !var_in_try_block_or_in_loop(sctx, v, referencingExpr, false);
+  ulong numRefs = 1;
+  return !var_in_try_block_or_in_loop(sctx, v, referencingExpr, false, numRefs);
 }
 
 
@@ -468,13 +469,17 @@ static bool var_in_try_block_or_in_loop(
     static_context* sctx,
     const var_expr* v,
     const expr* e,
-    bool in_try_block_or_in_loop)
+    bool in_try_block_or_in_loop,
+    ulong& numRemainingRefs)
 {
+  if (numRemainingRefs == 0)
+    return false;
+
   if (e->get_expr_kind() == trycatch_expr_kind)
   {
     const trycatch_expr* tce = dynamic_cast<const trycatch_expr *>(e);
 
-    if (var_in_try_block_or_in_loop(sctx, v, tce->get_try_expr(), true))
+    if (var_in_try_block_or_in_loop(sctx, v, tce->get_try_expr(), true, numRemainingRefs))
     {
       return true;
     }
@@ -486,7 +491,8 @@ static bool var_in_try_block_or_in_loop(
       if (var_in_try_block_or_in_loop(sctx,
                                       v,
                                       (*i)->get_catch_expr(),
-                                      in_try_block_or_in_loop))
+                                      in_try_block_or_in_loop,
+                                      numRemainingRefs))
       {
         return true;
       }
@@ -500,7 +506,7 @@ static bool var_in_try_block_or_in_loop(
 
 		expr_t referencingExpr = NULL;
 
-    for (uint32_t i = 0; i < flwor.num_clauses(); i++)
+    for (ulong i = 0; i < flwor.num_clauses(); ++i)
     {
       const flwor_clause& c = *flwor[i];
 
@@ -518,7 +524,7 @@ static bool var_in_try_block_or_in_loop(
         if (c.get_kind() == flwor_clause::for_clause &&
             TypeOps::type_max_cnt(*flc.get_expr()->return_type(sctx)) >= 2)
         {
-          return false;
+          return true;
         }
       }
     }
@@ -528,10 +534,15 @@ static bool var_in_try_block_or_in_loop(
 			referencingExpr = flwor.get_return_expr();
 		}
 
-		return var_in_try_block_or_in_loop(sctx, v, &*referencingExpr, in_try_block_or_in_loop);
+		return var_in_try_block_or_in_loop(sctx,
+                                       v,
+                                       &*referencingExpr,
+                                       in_try_block_or_in_loop,
+                                       numRemainingRefs);
   }
   else if (e == v)
   {
+    --numRemainingRefs;
     return in_try_block_or_in_loop;
   }
 
@@ -539,12 +550,17 @@ static bool var_in_try_block_or_in_loop(
   const_expr_iterator ei = e->expr_begin_const();
   while(!ei.done())
   {
-    if (var_in_try_block_or_in_loop(sctx, v, &*(*ei), in_try_block_or_in_loop))
+    if (var_in_try_block_or_in_loop(sctx,
+                                    v,
+                                    &*(*ei),
+                                    in_try_block_or_in_loop,
+                                    numRemainingRefs))
     {
       return true;
     }
     ++ei;
   }
+
   return false;
 }
 
@@ -578,31 +594,31 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     return flwor;
   }
 
-  rchandle<const_expr> pos;
-  const var_expr* pvar;
+  expr_t posExpr;
+  var_expr_t posVar;
 
-  // '... for $x at $p in E ... where $p = const ... return ...' -->
-  // '... for $x in fn:subsequence(E, const, 1) ... return ...
+  // '... for $x at $p in E ... where $p = posExpr ... return ...' -->
+  // '... for $x in fn:subsequence(E, posExpr, 1) ... return ...
   if (whereExpr != NULL &&
-      refactor_index_pred(rCtx, whereExpr, pvar, pos) &&
-      count_variable_uses(flwor, pvar, &rCtx, 2) <= 1)
+      is_subseq_pred(rCtx, flwor, whereExpr, posVar, posExpr) &&
+      count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
   {
-    function* subseq = GET_BUILTIN_FUNCTION(FN_SUBSEQUENCE_3);
-    expr* domainExpr = pvar->get_for_clause()->get_expr();
+    function* subseq = GET_BUILTIN_FUNCTION(FN_ZORBA_INT_SUBSEQUENCE_3);
+    expr* domainExpr = posVar->get_for_clause()->get_expr();
 
     std::vector<expr_t> args(3);
     args[0] = domainExpr;
-    args[1] = pos.getp();
-    args[2] = new const_expr(pos->get_sctx_id(),
-                             LOC(pos),
-                             xqp_double::parseInt(1));
+    args[1] = posExpr;
+    args[2] = new const_expr(posExpr->get_sctx_id(),
+                             LOC(posExpr),
+                             xqp_integer::parseInt(1));
 
     rchandle<fo_expr> result = new fo_expr(whereExpr->get_sctx_id(),
                                            LOC(whereExpr),
                                            subseq,
                                            args);
     fix_annotations(&*result);
-    for_clause* clause = pvar->get_for_clause();
+    for_clause* clause = posVar->get_for_clause();
     clause->set_expr(&*result);
     clause->set_pos_var(NULL);
     flwor->remove_where_clause();
@@ -621,19 +637,22 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
 
 
 /*******************************************************************************
-  Checks whether "cond" has the form '$pos_var = const', where const is an
-  integer literal that is >= 1. If so, it returns true, and sets pos_expr to
-  a new const expr storing the const value promoted to DOUBLE.
+  Checks whether "condExpr" has the form '$posVar = posExpr', where posExpr is 
+  an expression whose type is xs:positiveInteger, or an integer literal with
+  value >= 1.
 ********************************************************************************/
-static bool refactor_index_pred(
+static bool is_subseq_pred(
     RewriterContext& rCtx,
-    const expr* cond,
-    const var_expr*& pvar,
-    rchandle<const_expr>& pos_expr)
+    const flwor_expr* flworExpr,
+    const expr* condExpr,
+    var_expr_t& posVar,
+    expr_t& posExpr)
 {
-  const const_expr* pos;
+  static_context* sctx = rCtx.getStaticContext(condExpr);
+  TypeManager* tm = sctx->get_typemanager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  const fo_expr* fo = dynamic_cast<const fo_expr*>(cond);
+  const fo_expr* fo = dynamic_cast<const fo_expr*>(condExpr);
 
   if (fo == NULL)
     return false;
@@ -644,30 +663,82 @@ static bool refactor_index_pred(
       f->getKind() != FunctionConsts::OP_VALUE_EQUAL_2)
     return false;
 
-  static_context* sctx = rCtx.getStaticContext(cond);
-  TypeManager* tm = sctx->get_typemanager();
-
-  int i;
-  for (i = 0; i < 2; i++)
+  for (ulong i = 0; i < 2; i++)
   {
-    if (NULL != (pvar = dynamic_cast<const var_expr*>(fo->get_arg(i))) &&
-        pvar->get_kind() == var_expr::pos_var &&
-        NULL != (pos = dynamic_cast<const const_expr*>(fo->get_arg(1 - i))))
-    {
-      const store::Item* val = pos->get_val();
+    posVar = fo->get_arg(i)->get_var();
+    posExpr = fo->get_arg(1 - i);
+    const const_expr* posConstExpr = dynamic_cast<const const_expr*>(posExpr.getp());
 
-      if (TypeOps::is_subtype(*tm->create_named_type(val->getType()),
-                              *GENV_TYPESYSTEM.INTEGER_TYPE_ONE)
-          && val->getIntegerValue() >= xqp_integer::parseInt(1))
+    if (posVar != NULL &&
+        posVar->get_kind() == var_expr::pos_var &&
+        flworExpr->defines_variable(posVar) >= 0)
+    {
+      if (posConstExpr != NULL)
       {
-        store::Item_t iVal = const_cast<store::Item*>(val);
-        store::Item_t pVal;
-        GenericCast::promote(pVal, iVal, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *tm);
-        pos_expr = new const_expr(pos->get_sctx_id(), LOC(pos), pVal);
-        return true;
+        const store::Item* val = posConstExpr->get_val();
+        xqtref_t valType = tm->create_named_type(val->getType());
+
+        if (TypeOps::is_subtype(*valType, *rtm.INTEGER_TYPE_ONE) &&
+            val->getIntegerValue() >= xqp_integer::parseInt(1))
+        {
+          return true;
+        }
+      }
+      else
+      {
+        xqtref_t posExprType = posExpr->return_type(sctx);
+
+        if (TypeOps::is_subtype(*posExprType, *rtm.POSITIVE_INTEGER_TYPE_ONE))
+        {
+          VarIdMap varidMap;
+          ulong numFlworVars = 0;
+          index_flwor_vars(flworExpr, numFlworVars, varidMap, NULL);
+
+          DynamicBitset varset(numFlworVars);
+          ExprVarsMap exprVarMap;
+          build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
+
+         var_expr* forVar = posVar->get_for_clause()->get_var();
+         ulong forVarId = varidMap[forVar];
+
+         std::vector<ulong> posExprVarIds;
+         exprVarMap[posExpr].getSet(posExprVarIds);
+
+         ulong numPosExprVars = posExprVarIds.size();
+         for (ulong i = 0; i < numPosExprVars; ++i)
+         {
+           if (posExprVarIds[i] >= forVarId)
+             return false;
+         }
+
+          /*
+          std::vector<var_expr*> flworVars;
+          flworExpr->get_vars_defined(flworVars);
+
+          ulong numPosExprVars;
+          ulong numFlworVars = flworVars.size();
+
+          for (ulong i = 0; i < numFlworVars; ++i)
+          {
+            if (forVar == flworVars[i])
+              found = true;
+
+            if (found)
+            {
+              for (ulong j = 0; j < numPosExprVars; ++j)
+              {
+                if ()
+                  return false;
+              }
+            }
+          }
+          */
+          return true;
+        }
       }
     }
   }
+
   return false;
 }
 

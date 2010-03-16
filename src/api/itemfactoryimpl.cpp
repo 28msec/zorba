@@ -297,11 +297,9 @@ namespace zorba {
   Item
   ItemFactoryImpl::createDuration( const String& aValue )
   {
-    xqpStringStore* lString = Unmarshaller::getInternalString( aValue );
-    const xqpString s(lString);
+    xqpStringStore_t lString = Unmarshaller::getInternalString( aValue );
     store::Item_t   lItem;
-
-    theItemFactory->createDuration(lItem, s);
+    theItemFactory->createDuration(lItem, lString);
 
     return &*lItem;
   }

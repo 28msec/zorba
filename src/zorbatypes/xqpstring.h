@@ -291,11 +291,17 @@ public:
   void append_in_place(const char* str);
 
   void append_in_place(const char* str, ulong len);
+
+  xqpStringStore& operator+=(const xqpStringStore_t& suffix);
+
+  xqpStringStore& operator+=(const char* suffix);
 };
+
 
 #ifdef ZORBA_WIN_DLL
 template class  rchandle<xqpStringStore>;
 #endif
+
 
 // exported for testing only
 class ZORBA_DLL_PUBLIC xqpString : public ::zorba::serialization::SerializeBaseClass

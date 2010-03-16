@@ -86,6 +86,7 @@
   template < TypeConstants::atomic_type_code_t > class TypedValueCompareIterator;
 
   class OpNumericUnaryIterator;
+  class OpDoubleUnaryIterator;
 
   class FnIdIterator;
   class FnIdRefIterator;

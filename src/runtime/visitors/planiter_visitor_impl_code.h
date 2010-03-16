@@ -172,6 +172,8 @@
   virtual void endVisit ( const TypedValueCompareIterator<TypeConstants::XS_STRING>& ) = 0;
 
   PLAN_ITER_VISITOR (OpNumericUnaryIterator);
+
+  PLAN_ITER_VISITOR (OpDoubleUnaryIterator);
     
   PLAN_ITER_VISITOR (FnIdIterator);
 

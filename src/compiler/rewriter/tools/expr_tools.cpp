@@ -114,7 +114,7 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
   defined before v2: v1 is defined before v2 iff id(v1) < id(v2). 
 ********************************************************************************/
 void index_flwor_vars(
-    expr* e,
+    const expr* e,
     ulong& numVars,
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
@@ -122,7 +122,7 @@ void index_flwor_vars(
   if (e->get_expr_kind() == flwor_expr_kind ||
       e->get_expr_kind() == gflwor_expr_kind) 
   {
-    flwor_expr* flwor = static_cast<flwor_expr *>(e);
+    const flwor_expr* flwor = static_cast<const flwor_expr *>(e);
 
     for(flwor_expr::clause_list_t::const_iterator i = flwor->clause_begin();
         i != flwor->clause_end();
@@ -189,10 +189,10 @@ void index_flwor_vars(
     }
   }
 
-  expr_iterator i = e->expr_begin();
+  const_expr_iterator i = e->expr_begin_const();
   while(!i.done()) 
   {
-    expr* ce = &*(*i);
+    const expr* ce = &*(*i);
     if (ce) 
     {
       index_flwor_vars(ce, numVars, varidmap, idvarmap);

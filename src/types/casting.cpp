@@ -130,7 +130,7 @@ inline bool str_uA(store::Item_t& result, const store::Item* aItem, xqpStringSto
 inline bool str_flt(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context* nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_float n;
-  if (NumConversions::starCharToFloat(strval->c_str(), n))
+  if (Float::parseString(strval->c_str(), n))
     return aFactory->createFloat(result, n);
 
   throwError(FORG0001, aErrorInfo);
@@ -141,7 +141,7 @@ inline bool str_flt(store::Item_t& result, const store::Item* aItem, xqpStringSt
 inline bool str_dbl(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context* nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_double n;
-  if (NumConversions::starCharToDouble(strval->c_str(), n))
+  if (Double::parseString(strval->c_str(), n))
     return aFactory->createDouble(result, n);
 
   throwError(FORG0001, aErrorInfo);

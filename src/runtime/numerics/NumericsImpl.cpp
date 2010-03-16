@@ -79,6 +79,9 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(SpecificNumArithIterator, SpecificNumAr
 SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(OpNumericUnaryIterator)
 
+SERIALIZABLE_CLASS_VERSIONS(OpDoubleUnaryIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(OpDoubleUnaryIterator)
+
 /*******************************************************************************
   AddOperation (see runtime/core/arithmetic_impl.h/cpp)
 ********************************************************************************/
@@ -866,15 +869,59 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
                            "Wrong operand type for a unary arithmetic operation.");
     }
     
-    if ( consumeNext(item, theChild.getp(), planState ) )
-      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
-                           "Arithmetic operation has a sequence longer than one as an operand.");
-    STACK_PUSH (true, state );
+    STACK_PUSH(true, state);
   }
-  STACK_END (state);
+
+  STACK_END(state);
 }
 
 
 UNARY_ACCEPT(OpNumericUnaryIterator);
+
+
+/*******************************************************************************
+
+********************************************************************************/
+OpDoubleUnaryIterator::OpDoubleUnaryIterator(
+     static_context* sctx,
+     const QueryLoc& loc,
+     PlanIter_t& theChild,
+     bool aPlus)
+  :
+  UnaryBaseIterator<OpDoubleUnaryIterator, PlanIteratorState>(sctx, loc, theChild),
+  thePlus(aPlus)
+{
+}
+
+
+OpDoubleUnaryIterator::~OpDoubleUnaryIterator()
+{
+}
+
+
+bool OpDoubleUnaryIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t item;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if (consumeNext(item, theChild.getp(), planState ))
+  {
+    assert(item->isAtomic());
+
+    GENV_ITEMFACTORY->createDouble(result, (thePlus ?
+                                            item->getDoubleValue() :
+                                            -item->getDoubleValue()));
+
+    STACK_PUSH(true, state);
+  }
+
+  STACK_END(state);
+}
+
+
+UNARY_ACCEPT(OpDoubleUnaryIterator);
+
 
 } /* namespace zorba */

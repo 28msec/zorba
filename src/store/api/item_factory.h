@@ -372,7 +372,7 @@ public:
    * Specification: [http://www.w3.org/TR/xmlschema-2/#duration]
    * @param value string representation of the value
    */
-  virtual bool createDuration ( Item_t& result, const xqp_string& value ) = 0;
+  virtual bool createDuration(Item_t& result, const xqpStringStore_t& value) = 0;
 
   /**
    * @param years

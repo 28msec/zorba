@@ -371,6 +371,44 @@
   
 </zorba:iterator>
 
+
+<!--
+/*******************************************************************************
+   zorbaop:int-subsequence
+********************************************************************************/
+-->
+<zorba:iterator name="IntSubsequenceIterator">
+    
+  <zorba:description author="Zorba Team">
+    zorbaop:int-subsequence
+  </zorba:description>
+  
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="xqp_long" name="theRemaining"
+                  defaultValue="0" brief=""/>
+  </zorba:state>
+
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="int-subsequence" prefix="fn-zorba">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getReturnType/>
+      <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:propagatesDistinctNodes producer="0"/>
+      <zorba:compute_annotation/>
+    </zorba:methods>
+
+  </zorba:function>
+  
+</zorba:iterator>
+
+
 <!--
 /*******************************************************************************
   15.2.1 fn:zero-or-one

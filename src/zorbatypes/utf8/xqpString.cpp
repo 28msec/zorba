@@ -1034,7 +1034,7 @@ xqpStringStore_t xqpStringStore::formatAsXML() const
     {
       newStr->theString += '&';
       newStr->theString += '#';
-      newStr->theString +=  Integer::parseInt(cp).toString();
+      newStr->theString +=  Integer::parseInt(cp).toString()->c_str();
       newStr->theString += ';';
     }
   }
@@ -1341,6 +1341,26 @@ void xqpStringStore::append_in_place(const char* str)
 void xqpStringStore::append_in_place(const char* str, ulong len)
 {
   theString.append(str, len);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore& xqpStringStore::operator+=(const xqpStringStore_t& suffix)
+{
+  theString += suffix->theString;
+  return *this;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqpStringStore& xqpStringStore::operator+=(const char* suffix)
+{
+  theString += suffix;
+  return *this;
 }
 
 

@@ -76,6 +76,8 @@ public:
   {
   }
 
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+
   CODEGEN_DECL();
 };
 

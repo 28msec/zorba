@@ -70,7 +70,7 @@ public:
 
   ulong get_arity() const { return theSignature.arg_count(); }
 
-  bool is_variadic() const { return theSignature.is_variadic(); }
+  bool isVariadic() const { return theSignature.is_variadic(); }
 
   void setFlag(FunctionConsts::AnnotationFlags flag) 
   {
@@ -95,7 +95,7 @@ public:
 
   virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
 
-  virtual xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  virtual xqtref_t getReturnType(const std::vector<xqtref_t>& argTypes) const;
 
   virtual function* specialize(
         static_context* sctx,
@@ -108,7 +108,7 @@ public:
 
   virtual bool isArithmeticFunction() const { return false; }
 
-  virtual ArithmeticConsts::OperationKind arithmetic_kind() const 
+  virtual ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::UNKNOWN;
   }
@@ -119,7 +119,7 @@ public:
 
   virtual bool isGeneralComparisonFunction() const { return false; }
 
-  virtual CompareConsts::CompareType comparison_kind() const 
+  virtual CompareConsts::CompareType comparisonKind() const 
   {
     return CompareConsts::UNKNOWN;
   }

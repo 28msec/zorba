@@ -301,7 +301,7 @@ public:                                                                 \
   {                                                                     \
   }                                                                     \
                                                                         \
-  CompareConsts::CompareType comparison_kind() const                    \
+  CompareConsts::CompareType comparisonKind() const                     \
   {                                                                     \
     return CompareConsts::VALUE_##cc;                                   \
   }                                                                     \
@@ -320,7 +320,7 @@ public:                                                                 \
   {                                                                     \
   }                                                                     \
                                                                         \
-  CompareConsts::CompareType comparison_kind() const                    \
+  CompareConsts::CompareType comparisonKind() const                     \
   {                                                                     \
     return CompareConsts::VALUE_##OP;                                   \
   }                                                                     \
@@ -391,7 +391,7 @@ public:
     return GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2);
   }
 
-  CompareConsts::CompareType comparison_kind() const
+  CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_EQUAL;
   }   
@@ -419,7 +419,7 @@ public:
                                CompareConsts::GENERAL_NOT_EQUAL);
   }
 
-  CompareConsts::CompareType comparison_kind() const
+  CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_NOT_EQUAL;
   } 
@@ -452,7 +452,7 @@ public:
                                CompareConsts::GENERAL_LESS_EQUAL);
   }
 
-  CompareConsts::CompareType comparison_kind() const
+  CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_LESS_EQUAL;
   } 
@@ -485,7 +485,7 @@ public:
                                CompareConsts::GENERAL_LESS);
   }
 
-  CompareConsts::CompareType comparison_kind() const
+  CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_LESS;
   } 
@@ -518,7 +518,7 @@ public:
                                CompareConsts::GENERAL_GREATER_EQUAL);
   }
 
-  CompareConsts::CompareType comparison_kind() const
+  CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_GREATER_EQUAL;
   } 
@@ -551,7 +551,7 @@ public:
                                CompareConsts::GENERAL_GREATER);
   }
 
-  CompareConsts::CompareType comparison_kind() const
+  CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_GREATER;
   } 

@@ -23,6 +23,9 @@
 #include "zorbatypes/decimal.h"
 #include "zorbatypes/numconversions.h"
 
+#include "zorbaserialization/serialization_engine.h"
+
+
 #define IS_ZERO(mapm_obj)                 (mapm_obj == 0)
 #define IS_POSITIVE(mapm_obj)             (mapm_obj > 0)
 #define IS_POSITIVE_OR_ZERO(mapm_obj)     (mapm_obj >= 0)
@@ -32,22 +35,27 @@ float acosh( float z)
 {//formula from www.mathworks.com
   return ::log(z + ::sqrt(z*z-1));
 }
+
 double acosh( double z)
 {
   return ::log(z + ::sqrt(z*z-1));
 }
+
 float asinh( float z)
 {//formula from www.mathworks.com
   return ::log(z + ::sqrt(z*z+1));
 }
+
 double asinh( double z)
 {
   return ::log(z + ::sqrt(z*z+1));
 }
+
 float atanh( float z)
 {//formula from www.mathworks.com
   return (float)0.5*(float)::log((1+z)/(1-z));
 }
+
 double atanh( double z)
 {
   return 0.5*::log((1+z)/(1-z));
@@ -61,51 +69,69 @@ END_SERIALIZABLE_TEMPLATE_VERSIONS(FloatImpl)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(FloatImpl, FloatImpl<float>, 1)
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(FloatImpl, FloatImpl<double>, 2)
 
-const xqpString& FloatCommons::get_INF_POS_STR()
+
+const xqpStringStore_t& FloatCommons::get_INF_POS_STR()
 {
-   static const xqpString INF_POS_STR = "INF";
-   return INF_POS_STR;
+  static const xqpStringStore_t INF_POS_STR = new xqpStringStore("INF");
+  return INF_POS_STR;
 }
 
 
-const xqpString& FloatCommons::get_INF_NEG_STR()
+const xqpStringStore_t& FloatCommons::get_INF_NEG_STR()
 {
-   static const xqpString INF_NEG_STR = "-INF";
-   return INF_NEG_STR;
+  static const xqpStringStore_t INF_NEG_STR = new xqpStringStore("-INF");
+  return INF_NEG_STR;
 }
 
 
-const xqpString& FloatCommons::get_NOT_A_NUM_STR()
+const xqpStringStore_t& FloatCommons::get_NOT_A_NUM_STR()
 {
-   static const xqpString NOT_A_NUM_STR = "NaN";
-   return NOT_A_NUM_STR;
+  static const xqpStringStore_t NOT_A_NUM_STR = new xqpStringStore("NaN");
+  return NOT_A_NUM_STR;
 }
 
 
-Double FloatCommons::parseFloat(const Float& aFloat) {
+Double FloatCommons::parseFloat(const Float& aFloat) 
+{
   Double lDouble(aFloat.getNumber());
   return lDouble;
 }
 
-Float FloatCommons::parseDouble(const Double& aDouble) {
+
+Float FloatCommons::parseDouble(const Double& aDouble) 
+{
   Float lFloat((float)aDouble.getNumber());
   return lFloat;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType>& FloatImpl<FloatType>::zero() {
+void FloatImpl<FloatType>::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theFloating;
+  ar & precision;
+}
+
+
+template <typename FloatType>
+FloatImpl<FloatType>& FloatImpl<FloatType>::zero() 
+{
   static FloatImpl<FloatType> lValue(0);
   return lValue;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType>& FloatImpl<FloatType>::zero_neg() {
+FloatImpl<FloatType>& FloatImpl<FloatType>::zero_neg() 
+{
   static FloatImpl<FloatType> lValue(-0.0);
   return lValue;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType>& FloatImpl<FloatType>::one() {
+FloatImpl<FloatType>& FloatImpl<FloatType>::one() 
+{
   static FloatImpl<FloatType> lValue(1);
   return lValue;
 }
@@ -205,7 +231,6 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
   bool lGotDigit = false;
   bool lStop = false;
   bool lIsNegative = false;
-  bool lGotSpace = false;
   int  signif_digits = 0;
   int  trailing_zero = 0;
   bool new_aCharStar = false;
@@ -241,14 +266,15 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
              
     case '-': 
     {
-      if(lGotSign || lGotSign) \
+      if (lGotSign || lGotDigit)
       {
         lStop = true;
       }
       else 
       {
         lGotSign = true;
-        if(!lGotBase) lIsNegative = true;
+        if(!lGotBase)
+          lIsNegative = true;
       }
       break;
     }
@@ -256,11 +282,14 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
     case 'E':
     case 'e': 
     {
-      if(!lGotDigit || lGotBase) {
+      if(!lGotDigit || lGotBase) 
+      {
         lStop = true;
-      } else {
+      }
+      else
+      {
         lGotPoint = false;
-        lGotSign = false;        
+        lGotSign = false; 
         lGotBase = true;
         lGotDigit = false;
       }
@@ -269,9 +298,12 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
              
     case '.': 
     {
-      if(lGotPoint || lGotBase) {
+      if (lGotPoint || lGotBase) 
+      {
         lStop = true;
-      } else {
+      }
+      else
+      {
         lGotPoint = true;
       }
       break;
@@ -291,16 +323,20 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
       if(!lGotBase)
       {
         if(ch == '0')
+        {
           trailing_zero++;
+        }
         else
         {
-          if(signif_digits)
+          if (signif_digits)
             signif_digits = signif_digits + 1 + trailing_zero;
           else
             signif_digits++;
+
           trailing_zero = 0;
         }
       }
+
       lGotDigit = true;
       break;
     }
@@ -345,21 +381,19 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
     lCur++;
   }
 
-  if(!lGotDigit || lStop) 
+  if (!lGotDigit || lStop) 
   {
     if (!parseInfNaNString(aCharStar, aFloatImpl)) 
     {
       if(new_aCharStar)
         delete[] aCharStar;
+
       return false;
     }
   }
   else 
   {
     aFloatImpl.theFloating = (FloatType)atof(aCharStar);
-
-    if (lGotSpace)
-      delete [] aCharStar;
   }
 
   if(signif_digits < max_precision())
@@ -368,77 +402,96 @@ bool FloatImpl<FloatType>::parseString(const char* aCharStar, FloatImpl& aFloatI
 
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
   hashed_float = new FloatImpl<FloatType>(aFloatImpl);
-  const char  *dup_str = _strdup(aCharStar);
+  const char* dup_str = _strdup(aCharStar);
   parsed_floats.insert(dup_str, hashed_float);
 #endif
+
   if(new_aCharStar)
     delete[] aCharStar;
+
   return true;
 }
 
 
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::parseFloatType(FloatType aFloatImpl){
+FloatImpl<FloatType> FloatImpl<FloatType>::parseFloatType(FloatType aFloatImpl)
+{
   FloatImpl<FloatType> lFloating(aFloatImpl);
   return lFloating;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::parseInt(int32_t aInt) {
+FloatImpl<FloatType> FloatImpl<FloatType>::parseInt(int32_t aInt) 
+{
   FloatImpl<FloatType> lFloating((FloatType)aInt);
   return lFloating;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::parseLong(long aLong) {
+FloatImpl<FloatType> FloatImpl<FloatType>::parseLong(long aLong) 
+{
   FloatImpl<FloatType> lFloating((FloatType)aLong);
   return lFloating;
 }
+
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::parseDecimal(const Decimal& aDecimal)
 {
   FloatImpl<FloatType> lFloat;
-  xqpString   decimal_string = aDecimal.toString();
-  parseString(decimal_string.c_str(), lFloat);
+  xqpStringStore_t decimal_string = aDecimal.toString();
+  parseString(decimal_string->c_str(), lFloat);
   return lFloat;
 }
+
 
 template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::parseInteger(const Integer& aInteger)
 {
   FloatImpl<FloatType> lFloat;
-  xqpString   integer_string = aInteger.toString();
-  parseString(integer_string.c_str(), lFloat);
+  xqpStringStore_t integer_string = aInteger.toString();
+  parseString(integer_string->c_str(), lFloat);
   return lFloat;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::operator+(const FloatImpl& aFloatImpl) const{
+FloatImpl<FloatType> FloatImpl<FloatType>::operator+(const FloatImpl& aFloatImpl) const
+{
   FloatImpl lFloatImpl(theFloating + aFloatImpl.theFloating);
   return lFloatImpl;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::operator-(const FloatImpl& aFloatImpl) const{
+FloatImpl<FloatType> FloatImpl<FloatType>::operator-(const FloatImpl& aFloatImpl) const
+{
   FloatImpl lFloatImpl(theFloating - aFloatImpl.theFloating);
   return lFloatImpl;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::operator*(const FloatImpl& aFloatImpl) const{
+FloatImpl<FloatType> FloatImpl<FloatType>::operator*(const FloatImpl& aFloatImpl) const
+{
   FloatImpl lFloatImpl(theFloating * aFloatImpl.theFloating);
   return lFloatImpl;
 }
 
-template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::operator/(const FloatImpl& aFloatImpl) const{
-  FloatImpl lFloatImpl(theFloating / aFloatImpl.theFloating);
-  return lFloatImpl;
- }
 
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::operator%(const FloatImpl& aFloatImpl) const{
+FloatImpl<FloatType> FloatImpl<FloatType>::operator/(const FloatImpl& aFloatImpl) const
+{
+  FloatImpl lFloatImpl(theFloating / aFloatImpl.theFloating);
+  return lFloatImpl;
+}
+
+
+template <typename FloatType>
+FloatImpl<FloatType> FloatImpl<FloatType>::operator%(const FloatImpl& aFloatImpl) const
+{
   FloatImpl lFloatImpl(::fmod(theFloating, aFloatImpl.theFloating));
   return lFloatImpl;
 }
@@ -466,15 +519,20 @@ FloatImpl<FloatType> FloatImpl<FloatType>::ceil() const
   return lFloatImpl;
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::round() const{
+FloatImpl<FloatType> FloatImpl<FloatType>::round() const
+{
   return round(Integer::parseInt(0));
 }
 
+
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const{
+FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const
+{
   FloatImpl lFloatImpl;
-  if (isFinite()) {
+  if (isFinite()) 
+  {
 #ifndef ZORBA_NO_BIGNUMBERS
     MAPM mapmval = Decimal::round(theFloating, aPrecision.theInteger);
     char  strval[200];
@@ -484,16 +542,19 @@ FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const{
     lFloatImpl.theFloating = Decimal::round(theFloating, aPrecision.theInteger);
 #endif
   }
-  else {
+  else 
+  {
     lFloatImpl.theFloating = theFloating;
   }
   return lFloatImpl;
 }
 
 template <typename FloatType>
-FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven(Integer aPrecision) const{
+FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven(Integer aPrecision) const
+{
   FloatImpl lFloatImpl;
-  if (isFinite()) {
+  if (isFinite()) 
+  {
 #ifndef ZORBA_NO_BIGNUMBERS
     MAPM mapmval = Decimal::roundHalfToEven(theFloating, aPrecision.theInteger);
     char  strval[200];
@@ -503,7 +564,8 @@ FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven(Integer aPrecision) c
     lFloatImpl.theFloating = Decimal::roundHalfToEven(theFloating, aPrecision.theInteger);
 #endif
   }
-  else {
+  else 
+  {
     lFloatImpl.theFloating = theFloating;
   }
   return lFloatImpl;
@@ -723,48 +785,62 @@ bool FloatImpl<FloatType>::operator<=(const FloatImpl& aFloatImpl) const{
     return !(*this > aFloatImpl);
 }
 
+
 template <typename FloatType>
-bool FloatImpl<FloatType>::operator>(const FloatImpl& aFloatImpl) const{
+bool FloatImpl<FloatType>::operator>(const FloatImpl& aFloatImpl) const
+{
   return theFloating > aFloatImpl.theFloating;
 }
 
+
 template <typename FloatType>
-bool FloatImpl<FloatType>::operator>=(const FloatImpl& aFloatImpl) const{
+bool FloatImpl<FloatType>::operator>=(const FloatImpl& aFloatImpl) const
+{
   if(isNaN() || aFloatImpl.isNaN())
     return false;
   else
     return !(*this < aFloatImpl);
 }
 
+
 template <typename FloatType>
-xqpString FloatImpl<FloatType>::toIntegerString() const {
-  if (isNaN()) {
+xqpStringStore_t FloatImpl<FloatType>::toIntegerString() const 
+{
+  if (isNaN()) 
+  {
     return FloatCommons::get_NOT_A_NUM_STR();
   }
-  else if (isPosInf()) {
+  else if (isPosInf()) 
+  {
     return FloatCommons::get_INF_POS_STR();
   }
-  else if (isNegInf()) {
+  else if (isNegInf()) 
+  {
     return FloatCommons::get_INF_NEG_STR();
   }
-  else if (isPosZero()) {
-    return "0";
+  else if (isPosZero()) 
+  {
+    return new xqpStringStore("0");
   }
-  else if (isNegZero()) {
-    return "-0";
+  else if (isNegZero()) 
+  {
+    return new xqpStringStore("-0");
   }
 
   char lBuffer[174];
   sprintf(lBuffer, "%d", (int)theFloating);
-  xqpString lResult = lBuffer;
-  return lResult;
+
+  return new xqpStringStore(lBuffer);
 }
+
 
 template<>
 int FloatImpl<float>::max_precision() 
 {
   return 7;
 }
+
+
 template<>
 int FloatImpl<double>::max_precision() 
 {
@@ -772,32 +848,42 @@ int FloatImpl<double>::max_precision()
 }
 
 template <typename FloatType>
-xqpString FloatImpl<FloatType>::toString(bool no_scientific_format) const {
-  if (isNaN()) {
+xqpStringStore_t FloatImpl<FloatType>::toString(bool no_scientific_format) const 
+{
+  if (isNaN()) 
+  {
     return FloatCommons::get_NOT_A_NUM_STR();
   }
-  else if (isPosInf()) {
+  else if (isPosInf()) 
+  {
     return FloatCommons::get_INF_POS_STR();
   }
-  else if (isNegInf()) {
+  else if (isNegInf()) 
+  {
     return FloatCommons::get_INF_NEG_STR();
   }
-  else if (isPosZero()) {
-    return "0";
+  else if (isPosZero()) 
+  {
+    return new xqpStringStore("0");
   }
-  else if (isNegZero()) {
-    return "-0";
+  else if (isNegZero()) 
+  {
+    return new xqpStringStore("-0");
   }
 
   FloatType absVal = fabs(theFloating);
   FloatType lower = 0.000001f, upper = 1000000.0f;
-  if (no_scientific_format || (absVal < upper && absVal >= lower) || absVal == 0) {
+
+  if (no_scientific_format || (absVal < upper && absVal >= lower) || absVal == 0) 
+  {
     MAPM  decimal_mapm = theFloating;
 #ifndef ZORBA_NO_BIGNUMBERS
     decimal_mapm = decimal_mapm.round(precision);
 #endif
     return Decimal::decimalToString(decimal_mapm, max_precision());
-  } else {
+  }
+  else
+  {
     char lBuffer[174];
     char strformat[10];
     sprintf(strformat, "%%#1.%dE", precision);
@@ -839,7 +925,7 @@ xqpString FloatImpl<FloatType>::toString(bool no_scientific_format) const {
     }
 
     Decimal::reduceFloatingPointString(lBuffer);
-    return lBuffer;
+    return new xqpStringStore(lBuffer);
   }
 }
 

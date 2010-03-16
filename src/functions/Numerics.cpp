@@ -82,7 +82,7 @@ public:
   {
     return TypeOps::arithmetic_type(*arg_types[0],
                                     *arg_types[1],
-                                    arithmetic_kind() == ArithmeticConsts::DIVISION);
+                                    arithmeticKind() == ArithmeticConsts::DIVISION);
   }
 };
 
@@ -169,7 +169,7 @@ public:
   {
   };
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::ADDITION;
   }
@@ -186,7 +186,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::ADDITION;
   }
@@ -243,7 +243,7 @@ public:
   {
   };
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::SUBTRACTION;
   }
@@ -260,7 +260,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::SUBTRACTION;
   }
@@ -316,7 +316,7 @@ public:
   {
   };
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::MULTIPLICATION;
   }
@@ -333,7 +333,7 @@ public:
   {
   };
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::MULTIPLICATION;
   }
@@ -398,7 +398,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::DIVISION;
   }
@@ -415,7 +415,7 @@ public:
   {
   }
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::DIVISION;
   }
@@ -483,7 +483,7 @@ public:
   {
   };
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::INTEGER_DIVISION;
   }
@@ -536,7 +536,7 @@ public:
   {
   };
 
-  ArithmeticConsts::OperationKind arithmetic_kind() const 
+  ArithmeticConsts::OperationKind arithmeticKind() const 
   {
     return ArithmeticConsts::MODULO;
   }
@@ -563,8 +563,38 @@ public:
     return arg_types[0];
   }
 
+  virtual bool specializable() const { return true; }
+
+  function* specialize(static_context*, const std::vector<xqtref_t>&) const;
+
   virtual bool isArithmeticFunction() const { return true; }
 };
+
+
+function* single_numeric_func::specialize(
+    static_context* sctx,
+    const std::vector<xqtref_t>& argTypes) const
+{
+  const RootTypeManager& rtm = GENV_TYPESYSTEM;
+  xqtref_t argType = argTypes[0];
+
+  if (getKind() == FunctionConsts::OP_UNARY_PLUS_1)
+  {
+    if (TypeOps::is_subtype(*argType, *rtm.DOUBLE_TYPE_ONE))
+    {
+      return GET_BUILTIN_FUNCTION(OP_DOUBLE_UNARY_PLUS_1);
+    }
+  }
+  else if (getKind() == FunctionConsts::OP_UNARY_MINUS_1)
+  {
+    if (TypeOps::is_subtype(*argType, *rtm.DOUBLE_TYPE_ONE))
+    {
+      return GET_BUILTIN_FUNCTION(OP_DOUBLE_UNARY_MINUS_1);
+    }
+  }
+
+  return NULL;
+}
 
 
 /*******************************************************************************
@@ -596,6 +626,32 @@ PlanIter_t op_numeric_unary_plus::codegen(
     AnnotationHolder& ann) const
 {
   return new OpNumericUnaryIterator(sctx, loc, argv[0], true);
+}
+
+
+class op_double_unary_plus : public single_numeric_func
+{
+public:
+  op_double_unary_plus(const signature& sig)
+    :
+    single_numeric_func(sig, FunctionConsts::OP_DOUBLE_UNARY_PLUS_1)
+  {
+  }
+
+  bool specializable() const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+PlanIter_t op_double_unary_plus::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  return new OpDoubleUnaryIterator(sctx, loc, argv[0], true);
 }
 
 
@@ -635,12 +691,38 @@ PlanIter_t op_numeric_unary_minus::codegen(
 }
 
 
+class op_double_unary_minus : public single_numeric_func
+{
+public:
+  op_double_unary_minus(const signature& sig)
+    :
+    single_numeric_func(sig, FunctionConsts::OP_DOUBLE_UNARY_MINUS_1)
+  {
+  }
+
+  bool specializable() const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
+PlanIter_t op_double_unary_minus::codegen(
+    CompilerCB* /*cb*/,
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& argv,
+    AnnotationHolder& ann) const
+{
+  return new OpDoubleUnaryIterator(sctx, loc, argv[0], false);
+}
+
+
 /*******************************************************************************
   Register the rest of the numeric functions
 ********************************************************************************/
 #define DECL_ARITH( sctx, op, type, xqt )                              \
 DECL(sctx, op_numeric_##op##_##type,                                   \
-     (createQName (XQUERY_OP_NS,"op", "numeric-" #op "-" #type),      \
+     (createQName(XQUERY_OP_NS,"op", "numeric-" #op "-" #type),        \
       GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                             \
       GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                             \
       GENV_TYPESYSTEM.xqt##_TYPE_QUESTION))
@@ -648,7 +730,7 @@ DECL(sctx, op_numeric_##op##_##type,                                   \
 
 #define DECL_ALL_ARITH( sctx, op )                             \
 DECL(sctx, op_numeric_##op,                                    \
-     (createQName (XQUERY_OP_NS, "op", "numeric-" #op),        \
+     (createQName(XQUERY_OP_NS, "op", "numeric-" #op),         \
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                \
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,                \
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));              \
@@ -667,26 +749,36 @@ void populateContext_Numerics(static_context* sctx)
   DECL_ALL_ARITH (sctx, divide);
 
   DECL(sctx, op_numeric_integer_divide,
-       (createQName (XQUERY_OP_NS,"op", "numeric-integer-divide"),
+       (createQName(XQUERY_OP_NS,"op", "numeric-integer-divide"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, op_numeric_mod,
-       (createQName (XQUERY_OP_NS,"op", "numeric-mod"),
+       (createQName(ZORBA_OP_NS,"op", "numeric-mod"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, op_numeric_unary_minus,
-       (createQName (XQUERY_OP_NS,"op", "unary-minus"),
+       (createQName(XQUERY_OP_NS,"op", "unary-minus"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
 
+  DECL(sctx, op_double_unary_minus,
+       (createQName(ZORBA_OP_NS,"fn-zorba", "double-minus"),
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+
   DECL(sctx, op_numeric_unary_plus,
-       (createQName (XQUERY_OP_NS,"op", "unary-plus"),
+       (createQName(XQUERY_OP_NS,"op", "unary-plus"),
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
+
+  DECL(sctx, op_double_unary_plus,
+       (createQName(ZORBA_OP_NS,"fn-zorba", "double-plus"),
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
+        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
 }
 
   

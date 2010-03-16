@@ -68,6 +68,8 @@ DefaultOptimizer::DefaultOptimizer()
 
   ADD_DRIVER(FoldRules);
 
+  ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
+
   if (Properties::instance()->loopHoisting())
     ADD_SINGLETON_DRIVER(HoistExprsOutOfLoops);
 

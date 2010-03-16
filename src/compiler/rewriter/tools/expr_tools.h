@@ -68,7 +68,7 @@ expr_t fix_annotations(expr_t new_expr, const expr* old_expr = NULL);
   Util functions used by rules: HoistExprsOutOfLoops and IndexJoin.
 ********************************************************************************/
 
-void index_flwor_vars(expr*, ulong&, VarIdMap&, IdVarMap*);
+void index_flwor_vars(const expr*, ulong&, VarIdMap&, IdVarMap*);
 
 void build_expr_to_vars_map(expr*, const VarIdMap&, DynamicBitset&, ExprVarsMap&);
 

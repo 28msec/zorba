@@ -49,13 +49,9 @@ Iterator tree for main query:
       </ChildAxisIterator>
     </ForVariable>
     <ReturnClause>
-      <FnSubsequenceIterator>
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,c)" typename="*" nill allowed="0">
-          <ForVarIterator varname="$$dot"/>
-        </ChildAxisIterator>
-        <SingletonIterator value="xs:double(2)"/>
-        <SingletonIterator value="xs:double(1)"/>
-      </FnSubsequenceIterator>
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,c)" typename="*" nill allowed="0" target_position="1">
+        <ForVarIterator varname="$$dot"/>
+      </ChildAxisIterator>
     </ReturnClause>
   </flwor::FLWORIterator>
 </ChildAxisIterator>

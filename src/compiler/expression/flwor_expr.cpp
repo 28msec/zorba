@@ -967,9 +967,34 @@ void flwor_expr::get_vars_defined(std::vector<var_expr*>& varExprs) const
 ********************************************************************************/
 xqtref_t flwor_expr::return_type_impl(static_context* sctx) const
 {
-  // TODO: quant multiplication
-  return sctx->get_typemanager()->create_type(*theReturnExpr->return_type(sctx),
-                                              TypeConstants::QUANT_STAR);
+  TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
+
+  ulong numClauses = num_clauses();
+
+  for (ulong i = 0; i < numClauses && quant == TypeConstants::QUANT_ONE; ++i) 
+  {
+    const flwor_clause* c = theClauses[i];
+
+    switch (c->get_kind())
+    {
+    case flwor_clause::for_clause :
+    case flwor_clause::window_clause :
+      quant = TypeConstants::QUANT_STAR;
+      break;
+    default:
+      break;
+    }
+  }
+
+  if (quant == TypeConstants::QUANT_STAR)
+  {
+    return sctx->get_typemanager()->create_type(*theReturnExpr->return_type(sctx),
+                                                TypeConstants::QUANT_STAR);
+  }
+  else
+  {
+    return theReturnExpr->return_type(sctx);
+  }
 }
 
 
@@ -993,7 +1018,8 @@ expr_t flwor_expr::clone(substitution_t& subst) const
 
   flwor_expr_t cloneFlwor = new flwor_expr(theSctxId, get_loc(), theIsGeneral);
 
-  for (ulong i = 0; i < numClauses; ++i) {
+  for (ulong i = 0; i < numClauses; ++i) 
+  {
     flwor_clause_t cloneClause = theClauses[i]->clone(subst);
 
     cloneFlwor->add_clause(cloneClause.getp());

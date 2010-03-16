@@ -2501,6 +2501,20 @@ void PrinterVisitor::endVisit ( const FnSubsequenceIterator& ) {
 // </FnSubsequenceIterator>
 
 
+// <IntSubsequenceIterator>
+void PrinterVisitor::beginVisit ( const IntSubsequenceIterator& a) {
+  thePrinter.startBeginVisit("IntSubsequenceIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const IntSubsequenceIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </IntSubsequenceIterator>
+
+
 // <FnZeroOrOneIterator>
 void PrinterVisitor::beginVisit ( const FnZeroOrOneIterator& a) {
   thePrinter.startBeginVisit("FnZeroOrOneIterator", ++theId);

@@ -28,7 +28,8 @@
 #include <zorbatypes/zorbatypes_decl.h>
 #include <zorbatypes/datetime.h>
 #include <zorbatypes/duration.h>
-#include <zorbatypes/floatimpl.h>
+#include "zorbatypes/floatimpl.h"
+#include "zorbatypes/numconversions.h"
 #include "util/time.h"
 
 #include "compiler/api/compilercb.h"
@@ -456,6 +457,76 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   }
 
   while ((theChildren.size() < 3 || state->theRemaining > xqp_integer::parseInt(0)) &&
+         CONSUME(result, 0))
+  {
+    if (theChildren.size () >= 3)
+      state->theRemaining--;
+
+    STACK_PUSH (true, state);
+  }
+
+done:
+  theChildren[0]->reset(planState);
+
+  STACK_END (state);
+}
+
+
+/*******************************************************************************
+  zorbaop:int-subsequence
+********************************************************************************/
+bool IntSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
+  store::Item_t startPosItem;
+  xqpStringStore_t startPosStr;
+  xqp_long startPos;
+  store::Item_t lengthItem;
+  xqpStringStore_t lengthStr;
+  xqp_long length;
+
+  IntSubsequenceIteratorState* state;
+  DEFAULT_STACK_INIT(IntSubsequenceIteratorState, state, planState);
+  
+  CONSUME(startPosItem, 1);
+  startPosStr = startPosItem->getStringValue();
+  if (! NumConversions::strToLongLong(startPosStr.getp(), startPos))
+  {
+    ZORBA_ASSERT(false);
+  }
+  --startPos;
+  
+  if (theChildren.size() == 3) 
+  {
+    CONSUME(lengthItem, 2);
+    lengthStr = lengthItem->getStringValue();
+    if (! NumConversions::strToLongLong(lengthStr.getp(), length))
+    {
+      ZORBA_ASSERT(false);
+    }
+
+    state->theRemaining = length;
+  }
+
+  if (startPos < 0)
+  {
+    if (theChildren.size() >= 3)
+      state->theRemaining += startPos;
+
+    startPos = 0;
+  }
+
+  // If a length is specified and it is <= 0, return the empty sequence
+  if (theChildren.size() == 3 && state->theRemaining <= 0)
+    goto done;
+
+  // Consume and skip all input items that are before the startPos
+  for (; startPos > 0; --startPos)
+  {
+    if (!CONSUME(result, 0))
+      goto done;
+  }
+
+  while ((theChildren.size() < 3 || state->theRemaining > 0) &&
          CONSUME(result, 0))
   {
     if (theChildren.size () >= 3)

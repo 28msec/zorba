@@ -274,6 +274,8 @@ public:
 
   FunctionConsts::FunctionKind get_function_kind() const;
 
+  const var_expr* get_var() const;
+
   const store::Item* getQName(static_context* sctx) const;
 
 protected:

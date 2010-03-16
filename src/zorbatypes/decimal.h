@@ -62,7 +62,11 @@ public:
 
 public:
   Decimal() : theDecimal(0) { }
-  Decimal(const Decimal& aDecimal) : ::zorba::serialization::SerializeBaseClass(), theDecimal(aDecimal.theDecimal) { }
+
+  Decimal(const Decimal& aDecimal) 
+    :
+  ::zorba::serialization::SerializeBaseClass(), theDecimal(aDecimal.theDecimal) { }
+
   virtual ~Decimal() {}
 
 public:
@@ -76,7 +80,10 @@ public:
 #endif
 
 private:
-  static xqpString decimalToString(MAPM, int precision=ZORBA_FLOAT_POINT_PRECISION);
+  static xqpStringStore_t decimalToString(
+        MAPM,
+        int precision=ZORBA_FLOAT_POINT_PRECISION);
+
   static void reduceFloatingPointString(char *str);
 
 public:
@@ -168,8 +175,10 @@ public:
 #endif
   }
 
-  xqpString toString() const;
-  xqpString toIntegerString() const;
+  xqpStringStore_t toString() const;
+
+  xqpStringStore_t toIntegerString() const;
+
   uint32_t hash() const;
 
   int getValueAsInt();

@@ -52,10 +52,15 @@
   <zorba:description author="Zorba Team">fn:floor</zorba:description>
   
   <zorba:function>
+
     <zorba:signature localname="floor" prefix="fn">
       <zorba:param>xs:anyAtomicType?</zorba:param>
       <zorba:output>xs:anyAtomicType?</zorba:output>
     </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getReturnType/>
+    </zorba:methods>
   </zorba:function>
 </zorba:iterator>
   

@@ -562,6 +562,9 @@ namespace zorba {
     void beginVisit( const FnSubsequenceIterator& );
     void endVisit  ( const FnSubsequenceIterator& );
 
+    void beginVisit( const IntSubsequenceIterator& );
+    void endVisit  ( const IntSubsequenceIterator& );
+
     void beginVisit( const FnZeroOrOneIterator& );
     void endVisit  ( const FnZeroOrOneIterator& );
 

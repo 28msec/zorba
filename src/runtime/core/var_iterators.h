@@ -21,6 +21,8 @@
 #include "runtime/base/noarybase.h" 
 #include "runtime/base/narybase.h"
 
+#include "zorbatypes/representations.h"
+
 
 namespace zorba
 {
@@ -201,13 +203,17 @@ public:
 class LetVarState : public PlanIteratorState 
 {
 public:
+  store::TempSeq_t  theTempSeq;
+
   store::Iterator_t theSourceIter;
+  store::Item_t     theItem;
 
   LetVarState();
 
   ~LetVarState();
 
   void init(PlanState& planState)  { PlanIteratorState::init(planState); }
+
   void reset(PlanState& planState);
 };
 
@@ -216,7 +222,9 @@ class LetVarIterator : public NoaryBaseIterator<LetVarIterator, LetVarState>
 {
 private:
   store::Item_t  theVarName;
-  
+  xqp_long       theTargetPos;
+  PlanIter_t     theTargetPosIter;
+
 public:
   SERIALIZABLE_CLASS(LetVarIterator);
 
@@ -224,11 +232,7 @@ public:
   LetVarIterator, 
   NoaryBaseIterator<LetVarIterator, LetVarState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (NoaryBaseIterator<LetVarIterator, LetVarState>*)this);
-    ar & theVarName;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   LetVarIterator(
@@ -238,13 +242,47 @@ public:
 
   ~LetVarIterator() {}
   
+  bool setTargetPos(xqp_long v) 
+  {
+    if (theTargetPos == 0 && theTargetPosIter == NULL)
+    {
+      theTargetPos = v;
+      return true;
+    }
+    return false;
+  }
+
+  bool setTargetPosIter(const PlanIter_t& v) 
+  {
+    if (theTargetPos == 0 && theTargetPosIter == NULL)
+    {
+      theTargetPosIter = v; 
+      return true;
+    }
+    return false;
+  }
+
+  xqp_long getTargetPos() const { return theTargetPos; }
+
+  PlanIterator* getTargetPosIter() const { return theTargetPosIter.getp(); }
+
   store::Item* getVarName() const { return theVarName.getp(); }
+
+  void bind(store::TempSeq_t& value, PlanState& planState);
+
+  void bind(store::Iterator_t& it, PlanState& planState);
 
   void accept(PlanIterVisitor& v) const;
 
-  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+  uint32_t getStateSizeOfSubtree() const;
 
-  void bind(store::Iterator_t& it, PlanState& planState);
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  void resetImpl(PlanState& planState) const;
+
+  void closeImpl(PlanState& planState);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 

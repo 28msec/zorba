@@ -348,7 +348,7 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sct
   xqtref_t type1 = (fo->num_args() > 1 ? fo->get_arg(1)->return_type(sctx) : NULL);
 
   return ( ((f->isComparisonFunction() ||
-             f->arithmetic_kind() == ArithmeticConsts::SUBTRACTION) &&
+             f->arithmeticKind() == ArithmeticConsts::SUBTRACTION) &&
             (TypeOps::maybe_date_time(*type0) || TypeOps::maybe_date_time(*type1)))
            ||
            ((fkind == FunctionConsts::FN_DISTINCT_VALUES_1 ||
@@ -573,8 +573,8 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   {
     return partial_eval_logic (fo, false, rCtx);
   }
-  else if (f->comparison_kind() == CompareConsts::VALUE_EQUAL ||
-           f->comparison_kind() == CompareConsts::GENERAL_EQUAL)
+  else if (f->comparisonKind() == CompareConsts::VALUE_EQUAL ||
+           f->comparisonKind() == CompareConsts::GENERAL_EQUAL)
   {
     return partial_eval_eq (rCtx, *fo);
   }
