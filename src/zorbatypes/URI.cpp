@@ -127,7 +127,7 @@ void URI::decode_file_URI(
       xqpStringStore_t tmp = new xqpStringStore(uri->c_str() + 7);
       tmp->decodeFromUri(filepath);
     }
-    else if (uri->byteCompare(0, 16, "file://localhost/") == 0) 
+    else if (uri->byteCompare(0, 17, "file://localhost/") == 0)
     {
       xqpStringStore_t tmp = new xqpStringStore(uri->c_str() + 16);
       tmp->decodeFromUri(filepath);
