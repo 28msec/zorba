@@ -25,6 +25,9 @@
 #include "functions/udf.h"
 #include "functions/function_impl.h"
 
+#include "types/typeops.h"
+
+
 namespace zorba 
 {
 
@@ -45,8 +48,8 @@ user_function::user_function(
     bool deterministic_)
   :
   function(sig),
-  m_loc(loc), 
-  m_expr_body(expr_body), 
+  theLoc(loc), 
+  theBodyExpr(expr_body), 
   theUpdateType(ftype == ParseConstants::fn_update ?
                 UPDATE_EXPR :
                 ftype == ParseConstants::fn_sequential ? SEQUENTIAL_EXPR : SIMPLE_EXPR),
@@ -81,13 +84,14 @@ user_function::~user_function()
 void user_function::serialize(::zorba::serialization::Archiver& ar)
 {
   if(ar.is_serializing_out())
-    get_plan(ar.compiler_cb);
+    getPlan(ar.compiler_cb);
+
   serialize_baseclass(ar, (function*)this);
-  ar & m_loc;
+  ar & theLoc;
   SERIALIZE_ENUM(expr_script_kind_t, theUpdateType);
   ar & deterministic;
   ar & leaf;
-  ar & m_plan;
+  ar & thePlan;
   ar & m_param_iters;
   ar & m_state_size;
 }
@@ -98,7 +102,23 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
 ********************************************************************************/
 const QueryLoc& user_function::get_location() const
 {
-  return m_loc;
+  return theLoc;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t user_function::getUDFReturnType(static_context* sctx) const
+{
+  xqtref_t bodyType = theBodyExpr->return_type(sctx);
+  xqtref_t declaredType = get_signature().return_type();
+
+  if (TypeOps::is_subtype(*bodyType, *declaredType))
+    return bodyType;
+
+  return declaredType;
+
 }
 
 
@@ -107,7 +127,7 @@ const QueryLoc& user_function::get_location() const
 ********************************************************************************/
 void user_function::set_body(expr_t body)
 {
-  m_expr_body = body;
+  theBodyExpr = body;
 }
 
 
@@ -116,7 +136,7 @@ void user_function::set_body(expr_t body)
 ********************************************************************************/
 expr_t user_function::get_body() const
 {
-  return m_expr_body;
+  return theBodyExpr;
 }
 
 
@@ -144,8 +164,8 @@ const std::vector<var_expr_t>& user_function::get_args() const
 bool user_function::accessesDynCtx() const
 {
   // All undeclared functions unfoldable. TODO: better analysis
-  return (m_expr_body == NULL ||
-          m_expr_body->get_annotation(Annotations::UNFOLDABLE_OP).getp() == TSVAnnotationValue::TRUE_VAL.getp());
+  return (theBodyExpr == NULL ||
+          theBodyExpr->get_annotation(Annotations::UNFOLDABLE_OP).getp() == TSVAnnotationValue::TRUE_VAL.getp());
 }
 
 
@@ -161,9 +181,9 @@ std::vector<LetVarIter_t>& user_function::get_param_iters() const
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t user_function::get_plan(CompilerCB* ccb) const
+PlanIter_t user_function::getPlan(CompilerCB* ccb) const
 {
-  if (m_plan == NULL) 
+  if (thePlan == NULL) 
   {
     std::vector<std::vector<LetVarIter_t> > param_iter_vec(m_args.size());
     hash64map<std::vector<LetVarIter_t> *> param_map;
@@ -175,8 +195,8 @@ PlanIter_t user_function::get_plan(CompilerCB* ccb) const
     
     const store::Item* lName = getName();
     //lName may be null of inlined functions
-    m_plan = zorba::codegen(lName==0?0:lName->getStringValue()->c_str (),
-                            &*m_expr_body,
+    thePlan = zorba::codegen(lName==0 ? 0 : lName->getStringValue()->c_str(),
+                            &*theBodyExpr,
                             ccb,
                             &param_map);
 
@@ -199,7 +219,7 @@ PlanIter_t user_function::get_plan(CompilerCB* ccb) const
       }
     }
   }
-  return m_plan;
+  return thePlan;
 }
 
 

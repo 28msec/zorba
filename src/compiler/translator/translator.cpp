@@ -3473,14 +3473,14 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   // If function has any params, they have been wraped in a flwor expr. Set the
   // return clause of the flwor to the body expr of the function, and then make
   // this flwor be the actual body of the function.
-  ulong nargs = v.get_param_count();
+  ulong numParams = v.get_param_count();
   vector<varref_t> args;
-  if (nargs > 0) 
+  if (numParams > 0) 
   {
     rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr>();
     ZORBA_ASSERT(flwor != NULL);
 
-    for(ulong i = 0; i < nargs; ++i)
+    for(ulong i = 0; i < numParams; ++i)
     {
       const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
       var_expr* arg_var = dynamic_cast<var_expr*>(lc->get_expr());
@@ -3539,12 +3539,12 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     } 
 
     user_function* udf = dynamic_cast<user_function *>(
-                         lookup_fn(v.get_name(), nargs, loc));
+                         lookup_fn(v.get_name(), numParams, loc));
     ZORBA_ASSERT(udf != NULL);
 
     // Optimize the function body. This has to be done here because
     // we have the correct static context here (udfs declared in a library module
-    // must be compiled in the contex tof that module).
+    // must be compiled in the context of that module).
     xqtref_t returnType = udf->get_signature().return_type();
 
     if (TypeOps::is_builtin_simple(*returnType)) 
@@ -3562,16 +3562,37 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     if (theCCB->theConfig.opt_level == CompilerCB::config::O1) 
     {
-      RewriterContext rCtx(theCCB, body);
-      GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
-      body = rCtx.getRoot();
+      while (true)
+      {
+        RewriterContext rCtx(theCCB, body);
+        GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+        body = rCtx.getRoot();
+
+        xqtref_t bodyType = body->return_type(sctx_p);
+        xqtref_t declaredType = udf->get_signature().return_type();
+
+        if (!TypeOps::is_equal(*bodyType, *declaredType) &&
+            TypeOps::is_subtype(*bodyType, *declaredType))
+        {
+          udf->get_signature().return_type() = bodyType;
+          if (!udf->isLeaf())
+            continue;
+        }
+
+        udf->set_body(body);
+        udf->set_args(args);
+        break;
+      }
 
       if (theCCB->theConfig.optimize_cb != NULL)
         theCCB->theConfig.optimize_cb(&*body, v.get_name()->get_qname());
     }
+    else
+    {
+      udf->set_body(body);
+      udf->set_args(args);
+    }
 
-    udf->set_body(body);
-    udf->set_args(args);
     break;
   }
   case ParseConstants::fn_extern:

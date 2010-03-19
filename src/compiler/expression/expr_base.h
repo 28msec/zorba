@@ -167,6 +167,10 @@ private:
 class expr : public AnnotationHolder
 {
   friend class expr_iterator_data;
+  friend class forletwin_clause;
+  friend class for_clause;
+  friend class let_clause;
+  friend class where_clause;
 
 public:
   typedef rchandle<expr> expr_t;
@@ -270,6 +274,8 @@ public:
 
   bool contains_expr(const expr* e) const;
 
+  bool contains_node_construction() const;
+
   bool is_map(const expr* e, static_context* sctx) const;
 
   FunctionConsts::FunctionKind get_function_kind() const;
@@ -277,6 +283,8 @@ public:
   const var_expr* get_var() const;
 
   const store::Item* getQName(static_context* sctx) const;
+
+  void clear_annotations();
 
 protected:
   void invalidate()

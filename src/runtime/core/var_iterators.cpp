@@ -350,6 +350,29 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
 }
 
 
+void LetVarIterator::bind(
+    store::TempSeq_t& value,
+    PlanState& planState,
+    ulong startPos, 
+    ulong endPos)
+{
+  LetVarState* state;
+  state = StateTraitsImpl<LetVarState>::getState(planState, theStateOffset);
+
+  state->theTempSeq = value;
+
+  if (theTargetPos > 0)
+  {
+    value->getItem(startPos + theTargetPos - 1, state->theItem);
+  }
+  else if (theTargetPosIter == NULL)
+  {
+    state->theSourceIter = state->theTempSeq->getIterator(startPos, endPos, true);
+    state->theSourceIter->open();
+  }
+}
+
+
 void LetVarIterator::openImpl(
     PlanState& planState,
     uint32_t& offset)
@@ -402,7 +425,8 @@ bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     pos = posItem->getLongValue();
 
-    state->theTempSeq->getItem(pos, result);
+    if (pos > 0)
+      state->theTempSeq->getItem(pos, result);
 
     if (result)
       STACK_PUSH(true, state);

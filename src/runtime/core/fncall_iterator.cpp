@@ -125,7 +125,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   UDFunctionCallIteratorState* state = 
   StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, theStateOffset);
 
-  state->thePlan = theUDF->get_plan(planState.theCompilerCB).getp();
+  state->thePlan = theUDF->getPlan(planState.theCompilerCB).getp();
   state->thePlanStateSize = state->thePlan->getStateSizeOfSubtree();
 
   std::auto_ptr<PlanState> block(new PlanState(state->thePlanStateSize,
@@ -182,11 +182,11 @@ void UDFunctionCallIterator::resetImpl(PlanState& planState) const
 
 bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  UDFunctionCallIteratorState *state;
   bool success;
   ZorbaDebuggerCommons* lDebugger = planState.theCompilerCB->theDebuggerCommons;
   std::stringstream name;
 
+  UDFunctionCallIteratorState* state;
   DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
 
   if(lDebugger != 0)
@@ -210,7 +210,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
         ref->bind(state->theChildIterators.back(), *state->theFnBodyStateBlock);
  
        if(lDebugger != 0)
-        {
+       {
           store::Iterator_t it = state->theChildIterators.back();
           it->open();
           store::Item_t item;
@@ -245,7 +245,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   {
     try
     {
-      success = consumeNext (result, state->thePlan, *state->theFnBodyStateBlock);
+      success = consumeNext(result, state->thePlan, *state->theFnBodyStateBlock);
     }
     catch (ExitException &e)
     {
@@ -260,15 +260,20 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   }
 
   if (state->exitValue != NULL)
-    while (state->exitValue->next (result))
+  {
+    while (state->exitValue->next(result))
       STACK_PUSH(true, state);
+  }
 
+  /*
   if(lDebugger != 0)
   {
-    //lDebugger->theLastKnownStack = lDebugger->theStack;
-    //lDebugger->popStack();
+    lDebugger->theLastKnownStack = lDebugger->theStack;
+    lDebugger->popStack();
   }
-  STACK_END (state);
+  */
+
+  STACK_END(state);
 }
 
 

@@ -683,19 +683,15 @@ void WindowIterator::closeImpl(PlanState& aPlanState)
 ********************************************************************************/
 void WindowIterator::bindVariable(
     PlanState& aPlanState,
-    const store::TempSeq_t& aInputSeq,
-    const ulong aStartPos,
-    const ulong aEndPos) const
+    store::TempSeq_t& aInputSeq,
+    ulong aStartPos,
+    ulong aEndPos) const
 {
   for (std::vector<LetVarIter_t>::const_iterator lVarIter = theVarRefs.begin();
        lVarIter != theVarRefs.end();
        ++lVarIter)
   {
-    store::Iterator_t lIter = aInputSeq->getIterator(aStartPos, aEndPos, true);
-    lIter->open(); 
-    (*lVarIter)->bind(lIter, aPlanState);
-    // FIXME We need to close the iterator! So far this only works because close
-    // is a empty function
+    (*lVarIter)->bind(aInputSeq, aPlanState, aStartPos, aEndPos);
   }
 }
 

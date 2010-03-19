@@ -417,7 +417,7 @@ inline void createTempSeq(
   
 
 inline void bindVariables(
-    const store::TempSeq_t& aTmpSeq,
+    store::TempSeq_t& aTmpSeq,
     const std::vector<LetVarIter_t>& aLetVariables,
     PlanState& aPlanState) 
 {
@@ -425,9 +425,7 @@ inline void bindVariables(
   std::vector<LetVarIter_t>::const_iterator letEnd = aLetVariables.end();
   for (; letIter != letEnd; ++letIter) 
   {
-    store::Iterator_t iter = aTmpSeq->getIterator();
-    iter->open();
-    (*letIter)->bind(iter, aPlanState);
+    (*letIter)->bind(aTmpSeq, aPlanState);
   }
 }
   

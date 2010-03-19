@@ -25,27 +25,23 @@ Iterator tree for main query:
             <ForVarIterator varname="b"/>
           </ChildAxisIterator>
         </ForVariable>
-        <ReturnClause>
-          <flwor::FLWORIterator>
-            <ForVariable name="$$dot">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
+        <ForVariable name="$$dot">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
+            <ForVarIterator varname="$$dot"/>
+          </ChildAxisIterator>
+        </ForVariable>
+        <WhereClause>
+          <CompareIterator>
+            <FnDataIterator>
+              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
                 <ForVarIterator varname="$$dot"/>
-              </ChildAxisIterator>
-            </ForVariable>
-            <WhereClause>
-              <CompareIterator>
-                <FnDataIterator>
-                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                    <ForVarIterator varname="$$dot"/>
-                  </AttributeAxisIterator>
-                </FnDataIterator>
-                <SingletonIterator value="xs:string(person51)"/>
-              </CompareIterator>
-            </WhereClause>
-            <ReturnClause>
-              <ForVarIterator varname="$$dot"/>
-            </ReturnClause>
-          </flwor::FLWORIterator>
+              </AttributeAxisIterator>
+            </FnDataIterator>
+            <SingletonIterator value="xs:string(person51)"/>
+          </CompareIterator>
+        </WhereClause>
+        <ReturnClause>
+          <ForVarIterator varname="$$dot"/>
         </ReturnClause>
       </flwor::FLWORIterator>
     </HoistIterator>
@@ -60,27 +56,23 @@ Iterator tree for main query:
                 <ForVarIterator varname="b"/>
               </ChildAxisIterator>
             </ForVariable>
-            <ReturnClause>
-              <flwor::FLWORIterator>
-                <ForVariable name="$$dot">
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
+            <ForVariable name="$$dot">
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,personref)" typename="*" nill allowed="0">
+                <ForVarIterator varname="$$dot"/>
+              </ChildAxisIterator>
+            </ForVariable>
+            <WhereClause>
+              <CompareIterator>
+                <FnDataIterator>
+                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
                     <ForVarIterator varname="$$dot"/>
-                  </ChildAxisIterator>
-                </ForVariable>
-                <WhereClause>
-                  <CompareIterator>
-                    <FnDataIterator>
-                      <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                        <ForVarIterator varname="$$dot"/>
-                      </AttributeAxisIterator>
-                    </FnDataIterator>
-                    <SingletonIterator value="xs:string(person20)"/>
-                  </CompareIterator>
-                </WhereClause>
-                <ReturnClause>
-                  <ForVarIterator varname="$$dot"/>
-                </ReturnClause>
-              </flwor::FLWORIterator>
+                  </AttributeAxisIterator>
+                </FnDataIterator>
+                <SingletonIterator value="xs:string(person20)"/>
+              </CompareIterator>
+            </WhereClause>
+            <ReturnClause>
+              <ForVarIterator varname="$$dot"/>
             </ReturnClause>
           </flwor::FLWORIterator>
         </ForVariable>

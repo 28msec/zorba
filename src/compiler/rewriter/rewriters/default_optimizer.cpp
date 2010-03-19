@@ -37,6 +37,7 @@ public:
     ADD_RULE(PartialEval);
     ADD_RULE(RefactorPredFLWOR);
     ADD_RULE(EliminateUnusedLetVars);
+    ADD_RULE(MergeFLWOR);
   }
 };
 

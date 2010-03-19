@@ -67,12 +67,23 @@ public:
 
 xqtref_t binary_arith_func::getReturnType(const std::vector<xqtref_t>& arg_types) const 
 {
-  if (TypeOps::is_numeric(*arg_types[0]) && TypeOps::is_numeric(*arg_types[1])) 
+  bool numeric0 = TypeOps::is_numeric(*arg_types[0]);
+  bool numeric1 = TypeOps::is_numeric(*arg_types[1]);
+  ArithmeticConsts::OperationKind arithKind = arithmeticKind();
+
+  if (numeric0 && numeric1) 
   {
     return TypeOps::arithmetic_type(*arg_types[0],
                                     *arg_types[1],
-                                    arithmeticKind() == ArithmeticConsts::DIVISION);
+                                    arithKind == ArithmeticConsts::DIVISION);
   }
+  else if ((numeric0 || numeric1) && 
+           (arithKind == ArithmeticConsts::ADDITION ||
+            arithKind == ArithmeticConsts::SUBTRACTION))
+  {
+    return TypeOps::arithmetic_type(*arg_types[0], *arg_types[1], false);
+  }
+           
 
   if (TypeOps::is_empty(*arg_types [0]))
     return arg_types[0];

@@ -445,21 +445,18 @@ RULE_REWRITE_PRE(EliminateNodeOps)
       const expr* argExpr = fo->get_arg(0);
 
       function* fmin = nsdf->optimize(sctx, node, argExpr);
-      if (fmin != NULL) 
+
+      if (fmin != f)
       {
-        fo->set_func(fmin);
-      }
-      else 
-      {
-        // re-compute IGNORES_*
-        fo->set_func(GET_BUILTIN_FUNCTION(FN_REVERSE_1)); // HACK: need fn:identity here
-
-        std::auto_ptr<Rewriter> rw(
-        new SingletonRuleMajorDriverBase(rule_ptr_t(new MarkConsumerNodeProps())));
-
-        rw->rewrite(rCtx);
-
-        return fo->get_arg(0, true);
+        if (fmin != NULL) 
+        {
+          fo->set_func(fmin);
+          return fo;
+        }
+        else 
+        {
+          return fo->get_arg(0, true);
+        }
       }
     }
   }

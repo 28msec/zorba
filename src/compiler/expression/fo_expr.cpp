@@ -24,6 +24,7 @@
 
 #include "functions/library.h"
 #include "functions/function.h"
+#include "functions/udf.h"
 
 #include "zorbaerrors/Assert.h"
 
@@ -219,7 +220,12 @@ void fo_expr::compute_scripting_kind() const
 xqtref_t fo_expr::return_type_impl(static_context* sctx) const
 {
   const function* func = get_func();
+  /*
+  const user_function* udf = dynamic_cast<const user_function*>(func);
 
+  if (udf != NULL)
+    return udf->getUDFReturnType(sctx);
+  */
   FunctionConsts::FunctionKind funcKind = func->getKind();
 
   switch (funcKind) 

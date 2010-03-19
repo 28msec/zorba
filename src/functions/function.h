@@ -68,6 +68,8 @@ public:
 
   const signature& get_signature() const { return theSignature; }
 
+  signature& get_signature() { return theSignature; }
+
   ulong get_arity() const { return theSignature.arg_count(); }
 
   bool isVariadic() const { return theSignature.is_variadic(); }

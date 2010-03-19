@@ -68,7 +68,7 @@ RULE_REWRITE_POST(InferVarTypes)
     // Node: The translator has already set the type of pos_vars, count_vars,
     // wincond_out_pos_vars, and wincond_in_pos_vars to xs:positiveInteger.
 
-    for (uint32_t i = 0; i < flwor->num_clauses(); i++) 
+    for (ulong i = 0; i < flwor->num_clauses(); ++i) 
     {
       const flwor_clause& c = *(*flwor)[i];
 

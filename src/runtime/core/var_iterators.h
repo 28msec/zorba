@@ -270,6 +270,8 @@ public:
 
   void bind(store::TempSeq_t& value, PlanState& planState);
 
+  void bind(store::TempSeq_t& value, PlanState& planState, ulong startPos, ulong endPos);
+
   void bind(store::Iterator_t& it, PlanState& planState);
 
   void accept(PlanIterVisitor& v) const;

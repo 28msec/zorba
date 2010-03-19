@@ -380,8 +380,17 @@ PlanIter_t fn_zorba_int_subsequence::codegen(
       }
       else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
       {
+#if 1
+        const var_expr* inputVar = inputExpr->get_var();
+
+        if (inputVar != NULL &&
+            inputVar->get_kind() != var_expr::win_var &&
+            inputVarIter->setTargetPosIter(aArgs[1]))
+          return aArgs[0];
+#else
         if (inputVarIter->setTargetPosIter(aArgs[1]))
           return aArgs[0];
+#endif
       }
     }
   }

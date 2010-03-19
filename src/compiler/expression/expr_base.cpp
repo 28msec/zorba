@@ -568,23 +568,57 @@ bool expr::contains_expr(const expr* e) const
 
 
 /*******************************************************************************
+  Check if the expr tree rooted at e contains any node-constructor expr. If so,
+  e cannot be hoisted.
+********************************************************************************/
+bool expr::contains_node_construction() const
+{
+  expr_kind_t kind = get_expr_kind();
+
+  if (kind == elem_expr_kind ||
+      kind == attr_expr_kind ||
+      kind == text_expr_kind ||
+      kind == doc_expr_kind  ||
+      kind == pi_expr_kind)
+  {
+    return true;
+  }
+
+  const_expr_iterator i = expr_begin_const();
+  while(!i.done())
+  {
+    const expr* ce = &*(*i);
+    if (ce)
+    {
+      if (ce->contains_node_construction())
+      {
+        return true;
+      }
+    }
+    ++i;
+  }
+  return false;
+}
+
+
+/*******************************************************************************
   If "this" is a var_expr or a wrapper_expr over a var_expr, return the var_expr;
   otherwise return NULL.
 ********************************************************************************/
 const var_expr* expr::get_var() const
 {
   expr_kind_t kind = get_expr_kind();
+  const expr* currExpr = this;
 
-  if (kind == wrapper_expr_kind)
+  while (kind == wrapper_expr_kind)
   {
-    const wrapper_expr* wrapperExpr = static_cast<const wrapper_expr*>(this);
-
-    if (wrapperExpr->get_expr()->get_expr_kind() == var_expr_kind)
-      return static_cast<const var_expr*>(wrapperExpr->get_expr());
+    const wrapper_expr* wrapperExpr = static_cast<const wrapper_expr*>(currExpr);
+    currExpr = wrapperExpr->get_expr();
+    kind = currExpr->get_expr_kind();
   }
 
   if (kind == var_expr_kind)
-    return static_cast<const var_expr*>(this);
+    return static_cast<const var_expr*>(currExpr);
 
   return NULL;
 }
@@ -972,6 +1006,21 @@ const store::Item* expr::getQName(static_context* sctx) const
   return NULL;
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void expr::clear_annotations()
+{
+  m_annotations.clear();
+
+  expr_iterator iter = expr_begin();
+  while (!iter.done())
+  {
+    (*iter)->clear_annotations();
+    ++iter;
+  }
+}
 
 }
 

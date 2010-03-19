@@ -56,8 +56,6 @@ static bool contains_var(
     const VarIdMap&,
     const DynamicBitset&);
 
-static bool contains_node_construction(const expr*);
-
 static bool is_enclosed_expr(const expr*);
 
 static bool contains_updates(const expr*);
@@ -239,7 +237,7 @@ static expr_t try_hoisting(
     struct flwor_holder* holder)
 {
   if (non_hoistable (e) ||
-      contains_node_construction(e) ||
+      e->contains_node_construction() ||
       is_enclosed_expr(e))
   {
     return NULL;
@@ -414,38 +412,6 @@ static bool is_already_hoisted(const expr* e)
   {
     return static_cast<const fo_expr *>(e)->get_func()->getKind() ==
            FunctionConsts::OP_UNHOIST_1;
-  }
-  return false;
-}
-
-
-/*******************************************************************************
-  Check if the expr tree rooted at e contains any node-constructor expr. If so,
-  e cannot be hoisted.
-********************************************************************************/
-static bool contains_node_construction(const expr* e)
-{
-  if (e->get_expr_kind() == elem_expr_kind
-      || e->get_expr_kind() == attr_expr_kind
-      || e->get_expr_kind() == text_expr_kind
-      || e->get_expr_kind() == doc_expr_kind
-      || e->get_expr_kind() == pi_expr_kind)
-  {
-    return true;
-  }
-
-  const_expr_iterator i = e->expr_begin_const();
-  while(!i.done())
-  {
-    const expr* ce = &*(*i);
-    if (ce)
-    {
-      if (contains_node_construction(ce))
-      {
-        return true;
-      }
-    }
-    ++i;
   }
   return false;
 }

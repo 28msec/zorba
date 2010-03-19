@@ -493,31 +493,19 @@ bool IntSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planStat
   {
     ZORBA_ASSERT(false);
   }
-  --startPos;
   
-  if (theChildren.size() == 3) 
+  CONSUME(lengthItem, 2);
+  lengthStr = lengthItem->getStringValue();
+  if (! NumConversions::strToLongLong(lengthStr.getp(), length))
   {
-    CONSUME(lengthItem, 2);
-    lengthStr = lengthItem->getStringValue();
-    if (! NumConversions::strToLongLong(lengthStr.getp(), length))
-    {
-      ZORBA_ASSERT(false);
-    }
-
-    state->theRemaining = length;
+    ZORBA_ASSERT(false);
   }
 
-  if (startPos < 0)
-  {
-    if (theChildren.size() >= 3)
-      state->theRemaining += startPos;
-
-    startPos = 0;
-  }
-
-  // If a length is specified and it is <= 0, return the empty sequence
-  if (theChildren.size() == 3 && state->theRemaining <= 0)
+  if (startPos <= 0 || length <= 0)
     goto done;
+
+  state->theRemaining = length;
+  --startPos;
 
   // Consume and skip all input items that are before the startPos
   for (; startPos > 0; --startPos)
@@ -526,19 +514,17 @@ bool IntSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planStat
       goto done;
   }
 
-  while ((theChildren.size() < 3 || state->theRemaining > 0) &&
-         CONSUME(result, 0))
+  while (state->theRemaining > 0 && CONSUME(result, 0))
   {
-    if (theChildren.size () >= 3)
-      state->theRemaining--;
+    state->theRemaining--;
 
-    STACK_PUSH (true, state);
+    STACK_PUSH(true, state);
   }
 
 done:
   theChildren[0]->reset(planState);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

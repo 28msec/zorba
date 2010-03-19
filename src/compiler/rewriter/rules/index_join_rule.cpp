@@ -46,7 +46,7 @@ static bool checkVarDependency(RewriterContext&, expr*, ulong);
 static bool expandVars(RewriterContext&, expr*, ulong, int&);
 
 static void findFlworForVar(RewriterContext&, const var_expr*, flwor_expr*&,
-                            sequential_expr*&, ulong&, ulong&);
+                            sequential_expr*&, ulong&, ulong&, ulong&);
 
 
 struct PredicateInfo
@@ -90,7 +90,7 @@ expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
   {
     if (rewriteJoin(rCtx, predInfo))
     {
-      flworExpr->remove_where_clause();
+      predInfo.theFlworExpr->remove_where_clause();
     }
   }
   else if (whereExpr->get_function_kind() == FunctionConsts::OP_AND_2)
@@ -411,57 +411,94 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   if (maxInnerVarId >= 0)
   {
     // The domain expr depends on some flwor var that is defined before the outer
-    // var. In this case, we find the flwor expr defining the inner-most var
-    // referenced by the domain expr of the index and then create the index in
-    // the return expr of that flwor expr.
-    const var_expr* mostInnerVar = (*rCtx.theIdVarMap)[maxInnerVarId];
+    // var. In this case, we find the flwor expr defining the inner-most var V
+    // referenced by the domain expr of the index. Let F be this flwor expr. If
+    // F does not define the other var as well, then we create the index in the
+    // return expr of F. Otherwise, we first break up F by creating a sub-flwor
+    // expr (subF) and moving all clauses of F that appear after V's defining
+    // clause into subF, making the return expr of f be the return expr of subF,
+    // and setting subF as the return expr of F. Then, we create the index in 
+    // the return expr of F.
 
-    flwor_expr* innerFlworExpr = NULL;
-    sequential_expr* innerSeqExpr;
+    const var_expr* mostInnerVar = (*rCtx.theIdVarMap)[maxInnerVarId];
+    flwor_clause* mostInnerVarClause = mostInnerVar->get_flwor_clause();
+
+    flwor_expr* innerFlwor = NULL;
     ulong innerPosInStack;
     ulong innerPosInSeq;
+    ulong mostInnerVarPos;
+    sequential_expr* innerSeqExpr;
 
     findFlworForVar(rCtx,
                     mostInnerVar,
-                    innerFlworExpr,
+                    innerFlwor,
                     innerSeqExpr,
+                    mostInnerVarPos,
                     innerPosInStack,
                     innerPosInSeq);
 
-    if (innerFlworExpr->defines_variable(predInfo.theOuterVar) >= 0)
+    if (innerFlwor->defines_variable(predInfo.theOuterVar) >= 0)
     {
-      // TODO: create a let clause between the mostInnerVar and theOuterVar
-      // and make the domain expr of that let clause build the index. 
-      return false;
-    }
+      ulong numClauses = innerFlwor->num_clauses();
 
-    expr* returnExpr = innerFlworExpr->get_return_expr(false);
+      ZORBA_ASSERT(mostInnerVarPos < numClauses-1);
 
-    if (returnExpr->get_expr_kind() == sequential_expr_kind)
-    {
-      innerSeqExpr = static_cast<sequential_expr*>(returnExpr);
+      const QueryLoc& nestedLoc = mostInnerVarClause->get_loc();
 
-      ulong numArgs = innerSeqExpr->size();
-      ulong arg;
-      for (arg = 0; arg < numArgs; ++arg)
+      flwor_expr_t nestedFlwor = new flwor_expr(sctxid, nestedLoc, false);
+
+      for (ulong i = mostInnerVarPos+1; i < numClauses; ++i)
       {
-        if ((*innerSeqExpr)[arg]->get_function_kind() !=
-            FunctionConsts::OP_CREATE_INTERNAL_INDEX_2)
-        {
-          break;
-        }
+        nestedFlwor->add_clause(innerFlwor->get_clause(i, false));
       }
 
-      innerSeqExpr->add_at(arg, createExpr.getp());
-    }
-    else
-    {
+      for (ulong i = numClauses - 1; i > mostInnerVarPos; --i)
+      {
+        innerFlwor->remove_clause(i);
+      }
+
+      nestedFlwor->set_return_expr(innerFlwor->get_return_expr(true));
+
       innerSeqExpr = new sequential_expr(sctxid, loc);
 
       innerSeqExpr->push_back(createExpr.getp());
-      innerSeqExpr->push_back(returnExpr);
+      innerSeqExpr->push_back(nestedFlwor);
 
-      innerFlworExpr->set_return_expr(innerSeqExpr);
+      innerFlwor->set_return_expr(innerSeqExpr);
+
+      if (predInfo.theFlworExpr == innerFlwor)
+        predInfo.theFlworExpr = nestedFlwor;
+    }
+    else
+    {
+      expr* returnExpr = innerFlwor->get_return_expr(false);
+
+      if (returnExpr->get_expr_kind() == sequential_expr_kind)
+      {
+        innerSeqExpr = static_cast<sequential_expr*>(returnExpr);
+
+        ulong numArgs = innerSeqExpr->size();
+        ulong arg;
+        for (arg = 0; arg < numArgs; ++arg)
+        {
+          if ((*innerSeqExpr)[arg]->get_function_kind() !=
+              FunctionConsts::OP_CREATE_INTERNAL_INDEX_2)
+          {
+            break;
+          }
+        }
+
+        innerSeqExpr->add_at(arg, createExpr.getp());
+      }
+      else
+      {
+        innerSeqExpr = new sequential_expr(sctxid, loc);
+        
+        innerSeqExpr->push_back(createExpr.getp());
+        innerSeqExpr->push_back(returnExpr);
+
+        innerFlwor->set_return_expr(innerSeqExpr);
+      }
     }
 
     rCtx.theIsModifiedStack[innerPosInStack] = true;
@@ -474,11 +511,13 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
     sequential_expr* outerSeqExpr;
     ulong outerPosInStack;
     ulong outerPosInSeq;
+    ulong dummy;
 
     findFlworForVar(rCtx,
                     predInfo.theOuterVar,
                     outerFlworExpr,
                     outerSeqExpr,
+                    dummy,
                     outerPosInStack,
                     outerPosInSeq);
 
@@ -548,13 +587,13 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   createExpr->set_arg(1, buildExpr);
 
-  idx->setDomainExpr(NULL);
-  idx->setDomainVariable(NULL);
-
   if (Properties::instance()->printIntermediateOpt())
   {
     std::cout << std::endl << idx->toString() << std::endl;
   }
+
+  idx->setDomainExpr(NULL);
+  idx->setDomainVariable(NULL);
 
   //std::cout << "!!!!! Applied Hash Join !!!!!" << std::endl << std::endl;
 
@@ -641,6 +680,7 @@ static void findFlworForVar(
     const var_expr* var,
     flwor_expr*& flworExpr,
     sequential_expr*& seqExpr,
+    ulong& varPos,
     ulong& posInStack,
     ulong& posInSeq)
 {
@@ -675,8 +715,10 @@ static void findFlworForVar(
 
     assert(flworExpr != NULL);
 
-    if (flworExpr->defines_variable(var) >= 0)
+    long pos;
+    if ((pos = flworExpr->defines_variable(var)) >= 0)
     {
+      varPos = pos;
       posInStack = i;
       break;
     }

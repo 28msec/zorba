@@ -395,9 +395,9 @@ public:
 private:
   void bindVariable(
         PlanState& aPlanState,
-        const store::TempSeq_t& aInputSeq,
-        const ulong aStartPos,
-        const ulong aEndPos) const;
+        store::TempSeq_t& aInputSeq,
+        ulong aStartPos,
+        ulong aEndPos) const;
 
   void doGarbageCollection(WindowState* lState) const;
 };

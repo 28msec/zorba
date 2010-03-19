@@ -418,10 +418,10 @@ void OrderByIterator::bindOrderBy(
     OrderByState* iterState,
     PlanState& planState) const 
 {
-  const StreamTuple& streamTuple = iterState->theDataTable[iterState->theSortTable[iterState->theCurTuplePos].theDataPos];
+  StreamTuple& streamTuple = iterState->theDataTable[iterState->theSortTable[iterState->theCurTuplePos].theDataPos];
 
   ulong numForVarsRefs = theOutputForVarsRefs.size();
-  for(ulong i = 0; i < numForVarsRefs; ++i)
+  for (ulong i = 0; i < numForVarsRefs; ++i)
   {
     bindVariables(streamTuple.theItems[i], theOutputForVarsRefs[i], planState);
   }

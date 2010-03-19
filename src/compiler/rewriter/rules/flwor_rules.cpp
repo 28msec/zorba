@@ -39,7 +39,7 @@ static bool is_trivial_expr(const expr* e);
 
 static bool safe_to_fold_single_use(var_expr*, const flwor_expr&, static_context*);
 
-  static bool var_in_try_block_or_in_loop(static_context*, const var_expr*, const expr*, bool, ulong&);
+static bool var_in_try_block_or_in_loop(static_context*, const var_expr*, const expr*, bool, bool, ulong&);
 
 static bool is_subseq_pred(RewriterContext&, const flwor_expr*, const expr*, var_expr_t&, expr_t&);
 
@@ -406,6 +406,10 @@ static bool safe_to_fold_single_use(
   bool declared = false;
   expr_t referencingExpr = NULL;
 
+  expr* domainExpr = v->get_domain_expr();
+
+  bool hasNodeConstr = domainExpr->contains_node_construction();
+
   for (ulong i = 0; i < flwor.num_clauses(); ++i)
   {
     const flwor_clause& c = *flwor[i];
@@ -436,6 +440,12 @@ static bool safe_to_fold_single_use(
       {
         return false;
       }
+
+      // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
+      if (hasNodeConstr && c.get_expr()->contains_node_construction())
+      {
+        return false;
+      }
     }
   }
 
@@ -458,7 +468,12 @@ static bool safe_to_fold_single_use(
   }
 
   ulong numRefs = 1;
-  return !var_in_try_block_or_in_loop(sctx, v, referencingExpr, false, numRefs);
+  return !var_in_try_block_or_in_loop(sctx,
+                                      v,
+                                      referencingExpr,
+                                      false,
+                                      hasNodeConstr, 
+                                      numRefs);
 }
 
 
@@ -470,16 +485,24 @@ static bool var_in_try_block_or_in_loop(
     const var_expr* v,
     const expr* e,
     bool in_try_block_or_in_loop,
+    bool hasNodeConstr,
     ulong& numRemainingRefs)
 {
   if (numRemainingRefs == 0)
     return false;
 
-  if (e->get_expr_kind() == trycatch_expr_kind)
+  expr_kind_t kind = e->get_expr_kind();
+
+  if (kind == trycatch_expr_kind)
   {
     const trycatch_expr* tce = dynamic_cast<const trycatch_expr *>(e);
 
-    if (var_in_try_block_or_in_loop(sctx, v, tce->get_try_expr(), true, numRemainingRefs))
+    if (var_in_try_block_or_in_loop(sctx,
+                                    v,
+                                    tce->get_try_expr(),
+                                    true,
+                                    hasNodeConstr,
+                                    numRemainingRefs))
     {
       return true;
     }
@@ -492,6 +515,7 @@ static bool var_in_try_block_or_in_loop(
                                       v,
                                       (*i)->get_catch_expr(),
                                       in_try_block_or_in_loop,
+                                      hasNodeConstr,
                                       numRemainingRefs))
       {
         return true;
@@ -500,7 +524,7 @@ static bool var_in_try_block_or_in_loop(
     }
     return false;
   }
-  else if (e->get_expr_kind() == flwor_expr_kind)
+  else if (kind == flwor_expr_kind)
   {
     const flwor_expr& flwor = *static_cast<const flwor_expr *>(e);
 
@@ -526,6 +550,12 @@ static bool var_in_try_block_or_in_loop(
         {
           return true;
         }
+
+        // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
+        if (hasNodeConstr && c.get_expr()->contains_node_construction())
+        {
+          return true;
+        }
       }
     }
 
@@ -538,6 +568,7 @@ static bool var_in_try_block_or_in_loop(
                                        v,
                                        &*referencingExpr,
                                        in_try_block_or_in_loop,
+                                       hasNodeConstr,
                                        numRemainingRefs);
   }
   else if (e == v)
@@ -545,6 +576,19 @@ static bool var_in_try_block_or_in_loop(
     --numRemainingRefs;
     return in_try_block_or_in_loop;
   }
+
+#if 0
+  else if (kind == elem_expr_kind ||
+      kind == attr_expr_kind ||
+      kind == pi_expr_kind ||
+      kind == text_expr_kind ||
+      kind == doc_expr_kind)
+  {
+    // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
+    if (hasNodeConstr)
+      return true;
+  }
+#endif
 
   // Or else navigate down all children
   const_expr_iterator ei = e->expr_begin_const();
@@ -554,6 +598,7 @@ static bool var_in_try_block_or_in_loop(
                                     v,
                                     &*(*ei),
                                     in_try_block_or_in_loop,
+                                    hasNodeConstr,
                                     numRemainingRefs))
     {
       return true;
@@ -688,7 +733,7 @@ static bool is_subseq_pred(
       {
         xqtref_t posExprType = posExpr->return_type(sctx);
 
-        if (TypeOps::is_subtype(*posExprType, *rtm.POSITIVE_INTEGER_TYPE_ONE))
+        if (TypeOps::is_subtype(*posExprType, *rtm.INTEGER_TYPE_ONE))
         {
           VarIdMap varidMap;
           ulong numFlworVars = 0;
@@ -698,41 +743,19 @@ static bool is_subseq_pred(
           ExprVarsMap exprVarMap;
           build_expr_to_vars_map(posExpr, varidMap, varset, exprVarMap);
 
-         var_expr* forVar = posVar->get_for_clause()->get_var();
-         ulong forVarId = varidMap[forVar];
+          var_expr* forVar = posVar->get_for_clause()->get_var();
+          ulong forVarId = varidMap[forVar];
 
-         std::vector<ulong> posExprVarIds;
-         exprVarMap[posExpr].getSet(posExprVarIds);
+          std::vector<ulong> posExprVarIds;
+          exprVarMap[posExpr].getSet(posExprVarIds);
 
-         ulong numPosExprVars = posExprVarIds.size();
-         for (ulong i = 0; i < numPosExprVars; ++i)
-         {
-           if (posExprVarIds[i] >= forVarId)
-             return false;
-         }
-
-          /*
-          std::vector<var_expr*> flworVars;
-          flworExpr->get_vars_defined(flworVars);
-
-          ulong numPosExprVars;
-          ulong numFlworVars = flworVars.size();
-
-          for (ulong i = 0; i < numFlworVars; ++i)
+          ulong numPosExprVars = posExprVarIds.size();
+          for (ulong i = 0; i < numPosExprVars; ++i)
           {
-            if (forVar == flworVars[i])
-              found = true;
-
-            if (found)
-            {
-              for (ulong j = 0; j < numPosExprVars; ++j)
-              {
-                if ()
-                  return false;
-              }
-            }
+            if (posExprVarIds[i] >= forVarId)
+              return false;
           }
-          */
+          
           return true;
         }
       }
@@ -740,6 +763,126 @@ static bool is_subseq_pred(
   }
 
   return false;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+RULE_REWRITE_PRE(MergeFLWOR)
+{
+  flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
+
+  if (flwor == NULL)
+    return NULL;
+
+  bool modified = false;
+
+  if (flwor->get_return_expr()->get_expr_kind() == flwor_expr_kind)
+  {
+    flwor_expr_t returnFlwor = static_cast<flwor_expr*>(flwor->get_return_expr(true));
+
+    if (!flwor->is_general())
+    {
+      ulong numClauses = flwor->num_clauses();
+
+      for (ulong i = 0; i < numClauses; ++i)
+      {
+        const flwor_clause* c = (*flwor)[i];
+
+        if (c->get_kind() == flwor_clause::where_clause ||
+            c->get_kind() == flwor_clause::group_clause ||
+            c->get_kind() == flwor_clause::order_clause)
+        {
+          goto next1;
+        }
+      }
+    }
+
+    ulong numClauses = returnFlwor->num_clauses();
+    
+    for (ulong i = 0; i < numClauses; ++i)
+    {
+      const flwor_clause* c = (*returnFlwor)[i];
+      
+      if (c->get_kind() == flwor_clause::group_clause ||
+          c->get_kind() == flwor_clause::order_clause)
+      {
+        goto next1;
+      }
+    }
+
+    for (ulong i = 0; i < numClauses; ++i)
+    {
+      flwor->add_clause(returnFlwor->get_clause(i, false));
+    }
+
+    flwor->set_return_expr(returnFlwor->get_return_expr(true));
+
+    modified = true;
+  }
+
+ next1:
+
+#if 1
+  ulong numClauses = flwor->num_clauses();
+
+  for (ulong i = 0; i < numClauses; ++i)
+  {
+    bool merge = false;
+    flwor_expr_t nestedFlwor;
+    ulong numNestedClauses;
+
+    flwor_clause* c = flwor->get_clause(i, false);
+    expr* domainExpr = c->get_expr();
+
+    if (domainExpr != NULL && domainExpr->get_expr_kind() == flwor_expr_kind)
+    {
+      nestedFlwor = static_cast<flwor_expr*>(c->get_expr());
+      numNestedClauses = nestedFlwor->num_clauses();
+
+      if (c->get_kind() == flwor_clause::let_clause)
+      {
+        merge = true;
+
+        for (ulong j = 0; j < numNestedClauses; ++j)
+        {
+          if ((*nestedFlwor)[j]->get_kind() != flwor_clause::let_clause)
+          {
+            merge = false;
+            break;
+          }
+        }
+      }
+      else if (c->get_kind() == flwor_clause::for_clause)
+      {
+      }
+    }
+
+    if (merge)
+    {
+      for (ulong j = 0; j < numNestedClauses; ++j)
+      {
+        flwor->add_clause(i, nestedFlwor->get_clause(j, false));
+      }
+
+      c->set_expr(nestedFlwor->get_return_expr(false));
+
+      numClauses += numNestedClauses;
+      i += numNestedClauses;
+
+      modified = true;
+    }
+  }
+#endif
+
+  return (modified ? node : NULL);
+}
+
+
+RULE_REWRITE_POST(MergeFLWOR)
+{
+  return NULL;
 }
 
 

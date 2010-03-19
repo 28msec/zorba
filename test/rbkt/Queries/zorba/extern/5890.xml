@@ -1,0 +1,569 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE kolej SYSTEM "data.dtd">
+
+<kolej>
+        <!-- Kolej sa deli na patra, na patrach su miestnosti, ktore mozu pouzivat vsetci a pokoje -->
+	<patro cislopatra="1">
+		
+		<spolecne>
+
+			<vratnica cislo="r101">
+				<!-- Kazda miestnost ma svoj inventar, je jednoznacne identifikovana cislom -->
+				<inventar>
+					
+					<!-- Inventar sa sklada z rozneho vybavenia, povinna je cena a id -->
+					<zidle cena="400" id="i5468">Zidle</zidle>
+					<kos cena="100" id="i4879">Kos</kos>
+					<lampa cena="300" id="i7412">Lampa velka</lampa>
+					<pc cena="9000" id="i5776">Pocitac</pc>
+					<monitor cena="2000" id="i1233">Monitor</monitor>
+						
+				</inventar>
+		
+				<zamestnanci>
+					
+					<!-- V miestnosti moze byt viac zamestnancov -->
+					<zamestnanec pozice="vratni">Blanka Kopecka</zamestnanec>
+					<zamestnanec pozice="vratni">Frantisek Benda</zamestnanec>
+						
+				</zamestnanci>
+		
+			</vratnica>
+			    <?ls *.*?>
+			<posilovna cislo="r102">
+	
+				<inventar>
+		
+					<rotoped cena="3000" id="i1554">Rotoped</rotoped>
+					<rotoped cena="3000" id="i1489">Rotoped</rotoped>
+					<cinka cena="300" id="i1568">Cinka</cinka>
+					<cinka cena="300" id="i1598">Cinka</cinka>
+					<zrcadlo cena="400" id="i2245">Zrcadlo</zrcadlo>
+					<zrcadlo cena="500" id="i2745">Zrcadlo</zrcadlo>
+		
+				</inventar>
+		
+				<spravce stud="i21"></spravce>
+		
+			</posilovna>
+			    <?ls *.*?>
+			<hudebna cislo="r103">
+		
+				<inventar>
+					
+					<bici cena="5000" id="i9856">Bici</bici>
+					<sesilovac cena="3000" id="i1255">Sesilovac</sesilovac>
+					<lampa cena="600" id="i4566">Lampa</lampa>
+					<sesilovac cena="4000" id="i7899">Sesilovac</sesilovac>
+					
+				</inventar>
+		
+				<spravce stud="i22"></spravce>
+		
+			</hudebna>
+			    <?ls *.*?>
+			<hospodarka cislo="r105">
+		
+				<inventar>
+					
+					<lampa cena="300" id="i5868">Lampa</lampa>
+					<kos cena="100" id="i4897">Kos</kos>
+					<pc cena="12000" id="i4654">PC</pc>
+					<tiskarna cena="4000" id="i5524">Tiskarna CB</tiskarna>
+					<monitor cena="3000" id="i4888">LCD Monitor</monitor>
+					
+				</inventar>
+			
+				<zamestnanci>
+		
+					<zamestnanec pozice="hospodarka">Petruse Tumova</zamestnanec>
+		
+				</zamestnanci>
+		
+			</hospodarka>
+			    <?ls *.*?>
+			<modlitebna cislo="r106">
+	
+				<inventar>
+					<zidle cena="400" id="i5478">Zidle</zidle>
+					<zidle cena="400" id="i0568">Zidle</zidle>
+					<zidle cena="400" id="i2468">Zidle</zidle>
+					<zidle cena="400" id="i7888">Zidle</zidle>
+					<stul cena="600" id="i2318">Stul</stul>
+					<stul cena="800" id="i0228">Stul velky</stul>
+					<stul cena="600" id="i6988">Stul</stul>
+					<lampa cena="300" id="i5564">Lampa</lampa>
+					
+				</inventar>
+		
+				<spravce stud="i10"></spravce>
+		
+			</modlitebna>
+			    <?ls *.*?>
+			<studovna cislo="r107">
+			
+				<inventar>
+		
+					<zidle cena="400" id="i7878">Zidle</zidle>
+					<zidle cena="400" id="i5228">Zidle</zidle>
+					<zidle cena="400" id="i5477">Zidle</zidle>
+					<zidle cena="400" id="i6544">Zidle</zidle>
+					<stul cena="600" id="i2221">Stul</stul>
+					<stul cena="800" id="i3221">Stul velky</stul>
+					<stul cena="600" id="i8955">Stul</stul>
+					<lampa cena="300" id="i1235">Lampa</lampa>
+		
+				</inventar>
+		
+				<spravce stud="i11"></spravce>
+		
+			</studovna>
+			    <?ls *.*?>
+			<isc cislo="r108">
+	
+				<inventar>
+					
+					<zidle cena="400" id="i1478">Zidle</zidle>
+					<zidle cena="400" id="i2218">Zidle</zidle>
+					<zidle cena="400" id="i5667">Zidle</zidle>
+					<zidle cena="400" id="i8894">Zidle</zidle>
+					<stul cena="600" id="i2322">Stul</stul>
+					<stul cena="800" id="i1405">Stul velky</stul>
+					<stul cena="600" id="i654424">Stul</stul>
+					<lampa cena="300" id="i1111">Lampa</lampa>
+					
+				</inventar>
+		
+				<spravce stud="i12"></spravce>
+		
+			</isc>
+			    <?ls *.*?>
+			<sklad cislo="r109">
+	
+				<inventar>
+					<zidle cena="400" id="i1077">Vyrazena zidle</zidle>
+					<zidle cena="400" id="i127535">Zidle</zidle>
+					<zidle cena="400" id="i4568">Zidle</zidle>
+					<zidle cena="400" id="i8088">Zidle</zidle>
+					<stul cena="600" id="i2335322">Stul</stul>
+					<stul cena="800" id="i1451">Stul maly</stul>
+					<stul cena="600" id="i2135">Stul</stul>
+					<lampa cena="300" id="i1121">Lampa</lampa>
+					<lampa cena="300" id="i1231">Lampa</lampa>
+					<lampa cena="300" id="i4441">Lampa</lampa>		
+				</inventar>
+		
+			</sklad>
+			    <?ls *.*?>
+		</spolecne>
+
+		<pokoje>
+			<!-- Pokoj sa sklada z kupelne, kuchyne, wc a buniek A, B. Miestnosti mozu byt prazdne a mozu v nich byvat studenti -->
+			<pokoj cislo="r110">
+		
+				<koupelna>
+			
+					<inventar>
+						<sprcha cena="600" id="i2341">Sprcha</sprcha>
+						<zrcadlo cena="500" id="i2220">Zrcadlo</zrcadlo>
+						<topeni cena="600" id="i4447">Topeni</topeni>
+						<umyvadlo cena="400" id="i4414">Umyvadlo</umyvadlo>	
+					</inventar>
+			
+				</koupelna>
+		
+				<wc>
+		
+					<inventar>
+						<lampa cena="250" id="i4588">Lampa</lampa>
+						<wcbile cena="600" id="i1254">WC</wcbile>
+						<umyvadlo cena="500" id="i5544">Umyvadlo</umyvadlo>	
+					</inventar>
+			
+				</wc>
+		
+				<kuchyne>
+		
+					<inventar>
+						<varic cena="700" id="i7057">Varic</varic>
+						<lednicka cena="900" id="i457888" mrazak="ne">Lednicka</lednicka>
+					</inventar>
+			
+				</kuchyne>
+		
+				<bunka cast="A">
+		
+					<inventar>
+						<stul cena="800" id="i3222">Stul</stul>
+						<stul cena="800" id="i1230">Stul</stul>
+						<zidle cena="650" id="i4547">Zidle</zidle>
+						<zidle cena="650" id="i4847">Zidle</zidle>
+					</inventar>
+			
+					<studenti>
+			
+						<student id="i8">Ivan Matejko</student>
+				
+						<student id="i9">Martin Ciernik</student>
+			
+					</studenti>
+		
+				</bunka>
+		
+				<bunka cast="B">
+		
+					<inventar>
+						<stul cena="800" id="i3112">Stul</stul>
+						<stul cena="800" id="i4840">Stul</stul>
+						<zidle cena="650" id="i1224">Zidle</zidle>
+						<zidle cena="650" id="i6554">Zidle</zidle>
+					</inventar>
+			
+					<studenti>
+			
+						<student id="i10">Jan Vrba</student>
+			
+					</studenti>
+		
+				</bunka>
+		
+			</pokoj>
+			<?ls *.*?>
+			<pokoj cislo="r104">
+		
+				<koupelna>
+			
+					<inventar>
+						<sprcha cena="600" id="i2001">Sprcha</sprcha>
+						<zrcadlo cena="500" id="i2020">Zrcadlo</zrcadlo>
+						<topeni cena="600" id="i0007">Topeni</topeni>
+						<umyvadlo cena="400" id="i3214">Umyvadlo</umyvadlo>	
+					</inventar>
+			
+				</koupelna>
+		
+				<wc>
+		
+					<inventar>
+						<lampa cena="250" id="i451188">Lampa</lampa>
+						<wcbile cena="600" id="i125214">WC</wcbile>
+						<umyvadlo cena="500" id="i54742544">Umyvadlo</umyvadlo>	
+					</inventar>
+			
+				</wc>
+		
+				<kuchyne>
+		
+					<inventar>
+						<varic cena="700" id="i7557">Varic</varic>
+						<lednicka cena="900" id="i4582118" mrazak="ne">Lednicka</lednicka>
+					</inventar>
+			
+				</kuchyne>
+		
+				<bunka cast="A">
+		
+					<inventar>
+						<stul cena="800" id="i389222">Stul</stul>
+						<stul cena="800" id="i121230">Stul</stul>
+						<zidle cena="650" id="i456547">Zidle</zidle>
+						<zidle cena="650" id="i4847857">Zidle</zidle>
+					</inventar>
+			
+					<studenti>
+			
+						<student id="i11">Jia Wen Lin<internet /></student>
+				
+						<student id="i12">Hsiao Lin<internet /></student>
+			
+					</studenti>
+		
+				</bunka>
+		
+				<bunka cast="B">
+		
+					<inventar>
+						<stul cena="800" id="i3144">Stul</stul>
+						<stul cena="800" id="i4040">Stul</stul>
+						<zidle cena="650" id="i1214">Zidle</zidle>
+					</inventar>
+			
+					<studenti>
+			
+						<student id="i13">Cemal Soysal</student>
+						
+						<student id="i14">Aytac Akbal</student>
+			
+					</studenti>
+		
+				</bunka>
+		
+			</pokoj>
+			<?ls *.*?>
+		</pokoje>
+
+	</patro>
+	
+	<patro cislopatra="2">
+		
+		<spolecne>
+		
+			<pingpong cislo="r201">
+	
+				<inventar>
+					
+					<ppong cena="2000" id="i4582">Pingpongovy stul</ppong>
+					<lampa cena="400" id="i1455">Lampa</lampa>
+					
+				</inventar>
+		
+				<spravce stud="i14"></spravce>
+		
+			</pingpong>
+			<?ls *.*?>
+			<studovna cislo="r202">
+			
+				<inventar>
+		
+					<zidle cena="400" id="i7871218">Zidle</zidle>
+					<zidle cena="400" id="i5214128">Zidle</zidle>
+					<zidle cena="400" id="i501477">Zidle</zidle>
+					<zidle cena="400" id="i667544">Zidle</zidle>
+					<stul cena="600" id="i22215454">Stul</stul>
+					<stul cena="800" id="i3224521">Stul velky</stul>
+					<stul cena="600" id="i788499">Stul</stul>
+					<lampa cena="300" id="i126535">Lampa</lampa>
+		
+				</inventar>
+		
+				<spravce stud="i17"></spravce>
+		
+			</studovna>
+			<?ls *.*?>
+		</spolecne>
+		
+		<pokoje>
+
+			<pokoj cislo="r203">
+		
+				<koupelna>
+			
+					<inventar>
+						<sprcha cena="600" id="i237541">Sprcha</sprcha>
+						<zrcadlo cena="500" id="i222120">Zrcadlo</zrcadlo>
+						<topeni cena="600" id="i4475647">Topeni</topeni>
+						<umyvadlo cena="400" id="i44785614">Umyvadlo</umyvadlo>	
+					</inventar>
+			
+				</koupelna>
+		
+				<wc>
+		
+					<inventar>
+						<lampa cena="250" id="i457588">Lampa</lampa>
+						<wcbile cena="600" id="i12534">WC</wcbile>
+						<umyvadlo cena="500" id="i557844">Umyvadlo</umyvadlo>	
+					</inventar>
+			
+				</wc>
+		
+				<kuchyne>
+		
+					<inventar>
+						<varic cena="700" id="i755277">Varic</varic>
+						<lednicka cena="900" id="i458588" mrazak="ne">Lednicka</lednicka>
+					</inventar>
+			
+				</kuchyne>
+		
+				<bunka cast="A">
+		
+					<inventar>
+						<stul cena="800" id="i013222">Stul</stul>
+						<zidle cena="650" id="i404547">Zidle</zidle>
+						<zidle cena="650" id="i37588">Zidle</zidle>
+					</inventar>
+			
+					<studenti>
+			
+						<student id="i17">Anton Gregor<internet /></student>
+				
+						<student id="i18">Lukas Filip</student>
+			
+					</studenti>
+		
+				</bunka>
+		
+				<bunka cast="B">
+		
+					<inventar>
+						<stul cena="800" id="i376112">Stul</stul>
+						<stul cena="800" id="i44760">Stul</stul>
+						<zidle cena="650" id="i173224">Zidle</zidle>
+						<zidle cena="650" id="i657554">Zidle</zidle>
+					</inventar>
+			
+					<studenti>
+			
+						<student id="i19">Stanislav Varga<internet /></student>
+						<student id="i20"><![CDATA[%$^%$]]></student>
+			
+					</studenti>
+		
+				</bunka>
+		
+			</pokoj>
+			<?ls *.*?>
+			<pokoj cislo="r204">
+		
+				<koupelna>
+			
+					<inventar>
+						<sprcha cena="600" id="i882321">Sprcha</sprcha>
+						<zrcadlo cena="500" id="i275220">Zrcadlo</zrcadlo>
+						<topeni cena="600" id="i447547">Topeni</topeni>
+						<umyvadlo cena="400" id="i441274">Umyvadlo</umyvadlo>	
+					</inventar>
+			
+				</koupelna>
+		
+				<wc>
+		
+					<inventar>
+						<lampa cena="250" id="i4586758">Lampa</lampa>
+						<wcbile cena="600" id="i1254489">WC</wcbile>
+						<umyvadlo cena="500" id="i5572844">Umyvadlo</umyvadlo>	
+					</inventar>
+			
+				</wc>
+		
+				<kuchyne>
+		
+					<inventar>
+						<varic cena="700" id="i7597557">Varic</varic>
+						<lednicka cena="900" id="i475588" mrazak="ne">Lednicka</lednicka>
+					</inventar>
+			
+				</kuchyne>
+		
+				<bunka cast="A">
+		
+					<inventar>
+						<stul cena="800" id="i324622">Stul</stul>
+						<stul cena="800" id="i127430">Stul</stul>
+						<zidle cena="650" id="i974547">Zidle</zidle>
+						<zidle cena="650" id="i4814647">Zidle</zidle>
+					</inventar>
+			
+					<studenti>
+			
+						<student id="i21">Pavel Sip</student>
+				
+						<student id="i22">John Ireland</student>
+			
+					</studenti>
+		
+				</bunka>
+		
+				<bunka cast="B">
+		
+					<inventar>
+						<stul cena="800" id="i1643112">Stul</stul>
+						<stul cena="800" id="i484760">Stul</stul>
+						<zidle cena="650" id="i4655645">Zidle</zidle>
+						<zidle cena="650" id="i65514664">Zidle</zidle>
+					</inventar>
+			
+					<studenti>
+			
+						<student id="i23">Ondrej Dubny</student>
+			
+					</studenti>
+		
+				</bunka>
+		
+			</pokoj>
+			
+			<pokoj cislo="r205">
+		
+				<koupelna>
+			
+					<inventar>
+						<sprcha cena="600" id="i7312341">Sprcha</sprcha>
+						<zrcadlo cena="500" id="i2217620">Zrcadlo</zrcadlo>
+						<topeni cena="600" id="i4146447">Topeni</topeni>
+						<umyvadlo cena="400" id="i4149414">Umyvadlo</umyvadlo>	
+					</inventar>
+			
+				</koupelna>
+		
+				<wc>
+		
+					<inventar>
+						<lampa cena="250" id="i4799588">Lampa</lampa>
+						<wcbile cena="600" id="i125454">WC</wcbile>
+						<umyvadlo cena="500" id="i5540124">Umyvadlo</umyvadlo>	
+					</inventar>
+			
+				</wc>
+		
+				<kuchyne>
+		
+					<inventar>
+						<varic cena="700" id="i7546957">Varic</varic>
+						<lednicka cena="980" id="i3388" mrazak="ne">Lednicka</lednicka>
+					</inventar>
+			
+				</kuchyne>
+		
+				<bunka cast="A">
+		
+					<inventar>
+
+					</inventar>
+			
+					<studenti>
+			
+					</studenti>
+		
+				</bunka>
+				
+				<bunka cast="B">
+		
+					<inventar>
+						<stul cena="800" id="i4603112">Stul</stul>
+						<stul cena="800" id="i48040240">Stul</stul>
+						<zidle cena="650" id="i12401624">Zidle</zidle>
+						<zidle cena="650" id="i657654">Zidle</zidle>
+					</inventar>
+			
+					<studenti>
+			
+						<student id="i24">Jan Tehlicka</student>
+			
+					</studenti>
+		
+				</bunka>
+				<poznamka>Bunka A je prazdna</poznamka>
+			</pokoj>
+			
+			
+	
+		</pokoje>
+	
+	</patro>
+
+<artikel id="a568">
+ <name>Tisch</name>
+ <preis>35</preis>
+</artikel>
+<artikel id="a454">
+ <name>Bild</name>
+ <preis>45</preis>
+</artikel>
+<artikel id="a214">
+ <name>Blume</name>
+ <preis>12</preis>
+</artikel>
+</kolej>
+

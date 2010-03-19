@@ -32,26 +32,36 @@ namespace zorba
 namespace flwor 
 {
 
-    /////////////////////////////////////////////////////////////////////////////////
-    //                                                                             //
-    //  Static Binding Functions                                                   //
-    //                                                                             //
-    /////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Static Binding Functions                                                   //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
-    inline void bindVariables ( store::TempSeq_t& aTmpSeq,
-                                const std::vector<LetVarIter_t>& aLetVariables,
-                                PlanState& aPlanState ) {
-      std::vector<LetVarIter_t>::const_iterator letIter;
-      for ( letIter = aLetVariables.begin();
-            letIter != aLetVariables.end();
-            ++letIter ) {
-        store::Iterator_t iter = aTmpSeq->getIterator();
-        iter->open();
-        ( *letIter )->bind ( iter, aPlanState );
-      }
-    }
+inline void bindVariables(
+    store::TempSeq_t& aTmpSeq,
+    const std::vector<LetVarIter_t>& aLetVariables,
+    PlanState& aPlanState) 
+{
+  std::vector<LetVarIter_t>::const_iterator letIter;
+
+  for (letIter = aLetVariables.begin();
+       letIter != aLetVariables.end();
+       ++letIter) 
+  {
+    store::Iterator_t iter = aTmpSeq->getIterator();
+    iter->open();
+    (*letIter)->bind(iter, aPlanState);
+  }
+}
 
 
-  }/* namespace gflwor */
+}/* namespace gflwor */
 } /* namespace zorba */
 #endif  /* ZORBA_RUNTIME_GFLWOR_COMMON_BINDING */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

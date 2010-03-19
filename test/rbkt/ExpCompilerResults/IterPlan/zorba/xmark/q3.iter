@@ -44,22 +44,12 @@ Iterator tree for main query:
                   <ForVarIterator varname="b"/>
                 </ChildAxisIterator>
               </LetVariable>
-              <LetVariable name="$$last-idx" materialize="true">
-                <FnCountIterator>
-                  <LetVarIterator varname="$$temp5"/>
-                </FnCountIterator>
-              </LetVariable>
-              <ForVariable name="$$dot">
-                <LetVarIterator varname="$$temp5"/>
-              </ForVariable>
-              <WhereClause>
-                <TypedValueCompareIterator_INTEGER>
-                  <ForVarIterator varname="$$pos"/>
-                  <LetVarIterator varname="$$last-idx"/>
-                </TypedValueCompareIterator_INTEGER>
-              </WhereClause>
               <ReturnClause>
-                <ForVarIterator varname="$$dot"/>
+                <LetVarIterator varname="$$temp5">
+                  <FnCountIterator>
+                    <LetVarIterator varname="$$temp5"/>
+                  </FnCountIterator>
+                </LetVarIterator>
               </ReturnClause>
             </flwor::FLWORIterator>
           </ChildAxisIterator>
@@ -97,22 +87,12 @@ Iterator tree for main query:
                         <ForVarIterator varname="b"/>
                       </ChildAxisIterator>
                     </LetVariable>
-                    <LetVariable name="$$last-idx" materialize="true">
-                      <FnCountIterator>
-                        <LetVarIterator varname="$$temp11"/>
-                      </FnCountIterator>
-                    </LetVariable>
-                    <ForVariable name="$$dot">
-                      <LetVarIterator varname="$$temp11"/>
-                    </ForVariable>
-                    <WhereClause>
-                      <TypedValueCompareIterator_INTEGER>
-                        <ForVarIterator varname="$$pos"/>
-                        <LetVarIterator varname="$$last-idx"/>
-                      </TypedValueCompareIterator_INTEGER>
-                    </WhereClause>
                     <ReturnClause>
-                      <ForVarIterator varname="$$dot"/>
+                      <LetVarIterator varname="$$temp11">
+                        <FnCountIterator>
+                          <LetVarIterator varname="$$temp11"/>
+                        </FnCountIterator>
+                      </LetVarIterator>
                     </ReturnClause>
                   </flwor::FLWORIterator>
                 </ChildAxisIterator>

@@ -20,7 +20,7 @@
 #include "common/shared_types.h"
 
 #include "compiler/expression/expr_base.h"
-#include "compiler/expression/var_expr.h"
+//#include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_utils.h"
 
 
@@ -86,7 +86,8 @@ public:
     :
     theContext(sctx),
     theLocation(loc),
-    theKind(kind)
+    theKind(kind),
+    theFlworExpr(NULL)
   {
   }
 
@@ -97,6 +98,8 @@ public:
   flwor_expr* get_flwor_expr() const { return theFlworExpr; }
 
   virtual expr* get_expr() const { return NULL; }
+
+  virtual void set_expr(expr_t v) { }
 
   virtual flwor_clause_t clone(expr::substitution_t& substitution) const = 0;
 };
@@ -151,22 +154,17 @@ public:
 
   ~forletwin_clause();
 
-  void set_expr(expr_t v) { theDomainExpr = v; }
+  void set_expr(expr_t v);
 
   expr* get_expr() const { return theDomainExpr.getp(); }
 
   var_expr* get_var() const { return theVarExpr.getp(); }
 
-  void set_var(var_expr_t v)
-  {
-    theVarExpr = v;
-    if (theVarExpr != NULL)
-      theVarExpr->set_flwor_clause(this);
-  }
+  void set_var(var_expr_t v);
 
-  virtual const var_expr* get_pos_var() const { return NULL; }
+  virtual var_expr* get_pos_var() const { return NULL; }
 
-  virtual const var_expr* get_score_var() const { return NULL; }
+  virtual var_expr* get_score_var() const { return NULL; }
 };
 
 
@@ -205,23 +203,13 @@ public:
 
   void set_outer(bool outer) { theIsOuter = outer; }
 
-  var_expr* get_pos_var() const { return thePosVarExpr.getp(); }
+  var_expr* get_pos_var() const;
 
-  var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
+  var_expr* get_score_var() const;
 
-  void set_pos_var(var_expr_t v)
-  {
-    thePosVarExpr = v;
-    if (thePosVarExpr != NULL)
-      thePosVarExpr->set_flwor_clause(this);
-  }
+  void set_pos_var(var_expr_t v);
 
-  void set_score_var(var_expr_t v)
-  {
-    theScoreVarExpr = v;
-    if (theScoreVarExpr != NULL)
-      theScoreVarExpr->set_flwor_clause(this);
-  }
+  void set_score_var(var_expr_t v);
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 
@@ -258,14 +246,9 @@ public:
   ~let_clause();
 
 public:
-  const var_expr* get_score_var() const { return theScoreVarExpr.getp(); }
+  var_expr* get_score_var() const;
 
-  void set_score_var(var_expr_t v)
-  {
-    theScoreVarExpr = v;
-    if (theScoreVarExpr != NULL)
-      theScoreVarExpr->set_flwor_clause(this);
-  }
+  void set_score_var(var_expr_t v);
 
   void setLazyEval(bool v) { theLazyEval = v; }
 
@@ -601,7 +584,7 @@ public:
 
   expr* get_expr() const { return theWhereExpr.getp(); }
 
-  void set_expr(expr_t where) { theWhereExpr = where; }
+  void set_expr(expr_t where);
 
   flwor_clause_t clone(expr::substitution_t& substitution) const;
 };
@@ -696,6 +679,7 @@ public:
   void set_where(expr* e);
   void remove_where_clause();
   group_clause* get_group_clause() const;
+  orderby_clause* get_order_clause() const;
   ulong num_forlet_clauses();
 
   void accept(expr_visitor&);

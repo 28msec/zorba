@@ -39,8 +39,8 @@ namespace zorba
   i.e., an fo_expr is created that points to the udf obj and also has a vector
   of pointers to the arg exprs appearing in the function call.
 
-  m_loc         : The query location where this udf is declared at.
-  m_expr_body   : The expr tree representing what this function is doing. It is
+  theLoc        : The query location where this udf is declared at.
+  theBodyExpr   : The expr tree representing what this function is doing. It is
                   the result of translating the udf declaration (so for a udf
                   with one or more params, it is the flwor expr described above).
                   Note: translation of udf declarations includes normalization
@@ -49,25 +49,25 @@ namespace zorba
 
   theUpdateType : The update type of this udf.
   deterministic :
-  leaf          :
+  leaf          : True if this udf does not invoke any other udfs
 
-  m_plan        :
+  thePlan       :
   m_param_itrers:
   m_state_size  :
 ********************************************************************************/
 class user_function : public function 
 {
 private:
-  QueryLoc                m_loc;
+  QueryLoc                theLoc;
 
-  expr_t                  m_expr_body;
+  expr_t                  theBodyExpr;
   std::vector<var_expr_t> m_args;
 
   expr_script_kind_t      theUpdateType;
   bool                    deterministic;
-  bool                    leaf;  // does not call other UDF's
+  bool                    leaf;
   
-  mutable PlanIter_t                m_plan;
+  mutable PlanIter_t                thePlan;
   mutable std::vector<LetVarIter_t> m_param_iters;
   mutable int32_t                   m_state_size;
 
@@ -90,9 +90,11 @@ public:
 
   const QueryLoc& get_location() const;
 
-  virtual expr_script_kind_t getUpdateType() const { return theUpdateType; }
+  expr_script_kind_t getUpdateType() const { return theUpdateType; }
 
   virtual bool is_builtin_fn_named(const char* local, int local_len, int arg_count) const {return false;}
+
+  xqtref_t getUDFReturnType(static_context* sctx) const;
 
   bool isDeterministic() const { return deterministic; }
 
@@ -110,7 +112,7 @@ public:
 
   bool accessesDynCtx() const;
 
-  virtual PlanIter_t get_plan(CompilerCB *) const;
+  PlanIter_t getPlan(CompilerCB *) const;
   
   virtual std::vector<LetVarIter_t>& get_param_iters() const;
 

@@ -54,6 +54,7 @@ RULE(SpecializeOperations);
 RULE(EliminateTypeEnforcingOperations);
 RULE(EliminateUnusedLetVars);
 RULE(RefactorPredFLWOR);
+RULE(MergeFLWOR);
 RULE(EliminateExtraneousPathSteps);
 RULE(MarkFreeVars);
 RULE(MarkExpensiveOps);

@@ -764,7 +764,7 @@ RULE_REWRITE_POST(InlineFunctions)
 
       expr::substitution_t subst;
 
-      for (unsigned i = 0; i < udfArgs.size(); ++i)
+      for (ulong i = 0; i < udfArgs.size(); ++i)
       {
         var_expr_t p = udfArgs[i];
         subst[p] = fo->get_arg(i);
@@ -774,6 +774,7 @@ RULE_REWRITE_POST(InlineFunctions)
       {
         expr_t body = udf->get_body();
         body = body->clone(subst);
+        body->clear_annotations();
         return body;
         // TODO: this is caught here, because clone is not implemented for all expressions
       }
