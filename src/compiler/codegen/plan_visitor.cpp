@@ -32,6 +32,7 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftexpr_visitor.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
@@ -222,6 +223,88 @@ typedef rchandle<FlworClauseVarMap> FlworClauseVarMap_t;
 /*******************************************************************************
 
 ********************************************************************************/
+class plan_ftexpr_visitor : public ftexpr_visitor {
+public:
+  plan_ftexpr_visitor( expr_visitor &v ) : expr_visitor_( v ) { }
+
+  expr_visitor& get_expr_visitor();
+
+protected:
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmild_not_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftor_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftprimary_with_options_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftrange_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftselection_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftunary_not_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_times_expr );
+
+  // FTPosFilters
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcontent_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdistance_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftorder_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftscope_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwindow_filter );
+
+  // FTMatchOptions
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_words );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
+
+private:
+  expr_visitor &expr_visitor_;
+};
+
+expr_visitor& plan_ftexpr_visitor::get_expr_visitor() {
+  return expr_visitor_;
+}
+
+#define V plan_ftexpr_visitor
+
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftand_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_selection_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmild_not_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftor_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftprimary_with_options_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftrange_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftselection_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftunary_not_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwords_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwords_times_expr )
+
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcontent_filter )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdistance_filter )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftorder_filter )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftscope_filter )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwindow_filter )
+
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmatch_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstem_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_id )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
+
+#undef V
+
+/*******************************************************************************
+
+********************************************************************************/
 class plan_visitor : public expr_visitor
 {
 protected:
@@ -248,6 +331,8 @@ protected:
 
   std::stack<ZorbaDebugIterator*>        theDebuggerStack;
 
+  plan_ftexpr_visitor                   plan_ftexpr_visitor_;
+
 public:
 
 plan_visitor(CompilerCB* ccb, hash64map<vector<LetVarIter_t> *>* arg_var_map = NULL)
@@ -256,7 +341,8 @@ plan_visitor(CompilerCB* ccb, hash64map<vector<LetVarIter_t> *>* arg_var_map = N
   arg_var_iter_map(arg_var_map),
   theCCB(ccb),
   theLastSctxId(-1),
-  theLastSctx(NULL)
+  theLastSctx(NULL),
+  plan_ftexpr_visitor_( *this )
 {
 }
 
@@ -268,6 +354,10 @@ plan_visitor(CompilerCB* ccb, hash64map<vector<LetVarIter_t> *>* arg_var_map = N
 }
 
 public:
+
+ftexpr_visitor& get_ftexpr_visitor() {
+  return plan_ftexpr_visitor_;
+}
 
 PlanIter_t pop_itstack()
 {
@@ -2659,5 +2749,5 @@ PlanIter_t codegen(
 
 vector<PlanIter_t> plan_visitor::no_var_iters;
 
-
-} /* namespace zorba */
+} // namespace zorba
+/* vim:set et sw=2 ts=2: */

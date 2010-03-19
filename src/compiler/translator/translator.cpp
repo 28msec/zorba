@@ -10699,7 +10699,7 @@ void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
   while ( true ) {
     ftexpr *const e = top_ftstack();
     if ( ftstop_words *const s = dynamic_cast<ftstop_words*>( e ) ) {
-      stop_words.push_back( *s );
+      stop_words.push_back( s );
       pop_ftstack();
     } else
       break;

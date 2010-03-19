@@ -21,61 +21,81 @@
 namespace zorba 
 {
 
+class ftexpr_visitor;
+
 class expr_visitor
 {
 public: 
-  virtual ~expr_visitor() {}
 
-public:
-  
-#define EXPR_VISITOR_METHODS( e )         \
-                                          \
-  virtual bool begin_visit(e&) = 0;       \
-                                          \
-  virtual void end_visit(e&) = 0
-  
-  EXPR_VISITOR_METHODS (expr);
-  EXPR_VISITOR_METHODS (debugger_expr);
-  EXPR_VISITOR_METHODS (wrapper_expr);
-  EXPR_VISITOR_METHODS (sequential_expr);
-  EXPR_VISITOR_METHODS (var_expr);
-  EXPR_VISITOR_METHODS (flwor_expr);
-  EXPR_VISITOR_METHODS (promote_expr);
-  EXPR_VISITOR_METHODS (trycatch_expr);
-  EXPR_VISITOR_METHODS (eval_expr);
-  EXPR_VISITOR_METHODS (if_expr);
-  EXPR_VISITOR_METHODS (fo_expr);
-  EXPR_VISITOR_METHODS (ftcontains_expr);
-  EXPR_VISITOR_METHODS (instanceof_expr);
-  EXPR_VISITOR_METHODS (treat_expr);
-  EXPR_VISITOR_METHODS (castable_expr);
-  EXPR_VISITOR_METHODS (cast_expr);
-  EXPR_VISITOR_METHODS (name_cast_expr);
-  EXPR_VISITOR_METHODS (validate_expr);
-  EXPR_VISITOR_METHODS (extension_expr);
-  EXPR_VISITOR_METHODS (relpath_expr);
-  EXPR_VISITOR_METHODS (axis_step_expr);
-  EXPR_VISITOR_METHODS (match_expr);
-  EXPR_VISITOR_METHODS (const_expr);
-  EXPR_VISITOR_METHODS (order_expr);
-  EXPR_VISITOR_METHODS (elem_expr);
-  EXPR_VISITOR_METHODS (doc_expr);
-  EXPR_VISITOR_METHODS (attr_expr);
-  EXPR_VISITOR_METHODS (text_expr);
-  EXPR_VISITOR_METHODS (pi_expr);
-  EXPR_VISITOR_METHODS (insert_expr);
-  EXPR_VISITOR_METHODS (delete_expr);
-  EXPR_VISITOR_METHODS (rename_expr);
-  EXPR_VISITOR_METHODS (replace_expr);
-  EXPR_VISITOR_METHODS (transform_expr);
-  EXPR_VISITOR_METHODS (exit_expr);
-  EXPR_VISITOR_METHODS (while_expr);
-  EXPR_VISITOR_METHODS (flowctl_expr);
+  virtual ~expr_visitor() { }
 
-  EXPR_VISITOR_METHODS (function_item_expr);
-  EXPR_VISITOR_METHODS (dynamic_function_invocation_expr);
-#undef EXPR_VISITOR_METHODS
+  virtual ftexpr_visitor& get_ftexpr_visitor() = 0;
+
+#define DECL_EXPR_VISITOR_VISIT_MEM_FNS(C)  \
+  virtual bool begin_visit( C& ) = 0;       \
+  virtual void end_visit( C& ) = 0
+
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( debugger_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( wrapper_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( sequential_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( var_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( flwor_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( promote_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( trycatch_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( eval_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( if_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( fo_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( ftcontains_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( instanceof_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( treat_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( castable_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( cast_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( name_cast_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( validate_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( extension_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( relpath_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( axis_step_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( match_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( const_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( order_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( elem_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( doc_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( attr_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( text_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( pi_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( insert_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( delete_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( rename_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( replace_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( transform_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( exit_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( while_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( flowctl_expr );
+
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( function_item_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( dynamic_function_invocation_expr );
+
+#undef DECL_EXPR_VISITOR_VISIT_MEM_FNS
+#define DECL_EXPR_VISITOR_VISIT_MEM_FNS(C)  \
+  bool begin_visit( C& );                   \
+  void end_visit( C& )
+
+#define DEF_EXPR_VISITOR_BEGIN_VISIT(V,C) \
+  bool V::begin_visit( C& ) {             \
+    return true;                          \
+  }
+
+#define DEF_EXPR_VISITOR_END_VISIT(V,C) \
+  void V::end_visit( C& ) {             \
+  }
+
+#define DEF_EXPR_VISITOR_VISIT_MEM_FNS(V,C) \
+  DEF_EXPR_VISITOR_BEGIN_VISIT(V,C)         \
+  DEF_EXPR_VISITOR_END_VISIT(V,C)
+
 };
 
 } /* namespace zorba */
 #endif /* ZORBA_EXPR_VISITOR_H */
+/* vim:set et sw=2 ts=2: */

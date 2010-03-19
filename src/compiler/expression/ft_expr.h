@@ -19,13 +19,12 @@
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/ftexpr_classes.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/ft_types.h"
 #include "compiler/parsetree/parsenodes.h"
 
 namespace zorba {
-
-class ftexpr;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -65,9 +64,7 @@ public:
     union_expr_t ftignore
   );
 
-  void compute_scripting_kind() const {
-    // TODO
-  }
+  void compute_scripting_kind() const;
 
   expr_kind_t get_expr_kind() const {
     return ft_expr_kind;
@@ -77,6 +74,7 @@ public:
   ftexpr const* get_ftselection() const { return ftselection_; }
   union_expr_t get_ignore() const { return ftignore_; }
 
+  expr_iterator_data* make_iter();
   void next_iter( expr_iterator_data& );
   void accept( expr_visitor& );
 
@@ -89,105 +87,6 @@ private:
 };
 
 ///////////////////////////////////////////////////////////////////////////////
-
-class ftand_expr;
-class ftcase_option;
-class ftcontent_filter;
-class ftdiacritics_option;
-class ftdistance_filter;
-class ftextension_option;
-class ftextension_selection_expr;
-class ftlanguage_option;
-class ftmatch_option;
-class ftmatch_options;
-class ftmild_not_expr;
-class ftorder_filter;
-class ftor_expr;
-class ftpos_filter;
-class ftprimary;
-class ftprimary_with_options_expr;
-class ftrange_expr;
-class ftscope_filter;
-class ftselection_expr;
-class ftstem_option;
-class ftstop_word_option;
-class ftstop_words;
-class ftthesaurus_id;
-class ftthesaurus_option;
-class ftunary_not_expr;
-class ftwild_card_option;
-class ftwindow_filter;
-class ftwords_expr;
-class ftwords_times_expr;
-
-/**
- * An ftexpr_visitor is used to visit the nodes of an ftexpr tree.
- */
-class ftexpr_visitor {
-public:
-  virtual ~ftexpr_visitor();
-
-protected:
-  enum begin_result {
-    br_continue,
-    br_no_children  = 0x01,
-    br_no_end       = 0x02,
-  };
-
-# define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C)       \
-  virtual begin_result begin_visit( C const& ) = 0; \
-  virtual void end_visit( C const& ) = 0
-
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmild_not_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftor_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftprimary_with_options_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftrange_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftselection_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftunary_not_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_times_expr );
-
-  // FTPosFilters
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcontent_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdistance_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftorder_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftscope_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwindow_filter );
-
-  // FTMatchOptions
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_words );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
-
-# undef DECL_FTEXPR_VISITOR_VISIT_MEM_FNS
-# define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C) \
-  begin_result begin_visit( C const& );       \
-  void end_visit( C const& )
-
-# define DEF_FTEXPR_VISITOR_BEGIN_VISIT(C)                                \
-  ftexpr_visitor::begin_result ftexpr_visitor::begin_visit( C const& ) {  \
-    return br_continue;                                                   \
-  }
-
-# define DEF_FTEXPR_VISITOR_END_VISIT(C)        \
-  void ftexpr_visitor::end_visit( C const& ) {  \
-  }
-
-# define DEF_FTEXPR_VISITOR_VISIT_MEM_FNS(C)  \
-  DEF_FTEXPR_VISITOR_BEGIN_VISIT(C)           \
-  DEF_FTEXPR_VISITOR_END_VISIT(C)
-
-};
 
 /**
  * Base class for full-text expression classes.
@@ -347,7 +246,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftstop_word_option,ftmatch_option)
   void serialize( serialization::Archiver& );
 
-  typedef std::list<ftstop_words> stop_word_list_t;
+  typedef std::list<ftstop_words*> stop_word_list_t;
 
   ftstop_word_option(
     QueryLoc const&,
@@ -359,6 +258,8 @@ public:
     stop_word_list_t&,
     ft_stop_words_mode::type = ft_stop_words_mode::DEFAULT
   );
+
+  ~ftstop_word_option();
 
   void accept( ftexpr_visitor& ) const;
   ft_stop_words_mode::type get_mode() const { return mode_; }
@@ -706,6 +607,7 @@ public:
   ~ftand_expr();
 
   void accept( ftexpr_visitor& ) const;
+  ftexpr_list_t const& get_expr_list() const { return list_; }
 
 private:
   ftexpr_list_t list_;
@@ -723,6 +625,7 @@ public:
   ~ftmild_not_expr();
 
   void accept( ftexpr_visitor& ) const;
+  ftexpr_list_t const& get_expr_list() const { return list_; }
 
 private:
   ftexpr_list_t list_;
@@ -740,6 +643,7 @@ public:
   ~ftor_expr();
 
   void accept( ftexpr_visitor& ) const;
+  ftexpr_list_t const& get_expr_list() const { return list_; }
 
 private:
   ftexpr_list_t list_;
@@ -755,7 +659,6 @@ public:
   ~ftprimary_with_options_expr();
 
   void accept( ftexpr_visitor& ) const;
-
   ftprimary_expr const* get_primary() const { return primary_; }
   ftmatch_options const* get_match_options() const { return match_options_; }
   expr_t get_weight() const { return weight_; }
@@ -836,7 +739,6 @@ public:
   expr_t get_expr() const { return expr_; }
   ft_anyall_mode::type get_mode() const { return mode_; }
 
-  //void set_range( fo_expr *range );
 private:
   expr_t expr_;
   ft_anyall_mode::type mode_;

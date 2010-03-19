@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
+#include "compiler/expression/expr_visitor.h"
 #include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftexpr_visitor.h"
 #include "zorbautils/container_util.h"
 
 using namespace std;
@@ -117,27 +119,23 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_expr)
 SERIALIZABLE_CLASS_VERSIONS(ftwords_times_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times_expr)
 
-#if 0
-class pass_thru_visitor : public ftexpr_visitor {
-public:
-  pass_thru_visitor( expr_visitor &v ) : v_( v ) { }
-private:
-  expr_visitor &v_;
-};
-#endif
+#define BEGIN_VISIT( V )                                                \
+  { /* begin scope */                                                   \
+    ftexpr_visitor::begin_result const br0 = (V).begin_visit( *this );  \
+    if ( !(br0 & ftexpr_visitor::br_no_children) ) {
 
-inline void accept_unless_null( expr_t e, expr_visitor &v ) {
-  if ( e ) e->accept( v );
-}
+#define END_VISIT( V )                        \
+    }                                         \
+    if ( !(br0 & ftexpr_visitor::br_no_end) ) \
+        (V).end_visit( *this );               \
+  } /* end scope */
 
-#if 0
-inline void accept( ftexpr *e, expr_visitor &v ) {
-  if ( e ) {
-    pass_thru_visitor v2( v );
-    e->accept( v2 );
-  }
-}
-#endif
+#define ACCEPT( FTEXPR, V )                 \
+  if ( !(FTEXPR) ) ; else (FTEXPR)->accept( V )
+
+#define ACCEPT_SEQ( T, S, V )                                     \
+  for ( T::const_iterator i = (S).begin(); i != (S).end(); ++i )  \
+    ACCEPT( *i, V );
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -159,6 +157,244 @@ void ft_expr::serialize( serialization::Archiver &ar ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+class pass_thru_expr_visitor : public expr_visitor {
+public:
+  pass_thru_expr_visitor( ftexpr_visitor &v ) : ftexpr_visitor_( v ) { }
+
+  ftexpr_visitor& get_ftexpr_visitor();
+
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( attr_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( axis_step_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( castable_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( cast_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( const_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( debugger_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( delete_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( doc_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( dynamic_function_invocation_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( elem_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( eval_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( exit_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( extension_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( flowctl_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( flwor_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( fo_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( ftcontains_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( function_item_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( if_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( insert_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( instanceof_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( match_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( name_cast_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( order_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( pi_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( promote_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( relpath_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( rename_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( replace_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( sequential_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( text_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( transform_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( treat_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( trycatch_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( validate_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( var_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( while_expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( wrapper_expr );
+
+private:
+  ftexpr_visitor &ftexpr_visitor_;
+};
+
+ftexpr_visitor& pass_thru_expr_visitor::get_ftexpr_visitor() {
+  return ftexpr_visitor_;
+}
+
+#define V pass_thru_expr_visitor
+
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, attr_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, axis_step_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, castable_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, cast_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, const_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, debugger_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, delete_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, doc_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, dynamic_function_invocation_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, elem_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, eval_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, exit_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, extension_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, flowctl_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, flwor_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, fo_expr )
+
+bool V::begin_visit( ftcontains_expr &e ) {
+  //e.get_ftselection()
+  return true;
+}
+
+DEF_EXPR_VISITOR_END_VISIT( V, ftcontains_expr )
+
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, function_item_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, if_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, insert_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, instanceof_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, match_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, name_cast_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, order_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, pi_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, promote_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, relpath_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, rename_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, replace_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, sequential_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, text_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, transform_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, treat_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, trycatch_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, validate_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, var_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, while_expr )
+DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, wrapper_expr )
+
+#undef V
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * An next_iter_ftexpr_visitor is-an ftexpr_visitor that is used only by
+ * ftcontains_expr::next_iter().
+ */
+class next_iter_ftexpr_visitor : public ftexpr_visitor {
+public:
+  typedef list<expr_t> expr_list_t;
+
+  next_iter_ftexpr_visitor() : expr_visitor_( *this ) { }
+
+  void push_back( expr_t e ) {
+    sub_expr_list_.push_back( e );
+  }
+
+  expr_list_t& get_sub_expr_list() {
+    return sub_expr_list_;
+  }
+
+  expr_visitor& get_expr_visitor();
+
+protected:
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmild_not_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftor_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftprimary_with_options_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftrange_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftselection_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftunary_not_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_times_expr );
+
+  // FTPosFilters
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcontent_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdistance_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftorder_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftscope_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwindow_filter );
+
+  // FTMatchOptions
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_words );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
+
+private:
+  expr_list_t sub_expr_list_;
+  pass_thru_expr_visitor expr_visitor_;
+};
+
+expr_visitor& next_iter_ftexpr_visitor::get_expr_visitor() {
+  return expr_visitor_;
+}
+
+#define V next_iter_ftexpr_visitor
+
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftand_expr );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_selection_expr );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmild_not_expr );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftor_expr );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftprimary_with_options_expr );
+
+ftexpr_visitor::begin_result V::begin_visit( ftrange_expr const &c ) {
+  push_back( c.get_expr1() );
+  if ( c.get_expr2() )
+    push_back( c.get_expr2() );
+  return br_no_end;
+}
+DEF_FTEXPR_VISITOR_END_VISIT( V, ftrange_expr );
+
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftselection_expr );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftunary_not_expr );
+
+ftexpr_visitor::begin_result V::begin_visit( ftwords_expr const &c ) {
+  push_back( c.get_expr() );
+  return br_no_end;
+}
+DEF_FTEXPR_VISITOR_END_VISIT( V, ftwords_expr );
+
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwords_times_expr );
+
+// FTPosFilters
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcontent_filter );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdistance_filter );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftorder_filter );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftscope_filter );
+
+ftexpr_visitor::begin_result V::begin_visit( ftwindow_filter const &c ) {
+  push_back( c.get_window() );
+  return br_no_end;
+}
+DEF_FTEXPR_VISITOR_END_VISIT( V, ftwindow_filter )
+
+// FTMatchOptions
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcase_option );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_option );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmatch_option );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstem_option );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_words );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_id );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_option );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option );
+
+#undef V
+
+///////////////////////////////////////////////////////////////////////////////
+
+class ftcontains_expr_iterator_data : public expr_iterator_data {
+public:
+  list<expr_t> expr_list_;
+  list<expr_t>::iterator iter_;
+
+  ftcontains_expr_iterator_data( expr *e, list<expr_t> expr_list ) :
+    expr_iterator_data( e )
+  {
+    expr_list_.swap( expr_list );
+  }
+};
+
+///////////////////////////////////////////////////////////////////////////////
+
 ftcontains_expr::ftcontains_expr(
   short sctx,
   QueryLoc const &loc,
@@ -173,10 +409,21 @@ ftcontains_expr::ftcontains_expr(
 {
 }
 
+DEF_EXPR_ACCEPT( ftcontains_expr )
+#if 0
 void ftcontains_expr::accept( expr_visitor &v ) {
-  accept_unless_null( range_.getp(), v );
-  // pass_thru_visitor v2( v );
-  accept_unless_null( ftignore_.getp(), v );
+  if ( v.begin_visit( *this ) ) {
+    ACCEPT( range_, v );
+    ftexpr_visitor &v2 = v.get_ftexpr_visitor();
+    ACCEPT( ftselection_, *v2 );
+    ACCEPT( ftignore_, v );
+  }
+  v.end_visit( *this );
+}
+#endif
+
+void ftcontains_expr::compute_scripting_kind() const {
+  // TODO
 }
 
 void ftcontains_expr::serialize( serialization::Archiver &ar )
@@ -187,12 +434,18 @@ void ftcontains_expr::serialize( serialization::Archiver &ar )
   ar & ftignore_;
 }
 
+expr_iterator_data* ftcontains_expr::make_iter() {
+  next_iter_ftexpr_visitor v;
+  v.push_back( range_ );
+  ftselection_->accept( v );
+  v.push_back( ftignore_ );
+  return new ftcontains_expr_iterator_data( this, v.get_sub_expr_list() );
+}
+
 void ftcontains_expr::next_iter( expr_iterator_data &v ) {
-  BEGIN_EXPR_ITER ();
-  ITER (range_);
-  ITER (ftselection_);
-  ITER (ftignore_);
-  END_EXPR_ITER ();
+  BEGIN_EXPR_ITER2(ftcontains_expr);
+  ITER_FOR_EACH( iter_, vv.expr_list_.begin(), vv.expr_list_.end(), *vv.iter_ );
+  END_EXPR_ITER();
 }
 
 ostream& ftcontains_expr::put( ostream& o ) const
@@ -236,7 +489,9 @@ ftand_expr::~ftand_expr() {
 }
 
 void ftand_expr::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT_SEQ( ftexpr_list_t, list_, v );
+  END_VISIT( v );
 }
 
 void ftand_expr::serialize( serialization::Archiver &ar ) {
@@ -254,7 +509,8 @@ ftcase_option::ftcase_option(
 }
 
 void ftcase_option::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  END_VISIT( v );
 }
 
 void ftcase_option::serialize( serialization::Archiver &ar ) {
@@ -271,7 +527,8 @@ ftcontent_filter::ftcontent_filter(
 }
 
 void ftcontent_filter::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  END_VISIT( v );
 }
 
 ftdiacritics_option::ftdiacritics_option(
@@ -284,7 +541,8 @@ ftdiacritics_option::ftdiacritics_option(
 }
 
 void ftdiacritics_option::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  END_VISIT( v );
 }
 
 void ftdiacritics_option::serialize( serialization::Archiver &ar ) {
@@ -304,7 +562,9 @@ ftdistance_filter::ftdistance_filter(
 }
 
 void ftdistance_filter::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT( range_, v );
+  END_VISIT( v );
 }
 
 void ftdistance_filter::serialize( serialization::Archiver &ar ) {
@@ -325,7 +585,9 @@ ftextension_selection_expr::ftextension_selection_expr(
 }
 
 void ftextension_selection_expr::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT( ftselection_, v );
+  END_VISIT( v );
 }
 
 void ftextension_selection_expr::serialize( serialization::Archiver &ar ) {
@@ -344,7 +606,8 @@ ftextension_option::ftextension_option(
 }
 
 void ftextension_option::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  END_VISIT( v );
 }
 
 void ftextension_option::serialize( serialization::Archiver &ar ) {
@@ -354,7 +617,8 @@ void ftextension_option::serialize( serialization::Archiver &ar ) {
 }
 
 ftlanguage_option::ftlanguage_option(
-  QueryLoc const &loc, string const &lang
+  QueryLoc const &loc,
+  string const &lang
 ) :
   ftmatch_option( loc ),
   language_( lang )
@@ -362,7 +626,8 @@ ftlanguage_option::ftlanguage_option(
 }
 
 void ftlanguage_option::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  END_VISIT( v );
 }
 
 void ftlanguage_option::serialize( serialization::Archiver &ar ) {
@@ -399,7 +664,14 @@ ftmatch_options::~ftmatch_options() {
 }
 
 void ftmatch_options::accept( ftexpr_visitor &v ) const {
-  // TODO
+  ACCEPT( case_option_, v );
+  ACCEPT( diacritics_option_, v );
+  ACCEPT( extension_option_, v );
+  ACCEPT( language_option_, v );
+  ACCEPT( stem_option_, v );
+  ACCEPT( stop_word_option_, v );
+  ACCEPT( thesaurus_option_, v );
+  ACCEPT( wild_card_option_, v );
 }
 
 void ftmatch_options::serialize( serialization::Archiver &ar ) {
@@ -424,7 +696,9 @@ ftmild_not_expr::~ftmild_not_expr() {
 }
 
 void ftmild_not_expr::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT_SEQ( ftexpr_list_t, list_, v );
+  END_VISIT( v );
 }
 
 void ftmild_not_expr::serialize( serialization::Archiver &ar ) {
@@ -443,7 +717,9 @@ ftor_expr::ftor_expr( QueryLoc const &loc, ftexpr_list_t &list ) :
 }
 
 void ftor_expr::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT_SEQ( ftexpr_list_t, list_, v );
+  END_VISIT( v );
 }
 
 void ftor_expr::serialize( serialization::Archiver &ar ) {
@@ -457,7 +733,8 @@ ftorder_filter::ftorder_filter( QueryLoc const &loc ) :
 }
 
 void ftorder_filter::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  END_VISIT( v );
 }
 
 void ftorder_filter::serialize( serialization::Archiver &ar ) {
@@ -490,7 +767,10 @@ ftprimary_with_options_expr::~ftprimary_with_options_expr() {
 }
 
 void ftprimary_with_options_expr::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT( primary_, v );
+  ACCEPT( match_options_, v );
+  END_VISIT( v );
 }
 
 void ftprimary_with_options_expr::serialize( serialization::Archiver &ar ) {
@@ -514,7 +794,11 @@ ftrange_expr::ftrange_expr(
 }
 
 void ftrange_expr::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  expr_visitor &v2 = v.get_expr_visitor();
+  ACCEPT( expr1_, v2 );
+  ACCEPT( expr2_, v2 );
+  END_VISIT( v );
 }
 
 void ftrange_expr::serialize( serialization::Archiver &ar ) {
@@ -534,7 +818,8 @@ ftscope_filter::ftscope_filter(
 }
 
 void ftscope_filter::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  END_VISIT( v );
 }
 
 void ftscope_filter::serialize( serialization::Archiver &ar ) {
@@ -559,7 +844,9 @@ ftselection_expr::~ftselection_expr() {
 }
 
 void ftselection_expr::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT_SEQ( ftpos_filter_list_t, list_, v );
+  END_VISIT( v );
 }
 
 void ftselection_expr::serialize( serialization::Archiver &ar ) {
@@ -578,7 +865,8 @@ ftstem_option::ftstem_option(
 }
 
 void ftstem_option::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  END_VISIT( v );
 }
 
 void ftstem_option::serialize( serialization::Archiver &ar ) {
@@ -600,7 +888,8 @@ ftstop_words::ftstop_words(
 }
 
 void ftstop_words::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  END_VISIT( v );
 }
 
 void ftstop_words::serialize( serialization::Archiver &ar ) {
@@ -630,13 +919,19 @@ ftstop_word_option::ftstop_word_option(
   stop_words_.swap( stop_word_list );
 }
 
+ftstop_word_option::~ftstop_word_option() {
+  delete_ptr_container( stop_words_ );
+}
+
 void ftstop_word_option::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT_SEQ( stop_word_list_t, stop_words_, v );
+  END_VISIT( v );
 }
 
 void ftstop_word_option::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftmatch_option*)this );
-  // TODO: ar & stop_words_;
+  ar & stop_words_;
   SERIALIZE_ENUM(ft_stop_words_mode::type,mode_);
 }
 
@@ -658,7 +953,9 @@ ftthesaurus_id::~ftthesaurus_id() {
 }
 
 void ftthesaurus_id::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT( levels_, v );
+  END_VISIT( v );
 }
 
 void ftthesaurus_id::serialize( serialization::Archiver &ar ) {
@@ -686,7 +983,9 @@ ftthesaurus_option::~ftthesaurus_option() {
 }
 
 void ftthesaurus_option::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT_SEQ( thesaurus_id_list_t, thesaurus_id_list_, v );
+  END_VISIT( v );
 }
 
 void ftthesaurus_option::serialize( serialization::Archiver &ar ) {
@@ -706,7 +1005,9 @@ ftunary_not_expr::~ftunary_not_expr() {
 }
 
 void ftunary_not_expr::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT( subexpr_, v );
+  END_VISIT( v );
 }
 
 void ftunary_not_expr::serialize( serialization::Archiver &ar ) {
@@ -724,7 +1025,8 @@ ftwild_card_option::ftwild_card_option(
 }
 
 void ftwild_card_option::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  END_VISIT( v );
 }
 
 void ftwild_card_option::serialize( serialization::Archiver &ar ) {
@@ -744,7 +1046,10 @@ ftwindow_filter::ftwindow_filter(
 }
 
 void ftwindow_filter::accept( ftexpr_visitor &v ) const {
-  // TODO ACCEPT( window_, v );
+  BEGIN_VISIT( v );
+  expr_visitor &v2 = v.get_expr_visitor();
+  ACCEPT( window_, v2 );
+  END_VISIT( v );
 }
 
 void ftwindow_filter::serialize( serialization::Archiver &ar ) {
@@ -765,7 +1070,10 @@ ftwords_expr::ftwords_expr(
 }
 
 void ftwords_expr::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  expr_visitor &v2 = v.get_expr_visitor();
+  ACCEPT( expr_, v2 );
+  END_VISIT( v );
 }
 
 void ftwords_expr::serialize( serialization::Archiver &ar ) {
@@ -791,7 +1099,10 @@ ftwords_times_expr::~ftwords_times_expr() {
 }
 
 void ftwords_times_expr::accept( ftexpr_visitor &v ) const {
-  // TODO
+  BEGIN_VISIT( v );
+  ACCEPT( ftwords_, v );
+  ACCEPT( fttimes_, v );
+  END_VISIT( v );
 }
 
 void ftwords_times_expr::serialize( serialization::Archiver &ar ) {
