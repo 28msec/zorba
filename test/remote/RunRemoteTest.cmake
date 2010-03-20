@@ -20,6 +20,8 @@
 #   Valid options:
 #      changelist = svn changelist to submit (defaults to default changelist)
 #      ZORBA_BUILD_DIR = zorba build directory (defaults to src_dir/build)
+#      commit = set to "no" to prevent remote queue from committing changes
+#               (default "yes")
 
 
 # We'll need Subversion.
@@ -61,10 +63,18 @@ svn_package ("${srcdir}" "${CMAKE_ZORBA_BUILD_DIR}/remotequeue"
 
 # Copy the local changes to the remotequeue svn repository.  In
 # future, we could pass data to the remote queue (such as test suites
-# to run, etc.) with properties on the checkin.
+# to run, etc.) with properties on the checkin. For now at least, if
+# the "commit" argument is "no", then use a special checkin message to
+# instruct the remote queue not to commit the job to svn. (Doing it
+# this way also prevents this script for prompting for a checkin
+# message, which is useful.)
 message ("Submitting job ${changefile}....")
+if (commit STREQUAL "no")
+  set (commitargs -m "DO NOT COMMIT")
+endif (commit STREQUAL "no")
 execute_process (COMMAND
-                 "${svn}" import "${CMAKE_ZORBA_BUILD_DIR}/remotequeue/${changefile}"
+                 "${svn}" import ${commitargs}
+                 "${CMAKE_ZORBA_BUILD_DIR}/remotequeue/${changefile}"
                  "${svn_path}/workingsets/${changefile}"
                  TIMEOUT 300 RESULT_VARIABLE result)
 
