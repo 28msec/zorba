@@ -15,7 +15,7 @@
  */
 
 #include "compiler/expression/expr_visitor.h"
-#include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftexpr.h"
 #include "compiler/expression/ftexpr_visitor.h"
 #include "zorbautils/container_util.h"
 

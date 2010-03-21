@@ -20,6 +20,6 @@ SET(EXPRESSION_SRCS
     path_expr.cpp
     flwor_expr.cpp
     fo_expr.cpp
-    ft_expr.cpp
+    ftexpr.cpp
     function_item_expr.cpp)
 

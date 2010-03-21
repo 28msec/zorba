@@ -31,7 +31,7 @@
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
-#include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftexpr.h"
 #include "compiler/expression/ftexpr_visitor.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
