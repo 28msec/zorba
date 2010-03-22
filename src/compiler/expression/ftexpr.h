@@ -171,7 +171,7 @@ public:
 
   void accept( ftexpr_visitor& ) const;
   rchandle<QName> get_qname() const { return qname_; }
-  std::string get_val() const { return val_; }
+  std::string const& get_val() const { return val_; }
 
 private:
   rchandle<QName> qname_;
@@ -190,7 +190,7 @@ public:
   );
 
   void accept( ftexpr_visitor& ) const;
-  std::string get_language() const { return language_; }
+  std::string const& get_language() const { return language_; }
 
 private:
   std::string language_;
