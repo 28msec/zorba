@@ -334,9 +334,9 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftor_expr );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftprimary_with_options_expr );
 
 ftexpr_visitor::begin_result V::begin_visit( ftrange_expr const &c ) {
-  push_back( c.get_expr1() );
+  push_back( c.get_expr1().getp() );
   if ( c.get_expr2() )
-    push_back( c.get_expr2() );
+    push_back( c.get_expr2().getp() );
   return br_no_end;
 }
 DEF_FTEXPR_VISITOR_END_VISIT( V, ftrange_expr );
@@ -359,7 +359,7 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftorder_filter );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftscope_filter );
 
 ftexpr_visitor::begin_result V::begin_visit( ftwindow_filter const &c ) {
-  push_back( c.get_window() );
+  push_back( c.get_window().getp() );
   return br_no_end;
 }
 DEF_FTEXPR_VISITOR_END_VISIT( V, ftwindow_filter )
@@ -436,9 +436,9 @@ void ftcontains_expr::serialize( serialization::Archiver &ar )
 
 expr_iterator_data* ftcontains_expr::make_iter() {
   next_iter_ftexpr_visitor v;
-  v.push_back( range_ );
+  v.push_back( range_.getp() );
   ftselection_->accept( v );
-  v.push_back( ftignore_ );
+  v.push_back( ftignore_.getp() );
   return new ftcontains_expr_iterator_data( this, v.get_sub_expr_list() );
 }
 

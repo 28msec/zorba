@@ -462,7 +462,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
       innerSeqExpr = new sequential_expr(sctxid, loc);
 
       innerSeqExpr->push_back(createExpr.getp());
-      innerSeqExpr->push_back(nestedFlwor);
+      innerSeqExpr->push_back(nestedFlwor.getp());
 
       innerFlwor->set_return_expr(innerSeqExpr);
 
