@@ -758,9 +758,9 @@ RULE_REWRITE_POST(InlineFunctions)
     expr_t body;
 
     if (NULL != udf && ! udf->isSequential() && udf->isLeaf() &&
-        (NULL != (body = udf->get_body())))
+        (NULL != (body = udf->getBody())))
     {
-      const std::vector<var_expr_t>& udfArgs = udf->get_args();
+      const std::vector<var_expr_t>& udfArgs = udf->getArgVars();
 
       expr::substitution_t subst;
 
@@ -772,7 +772,7 @@ RULE_REWRITE_POST(InlineFunctions)
 
       try
       {
-        expr_t body = udf->get_body();
+        expr_t body = udf->getBody();
         body = body->clone(subst);
         body->clear_annotations();
         return body;

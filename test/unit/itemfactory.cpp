@@ -62,7 +62,7 @@ void
 testMultipleFactoryInitilizations()
 {
   Zorba* zorba = NULL;
-  simplestore::SimpleStore* store = NULL;
+  void* store = NULL;
 
   store = zorba::StoreManager::getStore();
   zorba = Zorba::getInstance(store);
@@ -86,9 +86,12 @@ testMultipleFactoryInitilizations()
 int
 itemfactory(int argc, char* argv[]) 
 {
-  try {
+  try 
+  {
     testMultipleFactoryInitilizations();
-  } catch (ZorbaException &e) {
+  }
+  catch (ZorbaException &e) 
+  {
     std::cerr << e << std::endl;
     return 1;
   }

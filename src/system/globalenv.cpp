@@ -61,77 +61,12 @@ using namespace zorba;
 
 GlobalEnvironment * GlobalEnvironment::m_globalEnv = 0;
 
-GlobalEnvironment::~GlobalEnvironment()
-{}
-
-void GlobalEnvironment::init_icu()
-{
-  // initialize the icu library
-  // we do this here because we are sure that is used
-  // from one thread only
-  // see http://www.icu-project.org/userguide/design.html#Init_and_Termination
-  // and http://www.icu-project.org/apiref/icu4c/uclean_8h.html
-#ifndef ZORBA_NO_UNICODE
-#  if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
-  {
-    TCHAR    self_path[1024];
-    GetModuleFileName(NULL, self_path, sizeof(self_path));
-        //PathRemoveFileSpec(self_path);
-    TCHAR  *filename;
-    filename = _tcsrchr(self_path, _T('\\'));
-    if(filename)
-      filename[1] = 0;
-    else
-      self_path[0] = 0;
-        //strcat(self_path, "\\");
-        //_tcscat(self_path, _T(U_ICUDATA_NAME));//icudt39l.dat");
-    _tcscat(self_path, _T("icudt") _T(U_ICU_VERSION_SHORT) _T(U_ICUDATA_TYPE_LETTER));//icudt39l.dat");
-    _tcscat(self_path, _T(".dat"));
-        //unsigned char *icu_data;
-    HANDLE    hfile;
-    hfile = CreateFile(self_path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
-    ZORBA_ASSERT(hfile != INVALID_HANDLE_VALUE);
-    DWORD   icusize;
-    icusize = GetFileSize(hfile, NULL);
-    icu_appdata = new unsigned char[icusize];
-    DWORD   nr_read;
-    ReadFile(hfile, icu_appdata, icusize, &nr_read, NULL);
-    CloseHandle(hfile);
-    UErrorCode    data_err = U_ZERO_ERROR;
-    udata_setCommonData(icu_appdata, &data_err);
-    ZORBA_ASSERT(data_err == U_ZERO_ERROR);
-  
-      //  u_setDataDirectory(self_path);
-  }
-#  endif
-  UErrorCode lICUInitStatus = U_ZERO_ERROR;
-  u_init(&lICUInitStatus);
-  ZORBA_ASSERT(lICUInitStatus == U_ZERO_ERROR);
-#endif//ifndef ZORBA_NO_UNICODE
-}
-
-void GlobalEnvironment::cleanup_icu()
-{
-  // we shutdown icu
-  // again it is important to mention this in the documentation
-  // we might disable this call because it only
-  // releases statically initialized memory and prevents
-  // valgrind from reporting those problems at the end
-  // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
-#ifndef ZORBA_NO_UNICODE
-  u_cleanup();
-# if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
-  delete[] icu_appdata;
-# endif
-#endif//ifndef ZORBA_NO_UNICODE
-}
 
 
 void GlobalEnvironment::init(store::Store* store)
 {
   // initialize Xerces-C lib
   Schema::initialize();
-
 
   m_globalEnv = new GlobalEnvironment();
 
@@ -147,35 +82,29 @@ void GlobalEnvironment::init(store::Store* store)
 
   BuiltinFunctionLibrary::create(m_globalEnv->m_rootStaticContext);
 
-#ifndef ZORBA_NO_BIGNUMBERS
-  // initialize mapm for bignum handling
-//  m_globalEnv->m_mapm = m_apm_init();
-#endif
-
-
 #ifdef ZORBA_WITH_REST
 #  ifdef ZORBA_WITH_SSL
-    curl_global_init(CURL_GLOBAL_ALL);
-    #ifdef ZORBA_VERIFY_PEER_SSL_CERTIFICATE
-    #if defined WIN32
-    //for Windows, try to find the "cacert.pem" file in one of system paths or current dir
-    DWORD   search_result;
-    #ifndef UNICODE
-    char  *certpath = m_globalEnv->g_curl_root_CA_certificates_path;
-    #else
-    WCHAR certpath[sizeof(m_globalEnv->g_curl_root_CA_certificates_path)];
-    #endif
-    search_result = SearchPath(NULL, 
-                              "cacert.pem", NULL,
-                              sizeof(m_globalEnv->g_curl_root_CA_certificates_path),
-                              certpath, NULL);
-    if(!search_result)
-      certpath[0] = 0;
-    else
-      certpath[search_result] = 0;
-    #ifdef UNICODE
-    //convert from UNICODE to ASCII
-    WideCharToMultiByte(CP_ACP, 0, certpath, -1, 
+  curl_global_init(CURL_GLOBAL_ALL);
+#ifdef ZORBA_VERIFY_PEER_SSL_CERTIFICATE
+#if defined WIN32
+  //for Windows, try to find the "cacert.pem" file in one of system paths or current dir
+  DWORD   search_result;
+#ifndef UNICODE
+  char  *certpath = m_globalEnv->g_curl_root_CA_certificates_path;
+#else
+  WCHAR certpath[sizeof(m_globalEnv->g_curl_root_CA_certificates_path)];
+#endif
+  search_result = SearchPath(NULL, 
+                             "cacert.pem", NULL,
+                             sizeof(m_globalEnv->g_curl_root_CA_certificates_path),
+                             certpath, NULL);
+  if(!search_result)
+    certpath[0] = 0;
+  else
+    certpath[search_result] = 0;
+#ifdef UNICODE
+  //convert from UNICODE to ASCII
+  WideCharToMultiByte(CP_ACP, 0, certpath, -1, 
                       m_globalEnv->g_curl_root_CA_certificates_path, sizeof(m_globalEnv->g_curl_root_CA_certificates_path),
                       NULL, NULL);
     #endif
@@ -273,12 +202,82 @@ void GlobalEnvironment::destroyStatics()
 #endif
 }
 
+
 GlobalEnvironment::GlobalEnvironment()
   :
   m_store(0), 
   m_rootStaticContext(0),
   m_compilerSubSys(0)
 {
+}
+
+
+GlobalEnvironment::~GlobalEnvironment()
+{
+}
+
+
+void GlobalEnvironment::init_icu()
+{
+  // initialize the icu library
+  // we do this here because we are sure that is used
+  // from one thread only
+  // see http://www.icu-project.org/userguide/design.html#Init_and_Termination
+  // and http://www.icu-project.org/apiref/icu4c/uclean_8h.html
+#ifndef ZORBA_NO_UNICODE
+#  if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
+  {
+    TCHAR    self_path[1024];
+    GetModuleFileName(NULL, self_path, sizeof(self_path));
+        //PathRemoveFileSpec(self_path);
+    TCHAR  *filename;
+    filename = _tcsrchr(self_path, _T('\\'));
+    if(filename)
+      filename[1] = 0;
+    else
+      self_path[0] = 0;
+        //strcat(self_path, "\\");
+        //_tcscat(self_path, _T(U_ICUDATA_NAME));//icudt39l.dat");
+    _tcscat(self_path, _T("icudt") _T(U_ICU_VERSION_SHORT) _T(U_ICUDATA_TYPE_LETTER));//icudt39l.dat");
+    _tcscat(self_path, _T(".dat"));
+        //unsigned char *icu_data;
+    HANDLE    hfile;
+    hfile = CreateFile(self_path, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+    ZORBA_ASSERT(hfile != INVALID_HANDLE_VALUE);
+    DWORD   icusize;
+    icusize = GetFileSize(hfile, NULL);
+    icu_appdata = new unsigned char[icusize];
+    DWORD   nr_read;
+    ReadFile(hfile, icu_appdata, icusize, &nr_read, NULL);
+    CloseHandle(hfile);
+    UErrorCode    data_err = U_ZERO_ERROR;
+    udata_setCommonData(icu_appdata, &data_err);
+    ZORBA_ASSERT(data_err == U_ZERO_ERROR);
+  
+      //  u_setDataDirectory(self_path);
+  }
+#  endif
+  UErrorCode lICUInitStatus = U_ZERO_ERROR;
+  u_init(&lICUInitStatus);
+  ZORBA_ASSERT(lICUInitStatus == U_ZERO_ERROR);
+#endif//ifndef ZORBA_NO_UNICODE
+}
+
+
+void GlobalEnvironment::cleanup_icu()
+{
+  // we shutdown icu
+  // again it is important to mention this in the documentation
+  // we might disable this call because it only
+  // releases statically initialized memory and prevents
+  // valgrind from reporting those problems at the end
+  // see http://www.icu-project.org/apiref/icu4c/uclean_8h.html#93f27d0ddc7c196a1da864763f2d8920
+#ifndef ZORBA_NO_UNICODE
+  u_cleanup();
+# if defined U_STATIC_IMPLEMENTATION && (defined WIN32 || defined WINCE)
+  delete[] icu_appdata;
+# endif
+#endif//ifndef ZORBA_NO_UNICODE
 }
 
 

@@ -82,7 +82,7 @@ const ulong SimpleStore::XML_URI_LEN = sizeof(SimpleStore::XML_URI);
 ********************************************************************************/
 SimpleStore::SimpleStore()
   :
-  theIsInitialized(false),
+  theNumUsers(0),
   theUriCounter(0),
   theCollectionCounter(1),
   theTreeCounter(1),
@@ -104,9 +104,20 @@ SimpleStore::SimpleStore()
 /*******************************************************************************
 
 ********************************************************************************/
+SimpleStore::~SimpleStore()
+{
+  shutdown(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void SimpleStore::init()
 {
-  if (!theIsInitialized)
+  SYNC_CODE(AutoLock lock(getGlobalLock(), Lock::WRITE);)
+
+  if (theNumUsers == 0)
   {
     // This initializes the libxml2 library and checks potential ABI mismatches
     // between the version it was compiled for and the actual  shared library used.
@@ -144,8 +155,11 @@ void SimpleStore::init()
 #ifdef ZORBA_STORE_MSDOM
     CoInitialize(NULL);
 #endif
-    theIsInitialized = true;
+
+    StoreManagerImpl::theStore = this;
   }
+
+  ++theNumUsers;
 }
 
 
@@ -219,9 +233,108 @@ void SimpleStore::initTypeNames()
 
 /*******************************************************************************
 
+********************************************************************************/
+void SimpleStore::shutdown(bool soft)
+{
+  SYNC_CODE(AutoLock lock(getGlobalLock(), Lock::WRITE);)
+
+  if (theNumUsers == 0)
+    return;
+
+  --theNumUsers;
+
+  if (theNumUsers == 0 || soft == false)
+  {
+    theIndices.clear();
+    theICs.clear();
+
+    theCollections->clear();
+    destroyCollectionSet(theCollections);
+
+    theUriCollections.clear();
+
+    theDocuments.clear();
+
+    if (theNodeFactory != NULL)
+    {
+      destroyNodeFactory(theNodeFactory);
+      theNodeFactory = NULL;
+    }
+
+    if (theItemFactory != NULL)
+    {
+      destroyItemFactory(theItemFactory);
+      theItemFactory = NULL;
+    }
+
+    if (theQNamePool != NULL)
+    {
+      ulong numTypes = theSchemaTypeNames.size();
+      for (ulong i = 0; i < numTypes; i++)
+        theSchemaTypeNames[i] = NULL;
+      
+      delete theQNamePool;
+      theQNamePool = NULL;
+    }
+    
+    if (theNamespacePool != NULL)
+    {
+      theEmptyNs = NULL;
+      theXmlSchemaNs = NULL;
+      
+      delete theNamespacePool;
+      theNamespacePool = NULL;
+    }
+
+    if (theIteratorFactory != NULL)
+    {
+      delete theIteratorFactory;
+      theIteratorFactory = NULL;
+    }
+
+    if (theNodeFactory != NULL)
+    {
+      delete theNodeFactory;
+      theNodeFactory = NULL;
+    }
+
+    // do cleanup of the libxml2 library
+    // however, after that, a user will have to call
+    // LIBXML_TEST_VERSION if he wants to use libxml2
+    // beyond the lifecycle of zorba
+    xmlCleanupParser();
+
+#ifdef ZORBA_STORE_MSDOM
+    CoUninitialize();
+#endif
+
+    StoreManagerImpl::theStore = NULL;
+  }
+}
+
+
+/*******************************************************************************
+
 *******************************************************************************/
-NodeFactory*
-SimpleStore::createNodeFactory() const
+CollectionSet* SimpleStore::createCollectionSet() const
+{
+  return new CollectionSet();
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+void SimpleStore::destroyCollectionSet(CollectionSet* c) const
+{
+  delete c;
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+NodeFactory* SimpleStore::createNodeFactory() const
 {
   return new NodeFactory();
 }
@@ -239,8 +352,7 @@ void SimpleStore::destroyNodeFactory(NodeFactory* f) const
 /*******************************************************************************
 
 *******************************************************************************/
-BasicItemFactory*
-SimpleStore::createItemFactory() const
+BasicItemFactory* SimpleStore::createItemFactory() const
 {
   return new BasicItemFactory(theNamespacePool, theQNamePool);
 }
@@ -257,112 +369,8 @@ void SimpleStore::destroyItemFactory(BasicItemFactory* f) const
 
 /*******************************************************************************
 
-*******************************************************************************/
-CollectionSet*
-SimpleStore::createCollectionSet() const
-{
-  return new CollectionSet();
-}
-
-
-/*******************************************************************************
-
-*******************************************************************************/
-void
-SimpleStore::destroyCollectionSet(CollectionSet* c) const
-{
-  delete c;
-}
-
-
-/*******************************************************************************
-
 ********************************************************************************/
-SimpleStore::~SimpleStore()
-{
-  shutdown();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-void SimpleStore::shutdown()
-{
-  if (!theIsInitialized)
-    return;
-
-  theIndices.clear();
-  theICs.clear();
-
-  theCollections->clear();
-  destroyCollectionSet(theCollections);
-
-  theUriCollections.clear();
-
-  theDocuments.clear();
-
-  if (theNodeFactory != NULL)
-  {
-    destroyNodeFactory(theNodeFactory);
-    theNodeFactory = NULL;
-  }
-
-  if (theItemFactory != NULL)
-  {
-    destroyItemFactory(theItemFactory);
-    theItemFactory = NULL;
-  }
-
-  if (theQNamePool != NULL)
-  {
-    ulong numTypes = theSchemaTypeNames.size();
-    for (ulong i = 0; i < numTypes; i++)
-      theSchemaTypeNames[i] = NULL;
-
-    delete theQNamePool;
-    theQNamePool = NULL;
-  }
-
-  if (theNamespacePool != NULL)
-  {
-    theEmptyNs = NULL;
-    theXmlSchemaNs = NULL;
-
-    delete theNamespacePool;
-    theNamespacePool = NULL;
-  }
-
-  if (theIteratorFactory != NULL)
-  {
-    delete theIteratorFactory;
-    theIteratorFactory = NULL;
-  }
-
-  if (theNodeFactory != NULL)
-  {
-    delete theNodeFactory;
-    theNodeFactory = NULL;
-  }
-
-  // do cleanup of the libxml2 library
-  // however, after that, a user will have to call
-  // LIBXML_TEST_VERSION if he wants to use libxml2
-  // beyond the lifecycle of zorba
-  xmlCleanupParser();
-
-#ifdef ZORBA_STORE_MSDOM
-    CoUninitialize();
-#endif
-
-  theIsInitialized = false;
-}
-
-/*******************************************************************************
-
-********************************************************************************/
-store::ItemFactory*
-SimpleStore::getItemFactory() const
+store::ItemFactory* SimpleStore::getItemFactory() const
 {
   return theItemFactory;
 }
@@ -1292,32 +1300,36 @@ bool SimpleStore::getPathInfo(
                     this to false.
 ********************************************************************************/
 TempSeq_t SimpleStore::createTempSeq(
-    store::Iterator* iterator,
+    store::Iterator_t& iterator,
     bool copyNodes,
     bool lazy)
 {
-  TempSeq_t tempSeq;
   if(lazy)
   {
     //tempSeq = new SimpleTempSeq(iterator, copyNodes);
-    tempSeq = new SimpleLazyTempSeq(iterator, copyNodes);
+    return new SimpleLazyTempSeq(iterator, copyNodes);
   }
   else
   {
-    tempSeq = new SimpleTempSeq(iterator, copyNodes);
+    return new SimpleTempSeq(iterator, copyNodes);
   }
-
-  return tempSeq;
 }
 
 
 /*******************************************************************************
   Creates an empty TempSeq.
 ********************************************************************************/
-TempSeq_t SimpleStore::createTempSeq()
+TempSeq_t SimpleStore::createTempSeq(bool lazy)
 {
-  TempSeq_t tempSeq = new SimpleTempSeq();
-  return tempSeq;
+  TempSeq_t tempSeq;
+  if (lazy)
+  {
+    return new SimpleLazyTempSeq();
+  }
+  else
+  {
+    return new SimpleTempSeq();
+  }
 }
 
 
@@ -1330,6 +1342,7 @@ TempSeq_t SimpleStore::createTempSeq(const std::vector<store::Item_t>& item_v)
   TempSeq_t tempSeq = new SimpleTempSeq(item_v);
   return tempSeq;
 }
+
 
 #ifdef ZORBA_STORE_MSDOM
 /*******************************************************************************

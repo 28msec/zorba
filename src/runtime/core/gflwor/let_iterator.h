@@ -44,10 +44,10 @@ namespace flwor
 class LetIterator : public BinaryBaseIterator<LetIterator, PlanIteratorState> 
 {
 private:
-  store::Item_t             theVarName;
-  std::vector<LetVarIter_t> theLetVars;
-    bool                    theLazyEval;
-  bool                      theNeedsMat;
+  store::Item_t           theVarName;
+  std::vector<PlanIter_t> theLetVars;
+  bool                    theLazyEval;
+  bool                    theNeedsMat;
   
 public:
   SERIALIZABLE_CLASS(LetIterator);
@@ -56,18 +56,10 @@ public:
   LetIterator,
   BinaryBaseIterator<LetIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<LetIterator, PlanIteratorState>*)this);
-
-    ar & theVarName;
-    ar & theLetVars;
-    ar & theNeedsMat;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  LetIterator ( 
+  LetIterator( 
         static_context* sctx,
         const QueryLoc& aLoc,  
         store::Item* aVarName, 
@@ -83,7 +75,7 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
-  bool nextImpl ( store::Item_t& result, PlanState& planState ) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 }

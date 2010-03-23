@@ -48,9 +48,9 @@ OuterForIterator::OuterForIterator(
                                                           loc,
                                                           aTupleIterator,
                                                           aInput),
-  theVarName (aVarName)
+  theVarName (aVarName),
+  theOuterForVars(aOuterForVars)
 {
-  castIterVector<ForVarIterator>(theOuterForVars, aOuterForVars);
 }
   
 
@@ -59,35 +59,44 @@ OuterForIterator::~OuterForIterator()
 }
 
 
+void OuterForIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<OuterForIterator, PlanIteratorState>*)this);
+  
+  ar & theVarName;
+  ar & theOuterForVars;
+}
+
+
 bool OuterForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
 {
   store::Item_t lItem;
 
   PlanIteratorState* lState;
-  DEFAULT_STACK_INIT (PlanIteratorState, lState, aPlanState);
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
 
-  while (consumeNext (aResult, theChild0, aPlanState)) 
+  while (consumeNext(aResult, theChild0, aPlanState)) 
   {
     //using a if, to avoid an additional state
-    if(consumeNext (lItem, theChild1, aPlanState))
+    if(consumeNext(lItem, theChild1, aPlanState))
     {
       do
       {
-        bindVariables (lItem, theOuterForVars, aPlanState);
-        STACK_PUSH (true, lState);
+        bindVariables(lItem, theOuterForVars, aPlanState);
+        STACK_PUSH(true, lState);
       }
-      while (consumeNext (lItem, theChild1, aPlanState));
+      while (consumeNext(lItem, theChild1, aPlanState));
     }
     else
     {
       bindVariables(lItem, theOuterForVars, aPlanState);
-      STACK_PUSH (true, lState);
+      STACK_PUSH(true, lState);
     }
 
     theChild1->reset(aPlanState);
   }
 
-  STACK_PUSH(false, lState);
   STACK_END(lState);
 }
 

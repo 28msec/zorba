@@ -44,16 +44,35 @@ public:
   {
     GlobalEnvironment::destroyStatics();
   }
-}g_zorbaImplStaticsDestroyer;
+} g_zorbaImplStaticsDestroyer;
 
-ZorbaImpl::ZorbaImpl() : theIsInitialized(false)
+
+ZorbaImpl::ZorbaImpl() : theNumUsers(0)
 {
 }
 
 
 ZorbaImpl::~ZorbaImpl()
 {
-  shutdown();
+  shutdownInternal(false);
+}
+
+
+/**
+ * Protected function to initialize the Zorba Engine.
+ * It's called once during static initialization or
+ * when calling getInstance after a former shutdown.
+ */
+void ZorbaImpl::init(store::Store* store)
+{
+  SYNC_CODE(AutoMutex lock(&theUsersMutex);)
+
+  if (theNumUsers == 0)
+  {
+    GlobalEnvironment::init(store);
+  }
+
+  ++theNumUsers;
 }
 
 
@@ -63,34 +82,25 @@ ZorbaImpl::~ZorbaImpl()
  * The function is either called explicitly by the user
  * or implicitly at destruction of the singleton instance.
  */
-void
-ZorbaImpl::shutdown()
+void ZorbaImpl::shutdownInternal(bool soft)
 {
-  if (theIsInitialized )
+  SYNC_CODE(AutoMutex lock(&theUsersMutex);)
+
+  if (theNumUsers == 0)
+    return;
+
+  --theNumUsers;
+
+  if (theNumUsers == 0 || soft == false)
   {
     Loki::DeletableSingleton<ItemFactoryImpl>::GracefulDelete();
     Loki::DeletableSingleton<XmlDataManagerImpl>::GracefulDelete();
     GlobalEnvironment::destroy();
-    theIsInitialized = false;
   }
 }
 
 
-/**
- * Protected function to initialize the Zorba Engine.
- * It's called once during static initialization or
- * when calling getInstance after a former shutdown.
- */
-void
-ZorbaImpl::init(store::Store* store)
-{
-  GlobalEnvironment::init(store);
-  theIsInitialized = true;
-}
-
-
-XQuery_t
-ZorbaImpl::createQuery(ErrorHandler* aErrorHandler)
+XQuery_t ZorbaImpl::createQuery(ErrorHandler* aErrorHandler)
 {
   XQuery_t lXQuery(new XQueryImpl());
   if (aErrorHandler != 0)
@@ -193,12 +203,6 @@ ZorbaImpl::compileQuery(
     lXQuery->registerErrorHandler(aErrorHandler);
   lXQuery->compile(aQuery, aStaticContext, aHints);
   return lXQuery;
-}
-
-void ZorbaImpl::populateRootStaticContext(const String &prolog, const Zorba_CompilerHints_t& aHints)
-{
-  std::auto_ptr<XQueryImpl> lXQuery(new XQueryImpl());
-  lXQuery->loadProlog (prolog, NULL, aHints);
 }
 
 

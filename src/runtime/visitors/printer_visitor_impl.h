@@ -94,37 +94,80 @@
     void endVisit ( const SpecificNumArithIterator<ModOperation, TypeConstants::XS_DOUBLE>& );
     void beginVisit ( const FnMinMaxIterator& a);
     void endVisit   ( const FnMinMaxIterator& );
+
     void beginVisit(const ForVarIterator& a);
     void endVisit  (const ForVarIterator& );
+
     void beginVisit(const LetVarIterator& a);
     void endVisit  (const LetVarIterator& );
+
     void beginVisitFlworWhereClause(const PlanIterator& a);
-    void endVisitFlworWhereClause (const PlanIterator& );
-    void beginVisitFlworLetVariable(bool materialize,const xqpStringStore_t varName,const std::vector<LetVarIter_t>& varRefs);
+    void endVisitFlworWhereClause(const PlanIterator& );
+
+    void beginVisitFlworLetVariable(
+        bool materialize,
+        const xqpStringStore_t varName,
+        const std::vector<PlanIter_t>& varRefs);
+
     void endVisitFlworLetVariable();
-    void beginVisitFlworForVariable(const xqpStringStore_t varName, const std::vector<ForVarIter_t>& varRefs,const std::vector<ForVarIter_t>& posRefs);
-    void endVisitFlworForVariable  ();
+
+    void beginVisitFlworForVariable(
+        const xqpStringStore_t varName,
+        const std::vector<PlanIter_t>& varRefs,
+        const std::vector<PlanIter_t>& posRefs);
+
+    void endVisitFlworForVariable();
+
     void beginVisitGroupByClause();
-    void endVisitGroupByClause  ();
+
+    void endVisitGroupByClause();
+
     void beginVisitGroupBySpec();
-    void endVisitGroupBySpec  ();
+
+    void endVisitGroupBySpec();
+
     void beginVisitGroupByOuter();
-    void endVisitGroupByOuter  ();
+
+    void endVisitGroupByOuter();
+
     void beginVisitGroupVariable(const std::vector<ForVarIter_t>& varRefs);
-    void endVisitGroupVariable  ();
+
+    void endVisitGroupVariable();
+
     void beginVisitNonGroupVariable(const std::vector<LetVarIter_t>& varRefs);
-    void endVisitNonGroupVariable  ();
+
+    void endVisitNonGroupVariable();
+
     void beginVisitOrderBy(const PlanIterator& a);
-    void endVisitOrderBy  (const PlanIterator& );
-    void beginVisitOrderByForVariable(ForVarIter_t inputVar,const std::vector<ForVarIter_t>& varRefs);
-    void endVisitOrderByForVariable ();
-    void beginVisitOrderByLetVariable(LetVarIter_t inputVar,const std::vector<LetVarIter_t>& varRefs);
+
+    void endVisitOrderBy(const PlanIterator& );
+
+    void beginVisitOrderByForVariable(
+        ForVarIter_t inputVar,
+        const std::vector<PlanIter_t>& varRefs);
+
+    void endVisitOrderByForVariable();
+
+    void beginVisitOrderByLetVariable(
+        LetVarIter_t inputVar,
+        const std::vector<PlanIter_t>& varRefs);
+
     void endVisitOrderByLetVariable();
-    void beginVisitWindowVariable(const std::string& varName,const std::vector<LetVarIter_t>& varRefs);
+
+    void beginVisitWindowVariable(
+        const std::string& varName,
+        const std::vector<LetVarIter_t>& varRefs);
+
     void endVisitWindowVariable();
-    void beginVisitWinCondVariable(const std::string& varName,const std::vector<ForVarIter_t>& varRefs);
+
+    void beginVisitWinCondVariable(
+        const std::string& varName,
+        const std::vector<PlanIter_t>& varRefs);
+
     void endVisitWinCondVariable();
+
     void beginVisitFlworReturn(const PlanIterator& a);
+
     void endVisitFlworReturn  (const PlanIterator& );
     void beginVisit(const CastIterator& a);
     void endVisit  (const CastIterator&);

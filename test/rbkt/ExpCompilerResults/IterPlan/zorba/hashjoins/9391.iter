@@ -9,26 +9,21 @@ Iterator tree for main query:
       </DescendantAxisIterator>
     </HoistIterator>
   </LetVariable>
-  <LetVariable name="$$opt_temp_1" materialize="true">
-    <HoistIterator>
-      <FnConcatIterator/>
-    </HoistIterator>
-  </LetVariable>
   <ReturnClause>
     <SequentialIterator>
       <CreateInternalIndexIterator>
         <flwor::FLWORIterator>
-          <ForVariable name="$$opt_temp_2">
+          <ForVariable name="$$opt_temp_1">
             <UnhoistIterator>
               <LetVarIterator varname="$$opt_temp_0"/>
             </UnhoistIterator>
           </ForVariable>
           <ReturnClause>
             <IndexEntryBuilderIterator>
-              <ForVarIterator varname="$$opt_temp_2"/>
+              <ForVarIterator varname="$$opt_temp_1"/>
               <FnCountIterator>
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
-                  <ForVarIterator varname="$$opt_temp_2"/>
+                  <ForVarIterator varname="$$opt_temp_1"/>
                 </ChildAxisIterator>
               </FnCountIterator>
             </IndexEntryBuilderIterator>
@@ -69,9 +64,7 @@ Iterator tree for main query:
                     </FnConcatIterator>
                   </FnDataIterator>
                 </AttributeIterator>
-                <UnhoistIterator>
-                  <LetVarIterator varname="$$opt_temp_1"/>
-                </UnhoistIterator>
+                <FnConcatIterator/>
               </ElementIterator>
             </ReturnClause>
           </flwor::FLWORIterator>

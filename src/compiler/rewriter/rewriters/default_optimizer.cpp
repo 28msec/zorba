@@ -44,7 +44,7 @@ public:
 
 DefaultOptimizer::DefaultOptimizer()
 {
-  if (Properties::instance ()->inlineUdf ())
+  if (Properties::instance ()->inlineUdf())
     ADD_SINGLETON_DRIVER(InlineFunctions);
 
   ADD_SINGLETON_DRIVER(InferVarTypes);
@@ -67,9 +67,13 @@ DefaultOptimizer::DefaultOptimizer()
 
   ADD_SINGLETON_DRIVER(SpecializeOperations);
 
+  //ADD_SINGLETON_DRIVER(MergeFLWOR);
+
   ADD_DRIVER(FoldRules);
 
   ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
+
+  //ADD_SINGLETON_DRIVER(MergeFLWOR);
 
   if (Properties::instance()->loopHoisting())
     ADD_SINGLETON_DRIVER(HoistExprsOutOfLoops);

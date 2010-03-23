@@ -14,7 +14,10 @@
  * limitations under the License.
  */
   class xqpStringStore;
+
   class PlanIterator;
+  typedef rchandle<PlanIterator> PlanIter_t;
+
   class FnBooleanIterator;
 #ifndef ZORBA_NO_XMLSCHEMA
   class ValidateIterator;

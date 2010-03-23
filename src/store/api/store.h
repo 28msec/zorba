@@ -43,9 +43,6 @@ class  Store
 public:
   virtual ~Store() { }
 
-  virtual void init() = 0;
-
-  virtual void shutdown() = 0;
 
   /*---------------------------- Zorba Engine Internal ----------------------------*/
 
@@ -72,7 +69,7 @@ public:
    *                   this to false.
    */
   virtual TempSeq_t createTempSeq(
-        Iterator* iterator,
+        Iterator_t& iterator,
         bool copyNodes,
         bool lazy) = 0;
 
@@ -80,6 +77,11 @@ public:
    * Creates a new TempSeq that is initialized with the given vector.
    */
   virtual TempSeq_t createTempSeq(const std::vector<Item_t>& item_v) = 0;
+
+  /**
+   * Creates a new, empty TempSeq.
+   */
+  virtual TempSeq_t createTempSeq(bool lazy) = 0;
 
 
   /* -------------------------- Reference Management --------------------------*/

@@ -76,35 +76,23 @@ namespace flwor
 class ForLetClause : public ::zorba::serialization::SerializeBaseClass
 {
   friend class FLWORIterator;
+  friend class FlworState;
   friend class PrinterVisitor;
 
 protected:
   enum ForLetType { FOR, LET };
 
   xqpStringStore_t           theVarName;
-
   ForLetType                 theType;
-  std::vector<ForVarIter_t>  theForVarRefs;
-  std::vector<ForVarIter_t>  thePosVarRefs;
-  std::vector<LetVarIter_t>  theLetVarRefs;
   PlanIter_t                 theInput;
+  std::vector<PlanIter_t>    theVarRefs;
+  std::vector<PlanIter_t>    thePosVarRefs;
   bool                       theDoLazyEval;
-  bool                       theMaterialize;
     
 public:
   SERIALIZABLE_CLASS(ForLetClause)
   SERIALIZABLE_CLASS_CONSTRUCTOR(ForLetClause)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theVarName;
-    SERIALIZE_ENUM(ForLetType, theType)
-    ar & theForVarRefs;
-    ar & thePosVarRefs;
-    ar & theLetVarRefs;
-    ar & theInput;
-    ar & theDoLazyEval;
-    ar & theMaterialize;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   ForLetClause() {}
@@ -278,8 +266,10 @@ public:
   typedef std::vector<store::Iterator_t> DataTable;
 
 protected:
-  checked_vector<uint32_t>      theVarBindingState;
-          
+  checked_vector<uint32_t>       theVarBindingState;
+  std::vector<store::TempSeq_t>  theTempSeqs;
+  std::vector<store::Iterator_t> theTempSeqIters;
+
   SortTable                     theSortTable;
   DataTable                     theDataTable;
   ulong                         theNumTuples;
@@ -295,12 +285,12 @@ public:
 
   ~FlworState();
 
-  void init(PlanState& state, size_t numVars);
+  void init(PlanState& state, const std::vector<ForLetClause>& forletClauses);
           
   void init(
         PlanState& state,
         TypeManager* tm,
-        size_t numVars,
+        const std::vector<ForLetClause>& forletClauses,
         std::vector<OrderSpec>* orderSpecs,
         std::vector<GroupingSpec>* groupingSpecs);
   
@@ -332,33 +322,19 @@ class FLWORIterator : public Batcher<FLWORIterator>
 {
 private:
   std::vector<ForLetClause> theForLetClauses;
+  ulong                     theNumBindings;
   PlanIter_t                theWhereClause;
   GroupByClause           * theGroupByClause;
   OrderByClause           * theOrderByClause;
-  bool                      doOrderBy; 
-  bool                      doGroupBy;
   PlanIter_t                theReturnClause; 
   bool                      theIsUpdating;
-  /*const */int             theNumBindings; //Number of FORs and LETs (overall) 
          
 public:
   SERIALIZABLE_CLASS(FLWORIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2(FLWORIterator, Batcher<FLWORIterator>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (Batcher<FLWORIterator>*)this);
-    ar & theForLetClauses;
-    ar & theWhereClause; //can be null
-    ar & theGroupByClause;
-    ar & theOrderByClause;  //can be null
-    ar & doOrderBy; //just indicates if the FLWOR has an orderby
-    ar & doGroupBy;
-    ar & theReturnClause; 
-    ar & theIsUpdating;
-    ar & theNumBindings; //Number of FORs and LETs (overall) 
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   FLWORIterator(
@@ -387,10 +363,8 @@ public:
   void accept(PlanIterVisitor&) const;
 
 private:
-  bool bindVariable(int varNb, FlworState* flworState, PlanState& planState) const;
+  bool bindVariable(ulong varNb, FlworState* flworState, PlanState& planState) const;
 
-  void resetVariable(int varNb, FlworState* flworState, PlanState& planState) const;
-    
   bool evalToBool(const PlanIter_t& checkIter, PlanState& planState) const;
     
   void materializeResultForSort(FlworState* flworState, PlanState& planState) const;

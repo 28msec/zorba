@@ -3579,8 +3579,8 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
             continue;
         }
 
-        udf->set_body(body);
-        udf->set_args(args);
+        udf->setBody(body);
+        udf->setArgVars(args);
         break;
       }
 
@@ -3589,8 +3589,8 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     }
     else
     {
-      udf->set_body(body);
-      udf->set_args(args);
+      udf->setBody(body);
+      udf->setArgVars(args);
     }
 
     break;
@@ -11061,7 +11061,8 @@ void end_visit(const InlineFunction& v, void* aState)
       flwor.getp(),
       ParseConstants::fn_read,
       false));
-  lFunction->set_args(lFunctionArgs);
+
+  lFunction->setArgVars(lFunctionArgs);
   // finalize step 2
   //Store the expr of in scoped variables
   expr_t lExpr(new function_item_expr(

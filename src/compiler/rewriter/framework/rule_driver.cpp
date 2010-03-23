@@ -59,18 +59,22 @@ void RuleMajorDriver::rewrite(RewriterContext& rCtx)
       bool rule_modified = false;
       expr_t newRoot = rewriteRec(rCtx, &**i, &*rCtx.getRoot(), rule_modified);
 
-      if (rule_modified)
-        modified = true;
-
       if (newRoot != NULL) 
       {
         rCtx.setRoot(newRoot);
       }
 
-      if (rule_modified && Properties::instance()->printIntermediateOpt()) 
+      if (rule_modified)
       {
-        std::cout << "After " << (*i)->getRuleName() << ":" << std::endl;
-        rCtx.getRoot()->put(std::cout) << std::endl;
+        modified = true;
+
+        if (Properties::instance()->printIntermediateOpt()) 
+        {
+          std::cout << "After " << (*i)->getRuleName() << ":" << std::endl;
+          rCtx.getRoot()->put(std::cout) << std::endl;
+        }
+
+        break;
       }
     }
   } while(modified);

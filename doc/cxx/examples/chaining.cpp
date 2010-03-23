@@ -105,7 +105,7 @@ chaining_example_2(Zorba* aZorba)
 int 
 chaining(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
+  void* lStore = zorba::StoreManager::getStore();
 
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;

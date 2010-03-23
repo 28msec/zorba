@@ -231,7 +231,7 @@ execution_plan_example_3(Zorba* aZorba)
 int
 execution_plans(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
+  void* lStore = zorba::StoreManager::getStore();
   Zorba *lZorba = Zorba::getInstance(lStore);
 
   bool res = false;

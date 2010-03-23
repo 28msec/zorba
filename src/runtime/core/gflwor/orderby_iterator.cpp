@@ -74,6 +74,17 @@ OrderSpec::OrderSpec (
 }
 
 
+void OrderSpec::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theDomainIter;
+  ar & theEmptyLeast;
+  ar & theDescending;
+  ar & theNativeCompare;
+  ar & theCollation;
+  ar & theCollator;
+}
+
+
 void OrderSpec::accept(PlanIterVisitor& v) const
 {
   v.beginVisitOrderBy(*theDomainIter);
@@ -175,8 +186,8 @@ OrderByIterator::OrderByIterator (
     PlanIter_t tupleIterator,
     std::vector<ForVarIter_t>& inputForVars,
     std::vector<LetVarIter_t>& inputLetVars,
-    std::vector<std::vector<ForVarIter_t> >& outputForVarsRefs,
-    std::vector<std::vector<LetVarIter_t> >& outputLetVarsRefs) 
+    std::vector<std::vector<PlanIter_t> >& outputForVarsRefs,
+    std::vector<std::vector<PlanIter_t> >& outputLetVarsRefs) 
   :
   Batcher<OrderByIterator>(sctx, aLoc),
   theStable(stable),
@@ -192,6 +203,20 @@ OrderByIterator::OrderByIterator (
   
 OrderByIterator::~OrderByIterator() 
 {
+}
+
+
+void OrderByIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (Batcher<OrderByIterator>*)this);
+  ar & theStable;
+  ar & theOrderSpecs;
+  ar & theTupleIter;
+
+  ar & theInputForVars;
+  ar & theInputLetVars;
+  ar & theOutputForVarsRefs;
+  ar & theOutputLetVarsRefs;
 }
 
 

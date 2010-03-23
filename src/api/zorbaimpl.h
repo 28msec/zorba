@@ -22,7 +22,11 @@
 #include <zorba/zorba.h>
 #include "common/shared_types.h"
 
-namespace zorba {
+#include "zorbautils/mutex.h"
+
+
+namespace zorba 
+{
 
 class FlowCtlException;
 
@@ -57,99 +61,80 @@ class ZorbaImpl : public Zorba
  protected:
   friend class Zorba;
 
-  bool theIsInitialized;
+  SYNC_CODE(Mutex theUsersMutex);
+  ulong           theNumUsers;
 
  public:
 
-  static void
-  notifyError(ErrorHandler*, error::ZorbaError&);
+  static void notifyError(ErrorHandler*, error::ZorbaError&);
 
   // notify zorba internal error 
-  static void
-  notifyError(ErrorHandler*, const std::string&);
+  static void notifyError(ErrorHandler*, const std::string&);
   
-  static void
-  notifyError(ErrorHandler*);
+  static void notifyError(ErrorHandler*);
 
-  static void
-  checkItem(const store::Item_t& aItem);
+  static void checkItem(const store::Item_t& aItem);
 
  public:
-
-  virtual void 
-  shutdown();
 
   virtual ~ZorbaImpl();
 
-  XQuery_t
-  createQuery(ErrorHandler* aErrorHandler = 0);
+  void shutdown() { shutdownInternal(true); }
 
-  XQuery_t
-  compileQuery(
+  XQuery_t createQuery(ErrorHandler* aErrorHandler = 0);
+
+  XQuery_t compileQuery(
         const String& aQuery,
         ErrorHandler* aErrorHandler = 0);
 
-  XQuery_t
-  compileQuery(
+  XQuery_t compileQuery(
         const String& aQuery,
         const StaticContext_t& aContext,
         ErrorHandler* aErrorHandler = 0); 
 
-  XQuery_t
-  compileQuery(
+  XQuery_t compileQuery(
         const String& aQuery,
         const Zorba_CompilerHints_t& aHints,
         ErrorHandler* aErrorHandler = 0);
 
-  XQuery_t
-  compileQuery(
+  XQuery_t compileQuery(
         const String& aQuery,
         const StaticContext_t& aContext,
         const Zorba_CompilerHints_t& aHints, 
         ErrorHandler* aErrorHandler = 0);
 
-  XQuery_t
-  compileQuery(
+  XQuery_t compileQuery(
         std::istream& aQuery,
         ErrorHandler* aErrorHandler = 0);
 
-  XQuery_t
-  compileQuery(
+  XQuery_t compileQuery(
         std::istream& aQuery,
         const StaticContext_t& aContext,
         ErrorHandler* aErrorHandler = 0);
 
-  XQuery_t
-  compileQuery(
+  XQuery_t compileQuery(
         std::istream& aQuery,
         const Zorba_CompilerHints_t& aHints,
         ErrorHandler* aErrorHandler = 0);
 
-  XQuery_t
-  compileQuery(
+  XQuery_t compileQuery(
         std::istream& aQuery,
         const StaticContext_t& aContext,
         const Zorba_CompilerHints_t& aHints, 
         ErrorHandler* aErrorHandler = 0);
 
-  virtual void populateRootStaticContext(
-                   const String &prolog,
-                   const Zorba_CompilerHints_t& aHints);
+  StaticContext_t createStaticContext(ErrorHandler* aErrorHandler = 0);
 
-  StaticContext_t
-  createStaticContext(ErrorHandler* aErrorHandler = 0);
+  ItemFactory* getItemFactory();
 
-  ItemFactory*
-  getItemFactory();
+  XmlDataManager* getXmlDataManager();
 
-  XmlDataManager*
-  getXmlDataManager();
-
- protected:
+protected:
   ZorbaImpl();
 
-  void
-  init(store::Store* store);
+  void init(store::Store* store);
+
+  void shutdownInternal(bool soft = true);
   
 }; /* class ZorbaImpl */
 

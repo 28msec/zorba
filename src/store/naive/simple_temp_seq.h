@@ -43,45 +43,47 @@ public:
 
   SimpleTempSeq(const std::vector<store::Item_t>& items) : theItems(items) {}
 
-  SimpleTempSeq(store::Iterator_t iter, bool copy = false);
+  SimpleTempSeq(store::Iterator_t& iter, bool copy = false);
 
   virtual ~SimpleTempSeq();
 
-  virtual bool empty();
+  bool empty();
   
   ulong getSize();
 
-  virtual void append(store::Iterator_t iter, bool copy);
+  void init(store::Iterator_t& iter, bool copy = false);
+
+  void append(store::Iterator_t iter, bool copy);
 
   store::Item_t operator[](ulong aIndex);
 
-  virtual void getItem(ulong position, store::Item_t& res);
+  void getItem(ulong position, store::Item_t& res);
 
-  virtual bool containsItem(ulong position);
+  bool containsItem(ulong position);
 
-  virtual store::Iterator_t getIterator();
+  store::Iterator_t getIterator();
 
-  virtual store::Iterator_t getIterator(
+  store::Iterator_t getIterator(
         ulong startPos,
         ulong endPos,
         bool streaming = false);
 
-  virtual store::Iterator_t getIterator(
+  store::Iterator_t getIterator(
         ulong startPos,
         store::Iterator_t function,
         const std::vector<store::Iterator_t>& var,
         bool streaming = false );
 
-  virtual store::Iterator_t getIterator(
+  store::Iterator_t getIterator(
         const std::vector<ulong>& positions,
         bool streaming = false);
 
-  virtual store::Iterator_t getIterator(
+  store::Iterator_t getIterator(
         store::Iterator_t positions,
         bool streaming = false);
   
-  virtual void purge();
-  virtual void purgeUpTo(ulong upTo );
+  void purge();
+  void purgeUpTo(ulong upTo );
 };
 
 
@@ -94,8 +96,7 @@ class SimpleTempSeqIter : public store::TempSeqIterator
   enum BorderType
   {
     none,
-    startEnd,
-    specificPositions
+    startEnd
   };
 
   SimpleTempSeq_t          theTempSeq;
@@ -104,7 +105,6 @@ class SimpleTempSeqIter : public store::TempSeqIterator
   ulong                    theCurPos;
   ulong                    theStartPos;
   ulong                    theEndPos;
-  std::vector<ulong>       thePositions;
     
  public:
   SimpleTempSeqIter() {}
@@ -112,8 +112,6 @@ class SimpleTempSeqIter : public store::TempSeqIterator
   SimpleTempSeqIter(SimpleTempSeq_t aTempSeq);
 
   SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, ulong startPos, ulong endPos);
-
-  SimpleTempSeqIter(SimpleTempSeq_t aTempSeq, const std::vector<ulong>& positions);
 
   virtual ~SimpleTempSeqIter();
 

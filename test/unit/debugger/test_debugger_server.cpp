@@ -518,7 +518,7 @@ namespace zorba {
 } /* namespace zorba */
 
 int test_debugger_server (int argc, char* argv[]) {
-  zorba::simplestore::SimpleStore* store = zorba::StoreManager::getStore();
+  void* store = zorba::StoreManager::getStore();
   Zorba* lZorba = zorba::Zorba::getInstance(store);
 
   std::cout << "executing test_run" << std::endl;

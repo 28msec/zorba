@@ -184,7 +184,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       expr* domainExpr = flwc->get_expr();
       var_expr* var = flwc->get_var();
       const var_expr* pvar = (is_let ? NULL : fc->get_pos_var());
-      int quant_cnt = 2;  // cardinality of FOR clause: 0, 1 or more
+      TypeConstants::quantifier_t for_quant;
+      ulong for_quant_cnt = 2;  // cardinality of FOR clause: 0, 1 or more
 
       if (pvar != NULL && count_variable_uses(&flwor, pvar, &rCtx, 1) == 0)
       {
@@ -201,13 +202,14 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       if (! is_let)
       {
         xqtref_t domainType = domainExpr->return_type(sctx);
-        quant_cnt = TypeOps::type_max_cnt(*domainType);
+        for_quant_cnt = TypeOps::type_max_cnt(*domainType);
+        for_quant = domainType->get_quantifier();
       }
 
       // Cannot substitute a FOR var whose domain might contain more than 1 items.
-      if (is_let || quant_cnt < 2)
+      if (is_let || for_quant == TypeConstants::QUANT_ONE)
       {
-        if (quant_cnt == 0)
+        if (for_quant_cnt == 0)
         {
           // FOR clause with 0 cardinality
           return fo_expr::create_seq(node->get_sctx_id(), LOC(node));
@@ -834,6 +836,7 @@ RULE_REWRITE_PRE(MergeFLWOR)
     ulong numNestedClauses;
 
     flwor_clause* c = flwor->get_clause(i, false);
+
     expr* domainExpr = c->get_expr();
 
     if (domainExpr != NULL && domainExpr->get_expr_kind() == flwor_expr_kind)
@@ -854,8 +857,33 @@ RULE_REWRITE_PRE(MergeFLWOR)
           }
         }
       }
-      else if (c->get_kind() == flwor_clause::for_clause)
+      else if (c->get_kind() == flwor_clause::for_clause &&
+               c->get_pos_var() == NULL)
       {
+        merge = true;
+
+        for (ulong j = 0; j < numNestedClauses; ++j)
+        {
+          flwor_clause* nestedClause = nestedFlwor->get_clause(j, false);
+          flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
+
+          if (nestedClauseKind != flwor_clause::let_clause &&
+              nestedClauseKind != flwor_clause::for_clause)
+          {
+#if 1
+            // temp hack until we have an optimized general flwor
+            if (nestedClauseKind == flwor_clause::where_clause &&
+                i == numClauses-1 &&
+                flwor->get_where() == NULL &&
+                nestedFlwor->get_return_expr()->get_var() != NULL)
+            {
+              continue;
+            }
+#endif
+            merge = false;
+            break;
+          }
+        }
       }
     }
 
@@ -863,7 +891,13 @@ RULE_REWRITE_PRE(MergeFLWOR)
     {
       for (ulong j = 0; j < numNestedClauses; ++j)
       {
-        flwor->add_clause(i, nestedFlwor->get_clause(j, false));
+        flwor_clause* nestedClause = nestedFlwor->get_clause(j, false);
+#if 1
+        if (nestedClause->get_kind() == flwor_clause::where_clause)
+          flwor->add_clause(i+j+1, nestedClause);
+        else
+#endif
+          flwor->add_clause(i+j, nestedClause);
       }
 
       c->set_expr(nestedFlwor->get_return_expr(false));

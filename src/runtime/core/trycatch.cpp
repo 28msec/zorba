@@ -238,36 +238,45 @@ TryCatchIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   TryCatchIteratorState* state;
   DEFAULT_STACK_INIT(TryCatchIteratorState, state, planState);
   
-  try { 
-    lIterator = new PlanIteratorWrapper ( theChild, planState );
-    lIterator->open();
-    state->theTargetSequence = GENV_STORE.createTempSeq( lIterator, false, false );
+  try 
+  { 
+    lIterator = new PlanIteratorWrapper(theChild, planState);
+    state->theTargetSequence = GENV_STORE.createTempSeq(lIterator, false, false);
     state->theTempIterator = state->theTargetSequence->getIterator();
     state->theTempIterator->open();
-  } catch (error::ZorbaError& e) {
-    if (!matchedCatch(e, state, planState)) {
-      lIterator->close();
+  }
+  catch (error::ZorbaError& e) 
+  {
+    if (!matchedCatch(e, state, planState)) 
+    {
       throw e;
     }
   }
-  lIterator->close();
 
-  if (state->theTempIterator != NULL) {
+  if (state->theTempIterator != NULL) 
+  {
     ZORBA_ASSERT(state->theCatchIterator == NULL);
-    while (state->theTempIterator->next(result)) {
+    while (state->theTempIterator->next(result)) 
+    {
       STACK_PUSH( true, state );
     } 
-  } else if (state->theCatchIterator != NULL) {
+  }
+  else if (state->theCatchIterator != NULL) 
+  {
     ZORBA_ASSERT(state->theTempIterator == NULL);
-    while(consumeNext(result, state->theCatchIterator.getp(), planState)) {
+    while(consumeNext(result, state->theCatchIterator.getp(), planState)) 
+    {
       STACK_PUSH(true, state);
     }
-  } else {
+  }
+  else
+  {
     ZORBA_ASSERT(false);
   }
  
   STACK_END (state);
 }
+
 
 void 
 TryCatchIterator::resetImpl(PlanState& planState) const

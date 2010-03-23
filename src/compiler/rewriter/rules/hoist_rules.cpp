@@ -392,14 +392,28 @@ static bool non_hoistable(const expr* e)
 {
   expr_kind_t k = e->get_expr_kind();
 
-  return (k == var_expr_kind ||
-          k == const_expr_kind ||
-          k == axis_step_expr_kind ||
-          k == match_expr_kind ||
-          (k == wrapper_expr_kind &&
-           non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr()))  ||
-          is_already_hoisted(e) ||
-          e->get_scripting_kind() == SEQUENTIAL_EXPR);
+  if (k == var_expr_kind ||
+      k == const_expr_kind ||
+      k == axis_step_expr_kind ||
+      k == match_expr_kind ||
+      (k == wrapper_expr_kind &&
+       non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
+      is_already_hoisted(e) ||
+      e->get_scripting_kind() == SEQUENTIAL_EXPR)
+  {
+    return true;
+  }
+
+  if (k == fo_expr_kind)
+  {
+    const fo_expr* fo = static_cast<const fo_expr*>(e);
+    const function* f = fo->get_func();
+
+    if (f->getKind() == FunctionConsts::OP_CONCATENATE_N && fo->num_args() == 0)
+      return true;
+  }
+
+  return false;
 }
 
 

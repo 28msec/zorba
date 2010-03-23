@@ -62,9 +62,9 @@ ForIterator::ForIterator (
   :
   BinaryBaseIterator<ForIterator, ForState>(sctx, loc, tupleIter, domainIter),
   theVarName(varName),
-  theHasPosVars(false)
+  theHasPosVars(false),
+  theVarRefs(varRefs)
 {
-  castIterVector<ForVarIterator>(theVarRefs, varRefs);
 }
 
 
@@ -78,11 +78,10 @@ ForIterator::ForIterator (
     const std::vector<PlanIter_t>& posRefs) 
   :
   BinaryBaseIterator<ForIterator, ForState>(sctx, loc, tupleIter, domainIter),
-  theVarName(varName)
+  theVarName(varName),
+  theVarRefs(varRefs),
+  thePosVarRefs(posRefs)
 {
-  castIterVector<ForVarIterator>(theVarRefs, varRefs);
-  castIterVector<ForVarIterator>(thePosVarRefs, posRefs);
-
   theHasPosVars = !thePosVarRefs.empty();
 }
 

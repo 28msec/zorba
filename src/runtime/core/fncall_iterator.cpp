@@ -198,10 +198,10 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     // Bind the args.
     state->openPlan();
 
-    std::vector<LetVarIter_t>& iters = theUDF->get_param_iters();
-    for (uint32_t i = 0; i < iters.size (); ++i) 
+    const std::vector<LetVarIter_t>& iters = theUDF->getArgVarRefIters();
+    for (ulong i = 0; i < iters.size(); ++i) 
     {
-      LetVarIter_t& ref = iters[i];
+      const LetVarIter_t& ref = iters[i];
       if ( ref != NULL) 
       {
         state->theChildIterators.push_back(new PlanIteratorWrapper(theChildren[i], planState));
@@ -209,13 +209,13 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
         ref->bind(state->theChildIterators.back(), *state->theFnBodyStateBlock);
  
-       if(lDebugger != 0)
+       if (lDebugger != 0)
        {
           store::Iterator_t it = state->theChildIterators.back();
           it->open();
           store::Item_t item;
           name << '$' << ref->getVarName() << '=';
-          while(it->next(item))
+          while (it->next(item))
           {
             String lValue(item->getStringValue());
             if(lValue.length() > 10)

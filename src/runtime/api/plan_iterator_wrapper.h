@@ -42,10 +42,13 @@ public:
 
   virtual ~PlanIteratorWrapper();
 
-  void open();
+  void open() {}
+
   bool next(store::Item_t&);
+
   void reset();
-  void close() throw();
+
+  void close() throw() {}
 };
 
 } /* namespace zorba */

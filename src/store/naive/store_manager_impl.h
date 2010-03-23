@@ -13,29 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_STORE_MANAGER_H
-#define ZORBA_STORE_MANAGER_H
+#ifndef ZORBA_SIMPLE_STORE_STORE_MANAGER_H
+#define ZORBA_SIMPLE_STORE_STORE_MANAGER_H
 
-#include <zorba/config.h>
-
-namespace zorba {
+#include <zorba/store_manager.h>
 
 
-/**
- * Class contains helper functions to create and destroy the store that is 
- * to be used by the zorba library. The functions must be implemented in the
- * code of each store module.
- */
-class ZORBA_DLL_PUBLIC StoreManager 
+namespace zorba 
 {
-public:
-  static void* getStore();
 
-  static void shutdownStore(void* store);
+namespace simplestore
+{
+
+class SimpleStore;
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class StoreManagerImpl : public StoreManager
+{
+  friend class SimpleStore;
+
+ private:
+  static SimpleStore  * theStore;
+
+ public:
+  static SimpleStore* getStoreInternal() { return theStore; }
 };
 
-}
 
+
+}
+}
 #endif
 
 /*

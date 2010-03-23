@@ -22,7 +22,7 @@ using namespace zorba;
 
 int test_debugger_protocol( int argc, char* argv[] )
 {
-  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
+  void* lStore = zorba::StoreManager::getStore();
   Zorba *lZorba = Zorba::getInstance(lStore);
 	bool lResult;
 	zorba::TestDebuggerSerialization * test = new zorba::TestDebuggerSerialization();

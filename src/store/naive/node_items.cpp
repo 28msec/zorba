@@ -34,6 +34,7 @@
 #include "store/naive/item_iterator.h"
 #include "store/naive/dataguide.h"
 #include "store/naive/node_factory.h"
+#include "store/naive/store_manager_impl.h"
 
 
 

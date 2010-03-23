@@ -1336,8 +1336,8 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
     vector<ForVarIter_t> inputForVars(numVars);
     vector<LetVarIter_t> inputLetVars(numVars);
-    vector<vector<ForVarIter_t> > outputForVarsRefs(numVars);
-    vector<vector<LetVarIter_t> > outputLetVarsRefs(numVars);
+    vector<vector<PlanIter_t> > outputForVarsRefs(numVars);
+    vector<vector<PlanIter_t> > outputLetVarsRefs(numVars);
 
     for (ulong i = 0; i < numVars; ++i)
     {
@@ -1350,8 +1350,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
       {
         inputForVars[numForVars] = forIter;
 
-        flwor::castIterVector<ForVarIterator>(outputForVarsRefs[numForVars],
-                                              varRebind->theOutputVarRefs);
+        outputForVarsRefs[numForVars] = varRebind->theOutputVarRefs;
         ++numForVars;
       }
       else
@@ -1362,8 +1361,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
         inputLetVars[numLetVars] = letIter;
 
-        flwor::castIterVector<LetVarIterator>(outputLetVarsRefs[numLetVars],
-                                              varRebind->theOutputVarRefs);
+        outputLetVarsRefs[numLetVars] = varRebind->theOutputVarRefs;
         ++numLetVars;
       }
     }

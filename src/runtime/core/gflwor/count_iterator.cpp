@@ -37,16 +37,16 @@ END_SERIALIZABLE_CLASS_VERSIONS(CountIterator)
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-void CountState::init ( PlanState& planState ) 
+void CountState::init(PlanState& planState) 
 {
-  PlanIteratorState::init ( planState );
+  PlanIteratorState::init(planState);
   theCount=0;
 }
 
 
-void CountState::reset ( PlanState& planState ) 
+  void CountState::reset(PlanState& planState) 
 {
-  PlanIteratorState::reset ( planState );
+  PlanIteratorState::reset(planState);
   theCount=0;
 }
   
@@ -67,9 +67,9 @@ CountIterator::CountIterator (
     const std::vector<PlanIter_t>& aCountVars ) 
   :
   UnaryBaseIterator<CountIterator, CountState> ( sctx, loc, aTupleIterator ),
-  theVarName ( aVarName )
+  theVarName(aVarName),
+  theCountVars(aCountVars)
 {
-  castIterVector<ForVarIterator>(theCountVars, aCountVars);
 }
 
 
@@ -78,23 +78,24 @@ CountIterator::~CountIterator()
 }
 
 
-bool CountIterator::nextImpl ( store::Item_t& aResult, PlanState& aPlanState ) const 
+bool CountIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
 {
-  CountState* lState;
   store::Item_t lItem;
 
-  DEFAULT_STACK_INIT ( CountState, lState, aPlanState );
-  while ( consumeNext ( aResult, theChild, aPlanState ) ) 
+  CountState* lState;
+  DEFAULT_STACK_INIT(CountState, lState, aPlanState);
+
+  while (consumeNext(aResult, theChild, aPlanState)) 
   {
     {
       store::Item_t lCountItem;
-      GENV_ITEMFACTORY->createInteger ( lCountItem, Integer::parseInt ( lState->incCount() ) );
-      bindVariables ( lCountItem, theCountVars, aPlanState );
+      GENV_ITEMFACTORY->createInteger(lCountItem, Integer::parseInt(lState->incCount()));
+      bindVariables(lCountItem, theCountVars, aPlanState);
     }
-    STACK_PUSH ( true, lState );
+    STACK_PUSH(true, lState);
   }
-  STACK_PUSH ( false, lState );
-  STACK_END ( lState );
+
+  STACK_END(lState);
 }
 
 

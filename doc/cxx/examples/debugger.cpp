@@ -150,8 +150,8 @@ bool debugger_example_1(Zorba *aZorba)
 int debugger( int argc, char *argv[] )
 {
   thePorts = getRandomPorts();
-  simplestore::SimpleStore *lStore = zorba::StoreManager::getStore();
-  Zorba *lZorba = Zorba::getInstance( lStore );
+  void* lStore = zorba::StoreManager::getStore();
+  Zorba* lZorba = Zorba::getInstance( lStore );
   bool res = false;
   {
 #ifdef ZORBA_HAVE_PTHREAD_H

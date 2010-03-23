@@ -117,7 +117,7 @@ public:
   checked_vector<store::Item_t> theSchemaTypeNames;
 
 protected:
-  bool                          theIsInitialized;
+  ulong                         theNumUsers;
 
   ulong                         theUriCounter;
   SYNC_CODE(Mutex               theUriCounterMutex;)
@@ -151,6 +151,7 @@ protected:
   virtual ~SimpleStore();
 
   void init();
+
   void initTypeNames();
 
   // function to create the node and item factory
@@ -172,7 +173,7 @@ protected:
   virtual void destroyCollectionSet(CollectionSet*) const;
 
 public:
-  void shutdown();
+  void shutdown(bool soft = true);
 
   store::ItemFactory* getItemFactory() const;
 
@@ -285,10 +286,10 @@ public:
 
   bool getNodeByReference(store::Item_t& result, const store::Item* uri);
 
-  store::TempSeq_t createTempSeq();
+  store::TempSeq_t createTempSeq(bool lazy);
 
   store::TempSeq_t createTempSeq(
-        store::Iterator* iterator,
+        store::Iterator_t& iterator,
         bool copyNodes ,
         bool lazy);
 

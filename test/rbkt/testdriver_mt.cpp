@@ -833,8 +833,7 @@ main(int argc, char** argv)
   //
   // Start the store and zorba
   //
-  zorba::simplestore::SimpleStore* store =
-  zorba::StoreManager::getStore();
+  void* store = zorba::StoreManager::getStore();
 
   zorba::Zorba* zorba = zorba::Zorba::getInstance(store);
 

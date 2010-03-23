@@ -18,31 +18,31 @@
 #include "api/zorbaimpl.h"
 #include "store/api/store.h"
 
-namespace zorba {
+namespace zorba 
+{
   
-  Zorba*
-  Zorba::getInstance(void* store)
-  {
-    static ZorbaImpl lInstance;
+Zorba* Zorba::getInstance(void* store)
+{
+  static ZorbaImpl lInstance;
 
-    if ( ! lInstance.theIsInitialized )
-      lInstance.init(static_cast<store::Store*>(store));
+  lInstance.init(static_cast<store::Store*>(store));
 
-    return &lInstance;
-  }
+  return &lInstance;
+}
 
 
-  Zorba::~Zorba() 
-  {
-  }
+const Version& Zorba::version()
+{
+  static Version theVersion;
+
+  return theVersion;
+}
 
 
-  const Version&
-  Zorba::version()
-  {
-    static Version theVersion;
+Zorba::~Zorba() 
+{
+}
 
-    return theVersion;
-  }
+
 } /* namespace zorba */
 

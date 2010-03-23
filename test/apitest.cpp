@@ -135,7 +135,7 @@ int _tmain(int argc, _TCHAR* argv[])
   zorba::storeminimal::SimpleStore* store = 
         zorba::storeminimal::SimpleStore::getInstance();
 #else
-  zorba::simplestore::SimpleStore* store = zorba::StoreManager::getStore();
+  void* store = zorba::StoreManager::getStore();
 #endif
       
   // Set the g_abort_on_exception flag in error_manager.cpp
@@ -149,11 +149,14 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // start parsing the query
   XQuery_t query = zengine->createQuery ();
-  if (lProp->debug()) {
+
+  if (lProp->debug()) 
+  {
     query->setDebugMode(lProp->debug());
     Zorba_CompilerHints lHints;
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
   }
+
   if (! lProp->inlineQuery())
     query->setFileName (path.get_path ());
   

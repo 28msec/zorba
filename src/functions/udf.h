@@ -33,7 +33,7 @@ namespace zorba
   return body_expr
 
   The internally generated vars $x1_, ..., $xn_ are not registered in any sctx,
-  but they are registered in the udf obj instead (m_args data member).
+  but they are registered in the udf obj instead (theArgVars data member).
 
   A call to a udf is translated the same way as a call to a built-in function,
   i.e., an fo_expr is created that points to the udf obj and also has a vector
@@ -45,37 +45,36 @@ namespace zorba
                   with one or more params, it is the flwor expr described above).
                   Note: translation of udf declarations includes normalization
                   and optimization of the expr tree.
-  m_args        : The internally generated arg vars (the $xi_ vars described above)
+  theArgVars    : The internally generated arg vars (the $xi_ vars described above)
 
   theUpdateType : The update type of this udf.
   deterministic :
   leaf          : True if this udf does not invoke any other udfs
 
   thePlan       :
-  m_param_itrers:
-  m_state_size  :
+  theArgVarRefs : Each arg var is referenced at most once in the function body.
+                  So, for each arg var, this vector stores the LetVarIterator
+                  that represents the reference to that var (or NULL if the arg 
+                  var is not referenced at all).
 ********************************************************************************/
 class user_function : public function 
 {
 private:
-  QueryLoc                theLoc;
+  QueryLoc                  theLoc;
 
-  expr_t                  theBodyExpr;
-  std::vector<var_expr_t> m_args;
+  expr_t                    theBodyExpr;
+  std::vector<var_expr_t>   theArgVars;
 
-  expr_script_kind_t      theUpdateType;
-  bool                    deterministic;
-  bool                    leaf;
+  expr_script_kind_t        theUpdateType;
+  bool                      theIsDeterministic;
+  bool                      theIsLeaf;
   
-  mutable PlanIter_t                thePlan;
-  mutable std::vector<LetVarIter_t> m_param_iters;
-  mutable int32_t                   m_state_size;
+  PlanIter_t                thePlan;
+  std::vector<LetVarIter_t> theArgVarRefs;
 
 public:
   SERIALIZABLE_CLASS(user_function)
-
   user_function(::zorba::serialization::Archiver& ar);
-
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -92,29 +91,27 @@ public:
 
   expr_script_kind_t getUpdateType() const { return theUpdateType; }
 
-  virtual bool is_builtin_fn_named(const char* local, int local_len, int arg_count) const {return false;}
+  //xqtref_t getUDFReturnType(static_context* sctx) const;
 
-  xqtref_t getUDFReturnType(static_context* sctx) const;
+  bool isDeterministic() const { return theIsDeterministic; }
 
-  bool isDeterministic() const { return deterministic; }
+  void setLeaf(bool v) { theIsLeaf = v; }
 
-  void setLeaf(bool v) { leaf = v; }
+  bool isLeaf() const { return theIsLeaf; }
 
-  bool isLeaf() const { return leaf; }
+  void setBody(expr_t body);
 
-  void set_body(expr_t body);
+  expr_t getBody() const;
 
-  expr_t get_body() const;
+  void setArgVars(std::vector<var_expr_t>& args);
 
-  void set_args(std::vector<var_expr_t>& args);
-
-  const std::vector<var_expr_t>& get_args() const;
+  const std::vector<var_expr_t>& getArgVars() const;
 
   bool accessesDynCtx() const;
 
-  PlanIter_t getPlan(CompilerCB *) const;
+  PlanIter_t getPlan(CompilerCB *);
   
-  virtual std::vector<LetVarIter_t>& get_param_iters() const;
+  const std::vector<LetVarIter_t>& getArgVarRefIters() const;
 
   PlanIter_t codegen(
         CompilerCB* cb,
@@ -137,6 +134,7 @@ public:
   {
     zorba::serialization::serialize_baseclass(ar, (function*)this);
   }
+
 public:
   external_function(const signature& sig) 
     :

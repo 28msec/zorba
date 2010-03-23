@@ -33,7 +33,7 @@ testMultipleDataMgrInitilizations()
 {
 
   Zorba* zorba = NULL;
-  simplestore::SimpleStore* store = NULL;
+  void* store = NULL;
 
   store = zorba::StoreManager::getStore();
   zorba = Zorba::getInstance(store);

@@ -45,7 +45,7 @@ user_function::user_function(
     const signature& sig, 
     expr_t expr_body, 
     enum ParseConstants::function_type_t ftype,
-    bool deterministic_)
+    bool deterministic)
   :
   function(sig),
   theLoc(loc), 
@@ -53,10 +53,9 @@ user_function::user_function(
   theUpdateType(ftype == ParseConstants::fn_update ?
                 UPDATE_EXPR :
                 ftype == ParseConstants::fn_sequential ? SEQUENTIAL_EXPR : SIMPLE_EXPR),
-  deterministic(deterministic_),
-  leaf(true)
+  theIsDeterministic(deterministic),
+  theIsLeaf(true)
 {
-  m_state_size = 0;
 }
 
 
@@ -89,11 +88,10 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, (function*)this);
   ar & theLoc;
   SERIALIZE_ENUM(expr_script_kind_t, theUpdateType);
-  ar & deterministic;
-  ar & leaf;
+  ar & theIsDeterministic;
+  ar & theIsLeaf;
   ar & thePlan;
-  ar & m_param_iters;
-  ar & m_state_size;
+  ar & theArgVarRefs;
 }
 
 
@@ -105,7 +103,7 @@ const QueryLoc& user_function::get_location() const
   return theLoc;
 }
 
-
+#if 0
 /*******************************************************************************
 
 ********************************************************************************/
@@ -120,12 +118,12 @@ xqtref_t user_function::getUDFReturnType(static_context* sctx) const
   return declaredType;
 
 }
-
+#endif
 
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::set_body(expr_t body)
+void user_function::setBody(expr_t body)
 {
   theBodyExpr = body;
 }
@@ -134,7 +132,7 @@ void user_function::set_body(expr_t body)
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t user_function::get_body() const
+expr_t user_function::getBody() const
 {
   return theBodyExpr;
 }
@@ -143,18 +141,18 @@ expr_t user_function::get_body() const
 /*******************************************************************************
 
 ********************************************************************************/
-void user_function::set_args(std::vector<var_expr_t>& args)
+void user_function::setArgVars(std::vector<var_expr_t>& args)
 {
-  m_args = args;
+  theArgVars = args;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<var_expr_t>& user_function::get_args() const
+const std::vector<var_expr_t>& user_function::getArgVars() const
 {
-  return m_args;
+  return theArgVars;
 }
   
 
@@ -172,45 +170,45 @@ bool user_function::accessesDynCtx() const
 /*******************************************************************************
 
 ********************************************************************************/
-std::vector<LetVarIter_t>& user_function::get_param_iters() const
+const std::vector<LetVarIter_t>& user_function::getArgVarRefIters() const
 {
-  return m_param_iters;
+  return theArgVarRefs;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t user_function::getPlan(CompilerCB* ccb) const
+PlanIter_t user_function::getPlan(CompilerCB* ccb)
 {
   if (thePlan == NULL) 
   {
-    std::vector<std::vector<LetVarIter_t> > param_iter_vec(m_args.size());
+    std::vector<std::vector<LetVarIter_t> > param_iter_vec(theArgVars.size());
     hash64map<std::vector<LetVarIter_t> *> param_map;
 
-    for(ulong i = 0; i < m_args.size(); ++i)
+    for(ulong i = 0; i < theArgVars.size(); ++i)
     {
-      param_map.put((uint64_t)&*m_args[i], &param_iter_vec[i]);
+      param_map.put((uint64_t)&*theArgVars[i], &param_iter_vec[i]);
     }
     
     const store::Item* lName = getName();
     //lName may be null of inlined functions
-    thePlan = zorba::codegen(lName==0 ? 0 : lName->getStringValue()->c_str(),
+    thePlan = zorba::codegen(lName == 0 ? 0 : lName->getStringValue()->c_str(),
                             &*theBodyExpr,
                             ccb,
                             &param_map);
 
-    for(ulong i = 0; i < param_iter_vec.size(); ++i) 
+    for (ulong i = 0; i < param_iter_vec.size(); ++i) 
     {
       std::vector<LetVarIter_t>& vec = param_iter_vec[i];
       switch(vec.size()) 
       {
         case 0:
-          m_param_iters.push_back(NULL);
+          theArgVarRefs.push_back(NULL);
           break;
 
         case 1:
-          m_param_iters.push_back(vec[0]);
+          theArgVarRefs.push_back(vec[0]);
           break;
 
         default:

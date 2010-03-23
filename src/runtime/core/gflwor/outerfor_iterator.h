@@ -30,8 +30,8 @@ namespace flwor
 class OuterForIterator : public BinaryBaseIterator<OuterForIterator, PlanIteratorState> 
 {
 private:
-  store::Item_t theVarName;
-  std::vector<ForVarIter_t> theOuterForVars;
+  store::Item_t           theVarName;
+  std::vector<PlanIter_t> theOuterForVars;
 
 public:
   SERIALIZABLE_CLASS(OuterForIterator);
@@ -40,14 +40,7 @@ public:
   OuterForIterator, 
   BinaryBaseIterator<OuterForIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<OuterForIterator, PlanIteratorState>*)this);
-
-    ar & theVarName;
-    ar & theOuterForVars;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   OuterForIterator(
@@ -62,7 +55,7 @@ public:
 
   void accept(PlanIterVisitor& v) const;
 
-  bool nextImpl (store::Item_t& result, PlanState& planState) const;
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 }

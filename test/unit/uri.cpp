@@ -39,7 +39,7 @@ using namespace zorba;
 
 int uri(int argc, char* argv[]) 
 {
-  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
+  void* lStore = zorba::StoreManager::getStore();
   Zorba *lZorba = Zorba::getInstance(lStore);
 
   zorba::xqpString foo("/b");

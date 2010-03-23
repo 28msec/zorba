@@ -25,25 +25,22 @@
 
 
 static void set_var(
+    DriverContext& driverCtx,
+    zorba::DynamicContext* dctx,
     bool inlineFile,
     std::string name,
-    std::string val,
-    zorba::DynamicContext* dctx,
-    const std::string& rbkt_src_dir,
-    const std::string& rbkt_bin_dir);
+    std::string val);
 
 static void set_vars(
-    Specification& aSpec,
-    zorba::DynamicContext* dctx,
-    const std::string& rbkt_src_dir,
-    const std::string& rbkt_bin_dir);
+    DriverContext& driverCtx,
+    zorba::DynamicContext* dctx);
 
 
 /*******************************************************************************
 
 ********************************************************************************/
 void slurp_file (
-    const char *fname,
+    const char* fname,
     std::string& result,
     const std::string& rbkt_src_dir,
     const std::string& rbkt_bin_dir)
@@ -187,9 +184,9 @@ Zorba_CompilerHints getCompilerHints()
 /*******************************************************************************
   Tries to create a ZorbaItem given a string in the form xs:TYPE(VALUE)
 ********************************************************************************/
-zorba::Item createItem(std::string strValue)
+zorba::Item createItem(DriverContext& driverCtx, std::string strValue)
 {
-  zorba::ItemFactory* itemfactory = zorba::Zorba::getInstance(NULL)->getItemFactory();
+  zorba::ItemFactory* itemfactory = driverCtx.theEngine->getItemFactory();
   size_t              pos = strValue.find("xs:");
 
   if(pos == std::string::npos)
@@ -293,7 +290,7 @@ void createDynamicContext(
   }
   
   // Set external vars
-  set_vars(spec, dctx, driverCtx.theRbktSourceDir, driverCtx.theRbktBinaryDir);
+  set_vars(driverCtx, dctx);
 
   if (spec.hasInputQuery()) 
   {
@@ -321,21 +318,20 @@ void createDynamicContext(
 
 ********************************************************************************/
 void set_vars(
-    Specification& aSpec,
-    zorba::DynamicContext* dctx,
-    const std::string& rbkt_src_dir,
-    const std::string& rbkt_bin_dir)
+    DriverContext& driverCtx,
+    zorba::DynamicContext* dctx)
 {
+  Specification& spec = *driverCtx.theSpec;
+
   //std::cout << "=== Setting variables from .spec file===" << std::endl;
   std::vector<Specification::Variable>::const_iterator lIter;
-  for (lIter = aSpec.variablesBegin(); lIter != aSpec.variablesEnd(); ++lIter)
+  for (lIter = spec.variablesBegin(); lIter != spec.variablesEnd(); ++lIter)
   {
-    set_var((*lIter).theInline,
-            (*lIter).theVarName,
-            (*lIter).theVarValue,
+    set_var(driverCtx,
             dctx,
-            rbkt_src_dir,
-            rbkt_bin_dir);
+            (*lIter).theInline,
+            (*lIter).theVarName,
+            (*lIter).theVarValue);
   }
   //std::cout << "=== end of setting variables ==" << std::endl;
 }
@@ -347,15 +343,14 @@ void set_vars(
   should be inlined or not
 ********************************************************************************/
 void set_var(
+    DriverContext& driverCtx,
+    zorba::DynamicContext* dctx,
     bool inlineFile,
     std::string name,
-    std::string val,
-    zorba::DynamicContext* dctx,
-    const std::string& rbkt_src_dir,
-    const std::string& rbkt_bin_dir) 
+    std::string val)
 {
-  zorba::str_replace_all (val, "$RBKT_SRC_DIR", rbkt_src_dir);
-  zorba::str_replace_all (val, "$RBKT_BINARY_DIR", rbkt_bin_dir);
+  zorba::str_replace_all(val, "$RBKT_SRC_DIR", driverCtx.theRbktSourceDir);
+  zorba::str_replace_all(val, "$RBKT_BINARY_DIR", driverCtx.theRbktBinaryDir);
 #ifdef MY_D_WIN32
   zorba::str_replace_all(val, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
   //zorba::str_replace_all(val, "/", "\\");
@@ -363,11 +358,11 @@ void set_var(
   //std::cout << "Setting variable " << name << " to value '" << val <<"'" << std::endl;
   if (!inlineFile) 
   {
-    zorba::Item lItem = createItem(val);
+    zorba::Item lItem = createItem(driverCtx, val);
 		if(name != ".")
-			dctx->setVariable (name, lItem);
+			dctx->setVariable(name, lItem);
 		else
-			dctx->setContextItem (lItem);
+			dctx->setContextItem(lItem);
   }
   else 
   {

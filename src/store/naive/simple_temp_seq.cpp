@@ -23,21 +23,9 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleTempSeq::SimpleTempSeq(store::Iterator_t iter, bool copy)
+SimpleTempSeq::SimpleTempSeq(store::Iterator_t& iter, bool copy)
 {
-  store::CopyMode lCopyMode;
-  store::Item_t curItem;
-
-  while (iter->next(curItem)) 
-  {
-    if (copy && curItem->isNode()) 
-      curItem = curItem->copy(NULL, 0, lCopyMode);
-
-    theItems.push_back(NULL);
-    theItems.back().transfer(curItem);
-  }
-
-  iter->close();
+  init(iter, copy);
 }
 
 
@@ -104,10 +92,37 @@ bool SimpleTempSeq::containsItem(ulong position)
 /*******************************************************************************
 
 ********************************************************************************/
+void SimpleTempSeq::init(store::Iterator_t& iter, bool copy)
+{
+  store::CopyMode lCopyMode;
+  store::Item_t curItem;
+
+  theItems.clear();
+
+  iter->open();
+
+  while (iter->next(curItem)) 
+  {
+    if (copy && curItem->isNode()) 
+      curItem = curItem->copy(NULL, 0, lCopyMode);
+
+    theItems.push_back(NULL);
+    theItems.back().transfer(curItem);
+  }
+
+  iter->close();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void SimpleTempSeq::append(store::Iterator_t iter, bool copy)
 {
   store::Item_t curItem;
   store::CopyMode lCopyMode;
+
+  iter->open();
 
   while (iter->next(curItem))
   {
@@ -146,7 +161,7 @@ store::Iterator_t SimpleTempSeq::getIterator(
     ulong endPos,
     bool streaming)
 {
-  return new SimpleTempSeqIter ( this, startPos, endPos );
+  return new SimpleTempSeqIter(this, startPos, endPos);
 }
 
 
@@ -230,18 +245,6 @@ SimpleTempSeqIter::SimpleTempSeqIter(
 }
 
 
-SimpleTempSeqIter::SimpleTempSeqIter(
-    SimpleTempSeq_t aTempSeq,
-    const std::vector<ulong>& positions)
-	:
-		theTempSeq(aTempSeq),
-    theBorderType(specificPositions),
-    theCurPos(-1),
-    thePositions(positions)
-{
-}
-
-
 SimpleTempSeqIter::~SimpleTempSeqIter()
 {
 }
@@ -263,7 +266,6 @@ void SimpleTempSeqIter::open()
     theCurPos = theStartPos - 2;
     break;
   case none:
-  case specificPositions:
     theCurPos = -1;
     break;
   }
@@ -289,13 +291,6 @@ bool SimpleTempSeqIter::next(store::Item_t& result)
       return true;
     }
     break;
-  case specificPositions:
-    if ( theCurPos < thePositions.size() ) 
-    {
-      result =  (*theTempSeq)[thePositions[theCurPos]];
-      return true;
-    }
-    break;
   }
   result = NULL;
   return false;
@@ -315,10 +310,6 @@ store::Item* SimpleTempSeqIter::next()
     if ( theCurPos < theEndPos ) 
       return (*theTempSeq)[theCurPos];
     break;
-  case specificPositions:
-    if ( theCurPos < thePositions.size() ) 
-      return (*theTempSeq)[thePositions[theCurPos]];
-    break;
   }
 
   return NULL;
@@ -333,7 +324,6 @@ void SimpleTempSeqIter::reset()
     theCurPos = theStartPos - 2;
     break;
   case none:
-  case specificPositions:
     theCurPos = -1;
     break;
   }

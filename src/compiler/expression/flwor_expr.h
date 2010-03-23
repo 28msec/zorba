@@ -101,6 +101,10 @@ public:
 
   virtual void set_expr(expr_t v) { }
 
+  virtual var_expr* get_pos_var() const { return NULL; }
+
+  virtual var_expr* get_score_var() const { return NULL; }
+
   virtual flwor_clause_t clone(expr::substitution_t& substitution) const = 0;
 };
 
@@ -161,10 +165,6 @@ public:
   var_expr* get_var() const { return theVarExpr.getp(); }
 
   void set_var(var_expr_t v);
-
-  virtual var_expr* get_pos_var() const { return NULL; }
-
-  virtual var_expr* get_score_var() const { return NULL; }
 };
 
 

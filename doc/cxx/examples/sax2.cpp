@@ -77,7 +77,7 @@ int sax2( int argc, char * argv[] )
   // create a SAX content handler that prints all events to standard out
   XMLSerializer lContentHandler( std::cout );
 
-  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
+  void* lStore = zorba::StoreManager::getStore();
 
   // initialize the Zorba engine and get a pointer to it
   Zorba* lZorba = Zorba::getInstance(lStore);

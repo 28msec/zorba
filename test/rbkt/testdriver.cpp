@@ -106,7 +106,7 @@ main(int argc, char** argv)
   zorba::storeminimal::SimpleStore* store =
   zorba::storeminimal::SimpleStore::getInstance();
 #else
-  zorba::simplestore::SimpleStore* store = zorba::StoreManager::getStore();
+  void* store = zorba::StoreManager::getStore();
 #endif
   if (store == NULL) return 20;
 

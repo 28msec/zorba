@@ -60,10 +60,10 @@ public:
 class ForIterator : public BinaryBaseIterator<ForIterator, ForState> 
 {
 private:
-  store::Item_t             theVarName;
-  bool                      theHasPosVars;
-  std::vector<ForVarIter_t> theVarRefs;
-  std::vector<ForVarIter_t> thePosVarRefs;
+  store::Item_t           theVarName;
+  bool                    theHasPosVars;
+  std::vector<PlanIter_t> theVarRefs;
+  std::vector<PlanIter_t> thePosVarRefs;
 
 public:
   SERIALIZABLE_CLASS(ForIterator);

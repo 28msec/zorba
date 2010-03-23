@@ -73,16 +73,16 @@ WindowVars::WindowVars (
     const std::vector<PlanIter_t >& aPrevOutVars,
     const std::vector<PlanIter_t >& aNextOutVars,
     const std::vector<PlanIter_t >& aPosOutVars)
+:
+  theCurVars(aCurVars),
+  thePrevVars(aPrevVars),
+  theNextVars(aNextVars),
+  thePosVars(aPosVars),
+  theCurOuterVars(aCurOutVars),
+  thePrevOuterVars(aPrevOutVars),
+  theNextOuterVars(aNextOutVars),
+  thePosOuterVars(aPosOutVars)
 {
-  castIterVector<ForVarIterator>(theCurVars, aCurVars);
-  castIterVector<ForVarIterator>(thePrevVars, aPrevVars);
-  castIterVector<ForVarIterator>(theNextVars, aNextVars);
-  castIterVector<ForVarIterator>(thePosVars, aPosVars);
-
-  castIterVector<ForVarIterator>(theCurOuterVars, aCurOutVars);
-  castIterVector<ForVarIterator>(thePrevOuterVars, aPrevOutVars);
-  castIterVector<ForVarIterator>(theNextOuterVars, aNextOutVars);
-  castIterVector<ForVarIterator>(thePosOuterVars, aPosOutVars);
 }
 
 
@@ -91,6 +91,23 @@ WindowVars::WindowVars (
 ********************************************************************************/
 WindowVars::~WindowVars()
 {
+}
+
+
+/***************************************************************************//**
+
+********************************************************************************/
+void WindowVars::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theCurVars;
+  ar & thePrevVars;
+  ar & theNextVars;
+  ar & thePosVars;
+
+  ar & theCurOuterVars;
+  ar & thePrevOuterVars;
+  ar & theNextOuterVars;
+  ar & thePosOuterVars;
 }
 
 
@@ -724,6 +741,7 @@ void WindowIterator::doGarbageCollection(WindowState* lState) const
 ********************************************************************************/
 bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
+  store::Iterator_t iterator;
   WindowState* lState;
   DEFAULT_STACK_INIT(WindowState, lState, aPlanState);
 
@@ -732,10 +750,10 @@ bool WindowIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) con
   {
     // Create the temp sequence where to materialize the result of the domain
     // expr (lazily if theLazyEval flag is true).
-    lState->theDomainSeq = 
-    GENV_STORE.createTempSeq(new PlanIteratorWrapper(theInputIter, aPlanState),
-                             false,
-                             theLazyEval);
+    iterator = new PlanIteratorWrapper(theInputIter, aPlanState);
+    lState->theDomainSeq = GENV_STORE.createTempSeq(iterator,
+                                                    false,
+                                                    theLazyEval);
 
     // Its clever to switch quite early to avoid a lot of if-else statements
     if (theWindowType == WindowIterator::SLIDING)

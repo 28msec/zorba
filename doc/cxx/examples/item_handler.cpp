@@ -65,7 +65,7 @@ bool item_handler_example(Zorba* aZorba)
 
 int item_handler(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
+  void* lStore = zorba::StoreManager::getStore();
 
   Zorba* lZorba = Zorba::getInstance(lStore);
   if (!item_handler_example(lZorba)) return 1;

@@ -48,23 +48,29 @@ CreateTupleIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     std::vector<store::TupleField> fields;
     fields.resize(n);
 
-    for(int i = 0; i < n; ++i) {
+    for(int i = 0; i < n; ++i) 
+    {
       store::TupleField& f = fields[i];
       std::vector<store::Item_t> items;
       items.resize(2);
       store::Item_t& i0 = items[0];
       store::Item_t& i1 = items[1];
-      if (consumeNext(i0, theChildren[i].getp(), planState)) {
-        if (consumeNext(i1, theChildren[i].getp(), planState)) {
+      if (consumeNext(i0, theChildren[i].getp(), planState)) 
+      {
+        if (consumeNext(i1, theChildren[i].getp(), planState)) 
+        {
           store::TempSeq_t seq = GENV_STORE.createTempSeq(items);
           store::Iterator_t lIter = new PlanIteratorWrapper(theChildren[i], planState);
-
           seq->append(lIter, false);
           f.set(seq.getp());
-        } else {
+        }
+        else
+        {
           f.set(i0.getp());
         }
-      } else {
+      }
+      else
+      {
         f.reset();
       }
     }
@@ -80,7 +86,10 @@ NARY_ACCEPT(CreateTupleIterator);
 
 
 GetTupleFieldIteratorState::GetTupleFieldIteratorState() { }
+
+
 GetTupleFieldIteratorState::~GetTupleFieldIteratorState() { }
+
 
 bool
 GetTupleFieldIterator::nextImpl(store::Item_t& result, PlanState& planState) const

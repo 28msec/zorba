@@ -41,13 +41,17 @@ public:
 class CountIterator : public UnaryBaseIterator<CountIterator, CountState> 
 {
 private:
-  store::Item_t theVarName;
-  std::vector<ForVarIter_t> theCountVars;
+  store::Item_t           theVarName;
+  std::vector<PlanIter_t> theCountVars;
 
 public:
   SERIALIZABLE_CLASS(CountIterator)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CountIterator, UnaryBaseIterator<CountIterator, CountState>)
-  void serialize(::zorba::serialization::Archiver &ar)
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  CountIterator,
+  UnaryBaseIterator<CountIterator, CountState>)
+
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (UnaryBaseIterator<CountIterator, CountState>*)this);
     ar & theVarName;

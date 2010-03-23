@@ -58,11 +58,13 @@ class SimpleLazyTempSeq : public store::TempSeq
  public:
   SimpleLazyTempSeq() { }
 
-  SimpleLazyTempSeq(store::Iterator_t iter, bool copy = false );
+  SimpleLazyTempSeq(store::Iterator_t& iter, bool copy = false);
 
   virtual ~SimpleLazyTempSeq();
 
   bool empty();
+
+  void init(store::Iterator_t& iter, bool copy = false);
 
   void append(store::Iterator_t iter, bool copy);
 

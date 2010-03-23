@@ -42,15 +42,26 @@ LetIterator::LetIterator (
   :
   BinaryBaseIterator<LetIterator, PlanIteratorState>(sctx, aLoc, aTupleIter, aInput),
   theVarName(aVarName),
+  theLetVars(aLetVars),
   theLazyEval(lazyEval), 
   theNeedsMat(aNeedsMaterialization) 
 {
-  castIterVector<LetVarIterator>(theLetVars, aLetVars);
 }
 
 
 LetIterator::~LetIterator() 
 {
+}
+
+
+void LetIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<LetIterator, PlanIteratorState>*)this);
+
+  ar & theVarName;
+  ar & theLetVars;
+  ar & theNeedsMat;
 }
 
 

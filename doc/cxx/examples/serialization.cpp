@@ -172,7 +172,7 @@ serialization_example_7(Zorba* aZorba)
 int 
 serialization(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
+  void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
 

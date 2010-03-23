@@ -23,12 +23,12 @@
 using namespace std;
 using namespace zorba;
 
-int main (int argc, const char **argv) {
+int main (int argc, const char **argv) 
+{
 
   // initialize and deinitialize zorba in order to avoid
   // valgrind showing still reachables
-  zorba::simplestore::SimpleStore* store =
-      zorba::StoreManager::getStore();
+  void* store = zorba::StoreManager::getStore();
   zorba::Zorba * engine = zorba::Zorba::getInstance(store);     
 
   if (strcmp (argv [1], "--branch-path") == 0) 

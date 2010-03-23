@@ -40,65 +40,79 @@ class Store;
 // exported for unit testing only
 class ZORBA_DLL_PUBLIC GlobalEnvironment 
 {
- public:
-   ~GlobalEnvironment();
- private:
-  void
-  init_icu();
-
-  void
-  cleanup_icu();
-
- public:
-  static void init(store::Store* store);
-  static void destroy();
-  static void destroyStatics();
-  static GlobalEnvironment& getInstance()
-  {
-    assert(m_globalEnv);
-    return *m_globalEnv;
-  }
-
-
-  RootTypeManager& getRootTypeManager();
-  static_context& getRootStaticContext();
-  bool isRootStaticContextInitialized();
-  XQueryCompilerSubsystem& getCompilerSubsystem();
-  store::Store& getStore();
-  store::ItemFactory* getItemFactory();
-  store::IteratorFactory* getIteratorFactory();
-  StandardModuleURIResolver* getModuleURIResolver() const { return m_module_resolver; }
-  StandardSchemaURIResolver* getSchemaURIResolver() const { return m_schema_resolver; }
-#ifdef ZORBA_XQUERYX
-  XQueryXConvertor    *getXQueryXConvertor();
-#endif
 private:
-  GlobalEnvironment();
 
-  store::Store                         * m_store;
-  root_static_context                  * m_rootStaticContext;
-#ifndef ZORBA_NO_BIGNUMBERS
-//  M_APM                                  m_mapm; // this is a pointer type
-#endif
-  XQueryCompilerSubsystem              * m_compilerSubSys;
+  static GlobalEnvironment    * m_globalEnv;
 
-  static GlobalEnvironment             * m_globalEnv;
+private:
+  store::Store                * m_store;
+
+  root_static_context         * m_rootStaticContext;
+
+  XQueryCompilerSubsystem     * m_compilerSubSys;
 
 #ifdef ZORBA_XQUERYX
-  XQueryXConvertor                     * xqueryx_convertor;
+  XQueryXConvertor            * xqueryx_convertor;
 #endif
 
-  StandardModuleURIResolver*            m_module_resolver;
-  StandardSchemaURIResolver*            m_schema_resolver;
+  StandardModuleURIResolver   * m_module_resolver;
+  StandardSchemaURIResolver   * m_schema_resolver;
 
 public:
 #if defined ZORBA_WITH_REST && defined ZORBA_WITH_SSL && defined ZORBA_VERIFY_PEER_SSL_CERTIFICATE
 #if defined WIN32
   //path where root CA certificates for SSL are kept (filename is "cacert.pem")
   //certificates are used by curl/ssleay (or openssl) when connecting to https.
-  char    g_curl_root_CA_certificates_path[1024];
+  char  g_curl_root_CA_certificates_path[1024];
 #endif
 #endif
+
+public:
+
+  static void init(store::Store* store);
+
+  static void destroy();
+
+  static void destroyStatics();
+
+  static GlobalEnvironment& getInstance()
+  {
+    assert(m_globalEnv);
+    return *m_globalEnv;
+  }
+
+public:
+  ~GlobalEnvironment();
+
+  RootTypeManager& getRootTypeManager();
+
+  static_context& getRootStaticContext();
+
+  bool isRootStaticContextInitialized();
+
+  XQueryCompilerSubsystem& getCompilerSubsystem();
+
+  store::Store& getStore();
+
+  store::ItemFactory* getItemFactory();
+
+  store::IteratorFactory* getIteratorFactory();
+
+  StandardModuleURIResolver* getModuleURIResolver() const { return m_module_resolver; }
+
+  StandardSchemaURIResolver* getSchemaURIResolver() const { return m_schema_resolver; }
+
+#ifdef ZORBA_XQUERYX
+  XQueryXConvertor* getXQueryXConvertor();
+#endif
+
+private:
+  GlobalEnvironment();
+
+  void init_icu();
+
+  void cleanup_icu();
+
 };
 
 #define GENV GlobalEnvironment::getInstance()

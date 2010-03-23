@@ -300,13 +300,13 @@ bool CompareIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
       if (!c0Done) 
       {
-        lIter0 = new PlanIteratorWrapper ( theChild0, planState );
+        lIter0 = new PlanIteratorWrapper(theChild0, planState);
         tSeq0->append(lIter0, false);
       }
 
       if (!c1Done) 
       {
-        lIter1 = new PlanIteratorWrapper ( theChild1, planState );
+        lIter1 = new PlanIteratorWrapper(theChild1, planState);
         tSeq1->append(lIter1, false);
       }
 

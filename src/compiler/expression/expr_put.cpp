@@ -164,8 +164,16 @@ ostream& for_clause::put(ostream& os) const
 
 #else
   os << INDENT << "FOR" << expr_addr(this) << " ";
+
   put_qname(theVarExpr->get_name(), os);
-  os << expr_addr(theVarExpr.getp()) << std::endl << DENT << "[\n";
+  os << expr_addr(theVarExpr.getp());
+  if (thePosVarExpr != NULL)
+  {
+    os << " AT ";
+    put_qname(thePosVarExpr->get_name(), os);
+    os << expr_addr(thePosVarExpr.getp());
+  }
+  os << std::endl << DENT << "[\n";
 
   theDomainExpr->put(os);
 #endif

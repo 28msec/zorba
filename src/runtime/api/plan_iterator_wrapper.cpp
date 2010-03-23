@@ -36,11 +36,6 @@ PlanIteratorWrapper::~PlanIteratorWrapper()
 }
   
   
-void PlanIteratorWrapper::open()
-{
-}
-
-
 bool PlanIteratorWrapper::next(store::Item_t& result)
 {
   return PlanIterator::consumeNext(result, theIterator, *theStateBlock);
@@ -53,8 +48,4 @@ void PlanIteratorWrapper::reset()
 }
   
 
-void PlanIteratorWrapper::close() throw()
-{
-}
-  
 } /* namespace zorba */

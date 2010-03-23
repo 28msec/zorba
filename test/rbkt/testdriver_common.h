@@ -155,7 +155,9 @@ void printErrors(
 
 Zorba_CompilerHints getCompilerHints();
 
-zorba::Item createItem(std::string strValue);
+zorba::Item createItem(
+    DriverContext& driverCtx,
+    std::string strValue);
 
 
 #endif

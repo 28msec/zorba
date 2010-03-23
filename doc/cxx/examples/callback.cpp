@@ -61,7 +61,7 @@ public:
   }
 private:
   Zorba* theZorba;
-  simplestore::SimpleStore* theStore;
+  void* theStore;
   unsigned theNumbersCalled;
   Zorba_SerializerOptions_t theSerOptions;
 };

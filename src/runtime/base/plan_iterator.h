@@ -307,7 +307,7 @@ public:
   {
   }
 
-  void serialize(::zorba::serialization::Archiver &ar);
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   PlanIterator(static_context* aContext, const QueryLoc& aLoc) 
@@ -450,10 +450,12 @@ public:
         const PlanIterator* iter,
         PlanState& planState)
   {
-    if (planState.theHasToQuit) {
+    if (planState.theHasToQuit) 
+    {
       // Quit the execution
       throw FlowCtlException(FlowCtlException::INTERRUPT);
     }
+
     return iter->produceNext(result, planState);
   }
 #endif

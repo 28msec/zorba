@@ -36,7 +36,11 @@ class  TempSeq : public SimpleRCObject
 public:
   virtual ~TempSeq(){}
 
- 
+  /**
+   * Initializes a temp sequence with the given input iterator
+   */
+  virtual void init(store::Iterator_t& iter, bool copy = false) = 0;
+
   /**
    * Appends the items from the iterator to the temp sequence
    */

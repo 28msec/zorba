@@ -1289,6 +1289,8 @@ DEF_FLWOR_GETTER (WhereClause, where)
 
 
 
+//#define ZORBA_FORCE_GFLWOR
+
 
 void FLWORExpr::compute_general () 
 {

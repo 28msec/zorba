@@ -20,23 +20,27 @@ class Store
 {
 public:
   Store() {}
+
   Store(const Store&) {}
+
   virtual ~Store() {}
-  virtual zorba::simplestore::SimpleStore* getStore() const { return 0; }
-  // TODO the above line must be replace by the following line!!
-  // virtual zorba::simplestore::Store* getStore() const { return 0; }
+
+  virtual void* getStore() const { return 0; }
+
 }; // class Store
+
 
 class InMemoryStore : public Store 
 {
 private:
-  zorba::simplestore::SimpleStore* theStore;
+  void* theStore;
 
 public:
   InMemoryStore() : theStore(0) {}
-  InMemoryStore(const InMemoryStore& aStore)
-    : Store(aStore), theStore(aStore.theStore) {}
-  InMemoryStore(zorba::simplestore::SimpleStore* aStore) : theStore(aStore) {}
+
+  InMemoryStore(const InMemoryStore& aStore) : Store(aStore), theStore(aStore.theStore) {}
+
+  InMemoryStore(void* aStore) : theStore(aStore) {}
 
   virtual ~InMemoryStore() {}
 
@@ -50,10 +54,14 @@ public:
   }
 
   static void shutdown(InMemoryStore& aStore)
-  { zorba::StoreManager::shutdownStore(aStore.theStore); }
+  { 
+    zorba::StoreManager::shutdownStore(aStore.theStore); 
+  }
 
-  virtual zorba::simplestore::SimpleStore* getStore() const
-  { return theStore; }
+  virtual void* getStore() const
+  {
+     return theStore; 
+  }
 }; // class InMemoryStore
 
 

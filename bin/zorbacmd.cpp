@@ -84,8 +84,8 @@ populateStaticContext(
     zorba::StaticContext_t& aStaticContext,
     const ZorbaCMDProperties& aProperties)
 {
-  try {
-
+  try 
+  {
     // add the following module path to the static context (in this order)
     // 1. command-line properties
     // 2. environment ZORBA_MODULE_PATH
@@ -138,6 +138,7 @@ populateStaticContext(
 
 
 bool populateDynamicContext(
+    Zorba* zorba,
     zorba::DynamicContext* aDynamicContext,
     const ZorbaCMDProperties& aProperties)
 {
@@ -153,13 +154,15 @@ bool populateDynamicContext(
        lIter != end;
        ++lIter)
   {
-    if ((*lIter).inline_file) {
+    if ((*lIter).inline_file) 
+    {
       std::ifstream* lInStream = new std::ifstream((*lIter).var_value.c_str());
       aDynamicContext->setVariableAsDocument((*lIter).var_name, (*lIter).var_value, 
                                              std::auto_ptr<std::istream>(lInStream));
-    } else {
-      zorba::Item lItem = zorba::Zorba::getInstance(NULL)
-                            ->getItemFactory()->createString((*lIter).var_value);
+    }
+    else 
+    {
+      zorba::Item lItem = zorba->getItemFactory()->createString((*lIter).var_value);
       aDynamicContext->setVariable((*lIter).var_name, lItem);
     }
   }
@@ -528,7 +531,7 @@ int executeQueryWithTiming(
     zorba::DynamicContext* lDynamicContext = query->getDynamicContext();
     try 
     {
-      if ( ! populateDynamicContext(lDynamicContext, properties) )
+      if ( ! populateDynamicContext(zorbaInstance, lDynamicContext, properties) )
       {
         properties.printHelp(std::cout);
         return 4;
@@ -597,6 +600,7 @@ int executeQueryWithTiming(
 
 
 int executeQuery(
+    zorba::Zorba* zorbaInstance,
     ZorbaCMDProperties& properties,
     zorba::XQuery_t& query,
     zorba::StaticContext_t& staticContext,
@@ -637,7 +641,7 @@ int executeQuery(
   zorba::DynamicContext* lDynamicContext = query->getDynamicContext();
   try 
   {
-    if ( ! populateDynamicContext(lDynamicContext, properties) )
+    if ( ! populateDynamicContext(zorbaInstance, lDynamicContext, properties) )
     {
       properties.printHelp(std::cout);
       return 4;
@@ -745,7 +749,7 @@ int _tmain(int argc, _TCHAR* argv[])
   timing.startTimer(TimingInfo::INIT_TIMER, 2);
 
 #ifndef ZORBA_MINIMAL_STORE
-  zorba::simplestore::SimpleStore* store = zorba::StoreManager::getStore();
+  void* store = zorba::StoreManager::getStore();
 #else
   zorba::storeminimal::SimpleStore* store =
   zorba::storeminimal::SimpleStoreManager::getStore();
@@ -869,7 +873,8 @@ int _tmain(int argc, _TCHAR* argv[])
           qfile->clear();
           qfile->seekg(0); // go back to the beginning
         }
-        catch (zorba::QueryException& qe) {
+        catch (zorba::QueryException& qe) 
+        {
           ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
           return 6;
         }
@@ -877,7 +882,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
       int status = 0;
 
-      if (doTiming) {
+      if (doTiming) 
+      {
         status = executeQueryWithTiming(lZorbaInstance,
                                         lProperties,
                                         lStaticContext,
@@ -885,7 +891,9 @@ int _tmain(int argc, _TCHAR* argv[])
                                         *qfile,
                                         *lOutputStream,
                                         timing);
-      } else {
+      }
+      else
+      {
         zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
         lQuery->setTimeout(lProperties.timeout());
 
@@ -893,7 +901,8 @@ int _tmain(int argc, _TCHAR* argv[])
           lQuery->setFileName (path.get_path ());
         }
 
-        status = executeQuery(lProperties,
+        status = executeQuery(lZorbaInstance,
+                              lProperties,
                               lQuery,
                               lStaticContext,
                               *qfile,
@@ -912,14 +921,17 @@ int _tmain(int argc, _TCHAR* argv[])
     //
     // Debug the query. Do not allow "compileOnly" flags and inline queries
     //
-    else if (debug) {
-      if (compileOnly) {
+    else if (debug) 
+    {
+      if (compileOnly) 
+      {
         std::cerr << "cannot debug a query if the compileOnly option is specified"
                   << std::endl;
         return 7;
       }
 
-      if (!asFile) {
+      if (!asFile) 
+      {
         std::cerr << "Cannot debug inline queries." << std::endl;
         return 8;
       }
@@ -939,7 +951,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
         lQuery->compile(*lXQ.get(), lHints);
         zorba::DynamicContext* lDynamicContext = lQuery->getDynamicContext();
-        if (!populateDynamicContext(lDynamicContext, lProperties)) {
+        if (!populateDynamicContext(lZorbaInstance, lDynamicContext, lProperties)) {
           return 9;
         }
 

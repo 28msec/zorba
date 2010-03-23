@@ -14,27 +14,34 @@
  * limitations under the License.
  */
 
-#include <zorba/store_manager.h>
+#include "store/naive/store_manager_impl.h"
+
 #include "store/naive/simple_store.h"
 
-namespace zorba { 
+namespace zorba 
+{ 
 
-simplestore::SimpleStore*
-StoreManager::getStore()
+void* StoreManager::getStore()
 {
-  static simplestore::SimpleStore lInstance;
+  static simplestore::SimpleStore store;
 
-  if ( ! lInstance.theIsInitialized )
-    lInstance.init();
+  store.init();
 
-  return &lInstance;
+  return &store;
 }
 
 
-void
-StoreManager::shutdownStore(simplestore::SimpleStore* aStore)
+void StoreManager::shutdownStore(void* store)
 {
-  aStore->shutdown();
+  static_cast<simplestore::SimpleStore*>(store)->shutdown();
+}
+
+
+namespace simplestore
+{
+
+SimpleStore* StoreManagerImpl::theStore = NULL;
+
 }
 
 }

@@ -216,14 +216,14 @@
   virtual void beginVisitFlworLetVariable(
         bool,
         const xqpStringStore_t,
-        const std::vector<LetVarIter_t>&) = 0;
+        const std::vector<PlanIter_t>&) = 0;
 
   virtual void endVisitFlworLetVariable() = 0;
     
   virtual void beginVisitFlworForVariable(
        const xqpStringStore_t,
-       const std::vector<ForVarIter_t>&,
-       const std::vector<ForVarIter_t>&) = 0;
+       const std::vector<PlanIter_t>&,
+       const std::vector<PlanIter_t>&) = 0;
 
   virtual void endVisitFlworForVariable() = 0;
     
@@ -253,13 +253,13 @@
     
   virtual void beginVisitOrderByForVariable(
         ForVarIter_t inputVar,
-        const std::vector<ForVarIter_t>& varRefs) = 0;
+        const std::vector<PlanIter_t>& varRefs) = 0;
 
   virtual void endVisitOrderByForVariable() = 0;
 
   virtual void beginVisitOrderByLetVariable(
         LetVarIter_t inputVar,
-        const std::vector<LetVarIter_t>& varRefs) = 0;
+        const std::vector<PlanIter_t>& varRefs) = 0;
 
   virtual void endVisitOrderByLetVariable() = 0;
 
@@ -271,7 +271,7 @@
 
   virtual void beginVisitWinCondVariable(
         const std::string& varName,
-        const std::vector<ForVarIter_t>& varRefs) = 0;
+        const std::vector<PlanIter_t>& varRefs) = 0;
 
   virtual void endVisitWinCondVariable() = 0;
 

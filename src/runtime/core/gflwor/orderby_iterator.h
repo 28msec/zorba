@@ -77,15 +77,7 @@ public:
 public:
   SERIALIZABLE_CLASS(OrderSpec)
   SERIALIZABLE_CLASS_CONSTRUCTOR(OrderSpec)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theDomainIter;
-    ar & theEmptyLeast;
-    ar & theDescending;
-    ar & theNativeCompare;
-    ar & theCollation;
-    ar & theCollator;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   OrderSpec() : theNativeCompare(false), theCollator(NULL) {}
@@ -190,31 +182,21 @@ private:
 class OrderByIterator : public Batcher<OrderByIterator> 
 {
 private:
-  bool                                    theStable;
-  std::vector<OrderSpec>                  theOrderSpecs;
+  bool                                  theStable;
+  std::vector<OrderSpec>                theOrderSpecs;
 
-  PlanIter_t theTupleIter;
+  PlanIter_t                            theTupleIter;
 
-  std::vector<ForVarIter_t>               theInputForVars;
-  std::vector<LetVarIter_t>               theInputLetVars;
-  std::vector<std::vector<ForVarIter_t> > theOutputForVarsRefs;
-  std::vector<std::vector<LetVarIter_t> > theOutputLetVarsRefs;
+  std::vector<ForVarIter_t>             theInputForVars;
+  std::vector<LetVarIter_t>             theInputLetVars;
+  std::vector<std::vector<PlanIter_t> > theOutputForVarsRefs;
+  std::vector<std::vector<PlanIter_t> > theOutputLetVarsRefs;
   
 public:
   SERIALIZABLE_CLASS(OrderByIterator)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(OrderByIterator, Batcher<OrderByIterator>)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (Batcher<OrderByIterator>*)this);
-	ar & theStable;
-    ar & theOrderSpecs;
-    ar & theTupleIter;
+  void serialize(::zorba::serialization::Archiver& ar);
 
-    ar & theInputForVars;
-    ar & theInputLetVars;
-    ar & theOutputForVarsRefs;
-    ar & theOutputLetVarsRefs;
-  }
 public:
   OrderByIterator(
         static_context* sctx,
@@ -224,8 +206,8 @@ public:
         PlanIter_t tupleIterator,
         std::vector<ForVarIter_t>& inputForVars,
         std::vector<LetVarIter_t>& inputLetVars,
-        std::vector<std::vector<ForVarIter_t> >& outputForVarsRefs,
-        std::vector<std::vector<LetVarIter_t> >& outputLetVarsRefs);
+        std::vector<std::vector<PlanIter_t> >& outputForVarsRefs,
+        std::vector<std::vector<PlanIter_t> >& outputLetVarsRefs);
   
   ~OrderByIterator();
 

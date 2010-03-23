@@ -45,8 +45,8 @@ QueryLoc::QueryLoc(const QueryLoc& aQueryLoc)
   theLineBegin (aQueryLoc.theLineBegin),
   theColumnBegin (aQueryLoc.theColumnBegin),
   theLineEnd (aQueryLoc.theLineEnd),
-  theColumnEnd (aQueryLoc.theColumnEnd),
-  theFunctionName(aQueryLoc.theFunctionName)
+  theColumnEnd (aQueryLoc.theColumnEnd)
+  //theFunctionName(aQueryLoc.theFunctionName)
 {
 }
 

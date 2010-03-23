@@ -664,16 +664,18 @@ void PrinterVisitor::beginVisitFlworWhereClause(const PlanIterator& a)
   a.accept(*this);
 }
 
+
 void PrinterVisitor::endVisitFlworWhereClause(const PlanIterator& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
+
 void PrinterVisitor::beginVisitFlworLetVariable(
-                                bool materialize,
-                                const xqpStringStore_t varName,
-                                const std::vector<LetVarIter_t>& varRefs)
+    bool materialize,
+    const xqpStringStore_t varName,
+    const std::vector<PlanIter_t>& varRefs)
 {
   thePrinter.startBeginVisit("LetVariable", ++theId);
 
@@ -697,16 +699,18 @@ void PrinterVisitor::beginVisitFlworLetVariable(
   thePrinter.endBeginVisit(theId);
 }
 
+
 void PrinterVisitor::endVisitFlworLetVariable()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
+
 void PrinterVisitor::beginVisitFlworForVariable(
-                                const xqpStringStore_t varName,
-                                const std::vector<ForVarIter_t>& varRefs,
-                                const std::vector<ForVarIter_t>& posRefs)
+    const xqpStringStore_t varName,
+    const std::vector<PlanIter_t>& varRefs,
+    const std::vector<PlanIter_t>& posRefs)
 {
   thePrinter.startBeginVisit("ForVariable", ++theId);
 
@@ -745,11 +749,13 @@ void PrinterVisitor::beginVisitFlworForVariable(
   thePrinter.endBeginVisit(theId);
 }
 
+
 void PrinterVisitor::endVisitFlworForVariable()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
+
 
 void PrinterVisitor::beginVisitGroupByClause()
 {
@@ -757,11 +763,13 @@ void PrinterVisitor::beginVisitGroupByClause()
   thePrinter.endBeginVisit(theId);
 }
 
+
 void PrinterVisitor::endVisitGroupByClause()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
+
 
 void PrinterVisitor::beginVisitGroupBySpec()
 {
@@ -769,11 +777,13 @@ void PrinterVisitor::beginVisitGroupBySpec()
   thePrinter.endBeginVisit(theId);
 }
 
+
 void PrinterVisitor::endVisitGroupBySpec()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
+
 
 void PrinterVisitor::beginVisitGroupByOuter()
 {
@@ -781,11 +791,13 @@ void PrinterVisitor::beginVisitGroupByOuter()
   thePrinter.endBeginVisit(theId);
 }
 
+
 void PrinterVisitor::endVisitGroupByOuter()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
+
 
 void PrinterVisitor::beginVisitGroupVariable(const std::vector<ForVarIter_t>& varRefs)
 {
@@ -807,14 +819,15 @@ void PrinterVisitor::beginVisitGroupVariable(const std::vector<ForVarIter_t>& va
   thePrinter.endBeginVisit(theId);
 }
 
+
 void PrinterVisitor::endVisitGroupVariable()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisitNonGroupVariable(
-                                const std::vector<LetVarIter_t>& varRefs)
+
+void PrinterVisitor::beginVisitNonGroupVariable(const std::vector<LetVarIter_t>& varRefs)
 {
   thePrinter.startBeginVisit("NonGroupVariable", ++theId);
 
@@ -834,11 +847,13 @@ void PrinterVisitor::beginVisitNonGroupVariable(
   thePrinter.endBeginVisit(theId);
 }
 
+
 void PrinterVisitor::endVisitNonGroupVariable()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
+
 
 void PrinterVisitor::beginVisitOrderBy(const PlanIterator& a)
 {
@@ -847,15 +862,17 @@ void PrinterVisitor::beginVisitOrderBy(const PlanIterator& a)
   a.accept(*this);
 }
 
+
 void PrinterVisitor::endVisitOrderBy(const PlanIterator& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
+
 void PrinterVisitor::beginVisitOrderByForVariable(
-                                  ForVarIter_t inputVar,
-                                  const std::vector<ForVarIter_t>& varRefs)
+    ForVarIter_t inputVar,
+    const std::vector<PlanIter_t>& varRefs)
 {
   thePrinter.startBeginVisit("OrderByForVariable", theId);
 
@@ -880,15 +897,17 @@ void PrinterVisitor::beginVisitOrderByForVariable(
   thePrinter.endBeginVisit(theId);
 }
 
+
 void PrinterVisitor::endVisitOrderByForVariable()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
+
 void PrinterVisitor::beginVisitOrderByLetVariable(
-                                  LetVarIter_t inputVar,
-                                  const std::vector<LetVarIter_t>& varRefs)
+    LetVarIter_t inputVar,
+    const std::vector<PlanIter_t>& varRefs)
 {
   thePrinter.startBeginVisit("OrderByLetVariable", theId);
 
@@ -913,11 +932,13 @@ void PrinterVisitor::beginVisitOrderByLetVariable(
   thePrinter.endBeginVisit(theId);
 }
 
+
 void PrinterVisitor::endVisitOrderByLetVariable()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
+
 
 void PrinterVisitor::beginVisitWindowVariable(
                               const std::string& varName,
@@ -943,15 +964,17 @@ void PrinterVisitor::beginVisitWindowVariable(
   thePrinter.endBeginVisit(theId);
 }
 
+
 void PrinterVisitor::endVisitWindowVariable()
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
+
 void PrinterVisitor::beginVisitWinCondVariable(
-                               const std::string& varName,
-                               const std::vector<ForVarIter_t>& varRefs)
+    const std::string& varName,
+    const std::vector<PlanIter_t>& varRefs)
 {
   thePrinter.startBeginVisit("WinCondVariable", theId);
 
@@ -972,6 +995,7 @@ void PrinterVisitor::beginVisitWinCondVariable(
 
   thePrinter.endBeginVisit(theId);
 }
+
 
 void PrinterVisitor::endVisitWinCondVariable()
 {

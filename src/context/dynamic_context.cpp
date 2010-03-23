@@ -353,8 +353,7 @@ void dynamic_context::set_variable(
   // the variable itself, and the current value of the variable is overwriten
   // here by this temp sequence. TODO: use lazy eval if we know the the 
   // assignment expression does not reference the variable itself.
-  var_iterator->open();
-  store::TempSeq_t seq = GENV_STORE.createTempSeq(var_iterator.getp(), 
+  store::TempSeq_t seq = GENV_STORE.createTempSeq(var_iterator, 
                                                   false, // no copy
                                                   false); // lazy eval
 

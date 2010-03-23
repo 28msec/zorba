@@ -260,6 +260,7 @@ void build_expr_to_vars_map(
   if (e->get_expr_kind() == var_expr_kind) 
   {
     set_bit(static_cast<var_expr *>(e), varmap, freeset, true);
+    freevarMap[e] = freeset;
     return;
   }
 

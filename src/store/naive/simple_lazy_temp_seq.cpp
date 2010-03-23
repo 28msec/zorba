@@ -31,13 +31,9 @@ const ulong SimpleLazyTempSeq::MAX_POSITION = std::vector<store::Item_t>().max_s
 /*******************************************************************************
 
 ********************************************************************************/
-SimpleLazyTempSeq::SimpleLazyTempSeq(store::Iterator_t aIter, bool aCopy)
-  :
-  theIterator(aIter),
-  theCopy(aCopy),
-  theMatFinished(false),
-  thePurgedUpTo(0)
+SimpleLazyTempSeq::SimpleLazyTempSeq(store::Iterator_t& aIter, bool aCopy)
 {
+  init(aIter, aCopy);
 }
 
 
@@ -70,6 +66,21 @@ bool SimpleLazyTempSeq::empty()
       return theItems.empty();
     }
   }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleLazyTempSeq::init(store::Iterator_t& aIter, bool aCopy)
+{
+  theIterator = aIter;
+  theCopy = aCopy;
+  theMatFinished = false;
+  thePurgedUpTo = 0;
+  theItems.clear();
+
+  theIterator->open();
 }
 
 

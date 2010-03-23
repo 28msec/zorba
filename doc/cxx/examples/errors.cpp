@@ -129,7 +129,7 @@ error_example_5(Zorba* aZorba)
 int 
 errors(int argc, char* argv[])
 {
-  simplestore::SimpleStore* lStore = zorba::StoreManager::getStore();
+  void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
   bool res = false;
 

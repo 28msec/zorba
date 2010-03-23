@@ -44,12 +44,15 @@ Iterator tree for main query:
                   <ForVarIterator varname="b"/>
                 </ChildAxisIterator>
               </LetVariable>
-              <ReturnClause>
+              <ForVariable name="$$dot">
                 <LetVarIterator varname="$$temp5">
                   <FnCountIterator>
                     <LetVarIterator varname="$$temp5"/>
                   </FnCountIterator>
                 </LetVarIterator>
+              </ForVariable>
+              <ReturnClause>
+                <ForVarIterator varname="$$dot"/>
               </ReturnClause>
             </flwor::FLWORIterator>
           </ChildAxisIterator>
@@ -87,12 +90,15 @@ Iterator tree for main query:
                         <ForVarIterator varname="b"/>
                       </ChildAxisIterator>
                     </LetVariable>
-                    <ReturnClause>
+                    <ForVariable name="$$dot">
                       <LetVarIterator varname="$$temp11">
                         <FnCountIterator>
                           <LetVarIterator varname="$$temp11"/>
                         </FnCountIterator>
                       </LetVarIterator>
+                    </ForVariable>
+                    <ReturnClause>
+                      <ForVarIterator varname="$$dot"/>
                     </ReturnClause>
                   </flwor::FLWORIterator>
                 </ChildAxisIterator>

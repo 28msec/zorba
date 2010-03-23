@@ -62,31 +62,20 @@ class WindowVars : public ::zorba::serialization::SerializeBaseClass
   friend class EndClause;
 
 protected:
-  std::vector<ForVarIter_t> theCurVars;
-  std::vector<ForVarIter_t> thePrevVars;
-  std::vector<ForVarIter_t> theNextVars;
-  std::vector<ForVarIter_t> thePosVars;
+  std::vector<PlanIter_t> theCurVars;
+  std::vector<PlanIter_t> thePrevVars;
+  std::vector<PlanIter_t> theNextVars;
+  std::vector<PlanIter_t> thePosVars;
 
-  std::vector<ForVarIter_t> theCurOuterVars;
-  std::vector<ForVarIter_t> thePrevOuterVars;
-  std::vector<ForVarIter_t> theNextOuterVars;
-  std::vector<ForVarIter_t> thePosOuterVars;
+  std::vector<PlanIter_t> theCurOuterVars;
+  std::vector<PlanIter_t> thePrevOuterVars;
+  std::vector<PlanIter_t> theNextOuterVars;
+  std::vector<PlanIter_t> thePosOuterVars;
 
 public:
   SERIALIZABLE_CLASS(WindowVars)
   SERIALIZABLE_CLASS_CONSTRUCTOR(WindowVars)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theCurVars;
-    ar & thePrevVars;
-    ar & theNextVars;
-    ar & thePosVars;
-
-    ar & theCurOuterVars;
-    ar & thePrevOuterVars;
-    ar & theNextOuterVars;
-    ar & thePosOuterVars;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   WindowVars();

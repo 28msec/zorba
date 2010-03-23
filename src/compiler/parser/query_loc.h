@@ -42,7 +42,7 @@ private:
   unsigned int theColumnBegin;
   unsigned int theLineEnd;
   unsigned int theColumnEnd;
-  std::string  theFunctionName;
+  //std::string  theFunctionName;
 
 public:
   SERIALIZABLE_CLASS(QueryLoc)
@@ -79,9 +79,9 @@ public:
 
   unsigned int getLineno() const { return getLineBegin(); }
  
-  void setFunctionName(std::string aName) { theFunctionName = aName; }
+  //void setFunctionName(std::string aName) { theFunctionName = aName; }
 
-  std::string getFunctionName() const { return theFunctionName; }
+  //std::string getFunctionName() const { return theFunctionName; }
  
   bool equals(const QueryLoc& loc) const;
 
