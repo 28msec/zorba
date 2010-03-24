@@ -24,47 +24,57 @@
 
 namespace zorba { namespace filemodule {
 
-  class FileModule : public ExternalModule
+class FileModule : public ExternalModule
+{
+private:
+  static ItemFactory* theFactory;
+
+protected:
+  class ltstr
   {
-    private:
-      static ItemFactory* theFactory;
-
-    protected:
-      class ltstr
-      {
-        public:
-          bool
-          operator()(const String& s1, const String& s2) const
-          {
-            return s1.compare(s2) < 0;
-          }
-      };
-
-      typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
-      mutable FuncMap_t theFunctions;
-  
-    public:
-      virtual ~FileModule();
-  
-      virtual String
-      getURI() const { return "http://www.zorba-xquery.com/modules/file"; }
-  
-      virtual StatelessExternalFunction*
-      getExternalFunction(String aLocalname) const;
-
-      virtual void
-      destroy();
-
-      static ItemFactory*
-      getItemFactory()
-      {
-        if(!theFactory)
-          theFactory = Zorba::getInstance(0)->getItemFactory();
-        return theFactory;
-      }
-
+  public:
+    bool operator()(const String& s1, const String& s2) const
+    {
+      return s1.compare(s2) < 0;
+    }
   };
+  
+  typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
 
-} /* namespace filemodule */ } /* namespace zorba */
+  mutable FuncMap_t theFunctions;
+  
+public:
+  virtual ~FileModule();
+  
+  virtual String
+  getURI() const { return "http://www.zorba-xquery.com/modules/file"; }
+  
+  virtual StatelessExternalFunction*
+  getExternalFunction(String aLocalname) const;
+
+  virtual void
+  destroy();
+
+  static ItemFactory*
+  getItemFactory()
+  {
+    if(!theFactory)
+    {
+      theFactory = Zorba::getInstance(0)->getItemFactory();
+    }
+    
+    return theFactory;
+  }
+};
+
+
+} /* namespace filemodule */ 
+} /* namespace zorba */
 
 #endif /* ZORBA_FILEMODULE_FILEMODULE_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

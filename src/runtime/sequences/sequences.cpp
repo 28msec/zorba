@@ -59,16 +59,6 @@ FnConcatIteratorState::FnConcatIteratorState() {}
 
 FnConcatIteratorState::~FnConcatIteratorState() {}
 
-
-void FnConcatIteratorState::init(PlanState& planState) {
-  PlanIteratorState::init(planState);
-  theCurIter = 0;
-}
-
-void FnConcatIteratorState::reset(PlanState& planState) {
-  PlanIteratorState::reset(planState);
-  theCurIter = 0;
-}
 // </FnConcatIterator>
 
 

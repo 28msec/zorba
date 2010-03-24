@@ -2546,7 +2546,8 @@ void end_visit(elem_expr& v)
 }
 
 
-bool begin_visit (attr_expr& v) {
+bool begin_visit(attr_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   theConstructorsStack.push(&v);
@@ -2556,37 +2557,57 @@ bool begin_visit (attr_expr& v) {
 }
 
 
-void end_visit (attr_expr& v) {
+void end_visit(attr_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 
-  PlanIter_t lQNameIter = 0;
-  PlanIter_t lVarIter = 0;
-  PlanIter_t lContentIter = 0;
+  PlanIter_t valueIter = 0;
 
-  if (v.getValueExpr() != 0) {
-    lVarIter = pop_itstack();
-  } else {
-    lVarIter = new EmptyIterator(sctx, qloc);
+  if (v.getValueExpr() != 0) 
+  {
+    valueIter = pop_itstack();
+  }
+  else
+  {
+    valueIter = new EmptyIterator(sctx, qloc);
   }
 
-  PlanIter_t lAttrIter = 0;
-  lQNameIter = pop_itstack();
+  PlanIter_t qnameIter;
+  store::Item_t qname;
+  const const_expr* qnameExpr = dynamic_cast<const const_expr*>(v.getQNameExpr());
+  if (qnameExpr != NULL)
+  {
+    qname = qnameExpr->get_val();
+    (void)pop_itstack();
+  }
+  else
+  {
+    qnameIter = pop_itstack();
+  }
 
   bool isRoot = false;
   theAttrContentStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
-  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())) {
+
+  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())) 
+  {
     isRoot = true;
   }
 
-  lAttrIter = new AttributeIterator(sctx, qloc, lQNameIter, lVarIter, isRoot);
+  PlanIter_t attrIter = new AttributeIterator(sctx,
+                                              qloc,
+                                              qname,
+                                              qnameIter,
+                                              valueIter,
+                                              isRoot);
 
-  push_itstack(lAttrIter);
+  push_itstack(attrIter);
 }
 
 
-bool begin_visit (text_expr& v) {
+bool begin_visit(text_expr& v) 
+{
   CODEGEN_TRACE_IN ("");
 
   theConstructorsStack.push(&v);

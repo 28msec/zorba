@@ -44,7 +44,7 @@ public:
 
 DefaultOptimizer::DefaultOptimizer()
 {
-  if (Properties::instance ()->inlineUdf())
+  if (Properties::instance()->inlineUdf())
     ADD_SINGLETON_DRIVER(InlineFunctions);
 
   ADD_SINGLETON_DRIVER(InferVarTypes);

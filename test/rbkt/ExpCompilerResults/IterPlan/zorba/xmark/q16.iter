@@ -47,8 +47,7 @@ Iterator tree for main query:
   <ReturnClause>
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,person)"/>
-      <AttributeIterator>
-        <SingletonIterator value="xs:QName(,,id)"/>
+      <AttributeIterator qname="id">
         <EnclosedIterator attr_cont="true">
           <FnDataIterator>
             <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">

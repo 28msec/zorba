@@ -69,8 +69,17 @@ declare function local:process-state($state, $stateName as xs:string) as xs:stri
   concat($gen:indent, '~', $stateName, '();', $gen:newline, $gen:newline),
 
   (: generate init and reset decl :)
-  concat($gen:indent,'void init(PlanState&amp;);',$gen:newline,
-         $gen:indent,'void reset(PlanState&amp;);',$gen:newline),
+  if( not($state/@generateInit) or $state/@generateInit ne 'use-default') 
+  then
+    concat($gen:indent,'void init(PlanState&amp;);',$gen:newline)
+  else
+    (),
+
+  if( not($state/@generateReset) or $state/@generateReset ne 'use-default') 
+  then
+    concat($gen:indent,'void reset(PlanState&amp;);',$gen:newline)
+  else
+    (),
   '};',$gen:newline, $gen:newline),'')
 };
 
@@ -180,6 +189,9 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     else (),
     $gen:indent,'void accept(PlanIterVisitor&amp; v) const;',$gen:newline,$gen:newline,
     $gen:indent,'bool nextImpl(store::Item_t&amp; result, PlanState&amp; aPlanState) const;',$gen:newline,
+    if( $iter/@generateOpenImpl eq 'true') then
+      concat($gen:newline, gen:indent(), 'void openImpl(PlanState&amp;, uint32_t&amp;);', $gen:newline)
+    else (),
     if( $iter/@generateResetImpl eq 'true') then
       concat($gen:newline, gen:indent(), 'void resetImpl(PlanState&amp;) const;', $gen:newline)
     else (),

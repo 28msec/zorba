@@ -17,6 +17,7 @@
 
 #include <istream>
 #include <zorba/stateless_function.h>
+#include <zorba/store_manager.h>
 
 #include "api/xqueryimpl.h"
 #include "api/staticcontextimpl.h"
@@ -69,6 +70,8 @@ void ZorbaImpl::init(store::Store* store)
 
   if (theNumUsers == 0)
   {
+    void* store2 = StoreManager::getStore();
+    assert(store2 == store);
     GlobalEnvironment::init(store);
   }
 
@@ -95,7 +98,9 @@ void ZorbaImpl::shutdownInternal(bool soft)
   {
     Loki::DeletableSingleton<ItemFactoryImpl>::GracefulDelete();
     Loki::DeletableSingleton<XmlDataManagerImpl>::GracefulDelete();
+    void* store = &GENV_STORE;
     GlobalEnvironment::destroy();
+    StoreManager::shutdownStore(store);
   }
 }
 

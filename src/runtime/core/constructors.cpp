@@ -475,45 +475,91 @@ void ElementIterator::closeImpl(PlanState& planState)
 AttributeIterator::AttributeIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    PlanIter_t&  aQNameIter,
-    PlanIter_t&  aValueIter,
-    bool         isRoot)
+    const store::Item_t& qname,
+    PlanIter_t& qnameIte,
+    PlanIter_t& valueIte,
+    bool isRoot)
   :
-  BinaryBaseIterator<AttributeIterator, PlanIteratorState>(sctx, loc, aQNameIter, aValueIter),
+  BinaryBaseIterator<AttributeIterator, PlanIteratorState>(sctx, loc, qnameIte, valueIte),
+  theQName(qname),
+  theIsId(false),
   theIsRoot(isRoot)
 {
+  if (theQName != NULL)
+  {
+    if (theQName->getLocalName()->empty())
+    {
+      ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
+                           "Attribute name must not have an empty local part.");
+    }
+
+    if (theQName->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) ||
+        (theQName->getNamespace()->empty() &&
+         theQName->getLocalName()->byteEqual("xmlns", 5)))
+    {
+      ZORBA_ERROR_LOC(XQDY0044, loc);
+    }
+
+    if (theQName->getPrefix()->byteEqual("xml", 3) &&
+        theQName->getLocalName()->byteEqual("id", 2))
+      theIsId = true;
+  }
+}
+
+
+void AttributeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<AttributeIterator, PlanIteratorState>*)this);
+
+  ar & theQName;
+  ar & theIsRoot;
 }
 
 
 bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t name;
+  store::Item_t qname;
   store::Item_t typeName = GENV_TYPESYSTEM.XS_UNTYPED_ATOMIC_QNAME;
   store::Item_t valueItem;
   xqpStringStore_t lexicalValue;
   store::Item_t typedValue;
   store::Item* parent;
+  bool isId = theIsId;
   std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  // Compute the attribute name. Note: we don't have to check that itemQName
-  // is indeed a valid qname, because the compiler wraps an xs:qname cast
-  // around the name expression.
-  consumeNext(name, theChild0, planState);
-
-  if (name->getLocalName()->empty())
+  if (theChild0 != NULL)
   {
-    ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
-                     "Attribute name must not have an empty local part.");
+    // Compute the attribute name. Note: we don't have to check that itemQName
+    // is indeed a valid qname, because the compiler wraps an xs:qname cast
+    // around the name expression.
+    consumeNext(qname, theChild0, planState);
+
+    if (qname->getPrefix()->byteEqual("xml", 3) &&
+        qname->getLocalName()->byteEqual("id", 2))
+    {
+      isId = true;
+    }
+
+    if (qname->getLocalName()->empty())
+    {
+      ZORBA_ERROR_LOC_DESC(XQDY0074, loc,
+                           "Attribute name must not have an empty local part.");
+    }
+
+    if (qname->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) ||
+        (qname->getNamespace()->empty() &&
+         qname->getLocalName()->byteEqual("xmlns", 5)))
+    {
+      ZORBA_ERROR_LOC(XQDY0044, loc);
+    }
   }
-
-  if (name->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) ||
-      (name->getNamespace()->empty() &&
-       name->getLocalName()->byteEqual("xmlns", 5)))
+  else
   {
-    ZORBA_ERROR_LOC(XQDY0044, loc);
+    qname = theQName;
   }
 
   // Compute lexical value of the attribute.
@@ -535,8 +581,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   }
   
   // normalize value of xml:id
-  if(name->getPrefix()->byteEqual("xml", 3) &&
-     name->getLocalName()->byteEqual("id", 2))
+  if (theIsId)
   {
     lexicalValue = lexicalValue->normalizeSpace();
   }
@@ -548,8 +593,10 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 
   parent = (theIsRoot ? NULL : path.top());
 
-  GENV_ITEMFACTORY->createAttributeNode(result, parent, -1,
-                                        name,
+  GENV_ITEMFACTORY->createAttributeNode(result,
+                                        parent,
+                                        -1,
+                                        qname,
                                         typeName,
                                         typedValue);
   STACK_PUSH(true, state);

@@ -99,8 +99,31 @@ getCollator(
 /*******************************************************************************
   15.1.2 op:concatenate
 ********************************************************************************/
-bool
-FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+void FnConcatIterator::openImpl(PlanState& planState, uint32_t& offset) 
+{
+  NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>
+  ::openImpl(planState, offset);
+
+  FnConcatIteratorState* state = 
+  StateTraitsImpl<FnConcatIteratorState>::getState(planState, this->theStateOffset);
+
+  state->theEndIter = theChildren.end();
+  state->theCurIter = theChildren.begin();
+}
+
+
+void FnConcatIterator::resetImpl(PlanState& planState) const
+{
+  NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>::resetImpl(planState);
+
+  FnConcatIteratorState* state = 
+  StateTraitsImpl<FnConcatIteratorState>::getState(planState, this->theStateOffset);
+
+  state->theCurIter = theChildren.begin();
+}
+
+
+bool FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   std::auto_ptr<store::PUL> pul;
 
@@ -110,9 +133,9 @@ FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (theIsUpdating)
     pul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
 
-  for (; state->theCurIter < theChildren.size(); ++state->theCurIter) 
+  for (; state->theCurIter != state->theEndIter; ++state->theCurIter) 
   {
-    while(consumeNext(result, theChildren[state->theCurIter].getp(), planState))
+    while(consumeNext(result, (*state->theCurIter).getp(), planState))
     {
       if (theIsUpdating)
       {
@@ -122,17 +145,18 @@ FnConcatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       else
       {
-        STACK_PUSH (true, state);
+        STACK_PUSH(true, state);
       }
     }
   }
   
-  if (theIsUpdating) {
+  if (theIsUpdating) 
+  {
     result = pul.release();
     STACK_PUSH(result != NULL, state);
   }
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

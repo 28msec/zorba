@@ -64,8 +64,7 @@ Iterator tree for main query:
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,increase)"/>
       <FnConcatIterator>
-        <AttributeIterator>
-          <SingletonIterator value="xs:QName(,,first)"/>
+        <AttributeIterator qname="first">
           <EnclosedIterator attr_cont="true">
             <FnDataIterator>
               <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
@@ -78,8 +77,7 @@ Iterator tree for main query:
             </FnDataIterator>
           </EnclosedIterator>
         </AttributeIterator>
-        <AttributeIterator>
-          <SingletonIterator value="xs:QName(,,last)"/>
+        <AttributeIterator qname="last">
           <EnclosedIterator attr_cont="true">
             <FnDataIterator>
               <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">

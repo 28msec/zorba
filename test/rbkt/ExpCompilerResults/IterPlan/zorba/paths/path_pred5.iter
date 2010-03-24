@@ -8,8 +8,7 @@ Iterator tree for main query:
             <SingletonIterator value="xs:QName(,,root1)"/>
             <ElementIterator>
               <SingletonIterator value="xs:QName(,,a)"/>
-              <AttributeIterator>
-                <SingletonIterator value="xs:QName(,,id)"/>
+              <AttributeIterator qname="id">
                 <SingletonIterator value="xs:string(1)"/>
               </AttributeIterator>
               <FnConcatIterator>

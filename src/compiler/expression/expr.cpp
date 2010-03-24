@@ -192,7 +192,6 @@ DEF_EXPR_ACCEPT (const_expr)
 DEF_EXPR_ACCEPT (order_expr)
 DEF_EXPR_ACCEPT (elem_expr)
 DEF_EXPR_ACCEPT (doc_expr)
-DEF_EXPR_ACCEPT (attr_expr)
 DEF_EXPR_ACCEPT (text_expr)
 DEF_EXPR_ACCEPT (pi_expr)
 DEF_EXPR_ACCEPT (insert_expr)
@@ -1391,6 +1390,9 @@ expr_t attr_expr::clone(substitution_t& subst) const
                        CLONE(getQNameExpr(), subst),
                        CLONE(getValueExpr(), subst));
 }
+
+
+DEF_EXPR_ACCEPT(attr_expr)
 
 
 /***************************************************************************//**

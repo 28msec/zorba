@@ -571,12 +571,12 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   }
   else if (fkind == FunctionConsts::OP_AND_2)
   {
-    return partial_eval_logic (fo, false, rCtx);
+    return partial_eval_logic(fo, false, rCtx);
   }
   else if (f->comparisonKind() == CompareConsts::VALUE_EQUAL ||
            f->comparisonKind() == CompareConsts::GENERAL_EQUAL)
   {
-    return partial_eval_eq (rCtx, *fo);
+    return partial_eval_eq(rCtx, *fo);
   }
   else if (fkind == FunctionConsts::FN_COUNT_1)
   {
@@ -589,6 +589,16 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     }
     return NULL;
   }
+  else if (fkind == FunctionConsts::FN_BOOLEAN_1)
+  {
+    expr_t arg = fo->get_arg(0, false);
+    xqtref_t argType = arg->return_type(rCtx.getStaticContext(fo));
+    if (TypeOps::is_subtype(*argType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS))
+    {
+      return new const_expr(fo->get_sctx_id(), fo->get_loc(), true);
+    }
+  }
+
   return NULL;
 }
 
@@ -719,12 +729,12 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
       args[1] = dpos;
       args[2] = new const_expr(val_expr->get_sctx_id(),
                                LOC(val_expr),
-                               xqp_double::parseInt(2));
+                               xqp_integer::parseInt(2));
 
       expr_t subseq_expr = fix_annotations(
                            new fo_expr(count_expr->get_sctx_id(),
                                        LOC (count_expr),
-                                       GET_BUILTIN_FUNCTION(FN_SUBSEQUENCE_3),
+                                       GET_BUILTIN_FUNCTION(FN_ZORBA_INT_SUBSEQUENCE_3),
                                        args));
 
       return fix_annotations(new fo_expr(fo.get_sctx_id(),

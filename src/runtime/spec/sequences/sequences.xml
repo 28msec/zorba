@@ -8,7 +8,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 -->
 <zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
-    
+
 <zorba:header>
     <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
     <zorba:include form="Quoted">runtime/core/path_iterators.h</zorba:include>
@@ -36,7 +36,9 @@
   15.1.2 op:concatenate
 ********************************************************************************/
 -->
-<zorba:iterator name="FnConcatIterator">
+<zorba:iterator name="FnConcatIterator" 
+                generateResetImpl="true"
+                generateOpenImpl="true">
 
   <zorba:description author="Zorba Team">
     op:concatenate
@@ -48,9 +50,10 @@
 
   <zorba:member type="bool" name="theIsUpdating" getterName="isUpdating" brief=""/>
 
-  <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="uint32_t" name="theCurIter" defaultValue="0"
-                  brief="the current iterator"/>
+  <zorba:state generateInit="use-default" generateReset="use-default">
+    <zorba:member type="std::vector&lt;PlanIter_t&gt;::const_iterator" name="theCurIter"
+                  brief="iterator pointing to the child that is currently being processed"/>
+    <zorba:member type="std::vector&lt;PlanIter_t&gt;::const_iterator" name="theEndIter"/>
   </zorba:state>
   
   <zorba:function annIsUpdating="true">

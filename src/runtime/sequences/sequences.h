@@ -47,14 +47,13 @@ class ItemValueCollHandleHashSet;
 class FnConcatIteratorState : public PlanIteratorState
 {
 public:
-  uint32_t theCurIter; //the current iterator
+  std::vector<PlanIter_t>::const_iterator theCurIter; //iterator pointing to the child that is currently being processed
+  std::vector<PlanIter_t>::const_iterator theEndIter; //
 
   FnConcatIteratorState();
 
   ~FnConcatIteratorState();
 
-  void init(PlanState&);
-  void reset(PlanState&);
 };
 
 class FnConcatIterator : public NaryBaseIterator<FnConcatIterator, FnConcatIteratorState>
@@ -92,6 +91,10 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void openImpl(PlanState&, uint32_t&);
+
+  void resetImpl(PlanState&) const;
 };
 
 

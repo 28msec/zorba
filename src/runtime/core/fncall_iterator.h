@@ -32,30 +32,33 @@ namespace zorba {
 
 class StaticContextImpl;
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
  public:
   PlanState                     * theFnBodyStateBlock;
   PlanIterator                  * thePlan;
   uint32_t                        thePlanStateSize;
-  std::vector<store::Iterator_t>  theChildIterators;
   bool                            thePlanOpen;
+  std::vector<store::Iterator_t>  theChildIterators;
   store::Iterator_t               exitValue;
 
   UDFunctionCallIteratorState();
 
   ~UDFunctionCallIteratorState();
 
-  void openPlan();
+  void open(PlanState& planState, user_function* udf);
 
-  void closePlan();
-
-  void resetPlan();
-
-  void resetChildIters();
+  void reset(PlanState& planState);
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
                                                        UDFunctionCallIteratorState> 
 {
@@ -79,7 +82,7 @@ public:
         const user_function* aUDF)
     :
     NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(sctx, loc, args), 
-    theUDF((user_function*)aUDF)
+    theUDF(const_cast<user_function*>(aUDF))
   {}
 
   ~UDFunctionCallIterator() {}
@@ -91,10 +94,6 @@ public:
   void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-  void resetImpl(PlanState& planState) const;
-
-  void closeImpl(PlanState& planState);
 };
 
 

@@ -58,10 +58,6 @@ public:
     theChild0(child0),
     theChild1(child1)
   {
-#ifndef NDEBUG
-    assert(child0 != 0);
-    assert(child1 != 0);
-#endif
   }
 
   virtual ~BinaryBaseIterator() {}
@@ -73,8 +69,8 @@ public:
 
   virtual uint32_t getStateSizeOfSubtree() const
   {
-    return theChild0->getStateSizeOfSubtree() +
-           theChild1->getStateSizeOfSubtree() +
+    return (theChild0 ? theChild0->getStateSizeOfSubtree() : 0) +
+           (theChild1 ? theChild1->getStateSizeOfSubtree() : 0) +
            this->getStateSize();
   }
 
@@ -95,8 +91,11 @@ BinaryBaseIterator<IterType, StateType>::openImpl(
   StateTraitsImpl<StateType>::createState(planState, this->theStateOffset, offset);
   StateTraitsImpl<StateType>::initState(planState, this->theStateOffset);
 
-  theChild0->open(planState, offset);
-  theChild1->open(planState, offset);
+  if (theChild0)
+    theChild0->open(planState, offset);
+
+  if (theChild1)
+    theChild1->open(planState, offset);
 }
 
 
@@ -106,8 +105,11 @@ BinaryBaseIterator<IterType, StateType>::resetImpl(PlanState& planState) const
 {
   StateTraitsImpl<StateType>::reset(planState, this->theStateOffset);
 
-  theChild0->reset(planState);
-  theChild1->reset(planState);
+  if (theChild0)
+    theChild0->reset(planState);
+
+  if (theChild1)
+    theChild1->reset(planState);
 }
 
 
@@ -115,8 +117,11 @@ template <class IterType, class StateType>
 void
 BinaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 {
-  theChild0->close(planState);
-  theChild1->close(planState);
+  if (theChild0)
+    theChild0->close(planState);
+
+  if (theChild1)
+    theChild1->close(planState);
 
   StateTraitsImpl<StateType>::destroyState(planState, this->theStateOffset);
 }
@@ -126,8 +131,10 @@ BinaryBaseIterator<IterType, StateType>::closeImpl(PlanState& planState)
 void IterType::accept(PlanIterVisitor& v) const \
 {                                               \
   v.beginVisit(*this);                          \
-  theChild0->accept(v);                         \
-  theChild1->accept(v);                         \
+  if (theChild0)                                \
+    theChild0->accept(v);                       \
+  if (theChild1)                                \
+    theChild1->accept(v);                       \
   v.endVisit(*this);                            \
 }
 

@@ -625,12 +625,17 @@ int executeQuery(
   //
   // Create and compile the query
   //
-  try {
+  try 
+  {
     query->compile(qfile, staticContext, lHints);
-  } catch (zorba::QueryException& qe) {
+  }
+  catch (zorba::QueryException& qe)
+  {
     ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), properties.indent());
     return 5;
-  } catch (zorba::ZorbaException& ze) {
+  }
+  catch (zorba::ZorbaException& ze)
+  {
     std::cerr << ze << std::endl;
     return 5;
   }
@@ -777,18 +782,24 @@ int _tmain(int argc, _TCHAR* argv[])
     bool asFile = ! fname.empty ();
     std::auto_ptr<std::istream> qfile;
     
-    if (asFile) {
+    if (asFile) 
+    {
       path.resolve_relative ();
       qfile.reset (new std::ifstream (path.c_str ()));
-    } else {
+    }
+    else
+    {
       qfile.reset (new std::istringstream(fURI));
     }
     
-    if ( asFile && (!qfile->good() || qfile->eof()) ) {
+    if ( asFile && (!qfile->good() || qfile->eof()) ) 
+    {
       std::cerr << "file {" << fname << "} not found or not readable." << std::endl;
       lProperties.printHelp(std::cout);
       return 3;
-    } else if (fURI.empty ()) {
+    }
+    else if (fURI.empty ())
+    {
       std::cerr << "empty query." << std::endl;
       lProperties.printHelp(std::cout);
       return 3;
@@ -842,8 +853,10 @@ int _tmain(int argc, _TCHAR* argv[])
     //
     // Parse the query
     //
-    if (lProperties.parseOnly()) {
-      try {
+    if (lProperties.parseOnly()) 
+    {
+      try 
+      {
         zorba::XQuery_t lQuery = lZorbaInstance->createQuery();
         if (asFile) {
           lQuery->setFileName(path.get_path());
@@ -851,7 +864,8 @@ int _tmain(int argc, _TCHAR* argv[])
 
         lQuery->parse (*qfile);
       }
-      catch (zorba::ZorbaException& ze) {
+      catch (zorba::ZorbaException& ze) 
+      {
         std::cerr << ze << std::endl;
         return 6;
       }
@@ -861,10 +875,12 @@ int _tmain(int argc, _TCHAR* argv[])
     // Compile and run it if necessary.
     // Print timing information if requested.
     //
-    else if (!debug) {
-
-      if(compileOnly) {
-        try {
+    else if (!debug) 
+    {
+      if(compileOnly) 
+      {
+        try 
+        {
           zorba::XQuery_t aQuery = lZorbaInstance->createQuery();
           if (asFile) {
             aQuery->setFileName(path.get_path());
@@ -1015,15 +1031,20 @@ int _tmain(int argc, _TCHAR* argv[])
         lClient.reset(0);
         lHandler.reset(0);
 
-        if (lProperties.debugServer() || lProperties.debug()) {
+        if (lProperties.debugServer() || lProperties.debug()) 
+        {
           lServer->join();
           lServer.reset(0);
         }
 
-      } catch (zorba::QueryException& qe) {
+      }
+      catch (zorba::QueryException& qe)
+      {
         ErrorPrinter::print(qe, std::cerr, lProperties.printErrorsAsXml(), lProperties.indent());
         return 5;
-      } catch (zorba::ZorbaException& ze) {
+      }
+      catch (zorba::ZorbaException& ze) 
+      {
         std::cerr << ze << std::endl;
         return 6;
       }
@@ -1034,7 +1055,9 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   if (doTiming)
+  {
     timing.startTimer(TimingInfo::DEINIT_TIMER, 2);
+  }
 
   lZorbaInstance->shutdown();
   zorba::StoreManager::shutdownStore(store);

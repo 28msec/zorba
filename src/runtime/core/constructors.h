@@ -182,15 +182,20 @@ public:
   
 
 /*******************************************************************************
-  AttributeIterator constructs an attribute element
+  AttributeIterator constructs an attribute node
   
-  theQNameIter:     Iter that produces the name (qname) of the element
-  theChild:         Iter that produces the value of the attribute element
+  theQName  : If the attribute qname is known at compile time, it is given as
+              input to the attribute iterator. In this case, theChild0 is not
+              used.
+  theChild0 : Iter that produces the qname of the node (if qname is not constant)
+  theChild1 : Iter that produces the value of the node.
 ********************************************************************************/
 class AttributeIterator : public BinaryBaseIterator<AttributeIterator, PlanIteratorState>
 {
 private:
-  bool       theIsRoot;
+  store::Item_t theQName;
+  bool          theIsId;
+  bool          theIsRoot;
 
 public:
   SERIALIZABLE_CLASS(AttributeIterator);
@@ -199,21 +204,18 @@ public:
   AttributeIterator,
   BinaryBaseIterator<AttributeIterator,PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<AttributeIterator,PlanIteratorState>*)this);
-
-    ar & theIsRoot;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   AttributeIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        PlanIter_t& aQNameIter,
-        PlanIter_t& aValueIter,
+        const store::Item_t& qname,
+        PlanIter_t& qnameIter,
+        PlanIter_t& valueIter,
         bool isRoot);
+
+  store::Item* getQName() const { return theQName.getp(); }
 
   void accept(PlanIterVisitor& v) const;
 

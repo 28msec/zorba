@@ -9,8 +9,7 @@ Iterator tree for main query:
             <FnConcatIterator>
               <ElementIterator>
                 <SingletonIterator value="xs:QName(,,a)"/>
-                <AttributeIterator>
-                  <SingletonIterator value="xs:QName(,,id)"/>
+                <AttributeIterator qname="id">
                   <SingletonIterator value="xs:string(1)"/>
                 </AttributeIterator>
                 <ElementIterator>
@@ -35,8 +34,7 @@ Iterator tree for main query:
               </ElementIterator>
               <ElementIterator>
                 <SingletonIterator value="xs:QName(,,a)"/>
-                <AttributeIterator>
-                  <SingletonIterator value="xs:QName(,,id)"/>
+                <AttributeIterator qname="id">
                   <SingletonIterator value="xs:string(2)"/>
                 </AttributeIterator>
                 <ElementIterator>

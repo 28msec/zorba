@@ -1100,7 +1100,27 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (LogicIterator)
   PRINTER_VISITOR_DEFINITION (CompareIterator)
   PRINTER_VISITOR_DEFINITION (ElementIterator)
-  PRINTER_VISITOR_DEFINITION (AttributeIterator)
+
+  void PrinterVisitor::beginVisit(const AttributeIterator& a)
+  {
+    thePrinter.startBeginVisit("AttributeIterator", ++theId);
+    if (a.getQName() != NULL)
+    {
+      xqpStringStore_t qname = a.getQName()->getStringValue();
+      thePrinter.addAttribute("qname", qname->str());
+    }
+    printCommons(&a, theId);
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const AttributeIterator& ) 
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+//PRINTER_VISITOR_DEFINITION (AttributeIterator)
+
   PRINTER_VISITOR_DEFINITION (DocumentIterator)
   PRINTER_VISITOR_DEFINITION (DocumentContentIterator)
   PRINTER_VISITOR_DEFINITION (CommentIterator)
