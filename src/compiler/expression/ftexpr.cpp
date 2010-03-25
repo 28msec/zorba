@@ -333,7 +333,7 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmild_not_expr );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftor_expr );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftprimary_with_options_expr );
 
-ftexpr_visitor::begin_result V::begin_visit( ftrange_expr const &c ) {
+ftexpr_visitor::begin_result V::begin_visit( ftrange_expr &c ) {
   push_back( c.get_expr1().getp() );
   if ( c.get_expr2() )
     push_back( c.get_expr2().getp() );
@@ -344,7 +344,7 @@ DEF_FTEXPR_VISITOR_END_VISIT( V, ftrange_expr );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftselection_expr );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftunary_not_expr );
 
-ftexpr_visitor::begin_result V::begin_visit( ftwords_expr const &c ) {
+ftexpr_visitor::begin_result V::begin_visit( ftwords_expr &c ) {
   push_back( c.get_expr() );
   return br_no_end;
 }
@@ -358,7 +358,7 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdistance_filter );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftorder_filter );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftscope_filter );
 
-ftexpr_visitor::begin_result V::begin_visit( ftwindow_filter const &c ) {
+ftexpr_visitor::begin_result V::begin_visit( ftwindow_filter &c ) {
   push_back( c.get_window().getp() );
   return br_no_end;
 }
@@ -409,21 +409,22 @@ ftcontains_expr::ftcontains_expr(
 {
 }
 
-DEF_EXPR_ACCEPT( ftcontains_expr )
-#if 0
+/* DEF_EXPR_ACCEPT( ftcontains_expr ) */
+
 void ftcontains_expr::accept( expr_visitor &v ) {
   if ( v.begin_visit( *this ) ) {
     ACCEPT( range_, v );
     ftexpr_visitor &v2 = v.get_ftexpr_visitor();
-    ACCEPT( ftselection_, *v2 );
+    ACCEPT( ftselection_, v2 );
     ACCEPT( ftignore_, v );
   }
   v.end_visit( *this );
 }
-#endif
 
 void ftcontains_expr::compute_scripting_kind() const {
-  // TODO
+  theCache.scripting_kind.kind = SIMPLE_EXPR;
+  theCache.scripting_kind.valid = true;
+  // TODO: checkIsSimple for all sub-expr
 }
 
 void ftcontains_expr::serialize( serialization::Archiver &ar )
@@ -488,7 +489,7 @@ ftand_expr::~ftand_expr() {
   delete_ptr_container( list_ );
 }
 
-void ftand_expr::accept( ftexpr_visitor &v ) const {
+void ftand_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( ftexpr_list_t, list_, v );
   END_VISIT( v );
@@ -508,7 +509,7 @@ ftcase_option::ftcase_option(
 {
 }
 
-void ftcase_option::accept( ftexpr_visitor &v ) const {
+void ftcase_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -526,7 +527,7 @@ ftcontent_filter::ftcontent_filter(
 {
 }
 
-void ftcontent_filter::accept( ftexpr_visitor &v ) const {
+void ftcontent_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -540,7 +541,7 @@ ftdiacritics_option::ftdiacritics_option(
 {
 }
 
-void ftdiacritics_option::accept( ftexpr_visitor &v ) const {
+void ftdiacritics_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -561,7 +562,7 @@ ftdistance_filter::ftdistance_filter(
 {
 }
 
-void ftdistance_filter::accept( ftexpr_visitor &v ) const {
+void ftdistance_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( range_, v );
   END_VISIT( v );
@@ -584,7 +585,7 @@ ftextension_selection_expr::ftextension_selection_expr(
 {
 }
 
-void ftextension_selection_expr::accept( ftexpr_visitor &v ) const {
+void ftextension_selection_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( ftselection_, v );
   END_VISIT( v );
@@ -605,7 +606,7 @@ ftextension_option::ftextension_option(
 {
 }
 
-void ftextension_option::accept( ftexpr_visitor &v ) const {
+void ftextension_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -625,7 +626,7 @@ ftlanguage_option::ftlanguage_option(
 {
 }
 
-void ftlanguage_option::accept( ftexpr_visitor &v ) const {
+void ftlanguage_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -663,7 +664,7 @@ ftmatch_options::~ftmatch_options() {
   delete wild_card_option_;
 }
 
-void ftmatch_options::accept( ftexpr_visitor &v ) const {
+void ftmatch_options::accept( ftexpr_visitor &v ) {
   ACCEPT( case_option_, v );
   ACCEPT( diacritics_option_, v );
   ACCEPT( extension_option_, v );
@@ -695,7 +696,7 @@ ftmild_not_expr::~ftmild_not_expr() {
   delete_ptr_container( list_ );
 }
 
-void ftmild_not_expr::accept( ftexpr_visitor &v ) const {
+void ftmild_not_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( ftexpr_list_t, list_, v );
   END_VISIT( v );
@@ -716,7 +717,7 @@ ftor_expr::ftor_expr( QueryLoc const &loc, ftexpr_list_t &list ) :
   list_.swap( list );
 }
 
-void ftor_expr::accept( ftexpr_visitor &v ) const {
+void ftor_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( ftexpr_list_t, list_, v );
   END_VISIT( v );
@@ -732,7 +733,7 @@ ftorder_filter::ftorder_filter( QueryLoc const &loc ) :
 {
 }
 
-void ftorder_filter::accept( ftexpr_visitor &v ) const {
+void ftorder_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -766,7 +767,7 @@ ftprimary_with_options_expr::~ftprimary_with_options_expr() {
   delete match_options_;
 }
 
-void ftprimary_with_options_expr::accept( ftexpr_visitor &v ) const {
+void ftprimary_with_options_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( primary_, v );
   ACCEPT( match_options_, v );
@@ -793,7 +794,7 @@ ftrange_expr::ftrange_expr(
 {
 }
 
-void ftrange_expr::accept( ftexpr_visitor &v ) const {
+void ftrange_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   expr_visitor &v2 = v.get_expr_visitor();
   ACCEPT( expr1_, v2 );
@@ -817,7 +818,7 @@ ftscope_filter::ftscope_filter(
 {
 }
 
-void ftscope_filter::accept( ftexpr_visitor &v ) const {
+void ftscope_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -843,7 +844,7 @@ ftselection_expr::~ftselection_expr() {
   delete_ptr_container( list_ );
 }
 
-void ftselection_expr::accept( ftexpr_visitor &v ) const {
+void ftselection_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( ftpos_filter_list_t, list_, v );
   END_VISIT( v );
@@ -864,7 +865,7 @@ ftstem_option::ftstem_option(
 {
 }
 
-void ftstem_option::accept( ftexpr_visitor &v ) const {
+void ftstem_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -887,7 +888,7 @@ ftstop_words::ftstop_words(
 {
 }
 
-void ftstop_words::accept( ftexpr_visitor &v ) const {
+void ftstop_words::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -923,7 +924,7 @@ ftstop_word_option::~ftstop_word_option() {
   delete_ptr_container( stop_words_ );
 }
 
-void ftstop_word_option::accept( ftexpr_visitor &v ) const {
+void ftstop_word_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( stop_word_list_t, stop_words_, v );
   END_VISIT( v );
@@ -952,7 +953,7 @@ ftthesaurus_id::~ftthesaurus_id() {
   delete levels_;
 }
 
-void ftthesaurus_id::accept( ftexpr_visitor &v ) const {
+void ftthesaurus_id::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( levels_, v );
   END_VISIT( v );
@@ -982,7 +983,7 @@ ftthesaurus_option::~ftthesaurus_option() {
   delete_ptr_container( thesaurus_id_list_ );
 }
 
-void ftthesaurus_option::accept( ftexpr_visitor &v ) const {
+void ftthesaurus_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( thesaurus_id_list_t, thesaurus_id_list_, v );
   END_VISIT( v );
@@ -1004,7 +1005,7 @@ ftunary_not_expr::~ftunary_not_expr() {
   delete subexpr_;
 }
 
-void ftunary_not_expr::accept( ftexpr_visitor &v ) const {
+void ftunary_not_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( subexpr_, v );
   END_VISIT( v );
@@ -1024,7 +1025,7 @@ ftwild_card_option::ftwild_card_option(
 {
 }
 
-void ftwild_card_option::accept( ftexpr_visitor &v ) const {
+void ftwild_card_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -1045,7 +1046,7 @@ ftwindow_filter::ftwindow_filter(
 {
 }
 
-void ftwindow_filter::accept( ftexpr_visitor &v ) const {
+void ftwindow_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   expr_visitor &v2 = v.get_expr_visitor();
   ACCEPT( window_, v2 );
@@ -1069,7 +1070,7 @@ ftwords_expr::ftwords_expr(
 {
 }
 
-void ftwords_expr::accept( ftexpr_visitor &v ) const {
+void ftwords_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   expr_visitor &v2 = v.get_expr_visitor();
   ACCEPT( expr_, v2 );
@@ -1098,7 +1099,7 @@ ftwords_times_expr::~ftwords_times_expr() {
   delete fttimes_;
 }
 
-void ftwords_times_expr::accept( ftexpr_visitor &v ) const {
+void ftwords_times_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( ftwords_, v );
   ACCEPT( fttimes_, v );

@@ -69,6 +69,7 @@
 #include "runtime/core/gflwor/count_iterator.h"
 #include "runtime/core/gflwor/tuplesource_iterator.h"
 #include "runtime/core/gflwor/orderby_iterator.h"
+#include "runtime/full_text/full_text.h"
 #include "runtime/schema/schema.h"
 #include "runtime/scripting/scripting.h"
 #include "runtime/util/flowctl_exception.h"
@@ -219,94 +220,15 @@ public:
 
 typedef rchandle<FlworClauseVarMap> FlworClauseVarMap_t;
 
+/******************************************************************************
 
-/*******************************************************************************
+ ******************************************************************************/
 
-********************************************************************************/
-class plan_ftexpr_visitor : public ftexpr_visitor {
-public:
-  plan_ftexpr_visitor( expr_visitor &v ) : expr_visitor_( v ) { }
+class plan_ftexpr_visitor;
 
-  expr_visitor& get_expr_visitor();
-
-protected:
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmild_not_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftor_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftprimary_with_options_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftrange_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftselection_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftunary_not_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_times_expr );
-
-  // FTPosFilters
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcontent_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdistance_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftorder_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftscope_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwindow_filter );
-
-  // FTMatchOptions
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_words );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
-
-private:
-  expr_visitor &expr_visitor_;
-};
-
-expr_visitor& plan_ftexpr_visitor::get_expr_visitor() {
-  return expr_visitor_;
-}
-
-#define V plan_ftexpr_visitor
-
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftand_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_selection_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmild_not_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftor_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftprimary_with_options_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftrange_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftselection_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftunary_not_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwords_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwords_times_expr )
-
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcontent_filter )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdistance_filter )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftorder_filter )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftscope_filter )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwindow_filter )
-
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmatch_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstem_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_id )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
-
-#undef V
-
-/*******************************************************************************
-
-********************************************************************************/
 class plan_visitor : public expr_visitor
 {
+  friend class plan_ftexpr_visitor;
 protected:
   static vector<PlanIter_t>              no_var_iters;
 
@@ -331,33 +253,15 @@ protected:
 
   std::stack<ZorbaDebugIterator*>        theDebuggerStack;
 
-  plan_ftexpr_visitor                   plan_ftexpr_visitor_;
+  plan_ftexpr_visitor                   *plan_ftexpr_visitor_;
 
 public:
 
-plan_visitor(CompilerCB* ccb, hash64map<vector<LetVarIter_t> *>* arg_var_map = NULL)
-  :
-  depth(0),
-  arg_var_iter_map(arg_var_map),
-  theCCB(ccb),
-  theLastSctxId(-1),
-  theLastSctx(NULL),
-  plan_ftexpr_visitor_( *this )
-{
-}
+plan_visitor(CompilerCB*, hash64map<vector<LetVarIter_t>*>* = NULL);
 
+~plan_visitor();
 
-~plan_visitor()
-{
-  for_each(catchvar_iter_map.begin(), catchvar_iter_map.end(), vector_destroyer<LetVarIter_t>());
-  for_each(copy_var_iter_map.begin(), copy_var_iter_map.end(), vector_destroyer<ForVarIter_t>());
-}
-
-public:
-
-ftexpr_visitor& get_ftexpr_visitor() {
-  return plan_ftexpr_visitor_;
-}
+ftexpr_visitor& get_ftexpr_visitor();
 
 PlanIter_t pop_itstack()
 {
@@ -2712,12 +2616,19 @@ bool begin_visit (ftcontains_expr& v)
 void end_visit (ftcontains_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+  PlanIter_t ftignore_it = pop_itstack();
+  PlanIter_t ftrange_it = pop_itstack();
+  PlanIter_t ftcontains_it = new FTContainsIterator(
+    sctx, qloc, ftrange_it, ftignore_it, v.get_ftselection()
+  );
+  push_itstack( ftcontains_it );
 }
 
 
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
+ ******************************************************************************/
+
 PlanIter_t result()
 {
   PlanIter_t res = pop_itstack();
@@ -2729,10 +2640,171 @@ PlanIter_t result()
 };
 
 
+/******************************************************************************
 
-/*******************************************************************************
+ ******************************************************************************/
 
-********************************************************************************/
+class plan_ftexpr_visitor : public ftexpr_visitor {
+public:
+  plan_ftexpr_visitor( plan_visitor &v ) : plan_visitor_( v ) { }
+
+  expr_visitor& get_expr_visitor();
+
+protected:
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmild_not_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftor_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftprimary_with_options_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftrange_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftselection_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftunary_not_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_expr );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_times_expr );
+
+  // FTPosFilters
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcontent_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdistance_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftorder_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftscope_filter );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwindow_filter );
+
+  // FTMatchOptions
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_words );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
+
+private:
+  plan_visitor &plan_visitor_;
+};
+
+expr_visitor& plan_ftexpr_visitor::get_expr_visitor() {
+  return plan_visitor_;
+}
+
+#define V plan_ftexpr_visitor
+
+#define ACCEPT( EXPR, V )                   \
+  if ( !(EXPR) ) ; else (EXPR)->accept( V )
+
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftand_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_selection_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmild_not_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftor_expr )
+
+ftexpr_visitor::begin_result V::begin_visit( ftprimary_with_options_expr &e ) {
+  ACCEPT( e.get_weight(), plan_visitor_ );
+  PlanIter_t it = plan_visitor_.pop_itstack();
+  ZORBA_ASSERT( plan_visitor_.itstack.empty() );
+  e.set_plan_iter( it );
+  return br_no_end;
+}
+DEF_FTEXPR_VISITOR_END_VISIT( V, ftprimary_with_options_expr )
+
+ftexpr_visitor::begin_result V::begin_visit( ftrange_expr &e ) {
+  PlanIter_t it2 = NULL;
+  ACCEPT( e.get_expr1(), plan_visitor_ );
+  if ( e.get_expr2() ) {
+    e.get_expr2()->accept( plan_visitor_ );
+    it2 = plan_visitor_.pop_itstack();
+  }
+  PlanIter_t it1 = plan_visitor_.pop_itstack();
+  ZORBA_ASSERT( plan_visitor_.itstack.empty() );
+  e.set_plan_iters( it1, it2 );
+  return br_no_end;
+}
+DEF_FTEXPR_VISITOR_END_VISIT( V, ftrange_expr )
+
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftselection_expr )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftunary_not_expr )
+
+ftexpr_visitor::begin_result V::begin_visit( ftwords_expr &e ) {
+  ACCEPT( e.get_expr(), plan_visitor_ );
+  PlanIter_t it = plan_visitor_.pop_itstack();
+  ZORBA_ASSERT( plan_visitor_.itstack.empty() );
+  e.set_plan_iter( it );
+  return br_no_end;
+}
+DEF_FTEXPR_VISITOR_END_VISIT( V, ftwords_expr )
+
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwords_times_expr )
+
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcontent_filter )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdistance_filter )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftorder_filter )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftscope_filter )
+
+ftexpr_visitor::begin_result V::begin_visit( ftwindow_filter &f ) {
+  ACCEPT( f.get_window(), plan_visitor_ );
+  PlanIter_t it = plan_visitor_.pop_itstack();
+  ZORBA_ASSERT( plan_visitor_.itstack.empty() );
+  f.set_plan_iter( it );
+  return br_no_end;
+}
+DEF_FTEXPR_VISITOR_END_VISIT( V, ftwindow_filter )
+
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmatch_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstem_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_id )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
+
+#undef V
+
+/******************************************************************************
+
+ ******************************************************************************/
+
+plan_visitor::plan_visitor(
+  CompilerCB *ccb,
+  hash64map<vector<LetVarIter_t>*>* arg_var_map
+) :
+  depth(0),
+  arg_var_iter_map(arg_var_map),
+  theCCB(ccb),
+  theLastSctxId(-1),
+  theLastSctx(NULL),
+  plan_ftexpr_visitor_( new plan_ftexpr_visitor( *this ) )
+{
+}
+
+plan_visitor::~plan_visitor()
+{
+  for_each(
+    catchvar_iter_map.begin(),
+    catchvar_iter_map.end(),
+    vector_destroyer<LetVarIter_t>()
+  );
+  for_each(
+    copy_var_iter_map.begin(),
+    copy_var_iter_map.end(),
+    vector_destroyer<ForVarIter_t>()
+  );
+  delete plan_ftexpr_visitor_;
+}
+
+ftexpr_visitor& plan_visitor::get_ftexpr_visitor() {
+  return *plan_ftexpr_visitor_;
+}
+
+/******************************************************************************
+
+ ******************************************************************************/
+
 PlanIter_t codegen(
     const char* descr,
     expr* root,

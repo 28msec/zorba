@@ -38,9 +38,9 @@ public:
 
   virtual expr_visitor& get_expr_visitor() = 0;
 
-# define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C)       \
-  virtual begin_result begin_visit( C const& ) = 0; \
-  virtual void end_visit( C const& ) = 0
+# define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C) \
+  virtual begin_result begin_visit( C& ) = 0; \
+  virtual void end_visit( C& ) = 0
 
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
@@ -75,16 +75,16 @@ public:
 
 # undef DECL_FTEXPR_VISITOR_VISIT_MEM_FNS
 # define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C) \
-  begin_result begin_visit( C const& );       \
-  void end_visit( C const& )
+  begin_result begin_visit( C& );             \
+  void end_visit( C& )
 
-# define DEF_FTEXPR_VISITOR_BEGIN_VISIT(V,C)                \
-  ftexpr_visitor::begin_result V::begin_visit( C const& ) { \
-    return br_no_end;                                       \
+# define DEF_FTEXPR_VISITOR_BEGIN_VISIT(V,C)          \
+  ftexpr_visitor::begin_result V::begin_visit( C& ) { \
+    return br_no_end;                                 \
   }
 
 # define DEF_FTEXPR_VISITOR_END_VISIT(V,C)  \
-  void V::end_visit( C const& ) {           \
+  void V::end_visit( C& ) {                 \
   }
 
 # define DEF_FTEXPR_VISITOR_VISIT_MEM_FNS(V,C)  \

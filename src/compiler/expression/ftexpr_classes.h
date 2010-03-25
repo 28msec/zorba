@@ -17,10 +17,14 @@
 #ifndef ZORBA_FTEXPR_CLASSES_H
 #define ZORBA_FTEXPR_CLASSES_H
 
+#include "zorbatypes/rchandle.h"
+
 namespace zorba {
 
 class ftexpr;
 class ftexpr_visitor;
+
+typedef rchandle<ftexpr> ftexpr_t;
 
 class ftand_expr;
 class ftcase_option;

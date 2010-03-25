@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ !
+ !  Full-text
+ !
+-->
+
+<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+    
+  <zorba:header>
+    <zorba:include form="Quoted">zorbatypes/representations.h</zorba:include>
+    <zorba:include form="Quoted">compiler/expression/ftexpr.h</zorba:include>
+  </zorba:header>
+
+  <!--
+   ! "contains text"
+  -->
+  <zorba:iterator
+    name="FTContainsIterator"
+    generateVisitor="true"
+    generateAccept="true" 
+    arity="binary">
+
+    <zorba:description author="Paul J. Lucas">
+      contains text
+    </zorba:description>
+
+    <zorba:constructor>
+      <zorba:parameter type="ftexpr*" name="ftselection"/>
+    </zorba:constructor>
+
+    <zorba:member type="ftexpr*" name="ftselection_"
+      brief="the ftexpr tree"/>
+
+  </zorba:iterator>
+</zorba:iterators>
+<!-- vim:set et sw=2 ts=2: -->
