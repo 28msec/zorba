@@ -2,15 +2,20 @@
 
 die() {
   echo
-  echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>] <zorba_repository>'
+  echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>] [--xqtsurl <xqtsurl>] <zorba_repository>'
   echo '<zorba_repository> is the top-level SVN working copy'
   echo '<workdir> is a temp directory to download and unzip XQTS (default: /tmp)'
   echo '<builddir> is the directory Zorba has been built in'
   echo '           (default: <zorba_repository>/build)'
+  echo '<xqtsurl> is the URL where the XQTS archived version can be found'
+  echo '          (default: http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip)'
+  echo '          (you can use for instance http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_current.zip)'
   exit 1
 }
 
 WORK=/tmp
+XQTSURL=http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip
+
 while [ $# -gt 1 ]
 do
   # --workdir to specify a working directory to download/unzip XQTS
@@ -18,6 +23,9 @@ do
 
   # --builddir to specify Zorba build directory (default: srcdir/build)
   test "$1" = "--builddir" && { BUILD="$2"; shift; shift; }
+
+  # xqtsurl to specify the URL where XQTS can be found (default: http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip)
+  test "$1" = "--xqtsurl" && { XQTSURL="$2"; shift; shift; }
 done
 
 SRC="$1"
@@ -40,7 +48,7 @@ fi
 
 ZIP="$WORK/XQTS.zip"
 echo Downloading test suite to zip $ZIP ...
-wget -c -O $ZIP http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip
+wget -c -O $ZIP $XQTSURL
 
 orig_pwd=`pwd`
 
