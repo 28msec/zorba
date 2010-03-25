@@ -819,7 +819,7 @@ void  xqpStringStore::replace(
 //+   }
   
 //  xqpString   newstr;
-  result = new xqpStringStore;
+  xqpStringStore_t  result2 = new xqpStringStore;
   const char  *start_str = c_str();
   int   subregex_count = regex->get_indexed_regex_count();
 
@@ -827,7 +827,7 @@ void  xqpStringStore::replace(
   while(regex->match_anywhere(start_str, parse_regex_flags(regexFlags), &match_pos, &matched_len))
   {
     if(match_pos)
-      result->append_in_place(start_str , match_pos);
+      result2->append_in_place(start_str , match_pos);
     const char *temprepl = replacement->c_str();
     const char *submatched_source;
     int   submatched_len;
@@ -840,7 +840,7 @@ void  xqpStringStore::replace(
         temprepl++;
         if(!*temprepl || (*temprepl != '\\') || (*temprepl != '$'))//Invalid replacement string.
           throw zorbatypesException("", ZorbatypesError::FORX0004);
-        result->append_in_place(*temprepl);
+        result2->append_in_place(*temprepl);
         temprepl++;
         continue;
       }
@@ -861,23 +861,23 @@ void  xqpStringStore::replace(
           throw zorbatypesException("", ZorbatypesError::FORX0004);
         else if(!index)
         {
-          result->append_in_place(start_str+match_pos, matched_len);
+          result2->append_in_place(start_str+match_pos, matched_len);
         }
         else if(regex->get_indexed_match(index, &submatched_source, &submatched_len))
         {
           if(submatched_source && submatched_len)
-            result->append_in_place(submatched_source, submatched_len);
+            result2->append_in_place(submatched_source, submatched_len);
         }
       }
       else
       {
-        result->append_in_place(*temprepl);
+        result2->append_in_place(*temprepl);
         temprepl++;
       }
     }
     start_str += match_pos + matched_len;
   }
-  result->append_in_place(start_str);
+  result2->append_in_place(start_str);
   }catch(...)
   {
     delete regex;
@@ -886,6 +886,7 @@ void  xqpStringStore::replace(
 
   delete regex;
   //return newstr;
+  result = result2;
 
 }
 
