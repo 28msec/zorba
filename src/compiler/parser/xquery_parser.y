@@ -467,7 +467,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token EXACTLY                          "'exactly'"
 %token FROM                             "'from'"
 %token FTAND                            "'ftand'"
-%token FTNOT                            "'not'"
+%token FTNOT                            "'ftnot'"
+%token NOT                              "'not'"
 %token FT_OPTION                        "'ft-option'"
 %token FTOR                             "'ftor'"
 %token INSENSITIVE                      "'insensitive'"
@@ -5213,7 +5214,9 @@ KEYWORD
     |   _STRICT { $$ = SYMTAB_PUT("strict"); }
     |   IDIV { $$ = SYMTAB_PUT("idiv"); }
     |   DOCUMENT { $$ = SYMTAB_PUT("document"); }
-    |   FTNOT { $$ = SYMTAB_PUT("not"); }
+    |   NOT { $$ = SYMTAB_PUT("not"); }
+    |   FTNOT { $$ = SYMTAB_PUT("ftnot"); }
+    |   NOT { $$ = SYMTAB_PUT("not"); }
     |   SENSITIVE { $$ = SYMTAB_PUT("sensitive"); }
     |   INSENSITIVE { $$ = SYMTAB_PUT("insensitive"); }
     |   DIACRITICS { $$ = SYMTAB_PUT("diacritics"); }
@@ -5459,7 +5462,7 @@ FTMildNot
         {
             $$ = $1;
         }
-    |   FTMildNot FTNOT _IN FTUnaryNot
+    |   FTMildNot NOT _IN FTUnaryNot
         {
             $$ = new FTMildNot( LOC(@$), $1, $4 );
         }
