@@ -27,11 +27,20 @@ MACRO(expected_failure testname bugid)
   else (willfail)
     set (willfail 1)
   endif (willfail)
-  set_tests_properties ("${testname}" PROPERTIES WILL_FAIL ${willfail})
 
-  # Also store the name and bug ID of this test in our output file
-  file (APPEND "${expected_failures_file}"
-        "<Test name=\"${testname}\" bug=\"${bugid}\"/>")
+  FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
+    # simplestore executable doesn't need an extension
+    SET(SUFFIX)
+    IF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+      SET(SUFFIX "_${ZORBA_STORE_NAME}")
+    ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
+
+    set_tests_properties ("${testname}${SUFFIX}" PROPERTIES WILL_FAIL ${willfail})
+
+    # Also store the name and bug ID of this test in our output file
+    file (APPEND "${expected_failures_file}"
+          "<Test name=\"${testname}${SUFFIX}\" bug=\"${bugid}\"/>")
+  ENDFOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
 
 ENDMACRO(expected_failure)
 

@@ -47,14 +47,7 @@ CREATE_TEST_SOURCELIST(examples
 )
  
 # add the executable
-ADD_EXECUTABLE(examples ${examples})
-TARGET_LINK_LIBRARIES(examples zorba_simplestore)
-
-IF(WIN32)
-SET(examples_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/examples)
-ELSE(WIN32)
-SET(examples_EXE_PATH    examples)
-ENDIF(WIN32)
+ZORBA_GENERATE_STORE_SPECIFIC_EXES(examples "${examples}" "" "")
 
 # remove the test driver source file
 SET (TestsToRun ${examples})
@@ -71,7 +64,7 @@ FOREACH (test ${TestsToRun})
   
   STRING(SUBSTRING ${FULL_TEST_NAME} ${SOURCE_DIR_LENGTH} ${TEST_NAME_LENGTH} TName)
 	MESSAGE(STATUS "Adding test for the C++ API's documentation: ${TName}")
-	ADD_TEST(${TName} ${examples_EXE_PATH} ${NAME_WITHOUT_EXT})
+	ZORBA_ADD_TEST_ALLSTORES(${TName} examples ${NAME_WITHOUT_EXT})
 ENDFOREACH(test)
 
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/Makefile.cmake ${CMAKE_CURRENT_BINARY_DIR}/Makefile.zorba)

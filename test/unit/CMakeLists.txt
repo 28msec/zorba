@@ -34,20 +34,7 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 # add the executable
-ADD_EXECUTABLE(UnitTests ${UnitTests})
-TARGET_LINK_LIBRARIES(UnitTests zorba_simplestore)
-
-IF (ZORBA_BUILD_STATIC_LIBRARY)                                                                         
-  ADD_EXECUTABLE(UnitTests_static ${UnitTests})                                                 
-  SET_TARGET_PROPERTIES(UnitTests_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
-  TARGET_LINK_LIBRARIES(UnitTests_static zorba_simplestore_static)                           
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)           
-
-IF(WIN32)
-SET(UNITTESTS_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/UnitTests)
-ELSE(WIN32)
-SET(UNITTESTS_EXE_PATH    UnitTests)
-ENDIF(WIN32)
+ZORBA_GENERATE_STORE_SPECIFIC_EXES(UnitTests "${UnitTests}" "" "")
 
 # remove the test driver source file
 SET (TestsToRun ${UnitTests})
@@ -59,7 +46,7 @@ MESSAGE(STATUS "Adding unit tests for CTest")
 FOREACH (test ${TestsToRun})
   GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
   SET (TestName "test/unit/${TName}")
-  ADD_TEST(${TestName} ${UNITTESTS_EXE_PATH} ${TName})
+  ZORBA_ADD_TEST_ALLSTORES(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
 
 ADD_SUBDIRECTORY(debugger)

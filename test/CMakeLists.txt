@@ -48,34 +48,21 @@ ENDIF(ZORBA_USE_SEPARATE_WINCE_SVN)
 # apitest
 #
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake)
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("apitest" "" "" "" "")
-
-
-IF (BUILDING_SIMPLESTORE)
-  ADD_EXECUTABLE(path_test path_test.cpp)
-  TARGET_LINK_LIBRARIES(path_test zorba_simplestore)
+ZORBA_GENERATE_STORE_SPECIFIC_EXES("apitest" "apitest.cpp" "" "")
   
-  IF (ZORBA_BUILD_STATIC_LIBRARY)
-    ADD_EXECUTABLE(path_test_static path_test.cpp)
-    SET_TARGET_PROPERTIES(path_test_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
-    TARGET_LINK_LIBRARIES(path_test_static zorba_simplestore_static)
-  ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
-
-  INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaAddTest.cmake)
+ZORBA_GENERATE_STORE_SPECIFIC_EXES("path_test" "path_test.cpp" "" "")
   
-  ZORBA_ADD_TEST_SIMPLE (test/fspathbranch1 path_test --branch-path /d1/d2/../d3/.)
-  SET_TESTS_PROPERTIES (test/fspathbranch1 PROPERTIES PASS_REGULAR_EXPRESSION /d1)
+ZORBA_ADD_TEST_ALLSTORES (test/fspathbranch1 path_test --branch-path /d1/d2/../d3/.)
+ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspathbranch1 PASS_REGULAR_EXPRESSION /d1)
   
-  ZORBA_ADD_TEST_SIMPLE (test/fspathbranch2 path_test --branch-path /dir)
-  SET_TESTS_PROPERTIES (test/fspathbranch2 PROPERTIES PASS_REGULAR_EXPRESSION /)
+ZORBA_ADD_TEST_ALLSTORES (test/fspathbranch2 path_test --branch-path /dir)
+ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspathbranch2 PASS_REGULAR_EXPRESSION /)
   
-  ZORBA_ADD_TEST_SIMPLE (test/fspath1 path_test --path /../d1/./././././././../..)
-  SET_TESTS_PROPERTIES (test/fspath1 PROPERTIES PASS_REGULAR_EXPRESSION /)
+ZORBA_ADD_TEST_ALLSTORES (test/fspath1 path_test --path /../d1/./././././././../..)
+ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspath1 PASS_REGULAR_EXPRESSION /)
   
-  ZORBA_ADD_TEST_SIMPLE (test/fspath2 path_test --path d1/d2/../../../../d3//)
-  SET_TESTS_PROPERTIES (test/fspath2 PROPERTIES PASS_REGULAR_EXPRESSION ../../d3)
-  
-ENDIF (BUILDING_SIMPLESTORE)
+ZORBA_ADD_TEST_ALLSTORES (test/fspath2 path_test --path d1/d2/../../../../d3//)
+ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspath2 PASS_REGULAR_EXPRESSION ../../d3)
 
 IF(NOT ZORBA_MINIMAL_STORE)
 # 

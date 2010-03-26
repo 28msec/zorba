@@ -25,6 +25,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/test/commons)
 
 SET(UPDTESTDRIVER_SRCS
+    updtestdriver.cpp
     ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
     ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp)
 

@@ -22,20 +22,8 @@ CREATE_TEST_SOURCELIST(DebuggerTests
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/bin)
  
-ADD_EXECUTABLE(DebuggerTests ${DebuggerTests} DebuggerTestClient.cpp DebuggerTestHandler.cpp ${CMAKE_SOURCE_DIR}/bin/debugger_server_runnable.cpp ${CMAKE_SOURCE_DIR}/bin/error_printer.cpp)
-TARGET_LINK_LIBRARIES(DebuggerTests zorba_simplestore)
-
-IF (ZORBA_BUILD_STATIC_LIBRARY)
-  ADD_EXECUTABLE(DebuggerTests_static ${DebuggerTests} DebuggerTestClient.cpp DebuggerTestHandler.cpp ${CMAKE_SOURCE_DIR}/bin/debugger_server_runnable.cpp ${CMAKE_SOURCE_DIR}/bin/error_printer.cpp)
-  SET_TARGET_PROPERTIES(DebuggerTests_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
-  TARGET_LINK_LIBRARIES(DebuggerTests_static zorba_simplestore_static)
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
-
-IF(WIN32)
-SET(DebuggerTests_EXE_PATH    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/DebuggerTests)
-ELSE(WIN32)
-SET(DebuggerTests_EXE_PATH    DebuggerTests)
-ENDIF(WIN32)
+SET(DEBUGGER_TEST_SRCS ${DebuggerTests} DebuggerTestClient.cpp DebuggerTestHandler.cpp ${CMAKE_SOURCE_DIR}/bin/debugger_server_runnable.cpp ${CMAKE_SOURCE_DIR}/bin/error_printer.cpp)
+ZORBA_GENERATE_STORE_SPECIFIC_EXES(DebuggerTests "${DEBUGGER_TEST_SRCS}" "" "")
 
 SET (TestsToRun ${DebuggerTests})
 REMOVE (TestsToRun DebuggerTests.cpp)
@@ -45,5 +33,5 @@ FOREACH (test ${TestsToRun})
 	GET_FILENAME_COMPONENT(TName ${test} NAME_WE)
 	MESSAGE(STATUS ${TName})
   	SET (TestName "test/unit/debugger/${TName}")
-	ADD_TEST(${TestName} ${DebuggerTests_EXE_PATH} ${TName})
+        ZORBA_ADD_TEST_ALLSTORES("${TestName}" DebuggerTests ${TName})
 ENDFOREACH(test)

@@ -28,16 +28,15 @@
 # 
 #   ZORBA_GENERATE_STORE_SPECIFIC_EXES(EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NAME) 
 #   
-#     EXE_NAME - the name of the executable. Per convention, the file that contains the main function 
-#                and must be located in the directory where the invocation of this function is located.
-#     DEPEND_SRCS - additional source files which will be compiled and linked to the created libraries
+#     EXE_NAME - the name of the executable.
+#     SRCS - source files which will be compiled and linked to the created libraries
 #     DEPEND_LIBS - libraries (exception zorba-store libs) to which the created libraries depend on
 #     NEW_NAME - If this variable is not equal "", the executables will be renamed to NEW_NAME
 #     INSTALL_DESTINATION - if non empty string, the created executable(s) is(are) installed to 
 #                           the passed destination
 #
 #
-MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NAME INSTALL_DESTINATION)
+MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME SRCS DEPEND_LIBS NEW_NAME)
 	# We need to change the CMAKE_CFG_INTDIR from the default value (a VS macro)
 	# otherwise this will make CMake fail when searching for the zorba.exe, because
 	# it does not know how to expand VS macros like $(OutDir).
@@ -52,10 +51,6 @@ MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME DEPEND_SRCS DEPEND_LIBS NEW_NA
       SET(SUFFIX "_${ZORBA_STORE_NAME}")
     ENDIF (NOT ${ZORBA_STORE_NAME} STREQUAL "simplestore")
 
-    SET( SRCS
-      ${CMAKE_CURRENT_SOURCE_DIR}/${EXE_NAME}.cpp
-      ${DEPEND_SRCS}
-    )
     ADD_EXECUTABLE("${EXE_NAME}${SUFFIX}" ${SRCS})
     TARGET_LINK_LIBRARIES("${EXE_NAME}${SUFFIX}" 
                           "zorba_${ZORBA_STORE_NAME}"

@@ -16,6 +16,7 @@ INCLUDE_DIRECTORIES(AFTER ${CMAKE_SOURCE_DIR}/src/)
 INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR})
 
 SET(SRCS
+  zorbacmd.cpp
   zorbacmdproperties.cpp
   error_printer.cpp
   util.cpp
@@ -37,43 +38,43 @@ IF (BUILDING_SIMPLESTORE)
 
 
   # test the basic features of the command line tool
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba1 zorbacmd --omit-xml-declaration -q "1+1")
-  SET_TESTS_PROPERTIES(bin/zorba1 PROPERTIES PASS_REGULAR_EXPRESSION "2")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba1 zorbacmd --omit-xml-declaration -q "1+1")
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba1 PASS_REGULAR_EXPRESSION "2")
   
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba2 zorbacmd --serialize-html -q "1+1")
-  SET_TESTS_PROPERTIES(bin/zorba2 PROPERTIES PASS_REGULAR_EXPRESSION "2")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba2 zorbacmd --serialize-html -q "1+1")
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba2 PASS_REGULAR_EXPRESSION "2")
   
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba3 zorbacmd -m 0 -q "1+1")
-  SET_TESTS_PROPERTIES(bin/zorba3 PROPERTIES PASS_REGULAR_EXPRESSION "")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba3 zorbacmd -m 0 -q "1+1")
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba3 PASS_REGULAR_EXPRESSION "")
   
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba4 zorbacmd --context-item=${CMAKE_CURRENT_SOURCE_DIR}/test.xml  -m 3 -q "./test/child[1]")
-  SET_TESTS_PROPERTIES(bin/zorba4 PROPERTIES PASS_REGULAR_EXPRESSION "(.*<child>child1</child>)*")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba4 zorbacmd --context-item=${CMAKE_CURRENT_SOURCE_DIR}/test.xml  -m 3 -q "./test/child[1]")
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba4 PASS_REGULAR_EXPRESSION "(.*<child>child1</child>)*")
   
   # test basic json and jsonml serialization features
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba_jsonml1 zorbacmd -q "<ul>1</ul>" -z method=jsonml)
-  SET_TESTS_PROPERTIES(bin/zorba_jsonml1 PROPERTIES PASS_REGULAR_EXPRESSION "ul.*1")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba_jsonml1 zorbacmd -q "<ul>1</ul>" -z method=jsonml)
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_jsonml1 PASS_REGULAR_EXPRESSION "ul.*1")
   
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba_json1 zorbacmd -q "<ul>1</ul>" -z method=json)
-  SET_TESTS_PROPERTIES(bin/zorba_json1 PROPERTIES PASS_REGULAR_EXPRESSION ".*API0061.* Could not serialize the element with string representation .*1.*")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba_json1 zorbacmd -q "<ul>1</ul>" -z method=json)
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_json1 PASS_REGULAR_EXPRESSION ".*API0061.* Could not serialize the element with string representation .*1.*")
   
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba_jsonml2 zorbacmd -q "(<!--comment-->)" -z method=jsonml)
-  SET_TESTS_PROPERTIES(bin/zorba_jsonml2 PROPERTIES PASS_REGULAR_EXPRESSION ".*API0065.* Parameter with string representation .*comment.* is not an element node.")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba_jsonml2 zorbacmd -q "(<!--comment-->)" -z method=jsonml)
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_jsonml2 PASS_REGULAR_EXPRESSION ".*API0065.* Parameter with string representation .*comment.* is not an element node.")
   
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba_jsonml3 zorbacmd -q "(<ul>1</ul>,<ul>2</ul>)" -z method=jsonml)
-  SET_TESTS_PROPERTIES(bin/zorba_jsonml3 PROPERTIES PASS_REGULAR_EXPRESSION ".*API0066.*")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba_jsonml3 zorbacmd -q "(<ul>1</ul>,<ul>2</ul>)" -z method=jsonml)
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_jsonml3 PASS_REGULAR_EXPRESSION ".*API0066.*")
   
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba5 zorbacmd -q -f blub.xq)
-  SET_TESTS_PROPERTIES(bin/zorba5 PROPERTIES PASS_REGULAR_EXPRESSION ".*Extra arguments found on command line.*")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba5 zorbacmd -q -f blub.xq)
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba5 PASS_REGULAR_EXPRESSION ".*Extra arguments found on command line.*")
   
   # test the compile-only option of the command line tool which is used for semantic checking in eclipse
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba_compilechk1 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l)
-  SET_TESTS_PROPERTIES(bin/zorba_compilechk1 PROPERTIES PASS_REGULAR_EXPRESSION ".*mymod.xq.*line 6, column 8:.*XPST0008.*")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba_compilechk1 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l)
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk1 PASS_REGULAR_EXPRESSION ".*mymod.xq.*line 6, column 8:.*XPST0008.*")
   
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba_compilechk2 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l -x)
-  SET_TESTS_PROPERTIES(bin/zorba_compilechk2 PROPERTIES PASS_REGULAR_EXPRESSION ".*XPST0008.*mymod.xq' lineStart='6' columnStart='8' lineEnd='6' columnEnd='8'.*")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba_compilechk2 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod.xq" -f -l -x)
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk2 PASS_REGULAR_EXPRESSION ".*XPST0008.*mymod.xq' lineStart='6' columnStart='8' lineEnd='6' columnEnd='8'.*")
 
   # test compile checking to work with library modules that have an invalid target namespace uri
   # test for bug #2934414
-  ZORBA_ADD_TEST_SIMPLE(bin/zorba_compilechk3 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod2.xq" -f -l -x)
-  SET_TESTS_PROPERTIES(bin/zorba_compilechk3 PROPERTIES PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq' lineStart='1' columnStart='1' lineEnd='1' columnEnd='1'.*")
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba_compilechk3 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod2.xq" -f -l -x)
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk3 PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq' lineStart='1' columnStart='1' lineEnd='1' columnEnd='1'.*")
 ENDIF(BUILDING_SIMPLESTORE)
