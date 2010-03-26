@@ -1,0 +1,16 @@
+@ECHO OFF
+
+IF "%~1" == "" (
+  ECHO This script is used to execute Zorba executables without setting the PATH environment variable manually.
+  ECHO Note: This script closes cmd.exe if an error happens!
+  ECHO Example: win_exec.bat bin\zorba.exe -q "1+2"
+  EXIT 1
+)
+
+SETLOCAL
+SET PATH=@WIN_CMAKE_BINARY_DIR@\src@MSVC_IDE_PATH_SUFFIX@;@REQUIRED_FILES_DIR@;@WIN_CMAKE_BINARY_DIR@\..\utils\src@MSVC_IDE_PATH_SUFFIX@;%PATH%
+%*
+IF %ERRORLEVEL% neq 0 (
+  EXIT %ERRORLEVEL%
+)
+ENDLOCAL
