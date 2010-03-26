@@ -288,7 +288,7 @@ namespace zorba { namespace http_client {
 
   std::string HttpResponseParser::replaceCodes( std::string aStr )
   {
-    std::ostringstream o;
+    std::stringstream o;
 
     std::string::size_type lPrev = 0;
     std::string::size_type lPos = aStr.find('&');
@@ -296,7 +296,8 @@ namespace zorba { namespace http_client {
     while (lPos != std::string::npos && lNext != std::string::npos) {
       o << aStr.substr(lPrev, lPos - lPrev);
       std::string code = aStr.substr(lPos + 1, lNext - lPos - 1);
-      o << "&" << lookUpCode(code) << ";";
+      std::string encoded = lookUpCode(code);
+      o << "&" << encoded << ";";
       lPrev = lNext + 1;
       lPos = aStr.find('&', lPos + 1);
       lNext = aStr.find(';', lPos);
@@ -382,7 +383,7 @@ namespace zorba { namespace http_client {
     theCodeMap.insert(std::pair<std::string, std::string>("agrave", "#224"));
     theCodeMap.insert(std::pair<std::string, std::string>("alefsym", "#8501"));
     theCodeMap.insert(std::pair<std::string, std::string>("alpha", "#945"));
-    theCodeMap.insert(std::pair<std::string, std::string>("amp", "#38;#38"));
+    theCodeMap.insert(std::pair<std::string, std::string>("amp", "#38"));
     theCodeMap.insert(std::pair<std::string, std::string>("and", "#8743"));
     theCodeMap.insert(std::pair<std::string, std::string>("ang", "#8736"));
     theCodeMap.insert(std::pair<std::string, std::string>("apos", "#39"));
@@ -465,7 +466,7 @@ namespace zorba { namespace http_client {
     theCodeMap.insert(std::pair<std::string, std::string>("lrm", "#8206"));
     theCodeMap.insert(std::pair<std::string, std::string>("lsaquo", "#8249"));
     theCodeMap.insert(std::pair<std::string, std::string>("lsquo", "#8216"));
-    theCodeMap.insert(std::pair<std::string, std::string>("lt", "#38;#60"));
+    theCodeMap.insert(std::pair<std::string, std::string>("lt", "#60"));
     theCodeMap.insert(std::pair<std::string, std::string>("macr", "#175"));
     theCodeMap.insert(std::pair<std::string, std::string>("mdash", "#8212"));
     theCodeMap.insert(std::pair<std::string, std::string>("micro", "#181"));
