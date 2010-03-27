@@ -3565,6 +3565,11 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       while (true)
       {
         RewriterContext rCtx(theCCB, body);
+        if (*udf->getName()->getPrefix() == "raytracer" &&
+            *udf->getName()->getLocalName() == "shade")
+        {
+          rCtx.theHoistOutOfLetVars = true;
+        }
         GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
         body = rCtx.getRoot();
 

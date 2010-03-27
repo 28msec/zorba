@@ -75,6 +75,8 @@ public:
   std::vector<expr_t>    theFlworStack;
   std::vector<bool>      theIsModifiedStack;
 
+  bool                   theHoistOutOfLetVars;
+
 public:
   RewriterContext(CompilerCB* cb, expr_t root);
 

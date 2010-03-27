@@ -71,7 +71,8 @@ void ZorbaImpl::init(store::Store* store)
   if (theNumUsers == 0)
   {
     void* store2 = StoreManager::getStore();
-    assert(store2 == store);
+    (void)store2;
+    assert(store == NULL || store2 == store);
     GlobalEnvironment::init(store);
   }
 

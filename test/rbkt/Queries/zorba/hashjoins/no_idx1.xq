@@ -1,6 +1,8 @@
 
 (:
-  No HashJoin : the inner domain expr depends indirectly on the outer var
+  No HashJoin : the inner domain expr depends indirectly on the outer var.
+  But an index can be built, for each ancestor, on the siblings of that
+  ancestor. 
 :)
 
 

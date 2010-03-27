@@ -109,7 +109,7 @@ void relpath_expr::add_back(expr_t step)
 {
   invalidate();
 
-  if (!step->is_simple())
+  if (!step->is_simple() && !step->is_vacuous())
   {
     ZORBA_ERROR_LOC(XUST0001, step->get_loc());
   }

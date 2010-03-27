@@ -41,22 +41,22 @@ Iterator tree for main query:
                 </FnDocIterator>
               </DescendantAxisIterator>
             </ForVariable>
-            <LetVariable name="anzahl" materialize="true">
+            <ForVariable name="anzahl">
               <FnCountIterator>
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
                   <ForVarIterator varname="book"/>
                 </ChildAxisIterator>
               </FnCountIterator>
-            </LetVariable>
+            </ForVariable>
             <OrderByClause>
-              <LetVarIterator varname="anzahl"/>
+              <ForVarIterator varname="anzahl"/>
             </OrderByClause>
             <ReturnClause>
               <ElementIterator>
                 <SingletonIterator value="xs:QName(,,gruppe)"/>
                 <AttributeIterator qname="anzahl">
                   <EnclosedIterator attr_cont="true">
-                    <LetVarIterator varname="anzahl"/>
+                    <ForVarIterator varname="anzahl"/>
                   </EnclosedIterator>
                 </AttributeIterator>
                 <EnclosedIterator attr_cont="false">
@@ -64,7 +64,7 @@ Iterator tree for main query:
                     <ForVariable name="book">
                       <IndexPointProbeIterator>
                         <SingletonIterator value="xs:QName(,,tempIndex0)"/>
-                        <LetVarIterator varname="anzahl"/>
+                        <ForVarIterator varname="anzahl"/>
                       </IndexPointProbeIterator>
                     </ForVariable>
                     <ReturnClause>

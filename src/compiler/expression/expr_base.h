@@ -286,6 +286,10 @@ public:
 
   void clear_annotations();
 
+  xqtref_t get_return_type_with_empty_input(
+        static_context* sctx,
+        const expr* input) const;
+
 protected:
   void invalidate()
   {

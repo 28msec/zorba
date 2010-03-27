@@ -793,9 +793,18 @@ void cast_base_expr::serialize(::zorba::serialization::Archiver& ar)
 
 xqtref_t cast_base_expr::return_type_impl(static_context* sctx) const 
 {
-  TypeConstants::quantifier_t q =
-  TypeOps::intersect_quant(TypeOps::quantifier(*theInputExpr->return_type(sctx)),
-                           TypeOps::quantifier(*theTargetType));
+  xqtref_t argType = theInputExpr->return_type(sctx);
+  TypeConstants::quantifier_t argQuant = argType->get_quantifier();
+  TypeConstants::quantifier_t targetQuant = theTargetType->get_quantifier();
+
+  if (TypeOps::is_equal(*argType, *GENV_TYPESYSTEM.EMPTY_TYPE) &&
+      (targetQuant == TypeConstants::QUANT_QUESTION ||
+       targetQuant == TypeConstants::QUANT_STAR))
+  {
+    return GENV_TYPESYSTEM.EMPTY_TYPE;
+  }
+
+  TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
 
   return sctx->get_typemanager()->create_type(*theTargetType, q);
 }

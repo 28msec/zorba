@@ -39,7 +39,7 @@ static bool isIndexJoinPredicate(RewriterContext&, PredicateInfo&);
 
 static bool rewriteJoin(RewriterContext&, PredicateInfo&);
 
-static const var_expr* findForVar(RewriterContext&, const expr*, ulong&);
+  static const var_expr* findForVar(static_context*, RewriterContext&, const expr*, ulong&);
 
 static bool checkVarDependency(RewriterContext&, expr*, ulong);
 
@@ -199,12 +199,12 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   // Analyze each operand of the eq to see if it depends on a single for
   // variable. If that is not true, we reject this predicate.
   ulong var1id;
-  const var_expr* var1 = findForVar(rCtx, op1, var1id);
+  const var_expr* var1 = findForVar(sctx, rCtx, op1, var1id);
   if (var1 == NULL)
     return false;
 
   ulong var2id;
-  const var_expr* var2 = findForVar(rCtx, op2, var2id);
+  const var_expr* var2 = findForVar(sctx, rCtx, op2, var2id);
   if (var2 == NULL)
     return false;
 
@@ -235,6 +235,12 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     outerVarId = var2id;
     innerVarId = var1id;
   }
+
+  // The domain of the outer var must contain more than 1 item.
+  xqtref_t outerDomainType = predInfo.theOuterVar->get_domain_expr()->return_type(sctx);
+
+  if (TypeOps::type_max_cnt(*outerDomainType) < 2)
+    return false;
 
   // The expr that defines the inner var must not depend on the outer var.
   expr* innerDomainExpr = predInfo.theInnerVar->get_for_clause()->get_expr();
@@ -291,6 +297,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   return that FOR var and its prefix id; otherwise return NULL.
 ********************************************************************************/
 static const var_expr* findForVar(
+    static_context* sctx,
     RewriterContext& rCtx,
     const expr* curExpr,
     ulong& varid)
@@ -313,11 +320,21 @@ static const var_expr* findForVar(
 
     if (var->get_kind() == var_expr::for_var)
     {
-      break;
+      xqtref_t domainType = var->get_domain_expr()->return_type(sctx);
+
+      if (domainType->get_quantifier() == TypeConstants::QUANT_ONE)
+      {
+        // treat this var as a let var
+        curExpr = var->get_domain_expr();
+      }
+      else
+      {
+        break;
+      }
     }
     else if (var->get_kind() == var_expr::let_var)
     {
-      curExpr = var->get_forletwin_clause()->get_expr();
+      curExpr = var->get_domain_expr();
     }
     else
     {

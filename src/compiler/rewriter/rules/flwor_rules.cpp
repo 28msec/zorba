@@ -37,7 +37,7 @@ static void collect_flw_vars(const flwor_expr& flwor, VarSetAnnVal& vars);
 
 static bool is_trivial_expr(const expr* e);
 
-static bool safe_to_fold_single_use(var_expr*, const flwor_expr&, static_context*);
+static bool safe_to_fold_single_use(var_expr*, TypeConstants::quantifier_t, const flwor_expr&, static_context*);
 
 static bool var_in_try_block_or_in_loop(static_context*, const var_expr*, const expr*, bool, bool, ulong&);
 
@@ -109,6 +109,10 @@ expr_t subst_vars(RewriterContext rCtx0, expr_t root, const var_expr* var, expr*
 ********************************************************************************/
 RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
+  const QueryLoc& loc = LOC(node);
+  static_context* sctx = rCtx.getStaticContext(node);
+  short sctxid = node->get_sctx_id();
+
   flwor_expr* flworp = dynamic_cast<flwor_expr *>(node);
 
   if (flworp == NULL || flworp->is_general())
@@ -153,39 +157,39 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       expr_t oldWhere = whereExpr;
       flwor.remove_where_clause();
 
-      return fix_if_annotations(new if_expr(node->get_sctx_id(),
-                                            LOC(node),
+      return fix_if_annotations(new if_expr(sctxid,
+                                            loc,
                                             NULL,
                                             oldWhere,
                                             &flwor,
-                                            fo_expr::create_seq(node->get_sctx_id(), LOC(node))));
+                                            fo_expr::create_seq(sctxid, loc)));
     }
   }
 
   bool modified = false;
-  static_context* sctx = rCtx.getStaticContext(node);
 
   // (a) Remove, if possible, FOR/LET vars that are not referenced anywhere
   // (b) Replace, if possible, FOR/LET vars that are referenced only once, with
   //     their domain expr.
-  for (ulong i = 0; i < numClauses; )
+  // (c) Change a LET var into a FOR var, if its domain expr consists of
+  //     exactly one item.
+  for (ulong i = 0; i < numClauses; ++i)
   {
+    bool substitute = false;
+
     flwor_clause& c = *flwor.get_clause(i, false);
 
-    if (c.get_kind() == flwor_clause::for_clause ||
-        c.get_kind() == flwor_clause::let_clause)
+    if (c.get_kind() == flwor_clause::for_clause)
     {
       numForLetClauses++;
-      forletwin_clause* flwc = static_cast<forletwin_clause *>(&c);
       for_clause* fc = static_cast<for_clause *>(&c);
 
-      bool is_let = c.get_kind() == flwor_clause::let_clause;
-
-      expr* domainExpr = flwc->get_expr();
-      var_expr* var = flwc->get_var();
-      const var_expr* pvar = (is_let ? NULL : fc->get_pos_var());
-      TypeConstants::quantifier_t for_quant;
-      ulong for_quant_cnt = 2;  // cardinality of FOR clause: 0, 1 or more
+      expr* domainExpr = fc->get_expr();
+      xqtref_t domainType = domainExpr->return_type(sctx);
+      var_expr* var = fc->get_var();
+      TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
+      ulong domainCount = TypeOps::type_max_cnt(*domainType);
+      const var_expr* pvar = fc->get_pos_var();
 
       if (pvar != NULL && count_variable_uses(&flwor, pvar, &rCtx, 1) == 0)
       {
@@ -193,93 +197,108 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         pvar = NULL;
       }
 
-      if (domainExpr->is_sequential())
-      {
-        ++i;
+      // Cannot substitute a FOR var whose domain is a sequential expr or
+      // might contain more than 1 items.
+      if (domainExpr->is_sequential() || domainCount >= 2)
         continue;
+
+      // FOR clause with 0 cardinality
+      if (domainCount == 0)
+        return fo_expr::create_seq(node->get_sctx_id(), LOC(node));
+
+      if (pvar != NULL)
+      {
+        MODIFY(subst_vars(rCtx, node, pvar, new const_expr(sctxid,
+                                                           loc,
+                                                           xqp_integer::parseInt(1))));
       }
 
-      if (! is_let)
+      int uses = count_variable_uses(&flwor, var, &rCtx, 2);
+
+      if (uses > 1 &&
+          is_trivial_expr(domainExpr) &&
+          domainQuant == TypeConstants::QUANT_ONE)
       {
-        xqtref_t domainType = domainExpr->return_type(sctx);
-        for_quant_cnt = TypeOps::type_max_cnt(*domainType);
-        for_quant = domainType->get_quantifier();
+        subst_vars(rCtx, node, var, domainExpr);
+        substitute = true;
+      }
+      else if (uses == 1 &&
+               ((is_trivial_expr(domainExpr) &&
+                 domainQuant == TypeConstants::QUANT_ONE) ||
+                safe_to_fold_single_use(var, domainQuant, flwor, sctx)))
+      {
+        subst_vars(rCtx, node, var, domainExpr);
+        substitute = true;
+      }
+      else if (uses == 0 &&
+               domainExpr->get_annotation(Annotations::NONDISCARDABLE_EXPR) !=
+               TSVAnnotationValue::TRUE_VAL &&
+               domainQuant == TypeConstants::QUANT_ONE)
+      {
+        substitute = true;
       }
 
-      // Cannot substitute a FOR var whose domain might contain more than 1 items.
-      if (is_let || for_quant == TypeConstants::QUANT_ONE)
+      if (substitute)
       {
-        if (for_quant_cnt == 0)
-        {
-          // FOR clause with 0 cardinality
-          return fo_expr::create_seq(node->get_sctx_id(), LOC(node));
-        }
-
-        if (pvar != NULL)
-        {
-          MODIFY(subst_vars(rCtx,
-                            node,
-                            pvar,
-                            new const_expr(node->get_sctx_id(),
-                                           LOC(node),
-                                           xqp_integer::parseInt(1))));
-        }
-
-        int uses = count_variable_uses(&flwor, var, &rCtx, 2);
-        if (uses > 1)
-        {
-          if (is_trivial_expr(domainExpr))
-          {
-            subst_vars(rCtx, node, var, domainExpr);
-            MODIFY(flwor.remove_clause(i));
-            --numClauses;
-            --numForLetClauses;
-          }
-          else
-          {
-            ++i;
-          }
-        }
-        else // uses == 1 or 0
-        {
-          if (uses == 1)
-          {
-            if (is_trivial_expr(domainExpr) || safe_to_fold_single_use(var, flwor, sctx))
-            {
-              subst_vars(rCtx, node, var, domainExpr);
-              MODIFY(flwor.remove_clause(i));
-              --numClauses;
-              --numForLetClauses;
-            }
-            else
-            {
-              ++i;
-            }
-          }
-          else // uses == 0
-          {
-            if (domainExpr->get_annotation(Annotations::NONDISCARDABLE_EXPR) !=
-                TSVAnnotationValue::TRUE_VAL)
-            {
-              MODIFY(flwor.remove_clause(i));
-              --numClauses;
-              --numForLetClauses;
-            }
-            else
-            {
-              ++i;
-            }
-          }
-        }
-      }
-      else
-      {
-        ++i;
+        MODIFY(flwor.remove_clause(i));
+        --numClauses;
+        --numForLetClauses;
+        --i;
       }
     }
-    else
+    else if (c.get_kind() == flwor_clause::let_clause)
     {
-      ++i;
+      let_clause* lc = static_cast<let_clause *>(&c);
+      numForLetClauses++;
+
+      expr* domainExpr = lc->get_expr();
+      xqtref_t domainType = domainExpr->return_type(sctx);
+      TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
+      var_expr* var = lc->get_var();
+
+      int uses = count_variable_uses(&flwor, var, &rCtx, 2);
+
+      if (uses > 1 && !domainExpr->is_sequential() && is_trivial_expr(domainExpr))
+      {
+        subst_vars(rCtx, node, var, domainExpr);
+        substitute = true;
+      }
+      else if (uses == 1)
+      {
+        if (!domainExpr->is_sequential() &&
+            (is_trivial_expr(domainExpr) ||
+             safe_to_fold_single_use(var, TypeConstants::QUANT_ONE, flwor, sctx)))
+        {
+          subst_vars(rCtx, node, var, domainExpr);
+          substitute = true;
+        }
+      }
+      else if (uses == 0 &&
+               !domainExpr->is_sequential() &&
+               domainExpr->get_annotation(Annotations::NONDISCARDABLE_EXPR) !=
+               TSVAnnotationValue::TRUE_VAL)
+      {
+        substitute = true;
+      }
+
+      if (substitute)
+      {
+        MODIFY(flwor.remove_clause(i));
+        --numClauses;
+        --numForLetClauses;
+        --i;
+      }
+      else if (domainQuant == TypeConstants::QUANT_ONE)
+      {
+        let_clause_t save = lc;
+        MODIFY(flwor.remove_clause(i));
+        const QueryLoc& loc = var->get_loc();
+        var_expr_t fvar = new var_expr(sctxid, loc, var_expr::for_var, var->get_name()); 
+        for_clause_t fc = new for_clause(NULL, sctxid, loc, fvar, domainExpr);
+        flwor.add_clause(i, fc);
+
+        subst_vars(rCtx, node, var, fvar.getp());
+      }
     }
   }
 
@@ -402,6 +421,7 @@ static bool is_trivial_expr(const expr* e)
 ********************************************************************************/
 static bool safe_to_fold_single_use(
     var_expr* v,
+    TypeConstants::quantifier_t for_quant,
     const flwor_expr& flwor,
     static_context* sctx)
 {
@@ -415,9 +435,53 @@ static bool safe_to_fold_single_use(
   for (ulong i = 0; i < flwor.num_clauses(); ++i)
   {
     const flwor_clause& c = *flwor[i];
+    flwor_clause::ClauseKind kind = c.get_kind();
 
-    if (c.get_kind() == flwor_clause::for_clause ||
-        c.get_kind() == flwor_clause::let_clause)
+    if (kind == flwor_clause::for_clause)
+    {
+      const for_clause& fc = *static_cast<const for_clause *>(&c);
+      var_expr* var = fc.get_var();
+
+      if (! declared)
+      {
+        declared = (v == var);
+        continue;
+      }
+
+      if (count_variable_uses(fc.get_expr(), v, NULL, 1) == 1)
+      {
+        if (for_quant != TypeConstants::QUANT_ONE)
+        {
+          xqtref_t type = fc.get_expr()->get_return_type_with_empty_input(sctx, v);
+
+          if (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.EMPTY_TYPE))
+          {
+            referencingExpr = fc.get_expr();
+            break;
+          }
+          else
+          {
+            return false;
+          }
+        }
+        else
+        {
+          referencingExpr = fc.get_expr();
+          break;
+        }
+      }
+
+      // If the var is referenced inside a for loop with more than 1 iterations,
+      // then we don't replace the var with its domain expr because the domain
+      // expr will be computed once per iteration instead of just once.
+      if (TypeOps::type_max_cnt(*fc.get_expr()->return_type(sctx)) >= 2)
+        return false;
+
+      // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
+      if (hasNodeConstr && fc.get_expr()->contains_node_construction())
+        return false;
+    }
+    else if (kind == flwor_clause::let_clause)
     {
       const forletwin_clause& flc = *static_cast<const forletwin_clause *>(&c);
       var_expr* var = flc.get_var();
@@ -428,46 +492,54 @@ static bool safe_to_fold_single_use(
         continue;
       }
 
-      if (count_variable_uses(flc.get_expr(), v, NULL, 1) == 1)
+      if (for_quant == TypeConstants::QUANT_ONE &&
+          count_variable_uses(flc.get_expr(), v, NULL, 1) == 1)
       {
         referencingExpr = flc.get_expr();
         break;
       }
 
-      // If the var is referenced inside a for loop with more than 1 iterations,
-      // then we don't replace the var with its domain expr because the domain
-      // expr will be computed once per iteration instead of just once.
-      if (c.get_kind() == flwor_clause::for_clause &&
-          TypeOps::type_max_cnt(*flc.get_expr()->return_type(sctx)) >= 2)
-      {
-        return false;
-      }
-
       // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
       if (hasNodeConstr && c.get_expr()->contains_node_construction())
-      {
         return false;
+    }
+    else if (kind == flwor_clause::where_clause)
+    {
+      if (for_quant == TypeConstants::QUANT_ONE && 
+          count_variable_uses(c.get_expr(), v, NULL, 1) == 1)
+      {
+        referencingExpr = c.get_expr();
+        break;
       }
     }
-  }
-
-  if (flwor.get_where() != NULL &&
-      referencingExpr == NULL &&
-      count_variable_uses(flwor.get_where(), v, NULL, 1) == 1)
-  {
-    referencingExpr = flwor.get_where();
+    else if (kind == flwor_clause::order_clause)
+    {
+      if (for_quant == TypeConstants::QUANT_ONE)
+      {
+        // TODO
+      }
+    }
   }
 
   if (referencingExpr == NULL &&
       count_variable_uses(flwor.get_return_expr(), v, NULL, 1) == 1)
   {
-    referencingExpr = flwor.get_return_expr();
+    if (for_quant != TypeConstants::QUANT_ONE)
+    {
+      xqtref_t type = 
+      flwor.get_return_expr()->get_return_type_with_empty_input(sctx, v);
+
+      if (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.EMPTY_TYPE))
+        referencingExpr = flwor.get_return_expr();
+    }
+    else
+    {
+      referencingExpr = flwor.get_return_expr();
+    }
   }
 
   if (referencingExpr == NULL)
-  {
     return false;
-  }
 
   ulong numRefs = 1;
   return !var_in_try_block_or_in_loop(sctx,
@@ -773,6 +845,8 @@ static bool is_subseq_pred(
 ********************************************************************************/
 RULE_REWRITE_PRE(MergeFLWOR)
 {
+  static_context* sctx = rCtx.getStaticContext(node);
+
   flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
 
   if (flwor == NULL)
@@ -850,7 +924,20 @@ RULE_REWRITE_PRE(MergeFLWOR)
 
         for (ulong j = 0; j < numNestedClauses; ++j)
         {
-          if ((*nestedFlwor)[j]->get_kind() != flwor_clause::let_clause)
+          flwor_clause* nestedClause = nestedFlwor->get_clause(j, false);
+          flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
+
+          if (nestedClauseKind == flwor_clause::for_clause)
+          {
+            xqtref_t nestedDomainType = nestedClause->get_expr()->return_type(sctx);
+
+            if (nestedDomainType->get_quantifier() != TypeConstants::QUANT_ONE)
+            {
+              merge = false;
+              break;
+            }
+          }
+          else if (nestedClauseKind != flwor_clause::let_clause)
           {
             merge = false;
             break;

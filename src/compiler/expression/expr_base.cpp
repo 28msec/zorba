@@ -22,6 +22,7 @@
 #include "compiler/expression/expr_visitor.h"
 
 #include "functions/function.h"
+#include "functions/library.h"
 
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
@@ -1021,6 +1022,26 @@ void expr::clear_annotations()
     ++iter;
   }
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t expr::get_return_type_with_empty_input(
+    static_context* sctx,
+    const expr* input) const
+{
+  expr_t emptyExpr = new fo_expr(input->get_sctx_id(),
+                                 QueryLoc::null,
+                                 GET_BUILTIN_FUNCTION(OP_CONCATENATE_N));
+  expr::substitution_t subst;
+  subst[input] = emptyExpr;
+
+  expr_t cloneExpr = clone(subst);
+
+  return cloneExpr->return_type(sctx);
+}
+
 
 }
 

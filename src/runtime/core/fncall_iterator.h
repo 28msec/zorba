@@ -62,6 +62,8 @@ class UDFunctionCallIteratorState : public PlanIteratorState
 class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator, 
                                                        UDFunctionCallIteratorState> 
 {
+  static ulong theDepth;
+
 protected:
   user_function* theUDF;
 

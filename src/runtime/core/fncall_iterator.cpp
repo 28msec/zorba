@@ -51,6 +51,9 @@ SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
 
 
+ulong UDFunctionCallIterator::theDepth = 0;
+
+
 UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   :
   theFnBodyStateBlock(NULL),
@@ -255,7 +258,19 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     //lDebugger->pushStack(std::make_pair<std::string, const QueryLoc>(name.str(), loc)); 
     //lDebugger->isFunctionExecution = true;
   }
-  
+
+#ifndef NDEBUG
+  if (*theUDF->getName()->getPrefix() == "raytracer" &&
+      *theUDF->getName()->getLocalName() != "test-ray")
+  {
+    std::cout << std::string(theDepth, ' ') 
+              << "Invoking function " << theUDF->getName()->getStringValue()->c_str()
+      //<< " from iterator " << this
+              << std::endl << std::endl;
+    theDepth += 2;
+  }
+#endif
+
   for (;;) 
   {
     try
@@ -287,6 +302,17 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     lDebugger->popStack();
   }
   */
+#ifndef NDEBUG
+  if (*theUDF->getName()->getPrefix() == "raytracer" &&
+      *theUDF->getName()->getLocalName() != "test-ray")
+  {
+    theDepth -= 2;
+    std::cout << std::string(theDepth, ' ') 
+              << "Returned from function " << theUDF->getName()->getStringValue()->c_str()
+      //<< " in iterator " << this
+              << std::endl << std::endl;
+  }
+#endif
 
   STACK_END(state);
 }

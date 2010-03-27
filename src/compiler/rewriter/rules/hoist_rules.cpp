@@ -23,6 +23,8 @@
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/flwor_expr.h"
 
+#include "types/typeops.h"
+
 #include "util/dynamic_bitset.h"
 
 #include "zorbaerrors/Assert.h"
@@ -204,7 +206,7 @@ static bool hoist_expressions(
     expr_iterator i = e->expr_begin();
     while(!i.done())
     {
-      expr *ce = &*(*i);
+      expr* ce = &*(*i);
       if (ce)
       {
         expr_t var = try_hoisting(rCtx, ce, varmap, freevarMap, fholder);
@@ -243,6 +245,8 @@ static expr_t try_hoisting(
     return NULL;
   }
 
+  static_context* sctx = rCtx.getStaticContext(e);
+
   std::map<const expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
   const DynamicBitset& varset = fvme->second;
@@ -258,38 +262,22 @@ static expr_t try_hoisting(
     // If any free variable is a group-by variable, give up.
     if (gc != NULL)
     {
-      for(flwor_expr::clause_list_t::const_iterator iter = h->flwor->clause_begin();
-          iter != h->flwor->clause_end();
-          ++iter)
+      const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
+      ulong numGroupVars = gvars.size();
+
+      for (ulong i = 0; i < numGroupVars; ++i)
       {
-        if ((*iter) != gc)
-          continue;
-
-        const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-        unsigned numGroupVars = gvars.size();
-
-        for (unsigned i = 0; i < numGroupVars; ++i)
-        {
-          if (contains_var(gvars[i].second.getp(), varmap, varset))
-            return NULL;
-        }
+        if (contains_var(gvars[i].second.getp(), varmap, varset))
+          return NULL;
       }
 
-      for(flwor_expr::clause_list_t::const_iterator iter = h->flwor->clause_begin();
-          iter != h->flwor->clause_end();
-          ++iter)
+      const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
+      ulong numNonGroupVars = ngvars.size();
+
+      for (ulong i = 0; i < numNonGroupVars; ++i)
       {
-        if ((*iter) != gc)
-          continue;
-
-        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-        unsigned numNonGroupVars = ngvars.size();
-
-        for (unsigned i = 0; i < numNonGroupVars; ++i)
-        {
-          if (contains_var(ngvars[i].second.getp(), varmap, varset))
-            return NULL;
-        }
+        if (contains_var(ngvars[i].second.getp(), varmap, varset))
+          return NULL;
       }
     }
 
@@ -309,7 +297,17 @@ static expr_t try_hoisting(
         found = true;
         break;
       }
-      inloop = inloop || (flc->get_kind() == flwor_clause::for_clause);
+
+      if (rCtx.theHoistOutOfLetVars)
+      {
+        inloop = (inloop || flc->get_kind() == flwor_clause::for_clause);
+      }
+      else
+      {
+        inloop = (inloop ||
+                  (flc->get_kind() == flwor_clause::for_clause &&
+                   TypeOps::type_max_cnt(*flc->get_expr()->return_type(sctx)) >= 2));
+      }
     }
 
     if (!found)

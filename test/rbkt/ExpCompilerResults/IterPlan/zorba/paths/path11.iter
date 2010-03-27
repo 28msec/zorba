@@ -2,7 +2,7 @@ Iterator tree for main query:
 <NodeSortIterator distinct="true" ascending="true">
   <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,b)" typename="*" nill allowed="0">
     <flwor::FLWORIterator>
-      <LetVariable name="x" materialize="true">
+      <ForVariable name="x">
         <ElementIterator>
           <SingletonIterator value="xs:QName(,,a)"/>
           <FnConcatIterator>
@@ -20,7 +20,7 @@ Iterator tree for main query:
             </ElementIterator>
           </FnConcatIterator>
         </ElementIterator>
-      </LetVariable>
+      </ForVariable>
       <ForVariable name="y">
         <FnConcatIterator>
           <SingletonIterator value="xs:integer(1)"/>
@@ -29,7 +29,7 @@ Iterator tree for main query:
         </FnConcatIterator>
       </ForVariable>
       <ReturnClause>
-        <LetVarIterator varname="x"/>
+        <ForVarIterator varname="x"/>
       </ReturnClause>
     </flwor::FLWORIterator>
   </ChildAxisIterator>
