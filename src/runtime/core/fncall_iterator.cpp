@@ -51,6 +51,9 @@ SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
 
 
+//#define TRACE_UDF_CALLS
+
+
 ulong UDFunctionCallIterator::theDepth = 0;
 
 
@@ -259,7 +262,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     //lDebugger->isFunctionExecution = true;
   }
 
-#ifndef NDEBUG
+#ifdef TRACE_UDF_CALLS
   if (*theUDF->getName()->getPrefix() == "raytracer" &&
       *theUDF->getName()->getLocalName() != "test-ray")
   {
@@ -302,7 +305,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     lDebugger->popStack();
   }
   */
-#ifndef NDEBUG
+#ifdef TRACE_UDF_CALLS
   if (*theUDF->getName()->getPrefix() == "raytracer" &&
       *theUDF->getName()->getLocalName() != "test-ray")
   {
