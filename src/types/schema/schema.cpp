@@ -1183,8 +1183,14 @@ void Schema::checkForAnonymousTypesInParticle(const TypeManager* typeManager,
     if (termType == XSParticle::TERM_ELEMENT)
     {
         XSElementDeclaration *xsElement = xsParticle->getElementTerm();
-        XSTypeDefinition* xsParticleTypeDef = xsElement->getTypeDefinition();
-        addAnonymousTypeToCache(typeManager, xsParticleTypeDef);
+
+        if ( xsElement->getScope() != XSConstants::SCOPE_GLOBAL )
+        {
+          // if reference to a global definition skip it, 
+          // otherwise infinite loop
+          XSTypeDefinition* xsParticleTypeDef = xsElement->getTypeDefinition();
+          addAnonymousTypeToCache(typeManager, xsParticleTypeDef);
+        }
     }
     else if (termType == XSParticle::TERM_MODELGROUP)
     {

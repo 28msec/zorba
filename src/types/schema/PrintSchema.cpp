@@ -245,19 +245,27 @@ void PrintSchema::processParticle(std::string pre, bool excludeBuiltIn,
     std::cout << pre << "- xsParticle is NULL\n";
     return;
   }
+
   XSParticle::TERM_TYPE termType = xsParticle->getTermType();
   if (termType == XSParticle::TERM_ELEMENT)
   {
     XSElementDeclaration *xsElement = xsParticle->getElementTerm();
     std::cout << pre << "- " << StrX(xsElement->getName());
-    XSTypeDefinition* xsTypeDef = xsElement->getTypeDefinition();
-    if ( xsTypeDef->getAnonymous() )
+
+    if ( xsElement->getScope() != XSConstants::SCOPE_GLOBAL )
     {
-        std::cout << "  Type anonymous:\n";
-        processTypeDefinition(pre + "    ", excludeBuiltIn, xsTypeDef);
+      XSTypeDefinition* xsTypeDef = xsElement->getTypeDefinition();
+      if ( xsTypeDef->getAnonymous() )
+      {
+          std::cout << "  Type anonymous:\n";
+          processTypeDefinition(pre + "    ", excludeBuiltIn, xsTypeDef);
+      }
+      else
+        std::cout << "\n";
     }
     else
-        std::cout << "\n";
+      std::cout << "  ref to global\n";
+ 
   }
   else if (termType == XSParticle::TERM_MODELGROUP)
   {
