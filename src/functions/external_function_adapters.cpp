@@ -25,12 +25,12 @@ END_SERIALIZABLE_CLASS_VERSIONS(stateless_external_function_adapter)
 stateless_external_function_adapter::stateless_external_function_adapter(
     const signature& sig,
     StatelessExternalFunction *function, 
-    bool aIsUpdating,
+    expr_script_kind_t aUpdateType,
     const xqp_string& aPrefix)
   :
   external_function(sig),
   m_function(function),
-  theUpdateType((aIsUpdating ? UPDATE_EXPR : SIMPLE_EXPR)),
+  theUpdateType(aUpdateType),
   thePrefix(aPrefix)
 {
 }

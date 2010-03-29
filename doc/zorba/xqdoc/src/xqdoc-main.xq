@@ -64,7 +64,7 @@ declare variable $indexCollector := <modules/>;
  :)
 declare sequential function local:generateXQDocXml() as xs:string*
 {
-  for $filedirs in tokenize($modulesPath, ":")
+  for $filedirs in tokenize($modulesPath, ";")
   for $file in file:files($filedirs, "\.xq$", fn:true())
   let $filePath := fn:concat($filedirs, file:path-separator(), $file)
   let $xqdoc := xqd:xqdoc(file:path-to-uri($filePath))
@@ -180,6 +180,7 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
   for $file in $xhtml//*:include
   let $type := $file/@type
   let $path := local:getFilePath($file/text())
+  let $read_text := file:read-text($path)
   return block {
   (: at the moment there is no way to ship the files defined as links with the packages/installers
     if (matches($type, "link")) then 
@@ -189,7 +190,7 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
       replace node $file with
         if (fn:exists($path)) then
           <pre> {$path}:<br />
-          <pre class="fragment">{file:read-text($path)}</pre>
+          <pre class="fragment">{$read_text}</pre>
           </pre>
         else
           <pre class="fragment">No example matching pattern '{$file/text()}' was found. Please update 'examplePath' variable.</pre>
@@ -227,11 +228,13 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
 declare sequential function local:generateIndexHtml($indexPath as xs:string) as document-node() {
     let $indexHtmlDoc := file:read-xml($indexPath)
     return block {
-        for $module in $indexCollector/module
-        return
-            insert nodes
+        insert nodes
+            for $module in $indexCollector/module
+            order by fn:data($module/@uri)
+            return
                 (<a href="{$module/@file}">{data($module/@uri)}</a>, <br />)
-                 as last into $indexHtmlDoc/*:html/*:body;
+        as last into $indexHtmlDoc/*:html/*:body;
+        
         $indexHtmlDoc;
     }
 };

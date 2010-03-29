@@ -297,7 +297,8 @@ protected:
         long                         pos,
         store::StoreConsts::NodeKind nodeKind);
 
-  XmlNode() {}
+  XmlNode()
+    : theParent(0) {}
 
 public:
 #ifndef NDEBUG

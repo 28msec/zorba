@@ -118,8 +118,9 @@ declare sequential function file:files(
 ) as xs:string* {
   for $f in file:files($path)
   let $full := fn:concat($path, "/", $f)
-  return
-    if ($recursive and file:is-directory($full))
+  let $is_directory := file:is-directory($full)
+  let $result :=
+    if ($recursive and $is_directory)
     then
       for $child in file:files($full, $pattern, $recursive)
       return fn:concat($f, file:path-separator(), $child)
@@ -127,6 +128,7 @@ declare sequential function file:files(
       if (fn:matches($f, $pattern))
       then $f
       else ()
+  return $result
 };
 
 (:~

@@ -31,7 +31,7 @@ namespace zorba {
       getExternalModule(const String& aURI) const;
 
       virtual bool
-      getTraceStream(std::ostream&) const;
+      getTraceStream(std::ostream*&) const;
 
       virtual CollectionURIResolver*
       getCollectionURIResolver() const;

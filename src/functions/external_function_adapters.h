@@ -49,7 +49,7 @@ public:
   stateless_external_function_adapter(
         const signature& sig, 
         StatelessExternalFunction *function,
-        bool aIsUpdating,
+        expr_script_kind_t aUpdateType,
         const xqp_string& aPrefix);
   
   ~stateless_external_function_adapter();

@@ -111,7 +111,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                                    vartypes),
                                            state->ccb.get(),
                                            state->dctx.get(),
-                                           0, // no query, yet and hence no no external functions in eval plans
+                                           planState.theRuntimeCB->theQuery, // HACK/TODO: use the right query (static or dynamic context)
                                            planState.theStackDepth + 1));
     state->eval_plan->checkDepth(loc);
     

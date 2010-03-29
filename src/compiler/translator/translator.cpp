@@ -2957,7 +2957,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       auto_ptr<istream> modfile;
       
       try {
-      modfile.reset(standardModuleResolver->resolve(compURI, *sctx_p, compURL));
+        modfile.reset(standardModuleResolver->resolve(compURI, *sctx_p, compURL));
       } catch (error::ZorbaError& e) {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
@@ -3204,11 +3204,21 @@ void* begin_visit(const VFO_DeclList& v)
 
       ZORBA_ASSERT(ef != NULL);
 
-      bool updating = (func_decl->get_type() == ParseConstants::fn_extern_update);
+      expr_script_kind_t lScriptKind; 
+      switch (func_decl->get_type()) {
+      case ParseConstants::fn_extern_update:
+        lScriptKind = UPDATE_EXPR;
+        break;
+      case ParseConstants::fn_extern_sequential:
+        lScriptKind = SEQUENTIAL_EXPR;
+        break;
+      default:
+        lScriptKind = SIMPLE_EXPR;
+      }
 
-      f = new stateless_external_function_adapter(sig,
-                                                  ef,
-                                                  updating,
+      f = new stateless_external_function_adapter(sig, 
+                                                  ef, 
+                                                  lScriptKind, 
                                                   qnameItem->getPrefix());
       break;
     }
@@ -8228,10 +8238,16 @@ void* begin_visit(const FunctionCall& v)
     if (v.get_arg_list() != NULL)
       numArgs = v.get_arg_list()->size();
 
-    function* f = lookup_fn(qname, numArgs, loc);
+    try {
+      function* f = lookup_fn(qname, numArgs, loc);
 
-    if (f != NULL && dynamic_cast<user_function*>(f) != NULL)
-      thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
+      if (f != NULL && dynamic_cast<user_function*>(f) != NULL)
+        thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
+    } catch (error::ZorbaError& e) {
+      // BUGFIX: rethrow error with location if namespace binding could
+      // not be found
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
   }
 
   push_nodestack(NULL);

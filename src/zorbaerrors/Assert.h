@@ -64,7 +64,7 @@ public:
 #define __ZORBA_ASSERT_aux1( cond, line )                               \
   do {                                                                  \
     if (! (cond)) {                                                     \
-      StackTracePrinter p (&std::cerr);                                 \
+      zorba::StackTracePrinter p (&std::cerr);                                 \
       ZORBA_ERROR_PARAM(XQP0005_SYSTEM_ASSERT_FAILED, #cond, __FILE__ ":" __ZORBA_ASSERT_aux2 (line)); \
     }                                                                   \
   } while(0)

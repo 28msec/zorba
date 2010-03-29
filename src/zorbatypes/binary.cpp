@@ -150,8 +150,8 @@ void Base64::encode(const std::vector<char>& aSource, std::vector<char>& aResult
   size_t lCurPos = 0;
   int i = 0;
   int j = 0;
-  char char_array_3[3];
-  char char_array_4[4];
+  char char_array_3[3] = {'\0','\0','\0'};
+  char char_array_4[4] = {'\0','\0','\0','\0'};
 
   while (in_len--) {
     char_array_3[i++] = aSource[lCurPos++];
@@ -191,8 +191,11 @@ xqpString Base64::encode(std::istream& aStream)
   std::vector<char> source, result;
   xqpString xqpResult;
   
-  while (aStream.good())
-    source.push_back((char)(aStream.get()));
+  char buf[1024];
+  while (!aStream.eof()) {
+    aStream.read(buf, 1024);
+    source.insert(source.end(), buf, buf + aStream.gcount());
+  }
 
   encode(source, result);
   for (unsigned int i=0; i<result.size(); i++)

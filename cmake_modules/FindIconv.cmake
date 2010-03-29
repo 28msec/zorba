@@ -18,6 +18,7 @@
 #  ICONV_FOUND - system has Iconv
 #  ICONV_INCLUDE_DIR - the Iconv include directory
 #  ICONV_LIBRARY - Link these to use Iconv
+#  ICONV_LIBRARY_DIR - the directory in which iconv is searched
 #
 
 
@@ -27,12 +28,14 @@ IF (ICONV_INCLUDE_DIR AND ICONV_LIBRARY)
 ENDIF (ICONV_INCLUDE_DIR AND ICONV_LIBRARY)
 
 FIND_PATH(ICONV_INCLUDE_DIR iconv.h
+  HINTS ${ICONV_INCLUDE_HINT}
   /usr/include
   /usr/local/include
   DOC "Include directory for the Iconv library linkage (the path to iconv.h file)"
 )
 
 FIND_LIBRARY(ICONV_LIBRARY NAMES iconv
+  HINTS ${ICONV_LIBRARY_HINT}
   PATHS
   /usr/${LIB_DESTINATION}
   /usr/local/${LIB_DESTINATION}

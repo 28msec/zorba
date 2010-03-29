@@ -22,7 +22,7 @@ namespace zorba {
   SerializationCallback::getExternalModule(const String& aURI) const { return 0; }
 
   bool
-  SerializationCallback::getTraceStream(std::ostream&) const { return false; }
+  SerializationCallback::getTraceStream(std::ostream*&) const { return false; }
 
   CollectionURIResolver*
   SerializationCallback::getCollectionURIResolver() const { return 0; }

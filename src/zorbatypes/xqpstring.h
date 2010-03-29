@@ -42,7 +42,8 @@ class ZORBA_DLL_PUBLIC xqpStringStore : public RCObject
 {
   friend class xqpString;
 
-  friend  std::ostream& operator<<(std::ostream& os, const xqpStringStore& src);
+  // ZORBA_DLL_PUBLIC is needed for Windows compilation.
+  friend ZORBA_DLL_PUBLIC std::ostream& operator<<(std::ostream& os, const xqpStringStore& src);
 
 public:
   typedef ptrdiff_t distance_type;

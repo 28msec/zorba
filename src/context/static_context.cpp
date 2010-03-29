@@ -481,7 +481,7 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
     }
 
     if (lUserTraceStream) {
-      bool lTraceStream =  lCallback->getTraceStream(*theTraceStream);
+      bool lTraceStream =  lCallback->getTraceStream(theTraceStream);
       if (!lTraceStream) {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
