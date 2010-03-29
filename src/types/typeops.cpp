@@ -627,15 +627,15 @@ xqtref_t TypeOps::union_type(const XQType& type1, const XQType& type2)
 ********************************************************************************/
 xqtref_t TypeOps::intersect_type(const XQType& type1, const XQType& type2)
 {
-  const TypeManager *mgr = get_lower_manager(type1.get_manager(), type2.get_manager());
-  XQType::type_kind_t tk1 = type1.type_kind (), tk2 = type2.type_kind ();
+  const TypeManager* mgr = get_lower_manager(type1.get_manager(), type2.get_manager());
+  XQType::type_kind_t tk1 = type1.type_kind(), tk2 = type2.type_kind ();
 
   if (tk1 < tk2)
-    return intersect_type (type2, type1);
+    return intersect_type(type2, type1);
 
-  TypeConstants::quantifier_t q1 = quantifier (type1), q2 = quantifier (type2);
+  TypeConstants::quantifier_t q1 = quantifier(type1), q2 = quantifier(type2);
 
-  if (is_subtype (type1, type2))
+  if (is_subtype(type1, type2))
     return &type1;
 
   else if (is_subtype (type2, type1))

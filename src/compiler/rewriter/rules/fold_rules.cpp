@@ -84,8 +84,8 @@ static expr_t execute (
   }
   catch (error::ZorbaError& /*e*/)
   {
-    node->put_annotation (Annotations::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
-    node->put_annotation (Annotations::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
+    node->put_annotation(Annotations::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
+    node->put_annotation(Annotations::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
     return node;
     // TODO:
     // we had to disable folding of errors because the FnErrorIterator
@@ -443,7 +443,7 @@ RULE_REWRITE_POST(MarkImpureExprs)
   // TODO: propagate non-discardable prop for FLWOR vars (see nodeid_rules.cpp)
 
   Annotations::Key k = Annotations::NONDISCARDABLE_EXPR;
-  switch (node->get_expr_kind ())
+  switch (node->get_expr_kind())
   {
   // TODO: update exprs probably non-discardable as well
   case fo_expr_kind:
@@ -465,7 +465,7 @@ RULE_REWRITE_POST(MarkImpureExprs)
   }
 
   if (node->get_annotation(k) != TSVAnnotationValue::TRUE_VAL.getp())
-    propagate_any_child_up (node, k);
+    propagate_any_child_up(node, k);
 
   return NULL;
 }
@@ -546,9 +546,12 @@ RULE_REWRITE_PRE(PartialEval)
   }
 
   case fo_expr_kind:
+  {
     return partial_eval_fo(rCtx, dynamic_cast<fo_expr *> (node));
+  }
 
-  default: break;
+  default:
+    break;
   }
 
   return NULL;

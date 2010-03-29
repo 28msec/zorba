@@ -202,6 +202,9 @@ static void inferWinCondVarTypes(const flwor_wincond* cond, xqtref_t domainType)
 ********************************************************************************/
 RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 {
+  static_context* sctx = rCtx.getStaticContext(node);
+  short sctxid = node->get_sctx_id();
+
   fo_expr* fo;
 
   if ((fo = dynamic_cast<fo_expr *>(node)) != NULL) 
@@ -209,7 +212,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     if (fo->get_func()->getKind() == FunctionConsts::FN_BOOLEAN_1) 
     {
       expr_t arg = fo->get_arg(0, false);
-      xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
+      xqtref_t arg_type = arg->return_type(sctx);
       if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
         return arg;
       else
@@ -219,7 +222,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     if (fo->get_func()->getKind() == FunctionConsts::FN_DATA_1) 
     {
       expr_t arg = fo->get_arg(0, false);
-      xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
+      xqtref_t arg_type = arg->return_type(sctx);
       if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
         return arg;
       else
@@ -232,7 +235,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) 
   {
     expr_t arg = pe->get_input(true);
-    xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
+    xqtref_t arg_type = arg->return_type(sctx);
     xqtref_t target_type = pe->get_target_type();
 
     // If arg type is subtype of target type, we can eliminate treat and promote
@@ -249,7 +252,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     if (node->get_expr_kind() == cast_expr_kind &&
         TypeOps::is_equal(*arg_ptype, *target_ptype))
     {
-      return new treat_expr(node->get_sctx_id(),
+      return new treat_expr(sctxid,
                             node->get_loc(),
                             arg,
                             target_type,
@@ -260,6 +263,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     if (node->get_expr_kind() == treat_expr_kind)
     {
       treat_expr* te = dynamic_cast<treat_expr *> (pe);
+
       if (te->get_check_prime() && TypeOps::is_subtype(*arg_ptype, *target_ptype))
       {
         te->set_check_prime(false);
