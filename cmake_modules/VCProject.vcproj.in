@@ -5,28 +5,28 @@
             Name="Debug|Win32"
             >
             <DebugSettings
-                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\@CMAKE_BUILD_TYPE@;@REQUIRED_FILES_DIR@;%PATH%"
+                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\Debug;@REQUIRED_FILES_DIR@;%PATH%"
             />
         </Configuration>
         <Configuration
             Name="Release|Win32"
             >
             <DebugSettings
-                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\@CMAKE_BUILD_TYPE@;@REQUIRED_FILES_DIR@;%PATH%"
+                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\Release;@REQUIRED_FILES_DIR@;%PATH%"
             />
         </Configuration>
         <Configuration
             Name="MinSizeRel|Win32"
             >
             <DebugSettings
-                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\@CMAKE_BUILD_TYPE@;@REQUIRED_FILES_DIR@;%PATH%"
+                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\MinSizeRel;@REQUIRED_FILES_DIR@;%PATH%"
             />
         </Configuration>
         <Configuration
             Name="RelWithDebInfo|Win32"
             >
             <DebugSettings
-                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\@CMAKE_BUILD_TYPE@;@REQUIRED_FILES_DIR@;%PATH%"
+                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\RelWithDebInfo;@REQUIRED_FILES_DIR@;%PATH%"
             />
         </Configuration>
             <!-- Rest of Configurations -->
