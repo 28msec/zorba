@@ -6,4 +6,4 @@ xqddf:create-collection(xs:QName("ns:collection_const"));
 
 xqddf:insert-nodes(xs:QName("ns:collection_const"), <a/>);
 
-xqddf:delete-nodes-last(xs:QName("ns:collection_const"));
+xqddf:delete-node-last(xs:QName("ns:collection_const"));

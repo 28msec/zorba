@@ -4,4 +4,4 @@ import module namespace ns = "http://www.example.com/example" at "../collection_
 
 xqddf:create-collection(xs:QName("ns:collection2"));
 
-xqddf:delete-nodes-first(xs:QName("ns:collection2"));
+xqddf:delete-node-first(xs:QName("ns:collection2"));

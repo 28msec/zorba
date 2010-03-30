@@ -6,6 +6,6 @@ xqddf:create-collection(xs:QName("ns:collection_unordered"));
 
 xqddf:insert-nodes(xs:QName("ns:collection_unordered"), <a/>);
 
-xqddf:delete-nodes-first(xs:QName("ns:collection_unordered"));
+xqddf:delete-node-first(xs:QName("ns:collection_unordered"));
 
 xqddf:collection(xs:QName("ns:collection_unordered"));
