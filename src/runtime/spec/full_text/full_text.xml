@@ -5,7 +5,10 @@
  !
 -->
 
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
     
   <zorba:header>
     <zorba:include form="Quoted">zorbatypes/representations.h</zorba:include>
@@ -15,11 +18,8 @@
   <!--
    ! "contains text"
   -->
-  <zorba:iterator
-    name="FTContainsIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="binary">
+  <zorba:iterator name="FTContainsIterator"
+                  arity="binary">
 
     <zorba:description author="Paul J. Lucas">
       contains text

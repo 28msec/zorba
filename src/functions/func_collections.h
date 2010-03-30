@@ -71,12 +71,12 @@ public:
 
   bool isSource() const { return true; }
 
-  FunctionConsts::AnnotationValue producesSortedNodes() const 
+  FunctionConsts::AnnotationValue producesDistinctNodes() const 
   {
     return FunctionConsts::YES;
   }
 
-  FunctionConsts::AnnotationValue producesDistinctNodes() const 
+  FunctionConsts::AnnotationValue producesSortedNodes() const 
   {
     return FunctionConsts::YES;
   }
@@ -112,9 +112,9 @@ public:
                 FunctionConsts::FN_ZORBA_DDL_CREATE_COLLECTION_2);
   }
 
-  bool accessesDynCtx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -130,9 +130,9 @@ public:
   {
   }
 
-  bool accessesDynCtx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -148,9 +148,9 @@ public:
   {
   }
 
-  bool accessesDynCtx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -166,9 +166,9 @@ public:
   {
   }
 
-  bool accessesDynCtx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -184,9 +184,9 @@ public:
   {
   }
 
-  bool accessesDynCtx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -202,9 +202,9 @@ public:
   {
   }
 
-  bool accessesDynCtx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -220,9 +220,9 @@ public:
   {
   }
 
-  bool accessesDynCtx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -238,9 +238,9 @@ public:
   {
   }
 
-  bool accessesDynCtx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };
@@ -250,33 +250,16 @@ public:
 class fn_zorba_ddl_delete_node_first : public function
 {
 public:
-  fn_zorba_ddl_delete_node_first(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_NODE_FIRST_1)
+  fn_zorba_ddl_delete_node_first(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.arg_count() == 1 ?
+                FunctionConsts::FN_ZORBA_DDL_DELETE_NODE_FIRST_1 :
+                FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_FIRST_2);
   }
-
-  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-ddl:delete-nodes-first
-class fn_zorba_ddl_delete_nodes_first : public function
-{
-public:
-  fn_zorba_ddl_delete_nodes_first(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_FIRST_2)
-  {
-  }
-
   bool accessesDynCtx() const { return true; }
-
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   CODEGEN_DECL();
 };
@@ -286,33 +269,16 @@ public:
 class fn_zorba_ddl_delete_node_last : public function
 {
 public:
-  fn_zorba_ddl_delete_node_last(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_NODE_LAST_1)
+  fn_zorba_ddl_delete_node_last(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.arg_count() == 1 ?
+                FunctionConsts::FN_ZORBA_DDL_DELETE_NODE_LAST_1 :
+                FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_LAST_2);
   }
-
-  bool accessesDynCtx() const { return true; }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
-  CODEGEN_DECL();
-};
-
-
-//fn-zorba-ddl:delete-nodes-last
-class fn_zorba_ddl_delete_nodes_last : public function
-{
-public:
-  fn_zorba_ddl_delete_nodes_last(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_LAST_2)
-  {
-  }
-
   bool accessesDynCtx() const { return true; }
-
-  expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
 
   CODEGEN_DECL();
 };

@@ -5,7 +5,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 -->
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
     
 <zorba:source>
     <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
@@ -23,17 +26,14 @@
     </zorba:description>
 
     <zorba:function>
-
       <zorba:signature localname="is-available-collection"
                        prefix="fn-zorba-introspect-dctx">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
-
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
-
     </zorba:function>
 
 </zorba:iterator>
@@ -48,23 +48,20 @@
       dc:available-collections
     </zorba:description>
 
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="nameItState"
-                    brief="the current iterator"/>
-    </zorba:state>
-  
     <zorba:function>
-
       <zorba:signature localname="available-collections"
                        prefix="fn-zorba-introspect-dctx">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
-
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
-
     </zorba:function>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="nameItState"
+                    brief="the current iterator"/>
+    </zorba:state>
 
 </zorba:iterator>
 
@@ -79,7 +76,6 @@
     </zorba:description>
 
     <zorba:function>
-
       <zorba:signature localname="is-available-index"
                        prefix="fn-zorba-introspect-dctx">
         <zorba:param>xs:QName</zorba:param>
@@ -104,23 +100,20 @@
       dc:available-indexes
     </zorba:description>
 
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="nameItState"
-                    brief="the current iterator"/>
-    </zorba:state>
-  
     <zorba:function>
-
       <zorba:signature localname="available-indexes"
                        prefix="fn-zorba-introspect-dctx">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
-
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
-
     </zorba:function>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="nameItState"
+                    brief="the current iterator"/>
+    </zorba:state>
 
 </zorba:iterator>
 
@@ -136,17 +129,14 @@
     </zorba:description>
 
     <zorba:function>
-
       <zorba:signature localname="is-activated-integrity-constraint"
                        prefix="fn-zorba-introspect-dctx">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>
-
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
-
     </zorba:function>
 
 </zorba:iterator>
@@ -161,24 +151,22 @@
       dc:activated-integrity-constraints
     </zorba:description>
 
-    <zorba:state generateInit="false" generateReset="false" 
-		 generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="nameItState"
-                    brief="the current iterator"/>
-    </zorba:state>
-  
     <zorba:function>
-
       <zorba:signature localname="activated-integrity-constraints"
                        prefix="fn-zorba-introspect-dctx">
         <zorba:output>xs:QName*</zorba:output>
       </zorba:signature>
-
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
-
     </zorba:function>
+
+    <zorba:state  generateInit="false" 
+                  generateReset="false" 
+                  generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="nameItState"
+                    brief="the current iterator"/>
+    </zorba:state>
 
 </zorba:iterator>
 

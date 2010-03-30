@@ -5,7 +5,10 @@
 // Zorba XQDoc                                                                 //
 /////////////////////////////////////////////////////////////////////////////////
 -->
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <!--
 /*******************************************************************************

@@ -7,7 +7,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 -->
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
     
 <zorba:header>
     <zorba:include form="Quoted">zorbautils/checked_vector.h</zorba:include>
@@ -19,11 +22,7 @@
  * 7.2.1 fn:codepoints-to-string
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="CodepointsToStringIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator  name="CodepointsToStringIterator">
 
     <zorba:description author="Zorba Team">
         fn:codepoints-to-string
@@ -41,13 +40,18 @@
  * 7.2.2 fn:string-to-codepoints
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="StringToCodepointsIterator"
-    arity="nary">
+<zorba:iterator name="StringToCodepointsIterator">
 
     <zorba:description author="Zorba Team">
         fn:string-to-codepoints
     </zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="string-to-codepoints" prefix="fn">
+          <zorba:param>xs:string?</zorba:param>
+          <zorba:output>xs:integer*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
 
     <zorba:state generateInit="false" generateReset="false">
       <zorba:member type="xqp_uint" name="theIterator"
@@ -55,13 +59,7 @@
       <zorba:member type="checked_vector&lt;xqp_uint&gt;" name="theResult"
                     brief="the resulting vector"/>
     </zorba:state>
-    
-    <zorba:function>
-      <zorba:signature localname="string-to-codepoints" prefix="fn">
-          <zorba:param>xs:string?</zorba:param>
-          <zorba:output>xs:integer*</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+
 </zorba:iterator>
 
 <!--
@@ -70,11 +68,7 @@
 ********************************************************************************/
 -->
 
-<zorba:iterator
-    name="CompareStrIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="CompareStrIterator">
 
     <zorba:description author="Zorba Team">
         fn:compare
@@ -102,11 +96,7 @@
 ********************************************************************************/
 -->
 
-<zorba:iterator
-    name="CodepointEqualIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="CodepointEqualIterator">
 
     <zorba:description author="Zorba Team">
         fn:codepoint-equal
@@ -133,11 +123,7 @@
  * 7.4.1 fn:concat
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="ConcatStrIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="ConcatStrIterator">
 
     <zorba:description author="Zorba Team">
         fn:concat
@@ -159,11 +145,7 @@
  * 7.4.2 fn:string-join
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="StringJoinIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="StringJoinIterator">
 
     <zorba:description author="Zorba Team">
         fn:string-join
@@ -184,11 +166,7 @@
  * 7.4.3 fn:substring
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="SubstringIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="SubstringIterator">
 
     <zorba:description author="Zorba Team">
         fn:substring
@@ -215,11 +193,7 @@
  * 7.4.4 fn:string-length
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="StringLengthIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="StringLengthIterator">
 
     <zorba:description author="Zorba Team">
         fn:string-length
@@ -239,11 +213,7 @@
  * 7.4.5 fn:normalize-space
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="NormalizeSpaceIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="NormalizeSpaceIterator">
 
     <zorba:description author="Zorba Team">
         fn:normalize-space
@@ -263,11 +233,7 @@
  * 7.4.6 fn:normalize-unicode
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="NormalizeUnicodeIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="NormalizeUnicodeIterator">
 
     <zorba:description author="Zorba Team">
         fn:normalize-unicode
@@ -292,11 +258,7 @@
  * 7.4.7 fn:upper-case
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="UpperCaseIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="UpperCaseIterator">
 
     <zorba:description author="Zorba Team">
         fn:upper-case
@@ -316,11 +278,7 @@
  * 7.4.8 fn:lower-case
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="LowerCaseIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="LowerCaseIterator">
 
     <zorba:description author="Zorba Team">
         fn:lower-case
@@ -340,11 +298,7 @@
  * 7.4.9 fn:translate
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="TranslateIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="TranslateIterator">
 
     <zorba:description author="Zorba Team">
         fn:translate
@@ -366,11 +320,7 @@
  * 7.4.10 fn:encode-for-uri
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="EncodeForUriIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="EncodeForUriIterator">
 
     <zorba:description author="Zorba Team">
         fn:encode-for-uri
@@ -390,11 +340,7 @@
  * 7.4.11 fn:iri-to-uri
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="IriToUriIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="IriToUriIterator">
 
     <zorba:description author="Zorba Team">
         fn:iri-to-uri
@@ -414,11 +360,7 @@
  * 7.4.12 fn:escape-html-uri
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="EscapeHtmlUriIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="EscapeHtmlUriIterator">
 
     <zorba:description author="Zorba Team">
         fn:escape-html-uri
@@ -443,11 +385,7 @@
  * 7.5.1 fn:contains
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="ContainsIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="ContainsIterator">
 
     <zorba:description author="Zorba Team">
         fn:contains
@@ -474,11 +412,7 @@
  * 7.5.2 fn:starts-with
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="StartsWithIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="StartsWithIterator">
 
     <zorba:description author="Zorba Team">
         fn:starts-with
@@ -505,11 +439,7 @@
  * 7.5.3 fn:ends-with
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="EndsWithIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="EndsWithIterator">
 
     <zorba:description author="Zorba Team">
         fn:ends-with
@@ -536,11 +466,7 @@
  * 7.5.4 fn:substring-before
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="SubstringBeforeIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="SubstringBeforeIterator">
 
     <zorba:description author="Zorba Team">
         fn:substring-before
@@ -567,11 +493,7 @@
  * 7.5.5 fn:substring-after
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="SubstringAfterIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="SubstringAfterIterator">
 
     <zorba:description author="Zorba Team">
         fn:substring-after
@@ -597,11 +519,7 @@
 // 7.6.2 fn:matches
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnMatchesIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="FnMatchesIterator">
 
     <zorba:description author="Zorba Team">
         fn:matches
@@ -627,11 +545,7 @@
 // 7.6.3 fn:replace
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="FnReplaceIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="FnReplaceIterator">
 
     <zorba:description author="Zorba Team">
         fn:replace
@@ -659,25 +573,12 @@
  * 7.6.4 fn:tokenize
 ********************************************************************************/
 -->
-<zorba:iterator name="FnTokenizeIterator" arity="nary">
+<zorba:iterator name="FnTokenizeIterator">
 
     <zorba:description author="Zorba Team">
         fn:tokenize
     </zorba:description>
 
-    <zorba:state generateReset="false">
-      <zorba:member type="xqp_string" name="theString"
-                    brief="the remaining string"/>
-      <zorba:member type="xqp_string" name="thePattern"
-                    brief="the pattern string"/>
-      <zorba:member type="xqp_string" name="theFlags"
-                    brief="the tokenizing flags"/>
-      <zorba:member type="xqp_int" name="start_pos" defaultValue="0"
-                    brief="the start position"/>
-      <zorba:member type="xqp_boolean" name="hasmatched" defaultValue="false"
-                    brief="flag indicating whether a match was found"/>
-    </zorba:state>
-    
     <zorba:function>
       <zorba:signature localname="tokenize" prefix="fn">
           <zorba:param>xs:string?</zorba:param>
@@ -691,5 +592,19 @@
           <zorba:output>xs:string*</zorba:output>
       </zorba:signature>
     </zorba:function>
+
+    <zorba:state generateReset="false">
+      <zorba:member type="xqp_string" name="theString"
+                    brief="the remaining string"/>
+      <zorba:member type="xqp_string" name="thePattern"
+                    brief="the pattern string"/>
+      <zorba:member type="xqp_string" name="theFlags"
+                    brief="the tokenizing flags"/>
+      <zorba:member type="xqp_int" name="start_pos" defaultValue="0"
+                    brief="the start position"/>
+      <zorba:member type="xqp_boolean" name="hasmatched" defaultValue="false"
+                    brief="flag indicating whether a match was found"/>
+    </zorba:state>
+
 </zorba:iterator>
 </zorba:iterators>

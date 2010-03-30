@@ -7,7 +7,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 -->
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <zorba:header>
     <zorba:include form="Quoted">runtime/base/narybase.h</zorba:include>
@@ -17,7 +20,7 @@
 </zorba:header>
 
 <zorba:source>
-    <zorba:include form="Quoted" ns="zorba">runtime/util/handle_hashset_item_value.h</zorba:include>
+    <zorba:include form="Quoted">runtime/util/handle_hashset_item_value.h</zorba:include>
 </zorba:source>
   
 <zorba:codegen>
@@ -36,7 +39,7 @@
   15.1.2 op:concatenate
 ********************************************************************************/
 -->
-<zorba:iterator name="FnConcatIterator" 
+<zorba:iterator name="FnConcatIterator"
                 generateResetImpl="true"
                 generateOpenImpl="true">
 
@@ -44,20 +47,7 @@
     op:concatenate
   </zorba:description>
 
-  <zorba:constructor>
-      <zorba:parameter type="bool" name="aIsUpdating" />
-  </zorba:constructor>
-
-  <zorba:member type="bool" name="theIsUpdating" getterName="isUpdating" brief=""/>
-
-  <zorba:state generateInit="use-default" generateReset="use-default">
-    <zorba:member type="std::vector&lt;PlanIter_t&gt;::const_iterator" name="theCurIter"
-                  brief="iterator pointing to the child that is currently being processed"/>
-    <zorba:member type="std::vector&lt;PlanIter_t&gt;::const_iterator" name="theEndIter"/>
-  </zorba:state>
-  
   <zorba:function annIsUpdating="true">
-
     <zorba:signature localname="concatenate" prefix="op">
       <zorba:param>item()*</zorba:param>
       <zorba:param>true</zorba:param> <!-- variadic function -->
@@ -68,8 +58,22 @@
       <zorba:getReturnType/>
       <zorba:compute_annotation/>
     </zorba:methods>
-
   </zorba:function>
+
+  <zorba:state generateInit="use-default" generateReset="use-default">
+    <zorba:member type="std::vector&lt;PlanIter_t&gt;::const_iterator" name="theCurIter"
+                  brief="iterator pointing to the child that is currently being processed"/>
+    <zorba:member type="std::vector&lt;PlanIter_t&gt;::const_iterator" name="theEndIter" brief=""/>
+  </zorba:state>
+
+  <zorba:constructor>
+      <zorba:parameter type="bool" name="aIsUpdating" />
+  </zorba:constructor>
+
+  <zorba:member type="bool" name="theIsUpdating" getterName="isUpdating" brief=""/>
+
+  
+
 
 </zorba:iterator>
 
@@ -107,33 +111,30 @@
                   $collation as xs:string) as xs:integer*
     </zorba:description>
     
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="uint32_t" name="theCurrentPos" defaultValue="0"
-                    brief="the current position in the sequence"/>
-
-      <zorba:member type="store::Item_t" name="theSearchItem" defaultValue="NULL"
-        brief="the item to search for"/>
-
-      <zorba:member type="XQPCollator*" name="theCollator" defaultValue="0"
-        brief="the collator"/>
-    </zorba:state>
-
   <zorba:function >
-
     <zorba:signature localname="index-of" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:anyAtomicType</zorba:param>
       <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
-
     <zorba:signature localname="index-of" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:anyAtomicType</zorba:param>
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
-
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="uint32_t" name="theCurrentPos" defaultValue="0"
+                  brief="the current position in the sequence"/>
+
+    <zorba:member type="store::Item_t" name="theSearchItem" defaultValue="NULL"
+      brief="the item to search for"/>
+
+    <zorba:member type="XQPCollator*" name="theCollator" defaultValue="0"
+      brief="the collator"/>
+  </zorba:state>
 
 </zorba:iterator>
 
@@ -193,18 +194,7 @@
   item that is not a duplicate and throw away the remaining ones.
   </zorba:description>
 
-  <zorba:state generateInit="true" generateReset="false">
-    <zorba:member type="bool" name="theHasNaN"
-                  defaultValue="false"
-                  brief="indicates whether NaN was found in the sequence"/>
-
-    <zorba:member name="theAlreadySeenMap"
-                  type="std::auto_ptr&lt;ItemValueCollHandleHashSet>"
-                  brief="hashmap for doing the duplicate elimination"/>
-
-  </zorba:state>
-  
-  <zorba:function generateReturnTypeDecl = "true">
+  <zorba:function>
     <zorba:signature localname="distinct-values" prefix="fn">
       <zorba:param>xs:anyAtomicType*</zorba:param>
       <zorba:param>xs:string</zorba:param>
@@ -222,6 +212,17 @@
 
   </zorba:function>
 
+  <zorba:state generateInit="true" generateReset="false">
+    <zorba:member type="bool" name="theHasNaN"
+                  defaultValue="false"
+                  brief="indicates whether NaN was found in the sequence"/>
+
+    <zorba:member name="theAlreadySeenMap"
+                  type="std::auto_ptr&lt;ItemValueCollHandleHashSet>"
+                  brief="hashmap for doing the duplicate elimination"/>
+
+  </zorba:state>
+
 </zorba:iterator>
 
 <!--
@@ -237,7 +238,16 @@
       of the second parameter.
   </zorba:description>
     
-  <zorba:state generateInit="true" generateReset="true">
+  <zorba:function>
+    <zorba:signature localname="insert-before" prefix="fn">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:param>item()*</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:state>
     <zorba:member type="xqp_integer" name="theCurrentPos"
                   defaultValue="xqp_integer::parseInt(0)" brief="the current position in the sequence"/>
 
@@ -247,15 +257,6 @@
     <zorba:member type="store::Item_t" name="theTargetItem"
                   defaultValue="NULL" brief=""/>
   </zorba:state>
-  
-  <zorba:function>
-    <zorba:signature localname="insert-before" prefix="fn">
-      <zorba:param>item()*</zorba:param>
-      <zorba:param>xs:integer</zorba:param>
-      <zorba:param>item()*</zorba:param>
-      <zorba:output>item()*</zorba:output>
-    </zorba:signature>
-  </zorba:function>
 
 </zorba:iterator>
 
@@ -271,17 +272,6 @@
     the position specified by the value of aPosition removed.
   </zorba:description>
   
-  <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="xqp_integer" name="theCurrentPos"
-                  defaultValue="xqp_integer::parseInt(0)" brief="the current position in the sequence"/>
-  
-    <zorba:member type="xqp_integer" name="thePosition"
-                  defaultValue="xqp_integer::parseInt(0)" brief="the position to delete"/>
-  
-    <zorba:member type="XQPCollator*" name="theCollator"
-                  defaultValue="0" brief="the collator"/>
-  </zorba:state>
-  
   <zorba:function>
 
     <zorba:signature localname="remove" prefix="fn">
@@ -292,11 +282,22 @@
 
     <zorba:methods>
       <zorba:getReturnType/>
-      <zorba:propagatesSortedNodes producer="0"/>
       <zorba:propagatesDistinctNodes producer="0"/>
+      <zorba:propagatesSortedNodes producer="0"/>      
     </zorba:methods>
 
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="xqp_integer" name="theCurrentPos"
+                  defaultValue="xqp_integer::parseInt(0)" brief="the current position in the sequence"/>
+  
+    <zorba:member type="xqp_integer" name="thePosition"
+                  defaultValue="xqp_integer::parseInt(0)" brief="the position to delete"/>
+  
+    <zorba:member type="XQPCollator*" name="theCollator"
+                  defaultValue="0" brief="the collator"/>
+  </zorba:state>
 
 </zorba:iterator>
 
@@ -310,11 +311,6 @@
   <zorba:description author="Zorba Team">
     fn:reverse
   </zorba:description>
-  
-  <zorba:state generateInit="false" generateReset="false">
-    <zorba:member type="std::stack&lt;store::Item_t&gt;"
-                  name="theStack" brief=""/>
-  </zorba:state>
   
   <zorba:function>
 
@@ -330,6 +326,11 @@
 
   </zorba:function>
 
+  <zorba:state generateInit="false" generateReset="false">
+    <zorba:member type="std::stack&lt;store::Item_t&gt;"
+                  name="theStack" brief=""/>
+  </zorba:state>
+
 </zorba:iterator>
 
 <!--
@@ -343,11 +344,6 @@
     fn:subsequence
   </zorba:description>
   
-  <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="xqp_integer" name="theRemaining"
-                  defaultValue="xqp_integer::parseInt(0)" brief=""/>
-  </zorba:state>
-
   <zorba:function generateCodegen="false">
 
     <zorba:signature localname="subsequence" prefix="fn">
@@ -365,12 +361,17 @@
 
     <zorba:methods>
       <zorba:getReturnType/>
-      <zorba:propagatesSortedNodes producer="0"/>
       <zorba:propagatesDistinctNodes producer="0"/>
+      <zorba:propagatesSortedNodes producer="0"/>
       <zorba:compute_annotation/>
     </zorba:methods>
 
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="xqp_integer" name="theRemaining"
+                  defaultValue="xqp_integer::parseInt(0)" brief=""/>
+  </zorba:state>
   
 </zorba:iterator>
 
@@ -386,11 +387,6 @@
     zorbaop:int-subsequence
   </zorba:description>
   
-  <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="xqp_long" name="theRemaining"
-                  defaultValue="0" brief=""/>
-  </zorba:state>
-
   <zorba:function generateCodegen="false">
 
     <zorba:signature localname="int-subsequence" prefix="fn-zorba">
@@ -402,12 +398,17 @@
 
     <zorba:methods>
       <zorba:getReturnType/>
-      <zorba:propagatesSortedNodes producer="0"/>
       <zorba:propagatesDistinctNodes producer="0"/>
+      <zorba:propagatesSortedNodes producer="0"/>      
       <zorba:compute_annotation/>
     </zorba:methods>
 
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="xqp_long" name="theRemaining"
+                  defaultValue="0" brief=""/>
+  </zorba:state>
   
 </zorba:iterator>
 
@@ -423,14 +424,7 @@
       fn:zero-or-one
     </zorba:description>
     
-    <zorba:constructor>
-        <zorba:parameter type="bool" name="doDistinct" defaultValue="false"/>
-    </zorba:constructor>
-    
-    <zorba:member type="bool" name="theDoDistinct" brief=""/>
-
     <zorba:function generateCodegen="false">
-
       <zorba:signature localname="zero-or-one" prefix="fn">
         <zorba:param>item()*</zorba:param>
         <zorba:output>item()?</zorba:output>
@@ -441,6 +435,12 @@
     </zorba:methods>
 
    </zorba:function>
+
+    <zorba:constructor>
+        <zorba:parameter type="bool" name="doDistinct" defaultValue="false"/>
+    </zorba:constructor>
+    
+    <zorba:member type="bool" name="theDoDistinct" brief=""/>
   
 </zorba:iterator>
 
@@ -455,7 +455,7 @@
       fn:one-or-more
     </zorba:description>
   
-  <zorba:function isMap="0">
+  <zorba:function>
 
     <zorba:signature localname="one-or-more" prefix="fn">
       <zorba:param>item()*</zorba:param>
@@ -464,8 +464,9 @@
 
     <zorba:methods>
       <zorba:getReturnType/>
-      <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:isMap producer="0"/>
       <zorba:propagatesDistinctNodes producer="0"/>
+      <zorba:propagatesSortedNodes producer="0"/>      
     </zorba:methods>
 
   </zorba:function>
@@ -528,7 +529,8 @@
   15.3.2 op:union : implemented using concat and sort
 ********************************************************************************/
 -->
-<zorba:iterator name="HashSemiJoinIterator" generateCodegen="false">
+<zorba:iterator name="HashSemiJoinIterator" 
+                generateCodegen="false">
     
     <zorba:description author="Zorba Team">
       op:union : implemented using concat and sort
@@ -542,19 +544,21 @@
       elimination is performed.
     </zorba:description>
 
+    <zorba:state generateInit="false" generateReset="false"
+                 generateConstructor="false" generateDestructor="false">
+        <zorba:member type="store::NodeHashSet*" name="theRightInput" brief=""/>
+    </zorba:state>
+
     <zorba:constructor>
       <zorba:parameter type="bool" name="antijoin" defaultValue="false"/>
     </zorba:constructor>
     
     <zorba:member type="bool" name="theAntijoin" brief=""/>
     
-    <zorba:state generateInit="false" generateReset="false"
-                 generateConstructor="false" generateDestructor="false">
-        <zorba:member type="store::NodeHashSet*" name="theRightInput" brief=""/>
-    </zorba:state>
 </zorba:iterator>    
 
-<zorba:iterator name="SortSemiJoinIterator" generateCodegen="false">
+<zorba:iterator name="SortSemiJoinIterator" 
+                generateCodegen="false">
     
     <zorba:description author="Zorba Team">
       Sortmerge based semijoin iterator.
@@ -724,20 +728,9 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="OpToIterator">
-    
+
     <zorba:description author="Zorba Team">op:to</zorba:description>
-    
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="xqp_integer" name="theCurInt"
-                    defaultValue="xqp_integer::parseInt(0)" brief="the current integer"/>
 
-       <zorba:member type="xqp_integer" name="theFirstVal"
-                     defaultValue="xqp_integer::parseInt(0)" brief="first integer"/>
-
-       <zorba:member type="xqp_integer" name="theLastVal" defaultValue="xqp_integer::parseInt(0)"
-                     brief="last integer"/>
-    </zorba:state>
-  
   <zorba:function >
     <zorba:signature localname="to" prefix="op">
       <zorba:param>xs:integer?</zorba:param>
@@ -745,6 +738,17 @@
       <zorba:output>xs:integer*</zorba:output>
     </zorba:signature>
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="xqp_integer" name="theCurInt"
+                  defaultValue="xqp_integer::parseInt(0)" brief="the current integer"/>
+
+     <zorba:member type="xqp_integer" name="theFirstVal"
+                   defaultValue="xqp_integer::parseInt(0)" brief="first integer"/>
+
+     <zorba:member type="xqp_integer" name="theLastVal" defaultValue="xqp_integer::parseInt(0)"
+                   brief="last integer"/>
+  </zorba:state>
 
 </zorba:iterator>
 

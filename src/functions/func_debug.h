@@ -50,9 +50,9 @@ public:
 
   bool isMap(ulong producer) const { return producer == 0; }
 
-  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
-
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
+
+  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };

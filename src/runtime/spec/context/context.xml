@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
     
 <!--
 /*******************************************************************************
 * 16.3 fn:current-dateTime
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="CurrentDateTimeIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="CurrentDateTimeIterator">
 
     <zorba:description author="Zorba Team">fn:current-dateTime</zorba:description>
     
@@ -35,11 +34,7 @@
 ********************************************************************************/
 -->
 
-<zorba:iterator
-    name="CurrentDateIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="CurrentDateIterator">
 
     <zorba:description author="Zorba Team">fn:current-date</zorba:description>
     
@@ -63,11 +58,7 @@
 ********************************************************************************/
 -->
 
-<zorba:iterator
-    name="CurrentTimeIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="CurrentTimeIterator">
 
     <zorba:description author="Zorba Team">fn:current-time</zorba:description>
     
@@ -91,11 +82,7 @@
 ********************************************************************************/
 -->
 
-<zorba:iterator
-    name="ImplicitTimezoneIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="ImplicitTimezoneIterator">
     
     <zorba:description author="Zorba Team">fn:implicit-timezone</zorba:description>
     
@@ -120,11 +107,7 @@
 ********************************************************************************/
 -->
 
-<zorba:iterator
-    name="DefaultCollationIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+<zorba:iterator name="DefaultCollationIterator">
     
     <zorba:description author="Zorba Team">fn:default-collation</zorba:description>
     

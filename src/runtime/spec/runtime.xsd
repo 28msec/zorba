@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+  xmlns:xs="http://www.w3.org/2001/XMLSchema"
+  targetNamespace="http://www.zorba-xquery.com"
+  xmlns="http://www.zorba-xquery.com"
+  elementFormDefault="qualified">
+
+  <xs:element name="iterators">
+  <xs:complexType>
+    <xs:sequence>
+      <xs:element name="header" type="seqInclude" minOccurs="0"/>
+      <xs:element name="source" type="seqInclude" minOccurs="0"/>
+      <xs:element name="codegen" type="codegen" minOccurs="0"/>
+      <xs:element name="iterator" type="iterator" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:element>
+
+  <xs:complexType name="codegen">
+    <xs:sequence>
+      <xs:element name="h" type="seqInclude" minOccurs="0"/>
+      <xs:element name="cpp" type="seqInclude" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="seqInclude">
+    <xs:sequence>
+      <xs:element name="include" type="include" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="fwd-decl" type="fwd-decl" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="include">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="form" type="include-enum" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="fwd-decl">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="ns" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:simpleType name="include-enum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="Quoted"/>
+      <xs:enumeration value="Angle-bracket"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="arity-enum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="noary"/>
+      <xs:enumeration value="unary"/>
+      <xs:enumeration value="binary"/>
+      <xs:enumeration value="nary"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="iterator">
+    <xs:sequence>
+      <xs:element name="description" type="description"/>
+      <xs:element name="function" type="function" minOccurs="0"/>
+      <xs:element name="state" type="state" minOccurs="0"/>
+      <xs:element name="constructor" type="constructor" minOccurs="0"/>
+      <xs:element name="member" type="member" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="method" type="method" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="arity" type="arity-enum" default="nary"/>
+    <xs:attribute name="generateSerialize" type="xs:boolean" default="true"/>
+    <xs:attribute name="generateCodegen" type="xs:boolean" default="true"/>
+    <xs:attribute name="preprocessorGuard" type="xs:string"/>
+    <xs:attribute name="generateAccept" type="xs:boolean" default="true"/>
+    <xs:attribute name="generateDestructor" type="xs:boolean" default="true"/>
+    <xs:attribute name="generateResetImpl" type="xs:boolean" default="false"/>
+    <xs:attribute name="generateOpenImpl" type="xs:boolean" default="false"/>
+    <xs:attribute name="generateCloseImpl" type="xs:boolean" default="false"/>
+  </xs:complexType>
+
+  <xs:complexType name="description">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="author" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="function">
+    <xs:sequence>
+      <xs:element name="signature" type="signature" maxOccurs="unbounded"/>
+      <xs:element name="methods" type="methods" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="annIsUpdating" type="xs:boolean"/>
+    <xs:attribute name="specializable" type="xs:boolean"/>
+    <xs:attribute name="generateCodegen" type="xs:boolean"/>
+  </xs:complexType>
+
+  <xs:complexType name="signature">
+    <xs:sequence>
+      <xs:element name="param" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="output" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+    <xs:attribute name="localname" type="xs:string" use="required"/>
+    <xs:attribute name="prefix" type="namespace-prefix-enum" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="methods">
+    <xs:sequence>
+      <xs:element name="getReturnType" minOccurs="0"/>
+      <xs:element name="getUpdateType" type="returnValue_1" minOccurs="0"/>
+      <xs:element name="accessesDynCtx" type="returnValue_2" minOccurs="0"/>
+      <xs:element name="isSource" type="returnValue_2" minOccurs="0"/>
+      <xs:element name="isDeterministic" type="returnValue_2" minOccurs="0"/>
+      <xs:element name="isMap" type="producer" minOccurs="0"/>
+      <xs:element name="producesDistinctNodes" type="returnValue_3" minOccurs="0"/>
+      <xs:element name="producesSortedNodes" type="returnValue_3" minOccurs="0"/>
+      <xs:element name="propagatesDistinctNodes" type="producer" minOccurs="0"/>
+      <xs:element name="propagatesSortedNodes" type="producer" minOccurs="0"/>
+      <xs:element name="compute_annotation" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="state">
+    <xs:sequence>
+      <xs:element name="member" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="type" type="xs:string" use="required"/>
+              <xs:attribute name="name" type="xs:string" use="required"/>
+              <xs:attribute name="defaultValue" type="xs:string"/>
+              <xs:attribute name="brief" type="xs:string" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="generateInit" type="xs:string" default="true"/>
+    <xs:attribute name="generateReset" type="xs:string" default="true"/>
+    <xs:attribute name="generateDestructor" type="xs:boolean" default="true"/>
+    <xs:attribute name="generateConstructor" type="xs:boolean" default="true"/>
+  </xs:complexType>
+
+  <xs:complexType name="constructor">
+    <xs:sequence>
+      <xs:element name="parameter" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="type" type="xs:string" use="required"/>
+              <xs:attribute name="name" type="xs:string" use="required"/>
+              <xs:attribute name="defaultValue" type="xs:string"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="member">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="type" type="xs:string" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="brief" type="xs:string" use="required"/>
+        <xs:attribute name="getterName" type="xs:string"/>
+        <xs:attribute name="setterName" type="xs:string"/>
+      </xs:extension>
+    </xs:simpleContent>
+  </xs:complexType>
+
+  <xs:complexType name="method">
+    <xs:sequence>
+      <xs:element name="param" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:simpleContent>
+            <xs:extension base="xs:string">
+              <xs:attribute name="type" type="xs:string" use="required"/>
+              <xs:attribute name="name" type="xs:string" use="required"/>
+            </xs:extension>
+          </xs:simpleContent>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="name" type="xs:string" use="required"/>
+    <xs:attribute name="return" type="xs:string" use="required"/>
+    <xs:attribute name="const" type="xs:string"/>
+  </xs:complexType>
+
+  <xs:complexType name="returnValue_1">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="returnValue" type="expr-script-kind-enum" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>    
+  </xs:complexType>
+
+  <xs:complexType name="returnValue_2">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="returnValue" type="xs:boolean" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>    
+  </xs:complexType>
+
+  <xs:complexType name="returnValue_3">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="returnValue" type="annotation-value-enum" default="NO"/>
+      </xs:extension>
+    </xs:simpleContent>    
+  </xs:complexType>
+
+  <xs:complexType name="producer">
+    <xs:simpleContent>
+      <xs:extension base="xs:string">
+        <xs:attribute name="producer" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:simpleContent>    
+  </xs:complexType>
+
+  <xs:simpleType name="expr-script-kind-enum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UPDATE_EXPR"/>
+      <xs:enumeration value="VACUOUS_EXPR"/>
+      <xs:enumeration value="SIMPLE_EXPR"/>
+      <xs:enumeration value="SEQUENTIAL_EXPR"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="annotation-value-enum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="NO"/>
+      <xs:enumeration value="YES"/>
+      <xs:enumeration value="PRESERVE"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="namespace-prefix-enum">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="fn"/>
+      <xs:enumeration value="op"/>
+      <xs:enumeration value="xs"/>
+      <xs:enumeration value="fn-zorba-util"/>
+      <xs:enumeration value="fn-zorba"/>
+      <xs:enumeration value="fn-zorba-rest"/>
+      <xs:enumeration value="fn-zorba-ref"/>
+      <xs:enumeration value="op-zorba"/>
+      <xs:enumeration value="fn-zorba-email"/>
+      <xs:enumeration value="zorba-json"/>
+      <xs:enumeration value="zorba-json-ml"/>
+      <xs:enumeration value="fn-zorba-fop"/>
+      <xs:enumeration value="xqdoc"/>
+      <xs:enumeration value="fn-zorba-math"/>
+      <xs:enumeration value="base64"/>
+      <xs:enumeration value="fn-zorba-introspect-dctx"/>
+      <xs:enumeration value="fn-zorba-introspect-sctx"/>
+      <xs:enumeration value="fn-zorba-ddl"/>
+      <xs:enumeration value="zorba-csv"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+</xs:schema>

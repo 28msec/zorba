@@ -6,7 +6,10 @@
 ********************************************************************************/
 -->
 
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
     
 <zorba:source>
     <zorba:include form="Quoted">store/api/item.h</zorba:include>
@@ -18,17 +21,10 @@
 ********************************************************************************/
 -->
 
-<zorba:iterator
-  name="TraceIterator">
+<zorba:iterator name="TraceIterator">
 
   <zorba:description author="Zorba Team">fn:trace</zorba:description>
-    
-  <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="store::Item_t" name="theTagItem" defaultValue="NULL" brief=""/>
-    <zorba:member type="uint32_t" name="theIndex" defaultValue="0" brief=""/>
-    <zorba:member type="std::ostream*" name="theOS" defaultValue="0" brief=""/>
-  </zorba:state>
-  
+
   <zorba:function generateCodegen="false">
 
     <zorba:signature localname="trace" prefix="fn">
@@ -37,12 +33,19 @@
       <zorba:output>item()*</zorba:output>
     </zorba:signature>
 
-      <zorba:methods>
-        <zorba:isMap producer="0"/>
-        <zorba:propagatesSortedNodes producer="0"/>
-        <zorba:propagatesDistinctNodes producer="0"/>
-      </zorba:methods>
+    <zorba:methods>
+      <zorba:isMap producer="0"/>
+      <zorba:propagatesDistinctNodes producer="0"/>
+      <zorba:propagatesSortedNodes producer="0"/>        
+    </zorba:methods>
+
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="store::Item_t" name="theTagItem" defaultValue="NULL" brief=""/>
+    <zorba:member type="uint32_t" name="theIndex" defaultValue="0" brief=""/>
+    <zorba:member type="std::ostream*" name="theOS" defaultValue="0" brief=""/>
+  </zorba:state>
   
 </zorba:iterator>
 
@@ -62,9 +65,9 @@
       <zorba:output>xs:string</zorba:output>
     </zorba:signature>
 
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-      </zorba:methods>
+    <zorba:methods>
+      <zorba:accessesDynCtx returnValue="true"/>
+    </zorba:methods>
 
   </zorba:function>
   
@@ -81,12 +84,6 @@
   
   <zorba:description author="Zorba Team">op-zorba:print</zorba:description>
   
-  <zorba:constructor>
-    <zorba:parameter type="bool" name="aPrintToConsole" defaultValue="true"/>
-  </zorba:constructor>
-  
-  <zorba:member type="bool" name="thePrintToConsole" />
-  
   <zorba:function>
 
     <zorba:signature localname="print" prefix="op-zorba">
@@ -99,6 +96,12 @@
     </zorba:methods>
 
   </zorba:function>
+
+  <zorba:constructor>
+    <zorba:parameter type="bool" name="aPrintToConsole" defaultValue="true"/>
+  </zorba:constructor>
+  
+  <zorba:member type="bool" name="thePrintToConsole" brief=""/>
   
 </zorba:iterator>
   

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <zorba:header>
   <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
@@ -30,18 +33,17 @@
 
   <zorba:description author="Zorba Team">Parsing a sequence of valid JSON strings into a sequence of XDM elements.</zorba:description>
 
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="xqp_string" name="theBaseUri" defaultValue="xqp_string()"
-                    brief="the base URI"/>
-    </zorba:state>
-  
-    <zorba:function>
-      <zorba:signature localname="parse" prefix="zorba-json">
-        <zorba:param>xs:string*</zorba:param>
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-    </zorba:function>
+  <zorba:function>
+    <zorba:signature localname="parse" prefix="zorba-json">
+      <zorba:param>xs:string*</zorba:param>
+      <zorba:output>node()*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="xqp_string" name="theBaseUri" defaultValue="xqp_string()"
+                  brief="the base URI"/>
+  </zorba:state>
 </zorba:iterator>
   
 <!--
@@ -68,14 +70,9 @@
 ********************************************************************************/
 -->
 <zorba:iterator name="ZorbaJsonMLParseIterator">
-  
+
   <zorba:description author="Zorba Team">Parsing a sequence of valid JsonML strings into a sequence of XDM elements.</zorba:description>
-  
-  <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="xqp_string" name="theBaseUri" defaultValue="xqp_string()"
-      brief="the base URI"/>
-  </zorba:state>
-  
+
   <zorba:function>
     <zorba:signature localname="parse" prefix="zorba-json-ml">
       <zorba:param>xs:string*</zorba:param>
@@ -83,6 +80,10 @@
     </zorba:signature>
   </zorba:function>
 
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="xqp_string" name="theBaseUri" defaultValue="xqp_string()"
+      brief="the base URI"/>
+  </zorba:state>
 </zorba:iterator>
   
 <!--
@@ -113,84 +114,104 @@
 
     <zorba:description author="Zorba Team">Parse a Comma Separated Values text and generate an XML.</zorba:description>
 
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="xqp_string" name="csv"
-        brief="csv text"/>
-      <zorba:member type="string_codepoints_iterator" name="csv_it"
-        brief="iterator over csv codepoints"/>
-      <zorba:member type="bool" name="first_row_is_header" defaultValue="false"
-        brief="if the first line of csv describe the name of the columns"/>
-      <zorba:member type="checked_vector&lt;uint32_t&gt;" name="separator_cp" 
-        brief="separator codepoint"/>
-      <zorba:member type="checked_vector &lt;uint32_t&gt;" name="quote_char_cp" 
-        brief="quote char codepoint"/>
-      <zorba:member type="checked_vector &lt;uint32_t&gt;" name="quote_escape_cp"
-        brief="quote escape codepoints"/>
-      <zorba:member type="store::Item_t" name="row_node_name"
-        brief="qname of the row element"/>
-      <zorba:member type="store::Item_t" name="default_column_node_name"
-        brief="default qname of the column element"/>
-      <zorba:member type="xqp_string" name="baseUri"
-        brief="keep the base uri from static context"/>
-      <zorba:member type="checked_vector &lt;store::Item_t&gt;" name="header_qnames"
-          brief="names of headers"/>
-      </zorba:state>
-
     <zorba:function>
       <zorba:signature localname="csv-to-xml" prefix="zorba-csv">
-        <zorba:param name="csv">xs:string</zorba:param>
-        <zorba:param name="first_row_is_header">xs:boolean</zorba:param>
-        <zorba:param name="separator">xs:string</zorba:param>
-        <zorba:param name="quote_char">xs:string</zorba:param>
-        <zorba:param name="quote_escape">xs:string</zorba:param>
-        <zorba:param name="row_node">xs:QName</zorba:param>
-        <zorba:param name="default_column_node">xs:QName</zorba:param>
+        <zorba:param>xs:string</zorba:param>      <!-- csv -->
+        <zorba:param>xs:boolean</zorba:param>     <!-- first_row_is_header -->
+        <zorba:param>xs:string</zorba:param>      <!-- separator -->
+        <zorba:param>xs:string</zorba:param>      <!-- quote_char -->
+        <zorba:param>xs:string</zorba:param>      <!-- quote_escape -->
+        <zorba:param>xs:QName</zorba:param>       <!-- row_node -->
+        <zorba:param>xs:QName</zorba:param>       <!-- default_column_node -->
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
     </zorba:function>
 
+    <zorba:state>
+      <zorba:member type="xqp_string" 
+                    name="csv"
+                    brief="csv text"/>
+      <zorba:member type="string_codepoints_iterator" 
+                    name="csv_it"
+                    brief="iterator over csv codepoints"/>
+      <zorba:member type="bool" 
+                    name="first_row_is_header" 
+                    defaultValue="false"
+                    brief="if the first line of csv describe the name of the columns"/>
+      <zorba:member type="checked_vector&lt;uint32_t&gt;" 
+                    name="separator_cp" 
+                    brief="separator codepoint"/>
+      <zorba:member type="checked_vector &lt;uint32_t&gt;" 
+                    name="quote_char_cp" 
+                    brief="quote char codepoint"/>
+      <zorba:member type="checked_vector &lt;uint32_t&gt;" 
+                    name="quote_escape_cp"
+                    brief="quote escape codepoints"/>
+      <zorba:member type="store::Item_t" 
+                    name="row_node_name"
+                    brief="qname of the row element"/>
+      <zorba:member type="store::Item_t" 
+                    name="default_column_node_name"
+                    brief="default qname of the column element"/>
+      <zorba:member type="xqp_string" 
+                    name="baseUri"
+                    brief="keep the base uri from static context"/>
+      <zorba:member type="checked_vector &lt;store::Item_t&gt;" 
+                    name="header_qnames"
+                    brief="names of headers"/>
+    </zorba:state>
+
   </zorba:iterator>
 
-	<!--
+  <!--
 /*******************************************************************************
   zorba-csv:txt-to-xml
 ********************************************************************************/
 -->
-	<zorba:iterator name="ZorbaTXT2XMLIterator">
+  <zorba:iterator name="ZorbaTXT2XMLIterator">
 
-		<zorba:description author="Zorba Team">Parse a Column Separated Values text and generate an XML.</zorba:description>
+    <zorba:description author="Zorba Team">Parse a Column Separated Values text and generate an XML.</zorba:description>
+  
+    <zorba:function>
+      <zorba:signature localname="txt-to-xml" prefix="zorba-csv">
+        <zorba:param>xs:string</zorba:param>          <!-- csv  -->
+        <zorba:param>xs:boolean</zorba:param>         <!-- first_row_is_header -->
+        <zorba:param>xs:integer+</zorba:param>        <!-- columns_positions -->
+        <zorba:param>xs:QName</zorba:param>           <!-- row_node -->
+        <zorba:param>xs:QName</zorba:param>           <!-- default_column_node -->
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
 
-		<zorba:state generateInit="true" generateReset="true">
-			<zorba:member type="xqp_string" name="csv"
-        brief="csv text"/>
-			<zorba:member type="string_codepoints_iterator" name="csv_it"
-        brief="iterator over csv codepoints"/>
-			<zorba:member type="bool" name="first_row_is_header" defaultValue="false"
-        brief="if the first line of csv describe the name of the columns"/>
-			<zorba:member type="checked_vector&lt;unsigned int&gt;" name="columns_positions"
-        brief="separator codepoint"/>
-			<zorba:member type="store::Item_t" name="row_node_name"
-        brief="qname of the row element"/>
-			<zorba:member type="store::Item_t" name="default_column_node_name"
-        brief="default qname of the column element"/>
-			<zorba:member type="xqp_string" name="baseUri"
-        brief="keep the base uri from static context"/>
-			<zorba:member type="checked_vector &lt;store::Item_t&gt;" name="header_qnames"
-          brief="names of headers"/>
-		</zorba:state>
+    <zorba:state>
+      <zorba:member type="xqp_string"
+                    name="csv"
+                    brief="csv text"/>
+      <zorba:member type="string_codepoints_iterator"
+                    name="csv_it"
+                    brief="iterator over csv codepoints"/>
+      <zorba:member type="bool"
+                    name="first_row_is_header"
+                    defaultValue="false"
+                    brief="if the first line of csv describe the name of the columns"/>
+      <zorba:member type="checked_vector&lt;unsigned int&gt;"
+                    name="columns_positions"
+                    brief="separator codepoint"/>
+      <zorba:member type="store::Item_t"
+                    name="row_node_name"
+                    brief="qname of the row element"/>
+      <zorba:member type="store::Item_t"
+                    name="default_column_node_name"
+                    brief="default qname of the column element"/>
+      <zorba:member type="xqp_string"
+                    name="baseUri"
+                    brief="keep the base uri from static context"/>
+      <zorba:member type="checked_vector &lt;store::Item_t&gt;"
+                    name="header_qnames"
+                    brief="names of headers"/>
+    </zorba:state>
 
-		<zorba:function>
-			<zorba:signature localname="txt-to-xml" prefix="zorba-csv">
-				<zorba:param name="csv">xs:string</zorba:param>
-				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
-				<zorba:param name="columns_positions">xs:integer+</zorba:param>
-				<zorba:param name="row_node">xs:QName</zorba:param>
-				<zorba:param name="default_column_node">xs:QName</zorba:param>
-				<zorba:output>node()*</zorba:output>
-			</zorba:signature>
-		</zorba:function>
-
-	</zorba:iterator>
+  </zorba:iterator>
 
 <!--
 /*******************************************************************************
@@ -202,41 +223,52 @@
 
   <zorba:description author="Zorba Team">Parse a Comma Separated Values text file and generate an XML.</zorba:description>
 
-  <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="std::ifstream" name="csv_stream" 
-      brief="csv text"/>
-    <zorba:member type="ifstream_codepoints_iterator" name="csv_it"
-      brief="csv codepoints iterator"/>
-    <zorba:member type="bool" name="first_row_is_header" defaultValue="false"
-      brief="if the first line of csv describe the name of the columns"/>
-    <zorba:member type="checked_vector&lt;uint32_t&gt;" name="separator_cp"
-      brief="separator codepoint"/>
-    <zorba:member type="checked_vector &lt;uint32_t&gt;" name="quote_char_cp"
-      brief="quote char codepoint"/>
-    <zorba:member type="checked_vector &lt;uint32_t&gt;" name="quote_escape_cp"
-      brief="quote escape codepoints"/>
-    <zorba:member type="store::Item_t" name="row_node_name"
-      brief="qname of the row element"/>
-    <zorba:member type="store::Item_t" name="default_column_node_name"
-      brief="default qname of the column element"/>
-    <zorba:member type="xqp_string" name="baseUri"
-      brief="keep the base uri from static context"/>
-    <zorba:member type="checked_vector &lt;store::Item_t&gt;" name="header_qnames"
-        brief="names of headers"/>
-  </zorba:state>
-
   <zorba:function>
     <zorba:signature localname="csv-file-to-xml" prefix="zorba-csv">
-      <zorba:param name="csv_file">xs:string</zorba:param>
-      <zorba:param name="first_row_is_header">xs:boolean</zorba:param>
-      <zorba:param name="separator">xs:string</zorba:param>
-      <zorba:param name="quote_char">xs:string</zorba:param>
-      <zorba:param name="quote_escape">xs:string</zorba:param>
-      <zorba:param name="row_node">xs:QName</zorba:param>
-      <zorba:param name="default_column_node">xs:QName</zorba:param>
+      <zorba:param>xs:string</zorba:param>      <!-- csv_file -->
+      <zorba:param>xs:boolean</zorba:param>     <!-- first_row_is_header -->
+      <zorba:param>xs:string</zorba:param>      <!-- separator -->
+      <zorba:param>xs:string</zorba:param>      <!-- quote_char -->
+      <zorba:param>xs:string</zorba:param>      <!-- quote_escape -->
+      <zorba:param>xs:QName</zorba:param>       <!-- row_node -->
+      <zorba:param>xs:QName</zorba:param>       <!-- default_column_node -->
       <zorba:output>node()*</zorba:output>
     </zorba:signature>
   </zorba:function>
+
+  <zorba:state>
+    <zorba:member type="std::ifstream"
+                  name="csv_stream" 
+                  brief="csv text"/>
+    <zorba:member type="ifstream_codepoints_iterator" 
+                  name="csv_it"
+                  brief="csv codepoints iterator"/>
+    <zorba:member type="bool" 
+                  name="first_row_is_header" 
+                  defaultValue="false"
+                  brief="if the first line of csv describe the name of the columns"/>
+    <zorba:member type="checked_vector&lt;uint32_t&gt;" 
+                  name="separator_cp"
+                  brief="separator codepoint"/>
+    <zorba:member type="checked_vector &lt;uint32_t&gt;" 
+                  name="quote_char_cp"
+                  brief="quote char codepoint"/>
+    <zorba:member type="checked_vector &lt;uint32_t&gt;" 
+                  name="quote_escape_cp"
+                  brief="quote escape codepoints"/>
+    <zorba:member type="store::Item_t" 
+                  name="row_node_name"
+                  brief="qname of the row element"/>
+    <zorba:member type="store::Item_t" 
+                  name="default_column_node_name"
+                  brief="default qname of the column element"/>
+    <zorba:member type="xqp_string" 
+                  name="baseUri"
+                  brief="keep the base uri from static context"/>
+    <zorba:member type="checked_vector &lt;store::Item_t&gt;" 
+                  name="header_qnames"
+                  brief="names of headers"/>
+  </zorba:state>
 
 </zorba:iterator>
 
@@ -245,135 +277,143 @@
   zorba-csv:txt-file-to-xml from file
 ********************************************************************************/
 -->
+  <zorba:iterator name="ZorbaTXT2XMLFromFileIterator">
 
-	<zorba:iterator name="ZorbaTXT2XMLFromFileIterator">
+    <zorba:description author="Zorba Team">Parse a Column Separated Values text file and generate an XML.</zorba:description>
 
-		<zorba:description author="Zorba Team">Parse a Column Separated Values text file and generate an XML.</zorba:description>
+    <zorba:function>
+      <zorba:signature localname="txt-file-to-xml" prefix="zorba-csv">
+        <zorba:param>xs:string</zorba:param>      <!-- csv_file -->
+        <zorba:param>xs:boolean</zorba:param>     <!-- first_row_is_header -->
+        <zorba:param>xs:integer+</zorba:param>    <!-- columns_positions -->
+        <zorba:param>xs:QName</zorba:param>       <!-- row_node -->
+        <zorba:param>xs:QName</zorba:param>       <!-- default_column_node -->
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
 
-		<zorba:state generateInit="true" generateReset="true">
-			<zorba:member type="std::ifstream" name="csv_stream"
-				brief="csv text"/>
-			<zorba:member type="ifstream_codepoints_iterator" name="csv_it"
-				brief="csv codepoints iterator"/>
-			<zorba:member type="bool" name="first_row_is_header" defaultValue="false"
-				brief="if the first line of csv describe the name of the columns"/>
-			<zorba:member type="checked_vector&lt;unsigned int&gt;" name="columns_positions"
-				brief="separator codepoint"/>
-			<zorba:member type="store::Item_t" name="row_node_name"
-				brief="qname of the row element"/>
-			<zorba:member type="store::Item_t" name="default_column_node_name"
-				brief="default qname of the column element"/>
-			<zorba:member type="xqp_string" name="baseUri"
-				brief="keep the base uri from static context"/>
-			<zorba:member type="checked_vector &lt;store::Item_t&gt;" name="header_qnames"
-					brief="names of headers"/>
-		</zorba:state>
+    <zorba:state>
+      <zorba:member type="std::ifstream"
+                    name="csv_stream"
+                    brief="csv text"/>
+      <zorba:member type="ifstream_codepoints_iterator" 
+                    name="csv_it"
+                    brief="csv codepoints iterator"/>
+      <zorba:member type="bool"
+                    name="first_row_is_header"
+                    defaultValue="false"
+                    brief="if the first line of csv describe the name of the columns"/>
+      <zorba:member type="checked_vector&lt;unsigned int&gt;"
+                    name="columns_positions"
+                    brief="separator codepoint"/>
+      <zorba:member type="store::Item_t"
+                    name="row_node_name"
+                    brief="qname of the row element"/>
+      <zorba:member type="store::Item_t"
+                    name="default_column_node_name"
+                    brief="default qname of the column element"/>
+      <zorba:member type="xqp_string"
+                    name="baseUri"
+                    brief="keep the base uri from static context"/>
+      <zorba:member type="checked_vector &lt;store::Item_t&gt;"
+                    name="header_qnames"
+                    brief="names of headers"/>
+    </zorba:state>
 
-		<zorba:function>
-			<zorba:signature localname="txt-file-to-xml" prefix="zorba-csv">
-				<zorba:param name="csv_file">xs:string</zorba:param>
-				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
-				<zorba:param name="columns_positions">xs:integer+</zorba:param>
-				<zorba:param name="row_node">xs:QName</zorba:param>
-				<zorba:param name="default_column_node">xs:QName</zorba:param>
-				<zorba:output>node()*</zorba:output>
-			</zorba:signature>
-		</zorba:function>
+  </zorba:iterator>
 
-	</zorba:iterator>
-
-	<!--
+  <!--
 /*******************************************************************************
   zorba-csv:xml-to-csv export xml to csv string
 ********************************************************************************/
 -->
 
-	<zorba:iterator name="ZorbaXML2CSVIterator">
+  <zorba:iterator name="ZorbaXML2CSVIterator">
 
-		<zorba:description author="Zorba Team">Export XML to a Comma Separated Values text string.</zorba:description>
+    <zorba:description author="Zorba Team">Export XML to a Comma Separated Values text string.</zorba:description>
 
-		<zorba:function>
-			<zorba:signature localname="xml-to-csv" prefix="zorba-csv">
-				<zorba:param name="xml">node()*</zorba:param>
-				<zorba:param name="xpaths">xs:string*</zorba:param>
-				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
-				<zorba:param name="separator">xs:string</zorba:param>
-				<zorba:param name="quote_char">xs:string</zorba:param>
-				<zorba:param name="quote_escape">xs:string</zorba:param>
-				<zorba:output>xs:string</zorba:output>
-			</zorba:signature>
-		</zorba:function>
+    <zorba:function>
+      <zorba:signature localname="xml-to-csv" prefix="zorba-csv">
+        <zorba:param>node()*</zorba:param>      <!-- xml -->
+        <zorba:param>xs:string*</zorba:param>   <!-- xpaths -->
+        <zorba:param>xs:boolean</zorba:param>   <!-- first_row_is_header -->
+        <zorba:param>xs:string</zorba:param>    <!-- separator -->
+        <zorba:param>xs:string</zorba:param>    <!-- quote_char -->
+        <zorba:param>xs:string</zorba:param>    <!-- quote_escape -->
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+    </zorba:function>
 
-	</zorba:iterator>
+  </zorba:iterator>
 
-	<!--
+<!--
 /*******************************************************************************
   zorba-csv:xml-to-csv-file export xml to csv file
 ********************************************************************************/
 -->
 
-	<zorba:iterator name="ZorbaXML2CSVFILEIterator">
+  <zorba:iterator name="ZorbaXML2CSVFILEIterator">
 
-		<zorba:description author="Zorba Team">Export XML to a Comma Separated Values text file.</zorba:description>
+    <zorba:description author="Zorba Team">Export XML to a Comma Separated Values text file.</zorba:description>
 
-		<zorba:function>
-			<zorba:signature localname="xml-to-csv-file" prefix="zorba-csv">
-				<zorba:param name="xml">node()*</zorba:param>
-				<zorba:param name="output_file">xs:string</zorba:param>
-				<zorba:param name="xpaths">xs:string*</zorba:param>
-				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
-				<zorba:param name="separator">xs:string</zorba:param>
-				<zorba:param name="quote_char">xs:string</zorba:param>
-				<zorba:param name="quote_escape">xs:string</zorba:param>
-				<zorba:output>xs:boolean</zorba:output>
-			</zorba:signature>
-		</zorba:function>
+    <zorba:function>
+      <zorba:signature localname="xml-to-csv-file" prefix="zorba-csv">
+        <zorba:param>node()*</zorba:param>      <!-- xml -->
+        <zorba:param>xs:string</zorba:param>    <!-- output_file -->
+        <zorba:param>xs:string*</zorba:param>   <!-- xpaths -->
+        <zorba:param>xs:boolean</zorba:param>   <!-- first_row_is_header -->
+        <zorba:param>xs:string</zorba:param>    <!-- separator -->
+        <zorba:param>xs:string</zorba:param>    <!-- quote_char -->
+        <zorba:param>xs:string</zorba:param>    <!-- quote_escape -->
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
 
-	</zorba:iterator>
+  </zorba:iterator>
 
-	<!--
+<!--
 /*******************************************************************************
   zorba-csv:xml-to-txt export xml to txt string
 ********************************************************************************/
 -->
 
-	<zorba:iterator name="ZorbaXML2TXTIterator">
+  <zorba:iterator name="ZorbaXML2TXTIterator">
 
-		<zorba:description author="Zorba Team">Export XML to a Column Separated Values text string.</zorba:description>
+    <zorba:description author="Zorba Team">Export XML to a Column Separated Values text string.</zorba:description>
 
-		<zorba:function>
-			<zorba:signature localname="xml-to-txt" prefix="zorba-csv">
-				<zorba:param name="xml">node()*</zorba:param>
-				<zorba:param name="xpaths">xs:string*</zorba:param>
-				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
-				<zorba:param name="field_lengths">xs:integer+</zorba:param>
-				<zorba:output>xs:string</zorba:output>
-			</zorba:signature>
-		</zorba:function>
+    <zorba:function>
+      <zorba:signature localname="xml-to-txt" prefix="zorba-csv">
+        <zorba:param>node()*</zorba:param>      <!-- xml -->
+        <zorba:param>xs:string*</zorba:param>   <!-- xpaths -->
+        <zorba:param>xs:boolean</zorba:param>   <!-- first_row_is_header -->
+        <zorba:param>xs:integer+</zorba:param>  <!-- field_lengths -->
+        <zorba:output>xs:string</zorba:output>
+      </zorba:signature>
+    </zorba:function>
 
-	</zorba:iterator>
+  </zorba:iterator>
 
-	<!--
+<!--
 /*******************************************************************************
   zorba-csv:xml-to-txt-file export xml to txt file
 ********************************************************************************/
 -->
 
-	<zorba:iterator name="ZorbaXML2TXTFILEIterator">
+  <zorba:iterator name="ZorbaXML2TXTFILEIterator">
 
-		<zorba:description author="Zorba Team">Export XML to a Column Separated Values text file.</zorba:description>
+    <zorba:description author="Zorba Team">Export XML to a Column Separated Values text file.</zorba:description>
 
-		<zorba:function>
-			<zorba:signature localname="xml-to-txt-file" prefix="zorba-csv">
-				<zorba:param name="xml">node()*</zorba:param>
-				<zorba:param name="output_file">xs:string</zorba:param>
-				<zorba:param name="xpaths">xs:string*</zorba:param>
-				<zorba:param name="first_row_is_header">xs:boolean</zorba:param>
-				<zorba:param name="field_lengths">xs:integer+</zorba:param>
-				<zorba:output>xs:boolean</zorba:output>
-			</zorba:signature>
-		</zorba:function>
+    <zorba:function>
+      <zorba:signature localname="xml-to-txt-file" prefix="zorba-csv">
+        <zorba:param>node()*</zorba:param>      <!-- xml -->
+        <zorba:param>xs:string</zorba:param>    <!-- output_file -->
+        <zorba:param>xs:string*</zorba:param>   <!-- xpaths -->
+        <zorba:param>xs:boolean</zorba:param>   <!-- first_row_is_header -->
+        <zorba:param>xs:integer+</zorba:param>  <!-- field_lengths -->
+        <zorba:output>xs:boolean</zorba:output>
+      </zorba:signature>
+    </zorba:function>
 
-	</zorba:iterator>
+  </zorba:iterator>
 
 </zorba:iterators>

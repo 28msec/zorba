@@ -6,8 +6,11 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 -->
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
-    
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
 <zorba:source>
   <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
@@ -28,14 +31,14 @@
   Error XXX is risen if $icName is not available in the static context.
     </zorba:description>
 
-    <zorba:function> 
+    <zorba:function>
 
       <zorba:signature localname="activate-integrity-constraint" 
-		       prefix="fn-zorba-ddl">
+           prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
-
+    
       <zorba:methods>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
@@ -64,7 +67,7 @@
     <zorba:function>
  
       <zorba:signature localname="deactivate-integrity-constraint" 
-		       prefix="fn-zorba-ddl">
+           prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
@@ -97,7 +100,7 @@
     <zorba:function> 
 
       <zorba:signature localname="check-integrity-constraint" 
-		       prefix="fn-zorba-ddl">
+           prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>xs:boolean</zorba:output>
       </zorba:signature>

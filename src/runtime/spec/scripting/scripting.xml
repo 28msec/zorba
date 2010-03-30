@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
   <zorba:header>
     <zorba:include form="Quoted">runtime/util/flowctl_exception.h</zorba:include>
@@ -36,11 +39,11 @@
   
     <zorba:description author="Zorba Team">FlowCtlIterator</zorba:description>
   
-    <zorba:member type="enum FlowCtlException::action" name="act"/>
-  
     <zorba:constructor>
         <zorba:parameter type="enum FlowCtlException::action" name="aAction" />
     </zorba:constructor>
+
+    <zorba:member type="enum FlowCtlException::action" name="act" brief=""/>
    
   </zorba:iterator>
 

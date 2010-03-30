@@ -5,7 +5,10 @@
 // 11 Functions Related to QNames                                              //
 /////////////////////////////////////////////////////////////////////////////////
 -->
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <zorba:header>
     <zorba:include form="Angle-bracket">vector</zorba:include>
@@ -150,18 +153,18 @@
 
   <zorba:description author="Zorba Team">fn:in-scope-prefixes</zorba:description>
 
-  <zorba:state generateInit="false" generateReset="false">
-    <zorba:member type="std::vector&lt;std::pair&lt;xqpStringStore_t, xqpStringStore_t&gt; &gt;" name="theBindings"
-                  brief=""/>
-    <zorba:member type="unsigned long" name="theCurrentPos" brief=""/>
-  </zorba:state>
-
   <zorba:function>
     <zorba:signature localname="in-scope-prefixes" prefix="fn">
       <zorba:param>element()</zorba:param> <!-- was node() -->
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>
   </zorba:function>
+
+  <zorba:state generateInit="false" generateReset="false">
+    <zorba:member type="std::vector&lt;std::pair&lt;xqpStringStore_t, xqpStringStore_t&gt; &gt;" name="theBindings"
+                  brief=""/>
+    <zorba:member type="unsigned long" name="theCurrentPos" brief=""/>
+  </zorba:state>
     
 </zorba:iterator>
 

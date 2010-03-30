@@ -143,9 +143,9 @@ public:
 
   xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
-  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
-
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
+
+  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };
@@ -182,9 +182,9 @@ public:
 
   xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
-  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
-
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
+
+  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
   COMPUTE_ANNOTATION_DECL();
 
@@ -204,9 +204,9 @@ public:
 
   xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
-  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
-
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
+
+  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
   COMPUTE_ANNOTATION_DECL();
 
@@ -242,9 +242,11 @@ public:
 
   xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
 
-  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
+  bool isMap(ulong producer) const { return producer == 0; }
 
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
+
+  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
 
   CODEGEN_DECL();
 };

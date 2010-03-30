@@ -7,7 +7,10 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 -->
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
     
 <zorba:source>
     <zorba:include form="Quoted">store/api/iterator.h</zorba:include>
@@ -24,12 +27,7 @@
  * 2.1 fn:node-name
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="NodeNameIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="NodeNameIterator">
 
     <zorba:description author="Zorba Team">fn:node-name</zorba:description>
     
@@ -48,12 +46,7 @@
 ********************************************************************************/
 -->
 
-<zorba:iterator
-    name="NilledIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="NilledIterator">
 
     <zorba:description author="Zorba Team">fn:nilled</zorba:description>
     
@@ -73,32 +66,27 @@
 ********************************************************************************/
 -->
 
-<zorba:iterator
-    name="FnStringIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    arity="nary">
+<zorba:iterator name="FnStringIterator">
 
     <zorba:description author="Zorba Team">fn:string</zorba:description>
     
-    <zorba:constructor>
-        <zorba:parameter type="bool" name="emptyStringOnNULL" />
-    </zorba:constructor>
-    
-    <zorba:member type="bool" name="theEmptyStringOnNULL" getterName="isUpdating" brief=""/>
-    
-    <zorba:state generateInit="true" generateReset="true"
-        generateConstructor="true" generateDestructor="true">
-        <zorba:member type="bool" name="hasOutput" defaultValue="false" brief=""/>
-    </zorba:state>
-
     <zorba:function generateCodegen="false">
         <zorba:signature localname="string" prefix="fn">
             <zorba:param>item()?</zorba:param>
             <zorba:output>xs:string</zorba:output>
         </zorba:signature>
     </zorba:function>
+
+    <zorba:state generateInit="true" generateReset="true"
+        generateConstructor="true" generateDestructor="true">
+        <zorba:member type="bool" name="hasOutput" defaultValue="false" brief=""/>
+    </zorba:state>
+
+    <zorba:constructor>
+        <zorba:parameter type="bool" name="emptyStringOnNULL" />
+    </zorba:constructor>
     
+    <zorba:member type="bool" name="theEmptyStringOnNULL" getterName="isUpdating" brief=""/>
 </zorba:iterator>
 
 <!--
@@ -111,10 +99,6 @@
 
   <zorba:description author="Zorba Team">fn:data</zorba:description>
   
-  <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="store::Iterator_t" name="theTypedValueIter" defaultValue="NULL" brief=""/>
-  </zorba:state>
-
   <zorba:function>
 
     <zorba:signature localname="data" prefix="fn">
@@ -128,6 +112,10 @@
     </zorba:methods>
 
   </zorba:function>
+
+  <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="store::Iterator_t" name="theTypedValueIter" defaultValue="NULL" brief=""/>
+  </zorba:state>
     
 </zorba:iterator>
 
@@ -136,12 +124,7 @@
  * 2.5 fn:base-uri
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="BaseUriIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="BaseUriIterator">
 
     <zorba:description author="Zorba Team">fn:base-uri</zorba:description>
     
@@ -160,12 +143,7 @@
  * 2.6 fn:document-uri
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="DocumentUriIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="DocumentUriIterator">
 
     <zorba:description author="Zorba Team">fn:document-uri</zorba:description>
     
@@ -192,12 +170,7 @@
  * 14.9 fn:root
 ********************************************************************************/
 -->
-<zorba:iterator
-    name="RootIterator"
-    generateVisitor="true"
-    generateAccept="true"
-    generateCodegen="true"
-    arity="nary">
+<zorba:iterator name="RootIterator">
     
     <zorba:description author="Zorba Team">fn:root</zorba:description>
     

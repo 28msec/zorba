@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <zorba:header>
     <zorba:include form="Quoted">zorbatypes/representations.h</zorba:include>
@@ -433,17 +436,17 @@
 
   <zorba:description author="Zorba Team">math:modf</zorba:description>
 
-  <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="xqp_double" name="theDoubInteger" defaultValue="xqp_double::zero()"
-                  brief=""/>
-  </zorba:state>
-  
   <zorba:function>
     <zorba:signature localname="modf" prefix="fn-zorba-math">
       <zorba:param>xs:double</zorba:param>
       <zorba:output>xs:double+</zorba:output>
     </zorba:signature>
   </zorba:function>
+
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="xqp_double" name="theDoubInteger" defaultValue="xqp_double::zero()"
+                  brief=""/>
+  </zorba:state>
     
 </zorba:iterator>
 
@@ -456,17 +459,17 @@
 
   <zorba:description author="Zorba Team">math:frexp</zorba:description>
 
-  <zorba:state generateInit="true" generateReset="true">
-    <zorba:member type="xqp_integer" name="theIntExponent" defaultValue="xqp_integer::zero()"
-                  brief=""/>
-  </zorba:state>
-  
   <zorba:function>
     <zorba:signature localname="frexp" prefix="fn-zorba-math">
       <zorba:param>xs:double</zorba:param>
       <zorba:output>xs:double+</zorba:output>
     </zorba:signature>
   </zorba:function>
+
+  <zorba:state generateInit="true" generateReset="true">
+    <zorba:member type="xqp_integer" name="theIntExponent" defaultValue="xqp_integer::zero()"
+                  brief=""/>
+  </zorba:state>
     
 </zorba:iterator>
 

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <!--
 /*******************************************************************************
@@ -20,8 +23,8 @@
     </zorba:signature>
 
     <zorba:methods>
-      <zorba:accessesDynCtx returnValue="true"/>
       <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+      <zorba:accessesDynCtx returnValue="true"/>      
     </zorba:methods>
 
   </zorba:function>

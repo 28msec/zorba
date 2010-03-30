@@ -48,9 +48,9 @@ public:
   {
   }
 
-  bool accessesDynCtx() const { return true; }
-
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };

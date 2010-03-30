@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
-    
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<!--
 <zorba:codegen>
     <zorba:h>
         <zorba:method>void populateContext_Comparison(static_context *sctx);</zorba:method>
     </zorba:h>
 </zorba:codegen>
-    
+-->
+
 <!--
 /*******************************************************************************
 * 14.6 op:is-same-node
 ********************************************************************************/
 -->
 <zorba:iterator
-    name="IsSameNodeIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+    name="IsSameNodeIterator">
 
     <zorba:description author="Zorba Team">op:is-same-node</zorba:description>
     
@@ -38,10 +40,7 @@
 -->
 
 <zorba:iterator
-    name="NodeBeforeIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+    name="NodeBeforeIterator">
 
     <zorba:description author="Zorba Team">op:node-before</zorba:description>
     
@@ -62,10 +61,7 @@
 -->
 
 <zorba:iterator
-    name="NodeAfterIterator"
-    generateVisitor="true"
-    generateAccept="true" 
-    arity="nary">
+    name="NodeAfterIterator">
 
     <zorba:description author="Zorba Team">op:node-after</zorba:description>
     

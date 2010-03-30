@@ -5,39 +5,47 @@
 // Zorba Function Item                                                         //
 /////////////////////////////////////////////////////////////////////////////////
 -->
-<z:iterators xmlns:z="http://www.zorba-xquery.com">
-<z:header>
-  <z:include form="Quoted">compiler/expression/expr_base.h</z:include>
-  <z:include form="Quoted">runtime/util/plan_wrapper_holder.h</z:include>
-  <z:include form="Quoted">types/typeimpl.h</z:include>
-  <z:include form="Quoted">functions/function.h</z:include>
-</z:header>
-<z:source>
-  <z:include form="Quoted">context/static_context.h</z:include>
-  <z:include form="Quoted">compiler/api/compilercb.h</z:include>
-  <z:include form="Quoted">context/dynamic_context.h</z:include>
-</z:source>
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+<zorba:header>
+  <zorba:include form="Quoted">compiler/expression/expr_base.h</zorba:include>
+  <zorba:include form="Quoted">runtime/util/plan_wrapper_holder.h</zorba:include>
+  <zorba:include form="Quoted">types/typeimpl.h</zorba:include>
+  <zorba:include form="Quoted">functions/function.h</zorba:include>
+</zorba:header>
+
+<zorba:source>
+  <zorba:include form="Quoted">context/static_context.h</zorba:include>
+  <zorba:include form="Quoted">compiler/api/compilercb.h</zorba:include>
+  <zorba:include form="Quoted">context/dynamic_context.h</zorba:include>
+</zorba:source>
 <!--
 /*******************************************************************************
  Dynamic Function Invocation
 ********************************************************************************/
 -->
-<z:iterator name="DynamicFunctionInvocationIterator" generateCloseImpl="true">
-  <z:description author="Zorba Team">TODO: notes from the spec</z:description>
+<zorba:iterator name="DynamicFunctionInvocationIterator"
+                generateCloseImpl="true">
 
-  <z:member type="checked_vector&lt;PlanIter_t>" name="theArgs" />
+  <zorba:description author="Zorba Team">TODO: notes from the spec</zorba:description>
 
-  <z:state generateInit="false" generateReset="false"> 
-    <z:member type="store::Iterator_t" name="thePlan"
+  <zorba:state generateInit="false" generateReset="false"> 
+    <zorba:member type="store::Iterator_t" name="thePlan"
                   brief="the plan to execute"/>
-    <z:member type="std::auto_ptr&lt;CompilerCB>" name="ccb"
+    <zorba:member type="std::auto_ptr&lt;CompilerCB>" name="ccb"
                   brief="the CompilerCB used to compile the plan"/>
-    <z:member type="std::auto_ptr&lt;dynamic_context>" name="dctx"
+    <zorba:member type="std::auto_ptr&lt;dynamic_context>" name="dctx"
                   brief="the dynamic context used to during execution of the plan"/>
-  </z:state>
+  </zorba:state>
  
-  <z:constructor>
-    <z:parameter type="checked_vector&lt;PlanIter_t>" name="args" />
-  </z:constructor>
-</z:iterator>
-</z:iterators>
+  <zorba:constructor>
+    <zorba:parameter type="checked_vector&lt;PlanIter_t>" name="args" />
+  </zorba:constructor>
+
+  <zorba:member type="checked_vector&lt;PlanIter_t>" name="theArgs" brief=""/>
+
+</zorba:iterator>
+</zorba:iterators>

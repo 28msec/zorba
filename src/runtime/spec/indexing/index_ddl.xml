@@ -6,21 +6,14 @@
 //                                                                            //
 ////////////////////////////////////////////////////////////////////////////////
 -->
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
-    
-<zorba:header>
-</zorba:header>
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
 <zorba:source>
   <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
-
-<zorba:codegen>
-  <zorba:cpp>
-    <!--    <zorba:include form="Quoted">functions/Index.h</zorba:include>-->
-  </zorba:cpp>
-</zorba:codegen>
-
 
 <!--
 /*******************************************************************************
@@ -56,12 +49,10 @@
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
-
       <zorba:methods>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
-
     </zorba:function>
 
 </zorba:iterator>
@@ -70,7 +61,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="DeleteIndexIterator" arity="unary">
+<zorba:iterator name="DeleteIndexIterator" 
+                arity="unary">
 
     <zorba:description author="Zorba Team">
   drop-index($indexName as xs:QName) as ()
@@ -82,17 +74,14 @@
     </zorba:description>
 
     <zorba:function>
-
       <zorba:signature localname="delete-index" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
-
       <zorba:methods>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
-
     </zorba:function>
 
 </zorba:iterator>
@@ -101,7 +90,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="CreateInternalIndexIterator" arity="unary">
+<zorba:iterator name="CreateInternalIndexIterator"
+                arity="unary">
 
     <zorba:description author="Zorba Team">
   create-internal-index($indexName as xs:QName) as ()
@@ -120,26 +110,23 @@
      updating function.
     </zorba:description>
 
-    <zorba:member type="store::Item_t" name="theQName"
-      getterName="getName" brief="the name of the index to create"/>
-
-    <zorba:constructor>
-        <zorba:parameter type="const store::Item_t" name="aName"/>
-    </zorba:constructor>
-
-    <zorba:function generateCodegen="false"> 
-
+    <zorba:function generateCodegen="false">
       <zorba:signature localname="create-internal-index" prefix="op">
         <zorba:param>xs:QName</zorba:param>
        <zorba:param>item()*</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
-
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
-
     </zorba:function>
+
+    <zorba:constructor>
+      <zorba:parameter type="const store::Item_t" name="aName"/>
+    </zorba:constructor>
+
+    <zorba:member type="store::Item_t" name="theQName"
+      getterName="getName" brief="the name of the index to create"/>
 
 </zorba:iterator>
 
@@ -147,7 +134,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="RefreshIndexIterator" arity="unary">
+<zorba:iterator name="RefreshIndexIterator" 
+                arity="unary">
 
     <zorba:description author="Zorba Team">
   refresh-index($indexName as xs:QName) as pul()
@@ -159,17 +147,14 @@
     </zorba:description>
 
     <zorba:function>
-
       <zorba:signature localname="refresh-index" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
-
       <zorba:methods>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
-
     </zorba:function>
 
 </zorba:iterator>
@@ -190,29 +175,27 @@
                       $keyN  as anyAtomic?) as item()*
 ********************************************************************************/
 -->
-<zorba:iterator name="IndexEntryBuilderIterator" arity="nary">
+<zorba:iterator name="IndexEntryBuilderIterator" 
+                arity="nary">
 
     <zorba:description author="Zorba Team">
     </zorba:description>
 
-    <zorba:state generateInit="true" generateReset="true">
-      <zorba:member type="uint32_t" name="theCurChild" defaultValue="0"
-                    brief="the current child"/>
-    </zorba:state>
-
     <zorba:function>
-
       <zorba:signature localname="index-entry-builder" prefix="op">
         <zorba:param>node()</zorba:param>
         <zorba:param>true</zorba:param> <!-- variadic function -->
         <zorba:output>item()*</zorba:output>
       </zorba:signature>
-
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
-
     </zorba:function>
+
+    <zorba:state generateInit="true" generateReset="true">
+      <zorba:member type="uint32_t" name="theCurChild" defaultValue="0"
+                    brief="the current child"/>
+    </zorba:state>
 
 </zorba:iterator>
 
@@ -220,7 +203,8 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="IndexPointProbeIterator" arity="nary">
+<zorba:iterator name="IndexPointProbeIterator" 
+                arity="nary">
 
     <zorba:description author="Zorba Team">
   probe-index-point($indexName as xs:QName,
@@ -228,6 +212,18 @@
                     ...,
                     $keyN      as anyAtomic?) as node()*
     </zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="probe-index-point" prefix="fn-zorba-ddl">
+        <zorba:param>xs:QName()</zorba:param>
+        <zorba:param>true</zorba:param> <!-- variadic function -->
+        <zorba:output>node()*</zorba:output>
+      </zorba:signature>
+      <zorba:methods>
+        <zorba:accessesDynCtx returnValue="true"/>
+        <zorba:producesDistinctNodes returnValue="YES"/>
+      </zorba:methods>
+    </zorba:function>
 
     <zorba:state generateInit="true" generateReset="false">
       <zorba:member type="const store::Item*" name="theQname" defaultValue="0"
@@ -241,26 +237,14 @@
                     brief="the index probe iterator"/>
     </zorba:state>
 
-    <zorba:function>
-      <zorba:signature localname="probe-index-point" prefix="fn-zorba-ddl">
-        <zorba:param>xs:QName()</zorba:param>
-        <zorba:param>true</zorba:param> <!-- variadic function -->
-        <zorba:output>node()*</zorba:output>
-      </zorba:signature>
-
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:producesDistinctNodes returnValue="YES"/>
-      </zorba:methods>
-    </zorba:function>
-
 </zorba:iterator>
 
 <!--
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="IndexRangeProbeIterator" arity="nary">
+<zorba:iterator name="IndexRangeProbeIterator" 
+                arity="nary">
 
     <zorba:description author="Zorba Team">
   probe-index-range($indexName               as xs:QName,
@@ -279,31 +263,27 @@
                     $rangeNupperBoundIncluded as boolean?) as node()*
     </zorba:description>
 
-    <zorba:state generateInit="true" generateReset="false">
-      <zorba:member type="const store::Item*" name="theQname" defaultValue="0"
-                    brief="the name of the index"/>
-
-      <zorba:member type="store::Index*" name="theIndex" defaultValue="0"
-                    brief="the index to probe"/>
-
-      <zorba:member type="store::IndexProbeIterator_t" name="theIterator"
-                    defaultValue="NULL"
-                    brief="the index probe iterator"/>
-    </zorba:state>
-
     <zorba:function>
       <zorba:signature localname="probe-index-range" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName()</zorba:param>
-        <zorba:param>true</zorba:param> <!-- variadic function -->
+        <zorba:param>true</zorba:param>       <!-- variadic function -->
         <zorba:output>node()*</zorba:output>
       </zorba:signature>
-
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
         <zorba:producesDistinctNodes returnValue="YES"/>
       </zorba:methods>
-
     </zorba:function>
+
+    <zorba:state generateInit="true" generateReset="false">
+      <zorba:member type="const store::Item*" name="theQname" defaultValue="0"
+                    brief="the name of the index"/>
+      <zorba:member type="store::Index*" name="theIndex" defaultValue="0"
+                    brief="the index to probe"/>
+      <zorba:member type="store::IndexProbeIterator_t" name="theIterator"
+                    defaultValue="NULL"
+                    brief="the index probe iterator"/>
+    </zorba:state>
 
 </zorba:iterator>
 

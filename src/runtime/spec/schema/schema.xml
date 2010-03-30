@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
     
 <zorba:header>
   <zorba:include form="Quoted">compiler/parser/parse_constants.h</zorba:include>
-  <zorba:fwd-decl>TypeManager</zorba:fwd-decl>
+  <zorba:fwd-decl ns="zorba">TypeManager</zorba:fwd-decl>
 </zorba:header>
 <zorba:source>
   <zorba:include form="Quoted">types/typemanager.h</zorba:include>
@@ -24,15 +27,15 @@
 
   <zorba:description author="Zorba Team">iterator backing the validate expression</zorba:description>
 
-  <zorba:member type="enum ParseConstants::validation_mode_t" name="validationMode"/>
-  <zorba:member type="rchandle&lt;TypeManager>" name="typemgr"/>
-  <zorba:member type="store::Item_t" name="typeName"/>
-
   <zorba:constructor>
     <zorba:parameter type="enum ParseConstants::validation_mode_t" name="aValidationMode"/>
     <zorba:parameter type="TypeManager*" name="aTypemgr"/>
     <zorba:parameter type="store::Item*" name="aTypeName"/>
   </zorba:constructor>
+
+  <zorba:member type="enum ParseConstants::validation_mode_t" name="validationMode" brief=""/>
+  <zorba:member type="rchandle&lt;TypeManager>" name="typemgr" brief=""/>
+  <zorba:member type="store::Item_t" name="typeName" brief=""/>
 
 </zorba:iterator>
 
@@ -40,8 +43,7 @@
 /*******************************************************************************
 ********************************************************************************/
 -->
-<zorba:iterator name="ZorbaSchemaTypeIterator"
-                arity="nary">
+<zorba:iterator name="ZorbaSchemaTypeIterator" arity="nary">
 
   <zorba:description author="Zorba Team">iterator backing the validate expression</zorba:description>
 

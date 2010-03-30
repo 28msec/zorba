@@ -6,11 +6,11 @@
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 -->
-<zorba:iterators xmlns:zorba="http://www.zorba-xquery.com">
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
     
-<zorba:header>
-</zorba:header>
-
 <zorba:source>
     <zorba:include  form="Quoted">store/api/iterator.h</zorba:include>
 </zorba:source>
@@ -24,13 +24,6 @@
     <zorba:description author="Zorba Team">
       fn:collection
     </zorba:description>
-
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="theIterator"
-                    brief="the current iterator"/>
-      <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
-                    brief="flag indicating whether theIterator was opened"/>
-    </zorba:state>
 
     <zorba:function>
 
@@ -49,6 +42,13 @@
       </zorba:methods>
 
     </zorba:function>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="theIterator"
+                    brief="the current iterator"/>
+      <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
+                    brief="flag indicating whether theIterator was opened"/>
+    </zorba:state>
   
 </zorba:iterator>
 
@@ -62,13 +62,6 @@
       zorba:collection
     </zorba:description>
 
-    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
-      <zorba:member type="store::Iterator_t" name="theIterator"
-                    brief="the current iterator"/>
-      <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
-                    brief="flag indicating whether theIterator was opened"/>
-    </zorba:state>
-
     <zorba:function>
 
       <zorba:signature localname="collection" prefix="fn-zorba-ddl">
@@ -78,12 +71,19 @@
 
       <zorba:methods>
         <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:isSource returnValue="true"/>
-        <zorba:producesSortedNodes returnValue="YES"/>
+        <zorba:isSource returnValue="true"/>        
         <zorba:producesDistinctNodes returnValue="YES"/>
+        <zorba:producesSortedNodes returnValue="YES"/>
       </zorba:methods>
 
     </zorba:function>
+
+    <zorba:state generateInit="false" generateReset="false" generateDestructor="false">
+      <zorba:member type="store::Iterator_t" name="theIterator"
+                    brief="the current iterator"/>
+      <zorba:member type="bool" name="theIteratorOpened" defaultValue="false"
+                    brief="flag indicating whether theIterator was opened"/>
+    </zorba:state>
   
 </zorba:iterator>
 
@@ -138,8 +138,8 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
     </zorba:function>
@@ -164,8 +164,8 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
     </zorba:function>
@@ -191,8 +191,8 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>        
       </zorba:methods>
 
     </zorba:function>
@@ -218,8 +218,8 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
     </zorba:function>
@@ -245,8 +245,8 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
     </zorba:function>
@@ -273,8 +273,8 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
     </zorba:function>
@@ -301,8 +301,8 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
     </zorba:function>
@@ -328,8 +328,8 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>        
       </zorba:methods>
 
     </zorba:function>
@@ -353,15 +353,6 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:function> 
-
       <zorba:signature localname="delete-nodes-first" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:unsignedLong</zorba:param>
@@ -369,8 +360,8 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
     </zorba:function>
@@ -394,15 +385,6 @@
         <zorba:output>empty-sequence()</zorba:output>
       </zorba:signature>
 
-      <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
-        <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
-      </zorba:methods>
-
-    </zorba:function>
-
-    <zorba:function> 
-
       <zorba:signature localname="delete-nodes-last" prefix="fn-zorba-ddl">
         <zorba:param>xs:QName</zorba:param>
         <zorba:param>xs:unsignedLong</zorba:param>
@@ -410,8 +392,8 @@
       </zorba:signature>
 
       <zorba:methods>
-        <zorba:accessesDynCtx returnValue="true"/>
         <zorba:getUpdateType returnValue="UPDATE_EXPR"/>
+        <zorba:accessesDynCtx returnValue="true"/>
       </zorba:methods>
 
     </zorba:function>
