@@ -27,9 +27,12 @@ IF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
   SET(SWIG_MODULE_libzorba_api_EXTRA_DEPS ${SWIG_FILES})
 
   ADD_SUBDIRECTORY(python)
+  IF(NOT WIN32 OR CYGWIN)
   ADD_SUBDIRECTORY(php)
+  ENDIF(NOT WIN32 OR CYGWIN)
   ADD_SUBDIRECTORY(java)
   
+  IF(NOT WIN32 OR CYGWIN)
   # ruby module on Mac OS doesn't link because cmake is generating
   # -framework ruby instead of -framework Ruby
   IF (APPLE AND UNIVERSAL )
@@ -38,6 +41,7 @@ IF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
     MESSAGE ( STATUS "Ruby module being built non-Universal" )
     ADD_SUBDIRECTORY(ruby)
   ENDIF ( APPLE AND UNIVERSAL )
+  ENDIF(NOT WIN32 OR CYGWIN)
 
 ELSE(SWIG_FOUND)
   MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
