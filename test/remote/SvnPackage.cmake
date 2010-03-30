@@ -26,13 +26,15 @@ macro (find_prereqs)
   ENDIF(NOT SVN_EXECUTABLE)
   set (svn "${SVN_EXECUTABLE}")
 
-  # We also want zorba itself (you HAVE built it, right?).
-  find_program(zorba NAMES zorba zorba.exe
-               PATHS "${cwd}/../../build" "${ZORBA_BUILD_DIR}"
-               PATH_SUFFIXES bin)
-  if (NOT zorba)
+  # create path to execute zorba
+  IF (WIN32)
+    SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/scripts/zorba_cmake.bat")
+  ELSE (WIN32)
+    SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/bin/zorba")
+  ENDIF (WIN32)
+  if (NOT EXISTS ${ZORBA_EXE_SCRIPT})
     message (FATAL_ERROR "Zorba is required; not found. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary.")
-  endif (NOT zorba)
+  endif (NOT EXISTS ${ZORBA_EXE_SCRIPT})
 endmacro (find_prereqs)
 
 
@@ -62,7 +64,7 @@ macro (get_files_with_status filelist svnstatusxml changelist)
       \";\")")
 
   # Set "filelist" to result
-  execute_process (COMMAND "${zorba}" --omit-xml-declaration
+  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
                    --query "${query}" --context-item "${svnstatusxml}"
                    OUTPUT_VARIABLE "${filelist}")
 endmacro (get_files_with_status)
@@ -113,7 +115,7 @@ macro (svn_package srcdir outdir changelist resultfile)
   # Package up for delivery to remote queue - name the archive after
   # the current time to ensure first-come, first-serve and prevent
   # collisions
-  execute_process (COMMAND "${zorba}" --omit-xml-declaration
+  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
                    --query "fn:adjust-dateTime-to-timezone(fn:current-dateTime(), xs:dayTimeDuration(\"PT0H\"))"
                    OUTPUT_VARIABLE datetime)
   string (REPLACE ":" "-" datetime "${datetime}")
@@ -141,11 +143,11 @@ macro (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile)
   set (chgdir "${tmpdir}/changes")
 
   # Checkout/update svn from specified URL and rev
-  execute_process (COMMAND "${zorba}" --omit-xml-declaration
+  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
                    --query "data(info/entry/url)"
                    --context-item "${chgdir}/svn-info.xml"
                    OUTPUT_VARIABLE svnroot)
-  execute_process (COMMAND "${zorba}" --omit-xml-declaration
+  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
                    --query "data(info/entry/@revision)"
                    --context-item "${chgdir}/svn-info.xml"
                    OUTPUT_VARIABLE svnrev)
@@ -164,7 +166,7 @@ macro (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile)
   file (READ "${chgdir}/changelist" changelist)
   get_files_with_status (deletefiles
                          "${chgdir}/svn-status.xml" "${changelist}" deleted)
-  execute_process (COMMAND "${zorba}" --omit-xml-declaration
+  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
                    --query "data(info/entry/@path)"
                    --context-item "${chgdir}/svn-info.xml"
                    OUTPUT_VARIABLE clientroot)

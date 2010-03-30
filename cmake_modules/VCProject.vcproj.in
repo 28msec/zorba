@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="Windows-1252"?>
+  <VisualStudioUserFile>
+    <Configurations>
+        <Configuration
+            Name="Debug|Win32"
+            >
+            <DebugSettings
+                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\@CMAKE_BUILD_TYPE@;@REQUIRED_FILES_DIR@;%PATH%"
+            />
+        </Configuration>
+        <Configuration
+            Name="Release|Win32"
+            >
+            <DebugSettings
+                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\@CMAKE_BUILD_TYPE@;@REQUIRED_FILES_DIR@;%PATH%"
+            />
+        </Configuration>
+        <Configuration
+            Name="MinSizeRel|Win32"
+            >
+            <DebugSettings
+                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\@CMAKE_BUILD_TYPE@;@REQUIRED_FILES_DIR@;%PATH%"
+            />
+        </Configuration>
+        <Configuration
+            Name="RelWithDebInfo|Win32"
+            >
+            <DebugSettings
+                Environment="PATH=@WIN_CMAKE_BINARY_DIR@\src\@CMAKE_BUILD_TYPE@;@REQUIRED_FILES_DIR@;%PATH%"
+            />
+        </Configuration>
+            <!-- Rest of Configurations -->
+	</Configurations>
+</VisualStudioUserFile>

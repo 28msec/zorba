@@ -33,7 +33,7 @@
 
 
 namespace zorba {
-
+class TypeManager;
 #ifndef ZORBA_NO_XMLSCHEMA
 /**
  * iterator backing the validate expression

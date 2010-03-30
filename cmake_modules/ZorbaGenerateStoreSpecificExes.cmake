@@ -62,6 +62,18 @@ MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME SRCS DEPEND_LIBS NEW_NAME)
     IF (NOT ${INSTALL_DESTINATION} STREQUAL "")
       INSTALL(TARGETS ${EXE_NAME}${SUFFIX} DESTINATION ${INSTALL_DESTINATION})
     ENDIF (NOT ${INSTALL_DESTINATION} STREQUAL "")
+    
+    # generating initial property file for each executable in visual studio
+    # is done to set the PATH variable correctly
+    IF (MSVC_IDE)
+        SET(SYSTEM_NAME $ENV{USERDOMAIN})
+        SET(USER_NAME $ENV{USERNAME})
+        SET(ZORBA_VC_PROJECT_CONFIG_FILE "${EXE_NAME}${SUFFIX}.vcproj.${SYSTEM_NAME}.${USER_NAME}.user")
+        # Do not overwrite old property files. The user might have adapted something.
+        IF(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
+            CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/cmake_modules/VCProject.vcproj.in ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
+        ENDIF(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_VC_PROJECT_CONFIG_FILE})
+    ENDIF (MSVC_IDE)
 
     IF (ZORBA_BUILD_STATIC_LIBRARY)
       ADD_EXECUTABLE("${EXE_NAME}${SUFFIX}_static" ${SRCS})
