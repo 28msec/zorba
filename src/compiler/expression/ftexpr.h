@@ -616,6 +616,7 @@ public:
   ~ftand_expr();
 
   void accept( ftexpr_visitor& );
+  ftexpr_list_t& get_expr_list() { return list_; }
   ftexpr_list_t const& get_expr_list() const { return list_; }
 
 private:
@@ -634,6 +635,7 @@ public:
   ~ftmild_not_expr();
 
   void accept( ftexpr_visitor& );
+  ftexpr_list_t& get_expr_list() { return list_; }
   ftexpr_list_t const& get_expr_list() const { return list_; }
 
 private:
@@ -652,6 +654,7 @@ public:
   ~ftor_expr();
 
   void accept( ftexpr_visitor& );
+  ftexpr_list_t& get_expr_list() { return list_; }
   ftexpr_list_t const& get_expr_list() const { return list_; }
 
 private:

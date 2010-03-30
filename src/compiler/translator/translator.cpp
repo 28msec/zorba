@@ -10352,6 +10352,20 @@ void end_visit (const FlowCtlStatement& v, void* visit_state)
 
 ////////// full-text-related //////////////////////////////////////////////////
 
+template<typename E> bool flatten( ftexpr *e ) {
+  if ( E *const e2 = dynamic_cast<E*>( e ) ) {
+    typename E::ftexpr_list_t list = e2->get_expr_list();
+    typename E::ftexpr_list_t::iterator i = list.begin();
+    while ( i != list.end() ) {
+      push_ftstack( *i );
+      list.erase( i++ );
+    }
+    delete e;
+    return true;
+  }
+  return false;
+}
+
 void *begin_visit (const FTAnd& v) {
   TRACE_VISIT ();
   push_ftstack( NULL ); // sentinel
@@ -10366,7 +10380,8 @@ void end_visit (const FTAnd& v, void* /*visit_state*/) {
     ftexpr *const e = pop_ftstack();
     if ( !e )
       break;
-    list.push_back( e );
+    if ( !flatten<ftand_expr>( e ) )
+      list.push_back( e );
   }
   push_ftstack( new ftand_expr( v.get_location(), list ) );
 }
@@ -10591,7 +10606,8 @@ void end_visit (const FTMildNot& v, void* /*visit_state*/) {
     ftexpr *const e = pop_ftstack();
     if ( !e )
       break;
-    list.push_back( e );
+    if ( !flatten<ftmild_not_expr>( e ) )
+      list.push_back( e );
   }
   push_ftstack( new ftmild_not_expr( v.get_location(), list ) );
 }
@@ -10620,7 +10636,8 @@ void end_visit (const FTOr& v, void* /*visit_state*/) {
     ftexpr *const e = pop_ftstack();
     if ( !e )
       break;
-    list.push_back( e );
+    if ( !flatten<ftor_expr>( e ) )
+      list.push_back( e );
   }
   push_ftstack( new ftor_expr( v.get_location(), list ) );
 }

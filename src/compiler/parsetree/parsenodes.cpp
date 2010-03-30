@@ -4517,83 +4517,83 @@ void FTSelection::accept( parsenode_visitor &v ) const
 }
 
 
-FTOr::FTOr(
-  QueryLoc const &loc,
-  parsenode const *ftor,
-  parsenode const *ftand
-) :
-  parsenode( loc ),
-  ftor_( ftor ),
-  ftand_( ftand )
-{
-  ZORBA_ASSERT( ftor );
-  ZORBA_ASSERT( ftand );
-}
-
-FTOr::~FTOr() {
-  delete ftor_;
-  delete ftand_;
-}
-
-void FTOr::accept( parsenode_visitor &v ) const
-{
-  BEGIN_VISITOR();
-  ACCEPT( ftor_ );
-  ACCEPT( ftand_ );
-  END_VISITOR();
-}
-
-
 FTAnd::FTAnd(
   QueryLoc const &loc,
-  parsenode const *ftand,
-  parsenode const *ftmild_not
+  parsenode const *left,
+  parsenode const *right
 ) :
   parsenode( loc ),
-  ftand_( ftand ),
-  ftmild_not_( ftmild_not )
+  left_( left ),
+  right_( right )
 {
-  ZORBA_ASSERT( ftand );
-  ZORBA_ASSERT( ftmild_not );
+  ZORBA_ASSERT( left );
+  ZORBA_ASSERT( right );
 }
 
 FTAnd::~FTAnd() {
-  delete ftand_;
-  delete ftmild_not_;
+  delete left_;
+  delete right_;
 }
 
 void FTAnd::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT( ftand_ );
-  ACCEPT( ftmild_not_ );
+  ACCEPT( left_ );
+  ACCEPT( right_ );
+  END_VISITOR();
+}
+
+
+FTOr::FTOr(
+  QueryLoc const &loc,
+  parsenode const *left,
+  parsenode const *right
+) :
+  parsenode( loc ),
+  left_( left ),
+  right_( right )
+{
+  ZORBA_ASSERT( left );
+  ZORBA_ASSERT( right );
+}
+
+FTOr::~FTOr() {
+  delete left_;
+  delete right_;
+}
+
+void FTOr::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT( left_ );
+  ACCEPT( right_ );
   END_VISITOR();
 }
 
 
 FTMildNot::FTMildNot(
   QueryLoc const &loc,
-  parsenode const *ftmild_not,
-  parsenode const *ftunary_not
+  parsenode const *left,
+  parsenode const *right
 ) :
   parsenode( loc ),
-  ftmild_not_( ftmild_not ),
-  ftunary_not_( ftunary_not )
+  left_( left ),
+  right_( right )
 {
-  ZORBA_ASSERT( ftmild_not );
-  ZORBA_ASSERT( ftunary_not );
+  ZORBA_ASSERT( left );
+  ZORBA_ASSERT( right );
 }
 
 FTMildNot::~FTMildNot() {
-  delete ftmild_not_;
-  delete ftunary_not_;
+  delete left_;
+  delete right_;
 }
 
 void FTMildNot::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  ACCEPT( ftmild_not_ );
-  ACCEPT( ftunary_not_ );
+  ACCEPT( left_ );
+  ACCEPT( right_ );
   END_VISITOR();
 }
 

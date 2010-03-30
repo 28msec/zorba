@@ -5583,14 +5583,14 @@ public:
   );
   ~FTAnd();
 
-  parsenode const* get_ftand() const { return ftand_; }
-  parsenode const* get_ftmild_not() const { return ftmild_not_; }
+  parsenode const* get_left() const { return left_; }
+  parsenode const* get_right() const { return right_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  parsenode const *const ftand_;
-  parsenode const *const ftmild_not_;
+  parsenode const *const left_;
+  parsenode const *const right_;
 };
 
 
@@ -5674,14 +5674,14 @@ public:
   );
   ~FTMildNot();
 
-  parsenode const* get_ftmild_not() const { return ftmild_not_; }
-  parsenode const* get_ftunary_not() const { return ftunary_not_; }
+  parsenode const* get_left() const { return left_; }
+  parsenode const* get_right() const { return right_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  parsenode const *const ftmild_not_;
-  parsenode const *const ftunary_not_;
+  parsenode const *const left_;
+  parsenode const *const right_;
 };
 
 
@@ -5711,14 +5711,14 @@ public:
   );
   ~FTOr();
 
-  parsenode const* get_ftor() const { return ftor_; }
-  parsenode const* get_ftand() const { return ftand_; }
+  parsenode const* get_left() const { return left_; }
+  parsenode const* get_right() const { return right_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
-  parsenode const *const ftor_;
-  parsenode const *const ftand_;
+  parsenode const *const left_;
+  parsenode const *const right_;
 };
 
 
