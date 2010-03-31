@@ -111,6 +111,7 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     ar & lURI;
 	  ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
+    ar & sctx;
   }
   else
   {
@@ -122,12 +123,14 @@ void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
     ar & lURIStore;
 	  ar.set_is_temp_field(false);
     ar & dyn_loaded_module;
+    ar & sctx;
 
     if (dyn_loaded_module)
     {
       StandardModuleURIResolver* moduleResolver = GENV.getModuleURIResolver();
 
-      module = moduleResolver->getExternalModule(lURIStore, GENV_ROOT_STATIC_CONTEXT);
+      ZORBA_ASSERT(sctx);
+      module = moduleResolver->getExternalModule(lURIStore, *sctx);
 
       // no way to get the module
       if (!module)
@@ -1779,6 +1782,7 @@ void static_context::bind_external_module(
   ctx_module_t modinfo;
   modinfo.module = aModule;
   modinfo.dyn_loaded_module = aDynamicallyLoaded;
+  modinfo.sctx = this;
 
   if (!theExternalModulesMap->insert(uri, modinfo))
   {

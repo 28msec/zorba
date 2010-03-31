@@ -321,6 +321,7 @@ public:
   {
     ExternalModule * module;
     bool             dyn_loaded_module;
+    static_context * sctx;
 
   public:
     SERIALIZABLE_CLASS(ctx_module_t)

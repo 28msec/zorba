@@ -24,6 +24,7 @@
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/schema/schema.h"
 #include "system/globalenv.h"
+#include <zorba/config.h>
 
 
 #include "types/typemanager.h"

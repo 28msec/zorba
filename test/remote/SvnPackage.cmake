@@ -28,12 +28,16 @@ macro (find_prereqs)
 
   # create path to execute zorba
   IF (WIN32)
-    SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/scripts/zorba_cmake.bat")
+		IF(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
+			SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/scripts/zorba_cmake.bat")
+		ELSE(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
+			SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/zorba.exe")
+		ENDIF(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
   ELSE (WIN32)
     SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/bin/zorba")
   ENDIF (WIN32)
   if (NOT EXISTS ${ZORBA_EXE_SCRIPT})
-    message (FATAL_ERROR "Zorba is required; not found. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary.")
+    message (FATAL_ERROR "Zorba is required; not found. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE_SCRIPT})")
   endif (NOT EXISTS ${ZORBA_EXE_SCRIPT})
 endmacro (find_prereqs)
 
