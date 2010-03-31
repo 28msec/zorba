@@ -25,60 +25,92 @@
 
 namespace zorba {
 
-namespace simplestore {
+  namespace store {
 
-SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
-END_SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
+    SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
+    END_SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 
-FunctionItem::FunctionItem(
-      const std::vector<store::Iterator_t>& aVariableValues,
-      const signature& aSignature,
+    FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
+      : theSignature(ar) {}
+    
+    FunctionItem::FunctionItem(
+      const QueryLoc&                aLocation,
+      const std::vector<PlanIter_t>& aVariableValues,
+      const signature&               aSignature,
+      uint32_t                       aArity,
+      const store::Iterator_t&       aImplementation)
+      : theLocation(aLocation),
+        theName(0),
+        theSignature(aSignature),
+        theArity(aArity),
+        theImplementation(aImplementation),
+        theVariableValues(aVariableValues)
+    {  }
+      
+    FunctionItem::FunctionItem(
+      const QueryLoc&          aLocation,
+      const store::Item_t&     aName,
+      const signature&         aSignature,
+      uint32_t                       aArity,
       const store::Iterator_t& aImplementation)
-  : store::Item(),
-    theName(0),
-    theVariableValues(aVariableValues),
-    theSignature(aSignature),
-    theImplementation(aImplementation)
-{ SYNC_CODE(theRCLockPtr = &theRCLock;) }
-  
-FunctionItem::FunctionItem(const store::Item_t& aName,
-      const signature& aSignature,
-      const store::Iterator_t& aImplementation)
-: store::Item(),
-  theName(aName),
-  theVariableNames(),
-  theVariableValues(),
-  theSignature(aSignature),
-  theImplementation(aImplementation)
-{ SYNC_CODE(theRCLockPtr = &theRCLock;) }
-
-
-void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & theName;
-  ar & theVariableNames;
-  ar & theVariableValues;
-  ar & theSignature;
-  ar & theImplementation;
-}
-
-void FunctionItem::getFunctionVariables(std::vector<store::Iterator_t>& aResult) const
-{
-    std::vector<store::Iterator_t>::const_iterator lIt;
-    for(lIt = theVariableValues.begin(); lIt != theVariableValues.end(); lIt++)
+      : theLocation(aLocation),
+        theName(aName),
+        theSignature(aSignature),
+        theArity(aArity),
+        theImplementation(aImplementation)
+    {  }
+    
+    
+    void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
     {
-        aResult.push_back(*lIt);
+      ar & theLocation;
+      ar & theName;
+      ar & theVariableValues;
+      ar & theSignature;
+      ar & theArity;
+      ar & theImplementation;
     }
-}
+    
+    void
+    FunctionItem::getFunctionVariables(std::vector<PlanIter_t>& aResult) const
+    {
+      std::vector<PlanIter_t>::const_iterator lIt;
+      for(lIt = theVariableValues.begin(); lIt != theVariableValues.end(); lIt++)
+      {
+        aResult.push_back(*lIt);
+      }
+    }
+    
+    const store::Iterator_t
+    FunctionItem::getFunctionImplementation() const
+    { 
+      store::FunctionItemIterator* func_iter =
+        dynamic_cast<store::FunctionItemIterator*>(theImplementation.getp());
+      return new store::FunctionItemIterator(*func_iter);//make a copy for runtime use 
+    }
+    
+    const signature&
+    FunctionItem::getFunctionSignature() const
+    {
+      return theSignature;
+    }
+    
+    xqp_string
+    FunctionItem::show() const
+    {
+      std::ostringstream lRes;
+      if (theName) {
+        lRes << theName->getStringValue() << "#" << theSignature.arg_count();
+      } else {
+        lRes << "inline function";
+      }
+      lRes << " (" << theLocation << ")";
+      return lRes.str().c_str();
+    }
 
-const store::Iterator_t FunctionItem::getFunctionImplementation() const
-{ 
-  store::FunctionItemIterator  *func_iter = dynamic_cast<store::FunctionItemIterator*>(theImplementation.getp());
-  return new store::FunctionItemIterator(*func_iter);//make a copy for runtime use 
-}
+    FunctionItem::~FunctionItem()
+    {
+    }
 
-const signature FunctionItem::getFunctionSignature() const
-{ return theSignature; }
-
-} //namespace simplestore
+  } //namespace store
 } //namespace zorba

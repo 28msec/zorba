@@ -24,7 +24,7 @@
 
 namespace zorba {
 
-#define VARIADIC_SIG_SIZE 100
+#define VARIADIC_SIG_SIZE 1000000
 
 /*******************************************************************************
   

@@ -78,6 +78,7 @@
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/eval/eval.h"
 #include "runtime/collections/collections.h"
+#include "runtime/function_item/function_item.h"
 #include "runtime/function_item/store_iterator.h"
 #include "runtime/function_item/function_item_iter.h"
 
@@ -327,24 +328,34 @@ bool begin_visit (function_item_expr& v)
 void end_visit(function_item_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  store::Item_t lQName = v.get_qname(), fitem;
-  bool isInline = lQName == 0;
-  store::Iterator_t lImpl = new store::FunctionItemIterator(theCCB, sctx, v, isInline);
+  store::Item_t lQName = v.get_qname();
+  store::Item_t lFItem;
+
+  bool isInline = (lQName == 0);
+  store::Iterator_t lImpl(new store::FunctionItemIterator(theCCB, sctx, v, isInline));
+
   if (!isInline) { // literal function item
-    ITEM_FACTORY->createFunction (fitem, lQName, v.get_function()->get_signature(), lImpl);
+    lFItem = new store::FunctionItem(
+      v.get_loc(),
+      lQName,
+      v.get_function()->get_signature(),
+      v.get_arity(),
+      lImpl); 
+
   } else { // inline function
-    vector<store::Iterator_t> lVariableValues;
-    const checked_vector<expr_t>& lVars = v.get_vars();
-    checked_vector<expr_t>::const_iterator lIt = lVars.begin();
-    for(; lIt != lVars.end(); ++lIt)
-    {
-      store::Iterator_t lVar = new PlanIterator_StoreIteratorWrapper(pop_itstack());//new PlanWrapper(pop_itstack(), theCCB, 0, 0);
-      lVariableValues.push_back(lVar);
+    vector<PlanIter_t> lVariableValues;
+    size_t lSize = v.get_vars().size();
+    for (size_t i = 0; i < lSize; ++i) {
+      lVariableValues.push_back(pop_itstack());
     }
-   
-    ITEM_FACTORY->createFunction (fitem, lVariableValues, v.get_function()->get_signature(), lImpl);
+    lFItem = new store::FunctionItem(
+      v.get_loc(),
+      lVariableValues,
+      v.get_function()->get_signature(),
+      v.get_arity(),
+      lImpl); 
   }
-  push_itstack(new SingletonIterator (sctx, qloc, fitem));
+  push_itstack(new SingletonIterator (sctx, qloc, lFItem));
 }
 
 bool begin_visit(dynamic_function_invocation_expr& v)
@@ -358,7 +369,7 @@ void end_visit(dynamic_function_invocation_expr& v)
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> lItem;
   checked_vector<PlanIter_t> lArgs(v.get_args().size());
-  generate (lArgs.rbegin(), lArgs.rend(), stack_to_generator(itstack));
+  generate (lArgs.begin(), lArgs.end(), stack_to_generator(itstack));
   
   lItem.push_back(pop_itstack());
   

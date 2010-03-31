@@ -17,6 +17,7 @@
 #define ZORBA_RUNTIME_FUNCTION_ITEM_H
 
 #include "store/api/item.h"
+#include "compiler/parser/query_loc.h"
 
 #include "functions/signature.h"
 
@@ -27,7 +28,7 @@ namespace zorba
 
 class signature;
 
-namespace simplestore 
+namespace store 
 {
 
 /*******************************************************************************
@@ -35,30 +36,73 @@ namespace simplestore
 ********************************************************************************/
 class FunctionItem : public store::Item
 {
-private:
-    /*const*/ store::Item_t theName;
-    std::vector<store::Item_t> theVariableNames;
-    std::vector<store::Iterator_t> theVariableValues;
-    /*const*/ signature theSignature;
-    /*const*/ store::Iterator_t theImplementation;
+protected:
+  // location of the function refered to by
+  // this function item
+  QueryLoc                theLocation;
+
+  // the name of the function, if generated from an inline function item
+  store::Item_t           theName;
+
+  // the signature of the function
+  signature               theSignature;
+
+  // redundant information but necessary for variadic functions
+  uint32_t                theArity;
+
+  // the function itself
+  // this is a wrapper which contains the function_item_expr
+  // codegen is done lazily in the DynamicFunctionInvocationIterator
+  store::Iterator_t       theImplementation;
+
+  // (in-scope) variable values for inline function items
+  std::vector<PlanIter_t> theVariableValues;
 
 public:
   SERIALIZABLE_CLASS(FunctionItem)
-  FunctionItem(::zorba::serialization::Archiver& ar) : theSignature(ar) {}
+  FunctionItem(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
+
 public:
-  FunctionItem(const std::vector<store::Iterator_t>& aVariableValues,
-          const signature& aSignature,
-          const store::Iterator_t& aImplementation);
+  FunctionItem(
+      const QueryLoc&                aLocation,
+      const std::vector<PlanIter_t>& aVariableValues,
+      const signature&               aSignature,
+      uint32_t                       aArity,
+      const store::Iterator_t&       aImplementation);
     
-  FunctionItem(const store::Item_t& aName,
-          const signature& aSignature,
-          const store::Iterator_t& aImplementation);
+  FunctionItem(
+      const QueryLoc&          aLocation,
+      const store::Item_t&     aName,
+      const signature&         aSignature,
+      uint32_t                 aArity,
+      const store::Iterator_t& aImplementation);
 
-protected:
-  SYNC_CODE(RCLock  theRCLock;)
+  const store::Item_t
+  getFunctionName() const
+  {
+    return theName;
+  }
 
-  ~FunctionItem() {}
+  uint32_t
+  getFunctionArity() const
+  {
+    return theArity;
+  }
+
+  void
+  getFunctionVariables(std::vector<PlanIter_t>&) const;
+
+  const store::Iterator_t
+  getFunctionImplementation() const;
+
+  const signature&
+  getFunctionSignature() const;
+
+  xqp_string
+  show() const;
+
+  ~FunctionItem();
 
   bool isNode() const     { return false; }
   bool isAtomic() const   { return false; }
@@ -67,23 +111,11 @@ protected:
   bool isError() const    { return false; }
   bool isFunction() const { return true; }
 
-  //store::Item_t getAtomizationValue() const;
-
-  //void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
-
-  const store::Item_t getFunctionName() const
-  {
-    return theName;
-  }
-
-  void getFunctionVariables(std::vector<store::Iterator_t>&) const;
-
-  const store::Iterator_t getFunctionImplementation() const;
-
-  const signature getFunctionSignature() const;
+protected:
+  SYNC_CODE(RCLock  theRCLock;)
 };
 
-}//end of simplestore namespace
+}//end of store namespace
 }//end of zorba namespace
 
 #endif

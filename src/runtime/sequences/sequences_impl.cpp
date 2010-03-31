@@ -735,7 +735,7 @@ bool DeepEqual(
 
   if (item1->isNode() != item2->isNode())
     return false;
-  
+
   if (item1->isAtomic())
   {
     assert(item2->isAtomic());
@@ -869,6 +869,10 @@ FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       break;
     }
 
+    if (arg1->isFunction() || arg2->isFunction()) {
+      ZORBA_ERROR_LOC_DESC(FOTY0015, loc, "An argument to fn:deep-equal() contains a function item.");
+    }
+  
     equal = equal && DeepEqual(theSctx, arg1, arg2, collator, planState.theRuntimeCB);
   }
   

@@ -1143,6 +1143,34 @@ void PrinterVisitor::endVisit ( const DynamicFunctionInvocationIterator& ) {
 // </DynamicFunctionInvocationIterator>
 
 
+// <FunctionNameIterator>
+void PrinterVisitor::beginVisit ( const FunctionNameIterator& a) {
+  thePrinter.startBeginVisit("FunctionNameIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FunctionNameIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FunctionNameIterator>
+
+
+// <FunctionArityIterator>
+void PrinterVisitor::beginVisit ( const FunctionArityIterator& a) {
+  thePrinter.startBeginVisit("FunctionArityIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FunctionArityIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FunctionArityIterator>
+
+
 // <ActivateICIterator>
 void PrinterVisitor::beginVisit ( const ActivateICIterator& a) {
   thePrinter.startBeginVisit("ActivateICIterator", ++theId);

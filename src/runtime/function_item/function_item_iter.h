@@ -38,15 +38,18 @@
 namespace zorba {
 
 /**
- * TODO: notes from the spec
+ * 
+ *     A dynamic function invocation invokes a function item, calling the function it
+ *     represents. A dynamic function invocation consists of an expression that returns
+ *     the function item and a parenthesized list of zero or more arguments.
+ *    
  * Author: Zorba Team
  */
 class DynamicFunctionInvocationIteratorState : public PlanIteratorState
 {
 public:
   store::Iterator_t thePlan; //the plan to execute
-  std::auto_ptr<CompilerCB> ccb; //the CompilerCB used to compile the plan
-  std::auto_ptr<dynamic_context> dctx; //the dynamic context used to during execution of the plan
+  bool theIsOpen; //flag indicating whether thePlan has been opened
 
   DynamicFunctionInvocationIteratorState();
 
@@ -59,7 +62,7 @@ public:
 class DynamicFunctionInvocationIterator : public NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>
 { 
 protected:
-  checked_vector<PlanIter_t> theArgs; //
+  std::vector<PlanIter_t> theFunctionArgs; //
 public:
   SERIALIZABLE_CLASS(DynamicFunctionInvocationIterator);
 
@@ -71,7 +74,7 @@ public:
     serialize_baseclass(ar,
     (NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>*)this);
 
-    ar & theArgs;
+    ar & theFunctionArgs;
   }
 
   DynamicFunctionInvocationIterator(
@@ -81,7 +84,7 @@ public:
     checked_vector<PlanIter_t> args)
     : 
     NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>(sctx, loc, children),
-    theArgs(args)
+    theFunctionArgs(args)
   {}
 
   virtual ~DynamicFunctionInvocationIterator();
@@ -89,8 +92,78 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
 
-  void closeImpl(PlanState&);
+
+/**
+ * 
+ *      Returns the name of the function identified by a function item.
+ *    
+ * Author: Zorba Team
+ */
+class FunctionNameIterator : public NaryBaseIterator<FunctionNameIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FunctionNameIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionNameIterator,
+    NaryBaseIterator<FunctionNameIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FunctionNameIterator, PlanIteratorState>*)this);
+  }
+
+  FunctionNameIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FunctionNameIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FunctionNameIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *      Returns the arity of the function identified by a function item.
+ *    
+ * Author: Zorba Team
+ */
+class FunctionArityIterator : public NaryBaseIterator<FunctionArityIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FunctionArityIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionArityIterator,
+    NaryBaseIterator<FunctionArityIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FunctionArityIterator, PlanIteratorState>*)this);
+  }
+
+  FunctionArityIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FunctionArityIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FunctionArityIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
 
 

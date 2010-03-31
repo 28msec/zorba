@@ -68,6 +68,9 @@ public:
     FORX0003, //Regular expression matches zero-length string.
     FORX0004, //Invalid replacement string.
     FOTY0012, //Argument node does not have a typed value.
+    FOTY0013, //Argument to fn:data() contains a node that does not have a typed value.
+    FOTY0014, //The argument to fn:string() is a function item
+    FOTY0015, //An argument to fn:deep-equal() contains a function item
     FOUP0001, // It is a dynamic error if the first operand of fn:put is not a node of a supported kind.
     FOUP0002  // It is a dynamic error if the second operand of fn:put is not a valid
     // lexical representation of the xs:anyURI type.

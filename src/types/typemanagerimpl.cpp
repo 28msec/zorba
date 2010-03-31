@@ -30,6 +30,7 @@
 
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
+#include "runtime/function_item/function_item.h"
 
 
 #ifdef ZORBA_XBROWSER
@@ -155,6 +156,27 @@ xqtref_t TypeManagerImpl::create_any_item_type(
   }
 }
 
+
+/***************************************************************************//**
+
+********************************************************************************/
+xqtref_t TypeManagerImpl::create_any_function_type(
+    TypeConstants::quantifier_t quantifier) const
+{
+  switch(quantifier)
+  {
+    case TypeConstants::QUANT_ONE:
+      return GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE;
+    case TypeConstants::QUANT_QUESTION:
+      return GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_QUESTION;
+    case TypeConstants::QUANT_STAR:
+      return GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_STAR;
+    case TypeConstants::QUANT_PLUS:
+      return GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_PLUS;
+    default:
+      return xqtref_t(0);
+  }
+}
 
 /***************************************************************************//**
   Return the builtin sequence type corresponding to the given typecode and
@@ -385,6 +407,18 @@ xqtref_t TypeManagerImpl::create_node_type(
 }
 
 
+/******************************************************************************
+
+*******************************************************************************/
+xqtref_t TypeManagerImpl::create_function_type(
+        const std::vector<xqtref_t>& aArgs,
+        const xqtref_t& aReturn,
+        TypeConstants::quantifier_t aQuant) const
+{
+  return new FunctionXQType(this, aArgs, aReturn, aQuant);
+}
+
+
 /***************************************************************************//**
 
 ********************************************************************************/
@@ -583,7 +617,20 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
       ZORBA_ASSERT(false);
     }
     }
-  }
+  } // else if (item->isNode())
+  else if (item->isFunction())
+  {
+    const store::FunctionItem* lFItem =
+      static_cast<const store::FunctionItem*>(item);
+    const signature& lSig = lFItem->getFunctionSignature();
+    const xqtref_t& lRetType = lSig.return_type();
+    std::vector<xqtref_t> lParamTypes;
+    for (uint32_t i = 0; i < lSig.arg_count(); ++i) {
+      lParamTypes.push_back(lSig[i]);
+    }
+
+    return new FunctionXQType(this, lParamTypes, lRetType, quant);
+  } // else if (item->isFunction())
   else
   {
     ZORBA_ASSERT(false);
@@ -697,6 +744,16 @@ xqtref_t TypeManagerImpl::create_type(
     }
   }
 
+  case XQType::FUNCTION_TYPE_KIND:
+  {
+    const FunctionXQType& ft = static_cast<const FunctionXQType&>(type);
+    return new FunctionXQType(
+        this,
+        ft.get_param_types(),
+        ft.get_return_type(),
+        quantifier);
+  }
+
   case XQType::ITEM_KIND:
     return create_any_item_type(quantifier);
 
@@ -705,6 +762,9 @@ xqtref_t TypeManagerImpl::create_type(
 
   case XQType::ANY_SIMPLE_TYPE_KIND:
     return GENV_TYPESYSTEM.ANY_SIMPLE_TYPE;
+
+  case XQType::ANY_FUNCTION_TYPE_KIND:
+    return create_any_function_type(quantifier);
 
   case XQType::UNTYPED_KIND:
     return GENV_TYPESYSTEM.UNTYPED_TYPE;

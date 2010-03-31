@@ -26,10 +26,6 @@
 
 namespace zorba {
 
-SERIALIZABLE_CLASS_VERSIONS(PlanIterator_StoreIteratorWrapper)
-END_SERIALIZABLE_CLASS_VERSIONS(PlanIterator_StoreIteratorWrapper)
-
-
 /*******************************************************************************
     class PlanWraper
 ********************************************************************************/

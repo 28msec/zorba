@@ -96,32 +96,6 @@ public:
   nextSerializableItem(store::Item_t& item);
 };
 
-class PlanIterator_StoreIteratorWrapper : public store::Iterator
-{
-  PlanIter_t      plan;
-public:
-  SERIALIZABLE_CLASS(PlanIterator_StoreIteratorWrapper)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(PlanIterator_StoreIteratorWrapper, store::Iterator);
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (store::Iterator*)this);
-    ar & plan;
-  }
-public:
-  PlanIterator_StoreIteratorWrapper(PlanIter_t plan)
-  {
-    this->plan = plan;
-  }
-  PlanIter_t      getPlanIterator() {return plan;}
-public:
-  void open() {}
-  bool next(store::Item_t&) {return false;}
-  void reset() {}
-  void close() {}
-
-};
-
-
 } /* namespace zorba */
 #endif
 

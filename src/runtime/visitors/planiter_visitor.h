@@ -176,6 +176,10 @@ namespace zorba{
 
     class DynamicFunctionInvocationIterator;
 
+    class FunctionNameIterator;
+
+    class FunctionArityIterator;
+
     class ActivateICIterator;
 
     class DeactivateICIterator;
@@ -690,6 +694,12 @@ public:
 
     virtual void beginVisit ( const DynamicFunctionInvocationIterator& ) = 0;
     virtual void endVisit   ( const DynamicFunctionInvocationIterator& ) = 0;
+
+    virtual void beginVisit ( const FunctionNameIterator& ) = 0;
+    virtual void endVisit   ( const FunctionNameIterator& ) = 0;
+
+    virtual void beginVisit ( const FunctionArityIterator& ) = 0;
+    virtual void endVisit   ( const FunctionArityIterator& ) = 0;
 
     virtual void beginVisit ( const ActivateICIterator& ) = 0;
     virtual void endVisit   ( const ActivateICIterator& ) = 0;

@@ -46,6 +46,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(AtomicXQType)
 SERIALIZABLE_CLASS_VERSIONS(NodeXQType)
 END_SERIALIZABLE_CLASS_VERSIONS(NodeXQType)
 
+SERIALIZABLE_CLASS_VERSIONS(FunctionXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(FunctionXQType)
+
 SERIALIZABLE_CLASS_VERSIONS(ItemXQType)
 END_SERIALIZABLE_CLASS_VERSIONS(ItemXQType)
 
@@ -54,6 +57,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(AnyXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(AnySimpleXQType)
 END_SERIALIZABLE_CLASS_VERSIONS(AnySimpleXQType)
+
+SERIALIZABLE_CLASS_VERSIONS(AnyFunctionXQType)
+END_SERIALIZABLE_CLASS_VERSIONS(AnyFunctionXQType)
 
 SERIALIZABLE_CLASS_VERSIONS(UntypedXQType)
 END_SERIALIZABLE_CLASS_VERSIONS(UntypedXQType)
@@ -74,8 +80,10 @@ const char* XQType::KIND_STRINGS[XQType::MAX_TYPE_KIND] =
   "ATOMIC_TYPE_KIND",
   "ITEM_KIND",
   "NODE_TYPE_KIND",
+  "FUNCTION_TYPE_KIND",
   "ANY_TYPE_KIND",
   "ANY_SIMPLE_TYPE_KIND",
+  "ANY_FUNCTION_TYPE_KIND",
   "UNTYPED_KIND",
   "NONE_KIND",
   "USER_DEFINED_KIND"
@@ -196,11 +204,17 @@ std::string XQType::toSchemaString() const
   case NODE_TYPE_KIND:
     result = "node()";
     break;
+  case FUNCTION_TYPE_KIND:
+    result = "function(...) as ...";
+    break;
   case ANY_TYPE_KIND:
     result = "xs:anyType";
     break;
   case ANY_SIMPLE_TYPE_KIND:
     result = "xs:anySimpleType";
+    break;
+  case ANY_FUNCTION_TYPE_KIND:
+    result = "function(*)";
     break;
   case UNTYPED_KIND:
     result = "xs:untyped";
@@ -429,6 +443,86 @@ std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
   return os << "]";
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+FunctionXQType::FunctionXQType(
+    const TypeManager* manager,
+    const std::vector<xqtref_t>& aParamTypes,
+    const xqtref_t& aReturnType,
+    TypeConstants::quantifier_t quantifier,
+    bool builtin)
+  :
+  XQType(manager, FUNCTION_TYPE_KIND, quantifier, builtin),
+  m_param_types(aParamTypes),
+  m_return_type(aReturnType)
+{
+}
+
+
+bool
+FunctionXQType::is_equal(const FunctionXQType& other) const
+{
+  return true;
+}
+
+
+/** 
+ * Bi is function(Ba_1, Ba_2, ... Ba_N) as Br,
+ * Ai is function(Aa_1, Aa_2, ... Aa_M) as Ar,
+ * Ai is subtype of Bi iff
+ * N (arity of Bi) equals M (arity of Ai),
+ * subtype(Ar, Br), and
+ * for values of I between 1 and N, subtype(Ba_I, Aa_I).
+ */
+bool
+FunctionXQType::is_subtype(const FunctionXQType& supertype) const
+{
+  if (this->get_number_params() != supertype.get_number_params()) {
+    return false;
+  }
+
+  if (!TypeOps::is_subtype(*get_return_type().getp(), *supertype.get_return_type().getp())) {
+    return false;
+  }
+
+  size_t i = 0;
+  for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
+       lIter != m_param_types.end(); ++lIter) {
+    if (!TypeOps::is_subtype(*lIter->getp(), *supertype[i++].getp())) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
+
+std::ostream&
+FunctionXQType::serialize_ostream(std::ostream& os) const
+{
+  os << "[FunctionXQType "
+     << TypeOps::decode_quantifier(get_quantifier()) << " ";
+
+  if (m_param_types.size() != 0)
+  {
+    os << "params=[";
+    size_t i = 1;
+    for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
+         lIter != m_param_types.end(); ++i, ++lIter) {
+      os << (*lIter)->toString();
+      if (i < m_param_types.size()) os << ", ";
+    }
+    os  << "] ";
+  }
+
+  os << "return=[";
+  os << m_return_type->toString ();
+  os  << "]";
+
+  return os << "]";
+}
 
 /*******************************************************************************
 

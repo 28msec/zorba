@@ -228,27 +228,31 @@ public:
   //
   typedef enum
   {
-    EMPTY_KIND,            // empty-sequence() (quanttifier = ?)
+    EMPTY_KIND,              // empty-sequence() (quanttifier = ?)
 
-    ATOMIC_TYPE_KIND,      // atomic, built-in type + quantifier
+    ATOMIC_TYPE_KIND,        // atomic, built-in type + quantifier
 
-    ITEM_KIND,             // item() + quantifier
+    ITEM_KIND,               // item() + quantifier
 
-    NODE_TYPE_KIND,        // KindTest + quantifier
+    NODE_TYPE_KIND,          // KindTest + quantifier
 
-    ANY_TYPE_KIND,         // xs:anyType (quanttifier = *)
+    FUNCTION_TYPE_KIND,      // function(...) as ... + quantifier
 
-    ANY_SIMPLE_TYPE_KIND,  // xs:anySimpleType (quanttifier = *)
+    ANY_TYPE_KIND,           // xs:anyType (quanttifier = *)
 
-    UNTYPED_KIND,          // xs:untyped (quanttifier = *)
+    ANY_SIMPLE_TYPE_KIND,    // xs:anySimpleType (quanttifier = *)
 
-    NONE_KIND,             // special kind of "type" defined by the formal
-                           // semantics. it represents the absence of type.
-                           // for example, the static type of the fn:error
-                           // function is "none". (quanttifier = 1)
+    ANY_FUNCTION_TYPE_KIND,  // function(*)
 
-    USER_DEFINED_KIND,     // Named, user-defined XMLSchema type (may be atomic,
-                           // list, union, or complex) + quantifier
+    UNTYPED_KIND,            // xs:untyped (quanttifier = *)
+
+    NONE_KIND,               // special kind of "type" defined by the formal
+                             // semantics. it represents the absence of type.
+                             // for example, the static type of the fn:error
+                             // function is "none". (quanttifier = 1)
+
+    USER_DEFINED_KIND,       // Named, user-defined XMLSchema type (may be atomic,
+                             // list, union, or complex) + quantifier
 
     MAX_TYPE_KIND
   } type_kind_t;
@@ -448,8 +452,54 @@ public:
 
 
 /***************************************************************************//**
-  Class ItemXQType represents sequence types item(), item()?, item()*, or item()+
+  Class FunctionXQType represents all the sequence types whose ItemType is a
+  FunctionType.
 ********************************************************************************/
+class FunctionXQType : public XQType
+{
+private:
+  std::vector<xqtref_t>         m_param_types;
+  xqtref_t                      m_return_type;
+
+public:
+  SERIALIZABLE_CLASS(FunctionXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(FunctionXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+    // TODO serialize m_param_types
+    ar & m_return_type;
+  }
+
+public:
+  FunctionXQType(
+        const TypeManager* manager,
+        const std::vector<xqtref_t>& aParamTypes,
+        const xqtref_t& aReturnType,
+        TypeConstants::quantifier_t quantifier,
+        bool builtin = false);
+
+  const std::vector<xqtref_t>&
+  get_param_types() const { return m_param_types; }
+
+  const xqtref_t&
+  operator[](size_t i) const { return m_param_types[i]; }
+
+  size_t
+  get_number_params() const { return m_param_types.size(); }
+
+  xqtref_t get_return_type() const { return m_return_type; }
+
+  bool is_equal(const FunctionXQType& supertype) const;
+
+  bool is_subtype(const FunctionXQType& supertype) const;
+
+  virtual std::ostream& serialize_ostream(std::ostream& os) const;
+};
+
+/******************************************************************************
+  Class ItemXQType represents sequence types item(), item()?, item()*, or item()+
+*******************************************************************************/
 class ItemXQType : public XQType
 {
 public:
@@ -471,9 +521,9 @@ public:
 };
 
 
-/***************************************************************************//**
+/******************************************************************************
   xs:anyType
-********************************************************************************/
+*******************************************************************************/
 class AnyXQType : public XQType
 {
 public:
@@ -494,9 +544,9 @@ public:
 };
 
 
-/***************************************************************************//**
+/******************************************************************************
   xs:anySimpleType
-********************************************************************************/
+*******************************************************************************/
 class AnySimpleXQType : public XQType
 {
 public:
@@ -518,6 +568,36 @@ public:
   }
 };
 
+
+/******************************************************************************
+  function(*)
+*******************************************************************************/
+class AnyFunctionXQType : public XQType
+{
+public:
+  AnyFunctionXQType(const TypeManager* manager, bool builtin = false)
+    :
+    XQType(manager, ANY_FUNCTION_TYPE_KIND, TypeConstants::QUANT_STAR, builtin)
+  {
+  }
+
+  AnyFunctionXQType(
+      const TypeManager* manager,
+      TypeConstants::quantifier_t quantifier,
+      bool builtin = false)
+    :
+    XQType(manager, ANY_FUNCTION_TYPE_KIND, quantifier, builtin)
+  {
+  }
+
+ public:
+  SERIALIZABLE_CLASS(AnyFunctionXQType)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnyFunctionXQType, XQType)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    serialize_baseclass(ar, (XQType*)this);
+  }
+};
 
 /***************************************************************************//**
   xs:untyped

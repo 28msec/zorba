@@ -59,9 +59,63 @@ DynamicFunctionInvocationIterator::~DynamicFunctionInvocationIterator() {}
 
 DynamicFunctionInvocationIteratorState::DynamicFunctionInvocationIteratorState() {}
 
-DynamicFunctionInvocationIteratorState::~DynamicFunctionInvocationIteratorState() {}
-
 // </DynamicFunctionInvocationIterator>
+
+
+// <FunctionNameIterator>
+const char* FunctionNameIterator::class_name_str = "FunctionNameIterator";
+FunctionNameIterator::class_factory<FunctionNameIterator>
+FunctionNameIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FunctionNameIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FunctionNameIterator::class_versions_count =
+sizeof(FunctionNameIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FunctionNameIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FunctionNameIterator::~FunctionNameIterator() {}
+
+// </FunctionNameIterator>
+
+
+// <FunctionArityIterator>
+const char* FunctionArityIterator::class_name_str = "FunctionArityIterator";
+FunctionArityIterator::class_factory<FunctionArityIterator>
+FunctionArityIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FunctionArityIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FunctionArityIterator::class_versions_count =
+sizeof(FunctionArityIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FunctionArityIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FunctionArityIterator::~FunctionArityIterator() {}
+
+// </FunctionArityIterator>
 
 
 

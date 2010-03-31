@@ -25,8 +25,6 @@
 
 #include "zorbaerrors/errors.h"
 
-#include "functions/signature.h"
-
 #include "store/naive/shared_types.h"
 
 namespace zorba {
@@ -48,17 +46,16 @@ public:
     ar & theArgs;   
   }
   
-private:
-    expr_t theExpr;
-    checked_vector<expr_t> theArgs;
+protected:
+  expr_t theExpr;
+  checked_vector<expr_t> theArgs;
     
 public:
-    dynamic_function_invocation_expr(short sctx, const QueryLoc& loc, expr_t anExpr, std::vector<expr_t>& args)
-        : expr(sctx, loc), theExpr(anExpr), theArgs(args)
-    {
-        assert(anExpr != 0);
-	      compute_scripting_kind();
-    }
+  dynamic_function_invocation_expr(
+      short sctx,
+      const QueryLoc& loc,
+      const expr_t& anExpr,
+      const std::vector<expr_t>& args);
     
 	expr_kind_t get_expr_kind() const { return dynamic_function_invocation_expr_kind; }
 	
@@ -80,30 +77,32 @@ public:
 class function_item_expr: public expr
 {
 private:
-  store::Item_t theQName;
-	function* theFunction;
+  store::Item_t          theQName;
+	function*              theFunction;
+  // we need to store the arity also here
+  // because the function above doesn't know
+  // about its arity in case it's a variadic function
+  uint32_t               theArity;
   checked_vector<expr_t> theScopedVariables;
 
 public:
   SERIALIZABLE_CLASS(function_item_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(function_item_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
-public:
-	function_item_expr(short sctx, const QueryLoc& loc,
-                     store::Item_t aQName, function* f)
-	: expr(sctx, loc), theQName(aQName), theFunction(f)
-	{
-		assert(f != NULL);
-	  compute_scripting_kind();
-  }
 
-  function_item_expr(short sctx, const QueryLoc& loc,
-                     function* f, std::vector<expr_t> aScopedVariables)
-	: expr(sctx, loc), theQName(0), theFunction(f), theScopedVariables(aScopedVariables) 
-	{
-		assert(f != NULL);
-	  compute_scripting_kind();
-	}
+public:
+	function_item_expr(
+      short           sctx,
+      const QueryLoc& loc,
+      store::Item_t   aQName,
+      function*       f,
+      uint32_t        aArity);
+
+  function_item_expr(
+      short               sctx,
+      const QueryLoc&     loc,
+      function*           f,
+      std::vector<expr_t> aScopedVariables);
 
   ~function_item_expr();
 	
@@ -112,6 +111,8 @@ public:
 	const function* get_function() const { return theFunction; }
 	
   const store::Item_t& get_qname() const { return theQName; }
+
+  uint32_t get_arity() const { return theArity; }
   
   const checked_vector<expr_t> get_vars() const { return theScopedVariables; }
 

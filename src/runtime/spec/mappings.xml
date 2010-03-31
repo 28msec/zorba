@@ -85,6 +85,7 @@
     <zorba:type zorbaType="ANY_URI">xs:anyURI</zorba:type>
     <zorba:type zorbaType="QNAME">xs:QName</zorba:type>
     <zorba:type zorbaType="NOTATION">xs:NOTATION</zorba:type>  
+    <zorba:type zorbaType="ANY_FUNCTION">function()</zorba:type>
   </zorba:types>
 
   <!-- XQuery Occurrence Indicators -->

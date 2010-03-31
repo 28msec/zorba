@@ -50,6 +50,7 @@
 #include "functions/func_random.h"
 #include "functions/func_maths.h"
 #include "functions/func_xqdoc.h"
+#include "functions/func_function_item_iter.h"
 
 #include "functions/Numerics.h"
 #include "functions/nodeid_internal.h"
@@ -112,6 +113,7 @@ void BuiltinFunctionLibrary::create(static_context* sctx)
   populate_context_sequences(sctx);
   populate_context_sequences_impl(sctx);
   populate_context_xqdoc(sctx);
+  populate_context_function_item_iter(sctx);
 
   populateContext_Arithmetics(sctx);
   populateContext_Numerics(sctx);

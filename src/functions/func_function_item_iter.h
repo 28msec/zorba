@@ -38,6 +38,33 @@ void populate_context_function_item_iter(static_context* sctx);
 
 
 
+//fn:function-name
+class fn_function_name : public function
+{
+public:
+  fn_function_name(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_FUNCTION_NAME_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn:function-arity
+class fn_function_arity : public function
+{
+public:
+  fn_function_arity(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_FUNCTION_ARITY_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
 
 } //namespace zorba
 

@@ -198,6 +198,9 @@ declare function local:iterator($iter, $name as xs:string, $state as xs:string) 
     if( $iter/@generateCloseImpl eq 'true') then
       concat($gen:newline, gen:indent(), 'void closeImpl(PlanState&amp;);', $gen:newline)
     else (),
+    if( $iter/@generateOpenImpl eq 'true') then
+      concat($gen:newline, gen:indent(), 'void openImpl(PlanState&amp;, uint32_t&amp;);', $gen:newline)
+    else (),
     '};',
     $gen:newline,$gen:newline
     )

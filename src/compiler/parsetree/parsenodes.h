@@ -5469,14 +5469,23 @@ class LiteralFunctionItem: public exprnode
  */
 class InlineFunction: public exprnode
 {
-  private:
+private:
   rchandle<ParamList> theParamList;
   rchandle<SequenceType> theReturnType;
   rchandle<EnclosedExpr> theEnclosedExpr;
 
-  public:
-  InlineFunction(const QueryLoc& loc_, rchandle<ParamList> aParamList, rchandle<SequenceType> aReturnType, rchandle<EnclosedExpr> aEnclosedExpr):
-    exprnode(loc_), theParamList(aParamList), theReturnType(aReturnType), theEnclosedExpr(aEnclosedExpr){}
+public:
+  InlineFunction(
+      const QueryLoc& loc_,
+      rchandle<ParamList> aParamList,
+      rchandle<SequenceType> aReturnType,
+      rchandle<EnclosedExpr> aEnclosedExpr)
+    :
+    exprnode(loc_),
+    theParamList(aParamList),
+    theReturnType(aReturnType),
+    theEnclosedExpr(aEnclosedExpr)
+  {}
 
   rchandle<ParamList> getParamList() const { return theParamList; }
   rchandle<SequenceType> getReturnType() const { return theReturnType; }
@@ -5498,19 +5507,19 @@ public:
 
 
 /*
- * TypedFunctionTest := "(" (SequenceType ("," SequenceType)*)? ")"
+ * TypeList := "(" (SequenceType ("," SequenceType)*)? ")"
  */
 class TypeList: public parsenode
 {
 protected:
-  std::vector<rchandle<parsenode> > theTypes;
+  std::vector<rchandle<SequenceType> > theTypes;
 
 public:
   TypeList(const QueryLoc& loc_): parsenode(loc_){}
 
-  void push_back(rchandle<parsenode> aType) { theTypes.push_back(aType); }
+  void push_back(rchandle<SequenceType> aType) { theTypes.push_back(aType); }
 
-  rchandle<parsenode> operator[](int i) const { return theTypes[i]; }
+  rchandle<SequenceType> operator[](int i) const { return theTypes[i]; }
 
   int size() const { return theTypes.size (); }
 
@@ -5520,22 +5529,32 @@ public:
 /**
  * TypedFunctionTest := "function" "(" TypeList? ")"  "as" SequenceType
  */
-class TypedFunctionTest: public parsenode
+class TypedFunctionTest : public parsenode
 {
-private:
-  rchandle<TypeList> theArgTypes;
+protected:
+  rchandle<TypeList>     theArgTypes;
   rchandle<SequenceType> theReturnType;
   
 public:
-   TypedFunctionTest(const QueryLoc& loc_, rchandle<SequenceType> aReturnType):
-     parsenode(loc_), theArgTypes(0), theReturnType(aReturnType){}
-  TypedFunctionTest(const QueryLoc& loc_, rchandle<TypeList> aTypeList, rchandle<SequenceType> aReturnType):
-     parsenode(loc_), theArgTypes(aTypeList), theReturnType(aReturnType){}
-  
-  rchandle<TypeList> getArgumentTypes() const { return theArgTypes; }
-  rchandle<SequenceType> getReturnType() const { return theReturnType; }
+  TypedFunctionTest(
+    const QueryLoc& loc_,
+    rchandle<SequenceType> aReturnType)
+  : parsenode(loc_),
+    theArgTypes(0),
+    theReturnType(aReturnType) {}
 
-    void accept(parsenode_visitor&) const;
+  TypedFunctionTest(
+    const QueryLoc& loc_,
+    rchandle<TypeList> aTypeList,
+    rchandle<SequenceType> aReturnType)
+  : parsenode(loc_),
+    theArgTypes(aTypeList),
+    theReturnType(aReturnType) {}
+  
+  const rchandle<TypeList>& getArgumentTypes() const { return theArgTypes; }
+  const rchandle<SequenceType>& getReturnType() const { return theReturnType; }
+
+  void accept(parsenode_visitor&) const;
 };
 
 

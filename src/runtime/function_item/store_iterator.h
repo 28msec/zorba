@@ -32,7 +32,7 @@ class function;
 namespace store 
 {
 
-class FunctionItemIterator: public Iterator
+class FunctionItemIterator : public Iterator
 {
   private:
     CompilerCB* theCCB;
@@ -48,6 +48,7 @@ class FunctionItemIterator: public Iterator
     SERIALIZABLE_CLASS(FunctionItemIterator)
     FunctionItemIterator(::zorba::serialization::Archiver& ar) : Iterator(ar), theExpr(ar) {}
     void serialize(::zorba::serialization::Archiver& ar);
+
   public:
     FunctionItemIterator(CompilerCB* aCCB, 
         static_context* aSctx,

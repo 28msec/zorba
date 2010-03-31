@@ -23,51 +23,53 @@
 #include "runtime/base/plan_iterator.h"
 #include "runtime/api/plan_wrapper.h"
 
-namespace zorba
-{
+namespace zorba {
 
-namespace store
-{
+  namespace store {
 
-SERIALIZABLE_CLASS_VERSIONS(FunctionItemIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(FunctionItemIterator)
+    SERIALIZABLE_CLASS_VERSIONS(FunctionItemIterator)
+    END_SERIALIZABLE_CLASS_VERSIONS(FunctionItemIterator)
+    
+    void
+    FunctionItemIterator::serialize(::zorba::serialization::Archiver& ar)
+    {
+      serialize_baseclass(ar, (Iterator*)this);
+      ar & theCCB;
+      ar & theSctx;
+      ar & theExpr;
+      ar & isInline;
+    }
+    
+    void
+    FunctionItemIterator::open()
+    {
+      PlanIter_t lIterator;
+      const function* lFunction = theExpr.get_function();
+      lIterator = lFunction->codegen(
+                    theCCB, theSctx,
+                    theExpr.get_loc(), theArguments,
+                    theExpr);
+      theImplementation = new PlanWrapper(lIterator, theCCB, 0, 0);
+      theImplementation->open();
+    }
+    
+    bool
+    FunctionItemIterator::next(Item_t& r)
+    {
+      return theImplementation->next(r);
+    }
+    
+    void
+    FunctionItemIterator::reset()
+    {
+      theImplementation->reset();
+    }
+    
+    void
+    FunctionItemIterator::close()
+    {
+      theImplementation->close();
+    }
 
-void FunctionItemIterator::serialize(::zorba::serialization::Archiver& ar)
-{
-  serialize_baseclass(ar, (Iterator*)this);
-  ar & theCCB;
-  ar & theSctx;
-  ar & theExpr;
-  ar & isInline;
-  //ar & theImplementation;
-  //ar & theArguments;
-}
-
-void FunctionItemIterator::open()
-{
-  PlanIter_t lIterator;
-  const function* lFunction = theExpr.get_function();
-  lIterator = lFunction->codegen(
-                theCCB, theSctx,
-                theExpr.get_loc(), theArguments,
-                theExpr);
-  theImplementation = new PlanWrapper(lIterator, theCCB, 0, 0);
-  theImplementation->open();
-}
-
-bool FunctionItemIterator::next(Item_t& r)
-{
-  return theImplementation->next(r);
-}
-
-void FunctionItemIterator::reset()
-{
-  theImplementation->reset();
-}
-
-void FunctionItemIterator::close()
-{
-  theImplementation->close();
-}
-}//end of namespace store
-}//end of namespace zorba
+  } //end of namespace store
+} //end of namespace zorba

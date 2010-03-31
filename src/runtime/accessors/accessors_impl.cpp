@@ -98,6 +98,10 @@ bool FnStringIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 
   while(consumeNext(inVal, theChildren[0], planState))
   {
+    if (inVal->isFunction()) {
+      ZORBA_ERROR_LOC_DESC(FOTY0014, loc,
+        "Argument to fn:string is a function item");
+    }
     state->hasOutput = true;
     strval = inVal->getStringValue();
     GENV_ITEMFACTORY->createString(result, strval);
@@ -132,6 +136,11 @@ FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     if (!consumeNext(result, theChildren[0], planState))
       break;
 
+    if (result->isFunction())
+    {
+      ZORBA_ERROR_LOC_DESC(FOTY0013, loc,
+        "Argument to fn:data is a function item");
+    }
     if (result->isAtomic())
     {
       STACK_PUSH(true, state);

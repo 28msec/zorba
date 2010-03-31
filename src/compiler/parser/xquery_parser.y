@@ -4509,11 +4509,11 @@ ItemType
         }
     |   FunctionTest
         {
-          $$ = $1;
+            $$ = $1;
         }
     |   ParenthesizedItemType
         {
-          $$ = $1;
+            $$ = $1;
         }
     ;
 
@@ -4521,13 +4521,13 @@ TypeList:
         SequenceType
         {
           TypeList* aTypeList = new TypeList(LOC (@$));
-          aTypeList->push_back($1);
+          aTypeList->push_back(dynamic_cast<SequenceType *>($1));
           $$ = aTypeList;
         }
     |   TypeList COMMA SequenceType
         {
           TypeList* aTypeList = dynamic_cast<TypeList *>($1);
-          if (aTypeList) aTypeList->push_back($3);
+          aTypeList->push_back(dynamic_cast<SequenceType *>($3));
           $$ = $1;
         }
 ;
@@ -4862,7 +4862,9 @@ TypedFunctionTest :
         }
     |   FUNCTION LPAR TypeList RPAR AS SequenceType
         {
-          $$ = new TypedFunctionTest(LOC (@$), dynamic_cast<TypeList *>($3), dynamic_cast<SequenceType *>($6));
+          $$ = new TypedFunctionTest(LOC (@$),
+              dynamic_cast<TypeList *>($3),
+              dynamic_cast<SequenceType *>($6));
         }
     ;
 

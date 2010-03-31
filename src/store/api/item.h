@@ -577,24 +577,6 @@ public:
   getFunctionName() const;
 
   /**
-   *  Accessor for the name of the function item variables.
-   */
-  virtual void
-  getFunctionVariables(std::vector<Iterator_t>&) const;
-  
-  /**
-   * Accessor for the implementation of the function item
-   */
-  virtual const Iterator_t
-  getFunctionImplementation() const;
-
-  /**
-   * Accessor for the signature of the function item
-   */
-  virtual const signature
-  getFunctionSignature() const;
-
-  /**
    * Make a copy of the xml tree rooted at this node and place the copied
    * tree at a given position under a given node.
    *

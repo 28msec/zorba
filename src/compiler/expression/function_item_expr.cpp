@@ -22,6 +22,7 @@
 #include "compiler/expression/expr_visitor.h"
 
 #include "functions/function.h"
+#include "functions/signature.h"
 
 using namespace std;
 
@@ -60,12 +61,56 @@ expr_iterator_data* dynamic_function_invocation_expr::make_iter()
   return new dynamic_function_invocation_expr_iterator_data(this);
 }
 
+dynamic_function_invocation_expr::dynamic_function_invocation_expr(
+  short sctx,
+  const QueryLoc& loc,
+  const expr_t& anExpr,
+  const std::vector<expr_t>& args)
+  : expr(sctx, loc),
+    theExpr(anExpr),
+    theArgs(args)
+{
+  assert(anExpr != 0);
+  compute_scripting_kind();
+}
+
 /**
  *
  */
 SERIALIZABLE_CLASS_VERSIONS(function_item_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(function_item_expr)
 DEF_EXPR_ACCEPT (function_item_expr)
+
+function_item_expr::function_item_expr(
+  short           sctx,
+  const QueryLoc& loc,
+  store::Item_t   aQName,
+  function*       f,
+  uint32_t        aArity)
+	: expr(sctx, loc),
+    theQName(aQName),
+    theFunction(f),
+    theArity(aArity)
+	{
+		assert(f != NULL);
+	  compute_scripting_kind();
+  }
+
+function_item_expr::function_item_expr(
+  short               sctx,
+  const QueryLoc&     loc,
+  function*           f,
+  std::vector<expr_t> aScopedVariables)
+	: expr(sctx, loc),
+    theQName(0),
+    theFunction(f),
+    // inline functions can't be variadic
+    theArity(f->get_signature().arg_count()),
+    theScopedVariables(aScopedVariables) 
+	{
+		assert(f != NULL);
+	  compute_scripting_kind();
+	}
 
 class function_item_expr_iterator_data : public expr_iterator_data 
 {

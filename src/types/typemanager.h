@@ -102,6 +102,9 @@ public:
   virtual xqtref_t create_any_item_type(
         TypeConstants::quantifier_t quantifier) const = 0;
 
+  virtual xqtref_t create_any_function_type(
+        TypeConstants::quantifier_t quantifier) const = 0;
+
   virtual xqtref_t create_node_type(
         store::StoreConsts::NodeKind nodeKind,
         const store::Item_t& nodeName,
@@ -109,6 +112,11 @@ public:
         TypeConstants::quantifier_t quantifier,
         bool nillable,
         bool schematype) const = 0;
+
+  virtual xqtref_t create_function_type(
+        const std::vector<xqtref_t>& aArgs,
+        const xqtref_t& aReturn,
+        TypeConstants::quantifier_t aQuant) const = 0;
 
   virtual xqtref_t create_type(
         const XQType& type,

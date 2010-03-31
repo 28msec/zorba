@@ -27,8 +27,7 @@
  Dynamic Function Invocation
 ********************************************************************************/
 -->
-<zorba:iterator name="DynamicFunctionInvocationIterator"
-                generateCloseImpl="true">
+<zorba:iterator name="DynamicFunctionInvocationIterator">
 
   <zorba:description author="Zorba Team">TODO: notes from the spec</zorba:description>
 
@@ -44,8 +43,6 @@
   <zorba:constructor>
     <zorba:parameter type="checked_vector&lt;PlanIter_t>" name="args" />
   </zorba:constructor>
-
-  <zorba:member type="checked_vector&lt;PlanIter_t>" name="theArgs" brief=""/>
 
 </zorba:iterator>
 </zorba:iterators>

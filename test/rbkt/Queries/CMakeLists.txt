@@ -228,4 +228,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic4 2962715)
 IF(WIN32)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/ric3 2962715)
 ENDIF(WIN32)
+EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-020 2979820)
+
 # --------------------------------------------------------------------------

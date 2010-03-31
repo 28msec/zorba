@@ -105,6 +105,14 @@ public:
   xqtref_t ITEM_TYPE_QUESTION;
   xqtref_t ITEM_TYPE_STAR;
   xqtref_t ITEM_TYPE_PLUS;
+  
+  /**
+   * Pre-allocated any function item objects
+   */
+  xqtref_t ANY_FUNCTION_TYPE_ONE; 
+  xqtref_t ANY_FUNCTION_TYPE_QUESTION;
+  xqtref_t ANY_FUNCTION_TYPE_STAR;
+  xqtref_t ANY_FUNCTION_TYPE_PLUS;
 
   /**
    * Pre-allocate XQType objects for the following KindTest sequence types:

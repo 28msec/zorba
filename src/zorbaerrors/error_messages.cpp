@@ -90,6 +90,9 @@ DEF_ERR_CODE (FORX0002, FORX0002, "Invalid regular expression {/s} ")
 DEF_ERR_CODE (FORX0003, FORX0003, "Regular expression matches zero-length string.")
 DEF_ERR_CODE (FORX0004, FORX0004, "Invalid replacement string.")
 DEF_ERR_CODE (FOTY0012, FOTY0012, "Argument node does not have a typed value.")
+DEF_ERR_CODE (FOTY0013, FOTY0013, "Argument to fn:data() contains a node that does not have a typed value.")
+DEF_ERR_CODE (FOTY0014, FOTY0014, "The argument to fn:string() cannot be a function item")
+DEF_ERR_CODE (FOTY0015, FOTY0015, "An argument to fn:deep-equal() contains a function item.")
 
 DEF_ERR_CODE(FOUP0001, FOUP0001, "It is a dynamic error if the first operand of fn:put is not a node of a supported kind.")
 
@@ -1007,6 +1010,15 @@ DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code)
       break;
     case ::zorba::ZorbatypesError::FOTY0012:
       return FOTY0012;
+      break;
+    case ::zorba::ZorbatypesError::FOTY0013:
+      return FOTY0013;
+      break;
+    case ::zorba::ZorbatypesError::FOTY0014:
+      return FOTY0014;
+      break;
+    case ::zorba::ZorbatypesError::FOTY0015:
+      return FOTY0015;
       break;
     case ::zorba::ZorbatypesError::FOUP0001:
       return FOUP0001;

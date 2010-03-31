@@ -295,6 +295,20 @@ xqtref_t TypeOps::prime_type(const XQType& type)
   case XQType::ANY_SIMPLE_TYPE_KIND:
     return GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE;
 
+  case XQType::ANY_FUNCTION_TYPE_KIND:
+    return GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE;
+
+  case XQType::FUNCTION_TYPE_KIND:
+  {
+    if (type.get_quantifier() == TypeConstants::QUANT_ONE)
+      return &type;
+
+    const FunctionXQType& lType = static_cast<const FunctionXQType&>(type);
+    return type.get_manager()->create_function_type(
+      lType.get_param_types(), lType.get_return_type(),
+      TypeConstants::QUANT_ONE);
+  }
+
   case XQType::UNTYPED_KIND:
     return GENV_TYPESYSTEM.ITEM_TYPE_ONE;
 
@@ -410,7 +424,7 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
       }
       default:
       {
-        // NODE, ITEM, ANY, ANY_SIMPLE, UNTYPED
+        // NODE, ITEM, ANY, ANY_SIMPLE, FUNCTION, UNTYPED
         return false;
       }
       }
@@ -434,7 +448,7 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
       }
       default:
       {
-        // ATOMIC, ITEM, ANY, ANY_SIMPLE, UNTYPED, USER_DEFINED (???)
+        // ATOMIC, ITEM, ANY, ANY_SIMPLE, UNTYPED, FUNCTION, USER_DEFINED (???)
         return false;
       }
       }
@@ -448,6 +462,8 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
       case XQType::ATOMIC_TYPE_KIND:
       case XQType::NODE_TYPE_KIND:
       case XQType::ITEM_KIND:
+      case XQType::FUNCTION_TYPE_KIND:
+      case XQType::ANY_FUNCTION_TYPE_KIND:
       case XQType::EMPTY_KIND:
         return true;
 
@@ -507,6 +523,35 @@ bool TypeOps::is_subtype(const XQType& subtype, const XQType& supertype)
       }
       break;
     }
+
+    case XQType::FUNCTION_TYPE_KIND:
+    {
+      switch (subtype.type_kind())
+      {
+      case XQType::ANY_FUNCTION_TYPE_KIND:
+      case XQType::FUNCTION_TYPE_KIND:
+      {
+        const FunctionXQType& f1 = static_cast<const FunctionXQType&>(subtype);
+        const FunctionXQType& f2 = static_cast<const FunctionXQType&>(supertype);
+        return f1.is_subtype(f2);
+      }
+      default:
+        return false;
+      }
+    } // XQType::FUNCTION_TYPE_KIND
+
+    case XQType::ANY_FUNCTION_TYPE_KIND:
+    {
+      switch (subtype.type_kind())
+      {
+      case XQType::FUNCTION_TYPE_KIND:
+      case XQType::ANY_FUNCTION_TYPE_KIND:
+        return true;
+      default:
+        // any, untyped, node, atomic
+        return false;
+      }
+    } // XQTYPE::ANY_FUNCTION_TYPE_KIND
 
     case XQType::UNTYPED_KIND:
     {

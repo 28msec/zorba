@@ -1357,27 +1357,6 @@ bool BasicItemFactory::createError(
   return true;
 }
 
-
-bool BasicItemFactory::createFunction(
-          store::Item_t& aResult,
-          const store::Item_t& aName,
-          const signature& aSignature,
-          const store::Iterator_t& aImplementation)
-{
-    aResult = new FunctionItem(aName, aSignature, aImplementation);
-    return true;
-}
-
-bool BasicItemFactory::createFunction(
-          store::Item_t& aResult,
-          const std::vector<store::Iterator_t>& aVariableValues,
-          const signature& aSignature,
-          const store::Iterator_t& aImplementation)
-{
-    aResult = new FunctionItem(aVariableValues, aSignature, aImplementation);
-    return true;
-}
-
 } // namespace simplestore
 } // namespace zorba
 

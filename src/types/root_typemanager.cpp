@@ -361,6 +361,11 @@ RootTypeManager::RootTypeManager()
   ITEM_TYPE_QUESTION = new ItemXQType(this, TypeConstants::QUANT_QUESTION, true);
   ITEM_TYPE_STAR = new ItemXQType(this, TypeConstants::QUANT_STAR, true);
   ITEM_TYPE_PLUS = new ItemXQType(this, TypeConstants::QUANT_PLUS, true);
+
+  ANY_FUNCTION_TYPE_ONE = new AnyFunctionXQType(this, TypeConstants::QUANT_ONE, true);
+  ANY_FUNCTION_TYPE_QUESTION = new AnyFunctionXQType(this, TypeConstants::QUANT_QUESTION, true);
+  ANY_FUNCTION_TYPE_STAR = new AnyFunctionXQType(this, TypeConstants::QUANT_STAR, true);
+  ANY_FUNCTION_TYPE_PLUS = new AnyFunctionXQType(this, TypeConstants::QUANT_PLUS, true);
   
   store::Item_t nullNodeName;
 
