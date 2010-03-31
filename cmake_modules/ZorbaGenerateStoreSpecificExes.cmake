@@ -62,6 +62,23 @@ MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME SRCS DEPEND_LIBS NEW_NAME)
     IF (NOT ${INSTALL_DESTINATION} STREQUAL "")
       INSTALL(TARGETS ${EXE_NAME}${SUFFIX} DESTINATION ${INSTALL_DESTINATION})
     ENDIF (NOT ${INSTALL_DESTINATION} STREQUAL "")
+
+    # generate bat file to set the PATH variable
+    IF (WIN32)
+      GET_TARGET_PROPERTY(TARGET_LOCATION "${EXE_NAME}${SUFFIX}" LOCATION)
+      FILE(TO_NATIVE_PATH "${TARGET_LOCATION}" WIN_TARGET_LOCATION)
+      SET (MSVC_PATH_SUFFIX)
+      IF (MSVC_IDE)
+        SET (MSVC_IDE_PATH_SUFFIX "\\${CMAKE_BUILD_TYPE}")
+      ENDIF (MSVC_IDE)
+      IF (NOT ${NEW_NAME} STREQUAL "")
+        SET (ZORBA_EXE_NAME "${NEW_NAME}${SUFFIX}")
+      ELSE (NOT ${NEW_NAME} STREQUAL "")
+        SET (ZORBA_EXE_NAME "${EXE_NAME}${SUFFIX}")
+      ENDIF (NOT ${NEW_NAME} STREQUAL "")
+       
+      CONFIGURE_FILE("${CMAKE_SOURCE_DIR}/scripts/win_exec.bat.in" "${CMAKE_CURRENT_BINARY_DIR}/${ZORBA_EXE_NAME}.bat" @only)
+    ENDIF (WIN32)
     
     # generating initial property file for each executable in visual studio
     # is done to set the PATH variable correctly

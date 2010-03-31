@@ -22,9 +22,6 @@ IF (WIN32)
   ENDIF (MSVC_IDE)
   FILE(TO_NATIVE_PATH "${CMAKE_BINARY_DIR}" WIN_CMAKE_BINARY_DIR)
   
-  CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/win_exec.bat.in ${CMAKE_BINARY_DIR}/win_exec.bat @only)
-  MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/win_exec.bat.in -> ${CMAKE_BINARY_DIR}/win_exec.bat") 
-  
   CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/win_exec_cmake.bat.in ${CMAKE_CURRENT_BINARY_DIR}/win_exec_cmake.bat @only)
   MESSAGE(STATUS "configured ${CMAKE_CURRENT_SOURCE_DIR}/win_exec_cmake.bat.in -> ${CMAKE_CURRENT_BINARY_DIR}/win_exec_cmake.bat") 
 
