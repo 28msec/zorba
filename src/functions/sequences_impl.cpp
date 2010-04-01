@@ -59,7 +59,9 @@ xqtref_t op_concatenate::getReturnType(const std::vector<xqtref_t>& arg_types) c
         q = TypeConstants::QUANT_PLUS;
     }
 
-    return GENV_TYPESYSTEM.create_type_x_quant(*t, q);
+    TypeManager* tm = t->get_manager();
+
+    return tm->create_type_x_quant(*t, q);
   }
 }
 
@@ -140,8 +142,8 @@ function* fn_sum::specialize(
 xqtref_t fn_one_or_more::getReturnType(
     const std::vector<xqtref_t>& arg_types) const
 {
-  return GENV_TYPESYSTEM.create_type(*TypeOps::prime_type(*arg_types[0]),
-                                     TypeConstants::QUANT_PLUS);
+  return arg_types[0]->get_manager()->
+         create_type(*TypeOps::prime_type(*arg_types[0]), TypeConstants::QUANT_PLUS);
 }
 
 

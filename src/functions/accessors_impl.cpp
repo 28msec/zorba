@@ -42,6 +42,7 @@ xqtref_t fn_data::getReturnType(const std::vector<xqtref_t>& arg_types) const
 
   const XQType& argType = *arg_types[0];
   TypeConstants::quantifier_t q = TypeOps::quantifier(argType);
+  TypeManager* tm = argType.get_manager();
 
   if (argType.type_kind() == XQType::NODE_TYPE_KIND)
   {
@@ -52,13 +53,13 @@ xqtref_t fn_data::getReturnType(const std::vector<xqtref_t>& arg_types) const
     if (nodeKind == store::StoreConsts::piNode ||
         nodeKind == store::StoreConsts::commentNode)
     {
-      return RTM.create_builtin_atomic_type(TypeConstants::XS_STRING, q);
+      return tm->create_builtin_atomic_type(TypeConstants::XS_STRING, q);
     }
 
     if (nodeKind == store::StoreConsts::documentNode ||
         nodeKind == store::StoreConsts::textNode)
     {
-      return RTM.create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
+      return tm->create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
     }
     
     xqtref_t cType = nType.get_content_type();
@@ -68,20 +69,20 @@ xqtref_t fn_data::getReturnType(const std::vector<xqtref_t>& arg_types) const
       {
         const XQType* itemType = static_cast<const UserDefinedXQType*>(cType.getp())->
                                  getListItemType();
-        return RTM.create_type(*itemType, TypeConstants::QUANT_STAR);
+        return tm->create_type(*itemType, TypeConstants::QUANT_STAR);
       }
       else if (TypeOps::is_equal(*cType, *RTM.UNTYPED_TYPE))
       {
-        return RTM.create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
+        return tm->create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
       }
       else if (TypeOps::is_subtype(*cType, *RTM.ANY_ATOMIC_TYPE_STAR))
       {
-        return RTM.create_type(*cType, q);
+        return tm->create_type(*cType, q);
       }
     }
   }
 
-  return RTM.create_builtin_atomic_type(TypeConstants::XS_ANY_ATOMIC,
+  return tm->create_builtin_atomic_type(TypeConstants::XS_ANY_ATOMIC,
                                         TypeConstants::QUANT_STAR);
 }
 
