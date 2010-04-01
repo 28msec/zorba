@@ -181,7 +181,7 @@ class TestSerializationCallback : public zorba::SerializationCallback
       getExternalModule(const String& aURI) const {return NULL;}
 
     virtual bool
-      getTraceStream(std::ostream&) const {return NULL;}
+      getTraceStream(std::ostream*&) const {return NULL;}
 
     virtual CollectionURIResolver*
       getCollectionURIResolver() const {return my_collection_resolver;}
