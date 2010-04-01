@@ -72,10 +72,8 @@
 
   <zorba:member type="bool" name="theIsUpdating" getterName="isUpdating" brief=""/>
 
-  
-
-
 </zorba:iterator>
+
 
 <!--
 /*******************************************************************************
