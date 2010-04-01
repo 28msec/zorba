@@ -368,12 +368,13 @@ void end_visit(dynamic_function_invocation_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> lItem;
-  checked_vector<PlanIter_t> lArgs(v.get_args().size());
-  generate (lArgs.begin(), lArgs.end(), stack_to_generator(itstack));
+  lItem.push_back(0);
+  for (size_t i = 0; i < v.get_args().size(); ++i) {
+    lItem.push_back(pop_itstack());
+  }
+  lItem[0] = pop_itstack();
   
-  lItem.push_back(pop_itstack());
-  
-  push_itstack(new DynamicFunctionInvocationIterator(sctx, qloc, lItem, lArgs));
+  push_itstack(new DynamicFunctionInvocationIterator(sctx, qloc, lItem));
 }
 
 bool begin_visit (debugger_expr& v)

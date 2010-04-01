@@ -22,27 +22,70 @@
   <zorba:include form="Quoted">compiler/api/compilercb.h</zorba:include>
   <zorba:include form="Quoted">context/dynamic_context.h</zorba:include>
 </zorba:source>
-<!--
-/*******************************************************************************
- Dynamic Function Invocation
-********************************************************************************/
--->
-<zorba:iterator name="DynamicFunctionInvocationIterator">
 
-  <zorba:description author="Zorba Team">TODO: notes from the spec</zorba:description>
+  <!--
+  /*******************************************************************************
+   Dynamic Function Invocation
+  ********************************************************************************/
+  -->
+  <zorba:iterator name="DynamicFunctionInvocationIterator">
+    <zorba:description author="Zorba Team">
+     A dynamic function invocation invokes a function item, calling the function it
+     represents. A dynamic function invocation consists of an expression that returns
+     the function item and a parenthesized list of zero or more arguments.
+    </zorba:description>
+  
+    <zorba:state
+        generateInit="false"
+        generateReset="false"
+        generateDestructor="false"> 
+      <zorba:member type="store::Iterator_t" name="thePlan"
+                    brief="the plan to execute"/>
+      <zorba:member type="bool" name="theIsOpen"
+                brief="flag indicating whether thePlan has been opened"/>
+    </zorba:state>
+   
+  </zorba:iterator>
 
-  <zorba:state generateInit="false" generateReset="false"> 
-    <zorba:member type="store::Iterator_t" name="thePlan"
-                  brief="the plan to execute"/>
-    <zorba:member type="std::auto_ptr&lt;CompilerCB>" name="ccb"
-                  brief="the CompilerCB used to compile the plan"/>
-    <zorba:member type="std::auto_ptr&lt;dynamic_context>" name="dctx"
-                  brief="the dynamic context used to during execution of the plan"/>
-  </zorba:state>
- 
-  <zorba:constructor>
-    <zorba:parameter type="checked_vector&lt;PlanIter_t>" name="args" />
-  </zorba:constructor>
+  <!--
+  /*******************************************************************************
+    fn:function-name
+  ********************************************************************************/
+  -->
+  <zorba:iterator name="FunctionNameIterator">
+    <zorba:description author="Zorba Team">
+      Returns the name of the function identified by a function item.
+    </zorba:description>
 
-</zorba:iterator>
+    <zorba:function >
+
+      <zorba:signature localname="function-name" prefix="fn">
+        <zorba:param>function()</zorba:param>
+        <zorba:output>xs:QName?</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+  
+  </zorba:iterator>
+
+  <!--
+  /*******************************************************************************
+    fn:function-arity
+  ********************************************************************************/
+  -->
+  <zorba:iterator name="FunctionArityIterator">
+    <zorba:description author="Zorba Team">
+      Returns the arity of the function identified by a function item.
+    </zorba:description>
+
+    <zorba:function >
+
+      <zorba:signature localname="function-arity" prefix="fn">
+        <zorba:param>function()</zorba:param>
+        <zorba:output>xs:integer</zorba:output>
+      </zorba:signature>
+
+    </zorba:function>
+  
+  </zorba:iterator>
 </zorba:iterators>

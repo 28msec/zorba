@@ -90,8 +90,9 @@ DynamicFunctionInvocationIterator::nextImpl(
   }
 
   {
-    vector<PlanIter_t>::const_iterator lIter = theFunctionArgs.begin();
-    for(; lIter != theFunctionArgs.end(); ++lIter) {
+    vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+    ++lIter; // first arg is producer
+    for(; lIter != theChildren.end(); ++lIter) {
       lFuncIter->addArg(*lIter); 
     }
   }

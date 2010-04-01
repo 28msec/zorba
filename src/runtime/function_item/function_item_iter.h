@@ -61,8 +61,6 @@ public:
 
 class DynamicFunctionInvocationIterator : public NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>
 { 
-protected:
-  std::vector<PlanIter_t> theFunctionArgs; //
 public:
   SERIALIZABLE_CLASS(DynamicFunctionInvocationIterator);
 
@@ -73,18 +71,14 @@ public:
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>*)this);
-
-    ar & theFunctionArgs;
   }
 
   DynamicFunctionInvocationIterator(
     static_context* sctx,
     const QueryLoc& loc,
-    std::vector<PlanIter_t>& children,
-    checked_vector<PlanIter_t> args)
+    std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>(sctx, loc, children),
-    theFunctionArgs(args)
+    NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>(sctx, loc, children)
   {}
 
   virtual ~DynamicFunctionInvocationIterator();

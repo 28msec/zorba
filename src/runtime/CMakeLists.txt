@@ -105,7 +105,6 @@ LIST(APPEND RUNTIME_SRCS
     util/flowctl_exception.cpp
     function_item/function_item.cpp
     function_item/store_iterator.cpp
-    full_text/full_text.cpp
 )
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS debug)
