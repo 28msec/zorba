@@ -22,12 +22,12 @@ SET(ZORBA_WORKS)
 # the Zorba will fail running the test query if the file API dll
 # is not found in the correct location
 IF (EXISTS ${ZORBA_EXE_PATH})
-  IF (WIN32 AND NOT REQUIRED_FILES_DIR)
+  IF (WIN32 AND NOT ZORBA_REQUIRED_DLLS_PATH)
     SET(ZORBA_WORKS FALSE)
     MESSAGE(STATUS "[WARNING] Zorba Command Line Utility can only run if the ZORBA_REQUIRED_DLLS_PATH "
                    "variable points to a directory containing the necessary dynamic library "
                    "dependencies. See the Zorba building documentation for more information.")
-  ELSE (WIN32 AND NOT REQUIRED_FILES_DIR)
+  ELSE (WIN32 AND NOT ZORBA_REQUIRED_DLLS_PATH)
     EXECUTE_PROCESS(COMMAND ${ZORBA_EXE_SCRIPT}
                             "-q" "import module namespace file = 'http://www.zorba-xquery.com/modules/file'; file:exists( 'a non existant file' )"
                     RESULT_VARIABLE ZORBA_WORKS_RES
@@ -40,7 +40,7 @@ IF (EXISTS ${ZORBA_EXE_PATH})
     ELSE (NOT ZORBA_WORKS_RES EQUAL 0)
       SET(ZORBA_WORKS TRUE)
     ENDIF (NOT ZORBA_WORKS_RES EQUAL 0)
-  ENDIF (WIN32 AND NOT REQUIRED_FILES_DIR)    
+  ENDIF (WIN32 AND NOT ZORBA_REQUIRED_DLLS_PATH)    
 ELSE (EXISTS ${ZORBA_EXE_PATH})
   SET(ZORBA_WORKS FALSE)
   MESSAGE(STATUS "[WARNING] Zorba Command Line Utility was not found at \"${ZORBA_EXE_PATH}\".")
