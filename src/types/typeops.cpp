@@ -326,7 +326,7 @@ xqtref_t TypeOps::prime_type(const XQType& type)
       return &type;
 
     const UserDefinedXQType& udType = static_cast<const UserDefinedXQType&>(type);
-    const TypeManager* tm = type.get_manager(); // looks like this is the wrong one, should use the one from sctx->get_typemanager()
+    const TypeManager* tm = type.get_manager();
 
     return tm->create_named_type(udType.get_qname(), TypeConstants::QUANT_ONE);
   }

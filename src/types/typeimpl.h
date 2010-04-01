@@ -299,7 +299,7 @@ public:
       delete this;
   }
 
-  const TypeManager* get_manager() const { return m_manager; }
+  TypeManager* get_manager() const { return m_manager; }
 
   type_kind_t type_kind() const { return m_type_kind; }
 

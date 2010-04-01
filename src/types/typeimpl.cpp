@@ -445,7 +445,7 @@ std::ostream& NodeXQType::serialize_ostream(std::ostream& os) const
 
 
 /*******************************************************************************
-
+  Constructor for user-defined Atomic and Complex types
 ********************************************************************************/
 FunctionXQType::FunctionXQType(
     const TypeManager* manager,
@@ -524,12 +524,12 @@ FunctionXQType::serialize_ostream(std::ostream& os) const
   return os << "]";
 }
 
-/*******************************************************************************
 
+/*******************************************************************************
+  Constructor for user-defined Atomic and Complex types
 ********************************************************************************/
-// constructor for Atomic and Complex types
 UserDefinedXQType::UserDefinedXQType(
-    const TypeManager *manager,
+    const TypeManager* manager,
     store::Item_t qname,
     xqtref_t baseType,
     TypeConstants::quantifier_t quantifier,
@@ -550,9 +550,11 @@ UserDefinedXQType::UserDefinedXQType(
 }
 
 
-// Constructor for List types
+/*******************************************************************************
+  Constructor for user-defined list types
+********************************************************************************/
 UserDefinedXQType::UserDefinedXQType(
-    const TypeManager *manager,
+    const TypeManager* manager,
     store::Item_t qname,
     xqtref_t baseType,
     TypeConstants::quantifier_t quantifier,
@@ -569,9 +571,11 @@ UserDefinedXQType::UserDefinedXQType(
 }
 
 
-// Constructor for Union types
+/*******************************************************************************
+  Constructor for user-defined union types
+********************************************************************************/
 UserDefinedXQType::UserDefinedXQType(
-    const TypeManager *manager,
+    const TypeManager* manager,
     store::Item_t qname,
     xqtref_t baseType,
     TypeConstants::quantifier_t quantifier,
