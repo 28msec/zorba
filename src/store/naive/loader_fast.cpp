@@ -228,14 +228,15 @@ store::Item_t FastXmlLoader::loadXml(
     std::istream& stream)
 {
   xmlParserCtxtPtr ctxt = NULL;
-
   theTree = GET_STORE().getNodeFactory().createXmlTree();
+
+  xmlSubstituteEntitiesDefault (1);
 
   if (uri == NULL)
   {
     std::ostringstream uristream;
     uristream << "zorba://internalDocumentURI-" << theTree->getId();
-    
+
     theDocUri = new xqpStringStore(uristream.str().c_str());
   }
   else

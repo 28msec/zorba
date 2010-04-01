@@ -123,6 +123,7 @@ store::Item_t SimpleXmlLoader::loadXml(
 
   try
   {
+    xmlSubstituteEntitiesDefault(1);
     long numChars = readPacket(stream, theBuffer, 4096);
 
     if (numChars < 0)
