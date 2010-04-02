@@ -26,8 +26,6 @@
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/collation_manager.h"
 
-#include "zorbatypes/libicu.h"
-
 #include <cstdio>
 
 using namespace std;
@@ -88,7 +86,8 @@ static xqpStringStore_t getXqpString(UnicodeString source)
 /*******************************************************************************
   Return an UnicodeString (UTF-16 encoded) version of the string.
 ********************************************************************************/
-static UnicodeString getUnicodeString(const char* aSrc, const ulong aLen)
+UnicodeString
+xqpString::getUnicodeString(const char* aSrc, const ulong aLen)
 {
   UnicodeString lRet;
   UErrorCode lStatus = U_ZERO_ERROR;
@@ -111,7 +110,8 @@ static UnicodeString getUnicodeString(const char* aSrc, const ulong aLen)
 /*******************************************************************************
 
 ********************************************************************************/
-static UnicodeString getUnicodeString(const xqpStringStore* aSrc)
+UnicodeString
+xqpString::getUnicodeString(const xqpStringStore* aSrc)
 {
   return getUnicodeString(aSrc->c_str(), aSrc->bytes());
 }
@@ -385,7 +385,7 @@ uint32_t xqpStringStore::hash(const XQPCollator* coll) const
   CollationKey collKey;
   UErrorCode status = U_ZERO_ERROR;
 
-  ((Collator*)coll->theCollator)->getCollationKey(getUnicodeString(this),
+  ((Collator*)coll->theCollator)->getCollationKey(xqpString::getUnicodeString(this),
                                                   collKey,
                                                   status);
 
@@ -504,8 +504,8 @@ long xqpStringStore::compare(const xqpStringStore* other, const XQPCollator* col
 
   Collator::EComparisonResult result = ::Collator::EQUAL;
 
-  result = ((Collator*)coll->theCollator)->compare(getUnicodeString(this),
-                                                   getUnicodeString(other));
+  result = ((Collator*)coll->theCollator)->compare(xqpString::getUnicodeString(this),
+                                                   xqpString::getUnicodeString(other));
 
   return result;
 }
@@ -545,8 +545,8 @@ long xqpStringStore::positionOf(
 
   UErrorCode status = U_ZERO_ERROR;
 
-  StringSearch search(getUnicodeString(substr),
-                      getUnicodeString(this),
+  StringSearch search(xqpString::getUnicodeString(substr),
+                      xqpString::getUnicodeString(this),
                       (RuleBasedCollator*)coll->theCollator, NULL, status);
 
   if(U_FAILURE(status))
@@ -590,8 +590,8 @@ long xqpStringStore::lastPositionOf(
 
   UErrorCode status = U_ZERO_ERROR;
 
-  StringSearch search(getUnicodeString(substr),
-                      getUnicodeString(this),
+  StringSearch search(xqpString::getUnicodeString(substr),
+                      xqpString::getUnicodeString(this),
                       (RuleBasedCollator *)coll->theCollator, NULL, status);
 
   if(U_FAILURE(status))
@@ -628,8 +628,8 @@ bool xqpStringStore::matches(
 {
   UErrorCode status = U_ZERO_ERROR;
 
-  UnicodeString uspattern = getUnicodeString(pattern, patternLength);
-  UnicodeString us = getUnicodeString(this);
+  UnicodeString uspattern = xqpString::getUnicodeString(pattern, patternLength);
+  UnicodeString us = xqpString::getUnicodeString(this);
   
   RegexMatcher matcher(uspattern, parse_regex_flags(regexFlags), status);
 
@@ -876,8 +876,8 @@ void xqpStringStore::replace(
 {
   UErrorCode status = U_ZERO_ERROR;
 
-  UnicodeString uspattern = getUnicodeString(pattern);
-  UnicodeString us = getUnicodeString(this);
+  UnicodeString uspattern = xqpString::getUnicodeString(pattern);
+  UnicodeString us = xqpString::getUnicodeString(this);
 
   RegexMatcher matcher(uspattern, us, parse_regex_flags(regexFlags), status);
 
@@ -896,7 +896,7 @@ void xqpStringStore::replace(
   }
 
   UnicodeString utf16result =
-  matcher.replaceAll(getUnicodeString(replacement), status);
+  matcher.replaceAll(xqpString::getUnicodeString(replacement), status);
 
   if (U_FAILURE(status)) 
   {
@@ -979,19 +979,19 @@ xqpStringStore_t xqpStringStore::normalize(const xqpStringStore* normMode) const
   }
   else if(normMode->byteEqual("NFC", 3))
   {
-    Normalizer::normalize(getUnicodeString(this), UNORM_NFC , 0, result, status);
+    Normalizer::normalize(xqpString::getUnicodeString(this), UNORM_NFC , 0, result, status);
   }
   else if(normMode->byteEqual("NFKC", 4))
   {
-    Normalizer::normalize(getUnicodeString(this), UNORM_NFKC , 0, result, status);
+    Normalizer::normalize(xqpString::getUnicodeString(this), UNORM_NFKC , 0, result, status);
   }
   else if(normMode->byteEqual("NFD", 3))
   {
-    Normalizer::normalize(getUnicodeString(this), UNORM_NFD , 0, result, status);
+    Normalizer::normalize(xqpString::getUnicodeString(this), UNORM_NFD , 0, result, status);
   }
   else if(normMode->byteEqual("NFKD", 4))
   {
-    Normalizer::normalize(getUnicodeString(this), UNORM_NFKD , 0, result, status);
+    Normalizer::normalize(xqpString::getUnicodeString(this), UNORM_NFKD , 0, result, status);
   }
 
   if(U_FAILURE(status))
@@ -1433,6 +1433,10 @@ xqpString::xqpString(const wchar_t * src)
   delete[] target;
 }
 
+xqpString::xqpString(const UnicodeString aSrc)
+{
+  theStrStore = getXqpString(aSrc);
+}
 
 xqpString& xqpString::operator=(const std::string& src)
 {

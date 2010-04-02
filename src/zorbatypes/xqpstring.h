@@ -32,6 +32,8 @@
 
 #include "zorbaserialization/serialization_engine.h"
 
+#include "zorbatypes/libicu.h"
+
 namespace zorba {
 
 
@@ -348,6 +350,11 @@ public:
    * @param src %Source wchar_t string(UCS-4 encoded)
    */
   xqpString(const wchar_t * src);
+
+  /**Construct a xqpString(UTF-8 encoded) given a UnicodeString(UTF-16 encoded).
+   * @param src %Source UnicodeString string(UTF-16 encoded)
+   */
+  xqpString(const UnicodeString aSrc);
 
   virtual ~xqpString(){};
 
@@ -690,6 +697,12 @@ public:
 
   static wchar_t *
   getWCS(const char * aSrc, const unsigned int aSrcLen, int32_t *aDestLen);
+
+  static UnicodeString
+  getUnicodeString(const xqpStringStore* aSrc);
+
+  static UnicodeString
+  getUnicodeString(const char* aSrc, const ulong aLen);
 
 public:
     static xqpString concat(const char *s1,
