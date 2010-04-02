@@ -18,6 +18,7 @@
 #include <zorba/error.h>
 #include "zorbatypes/binary.h"
 #include "zorbaerrors/error_manager.h"
+#include "util/XmlWhitespace.h"
 
 namespace zorba {
 SERIALIZABLE_CLASS_VERSIONS(Base64)
@@ -98,7 +99,11 @@ void Base64::insertData(const char* aCharStar, size_t len)
       default:
         ZORBA_ERROR_DESC(FORG0001,"In Base 64, '=' must be at the end and must be succeed by [AEIMQUYcgkosw048]");
       }
-    } else {
+    } else if ( xmlWhitespaceChar(lChar) ) 
+	{
+	  // ignore it
+	}
+	else {
       std::stringstream lStream;
       lStream << "invalid character '" << aCharStar[i] << "' in Base64 value";
       ZORBA_ERROR_DESC(FORG0001, lStream.str());

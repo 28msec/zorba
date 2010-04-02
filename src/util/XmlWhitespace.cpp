@@ -53,4 +53,11 @@ xqpString xmlWhitespaceCollapse(xqpString v, XmlWhitespace_t wsr)
     }
 }
 
+/*
+ * checks if is XML whitespace char
+ */ 
+bool xmlWhitespaceChar(char c)
+{
+	return c == ' ' || c == '\n' || c == '\t' || c == '\r';
+}
 } // end xqp namespace

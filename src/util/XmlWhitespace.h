@@ -50,5 +50,10 @@ xqpString xmlWhitespaceCollapse(xqpString str);
  */ 
 xqpString xmlWhitespaceCollapse(xqpString str, XmlWhitespace_t wsct);
 
+/*
+ * checks if is XML whitespace char
+ */ 
+bool xmlWhitespaceChar(char c);
+
 } // end xqp namespace
 #endif /*XMLWHITESPACE_H_*/
