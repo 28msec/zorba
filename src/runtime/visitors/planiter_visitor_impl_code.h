@@ -335,3 +335,11 @@
 
   PLAN_ITER_VISITOR(HoistIterator);
   PLAN_ITER_VISITOR(UnhoistIterator);
+
+  PLAN_ITER_VISITOR(IndexRangeProbeIterator);
+  PLAN_ITER_VISITOR(IndexPointProbeIterator);
+  PLAN_ITER_VISITOR(IndexEntryBuilderIterator);
+  PLAN_ITER_VISITOR(RefreshIndexIterator);
+  PLAN_ITER_VISITOR(CreateIndexIterator);
+  PLAN_ITER_VISITOR(CreateInternalIndexIterator);
+  PLAN_ITER_VISITOR(DeleteIndexIterator);

@@ -143,8 +143,10 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // "if E then flwor else ()", where flwor is the original flwor expr without the
   // where clause.
   expr* whereExpr;
-  if ((whereExpr = flwor.get_where()) != NULL)// &&
-    //flwor.get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL)
+  if ((whereExpr = flwor.get_where()) != NULL
+      //&&
+      //flwor.get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL
+     )
   {
     const var_ptr_set& whereVars = get_varset_annotation(whereExpr,
                                                          Annotations::FREE_VARS);

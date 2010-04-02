@@ -14,19 +14,12 @@
  * limitations under the License.
  */
  
-// ******************************************
-// *                                        *
-// * THIS IS A GENERATED FILE. DO NOT EDIT! *
-// * SEE .xml FILE WITH SAME NAME           *
-// *                                        *
-// ******************************************
-
-
 #include "runtime/indexing/index_ddl.h"
 #include "functions/func_index_ddl.h"
 
 
-namespace zorba{
+namespace zorba
+{
 
 
 

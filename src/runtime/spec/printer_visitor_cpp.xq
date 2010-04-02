@@ -4,13 +4,14 @@ import module namespace util="http://www.zorba-xquery.com/zorba/util-functions";
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
-declare function local:get-files($files as xs:string) as xs:string
+declare sequential function local:get-files($files as xs:string) as xs:string
 {
-  let $xml-files as xs:string* := tokenize($files,';') 
-  return string-join(for $file in $xml-files return local:process-file($file),$gen:newline)
+  let $xml-files as xs:string* := tokenize($files,';')
+  let $temp := for $file in $xml-files return local:process-file($file)
+  return string-join($temp, $gen:newline)
 };
 
-declare function local:process-file($file) as xs:string
+declare sequential function local:process-file($file) as xs:string
 {
   let $doc := file:read-xml($file)/zorba:iterators
   
@@ -124,10 +125,12 @@ declare function local:printer-visitor-definition($iter) as xs:string
 
 declare variable $files as xs:string external;
 
+let $temp := local:get-files($files)
+return
 string-join((gen:add-copyright(),
 local:create-includes($files),
 'namespace zorba{',
   local:create-class(),
-  local:get-files($files),
+  $temp,
 '}')
 ,string-join(($gen:newline,$gen:newline),''))

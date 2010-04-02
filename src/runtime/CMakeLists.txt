@@ -95,6 +95,7 @@ LIST(APPEND RUNTIME_SRCS
     core/internal_operators.cpp
     durations_dates_times/DurationsDatesTimesImpl.cpp
     indexing/doc_indexer.cpp
+    indexing/index_ddl.cpp
     numerics/NumericsImpl.cpp
     sequences/SequencesImpl.cpp
     visitors/iterprinter.cpp

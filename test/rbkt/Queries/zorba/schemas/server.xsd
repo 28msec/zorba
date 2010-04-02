@@ -1,0 +1,18 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xmlns:oas="http://www.28msec.com/modules/oauth/server"
+targetNamespace="http://www.28msec.com/modules/oauth/server"
+
+elementFormDefault="qualified" >
+
+
+<xs:simpleType name="token-status">
+<xs:restriction base="xs:string">
+<xs:enumeration value="consumer"/>
+<xs:enumeration value="request"/>
+<xs:enumeration value="authorized-request"/>
+<xs:enumeration value="access"/>
+</xs:restriction>
+</xs:simpleType>
+<!-- End : General Type Definitions -->
+
+</xs:schema>

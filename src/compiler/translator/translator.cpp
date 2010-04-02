@@ -971,6 +971,7 @@ protected:
   int                                  theTempVarCounter;
 
   stack<expr_t>                        theNodeStack;
+
   stack<ftexpr*>                       theFTNodeStack;
 
   stack<xqtref_t>                      theTypeStack; 
@@ -2775,10 +2776,12 @@ void* begin_visit(const SchemaImport& v)
     std::string lSchemaUri;
     lSchemaUri = lSchemaResolver->resolve(targetNSItem, sctx_p, atUriItemList);
 
+    TypeManager* tm = sctx_p->get_typemanager();
+
     // Create a Schema obj and register it in the typemanger, if the typemanager
     // does not have a schema obj already
-    CTXTS->initializeSchema();
-    Schema* schema_p = CTXTS->getSchema();
+    tm->initializeSchema();
+    Schema* schema_p = tm->getSchema();
 
     // Make Xerxes load and parse the xsd file and create a Xerces
     // representaton of it.
@@ -3683,10 +3686,13 @@ void end_visit(const Param& v, void* /*visit_state*/)
   // of inline functions
   // inline functions currently can't be sequential anyway
   // hence, we can always lazy evaluation
-  if (!theCurrentPrologVFDecl.isNull()) {
+  if (!theCurrentPrologVFDecl.isNull()) 
+  {
     const function* f = theCurrentPrologVFDecl.getFunction();
     lc->setLazyEval(!f->isSequential());
-  } else {
+  } 
+  else 
+  {
     //lc->setLazyEval(true);
   }
 
@@ -8220,15 +8226,21 @@ void* begin_visit(const FunctionCall& v)
     if (v.get_arg_list() != NULL)
       numArgs = v.get_arg_list()->size();
 
-    try {
-      function* f = lookup_fn(qname, numArgs, loc);
+    function* f = lookup_fn(qname, numArgs, loc);
 
-      if (f != NULL && dynamic_cast<user_function*>(f) != NULL)
+    if (f != NULL)
+    {
+      if (f->isSequential() &&
+          theCurrentPrologVFDecl.getKind() == PrologGraphVertex::FUN &&
+          ! theCurrentPrologVFDecl.getFunction()->isSequential())
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(XUST0001, loc,
+                                 "A sequantial function is called from a non "
+                                 << " sequential function");
+      }
+
+      if (dynamic_cast<user_function*>(f) != NULL)
         thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
-    } catch (error::ZorbaError& e) {
-      // BUGFIX: rethrow error with location if namespace binding could
-      // not be found
-      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
     }
   }
 

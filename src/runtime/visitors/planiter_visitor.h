@@ -186,20 +186,6 @@ namespace zorba{
 
     class CheckICIterator;
 
-    class CreateIndexIterator;
-
-    class DeleteIndexIterator;
-
-    class CreateInternalIndexIterator;
-
-    class RefreshIndexIterator;
-
-    class IndexEntryBuilderIterator;
-
-    class IndexPointProbeIterator;
-
-    class IndexRangeProbeIterator;
-
     class IsAvailableCollectionIterator;
 
     class AvailableCollectionsIterator;
@@ -709,27 +695,6 @@ public:
 
     virtual void beginVisit ( const CheckICIterator& ) = 0;
     virtual void endVisit   ( const CheckICIterator& ) = 0;
-
-    virtual void beginVisit ( const CreateIndexIterator& ) = 0;
-    virtual void endVisit   ( const CreateIndexIterator& ) = 0;
-
-    virtual void beginVisit ( const DeleteIndexIterator& ) = 0;
-    virtual void endVisit   ( const DeleteIndexIterator& ) = 0;
-
-    virtual void beginVisit ( const CreateInternalIndexIterator& ) = 0;
-    virtual void endVisit   ( const CreateInternalIndexIterator& ) = 0;
-
-    virtual void beginVisit ( const RefreshIndexIterator& ) = 0;
-    virtual void endVisit   ( const RefreshIndexIterator& ) = 0;
-
-    virtual void beginVisit ( const IndexEntryBuilderIterator& ) = 0;
-    virtual void endVisit   ( const IndexEntryBuilderIterator& ) = 0;
-
-    virtual void beginVisit ( const IndexPointProbeIterator& ) = 0;
-    virtual void endVisit   ( const IndexPointProbeIterator& ) = 0;
-
-    virtual void beginVisit ( const IndexRangeProbeIterator& ) = 0;
-    virtual void endVisit   ( const IndexRangeProbeIterator& ) = 0;
 
     virtual void beginVisit ( const IsAvailableCollectionIterator& ) = 0;
     virtual void endVisit   ( const IsAvailableCollectionIterator& ) = 0;

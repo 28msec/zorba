@@ -18,7 +18,7 @@ declare variable $modulesPath as xs:string external;
  :
  : @param $modulePath where to search for modules recursively.
 :)
-declare function local:testXQDoc($modulesPath as xs:string) {
+declare sequential function local:testXQDoc($modulesPath as xs:string) {
     for $file in file:files($modulesPath)
     let $filePath := concat($modulesPath, "/", $file)
     return

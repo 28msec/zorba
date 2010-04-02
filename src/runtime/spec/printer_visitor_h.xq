@@ -3,17 +3,16 @@ declare namespace zorba="http://www.zorba-xquery.com";
 import module namespace gen = "http://www.zorba-xquery.com/internal/gen" at "utils.xq";
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
-declare function local:get-files($files as xs:string) as xs:string
+declare sequential function local:get-files($files as xs:string) as xs:string
 {
   let $xml-files as xs:string* := tokenize($files,';') 
+  let $temp := for $file in $xml-files
+               return local:process-file($file)
   return
-  string-join(
-    for $file in $xml-files
-    return local:process-file($file),
-  concat($gen:newline, $gen:newline))
+  string-join($temp, concat($gen:newline, $gen:newline))
 };
 
-declare function local:process-file($file) as xs:string
+declare sequential function local:process-file($file) as xs:string
 {
   let $doc := file:read-xml($file)/zorba:iterators
   return
@@ -81,13 +80,15 @@ declare function local:create-includes() as xs:string
 
 declare variable $files as xs:string external;
 
+let $temp := local:get-files($files)
+return
 string-join((gen:add-copyright(),
              gen:add-guard-open('runtime_printer_visitor'),
              local:create-includes(),
              'namespace zorba {',
                local:create-fwd-decl(),
                local:create-class(),
-               local:get-files($files),
+               $temp,
                string-join(($gen:indent,
                '}; //class PrinterVisitor',
              $gen:newline,

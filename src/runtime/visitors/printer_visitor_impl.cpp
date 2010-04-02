@@ -46,6 +46,7 @@
 #include "runtime/sequences/SequencesImpl.h"
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
 #include "runtime/debug/zorba_debug_iterator.h"
+#include "runtime/indexing/index_ddl.h"
 #include "debugger/zorba_debugger_commons.h"
 #include "runtime/util/UtilImpl.h"
 #include "context/static_context.h"
@@ -1183,4 +1184,26 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_AXIS_DEFINITION (PrecedingAxisIterator)
   PRINTER_VISITOR_AXIS_DEFINITION (PrecedingReverseAxisIterator)
   PRINTER_VISITOR_AXIS_DEFINITION (FollowingAxisIterator)
+
+
+  void PrinterVisitor::beginVisit(const CreateInternalIndexIterator& a) 
+  {
+    thePrinter.startBeginVisit("CreateInternalIndexIterator", ++theId);
+    thePrinter.addAttribute("name", a.getName()->show());
+    printCommons( &a, theId );
+    thePrinter.endBeginVisit(theId);
+  }
+
+  void PrinterVisitor::endVisit(const CreateInternalIndexIterator&) 
+  {
+    thePrinter.startEndVisit();
+    thePrinter.endEndVisit();
+  }
+
+  PRINTER_VISITOR_DEFINITION(CreateIndexIterator);
+  PRINTER_VISITOR_DEFINITION(DeleteIndexIterator);
+  PRINTER_VISITOR_DEFINITION(RefreshIndexIterator);
+  PRINTER_VISITOR_DEFINITION(IndexEntryBuilderIterator);
+  PRINTER_VISITOR_DEFINITION(IndexPointProbeIterator);
+  PRINTER_VISITOR_DEFINITION(IndexRangeProbeIterator);
 }

@@ -69,7 +69,8 @@ LIST(APPEND FUNCTIONS_SRCS
     signature.cpp
     InternalOperators.cpp
     nodeid_internal.cpp
-    func_numerics_impl.cpp)
+    func_numerics_impl.cpp
+    func_index_ddl.cpp)
 
 IF (ZORBA_WITH_REST)
   SET(FUNCTIONS_SRCS ${FUNCTIONS_SRCS} Rest.cpp)

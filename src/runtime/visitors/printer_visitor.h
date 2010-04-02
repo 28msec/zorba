@@ -284,27 +284,6 @@ namespace zorba {
     void beginVisit( const CheckICIterator& );
     void endVisit  ( const CheckICIterator& );
 
-    void beginVisit( const CreateIndexIterator& );
-    void endVisit  ( const CreateIndexIterator& );
-
-    void beginVisit( const DeleteIndexIterator& );
-    void endVisit  ( const DeleteIndexIterator& );
-
-    void beginVisit( const CreateInternalIndexIterator& );
-    void endVisit  ( const CreateInternalIndexIterator& );
-
-    void beginVisit( const RefreshIndexIterator& );
-    void endVisit  ( const RefreshIndexIterator& );
-
-    void beginVisit( const IndexEntryBuilderIterator& );
-    void endVisit  ( const IndexEntryBuilderIterator& );
-
-    void beginVisit( const IndexPointProbeIterator& );
-    void endVisit  ( const IndexPointProbeIterator& );
-
-    void beginVisit( const IndexRangeProbeIterator& );
-    void endVisit  ( const IndexRangeProbeIterator& );
-
     void beginVisit( const IsAvailableCollectionIterator& );
     void endVisit  ( const IsAvailableCollectionIterator& );
 

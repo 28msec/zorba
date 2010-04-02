@@ -14,12 +14,6 @@
  * limitations under the License.
  */
  
-// ******************************************
-// *                                        *
-// * THIS IS A GENERATED FILE. DO NOT EDIT! *
-// * SEE .xml FILE WITH SAME NAME           *
-// *                                        *
-// ******************************************
 #ifndef ZORBA_RUNTIME_INDEXING_INDEX_DDL_H
 #define ZORBA_RUNTIME_INDEXING_INDEX_DDL_H
 
@@ -31,10 +25,70 @@
 #include "runtime/base/narybase.h"
 
 
-namespace zorba {
+namespace zorba 
+{
+
+class ValueIndex;
+
 
 /**
  * 
+ *  create-internal-index($indexName as xs:QName) as ()
+ *
+ *  This is an intenal function that is used by the hashjoins rule to create and
+ *  populate a temp index. There are 3 reasons why we need a different function
+ *  than the regular create-index, which is defined below:
+ *
+ *  1. create-index assumes that the domain and key expressions do not reference
+ *     any free variables. This is not true for the temp index created by the
+ *     hashjoin rule.
+ *  2. The argument to create-index can be any arbitrary expression that returns
+ *     a QName. In the case of create-internal-index we know that the arg is a
+ *     const expr holding a qname item.
+ *  3. create-internal-index is a "simple" function, whereas create-index is an
+ *     updating function.
+ */
+class CreateInternalIndexIterator : public UnaryBaseIterator<CreateInternalIndexIterator,
+                                                             PlanIteratorState>
+{ 
+protected:
+  store::Item_t theQName; //the name of the index to create
+
+public:
+  SERIALIZABLE_CLASS(CreateInternalIndexIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CreateInternalIndexIterator,
+  UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>*)this);
+
+    ar & theQName;
+  }
+
+  CreateInternalIndexIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& child,
+        const store::Item_t aName)
+    :
+    UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>(sctx, loc, child),
+    theQName(aName)
+  {}
+
+  virtual ~CreateInternalIndexIterator();
+
+  store::Item_t getName() const { return theQName; }
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
  *  create-index($indexName as xs:QName) as pul()
  *
  *  This is an updating function. During normal runtime (see CreateIndexIterator),
@@ -56,15 +110,15 @@ namespace zorba {
  *  plan is stored in the update primitive, and during applyUpdates(), it is given
  *  as an arg to the SimpleStore::createIndex() method. 
  *    
- * Author: Zorba Team
  */
-class CreateIndexIterator : public UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>
+class CreateIndexIterator : public UnaryBaseIterator<CreateIndexIterator, 
+                                                     PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(CreateIndexIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(CreateIndexIterator,
-    UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>);
+  UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
@@ -73,12 +127,13 @@ public:
   }
 
   CreateIndexIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanIter_t& child)
-    : 
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& child)
+    :
     UnaryBaseIterator<CreateIndexIterator, PlanIteratorState>(sctx, loc, child)
-  {}
+  {
+  }
 
   virtual ~CreateIndexIterator();
 
@@ -97,15 +152,15 @@ public:
  *  primitive. During applyUpdates(), it destroys the index container in the store
  *  and removes the index entry from the dynamic context. 
  *    
- * Author: Zorba Team
  */
-class DeleteIndexIterator : public UnaryBaseIterator<DeleteIndexIterator, PlanIteratorState>
+class DeleteIndexIterator : public UnaryBaseIterator<DeleteIndexIterator,
+                                                     PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(DeleteIndexIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(DeleteIndexIterator,
-    UnaryBaseIterator<DeleteIndexIterator, PlanIteratorState>);
+  UnaryBaseIterator<DeleteIndexIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
@@ -114,71 +169,14 @@ public:
   }
 
   DeleteIndexIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanIter_t& child)
-    : 
+        static_context* sctx,
+        const QueryLoc& loc,
+        PlanIter_t& child)
+    :
     UnaryBaseIterator<DeleteIndexIterator, PlanIteratorState>(sctx, loc, child)
   {}
 
   virtual ~DeleteIndexIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
- *  create-internal-index($indexName as xs:QName) as ()
- *
- *  This is an intenal function that is used by the hashjoins rule to create and
- *  populate a temp index. There are 3 reasons why we need a different function
- *  than the regular create-index, which is defined below:
- *
- *  1. create-index assumes that the domain and key expressions do not reference
- *     any free variables. This is not true for the temp index created by the
- *     hashjoin rule.
- *  2. The argument to create-index can be any arbitrary expression that returns
- *     a QName. In the case of create-internal-index we know that the arg is a
- *     const expr holding a qname item.
- *  3. create-internal-index is a "simple" function, whereas create-index is an
- *     updating function.
- *    
- * Author: Zorba Team
- */
-class CreateInternalIndexIterator : public UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>
-{ 
-protected:
-  store::Item_t theQName; //the name of the index to create
-public:
-  SERIALIZABLE_CLASS(CreateInternalIndexIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(CreateInternalIndexIterator,
-    UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>*)this);
-
-    ar & theQName;
-  }
-
-  CreateInternalIndexIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    PlanIter_t& child,
-    const store::Item_t aName)
-    : 
-    UnaryBaseIterator<CreateInternalIndexIterator, PlanIteratorState>(sctx, loc, child),
-    theQName(aName)
-  {}
-
-  virtual ~CreateInternalIndexIterator();
-
-  store::Item_t getName() const { return theQName; }
 
   void accept(PlanIterVisitor& v) const;
 
@@ -197,13 +195,14 @@ public:
  *    
  * Author: Zorba Team
  */
-class RefreshIndexIterator : public UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>
+class RefreshIndexIterator : public UnaryBaseIterator<RefreshIndexIterator, 
+                                                      PlanIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(RefreshIndexIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(RefreshIndexIterator,
-    UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>);
+  UnaryBaseIterator<RefreshIndexIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
@@ -245,7 +244,8 @@ public:
   void reset(PlanState&);
 };
 
-class IndexEntryBuilderIterator : public NaryBaseIterator<IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>
+class IndexEntryBuilderIterator : public NaryBaseIterator<IndexEntryBuilderIterator, 
+                                                          IndexEntryBuilderIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(IndexEntryBuilderIterator);
@@ -287,9 +287,10 @@ public:
 class IndexPointProbeIteratorState : public PlanIteratorState
 {
 public:
-  const store::Item* theQname; //the name of the index
-  store::Index* theIndex; //the index to probe
-  store::IndexProbeIterator_t theIterator; //the index probe iterator
+  const store::Item            * theQname; 
+  const ValueIndex             * theIndexDecl;
+  store::Index                 * theIndex; 
+  store::IndexProbeIterator_t    theIterator;
 
   IndexPointProbeIteratorState();
 
@@ -299,13 +300,14 @@ public:
   void reset(PlanState&);
 };
 
-class IndexPointProbeIterator : public NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>
+class IndexPointProbeIterator : public NaryBaseIterator<IndexPointProbeIterator, 
+                                                        IndexPointProbeIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(IndexPointProbeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexPointProbeIterator,
-    NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>);
+  NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
@@ -329,31 +331,32 @@ public:
 };
 
 
-/**
- * 
- *  probe-index-range($indexName               as xs:QName,
- *                    $range1LowerBound         as anyAtomic?,
- *                    $range1UpperBound         as anyAtomic?,
- *                    $range1HaveLowerBound     as boolean?,
- *                    $range1HaveupperBound     as boolean?,
- *                    $range1LowerBoundIncluded as boolean?,
- *                    $range1upperBoundIncluded as boolean?,
- *                    ....,
- *                    $rangeNLowerBound         as anyAtomic?,
- *                    $rangeNUpperBound         as anyAtomic?,
- *                    $rangeNHaveLowerBound     as boolean?,
- *                    $rangeNHaveupperBound     as boolean?,
- *                    $rangeNLowerBoundIncluded as boolean?,
- *                    $rangeNupperBoundIncluded as boolean?) as node()*
- *    
- * Author: Zorba Team
- */
+/*******************************************************************************
+   probe-index-range($indexName               as xs:QName,
+                     $range1LowerBound         as anyAtomic?,
+                     $range1UpperBound         as anyAtomic?,
+                     $range1HaveLowerBound     as boolean?,
+                     $range1HaveupperBound     as boolean?,
+                     $range1LowerBoundIncluded as boolean?,
+                     $range1upperBoundIncluded as boolean?,
+                     ....,
+                     $rangeNLowerBound         as anyAtomic?,
+                     $rangeNUpperBound         as anyAtomic?,
+                     $rangeNHaveLowerBound     as boolean?,
+                     $rangeNHaveupperBound     as boolean?,
+                     $rangeNLowerBoundIncluded as boolean?,
+                     $rangeNupperBoundIncluded as boolean?) as node()*
+
+  theQname    : the name of the index
+  theIndex    : the index to probe
+  theIterator : the index probe iterator
+********************************************************************************/
 class IndexRangeProbeIteratorState : public PlanIteratorState
 {
 public:
-  const store::Item* theQname; //the name of the index
-  store::Index* theIndex; //the index to probe
-  store::IndexProbeIterator_t theIterator; //the index probe iterator
+  const store::Item           * theQname;
+  store::Index                * theIndex;
+  store::IndexProbeIterator_t   theIterator;
 
   IndexRangeProbeIteratorState();
 
@@ -363,24 +366,26 @@ public:
   void reset(PlanState&);
 };
 
-class IndexRangeProbeIterator : public NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>
+
+class IndexRangeProbeIterator : public NaryBaseIterator<IndexRangeProbeIterator,
+                                                        IndexRangeProbeIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(IndexRangeProbeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexRangeProbeIterator,
-    NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>);
+  NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>*)this);
   }
 
   IndexRangeProbeIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& children)
     : 
     NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>(sctx, loc, children)
   {}

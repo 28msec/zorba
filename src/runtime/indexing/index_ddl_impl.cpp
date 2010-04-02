@@ -29,6 +29,7 @@
 #include "context/dynamic_context.h"
 
 #include "types/typeimpl.h"
+#include "types/typeops.h"
 
 
 namespace zorba 
@@ -287,7 +288,6 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 {
   store::Item_t qnameItem;
   store::Item_t keyItem;
-  ValueIndex_t indexDecl;
   store::IndexPointCondition_t cond;
   ulong numChildren = theChildren.size();
   ulong i;
@@ -303,19 +303,19 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
   {
     state->theQname = qnameItem;
 
-    if ((indexDecl = theSctx->lookup_index(qnameItem)) == NULL)
+    if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
     {
       ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                             qnameItem->getStringValue()->c_str(), "");
     }
 
-    if (indexDecl->getKeyExpressions().size() != numChildren-1)
+    if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1)
     {
       ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
                             qnameItem->getStringValue()->c_str(), "");
     }
 
-    state->theIndex = (indexDecl->isTemp() ?
+    state->theIndex = (state->theIndexDecl->isTemp() ?
                        planState.dctx()->getIndex(qnameItem) :
                        GENV_STORE.getIndex(state->theQname));
 
@@ -337,6 +337,22 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
     {
       // We may reach here in the case of internally-generated hashjoins
       break;
+    }
+
+    if (keyItem != NULL)
+    {
+      xqtref_t searchKeyType = theSctx->get_typemanager()->create_value_type(keyItem);
+      xqtref_t indexKeyType = (state->theIndexDecl->getKeyTypes())[i-1];
+
+      if (!TypeOps::is_subtype(*searchKeyType, *indexKeyType))
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
+                                 "The type of a search key does not mathch the type"
+                                 << " of the corresponding index key. The search key"
+                                 << " has type " << searchKeyType->toString()
+                                 << " and the expected key type is "
+                                 << indexKeyType->toString());
+      }
     }
 
     cond->pushItem(keyItem);

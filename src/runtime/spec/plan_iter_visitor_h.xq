@@ -24,13 +24,16 @@ declare function local:create-class() as xs:string
 };
  
 (:type can be 'fwd-decl' or 'class' :)
-declare function local:process-files($files as xs:string, $type as xs:string) as xs:string
+declare sequential function local:process-files(
+    $files as xs:string, 
+    $type as xs:string) as xs:string
 {
-  let $xml-files as xs:string* := tokenize($files,';') 
-  return string-join(for $file in $xml-files return local:process-file($file, $type),$gen:newline)
+  let $xml-files as xs:string* := tokenize($files,';')
+  let $temp := for $file in $xml-files return local:process-file($file, $type)
+  return string-join($temp, $gen:newline)
 };
 
-declare function local:process-file($file, $type as xs:string) as xs:string
+declare sequential function local:process-file($file, $type as xs:string) as xs:string
 {
   let $doc := file:read-xml($file)/zorba:iterators
 
@@ -61,22 +64,27 @@ declare function local:process-iter($iter, $type as xs:string) as xs:string
   )
 };
 
-declare function local:create-fwd-decl($files as xs:string) as xs:string
+declare sequential function local:create-fwd-decl($files as xs:string) as xs:string
 {
-  string-join((local:process-files($files,'fwd-decl'),
-  $gen:newline,$gen:newline,'#include "runtime/visitors/planiter_visitor_impl_include.h"'),'')
+  let $temp := local:process-files($files,'fwd-decl')
+  return 
+  string-join(($temp, $gen:newline, $gen:newline,
+               '#include "runtime/visitors/planiter_visitor_impl_include.h"'),'')
 };
 
 
 declare variable $files as xs:string external;
 
+let $temp1 := local:create-fwd-decl($files)
+let $temp2 := local:process-files($files,'class')
+return
 string-join((gen:add-copyright(),
   gen:add-guard-open('runtime_visitors_plan_iter_visitor'),
   local:create-include(),
   'namespace zorba{',
-    local:create-fwd-decl($files),
+    $temp1,
     local:create-class(),
-    local:process-files($files,'class'),
+    $temp2,
     string-join(($gen:indent,'}; //class PlanIterVisitor',
     $gen:newline,
   '} //namespace zorba',$gen:newline),''),

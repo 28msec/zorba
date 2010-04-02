@@ -14,13 +14,6 @@
  * limitations under the License.
  */
  
-// ******************************************
-// *                                        *
-// * THIS IS A GENERATED FILE. DO NOT EDIT! *
-// * SEE .xml FILE WITH SAME NAME           *
-// *                                        *
-// ******************************************
-
 
 #ifndef ZORBA_FUNCTIONS_INDEX_DDL_H
 #define ZORBA_FUNCTIONS_INDEX_DDL_H
@@ -30,8 +23,8 @@
 #include "functions/function_impl.h"
 
 
-namespace zorba {
-
+namespace zorba 
+{
 
 void populate_context_index_ddl(static_context* sctx);
 

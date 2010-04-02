@@ -49,7 +49,6 @@
 #include "runtime/full_text/full_text.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
-#include "runtime/indexing/index_ddl.h"
 #include "runtime/introspection/dctx.h"
 #include "runtime/introspection/sctx.h"
 #include "runtime/maths/maths.h"
@@ -1211,104 +1210,6 @@ void PrinterVisitor::endVisit ( const CheckICIterator& ) {
   thePrinter.endEndVisit();
 }
 // </CheckICIterator>
-
-
-// <CreateIndexIterator>
-void PrinterVisitor::beginVisit ( const CreateIndexIterator& a) {
-  thePrinter.startBeginVisit("CreateIndexIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const CreateIndexIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </CreateIndexIterator>
-
-
-// <DeleteIndexIterator>
-void PrinterVisitor::beginVisit ( const DeleteIndexIterator& a) {
-  thePrinter.startBeginVisit("DeleteIndexIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const DeleteIndexIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </DeleteIndexIterator>
-
-
-// <CreateInternalIndexIterator>
-void PrinterVisitor::beginVisit ( const CreateInternalIndexIterator& a) {
-  thePrinter.startBeginVisit("CreateInternalIndexIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const CreateInternalIndexIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </CreateInternalIndexIterator>
-
-
-// <RefreshIndexIterator>
-void PrinterVisitor::beginVisit ( const RefreshIndexIterator& a) {
-  thePrinter.startBeginVisit("RefreshIndexIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const RefreshIndexIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </RefreshIndexIterator>
-
-
-// <IndexEntryBuilderIterator>
-void PrinterVisitor::beginVisit ( const IndexEntryBuilderIterator& a) {
-  thePrinter.startBeginVisit("IndexEntryBuilderIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const IndexEntryBuilderIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </IndexEntryBuilderIterator>
-
-
-// <IndexPointProbeIterator>
-void PrinterVisitor::beginVisit ( const IndexPointProbeIterator& a) {
-  thePrinter.startBeginVisit("IndexPointProbeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const IndexPointProbeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </IndexPointProbeIterator>
-
-
-// <IndexRangeProbeIterator>
-void PrinterVisitor::beginVisit ( const IndexRangeProbeIterator& a) {
-  thePrinter.startBeginVisit("IndexRangeProbeIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const IndexRangeProbeIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </IndexRangeProbeIterator>
 
 
 // <IsAvailableCollectionIterator>

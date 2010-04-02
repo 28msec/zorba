@@ -51,9 +51,6 @@ SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(StatelessExtFunctionCallIterator)
 
 
-//#define TRACE_UDF_CALLS
-
-
 ulong UDFunctionCallIterator::theDepth = 0;
 
 
@@ -186,14 +183,30 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 }
 
 
+#define TRACE_UDF_CALLS
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  bool success;
+  bool success = true;
   ZorbaDebuggerCommons* lDebugger = planState.theCompilerCB->theDebuggerCommons;
   std::stringstream name;
+
+#ifdef TRACE_UDF_CALLS
+  if (*theUDF->getName()->getPrefix() == "raytracer" &&
+      *theUDF->getName()->getLocalName() != "test-ray")
+  {
+    std::cout << std::string(theDepth, ' ') 
+              << "Invoking function "
+              << theUDF->getName()->getStringValue()->c_str()
+              //<< " from iterator " << this
+              << std::endl << std::endl;
+    theDepth += 2;
+  }
+#endif
 
   UDFunctionCallIteratorState* state;
   DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
@@ -262,18 +275,6 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     //lDebugger->isFunctionExecution = true;
   }
 
-#ifdef TRACE_UDF_CALLS
-  if (*theUDF->getName()->getPrefix() == "raytracer" &&
-      *theUDF->getName()->getLocalName() != "test-ray")
-  {
-    std::cout << std::string(theDepth, ' ') 
-              << "Invoking function " << theUDF->getName()->getStringValue()->c_str()
-      //<< " from iterator " << this
-              << std::endl << std::endl;
-    theDepth += 2;
-  }
-#endif
-
   for (;;) 
   {
     try
@@ -287,9 +288,26 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     }
     
     if (success)
+    {
+#ifdef TRACE_UDF_CALLS
+      if (*theUDF->getName()->getPrefix() == "raytracer" &&
+          *theUDF->getName()->getLocalName() != "test-ray")
+      {
+        theDepth -= 2;
+        std::cout << std::string(theDepth, ' ') 
+                  << "Returned from function "
+                  << theUDF->getName()->getStringValue()->c_str()
+                  //<< " in iterator " << this
+                  << std::endl << std::endl;
+      }
+#endif
+
       STACK_PUSH(true, state);
+    }
     else
+    {
       break;
+    }
   }
 
   if (state->exitValue != NULL)
@@ -298,21 +316,16 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       STACK_PUSH(true, state);
   }
 
-  /*
-  if(lDebugger != 0)
-  {
-    lDebugger->theLastKnownStack = lDebugger->theStack;
-    lDebugger->popStack();
-  }
-  */
+
 #ifdef TRACE_UDF_CALLS
   if (*theUDF->getName()->getPrefix() == "raytracer" &&
       *theUDF->getName()->getLocalName() != "test-ray")
   {
     theDepth -= 2;
     std::cout << std::string(theDepth, ' ') 
-              << "Returned from function " << theUDF->getName()->getStringValue()->c_str()
-      //<< " in iterator " << this
+              << "Returned from function "
+              << theUDF->getName()->getStringValue()->c_str()
+              //<< " in iterator " << this
               << std::endl << std::endl;
   }
 #endif

@@ -10,7 +10,7 @@ Iterator tree for main query:
   </LetVariable>
   <ReturnClause>
     <SequentialIterator>
-      <CreateInternalIndexIterator>
+      <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
         <flwor::FLWORIterator>
           <ForVariable name="$$opt_temp_3">
             <UnhoistIterator>
