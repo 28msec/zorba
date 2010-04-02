@@ -26,7 +26,7 @@
 
 #include "store/api/shared_types.h"
 
-
+#include <stdio.h>
 #include <map>
 
 namespace zorba{

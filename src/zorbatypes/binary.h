@@ -17,6 +17,7 @@
 #define ZORBA_BINARY_H
 
 #include <vector>
+#include <stdio.h>
 #include <zorba/config.h>
 #include "zorbatypes/xqpstring.h"
 
