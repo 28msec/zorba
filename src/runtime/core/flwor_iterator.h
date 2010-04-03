@@ -266,7 +266,7 @@ public:
   typedef std::vector<store::Iterator_t> DataTable;
 
 protected:
-  checked_vector<uint32_t>       theVarBindingState;
+  checked_vector<long>           theVarBindingState;
   std::vector<store::TempSeq_t>  theTempSeqs;
   std::vector<store::Iterator_t> theTempSeqIters;
 
@@ -279,6 +279,8 @@ protected:
 
   GroupHashMap                * theGroupMap; 
   GroupHashMap::iterator        theGroupMapIter;
+
+  bool                          theFirstResult;
 
 public:
   FlworState();

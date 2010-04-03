@@ -2777,14 +2777,15 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
 
 #undef V
 
-/******************************************************************************
 
- ******************************************************************************/
+/*******************************************************************************
+
+********************************************************************************/
 
 plan_visitor::plan_visitor(
-  CompilerCB *ccb,
-  hash64map<vector<LetVarIter_t>*>* arg_var_map
-) :
+    CompilerCB* ccb,
+    hash64map<vector<LetVarIter_t>*>* arg_var_map)
+  :
   depth(0),
   arg_var_iter_map(arg_var_map),
   theCCB(ccb),
@@ -2793,6 +2794,7 @@ plan_visitor::plan_visitor(
   plan_ftexpr_visitor_( new plan_ftexpr_visitor( *this ) )
 {
 }
+
 
 plan_visitor::~plan_visitor()
 {
@@ -2809,13 +2811,16 @@ plan_visitor::~plan_visitor()
   delete plan_ftexpr_visitor_;
 }
 
-ftexpr_visitor& plan_visitor::get_ftexpr_visitor() {
+
+ftexpr_visitor& plan_visitor::get_ftexpr_visitor() 
+{
   return *plan_ftexpr_visitor_;
 }
 
-/******************************************************************************
 
- ******************************************************************************/
+/*******************************************************************************
+
+********************************************************************************/
 
 PlanIter_t codegen(
     const char* descr,

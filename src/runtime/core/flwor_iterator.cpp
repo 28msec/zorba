@@ -439,7 +439,8 @@ FlworState::FlworState()
   :
   theNumTuples(0),
   theCurTuplePos(0),
-  theGroupMap(0)
+  theGroupMap(0),
+  theFirstResult(true)
 {
 }
 
@@ -470,7 +471,7 @@ void FlworState::init(
   PlanIteratorState::init(planState);
 
   ulong numVars = forletClauses.size();
-  std::vector<uint32_t> v(numVars, 0);
+  std::vector<long> v(numVars, 0);
   theVarBindingState.swap(v);
   assert(theVarBindingState.size() > 0);
 
@@ -495,6 +496,7 @@ void FlworState::init(
 
   theNumTuples = 0;
   theCurTuplePos = 0;
+  theFirstResult = true;
 }
 
 
@@ -533,7 +535,9 @@ void FlworState::reset(PlanState& planState)
 
   size_t size = theVarBindingState.size();
 
-  ::memset(&theVarBindingState[0], 0, size * sizeof(uint32_t));
+  ::memset(&theVarBindingState[0], 0, size * sizeof(long));
+
+  theFirstResult = true;
 
   if (theOrderResultIter != NULL)
   {
@@ -690,7 +694,7 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       else
       {
-        // If there are no more bindings for the outer-most var (curVar == -1),
+        // If there are no more bindings for the outer-most var (curVar == 0),
         // then if we had to Order of Group we need to return the results,
         // otherwise we just need to indicate that we finished by returning NULL.
         if ( curVar == 0 )
@@ -767,10 +771,14 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         }
         else
         {
-          // Reset the iterator the computes the domain of the given variable.
-          theForLetClauses[curVar].theInput->reset(planState);
-          iterState->theVarBindingState[curVar] = 0;
-
+          // No more values for the current variable (and the current variable
+          // is  not the 1st one). We go back to the previous variable to
+          // compute its next value (if any). Then, we will come back to this
+          // variable again, and compute all its possible values from the 
+          // begining. So, we mark this var's state as "to be reset", so that
+          // the domain expr of the var will be reset before we try to compute
+          // its new set of values.
+          iterState->theVarBindingState[curVar] = -1;
           --curVar;
         }
       }
@@ -788,21 +796,29 @@ bool FLWORIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       else if (theIsUpdating)
       {
+        if (!iterState->theFirstResult)
+          theReturnClause->reset(planState);
+
+        iterState->theFirstResult = false;
+
         while(consumeNext(curItem, theReturnClause, planState)) 
         {
           ZORBA_FATAL(curItem->isPul(), "");
 
           pul->mergeUpdates(curItem);
         }
-        theReturnClause->reset(planState);
       }
       else if ( !theOrderByClause )
       {
+        if (!iterState->theFirstResult)
+          theReturnClause->reset(planState);
+
+        iterState->theFirstResult = false;
+
         while (consumeNext(result, theReturnClause, planState))
         {
           STACK_PUSH(true, iterState);
         }
-        theReturnClause->reset(planState);
       }
       else
       {
@@ -832,6 +848,14 @@ bool FLWORIterator::bindVariable(
 {
   const ForLetClause& flc = theForLetClauses[varNo];
 
+  long& bindingState = iterState->theVarBindingState[varNo];
+
+  if (bindingState == -1)
+  {
+    theForLetClauses[varNo].theInput->reset(planState);
+    bindingState = 0;
+  }
+
   switch (flc.theType)
   {
   // In the case of a FOR var, we compute the next item of the input and bind
@@ -845,7 +869,7 @@ bool FLWORIterator::bindVariable(
     }
 
     // We increase the position counter
-    ++(iterState->theVarBindingState[varNo]);
+    ++bindingState;
 
     std::vector<PlanIter_t>::const_iterator viter = flc.theVarRefs.begin();
     std::vector<PlanIter_t>::const_iterator end = flc.theVarRefs.end();
@@ -858,8 +882,7 @@ bool FLWORIterator::bindVariable(
     if (!flc.thePosVarRefs.empty())
     {
       store::Item_t posItem;
-      GENV_ITEMFACTORY->createInteger(posItem,
-                                      Integer::parseInt(iterState->theVarBindingState[varNo]));
+      GENV_ITEMFACTORY->createInteger(posItem, Integer::parseInt(bindingState));
 
       std::vector<PlanIter_t>::const_iterator viter = flc.thePosVarRefs.begin();
       std::vector<PlanIter_t>::const_iterator end = flc.thePosVarRefs.end();
@@ -875,7 +898,7 @@ bool FLWORIterator::bindVariable(
   case ForLetClause::LET :
   {      
     // If the var is already bound, there is no next value for it, so return false.
-    if (iterState->theVarBindingState[varNo] == 1)
+    if (bindingState == 1)
     {
       return false;
     }
@@ -891,7 +914,7 @@ bool FLWORIterator::bindVariable(
       ((*viter).getp())->bind(tmpSeq, planState);
     }
 
-    ++(iterState->theVarBindingState[varNo]);
+    bindingState = 1;
     return true;
   }
   default:
@@ -913,7 +936,7 @@ bool FLWORIterator::evalToBool(
     PlanState& planState) const
 {
   store::Item_t boolValue;
-  if (!consumeNext ( boolValue, predicateIter.getp(), planState ))
+  if (!consumeNext(boolValue, predicateIter.getp(), planState))
     return false;
 
   bool value = boolValue->getBooleanValue();

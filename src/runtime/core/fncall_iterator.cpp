@@ -183,7 +183,42 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 }
 
 
-#define TRACE_UDF_CALLS
+//#define TRACE_UDF_CALLS
+
+/*******************************************************************************
+
+********************************************************************************/
+void UDFunctionCallIterator::resetImpl(PlanState& planState) const
+{
+#ifdef TRACE_UDF_CALLS
+  if (*theUDF->getName()->getPrefix() == "raytracer" &&
+      *theUDF->getName()->getLocalName() != "test-ray")
+  {
+    std::cout << std::string(theDepth, ' ') 
+              << "Reseting function "
+              << theUDF->getName()->getStringValue()->c_str()
+              //<< " from iterator " << this
+              << std::endl << std::endl;
+    theDepth += 2;
+  }
+#endif
+
+  NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
+  resetImpl(planState);
+
+#ifdef TRACE_UDF_CALLS
+  if (*theUDF->getName()->getPrefix() == "raytracer" &&
+      *theUDF->getName()->getLocalName() != "test-ray")
+  {
+    theDepth -= 2;
+    std::cout << std::string(theDepth, ' ') 
+              << "Reseted function "
+              << theUDF->getName()->getStringValue()->c_str()
+              //<< " in iterator " << this
+              << std::endl << std::endl;
+  }
+#endif
+}
 
 
 /*******************************************************************************

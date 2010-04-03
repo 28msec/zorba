@@ -195,9 +195,9 @@ public:
   LET variables. A LetVarIterator represents a reference to a let variable V.
   
   theSourceIter stores the current "value" of V: it is a PlanIteratorWraper
-  that may wrap the actual expression that defines the var, or an iterator
-  over a temp sequence, if the result of the defining expression needs
-  materialization.
+  that may wrap the actual domain expression that defines the var, or an
+  iterator over a temp sequence, if the result of the domain expression is
+  materialized.
 
 ********************************************************************************/
 class LetVarState : public PlanIteratorState 
@@ -224,6 +224,7 @@ private:
   store::Item_t  theVarName;
   xqp_long       theTargetPos;
   PlanIter_t     theTargetPosIter;
+  bool           theResetSource;
 
 public:
   SERIALIZABLE_CLASS(LetVarIterator);
@@ -241,7 +242,11 @@ public:
         store::Item* name);
 
   ~LetVarIterator() {}
-  
+
+  bool getResetSource() const { return theResetSource; }
+
+  void setResetSource(bool v) { theResetSource = v; }
+
   bool setTargetPos(xqp_long v) 
   {
     if (theTargetPos == 0 && theTargetPosIter == NULL)

@@ -3576,13 +3576,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       while (true)
       {
         RewriterContext rCtx(theCCB, body);
-#if 0
-        if (*udf->getName()->getPrefix() == "raytracer" &&
-            *udf->getName()->getLocalName() == "shade")
-        {
-          rCtx.theHoistOutOfLetVars = false;
-        }
-#endif
         GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
         body = rCtx.getRoot();
 
@@ -3688,8 +3681,8 @@ void end_visit(const Param& v, void* /*visit_state*/)
   // hence, we can always lazy evaluation
   if (!theCurrentPrologVFDecl.isNull()) 
   {
-    const function* f = theCurrentPrologVFDecl.getFunction();
-    lc->setLazyEval(!f->isSequential());
+    //const function* f = theCurrentPrologVFDecl.getFunction();
+    //lc->setLazyEval(!f->isSequential());
   } 
   else 
   {

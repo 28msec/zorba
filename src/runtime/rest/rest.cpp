@@ -285,6 +285,7 @@ int processReply(const QueryLoc& aLoc,
     createNodeHelper(result, planState, sctx, "error-message", &error_node);
     GENV_ITEMFACTORY->createTextNode(text_code, error_node, -1, temp);
   }
+
   createNodeHelper(result, planState, sctx, "headers", &headers_node);
   if (!ignore_payload)
     createNodeHelper(result, planState, sctx, "payload", &payload);
@@ -936,6 +937,7 @@ bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState
     curl_easy_setopt(state->EasyHandle, CURLOPT_CAINFO, GENV.g_curl_root_CA_certificates_path);
   #endif
 #endif
+
   code = state->theStreamBuffer->multi_perform();
   processReply(loc,
                result,
@@ -949,7 +951,9 @@ bool ZorbaRestHeadIterator::nextImpl(store::Item_t& result, PlanState& planState
 
   curl_slist_free_all(headers_list);
   cleanupConnection(state);
+
   STACK_PUSH(true, state);
+
   STACK_END (state);
 }
 
