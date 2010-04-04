@@ -42,10 +42,4 @@ bool PlanIteratorWrapper::next(store::Item_t& result)
 }
 
 
-void PlanIteratorWrapper::reset()
-{
-  //theIterator->reset(*theStateBlock);
-}
-  
-
 } /* namespace zorba */

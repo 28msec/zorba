@@ -43,8 +43,6 @@ namespace zorba {
 
 RULE(EchoNodes);
 
-RULE(InferVarTypes);
-
 RULE(MarkConsumerNodeProps);
 RULE(MarkProducerNodeProps);
 RULE(EliminateNodeOps);

@@ -30,8 +30,7 @@ RewriterContext::RewriterContext(CompilerCB* aCompilerCB, expr_t root)
   m_tempIndexCounter(0),
   theVarIdMap(NULL),
   theIdVarMap(NULL),
-  theExprVarsMap(NULL),
-  theHoistOutOfLetVars(false)
+  theExprVarsMap(NULL)
 {
 }
 

@@ -3578,7 +3578,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         RewriterContext rCtx(theCCB, body);
         GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
         body = rCtx.getRoot();
-
+#if 1
         xqtref_t bodyType = body->return_type(sctx_p);
         xqtref_t declaredType = udf->get_signature().return_type();
 
@@ -3589,7 +3589,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
           if (!udf->isLeaf())
             continue;
         }
-
+#endif
         udf->setBody(body);
         udf->setArgVars(args);
         break;

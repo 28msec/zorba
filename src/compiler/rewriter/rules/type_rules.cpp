@@ -22,11 +22,13 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
+#include "compiler/rewriter/framework/rule_driver.h"
 
 #include "context/static_context.h"
 
 #include "functions/function.h"
 #include "functions/library.h"
+#include "functions/udf.h"
 
 #include "util/properties.h"
 
@@ -38,8 +40,6 @@ using namespace std;
 namespace zorba 
 {
 
-static void inferWinCondVarTypes(const flwor_wincond* cond, xqtref_t domainType);
-
 static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t);
 
 static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx);
@@ -48,154 +48,70 @@ static function* flip_value_cmp(FunctionConsts::FunctionKind kind);
 
 
 /*******************************************************************************
-  Set the type of variables defined in flwor expressions.
+
 ********************************************************************************/
-RULE_REWRITE_PRE(InferVarTypes) 
+void buildUDFCallGraph(RewriterContext& rctx, expr* curExpr) 
 {
-  return NULL;
-}
-
-
-RULE_REWRITE_POST(InferVarTypes) 
-{
-  static_context* sctx = rCtx.getStaticContext(node);
-
-  if (node->get_expr_kind() == flwor_expr_kind ||
-      node->get_expr_kind() == gflwor_expr_kind) 
+  if (curExpr->get_expr_kind() == fo_expr_kind)
   {
-    flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
-
-    // Node: The translator has already set the type of pos_vars, count_vars,
-    // wincond_out_pos_vars, and wincond_in_pos_vars to xs:positiveInteger.
-
-    for (ulong i = 0; i < flwor->num_clauses(); ++i) 
+    fo_expr* fo = static_cast<fo_expr*>(curExpr);
+    user_function* udf = dynamic_cast<user_function*>(fo->get_func(false));
+  
+    if (udf != NULL)
     {
-      const flwor_clause& c = *(*flwor)[i];
 
-      if (c.get_kind() == flwor_clause::for_clause)
+      if (std::find(rctx.theUDFCallChain.begin(), rctx.theUDFCallChain.end(), udf) !=
+          rctx.theUDFCallChain.end())
       {
-        const for_clause* fc = static_cast<const for_clause *>(&c);
-
-        varref_t var = fc->get_var();
-        xqtref_t explicitType = var->get_type();
-        xqtref_t domainType = fc->get_expr()->return_type(sctx);
-        domainType = TypeOps::prime_type(*domainType);
-
-        if (explicitType == NULL || TypeOps::is_subtype(*domainType, *explicitType))
-          var->set_type(domainType);
-      }
-      else if (c.get_kind() == flwor_clause::let_clause)
-      {
-        const let_clause* lc = static_cast<const let_clause *>(&c);
-
-        varref_t var = lc->get_var();
-        xqtref_t explicitType = var->get_type();
-        xqtref_t domainType = lc->get_expr()->return_type(sctx);
-
-        if (explicitType == NULL || TypeOps::is_subtype(*domainType, *explicitType))
-          var->set_type(domainType);
-      }
-      else if (c.get_kind() == flwor_clause::window_clause)
-      {
-        const window_clause* wc = static_cast<const window_clause *>(&c);
-
-        varref_t var = wc->get_var();
-        xqtref_t explicitType = var->get_type();
-        xqtref_t domainType = wc->get_expr()->return_type(sctx);
-
-        if (explicitType == NULL || TypeOps::is_subtype(*domainType, *explicitType))
-          var->set_type(domainType);
-
-        flwor_wincond* startCond = wc->get_win_start();
-        flwor_wincond* stopCond = wc->get_win_stop();
-
-        if (startCond != NULL)
-          inferWinCondVarTypes(startCond, domainType);
-
-        if (stopCond != NULL)
-          inferWinCondVarTypes(stopCond, domainType);
-      }
-      else if (c.get_kind() == flwor_clause::group_clause)
-      {
-        const group_clause* gc = static_cast<const group_clause *>(&c);
-
-        const flwor_clause::rebind_list_t& gvars = gc->get_grouping_vars();
-        ulong numGroupVars = gvars.size();
-
-        for (ulong i = 0; i < numGroupVars; ++i)
-        {
-          gvars[i].second->set_type(gvars[i].first->return_type(sctx));
-        }
-
-        const flwor_clause::rebind_list_t& ngvars = gc->get_nongrouping_vars();
-        ulong numNonGroupVars = ngvars.size();
-        
-        for (ulong i = 0; i < numNonGroupVars; ++i)
-        {
-          xqtref_t domainType = ngvars[i].first->return_type(sctx);
-          xqtref_t type = GENV_TYPESYSTEM.create_type(*domainType,
-                                                      TypeConstants::QUANT_STAR);
-          ngvars[i].second->set_type(type);
-        }
+        rctx.theUDFCallChain.push_back(udf);
+      
+        buildUDFCallGraph(rctx, udf->getBody());
+          
+        rctx.theUDFCallChain.pop_back();
       }
     }
   }
+
+  for (expr_iterator i = curExpr->expr_begin(); !i.done(); ++i) 
+  {
+    buildUDFCallGraph(rctx, &**i);
+  }
+}
+
+
+#if 0
+RULE_REWRITE_POST(InferUDFTypes) 
+{
+  if (node->get_expr_kind() != fo_expr_kind)
+    return NULL;
+
+  fo_expr* fo = static_cast<fo_expr*>(node);
+  user_function* udf = dynamic_cast<user_function*>(fo->get_func(false));
+  
+  if (udf == NULL)
+    return NULL;
+
+  if (udf->getBody() == NULL)
+    return NULL;
+
+  rCtx.theUDFCallChain.pop_back(udf);
+
+  static_context* sctx = rCtx.getStaticContext(node);
+
+  expr_t bodyExpr = udf->getBody();
+  xqtref_t bodyType = bodyExpr->return_type(sctx);
+  xqtref_t declaredType = udf->get_signature().return_type();
+
+  if (!TypeOps::is_equal(*bodyType, *declaredType) &&
+      TypeOps::is_subtype(*bodyType, *declaredType))
+  {
+    udf->get_signature().return_type() = bodyType;
+    return node;
+  }
+
   return NULL;
 }
-
-
-static void inferWinCondVarTypes(const flwor_wincond* cond, xqtref_t domainType)
-{
-  RootTypeManager& RTM = GENV_TYPESYSTEM;
-
-  const flwor_wincond::vars& invars = cond->get_in_vars();
-  const flwor_wincond::vars& outvars = cond->get_out_vars();
-
-  TypeConstants::quantifier_t quant = domainType->get_quantifier();
-
-  xqtref_t nextprevType;
-  xqtref_t currType;
-
-  if (quant == TypeConstants::QUANT_ONE)
-  {
-    currType = domainType;
-    nextprevType = RTM.create_type(*domainType, TypeConstants::QUANT_QUESTION);
-  }
-  else if (quant == TypeConstants::QUANT_QUESTION)
-  {
-    currType = domainType;
-    nextprevType = domainType;
-  }
-  else if (quant == TypeConstants::QUANT_PLUS)
-  {
-    currType = TypeOps::prime_type(*domainType.getp());
-    nextprevType = RTM.create_type(*domainType, TypeConstants::QUANT_QUESTION);
-  }
-  else
-  {
-    nextprevType = RTM.create_type(*domainType, TypeConstants::QUANT_QUESTION);
-    currType = nextprevType;
-  }
-
-  if (invars.curr)
-    invars.curr->set_type(currType);
-
-  if (invars.prev)
-    invars.prev->set_type(nextprevType);
-
-  if (invars.next)
-    invars.next->set_type(nextprevType);
-
-  if (outvars.curr)
-    outvars.curr->set_type(currType);
-
-  if (outvars.prev)
-    outvars.prev->set_type(nextprevType);
-
-  if (outvars.next)
-    outvars.next->set_type(nextprevType);
-}
-
+#endif
 
 /*******************************************************************************
 

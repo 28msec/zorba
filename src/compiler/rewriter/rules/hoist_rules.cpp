@@ -298,16 +298,9 @@ static expr_t try_hoisting(
         break;
       }
 
-      if (rCtx.theHoistOutOfLetVars)
-      {
-        inloop = (inloop || flc->get_kind() == flwor_clause::for_clause);
-      }
-      else
-      {
-        inloop = (inloop ||
-                  (flc->get_kind() == flwor_clause::for_clause &&
-                   TypeOps::type_max_cnt(*flc->get_expr()->return_type(sctx)) >= 2));
-      }
+      inloop = (inloop ||
+                (flc->get_kind() == flwor_clause::for_clause &&
+                 TypeOps::type_max_cnt(*flc->get_expr()->return_type(sctx)) >= 2));
     }
 
     if (!found)

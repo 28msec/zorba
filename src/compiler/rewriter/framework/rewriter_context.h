@@ -64,18 +64,18 @@ typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
 class RewriterContext 
 {
 public:
-  CompilerCB           * theCCB;
-  expr_t                 theRoot;
-  int                    m_tempvarCounter;
-  int                    m_tempIndexCounter;
+  CompilerCB                 * theCCB;
+  expr_t                       theRoot;
+  int                          m_tempvarCounter;
+  int                          m_tempIndexCounter;
 
-  VarIdMap             * theVarIdMap;
-  IdVarMap             * theIdVarMap;
-  ExprVarsMap          * theExprVarsMap;
-  std::vector<expr_t>    theFlworStack;
-  std::vector<bool>      theIsModifiedStack;
+  VarIdMap                   * theVarIdMap;
+  IdVarMap                   * theIdVarMap;
+  ExprVarsMap                * theExprVarsMap;
+  std::vector<expr_t>          theFlworStack;
+  std::vector<bool>            theIsModifiedStack;
 
-  bool                   theHoistOutOfLetVars;
+  std::vector<user_function*>  theUDFCallChain;
 
 public:
   RewriterContext(CompilerCB* cb, expr_t root);
