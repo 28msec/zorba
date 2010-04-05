@@ -5216,7 +5216,6 @@ KEYWORD
     |   _STRICT { $$ = SYMTAB_PUT("strict"); }
     |   IDIV { $$ = SYMTAB_PUT("idiv"); }
     |   DOCUMENT { $$ = SYMTAB_PUT("document"); }
-    |   NOT { $$ = SYMTAB_PUT("not"); }
     |   FTNOT { $$ = SYMTAB_PUT("ftnot"); }
     |   NOT { $$ = SYMTAB_PUT("not"); }
     |   SENSITIVE { $$ = SYMTAB_PUT("sensitive"); }
