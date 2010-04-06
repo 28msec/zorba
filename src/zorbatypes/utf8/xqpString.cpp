@@ -27,6 +27,7 @@
 #include "zorbatypes/collation_manager.h"
 
 #include <cstdio>
+#include <stdio.h>
 
 using namespace std;
 
