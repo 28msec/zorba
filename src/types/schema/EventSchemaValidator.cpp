@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -51,9 +51,9 @@ EventSchemaValidator::EventSchemaValidator(
                      XERCES_CPP_NAMESPACE::GrammarResolver(grammarPool, memoryManager);
   theGrammarResolver->useCachedGrammarInParse(true);
 
-#if 0 // enable this to debug registered user defined schema types
+#if 1 // enable this to debug registered user defined schema types
   PrintSchema::printInfo(true, grammarPool);
-#endif 
+#endif
 
   theSchemaValidatorFilter = new SchemaValidatorFilter(!isLax,
                                                      &theValidationEventHandler,
@@ -81,18 +81,18 @@ void EventSchemaValidator::startDoc()
 void EventSchemaValidator::endDoc()
 {
   //cout << "   EDoc \n";
-    
+
   theSchemaValidatorFilter->endDocumentEvent();
 }
 
 
 void EventSchemaValidator::startElem(store::Item_t elemName)
-{   
+{
   //cout << "  sv SElem: " << elemName->getLocalName()->c_str() << "\n";
 
-  XMLChArray prefix(elemName->getPrefix()->c_str()); 
+  XMLChArray prefix(elemName->getPrefix()->c_str());
   XMLChArray uri(elemName->getNamespace()->c_str());
-  XMLChArray localname(elemName->getLocalName()->c_str()); 
+  XMLChArray localname(elemName->getLocalName()->c_str());
   theSchemaValidatorFilter->startElementEvent(prefix, uri, localname);
 }
 
@@ -101,9 +101,9 @@ void EventSchemaValidator::endElem(store::Item_t elemName)
 {
   //cout << "  sv EElem: " << elemName->getLocalName()->c_str() << "\n";
 
-  XMLChArray prefix(elemName->getPrefix()->c_str()); 
+  XMLChArray prefix(elemName->getPrefix()->c_str());
   XMLChArray uri(elemName->getNamespace()->c_str());
-  XMLChArray localname(elemName->getLocalName()->c_str()); 
+  XMLChArray localname(elemName->getLocalName()->c_str());
   XMLCh *typeURI = NULL;
   XMLCh *typeName = NULL;
   theSchemaValidatorFilter->endElementEvent(prefix, uri, localname, typeURI, typeName);
@@ -115,11 +115,11 @@ void EventSchemaValidator::attr(store::Item_t attrName, xqpStringStore_t textVal
   //cout << "  sv   Attr: " << attrName->getPrefix()->c_str() << ":"
   //     << attrName->getLocalName()->c_str() << " = '" << textValue->c_str() << "'\n";
 
-  XMLChArray prefix(attrName->getPrefix()->c_str()); 
+  XMLChArray prefix(attrName->getPrefix()->c_str());
   XMLChArray uri(attrName->getNamespace()->c_str());
-  XMLChArray localname(attrName->getLocalName()->c_str()); 
+  XMLChArray localname(attrName->getLocalName()->c_str());
   XMLChArray value(textValue->c_str());
-  XMLCh *typeURI = NULL; 
+  XMLCh *typeURI = NULL;
   XMLCh *typeName = NULL;
   theSchemaValidatorFilter->attributeEvent(prefix, uri, localname, value, typeURI, typeName);
 }
@@ -160,14 +160,14 @@ store::Item_t EventSchemaValidator::getTypeQName()
   //cout << "  - getTypeQName: " << typeName << "@" << typeUri <<" ";
 
   store::Item_t typeQName;
-  GENV_ITEMFACTORY->createQName(typeQName, 
-                                typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), 
-                                "", 
+  GENV_ITEMFACTORY->createQName(typeQName,
+                                typeUri.localFormOrDefault (Schema::XSD_NAMESPACE),
+                                "",
                                 typeName.localFormOrDefault ("untyped"));
-  
+
   //cout << " : " << typeQName->getLocalName()->c_str() << " @ "
   //     << typeQName->getNamespace()->c_str() <<"\n";
-  
+
   return typeQName;
 }
 
@@ -178,13 +178,13 @@ xqtref_t EventSchemaValidator::getType()
   StrX typeUri(theSchemaValidatorFilter->getTypeUri());
 
   //cout << "  - getType: " << typeName << "@" << typeUri <<"\n";
-    
+
   store::Item_t typeQName;
-  GENV_ITEMFACTORY->createQName(typeQName, 
-                                typeUri.localFormOrDefault (Schema::XSD_NAMESPACE), 
-                                "", 
+  GENV_ITEMFACTORY->createQName(typeQName,
+                                typeUri.localFormOrDefault (Schema::XSD_NAMESPACE),
+                                "",
                                 typeName.localFormOrDefault ("untyped"));
-  
+
   xqtref_t type = theTypeManager->create_named_type(typeQName);
   return type;
 }
@@ -196,18 +196,18 @@ store::Item_t EventSchemaValidator::getSubstitutedElemQName()
   {
     StrX substElemName(theSchemaValidatorFilter->getSubstitutedElemName());
     StrX substElemUri (theSchemaValidatorFilter->getSubstitutedElemUri ());
-        
+
     //cout << "  - getSubstitutedElemQName: " << substElemName << "@" << substElemUri <<" ";
-        
+
     store::Item_t substElemQName;
-    GENV_ITEMFACTORY->createQName(substElemQName, 
-                                  substElemUri.localForm(), 
-                                  "", 
+    GENV_ITEMFACTORY->createQName(substElemQName,
+                                  substElemUri.localForm(),
+                                  "",
                                   substElemName.localForm());
-        
+
     //cout << " : " << substElemQName->getLocalName()->c_str() << " @ "
     //     << substElemQName->getNamespace()->c_str() <<"\n";
-  
+
     return substElemQName;
   }
   else
@@ -219,7 +219,7 @@ void EventSchemaValidator::startType(store::Item_t typeQName)
 {
   XMLChArray uri(typeQName->getNamespace()->c_str());
   XMLChArray localname(typeQName->getLocalName()->c_str());
-    
+
   //cout << "   SType: " << typeQName->getLocalName()->c_str() << " @ "
   //     << typeQName->getNamespace()->c_str() << "\n";
 
@@ -230,7 +230,7 @@ void EventSchemaValidator::startType(store::Item_t typeQName)
 void EventSchemaValidator::endType()
 {
   //cout << "   EType \n";
-    
+
   theSchemaValidatorFilter->endTypeEvent();
 }
 
