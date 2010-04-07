@@ -786,7 +786,8 @@ public:
 class InScopeSchemaTypesIteratorState : public PlanIteratorState
 {
 public:
-  unsigned int position; //current position
+  unsigned int ns_pos; //current position
+  unsigned int elem_pos; //current position
 
   InScopeSchemaTypesIteratorState();
 

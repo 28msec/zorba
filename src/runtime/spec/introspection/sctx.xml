@@ -416,7 +416,8 @@
   </zorba:function>
 
   <zorba:state generateReset="false" generateDestructor="false">
-    <zorba:member type="unsigned int" name="position" brief="current position"/>
+    <zorba:member type="unsigned int" name="ns_pos" brief="current position"/>
+    <zorba:member type="unsigned int" name="elem_pos" brief="current position"/>
   </zorba:state>
 
 </zorba:iterator>
