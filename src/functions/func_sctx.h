@@ -304,6 +304,34 @@ public:
 };
 
 
+//fn-zorba-introspect-sctx:in-scope-element-declarations
+class fn_zorba_introspect_sctx_in_scope_element_declarations : public function
+{
+public:
+  fn_zorba_introspect_sctx_in_scope_element_declarations(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_IN_SCOPE_ELEMENT_DECLARATIONS_0)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-introspect-sctx:in-scope-attribute-declarations
+class fn_zorba_introspect_sctx_in_scope_attribute_declarations : public function
+{
+public:
+  fn_zorba_introspect_sctx_in_scope_attribute_declarations(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_IN_SCOPE_ATTRIBUTE_DECLARATIONS_0)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-introspect-sctx:is-declared-integrity-constraint
 class fn_zorba_introspect_sctx_is_declared_integrity_constraint : public function
 {

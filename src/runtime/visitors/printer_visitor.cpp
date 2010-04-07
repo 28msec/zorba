@@ -1562,6 +1562,34 @@ void PrinterVisitor::endVisit ( const InScopeSchemaTypesIterator& ) {
 // </InScopeSchemaTypesIterator>
 
 
+// <InScopeElementDeclarationsIterator>
+void PrinterVisitor::beginVisit ( const InScopeElementDeclarationsIterator& a) {
+  thePrinter.startBeginVisit("InScopeElementDeclarationsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const InScopeElementDeclarationsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </InScopeElementDeclarationsIterator>
+
+
+// <InScopeAttributeDeclarationsIterator>
+void PrinterVisitor::beginVisit ( const InScopeAttributeDeclarationsIterator& a) {
+  thePrinter.startBeginVisit("InScopeAttributeDeclarationsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const InScopeAttributeDeclarationsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </InScopeAttributeDeclarationsIterator>
+
+
 // <IsDeclaredICIterator>
 void PrinterVisitor::beginVisit ( const IsDeclaredICIterator& a) {
   thePrinter.startBeginVisit("IsDeclaredICIterator", ++theId);

@@ -236,6 +236,10 @@ namespace zorba{
 
     class InScopeSchemaTypesIterator;
 
+    class InScopeElementDeclarationsIterator;
+
+    class InScopeAttributeDeclarationsIterator;
+
     class IsDeclaredICIterator;
 
     class DeclaredICsIterator;
@@ -770,6 +774,12 @@ public:
 
     virtual void beginVisit ( const InScopeSchemaTypesIterator& ) = 0;
     virtual void endVisit   ( const InScopeSchemaTypesIterator& ) = 0;
+
+    virtual void beginVisit ( const InScopeElementDeclarationsIterator& ) = 0;
+    virtual void endVisit   ( const InScopeElementDeclarationsIterator& ) = 0;
+
+    virtual void beginVisit ( const InScopeAttributeDeclarationsIterator& ) = 0;
+    virtual void endVisit   ( const InScopeAttributeDeclarationsIterator& ) = 0;
 
     virtual void beginVisit ( const IsDeclaredICIterator& ) = 0;
     virtual void endVisit   ( const IsDeclaredICIterator& ) = 0;

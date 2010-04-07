@@ -38,6 +38,11 @@
 #include "store/api/collection.h"
 #include "store/api/store.h"
 
+#include "types/schema/xercesIncludes.h"
+#include "types/schema/schema.h"
+#include "types/schema/PrintSchema.h"
+#include "types/schema/StrX.h"
+
 
 namespace zorba {
 
@@ -55,11 +60,11 @@ bool IsDeclaredCollectionIterator::nextImpl(
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_collection(lName.getp()) == 0) 
+  if (theSctx->lookup_collection(lName.getp()) == 0)
   {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, false), lState);
   }
-  else 
+  else
   {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, true), lState);
   }
@@ -72,7 +77,7 @@ bool IsDeclaredCollectionIterator::nextImpl(
 ********************************************************************************/
 DeclaredCollectionsIteratorState::~DeclaredCollectionsIteratorState()
 {
-  if ( nameItState != NULL ) 
+  if ( nameItState != NULL )
   {
     nameItState->close();
     nameItState = NULL;
@@ -90,7 +95,7 @@ void DeclaredCollectionsIteratorState::init(PlanState& planState)
 void DeclaredCollectionsIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  if ( nameItState != NULL ) 
+  if ( nameItState != NULL )
   {
     nameItState->close();
     nameItState = NULL;
@@ -134,11 +139,11 @@ bool IsDeclaredIndexIterator::nextImpl(
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_index(lName.getp()) == 0) 
+  if (theSctx->lookup_index(lName.getp()) == 0)
   {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, false), lState);
   }
-  else 
+  else
   {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(aResult, true), lState);
   }
@@ -152,7 +157,7 @@ bool IsDeclaredIndexIterator::nextImpl(
 ********************************************************************************/
 DeclaredIndexesIteratorState::~DeclaredIndexesIteratorState()
 {
-  if (nameItState != NULL) 
+  if (nameItState != NULL)
   {
     nameItState->close();
     nameItState = NULL;
@@ -163,7 +168,7 @@ DeclaredIndexesIteratorState::~DeclaredIndexesIteratorState()
 void DeclaredIndexesIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  if (nameItState != NULL) 
+  if (nameItState != NULL)
   {
     nameItState->close();
     nameItState = NULL;
@@ -224,9 +229,7 @@ bool StaticNamespacesIterator::nextImpl(
   while (lState->thePosition < lState->theBindings.size())
   {
     prefix = lState->theBindings.at(lState->thePosition).first;
-
     STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, prefix), lState);
-
     ++lState->thePosition;
   }
 
@@ -277,6 +280,7 @@ bool InscopeVariablesIterator::nextImpl(
     PlanState& aPlanState) const
 {
   InscopeVariablesIteratorState* state;
+  store::Item_t temp;
   DEFAULT_STACK_INIT(InscopeVariablesIteratorState, state, aPlanState);
 
   theSctx->getVariables(state->theVariables);
@@ -284,8 +288,9 @@ bool InscopeVariablesIterator::nextImpl(
 
   while (state->thePosition < state->theVariables.size())
   {
-    STACK_PUSH(state->theVariables[state->thePosition]->get_name(), state);
-
+    // STACK_PUSH(state->theVariables[state->thePosition]->get_name(), state); // TODO: passing a QName directly will result in a segmentation fault
+    temp = state->theVariables[state->thePosition]->get_name();
+    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult, temp->getNamespace()->c_str(), temp->getPrefix()->c_str(), temp->getLocalName()->c_str()), state);
     ++state->thePosition;
   }
 
@@ -353,7 +358,9 @@ bool StaticallyKnownDocumentsIterator::nextImpl(
   }
   else
   {
-    STACK_PUSH(type->get_qname(), state);
+    // STACK_PUSH(type->get_qname(), state); // TODO: passing a QName directly will result in a segmentation fault
+    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult, type->get_qname()->getNamespace()->c_str(),
+               type->get_qname()->getPrefix()->c_str(), type->get_qname()->getLocalName()->c_str()), state);
 
     /*
     ns = qname->getNamespace();
@@ -413,7 +420,6 @@ bool StaticallyKnownCollationsIterator::nextImpl(
   {
     temp = new xqpStringStore(state->theCollations.at(state->thePosition));
     STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, temp), state);
-
     ++state->thePosition;
   }
 
@@ -511,7 +517,7 @@ bool BoundarySpacePolicyIterator::nextImpl(
 
 ********************************************************************************/
 bool CopyNamespacesModeIterator::nextImpl(
-    store::Item_t& aResult, 
+    store::Item_t& aResult,
     PlanState& aPlanState) const
 {
   PlanIteratorState* state;
@@ -555,15 +561,17 @@ bool FunctionNamesIterator::nextImpl(
     PlanState& aPlanState) const
 {
   FunctionNamesIteratorState* state;
+  store::Item_t temp;
+
   DEFAULT_STACK_INIT(FunctionNamesIteratorState, state, aPlanState);
 
   theSctx->get_functions(state->theFunctions);
   state->thePosition = 0;
-
   while (state->thePosition < state->theFunctions.size())
   {
-    STACK_PUSH(state->theFunctions[state->thePosition]->getName(), state);
-
+    temp = state->theFunctions[state->thePosition]->getName();
+    // STACK_PUSH(state->theFunctions[state->thePosition]->getName(), state); // TODO: if this call is used, a segmentation fault will result later
+    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult, temp->getNamespace()->c_str(), temp->getPrefix()->c_str(), temp->getLocalName()->c_str()), state);
     ++state->thePosition;
   }
 
@@ -645,6 +653,154 @@ bool InScopeSchemaTypesIterator::nextImpl(
       STACK_PUSH( GENV_ITEMFACTORY->createQName(aResult, temp_qname->getNamespace(), temp_qname->getPrefix(), temp_qname->getLocalName()), state);
   }
   */
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+InScopeElementDeclarationsIteratorState::~InScopeElementDeclarationsIteratorState()
+{
+}
+
+void InScopeElementDeclarationsIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  ns_pos = 0;
+  elem_pos = 0;
+}
+
+
+bool InScopeElementDeclarationsIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  XERCES_CPP_NAMESPACE_USE;
+  InScopeElementDeclarationsIteratorState* state;
+  xqpString qname_ns;
+  bool modelHasChanged;
+  Schema* schema;
+  XMLGrammarPool* grammarPool;
+  XSModel* xsModel;
+  StringList* namespaces;
+  const XMLCh* nameSpace;
+  XSNamedMap<XSObject>* xsElements;
+  XSElementDeclaration* xsElement;
+  const XMLCh* elemNameSpace;
+
+  // MemoryManager* memoryManager = XMLPlatformUtils::fgMemoryManager;
+  // GrammarResolver* theGrammarResolver = new (memoryManager)GrammarResolver(grammarPool, memoryManager);
+  // theGrammarResolver->useCachedGrammarInParse(true);
+  schema = theSctx->get_typemanager()->getSchema();
+  grammarPool = schema->getGrammarPool();
+  xsModel = grammarPool->getXSModel(modelHasChanged);
+  namespaces = xsModel->getNamespaces();
+
+  // std::cout << "--> PrintSchema::printInfo(): " << std::endl;
+  // PrintSchema::printInfo(false, grammarPool);
+
+  DEFAULT_STACK_INIT(InScopeElementDeclarationsIteratorState, state, aPlanState);
+  state->ns_pos = 0;
+  state->elem_pos = 0;
+
+  while (state->ns_pos < namespaces->size())
+  {
+    nameSpace = namespaces->elementAt(state->ns_pos);
+    if (nameSpace == NULL || XMLString::stringLen(nameSpace) <= 0)
+    {
+      state->ns_pos++;
+      state->elem_pos = 0;
+      continue;
+    }
+
+    xsElements = xsModel->getComponentsByNamespace(XSConstants::ELEMENT_DECLARATION, nameSpace);
+    if (xsElements == NULL || xsElements->getLength() <= 0 || state->elem_pos >= xsElements->getLength())
+    {
+      state->ns_pos++;
+      state->elem_pos = 0;
+      continue;
+    }
+
+    xsElement = (XSElementDeclaration*)xsElements->item(state->elem_pos);
+    elemNameSpace = xsElement->getNamespace();
+    if (elemNameSpace && (XMLString::stringLen(elemNameSpace )>0))
+      qname_ns = StrX(elemNameSpace).localForm();
+
+    state->elem_pos++;
+    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult, qname_ns.c_str(), "", StrX(xsElement->getName()).localForm()), state);
+  }
+
+  STACK_END (state);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+InScopeAttributeDeclarationsIteratorState::~InScopeAttributeDeclarationsIteratorState()
+{
+}
+
+void InScopeAttributeDeclarationsIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  ns_pos = 0;
+  elem_pos = 0;
+}
+
+
+bool InScopeAttributeDeclarationsIterator::nextImpl(
+    store::Item_t& aResult,
+    PlanState& aPlanState) const
+{
+  XERCES_CPP_NAMESPACE_USE;
+  InScopeAttributeDeclarationsIteratorState* state;
+  xqpString qname_ns;
+  bool modelHasChanged;
+  Schema* schema;
+  XMLGrammarPool* grammarPool;
+  XSModel* xsModel;
+  StringList* namespaces;
+  const XMLCh* nameSpace;
+  XSNamedMap<XSObject>* xsElements;
+  XSElementDeclaration* xsElement;
+  const XMLCh* elemNameSpace;
+
+  schema = theSctx->get_typemanager()->getSchema();
+  grammarPool = schema->getGrammarPool();
+  xsModel = grammarPool->getXSModel(modelHasChanged);
+  namespaces = xsModel->getNamespaces();
+
+  DEFAULT_STACK_INIT(InScopeAttributeDeclarationsIteratorState, state, aPlanState);
+  state->ns_pos = 0;
+  state->elem_pos = 0;
+
+  while (state->ns_pos < namespaces->size())
+  {
+    nameSpace = namespaces->elementAt(state->ns_pos);
+    if (nameSpace == NULL || XMLString::stringLen(nameSpace) <= 0)
+    {
+      state->ns_pos++;
+      state->elem_pos = 0;
+      continue;
+    }
+
+    xsElements = xsModel->getComponentsByNamespace(XSConstants::ATTRIBUTE_DECLARATION, nameSpace);
+    if (xsElements == NULL || xsElements->getLength() <= 0 || state->elem_pos >= xsElements->getLength())
+    {
+      state->ns_pos++;
+      state->elem_pos = 0;
+      continue;
+    }
+
+    xsElement = (XSElementDeclaration*)xsElements->item(state->elem_pos);
+    elemNameSpace = xsElement->getNamespace();
+    if (elemNameSpace && (XMLString::stringLen(elemNameSpace )>0))
+      qname_ns = StrX(elemNameSpace).localForm();
+
+    state->elem_pos++;
+    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult, qname_ns.c_str(), "", StrX(xsElement->getName()).localForm()), state);
+  }
 
   STACK_END (state);
 }

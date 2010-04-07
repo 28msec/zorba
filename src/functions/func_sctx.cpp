@@ -220,6 +220,26 @@ PlanIter_t fn_zorba_introspect_sctx_in_scope_schema_types::codegen(
   return new InScopeSchemaTypesIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_introspect_sctx_in_scope_element_declarations::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new InScopeElementDeclarationsIterator(sctx, loc, argv);
+}
+
+PlanIter_t fn_zorba_introspect_sctx_in_scope_attribute_declarations::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new InScopeAttributeDeclarationsIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_introspect_sctx_is_declared_integrity_constraint::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -339,6 +359,16 @@ void populate_context_sctx(static_context* sctx)
 
   DECL(sctx, fn_zorba_introspect_sctx_in_scope_schema_types,
       (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","in-scope-schema-types"),
+      GENV_TYPESYSTEM.QNAME_TYPE_STAR));
+
+
+  DECL(sctx, fn_zorba_introspect_sctx_in_scope_element_declarations,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","in-scope-element-declarations"),
+      GENV_TYPESYSTEM.QNAME_TYPE_STAR));
+
+
+  DECL(sctx, fn_zorba_introspect_sctx_in_scope_attribute_declarations,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","in-scope-attribute-declarations"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 

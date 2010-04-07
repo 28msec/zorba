@@ -828,6 +828,106 @@ public:
 
 /**
  * 
+ *    sc:in-scope-element-declarations
+ *  
+ * Author: Zorba Team
+ */
+class InScopeElementDeclarationsIteratorState : public PlanIteratorState
+{
+public:
+  unsigned int ns_pos; //current position
+  unsigned int elem_pos; //current position
+
+  InScopeElementDeclarationsIteratorState();
+
+  ~InScopeElementDeclarationsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class InScopeElementDeclarationsIterator : public NaryBaseIterator<InScopeElementDeclarationsIterator, InScopeElementDeclarationsIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(InScopeElementDeclarationsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(InScopeElementDeclarationsIterator,
+    NaryBaseIterator<InScopeElementDeclarationsIterator, InScopeElementDeclarationsIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<InScopeElementDeclarationsIterator, InScopeElementDeclarationsIteratorState>*)this);
+  }
+
+  InScopeElementDeclarationsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<InScopeElementDeclarationsIterator, InScopeElementDeclarationsIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~InScopeElementDeclarationsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:in-scope-attribute-declarations
+ *  
+ * Author: Zorba Team
+ */
+class InScopeAttributeDeclarationsIteratorState : public PlanIteratorState
+{
+public:
+  unsigned int ns_pos; //current position
+  unsigned int elem_pos; //current position
+
+  InScopeAttributeDeclarationsIteratorState();
+
+  ~InScopeAttributeDeclarationsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class InScopeAttributeDeclarationsIterator : public NaryBaseIterator<InScopeAttributeDeclarationsIterator, InScopeAttributeDeclarationsIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(InScopeAttributeDeclarationsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(InScopeAttributeDeclarationsIterator,
+    NaryBaseIterator<InScopeAttributeDeclarationsIterator, InScopeAttributeDeclarationsIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<InScopeAttributeDeclarationsIterator, InScopeAttributeDeclarationsIteratorState>*)this);
+  }
+
+  InScopeAttributeDeclarationsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<InScopeAttributeDeclarationsIterator, InScopeAttributeDeclarationsIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~InScopeAttributeDeclarationsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
  *      sc:is-declared-integrity-constraint
  *    
  * Author: Zorba Team

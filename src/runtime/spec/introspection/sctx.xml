@@ -421,6 +421,53 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="InScopeElementDeclarationsIterator">
+
+  <zorba:description author="Zorba Team">
+    sc:in-scope-element-declarations
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="in-scope-element-declarations"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:state generateReset="false" generateDestructor="false">
+    <zorba:member type="unsigned int" name="ns_pos" brief="current position"/>
+    <zorba:member type="unsigned int" name="elem_pos" brief="current position"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="InScopeAttributeDeclarationsIterator">
+
+  <zorba:description author="Zorba Team">
+    sc:in-scope-attribute-declarations
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="in-scope-attribute-declarations"
+                     prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:QName*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:state generateReset="false" generateDestructor="false">
+    <zorba:member type="unsigned int" name="ns_pos" brief="current position"/>
+    <zorba:member type="unsigned int" name="elem_pos" brief="current position"/>
+  </zorba:state>
+
+</zorba:iterator>
 
 <!--
 /*******************************************************************************

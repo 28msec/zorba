@@ -148,6 +148,26 @@ declare function sctx:default-collection-type() as xs:string external;
 declare function sctx:in-scope-variables() as xs:QName* external;
 
 (:~
+  : The function return a sequence of QNames identifying declared elements
+  : in the imported schemas.
+  :
+  : @return A sequence of QNames, one for each declared element.
+  :
+  : @see http://www.w3.org/TR/xquery/#dt-is-elems
+  :)
+declare function sctx:in-scope-element-declarations() as xs:QName* external;
+
+(:~
+  : The function return a sequence of QNames identifying declared attributes
+  : in the imported schemas.
+  :
+  : @return A sequence of QNames, one for each attribute.
+  :
+  : @see http://www.w3.org/TR/xquery/#dt-is-attrs
+  :)
+declare function sctx:in-scope-attribute-declarations() as xs:QName* external;
+
+(:~
  : The function returns a sequence containing the QNames of all defined
  : functions, which are available to be called from within an expression.
  :

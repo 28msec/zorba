@@ -359,6 +359,12 @@ namespace zorba {
     void beginVisit( const InScopeSchemaTypesIterator& );
     void endVisit  ( const InScopeSchemaTypesIterator& );
 
+    void beginVisit( const InScopeElementDeclarationsIterator& );
+    void endVisit  ( const InScopeElementDeclarationsIterator& );
+
+    void beginVisit( const InScopeAttributeDeclarationsIterator& );
+    void endVisit  ( const InScopeAttributeDeclarationsIterator& );
+
     void beginVisit( const IsDeclaredICIterator& );
     void endVisit  ( const IsDeclaredICIterator& );
 
