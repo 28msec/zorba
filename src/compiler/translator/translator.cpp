@@ -2975,7 +2975,12 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       // Create the root sctx for the imported module as a child of the
       // query-level sctx. Register this sctx in the query-level sctx map.
-      static_context* moduleRootSctx = independentSctx->create_child_context();
+      static_context* moduleRootSctx;
+      if (theCCB->isLoadPrologQuery())
+        moduleRootSctx = theCCB->theRootSctx->create_child_context();
+      else
+        moduleRootSctx = independentSctx->create_child_context();
+
       moduleRootSctx->set_entity_retrieval_uri(compURI2);
       moduleRootSctx->set_module_namespace(targetNS->str());
       short moduleRootSctxId = theCCB->theSctxMap->size() + 1;
