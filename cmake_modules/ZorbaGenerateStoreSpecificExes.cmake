@@ -36,7 +36,7 @@
 #                           the passed destination
 #
 #
-MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME SRCS DEPEND_LIBS NEW_NAME)
+MACRO(ZORBA_GENERATE_STORE_SPECIFIC_EXES EXE_NAME SRCS DEPEND_LIBS NEW_NAME INSTALL_DESTINATION)
 	# We need to change the CMAKE_CFG_INTDIR from the default value (a VS macro)
 	# otherwise this will make CMake fail when searching for the zorba.exe, because
 	# it does not know how to expand VS macros like $(OutDir).

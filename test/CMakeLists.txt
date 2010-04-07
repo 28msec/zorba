@@ -48,9 +48,9 @@ ENDIF(ZORBA_USE_SEPARATE_WINCE_SVN)
 # apitest
 #
 INCLUDE(${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaGenerateStoreSpecificExes.cmake)
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("apitest" "apitest.cpp" "" "")
+ZORBA_GENERATE_STORE_SPECIFIC_EXES("apitest" "apitest.cpp" "" "" "")
   
-ZORBA_GENERATE_STORE_SPECIFIC_EXES("path_test" "path_test.cpp" "" "")
+ZORBA_GENERATE_STORE_SPECIFIC_EXES("path_test" "path_test.cpp" "" "" "")
   
 ZORBA_ADD_TEST_ALLSTORES (test/fspathbranch1 path_test --branch-path /d1/d2/../d3/.)
 ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspathbranch1 PASS_REGULAR_EXPRESSION /d1)

@@ -17,7 +17,7 @@
 # elsewhere.
 
 
-macro (find_prereqs)
+MACRO (find_prereqs)
   # Definitely need svn here.
   FIND_PROGRAM(SVN_EXECUTABLE svn
   DOC "subversion command line client")
@@ -39,12 +39,12 @@ macro (find_prereqs)
   if (NOT EXISTS ${ZORBA_EXE_SCRIPT})
     message (FATAL_ERROR "Zorba is required; not found. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE_SCRIPT})")
   endif (NOT EXISTS ${ZORBA_EXE_SCRIPT})
-endmacro (find_prereqs)
+ENDMACRO (find_prereqs)
 
 
 # Utility routine: given svn-status.xml file and a changelist (may be
 # ""), return a list of files which match any specified status.
-macro (get_files_with_status filelist svnstatusxml changelist)
+MACRO (get_files_with_status filelist svnstatusxml changelist)
   # Which element to look at?
   if ("${changelist}" STREQUAL "")
     set (elem "target")
@@ -56,22 +56,17 @@ macro (get_files_with_status filelist svnstatusxml changelist)
   set (whereclause "")
   set (prefix "where")
   foreach (status ${ARGN})
-    set (whereclause "${whereclause}${prefix} $status=\"${status}\"")
+    set (whereclause "${whereclause}${prefix} $status eq \"${status}\"")
     set (prefix " or")
   endforeach (status ${ARGN})
-  set (query
-    "fn:string-join(
-      for $entry in status/${elem}/entry
-      let $status := data($entry/wc-status/@item)
-      ${whereclause}
-      return $entry/@path,
-      \";\")")
-
+  
+  # BUG: if the query below has new lines you will get a Zorba syntax error on Windows
+  set (query "fn:string-join(for $entry in status/${elem}/entry let $status := data($entry/wc-status/@item) ${whereclause} return $entry/@path, ';')")
   # Set "filelist" to result
   execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
                    --query "${query}" --context-item "${svnstatusxml}"
                    OUTPUT_VARIABLE "${filelist}")
-endmacro (get_files_with_status)
+ENDMACRO (get_files_with_status)
 
 
 # Args:

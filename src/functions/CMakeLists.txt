@@ -53,6 +53,7 @@ LIST(APPEND FUNCTIONS_SRCS
     booleans_impl.cpp
     debug_impl.cpp
     durations_dates_times_impl.cpp
+    func_durations_dates_times.cpp
     sequences_impl.cpp
     fnerror_impl.cpp
     index_ddl_impl.cpp

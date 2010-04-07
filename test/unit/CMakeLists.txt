@@ -34,7 +34,7 @@ ELSE(WIN32)
 ENDIF(WIN32)
 
 # add the executable
-ZORBA_GENERATE_STORE_SPECIFIC_EXES(UnitTests "${UnitTests}" "" "")
+ZORBA_GENERATE_STORE_SPECIFIC_EXES(UnitTests "${UnitTests}" "" "" "")
 
 # remove the test driver source file
 SET (TestsToRun ${UnitTests})

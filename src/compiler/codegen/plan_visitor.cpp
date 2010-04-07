@@ -2790,9 +2790,9 @@ plan_visitor::plan_visitor(
   arg_var_iter_map(arg_var_map),
   theCCB(ccb),
   theLastSctxId(-1),
-  theLastSctx(NULL),
-  plan_ftexpr_visitor_( new plan_ftexpr_visitor( *this ) )
+  theLastSctx(NULL)
 {
+  plan_ftexpr_visitor_ = new plan_ftexpr_visitor( *this );
 }
 
 

@@ -23,7 +23,7 @@ CREATE_TEST_SOURCELIST(DebuggerTests
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/bin)
  
 SET(DEBUGGER_TEST_SRCS ${DebuggerTests} DebuggerTestClient.cpp DebuggerTestHandler.cpp ${CMAKE_SOURCE_DIR}/bin/debugger_server_runnable.cpp ${CMAKE_SOURCE_DIR}/bin/error_printer.cpp)
-ZORBA_GENERATE_STORE_SPECIFIC_EXES(DebuggerTests "${DEBUGGER_TEST_SRCS}" "" "")
+ZORBA_GENERATE_STORE_SPECIFIC_EXES(DebuggerTests "${DEBUGGER_TEST_SRCS}" "" "" "")
 
 SET (TestsToRun ${DebuggerTests})
 REMOVE (TestsToRun DebuggerTests.cpp)

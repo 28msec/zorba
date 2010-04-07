@@ -47,7 +47,7 @@ CREATE_TEST_SOURCELIST(examples
 )
  
 # add the executable
-ZORBA_GENERATE_STORE_SPECIFIC_EXES(examples "${examples}" "" "")
+ZORBA_GENERATE_STORE_SPECIFIC_EXES(examples "${examples}" "" "" "")
 
 # remove the test driver source file
 SET (TestsToRun ${examples})

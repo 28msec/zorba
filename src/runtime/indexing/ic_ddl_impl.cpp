@@ -162,7 +162,7 @@ CheckICIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     //             state);    
   }
 
-  STACK_PUSH(result, state);
+  STACK_PUSH(result.isNull(), state);
   
   STACK_PUSH(true, state);
 

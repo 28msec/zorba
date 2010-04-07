@@ -1129,7 +1129,7 @@ StaticContextImpl::resolve(const String& aBaseUri, const String& aRelativeURI) c
   xqpStringStore_t lBaseUri = Unmarshaller::getInternalString(aBaseUri);
   xqpStringStore_t lRelativeUri = Unmarshaller::getInternalString(aRelativeURI);
 
-  xqpStringStore_t lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri);
+  xqpStringStore_t lResolved = theCtx->resolve_relative_uri(lRelativeUri, lBaseUri.isNull());
 
   return lResolved.getp();
 }
