@@ -38,10 +38,12 @@
 #include "store/api/collection.h"
 #include "store/api/store.h"
 
+#ifndef ZORBA_NO_XMLSCHEMA
 #include "types/schema/xercesIncludes.h"
 #include "types/schema/schema.h"
 #include "types/schema/PrintSchema.h"
 #include "types/schema/StrX.h"
+#endif // #ifndef ZORBA_NO_XMLSCHEMA
 
 
 namespace zorba {
@@ -637,8 +639,10 @@ bool InScopeSchemaTypesIterator::nextImpl(
     store::Item_t& aResult,
     PlanState& aPlanState) const
 {
-  XERCES_CPP_NAMESPACE_USE;
   InScopeSchemaTypesIteratorState* state;
+  
+#ifndef ZORBA_NO_XMLSCHEMA
+  XERCES_CPP_NAMESPACE_USE;
   xqpString qname_ns;
   bool modelHasChanged;
   Schema* schema;
@@ -659,9 +663,9 @@ bool InScopeSchemaTypesIterator::nextImpl(
   }
 
   DEFAULT_STACK_INIT(InScopeSchemaTypesIteratorState, state, aPlanState);
+  
   state->ns_pos = 0;
-  state->elem_pos = 0;
-
+  state->elem_pos = 0;  
   while (schema != NULL && state->ns_pos < namespaces->size())
   {
     nameSpace = namespaces->elementAt(state->ns_pos);
@@ -688,8 +692,17 @@ bool InScopeSchemaTypesIterator::nextImpl(
     state->elem_pos++;
     STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult, qname_ns.c_str(), "", StrX(xsElement->getName()).localForm()), state);
   }
-
   STACK_END (state);
+  
+#else // #ifndef ZORBA_NO_XMLSCHEMA
+
+  // In case Zorba is compiled without schema, the function will return an empty sequence
+  // TODO: the function should return the predefined xs: types even without schema 
+
+  DEFAULT_STACK_INIT(InScopeSchemaTypesIteratorState, state, aPlanState);
+  STACK_END (state);
+  
+#endif // #ifndef ZORBA_NO_XMLSCHEMA
 }
 
 
@@ -712,8 +725,10 @@ bool InScopeElementDeclarationsIterator::nextImpl(
     store::Item_t& aResult,
     PlanState& aPlanState) const
 {
-  XERCES_CPP_NAMESPACE_USE;
   InScopeElementDeclarationsIteratorState* state;
+  
+#ifndef ZORBA_NO_XMLSCHEMA
+  XERCES_CPP_NAMESPACE_USE;
   xqpString qname_ns;
   bool modelHasChanged;
   Schema* schema;
@@ -725,9 +740,6 @@ bool InScopeElementDeclarationsIterator::nextImpl(
   XSElementDeclaration* xsElement;
   const XMLCh* elemNameSpace;
 
-  // MemoryManager* memoryManager = XMLPlatformUtils::fgMemoryManager;
-  // GrammarResolver* theGrammarResolver = new (memoryManager)GrammarResolver(grammarPool, memoryManager);
-  // theGrammarResolver->useCachedGrammarInParse(true);
   schema = theSctx->get_typemanager()->getSchema();
   if (schema != NULL)
   {
@@ -736,13 +748,10 @@ bool InScopeElementDeclarationsIterator::nextImpl(
     namespaces = xsModel->getNamespaces();
   }
 
-  // std::cout << "--> PrintSchema::printInfo(): " << std::endl;
-  // PrintSchema::printInfo(false, grammarPool);
-
   DEFAULT_STACK_INIT(InScopeElementDeclarationsIteratorState, state, aPlanState);
+
   state->ns_pos = 0;
   state->elem_pos = 0;
-
   while (schema != NULL && state->ns_pos < namespaces->size())
   {
     nameSpace = namespaces->elementAt(state->ns_pos);
@@ -768,9 +777,16 @@ bool InScopeElementDeclarationsIterator::nextImpl(
 
     state->elem_pos++;
     STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult, qname_ns.c_str(), "", StrX(xsElement->getName()).localForm()), state);
-  }
-
+  }  
   STACK_END (state);
+  
+#else // #ifndef ZORBA_NO_XMLSCHEMA
+
+  // In case Zorba is compiled without schema, the function will return an empty sequence
+  DEFAULT_STACK_INIT(InScopeElementDeclarationsIteratorState, state, aPlanState);
+  STACK_END (state);
+
+#endif // #ifndef ZORBA_NO_XMLSCHEMA
 }
 
 
@@ -793,8 +809,10 @@ bool InScopeAttributeDeclarationsIterator::nextImpl(
     store::Item_t& aResult,
     PlanState& aPlanState) const
 {
-  XERCES_CPP_NAMESPACE_USE;
   InScopeAttributeDeclarationsIteratorState* state;
+  
+#ifndef ZORBA_NO_XMLSCHEMA
+  XERCES_CPP_NAMESPACE_USE;  
   xqpString qname_ns;
   bool modelHasChanged;
   Schema* schema;
@@ -844,8 +862,15 @@ bool InScopeAttributeDeclarationsIterator::nextImpl(
     state->elem_pos++;
     STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult, qname_ns.c_str(), "", StrX(xsElement->getName()).localForm()), state);
   }
-
   STACK_END (state);
+
+#else // #ifndef ZORBA_NO_XMLSCHEMA
+
+  // In case Zorba is compiled without schema, the function will return an empty sequence
+  DEFAULT_STACK_INIT(InScopeAttributeDeclarationsIteratorState, state, aPlanState);
+  STACK_END (state);
+  
+#endif // #ifndef ZORBA_NO_XMLSCHEMA  
 }
 
 
