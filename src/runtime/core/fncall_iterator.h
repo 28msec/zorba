@@ -34,16 +34,30 @@ class StaticContextImpl;
 
 
 /*******************************************************************************
-
+  thePlan          : The runtime plan for the function body. This is created
+                     during UDFunctionCallIterator::openImpl(), if it has not
+                     not been created already (during the openImpl() method of
+                     another UDFunctionCallIterator on the same udf). A pointer
+                     to this plan is also stored in the udf obj itself, and
+                     that's how we know if it has been created already or not.
+  thePlanState     : The plan state to run thePlan with. The PlanState obj is
+                     created during UDFunctionCallIterator::openImpl(), but the
+                     actual state block is created an initialized the 1st time
+                     that UDFunctionCallIterator::nextImpl() is called (at that
+                     time open() is invoked on thePlan).
+  thePlanStateSize : The size of the plan state block.
+  thePlanOpen      :
+  theArgWrappers   :
+  exitValue        :
 ********************************************************************************/
 class UDFunctionCallIteratorState : public PlanIteratorState 
 {
  public:
-  PlanState                     * theFnBodyStateBlock;
   PlanIterator                  * thePlan;
+  PlanState                     * thePlanState;
   uint32_t                        thePlanStateSize;
   bool                            thePlanOpen;
-  std::vector<store::Iterator_t>  theChildIterators;
+  std::vector<store::Iterator_t>  theArgWrappers;
   store::Iterator_t               exitValue;
 
   UDFunctionCallIteratorState();
@@ -94,8 +108,6 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);
-
-  void resetImpl(PlanState& planState) const;
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };

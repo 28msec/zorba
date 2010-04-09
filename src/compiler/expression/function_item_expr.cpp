@@ -74,6 +74,8 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
   compute_scripting_kind();
 }
 
+
+
 /**
  *
  */
@@ -81,46 +83,46 @@ SERIALIZABLE_CLASS_VERSIONS(function_item_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(function_item_expr)
 DEF_EXPR_ACCEPT (function_item_expr)
 
-function_item_expr::function_item_expr(
-  short           sctx,
-  const QueryLoc& loc,
-  store::Item_t   aQName,
-  function*       f,
-  uint32_t        aArity)
-	: expr(sctx, loc),
-    theQName(aQName),
-    theFunction(f),
-    theArity(aArity)
-	{
-		assert(f != NULL);
-	  compute_scripting_kind();
-  }
 
 function_item_expr::function_item_expr(
-  short               sctx,
-  const QueryLoc&     loc,
-  function*           f,
-  std::vector<expr_t> aScopedVariables)
-	: expr(sctx, loc),
-    theQName(0),
-    theFunction(f),
-    // inline functions can't be variadic
-    theArity(f->get_signature().arg_count()),
-    theScopedVariables(aScopedVariables) 
-	{
-		assert(f != NULL);
-	  compute_scripting_kind();
-	}
-
-class function_item_expr_iterator_data : public expr_iterator_data 
+    short sctx,
+    const QueryLoc& loc,
+    const store::Item* aQName,
+    function* f,
+    uint32_t aArity)
+	: 
+  expr(sctx, loc),
+  theQName(const_cast<store::Item*>(aQName)),
+  theFunction(f),
+  theArity(aArity)
 {
-public:
-  checked_vector<expr_t>::iterator iter;
+  assert(f != NULL);
+  compute_scripting_kind();
+}
 
-  function_item_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
-};
 
-function_item_expr::~function_item_expr(){}
+function_item_expr::function_item_expr(
+    short sctx,
+    const QueryLoc& loc,
+    function*f,
+    std::vector<expr_t>& aScopedVariables)
+	:
+  expr(sctx, loc),
+  theQName(0),
+  theFunction(f),
+  // inline functions can't be variadic
+  theArity(f->get_signature().arg_count()),
+  theScopedVariables(aScopedVariables) 
+{
+  assert(f != NULL);
+  compute_scripting_kind();
+}
+
+
+function_item_expr::~function_item_expr()
+{
+}
+
 
 void function_item_expr::serialize(::zorba::serialization::Archiver& ar)
 {
@@ -130,10 +132,21 @@ void function_item_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theScopedVariables;
 }
 
+
+class function_item_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  checked_vector<expr_t>::iterator iter;
+
+  function_item_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
+};
+
+
 void function_item_expr::compute_scripting_kind() const 
 {
   theCache.scripting_kind.kind = SIMPLE_EXPR;
 }
+
 
 void function_item_expr::next_iter(expr_iterator_data& v)
 {
@@ -144,8 +157,11 @@ void function_item_expr::next_iter(expr_iterator_data& v)
   END_EXPR_ITER();
 }
 
+
 expr_iterator_data* function_item_expr::make_iter()
 {
   return new function_item_expr_iterator_data(this);
 }
+
+
 }//end of namespace

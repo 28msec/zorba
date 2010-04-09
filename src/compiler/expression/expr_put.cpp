@@ -28,9 +28,11 @@
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/function_item_expr.h"
 #include "compiler/parser/parse_constants.h"
 
 #include "functions/function.h"
+#include "functions/udf.h"
 
 
 using namespace std;
@@ -404,6 +406,40 @@ ostream& fo_expr::put( ostream& os) const
 
   CLOSE_EXPR;
 }
+
+
+std::ostream& function_item_expr::put(std::ostream& os) const
+{
+  os << INDENT << "funtion_item_expr " << expr_addr(this);
+
+  if (theQName != NULL)
+  {
+    os << " " << theQName->getStringValue() << "/" << theArity;
+    UNDENT;
+    return os;
+  }
+  else
+  {
+    os << " inline udf (" << theFunction << ") [\n";
+    reinterpret_cast<const user_function*>(theFunction)->getBody()->put(os);
+    CLOSE_EXPR;
+  }
+}
+
+
+ostream& dynamic_function_invocation_expr::put(ostream& os) const
+{
+  os << INDENT << "dynamic_function_invocation_expr " << expr_addr(this)
+     << " [\n";
+
+  theExpr->put(os);
+
+  for (ulong i = 0; i < theArgs.size(); ++i)
+    theArgs[i]->put(os);
+
+  CLOSE_EXPR;
+}
+
 
 ostream& instanceof_expr::put( ostream& os) const
 {

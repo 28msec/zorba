@@ -29,11 +29,16 @@
 
 namespace zorba {
 
-/**
- *  [121]   	FilterExpr	   ::=   	PrimaryExpr (Predicate | DynamicFunctionInvocation)*
- *  [164]   	DynamicFunctionInvocation	   ::=   	"(" (ExprSingle ("," ExprSingle)*)? ")"
- */
-class dynamic_function_invocation_expr: public expr
+/*******************************************************************************
+
+  [121] FilterExpr ::= PrimaryExpr (Predicate | DynamicFunctionInvocation)*
+  
+  [164] DynamicFunctionInvocation ::= "(" (ExprSingle ("," ExprSingle)*)? ")"
+
+  theExpr : The input expr that produces a function item
+  theArgs : The arg exprs to pass to the function.
+********************************************************************************/
+class dynamic_function_invocation_expr : public expr
 {
 
 public:
@@ -47,7 +52,7 @@ public:
   }
   
 protected:
-  expr_t theExpr;
+  expr_t                 theExpr;
   checked_vector<expr_t> theArgs;
     
 public:
@@ -67,23 +72,40 @@ public:
 	
   void next_iter(expr_iterator_data& v);
 
-	std::ostream& put(std::ostream& os) const{ /* TODO */ return os; }
+	std::ostream& put(std::ostream& os) const;
 
 	void accept(expr_visitor&);
   
   expr_iterator_data* make_iter(); 
 };
 
+
+
+/*******************************************************************************
+  Represents a LiteralFunctionItem expr or an InlineFunction expr.
+
+  theQName           : NULL in case of inline function. Otherwise, the qname of
+                       the named function in the LiteralFunctionItem.
+  theFunction        : In case of inline function expr, this is a pointer to an 
+                       anonymous user_function obj that is created on-the-fly by
+                       the translator to represent the body and signature of the 
+                       inline function. In case of LiteralFunctionItem, it may 
+                       be either a function or a user_function obj, depending on
+                       the kind of the named function.
+  theArity           : We need to store the arity also here because the function
+                       above doesn't know about its arity in case it's a variadic
+                       function.
+  theScopedVariables : Empty in the case of LiteralFunctionItem. Otherwise, the
+                       flwor vars that are in scope at the place where the
+                       InlineFunction expr appears at.
+********************************************************************************/
 class function_item_expr: public expr
 {
 private:
-  store::Item_t          theQName;
-	function*              theFunction;
-  // we need to store the arity also here
-  // because the function above doesn't know
-  // about its arity in case it's a variadic function
-  uint32_t               theArity;
-  checked_vector<expr_t> theScopedVariables;
+  store::Item_t        theQName;
+	function           * theFunction;
+  uint32_t             theArity;
+  std::vector<expr_t>  theScopedVariables;
 
 public:
   SERIALIZABLE_CLASS(function_item_expr)
@@ -92,17 +114,17 @@ public:
 
 public:
 	function_item_expr(
-      short           sctx,
+      short sctx,
       const QueryLoc& loc,
-      store::Item_t   aQName,
-      function*       f,
-      uint32_t        aArity);
+      const store::Item* aQName,
+      function* f,
+      uint32_t aArity);
 
   function_item_expr(
-      short               sctx,
-      const QueryLoc&     loc,
-      function*           f,
-      std::vector<expr_t> aScopedVariables);
+      short sctx,
+      const QueryLoc& loc,
+      function* f,
+      std::vector<expr_t>& aScopedVariables);
 
   ~function_item_expr();
 	
@@ -114,19 +136,25 @@ public:
 
   uint32_t get_arity() const { return theArity; }
   
-  const checked_vector<expr_t> get_vars() const { return theScopedVariables; }
+  const std::vector<expr_t>& get_vars() const { return theScopedVariables; }
 
 	void compute_scripting_kind() const;
 	
-  void next_iter(expr_iterator_data& v);
+  expr_iterator_data* make_iter();
 
-	std::ostream& put(std::ostream& os) const{ return os; }
+  void next_iter(expr_iterator_data& v);
 
 	void accept(expr_visitor&);
 
-  expr_iterator_data* make_iter();
+	std::ostream& put(std::ostream& os) const;
 };
 
 } //end of namespace
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

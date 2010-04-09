@@ -144,4 +144,10 @@ typedef rchandle<union_expr> union_expr_t;
 } // namespace zorba
 
 #endif
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+
 /* vim:set et sw=2 ts=2: */
