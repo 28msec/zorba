@@ -133,7 +133,7 @@ class StatelessExtFunctionCallIterator :
 protected:
   const StatelessExternalFunction *m_function;
   bool theIsUpdating;
-  xqp_string thePrefix;
+  xqp_string theNamespace;
 
 public:
   SERIALIZABLE_CLASS(StatelessExtFunctionCallIterator);

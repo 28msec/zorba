@@ -31,7 +31,7 @@ class stateless_external_function_adapter : public external_function
 private:
   StatelessExternalFunction * m_function;
   expr_script_kind_t          theUpdateType;
-  xqp_string                  thePrefix;
+  xqp_string                  theNamespace;
 
 public:
   SERIALIZABLE_CLASS(stateless_external_function_adapter)
@@ -42,7 +42,7 @@ public:
     if(!ar.is_serializing_out())
       m_function = NULL;//don't serialize this for now
     SERIALIZE_ENUM(expr_script_kind_t, theUpdateType);
-    ar & thePrefix;
+    ar & theNamespace;
   }
 
 public:

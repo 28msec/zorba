@@ -3225,7 +3225,7 @@ void* begin_visit(const VFO_DeclList& v)
       f = new stateless_external_function_adapter(sig, 
                                                   ef, 
                                                   lScriptKind, 
-                                                  qnameItem->getPrefix());
+                                                  qnameItem->getNamespace());
       break;
     }
     case ParseConstants::fn_sequential:

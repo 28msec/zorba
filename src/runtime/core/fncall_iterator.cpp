@@ -305,13 +305,13 @@ StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(
     std::vector<PlanIter_t>& args,
     const StatelessExternalFunction *function,
     bool aIsUpdating,
-    const xqp_string& aPrefix)
+    const xqp_string& aNamespace)
   :
   NaryBaseIterator<StatelessExtFunctionCallIterator, 
                    StatelessExtFunctionCallIteratorState>(sctx, loc, args),
   m_function(function),
   theIsUpdating(aIsUpdating),
-  thePrefix(aPrefix)
+  theNamespace(aNamespace)
 { 
 }
 
@@ -333,7 +333,7 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
   if (ar.is_serializing_out()) 
   {
     // serialize out: serialize prefix and localname of the function
-    ar & thePrefix;
+    ar & theNamespace;
     xqpStringStore_t lTmp;
     lTmp = Unmarshaller::getInternalString(m_function->getLocalName());
     ar.set_is_temp_field(true);
@@ -344,23 +344,21 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
   {
     // serializing in: get the function from the static context
     //                 using the serialized prefix/uri and localname 
-    ar & thePrefix;
+    ar & theNamespace;
     xqpStringStore_t lLocalname;
     ar.set_is_temp_field(true);
     ar & lLocalname;
     ar.set_is_temp_field(false);
-    xqpStringStore_t lURI;
-    if(thePrefix.getStore())
+    if(theNamespace.getStore())
     {
       QueryLoc loc;
-      theSctx->lookup_ns(lURI, thePrefix.getStore(), loc);
-      m_function = theSctx->lookup_stateless_external_function(lURI.getp(),
+      m_function = theSctx->lookup_stateless_external_function(theNamespace.getStore(),
                                                                lLocalname.getp());
       if (!m_function) 
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because "
-                             << " the external function with URI " << lURI
+                             << " the external function with URI " << theNamespace
                              << " and local name " << lLocalname
                              << " is not available through any of the"
                              << " ExternalModules.");

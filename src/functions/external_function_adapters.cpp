@@ -26,12 +26,12 @@ stateless_external_function_adapter::stateless_external_function_adapter(
     const signature& sig,
     StatelessExternalFunction *function, 
     expr_script_kind_t aUpdateType,
-    const xqp_string& aPrefix)
+    const xqp_string& aNamespace)
   :
   external_function(sig),
   m_function(function),
   theUpdateType(aUpdateType),
-  thePrefix(aPrefix)
+  theNamespace(aNamespace)
 {
 }
 
@@ -48,7 +48,7 @@ PlanIter_t stateless_external_function_adapter::codegen(
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const
 {
-  return new StatelessExtFunctionCallIterator(sctx, loc, argv, m_function, isUpdating(), thePrefix);
+  return new StatelessExtFunctionCallIterator(sctx, loc, argv, m_function, isUpdating(), theNamespace);
 }
 
 }
