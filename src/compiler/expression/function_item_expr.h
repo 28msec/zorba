@@ -63,7 +63,7 @@ public:
       const std::vector<expr_t>& args);
     
 	expr_kind_t get_expr_kind() const { return dynamic_function_invocation_expr_kind; }
-	
+
 	const expr_t get_function() const { return theExpr; }
 	
   const std::vector<expr_t>& get_args() const { return theArgs; }
@@ -122,14 +122,16 @@ public:
 
   function_item_expr(
       short sctx,
-      const QueryLoc& loc,
-      function* f,
-      std::vector<expr_t>& aScopedVariables);
+      const QueryLoc& loc);
 
   ~function_item_expr();
 	
   expr_kind_t get_expr_kind() const { return function_item_expr_kind; }
 	
+  void add_variable(expr* var);
+
+  void set_function(function* udf);
+
 	const function* get_function() const { return theFunction; }
 	
   const store::Item_t& get_qname() const { return theQName; }
@@ -140,6 +142,8 @@ public:
 
 	void compute_scripting_kind() const;
 	
+  xqtref_t return_type_impl(static_context* sctx) const;
+
   expr_iterator_data* make_iter();
 
   void next_iter(expr_iterator_data& v);

@@ -3496,7 +3496,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr>();
     ZORBA_ASSERT(flwor != NULL);
 
-    for(ulong i = 0; i < numParams; ++i)
+    for (ulong i = 0; i < numParams; ++i)
     {
       const let_clause* lc = dynamic_cast<const let_clause*>((*flwor)[i]);
       var_expr* arg_var = dynamic_cast<var_expr*>(lc->get_expr());
@@ -8610,18 +8610,24 @@ void* begin_visit(const InlineFunction& v)
 
   // Get the in-scope vars of the scope before opening the new scope for the
   // function devl
-  checked_vector<var_expr_t> lScopedVars;
-  sctx_p->getVariables(lScopedVars);
+  std::vector<var_expr_t> scopedVars;
+  sctx_p->getVariables(scopedVars);
 
   push_scope();
   
-  // Handle function parameters if any. At the end, the flwor will have a let
-  // binding for each function parameter
-  rchandle<flwor_expr> flwor;
-  rchandle<ParamList> lParams = v.getParamList();
-  if (lParams) 
+  function_item_expr* fiExpr = new function_item_expr(sctxid(), loc);
+
+  push_nodestack(fiExpr);
+
+  flwor_expr_t flwor;
+
+  // Handle function parameters. Translation of the params, if any, results to
+  // a flwor expr with one let binding for each function parameter.
+  rchandle<ParamList> params = v.getParamList();
+  if (params) 
   {
-    lParams->accept(*this);
+    params->accept(*this);
+
     flwor = pop_nodestack().cast<flwor_expr>(); 
   }
   else
@@ -8631,24 +8637,36 @@ void* begin_visit(const InlineFunction& v)
 
   // Handle inscope variables. For each inscope var, a let binding is added to
   // the flwor.
-  checked_vector<var_expr_t>::iterator lIter = lScopedVars.begin();
-  for(; lIter != lScopedVars.end(); ++lIter)
+  std::vector<var_expr_t>::iterator ite = scopedVars.begin();
+  for(; ite != scopedVars.end(); ++ite)
   {
-    store::Item_t qname = (*lIter)->get_name();
-    std::string lVarName(qname->getStringValue()->c_str());
+    var_expr* varExpr = (*ite);
+    var_expr::var_kind kind = varExpr->get_kind();
 
-    if(lVarName == "$$dot") 
+    if (kind == var_expr::prolog_var || kind == var_expr::local_var)
+    {
       continue;
+    }
+
+    store::Item_t qname = varExpr->get_name();
 
     varref_t arg_var = create_var(loc, qname, var_expr::arg_var);
     varref_t subst_var = bind_var(loc, qname, var_expr::let_var);
     let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
+
+    arg_var->set_type(varExpr->return_type(sctx_p));
+
     // TODO: this could probably be done lazily in some cases
     //lc->setLazyEval(true);
     flwor->add_clause(lc);
+
+    fiExpr->add_variable((*ite).getp());
   }
 
-  push_nodestack(flwor.getp());
+  if (flwor->num_clauses() > 0)
+    push_nodestack(flwor.getp());
+  else
+    push_nodestack(NULL);
 
   return no_state;
 }
@@ -8658,17 +8676,16 @@ void end_visit(const InlineFunction& v, void* aState)
 {
   TRACE_VISIT_OUT();
  
-  //Get the inline function body
-  expr_t body = pop_nodestack(); 
-  ZORBA_ASSERT(body != 0);
-
-  rchandle<flwor_expr> flwor = pop_nodestack().cast<flwor_expr>(); 
-
+  // Get the return tyoe
   xqtref_t returnType = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   if(v.getReturnType() != 0) 
   {
     returnType = pop_tstack();
   }
+
+  // Get the inline function body and wrap it in appropriate type op.
+  expr_t body = pop_nodestack(); 
+  ZORBA_ASSERT(body != 0);
 
   if (TypeOps::is_builtin_simple(*returnType)) 
   {
@@ -8680,7 +8697,22 @@ void end_visit(const InlineFunction& v, void* aState)
     body = wrap_in_type_match(body, returnType);
   }
 
-  flwor->set_return_expr(body);
+  // Make the body be the return expr of the flwor that binds the function params.
+  flwor_expr_t flwor = pop_nodestack().cast<flwor_expr>();
+
+  if (flwor != NULL)
+  {
+    flwor->set_return_expr(body);
+
+    body = flwor;
+  }
+
+  if (theCCB->theConfig.opt_level == CompilerCB::config::O1) 
+  {
+    RewriterContext rCtx(theCCB, body);
+    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+    body = rCtx.getRoot();
+  }
 
   // Translate the type declarations for the function params
   vector<xqtref_t> paramTypes;
@@ -8704,35 +8736,38 @@ void end_visit(const InlineFunction& v, void* aState)
     }
   }
 
-  signature lSignature(0, paramTypes, returnType);
-
-  std::auto_ptr<user_function> lFunction(new user_function(
-      loc,
-      lSignature,
-      flwor.getp(),
-      ParseConstants::fn_read,
-      false));
-
   // Parameters and inscope vars have been wrapped into a flwor expression
   // (see begin_visit). We need to add all expressions to the function_item_expr
   // expr so they can be bound at runtime 
   std::vector<var_expr_t> argVars;
 
-  for (ulong i = 0; i < flwor->num_clauses(); i++)
+  if (flwor != NULL)
   {
-    const flwor_clause* lClause = (*flwor)[i];
-    const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
-    ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
-    var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
-    argVars.push_back(argVar);
+    for (ulong i = 0; i < flwor->num_clauses(); i++)
+    {
+      const flwor_clause* lClause = (*flwor)[i];
+      const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
+      ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
+      var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
+      argVars.push_back(argVar);
+    }
   }
 
-  lFunction->setArgVars(argVars);
+  user_function* udf = new user_function(loc,
+                                         signature(0, paramTypes, returnType),
+                                         body.getp(),
+                                         ParseConstants::fn_read,
+                                         false);
+  udf->setArgVars(argVars);
 
-  push_nodestack(new function_item_expr(sctxid(),
-                                        loc,
-                                        lFunction.release(),
-                                        theScopedVars));
+  // Get the function_item_expr and set its function to the udf created above.
+  function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(
+                               theNodeStack.top().getp());
+  assert(fiExpr != NULL);
+
+  fiExpr->set_function(udf);
+
+  // pop the scope.
   pop_scope();
 }
 

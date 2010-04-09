@@ -416,6 +416,7 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   {
     os << " " << theQName->getStringValue() << "/" << theArity;
     UNDENT;
+    os << std::endl;
     return os;
   }
   else
@@ -625,9 +626,16 @@ ostream& match_expr::put(ostream& os) const
 
 ostream& const_expr::put(ostream& os) const
 {
-  os << INDENT << "const_expr" << expr_addr(this) << " "
-     << get_val()->getType()->getStringValue()->c_str()
-     << " [ " << theValue->getStringValue() << " ]\n";
+  os << INDENT << "const_expr" << expr_addr(this) << " ";
+  if (theValue->isFunction())
+  {
+    os << "functrion item [ " << theValue->show().c_str() << " ]\n";
+  }
+  else
+  {
+    os << get_val()->getType()->getStringValue()->c_str()
+       << " [ " << theValue->getStringValue() << " ]\n";
+  }
   UNDENT;
   return os;
 }

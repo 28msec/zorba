@@ -103,18 +103,13 @@ function_item_expr::function_item_expr(
 
 function_item_expr::function_item_expr(
     short sctx,
-    const QueryLoc& loc,
-    function*f,
-    std::vector<expr_t>& aScopedVariables)
+    const QueryLoc& loc)
 	:
   expr(sctx, loc),
   theQName(0),
-  theFunction(f),
-  // inline functions can't be variadic
-  theArity(f->get_signature().arg_count()),
-  theScopedVariables(aScopedVariables) 
+  theFunction(NULL),
+  theArity(0)
 {
-  assert(f != NULL);
   compute_scripting_kind();
 }
 
@@ -133,6 +128,31 @@ void function_item_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
+void function_item_expr::add_variable(expr* var)
+{
+  theScopedVariables.push_back(var);
+}
+
+
+void function_item_expr::set_function(function* udf) 
+{
+  theFunction = udf; 
+  theArity = udf->get_signature().arg_count();
+}
+
+
+void function_item_expr::compute_scripting_kind() const 
+{
+  theCache.scripting_kind.kind = SIMPLE_EXPR;
+}
+
+
+xqtref_t function_item_expr::return_type_impl(static_context* sctx) const
+{
+  return GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE;
+}
+
+
 class function_item_expr_iterator_data : public expr_iterator_data 
 {
 public:
@@ -140,12 +160,6 @@ public:
 
   function_item_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
 };
-
-
-void function_item_expr::compute_scripting_kind() const 
-{
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-}
 
 
 void function_item_expr::next_iter(expr_iterator_data& v)
