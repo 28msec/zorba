@@ -8525,6 +8525,232 @@ void end_visit(const ArgList& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
+  FilterExpr ::= PrimaryExpr (Predicate | DynamicFunctionInvocation)*
+ 
+  DynamicFunctionInvocation ::= "(" (ExprSingle ("," ExprSingle)*)? ")"
+********************************************************************************/
+void* begin_visit(const DynamicFunctionInvocation& v)
+{
+  TRACE_VISIT();
+  return no_state;  
+}
+
+void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  // Collect the arguments of the dynamic function invocation
+  std::vector<expr_t> arguments;
+  if (v.getArgList() != 0) 
+  {
+    size_t lSize = v.getArgList()->size();
+    for (size_t i = lSize; i > 0; --i) 
+    {
+      arguments.push_back(pop_nodestack());
+    }
+  }
+
+  // Get the function item expr
+  expr_t lItem = pop_nodestack();
+  ZORBA_ASSERT(lItem != 0);
+
+  expr_t lDynFuncInvocation = new dynamic_function_invocation_expr(
+                                    sctxid(), 
+                                    loc,
+                                    lItem,
+                                    arguments);
+  push_nodestack(lDynFuncInvocation);
+}
+
+
+/*******************************************************************************
+  LiteralFunctionItem ::= QName "#" IntegerLiteral
+********************************************************************************/
+void* begin_visit(const LiteralFunctionItem& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+
+  rchandle<QName> lQName = v.getQName();
+  xqp_uint lArity = 0;
+
+  if(!NumConversions::integerToUInt(v.getArity(), lArity)) 
+  {
+    ZORBA_ERROR_LOC_DESC(XPST0017, loc,
+      "Couldn't parse function arity. Maybe arity is too big.");
+  }
+
+  // Get function implementation
+  function* fn = lookup_fn(lQName, lArity, loc);
+
+  // raise XPST0017 if function could not be found
+  if (fn == 0) 
+  {
+    ZORBA_ERROR_LOC_PARAM(XPST0017, loc, lQName->get_qname(), to_string(lArity));
+  }
+
+  expr_t lExpr = new function_item_expr(sctxid(), loc, fn->getName(), fn, lArity);
+
+  push_nodestack(lExpr.getp());
+}
+
+
+/*******************************************************************************
+  InlineFunction ::= "function" "(" ParamList? ")"
+                     ("as" SequenceType)? EnclosedExpr
+********************************************************************************/
+void* begin_visit(const InlineFunction& v)
+{
+  TRACE_VISIT();
+
+  /****************************************************************************
+   get the in-scope vars of the scope 
+   before opening the new scope for the function devl
+  *****************************************************************************/
+  checked_vector<var_expr_t> lScopedVars;
+  sctx_p->getVariables(lScopedVars);
+  push_scope();
+  
+  /****************************************************************************
+   handle function parameters if any
+   at the end, the flwor will have a let binding for each function parameter
+  *****************************************************************************/
+  rchandle<flwor_expr> flwor;
+  rchandle<ParamList> lParams = v.getParamList();
+  if (lParams) 
+  {
+    theCurrentPrologVFDecl.setNull();
+    lParams->accept(*this);
+    flwor = pop_nodestack().cast<flwor_expr>(); 
+  }
+  else
+  {
+    flwor = new flwor_expr(sctxid(), loc, false);
+  }
+
+  /****************************************************************************
+   handle inscope variables
+   for each inscope var, a let binding is added to the flwor
+  ****************************************************************************/
+  checked_vector<var_expr_t>::iterator lIter = lScopedVars.begin();
+  for(; lIter != lScopedVars.end(); ++lIter)
+  {
+    store::Item_t qname = (*lIter)->get_name();
+    std::string lVarName(qname->getStringValue()->c_str());
+
+    if(lVarName == "$$dot") continue;
+
+    varref_t arg_var = create_var(loc, qname, var_expr::arg_var);
+    varref_t subst_var = bind_var(loc, qname, var_expr::let_var);
+    let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
+    // TODO: this could probably be done lazily in some cases
+    //lc->setLazyEval(true);
+    flwor->add_clause(lc);
+  }
+
+  /****************************************************************************
+   at the end, a flwor is on top of the stack
+  ****************************************************************************/
+  push_nodestack(flwor.getp());
+
+  return no_state;
+}
+
+/**
+ */
+void end_visit(const InlineFunction& v, void* aState)
+{
+  TRACE_VISIT_OUT();
+ 
+  /****************************************************************************
+   get the inline function's body
+   ***************************************************************************/
+  //Get the inline function body
+  expr_t lBody = pop_nodestack(); 
+  ZORBA_ASSERT(lBody != 0);
+  
+  /****************************************************************************
+   Parameters and inscope vars have been wrapped into a flwor expression
+   see begin_visit.
+
+   We need to add all expressions to the function_item_expr expr so
+   they can be bound at runtime 
+   ***************************************************************************/
+  std::vector<var_expr_t> lFunctionArgs;
+  rchandle<flwor_expr> flwor = pop_nodestack().cast<flwor_expr>(); 
+
+  for (ulong i = 0; i < flwor->num_clauses(); i++)
+  {
+    const flwor_clause* lClause = (*flwor)[i];
+    const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
+    ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
+    var_expr* lVarExpr = dynamic_cast<var_expr*>(letClause->get_expr());
+    lFunctionArgs.push_back(lVarExpr);
+  }
+
+  /****************************************************************************
+    Set the function body has the return expr of the flwor
+   ***************************************************************************/
+  flwor->set_return_expr(lBody);
+  
+  /****************************************************************************
+   Translate the type declarations for the args and the return value
+   needed for the function signature
+   ***************************************************************************/
+  vector<xqtref_t> lArgTypes;
+  rchandle<ParamList> lParams = v.getParamList();
+  if(lParams != 0)
+  {
+    vector<rchandle<Param> >::const_iterator lIt = lParams->begin();
+    for(; lIt != lParams->end(); ++lIt)
+    {
+      const Param* param = lIt->getp();
+      const SequenceType* param_type = param->get_typedecl().getp();
+      if(param_type == 0) {
+        lArgTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
+      } else {
+        param_type->accept(*this);
+        lArgTypes.push_back(pop_tstack());
+      }
+    }
+  }
+
+  xqtref_t lReturnType = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
+  if(v.getReturnType() != 0) {
+    lReturnType = pop_tstack();
+  }
+
+  signature lSignature(0, lArgTypes, lReturnType);
+
+  if (TypeOps::is_builtin_simple(*lReturnType)) {
+    lBody = wrap_in_atomization(lBody);
+    lBody = wrap_in_type_promotion(lBody, lReturnType);
+  } else {
+    lBody = wrap_in_type_match(lBody, lReturnType);
+  }
+ 
+  std::auto_ptr<user_function> lFunction(new user_function(
+      loc,
+      lSignature,
+      flwor.getp(),
+      ParseConstants::fn_read,
+      false));
+
+  lFunction->setArgVars(lFunctionArgs);
+
+  push_nodestack(new function_item_expr(
+      sctxid(), loc, lFunction.release(), theScopedVars));
+
+  pop_scope();
+}
+
+
+/*******************************************************************************
 
   Node Construction
 
@@ -10927,216 +11153,7 @@ void end_visit (const FTWordsValue& v, void* /*visit_state*/) {
   // nothing to do
 }
 
-//Function items exprs
-void *begin_visit(const DynamicFunctionInvocation& v)
-{
-  TRACE_VISIT();
-  return no_state;  
-}
 
-void end_visit(const DynamicFunctionInvocation& v, void* /*visit_state*/)
-{
-  TRACE_VISIT_OUT();
-  //Collect the arguments of the dynamic function invocation
-  std::vector<expr_t> arguments;
-  if(v.getArgList() != 0) {
-    size_t lSize = v.getArgList()->size();
-    for (size_t i = lSize; i > 0; --i) {
-      arguments.push_back(pop_nodestack());
-    }
-  }
-  //Get the function item expr
-  expr_t lItem = pop_nodestack();
-  ZORBA_ASSERT(lItem != 0);
-  expr_t lDynFuncInvocation = new dynamic_function_invocation_expr(
-                                    sctxid(), 
-                                    loc,
-                                    lItem,
-                                    arguments);
-  push_nodestack(lDynFuncInvocation);
-}
-
-void* begin_visit(const LiteralFunctionItem& n)
-{
-  return no_state;
-}
-
-void end_visit(const LiteralFunctionItem& n, void* /*visit_state*/)
-{
-  const QueryLoc& loc = n.get_location();
-  rchandle<QName> lQName = n.getQName();
-  const xqpStringStore_t& lPfx = lQName->get_prefix();
-  const xqpStringStore_t& lLocal = lQName->get_localname();
-  xqp_uint lArity = 0;
-
-  if(!NumConversions::integerToUInt(n.getArity(), lArity)) {
-    ZORBA_ERROR_LOC_DESC(XPST0017, loc,
-      "Couldn't parse function arity. Maybe arity is too big.");
-  }
-
-  // If the QName in the literal function item has no namespace prefix,
-  // it is considered to be in the default function namespace.
-  xqpStringStore_t lNs;
-  try {
-    sctx_p->lookup_ns(lNs, lPfx, loc);
-  } catch (...) {
-    lNs = sctx_p->default_function_ns();
-  }
-
-  store::Item_t lQNameItem;
-  GENV_ITEMFACTORY->createQName(lQNameItem, lNs, lPfx, lLocal);
-  // Get function implementation
-  function* fn = lookup_fn(lQName, lArity, loc);
-  // raise XPST0017 if function could not be found
-  if (fn == 0) {
-    ZORBA_ERROR_LOC_PARAM(XPST0017, loc, lQName->get_qname(), to_string(lArity));
-  }
-
-  expr_t lExpr = new function_item_expr(sctxid(), loc, lQNameItem, fn, lArity);
-  push_nodestack(lExpr.getp());
-}
-
-void* begin_visit(const InlineFunction& v)
-{
-  TRACE_VISIT();
-
-  /****************************************************************************
-   get the in-scope vars of the scope 
-   before opening the new scope for the function devl
-  *****************************************************************************/
-  checked_vector<var_expr_t> lScopedVars;
-  sctx_p->getVariables(lScopedVars);
-  push_scope();
-  
-  /****************************************************************************
-   handle function parameters if any
-   at the end, the flwor will have a let binding for each function parameter
-  *****************************************************************************/
-  rchandle<flwor_expr> flwor;
-  rchandle<ParamList> lParams = v.getParamList();
-  if (lParams) {
-    theCurrentPrologVFDecl.setNull();
-    lParams->accept(*this);
-    flwor = pop_nodestack().cast<flwor_expr>(); 
-  } else {
-    flwor = new flwor_expr(sctxid(), loc, false);
-  }
-
-  /****************************************************************************
-   handle inscope variables
-   for each inscope var, a let binding is added to the flwor
-  ****************************************************************************/
-  checked_vector<var_expr_t>::iterator lIter = lScopedVars.begin();
-  for(; lIter != lScopedVars.end(); ++lIter)
-  {
-    store::Item_t qname = (*lIter)->get_name();
-    std::string lVarName(qname->getStringValue()->c_str());
-
-    if(lVarName == "$$dot") continue;
-
-    varref_t arg_var = create_var(loc, qname, var_expr::arg_var);
-    varref_t subst_var = bind_var(loc, qname, var_expr::let_var);
-    let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
-    // TODO: this could probably be done lazily in some cases
-    //lc->setLazyEval(true);
-    flwor->add_clause(lc);
-  }
-
-  /****************************************************************************
-   at the end, a flwor is on top of the stack
-  ****************************************************************************/
-  push_nodestack(flwor.getp());
-
-  return no_state;
-}
-
-/**
- */
-void end_visit(const InlineFunction& v, void* aState)
-{
-  TRACE_VISIT_OUT();
- 
-  /****************************************************************************
-   get the inline function's body
-   ***************************************************************************/
-  //Get the inline function body
-  expr_t lBody = pop_nodestack(); 
-  ZORBA_ASSERT(lBody != 0);
-  
-  /****************************************************************************
-   Parameters and inscope vars have been wrapped into a flwor expression
-   see begin_visit.
-
-   We need to add all expressions to the function_item_expr expr so
-   they can be bound at runtime 
-   ***************************************************************************/
-  std::vector<var_expr_t> lFunctionArgs;
-  rchandle<flwor_expr> flwor = pop_nodestack().cast<flwor_expr>(); 
-
-  for (ulong i = 0; i < flwor->num_clauses(); i++)
-  {
-    const flwor_clause* lClause = (*flwor)[i];
-    const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
-    ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
-    var_expr* lVarExpr = dynamic_cast<var_expr*>(letClause->get_expr());
-    lFunctionArgs.push_back(lVarExpr);
-  }
-
-  /****************************************************************************
-    Set the function body has the return expr of the flwor
-   ***************************************************************************/
-  flwor->set_return_expr(lBody);
-  
-  /****************************************************************************
-   Translate the type declarations for the args and the return value
-   needed for the function signature
-   ***************************************************************************/
-  vector<xqtref_t> lArgTypes;
-  rchandle<ParamList> lParams = v.getParamList();
-  if(lParams != 0)
-  {
-    vector<rchandle<Param> >::const_iterator lIt = lParams->begin();
-    for(; lIt != lParams->end(); ++lIt)
-    {
-      const Param* param = lIt->getp();
-      const SequenceType* param_type = param->get_typedecl().getp();
-      if(param_type == 0) {
-        lArgTypes.push_back(GENV_TYPESYSTEM.ITEM_TYPE_STAR);
-      } else {
-        param_type->accept(*this);
-        lArgTypes.push_back(pop_tstack());
-      }
-    }
-  }
-
-  xqtref_t lReturnType = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-  if(v.getReturnType() != 0) {
-    lReturnType = pop_tstack();
-  }
-
-  signature lSignature(0, lArgTypes, lReturnType);
-
-  if (TypeOps::is_builtin_simple(*lReturnType)) {
-    lBody = wrap_in_atomization(lBody);
-    lBody = wrap_in_type_promotion(lBody, lReturnType);
-  } else {
-    lBody = wrap_in_type_match(lBody, lReturnType);
-  }
- 
-  std::auto_ptr<user_function> lFunction(new user_function(
-      loc,
-      lSignature,
-      flwor.getp(),
-      ParseConstants::fn_read,
-      false));
-
-  lFunction->setArgVars(lFunctionArgs);
-
-  push_nodestack(new function_item_expr(
-      sctxid(), loc, lFunction.release(), theScopedVars));
-
-  pop_scope();
-}
 
 void* begin_visit(const AnyFunctionTest& v)
 {
