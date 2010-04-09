@@ -411,11 +411,11 @@ xqtref_t TypeManagerImpl::create_node_type(
 
 *******************************************************************************/
 xqtref_t TypeManagerImpl::create_function_type(
-        const std::vector<xqtref_t>& aArgs,
-        const xqtref_t& aReturn,
-        TypeConstants::quantifier_t aQuant) const
+        const std::vector<xqtref_t>& paramTypes,
+        const xqtref_t& returnType,
+        TypeConstants::quantifier_t quant) const
 {
-  return new FunctionXQType(this, aArgs, aReturn, aQuant);
+  return new FunctionXQType(this, paramTypes, returnType, quant);
 }
 
 
