@@ -1966,7 +1966,19 @@ serializer::binary_emitter::binary_emitter(
 
 void serializer::binary_emitter::emit_item(const store::Item* item)
 {
-  xqp_base64Binary lValue = item->getBase64BinaryValue();
+  xqp_base64Binary lValue;
+  // First try to just get the base64 value from the String
+  try {
+    lValue = item->getBase64BinaryValue();
+  } catch (...) {
+    //If this fails, then just get the string value of the item
+    // and convert it to base64
+    std::string lStringValue;
+    item->getStringValue(lStringValue);
+    std::stringstream lStream(lStringValue);
+    Base64::encode(lStream, lValue);
+  }
+
   std::vector<char> lDecodedData;
   lValue.decode(lDecodedData);
 
