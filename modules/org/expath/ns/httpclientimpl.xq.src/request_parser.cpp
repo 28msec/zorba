@@ -107,7 +107,7 @@ namespace zorba { namespace http_client {
       } else if (lLocalName == "send-authorization") {
         String lString = lItem.getStringValue();
         lSendAuthorization = lString == "true";
-      } else if (lLocalName == "override-content-type") {
+      } else if (lLocalName == "override-media-type") {
         lOverrideContentType = lItem.getStringValue();
       } else if (lLocalName == "follow-redirect") {
         String lString = lItem.getStringValue();
@@ -227,7 +227,7 @@ namespace zorba { namespace http_client {
       Item lQName;
       lItem.getNodeName(lQName);
       String lLocalName = lQName.getLocalName();
-      if (lLocalName == "content-type") {
+      if (lLocalName == "media-type") {
         lContentType = lItem.getStringValue();
       } else if (lLocalName == "boundary") {
         lBoundary = lItem.getStringValue();

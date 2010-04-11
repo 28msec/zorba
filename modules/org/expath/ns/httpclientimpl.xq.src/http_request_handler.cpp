@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include <iostream>
+
 #include <zorba/zorba.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/serializer.h>
@@ -78,7 +80,7 @@ namespace zorba { namespace http_client {
     if (aMethod == "POST") {
       curl_easy_setopt(theCurl, CURLOPT_POST, 1);
     } else if (aMethod == "PUT") {
-      curl_easy_setopt(theCurl, CURLOPT_UPLOAD, 1);
+      curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, "PUT");
     } else if (aMethod == "GET") {
       //is default
     } else if (aMethod == "DELETE") {
@@ -235,6 +237,5 @@ namespace zorba { namespace http_client {
       Serializer::createSerializer(theLastSerializerOptions);
     SingletonItemSequence lSequence(aItem);
     lSerializer->serialize(&lSequence, *theSerStream);
-    std::string ser = theSerStream->str();
   }
 }}

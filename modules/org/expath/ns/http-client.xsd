@@ -134,7 +134,7 @@
         </documentation>
       </annotation>
     </attribute>
-    <attribute name="override-content-type" type="string" use="optional">
+    <attribute name="override-media-type" type="string" use="optional">
       <annotation xml:lang="en">
         <documentation>
           Is a MIME type. It can be used only with http:request, and will
@@ -274,7 +274,7 @@
     <annotation xml:lang="en">
       <documentation>
         The http:multipart element represents an multi-part request or
-        response. The content-type attribute is the media type of the
+        response. The media-type attribute is the media type of the
         request or response, and has to be a multipart media type (that is, its
         main type must be multipart.) The boundary attribute is the boundary
         marker used to separate the several parts in the message (the value of
@@ -289,8 +289,8 @@
         <element name="body" type="http:bodyType" minOccurs="1" maxOccurs="1"/>
       </sequence>
     </sequence>
-    <attribute name="content-type" type="string" use="required"/>
-    <attribute name="boundary" type="string" use="required"/>
+    <attribute name="media-type" type="string" use="required"/>
+    <attribute name="boundary" type="string" use="optional"/>
   </complexType>
   <element name="multipart" type="http:multipartType"/>
 
