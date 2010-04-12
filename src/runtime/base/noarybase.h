@@ -78,8 +78,20 @@ NoaryBaseIterator<IterType, StateType>::openImpl(
     PlanState& planState,
     uint32_t& offset)
 {
+#ifndef NDEBUG
+  uint32_t saveOffset = this->theStateOffset;
+#endif
   StateTraitsImpl<StateType>::createState(planState, this->theStateOffset, offset);
   StateTraitsImpl<StateType>::initState(planState, this->theStateOffset);
+
+#ifndef NDEBUG
+  if (saveOffset != 0 && saveOffset != this->theStateOffset)
+  {
+    std::cout << "saved offset = " << saveOffset
+              << " current offset = " << this->theStateOffset << std::endl;
+    ZORBA_ASSERT(false);
+  }
+#endif
 }
 
 

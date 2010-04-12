@@ -16,47 +16,43 @@
 #ifndef ZORBA_RUNTIME_FUNCTION_ITEM_H
 #define ZORBA_RUNTIME_FUNCTION_ITEM_H
 
+#include "common/shared_types.h"
+
 #include "store/api/item.h"
-#include "compiler/parser/query_loc.h"
 
-#include "functions/signature.h"
+//#include "compiler/parser/query_loc.h"
 
-#include "store/api/iterator.h"
+//#include "functions/signature.h"
+
+//#include "store/api/iterator.h"
 
 namespace zorba
 {
 
 class signature;
+class function_item_expr;
 
-namespace store 
-{
 
 /*******************************************************************************
-
+  theLocation       : Location of the function refered to by this function item.
+  theName           : The name of the function, if not generated from an inline 
+                      function item.
+  theArity          : necessary for variadic functions
+  theFunction       :
+  theVariableValues : (in-scope) variable values for inline function items
 ********************************************************************************/
 class FunctionItem : public store::Item
 {
 protected:
-  // location of the function refered to by
-  // this function item
-  QueryLoc                theLocation;
+  CompilerCB                   * theCCB;
 
-  // the name of the function, if generated from an inline function item
-  store::Item_t           theName;
+  static_context               * theSctx;
 
-  // the signature of the function
-  signature               theSignature;
+  rchandle<function_item_expr>   theExpr;
 
-  // redundant information but necessary for variadic functions
-  uint32_t                theArity;
+  std::vector<PlanIter_t>        theVariableValues;
 
-  // the function itself
-  // this is a wrapper which contains the function_item_expr
-  // codegen is done lazily in the DynamicFunctionInvocationIterator
-  store::Iterator_t       theImplementation;
-
-  // (in-scope) variable values for inline function items
-  std::vector<PlanIter_t> theVariableValues;
+  SYNC_CODE(RCLock               theRCLock;)
 
 public:
   SERIALIZABLE_CLASS(FunctionItem)
@@ -65,44 +61,29 @@ public:
 
 public:
   FunctionItem(
-      const QueryLoc&                aLocation,
-      const std::vector<PlanIter_t>& aVariableValues,
-      const signature&               aSignature,
-      uint32_t                       aArity,
-      const store::Iterator_t&       aImplementation);
+      CompilerCB* ccb, 
+      static_context* sctx,
+      function_item_expr* expr,
+      const std::vector<PlanIter_t>& varValues);
     
   FunctionItem(
-      const QueryLoc&          aLocation,
-      const store::Item_t&     aName,
-      const signature&         aSignature,
-      uint32_t                 aArity,
-      const store::Iterator_t& aImplementation);
-
-  const store::Item_t
-  getFunctionName() const
-  {
-    return theName;
-  }
-
-  uint32_t
-  getFunctionArity() const
-  {
-    return theArity;
-  }
-
-  void
-  getFunctionVariables(std::vector<PlanIter_t>&) const;
-
-  const store::Iterator_t
-  getFunctionImplementation() const;
-
-  const signature&
-  getFunctionSignature() const;
-
-  xqp_string
-  show() const;
+      CompilerCB* ccb, 
+      static_context* sctx,
+      function_item_expr* expr);
 
   ~FunctionItem();
+
+  const store::Item_t getFunctionName() const;
+
+  uint32_t getArity() const;
+
+  const signature& getSignature() const;
+
+  const std::vector<PlanIter_t>& getVariables() const;
+
+  PlanIter_t getImplementation(std::vector<PlanIter_t>& args) const;
+
+  xqp_string show() const;
 
   bool isNode() const     { return false; }
   bool isAtomic() const   { return false; }
@@ -110,12 +91,9 @@ public:
   bool isTuple() const    { return false; }
   bool isError() const    { return false; }
   bool isFunction() const { return true; }
-
-protected:
-  SYNC_CODE(RCLock  theRCLock;)
 };
 
-}//end of store namespace
+
 }//end of zorba namespace
 
 #endif

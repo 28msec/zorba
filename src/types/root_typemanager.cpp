@@ -521,6 +521,18 @@ RootTypeManager::~RootTypeManager()
 
   delete NONE_TYPE.getp();
   NONE_TYPE.setNull();
+
+  delete ANY_FUNCTION_TYPE_ONE.getp();
+  ANY_FUNCTION_TYPE_ONE.setNull();
+
+  delete ANY_FUNCTION_TYPE_QUESTION.getp();
+  ANY_FUNCTION_TYPE_QUESTION.setNull();
+
+  delete ANY_FUNCTION_TYPE_PLUS.getp();
+  ANY_FUNCTION_TYPE_PLUS.setNull();
+
+  delete ANY_FUNCTION_TYPE_STAR.getp();
+  ANY_FUNCTION_TYPE_STAR.setNull();
 }
 
 /* vim:set ts=2 sw=2: */

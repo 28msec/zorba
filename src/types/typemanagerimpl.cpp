@@ -30,8 +30,10 @@
 
 #include "store/api/iterator.h"
 #include "store/api/item_factory.h"
+
 #include "runtime/function_item/function_item.h"
 
+#include "functions/signature.h"
 
 #ifdef ZORBA_XBROWSER
 #include "DOMQName.h"
@@ -620,12 +622,12 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
   } // else if (item->isNode())
   else if (item->isFunction())
   {
-    const store::FunctionItem* lFItem =
-      static_cast<const store::FunctionItem*>(item);
-    const signature& lSig = lFItem->getFunctionSignature();
+    const FunctionItem* lFItem = static_cast<const FunctionItem*>(item);
+    const signature& lSig = lFItem->getSignature();
     const xqtref_t& lRetType = lSig.return_type();
     std::vector<xqtref_t> lParamTypes;
-    for (uint32_t i = 0; i < lSig.arg_count(); ++i) {
+    for (uint32_t i = 0; i < lSig.arg_count(); ++i) 
+    {
       lParamTypes.push_back(lSig[i]);
     }
 

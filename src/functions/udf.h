@@ -89,6 +89,12 @@ public:
 
   const QueryLoc& get_location() const;
 
+  bool is_builtin() const { return false; }
+
+  bool is_external() const { return false; }
+
+  bool is_udf() const { return true; }
+
   expr_script_kind_t getUpdateType() const { return theUpdateType; }
 
   //xqtref_t getUDFReturnType(static_context* sctx) const;
@@ -143,6 +149,12 @@ public:
   }
 
   virtual ~external_function() { }
+
+  bool is_builtin() const { return false; }
+
+  bool is_external() const { return true; }
+
+  bool is_udf() const { return false; }
 };
 
 

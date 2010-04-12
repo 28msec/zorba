@@ -79,8 +79,8 @@
 #include "runtime/eval/eval.h"
 #include "runtime/collections/collections.h"
 #include "runtime/function_item/function_item.h"
-#include "runtime/function_item/store_iterator.h"
 #include "runtime/function_item/function_item_iter.h"
+#include "runtime/function_item/dynamic_fncall_iterator.h"
 
 #include "debugger/zorba_debugger_commons.h"
 
@@ -310,14 +310,17 @@ bool is_enclosed_expr(expr* e)
 }
 
 
-bool begin_visit (expr& v) {
+bool begin_visit (expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (expr& v) {
+void end_visit (expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 }
+
 
 bool begin_visit (function_item_expr& v)
 {
@@ -332,31 +335,28 @@ void end_visit(function_item_expr& v)
   store::Item_t lFItem;
 
   bool isInline = (lQName == 0);
-  store::Iterator_t lImpl(new store::FunctionItemIterator(theCCB, sctx, v, isInline));
 
-  if (!isInline) { // literal function item
-    lFItem = new store::FunctionItem(
-      v.get_loc(),
-      lQName,
-      v.get_function()->get_signature(),
-      v.get_arity(),
-      lImpl); 
-
-  } else { // inline function
+  if (!isInline) 
+  {
+    // literal function item
+    lFItem = new FunctionItem(theCCB, sctx, &v); 
+  }
+  else
+  {
+    // inline function
     vector<PlanIter_t> lVariableValues;
     size_t lSize = v.get_vars().size();
-    for (size_t i = 0; i < lSize; ++i) {
+    for (size_t i = 0; i < lSize; ++i) 
+    {
       lVariableValues.push_back(pop_itstack());
     }
-    lFItem = new store::FunctionItem(
-      v.get_loc(),
-      lVariableValues,
-      v.get_function()->get_signature(),
-      v.get_arity(),
-      lImpl); 
+
+    lFItem = new FunctionItem(theCCB, sctx, &v, lVariableValues);
   }
+
   push_itstack(new SingletonIterator (sctx, qloc, lFItem));
 }
+
 
 bool begin_visit(dynamic_function_invocation_expr& v)
 {
@@ -367,15 +367,21 @@ bool begin_visit(dynamic_function_invocation_expr& v)
 void end_visit(dynamic_function_invocation_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-  checked_vector<PlanIter_t> lItem;
-  lItem.push_back(0);
-  for (size_t i = 0; i < v.get_args().size(); ++i) {
-    lItem.push_back(pop_itstack());
+
+  ulong numArgs = v.get_args().size() + 1;
+
+  std::vector<PlanIter_t> argIters(numArgs);
+
+  for (size_t i = 1; i < numArgs; ++i) 
+  {
+    argIters[i] = pop_itstack();
   }
-  lItem[0] = pop_itstack();
   
-  push_itstack(new DynamicFunctionInvocationIterator(sctx, qloc, lItem));
+  argIters[0] = pop_itstack();
+  
+  push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters));
 }
+
 
 bool begin_visit (debugger_expr& v)
 {

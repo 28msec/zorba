@@ -108,7 +108,7 @@ void QNamePool::remove(QNameItem* qn)
     // qn in the pool, and let the pool garbage-collect it later (if it still
     // unused). If however QNameItems may be referenced by regular pointers as
     // well, then qn must be removed from the pool and really deleted
-    theHashSet.remove(qn);
+    theHashSet.removeNoSync(qn);
     delete qn;
   }
 }
@@ -400,7 +400,7 @@ void QNamePool::cachePin(QNameItem* qn)
 /*******************************************************************************
 
 ********************************************************************************/
-HashEntry<QNameItem*, DummyHashValue>* QNamePool::hashFind(
+QNamePool::QNHashEntry* QNamePool::hashFind(
     const char* ns,
     const char* pre,
     const char* ln,

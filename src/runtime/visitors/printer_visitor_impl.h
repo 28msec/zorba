@@ -279,3 +279,5 @@
   DECLARE_VISITOR(CreateIndexIterator);
   DECLARE_VISITOR(CreateInternalIndexIterator);
   DECLARE_VISITOR(DeleteIndexIterator);
+
+  DECLARE_VISITOR(DynamicFnCallIterator);

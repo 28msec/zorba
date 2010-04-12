@@ -647,6 +647,14 @@ bool remove(const T& item)
 }
 
 
+bool removeNoSync(const T& item)
+{
+  ulong hval = hash(item);
+
+  return removeNoSync(item, hval);
+}
+
+
 bool removeNoSync(const T& item, ulong hval)
 {
   HASHENTRY<T, V>* entry = bucket(hval);

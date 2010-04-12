@@ -1128,20 +1128,6 @@ void PrinterVisitor::endVisit ( const FTContainsIterator& ) {
 // </FTContainsIterator>
 
 
-// <DynamicFunctionInvocationIterator>
-void PrinterVisitor::beginVisit ( const DynamicFunctionInvocationIterator& a) {
-  thePrinter.startBeginVisit("DynamicFunctionInvocationIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const DynamicFunctionInvocationIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </DynamicFunctionInvocationIterator>
-
-
 // <FunctionNameIterator>
 void PrinterVisitor::beginVisit ( const FunctionNameIterator& a) {
   thePrinter.startBeginVisit("FunctionNameIterator", ++theId);

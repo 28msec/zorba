@@ -32,36 +32,6 @@
 
 namespace zorba {
 
-// <DynamicFunctionInvocationIterator>
-const char* DynamicFunctionInvocationIterator::class_name_str = "DynamicFunctionInvocationIterator";
-DynamicFunctionInvocationIterator::class_factory<DynamicFunctionInvocationIterator>
-DynamicFunctionInvocationIterator::g_class_factory;
-
-const serialization::ClassVersion 
-DynamicFunctionInvocationIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int DynamicFunctionInvocationIterator::class_versions_count =
-sizeof(DynamicFunctionInvocationIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void DynamicFunctionInvocationIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-DynamicFunctionInvocationIterator::~DynamicFunctionInvocationIterator() {}
-
-DynamicFunctionInvocationIteratorState::DynamicFunctionInvocationIteratorState() {}
-
-// </DynamicFunctionInvocationIterator>
-
-
 // <FunctionNameIterator>
 const char* FunctionNameIterator::class_name_str = "FunctionNameIterator";
 FunctionNameIterator::class_factory<FunctionNameIterator>

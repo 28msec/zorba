@@ -147,11 +147,24 @@ bool UDFunctionCallIterator::isUpdating() const
 ********************************************************************************/
 void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
-  openImpl(planState, offset);
+  UDFunctionCallIteratorState* state;
 
-  UDFunctionCallIteratorState* state = 
-  StateTraitsImpl<UDFunctionCallIteratorState>::getState(planState, theStateOffset);
+  if (!theIsDynamic)
+  {
+    NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
+    openImpl(planState, offset);
+
+    state = StateTraitsImpl<UDFunctionCallIteratorState>::
+            getState(planState, theStateOffset);
+  }
+  else
+  {
+    theStateOffset = offset;
+
+    state = new (planState.theBlock + offset) UDFunctionCallIteratorState();
+
+    state->init(planState);
+  }
 
   if (planState.theStackDepth + 1 > 256)
     ZORBA_ERROR_LOC_PARAM(XQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
@@ -182,6 +195,43 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
     }
   }
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UDFunctionCallIterator::resetImpl(PlanState& planState) const
+{
+  if (!theIsDynamic)
+  {
+    NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
+    resetImpl(planState);
+  }
+  else
+  {
+    StateTraitsImpl<UDFunctionCallIteratorState>::
+    reset(planState, theStateOffset);
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UDFunctionCallIterator::closeImpl(PlanState& planState)
+{
+  if (!theIsDynamic)
+  {
+    NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>::
+    closeImpl(planState);
+  }
+  else
+  {
+    StateTraitsImpl<UDFunctionCallIteratorState>::
+    destroyState(planState, theStateOffset);
+  }
+}
+
 
 
 /*******************************************************************************

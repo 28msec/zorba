@@ -79,7 +79,8 @@ class UDFunctionCallIterator : public NaryBaseIterator<UDFunctionCallIterator,
   static ulong theDepth;
 
 protected:
-  user_function* theUDF;
+  user_function  * theUDF;
+  bool             theIsDynamic;
 
 public:
   SERIALIZABLE_CLASS(UDFunctionCallIterator);
@@ -98,21 +99,32 @@ public:
         const user_function* aUDF)
     :
     NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>(sctx, loc, args), 
-    theUDF(const_cast<user_function*>(aUDF))
-  {}
+    theUDF(const_cast<user_function*>(aUDF)),
+    theIsDynamic(false)
+  {
+  }
 
   ~UDFunctionCallIterator() {}
     
   bool isUpdating() const;
 
+  void setDynamic() { theIsDynamic = true; }
+
   void accept(PlanIterVisitor& v) const;
 
   void openImpl(PlanState& planState, uint32_t& offset);
+
+  void resetImpl(PlanState& planState) const;
+
+  void closeImpl(PlanState& planState);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class StatelessExtFunctionCallIteratorState : public PlanIteratorState 
 {
  public:

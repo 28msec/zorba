@@ -34,57 +34,60 @@ namespace store
 
 class FunctionItemIterator : public Iterator
 {
-  private:
-    CompilerCB* theCCB;
-    static_context* theSctx;
-    function_item_expr theExpr;
-    bool isInline;
+private:
+  CompilerCB            * theCCB;
+  static_context        * theSctx;
+  function_item_expr      theExpr;
+  bool                    isInline;
     
-    //runtime members:
-    store::Iterator_t theImplementation;
-    std::vector<PlanIter_t> theArguments;
+  //runtime members:
+  store::Iterator_t       theImplementation;
+  std::vector<PlanIter_t> theArguments;
     
-  public:
-    SERIALIZABLE_CLASS(FunctionItemIterator)
-    FunctionItemIterator(::zorba::serialization::Archiver& ar) : Iterator(ar), theExpr(ar) {}
-    void serialize(::zorba::serialization::Archiver& ar);
+public:
+  SERIALIZABLE_CLASS(FunctionItemIterator)
 
-  public:
-    FunctionItemIterator(CompilerCB* aCCB, 
+  FunctionItemIterator(::zorba::serialization::Archiver& ar)
+    :
+    Iterator(ar),
+    theExpr(ar)
+  {
+  }
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  FunctionItemIterator(
+        CompilerCB* aCCB, 
         static_context* aSctx,
         function_item_expr& anExpr,
         bool inlined)
-      : 
-        theCCB(aCCB),
-        theSctx(aSctx),
-        theExpr(anExpr),
-        isInline(inlined),
-        theImplementation(0)
-    {}
-
-    void open();
-    bool next(Item_t&);
-    void reset();
-    void close();
-
-    FunctionItemIterator* setArgs(std::vector<PlanIter_t>& args)
-    {
-      theArguments = args;
-      return this;
-    }
-
-    FunctionItemIterator* addArg(const PlanIter_t& arg)
-    {
-      theArguments.push_back(arg);
-      return this;
-    }
-
-    const std::vector<PlanIter_t>& getArgs() const
-    {
-      return theArguments;
-    }
-
+    : 
+    theCCB(aCCB),
+    theSctx(aSctx),
+    theExpr(anExpr),
+    isInline(inlined),
+    theImplementation(0)
+  {}
+  
+  void open();
+  bool next(Item_t&);
+  void reset();
+  void close();
+  
+  FunctionItemIterator* addArg(const PlanIter_t& arg)
+  {
+    theArguments.push_back(arg);
+    return this;
+  }
+  
+  const std::vector<PlanIter_t>& getArgs() const
+  {
+    return theArguments;
+  }
 };
+
+
 }//end of namespace store
 }//end of namespace zorba
 

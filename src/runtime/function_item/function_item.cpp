@@ -15,102 +15,122 @@
  */
 
 #include "runtime/function_item/function_item.h"
+#include "runtime/core/fncall_iterator.h"
+#include "runtime/base/plan_iterator.h"
+
+#include "compiler/api/compilercb.h"
+#include "compiler/expression/function_item_expr.h"
 
 #include "functions/signature.h"
+#include "functions/function.h"
 
-#include "store/api/iterator.h"
-#include "runtime/function_item/store_iterator.h"
-#include "runtime/base/plan_iterator.h"
 #include "zorbaserialization/serialization_engine.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-  namespace store {
 
-    SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
-    END_SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
+SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
+END_SERIALIZABLE_CLASS_VERSIONS(FunctionItem)
 
-    FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
-      : theSignature(ar) {}
-    
-    FunctionItem::FunctionItem(
-      const QueryLoc&                aLocation,
-      const std::vector<PlanIter_t>& aVariableValues,
-      const signature&               aSignature,
-      uint32_t                       aArity,
-      const store::Iterator_t&       aImplementation)
-      : theLocation(aLocation),
-        theName(0),
-        theSignature(aSignature),
-        theArity(aArity),
-        theImplementation(aImplementation),
-        theVariableValues(aVariableValues)
-    {  }
-      
-    FunctionItem::FunctionItem(
-      const QueryLoc&          aLocation,
-      const store::Item_t&     aName,
-      const signature&         aSignature,
-      uint32_t                       aArity,
-      const store::Iterator_t& aImplementation)
-      : theLocation(aLocation),
-        theName(aName),
-        theSignature(aSignature),
-        theArity(aArity),
-        theImplementation(aImplementation)
-    {  }
-    
-    
-    void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
-    {
-      ar & theLocation;
-      ar & theName;
-      ar & theVariableValues;
-      ar & theSignature;
-      ar & theArity;
-      ar & theImplementation;
-    }
-    
-    void
-    FunctionItem::getFunctionVariables(std::vector<PlanIter_t>& aResult) const
-    {
-      std::vector<PlanIter_t>::const_iterator lIt;
-      for(lIt = theVariableValues.begin(); lIt != theVariableValues.end(); lIt++)
-      {
-        aResult.push_back(*lIt);
-      }
-    }
-    
-    const store::Iterator_t
-    FunctionItem::getFunctionImplementation() const
-    { 
-      store::FunctionItemIterator* func_iter =
-        dynamic_cast<store::FunctionItemIterator*>(theImplementation.getp());
-      return new store::FunctionItemIterator(*func_iter);//make a copy for runtime use 
-    }
-    
-    const signature&
-    FunctionItem::getFunctionSignature() const
-    {
-      return theSignature;
-    }
-    
-    xqp_string
-    FunctionItem::show() const
-    {
-      std::ostringstream lRes;
-      if (theName) {
-        lRes << theName->getStringValue() << "#" << theSignature.arg_count();
-      } else {
-        lRes << "inline function";
-      }
-      lRes << " (" << theLocation << ")";
-      return lRes.str().c_str();
-    }
 
-    FunctionItem::~FunctionItem()
-    {
-    }
+FunctionItem::FunctionItem(::zorba::serialization::Archiver& ar)
+{
+}
+    
 
-  } //namespace store
+FunctionItem::FunctionItem(
+    CompilerCB* ccb, 
+    static_context* sctx,
+    function_item_expr* expr,
+    const std::vector<PlanIter_t>& varValues)
+  :
+  theCCB(ccb),
+  theSctx(sctx),
+  theExpr(expr),
+  theVariableValues(varValues)
+{ 
+}
+
+  
+FunctionItem::FunctionItem(
+    CompilerCB* ccb, 
+    static_context* sctx,
+    function_item_expr* expr)
+  :
+  theCCB(ccb),
+  theSctx(sctx),
+  theExpr(expr)
+{ 
+}
+  
+
+FunctionItem::~FunctionItem()
+{
+}
+
+  
+void FunctionItem::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theCCB;
+  ar & theSctx;
+  ar & theExpr;
+  ar & theVariableValues;
+}
+    
+
+const store::Item_t FunctionItem::getFunctionName() const 
+{
+  return theExpr->get_qname();
+}
+
+
+uint32_t FunctionItem::getArity() const 
+{
+  return theExpr->get_arity();
+}
+
+
+const signature& FunctionItem::getSignature() const
+{
+  return theExpr->get_function()->get_signature();
+}
+
+
+const std::vector<PlanIter_t>& FunctionItem::getVariables() const
+{
+  return theVariableValues;
+}
+  
+ 
+PlanIter_t FunctionItem::getImplementation(std::vector<PlanIter_t>& args) const
+{ 
+  PlanIter_t res = theExpr->get_function()->codegen(theCCB,
+                                                    theSctx,
+                                                    theExpr->get_loc(),
+                                                    args,
+                                                    *theExpr);
+
+  static_cast<UDFunctionCallIterator*>(res.getp())->setDynamic();
+
+  return res;
+}
+   
+    
+xqp_string FunctionItem::show() const
+{
+  std::ostringstream lRes;
+  if (getFunctionName() != NULL) 
+  {
+    lRes << getFunctionName()->getStringValue() << "#" << getArity();
+  }
+  else
+  {
+    lRes << "inline function";
+  }
+  lRes << " (" << theExpr->get_loc() << ")";
+  return lRes.str().c_str();
+}
+  
+
 } //namespace zorba

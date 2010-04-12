@@ -159,13 +159,16 @@
   class HoistIterator;
   class UnhoistIterator;
   
-  class IndexRangeProbeIterator;
-  class IndexPointProbeIterator;
+class IndexRangeProbeIterator;
+class IndexPointProbeIterator;
 class IndexEntryBuilderIterator;
 class RefreshIndexIterator;
 class CreateIndexIterator;
 class CreateInternalIndexIterator;
 class DeleteIndexIterator;
+
+class DynamicFnCallIterator;
+
 
  #define PLAN_ITER_VISITOR(class)                \
   virtual void beginVisit ( const class& ) = 0;  \

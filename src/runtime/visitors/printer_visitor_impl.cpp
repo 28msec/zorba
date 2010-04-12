@@ -47,6 +47,7 @@
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/indexing/index_ddl.h"
+#include "runtime/function_item/dynamic_fncall_iterator.h"
 #include "debugger/zorba_debugger_commons.h"
 #include "runtime/util/UtilImpl.h"
 #include "context/static_context.h"
@@ -1206,4 +1207,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(IndexEntryBuilderIterator);
   PRINTER_VISITOR_DEFINITION(IndexPointProbeIterator);
   PRINTER_VISITOR_DEFINITION(IndexRangeProbeIterator);
+
+  PRINTER_VISITOR_DEFINITION(DynamicFnCallIterator);
 }

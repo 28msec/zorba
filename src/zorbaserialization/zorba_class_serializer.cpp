@@ -970,10 +970,10 @@ EndAtomicItem:;
 #endif
     else if(is_function)
     {
-      store::FunctionItem   *fitem = NULL;
+      FunctionItem   *fitem = NULL;
       if(ar.is_serializing_out())
       {
-        fitem = dynamic_cast<store::FunctionItem*>(obj);
+        fitem = dynamic_cast<FunctionItem*>(obj);
       }
       ar.dont_allow_delay();
       ar.set_is_temp_field(false);                    

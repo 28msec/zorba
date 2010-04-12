@@ -1,6 +1,21 @@
-#include "runtime/function_item/function_item_iter.h"
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+ 
 
-#include <vector>
+#include "runtime/function_item/function_item_iter.h"
 
 #include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_iterator_wrapper.h"
@@ -22,107 +37,17 @@ using namespace std;
 
 namespace zorba {
 
-/*******************************************************************************
- ******************************************************************************/
-void
-DynamicFunctionInvocationIteratorState::init(PlanState& planState)
-{
-   PlanIteratorState::init(planState);
-   thePlan = NULL;
-   theIsOpen = false;
-}
 
 /*******************************************************************************
- ******************************************************************************/
-void
-DynamicFunctionInvocationIteratorState::reset(PlanState& planState)
-{
-   PlanIteratorState::reset(planState);
-   if (theIsOpen) {
-     thePlan->reset();
-   }
-}
 
-/*******************************************************************************
- ******************************************************************************/
-DynamicFunctionInvocationIteratorState::~DynamicFunctionInvocationIteratorState()
-{
-  if (theIsOpen) {
-    thePlan->close();
-  }
-}
-
-/*******************************************************************************
- ******************************************************************************/
-bool
-DynamicFunctionInvocationIterator::nextImpl(
-    store::Item_t& r,
-    PlanState& planState) const
-{
-  PlanIterator* lChild = theChildren[0].getp();
-  store::Item_t lFItem, lItem;
-  store::FunctionItem*         lFunctionItem;
-  store::FunctionItemIterator* lFuncIter = 0;
-  std::vector<PlanIter_t>      lScopedVariables;
-
-  DynamicFunctionInvocationIteratorState* state;
-
-  DEFAULT_STACK_INIT(DynamicFunctionInvocationIteratorState, state, planState);
-
-  // first child must return exactly one item which is a function item
-  // otherwise XPTY0004 is raised
-  if (!consumeNext(lFItem, lChild, planState) &&
-      !lFItem->isFunction() &&
-      consumeNext(lItem, lChild, planState)) {
-    ZORBA_ERROR_LOC(XPTY0004, loc);
-  }
-
-  lFunctionItem = static_cast<store::FunctionItem*>(lFItem.getp());
-  state->thePlan = lFunctionItem->getFunctionImplementation();
-  lFuncIter = static_cast<store::FunctionItemIterator*>(state->thePlan.getp());
-
-  lFunctionItem->getFunctionVariables(lScopedVariables);
-  {
-    vector<PlanIter_t>::const_iterator lIter = lScopedVariables.begin();
-    for(; lIter != lScopedVariables.end(); ++lIter) {
-      lFuncIter->addArg(*lIter);
-    }
-  }
-
-  {
-    vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-    ++lIter; // first arg is producer
-    for(; lIter != theChildren.end(); ++lIter) {
-      lFuncIter->addArg(*lIter); 
-    }
-  }
-
-  // must be opened after vars and params are set
-  state->thePlan->open();
-  state->theIsOpen = true;
-  
-  while(state->thePlan->next(r)) {
-    STACK_PUSH(true, state);
-  }
-
-  // need to close here early in case the plan is completely
-  // consumed. Otherwise, the plan would still be opened
-  // if destroyed from the state's destructor.
-  state->thePlan->close();
-  state->theIsOpen = false;
-
-  STACK_END(state);
-};
-
-/*******************************************************************************
  ******************************************************************************/
 bool
 FunctionNameIterator::nextImpl(
     store::Item_t& r,
     PlanState& planState) const
 {
-  store::Item_t        lFItem;
-  store::FunctionItem* lFunctionItem = 0;
+  store::Item_t lFItem;
+  FunctionItem* lFunctionItem = 0;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -132,9 +57,10 @@ FunctionNameIterator::nextImpl(
   // function signature guarantees that
   ZORBA_ASSERT(lFItem->isFunction());
 
-  lFunctionItem = static_cast<store::FunctionItem*>(lFItem.getp());
+  lFunctionItem = static_cast<FunctionItem*>(lFItem.getp());
 
-  if (lFunctionItem->getFunctionName()) {
+  if (lFunctionItem->getFunctionName()) 
+  {
     // non-inline function
     r = lFunctionItem->getFunctionName();
     STACK_PUSH(true, state);
@@ -143,16 +69,18 @@ FunctionNameIterator::nextImpl(
   STACK_END(state);
 }
 
+
 /*******************************************************************************
+
  ******************************************************************************/
 bool
 FunctionArityIterator::nextImpl(
     store::Item_t& r,
     PlanState& planState) const
 {
-  store::Item_t        lFItem;
-  store::FunctionItem* lFunctionItem = 0;
-  xqp_integer          lInt;
+  store::Item_t lFItem;
+  FunctionItem* lFunctionItem = 0;
+  xqp_integer   lInt;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -162,9 +90,9 @@ FunctionArityIterator::nextImpl(
   // function signature guarantees that
   ZORBA_ASSERT(lFItem->isFunction());
 
-  lFunctionItem = static_cast<store::FunctionItem*>(lFItem.getp());
+  lFunctionItem = static_cast<FunctionItem*>(lFItem.getp());
 
-  lInt = Integer::parseUInt(lFunctionItem->getFunctionArity());
+  lInt = Integer::parseUInt(lFunctionItem->getArity());
 
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(r, lInt), state);
 

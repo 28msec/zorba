@@ -266,9 +266,6 @@ namespace zorba {
     void beginVisit( const FTContainsIterator& );
     void endVisit  ( const FTContainsIterator& );
 
-    void beginVisit( const DynamicFunctionInvocationIterator& );
-    void endVisit  ( const DynamicFunctionInvocationIterator& );
-
     void beginVisit( const FunctionNameIterator& );
     void endVisit  ( const FunctionNameIterator& );
 

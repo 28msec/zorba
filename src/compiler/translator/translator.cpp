@@ -1444,7 +1444,7 @@ var_expr_t create_var(
   Create a var_expr for an internal variable with a given kind. The name to be
   used for the internally generated variable is unique within this translator.
 ********************************************************************************/
-varref_t create_temp_var(const QueryLoc& loc, var_expr::var_kind kind)
+var_expr_t create_temp_var(const QueryLoc& loc, var_expr::var_kind kind)
 {
   std::string localName = "$$temp" + to_string(theTempVarCounter++);
 
@@ -8576,27 +8576,52 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  rchandle<QName> lQName = v.getQName();
-  xqp_uint lArity = 0;
+  rchandle<QName> qname = v.getQName();
+  uint32_t arity = 0;
 
-  if(!NumConversions::integerToUInt(v.getArity(), lArity)) 
+  if(!NumConversions::integerToUInt(v.getArity(), arity)) 
   {
     ZORBA_ERROR_LOC_DESC(XPST0017, loc,
       "Couldn't parse function arity. Maybe arity is too big.");
   }
 
   // Get function implementation
-  function* fn = lookup_fn(lQName, lArity, loc);
+  function* fn = lookup_fn(qname, arity, loc);
 
   // raise XPST0017 if function could not be found
   if (fn == 0) 
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0017, loc, lQName->get_qname(), to_string(lArity));
+    ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), to_string(arity));
   }
 
-  expr_t lExpr = new function_item_expr(sctxid(), loc, fn->getName(), fn, lArity);
+  if (!fn->is_udf())
+  {
+    std::vector<expr_t> foArgs(arity);
+    std::vector<var_expr_t> udfArgs(arity);
+    
+    for (ulong i = 0; i < arity; ++i)
+    {
+      var_expr_t argVar = create_temp_var(loc, var_expr::arg_var);
+      
+      udfArgs[i] = argVar;
+      foArgs[i] = argVar.getp();
+    }
 
-  push_nodestack(lExpr.getp());
+    expr_t body = new fo_expr(sctxid(), loc, fn, foArgs);
+
+    user_function* udf = new user_function(loc,
+                                           fn->get_signature(),
+                                           body,
+                                           ParseConstants::fn_read,
+                                           false);
+    udf->setArgVars(udfArgs);
+
+    fn = udf;
+  }
+
+  expr_t fiExpr = new function_item_expr(sctxid(), loc, fn->getName(), fn, arity);
+
+  push_nodestack(fiExpr.getp());
 }
 
 
@@ -8650,8 +8675,8 @@ void* begin_visit(const InlineFunction& v)
 
     store::Item_t qname = varExpr->get_name();
 
-    varref_t arg_var = create_var(loc, qname, var_expr::arg_var);
-    varref_t subst_var = bind_var(loc, qname, var_expr::let_var);
+    var_expr_t arg_var = create_var(loc, qname, var_expr::arg_var);
+    var_expr_t subst_var = bind_var(loc, qname, var_expr::let_var);
     let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
     arg_var->set_type(varExpr->return_type(sctx_p));
@@ -8676,6 +8701,8 @@ void end_visit(const InlineFunction& v, void* aState)
 {
   TRACE_VISIT_OUT();
  
+  std::vector<var_expr_t> argVars;
+
   // Get the return tyoe
   xqtref_t returnType = GENV_TYPESYSTEM.ITEM_TYPE_STAR;
   if(v.getReturnType() != 0) 
@@ -8705,6 +8732,19 @@ void end_visit(const InlineFunction& v, void* aState)
     flwor->set_return_expr(body);
 
     body = flwor;
+
+    // Parameters and inscope vars have been wrapped into a flwor expression (see
+    // begin_visit). We need to add these to the udf obj so that they will bound
+    // at runtime. We must do this here (before we optimize the inline function
+    // body, because optimization may remove clauses from the flwor expr
+    for (ulong i = 0; i < flwor->num_clauses(); i++)
+    {
+      const flwor_clause* lClause = (*flwor)[i];
+      const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
+      ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
+      var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
+      argVars.push_back(argVar);
+    }
   }
 
   if (theCCB->theConfig.opt_level == CompilerCB::config::O1) 
@@ -8736,23 +8776,7 @@ void end_visit(const InlineFunction& v, void* aState)
     }
   }
 
-  // Parameters and inscope vars have been wrapped into a flwor expression
-  // (see begin_visit). We need to add all expressions to the function_item_expr
-  // expr so they can be bound at runtime 
-  std::vector<var_expr_t> argVars;
-
-  if (flwor != NULL)
-  {
-    for (ulong i = 0; i < flwor->num_clauses(); i++)
-    {
-      const flwor_clause* lClause = (*flwor)[i];
-      const let_clause* letClause = dynamic_cast<const let_clause*>(lClause);
-      ZORBA_ASSERT(letClause != 0); // can only be a parameter bound using let
-      var_expr* argVar = dynamic_cast<var_expr*>(letClause->get_expr());
-      argVars.push_back(argVar);
-    }
-  }
-
+  // Create the udf obj.
   user_function* udf = new user_function(loc,
                                          signature(0, paramTypes, returnType),
                                          body.getp(),

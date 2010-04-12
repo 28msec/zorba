@@ -771,7 +771,8 @@ TransformIterator::openImpl(PlanState& planState, uint32_t& offset)
   }
 
   theModifyIter->open(planState, offset);
-  thePulHolderIter->open(planState, offset);
+  // Do not open thePulHolderIter; it is a descendant of theApplyIter as well,
+  // so it will be opened during theApplyIter->open()
   theApplyIter->open(planState, offset);
   theReturnIter->open(planState , offset);
 }

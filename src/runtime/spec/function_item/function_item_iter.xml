@@ -25,30 +25,6 @@
 
   <!--
   /*******************************************************************************
-   Dynamic Function Invocation
-  ********************************************************************************/
-  -->
-  <zorba:iterator name="DynamicFunctionInvocationIterator">
-    <zorba:description author="Zorba Team">
-     A dynamic function invocation invokes a function item, calling the function it
-     represents. A dynamic function invocation consists of an expression that returns
-     the function item and a parenthesized list of zero or more arguments.
-    </zorba:description>
-  
-    <zorba:state
-        generateInit="false"
-        generateReset="false"
-        generateDestructor="false"> 
-      <zorba:member type="store::Iterator_t" name="thePlan"
-                    brief="the plan to execute"/>
-      <zorba:member type="bool" name="theIsOpen"
-                brief="flag indicating whether thePlan has been opened"/>
-    </zorba:state>
-   
-  </zorba:iterator>
-
-  <!--
-  /*******************************************************************************
     fn:function-name
   ********************************************************************************/
   -->

@@ -95,6 +95,12 @@ public:
 
   bool isSequential() const { return getUpdateType() == SEQUENTIAL_EXPR; }
 
+  virtual bool is_builtin() const { return true; }
+
+  virtual bool is_external() const { return false; }
+
+  virtual bool is_udf() const { return false; }
+
   virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
 
   virtual xqtref_t getReturnType(const std::vector<xqtref_t>& argTypes) const;

@@ -186,17 +186,19 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
     std::vector<std::vector<LetVarIter_t> > param_iter_vec(theArgVars.size());
     hash64map<std::vector<LetVarIter_t> *> param_map;
 
-    for(ulong i = 0; i < theArgVars.size(); ++i)
+    for (ulong i = 0; i < theArgVars.size(); ++i)
     {
       param_map.put((uint64_t)&*theArgVars[i], &param_iter_vec[i]);
     }
     
     const store::Item* lName = getName();
     //lName may be null of inlined functions
-    thePlan = zorba::codegen(lName == 0 ? 0 : lName->getStringValue()->c_str(),
-                            &*theBodyExpr,
-                            ccb,
-                            &param_map);
+    thePlan = zorba::codegen((lName == 0 ?
+                              "inline function" :
+                              lName->getStringValue()->c_str()),
+                             &*theBodyExpr,
+                             ccb,
+                             &param_map);
 
     for (ulong i = 0; i < param_iter_vec.size(); ++i) 
     {

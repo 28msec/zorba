@@ -67,8 +67,8 @@ protected:
     static uint32_t hash(const QNameItem* t)
     {
       return  hashfun::h32(t->getPrefix()->c_str(),
-                           hashfun::h32(t->getNamespace()->c_str(),
-                                        hashfun::h32(t->getLocalName()->c_str())));
+                           hashfun::h32(t->getLocalName()->c_str(),
+                                        hashfun::h32(t->getNamespace()->c_str())));
     }
   };
 

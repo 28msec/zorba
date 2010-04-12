@@ -39,58 +39,6 @@ namespace zorba {
 
 /**
  * 
- *     A dynamic function invocation invokes a function item, calling the function it
- *     represents. A dynamic function invocation consists of an expression that returns
- *     the function item and a parenthesized list of zero or more arguments.
- *    
- * Author: Zorba Team
- */
-class DynamicFunctionInvocationIteratorState : public PlanIteratorState
-{
-public:
-  store::Iterator_t thePlan; //the plan to execute
-  bool theIsOpen; //flag indicating whether thePlan has been opened
-
-  DynamicFunctionInvocationIteratorState();
-
-  ~DynamicFunctionInvocationIteratorState();
-
-  void init(PlanState&);
-  void reset(PlanState&);
-};
-
-class DynamicFunctionInvocationIterator : public NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>
-{ 
-public:
-  SERIALIZABLE_CLASS(DynamicFunctionInvocationIterator);
-
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DynamicFunctionInvocationIterator,
-    NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>*)this);
-  }
-
-  DynamicFunctionInvocationIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<DynamicFunctionInvocationIterator, DynamicFunctionInvocationIteratorState>(sctx, loc, children)
-  {}
-
-  virtual ~DynamicFunctionInvocationIterator();
-
-  void accept(PlanIterVisitor& v) const;
-
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
-};
-
-
-/**
- * 
  *      Returns the name of the function identified by a function item.
  *    
  * Author: Zorba Team
