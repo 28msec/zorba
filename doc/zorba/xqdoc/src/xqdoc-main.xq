@@ -150,7 +150,7 @@ declare sequential function local:collectModule ($module, $relativeFileName as x
     ();
 };    
 
-declare function local:getFilePath ($filename as xs:string) as xs:string*
+declare sequential function local:getFilePath ($filename as xs:string) as xs:string*
 {
   let $zorbaPath := replace($modulesPath,"/modules","")
   for $relPath in $examplePath
