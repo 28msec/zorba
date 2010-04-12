@@ -958,6 +958,10 @@ void URI::initializePath(const xqpStringStore* uri)
         }
         ++lIndex;
       }
+    #ifdef WIN32
+      if (theScheme->byteEqual("file", 4) && (lCodepoints[lStart] == '/'))//jump over first '/' of path
+        lStart++;
+    #endif
     }
     else
     {
@@ -1202,7 +1206,10 @@ void URI::resolve(const URI* base_uri)
   }
 
   // 6b - append the relative URI path
-  path->append_in_place(thePath);
+  if(path != NULL)
+    path->append_in_place(thePath);
+  else
+    path = thePath;
 
   // 6c - remove all "./" where "." is a complete path segment
   xqpStringStore_t pattern = new xqpStringStore("/\\./");
@@ -1565,7 +1572,6 @@ void URI::build_full_text() const
   if ( is_set(Host) || is_set(RegBasedAuthority) ) 
   {
     lURI << "//";
-    
     if ( is_set(Host) ) 
     {
       if ( is_set(UserInfo) )
@@ -1581,6 +1587,10 @@ void URI::build_full_text() const
       lURI << theRegBasedAuthority->c_str();
     }
   }
+#ifdef WIN32
+    if(theScheme->byteEqual("file", 4))
+      lURI << "/";
+#endif
 
   if ( is_set(Path) )
     lURI << thePath->c_str();
@@ -1631,6 +1641,10 @@ void URI::build_ascii_full_text() const
     }
   }
 
+#ifdef WIN32
+  if(theScheme->byteEqual("file", 4))
+    lURI << "/";
+#endif
   if ( is_set(Path) )
     lURI << thePath->c_str();
 

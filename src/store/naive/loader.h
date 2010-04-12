@@ -70,6 +70,8 @@ protected:
   static const ulong INPUT_CHUNK_SIZE = 8192;
 
 protected:
+  xmlParserCtxtPtr                 ctxt;
+
   xmlSAXHandler                    theSaxHandler;
 
   char                             theBuffer[INPUT_CHUNK_SIZE];
@@ -91,6 +93,7 @@ public:
         error::ErrorManager* errorManager,
         bool dataguide)
     :
+    ctxt(NULL),
     theFactory(factory),
     theErrorManager(errorManager),
     theTraceLevel(0),
@@ -286,6 +289,17 @@ public:
   static void error(void * ctx, const char * msg, ... );
 
   static void warning(void * ctx, const char * msg, ... );
+
+  static xmlEntityPtr	getEntity	(void * ctx, 					 
+                                 const xmlChar * name);
+  static xmlEntityPtr getParameterEntity (void *ctx,
+				                          const xmlChar *name);
+  static void entityDecl (void *ctx,
+				  const xmlChar *name,
+				  int type,
+				  const xmlChar *publicId,
+				  const xmlChar *systemId,
+				  xmlChar *content);
 };
 
 

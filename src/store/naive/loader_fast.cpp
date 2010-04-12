@@ -34,6 +34,7 @@
 #include "store/naive/node_factory.h"
 
 #include "zorbatypes/datetime.h"
+#include "zorbatypes/URI.h"
 
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
@@ -66,7 +67,6 @@ namespace zorba { namespace simplestore {
       return; \
   } while (0);
 
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -96,6 +96,10 @@ FastXmlLoader::FastXmlLoader(
   theSaxHandler.processingInstruction = &FastXmlLoader::processingInstruction;
   theSaxHandler.warning = &FastXmlLoader::warning;
   theSaxHandler.error = &FastXmlLoader::error;
+
+  theSaxHandler.getEntity = &FastXmlLoader::getEntity;
+  theSaxHandler.getParameterEntity = &FastXmlLoader::getParameterEntity;
+  theSaxHandler.entityDecl = &FastXmlLoader::entityDecl;
 }
 
 
@@ -159,6 +163,8 @@ void FastXmlLoader::abortload()
     theBindingsStack.pop();
     //delete ctx;
   }
+
+  ctxt = NULL;
 }
 
 
@@ -227,7 +233,7 @@ store::Item_t FastXmlLoader::loadXml(
     const xqpStringStore_t& uri,
     std::istream& stream)
 {
-  xmlParserCtxtPtr ctxt = NULL;
+//  xmlParserCtxtPtr ctxt = NULL;
   theTree = GET_STORE().getNodeFactory().createXmlTree();
 
   xmlSubstituteEntitiesDefault (1);
@@ -243,7 +249,6 @@ store::Item_t FastXmlLoader::loadXml(
   {
     theDocUri = uri;
   }
-
   theTree->setDocUri(theDocUri);
 
   try
@@ -267,7 +272,7 @@ store::Item_t FastXmlLoader::loadXml(
       return NULL;
     }
 
-    ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, theBuffer, numChars, NULL);
+    ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, theBuffer, numChars, uri.getp() ? uri->c_str() : NULL);
 
     if (ctxt == NULL)
     {
@@ -338,7 +343,8 @@ store::Item_t FastXmlLoader::loadXml(
     return NULL;
   }
 
-  XmlNode* resultNode = theRootNode;
+  XmlNode* resultNode;
+  resultNode = theRootNode;
   reset();
   return resultNode;
 }
@@ -353,7 +359,7 @@ void FastXmlLoader::startDocument(void * ctx)
 {
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
-
+  
   try
   {
     XmlNode* docNode = GET_STORE().getNodeFactory().createDocumentNode();
@@ -450,7 +456,7 @@ void FastXmlLoader::endDocument(void * ctx)
       loader.theGuideStack.pop();
       assert(loader.theGuideStack.empty());
 
-      loader.theTree->setDataGuide(rootGNode);
+        loader.theTree->setDataGuide(rootGNode);
 
 #ifndef NDEBUG
       std::cout << rootGNode->show(0) << std::endl;
@@ -1007,7 +1013,7 @@ void FastXmlLoader::error(void * ctx, const char * msg, ... )
   vsprintf(buf, msg, args);
   va_end(args);
   ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager,
-                            STR0021_LOADER_PARSING_ERROR, buf);
+    STR0021_LOADER_PARSING_ERROR, buf);
 }
 
 
@@ -1029,7 +1035,97 @@ void FastXmlLoader::warning(void * ctx, const char * msg, ... )
   std::cerr << buf << std::endl;
 }
 
+xmlEntityPtr	FastXmlLoader::getEntity	(void * ctx, 					 
+                                         const xmlChar * name)
+{
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
+//  ZORBA_LOADER_CHECK_ERROR(loader);
+/*
+  xmlEntityPtr  parsed_entity = NULL;
+  loader.entity_hash.get((const char*)name, parsed_entity);
+  return parsed_entity;
+*/
+  return xmlGetDocEntity(loader.ctxt->myDoc, name);
+}
+
+xmlEntityPtr FastXmlLoader::getParameterEntity (void *ctx,
+			                          const xmlChar *name)
+{
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
+  return xmlGetParameterEntity(loader.ctxt->myDoc, name);
+}
+
+void FastXmlLoader::entityDecl (void *ctx,
+				const xmlChar *name,
+				int   type,
+				const xmlChar *publicId,
+				const xmlChar *systemId,
+				xmlChar *content)
+{
+  FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
+  ZORBA_LOADER_CHECK_ERROR(loader);
+
+/*  if(type == XML_INTERNAL_PARAMETER_ENTITY)
+  {
+    xmlAddDtdEntity(loader.ctxt->myDoc, 
+                    name, type, publicId, systemId, content);
+  }
+*/
+  /*
+  if(type != XML_EXTERNAL_GENERAL_PARSED_ENTITY)
+  {
+    ZORBA_ERROR_PARAM_CONTINUE_OSS(loader.theErrorManager, 
+                              STR0020_LOADER_IO_ERROR,
+                              "Cannot process entity  ", name);
+  }
+  */
+/*
+  URI   doc_uri(loader.theDocUri, false);//dont validate uri, is already valid
+  xqpString   sysId((char*)systemId);
+  URI   entity_uri(doc_uri, sysId.getStore());
+  xqpStringStore_t  entity_uri_string = entity_uri.toString();
+  xqpStringStore_t  entity_path;
+  entity_uri.get_path(entity_path);
+  
+  char *entity_content = NULL;
+  FILE *fentity = NULL;
+  fentity = fopen(entity_path->c_str(), "rb");
+  fseek(fentity, 0, SEEK_END);
+  long long entity_size = _ftelli64(fentity);
+  entity_content = (char*)malloc(entity_size + 1);
+  fseek(fentity, 0, SEEK_SET);
+  fread(entity_content, entity_size, 1, fentity);
+  entity_content[entity_size] = 0;
+  fclose(fentity);
+*/
+  /*
+  xmlEntityPtr  new_entity;
+  new_entity = xmlNewEntity(NULL, name, type, publicId, systemId, content);//(const xmlChar*)entity_content);
+  //new_entity->URI = (const xmlChar*)xmlMemStrdup(entity_uri_string->c_str());
+  new_entity->URI = xmlBuildURI(systemId, (const xmlChar*)loader.theDocUri->c_str());
+  const char    *char_name = strdup((const char*)name);
+  loader.entity_hash.insert(char_name, new_entity);
+  */
+/*
+  std::ifstream  fentity(entity_path->c_str());
+  loader.loadXml(entity_uri_string, fentity);
+*/
+/*  //XmlNodePtr  entitylst;
+  int retval;
+  if((retval=xmlParseCtxtExternalEntity(loader.ctxt,
+    (xmlChar*)"file:///C:/xquery_development/XQTS_current/cat/AbbrAxes.xml",//(xmlChar*)entity_uri_string->c_str(), 
+                              systemId,
+                              NULL)) != 0)
+  {
+    ZORBA_ERROR_PARAM_CONTINUE_OSS(loader.theErrorManager, 
+                              STR0020_LOADER_IO_ERROR,
+                              "Cannot load entity  ", name);
+  }
+*/
+}
+
 #undef ZORBA_ERROR_DESC_CONTINUE
+
 
 } // namespace simplestore
 } // namespace zorba

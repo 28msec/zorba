@@ -70,7 +70,7 @@ public:
 
   void pop(ulong num = 1)
   {
-    assert(!empty());
+    assert(theTop >= num);
     theTop -= num;
     //theStack.resize(theTop);
   }
