@@ -372,8 +372,8 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     quote_char = result->getStringValue().getp();
     state->quote_char_cp = quote_char.getCodepoints();
   }
-  //read quote_escape
   {
+   //read quote_escape
     xqpString         quote_escape;
     if(!consumeNext(result, theChildren[4].getp(), planState))
     {
@@ -1256,6 +1256,8 @@ ZorbaXML2CSVIterator::nextImpl(store::Item_t& result,
                             "Missing param quote_escape", "");
     }
     quote_char = result->getStringValue().getp();
+    if(quote_char.empty())
+      quote_char = "\"";
     //read quote_escape
     if(!consumeNext(result, theChildren[5].getp(), planState))
     {
@@ -1264,6 +1266,8 @@ ZorbaXML2CSVIterator::nextImpl(store::Item_t& result,
                             "Missing param quote_char", "");
     }
     quote_escape = result->getStringValue().getp();
+    if(quote_escape.empty())
+      quote_escape = quote_char + quote_char;
 
     int   line_index = 0;
 
@@ -1376,6 +1380,8 @@ ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result,
                             "Missing param quote_escape", "");
     }
     quote_char = result->getStringValue().getp();
+    if(quote_char.empty())
+      quote_char = "\"";
     //read quote_escape
     if(!consumeNext(result, theChildren[6].getp(), planState))
     {
@@ -1384,6 +1390,8 @@ ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result,
                             "Missing param quote_char", "");
     }
     quote_escape = result->getStringValue().getp();
+    if(quote_escape.empty())
+      quote_escape = quote_char + quote_char;
 
     int   line_index = 0;
 
