@@ -74,7 +74,11 @@ void areNodeModifiersViolated(
     const StaticallyKnownCollection* lDeclColl = 
       aSctx->lookup_collection(lColl->getName());
 
-    ZORBA_ASSERT(lDeclColl != 0);
+    if (lDeclColl == NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XDDY0001_COLLECTION_NOT_DECLARED, aLoc, 
+                            lColl->getName()->getStringValue(), "");
+    }
 
     switch(lDeclColl->getNodeModifier()) 
     {
