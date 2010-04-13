@@ -324,8 +324,8 @@ void end_visit (expr& v)
 
 bool begin_visit (function_item_expr& v)
 {
-    CODEGEN_TRACE_IN("");
-    return true;
+  CODEGEN_TRACE_IN("");
+  return true;
 }
 
 void end_visit(function_item_expr& v)
@@ -350,7 +350,6 @@ void end_visit(function_item_expr& v)
     {
       lVariableValues.push_back(pop_itstack());
     }
-
     lFItem = new FunctionItem(theCCB, sctx, &v, lVariableValues);
   }
 
