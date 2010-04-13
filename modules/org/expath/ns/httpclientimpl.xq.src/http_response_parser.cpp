@@ -161,11 +161,13 @@ namespace zorba { namespace http_client {
       }
       lValue = lValue.substr(0, lPosition + 1);
     }
-    if (lName == "Content-Type") {
+    String lNameS = lName.c_str();
+    lNameS.lowercase();
+    if (lNameS == "content-type") {
       lParser->theCurrentContentType = lValue.substr(0, lValue.find(';'));
-    } else if (lName == "Content-ID") {
+    } else if (lNameS == "content-id") {
       lParser->theId = lValue;
-    } else if (lName == "Content-Description") {
+    } else if (lNameS == "content-description") {
       lParser->theDescription = lValue;
     }
     lParser->theHeaders.push_back(
