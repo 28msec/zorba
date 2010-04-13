@@ -40,7 +40,6 @@ namespace zorba {
 ********************************************************************************/
 class dynamic_function_invocation_expr : public expr
 {
-
 public:
   SERIALIZABLE_CLASS(dynamic_function_invocation_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(dynamic_function_invocation_expr, expr)
