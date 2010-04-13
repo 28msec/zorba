@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -37,7 +37,7 @@
 
 #include "zorbaerrors/Assert.h"
 
-namespace zorba 
+namespace zorba
 {
 
 /*******************************************************************************
@@ -67,7 +67,7 @@ StandardDocumentURIResolver::resolve(
   if (lResultDoc != NULL)
     return lResultDoc;
 
-  if (lURI.get_scheme()->byteEqual("file", 4)) 
+  if (lURI.get_scheme()->byteEqual("file", 4))
   {
 #ifdef ZORBA_WITH_FILE_ACCESS // maybe we don't want to allow file access for security reasons (e.g. in a webapp)
     std::ifstream lInStream;
@@ -75,12 +75,12 @@ StandardDocumentURIResolver::resolve(
     URI::decode_file_URI(lURI.toString().getp(), decodedURI);
 
     lInStream.open(decodedURI->c_str(), std::ios::in);
-    if (lInStream.is_open() == false) 
+    if (lInStream.is_open() == false)
     {
       ZORBA_ERROR_DESC_OSS(FODC0002, "File not found or accessible " << decodedURI);
     }
 
-    if (tidying) 
+    if (tidying)
     {
 #ifdef ZORBA_WITH_TIDY
       std::stringstream out;
@@ -99,27 +99,27 @@ StandardDocumentURIResolver::resolve(
       ZORBA_ASSERT(!tidying);
 #endif
     }
-    else 
+    else
     {
       // parse exception must be caught by the caller
       lResultDoc = lStore.loadDocument(lURI.toString(), lInStream);
     }
-    
+
     // result can't be null, because we already asked the store if he has it
     ZORBA_ASSERT(lResultDoc != NULL);
 #else
     ZORBA_ERROR_DESC_OSS(FODC0002, "Unable to retrieve " << lURI.toString());
 #endif
-  } 
+  }
   else if (lURI.get_scheme()->byteEqual("http", 4) ||
-           lURI.get_scheme()->byteEqual("https", 5)) 
+           lURI.get_scheme()->byteEqual("https", 5))
   {
 #ifdef ZORBA_WITH_REST
     // retrieve web file
     std::stringstream iss;
     int result = http_get(lURI.toString()->c_str(), iss);
-    
-    if (result != 0) 
+
+    if (result != 0)
       ZORBA_ERROR_DESC_OSS(FODC0002, "File not found or accessible. Could not make HTTP call");
 
     if (tidying)
@@ -143,7 +143,7 @@ StandardDocumentURIResolver::resolve(
       ZORBA_ASSERT(!tidying);
 #endif
     }
-    else 
+    else
     {
       // parse exception must be caught by the caller
       lResultDoc = lStore.loadDocument(lURI.toString(), iss);
@@ -156,7 +156,7 @@ StandardDocumentURIResolver::resolve(
                          "Can't retrieve the http:// or https:// URI "
                          << lURI.toString());
 #endif
-    } 
+    }
   else
   {
     xqpString   q;
@@ -171,7 +171,7 @@ StandardDocumentURIResolver::resolve(
                          << lURI.toString()
                          << " . " << q);
   }
-  if (lResultDoc == NULL) 
+  if (lResultDoc == NULL)
   {
     ZORBA_ERROR_DESC_OSS(FODC0002,
                          "Couldn't retrieve document with URI "
@@ -185,7 +185,7 @@ StandardDocumentURIResolver::resolve(
 /*******************************************************************************
 
 ********************************************************************************/
-store::Collection_t 
+store::Collection_t
 StandardCollectionURIResolver::resolve(
     const store::Item_t& aURI,
     static_context* aStaticContext)
@@ -200,20 +200,20 @@ StandardCollectionURIResolver::resolve(
   // throw FODC0004 if the URI is not valid
   URI lURI;
 
-  try 
+  try
   {
     lURI = URI(&*lUriString);
-    if (!lURI.is_absolute()) 
+    if (!lURI.is_absolute())
     {
       URI lBaseURI(aStaticContext->get_base_uri());
-      lURI = URI(lBaseURI, &*lUriString); 
+      lURI = URI(lBaseURI, &*lUriString);
     }
   }
-  catch (error::ZorbaError& e) 
+  catch (error::ZorbaError& e)
   {
     ZORBA_ERROR_DESC_OSS(FODC0004,
                          "URI " << lUriString
-                         << " is not valid or could not be resolved. Reason: " 
+                         << " is not valid or could not be resolved. Reason: "
                          << e.theDescription);
   }
 
@@ -244,11 +244,11 @@ StandardSchemaURIResolver::resolve(
   std::vector<std::string> lModulePaths;
   aStaticContext->get_full_module_paths(lModulePaths);
 
-  if (lModulePaths.size() != 0) 
+  if (lModulePaths.size() != 0)
   {
     std::string filepath;
     filepath = checkSchemaPath(lModulePaths, aURI, 0);
-    if (filepath != "") 
+    if (filepath != "")
     {
       xqpStringStore_t filepath2 = new xqpStringStore(filepath);
       xqpStringStore_t url;
@@ -261,13 +261,13 @@ StandardSchemaURIResolver::resolve(
   std::vector<InternalSchemaURIResolver*> lResolvers;
   aStaticContext->get_schema_uri_resolvers(lResolvers);
   for (std::vector<InternalSchemaURIResolver*>::const_iterator lIter =
-      lResolvers.begin(); lIter != lResolvers.end(); ++lIter) 
+      lResolvers.begin(); lIter != lResolvers.end(); ++lIter)
   {
     std::string lResult = (*lIter)->resolve(aURI,
                                             aStaticContext,
                                             aAtList,
                                             aFileUri);
-    if (lResult != "") 
+    if (lResult != "")
     {
       return lResult;
     }
@@ -277,16 +277,16 @@ StandardSchemaURIResolver::resolve(
   // filesystem or on the web
   // TODO register other interal resolvers for each of the tasks
   xqpStringStore_t  lResolvedURI;
-  if (aAtList.size() > 0) 
+  if (aAtList.size() > 0)
   {
     lResolvedURI = aAtList[0]->getStringValue();
   }
-  else 
+  else
   {
     lResolvedURI = aURI->getStringValue();
   }
 
-  if (lResolvedURI->byteStartsWith("file://", 7)) 
+  if (lResolvedURI->byteStartsWith("file://", 7))
   {
     // maybe we don't want to allow file access for security reasons (e.g. in a webapp)
 #ifdef ZORBA_WITH_FILE_ACCESS
@@ -294,8 +294,8 @@ StandardSchemaURIResolver::resolve(
     URI::decode_file_URI(lResolvedURI, filepath);
 
     std::auto_ptr<std::ifstream> lSchemaFile(new std::ifstream(filepath->c_str()));
- 
-    if (lSchemaFile->good()) 
+
+    if (lSchemaFile->good())
     {
       return lResolvedURI->c_str();
     }
@@ -321,7 +321,7 @@ std::string StandardSchemaURIResolver::checkSchemaPath(
   // compute path notation of the uri with a .xq at the end
   // TODO: we might extend that to other file exentsions
   xqpStringStore_t lPathNotation = lURI.toPathNotation();
-  if (!lPathNotation->byteEndsWith(".xsd", 4)) 
+  if (!lPathNotation->byteEndsWith(".xsd", 4))
   {
     lPathNotation = lPathNotation->append(".xsd");
   }
@@ -330,7 +330,7 @@ std::string StandardSchemaURIResolver::checkSchemaPath(
   // the higher in the hirarchy the static context is
   // the higher the priority of its module paths
   for (std::vector<std::string>::const_iterator lIter = aSchemaPath.begin();
-       lIter != aSchemaPath.end(); ++lIter) 
+       lIter != aSchemaPath.end(); ++lIter)
   {
     xqpString lPotentialModuleFile = (*lIter) + lPathNotation->str();
     std::auto_ptr<std::istream> modfile(
@@ -342,7 +342,7 @@ std::string StandardSchemaURIResolver::checkSchemaPath(
         *aResultFile = *(lPotentialModuleFile.getStore());
       }
       return lPotentialModuleFile.c_str();
-    } 
+    }
   }
   return "";
 }
@@ -386,7 +386,7 @@ void StandardModuleURIResolver::resolveTargetNamespace(
 
 
 /*******************************************************************************
-  Resolve the URI of a module component to an input stream. Resolving is done 
+  Resolve the URI of a module component to an input stream. Resolving is done
   according to the following rules:
 
   1. All module paths that are registered in the path from the zorba root sctx
@@ -407,15 +407,15 @@ std::istream* StandardModuleURIResolver::resolve(
 {
   std::auto_ptr<std::istream> modfile(0); // result file
 
-  // 1. check using registered module paths 
+  // 1. check using registered module paths
   std::vector<std::string> lModulePaths;
   sctx.get_full_module_paths(lModulePaths);
 
-  if (lModulePaths.size() != 0) 
+  if (lModulePaths.size() != 0)
   {
     modfile.reset(checkModulePath(lModulePaths, uri, url));
 
-    if (modfile.get() != 0)  
+    if (modfile.get() != 0)
     {
       assert(modfile->good());
       return modfile.release();
@@ -430,7 +430,7 @@ std::istream* StandardModuleURIResolver::resolve(
   for (ite = lResolvers.begin(); ite != lResolvers.end(); ++ite)
   {
     modfile.reset((*ite)->resolve(uri, sctx, url));
-    if (modfile.get()) 
+    if (modfile.get())
     {
       assert(modfile->good());
       return modfile.release();
@@ -441,7 +441,7 @@ std::istream* StandardModuleURIResolver::resolve(
   // TODO register other interal resolvers for each of the tasks
   url = uri;
 
-  if (url.compare(0, 7, "file://") == 0) 
+  if (url.compare(0, 7, "file://") == 0)
   {
     // maybe we don't want to allow file access for security reasons (e.g. in a webapp)
 #ifdef ZORBA_WITH_FILE_ACCESS
@@ -481,14 +481,14 @@ std::istream* StandardModuleURIResolver::checkModulePath(
   // compute path notation of the uri with a .xq at the end
   // TODO: we might extend that to other file exentsions
   xqpStringStore_t lPathNotation = lURI.toPathNotation();
-  if (!lPathNotation->byteEndsWith(".xq", 3)) 
+  if (!lPathNotation->byteEndsWith(".xq", 3))
   {
     lPathNotation = lPathNotation->append(".xq");
   }
 
 
   for (std::vector<std::string>::const_iterator ite = modulePaths.begin();
-       ite != modulePaths.end(); 
+       ite != modulePaths.end();
        ++ite)
   {
     fileURL = (*ite) + lPathNotation->c_str();
@@ -496,7 +496,7 @@ std::istream* StandardModuleURIResolver::checkModulePath(
     if (modfile->good())
     {
       return modfile.release();
-    } 
+    }
   }
 
   return 0;
@@ -504,7 +504,7 @@ std::istream* StandardModuleURIResolver::checkModulePath(
 
 
 /*******************************************************************************
-  Find and load the external module with the given target namespace. 
+  Find and load the external module with the given target namespace.
 ********************************************************************************/
 ExternalModule* StandardModuleURIResolver::getExternalModule(
     const xqpStringStore_t& fileURL,
@@ -515,7 +515,7 @@ ExternalModule* StandardModuleURIResolver::getExternalModule(
 
   std::auto_ptr<std::istream> modfile(0); // result file
 
-  if (lModulePaths.size() != 0) 
+  if (lModulePaths.size() != 0)
   {
     URI lURI(fileURL);
 
@@ -525,21 +525,21 @@ ExternalModule* StandardModuleURIResolver::getExternalModule(
     // the higher in the hirarchy the static context is
     // the higher the priority of its module paths
     for (std::vector<std::string>::const_iterator ite = lModulePaths.begin();
-        ite != lModulePaths.end(); 
-         ++ite) 
+        ite != lModulePaths.end();
+         ++ite)
     {
       std::string potentialModuleFile = (*ite);
       potentialModuleFile += lLibraryName;
 
       std::auto_ptr<std::istream> modfile(new std::ifstream(potentialModuleFile.c_str()));
 
-      if (modfile->good()) 
+      if (modfile->good())
       {
         ExternalModule* lModule = DynamicLoader::getInstance()->
                                   getModule(potentialModuleFile);
-        if (lModule) 
+        if (lModule)
         {
-          if (!lModule->getURI().equals(fileURL->c_str())) 
+          if (!lModule->getURI().equals(fileURL->c_str()))
           {
             ZORBA_ERROR_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
                                  "The module loaded from " << potentialModuleFile
@@ -549,7 +549,7 @@ ExternalModule* StandardModuleURIResolver::getExternalModule(
         }
 
         return lModule;
-      } 
+      }
     }
   }
 
@@ -570,13 +570,13 @@ std::string StandardModuleURIResolver::computeLibraryName(const URI& aURI)
 
   std::string lFileName = "";
   std::string lBranchPath = "";
-  
+
   // is the URI ends in '/'
-  if (lIndexOfLastSlash == lRelativePath.length()) 
+  if (lIndexOfLastSlash == lRelativePath.length())
   {
     lBranchPath = lRelativePath;
-  } 
-  else 
+  }
+  else
   {
     // is '/' is not found
     if (lIndexOfLastSlash == std::string::npos)
@@ -592,7 +592,7 @@ std::string StandardModuleURIResolver::computeLibraryName(const URI& aURI)
     // remove .xq from the end of the file if present
     // bugfix: find_last_of didn't do the right thing
     size_t lIndexOfXQ = lFileName.find(".xq");
-    if (lIndexOfXQ == lFileName.size() - 3) 
+    if (lIndexOfXQ != std::string::npos && lIndexOfXQ == lFileName.size() - 3)
     {
       lFileName.erase(lIndexOfXQ );
     }
@@ -609,7 +609,7 @@ std::string StandardModuleURIResolver::computeLibraryName(const URI& aURI)
 #else
 #ifdef APPLE
       << "lib" << lFileName << get_current_lib_suffix() << ".dylib";
-#else 
+#else
       << "lib" << lFileName << get_current_lib_suffix() << ".so";
 #endif
 #endif
@@ -641,7 +641,7 @@ void StandardLibraryModuleURIResolver::resolveTargetNamespace(
 /*******************************************************************************
 
 ********************************************************************************/
-std::istream* 
+std::istream*
 StandardLibraryModuleURIResolver::resolve(
     const std::string& uri,
     static_context& sctx,
