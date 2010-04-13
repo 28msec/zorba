@@ -497,6 +497,7 @@ public:
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
 
+
 /******************************************************************************
   Class ItemXQType represents sequence types item(), item()?, item()*, or item()+
 *******************************************************************************/
@@ -562,7 +563,7 @@ public:
  public:
   SERIALIZABLE_CLASS(AnySimpleXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnySimpleXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (XQType*)this);
   }
@@ -593,11 +594,12 @@ public:
  public:
   SERIALIZABLE_CLASS(AnyFunctionXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnyFunctionXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (XQType*)this);
   }
 };
+
 
 /***************************************************************************//**
   xs:untyped
