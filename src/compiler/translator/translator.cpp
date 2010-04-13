@@ -1012,7 +1012,7 @@ protected:
   
   xqpStringStore_t                     theEmptyString;
 
-  checked_vector<expr_t>               theScopedVars;
+  std::vector<var_expr_t>              theScopedVars;
 
 public:
 
@@ -3490,7 +3490,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   // return clause of the flwor to the body expr of the function, and then make
   // this flwor be the actual body of the function.
   ulong numParams = v.get_param_count();
-  vector<varref_t> args;
+  vector<var_expr_t> args;
   if (numParams > 0) 
   {
     rchandle<flwor_expr> flwor = pop_nodestack().dyn_cast<flwor_expr>();
@@ -11188,7 +11188,8 @@ void end_visit (const FTWordsTimes& v, void* /*visit_state*/) {
   push_ftstack( wt );
 }
 
-void *begin_visit (const FTWordsValue& v) {
+void *begin_visit (const FTWordsValue& v) 
+{
   TRACE_VISIT ();
   // nothing to do
   return no_state;
@@ -11198,7 +11199,6 @@ void end_visit (const FTWordsValue& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   // nothing to do
 }
-
 
 
 void* begin_visit(const AnyFunctionTest& v)
