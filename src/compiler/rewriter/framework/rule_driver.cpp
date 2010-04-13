@@ -15,7 +15,7 @@
  */
 #include "compiler/expression/expr_base.h"
 #include "compiler/rewriter/framework/rule_driver.h"
-#include "compiler/rewriter/framework/rewrite_rule.h"
+#include "compiler/rewriter/rules/rule_base.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 
 #include "util/properties.h"

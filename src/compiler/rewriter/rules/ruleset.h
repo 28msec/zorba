@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_RULESET_H
-#define ZORBA_RULESET_H
+#ifndef ZORBA_COMPILER_REWRITER_RULESET_H
+#define ZORBA_COMPILER_REWRITER_RULESET_H
+
+#include <string>
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
-#include "compiler/rewriter/framework/rewrite_rule.h"
+#include "compiler/rewriter/rules/rule_base.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
 
@@ -33,8 +35,10 @@ namespace zorba {
     ~name() { }                                                     \
                                                                     \
     const std::string& getRuleName() const { return m_ruleName; }   \
-    expr_t rewritePre(expr *node, RewriterContext& rCtx);           \
-    expr_t rewritePost(expr *node, RewriterContext& rCtx);          \
+                                                                    \
+    expr_t rewritePre(expr* node, RewriterContext& rCtx);           \
+                                                                    \
+    expr_t rewritePost(expr* node, RewriterContext& rCtx);          \
                                                                     \
   private:                                                          \
     std::string m_ruleName;                                         \
@@ -44,49 +48,65 @@ namespace zorba {
 RULE(EchoNodes);
 
 RULE(MarkConsumerNodeProps);
+
 RULE(MarkProducerNodeProps);
+
 RULE(EliminateNodeOps);
+
 RULE(ReplaceExprWithConstantOneWhenPossible);
 
 RULE(SpecializeOperations);
+
 RULE(EliminateTypeEnforcingOperations);
+
 RULE(EliminateUnusedLetVars);
+
 RULE(RefactorPredFLWOR);
+
 RULE(MergeFLWOR);
+
 RULE(EliminateExtraneousPathSteps);
+
 RULE(MarkFreeVars);
+
 RULE(MarkExpensiveOps);
+
 RULE(MarkUnfoldableExprs);
+
 RULE(MarkImpureExprs);
+
 RULE(HoistExprsOutOfLoops);
+
 RULE(PlanPrinter);
 
 RULE(IndexJoin);
 
 RULE(InlineFunctions);
 
+RULE(PartialEval);
+
+
 class FoldConst : public RewriteRule 
 {
 protected:
-  bool fold_expensive_ops;
+  bool        fold_expensive_ops;
   std::string m_ruleName;
 
 public:     
   FoldConst (bool fold_expensive_ops_) 
-  :
+    :
     fold_expensive_ops (fold_expensive_ops_), m_ruleName("FoldConst") {}
 
   const std::string& getRuleName() const { return m_ruleName; }
-  expr_t rewritePre(expr *node, RewriterContext& rCtx);
-  expr_t rewritePost(expr *node, RewriterContext& rCtx);
+
+  expr_t rewritePre(expr* node, RewriterContext& rCtx);
+
+  expr_t rewritePost(expr* node, RewriterContext& rCtx);
 };
 
-RULE(PartialEval);
 
 #undef RULE
 
-#define RULE_REWRITE_PRE(name) expr_t name::rewritePre(expr *node, RewriterContext& rCtx)
-#define RULE_REWRITE_POST(name) expr_t name::rewritePost(expr *node, RewriterContext& rCtx)
 
 }
 

@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_COMPILER_REWRITE_RULE_H
-#define ZORBA_COMPILER_REWRITE_RULE_H
+#ifndef ZORBA_COMPILER_REWRITER_RULE_H
+#define ZORBA_COMPILER_REWRITER_RULE_H
 
-#include <string>
 #include "common/shared_types.h"
-#include "zorbatypes/rchandle.h"
+
 
 namespace zorba {
 
@@ -37,6 +36,11 @@ public:
 
   virtual expr_t rewritePost(expr* node, RewriterContext& rCtx) = 0;
 };
+
+
+#define RULE_REWRITE_PRE(name) expr_t name::rewritePre(expr* node, RewriterContext& rCtx)
+
+#define RULE_REWRITE_POST(name) expr_t name::rewritePost(expr* node, RewriterContext& rCtx)
 
 }
 

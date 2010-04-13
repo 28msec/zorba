@@ -51,7 +51,7 @@ public:
 
   static uint32_t hash(const user_function* n)
   {
-    return hashfun::h32(&n, sizeof(user_function*));
+    return hashfun::h32((void*)(&n), sizeof(user_function*));
   }
 };
 
