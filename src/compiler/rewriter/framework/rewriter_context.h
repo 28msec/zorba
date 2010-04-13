@@ -66,6 +66,7 @@ class RewriterContext
 public:
   CompilerCB                 * theCCB;
   expr_t                       theRoot;
+
   int                          m_tempvarCounter;
   int                          m_tempIndexCounter;
 

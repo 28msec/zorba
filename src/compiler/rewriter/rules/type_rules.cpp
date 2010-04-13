@@ -21,6 +21,7 @@
 
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/rewriter/rules/ruleset.h"
+#include "compiler/rewriter/rules/type_rules.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/rewriter/framework/rule_driver.h"
 
@@ -50,7 +51,46 @@ static function* flip_value_cmp(FunctionConsts::FunctionKind kind);
 /*******************************************************************************
 
 ********************************************************************************/
-void buildUDFCallGraph(RewriterContext& rctx, expr* curExpr) 
+UDFGraph::~UDFGraph()
+{
+  UDFGraph::iterator ite = this->begin();
+  UDFGraph::iterator end = this->end();
+  for (; ite != end; ++ite)
+  {
+    delete (*ite).second;
+  }
+}
+
+
+void UDFGraph::addEdge(user_function* caller, user_function* callee)
+{
+  UDFNode* callerNode = NULL;
+  UDFNode* calleeNode = NULL;
+
+  if (!get(caller, callerNode))
+  {
+    callerNode = new UDFNode(caller);
+    insert(caller, callerNode);
+  }
+
+  if (!get(callee, calleeNode))
+  {
+    calleeNode = new UDFNode(callee);
+    insert(callee, calleeNode);
+  }
+
+  callerNode->theChildren.insert(calleeNode);
+  calleeNode->theParents.insert(callerNode);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void buildUDFCallGraph(
+    UDFGraph* graph,
+    std::vector<user_function*>& callChain,
+    expr* curExpr) 
 {
   if (curExpr->get_expr_kind() == fo_expr_kind)
   {
@@ -60,21 +100,20 @@ void buildUDFCallGraph(RewriterContext& rctx, expr* curExpr)
     if (udf != NULL)
     {
 
-      if (std::find(rctx.theUDFCallChain.begin(), rctx.theUDFCallChain.end(), udf) !=
-          rctx.theUDFCallChain.end())
+      if (std::find(callChain.begin(), callChain.end(), udf) != callChain.end())
       {
-        rctx.theUDFCallChain.push_back(udf);
+        callChain.push_back(udf);
       
-        buildUDFCallGraph(rctx, udf->getBody());
+        buildUDFCallGraph(graph, callChain, udf->getBody());
           
-        rctx.theUDFCallChain.pop_back();
+        callChain.pop_back();
       }
     }
   }
 
   for (expr_iterator i = curExpr->expr_begin(); !i.done(); ++i) 
   {
-    buildUDFCallGraph(rctx, &**i);
+    buildUDFCallGraph(graph, callChain, &**i);
   }
 }
 

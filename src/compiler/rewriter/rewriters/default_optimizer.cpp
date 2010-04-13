@@ -81,6 +81,7 @@ DefaultOptimizer::DefaultOptimizer()
     ADD_ONCE_DRIVER(IndexJoin);
 }
 
+
 DefaultOptimizer::~DefaultOptimizer() throw ()
 {
 }
