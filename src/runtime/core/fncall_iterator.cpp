@@ -130,6 +130,7 @@ void UDFunctionCallIterator::serialize(::zorba::serialization::Archiver& ar)
   (NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>*)this);
 
   ar & theUDF;
+  ar & theIsDynamic;
 }
 
 
