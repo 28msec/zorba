@@ -77,24 +77,8 @@ namespace zorba { namespace http_client {
                                         bool aFollowRedirect,
                                         int aTimeout /*= -1*/ )
   {
-    if (aMethod == "POST") {
-      curl_easy_setopt(theCurl, CURLOPT_POST, 1);
-    } else if (aMethod == "PUT") {
-      curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, "PUT");
-    } else if (aMethod == "GET") {
-      //is default
-    } else if (aMethod == "DELETE") {
-      curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, "DELETE");
-    } else if (aMethod == "TRACE") {
-      curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, "TRACE");
-    } else if (aMethod == "OPTIONS") {
-      curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, "OPTIONS");
-    } else if (aMethod == "HEAD") {
-      curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, "HEAD");
-    } else {
-      aMethod.uppercase();
-      curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, aMethod.c_str());
-    }
+    aMethod.uppercase();
+    curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, aMethod.c_str());
     if (href != "") {
       curl_easy_setopt(theCurl, CURLOPT_URL, href.c_str());
     }
@@ -109,19 +93,19 @@ namespace zorba { namespace http_client {
     if (aUsername != "" && !aSendAuthorization) {
       String lUserPw = aUsername + ":" + aPassword;
       curl_easy_setopt(theCurl, CURLOPT_USERPWD, lUserPw.c_str());
-      if (aAuthMethod == "Basic") {
+      if (aAuthMethod.lowercase() == "basic") {
         curl_easy_setopt(theCurl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-      } else if (aAuthMethod == "Digest") {
+      } else if (aAuthMethod.lowercase() == "digest") {
         curl_easy_setopt(theCurl, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
       }
     }
     if (aUsername != "" && aSendAuthorization) {
-      if (aAuthMethod == "Basic") {
+      if (aAuthMethod.lowercase() == "basic") {
         String lAuthString = aUsername + ":" + aPassword;
         String lAuth = "Authorization: Basic ";
         lAuth += encoding::Base64::encode(lAuthString);
         theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lAuth.c_str());
-      } else if (aAuthMethod == "Digest") {
+      } else if (aAuthMethod.lowercase() == "digest") {
         String lUserPw = aUsername + ":" + aPassword;
         curl_easy_setopt(theCurl, CURLOPT_USERPWD, lUserPw.c_str());
         curl_easy_setopt(theCurl, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
