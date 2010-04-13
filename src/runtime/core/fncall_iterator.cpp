@@ -169,6 +169,8 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
   if (planState.theStackDepth + 1 > 256)
     ZORBA_ERROR_LOC_PARAM(XQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
 
+  // Create the plan for the udf body (if not done already) and allocate
+  // the plan state (but not the state block) and dynamic context. 
   state->open(planState, theUDF);
 
   // Create a wrapper over each subplan that computes an argument expr, if the
@@ -240,9 +242,16 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
 bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool success = true;
+  ZorbaDebuggerCommons* lDebugger = planState.theCompilerCB->theDebuggerCommons; 	 
+  std::stringstream name;
 
   UDFunctionCallIteratorState* state;
   DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
+
+  if(lDebugger != 0)
+  {
+    name << theUDF->getName()->getStringValue() << '(';
+  }
 
   // Open the plan, if not done already. This cannot be done in the openImpl
   // method because in the case of recursive functions, we will get into an
@@ -268,10 +277,41 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       if (argRef != NULL)
       {
         argRef->bind(*argWrapsIte, *state->thePlanState);
+
+       if (lDebugger != 0)
+       {
+          store::Iterator_t it = (*argWrapsIte);
+          it->open();
+          store::Item_t item;
+          name << '$' << argRef->getVarName() << '=';
+          while (it->next(item))
+          {
+            String lValue(item->getStringValue());
+            if(lValue.length() > 10)
+            {
+              name.write(lValue.c_str(), 10);
+              name << "...";
+            }
+            else 
+            {
+              name << item->getStringValue();
+            }
+            name << " (" << item->getType()->getStringValue() << ')';
+          }
+          it->reset();
+        }
       }
     }
   }
 
+  if (lDebugger != 0) 	 
+  { 	 
+    name << ')'; 	 
+    //lDebugger->theLastKnownStack = lDebugger->theStack; 	 
+    //lDebugger->pushStack(std::make_pair<std::string, const QueryLoc>(name.str(), loc));
+    //lDebugger->isFunctionExecution = true; 	 
+  }
+  
   for (;;) 
   {
     try
