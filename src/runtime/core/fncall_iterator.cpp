@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,13 +60,13 @@ UDFunctionCallIteratorState::UDFunctionCallIteratorState()
   thePlanState(NULL),
   thePlanStateSize(0),
   thePlanOpen(false)
-{ 
+{
 }
 
 
 UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 {
-  if (thePlanOpen) 
+  if (thePlanOpen)
   {
     thePlan->close(*thePlanState);
     thePlanOpen = false;
@@ -99,8 +99,8 @@ void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
   thePlanState->theDebuggerCommons = planState.theDebuggerCommons;
 
   // Must allocate new dctx, as child of the "current" dctx, because the udf may
-  // declare local block vars, some of which may hide vars with the same name in 
-  // the scope of the caller. 
+  // declare local block vars, some of which may hide vars with the same name in
+  // the scope of the caller.
   thePlanState->theRuntimeCB = new RuntimeCB(*planState.theRuntimeCB);
   thePlanState->theRuntimeCB->theDynamicContext =
   new dynamic_context(thePlanState->theRuntimeCB->theDynamicContext);
@@ -114,7 +114,7 @@ void UDFunctionCallIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
 
-  if (thePlanOpen) 
+  if (thePlanOpen)
   {
     thePlan->reset(*thePlanState);
   }
@@ -126,7 +126,7 @@ void UDFunctionCallIteratorState::reset(PlanState& planState)
 ********************************************************************************/
 void UDFunctionCallIterator::serialize(::zorba::serialization::Archiver& ar)
 {
-  serialize_baseclass(ar, 
+  serialize_baseclass(ar,
   (NaryBaseIterator<UDFunctionCallIterator, UDFunctionCallIteratorState>*)this);
 
   ar & theUDF;
@@ -137,9 +137,9 @@ void UDFunctionCallIterator::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-bool UDFunctionCallIterator::isUpdating() const 
-{ 
-  return theUDF->isUpdating(); 
+bool UDFunctionCallIterator::isUpdating() const
+{
+  return theUDF->isUpdating();
 }
 
 
@@ -171,7 +171,7 @@ void UDFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
     ZORBA_ERROR_LOC_PARAM(XQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
 
   // Create the plan for the udf body (if not done already) and allocate
-  // the plan state (but not the state block) and dynamic context. 
+  // the plan state (but not the state block) and dynamic context.
   state->open(planState, theUDF);
 
   // Create a wrapper over each subplan that computes an argument expr, if the
@@ -243,7 +243,7 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
 bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   bool success = true;
-  ZorbaDebuggerCommons* lDebugger = planState.theCompilerCB->theDebuggerCommons; 	 
+  ZorbaDebuggerCommons* lDebugger = planState.theCompilerCB->theDebuggerCommons;
   std::stringstream name;
 
   UDFunctionCallIteratorState* state;
@@ -257,7 +257,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   // Open the plan, if not done already. This cannot be done in the openImpl
   // method because in the case of recursive functions, we will get into an
   // infinite loop.
-  if (!state->thePlanOpen) 
+  if (!state->thePlanOpen)
   {
     uint32_t planOffset = 0;
     state->thePlan->open(*state->thePlanState, planOffset);
@@ -293,7 +293,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
               name.write(lValue.c_str(), 10);
               name << "...";
             }
-            else 
+            else
             {
               name << item->getStringValue();
             }
@@ -305,15 +305,15 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     }
   }
 
-  if (lDebugger != 0) 	 
-  { 	 
-    name << ')'; 	 
-    //lDebugger->theLastKnownStack = lDebugger->theStack; 	 
+  if (lDebugger != 0)
+  {
+    name << ')';
+    //lDebugger->theLastKnownStack = lDebugger->theStack;
     //lDebugger->pushStack(std::make_pair<std::string, const QueryLoc>(name.str(), loc));
-    //lDebugger->isFunctionExecution = true; 	 
+    //lDebugger->isFunctionExecution = true;
   }
-  
-  for (;;) 
+
+  for (;;)
   {
     try
     {
@@ -324,7 +324,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       state->exitValue = e.val;
       success = false;
     }
-    
+
     if (success)
     {
       STACK_PUSH(true, state);
@@ -352,14 +352,14 @@ NARY_ACCEPT(UDFunctionCallIterator);
 
 ********************************************************************************/
 // external functions
-class ExtFuncArgItemSequence : public ItemSequence 
+class ExtFuncArgItemSequence : public ItemSequence
 {
   public:
     ExtFuncArgItemSequence(PlanIter_t child, PlanState& stateBlock)
       : m_child(child),
       m_stateBlock(stateBlock) { }
 
-    bool next(Item& item) 
+    bool next(Item& item)
     {
       store::Item_t result;
       bool status = m_child->consumeNext(result, m_child.getp(), m_stateBlock);
@@ -373,12 +373,12 @@ class ExtFuncArgItemSequence : public ItemSequence
 };
 
 
-StatelessExtFunctionCallIteratorState::StatelessExtFunctionCallIteratorState() 
-{ 
+StatelessExtFunctionCallIteratorState::StatelessExtFunctionCallIteratorState()
+{
 }
 
 
-StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState() 
+StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState()
 {
 }
 
@@ -398,12 +398,12 @@ StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(
     bool aIsUpdating,
     const xqp_string& aNamespace)
   :
-  NaryBaseIterator<StatelessExtFunctionCallIterator, 
+  NaryBaseIterator<StatelessExtFunctionCallIterator,
                    StatelessExtFunctionCallIteratorState>(sctx, loc, args),
   m_function(function),
   theIsUpdating(aIsUpdating),
   theNamespace(aNamespace)
-{ 
+{
 }
 
 
@@ -421,7 +421,7 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
                                   StatelessExtFunctionCallIterator,
                                   StatelessExtFunctionCallIteratorState>*>(this));
   ar.dont_allow_delay_for_plan_sctx = false;
-  if (ar.is_serializing_out()) 
+  if (ar.is_serializing_out())
   {
     // serialize out: serialize prefix and localname of the function
     ar & theNamespace;
@@ -434,7 +434,7 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
   else
   {
     // serializing in: get the function from the static context
-    //                 using the serialized prefix/uri and localname 
+    //                 using the serialized prefix/uri and localname
     ar & theNamespace;
     xqpStringStore_t lLocalname;
     ar.set_is_temp_field(true);
@@ -445,7 +445,7 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
       QueryLoc loc;
       m_function = theSctx->lookup_stateless_external_function(theNamespace.getStore(),
                                                                lLocalname.getp());
-      if (!m_function) 
+      if (!m_function)
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because "
@@ -453,7 +453,7 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
                              << " and local name " << lLocalname
                              << " is not available through any of the"
                              << " ExternalModules.");
-      } 
+      }
     }
     else
       m_function = NULL;
@@ -464,15 +464,15 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
 
 void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
-  NaryBaseIterator<StatelessExtFunctionCallIterator, 
+  NaryBaseIterator<StatelessExtFunctionCallIterator,
                    StatelessExtFunctionCallIteratorState>::openImpl(planState, offset);
 
   StatelessExtFunctionCallIteratorState* state =
-  StateTraitsImpl<StatelessExtFunctionCallIteratorState>::getState(planState, 
+  StateTraitsImpl<StatelessExtFunctionCallIteratorState>::getState(planState,
                                                                    theStateOffset);
   int n = theChildren.size();
   state->m_extArgs.resize(n);
-  for(int i = 0; i < n; ++i) 
+  for(int i = 0; i < n; ++i)
   {
     state->m_extArgs[i] = new ExtFuncArgItemSequence(theChildren[i], planState);
   }
@@ -481,7 +481,7 @@ void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& 
 
 void StatelessExtFunctionCallIterator::closeImpl(PlanState& planState)
 {
-  StatelessExtFunctionCallIteratorState* state = 
+  StatelessExtFunctionCallIteratorState* state =
   StateTraitsImpl<StatelessExtFunctionCallIteratorState>::getState(planState,
                                                                    theStateOffset);
 
@@ -491,7 +491,7 @@ void StatelessExtFunctionCallIterator::closeImpl(PlanState& planState)
     delete state->m_extArgs[i];
   }
 
-  NaryBaseIterator<StatelessExtFunctionCallIterator, 
+  NaryBaseIterator<StatelessExtFunctionCallIterator,
                    StatelessExtFunctionCallIteratorState>::closeImpl(planState);
 }
 
@@ -523,12 +523,12 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
     }
 
   } catch(const ZorbaException& e) {
-    // take all information from the exception raised in 
+    // take all information from the exception raised in
     // the external function (e.g. file name) + add loc information
     throw error::ErrorManager::createException(e.getErrorCode(),
-                                               e.getDescription().c_str(), 
+                                               e.getDescription().c_str(),
                                                e.getFileName().c_str(),
-                                               e.getFileLineNumber(), 
+                                               e.getFileLineNumber(),
                                                loc.getLineBegin(),
                                                loc.getColumnBegin(),
                                                loc.getFilename());
@@ -536,6 +536,9 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
   while (true)
   {
     try {
+      if (state->m_result.get() == NULL) // This will happen if the user's external function returns a zorba::ItemSequence_t(NULL)
+        break;
+
       if (!state->m_result->next(lOutsideItem)) {
         break;
       }
@@ -543,9 +546,9 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
       // take all information from the exception raised in
       // the external function (e.g. file name) + add loc information
       throw error::ErrorManager::createException(e.getErrorCode(),
-                                                 e.getDescription().c_str(), 
+                                                 e.getDescription().c_str(),
                                                  e.getFileName().c_str(),
-                                                 e.getFileLineNumber(), 
+                                                 e.getFileLineNumber(),
                                                  loc.getLineBegin(),
                                                  loc.getColumnBegin(),
                                                  loc.getFilename());
@@ -558,11 +561,11 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
         ZORBA_ERROR_LOC(XUDY0019, loc);
       }
     }
-    else 
+    else
     {
       if (result->isPul())
       {
-        ZORBA_ERROR_LOC(XUDY0018, loc); 
+        ZORBA_ERROR_LOC(XUDY0018, loc);
       }
     }
     STACK_PUSH(true, state);
