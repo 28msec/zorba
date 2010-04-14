@@ -216,7 +216,26 @@ declare function sctx:default-collation() as xs:string
 };
 
 (:~
- : The function returns a sequence that contains the  statically known collations.
+  : The function returns a sequence that contains the URIs of all statically known documents.
+  :
+  : @return The sequence of document URIs.
+  :
+  : @see http://www.w3.org/TR/xquery/#dt-known-docs
+  :)
+declare function sctx:statically-known-documents() as xs:anyURI* external;
+
+(:~
+  : For the given document, the function returns the static type of its root node.
+  :
+  : @param $document An URI of a document.
+  : @return The static type of the given document.
+  :
+  : @see http://www.w3.org/TR/xquery/#dt-known-docs
+  :)
+declare function sctx:statically-known-document-type($document as xs:string) as xs:QName external;
+
+(:~
+ : The function returns a sequence that contains the statically known collations.
  :
  : @return The sequence of collations.
  :

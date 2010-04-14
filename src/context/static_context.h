@@ -22,7 +22,7 @@
 #include <zorba/api_shared_types.h>
 
 #ifdef WIN32
-#include "store/api/item.h" 
+#include "store/api/item.h"
 #include "compiler/expression/expr_base.h"
 #include "types/typemanager.h"
 #endif
@@ -34,7 +34,7 @@
 #include "common/shared_types.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 class expr;
@@ -105,7 +105,7 @@ public:
   Class static_context implements a node in the hierarchy of static contextes.
   The root of this hierarchy is a global (singleton) sctx that is shared by all
   queries. This global root sctx is created during engine statrtup and is
-  initialized with the default values specified by the W3C spec. After its 
+  initialized with the default values specified by the W3C spec. After its
   creation, it is accessible via the singleton GlobalEnvironment obj (see
   GENV_ROOT_STATIC_CONTEXT macro in src/system/globalenv.h). We call this the
   "zorba root sctx".
@@ -136,7 +136,7 @@ public:
   expression-level sctx objs provide scoping contextes for variables, namespace
   bindings, etc. They both inherit and hide information from their ancestor sctxs.
 
-  Expression-level sctx objs are created and maintained only during the 
+  Expression-level sctx objs are created and maintained only during the
   translation of a module; afterwards they are discarded. In contrast, query
   and module root sctx objs stay around for the whole life of a query (including
   runtime). Such sctxs are registered in XQueryImpl::theSctxMap.
@@ -147,14 +147,14 @@ public:
 
   theParent :
   -----------
- 
+
   Pointer to the parent sctx object in the sctx hierarchy.
 
   theTraceStream :
   ----------------
 
   Output stream that is used by the fn:trace function. std::cerr is the default
-  if the user didn't provide one. 
+  if the user didn't provide one.
 
   theQueryExpr :
   --------------
@@ -167,7 +167,7 @@ public:
   --------------------
 
   If this is the root sctx of a library module, theModuleNamespace stores the
-  target namespace URI of that module. 
+  target namespace URI of that module.
 
   theBaseUriInfo :
   ----------------
@@ -204,13 +204,13 @@ public:
   theModulePaths :
   ----------------
 
-  Vector of absolute directory pathnames for directories that contain module 
+  Vector of absolute directory pathnames for directories that contain module
   and/or schema files. The Zorba root sctx stores a number of predefined paths.
   Applications may register additional paths in their own sctx objs. These
   directory pathnames are used by the StandardModuleURIResolver and the
   StandardSchemaURIResolver, which implement the full resulution protocol for
   modules and schemas, respectively.
- 
+
   theTypemgr :
   ------------
 
@@ -225,7 +225,7 @@ public:
 
   theDefaultElementNamespace :
   ----------------------------
-  
+
   The namespace URI to be used for element and type qnames whose prefix is empty.
 
   theDefaultFunctionNamespace :
@@ -238,11 +238,11 @@ public:
 
   An entry of this hash map maps an expanded qname to the function object with
   that qname. The qname of a function does not fully identify the function; the
-  arity is needed together with the qname for a full id. But, most functions 
+  arity is needed together with the qname for a full id. But, most functions
   have a single arity, so for better performance, such functions are registered
   in this map. Functions that have multiple arities, have one of their associated
   function objs registered here and the rest are stored in theFunctionArityMap.
- 
+
   theFunctionArityMap :
   ---------------------
 
@@ -252,7 +252,7 @@ public:
   different arities. One of these versions is stored in the theFunctionMap,
   and the rest are regisreded in theFunctionArityMap.
 
-  theCollectionMap : 
+  theCollectionMap :
   ------------------
 
   A hash mash map mapping XQDDF collection qnames to the objs storing the info
@@ -273,7 +273,7 @@ public:
   theDecimalFormats :
   -------------------
 
-  Set of decimal formats. Each decimal format is identified by a qname. 
+  Set of decimal formats. Each decimal format is identified by a qname.
   theDecimalFormats must not contain two decimal formats with the same qname.
   If an ancestor sctx contains a decimal format with the same qname as a
   decimal format in "this" sctx, then the decimal format of the ancestor is
@@ -359,7 +359,7 @@ protected:
 	ExternalModuleMap                     * theExternalModulesMap;
 
   rchandle<TypeManager>                   theTypemgr;
-  
+
   NamespaceBindings                     * theNamespaceBindings;
   xqpStringStore_t                        theDefaultElementNamespace;
   xqpStringStore_t                        theDefaultFunctionNamespace;
@@ -466,7 +466,7 @@ public:
         bool validate = true);
 
   //
-  // URI Resolution 
+  // URI Resolution
   //
   void set_document_uri_resolver(InternalDocumentURIResolver*);
 
@@ -593,6 +593,8 @@ public:
 	void bind_document(xqpStringStore_t& uri, xqtref_t& t);
 
   const XQType* lookup_document(const xqpStringStore_t& uri);
+
+  void get_all_documents(std::vector<xqpStringStore_t>& documents);
 
   //
   // W3C Collections

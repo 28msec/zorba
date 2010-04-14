@@ -216,6 +216,8 @@ namespace zorba{
 
     class StaticallyKnownDocumentsIterator;
 
+    class StaticallyKnownDocumentTypeIterator;
+
     class StaticallyKnownCollationsIterator;
 
     class ConstructionModeIterator;
@@ -742,6 +744,9 @@ public:
 
     virtual void beginVisit ( const StaticallyKnownDocumentsIterator& ) = 0;
     virtual void endVisit   ( const StaticallyKnownDocumentsIterator& ) = 0;
+
+    virtual void beginVisit ( const StaticallyKnownDocumentTypeIterator& ) = 0;
+    virtual void endVisit   ( const StaticallyKnownDocumentTypeIterator& ) = 0;
 
     virtual void beginVisit ( const StaticallyKnownCollationsIterator& ) = 0;
     virtual void endVisit   ( const StaticallyKnownCollationsIterator& ) = 0;

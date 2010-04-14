@@ -170,7 +170,21 @@ class fn_zorba_introspect_sctx_statically_known_documents : public function
 public:
   fn_zorba_introspect_sctx_statically_known_documents(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_STATICALLY_KNOWN_DOCUMENTS_1)
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_STATICALLY_KNOWN_DOCUMENTS_0)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-introspect-sctx:statically-known-document-type
+class fn_zorba_introspect_sctx_statically_known_document_type : public function
+{
+public:
+  fn_zorba_introspect_sctx_statically_known_document_type(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_STATICALLY_KNOWN_DOCUMENT_TYPE_1)
   {
   }
 

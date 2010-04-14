@@ -1422,6 +1422,20 @@ void PrinterVisitor::endVisit ( const StaticallyKnownDocumentsIterator& ) {
 // </StaticallyKnownDocumentsIterator>
 
 
+// <StaticallyKnownDocumentTypeIterator>
+void PrinterVisitor::beginVisit ( const StaticallyKnownDocumentTypeIterator& a) {
+  thePrinter.startBeginVisit("StaticallyKnownDocumentTypeIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const StaticallyKnownDocumentTypeIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </StaticallyKnownDocumentTypeIterator>
+
+
 // <StaticallyKnownCollationsIterator>
 void PrinterVisitor::beginVisit ( const StaticallyKnownCollationsIterator& a) {
   thePrinter.startBeginVisit("StaticallyKnownCollationsIterator", ++theId);

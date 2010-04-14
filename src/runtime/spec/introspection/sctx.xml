@@ -220,6 +220,31 @@
   <zorba:function>
     <zorba:signature localname="statically-known-documents"
                      prefix="fn-zorba-introspect-sctx">
+      <zorba:output>xs:anyURI*</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+
+  <zorba:state generateReset="false" generateDestructor="false">
+    <zorba:member type="std::vector&lt;xqpStringStore_t&gt;" name="theDocuments"
+                  brief="vector of document URIs"/>
+    <zorba:member type="ulong" name="thePosition" brief="current position"/>
+  </zorba:state>
+
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="StaticallyKnownDocumentTypeIterator">
+
+  <zorba:description author="Zorba Team">
+    sc:statically-known-document-type
+  </zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="statically-known-document-type"
+                     prefix="fn-zorba-introspect-sctx">
       <zorba:param>xs:string</zorba:param>
       <zorba:output>xs:QName</zorba:output>
     </zorba:signature>

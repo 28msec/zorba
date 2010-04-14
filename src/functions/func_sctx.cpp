@@ -130,6 +130,16 @@ PlanIter_t fn_zorba_introspect_sctx_statically_known_documents::codegen(
   return new StaticallyKnownDocumentsIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_introspect_sctx_statically_known_document_type::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new StaticallyKnownDocumentTypeIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_introspect_sctx_statically_known_collations::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -312,6 +322,11 @@ void populate_context_sctx(static_context* sctx)
 
   DECL(sctx, fn_zorba_introspect_sctx_statically_known_documents,
       (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","statically-known-documents"),
+      GENV_TYPESYSTEM.ANY_URI_TYPE_STAR));
+
+
+  DECL(sctx, fn_zorba_introspect_sctx_statically_known_document_type,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","statically-known-document-type"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE,
       GENV_TYPESYSTEM.QNAME_TYPE_ONE));
 

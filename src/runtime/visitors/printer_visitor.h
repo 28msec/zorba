@@ -329,6 +329,9 @@ namespace zorba {
     void beginVisit( const StaticallyKnownDocumentsIterator& );
     void endVisit  ( const StaticallyKnownDocumentsIterator& );
 
+    void beginVisit( const StaticallyKnownDocumentTypeIterator& );
+    void endVisit  ( const StaticallyKnownDocumentTypeIterator& );
+
     void beginVisit( const StaticallyKnownCollationsIterator& );
     void endVisit  ( const StaticallyKnownCollationsIterator& );
 

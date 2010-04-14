@@ -417,18 +417,32 @@ public:
  *  
  * Author: Zorba Team
  */
-class StaticallyKnownDocumentsIterator : public NaryBaseIterator<StaticallyKnownDocumentsIterator, PlanIteratorState>
+class StaticallyKnownDocumentsIteratorState : public PlanIteratorState
+{
+public:
+  std::vector<xqpStringStore_t> theDocuments; //vector of document URIs
+  ulong thePosition; //current position
+
+  StaticallyKnownDocumentsIteratorState();
+
+  ~StaticallyKnownDocumentsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class StaticallyKnownDocumentsIterator : public NaryBaseIterator<StaticallyKnownDocumentsIterator, StaticallyKnownDocumentsIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(StaticallyKnownDocumentsIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(StaticallyKnownDocumentsIterator,
-    NaryBaseIterator<StaticallyKnownDocumentsIterator, PlanIteratorState>);
+    NaryBaseIterator<StaticallyKnownDocumentsIterator, StaticallyKnownDocumentsIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<StaticallyKnownDocumentsIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<StaticallyKnownDocumentsIterator, StaticallyKnownDocumentsIteratorState>*)this);
   }
 
   StaticallyKnownDocumentsIterator(
@@ -436,10 +450,46 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<StaticallyKnownDocumentsIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<StaticallyKnownDocumentsIterator, StaticallyKnownDocumentsIteratorState>(sctx, loc, children)
   {}
 
   virtual ~StaticallyKnownDocumentsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
+ * 
+ *    sc:statically-known-document-type
+ *  
+ * Author: Zorba Team
+ */
+class StaticallyKnownDocumentTypeIterator : public NaryBaseIterator<StaticallyKnownDocumentTypeIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(StaticallyKnownDocumentTypeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(StaticallyKnownDocumentTypeIterator,
+    NaryBaseIterator<StaticallyKnownDocumentTypeIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<StaticallyKnownDocumentTypeIterator, PlanIteratorState>*)this);
+  }
+
+  StaticallyKnownDocumentTypeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<StaticallyKnownDocumentTypeIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~StaticallyKnownDocumentTypeIterator();
 
   void accept(PlanIterVisitor& v) const;
 

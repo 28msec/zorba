@@ -329,7 +329,41 @@ void StaticallyKnownDocumentsIterator::accept(PlanIterVisitor& v) const {
 
 StaticallyKnownDocumentsIterator::~StaticallyKnownDocumentsIterator() {}
 
+StaticallyKnownDocumentsIteratorState::StaticallyKnownDocumentsIteratorState() {}
+
+
+void StaticallyKnownDocumentsIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
 // </StaticallyKnownDocumentsIterator>
+
+
+// <StaticallyKnownDocumentTypeIterator>
+const char* StaticallyKnownDocumentTypeIterator::class_name_str = "StaticallyKnownDocumentTypeIterator";
+StaticallyKnownDocumentTypeIterator::class_factory<StaticallyKnownDocumentTypeIterator>
+StaticallyKnownDocumentTypeIterator::g_class_factory;
+
+const serialization::ClassVersion 
+StaticallyKnownDocumentTypeIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int StaticallyKnownDocumentTypeIterator::class_versions_count =
+sizeof(StaticallyKnownDocumentTypeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void StaticallyKnownDocumentTypeIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+StaticallyKnownDocumentTypeIterator::~StaticallyKnownDocumentTypeIterator() {}
+
+// </StaticallyKnownDocumentTypeIterator>
 
 
 // <StaticallyKnownCollationsIterator>

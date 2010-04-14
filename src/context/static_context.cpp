@@ -66,7 +66,7 @@
 
 using namespace std;
 
-namespace zorba 
+namespace zorba
 {
 
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
@@ -91,7 +91,7 @@ void BaseUriInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theApplicationBaseUri;
   ar & theEntityRetrievalUri;
   ar & theEncapsulatingEntityUri;
-  
+
   ar & theBaseUri;
 }
 
@@ -307,7 +307,7 @@ static_context::~static_context()
     for(; ite != end; ++ite)
     {
       const ctx_module_t& val = ite.getValue();
-      if (val.dyn_loaded_module) 
+      if (val.dyn_loaded_module)
       {
         val.module->destroy();
       }
@@ -328,7 +328,7 @@ static_context::~static_context()
   if (theFunctionArityMap)
   {
     FunctionArityMap::iterator ite = theFunctionArityMap->begin();
-    FunctionArityMap::iterator end = theFunctionArityMap->end(); 
+    FunctionArityMap::iterator end = theFunctionArityMap->end();
     for (; ite != end; ++ite)
     {
       delete (*ite).second;
@@ -355,7 +355,7 @@ static_context::~static_context()
   if (theDefaultCollation)
     delete theDefaultCollation;
 
-  if (theCollationMap) 
+  if (theCollationMap)
   {
     CollationMap::iterator ite = theCollationMap->begin();
     CollationMap::iterator end = theCollationMap->end();
@@ -413,7 +413,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
 	  ar.set_is_temp_field(false);
 
     // callback required but not available
-    if ((lUserDocResolver || lUserColResolver) && !lCallback) 
+    if ((lUserDocResolver || lUserColResolver) && !lCallback)
     {
       ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                            "Couldn't load pre-compiled query because"
@@ -424,7 +424,7 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
 
     if (lUserDocResolver) {
       DocumentURIResolver* lDocResolver = lCallback->getDocumentURIResolver();
-      if (!lDocResolver) 
+      if (!lDocResolver)
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because"
@@ -462,8 +462,8 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
 	  ar.set_is_temp_field(true);
     ar & lUserTraceStream;
 	  ar.set_is_temp_field(false);
-  } 
-  else 
+  }
+  else
   {
     // serialize in: set the trace stream from the user
     //               std::cerr is used if non was registered
@@ -474,7 +474,7 @@ void static_context::serialize_tracestream(serialization::Archiver& ar)
 	  ar.set_is_temp_field(false);
 
     // callback required but not available
-    if (lUserTraceStream && !lCallback) 
+    if (lUserTraceStream && !lCallback)
     {
       ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                            "Couldn't load pre-compiled query because "
@@ -669,7 +669,7 @@ std::ostream* static_context::get_trace_stream() const
 /***************************************************************************//**
 
 ********************************************************************************/
-xqpStringStore_t static_context::get_implementation_baseuri() const 
+xqpStringStore_t static_context::get_implementation_baseuri() const
 {
   return reinterpret_cast<root_static_context*>(&GENV_ROOT_STATIC_CONTEXT)->theImplementationBaseUri;
 }
@@ -855,7 +855,7 @@ void static_context::compute_base_uri()
         userBaseUri = sctx->theBaseUriInfo->theApplicationBaseUri;
         break;
       }
-      
+
       sctx = sctx->theParent;
     }
   }
@@ -984,7 +984,7 @@ InternalCollectionURIResolver* static_context::get_collection_uri_resolver()
   if ( theColResolver != 0 )
     return theColResolver;
 
-  return (theParent != NULL ? 
+  return (theParent != NULL ?
           dynamic_cast<static_context*>(theParent)->get_collection_uri_resolver() :
           0);
 }
@@ -1006,7 +1006,7 @@ void static_context::add_schema_uri_resolver(
 void static_context::get_schema_uri_resolvers(
     std::vector<InternalSchemaURIResolver*>& aResolvers)
 {
-  if (theParent != NULL) 
+  if (theParent != NULL)
   {
     static_cast<static_context*>(theParent)->get_schema_uri_resolvers(aResolvers);
   }
@@ -1053,7 +1053,7 @@ void static_context::remove_module_uri_resolver(
     InternalModuleURIResolver* aResolver)
 {
   std::vector<InternalModuleURIResolver*>::iterator ite;
-  for (ite = theModuleResolvers.begin(); ite != theModuleResolvers.end(); ++ite) 
+  for (ite = theModuleResolvers.begin(); ite != theModuleResolvers.end(); ++ite)
   {
     if (aResolver == *ite)
     {
@@ -1070,7 +1070,7 @@ void static_context::remove_module_uri_resolver(
 void static_context::get_module_uri_resolvers(
     std::vector<InternalModuleURIResolver*>& lResolvers) const
 {
-  if (theParent != NULL) 
+  if (theParent != NULL)
   {
     theParent->get_module_uri_resolvers(lResolvers);
   }
@@ -1104,7 +1104,7 @@ void static_context::get_module_paths(std::vector<std::string>& paths) const
 ********************************************************************************/
 void static_context::get_full_module_paths(std::vector<std::string>& paths) const
 {
-  if (theParent != NULL) 
+  if (theParent != NULL)
   {
     theParent->get_full_module_paths(paths);
   }
@@ -1132,7 +1132,7 @@ void static_context::set_typemanager(rchandle<TypeManager> typemgr)
 TypeManager* static_context::get_typemanager() const
 {
   TypeManager* tm = theTypemgr.getp();
-  if (tm != NULL) 
+  if (tm != NULL)
   {
     return tm;
   }
@@ -1253,7 +1253,7 @@ void static_context::bind_ns(
 /***************************************************************************//**
   Search the static-context tree, starting from "this" and moving upwards,
   looking for the 1st namespace binding for the given prefix. If no such
-  binding is found, either raise an error (if the given error code is not 
+  binding is found, either raise an error (if the given error code is not
   MAX_ZORBA_ERROR_CODE) or return false. Otherwise, it return true and the
   associated namespace uri.
 ********************************************************************************/
@@ -1449,17 +1449,17 @@ void static_context::getVariables(std::vector<std::string>& aResult) const
         const var_expr* lExpr = ite.getValue();
         var_expr::var_kind lKind = lExpr->get_kind();
 
-        if (lKind == var_expr::prolog_var) 
+        if (lKind == var_expr::prolog_var)
         {
           aResult.push_back("global");
         }
-        else 
+        else
         {
           aResult.push_back("local");
         }
 
         std::string lType;
-        if (lExpr->get_type() == NULL || lExpr->get_type()->get_qname() == NULL) 
+        if (lExpr->get_type() == NULL || lExpr->get_type()->get_qname() == NULL)
         {
           lType = "anyType:http://www.w3.org/2001/XMLSchema";
         }
@@ -1471,7 +1471,7 @@ void static_context::getVariables(std::vector<std::string>& aResult) const
           lType += lQname->getNamespace()->c_str();
         }
 
-        if (lExpr->is_sequential()) 
+        if (lExpr->is_sequential())
         {
           lType += "*";
         }
@@ -1494,7 +1494,7 @@ void static_context::getVariables(std::vector<std::string>& aResult) const
 
 
 /***************************************************************************//**
-  This method is used by introspection. 
+  This method is used by introspection.
 ********************************************************************************/
 void static_context::getVariables(std::vector<var_expr_t>& vars) const
 {
@@ -1753,7 +1753,7 @@ void static_context::find_functions(
       functions.push_back((*fv)[i].getp());
     }
   }
-  
+
   if (theParent != NULL)
     theParent->find_functions(qname2, functions);
 }
@@ -1764,10 +1764,10 @@ void static_context::find_functions(
   functions defined in the target namespace of the module.
 
   If aDynamicallyLoaded is false, then the external module to register has been
-  created and is provided directly by the application. Otherwise, it is an 
+  created and is provided directly by the application. Otherwise, it is an
   external module that is created and loaded dynamically by zorba from a lib
   file that is stored somewhere in the in-scope module paths (see
-  StandardModuleURIResolver::getExternalModule method). 
+  StandardModuleURIResolver::getExternalModule method).
 ********************************************************************************/
 void static_context::bind_external_module(
     ExternalModule* aModule,
@@ -1880,13 +1880,27 @@ const XQType* static_context::lookup_document(const xqpStringStore_t& uri)
   static_context* sctx = this;
   while (sctx != NULL)
   {
-    if (theDocumentMap && theDocumentMap->get(uri, type))
+    if (sctx->theDocumentMap && sctx->theDocumentMap->get(uri, type))
       return type.getp();
 
     sctx = sctx->theParent;
   }
 
   return NULL;
+}
+
+void static_context::get_all_documents(std::vector<xqpStringStore_t>& documents)
+{
+  static_context* sctx = this;
+  documents.clear();
+  while (sctx != NULL)
+  {
+    if (sctx->theDocumentMap != NULL)
+      for(DocumentMap::iterator it = sctx->theDocumentMap->begin(); it != sctx->theDocumentMap->end(); ++it)
+        documents.push_back(it.getKey());
+
+    sctx = sctx->theParent;
+  }
 }
 
 
@@ -2057,7 +2071,7 @@ to_collection_node_modifier(const StaticContextConsts::node_modifier_t& p)
 ********************************************************************************/
 void static_context::call_collection_callback(const StaticallyKnownCollection_t& aColl)
 {
-  if (theCollectionCallback) 
+  if (theCollectionCallback)
   {
     // wrap the collection information into an object known in the api
     DeclaredCollection lDeclaredColl;
@@ -2069,7 +2083,7 @@ void static_context::call_collection_callback(const StaticallyKnownCollection_t&
   }
   else
   {
-    if (theParent) 
+    if (theParent)
     {
       theParent->call_collection_callback(aColl);
     }
@@ -2150,7 +2164,7 @@ index_maintenance_mode_t
 to_index_maintenance_mode(const ValueIndex::MaintenanceMode& mode)
 {
   index_maintenance_mode_t lRes;
-  switch (mode) 
+  switch (mode)
   {
   case ValueIndex::MANUAL: lRes = index_manual; break;
   case ValueIndex::REBUILD: lRes = index_automatic; break;
@@ -2167,7 +2181,7 @@ index_container_kind_t
 to_index_container_kind(const ValueIndex::ContainerKind& kind)
 {
   index_container_kind_t lRes;
-  switch (kind) 
+  switch (kind)
   {
     case ValueIndex::HASH: lRes = index_hash; break;
     case ValueIndex::TREE: lRes = index_tree; break;
@@ -2194,7 +2208,7 @@ void static_context::set_index_callback(
 ********************************************************************************/
 void static_context::call_index_callback(const ValueIndex_t& index)
 {
-  if (theIndexCallback) 
+  if (theIndexCallback)
   {
     DeclaredIndex lDeclaredIndex;
     lDeclaredIndex.theName = index->getName();
@@ -2204,9 +2218,9 @@ void static_context::call_index_callback(const ValueIndex_t& index)
       to_index_container_kind(index->getMethod());
     theIndexCallback(lDeclaredIndex, theIndexCallbackData);
   }
-  else 
+  else
   {
-    if (theParent) 
+    if (theParent)
     {
       static_cast<static_context*>(theParent)->call_index_callback(index);
     }
@@ -2291,14 +2305,14 @@ void static_context::add_collation(const std::string& uri, const QueryLoc& loc)
 
   if (collator == NULL)
   {
-    ZORBA_ERROR_LOC_DESC_OSS(FOCH0002, loc, 
+    ZORBA_ERROR_LOC_DESC_OSS(FOCH0002, loc,
                              "Collation " << uri << " not supported.");
   }
   else
   {
     if (theCollationMap == NULL)
       theCollationMap = new CollationMap();
-    
+
     (*theCollationMap)[resolvedURI] = collator;
   }
 }
@@ -2355,7 +2369,7 @@ XQPCollator* static_context::get_collator(
 
     sctx = sctx->theParent;
   }
-  
+
   ZORBA_ERROR_LOC_DESC_OSS(FOCH0002, loc,
                            "Collation " << uri << " not found in static context.");
   return NULL;
@@ -2839,7 +2853,7 @@ DecimalFormat_t static_context::get_decimal_format(const store::Item_t& qname)
 
 /***************************************************************************//**
   Merge the static context of a module with this static context. Only functions
-  and variables defined in the module are included in this static context. 
+  and variables defined in the module are included in this static context.
 ********************************************************************************/
 void static_context::import_module(const static_context* module, const QueryLoc& loc)
 {
