@@ -959,7 +959,8 @@ void URI::initializePath(const xqpStringStore* uri)
         ++lIndex;
       }
     #ifdef WIN32
-      if (theScheme->byteEqual("file", 4) && (lCodepoints[lStart] == '/'))//jump over first '/' of path
+      if (theScheme->byteEqual("file", 4) && (lCodepoints[lStart] == '/') && 
+        ((lCodepoints[lStart+2] == ':') || !uri->byteCompare(lStart+2, 4, "%3A/")))//jump over first '/' of path
         lStart++;
     #endif
     }
@@ -1550,6 +1551,8 @@ void URI::build_path_notation() const
 
   if (is_set(Path)) 
   {
+    if(!thePath->empty() && (thePath->charAt(0) != '/')&& (thePath->charAt(0) != '\\'))
+      lPathNotation << "/";
     lPathNotation << thePath;
   } 
 
@@ -1587,13 +1590,15 @@ void URI::build_full_text() const
       lURI << theRegBasedAuthority->c_str();
     }
   }
-#ifdef WIN32
-    if(theScheme->byteEqual("file", 4))
-      lURI << "/";
-#endif
 
   if ( is_set(Path) )
+  {
+  #ifdef WIN32
+    if(theScheme->byteEqual("file", 4) && !thePath->empty() && (thePath->charAt(0) != '/'))
+        lURI << "/";
+  #endif
     lURI << thePath->c_str();
+  }
 
   if ( is_set(QueryString) )
     lURI << "?" << theQueryString->c_str();
@@ -1627,10 +1632,6 @@ void URI::build_ascii_full_text() const
         lURI << theUserInfo->c_str() << "@";
 
       lURI << theHost->c_str();
-#ifdef WIN32
-      if(theScheme->byteEqual("file", 4))
-        lURI << "/";
-#endif
 
       if ( is_set(Port) )
         lURI << ":" << thePort;
@@ -1641,12 +1642,14 @@ void URI::build_ascii_full_text() const
     }
   }
 
-#ifdef WIN32
-  if(theScheme->byteEqual("file", 4))
-    lURI << "/";
-#endif
   if ( is_set(Path) )
+  {
+  #ifdef WIN32
+    if(theScheme->byteEqual("file", 4) && !thePath->empty() && (thePath->charAt(0) != '/'))
+        lURI << "/";
+  #endif
     lURI << thePath->c_str();
+  }
 
   if ( is_set(QueryString) )
     lURI << "?" << theQueryString->c_str();

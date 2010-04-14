@@ -167,7 +167,7 @@ public:
     return byteCompare(other->c_str(), other->bytes());
   }
 
-  long byteCompare(ulong bytePos, ulong numBytes, const char* other)
+  long byteCompare(ulong bytePos, ulong numBytes, const char* other) const
   {
     int res = theString.compare(bytePos, numBytes, other);
     return (res < 0 ? -1 : (res > 0 ? 1 : 0));

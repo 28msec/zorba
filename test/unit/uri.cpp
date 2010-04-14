@@ -536,11 +536,15 @@ int uri(int argc, char* argv[])
       "",
       "",
       "",
+#ifndef WIN32
       "/d:/a/b/c",
+#else
+      "d:/a/b/c",
+#endif      
       "",
       "",
       "/d:/a/b/c" // path notation
-    },
+      },
     {
       "",
       "file://localhost/d:/a/b/c",
@@ -550,7 +554,11 @@ int uri(int argc, char* argv[])
       "",
       "localhost",
       "",
+#ifndef WIN32
       "/d:/a/b/c",
+#else
+      "d:/a/b/c",
+#endif
       "",
       "",
       "localhost/d:/a/b/c" // path notation
@@ -596,7 +604,8 @@ int uri(int argc, char* argv[])
         relativized = zorba::URI(uri, base);
       }
 
-      if (!uri.toString()->byteEqual(&tests[i].text))  
+      xqpStringStore_t  uri_string = uri.toString();
+      if (!uri_string->byteEqual(&tests[i].text))  
       {
         std::cerr << "uri text " << uri.toString()->c_str() << " is not equal to "
                   << tests[i].text.c_str() << std::endl;
@@ -687,7 +696,8 @@ int uri(int argc, char* argv[])
         }
       }
 
-      if (!uri.toPathNotation()->byteEqual(&tests[i].path_notation)) 
+      xqpStringStore_t    uri_path_notation = uri.toPathNotation();
+      if (!uri_path_notation->byteEqual(&tests[i].path_notation)) 
       {
         std::cerr << "path notation " << uri.toPathNotation()->c_str()
                   << " is not equal to " 
