@@ -47,6 +47,11 @@ if test ! -d "$BUILD"; then
 fi
 
 ZIP="$WORK/XQTS.zip"
+
+#removing the previous downloaded version is not the best solution but solves the cases where the version posted on the W3C site as "XQTS_current.zip" has changed between 2 calls of the import_w3c_testsuite script.
+echo Cleaning up previous downloaded version of XQTS...
+rm -rf $ZIP
+
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP $XQTSURL
 
