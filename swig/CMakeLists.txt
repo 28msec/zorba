@@ -31,7 +31,7 @@ IF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
   ADD_SUBDIRECTORY(php)
   ENDIF(NOT WIN32 OR CYGWIN)
   ADD_SUBDIRECTORY(java)
-  
+
   IF(NOT WIN32 OR CYGWIN)
   # ruby module on Mac OS doesn't link because cmake is generating
   # -framework ruby instead of -framework Ruby
@@ -45,5 +45,5 @@ IF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
 
 ELSE(SWIG_FOUND)
   MESSAGE(STATUS "SWIG not installed => no language bindings are generated.")
-
+  SET(ZORBA_USE_SWIG 0)
 ENDIF (SWIG_FOUND AND BUILDING_SIMPLESTORE)

@@ -34,15 +34,14 @@ IF (BUILDING_SIMPLESTORE)
   # programming apis
   ADD_SUBDIRECTORY(cxx)
   ADD_SUBDIRECTORY(c)
-  
-  FIND_PACKAGE(SWIG)
-  IF (SWIG_FOUND)
+
+  IF(ZORBA_USE_SWIG AND BUILDING_SIMPLESTORE)
     ADD_SUBDIRECTORY(java)
     ADD_SUBDIRECTORY(python)
     ADD_SUBDIRECTORY(ruby)
     ADD_SUBDIRECTORY(php)
-  ENDIF (SWIG_FOUND)
-  
+  ENDIF(ZORBA_USE_SWIG AND BUILDING_SIMPLESTORE)
+
   # workaround: a dir is already needed for the install command.
   # the html directory, however, is generated with the make doc call
   FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/zorba/html)

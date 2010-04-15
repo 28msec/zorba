@@ -49,11 +49,13 @@ In order to build Zorba, you need the following libraries and development header
   - CURL 7.12 or higher (used to enable REST and HTTP; http://curl.haxx.se/)
   - Tidy (used to enable tidy functions; http://tidy.sourceforge.net)
   - LibXslt (used for compiling XQueryX code (http://xmlsoft.org/XSLT/); version 1.1.24 has been tested)
-  - IMAP CClient used for sending mail
-  - Java + Apache FOP if the FOP library should be used.
-  - Ruby for the Ruby language binding
-  - PHP for the PHP language binding
-  - Pythong for the Python language binding
+  - IMAP CClient (http://www.washington.edu/imap/) used for email sending functions
+  - Java (http://java.sun.com/javase/downloads/index.jsp) + Apache FOP (http://xmlgraphics.apache.org/fop/download.html) if the FOP library should be used.
+- <em>Optional Packages that are required if you want to build language bindings</em>
+  - Swig (http://www.swig.org/download.html) + Java (http://java.sun.com/javase/downloads/index.jsp) for the Java language binding
+  - Swig (http://www.swig.org/download.html) + Ruby (http://www.ruby-lang.org/en/downloads/) for the Ruby language binding
+  - Swig (http://www.swig.org/download.html) + PHP (http://www.php.net/downloads.php) for the PHP language binding
+  - Swig (http://www.swig.org/download.html) + Python (http://www.python.org/download/) for the Python language binding
 - <em>Optional Packages that are required if you want to build the scanner and parser</em>
   - Flex 2.5.33 or higher (http://flex.sourceforge.net/)
   - Bison 2.4 or higher (http://www.gnu.org/software/bison/)
@@ -151,7 +153,16 @@ libraries.  It will also add some symbolic links to the libraries.
   -# CURL (http://curl.haxx.se/download.html)(if you want to have REST support or call http URIs)
   -# Tidy (http://dev.int64.org/tidy.html) (if you intend to use HTML files and have to transform them into syntactically valid XML)
   -# Libxslt (http://www.zlatkovic.com/pub/libxml/)
-  -# Imap CClient used for sending mail
+  -# IMAP CClient (http://www.washington.edu/imap/) used for email sending functions
+  -# Java (http://java.sun.com/javase/downloads/index.jsp) + Apache FOP (http://xmlgraphics.apache.org/fop/download.html) if the FOP library should be used.
+  -# <em>Optional Packages that are required if you want to build language bindings</em>
+    -# Swig (http://www.swig.org/download.html) + Java (http://java.sun.com/javase/downloads/index.jsp) for the Java language binding
+    -# Swig (http://www.swig.org/download.html) + Ruby (http://www.ruby-lang.org/en/downloads/) for the Ruby language binding
+    -# Swig (http://www.swig.org/download.html) + PHP (http://www.php.net/downloads.php) for the PHP language binding
+    -# Swig (http://www.swig.org/download.html) + Python (http://www.python.org/download/) for the Python language binding
+  -# <em>Optional Packages that are required if you want to build the scanner and parser</em>
+    -# Flex 2.5.33 or higher (http://flex.sourceforge.net/)
+    -# Bison 2.4 or higher (http://www.gnu.org/software/bison/)
 - In order to execute Zorba, please note that the paths to all of the installed libraries need to be included in the <tt>PATH</tt> environment variable.
   \code path_to_libxml2\bin;path_to_icu\bin;path_to_iconv\bin;path_to_xerces\bin \endcode
   To do this, right click on My Computer -> Properties -> Advanced -> Environment Variables and edit the PATH variable. Alternatively, you can also copy all the dlls
