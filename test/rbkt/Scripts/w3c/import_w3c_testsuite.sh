@@ -8,13 +8,13 @@ die() {
   echo '<builddir> is the directory Zorba has been built in'
   echo '           (default: <zorba_repository>/build)'
   echo '<xqtsurl> is the URL where the XQTS archived version can be found'
-  echo '          (default: http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip)'
-  echo '          (you can use for instance http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_current.zip)'
+  echo '          (default: http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_current.zip)'
+  echo '          (you can use for instance http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip)'
   exit 1
 }
 
 WORK=/tmp
-XQTSURL=http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip
+XQTSURL=http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_current.zip
 
 while [ $# -gt 1 ]
 do
@@ -24,7 +24,8 @@ do
   # --builddir to specify Zorba build directory (default: srcdir/build)
   test "$1" = "--builddir" && { BUILD="$2"; shift; shift; }
 
-  # xqtsurl to specify the URL where XQTS can be found (default: http://www.w3.org/XML/Query/test-suite/XQTS_1_0_2.zip)
+  # xqtsurl to specify the URL where XQTS can be found
+  # default value: http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_current.zip
   test "$1" = "--xqtsurl" && { XQTSURL="$2"; shift; shift; }
 done
 
@@ -46,11 +47,9 @@ if test ! -d "$BUILD"; then
   exit 1
 fi
 
-ZIP="$WORK/XQTS.zip"
-
-#removing the previous downloaded version is not the best solution but solves the cases where the version posted on the W3C site as "XQTS_current.zip" has changed between 2 calls of the import_w3c_testsuite script.
-echo Cleaning up previous downloaded version of XQTS...
-rm -rf $ZIP
+#this could be a problem problem because if the version posted on the W3C site as XQTS_current.zip changes, the new version will not be downloaded by the import script.
+#Removing the previous downloaded version first would solve the problem but that would mean that each time the script is run it would download a fresh XQTS_current.zip and this is a problem with the niglies tests.
+ZIP="$WORK/XQTS_current.zip"
 
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP $XQTSURL
