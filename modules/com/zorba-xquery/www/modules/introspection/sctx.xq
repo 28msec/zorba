@@ -148,24 +148,40 @@ declare function sctx:default-collection-type() as xs:string external;
 declare function sctx:in-scope-variables() as xs:QName* external;
 
 (:~
-  : The function return a sequence of QNames identifying declared elements
-  : in the imported schemas.
-  :
-  : @return A sequence of QNames, one for each declared element.
-  :
-  : @see http://www.w3.org/TR/xquery/#dt-is-elems
-  :)
+ : The function return a sequence of QNames identifying declared elements
+ : in the imported schemas.
+ :
+ : @return A sequence of QNames, one for each declared element.
+ :
+ : @see http://www.w3.org/TR/xquery/#dt-is-elems
+ :)
 declare function sctx:in-scope-element-declarations() as xs:QName* external;
 
 (:~
-  : The function return a sequence of QNames identifying declared attributes
-  : in the imported schemas.
-  :
-  : @return A sequence of QNames, one for each attribute.
-  :
-  : @see http://www.w3.org/TR/xquery/#dt-is-attrs
-  :)
+ : The function return a sequence of QNames identifying declared attributes
+ : in the imported schemas.
+ :
+ : @return A sequence of QNames, one for each attribute.
+ :
+ : @see http://www.w3.org/TR/xquery/#dt-is-attrs
+ :)
 declare function sctx:in-scope-attribute-declarations() as xs:QName* external;
+
+(:~
+ : The function returns a sequence of QNames identifying declared in-scope
+ : schema element groups.
+ :
+ : @return A sequence of QNames, one for each element group.
+ :)
+declare function sctx:in-scope-element-groups() as xs:QName* external;
+
+(:~
+ : The function returns a sequence of QNames identifying declared in-scope
+ : schema attribute groups.
+ :
+ : @return A sequence of QNames, one for each attribute group.
+ :)
+declare function sctx:in-scope-attribute-groups() as xs:QName* external;
 
 (:~
  : The function returns a sequence containing the QNames of all defined

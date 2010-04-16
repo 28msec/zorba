@@ -346,6 +346,34 @@ public:
 };
 
 
+//fn-zorba-introspect-sctx:in-scope-element-groups
+class fn_zorba_introspect_sctx_in_scope_element_groups : public function
+{
+public:
+  fn_zorba_introspect_sctx_in_scope_element_groups(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_IN_SCOPE_ELEMENT_GROUPS_0)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-introspect-sctx:in-scope-attribute-groups
+class fn_zorba_introspect_sctx_in_scope_attribute_groups : public function
+{
+public:
+  fn_zorba_introspect_sctx_in_scope_attribute_groups(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_IN_SCOPE_ATTRIBUTE_GROUPS_0)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-introspect-sctx:is-declared-integrity-constraint
 class fn_zorba_introspect_sctx_is_declared_integrity_constraint : public function
 {

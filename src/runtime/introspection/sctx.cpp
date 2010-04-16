@@ -710,6 +710,74 @@ void InScopeAttributeDeclarationsIteratorState::init(PlanState& planState) {
 // </InScopeAttributeDeclarationsIterator>
 
 
+// <InScopeElementGroupsIterator>
+const char* InScopeElementGroupsIterator::class_name_str = "InScopeElementGroupsIterator";
+InScopeElementGroupsIterator::class_factory<InScopeElementGroupsIterator>
+InScopeElementGroupsIterator::g_class_factory;
+
+const serialization::ClassVersion 
+InScopeElementGroupsIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int InScopeElementGroupsIterator::class_versions_count =
+sizeof(InScopeElementGroupsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void InScopeElementGroupsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+InScopeElementGroupsIterator::~InScopeElementGroupsIterator() {}
+
+InScopeElementGroupsIteratorState::InScopeElementGroupsIteratorState() {}
+
+
+void InScopeElementGroupsIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+// </InScopeElementGroupsIterator>
+
+
+// <InScopeAttributeGroupsIterator>
+const char* InScopeAttributeGroupsIterator::class_name_str = "InScopeAttributeGroupsIterator";
+InScopeAttributeGroupsIterator::class_factory<InScopeAttributeGroupsIterator>
+InScopeAttributeGroupsIterator::g_class_factory;
+
+const serialization::ClassVersion 
+InScopeAttributeGroupsIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int InScopeAttributeGroupsIterator::class_versions_count =
+sizeof(InScopeAttributeGroupsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void InScopeAttributeGroupsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+InScopeAttributeGroupsIterator::~InScopeAttributeGroupsIterator() {}
+
+InScopeAttributeGroupsIteratorState::InScopeAttributeGroupsIteratorState() {}
+
+
+void InScopeAttributeGroupsIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+// </InScopeAttributeGroupsIterator>
+
+
 // <IsDeclaredICIterator>
 const char* IsDeclaredICIterator::class_name_str = "IsDeclaredICIterator";
 IsDeclaredICIterator::class_factory<IsDeclaredICIterator>

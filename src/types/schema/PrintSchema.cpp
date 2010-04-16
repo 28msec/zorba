@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,7 +45,7 @@ void PrintSchema::printInfo(bool excludeBuiltIn, XMLGrammarPool* grammarPool)
 
       std::cout << "Processing Namespace:   ";
       const XMLCh *nameSpace = namespaces->elementAt(i);
-            
+
       if (nameSpace && (XMLString::stringLen(nameSpace)>0))
       {
         std::cout << StrX(nameSpace);
@@ -63,13 +63,21 @@ void PrintSchema::printInfo(bool excludeBuiltIn, XMLGrammarPool* grammarPool)
       std::cout << "\n============================================"
                                 << std::endl
                                 << std::endl;
-      
+
       processElements(excludeBuiltIn,
           xsModel->getComponentsByNamespace(XSConstants::ELEMENT_DECLARATION,
                                             nameSpace));
-      processTypeDefinitions(excludeBuiltIn, 
+      processTypeDefinitions(excludeBuiltIn,
           xsModel->getComponentsByNamespace(XSConstants::TYPE_DEFINITION,
                                             nameSpace));
+
+      processTypeDefinitions(excludeBuiltIn,
+          xsModel->getComponentsByNamespace(XSConstants::MODEL_GROUP_DEFINITION,
+                                 nameSpace));
+
+      processTypeDefinitions(excludeBuiltIn,
+          xsModel->getComponentsByNamespace(XSConstants::ATTRIBUTE_GROUP_DEFINITION,
+                                 nameSpace));
     }
   }
   else
@@ -108,10 +116,10 @@ void PrintSchema::processElements(bool excludeBuiltIn,
     XSElementDeclaration *xsElement =
         (XSElementDeclaration *)xsElements->item(i);
     printBasic("", excludeBuiltIn, xsElement, "Element");
-    
+
     // Content Model
     XSTypeDefinition *xsTypeDef = xsElement->getTypeDefinition();
-    
+
     printTypeRef("", excludeBuiltIn, xsTypeDef);
 
     if (xsTypeDef->getAnonymous())
@@ -133,7 +141,7 @@ void PrintSchema::processSimpleTypeDefinition(std::string pre,
   if (facets)
   {
     std::cout << pre << "Facets:\n";
-    
+
     if (facets & XSSimpleTypeDefinition::FACET_LENGTH)
       std::cout << pre << "\tLength:\t\t" << StrX(xsSimpleTypeDef->
           getLexicalFacetValue(XSSimpleTypeDefinition::FACET_LENGTH)) <<
@@ -204,8 +212,8 @@ void PrintSchema::processSimpleTypeDefinition(std::string pre,
     }
   }
 }
-  
-  
+
+
 void PrintSchema::printCompositorTypeConnector(XSModelGroup::COMPOSITOR_TYPE type)
 {
   switch (type)
@@ -265,7 +273,7 @@ void PrintSchema::processParticle(std::string pre, bool excludeBuiltIn,
     }
     else
       std::cout << "  ref to global\n";
- 
+
   }
   else if (termType == XSParticle::TERM_MODELGROUP)
   {
@@ -278,9 +286,9 @@ void PrintSchema::processParticle(std::string pre, bool excludeBuiltIn,
 
     XSParticleList *xsParticleList = xsModelGroup->getParticles();
     for (unsigned i = 0; i < xsParticleList->size(); i++)
-    {      
+    {
       processParticle(pre + "  ", excludeBuiltIn, xsParticleList->elementAt(i));
-    }    
+    }
   }
   else if (termType == XSParticle::TERM_WILDCARD)
   {
@@ -288,7 +296,7 @@ void PrintSchema::processParticle(std::string pre, bool excludeBuiltIn,
   }
 }
 
-  
+
 void PrintSchema::processComplexTypeDefinition(std::string pre,
     bool excludeBuiltIn, XSComplexTypeDefinition *xsComplexTypeDef)
 {
@@ -298,7 +306,7 @@ void PrintSchema::processComplexTypeDefinition(std::string pre,
     std::cout << pre << "Base:           ";
     std::cout << StrX(xsBaseTypeDef->getName()) << "\n";
   }
-  
+
   XSComplexTypeDefinition::CONTENT_TYPE contentType =
     xsComplexTypeDef->getContentType();
 
@@ -333,19 +341,19 @@ void PrintSchema::processComplexTypeDefinition(std::string pre,
     processParticle(pre + "  ", excludeBuiltIn, xsComplexTypeDef->getParticle());
   }
 }
-  
+
 
 void PrintSchema::processTypeDefinitions(bool excludeBuiltIn,
         XSNamedMap<XSObject> *xsTypeDefs)
 {
   if (!xsTypeDefs)
     return;
-  
+
   for (unsigned i=0; i < xsTypeDefs->getLength(); i++)
   {
     XSTypeDefinition *xsTypeDef = (XSTypeDefinition *)xsTypeDefs->item(i);
     processTypeDefinition("", excludeBuiltIn, xsTypeDef);
-    
+
     std::cout << "--------------------------------------------" << std::endl;
   }
 }
@@ -385,13 +393,14 @@ void PrintSchema::processTypeDefinition(std::string pre, bool excludeBuiltIn,
       processSimpleTypeDefinition(pre, excludeBuiltIn,
                                   (XSSimpleTypeDefinition *)xsTypeDef);
     }
-    else
+    else if (xsTypeDef->getTypeCategory() == XSTypeDefinition::COMPLEX_TYPE)
     {
       std::cout << "Complex\n";
       processComplexTypeDefinition(pre, excludeBuiltIn,
                                    (XSComplexTypeDefinition *)xsTypeDef);
     }
-    //std::cout << std::endl;
+    else
+      std::cout << std::endl;
 }
 
 } // namespace xqp
