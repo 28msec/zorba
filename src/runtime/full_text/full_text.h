@@ -59,7 +59,7 @@ public:
   void closeImpl( PlanState& );
 private:
   ftexpr *ftselection_;
-  std::list<PlanIter_t> sub_iters_;
+  sub_iter_list_t sub_iters_;
 };
 
 }

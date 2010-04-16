@@ -107,7 +107,7 @@ void FTContainsIterator::openImpl( PlanState &state, uint32_t &offset ) {
   theChild0->open( state, offset );
   if ( theChild1 ) // the optional FTIgnoreOption
     theChild1->open( state, offset );
-  for ( list<PlanIter_t>::iterator i = sub_iters_.begin();
+  for ( sub_iter_list_t::iterator i = sub_iters_.begin();
         i != sub_iters_.end(); ++i ) {
     (*i)->open( state, offset );
   }
@@ -118,7 +118,7 @@ void FTContainsIterator::closeImpl( PlanState &state ) {
   theChild0->close( state );
   if ( theChild1 ) // the optional FTIgnoreOption
     theChild1->close( state );
-  for ( list<PlanIter_t>::iterator i = sub_iters_.begin();
+  for ( sub_iter_list_t::iterator i = sub_iters_.begin();
         i != sub_iters_.end(); ++i ) {
     (*i)->close( state );
   }
@@ -129,7 +129,7 @@ void FTContainsIterator::resetImpl( PlanState &state ) const {
   theChild0->reset( state );
   if ( theChild1 ) // the optional FTIgnoreOption
     theChild1->reset( state );
-  for ( list<PlanIter_t>::const_iterator i = sub_iters_.begin();
+  for ( sub_iter_list_t::const_iterator i = sub_iters_.begin();
         i != sub_iters_.end(); ++i ) {
     (*i)->reset( state );
   }
