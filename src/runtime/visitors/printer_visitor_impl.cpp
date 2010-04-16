@@ -1060,6 +1060,17 @@ void PrinterVisitor::endVisit(const CastableIterator&) {
   thePrinter.endEndVisit();
 }
 
+void PrinterVisitor::beginVisit(const FTContainsIterator& a) {
+  thePrinter.startBeginVisit("FTContainsIterator", ++theId);
+  // TODO
+  thePrinter.endBeginVisit(theId);
+}
+
+void PrinterVisitor::endVisit(const FTContainsIterator&) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
 #define TYPED_VAL_CMP( xqt )                                            \
 void PrinterVisitor::beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_##xqt>& a){\
     thePrinter.startBeginVisit("TypedValueCompareIterator_" #xqt, ++theId); \

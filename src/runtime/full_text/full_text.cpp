@@ -14,45 +14,42 @@
  * limitations under the License.
  */
  
-// ******************************************
-// *                                        *
-// * THIS IS A GENERATED FILE. DO NOT EDIT! *
-// * SEE .xml FILE WITH SAME NAME           *
-// *                                        *
-// ******************************************
-
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/full_text/full_text.h"
 #include "system/globalenv.h"
 
-
+/******************************************************************************
+ *                                                                            *
+ * This USED to be a generated file, but isn't currently because the formerly *
+ * corresponding .xml file with the same name wasn't sufficiently flexible.   *
+ *                                                                            *
+ * The code that's in this file is the same as what would have been           *
+ * generated.                                                                 *
+ *                                                                            *
+ ******************************************************************************/
 
 namespace zorba {
 
-// <FTContainsIterator>
 const char* FTContainsIterator::class_name_str = "FTContainsIterator";
 FTContainsIterator::class_factory<FTContainsIterator>
-FTContainsIterator::g_class_factory;
+  FTContainsIterator::g_class_factory;
 
 const serialization::ClassVersion 
-FTContainsIterator::class_versions[] ={{ 1, 0x000905, false}};
+  FTContainsIterator::class_versions[] = { { 1, 0x000905, false } };
 
 const int FTContainsIterator::class_versions_count =
-sizeof(FTContainsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+  sizeof( FTContainsIterator::class_versions ) /
+  sizeof( struct serialization::ClassVersion );
 
-void FTContainsIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  theChild0->accept(v);
-theChild1->accept(v);
-
-  v.endVisit(*this);
+void FTContainsIterator::accept( PlanIterVisitor &v ) const {
+  v.beginVisit( *this );
+  theChild0->accept( v );
+  theChild1->accept( v );
+  v.endVisit( *this );
 }
 
-FTContainsIterator::~FTContainsIterator() {}
-
-// </FTContainsIterator>
-
-
+FTContainsIterator::~FTContainsIterator() {
+}
 
 }
+/* vim:set et sw=2 ts=2: */

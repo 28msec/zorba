@@ -14,73 +14,54 @@
  * limitations under the License.
  */
  
-// ******************************************
-// *                                        *
-// * THIS IS A GENERATED FILE. DO NOT EDIT! *
-// * SEE .xml FILE WITH SAME NAME           *
-// *                                        *
-// ******************************************
-#ifndef ZORBA_RUNTIME_FULL_TEXT_FULL_TEXT_H
-#define ZORBA_RUNTIME_FULL_TEXT_FULL_TEXT_H
+#ifndef ZORBA_RUNTIME_FULL_TEXT_H
+#define ZORBA_RUNTIME_FULL_TEXT_H
 
+/******************************************************************************
+ *                                                                            *
+ * This USED to be a generated file, but isn't currently because the formerly *
+ * corresponding .xml file with the same name wasn't sufficiently flexible.   *
+ *                                                                            *
+ ******************************************************************************/
 
 #include "common/shared_types.h"
-
-#include "runtime/base/binarybase.h"
-
-
-#include "zorbatypes/representations.h"
 #include "compiler/expression/ftexpr.h"
-
+#include "runtime/base/binarybase.h"
+#include "zorbatypes/representations.h"
 
 namespace zorba {
 
-/**
- * 
- *      contains text
- *    
- * Author: Paul J. Lucas
- */
-class FTContainsIterator : public BinaryBaseIterator<FTContainsIterator, PlanIteratorState>
-{ 
-protected:
-  ftexpr* ftselection_; //the ftexpr tree
+class FTContainsIterator :
+  public BinaryBaseIterator<FTContainsIterator,PlanIteratorState> { 
+private:
+  typedef BinaryBaseIterator<FTContainsIterator,PlanIteratorState> base_type;
 public:
   SERIALIZABLE_CLASS(FTContainsIterator);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(FTContainsIterator, base_type);
+  void serialize( serialization::Archiver& );
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FTContainsIterator,
-    BinaryBaseIterator<FTContainsIterator, PlanIteratorState>);
-
-  void serialize( ::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<FTContainsIterator, PlanIteratorState>*)this);
-
-    ar & ftselection_;
-  }
+  typedef std::list<PlanIter_t> sub_iter_list_t;
 
   FTContainsIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
+    static_context*,
+    QueryLoc const&,
     PlanIter_t& child1, PlanIter_t& child2,
-    ftexpr* ftselection)
-    : 
-    BinaryBaseIterator<FTContainsIterator, PlanIteratorState>(sctx, loc, child1, child2),
-    ftselection_(ftselection)
-  {}
-
+    ftexpr *ftselection,
+    sub_iter_list_t&
+  );
   virtual ~FTContainsIterator();
 
-  void accept(PlanIterVisitor& v) const;
+  void accept( PlanIterVisitor& ) const;
 
-  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+  bool nextImpl( store::Item_t &result, PlanState& ) const;
+  void openImpl( PlanState&, uint32_t& );
+  void resetImpl( PlanState& ) const;
+  void closeImpl( PlanState& );
+private:
+  ftexpr *ftselection_;
+  std::list<PlanIter_t> sub_iters_;
 };
 
-
 }
-#endif
-/*
- * Local variables:
- * mode: c++
- * End:
- */ 
+#endif  /* ZORBA_RUNTIME_FULL_TEXT_H */
+/* vim:set et sw=2 ts=2: */

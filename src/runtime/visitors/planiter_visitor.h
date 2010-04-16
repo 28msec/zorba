@@ -172,8 +172,6 @@ namespace zorba{
 
     class FnPutIterator;
 
-    class FTContainsIterator;
-
     class FunctionNameIterator;
 
     class FunctionArityIterator;
@@ -678,9 +676,6 @@ public:
 
     virtual void beginVisit ( const FnPutIterator& ) = 0;
     virtual void endVisit   ( const FnPutIterator& ) = 0;
-
-    virtual void beginVisit ( const FTContainsIterator& ) = 0;
-    virtual void endVisit   ( const FTContainsIterator& ) = 0;
 
     virtual void beginVisit ( const FunctionNameIterator& ) = 0;
     virtual void endVisit   ( const FunctionNameIterator& ) = 0;

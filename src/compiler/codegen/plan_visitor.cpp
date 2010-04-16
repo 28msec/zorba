@@ -15,8 +15,9 @@
  */
 
 #include <iostream>
-#include <vector>
+#include <list>
 #include <stack>
+#include <vector>
 
 #include "zorbaerrors/Assert.h"
 
@@ -2619,29 +2620,6 @@ void end_visit (order_expr& v)
   CODEGEN_TRACE_OUT("");
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-
-bool begin_visit (ftcontains_expr& v)
-{
-  CODEGEN_TRACE_IN("");
-  return true;
-}
-
-void end_visit (ftcontains_expr& v)
-{
-  CODEGEN_TRACE_OUT("");
-  PlanIter_t ftignore_it = pop_itstack();
-  PlanIter_t ftrange_it = pop_itstack();
-  PlanIter_t ftcontains_it = new FTContainsIterator(
-    sctx, qloc, ftrange_it, ftignore_it, v.get_ftselection()
-  );
-  push_itstack( ftcontains_it );
-}
-
-
 /******************************************************************************
 
  ******************************************************************************/
@@ -2653,6 +2631,8 @@ PlanIter_t result()
   return res;
 }
 
+bool begin_visit (ftcontains_expr&);
+void end_visit (ftcontains_expr&);
 
 };
 
@@ -2663,9 +2643,12 @@ PlanIter_t result()
 
 class plan_ftexpr_visitor : public ftexpr_visitor {
 public:
+  typedef list<PlanIter_t> PlanIter_list_t;
+
   plan_ftexpr_visitor( plan_visitor &v ) : plan_visitor_( v ) { }
 
   expr_visitor& get_expr_visitor();
+  PlanIter_list_t& get_sub_iters() { return sub_iters_; }
 
 protected:
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
@@ -2691,7 +2674,7 @@ protected:
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_options );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_words );
@@ -2701,6 +2684,7 @@ protected:
 
 private:
   plan_visitor &plan_visitor_;
+  list<PlanIter_t> sub_iters_;
 };
 
 expr_visitor& plan_ftexpr_visitor::get_expr_visitor() {
@@ -2717,16 +2701,17 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_selection_expr )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmild_not_expr )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftor_expr )
 
-ftexpr_visitor::begin_result V::begin_visit( ftprimary_with_options_expr &e ) {
+ft_visit_result::type V::begin_visit( ftprimary_with_options_expr &e ) {
   ACCEPT( e.get_weight(), plan_visitor_ );
   PlanIter_t it = plan_visitor_.pop_itstack();
   ZORBA_ASSERT( plan_visitor_.itstack.empty() );
   e.set_plan_iter( it );
-  return br_no_end;
+  sub_iters_.push_back( it );
+  return ft_visit_result::no_end;
 }
 DEF_FTEXPR_VISITOR_END_VISIT( V, ftprimary_with_options_expr )
 
-ftexpr_visitor::begin_result V::begin_visit( ftrange_expr &e ) {
+ft_visit_result::type V::begin_visit( ftrange_expr &e ) {
   PlanIter_t it2 = NULL;
   ACCEPT( e.get_expr1(), plan_visitor_ );
   if ( e.get_expr2() ) {
@@ -2736,19 +2721,22 @@ ftexpr_visitor::begin_result V::begin_visit( ftrange_expr &e ) {
   PlanIter_t it1 = plan_visitor_.pop_itstack();
   ZORBA_ASSERT( plan_visitor_.itstack.empty() );
   e.set_plan_iters( it1, it2 );
-  return br_no_end;
+  sub_iters_.push_back( it1 );
+  sub_iters_.push_back( it2 );
+  return ft_visit_result::no_end;
 }
 DEF_FTEXPR_VISITOR_END_VISIT( V, ftrange_expr )
 
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftselection_expr )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftunary_not_expr )
 
-ftexpr_visitor::begin_result V::begin_visit( ftwords_expr &e ) {
+ft_visit_result::type V::begin_visit( ftwords_expr &e ) {
   ACCEPT( e.get_expr(), plan_visitor_ );
   PlanIter_t it = plan_visitor_.pop_itstack();
   ZORBA_ASSERT( plan_visitor_.itstack.empty() );
   e.set_plan_iter( it );
-  return br_no_end;
+  sub_iters_.push_back( it );
+  return ft_visit_result::no_end;
 }
 DEF_FTEXPR_VISITOR_END_VISIT( V, ftwords_expr )
 
@@ -2759,12 +2747,13 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdistance_filter )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftorder_filter )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftscope_filter )
 
-ftexpr_visitor::begin_result V::begin_visit( ftwindow_filter &f ) {
+ft_visit_result::type V::begin_visit( ftwindow_filter &f ) {
   ACCEPT( f.get_window(), plan_visitor_ );
   PlanIter_t it = plan_visitor_.pop_itstack();
   ZORBA_ASSERT( plan_visitor_.itstack.empty() );
   f.set_plan_iter( it );
-  return br_no_end;
+  sub_iters_.push_back( it );
+  return ft_visit_result::no_end;
 }
 DEF_FTEXPR_VISITOR_END_VISIT( V, ftwindow_filter )
 
@@ -2772,7 +2761,7 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_option )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmatch_option )
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmatch_options )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstem_option )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
@@ -2783,9 +2772,9 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
 #undef V
 
 
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
+ ******************************************************************************/
 
 plan_visitor::plan_visitor(
     CompilerCB* ccb,
@@ -2817,15 +2806,34 @@ plan_visitor::~plan_visitor()
 }
 
 
+bool plan_visitor::begin_visit (ftcontains_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void plan_visitor::end_visit (ftcontains_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  PlanIter_t ftignore_it = pop_itstack();
+  PlanIter_t ftrange_it = pop_itstack();
+  PlanIter_t ftcontains_it = new FTContainsIterator(
+    sctx, qloc, ftrange_it, ftignore_it, v.get_ftselection(),
+    plan_ftexpr_visitor_->get_sub_iters()
+  );
+  push_itstack( ftcontains_it );
+}
+
+
 ftexpr_visitor& plan_visitor::get_ftexpr_visitor() 
 {
   return *plan_ftexpr_visitor_;
 }
 
 
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
+ ******************************************************************************/
 
 PlanIter_t codegen(
     const char* descr,

@@ -101,6 +101,9 @@
     void beginVisit(const LetVarIterator& a);
     void endVisit  (const LetVarIterator& );
 
+    void beginVisit(const FTContainsIterator& a);
+    void endVisit  (const FTContainsIterator& );
+
     void beginVisitFlworWhereClause(const PlanIterator& a);
     void endVisitFlworWhereClause(const PlanIterator& );
 

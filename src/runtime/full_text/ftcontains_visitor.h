@@ -14,26 +14,25 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FTEXPR_VISITOR_H
-#define ZORBA_FTEXPR_VISITOR_H
+#ifndef ZORBA_FULL_TEXT_EVAL_VISITOR_H
+#define ZORBA_FULL_TEXT_EVAL_VISITOR_H
 
-#include "compiler/expression/expr_base.h"
-#include "compiler/expression/ftexpr_classes.h"
+#include <stack>
+
+#include "compiler/expression/ftexpr_visitor.h"
+#include "runtime/base/plan_iterator.h"
+#include "runtime/full_text/ft_matches.h"
 
 namespace zorba {
 
-/**
- * An ftexpr_visitor is used to visit the nodes of an ftexpr tree.
- */
-class ftexpr_visitor {
+class ftcontains_visitor : public ftexpr_visitor {
 public:
-  virtual ~ftexpr_visitor();
+  ftcontains_visitor( ft_tokens const&, PlanState& );
+  ~ftcontains_visitor();
 
-  virtual expr_visitor& get_expr_visitor() = 0;
+  bool ftcontains() const;
 
-# define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C)           \
-  virtual ft_visit_result::type begin_visit( C& ) = 0;  \
-  virtual void end_visit( C& ) = 0
+  expr_visitor& get_expr_visitor();
 
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
@@ -66,28 +65,25 @@ public:
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
 
-# undef DECL_FTEXPR_VISITOR_VISIT_MEM_FNS
-# define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C) \
-  ft_visit_result::type begin_visit( C& );    \
-  void end_visit( C& )
+private:
+  std::stack<ft_all_matches*> eval_stack_;
+  PlanState plan_state_;
 
-# define DEF_FTEXPR_VISITOR_BEGIN_VISIT(V,C)    \
-  ft_visit_result::type V::begin_visit( C& ) {  \
-    return ft_visit_result::proceed;            \
+  void push( ft_all_matches *m ) {
+    eval_stack_.push( m );
   }
 
-# define DEF_FTEXPR_VISITOR_END_VISIT(V,C)  \
-  void V::end_visit( C& ) {                 \
+  ft_all_matches* pop() {
+    ft_all_matches *const m = top();
+    eval_stack_.pop();
+    return m;
   }
 
-# define DEF_FTEXPR_VISITOR_VISIT_MEM_FNS(V,C)  \
-  DEF_FTEXPR_VISITOR_BEGIN_VISIT(V,C)           \
-  DEF_FTEXPR_VISITOR_END_VISIT(V,C)
-
-protected:
-  ftexpr_visitor() { }
+  ft_all_matches* top() const {
+    return eval_stack_.top();
+  }
 };
 
 } // namespace zorba
-#endif /* ZORBA_FTEXPR_VISITOR_H */
+#endif  /* ZORBA_FULL_TEXT_EVAL_VISITOR_H */
 /* vim:set et sw=2 ts=2: */

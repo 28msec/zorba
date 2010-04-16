@@ -315,6 +315,8 @@
 
   PLAN_ITER_VISITOR(ApplyIterator);
 
+  PLAN_ITER_VISITOR(FTContainsIterator);
+
 #ifdef ZORBA_WITH_TIDY
   PLAN_ITER_VISITOR(ZorbaTidyIterator);
   PLAN_ITER_VISITOR(ZorbaTDocIterator);

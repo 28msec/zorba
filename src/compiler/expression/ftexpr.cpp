@@ -119,22 +119,29 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_expr)
 SERIALIZABLE_CLASS_VERSIONS(ftwords_times_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times_expr)
 
-#define BEGIN_VISIT( V )                                                \
-  { /* begin scope */                                                   \
-    ftexpr_visitor::begin_result const br0 = (V).begin_visit( *this );  \
-    if ( !(br0 & ftexpr_visitor::br_no_children) ) {
+#define DO_CHILDREN( R )  ( !(R & ft_visit_result::no_children) )
+#define DO_END_VISIT( R ) ( !(R & ft_visit_result::no_end) )
 
-#define END_VISIT( V )                        \
-    }                                         \
-    if ( !(br0 & ftexpr_visitor::br_no_end) ) \
-        (V).end_visit( *this );               \
-  } /* end scope */
+#define BEGIN_VISIT( V )                                \
+  ft_visit_result::type vr0 = (V).begin_visit( *this ); \
+  if ( DO_CHILDREN( vr0 ) ) {
 
-#define ACCEPT( FTEXPR, V )                 \
-  if ( !(FTEXPR) ) ; else (FTEXPR)->accept( V )
+#define END_VISIT( V )                                       \
+  }                                                          \
+  if ( !DO_END_VISIT( vr0 ) ) ; else (V).end_visit( *this ); \
+  return vr0
 
-#define ACCEPT_SEQ( T, S, V )                                     \
-  for ( T::const_iterator i = (S).begin(); i != (S).end(); ++i )  \
+#define EV_ACCEPT( EXPR, V ) \
+  if ( !(EXPR) ) ; else (EXPR)->accept( V )
+
+#define ACCEPT( FTEXPR, V ) \
+  if ( !(FTEXPR) ) ; else   \
+  vr0 = (ft_visit_result::type)(vr0 | (FTEXPR)->accept( V ))
+
+#define ACCEPT_SEQ( T, S, V )                 \
+  for ( T::const_iterator i = (S).begin();    \
+        DO_CHILDREN( vr0 ) && i != (S).end(); \
+        ++i )                                 \
     ACCEPT( *i, V );
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -232,7 +239,9 @@ DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, flwor_expr )
 DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, fo_expr )
 
 bool V::begin_visit( ftcontains_expr &e ) {
-  //e.get_ftselection()
+  ftexpr *const ftselection = e.get_ftselection();
+  ftexpr_visitor &v2 = get_ftexpr_visitor();
+  //v2.begin_visit( ftselection );
   return true;
 }
 
@@ -308,7 +317,7 @@ protected:
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_option );
+  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_options );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_words );
@@ -333,20 +342,20 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmild_not_expr );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftor_expr );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftprimary_with_options_expr );
 
-ftexpr_visitor::begin_result V::begin_visit( ftrange_expr &c ) {
+ft_visit_result::type V::begin_visit( ftrange_expr &c ) {
   push_back( c.get_expr1().getp() );
   if ( c.get_expr2() )
     push_back( c.get_expr2().getp() );
-  return br_no_end;
+  return ft_visit_result::no_end;
 }
 DEF_FTEXPR_VISITOR_END_VISIT( V, ftrange_expr );
 
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftselection_expr );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftunary_not_expr );
 
-ftexpr_visitor::begin_result V::begin_visit( ftwords_expr &c ) {
+ft_visit_result::type V::begin_visit( ftwords_expr &c ) {
   push_back( c.get_expr() );
-  return br_no_end;
+  return ft_visit_result::no_end;
 }
 DEF_FTEXPR_VISITOR_END_VISIT( V, ftwords_expr );
 
@@ -358,9 +367,9 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdistance_filter );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftorder_filter );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftscope_filter );
 
-ftexpr_visitor::begin_result V::begin_visit( ftwindow_filter &c ) {
+ft_visit_result::type V::begin_visit( ftwindow_filter &c ) {
   push_back( c.get_window().getp() );
-  return br_no_end;
+  return ft_visit_result::no_end;
 }
 DEF_FTEXPR_VISITOR_END_VISIT( V, ftwindow_filter )
 
@@ -369,7 +378,7 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcase_option );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_option );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option );
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmatch_option );
+DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmatch_options );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstem_option );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option );
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_words );
@@ -413,10 +422,10 @@ ftcontains_expr::ftcontains_expr(
 
 void ftcontains_expr::accept( expr_visitor &v ) {
   if ( v.begin_visit( *this ) ) {
-    ACCEPT( range_, v );
+    EV_ACCEPT( range_, v );
     ftexpr_visitor &v2 = v.get_ftexpr_visitor();
-    ACCEPT( ftselection_, v2 );
-    ACCEPT( ftignore_, v );
+    ftselection_->accept( v2 );
+    EV_ACCEPT( ftignore_, v );
   }
   v.end_visit( *this );
 }
@@ -489,7 +498,7 @@ ftand_expr::~ftand_expr() {
   delete_ptr_container( list_ );
 }
 
-void ftand_expr::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftand_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( ftexpr_list_t, list_, v );
   END_VISIT( v );
@@ -509,7 +518,7 @@ ftcase_option::ftcase_option(
 {
 }
 
-void ftcase_option::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftcase_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -527,7 +536,7 @@ ftcontent_filter::ftcontent_filter(
 {
 }
 
-void ftcontent_filter::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftcontent_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -541,7 +550,7 @@ ftdiacritics_option::ftdiacritics_option(
 {
 }
 
-void ftdiacritics_option::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftdiacritics_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -562,7 +571,7 @@ ftdistance_filter::ftdistance_filter(
 {
 }
 
-void ftdistance_filter::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftdistance_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( range_, v );
   END_VISIT( v );
@@ -585,7 +594,7 @@ ftextension_selection_expr::ftextension_selection_expr(
 {
 }
 
-void ftextension_selection_expr::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftextension_selection_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( ftselection_, v );
   END_VISIT( v );
@@ -606,7 +615,7 @@ ftextension_option::ftextension_option(
 {
 }
 
-void ftextension_option::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftextension_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -626,7 +635,7 @@ ftlanguage_option::ftlanguage_option(
 {
 }
 
-void ftlanguage_option::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftlanguage_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -664,7 +673,8 @@ ftmatch_options::~ftmatch_options() {
   delete wild_card_option_;
 }
 
-void ftmatch_options::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftmatch_options::accept( ftexpr_visitor &v ) {
+  BEGIN_VISIT( v );
   ACCEPT( case_option_, v );
   ACCEPT( diacritics_option_, v );
   ACCEPT( extension_option_, v );
@@ -673,6 +683,7 @@ void ftmatch_options::accept( ftexpr_visitor &v ) {
   ACCEPT( stop_word_option_, v );
   ACCEPT( thesaurus_option_, v );
   ACCEPT( wild_card_option_, v );
+  END_VISIT( v );
 }
 
 void ftmatch_options::serialize( serialization::Archiver &ar ) {
@@ -696,7 +707,7 @@ ftmild_not_expr::~ftmild_not_expr() {
   delete_ptr_container( list_ );
 }
 
-void ftmild_not_expr::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftmild_not_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( ftexpr_list_t, list_, v );
   END_VISIT( v );
@@ -717,7 +728,7 @@ ftor_expr::ftor_expr( QueryLoc const &loc, ftexpr_list_t &list ) :
   list_.swap( list );
 }
 
-void ftor_expr::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftor_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( ftexpr_list_t, list_, v );
   END_VISIT( v );
@@ -733,7 +744,7 @@ ftorder_filter::ftorder_filter( QueryLoc const &loc ) :
 {
 }
 
-void ftorder_filter::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftorder_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -767,7 +778,7 @@ ftprimary_with_options_expr::~ftprimary_with_options_expr() {
   delete match_options_;
 }
 
-void ftprimary_with_options_expr::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftprimary_with_options_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( primary_, v );
   ACCEPT( match_options_, v );
@@ -794,11 +805,11 @@ ftrange_expr::ftrange_expr(
 {
 }
 
-void ftrange_expr::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftrange_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   expr_visitor &v2 = v.get_expr_visitor();
-  ACCEPT( expr1_, v2 );
-  ACCEPT( expr2_, v2 );
+  EV_ACCEPT( expr1_, v2 );
+  EV_ACCEPT( expr2_, v2 );
   END_VISIT( v );
 }
 
@@ -818,7 +829,7 @@ ftscope_filter::ftscope_filter(
 {
 }
 
-void ftscope_filter::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftscope_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -844,7 +855,7 @@ ftselection_expr::~ftselection_expr() {
   delete_ptr_container( list_ );
 }
 
-void ftselection_expr::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftselection_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( ftpos_filter_list_t, list_, v );
   END_VISIT( v );
@@ -865,7 +876,7 @@ ftstem_option::ftstem_option(
 {
 }
 
-void ftstem_option::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftstem_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -888,7 +899,7 @@ ftstop_words::ftstop_words(
 {
 }
 
-void ftstop_words::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftstop_words::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -924,7 +935,7 @@ ftstop_word_option::~ftstop_word_option() {
   delete_ptr_container( stop_words_ );
 }
 
-void ftstop_word_option::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftstop_word_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( stop_word_list_t, stop_words_, v );
   END_VISIT( v );
@@ -953,7 +964,7 @@ ftthesaurus_id::~ftthesaurus_id() {
   delete levels_;
 }
 
-void ftthesaurus_id::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftthesaurus_id::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( levels_, v );
   END_VISIT( v );
@@ -983,7 +994,7 @@ ftthesaurus_option::~ftthesaurus_option() {
   delete_ptr_container( thesaurus_id_list_ );
 }
 
-void ftthesaurus_option::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftthesaurus_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT_SEQ( thesaurus_id_list_t, thesaurus_id_list_, v );
   END_VISIT( v );
@@ -1005,7 +1016,7 @@ ftunary_not_expr::~ftunary_not_expr() {
   delete subexpr_;
 }
 
-void ftunary_not_expr::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftunary_not_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( subexpr_, v );
   END_VISIT( v );
@@ -1025,7 +1036,7 @@ ftwild_card_option::ftwild_card_option(
 {
 }
 
-void ftwild_card_option::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftwild_card_option::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
 }
@@ -1046,10 +1057,10 @@ ftwindow_filter::ftwindow_filter(
 {
 }
 
-void ftwindow_filter::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftwindow_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   expr_visitor &v2 = v.get_expr_visitor();
-  ACCEPT( window_, v2 );
+  EV_ACCEPT( window_, v2 );
   END_VISIT( v );
 }
 
@@ -1070,10 +1081,10 @@ ftwords_expr::ftwords_expr(
 {
 }
 
-void ftwords_expr::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftwords_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   expr_visitor &v2 = v.get_expr_visitor();
-  ACCEPT( expr_, v2 );
+  EV_ACCEPT( expr_, v2 );
   END_VISIT( v );
 }
 
@@ -1099,7 +1110,7 @@ ftwords_times_expr::~ftwords_times_expr() {
   delete fttimes_;
 }
 
-void ftwords_times_expr::accept( ftexpr_visitor &v ) {
+ft_visit_result::type ftwords_times_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( ftwords_, v );
   ACCEPT( fttimes_, v );

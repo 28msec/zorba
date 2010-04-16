@@ -24,6 +24,15 @@ namespace zorba {
 class ftexpr;
 class ftexpr_visitor;
 
+namespace ft_visit_result {
+  enum type {
+    proceed,
+    no_children = 0x01,
+    no_end      = 0x02,
+    neither     = no_children | no_end
+  };
+};
+
 typedef rchandle<ftexpr> ftexpr_t;
 
 class ftand_expr;

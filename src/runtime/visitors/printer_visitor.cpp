@@ -46,7 +46,6 @@
 #include "runtime/eval/eval.h"
 #include "runtime/fnerror/fnerror.h"
 #include "runtime/fnput/fnput.h"
-#include "runtime/full_text/full_text.h"
 #include "runtime/function_item/function_item_iter.h"
 #include "runtime/indexing/ic_ddl.h"
 #include "runtime/introspection/dctx.h"
@@ -1112,20 +1111,6 @@ void PrinterVisitor::endVisit ( const FnPutIterator& ) {
   thePrinter.endEndVisit();
 }
 // </FnPutIterator>
-
-
-// <FTContainsIterator>
-void PrinterVisitor::beginVisit ( const FTContainsIterator& a) {
-  thePrinter.startBeginVisit("FTContainsIterator", ++theId);
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit( theId );
-}
-
-void PrinterVisitor::endVisit ( const FTContainsIterator& ) {
-  thePrinter.startEndVisit();
-  thePrinter.endEndVisit();
-}
-// </FTContainsIterator>
 
 
 // <FunctionNameIterator>

@@ -100,7 +100,7 @@ public:
 
   virtual ~ftexpr();
 
-  virtual void accept( ftexpr_visitor& ) = 0;
+  virtual ft_visit_result::type accept( ftexpr_visitor& ) = 0;
   QueryLoc const& get_loc() const { return loc_; }
 
 protected:
@@ -134,7 +134,7 @@ public:
     ft_case_mode::type = ft_case_mode::DEFAULT
   );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ft_case_mode::type get_mode() const { return mode_; }
 
 private:
@@ -152,7 +152,7 @@ public:
     ft_diacritics_mode::type = ft_diacritics_mode::DEFAULT
   );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ft_diacritics_mode::type get_mode() const { return mode_; }
 
 private:
@@ -171,7 +171,7 @@ public:
     std::string const &val
   );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   rchandle<QName> get_qname() const { return qname_; }
   std::string const& get_val() const { return val_; }
 
@@ -191,7 +191,7 @@ public:
     std::string const &language
   );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   std::string const& get_language() const { return language_; }
 
 private:
@@ -209,7 +209,7 @@ public:
     ft_stem_mode::type = ft_stem_mode::DEFAULT
   );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ft_stem_mode::type get_mode() const { return mode_; }
 
 private:
@@ -231,7 +231,7 @@ public:
     ft_stop_words_unex::type = ft_stop_words_unex::union_
   );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   std::string const& get_uri() const { return uri_; }
   list_t const& get_list() const { return list_; }
   ft_stop_words_unex::type get_mode() const { return mode_; }
@@ -263,7 +263,7 @@ public:
 
   ~ftstop_word_option();
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ft_stop_words_mode::type get_mode() const { return mode_; }
   stop_word_list_t const& get_stop_words() const { return stop_words_; }
 
@@ -286,7 +286,7 @@ public:
   );
   ~ftthesaurus_id();
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   std::string const& get_uri() const { return uri_; }
   std::string const& get_relationship() const { return relationship_; }
   ftrange_expr const* get_levels() const { return levels_; }
@@ -316,7 +316,7 @@ public:
   thesaurus_id_list_t const& get_thesaurus_id_list() const
     { return thesaurus_id_list_; }
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   bool includes_default() const { return includes_default_; }
   bool no_thesaurus() const { return no_thesaurus_; }
 
@@ -337,7 +337,7 @@ public:
     ft_wild_card_mode::type = ft_wild_card_mode::DEFAULT
   );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ft_wild_card_mode::type get_mode() const { return mode_; }
 
 private:
@@ -353,7 +353,7 @@ public:
   ftmatch_options( QueryLoc const& );
   ~ftmatch_options();
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
 
   ftcase_option const* get_case_option() const { return case_option_; }
 
@@ -454,7 +454,7 @@ public:
     ftselection_expr*
   );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ftselection_expr const* get_ftselection() const { return ftselection_; }
 
 private:
@@ -476,7 +476,7 @@ public:
   );
   ~ftselection_expr();
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ftpos_filter_list_t const& get_ftpos_filter_list() const { return list_; }
   ftexpr const* get_ftor() const { return ftor_; };
 
@@ -498,7 +498,7 @@ public:
   );
   ~ftwords_times_expr();
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ftwords_expr const* get_words() const { return ftwords_; }
   ftrange_expr const* get_times() const { return fttimes_; }
 
@@ -529,7 +529,7 @@ public:
 
   ftcontent_filter( QueryLoc const&, ft_content_mode::type );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ft_content_mode::type get_mode() const { return mode_; }
 
 private:
@@ -544,7 +544,7 @@ public:
 
   ftdistance_filter( QueryLoc const&, ftrange_expr*, ft_unit::type );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ftrange_expr const* get_range() const { return range_; }
   ft_unit::type get_unit() const { return unit_; }
 
@@ -559,7 +559,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftorder_filter,ftpos_filter)
   void serialize( serialization::Archiver& );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ftorder_filter( QueryLoc const& );
 };
 
@@ -571,7 +571,9 @@ public:
 
   ftscope_filter( QueryLoc const&, ft_scope::type, ft_big_unit::type );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_scope::type get_scope() const { return scope_; }
+  ft_big_unit::type get_unit() const { return unit_; }
 
 private:
   ft_scope::type scope_;
@@ -586,7 +588,7 @@ public:
 
   ftwindow_filter( QueryLoc const&, additive_expr_t, ft_unit::type );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ft_unit::type get_unit() const { return unit_; }
   additive_expr_t get_window() const { return window_; }
 
@@ -615,7 +617,7 @@ public:
   ftand_expr( QueryLoc const&, ftexpr_list_t& );
   ~ftand_expr();
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ftexpr_list_t& get_expr_list() { return list_; }
   ftexpr_list_t const& get_expr_list() const { return list_; }
 
@@ -634,7 +636,7 @@ public:
   ftmild_not_expr( QueryLoc const&, ftexpr_list_t& );
   ~ftmild_not_expr();
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ftexpr_list_t& get_expr_list() { return list_; }
   ftexpr_list_t const& get_expr_list() const { return list_; }
 
@@ -653,7 +655,7 @@ public:
   ftor_expr( QueryLoc const&, ftexpr_list_t& );
   ~ftor_expr();
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ftexpr_list_t& get_expr_list() { return list_; }
   ftexpr_list_t const& get_expr_list() const { return list_; }
 
@@ -670,7 +672,7 @@ public:
   ftprimary_with_options_expr( QueryLoc const& );
   ~ftprimary_with_options_expr();
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ftprimary_expr const* get_primary() const { return primary_; }
   ftmatch_options const* get_match_options() const { return match_options_; }
   PlanIter_t get_plan_iter() const { return plan_iter_; }
@@ -714,13 +716,13 @@ public:
     additive_expr_t expr2 = NULL
   );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   additive_expr_t get_expr1() const { return expr1_; }
   additive_expr_t get_expr2() const { return expr2_; }
   ft_range_mode::type get_mode() const { return mode_; }
 
-  PlanIter_t get_iter1() const { return it1_; }
-  PlanIter_t get_iter2() const { return it2_; }
+  PlanIter_t get_plan_iter1() const { return it1_; }
+  PlanIter_t get_plan_iter2() const { return it2_; }
 
   void set_plan_iters( PlanIter_t it1, PlanIter_t it2 ) {
     it1_ = it1;
@@ -744,7 +746,7 @@ public:
   ftunary_not_expr( QueryLoc const&, ftexpr *subexpr );
   ~ftunary_not_expr();
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   ftexpr const* get_subexpr() const { return subexpr_; }
 
 private:
@@ -763,7 +765,7 @@ public:
     ft_anyall_mode::type = ft_anyall_mode::DEFAULT
   );
 
-  void accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftexpr_visitor& );
   expr_t get_expr() const { return expr_; }
   ft_anyall_mode::type get_mode() const { return mode_; }
   PlanIter_t get_plan_iter() const { return plan_iter_; }

@@ -63,7 +63,6 @@ PLANINTER_VISITOR_GENERATOR(${PLANINTER_VISITOR_HEADER_GENERATOR}
                             "files:=${SPEC_FILES}"
                             ${ZORBA_WORKS})
 
-
 LIST(APPEND RUNTIME_SRCS
     visitors/printer_visitor_api.cpp
     api/plan_iterator_wrapper.cpp
@@ -107,6 +106,8 @@ LIST(APPEND RUNTIME_SRCS
     function_item/function_item.cpp
     function_item/dynamic_fncall_iterator.cpp
 )
+
+ADD_SRC_SUBFOLDER(RUNTIME_SRCS full_text FULLTEXT_SRCS)
 
 HEADER_GROUP_SUBFOLDER(RUNTIME_SRCS debug)
 

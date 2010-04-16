@@ -119,6 +119,7 @@
   class ApplyIterator;
   class CreateTupleIterator;
   class GetTupleFieldIterator;
+  class FTContainsIterator;
 
   class ZorbaSchemaTypeIterator;
 #ifdef ZORBA_WITH_TIDY

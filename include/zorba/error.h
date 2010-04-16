@@ -765,6 +765,8 @@ typedef enum
   XTDE1350,
   // It is a non-recoverable dynamic error if a component specifier within the picture refers to components that are not available in the given type of $value.
 
+  FTDY0017, // Invalid expression on the left-hand side of a not-in
+
   //
   // ZORBA errors
   //
@@ -981,3 +983,4 @@ typedef enum
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */
