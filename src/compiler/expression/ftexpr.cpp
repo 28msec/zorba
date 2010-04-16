@@ -807,10 +807,10 @@ ftrange_expr::ftrange_expr(
 
 ft_visit_result::type ftrange_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
-  expr_visitor &v2 = v.get_expr_visitor();
+/*  expr_visitor &v2 = v.get_expr_visitor();
   EV_ACCEPT( expr1_, v2 );
   EV_ACCEPT( expr2_, v2 );
-  END_VISIT( v );
+*/  END_VISIT( v );
 }
 
 void ftrange_expr::serialize( serialization::Archiver &ar ) {
@@ -1059,9 +1059,9 @@ ftwindow_filter::ftwindow_filter(
 
 ft_visit_result::type ftwindow_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
-  expr_visitor &v2 = v.get_expr_visitor();
+/*  expr_visitor &v2 = v.get_expr_visitor();
   EV_ACCEPT( window_, v2 );
-  END_VISIT( v );
+*/  END_VISIT( v );
 }
 
 void ftwindow_filter::serialize( serialization::Archiver &ar ) {
@@ -1083,9 +1083,9 @@ ftwords_expr::ftwords_expr(
 
 ft_visit_result::type ftwords_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
-  expr_visitor &v2 = v.get_expr_visitor();
+/*  expr_visitor &v2 = v.get_expr_visitor();
   EV_ACCEPT( expr_, v2 );
-  END_VISIT( v );
+*/  END_VISIT( v );
 }
 
 void ftwords_expr::serialize( serialization::Archiver &ar ) {

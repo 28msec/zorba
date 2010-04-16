@@ -29,7 +29,7 @@ class ftexpr_visitor {
 public:
   virtual ~ftexpr_visitor();
 
-  virtual expr_visitor& get_expr_visitor() = 0;
+  //virtual expr_visitor& get_expr_visitor() = 0;
 
 # define DECL_FTEXPR_VISITOR_VISIT_MEM_FNS(C)           \
   virtual ft_visit_result::type begin_visit( C& ) = 0;  \

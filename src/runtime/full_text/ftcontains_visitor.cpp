@@ -25,6 +25,11 @@ using namespace std;
 
 namespace zorba {
 
+//for Windows build
+#undef max
+#undef min
+
+
 ftcontains_visitor::ftcontains_visitor( ft_tokens const &tokens,
                                         PlanState &state ) :
   plan_state_( state )
@@ -50,11 +55,11 @@ bool ftcontains_visitor::ftcontains() const {
       return true;
   return false;
 }
-
+/*
 expr_visitor& ftcontains_visitor::get_expr_visitor() {
   // TODO
 }
-
+*/
 ///////////////////////////////////////////////////////////////////////////////
 
 #define V ftcontains_visitor

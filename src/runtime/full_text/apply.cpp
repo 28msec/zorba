@@ -29,6 +29,10 @@ using namespace std;
 
 namespace zorba {
 
+//for Windows build
+#undef max
+#undef min
+
 typedef set<ft_token::int_t> ft_pos_set;
 
 ////////// Helper algorithms /////////////////////////////////////////////////
