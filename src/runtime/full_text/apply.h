@@ -49,7 +49,7 @@ void apply_ftwindow( ft_all_matches const&, int window_size, ft_unit::type,
                      ft_all_matches &result );
 
 void apply_ftwords( ft_tokens const &search_ctx, ft_query_tokens const&,
-                    int query_pos, ft_anyall_mode::type,
+                    ft_query_token::int_t query_pos, ft_anyall_mode::type,
                     ft_all_matches &result );
 
 } // namespace zorba

@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+#include <memory>
+#include <string>
+
 #include <zorba/store_consts.h>
 
 #include "common/common.h"
@@ -24,6 +27,7 @@
 #include "runtime/full_text/full_text.h"
 #include "runtime/full_text/ftcontains_visitor.h"
 #include "runtime/full_text/ft_tokenizer.h"
+#include "runtime/full_text/stl_helpers.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -35,8 +39,33 @@ using namespace std;
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
+class ft_item_token_creator : public ft_tokenizer::callback {
+public:
+  ft_item_token_creator( ft_item_tokens &tokens ) : tokens_( tokens ) { }
+
+  void operator()( char const *utf8_s, int utf8_len,
+                   int token_no, int sent_no, int para_no );
+private:
+  ft_item_tokens &tokens_;
+};
+
+void ft_item_token_creator::operator()( char const *utf8_s, int utf8_len,
+                                        int token_no, int sent_no,
+                                        int para_no ) {
+  ft_item_token t;
+  t.word = string( utf8_s, utf8_len );
+  t.pos  = token_no;
+  t.sent = sent_no;
+  t.para = para_no;
+  tokens_.push_back( t );
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 static void tokenize( store::Item_t item, ft_tokenizer &tokenizer,
-                      ft_tokens &result ) {
+                      ft_tokenizer::callback &callback ) {
   switch ( item->getNodeKind() ) {
     case store::StoreConsts::documentNode:
     case store::StoreConsts::elementNode: {
@@ -44,12 +73,12 @@ static void tokenize( store::Item_t item, ft_tokenizer &tokenizer,
       store::Iterator_t it = item->getChildren();
       store::Item_t child;
       for ( it->open(); it->next( child ); it->close() )
-        tokenize( child, tokenizer, result );
+        tokenize( child, tokenizer, callback );
       break;
     }
     case store::StoreConsts::textNode: {
       xqpStringStore_t const s = item->getStringValue();
-      tokenizer.tokenize( s->str(), result );
+      tokenizer.tokenize( s->str(), callback );
       break;
     }
     default:
@@ -62,11 +91,11 @@ static void tokenize( store::Item_t item, ft_tokenizer &tokenizer,
 FTContainsIterator::FTContainsIterator(
   static_context *sctx,
   QueryLoc const &loc,
-  PlanIter_t &child1, PlanIter_t &child2,
+  PlanIter_t &search_context, PlanIter_t &ftignore_option,
   ftexpr *ftselection,
   sub_iter_list_t &sub_iters
 ) : 
-  base_type( sctx, loc, child1, child2 ),
+  base_type( sctx, loc, search_context, ftignore_option ),
   ftselection_( ftselection )
 {
   sub_iters_.swap( sub_iters );
@@ -81,20 +110,21 @@ void FTContainsIterator::serialize( serialization::Archiver &ar ) {
 bool FTContainsIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
   bool ftcontains = false;
-  store::Item_t item0;
-  ft_tokenizer *const tokenizer = ft_tokenizer::create();
+  store::Item_t item;
+  auto_ptr<ft_tokenizer> tokenizer( ft_tokenizer::create() );
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
-  while ( !ftcontains && consumeNext( item0, theChild0.getp(), plan_state ) ) {
-    ft_tokens tokens;
-    tokenize( item0, *tokenizer, tokens );
-    if ( tokens.empty() )
-      continue;
-    ftcontains_visitor v( tokens, plan_state );
-    ftselection_->accept( v );
-    ftcontains = v.ftcontains();
+  while ( !ftcontains && consumeNext( item, theChild0.getp(), plan_state ) ) {
+    ft_item_tokens tokens;
+    ft_item_token_creator token_creator( tokens );
+    tokenize( item, *tokenizer, token_creator );
+    if ( !tokens.empty() ) {
+      ftcontains_visitor v( tokens, plan_state );
+      ftselection_->accept( v );
+      ftcontains = v.ftcontains();
+    }
   }
 
   STACK_PUSH( GENV_ITEMFACTORY->createBoolean( result, ftcontains ), state );
@@ -107,8 +137,7 @@ void FTContainsIterator::openImpl( PlanState &state, uint32_t &offset ) {
   theChild0->open( state, offset );
   if ( theChild1 ) // the optional FTIgnoreOption
     theChild1->open( state, offset );
-  for ( sub_iter_list_t::iterator i = sub_iters_.begin();
-        i != sub_iters_.end(); ++i ) {
+  MUTATE_EACH( sub_iter_list_t, i, sub_iters_ ) {
     (*i)->open( state, offset );
   }
 }
@@ -118,8 +147,7 @@ void FTContainsIterator::closeImpl( PlanState &state ) {
   theChild0->close( state );
   if ( theChild1 ) // the optional FTIgnoreOption
     theChild1->close( state );
-  for ( sub_iter_list_t::iterator i = sub_iters_.begin();
-        i != sub_iters_.end(); ++i ) {
+  MUTATE_EACH( sub_iter_list_t, i, sub_iters_ ) {
     (*i)->close( state );
   }
 }
@@ -129,8 +157,7 @@ void FTContainsIterator::resetImpl( PlanState &state ) const {
   theChild0->reset( state );
   if ( theChild1 ) // the optional FTIgnoreOption
     theChild1->reset( state );
-  for ( sub_iter_list_t::const_iterator i = sub_iters_.begin();
-        i != sub_iters_.end(); ++i ) {
+  FOR_EACH( sub_iter_list_t, i, sub_iters_ ) {
     (*i)->reset( state );
   }
 }

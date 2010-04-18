@@ -37,7 +37,7 @@ private:
   typedef BinaryBaseIterator<FTContainsIterator,PlanIteratorState> base_type;
 public:
   SERIALIZABLE_CLASS(FTContainsIterator);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(FTContainsIterator, base_type);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(FTContainsIterator,base_type);
   void serialize( serialization::Archiver& );
 
   typedef std::list<PlanIter_t> sub_iter_list_t;
@@ -45,7 +45,7 @@ public:
   FTContainsIterator(
     static_context*,
     QueryLoc const&,
-    PlanIter_t& child1, PlanIter_t& child2,
+    PlanIter_t &search_context, PlanIter_t &ftignore_option,
     ftexpr *ftselection,
     sub_iter_list_t&
   );
@@ -53,8 +53,8 @@ public:
 
   void accept( PlanIterVisitor& ) const;
 
-  bool nextImpl( store::Item_t &result, PlanState& ) const;
   void openImpl( PlanState&, uint32_t& );
+  bool nextImpl( store::Item_t &result, PlanState& ) const;
   void resetImpl( PlanState& ) const;
   void closeImpl( PlanState& );
 private:

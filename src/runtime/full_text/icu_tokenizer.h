@@ -17,24 +17,26 @@
 #ifndef ZORBA_FULL_TEXT_ICU_TOKENIZER_H
 #define ZORBA_FULL_TEXT_ICU_TOKENIZER_H
 
-#include <unicode/brkiter.h>
+#include <unicode/rbbi.h>
 
 #include "runtime/full_text/ft_tokenizer.h"
 
 namespace zorba {
 
+/**
+ * An icu_tokenizer is-an ft_tokenizer that uses the ICU (International
+ * Components for Unicode) library.
+ */
 class icu_tokenizer : public ft_tokenizer {
 public:
+  icu_tokenizer();
   ~icu_tokenizer();
 
-  void tokenize( std::string const &utf8_text, ft_tokens &result ) const;
+  void tokenize( std::string const &utf8_s, callback& );
 
 private:
-  U_NAMESPACE_QUALIFIER BreakIterator* get_word_it() const;
-  U_NAMESPACE_QUALIFIER BreakIterator* get_sent_it() const;
-
-  mutable U_NAMESPACE_QUALIFIER BreakIterator *word_it_;
-  mutable U_NAMESPACE_QUALIFIER BreakIterator *sent_it_;
+  U_NAMESPACE_QUALIFIER RuleBasedBreakIterator *word_it_;
+  U_NAMESPACE_QUALIFIER RuleBasedBreakIterator *sent_it_;
 };
 
 } // namespace zorba

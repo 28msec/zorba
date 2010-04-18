@@ -27,7 +27,7 @@ namespace zorba {
 
 class ftcontains_visitor : public ftexpr_visitor {
 public:
-  ftcontains_visitor( ft_tokens const&, PlanState& );
+  ftcontains_visitor( ft_item_tokens const&, PlanState& );
   ~ftcontains_visitor();
 
   bool ftcontains() const;

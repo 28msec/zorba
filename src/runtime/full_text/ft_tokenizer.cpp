@@ -20,9 +20,7 @@
 namespace zorba {
 
 ft_tokenizer::ft_tokenizer() {
-  token_no_ = 0;
-  sent_no_ = 0;
-  para_no_ = 0;
+  token_no_ = sent_no_ = para_no_ = 0;
 }
 
 ft_tokenizer::~ft_tokenizer() {
@@ -31,6 +29,10 @@ ft_tokenizer::~ft_tokenizer() {
 
 ft_tokenizer* ft_tokenizer::create() {
   return new icu_tokenizer;
+}
+
+ft_tokenizer::callback::~callback() {
+  // do nothing
 }
 
 } // namespace zorba

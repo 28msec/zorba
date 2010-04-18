@@ -25,15 +25,17 @@
 #include "runtime/full_text/stl_helpers.h"
 #include "zorbaerrors/error_manager.h"
 
+#ifdef WIN32
+// Windows annoyingly defines these as macros.
+#undef max
+#undef min
+#endif
+
 using namespace std;
 
 namespace zorba {
 
-//for Windows build
-#undef max
-#undef min
-
-typedef set<ft_token::int_t> ft_pos_set;
+typedef set<ft_token_span::int_t> ft_pos_set;
 
 ////////// Helper algorithms /////////////////////////////////////////////////
 
@@ -57,22 +59,23 @@ static ft_pos_set
 covered_include_positions( ft_match::includes_t const &includes ) {
   ft_pos_set s;
   FOR_EACH( ft_match::includes_t, i, includes )
-    for ( ft_token::int_t pos = i->pos.start; pos <= i->pos.end; ++pos )
+    for ( ft_token_span::int_t pos = i->pos.start; pos <= i->pos.end; ++pos )
       s.insert( pos );
   return s;
 }
 
 /**
- * For the given ft_unit, gets its corresponding ft_token pointer-to-member.
+ * For the given ft_unit, gets its corresponding ft_token_span
+ * pointer-to-member.
  */
-static ft_token::start_end_ptr get_sep_for( ft_unit::type unit ) {
+static ft_token_span::start_end_ptr get_sep_for( ft_unit::type unit ) {
   switch ( unit ) {
     case ft_unit::words:
-      return &ft_token::pos;
+      return &ft_token_span::pos;
     case ft_unit::sentences:
-      return &ft_token::sent;
+      return &ft_token_span::sent;
     case ft_unit::paragraphs:
-      return &ft_token::para;
+      return &ft_token_span::para;
   }
   return 0;                             // to suppress warning
 }
@@ -85,37 +88,39 @@ template<typename T> inline bool is_max_valid( T n ) {
 }
 
 /**
- * Sorts the 2 ft_tokens by their positions.
+ * Sorts the 2 ft_token_spans by their positions.
  */
-static void sort( ft_token const **ti, ft_token const **tj ) {
-  if ( **ti > **tj ) {
-    ft_token const *const temp = *ti;
-    *ti = *tj;
-    *tj = temp;
+static void sort( ft_token_span const *&tsi, ft_token_span const *&tsj ) {
+  if ( *tsi > *tsj ) {
+    ft_token_span const *const temp = tsi;
+    tsi = tsj;
+    tsj = temp;
   }
 }
 
 /**
- * Computes the distance of N between 2 ft_tokens where N is specified by the
- * pointer-to-member.
+ * Computes the distance of N between 2 ft_token_spans where N is specified by
+ * the pointer-to-member.
  */
-static ft_token::int_t distance( ft_token const &ti, ft_token const &tj,
-                                 ft_token::start_end_ptr sep ) {
-  ft_token const *pi = &ti, *pj = &tj;
-  sort( &pi, &pj );
+static ft_token_span::int_t distance( ft_token_span const &tsi,
+                                      ft_token_span const &tsj,
+                                      ft_token_span::start_end_ptr sep ) {
+  ft_token_span const *pi = &tsi, *pj = &tsj;
+  sort( pi, pj );
   return (pj->*sep).start - (pi->*sep).end - 1;
 }
 
 /**
- * Computes max(N) from the given sequence of ft_tokens where N is specified by
- * the pointers-to-members.
+ * Computes max(N) from the given sequence of ft_token_spans where N is
+ * specified by the pointers-to-members.
  */
-template<typename FTTokenSequenceType>
-ft_token::int_t max( FTTokenSequenceType &seq, ft_token::start_end_ptr sep,
-                     ft_token::int_ptr ip ) {
-  ft_token::int_t result = numeric_limits<ft_token::int_t>::min();
-  FOR_EACH( typename FTTokenSequenceType, t, seq ) {
-    ft_token::int_t const n = (*t).*sep.*ip;
+template<typename FTTokenSpanSequenceType>
+ft_token_span::int_t max( FTTokenSpanSequenceType &seq,
+                          ft_token_span::start_end_ptr sep,
+                          ft_token_span::int_ptr ip ) {
+  ft_token_span::int_t result = numeric_limits<ft_token_span::int_t>::min();
+  FOR_EACH( typename FTTokenSpanSequenceType, ts, seq ) {
+    ft_token_span::int_t const n = (*ts).*sep.*ip;
     if ( n > result )
       result = n;
   }
@@ -123,7 +128,7 @@ ft_token::int_t max( FTTokenSequenceType &seq, ft_token::start_end_ptr sep,
 }
 
 #define MAX(SEQ,SEP,IP) \
-  max( SEQ, &ft_token::SEP, &ft_token::start_end::IP )
+  max( SEQ, &ft_token_span::SEP, &ft_token_span::start_end::IP )
 
 /**
  * Find the max query_pos among all the match's include/exclude lists.
@@ -146,15 +151,16 @@ ft_string_match::int_t max_query_pos( ft_all_matches const &am ) {
 }
 
 /**
- * Computes min(N) from the given sequence of ft_tokens where N is specified by
- * the pointers-to-members.
+ * Computes min(N) from the given sequence of ft_token_spans where N is
+ * specified by the pointers-to-members.
  */
-template<typename FTTokenSequenceType>
-ft_token::int_t min( FTTokenSequenceType &seq, ft_token::start_end_ptr sep,
-                     ft_token::int_ptr ip ) {
-  ft_token::int_t result = numeric_limits<ft_token::int_t>::max();
-  FOR_EACH( typename FTTokenSequenceType, t, seq ) {
-    ft_token::int_t const n = (*t).*sep.*ip;
+template<typename FTTokenSpanSequenceType>
+ft_token_span::int_t min( FTTokenSpanSequenceType &seq,
+                          ft_token_span::start_end_ptr sep,
+                          ft_token_span::int_ptr ip ) {
+  ft_token_span::int_t result = numeric_limits<ft_token_span::int_t>::max();
+  FOR_EACH( typename FTTokenSpanSequenceType, ts, seq ) {
+    ft_token_span::int_t const n = (*ts).*sep.*ip;
     if ( n < result )
       result = n;
   }
@@ -162,7 +168,7 @@ ft_token::int_t min( FTTokenSequenceType &seq, ft_token::start_end_ptr sep,
 }
 
 #define MIN(SEQ,SEP,IP) \
-  min( SEQ, &ft_token::SEP, &ft_token::start_end::IP )
+  min( SEQ, &ft_token_span::SEP, &ft_token_span::start_end::IP )
 
 /**
  * From [1] 4.2.6.8:
@@ -181,8 +187,8 @@ static void join_includes( ft_match::includes_t const &includes,
   if ( includes.empty() )
     return;
 
-  ft_token::int_t const min_pos = MIN( includes, pos, start );
-  ft_token::int_t const max_pos = MAX( includes, pos, end );
+  ft_token_span::int_t const min_pos = MIN( includes, pos, start );
+  ft_token_span::int_t const max_pos = MAX( includes, pos, end );
   bool is_contiguous = true;
 
   FOR_EACH( ft_match::includes_t, i, includes ) {
@@ -193,7 +199,7 @@ static void join_includes( ft_match::includes_t const &includes,
   }
   if ( is_contiguous ) {
     ft_pos_set const pos_set = covered_include_positions( includes );
-    for ( ft_token::int_t pos = min_pos; pos <= max_pos; ++pos ) {
+    for ( ft_token_span::int_t pos = min_pos; pos <= max_pos; ++pos ) {
       if ( !contains( pos_set, pos ) ) {
         is_contiguous = false;
         break;
@@ -218,8 +224,9 @@ static void match_tokens( ft_tokens const &search_ctx,
   // TODO
 }
 
-inline bool token_covers_pos( ft_token const &t, int token_pos ) {
-  return token_pos >= t.pos.start && token_pos <= t.pos.end;
+inline bool token_covers_pos( ft_token_span const &ts,
+                              ft_token_span::int_t token_pos ) {
+  return token_pos >= ts.pos.start && token_pos <= ts.pos.end;
 }
 
 ////////// ApplyFTAnd /////////////////////////////////////////////////////////
@@ -241,16 +248,16 @@ void apply_ftand( ft_all_matches const &ami, ft_all_matches const &amj,
 ////////// ApplyFTContent /////////////////////////////////////////////////////
 
 void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode ) {
-  ft_token::int_t const start_pos = 0;  // TODO: get_lowest_token_pos();
-  ft_token::int_t const end_pos = 0;    // TODO: get_highest_token_pos();
+  ft_token_span::int_t const start_pos = 0;  // TODO: get_lowest_token_pos();
+  ft_token_span::int_t const end_pos = 0;    // TODO: get_highest_token_pos();
 
   if ( mode == ft_content_mode::entire ) {
     for ( ft_all_matches::iterator m = am.begin(); m != am.end(); ) {
       bool keep = false;
-      FOR_EACH( ft_match::includes_t, t, m->includes ) {
-        if ( t->is_contiguous ) {
-          for ( ft_token::int_t pos = start_pos; pos <= end_pos; ++pos ) {
-            if ( token_covers_pos( *t, pos ) ) {
+      FOR_EACH( ft_match::includes_t, i, m->includes ) {
+        if ( i->is_contiguous ) {
+          for ( ft_token_span::int_t pos = start_pos; pos <= end_pos; ++pos ) {
+            if ( token_covers_pos( *i, pos ) ) {
               keep = true;
               break;
             }
@@ -263,13 +270,13 @@ void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode ) {
         m = am.erase( m );
     }
   } else {
-    ft_token::int_t const pos = mode == ft_content_mode::at_start ?
+    ft_token_span::int_t const pos = mode == ft_content_mode::at_start ?
       start_pos : end_pos;
 
     for ( ft_all_matches::iterator m = am.begin(); m != am.end(); ) {
       bool keep = false;
-      FOR_EACH( ft_match::includes_t, t, m->includes ) {
-        if ( token_covers_pos( *t, pos ) ) {
+      FOR_EACH( ft_match::includes_t, i, m->includes ) {
+        if ( token_covers_pos( *i, pos ) ) {
           keep = true;
           break;
         }
@@ -286,7 +293,7 @@ void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode ) {
 
 void apply_ftdistance( ft_all_matches const &am, int at_least, int at_most,
                        ft_unit::type unit, ft_all_matches &result ) {
-  ft_token::start_end_ptr const sep = get_sep_for( unit );
+  ft_token_span::start_end_ptr const sep = get_sep_for( unit );
   FOR_EACH( ft_all_matches, m, am ) {
     bool satisfies = true;
     if ( m->includes.size() > 1 ) {
@@ -295,7 +302,7 @@ void apply_ftdistance( ft_all_matches const &am, int at_least, int at_most,
         ft_match::includes_t::const_iterator j = i;
         if ( ++j == m->includes.end() )
           break;
-        ft_token::int_t const d = distance( *i, *j, sep );
+        ft_token_span::int_t const d = distance( *i, *j, sep );
         if ( d < at_least || d > at_most ) {
           satisfies = false;
           break;
@@ -307,7 +314,7 @@ void apply_ftdistance( ft_all_matches const &am, int at_least, int at_most,
       join_includes( m->includes, m_new.includes );
       FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
         FOR_EACH( ft_match::includes_t, i, m->includes ) {
-          ft_token::int_t const d = distance( *i, *e, sep );
+          ft_token_span::int_t const d = distance( *i, *e, sep );
           if ( d >= at_least && d <= at_most ) {
             m_new.excludes.push_back( *e );
             break;
@@ -367,7 +374,7 @@ void apply_ftorder( ft_all_matches &am ) {
 ////////// ApplyFTScope ///////////////////////////////////////////////////////
 
 static void apply_ftscope_diff( ft_all_matches const &am,
-                                ft_token::start_end_ptr sep,
+                                ft_token_span::start_end_ptr sep,
                                 ft_all_matches &result ) {
   FOR_EACH( ft_all_matches, m, am ) {
     FOR_EACH( ft_match::includes_t, i1, m->includes ) {
@@ -401,8 +408,8 @@ static void apply_ftscope_diff( ft_all_matches const &am,
  * Helper function for apply_ftscope_same().
  */
 static bool every_start_is( ft_match::includes_t const &includes,
-                            ft_token::start_end_ptr sep,
-                            ft_token::int_t start ) {
+                            ft_token_span::start_end_ptr sep,
+                            ft_token_span::int_t start ) {
   FOR_EACH( ft_match::includes_t, i, includes ) {
     if ( ((*i).*sep).start != start )
       return false;
@@ -411,7 +418,7 @@ static bool every_start_is( ft_match::includes_t const &includes,
 }
 
 static void apply_ftscope_same( ft_all_matches const &am,
-                                ft_token::start_end_ptr sep,
+                                ft_token_span::start_end_ptr sep,
                                 ft_all_matches &result ) {
   FOR_EACH( ft_all_matches, m, am ) {
     FOR_EACH( ft_match::includes_t, i1, m->includes ) {
@@ -440,13 +447,13 @@ static void apply_ftscope_same( ft_all_matches const &am,
 
 void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
                     ft_big_unit::type unit, ft_all_matches &result ) {
-  ft_token::start_end_ptr sep;
+  ft_token_span::start_end_ptr sep;
   switch ( unit ) {
     case ft_big_unit::sentence:
-      sep = &ft_token::sent;
+      sep = &ft_token_span::sent;
       break;
     case ft_big_unit::paragraph:
-      sep = &ft_token::para;
+      sep = &ft_token_span::para;
       break;
   }
   switch ( scope ) {
@@ -472,18 +479,18 @@ typedef list<ft_all_matches> ft_all_matches_seq;
 
 static void apply_query_tokens_as_phrase( ft_tokens const &search_ctx,
                                           ft_query_tokens const &qtokens,
-                                          int query_pos,
+                                          ft_query_token::int_t query_pos,
                                           ft_all_matches &result ) {
   ft_tokens tokens;
   match_tokens( search_ctx, qtokens, tokens );
-  FOR_EACH( ft_tokens, t, tokens ) {
+  FOR_EACH( ft_tokens, ts, tokens ) {
     ft_string_include si;
-    si.pos.start     = t->pos.start;
-    si.pos.end       = t->pos.end;
-    si.sent.start    = t->sent.start;
-    si.sent.end      = t->sent.end;
-    si.para.start    = t->para.start;
-    si.para.end      = t->para.end;
+    si.pos.start     = ts->pos.start;
+    si.pos.end       = ts->pos.end;
+    si.sent.start    = ts->sent.start;
+    si.sent.end      = ts->sent.end;
+    si.para.start    = ts->para.start;
+    si.para.end      = ts->para.end;
     si.query_pos     = query_pos;
     si.is_contiguous = true;
     ft_match m_new;
@@ -510,7 +517,7 @@ static void make_conj_disj( ft_all_matches const &cur_res,
 
 static void apply_ftwords_phrase( ft_tokens const &search_ctx,
                                   ft_query_tokens const &qtokens,
-                                  int query_pos,
+                                  ft_query_token::int_t query_pos,
                                   ft_all_matches &result ) {
   if ( !qtokens.empty() )
     apply_query_tokens_as_phrase( search_ctx, qtokens, query_pos, result );
@@ -518,7 +525,7 @@ static void apply_ftwords_phrase( ft_tokens const &search_ctx,
 
 static void apply_ftwords_all( ft_tokens const &search_ctx,
                                ft_query_tokens &qtokens,
-                               int query_pos,
+                               ft_query_token::int_t query_pos,
                                ft_all_matches &result ) {
   if ( !qtokens.empty() ) {
     ft_query_tokens first_qtokens;
@@ -528,7 +535,7 @@ static void apply_ftwords_all( ft_tokens const &search_ctx,
     apply_ftwords_phrase( search_ctx, first_qtokens, query_pos, first_am );
 
     if ( !qtokens.empty() ) {
-      int const temp_pos = max_query_pos( first_am );
+      ft_query_token::int_t const temp_pos = max_query_pos( first_am );
       if ( is_max_valid( temp_pos ) )
         query_pos = temp_pos + 1;
       ft_all_matches rest_am;
@@ -542,7 +549,7 @@ static void apply_ftwords_all( ft_tokens const &search_ctx,
 
 static void apply_ftwords_any( ft_tokens const &search_ctx,
                                ft_query_tokens &qtokens,
-                               int query_pos,
+                               ft_query_token::int_t query_pos,
                                ft_all_matches &result ) {
   if ( !qtokens.empty() ) {
     ft_query_tokens first_qtokens;
@@ -551,7 +558,7 @@ static void apply_ftwords_any( ft_tokens const &search_ctx,
     ft_all_matches first_am;
     apply_ftwords_phrase( search_ctx, first_qtokens, query_pos, first_am );
 
-    int const temp_pos = max_query_pos( first_am );
+    ft_query_token::int_t const temp_pos = max_query_pos( first_am );
     if ( is_max_valid( temp_pos ) )
       query_pos = temp_pos + 1;
 
@@ -563,12 +570,12 @@ static void apply_ftwords_any( ft_tokens const &search_ctx,
 
 static void apply_ftwords_xxx_word( ft_tokens const &search_ctx,
                                     ft_query_tokens const &qtokens,
-                                    int query_pos,
+                                    ft_query_token::int_t query_pos,
                                     apply_fn_3arg_t apply_fn,
                                     ft_all_matches &result ) {
   if ( !qtokens.empty() ) {
     ft_all_matches_seq all_am_seq;
-    int pos = 0;
+    ft_query_token::int_t pos = 0;
     FOR_EACH( ft_query_tokens, qtoken, qtokens ) {
       ft_query_tokens qtokens2;
       qtokens2.push_back( *qtoken );
@@ -584,8 +591,10 @@ static void apply_ftwords_xxx_word( ft_tokens const &search_ctx,
 }
 
 void apply_ftwords( ft_tokens const &search_ctx,
-                    ft_query_tokens const &qtokens, int query_pos,
-                    ft_anyall_mode::type mode, ft_all_matches &result ) {
+                    ft_query_tokens const &qtokens,
+                    ft_query_token::int_t query_pos,
+                    ft_anyall_mode::type mode,
+                    ft_all_matches &result ) {
   ft_query_tokens qtokens_copy( qtokens );
   switch ( mode ) {
     case ft_anyall_mode::any:
@@ -614,13 +623,13 @@ void apply_ftwords( ft_tokens const &search_ctx,
 
 void apply_ftwindow( ft_all_matches const &am, int window_size,
                      ft_unit::type unit, ft_all_matches &result ) {
-  ft_token::start_end_ptr const sep = get_sep_for( unit );
+  ft_token_span::start_end_ptr const sep = get_sep_for( unit );
   FOR_EACH( ft_all_matches, m, am ) {
-    ft_token::int_t const min_pos = MIN( m->includes, pos, start );
-    ft_token::int_t const max_pos = MAX( m->includes, pos, end );
-    for ( ft_token::int_t win_start_pos = max_pos - window_size + 1;
+    ft_token_span::int_t const min_pos = MIN( m->includes, pos, start );
+    ft_token_span::int_t const max_pos = MAX( m->includes, pos, end );
+    for ( ft_token_span::int_t win_start_pos = max_pos - window_size + 1;
           win_start_pos < min_pos; ++win_start_pos ) {
-      ft_token::int_t const win_end_pos = win_start_pos + window_size - 1;
+      ft_token_span::int_t const win_end_pos = win_start_pos + window_size - 1;
       ft_match m_new;
       join_includes( m->includes, m_new.includes );
       FOR_EACH( ft_match::excludes_t, e, m->excludes ) {

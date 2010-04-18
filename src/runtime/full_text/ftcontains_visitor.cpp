@@ -30,7 +30,7 @@ namespace zorba {
 #undef min
 
 
-ftcontains_visitor::ftcontains_visitor( ft_tokens const &tokens,
+ftcontains_visitor::ftcontains_visitor( ft_item_tokens const &tokens,
                                         PlanState &state ) :
   plan_state_( state )
 {
@@ -145,7 +145,7 @@ void V::end_visit( ftwords_expr &e ) {
   */
   ft_tokens search_ctx;
   ft_query_tokens qtokens;
-  int query_pos = 0;
+  ft_query_token::int_t query_pos = 0;
   ft_all_matches *const result = new ft_all_matches;
   apply_ftwords( search_ctx, qtokens, query_pos, e.get_mode(), *result );
   push( result );
