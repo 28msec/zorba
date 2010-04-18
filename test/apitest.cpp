@@ -25,7 +25,7 @@
 // tests are allowed to use internals
 #include "api/unmarshaller.h"
 #include "zorbatypes/xqpstring.h"
-#include "util/properties.h"
+#include "system/properties.h"
 
 #include <zorba/util/path.h>
 

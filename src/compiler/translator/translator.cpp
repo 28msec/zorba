@@ -26,7 +26,6 @@
 
 #include "common/common.h"
 
-#include "util/properties.h"
 #include "util/stl_extra.h"
 #include "util/tracer.h"
 
@@ -63,6 +62,7 @@
 #include "compiler/xqddf/collection_decl.h"
 
 #include "system/globalenv.h"
+#include "system/properties.h"
 
 #include "functions/library.h"
 #include "functions/signature.h"
@@ -72,6 +72,7 @@
 #include "store/api/update_consts.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
+
 #include "runtime/api/plan_wrapper.h"
 
 #include "debugger/zorba_debugger_commons.h"

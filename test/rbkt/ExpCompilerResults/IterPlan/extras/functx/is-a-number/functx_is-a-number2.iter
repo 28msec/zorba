@@ -1,0 +1,8 @@
+Iterator tree for main query:
+<ElementIterator>
+  <SingletonIterator value="xs:QName(,,result)"/>
+  <EnclosedIterator attr_cont="false">
+    <SingletonIterator value="xs:boolean(true)"/>
+  </EnclosedIterator>
+</ElementIterator>
+

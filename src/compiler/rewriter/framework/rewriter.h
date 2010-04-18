@@ -25,10 +25,10 @@ namespace zorba
 
 class Rewriter : public SimpleRCObject 
 {
-  public:
-    virtual ~Rewriter() { }
+public:
+  virtual ~Rewriter() { }
 
-    virtual void rewrite(RewriterContext& rCtx) = 0;
+  virtual bool rewrite(RewriterContext& rCtx) = 0;
 };
 
 }

@@ -18,13 +18,10 @@
 #include "compiler/rewriter/rules/rule_base.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 
-#include "util/properties.h"
+#include "system/properties.h"
 
-namespace zorba {
-
-
-static expr_t rewriteRec(RewriterContext&, RewriteRule*, expr*, bool&);
-
+namespace zorba 
+{
 
 
 /*******************************************************************************
@@ -46,18 +43,19 @@ RuleMajorDriver::~RuleMajorDriver()
 /*******************************************************************************
 
 ********************************************************************************/
-void RuleMajorDriver::rewrite(RewriterContext& rCtx)
+bool RuleMajorDriver::rewrite(RewriterContext& rCtx)
 {
+  bool totalModified = false;
   bool modified = false;
   rules_t::const_iterator end = m_rules.end();
   do 
   {
     modified = false;
 
-    for(rules_t::iterator i = m_rules.begin(); i != end; ++i) 
+    for (rules_t::iterator i = m_rules.begin(); i != end; ++i) 
     {
       bool rule_modified = false;
-      expr_t newRoot = rewriteRec(rCtx, &**i, &*rCtx.getRoot(), rule_modified);
+      expr_t newRoot = (*i)->apply(rCtx, &*rCtx.getRoot(), rule_modified);
 
       if (newRoot != NULL) 
       {
@@ -67,6 +65,7 @@ void RuleMajorDriver::rewrite(RewriterContext& rCtx)
       if (rule_modified)
       {
         modified = true;
+        totalModified = true;
 
         if (Properties::instance()->printIntermediateOpt()) 
         {
@@ -78,17 +77,19 @@ void RuleMajorDriver::rewrite(RewriterContext& rCtx)
       }
     }
   } while(modified);
+
+  return totalModified;
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void RuleOnceDriverBase::rewrite(RewriterContext& rCtx)
+bool RuleOnceDriverBase::rewrite(RewriterContext& rCtx)
 {
   bool modified = false;
 
-  expr_t newRoot = rewriteRec(rCtx, theRule, &*rCtx.getRoot(), modified);
+  expr_t newRoot = theRule->apply(rCtx, &*rCtx.getRoot(), modified);
 
   if (newRoot != NULL) 
   {
@@ -100,49 +101,8 @@ void RuleOnceDriverBase::rewrite(RewriterContext& rCtx)
     std::cout << "After " << theRule->getRuleName() << ":" << std::endl;
     rCtx.getRoot()->put(std::cout) << std::endl;
   }
-}
 
-
-/*******************************************************************************
-  Apply the given rule to the "curExpr" and, recursively, to each sub expression
-  of "curExpr". If any rewrite is done anywhere inside the expr sub tree rooted
-  at "curExpr", then "modified" will be set to true ("modified" is never set to
-  false by this method). If as part of a re-write, "curExpr" is rewriten into
-  another expr E, then E is returned to the caller.   
-********************************************************************************/
-static expr_t rewriteRec(
-    RewriterContext& rCtx,
-    RewriteRule* rule,
-    expr* curExpr,
-    bool& modified)
-{
-  expr_t result = NULL;
-
-  expr_t newExpr = rule->rewritePre(&*curExpr, rCtx);
-  if (newExpr != NULL) 
-  {
-    curExpr = newExpr;
-    result = newExpr;
-    modified = true;
-  }
-
-  for(expr_iterator i = curExpr->expr_begin(); !i.done(); ++i) 
-  {
-    expr_t new_e = rewriteRec(rCtx, rule, &**i, modified);
-    if (new_e != NULL) 
-    {
-      *i = &*new_e;
-    }
-  }
-
-  newExpr = rule->rewritePost(&*curExpr, rCtx);
-  if (newExpr != NULL) 
-  {
-    result = newExpr;
-    modified = true;
-  }
-
-  return result;
+  return modified;
 }
 
 

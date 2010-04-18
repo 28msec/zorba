@@ -37,21 +37,17 @@
 namespace zorba 
 {
 
-#define SORTED_NODES(e)                                 \
-e->put_annotation(Annotations::PRODUCES_SORTED_NODES,   \
-                  TSVAnnotationValue::TRUE_VAL)
+#define SORTED_NODES(e) \
+e->setProducesSortedNodes(expr::ANNOTATION_TRUE)
 
-#define DISTINCT_NODES(e)                               \
-e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, \
-                  TSVAnnotationValue::TRUE_VAL)
+#define PROPOGATE_SORTED_NODES(src, tgt) \
+tgt->setProducesSortedNodes(src->getProducesSortedNodes())
 
-#define PROPOGATE_SORTED_NODES(src, tgt)                                      \
-tgt->put_annotation(Annotations::PRODUCES_SORTED_NODES,                       \
-                    src->get_annotation(Annotations::PRODUCES_SORTED_NODES))
+#define DISTINCT_NODES(e) \
+e->setProducesDistinctNodes(expr::ANNOTATION_TRUE)
 
-#define PROPOGATE_DISTINCT_NODES(src, tgt)                                    \
-tgt->put_annotation(Annotations::PRODUCES_DISTINCT_NODES,                     \
-                    src->get_annotation(Annotations::PRODUCES_DISTINCT_NODES))
+#define PROPOGATE_DISTINCT_NODES(src, tgt) \
+tgt->setProducesDistinctNodes(src->getProducesDistinctNodes())
 
 
 /*******************************************************************************
@@ -217,7 +213,11 @@ bool DataflowAnnotationsComputer::generic_compute(expr* e)
 void DataflowAnnotationsComputer::compute_sequential_expr(sequential_expr* e)
 {
   default_walk(e);
-  generic_compute(e);
+  if (!generic_compute(e) && e->size() > 0)
+  {
+    PROPOGATE_SORTED_NODES((*e)[e->size()-1], e);
+    PROPOGATE_DISTINCT_NODES((*e)[e->size()-1], e);
+  }
 }
 
 
@@ -232,6 +232,9 @@ void DataflowAnnotationsComputer::compute_wrapper_expr(wrapper_expr* e)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_var_expr(var_expr* e)
 {
   if (!generic_compute(e)) 
@@ -245,6 +248,9 @@ void DataflowAnnotationsComputer::compute_var_expr(var_expr* e)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
 {
   default_walk(e);
@@ -252,6 +258,9 @@ void DataflowAnnotationsComputer::compute_flwor_expr(flwor_expr* e)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_trycatch_expr(trycatch_expr* e)
 {
   default_walk(e);
@@ -259,7 +268,10 @@ void DataflowAnnotationsComputer::compute_trycatch_expr(trycatch_expr* e)
 }
 
 
-void DataflowAnnotationsComputer::compute_promote_expr(promote_expr *e)
+/*******************************************************************************
+
+********************************************************************************/
+void DataflowAnnotationsComputer::compute_promote_expr(promote_expr* e)
 {
   default_walk(e);
   PROPOGATE_SORTED_NODES(e->get_input(), e);
@@ -267,13 +279,19 @@ void DataflowAnnotationsComputer::compute_promote_expr(promote_expr *e)
 }
 
 
-void DataflowAnnotationsComputer::compute_if_expr(if_expr *e)
+/*******************************************************************************
+
+********************************************************************************/
+void DataflowAnnotationsComputer::compute_if_expr(if_expr* e)
 {
   default_walk(e);
   generic_compute(e);
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_fo_expr(fo_expr* e)
 {
   default_walk(e);
@@ -292,23 +310,22 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr* e)
     }
     else if (sorted == FunctionConsts::NO)
     {
-      e->put_annotation(Annotations::PRODUCES_SORTED_NODES,
-                        TSVAnnotationValue::FALSE_VAL);
+      e->setProducesSortedNodes(expr::ANNOTATION_FALSE);
     } 
     else 
     {
-      AnnotationValue_t sorted = TSVAnnotationValue::MAYBE_VAL;
+      expr::BoolAnnotationValue sorted = expr::ANNOTATION_FALSE;
 
       for (ulong i = 0; i < nArgs; ++i) 
       {
-        if (f->propagatesSortedNodes(i)) 
+        if (f->propagatesSortedNodes(i))
         {
-          sorted = e->get_arg(i)->get_annotation(Annotations::PRODUCES_SORTED_NODES);
+          sorted = e->get_arg(i)->getProducesSortedNodes();
           break;
         }
       }
 
-      e->put_annotation(Annotations::PRODUCES_SORTED_NODES, sorted);
+      e->setProducesSortedNodes(sorted);
     }
 
     FunctionConsts::AnnotationValue distinct = f->producesDistinctNodes();
@@ -319,28 +336,30 @@ void DataflowAnnotationsComputer::compute_fo_expr(fo_expr* e)
     }
     else if (distinct == FunctionConsts::NO) 
     {
-      e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES,
-                        TSVAnnotationValue::FALSE_VAL);
+      e->setProducesDistinctNodes(expr::ANNOTATION_FALSE);
     }
     else
     {
-      AnnotationValue_t distinct = TSVAnnotationValue::MAYBE_VAL;
+      expr::BoolAnnotationValue distinct = expr::ANNOTATION_FALSE;
 
       for (ulong i = 0; i < nArgs; ++i) 
       {
         if (f->propagatesDistinctNodes(i)) 
         {
-          distinct = e->get_arg(i)->get_annotation(Annotations::PRODUCES_DISTINCT_NODES);
+          distinct = e->get_arg(i)->getProducesDistinctNodes();
           break;
         }
       }
 
-      e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, distinct);
+      e->setProducesDistinctNodes(distinct);
     }
   }
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_instanceof_expr(instanceof_expr *e)
 {
   default_walk(e);
@@ -349,6 +368,9 @@ void DataflowAnnotationsComputer::compute_instanceof_expr(instanceof_expr *e)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_treat_expr(treat_expr *e)
 {
   default_walk(e);
@@ -360,6 +382,9 @@ void DataflowAnnotationsComputer::compute_treat_expr(treat_expr *e)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_castable_expr(castable_expr *e)
 {
   default_walk(e);
@@ -367,6 +392,10 @@ void DataflowAnnotationsComputer::compute_castable_expr(castable_expr *e)
   PROPOGATE_DISTINCT_NODES(e->get_input(), e);
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
 void DataflowAnnotationsComputer::compute_cast_expr(cast_expr* e)
 {
   default_walk(e);
@@ -455,21 +484,8 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
 
     if (only_child_axes) 
     {
-      AnnotationValue_t sortedAnnot =
-      (*e)[0]->get_annotation(Annotations::PRODUCES_SORTED_NODES);
-
-      if (sortedAnnot != NULL) 
-      {
-        e->put_annotation(Annotations::PRODUCES_SORTED_NODES, sortedAnnot);
-      }
-
-      AnnotationValue_t distinctAnnot =
-      (*e)[0]->get_annotation(Annotations::PRODUCES_DISTINCT_NODES);
-
-      if (distinctAnnot != NULL) 
-      {
-        e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES, distinctAnnot);
-      }
+      PROPOGATE_SORTED_NODES((*e)[0], e);
+      PROPOGATE_DISTINCT_NODES((*e)[0], e);
     }
     else
     {
@@ -499,10 +515,13 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
           }
         }
 
-        e->put_annotation(Annotations::PRODUCES_SORTED_NODES,
-                          TSVAnnotationValue::from_bool(sorted));
-        e->put_annotation(Annotations::PRODUCES_DISTINCT_NODES,
-                          TSVAnnotationValue::from_bool(distinct));
+        e->setProducesSortedNodes((sorted ?
+                                   expr::ANNOTATION_TRUE :
+                                   expr::ANNOTATION_FALSE));
+
+        e->setProducesDistinctNodes((distinct ?
+                                     expr::ANNOTATION_TRUE :
+                                     expr::ANNOTATION_FALSE));
       }
     }
   }
@@ -520,17 +539,20 @@ void DataflowAnnotationsComputer::compute_match_expr(match_expr* e)
   ZORBA_ASSERT(false);
 }
 
+
 void DataflowAnnotationsComputer::compute_const_expr(const_expr* e)
 {
   default_walk(e);
   generic_compute(e);
 }
 
+
 void DataflowAnnotationsComputer::compute_order_expr(order_expr* e)
 {
   default_walk(e);
   generic_compute(e);
 }
+
 
 void DataflowAnnotationsComputer::compute_elem_expr(elem_expr* e)
 {
@@ -539,12 +561,14 @@ void DataflowAnnotationsComputer::compute_elem_expr(elem_expr* e)
   DISTINCT_NODES(e);
 }
 
+
 void DataflowAnnotationsComputer::compute_doc_expr(doc_expr* e)
 {
   default_walk(e);
   SORTED_NODES(e);
   DISTINCT_NODES(e);
 }
+
 
 void DataflowAnnotationsComputer::compute_attr_expr(attr_expr* e)
 {
@@ -553,12 +577,14 @@ void DataflowAnnotationsComputer::compute_attr_expr(attr_expr* e)
   DISTINCT_NODES(e);
 }
 
+
 void DataflowAnnotationsComputer::compute_text_expr(text_expr* e)
 {
   default_walk(e);
   SORTED_NODES(e);
   DISTINCT_NODES(e);
 }
+
 
 void DataflowAnnotationsComputer::compute_pi_expr(pi_expr* e)
 {

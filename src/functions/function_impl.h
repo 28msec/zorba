@@ -28,7 +28,7 @@
 
 #ifndef NDEBUG
 
-#include "util/properties.h"
+#include "system/properties.h"
 
 #define DEBUG_FN_DECL(fname, cnt)                                     \
   if (Properties::instance()->dumpLib())                              \

@@ -25,17 +25,60 @@ class CompilerCB;
 class RewriterContext;
 
 
+/*******************************************************************************
+
+********************************************************************************/
 class RewriteRule : public SimpleRCObject 
 {
+private:
+  std::string theRuleName;     
+
 public:
+  RewriteRule(const std::string& name) : theRuleName(name) {}
+
   virtual ~RewriteRule() { }
 
-  virtual const std::string& getRuleName() const = 0;
+  const std::string& getRuleName() const { return theRuleName; }
 
+  virtual expr_t apply(RewriterContext& rCtx, expr* node, bool& modified) = 0;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class PrePostRewriteRule : public RewriteRule
+{
+public:
+  PrePostRewriteRule(const std::string& name) : RewriteRule(name) {}
+
+  virtual ~PrePostRewriteRule() { }
+
+  expr_t apply(RewriterContext& rCtx, expr* node, bool& modifed);
+
+protected:
   virtual expr_t rewritePre(expr* node, RewriterContext& rCtx) = 0;
 
   virtual expr_t rewritePost(expr* node, RewriterContext& rCtx) = 0;
 };
+
+
+/*******************************************************************************
+
+********************************************************************************/
+#define RULE(name)                                                  \
+class name : public PrePostRewriteRule                              \
+{                                                                   \
+ public:                                                            \
+  name() : PrePostRewriteRule(#name) { }                            \
+                                                                    \
+  ~name() { }                                                       \
+                                                                    \
+ protected:                                                         \
+  expr_t rewritePre(expr* node, RewriterContext& rCtx);             \
+                                                                    \
+  expr_t rewritePost(expr* node, RewriterContext& rCtx);            \
+}
 
 
 #define RULE_REWRITE_PRE(name) expr_t name::rewritePre(expr* node, RewriterContext& rCtx)

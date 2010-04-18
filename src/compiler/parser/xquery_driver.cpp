@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 #include <fstream>
-#include "util/properties.h"
+#include "system/properties.h"
 #include "compiler/parser/xquery_driver.h"
 
 #ifdef __GNUC__

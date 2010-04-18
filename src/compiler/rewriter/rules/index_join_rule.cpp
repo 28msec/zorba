@@ -25,7 +25,7 @@
 
 #include "types/typeops.h"
 
-#include "util/properties.h"
+#include "system/properties.h"
 
 #include "zorbaerrors/Assert.h"
 

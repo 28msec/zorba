@@ -43,8 +43,7 @@ PlanWrapper::PlanWrapper(
 #ifndef NDEBUG
   theIsOpened(false),
 #endif
-  theTimeout(0),
-  theTimeoutMutex(0)
+  theTimeout(0)
 {
   assert (aCompilerCB);
 
@@ -70,8 +69,7 @@ PlanWrapper::PlanWrapper(
   if (aTimeout != -1) 
   {
     StateWrapper lWrapper(*theStateBlock);
-    theTimeoutMutex = new Mutex();
-    theTimeout = new Timeout(aTimeout, lWrapper, theTimeoutMutex);
+    theTimeout = new Timeout(aTimeout, lWrapper);
   }
 }
 
@@ -83,16 +81,12 @@ PlanWrapper::~PlanWrapper()
 #endif
   if (theTimeout) 
   {
-    // we wait for the timeout thread to terminate
-    // in case the timeout killed us
-    theTimeoutMutex->lock();
     // Terminate could throw an exception
     // but does not for this particular implementation
     theTimeout->terminate();
-    theTimeoutMutex->unlock();
   }
+
   delete theTimeout;
-  delete theTimeoutMutex;
 
   // we created it
   delete theStateBlock->theRuntimeCB; 
@@ -115,9 +109,14 @@ PlanWrapper::open()
 #ifndef NDEBUG
   assert(!theIsOpened);
 #endif
+
   uint32_t offset = 0;
   theIterator->open(*theStateBlock, offset);
-  if (theTimeout) {
+
+  if (theTimeout) 
+  {
+    // Start a thread that will suspend itself for the given amount of time,
+    // and then it will wake up and set theHasToQuit flag of the plan state.
     theTimeout->start();
   }
 
@@ -148,8 +147,7 @@ PlanWrapper::reset()
 }
 
 
-void
-PlanWrapper::close() throw ()
+void PlanWrapper::close() throw ()
 {
   theIterator->close(*theStateBlock);
 
@@ -158,20 +156,20 @@ PlanWrapper::close() throw ()
 #endif
 }
 
-void
-PlanWrapper::checkDepth (const QueryLoc &loc)
+
+void PlanWrapper::checkDepth (const QueryLoc &loc)
 {
   theStateBlock->checkDepth (loc);
 }
 
-const RuntimeCB*
-PlanWrapper::getRuntimeCB () const
+
+const RuntimeCB* PlanWrapper::getRuntimeCB() const
 {
   return theStateBlock->getRuntimeCB ();
 }
 
-bool
-PlanWrapper::nextSerializableItem(store::Item_t& aItem)
+
+bool PlanWrapper::nextSerializableItem(store::Item_t& aItem)
 {
   if (!next(aItem)) {
     return false;

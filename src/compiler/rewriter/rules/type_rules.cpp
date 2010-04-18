@@ -31,7 +31,7 @@
 #include "functions/library.h"
 #include "functions/udf.h"
 
-#include "util/properties.h"
+#include "system/properties.h"
 
 #include "zorbaerrors/Assert.h"
 

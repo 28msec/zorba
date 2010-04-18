@@ -27,7 +27,7 @@
 #include "testuriresolver.h"
 #include "testdriver_common.h"
 
-#include "util/properties.h"
+#include "system/properties.h"
 
 #include <zorba/static_context.h>
 #include <zorba/util/file.h>

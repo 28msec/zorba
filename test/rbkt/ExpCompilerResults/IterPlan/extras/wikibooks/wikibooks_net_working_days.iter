@@ -7,11 +7,6 @@ Iterator tree for main query:
       </NameCastIterator>
     </HoistIterator>
   </LetVariable>
-  <LetVariable name="$$opt_temp_1" materialize="true">
-    <HoistIterator>
-      <FnConcatIterator/>
-    </HoistIterator>
-  </LetVariable>
   <ReturnClause>
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,html)"/>
@@ -44,8 +39,7 @@ Iterator tree for main query:
           </ElementIterator>
           <ElementIterator>
             <SingletonIterator value="xs:QName(,,table)"/>
-            <AttributeIterator>
-              <SingletonIterator value="xs:QName(,,border)"/>
+            <AttributeIterator qname="border">
               <SingletonIterator value="xs:string(1)"/>
             </AttributeIterator>
             <FnConcatIterator>
@@ -89,7 +83,7 @@ Iterator tree for main query:
                       <SingletonIterator value="xs:integer(20)"/>
                     </OpToIterator>
                   </ForVariable>
-                  <LetVariable name="d" materialize="true">
+                  <ForVariable name="d">
                     <GenericArithIterator_AddOperation>
                       <SingletonIterator value="2008-07-01+01:00"/>
                       <CastIterator type="xs:dayTimeDuration">
@@ -100,25 +94,23 @@ Iterator tree for main query:
                         </ConcatStrIterator>
                       </CastIterator>
                     </GenericArithIterator_AddOperation>
-                  </LetVariable>
-                  <LetVariable name="dow" materialize="true">
-                    <PromoteIterator type="xs:integer">
-                      <NumArithIterator_ModOperation>
-                        <CastIterator type="xs:integer">
-                          <GenericArithIterator_DivideOperation>
-                            <GenericArithIterator_SubtractOperation>
-                              <CastIterator type="xs:date">
-                                <LetVarIterator varname="d"/>
-                              </CastIterator>
-                              <SingletonIterator value="1901-01-06"/>
-                            </GenericArithIterator_SubtractOperation>
-                            <SingletonIterator value="P1D"/>
-                          </GenericArithIterator_DivideOperation>
-                        </CastIterator>
-                        <SingletonIterator value="xs:integer(7)"/>
-                      </NumArithIterator_ModOperation>
-                    </PromoteIterator>
-                  </LetVariable>
+                  </ForVariable>
+                  <ForVariable name="dow">
+                    <NumArithIterator_ModOperation>
+                      <CastIterator type="xs:integer">
+                        <GenericArithIterator_DivideOperation>
+                          <GenericArithIterator_SubtractOperation>
+                            <CastIterator type="xs:date">
+                              <ForVarIterator varname="d"/>
+                            </CastIterator>
+                            <SingletonIterator value="1901-01-06"/>
+                          </GenericArithIterator_SubtractOperation>
+                          <SingletonIterator value="P1D"/>
+                        </GenericArithIterator_DivideOperation>
+                      </CastIterator>
+                      <SingletonIterator value="xs:integer(7)"/>
+                    </NumArithIterator_ModOperation>
+                  </ForVariable>
                   <ReturnClause>
                     <ElementIterator>
                       <SingletonIterator value="xs:QName(,,tr)"/>
@@ -139,15 +131,12 @@ Iterator tree for main query:
                                 <SingletonIterator value="xs:string(Lavender)"/>
                               </EnclosedIterator>
                             </AttributeIterator>
-                            <UnhoistIterator>
-                              <LetVarIterator varname="$$opt_temp_1"/>
-                            </UnhoistIterator>
+                            <FnConcatIterator/>
                           </IfThenElseIterator>
                         </EnclosedIterator>
                         <ElementIterator>
                           <SingletonIterator value="xs:QName(,,td)"/>
-                          <AttributeIterator>
-                            <SingletonIterator value="xs:QName(,,align)"/>
+                          <AttributeIterator qname="align">
                             <SingletonIterator value="xs:string(center)"/>
                           </AttributeIterator>
                           <EnclosedIterator attr_cont="false">
@@ -156,37 +145,34 @@ Iterator tree for main query:
                         </ElementIterator>
                         <ElementIterator>
                           <SingletonIterator value="xs:QName(,,td)"/>
-                          <AttributeIterator>
-                            <SingletonIterator value="xs:QName(,,align)"/>
+                          <AttributeIterator qname="align">
                             <SingletonIterator value="xs:string(center)"/>
                           </AttributeIterator>
                           <EnclosedIterator attr_cont="false">
-                            <LetVarIterator varname="d"/>
+                            <ForVarIterator varname="d"/>
                           </EnclosedIterator>
                         </ElementIterator>
                         <ElementIterator>
                           <SingletonIterator value="xs:QName(,,td)"/>
-                          <AttributeIterator>
-                            <SingletonIterator value="xs:QName(,,align)"/>
+                          <AttributeIterator qname="align">
                             <SingletonIterator value="xs:string(center)"/>
                           </AttributeIterator>
                           <EnclosedIterator attr_cont="false">
                             <UDFunctionCallIterator>
-                              <LetVarIterator varname="d"/>
+                              <ForVarIterator varname="d"/>
                             </UDFunctionCallIterator>
                           </EnclosedIterator>
                         </ElementIterator>
                         <ElementIterator>
                           <SingletonIterator value="xs:QName(,,td)"/>
-                          <AttributeIterator>
-                            <SingletonIterator value="xs:QName(,,align)"/>
+                          <AttributeIterator qname="align">
                             <SingletonIterator value="xs:string(center)"/>
                           </AttributeIterator>
                           <EnclosedIterator attr_cont="false">
                             <UDFunctionCallIterator>
                               <SingletonIterator value="2008-07-01+01:00"/>
                               <PromoteIterator type="xs:date">
-                                <LetVarIterator varname="d"/>
+                                <ForVarIterator varname="d"/>
                               </PromoteIterator>
                             </UDFunctionCallIterator>
                           </EnclosedIterator>

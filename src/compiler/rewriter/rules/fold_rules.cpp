@@ -25,6 +25,7 @@
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/codegen/plan_visitor.h"
+#include "compiler/api/compilercb.h"
 
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
@@ -46,17 +47,17 @@ namespace zorba {
 
 static void remove_wincond_vars(const flwor_wincond*, VarSetAnnVal*);
 
-static bool maybe_needs_implicit_timezone (const fo_expr*, static_context*);
+static bool standalone_expr(expr_t);
 
-static bool standalone_expr (expr_t);
-
-static bool already_folded (expr_t, RewriterContext&);
+static bool already_folded(expr_t, RewriterContext&);
 
 static expr_t partial_eval_fo (RewriterContext&, fo_expr*);
 
 static expr_t partial_eval_logic(fo_expr*, bool, RewriterContext&);
 
-static expr_t partial_eval_eq (RewriterContext&, fo_expr&);
+static expr_t partial_eval_eq(RewriterContext&, fo_expr&);
+
+static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sctx);
 
 
 /*******************************************************************************
@@ -72,55 +73,206 @@ static expr_t execute (
   store::Item_t item;
   try
   {
-    for (PlanWrapperHolder pw(new PlanWrapper(plan, compilercb, 0, NULL)); ; )
+    PlanWrapperHolder pw(new PlanWrapper(plan,
+                                         compilercb,
+                                         0,      // dynamic ctx
+                                         NULL,   // xquery
+                                         0,      // stack depth
+                                         compilercb->theTimeout)); 
+    for (;;)
     {
       if (!pw->next(item))
       {
         break;
       }
-      result.push_back (item);
+      result.push_back(item);
     }
+
     return NULL;
   }
   catch (error::ZorbaError& /*e*/)
   {
-    node->put_annotation(Annotations::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
-    node->put_annotation(Annotations::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
+    node->setUnfoldable(expr::ANNOTATION_TRUE_FIXED);
+    node->setNonDiscardable(expr::ANNOTATION_TRUE_FIXED);
     return node;
     // TODO:
     // we had to disable folding of errors because the FnErrorIterator
     // was erroneously used. It always raises a ZorbaUserError (which is not correct).
-
-    // XQUERY_ERROR lErrorCode = e.theErrorCode;
-    // QueryLoc loc;
-    // loc.setLineBegin(e.theQueryLine);
-    // loc.setColumnBegin(e.theQueryColumn);
-    // store::Item_t qname;
-    // ITEM_FACTORY->createQName (qname, "http://www.w3.org/2005/xqt-errors", "err",  error::ZorbaError::toString(lErrorCode).c_str ());
-    // expr_t err_expr = new fo_expr(node->get_sctx_id(), loc, GET_BUILTIN_FUNCTION(FN_ERROR_2),
-    //                                new const_expr (node->get_sctx_id(), loc, qname),
-    //                                new const_expr (node->get_sctx_id(), loc, e.theDescription));
-    // err_expr->put_annotation (AnnotationKey::UNFOLDABLE_OP, TSVAnnotationValue::TRUE_VAL);
-    // err_expr->put_annotation (AnnotationKey::NONDISCARDABLE_EXPR, TSVAnnotationValue::TRUE_VAL);
-    // return err_expr;
+#if 0
+    XQUERY_ERROR lErrorCode = e.theErrorCode;
+    QueryLoc loc;
+    loc.setLineBegin(e.theQueryLine);
+    loc.setColumnBegin(e.theQueryColumn);
+    store::Item_t qname;
+    ITEM_FACTORY->createQName(qname,
+                              "http://www.w3.org/2005/xqt-errors",
+                              "err",
+                              error::ZorbaError::toString(lErrorCode).c_str());
+    expr_t err_expr = new fo_expr(node->get_sctx_id(),
+                                  loc,
+                                  GET_BUILTIN_FUNCTION(FN_ERROR_2),
+                                  new const_expr(node->get_sctx_id(), loc, qname),
+                                  new const_expr(node->get_sctx_id(), loc, e.theDescription));
+    err_expr->setUnfoldable(expr::ANNOTATION_TRUE_FIXED);
+    err_expr->setNonDiscardable(expr::ANNOTATION_TRUE_FIXED);
+    return err_expr;
+#endif
   }
 }
 
 
 /*******************************************************************************
-  If any of the subexprs of the given expr E has the given annotation k, then
-  set the k annotation on E as well.
+  Some expressions can be computed (at leat partially) during compilation time
+  based on the static type of their argument. For example, count(E) can be
+  replaced by const 1 if the static type of E has quantifier 1. Also,
+  castable(E, target_type) can be replaced by const true if the static type of
+  E is a subtype of target_type. However, E may have "side-effects", which
+  prevent such a replacement. For example, it may be a treat expr, whose
+  semantics is to return an error during runtime if the arg of the treat expr
+  does not have the corect type. We call such exprs "impure", and flag them as
+  non-discardable so that no (partial) evaluation of parent exprs is done.
+
+  Mark the exprs that should not be folded
 ********************************************************************************/
-void propagate_any_child_up(expr* node, Annotations::Key k)
+expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
-  for(expr_iterator i = node->expr_begin(); ! i.done(); ++i)
+  expr::BoolAnnotationValue saveNonDiscardable = node->getNonDiscardable();
+  expr::BoolAnnotationValue saveUnfoldable = node->getUnfoldable();
+
+  // By default, an expr is discardable and foldable
+  expr::BoolAnnotationValue curNonDiscardable = expr::ANNOTATION_FALSE;
+  expr::BoolAnnotationValue curUnfoldable = expr::ANNOTATION_FALSE;
+
+  for (const_expr_iterator i = node->expr_begin_const(); !i.done(); ++i) 
   {
-    if ((*i)->get_annotation (k).getp() == TSVAnnotationValue::TRUE_VAL.getp())
+    expr* childExpr = *i;
+
+    apply(rCtx, childExpr, modified);
+
+    // If any of the children is nondiscardable, "this" is nondiscardable too.
+    if (childExpr->isNonDiscardable())
     {
-      node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
-      break;
+      curNonDiscardable = expr::ANNOTATION_TRUE;
+    }
+
+    // If any of the children is unfoldable, then "this" is unfoldable too.
+    if (childExpr->isUnfoldable())
+    {
+      curUnfoldable = expr::ANNOTATION_TRUE;
     }
   }
+
+  // Certain exprs are nondiscardable and/or unfoldable independently from
+  // their children
+  switch (node->get_expr_kind())
+  {
+  // TODO: update exprs probably non-discardable as well
+  case fo_expr_kind:
+  {
+    fo_expr* fo = static_cast<fo_expr *>(node);
+    const function* f = fo->get_func();
+
+    // The various fn:error functions are non-discardable. Variable assignment
+    // is also non-discardable.
+    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 ||
+        dynamic_cast<const fn_error*>(f) != NULL)
+    {
+      curNonDiscardable = expr::ANNOTATION_TRUE_FIXED;
+    }
+
+    // Do not fold functions that always require access to the dynamic context,
+    // or may need to access the implicit timezone (which is also in the dynamic
+    // constext).
+    if (f->accessesDynCtx () ||
+        dynamic_cast<const fn_error*>(f) != NULL ||
+        maybe_needs_implicit_timezone(fo, rCtx.getStaticContext(node)) ||
+        !f->isDeterministic())
+    {
+      curUnfoldable = expr::ANNOTATION_TRUE_FIXED;
+    }
+
+    break;
+  }
+
+  case var_expr_kind:
+  {
+    var_expr::var_kind varKind = static_cast<var_expr *>(node)->get_kind();
+
+    if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
+      curUnfoldable = expr::ANNOTATION_TRUE_FIXED;
+
+    break;
+  }
+
+  // Exit and flow-control exprs do more than just computing a result which is
+  // consumed by their parent expr. So, they cannot be folded.
+  case exit_expr_kind:
+  case flowctl_expr_kind:
+
+  // Node constructors are unfoldable because if a node constructor is inside
+  // a loop, then it will create a different xml tree every time it is invoked,
+  // even if the constructor itself is "constant" (i.e. does not reference any
+  // varialbes)
+  case elem_expr_kind:
+  case attr_expr_kind:
+  case text_expr_kind:
+  case pi_expr_kind:
+  case doc_expr_kind:
+  {
+    curUnfoldable = expr::ANNOTATION_TRUE_FIXED;
+    break;
+  }
+
+  case cast_expr_kind:
+  case treat_expr_kind:
+  case promote_expr_kind:
+  {
+    curNonDiscardable = expr::ANNOTATION_TRUE_FIXED;
+    break;
+  }
+
+  default:
+  {
+    break;
+  }
+  }
+
+  if (saveNonDiscardable != curNonDiscardable &&
+      saveNonDiscardable != expr::ANNOTATION_TRUE_FIXED)
+  {
+    node->setNonDiscardable(curNonDiscardable);
+    modified = true;
+  }
+
+  if (saveUnfoldable != curUnfoldable &&
+      saveUnfoldable != expr::ANNOTATION_TRUE_FIXED)
+  {
+    node->setUnfoldable(curUnfoldable);
+    modified = true;
+  }
+
+  return NULL;
+}
+
+
+static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sctx)
+{
+  const function* f = fo->get_func();
+  FunctionConsts::FunctionKind fkind = f->getKind();
+  xqtref_t type0 = (fo->num_args() > 0 ? fo->get_arg(0)->return_type(sctx) : NULL);
+  xqtref_t type1 = (fo->num_args() > 1 ? fo->get_arg(1)->return_type(sctx) : NULL);
+
+  return ( ((f->isComparisonFunction() ||
+             f->arithmeticKind() == ArithmeticConsts::SUBTRACTION) &&
+            (TypeOps::maybe_date_time(*type0) || TypeOps::maybe_date_time(*type1)))
+           ||
+           ((fkind == FunctionConsts::FN_DISTINCT_VALUES_1 ||
+             fkind == FunctionConsts::FN_DISTINCT_VALUES_2 ||
+             fkind == FunctionConsts::FN_MIN_1 ||
+             fkind == FunctionConsts::FN_MIN_2 ||
+             fkind == FunctionConsts::FN_MAX_1 ||
+             fkind == FunctionConsts::FN_MAX_2)
+            && TypeOps::maybe_date_time(*TypeOps::prime_type(*type0))) );
 }
 
 
@@ -247,121 +399,6 @@ static void remove_wincond_vars(
 
 
 /*******************************************************************************
-  Mark expensive exprs (flwor expr, path expr, and any exprs referencing other
-  expensive exprs).
-********************************************************************************/
-
-RULE_REWRITE_PRE(MarkExpensiveOps)
-{
-  return NULL;
-}
-
-
-RULE_REWRITE_POST(MarkExpensiveOps)
-{
-  Annotations::Key k = Annotations::EXPENSIVE_OP;
-  switch (node->get_expr_kind ()) {
-  case flwor_expr_kind:
-  case gflwor_expr_kind:
-  case relpath_expr_kind:
-    node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
-    break;
-  default:
-    propagate_any_child_up (node, k);
-  }
-  return NULL;
-}
-
-
-/*******************************************************************************
-  Mark the exprs that should not be folded
-********************************************************************************/
-
-RULE_REWRITE_PRE(MarkUnfoldableExprs)
-{
-  return NULL;
-}
-
-
-RULE_REWRITE_POST(MarkUnfoldableExprs)
-{
-  Annotations::Key k = Annotations::UNFOLDABLE_OP;
-  switch (node->get_expr_kind ())
-  {
-  case fo_expr_kind:
-  {
-    fo_expr* fo = static_cast<fo_expr *> (node);
-    const function* f = fo->get_func();
-
-    // Do not fold functions that always require access to the dynamic context,
-    // or may need to access the implicit timezone (which is also in the dynamic
-    // constext).
-    if (f->accessesDynCtx () ||
-        dynamic_cast<const fn_error*>(f) != NULL ||
-        maybe_needs_implicit_timezone(fo, rCtx.getStaticContext(node)) ||
-        !f->isDeterministic())
-      node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
-
-    break;
-  }
-
-  case var_expr_kind:
-  {
-    var_expr::var_kind varKind = static_cast<var_expr *> (node)->get_kind();
-    if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
-      node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
-    break;
-  }
-
-  // Exit and flow-control exprs do more than just computing a result which is
-  // consumed by their parent expr. So, they cannot be folded.
-  case exit_expr_kind:
-  case flowctl_expr_kind:
-
-  // Node constructors are unfoldable because if a node constructor is inside
-  // a loop, then it will create a different xml tree every time it is invoked,
-  // even if the constructor itself is "constant" (i.e. does not reference any
-  // varialbes)
-  case elem_expr_kind:
-  case attr_expr_kind:
-  case text_expr_kind:
-  case pi_expr_kind:
-  case doc_expr_kind:
-    node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
-    break;
-
-  default: break;
-  }
-
-  if (node->get_annotation (k) != TSVAnnotationValue::TRUE_VAL)
-    propagate_any_child_up (node, k);
-
-  return NULL;
-}
-
-
-static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sctx)
-{
-  const function* f = fo->get_func();
-  FunctionConsts::FunctionKind fkind = f->getKind();
-  xqtref_t type0 = (fo->num_args() > 0 ? fo->get_arg(0)->return_type(sctx) : NULL);
-  xqtref_t type1 = (fo->num_args() > 1 ? fo->get_arg(1)->return_type(sctx) : NULL);
-
-  return ( ((f->isComparisonFunction() ||
-             f->arithmeticKind() == ArithmeticConsts::SUBTRACTION) &&
-            (TypeOps::maybe_date_time(*type0) || TypeOps::maybe_date_time(*type1)))
-           ||
-           ((fkind == FunctionConsts::FN_DISTINCT_VALUES_1 ||
-             fkind == FunctionConsts::FN_DISTINCT_VALUES_2 ||
-             fkind == FunctionConsts::FN_MIN_1 ||
-             fkind == FunctionConsts::FN_MIN_2 ||
-             fkind == FunctionConsts::FN_MAX_1 ||
-             fkind == FunctionConsts::FN_MAX_2)
-            && TypeOps::maybe_date_time(*TypeOps::prime_type(*type0))) );
-}
-
-
-/*******************************************************************************
   Execute const exprs that return at most one item as a result. Replace such
   exprs by either a const_expr whose value is the returned item, or an empty
   fn:concatenate expr, if no item is returned by the evaluation of the const
@@ -370,15 +407,16 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sct
 
 RULE_REWRITE_PRE(FoldConst)
 {
-  xqtref_t rtype = node->return_type (rCtx.getStaticContext(node));
+  xqtref_t rtype = node->return_type(rCtx.getStaticContext(node));
 
-  if (standalone_expr (node) &&
-      ! already_folded (node, rCtx) &&
-      get_varset_annotation (node, Annotations::FREE_VARS).empty () &&
-      node->get_annotation (Annotations::UNFOLDABLE_OP) != TSVAnnotationValue::TRUE_VAL &&
-      TypeOps::type_max_cnt (*rtype) <= 1 &&
-      (fold_expensive_ops ||
-       node->get_annotation (Annotations::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VAL))
+  if (standalone_expr(node) &&
+      ! already_folded(node, rCtx) &&
+      get_varset_annotation (node, Annotations::FREE_VARS).empty() &&
+      ! node->isUnfoldable() &&
+      TypeOps::type_max_cnt(*rtype) <= 1)
+    // &&
+    //  (fold_expensive_ops ||
+    //   node->get_annotation (Annotations::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VAL))
   {
     vector<store::Item_t> result;
     expr_t folded = execute (rCtx.getCompilerCB(), node, result);
@@ -421,57 +459,6 @@ static bool already_folded (expr_t e, RewriterContext& rCtx)
 
 
 /*******************************************************************************
-  Some expressions can be computed (at leat partially) during compilation time
-  based on the static type of their argument. For example, count(E) can be
-  replaced by const 1 if the static type of E has quantifier 1. Also,
-  castable(E, target_type) can be replaced by const true if the static type of
-  E is a subtype of target_type. However, E may have "side-effects", which
-  prevent such a replacement. For example, it may be a treat expr, whose
-  semantics is to return an error during runtime if the arg of the treat expr
-  does not have the corect type. We call such exprs "impure", and flag them as
-  non-discardable so that no (partial) evaluation of parent exprs is done.
-********************************************************************************/
-
-RULE_REWRITE_PRE(MarkImpureExprs)
-{
-  return NULL;
-}
-
-RULE_REWRITE_POST(MarkImpureExprs)
-{
-  // TODO: constructors cannot be cloned; but currently we never clone anyway.
-  // TODO: propagate non-discardable prop for FLWOR vars (see nodeid_rules.cpp)
-
-  Annotations::Key k = Annotations::NONDISCARDABLE_EXPR;
-  switch (node->get_expr_kind())
-  {
-  // TODO: update exprs probably non-discardable as well
-  case fo_expr_kind:
-  {
-    fo_expr* fo = static_cast<fo_expr *> (node);
-    const function* f = fo->get_func();
-
-    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 ||
-        dynamic_cast<const fn_error*>(f) != NULL)
-      node->put_annotation(k, TSVAnnotationValue::TRUE_VAL);
-
-    break;
-  }
-  default:
-  {
-    if (dynamic_cast<cast_base_expr *> (node) != NULL)
-      node->put_annotation (k, TSVAnnotationValue::TRUE_VAL);
-  }
-  }
-
-  if (node->get_annotation(k) != TSVAnnotationValue::TRUE_VAL.getp())
-    propagate_any_child_up(node, k);
-
-  return NULL;
-}
-
-
-/*******************************************************************************
 
   The PartialEval rule performs the following kinds of rewrites:
 
@@ -508,7 +495,7 @@ RULE_REWRITE_PRE(PartialEval)
   {
     const expr* arg = cbe->get_input();
 
-    if (arg->get_annotation(Annotations::NONDISCARDABLE_EXPR).getp() == TSVAnnotationValue::TRUE_VAL.getp())
+    if (arg->isNonDiscardable())
       return NULL;
 
     xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
@@ -584,7 +571,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   else if (fkind == FunctionConsts::FN_COUNT_1)
   {
     expr_t arg = fo->get_arg(0, false);
-    if (arg->get_annotation(Annotations::NONDISCARDABLE_EXPR) != TSVAnnotationValue::TRUE_VAL)
+    if (!arg->isNonDiscardable())
     {
       int type_cnt = TypeOps::type_cnt(*arg->return_type(rCtx.getStaticContext(fo)));
       if (type_cnt != -1)

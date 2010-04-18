@@ -49,35 +49,30 @@ class ZORBA_DLL_PUBLIC Runnable
 {
 
 protected:
-    Runnable();
+  Runnable();
 
-public:
-    enum ThreadState {
-      RUNNING,
-      TERMINATED,
-      SUSPENDED,
-      IDLE
-    };
+ public:
+  enum ThreadState {
+    RUNNING,
+    TERMINATED,
+    SUSPENDED,
+    IDLE
+  };
 
 public:
   virtual ~Runnable();
 
 public:
-    void
-    start();
+    void start();
 
     // can only be called if the thread is suspended
-    void
-    terminate();
+    void terminate();
 
-    void
-    suspend(unsigned long aTimeInMs = 0);
+    void suspend(unsigned long aTimeInMs = 0);
 
-    void
-    resume();
+    void resume();
 
-    void
-    join();
+    void join();
 
     ThreadState status() const { return theStatus; }
 
@@ -106,23 +101,25 @@ protected: // To be implemented by the user
     virtual void finish() = 0;
 
 private:
-    volatile ThreadState theStatus;
     static ZORBA_THREAD_RETURN startImpl(void* params);
+
     static void cleanupHandler(void *arg);
 
     void finishImpl();
 
-    bool theFinishCalled;
+    volatile ThreadState theStatus;
+
+    bool              theFinishCalled;
 
     Mutex             theMutex;
 
     Condition         theCondition;
 
-    bool theDeleteAfterRun;
-    bool theJoining;
+    bool              theDeleteAfterRun;
+    bool              theJoining;
 
 #ifdef ZORBA_HAVE_PTHREAD_H
-    bool theCalledTerminate;
+    bool              theCalledTerminate;
     pthread_t         theThread;
 
     static void
@@ -130,7 +127,7 @@ private:
 
 #else
     ThreadId theThreadId;
-    HANDLE theThread;
+    HANDLE   theThread;
 #endif
 };
 } /* namespace zorba */

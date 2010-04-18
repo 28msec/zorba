@@ -51,7 +51,7 @@ public:
 
   virtual ~RuleMajorDriver();
 
-  void rewrite(RewriterContext& rCtx);
+  bool rewrite(RewriterContext& rCtx);
 };
 
 
@@ -61,7 +61,7 @@ public:
 class SingletonRuleMajorDriverBase : public RuleMajorDriver 
 {
 public:
-  SingletonRuleMajorDriverBase (rule_ptr_t rule) { m_rules.push_back(rule); }
+  SingletonRuleMajorDriverBase(rule_ptr_t rule) { m_rules.push_back(rule); }
 };
 
 
@@ -83,9 +83,9 @@ private:
   rule_ptr_t theRule;
 
 public:
-  RuleOnceDriverBase (rule_ptr_t rule) : theRule(rule) { }
+  RuleOnceDriverBase(rule_ptr_t rule) : theRule(rule) { }
 
-  void rewrite(RewriterContext& rCtx);
+  bool rewrite(RewriterContext& rCtx);
 };
 
 

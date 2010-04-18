@@ -19,8 +19,7 @@
 #include <memory>
 
 #include "system/globalenv.h"
-
-#include "util/properties.h"
+#include "system/properties.h"
 
 #include "context/static_context.h"
 #include "context/standard_uri_resolvers.h"

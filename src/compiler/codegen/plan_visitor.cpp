@@ -21,12 +21,12 @@
 
 #include "zorbaerrors/Assert.h"
 
-#include "util/properties.h"
 #include "util/tracer.h"
 #include "util/stl_extra.h"
 #include "util/hashmap32.h"
 
 #include "system/globalenv.h"
+#include "system/properties.h"
 
 #include "compiler/api/compilercb.h"
 #include "compiler/codegen/plan_visitor.h"

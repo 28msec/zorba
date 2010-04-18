@@ -119,13 +119,18 @@ public:
 
   config                              theConfig;
 
+  long                                theTimeout;
+
 public:
   SERIALIZABLE_CLASS(CompilerCB);
   CompilerCB(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  CompilerCB(std::map<short, static_context_t>&, error::ErrorManager*);
+  CompilerCB(
+        std::map<short, static_context_t>&,
+        error::ErrorManager*,
+        long timeout = -1);
 
   CompilerCB(const CompilerCB& ccb);
 

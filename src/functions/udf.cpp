@@ -162,8 +162,7 @@ const std::vector<var_expr_t>& user_function::getArgVars() const
 bool user_function::accessesDynCtx() const
 {
   // All undeclared functions unfoldable. TODO: better analysis
-  return (theBodyExpr == NULL ||
-          theBodyExpr->get_annotation(Annotations::UNFOLDABLE_OP).getp() == TSVAnnotationValue::TRUE_VAL.getp());
+  return (theBodyExpr == NULL || theBodyExpr->isUnfoldable());
 }
 
 

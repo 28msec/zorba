@@ -1,159 +1,152 @@
 Iterator tree for main query:
-<TreatIterator quant="">
-  <flwor::FLWORIterator>
-    <LetVariable name="wordlist" materialize="true">
-      <ElementIterator>
-        <SingletonIterator value="xs:QName(,,keywords)"/>
-        <FnConcatIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(red)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(green)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(red)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(blue)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(violet)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(red)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(blue)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(blue)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(red)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(orange)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(green)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(yellow)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(indigo)"/>
-            </TextIterator>
-          </ElementIterator>
-          <ElementIterator>
-            <SingletonIterator value="xs:QName(,,term)"/>
-            <TextIterator>
-              <SingletonIterator value="xs:string(red)"/>
-            </TextIterator>
-          </ElementIterator>
-        </FnConcatIterator>
-      </ElementIterator>
-    </LetVariable>
-    <LetVariable name="$$opt_temp_0" materialize="true">
-      <HoistIterator>
-        <HoistIterator>
-          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,term)" typename="*" nill allowed="0">
-            <LetVarIterator varname="wordlist"/>
-          </ChildAxisIterator>
-        </HoistIterator>
-      </HoistIterator>
-    </LetVariable>
-    <ReturnClause>
-      <ElementIterator>
-        <SingletonIterator value="xs:QName(,,terms)"/>
-        <EnclosedIterator attr_cont="false">
-          <flwor::FLWORIterator>
-            <ForVariable name="term">
-              <FnDistinctValuesIterator>
-                <FnDataIterator>
-                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,term)" typename="*" nill allowed="0">
-                    <LetVarIterator varname="wordlist"/>
-                  </ChildAxisIterator>
-                </FnDataIterator>
-              </FnDistinctValuesIterator>
-            </ForVariable>
-            <ReturnClause>
-              <ElementIterator>
-                <SingletonIterator value="xs:QName(,,term)"/>
-                <AttributeIterator>
-                  <SingletonIterator value="xs:QName(,,count)"/>
-                  <EnclosedIterator attr_cont="true">
-                    <FnCountIterator>
-                      <flwor::FLWORIterator>
-                        <ForVariable name="$$dot">
-                          <UnhoistIterator>
-                            <UnhoistIterator>
-                              <LetVarIterator varname="$$opt_temp_0"/>
-                            </UnhoistIterator>
-                          </UnhoistIterator>
-                        </ForVariable>
-                        <WhereClause>
-                          <CompareIterator>
-                            <FnDataIterator>
-                              <ForVarIterator varname="$$dot"/>
-                            </FnDataIterator>
-                            <ForVarIterator varname="term"/>
-                          </CompareIterator>
-                        </WhereClause>
-                        <ReturnClause>
-                          <SingletonIterator value="xs:boolean(true)"/>
-                        </ReturnClause>
-                      </flwor::FLWORIterator>
-                    </FnCountIterator>
-                  </EnclosedIterator>
-                </AttributeIterator>
-                <EnclosedIterator attr_cont="false">
-                  <ForVarIterator varname="term"/>
+<flwor::FLWORIterator>
+  <ForVariable name="wordlist">
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,keywords)"/>
+      <FnConcatIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(red)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(green)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(red)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(blue)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(violet)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(red)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(blue)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(blue)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(red)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(orange)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(green)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(yellow)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(indigo)"/>
+          </TextIterator>
+        </ElementIterator>
+        <ElementIterator>
+          <SingletonIterator value="xs:QName(,,term)"/>
+          <TextIterator>
+            <SingletonIterator value="xs:string(red)"/>
+          </TextIterator>
+        </ElementIterator>
+      </FnConcatIterator>
+    </ElementIterator>
+  </ForVariable>
+  <LetVariable name="$$opt_temp_0" materialize="true">
+    <HoistIterator>
+      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,term)" typename="*" nill allowed="0">
+        <ForVarIterator varname="wordlist"/>
+      </ChildAxisIterator>
+    </HoistIterator>
+  </LetVariable>
+  <ReturnClause>
+    <ElementIterator>
+      <SingletonIterator value="xs:QName(,,terms)"/>
+      <EnclosedIterator attr_cont="false">
+        <flwor::FLWORIterator>
+          <ForVariable name="term">
+            <FnDistinctValuesIterator>
+              <FnDataIterator>
+                <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,term)" typename="*" nill allowed="0">
+                  <ForVarIterator varname="wordlist"/>
+                </ChildAxisIterator>
+              </FnDataIterator>
+            </FnDistinctValuesIterator>
+          </ForVariable>
+          <ReturnClause>
+            <ElementIterator>
+              <SingletonIterator value="xs:QName(,,term)"/>
+              <AttributeIterator qname="count">
+                <EnclosedIterator attr_cont="true">
+                  <FnCountIterator>
+                    <flwor::FLWORIterator>
+                      <ForVariable name="$$dot">
+                        <UnhoistIterator>
+                          <LetVarIterator varname="$$opt_temp_0"/>
+                        </UnhoistIterator>
+                      </ForVariable>
+                      <WhereClause>
+                        <CompareIterator>
+                          <FnDataIterator>
+                            <ForVarIterator varname="$$dot"/>
+                          </FnDataIterator>
+                          <ForVarIterator varname="term"/>
+                        </CompareIterator>
+                      </WhereClause>
+                      <ReturnClause>
+                        <SingletonIterator value="xs:boolean(true)"/>
+                      </ReturnClause>
+                    </flwor::FLWORIterator>
+                  </FnCountIterator>
                 </EnclosedIterator>
-              </ElementIterator>
-            </ReturnClause>
-          </flwor::FLWORIterator>
-        </EnclosedIterator>
-      </ElementIterator>
-    </ReturnClause>
-  </flwor::FLWORIterator>
-</TreatIterator>
+              </AttributeIterator>
+              <EnclosedIterator attr_cont="false">
+                <ForVarIterator varname="term"/>
+              </EnclosedIterator>
+            </ElementIterator>
+          </ReturnClause>
+        </flwor::FLWORIterator>
+      </EnclosedIterator>
+    </ElementIterator>
+  </ReturnClause>
+</flwor::FLWORIterator>
 

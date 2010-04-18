@@ -35,21 +35,6 @@
 #define LOOKUP_FN( pfx, local, arity ) \
 (GENV.getRootStaticContext ().lookup_fn (pfx, local, arity))
 
-#define LOOKUP_OP1( local ) \
-(GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 1))
-
-#define LOOKUP_OP2( local ) \
-(GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 2))
-
-#define LOOKUP_OP3( local ) \
-(GENV.getRootStaticContext ().lookup_builtin_fn (":" local, 3))
-
-#define LOOKUP_OPN( local ) \
-(GENV.getRootStaticContext ().lookup_builtin_fn (":" local, VARIADIC_SIG_SIZE))
-
-#define LOOKUP_RESOLVED_FN( ns, local, arity ) \
-(GENV.getRootStaticContext().lookup_resolved_fn(ns, local, arity))
-
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
 #define LOC( expr ) (expr)->get_loc ()

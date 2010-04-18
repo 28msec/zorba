@@ -782,6 +782,7 @@ cast_base_expr::cast_base_expr(
   : 
   cast_or_castable_base_expr(sctx, loc, input, type)
 {
+  setNonDiscardable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -1241,6 +1242,8 @@ elem_expr::elem_expr(
   theNSCtx(const_cast<namespace_context*>(aNSCtx))
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -1258,6 +1261,8 @@ elem_expr::elem_expr(
   theNSCtx(const_cast<namespace_context*>(aNSCtx))
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
   
 
@@ -1340,6 +1345,8 @@ attr_expr::attr_expr(
   theValueExpr(aValueExpr)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -1418,6 +1425,8 @@ text_expr::text_expr(
   theContentExpr(content)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -1506,6 +1515,8 @@ pi_expr::pi_expr(
   theContentExpr(contentExpr)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -2268,6 +2279,8 @@ exit_expr::exit_expr(short sctx, const QueryLoc& loc, expr_t inExpr)
   theExpr(inExpr)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 
@@ -2326,6 +2339,8 @@ flowctl_expr::flowctl_expr(short sctx, const QueryLoc &loc, enum action action)
   theAction(action)
 {
   compute_scripting_kind();
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 

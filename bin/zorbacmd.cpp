@@ -61,11 +61,11 @@
 #include "util/time.h"
 
 // toggle this to allow configuration via a system properties file
-// (see src/util/properties.*)
+// (see src/system/properties.*)
 #define ZORBACMD_LOAD_SYSTEM_PROPERTIES 1
 
 #if ZORBACMD_LOAD_SYSTEM_PROPERTIES
-#  include "util/properties.h"
+#  include "system/properties.h"
 #endif
 
 using namespace zorba;
@@ -708,12 +708,13 @@ int _tmain(int argc, _TCHAR* argv[])
 {
 #if ZORBACMD_LOAD_SYSTEM_PROPERTIES
   // only configurable via a config file or environment vars
-  zorba::Properties::load (0, NULL);
+  zorba::Properties::load(0, NULL);
 #endif
 
   // parse the command line and/or the properties file
   ZorbaCMDProperties lProperties;
-  if (!lProperties.loadProperties(argc, argv)) {
+  if (!lProperties.loadProperties(argc, argv)) 
+  {
     return 1;
   }
 

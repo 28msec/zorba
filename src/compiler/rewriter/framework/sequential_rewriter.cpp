@@ -28,14 +28,21 @@ SequentialRewriter::~SequentialRewriter() throw ()
 }
 
 
-void SequentialRewriter::rewrite(RewriterContext& rCtx)
+bool SequentialRewriter::rewrite(RewriterContext& rCtx)
 {
+  bool modified = false;
+
   rewriters_t::const_iterator end = m_childRewriters.end();
 
   for(rewriters_t::const_iterator i = m_childRewriters.begin(); i != end; ++i) 
   {
-    (*i)->rewrite(rCtx);
+    bool mod = (*i)->rewrite(rCtx);
+
+    if (mod && modified == false)
+      modified = true;
   }
+
+  return modified;
 }
 
 }

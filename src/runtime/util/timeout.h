@@ -13,36 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef TIMEOUT_H
-#define TIMEOUT_H
+#ifndef ZORBA_RUNTIME_UTIL_TIMEOUT_H
+#define ZORBA_RUNTIME_UTIL_TIMEOUT_H
+
 #include "zorbautils/runnable.h"
 
-namespace zorba {
-  class PlanState;
+namespace zorba 
+{
 
-  class StateWrapper {
-  private:
-    PlanState& theState;
+class PlanState;
 
-  public:
-    StateWrapper(PlanState& aState);
 
-    void doBreak();
-  };
+class StateWrapper 
+{
+private:
+  PlanState& theState;
 
-  class Timeout : public Runnable {
-  private:
-    long theTimeout;
-    StateWrapper theWrapper;
-    Mutex* theTimeoutMutex; // shared with PlanWrapper
+public:
+  StateWrapper(PlanState& aState);
 
-  public:
-    Timeout(long aTimeout, const StateWrapper& aWrapper, Mutex* aMutex);
+  void doBreak();
+};
 
-    virtual void run();
-    // Note: this method is not allowd to throw an exception!
-    virtual void finish();
-  };
+
+class Timeout : public Runnable 
+{
+private:
+  long           theTimeout;
+  StateWrapper   theWrapper;
+
+public:
+  Timeout(long aTimeout, const StateWrapper& aWrapper);
+
+  virtual void run();
+  // Note: this method is not allowd to throw an exception!
+  virtual void finish();
+};
+
+
 } //namespace zorba
 
 #endif //TIMEOUT_H

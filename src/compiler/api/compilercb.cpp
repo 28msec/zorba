@@ -19,7 +19,7 @@
 
 #include "context/static_context.h"
 
-#include "util/properties.h"
+#include "system/properties.h"
 
 #include "zorbaserialization/serialization_engine.h"
 
@@ -93,14 +93,16 @@ void CompilerCB::config::serialize(::zorba::serialization::Archiver& ar)
 
 CompilerCB::CompilerCB(
     std::map<short, static_context_t>& sctx_map,
-    error::ErrorManager* errmgr)
+    error::ErrorManager* errmgr,
+    long timeout)
   :
   theErrorManager(errmgr),
   theSctxMap(&sctx_map),
   theRootSctx(0),
   theDebuggerCommons(0),
   theIsLoadProlog(false),
-  theIsUpdating(false)
+  theIsUpdating(false),
+  theTimeout(timeout)
 {
 }
 
@@ -114,7 +116,8 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theDebuggerCommons(cb.theDebuggerCommons),
   theIsLoadProlog(false),
   theIsUpdating(false),
-  theConfig(cb.theConfig)
+  theConfig(cb.theConfig),
+  theTimeout(cb.theTimeout)
 {
 }
 
@@ -143,7 +146,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
     theDebuggerCommons = NULL;
   }
   ar & theConfig;
-  //ar & theDebuggerCommons;
+  ar & theTimeout;
 }
 
 

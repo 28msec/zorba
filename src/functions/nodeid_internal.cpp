@@ -54,9 +54,7 @@ function* op_node_sort_distinct::optimize(
     const expr* child) const
 {
   Annotations::Key ignoresSortedNodes = Annotations::IGNORES_SORTED_NODES;
-  Annotations::Key producesSortedNodes = Annotations::PRODUCES_SORTED_NODES;
   Annotations::Key ignoresDupNodes = Annotations::IGNORES_DUP_NODES;
-  Annotations::Key producesDistinctNodes = Annotations::PRODUCES_DISTINCT_NODES;
 
 #if 0
   cout << "optimize: self " << self << " child " << child
@@ -99,8 +97,7 @@ function* op_node_sort_distinct::optimize(
         self->get_annotation(ignoresDupNodes).getp() == TSV_TRUE_P)
       distinct = false;
 
-    if (child != NULL &&
-        child->get_annotation(producesDistinctNodes).getp() == TSV_TRUE_P)
+    if (child != NULL && child->getProducesDistinctNodes() == expr::ANNOTATION_TRUE)
       distinct = false;
   }
 
@@ -112,7 +109,7 @@ function* op_node_sort_distinct::optimize(
       sort = false;
 
     if (child != NULL &&
-        child->get_annotation(producesSortedNodes).getp() == TSV_TRUE_P &&
+        child->getProducesSortedNodes() == expr::ANNOTATION_TRUE &&
         myActions[SORT_ASC])
       sort = false;
   }

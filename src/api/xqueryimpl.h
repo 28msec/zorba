@@ -199,8 +199,6 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   double                             theDocLoadingUserTime;
   long                               theDocLoadingTime;
 
-  long                               theTimeout;
-
 private:
   bool                               theIsDebugMode;
   std::string                        theProfileName;

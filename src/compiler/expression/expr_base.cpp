@@ -23,6 +23,7 @@
 
 #include "functions/function.h"
 #include "functions/library.h"
+#include "functions/func_fnerror.h"
 
 #include "types/root_typemanager.h"
 #include "types/typeops.h"
@@ -154,7 +155,7 @@ const_expr_iterator& const_expr_iterator::operator++()
 }
 
 
-const expr* const_expr_iterator::operator*()
+expr* const_expr_iterator::operator*()
 {
   return theIter->theCurrentChild->getp();
 }
@@ -195,12 +196,17 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 expr::expr(short sctx, const QueryLoc& loc) 
   :
   theSctxId(sctx),
-  theLoc(loc) 
+  theLoc(loc),
+  theFlags1(0) 
 {
   invalidate();
   theCache.type.valid = false;
   theCache.scripting_kind.valid = false;
   theCache.scripting_kind.kind = VACUOUS_EXPR;
+
+  // This is the default. The constructors for certain exprs set different values. 
+  setNonDiscardable(ANNOTATION_FALSE);
+  setUnfoldable(ANNOTATION_FALSE);
 }
 
 
@@ -225,27 +231,7 @@ void expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theCache.type.t;
   ar & theCache.scripting_kind.valid;
   SERIALIZE_ENUM(expr_script_kind_t, theCache.scripting_kind.kind);
-}
-
-
-/*******************************************************************************
-  Return true if the expr does not reference any variables.
-********************************************************************************/
-bool expr::is_constant() const
-{
-  if (get_expr_kind() == var_expr_kind) 
-  {
-    return false;
-  }
-
-  for(const_expr_iterator i = expr_begin_const(); !i.done(); ++i) 
-  {
-    if (!(*i)->is_constant()) 
-    {
-      return false;
-    }
-  }
-  return true;
+  ar & theFlags1;
 }
 
 
@@ -519,6 +505,199 @@ std::string expr::toString() const
   std::ostringstream oss;
   put(oss);
   return oss.str();
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void expr::clear_annotations()
+{
+  m_annotations.clear();
+  theFlags1 = 0;
+
+  setNonDiscardable(ANNOTATION_FALSE);
+  setUnfoldable(ANNOTATION_FALSE);
+
+  expr::setDirectAnnotations();
+
+  expr_iterator iter = expr_begin();
+  while (!iter.done())
+  {
+    (*iter)->clear_annotations();
+    ++iter;
+  }
+}
+
+
+/*******************************************************************************
+  Certain exprs are nondiscardable and/or unfoldable independently from their
+  children.
+********************************************************************************/
+void expr::setDirectAnnotations()
+{
+  // TODO: update exprs probably non-discardable as well
+  switch (get_expr_kind())
+  {
+  case fo_expr_kind:
+  {
+    fo_expr* fo = static_cast<fo_expr *>(this);
+    const function* f = fo->get_func();
+
+    // The various fn:error functions are non-discardable. Variable assignment
+    // is also non-discardable.
+    if (f->getKind() == FunctionConsts::OP_VAR_ASSIGN_1 ||
+        dynamic_cast<const fn_error*>(f) != NULL)
+    {
+      setNonDiscardable(ANNOTATION_TRUE_FIXED);
+    }
+
+    // Do not fold functions that always require access to the dynamic context,
+    // or may need to access the implicit timezone (which is also in the dynamic
+    // constext).
+    if (f->accessesDynCtx () ||
+        dynamic_cast<const fn_error*>(f) != NULL ||
+        //maybe_needs_implicit_timezone(fo, rCtx.getStaticContext(node)) ||
+        !f->isDeterministic())
+    {
+      setUnfoldable(ANNOTATION_TRUE_FIXED);
+    }
+
+    break;
+  }
+
+  case var_expr_kind:
+  {
+    var_expr::var_kind varKind = static_cast<var_expr *>(this)->get_kind();
+
+    if (varKind == var_expr::prolog_var || varKind == var_expr::local_var)
+      setUnfoldable(ANNOTATION_TRUE_FIXED);
+
+    break;
+  }
+
+  // Exit and flow-control exprs do more than just computing a result which is
+  // consumed by their parent expr. So, they cannot be folded.
+  case exit_expr_kind:
+  case flowctl_expr_kind:
+
+  // Node constructors are unfoldable because if a node constructor is inside
+  // a loop, then it will create a different xml tree every time it is invoked,
+  // even if the constructor itself is "constant" (i.e. does not reference any
+  // varialbes)
+  case elem_expr_kind:
+  case attr_expr_kind:
+  case text_expr_kind:
+  case pi_expr_kind:
+  case doc_expr_kind:
+  {
+    setUnfoldable(ANNOTATION_TRUE_FIXED);
+    break;
+  }
+
+  case cast_expr_kind:
+  case treat_expr_kind:
+  case promote_expr_kind:
+  {
+    setNonDiscardable(ANNOTATION_TRUE_FIXED);
+    break;
+  }
+
+  default:
+  {
+    break;
+  }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+expr::BoolAnnotationValue expr::getProducesSortedNodes() const
+{
+  return (BoolAnnotationValue)(theFlags1 & 0x3);
+}
+
+
+void expr::setProducesSortedNodes(BoolAnnotationValue v)
+{
+  theFlags1 &= ~0x3;
+  theFlags1 |= v;
+}
+
+
+expr::BoolAnnotationValue expr::getProducesDistinctNodes() const
+{
+  return (BoolAnnotationValue)((theFlags1 & 0xC) >> 2);
+}
+
+
+void expr::setProducesDistinctNodes(BoolAnnotationValue v)
+{
+  theFlags1 &= ~0xC;
+  theFlags1 |= (v << 2);
+}
+
+
+expr::BoolAnnotationValue expr::getNonDiscardable() const
+{
+  return (BoolAnnotationValue)((theFlags1 & 0x30) >> 4);
+}
+
+
+void expr::setNonDiscardable(BoolAnnotationValue v)
+{
+  theFlags1 &= ~0x30;
+  theFlags1 |= (v << 4);
+}
+
+
+bool expr::isNonDiscardable() const
+{
+  BoolAnnotationValue v = getNonDiscardable();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+expr::BoolAnnotationValue expr::getUnfoldable() const
+{
+  return (BoolAnnotationValue)((theFlags1 & 0xC0) >> 6);
+}
+
+
+void expr::setUnfoldable(BoolAnnotationValue v)
+{
+  theFlags1 &= ~0xC0;
+  theFlags1 |= (v << 6);
+}
+
+
+bool expr::isUnfoldable() const
+{
+  BoolAnnotationValue v = getUnfoldable();
+  return (v == ANNOTATION_TRUE || v == ANNOTATION_TRUE_FIXED);
+}
+
+
+/*******************************************************************************
+  Return true if the expr does not reference any variables.
+********************************************************************************/
+bool expr::is_constant() const
+{
+  if (get_expr_kind() == var_expr_kind) 
+  {
+    return false;
+  }
+
+  for(const_expr_iterator i = expr_begin_const(); !i.done(); ++i) 
+  {
+    if (!(*i)->is_constant()) 
+    {
+      return false;
+    }
+  }
+  return true;
 }
 
 
@@ -1007,21 +1186,6 @@ const store::Item* expr::getQName(static_context* sctx) const
   return NULL;
 }
 
-
-/*******************************************************************************
-
-********************************************************************************/
-void expr::clear_annotations()
-{
-  m_annotations.clear();
-
-  expr_iterator iter = expr_begin();
-  while (!iter.done())
-  {
-    (*iter)->clear_annotations();
-    ++iter;
-  }
-}
 
 
 /*******************************************************************************

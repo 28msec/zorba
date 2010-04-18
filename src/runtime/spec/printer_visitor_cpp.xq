@@ -78,7 +78,7 @@ declare function local:create-includes($files) as xs:string
     $gen:newline, $gen:newline,
     '#include "runtime/visitors/iterprinter.h"',
     $gen:newline, $gen:newline,
-    '#include "util/properties.h"',
+    '#include "system/properties.h"',
     $gen:newline, $gen:newline,
     '#include "zorbautils/strutil.h"',
     $gen:newline, $gen:newline,

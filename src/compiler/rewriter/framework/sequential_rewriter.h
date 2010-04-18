@@ -38,7 +38,7 @@ protected:
   rewriters_t m_childRewriters;
 
 public:
-  void rewrite(RewriterContext& rCtx);
+  virtual bool rewrite(RewriterContext& rCtx);
 
 protected:
   SequentialRewriter();

@@ -1,0 +1,6 @@
+module namespace module1 = "http://www.zorba-xquery.com/module1";
+
+declare updating function module1:update($a, $b) 
+{
+  replace value of node $a/test with $b
+};

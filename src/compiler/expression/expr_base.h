@@ -150,7 +150,7 @@ public:
 
   const_expr_iterator& operator++();
 
-  const expr* operator*();
+  expr* operator*();
 
   bool done() const;
 
@@ -178,6 +178,16 @@ public:
   typedef std::map<const expr *, expr_t> substitution_t;
 
   typedef substitution_t::iterator subst_iter_t;
+
+
+  typedef enum 
+  {
+    ANNOTATION_UNKNOWN = 0,
+    ANNOTATION_FALSE,
+    ANNOTATION_TRUE,
+    ANNOTATION_TRUE_FIXED
+  } BoolAnnotationValue;
+
 
 protected:
   // Pitfall when using the cache -- AVOID THIS SCENARIO:
@@ -208,6 +218,8 @@ protected:
   short            theSctxId;
   QueryLoc         theLoc;
   Cache            theCache;
+
+  ulong            theFlags1;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(expr)
@@ -268,6 +280,28 @@ public:
   std::string toString() const;
 
 public:
+  BoolAnnotationValue getProducesSortedNodes() const;
+
+  void setProducesSortedNodes(BoolAnnotationValue v);
+
+  BoolAnnotationValue getProducesDistinctNodes() const;
+
+  void setProducesDistinctNodes(BoolAnnotationValue v);
+
+  BoolAnnotationValue getNonDiscardable() const;
+
+  bool isNonDiscardable() const;
+
+  void setNonDiscardable(BoolAnnotationValue v);
+
+  BoolAnnotationValue getUnfoldable() const;
+
+  void setUnfoldable(BoolAnnotationValue v);
+
+  bool isUnfoldable() const;
+
+  void setDirectAnnotations();
+
   bool is_constant() const;
 
   void replace_expr(const expr* oldExpr, const expr* newExpr);

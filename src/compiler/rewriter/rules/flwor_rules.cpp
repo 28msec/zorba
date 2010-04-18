@@ -50,24 +50,22 @@ static bool is_subseq_pred(RewriterContext&, const flwor_expr*, const expr*, var
 /*******************************************************************************
 
 ********************************************************************************/
-class SubstVars : public RewriteRule
+class SubstVars : public PrePostRewriteRule
 {
 protected:
   const var_expr   * theVarExpr;
   expr             * theSubstExpr;
-  std::string        theRuleName;
 
 public:
   SubstVars(const var_expr* var, expr* subst)
     :
+    PrePostRewriteRule("SubstVars"),
     theVarExpr(var),
-    theSubstExpr(subst),
-    theRuleName("SubstVars")
+    theSubstExpr(subst)
   {
   }
 
-  const std::string& getRuleName() const { return theRuleName; }
-
+protected:
   expr_t rewritePre(expr* node, RewriterContext& rCtx);
   expr_t rewritePost(expr* node, RewriterContext& rCtx);
 };
@@ -88,17 +86,25 @@ RULE_REWRITE_POST(SubstVars)
 /*******************************************************************************
   Replace all references to var "var" inside the expr "root" with expr "subst"
 ********************************************************************************/
-expr_t subst_vars(RewriterContext rCtx0, expr_t root, const var_expr* var, expr* subst)
+expr_t subst_vars(
+    const RewriterContext& rCtx0,
+    expr* root,
+    const var_expr* var,
+    expr* subst)
 {
-  RewriterContext rCtx (rCtx0.getCompilerCB(), root);
+  RewriterContext rCtx(rCtx0.getCompilerCB(), root);
 
-  std::auto_ptr<Rewriter> rw(new SingletonRuleMajorDriverBase(rule_ptr_t(new SubstVars(var, subst))));
+  SubstVars rule(var, subst);
 
-  rw->rewrite(rCtx);
+  bool modified;
+
+  rule.apply(rCtx, root, modified);
 
 #if 0  // debug substitutions
-  std::cout << "After subst " << var << ":" << std::endl; rCtx.getRoot()->put (std::cout) << std::endl;
+  std::cout << "After subst " << var << ":" << std::endl;
+  rCtx.getRoot()->put(std::cout) << std::endl;
 #endif
+
   return rCtx.getRoot();
 }
 
@@ -233,8 +239,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         substitute = true;
       }
       else if (uses == 0 &&
-               domainExpr->get_annotation(Annotations::NONDISCARDABLE_EXPR) !=
-               TSVAnnotationValue::TRUE_VAL &&
+               !domainExpr->isNonDiscardable() &&
                domainQuant == TypeConstants::QUANT_ONE)
       {
         substitute = true;
@@ -277,8 +282,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       }
       else if (uses == 0 &&
                !domainExpr->is_sequential() &&
-               domainExpr->get_annotation(Annotations::NONDISCARDABLE_EXPR) !=
-               TSVAnnotationValue::TRUE_VAL)
+               !domainExpr->isNonDiscardable())
       {
         substitute = true;
       }

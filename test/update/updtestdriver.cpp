@@ -40,7 +40,7 @@
 
 #include <zorba/store_manager.h>
 
-#include "util/properties.h"
+#include "system/properties.h"
 #include "testdriver_comparator.h"
 
 bool isErrorExpected(zorba::ZorbaException& e, State* aState) 

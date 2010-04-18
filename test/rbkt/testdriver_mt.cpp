@@ -38,7 +38,7 @@
 
 #include "zorbautils/mutex.h"
 
-#include "util/properties.h"
+#include "system/properties.h"
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
 #include "specification.h" // parsing spec files

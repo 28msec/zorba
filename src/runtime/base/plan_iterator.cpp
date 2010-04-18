@@ -97,7 +97,10 @@ bool PlanIterator::consumeNext(
     const PlanIterator* iter,
     PlanState& planState)
 {
-  if (planState.theHasToQuit) {
+  if (planState.theHasToQuit) 
+  {
+    // std::cout << "Plan interupted" << std::endl;
+
     throw FlowCtlException(FlowCtlException::INTERRUPT);
   }
   bool status = iter->produceNext(result, planState);

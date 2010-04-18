@@ -25,47 +25,81 @@
 
 namespace zorba {
 
-class ZORBA_DLL_PUBLIC PropertiesBase {
+/***************************************************************************//**
+
+********************************************************************************/
+class ZORBA_DLL_PUBLIC PropertiesBase 
+{
 protected:
   std::vector<std::string > __thePositionalArgs;
 
 public:
   virtual ~PropertiesBase () {}
 
-  virtual const char **get_all_options () const = 0;
-  virtual std::string load_argv (int argc, const char **argv) = 0;
-  virtual std::string check_args () { return ""; }
-
-  virtual std::string load_all (const char *cfgname, const std::string &env_pfx, int argc, const char **argv) {
+  std::string load_all(
+        const char* cfgFilename,
+        const std::string& env_pfx,
+        int argc,
+        const char **argv) 
+  {
     std::string result;
-    if (! (result = load_env (env_pfx)).empty ())
+
+    if (! (result = load_env(env_pfx)).empty())
       return result;
-    if (! (result = load_file (cfgname)).empty ())
+
+    if (! (result = load_file(cfgFilename)).empty())
       return result;
-    return load_argv (argc, argv);
+
+    return load_argv(argc, argv);
   }
 
-  virtual std::string load_env (const std::string &env_pfx, const char **options);
-  virtual std::string load_env (const std::string &env_pfx) { return load_env (env_pfx, get_all_options ()); }
-  std::string load_file (const char *fname);
+  std::string load_env(const std::string& env_pfx) 
+  {
+    return load_env(env_pfx, get_all_options()); 
+  }
 
-  const std::vector<std::string > &getPositionalArgs () const { return __thePositionalArgs; }
+  std::string load_env(const std::string& env_pfx, const char **options);
 
-  void copy_args (const char **argv) {
-    for (; *argv != NULL; ++argv) {
-      __thePositionalArgs.push_back (*argv);
+  std::string load_file(const char* fname);
+
+  virtual std::string load_argv(int argc, const char **argv) = 0;
+
+  virtual const char** get_all_options() const = 0;
+
+  virtual std::string check_args() { return ""; }
+
+  const std::vector<std::string>& getPositionalArgs() const
+  {
+    return __thePositionalArgs;
+  }
+
+  void copy_args (const char** argv) 
+  {
+    for (; *argv != NULL; ++argv) 
+    {
+      __thePositionalArgs.push_back(*argv);
     }
   }
 
-  template<class T> void init_val (const char *str, T &val, unsigned delta = 0) {
-    std::istringstream is (str + delta);
+  template<class T> void init_val(const char* str, T& val, unsigned delta = 0) 
+  {
+    std::istringstream is(str + delta);
     is >> val;
   }
 
 };
 
-template<> ZORBA_DLL_PUBLIC void PropertiesBase::init_val (const char *str, std::string &val, unsigned delta);
-template<> ZORBA_DLL_PUBLIC void PropertiesBase::init_val (const char *str, std::vector<std::string> &val, unsigned delta);
+
+template<> ZORBA_DLL_PUBLIC void PropertiesBase::init_val(
+    const char* str,
+    std::string& val,
+    unsigned delta);
+
+
+template<> ZORBA_DLL_PUBLIC void PropertiesBase::init_val(
+    const char* str,
+    std::vector<std::string>& val,
+    unsigned delta);
 
 }
 

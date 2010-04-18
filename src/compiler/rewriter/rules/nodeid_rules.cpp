@@ -407,7 +407,8 @@ RULE_REWRITE_POST(MarkConsumerNodeProps)
 ********************************************************************************/
 RULE_REWRITE_PRE(MarkProducerNodeProps)
 {
-  if (rCtx.getRoot().getp() == node) {
+  if (rCtx.getRoot().getp() == node) 
+  {
     DataflowAnnotationsComputer computer(rCtx.getStaticContext(node));
     computer.compute(node);
   }

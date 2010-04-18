@@ -85,6 +85,7 @@ fo_expr::fo_expr(
 {
   assert(f != NULL);
   compute_scripting_kind();
+  setDirectAnnotations();
 }
 
 
@@ -102,6 +103,7 @@ fo_expr::fo_expr(
   theArgs[0] = arg;
 
   compute_scripting_kind();
+  setDirectAnnotations();
 }
 
 
@@ -121,6 +123,7 @@ fo_expr::fo_expr(
   theArgs[1] = arg2;
 
   compute_scripting_kind();
+  setDirectAnnotations();
 }
 
 
@@ -136,6 +139,7 @@ fo_expr::fo_expr(
 {
   assert(f != NULL);
   compute_scripting_kind();
+  setDirectAnnotations();
 }
 
 

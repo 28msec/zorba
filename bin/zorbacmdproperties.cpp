@@ -88,34 +88,49 @@ std::string ZorbaCMDProperties::check_args () {
   return "";
 }
 
-bool ZorbaCMDProperties::loadProperties(int argc, char* argv[]) {
-  std::string result = load_argv (argc, (const char **) argv);
-  if (result.empty ()) result = check_args ();
-  if (result == "!HELP") {
+
+bool ZorbaCMDProperties::loadProperties(int argc, char* argv[]) 
+{
+  std::string result = load_argv(argc, (const char **) argv);
+
+  if (result.empty())
+    result = check_args();
+
+  if (result == "!HELP") 
+  {
     std::cout << "Zorba XQuery Engine, Version: " 
               << zorba::Zorba::version() << std::endl;
     std::cout << "Available options:\n\n";
     std::cout << get_help_msg ();
     return false;
-  } else if (result == "!VER") {
+  }
+  else if (result == "!VER") 
+  {
     std::cout << "Zorba XQuery Engine, Version: " 
               << zorba::Zorba::version() << std::endl;
     return false;
-  } else if (result.empty ()) {
+  }
+  else if (result.empty ())
+  {
     return true;
-  } else if (result [0] != '!') {
+  }
+  else if (result [0] != '!')
+  {
     std::cout << "Error: " << result << std::endl;
     return false;
-  } else {
+  }
+  else
+  {
     return false;
   }  
 }
 
-void
-ZorbaCMDProperties::getModulePaths(std::string& aPaths) const
+
+void ZorbaCMDProperties::getModulePaths(std::string& aPaths) const
 {
   aPaths = theModulePath;
 }
+
 
 std::vector<std::pair<std::string,std::string> > ZorbaCMDProperties::getSerializerParameters() const
 {

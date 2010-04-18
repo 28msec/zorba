@@ -15,7 +15,12 @@
  */
 
 #include "compiler/rewriter/tools/expr_tools.h"
+#include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/flwor_expr.h"
+
+#include "functions/func_fnerror.h"
+
+#include "types/typeops.h"
 
 namespace zorba
 {
@@ -62,14 +67,6 @@ expr_t fix_annotations(expr_t new_expr, const expr* old_expr)
 
       new_expr->put_annotation(static_cast<Annotations::Key>(k),
                                AnnotationValue_t(new VarSetAnnVal(s)));
-    }
-    else if (k != Annotations::CONCAT_EXPR)
-    {
-      AnnotationValue_t v = 
-      old_expr->get_annotation(static_cast<Annotations::Key>(k));
-      
-      if (v != NULL)
-        new_expr->put_annotation(static_cast<Annotations::Key>(k), v);
     }
   }
   

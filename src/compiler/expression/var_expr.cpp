@@ -82,6 +82,8 @@ var_expr::var_expr(
   theCopyClause(NULL)
 {
   theUniqueId = theVarCounter++;
+
+  setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
 

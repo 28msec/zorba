@@ -29,7 +29,7 @@
 
 #include "runtime/visitors/iterprinter.h"
 
-#include "util/properties.h"
+#include "system/properties.h"
 
 #include "zorbautils/strutil.h"
 

@@ -31,7 +31,7 @@
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 
-#include "util/properties.h"
+//#include "util/properties.h"
 
 #include "system/globalenv.h"
 
@@ -108,7 +108,6 @@ XQueryImpl::XQueryImpl()
   theIsClosed(false),
   theDocLoadingUserTime(0.0),
   theDocLoadingTime(0),
-  theTimeout(-1),
   theIsDebugMode(false),
   theProfileName("xquery_profile.out")
 {
@@ -170,7 +169,6 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
     
     theCompilerCB->theErrorManager = theErrorManager;
   }
-  ar & theTimeout;
 }
 
 
@@ -871,7 +869,7 @@ XQueryImpl::generateWrapper()
       theDynamicContext,
       this,
       0,
-      theTimeout);
+      theCompilerCB->theTimeout);
   return lPlan;
 }
 
@@ -1100,9 +1098,10 @@ XQueryImpl::loadExecutionPlan(std::istream &is, SerializationCallback* aCallback
   return false;
 }
 
-void XQueryImpl::setTimeout( long aTimeout /* = -1 */ )
+
+void XQueryImpl::setTimeout(long aTimeout /* = -1 */)
 {
-  theTimeout = aTimeout;
+  theCompilerCB->theTimeout = aTimeout;
 }
 
 } /* namespace zorba */

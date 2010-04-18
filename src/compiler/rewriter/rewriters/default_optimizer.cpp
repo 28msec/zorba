@@ -18,20 +18,21 @@
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/rewriters/common_rewriter.h"
 #include "compiler/rewriter/rewriters/default_optimizer.h"
+#include "compiler/rewriter/tools/expr_tools.h"
 
-#include "util/properties.h"
+#include "system/properties.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 class FoldRules : public RuleMajorDriver
 {
 public:
   FoldRules()
   {
-    ADD_RULE(MarkExpensiveOps);
-    ADD_RULE(MarkUnfoldableExprs);
-    ADD_RULE(MarkImpureExprs);
+    //ADD_RULE(MarkExpensiveOps);
     // Most rules try to update the freevars annotations, but for now let's stay on the safe side
+    ADD_RULE(MarkExprs);
     ADD_RULE(MarkFreeVars);
     ADD_RULE(FoldConst(false));
     ADD_RULE(PartialEval);
@@ -44,46 +45,94 @@ public:
 
 DefaultOptimizer::DefaultOptimizer()
 {
-  if (Properties::instance()->inlineUdf())
-    ADD_SINGLETON_DRIVER(InlineFunctions);
-
-  ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
-
-  ADD_SINGLETON_DRIVER(EliminateExtraneousPathSteps);
-
-  ADD_DRIVER(FoldRules);
-
-  ADD_SINGLETON_DRIVER(ReplaceExprWithConstantOneWhenPossible);
-
-  ADD_SINGLETON_DRIVER(MarkFreeVars);
-  ADD_SINGLETON_DRIVER(EliminateUnusedLetVars);
-
-  ADD_SINGLETON_DRIVER(MarkProducerNodeProps);
-  ADD_SINGLETON_DRIVER(EliminateNodeOps);
-
-  ADD_SINGLETON_DRIVER(MarkConsumerNodeProps);
-  ADD_SINGLETON_DRIVER(EliminateNodeOps);
-
-  ADD_SINGLETON_DRIVER(SpecializeOperations);
-
-  ADD_DRIVER(FoldRules);
-
-  ADD_SINGLETON_DRIVER(EliminateTypeEnforcingOperations);
-
-  if (Properties::instance()->loopHoisting())
-    ADD_SINGLETON_DRIVER(HoistExprsOutOfLoops);
-
-  // For UDFs, which need this annotation in udf::requires_dyn_ctx()
-  // TODO: only do this for UDFs
-  ADD_SINGLETON_DRIVER(MarkUnfoldableExprs);
-
-  if (Properties::instance()->inferJoins())
-    ADD_ONCE_DRIVER(IndexJoin);
 }
 
 
 DefaultOptimizer::~DefaultOptimizer() throw ()
 {
 }
+
+
+bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
+{
+  bool modified = false;
+
+  SingletonRuleMajorDriver<EliminateTypeEnforcingOperations> driverTypeRules;
+  SingletonRuleMajorDriver<EliminateExtraneousPathSteps> driverPathSimplify;
+  SingletonRuleMajorDriver<ReplaceExprWithConstantOneWhenPossible> driverExprSimplify;
+  SingletonRuleMajorDriver<EliminateUnusedLetVars> driverEliminateVars;
+  SingletonRuleMajorDriver<MarkProducerNodeProps> driverMarkProducerNodeProps;
+  SingletonRuleMajorDriver<MarkConsumerNodeProps> driverMarkConsumerNodeProps;
+  SingletonRuleMajorDriver<EliminateNodeOps> driverEliminateNodeOps;
+  SingletonRuleMajorDriver<SpecializeOperations> driverSpecializeOperations;
+  SingletonRuleMajorDriver<HoistExprsOutOfLoops> driverHoistExprsOutOfLoops;
+  RuleOnceDriver<IndexJoin> driverIndexJoin;
+
+  SingletonRuleMajorDriver<MarkFreeVars> driverMarkFreeVars;
+  FoldRules driverFoldRules;
+
+  // InlineFunctions
+
+  if (Properties::instance()->inlineUdf())
+  {
+    SingletonRuleMajorDriver<InlineFunctions> driverInlineFunctions;
+    if (driverInlineFunctions.rewrite(rCtx))
+      modified = true;
+  }
+
+  // TypeRules
+  if (driverTypeRules.rewrite(rCtx))
+    modified = true;
+
+  // PathSimplification
+  if (driverPathSimplify.rewrite(rCtx))
+    modified = true;
+
+  // Mark non-discardable and unfoldable expr
+  //bool mod;
+  //mark_exprs(rCtx, rCtx.getRoot().getp(), mod);
+
+  // FoldRules
+  driverFoldRules.rewrite(rCtx);
+
+  //
+  driverExprSimplify.rewrite(rCtx);
+
+  //
+  driverMarkFreeVars.rewrite(rCtx);
+
+  //
+  driverEliminateVars.rewrite(rCtx);
+
+  //
+  driverMarkProducerNodeProps.rewrite(rCtx);
+  driverEliminateNodeOps.rewrite(rCtx);
+
+  //
+  driverMarkConsumerNodeProps.rewrite(rCtx);
+  driverEliminateNodeOps.rewrite(rCtx);
+
+  //
+  driverSpecializeOperations.rewrite(rCtx);
+
+  // FoldRules
+  driverFoldRules.rewrite(rCtx);
+
+  // TypeRules
+  driverTypeRules.rewrite(rCtx);
+
+  if (Properties::instance()->loopHoisting())
+    driverHoistExprsOutOfLoops.rewrite(rCtx);
+
+  // For UDFs, which need this annotation in udf::requires_dyn_ctx()
+  // TODO: only do this for UDFs
+  //ADD_ONCE_DRIVER(MarkUnfoldableExprs);
+
+  if (Properties::instance()->inferJoins())
+    driverIndexJoin.rewrite(rCtx);
+
+  return modified;
+}
+
 
 }

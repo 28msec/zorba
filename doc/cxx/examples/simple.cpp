@@ -234,12 +234,16 @@ example_12(Zorba* aZorba)
 bool
 example_13(Zorba* aZorba)
 {
-  XQuery_t lQuery = aZorba->compileQuery("while (fn:true()) {()};");
+  XQuery_t lQuery = aZorba->createQuery();
   lQuery->setTimeout(1);
 
-  try {
+  try 
+  {
+    lQuery->compile("while (fn:true()) {()};");
     std::cout << lQuery << std::endl;
-  } catch (zorba::SystemException&) {
+  }
+  catch (zorba::SystemException&) 
+  {
     std::cout << "query interrputed after 1 second" << std::endl;
     return true;
   }

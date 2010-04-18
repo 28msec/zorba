@@ -24,26 +24,8 @@
 #include "compiler/semantic_annotations/annotation_keys.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
 
-namespace zorba {
-
-#define RULE(name) \
-  class name : public RewriteRule                                   \
-  {                                                                 \
-  public:                                                           \
-    name() : m_ruleName(#name) { }                                  \
-                                                                    \
-    ~name() { }                                                     \
-                                                                    \
-    const std::string& getRuleName() const { return m_ruleName; }   \
-                                                                    \
-    expr_t rewritePre(expr* node, RewriterContext& rCtx);           \
-                                                                    \
-    expr_t rewritePost(expr* node, RewriterContext& rCtx);          \
-                                                                    \
-  private:                                                          \
-    std::string m_ruleName;                                         \
-  }
-
+namespace zorba 
+{
 
 RULE(EchoNodes);
 
@@ -69,12 +51,6 @@ RULE(EliminateExtraneousPathSteps);
 
 RULE(MarkFreeVars);
 
-RULE(MarkExpensiveOps);
-
-RULE(MarkUnfoldableExprs);
-
-RULE(MarkImpureExprs);
-
 RULE(HoistExprsOutOfLoops);
 
 RULE(PlanPrinter);
@@ -86,22 +62,33 @@ RULE(InlineFunctions);
 RULE(PartialEval);
 
 
-class FoldConst : public RewriteRule 
+class FoldConst : public PrePostRewriteRule 
 {
 protected:
-  bool        fold_expensive_ops;
-  std::string m_ruleName;
+  bool  theFoldExpensiveOps;
 
 public:     
-  FoldConst (bool fold_expensive_ops_) 
+  FoldConst(bool fold_expensive_ops) 
     :
-    fold_expensive_ops (fold_expensive_ops_), m_ruleName("FoldConst") {}
+    PrePostRewriteRule("FoldConst"),
+    theFoldExpensiveOps(fold_expensive_ops)
+  {
+  }
 
-  const std::string& getRuleName() const { return m_ruleName; }
-
+protected:
   expr_t rewritePre(expr* node, RewriterContext& rCtx);
 
   expr_t rewritePost(expr* node, RewriterContext& rCtx);
+};
+
+
+
+class MarkExprs : public RewriteRule 
+{
+public:
+  MarkExprs() : RewriteRule("MarkExprs") {}
+
+  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
 };
 
 

@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 SET(REWRITER_RULES_SRCS
+    rule_base.cpp
     nodeid_rules.cpp
     debug_rules.cpp
     type_rules.cpp

@@ -17,7 +17,7 @@
 #include "runtime/visitors/printer_visitor.h"
 
 #include "types/typeops.h"
-#include "util/properties.h"
+#include "system/properties.h"
 
 #include "runtime/core/item_iterator.h"
 #include "runtime/core/var_iterators.h"

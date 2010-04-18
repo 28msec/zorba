@@ -28,6 +28,8 @@ public:
   DefaultOptimizer();
 
   ~DefaultOptimizer() throw ();
+
+  bool rewrite(RewriterContext& rCtx);
 };
 
 
