@@ -91,7 +91,7 @@ public:
   RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 
 ********************************************************************************/
-relpath_expr::relpath_expr(short sctx, const QueryLoc& loc)
+relpath_expr::relpath_expr(static_context* sctx, const QueryLoc& loc)
   :
   expr(sctx, loc)
 {
@@ -182,7 +182,7 @@ void relpath_expr::next_iter(expr_iterator_data& v)
 
 expr_t relpath_expr::clone(substitution_t& subst) const
 {
-  std::auto_ptr<relpath_expr> re(new relpath_expr(theSctxId, get_loc()));
+  std::auto_ptr<relpath_expr> re(new relpath_expr(theSctx, get_loc()));
 
   for (unsigned i = 0; i < size(); ++i)
   {
@@ -199,7 +199,7 @@ expr_t relpath_expr::clone(substitution_t& subst) const
   AxisStep ::= Axis NodeTest Predicate*
 
 ********************************************************************************/
-axis_step_expr::axis_step_expr(short sctx, const QueryLoc& loc)
+axis_step_expr::axis_step_expr(static_context* sctx, const QueryLoc& loc)
   :
   expr(sctx, loc)
 {
@@ -251,7 +251,7 @@ void axis_step_expr::next_iter(expr_iterator_data& v)
 
 expr_t axis_step_expr::clone(substitution_t& subst) const
 {
-  axis_step_expr* ae = new axis_step_expr(theSctxId, get_loc());
+  axis_step_expr* ae = new axis_step_expr(theSctx, get_loc());
   ae->setAxis(getAxis());
   ae->setTest(getTest());
   return ae;
@@ -270,7 +270,7 @@ expr_t axis_step_expr::clone(substitution_t& subst) const
                      PITest | CommentTest | TextTest | AnyKindTest
 
 ********************************************************************************/
-match_expr::match_expr(short sctx, const QueryLoc& loc)
+match_expr::match_expr(static_context* sctx, const QueryLoc& loc)
   :
   expr(sctx, loc),
   theDocTestKind(match_no_test),
@@ -348,7 +348,7 @@ void match_expr::next_iter(expr_iterator_data& v)
 
 expr_t match_expr::clone(substitution_t& subst) const
 {
-  match_expr* me = new match_expr(theSctxId, get_loc());
+  match_expr* me = new match_expr(theSctx, get_loc());
   me->setTestKind(getTestKind());
   me->setDocTestKind(getDocTestKind());
   me->setWildName(getWildName());

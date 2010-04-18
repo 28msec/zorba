@@ -245,7 +245,7 @@ static expr_t try_hoisting(
     return NULL;
   }
 
-  static_context* sctx = rCtx.getStaticContext(e);
+  static_context* sctx = e->get_sctx();
 
   std::map<const expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
@@ -314,15 +314,14 @@ static expr_t try_hoisting(
   // var: $$temp := op:hoist(e) (b) we place the $$temp declaration right after
   // variable V, and (c) we replace e with op:unhoist($$temp).
 
-  var_expr_t letvar(rCtx.createTempVar(e->get_sctx_id(), e->get_loc(), var_expr::let_var));
+  var_expr_t letvar(rCtx.createTempVar(e->get_sctx(), e->get_loc(), var_expr::let_var));
 
-  expr_t hoisted = new fo_expr(e->get_sctx_id(),
+  expr_t hoisted = new fo_expr(e->get_sctx(),
                                e->get_loc(),
                                GET_BUILTIN_FUNCTION(OP_HOIST_1),
                                e);
 
-  let_clause_t flref(new let_clause(NULL,
-                                    e->get_sctx_id(),
+  let_clause_t flref(new let_clause(e->get_sctx(),
                                     e->get_loc(),
                                     letvar,
                                     hoisted));
@@ -333,7 +332,7 @@ static expr_t try_hoisting(
   {
     if (h->flwor == NULL)
     {
-      h->flwor = new flwor_expr(e->get_sctx_id(), e->get_loc(), false);
+      h->flwor = new flwor_expr(e->get_sctx(), e->get_loc(), false);
     }
     h->flwor->add_clause(flref);
   }
@@ -343,10 +342,10 @@ static expr_t try_hoisting(
     ++h->clause_count;
   }
 
-  expr_t unhoisted = new fo_expr(e->get_sctx_id(),
+  expr_t unhoisted = new fo_expr(e->get_sctx(),
                                  e->get_loc(),
                                  GET_BUILTIN_FUNCTION(OP_UNHOIST_1),
-                                 new wrapper_expr(e->get_sctx_id(),
+                                 new wrapper_expr(e->get_sctx(),
                                                   e->get_loc(),
                                                   letvar.getp()));
   return unhoisted.getp();

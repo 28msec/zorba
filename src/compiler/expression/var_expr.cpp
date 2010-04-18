@@ -69,7 +69,7 @@ std::string var_expr::decode_var_kind(enum var_kind k)
 
 ********************************************************************************/
 var_expr::var_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     var_kind k,
     store::Item* name)

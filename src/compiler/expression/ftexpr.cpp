@@ -146,7 +146,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times_expr)
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ft_expr::ft_expr( short sctx, QueryLoc const &loc ) :
+ft_expr::ft_expr( static_context* sctx, QueryLoc const &loc ) :
   expr( sctx, loc )
 {
 }
@@ -405,7 +405,7 @@ public:
 ///////////////////////////////////////////////////////////////////////////////
 
 ftcontains_expr::ftcontains_expr(
-  short sctx,
+  static_context* sctx,
   QueryLoc const &loc,
   range_expr_t range,
   ftexpr *ftselection,

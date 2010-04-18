@@ -85,7 +85,7 @@ void flwor_clause::serialize(::zorba::serialization::Archiver& ar)
 
 ********************************************************************************/
 forletwin_clause::forletwin_clause(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     flwor_clause::ClauseKind kind,
     varref_t varExpr,
@@ -137,7 +137,6 @@ void forletwin_clause::set_var(var_expr_t v)
 ********************************************************************************/
 for_clause::for_clause(
     static_context* sctx,
-    short sctxid,
     const QueryLoc& loc,
     var_expr_t varExpr,
     expr_t domainExpr,
@@ -145,7 +144,7 @@ for_clause::for_clause(
     varref_t scoreVarExpr,
     bool isOuter)
   :
-  forletwin_clause(sctxid, loc, flwor_clause::for_clause, varExpr, domainExpr),
+  forletwin_clause(sctx, loc, flwor_clause::for_clause, varExpr, domainExpr),
   thePosVarExpr(posVarExpr),
   theScoreVarExpr(scoreVarExpr),
   theIsOuter(isOuter)
@@ -181,7 +180,7 @@ for_clause::for_clause(
                                      <<" as " << declaredType->toString());
           }
 
-          domainExpr = new treat_expr(sctxid, loc, domainExpr, declaredType, XPTY0004);
+          domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, XPTY0004);
 
           set_expr(domainExpr);
         }
@@ -261,8 +260,7 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) const
     subst[score_var_ptr] = scorevarCopy.getp();
   }
 
-  return new for_clause(NULL,
-                        theContext,
+  return new for_clause(theContext,
                         get_loc(),
                         varCopy,
                         domainCopy,
@@ -277,13 +275,12 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) const
 ********************************************************************************/
 let_clause::let_clause(
     static_context* sctx,
-    short sctxid,
     const QueryLoc& loc,
     varref_t varExpr,
     expr_t domainExpr,
     bool lazy)
   :
-  forletwin_clause(sctxid, loc, flwor_clause::let_clause, varExpr, domainExpr),
+  forletwin_clause(sctx, loc, flwor_clause::let_clause, varExpr, domainExpr),
   theScoreVarExpr(NULL),
   theLazyEval(lazy)
 {
@@ -308,7 +305,7 @@ let_clause::let_clause(
                                    <<" as " << declaredType->toString());
         }
 
-        domainExpr = new treat_expr(sctxid, loc, domainExpr, declaredType, XPTY0004);
+        domainExpr = new treat_expr(sctx, loc, domainExpr, declaredType, XPTY0004);
 
         set_expr(domainExpr);
       }
@@ -363,7 +360,7 @@ flwor_clause_t let_clause::clone(expr::substitution_t& subst) const
   }
 #endif
 
-  return new let_clause(NULL, theContext, get_loc(), varCopy, domainCopy, theLazyEval);
+  return new let_clause(theContext, get_loc(), varCopy, domainCopy, theLazyEval);
 }
 
 
@@ -373,7 +370,6 @@ flwor_clause_t let_clause::clone(expr::substitution_t& subst) const
 ********************************************************************************/
 window_clause::window_clause(
     static_context* sctx,
-    short sctxid,
     const QueryLoc& loc,
     window_t winKind,
     varref_t varExpr,
@@ -382,7 +378,7 @@ window_clause::window_clause(
     flwor_wincond_t winStop,
     bool lazy)
   :
-  forletwin_clause(sctxid, loc, flwor_clause::window_clause, varExpr, domainExpr),
+  forletwin_clause(sctx, loc, flwor_clause::window_clause, varExpr, domainExpr),
   theWindowKind(winKind),
   theWinStartCond(winStart),
   theWinStopCond(winStop),
@@ -404,7 +400,7 @@ window_clause::window_clause(
       if (!TypeOps::is_subtype(*GENV_TYPESYSTEM.ITEM_TYPE_STAR, *varType) &&
           !TypeOps::is_subtype(*domainType, *varType))
       {
-        domainExpr = new treat_expr(sctxid, loc, domainExpr, varType, XPTY0004);
+        domainExpr = new treat_expr(sctx, loc, domainExpr, varType, XPTY0004);
 
         set_expr(domainExpr);
       }
@@ -465,8 +461,7 @@ flwor_clause_t window_clause::clone(expr::substitution_t& subst) const
   if (theWinStopCond != NULL)
     cloneStopCond = theWinStopCond->clone(subst);
 
-  return new window_clause(NULL,
-                           theContext,
+  return new window_clause(theContext,
                            get_loc(),
                            theWindowKind,
                            varCopy,
@@ -498,7 +493,7 @@ flwor_wincond::flwor_wincond(
 
     if(!TypeOps::is_equal(*condType, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
     {
-      theCondExpr = new fo_expr(theCondExpr->get_sctx_id(),
+      theCondExpr = new fo_expr(theCondExpr->get_sctx(),
                                 theCondExpr->get_loc(),
                                 GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
                                 theCondExpr);
@@ -575,7 +570,7 @@ flwor_wincond_t flwor_wincond::clone(expr::substitution_t& subst) const
 
 ********************************************************************************/
 group_clause::group_clause(
-     short sctx,
+     static_context* sctx,
      const QueryLoc& loc,
      const rebind_list_t& gvars,
      rebind_list_t ngvars,
@@ -853,7 +848,7 @@ void flwor_expr::add_clause(ulong pos, flwor_clause* c)
 ********************************************************************************/
 void flwor_expr::add_where(expr_t e)
 {
-  where_clause* whereClause = new where_clause(theSctxId, e->get_loc(), e);
+  where_clause* whereClause = new where_clause(theSctx, e->get_loc(), e);
 
   add_clause(whereClause);
 }
@@ -892,7 +887,7 @@ void flwor_expr::set_where(expr* e)
     return;
   }
 
-  where_clause* wc = new where_clause(theSctxId, e->get_loc(), e);
+  where_clause* wc = new where_clause(theSctx, e->get_loc(), e);
   theClauses.insert(theClauses.begin() + i, wc);
   wc->theFlworExpr = this;
 
@@ -1124,7 +1119,7 @@ expr_t flwor_expr::clone(substitution_t& subst) const
 {
   ulong numClauses = num_clauses();
 
-  flwor_expr_t cloneFlwor = new flwor_expr(theSctxId, get_loc(), theIsGeneral);
+  flwor_expr_t cloneFlwor = new flwor_expr(theSctx, get_loc(), theIsGeneral);
 
   for (ulong i = 0; i < numClauses; ++i) 
   {

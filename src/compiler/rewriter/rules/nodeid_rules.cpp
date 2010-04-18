@@ -363,7 +363,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     if (ce != NULL) 
     {
       expr* input = ce->get_input(false);
-      mark_casts(ce, input, rCtx.getStaticContext(node));
+      mark_casts(ce, input, node->get_sctx());
       break;
     }
     else
@@ -409,7 +409,7 @@ RULE_REWRITE_PRE(MarkProducerNodeProps)
 {
   if (rCtx.getRoot().getp() == node) 
   {
-    DataflowAnnotationsComputer computer(rCtx.getStaticContext(node));
+    DataflowAnnotationsComputer computer(node->get_sctx());
     computer.compute(node);
   }
   return NULL;
@@ -427,7 +427,7 @@ RULE_REWRITE_POST(MarkProducerNodeProps)
 ********************************************************************************/
 RULE_REWRITE_PRE(EliminateNodeOps)
 {
-  static_context* sctx = rCtx.getStaticContext(node);
+  static_context* sctx = node->get_sctx();
 
   fo_expr* fo = dynamic_cast<fo_expr *>(node);
 

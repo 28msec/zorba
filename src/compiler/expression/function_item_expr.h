@@ -56,7 +56,7 @@ protected:
     
 public:
   dynamic_function_invocation_expr(
-      short sctx,
+      static_context* sctx,
       const QueryLoc& loc,
       const expr_t& anExpr,
       const std::vector<expr_t>& args);
@@ -113,14 +113,14 @@ public:
 
 public:
 	function_item_expr(
-      short sctx,
+      static_context* sctx,
       const QueryLoc& loc,
       const store::Item* aQName,
       function* f,
       uint32_t aArity);
 
   function_item_expr(
-      short sctx,
+      static_context* sctx,
       const QueryLoc& loc);
 
   ~function_item_expr();

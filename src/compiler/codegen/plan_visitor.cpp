@@ -101,7 +101,7 @@
 
 #define QLOCDECL const QueryLoc &qloc = v.get_loc(); (void) qloc
 
-#define SCTXDECL static_context* sctx = get_sctx(v.get_sctx_id()); (void)sctx;
+#define SCTXDECL static_context* sctx = v.get_sctx(); (void)sctx;
 
 #ifndef NDEBUG
 
@@ -222,12 +222,13 @@ public:
 
 typedef rchandle<FlworClauseVarMap> FlworClauseVarMap_t;
 
-/******************************************************************************
-
- ******************************************************************************/
 
 class plan_ftexpr_visitor;
 
+
+/*******************************************************************************
+
+********************************************************************************/
 class plan_visitor : public expr_visitor
 {
   friend class plan_ftexpr_visitor;
@@ -250,12 +251,9 @@ protected:
 
   CompilerCB                           * theCCB;
 
-  short                                  theLastSctxId;
-  static_context                       * theLastSctx;
-
   std::stack<ZorbaDebugIterator*>        theDebuggerStack;
 
-  plan_ftexpr_visitor                   *plan_ftexpr_visitor_;
+  plan_ftexpr_visitor                  * plan_ftexpr_visitor_;
 
 public:
 
@@ -285,18 +283,6 @@ void print_stack()
     XMLIterPrinter vp (cout);
     print_iter_plan (vp, peek_stack(itstack));
   }
-}
-
-
-static_context* get_sctx(short sctx)
-{
-  if (sctx != theLastSctxId)
-  {
-    theLastSctxId = sctx;
-    theLastSctx = theCCB->getStaticContext(sctx);
-  }
-
-  return theLastSctx;
 }
 
 
@@ -508,9 +494,7 @@ PlanIter_t base_var_codegen(
   bool bound = varMap.get((uint64_t) &var, varRefs);
   ZORBA_ASSERT(bound);
 
-  Iter* iter = new Iter(get_sctx(var.get_sctx_id()),
-                        var.get_loc(),
-                        var.get_name());
+  Iter* iter = new Iter(var.get_sctx(), var.get_loc(), var.get_name());
 
   varRefs->push_back(iter);
 
@@ -523,15 +507,11 @@ PlanIter_t create_var_iter(const var_expr& var, bool forvar)
   PlanIter_t iter;
   if (forvar)
   {
-    iter = new ForVarIterator(get_sctx(var.get_sctx_id()),
-                              var.get_loc(),
-                              var.get_name());
+    iter = new ForVarIterator(var.get_sctx(), var.get_loc(), var.get_name());
   }
   else
   {
-    iter = new LetVarIterator(get_sctx(var.get_sctx_id()),
-                              var.get_loc(),
-                              var.get_name());
+    iter = new LetVarIterator(var.get_sctx(), var.get_loc(), var.get_name());
   }
   return iter;
 }
@@ -540,7 +520,7 @@ PlanIter_t create_var_iter(const var_expr& var, bool forvar)
 void general_var_codegen(const var_expr& var)
 {
   const QueryLoc& qloc = var.get_loc();
-  static_context* sctx = get_sctx(var.get_sctx_id());
+  static_context* sctx = var.get_sctx();
 
   bool isForVar = false;
 
@@ -645,29 +625,29 @@ void general_var_codegen(const var_expr& var)
     {
       vector<PlanIter_t> ctx_args;
       store::Item_t qname;
-      xqpStringStore_t dot = new xqpStringStore (".");
-      ITEM_FACTORY->createString (qname, dot);
-      ctx_args.push_back (new SingletonIterator (sctx, qloc, qname));
-      push_itstack(new CtxVariableIterator (sctx, qloc, ctx_args));
+      xqpStringStore_t dot = new xqpStringStore(".");
+      ITEM_FACTORY->createString(qname, dot);
+      ctx_args.push_back(new SingletonIterator(sctx, qloc, qname));
+      push_itstack(new CtxVariableIterator(sctx, qloc, ctx_args));
     }
     else if (varname == DOT_POS_VAR)
     {
       store::Item_t i;
-      ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
-      push_itstack(new SingletonIterator (sctx, qloc, i));
+      ITEM_FACTORY->createInteger(i, Integer::parseInt((int32_t)1));
+      push_itstack(new SingletonIterator(sctx, qloc, i));
     }
     else if (varname == LAST_IDX_VAR)
     {
       store::Item_t i;
-      ITEM_FACTORY->createInteger (i, Integer::parseInt((int32_t)1));
-      push_itstack(new SingletonIterator (sctx, qloc, i));
+      ITEM_FACTORY->createInteger(i, Integer::parseInt((int32_t)1));
+      push_itstack(new SingletonIterator(sctx, qloc, i));
     }
     else
     {
-      expr_t lookup_expr = new fo_expr(var.get_sctx_id(),
+      expr_t lookup_expr = new fo_expr(var.get_sctx(),
                                        qloc,
                                        GET_BUILTIN_FUNCTION(OP_VAR_REF_1),
-                                       new const_expr(var.get_sctx_id(),
+                                       new const_expr(var.get_sctx(),
                                                       qloc,
                                                       dynamic_context::var_key(&var)));
       lookup_expr->accept(*this);
@@ -1046,7 +1026,7 @@ struct wincond_var_iters
 
 bool nativeColumnSort(expr* colExpr)
 {
-  static_context* sctx = get_sctx(colExpr->get_sctx_id());
+  static_context* sctx = colExpr->get_sctx();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   xqtref_t colType = colExpr->return_type(sctx);
@@ -1073,7 +1053,7 @@ PlanIter_t gflwor_codegen(flwor_expr& flworExpr, int currentClause)
 
   const QueryLoc& qloc = flworExpr.get_loc();
 
-  static_context* sctx = get_sctx(flworExpr.get_sctx_id());
+  static_context* sctx = flworExpr.get_sctx();
 
   if (currentClause < 0)
   {
@@ -1486,7 +1466,7 @@ void flwor_codegen(const flwor_expr& flworExpr)
 
   std::reverse(forletClauses.begin(), forletClauses.end());
 
-  flworIter = new flwor::FLWORIterator(get_sctx(flworExpr.get_sctx_id()),
+  flworIter = new flwor::FLWORIterator(flworExpr.get_sctx(),
                                        flworExpr.get_loc(),
                                        forletClauses,
                                        whereIter,
@@ -2548,11 +2528,13 @@ void end_visit (text_expr& v) {
   theAttrContentStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
-  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())) {
+  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())) 
+  {
     isRoot = true;
   }
 
-  switch (v.get_type ()) {
+  switch (v.get_type ()) 
+  {
   case text_expr::text_constructor:
     push_itstack (new TextIterator(sctx, qloc, content, isRoot));
     break;
@@ -2567,7 +2549,8 @@ void end_visit (text_expr& v) {
 }
 
 
-bool begin_visit (pi_expr& v) {
+bool begin_visit (pi_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   theConstructorsStack.push(&v);
@@ -2585,7 +2568,8 @@ void end_visit (pi_expr& v)
   theAttrContentStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
-  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())) {
+  if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())) 
+  {
     isRoot = true;
   }
 
@@ -2782,9 +2766,7 @@ plan_visitor::plan_visitor(
   :
   depth(0),
   arg_var_iter_map(arg_var_map),
-  theCCB(ccb),
-  theLastSctxId(-1),
-  theLastSctx(NULL)
+  theCCB(ccb)
 {
   plan_ftexpr_visitor_ = new plan_ftexpr_visitor( *this );
 }

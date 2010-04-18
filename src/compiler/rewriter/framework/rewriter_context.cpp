@@ -57,14 +57,8 @@ void RewriterContext::setRoot(expr_t root)
 }
 
 
-static_context* RewriterContext::getStaticContext(const expr* node) const
-{
-  return theCCB->getStaticContext(node->get_sctx_id());
-}
-
-
 rchandle<var_expr> RewriterContext::createTempVar(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     var_expr::var_kind kind)
 {

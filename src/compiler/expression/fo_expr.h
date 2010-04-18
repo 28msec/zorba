@@ -45,26 +45,26 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  static fo_expr* create_seq(short sctx, const QueryLoc &);
+  static fo_expr* create_seq(static_context* sctx, const QueryLoc &);
 
 public:
-  fo_expr(short sctx, const QueryLoc& loc, const function* f);
+  fo_expr(static_context* sctx, const QueryLoc& loc, const function* f);
 
   fo_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const expr* arg);
 
   fo_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const expr* arg1,
     const expr* arg2);
 
   fo_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const std::vector<expr_t>& args);

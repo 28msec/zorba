@@ -193,9 +193,9 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr(short sctx, const QueryLoc& loc) 
+expr::expr(static_context* sctx, const QueryLoc& loc) 
   :
-  theSctxId(sctx),
+  theSctx(sctx),
   theLoc(loc),
   theFlags1(0) 
 {
@@ -225,7 +225,7 @@ void expr::serialize(::zorba::serialization::Archiver& ar)
 {
   //serialize_baseclass(ar, (SimpleRCObject*)this);
   serialize_baseclass(ar, (AnnotationHolder*)this);
-  ar & theSctxId;
+  ar & theSctx;
   ar & theLoc;
   ar & theCache.type.valid;
   ar & theCache.type.t;
@@ -1195,7 +1195,7 @@ xqtref_t expr::get_return_type_with_empty_input(
     static_context* sctx,
     const expr* input) const
 {
-  expr_t emptyExpr = new fo_expr(input->get_sctx_id(),
+  expr_t emptyExpr = new fo_expr(input->get_sctx(),
                                  QueryLoc::null,
                                  GET_BUILTIN_FUNCTION(OP_CONCATENATE_N));
   expr::substitution_t subst;

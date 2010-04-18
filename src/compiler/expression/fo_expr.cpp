@@ -65,7 +65,7 @@ public:
   UnionExpr, and IntersectExceptExpr.
 ********************************************************************************/
 
-fo_expr* fo_expr::create_seq(short sctx, const QueryLoc& loc)
+fo_expr* fo_expr::create_seq(static_context* sctx, const QueryLoc& loc)
 {
   function* f = BuiltinFunctionLibrary::getFunction(FunctionConsts::OP_CONCATENATE_N);
 
@@ -76,7 +76,7 @@ fo_expr* fo_expr::create_seq(short sctx, const QueryLoc& loc)
 
 
 fo_expr::fo_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const function* f)
   :
@@ -90,7 +90,7 @@ fo_expr::fo_expr(
 
 
 fo_expr::fo_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const expr* arg)
@@ -108,7 +108,7 @@ fo_expr::fo_expr(
 
 
 fo_expr::fo_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const expr* arg1,
@@ -128,7 +128,7 @@ fo_expr::fo_expr(
 
 
 fo_expr::fo_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const function* f,
     const std::vector<expr_t>& args)
@@ -309,7 +309,7 @@ expr_t fo_expr::clone(substitution_t& subst) const
        return i->second;
   }
 
-  std::auto_ptr<fo_expr> fo(new fo_expr(theSctxId, get_loc(), get_func()));
+  std::auto_ptr<fo_expr> fo(new fo_expr(theSctx, get_loc(), get_func()));
 
   for (unsigned i = 0; i < theArgs.size(); ++i)
     fo->theArgs.push_back(theArgs[i]->clone(subst));

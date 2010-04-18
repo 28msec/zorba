@@ -63,13 +63,20 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  sequential_expr(short, const QueryLoc&);
+  sequential_expr(static_context*, const QueryLoc&);
 
-  sequential_expr(short, const QueryLoc&, expr_t first, expr_t second);
+  sequential_expr(static_context*, const QueryLoc&, expr_t first, expr_t second);
 
-  sequential_expr(short, const QueryLoc&, checked_vector<expr_t> seq, expr_t result);
+  sequential_expr(
+        static_context*,
+        const QueryLoc&,
+        checked_vector<expr_t>& seq,
+        expr_t result);
 
-  sequential_expr(short, const QueryLoc&, checked_vector<expr_t> seq);
+  sequential_expr(
+        static_context*,
+        const QueryLoc&,
+        checked_vector<expr_t>& seq);
 
   expr_kind_t get_expr_kind() const { return sequential_expr_kind; }
 
@@ -199,7 +206,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  trycatch_expr(short sctx, const QueryLoc&, expr_t tryExpr);
+  trycatch_expr(static_context* sctx, const QueryLoc&, expr_t tryExpr);
 
   expr_kind_t get_expr_kind() const { return trycatch_expr_kind; }
 
@@ -257,9 +264,8 @@ public:
 
 public:
   if_expr(
-        short sctxid,
-        const QueryLoc& loc,
         static_context* sctx,
+        const QueryLoc& loc,
         expr_t c,
         expr_t t,
         expr_t e);
@@ -316,7 +322,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  order_expr(short sctx, const QueryLoc&, order_type_t, expr_t);
+  order_expr(static_context* sctx, const QueryLoc&, order_type_t, expr_t);
 
   expr_kind_t get_expr_kind() const { return order_expr_kind; }
 
@@ -358,7 +364,7 @@ public:
 
 public:
   validate_expr(
-        short sctx,
+        static_context* sctx,
         const QueryLoc&,
         ParseConstants::validation_mode_t,
         store::Item_t aTypeName,
@@ -402,7 +408,7 @@ protected:
 
 protected:
   cast_or_castable_base_expr(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         expr_t input,
         xqtref_t type);
@@ -438,7 +444,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  cast_base_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
+  cast_base_expr(static_context* sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
 
   xqtref_t return_type_impl(static_context*) const;
 };
@@ -457,7 +463,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  cast_expr(short sctx, const QueryLoc&, expr_t, xqtref_t);
+  cast_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
 
   expr_kind_t get_expr_kind() const { return cast_expr_kind; }
 
@@ -496,7 +502,7 @@ public:
 
 public:
   treat_expr(
-        short sctx, 
+        static_context* sctx, 
         const QueryLoc&,
         expr_t,
         xqtref_t,
@@ -563,7 +569,7 @@ public:
   }
 
 public:
-  promote_expr(short sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
+  promote_expr(static_context* sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
 
   expr_kind_t get_expr_kind() const { return promote_expr_kind; }
 
@@ -590,7 +596,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  castable_base_expr(short sctx, const QueryLoc&, expr_t, xqtref_t);
+  castable_base_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
 
   xqtref_t return_type_impl(static_context*) const;
 };
@@ -609,7 +615,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  castable_expr(short sctx, const QueryLoc&, expr_t, xqtref_t);
+  castable_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
   
   expr_kind_t get_expr_kind() const { return castable_expr_kind; }
 
@@ -636,7 +642,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  instanceof_expr(short sctx, const QueryLoc&, expr_t, xqtref_t);
+  instanceof_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
 
   expr_kind_t get_expr_kind() const { return instanceof_expr_kind; }
 
@@ -672,7 +678,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  name_cast_expr(short sctx, const QueryLoc&, expr_t, const namespace_context*);
+  name_cast_expr(static_context* sctx, const QueryLoc&, expr_t, const namespace_context*);
 
   expr_kind_t get_expr_kind() const { return name_cast_expr_kind; }
 
@@ -708,7 +714,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  doc_expr(short sctx, const QueryLoc&, expr_t aContent);
+  doc_expr(static_context* sctx, const QueryLoc&, expr_t aContent);
 
   expr_kind_t get_expr_kind() const { return doc_expr_kind; }
 
@@ -771,7 +777,7 @@ public:
 
 public:
   elem_expr(
-        short sctx,
+        static_context* sctx,
         const QueryLoc&,
         expr_t aQNameExpr,
         expr_t aAttrs,
@@ -779,7 +785,7 @@ public:
         const namespace_context* aNSCtx);
   
   elem_expr(
-        short sctx,
+        static_context* sctx,
         const QueryLoc&,
         expr_t aQNameExpr,
         expr_t aContent,
@@ -848,7 +854,7 @@ public:
 
 public:
   attr_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t aQNameExpr,
     expr_t aValueExpr);
@@ -900,7 +906,7 @@ public:
 
 public:
   text_expr(
-        short sctx,
+        static_context* sctx,
         const QueryLoc&,
         text_constructor_type,
         expr_t);
@@ -942,7 +948,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  pi_expr(short sctx, const QueryLoc&, expr_t, expr_t);
+  pi_expr(static_context* sctx, const QueryLoc&, expr_t, expr_t);
  
   expr_kind_t get_expr_kind() const { return pi_expr_kind; }
 
@@ -981,7 +987,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  wrapper_expr(short sctx, const QueryLoc& loc, expr_t wrapped);
+  wrapper_expr(static_context* sctx, const QueryLoc& loc, expr_t wrapped);
 
   expr_kind_t get_expr_kind() const { return wrapper_expr_kind; }
 
@@ -1021,23 +1027,23 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  const_expr(short sctx, const QueryLoc&, xqpStringStore_t& sval);
+  const_expr(static_context* sctx, const QueryLoc&, xqpStringStore_t& sval);
 
-  const_expr(short sctx, const QueryLoc&, const std::string& sval);
+  const_expr(static_context* sctx, const QueryLoc&, const std::string& sval);
 
-  const_expr(short sctx, const QueryLoc&, const char* sval);
+  const_expr(static_context* sctx, const QueryLoc&, const char* sval);
 
-  const_expr(short sctx, const QueryLoc&, xqp_integer);
+  const_expr(static_context* sctx, const QueryLoc&, xqp_integer);
 
-  const_expr(short sctx, const QueryLoc&, xqp_decimal);
+  const_expr(static_context* sctx, const QueryLoc&, xqp_decimal);
 
-  const_expr(short sctx, const QueryLoc&, xqp_double);
+  const_expr(static_context* sctx, const QueryLoc&, xqp_double);
 
-  const_expr(short sctx, const QueryLoc&, xqp_boolean);
+  const_expr(static_context* sctx, const QueryLoc&, xqp_boolean);
 
-  const_expr(short sctx, const QueryLoc&, store::Item_t);  
+  const_expr(static_context* sctx, const QueryLoc&, store::Item_t);  
 
-  const_expr(short sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
+  const_expr(static_context* sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
 
   expr_kind_t get_expr_kind() const { return const_expr_kind; }
 
@@ -1093,9 +1099,9 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  extension_expr(short sctx, const QueryLoc&);
+  extension_expr(static_context* sctx, const QueryLoc&);
 
-  extension_expr(short sctx, const QueryLoc&, expr_t);
+  extension_expr(static_context* sctx, const QueryLoc&, expr_t);
 
   expr_kind_t get_expr_kind() const { return extension_expr_kind; }
 
@@ -1157,7 +1163,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  eval_expr(short sctx, const QueryLoc& loc, expr_t e)
+  eval_expr(static_context* sctx, const QueryLoc& loc, expr_t e)
     :
     expr(sctx, loc),
     theExpr(e)
@@ -1201,7 +1207,7 @@ private:
 
 public:
   debugger_expr(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         expr_t aChild,
         std::list<global_binding> aGlobals)
@@ -1212,7 +1218,7 @@ public:
   }
 
   debugger_expr(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         expr_t aChild,
         checked_vector<varref_t> aScopedVariables,
@@ -1271,7 +1277,7 @@ public:
 
 public:
 	insert_expr(
-    short sctx,
+    static_context* sctx,
 		const QueryLoc&,
     store::UpdateConsts::InsertType,
 		expr_t aSourceExpr,
@@ -1315,7 +1321,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	delete_expr(short sctx, const QueryLoc&, expr_t);
+	delete_expr(static_context* sctx, const QueryLoc&, expr_t);
 
   expr_kind_t get_expr_kind() const { return delete_expr_kind; }
 
@@ -1354,7 +1360,7 @@ public:
 
 public:
 	replace_expr(
-    short sctx,
+    static_context* sctx,
 		const QueryLoc&,
     store::UpdateConsts::ReplaceType aType,
 		expr_t,
@@ -1399,7 +1405,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	rename_expr(short sctx,	const QueryLoc&, expr_t, expr_t);
+	rename_expr(static_context* sctx,	const QueryLoc&, expr_t, expr_t);
 
   expr_kind_t get_expr_kind() const { return rename_expr_kind; }
 
@@ -1470,7 +1476,7 @@ public:
 
 public:
 	transform_expr(
-    short sctx,
+    static_context* sctx,
 		const QueryLoc&,
 		expr_t aModifyExpr,
 		expr_t aReturnExpr);
@@ -1537,7 +1543,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  exit_expr(short sctx, const QueryLoc& loc, expr_t inExpr);
+  exit_expr(static_context* sctx, const QueryLoc& loc, expr_t inExpr);
 
   expr_kind_t get_expr_kind() const { return exit_expr_kind; }
 
@@ -1576,7 +1582,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  flowctl_expr(short sctx, const QueryLoc& loc, enum action action);
+  flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action);
 
   expr_kind_t get_expr_kind() const { return flowctl_expr_kind; }
 
@@ -1613,7 +1619,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  while_expr(short sctx, const QueryLoc& loc, expr_t body);
+  while_expr(static_context* sctx, const QueryLoc& loc, expr_t body);
 
   expr_kind_t get_expr_kind() const { return while_expr_kind; }
 

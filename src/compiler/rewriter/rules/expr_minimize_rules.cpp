@@ -50,7 +50,7 @@ static void replace_with_constant_if_typequant_one(static_context* sctx, expr* e
 
 RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible) 
 {
-  static_context* sctx = rCtx.getStaticContext(node);
+  static_context* sctx = node->get_sctx();
 
   if (node->get_expr_kind() != fo_expr_kind)
     return NULL;
@@ -87,7 +87,7 @@ static expr_t get_constant_if_typequant_one(static_context* sctx, expr* e)
   {
     if (TypeOps::type_cnt(*(e->return_type(sctx))) == 1) 
     {
-      return new const_expr(e->get_sctx_id(), e->get_loc(), 1);
+      return new const_expr(e->get_sctx(), e->get_loc(), 1);
     }
     else
     {

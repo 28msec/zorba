@@ -44,7 +44,7 @@ public:
 
 
 dynamic_function_invocation_expr::dynamic_function_invocation_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const expr_t& anExpr,
     const std::vector<expr_t>& args)
@@ -89,7 +89,7 @@ DEF_EXPR_ACCEPT (function_item_expr)
 
 
 function_item_expr::function_item_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     const store::Item* aQName,
     function* f,
@@ -106,7 +106,7 @@ function_item_expr::function_item_expr(
 
 
 function_item_expr::function_item_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc)
 	:
   expr(sctx, loc),

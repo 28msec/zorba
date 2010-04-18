@@ -46,7 +46,7 @@ public:
   std::ostream& put( std::ostream& ) const;
 
 protected:
-  ft_expr( short sctx, const QueryLoc& );
+  ft_expr( static_context* sctx, const QueryLoc& );
 };
 
 /**
@@ -59,7 +59,7 @@ public:
   void serialize( serialization::Archiver& );
 
   ftcontains_expr(
-    short sctx,
+    static_context* sctx,
     QueryLoc const&,
     range_expr_t range,
     ftexpr *ftselection,
@@ -783,4 +783,11 @@ private:
 } /* namespace zorba */
 
 #endif /* ZORBA_FTEXPR_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+
 /* vim:set et sw=2 ts=2: */

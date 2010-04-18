@@ -59,7 +59,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  relpath_expr(short sctx, const QueryLoc& loc);
+  relpath_expr(static_context* sctx, const QueryLoc& loc);
 
   expr_kind_t get_expr_kind() const { return relpath_expr_kind; }
 
@@ -122,7 +122,7 @@ public:
   static bool is_reverse_axis(axis_kind_t kind);
 
 public:
-  axis_step_expr(short sctx, const QueryLoc&);
+  axis_step_expr(static_context* sctx, const QueryLoc&);
 
   expr_kind_t get_expr_kind() const { return axis_step_expr_kind; }
 
@@ -188,7 +188,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  match_expr(short sctx, const QueryLoc&);
+  match_expr(static_context* sctx, const QueryLoc&);
 
   expr_kind_t get_expr_kind() const { return match_expr_kind; }
 

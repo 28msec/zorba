@@ -185,7 +185,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     // constext).
     if (f->accessesDynCtx () ||
         dynamic_cast<const fn_error*>(f) != NULL ||
-        maybe_needs_implicit_timezone(fo, rCtx.getStaticContext(node)) ||
+        maybe_needs_implicit_timezone(fo, node->get_sctx()) ||
         !f->isDeterministic())
     {
       curUnfoldable = expr::ANNOTATION_TRUE_FIXED;
@@ -407,7 +407,7 @@ static void remove_wincond_vars(
 
 RULE_REWRITE_PRE(FoldConst)
 {
-  xqtref_t rtype = node->return_type(rCtx.getStaticContext(node));
+  xqtref_t rtype = node->return_type(node->get_sctx());
 
   if (standalone_expr(node) &&
       ! already_folded(node, rCtx) &&
@@ -424,8 +424,8 @@ RULE_REWRITE_PRE(FoldConst)
     {
       ZORBA_ASSERT (result.size () <= 1);
       folded = (result.size () == 1 ?
-                ((expr *) (new const_expr (node->get_sctx_id(), LOC (node), result [0]))) :
-                ((expr *) (fo_expr::create_seq (node->get_sctx_id(), LOC (node)))));
+                ((expr *) (new const_expr (node->get_sctx(), LOC (node), result [0]))) :
+                ((expr *) (fo_expr::create_seq (node->get_sctx(), LOC (node)))));
     }
     return folded;
   }
@@ -498,17 +498,17 @@ RULE_REWRITE_PRE(PartialEval)
     if (arg->isNonDiscardable())
       return NULL;
 
-    xqtref_t arg_type = arg->return_type(rCtx.getStaticContext(node));
+    xqtref_t arg_type = arg->return_type(node->get_sctx());
 
     if (TypeOps::is_subtype(*arg_type, *cbe->get_target_type()))
     {
-      return new const_expr(node->get_sctx_id(), LOC(node), true);
+      return new const_expr(node->get_sctx(), LOC(node), true);
     }
     else if (node->get_expr_kind() == instanceof_expr_kind)
     {
       return (TypeOps::intersect_type(*arg_type, *cbe->get_target_type()) ==
               GENV_TYPESYSTEM.NONE_TYPE ?
-              new const_expr(node->get_sctx_id(), LOC(node), false) :
+              new const_expr(node->get_sctx(), LOC(node), false) :
               NULL);
     }
     else
@@ -573,19 +573,19 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     expr_t arg = fo->get_arg(0, false);
     if (!arg->isNonDiscardable())
     {
-      int type_cnt = TypeOps::type_cnt(*arg->return_type(rCtx.getStaticContext(fo)));
+      int type_cnt = TypeOps::type_cnt(*arg->return_type(fo->get_sctx()));
       if (type_cnt != -1)
-        return new const_expr(fo->get_sctx_id(), fo->get_loc(), Integer::parseInt(type_cnt));
+        return new const_expr(fo->get_sctx(), fo->get_loc(), Integer::parseInt(type_cnt));
     }
     return NULL;
   }
   else if (fkind == FunctionConsts::FN_BOOLEAN_1)
   {
     expr_t arg = fo->get_arg(0, false);
-    xqtref_t argType = arg->return_type(rCtx.getStaticContext(fo));
+    xqtref_t argType = arg->return_type(fo->get_sctx());
     if (TypeOps::is_subtype(*argType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS))
     {
-      return new const_expr(fo->get_sctx_id(), fo->get_loc(), true);
+      return new const_expr(fo->get_sctx(), fo->get_loc(), true);
     }
   }
 
@@ -615,7 +615,7 @@ static expr_t partial_eval_logic(
     if ((constArg = dynamic_cast<const const_expr*>(arg)) != NULL)
     {
       if (constArg->get_val()->getEBV()->getBooleanValue() == shortcircuit_val)
-        return new const_expr(fo->get_sctx_id(), LOC(fo), (xqp_boolean)shortcircuit_val);
+        return new const_expr(fo->get_sctx(), LOC(fo), (xqp_boolean)shortcircuit_val);
     }
     else
     {
@@ -634,7 +634,7 @@ static expr_t partial_eval_logic(
   if (nonConst1 < 0)
   {
     // Both args are constant exprs
-    return new const_expr(fo->get_sctx_id(), LOC(fo), (xqp_boolean) ! shortcircuit_val);
+    return new const_expr(fo->get_sctx(), LOC(fo), (xqp_boolean) ! shortcircuit_val);
   }
 
   if (nonConst2 < 0)
@@ -644,10 +644,10 @@ static expr_t partial_eval_logic(
 
     expr_t arg = fo->get_arg(nonConst1, true);
 
-    if (! TypeOps::is_subtype(*arg->return_type(rCtx.getStaticContext(fo)),
+    if (! TypeOps::is_subtype(*arg->return_type(fo->get_sctx()),
                               *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
     {
-      arg = fix_annotations(new fo_expr(fo->get_sctx_id(),
+      arg = fix_annotations(new fo_expr(fo->get_sctx(),
                                         LOC(fo),
                                         GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
                                         arg));
@@ -680,7 +680,7 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
   if (i == 2)
     return NULL;
 
-  TypeManager* tm = rCtx.getStaticContext(&fo)->get_typemanager();
+  TypeManager* tm = fo.get_sctx()->get_typemanager();
 
   store::Item* val = val_expr->get_val();
 
@@ -692,17 +692,17 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 
     if (ival < zero)
     {
-      return new const_expr(val_expr->get_sctx_id(), LOC(val_expr), false);
+      return new const_expr(val_expr->get_sctx(), LOC(val_expr), false);
     }
     else if (ival == zero)
     {
-      return fix_annotations(new fo_expr(fo.get_sctx_id(), fo.get_loc(),
+      return fix_annotations(new fo_expr(fo.get_sctx(), fo.get_loc(),
                                          GET_BUILTIN_FUNCTION(FN_EMPTY_1),
                                          count_expr->get_arg(0, false)));
     }
     else if (ival == xqp_integer::parseInt(1))
     {
-      return fix_annotations(new fo_expr(fo.get_sctx_id(),
+      return fix_annotations(new fo_expr(fo.get_sctx(),
                                          fo.get_loc(),
                                          GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
                                          count_expr->get_arg(0, false)));
@@ -712,22 +712,22 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
       store::Item_t pVal;
       store::Item_t iVal = val;
       GenericCast::promote(pVal, iVal, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *tm);
-      expr_t dpos = new const_expr(val_expr->get_sctx_id(), LOC(val_expr), pVal);
+      expr_t dpos = new const_expr(val_expr->get_sctx(), LOC(val_expr), pVal);
 
       std::vector<expr_t> args(3);
       args[0] = count_expr->get_arg(0);
       args[1] = dpos;
-      args[2] = new const_expr(val_expr->get_sctx_id(),
+      args[2] = new const_expr(val_expr->get_sctx(),
                                LOC(val_expr),
                                xqp_integer::parseInt(2));
 
       expr_t subseq_expr = fix_annotations(
-                           new fo_expr(count_expr->get_sctx_id(),
+                           new fo_expr(count_expr->get_sctx(),
                                        LOC (count_expr),
                                        GET_BUILTIN_FUNCTION(FN_ZORBA_INT_SUBSEQUENCE_3),
                                        args));
 
-      return fix_annotations(new fo_expr(fo.get_sctx_id(),
+      return fix_annotations(new fo_expr(fo.get_sctx(),
                                          fo.get_loc(),
                                          GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
                                          subseq_expr));

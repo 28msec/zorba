@@ -33,6 +33,9 @@
 namespace zorba
 {
 
+class static_context;
+
+
 enum expr_kind_t
 {
   attr_expr_kind,
@@ -215,7 +218,7 @@ protected:
   static expr_t  * iter_done;
 
 protected:
-  short            theSctxId;
+  static_context * theSctx;
   QueryLoc         theLoc;
   Cache            theCache;
 
@@ -233,7 +236,7 @@ public:
         const QueryLoc& loc);
 
 public:
-  expr(short, const QueryLoc&);
+  expr(static_context*, const QueryLoc&);
 
   virtual ~expr();
 
@@ -243,7 +246,7 @@ public:
 
   void set_loc(const QueryLoc& aLoc) { theLoc = aLoc; }
 
-  short get_sctx_id() const { return theSctxId; }
+  static_context* get_sctx() const { return theSctx; }
 
   expr_script_kind_t get_scripting_kind() const;
 

@@ -272,7 +272,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-sequential_expr::sequential_expr(short sctx, const QueryLoc& loc)
+sequential_expr::sequential_expr(static_context* sctx, const QueryLoc& loc)
   :
   expr(sctx, loc)
 {
@@ -281,7 +281,7 @@ sequential_expr::sequential_expr(short sctx, const QueryLoc& loc)
 
 
 sequential_expr::sequential_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t first,
     expr_t second)
@@ -295,9 +295,9 @@ sequential_expr::sequential_expr(
 
 
 sequential_expr::sequential_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
-    checked_vector<expr_t> seq,
+    checked_vector<expr_t>& seq,
     expr_t result)
   :
   expr(sctx, loc),
@@ -309,9 +309,9 @@ sequential_expr::sequential_expr(
 
 
 sequential_expr::sequential_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
-    checked_vector<expr_t> seq)
+    checked_vector<expr_t>& seq)
   :
   expr(sctx, loc),
   sequence(seq)
@@ -381,11 +381,11 @@ void sequential_expr::next_iter(expr_iterator_data& v)
 
 expr_t sequential_expr::clone(substitution_t& subst) const
 {
-  vector<expr_t> seq2;
+  checked_vector<expr_t> seq2;
   for (unsigned i = 0; i < sequence.size(); ++i)
     seq2.push_back(sequence[i]->clone(subst));
 
-  return new sequential_expr(theSctxId, get_loc(), seq2);
+  return new sequential_expr(theSctx, get_loc(), seq2);
 }
 
 
@@ -409,7 +409,7 @@ void catch_clause::serialize(::zorba::serialization::Archiver& ar)
 
 
 trycatch_expr::trycatch_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t tryExpr)
   :
@@ -496,14 +496,13 @@ void trycatch_expr::next_iter(expr_iterator_data& v)
   [68] IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
 ********************************************************************************/
 if_expr::if_expr(
-  short sctxid,
-  const QueryLoc& loc,
-  static_context* sctx,
-  expr_t condExpr,
-  expr_t thenExpr,
-  expr_t elseExpr)
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t condExpr,
+    expr_t thenExpr,
+    expr_t elseExpr)
   :
-  expr(sctxid, loc),
+  expr(sctx, loc),
   theThenExpr(thenExpr),
   theElseExpr(elseExpr)
 {
@@ -511,7 +510,7 @@ if_expr::if_expr(
       !TypeOps::is_equal(*condExpr->return_type(sctx),
                          *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
   {
-    fo_expr* boolExpr = new fo_expr(sctxid,
+    fo_expr* boolExpr = new fo_expr(sctx,
                                     loc,
                                     GET_BUILTIN_FUNCTION(FN_BOOLEAN_1),
                                     condExpr);
@@ -576,9 +575,8 @@ xqtref_t if_expr::return_type_impl(static_context* sctx) const
 
 expr_t if_expr::clone(substitution_t& subst) const 
 {
-  return new if_expr(theSctxId,
+  return new if_expr(theSctx,
                      get_loc(),
-                     NULL,
                      get_cond_expr()->clone(subst),
                      get_then_expr()->clone(subst),
                      get_else_expr()->clone(subst));
@@ -601,7 +599,7 @@ void if_expr::next_iter(expr_iterator_data& v)
 
 ********************************************************************************/
 order_expr::order_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     order_type_t type,
     expr_t inExpr)
@@ -645,7 +643,7 @@ void order_expr::next_iter(expr_iterator_data& v)
 
 expr_t order_expr::clone(substitution_t& subst) const
 {
-  return new order_expr(theSctxId, get_loc(), get_type(), get_expr()->clone(subst));
+  return new order_expr(theSctx, get_loc(), get_type(), get_expr()->clone(subst));
 }
 
 
@@ -653,7 +651,7 @@ expr_t order_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 validate_expr::validate_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     enum ParseConstants::validation_mode_t mode,
     store::Item_t typeName,
@@ -705,7 +703,7 @@ void validate_expr::next_iter(expr_iterator_data& v)
 
 expr_t validate_expr::clone(substitution_t& subst) const
 {
-  return new validate_expr(theSctxId,
+  return new validate_expr(theSctx,
                            get_loc(),
                            get_valmode(),
                            const_cast<store::Item*>(get_type_name()),
@@ -719,7 +717,7 @@ expr_t validate_expr::clone(substitution_t& subst) const
   Base for cast, treat, promote, castable, instanceof
 ********************************************************************************/
 cast_or_castable_base_expr::cast_or_castable_base_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t input,
     xqtref_t type)
@@ -775,7 +773,7 @@ void cast_or_castable_base_expr::compute_scripting_kind() const
   Base for cast, treat, promote
 ********************************************************************************/
 cast_base_expr::cast_base_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t input,
     xqtref_t type)
@@ -817,7 +815,7 @@ xqtref_t cast_base_expr::return_type_impl(static_context* sctx) const
   SingleType ::= AtomicType "?"?
 ********************************************************************************/
 cast_expr::cast_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t inputExpr,
     xqtref_t type)
@@ -851,7 +849,7 @@ void cast_expr::next_iter(expr_iterator_data& v)
 
 expr_t cast_expr::clone(substitution_t& subst) const
 {
-  return new cast_expr(theSctxId,
+  return new cast_expr(theSctx,
                        get_loc(),
                        get_input()->clone(subst), 
                        get_target_type());
@@ -862,7 +860,7 @@ expr_t cast_expr::clone(substitution_t& subst) const
 	TreatExpr ::= CastableExpr ( "treat" "as" SequenceType )?
 ********************************************************************************/
 treat_expr::treat_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t inputExpr,
     xqtref_t type,
@@ -913,7 +911,7 @@ void treat_expr::next_iter(expr_iterator_data& v)
 
 expr_t treat_expr::clone(substitution_t& subst) const
 {
-  return new treat_expr(theSctxId,
+  return new treat_expr(theSctx,
                         get_loc(),
                         get_input()->clone(subst), 
                         get_target_type(),
@@ -926,7 +924,7 @@ expr_t treat_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 promote_expr::promote_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t input,
     xqtref_t type)
@@ -995,7 +993,7 @@ void promote_expr::next_iter(expr_iterator_data& v)
 
 expr_t promote_expr::clone(substitution_t& subst) const
 {
-  return new promote_expr(theSctxId, 
+  return new promote_expr(theSctx, 
                           get_loc(),
                           get_input()->clone(subst),
                           get_target_type());
@@ -1006,7 +1004,7 @@ expr_t promote_expr::clone(substitution_t& subst) const
   Base for castable, instanceof
 ********************************************************************************/
 castable_base_expr::castable_base_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t input,
     xqtref_t type)
@@ -1034,7 +1032,7 @@ xqtref_t castable_base_expr::return_type_impl(static_context* sctx) const
   SingleType ::= AtomicType "?"?
 ********************************************************************************/
 castable_expr::castable_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t inputExpr,
     xqtref_t type)
@@ -1066,7 +1064,7 @@ void castable_expr::next_iter(expr_iterator_data& v)
 
 expr_t castable_expr::clone(substitution_t& subst) const
 {
-  return new castable_expr(theSctxId, 
+  return new castable_expr(theSctx, 
                            get_loc(),
                            get_input()->clone(subst),
                            get_target_type());
@@ -1077,7 +1075,7 @@ expr_t castable_expr::clone(substitution_t& subst) const
 	InstanceofExpr ::= TreatExpr ( "instance" "of" SequenceType )?
 ********************************************************************************/
 instanceof_expr::instanceof_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t inputExpr,
     xqtref_t type)
@@ -1103,7 +1101,7 @@ void instanceof_expr::next_iter(expr_iterator_data& v)
 
 expr_t instanceof_expr::clone(substitution_t& subst) const
 {
-  return new instanceof_expr(theSctxId,
+  return new instanceof_expr(theSctx,
                              get_loc(),
                              get_input()->clone(subst),
                              get_target_type());
@@ -1114,7 +1112,7 @@ expr_t instanceof_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 name_cast_expr::name_cast_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t inputExpr,
     const namespace_context* aNCtx)
@@ -1160,7 +1158,7 @@ const namespace_context* name_cast_expr::get_namespace_context() const
 
 expr_t name_cast_expr::clone(substitution_t& subst) const
 {
-  return new name_cast_expr(theSctxId,
+  return new name_cast_expr(theSctx,
                             get_loc(),
                             get_input()->clone(subst),
                             get_namespace_context());
@@ -1171,7 +1169,7 @@ expr_t name_cast_expr::clone(substitution_t& subst) const
   CompDocConstructor ::= "document" "{" Expr "}"
 ********************************************************************************/
 doc_expr::doc_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t aContent)
   :
@@ -1220,7 +1218,7 @@ void doc_expr::next_iter(expr_iterator_data& v)
 
 expr_t doc_expr::clone(substitution_t& subst) const
 {
-  return new doc_expr(theSctxId, get_loc(), CLONE(getContent(), subst));
+  return new doc_expr(theSctx, get_loc(), CLONE(getContent(), subst));
 }
 
 
@@ -1228,7 +1226,7 @@ expr_t doc_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 elem_expr::elem_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& aLoc,
     expr_t aQNameExpr,
     expr_t aAttrs,
@@ -1248,7 +1246,7 @@ elem_expr::elem_expr(
 
 
 elem_expr::elem_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& aLoc,
     expr_t aQNameExpr,
     expr_t aContent,
@@ -1322,7 +1320,7 @@ void elem_expr::next_iter(expr_iterator_data& v)
 
 expr_t elem_expr::clone(substitution_t& subst) const
 {
-  return new elem_expr(theSctxId,
+  return new elem_expr(theSctx,
                        get_loc(),
                        CLONE(getQNameExpr(), subst),
                        CLONE(getAttrs(), subst),
@@ -1335,7 +1333,7 @@ expr_t elem_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 attr_expr::attr_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t aQNameExpr,
     expr_t aValueExpr)
@@ -1401,7 +1399,7 @@ void attr_expr::next_iter(expr_iterator_data& v)
 
 expr_t attr_expr::clone(substitution_t& subst) const
 {
-  return new attr_expr(theSctxId,
+  return new attr_expr(theSctx,
                        get_loc(),
                        CLONE(getQNameExpr(), subst),
                        CLONE(getValueExpr(), subst));
@@ -1415,7 +1413,7 @@ DEF_EXPR_ACCEPT(attr_expr)
 
 ********************************************************************************/
 text_expr::text_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     text_constructor_type type_arg,
     expr_t content)
@@ -1497,7 +1495,7 @@ void text_expr::next_iter(expr_iterator_data& v)
 
 expr_t text_expr::clone(substitution_t& subst) const
 {
-  return new text_expr(theSctxId, get_loc(), get_type(), CLONE(get_text(), subst));
+  return new text_expr(theSctx, get_loc(), get_type(), CLONE(get_text(), subst));
 }
 
 
@@ -1505,7 +1503,7 @@ expr_t text_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 pi_expr::pi_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t targetExpr,
     expr_t contentExpr)
@@ -1561,7 +1559,7 @@ void pi_expr::next_iter(expr_iterator_data& v)
 
 expr_t pi_expr::clone(substitution_t& subst) const
 {
-  return new pi_expr(theSctxId,
+  return new pi_expr(theSctx,
                      get_loc(),
                      CLONE(get_target_expr(), subst),
                      CLONE(get_content_expr(), subst));
@@ -1573,7 +1571,7 @@ expr_t pi_expr::clone(substitution_t& subst) const
   Normally, it is used to wrap a var_expr in order to represent a var reference
   (see var_expr.h). But it may wrap any other kind of expr as well.
 ********************************************************************************/
-wrapper_expr::wrapper_expr(short sctx, const QueryLoc& loc, expr_t wrapped)
+wrapper_expr::wrapper_expr(static_context* sctx, const QueryLoc& loc, expr_t wrapped)
   :
   expr(sctx, loc),
   theWrappedExpr(wrapped)
@@ -1627,14 +1625,14 @@ expr_t wrapper_expr::clone(substitution_t& subst) const
       e->get_expr_kind() != var_expr_kind)
     return e;
   else
-    return new wrapper_expr(theSctxId, get_loc(), e);
+    return new wrapper_expr(theSctx, get_loc(), e);
 }
 
 
 /***************************************************************************//**
 
 ********************************************************************************/
-const_expr::const_expr(short sctx, const QueryLoc& loc, xqpStringStore_t& v)
+const_expr::const_expr(static_context* sctx, const QueryLoc& loc, xqpStringStore_t& v)
   :
   expr(sctx, loc)
 {
@@ -1642,7 +1640,7 @@ const_expr::const_expr(short sctx, const QueryLoc& loc, xqpStringStore_t& v)
 }
 
 
-const_expr::const_expr(short sctx, const QueryLoc& loc, const std::string& v)
+const_expr::const_expr(static_context* sctx, const QueryLoc& loc, const std::string& v)
   :
   expr(sctx, loc)
 {
@@ -1651,7 +1649,7 @@ const_expr::const_expr(short sctx, const QueryLoc& loc, const std::string& v)
 }
 
 
-const_expr::const_expr(short sctx, const QueryLoc& loc, const char* v)
+const_expr::const_expr(static_context* sctx, const QueryLoc& loc, const char* v)
   :
   expr(sctx, loc)
 {
@@ -1660,7 +1658,7 @@ const_expr::const_expr(short sctx, const QueryLoc& loc, const char* v)
 }
 
 
-const_expr::const_expr(short sctx, const QueryLoc& loc, xqp_integer v)
+const_expr::const_expr(static_context* sctx, const QueryLoc& loc, xqp_integer v)
   :
   expr(sctx, loc)
 {
@@ -1668,7 +1666,7 @@ const_expr::const_expr(short sctx, const QueryLoc& loc, xqp_integer v)
 }
 
 const_expr::const_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     xqp_decimal v)
   :
@@ -1678,7 +1676,7 @@ const_expr::const_expr(
 }
 
 const_expr::const_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     xqp_double v)
   :
@@ -1689,7 +1687,7 @@ const_expr::const_expr(
 
 
 const_expr::const_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     xqp_boolean v)
   :
@@ -1700,7 +1698,7 @@ const_expr::const_expr(
 
 
 const_expr::const_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     store::Item_t v)
   :
@@ -1711,7 +1709,7 @@ const_expr::const_expr(
 
 
 const_expr::const_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& aLoc, 
     const char* aNamespace,
     const char* aPrefix, 
@@ -1754,7 +1752,7 @@ void const_expr::next_iter(expr_iterator_data& v)
 
 expr_t const_expr::clone(substitution_t&) const
 {
-  return new const_expr(theSctxId, get_loc(), theValue);
+  return new const_expr(theSctx, get_loc(), theValue);
 }
 
 
@@ -1777,7 +1775,7 @@ void pragma::serialize(::zorba::serialization::Archiver& ar)
 
 
 extension_expr::extension_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc)
   :
   expr(sctx, loc)
@@ -1787,7 +1785,7 @@ extension_expr::extension_expr(
 
 
 extension_expr::extension_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t e)
   :
@@ -1879,7 +1877,7 @@ void debugger_expr::store_local_variables(checked_vector<varref_t>& aScopedVaria
     {
       lQNames.insert( (*it)->get_name() );
       varref_t lValue = (*it);
-      varref_t lVariable(new var_expr(theSctxId,
+      varref_t lVariable(new var_expr(theSctx,
                                       theLoc,
                                       var_expr::eval_var,
                                       lValue->get_name() ) );
@@ -1918,7 +1916,7 @@ void debugger_expr::next_iter(expr_iterator_data& v)
 
 ********************************************************************************/
 insert_expr::insert_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     store::UpdateConsts::InsertType aType,
     expr_t aSourceExpr,
@@ -1968,7 +1966,7 @@ void insert_expr::next_iter(expr_iterator_data& v)
 
 expr_t insert_expr::clone(substitution_t& subst) const
 {
-  return new insert_expr(theSctxId,
+  return new insert_expr(theSctx,
                          get_loc(),
                          getType(),
                          getSourceExpr()->clone(subst),
@@ -1980,7 +1978,7 @@ expr_t insert_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 delete_expr::delete_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t aTargetExpr)
   :
@@ -2021,7 +2019,7 @@ void delete_expr::next_iter(expr_iterator_data& v)
 
 expr_t delete_expr::clone (substitution_t& subst) const
 {
-  return new delete_expr(theSctxId, get_loc(), getTargetExpr()->clone(subst));
+  return new delete_expr(theSctx, get_loc(), getTargetExpr()->clone(subst));
 }
 
 
@@ -2029,7 +2027,7 @@ expr_t delete_expr::clone (substitution_t& subst) const
 
 ********************************************************************************/
 replace_expr::replace_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     store::UpdateConsts::ReplaceType aType,
     expr_t aTargetExpr,
@@ -2080,7 +2078,7 @@ void replace_expr::next_iter(expr_iterator_data& v)
 
 expr_t replace_expr::clone(substitution_t& subst) const
 {
-  return new replace_expr(theSctxId,
+  return new replace_expr(theSctx,
                           get_loc(),
                           getType(),
                           getTargetExpr()->clone(subst),
@@ -2092,7 +2090,7 @@ expr_t replace_expr::clone(substitution_t& subst) const
 
 ********************************************************************************/
 rename_expr::rename_expr(
-    short sctx,
+    static_context* sctx,
     const QueryLoc& loc,
     expr_t aTargetExpr,
     expr_t aNameExpr)
@@ -2140,7 +2138,7 @@ void rename_expr::next_iter(expr_iterator_data& v)
 
 expr_t rename_expr::clone(substitution_t& subst) const
 {
-  return new rename_expr(theSctxId,
+  return new rename_expr(theSctx,
                          get_loc(),
                          getTargetExpr()->clone(subst),
                          getNameExpr()->clone(subst));
@@ -2167,7 +2165,7 @@ void copy_clause::serialize(::zorba::serialization::Archiver& ar)
 
 
 transform_expr::transform_expr(
-    short sctx,
+    static_context* sctx,
 	  const QueryLoc& loc,
     expr_t aModifyExpr,
     expr_t aReturnExpr)
@@ -2273,7 +2271,7 @@ void transform_expr::next_iter(expr_iterator_data& v)
 /*******************************************************************************
 
 ********************************************************************************/
-exit_expr::exit_expr(short sctx, const QueryLoc& loc, expr_t inExpr)
+exit_expr::exit_expr(static_context* sctx, const QueryLoc& loc, expr_t inExpr)
   :
   expr(sctx, loc),
   theExpr(inExpr)
@@ -2326,14 +2324,14 @@ void exit_expr::next_iter(expr_iterator_data& v)
 
 expr_t exit_expr::clone(substitution_t& subst) const
 {
-  return new exit_expr(theSctxId, get_loc(), get_value()->clone(subst));
+  return new exit_expr(theSctx, get_loc(), get_value()->clone(subst));
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-flowctl_expr::flowctl_expr(short sctx, const QueryLoc &loc, enum action action)
+flowctl_expr::flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action)
   :
   expr(sctx, loc),
   theAction(action)
@@ -2374,14 +2372,14 @@ void flowctl_expr::next_iter(expr_iterator_data& v)
 
 expr_t flowctl_expr::clone(substitution_t& subst) const
 {
-  return new flowctl_expr(theSctxId, get_loc(), get_action());
+  return new flowctl_expr(theSctx, get_loc(), get_action());
 }
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-while_expr::while_expr(short sctx, const QueryLoc& loc, expr_t body)
+while_expr::while_expr(static_context* sctx, const QueryLoc& loc, expr_t body)
   : 
   expr(sctx, loc),
   theBody(body)
@@ -2425,7 +2423,7 @@ void while_expr::next_iter(expr_iterator_data& v)
 
 expr_t while_expr::clone(substitution_t& subst) const
 {
-  return new while_expr(theSctxId, get_loc(), get_body()->clone(subst));
+  return new while_expr(theSctx, get_loc(), get_body()->clone(subst));
 }
 
 

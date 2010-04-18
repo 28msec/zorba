@@ -70,7 +70,7 @@ public:
   } ClauseKind;
 
 protected:
-  short                     theContext;
+  static_context          * theContext;
   QueryLoc                  theLocation;
 
   ClauseKind                theKind;
@@ -82,7 +82,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  flwor_clause(short sctx, const QueryLoc& loc, ClauseKind kind)
+  flwor_clause(static_context* sctx, const QueryLoc& loc, ClauseKind kind)
     :
     theContext(sctx),
     theLocation(loc),
@@ -150,7 +150,7 @@ public:
 
 public:
   forletwin_clause(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         ClauseKind kind,
         var_expr_t varExpr,
@@ -188,7 +188,6 @@ public:
 public:
   for_clause(
         static_context* sctx,
-        short sctxid,
         const QueryLoc& loc,
         var_expr_t varExpr,
         expr_t domainExpr,
@@ -237,7 +236,6 @@ public:
 public:
   let_clause(
         static_context* sctx,
-        short sctxid,
         const QueryLoc& loc,
         var_expr_t varExpr,
         expr_t domainExpr,
@@ -287,7 +285,6 @@ public:
 public:
   window_clause(
         static_context* sctx,
-        short sctxid,
         const QueryLoc& loc,
         window_t winKind,
         var_expr_t varExpr,
@@ -441,7 +438,7 @@ public:
 
 public:
   group_clause(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         const rebind_list_t& gvars,
         rebind_list_t ngvars,
@@ -499,7 +496,7 @@ public:
 
 public:
   orderby_clause (
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         bool stable,
         const std::vector<OrderModifier>& modifiers,
@@ -545,7 +542,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  count_clause(short sctx, const QueryLoc& loc, var_expr_t var)
+  count_clause(static_context* sctx, const QueryLoc& loc, var_expr_t var)
     :
     flwor_clause(sctx, loc, flwor_clause::count_clause),
     theVarExpr(var)
@@ -575,7 +572,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  where_clause(short sctx, const QueryLoc& loc, expr_t where)
+  where_clause(static_context* sctx, const QueryLoc& loc, expr_t where)
     :
     flwor_clause(sctx, loc, flwor_clause::where_clause),
     theWhereExpr(where)
@@ -617,7 +614,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  flwor_expr(short sctx, const QueryLoc& loc, bool general)
+  flwor_expr(static_context* sctx, const QueryLoc& loc, bool general)
     :
     expr(sctx, loc),
     theIsGeneral(general)

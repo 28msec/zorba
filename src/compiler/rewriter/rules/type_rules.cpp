@@ -157,8 +157,7 @@ RULE_REWRITE_POST(InferUDFTypes)
 ********************************************************************************/
 RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 {
-  static_context* sctx = rCtx.getStaticContext(node);
-  short sctxid = node->get_sctx_id();
+  static_context* sctx = node->get_sctx();
 
   fo_expr* fo;
 
@@ -207,7 +206,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     if (node->get_expr_kind() == cast_expr_kind &&
         TypeOps::is_equal(*arg_ptype, *target_ptype))
     {
-      return new treat_expr(sctxid,
+      return new treat_expr(sctx,
                             node->get_loc(),
                             arg,
                             target_type,
@@ -253,7 +252,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  static_context* sctx = rCtx.getStaticContext(node);
+  static_context* sctx = node->get_sctx();
 
   if (node->get_expr_kind() == fo_expr_kind) 
   {
@@ -278,7 +277,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 
         if (TypeOps::is_subtype(*argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
         {
-          expr_t promoteExpr = new promote_expr(argExpr->get_sctx_id(),
+          expr_t promoteExpr = new promote_expr(argExpr->get_sctx(),
                                                 argExpr->get_loc(),
                                                 argExpr,
                                                 rtm.DOUBLE_TYPE_STAR);
@@ -351,7 +350,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 
             if (TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION)) 
             {
-              nargs[i] = new cast_expr(arg->get_sctx_id(),
+              nargs[i] = new cast_expr(arg->get_sctx(),
                                        arg->get_loc(),
                                        arg,
                                        string_type);
@@ -425,7 +424,7 @@ RULE_REWRITE_POST(SpecializeOperations)
 
           if (TypeOps::is_subtype(*colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
           {
-            expr_t castExpr = new cast_expr(colExpr->get_sctx_id(),
+            expr_t castExpr = new cast_expr(colExpr->get_sctx(),
                                             colExpr->get_loc(),
                                             colExpr,
                                             rtm.STRING_TYPE_QUESTION);
@@ -501,7 +500,7 @@ static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t)
       arg = pe->get_input(false);
   }
 
-  return new promote_expr(arg->get_sctx_id(), arg->get_loc(), arg, t);
+  return new promote_expr(arg->get_sctx(), arg->get_loc(), arg, t);
 }
 
 

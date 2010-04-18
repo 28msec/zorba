@@ -124,7 +124,7 @@ public:
 
 public:
   var_expr(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         var_kind k,
         store::Item* name);

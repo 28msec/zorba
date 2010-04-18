@@ -85,14 +85,12 @@ public:
 
   CompilerCB* getCompilerCB() const { return theCCB; }
 
-  static_context* getStaticContext(const expr* node) const;
-
   expr_t getRoot();
 
   void setRoot(expr_t root);
 
   rchandle<var_expr> createTempVar(
-        short sctx,
+        static_context* sctx,
         const QueryLoc& loc,
         var_expr::var_kind kind);
 };

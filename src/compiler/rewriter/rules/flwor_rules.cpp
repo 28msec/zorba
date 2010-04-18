@@ -116,8 +116,7 @@ expr_t subst_vars(
 RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
   const QueryLoc& loc = LOC(node);
-  static_context* sctx = rCtx.getStaticContext(node);
-  short sctxid = node->get_sctx_id();
+  static_context* sctx = node->get_sctx();
 
   flwor_expr* flworp = dynamic_cast<flwor_expr *>(node);
 
@@ -165,12 +164,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       expr_t oldWhere = whereExpr;
       flwor.remove_where_clause();
 
-      return fix_if_annotations(new if_expr(sctxid,
+      return fix_if_annotations(new if_expr(sctx,
                                             loc,
-                                            NULL,
                                             oldWhere,
                                             &flwor,
-                                            fo_expr::create_seq(sctxid, loc)));
+                                            fo_expr::create_seq(sctx, loc)));
     }
   }
 
@@ -212,11 +210,11 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
       // FOR clause with 0 cardinality
       if (domainCount == 0)
-        return fo_expr::create_seq(node->get_sctx_id(), LOC(node));
+        return fo_expr::create_seq(sctx, LOC(node));
 
       if (pvar != NULL)
       {
-        MODIFY(subst_vars(rCtx, node, pvar, new const_expr(sctxid,
+        MODIFY(subst_vars(rCtx, node, pvar, new const_expr(sctx,
                                                            loc,
                                                            xqp_integer::parseInt(1))));
       }
@@ -299,8 +297,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         let_clause_t save = lc;
         MODIFY(flwor.remove_clause(i));
         const QueryLoc& loc = var->get_loc();
-        var_expr_t fvar = new var_expr(sctxid, loc, var_expr::for_var, var->get_name()); 
-        for_clause_t fc = new for_clause(NULL, sctxid, loc, fvar, domainExpr);
+        var_expr_t fvar = new var_expr(sctx, loc, var_expr::for_var, var->get_name()); 
+        for_clause_t fc = new for_clause(sctx, loc, fvar, domainExpr);
         flwor.add_clause(i, fc);
 
         subst_vars(rCtx, node, var, fvar.getp());
@@ -316,12 +314,12 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 
     if ((whereExpr = flwor.get_where()) != NULL)
     {
-      result = fix_if_annotations(new if_expr(whereExpr->get_sctx_id(),
+      result = fix_if_annotations(new if_expr(whereExpr->get_sctx(),
                                               LOC(whereExpr),
-                                              NULL,
                                               whereExpr,
                                               result,
-                                              fo_expr::create_seq(whereExpr->get_sctx_id(), LOC(whereExpr))));
+                                              fo_expr::create_seq(whereExpr->get_sctx(),
+                                                                  LOC(whereExpr))));
     }
 
     return result;
@@ -700,7 +698,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   if (flwor == NULL || flwor->is_general())
     return NULL;
 
-  static_context* sctx = rCtx.getStaticContext(node);
+  static_context* sctx = node->get_sctx();
 
   if_expr* ifReturnExpr = dynamic_cast<if_expr*>(flwor->get_return_expr(true));
   expr* whereExpr = flwor->get_where();
@@ -734,11 +732,11 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
     std::vector<expr_t> args(3);
     args[0] = domainExpr;
     args[1] = posExpr;
-    args[2] = new const_expr(posExpr->get_sctx_id(),
+    args[2] = new const_expr(posExpr->get_sctx(),
                              LOC(posExpr),
                              xqp_integer::parseInt(1));
 
-    rchandle<fo_expr> result = new fo_expr(whereExpr->get_sctx_id(),
+    rchandle<fo_expr> result = new fo_expr(whereExpr->get_sctx(),
                                            LOC(whereExpr),
                                            subseq,
                                            args);
@@ -773,7 +771,7 @@ static bool is_subseq_pred(
     var_expr_t& posVar,
     expr_t& posExpr)
 {
-  static_context* sctx = rCtx.getStaticContext(condExpr);
+  static_context* sctx = condExpr->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -851,7 +849,7 @@ static bool is_subseq_pred(
 ********************************************************************************/
 RULE_REWRITE_PRE(MergeFLWOR)
 {
-  static_context* sctx = rCtx.getStaticContext(node);
+  static_context* sctx = node->get_sctx();
 
   flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
 

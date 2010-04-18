@@ -108,7 +108,7 @@ expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
       {
         if (rewriteJoin(rCtx, predInfo))
         {
-          expr_t trueExpr = new const_expr(flworExpr->get_sctx_id(),
+          expr_t trueExpr = new const_expr(flworExpr->get_sctx(),
                                            flworExpr->get_loc(),
                                            true);
           (*i) = trueExpr;
@@ -154,7 +154,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   const function* fn;
   const expr* predExpr = predInfo.thePredicate;
 
-  static_context* sctx = rCtx.getStaticContext(predExpr);
+  static_context* sctx = predExpr->get_sctx();
 
   // skip fn:boolean() wrapper
   while (true)
@@ -386,8 +386,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   // std::cout << "!!!!! Found Join Index Predicate !!!!!" << std::endl << std::endl;
 
   const QueryLoc& loc = predInfo.thePredicate->get_loc();
-  short sctxid = predInfo.thePredicate->get_sctx_id();
-  static_context* sctx = rCtx.getStaticContext(predInfo.thePredicate);
+  static_context* sctx = predInfo.thePredicate->get_sctx();
 
   for_clause* fc = predInfo.theInnerVar->get_for_clause();
 
@@ -413,10 +412,10 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", os.str().c_str());
 
-  expr_t qnameExpr(new const_expr(sctxid, loc, qname));
+  expr_t qnameExpr(new const_expr(sctx, loc, qname));
   expr_t buildExpr;
 
-  fo_expr_t createExpr = new fo_expr(sctxid,
+  fo_expr_t createExpr = new fo_expr(sctx,
                                      loc,
                                      GET_BUILTIN_FUNCTION(OP_CREATE_INTERNAL_INDEX_2),
                                      qnameExpr,
@@ -462,7 +461,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
       const QueryLoc& nestedLoc = mostInnerVarClause->get_loc();
 
-      flwor_expr_t nestedFlwor = new flwor_expr(sctxid, nestedLoc, false);
+      flwor_expr_t nestedFlwor = new flwor_expr(sctx, nestedLoc, false);
 
       for (ulong i = mostInnerVarPos+1; i < numClauses; ++i)
       {
@@ -476,7 +475,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
       nestedFlwor->set_return_expr(innerFlwor->get_return_expr(true));
 
-      innerSeqExpr = new sequential_expr(sctxid, loc);
+      innerSeqExpr = new sequential_expr(sctx, loc);
 
       innerSeqExpr->push_back(createExpr.getp());
       innerSeqExpr->push_back(nestedFlwor.getp());
@@ -509,7 +508,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
       }
       else
       {
-        innerSeqExpr = new sequential_expr(sctxid, loc);
+        innerSeqExpr = new sequential_expr(sctx, loc);
         
         innerSeqExpr->push_back(createExpr.getp());
         innerSeqExpr->push_back(returnExpr);
@@ -541,7 +540,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
     //  Build or adjust outer sequential expr
     if (outerSeqExpr == NULL)
     {
-      outerSeqExpr = new sequential_expr(sctxid, loc);
+      outerSeqExpr = new sequential_expr(sctx, loc);
 
       outerSeqExpr->push_back(createExpr.getp());
       outerSeqExpr->push_back(outerFlworExpr);
@@ -559,7 +558,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   // Replace the expr defining the inner var with an index probe.
   //
-  fo_expr_t probeExpr = new fo_expr(sctxid,
+  fo_expr_t probeExpr = new fo_expr(sctx,
                                     loc,
                                     GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_PROBE_INDEX_POINT_N),
                                     qnameExpr,
@@ -574,9 +573,9 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   idx->setDomainExpr(domainExpr);
 
-  idx->setDomainVariable(rCtx.createTempVar(sctxid, loc, var_expr::for_var));
+  idx->setDomainVariable(rCtx.createTempVar(sctx, loc, var_expr::for_var));
 
-  idx->setDomainPositionVariable(rCtx.createTempVar(sctxid, loc, var_expr::pos_var));
+  idx->setDomainPositionVariable(rCtx.createTempVar(sctx, loc, var_expr::pos_var));
 
   idx->setTemp(true);
 
