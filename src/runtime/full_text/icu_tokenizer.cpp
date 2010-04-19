@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include <memory>                       /* for auto_ptr */
 #include <unicode/ustring.h>
 
 #include "runtime/full_text/icu_tokenizer.h"
@@ -93,26 +92,24 @@ static char* utf16_to_utf8( UChar const *utf16_s, int32_t utf16_len,
 ///////////////////////////////////////////////////////////////////////////////
 
 icu_tokenizer::icu_tokenizer() {
-  word_it_ = sent_it_ = NULL;
   UErrorCode err = U_ZERO_ERROR;
 
   // TODO: get actual locale
-  word_it_ = dynamic_cast<RuleBasedBreakIterator*>(
-    BreakIterator::createWordInstance( Locale::getUS(), err )
+  word_it_ = BreakIterator_ptr(
+    dynamic_cast<RuleBasedBreakIterator*>(
+      BreakIterator::createWordInstance( Locale::getUS(), err )
+    )
   );
   if ( U_FAILURE( err ) )
     /* TODO: ZORBA_ERROR(code) */;
 
-  sent_it_ = dynamic_cast<RuleBasedBreakIterator*>(
-    BreakIterator::createSentenceInstance( Locale::getUS(), err )
+  sent_it_ = BreakIterator_ptr(
+    dynamic_cast<RuleBasedBreakIterator*>(
+      BreakIterator::createSentenceInstance( Locale::getUS(), err )
+    )
   );
   if ( U_FAILURE( err ) )
     /* TODO: ZORBA_ERROR(code) */;
-}
-
-icu_tokenizer::~icu_tokenizer() {
-  delete word_it_;
-  delete sent_it_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

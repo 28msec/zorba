@@ -17,6 +17,7 @@
 #ifndef ZORBA_FULL_TEXT_ICU_TOKENIZER_H
 #define ZORBA_FULL_TEXT_ICU_TOKENIZER_H
 
+#include <memory>                       /* for auto_ptr */
 #include <unicode/rbbi.h>
 
 #include "runtime/full_text/tokenizer.h"
@@ -30,13 +31,22 @@ namespace zorba {
 class icu_tokenizer : public Tokenizer {
 public:
   icu_tokenizer();
-  ~icu_tokenizer();
 
   void tokenize( std::string const &utf8_s, Callback& );
 
 private:
-  U_NAMESPACE_QUALIFIER RuleBasedBreakIterator *word_it_;
-  U_NAMESPACE_QUALIFIER RuleBasedBreakIterator *sent_it_;
+  /**
+   * Use an auto_ptr to guarantee destruction in case the constructor throws an
+   * exception.
+   *
+   * See the C++ FAQ 17.4: How should I handle resources if my constructors may
+   * throw exceptions?
+   */ 
+  typedef std::auto_ptr<U_NAMESPACE_QUALIFIER RuleBasedBreakIterator>
+          BreakIterator_ptr;
+
+  BreakIterator_ptr word_it_;
+  BreakIterator_ptr sent_it_;
 };
 
 } // namespace zorba
