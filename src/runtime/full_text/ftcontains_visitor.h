@@ -66,9 +66,6 @@ public:
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
 
 private:
-  std::stack<ft_all_matches*> eval_stack_;
-  PlanState plan_state_;
-
   void push( ft_all_matches *m ) {
     eval_stack_.push( m );
   }
@@ -82,6 +79,10 @@ private:
   ft_all_matches* top() const {
     return eval_stack_.top();
   }
+
+  std::stack<ft_all_matches*> eval_stack_;
+  PlanState plan_state_;
+  pass_thru_expr_visitor expr_visitor_;
 };
 
 } // namespace zorba

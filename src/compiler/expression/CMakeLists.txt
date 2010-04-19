@@ -21,5 +21,6 @@ SET(EXPRESSION_SRCS
     flwor_expr.cpp
     fo_expr.cpp
     ftexpr.cpp
+    ftexpr_visitor.cpp
     function_item_expr.cpp)
 

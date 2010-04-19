@@ -25,14 +25,16 @@ using namespace std;
 
 namespace zorba {
 
-//for Windows build
+#ifdef WIN32
+// Windows annoyingly defines these as macros.
 #undef max
 #undef min
-
+#endif
 
 ftcontains_visitor::ftcontains_visitor( ft_item_tokens const &tokens,
                                         PlanState &state ) :
-  plan_state_( state )
+  plan_state_( state ),
+  expr_visitor_( *this )
 {
   // do nothing
 }
@@ -55,11 +57,11 @@ bool ftcontains_visitor::ftcontains() const {
       return true;
   return false;
 }
-/*
+
 expr_visitor& ftcontains_visitor::get_expr_visitor() {
-  // TODO
+  return expr_visitor_;
 }
-*/
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #define V ftcontains_visitor

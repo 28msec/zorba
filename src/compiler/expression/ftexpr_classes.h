@@ -23,6 +23,7 @@ namespace zorba {
 
 class ftexpr;
 class ftexpr_visitor;
+class pass_thru_expr_visitor;
 
 namespace ft_visit_result {
   enum type {
@@ -31,7 +32,7 @@ namespace ft_visit_result {
     no_end      = 0x02,
     neither     = no_children | no_end
   };
-};
+}
 
 typedef rchandle<ftexpr> ftexpr_t;
 

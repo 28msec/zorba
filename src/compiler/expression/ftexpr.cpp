@@ -164,117 +164,8 @@ void ft_expr::serialize( serialization::Archiver &ar ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class pass_thru_expr_visitor : public expr_visitor {
-public:
-  pass_thru_expr_visitor( ftexpr_visitor &v ) : ftexpr_visitor_( v ) { }
-
-  ftexpr_visitor& get_ftexpr_visitor();
-
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( attr_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( axis_step_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( castable_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( cast_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( const_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( debugger_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( delete_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( doc_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( dynamic_function_invocation_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( elem_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( eval_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( exit_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( extension_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( flowctl_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( flwor_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( fo_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( ftcontains_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( function_item_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( if_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( insert_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( instanceof_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( match_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( name_cast_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( order_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( pi_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( promote_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( relpath_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( rename_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( replace_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( sequential_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( text_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( transform_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( treat_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( trycatch_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( validate_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( var_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( while_expr );
-  DECL_EXPR_VISITOR_VISIT_MEM_FNS( wrapper_expr );
-
-private:
-  ftexpr_visitor &ftexpr_visitor_;
-};
-
-ftexpr_visitor& pass_thru_expr_visitor::get_ftexpr_visitor() {
-  return ftexpr_visitor_;
-}
-
-#define V pass_thru_expr_visitor
-
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, attr_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, axis_step_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, castable_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, cast_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, const_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, debugger_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, delete_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, doc_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, dynamic_function_invocation_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, elem_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, eval_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, exit_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, extension_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, flowctl_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, flwor_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, fo_expr )
-
-bool V::begin_visit( ftcontains_expr &e ) {
-  ftexpr *const ftselection = e.get_ftselection();
-  ftexpr_visitor &v2 = get_ftexpr_visitor();
-  //v2.begin_visit( ftselection );
-  return true;
-}
-
-DEF_EXPR_VISITOR_END_VISIT( V, ftcontains_expr )
-
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, function_item_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, if_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, insert_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, instanceof_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, match_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, name_cast_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, order_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, pi_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, promote_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, relpath_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, rename_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, replace_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, sequential_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, text_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, transform_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, treat_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, trycatch_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, validate_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, var_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, while_expr )
-DEF_EXPR_VISITOR_VISIT_MEM_FNS( V, wrapper_expr )
-
-#undef V
-
-///////////////////////////////////////////////////////////////////////////////
-
 /**
- * An next_iter_ftexpr_visitor is-an ftexpr_visitor that is used only by
+ * A next_iter_ftexpr_visitor is-an ftexpr_visitor that is used only by
  * ftcontains_expr::next_iter().
  */
 class next_iter_ftexpr_visitor : public ftexpr_visitor {
@@ -423,8 +314,7 @@ ftcontains_expr::ftcontains_expr(
 void ftcontains_expr::accept( expr_visitor &v ) {
   if ( v.begin_visit( *this ) ) {
     EV_ACCEPT( range_, v );
-    ftexpr_visitor &v2 = v.get_ftexpr_visitor();
-    ftselection_->accept( v2 );
+    ftselection_->accept( v.get_ftexpr_visitor() );
     EV_ACCEPT( ftignore_, v );
   }
   v.end_visit( *this );
@@ -468,12 +358,6 @@ ostream& ftcontains_expr::put( ostream& o ) const
     ftignore_->put( o );
   //CLOSE_EXPR;
   return o;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-ftexpr_visitor::~ftexpr_visitor() {
-  // do nothing
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -807,10 +691,10 @@ ftrange_expr::ftrange_expr(
 
 ft_visit_result::type ftrange_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
-/*  expr_visitor &v2 = v.get_expr_visitor();
+  expr_visitor &v2 = v.get_expr_visitor();
   EV_ACCEPT( expr1_, v2 );
   EV_ACCEPT( expr2_, v2 );
-*/  END_VISIT( v );
+  END_VISIT( v );
 }
 
 void ftrange_expr::serialize( serialization::Archiver &ar ) {
@@ -1059,9 +943,8 @@ ftwindow_filter::ftwindow_filter(
 
 ft_visit_result::type ftwindow_filter::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
-/*  expr_visitor &v2 = v.get_expr_visitor();
-  EV_ACCEPT( window_, v2 );
-*/  END_VISIT( v );
+  EV_ACCEPT( window_, v.get_expr_visitor() );
+  END_VISIT( v );
 }
 
 void ftwindow_filter::serialize( serialization::Archiver &ar ) {
@@ -1083,9 +966,8 @@ ftwords_expr::ftwords_expr(
 
 ft_visit_result::type ftwords_expr::accept( ftexpr_visitor &v ) {
   BEGIN_VISIT( v );
-/*  expr_visitor &v2 = v.get_expr_visitor();
-  EV_ACCEPT( expr_, v2 );
-*/  END_VISIT( v );
+  EV_ACCEPT( expr_, v.get_expr_visitor() );
+  END_VISIT( v );
 }
 
 void ftwords_expr::serialize( serialization::Archiver &ar ) {
