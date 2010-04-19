@@ -26,8 +26,8 @@
 
 #include "runtime/full_text/full_text.h"
 #include "runtime/full_text/ftcontains_visitor.h"
-#include "runtime/full_text/ft_tokenizer.h"
 #include "runtime/full_text/stl_helpers.h"
+#include "runtime/full_text/tokenizer.h"
 
 #include "store/api/item.h"
 #include "store/api/item_factory.h"
@@ -41,7 +41,7 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class ft_item_token_creator : public ft_tokenizer::callback {
+class ft_item_token_creator : public Tokenizer::Callback {
 public:
   ft_item_token_creator( ft_item_tokens &tokens ) : tokens_( tokens ) { }
 
@@ -64,8 +64,8 @@ void ft_item_token_creator::operator()( char const *utf8_s, int utf8_len,
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void tokenize( store::Item_t item, ft_tokenizer &tokenizer,
-                      ft_tokenizer::callback &callback ) {
+static void tokenize( store::Item_t item, Tokenizer &tokenizer,
+                      Tokenizer::Callback &callback ) {
   switch ( item->getNodeKind() ) {
     case store::StoreConsts::documentNode:
     case store::StoreConsts::elementNode: {
@@ -111,7 +111,7 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
   bool ftcontains = false;
   store::Item_t item;
-  auto_ptr<ft_tokenizer> tokenizer( ft_tokenizer::create() );
+  auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );

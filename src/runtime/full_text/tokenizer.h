@@ -22,21 +22,21 @@
 namespace zorba {
 
 /**
- * An ft_tokenizer breaks a string into a stream of word tokens.  Each token is
+ * A Tokenizer breaks a string into a stream of word tokens.  Each token is
  * assigned a token, sentence, and paragraph number.
  *
- * An ft_tokenizer determines word and sentence boundaries automatically, but
- * must be told when to increment the paragraph number.
+ * A Tokenizer determines word and sentence boundaries automatically, but must
+ * be told when to increment the paragraph number.
  */
-class ft_tokenizer {
+class Tokenizer {
 public:
 
   /**
-   * A callback is called once per token.
+   * A Callback is called once per token.
    */
-  class callback {
+  class Callback {
   public:
-    virtual ~callback();
+    virtual ~Callback();
 
     /**
      * This member-function is called once per token.
@@ -52,7 +52,7 @@ public:
                              int token_no, int sent_no, int para_no ) = 0;
   };
 
-  ~ft_tokenizer();
+  ~Tokenizer();
 
   /**
    * Increments the current paragraph number by 1.
@@ -62,20 +62,20 @@ public:
   }
 
   /**
-   * Creates an ft_tokenizer implemenation instance.
+   * Creates a Tokenizer implemenation instance.
    */
-  static ft_tokenizer* create();
+  static Tokenizer* create();
 
   /**
    * Tokenizes the given string.
    *
-   * @param utf8_s  The string to tokenize encoded in UTF-8.
-   * @param cb      The callback to call once per token.
+   * @param utf8_s    The string to tokenize encoded in UTF-8.
+   * @param callback  The Callback to call once per token.
    */
-  virtual void tokenize( std::string const &utf8_s, callback &cb ) = 0;
+  virtual void tokenize( std::string const &utf8_s, Callback &callback ) = 0;
 
 protected:
-  ft_tokenizer();
+  Tokenizer();
 
   int token_no_;
   int sent_no_;

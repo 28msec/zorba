@@ -19,20 +19,20 @@
 
 #include <unicode/rbbi.h>
 
-#include "runtime/full_text/ft_tokenizer.h"
+#include "runtime/full_text/tokenizer.h"
 
 namespace zorba {
 
 /**
- * An icu_tokenizer is-an ft_tokenizer that uses the ICU (International
- * Components for Unicode) library.
+ * An icu_tokenizer is-a Tokenizer that uses the ICU (International Components
+ * for Unicode) library.
  */
-class icu_tokenizer : public ft_tokenizer {
+class icu_tokenizer : public Tokenizer {
 public:
   icu_tokenizer();
   ~icu_tokenizer();
 
-  void tokenize( std::string const &utf8_s, callback& );
+  void tokenize( std::string const &utf8_s, Callback& );
 
 private:
   U_NAMESPACE_QUALIFIER RuleBasedBreakIterator *word_it_;

@@ -17,7 +17,7 @@ SET(FULLTEXT_SRCS
     full_text_impl.cpp
     ftcontains_visitor.cpp
     apply.cpp
-    ft_tokenizer.cpp
+    tokenizer.cpp
     icu_tokenizer.cpp
     )
 

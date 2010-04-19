@@ -117,7 +117,7 @@ icu_tokenizer::~icu_tokenizer() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void icu_tokenizer::tokenize( string const &utf8_s, callback &cb ) {
+void icu_tokenizer::tokenize( string const &utf8_s, Callback &callback ) {
   int32_t utf16_len;
   auto_ptr<UChar> const utf16_buf(
     utf8_to_utf16( utf8_s.c_str(), utf8_s.length(), &utf16_len )
@@ -137,7 +137,7 @@ void icu_tokenizer::tokenize( string const &utf8_s, callback &cb ) {
       auto_ptr<char> const utf8_buf(
         utf16_to_utf8( utf16_buf.get() + word_start, utf16_len, &utf8_len )
       );
-      cb( utf8_buf.get(), utf8_len, token_no_++, sent_no_, para_no_ );
+      callback( utf8_buf.get(), utf8_len, token_no_++, sent_no_, para_no_ );
     }
     word_start = word_end, word_end = word_it_->next();
     if ( word_end >= sent_end && sent_end != BreakIterator::DONE ) {

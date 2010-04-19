@@ -14,24 +14,24 @@
  * limitations under the License.
  */
 
-#include "runtime/full_text/ft_tokenizer.h"
+#include "runtime/full_text/tokenizer.h"
 #include "runtime/full_text/icu_tokenizer.h"
 
 namespace zorba {
 
-ft_tokenizer::ft_tokenizer() {
+Tokenizer::Tokenizer() {
   token_no_ = sent_no_ = para_no_ = 0;
 }
 
-ft_tokenizer::~ft_tokenizer() {
+Tokenizer::~Tokenizer() {
   // do nothing
 }
 
-ft_tokenizer* ft_tokenizer::create() {
+Tokenizer* Tokenizer::create() {
   return new icu_tokenizer;
 }
 
-ft_tokenizer::callback::~callback() {
+Tokenizer::Callback::~Callback() {
   // do nothing
 }
 
