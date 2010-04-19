@@ -16,7 +16,10 @@
 
 #include <unicode/ustring.h>
 
+#include <zorba/error.h>
+
 #include "runtime/full_text/icu_tokenizer.h"
+#include "zorbaerrors/error_manager.h"
 
 using namespace std;
 U_NAMESPACE_USE
@@ -51,10 +54,8 @@ static UChar* utf8_to_utf16( char const *utf8_s, int32_t utf8_len,
     SubChar, NULL,
     &err
   );
-#if 0 // TODO
   if ( U_FAILURE( err ) )
-    ZORBA_ERROR( err );
-#endif
+    ZORBA_ERROR( XQP0034_ILLEGAL_UTF8_BYTE );
   return utf16_buf;
 }
 
@@ -82,10 +83,8 @@ static char* utf16_to_utf8( UChar const *utf16_s, int32_t utf16_len,
     SubChar, NULL,
     &err
   );
-#if 0 // TODO
   if ( U_FAILURE( err ) )
-    ZORBA_ERROR( err );
-#endif
+    ZORBA_ERROR( XQP0035_ILLEGAL_UTF16_BYTE );
   return utf8_buf;
 }
 
@@ -101,7 +100,7 @@ icu_tokenizer::icu_tokenizer() {
     )
   );
   if ( U_FAILURE( err ) )
-    /* TODO: ZORBA_ERROR(code) */;
+    ZORBA_ERROR( XQP0036_BREAKITERATOR_CREATION_FAILED );
 
   sent_it_ = BreakIterator_ptr(
     dynamic_cast<RuleBasedBreakIterator*>(
@@ -109,7 +108,7 @@ icu_tokenizer::icu_tokenizer() {
     )
   );
   if ( U_FAILURE( err ) )
-    /* TODO: ZORBA_ERROR(code) */;
+    ZORBA_ERROR( XQP0036_BREAKITERATOR_CREATION_FAILED );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
