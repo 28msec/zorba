@@ -16,11 +16,11 @@
 #include "runnable.h"
 
 #include <cassert>
-#include <unistd.h>
 
 #include "zorbaerrors/Assert.h"
 
 #ifdef ZORBA_HAVE_PTHREAD_H
+#include <unistd.h>
 #    include <pthread.h>
 #    define ZORBA_THREAD_RETURN void *
 #else
@@ -109,7 +109,11 @@ retry:
   {
     // busy wait until the child thread terminates or suspends itself.
     theMutex.unlock();
+#ifndef WIN32
     usleep(1000);
+#else
+    Sleep(1);
+#endif
     goto retry;
   }
   else 
