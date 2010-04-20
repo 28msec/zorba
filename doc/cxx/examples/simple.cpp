@@ -251,6 +251,16 @@ example_13(Zorba* aZorba)
   return false;
 }
 
+bool
+example_14()
+{
+  zorba::String str( "a" );
+  str += "b";
+  str += "c";
+
+  return (str == "abc");
+}
+
 
 int 
 simple(int argc, char* argv[])
@@ -322,6 +332,11 @@ simple(int argc, char* argv[])
 
   std::cout << "executing example 13" << std::endl;
   res = example_13(lZorba);
+  if (!res) return 1;
+  std::cout << std::endl;
+
+  std::cout << "executing example 14" << std::endl;
+  res = example_14();
   if (!res) return 1;
   std::cout << std::endl;
 
