@@ -623,6 +623,8 @@ namespace zorbac {
       case FODC0003: 
         // Function stability not defined.
 
+
+
         // ???
         return XQC_INTERNAL_ERROR;
 
@@ -812,12 +814,15 @@ namespace zorbac {
       case XQP0027_MS_DOM_ERROR:
       case XQP0028_FUNCTION_IMPL_NOT_FOUND:
       case XQP0030_DEADLOCK:
+      case XQP0036_BREAKITERATOR_CREATION_FAILED:
 
         return XQC_INTERNAL_ERROR;
 
 
       case XQP0031_MALFORMED_XQUERYX_INPUT:
       case XQP0032_ERROR_TRANSFORMING_XQUERYX_TO_XQUERY:
+      case XQP0034_ILLEGAL_UTF8_BYTE:
+      case XQP0035_ILLEGAL_UTF16_BYTE:
 
         return XQC_INVALID_ARGUMENT;
 
@@ -1012,3 +1017,4 @@ namespace zorbac {
     return Error::convert_xquery_error(qe.getErrorCode());
   }
 } /* namespace zorbac */
+/* vim:set et sw=2 ts=2: */
