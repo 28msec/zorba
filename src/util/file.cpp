@@ -186,7 +186,14 @@ void filesystem_path::canonicalize ()
         else
           prev += sep.size ();
       }
+#ifdef WIN32
+      if(0 == prev)
+        path = path.substr(0, rtsize);
+      else
+        path.erase (prev, pos - prev + sep.size ());
+#else
       path.erase (prev, pos - prev + sep.size ());
+#endif
       pos = prev - sep.size ();
     }
   }
