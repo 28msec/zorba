@@ -95,6 +95,7 @@ relpath_expr::relpath_expr(static_context* sctx, const QueryLoc& loc)
   :
   expr(sctx, loc)
 {
+  compute_scripting_kind();
 }
 
 
@@ -118,10 +119,9 @@ void relpath_expr::add_back(expr_t step)
 }
 
 
-void relpath_expr::compute_scripting_kind() const
+void relpath_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -203,6 +203,7 @@ axis_step_expr::axis_step_expr(static_context* sctx, const QueryLoc& loc)
   :
   expr(sctx, loc)
 {
+  compute_scripting_kind();
 }
 
 
@@ -224,10 +225,9 @@ bool axis_step_expr::is_reverse_axis(axis_kind_t k)
 }
 
 
-void axis_step_expr::compute_scripting_kind() const
+void axis_step_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -279,6 +279,7 @@ match_expr::match_expr(static_context* sctx, const QueryLoc& loc)
   theTypeName(NULL),
   theNilledAllowed(false)
 {
+  compute_scripting_kind();
 }
 
 
@@ -326,10 +327,9 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
 }
 
 
-void match_expr::compute_scripting_kind() const
+void match_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 

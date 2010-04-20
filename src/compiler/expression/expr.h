@@ -34,6 +34,7 @@
 
 #include "context/static_context.h"
 #include "context/namespace_context.h"
+
 #include "types/node_test.h"
 #include "types/typeimpl.h"
 
@@ -107,7 +108,7 @@ public:
     compute_scripting_kind();
   }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context *) const;
 
@@ -230,7 +231,7 @@ public:
   
   catch_clause_t const& operator[](int i) const { return theCatchClauses[i]; }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   // TODO return_type_impl() ????
   
@@ -288,7 +289,7 @@ public:
 
   xqtref_t return_type_impl(static_context*) const;
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   expr_t clone(substitution_t& s) const;
 
@@ -332,7 +333,7 @@ public:
 
   const expr* get_expr() const { return theExpr; }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -383,7 +384,7 @@ public:
 
   ParseConstants::validation_mode_t get_valmode() const { return theMode; }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -429,7 +430,7 @@ public:
 
   void set_target_type(xqtref_t target);
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 };
 
 
@@ -688,7 +689,7 @@ public:
 
   const namespace_context* get_namespace_context() const;
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   void next_iter(expr_iterator_data&);
 
@@ -722,7 +723,7 @@ public:
 
   const expr* getContent() const { return theContent.getp(); }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -803,7 +804,7 @@ public:
 
   const namespace_context* getNSCtx() const;
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
   
   xqtref_t return_type_impl(static_context *) const;
 
@@ -869,7 +870,7 @@ public:
 
   const store::Item* getQName() const;
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -919,7 +920,7 @@ public:
 
   text_constructor_type get_type() const { return type; }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -958,7 +959,7 @@ public:
 
   const expr* get_content_expr() const { return theContentExpr.getp(); }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
   
   xqtref_t return_type_impl(static_context*) const;
 
@@ -999,7 +1000,7 @@ public:
 
   void set_expr(const expr* e) { invalidate(); theWrappedExpr = e; }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   void next_iter(expr_iterator_data&);
 
@@ -1051,7 +1052,7 @@ public:
 
   store::Item* get_val() const { return theValue.getp(); }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -1111,7 +1112,7 @@ public:
 
   void next_iter(expr_iterator_data&);
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   // TODO clone ????
 
@@ -1138,13 +1139,7 @@ public:
   public:
     SERIALIZABLE_CLASS(eval_var)
     SERIALIZABLE_CLASS_CONSTRUCTOR(eval_var)
-    void serialize(::zorba::serialization::Archiver& ar)
-    {
-      ar & varname;
-      ar & var_key;
-      ar & type;
-      ar & val;
-    }
+    void serialize(::zorba::serialization::Archiver& ar);
 
     eval_var() {}
 
@@ -1168,6 +1163,7 @@ public:
     expr(sctx, loc),
     theExpr(e)
   {
+    compute_scripting_kind();
   }
 
   expr_kind_t get_expr_kind() const { return eval_expr_kind; }
@@ -1184,7 +1180,7 @@ public:
 
   void add_var(eval_var var) { vars.push_back(var); }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   expr_iterator_data* make_iter();
 
@@ -1293,7 +1289,7 @@ public:
 
 	const expr* getTargetExpr() const { return theTargetExpr.getp(); }
   
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -1331,7 +1327,7 @@ public:
 
   void next_iter(expr_iterator_data&);
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -1376,7 +1372,7 @@ public:
 
 	const expr* getReplaceExpr() const { return theReplaceExpr.getp(); }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -1415,7 +1411,7 @@ public:
 
 	const expr* getNameExpr() const { return theNameExpr.getp(); }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -1505,7 +1501,7 @@ public:
 
 	size_t size() const { return theCopyClauses.size(); }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -1551,7 +1547,7 @@ public:
 
   expr* get_value() const { return theExpr.getp(); }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -1592,7 +1588,7 @@ public:
 
   expr_t clone(substitution_t& s) const;
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -1627,7 +1623,7 @@ public:
 
   expr* get_body() const { return theBody.getp(); }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 

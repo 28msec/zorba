@@ -201,8 +201,7 @@ expr::expr(static_context* sctx, const QueryLoc& loc)
 {
   invalidate();
   theCache.type.valid = false;
-  theCache.scripting_kind.valid = false;
-  theCache.scripting_kind.kind = VACUOUS_EXPR;
+  theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
   // This is the default. The constructors for certain exprs set different values. 
   setNonDiscardable(ANNOTATION_FALSE);
@@ -229,8 +228,7 @@ void expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theLoc;
   ar & theCache.type.valid;
   ar & theCache.type.t;
-  ar & theCache.scripting_kind.valid;
-  SERIALIZE_ENUM(expr_script_kind_t, theCache.scripting_kind.kind);
+  SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
   ar & theFlags1;
 }
 
@@ -238,7 +236,7 @@ void expr::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-expr_script_kind_t expr::get_scripting_kind() const 
+expr_script_kind_t expr::get_scripting_kind() const
 {
   if (is_vacuous())
     return VACUOUS_EXPR;
@@ -254,49 +252,43 @@ expr_script_kind_t expr::get_scripting_kind() const
 }
 
 
-bool expr::is_updating() const 
+bool expr::is_updating() const
 {
-  if (! theCache.scripting_kind.valid)
-    compute_scripting_kind();
+  assert(theScriptingKind != UNKNOWN_SCRIPTING_KIND);
 
-  return theCache.scripting_kind.kind == UPDATE_EXPR;
+  return theScriptingKind == UPDATE_EXPR;
 }
 
   
-bool expr::is_sequential() const 
+bool expr::is_sequential() const
 {
-  if (! theCache.scripting_kind.valid)
-    compute_scripting_kind();
+  assert(theScriptingKind != UNKNOWN_SCRIPTING_KIND);
 
-  return theCache.scripting_kind.kind == SEQUENTIAL_EXPR;
+  return theScriptingKind == SEQUENTIAL_EXPR;
 }
   
 
-bool expr::is_vacuous() const 
+bool expr::is_vacuous() const
 {
-  if (! theCache.scripting_kind.valid)
-    compute_scripting_kind();
+  assert(theScriptingKind != UNKNOWN_SCRIPTING_KIND);
 
-  return theCache.scripting_kind.kind == VACUOUS_EXPR;
+  return theScriptingKind == VACUOUS_EXPR;
 }
 
 
-bool expr::is_simple() const 
+bool expr::is_simple() const
 {
-  if (! theCache.scripting_kind.valid)
-    compute_scripting_kind();
+  assert(theScriptingKind != UNKNOWN_SCRIPTING_KIND);
 
-  return theCache.scripting_kind.kind == SIMPLE_EXPR;
+  return theScriptingKind == SIMPLE_EXPR;
 }
 
 
-bool expr::is_updating_or_vacuous() const 
+bool expr::is_updating_or_vacuous() const
 {
-  if (! theCache.scripting_kind.valid)
-    compute_scripting_kind();
+  assert(theScriptingKind != UNKNOWN_SCRIPTING_KIND);
 
-  return (theCache.scripting_kind.kind == UPDATE_EXPR ||
-          theCache.scripting_kind.kind == VACUOUS_EXPR);
+  return (theScriptingKind == UPDATE_EXPR || theScriptingKind == VACUOUS_EXPR);
 }
 
 
@@ -322,6 +314,9 @@ expr_script_kind_t expr::scripting_kind_anding(
 
     case SEQUENTIAL_EXPR:
       return SEQUENTIAL_EXPR;
+
+    default:
+      ZORBA_ASSERT(false);
     }
 
     break;
@@ -342,6 +337,9 @@ expr_script_kind_t expr::scripting_kind_anding(
 
     case SEQUENTIAL_EXPR:
       return SEQUENTIAL_EXPR;
+
+    default:
+      ZORBA_ASSERT(false);
     }
 
     break;
@@ -363,6 +361,9 @@ expr_script_kind_t expr::scripting_kind_anding(
     case SEQUENTIAL_EXPR:
       ZORBA_ERROR_LOC(XUST0001, loc);
       break;
+
+    default:
+      ZORBA_ASSERT(false);
     }
 
     break;
@@ -383,6 +384,9 @@ expr_script_kind_t expr::scripting_kind_anding(
 
     case SEQUENTIAL_EXPR:
       return SEQUENTIAL_EXPR;
+
+    default:
+      ZORBA_ASSERT(false); 
     }
 
     break;

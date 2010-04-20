@@ -79,7 +79,7 @@ public:
 
   std::vector<expr_t>::const_iterator end() const { return theSteps.end(); }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -139,7 +139,7 @@ public:
 
   void setTest(rchandle<match_expr> v) { theNodeTest = v.getp(); }
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 
@@ -222,7 +222,7 @@ public:
 
   store::StoreConsts::NodeKind getNodeKind() const;
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 

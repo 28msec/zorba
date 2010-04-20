@@ -163,7 +163,7 @@ const store::Item* fo_expr::get_fname() const
 }
 
 
-void fo_expr::compute_scripting_kind() const
+void fo_expr::compute_scripting_kind()
 {
   const function* func = get_func();
   ulong numArgs = num_args();
@@ -182,7 +182,7 @@ void fo_expr::compute_scripting_kind() const
       kind = scripting_kind_anding(kind, argKind, theArgs[i]->get_loc());
     }
 
-    theCache.scripting_kind.kind = kind;
+    theScriptingKind = kind;
   }
   else if (func->getKind() == FunctionConsts::OP_VAR_ASSIGN_1)
   {
@@ -198,10 +198,12 @@ void fo_expr::compute_scripting_kind() const
         ZORBA_ERROR_LOC(XUST0001, theArgs[i]->get_loc());
       }
     }
+
+    theScriptingKind = SEQUENTIAL_EXPR;
   }
   else
   {
-    theCache.scripting_kind.kind = func->getUpdateType();
+    theScriptingKind = func->getUpdateType();
 
     for (ulong i = 0; i < numArgs; ++i)
     {
@@ -216,8 +218,6 @@ void fo_expr::compute_scripting_kind() const
       }
     }
   }
-
-  theCache.scripting_kind.valid = true;
 }
 
 
@@ -314,7 +314,7 @@ expr_t fo_expr::clone(substitution_t& subst) const
   for (unsigned i = 0; i < theArgs.size(); ++i)
     fo->theArgs.push_back(theArgs[i]->clone(subst));
 
-  fo->theCache.scripting_kind.kind  = theCache.scripting_kind.kind;
+  fo->theScriptingKind  = theScriptingKind;
 
   return fo.release();
 }

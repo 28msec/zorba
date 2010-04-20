@@ -205,24 +205,22 @@ protected:
       bool             valid;
       xqtref_t         t;
     } type;
-
-    mutable struct
-    {
-      bool               valid;
-      expr_script_kind_t kind;
-    } scripting_kind;
   };
 
 protected:
-  static expr_t    iter_end_expr;
-  static expr_t  * iter_done;
+  static expr_t      iter_end_expr;
+  static expr_t    * iter_done;
 
 protected:
-  static_context * theSctx;
-  QueryLoc         theLoc;
-  Cache            theCache;
+  static_context   * theSctx;
 
-  ulong            theFlags1;
+  QueryLoc           theLoc;
+
+  expr_script_kind_t theScriptingKind;
+
+  Cache              theCache;
+
+  ulong              theFlags1;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(expr)
@@ -331,7 +329,6 @@ protected:
   void invalidate()
   {
     theCache.type.valid = false;
-    // theCache.upd_seq_kind.valid = false;
   }
 
   // Returns true if all modifiers, as well as all accessors that permit future
@@ -339,7 +336,7 @@ protected:
   // iterators are compliant.
   virtual bool cache_compliant() const { return false; }
 
-  virtual void compute_scripting_kind() const = 0;
+  virtual void compute_scripting_kind() = 0;
 
   virtual expr_iterator_data* make_iter();
 

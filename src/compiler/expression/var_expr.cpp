@@ -83,6 +83,8 @@ var_expr::var_expr(
 {
   theUniqueId = theVarCounter++;
 
+  compute_scripting_kind();
+
   setUnfoldable(ANNOTATION_TRUE_FIXED);
 }
 
@@ -206,10 +208,9 @@ for_clause* var_expr::get_for_clause() const
 /*******************************************************************************
 
 ********************************************************************************/
-void var_expr::compute_scripting_kind() const
+void var_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 

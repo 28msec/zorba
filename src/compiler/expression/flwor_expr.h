@@ -619,6 +619,7 @@ public:
     expr(sctx, loc),
     theIsGeneral(general)
   {
+    theScriptingKind = SIMPLE_EXPR;
   }
 
   expr_kind_t get_expr_kind() const
@@ -636,11 +637,16 @@ public:
 
   expr* get_return_expr(bool invalidate);
 
-  void set_return_expr(expr_t e) { invalidate(); theReturnExpr = e; }
+  void set_return_expr(expr_t e) 
+  {
+    invalidate();
+    theReturnExpr = e;
+    compute_scripting_kind();
+  }
 
   xqtref_t return_type_impl(static_context*) const;
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   ulong num_clauses() const { return theClauses.size(); }
 

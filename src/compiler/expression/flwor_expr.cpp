@@ -1104,11 +1104,11 @@ xqtref_t flwor_expr::return_type_impl(static_context* sctx) const
 /*******************************************************************************
 
 ********************************************************************************/
-void flwor_expr::compute_scripting_kind() const
+void flwor_expr::compute_scripting_kind()
 {
   const expr* ret = get_return_expr();
-  theCache.scripting_kind.kind = ret->get_scripting_kind();
-  theCache.scripting_kind.valid = true;
+  if (ret)
+    theScriptingKind = ret->get_scripting_kind();
 }
 
 

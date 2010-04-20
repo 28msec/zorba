@@ -159,7 +159,7 @@ public:
 
   const var_expr* get_pos_var() const;
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   xqtref_t return_type_impl(static_context*) const;
 

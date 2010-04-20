@@ -65,6 +65,7 @@ enum match_wild_t
 
 enum expr_script_kind_t
 {
+  UNKNOWN_SCRIPTING_KIND,
   UPDATE_EXPR,
   VACUOUS_EXPR,
   SIMPLE_EXPR,

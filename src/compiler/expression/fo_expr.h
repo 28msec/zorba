@@ -93,7 +93,7 @@ public:
 
   xqtref_t return_type_impl(static_context*) const;
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   expr_t clone(substitution_t& s) const;
 

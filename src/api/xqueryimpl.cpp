@@ -759,7 +759,7 @@ void XQueryImpl::execute()
 
     PlanWrapper_t lPlan = generateWrapper();
 
-    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     Iterator_t lIter(new ResultIteratorImpl(this, lPlan));
   
@@ -785,13 +785,17 @@ void XQueryImpl::serialize(
     const Zorba_SerializerOptions_t* opt)
 {
   ZORBA_TRY
+
     serializer lSerializer(theErrorManager);
+
     if (opt != NULL) 
     {
       const Zorba_SerializerOptions_t lOptions = *opt;
       SerializerImpl::setSerializationParameters(lSerializer, lOptions);
     }
+
     lSerializer.serialize((intern::Serializable*)aWrapper, os);
+
   ZORBA_CATCH
 }
 
@@ -807,12 +811,15 @@ void XQueryImpl::serialize(
     const Zorba_SerializerOptions_t* opt /*= NULL*/)
 {
   ZORBA_TRY
+
     serializer lSerializer(theErrorManager);
+
     if (opt != NULL) 
     {
       const Zorba_SerializerOptions_t lOptions = *opt;
       SerializerImpl::setSerializationParameters(lSerializer, lOptions);
     }
+
     lSerializer.serialize((intern::Serializable*)aWrapper,
                           os, aHandler, aHandlerData);
   ZORBA_CATCH

@@ -307,6 +307,7 @@ ftcontains_expr::ftcontains_expr(
   ftselection_( ftselection ),
   ftignore_( ftignore )
 {
+  compute_scripting_kind();
 }
 
 /* DEF_EXPR_ACCEPT( ftcontains_expr ) */
@@ -320,9 +321,8 @@ void ftcontains_expr::accept( expr_visitor &v ) {
   v.end_visit( *this );
 }
 
-void ftcontains_expr::compute_scripting_kind() const {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+void ftcontains_expr::compute_scripting_kind() {
+  theScriptingKind = SIMPLE_EXPR;
   // TODO: checkIsSimple for all sub-expr
 }
 

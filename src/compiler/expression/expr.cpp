@@ -327,9 +327,9 @@ void sequential_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void sequential_expr::compute_scripting_kind() const 
+void sequential_expr::compute_scripting_kind() 
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
+  theScriptingKind = SIMPLE_EXPR;
   bool vacuous = true;
 
   ulong numChildren = sequence.size();
@@ -340,7 +340,7 @@ void sequential_expr::compute_scripting_kind() const
 
     if (kind == SEQUENTIAL_EXPR || kind == UPDATE_EXPR)
     {
-      theCache.scripting_kind.kind = SEQUENTIAL_EXPR;
+      theScriptingKind = SEQUENTIAL_EXPR;
       vacuous = false;
       break;
     }
@@ -351,9 +351,7 @@ void sequential_expr::compute_scripting_kind() const
   }
 
   if (vacuous)
-    theCache.scripting_kind.kind = VACUOUS_EXPR;
-
-  theCache.scripting_kind.valid = true;
+    theScriptingKind = VACUOUS_EXPR;
 }
 
 
@@ -439,9 +437,9 @@ void trycatch_expr::add_clause_in_front(catch_clause_t cc)
 }
 
 
-void trycatch_expr::compute_scripting_kind() const 
+void trycatch_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = theTryExpr->get_scripting_kind();
+  theScriptingKind = theTryExpr->get_scripting_kind();
 
   ulong numCatchClauses = theCatchClauses.size();
 
@@ -451,23 +449,21 @@ void trycatch_expr::compute_scripting_kind() const
 
     expr_script_kind_t catchKind = catchExpr->get_scripting_kind();
 
-    if (theCache.scripting_kind.kind == UPDATE_EXPR)
+    if (theScriptingKind == UPDATE_EXPR)
     {
       if (catchKind == SEQUENTIAL_EXPR)
         ZORBA_ERROR_LOC(XUST0001, catchExpr->get_loc());
     }
-    else if (theCache.scripting_kind.kind == SEQUENTIAL_EXPR)
+    else if (theScriptingKind == SEQUENTIAL_EXPR)
     {
       if (catchKind == UPDATE_EXPR)
         ZORBA_ERROR_LOC(XUST0001, catchExpr->get_loc());
     }
-    else if (theCache.scripting_kind.kind == VACUOUS_EXPR)
+    else if (theScriptingKind == VACUOUS_EXPR)
     {
-      theCache.scripting_kind.kind = catchKind;
+      theScriptingKind = catchKind;
     }
   }
-
-  theCache.scripting_kind.valid = true;
 }
 
 
@@ -553,16 +549,14 @@ expr* if_expr::get_else_expr(bool invalidate)
 }
 
 
-void if_expr::compute_scripting_kind() const 
+void if_expr::compute_scripting_kind()
 {
   checkNonUpdating(theCondExpr);
 
   expr_script_kind_t thenKind = theThenExpr->get_scripting_kind();
   expr_script_kind_t elseKind = theElseExpr->get_scripting_kind();
 
-  theCache.scripting_kind.kind = expr::scripting_kind_anding(thenKind, elseKind, theLoc);
-
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = expr::scripting_kind_anding(thenKind, elseKind, theLoc);
 }
 
 
@@ -620,10 +614,9 @@ void order_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void order_expr::compute_scripting_kind() const
+void order_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = theExpr->get_scripting_kind();
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = theExpr->get_scripting_kind();
 }
 
 
@@ -678,10 +671,9 @@ void validate_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void validate_expr::compute_scripting_kind() const
+void validate_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 
   checkSimpleExpr(theExpr);
 }
@@ -760,10 +752,9 @@ expr* cast_or_castable_base_expr::get_input(bool invalidate)
 }
 
 
-void cast_or_castable_base_expr::compute_scripting_kind() const 
+void cast_or_castable_base_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 
   checkSimpleExpr(theInputExpr);
 }
@@ -1133,10 +1124,9 @@ void name_cast_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void name_cast_expr::compute_scripting_kind() const 
+void name_cast_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 
   checkSimpleExpr(theInputExpr);
 }
@@ -1187,10 +1177,9 @@ void doc_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void doc_expr::compute_scripting_kind() const 
+void doc_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 
   checkSimpleExpr(theContent);
 }
@@ -1280,10 +1269,9 @@ const namespace_context* elem_expr::getNSCtx() const
 }
 
 
-void elem_expr::compute_scripting_kind() const 
+void elem_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 
   checkSimpleExpr(theQNameExpr);
   checkSimpleExpr(theContent);
@@ -1366,10 +1354,9 @@ const store::Item* attr_expr::getQName() const
 }
 
 
-void attr_expr::compute_scripting_kind() const 
+void attr_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 
   checkSimpleExpr(theQNameExpr);
   checkSimpleExpr(theValueExpr);
@@ -1436,10 +1423,9 @@ void text_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void text_expr::compute_scripting_kind() const 
+void text_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 
   checkSimpleExpr(theContentExpr);
 }
@@ -1526,10 +1512,9 @@ void pi_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void pi_expr::compute_scripting_kind() const 
+void pi_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 
   checkSimpleExpr(theTargetExpr);
   checkSimpleExpr(theContentExpr);
@@ -1596,10 +1581,9 @@ expr* wrapper_expr::get_expr(bool invalidate)
 }
 
 
-void wrapper_expr::compute_scripting_kind() const
+void wrapper_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = theWrappedExpr->get_scripting_kind();;
-  theCache.scripting_kind.valid = true;  
+  theScriptingKind = theWrappedExpr->get_scripting_kind();;
 }
 
 
@@ -1637,6 +1621,7 @@ const_expr::const_expr(static_context* sctx, const QueryLoc& loc, xqpStringStore
   expr(sctx, loc)
 {
   GENV_ITEMFACTORY->createString(theValue, v); 
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -1646,6 +1631,7 @@ const_expr::const_expr(static_context* sctx, const QueryLoc& loc, const std::str
 {
   xqpStringStore_t tmp = new xqpStringStore(v);
   GENV_ITEMFACTORY->createString(theValue, tmp); 
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -1655,6 +1641,7 @@ const_expr::const_expr(static_context* sctx, const QueryLoc& loc, const char* v)
 {
   xqpStringStore_t tmp = new xqpStringStore(v);
   GENV_ITEMFACTORY->createString(theValue, tmp); 
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -1663,6 +1650,7 @@ const_expr::const_expr(static_context* sctx, const QueryLoc& loc, xqp_integer v)
   expr(sctx, loc)
 {
   GENV_ITEMFACTORY->createInteger(theValue, v);
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 const_expr::const_expr(
@@ -1673,6 +1661,7 @@ const_expr::const_expr(
   expr(sctx, loc)
 {
   GENV_ITEMFACTORY->createDecimal(theValue, v);
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 const_expr::const_expr(
@@ -1683,6 +1672,7 @@ const_expr::const_expr(
   expr(sctx, loc)
 {
   GENV_ITEMFACTORY->createDouble(theValue, v);
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -1694,6 +1684,7 @@ const_expr::const_expr(
   expr(sctx, loc)
 {
   GENV_ITEMFACTORY->createBoolean(theValue, v);
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -1705,6 +1696,7 @@ const_expr::const_expr(
   expr(sctx, loc),
   theValue(v)
 {
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -1718,6 +1710,7 @@ const_expr::const_expr(
   expr(sctx, aLoc)
 {
   GENV_ITEMFACTORY->createQName(theValue, aNamespace, aPrefix, aLocal);
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -1728,10 +1721,9 @@ void const_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void const_expr::compute_scripting_kind() const
+void const_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;  
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -1812,10 +1804,9 @@ void extension_expr::next_iter(expr_iterator_data& v)
 }
 
 
-void extension_expr::compute_scripting_kind() const
+void extension_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;  
+  theScriptingKind = SIMPLE_EXPR;
 
   checkSimpleExpr(theExpr);
 }
@@ -1832,10 +1823,9 @@ void eval_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void eval_expr::compute_scripting_kind() const
+void eval_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = theExpr->get_scripting_kind();
-  theCache.scripting_kind.valid = true;  
+  theScriptingKind = theExpr->get_scripting_kind();
 }
 
 
@@ -1861,6 +1851,15 @@ eval_expr::eval_var::eval_var(var_expr* ve, expr_t val_)
   type(ve->get_type()),
   val(val_)
 {
+}
+
+
+void eval_expr::eval_var::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & varname;
+  ar & var_key;
+  ar & type;
+  ar & val;
 }
 
 
@@ -1940,10 +1939,9 @@ void insert_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void insert_expr::compute_scripting_kind() const 
+void insert_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = UPDATE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = UPDATE_EXPR;
 
   checkNonUpdating(theSourceExpr);
   checkNonUpdating(theTargetExpr);
@@ -1995,10 +1993,9 @@ void delete_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theTargetExpr;
 }
 
-void delete_expr::compute_scripting_kind() const 
+void delete_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = UPDATE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = UPDATE_EXPR;
 
   checkNonUpdating(theTargetExpr);
 }
@@ -2051,10 +2048,9 @@ void replace_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void replace_expr::compute_scripting_kind() const 
+void replace_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = UPDATE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = UPDATE_EXPR;
 
   checkNonUpdating(theTargetExpr);
   checkNonUpdating(theReplaceExpr);
@@ -2111,10 +2107,9 @@ void rename_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void rename_expr::compute_scripting_kind() const 
+void rename_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = UPDATE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = UPDATE_EXPR;
 
   checkNonUpdating(theTargetExpr);
   checkNonUpdating(theNameExpr);
@@ -2208,10 +2203,9 @@ void transform_expr::add_back(copy_clause_t c)
 }
 
 
-void transform_expr::compute_scripting_kind() const 
+void transform_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 
   ulong numCopyVars = theCopyClauses.size();
 
@@ -2289,22 +2283,20 @@ void exit_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void exit_expr::compute_scripting_kind() const
+void exit_expr::compute_scripting_kind()
 {
   if (theExpr->is_simple())
   {
-    theCache.scripting_kind.kind = SIMPLE_EXPR;
+    theScriptingKind = SIMPLE_EXPR;
   }
   if (theExpr->is_vacuous())
   {
-    theCache.scripting_kind.kind = VACUOUS_EXPR;
+    theScriptingKind = VACUOUS_EXPR;
   }
   else
   {
-    theCache.scripting_kind.kind = SEQUENTIAL_EXPR;
+    theScriptingKind = SEQUENTIAL_EXPR;
   }
-
-  theCache.scripting_kind.valid = true;
 }
 
 
@@ -2349,11 +2341,9 @@ void flowctl_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void flowctl_expr::compute_scripting_kind() const
+void flowctl_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
-
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -2395,15 +2385,13 @@ void while_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void while_expr::compute_scripting_kind() const
+void while_expr::compute_scripting_kind()
 {
   sequential_expr* seq = static_cast<sequential_expr*>(theBody.getp());
 
   checkNonUpdating((*seq)[0]);
 
-  theCache.scripting_kind.kind = theBody->get_scripting_kind();
-
-  theCache.scripting_kind.valid = true;
+  theScriptingKind = theBody->get_scripting_kind();
 }
 
 

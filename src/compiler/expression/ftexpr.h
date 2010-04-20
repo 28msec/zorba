@@ -66,7 +66,7 @@ public:
     union_expr_t ftignore
   );
 
-  void compute_scripting_kind() const;
+  void compute_scripting_kind();
 
   expr_kind_t get_expr_kind() const {
     return ft_expr_kind;

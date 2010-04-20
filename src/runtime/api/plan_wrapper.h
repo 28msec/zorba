@@ -55,8 +55,8 @@ protected:
   PlanIter_t        theIterator;
   dynamic_context * theDynamicContext;
 
-  PlanState*        theStateBlock;
-  XQueryImpl*       theQuery;
+  PlanState       * theStateBlock;
+  XQueryImpl      * theQuery;
 #ifndef NDEBUG
   bool		          theIsOpened;
 #endif

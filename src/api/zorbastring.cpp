@@ -20,27 +20,35 @@
 
 namespace zorba {
 
+
 String::String()
 {
   m_string = new xqpStringStore("");
   RCHelper::addReference(m_string);
 }
 
-String::String(xqpStringStore *other)
-  : m_string(other)
+
+String::String(xqpStringStore* other)
+  :
+  m_string(other)
 {
-  if (m_string != NULL) {
+  if (m_string != NULL) 
+  {
     RCHelper::addReference(m_string);
   }
 }
 
+
 String::String(const String& other)
-  : m_string(other.m_string)
+  :
+  m_string(other.m_string)
 {
-  if (m_string != NULL) {
+  if (m_string != NULL) 
+  {
     RCHelper::addReference(m_string);
   }
 }
+
 
 String::String(const char* string)
 {
@@ -48,90 +56,110 @@ String::String(const char* string)
   RCHelper::addReference(m_string);
 }
 
+
 String::String(const std::string& string)
 {
   m_string = new xqpStringStore(string);
   RCHelper::addReference(m_string);
 }
 
+
 String::~String()
 {
-  if (m_string != NULL) {
+  if (m_string != NULL) 
+  {
     RCHelper::removeReference(m_string);
   }
 }
 
-const char *String::c_str() const
+
+const char* String::c_str() const
 {
   return m_string->c_str();
 }
 
-const String& String::operator =(const String& rhs)
+
+const String& String::operator=(const String& rhs)
 {
-  if (m_string != rhs.m_string) {
-    if (m_string != NULL) {
+  if (m_string != rhs.m_string) 
+  {
+    if (m_string != NULL) 
+    {
       RCHelper::removeReference(m_string);
     }
     m_string = rhs.m_string;
-    if (m_string != NULL) {
+    if (m_string != NULL) 
+    {
       RCHelper::addReference(m_string);
     }
   }
   return *this;
 }
 
-const String& String::operator =(xqpStringStore *rhs)
+
+const String& String::operator=(xqpStringStore* rhs)
 {
-  if (m_string != rhs) {
-    if (m_string != NULL) {
+  if (m_string != rhs) 
+  {
+    if (m_string != NULL) 
+    {
       RCHelper::removeReference(m_string);
     }
+
     m_string = rhs;
-    if (m_string != NULL) {
+
+    if (m_string != NULL) 
+    {
       RCHelper::addReference(m_string);
     }
   }
   return *this;
 }
 
-int
-String::compare(const String& string) const
-{
-  return m_string->compare(string.m_string);
-}
 
-bool
-String::equals(const String& aString) const
-{
-  return m_string->equals(aString.m_string);
-}
-
-size_t
-String::length() const
+size_t String::length() const
 {
   return m_string->numChars();
 }
 
-size_t
-String::bytes() const
+ 
+size_t String::bytes() const
 {
   return m_string->bytes();
 }
 
-bool
-String::empty()  const
+
+bool String::empty()  const
 {
   return m_string->empty();
 }
 
-bool 
-String::operator==(const String& str) const
+
+int String::compare(const String& string) const
+{
+  return m_string->compare(string.m_string);
+}
+
+
+bool String::equals(const String& aString) const
+{
+  return m_string->equals(aString.m_string);
+}
+
+
+bool String::byteEqual(const char* aString, unsigned int aBytes) const
+{
+  return m_string->byteEqual( aString, aBytes );
+}
+
+
+bool String::operator==(const String& str) const
 {
   return equals(str);
 }
 
-bool 
-String::operator!=(const String& str) const
+
+bool String::operator!=(const String& str) const
 {
   return !equals(str);
 }
@@ -142,108 +170,120 @@ String::operator<(const String& str) const
   return compare(str) < 0;
 }
 
-bool
-String::operator<=(const String& str) const
+
+bool String::operator<=(const String& str) const
 {
   return compare(str) <= 0;
 }
 
-bool
-String::operator>(const String& str) const
+
+bool String::operator>(const String& str) const
 {
   return compare(str) > 0;
 }
 
-bool
-String::operator>=(const String& str) const
+
+bool String::operator>=(const String& str) const
 {
   return compare(str) >= 0;
 }
+
+
+char String::charAt(unsigned aIndex) const
+{
+  return m_string->byteAt( aIndex );
+}
+
+
+int String::indexOf(const char* pattern) const
+{
+  return m_string->bytePositionOf(pattern, strlen(pattern), 0);
+}
+
+
+int String::lastIndexOf(const char* pattern) const
+{
+  return m_string->byteLastPositionOf(pattern, strlen(pattern));
+}
+
+
+bool String::endsWith(const char* pattern) const
+{
+  return m_string->byteEndsWith(pattern, strlen(pattern));
+}
+
+
+bool String::startsWith(const char* pattern) const
+{
+  return m_string->byteStartsWith(pattern, strlen(pattern));
+}
+
+
+String String::substring(unsigned aIndex) const
+{
+  return String(m_string->substr( aIndex ));
+}
+
+
+String String::substring(unsigned int aIndex, unsigned int aLength) const
+{
+  return String(m_string->byteSubstr(aIndex, aLength));
+}
+
+
+String String::append(const char* suffix) const
+{
+  return String(m_string->append( suffix ));
+}
+
+
+String String::append(const String& suffix) const
+{
+  return String(m_string->append( suffix.c_str() ));
+}
+
 
 zorba::String String::operator+(const String& str) const
 {
   return append(str);
 }
 
+
 zorba::String String::operator+(const char* str) const
 {
   return append(str);
 }
 
+
 zorba::String& String::operator+=(const String& str)
 {
-  m_string = m_string->append(str.m_string);
+  xqpStringStore_t tmp = m_string->append(str.m_string);
+
+  if (m_string != NULL) 
+  {
+    RCHelper::removeReference(m_string);
+  }
+
+  m_string = tmp.release();
   return *this;
 }
+
 
 zorba::String& String::operator+=(const char* str)
 {
-  m_string = m_string->append(str);
+  xqpStringStore_t tmp = m_string->append(str);
+
+  if (m_string != NULL) 
+  {
+    RCHelper::removeReference(m_string);
+  }
+
+  m_string = tmp.release();
   return *this;
 }
 
-bool
-String::byteEqual(const char* aString, unsigned int aBytes) const
-{
-  return m_string->byteEqual( aString, aBytes );
-}
 
-int
-String::indexOf(const char* pattern) const
-{
-  return m_string->bytePositionOf(pattern, strlen(pattern), 0);
-}
-
-int
-String::lastIndexOf(const char* pattern) const
-{
-  return m_string->byteLastPositionOf(pattern, strlen(pattern));
-}
-
-bool
-String::endsWith(const char* pattern) const
-{
-  return m_string->byteEndsWith(pattern, strlen(pattern));
-}
-
-bool
-String::startsWith(const char* pattern) const
-{
-  return m_string->byteStartsWith(pattern, strlen(pattern));
-}
-
-char
-String::charAt(unsigned aIndex) const
-{
-  return m_string->byteAt( aIndex );
-}
-
-String
-String::substring(unsigned aIndex) const
-{
-  return String(m_string->substr( aIndex ));
-}
-
-String
-String::substring(unsigned int aIndex, unsigned int aLength) const
-{
-  return String(m_string->byteSubstr(aIndex, aLength));
-}
-
-String
-String::append(const char* suffix) const
-{
-  return String(m_string->append( suffix ));
-}
-
-String
-String::append(const String& suffix) const
-{
-  return String(m_string->append( suffix.c_str() ));
-}
-
-const String&
-String::uppercase()
+const String& String::uppercase()
 {
   xqpStringStore_t res = m_string->uppercase();
   if (m_string != res) {
@@ -258,8 +298,8 @@ String::uppercase()
   return *this;
 }
 
-const String&
-String::lowercase()
+
+const String& String::lowercase()
 {
   xqpStringStore_t res = m_string->lowercase();
   if (m_string != res) {
@@ -274,8 +314,8 @@ String::lowercase()
   return *this;
 }
 
-const String&
-String::normalizeSpace()
+
+const String& String::normalizeSpace()
 {
   xqpStringStore_t res = m_string->normalizeSpace();
   if (m_string != res) {
@@ -290,8 +330,8 @@ String::normalizeSpace()
   return *this;
 }
 
-const String&
-String::trim(const String aChars)
+
+const String& String::trim(const String aChars)
 {
   xqpStringStore_t res = m_string->trim(aChars.c_str(), aChars.length());
   if (m_string != res) {
@@ -306,8 +346,8 @@ String::trim(const String aChars)
   return *this;
 }
 
-const String&
-String::trim(const char* aChars, int aLength)
+
+const String& String::trim(const char* aChars, int aLength)
 {
   xqpStringStore_t res = m_string->trim(aChars, aLength);
   if (m_string != res) {
@@ -322,8 +362,8 @@ String::trim(const char* aChars, int aLength)
   return *this;
 }
 
-const String&
-String::trim()
+
+const String& String::trim()
 {
   xqpStringStore_t res = m_string->trim();
   if (m_string != res) {
@@ -338,8 +378,8 @@ String::trim()
   return *this;
 }
 
-const String&
-String::formatAsXML()
+
+const String& String::formatAsXML()
 {
   xqpStringStore_t res = m_string->formatAsXML();
   if (m_string != res) {
@@ -354,8 +394,8 @@ String::formatAsXML()
   return *this;
 }
 
-const String&
-String::escapeHtmlUri()
+
+const String& String::escapeHtmlUri()
 {
   xqpStringStore_t res = m_string->escapeHtmlUri();
   if (m_string != res) 
@@ -373,8 +413,8 @@ String::escapeHtmlUri()
   return *this;
 }
 
-const String&
-String::iriToUri()
+
+const String& String::iriToUri()
 {
   xqpStringStore_t res = m_string->iriToUri();
   if (m_string != res) 
@@ -392,8 +432,8 @@ String::iriToUri()
   return *this;
 }
 
-const String&
-String::encodeForUri()
+
+const String& String::encodeForUri()
 {
   xqpStringStore_t res;
   m_string->encodeForUri(res);
@@ -412,8 +452,8 @@ String::encodeForUri()
   return *this;
 }
 
-const String&
-String::decodeFromUri()
+
+const String& String::decodeFromUri()
 {
   xqpStringStore_t res;
   m_string->decodeFromUri(res);
@@ -424,12 +464,14 @@ String::decodeFromUri()
       RCHelper::removeReference(m_string);
     }
     m_string = res;
-    if (m_string != NULL) {
+    if (m_string != NULL) 
+    {
       RCHelper::addReference(m_string);
     }
   }
   return *this;
 }
+
 
 std::ostream& operator <<(std::ostream& os, const String& str)
 {

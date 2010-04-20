@@ -67,7 +67,7 @@ public:
 	
   const std::vector<expr_t>& get_args() const { return theArgs; }
 	
-	void compute_scripting_kind() const;
+	void compute_scripting_kind();
 	
   void next_iter(expr_iterator_data& v);
 
@@ -139,7 +139,7 @@ public:
   
   const std::vector<expr_t>& get_vars() const { return theScopedVariables; }
 
-	void compute_scripting_kind() const;
+	void compute_scripting_kind();
 	
   xqtref_t return_type_impl(static_context* sctx) const;
 

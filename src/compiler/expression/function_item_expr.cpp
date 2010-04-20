@@ -58,9 +58,9 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
 }
 
 
-void dynamic_function_invocation_expr::compute_scripting_kind() const 
+void dynamic_function_invocation_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
@@ -145,9 +145,9 @@ void function_item_expr::set_function(function* udf)
 }
 
 
-void function_item_expr::compute_scripting_kind() const 
+void function_item_expr::compute_scripting_kind()
 {
-  theCache.scripting_kind.kind = SIMPLE_EXPR;
+  theScriptingKind = SIMPLE_EXPR;
 }
 
 
