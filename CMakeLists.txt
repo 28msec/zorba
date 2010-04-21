@@ -16,6 +16,7 @@ PROJECT(zorba)
 ENABLE_TESTING()
 INCLUDE(CTest)
 
+
 # overwriting the source and binary directories with the current zorba ones
 # this is usefull for other projects reusing zorba as a subcomponent
 SET(CMAKE_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
@@ -429,6 +430,33 @@ INCLUDE(CMakeExportBuildSettings)
 CMAKE_EXPORT_BUILD_SETTINGS(${CMAKE_BINARY_DIR}/ZorbaBuildSettings.cmake)
 EXPORT_LIBRARY_DEPENDENCIES(${CMAKE_BINARY_DIR}/ZorbaLibraryDepends.cmake)
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/ZorbaConfig.cmake.in ${CMAKE_BINARY_DIR}/ZorbaConfig.cmake)
+
+IF(WIN32)
+#automatic detection of external dll dependencies
+	FIND_PROGRAM(DEPENDS_EXE depends 
+							PATHS "C:\\Program Files\\Microsoft Visual Studio 8\\Common7\\Tools\\Bin"
+										"C:\\Program Files\\Microsoft Visual Studio 9.0\\Common7\\Tools\\Bin"
+										"C:\\Program Files\\Microsoft Visual Studio 10.0\\Common7\\Tools\\Bin"
+							)
+
+	IF(DEPENDS_EXE)
+	FILE(TO_CMAKE_PATH ${DEPENDS_EXE} DEPENDS_EXE)
+	ENDIF(DEPENDS_EXE)
+
+	GET_TARGET_PROPERTY(ZORBA_EXE_PATH zorbacmd LOCATION)
+
+	#script to be executed before CPack
+	CONFIGURE_FILE(
+			"${CMAKE_CURRENT_SOURCE_DIR}/install_external_dll_script.txt.in"
+			"${CMAKE_CURRENT_BINARY_DIR}/install_external_dll_script.txt"
+			@ONLY)
+	INSTALL(SCRIPT ${CMAKE_CURRENT_BINARY_DIR}/install_external_dll_script.txt)
+
+	FILE(MAKE_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls")
+	INSTALL(DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/external_dlls/" DESTINATION bin)
+
+
+ENDIF(WIN32)
 
 # Close expected failures listing
 close_expected_failures ()
