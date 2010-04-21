@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,15 +39,16 @@ END_SERIALIZABLE_CLASS_VERSIONS(function)
 /*******************************************************************************
 
 ********************************************************************************/
-function::function(const signature& sig) 
+function::function(const signature& sig)
   :
   theSignature(sig),
   theKind(FunctionConsts::FN_UNKNOWN),
-  theFlags(0)
+  theFlags(0),
+  theIsDeterministic(true)
 {
   const store::Item* lName = getName();
   //lName may be null for inlined functions
-  if(lName != 0 && 
+  if(lName != 0 &&
      getName()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
     setFlag(FunctionConsts::hasFnNamespace);
 
@@ -65,11 +66,12 @@ function::function(const signature& sig)
 /*******************************************************************************
 
 ********************************************************************************/
-function::function(const signature& sig, FunctionConsts::FunctionKind kind) 
+function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   :
   theSignature(sig),
   theKind(kind),
-  theFlags(0)
+  theFlags(0),
+  theIsDeterministic(true)
 {
   if(getName()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
     setFlag(FunctionConsts::hasFnNamespace);
@@ -99,7 +101,7 @@ void function::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t function::getReturnType(const std::vector<xqtref_t> &) const 
+xqtref_t function::getReturnType(const std::vector<xqtref_t> &) const
 {
   return theSignature.return_type();
 }
@@ -108,7 +110,7 @@ xqtref_t function::getReturnType(const std::vector<xqtref_t> &) const
 /*******************************************************************************
 
 ********************************************************************************/
-bool function::validate_args(std::vector<PlanIter_t>& argv) const 
+bool function::validate_args(std::vector<PlanIter_t>& argv) const
 {
   uint32_t n = theSignature.arg_count ();
   return n == VARIADIC_SIG_SIZE || argv.size() == theSignature.arg_count();
@@ -122,9 +124,9 @@ bool function::validate_args(std::vector<PlanIter_t>& argv) const
 void function::compute_annotation(
     AnnotationHolder* parent,
     std::vector<AnnotationHolder *>& kids,
-    Annotations::Key k) const 
+    Annotations::Key k) const
 {
-  switch (k) 
+  switch (k)
   {
   case Annotations::IGNORES_SORTED_NODES:
   case Annotations::IGNORES_DUP_NODES:
@@ -137,7 +139,7 @@ void function::compute_annotation(
         // is considered as "potentially interested" in sorted and/or duplicate
         // nodes. In this case, each of its input exprs must also be marked as
         // "potentially interested", even if the input expr by itself is not
-        // interested. 
+        // interested.
         TSVAnnotationValue::update_annotation(kids[src],
                                               k,
                                               TSVAnnotationValue::MAYBE_VAL);
@@ -169,7 +171,7 @@ bool function::isMap(ulong input) const
 /*******************************************************************************
   Check whether this function produces, preserves, or eliminates duplicate nodes.
 ********************************************************************************/
-FunctionConsts::AnnotationValue function::producesDistinctNodes() const 
+FunctionConsts::AnnotationValue function::producesDistinctNodes() const
 {
   xqtref_t rt = theSignature.return_type();
 
@@ -187,11 +189,11 @@ FunctionConsts::AnnotationValue function::producesDistinctNodes() const
   Check whether this function produces nodes in document order, preserves the
   doc order of its input, or produces nodes out of doc order.
 ********************************************************************************/
-FunctionConsts::AnnotationValue function::producesSortedNodes() const 
+FunctionConsts::AnnotationValue function::producesSortedNodes() const
 {
   xqtref_t rt = theSignature.return_type();
 
-  if (TypeOps::type_max_cnt(*rt) <= 1 || 
+  if (TypeOps::type_max_cnt(*rt) <= 1 ||
       TypeOps::is_subtype(*rt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
   {
     return FunctionConsts::YES;

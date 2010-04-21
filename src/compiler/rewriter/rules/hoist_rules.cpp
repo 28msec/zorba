@@ -401,6 +401,9 @@ static bool non_hoistable(const expr* e)
 
     if (f->getKind() == FunctionConsts::OP_CONCATENATE_N && fo->num_args() == 0)
       return true;
+
+    if (f->isDeterministic() == false)
+      return true;
   }
 
   return false;

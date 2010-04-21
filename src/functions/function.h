@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,7 @@
 #include "compiler/expression/expr_consts.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 
@@ -41,12 +41,13 @@ class AnnotationHolder;
 /*******************************************************************************
 
 ********************************************************************************/
-class function : public SimpleRCObject 
+class function : public SimpleRCObject
 {
 protected:
 	signature                    theSignature;
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
+  bool                         theIsDeterministic;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(function)
@@ -74,7 +75,7 @@ public:
 
   bool isVariadic() const { return theSignature.is_variadic(); }
 
-  void setFlag(FunctionConsts::AnnotationFlags flag) 
+  void setFlag(FunctionConsts::AnnotationFlags flag)
   {
     theFlags |= flag;
   }
@@ -84,7 +85,7 @@ public:
     theFlags &= ~flag;
   }
 
-  bool testFlag(FunctionConsts::AnnotationFlags flag) const 
+  bool testFlag(FunctionConsts::AnnotationFlags flag) const
   {
     return (theFlags & flag) != 0;
   }
@@ -116,7 +117,7 @@ public:
 
   virtual bool isArithmeticFunction() const { return false; }
 
-  virtual ArithmeticConsts::OperationKind arithmeticKind() const 
+  virtual ArithmeticConsts::OperationKind arithmeticKind() const
   {
     return ArithmeticConsts::UNKNOWN;
   }
@@ -127,7 +128,7 @@ public:
 
   virtual bool isGeneralComparisonFunction() const { return false; }
 
-  virtual CompareConsts::CompareType comparisonKind() const 
+  virtual CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::UNKNOWN;
   }
@@ -138,7 +139,9 @@ public:
 
   virtual bool isSource() const { return false; }
 
-  virtual bool isDeterministic() const { return true; }
+  virtual bool isDeterministic() const { return theIsDeterministic; }
+
+  virtual void setIsDeterministic(bool isDeterministic) { theIsDeterministic = isDeterministic; }
 
   virtual bool isMap(ulong input) const;
 

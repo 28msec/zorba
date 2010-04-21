@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -43,7 +43,7 @@
 
 using namespace std;
 
-namespace zorba 
+namespace zorba
 {
 
 int dummy;
@@ -123,7 +123,7 @@ MainModule::MainModule(
   :
   Module(loc_, _ver),
   prolog_h(_prolog_h),
-  query_body_h(_query_body_h)  
+  query_body_h(_query_body_h)
 {
 }
 
@@ -211,36 +211,36 @@ Prolog::Prolog(
 }
 
 
-bool Prolog::set_sind_list(SIND_DeclList* list) 
-{ 
-  bool result = true; 
-  if (!sind_list_h.isNull()) 
-    result = false; 
-  sind_list_h = list; 
+bool Prolog::set_sind_list(SIND_DeclList* list)
+{
+  bool result = true;
+  if (!sind_list_h.isNull())
+    result = false;
+  sind_list_h = list;
   return result;
 }
 
 
-bool Prolog::set_vfo_list(VFO_DeclList* list) 
-{ 
-  bool result = true; 
-  if (!vfo_list_h.isNull()) 
-    result = false; 
-  vfo_list_h = list; 
+bool Prolog::set_vfo_list(VFO_DeclList* list)
+{
+  bool result = true;
+  if (!vfo_list_h.isNull())
+    result = false;
+  vfo_list_h = list;
   return result;
 }
 
 
-bool Prolog::set_list(parsenode* list) 
+bool Prolog::set_list(parsenode* list)
 {
   SIND_DeclList* sdl = dynamic_cast<SIND_DeclList*>(list);
   if (sdl != NULL)
     return set_sind_list(sdl);
-  
+
   VFO_DeclList* vdl = dynamic_cast<VFO_DeclList*>(list);
   if (vdl != NULL)
     return set_vfo_list(vdl);
-  
+
   return false;
 }
 
@@ -644,7 +644,7 @@ OptionDecl::OptionDecl(
   parsenode(loc_),
   qname_h(_qname_h),
   val(_val)
-{ 
+{
 }
 
 
@@ -745,7 +745,7 @@ FunctionDecl::FunctionDecl(
   paramlist_h(_paramlist_h),
   body_h(_body_h),
   return_type_h(_return_type_h),
-  deterministic (false)
+  deterministic(true)
 {
 }
 
@@ -760,7 +760,7 @@ void FunctionDecl::accept( parsenode_visitor &v ) const
 }
 
 
-int FunctionDecl::get_param_count() const 
+int FunctionDecl::get_param_count() const
 {
   return paramlist_h == NULL ? 0 : paramlist_h->size ();
 }
@@ -816,16 +816,16 @@ void Param::accept( parsenode_visitor &v ) const
 
 
 /*******************************************************************************
-  [*] CollectionDecl ::= "declare" CollProperties "collection" QName 
+  [*] CollectionDecl ::= "declare" CollProperties "collection" QName
                          ("as" CollectionTypeDecl)?
-                         ("with" NodeModifier "nodes")? 
+                         ("with" NodeModifier "nodes")?
 
   [*] CollProperties ::= ("const" | "mutable" | "append-only" | "queue" |
                           "ordered" | "unordered")*
 
   [*] NodeModifier ::= ("read-only" | "mutable")
 
-  [*] CollectionTypeDecl ::= KindTest OccurenceIndicator? 
+  [*] CollectionTypeDecl ::= KindTest OccurenceIndicator?
 ********************************************************************************/
 CollectionDecl::CollectionDecl(
     const QueryLoc& aLoc,
@@ -919,7 +919,7 @@ void NodeModifier::accept( parsenode_visitor &v ) const
                 "on" "nodes" IndexDomainExpr "by" IndexKeyList
 
   IndexPropertyList := ("unique" | "non" "unique" |
-                        "value" "range" | "value" "equality" | 
+                        "value" "range" | "value" "equality" |
                         "automatically" "maintained" | "manually" "maintained")*
 
   IndexDomainExpr := PathExpr
@@ -974,7 +974,7 @@ IndexDecl::IndexDecl(
       setUnique = true;
       theIsUnique = (prop == StaticContextConsts::decl_unique);
       break;
-      
+
     case StaticContextConsts::decl_value_equality:
     case StaticContextConsts::decl_value_range:
       if (setOrdered)
@@ -984,7 +984,7 @@ IndexDecl::IndexDecl(
       setOrdered = true;
       theIsOrdered = (prop == StaticContextConsts::decl_value_range);
       break;
-    
+
     case StaticContextConsts::decl_manual:
     case StaticContextConsts::decl_automatic:
       if (setAutomatic)
@@ -994,7 +994,7 @@ IndexDecl::IndexDecl(
       setAutomatic = true;
       theIsAutomatic = (prop == StaticContextConsts::decl_automatic);
       break;
-      
+
     default:
         ZORBA_ERROR_LOC_PARAM(XDST0026_INDEX_INVALID_PROPERTY_VALUE, loc,
                               name->get_qname(), StaticContextConsts::toString(prop));
@@ -1055,24 +1055,24 @@ void IndexKeySpec::accept( parsenode_visitor &v ) const
 
 
 /*******************************************************************************
-  IntegrityConstraintDecl ::= "declare" "integrity" "constraint" 
+  IntegrityConstraintDecl ::= "declare" "integrity" "constraint"
       QName ICType
   ICType ::= ICCollSimpleCheck | ICCollUniqueKey | ICCollForeachNode |
              ICNodeOfType | ICForeighKey
   ICCollSimpleCheck ::= "on" "collection" QName "$" QName "check" ExprSimple
-  ICCollUniqueKey   ::= "on" "collection" QNAME "$" QName "check" "unique" 
+  ICCollUniqueKey   ::= "on" "collection" QNAME "$" QName "check" "unique"
                         "key" "(" Expr ")"
   ICCollForeachNode ::= "on" "collection" QNAME "foreach" "node" "$" QName
                         "check" ExprSingle
   ICNodeOfType      ::= "on" "node" QName "of""type" KindTest "check" ExprSingle
-  ICForeighKey      ::= "on" "foreign" "key" 
-                        "from" "collection" QName "node" "$" QName "keys" 
+  ICForeighKey      ::= "on" "foreign" "key"
+                        "from" "collection" QName "node" "$" QName "keys"
                            "(" Expr ")"
-                        "to" "collection" QName "node" "$" QName "keys" 
-                           "(" Expr ")"                        
+                        "to" "collection" QName "node" "$" QName "keys"
+                           "(" Expr ")"
 *******************************************************************************/
 IntegrityConstraintDecl::IntegrityConstraintDecl (
-    const QueryLoc& loc, 
+    const QueryLoc& loc,
     QName* name,
     ICKind icKind)
   :
@@ -1156,7 +1156,7 @@ void EnclosedExpr::accept( parsenode_visitor &v ) const
         an Expr node if BlockDecls is empty, or a BlockBody node whose "decls"
         data member stores the var declarations.
 ********************************************************************************/
-void BlockBody::accept ( parsenode_visitor &v ) const 
+void BlockBody::accept ( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 
@@ -1205,7 +1205,7 @@ void Expr::accept( parsenode_visitor &v ) const
   BEGIN_VISITOR();
 
   vector<rchandle<exprnode> >::const_reverse_iterator it = expr_hv.rbegin();
-  for (; it != expr_hv.rend(); ++it) 
+  for (; it != expr_hv.rend(); ++it)
   {
     const exprnode* e_p = &**it;
     ACCEPT_CHK(e_p);
@@ -1231,9 +1231,9 @@ FLWORExpr::FLWORExpr(
   exprnode (loc_),
   clauses (clauses_),
   return_val_h (ret_),
-  return_location(return_loc_) 
+  return_location(return_loc_)
 {
-  for (unsigned i = 0; i < clauses->size (); i++) 
+  for (unsigned i = 0; i < clauses->size (); i++)
   {
     {
       GroupByClause *c = dynamic_cast<GroupByClause *> ((*clauses) [i].getp ());
@@ -1263,11 +1263,11 @@ void FLWORExpr::accept( parsenode_visitor &v ) const
 }
 
 
-template<class T> void get_flwor_clause (const FLWORExpr &f, T **p) 
+template<class T> void get_flwor_clause (const FLWORExpr &f, T **p)
 {
   *p = NULL;
   rchandle<FLWORClauseList> clauses = f.get_clause_list ();
-  for (unsigned i = 0; i < clauses->size (); i++) 
+  for (unsigned i = 0; i < clauses->size (); i++)
   {
     FLWORClause* cp = (*clauses) [i].getp ();
     *p = dynamic_cast<T *> (cp);
@@ -1292,7 +1292,7 @@ DEF_FLWOR_GETTER (WhereClause, where)
 //#define ZORBA_FORCE_GFLWOR
 
 
-void FLWORExpr::compute_general () 
+void FLWORExpr::compute_general ()
 {
   general = non_10 = false;
 #ifdef ZORBA_FORCE_GFLWOR
@@ -1301,11 +1301,11 @@ void FLWORExpr::compute_general ()
 
   bool has_where = false, has_order = false, has_group = false;
 
-  for (unsigned i = 0; i < clauses->size(); i++) 
+  for (unsigned i = 0; i < clauses->size(); i++)
   {
     const FLWORClause* cp = (*clauses)[i].getp();
 
-    if (typeid (*cp) == typeid (ForClause)) 
+    if (typeid (*cp) == typeid (ForClause))
     {
       // any preceding non-initial clause triggers GFLWOR
       if (has_group || has_where || has_order)
@@ -1314,27 +1314,27 @@ void FLWORExpr::compute_general ()
       if (static_cast<const ForClause *> (cp)->is_outer ())
         non_10 = general = true;
     }
-    else if (typeid (*cp) == typeid (LetClause)) 
+    else if (typeid (*cp) == typeid (LetClause))
     {
       // any preceding non-initial clause triggers GFLWOR
       if (has_group || has_where || has_order)
         non_10 = general = true;
     }
-    else if (typeid (*cp) == typeid (WindowClause)) 
+    else if (typeid (*cp) == typeid (WindowClause))
     {
       non_10 = general =true;
     }
-    else if (typeid (*cp) == typeid (WhereClause)) 
+    else if (typeid (*cp) == typeid (WhereClause))
     {
       if (has_where || has_group || has_order) non_10 = general = true;
       has_where = true;
     }
-    else if (typeid (*cp) == typeid (OrderByClause)) 
+    else if (typeid (*cp) == typeid (OrderByClause))
     {
       if (has_order) non_10 = general = true;
       has_order = true;
     }
-    else if (typeid (*cp) == typeid (GroupByClause)) 
+    else if (typeid (*cp) == typeid (GroupByClause))
     {
       if (has_group || has_order) non_10 = general = true;
       has_group = true;
@@ -1376,11 +1376,11 @@ void WindowClause::accept( parsenode_visitor &v ) const
 /*******************************************************************************
   WindowVarDecl ::= "$" VarName TypeDeclaration? "in"  ExprSingle
 ********************************************************************************/
-void WindowVarDecl::accept( parsenode_visitor &v ) const 
+void WindowVarDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(theType);
-  // The domain expr has been translated already. 
+  // The domain expr has been translated already.
   END_VISITOR();
 }
 
@@ -1404,7 +1404,7 @@ void FLWORWinCond::accept( parsenode_visitor &v ) const
                  ("previous" "$" PreviousItem)?
                  ("next" "$" NextItem)?
 ********************************************************************************/
-void WindowVars::accept( parsenode_visitor &v ) const 
+void WindowVars::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   ACCEPT(posvar);
@@ -1424,7 +1424,7 @@ void FLWORClauseList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   vector<rchandle<FLWORClause> >::const_iterator it = theClauses.begin();
-  for (; it != theClauses.end(); ++it) 
+  for (; it != theClauses.end(); ++it)
   {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -1563,7 +1563,7 @@ void VarGetsDeclList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   vector<rchandle<VarGetsDecl> >::const_iterator it = vardecl_hv.begin();
-  for (; it!=vardecl_hv.end(); ++it) 
+  for (; it!=vardecl_hv.end(); ++it)
   {
     const parsenode *e_p = &**it;
     ACCEPT_CHK (e_p);
@@ -2692,7 +2692,7 @@ RelativePathExpr::RelativePathExpr(
     if (dot != NULL)
     {
       // step/  ./...  --> step/...
-      // step/  .//... --> step//... 
+      // step/  .//... --> step//...
       relpath_expr_h = rpep->relpath_expr_h;
       if (!dot->is_placeholder())
         step_type = rpep->get_step_type();
@@ -3030,9 +3030,9 @@ PredicateList::PredicateList(
 void PredicateList::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
-  
+
   for (vector<rchandle<exprnode> >::const_iterator it = pred_hv.begin();
-       it!=pred_hv.end(); ++it) 
+       it!=pred_hv.end(); ++it)
   {
     const exprnode* e_p = &**it;
     ZORBA_ASSERT(e_p!=NULL);
@@ -3112,7 +3112,7 @@ void ParenthesizedExpr::accept( parsenode_visitor &v ) const
 ContextItemExpr::ContextItemExpr(
   const QueryLoc& loc_, bool _placeholder)
 :
-  exprnode(loc_), 
+  exprnode(loc_),
   placeholder(_placeholder)
 {}
 
@@ -4758,7 +4758,7 @@ void FTWordsValue::accept( parsenode_visitor &v ) const
 
 
 FTOrder::FTOrder(
-  QueryLoc const &loc 
+  QueryLoc const &loc
 ) :
   FTPosFilter( loc )
 {
@@ -5334,7 +5334,7 @@ void DynamicFunctionInvocation::accept(parsenode_visitor& v) const
   BEGIN_VISITOR();
   ACCEPT(thePrimaryExpr);
   if(theArgList != 0) ACCEPT(theArgList);
-  END_VISITOR();  
+  END_VISITOR();
 }
 
 

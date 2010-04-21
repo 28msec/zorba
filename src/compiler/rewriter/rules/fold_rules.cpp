@@ -78,7 +78,7 @@ static expr_t execute (
                                          0,      // dynamic ctx
                                          NULL,   // xquery
                                          0,      // stack depth
-                                         compilercb->theTimeout)); 
+                                         compilercb->theTimeout));
     for (;;)
     {
       if (!pw->next(item))
@@ -143,7 +143,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   expr::BoolAnnotationValue curNonDiscardable = expr::ANNOTATION_FALSE;
   expr::BoolAnnotationValue curUnfoldable = expr::ANNOTATION_FALSE;
 
-  for (const_expr_iterator i = node->expr_begin_const(); !i.done(); ++i) 
+  for (const_expr_iterator i = node->expr_begin_const(); !i.done(); ++i)
   {
     expr* childExpr = *i;
 
@@ -409,10 +409,17 @@ RULE_REWRITE_PRE(FoldConst)
 {
   xqtref_t rtype = node->return_type(node->get_sctx());
 
+  // TODO: this computation could be moved to isUnfoldable() in fo_expr
+  bool isDeterministicFunc = true;
+  fo_expr* fo = dynamic_cast<fo_expr *>(node);
+  if (fo != NULL && fo->get_func() != NULL)
+    isDeterministicFunc = fo->get_func()->isDeterministic();
+
   if (standalone_expr(node) &&
       ! already_folded(node, rCtx) &&
       get_varset_annotation (node, Annotations::FREE_VARS).empty() &&
       ! node->isUnfoldable() &&
+      isDeterministicFunc &&
       TypeOps::type_max_cnt(*rtype) <= 1)
     // &&
     //  (fold_expensive_ops ||
