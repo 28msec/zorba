@@ -148,6 +148,17 @@ declare function sctx:default-collection-type() as xs:string external;
 declare function sctx:in-scope-variables() as xs:QName* external;
 
 (:~
+ : The function returns a sequence of QNames identifying in-scope schema types,
+ : including all the predefined schema types and all definitions found in
+ : imported schemas.
+ :
+ : @return A sequence of QNames, one for each defined type.
+ :
+ : @see http://www.w3.org/TR/xquery/#dt-is-types
+ :)
+declare function sctx:in-scope-schema-types() as xs:QName* external;
+
+(:~
  : The function return a sequence of QNames identifying declared elements
  : in the imported schemas.
  :
