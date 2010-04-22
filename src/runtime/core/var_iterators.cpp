@@ -319,6 +319,7 @@ void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, (NoaryBaseIterator<LetVarIterator, LetVarState>*)this);
   ar & theVarName;
   ar & theTargetPos;
+  ar & theTargetPosIter;
   ar & theResetSource;
 }
 

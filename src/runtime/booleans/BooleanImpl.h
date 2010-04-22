@@ -19,12 +19,15 @@
 #include "common/shared_types.h"
 
 #include "types/typeconstants.h"
+#include "types/typemanager.h"
 
 #include "compiler/expression/expr_consts.h"
 
 #include "runtime/base/unarybase.h"
 #include "runtime/base/binarybase.h"
 #include "runtime/base/narybase.h"
+
+#include "system/globalenv.h"
 
 
 namespace zorba
@@ -160,6 +163,9 @@ public:
 
     SERIALIZE_ENUM(CompareConsts::CompareType, theCompType)
     ar & theIsGeneralComparison;
+    SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
+    ar & theTimezone;
+    ar & theCollation;
   }
 
 public:

@@ -217,6 +217,7 @@ bool Archiver::add_simple_field(const char *type,
   {
     new_field->parent = current_compound_field;
     new_field->id = ++nr_ids;
+    new_field->order = new_field->id;
     if(current_compound_field->last_child)
       current_compound_field->last_child->next = new_field;
     else
@@ -250,6 +251,7 @@ void Archiver::replace_field(archive_field  *new_field, archive_field  *ref_fiel
   new_field->parent = ref_field_parent;
   if(ref_field_parent->last_child == ref_field)
     ref_field_parent->last_child = new_field;
+  new_field->order = ref_field->order;
 }
 
 void Archiver::exchange_fields(archive_field  *new_field, archive_field  *ref_field)
@@ -270,6 +272,7 @@ void Archiver::exchange_fields(archive_field  *new_field, archive_field  *ref_fi
     current_compound_field->first_child = ref_field;
   ref_field->next = NULL;
   current_compound_field->last_child = ref_field;
+  ref_field->order = nr_ids;
 
   new_field->allow_delay2 = ref_field->allow_delay2;
 }
@@ -333,6 +336,7 @@ bool Archiver::add_compound_field(const char *type,
   {
     new_field->parent = current_compound_field;
     new_field->id = ++nr_ids;
+    new_field->order = new_field->id;
     if(current_compound_field->last_child)
       current_compound_field->last_child->next = new_field;
     else
@@ -864,6 +868,11 @@ void Archiver::exchange_mature_fields(archive_field *field1, archive_field *fiel
   ENUM_ALLOW_DELAY temp_delay = field1->allow_delay2;
   field1->allow_delay2 = field2->allow_delay2;
   field2->allow_delay2 = temp_delay;
+
+  unsigned int  temp_order;
+  temp_order = field1->order;
+  field1->order = field2->order;
+  field2->order = temp_order;
 }
 
 void Archiver::check_compound_fields(archive_field *parent_field)
@@ -987,6 +996,14 @@ int Archiver::check_order(archive_field *parent_field,
                            archive_field *field1,
                            archive_field *field2)
 {
+
+  if(field1->order < field2->order)
+    return -1;
+  else if(field1->order == field2->order)
+    return 0;
+  else
+    return 1;
+/*
   archive_field *child;
   int check_ret;
   child = parent_field->first_child;
@@ -1005,6 +1022,7 @@ int Archiver::check_order(archive_field *parent_field,
     child = child->next;
   }
   return 0;
+*/
 }
 
 archive_field* Archiver::get_prev(archive_field* field)
@@ -1032,7 +1050,7 @@ bool Archiver::check_allowed_delays(archive_field *parent_field)
   while(child)
   {
     if((child->field_treat == ARCHIVE_FIELD_IS_REFERENCING) &&
-       (((child->allow_delay2 == DONT_ALLOW_DELAY) && (check_order(out_fields, child, child->refered) < 1)) ||
+       (((child->allow_delay2 == DONT_ALLOW_DELAY) && (check_order(out_fields, child, child->refered) < 1) && (child->allow_delay2 == DONT_ALLOW_DELAY)) ||
        (child->allow_delay2 == SERIALIZE_NOW)))
     {
       if(child->allow_delay2 == SERIALIZE_NOW)

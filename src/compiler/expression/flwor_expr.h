@@ -432,7 +432,7 @@ protected:
   std::vector<std::string> theCollations;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(group_clause)
+  SERIALIZABLE_CLASS(group_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(group_clause, flwor_clause)
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -490,7 +490,7 @@ protected:
   std::vector<expr_t>         theOrderingExprs;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(orderby_clause)
+  SERIALIZABLE_CLASS(orderby_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(orderby_clause, flwor_clause)
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -537,7 +537,7 @@ protected:
   var_expr_t theVarExpr;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(count_clause)
+  SERIALIZABLE_CLASS(count_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(count_clause, flwor_clause)
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -567,7 +567,7 @@ class where_clause : public flwor_clause
   expr_t theWhereExpr;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(where_clause)
+  SERIALIZABLE_CLASS(where_clause)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(where_clause, flwor_clause)
   void serialize(::zorba::serialization::Archiver& ar);
 

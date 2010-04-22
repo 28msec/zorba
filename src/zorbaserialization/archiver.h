@@ -92,6 +92,7 @@ public:
   enum ArchiveFieldTreat  field_treat;
   unsigned int   referencing;
   unsigned int   id;
+  unsigned int   order;///order in the tree
   bool  is_class;
   const char  *value;//for simple fields
   unsigned int   value_str_pos_in_pool;

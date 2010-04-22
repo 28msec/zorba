@@ -78,6 +78,7 @@ void flwor_clause::serialize(::zorba::serialization::Archiver& ar)
   ar & theContext;
   ar & theLocation;
   SERIALIZE_ENUM(ClauseKind, theKind);
+  ar & theFlworExpr;
 }
 
 
