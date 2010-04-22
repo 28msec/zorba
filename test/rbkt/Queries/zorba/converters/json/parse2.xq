@@ -1,4 +1,6 @@
-import module namespace json = "http://www.zorba-xquery.com/zorba/json-functions";
+
+import module namespace json = "http://www.zorba-xquery.com/modules/json";
+
 json:parse(('{
    "firstName": "John",
    "state": null,

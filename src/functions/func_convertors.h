@@ -66,13 +66,13 @@ public:
 };
 
 
-//zorba-json-ml:parse
-class zorba_json_ml_parse : public function
+//zorba-json:parseML
+class zorba_json_parseML : public function
 {
 public:
-  zorba_json_ml_parse(const signature& sig)
+  zorba_json_parseML(const signature& sig)
     :
-    function(sig, FunctionConsts::ZORBA_JSON_ML_PARSE_1)
+    function(sig, FunctionConsts::ZORBA_JSON_PARSEML_1)
   {
   }
 
@@ -80,13 +80,13 @@ public:
 };
 
 
-//zorba-json-ml:serialize
-class zorba_json_ml_serialize : public function
+//zorba-json:serializeML
+class zorba_json_serializeML : public function
 {
 public:
-  zorba_json_ml_serialize(const signature& sig)
+  zorba_json_serializeML(const signature& sig)
     :
-    function(sig, FunctionConsts::ZORBA_JSON_ML_SERIALIZE_1)
+    function(sig, FunctionConsts::ZORBA_JSON_SERIALIZEML_1)
   {
   }
 

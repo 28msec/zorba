@@ -567,32 +567,32 @@ void PrinterVisitor::endVisit ( const ZorbaJsonSerializeIterator& ) {
 // </ZorbaJsonSerializeIterator>
 
 
-// <ZorbaJsonMLParseIterator>
-void PrinterVisitor::beginVisit ( const ZorbaJsonMLParseIterator& a) {
-  thePrinter.startBeginVisit("ZorbaJsonMLParseIterator", ++theId);
+// <ZorbaJsonParseMLIterator>
+void PrinterVisitor::beginVisit ( const ZorbaJsonParseMLIterator& a) {
+  thePrinter.startBeginVisit("ZorbaJsonParseMLIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const ZorbaJsonMLParseIterator& ) {
+void PrinterVisitor::endVisit ( const ZorbaJsonParseMLIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </ZorbaJsonMLParseIterator>
+// </ZorbaJsonParseMLIterator>
 
 
-// <ZorbaJsonMLSerializeIterator>
-void PrinterVisitor::beginVisit ( const ZorbaJsonMLSerializeIterator& a) {
-  thePrinter.startBeginVisit("ZorbaJsonMLSerializeIterator", ++theId);
+// <ZorbaJsonSerializeMLIterator>
+void PrinterVisitor::beginVisit ( const ZorbaJsonSerializeMLIterator& a) {
+  thePrinter.startBeginVisit("ZorbaJsonSerializeMLIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const ZorbaJsonMLSerializeIterator& ) {
+void PrinterVisitor::endVisit ( const ZorbaJsonSerializeMLIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </ZorbaJsonMLSerializeIterator>
+// </ZorbaJsonSerializeMLIterator>
 
 
 // <ZorbaCSV2XMLIterator>

@@ -1,6 +1,6 @@
-import module namespace jsonml = "http://www.zorba-xquery.com/zorba/json-ml-functions";
+import module namespace json = "http://www.zorba-xquery.com/modules/json";
 
-jsonml:parse(('[ "ul",
+json:parseML(('[ "ul",
                   [ "li",
                     true],
                   [ "li",

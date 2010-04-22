@@ -66,15 +66,15 @@
   
 <!--
 /*******************************************************************************
-  zorba-json-ml:parse
+  zorba-json:parseML
 ********************************************************************************/
 -->
-<zorba:iterator name="ZorbaJsonMLParseIterator">
+<zorba:iterator name="ZorbaJsonParseMLIterator">
 
   <zorba:description author="Zorba Team">Parsing a sequence of valid JsonML strings into a sequence of XDM elements.</zorba:description>
 
   <zorba:function>
-    <zorba:signature localname="parse" prefix="zorba-json-ml">
+    <zorba:signature localname="parseML" prefix="zorba-json">
       <zorba:param>xs:string*</zorba:param>
       <zorba:output>node()*</zorba:output>
     </zorba:signature>
@@ -88,15 +88,15 @@
   
 <!--
 /*******************************************************************************
-  zorba-json-ml:serialize
+  zorba-json:serializeML
 ********************************************************************************/
 -->
-<zorba:iterator name="ZorbaJsonMLSerializeIterator">
+<zorba:iterator name="ZorbaJsonSerializeMLIterator">
   
   <zorba:description author="Zorba Team">The serialize function takes a sequence of elements as parameter and transforms each element into a valid JsonML string.</zorba:description>
   
   <zorba:function>
-    <zorba:signature localname="serialize" prefix="zorba-json-ml">
+    <zorba:signature localname="serializeML" prefix="zorba-json">
       <zorba:param>node()*</zorba:param>
       <zorba:output>xs:string*</zorba:output>
     </zorba:signature>

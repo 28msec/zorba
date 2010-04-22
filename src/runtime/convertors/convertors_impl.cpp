@@ -108,16 +108,16 @@ ZorbaJsonSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState
   STACK_END (state);
 }
 
-//JsonML
+//Json:ParseML
 bool
-ZorbaJsonMLParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+ZorbaJsonParseMLIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   xqp_string        error_log;
   bool              parseOK = true;
   store::Item_t     strItem;
 
-  ZorbaJsonMLParseIteratorState *state;
-  DEFAULT_STACK_INIT(ZorbaJsonMLParseIteratorState, state, planState);
+  ZorbaJsonParseMLIteratorState *state;
+  DEFAULT_STACK_INIT(ZorbaJsonParseMLIteratorState, state, planState);
 
   if( state->theBaseUri.empty() )
     state->theBaseUri = theSctx->get_base_uri().getp();
@@ -150,7 +150,7 @@ ZorbaJsonMLParseIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 }
 
 bool
-ZorbaJsonMLSerializeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+ZorbaJsonSerializeMLIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     elemItem;
   xqpStringStore_t  str, error_log;

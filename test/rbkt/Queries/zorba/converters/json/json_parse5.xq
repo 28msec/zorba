@@ -1,6 +1,6 @@
 (: json:parse with wrong param :)
 
-import module namespace json = "http://www.zorba-xquery.com/zorba/json-functions";
+import module namespace json = "http://www.zorba-xquery.com/modules/json";
 json:parse(('[ "ul",
                   [ "li",
                     true],

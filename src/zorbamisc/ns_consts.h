@@ -33,8 +33,7 @@
 #define ZORBA_INDEX_FN_NS           "http://www.zorba-xquery.com/zorba/index-functions"
 #define ZORBA_ALEXIS_FN_NS          "http://www.zorba-xquery.com/zorba/util-functions"
 #define ZORBA_EMAIL_FN_NS           "http://www.zorba-xquery.com/zorba/email-functions"
-#define ZORBA_JSON_FN_NS            "http://www.zorba-xquery.com/zorba/json-functions"
-#define ZORBA_JSON_ML_FN_NS         "http://www.zorba-xquery.com/zorba/json-ml-functions"
+#define ZORBA_JSON_FN_NS            "http://www.zorba-xquery.com/modules/json"
 #define ZORBA_FOP_FN_NS             "http://www.zorba-xquery.com/zorba/fop-functions"
 
 #define ZORBA_XQDOC_FN_NS           "http://www.zorba-xquery.com/modules/xqdoc"

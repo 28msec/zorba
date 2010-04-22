@@ -101,18 +101,18 @@ ZorbaJsonSerializeIterator::~ZorbaJsonSerializeIterator() {}
 // </ZorbaJsonSerializeIterator>
 
 
-// <ZorbaJsonMLParseIterator>
-const char* ZorbaJsonMLParseIterator::class_name_str = "ZorbaJsonMLParseIterator";
-ZorbaJsonMLParseIterator::class_factory<ZorbaJsonMLParseIterator>
-ZorbaJsonMLParseIterator::g_class_factory;
+// <ZorbaJsonParseMLIterator>
+const char* ZorbaJsonParseMLIterator::class_name_str = "ZorbaJsonParseMLIterator";
+ZorbaJsonParseMLIterator::class_factory<ZorbaJsonParseMLIterator>
+ZorbaJsonParseMLIterator::g_class_factory;
 
 const serialization::ClassVersion 
-ZorbaJsonMLParseIterator::class_versions[] ={{ 1, 0x000905, false}};
+ZorbaJsonParseMLIterator::class_versions[] ={{ 1, 0x000905, false}};
 
-const int ZorbaJsonMLParseIterator::class_versions_count =
-sizeof(ZorbaJsonMLParseIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+const int ZorbaJsonParseMLIterator::class_versions_count =
+sizeof(ZorbaJsonParseMLIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaJsonMLParseIterator::accept(PlanIterVisitor& v) const {
+void ZorbaJsonParseMLIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -124,37 +124,37 @@ void ZorbaJsonMLParseIterator::accept(PlanIterVisitor& v) const {
   v.endVisit(*this);
 }
 
-ZorbaJsonMLParseIterator::~ZorbaJsonMLParseIterator() {}
+ZorbaJsonParseMLIterator::~ZorbaJsonParseMLIterator() {}
 
-ZorbaJsonMLParseIteratorState::ZorbaJsonMLParseIteratorState() {}
+ZorbaJsonParseMLIteratorState::ZorbaJsonParseMLIteratorState() {}
 
-ZorbaJsonMLParseIteratorState::~ZorbaJsonMLParseIteratorState() {}
+ZorbaJsonParseMLIteratorState::~ZorbaJsonParseMLIteratorState() {}
 
 
-void ZorbaJsonMLParseIteratorState::init(PlanState& planState) {
+void ZorbaJsonParseMLIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
   theBaseUri = xqp_string();
 }
 
-void ZorbaJsonMLParseIteratorState::reset(PlanState& planState) {
+void ZorbaJsonParseMLIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   theBaseUri = xqp_string();
 }
-// </ZorbaJsonMLParseIterator>
+// </ZorbaJsonParseMLIterator>
 
 
-// <ZorbaJsonMLSerializeIterator>
-const char* ZorbaJsonMLSerializeIterator::class_name_str = "ZorbaJsonMLSerializeIterator";
-ZorbaJsonMLSerializeIterator::class_factory<ZorbaJsonMLSerializeIterator>
-ZorbaJsonMLSerializeIterator::g_class_factory;
+// <ZorbaJsonSerializeMLIterator>
+const char* ZorbaJsonSerializeMLIterator::class_name_str = "ZorbaJsonSerializeMLIterator";
+ZorbaJsonSerializeMLIterator::class_factory<ZorbaJsonSerializeMLIterator>
+ZorbaJsonSerializeMLIterator::g_class_factory;
 
 const serialization::ClassVersion 
-ZorbaJsonMLSerializeIterator::class_versions[] ={{ 1, 0x000905, false}};
+ZorbaJsonSerializeMLIterator::class_versions[] ={{ 1, 0x000905, false}};
 
-const int ZorbaJsonMLSerializeIterator::class_versions_count =
-sizeof(ZorbaJsonMLSerializeIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+const int ZorbaJsonSerializeMLIterator::class_versions_count =
+sizeof(ZorbaJsonSerializeMLIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void ZorbaJsonMLSerializeIterator::accept(PlanIterVisitor& v) const {
+void ZorbaJsonSerializeMLIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -166,9 +166,9 @@ void ZorbaJsonMLSerializeIterator::accept(PlanIterVisitor& v) const {
   v.endVisit(*this);
 }
 
-ZorbaJsonMLSerializeIterator::~ZorbaJsonMLSerializeIterator() {}
+ZorbaJsonSerializeMLIterator::~ZorbaJsonSerializeMLIterator() {}
 
-// </ZorbaJsonMLSerializeIterator>
+// </ZorbaJsonSerializeMLIterator>
 
 
 // <ZorbaCSV2XMLIterator>

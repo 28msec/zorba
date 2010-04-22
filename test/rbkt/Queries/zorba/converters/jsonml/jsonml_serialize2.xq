@@ -1,5 +1,5 @@
 (: jsonml:serialize with invalid param: comment node  :)
 
-import module namespace jsonml = "http://www.zorba-xquery.com/zorba/json-ml-functions";
+import module namespace json = "http://www.zorba-xquery.com/modules/json";
 
-jsonml:serialize((<!--comment-->))
+json:serializeML((<!--comment-->))

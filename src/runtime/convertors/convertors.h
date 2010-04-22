@@ -122,42 +122,42 @@ public:
  * Parsing a sequence of valid JsonML strings into a sequence of XDM elements.
  * Author: Zorba Team
  */
-class ZorbaJsonMLParseIteratorState : public PlanIteratorState
+class ZorbaJsonParseMLIteratorState : public PlanIteratorState
 {
 public:
   xqp_string theBaseUri; //the base URI
 
-  ZorbaJsonMLParseIteratorState();
+  ZorbaJsonParseMLIteratorState();
 
-  ~ZorbaJsonMLParseIteratorState();
+  ~ZorbaJsonParseMLIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class ZorbaJsonMLParseIterator : public NaryBaseIterator<ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>
+class ZorbaJsonParseMLIterator : public NaryBaseIterator<ZorbaJsonParseMLIterator, ZorbaJsonParseMLIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaJsonMLParseIterator);
+  SERIALIZABLE_CLASS(ZorbaJsonParseMLIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonMLParseIterator,
-    NaryBaseIterator<ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonParseMLIterator,
+    NaryBaseIterator<ZorbaJsonParseMLIterator, ZorbaJsonParseMLIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>*)this);
+    (NaryBaseIterator<ZorbaJsonParseMLIterator, ZorbaJsonParseMLIteratorState>*)this);
   }
 
-  ZorbaJsonMLParseIterator(
+  ZorbaJsonParseMLIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<ZorbaJsonMLParseIterator, ZorbaJsonMLParseIteratorState>(sctx, loc, children)
+    NaryBaseIterator<ZorbaJsonParseMLIterator, ZorbaJsonParseMLIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~ZorbaJsonMLParseIterator();
+  virtual ~ZorbaJsonParseMLIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -169,29 +169,29 @@ public:
  * The serialize function takes a sequence of elements as parameter and transforms each element into a valid JsonML string.
  * Author: Zorba Team
  */
-class ZorbaJsonMLSerializeIterator : public NaryBaseIterator<ZorbaJsonMLSerializeIterator, PlanIteratorState>
+class ZorbaJsonSerializeMLIterator : public NaryBaseIterator<ZorbaJsonSerializeMLIterator, PlanIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(ZorbaJsonMLSerializeIterator);
+  SERIALIZABLE_CLASS(ZorbaJsonSerializeMLIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonMLSerializeIterator,
-    NaryBaseIterator<ZorbaJsonMLSerializeIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaJsonSerializeMLIterator,
+    NaryBaseIterator<ZorbaJsonSerializeMLIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaJsonMLSerializeIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaJsonSerializeMLIterator, PlanIteratorState>*)this);
   }
 
-  ZorbaJsonMLSerializeIterator(
+  ZorbaJsonSerializeMLIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<ZorbaJsonMLSerializeIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<ZorbaJsonSerializeMLIterator, PlanIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~ZorbaJsonMLSerializeIterator();
+  virtual ~ZorbaJsonSerializeMLIterator();
 
   void accept(PlanIterVisitor& v) const;
 

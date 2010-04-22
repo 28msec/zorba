@@ -146,11 +146,11 @@ namespace zorba {
     void beginVisit( const ZorbaJsonSerializeIterator& );
     void endVisit  ( const ZorbaJsonSerializeIterator& );
 
-    void beginVisit( const ZorbaJsonMLParseIterator& );
-    void endVisit  ( const ZorbaJsonMLParseIterator& );
+    void beginVisit( const ZorbaJsonParseMLIterator& );
+    void endVisit  ( const ZorbaJsonParseMLIterator& );
 
-    void beginVisit( const ZorbaJsonMLSerializeIterator& );
-    void endVisit  ( const ZorbaJsonMLSerializeIterator& );
+    void beginVisit( const ZorbaJsonSerializeMLIterator& );
+    void endVisit  ( const ZorbaJsonSerializeMLIterator& );
 
     void beginVisit( const ZorbaCSV2XMLIterator& );
     void endVisit  ( const ZorbaCSV2XMLIterator& );

@@ -1076,7 +1076,6 @@ TranslatorImpl(
   theBuiltInModules.insert (ZORBA_NODEREF_FN_NS);
   theBuiltInModules.insert (ZORBA_ALEXIS_FN_NS);
   theBuiltInModules.insert (ZORBA_JSON_FN_NS);
-  theBuiltInModules.insert (ZORBA_JSON_ML_FN_NS);
   theBuiltInModules.insert (ZORBA_FOP_FN_NS);
 
   ctx_item_type = GENV_TYPESYSTEM.ITEM_TYPE_ONE;
