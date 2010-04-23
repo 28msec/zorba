@@ -959,7 +959,7 @@ void URI::initializePath(const xqpStringStore* uri)
         ++lIndex;
       }
     #ifdef WIN32
-      if (theScheme->byteEqual("file", 4) && (lCodepoints[lStart] == '/') && 
+      if (theScheme->byteEqual("file", 4) && (lCodepoints[lStart] == '/') && (lEnd > (lStart+2)) &&
         ((lCodepoints[lStart+2] == ':') || !uri->byteCompare(lStart+2, 4, "%3A/")))//jump over first '/' of path
         lStart++;
     #endif
