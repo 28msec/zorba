@@ -75,8 +75,8 @@ static expr_t execute (
   {
     PlanWrapperHolder pw(new PlanWrapper(plan,
                                          compilercb,
-                                         0,      // dynamic ctx
-                                         NULL,   // xquery
+                                         NULL,      // dynamic ctx
+                                         NULL,   // query
                                          0,      // stack depth
                                          compilercb->theTimeout));
     for (;;)

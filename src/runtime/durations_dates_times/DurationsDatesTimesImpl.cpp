@@ -108,7 +108,7 @@ FnAdjustToTimeZoneIterator_1::nextImpl(store::Item_t& result, PlanState& planSta
     try
     {
       dt = std::auto_ptr<DateTime>(item0->getDateTimeValue().adjustToTimeZone(
-        planState.theRuntimeCB->theDynamicContext->get_implicit_timezone()));
+        planState.theDynamicContext->get_implicit_timezone()));
     }
     catch (InvalidTimezoneException)
     {

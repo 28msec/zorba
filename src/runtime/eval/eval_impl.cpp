@@ -16,7 +16,7 @@
  #include "runtime/eval/eval.h"
 
 #include <sstream>
-#include "runtime/api/runtimecb.h"
+
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/iterator_impl.h"
 
@@ -96,8 +96,11 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   // set up eval state's ccb
   state->ccb.reset(new CompilerCB(*planState.theCompilerCB));
+
   state->ccb->theRootSctx = getStaticContext(planState)->create_child_context();
+
   sctxid = state->ccb->theSctxMap->size() + 1;
+
   (*planState.theCompilerCB->theSctxMap)[sctxid] = state->ccb->theRootSctx; 
 
   CONSUME(item, 0);
@@ -111,7 +114,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                                    vartypes),
                                            state->ccb.get(),
                                            state->dctx.get(),
-                                           planState.theRuntimeCB->theQuery, // HACK/TODO: use the right query (static or dynamic context)
+                                           planState.theQuery, // HACK/TODO: use the right query (static or dynamic context)
                                            planState.theStackDepth + 1));
     state->eval_plan->checkDepth(loc);
     

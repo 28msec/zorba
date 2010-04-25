@@ -228,7 +228,7 @@ void CompareIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   theTypeManager = theSctx->get_typemanager();
   theCollation = theSctx->get_default_collator(loc);
-  theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
+  theTimezone = planState.theDynamicContext->get_implicit_timezone();
 }
 
 
@@ -825,7 +825,7 @@ void TypedValueCompareIterator<ATC>::openImpl(PlanState& planState, uint32_t& of
   NaryBaseIterator<TypedValueCompareIterator, PlanIteratorState>
   ::openImpl(planState, offset);
 
-  theTimezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
+  theTimezone = planState.theDynamicContext->get_implicit_timezone();
   theCollation = this->theSctx->get_default_collator(this->loc);
 }
 

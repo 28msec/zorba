@@ -88,7 +88,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(OpDoubleUnaryIterator)
 template<>
 bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -102,7 +102,7 @@ bool AddOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
 template<>
 bool AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -116,7 +116,7 @@ bool AddOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
 template<>
 bool AddOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -130,7 +130,7 @@ bool AddOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
 template<>
 bool AddOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -147,7 +147,7 @@ bool AddOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -161,7 +161,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBL
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -175,7 +175,7 @@ bool SubtractOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -189,7 +189,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECI
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -206,7 +206,7 @@ bool SubtractOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTE
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -220,7 +220,7 @@ bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBL
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -234,7 +234,7 @@ bool MultiplyOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -248,7 +248,7 @@ bool MultiplyOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECI
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -265,7 +265,7 @@ bool MultiplyOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTE
 template<>
 bool DivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -279,7 +279,7 @@ bool DivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>
 template<>
 bool DivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -293,7 +293,7 @@ bool DivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
 template<>
 bool DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
     store::Item_t& result,
-    RuntimeCB* /*rcb*/,
+    dynamic_context* /*dctx*/,
     const TypeManager* /* tm */,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -312,7 +312,7 @@ bool DivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMA
 template<>
 bool DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -334,7 +334,7 @@ bool DivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGE
 template<>
 bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DOUBLE>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -373,7 +373,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
 template<>
 bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_FLOAT>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -412,7 +412,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_F
 template<>
 bool IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS_DECIMAL>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -432,7 +432,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DECIMAL,TypeConstants::XS
 template<>
 bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS_INTEGER>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -455,7 +455,7 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_INTEGER,TypeConstants::XS
 template<>
 bool ModOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -469,7 +469,7 @@ bool ModOperation::compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_DOUBLE>(
 template<>
 bool ModOperation::compute<TypeConstants::XS_FLOAT, TypeConstants::XS_FLOAT>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc*,
     const store::Item* i0,
@@ -483,7 +483,7 @@ bool ModOperation::compute<TypeConstants::XS_FLOAT, TypeConstants::XS_FLOAT>(
 template<>
 bool ModOperation::compute<TypeConstants::XS_DECIMAL, TypeConstants::XS_DECIMAL>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -503,7 +503,7 @@ bool ModOperation::compute<TypeConstants::XS_DECIMAL, TypeConstants::XS_DECIMAL>
 template<>
 bool ModOperation::compute<TypeConstants::XS_INTEGER, TypeConstants::XS_INTEGER>(
     store::Item_t& result,
-    RuntimeCB* /* rcb */,
+    dynamic_context* /* dctx */,
     const TypeManager* /* tm */,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -553,7 +553,7 @@ bool NumArithIterator<Operation>::nextImpl(
     if (consumeNext(n1, this->theChild1.getp(), planState))
     {
       res = compute(result,
-                    planState.theRuntimeCB,
+                    planState.theDynamicContext,
                     this->theSctx->get_typemanager(),
                     this->loc,
                     n0,
@@ -587,7 +587,7 @@ void NumArithIterator<Operation>::accept(PlanIterVisitor& v) const
 template < class Operation >
 bool NumArithIterator<Operation>::compute(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc& aLoc, 
     store::Item_t& n0,
@@ -599,14 +599,14 @@ bool NumArithIterator<Operation>::compute(
   xqtref_t type0 = tm->create_value_type(n0);
   xqtref_t type1 = tm->create_value_type(n1);
 
-  return computeAtomic(result, rcb, tm, aLoc, n0, type0, n1, type1);
+  return computeAtomic(result, dctx, tm, aLoc, n0, type0, n1, type1);
 }
 
   
 template < class Operation >
 bool NumArithIterator<Operation>::computeAtomic(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc& aLoc,
     store::Item_t& item0,
@@ -633,7 +633,7 @@ bool NumArithIterator<Operation>::computeAtomic(
 
       res = Operation::template
             computeSingleType<TypeConstants::XS_DOUBLE>
-            (result, rcb, tm, &aLoc, n0, n1 );
+            (result, dctx, tm, &aLoc, n0, n1 );
       break;
     }
     case TypeConstants::XS_FLOAT:
@@ -643,7 +643,7 @@ bool NumArithIterator<Operation>::computeAtomic(
 
       res = Operation::template 
             computeSingleType<TypeConstants::XS_FLOAT>
-            (result, rcb, tm, &aLoc, n0, n1);
+            (result, dctx, tm, &aLoc, n0, n1);
       break;
     }
     case TypeConstants::XS_DECIMAL:
@@ -653,7 +653,7 @@ bool NumArithIterator<Operation>::computeAtomic(
 
       res = Operation::template
             computeSingleType<TypeConstants::XS_DECIMAL>
-            (result, rcb, tm, &aLoc,n0, n1);
+            (result, dctx, tm, &aLoc,n0, n1);
       break;
     }
     case TypeConstants::XS_INTEGER:
@@ -663,7 +663,7 @@ bool NumArithIterator<Operation>::computeAtomic(
 
        res = Operation::template 
             computeSingleType<TypeConstants::XS_INTEGER>
-            (result, rcb, tm, &aLoc, n0, n1 );
+            (result, dctx, tm, &aLoc, n0, n1 );
       break;
     }
     default:
@@ -739,7 +739,7 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl(
     if (consumeNext( n1, this->theChild1.getp(), planState ))
     {
       res = compute(result,
-                    planState.theRuntimeCB,
+                    planState.theDynamicContext,
                     this->theSctx->get_typemanager(),
                     this->loc,
                     n0.getp(),
@@ -759,7 +759,7 @@ bool SpecificNumArithIterator<Operation, Type>::nextImpl(
 template < class Operation, TypeConstants::atomic_type_code_t Type >
 bool SpecificNumArithIterator<Operation, Type>::compute(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc& aLoc, 
     store::Item *n0,
@@ -768,7 +768,7 @@ bool SpecificNumArithIterator<Operation, Type>::compute(
   assert(n0->isAtomic());
   assert(n1->isAtomic());
 
-  return Operation::template computeSingleType<Type>(result, rcb, tm, &aLoc, n0, n1 );
+  return Operation::template computeSingleType<Type>(result, dctx, tm, &aLoc, n0, n1 );
 }
 
   

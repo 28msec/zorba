@@ -33,7 +33,6 @@ class ArithOperationsCommons
 {
 public:
   static void createError(
-      RuntimeCB* rcb,
       const TypeManager* tm,
       const char* aOp, 
       const QueryLoc*, 
@@ -59,26 +58,26 @@ public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
   static bool compute(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item*,
         const store::Item*)
   {
-    ArithOperationsCommons::createError(rcb, tm, "add", loc, ATC0, ATC1);
+    ArithOperationsCommons::createError(tm, "add", loc, ATC0, ATC1);
     return 0;
   }
 
   template<TypeConstants::atomic_type_code_t ATC>
   static bool computeSingleType(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item* i0,
         const store::Item* i1) 
   {
-    return AddOperation::compute<ATC,ATC>(result, rcb, tm, loc, i0, i1);
+    return AddOperation::compute<ATC,ATC>(result, dctx, tm, loc, i0, i1);
   }
 };
 
@@ -100,26 +99,26 @@ public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
   static bool compute(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item*,
         const store::Item*)
   {
-    ArithOperationsCommons::createError(rcb, tm, "sub", loc, ATC0, ATC1);
+    ArithOperationsCommons::createError(tm, "sub", loc, ATC0, ATC1);
     return 0;
   }
 
   template<TypeConstants::atomic_type_code_t ATC>
   static bool computeSingleType(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item* i0,
         const store::Item* i1) 
   {
-    return SubtractOperation::compute<ATC,ATC>(result, rcb, tm, loc, i0, i1);
+    return SubtractOperation::compute<ATC,ATC>(result, dctx, tm, loc, i0, i1);
   }
 };
 
@@ -141,26 +140,26 @@ public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
   static bool compute(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item*,
         const store::Item*)
   {
-    ArithOperationsCommons::createError(rcb, tm, "mul", loc, ATC0, ATC1);
+    ArithOperationsCommons::createError(tm, "mul", loc, ATC0, ATC1);
     return 0;
   }
 
   template<TypeConstants::atomic_type_code_t ATC>
   static bool computeSingleType(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item* i0,
         const store::Item* i1) 
   {
-    return MultiplyOperation::compute<ATC,ATC>(result, rcb, tm, loc, i0, i1);
+    return MultiplyOperation::compute<ATC,ATC>(result, dctx, tm, loc, i0, i1);
   }
 };
 
@@ -182,26 +181,26 @@ public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
   static bool compute(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item*,
         const store::Item*)
   {
-    ArithOperationsCommons::createError(rcb, tm, "div", loc, ATC0, ATC1);
+    ArithOperationsCommons::createError(tm, "div", loc, ATC0, ATC1);
     return 0;
   }
 
   template<TypeConstants::atomic_type_code_t ATC>
   static bool computeSingleType(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item* i0,
         const store::Item* i1) 
   {
-    return DivideOperation::compute<ATC,ATC>(result, rcb, tm, loc, i0, i1);
+    return DivideOperation::compute<ATC,ATC>(result, dctx, tm, loc, i0, i1);
   }
 };
 
@@ -222,26 +221,26 @@ public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
   static bool compute(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item*,
         const store::Item*)
   {
-    ArithOperationsCommons::createError(rcb, tm, "int-div", loc, ATC0, ATC1);
+    ArithOperationsCommons::createError(tm, "int-div", loc, ATC0, ATC1);
     return 0;
   }
 
   template<TypeConstants::atomic_type_code_t ATC>
   static bool computeSingleType(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item* i0,
         const store::Item* i1) 
   {
-    return IntegerDivideOperation::compute<ATC,ATC>(result, rcb, tm, loc, i0, i1);
+    return IntegerDivideOperation::compute<ATC,ATC>(result, dctx, tm, loc, i0, i1);
   }
 };
 
@@ -262,26 +261,26 @@ public:
   template<TypeConstants::atomic_type_code_t ATC0, TypeConstants::atomic_type_code_t ATC1>
   static bool compute(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item*,
         const store::Item*)
   {
-    ArithOperationsCommons::createError(rcb, tm, "mod", loc, ATC0, ATC1);
+    ArithOperationsCommons::createError(tm, "mod", loc, ATC0, ATC1);
     return 0;
   }
 
   template<TypeConstants::atomic_type_code_t ATC>
   static bool computeSingleType(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc* loc,
         const store::Item* i0,
         const store::Item* i1) 
   {
-    return ModOperation::compute<ATC,ATC>(result, rcb, tm, loc, i0, i1);
+    return ModOperation::compute<ATC,ATC>(result, dctx, tm, loc, i0, i1);
   }
 };
 
@@ -301,7 +300,7 @@ class GenericArithIterator : public BinaryBaseIterator<GenericArithIterator<Oper
 public:
   static bool compute(
         store::Item_t& result,
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc& loc,
         store::Item_t& n0,

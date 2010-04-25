@@ -281,8 +281,11 @@ protected:
   InternalNode    * theParent;
   uint32_t          theFlags;
 
+protected:
+
   // make sure that only created by the factory
   friend class NodeFactory;
+
   XmlNode(store::StoreConsts::NodeKind nodeKind)
     :
     Item(),
@@ -297,8 +300,7 @@ protected:
         long                         pos,
         store::StoreConsts::NodeKind nodeKind);
 
-  XmlNode()
-    : theParent(0) {}
+  XmlNode() : theParent(0) {}
 
 public:
 #ifndef NDEBUG

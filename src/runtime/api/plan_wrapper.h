@@ -34,6 +34,7 @@ class ZorbaDebuggerCommons;
 class ZorbaDebuggerRuntime;
 class Timeout;
 class XQueryImpl;
+class dynamic_context;
 
 
 /*******************************************************************************
@@ -44,6 +45,12 @@ class XQueryImpl;
   iterators in the (sub)tree. In general, it hides internal functionality
   like separation of code and execution, or garabage collection, and it
   provides a simple interface that the application can use.
+
+  theDynamicContext : Most of the time this is NULL. It is non-NULL if a NULL
+                      dctx is given to the constructor of "this", in which case
+                      the constructor will allocate a dctx and store a pointer
+                      to it in theDynamicContext, so that it will be deallocated
+                      by the destructor of "this".
 ********************************************************************************/
 class PlanWrapper : public store::Iterator, public intern::Serializable
 {
@@ -55,12 +62,12 @@ protected:
   PlanIter_t        theIterator;
   dynamic_context * theDynamicContext;
 
-  PlanState       * theStateBlock;
-  XQueryImpl      * theQuery;
+  PlanState       * thePlanState;
+
 #ifndef NDEBUG
   bool		          theIsOpened;
 #endif
-  Timeout*          theTimeout;
+  Timeout         * theTimeout;
   Mutex             theTimeoutMutex;
 
 public:
@@ -75,27 +82,18 @@ public:
 
   virtual ~PlanWrapper();
 
-  virtual void 
-  open();
+  virtual void open();
 
-  virtual bool
-  next(store::Item_t& item);
+  virtual bool next(store::Item_t& item);
 
-  virtual void 
-  reset();
+  virtual void reset();
 
-  virtual void
-  close() throw ();
+  virtual void close() throw ();
 
-  virtual void
-  checkDepth(const QueryLoc& loc);
-
-  const RuntimeCB*
-  getRuntimeCB() const;
+  virtual void checkDepth(const QueryLoc& loc);
 
   // implementing the internal Serializable interface
-  virtual bool
-  nextSerializableItem(store::Item_t& item);
+  virtual bool nextSerializableItem(store::Item_t& item);
 };
 
 } /* namespace zorba */

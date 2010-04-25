@@ -85,7 +85,7 @@ void GroupByState::init(
 {
   PlanIteratorState::init(aState);
 
-  GroupTupleCmp cmp(aState.theRuntimeCB, tm, gspecs);
+  GroupTupleCmp cmp(aState.theDynamicContext, tm, gspecs);
   theGroupMap = new GroupHashMap(cmp, 1024, false);
 }
 

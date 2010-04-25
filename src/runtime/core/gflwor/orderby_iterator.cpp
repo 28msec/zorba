@@ -328,7 +328,9 @@ bool OrderByIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   }
 
   {
-    SortTupleCmp cmp(planState.theRuntimeCB, theSctx->get_typemanager(), &theOrderSpecs);
+    SortTupleCmp cmp(planState.theDynamicContext,
+                     theSctx->get_typemanager(),
+                     &theOrderSpecs);
 
     if (theStable)
     {

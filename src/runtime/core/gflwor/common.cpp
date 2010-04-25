@@ -167,14 +167,14 @@ void NonGroupingSpec::close(PlanState& planState)
 
 
 GroupTupleCmp::GroupTupleCmp(
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     std::vector<GroupingSpec>* groupingSpecs) 
   :
   theGroupingSpecs(groupingSpecs),
   theTypeManager(tm)
 {
-  theTimezone = rcb->theDynamicContext->get_implicit_timezone();
+  theTimezone = dctx->get_implicit_timezone();
 }
 
 

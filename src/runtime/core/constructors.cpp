@@ -97,7 +97,7 @@ bool DocumentIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   xqpStringStore_t baseUri = theSctx->get_base_uri();
   xqpStringStore_t docUri;
 
-  std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
+  std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
   store::CopyMode copymode;
   store::Item_t child;
 
@@ -298,7 +298,7 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   store::Item_t nullValue;
   xqpStringStore_t content;
 
-  std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
+  std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
   store::Item_t attr;
   store::Item_t child;
   store::CopyMode copymode;
@@ -526,7 +526,7 @@ bool AttributeIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   store::Item_t typedValue;
   store::Item* parent;
   bool isId = theIsId;
-  std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
+  std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -629,7 +629,7 @@ bool TextIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   std::string buf;
 
   store::Item* parent;
-  std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
+  std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -700,7 +700,7 @@ bool PiIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   bool lFirst;
 
   store::Item* parent;
-  std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
+  std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -784,7 +784,7 @@ bool CommentIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   xqpStringStore_t content;
   bool lFirst;
   store::Item* parent;
-  std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
+  std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -894,7 +894,7 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 {
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   xqpStringStore_t strval;
-  std::stack<store::Item*>& path = planState.theRuntimeCB->theNodeConstuctionPath;
+  std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
 
   EnclosedIteratorState* state;
   DEFAULT_STACK_INIT(EnclosedIteratorState, state, planState);

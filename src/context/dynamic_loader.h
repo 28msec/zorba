@@ -22,35 +22,39 @@
 
 namespace zorba {
 
-  class ExternalModule;
+class ExternalModule;
 
-  class DynamicLoader
+class DynamicLoader
+{
+public:
+  static DynamicLoader* getInstance()
   {
-    public:
-      static DynamicLoader*
-      getInstance()
-      {
-        static DynamicLoader lLoader;
+    static DynamicLoader lLoader;
 
-        return &lLoader;
-      }
+    return &lLoader;
+  }
 
-      ExternalModule*
-      getModule(const xqpString& aFile) const;
+  ExternalModule* getModule(const xqpString& aFile) const;
 
-      virtual ~DynamicLoader();
+  virtual ~DynamicLoader();
 
-    private:
+private:
 
 #ifdef WIN32
-      typedef std::set<HMODULE> LibrarySet_t;
+  typedef std::set<HMODULE> LibrarySet_t;
 #else
-      typedef std::set<void*> LibrarySet_t;
+  typedef std::set<void*> LibrarySet_t;
 #endif
-      mutable LibrarySet_t theLibraries;
 
-  };
+  mutable LibrarySet_t theLibraries;
+};
 
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

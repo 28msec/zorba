@@ -22,28 +22,40 @@
 namespace zorba {
 
 // RAII-style class
-class PlanWrapperHolder {
+class PlanWrapperHolder 
+{
   std::auto_ptr<PlanWrapper> pw;
   
 public:
   PlanWrapperHolder (PlanWrapper *pw_)
-    : pw (pw_)
-  { pw->open (); }
-  PlanWrapperHolder () {}
-  ~PlanWrapperHolder() {
-    if (pw.get () != NULL)
-      pw->close ();
+    :
+    pw(pw_)
+  {
+    pw->open();
+  }
+
+  PlanWrapperHolder() {}
+
+  ~PlanWrapperHolder() 
+  {
+    if (pw.get() != NULL)
+      pw->close();
   }
   
-  void reset (PlanWrapper *pw_) {
-    if (pw.get () != NULL)
-      pw->close ();
-    pw.reset (pw_);
+  void reset(PlanWrapper* pw_) 
+  {
+    if (pw.get() != NULL)
+      pw->close();
+
+    pw.reset(pw_);
+
     if (pw_ != NULL)
-      pw->open ();
+      pw->open();
   }
-  PlanWrapper *get () { return pw.get (); }
-  PlanWrapper *operator-> () { return pw.get(); }
+
+  PlanWrapper* get() { return pw.get(); }
+
+  PlanWrapper* operator->() { return pw.get(); }
 };
 
 }

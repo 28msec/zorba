@@ -35,7 +35,6 @@
 #include "compiler/api/compilercb.h"
 
 #include "runtime/sequences/sequences.h"
-#include "runtime/api/runtimecb.h"
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/util/iterator_impl.h"
 #include "runtime/util/handle_hashset_item_value.h"
@@ -64,9 +63,7 @@ using namespace std;
 namespace zorba {
   
 
-static XQPCollator*
-getCollator(
-    RuntimeCB* aRuntimeCB,
+static XQPCollator* getCollator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanState& planState,
@@ -183,7 +180,7 @@ FnIndexOfIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   if ( theChildren.size() == 3 )
-    state->theCollator = getCollator(planState.theRuntimeCB, theSctx, loc,
+    state->theCollator = getCollator(theSctx, loc,
                                      planState, theChildren[2].getp());
 
   while ( consumeNext(lSequenceItem, theChildren[0].getp(), planState))
@@ -256,8 +253,7 @@ FnExistsIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 /*******************************************************************************
   15.1.6 fn:distinct-values
 ********************************************************************************/
-void
-FnDistinctValuesIteratorState::reset(PlanState& planState) 
+void FnDistinctValuesIteratorState::reset(PlanState& planState) 
 {
   PlanIteratorState::reset(planState);
   theHasNaN = false;
@@ -266,8 +262,9 @@ FnDistinctValuesIteratorState::reset(PlanState& planState)
 }
 
 
-bool 
-FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool FnDistinctValuesIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
 {
   store::Item_t lItem;
   xqtref_t lItemType;
@@ -279,34 +276,38 @@ FnDistinctValuesIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 
   if (theChildren.size() == 2) 
   {
-    lCollator = getCollator(planState.theRuntimeCB, theSctx, loc,
-                            planState, theChildren[1].getp());
+    lCollator = getCollator(theSctx, loc, planState, theChildren[1].getp());
 
-    theValueCompare = new ValueCompareParam(planState.theRuntimeCB, theSctx);
+    theValueCompare = new ValueCompareParam(planState.theDynamicContext, theSctx);
     theValueCompare->theCollator = lCollator;
   }
   else
   {
-    theValueCompare = new ValueCompareParam(planState.theRuntimeCB, theSctx);
+    theValueCompare = new ValueCompareParam(planState.theDynamicContext, theSctx);
   }
+
   // theValueCompare managed by state->theAlreadySeenMap
-  state->theAlreadySeenMap.reset (new ItemValueCollHandleHashSet (theValueCompare));
+  state->theAlreadySeenMap.reset(new ItemValueCollHandleHashSet(theValueCompare));
 
   while (consumeNext(result, theChildren[0].getp(), planState)) 
   {
-    if (result->isNaN ()) {
-      if (! state->theHasNaN) {
+    if (result->isNaN()) 
+    {
+      if (! state->theHasNaN) 
+      {
         state->theHasNaN = true;
         STACK_PUSH(true, state);
       }
-    } else if ( ! state->theAlreadySeenMap->find(result) ) {
+    }
+    else if ( ! state->theAlreadySeenMap->find(result) ) 
+    {
       // check if the item is already in the map
       state->theAlreadySeenMap->insert(result);
       STACK_PUSH(true, state);
     }
   }
     
-  STACK_END (state);
+  STACK_END(state);
 }
 
 /*******************************************************************************
@@ -380,8 +381,7 @@ FnRemoveIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   state->thePosition = lPositionItem->getIntegerValue();
 
   if ( theChildren.size() == 3 )
-    state->theCollator = getCollator(planState.theRuntimeCB, theSctx, loc,
-                                     planState, theChildren[2].getp());
+    state->theCollator = getCollator(theSctx, loc, planState, theChildren[2].getp());
 
   while (consumeNext(result, theChildren[0].getp(), planState))
   {
@@ -683,17 +683,17 @@ FnExactlyOneIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 ********************************************************************************/
 bool DeepEqual(
     static_context* sctx,
+    dynamic_context* dctx,
     store::Item_t& item1,
     store::Item_t& item2,
-    XQPCollator* collator,
-    RuntimeCB* theRuntimeCB);
+    XQPCollator* collator);
 
 bool DeepEqual(
     static_context* sctx,
+    dynamic_context* dctx,
     store::Iterator_t it1,
     store::Iterator_t it2,
-    XQPCollator* collator,
-    RuntimeCB* theRuntimeCB)
+    XQPCollator* collator)
 {
   store::Item_t child1, child2;
   bool c1Valid, c2Valid;
@@ -710,7 +710,7 @@ bool DeepEqual(
       return true;
     else if (!c1Valid || !c2Valid)
       return false;
-    else if (!DeepEqual(sctx, child1, child2, collator, theRuntimeCB))
+    else if (!DeepEqual(sctx, dctx, child1, child2, collator))
       return false;
   }
     
@@ -720,10 +720,10 @@ bool DeepEqual(
 
 bool DeepEqual(
     static_context* sctx,
+    dynamic_context* dctx,
     store::Item_t& item1,
     store::Item_t& item2,
-    XQPCollator* collator,
-    RuntimeCB* theRuntimeCB)
+    XQPCollator* collator)
 {
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
@@ -740,7 +740,7 @@ bool DeepEqual(
   {
     assert(item2->isAtomic());
     TypeManager* typemgr = sctx->get_typemanager();
-    long timezone = theRuntimeCB->theDynamicContext->get_implicit_timezone();
+    long timezone = dctx->get_implicit_timezone();
 
     if (collator == NULL)
       collator = sctx->get_default_collator(QueryLoc::null);
@@ -791,16 +791,16 @@ bool DeepEqual(
           return false;
 
         return (DeepEqual(sctx,
+                          dctx,
                           item1->getAttributes(),
                           item2->getAttributes(),
-                          collator,
-                          theRuntimeCB)
+                          collator)
                 &&
                 DeepEqual(sctx,
+                          dctx,
                           item1->getChildren(),
                           item2->getChildren(),
-                          collator,
-                          theRuntimeCB));
+                          collator));
         break;
         
       case store::StoreConsts::attributeNode:
@@ -814,9 +814,9 @@ bool DeepEqual(
         item2->getTypedValue(tvalue2, tvalue2Iter);
 
         if (tvalue1Iter == NULL && tvalue2Iter == NULL)
-          return DeepEqual(sctx, tvalue1, tvalue2, collator, theRuntimeCB);
+          return DeepEqual(sctx, dctx, tvalue1, tvalue2, collator);
         else if (tvalue1Iter != NULL && tvalue2Iter != NULL)
-          return DeepEqual(sctx, tvalue1Iter, tvalue2Iter, collator, theRuntimeCB);
+          return DeepEqual(sctx, dctx, tvalue1Iter, tvalue2Iter, collator);
         else
           return false;
 
@@ -852,8 +852,7 @@ FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if ( theChildren.size() == 3 )
   {
-    collator = getCollator(planState.theRuntimeCB, theSctx, loc,
-                           planState, theChildren[2].getp());
+    collator = getCollator(theSctx, loc, planState, theChildren[2].getp());
   }
 
   while (1)
@@ -873,7 +872,11 @@ FnDeepEqualIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       ZORBA_ERROR_LOC_DESC(FOTY0015, loc, "An argument to fn:deep-equal() contains a function item.");
     }
   
-    equal = equal && DeepEqual(theSctx, arg1, arg2, collator, planState.theRuntimeCB);
+    equal = equal && DeepEqual(theSctx,
+                               planState.theDynamicContext,
+                               arg1,
+                               arg2,
+                               collator);
   }
   
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, equal), state);
@@ -1099,7 +1102,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       // DO NOT short-circuit for INF and NaN!
       // Must check all items in case FORG0006 is needed
       GenericArithIterator<AddOperation>::compute(lSumItem,
-                                                  planState.theRuntimeCB,
+                                                  planState.theDynamicContext,
                                                   &tm,
                                                   loc,
                                                   lSumItem,
@@ -1111,7 +1114,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     GENV_ITEMFACTORY->createInteger(countItem, Integer::parseInt (lCount));
     GenericArithIterator<DivideOperation>::compute(result,
-                                                   planState.theRuntimeCB,
+                                                   planState.theDynamicContext,
                                                    &tm,
                                                    loc,
                                                    lSumItem,
@@ -1179,7 +1182,7 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           TypeOps::is_subtype(*lRunningType, *rtm.DT_DURATION_TYPE_ONE)))
       {
         GenericArithIterator<AddOperation>::compute(result,
-                                                    planState.theRuntimeCB,
+                                                    planState.theDynamicContext,
                                                     &tm,
                                                     loc,
                                                     result,
@@ -1457,7 +1460,7 @@ OpToIterator::nextImpl(store::Item_t& result, PlanState& planState) const {
 static void fillTime (
     const zorba::DateTime& t0,
     const zorbatm::timeinfo& t0user,
-    RuntimeCB *runtimeCB) 
+    PlanState& planState) 
 {
   zorba::DateTime   t1;
   zorbatm::timeinfo t1user;
@@ -1467,11 +1470,12 @@ static void fillTime (
 
   std::auto_ptr<zorba::Duration> diffTime;
   diffTime.reset(t1.subtractDateTime(&t0, 0));
-  runtimeCB->docLoadingTime += diffTime->getTotalMilliseconds();
 
-  runtimeCB->docLoadingUserTime +=
-    zorbatm::get_time_elapsed (zorbatm::extract_user_time_detail (t0user),
-                               zorbatm::extract_user_time_detail (t1user));
+  planState.theDynamicContext->theDocLoadingTime += diffTime->getTotalMilliseconds();
+
+  planState.theDynamicContext->theDocLoadingUserTime +=
+    zorbatm::get_time_elapsed(zorbatm::extract_user_time_detail(t0user),
+                              zorbatm::extract_user_time_detail(t1user));
 }
 
 
@@ -1481,14 +1485,11 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   xqpStringStore_t  uriString;
   xqpStringStore_t  resolvedURIString;
   store::Item_t     resolvedURIItem;
-  RuntimeCB        *runtimeCB;
   zorba::DateTime   t0;
   zorbatm::timeinfo t0user;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-
-  runtimeCB = planState.theRuntimeCB;
 
   if (consumeNext(uriItem, theChildren[0].getp(), planState)) 
   {
@@ -1506,7 +1507,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     if (result != NULL) 
     {
-      fillTime (t0, t0user, runtimeCB);
+      fillTime(t0, t0user, planState);
       STACK_PUSH(true, state);
     }
     else 
@@ -1530,7 +1531,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                                                theSctx,
                                                                false,
                                                                false);
-        fillTime(t0, t0user, runtimeCB);
+        fillTime(t0, t0user, planState);
       } 
       catch (error::ZorbaError& e) 
       {

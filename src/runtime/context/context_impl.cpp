@@ -40,7 +40,7 @@ CurrentDateTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  result = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
+  result = planState.theDynamicContext->get_current_date_time();
   if (result != NULL)
     STACK_PUSH(true, state );
 
@@ -57,7 +57,7 @@ CurrentDateIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemRes = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
+  itemRes = planState.theDynamicContext->get_current_date_time();
   if( NULL != itemRes )
   {
     d.reset (itemRes->getDateTimeValue().getDate());
@@ -77,7 +77,7 @@ CurrentTimeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  itemRes = planState.theRuntimeCB->theDynamicContext->get_current_date_time();
+  itemRes = planState.theDynamicContext->get_current_date_time();
   if( NULL != itemRes )
   {
     t.reset (itemRes->getDateTimeValue().getTime());
@@ -98,7 +98,7 @@ ImplicitTimezoneIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  secs = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
+  secs = planState.theDynamicContext->get_implicit_timezone();
   neg = secs < 0;
   if (neg)
     secs = -secs;

@@ -30,6 +30,7 @@
 
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/debug/zorba_debug_iterator.h"
+#include "runtime/util/flowctl_exception.h"
 
 #include "zorba/exception.h"
 #include "zorba/printer_error_handler.h"
@@ -212,7 +213,7 @@ void ZorbaDebuggerRuntime::runQuery()
   PrinterErrorHandler lErrorHandler(theOStream);
 
   try {
-    theWrapper->theStateBlock->theDebuggerCommons->setRuntime(this);
+    theWrapper->thePlanState->theDebuggerCommons->setRuntime(this);
     theLock.unlock();
 
     delete theSerializer;
@@ -289,7 +290,7 @@ void ZorbaDebuggerRuntime::breakpointCommands()
       std::vector<unsigned int>::iterator lIter;
       for (lIter = lIds.begin(); lIter != lIds.end(); ++lIter) {
         ZorbaDebuggerCommons* lCommons = 
-          theWrapper->theStateBlock->theDebuggerCommons;
+          theWrapper->thePlanState->theDebuggerCommons;
         lCommons->clearBreakpoint(*lIter);
       }
     }
@@ -341,7 +342,7 @@ QueryLoc ZorbaDebuggerRuntime::addBreakpoint(const QueryLoc& aLocation,
   DebugLocation_t lLocation;
   lLocation.theFileName = aLocation.getFilename().c_str();
   lLocation.theLineNumber = aLocation.getLineno();
-  ZorbaDebuggerCommons* lCommons = theWrapper->theStateBlock->theDebuggerCommons;
+  ZorbaDebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
   if (lCommons->addBreakpoint(lLocation, aId)){
     return lLocation.theQueryLocation;
   }
@@ -384,7 +385,7 @@ void ZorbaDebuggerRuntime::terminateRuntime()
   TerminateMessage* lMessage = dynamic_cast<TerminateMessage*>(theCurrentMessage);
   assert(lMessage);
 #endif
-  theWrapper->theStateBlock->theHasToQuit = true;
+  theWrapper->thePlanState->theHasToQuit = true;
   if (theExecStatus == QUERY_SUSPENDED) {
     resume();
   } else if (theExecStatus == QUERY_IDLE) {
@@ -397,7 +398,7 @@ void ZorbaDebuggerRuntime::terminateRuntime()
 ReplyMessage* ZorbaDebuggerRuntime::getAllVariables()
 {
   ZorbaDebuggerCommons* lCommons = 
-    theWrapper->theStateBlock->theDebuggerCommons;
+    theWrapper->thePlanState->theDebuggerCommons;
   static_context* lContext = lCommons->getCurrentStaticContext();
   std::vector<std::string> lVariables;
   lContext->getVariables(lVariables);
@@ -422,7 +423,7 @@ void ZorbaDebuggerRuntime::step()
 #endif // NDEBUG
   StepMessage* lMessage = static_cast<StepMessage*>(theCurrentMessage);
   StepCommand lCommand = lMessage->getStepKind();
-  ZorbaDebuggerCommons* lCommons = theWrapper->theStateBlock->theDebuggerCommons;
+  ZorbaDebuggerCommons* lCommons = theWrapper->thePlanState->theDebuggerCommons;
 
   switch (lCommand)
   {
@@ -454,7 +455,7 @@ void ZorbaDebuggerRuntime::evalCommand()
   // This command will care itself about garbage collection - so don't delete
   // it in this method!
   EvalCommand* lCommand = new EvalCommand(
-    theWrapper->theStateBlock->theDebuggerCommons,
+    theWrapper->thePlanState->theDebuggerCommons,
     theCommunicator, lExpr.c_str(), theSerializerOptions,
     theCurrentMessage->getId());
   lCommand->setDeleteAfterRun(true);
@@ -466,7 +467,7 @@ ReplyMessage* ZorbaDebuggerRuntime::listSource()
   ZORBA_ASSERT(dynamic_cast<ListCommand*>(theCurrentMessage));
   ListCommand* lCommand = dynamic_cast<ListCommand*>(theCurrentMessage);
   std::string lFile;
-  lFile = theWrapper->theStateBlock->theDebuggerCommons->getFilepathOfURI(
+  lFile = theWrapper->thePlanState->theDebuggerCommons->getFilepathOfURI(
     lCommand->getFilename());
 
   std::string lCurrLine;

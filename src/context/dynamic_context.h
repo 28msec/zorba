@@ -94,6 +94,10 @@ protected:
   IndexMap                   * theAvailableIndices;
 
 public:
+  double                       theDocLoadingUserTime;
+  long                         theDocLoadingTime;
+
+public:
   static std::string var_key(const void* var);
 
   static xqpString expand_varname(

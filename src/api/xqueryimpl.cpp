@@ -404,7 +404,8 @@ XQueryImpl::executeSAX()
   checkNotClosed();
   checkCompiled();
 
-  if (isUpdating()) {
+  if (isUpdating()) 
+  {
     ZORBA_ERROR_DESC(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY,
       "Can't perform SAX serialization with an updating query.");
   }
@@ -414,23 +415,29 @@ XQueryImpl::executeSAX()
   Zorba_SerializerOptions_t opt;
   SerializerImpl::setSerializationParameters(lSerializer, opt);
 
-  try {
+  try 
+  {
     lPlan->open();
-    if (theSAX2Handler != NULL) {
+    if (theSAX2Handler != NULL) 
+    {
       lSerializer.serialize((intern::Serializable*)&*lPlan, std::cerr, theSAX2Handler);
       std::cerr << std::endl;
-    } else {
+    }
+    else
+    {
       store::Item_t item;
       while (lPlan->next(item)){};
     }
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e)
+  {
     lPlan->close();
     ZorbaImpl::notifyError(theErrorHandler, e);
     return;
   }
 
-  theDocLoadingUserTime = lPlan->getRuntimeCB ()->docLoadingUserTime;
-  theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+  theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
+  theDocLoadingTime = theDynamicContext->theDocLoadingTime;
 
   lPlan->close();
   //SAX2_XMLReaderNative xmlreader( theSAXHandler, 0, 0, 0, 0 );
@@ -700,8 +707,8 @@ void XQueryImpl::execute(
 
   lPlan->close();
 
-  theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
-  theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+  theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
+  theDocLoadingTime = theDynamicContext->theDocLoadingTime;
 }
 
 
@@ -736,8 +743,8 @@ void XQueryImpl::execute(
 
   lPlan->close();
 
-  theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
-  theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+  theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
+  theDocLoadingTime = theDynamicContext->theDocLoadingTime;
 }
 
 
@@ -769,8 +776,8 @@ void XQueryImpl::execute()
     Item lItem;
     lIter->next(lItem);
 
-    theDocLoadingUserTime = lPlan->getRuntimeCB()->docLoadingUserTime;
-    theDocLoadingTime = lPlan->getRuntimeCB()->docLoadingTime;
+    theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
+    theDocLoadingTime = theDynamicContext->theDocLoadingTime;
 
   ZORBA_CATCH
 }
@@ -850,9 +857,7 @@ XQueryImpl::iterator()
 /*******************************************************************************
 
 ********************************************************************************/
-// QQQ?
-void
-XQueryImpl::removeResultIterator(const ResultIteratorImpl* iter)
+void XQueryImpl::removeResultIterator(const ResultIteratorImpl* iter)
 {
   std::vector<ResultIteratorImpl*>::iterator it =
     std::find(theResultIterators.begin(),
@@ -867,16 +872,16 @@ XQueryImpl::removeResultIterator(const ResultIteratorImpl* iter)
 /*******************************************************************************
 
 ********************************************************************************/
-PlanWrapper_t
-XQueryImpl::generateWrapper()
+PlanWrapper_t XQueryImpl::generateWrapper()
 {
   PlanWrapper_t lPlan = new PlanWrapper(
       static_cast<PlanIterator*>(thePlan->theRootIter.getp()),
       theCompilerCB,
       theDynamicContext,
       this,
-      0,
+      0, // stack depth
       theCompilerCB->theTimeout);
+
   return lPlan;
 }
 
@@ -884,10 +889,10 @@ XQueryImpl::generateWrapper()
 /*******************************************************************************
 
 ********************************************************************************/
-void
-XQueryImpl::checkNotClosed() const
+void XQueryImpl::checkNotClosed() const
 {
-  if (theIsClosed) {
+  if (theIsClosed) 
+  {
     ZORBA_ERROR_DESC(API0022_QUERY_ALREADY_CLOSED,
                      "Can't perform the operation because the query is already closed");
   }
@@ -897,10 +902,10 @@ XQueryImpl::checkNotClosed() const
 /*******************************************************************************
 
 ********************************************************************************/
-void
-XQueryImpl::checkCompiled() const
+void XQueryImpl::checkCompiled() const
 {
-  if ( ! thePlan ) {
+  if ( ! thePlan ) 
+  {
     ZORBA_ERROR_DESC(API0003_XQUERY_NOT_COMPILED, 
                      "Can't perform the operation because the query is not compiled");
   }

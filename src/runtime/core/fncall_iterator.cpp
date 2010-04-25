@@ -74,11 +74,8 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 
   if (thePlanState != NULL)
   {
-    if (thePlanState->theRuntimeCB != NULL)
-    {
-      delete thePlanState->theRuntimeCB->theDynamicContext;
-      delete thePlanState->theRuntimeCB;
-    }
+    if (thePlanState->theDynamicContext)
+      delete thePlanState->theDynamicContext;
 
     delete thePlanState;
     thePlanState = NULL;
@@ -92,18 +89,18 @@ UDFunctionCallIteratorState::~UDFunctionCallIteratorState()
 void UDFunctionCallIteratorState::open(PlanState& planState, user_function* udf)
 {
   thePlan = udf->getPlan(planState.theCompilerCB).getp();
-  thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
-  thePlanState = new PlanState(thePlanStateSize, planState.theStackDepth + 1);
-  thePlanState->theCompilerCB = planState.theCompilerCB;
-  thePlanState->theDebuggerCommons = planState.theDebuggerCommons;
+  thePlanStateSize = thePlan->getStateSizeOfSubtree();
 
   // Must allocate new dctx, as child of the "current" dctx, because the udf may
   // declare local block vars, some of which may hide vars with the same name in
   // the scope of the caller.
-  thePlanState->theRuntimeCB = new RuntimeCB(*planState.theRuntimeCB);
-  thePlanState->theRuntimeCB->theDynamicContext =
-  new dynamic_context(thePlanState->theRuntimeCB->theDynamicContext);
+  dynamic_context* dctx = new dynamic_context(planState.theDynamicContext);
+
+  thePlanState = new PlanState(dctx, thePlanStateSize, planState.theStackDepth + 1);
+  thePlanState->theCompilerCB = planState.theCompilerCB;
+  thePlanState->theDebuggerCommons = planState.theDebuggerCommons;
+  thePlanState->theQuery = planState.theQuery;
 }
 
 
@@ -500,29 +497,36 @@ void StatelessExtFunctionCallIterator::closeImpl(PlanState& planState)
 bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
                                                 PlanState& planState) const
 {
-  StatelessExtFunctionCallIteratorState *state;
   Item lOutsideItem;
   const PureStatelessExternalFunction* lPureFct = 0;
   const NonePureStatelessExternalFunction* lNonePureFct = 0;
+
+  StatelessExtFunctionCallIteratorState* state;
   DEFAULT_STACK_INIT(StatelessExtFunctionCallIteratorState, state, planState);
 
-  try {
-    if (m_function->isDeterministic()) {
+  try 
+  {
+    if (m_function->isDeterministic()) 
+    {
       lPureFct = dynamic_cast<const PureStatelessExternalFunction*>(m_function);
       ZORBA_ASSERT(lPureFct);
 
       state->m_result = lPureFct->evaluate(state->m_extArgs);
-    } else {
+    }
+    else
+    {
       lNonePureFct = dynamic_cast<const NonePureStatelessExternalFunction*>(m_function);
       ZORBA_ASSERT(lNonePureFct);
 
-      ZORBA_ASSERT(planState.theRuntimeCB->theQuery);
+      ZORBA_ASSERT(planState.theQuery);
       state->m_result = lNonePureFct->evaluate(state->m_extArgs,
-          planState.theRuntimeCB->theQuery->getStaticContext(),
-          planState.theRuntimeCB->theQuery->getDynamicContext());
+                                               planState.theQuery->getStaticContext(),
+                                               planState.theQuery->getDynamicContext());
     }
 
-  } catch(const ZorbaException& e) {
+  }
+  catch(const ZorbaException& e) 
+  {
     // take all information from the exception raised in
     // the external function (e.g. file name) + add loc information
     throw error::ErrorManager::createException(e.getErrorCode(),
@@ -535,7 +539,8 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
   }
   while (true)
   {
-    try {
+    try 
+    {
       if (state->m_result.get() == NULL) // This will happen if the user's external function returns a zorba::ItemSequence_t(NULL)
         break;
 

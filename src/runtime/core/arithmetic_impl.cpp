@@ -53,13 +53,11 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterat
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(GenericArithIterator, GenericArithIterator<ModOperation>, 6)
 
 void ArithOperationsCommons::createError(
-  RuntimeCB* rcb,
-  const TypeManager* tm,
-  const char* aOp, 
-  const QueryLoc* aLoc, 
-  TypeConstants::atomic_type_code_t aType0,
-  TypeConstants::atomic_type_code_t aType1
-)
+    const TypeManager* tm,
+    const char* aOp, 
+    const QueryLoc* aLoc, 
+    TypeConstants::atomic_type_code_t aType0,
+    TypeConstants::atomic_type_code_t aType1)
 {
   std::stringstream lStream;
   lStream << "The operation '";
@@ -69,7 +67,7 @@ void ArithOperationsCommons::createError(
   lStream << " and ";
   tm->create_builtin_atomic_type(aType1, TypeConstants::QUANT_ONE)->serialize_ostream(lStream);
   lStream << ".";
-  ZORBA_ERROR_LOC_DESC( XPTY0004, *aLoc, lStream.str());
+  ZORBA_ERROR_LOC_DESC(XPTY0004, *aLoc, lStream.str());
 }
 
 
@@ -107,7 +105,7 @@ bool GenericArithIterator<Operation>::nextImpl(
     if (consumeNext(n1, this->theChild1.getp(), planState))
     {
       status = compute(result,
-                       planState.theRuntimeCB,
+                       planState.theDynamicContext,
                        this->theSctx->get_typemanager(),
                        this->loc,
                        n0,
@@ -143,7 +141,7 @@ void GenericArithIterator<Operation>::accept(PlanIterVisitor& v) const
 template < class Operation >
 bool GenericArithIterator<Operation>::compute(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc& aLoc, 
     store::Item_t& n0,
@@ -167,13 +165,13 @@ bool GenericArithIterator<Operation>::compute(
     {
       return Operation::template
              compute<TypeConstants::XS_DOUBLE, TypeConstants::XS_YM_DURATION>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
     else
     {
       return Operation::template
              compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DT_DURATION>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
   }
   else if (TypeOps::is_subtype(*type0, *rtm.DT_DURATION_TYPE_ONE) &&
@@ -181,7 +179,7 @@ bool GenericArithIterator<Operation>::compute(
   {
     return Operation::template
            compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
-           (result, rcb, tm, &aLoc, n0, n1);
+           (result, dctx, tm, &aLoc, n0, n1);
   }
   else if (TypeOps::is_subtype(*type0, *rtm.YM_DURATION_TYPE_ONE))
   {
@@ -190,25 +188,25 @@ bool GenericArithIterator<Operation>::compute(
       GenericCast::castToAtomic(n1, n1, &*rtm.DOUBLE_TYPE_ONE, *tm);
       return Operation::template
              compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
     else if (TypeOps::is_subtype(*type1, *rtm.DATETIME_TYPE_ONE))
     {
       return Operation::template
              compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
     else if (TypeOps::is_subtype(*type1, *rtm.DATE_TYPE_ONE))
     {
       return Operation::template
              compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
     else if (TypeOps::is_equal(*type0, *type1))
     {
       return Operation::template
       computeSingleType<TypeConstants::XS_YM_DURATION>
-      (result, rcb, tm, &aLoc, n0, n1);
+      (result, dctx, tm, &aLoc, n0, n1);
     }
   }
   else if (TypeOps::is_subtype(*type0, *rtm.DT_DURATION_TYPE_ONE))
@@ -219,25 +217,25 @@ bool GenericArithIterator<Operation>::compute(
 
       return Operation::template
              compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
     else if (TypeOps::is_subtype(*type1, *rtm.DATETIME_TYPE_ONE))
     {
       return Operation::template 
              compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
     else if (TypeOps::is_subtype(*type1, *rtm.DATE_TYPE_ONE))
     {
       return Operation::template
              compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
     else if (TypeOps::is_equal(*type0, *type1))
     {
       return Operation::template
              computeSingleType<TypeConstants::XS_DT_DURATION>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
   }
   else if(TypeOps::is_subtype(*type0, *rtm.DATETIME_TYPE_ONE))
@@ -246,13 +244,13 @@ bool GenericArithIterator<Operation>::compute(
     {
       return Operation::template
              compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
     else if (TypeOps::is_subtype ( *type1, *rtm.DURATION_TYPE_ONE ))
     {
       return Operation::template
              compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>
-            (result, rcb, tm, &aLoc, n0, n1);
+            (result, dctx, tm, &aLoc, n0, n1);
     }
   }
   else if(TypeOps::is_subtype(*type0, *rtm.DATE_TYPE_ONE))
@@ -261,13 +259,13 @@ bool GenericArithIterator<Operation>::compute(
     {
       return Operation::template
              compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
     else if (TypeOps::is_subtype ( *type1, *rtm.DURATION_TYPE_ONE ))
     {
       return Operation::template
              compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
   }
   else if(TypeOps::is_subtype(*type0, *rtm.TIME_TYPE_ONE))
@@ -276,13 +274,13 @@ bool GenericArithIterator<Operation>::compute(
     {
       return Operation::template
              compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
     else if (TypeOps::is_subtype(*type1, *rtm.DT_DURATION_TYPE_ONE))
     {
       return Operation::template 
              compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
-             (result, rcb, tm, &aLoc, n0, n1);
+             (result, dctx, tm, &aLoc, n0, n1);
     }
   }
   else if ((TypeOps::is_numeric(*type0) ||
@@ -291,7 +289,7 @@ bool GenericArithIterator<Operation>::compute(
              TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE)))
   {
     return NumArithIterator<Operation>::
-           computeAtomic(result, rcb, tm, aLoc, n0, type0, n1, type1);
+           computeAtomic(result, dctx, tm, aLoc, n0, type0, n1, type1);
   }
   
   ZORBA_ERROR_LOC_DESC(XPTY0004, aLoc,
@@ -309,7 +307,7 @@ bool GenericArithIterator<Operation>::compute(
 template<>
 bool AddOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DURATION>
  ( store::Item_t& result,
-   RuntimeCB* rcb,
+   dynamic_context* dctx,
    const TypeManager* tm,
    const QueryLoc* loc,
    const store::Item* i0,
@@ -323,7 +321,7 @@ bool AddOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DU
 template<>
 bool AddOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT_DURATION>
 ( store::Item_t& result,
-  RuntimeCB* rcb,
+  dynamic_context* dctx,
   const TypeManager* tm,
   const QueryLoc* loc,
   const store::Item* i0,
@@ -337,7 +335,7 @@ bool AddOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT_DU
 template<>
 bool AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -351,7 +349,7 @@ bool AddOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION
 template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -365,7 +363,7 @@ bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATETIME
 template<>
 bool AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 ( store::Item_t& result,
-  RuntimeCB* rcb,
+  dynamic_context* dctx,
   const TypeManager* tm,
   const QueryLoc* loc,
   const store::Item* i0,
@@ -379,7 +377,7 @@ bool AddOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>
 template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
 ( store::Item_t& result,
-  RuntimeCB* rcb,
+  dynamic_context* dctx,
   const TypeManager* tm,
   const QueryLoc* loc,
   const store::Item* i0,
@@ -393,7 +391,7 @@ bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_DATE>
 template<>
 bool AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 ( store::Item_t& result,
-  RuntimeCB* rcb,
+  dynamic_context* dctx,
   const TypeManager* tm,
   const QueryLoc* loc,
   const store::Item* i0,
@@ -407,7 +405,7 @@ bool AddOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>
 template<>
 bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
 ( store::Item_t& result,
-  RuntimeCB* rcb,
+  dynamic_context* dctx,
   const TypeManager* tm,
   const QueryLoc* loc,
   const store::Item* i0,
@@ -425,7 +423,7 @@ bool AddOperation::compute<TypeConstants::XS_DURATION,TypeConstants::XS_TIME>
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DURATION>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -441,7 +439,7 @@ bool SubtractOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT_DURATION>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -457,7 +455,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DURATION>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -471,7 +469,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DUR
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATION>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -485,7 +483,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DURATIO
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATION>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -499,7 +497,7 @@ bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_DURATIO
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DATETIME>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -509,7 +507,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DAT
   try 
   {
     d.reset(i0->getDateTimeValue().subtractDateTime(&i1->getDateTimeValue(),
-                                                    rcb->theDynamicContext->get_implicit_timezone()));
+                                                    dctx->get_implicit_timezone()));
   }
   catch (InvalidTimezoneException) 
   {
@@ -522,7 +520,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DATETIME,TypeConstants::XS_DAT
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -532,7 +530,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>(
   try 
   {
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
-                                                rcb->theDynamicContext->get_implicit_timezone()));
+                                                dctx->get_implicit_timezone()));
   }
   catch (InvalidTimezoneException) 
   {
@@ -545,7 +543,7 @@ bool SubtractOperation::compute<TypeConstants::XS_DATE,TypeConstants::XS_DATE>(
 template<>
 bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -555,7 +553,7 @@ bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>(
   try 
   {
     d.reset(i0->getTimeValue().subtractDateTime(&i1->getTimeValue(),
-                                                rcb->theDynamicContext->get_implicit_timezone()));
+                                                dctx->get_implicit_timezone()));
   }
   catch (InvalidTimezoneException) 
   {
@@ -572,7 +570,7 @@ bool SubtractOperation::compute<TypeConstants::XS_TIME,TypeConstants::XS_TIME>(
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -594,7 +592,7 @@ bool MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -614,28 +612,28 @@ bool MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_
 
 
 template<>
-bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_YM_DURATION>
-( store::Item_t& result,
-  RuntimeCB* rcb,
-  const TypeManager* tm,
-  const QueryLoc* loc,
-  const store::Item* i0,
-  const store::Item* i1 )
+bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_YM_DURATION>(
+    store::Item_t& result,
+    dynamic_context* dctx,
+    const TypeManager* tm,
+    const QueryLoc* loc,
+    const store::Item* i0,
+    const store::Item* i1)
 {
-  return MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>(result, rcb, tm, loc, i1, i0);
+  return MultiplyOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>(result, dctx, tm, loc, i1, i0);
 }
 
 
 template<>
 bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DT_DURATION>
 ( store::Item_t& result,
-  RuntimeCB* rcb,
+  dynamic_context* dctx,
   const TypeManager* tm,
   const QueryLoc* loc,
   const store::Item* i0,
   const store::Item* i1 )
 {
-  return MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>(result, rcb, tm, loc, i1, i0);
+  return MultiplyOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>(result, dctx, tm, loc, i1, i0);
 }
 
 
@@ -646,7 +644,7 @@ bool MultiplyOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_DT_DU
 template<>
 bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DOUBLE>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,
@@ -672,7 +670,7 @@ bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_DO
 template<>
 bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DOUBLE>
 ( store::Item_t& result,
-  RuntimeCB* rcb,
+  dynamic_context* dctx,
   const TypeManager* tm,
   const QueryLoc* loc,
   const store::Item* i0,
@@ -698,7 +696,7 @@ bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DO
 template<>
 bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM_DURATION>
 ( store::Item_t& result,
-  RuntimeCB* rcb,
+  dynamic_context* dctx,
   const TypeManager* tm,
   const QueryLoc* loc,
   const store::Item* i0,
@@ -712,7 +710,7 @@ bool DivideOperation::compute<TypeConstants::XS_YM_DURATION,TypeConstants::XS_YM
 template<>
 bool DivideOperation::compute<TypeConstants::XS_DT_DURATION,TypeConstants::XS_DT_DURATION>(
     store::Item_t& result,
-    RuntimeCB* rcb,
+    dynamic_context* dctx,
     const TypeManager* tm,
     const QueryLoc* loc,
     const store::Item* i0,

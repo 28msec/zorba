@@ -16,17 +16,18 @@
 #ifndef ZORBA_RUNTIME_PLAN_ITERATOR
 #define ZORBA_RUNTIME_PLAN_ITERATOR
 
-//#include <typeinfo>
+#include <stack>
 
 #include "common/shared_types.h"
 
 #include "zorbaerrors/Assert.h"
 
+#include "runtime/util/flowctl_exception.h"
+
 #include "compiler/parser/query_loc.h"
 
 #include "zorbaserialization/class_serializer.h"
 
-#include "runtime/util/flowctl_exception.h"
 
 #if ZORBA_BATCHING_TYPE == 1
 #include "store/api/item.h"
@@ -96,8 +97,10 @@ namespace zorba
 
 class RuntimeCB;
 class PlanIterVisitor;
-
+class dynamic_context;
 class ZorbaDebuggerCommons;
+class XQueryImpl;
+
 
 /*******************************************************************************
   Class to represent state that is shared by all plan iterators. 
@@ -119,33 +122,35 @@ class ZorbaDebuggerCommons;
 class PlanState
 {
 public:
-  int8_t               * theBlock;
+  int8_t                  * theBlock;
 
-  uint32_t               theBlockSize;
+  uint32_t                  theBlockSize;
 
-  uint32_t               theStackDepth;
+  uint32_t                  theStackDepth;
   
   // TODO this guy should become const because nothing can change anymore during
   // runtime. We need to make all accessor in the control block and static context
   // (see also shortcut below) const before doing that
-  CompilerCB           * theCompilerCB; 
+  CompilerCB              * theCompilerCB; 
 
-  RuntimeCB            * theRuntimeCB;
+  XQueryImpl              * theQuery;
 
-  ZorbaDebuggerCommons * theDebuggerCommons;
+  dynamic_context         * theDynamicContext;
 
-  bool                   theHasToQuit;
+  std::stack<store::Item*>  theNodeConstuctionPath;
+
+  ZorbaDebuggerCommons    * theDebuggerCommons;
+
+  bool                      theHasToQuit;
 
 public:
-  PlanState(uint32_t blockSize, uint32_t aStackDepth = 0);
+  PlanState(dynamic_context* dctx, uint32_t blockSize, uint32_t aStackDepth = 0);
 
   ~PlanState();
 
-  void checkDepth(const QueryLoc &loc);
+  void checkDepth(const QueryLoc& loc);
 
-  const RuntimeCB* getRuntimeCB() const { return theRuntimeCB; }
-
-  dynamic_context* dctx();
+  dynamic_context* dctx() { return theDynamicContext; }
 };
 
 

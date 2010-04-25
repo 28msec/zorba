@@ -1767,7 +1767,9 @@ void static_context::find_functions(
   created and is provided directly by the application. Otherwise, it is an
   external module that is created and loaded dynamically by zorba from a lib
   file that is stored somewhere in the in-scope module paths (see
-  StandardModuleURIResolver::getExternalModule method).
+  StandardModuleURIResolver::getExternalModule method and how this method is
+  invoked by the static_context::lookup_stateless_external_function method
+  below).
 ********************************************************************************/
 void static_context::bind_external_module(
     ExternalModule* aModule,

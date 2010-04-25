@@ -69,8 +69,7 @@ bool CtxVarDeclIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   CONSUME (varName, 0);
 
-  planState.theRuntimeCB->theDynamicContext->
-  declare_variable(varName->getStringValue()->str());
+  planState.theDynamicContext->declare_variable(varName->getStringValue()->str());
 
   STACK_END (state);
 }
@@ -100,7 +99,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (! CONSUME (item, 1))
 			ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "context item must be a single item");
 
-    planState.theRuntimeCB->theDynamicContext->set_context_item(item, 0);
+    planState.theDynamicContext->set_context_item(item, 0);
 
     if (CONSUME (item, 1))
       ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "context item must be a single item");
@@ -110,8 +109,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
     if (! CONSUME (item, 1))
 			ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "variable value must be a single item");
 
-    planState.theRuntimeCB->theDynamicContext->
-    set_variable(varName->getStringValue()->str(), item);
+    planState.theDynamicContext->set_variable(varName->getStringValue()->str(), item);
 
     if (CONSUME (item, 1))
       ZORBA_ERROR_LOC_DESC( XPTY0004, loc, "variable value must be a single item");
@@ -119,8 +117,7 @@ bool CtxVarAssignIterator::nextImpl(store::Item_t& result, PlanState& planState)
   else
   {
     store::Iterator_t planIter = new PlanIteratorWrapper(theChildren[1], planState);
-    planState.theRuntimeCB->theDynamicContext->
-    set_variable(varName->getStringValue()->str(), planIter);
+    planState.theDynamicContext->set_variable(varName->getStringValue()->str(), planIter);
   }
 
   STACK_END (state);
@@ -141,7 +138,7 @@ bool CtxVarExistsIterator::nextImpl(store::Item_t& result, PlanState& planState)
   store::Item_t varName;
   store::Item_t varItem;
   store::Iterator_t varIter;
-  dynamic_context* dctx = planState.theRuntimeCB->theDynamicContext;
+  dynamic_context* dctx = planState.theDynamicContext;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -191,7 +188,7 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   // looking for context item?
 	if(varName->getStringValue()->byteEqual(".", 1)) 
   {  
-    result = planState.theRuntimeCB->theDynamicContext->context_item();
+    result = planState.theDynamicContext->context_item();
 		if(result == NULL)
 			ZORBA_ERROR_LOC_PARAM( XPDY0002, loc, "context item", "");
 
@@ -199,8 +196,7 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 	}
   else
   {
-    planState.theRuntimeCB->theDynamicContext->
-    get_variable(varName, result, state->theIter);
+    planState.theDynamicContext->get_variable(varName, result, state->theIter);
 
     if (result != NULL)
     {

@@ -205,11 +205,15 @@ public:
   ----------------
 
   Vector of absolute directory pathnames for directories that contain module
-  and/or schema files. The Zorba root sctx stores a number of predefined paths.
+  files and/or schema files and/or library files that contain the implementations
+  of external functions. The Zorba root sctx stores a number of predefined paths.
   Applications may register additional paths in their own sctx objs. These
   directory pathnames are used by the StandardModuleURIResolver and the
   StandardSchemaURIResolver, which implement the full resulution protocol for
   modules and schemas, respectively.
+
+  theExternalModulesMap :
+  -----------------------
 
   theTypemgr :
   ------------
@@ -232,6 +236,12 @@ public:
   -----------------------------
 
   The namespace URI to be used for function qnames whose prefix is empty.
+
+  theCtxItemType :
+  ----------------
+
+  theVariablesMap :
+  -----------------
 
   theFunctionMap :
   ----------------
@@ -258,17 +268,44 @@ public:
   A hash mash map mapping XQDDF collection qnames to the objs storing the info
   from the declaration of the associated collections.
 
+  theCollectionCallback :
+  -----------------------
+
+  theCollectionCallbackData :
+  ---------------------------
+
+  theW3CCollectionMap :
+  ---------------------
+
+  theDefaultW3CCollectionType :
+  -----------------------------
+
   theIndexMap :
   -------------
 
   A hash mash map mapping XQDDF index qnames to the objs storing the info from
   the declaration of the associated index.
 
+  theIndexCallback :
+  ------------------
+
+  theIndexCallbackData :
+  ----------------------
+
   theICMap :
   ----------
 
   A hash mash map mapping XQDDF integrity constraint qnames to the objs storing
   the info from the declaration of the associated integrity constraint.
+
+  theDocumentMap :
+  ----------------
+
+  theCollationMap :
+  -----------------
+
+  theDefaultCollation :
+  ---------------------
 
   theDecimalFormats :
   -------------------
@@ -364,16 +401,16 @@ protected:
   xqpStringStore_t                        theDefaultElementNamespace;
   xqpStringStore_t                        theDefaultFunctionNamespace;
 
+  xqtref_t                                theCtxItemType;
+
   VariableMap                           * theVariablesMap;
 
   FunctionMap                           * theFunctionMap;
   FunctionArityMap                      * theFunctionArityMap;
 
-  CollectionMap                        * theCollectionMap;
-  CollectionCallback                     theCollectionCallback;
-  void                                 * theCollectionCallbackData;
-
-  xqtref_t                                theCtxItemType;
+  CollectionMap                         * theCollectionMap;
+  CollectionCallback                      theCollectionCallback;
+  void                                  * theCollectionCallbackData;
 
   W3CCollectionMap                      * theW3CCollectionMap;
   xqtref_t                                theDefaultW3CCollectionType;
@@ -381,6 +418,7 @@ protected:
   IndexMap                              * theIndexMap;
   IndexCallback                           theIndexCallback;
   void                                  * theIndexCallbackData;
+
   ICMap                                 * theICMap;
 
   DocumentMap                           * theDocumentMap;

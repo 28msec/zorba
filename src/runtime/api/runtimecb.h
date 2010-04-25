@@ -16,39 +16,17 @@
 #ifndef XQP_RUNTIMECB_H
 #define XQP_RUNTIMECB_H
 
-#include <stack>
 
-
-namespace zorba {
-
-namespace store
+namespace zorba 
 {
-  class Item;
-}
 
-class static_context;
-class dynamic_context;
 class XQueryImpl;
  
 
 class RuntimeCB 
 {
 public:
-  RuntimeCB()
-    :
-    theDynamicContext(0),
-    docLoadingUserTime(0.0),
-    docLoadingTime(0)
-  {
-  }
-
-  XQueryImpl               * theQuery;
-  dynamic_context          * theDynamicContext;
-
-  double                     docLoadingUserTime;
-  long                       docLoadingTime;
-
-  std::stack<store::Item*>   theNodeConstuctionPath;
+  RuntimeCB()  { }
 };
 
 } /* namespace zorba */

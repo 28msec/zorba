@@ -25,7 +25,7 @@
 namespace zorba
 {
 
-class RuntimeCB;
+class dynamic_context;
 
 
 /*******************************************************************************
@@ -45,7 +45,7 @@ public:
   static bool
   compute(
         store::Item_t& result,
-        RuntimeCB* aRuntimeCB,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc& loc,
         store::Item_t& item0,
@@ -54,7 +54,7 @@ public:
   static bool
   computeAtomic(
         store::Item_t& result,
-        RuntimeCB* aRuntimeCB,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc&,
         store::Item_t& item0,
@@ -100,7 +100,7 @@ public:
   static bool
   compute(
         store::Item_t& result,
-        RuntimeCB* aRuntimeCB,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const QueryLoc& loc,
         store::Item *item0,

@@ -211,7 +211,7 @@ public:
   GroupTupleCmp() : theGroupingSpecs(0), theTypeManager(0), theTimezone(0) {}
 
   GroupTupleCmp(
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         std::vector<GroupingSpec>* groupSpecs);
 

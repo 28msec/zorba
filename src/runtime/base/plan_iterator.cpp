@@ -20,6 +20,7 @@
 #include "runtime/base/plan_iterator.h"
 #include "runtime/api/runtimecb.h"
 
+#include "runtime/util/flowctl_exception.h"
 
 namespace zorba
 {
@@ -46,33 +47,32 @@ END_SERIALIZABLE_CLASS_VERSIONS(PlanIterator)
 /*******************************************************************************
   class PlanState
 ********************************************************************************/
-PlanState::PlanState(uint32_t blockSize, uint32_t aStackDepth)
+PlanState::PlanState(dynamic_context* dctx, uint32_t blockSize, uint32_t aStackDepth)
   :
-  theBlockSize (blockSize),
-  theStackDepth (aStackDepth),
-  theRuntimeCB(0),
+  theBlockSize(blockSize),
+  theStackDepth(aStackDepth),
+  theCompilerCB(0),
+  theQuery(0),
+  theDynamicContext(dctx),
   theHasToQuit(false)
 {
+  assert(dctx != NULL);
   theBlock = new int8_t[theBlockSize];
 }
 
 
-dynamic_context* PlanState::dctx()
-{
-  return theRuntimeCB->theDynamicContext;
-}
 
-
-void PlanState::checkDepth (const QueryLoc &loc)
+void PlanState::checkDepth(const QueryLoc& loc)
 {
   if (theStackDepth > 256)
-    ZORBA_ERROR_LOC_PARAM (XQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
+    ZORBA_ERROR_LOC_PARAM(XQP0019_INTERNAL_ERROR, loc, "stack overflow", "");
 }
 
 
 PlanState::~PlanState()
 {
-  delete[] theBlock; theBlock = 0;
+  delete[] theBlock;
+  theBlock = 0;
 }
 
 

@@ -28,6 +28,15 @@
 #    define ZORBA_THREAD_RETURN DWORD WINAPI
 #endif
 
+//#define TRACING_ON
+
+#ifdef TRACING_ON
+#define TRACE(msg) std::cout << msg << std::endl;
+#else
+#define TRACE(msg)
+#endif
+
+
 zorba::Runnable::~Runnable()
 {
 }
@@ -69,7 +78,7 @@ void zorba::Runnable::start()
     assert(false);
 #endif
 
-  // std::cout << "Created child thread " << theThread << std::endl << std::endl;
+  TRACE("Created child thread " << theThread << std::endl);
 }
 
 
@@ -78,7 +87,7 @@ void zorba::Runnable::start()
 ********************************************************************************/
 void zorba::Runnable::terminate()
 {
-  // std::cout << "Terminating child thread " << theThread << std::endl << std::endl;
+  TRACE("Terminating child thread " << theThread << std::endl);
 
 retry:
 
@@ -126,6 +135,8 @@ retry:
   join();
 
   finishImpl();
+
+  TRACE("Terminating child thread " << theThread << std::endl);
 }
 
 
@@ -191,7 +202,7 @@ void zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
   else
     theCondition.wait();
 
-  std::cout << "Resuming child thread " << theThread << std::endl << std::endl;
+  TRACE("Resuming child thread " << theThread << std::endl);
 
   theStatus = RUNNING;
 

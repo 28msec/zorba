@@ -3194,7 +3194,7 @@ void* begin_visit(const VFO_DeclList& v)
       try
       {
         ef = theSctx->lookup_stateless_external_function(qnameItem->getNamespace(),
-                                                        qnameItem->getLocalName());
+                                                         qnameItem->getLocalName());
       }
       catch (error::ZorbaError& e)
       {
@@ -3213,7 +3213,8 @@ void* begin_visit(const VFO_DeclList& v)
       ZORBA_ASSERT(ef != NULL);
 
       expr_script_kind_t lScriptKind;
-      switch (func_decl->get_type()) {
+      switch (func_decl->get_type()) 
+      {
       case ParseConstants::fn_extern_update:
         lScriptKind = UPDATE_EXPR;
         break;

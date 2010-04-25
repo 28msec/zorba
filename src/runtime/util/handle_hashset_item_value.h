@@ -33,16 +33,14 @@ namespace zorba
 class ValueCompareParam
 {
 public:
-  ValueCompareParam(RuntimeCB* aRuntimeCB, static_context* sctx)
+  ValueCompareParam(dynamic_context* dctx, static_context* sctx)
     :
-    theRuntimeCB(aRuntimeCB),
     theTypeManager(sctx->get_typemanager()),
-    theTimezone(theRuntimeCB->theDynamicContext->get_implicit_timezone()),
-      theCollator(sctx->get_default_collator(QueryLoc::null)) 
+    theTimezone(dctx->get_implicit_timezone()),
+    theCollator(sctx->get_default_collator(QueryLoc::null)) 
   {
   }
 
-  RuntimeCB   * theRuntimeCB;
   TypeManager * theTypeManager;
   long          theTimezone;
   XQPCollator * theCollator;
@@ -175,3 +173,9 @@ public:
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

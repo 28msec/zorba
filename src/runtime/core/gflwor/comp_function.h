@@ -19,7 +19,6 @@
 #include "context/dynamic_context.h"
 
 #include "runtime/core/gflwor/common.h"
-#include "runtime/api/runtimecb.h"
 #include "runtime/booleans/BooleanImpl.h"
 
 
@@ -44,14 +43,14 @@ public:
   SortTupleCmp() : theOrderSpecs(0), theTypeManager(0), theTimezone(0) {}
 
   SortTupleCmp(
-        RuntimeCB* rcb,
+        dynamic_context* dctx,
         const TypeManager* tm,
         const std::vector<OrderSpec>* orderSpecs)
     :
     theOrderSpecs(orderSpecs) 
   {
     theTypeManager = tm;
-    theTimezone = rcb->theDynamicContext->get_implicit_timezone();
+    theTimezone = dctx->get_implicit_timezone();
   }
 
   /**

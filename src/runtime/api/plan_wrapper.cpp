@@ -33,22 +33,18 @@ PlanWrapper::PlanWrapper(
     const PlanIter_t& aIter,
     CompilerCB* aCompilerCB,
     dynamic_context* aDynamicContext,
-    XQueryImpl* aQuery,
+    XQueryImpl* query,
     uint32_t aStackDepth,
     long aTimeout)
   :
   theIterator(aIter),
   theDynamicContext(NULL),
-  theQuery(aQuery),
 #ifndef NDEBUG
   theIsOpened(false),
 #endif
   theTimeout(0)
 {
   assert (aCompilerCB);
-
-  uint32_t lStateSize = theIterator->getStateSizeOfSubtree();
-  theStateBlock = new PlanState(lStateSize, aStackDepth);
 
   if (aDynamicContext == NULL)
   {
@@ -58,17 +54,18 @@ PlanWrapper::PlanWrapper(
     theDynamicContext = aDynamicContext;
   }
 
-  // set the compiler cb in the state
-  theStateBlock->theCompilerCB = aCompilerCB;
+  uint32_t lStateSize = theIterator->getStateSizeOfSubtree();
 
-  // for the moment, let's keep the runtime cb here
-  theStateBlock->theRuntimeCB = new RuntimeCB();
-  theStateBlock->theRuntimeCB->theDynamicContext = aDynamicContext;
-  theStateBlock->theRuntimeCB->theQuery = theQuery;
-  theStateBlock->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
+  thePlanState = new PlanState(aDynamicContext, lStateSize, aStackDepth);
+
+  // set the compiler cb in the state
+  thePlanState->theCompilerCB = aCompilerCB;
+  thePlanState->theQuery = query;
+  thePlanState->theDebuggerCommons = aCompilerCB->theDebuggerCommons;
+
   if (aTimeout != -1) 
   {
-    StateWrapper lWrapper(*theStateBlock);
+    StateWrapper lWrapper(*thePlanState);
     theTimeout = new Timeout(aTimeout, lWrapper);
   }
 }
@@ -88,11 +85,8 @@ PlanWrapper::~PlanWrapper()
 
   delete theTimeout;
 
-  // we created it
-  delete theStateBlock->theRuntimeCB; 
-
-  delete theStateBlock; 
-  theStateBlock = NULL;
+  delete thePlanState; 
+  thePlanState = NULL;
 
   // De-allocate locally allocated dctx, if any
   if (theDynamicContext != NULL)
@@ -111,7 +105,7 @@ PlanWrapper::open()
 #endif
 
   uint32_t offset = 0;
-  theIterator->open(*theStateBlock, offset);
+  theIterator->open(*thePlanState, offset);
 
   if (theTimeout) 
   {
@@ -133,7 +127,7 @@ PlanWrapper::next(store::Item_t& result)
   assert(theIsOpened);
 #endif
 
-  return PlanIterator::consumeNext(result, theIterator.getp(), *theStateBlock);
+  return PlanIterator::consumeNext(result, theIterator.getp(), *thePlanState);
 }
 
 
@@ -143,13 +137,13 @@ PlanWrapper::reset()
 #ifndef NDEBUG
   assert(theIsOpened);
 #endif
-  theIterator->reset(*theStateBlock); 
+  theIterator->reset(*thePlanState); 
 }
 
 
 void PlanWrapper::close() throw ()
 {
-  theIterator->close(*theStateBlock);
+  theIterator->close(*thePlanState);
 
 #ifndef NDEBUG
   theIsOpened = false;
@@ -157,21 +151,16 @@ void PlanWrapper::close() throw ()
 }
 
 
-void PlanWrapper::checkDepth (const QueryLoc &loc)
+void PlanWrapper::checkDepth (const QueryLoc& loc)
 {
-  theStateBlock->checkDepth (loc);
-}
-
-
-const RuntimeCB* PlanWrapper::getRuntimeCB() const
-{
-  return theStateBlock->getRuntimeCB ();
+  thePlanState->checkDepth(loc);
 }
 
 
 bool PlanWrapper::nextSerializableItem(store::Item_t& aItem)
 {
-  if (!next(aItem)) {
+  if (!next(aItem)) 
+  {
     return false;
   }
   return true;

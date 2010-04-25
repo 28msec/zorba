@@ -28,92 +28,98 @@
 namespace zorba {
 
 #ifdef WIN32
-  static void
-  displayError(std::string& aErrorMsg) {
-      LPVOID lpMsgBuf;
-      LPVOID lpDisplayBuf;
-      DWORD dw = GetLastError();
+static void displayError(std::string& aErrorMsg) 
+{
+  LPVOID lpMsgBuf;
+  LPVOID lpDisplayBuf;
+  DWORD dw = GetLastError();
   
-      FormatMessage(
-          FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-          FORMAT_MESSAGE_FROM_SYSTEM |
-          FORMAT_MESSAGE_IGNORE_INSERTS,
-          NULL,
-          dw,
-          MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-          (LPTSTR) &lpMsgBuf,
-          0, NULL );
-      lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, 
-          (lstrlen((LPCTSTR)lpMsgBuf) + 40) * sizeof(TCHAR)); 
-      StringCchPrintf((LPTSTR)lpDisplayBuf, 
-          LocalSize(lpDisplayBuf) / sizeof(TCHAR),
-          TEXT("Failed with error %d: %s"), dw, lpMsgBuf); 
+  FormatMessage(
+                FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+                FORMAT_MESSAGE_FROM_SYSTEM |
+                FORMAT_MESSAGE_IGNORE_INSERTS,
+                NULL,
+                dw,
+                MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+                (LPTSTR) &lpMsgBuf,
+                0, NULL );
+  lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, 
+                                    (lstrlen((LPCTSTR)lpMsgBuf) + 40) * sizeof(TCHAR)); 
+  StringCchPrintf((LPTSTR)lpDisplayBuf, 
+                  LocalSize(lpDisplayBuf) / sizeof(TCHAR),
+                  TEXT("Failed with error %d: %s"), dw, lpMsgBuf); 
   
-      aErrorMsg = (LPCTSTR) lpDisplayBuf;
+  aErrorMsg = (LPCTSTR) lpDisplayBuf;
   
-      LocalFree(lpMsgBuf);
-      LocalFree(lpDisplayBuf);
-  }
+  LocalFree(lpMsgBuf);
+  LocalFree(lpDisplayBuf);
+}
 #endif // WIN32
 
-  ExternalModule*
-  DynamicLoader::getModule(const xqpString& aFile) const
-  {
-    // function pointer to create a module
-    ExternalModule* (*createModule)() = NULL;
 
+ExternalModule* DynamicLoader::getModule(const xqpString& aFile) const
+{
+  // function pointer to create a module
+  ExternalModule* (*createModule)() = NULL;
+  
 #ifdef WIN32
-    HMODULE handle = LoadLibrary(aFile.c_str());
-    if (handle == NULL) {
-      std::string lErrorMessage;
-      displayError(lErrorMessage);
-      ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
-                           "Cannot load the dynamic library file " << aFile
-                           << ". " << lErrorMessage);
-    }
-    createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
-    if (createModule == NULL) {
-      std::string lErrorMessage;
-      displayError(lErrorMessage);
-      ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
-                           "Function createModule not available in dynamic"
-                           << " library" << aFile << ". " << lErrorMessage);
-    }
-#else
-    void *handle = dlopen(aFile.c_str(), RTLD_NOW);
-    if (!handle) {
-      ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
-                           "Cannot load the dynamic library file " << aFile
-                           << ". " << dlerror());
-    }
-
-    createModule = (ExternalModule* (*)()) dlsym(handle, "createModule");
-    if (createModule == NULL) {
-      dlclose(handle);
-      ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
-                           "Function createModule not available in dynamic"
-                           << " library" << aFile << ". " << dlerror());
-    }
-#endif
-    if (theLibraries.find(handle) == theLibraries.end()) {
-      theLibraries.insert(handle);
-    }
-
-    return createModule();
-  }
-
-  DynamicLoader::~DynamicLoader()
+  HMODULE handle = LoadLibrary(aFile.c_str());
+  if (handle == NULL) 
   {
-    for (LibrarySet_t::const_iterator lIter = theLibraries.begin();
-         lIter != theLibraries.end(); ++lIter) {
-#ifdef WIN32
-      FreeLibrary(*lIter);
-#else
-      dlclose(*lIter);
-#endif
-    }
-    
+    std::string lErrorMessage;
+    displayError(lErrorMessage);
+    ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
+                         "Cannot load the dynamic library file " << aFile
+                         << ". " << lErrorMessage);
   }
-
+  createModule = (ExternalModule* (*)())GetProcAddress(handle, "createModule");
+  if (createModule == NULL) 
+  {
+    std::string lErrorMessage;
+    displayError(lErrorMessage);
+    ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
+                         "Function createModule not available in dynamic"
+                         << " library" << aFile << ". " << lErrorMessage);
+  }
+#else
+  void* handle = dlopen(aFile.c_str(), RTLD_NOW);
+  if (!handle) 
+  {
+    ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
+                         "Cannot load the dynamic library file " << aFile
+                         << ". " << dlerror());
+  }
+  
+  createModule = (ExternalModule* (*)()) dlsym(handle, "createModule");
+  if (createModule == NULL) 
+  {
+    dlclose(handle);
+    ZORBA_ERROR_DESC_OSS(API0015_CANNOT_OPEN_FILE,
+                         "Function createModule not available in dynamic"
+                         << " library" << aFile << ". " << dlerror());
+  }
+#endif
+  if (theLibraries.find(handle) == theLibraries.end()) 
+  {
+    theLibraries.insert(handle);
+  }
+  
+  return createModule();
+}
+  
+  
+DynamicLoader::~DynamicLoader()
+{
+  for (LibrarySet_t::const_iterator lIter = theLibraries.begin();
+       lIter != theLibraries.end(); ++lIter) 
+  {
+#ifdef WIN32
+    FreeLibrary(*lIter);
+#else
+    dlclose(*lIter);
+#endif
+  }
+}
+  
 
 } /* namespace zorba */

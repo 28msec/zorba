@@ -76,9 +76,7 @@ NARY_ACCEPT(FnIdIterator);
 
 NARY_ACCEPT(FnIdRefIterator);
 
-static XQPCollator*
-getCollator(
-    RuntimeCB* aRuntimeCB,
+static XQPCollator* getCollator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanState& planState,
@@ -136,7 +134,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   const TypeManager& tm = *theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  long timezone = planState.theRuntimeCB->theDynamicContext->get_implicit_timezone();
+  long timezone = planState.theDynamicContext->get_implicit_timezone();
   XQPCollator*  lCollator = 0;
   bool  elems_in_seq = 0;
   result = NULL;
@@ -147,8 +145,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (theChildren.size() == 2)
-    lCollator = getCollator(planState.theRuntimeCB, theSctx, loc,
-                            planState, theChildren[1].getp());
+    lCollator = getCollator(theSctx, loc, planState, theChildren[1].getp());
   else
     lCollator = theSctx->get_default_collator(loc);
 

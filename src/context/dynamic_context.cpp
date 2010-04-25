@@ -130,7 +130,9 @@ xqp_string dynamic_context::expand_varname(
 dynamic_context::dynamic_context(dynamic_context* parent)
   :
   theParent(NULL),
-  theAvailableIndices(NULL)
+  theAvailableIndices(NULL),
+  theDocLoadingUserTime(0.0),
+  theDocLoadingTime(0)
 {
   theParent = parent;
 

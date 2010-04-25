@@ -1050,8 +1050,9 @@ StaticContextImpl::declareOption(const Item& aQName, const String& aOptionValue)
 }
 
 
-void
-StaticContextImpl::loadProlog(const String& prolog, const Zorba_CompilerHints_t& hints)
+void StaticContextImpl::loadProlog(
+    const String& prolog,
+    const Zorba_CompilerHints_t& hints)
 {
   // Create and compile an internal query whose prolog is the given prolog and
   // its body is just the emtpy sequence expression: "()".
@@ -1064,18 +1065,22 @@ StaticContextImpl::loadProlog(const String& prolog, const Zorba_CompilerHints_t&
   theSctxMap = impl.theSctxMap;
 }
 
-void
-StaticContextImpl::setModulePaths( const std::vector<String>& aModulePaths )
+
+void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
 {
-  try {
+  try 
+  {
     std::vector<std::string> lModulePaths;
 
     for (std::vector<String>::const_iterator lIter = aModulePaths.begin();
-         lIter != aModulePaths.end(); ++lIter) {
-      if (lIter->length()!=0) {
+         lIter != aModulePaths.end(); ++lIter) 
+    {
+      if (lIter->length() != 0) 
+      {
         lModulePaths.push_back(Unmarshaller::getInternalString(*lIter)->c_str());
         std::string& lPath = lModulePaths.back();
-        if (lPath.rfind(filesystem_path::get_path_separator()) != std::string::npos) {
+        if (lPath.rfind(filesystem_path::get_path_separator()) != std::string::npos) 
+        {
           lPath.append(filesystem_path::get_path_separator());
         }
       }
@@ -1083,13 +1088,15 @@ StaticContextImpl::setModulePaths( const std::vector<String>& aModulePaths )
     }
     
     theCtx->set_module_paths(lModulePaths);
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
 }
 
-void
-StaticContextImpl::getModulePaths( std::vector<String>& aModulePaths ) const
+
+void StaticContextImpl::getModulePaths(std::vector<String>& aModulePaths) const
 {
   try {
     std::vector<std::string> lModulePaths;
