@@ -62,6 +62,8 @@ static bool is_enclosed_expr(const expr*);
 
 static bool contains_updates(const expr*);
 
+static bool contains_nondeterministic(const expr*);
+
 
 /*******************************************************************************
   Used to implement a stack of flwor exprs.
@@ -131,6 +133,7 @@ static bool hoist_expressions(
     struct flwor_holder* fholder)
 {
   bool status = false;
+
   if (e->get_expr_kind() == flwor_expr_kind)
   {
     flwor_expr* flwor = static_cast<flwor_expr *>(e);
@@ -386,9 +389,9 @@ static bool non_hoistable(const expr* e)
       k == const_expr_kind ||
       k == axis_step_expr_kind ||
       k == match_expr_kind ||
-      (k == wrapper_expr_kind &&
-       non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
+      (k == wrapper_expr_kind && non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
       is_already_hoisted(e) ||
+      contains_nondeterministic(e) ||
       e->get_scripting_kind() == SEQUENTIAL_EXPR)
   {
     return true;
@@ -400,9 +403,6 @@ static bool non_hoistable(const expr* e)
     const function* f = fo->get_func();
 
     if (f->getKind() == FunctionConsts::OP_CONCATENATE_N && fo->num_args() == 0)
-      return true;
-
-    if (f->isDeterministic() == false)
       return true;
   }
 
@@ -459,6 +459,45 @@ static bool contains_updates(const expr* e)
 
   return false;
 }
+
+/*******************************************************************************
+  The function returns false for non-deterministic FO expressions, and true
+  for all other expressions
+********************************************************************************/
+static bool is_deterministic(const expr* e)
+{
+  if (e->get_expr_kind() == fo_expr_kind)
+  {
+    const fo_expr* fo = static_cast<const fo_expr*>(e);
+    return fo->get_func()->isDeterministic();
+  }
+
+  return true;
+}
+
+/*******************************************************************************
+  Returns true if the expressions contains a non-deterministic function call
+********************************************************************************/
+static bool contains_nondeterministic(const expr* e)
+{
+  if (!is_deterministic(e))
+    return true;
+
+  const_expr_iterator i = e->expr_begin_const();
+  while(!i.done())
+  {
+    const expr* ce = &*(*i);
+    if (ce)
+    {
+      if (contains_nondeterministic(ce))
+        return true;
+    }
+    ++i;
+  }
+
+  return false;
+}
+
 
 }
 /* vim:set ts=2 sw=2: */

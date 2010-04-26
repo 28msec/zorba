@@ -75,8 +75,8 @@ static expr_t execute (
   {
     PlanWrapperHolder pw(new PlanWrapper(plan,
                                          compilercb,
-                                         NULL,      // dynamic ctx
-                                         NULL,   // query
+                                         0,      // dynamic ctx
+                                         NULL,   // xquery
                                          0,      // stack depth
                                          compilercb->theTimeout));
     for (;;)
@@ -411,9 +411,12 @@ RULE_REWRITE_PRE(FoldConst)
 
   // TODO: this computation could be moved to isUnfoldable() in fo_expr
   bool isDeterministicFunc = true;
-  fo_expr* fo = dynamic_cast<fo_expr *>(node);
-  if (fo != NULL && fo->get_func() != NULL)
-    isDeterministicFunc = fo->get_func()->isDeterministic();
+  if (node->get_expr_kind() == fo_expr_kind)
+  {
+    fo_expr* fo = static_cast<fo_expr *>(node);
+    if (fo != NULL && fo->get_func() != NULL)
+      isDeterministicFunc = fo->get_func()->isDeterministic();
+  }
 
   if (standalone_expr(node) &&
       ! already_folded(node, rCtx) &&
