@@ -538,6 +538,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
       theParent->addReference(theParent->getSharedRefCounter() SYNC_PARAM2(theParent->getRCLock()));
   }
 
+  ar & theModuleNamespace;
   ar & theBaseUriInfo;
 
   serialize_resolvers(ar);
@@ -553,15 +554,23 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theDefaultElementNamespace;
   ar & theDefaultFunctionNamespace;
 
+  ar & theCtxItemType;
+
   ar & theVariablesMap;
 
   ar & theFunctionMap;
   ar & theFunctionArityMap;
 
-  ar & theW3CCollectionMap;
   ar & theCollectionMap;
+  
+  ar & theW3CCollectionMap;
+  ar & theDefaultW3CCollectionType;
+
   ar & theIndexMap;
+
   ar & theICMap;
+
+  ar & theDocumentMap;
 
   ar & theCollationMap;
   ar & theDefaultCollation;
