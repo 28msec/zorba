@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,12 +23,12 @@
 #ifdef CYGWIN
 #undef WIN32
 #endif
-#endif // ZORBA_NO_XMLSCHEMA 
+#endif // ZORBA_NO_XMLSCHEMA
 
 #include <zorba/api_shared_types.h>
 #include "common/shared_types.h"
 
-#include "zorbatypes/representations.h" 
+#include "zorbatypes/representations.h"
 
 
 #define ZORBA_HASHMAP_WITH_SERIALIZATION
@@ -50,9 +50,9 @@ namespace zorba
 
 
 #ifndef ZORBA_NO_XMLSCHEMA
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
+*******************************************************************************/
 class SchemaLocationEntityResolver : public XERCES_CPP_NAMESPACE::EntityResolver
 {
 protected:
@@ -74,7 +74,7 @@ public:
 
 /*******************************************************************************
 
-********************************************************************************/
+*******************************************************************************/
 class Schema : public ::zorba::serialization::SerializeBaseClass
 {
 public:
@@ -144,26 +144,26 @@ public:
   bool parseUserSimpleTypes(
         xqpStringStore_t& textValue,
         const xqtref_t& aTargetType,
-        std::vector<store::Item_t> &resultList);    
+        std::vector<store::Item_t> &resultList);
 
     // user defined atomic types
   bool parseUserAtomicTypes(
         xqpStringStore_t& textValue,
         const xqtref_t& aTargetType,
-        store::Item_t& result);    
+        store::Item_t& result);
 
     // user defined list types
   bool parseUserListTypes(
         const xqpStringStore_t& textValue,
-        const xqtref_t& aTargetType, 
-        std::vector<store::Item_t>& resultList);    
+        const xqtref_t& aTargetType,
+        std::vector<store::Item_t>& resultList);
 
     // user defined union types
   bool parseUserUnionTypes(
         xqpStringStore_t& textValue,
-        const xqtref_t& aTargetType, 
-        std::vector<store::Item_t> &resultList);    
-  
+        const xqtref_t& aTargetType,
+        std::vector<store::Item_t> &resultList);
+
     // user defined simple types, i.e. Atomic, List or Union Types
   bool isCastableUserSimpleTypes(
         const xqpStringStore_t& textValue,
@@ -187,10 +187,10 @@ public:
 private:
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  XERCES_CPP_NAMESPACE::XSTypeDefinition* 
+  XERCES_CPP_NAMESPACE::XSTypeDefinition*
     getTypeDefForElement(const store::Item* qname);
 
-  XERCES_CPP_NAMESPACE::XSTypeDefinition* 
+  XERCES_CPP_NAMESPACE::XSTypeDefinition*
     getTypeDefForAttribute(const store::Item* qname);
 
   xqtref_t createXQTypeFromTypeDefinition(

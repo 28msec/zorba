@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -206,36 +206,36 @@ void Schema::registerXSD(const char* xsdURL,
                          const QueryLoc& loc)
 {
   std::auto_ptr<SAX2XMLReader> parser;
-  
+
   TRACE("url=" << xsdURL << " loc=" << location);
-  
+
   try
   {
-    SAX2XMLReader* reader = 
+    SAX2XMLReader* reader =
       XMLReaderFactory::createXMLReader(XMLPlatformUtils::fgMemoryManager,
-                                        theGrammarPool);
-    
+					theGrammarPool);
+
     parser.reset(reader);
     // Perform namespace processing
-    parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, true);                     
-    // Do not report attributes used for namespace declarations and optionally  
+    parser->setFeature(XMLUni::fgSAX2CoreNameSpaces, true);
+    // Do not report attributes used for namespace declarations and optionally
     // do not report original prefixed names
-    parser->setFeature(XMLUni::fgSAX2CoreNameSpacePrefixes, false);             
+    parser->setFeature(XMLUni::fgSAX2CoreNameSpacePrefixes, false);
     // Enable parser's schema support
-    parser->setFeature(XMLUni::fgXercesSchema, true);                           
+    parser->setFeature(XMLUni::fgXercesSchema, true);
     // time and memory intensive to be disabled only if schema files
     // previously checked
-    parser->setFeature(XMLUni::fgXercesSchemaFullChecking, true);               
+    parser->setFeature(XMLUni::fgXercesSchemaFullChecking, true);
     // report all validation errors
-    parser->setFeature(XMLUni::fgSAX2CoreValidation, true);                     
+    parser->setFeature(XMLUni::fgSAX2CoreValidation, true);
     // validate only if schema is available
-    parser->setFeature(XMLUni::fgXercesDynamic, true);                          
+    parser->setFeature(XMLUni::fgXercesDynamic, true);
     // load the schema in the grammar pool
     ////parser->setFeature(XMLUni::fgXercesLoadSchema, true);
     // disables network resolver
-    parser->setFeature(XMLUni::fgXercesDisableDefaultEntityResolution, true);   
-    
-    parser->setProperty(XMLUni::fgXercesScannerName, 
+    parser->setFeature(XMLUni::fgXercesDisableDefaultEntityResolution, true);
+
+    parser->setProperty(XMLUni::fgXercesScannerName,
                         (void *)XMLUni::fgSGXMLScanner);
     
     // this doesn't seem to work
@@ -250,13 +250,13 @@ void Schema::registerXSD(const char* xsdURL,
     XMLChArray xerces_xsdURL(xsdURL);
     SchemaLocationEntityResolver lEntityResolver(xerces_xsdURL.get(), location);
     parser->setEntityResolver(&lEntityResolver);
-    
+
     //this works but using loadProlog
     //parser->loadGrammar("file:///location/file.xsd",
     //                    Grammar::SchemaGrammarType, true);
-    
+
     parser->loadGrammar(xsdURL, Grammar::SchemaGrammarType, true);
-    
+
     if (handler.getSawErrors())
     {
       handler.resetErrors();
@@ -265,27 +265,27 @@ void Schema::registerXSD(const char* xsdURL,
   catch (const OutOfMemoryException&)
   {
     ZORBA_ERROR_LOC_DESC(XQST0059, loc,
-                         std::string("OutOfMemoryException during parsing ") +
-                         std::string(xsdURL));
+			 std::string("OutOfMemoryException during parsing ") +
+			 std::string(xsdURL));
   }
   catch (const XMLException& e)
   {
     ZORBA_ERROR_LOC_DESC_OSS(XQST0059, loc,
-                             "Error during parsing: " << xsdURL << " "
-                             << StrX(e.getMessage()));
+			     "Error during parsing: " << xsdURL << " "
+			     << StrX(e.getMessage()));
   }
-  catch (const error::ZorbaError& e) 
+  catch (const error::ZorbaError& e)
   {
     throw e;
   }
   catch (...)
   {
     ZORBA_ERROR_LOC_DESC(XQST0059, loc,
-                         std::string("Unexpected exception during parsing: ") +
-                         std::string(xsdURL));
+			 std::string("Unexpected exception during parsing: ") +
+			 std::string(xsdURL));
   }
-  
-#ifdef DO_PRINT_SCHEMA_INFO 
+
+#ifdef DO_PRINT_SCHEMA_INFO
   // enable this to debug registered user defined schema types
   printXSDInfo(true);
 #endif
@@ -351,7 +351,7 @@ xqtref_t Schema::createXQTypeFromElementName(
     const store::Item* qname,
     const bool riseErrors)
 {
-  TRACE("qn:" << qname->getLocalName()->str() << " @ " << 
+  TRACE("qn:" << qname->getLocalName()->str() << " @ " <<
         qname->getNamespace()->str() );
   XSTypeDefinition* typeDef = getTypeDefForElement(qname);
 
@@ -360,12 +360,12 @@ xqtref_t Schema::createXQTypeFromElementName(
 
   if(!typeDef)
   {
-    ZORBA_ERROR_PARAM(XPST0008, "schema-element", 
+    ZORBA_ERROR_PARAM(XPST0008, "schema-element",
                       qname->getStringValue()->c_str());
   }
-  
+
   xqtref_t res = createXQTypeFromTypeDefinition(typeManager, typeDef);
-  TRACE("res:" << res->get_qname()->getLocalName()->str() << " @ " << 
+  TRACE("res:" << res->get_qname()->getLocalName()->str() << " @ " <<
         res->get_qname()->getNamespace()->str());
 
   return res;
