@@ -1004,6 +1004,7 @@ std::string start_state(int state)
     case MODE_DECLAREORDERING: return "MODE_DECLAREORDERING";
     case MODE_ELEMENT_CONTENT: return "MODE_ELEMENT_CONTENT";
     case MODE_END_TAG: return "MODE_END_TAG";
+    case MODE_EXPR_DOC_COMMENT: return "MODE_EXPR_DOC_COMMENT";
     case MODE_EXPR_COMMENT: return "MODE_EXPR_COMMENT";
     case MODE_ITEMTYPE: return "MODE_ITEMTYPE";
     case MODE_KINDTEST: return "MODE_KINDTEST";
