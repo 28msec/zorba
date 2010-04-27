@@ -313,7 +313,7 @@ Duration* Duration::operator*(const Double& value) const
 
   result = getTotalSeconds() * value;
   result = result.round(significants);
-  dSeconds = result.round();
+  dSeconds = result.floor();
   NumConversions::doubleToLong(dSeconds, seconds);
 
   result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
@@ -340,7 +340,7 @@ Duration* Duration::operator/(const Double& value) const
   
   result = getTotalSeconds() / value;
   result = result.round(significants);
-  dSeconds = result.round();
+  dSeconds = result.floor();
   NumConversions::doubleToLong(dSeconds, seconds);
 
   result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
