@@ -17,16 +17,18 @@
 
 #include "runtime/core/fncall_iterator.h"
 
-namespace zorba {
+namespace zorba 
+{
 
 SERIALIZABLE_CLASS_VERSIONS(stateless_external_function_adapter)
 END_SERIALIZABLE_CLASS_VERSIONS(stateless_external_function_adapter)
+
 
 stateless_external_function_adapter::stateless_external_function_adapter(
     const signature& sig,
     StatelessExternalFunction *function, 
     expr_script_kind_t aUpdateType,
-    const xqp_string& aNamespace)
+    const xqpStringStore_t& aNamespace)
   :
   external_function(sig),
   m_function(function),
@@ -48,7 +50,12 @@ PlanIter_t stateless_external_function_adapter::codegen(
     std::vector<PlanIter_t>& argv,
     AnnotationHolder& ann) const
 {
-  return new StatelessExtFunctionCallIterator(sctx, loc, argv, m_function, isUpdating(), theNamespace);
+  return new StatelessExtFunctionCallIterator(sctx,
+                                              loc,
+                                              argv,
+                                              m_function,
+                                              isUpdating(),
+                                              theNamespace);
 }
 
 }

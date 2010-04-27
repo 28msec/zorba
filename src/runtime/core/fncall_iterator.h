@@ -129,9 +129,10 @@ class StatelessExtFunctionCallIteratorState : public PlanIteratorState
 {
  public:
   std::vector<ItemSequence*> m_extArgs;
-  ItemSequence_t             m_result;
+  ItemSequence_t             theResult;
 
   StatelessExtFunctionCallIteratorState();
+
   ~StatelessExtFunctionCallIteratorState();
 
   void reset(PlanState&);
@@ -143,9 +144,9 @@ class StatelessExtFunctionCallIterator :
                                            StatelessExtFunctionCallIteratorState>
 {
 protected:
-  const StatelessExternalFunction *m_function;
-  bool theIsUpdating;
-  xqp_string theNamespace;
+  const StatelessExternalFunction * theFunction;
+  bool                              theIsUpdating;
+  xqpStringStore_t                  theNamespace;
 
 public:
   SERIALIZABLE_CLASS(StatelessExtFunctionCallIterator);
@@ -162,9 +163,9 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& args,
-        const StatelessExternalFunction *function,
-        bool aIsUpdating,
-        const xqp_string& aPrefix);
+        const StatelessExternalFunction* function,
+        bool isUpdating,
+        const xqpStringStore_t& ns);
 
   virtual ~StatelessExtFunctionCallIterator();
 
@@ -175,8 +176,6 @@ public:
   void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-
-  void closeImpl(PlanState& planState);
 };
 
 }

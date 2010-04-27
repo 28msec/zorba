@@ -348,25 +348,28 @@ NARY_ACCEPT(UDFunctionCallIterator);
 /*******************************************************************************
 
 ********************************************************************************/
-// external functions
+
 class ExtFuncArgItemSequence : public ItemSequence
 {
-  public:
-    ExtFuncArgItemSequence(PlanIter_t child, PlanState& stateBlock)
-      : m_child(child),
-      m_stateBlock(stateBlock) { }
+private:
+  PlanIter_t   theChild;
+  PlanState  & thePlanState;
 
-    bool next(Item& item)
-    {
-      store::Item_t result;
-      bool status = m_child->consumeNext(result, m_child.getp(), m_stateBlock);
-      item = status ? result : NULL;
-      return status;
-    }
+public:
+  ExtFuncArgItemSequence(PlanIter_t& child, PlanState& state)
+    :
+    theChild(child),
+    thePlanState(state)
+  {
+  }
 
-  private:
-    PlanIter_t m_child;
-    PlanState& m_stateBlock;
+  bool next(Item& item)
+  {
+    store::Item_t result;
+    bool status = theChild->consumeNext(result, theChild.getp(), thePlanState);
+    item = status ? result : NULL;
+    return status;
+  }
 };
 
 
@@ -377,13 +380,19 @@ StatelessExtFunctionCallIteratorState::StatelessExtFunctionCallIteratorState()
 
 StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState()
 {
+  ulong n = m_extArgs.size();
+
+  for (ulong i = 0; i < n; ++i) 
+  {
+    delete m_extArgs[i];
+  }
 }
 
 
 void StatelessExtFunctionCallIteratorState::reset(PlanState& planState)
 {
   PlanIteratorState::reset(planState);
-  m_result.reset();
+  theResult.reset();
 }
 
 
@@ -391,15 +400,15 @@ StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& args,
-    const StatelessExternalFunction *function,
-    bool aIsUpdating,
-    const xqp_string& aNamespace)
+    const StatelessExternalFunction* function,
+    bool isUpdating,
+    const xqpStringStore_t& ns)
   :
   NaryBaseIterator<StatelessExtFunctionCallIterator,
                    StatelessExtFunctionCallIteratorState>(sctx, loc, args),
-  m_function(function),
-  theIsUpdating(aIsUpdating),
-  theNamespace(aNamespace)
+  theFunction(function),
+  theIsUpdating(isUpdating),
+  theNamespace(ns)
 {
 }
 
@@ -409,8 +418,7 @@ StatelessExtFunctionCallIterator::~StatelessExtFunctionCallIterator()
 }
 
 
-void
-StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
+void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
 {
   ar.dont_allow_delay_for_plan_sctx = true;
   serialize_baseclass(ar,
@@ -423,7 +431,7 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
     // serialize out: serialize prefix and localname of the function
     ar & theNamespace;
     xqpStringStore_t lTmp;
-    lTmp = Unmarshaller::getInternalString(m_function->getLocalName());
+    lTmp = Unmarshaller::getInternalString(theFunction->getLocalName());
     ar.set_is_temp_field(true);
     ar & lTmp;
     ar.set_is_temp_field(false);
@@ -437,12 +445,12 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
     ar.set_is_temp_field(true);
     ar & lLocalname;
     ar.set_is_temp_field(false);
-    if(theNamespace.getStore())
+    if(theNamespace)
     {
       QueryLoc loc;
-      m_function = theSctx->lookup_stateless_external_function(theNamespace.getStore(),
-                                                               lLocalname.getp());
-      if (!m_function)
+      theFunction = theSctx->lookup_stateless_external_function(theNamespace,
+                                                                lLocalname.getp());
+      if (!theFunction)
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                              "Couldn't load pre-compiled query because "
@@ -453,8 +461,9 @@ StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
       }
     }
     else
-      m_function = NULL;
+      theFunction = NULL;
   }
+
   ar & theIsUpdating;
 }
 
@@ -476,26 +485,9 @@ void StatelessExtFunctionCallIterator::openImpl(PlanState& planState, uint32_t& 
 }
 
 
-void StatelessExtFunctionCallIterator::closeImpl(PlanState& planState)
-{
-  StatelessExtFunctionCallIteratorState* state =
-  StateTraitsImpl<StatelessExtFunctionCallIteratorState>::getState(planState,
-                                                                   theStateOffset);
-
-  // we have the ownership for the item sequences
-  int n = theChildren.size();
-  for(int i = 0; i < n; ++i) {
-    delete state->m_extArgs[i];
-  }
-
-  NaryBaseIterator<StatelessExtFunctionCallIterator,
-                   StatelessExtFunctionCallIteratorState>::closeImpl(planState);
-}
-
-
-
-bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
-                                                PlanState& planState) const
+bool StatelessExtFunctionCallIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   Item lOutsideItem;
   const PureStatelessExternalFunction* lPureFct = 0;
@@ -506,20 +498,20 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
 
   try 
   {
-    if (m_function->isDeterministic()) 
+    if (theFunction->isDeterministic()) 
     {
-      lPureFct = dynamic_cast<const PureStatelessExternalFunction*>(m_function);
+      lPureFct = dynamic_cast<const PureStatelessExternalFunction*>(theFunction);
       ZORBA_ASSERT(lPureFct);
 
-      state->m_result = lPureFct->evaluate(state->m_extArgs);
+      state->theResult = lPureFct->evaluate(state->m_extArgs);
     }
     else
     {
-      lNonePureFct = dynamic_cast<const NonePureStatelessExternalFunction*>(m_function);
+      lNonePureFct = dynamic_cast<const NonePureStatelessExternalFunction*>(theFunction);
       ZORBA_ASSERT(lNonePureFct);
 
       ZORBA_ASSERT(planState.theQuery);
-      state->m_result = lNonePureFct->evaluate(state->m_extArgs,
+      state->theResult = lNonePureFct->evaluate(state->m_extArgs,
                                                planState.theQuery->getStaticContext(),
                                                planState.theQuery->getDynamicContext());
     }
@@ -541,13 +533,16 @@ bool StatelessExtFunctionCallIterator::nextImpl(store::Item_t& result,
   {
     try 
     {
-      if (state->m_result.get() == NULL) // This will happen if the user's external function returns a zorba::ItemSequence_t(NULL)
+      if (state->theResult.get() == NULL) // This will happen if the user's external function returns a zorba::ItemSequence_t(NULL)
         break;
 
-      if (!state->m_result->next(lOutsideItem)) {
+      if (!state->theResult->next(lOutsideItem)) 
+      {
         break;
       }
-    } catch(const ZorbaException& e) {
+    } 
+    catch(const ZorbaException& e)
+    {
       // take all information from the exception raised in
       // the external function (e.g. file name) + add loc information
       throw error::ErrorManager::createException(e.getErrorCode(),

@@ -336,7 +336,8 @@
   15.1.10 fn:subsequence
 ********************************************************************************/
 -->
-<zorba:iterator name="FnSubsequenceIterator">
+<zorba:iterator name="FnSubsequenceIterator" 
+                generateResetImpl="true">
     
   <zorba:description author="Zorba Team">
     fn:subsequence
@@ -367,8 +368,11 @@
   </zorba:function>
 
   <zorba:state>
+
     <zorba:member type="xqp_integer" name="theRemaining"
                   defaultValue="xqp_integer::parseInt(0)" brief=""/>
+    <zorba:member type="bool" name="theIsChildReset" defaultValue="false"/>
+
   </zorba:state>
   
 </zorba:iterator>

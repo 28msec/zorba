@@ -358,11 +358,13 @@ FnSubsequenceIteratorState::~FnSubsequenceIteratorState() {}
 void FnSubsequenceIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
   theRemaining = xqp_integer::parseInt(0);
+  theIsChildReset = false;
 }
 
 void FnSubsequenceIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   theRemaining = xqp_integer::parseInt(0);
+  theIsChildReset = false;
 }
 // </FnSubsequenceIterator>
 

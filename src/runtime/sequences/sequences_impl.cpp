@@ -422,11 +422,13 @@ bool FnReverseIterator::nextImpl(store::Item_t& result, PlanState& planState) co
   FnReverseIteratorState *state;
   DEFAULT_STACK_INIT(FnReverseIteratorState, state, planState);
 
-  while(consumeNext(iVal, theChildren[0].getp(), planState)) {
+  while(consumeNext(iVal, theChildren[0].getp(), planState)) 
+  {
     state->theStack.push(iVal);
   }
 
-  while(!state->theStack.empty()) {
+  while(!state->theStack.empty()) 
+  {
     result = state->theStack.top();
     state->theStack.pop();
     STACK_PUSH(true, state);
@@ -439,6 +441,27 @@ bool FnReverseIterator::nextImpl(store::Item_t& result, PlanState& planState) co
 /*******************************************************************************
   15.1.10 fn:subsequence
 ********************************************************************************/
+void FnSubsequenceIterator::resetImpl(PlanState& planState) const
+{
+  FnSubsequenceIteratorState* state = 
+  StateTraitsImpl<FnSubsequenceIteratorState>::getState(planState, theStateOffset);
+
+  if (state->theIsChildReset)
+  {
+    state->reset(planState);
+    
+    theChildren[1]->reset(planState);
+    if (theChildren.size() > 2)
+      theChildren[2]->reset(planState);
+  }
+  else
+  {
+    NaryBaseIterator<FnSubsequenceIterator, FnSubsequenceIteratorState>::
+    resetImpl(planState);
+  }
+}
+
+
 bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t startPosItem;
@@ -450,6 +473,8 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
   
+  state->theIsChildReset = false;
+
   CONSUME(startPosItem, 1);
   xqp_integer::parseDouble(startPosItem->getDoubleValue().round(), startPos);
   startPos += minus_one;
@@ -491,13 +516,14 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
 
 done:
   theChildren[0]->reset(planState);
+  state->theIsChildReset = true;
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 
 /*******************************************************************************
-  zorbaop:int-subsequence
+  zorbaop:internal-subsequence
 ********************************************************************************/
 bool IntSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {

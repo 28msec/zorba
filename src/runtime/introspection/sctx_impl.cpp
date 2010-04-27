@@ -363,12 +363,15 @@ bool StaticallyKnownDocumentsIterator::nextImpl(
 
   while (state->thePosition < state->theDocuments.size())
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, state->theDocuments.at(state->thePosition)), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createString(aResult,
+                                              state->theDocuments.at(state->thePosition)),
+               state);
     ++state->thePosition;
   }
 
   STACK_END (state);
 }
+
 
 /*******************************************************************************
 
@@ -650,8 +653,6 @@ bool InScopeSchemaTypesIterator::nextImpl(
     store::Item_t& aResult,
     PlanState& aPlanState) const
 {
-  InScopeSchemaTypesIteratorState* state;
-
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE_USE;
   xqpString qname_ns;
@@ -673,6 +674,7 @@ bool InScopeSchemaTypesIterator::nextImpl(
     namespaces = xsModel->getNamespaces();
   }
 
+  InScopeSchemaTypesIteratorState* state;
   DEFAULT_STACK_INIT(InScopeSchemaTypesIteratorState, state, aPlanState);
 
   state->ns_pos = 0;
@@ -687,8 +689,12 @@ bool InScopeSchemaTypesIterator::nextImpl(
       continue;
     }
 
-    xsElements = xsModel->getComponentsByNamespace(XSConstants::TYPE_DEFINITION, nameSpace);
-    if (xsElements == NULL || xsElements->getLength() <= 0 || state->elem_pos >= xsElements->getLength())
+    xsElements = xsModel->getComponentsByNamespace(XSConstants::TYPE_DEFINITION,
+                                                   nameSpace);
+
+    if (xsElements == NULL ||
+        xsElements->getLength() <= 0 ||
+        state->elem_pos >= xsElements->getLength())
     {
       state->ns_pos++;
       state->elem_pos = 0;
@@ -697,19 +703,25 @@ bool InScopeSchemaTypesIterator::nextImpl(
 
     xsElement = (XSElementDeclaration*)xsElements->item(state->elem_pos);
     elemNameSpace = xsElement->getNamespace();
-    if (elemNameSpace && (XMLString::stringLen(elemNameSpace )>0))
+    if (elemNameSpace && (XMLString::stringLen(elemNameSpace ) > 0))
       qname_ns = StrX(elemNameSpace).localForm();
 
     state->elem_pos++;
-    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult, qname_ns.c_str(), "", StrX(xsElement->getName()).localForm()), state);
+
+    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult,
+                                             qname_ns.c_str(),
+                                             "",
+                                             StrX(xsElement->getName()).localForm()),
+               state);
   }
+
   STACK_END (state);
 
 #else // #ifndef ZORBA_NO_XMLSCHEMA
 
   // In case Zorba is compiled without schema, the function will return an empty sequence
   // TODO: the function should return the predefined xs: types even without schema
-
+  InScopeSchemaTypesIteratorState* state;
   DEFAULT_STACK_INIT(InScopeSchemaTypesIteratorState, state, aPlanState);
   STACK_END (state);
 
@@ -736,8 +748,6 @@ bool InScopeElementDeclarationsIterator::nextImpl(
     store::Item_t& aResult,
     PlanState& aPlanState) const
 {
-  InScopeElementDeclarationsIteratorState* state;
-
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE_USE;
   xqpString qname_ns;
@@ -759,6 +769,7 @@ bool InScopeElementDeclarationsIterator::nextImpl(
     namespaces = xsModel->getNamespaces();
   }
 
+  InScopeElementDeclarationsIteratorState* state;
   DEFAULT_STACK_INIT(InScopeElementDeclarationsIteratorState, state, aPlanState);
 
   state->ns_pos = 0;
@@ -787,13 +798,19 @@ bool InScopeElementDeclarationsIterator::nextImpl(
       qname_ns = StrX(elemNameSpace).localForm();
 
     state->elem_pos++;
-    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult, qname_ns.c_str(), "", StrX(xsElement->getName()).localForm()), state);
+    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult,
+                                             qname_ns.c_str(),
+                                             "",
+                                             StrX(xsElement->getName()).localForm()),
+               state);
   }
+
   STACK_END (state);
 
 #else // #ifndef ZORBA_NO_XMLSCHEMA
 
   // In case Zorba is compiled without schema, the function will return an empty sequence
+  InScopeElementDeclarationsIteratorState* state;
   DEFAULT_STACK_INIT(InScopeElementDeclarationsIteratorState, state, aPlanState);
   STACK_END (state);
 

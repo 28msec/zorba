@@ -1904,11 +1904,16 @@ void static_context::get_all_documents(std::vector<xqpStringStore_t>& documents)
 {
   static_context* sctx = this;
   documents.clear();
+
   while (sctx != NULL)
   {
     if (sctx->theDocumentMap != NULL)
-      for(DocumentMap::iterator it = sctx->theDocumentMap->begin(); it != sctx->theDocumentMap->end(); ++it)
+    {
+      for(DocumentMap::iterator it = sctx->theDocumentMap->begin();
+          it != sctx->theDocumentMap->end();
+          ++it)
         documents.push_back(it.getKey());
+    }
 
     sctx = sctx->theParent;
   }

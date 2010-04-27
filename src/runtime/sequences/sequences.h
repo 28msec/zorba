@@ -463,6 +463,7 @@ class FnSubsequenceIteratorState : public PlanIteratorState
 {
 public:
   xqp_integer theRemaining; //
+  bool theIsChildReset; //
 
   FnSubsequenceIteratorState();
 
@@ -499,6 +500,8 @@ public:
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void resetImpl(PlanState&) const;
 };
 
 
