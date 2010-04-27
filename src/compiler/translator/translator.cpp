@@ -7113,11 +7113,17 @@ void *begin_visit (const PathExpr& v)
 
     ctx_path_expr->add_back(&*ase);
 
-    rchandle<fo_expr> fo = new fo_expr(theRootSctx,
-                                       loc,
-                                       GET_BUILTIN_FUNCTION(FN_ROOT_1),
-                                       ctx_path_expr.getp());
-    result = fo.getp();
+    fo_expr_t fo = new fo_expr(theRootSctx,
+                               loc,
+                               GET_BUILTIN_FUNCTION(FN_ROOT_1),
+                               ctx_path_expr.getp());
+    normalize_fo(fo);
+
+    result = new treat_expr(theRootSctx,
+                            loc,
+                            fo,
+                            GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE,
+                            XPDY0050);
 
     if (path_expr != NULL)
     {
@@ -9880,7 +9886,8 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
 ********************************************************************************/
 void* begin_visit(const SchemaElementTest& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
+
 #ifndef ZORBA_NO_XMLSCHEMA
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   rchandle<QName> elemName = v.get_elem();
@@ -9892,7 +9899,7 @@ void* begin_visit(const SchemaElementTest& v)
   if (axisExpr != NULL)
   {
     store::Item_t typeQNameItem;
-    CTXTS->get_schema_element_typename(elemQNameItem, typeQNameItem);
+    CTXTS->get_schema_element_typename(elemQNameItem, typeQNameItem, loc);
 
     rchandle<match_expr> match = new match_expr(theRootSctx, loc);
     match->setTestKind(match_xs_elem_test);
@@ -9906,7 +9913,8 @@ void* begin_visit(const SchemaElementTest& v)
     try
     {
       xqtref_t seqmatch = CTXTS->create_schema_element_type(elemQNameItem,
-                                                            TypeConstants::QUANT_ONE);
+                                                            TypeConstants::QUANT_ONE,
+                                                            loc);
       theTypeStack.push(seqmatch);
     }
     catch (error::ZorbaError& e)
@@ -9994,9 +10002,9 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const SchemaAttributeTest& v)
+void* begin_visit(const SchemaAttributeTest& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
 #ifndef ZORBA_NO_XMLSCHEMA
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
@@ -10009,7 +10017,7 @@ void *begin_visit (const SchemaAttributeTest& v)
   if (axisExpr != NULL)
   {
     store::Item_t typeQNameItem;
-    CTXTS->get_schema_attribute_typename(attrQNameItem, typeQNameItem);
+    CTXTS->get_schema_attribute_typename(attrQNameItem, typeQNameItem, loc);
 
     rchandle<match_expr> match = new match_expr(theRootSctx, loc);
     match->setTestKind(match_xs_attr_test);
@@ -10021,7 +10029,8 @@ void *begin_visit (const SchemaAttributeTest& v)
   else
   {
     xqtref_t seqmatch = CTXTS->create_schema_attribute_type(attrQNameItem,
-                                                            TypeConstants::QUANT_ONE);
+                                                            TypeConstants::QUANT_ONE,
+                                                            loc);
 
     theTypeStack.push(seqmatch);
   }
@@ -10033,9 +10042,9 @@ void *begin_visit (const SchemaAttributeTest& v)
 }
 
 
-void end_visit (const SchemaAttributeTest& v, void* /*visit_state*/)
+void end_visit(const SchemaAttributeTest& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 

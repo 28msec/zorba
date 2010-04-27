@@ -297,14 +297,15 @@ void Schema::registerXSD(const char* xsdURL,
 *******************************************************************************/
 void Schema::getTypeNameFromElementName(
     const store::Item* qname,
-    store::Item_t& typeName)
+    store::Item_t& typeName,
+    const QueryLoc& loc)
 {
   XSTypeDefinition* typeDef = getTypeDefForElement(qname);
 
   if (!typeDef) 
   {
-    ZORBA_ERROR_PARAM(XPST0008, "schema-element", 
-                      qname->getStringValue()->c_str());
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-element", 
+                          qname->getStringValue()->c_str());
   }
 
   const XMLCh* typeNameStr = typeDef->getName();
@@ -322,14 +323,15 @@ void Schema::getTypeNameFromElementName(
 *******************************************************************************/
 void Schema::getTypeNameFromAttributeName(
     const store::Item* qname,
-    store::Item_t& typeName)
+    store::Item_t& typeName,
+    const QueryLoc& loc)
 {
   XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
 
   if (!typeDef) 
   {
-    ZORBA_ERROR_PARAM(XPST0008, "schema-attribute", 
-                      qname->getStringValue()->c_str());
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute", 
+                          qname->getStringValue()->c_str());
   }
 
   const XMLCh* typeNameStr = typeDef->getName();
@@ -349,19 +351,21 @@ void Schema::getTypeNameFromAttributeName(
 xqtref_t Schema::createXQTypeFromElementName(
     const TypeManager* typeManager,
     const store::Item* qname,
-    const bool riseErrors)
+    const bool riseErrors,
+    const QueryLoc& loc)
 {
   TRACE("qn:" << qname->getLocalName()->str() << " @ " <<
         qname->getNamespace()->str() );
+
   XSTypeDefinition* typeDef = getTypeDefForElement(qname);
 
   if (!riseErrors && !typeDef)
       return NULL;
 
-  if(!typeDef)
+  if (!typeDef)
   {
-    ZORBA_ERROR_PARAM(XPST0008, "schema-element",
-                      qname->getStringValue()->c_str());
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-element",
+                          qname->getStringValue()->c_str());
   }
 
   xqtref_t res = createXQTypeFromTypeDefinition(typeManager, typeDef);
@@ -378,14 +382,15 @@ xqtref_t Schema::createXQTypeFromElementName(
 *******************************************************************************/
 xqtref_t Schema::createXQTypeFromAttributeName(
     const TypeManager* typeManager,
-    const store::Item* qname)
+    const store::Item* qname,
+    const QueryLoc& loc)
 {
   XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
 
   if (!typeDef) 
   {
-    ZORBA_ERROR_PARAM(XPST0008, "schema-attribute", 
-                      qname->getStringValue()->c_str());
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute", 
+                          qname->getStringValue()->c_str());
   }
 
   return createXQTypeFromTypeDefinition(typeManager, typeDef);

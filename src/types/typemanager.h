@@ -134,19 +134,23 @@ public:
 
   virtual xqtref_t create_schema_element_type(
         const store::Item_t& eName,
-        TypeConstants::quantifier_t quant) const = 0;
+        TypeConstants::quantifier_t quant,
+        const QueryLoc& loc) const = 0;
 
   virtual void get_schema_element_typename(
         const store::Item* elemName,
-        store::Item_t& typeName) = 0;
+        store::Item_t& typeName,
+        const QueryLoc& loc) = 0;
 
   virtual xqtref_t create_schema_attribute_type(
         const store::Item_t& aName,
-        TypeConstants::quantifier_t quant) const = 0;
+        TypeConstants::quantifier_t quant,
+        const QueryLoc& loc) const = 0;
 
   virtual void get_schema_attribute_typename(
         const store::Item* attrName,
-        store::Item_t& typeName) = 0;
+        store::Item_t& typeName,
+        const QueryLoc& loc) = 0;
 
 #endif
 };

@@ -33,6 +33,8 @@
 
 #include "runtime/function_item/function_item.h"
 
+#include "compiler/parser/query_loc.h"
+
 #include "functions/signature.h"
 
 #ifdef ZORBA_XBROWSER
@@ -651,9 +653,16 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_schema_element_type(
     const store::Item_t& elemName,
-    TypeConstants::quantifier_t quant) const
+    TypeConstants::quantifier_t quant,
+    const QueryLoc& loc) const
 {
-  xqtref_t contentType = m_schema->createXQTypeFromElementName(this, elemName, true);
+  if (m_schema == NULL)
+  {
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-element", 
+                          elemName->getStringValue()->c_str());
+  }
+
+  xqtref_t contentType = m_schema->createXQTypeFromElementName(this, elemName, true, loc);
 
   return create_node_type(store::StoreConsts::elementNode,
                           elemName,
@@ -669,9 +678,16 @@ xqtref_t TypeManagerImpl::create_schema_element_type(
 ********************************************************************************/
 void TypeManagerImpl::get_schema_element_typename(
     const store::Item* elemName,
-    store::Item_t& typeName)
+    store::Item_t& typeName,
+    const QueryLoc& loc)
 {
-  m_schema->getTypeNameFromElementName(elemName, typeName);
+  if (m_schema == NULL)
+  {
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-element", 
+                          elemName->getStringValue()->c_str());
+  }
+
+  m_schema->getTypeNameFromElementName(elemName, typeName, loc);
 }
 
 
@@ -683,9 +699,16 @@ void TypeManagerImpl::get_schema_element_typename(
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_schema_attribute_type(
     const store::Item_t& attrName,
-    TypeConstants::quantifier_t quant) const
+    TypeConstants::quantifier_t quant,
+    const QueryLoc& loc) const
 {
-  xqtref_t contentType = m_schema->createXQTypeFromAttributeName(this, attrName);
+  if (m_schema == NULL)
+  {
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute", 
+                          attrName->getStringValue()->c_str());
+  }
+
+  xqtref_t contentType = m_schema->createXQTypeFromAttributeName(this, attrName, loc);
 
   return create_node_type(store::StoreConsts::attributeNode,
                           attrName,
@@ -702,9 +725,16 @@ xqtref_t TypeManagerImpl::create_schema_attribute_type(
 ********************************************************************************/
 void TypeManagerImpl::get_schema_attribute_typename(
     const store::Item* attrName,
-    store::Item_t& typeName)
+    store::Item_t& typeName,
+    const QueryLoc& loc)
 {
-  m_schema->getTypeNameFromAttributeName(attrName, typeName);
+  if (m_schema == NULL)
+  {
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute", 
+                          attrName->getStringValue()->c_str());
+  }
+
+  m_schema->getTypeNameFromAttributeName(attrName, typeName, loc);
 }
 
 

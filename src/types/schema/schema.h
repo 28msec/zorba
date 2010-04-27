@@ -119,20 +119,24 @@ public:
 
   void getTypeNameFromElementName(
         const store::Item* qname,
-        store::Item_t& typeName);
+        store::Item_t& typeName,
+        const QueryLoc& loc);
 
   void getTypeNameFromAttributeName(
         const store::Item* qname,
-        store::Item_t& typeName);
+        store::Item_t& typeName,
+        const QueryLoc& loc);
 
   xqtref_t createXQTypeFromElementName(
         const TypeManager* typeManager,
         const store::Item* qname,
-        const bool riseErrors);
+        const bool riseErrors,
+        const QueryLoc& loc);
 
   xqtref_t createXQTypeFromAttributeName(
         const TypeManager* typeManager,
-        const store::Item* qname);
+        const store::Item* qname,
+        const QueryLoc& loc);
 
   xqtref_t createXQTypeFromTypeName(
         const TypeManager* manager,
