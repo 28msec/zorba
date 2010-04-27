@@ -30,37 +30,7 @@
   : @author Sorin Nasoi
   : @version 1.0
   :
-  : <ul>
-  :   <li>Table of Contents
-  :     <ul>
-  :       <li><a href="#json_namespace">1 JSON Module Namespace</a></li>
-  :       <li><a href="#conv_json">2 JSON Functions</a></li>
-  :       <li><a href="#conv_json_ml">3 JSONML Functions</a></li>
-  :       <li>4 Examples
-  :           <ul>
-  :             <li><a href="#examples_json_parse">4.1 parse</a></li>
-  :             <li><a href="#examples_json_serialize">4.2 serialize</a></li>
-  :             <li><a href="#examples_json_ml_parse">4.3 parseML</a></li>
-  :             <li><a href="#examples_json_ml_serialize">4.4 serializeML</a></li>
-  :           </ul>
-  :       </li>
-  :       <li><a href="#function_summary">5 Function Summary</a></li>
-  :       <li><a href="#functions">6 Functions</a></li>
-  :       <li><a href="#appendix_A">Appendix A:  Error codes</a></li>
-  :    </ul>
-  :   </li>
-  : </ul>
-  :
-  :<h2><a name="json_namespace">1 JSON Module Namespace</a></h2>
-  :The <em>parse</em> and <em>serialize</em> functions are available in the JSON
-  : module with URI <code>"http://www.zorba-xquery.com/modules/json"</code>.<br/>
-  :In order to use this functionality, you have to import this module in the
-  :prolog of your XQuery module as follows:
-  :<pre class="fragment">
-  :import module namespace zorba-json = "http://www.zorba-xquery.com/modules/json";
-  :</pre><br/>
-  :
-  :<h2><a name="conv_json">2 JSON Functions</a></h2>
+  :<h2><a name="conv_json">1 JSON Functions</a></h2>
   :JSON is a lightweight hierarchical data-interchange format. Like XML, it is
   :easy for humans to read and write. Moreover, it is easy for machines to parse
   : and generate.<br/>
@@ -93,13 +63,13 @@
   : reverse process, i.e. serializing a sequence of elements into a sequence of
   :valid JSON strings. <br/>
   :
-  :<h2><a name="conv_json_ml">3 JSONML Functions</a></h2>
+  :<h2><a name="conv_json_ml">2 JSONML Functions</a></h2>
   :<a href="http://jsonml.org" target="_blank">JsonML</a> (JSON Markup Language)
   : is an application of the <a href="http://www.json.org/" target="_blank">JSON</a>
   : (JavaScript Object Notation) format. <br/>
   :The purpose of JsonML is to provide a compact format for transporting
   :XML-based markup as JSON. In contrast to the JSON mapping depicted above (see
-  : <a href="#conv_json">2 JSON Functions</a>), JsonML allows a lossless
+  : <a href="#conv_json">1 JSON Functions</a>), JsonML allows a lossless
   : conversion back and forth. <br/>
   :Zorba implements the <a href="http://jsonml.org" target="_blank">JsonML</a>
   :structure defined in this article 
@@ -131,7 +101,8 @@
   :]<br />
   :</pre>
   :
-  :<h3><a name="examples_json_parse">4.1 parse</a></h3>
+  :<h2><a name="conv_json_ml">3 Examples</a></h2>
+  :<h3><a name="examples_json_parse">3.1 parse</a></h3>
   :<pre class="fragment">
   :import module namespace json = "http://www.zorba-xquery.com/modules/json";<br /><br />
   :json:parse(('{<br />
@@ -221,7 +192,7 @@
   :</json><br />
   :</pre><br />
   :
-  :<h3><a name="examples_json_serialize">4.2 serialize</a></h3>
+  :<h3><a name="examples_json_serialize">3.2 serialize</a></h3>
   :<pre class="fragment">
   :import module namespace json = "http://www.zorba-xquery.com/modules/json";<br /><br />
   :
@@ -230,7 +201,7 @@
   :json:serialize(json:parse($str)) eq $str<br />
   :</pre><br />
   :
-  :<h3><a name="examples_json_ml_parse">4.3 parseML</a></h3>
+  :<h3><a name="examples_json_ml_parse">3.3 parseML</a></h3>
   :
   :<pre class="fragment">
   :import module namespace json = "http://www.zorba-xquery.com/modules/json";<br /><br />
@@ -271,7 +242,7 @@
   :</table><br />
   :</pre><br />
   :
-  :<h3><a name="examples_json_ml_serialize">4.4 serializeML</a></h3>
+  :<h3><a name="examples_json_ml_serialize">3.4 serializeML</a></h3>
   :
   :<pre class="fragment">
   :import module namespace json = "http://www.zorba-xquery.com/modules/json";<br /><br />
@@ -317,7 +288,7 @@ module namespace json = "http://www.zorba-xquery.com/modules/json";
  : @return true if the email was set successfully, false otherwise.
  : @error API0060 if any of the strings passed as parameter are not a valid JSON
  :)
-declare sequential function json:parse(
+declare function json:parse(
   $text as xs:string*
 ) as node()* external;
 
@@ -331,7 +302,7 @@ declare sequential function json:parse(
  : @error API0061 if the passed elements do not have a valid JSON structure
  : @error API0062 if the passed parameter is not an element
  :)
-declare sequential function json:serialize(
+declare function json:serialize(
   $xml as node()*
 ) as xs:string* external;
 
@@ -342,7 +313,7 @@ declare sequential function json:serialize(
  : @return true if the email was set successfully, false otherwise.
  : @error API0060 if any of the strings passed as parameter are not a valid JSON
  :)
-declare sequential function json:parseML(
+declare function json:parse-ml(
   $text as xs:string*
 ) as node()* external;
 
@@ -356,6 +327,6 @@ declare sequential function json:parseML(
  : @error API0061 if the passed elements do not have a valid JSON structure
  : @error API0062 if the passed parameter is not an element
  :)
-declare sequential function json:serializeML(
+declare function json:serialize-ml(
   $xml as node()*
 ) as xs:string* external;

@@ -2,7 +2,7 @@
 
 import module namespace json = "http://www.zorba-xquery.com/modules/json";
 
-json:parseML(('{
+json:parse-ml(('{
      "firstName": "John",
      "lastName": "Smith",
      "address": {

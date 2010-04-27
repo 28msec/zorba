@@ -2,4 +2,4 @@
 
 import module namespace json = "http://www.zorba-xquery.com/modules/json";
 
-json:parseML((<a/>,<b/>))
+json:parse-ml((<a/>,<b/>))

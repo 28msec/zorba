@@ -7,6 +7,6 @@ json:serialize(
      <pair name="firstName" type="string">&quot;</pair>
   </json>
 ),
-json:serializeML(
+json:serialize-ml(
   <person><firstName>&quot;</firstName></person>
 )

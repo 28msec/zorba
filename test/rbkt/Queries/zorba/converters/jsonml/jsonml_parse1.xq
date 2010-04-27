@@ -1,6 +1,6 @@
 import module namespace json = "http://www.zorba-xquery.com/modules/json";
 
-json:parseML(('[ "ul",
+json:parse-ml(('[ "ul",
                   [ "li",
                     true],
                   [ "li",

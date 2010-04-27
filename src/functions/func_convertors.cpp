@@ -52,7 +52,7 @@ PlanIter_t zorba_json_serialize::codegen(
   return new ZorbaJsonSerializeIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_json_parseML::codegen(
+PlanIter_t zorba_json_parse_ml::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -62,7 +62,7 @@ PlanIter_t zorba_json_parseML::codegen(
   return new ZorbaJsonParseMLIterator(sctx, loc, argv);
 }
 
-PlanIter_t zorba_json_serializeML::codegen(
+PlanIter_t zorba_json_serialize_ml::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -166,14 +166,14 @@ void populate_context_convertors(static_context* sctx)
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 
 
-  DECL(sctx, zorba_json_parseML,
-      (createQName("http://www.zorba-xquery.com/modules/json","zorba-json","parseML"),
+  DECL(sctx, zorba_json_parse_ml,
+      (createQName("http://www.zorba-xquery.com/modules/json","zorba-json","parse-ml"),
       GENV_TYPESYSTEM.STRING_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 
-  DECL(sctx, zorba_json_serializeML,
-      (createQName("http://www.zorba-xquery.com/modules/json","zorba-json","serializeML"),
+  DECL(sctx, zorba_json_serialize_ml,
+      (createQName("http://www.zorba-xquery.com/modules/json","zorba-json","serialize-ml"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
       GENV_TYPESYSTEM.STRING_TYPE_STAR));
 
