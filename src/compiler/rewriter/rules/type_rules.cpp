@@ -422,7 +422,8 @@ RULE_REWRITE_POST(SpecializeOperations)
           expr* colExpr = obc->get_column_expr(j);
           xqtref_t colType = colExpr->return_type(sctx);
 
-          if (TypeOps::is_subtype(*colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
+          if (!TypeOps::is_equal(*colType, *GENV_TYPESYSTEM.EMPTY_TYPE) &&
+              TypeOps::is_subtype(*colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
           {
             expr_t castExpr = new cast_expr(colExpr->get_sctx(),
                                             colExpr->get_loc(),
