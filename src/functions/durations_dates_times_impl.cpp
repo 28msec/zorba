@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,8 +40,8 @@ class op_ym_durations_add : public function
 {
 public:
   op_ym_durations_add(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<AddOperation>);
 };
 
 
@@ -53,9 +53,9 @@ class op_ym_durations_subtract : public function
 public:
   op_ym_durations_subtract(const signature& sig) : function(sig) {}
 
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<SubtractOperation>);
 };
-  
+
 
 /*
  * 10.6.3 op:multiply-yearMonthDuration
@@ -65,7 +65,7 @@ class op_ym_durations_multiply : public function
 public:
   op_ym_durations_multiply(const signature& sig) : function(sig) {}
 
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<MultiplyOperation>);
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<MultiplyOperation>);
 };
 
 
@@ -76,8 +76,8 @@ class op_ym_durations_divide : public function
 {
 public:
   op_ym_durations_divide(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<DivideOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<DivideOperation>);
 };
 
 
@@ -88,8 +88,8 @@ class op_divide_ymd_by_ymd : public function
 {
 public:
   op_divide_ymd_by_ymd(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<DivideOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<DivideOperation>);
 };
 
 
@@ -100,8 +100,8 @@ class op_dt_durations_add : public function
 {
 public:
   op_dt_durations_add(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<AddOperation>);
 };
 
 
@@ -112,8 +112,8 @@ class op_dt_durations_subtract : public function
 {
 public:
   op_dt_durations_subtract(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<SubtractOperation>);
 };
 
 
@@ -124,8 +124,8 @@ class op_dt_durations_multiply : public function
 {
 public:
   op_dt_durations_multiply(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<MultiplyOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<MultiplyOperation>);
 };
 
 
@@ -136,8 +136,8 @@ class op_dt_durations_divide : public function
 {
 public:
   op_dt_durations_divide(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<DivideOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<DivideOperation>);
 };
 
 
@@ -148,8 +148,8 @@ class op_divide_dtd_by_dtd : public function
 {
 public:
   op_divide_dtd_by_dtd(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<DivideOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<DivideOperation>);
 };
 
 
@@ -160,11 +160,11 @@ class op_sub_dt : public function
 {
 public:
   op_sub_dt(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<SubtractOperation>);
 };
-  
-  
+
+
 /*
  * 10.8.2 op:subtract-dates
  *-----------------------*/
@@ -172,8 +172,8 @@ class op_sub_d : public function
 {
 public:
   op_sub_d(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<SubtractOperation>);
 };
 
 
@@ -184,8 +184,8 @@ class op_sub_t : public function
 {
 public:
   op_sub_t(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<SubtractOperation>);
 };
 
 
@@ -196,8 +196,8 @@ class op_add_ymd_to_dt : public function
 {
 public:
   op_add_ymd_to_dt(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<AddOperation>);
 };
 
 
@@ -208,8 +208,8 @@ class op_add_dtd_to_dt : public function
 {
 public:
   op_add_dtd_to_dt(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<AddOperation>);
 };
 
 
@@ -220,8 +220,8 @@ class op_sub_ymd_from_dt : public function
 {
 public:
   op_sub_ymd_from_dt(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<SubtractOperation>);
 };
 
 
@@ -232,8 +232,8 @@ class op_sub_dtd_from_dt : public function
 {
 public:
   op_sub_dtd_from_dt(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<SubtractOperation>);
 };
 
 
@@ -244,8 +244,8 @@ class op_add_ymd_to_d : public function
 {
 public:
   op_add_ymd_to_d(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<AddOperation>);
 };
 
 
@@ -257,7 +257,7 @@ class op_add_dtd_to_d : public function
 public:
   op_add_dtd_to_d(const signature& sig) : function(sig) {}
 
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<AddOperation>);
 };
 
 
@@ -268,8 +268,8 @@ class op_sub_ymd_from_d : public function
 {
 public:
   op_sub_ymd_from_d(const signature& sig) : function(sig) {}
-  
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);
+
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<SubtractOperation>);
 };
 
 
@@ -281,7 +281,7 @@ class op_sub_dtd_from_d : public function
 public:
   op_sub_dtd_from_d(const signature& sig) : function(sig) {}
 
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);  
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<SubtractOperation>);
 };
 
 
@@ -293,7 +293,7 @@ class op_add_dtd_to_t : public function
 public:
   op_add_dtd_to_t(const signature& sig) : function(sig) {}
 
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<AddOperation>);
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<AddOperation>);
 };
 
 
@@ -305,7 +305,7 @@ class op_sub_dtd_from_t : public function
 public:
   op_sub_dtd_from_t(const signature& sig) : function(sig) {}
 
-  DEFAULT_BINARY_CODEGEN(NumArithIterator<SubtractOperation>);  
+  DEFAULT_BINARY_CODEGEN(GenericArithIterator<SubtractOperation>);
 };
 
 
@@ -350,7 +350,7 @@ class fn_adjust_d_to_tz_2 : public function
 {
 public:
   fn_adjust_d_to_tz_2(const signature& sig) : function(sig) {}
-  
+
   DEFAULT_BINARY_CODEGEN(FnAdjustToTimeZoneIterator_2);
 };
 
@@ -362,7 +362,7 @@ class fn_adjust_t_to_tz_1 : public function
 {
 public:
   fn_adjust_t_to_tz_1(const signature& sig) : function(sig) {}
-  
+
   bool accessesDynCtx () const { return true; }
 
   DEFAULT_UNARY_CODEGEN(FnAdjustToTimeZoneIterator_1);
@@ -381,7 +381,7 @@ public:
 /*
  * XQuery1.1 formatting functions
  *------------------------------------------------*/
-  
+
 class fn_format_datetime_4 : public function
 {
 public:
