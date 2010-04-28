@@ -9845,6 +9845,19 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
 
+  xqtref_t contentType;
+
+  if (typeName != NULL)
+  {
+    contentType = CTXTS->create_named_type(typeNameItem, TypeConstants::QUANT_ONE);
+
+    if (contentType == NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "element type", 
+                            typeNameItem->getStringValue()->c_str());
+    }
+  }
+
   if (axisExpr != NULL)
   {
     rchandle<match_expr> me = new match_expr(theRootSctx, loc);
@@ -9859,13 +9872,6 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
   // Else, create a sequence-type match
   else
   {
-    xqtref_t contentType;
-
-    if (typeName != NULL)
-    {
-      contentType = CTXTS->create_named_type(typeNameItem, TypeConstants::QUANT_ONE);
-    }
-
     xqtref_t seqmatch = CTXTS->create_node_type(store::StoreConsts::elementNode,
                                                 elemNameItem,
                                                 contentType,
@@ -9949,6 +9955,28 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
   rchandle<QName> attrName = v.get_attr_name();
   rchandle<TypeName> typeName = v.get_type_name();
 
+  store::Item_t attrNameItem;
+  store::Item_t typeNameItem;
+  xqtref_t contentType;
+
+  if (attrName != NULL)
+  {
+    expand_no_default_qname(attrNameItem, attrName,  attrName->get_location());
+  }
+
+  if (typeName != NULL)
+  {
+    expand_elem_qname(typeNameItem, typeName->get_name(), typeName->get_location());
+
+    contentType = CTXTS->create_named_type(typeNameItem, TypeConstants::QUANT_ONE);
+
+    if (contentType == NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "attribute type", 
+                            typeNameItem->getStringValue()->c_str());
+    }
+  }
+
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   if (axisExpr != NULL)
@@ -9957,39 +9985,15 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
     match->setTestKind(match_attr_test);
 
     if (attrName != NULL)
-    {
-      store::Item_t qnameItem;
-      expand_no_default_qname(qnameItem, attrName,  attrName->get_location());
-      match->setQName(qnameItem);
-    }
+      match->setQName(attrNameItem);
 
     if (typeName != NULL)
-    {
-      store::Item_t qnameItem;
-      expand_elem_qname(qnameItem, typeName->get_name(), typeName->get_location());
-      match->setTypeName(qnameItem);
-    }
+      match->setTypeName(typeNameItem);
 
     axisExpr->setTest(match);
   }
   else
   {
-    store::Item_t attrNameItem;
-    xqtref_t contentType;
-
-    if (attrName != NULL)
-    {
-      expand_no_default_qname(attrNameItem, attrName,  attrName->get_location());
-    }
-
-    if (typeName != NULL)
-    {
-      store::Item_t qnameItem;
-      expand_elem_qname(qnameItem, typeName->get_name(), typeName->get_location());
-
-      contentType = CTXTS->create_named_type(qnameItem, TypeConstants::QUANT_ONE);
-    }
-
     xqtref_t seqmatch = CTXTS->create_node_type(store::StoreConsts::attributeNode,
                                                 attrNameItem.getp(),
                                                 contentType,
@@ -10100,23 +10104,33 @@ void end_visit (const CommentTest& v, void* /*visit_state*/)
 }
 
 
-void *begin_visit (const PITest& v)
+void* begin_visit(const PITest& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 
 
-void end_visit (const PITest& v, void* /*visit_state*/)
+void end_visit(const PITest& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
   string target = v.get_target();
 
   store::Item_t qname = NULL;
   if (target != "")
-    GENV_ITEMFACTORY->createQName(qname, NULL, NULL, target.c_str ());
+  {
+    xqpStringStore_t tmp = new xqpStringStore(target);
+
+    if (!GenericCast::instance()->castableToNCName(tmp))
+    {
+      ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
+                           "String literal in pi test cannot be converted to NCName");
+    }
+
+    GENV_ITEMFACTORY->createQName(qname, NULL, NULL, target.c_str());
+  }
 
   if (axisExpr != NULL)
   {
@@ -10147,7 +10161,8 @@ void end_visit (const PITest& v, void* /*visit_state*/)
 
 
 /* update-related */
-void *begin_visit (const DeleteExpr& v) {
+void* begin_visit(const DeleteExpr& v) 
+{
   TRACE_VISIT ();
   return no_state;
 }

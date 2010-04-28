@@ -1887,23 +1887,27 @@ bool GenericCast::castableToName(const xqpStringStore *str)
   std::vector<uint32_t> cps = str->getCodepoints();
   std::vector<uint32_t>::size_type i, sz = cps.size();
 
-  if (sz == 0) {
+  if (sz == 0) 
+  {
     return false;
   }
 
-  for(i = 0; i < sz; ++i) {
+  for (i = 0; i < sz; ++i) 
+  {
     cp = cps[i];
-    if (!(XQCharType::isLetter(cp)
-      || cp == '_'
-      || cp == ':')) {
-      if (i == 0) {
+    if (!(XQCharType::isLetter(cp) || cp == '_' || cp == ':')) 
+    {
+      if (i == 0) 
+      {
         return false;
       }
+
       if (!(XQCharType::isDigit(cp)
         || XQCharType::isExtender(cp)
         || XQCharType::isCombiningChar(cp)
         || cp == '.'
-        || cp == '-')) {
+        || cp == '-')) 
+      {
         return false;
       }
     }

@@ -242,10 +242,6 @@ xqtref_t TypeManagerImpl::create_named_atomic_type(
 
 /***************************************************************************//**
   Create a sequence type from the given typename and quantifier.
-
-  Here, the typename is assumed to be of a builtin type. If not, the method will
-  return NULL. Class DelegatingTypeManager redefines this method to handle user-
-  defined types. 
 ********************************************************************************/
 xqtref_t TypeManagerImpl::create_named_type(
     store::Item* qname,
@@ -292,7 +288,7 @@ xqtref_t TypeManagerImpl::create_named_type(
       ZORBA_ASSERT(namedType->type_kind() == XQType::USER_DEFINED_KIND);
 
       return create_type(*namedType, quant);
-  }
+    }
 #endif
 
     return NULL;
