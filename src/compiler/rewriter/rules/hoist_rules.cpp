@@ -54,7 +54,7 @@ static bool non_hoistable (const expr*);
 static bool is_already_hoisted(const expr*);
 
 static bool contains_var(
-    const var_expr*,
+    var_expr*,
     const VarIdMap&,
     const DynamicBitset&);
 
@@ -91,7 +91,7 @@ RULE_REWRITE_PRE(HoistExprsOutOfLoops)
     return NULL;
 
   ulong numVars = 0;
-  std::map<const var_expr *, ulong> varmap;
+  VarIdMap varmap;
 
   index_flwor_vars(node, numVars, varmap, NULL);
 
@@ -146,7 +146,7 @@ static bool hoist_expressions(
     ulong i = 0;
     while(i < numForLetClauses)
     {
-      forletwin_clause* flc = static_cast<forletwin_clause*>(flwor->get_clause(i, true));
+      forletwin_clause* flc = static_cast<forletwin_clause*>(flwor->get_clause(i));
 
       expr* domainExpr = flc->get_expr();
 
@@ -186,7 +186,7 @@ static bool hoist_expressions(
       }
     }
 
-    expr_t re = flwor->get_return_expr(false);
+    expr_t re = flwor->get_return_expr();
     expr_t rvar = try_hoisting(rCtx, re, varmap, freevarMap, &curr_holder);
     if (rvar != NULL)
     {
@@ -248,8 +248,6 @@ static expr_t try_hoisting(
     return NULL;
   }
 
-  static_context* sctx = e->get_sctx();
-
   std::map<const expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
   const DynamicBitset& varset = fvme->second;
@@ -303,7 +301,7 @@ static expr_t try_hoisting(
 
       inloop = (inloop ||
                 (flc->get_kind() == flwor_clause::for_clause &&
-                 TypeOps::type_max_cnt(*flc->get_expr()->return_type(sctx)) >= 2));
+                 TypeOps::type_max_cnt(*flc->get_expr()->get_return_type()) >= 2));
     }
 
     if (!found)
@@ -359,7 +357,7 @@ static expr_t try_hoisting(
   Check if the given var is contained in the given varset.
 ********************************************************************************/
 static bool contains_var(
-    const var_expr* v,
+    var_expr* v,
     const VarIdMap& varmap,
     const DynamicBitset& varset)
 {

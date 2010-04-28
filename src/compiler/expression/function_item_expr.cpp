@@ -151,12 +151,6 @@ void function_item_expr::compute_scripting_kind()
 }
 
 
-xqtref_t function_item_expr::return_type_impl(static_context* sctx) const
-{
-  return GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE;
-}
-
-
 class function_item_expr_iterator_data : public expr_iterator_data 
 {
 public:

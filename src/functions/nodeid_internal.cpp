@@ -51,7 +51,7 @@ namespace zorba
 function* op_node_sort_distinct::optimize(
     static_context* sctx,
     const expr* self,
-    const expr* child) const
+    expr* child) const
 {
   Annotations::Key ignoresSortedNodes = Annotations::IGNORES_SORTED_NODES;
   Annotations::Key ignoresDupNodes = Annotations::IGNORES_DUP_NODES;
@@ -74,7 +74,7 @@ function* op_node_sort_distinct::optimize(
   bool noa = myActions[NOA];
   if (noa)
   {
-    xqtref_t inputType = child->return_type(sctx);
+    xqtref_t inputType = child->get_return_type();
 
     if (TypeOps::is_subtype(*inputType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
     {

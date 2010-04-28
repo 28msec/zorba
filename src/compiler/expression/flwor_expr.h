@@ -600,6 +600,8 @@ public:
 ********************************************************************************/
 class flwor_expr : public expr
 {
+  friend class expr;
+
 public:
   typedef std::vector<rchandle<flwor_clause> > clause_list_t;
 
@@ -627,24 +629,17 @@ public:
     return (theIsGeneral ? gflwor_expr_kind : flwor_expr_kind);
   }
 
-  bool cache_compliant() const { return true; }
-
   bool is_general() const { return theIsGeneral; }
 
   bool is_updating() const { return theReturnExpr->is_updating(); }
 
-  const expr* get_return_expr() const { return theReturnExpr.getp(); }
-
-  expr* get_return_expr(bool invalidate);
+  expr* get_return_expr() const { return theReturnExpr.getp(); }
 
   void set_return_expr(expr_t e) 
   {
-    invalidate();
     theReturnExpr = e;
     compute_scripting_kind();
   }
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void compute_scripting_kind();
 
@@ -660,7 +655,7 @@ public:
 
   const flwor_clause* operator[](int i) const { return theClauses[i].getp(); }
 
-  flwor_clause* get_clause(ulong i, bool invalidate);
+  flwor_clause* get_clause(ulong i);
 
   clause_list_t::const_iterator clause_begin() const { return theClauses.begin(); }
 

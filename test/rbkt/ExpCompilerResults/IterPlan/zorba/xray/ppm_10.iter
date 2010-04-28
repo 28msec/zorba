@@ -1,0 +1,160 @@
+Iterator tree for main query:
+<SequentialIterator>
+  <SequentialIterator>
+    <CtxVarDeclIterator>
+      <SingletonIterator value="xs:string(447:scene)"/>
+    </CtxVarDeclIterator>
+    <CtxVarAssignIterator>
+      <SingletonIterator value="xs:string(447:scene)"/>
+      <UDFunctionCallIterator>
+        <TreatIterator quant="">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,scene)" typename="*" nill allowed="0">
+            <FnDocIterator>
+              <SingletonIterator value="xs:string(scene.xml)"/>
+            </FnDocIterator>
+          </ChildAxisIterator>
+        </TreatIterator>
+      </UDFunctionCallIterator>
+    </CtxVarAssignIterator>
+  </SequentialIterator>
+  <SequentialIterator>
+    <CtxVarDeclIterator>
+      <SingletonIterator value="xs:string(446:height)"/>
+    </CtxVarDeclIterator>
+    <CtxVarAssignIterator>
+      <SingletonIterator value="xs:string(446:height)"/>
+      <SingletonIterator value="xs:integer(10)"/>
+    </CtxVarAssignIterator>
+  </SequentialIterator>
+  <TreatIterator type="xs:integer" quant="">
+    <CtxVariableIterator>
+      <SingletonIterator value="xs:string(446:height)"/>
+    </CtxVariableIterator>
+  </TreatIterator>
+  <SequentialIterator>
+    <CtxVarDeclIterator>
+      <SingletonIterator value="xs:string(445:width)"/>
+    </CtxVarDeclIterator>
+    <CtxVarAssignIterator>
+      <SingletonIterator value="xs:string(445:width)"/>
+      <SingletonIterator value="xs:integer(10)"/>
+    </CtxVarAssignIterator>
+  </SequentialIterator>
+  <TreatIterator type="xs:integer" quant="">
+    <CtxVariableIterator>
+      <SingletonIterator value="xs:string(445:width)"/>
+    </CtxVariableIterator>
+  </TreatIterator>
+  <FnConcatIterator>
+    <StringJoinIterator>
+      <FnConcatIterator>
+        <SingletonIterator value="xs:string(P3)"/>
+        <StringJoinIterator>
+          <FnConcatIterator>
+            <FnStringIterator>
+              <CtxVariableIterator>
+                <SingletonIterator value="xs:string(445:width)"/>
+              </CtxVariableIterator>
+            </FnStringIterator>
+            <FnStringIterator>
+              <CtxVariableIterator>
+                <SingletonIterator value="xs:string(446:height)"/>
+              </CtxVariableIterator>
+            </FnStringIterator>
+          </FnConcatIterator>
+          <SingletonIterator value="xs:string( )"/>
+        </StringJoinIterator>
+        <SingletonIterator value="xs:string(255)"/>
+        <flwor::FLWORIterator>
+          <ForVariable name="aspect-ratio">
+            <SpecificNumArithIterator_DivideOperation_DECIMAL>
+              <CtxVariableIterator>
+                <SingletonIterator value="xs:string(445:width)"/>
+              </CtxVariableIterator>
+              <CtxVariableIterator>
+                <SingletonIterator value="xs:string(446:height)"/>
+              </CtxVariableIterator>
+            </SpecificNumArithIterator_DivideOperation_DECIMAL>
+          </ForVariable>
+          <ForVariable name="y">
+            <OpToIterator>
+              <SingletonIterator value="xs:integer(1)"/>
+              <CtxVariableIterator>
+                <SingletonIterator value="xs:string(446:height)"/>
+              </CtxVariableIterator>
+            </OpToIterator>
+          </ForVariable>
+          <ForVariable name="y-recentered">
+            <SpecificNumArithIterator_AddOperation_DECIMAL>
+              <SpecificNumArithIterator_DivideOperation_DECIMAL>
+                <OpNumericUnaryIterator>
+                  <ForVarIterator varname="y"/>
+                </OpNumericUnaryIterator>
+                <CtxVariableIterator>
+                  <SingletonIterator value="xs:string(446:height)"/>
+                </CtxVariableIterator>
+              </SpecificNumArithIterator_DivideOperation_DECIMAL>
+              <SingletonIterator value="xs:decimal(0.5)"/>
+            </SpecificNumArithIterator_AddOperation_DECIMAL>
+          </ForVariable>
+          <ForVariable name="x">
+            <OpToIterator>
+              <SingletonIterator value="xs:integer(1)"/>
+              <CtxVariableIterator>
+                <SingletonIterator value="xs:string(445:width)"/>
+              </CtxVariableIterator>
+            </OpToIterator>
+          </ForVariable>
+          <ReturnClause>
+            <StringJoinIterator>
+              <flwor::FLWORIterator>
+                <ForVariable name="channel">
+                  <UDFunctionCallIterator>
+                    <TreatIterator type="[NodeXQType elementNode  content=[XQType ANY_TYPE_KIND*]]" quant="">
+                      <CtxVariableIterator>
+                        <SingletonIterator value="xs:string(447:scene)"/>
+                      </CtxVariableIterator>
+                    </TreatIterator>
+                    <PromoteIterator type="xs:double">
+                      <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
+                        <SpecificNumArithIterator_SubtractOperation_DECIMAL>
+                          <SpecificNumArithIterator_DivideOperation_DECIMAL>
+                            <ForVarIterator varname="x"/>
+                            <CtxVariableIterator>
+                              <SingletonIterator value="xs:string(445:width)"/>
+                            </CtxVariableIterator>
+                          </SpecificNumArithIterator_DivideOperation_DECIMAL>
+                          <SingletonIterator value="xs:decimal(0.5)"/>
+                        </SpecificNumArithIterator_SubtractOperation_DECIMAL>
+                        <ForVarIterator varname="aspect-ratio"/>
+                      </SpecificNumArithIterator_MultiplyOperation_DECIMAL>
+                    </PromoteIterator>
+                    <PromoteIterator type="xs:double">
+                      <ForVarIterator varname="y-recentered"/>
+                    </PromoteIterator>
+                  </UDFunctionCallIterator>
+                </ForVariable>
+                <ReturnClause>
+                  <FnStringIterator>
+                    <FloorIterator>
+                      <SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                        <ForVarIterator varname="channel"/>
+                        <SingletonIterator value="xs:double(255)"/>
+                      </SpecificNumArithIterator_MultiplyOperation_DOUBLE>
+                    </FloorIterator>
+                  </FnStringIterator>
+                </ReturnClause>
+              </flwor::FLWORIterator>
+              <SingletonIterator value="xs:string( )"/>
+            </StringJoinIterator>
+          </ReturnClause>
+        </flwor::FLWORIterator>
+      </FnConcatIterator>
+      <SingletonIterator value="xs:string(
+)"/>
+    </StringJoinIterator>
+    <SingletonIterator value="xs:string(
+)"/>
+  </FnConcatIterator>
+</SequentialIterator>
+

@@ -89,7 +89,7 @@ PlanIter_t ctx_var_assign::codegen(
 
   const fo_expr& expr = reinterpret_cast<const fo_expr&>(ann);
 
-  xqtref_t exprType = expr.get_arg(1)->return_type(sctx);
+  xqtref_t exprType = expr.get_arg(1)->get_return_type();
 
   if (exprType->get_quantifier() == TypeConstants::QUANT_ONE)
     iter->setSingleItem();

@@ -27,11 +27,11 @@ namespace zorba
 
 static void add_wincond_vars(const flwor_wincond*, ulong&, VarIdMap&, IdVarMap*);
 
-static void add_var(const var_expr*, ulong&, VarIdMap&, IdVarMap*);
+static void add_var(var_expr*, ulong&, VarIdMap&, IdVarMap*);
 
 static void remove_wincond_vars(const flwor_wincond*, const VarIdMap&, DynamicBitset&);
 
-static void set_bit(const var_expr*, const VarIdMap&, DynamicBitset&, bool);
+static void set_bit(var_expr*, const VarIdMap&, DynamicBitset&, bool);
 
 
 /*******************************************************************************
@@ -227,7 +227,7 @@ static void add_wincond_vars(
 
 ********************************************************************************/
 static void add_var(
-    const var_expr* v,
+    var_expr* v,
     ulong& numVars,
     VarIdMap& varidmap,
     IdVarMap* idvarmap)
@@ -381,7 +381,7 @@ static void remove_wincond_vars(
 
 ********************************************************************************/
 static void set_bit(
-    const var_expr* v,
+    var_expr* v,
     const VarIdMap& varmap,
     DynamicBitset& freeset,
     bool value)

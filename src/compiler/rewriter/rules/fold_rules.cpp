@@ -57,7 +57,7 @@ static expr_t partial_eval_logic(fo_expr*, bool, RewriterContext&);
 
 static expr_t partial_eval_eq(RewriterContext&, fo_expr&);
 
-static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sctx);
+static bool maybe_needs_implicit_timezone(const fo_expr* fo);
 
 
 /*******************************************************************************
@@ -185,7 +185,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     // constext).
     if (f->accessesDynCtx () ||
         dynamic_cast<const fn_error*>(f) != NULL ||
-        maybe_needs_implicit_timezone(fo, node->get_sctx()) ||
+        maybe_needs_implicit_timezone(fo) ||
         !f->isDeterministic())
     {
       curUnfoldable = expr::ANNOTATION_TRUE_FIXED;
@@ -255,12 +255,12 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 }
 
 
-static bool maybe_needs_implicit_timezone(const fo_expr* fo, static_context* sctx)
+static bool maybe_needs_implicit_timezone(const fo_expr* fo)
 {
   const function* f = fo->get_func();
   FunctionConsts::FunctionKind fkind = f->getKind();
-  xqtref_t type0 = (fo->num_args() > 0 ? fo->get_arg(0)->return_type(sctx) : NULL);
-  xqtref_t type1 = (fo->num_args() > 1 ? fo->get_arg(1)->return_type(sctx) : NULL);
+  xqtref_t type0 = (fo->num_args() > 0 ? fo->get_arg(0)->get_return_type() : NULL);
+  xqtref_t type1 = (fo->num_args() > 1 ? fo->get_arg(1)->get_return_type() : NULL);
 
   return ( ((f->isComparisonFunction() ||
              f->arithmeticKind() == ArithmeticConsts::SUBTRACTION) &&
@@ -407,7 +407,7 @@ static void remove_wincond_vars(
 
 RULE_REWRITE_PRE(FoldConst)
 {
-  xqtref_t rtype = node->return_type(node->get_sctx());
+  xqtref_t rtype = node->get_return_type();
 
   // TODO: this computation could be moved to isUnfoldable() in fo_expr
   bool isDeterministicFunc = true;
@@ -503,12 +503,12 @@ RULE_REWRITE_PRE(PartialEval)
   const castable_base_expr* cbe;
   if ((cbe = dynamic_cast<const castable_base_expr *>(node)) != NULL)
   {
-    const expr* arg = cbe->get_input();
+    expr* arg = cbe->get_input();
 
     if (arg->isNonDiscardable())
       return NULL;
 
-    xqtref_t arg_type = arg->return_type(node->get_sctx());
+    xqtref_t arg_type = arg->get_return_type();
 
     if (TypeOps::is_subtype(*arg_type, *cbe->get_target_type()))
     {
@@ -536,8 +536,8 @@ RULE_REWRITE_PRE(PartialEval)
     if (cond != NULL)
     {
       return (cond->get_val()->getBooleanValue() ?
-              ite->get_then_expr(true) :
-              ite->get_else_expr(true));
+              ite->get_then_expr() :
+              ite->get_else_expr());
     }
     break;
   }
@@ -580,10 +580,10 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   }
   else if (fkind == FunctionConsts::FN_COUNT_1)
   {
-    expr_t arg = fo->get_arg(0, false);
+    expr_t arg = fo->get_arg(0);
     if (!arg->isNonDiscardable())
     {
-      int type_cnt = TypeOps::type_cnt(*arg->return_type(fo->get_sctx()));
+      int type_cnt = TypeOps::type_cnt(*arg->get_return_type());
       if (type_cnt != -1)
         return new const_expr(fo->get_sctx(), fo->get_loc(), Integer::parseInt(type_cnt));
     }
@@ -591,8 +591,8 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   }
   else if (fkind == FunctionConsts::FN_BOOLEAN_1)
   {
-    expr_t arg = fo->get_arg(0, false);
-    xqtref_t argType = arg->return_type(fo->get_sctx());
+    expr_t arg = fo->get_arg(0);
+    xqtref_t argType = arg->get_return_type();
     if (TypeOps::is_subtype(*argType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS))
     {
       return new const_expr(fo->get_sctx(), fo->get_loc(), true);
@@ -652,9 +652,9 @@ static expr_t partial_eval_logic(
     // Only one of the args is a constant expr. The non-const arg is pointed
     // to by nonConst1.
 
-    expr_t arg = fo->get_arg(nonConst1, true);
+    expr_t arg = fo->get_arg(nonConst1);
 
-    if (! TypeOps::is_subtype(*arg->return_type(fo->get_sctx()),
+    if (! TypeOps::is_subtype(*arg->get_return_type(),
                               *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
     {
       arg = fix_annotations(new fo_expr(fo->get_sctx(),
@@ -681,8 +681,8 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 
   for (i = 0; i < 2; i++)
   {
-    if (NULL != (val_expr = dynamic_cast<const_expr*>(fo.get_arg(i, false))) &&
-        NULL != (count_expr = dynamic_cast<fo_expr*>(fo.get_arg(1-i, false))) &&
+    if (NULL != (val_expr = dynamic_cast<const_expr*>(fo.get_arg(i))) &&
+        NULL != (count_expr = dynamic_cast<fo_expr*>(fo.get_arg(1-i))) &&
         count_expr->get_func()->getKind() == FunctionConsts::FN_COUNT_1)
       break;
   }
@@ -708,14 +708,14 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
     {
       return fix_annotations(new fo_expr(fo.get_sctx(), fo.get_loc(),
                                          GET_BUILTIN_FUNCTION(FN_EMPTY_1),
-                                         count_expr->get_arg(0, false)));
+                                         count_expr->get_arg(0)));
     }
     else if (ival == xqp_integer::parseInt(1))
     {
       return fix_annotations(new fo_expr(fo.get_sctx(),
                                          fo.get_loc(),
                                          GET_BUILTIN_FUNCTION(OP_EXACTLY_ONE_NORAISE_1),
-                                         count_expr->get_arg(0, false)));
+                                         count_expr->get_arg(0)));
     }
     else
     {

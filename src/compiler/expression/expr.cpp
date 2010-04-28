@@ -355,12 +355,6 @@ void sequential_expr::compute_scripting_kind()
 }
 
 
-xqtref_t sequential_expr::return_type_impl(static_context* sctx) const
-{
-  return sequence[sequence.size() - 1]->return_type(sctx);
-}
-
-
 expr_iterator_data* sequential_expr::make_iter() 
 {
   return new sequential_expr_iterator_data(this);
@@ -428,8 +422,6 @@ void trycatch_expr::serialize(::zorba::serialization::Archiver& ar)
 
 void trycatch_expr::add_clause_in_front(catch_clause_t cc)
 {
-  invalidate();
-
   theCatchClauses.insert(theCatchClauses.begin(), cc);
 
   if (cc->get_catch_expr() != NULL)
@@ -503,7 +495,7 @@ if_expr::if_expr(
   theElseExpr(elseExpr)
 {
   if (sctx != NULL &&
-      !TypeOps::is_equal(*condExpr->return_type(sctx),
+      !TypeOps::is_equal(*condExpr->get_return_type(),
                          *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
   {
     fo_expr* boolExpr = new fo_expr(sctx,
@@ -528,27 +520,6 @@ void if_expr::serialize(::zorba::serialization::Archiver& ar)
 }
   
 
-expr* if_expr::get_cond_expr(bool invalidate) 
-{
-  if (invalidate) this->invalidate();
-  return theCondExpr; 
-}
-
-
-expr* if_expr::get_then_expr(bool invalidate) 
-{
-  if (invalidate) this->invalidate();
-  return theThenExpr; 
-}
-
-
-expr* if_expr::get_else_expr(bool invalidate) 
-{
-  if (invalidate) this->invalidate();
-  return theElseExpr; 
-}
-
-
 void if_expr::compute_scripting_kind()
 {
   checkNonUpdating(theCondExpr);
@@ -557,13 +528,6 @@ void if_expr::compute_scripting_kind()
   expr_script_kind_t elseKind = theElseExpr->get_scripting_kind();
 
   theScriptingKind = expr::scripting_kind_anding(thenKind, elseKind, theLoc);
-}
-
-
-xqtref_t if_expr::return_type_impl(static_context* sctx) const 
-{
-  return TypeOps::union_type(*theThenExpr->return_type(sctx),
-                             *theElseExpr->return_type(sctx));
 }
 
 
@@ -620,12 +584,6 @@ void order_expr::compute_scripting_kind()
 }
 
 
-xqtref_t order_expr::return_type_impl(static_context* sctx) const 
-{
-  return theExpr->return_type(sctx); 
-}
-
-
 void order_expr::next_iter(expr_iterator_data& v) 
 {
   BEGIN_EXPR_ITER();
@@ -676,12 +634,6 @@ void validate_expr::compute_scripting_kind()
   theScriptingKind = SIMPLE_EXPR;
 
   checkSimpleExpr(theExpr);
-}
-
-
-xqtref_t validate_expr::return_type_impl(static_context* sctx) const
-{
-  return GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE;
 }
 
 
@@ -740,15 +692,7 @@ xqtref_t cast_or_castable_base_expr::get_target_type() const
 
 void cast_or_castable_base_expr::set_target_type(xqtref_t target) 
 {
-  invalidate();
   theTargetType = target;
-}
-
-
-expr* cast_or_castable_base_expr::get_input(bool invalidate) 
-{
-  if (invalidate) this->invalidate();
-  return theInputExpr.getp(); 
 }
 
 
@@ -778,25 +722,6 @@ cast_base_expr::cast_base_expr(
 void cast_base_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (cast_or_castable_base_expr*)this);
-}
-
-
-xqtref_t cast_base_expr::return_type_impl(static_context* sctx) const 
-{
-  xqtref_t argType = theInputExpr->return_type(sctx);
-  TypeConstants::quantifier_t argQuant = argType->get_quantifier();
-  TypeConstants::quantifier_t targetQuant = theTargetType->get_quantifier();
-
-  if (TypeOps::is_equal(*argType, *GENV_TYPESYSTEM.EMPTY_TYPE) &&
-      (targetQuant == TypeConstants::QUANT_QUESTION ||
-       targetQuant == TypeConstants::QUANT_STAR))
-  {
-    return GENV_TYPESYSTEM.EMPTY_TYPE;
-  }
-
-  TypeConstants::quantifier_t q = TypeOps::intersect_quant(argQuant, targetQuant);
-
-  return sctx->get_typemanager()->create_type(*theTargetType, q);
 }
 
 
@@ -873,25 +798,6 @@ void treat_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-xqtref_t treat_expr::return_type_impl(static_context* sctx) const 
-{
-  xqtref_t input_type = get_input()->return_type(sctx);
-  xqtref_t input_ptype = TypeOps::prime_type(*input_type);
-  xqtref_t target_ptype = TypeOps::prime_type(*theTargetType);
-
-  TypeConstants::quantifier_t q =
-    TypeOps::intersect_quant(TypeOps::quantifier(*input_type),
-                             TypeOps::quantifier(*theTargetType));
-
-  if (TypeOps::is_subtype(*input_ptype, *target_ptype)) 
-  {
-    return sctx->get_typemanager()->create_type(*input_ptype, q);
-  }
-
-  return sctx->get_typemanager()->create_type(*target_ptype, q);
-}
-
-
 void treat_expr::next_iter(expr_iterator_data& v) 
 {
   BEGIN_EXPR_ITER();
@@ -922,55 +828,6 @@ promote_expr::promote_expr(
   :
   cast_base_expr(sctx, loc, input, type)
 {
-}
-
-
-xqtref_t promote_expr::return_type_impl(static_context* sctx) const 
-{
-  TypeManager* tm = sctx->get_typemanager();
-
-  xqtref_t in_type = theInputExpr->return_type(sctx);
-  xqtref_t in_ptype = TypeOps::prime_type(*in_type);
-  xqtref_t target_ptype = TypeOps::prime_type(*theTargetType);
-
-  TypeConstants::quantifier_t q =
-    TypeOps::intersect_quant(TypeOps::quantifier(*in_type),
-                             TypeOps::quantifier(*theTargetType));
-
-  if (TypeOps::is_subtype(*in_ptype, *target_ptype))
-    return tm->create_type(*in_ptype, q);
-
-  // be liberal
-  return tm->create_type(*target_ptype, q);
-
-#if 0
-  RootTypeManager& ts = GENV_TYPESYSTEM;
-  // TODO: for nodes, the result would be none
-  if (TypeOps::is_equal (*in_ptype, *ts.UNTYPED_ATOMIC_TYPE_ONE))
-    return tm->create_type_x_quant(*target_ptype, q);
-  
-  // decimal --> float
-  if (TypeOps::is_subtype(*target_ptype, *ts.FLOAT_TYPE_ONE)) 
-  {
-    if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE))
-      return tm->create_type_x_quant(*target_ptype, q);
-  }
-  
-  // decimal/float --> double
-  if (TypeOps::is_subtype(*target_ptype, *ts.DOUBLE_TYPE_ONE)) 
-  {
-    if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE) ||
-        TypeOps::is_subtype(*in_ptype, *ts.FLOAT_TYPE_ONE))
-      return tm->create_type_x_quant(*target_ptype, q);
-  }
-  
-  // uri --> string
-  if (TypeOps::is_subtype(*target_ptype, *ts.STRING_TYPE_ONE)) 
-  {
-    if (TypeOps::is_subtype(*in_ptype, *ts.ANY_URI_TYPE_ONE))
-      return tm->create_type_x_quant(*target_ptype, q);
-  }
-#endif
 }
 
 
@@ -1008,12 +865,6 @@ castable_base_expr::castable_base_expr(
 void castable_base_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (cast_or_castable_base_expr*)this);
-}
-
-
-xqtref_t castable_base_expr::return_type_impl(static_context* sctx) const 
-{
-  return GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
 }
 
 
@@ -1185,18 +1036,6 @@ void doc_expr::compute_scripting_kind()
 }
 
 
-xqtref_t doc_expr::return_type_impl(static_context* sctx) const 
-{
-  return sctx->get_typemanager()->
-         create_node_type(store::StoreConsts::documentNode,
-                          NULL,
-                          theContent == NULL ? NULL : theContent->return_type(sctx),
-                          TypeConstants::QUANT_ONE,
-                          false,
-                          false);
-}
-
-
 void doc_expr::next_iter(expr_iterator_data& v) 
 {
   BEGIN_EXPR_ITER();
@@ -1279,23 +1118,6 @@ void elem_expr::compute_scripting_kind()
 }
 
 
-xqtref_t elem_expr::return_type_impl(static_context* sctx) const 
-{
-  xqtref_t typeName =
-           (sctx->construction_mode() == StaticContextConsts::cons_preserve ?
-            GENV_TYPESYSTEM.ANY_TYPE : 
-            GENV_TYPESYSTEM.UNTYPED_TYPE);
-
-  return sctx->get_typemanager()->
-         create_node_type(store::StoreConsts::elementNode,
-                          NULL,
-                          typeName,
-                          TypeConstants::QUANT_ONE,
-                          false,
-                          false);
-}
-
-
 void elem_expr::next_iter(expr_iterator_data& v) 
 {
   BEGIN_EXPR_ITER();
@@ -1363,18 +1185,6 @@ void attr_expr::compute_scripting_kind()
 }
 
 
-xqtref_t attr_expr::return_type_impl(static_context* sctx) const 
-{
-  return sctx->get_typemanager()->
-         create_node_type(store::StoreConsts::attributeNode,
-                          NULL,
-                          theValueExpr == NULL ? NULL : theValueExpr->return_type(sctx),
-                          TypeConstants::QUANT_ONE,
-                          false,
-                          false);
-}
-
-
 void attr_expr::next_iter(expr_iterator_data& v) 
 {
   BEGIN_EXPR_ITER();
@@ -1431,46 +1241,6 @@ void text_expr::compute_scripting_kind()
 }
 
 
-xqtref_t text_expr::return_type_impl(static_context* sctx) const 
-{
-  store::StoreConsts::NodeKind nodeKind;
-
-  TypeConstants::quantifier_t q = TypeConstants::QUANT_ONE;
-
-  switch (type) 
-  {
-    case text_constructor: 
-    {
-      xqtref_t t = get_text()->return_type(sctx);
-
-      if (TypeOps::is_empty(*t))
-        return t;
-
-      else if (TypeOps::type_min_cnt(*t) == 0)
-        q = TypeConstants::QUANT_QUESTION;
-
-      nodeKind = store::StoreConsts::textNode;
-      break;
-    }
-
-  case comment_constructor:
-    nodeKind = store::StoreConsts::commentNode;
-    break;
-
-  default:
-    ZORBA_ASSERT(false);
-    break;
-  }
-
-  return sctx->get_typemanager()->create_node_type(nodeKind,
-                                                   NULL,
-                                                   NULL,
-                                                   q,
-                                                   false,
-                                                   false);
-}
-
-
 void text_expr::next_iter(expr_iterator_data& v) 
 {
   BEGIN_EXPR_ITER();
@@ -1521,18 +1291,6 @@ void pi_expr::compute_scripting_kind()
 }
 
 
-xqtref_t pi_expr::return_type_impl(static_context* sctx) const 
-{
-  return sctx->get_typemanager()->
-         create_node_type(store::StoreConsts::piNode,
-                          NULL,
-                          NULL,
-                          TypeConstants::QUANT_ONE,
-                          false,
-                          false);
-}
-
-
 void pi_expr::next_iter(expr_iterator_data& v) 
 {
   BEGIN_EXPR_ITER();
@@ -1572,24 +1330,9 @@ void wrapper_expr::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-expr* wrapper_expr::get_expr(bool invalidate) 
-{
-  if (invalidate)
-    this->invalidate();
-
-  return theWrappedExpr;
-}
-
-
 void wrapper_expr::compute_scripting_kind()
 {
   theScriptingKind = theWrappedExpr->get_scripting_kind();;
-}
-
-
-xqtref_t wrapper_expr::return_type_impl(static_context* sctx) const 
-{
-  return theWrappedExpr->return_type(sctx);
 }
 
 
@@ -1724,14 +1467,6 @@ void const_expr::serialize(::zorba::serialization::Archiver& ar)
 void const_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-xqtref_t const_expr::return_type_impl(static_context* sctx) const
-{
-  xqtref_t type = sctx->get_typemanager()->create_value_type(theValue.getp());
-
-  return type;
 }
 
 
@@ -1948,12 +1683,6 @@ void insert_expr::compute_scripting_kind()
 }
 
 
-xqtref_t insert_expr::return_type_impl(static_context* sctx) const
-{
-  return GENV_TYPESYSTEM.EMPTY_TYPE;
-}
-
-
 void insert_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER();
@@ -1998,12 +1727,6 @@ void delete_expr::compute_scripting_kind()
   theScriptingKind = UPDATE_EXPR;
 
   checkNonUpdating(theTargetExpr);
-}
-
-
-xqtref_t delete_expr::return_type_impl(static_context* sctx) const
-{
-  return GENV_TYPESYSTEM.EMPTY_TYPE;
 }
 
 
@@ -2057,12 +1780,6 @@ void replace_expr::compute_scripting_kind()
 }
 
 
-xqtref_t replace_expr::return_type_impl(static_context* sctx) const
-{
-  return GENV_TYPESYSTEM.EMPTY_TYPE;
-}
-
-
 void replace_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER();
@@ -2113,12 +1830,6 @@ void rename_expr::compute_scripting_kind()
 
   checkNonUpdating(theTargetExpr);
   checkNonUpdating(theNameExpr);
-}
-
-
-xqtref_t rename_expr::return_type_impl(static_context* sctx) const
-{
-  return GENV_TYPESYSTEM.EMPTY_TYPE;
 }
 
 
@@ -2228,12 +1939,6 @@ void transform_expr::compute_scripting_kind()
 }
 
 
-xqtref_t transform_expr::return_type_impl(static_context* sctx) const
-{
-  return theReturnExpr->return_type(sctx);
-}
-
-
 expr_iterator_data* transform_expr::make_iter()
 {
   return new transform_expr_iterator_data(this);
@@ -2300,12 +2005,6 @@ void exit_expr::compute_scripting_kind()
 }
 
 
-xqtref_t exit_expr::return_type_impl(static_context* sctx) const
-{
-  return theExpr->return_type(sctx);
-}
-
-
 void exit_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER();
@@ -2344,12 +2043,6 @@ void flowctl_expr::serialize(::zorba::serialization::Archiver& ar)
 void flowctl_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-xqtref_t flowctl_expr::return_type_impl(static_context* sctx) const
-{
-  return GENV_TYPESYSTEM.EMPTY_TYPE;
 }
 
 
@@ -2392,12 +2085,6 @@ void while_expr::compute_scripting_kind()
   checkNonUpdating((*seq)[0]);
 
   theScriptingKind = theBody->get_scripting_kind();
-}
-
-
-xqtref_t while_expr::return_type_impl(static_context* sctx) const
-{
-  return GENV_TYPESYSTEM.EMPTY_TYPE;
 }
 
 

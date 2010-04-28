@@ -60,12 +60,12 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   SingletonRuleMajorDriver<EliminateTypeEnforcingOperations> driverTypeRules;
   SingletonRuleMajorDriver<EliminateExtraneousPathSteps> driverPathSimplify;
   SingletonRuleMajorDriver<ReplaceExprWithConstantOneWhenPossible> driverExprSimplify;
-  SingletonRuleMajorDriver<EliminateUnusedLetVars> driverEliminateVars;
-  SingletonRuleMajorDriver<MarkProducerNodeProps> driverMarkProducerNodeProps;
-  SingletonRuleMajorDriver<MarkConsumerNodeProps> driverMarkConsumerNodeProps;
-  SingletonRuleMajorDriver<EliminateNodeOps> driverEliminateNodeOps;
+  RuleOnceDriver<EliminateUnusedLetVars> driverEliminateVars;
+  RuleOnceDriver<MarkProducerNodeProps> driverMarkProducerNodeProps;
+  RuleOnceDriver<MarkConsumerNodeProps> driverMarkConsumerNodeProps;
+  RuleOnceDriver<EliminateNodeOps> driverEliminateNodeOps;
   SingletonRuleMajorDriver<SpecializeOperations> driverSpecializeOperations;
-  SingletonRuleMajorDriver<HoistExprsOutOfLoops> driverHoistExprsOutOfLoops;
+  RuleOnceDriver<HoistExprsOutOfLoops> driverHoistExprsOutOfLoops;
   RuleOnceDriver<IndexJoin> driverIndexJoin;
 
   SingletonRuleMajorDriver<MarkFreeVars> driverMarkFreeVars;
@@ -80,6 +80,8 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
       modified = true;
   }
 
+ repeat1:
+
   // TypeRules
   if (driverTypeRules.rewrite(rCtx))
     modified = true;
@@ -88,12 +90,19 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   if (driverPathSimplify.rewrite(rCtx))
     modified = true;
 
-  // Mark non-discardable and unfoldable expr
-  //bool mod;
-  //mark_exprs(rCtx, rCtx.getRoot().getp(), mod);
-
   // FoldRules
   driverFoldRules.rewrite(rCtx);
+
+  //
+  bool local_modified = false;
+  rCtx.theRoot->compute_return_type(true, &local_modified);
+  if (local_modified)
+  {
+    //std::cout << "TYPES MODIFIED 1 !!!" << std::endl << std::endl;
+    goto repeat1;
+  }
+
+ repeat2:
 
   //
   driverExprSimplify.rewrite(rCtx);
@@ -104,6 +113,15 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   //
   driverEliminateVars.rewrite(rCtx);
 
+  //  Recompute static types
+  local_modified = false;
+  rCtx.theRoot->compute_return_type(true, &local_modified);
+  if (local_modified)
+  {
+    //std::cout << "TYPES MODIFIED 2 !!!" << std::endl << std::endl;
+    goto repeat2;
+  }
+
   //
   driverMarkProducerNodeProps.rewrite(rCtx);
   driverEliminateNodeOps.rewrite(rCtx);
@@ -112,7 +130,9 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   driverMarkConsumerNodeProps.rewrite(rCtx);
   driverEliminateNodeOps.rewrite(rCtx);
 
-  //
+ repeat4:
+
+  // SpecializeOps
   driverSpecializeOperations.rewrite(rCtx);
 
   // FoldRules
@@ -121,12 +141,17 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   // TypeRules
   driverTypeRules.rewrite(rCtx);
 
+  // Recompute static types
+  local_modified = false;
+  rCtx.theRoot->compute_return_type(true, &local_modified);
+  if (local_modified)
+  {
+    //std::cout << "TYPES MODIFIED 4 !!!" << std::endl << std::endl;
+    goto repeat4;
+  }
+
   if (Properties::instance()->loopHoisting())
     driverHoistExprsOutOfLoops.rewrite(rCtx);
-
-  // For UDFs, which need this annotation in udf::requires_dyn_ctx()
-  // TODO: only do this for UDFs
-  //ADD_ONCE_DRIVER(MarkUnfoldableExprs);
 
   if (Properties::instance()->inferJoins())
     driverIndexJoin.rewrite(rCtx);

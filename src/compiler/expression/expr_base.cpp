@@ -199,8 +199,6 @@ expr::expr(static_context* sctx, const QueryLoc& loc)
   theLoc(loc),
   theFlags1(0) 
 {
-  invalidate();
-  theCache.type.valid = false;
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
   // This is the default. The constructors for certain exprs set different values. 
@@ -226,8 +224,7 @@ void expr::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, (AnnotationHolder*)this);
   ar & theSctx;
   ar & theLoc;
-  ar & theCache.type.valid;
-  ar & theCache.type.t;
+  ar & theType;
   SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
   ar & theFlags1;
 }
@@ -399,30 +396,7 @@ expr_script_kind_t expr::scripting_kind_anding(
 
   return SIMPLE_EXPR;
 }
-  
-
-/*******************************************************************************
-
-********************************************************************************/
-xqtref_t expr::return_type(static_context* sctx) const
-{
-  if (! cache_compliant())
-    return DEBUG_RT(this, return_type_impl(sctx));
-
-  if (! theCache.type.valid)
-  {
-    theCache.type.t = DEBUG_RT(this, return_type_impl(sctx));
-    theCache.type.valid = true;
-  }
-
-  return theCache.type.t;
-}
-
-
-xqtref_t expr::return_type_impl(static_context* sctx) const
-{
-  return GENV_TYPESYSTEM.ITEM_TYPE_STAR;
-}
+ 
 
 
 /*******************************************************************************
@@ -430,11 +404,7 @@ xqtref_t expr::return_type_impl(static_context* sctx) const
 ********************************************************************************/
 expr_iterator expr::expr_begin(bool invalidate) 
 {
-  if (invalidate)
-    this->invalidate();
-
   expr_iterator_data* iter_data = make_iter();
-  iter_data->set_invalidate(invalidate);
   iter_data->next();
 
   return expr_iterator(iter_data);
@@ -444,7 +414,6 @@ expr_iterator expr::expr_begin(bool invalidate)
 const_expr_iterator expr::expr_begin_const() const 
 {
   expr_iterator_data* iter_data = const_cast<expr*>(this)->make_iter();
-  iter_data->set_invalidate(false);
   iter_data->next();
 
   return const_expr_iterator(iter_data);
@@ -824,12 +793,12 @@ const var_expr* expr::get_var() const
   returns false, it may still be a map, but this algorithm could not determine
   that.
 ********************************************************************************/
-bool expr::is_map(const expr* e, static_context* sctx) const
+bool expr::is_map(expr* e, static_context* sctx) const
 {
   if (is_updating())
     return false;
 
-  xqtref_t type = e->return_type(sctx);
+  xqtref_t type = e->get_return_type();
   TypeConstants::quantifier_t q = type->get_quantifier();
 
   if (q == TypeConstants::QUANT_ONE || q == TypeConstants::QUANT_QUESTION)
@@ -1195,9 +1164,7 @@ const store::Item* expr::getQName(static_context* sctx) const
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t expr::get_return_type_with_empty_input(
-    static_context* sctx,
-    const expr* input) const
+xqtref_t expr::get_return_type_with_empty_input(const expr* input) const
 {
   expr_t emptyExpr = new fo_expr(input->get_sctx(),
                                  QueryLoc::null,
@@ -1207,7 +1174,7 @@ xqtref_t expr::get_return_type_with_empty_input(
 
   expr_t cloneExpr = clone(subst);
 
-  return cloneExpr->return_type(sctx);
+  return cloneExpr->get_return_type();
 }
 
 

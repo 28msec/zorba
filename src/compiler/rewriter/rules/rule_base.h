@@ -30,13 +30,46 @@ class RewriterContext;
 ********************************************************************************/
 class RewriteRule : public SimpleRCObject 
 {
+public:
+  typedef enum
+  {
+    MarkConsumerNodeProps,
+    MarkProducerNodeProps,
+    EliminateNodeOps,
+    ReplaceExprWithConstantOneWhenPossible,
+    SpecializeOperations,
+    EliminateTypeEnforcingOperations,
+    EliminateUnusedLetVars,
+    RefactorPredFLWOR,
+    MergeFLWOR,
+    FoldConst,
+    MarkExprs,
+    SubstVars,
+    EliminateExtraneousPathSteps,
+    MarkFreeVars,
+    HoistExprsOutOfLoops,
+    IndexJoin,
+    InlineFunctions,
+    PartialEval,
+    EchoNodes,
+    PlanPrinter
+  } RuleKind;
+
 private:
+  RuleKind    theKind;
   std::string theRuleName;     
 
 public:
-  RewriteRule(const std::string& name) : theRuleName(name) {}
+  RewriteRule(RuleKind k, const std::string& name) 
+    :
+    theKind(k),
+    theRuleName(name)
+  {
+  }
 
   virtual ~RewriteRule() { }
+
+  RuleKind getKind() const { return theKind; }
 
   const std::string& getRuleName() const { return theRuleName; }
 
@@ -50,7 +83,11 @@ public:
 class PrePostRewriteRule : public RewriteRule
 {
 public:
-  PrePostRewriteRule(const std::string& name) : RewriteRule(name) {}
+  PrePostRewriteRule(RewriteRule::RuleKind k, const std::string& name) 
+    :
+    RewriteRule(k, name)
+  {
+  }
 
   virtual ~PrePostRewriteRule() { }
 
@@ -70,7 +107,7 @@ protected:
 class name : public PrePostRewriteRule                              \
 {                                                                   \
  public:                                                            \
-  name() : PrePostRewriteRule(#name) { }                            \
+  name() : PrePostRewriteRule(RewriteRule::name, #name) { }         \
                                                                     \
   ~name() { }                                                       \
                                                                     \

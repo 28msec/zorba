@@ -76,7 +76,7 @@ public:
   virtual function* optimize(
         static_context* sctx,
         const expr* self,
-        const expr* child) const;
+        expr* child) const;
 
   xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const
   {

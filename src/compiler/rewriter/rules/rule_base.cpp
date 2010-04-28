@@ -42,7 +42,7 @@ expr_t PrePostRewriteRule::apply(RewriterContext& rCtx, expr* curExpr, bool& mod
     modified = true;
   }
 
-  for(expr_iterator i = curExpr->expr_begin(); !i.done(); ++i) 
+  for (expr_iterator i = curExpr->expr_begin(); !i.done(); ++i) 
   {
     expr_t new_e = apply(rCtx, &**i, modified);
     if (new_e != NULL) 

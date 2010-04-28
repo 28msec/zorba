@@ -14,6 +14,7 @@
 SET(EXPRESSION_SRCS
     expr_consts.cpp
     expr_base.cpp
+    expr_type.cpp
     expr.cpp
     expr_put.cpp
     var_expr.cpp

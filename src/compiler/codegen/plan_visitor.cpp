@@ -774,7 +774,7 @@ bool begin_visit(flwor_expr& v)
     }
   }
 
-  v.get_return_expr(false)->accept(*this);
+  v.get_return_expr()->accept(*this);
 
   // Do not visit the children of this flwor expr; this was done already by
   // this method
@@ -1026,10 +1026,9 @@ struct wincond_var_iters
 
 bool nativeColumnSort(expr* colExpr)
 {
-  static_context* sctx = colExpr->get_sctx();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t colType = colExpr->return_type(sctx);
+  xqtref_t colType = colExpr->get_return_type();
 
   if (TypeOps::is_subtype(*colType, *rtm.STRING_TYPE_STAR) ||
       TypeOps::is_subtype(*colType, *rtm.DOUBLE_TYPE_STAR) ||
@@ -1636,10 +1635,10 @@ bool begin_visit (insert_expr& v)
 
   store::UpdateConsts::InsertType kind  = v.getType();
 
-  const expr* targetExpr = v.getTargetExpr();
-  const expr* sourceExpr = v.getSourceExpr();
-  xqtref_t targetType = targetExpr->return_type(sctx);
-  xqtref_t sourceType = sourceExpr->return_type(sctx);
+  expr* targetExpr = v.getTargetExpr();
+  expr* sourceExpr = v.getSourceExpr();
+  xqtref_t targetType = targetExpr->get_return_type();
+  xqtref_t sourceType = sourceExpr->get_return_type();
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
@@ -1737,8 +1736,8 @@ bool begin_visit (replace_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
-  const expr* targetExpr = v.getTargetExpr();
-  xqtref_t targetType = targetExpr->return_type(sctx);
+  expr* targetExpr = v.getTargetExpr();
+  xqtref_t targetType = targetExpr->get_return_type();
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
@@ -1763,8 +1762,8 @@ bool begin_visit (rename_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
-  const expr* targetExpr = v.getTargetExpr();
-  xqtref_t targetType = targetExpr->return_type(sctx);
+  expr* targetExpr = v.getTargetExpr();
+  xqtref_t targetType = targetExpr->get_return_type();
 
   if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
@@ -1792,7 +1791,7 @@ bool begin_visit (transform_expr& v)
   {
     rchandle<var_expr> var = (*lIter)->getVar();
     expr_t sourceExpr = (*lIter)->getExpr();
-    xqtref_t sourceType = sourceExpr->return_type(sctx);
+    xqtref_t sourceType = sourceExpr->get_return_type();
 
     if (TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
       ZORBA_ERROR_LOC(XUTY0013, qloc);
@@ -1987,23 +1986,27 @@ void end_visit (treat_expr& v) {
   push_itstack(new TreatIterator(sctx, qloc, arg, v.get_target_type(), v.get_check_prime(), v.get_err()));
 }
 
-bool begin_visit (castable_expr& v) {
+bool begin_visit (castable_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (castable_expr& v) {
+void end_visit (castable_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
   push_itstack(new CastableIterator(sctx, qloc, lChild, v.get_target_type()));
 }
 
-bool begin_visit (cast_expr& v) {
+bool begin_visit (cast_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (cast_expr& v) {
+void end_visit (cast_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t lChild = pop_itstack();
   push_itstack(new CastIterator(sctx, qloc, lChild, v.get_target_type()));
@@ -2014,8 +2017,8 @@ bool begin_visit(name_cast_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
-  const expr* targetExpr = v.get_input();
-  xqtref_t targetType = targetExpr->return_type(sctx);
+  expr* targetExpr = v.get_input();
+  xqtref_t targetType = targetExpr->get_return_type();
 
   if (TypeOps::is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *targetType) ||
       TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) ||
@@ -2086,7 +2089,8 @@ void end_visit (extension_expr& v)
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (relpath_expr& v) {
+bool begin_visit (relpath_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   //PlanIter_t input = pop_itstack();
@@ -2098,7 +2102,8 @@ bool begin_visit (relpath_expr& v) {
 }
 
 
-void end_visit (relpath_expr& v) {
+void end_visit (relpath_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 }
 
@@ -2188,14 +2193,16 @@ void end_visit (match_expr& v) {
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (relpath_expr& v) {
+bool begin_visit (relpath_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   // Done in axis itself
   return true;
 }
 
 
-void end_visit (relpath_expr& v) {
+void end_visit(relpath_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 }
 
@@ -2203,7 +2210,8 @@ void end_visit (relpath_expr& v) {
 /*******************************************************************************
 
 ********************************************************************************/
-bool begin_visit (axis_step_expr& v) {
+bool begin_visit (axis_step_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   bool result = true;

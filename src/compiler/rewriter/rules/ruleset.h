@@ -29,6 +29,8 @@ namespace zorba
 
 RULE(EchoNodes);
 
+RULE(PlanPrinter);
+
 RULE(MarkConsumerNodeProps);
 
 RULE(MarkProducerNodeProps);
@@ -53,8 +55,6 @@ RULE(MarkFreeVars);
 
 RULE(HoistExprsOutOfLoops);
 
-RULE(PlanPrinter);
-
 RULE(IndexJoin);
 
 RULE(InlineFunctions);
@@ -70,7 +70,7 @@ protected:
 public:     
   FoldConst(bool fold_expensive_ops) 
     :
-    PrePostRewriteRule("FoldConst"),
+    PrePostRewriteRule(RewriteRule::FoldConst, "FoldConst"),
     theFoldExpensiveOps(fold_expensive_ops)
   {
   }
@@ -86,7 +86,7 @@ protected:
 class MarkExprs : public RewriteRule 
 {
 public:
-  MarkExprs() : RewriteRule("MarkExprs") {}
+  MarkExprs() : RewriteRule(RewriteRule::MarkExprs, "MarkExprs") {}
 
   expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
 };

@@ -28,8 +28,8 @@
 namespace zorba 
 {
 
-typedef std::map<const var_expr *, ulong> VarIdMap;
-typedef std::vector<const var_expr*> IdVarMap;
+typedef std::map<var_expr *, ulong> VarIdMap;
+typedef std::vector<var_expr*> IdVarMap;
 typedef std::map<const expr *, DynamicBitset> ExprVarsMap;
 
 

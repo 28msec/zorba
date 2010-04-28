@@ -119,9 +119,6 @@ void forletwin_clause::serialize(::zorba::serialization::Archiver& ar)
 void forletwin_clause::set_expr(expr_t v) 
 {
   theDomainExpr = v; 
-  
-  if (theFlworExpr)
-    theFlworExpr->invalidate();
 }
 
 
@@ -164,7 +161,7 @@ for_clause::for_clause(
       if (TypeOps::is_empty(*declaredType))
         ZORBA_ERROR_LOC_PARAM(XPTY0004, loc, "empty-sequence()", "");
 
-      xqtref_t domainType = domainExpr->return_type(sctx);
+      xqtref_t domainType = domainExpr->get_return_type();
 
       if (!TypeOps::is_subtype(*GENV_TYPESYSTEM.ITEM_TYPE_STAR, *declaredType))
       {
@@ -293,7 +290,7 @@ let_clause::let_clause(
     xqtref_t declaredType = varExpr->get_type();
     if (declaredType != NULL)
     {
-      xqtref_t domainType = domainExpr->return_type(sctx);
+      xqtref_t domainType = domainExpr->get_return_type();
 
       if (!TypeOps::is_subtype(*GENV_TYPESYSTEM.ITEM_TYPE_STAR, *declaredType) &&
           !TypeOps::is_subtype(*domainType, *declaredType))
@@ -396,7 +393,7 @@ window_clause::window_clause(
     xqtref_t varType = varExpr->get_type();
     if (varType != NULL)
     {
-      xqtref_t domainType = domainExpr->return_type(sctx);
+      xqtref_t domainType = domainExpr->get_return_type();
 
       if (!TypeOps::is_subtype(*GENV_TYPESYSTEM.ITEM_TYPE_STAR, *varType) &&
           !TypeOps::is_subtype(*domainType, *varType))
@@ -490,7 +487,7 @@ flwor_wincond::flwor_wincond(
 {
   if (sctx != NULL)
   {
-    xqtref_t condType = theCondExpr->return_type(sctx);
+    xqtref_t condType = theCondExpr->get_return_type();
 
     if(!TypeOps::is_equal(*condType, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
     {
@@ -741,9 +738,6 @@ void where_clause::serialize(::zorba::serialization::Archiver& ar)
 void where_clause::set_expr(expr_t where) 
 {
   theWhereExpr = where;
-
-  if (theFlworExpr)
-    theFlworExpr->invalidate();
 }
 
 
@@ -792,19 +786,8 @@ void flwor_expr::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-expr* flwor_expr::get_return_expr(bool invalidate)
+flwor_clause* flwor_expr::get_clause(ulong i)
 {
-  if (invalidate) this->invalidate();
-  return theReturnExpr.getp();
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-flwor_clause* flwor_expr::get_clause(ulong i, bool invalidate)
-{
-  if (invalidate) this->invalidate();
   return theClauses[i].getp();
 }
 
@@ -818,7 +801,6 @@ void flwor_expr::remove_clause(ulong pos)
     theClauses[pos]->theFlworExpr = NULL;
 
   theClauses.erase(theClauses.begin() + pos);
-  invalidate();
 }
 
 
@@ -829,7 +811,6 @@ void flwor_expr::add_clause(flwor_clause* c)
 {
   theClauses.push_back(c);
   c->theFlworExpr = this;
-  invalidate();
 }
 
 
@@ -840,7 +821,6 @@ void flwor_expr::add_clause(ulong pos, flwor_clause* c)
 {
   theClauses.insert(theClauses.begin() + pos, c);
   c->theFlworExpr = this;
-  invalidate();
 }
 
 
@@ -891,8 +871,6 @@ void flwor_expr::set_where(expr* e)
   where_clause* wc = new where_clause(theSctx, e->get_loc(), e);
   theClauses.insert(theClauses.begin() + i, wc);
   wc->theFlworExpr = this;
-
-  invalidate();
 }
 
 
@@ -911,8 +889,6 @@ void flwor_expr::remove_where_clause()
       return;
     }
   }
-
-  invalidate();
 }
 
 
@@ -1057,48 +1033,6 @@ void flwor_expr::get_vars_defined(std::vector<var_expr*>& varExprs) const
       if (stopVars.next) varExprs.push_back(stopVars.next.getp());
     }
   }
-}
-
-
-/*******************************************************************************
-
-********************************************************************************/
-xqtref_t flwor_expr::return_type_impl(static_context* sctx) const
-{
-  TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
-
-  ulong numClauses = num_clauses();
-
-  for (ulong i = 0; i < numClauses && quant != TypeConstants::QUANT_STAR; ++i) 
-  {
-    const flwor_clause* c = theClauses[i];
-
-    switch (c->get_kind())
-    {
-    case flwor_clause::for_clause :
-    {
-      const for_clause* fc = static_cast<const for_clause *>(c);
-      quant = TypeOps::union_quant(quant,
-                                   fc->get_expr()->return_type(sctx)->get_quantifier());
-      break;
-    }
-    case flwor_clause::window_clause :
-    {
-      quant = TypeConstants::QUANT_STAR;
-      break;
-    }
-    case flwor_clause::where_clause :
-    {
-      quant = TypeOps::union_quant(quant, TypeConstants::QUANT_QUESTION);
-      break;
-    }
-    default:
-      break;
-    }
-  }
-
-  return sctx->get_typemanager()->
-         create_type_x_quant(*theReturnExpr->return_type(sctx), quant);
 }
 
 

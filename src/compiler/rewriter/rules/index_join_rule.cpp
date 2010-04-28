@@ -39,7 +39,7 @@ static bool isIndexJoinPredicate(RewriterContext&, PredicateInfo&);
 
 static bool rewriteJoin(RewriterContext&, PredicateInfo&);
 
-  static const var_expr* findForVar(static_context*, RewriterContext&, const expr*, ulong&);
+static var_expr* findForVar(static_context*, RewriterContext&, const expr*, ulong&);
 
 static bool checkVarDependency(RewriterContext&, expr*, ulong);
 
@@ -51,13 +51,13 @@ static void findFlworForVar(RewriterContext&, const var_expr*, flwor_expr*&,
 
 struct PredicateInfo
 {
-  flwor_expr     * theFlworExpr;
-  expr           * thePredicate;
-  const expr     * theOuterOp;
-  const var_expr * theOuterVar;
-  ulong            theOuterVarId;
-  const expr     * theInnerOp;
-  const var_expr * theInnerVar;
+  flwor_expr  * theFlworExpr;
+  expr        * thePredicate;
+  expr        * theOuterOp;
+  var_expr    * theOuterVar;
+  ulong         theOuterVarId;
+  expr        * theInnerOp;
+  var_expr    * theInnerVar;
 };
 
 
@@ -177,8 +177,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   if (fn->comparisonKind() != CompareConsts::VALUE_EQUAL)
     return false;
 
-  const expr* op1 = foExpr->get_arg(0);
-  const expr* op2 = foExpr->get_arg(1);
+  expr* op1 = foExpr->get_arg(0);
+  expr* op2 = foExpr->get_arg(1);
 
   if (rCtx.theVarIdMap == NULL)
   {
@@ -199,12 +199,12 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   // Analyze each operand of the eq to see if it depends on a single for
   // variable. If that is not true, we reject this predicate.
   ulong var1id;
-  const var_expr* var1 = findForVar(sctx, rCtx, op1, var1id);
+  var_expr* var1 = findForVar(sctx, rCtx, op1, var1id);
   if (var1 == NULL)
     return false;
 
   ulong var2id;
-  const var_expr* var2 = findForVar(sctx, rCtx, op2, var2id);
+  var_expr* var2 = findForVar(sctx, rCtx, op2, var2id);
   if (var2 == NULL)
     return false;
 
@@ -237,7 +237,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   }
 
   // The domain of the outer var must contain more than 1 item.
-  xqtref_t outerDomainType = predInfo.theOuterVar->get_domain_expr()->return_type(sctx);
+  xqtref_t outerDomainType = predInfo.theOuterVar->get_domain_expr()->get_return_type();
 
   if (TypeOps::type_max_cnt(*outerDomainType) < 2)
     return false;
@@ -253,8 +253,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     return false;
 
   // Type checks
-  xqtref_t outerType = predInfo.theOuterOp->return_type(sctx);
-  xqtref_t innerType = predInfo.theInnerOp->return_type(sctx);
+  xqtref_t outerType = predInfo.theOuterOp->get_return_type();
+  xqtref_t innerType = predInfo.theInnerOp->get_return_type();
   xqtref_t primeOuterType = TypeOps::prime_type(*outerType);
   xqtref_t primeInnerType = TypeOps::prime_type(*innerType);
   TypeConstants::quantifier_t outerQuant = TypeOps::quantifier(*outerType);
@@ -296,13 +296,13 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   Check if "curExpr" references a single var and that var is a FOR var. If so,
   return that FOR var and its prefix id; otherwise return NULL.
 ********************************************************************************/
-static const var_expr* findForVar(
+static var_expr* findForVar(
     static_context* sctx,
     RewriterContext& rCtx,
     const expr* curExpr,
     ulong& varid)
 {
-  const var_expr* var = NULL;
+  var_expr* var = NULL;
 
   while (true)
   {
@@ -320,7 +320,7 @@ static const var_expr* findForVar(
 
     if (var->get_kind() == var_expr::for_var)
     {
-      xqtref_t domainType = var->get_domain_expr()->return_type(sctx);
+      xqtref_t domainType = var->get_domain_expr()->get_return_type();
 
       if (domainType->get_quantifier() == TypeConstants::QUANT_ONE)
       {
@@ -465,7 +465,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
       for (ulong i = mostInnerVarPos+1; i < numClauses; ++i)
       {
-        nestedFlwor->add_clause(innerFlwor->get_clause(i, false));
+        nestedFlwor->add_clause(innerFlwor->get_clause(i));
       }
 
       for (ulong i = numClauses - 1; i > mostInnerVarPos; --i)
@@ -473,7 +473,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
         innerFlwor->remove_clause(i);
       }
 
-      nestedFlwor->set_return_expr(innerFlwor->get_return_expr(true));
+      nestedFlwor->set_return_expr(innerFlwor->get_return_expr());
 
       innerSeqExpr = new sequential_expr(sctx, loc);
 
@@ -487,7 +487,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
     }
     else
     {
-      expr* returnExpr = innerFlwor->get_return_expr(false);
+      expr* returnExpr = innerFlwor->get_return_expr();
 
       if (returnExpr->get_expr_kind() == sequential_expr_kind)
       {
@@ -584,7 +584,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   std::vector<OrderModifier> modifiers(1);
 
   columnExprs[0] = predInfo.theInnerOp;
-  columnTypes[0] = predInfo.theInnerOp->return_type(sctx);
+  columnTypes[0] = predInfo.theInnerOp->get_return_type();
   modifiers[0].theAscending = true;
   modifiers[0].theEmptyLeast = true;
   modifiers[0].theCollation = sctx->get_default_collation(QueryLoc::null);
@@ -633,7 +633,7 @@ static bool expandVars(
 
     if (wrapper->get_expr()->get_expr_kind() == var_expr_kind)
     {
-      const var_expr* var = reinterpret_cast<const var_expr*>(wrapper->get_expr());
+      var_expr* var = reinterpret_cast<var_expr*>(wrapper->get_expr());
       ulong varid = (*rCtx.theVarIdMap)[var];
 
       if (varid > outerVarId)

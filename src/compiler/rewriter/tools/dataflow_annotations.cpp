@@ -193,7 +193,7 @@ void DataflowAnnotationsComputer::default_walk(expr* e)
 ********************************************************************************/
 bool DataflowAnnotationsComputer::generic_compute(expr* e)
 {
-  xqtref_t rt = e->return_type(m_ctx);
+  xqtref_t rt = e->get_return_type();
   TypeConstants::quantifier_t quant = TypeOps::quantifier(*rt);
 
   if (quant == TypeConstants::QUANT_ONE || quant == TypeConstants::QUANT_QUESTION) 
@@ -489,7 +489,7 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
     }
     else
     {
-      xqtref_t crt = (*e)[0]->return_type(m_ctx);
+      xqtref_t crt = (*e)[0]->get_return_type();
 
       if (TypeOps::type_max_cnt(*crt) <= 1) 
       {

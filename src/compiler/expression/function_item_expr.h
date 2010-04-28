@@ -40,6 +40,8 @@ namespace zorba {
 ********************************************************************************/
 class dynamic_function_invocation_expr : public expr
 {
+  friend class expr;
+
 public:
   SERIALIZABLE_CLASS(dynamic_function_invocation_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(dynamic_function_invocation_expr, expr)
@@ -100,6 +102,8 @@ public:
 ********************************************************************************/
 class function_item_expr: public expr
 {
+  friend class expr;
+
 private:
   store::Item_t        theQName;
 	function           * theFunction;
@@ -141,8 +145,6 @@ public:
 
 	void compute_scripting_kind();
 	
-  xqtref_t return_type_impl(static_context* sctx) const;
-
   expr_iterator_data* make_iter();
 
   void next_iter(expr_iterator_data& v);

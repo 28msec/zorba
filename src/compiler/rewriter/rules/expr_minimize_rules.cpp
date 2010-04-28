@@ -63,7 +63,7 @@ RULE_REWRITE_PRE(ReplaceExprWithConstantOneWhenPossible)
       fkind == FunctionConsts::FN_EMPTY_1 ||
       fkind == FunctionConsts::FN_EXISTS_1) 
   {
-    expr_t child = fo->get_arg(0, false);
+    expr_t child = fo->get_arg(0);
     expr_t nc = get_constant_if_typequant_one(sctx, child);
     if (nc != NULL) 
     {
@@ -85,7 +85,7 @@ static expr_t get_constant_if_typequant_one(static_context* sctx, expr* e)
 {
   if (e->get_expr_kind() != const_expr_kind) 
   {
-    if (TypeOps::type_cnt(*(e->return_type(sctx))) == 1) 
+    if (TypeOps::type_cnt(*(e->get_return_type())) == 1) 
     {
       return new const_expr(e->get_sctx(), e->get_loc(), 1);
     }
@@ -106,7 +106,7 @@ static void replace_with_constant_if_typequant_one(static_context* sctx, expr* e
     case flwor_expr_kind: 
     {
       flwor_expr* flwor = static_cast<flwor_expr *>(e);
-      expr* ret = flwor->get_return_expr(false);
+      expr* ret = flwor->get_return_expr();
       expr_t nret = get_constant_if_typequant_one(sctx, ret);
       if (nret != NULL) 
       {

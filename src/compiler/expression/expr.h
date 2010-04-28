@@ -56,6 +56,9 @@ class signature;
 ********************************************************************************/
 class sequential_expr : public expr
 {
+  friend class expr;
+
+protected:
   checked_vector<expr_t> sequence;
 
 public:
@@ -81,36 +84,29 @@ public:
 
   expr_kind_t get_expr_kind() const { return sequential_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
   unsigned size() const { return sequence.size(); }
 
   const expr_t& operator[](int i) const { return sequence[i]; }
 
   void push_back(expr_t e) 
   {
-    invalidate();
     sequence.push_back(e);
     compute_scripting_kind();
   }
 
   void push_front(expr_t e) 
   {
-    invalidate();
     sequence.insert(sequence.begin(), e);
     compute_scripting_kind();
   }
 
   void add_at(ulong pos, expr_t e)
   {
-    invalidate();
     sequence.insert(sequence.begin() + pos, e);
     compute_scripting_kind();
   }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context *) const;
 
   expr_iterator_data* make_iter();
 
@@ -147,6 +143,7 @@ public:
 ********************************************************************************/
 class catch_clause : public SimpleRCObject 
 {
+  friend class expr;
   friend class trycatch_expr;
 
 public:
@@ -197,9 +194,11 @@ typedef rchandle<catch_clause> catch_clause_t;
 
 class trycatch_expr : public expr 
 {
+  friend class expr;
+
 protected:
-    expr_t                      theTryExpr;
-    std::vector<catch_clause_t> theCatchClauses;
+  expr_t                      theTryExpr;
+  std::vector<catch_clause_t> theCatchClauses;
 
 public:
   SERIALIZABLE_CLASS(trycatch_expr)
@@ -210,8 +209,6 @@ public:
   trycatch_expr(static_context* sctx, const QueryLoc&, expr_t tryExpr);
 
   expr_kind_t get_expr_kind() const { return trycatch_expr_kind; }
-
-  bool cache_compliant() const { return true; }
 
   const expr* get_try_expr() const { return theTryExpr; }
 
@@ -233,8 +230,6 @@ public:
 
   void compute_scripting_kind();
 
-  // TODO return_type_impl() ????
-  
   expr_iterator_data* make_iter();
   
   void next_iter(expr_iterator_data&);
@@ -253,6 +248,8 @@ public:
 ********************************************************************************/
 class if_expr : public expr 
 {
+  friend class expr;
+
 protected:
   expr_t theCondExpr;
   expr_t theThenExpr;
@@ -273,21 +270,11 @@ public:
 
   expr_kind_t get_expr_kind() const { return if_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-  
-  expr* get_cond_expr(bool invalidate);
+  expr* get_cond_expr() const { return theCondExpr.getp(); }
 
-  expr* get_then_expr(bool invalidate);
+  expr* get_then_expr() const { return theThenExpr.getp(); }
 
-  expr* get_else_expr(bool invalidate);
-
-  const expr* get_cond_expr() const { return theCondExpr; }
-
-  const expr* get_then_expr() const { return theThenExpr; }
-
-  const expr* get_else_expr() const { return theElseExpr; }
-
-  xqtref_t return_type_impl(static_context*) const;
+  expr* get_else_expr() const { return theElseExpr.getp(); }
 
   void compute_scripting_kind();
 
@@ -306,6 +293,8 @@ public:
 ********************************************************************************/
 class order_expr : public expr 
 {
+  friend class expr;
+
 public:
   enum order_type_t 
   {
@@ -327,15 +316,11 @@ public:
 
   expr_kind_t get_expr_kind() const { return order_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
   order_type_t get_type() const { return theType; }
 
   const expr* get_expr() const { return theExpr; }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   expr_t clone(substitution_t& s) const;
 
@@ -352,6 +337,8 @@ public:
 ********************************************************************************/
 class validate_expr : public expr 
 {
+  friend class expr;
+
 protected:
   ParseConstants::validation_mode_t theMode;
   store::Item_t                     theTypeName;
@@ -374,8 +361,6 @@ public:
 
   expr_kind_t get_expr_kind() const { return validate_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
   const expr* get_expr() const { return theExpr; }
 
   const store::Item* get_type_name() const { return theTypeName; }
@@ -385,8 +370,6 @@ public:
   ParseConstants::validation_mode_t get_valmode() const { return theMode; }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -403,6 +386,8 @@ public:
 ********************************************************************************/
 class cast_or_castable_base_expr : public expr 
 {
+  friend class expr;
+
 protected:
   expr_t   theInputExpr;
   xqtref_t theTargetType;
@@ -420,11 +405,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  bool cache_compliant() const { return true; }
-
-  const expr* get_input() const { return theInputExpr.getp(); }
-
-  expr* get_input(bool invalidate);
+  expr* get_input() const { return theInputExpr.getp(); }
 
   xqtref_t get_target_type() const;
 
@@ -446,8 +427,6 @@ public:
 
 public:
   cast_base_expr(static_context* sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
-
-  xqtref_t return_type_impl(static_context*) const;
 };
 
 
@@ -458,6 +437,8 @@ public:
 ********************************************************************************/
 class cast_expr : public cast_base_expr 
 {
+  friend class expr;
+
 public:
   SERIALIZABLE_CLASS(cast_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_expr, cast_base_expr)
@@ -492,6 +473,8 @@ public:
 ********************************************************************************/
 class treat_expr : public cast_base_expr 
 {
+  friend class expr;
+
 protected:
   XQUERY_ERROR theError;
   bool         theCheckPrime;
@@ -517,8 +500,6 @@ public:
   bool get_check_prime() const { return theCheckPrime; }
 
   void set_check_prime(bool check_prime) { theCheckPrime = check_prime; }
-
-  xqtref_t return_type_impl(static_context*) const;  
 
   void next_iter(expr_iterator_data&);
 
@@ -561,6 +542,8 @@ public:
 ********************************************************************************/
 class promote_expr : public cast_base_expr
 {
+  friend class expr;
+
 public:
   SERIALIZABLE_CLASS(promote_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(promote_expr, cast_base_expr)
@@ -573,8 +556,6 @@ public:
   promote_expr(static_context* sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
 
   expr_kind_t get_expr_kind() const { return promote_expr_kind; }
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -598,8 +579,6 @@ public:
 
 public:
   castable_base_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
-
-  xqtref_t return_type_impl(static_context*) const;
 };
 
 
@@ -610,6 +589,8 @@ public:
 ********************************************************************************/
 class castable_expr : public castable_base_expr 
 {
+  friend class expr;
+
 public:
   SERIALIZABLE_CLASS(castable_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(castable_expr, castable_base_expr)
@@ -637,6 +618,8 @@ public:
 ********************************************************************************/
 class instanceof_expr : public castable_base_expr 
 {
+  friend class expr;
+
 public:
   SERIALIZABLE_CLASS(instanceof_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(instanceof_expr, castable_base_expr)
@@ -669,6 +652,8 @@ public:
 ********************************************************************************/
 class name_cast_expr : public expr 
 {
+  friend class expr;
+
 private:
   expr_t             theInputExpr;
   NamespaceContext_t theNCtx;
@@ -683,9 +668,7 @@ public:
 
   expr_kind_t get_expr_kind() const { return name_cast_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
-  const expr* get_input() const { return theInputExpr.getp(); }
+  expr* get_input() const { return theInputExpr.getp(); }
 
   const namespace_context* get_namespace_context() const;
 
@@ -706,6 +689,8 @@ public:
 ********************************************************************************/
 class doc_expr : public expr 
 {
+  friend class expr;
+
 protected:
   expr_t theContent;
 
@@ -719,13 +704,9 @@ public:
 
   expr_kind_t get_expr_kind() const { return doc_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
   const expr* getContent() const { return theContent.getp(); }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -765,6 +746,8 @@ public:
 ********************************************************************************/
 class elem_expr : public expr 
 {
+  friend class expr;
+
 protected:
   expr_t theQNameExpr;
   expr_t theAttrs;
@@ -794,8 +777,6 @@ public:
   
   expr_kind_t get_expr_kind() const { return elem_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-  
   const expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
   const expr* getContent() const { return theContent.getp(); }
@@ -806,8 +787,6 @@ public:
 
   void compute_scripting_kind();
   
-  xqtref_t return_type_impl(static_context *) const;
-
   void next_iter(expr_iterator_data&);
 
   expr_t clone(substitution_t& s) const;  
@@ -844,6 +823,8 @@ public:
 ********************************************************************************/
 class attr_expr : public expr 
 {
+  friend class expr;
+
 protected:
   expr_t theQNameExpr;
   expr_t theValueExpr;
@@ -862,8 +843,6 @@ public:
 
   expr_kind_t get_expr_kind() const { return attr_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
   const expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
   const expr* getValueExpr() const { return theValueExpr.getp(); }
@@ -871,8 +850,6 @@ public:
   const store::Item* getQName() const;
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -889,6 +866,8 @@ public:
 ********************************************************************************/
 class text_expr : public expr 
 {
+  friend class expr;
+
 public:
   typedef enum 
   {
@@ -914,15 +893,11 @@ public:
 
   expr_kind_t get_expr_kind() const { return text_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
-  const expr* get_text() const { return theContentExpr.getp(); }
+  expr* get_text() const { return theContentExpr.getp(); }
 
   text_constructor_type get_type() const { return type; }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -939,6 +914,8 @@ public:
 ********************************************************************************/
 class pi_expr : public expr 
 {
+  friend class expr;
+
 protected:
   expr_t theTargetExpr;
   expr_t theContentExpr;
@@ -953,16 +930,12 @@ public:
  
   expr_kind_t get_expr_kind() const { return pi_expr_kind; }
 
-  bool cache_compliant() const { return true; }
- 
   const expr* get_target_expr() const { return theTargetExpr.getp(); }
 
   const expr* get_content_expr() const { return theContentExpr.getp(); }
 
   void compute_scripting_kind();
   
-  xqtref_t return_type_impl(static_context*) const;
-
   void next_iter(expr_iterator_data&);
 
   expr_t clone(substitution_t& s) const;  
@@ -980,6 +953,9 @@ public:
 ********************************************************************************/
 class wrapper_expr : public expr 
 {
+  friend class expr;
+
+protected:
   expr_t theWrappedExpr;
 
 public:
@@ -992,21 +968,15 @@ public:
 
   expr_kind_t get_expr_kind() const { return wrapper_expr_kind; }
 
-  bool cache_compliant() const { return true; }
+  expr* get_expr() const { return theWrappedExpr.getp(); }
 
-  const expr* get_expr() const { return theWrappedExpr; }
-
-  expr* get_expr(bool invalidate);
-
-  void set_expr(const expr* e) { invalidate(); theWrappedExpr = e; }
+  void set_expr(const expr* e) { theWrappedExpr = e; }
 
   void compute_scripting_kind();
 
   void next_iter(expr_iterator_data&);
 
   void accept(expr_visitor&);
-
-  xqtref_t return_type_impl(static_context*) const;
 
   expr_t clone(substitution_t& s) const;
 
@@ -1019,6 +989,8 @@ public:
 ********************************************************************************/
 class const_expr : public expr 
 {
+  friend class expr;
+
 protected:
   store::Item_t theValue;
 
@@ -1048,13 +1020,9 @@ public:
 
   expr_kind_t get_expr_kind() const { return const_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
   store::Item* get_val() const { return theValue.getp(); }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -1071,6 +1039,8 @@ public:
 ********************************************************************************/
 class pragma : public SimpleRCObject
 {
+  friend class expr;
+
 public:
   store::Item_t theQName;
   std::string theContent;
@@ -1090,6 +1060,8 @@ public:
 ********************************************************************************/
 class extension_expr : public expr 
 {
+  friend class expr;
+
 protected:
   std::vector<rchandle<pragma> > thePragmas;
   expr_t                         theExpr;
@@ -1127,6 +1099,8 @@ public:
 ********************************************************************************/
 class eval_expr : public expr 
 {
+  friend class expr;
+
 public:
   class eval_var : public ::zorba::serialization::SerializeBaseClass
   {
@@ -1197,6 +1171,8 @@ public:
 ********************************************************************************/
 class debugger_expr: public eval_expr
 {
+  friend class expr;
+
 private:
   std::list<global_binding> theGlobals;
   bool                      theForExpr;
@@ -1261,6 +1237,8 @@ private:
 ********************************************************************************/
 class insert_expr : public expr
 {
+  friend class expr;
+
 protected:
   store::UpdateConsts::InsertType theType;
 	expr_t                          theSourceExpr;
@@ -1281,17 +1259,13 @@ public:
 
   expr_kind_t get_expr_kind() const { return insert_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
   store::UpdateConsts::InsertType getType() const { return theType; }
 
-	const expr* getSourceExpr() const { return theSourceExpr.getp(); }
+	expr* getSourceExpr() const { return theSourceExpr.getp(); }
 
-	const expr* getTargetExpr() const { return theTargetExpr.getp(); }
+	expr* getTargetExpr() const { return theTargetExpr.getp(); }
   
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -1308,6 +1282,8 @@ public:
 ********************************************************************************/
 class delete_expr : public expr
 {
+  friend class expr;
+
 protected:
 	expr_t theTargetExpr;
 
@@ -1321,15 +1297,11 @@ public:
 
   expr_kind_t get_expr_kind() const { return delete_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
-	const expr* getTargetExpr() const { return theTargetExpr.getp(); }
+	expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
   void next_iter(expr_iterator_data&);
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   expr_t clone(substitution_t& s) const;
 
@@ -1344,6 +1316,8 @@ public:
 ********************************************************************************/
 class replace_expr : public expr
 {
+  friend class expr;
+
 protected:
   store::UpdateConsts::ReplaceType theType;
 	expr_t                           theTargetExpr;
@@ -1364,17 +1338,13 @@ public:
 
   expr_kind_t get_expr_kind() const { return replace_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
   store::UpdateConsts::ReplaceType getType() const { return theType; }
 
-	const expr* getTargetExpr() const { return theTargetExpr.getp(); }
+	expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
-	const expr* getReplaceExpr() const { return theReplaceExpr.getp(); }
+	expr* getReplaceExpr() const { return theReplaceExpr.getp(); }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -1391,6 +1361,8 @@ public:
 ********************************************************************************/
 class rename_expr : public expr
 {
+  friend class expr;
+
 protected:
 	expr_t theTargetExpr;
 	expr_t theNameExpr;
@@ -1405,15 +1377,11 @@ public:
 
   expr_kind_t get_expr_kind() const { return rename_expr_kind; }
 
-  bool cache_compliant() const { return true; }
+	expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
-	const expr* getTargetExpr() const { return theTargetExpr.getp(); }
-
-	const expr* getNameExpr() const { return theNameExpr.getp(); }
+	expr* getNameExpr() const { return theNameExpr.getp(); }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -1432,6 +1400,7 @@ public:
 ********************************************************************************/
 class copy_clause : public SimpleRCObject
 {
+  friend class expr;
   friend class transform_expr;
 
 private:
@@ -1460,6 +1429,8 @@ typedef rchandle<copy_clause> copy_clause_t;
 
 class transform_expr : public expr
 {
+  friend class expr;
+
 protected:
 	std::vector<copy_clause_t> theCopyClauses;
 	expr_t                     theModifyExpr;
@@ -1478,8 +1449,6 @@ public:
 		expr_t aReturnExpr);
 
   expr_kind_t get_expr_kind() const { return transform_expr_kind; }
-
-  bool cache_compliant() const { return true; }
 
 	expr_t getModifyExpr() const { return theModifyExpr; }
 
@@ -1502,8 +1471,6 @@ public:
 	size_t size() const { return theCopyClauses.size(); }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   expr_iterator_data* make_iter();
 
@@ -1530,6 +1497,8 @@ public:
 ********************************************************************************/
 class exit_expr : public expr 
 {
+  friend class expr;
+
 private:
   expr_t theExpr;
 
@@ -1543,13 +1512,9 @@ public:
 
   expr_kind_t get_expr_kind() const { return exit_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
   expr* get_value() const { return theExpr.getp(); }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   expr_t clone(substitution_t& s) const;
 
@@ -1566,6 +1531,8 @@ public:
 ********************************************************************************/
 class flowctl_expr : public expr 
 {
+  friend class expr;
+
 public:
   enum action { BREAK, CONTINUE };
 
@@ -1582,15 +1549,11 @@ public:
 
   expr_kind_t get_expr_kind() const { return flowctl_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
   enum action get_action() const { return theAction; }
 
   expr_t clone(substitution_t& s) const;
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 
@@ -1607,6 +1570,9 @@ public:
 ********************************************************************************/
 class while_expr : public expr 
 {
+  friend class expr;
+
+protected:
   expr_t theBody;
 
 public:
@@ -1619,13 +1585,9 @@ public:
 
   expr_kind_t get_expr_kind() const { return while_expr_kind; }
 
-  bool cache_compliant() const { return true; }
-
   expr* get_body() const { return theBody.getp(); }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   void next_iter(expr_iterator_data&);
 

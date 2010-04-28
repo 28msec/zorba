@@ -1647,9 +1647,9 @@ void normalize_fo(fo_expr* foExpr)
     }
   }
 
-  for(ulong i = 0; i < n; ++i)
+  for (ulong i = 0; i < n; ++i)
   {
-    expr::expr_t argExpr = foExpr->get_arg(i, true);
+    expr::expr_t argExpr = foExpr->get_arg(i);
 
     xqtref_t paramType;
 
@@ -3587,7 +3587,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
         body = rCtx.getRoot();
 #if 1
-        xqtref_t bodyType = body->return_type(theSctx);
+        xqtref_t bodyType = body->get_return_type();
         xqtref_t declaredType = udf->get_signature().return_type();
 
         if (!TypeOps::is_equal(*bodyType, *declaredType) &&
@@ -7316,7 +7316,7 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
                                          GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
                                          errCode);
 
-      if (TypeOps::type_max_cnt(*sourceExpr->return_type(theSctx)) > 1)
+      if (TypeOps::type_max_cnt(*sourceExpr->get_return_type()) > 1)
         theNodeSortStack.top().theSingleInput = false;
 
       pathExpr->add_back(sourceExpr);
@@ -8693,7 +8693,7 @@ void* begin_visit(const InlineFunction& v)
     var_expr_t subst_var = bind_var(loc, qname, var_expr::let_var);
     let_clause_t lc = wrap_in_letclause(&*arg_var, subst_var);
 
-    arg_var->set_type(varExpr->return_type(theSctx));
+    arg_var->set_type(varExpr->get_return_type());
 
     // TODO: this could probably be done lazily in some cases
     //lc->setLazyEval(true);
@@ -9032,7 +9032,7 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     if ((foExpr = dynamic_cast<fo_expr*>(valueExpr.getp())) != NULL &&
         foExpr->get_func()->getKind() == FunctionConsts::OP_ENCLOSED_1)
     {
-      foExpr->set_arg(0, wrap_in_atomization(foExpr->get_arg(0, false)));
+      foExpr->set_arg(0, wrap_in_atomization(foExpr->get_arg(0)));
     }
     else if (valueExpr != NULL)
     {

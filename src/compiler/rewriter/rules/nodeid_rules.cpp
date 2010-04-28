@@ -218,7 +218,7 @@ static void mark_casts(
 
   bool ignores_dups = (q == TypeConstants::QUANT_STAR ||
                        (q == TypeConstants::QUANT_PLUS &&
-                        TypeOps::type_min_cnt(*input->return_type(sctx)) >= 1));
+                        TypeOps::type_min_cnt(*input->get_return_type()) >= 1));
 
   if (is_cast)
   {
@@ -243,7 +243,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
   case fo_expr_kind: 
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
-    function* f = fo->get_func(false);
+    function* f = fo->get_func();
 
     FunctionConsts::FunctionKind fkind = f->getKind();
 
@@ -255,7 +255,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
         fkind == FunctionConsts::FN_MIN_2 ||
         fkind == FunctionConsts::FN_BOOLEAN_1)
     {
-      expr_t arg = fo->get_arg(0, false);
+      expr_t arg = fo->get_arg(0);
       TSVAnnotationValue::update_annotation(arg,
                                             Annotations::IGNORES_SORTED_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
@@ -270,7 +270,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
       // duplicate elimination is pulled up into the runtime iterators for
       // fn:zero-or-one or fn:exactly-one.
       bool ignoresDups = false;
-      expr_t arg = fo->get_arg(0, false);
+      expr_t arg = fo->get_arg(0);
 
       if (arg->get_expr_kind() == fo_expr_kind)
       {
@@ -299,7 +299,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
              fkind == FunctionConsts::FN_AVG_1 ||
              fkind == FunctionConsts::OP_EXACTLY_ONE_NORAISE_1)
     {
-      expr_t arg = fo->get_arg(0, false);
+      expr_t arg = fo->get_arg(0);
       TSVAnnotationValue::update_annotation(arg,
                                             Annotations::IGNORES_SORTED_NODES,
                                             TSVAnnotationValue::TRUE_VAL);
@@ -313,7 +313,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
       ulong numArgs = fo->num_args();
 
       for (ulong i = 0; i < numArgs; ++i)
-        args.push_back(static_cast<AnnotationHolder*>(fo->get_arg(i, false)));
+        args.push_back(static_cast<AnnotationHolder*>(fo->get_arg(i)));
 
       f->compute_annotation(node, args, Annotations::IGNORES_DUP_NODES);
       f->compute_annotation(node, args, Annotations::IGNORES_SORTED_NODES);
@@ -323,9 +323,9 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
 
   case if_expr_kind: 
   {
-    if_expr* ite = static_cast<if_expr *> (node);
-    pushdown_ignore_props(node, ite->get_then_expr(false));
-    pushdown_ignore_props(node, ite->get_else_expr(false));
+    if_expr* ite = static_cast<if_expr *>(node);
+    pushdown_ignore_props(node, ite->get_then_expr());
+    pushdown_ignore_props(node, ite->get_else_expr());
     break;
   }
 
@@ -334,13 +334,13 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     flwor_expr* flwor = static_cast<flwor_expr *> (node);
     init_let_vars_consumer_props(flwor);
     mark_for_vars_ignoring_sort(flwor);
-    pushdown_ignore_props(node, flwor->get_return_expr(false));
+    pushdown_ignore_props(node, flwor->get_return_expr());
     break;
   }
 
   case relpath_expr_kind: 
   {
-    expr_t arg = (*static_cast<relpath_expr *> (node)) [0];
+    expr_t arg = (*static_cast<relpath_expr *>(node))[0];
     TSVAnnotationValue::update_annotation(arg,
                                           Annotations::IGNORES_SORTED_NODES,
                                           TSVAnnotationValue::TRUE_VAL);
@@ -352,8 +352,8 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
 
   case wrapper_expr_kind: 
   {
-    wrapper_expr* we = static_cast<wrapper_expr *> (node);
-    pushdown_ignore_props(node, we->get_expr(false));
+    wrapper_expr* we = static_cast<wrapper_expr *>(node);
+    pushdown_ignore_props(node, we->get_expr());
     break;
   }    
 
@@ -362,7 +362,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     cast_or_castable_base_expr* ce = dynamic_cast<cast_base_expr *> (node);
     if (ce != NULL) 
     {
-      expr* input = ce->get_input(false);
+      expr* input = ce->get_input();
       mark_casts(ce, input, node->get_sctx());
       break;
     }
@@ -437,13 +437,13 @@ RULE_REWRITE_PRE(EliminateNodeOps)
 
     // ????
     if (f->getKind() == FunctionConsts::FN_UNORDERED_1)
-      return fo->get_arg(0, true);
+      return fo->get_arg(0);
 
     const op_node_sort_distinct* nsdf = dynamic_cast<const op_node_sort_distinct*>(f);
 
     if (nsdf != NULL) 
     {
-      const expr* argExpr = fo->get_arg(0);
+      expr* argExpr = fo->get_arg(0);
 
       function* fmin = nsdf->optimize(sctx, node, argExpr);
 
@@ -456,7 +456,7 @@ RULE_REWRITE_PRE(EliminateNodeOps)
         }
         else 
         {
-          return fo->get_arg(0, true);
+          return fo->get_arg(0);
         }
       }
     }

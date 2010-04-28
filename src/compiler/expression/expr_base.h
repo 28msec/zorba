@@ -193,21 +193,6 @@ public:
 
 
 protected:
-  // Pitfall when using the cache -- AVOID THIS SCENARIO:
-  // (1) obtain a non-const ptr to a child expression (cache is invalidated)
-  // (2) call an operation P() that caches its result
-  // (3) modify the child expr (cache is NOT invalidated)
-  // (4) call P() again and get (possibly wrong) cached result
-  struct Cache
-  {
-    mutable struct
-    {
-      bool             valid;
-      xqtref_t         t;
-    } type;
-  };
-
-protected:
   static expr_t      iter_end_expr;
   static expr_t    * iter_done;
 
@@ -218,7 +203,7 @@ protected:
 
   expr_script_kind_t theScriptingKind;
 
-  Cache              theCache;
+  xqtref_t           theType;
 
   ulong              theFlags1;
 
@@ -258,9 +243,9 @@ public:
 
   bool is_updating_or_vacuous() const;
 
-  xqtref_t return_type(static_context* sctx) const;
+  void compute_return_type(bool deep, bool* modified);
 
-  virtual xqtref_t return_type_impl(static_context* sctx) const;
+  xqtref_t get_return_type();
 
   expr_iterator expr_begin(bool invalidateCache = true);
 
@@ -311,7 +296,7 @@ public:
 
   bool contains_node_construction() const;
 
-  bool is_map(const expr* e, static_context* sctx) const;
+  bool is_map(expr* e, static_context* sctx) const;
 
   FunctionConsts::FunctionKind get_function_kind() const;
 
@@ -321,21 +306,9 @@ public:
 
   void clear_annotations();
 
-  xqtref_t get_return_type_with_empty_input(
-        static_context* sctx,
-        const expr* input) const;
+  xqtref_t get_return_type_with_empty_input(const expr* input) const;
 
 protected:
-  void invalidate()
-  {
-    theCache.type.valid = false;
-  }
-
-  // Returns true if all modifiers, as well as all accessors that permit future
-  // modifications of child expressions, call invalidate(). Note that expr
-  // iterators are compliant.
-  virtual bool cache_compliant() const { return false; }
-
   virtual void compute_scripting_kind() = 0;
 
   virtual expr_iterator_data* make_iter();
@@ -407,7 +380,6 @@ do                                                                  \
                                                                     \
   if ((subExprHandle) != NULL)                                      \
   {                                                                 \
-    if (v.theInvalidate) invalidate();                              \
     return;                                                         \
   }                                                                 \
                                                                     \

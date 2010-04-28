@@ -37,9 +37,9 @@ static void collect_flw_vars(const flwor_expr& flwor, VarSetAnnVal& vars);
 
 static bool is_trivial_expr(const expr* e);
 
-static bool safe_to_fold_single_use(var_expr*, TypeConstants::quantifier_t, const flwor_expr&, static_context*);
+static bool safe_to_fold_single_use(var_expr*, TypeConstants::quantifier_t, const flwor_expr&);
 
-static bool var_in_try_block_or_in_loop(static_context*, const var_expr*, const expr*, bool, bool, ulong&);
+static bool var_in_try_block_or_in_loop(const var_expr*, const expr*, bool, bool, ulong&);
 
 static bool is_subseq_pred(RewriterContext&, const flwor_expr*, const expr*, var_expr_t&, expr_t&);
 
@@ -59,7 +59,7 @@ protected:
 public:
   SubstVars(const var_expr* var, expr* subst)
     :
-    PrePostRewriteRule("SubstVars"),
+    PrePostRewriteRule(RewriteRule::SubstVars, "SubstVars"),
     theVarExpr(var),
     theSubstExpr(subst)
   {
@@ -183,7 +183,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   {
     bool substitute = false;
 
-    flwor_clause& c = *flwor.get_clause(i, false);
+    flwor_clause& c = *flwor.get_clause(i);
 
     if (c.get_kind() == flwor_clause::for_clause)
     {
@@ -191,7 +191,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       for_clause* fc = static_cast<for_clause *>(&c);
 
       expr* domainExpr = fc->get_expr();
-      xqtref_t domainType = domainExpr->return_type(sctx);
+      xqtref_t domainType = domainExpr->get_return_type();
       var_expr* var = fc->get_var();
       TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
       ulong domainCount = TypeOps::type_max_cnt(*domainType);
@@ -231,7 +231,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       else if (uses == 1 &&
                ((is_trivial_expr(domainExpr) &&
                  domainQuant == TypeConstants::QUANT_ONE) ||
-                safe_to_fold_single_use(var, domainQuant, flwor, sctx)))
+                safe_to_fold_single_use(var, domainQuant, flwor)))
       {
         subst_vars(rCtx, node, var, domainExpr);
         substitute = true;
@@ -249,6 +249,8 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
         --numClauses;
         --numForLetClauses;
         --i;
+
+        flwor.compute_return_type(true, NULL);
       }
     }
     else if (c.get_kind() == flwor_clause::let_clause)
@@ -257,7 +259,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       numForLetClauses++;
 
       expr* domainExpr = lc->get_expr();
-      xqtref_t domainType = domainExpr->return_type(sctx);
+      xqtref_t domainType = domainExpr->get_return_type();
       TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
       var_expr* var = lc->get_var();
 
@@ -272,7 +274,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       {
         if (!domainExpr->is_sequential() &&
             (is_trivial_expr(domainExpr) ||
-             safe_to_fold_single_use(var, TypeConstants::QUANT_ONE, flwor, sctx)))
+             safe_to_fold_single_use(var, TypeConstants::QUANT_ONE, flwor)))
         {
           subst_vars(rCtx, node, var, domainExpr);
           substitute = true;
@@ -309,7 +311,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
   // FLWOR with no remaining clauses
   if (numForLetClauses == 0)
   {
-    expr_t result = flwor.get_return_expr(false);
+    expr_t result = flwor.get_return_expr();
     expr* whereExpr;
 
     if ((whereExpr = flwor.get_where()) != NULL)
@@ -426,8 +428,7 @@ static bool is_trivial_expr(const expr* e)
 static bool safe_to_fold_single_use(
     var_expr* v,
     TypeConstants::quantifier_t for_quant,
-    const flwor_expr& flwor,
-    static_context* sctx)
+    const flwor_expr& flwor)
 {
   bool declared = false;
   expr_t referencingExpr = NULL;
@@ -456,7 +457,7 @@ static bool safe_to_fold_single_use(
       {
         if (for_quant != TypeConstants::QUANT_ONE)
         {
-          xqtref_t type = fc.get_expr()->get_return_type_with_empty_input(sctx, v);
+          xqtref_t type = fc.get_expr()->get_return_type_with_empty_input(v);
 
           if (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.EMPTY_TYPE))
           {
@@ -478,7 +479,7 @@ static bool safe_to_fold_single_use(
       // If the var is referenced inside a for loop with more than 1 iterations,
       // then we don't replace the var with its domain expr because the domain
       // expr will be computed once per iteration instead of just once.
-      if (TypeOps::type_max_cnt(*fc.get_expr()->return_type(sctx)) >= 2)
+      if (TypeOps::type_max_cnt(*fc.get_expr()->get_return_type()) >= 2)
         return false;
 
       // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
@@ -531,7 +532,7 @@ static bool safe_to_fold_single_use(
     if (for_quant != TypeConstants::QUANT_ONE)
     {
       xqtref_t type = 
-      flwor.get_return_expr()->get_return_type_with_empty_input(sctx, v);
+      flwor.get_return_expr()->get_return_type_with_empty_input(v);
 
       if (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.EMPTY_TYPE))
         referencingExpr = flwor.get_return_expr();
@@ -546,8 +547,7 @@ static bool safe_to_fold_single_use(
     return false;
 
   ulong numRefs = 1;
-  return !var_in_try_block_or_in_loop(sctx,
-                                      v,
+  return !var_in_try_block_or_in_loop(v,
                                       referencingExpr,
                                       false,
                                       hasNodeConstr, 
@@ -559,7 +559,6 @@ static bool safe_to_fold_single_use(
 
 ********************************************************************************/
 static bool var_in_try_block_or_in_loop(
-    static_context* sctx,
     const var_expr* v,
     const expr* e,
     bool in_try_block_or_in_loop,
@@ -575,8 +574,7 @@ static bool var_in_try_block_or_in_loop(
   {
     const trycatch_expr* tce = dynamic_cast<const trycatch_expr *>(e);
 
-    if (var_in_try_block_or_in_loop(sctx,
-                                    v,
+    if (var_in_try_block_or_in_loop(v,
                                     tce->get_try_expr(),
                                     true,
                                     hasNodeConstr,
@@ -589,8 +587,7 @@ static bool var_in_try_block_or_in_loop(
     std::vector<catch_clause_t>::const_iterator end = tce->end();
     while(i != end)
     {
-      if (var_in_try_block_or_in_loop(sctx,
-                                      v,
+      if (var_in_try_block_or_in_loop(v,
                                       (*i)->get_catch_expr(),
                                       in_try_block_or_in_loop,
                                       hasNodeConstr,
@@ -624,7 +621,7 @@ static bool var_in_try_block_or_in_loop(
         }
 
         if (c.get_kind() == flwor_clause::for_clause &&
-            TypeOps::type_max_cnt(*flc.get_expr()->return_type(sctx)) >= 2)
+            TypeOps::type_max_cnt(*flc.get_expr()->get_return_type()) >= 2)
         {
           return true;
         }
@@ -642,8 +639,7 @@ static bool var_in_try_block_or_in_loop(
 			referencingExpr = flwor.get_return_expr();
 		}
 
-		return var_in_try_block_or_in_loop(sctx,
-                                       v,
+		return var_in_try_block_or_in_loop(v,
                                        &*referencingExpr,
                                        in_try_block_or_in_loop,
                                        hasNodeConstr,
@@ -672,8 +668,7 @@ static bool var_in_try_block_or_in_loop(
   const_expr_iterator ei = e->expr_begin_const();
   while(!ei.done())
   {
-    if (var_in_try_block_or_in_loop(sctx,
-                                    v,
+    if (var_in_try_block_or_in_loop(v,
                                     &*(*ei),
                                     in_try_block_or_in_loop,
                                     hasNodeConstr,
@@ -698,9 +693,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   if (flwor == NULL || flwor->is_general())
     return NULL;
 
-  static_context* sctx = node->get_sctx();
-
-  if_expr* ifReturnExpr = dynamic_cast<if_expr*>(flwor->get_return_expr(true));
+  if_expr* ifReturnExpr = dynamic_cast<if_expr*>(flwor->get_return_expr());
   expr* whereExpr = flwor->get_where();
 
   // "for $x in ... return if (ce) then te else ()" -->
@@ -708,10 +701,10 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   if (ifReturnExpr != NULL &&
       whereExpr == NULL &&
       ifReturnExpr->is_simple() &&
-      TypeOps::is_empty(*ifReturnExpr->get_else_expr()->return_type(sctx)))
+      TypeOps::is_empty(*ifReturnExpr->get_else_expr()->get_return_type()))
   {
-    expr_t cond = ifReturnExpr->get_cond_expr(false);
-    expr_t then = ifReturnExpr->get_then_expr(false);
+    expr_t cond = ifReturnExpr->get_cond_expr();
+    expr_t then = ifReturnExpr->get_then_expr();
     flwor->set_return_expr(then);
     flwor->set_where(cond);
     return flwor;
@@ -809,7 +802,7 @@ static bool is_subseq_pred(
       }
       else
       {
-        xqtref_t posExprType = posExpr->return_type(sctx);
+        xqtref_t posExprType = posExpr->get_return_type();
 
         if (TypeOps::is_subtype(*posExprType, *rtm.INTEGER_TYPE_ONE))
         {
@@ -849,8 +842,6 @@ static bool is_subseq_pred(
 ********************************************************************************/
 RULE_REWRITE_PRE(MergeFLWOR)
 {
-  static_context* sctx = node->get_sctx();
-
   flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
 
   if (flwor == NULL)
@@ -860,7 +851,7 @@ RULE_REWRITE_PRE(MergeFLWOR)
 
   if (flwor->get_return_expr()->get_expr_kind() == flwor_expr_kind)
   {
-    flwor_expr_t returnFlwor = static_cast<flwor_expr*>(flwor->get_return_expr(true));
+    flwor_expr_t returnFlwor = static_cast<flwor_expr*>(flwor->get_return_expr());
 
     if (!flwor->is_general())
     {
@@ -894,10 +885,10 @@ RULE_REWRITE_PRE(MergeFLWOR)
 
     for (ulong i = 0; i < numClauses; ++i)
     {
-      flwor->add_clause(returnFlwor->get_clause(i, false));
+      flwor->add_clause(returnFlwor->get_clause(i));
     }
 
-    flwor->set_return_expr(returnFlwor->get_return_expr(true));
+    flwor->set_return_expr(returnFlwor->get_return_expr());
 
     modified = true;
   }
@@ -913,7 +904,7 @@ RULE_REWRITE_PRE(MergeFLWOR)
     flwor_expr_t nestedFlwor;
     ulong numNestedClauses;
 
-    flwor_clause* c = flwor->get_clause(i, false);
+    flwor_clause* c = flwor->get_clause(i);
 
     expr* domainExpr = c->get_expr();
 
@@ -928,12 +919,12 @@ RULE_REWRITE_PRE(MergeFLWOR)
 
         for (ulong j = 0; j < numNestedClauses; ++j)
         {
-          flwor_clause* nestedClause = nestedFlwor->get_clause(j, false);
+          flwor_clause* nestedClause = nestedFlwor->get_clause(j);
           flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
 
           if (nestedClauseKind == flwor_clause::for_clause)
           {
-            xqtref_t nestedDomainType = nestedClause->get_expr()->return_type(sctx);
+            xqtref_t nestedDomainType = nestedClause->get_expr()->get_return_type();
 
             if (nestedDomainType->get_quantifier() != TypeConstants::QUANT_ONE)
             {
@@ -955,7 +946,7 @@ RULE_REWRITE_PRE(MergeFLWOR)
 
         for (ulong j = 0; j < numNestedClauses; ++j)
         {
-          flwor_clause* nestedClause = nestedFlwor->get_clause(j, false);
+          flwor_clause* nestedClause = nestedFlwor->get_clause(j);
           flwor_clause::ClauseKind nestedClauseKind = nestedClause->get_kind();
 
           if (nestedClauseKind != flwor_clause::let_clause &&
@@ -982,7 +973,7 @@ RULE_REWRITE_PRE(MergeFLWOR)
     {
       for (ulong j = 0; j < numNestedClauses; ++j)
       {
-        flwor_clause* nestedClause = nestedFlwor->get_clause(j, false);
+        flwor_clause* nestedClause = nestedFlwor->get_clause(j);
 #if 1
         if (nestedClause->get_kind() == flwor_clause::where_clause)
           flwor->add_clause(i+j+1, nestedClause);
@@ -991,7 +982,7 @@ RULE_REWRITE_PRE(MergeFLWOR)
           flwor->add_clause(i+j, nestedClause);
       }
 
-      c->set_expr(nestedFlwor->get_return_expr(false));
+      c->set_expr(nestedFlwor->get_return_expr());
 
       numClauses += numNestedClauses;
       i += numNestedClauses;

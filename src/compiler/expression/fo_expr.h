@@ -35,6 +35,8 @@ class signature;
 ********************************************************************************/
 class fo_expr : public expr
 {
+  friend class expr;
+
 protected:
   checked_vector<expr_t>   theArgs;
   function               * theFunction;
@@ -71,13 +73,9 @@ public:
 
   expr_kind_t get_expr_kind() const { return fo_expr_kind; }
 
-  bool cache_compliant() const { return true; }
+  function* get_func() const { return theFunction; }
 
-  const function* get_func() const { return theFunction; }
-
-  function* get_func(bool inv) { if (inv) invalidate(); return theFunction; }
-
-  void set_func(function* f) { theFunction = f; invalidate(); }
+  void set_func(function* f) { theFunction = f; }
 
   const signature& get_signature() const;
 
@@ -85,13 +83,9 @@ public:
 
   ulong num_args() const { return theArgs.size(); }
 
-  const expr* get_arg(ulong i) const { return theArgs[i]; }
+  expr* get_arg(ulong i) const { return theArgs[i].getp(); }
 
-  expr* get_arg(ulong i, bool inv) { if (inv) invalidate(); return theArgs[i]; }
-
-  void set_arg(ulong i, expr* e) { theArgs[i] = e; invalidate(); }
-
-  xqtref_t return_type_impl(static_context*) const;
+  void set_arg(ulong i, expr* e) { theArgs[i] = e; }
 
   void compute_scripting_kind();
 

@@ -95,7 +95,7 @@ void buildUDFCallGraph(
   if (curExpr->get_expr_kind() == fo_expr_kind)
   {
     fo_expr* fo = static_cast<fo_expr*>(curExpr);
-    user_function* udf = dynamic_cast<user_function*>(fo->get_func(false));
+    user_function* udf = dynamic_cast<user_function*>(fo->get_func());
   
     if (udf != NULL)
     {
@@ -125,7 +125,7 @@ RULE_REWRITE_POST(InferUDFTypes)
     return NULL;
 
   fo_expr* fo = static_cast<fo_expr*>(node);
-  user_function* udf = dynamic_cast<user_function*>(fo->get_func(false));
+  user_function* udf = dynamic_cast<user_function*>(fo->get_func());
   
   if (udf == NULL)
     return NULL;
@@ -138,7 +138,7 @@ RULE_REWRITE_POST(InferUDFTypes)
   static_context* sctx = rCtx.getStaticContext(node);
 
   expr_t bodyExpr = udf->getBody();
-  xqtref_t bodyType = bodyExpr->return_type(sctx);
+  xqtref_t bodyType = bodyExpr->get_return_type();
   xqtref_t declaredType = udf->get_signature().return_type();
 
   if (!TypeOps::is_equal(*bodyType, *declaredType) &&
@@ -165,8 +165,8 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   {
     if (fo->get_func()->getKind() == FunctionConsts::FN_BOOLEAN_1) 
     {
-      expr_t arg = fo->get_arg(0, false);
-      xqtref_t arg_type = arg->return_type(sctx);
+      expr_t arg = fo->get_arg(0);
+      xqtref_t arg_type = arg->get_return_type();
       if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
         return arg;
       else
@@ -175,8 +175,8 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 
     if (fo->get_func()->getKind() == FunctionConsts::FN_DATA_1) 
     {
-      expr_t arg = fo->get_arg(0, false);
-      xqtref_t arg_type = arg->return_type(sctx);
+      expr_t arg = fo->get_arg(0);
+      xqtref_t arg_type = arg->get_return_type();
       if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
         return arg;
       else
@@ -188,8 +188,8 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
   // Note: the if cond is true for promote_expr, treat_expr, and cast_expr
   if ((pe = dynamic_cast<cast_base_expr *>(node)) != NULL) 
   {
-    expr_t arg = pe->get_input(true);
-    xqtref_t arg_type = arg->return_type(sctx);
+    expr_t arg = pe->get_input();
+    xqtref_t arg_type = arg->get_return_type();
     xqtref_t target_type = pe->get_target_type();
 
     // If arg type is subtype of target type, we can eliminate treat and promote
@@ -265,8 +265,8 @@ RULE_REWRITE_POST(SpecializeOperations)
     if (fn->getKind() == FunctionConsts::FN_SUM_1 ||
         fn->getKind() == FunctionConsts::FN_SUM_2)
     {
-      expr_t argExpr = fo->get_arg(0, false);
-      xqtref_t argType = argExpr->return_type(sctx);
+      expr_t argExpr = fo->get_arg(0);
+      xqtref_t argType = argExpr->get_return_type();
       std::vector<xqtref_t> argTypes;  
       argTypes.push_back(argType);
 
@@ -291,8 +291,8 @@ RULE_REWRITE_POST(SpecializeOperations)
     else if (fn->getKind() == FunctionConsts::OP_UNARY_MINUS_1 ||
              fn->getKind() == FunctionConsts::OP_UNARY_PLUS_1)
     {
-      expr_t argExpr = fo->get_arg(0, false);
-      xqtref_t argType = argExpr->return_type(sctx);
+      expr_t argExpr = fo->get_arg(0);
+      xqtref_t argType = argExpr->get_return_type();
       std::vector<xqtref_t> argTypes;  
       argTypes.push_back(argType);
 
@@ -305,11 +305,11 @@ RULE_REWRITE_POST(SpecializeOperations)
     }
     else if (fo->num_args() == 2) 
     {
-      expr* arg0 = fo->get_arg(0, false);
-      expr* arg1 = fo->get_arg(1, false);
+      expr* arg0 = fo->get_arg(0);
+      expr* arg1 = fo->get_arg(1);
 
-      xqtref_t t0 = arg0->return_type(sctx);
-      xqtref_t t1 = arg1->return_type(sctx);
+      xqtref_t t0 = arg0->get_return_type();
+      xqtref_t t1 = arg1->get_return_type();
 
       if (TypeOps::type_max_cnt(*t0) > 1 || TypeOps::type_max_cnt(*t1) > 1)
         return NULL;
@@ -388,8 +388,8 @@ RULE_REWRITE_POST(SpecializeOperations)
               if (TypeOps::is_equal(*TypeOps::prime_type(*aType), *rtm.DECIMAL_TYPE_ONE)
                   && TypeOps::is_subtype(*t0, *rtm.INTEGER_TYPE_ONE))
               {
-                expr_t tmp = fo->get_arg(0, false);
-                fo->set_arg(0, fo->get_arg(1, false));
+                expr_t tmp = fo->get_arg(0);
+                fo->set_arg(0, fo->get_arg(1));
                 fo->set_arg(1, tmp);
                 fo->set_func(flip_value_cmp(fo->get_func()->getKind()));
               }
@@ -414,13 +414,13 @@ RULE_REWRITE_POST(SpecializeOperations)
       if ((*flworExpr)[i]->get_kind() == flwor_clause::order_clause)
       {
         orderby_clause* obc = reinterpret_cast<orderby_clause*>
-                              (flworExpr->get_clause(i, false));
+                              (flworExpr->get_clause(i));
 
         ulong numColumns = obc->num_columns();
         for (ulong j = 0; j < numColumns; ++j)
         {
           expr* colExpr = obc->get_column_expr(j);
-          xqtref_t colType = colExpr->return_type(sctx);
+          xqtref_t colType = colExpr->get_return_type();
 
           if (!TypeOps::is_equal(*colType, *GENV_TYPESYSTEM.EMPTY_TYPE) &&
               TypeOps::is_subtype(*colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
@@ -448,10 +448,10 @@ RULE_REWRITE_POST(SpecializeOperations)
 static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
 {
   const function* fn = fo->get_func();
-  expr* arg0 = fo->get_arg(0, false);
-  expr* arg1 = fo->get_arg(1, false);
-  xqtref_t t0 = arg0->return_type(sctx);
-  xqtref_t t1 = arg1->return_type(sctx);
+  expr* arg0 = fo->get_arg(0);
+  expr* arg1 = fo->get_arg(1);
+  xqtref_t t0 = arg0->get_return_type();
+  xqtref_t t1 = arg1->get_return_type();
 
   xqtref_t aType = 
   TypeOps::arithmetic_type(*t0,
@@ -498,7 +498,7 @@ static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t)
     promote_expr* pe = static_cast<promote_expr*>(arg);
     xqtref_t peType = pe->get_target_type();
     if (TypeOps::is_equal(*peType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
-      arg = pe->get_input(false);
+      arg = pe->get_input();
   }
 
   return new promote_expr(arg->get_sctx(), arg->get_loc(), arg, t);

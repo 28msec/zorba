@@ -71,6 +71,8 @@ typedef rchandle<var_expr> var_expr_t;
 *******************************************************************************/
 class var_expr : public expr 
 {
+  friend class expr;
+
 public:
   enum var_kind 
   {
@@ -160,8 +162,6 @@ public:
   const var_expr* get_pos_var() const;
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   expr_t clone(substitution_t& subst) const;
 

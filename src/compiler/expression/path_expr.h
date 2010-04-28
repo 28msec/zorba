@@ -50,6 +50,8 @@ class match_expr;
 ********************************************************************************/
 class relpath_expr : public expr 
 {
+  friend class expr;
+
 protected:
   std::vector<expr_t> theSteps;
 
@@ -62,8 +64,6 @@ public:
   relpath_expr(static_context* sctx, const QueryLoc& loc);
 
   expr_kind_t get_expr_kind() const { return relpath_expr_kind; }
-
-  bool cache_compliant() const { return true; }
 
 	size_t size() const { return theSteps.size(); }
 
@@ -80,8 +80,6 @@ public:
   std::vector<expr_t>::const_iterator end() const { return theSteps.end(); }
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   expr_iterator_data* make_iter();
 
@@ -109,6 +107,8 @@ public:
 ********************************************************************************/
 class axis_step_expr : public expr 
 {
+  friend class expr;
+
 protected:
   axis_kind_t             theAxis;
   expr_t                  theNodeTest;
@@ -141,8 +141,6 @@ public:
 
   void compute_scripting_kind();
 
-  xqtref_t return_type_impl(static_context*) const;
-
   void next_iter(expr_iterator_data&);
 
   expr_t clone(substitution_t &) const;
@@ -171,6 +169,8 @@ public:
 ********************************************************************************/
 class match_expr : public expr 
 {
+  friend class expr;
+
 protected:
   match_test_t      theTestKind;
   match_test_t      theDocTestKind;
@@ -223,8 +223,6 @@ public:
   store::StoreConsts::NodeKind getNodeKind() const;
 
   void compute_scripting_kind();
-
-  xqtref_t return_type_impl(static_context*) const;
 
   expr_t clone(substitution_t &) const;
 
