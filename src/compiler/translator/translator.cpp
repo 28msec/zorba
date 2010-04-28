@@ -7530,41 +7530,54 @@ void end_visit (const AxisStep& v, void* /*visit_state*/)
 /*******************************************************************************
   [95] ForwardStep ::= (ForwardAxis NodeTest) | AbbrevForwardStep
 ********************************************************************************/
-void *begin_visit (const ForwardStep& v)
+void* begin_visit(const ForwardStep& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
 
-void end_visit (const ForwardStep& v, void* /*visit_state*/)
+void end_visit(const ForwardStep& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
 /*******************************************************************************
   [97] AbbrevForwardStep ::= "@"? NodeTest
 ********************************************************************************/
-void *begin_visit (const AbbrevForwardStep& v)
+void* begin_visit(const AbbrevForwardStep& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
 
-  rchandle<axis_step_expr> ase = expect_axis_step_top ();
+  rchandle<axis_step_expr> ase = expect_axis_step_top();
 
-  if (v.get_attr_bit()) {
+  if (v.get_attr_bit()) 
+  {
     ase->setAxis(axis_kind_attribute);
-  } else {
-    ase->setAxis(axis_kind_child);
+  }
+  else
+  {
+    const parsenode* nodeTest = v.get_node_test();
+
+    if (dynamic_cast<const AttributeTest*>(nodeTest) == NULL &&
+        dynamic_cast<const SchemaAttributeTest*>(nodeTest) == NULL)
+    {
+      ase->setAxis(axis_kind_child);
+    }
+    else
+    {
+      ase->setAxis(axis_kind_attribute);
+    }
   }
 
   return no_state;
 }
 
 
-void end_visit (const AbbrevForwardStep& v, void* /*visit_state*/)
+void end_visit(const AbbrevForwardStep& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 }
 
 
@@ -7572,9 +7585,9 @@ void end_visit (const AbbrevForwardStep& v, void* /*visit_state*/)
   [98] ReverseStep ::= (ReverseAxis NodeTest) | AbbrevReverseStep
   [100] AbbrevReverseStep ::= ".."
 ********************************************************************************/
-void *begin_visit (const ReverseStep& v)
+void* begin_visit(const ReverseStep& v)
 {
-  TRACE_VISIT ();
+  TRACE_VISIT();
   return no_state;
 }
 

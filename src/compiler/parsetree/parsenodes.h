@@ -3434,7 +3434,8 @@ public:
     rchandle<parsenode>,
     bool attr_b);
     
-  rchandle<parsenode> get_node_test() const { return node_test_h; }
+  const parsenode* get_node_test() const { return node_test_h.getp(); }
+
   bool get_attr_bit() const { return attr_b; }
 
   void accept(parsenode_visitor&) const;

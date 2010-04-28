@@ -256,7 +256,7 @@ doctest1:
     if (theType != NULL)
     {
       xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
-                       create_value_type(node);
+        create_named_type(node->getType());
 
       if ((!TypeOps::is_subtype(*atype, *theType)) ||
           (theNilledAllowed == false &&
@@ -299,7 +299,7 @@ doctest2:
     if (theType != NULL)
     {
       xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
-                       create_value_type(node);
+                       create_named_type(node->getType());
 
       if (! TypeOps::is_subtype(*atype, *theType))
         return false;
@@ -316,7 +316,7 @@ doctest2:
       return false;
 
     xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
-                     create_value_type(node);
+                     create_named_type(node->getType());
 
     if (! TypeOps::is_subtype(*atype, *theType))
       return false;
