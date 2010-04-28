@@ -659,8 +659,8 @@ bool InScopeSchemaTypesIterator::nextImpl(
   bool modelHasChanged;
   Schema* schema;
   XMLGrammarPool* grammarPool;
-  XSModel* xsModel;
-  StringList* namespaces;
+  XSModel* xsModel = NULL;
+  StringList* namespaces = NULL;
   const XMLCh* nameSpace;
   XSNamedMap<XSObject>* xsElements;
   XSElementDeclaration* xsElement;
@@ -754,8 +754,8 @@ bool InScopeElementDeclarationsIterator::nextImpl(
   bool modelHasChanged;
   Schema* schema;
   XMLGrammarPool* grammarPool;
-  XSModel* xsModel;
-  StringList* namespaces;
+  XSModel* xsModel = NULL;
+  StringList* namespaces = NULL;
   const XMLCh* nameSpace;
   XSNamedMap<XSObject>* xsElements;
   XSElementDeclaration* xsElement;
@@ -845,8 +845,8 @@ bool InScopeAttributeDeclarationsIterator::nextImpl(
   bool modelHasChanged;
   Schema* schema;
   XMLGrammarPool* grammarPool;
-  XSModel* xsModel;
-  StringList* namespaces;
+  XSModel* xsModel = NULL;
+  StringList* namespaces = NULL;
   const XMLCh* nameSpace;
   XSNamedMap<XSObject>* xsElements;
   XSElementDeclaration* xsElement;
@@ -928,8 +928,8 @@ bool InScopeElementGroupsIterator::nextImpl(
   bool modelHasChanged;
   Schema* schema;
   XMLGrammarPool* grammarPool;
-  XSModel* xsModel;
-  StringList* namespaces;
+  XSModel* xsModel = NULL;
+  StringList* namespaces = NULL;
   const XMLCh* nameSpace;
   XSNamedMap<XSObject>* xsElements;
   XSElementDeclaration* xsElement;
@@ -1011,8 +1011,8 @@ bool InScopeAttributeGroupsIterator::nextImpl(
   bool modelHasChanged;
   Schema* schema;
   XMLGrammarPool* grammarPool;
-  XSModel* xsModel;
-  StringList* namespaces;
+  XSModel* xsModel = NULL;
+  StringList* namespaces = NULL;
   const XMLCh* nameSpace;
   XSNamedMap<XSObject>* xsElements;
   XSElementDeclaration* xsElement;
