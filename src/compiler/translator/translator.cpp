@@ -7121,7 +7121,7 @@ void *begin_visit (const PathExpr& v)
 
     result = new treat_expr(theRootSctx,
                             loc,
-                            fo,
+                            fo.getp(),
                             GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE,
                             XPDY0050);
 
