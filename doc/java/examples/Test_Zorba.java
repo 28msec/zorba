@@ -52,7 +52,7 @@ public class Test_Zorba
     }
 
     lIterator.close();
-    lIterator.destroy();
+    lIterator.delete();
 
     return true;
   }
