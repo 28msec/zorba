@@ -10,7 +10,7 @@ else
   validate {
     <test-suite-result>
        <implementation name="Zorba" 
-         version='1.0.0 (svn rev. 7923)'
+         version='1.0.0 (svn rev. 8152)'
          anonymous-result-column="false">
   
          <organization
@@ -53,22 +53,36 @@ else
          
          <features>
             <feature name='Minimum Conformance' supported='true' />
-            <feature name="Full Axis Feature" supported='true' />
+            <feature name='Schema Import Feature' supported='true' />
+            <feature name='Schema Validation Feature' supported='true' />
+            <feature name='Static Typing Feature' supported='true' /> <!-- is this true -->
+            <feature name='Full Axis Feature' supported='true' />
+            <feature name='Module Feature' supported='true' />
+            <feature name='Serialization Feature' supported='true' />
          </features>
          
          <context-properties>
-           <context-property
-             name="Revalidation mode"
-             value="lax"
-             context-type="static"/>
+            <context-property name="Boundary-space policy" context-type="static" value="strip"/>
+            <context-property name="Ordering mode" context-type="static" value="ordered"/>
+            <context-property name="Context item static type" context-type="static" value="item()"/>
+            <context-property name="Default element/type namespace" context-type="static" value=""/>
+            <context-property name="Default function namespace" context-type="static" value="http://www.w3.org/2005/xpath-functions"/>
+
+            <context-property name="Default collation" context-type="static" value="http://www.w3.org/2005/xpath-functions/collation/codepoint"/>
+            <context-property name="Construction mode" context-type="static" value="preserve"/>
+
+            <context-property name="Default order for empty sequences" context-type="static" value="empty greatest"/>
+
+            <context-property name="Copy-namespaces mode" context-type="static" value="inherit preserve"/>
+
          </context-properties>
-            
+
        </implementation>
 
        <syntax>XQuery</syntax>
 
-       <test-run dateRun="2010-03-02">
-          <test-suite version="1.0.6"/>
+       <test-run dateRun="2010-04-28">
+          <test-suite version="1.0.2"/>
           <transformation><p>Standard</p></transformation>
           <comparison><p>Standard</p></comparison>
           <otherComments><p>None</p></otherComments>
