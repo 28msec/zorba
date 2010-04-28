@@ -433,8 +433,8 @@ static void apply_ftscope_same( ft_all_matches const &am,
           copy_seq( m->includes, m_new.includes );
           FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
             if ( ((*e).*sep).start == 0 ||
-                 ((*e).*sep).start == ((*e).*sep).end &&
-                 every_start_is( m->includes, sep, ((*e).*sep).start ) ) {
+                 (((*e).*sep).start == ((*e).*sep).end &&
+                  every_start_is( m->includes, sep, ((*e).*sep).start ) ) ) {
               m_new.excludes.push_back( *e );
             }
           }
@@ -447,7 +447,7 @@ static void apply_ftscope_same( ft_all_matches const &am,
 
 void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
                     ft_big_unit::type unit, ft_all_matches &result ) {
-  ft_token_span::start_end_ptr sep;
+  ft_token_span::start_end_ptr sep = 0;
   switch ( unit ) {
     case ft_big_unit::sentence:
       sep = &ft_token_span::sent;

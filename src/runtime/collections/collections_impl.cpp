@@ -1025,7 +1025,7 @@ bool ZorbaDeleteNodesFirstIterator::nextImpl(
   store::Item_t                    collectionName;
   ulong                            collectionSize;
   store::Item_t                    numNodesItem;
-  xqp_long                         numNodes = 1;
+  xqp_ulong                         numNodes = 1;
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 
@@ -1104,7 +1104,7 @@ bool ZorbaDeleteNodesLastIterator::nextImpl(
   store::Item_t                    collectionName;
   ulong                            collectionSize;
   store::Item_t                    numNodesItem;
-  xqp_long                         numNodes = 1;
+  xqp_ulong                         numNodes = 1;
   std::vector<store::Item_t>       nodes;
   std::auto_ptr<store::PUL>        pul;
 

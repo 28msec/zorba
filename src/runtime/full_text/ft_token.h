@@ -76,12 +76,12 @@ struct ft_token_span {
 
 inline bool operator<( ft_token_span const &tsi, ft_token_span const &tsj ) {
   return  tsi.pos.start < tsj.pos.start ||
-          tsi.pos.start == tsj.pos.start && tsi.pos.end < tsj.pos.end;
+          (tsi.pos.start == tsj.pos.start && tsi.pos.end < tsj.pos.end);
 }
 
 inline bool operator>( ft_token_span const &tsi, ft_token_span const &tsj ) {
   return  tsi.pos.start > tsj.pos.start ||
-          tsi.pos.start == tsj.pos.start && tsi.pos.end > tsj.pos.end;
+          (tsi.pos.start == tsj.pos.start && tsi.pos.end > tsj.pos.end);
 }
 
 typedef std::list<ft_token_span> ft_tokens;
