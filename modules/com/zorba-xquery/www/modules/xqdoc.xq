@@ -30,4 +30,4 @@ module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
  : @return The xqdoc element as specified by www.xqdoc.org.
  : @error An error is thrown if an IO problem occurs.
  :)
-declare sequential function xqd:xqdoc($module as xs:string) as element() external;
+declare nondeterministic function xqd:xqdoc($module as xs:string) as element() external;

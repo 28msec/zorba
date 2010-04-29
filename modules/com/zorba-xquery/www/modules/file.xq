@@ -62,7 +62,7 @@ declare sequential function file:copy(
  : @return true if the path/URI points to an existing file system item.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:exists(
+declare nondeterministic function file:exists(
   $fileOrDir as xs:string
 ) as xs:boolean external;
 
@@ -76,7 +76,7 @@ declare sequential function file:exists(
  : @return The sequence of names of the direct children. 
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:files(
+declare nondeterministic function file:files(
   $path as xs:string
 ) as xs:string* external;
 
@@ -92,7 +92,7 @@ declare sequential function file:files(
  : @param $pattern The file name condition to be checked.
  : @return A sequence of file names matching the pattern.
  :)
-declare sequential function file:files(
+declare nondeterministic function file:files(
   $path as xs:string,
   $pattern as xs:string
 ) as xs:string* {
@@ -111,7 +111,7 @@ declare sequential function file:files(
  :        should be searched recursively.
  : @return A sequence of file names matching the pattern.
  :)
-declare sequential function file:files(
+declare nondeterministic function file:files(
   $path as xs:string,
   $pattern as xs:string,
   $recursive as xs:boolean
@@ -139,7 +139,7 @@ declare sequential function file:files(
  : @return true if the path/URI points to a directory.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:is-directory(
+declare nondeterministic function file:is-directory(
   $dir as xs:string
 ) as xs:boolean external;
 
@@ -150,7 +150,7 @@ declare sequential function file:is-directory(
  : @return true if the path/URI points to a file.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:is-file(
+declare nondeterministic function file:is-file(
   $file as xs:string
 ) as xs:boolean external;
 
@@ -164,7 +164,7 @@ declare sequential function file:is-file(
  : @error An error is thrown if the provided path does not point to an existing
  :        item or if IO or Security problems occur.
  :)
-declare sequential function file:last-modified(
+declare nondeterministic function file:last-modified(
   $fileOrDir as xs:string
 ) as xs:dateTime external;
 
@@ -266,7 +266,7 @@ declare function file:path-to-uri(
  : @return The content of the file as Base64.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:read(
+declare nondeterministic function file:read(
   $file as xs:string
 ) as xs:base64Binary external;
 
@@ -295,7 +295,7 @@ declare sequential function file:read-html(
  : @return The content of the file as string.
  : @error An error is thrown if IO or Security problems occur.
  :)
-declare sequential function file:read-text(
+declare nondeterministic function file:read-text(
   $file as xs:string
 ) as xs:string external;
 

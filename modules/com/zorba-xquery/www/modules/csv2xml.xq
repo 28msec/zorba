@@ -117,7 +117,7 @@ declare function zorba-csv:csv-to-xml($csv as xs:string) as node()*
  : @error API0072 - if there are more fields on a line than they are in the header 
  :                   (if first_row_is_header is set to true)
 :)
-declare function zorba-csv:csv-file-to-xml( $csv_file as xs:string,
+declare nondeterministic function zorba-csv:csv-file-to-xml( $csv_file as xs:string,
                               $first_row_is_header as xs:boolean,
                               $separator as xs:string,
                               $quote_char as xs:string,
@@ -151,7 +151,7 @@ declare function zorba-csv:csv-file-to-xml( $csv_file as xs:string,
  : @error API0072 - if there are more fields on a line than they are in the header 
  :                   (if first_row_is_header is set to true)
 :)
-declare function zorba-csv:txt-file-to-xml( $csv_file as xs:string,
+declare nondeterministic function zorba-csv:txt-file-to-xml( $csv_file as xs:string,
                               $first_row_is_header as xs:boolean,
                               $columns_positions as xs:integer+,
                               $row_node as xs:QName,
@@ -233,7 +233,7 @@ declare function zorba-csv:xml-to-csv($xml as node()*,
  : @error API0073 - cannot open file for writing
  : @error API0073 - cannot transform node into csv line
 :)
-declare function zorba-csv:xml-to-csv-file($xml as node()*, 
+declare sequential function zorba-csv:xml-to-csv-file($xml as node()*, 
 																	 $output_file as xs:string,
 																	 $xpaths as xs:string*,
 																	 $first_row_is_header as xs:boolean,
@@ -304,7 +304,7 @@ declare function zorba-csv:xml-to-txt($xml as node()*,
  : @error API0073 - if field lengths sequence is empty
  : @error API0073 - cannot transform node into csv line
 :)
-declare function zorba-csv:xml-to-txt-file($xml as node()*, 
+declare sequential function zorba-csv:xml-to-txt-file($xml as node()*, 
 																	 $output_file as xs:string,
 																	 $xpaths as xs:string*,
 																	 $first_row_is_header as xs:boolean,
