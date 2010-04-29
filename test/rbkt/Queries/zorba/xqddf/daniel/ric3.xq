@@ -1,3 +1,4 @@
+(: commented out
 import module namespace xqddf-test = "http://www.zorba-xquery.com/modules/xqddf/test" at "xqddf_prolog.xqlib";
 import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 
@@ -37,3 +38,4 @@ replace value of node xqddf:collection($xqddf-test:blue-collection)[1]/name
 block{
 xqddf:collection($xqddf-test:white-collection)/name;
 };
+:)
