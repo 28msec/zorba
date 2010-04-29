@@ -14,10 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FULL_TEXT_FT_TOKENIZER_H
-#define ZORBA_FULL_TEXT_FT_TOKENIZER_H
-
-#include <string>
+#ifndef ZORBA_TOKENIZER_H
+#define ZORBA_TOKENIZER_H
 
 namespace zorba {
 
@@ -43,16 +41,19 @@ public:
      *
      * @param utf8_s    The token string encoded in UTF-8.  It is not
      *                  null-terminated.
-     * @param utf8_len  The number of chars in the token string.
+     * @param len       The number of chars in the token string.
      * @param token_no  The token number.  Token numbers start at 0.
      * @param sent_no   The sentence number.  Sentence numbers start at 0.
      * @param para_no   The paragraph number.  Paragraph numbers start at 0.
      */
-    virtual void operator()( char const *utf8_s, int utf8_len,
+    virtual void operator()( char const *utf8_s, int len,
                              int token_no, int sent_no, int para_no ) = 0;
   };
 
-  ~Tokenizer();
+  /**
+   * Destroys a Tokenizer.
+   */
+  virtual ~Tokenizer();
 
   /**
    * Increments the current paragraph number by 1.
@@ -62,17 +63,14 @@ public:
   }
 
   /**
-   * Creates a Tokenizer implemenation instance.
-   */
-  static Tokenizer* create();
-
-  /**
    * Tokenizes the given string.
    *
-   * @param utf8_s    The string to tokenize encoded in UTF-8.
+   * @param utf8_s    The string to tokenize encoded in UTF-8.  It need not be
+   *                  null-terminated.
+   * @param len       The number of chars in the token string.
    * @param callback  The Callback to call once per token.
    */
-  virtual void tokenize( std::string const &utf8_s, Callback &callback ) = 0;
+  virtual void tokenize( char const *utf8_s, int len, Callback &callback ) = 0;
 
 protected:
   Tokenizer();
@@ -83,5 +81,5 @@ protected:
 };
 
 } // namespace zorba
-#endif  /* ZORBA_FULL_TEXT_FT_TOKENIZER_H */
+#endif  /* ZORBA_TOKENIZER_H */
 /* vim:set et sw=2 ts=2: */

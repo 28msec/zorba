@@ -18,8 +18,8 @@
 
 #include <zorba/error.h>
 
-#include "runtime/full_text/icu_tokenizer.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbautils/icu_tokenizer.h"
 
 using namespace std;
 U_NAMESPACE_USE
@@ -113,11 +113,14 @@ icu_tokenizer::icu_tokenizer() {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void icu_tokenizer::tokenize( string const &utf8_s, Callback &callback ) {
+void icu_tokenizer::tokenize( char const *utf8_s, int utf8_len,
+                              Callback &callback ) {
   int32_t utf16_len;
   auto_ptr<UChar> const utf16_buf(
-    utf8_to_utf16( utf8_s.c_str(), utf8_s.length(), &utf16_len )
+    utf8_to_utf16( utf8_s, utf8_len, &utf16_len )
   );
+
+  // This UnicodeString wraps the existing buffer: no copy is made.
   UnicodeString const utf16_s( false, utf16_buf.get(), utf16_len );
 
   word_it_->setText( utf16_s );

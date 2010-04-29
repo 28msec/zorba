@@ -21,6 +21,7 @@
 
 #include "compiler/parser/ft_types.h"
 #include "runtime/full_text/ft_matches.h"
+#include "store/api/ft_token_iterator.h"
 
 namespace zorba {
 
@@ -48,8 +49,9 @@ void apply_ftunary_not( ft_all_matches& );
 void apply_ftwindow( ft_all_matches const&, int window_size, ft_unit::type,
                      ft_all_matches &result );
 
-void apply_ftwords( ft_tokens const &search_ctx, ft_query_tokens const&,
-                    ft_query_token::int_t query_pos, ft_anyall_mode::type,
+void apply_ftwords( FTTokenIterator &search_ctx,
+                    FTTokenIterator &query_tokens,
+                    FTToken::int_t query_pos, ft_anyall_mode::type,
                     ft_all_matches &result );
 
 } // namespace zorba

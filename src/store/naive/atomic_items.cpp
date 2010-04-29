@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#include "zorbautils/hashfun.h"
-#include "zorbatypes/numconversions.h"
-#include "zorbatypes/collation_manager.h"
+
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbatypes/collation_manager.h"
+#include "zorbatypes/numconversions.h"
+#include "zorbautils/hashfun.h"
+#include "zorbautils/icu_tokenizer.h"
 
 #include "store/api/item.h"
 #include "store/naive/node_items.h"
@@ -332,6 +334,23 @@ xqp_string StringItemNaive::show() const
 {
   return "xs:string(" + theValue->str() + ")";
 }
+
+void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
+                                      int token_no, int sent_no, int para_no ) {
+  FTToken t( utf8_s, utf8_len, token_no );
+  tokens_.push_back( t );
+}
+
+FTTokenIterator StringItemNaive::getQueryTokens() const {
+  if ( theTokens.empty() ) {
+    icu_tokenizer tokenizer;
+    AtomicItemTokenizer atomic_tokenizer( tokenizer, theTokens );
+    xqpStringStore const *const xText = getStringValue();
+    atomic_tokenizer.tokenize( xText->c_str(), xText->size() );
+  }
+  return FTTokenIterator( theTokens, 0, theTokens.size() );
+}
+
 
 /*******************************************************************************
   class NormalizedStringItemImpl
@@ -1564,4 +1583,4 @@ xqp_string ErrorItemNaive::show() const
 
 } // namespace simplestore
 } // namespace zorba
-
+/* vim:set et sw=2 ts=2: */

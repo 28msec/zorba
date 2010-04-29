@@ -14,77 +14,19 @@
  * limitations under the License.
  */
 
-#include <memory>
-#include <string>
-
-#include <zorba/store_consts.h>
-
 #include "common/common.h"
-
-#include "zorbatypes/zorbatypesError.h"
-#include "zorbatypes/utf8.h"
-
-#include "runtime/full_text/full_text.h"
 #include "runtime/full_text/ftcontains_visitor.h"
+#include "runtime/full_text/full_text.h"
 #include "runtime/full_text/stl_helpers.h"
-#include "runtime/full_text/tokenizer.h"
-
-#include "store/api/item.h"
+#include "store/api/ft_token_iterator.h"
 #include "store/api/item_factory.h"
-#include "store/api/iterator.h"
-
+#include "store/api/item.h"
 #include "system/globalenv.h"
+#include "zorbatypes/utf8.h"
 
 using namespace std;
 
 namespace zorba {
-
-///////////////////////////////////////////////////////////////////////////////
-
-class ft_item_token_creator : public Tokenizer::Callback {
-public:
-  ft_item_token_creator( ft_item_tokens &tokens ) : tokens_( tokens ) { }
-
-  void operator()( char const *utf8_s, int utf8_len,
-                   int token_no, int sent_no, int para_no );
-private:
-  ft_item_tokens &tokens_;
-};
-
-void ft_item_token_creator::operator()( char const *utf8_s, int utf8_len,
-                                        int token_no, int sent_no,
-                                        int para_no ) {
-  ft_item_token t;
-  t.word = string( utf8_s, utf8_len );
-  t.pos  = token_no;
-  t.sent = sent_no;
-  t.para = para_no;
-  tokens_.push_back( t );
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-static void tokenize( store::Item_t item, Tokenizer &tokenizer,
-                      Tokenizer::Callback &callback ) {
-  switch ( item->getNodeKind() ) {
-    case store::StoreConsts::documentNode:
-    case store::StoreConsts::elementNode: {
-      tokenizer.inc_para();
-      store::Iterator_t it = item->getChildren();
-      store::Item_t child;
-      for ( it->open(); it->next( child ); it->close() )
-        tokenize( child, tokenizer, callback );
-      break;
-    }
-    case store::StoreConsts::textNode: {
-      xqpStringStore_t const s = item->getStringValue();
-      tokenizer.tokenize( s->str(), callback );
-      break;
-    }
-    default:
-      break;
-  }
-}
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -110,18 +52,15 @@ void FTContainsIterator::serialize( serialization::Archiver &ar ) {
 bool FTContainsIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
   bool ftcontains = false;
-  store::Item_t item;
-  auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
+  store::Item_t item;                   // for the search context
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
   while ( !ftcontains && consumeNext( item, theChild0.getp(), plan_state ) ) {
-    ft_item_tokens tokens;
-    ft_item_token_creator token_creator( tokens );
-    tokenize( item, *tokenizer, token_creator );
-    if ( !tokens.empty() ) {
-      ftcontains_visitor v( tokens, plan_state );
+    FTTokenIterator token_it = item->getDocumentTokens();
+    if ( !token_it.empty() ) {
+      ftcontains_visitor v( token_it, plan_state );
       ftselection_->accept( v );
       ftcontains = v.ftcontains();
     }
@@ -132,8 +71,7 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
 }
 
 void FTContainsIterator::openImpl( PlanState &state, uint32_t &offset ) {
-  BinaryBaseIterator<FTContainsIterator,PlanIteratorState>
-    ::openImpl( state, offset );
+  base_type::openImpl( state, offset );
   theChild0->open( state, offset );
   if ( theChild1 ) // the optional FTIgnoreOption
     theChild1->open( state, offset );
@@ -143,7 +81,7 @@ void FTContainsIterator::openImpl( PlanState &state, uint32_t &offset ) {
 }
 
 void FTContainsIterator::closeImpl( PlanState &state ) {
-  BinaryBaseIterator<FTContainsIterator,PlanIteratorState>::closeImpl( state );
+  base_type::closeImpl( state );
   theChild0->close( state );
   if ( theChild1 ) // the optional FTIgnoreOption
     theChild1->close( state );
@@ -153,7 +91,7 @@ void FTContainsIterator::closeImpl( PlanState &state ) {
 }
 
 void FTContainsIterator::resetImpl( PlanState &state ) const {
-  BinaryBaseIterator<FTContainsIterator, PlanIteratorState>::resetImpl( state );
+  base_type::resetImpl( state );
   theChild0->reset( state );
   if ( theChild1 ) // the optional FTIgnoreOption
     theChild1->reset( state );

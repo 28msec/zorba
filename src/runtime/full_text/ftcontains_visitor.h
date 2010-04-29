@@ -27,7 +27,7 @@ namespace zorba {
 
 class ftcontains_visitor : public ftexpr_visitor {
 public:
-  ftcontains_visitor( ft_item_tokens const&, PlanState& );
+  ftcontains_visitor( FTTokenIterator &search_context, PlanState& );
   ~ftcontains_visitor();
 
   bool ftcontains() const;
@@ -80,8 +80,9 @@ private:
     return eval_stack_.top();
   }
 
-  std::stack<ft_all_matches*> eval_stack_;
+  FTTokenIterator search_context_;
   PlanState plan_state_;
+  std::stack<ft_all_matches*> eval_stack_;
   pass_thru_expr_visitor expr_visitor_;
 };
 

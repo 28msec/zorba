@@ -17,9 +17,10 @@
 #include <stack>
 #include <memory>
 
-#include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
+#include "zorbaerrors/error_manager.h"
 #include "zorbatypes/URI.h"
+#include "zorbautils/icu_tokenizer.h"
 
 #include "store/api/copymode.h"
 #include "store/naive/atomic_items.h"
@@ -35,7 +36,6 @@
 #include "store/naive/dataguide.h"
 #include "store/naive/node_factory.h"
 #include "store/naive/store_manager_impl.h"
-
 
 
 namespace zorba { namespace simplestore {
@@ -174,6 +174,8 @@ XmlNode::XmlNode(
     setTree(parent->getTree());
     setOrdPath(parent, pos, nodeKind);
   }
+
+  initTokens();
 }
 
 
@@ -3037,6 +3039,55 @@ xqp_string CommentNode::show() const
   return "<!--" + theContent->str() + "-->";
 }
 
+/******************************************************************************
+ *
+ *  Full-text
+ *
+ ******************************************************************************/
+
+void XmlNodeTokenizer::beginTokenization( XmlNode &node ) {
+  node.theBeginTokenIndex = tokens_.size();
+}
+
+void XmlNodeTokenizer::endTokenization( XmlNode &node ) {
+  node.theEndTokenIndex = tokens_.size();
+}
+
+void XmlNodeTokenizer::operator()( char const *utf8_s, int utf8_len,
+                                   int token_no, int sent_no, int para_no ) {
+  FTToken t( utf8_s, utf8_len, token_no, sent_no, para_no );
+  tokens_.push_back( t );
+}
+
+void XmlNode::tokenize( XmlNodeTokenizer& ) {
+  // do nothing
+}
+
+void InternalNode::tokenize( XmlNodeTokenizer &tokenizer ) {
+  tokenizer.inc_para();
+  tokenizer.beginTokenization( *this );
+  for ( ulong i = 0; i < numChildren(); ++i )
+    getChild( i )->tokenize( tokenizer );
+  tokenizer.endTokenization( *this );
+}
+
+void TextNode::tokenize( XmlNodeTokenizer &tokenizer ) {
+  tokenizer.beginTokenization( *this );
+  xqpStringStore const *const xText = getText();
+  tokenizer.tokenize( xText->c_str(), xText->size() );
+  tokenizer.endTokenization( *this );
+}
+
+FTTokenIterator XmlNode::getDocumentTokens() const {
+  XmlTree::FTTokens &tokens = getTree()->getTokens();
+  if ( !hasTokens() ) {
+    icu_tokenizer tokenizer;
+    XmlNodeTokenizer xml_tokenizer( tokenizer, tokens );
+    getRoot()->tokenize( xml_tokenizer );
+  }
+  return FTTokenIterator( tokens, theBeginTokenIndex, theEndTokenIndex );
+}
+
 } // namespace store
 } // namespace zorba
-
+/* vim:set et sw=2 ts=2: */

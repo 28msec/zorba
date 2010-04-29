@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #ifndef ZORBA_STORE_ATOMIC_ITEMS_H
 #define ZORBA_STORE_ATOMIC_ITEMS_H
+
+#include <vector>
 
 #include "store/api/item.h"
 
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
 #include "zorbatypes/datetime.h"
+#include "zorbautils/tokenizer.h"
 
 #include "zorbaerrors/errors.h"
 
@@ -31,9 +35,10 @@ namespace zorba
 namespace simplestore
 {
 
-/*******************************************************************************
+/*****************************************************************************
 
-********************************************************************************/
+ *****************************************************************************/
+
 class AtomicItem : public store::Item
 {
 #ifdef ZORBA_FOR_ONE_THREAD_ONLY
@@ -385,21 +390,28 @@ public:
 };
 
 
-/*******************************************************************************
+/******************************************************************************
   class StringItem
-********************************************************************************/
+ *****************************************************************************/
+
+class AtomicItemTokenizer;
+
 class StringItemNaive : public AtomicItem
 {
 protected:
   xqpStringStore_t theValue;
 
-protected:
   // make sure that only created by the factory
   friend class BasicItemFactory;
   StringItemNaive(xqpStringStore_t& value) { theValue.transfer(value); }
 
   StringItemNaive() {}
-  
+
+  typedef std::vector<FTToken> FTTokens;
+  mutable FTTokens theTokens;
+
+  friend class AtomicItemTokenizer;
+
 public:
   virtual store::Item* getType( ) const;
 
@@ -425,6 +437,33 @@ public:
   xqpStringStore* getString() const { return theValue.getp(); }
 
   virtual xqp_string show() const;
+
+  FTTokenIterator getQueryTokens() const;
+};
+
+/**
+ * An <code>AtomicItemTokenizer</code> is-a Tokenizer::Callback TODO
+ */
+class AtomicItemTokenizer : public Tokenizer::Callback {
+public:
+  typedef StringItemNaive::FTTokens FTTokens;
+
+  AtomicItemTokenizer( Tokenizer &tokenizer, FTTokens &tokens ) :
+    tokenizer_( tokenizer ),
+    tokens_( tokens )
+  {
+  }
+
+  void operator()( char const *utf8_s, int utf8_len,
+                   int token_no, int sent_no, int para_no );
+
+  void tokenize( char const *utf8_s, int len ) {
+    tokenizer_.tokenize( utf8_s, len, *this );
+  }
+
+private:
+  Tokenizer &tokenizer_;
+  FTTokens &tokens_;
 };
 
 
@@ -1792,3 +1831,4 @@ protected:
  * mode: c++
  * End:
  */
+ /* vim:set et sw=2 ts=2: */

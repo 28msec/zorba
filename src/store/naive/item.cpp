@@ -140,6 +140,19 @@ xqpStringStore* Item::getStringValueP() const
   return 0;
 }
 
+FTTokenIterator Item::getDocumentTokens() const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+  return *(FTTokenIterator*)0;
+}
+
+FTTokenIterator Item::getQueryTokens() const
+{
+  ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                        __FUNCTION__, getType()->getStringValue());
+  return *(FTTokenIterator*)0;
+}
 
 
 /* ---------------------  Methods for AtomicValues --------------------------- */
@@ -784,3 +797,4 @@ const Item_t Item::getFunctionName() const
 
 } // namespace store
 } // namespace zorba
+/* vim:set et sw=2 ts=2: */

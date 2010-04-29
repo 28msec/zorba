@@ -92,10 +92,11 @@ public:
   excludes_t excludes;
 
   void sort_includes() const {
-    if ( !includes_sorted_ ) {
+    // TODO: optimize later
+    //if ( !includes_sorted_ ) {
       includes_sorted_ = true;
       includes.sort();
-    }
+    //}
   }
 
   typedef string_matches_t ft_match::*string_match_ptr;

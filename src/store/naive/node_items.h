@@ -17,8 +17,11 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITEMS
 #define ZORBA_SIMPLE_STORE_NODE_ITEMS
 
+#include <vector>
+
 #include <zorba/error.h>
 
+#include "store/api/ft_token_iterator.h"
 #include "store/naive/shared_types.h"
 #include "store/naive/text_node_content.h"
 #include "store/naive/item_vector.h"
@@ -34,6 +37,7 @@
 #include "store/api/item.h"
 
 #include "zorbautils/fatal.h"
+#include "zorbautils/tokenizer.h"
 #include "zorbaerrors/Assert.h"
 
 
@@ -145,6 +149,11 @@ extern NodeVector dummyVector;
 ********************************************************************************/
 class XmlTree
 {
+public:
+  typedef FTTokenIterator::FTTokens FTTokens;
+  typedef FTTokens::size_type FTTokenIndex_t;
+  friend class XmlNode;
+
 protected:
   mutable long              theRefCount;
   SYNC_CODE(mutable RCLock  theRCLock;)
@@ -163,6 +172,8 @@ protected:
 
   bool                      theIsValidated;
   bool                      theIsRecursive;
+
+  FTTokens                  theTokens;
 
   // make sure that only created by the factory
   friend class NodeFactory;
@@ -219,20 +230,54 @@ public:
   GuideNode* getDataGuide() const { return theDataGuideRootNode; }
 
   void setDataGuide(GuideNode* root) { theDataGuideRootNode = root; }
+
+  FTTokens& getTokens() { return theTokens; }
 };
 
+/**
+ * An <code>XmlNodeTokenizer</code> is-a Tokenizer::Callback TODO
+ */
+class XmlNodeTokenizer : public Tokenizer::Callback {
+public:
+  typedef XmlTree::FTTokens FTTokens;
 
+  XmlNodeTokenizer( Tokenizer &tokenizer, FTTokens tokens ) :
+    tokenizer_( tokenizer ),
+    tokens_( tokens )
+  {
+  }
 
-/*******************************************************************************
+  void operator()( char const *utf8_s, int utf8_len,
+                   int token_no, int sent_no, int para_no );
 
-  Node identification: A node is uniquelly and globally identified by a composite
-  key consisting of: the id of the containing collection, the id of the containing
-  tree, and the ordpath of the node within its containing tree.
+  void beginTokenization( XmlNode& );
+  void endTokenization( XmlNode& );
 
-********************************************************************************/
+  void inc_para() {
+    tokenizer_.inc_para();
+  }
+
+  void tokenize( char const *utf8_s, int len ) {
+    tokenizer_.tokenize( utf8_s, len, *this );
+  }
+
+private:
+  Tokenizer &tokenizer_;
+  FTTokens &tokens_;
+};
+
+/******************************************************************************
+
+  Node identification: A node is uniquely and globally identified by a
+  composite key consisting of: the id of the containing collection, the id of
+  the containing tree, and the ordpath of the node within its containing tree.
+
+ ******************************************************************************/
+
 class XmlNode : public store::Item
 {
   friend class XmlTree;
+  friend class XmlNodeTokenizer;
 
   friend class InternalNode;
   friend class DocumentNode;
@@ -281,7 +326,11 @@ protected:
   InternalNode    * theParent;
   uint32_t          theFlags;
 
-protected:
+  mutable XmlTree::FTTokenIndex_t theBeginTokenIndex, theEndTokenIndex;
+
+  bool hasTokens() const {
+    return theBeginTokenIndex != theEndTokenIndex;
+  }
 
   // make sure that only created by the factory
   friend class NodeFactory;
@@ -292,6 +341,7 @@ protected:
     theParent(NULL)
   {
     theFlags = (uint32_t)nodeKind;
+    initTokens();
   }
 
   XmlNode(
@@ -300,7 +350,15 @@ protected:
         long                         pos,
         store::StoreConsts::NodeKind nodeKind);
 
-  XmlNode() : theParent(0) {}
+  XmlNode()
+    : theParent(0)
+  {
+    initTokens();
+  }
+
+  void initTokens() {
+    theBeginTokenIndex = theEndTokenIndex = 0;
+  }
 
 public:
 #ifndef NDEBUG
@@ -437,6 +495,8 @@ public:
   uint32_t getFlags() { return theFlags; }
   void setFlags(uint32_t flags) { theFlags = flags; }
 
+  FTTokenIterator getDocumentTokens() const;
+
 protected:
   virtual xqpStringStore_t getBaseURIInternal(bool& local) const;
 
@@ -449,6 +509,8 @@ protected:
   long disconnect() throw();
 
   void connect(InternalNode* node, ulong pos) throw();
+
+  virtual void tokenize( XmlNodeTokenizer& );
 
 private:
   void destroyInternal() throw();
@@ -519,6 +581,8 @@ protected:
 
   void removeAttr(ulong pos);
   bool removeAttr(XmlNode* attr);
+
+  void tokenize( XmlNodeTokenizer& );
 };
 
 
@@ -956,6 +1020,8 @@ protected:
 
   void setValue(store::Item_t& val)    { theContent.setValue(val); }
   void setValue(store::Item* val)      { theContent.setValue(val); }
+
+  void tokenize( XmlNodeTokenizer& );
 };
 
 
@@ -1112,16 +1178,15 @@ inline long XmlNode::compare2(const XmlNode* other) const
   return 1;
 }
 
-
 } // namespace store
 } // namespace zorba
 
 #endif//#ifdef ZORBA_STORE_MSDOM
 
 #endif
-
 /*
  * Local variables:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

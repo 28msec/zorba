@@ -19,7 +19,9 @@ SET(ZORBAUTILS_SRCS
     condition.cpp
     latch.cpp
     lock.cpp
-    runnable.cpp)
+    runnable.cpp
+    tokenizer.cpp
+    icu_tokenizer.cpp)
 
 IF (ZORBA_WITH_LIBXML2_SAX)
     SET(ZORBAUTILS_SRCS ${ZORBAUTILS_SRCS} SAXParser.cpp)

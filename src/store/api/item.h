@@ -24,8 +24,8 @@
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
 
+#include "store/api/ft_token_iterator.h"
 #include "store/api/shared_types.h"
-
 
 namespace zorba 
 {
@@ -622,6 +622,21 @@ public:
   /* -------------------- Methods for ErrorItem --------------------- */
 
   virtual error::ZorbaError* getError() const;
+
+  /* -------------------- Methods for Full-Text --------------------- */
+
+  /**
+   * Gets the tokens for this item.
+   */
+  virtual FTTokenIterator
+  getDocumentTokens() const;
+
+  /**
+   * Gets the tokens for this item.
+   */
+  virtual FTTokenIterator
+  getQueryTokens() const;
+
 }; 
 
 
@@ -635,3 +650,4 @@ public:
  * mode: c++
  * End:
  */
+ /* vim:set et sw=2 ts=2: */

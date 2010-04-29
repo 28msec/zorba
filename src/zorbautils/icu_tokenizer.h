@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FULL_TEXT_ICU_TOKENIZER_H
-#define ZORBA_FULL_TEXT_ICU_TOKENIZER_H
+#ifndef ZORBA_ICU_TOKENIZER_H
+#define ZORBA_ICU_TOKENIZER_H
 
 #include <memory>                       /* for auto_ptr */
-#include <unicode/rbbi.h>
+#include <unicode/rbbi.h>               /* for RuleBasedBreakIterator */
 
-#include "runtime/full_text/tokenizer.h"
+#include "zorbautils/tokenizer.h"
 
 namespace zorba {
 
@@ -32,7 +32,7 @@ class icu_tokenizer : public Tokenizer {
 public:
   icu_tokenizer();
 
-  void tokenize( std::string const &utf8_s, Callback& );
+  void tokenize( char const *utf8_s, int len, Callback& );
 
 private:
   /**
@@ -50,5 +50,5 @@ private:
 };
 
 } // namespace zorba
-#endif  /* ZORBA_FULL_TEXT_ICU_TOKENIZER_H */
+#endif  /* ZORBA_ICU_TOKENIZER_H */
 /* vim:set et sw=2 ts=2: */

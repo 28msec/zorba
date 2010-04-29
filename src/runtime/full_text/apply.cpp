@@ -102,12 +102,14 @@ static void sort( ft_token_span const *&tsi, ft_token_span const *&tsj ) {
  * Computes the distance of N between 2 ft_token_spans where N is specified by
  * the pointer-to-member.
  */
-static ft_token_span::int_t distance( ft_token_span const &tsi,
-                                      ft_token_span const &tsj,
-                                      ft_token_span::start_end_ptr sep ) {
+static ft_token_span::distance_t distance( ft_token_span const &tsi,
+                                           ft_token_span const &tsj,
+                                           ft_token_span::start_end_ptr sep ) {
   ft_token_span const *pi = &tsi, *pj = &tsj;
   sort( pi, pj );
-  return (pj->*sep).start - (pi->*sep).end - 1;
+  return  static_cast<ft_token_span::distance_t>( (pj->*sep).start )
+        - static_cast<ft_token_span::distance_t>( (pi->*sep).end   )
+        - 1;
 }
 
 /**
@@ -219,9 +221,34 @@ static void join_includes( ft_match::includes_t const &includes,
   result.push_back( si );
 }
 
-static void match_tokens( ft_tokens const &search_ctx,
-                          ft_query_tokens const &qtokens, ft_tokens &result ) {
-  // TODO
+static void match_tokens( FTTokenIterator &doc_tokens,
+                          FTTokenIterator &query_tokens,
+                          ft_token_spans &result ) {
+  doc_tokens.reset();
+  while ( doc_tokens.hasNext() ) {
+    FTTokenIterator const doc_tokens_copy( doc_tokens );
+    query_tokens.reset();
+    FTToken const *dt_start = 0, *dt_end, *qt;
+    while ( doc_tokens.next( &dt_end ) && query_tokens.next( &qt ) ) {
+      if ( !dt_start )
+        dt_start = dt_end;
+      if ( dt_end->word != qt->word )
+        break;
+    }
+    if ( !query_tokens.hasNext() ) {
+      ft_token_span ts;
+      ts.pos.start  = dt_start->pos;
+      ts.pos.end    = dt_end->pos;
+      ts.sent.start = dt_start->sent;
+      ts.sent.end   = dt_end->sent;
+      ts.para.start = dt_start->para;
+      ts.para.end   = dt_end->para;
+      result.push_back( ts );
+    } else {
+      doc_tokens = doc_tokens_copy;
+      doc_tokens.next();
+    }
+  }
 }
 
 inline bool token_covers_pos( ft_token_span const &ts,
@@ -302,7 +329,7 @@ void apply_ftdistance( ft_all_matches const &am, int at_least, int at_most,
         ft_match::includes_t::const_iterator j = i;
         if ( ++j == m->includes.end() )
           break;
-        ft_token_span::int_t const d = distance( *i, *j, sep );
+        ft_token_span::distance_t const d = distance( *i, *j, sep );
         if ( d < at_least || d > at_most ) {
           satisfies = false;
           break;
@@ -314,7 +341,7 @@ void apply_ftdistance( ft_all_matches const &am, int at_least, int at_most,
       join_includes( m->includes, m_new.includes );
       FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
         FOR_EACH( ft_match::includes_t, i, m->includes ) {
-          ft_token_span::int_t const d = distance( *i, *e, sep );
+          ft_token_span::distance_t const d = distance( *i, *e, sep );
           if ( d >= at_least && d <= at_most ) {
             m_new.excludes.push_back( *e );
             break;
@@ -477,21 +504,21 @@ void apply_ftunary_not( ft_all_matches &am ) {
 
 typedef list<ft_all_matches> ft_all_matches_seq;
 
-static void apply_query_tokens_as_phrase( ft_tokens const &search_ctx,
-                                          ft_query_tokens const &qtokens,
-                                          ft_query_token::int_t query_pos,
+static void apply_query_tokens_as_phrase( FTTokenIterator &search_ctx,
+                                          FTTokenIterator &query_tokens,
+                                          FTToken::int_t query_pos,
                                           ft_all_matches &result ) {
-  ft_tokens tokens;
-  match_tokens( search_ctx, qtokens, tokens );
-  FOR_EACH( ft_tokens, ts, tokens ) {
+  ft_token_spans token_spans;
+  match_tokens( search_ctx, query_tokens, token_spans );
+  FOR_EACH( ft_token_spans, ts, token_spans ) {
     ft_string_include si;
-    si.pos.start     = ts->pos.start;
-    si.pos.end       = ts->pos.end;
-    si.sent.start    = ts->sent.start;
-    si.sent.end      = ts->sent.end;
-    si.para.start    = ts->para.start;
-    si.para.end      = ts->para.end;
-    si.query_pos     = query_pos;
+    si.pos.start  = ts->pos.start;
+    si.pos.end    = ts->pos.end;
+    si.sent.start = ts->sent.start;
+    si.sent.end   = ts->sent.end;
+    si.para.start = ts->para.start;
+    si.para.end   = ts->para.end;
+    si.query_pos  = query_pos;
     si.is_contiguous = true;
     ft_match m_new;
     m_new.includes.push_back( si );
@@ -515,31 +542,32 @@ static void make_conj_disj( ft_all_matches const &cur_res,
   }
 }
 
-static void apply_ftwords_phrase( ft_tokens const &search_ctx,
-                                  ft_query_tokens const &qtokens,
-                                  ft_query_token::int_t query_pos,
+static void apply_ftwords_phrase( FTTokenIterator &search_ctx,
+                                  FTTokenIterator &query_tokens,
+                                  FTToken::int_t query_pos,
                                   ft_all_matches &result ) {
-  if ( !qtokens.empty() )
-    apply_query_tokens_as_phrase( search_ctx, qtokens, query_pos, result );
+  if ( !query_tokens.empty() )
+    apply_query_tokens_as_phrase( search_ctx, query_tokens, query_pos, result );
 }
 
-static void apply_ftwords_all( ft_tokens const &search_ctx,
-                               ft_query_tokens &qtokens,
-                               ft_query_token::int_t query_pos,
+static void apply_ftwords_all( FTTokenIterator &search_ctx,
+                               FTTokenIterator &query_tokens,
+                               FTToken::int_t query_pos,
                                ft_all_matches &result ) {
-  if ( !qtokens.empty() ) {
-    ft_query_tokens first_qtokens;
-    move_front_to_back( qtokens, first_qtokens );
+  if ( !query_tokens.empty() ) {
+    FTTokenIterator::index_t const i = query_tokens.index();
+    FTTokenIterator first_query_token( query_tokens, i, i + 1 );
+    query_tokens.next();
 
     ft_all_matches first_am;
-    apply_ftwords_phrase( search_ctx, first_qtokens, query_pos, first_am );
+    apply_ftwords_phrase( search_ctx, first_query_token, query_pos, first_am );
 
-    if ( !qtokens.empty() ) {
-      ft_query_token::int_t const temp_pos = max_query_pos( first_am );
+    if ( query_tokens.hasNext() ) {
+      FTToken::int_t const temp_pos = max_query_pos( first_am );
       if ( is_max_valid( temp_pos ) )
         query_pos = temp_pos + 1;
       ft_all_matches rest_am;
-      apply_ftwords_all( search_ctx, qtokens, query_pos, rest_am );
+      apply_ftwords_all( search_ctx, query_tokens, query_pos, rest_am );
       apply_ftand( first_am, rest_am, result );
     } else {
       result.swap( first_am );
@@ -547,41 +575,47 @@ static void apply_ftwords_all( ft_tokens const &search_ctx,
   }
 }
 
-static void apply_ftwords_any( ft_tokens const &search_ctx,
-                               ft_query_tokens &qtokens,
-                               ft_query_token::int_t query_pos,
+static void apply_ftwords_any( FTTokenIterator &search_ctx,
+                               FTTokenIterator &query_tokens,
+                               FTToken::int_t query_pos,
                                ft_all_matches &result ) {
-  if ( !qtokens.empty() ) {
-    ft_query_tokens first_qtokens;
-    move_front_to_back( qtokens, first_qtokens );
+  if ( !query_tokens.empty() ) {
+    FTTokenIterator::index_t const i = query_tokens.index();
+    FTTokenIterator first_query_token( query_tokens, i, i + 1 );
+    query_tokens.next();
 
     ft_all_matches first_am;
-    apply_ftwords_phrase( search_ctx, first_qtokens, query_pos, first_am );
+    apply_ftwords_phrase( search_ctx, first_query_token, query_pos, first_am );
 
-    ft_query_token::int_t const temp_pos = max_query_pos( first_am );
+    FTToken::int_t const temp_pos = max_query_pos( first_am );
     if ( is_max_valid( temp_pos ) )
       query_pos = temp_pos + 1;
 
     ft_all_matches rest_am;
-    apply_ftwords_any( search_ctx, qtokens, query_pos, rest_am );
+    apply_ftwords_any( search_ctx, query_tokens, query_pos, rest_am );
     apply_ftor( first_am, rest_am, result );
   }
 }
 
-static void apply_ftwords_xxx_word( ft_tokens const &search_ctx,
-                                    ft_query_tokens const &qtokens,
-                                    ft_query_token::int_t query_pos,
+/**
+ * This function combines ApplyFTWordsAnyWord() and ApplyFTWordsAllWord() since
+ * the code is the same except that the former calls MakeDisjunction() and the
+ * latter calls MakeConjunction().
+ */
+static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
+                                    FTTokenIterator &query_tokens,
+                                    FTToken::int_t query_pos,
                                     apply_fn_3arg_t apply_fn,
                                     ft_all_matches &result ) {
-  if ( !qtokens.empty() ) {
+  if ( !query_tokens.empty() ) {
     ft_all_matches_seq all_am_seq;
-    ft_query_token::int_t pos = 0;
-    FOR_EACH( ft_query_tokens, qtoken, qtokens ) {
-      ft_query_tokens qtokens2;
-      qtokens2.push_back( *qtoken );
+    for ( FTToken::int_t pos = 0; query_tokens.hasNext();
+          ++pos, query_tokens.next() ) {
+      FTTokenIterator::index_t const i = query_tokens.index();
+      FTTokenIterator query_token( query_tokens, i, i + 1 );
       ft_all_matches am;
       apply_query_tokens_as_phrase(
-        search_ctx, qtokens2, query_pos + pos++, am
+        search_ctx, query_token, query_pos + pos, am
       );
       all_am_seq.push_back( am );
     }
@@ -590,31 +624,30 @@ static void apply_ftwords_xxx_word( ft_tokens const &search_ctx,
   }
 }
 
-void apply_ftwords( ft_tokens const &search_ctx,
-                    ft_query_tokens const &qtokens,
-                    ft_query_token::int_t query_pos,
+void apply_ftwords( FTTokenIterator &search_ctx,
+                    FTTokenIterator &query_tokens,
+                    FTToken::int_t query_pos,
                     ft_anyall_mode::type mode,
                     ft_all_matches &result ) {
-  ft_query_tokens qtokens_copy( qtokens );
   switch ( mode ) {
     case ft_anyall_mode::any:
-      apply_ftwords_any( search_ctx, qtokens_copy, query_pos, result );
+      apply_ftwords_any( search_ctx, query_tokens, query_pos, result );
       break;
     case ft_anyall_mode::any_word:
       apply_ftwords_xxx_word(
-        search_ctx, qtokens_copy, query_pos, &apply_ftor, result
+        search_ctx, query_tokens, query_pos, &apply_ftor, result
       );
       break;
     case ft_anyall_mode::all:
-      apply_ftwords_all( search_ctx, qtokens_copy, query_pos, result );
+      apply_ftwords_all( search_ctx, query_tokens, query_pos, result );
       break;
     case ft_anyall_mode::all_words:
       apply_ftwords_xxx_word(
-        search_ctx, qtokens_copy, query_pos, &apply_ftand, result
+        search_ctx, query_tokens, query_pos, &apply_ftand, result
       );
       break;
     case ft_anyall_mode::phrase:
-      apply_ftwords_phrase( search_ctx, qtokens, query_pos, result );
+      apply_ftwords_phrase( search_ctx, query_tokens, query_pos, result );
       break;
   }
 }

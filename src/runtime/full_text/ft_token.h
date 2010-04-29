@@ -18,48 +18,18 @@
 #define ZORBA_FULL_TEXT_FT_TOKEN_H
 
 #include <list>
-#include <string>
+
+#include "store/api/ft_token.h"
 
 namespace zorba {
-
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * An ft_query_token is the identity of a token inside a query string.
- */
-struct ft_query_token {
-  typedef int int_t;
-
-  std::string word;
-  int_t pos;
-};
-
-/**
- * An ft_query_tokens is a sequence of ft_query_token representing the
- * collection of tokens derived from tokenizing one query string.
- */
-typedef std::list<ft_query_token> ft_query_tokens;
-
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * An ft_item_token is a token in the search context.
- */
-struct ft_item_token : ft_query_token {
-  int_t sent;
-  int_t para;
-};
-
-typedef std::list<ft_item_token> ft_item_tokens;
-
-///////////////////////////////////////////////////////////////////////////////
 
 /**
  * An ft_token_span represents a contiguous collection of tokens from an XML
  * document.
  */
 struct ft_token_span {
-  typedef int int_t;
+  typedef FTToken::int_t int_t;
+  typedef int distance_t;               // this MUST be a signed type
 
   struct start_end {
     int_t start;
@@ -84,7 +54,7 @@ inline bool operator>( ft_token_span const &tsi, ft_token_span const &tsj ) {
           (tsi.pos.start == tsj.pos.start && tsi.pos.end > tsj.pos.end);
 }
 
-typedef std::list<ft_token_span> ft_tokens;
+typedef std::list<ft_token_span> ft_token_spans;
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_FT_TOKEN_H */

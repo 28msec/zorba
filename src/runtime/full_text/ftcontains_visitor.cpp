@@ -20,6 +20,7 @@
 #include "runtime/full_text/apply.h"
 #include "runtime/full_text/ftcontains_visitor.h"
 #include "runtime/full_text/stl_helpers.h"
+#include "zorbautils/container_util.h"
 
 using namespace std;
 
@@ -31,8 +32,9 @@ namespace zorba {
 #undef min
 #endif
 
-ftcontains_visitor::ftcontains_visitor( ft_item_tokens const &tokens,
+ftcontains_visitor::ftcontains_visitor( FTTokenIterator &search_context,
                                         PlanState &state ) :
+  search_context_( search_context ),
   plan_state_( state ),
   expr_visitor_( *this )
 {
@@ -40,7 +42,8 @@ ftcontains_visitor::ftcontains_visitor( ft_item_tokens const &tokens,
 }
 
 ftcontains_visitor::~ftcontains_visitor() {
-  // do nothing
+  while ( !eval_stack_.empty() )
+    delete pop();
 }
 
 bool ftcontains_visitor::ftcontains() const {
@@ -142,14 +145,10 @@ ft_visit_result::type V::begin_visit( ftwords_expr &e ) {
 void V::end_visit( ftwords_expr &e ) {
   store::Item_t item;
   PlanIterator::consumeNext( item, e.get_plan_iter(), plan_state_ );
-  /* TODO
-  item->
-  */
-  ft_tokens search_ctx;
-  ft_query_tokens qtokens;
-  ft_query_token::int_t query_pos = 0;
+  FTTokenIterator qtokens = item->getQueryTokens();
+  FTToken::int_t query_pos = 0;
   ft_all_matches *const result = new ft_all_matches;
-  apply_ftwords( search_ctx, qtokens, query_pos, e.get_mode(), *result );
+  apply_ftwords( search_context_, qtokens, query_pos, e.get_mode(), *result );
   push( result );
 }
 
