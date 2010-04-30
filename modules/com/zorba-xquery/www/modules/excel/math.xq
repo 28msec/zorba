@@ -200,7 +200,7 @@ declare function excel:floor(
     if ($sig eq 0) then
       fn:error($excel-err:errNum, "Floor function does not accept significance 0")
     else if ($num * $sig ge 0) then
-      fn:floor($numb div $sig) * $sig
+      fn:floor($number div $sig) * $sig
     else
       fn:error($excel-err:errNum, "Floor function: both arguments must have the same sign")
 };
