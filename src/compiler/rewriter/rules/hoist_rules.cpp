@@ -22,6 +22,7 @@
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/expr_iter.h"
 
 #include "types/typeops.h"
 
@@ -206,16 +207,17 @@ static bool hoist_expressions(
   }
   else
   {
-    expr_iterator i = e->expr_begin();
-    while(!i.done())
+    ExprIterator iter(e);
+
+    while(!iter.done())
     {
-      expr* ce = &*(*i);
+      expr* ce = &*(*iter);
       if (ce)
       {
         expr_t var = try_hoisting(rCtx, ce, varmap, freevarMap, fholder);
         if (var != NULL)
         {
-          *i = var.getp();
+          *iter = var.getp();
           status = true;
         }
         else
@@ -223,7 +225,8 @@ static bool hoist_expressions(
           status = hoist_expressions(rCtx, ce, varmap, freevarMap, fholder) || status;
         }
       }
-      ++i;
+
+      iter.next();
     }
   }
 
@@ -443,16 +446,16 @@ static bool contains_updates(const expr* e)
   if (e->is_updating())
     return true;
 
-  const_expr_iterator i = e->expr_begin_const();
-  while(!i.done())
+  ExprConstIterator iter(e);
+  while(!iter.done())
   {
-    const expr* ce = &*(*i);
+    const expr* ce = iter.get_expr();
     if (ce)
     {
       if (contains_updates(ce))
         return true;
     }
-    ++i;
+    iter.next();
   }
 
   return false;
@@ -481,16 +484,16 @@ static bool contains_nondeterministic(const expr* e)
   if (!is_deterministic(e))
     return true;
 
-  const_expr_iterator i = e->expr_begin_const();
-  while(!i.done())
+  ExprConstIterator iter(e);
+  while(!iter.done())
   {
-    const expr* ce = &*(*i);
+    const expr* ce = iter.get_expr();
     if (ce)
     {
       if (contains_nondeterministic(ce))
         return true;
     }
-    ++i;
+    iter.next();
   }
 
   return false;

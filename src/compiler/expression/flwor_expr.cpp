@@ -752,28 +752,6 @@ flwor_clause_t where_clause::clone(expr::substitution_t& subst) const
 /*******************************************************************************
 
 ********************************************************************************/
-class flwor_expr_iterator_data : public expr_iterator_data
-{
-public:
-  flwor_expr::clause_list_t::iterator    theClausesIter;
-  flwor_expr::clause_list_t::iterator    theClausesEnd;
-  std::vector<expr_t>::iterator          theOrderExprsIter;
-  std::vector<expr_t>::iterator          theOrderExprsEnd;
-  flwor_clause::rebind_list_t::iterator  theGroupVarsIter;
-  flwor_clause::rebind_list_t::iterator  theGroupVarsEnd;
-  flwor_clause::rebind_list_t::iterator  theNonGroupVarsIter;
-  flwor_clause::rebind_list_t::iterator  theNonGroupVarsEnd;
-  int                                    theWincondIter;
-
-public:
-  flwor_expr_iterator_data(expr* e) : expr_iterator_data(e), theWincondIter(0) {}
-};
-
-
-
-/*******************************************************************************
-
-********************************************************************************/
 void flwor_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
@@ -1067,6 +1045,27 @@ expr_t flwor_expr::clone(substitution_t& subst) const
 
   return cloneFlwor.getp();
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class flwor_expr_iterator_data : public expr_iterator_data
+{
+public:
+  flwor_expr::clause_list_t::iterator    theClausesIter;
+  flwor_expr::clause_list_t::iterator    theClausesEnd;
+  std::vector<expr_t>::iterator          theOrderExprsIter;
+  std::vector<expr_t>::iterator          theOrderExprsEnd;
+  flwor_clause::rebind_list_t::iterator  theGroupVarsIter;
+  flwor_clause::rebind_list_t::iterator  theGroupVarsEnd;
+  flwor_clause::rebind_list_t::iterator  theNonGroupVarsIter;
+  flwor_clause::rebind_list_t::iterator  theNonGroupVarsEnd;
+  int                                    theWincondIter;
+
+public:
+  flwor_expr_iterator_data(expr* e) : expr_iterator_data(e), theWincondIter(0) {}
+};
 
 
 /*******************************************************************************

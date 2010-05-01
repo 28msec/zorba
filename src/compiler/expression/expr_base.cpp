@@ -19,6 +19,7 @@
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
+#include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr_visitor.h"
 
 #include "functions/function.h"
@@ -65,106 +66,6 @@ static xqtref_t print_expr_and_type(expr* e, xqtref_t t)
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
-
-/*******************************************************************************
-  Class expr_iterator
-********************************************************************************/
-expr_iterator::expr_iterator(const expr_iterator& other) 
-  :
-  theIter(new expr_iterator_data(*other.theIter)) 
-{
-}
-
-
-expr_iterator::~expr_iterator() 
-{
-  delete theIter; 
-}
-
-
-expr_iterator& expr_iterator::operator=(const expr_iterator& other) 
-{
-  if (this != &other) 
-  {
-    delete theIter;
-    theIter = new expr_iterator_data(*other.theIter);
-  }
-  return *this;
-}
-
-
-expr_iterator& expr_iterator::operator++()
-{
-  theIter->next();
-  return *this; 
-}
-
-#if 0
-expr_iterator expr_iterator::operator++(int)
-{
-  expr_iterator old;
-  old = *this;
-  ++*this;
-  return old;
-}
-#endif
-
-expr_t& expr_iterator::operator*()
-{
-  return *(theIter->theCurrentChild);
-}
-
-
-bool expr_iterator::done() const 
-{
-  return theIter->done();
-}
-
-
-/*******************************************************************************
-  Class const_expr_iterator
-********************************************************************************/
-const_expr_iterator::const_expr_iterator(const const_expr_iterator& other) 
-  :
-  theIter(new expr_iterator_data(*other.theIter)) 
-{
-}
-
-
-const_expr_iterator::~const_expr_iterator() 
-{
-  delete theIter; 
-}
-
-
-const_expr_iterator& const_expr_iterator::operator=(const const_expr_iterator& other) 
-{
-  if (this != &other)
-  {
-    delete theIter;
-    theIter = new expr_iterator_data(*other.theIter);
-  }
-  return *this;
-}
-
-
-const_expr_iterator& const_expr_iterator::operator++()
-{
-  theIter->next();
-  return *this; 
-}
-
-
-expr* const_expr_iterator::operator*()
-{
-  return theIter->theCurrentChild->getp();
-}
-
-
-bool const_expr_iterator::done() const 
-{
-  return theIter->done();
-}
 
 
 /*******************************************************************************
@@ -402,24 +303,6 @@ expr_script_kind_t expr::scripting_kind_anding(
 /*******************************************************************************
 
 ********************************************************************************/
-expr_iterator expr::expr_begin(bool invalidate) 
-{
-  expr_iterator_data* iter_data = make_iter();
-  iter_data->next();
-
-  return expr_iterator(iter_data);
-}
-
-
-const_expr_iterator expr::expr_begin_const() const 
-{
-  expr_iterator_data* iter_data = const_cast<expr*>(this)->make_iter();
-  iter_data->next();
-
-  return const_expr_iterator(iter_data);
-}
-
-
 expr_iterator_data* expr::make_iter()
 {
   return new expr_iterator_data(this);
@@ -462,10 +345,13 @@ DEF_EXPR_ACCEPT (expr)
 ********************************************************************************/
 void expr::accept_children(expr_visitor& v) 
 {
-  for (expr_iterator i = expr_begin(); ! i.done(); ++i) 
+  ExprIterator iter(this);
+  while (!iter.done())
   {
-    if (*i != NULL)
-      (*i)->accept(v);
+    if (*iter != NULL)
+      (*iter)->accept(v);
+
+    iter.next();
   }
 }
 
@@ -494,11 +380,11 @@ void expr::clear_annotations()
 
   expr::setDirectAnnotations();
 
-  expr_iterator iter = expr_begin();
+  ExprIterator iter(this);
   while (!iter.done())
   {
     (*iter)->clear_annotations();
-    ++iter;
+    iter.next();
   }
 }
 
@@ -663,12 +549,15 @@ bool expr::is_constant() const
     return false;
   }
 
-  for(const_expr_iterator i = expr_begin_const(); !i.done(); ++i) 
+  ExprConstIterator iter(this);
+  while (!iter.done())
   {
-    if (!(*i)->is_constant()) 
+    if (!iter.get_expr()->is_constant()) 
     {
       return false;
     }
+
+    iter.next();
   }
   return true;
 }
@@ -679,7 +568,7 @@ bool expr::is_constant() const
 ********************************************************************************/
 void expr::replace_expr(const expr* oldExpr, const expr* newExpr)
 {
-  expr_iterator iter = expr_begin();
+  ExprIterator iter(this);
   while (!iter.done())
   {
     if ((*iter).getp() == oldExpr)
@@ -691,7 +580,7 @@ void expr::replace_expr(const expr* oldExpr, const expr* newExpr)
       (*iter)->replace_expr(oldExpr, newExpr);
     }
 
-    ++iter;
+    iter.next();
   }
 }
 
@@ -701,19 +590,19 @@ void expr::replace_expr(const expr* oldExpr, const expr* newExpr)
 ********************************************************************************/
 bool expr::contains_expr(const expr* e) const
 {
-  const_expr_iterator iter = expr_begin_const();
+  ExprConstIterator iter(this);
   while (!iter.done())
   {
-    if ((*iter) == e)
+    if (iter.get_expr() == e)
     {
       return true;
     }
-    else if ((*iter)->contains_expr(e))
+    else if (iter.get_expr()->contains_expr(e))
     {
       return true;
     }
 
-    ++iter;
+    iter.next();
   }
 
   return false;
@@ -737,10 +626,10 @@ bool expr::contains_node_construction() const
     return true;
   }
 
-  const_expr_iterator i = expr_begin_const();
-  while(!i.done())
+  ExprConstIterator iter(this);
+  while(!iter.done())
   {
-    const expr* ce = &*(*i);
+    const expr* ce = iter.get_expr();
     if (ce)
     {
       if (ce->contains_node_construction())
@@ -748,7 +637,7 @@ bool expr::contains_node_construction() const
         return true;
       }
     }
-    ++i;
+    iter.next();
   }
   return false;
 }

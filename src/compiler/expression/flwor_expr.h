@@ -20,7 +20,7 @@
 #include "common/shared_types.h"
 
 #include "compiler/expression/expr_base.h"
-//#include "compiler/expression/var_expr.h"
+#include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr_utils.h"
 
 
@@ -54,6 +54,7 @@ typedef rchandle<flwor_expr> flwor_expr_t;
 class flwor_clause : public SimpleRCObject
 {
   friend class flwor_expr;
+  friend class ExprIterator;
 
 public:
   typedef std::vector<std::pair<expr_t, var_expr_t> > rebind_list_t;
@@ -138,6 +139,7 @@ public:
 class forletwin_clause : public flwor_clause
 {
   friend class flwor_expr;
+  friend class ExprIterator;
 
 protected:
   var_expr_t   theVarExpr;
@@ -174,6 +176,7 @@ public:
 class for_clause : public forletwin_clause
 {
   friend class flwor_expr;
+  friend class ExprIterator;
 
 protected:
   var_expr_t    thePosVarExpr;
@@ -223,6 +226,7 @@ public:
 class let_clause : public forletwin_clause
 {
   friend class flwor_expr;
+  friend class ExprIterator;
 
 protected:
   var_expr_t  theScoreVarExpr;
@@ -267,6 +271,7 @@ public:
 class window_clause : public forletwin_clause
 {
   friend class flwor_expr;
+  friend class ExprIterator;
 
 public:
   typedef enum { tumbling_window, sliding_window } window_t;
@@ -349,6 +354,7 @@ public:
 class flwor_wincond : public SimpleRCObject
 {
   friend class flwor_expr;
+  friend class ExprIterator;
 
 public:
   struct vars
@@ -425,6 +431,7 @@ public:
 class group_clause : public flwor_clause
 {
   friend class flwor_expr;
+  friend class ExprIterator;
 
 protected:
   rebind_list_t            theGroupVars;
@@ -482,8 +489,10 @@ public:
 ********************************************************************************/
 class orderby_clause : public flwor_clause
 {
-protected:
+  friend class ExprIterator;
   friend class flwor_expr;
+
+protected:
 
   bool                        theStableOrder;
   std::vector<OrderModifier>  theModifiers;
@@ -533,6 +542,8 @@ public:
 ********************************************************************************/
 class count_clause : public flwor_clause
 {
+  friend class ExprIterator;
+
 protected:
   var_expr_t theVarExpr;
 
@@ -562,6 +573,7 @@ public:
 ********************************************************************************/
 class where_clause : public flwor_clause
 {
+  friend class ExprIterator;
   friend class flwor_expr;
 
   expr_t theWhereExpr;
@@ -600,6 +612,7 @@ public:
 ********************************************************************************/
 class flwor_expr : public expr
 {
+  friend class ExprIterator;
   friend class expr;
 
 public:

@@ -125,8 +125,8 @@ std::ostream& wrapper_expr::put(std::ostream& os) const
 ostream& sequential_expr::put( ostream& os) const
 {
   BEGIN_EXPR (sequential_expr);
-  for (checked_vector<expr_t>::const_iterator i = this->sequence.begin ();
-       i != sequence.end (); i++)
+  for (checked_vector<expr_t>::const_iterator i = this->theArgs.begin ();
+       i != theArgs.end (); i++)
     (*i)->put (os);
   CLOSE_EXPR;
 }
@@ -361,13 +361,14 @@ ostream& trycatch_expr::put( ostream& os) const
 
   theTryExpr->put(os);
 
-  for (vector<catch_clause_t>::const_iterator it = theCatchClauses.begin();
-       it != theCatchClauses.end(); ++it)
+  ulong numClauses = theCatchClauses.size();
+
+  for (ulong i = 0; i < numClauses; ++i)
   {
-    catch_clause_t cc = *it;
+    catch_clause_t cc = theCatchClauses[i];
     os << DENT << "CATCH ";
     os << "\n";
-    cc->theCatchExpr->put(os);
+    theCatchExprs[i]->put(os);
   }
   os << DENT << "]\n";
   return os;

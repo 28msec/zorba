@@ -17,6 +17,7 @@
 
 #include "compiler/rewriter/rules/rule_base.h"
 #include "compiler/expression/expr_base.h"
+#include "compiler/expression/expr_iter.h"
 
 
 namespace zorba 
@@ -42,13 +43,17 @@ expr_t PrePostRewriteRule::apply(RewriterContext& rCtx, expr* curExpr, bool& mod
     modified = true;
   }
 
-  for (expr_iterator i = curExpr->expr_begin(); !i.done(); ++i) 
+  ExprIterator iter(curExpr);
+
+  while (!iter.done())
   {
-    expr_t new_e = apply(rCtx, &**i, modified);
-    if (new_e != NULL) 
+    expr_t new_e = apply(rCtx, (*iter).getp(), modified);
+    if (new_e != NULL)
     {
-      *i = &*new_e;
+      *iter = &*new_e;
     }
+
+    iter.next();
   }
 
   newExpr = rewritePost(&*curExpr, rCtx);

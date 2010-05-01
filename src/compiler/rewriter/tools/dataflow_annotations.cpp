@@ -18,6 +18,7 @@
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/expr_iter.h"
 
 #include "compiler/rewriter/tools/dataflow_annotations.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
@@ -169,15 +170,15 @@ void DataflowAnnotationsComputer::compute(expr* e)
 ********************************************************************************/
 void DataflowAnnotationsComputer::default_walk(expr* e)
 {
-  expr_iterator i = e->expr_begin();
-  while(!i.done()) 
+  ExprIterator iter(e);
+  while(!iter.done()) 
   {
-    expr* child = (*i).getp();
+    expr* child = (*iter).getp();
     if (child != NULL) 
     {
       compute(child);
     }
-    ++i;
+    iter.next();
   }
 }
 

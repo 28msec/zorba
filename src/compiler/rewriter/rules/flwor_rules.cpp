@@ -20,6 +20,7 @@
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/framework/rule_driver.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/expr_iter.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 
 #include "context/static_context.h"
@@ -583,19 +584,18 @@ static bool var_in_try_block_or_in_loop(
       return true;
     }
 
-    std::vector<catch_clause_t>::const_iterator i = tce->begin();
-    std::vector<catch_clause_t>::const_iterator end = tce->end();
-    while(i != end)
+    ulong numClauses = tce->clause_count();
+
+    for (ulong i = 0; i < numClauses; ++i)
     {
       if (var_in_try_block_or_in_loop(v,
-                                      (*i)->get_catch_expr(),
+                                      tce->get_catch_expr(i),
                                       in_try_block_or_in_loop,
                                       hasNodeConstr,
                                       numRemainingRefs))
       {
         return true;
       }
-      ++i;
     }
     return false;
   }
@@ -665,18 +665,18 @@ static bool var_in_try_block_or_in_loop(
 #endif
 
   // Or else navigate down all children
-  const_expr_iterator ei = e->expr_begin_const();
+  ExprConstIterator ei(e);
   while(!ei.done())
   {
     if (var_in_try_block_or_in_loop(v,
-                                    &*(*ei),
+                                    ei.get_expr(),
                                     in_try_block_or_in_loop,
                                     hasNodeConstr,
                                     numRemainingRefs))
     {
       return true;
     }
-    ++ei;
+    ei.next();
   }
 
   return false;

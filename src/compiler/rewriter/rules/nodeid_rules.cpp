@@ -22,6 +22,7 @@
 
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
+#include "compiler/expression/expr_iter.h"
 
 #include "types/typeops.h"
 
@@ -368,14 +369,16 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     }
     else
     {
-      for(expr_iterator i = node->expr_begin(); !i.done(); ++i) 
+      ExprIterator iter(node);
+      while (!iter.done()) 
       {
-        TSVAnnotationValue::update_annotation(*i,
+        TSVAnnotationValue::update_annotation(*iter,
                                               Annotations::IGNORES_SORTED_NODES,
                                               TSVAnnotationValue::FALSE_VAL);
-        TSVAnnotationValue::update_annotation(*i,
+        TSVAnnotationValue::update_annotation(*iter,
                                               Annotations::IGNORES_DUP_NODES,
                                               TSVAnnotationValue::FALSE_VAL);
+        iter.next();
       }
     }
 

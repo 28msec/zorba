@@ -51,195 +51,6 @@ class NodeNameTest;
 class signature;
 
 
-/***************************************************************************//**
-  imperative construct: do this, then that
-********************************************************************************/
-class sequential_expr : public expr
-{
-  friend class expr;
-
-protected:
-  checked_vector<expr_t> sequence;
-
-public:
-  SERIALIZABLE_CLASS(sequential_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(sequential_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  sequential_expr(static_context*, const QueryLoc&);
-
-  sequential_expr(static_context*, const QueryLoc&, expr_t first, expr_t second);
-
-  sequential_expr(
-        static_context*,
-        const QueryLoc&,
-        checked_vector<expr_t>& seq,
-        expr_t result);
-
-  sequential_expr(
-        static_context*,
-        const QueryLoc&,
-        checked_vector<expr_t>& seq);
-
-  expr_kind_t get_expr_kind() const { return sequential_expr_kind; }
-
-  unsigned size() const { return sequence.size(); }
-
-  const expr_t& operator[](int i) const { return sequence[i]; }
-
-  void push_back(expr_t e) 
-  {
-    sequence.push_back(e);
-    compute_scripting_kind();
-  }
-
-  void push_front(expr_t e) 
-  {
-    sequence.insert(sequence.begin(), e);
-    compute_scripting_kind();
-  }
-
-  void add_at(ulong pos, expr_t e)
-  {
-    sequence.insert(sequence.begin() + pos, e);
-    compute_scripting_kind();
-  }
-
-  void compute_scripting_kind();
-
-  expr_iterator_data* make_iter();
-
-  void next_iter(expr_iterator_data&);
-
-  expr_t clone(substitution_t& s) const;
-
-  void accept(expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-};
-
-
-/***************************************************************************//**
-  [169] TryCatchExpr ::= TryClause CatchClauseList
-
-  [170] TryClause ::= "try" "{" TryTargetExpr "}"
-
-  [171] TryTargetExpr ::= Expr
-
-        CatchClauseList := CatchClause+
-
-  [172] CatchClause ::= "catch" CatchErrorList CatchVars? "{" Expr "}"
-
-  [173] CatchErrorList ::= NameTest ("|" NameTest)*
-
-  [174] CatchVars ::= "(" CatchErrorCode ("," CatchErrorDesc ("," CatchErrorVal)?)? ")"
-
-  [175] CatchErrorCode ::= "$" VarName
-
-  [176] CatchErrorDesc ::= "$" VarName
-
-  [177] CatchErrorVal ::= "$" VarName
-********************************************************************************/
-class catch_clause : public SimpleRCObject 
-{
-  friend class expr;
-  friend class trycatch_expr;
-
-public:
-  typedef rchandle<NodeNameTest> nt_t;
-  typedef std::vector<nt_t> nt_list_t;
-
-protected:
-  nt_list_t   theNameTests;
-  var_expr_t  theErrorCodeVar;
-  var_expr_t  theErrorDescVar;
-  var_expr_t  theErrorItemVar;
-  expr_t      theCatchExpr;
-  
-public:
-  SERIALIZABLE_CLASS(catch_clause)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(catch_clause, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  catch_clause();
-  
-  void set_nametests(nt_list_t& a) { theNameTests = a; }
-
-  nt_list_t& get_nametests() { return theNameTests; }
-  
-  void add_nametest_h(nt_t n) { theNameTests.push_back(n); }
-  
-  void set_error_code_var(varref_t a) { theErrorCodeVar = a; }
-
-  const var_expr* get_error_code_var() const { return theErrorCodeVar.getp(); }
-  
-  void set_error_desc_var(varref_t a) { theErrorDescVar = a; }
-
-  const var_expr* get_error_desc_var() const { return theErrorDescVar.getp(); }
-  
-  void set_error_item_var(varref_t a) { theErrorItemVar = a; }
-
-  const var_expr* get_error_item_var() const { return theErrorItemVar.getp(); }
-  
-  void set_catch_expr(expr_t a) { theCatchExpr = a; }
-
-  const expr* get_catch_expr() const { return theCatchExpr.getp(); }
-};
-
-
-typedef rchandle<catch_clause> catch_clause_t;
-
-
-class trycatch_expr : public expr 
-{
-  friend class expr;
-
-protected:
-  expr_t                      theTryExpr;
-  std::vector<catch_clause_t> theCatchClauses;
-
-public:
-  SERIALIZABLE_CLASS(trycatch_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(trycatch_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  trycatch_expr(static_context* sctx, const QueryLoc&, expr_t tryExpr);
-
-  expr_kind_t get_expr_kind() const { return trycatch_expr_kind; }
-
-  const expr* get_try_expr() const { return theTryExpr; }
-
-  void add_clause_in_front(catch_clause_t cc);
-  
-  std::vector<catch_clause_t>::const_iterator begin() const
-  {
-    return theCatchClauses.begin();
-  }
-
-  std::vector<catch_clause_t>::const_iterator end() const
-  {
-    return theCatchClauses.end(); 
-  }
-
-  uint32_t clause_count() const { return theCatchClauses.size(); }
-  
-  catch_clause_t const& operator[](int i) const { return theCatchClauses[i]; }
-
-  void compute_scripting_kind();
-
-  expr_iterator_data* make_iter();
-  
-  void next_iter(expr_iterator_data&);
-
-  // TODO clone() ????
-
-  void accept(expr_visitor&);
-
-  std::ostream& put(std::ostream&) const;
-};
 
 
 
@@ -248,6 +59,7 @@ public:
 ********************************************************************************/
 class if_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -293,6 +105,7 @@ public:
 ********************************************************************************/
 class order_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 public:
@@ -337,6 +150,7 @@ public:
 ********************************************************************************/
 class validate_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -386,6 +200,7 @@ public:
 ********************************************************************************/
 class cast_or_castable_base_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -420,6 +235,8 @@ public:
 ********************************************************************************/
 class cast_base_expr : public cast_or_castable_base_expr 
 {
+  friend class ExprIterator;
+
 public:
   SERIALIZABLE_ABSTRACT_CLASS(cast_base_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(cast_base_expr, cast_or_castable_base_expr)
@@ -437,6 +254,7 @@ public:
 ********************************************************************************/
 class cast_expr : public cast_base_expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 public:
@@ -473,6 +291,7 @@ public:
 ********************************************************************************/
 class treat_expr : public cast_base_expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -542,6 +361,7 @@ public:
 ********************************************************************************/
 class promote_expr : public cast_base_expr
 {
+  friend class ExprIterator;
   friend class expr;
 
 public:
@@ -572,6 +392,8 @@ public:
 ********************************************************************************/
 class castable_base_expr : public cast_or_castable_base_expr 
 {
+  friend class ExprIterator;
+
 public:
   SERIALIZABLE_ABSTRACT_CLASS(castable_base_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(castable_base_expr, cast_or_castable_base_expr)
@@ -589,6 +411,7 @@ public:
 ********************************************************************************/
 class castable_expr : public castable_base_expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 public:
@@ -618,6 +441,7 @@ public:
 ********************************************************************************/
 class instanceof_expr : public castable_base_expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 public:
@@ -652,6 +476,7 @@ public:
 ********************************************************************************/
 class name_cast_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 private:
@@ -689,6 +514,7 @@ public:
 ********************************************************************************/
 class doc_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -746,6 +572,7 @@ public:
 ********************************************************************************/
 class elem_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -823,6 +650,7 @@ public:
 ********************************************************************************/
 class attr_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -866,6 +694,7 @@ public:
 ********************************************************************************/
 class text_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 public:
@@ -914,6 +743,7 @@ public:
 ********************************************************************************/
 class pi_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -953,6 +783,7 @@ public:
 ********************************************************************************/
 class wrapper_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -989,6 +820,7 @@ public:
 ********************************************************************************/
 class const_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -1060,6 +892,7 @@ public:
 ********************************************************************************/
 class extension_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -1094,11 +927,133 @@ public:
 };
 
 
+/////////////////////////////////////////////////////////////////////////
+//                                                                     //
+//	XQuery 1.1 expressions                                             //
+//  [http://www.w3.org/TR/xquery-1.1/]                                 //
+//                                                                     //
+/////////////////////////////////////////////////////////////////////////
+
+
+/***************************************************************************//**
+  [169] TryCatchExpr ::= TryClause CatchClauseList
+
+  [170] TryClause ::= "try" "{" TryTargetExpr "}"
+
+  [171] TryTargetExpr ::= Expr
+
+        CatchClauseList := CatchClause+
+
+  [172] CatchClause ::= "catch" CatchErrorList CatchVars? "{" Expr "}"
+
+  [173] CatchErrorList ::= NameTest ("|" NameTest)*
+
+  [174] CatchVars ::= "(" CatchErrorCode ("," CatchErrorDesc ("," CatchErrorVal)?)? ")"
+
+  [175] CatchErrorCode ::= "$" VarName
+
+  [176] CatchErrorDesc ::= "$" VarName
+
+  [177] CatchErrorVal ::= "$" VarName
+********************************************************************************/
+class catch_clause : public SimpleRCObject 
+{
+  friend class expr;
+  friend class trycatch_expr;
+
+public:
+  typedef rchandle<NodeNameTest> nt_t;
+  typedef std::vector<nt_t> nt_list_t;
+
+protected:
+  nt_list_t   theNameTests;
+  var_expr_t  theErrorCodeVar;
+  var_expr_t  theErrorDescVar;
+  var_expr_t  theErrorItemVar;
+  
+public:
+  SERIALIZABLE_CLASS(catch_clause)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(catch_clause, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  catch_clause();
+  
+  void set_nametests(nt_list_t& a) { theNameTests = a; }
+
+  nt_list_t& get_nametests() { return theNameTests; }
+  
+  void add_nametest_h(nt_t n) { theNameTests.push_back(n); }
+  
+  void set_error_code_var(varref_t a) { theErrorCodeVar = a; }
+
+  const var_expr* get_error_code_var() const { return theErrorCodeVar.getp(); }
+  
+  void set_error_desc_var(varref_t a) { theErrorDescVar = a; }
+
+  const var_expr* get_error_desc_var() const { return theErrorDescVar.getp(); }
+  
+  void set_error_item_var(varref_t a) { theErrorItemVar = a; }
+
+  const var_expr* get_error_item_var() const { return theErrorItemVar.getp(); }
+};
+
+
+typedef rchandle<catch_clause> catch_clause_t;
+
+
+class trycatch_expr : public expr 
+{
+  friend class ExprIterator;
+  friend class expr;
+
+protected:
+  expr_t                      theTryExpr;
+  std::vector<expr_t>         theCatchExprs;
+  std::vector<catch_clause_t> theCatchClauses;
+
+public:
+  SERIALIZABLE_CLASS(trycatch_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(trycatch_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  trycatch_expr(static_context* sctx, const QueryLoc&, expr_t tryExpr);
+
+  expr_kind_t get_expr_kind() const { return trycatch_expr_kind; }
+
+  expr* get_try_expr() const { return theTryExpr.getp(); }
+
+  expr* get_catch_expr(ulong i) const { return theCatchExprs[i].getp(); }
+
+  void add_catch_expr(expr_t e);
+
+  void add_clause(catch_clause_t cc);
+  
+  uint32_t clause_count() const { return theCatchClauses.size(); }
+  
+  catch_clause_t const& operator[](int i) const { return theCatchClauses[i]; }
+
+  void compute_scripting_kind();
+
+  expr_iterator_data* make_iter();
+  
+  void next_iter(expr_iterator_data&);
+
+  // TODO clone() ????
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
 /***************************************************************************//**
 
 ********************************************************************************/
 class eval_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 public:
@@ -1108,7 +1063,6 @@ public:
     store::Item_t varname;
     std::string var_key;
     xqtref_t type;
-    expr_t val;
 
   public:
     SERIALIZABLE_CLASS(eval_var)
@@ -1117,7 +1071,7 @@ public:
 
     eval_var() {}
 
-    eval_var(var_expr* ve, expr_t val);
+    eval_var(var_expr* ve);
 
     virtual ~eval_var() {}
   };
@@ -1125,6 +1079,7 @@ public:
 protected:
   expr_t                   theExpr;
   checked_vector<eval_var> vars;
+  std::vector<expr_t>      theArgs;
 
 public:
   SERIALIZABLE_CLASS(eval_expr)
@@ -1142,17 +1097,19 @@ public:
 
   expr_kind_t get_expr_kind() const { return eval_expr_kind; }
 
-  checked_vector<eval_var>& get_vars() { return vars; }
+  expr* get_expr() const { return theExpr.getp(); }
 
-  const expr_t& get_expr() const { return theExpr; }
-
-  expr_t get_expr() { return theExpr; }
+  expr* get_arg_expr(ulong i) { return theArgs[i].getp(); }
 
   unsigned var_count() const { return vars.size (); }
 
-  eval_var& var_at(unsigned i) { return vars [i]; }
+  eval_var& get_var(ulong i) { return vars[i]; }
 
-  void add_var(eval_var var) { vars.push_back(var); }
+  void add_var(eval_var var, expr_t arg) 
+  {
+    vars.push_back(var);
+    theArgs.push_back(arg);
+  }
 
   void compute_scripting_kind();
 
@@ -1171,6 +1128,7 @@ public:
 ********************************************************************************/
 class debugger_expr: public eval_expr
 {
+  friend class ExprIterator;
   friend class expr;
 
 private:
@@ -1204,7 +1162,7 @@ public:
     store_local_variables( aScopedVariables );
   }
 
- expr_kind_t get_expr_kind() const { return debugger_expr_kind; }
+  expr_kind_t get_expr_kind() const { return debugger_expr_kind; }
 
   std::list<global_binding> getGlobals() const { return theGlobals; }
 
@@ -1223,6 +1181,194 @@ private:
 };
 
 
+/////////////////////////////////////////////////////////////////////////
+//                                                                     //
+//	Scripting expressions                                              //
+//  [http://www.w3.org/TR/xquery-sx-10/]                               //
+//                                                                     //
+/////////////////////////////////////////////////////////////////////////
+
+
+/***************************************************************************//**
+  imperative construct: do this, then that
+********************************************************************************/
+class sequential_expr : public expr
+{
+  friend class ExprIterator;
+  friend class expr;
+
+protected:
+  checked_vector<expr_t> theArgs;
+
+public:
+  SERIALIZABLE_CLASS(sequential_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(sequential_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  sequential_expr(static_context*, const QueryLoc&);
+
+  sequential_expr(static_context*, const QueryLoc&, expr_t first, expr_t second);
+
+  sequential_expr(
+        static_context*,
+        const QueryLoc&,
+        checked_vector<expr_t>& seq,
+        expr_t result);
+
+  sequential_expr(
+        static_context*,
+        const QueryLoc&,
+        checked_vector<expr_t>& seq);
+
+  expr_kind_t get_expr_kind() const { return sequential_expr_kind; }
+
+  unsigned size() const { return theArgs.size(); }
+
+  const expr_t& operator[](int i) const { return theArgs[i]; }
+
+  void push_back(expr_t e) 
+  {
+    theArgs.push_back(e);
+    compute_scripting_kind();
+  }
+
+  void push_front(expr_t e) 
+  {
+    theArgs.insert(theArgs.begin(), e);
+    compute_scripting_kind();
+  }
+
+  void add_at(ulong pos, expr_t e)
+  {
+    theArgs.insert(theArgs.begin() + pos, e);
+    compute_scripting_kind();
+  }
+
+  void compute_scripting_kind();
+
+  expr_iterator_data* make_iter();
+
+  void next_iter(expr_iterator_data&);
+
+  expr_t clone(substitution_t& s) const;
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+};
+
+
+/*******************************************************************************
+  ExitExpr ::= "exit" "with" ExprSingle
+********************************************************************************/
+class exit_expr : public expr 
+{
+  friend class ExprIterator;
+  friend class expr;
+
+private:
+  expr_t theExpr;
+
+public:
+  SERIALIZABLE_CLASS(exit_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  exit_expr(static_context* sctx, const QueryLoc& loc, expr_t inExpr);
+
+  expr_kind_t get_expr_kind() const { return exit_expr_kind; }
+
+  expr* get_value() const { return theExpr.getp(); }
+
+  void compute_scripting_kind();
+
+  expr_t clone(substitution_t& s) const;
+
+  void next_iter(expr_iterator_data&);
+
+  void accept(expr_visitor&);
+
+	std::ostream& put(std::ostream&) const;
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class flowctl_expr : public expr 
+{
+  friend class ExprIterator;
+  friend class expr;
+
+public:
+  enum action { BREAK, CONTINUE };
+
+protected:
+  enum action theAction;
+
+public:
+  SERIALIZABLE_CLASS(flowctl_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(flowctl_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action);
+
+  expr_kind_t get_expr_kind() const { return flowctl_expr_kind; }
+
+  enum action get_action() const { return theAction; }
+
+  expr_t clone(substitution_t& s) const;
+
+  void compute_scripting_kind();
+
+  void next_iter(expr_iterator_data&);
+
+  void accept(expr_visitor&);
+
+	std::ostream& put(std::ostream&) const;
+};
+
+
+/*******************************************************************************
+	WhileExpr ::= "while" "(" ExprSingle ")" WhileBody
+
+  WhileBody ::= Block
+********************************************************************************/
+class while_expr : public expr 
+{
+  friend class ExprIterator;
+  friend class expr;
+
+protected:
+  expr_t theBody;
+
+public:
+  SERIALIZABLE_CLASS(while_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(while_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  while_expr(static_context* sctx, const QueryLoc& loc, expr_t body);
+
+  expr_kind_t get_expr_kind() const { return while_expr_kind; }
+
+  expr* get_body() const { return theBody.getp(); }
+
+  void compute_scripting_kind();
+
+  void next_iter(expr_iterator_data&);
+
+  expr_t clone(substitution_t& s) const;
+
+  void accept(expr_visitor&);
+
+	std::ostream& put(std::ostream&) const;
+};
+
+
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
@@ -1237,6 +1383,7 @@ private:
 ********************************************************************************/
 class insert_expr : public expr
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -1282,6 +1429,7 @@ public:
 ********************************************************************************/
 class delete_expr : public expr
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -1316,6 +1464,7 @@ public:
 ********************************************************************************/
 class replace_expr : public expr
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -1361,6 +1510,7 @@ public:
 ********************************************************************************/
 class rename_expr : public expr
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -1402,6 +1552,7 @@ class copy_clause : public SimpleRCObject
 {
   friend class expr;
   friend class transform_expr;
+  friend class ExprIterator;
 
 private:
   var_expr_t theVar;
@@ -1429,6 +1580,7 @@ typedef rchandle<copy_clause> copy_clause_t;
 
 class transform_expr : public expr
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -1477,121 +1629,6 @@ public:
   void next_iter(expr_iterator_data&);
 
   // TODO : clone()
-
-  void accept(expr_visitor&);
-
-	std::ostream& put(std::ostream&) const;
-};
-
-
-/////////////////////////////////////////////////////////////////////////
-//                                                                     //
-//	Scripting expressions                                              //
-//  [http://www.w3.org/TR/xquery-sx-10/]                               //
-//                                                                     //
-/////////////////////////////////////////////////////////////////////////
-
-
-/*******************************************************************************
-  ExitExpr ::= "exit" "with" ExprSingle
-********************************************************************************/
-class exit_expr : public expr 
-{
-  friend class expr;
-
-private:
-  expr_t theExpr;
-
-public:
-  SERIALIZABLE_CLASS(exit_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(exit_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  exit_expr(static_context* sctx, const QueryLoc& loc, expr_t inExpr);
-
-  expr_kind_t get_expr_kind() const { return exit_expr_kind; }
-
-  expr* get_value() const { return theExpr.getp(); }
-
-  void compute_scripting_kind();
-
-  expr_t clone(substitution_t& s) const;
-
-  void next_iter(expr_iterator_data&);
-
-  void accept(expr_visitor&);
-
-	std::ostream& put(std::ostream&) const;
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class flowctl_expr : public expr 
-{
-  friend class expr;
-
-public:
-  enum action { BREAK, CONTINUE };
-
-protected:
-  enum action theAction;
-
-public:
-  SERIALIZABLE_CLASS(flowctl_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(flowctl_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action);
-
-  expr_kind_t get_expr_kind() const { return flowctl_expr_kind; }
-
-  enum action get_action() const { return theAction; }
-
-  expr_t clone(substitution_t& s) const;
-
-  void compute_scripting_kind();
-
-  void next_iter(expr_iterator_data&);
-
-  void accept(expr_visitor&);
-
-	std::ostream& put(std::ostream&) const;
-};
-
-
-/*******************************************************************************
-	WhileExpr ::= "while" "(" ExprSingle ")" WhileBody
-
-  WhileBody ::= Block
-********************************************************************************/
-class while_expr : public expr 
-{
-  friend class expr;
-
-protected:
-  expr_t theBody;
-
-public:
-  SERIALIZABLE_CLASS(while_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(while_expr, expr)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  while_expr(static_context* sctx, const QueryLoc& loc, expr_t body);
-
-  expr_kind_t get_expr_kind() const { return while_expr_kind; }
-
-  expr* get_body() const { return theBody.getp(); }
-
-  void compute_scripting_kind();
-
-  void next_iter(expr_iterator_data&);
-
-  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 

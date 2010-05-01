@@ -40,6 +40,7 @@ namespace zorba {
 ********************************************************************************/
 class dynamic_function_invocation_expr : public expr
 {
+  friend class ExprIterator;
   friend class expr;
 
 public:
@@ -102,6 +103,7 @@ public:
 ********************************************************************************/
 class function_item_expr: public expr
 {
+  friend class ExprIterator;
   friend class expr;
 
 private:

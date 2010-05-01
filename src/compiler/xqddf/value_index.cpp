@@ -25,6 +25,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr.h"
+#include "compiler/expression/expr_iter.h"
 #include "compiler/codegen/plan_visitor.h"
 
 #include "runtime/base/plan_iterator.h"
@@ -343,9 +344,11 @@ void ValueIndex::analyzeExprInternal(
     }
   }
 
-  for(expr_iterator i = e->expr_begin(); !i.done(); ++i)
+  ExprIterator iter(e);
+  while (!iter.done())
   {
-    analyzeExprInternal((*i), sourceNames, sourceExprs, varExprs, dotVar);
+    analyzeExprInternal((*iter), sourceNames, sourceExprs, varExprs, dotVar);
+    iter.next();
   }
 }
 

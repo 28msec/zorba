@@ -17,6 +17,7 @@
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/expr_iter.h"
 
 #include "functions/func_fnerror.h"
 
@@ -91,11 +92,11 @@ void replace_var(expr* e, const var_expr* oldVar, var_expr* newVar)
     }
   }
 
-  expr_iterator iter = e->expr_begin();
+  ExprIterator iter(e);
   while (!iter.done())
   {
     replace_var((*iter), oldVar, newVar);
-    ++iter;
+    iter.next();
   }
 }
 
@@ -186,15 +187,15 @@ void index_flwor_vars(
     }
   }
 
-  const_expr_iterator i = e->expr_begin_const();
-  while(!i.done()) 
+  ExprConstIterator iter(e);
+  while(!iter.done()) 
   {
-    const expr* ce = &*(*i);
+    const expr* ce = iter.get_expr();
     if (ce) 
     {
       index_flwor_vars(ce, numVars, varidmap, idvarmap);
     }
-    ++i;
+    iter.next();
   }
 }
 
@@ -264,17 +265,17 @@ void build_expr_to_vars_map(
   ulong numVars = freeset.size();
 
   DynamicBitset eFreeset(numVars);
-  expr_iterator i = e->expr_begin();
-  while(!i.done()) 
+  ExprIterator iter(e);
+  while(!iter.done()) 
   {
-    expr* ce = &*(*i);
+    expr* ce = &*(*iter);
     if (ce) 
     {
       eFreeset.reset();
       build_expr_to_vars_map(ce, varmap, eFreeset, freevarMap);
       freeset.set_union(eFreeset);
     }
-    ++i;
+    iter.next();
   }
 
   // A flwor does not depend on the vars that are defined inside the flwor itself,

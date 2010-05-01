@@ -391,10 +391,10 @@ void end_visit (debugger_expr& v)
   std::vector<PlanIter_t> argv;
   for (unsigned i = 0; i < v.var_count (); i++)
   {
-    varnames.push_back (v.var_at (i).varname);
-    var_keys.push_back (v.var_at (i).var_key);
-    vartypes.push_back (v.var_at (i).type);
-    argvEvalIter.push_back (pop_itstack());
+    varnames.push_back(v.get_var(i).varname);
+    var_keys.push_back(v.get_var(i).var_key);
+    vartypes.push_back(v.get_var(i).type);
+    argvEvalIter.push_back(pop_itstack());
   }
 
   //create the eval iterator children
@@ -1538,15 +1538,18 @@ bool begin_visit(trycatch_expr& v)
     catch_clause* cc = &*v[i];
     if (cc->get_error_code_var() != NULL)
     {
-      catchvar_iter_map.put((uint64_t)&*cc->get_error_code_var(), new vector<LetVarIter_t>());
+      catchvar_iter_map.put((uint64_t)&*cc->get_error_code_var(),
+                            new vector<LetVarIter_t>());
     }
     if (cc->get_error_desc_var() != NULL)
     {
-      catchvar_iter_map.put((uint64_t)&*cc->get_error_desc_var(), new vector<LetVarIter_t>());
+      catchvar_iter_map.put((uint64_t)&*cc->get_error_desc_var(),
+                            new vector<LetVarIter_t>());
     }
     if (cc->get_error_item_var() != NULL)
     {
-      catchvar_iter_map.put((uint64_t)&*cc->get_error_item_var(), new vector<LetVarIter_t>());
+      catchvar_iter_map.put((uint64_t)&*cc->get_error_item_var(), 
+                            new vector<LetVarIter_t>());
     }
   }
   return true;
@@ -1555,26 +1558,31 @@ bool begin_visit(trycatch_expr& v)
 void end_visit(trycatch_expr& v)
 {
   CODEGEN_TRACE_OUT("");
+
   vector<LetVarIter_t> *vec = NULL;
   vector<TryCatchIterator::CatchClause> rev_ccs;
+
   for(int i = v.clause_count() - 1; i >= 0; --i)
   {
     catch_clause* cc = &*v[i];
     TryCatchIterator::CatchClause rcc;
     rcc.node_names = cc->get_nametests();
     rcc.catch_expr = pop_itstack();
+
     if (cc->get_error_code_var() != NULL)
     {
       bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_code_var(), vec);
       ZORBA_ASSERT(bound);
       rcc.errorcode_var = *vec;
     }
+
     if (cc->get_error_desc_var() != NULL)
     {
       bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_desc_var(), vec);
       ZORBA_ASSERT(bound);
       rcc.errordesc_var = *vec;
     }
+
     if (cc->get_error_item_var() != NULL)
     {
       bool bound = catchvar_iter_map.get((uint64_t)&*cc->get_error_item_var(), vec);
@@ -1583,29 +1591,34 @@ void end_visit(trycatch_expr& v)
     }
     rev_ccs.push_back(rcc);
   }
+
   vector<TryCatchIterator::CatchClause> ccs(rev_ccs.rbegin(), rev_ccs.rend());
   PlanIter_t lChild = pop_itstack();
+
   push_itstack(new TryCatchIterator(sctx, qloc, lChild, ccs));
 }
 
-bool begin_visit (eval_expr& v) {
+bool begin_visit (eval_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (eval_expr& v) {
+void end_visit(eval_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   checked_vector<PlanIter_t> argv;
   checked_vector<store::Item_t> varnames;
   checked_vector<string> var_keys;
   checked_vector<xqtref_t> vartypes;
-  for (unsigned i = 0; i < v.var_count (); i++) {
-    varnames.push_back (v.var_at (i).varname);
-    var_keys.push_back (v.var_at (i).var_key);
-    argv.push_back (pop_itstack ());
+  for (unsigned i = 0; i < v.var_count (); i++) 
+  {
+    varnames.push_back(v.get_var(i).varname);
+    var_keys.push_back(v.get_var(i).var_key);
+    argv.push_back(pop_itstack());
   }
-  argv.push_back (pop_itstack ());
-  reverse (argv.begin (), argv.end ());
+  argv.push_back(pop_itstack());
+  reverse(argv.begin(), argv.end());
   push_itstack (new EvalIterator (sctx, qloc, argv, varnames, var_keys, vartypes));
 }
 

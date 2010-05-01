@@ -35,6 +35,7 @@ class signature;
 ********************************************************************************/
 class fo_expr : public expr
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:

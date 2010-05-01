@@ -50,6 +50,7 @@ class match_expr;
 ********************************************************************************/
 class relpath_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -107,6 +108,7 @@ public:
 ********************************************************************************/
 class axis_step_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:
@@ -169,6 +171,7 @@ public:
 ********************************************************************************/
 class match_expr : public expr 
 {
+  friend class ExprIterator;
   friend class expr;
 
 protected:

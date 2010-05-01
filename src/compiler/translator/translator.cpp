@@ -2025,7 +2025,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
       expr_t val = new wrapper_expr(theRootSctx,
                                     lLocation.theQueryLocation,
                                     rchandle<expr>(lVe));
-      lExpr->add_var(eval_expr::eval_var(&*ve, val));
+      lExpr->add_var(eval_expr::eval_var(&*ve), val);
     }
 
     aExpr = lExpr.release();
@@ -10484,7 +10484,7 @@ void* begin_visit(const CatchExpr& v)
     }
   }
 
-  tce->add_clause_in_front(cc);
+  tce->add_clause(cc);
 
   return no_state;
 }
@@ -10496,8 +10496,7 @@ void end_visit(const CatchExpr& v, void* visit_state)
   expr_t ce = pop_nodestack();
   trycatch_expr* tce = dynamic_cast<trycatch_expr *>(theNodeStack.top().getp());
 
-  catch_clause* cc = &*(*tce)[0];
-  cc->set_catch_expr(ce);
+  tce->add_catch_expr(ce);
 
   pop_scope();
 }
@@ -10507,6 +10506,7 @@ void end_visit(const CatchExpr& v, void* visit_state)
 void* begin_visit(const EvalExpr& v)
 {
   TRACE_VISIT();
+
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
     ZORBA_ERROR_LOC_DESC(XPST0003, loc,
                          "Eval is a feature that is only available in XQuery 1.1 or later.");
@@ -10522,7 +10522,7 @@ void end_visit(const EvalExpr& v, void* visit_state)
                   loc,
                   create_cast_expr(loc, pop_nodestack(), theRTM.STRING_TYPE_ONE, true));
 
-  rchandle<VarGetsDeclList> vgdl = v.get_vars ();
+  rchandle<VarGetsDeclList> vgdl = v.get_vars();
 
   for (size_t i = 0; i < vgdl->size(); i++)
   {
@@ -10537,7 +10537,7 @@ void end_visit(const EvalExpr& v, void* visit_state)
                            ve->get_type(),
                            XPTY0004);
 
-    result->add_var(eval_expr::eval_var (&*ve, val));
+    result->add_var(eval_expr::eval_var(&*ve), val);
 
     pop_scope();
   }

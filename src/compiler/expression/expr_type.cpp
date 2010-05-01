@@ -23,6 +23,8 @@
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr.h"
+#include "compiler/expression/expr_iter.h"
+
 #include "compiler/xqddf/collection_decl.h"
 
 #include "functions/function.h"
@@ -76,9 +78,11 @@ void expr::compute_return_type(bool deep, bool* modified)
 {
   if (deep)
   {
-    for (expr_iterator i = expr_begin(); !i.done(); ++i) 
+    ExprIterator iter(this);
+    while (!iter.done()) 
     {
-      (*i)->compute_return_type(deep, modified);
+      (*iter)->compute_return_type(deep, modified);
+      iter.next();
     }
   }
 
@@ -94,7 +98,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     sequential_expr* e = static_cast<sequential_expr*>(this);
 
-    newType = e->sequence[e->sequence.size() - 1]->get_return_type();
+    newType = e->theArgs[e->theArgs.size() - 1]->get_return_type();
     break;
   }
 

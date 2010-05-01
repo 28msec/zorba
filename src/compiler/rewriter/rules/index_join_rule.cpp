@@ -19,6 +19,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/xqddf/value_index.h"
+#include "compiler/expression/expr_iter.h"
 
 #include "functions/function.h"
 #include "functions/library.h"
@@ -97,12 +98,12 @@ expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
   {
     // TODO: Flatten the and-tree and test all conjuncts
     // TODO: consider multi-key indices
-    expr_iterator i = whereExpr->expr_begin();
-    for(; !i.done(); ++i)
+    ExprIterator iter(whereExpr);
+    while (!iter.done())
     {
       PredicateInfo predInfo;
       predInfo.theFlworExpr = flworExpr;
-      predInfo.thePredicate = (*i);
+      predInfo.thePredicate = (*iter);
 
       if (isIndexJoinPredicate(rCtx, predInfo))
       {
@@ -111,7 +112,7 @@ expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
           expr_t trueExpr = new const_expr(flworExpr->get_sctx(),
                                            flworExpr->get_loc(),
                                            true);
-          (*i) = trueExpr;
+          (*iter) = trueExpr;
 
           if (Properties::instance()->printIntermediateOpt())
           {
@@ -120,6 +121,8 @@ expr_t IndexJoin::rewritePre(expr* node, RewriterContext& rCtx)
           }
         }
       }
+
+      iter.next();
     }
   }
 
@@ -675,13 +678,13 @@ static bool expandVars(
     ZORBA_ASSERT(false);
   }
 
-  expr_iterator iter = subExpr->expr_begin();
+  ExprIterator iter(subExpr);
   while (!iter.done())
   {
     if (!expandVars(rCtx, *iter, outerVarId, maxVarId))
       return false;
 
-    ++iter;
+    iter.next();
   }
 
   return true;
@@ -716,7 +719,7 @@ static void findFlworForVar(
 
       seqExpr = static_cast<sequential_expr*>(rCtx.theFlworStack[i].getp());
 
-      expr_iterator exprIter = seqExpr->expr_begin();
+      ExprIterator exprIter(seqExpr);
       while (!exprIter.done())
       {
         if ((*exprIter)->get_expr_kind() == flwor_expr_kind)
@@ -724,7 +727,7 @@ static void findFlworForVar(
           flworExpr = static_cast<flwor_expr*>((*exprIter).getp());
           break;
         }
-        ++exprIter;
+        exprIter.next();
         ++posInSeq;
       }
     }

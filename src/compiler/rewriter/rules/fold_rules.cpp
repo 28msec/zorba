@@ -23,7 +23,10 @@
 
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
+
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/expr_iter.h"
+
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/api/compilercb.h"
 
@@ -143,9 +146,10 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
   expr::BoolAnnotationValue curNonDiscardable = expr::ANNOTATION_FALSE;
   expr::BoolAnnotationValue curUnfoldable = expr::ANNOTATION_FALSE;
 
-  for (const_expr_iterator i = node->expr_begin_const(); !i.done(); ++i)
+  ExprConstIterator iter(node);
+  while(!iter.done())
   {
-    expr* childExpr = *i;
+    expr* childExpr = iter.get_expr();
 
     apply(rCtx, childExpr, modified);
 
@@ -160,6 +164,8 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     {
       curUnfoldable = expr::ANNOTATION_TRUE;
     }
+
+    iter.next();
   }
 
   // Certain exprs are nondiscardable and/or unfoldable independently from
@@ -298,11 +304,14 @@ RULE_REWRITE_POST(MarkFreeVars)
   }
   else
   {
-    for(expr_iterator i = node->expr_begin(); ! i.done(); ++i)
+    ExprIterator iter(node);
+    while (!iter.done())
     {
-      expr *e = *i;
-      const var_ptr_set &kfv = get_varset_annotation (e, Annotations::FREE_VARS);
+      expr *e = *iter;
+      const var_ptr_set& kfv = get_varset_annotation (e, Annotations::FREE_VARS);
       copy (kfv.begin(), kfv.end(), inserter(freevars->varset, freevars->varset.begin()));
+
+      iter.next();
     }
 
     if (node->get_expr_kind () == flwor_expr_kind ||

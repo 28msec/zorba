@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include "compiler/expression/expr.h"
+#include "compiler/expression/expr_iter.h"
 #include "compiler/rewriter/tools/expr_tools.h"
 #include "compiler/expression/abstract_expr_visitor.h"
 
@@ -38,10 +39,13 @@ bool count_variable_uses_rec(
     return true;
   }
 
-  for (const_expr_iterator iter = e->expr_begin_const(); !iter.done(); ++iter)
+  ExprConstIterator iter(e);
+  while (!iter.done())
   {
-    if (!count_variable_uses_rec((*iter), var, rCtx, limit, count))
+    if (!count_variable_uses_rec(iter.get_expr(), var, rCtx, limit, count))
       return false;
+
+    iter.next();
   }
 
   return true;

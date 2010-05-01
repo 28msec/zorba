@@ -35,6 +35,16 @@ namespace zorba
 
 class static_context;
 
+class expr;
+typedef rchandle<expr> expr_t;
+
+class wrapper_expr;
+typedef rchandle<wrapper_expr> wrapper_expr_t;
+
+class expr_visitor;
+
+class expr_iterator_data;
+
 
 enum expr_kind_t
 {
@@ -80,89 +90,6 @@ enum expr_kind_t
   unknown_expr_kind
 };
 
-class expr;
-typedef rchandle<expr> expr_t;
-
-class wrapper_expr;
-typedef rchandle<wrapper_expr> wrapper_expr_t;
-
-class expr_visitor;
-
-class expr_iterator_data;
-
-class expr_iterator;
-
-
-/*******************************************************************************
-  A class to iterate over the subexpressions of an expr. The actual work is done
-  by an instance of expr_iterator_data (see below). Such instances are allocated
-  dynamically in the heap, whenever we need to iterate over the subexpressions of
-  an expr. On the other hand, instances of expr_iterator are always allocated on
-  the stack; they wrap corresponding instances of expr_iterator_data (always a
-  1:1 relationship) and provide an object-based, rather than pointer-based,
-  iterator interface.
-********************************************************************************/
-class expr_iterator
-{
-private:
-  expr_iterator_data * theIter;
-
-public:
-  expr_iterator() : theIter(0) {}
-
-  expr_iterator(expr_iterator_data* iter) : theIter(iter) {}
-
-  expr_iterator(const expr_iterator& other);
-
-  ~expr_iterator();
-
-  expr_iterator& operator=(const expr_iterator& other);
-
-  expr_iterator& operator++();
-
-  //expr_iterator operator++(int);
-
-  expr_t& operator*();
-
-  bool done() const;
-
-private:
-  // comparisson forbidden; use done()
-  bool operator==(const expr_iterator& other) { return false; }
-};
-
-
-/*******************************************************************************
-  A const version of expr_iterator.
-********************************************************************************/
-class const_expr_iterator
-{
-private:
-  expr_iterator_data * theIter;
-
-public:
-  const_expr_iterator() : theIter(0) {}
-
-  const_expr_iterator(expr_iterator_data* iter) : theIter(iter) {}
-
-  const_expr_iterator(const const_expr_iterator& other);
-
-  ~const_expr_iterator();
-
-  const_expr_iterator& operator=(const const_expr_iterator& other);
-
-  const_expr_iterator& operator++();
-
-  expr* operator*();
-
-  bool done() const;
-
-private:
-  // comparisson forbidden; use done()
-  bool operator==(const const_expr_iterator& other) { return false; }
-};
-
-
 
 /*******************************************************************************
   Base class for the expression tree node hierarchy
@@ -170,6 +97,7 @@ private:
 class expr : public AnnotationHolder
 {
   friend class expr_iterator_data;
+  friend class ExprIterator;
   friend class forletwin_clause;
   friend class for_clause;
   friend class let_clause;
@@ -227,7 +155,7 @@ public:
 
   const QueryLoc& get_loc() const { return theLoc; }
 
-  void set_loc(const QueryLoc& aLoc) { theLoc = aLoc; }
+  void set_loc(const QueryLoc& loc) { theLoc = loc; }
 
   static_context* get_sctx() const { return theSctx; }
 
@@ -246,10 +174,6 @@ public:
   void compute_return_type(bool deep, bool* modified);
 
   xqtref_t get_return_type();
-
-  expr_iterator expr_begin(bool invalidateCache = true);
-
-  const_expr_iterator expr_begin_const() const;
 
   virtual void next_iter(expr_iterator_data &) = 0;
 

@@ -20,6 +20,8 @@
 #include "types/typeops.h"
 
 #include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/expr_iter.h"
+
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/rules/type_rules.h"
 #include "compiler/rewriter/tools/expr_tools.h"
@@ -111,9 +113,12 @@ void buildUDFCallGraph(
     }
   }
 
-  for (expr_iterator i = curExpr->expr_begin(); !i.done(); ++i) 
+  ExprIterator iter(curExpr);
+  while (!iter.done()) 
   {
-    buildUDFCallGraph(graph, callChain, &**i);
+    buildUDFCallGraph(graph, callChain, (*iter).getp());
+
+    iter.next();
   }
 }
 

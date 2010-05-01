@@ -225,40 +225,6 @@ static inline void checkSimpleExpr(const expr* e)
 /*******************************************************************************
   Specific expr_iterator_data classes
 ********************************************************************************/
-class trycatch_expr_iterator_data : public expr_iterator_data 
-{
-public:
-  std::vector<catch_clause_t>::const_iterator clause_iter;
-
-  trycatch_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
-};
-
-
-class transform_expr_iterator_data : public expr_iterator_data 
-{
-public:
-  std::vector<rchandle<copy_clause> >::iterator clause_iter;
-  transform_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
-};
-
-
-class eval_expr_iterator_data : public expr_iterator_data 
-{
-public:
-  checked_vector<eval_expr::eval_var>::iterator var_iter;
-
-  eval_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
-};
-
-
-class debugger_expr_iterator_data: public expr_iterator_data 
-{
-public:
-  checked_vector<eval_expr::eval_var>::iterator var_iter;
-  
-  debugger_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
-};
-
 
 class sequential_expr_iterator_data : public expr_iterator_data 
 {
@@ -288,8 +254,8 @@ sequential_expr::sequential_expr(
   :
   expr(sctx, loc)
 {
-  sequence.push_back(first);
-  sequence.push_back(second);
+  theArgs.push_back(first);
+  theArgs.push_back(second);
   compute_scripting_kind();
 }
 
@@ -301,9 +267,9 @@ sequential_expr::sequential_expr(
     expr_t result)
   :
   expr(sctx, loc),
-  sequence(seq)
+  theArgs(seq)
 {
-  sequence.push_back(result);
+  theArgs.push_back(result);
   compute_scripting_kind();
 }
 
@@ -314,7 +280,7 @@ sequential_expr::sequential_expr(
     checked_vector<expr_t>& seq)
   :
   expr(sctx, loc),
-  sequence(seq)
+  theArgs(seq)
 {
   compute_scripting_kind();
 }
@@ -323,7 +289,7 @@ sequential_expr::sequential_expr(
 void sequential_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
-  ar & sequence;
+  ar & theArgs;
 }
 
 
@@ -332,11 +298,11 @@ void sequential_expr::compute_scripting_kind()
   theScriptingKind = SIMPLE_EXPR;
   bool vacuous = true;
 
-  ulong numChildren = sequence.size();
+  ulong numChildren = theArgs.size();
 
   for (ulong i = 0; i < numChildren; ++i)
   {
-    expr_script_kind_t kind = sequence[i]->get_scripting_kind();
+    expr_script_kind_t kind = theArgs[i]->get_scripting_kind();
 
     if (kind == SEQUENTIAL_EXPR || kind == UPDATE_EXPR)
     {
@@ -365,7 +331,7 @@ void sequential_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER2(sequential_expr);
 
-  ITER_FOR_EACH(iter, sequence.begin(), sequence.end(), (*vv.iter));
+  ITER_FOR_EACH(iter, theArgs.begin(), theArgs.end(), (*vv.iter));
 
   END_EXPR_ITER();
 }
@@ -374,8 +340,8 @@ void sequential_expr::next_iter(expr_iterator_data& v)
 expr_t sequential_expr::clone(substitution_t& subst) const
 {
   checked_vector<expr_t> seq2;
-  for (unsigned i = 0; i < sequence.size(); ++i)
-    seq2.push_back(sequence[i]->clone(subst));
+  for (unsigned i = 0; i < theArgs.size(); ++i)
+    seq2.push_back(theArgs[i]->clone(subst));
 
   return new sequential_expr(theSctx, get_loc(), seq2);
 }
@@ -396,7 +362,6 @@ void catch_clause::serialize(::zorba::serialization::Archiver& ar)
   ar & theErrorCodeVar;
   ar & theErrorDescVar;
   ar & theErrorItemVar;
-  ar & theCatchExpr;
 }
 
 
@@ -416,16 +381,22 @@ void trycatch_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theTryExpr;
+  ar & theCatchExprs;
   ar & theCatchClauses;
 }
 
 
-void trycatch_expr::add_clause_in_front(catch_clause_t cc)
+void trycatch_expr::add_catch_expr(expr_t e)
+{
+  theCatchExprs.insert(theCatchExprs.begin(), e);
+
+  compute_scripting_kind();
+}
+
+
+void trycatch_expr::add_clause(catch_clause_t cc)
 {
   theCatchClauses.insert(theCatchClauses.begin(), cc);
-
-  if (cc->get_catch_expr() != NULL)
-    compute_scripting_kind();
 }
 
 
@@ -437,7 +408,7 @@ void trycatch_expr::compute_scripting_kind()
 
   for(ulong i = 0; i < numCatchClauses; ++i) 
   {
-    const expr* catchExpr = theCatchClauses[i]->get_catch_expr();
+    const expr* catchExpr = theCatchExprs[i].getp();
 
     expr_script_kind_t catchKind = catchExpr->get_scripting_kind();
 
@@ -459,6 +430,15 @@ void trycatch_expr::compute_scripting_kind()
 }
 
 
+class trycatch_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  std::vector<expr_t>::iterator catch_iter;
+
+  trycatch_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
+};
+
+
 expr_iterator_data* trycatch_expr::make_iter() 
 {
   return new trycatch_expr_iterator_data(this);
@@ -471,9 +451,11 @@ void trycatch_expr::next_iter(expr_iterator_data& v)
 
   ITER(theTryExpr);
 
-  for (vv.clause_iter = begin(); vv.clause_iter != end(); ++(vv.clause_iter))
+  for (vv.catch_iter = theCatchExprs.begin(); 
+       vv.catch_iter != theCatchExprs.end();
+       ++(vv.catch_iter))
   {
-    ITER((*vv.clause_iter)->theCatchExpr);
+    ITER((*vv.catch_iter));
   }
 
   END_EXPR_ITER ();
@@ -1550,11 +1532,29 @@ void extension_expr::compute_scripting_kind()
 /*******************************************************************************
 
 ********************************************************************************/
+eval_expr::eval_var::eval_var(var_expr* ve)
+  :
+  varname(ve->get_name()),
+  var_key(dynamic_context::var_key(ve)),
+  type(ve->get_type())
+{
+}
+
+
+void eval_expr::eval_var::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & varname;
+  ar & var_key;
+  ar & type;
+}
+
+
 void eval_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theExpr;
   ar & vars;
+  ar & theArgs;
 }
 
 
@@ -1562,6 +1562,15 @@ void eval_expr::compute_scripting_kind()
 {
   theScriptingKind = theExpr->get_scripting_kind();
 }
+
+
+class eval_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  std::vector<expr_t>::iterator var_iter;
+
+  eval_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
+};
 
 
 expr_iterator_data* eval_expr::make_iter() 
@@ -1574,27 +1583,8 @@ void eval_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER2(eval_expr);
   ITER(theExpr);
-  ITER_FOR_EACH(var_iter, vars.begin(), vars.end(), vv.var_iter->val);
+  ITER_FOR_EACH(var_iter, theArgs.begin(), theArgs.end(), *vv.var_iter);
   END_EXPR_ITER();
-}
-
-
-eval_expr::eval_var::eval_var(var_expr* ve, expr_t val_)
-  :
-  varname(ve->get_name()),
-  var_key(dynamic_context::var_key(ve)),
-  type(ve->get_type()),
-  val(val_)
-{
-}
-
-
-void eval_expr::eval_var::serialize(::zorba::serialization::Archiver& ar)
-{
-  ar & varname;
-  ar & var_key;
-  ar & type;
-  ar & val;
 }
 
 
@@ -1616,10 +1606,19 @@ void debugger_expr::store_local_variables(checked_vector<varref_t>& aScopedVaria
                                       var_expr::eval_var,
                                       lValue->get_name() ) );
       lVariable->set_type( lValue->get_type() );
-      add_var(eval_expr::eval_var(&*lVariable, lValue.getp()));
+      add_var(eval_expr::eval_var(&*lVariable), lValue.getp());
     }
   }
 }
+
+
+class debugger_expr_iterator_data: public expr_iterator_data 
+{
+public:
+  std::vector<expr_t>::iterator var_iter;
+  
+  debugger_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
+};
 
 
 expr_iterator_data* debugger_expr::make_iter() 
@@ -1632,7 +1631,7 @@ void debugger_expr::next_iter(expr_iterator_data& v)
 {
   BEGIN_EXPR_ITER2(debugger_expr);
   ITER(theExpr);
-  ITER_FOR_EACH(var_iter, vars.begin(), vars.end(), vv.var_iter->val);
+  ITER_FOR_EACH(var_iter, theArgs.begin(), theArgs.end(), *vv.var_iter);
   END_EXPR_ITER();
 }  
 
@@ -1937,6 +1936,14 @@ void transform_expr::compute_scripting_kind()
 
   checkNonUpdating(theReturnExpr);
 }
+
+
+class transform_expr_iterator_data : public expr_iterator_data 
+{
+public:
+  std::vector<rchandle<copy_clause> >::iterator clause_iter;
+  transform_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
+};
 
 
 expr_iterator_data* transform_expr::make_iter()
