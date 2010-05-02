@@ -30,13 +30,13 @@ namespace zorba
 class ExprIterator
 {
 protected:
-  expr                         * theExpr;
+  expr                                 * theExpr;
 
-  expr_t                       * theCurrentChild;
-  int                            theState;
+  expr_t                               * theCurrentChild;
+  int                                    theState;
 
-  std::vector<expr_t>::iterator  theArgsIter;
-  std::vector<expr_t>::iterator  theArgsEnd;
+  std::vector<expr_t>::iterator          theArgsIter;
+  std::vector<expr_t>::iterator          theArgsEnd;
 
   flwor_expr::clause_list_t::iterator    theClausesIter;
   flwor_expr::clause_list_t::iterator    theClausesEnd;
@@ -46,18 +46,11 @@ protected:
   flwor_clause::rebind_list_t::iterator  theNonGroupVarsEnd;
   int                                    theWincondIter;
 
-  std::vector<copy_clause_t>::iterator  theCopyClauseIter;
-  std::vector<copy_clause_t>::iterator  theCopyClauseEnd;
+  std::vector<copy_clause_t>::iterator   theCopyClauseIter;
+  std::vector<copy_clause_t>::iterator   theCopyClauseEnd;
 
 public:
-  ExprIterator(expr* e) 
-    :
-    theExpr(e),
-    theCurrentChild(NULL),
-    theState(0)
-  {
-    next();
-  }
+  ExprIterator(expr* e);
 
   ~ExprIterator() {}
 

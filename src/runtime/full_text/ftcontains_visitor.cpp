@@ -35,8 +35,7 @@ namespace zorba {
 ftcontains_visitor::ftcontains_visitor( FTTokenIterator &search_context,
                                         PlanState &state ) :
   search_context_( search_context ),
-  plan_state_( state ),
-  expr_visitor_( *this )
+  plan_state_( state )
 {
   // do nothing
 }
@@ -61,9 +60,7 @@ bool ftcontains_visitor::ftcontains() const {
   return false;
 }
 
-expr_visitor& ftcontains_visitor::get_expr_visitor() {
-  return expr_visitor_;
-}
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

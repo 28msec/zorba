@@ -39,7 +39,6 @@
 
 #include "runtime/rest/rest.h"
 #include "runtime/util/iterator_impl.h"
-#include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planiter_visitor.h"

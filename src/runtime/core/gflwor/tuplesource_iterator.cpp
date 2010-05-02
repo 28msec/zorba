@@ -22,7 +22,6 @@
 #include "compiler/expression/expr.h"
 
 #include "runtime/core/var_iterators.h"
-#include "runtime/api/runtimecb.h"
 #include "store/api/temp_seq.h"
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/api/plan_iterator_wrapper.h"

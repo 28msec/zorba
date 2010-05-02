@@ -34,15 +34,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(dynamic_function_invocation_expr)
 DEF_EXPR_ACCEPT (dynamic_function_invocation_expr)
 
 
-class dynamic_function_invocation_expr_iterator_data : public expr_iterator_data 
-{
-public:
-  checked_vector<expr_t>::iterator iter;
-
-  dynamic_function_invocation_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
-};
-
-
 dynamic_function_invocation_expr::dynamic_function_invocation_expr(
     static_context* sctx,
     const QueryLoc& loc,
@@ -62,22 +53,6 @@ void dynamic_function_invocation_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
 }
-
-
-void dynamic_function_invocation_expr::next_iter(expr_iterator_data& v)
-{
-  BEGIN_EXPR_ITER2(dynamic_function_invocation_expr);
-  ITER(theExpr);
-  ITER_FOR_EACH(iter, theArgs.begin(), theArgs.end(), (*vv.iter));
-  END_EXPR_ITER();
-}
-
-
-expr_iterator_data* dynamic_function_invocation_expr::make_iter()
-{
-  return new dynamic_function_invocation_expr_iterator_data(this);
-}
-
 
 
 /*******************************************************************************
@@ -148,32 +123,6 @@ void function_item_expr::set_function(function* udf)
 void function_item_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-class function_item_expr_iterator_data : public expr_iterator_data 
-{
-public:
-  checked_vector<expr_t>::iterator iter;
-
-  function_item_expr_iterator_data(expr* e) : expr_iterator_data(e) {}
-};
-
-
-void function_item_expr::next_iter(expr_iterator_data& v)
-{
-  BEGIN_EXPR_ITER2(function_item_expr);
-  ITER_FOR_EACH(iter,
-                theScopedVariables.begin(),
-                theScopedVariables.end(),
-                (*vv.iter));
-  END_EXPR_ITER();
-}
-
-
-expr_iterator_data* function_item_expr::make_iter()
-{
-  return new function_item_expr_iterator_data(this);
 }
 
 

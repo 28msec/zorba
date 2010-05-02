@@ -43,8 +43,6 @@ typedef rchandle<wrapper_expr> wrapper_expr_t;
 
 class expr_visitor;
 
-class expr_iterator_data;
-
 
 enum expr_kind_t
 {
@@ -129,7 +127,8 @@ protected:
 
   QueryLoc           theLoc;
 
-  expr_script_kind_t theScriptingKind;
+  short              theKind;
+  short              theScriptingKind;
 
   xqtref_t           theType;
 
@@ -174,8 +173,6 @@ public:
   void compute_return_type(bool deep, bool* modified);
 
   xqtref_t get_return_type();
-
-  virtual void next_iter(expr_iterator_data &) = 0;
 
   expr_t clone() const;
 
@@ -235,88 +232,8 @@ public:
 protected:
   virtual void compute_scripting_kind() = 0;
 
-  virtual expr_iterator_data* make_iter();
-
   bool is_map_internal(const expr* e, bool& found) const;
 };
-
-
-/*******************************************************************************
-  Base class for iterators that iterate over the subexpressions (children) of
-  a given expr. Notice that theCurrentChild is a pointer to expr_t.
-
-  Each actual instance of the abstract expr class has its own way of storing
-  pointers to its subexpressions. So, to make expr_iterator_data work with any
-  kind of expr, the actual work of expr_iterator_data is done by the virtual
-  expr::next_iter() method. Every concrete subclass of expr must defined its
-  own next_iter() method.
-********************************************************************************/
-class expr_iterator_data
-{
-protected:
-  expr   * theExpr;
-
-public:
-  expr_t * theCurrentChild;
-  int      theState;
-  bool     theInvalidate;
-
-public:
-  expr_iterator_data(expr* e)
-    :
-    theExpr(e),
-    theCurrentChild(NULL),
-    theState(0),
-    theInvalidate(true)
-  {
-  }
-
-  virtual ~expr_iterator_data() {}
-
-  void set_invalidate(bool v) { theInvalidate = v; }
-
-  void next() { theExpr->next_iter(*this); }
-
-  bool done() const;
-};
-
-
-/*******************************************************************************
-  Iterator macros. These macros are used inside the expr::next_iter() method:
-  expr::next_iter(expr_iterator_data& v)
-********************************************************************************/
-
-#define BEGIN_EXPR_ITER() switch (v.theState) { case 0:
-
-
-#define BEGIN_EXPR_ITER2( type )                                       \
-  type##_iterator_data& vv = dynamic_cast<type##_iterator_data &>(v);  \
-  BEGIN_EXPR_ITER()
-
-#define END_EXPR_ITER()   v.theCurrentChild = expr::iter_done; }
-
-
-#define ITER(subExprHandle)                                         \
-do                                                                  \
-{                                                                   \
-  v.theState = __LINE__;                                            \
-  v.theCurrentChild = reinterpret_cast<expr_t*>(&(subExprHandle));  \
-                                                                    \
-  if ((subExprHandle) != NULL)                                      \
-  {                                                                 \
-    return;                                                         \
-  }                                                                 \
-                                                                    \
-case __LINE__:;                                                     \
-                                                                    \
-} while (0)
-
-
-#define ITER_FOR_EACH( iter, begin, end, expr )                  \
-for (vv.iter = (begin); vv.iter != (end); ++(vv.iter))           \
-{                                                                \
-  ITER(expr);                                                    \
-}
 
 
 /*******************************************************************************

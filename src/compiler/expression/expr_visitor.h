@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_EXPR_VISITOR_H
-#define ZORBA_EXPR_VISITOR_H
+#ifndef ZORBA_COMPILER_EXPR_VISITOR_H
+#define ZORBA_COMPILER_EXPR_VISITOR_H
 
 #include "compiler/expression/expr_classes.h"
 
 namespace zorba 
 {
 
-class ftexpr_visitor;
+class ftselection_visitor;
 
 class expr_visitor
 {
@@ -29,7 +29,7 @@ public:
 
   virtual ~expr_visitor() { }
 
-  virtual ftexpr_visitor& get_ftexpr_visitor() = 0;
+  virtual ftselection_visitor* get_ftselection_visitor() = 0;
 
 #define DECL_EXPR_VISITOR_VISIT_MEM_FNS(C)  \
   virtual bool begin_visit( C& ) = 0;       \

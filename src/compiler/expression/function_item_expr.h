@@ -71,14 +71,10 @@ public:
   const std::vector<expr_t>& get_args() const { return theArgs; }
 	
 	void compute_scripting_kind();
-	
-  void next_iter(expr_iterator_data& v);
-
-	std::ostream& put(std::ostream& os) const;
 
 	void accept(expr_visitor&);
-  
-  expr_iterator_data* make_iter(); 
+
+	std::ostream& put(std::ostream& os) const;
 };
 
 
@@ -147,10 +143,6 @@ public:
 
 	void compute_scripting_kind();
 	
-  expr_iterator_data* make_iter();
-
-  void next_iter(expr_iterator_data& v);
-
 	void accept(expr_visitor&);
 
 	std::ostream& put(std::ostream& os) const;

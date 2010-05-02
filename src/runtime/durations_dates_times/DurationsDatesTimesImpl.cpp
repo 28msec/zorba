@@ -30,7 +30,6 @@
 
 #include "runtime/durations_dates_times/DurationsDatesTimesImpl.h"
 #include "runtime/core/arithmetic_impl.h"
-#include "runtime/api/runtimecb.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item.h"

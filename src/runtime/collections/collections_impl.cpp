@@ -28,7 +28,6 @@
 
 #include "compiler/xqddf/collection_decl.h"
 
-#include "runtime/api/runtimecb.h"
 #include "runtime/collections/collections.h"
 
 #include "store/api/pul.h"

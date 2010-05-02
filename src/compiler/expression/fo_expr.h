@@ -92,10 +92,6 @@ public:
 
   expr_t clone(substitution_t& s) const;
 
-  expr_iterator_data* make_iter();
-
-  void next_iter(expr_iterator_data&);
-
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;

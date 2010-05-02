@@ -49,23 +49,6 @@ DEF_EXPR_ACCEPT (match_expr)
 
 /*******************************************************************************
 
-********************************************************************************/
-class relpath_expr_iterator_data : public expr_iterator_data 
-{
-public:
-  ulong theCurrStep;
-
-  relpath_expr_iterator_data(expr* e) 
-    :
-    expr_iterator_data(e),
-    theCurrStep(0)
-  {
-  }
-};
-
-
-/*******************************************************************************
-
   RelativPathExpr ::= "/" | ("/" | "//")?  StepExpr (("/" | "//") StepExpr)*
 
 ********************************************************************************/
@@ -98,27 +81,6 @@ void relpath_expr::add_back(expr_t step)
 void relpath_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-expr_iterator_data* relpath_expr::make_iter()
-{
-  return new relpath_expr_iterator_data(this); 
-}
-
-
-void relpath_expr::next_iter(expr_iterator_data& v) 
-{
-  relpath_expr_iterator_data& vv = static_cast<relpath_expr_iterator_data&>(v);
-
-  BEGIN_EXPR_ITER();
-
-  for (; vv.theCurrStep < theSteps.size(); ++vv.theCurrStep)
-  {
-    ITER(theSteps[vv.theCurrStep]);
-  }
-
-  END_EXPR_ITER();
 }
 
 
@@ -170,16 +132,6 @@ bool axis_step_expr::is_reverse_axis(axis_kind_t k)
 void axis_step_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-void axis_step_expr::next_iter(expr_iterator_data& v) 
-{
-  BEGIN_EXPR_ITER();
-
-  ITER(theNodeTest);
-
-  END_EXPR_ITER();
 }
 
 
@@ -264,13 +216,6 @@ store::StoreConsts::NodeKind match_expr::getNodeKind() const
 void match_expr::compute_scripting_kind()
 {
   theScriptingKind = SIMPLE_EXPR;
-}
-
-
-void match_expr::next_iter(expr_iterator_data& v) 
-{
-  BEGIN_EXPR_ITER();
-  END_EXPR_ITER();
 }
 
 

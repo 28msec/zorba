@@ -36,7 +36,6 @@
 
 #include "runtime/core/arithmetic_impl.h"
 #include "runtime/numerics/NumericsImpl.h"
-#include "runtime/api/runtimecb.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item_factory.h"

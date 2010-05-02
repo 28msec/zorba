@@ -165,8 +165,6 @@ public:
 
   expr_t clone(substitution_t& subst) const;
 
-  void next_iter(expr_iterator_data&);
-
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;

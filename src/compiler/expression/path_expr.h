@@ -82,10 +82,6 @@ public:
 
   void compute_scripting_kind();
 
-  expr_iterator_data* make_iter();
-
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t &) const;
 
   void accept(expr_visitor&);
@@ -142,8 +138,6 @@ public:
   void setTest(rchandle<match_expr> v) { theNodeTest = v.getp(); }
 
   void compute_scripting_kind();
-
-  void next_iter(expr_iterator_data&);
 
   expr_t clone(substitution_t &) const;
 
@@ -228,8 +222,6 @@ public:
   void compute_scripting_kind();
 
   expr_t clone(substitution_t &) const;
-
-  void next_iter(expr_iterator_data&);
 
   void accept(expr_visitor&);
 

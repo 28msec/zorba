@@ -20,6 +20,8 @@
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/ftexpr.h"
+#include "compiler/expression/ftexpr_visitor.h"
 
 #include "zorbaerrors/Assert.h"
 
@@ -46,6 +48,26 @@ case __LINE__:;                                                     \
                                                                     \
 } while (0)
 
+
+
+ExprIterator::ExprIterator(expr* e) 
+  :
+  theExpr(e),
+  theCurrentChild(NULL),
+  theState(0)
+{
+  if (e->get_expr_kind() == ft_expr_kind)
+  {
+    ftcontains_expr* ftExpr = static_cast<ftcontains_expr*>(e);
+
+    next_iter_ftselection_visitor ftselVisitor;
+    ftExpr->get_ftselection()->accept(ftselVisitor);
+
+    ftExpr->ftselection_exprs_.swap(ftselVisitor.get_sub_expr_list());
+  }
+
+  next();
+}
 
 
 void ExprIterator::next()
@@ -561,6 +583,27 @@ void ExprIterator::next()
 
     EXPR_ITER_NEXT(trfExpr->theModifyExpr);
     EXPR_ITER_NEXT(trfExpr->theReturnExpr);
+
+    EXPR_ITER_END();
+    break;
+  }
+
+  case ft_expr_kind:
+  {
+    ftcontains_expr* ftExpr = static_cast<ftcontains_expr*>(theExpr);
+
+    EXPR_ITER_BEGIN();
+
+    EXPR_ITER_NEXT(ftExpr->range_);
+
+    theArgsIter = ftExpr->ftselection_exprs_.begin();
+    theArgsEnd = ftExpr->ftselection_exprs_.end();
+    for (; theArgsIter != theArgsEnd; ++theArgsIter)
+    {
+      EXPR_ITER_NEXT(*theArgsIter);
+    }
+
+    EXPR_ITER_NEXT(ftExpr->ftignore_);
 
     EXPR_ITER_END();
     break;

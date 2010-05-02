@@ -18,7 +18,6 @@
 #include "compiler/api/compilercb.h"
 
 #include "runtime/base/plan_iterator.h"
-#include "runtime/api/runtimecb.h"
 
 #include "runtime/util/flowctl_exception.h"
 

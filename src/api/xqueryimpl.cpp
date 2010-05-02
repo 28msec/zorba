@@ -31,8 +31,6 @@
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_manager.h"
 
-//#include "util/properties.h"
-
 #include "system/globalenv.h"
 
 #include "api/staticcontextimpl.h"
@@ -54,7 +52,6 @@
 
 #include "runtime/base/plan_iterator.h" 
 #include "runtime/api/plan_wrapper.h"
-#include "runtime/api/runtimecb.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/visitors/printer_visitor_api.h"
 #include "runtime/util/flowctl_exception.h"

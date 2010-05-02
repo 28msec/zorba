@@ -25,14 +25,15 @@
 
 namespace zorba {
 
-class ftcontains_visitor : public ftexpr_visitor {
+class ftcontains_visitor : public ftselection_visitor {
 public:
   ftcontains_visitor( FTTokenIterator &search_context, PlanState& );
+
   ~ftcontains_visitor();
 
   bool ftcontains() const;
 
-  expr_visitor& get_expr_visitor();
+  expr_visitor* get_expr_visitor() { return NULL; }
 
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
   DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
@@ -83,7 +84,6 @@ private:
   FTTokenIterator search_context_;
   PlanState plan_state_;
   std::stack<ft_all_matches*> eval_stack_;
-  pass_thru_expr_visitor expr_visitor_;
 };
 
 } // namespace zorba

@@ -31,8 +31,6 @@
 
 #include "zorbaserialization/class_serializer.h"
 
-//#include "compiler/api/compilercb.h"
-
 
 namespace zorba 
 {

@@ -30,7 +30,6 @@
 
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/booleans/BooleanImpl.h"
-#include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/util/iterator_impl.h"
 

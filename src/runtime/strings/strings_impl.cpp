@@ -31,7 +31,6 @@
 #include "compiler/api/compilercb.h"
 
 #include "runtime/strings/strings.h"
-#include "runtime/api/runtimecb.h"
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "store/api/item.h"

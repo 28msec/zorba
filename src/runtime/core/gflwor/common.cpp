@@ -19,7 +19,6 @@
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/booleans/BooleanImpl.h"
 #include "runtime/core/gflwor/common.h"
-#include "runtime/api/runtimecb.h"
 
 namespace zorba
 {

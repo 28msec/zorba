@@ -39,26 +39,6 @@ DEF_EXPR_ACCEPT (fo_expr)
 
 
 /*******************************************************************************
-
-********************************************************************************/
-class fo_expr_iterator_data : public expr_iterator_data
-{
-public:
-  ulong theCurrentArg;
-  ulong theNumArgs;
-
-public:
-  fo_expr_iterator_data(expr* e)
-    :
-    expr_iterator_data(e),
-    theCurrentArg(0),
-    theNumArgs(static_cast<fo_expr*>(e)->num_args())
-  {
-  }
-};
-
-
-/*******************************************************************************
   first-order expressions. Represents function invocations as well as:
 
   OrExpr, AndExpr, ComparisonExpr, RangeExpr, AdditiveExpr, MultiplicativeExpr,
@@ -239,27 +219,6 @@ expr_t fo_expr::clone(substitution_t& subst) const
   fo->theScriptingKind  = theScriptingKind;
 
   return fo.release();
-}
-
-
-expr_iterator_data* fo_expr::make_iter()
-{
-  return new fo_expr_iterator_data(this);
-}
-
-
-void fo_expr::next_iter(expr_iterator_data& v)
-{
-  fo_expr_iterator_data& vv = static_cast<fo_expr_iterator_data&>(v);
-
-  BEGIN_EXPR_ITER();
-
-  for (; vv.theCurrentArg < vv.theNumArgs; ++vv.theCurrentArg)
-  {
-    ITER(theArgs[vv.theCurrentArg]);
-  }
-
-  END_EXPR_ITER();
 }
 
 

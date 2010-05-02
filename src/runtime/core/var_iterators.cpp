@@ -20,7 +20,6 @@
 
 #include "context/dynamic_context.h"
 
-#include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/base/noarybase.h"
 #include "runtime/core/var_iterators.h"

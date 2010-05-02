@@ -23,7 +23,6 @@
 
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/gflwor/comp_function.h"
-#include "runtime/api/runtimecb.h"
 #include "runtime/api/plan_iterator_wrapper.h"
 #include "runtime/visitors/planiter_visitor.h"
 

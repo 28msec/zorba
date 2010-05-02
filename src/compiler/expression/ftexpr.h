@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FTEXPR_H
-#define ZORBA_FTEXPR_H
+#ifndef ZORBA_COMPILER_FTEXPR_H
+#define ZORBA_COMPILER_FTEXPR_H
 
 #include "common/shared_types.h"
+
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/ftexpr_classes.h"
@@ -27,6 +28,9 @@
 #include "runtime/base/plan_iterator.h"
 
 namespace zorba {
+
+class ftselection_visitor;
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -49,10 +53,14 @@ protected:
   ft_expr( static_context* sctx, const QueryLoc& );
 };
 
+
 /**
  * An ftcontains_expr is-an ft_expr for the FTContainsExpr.
  */
-class ftcontains_expr : public ft_expr {
+class ftcontains_expr : public ft_expr 
+{
+  friend class ExprIterator;
+
 public:
   SERIALIZABLE_ABSTRACT_CLASS(ftcontains_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcontains_expr,ft_expr)
@@ -73,20 +81,23 @@ public:
   }
 
   range_expr_t get_range() const { return range_; }
+
   ftexpr* get_ftselection() const { return ftselection_; }
+
   union_expr_t get_ignore() const { return ftignore_; }
 
-  expr_iterator_data* make_iter();
-  void next_iter( expr_iterator_data& );
   void accept( expr_visitor& );
 
   std::ostream& put( std::ostream& ) const;
 
 private:
-  range_expr_t range_;
-  ftexpr *ftselection_;
-  union_expr_t ftignore_;
+  range_expr_t         range_;
+  ftexpr             * ftselection_;
+  union_expr_t         ftignore_;
+
+  std::vector<expr_t>  ftselection_exprs_;
 };
+
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -100,7 +111,7 @@ public:
 
   virtual ~ftexpr();
 
-  virtual ft_visit_result::type accept( ftexpr_visitor& ) = 0;
+  virtual ft_visit_result::type accept( ftselection_visitor& ) = 0;
   QueryLoc const& get_loc() const { return loc_; }
 
 protected:
@@ -110,6 +121,7 @@ protected:
 private:
   QueryLoc loc_;
 };
+
 
 ////////// FTMatchOptions /////////////////////////////////////////////////////
 
@@ -123,6 +135,7 @@ protected:
   ftmatch_option( QueryLoc const &loc ) : ftexpr( loc ) { }
 };
 
+
 class ftcase_option : public ftmatch_option {
 public:
   SERIALIZABLE_CLASS(ftcase_option)
@@ -134,12 +147,13 @@ public:
     ft_case_mode::type = ft_case_mode::DEFAULT
   );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ft_case_mode::type get_mode() const { return mode_; }
 
 private:
   ft_case_mode::type mode_;
 };
+
 
 class ftdiacritics_option : public ftmatch_option {
 public:
@@ -152,12 +166,13 @@ public:
     ft_diacritics_mode::type = ft_diacritics_mode::DEFAULT
   );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ft_diacritics_mode::type get_mode() const { return mode_; }
 
 private:
   ft_diacritics_mode::type mode_;
 };
+
 
 class ftextension_option : public ftmatch_option {
 public:
@@ -171,7 +186,7 @@ public:
     std::string const &val
   );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   rchandle<QName> get_qname() const { return qname_; }
   std::string const& get_val() const { return val_; }
 
@@ -179,6 +194,7 @@ private:
   rchandle<QName> qname_;
   std::string val_;
 };
+
 
 class ftlanguage_option : public ftmatch_option {
 public:
@@ -191,12 +207,13 @@ public:
     std::string const &language
   );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   std::string const& get_language() const { return language_; }
 
 private:
   std::string language_;
 };
+
 
 class ftstem_option : public ftmatch_option {
 public:
@@ -209,12 +226,13 @@ public:
     ft_stem_mode::type = ft_stem_mode::DEFAULT
   );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ft_stem_mode::type get_mode() const { return mode_; }
 
 private:
   ft_stem_mode::type mode_;
 };
+
 
 class ftstop_words : public ftexpr {
 public:
@@ -231,7 +249,7 @@ public:
     ft_stop_words_unex::type = ft_stop_words_unex::union_
   );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   std::string const& get_uri() const { return uri_; }
   list_t const& get_list() const { return list_; }
   ft_stop_words_unex::type get_mode() const { return mode_; }
@@ -241,6 +259,7 @@ private:
   list_t list_;
   ft_stop_words_unex::type mode_;
 };
+
 
 class ftstop_word_option : public ftmatch_option {
 public:
@@ -263,7 +282,7 @@ public:
 
   ~ftstop_word_option();
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ft_stop_words_mode::type get_mode() const { return mode_; }
   stop_word_list_t const& get_stop_words() const { return stop_words_; }
 
@@ -271,6 +290,7 @@ private:
   stop_word_list_t stop_words_;
   ft_stop_words_mode::type mode_;
 };
+
 
 class ftthesaurus_id : public ftexpr {
 public:
@@ -286,7 +306,7 @@ public:
   );
   ~ftthesaurus_id();
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   std::string const& get_uri() const { return uri_; }
   std::string const& get_relationship() const { return relationship_; }
   ftrange_expr const* get_levels() const { return levels_; }
@@ -296,6 +316,7 @@ private:
   std::string relationship_;
   ftrange_expr *levels_;
 };
+
 
 class ftthesaurus_option : public ftmatch_option {
 public:
@@ -316,7 +337,7 @@ public:
   thesaurus_id_list_t const& get_thesaurus_id_list() const
     { return thesaurus_id_list_; }
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   bool includes_default() const { return includes_default_; }
   bool no_thesaurus() const { return no_thesaurus_; }
 
@@ -325,6 +346,7 @@ private:
   bool includes_default_;
   bool no_thesaurus_;
 };
+
 
 class ftwild_card_option : public ftmatch_option {
 public:
@@ -337,12 +359,13 @@ public:
     ft_wild_card_mode::type = ft_wild_card_mode::DEFAULT
   );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ft_wild_card_mode::type get_mode() const { return mode_; }
 
 private:
   ft_wild_card_mode::type mode_;
 };
+
 
 class ftmatch_options : public ftexpr {
 public:
@@ -353,7 +376,7 @@ public:
   ftmatch_options( QueryLoc const& );
   ~ftmatch_options();
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
 
   ftcase_option const* get_case_option() const { return case_option_; }
 
@@ -442,6 +465,7 @@ protected:
   ftprimary_expr( QueryLoc const &loc ) : ftexpr( loc ) { }
 };
 
+
 class ftextension_selection_expr : public ftprimary_expr {
 public:
   SERIALIZABLE_CLASS(ftextension_selection_expr)
@@ -454,12 +478,13 @@ public:
     ftselection_expr*
   );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ftselection_expr const* get_ftselection() const { return ftselection_; }
 
 private:
   ftselection_expr *ftselection_;
 };
+
 
 class ftselection_expr : public ftprimary_expr {
 public:
@@ -476,7 +501,7 @@ public:
   );
   ~ftselection_expr();
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ftpos_filter_list_t const& get_ftpos_filter_list() const { return list_; }
   ftexpr const* get_ftor() const { return ftor_; };
 
@@ -484,6 +509,7 @@ private:
   ftpos_filter_list_t list_;
   ftexpr *ftor_;
 };
+
 
 class ftwords_times_expr : public ftprimary_expr {
 public:
@@ -498,7 +524,7 @@ public:
   );
   ~ftwords_times_expr();
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ftwords_expr const* get_words() const { return ftwords_; }
   ftrange_expr const* get_times() const { return fttimes_; }
 
@@ -519,6 +545,7 @@ protected:
   ftpos_filter( QueryLoc const& );
 };
 
+
 class ftcontent_filter : public ftpos_filter {
 public:
   SERIALIZABLE_CLASS(ftcontent_filter)
@@ -529,12 +556,13 @@ public:
 
   ftcontent_filter( QueryLoc const&, ft_content_mode::type );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ft_content_mode::type get_mode() const { return mode_; }
 
 private:
   ft_content_mode::type mode_;
 };
+
 
 class ftdistance_filter : public ftpos_filter {
 public:
@@ -544,7 +572,7 @@ public:
 
   ftdistance_filter( QueryLoc const&, ftrange_expr*, ft_unit::type );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ftrange_expr const* get_range() const { return range_; }
   ft_unit::type get_unit() const { return unit_; }
 
@@ -553,15 +581,17 @@ private:
   ft_unit::type unit_;
 };
 
+
 class ftorder_filter : public ftpos_filter {
 public:
   SERIALIZABLE_CLASS(ftorder_filter)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftorder_filter,ftpos_filter)
   void serialize( serialization::Archiver& );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ftorder_filter( QueryLoc const& );
 };
+
 
 class ftscope_filter : public ftpos_filter {
 public:
@@ -571,7 +601,7 @@ public:
 
   ftscope_filter( QueryLoc const&, ft_scope::type, ft_big_unit::type );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ft_scope::type get_scope() const { return scope_; }
   ft_big_unit::type get_unit() const { return unit_; }
 
@@ -579,6 +609,7 @@ private:
   ft_scope::type scope_;
   ft_big_unit::type unit_;
 };
+
 
 class ftwindow_filter : public ftpos_filter {
 public:
@@ -588,7 +619,7 @@ public:
 
   ftwindow_filter( QueryLoc const&, additive_expr_t, ft_unit::type );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ft_unit::type get_unit() const { return unit_; }
   additive_expr_t get_window() const { return window_; }
 
@@ -617,13 +648,14 @@ public:
   ftand_expr( QueryLoc const&, ftexpr_list_t& );
   ~ftand_expr();
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ftexpr_list_t& get_expr_list() { return list_; }
   ftexpr_list_t const& get_expr_list() const { return list_; }
 
 private:
   ftexpr_list_t list_;
 };
+
 
 class ftmild_not_expr : public ftexpr {
 public:
@@ -636,13 +668,14 @@ public:
   ftmild_not_expr( QueryLoc const&, ftexpr_list_t& );
   ~ftmild_not_expr();
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ftexpr_list_t& get_expr_list() { return list_; }
   ftexpr_list_t const& get_expr_list() const { return list_; }
 
 private:
   ftexpr_list_t list_;
 };
+
 
 class ftor_expr : public ftexpr {
 public:
@@ -655,13 +688,14 @@ public:
   ftor_expr( QueryLoc const&, ftexpr_list_t& );
   ~ftor_expr();
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ftexpr_list_t& get_expr_list() { return list_; }
   ftexpr_list_t const& get_expr_list() const { return list_; }
 
 private:
   ftexpr_list_t list_;
 };
+
 
 class ftprimary_with_options_expr : public ftexpr {
 public:
@@ -672,7 +706,7 @@ public:
   ftprimary_with_options_expr( QueryLoc const& );
   ~ftprimary_with_options_expr();
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ftprimary_expr const* get_primary() const { return primary_; }
   ftmatch_options const* get_match_options() const { return match_options_; }
   PlanIter_t get_plan_iter() const { return plan_iter_; }
@@ -703,6 +737,7 @@ private:
   PlanIter_t plan_iter_;
 };
 
+
 class ftrange_expr : public ftexpr {
 public:
   SERIALIZABLE_CLASS(ftrange_expr)
@@ -716,7 +751,7 @@ public:
     additive_expr_t expr2 = NULL
   );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   additive_expr_t get_expr1() const { return expr1_; }
   additive_expr_t get_expr2() const { return expr2_; }
   ft_range_mode::type get_mode() const { return mode_; }
@@ -737,6 +772,7 @@ private:
   PlanIter_t it2_;
 };
 
+
 class ftunary_not_expr : public ftexpr {
 public:
   SERIALIZABLE_CLASS(ftunary_not_expr)
@@ -746,12 +782,13 @@ public:
   ftunary_not_expr( QueryLoc const&, ftexpr *subexpr );
   ~ftunary_not_expr();
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   ftexpr const* get_subexpr() const { return subexpr_; }
 
 private:
   ftexpr *subexpr_;
 };
+
 
 class ftwords_expr : public ftexpr {
 public:
@@ -765,7 +802,7 @@ public:
     ft_anyall_mode::type = ft_anyall_mode::DEFAULT
   );
 
-  ft_visit_result::type accept( ftexpr_visitor& );
+  ft_visit_result::type accept( ftselection_visitor& );
   expr_t get_expr() const { return expr_; }
   ft_anyall_mode::type get_mode() const { return mode_; }
   PlanIter_t get_plan_iter() const { return plan_iter_; }

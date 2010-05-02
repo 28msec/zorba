@@ -92,8 +92,6 @@ public:
 
   expr_t clone(substitution_t& s) const;
 
-  void next_iter(expr_iterator_data&);
-
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
@@ -136,8 +134,6 @@ public:
   void compute_scripting_kind();
 
   expr_t clone(substitution_t& s) const;
-
-  void next_iter(expr_iterator_data&);
 
   void accept(expr_visitor&);
 
@@ -184,8 +180,6 @@ public:
   ParseConstants::validation_mode_t get_valmode() const { return theMode; }
 
   void compute_scripting_kind();
-
-  void next_iter(expr_iterator_data&);
 
   expr_t clone(substitution_t& s) const;
 
@@ -269,8 +263,6 @@ public:
 
   bool is_optional() const;
 
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
@@ -319,8 +311,6 @@ public:
   bool get_check_prime() const { return theCheckPrime; }
 
   void set_check_prime(bool check_prime) { theCheckPrime = check_prime; }
-
-  void next_iter(expr_iterator_data&);
 
   expr_t clone(substitution_t& s) const;
 
@@ -377,8 +367,6 @@ public:
 
   expr_kind_t get_expr_kind() const { return promote_expr_kind; }
 
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
@@ -426,8 +414,6 @@ public:
 
   bool is_optional() const;
 
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
@@ -453,8 +439,6 @@ public:
   instanceof_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
 
   expr_kind_t get_expr_kind() const { return instanceof_expr_kind; }
-
-  void next_iter(expr_iterator_data&);
 
   expr_t clone(substitution_t& s) const;
 
@@ -499,8 +483,6 @@ public:
 
   void compute_scripting_kind();
 
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
@@ -533,8 +515,6 @@ public:
   const expr* getContent() const { return theContent.getp(); }
 
   void compute_scripting_kind();
-
-  void next_iter(expr_iterator_data&);
 
   expr_t clone(substitution_t& s) const;
 
@@ -614,8 +594,6 @@ public:
 
   void compute_scripting_kind();
   
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t& s) const;  
 
   void accept(expr_visitor&);
@@ -679,8 +657,6 @@ public:
 
   void compute_scripting_kind();
 
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
@@ -728,8 +704,6 @@ public:
 
   void compute_scripting_kind();
 
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t& s) const;  
 
   void accept(expr_visitor&);
@@ -766,8 +740,6 @@ public:
 
   void compute_scripting_kind();
   
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t& s) const;  
 
   void accept(expr_visitor&);
@@ -804,8 +776,6 @@ public:
   void set_expr(const expr* e) { theWrappedExpr = e; }
 
   void compute_scripting_kind();
-
-  void next_iter(expr_iterator_data&);
 
   void accept(expr_visitor&);
 
@@ -855,8 +825,6 @@ public:
   store::Item* get_val() const { return theValue.getp(); }
 
   void compute_scripting_kind();
-
-  void next_iter(expr_iterator_data&);
 
   expr_t clone(substitution_t& s) const;
 
@@ -914,8 +882,6 @@ public:
   void add(rchandle<pragma> p) { thePragmas.push_back(p); }
 
   const expr* get_expr() const { return theExpr; }
-
-  void next_iter(expr_iterator_data&);
 
   void compute_scripting_kind();
 
@@ -1036,10 +1002,6 @@ public:
 
   void compute_scripting_kind();
 
-  expr_iterator_data* make_iter();
-  
-  void next_iter(expr_iterator_data&);
-
   // TODO clone() ????
 
   void accept(expr_visitor&);
@@ -1113,10 +1075,6 @@ public:
 
   void compute_scripting_kind();
 
-  expr_iterator_data* make_iter();
-
-  void next_iter(expr_iterator_data&);
-
   void accept(expr_visitor&);
 
   std::ostream& put(std::ostream&) const;
@@ -1167,10 +1125,6 @@ public:
   std::list<global_binding> getGlobals() const { return theGlobals; }
 
   bool isForExpr() const { return theForExpr; }
-
-  expr_iterator_data* make_iter();
-
-  void next_iter(expr_iterator_data&);
 
   void accept(expr_visitor&);
 
@@ -1247,10 +1201,6 @@ public:
 
   void compute_scripting_kind();
 
-  expr_iterator_data* make_iter();
-
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
@@ -1285,8 +1235,6 @@ public:
   void compute_scripting_kind();
 
   expr_t clone(substitution_t& s) const;
-
-  void next_iter(expr_iterator_data&);
 
   void accept(expr_visitor&);
 
@@ -1324,8 +1272,6 @@ public:
 
   void compute_scripting_kind();
 
-  void next_iter(expr_iterator_data&);
-
   void accept(expr_visitor&);
 
 	std::ostream& put(std::ostream&) const;
@@ -1358,8 +1304,6 @@ public:
   expr* get_body() const { return theBody.getp(); }
 
   void compute_scripting_kind();
-
-  void next_iter(expr_iterator_data&);
 
   expr_t clone(substitution_t& s) const;
 
@@ -1414,8 +1358,6 @@ public:
   
   void compute_scripting_kind();
 
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
@@ -1446,8 +1388,6 @@ public:
   expr_kind_t get_expr_kind() const { return delete_expr_kind; }
 
 	expr* getTargetExpr() const { return theTargetExpr.getp(); }
-
-  void next_iter(expr_iterator_data&);
 
   void compute_scripting_kind();
 
@@ -1495,8 +1435,6 @@ public:
 
   void compute_scripting_kind();
 
-  void next_iter(expr_iterator_data&);
-
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
@@ -1532,8 +1470,6 @@ public:
 	expr* getNameExpr() const { return theNameExpr.getp(); }
 
   void compute_scripting_kind();
-
-  void next_iter(expr_iterator_data&);
 
   expr_t clone(substitution_t& s) const;
 
@@ -1623,10 +1559,6 @@ public:
 	size_t size() const { return theCopyClauses.size(); }
 
   void compute_scripting_kind();
-
-  expr_iterator_data* make_iter();
-
-  void next_iter(expr_iterator_data&);
 
   // TODO : clone()
 
