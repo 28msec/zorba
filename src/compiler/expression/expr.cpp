@@ -233,7 +233,7 @@ if_expr::if_expr(
     expr_t thenExpr,
     expr_t elseExpr)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, if_expr_kind),
   theThenExpr(thenExpr),
   theElseExpr(elseExpr)
 {
@@ -293,7 +293,7 @@ order_expr::order_expr(
     order_type_t type,
     expr_t inExpr)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, order_expr_kind),
   theType(type),
   theExpr(inExpr)
 {
@@ -332,7 +332,7 @@ validate_expr::validate_expr(
     expr_t inExpr,
     rchandle<TypeManager> typemgr)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, validate_expr_kind),
   theMode(mode),
   theTypeName(typeName),
   theTypeMgr(typemgr),
@@ -378,10 +378,11 @@ expr_t validate_expr::clone(substitution_t& subst) const
 cast_or_castable_base_expr::cast_or_castable_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
+    expr_kind_t kind,
     expr_t input,
     xqtref_t type)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, kind),
   theInputExpr(input),
   theTargetType(type)
 {
@@ -425,10 +426,11 @@ void cast_or_castable_base_expr::compute_scripting_kind()
 cast_base_expr::cast_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
+    expr_kind_t kind,
     expr_t input,
     xqtref_t type)
   : 
-  cast_or_castable_base_expr(sctx, loc, input, type)
+  cast_or_castable_base_expr(sctx, loc, kind, input, type)
 {
   setNonDiscardable(ANNOTATION_TRUE_FIXED);
 }
@@ -451,7 +453,7 @@ cast_expr::cast_expr(
     expr_t inputExpr,
     xqtref_t type)
   :
-  cast_base_expr(sctx, loc, inputExpr, type)
+  cast_base_expr(sctx, loc, cast_expr_kind, inputExpr, type)
 {
   assert(type->get_quantifier() == TypeConstants::QUANT_ONE ||
          type->get_quantifier() == TypeConstants::QUANT_QUESTION);
@@ -490,7 +492,7 @@ treat_expr::treat_expr(
     XQUERY_ERROR err,
     bool check_prime)
   :
-  cast_base_expr(sctx, loc, inputExpr, type),
+  cast_base_expr(sctx, loc, treat_expr_kind, inputExpr, type),
   theError(err),
   theCheckPrime(check_prime)
 {
@@ -525,7 +527,7 @@ promote_expr::promote_expr(
     expr_t input,
     xqtref_t type)
   :
-  cast_base_expr(sctx, loc, input, type)
+  cast_base_expr(sctx, loc, promote_expr_kind, input, type)
 {
 }
 
@@ -545,10 +547,11 @@ expr_t promote_expr::clone(substitution_t& subst) const
 castable_base_expr::castable_base_expr(
     static_context* sctx,
     const QueryLoc& loc,
+    expr_kind_t kind,
     expr_t input,
     xqtref_t type)
   :
-  cast_or_castable_base_expr(sctx, loc, input, type)
+  cast_or_castable_base_expr(sctx, loc, kind, input, type)
 {
 }
 
@@ -570,7 +573,7 @@ castable_expr::castable_expr(
     expr_t inputExpr,
     xqtref_t type)
   :
-  castable_base_expr (sctx, loc, inputExpr, type)
+  castable_base_expr (sctx, loc, castable_expr_kind, inputExpr, type)
 {
 }
 
@@ -605,7 +608,7 @@ instanceof_expr::instanceof_expr(
     expr_t inputExpr,
     xqtref_t type)
   :
-  castable_base_expr(sctx, loc, inputExpr, type)
+  castable_base_expr(sctx, loc, instanceof_expr_kind, inputExpr, type)
 {
 }
 
@@ -634,7 +637,7 @@ name_cast_expr::name_cast_expr(
     expr_t inputExpr,
     const namespace_context* aNCtx)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, name_cast_expr_kind),
   theInputExpr(inputExpr),
   theNCtx(const_cast<namespace_context*>(aNCtx)) 
 {
@@ -681,7 +684,7 @@ doc_expr::doc_expr(
     const QueryLoc& loc,
     expr_t aContent)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, doc_expr_kind),
   theContent(aContent)
 {
   compute_scripting_kind();
@@ -720,7 +723,7 @@ elem_expr::elem_expr(
     expr_t aContent,
     const namespace_context* aNSCtx)
   :
-  expr(sctx, aLoc),
+  expr(sctx, aLoc, elem_expr_kind),
   theQNameExpr(aQNameExpr),
   theAttrs(aAttrs),
   theContent(aContent),
@@ -739,7 +742,7 @@ elem_expr::elem_expr(
     expr_t aContent,
     const namespace_context* aNSCtx)
   :
-  expr(sctx, aLoc),
+  expr(sctx, aLoc, elem_expr_kind),
   theQNameExpr(aQNameExpr),
   theAttrs(0),
   theContent(aContent),
@@ -797,7 +800,7 @@ attr_expr::attr_expr(
     expr_t aQNameExpr,
     expr_t aValueExpr)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, attr_expr_kind),
   theQNameExpr(aQNameExpr),
   theValueExpr(aValueExpr)
 {
@@ -855,7 +858,7 @@ text_expr::text_expr(
     text_constructor_type type_arg,
     expr_t content)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, text_expr_kind),
   type(type_arg),
   theContentExpr(content)
 {
@@ -896,7 +899,7 @@ pi_expr::pi_expr(
     expr_t targetExpr,
     expr_t contentExpr)
 :
-  expr(sctx, loc),
+  expr(sctx, loc, pi_expr_kind),
   theTargetExpr(targetExpr),
   theContentExpr(contentExpr)
 {
@@ -939,7 +942,7 @@ expr_t pi_expr::clone(substitution_t& subst) const
 ********************************************************************************/
 wrapper_expr::wrapper_expr(static_context* sctx, const QueryLoc& loc, expr_t wrapped)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, wrapper_expr_kind),
   theWrappedExpr(wrapped)
 {
   compute_scripting_kind();
@@ -976,7 +979,7 @@ expr_t wrapper_expr::clone(substitution_t& subst) const
 ********************************************************************************/
 const_expr::const_expr(static_context* sctx, const QueryLoc& loc, xqpStringStore_t& v)
   :
-  expr(sctx, loc)
+  expr(sctx, loc, const_expr_kind)
 {
   GENV_ITEMFACTORY->createString(theValue, v); 
   theScriptingKind = SIMPLE_EXPR;
@@ -985,7 +988,7 @@ const_expr::const_expr(static_context* sctx, const QueryLoc& loc, xqpStringStore
 
 const_expr::const_expr(static_context* sctx, const QueryLoc& loc, const std::string& v)
   :
-  expr(sctx, loc)
+  expr(sctx, loc, const_expr_kind)
 {
   xqpStringStore_t tmp = new xqpStringStore(v);
   GENV_ITEMFACTORY->createString(theValue, tmp); 
@@ -995,7 +998,7 @@ const_expr::const_expr(static_context* sctx, const QueryLoc& loc, const std::str
 
 const_expr::const_expr(static_context* sctx, const QueryLoc& loc, const char* v)
   :
-  expr(sctx, loc)
+  expr(sctx, loc, const_expr_kind)
 {
   xqpStringStore_t tmp = new xqpStringStore(v);
   GENV_ITEMFACTORY->createString(theValue, tmp); 
@@ -1005,7 +1008,7 @@ const_expr::const_expr(static_context* sctx, const QueryLoc& loc, const char* v)
 
 const_expr::const_expr(static_context* sctx, const QueryLoc& loc, xqp_integer v)
   :
-  expr(sctx, loc)
+  expr(sctx, loc, const_expr_kind)
 {
   GENV_ITEMFACTORY->createInteger(theValue, v);
   theScriptingKind = SIMPLE_EXPR;
@@ -1016,7 +1019,7 @@ const_expr::const_expr(
     const QueryLoc& loc,
     xqp_decimal v)
   :
-  expr(sctx, loc)
+  expr(sctx, loc, const_expr_kind)
 {
   GENV_ITEMFACTORY->createDecimal(theValue, v);
   theScriptingKind = SIMPLE_EXPR;
@@ -1027,7 +1030,7 @@ const_expr::const_expr(
     const QueryLoc& loc,
     xqp_double v)
   :
-  expr(sctx, loc)
+  expr(sctx, loc, const_expr_kind)
 {
   GENV_ITEMFACTORY->createDouble(theValue, v);
   theScriptingKind = SIMPLE_EXPR;
@@ -1039,7 +1042,7 @@ const_expr::const_expr(
     const QueryLoc& loc,
     xqp_boolean v)
   :
-  expr(sctx, loc)
+  expr(sctx, loc, const_expr_kind)
 {
   GENV_ITEMFACTORY->createBoolean(theValue, v);
   theScriptingKind = SIMPLE_EXPR;
@@ -1051,7 +1054,7 @@ const_expr::const_expr(
     const QueryLoc& loc,
     store::Item_t v)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, const_expr_kind),
   theValue(v)
 {
   theScriptingKind = SIMPLE_EXPR;
@@ -1065,7 +1068,7 @@ const_expr::const_expr(
     const char* aPrefix, 
     const char* aLocal)
   :
-  expr(sctx, aLoc)
+  expr(sctx, aLoc, const_expr_kind)
 {
   GENV_ITEMFACTORY->createQName(theValue, aNamespace, aPrefix, aLocal);
   theScriptingKind = SIMPLE_EXPR;
@@ -1113,7 +1116,7 @@ extension_expr::extension_expr(
     static_context* sctx,
     const QueryLoc& loc)
   :
-  expr(sctx, loc)
+  expr(sctx, loc, extension_expr_kind)
 {
   compute_scripting_kind();
 }
@@ -1124,7 +1127,7 @@ extension_expr::extension_expr(
     const QueryLoc& loc,
     expr_t e)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, extension_expr_kind),
   theExpr(e)
 {
   compute_scripting_kind();
@@ -1178,7 +1181,7 @@ trycatch_expr::trycatch_expr(
     const QueryLoc& loc,
     expr_t tryExpr)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, trycatch_expr_kind),
   theTryExpr(tryExpr)
 {
   compute_scripting_kind();
@@ -1312,7 +1315,7 @@ void debugger_expr::store_local_variables(checked_vector<varref_t>& aScopedVaria
 ********************************************************************************/
 sequential_expr::sequential_expr(static_context* sctx, const QueryLoc& loc)
   :
-  expr(sctx, loc)
+  expr(sctx, loc, sequential_expr_kind)
 {
   compute_scripting_kind();
 }
@@ -1324,7 +1327,7 @@ sequential_expr::sequential_expr(
     expr_t first,
     expr_t second)
   :
-  expr(sctx, loc)
+  expr(sctx, loc, sequential_expr_kind)
 {
   theArgs.push_back(first);
   theArgs.push_back(second);
@@ -1338,7 +1341,7 @@ sequential_expr::sequential_expr(
     checked_vector<expr_t>& seq,
     expr_t result)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, sequential_expr_kind),
   theArgs(seq)
 {
   theArgs.push_back(result);
@@ -1351,7 +1354,7 @@ sequential_expr::sequential_expr(
     const QueryLoc& loc,
     checked_vector<expr_t>& seq)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, sequential_expr_kind),
   theArgs(seq)
 {
   compute_scripting_kind();
@@ -1408,7 +1411,7 @@ expr_t sequential_expr::clone(substitution_t& subst) const
 ********************************************************************************/
 exit_expr::exit_expr(static_context* sctx, const QueryLoc& loc, expr_t inExpr)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, exit_expr_kind),
   theExpr(inExpr)
 {
   compute_scripting_kind();
@@ -1452,7 +1455,7 @@ expr_t exit_expr::clone(substitution_t& subst) const
 ********************************************************************************/
 flowctl_expr::flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, flowctl_expr_kind),
   theAction(action)
 {
   compute_scripting_kind();
@@ -1485,7 +1488,7 @@ expr_t flowctl_expr::clone(substitution_t& subst) const
 ********************************************************************************/
 while_expr::while_expr(static_context* sctx, const QueryLoc& loc, expr_t body)
   : 
-  expr(sctx, loc),
+  expr(sctx, loc, while_expr_kind),
   theBody(body)
 {
   compute_scripting_kind();
@@ -1532,7 +1535,7 @@ insert_expr::insert_expr(
     expr_t aSourceExpr,
     expr_t aTargetExpr)
   :
-	expr(sctx, loc),
+	expr(sctx, loc, insert_expr_kind),
   theType(aType),
 	theSourceExpr(aSourceExpr),
 	theTargetExpr(aTargetExpr)
@@ -1577,7 +1580,7 @@ delete_expr::delete_expr(
     const QueryLoc& loc,
     expr_t aTargetExpr)
   :
-	expr(sctx, loc),
+	expr(sctx, loc, delete_expr_kind),
 	theTargetExpr(aTargetExpr)
 {
   compute_scripting_kind();
@@ -1614,7 +1617,7 @@ replace_expr::replace_expr(
     expr_t aTargetExpr,
     expr_t aReplaceExpr)
   :
-	expr(sctx, loc),
+	expr(sctx, loc, replace_expr_kind),
   theType(aType),
 	theTargetExpr(aTargetExpr),
 	theReplaceExpr(aReplaceExpr)
@@ -1660,7 +1663,7 @@ rename_expr::rename_expr(
     expr_t aTargetExpr,
     expr_t aNameExpr)
   :
-	expr(sctx, loc),
+	expr(sctx, loc, rename_expr_kind),
 	theTargetExpr(aTargetExpr),
 	theNameExpr(aNameExpr)
 {
@@ -1719,7 +1722,7 @@ transform_expr::transform_expr(
     expr_t aModifyExpr,
     expr_t aReturnExpr)
   :
-	expr(sctx, loc),
+	expr(sctx, loc, transform_expr_kind),
 	theModifyExpr(aModifyExpr),
 	theReturnExpr(aReturnExpr)
 {

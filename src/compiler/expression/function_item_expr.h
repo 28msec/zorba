@@ -13,17 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_FUNCTION_ITEM_EXPR_H
-#define ZORBA_FUNCTION_ITEM_EXPR_H
+#ifndef ZORBA_COMPILER_FUNCTION_ITEM_EXPR_H
+#define ZORBA_COMPILER_FUNCTION_ITEM_EXPR_H
 
 #include <vector>
 
-#include "compiler/expression/expr.h"
-
-#include "zorbatypes/xqpstring.h"
-#include "zorbatypes/representations.h"
-
-#include "zorbaerrors/errors.h"
+#include "compiler/expression/expr_base.h"
 
 #include "store/naive/shared_types.h"
 
@@ -64,8 +59,6 @@ public:
       const expr_t& anExpr,
       const std::vector<expr_t>& args);
     
-	expr_kind_t get_expr_kind() const { return dynamic_function_invocation_expr_kind; }
-
 	const expr_t get_function() const { return theExpr; }
 	
   const std::vector<expr_t>& get_args() const { return theArgs; }
@@ -126,8 +119,6 @@ public:
       const QueryLoc& loc);
 
   ~function_item_expr();
-	
-  expr_kind_t get_expr_kind() const { return function_item_expr_kind; }
 	
   void add_variable(expr* var);
 

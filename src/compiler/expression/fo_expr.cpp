@@ -15,16 +15,13 @@
  */
 #include <vector>
 
-#include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/expr_visitor.h"
-//#include "compiler/xqddf/collection_decl.h"
 
 #include "context/static_context.h"
 
 #include "functions/library.h"
 #include "functions/function.h"
-#include "functions/udf.h"
 
 #include "zorbaerrors/Assert.h"
 
@@ -60,7 +57,7 @@ fo_expr::fo_expr(
     const QueryLoc& loc,
     const function* f)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
 {
   assert(f != NULL);
@@ -75,7 +72,7 @@ fo_expr::fo_expr(
     const function* f,
     const expr* arg)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
 {
   assert(f != NULL);
@@ -94,7 +91,7 @@ fo_expr::fo_expr(
     const expr* arg1,
     const expr* arg2)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, fo_expr_kind),
   theFunction(const_cast<function*>(f))
 {
   assert(f != NULL);
@@ -113,7 +110,7 @@ fo_expr::fo_expr(
     const function* f,
     const std::vector<expr_t>& args)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, fo_expr_kind),
   theArgs(args),
   theFunction(const_cast<function*>(f))
 {

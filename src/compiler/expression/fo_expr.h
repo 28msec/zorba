@@ -72,8 +72,6 @@ public:
     const function* f,
     const std::vector<expr_t>& args);
 
-  expr_kind_t get_expr_kind() const { return fo_expr_kind; }
-
   function* get_func() const { return theFunction; }
 
   void set_func(function* f) { theFunction = f; }

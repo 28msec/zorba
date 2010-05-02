@@ -80,8 +80,6 @@ public:
         expr_t t,
         expr_t e);
 
-  expr_kind_t get_expr_kind() const { return if_expr_kind; }
-
   expr* get_cond_expr() const { return theCondExpr.getp(); }
 
   expr* get_then_expr() const { return theThenExpr.getp(); }
@@ -125,8 +123,6 @@ public:
 public:
   order_expr(static_context* sctx, const QueryLoc&, order_type_t, expr_t);
 
-  expr_kind_t get_expr_kind() const { return order_expr_kind; }
-
   order_type_t get_type() const { return theType; }
 
   const expr* get_expr() const { return theExpr; }
@@ -169,8 +165,6 @@ public:
         expr_t,
         rchandle<TypeManager>);
 
-  expr_kind_t get_expr_kind() const { return validate_expr_kind; }
-
   const expr* get_expr() const { return theExpr; }
 
   const store::Item* get_type_name() const { return theTypeName; }
@@ -205,6 +199,7 @@ protected:
   cast_or_castable_base_expr(
         static_context* sctx,
         const QueryLoc& loc,
+        expr_kind_t kind,
         expr_t input,
         xqtref_t type);
   
@@ -237,7 +232,12 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  cast_base_expr(static_context* sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
+  cast_base_expr(
+        static_context* sctx, 
+        const QueryLoc& loc,
+        expr_kind_t kind,
+        expr_t input,
+        xqtref_t type);
 };
 
 
@@ -258,8 +258,6 @@ public:
 
 public:
   cast_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
-
-  expr_kind_t get_expr_kind() const { return cast_expr_kind; }
 
   bool is_optional() const;
 
@@ -303,8 +301,6 @@ public:
         xqtref_t,
         XQUERY_ERROR,
         bool check_prime = true);
-
-  expr_kind_t get_expr_kind() const { return treat_expr_kind; }
 
   XQUERY_ERROR get_err() const { return theError; }
 
@@ -365,8 +361,6 @@ public:
 public:
   promote_expr(static_context* sctx, const QueryLoc& loc, expr_t input, xqtref_t type);
 
-  expr_kind_t get_expr_kind() const { return promote_expr_kind; }
-
   expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
@@ -388,7 +382,12 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  castable_base_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
+  castable_base_expr(
+        static_context* sctx,
+        const QueryLoc&,
+        expr_kind_t kind,
+        expr_t,
+        xqtref_t);
 };
 
 
@@ -410,8 +409,6 @@ public:
 public:
   castable_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
   
-  expr_kind_t get_expr_kind() const { return castable_expr_kind; }
-
   bool is_optional() const;
 
   expr_t clone(substitution_t& s) const;
@@ -437,8 +434,6 @@ public:
 
 public:
   instanceof_expr(static_context* sctx, const QueryLoc&, expr_t, xqtref_t);
-
-  expr_kind_t get_expr_kind() const { return instanceof_expr_kind; }
 
   expr_t clone(substitution_t& s) const;
 
@@ -475,8 +470,6 @@ public:
 public:
   name_cast_expr(static_context* sctx, const QueryLoc&, expr_t, const namespace_context*);
 
-  expr_kind_t get_expr_kind() const { return name_cast_expr_kind; }
-
   expr* get_input() const { return theInputExpr.getp(); }
 
   const namespace_context* get_namespace_context() const;
@@ -509,8 +502,6 @@ public:
 
 public:
   doc_expr(static_context* sctx, const QueryLoc&, expr_t aContent);
-
-  expr_kind_t get_expr_kind() const { return doc_expr_kind; }
 
   const expr* getContent() const { return theContent.getp(); }
 
@@ -582,8 +573,6 @@ public:
         expr_t aContent,
         const namespace_context* aNSCtx);
   
-  expr_kind_t get_expr_kind() const { return elem_expr_kind; }
-
   const expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
   const expr* getContent() const { return theContent.getp(); }
@@ -647,8 +636,6 @@ public:
     expr_t aQNameExpr,
     expr_t aValueExpr);
 
-  expr_kind_t get_expr_kind() const { return attr_expr_kind; }
-
   const expr* getQNameExpr() const { return theQNameExpr.getp(); }
 
   const expr* getValueExpr() const { return theValueExpr.getp(); }
@@ -696,8 +683,6 @@ public:
         text_constructor_type,
         expr_t);
 
-  expr_kind_t get_expr_kind() const { return text_expr_kind; }
-
   expr* get_text() const { return theContentExpr.getp(); }
 
   text_constructor_type get_type() const { return type; }
@@ -732,8 +717,6 @@ public:
 public:
   pi_expr(static_context* sctx, const QueryLoc&, expr_t, expr_t);
  
-  expr_kind_t get_expr_kind() const { return pi_expr_kind; }
-
   const expr* get_target_expr() const { return theTargetExpr.getp(); }
 
   const expr* get_content_expr() const { return theContentExpr.getp(); }
@@ -768,8 +751,6 @@ public:
 
 public:
   wrapper_expr(static_context* sctx, const QueryLoc& loc, expr_t wrapped);
-
-  expr_kind_t get_expr_kind() const { return wrapper_expr_kind; }
 
   expr* get_expr() const { return theWrappedExpr.getp(); }
 
@@ -819,8 +800,6 @@ public:
   const_expr(static_context* sctx, const QueryLoc&, store::Item_t);  
 
   const_expr(static_context* sctx, const QueryLoc&, const char* ns, const char* pre, const char* local);
-
-  expr_kind_t get_expr_kind() const { return const_expr_kind; }
 
   store::Item* get_val() const { return theValue.getp(); }
 
@@ -876,8 +855,6 @@ public:
   extension_expr(static_context* sctx, const QueryLoc&);
 
   extension_expr(static_context* sctx, const QueryLoc&, expr_t);
-
-  expr_kind_t get_expr_kind() const { return extension_expr_kind; }
 
   void add(rchandle<pragma> p) { thePragmas.push_back(p); }
 
@@ -986,8 +963,6 @@ public:
 public:
   trycatch_expr(static_context* sctx, const QueryLoc&, expr_t tryExpr);
 
-  expr_kind_t get_expr_kind() const { return trycatch_expr_kind; }
-
   expr* get_try_expr() const { return theTryExpr.getp(); }
 
   expr* get_catch_expr(ulong i) const { return theCatchExprs[i].getp(); }
@@ -1051,13 +1026,11 @@ public:
 public:
   eval_expr(static_context* sctx, const QueryLoc& loc, expr_t e)
     :
-    expr(sctx, loc),
+    expr(sctx, loc, eval_expr_kind),
     theExpr(e)
   {
     compute_scripting_kind();
   }
-
-  expr_kind_t get_expr_kind() const { return eval_expr_kind; }
 
   expr* get_expr() const { return theExpr.getp(); }
 
@@ -1120,8 +1093,6 @@ public:
     store_local_variables( aScopedVariables );
   }
 
-  expr_kind_t get_expr_kind() const { return debugger_expr_kind; }
-
   std::list<global_binding> getGlobals() const { return theGlobals; }
 
   bool isForExpr() const { return theForExpr; }
@@ -1175,8 +1146,6 @@ public:
         const QueryLoc&,
         checked_vector<expr_t>& seq);
 
-  expr_kind_t get_expr_kind() const { return sequential_expr_kind; }
-
   unsigned size() const { return theArgs.size(); }
 
   const expr_t& operator[](int i) const { return theArgs[i]; }
@@ -1228,8 +1197,6 @@ public:
 public:
   exit_expr(static_context* sctx, const QueryLoc& loc, expr_t inExpr);
 
-  expr_kind_t get_expr_kind() const { return exit_expr_kind; }
-
   expr* get_value() const { return theExpr.getp(); }
 
   void compute_scripting_kind();
@@ -1264,8 +1231,6 @@ public:
 public:
   flowctl_expr(static_context* sctx, const QueryLoc& loc, enum action action);
 
-  expr_kind_t get_expr_kind() const { return flowctl_expr_kind; }
-
   enum action get_action() const { return theAction; }
 
   expr_t clone(substitution_t& s) const;
@@ -1298,8 +1263,6 @@ public:
 
 public:
   while_expr(static_context* sctx, const QueryLoc& loc, expr_t body);
-
-  expr_kind_t get_expr_kind() const { return while_expr_kind; }
 
   expr* get_body() const { return theBody.getp(); }
 
@@ -1348,8 +1311,6 @@ public:
 		expr_t aSourceExpr,
 		expr_t aTargetExpr);
 
-  expr_kind_t get_expr_kind() const { return insert_expr_kind; }
-
   store::UpdateConsts::InsertType getType() const { return theType; }
 
 	expr* getSourceExpr() const { return theSourceExpr.getp(); }
@@ -1384,8 +1345,6 @@ public:
 
 public:
 	delete_expr(static_context* sctx, const QueryLoc&, expr_t);
-
-  expr_kind_t get_expr_kind() const { return delete_expr_kind; }
 
 	expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
@@ -1425,8 +1384,6 @@ public:
 		expr_t,
 		expr_t);
 
-  expr_kind_t get_expr_kind() const { return replace_expr_kind; }
-
   store::UpdateConsts::ReplaceType getType() const { return theType; }
 
 	expr* getTargetExpr() const { return theTargetExpr.getp(); }
@@ -1462,8 +1419,6 @@ public:
 
 public:
 	rename_expr(static_context* sctx,	const QueryLoc&, expr_t, expr_t);
-
-  expr_kind_t get_expr_kind() const { return rename_expr_kind; }
 
 	expr* getTargetExpr() const { return theTargetExpr.getp(); }
 
@@ -1535,8 +1490,6 @@ public:
 		const QueryLoc&,
 		expr_t aModifyExpr,
 		expr_t aReturnExpr);
-
-  expr_kind_t get_expr_kind() const { return transform_expr_kind; }
 
 	expr_t getModifyExpr() const { return theModifyExpr; }
 

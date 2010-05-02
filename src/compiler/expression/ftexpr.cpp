@@ -148,7 +148,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times_expr)
 ///////////////////////////////////////////////////////////////////////////////
 
 ft_expr::ft_expr( static_context* sctx, QueryLoc const &loc ) :
-  expr( sctx, loc )
+  expr( sctx, loc, ft_expr_kind )
 {
 }
 

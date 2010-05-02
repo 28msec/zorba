@@ -74,7 +74,7 @@ var_expr::var_expr(
     var_kind k,
     store::Item* name)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, var_expr_kind),
   theKind(k),
   theName(name),
   theDeclaredType(NULL),

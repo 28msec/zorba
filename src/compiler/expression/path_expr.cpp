@@ -54,7 +54,7 @@ DEF_EXPR_ACCEPT (match_expr)
 ********************************************************************************/
 relpath_expr::relpath_expr(static_context* sctx, const QueryLoc& loc)
   :
-  expr(sctx, loc)
+expr(sctx, loc, relpath_expr_kind)
 {
   compute_scripting_kind();
 }
@@ -105,7 +105,7 @@ expr_t relpath_expr::clone(substitution_t& subst) const
 ********************************************************************************/
 axis_step_expr::axis_step_expr(static_context* sctx, const QueryLoc& loc)
   :
-  expr(sctx, loc)
+  expr(sctx, loc, axis_step_expr_kind)
 {
   compute_scripting_kind();
 }
@@ -158,7 +158,7 @@ expr_t axis_step_expr::clone(substitution_t& subst) const
 ********************************************************************************/
 match_expr::match_expr(static_context* sctx, const QueryLoc& loc)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, match_expr_kind),
   theDocTestKind(match_no_test),
   theWildKind(match_no_wild),
   theQName(NULL),

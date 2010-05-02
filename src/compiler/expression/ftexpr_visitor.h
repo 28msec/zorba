@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FTEXPR_VISITOR_H
-#define ZORBA_FTEXPR_VISITOR_H
+#ifndef ZORBA_COMPILER_FTEXPR_VISITOR_H
+#define ZORBA_COMPILER_FTEXPR_VISITOR_H
 
 #include "compiler/expression/expr_base.h"
-#include "compiler/expression/expr_classes.h"
-#include "compiler/expression/expr_visitor.h"
 #include "compiler/expression/ftexpr_classes.h"
 
 namespace zorba {

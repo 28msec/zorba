@@ -78,10 +78,11 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 /*******************************************************************************
 
 ********************************************************************************/
-expr::expr(static_context* sctx, const QueryLoc& loc) 
+  expr::expr(static_context* sctx, const QueryLoc& loc, expr_kind_t k) 
   :
   theSctx(sctx),
   theLoc(loc),
+  theKind(k),
   theFlags1(0) 
 {
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
@@ -110,6 +111,7 @@ void expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theSctx;
   ar & theLoc;
   ar & theType;
+  SERIALIZE_ENUM(expr_kind_t, theKind);
   SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
   ar & theFlags1;
 }

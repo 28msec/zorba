@@ -131,8 +131,6 @@ public:
         var_kind k,
         store::Item* name);
 
-  expr_kind_t get_expr_kind() const { return var_expr_kind; }
-
   ulong get_unique_id() const { return theUniqueId; }
 
   store::Item* get_name() const;

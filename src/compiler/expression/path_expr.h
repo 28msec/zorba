@@ -64,8 +64,6 @@ public:
 public:
   relpath_expr(static_context* sctx, const QueryLoc& loc);
 
-  expr_kind_t get_expr_kind() const { return relpath_expr_kind; }
-
 	size_t size() const { return theSteps.size(); }
 
 	void add_back(expr_t step);
@@ -121,8 +119,6 @@ public:
 
 public:
   axis_step_expr(static_context* sctx, const QueryLoc&);
-
-  expr_kind_t get_expr_kind() const { return axis_step_expr_kind; }
 
   axis_kind_t getAxis() const { return theAxis; }
 
@@ -186,8 +182,6 @@ public:
 
 public:
   match_expr(static_context* sctx, const QueryLoc&);
-
-  expr_kind_t get_expr_kind() const { return match_expr_kind; }
 
   match_test_t getTestKind() const { return theTestKind; }
 

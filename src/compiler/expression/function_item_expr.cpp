@@ -16,9 +16,6 @@
 
 #include "compiler/expression/function_item_expr.h"
 
-#include "zorbautils/checked_vector.h"
-
-#include "compiler/expression/expr_utils.h"
 #include "compiler/expression/expr_visitor.h"
 
 #include "functions/function.h"
@@ -31,6 +28,7 @@ namespace zorba {
 
 SERIALIZABLE_CLASS_VERSIONS(dynamic_function_invocation_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(dynamic_function_invocation_expr)
+
 DEF_EXPR_ACCEPT (dynamic_function_invocation_expr)
 
 
@@ -40,7 +38,7 @@ dynamic_function_invocation_expr::dynamic_function_invocation_expr(
     const expr_t& anExpr,
     const std::vector<expr_t>& args)
   :
-  expr(sctx, loc),
+  expr(sctx, loc, dynamic_function_invocation_expr_kind),
   theExpr(anExpr),
   theArgs(args)
 {
@@ -60,6 +58,7 @@ void dynamic_function_invocation_expr::compute_scripting_kind()
 ********************************************************************************/
 SERIALIZABLE_CLASS_VERSIONS(function_item_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(function_item_expr)
+
 DEF_EXPR_ACCEPT (function_item_expr)
 
 
@@ -70,7 +69,7 @@ function_item_expr::function_item_expr(
     function* f,
     uint32_t aArity)
 	: 
-  expr(sctx, loc),
+  expr(sctx, loc, function_item_expr_kind),
   theQName(const_cast<store::Item*>(aQName)),
   theFunction(f),
   theArity(aArity)
@@ -84,7 +83,7 @@ function_item_expr::function_item_expr(
     static_context* sctx,
     const QueryLoc& loc)
 	:
-  expr(sctx, loc),
+  expr(sctx, loc, function_item_expr_kind),
   theQName(0),
   theFunction(NULL),
   theArity(0)

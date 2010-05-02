@@ -146,11 +146,11 @@ public:
         const QueryLoc& loc);
 
 public:
-  expr(static_context*, const QueryLoc&);
+  expr(static_context*, const QueryLoc&, expr_kind_t);
 
   virtual ~expr();
 
-  virtual expr_kind_t get_expr_kind() const = 0;
+  expr_kind_t get_expr_kind() const { return static_cast<expr_kind_t>(theKind); }
 
   const QueryLoc& get_loc() const { return theLoc; }
 

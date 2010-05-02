@@ -631,15 +631,10 @@ public:
 public:
   flwor_expr(static_context* sctx, const QueryLoc& loc, bool general)
     :
-    expr(sctx, loc),
+    expr(sctx, loc, (general ? gflwor_expr_kind : flwor_expr_kind)),
     theIsGeneral(general)
   {
     theScriptingKind = SIMPLE_EXPR;
-  }
-
-  expr_kind_t get_expr_kind() const
-  {
-    return (theIsGeneral ? gflwor_expr_kind : flwor_expr_kind);
   }
 
   bool is_general() const { return theIsGeneral; }

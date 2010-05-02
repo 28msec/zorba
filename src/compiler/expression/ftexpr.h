@@ -76,10 +76,6 @@ public:
 
   void compute_scripting_kind();
 
-  expr_kind_t get_expr_kind() const {
-    return ft_expr_kind;
-  }
-
   range_expr_t get_range() const { return range_; }
 
   ftexpr* get_ftselection() const { return ftselection_; }
