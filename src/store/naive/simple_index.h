@@ -74,7 +74,7 @@ public:
 
   store::IndexBoxCondition_t createBoxCondition();
 
-  virtual bool insert(const store::IndexKey* key, store::Item_t& item) = 0;
+  virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
 
   virtual bool remove(const store::IndexKey* key, store::Item_t& item) = 0;
 };
@@ -131,7 +131,7 @@ public:
 
   bool probe(const store::IndexKey& key, store::Item_t& result);
 
-  bool insert(const store::IndexKey* key, store::Item_t& item);
+  bool insert(store::IndexKey*& key, store::Item_t& item);
 
   bool remove(const store::IndexKey* key, store::Item_t& item);
 
@@ -199,7 +199,7 @@ public:
 
   bool probe(const store::IndexKey& key, store::Item_t& result);
 
-  bool insert(const store::IndexKey* key, store::Item_t& item);
+  bool insert(store::IndexKey*& key, store::Item_t& item);
 
   bool remove(const store::IndexKey* key, store::Item_t& item);
 

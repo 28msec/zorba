@@ -198,7 +198,7 @@ void HashIndex::clear()
   in the index already, then the key itself is inserted as well. Return true
   if the key was already in the index, false otherwise
 ********************************************************************************/
-bool HashIndex::insert(const store::IndexKey* key, store::Item_t& value)
+bool HashIndex::insert(store::IndexKey*& key, store::Item_t& value)
 {
   if (key->size() != theNumColumns)
   {
@@ -218,16 +218,19 @@ bool HashIndex::insert(const store::IndexKey* key, store::Item_t& value)
 
     valueSet->resize(valueSet->size() + 1);
     (*valueSet)[valueSet->size()-1].transfer(value);
+    
     return true;
   }
 
   valueSet = new store::IndexValue(1);
   (*valueSet)[0].transfer(value);
   
-  //  std::cout << "Index Entry Insert [" << constkey << "," 
+  //std::cout << "Index Entry Insert [" << key << "," 
   //          << valueSet << "]" << std::endl;
 
-  theMap.insert(key, valueSet);
+  const store::IndexKey* key2 = key;
+  theMap.insert(key2, valueSet);
+  key = NULL; // ownership of the key obj passes to the index.
 
   return false;
 } 
@@ -391,7 +394,7 @@ void STLMapIndex::clear()
 /******************************************************************************
 
 ********************************************************************************/
-bool STLMapIndex::insert(const store::IndexKey* key, store::Item_t& value)
+bool STLMapIndex::insert(store::IndexKey*& key, store::Item_t& value)
 {
   if (key->size() != theNumColumns)
   {
@@ -434,6 +437,7 @@ bool STLMapIndex::insert(const store::IndexKey* key, store::Item_t& value)
   (*valueSet)[0].transfer(value);
 
   theMap.insert(STLMapPair(key, valueSet));
+  key = NULL; // ownership of the key obj passes to the index.
 
   return false;
 }

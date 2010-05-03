@@ -480,7 +480,8 @@ void SimpleStore::populateIndex(
                           index->getName()->getStringValue(), "");
       }
 
-      key = new store::IndexKey(aNumColumns);
+      if (key == NULL)
+        key = new store::IndexKey(aNumColumns);
 
       for (ulong i = 0; i < aNumColumns; ++i)
       {
@@ -491,8 +492,6 @@ void SimpleStore::populateIndex(
       }
 
       index->insert(key, domainItem);
-
-      key = NULL; // ownership of the key obj passes to the index.
     }
   }
   catch(...)
@@ -503,6 +502,9 @@ void SimpleStore::populateIndex(
     aSourceIter->close();
     throw;
   }
+
+  if (key != NULL)
+    delete key;
 
   aSourceIter->close();
 }

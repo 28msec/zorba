@@ -1604,15 +1604,14 @@ void CollectionPul::refreshIndices()
       store::Item_t& beforeNode = (*beforeIte).first;
       store::Item_t& afterNode = (*afterIte).first;
       store::IndexKey* beforeKey = (*beforeIte).second;
-      store::IndexKey* afterKey = (*afterIte).second;
+      store::IndexKey*& afterKey = (*afterIte).second;
 
       if (beforeNode == afterNode)
       {
         if (!keyCmp.equal(beforeKey, afterKey))
         {
           index->remove(beforeKey, beforeNode);
-          if (!index->insert(afterKey, afterNode))
-            (*afterIte).second = NULL; // ownership of the key was passed to the index
+          index->insert(afterKey, afterNode);
         }
 
         ++beforeIte;
@@ -1625,8 +1624,7 @@ void CollectionPul::refreshIndices()
       }
       else
       {
-        if (!index->insert(afterKey, afterNode))
-          (*afterIte).second = NULL; // ownership of the key was passed to the index
+        index->insert(afterKey, afterNode);
         ++afterIte;
       }
     }
@@ -1639,8 +1637,7 @@ void CollectionPul::refreshIndices()
 
     while (afterIte != afterEnd)
     {
-      if (!index->insert((*afterIte).second, (*afterIte).first))
-        (*afterIte).second = NULL; // ownership of the key was passed to the index
+      index->insert((*afterIte).second, (*afterIte).first);
       ++afterIte;
     }
 
@@ -1661,8 +1658,7 @@ void CollectionPul::refreshIndices()
 
         for (ulong j = 0; j < numEntries; ++j)
         {
-          if (!index->insert(delta[j].second, delta[j].first))
-            delta[j].second = NULL; // ownership of the key was passed to the index
+          index->insert(delta[j].second, delta[j].first);
         }
       }
       catch (...)
