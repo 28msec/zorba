@@ -173,7 +173,7 @@ DynamicContextImpl::getVariable(
 
     store::Item_t lItem;
     store::Iterator_t lIter;
-    theCtx->get_variable(lExpandedName, lItem, lIter);
+    theCtx->get_variable(lExpandedName, QueryLoc::null, lItem, lIter);
     if (! lItem.isNull()) 
     {
       aItem = lItem;

@@ -150,13 +150,19 @@ public:
 
   bool get_variable(
         const store::Item_t& varname,
+        const QueryLoc& loc,
         store::Item_t& var_item,
         store::Iterator_t& var_iter);
 
   bool get_variable(
     const std::string& varname,
+    const QueryLoc& loc,
     store::Item_t& var_item,
     store::Iterator_t& var_iter);
+
+  bool exists_variable(const store::Item_t& varname);
+
+  bool exists_variable(const std::string& varkey);
 
   store::Index* getIndex(store::Item* qname) const;
 
@@ -175,11 +181,9 @@ public:
    */
   store::IC* getIC(const store::Item* qname);
 
-  bool
-  addExternalFunctionParam ( const std::string& aName, void* aValue );
+  bool addExternalFunctionParam(const std::string& aName, void* aValue);
 
-  bool
-  getExternalFunctionParam ( const std::string& aName, void*& aValue) const;
+  bool getExternalFunctionParam(const std::string& aName, void*& aValue) const;
 
   std::vector<xqpString>* get_all_keymap_keys() const;
 
@@ -212,6 +216,7 @@ protected:
 
   bool lookup_var_value(
         const std::string& key,
+        const QueryLoc& loc,
         store::Item_t& var_item,
         store::Iterator_t& var_iter);
 

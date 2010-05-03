@@ -420,30 +420,34 @@ void dynamic_context::set_variable(
 ********************************************************************************/
 bool dynamic_context::get_variable(
     const store::Item_t& varname,
+    const QueryLoc& loc,
     store::Item_t& var_item,
     store::Iterator_t& var_iter)
 {
   var_item = NULL;
   var_iter = NULL;
   return lookup_var_value("var:" + varname->getStringValue()->str(),
-    var_item,
-    var_iter);
+                          loc,
+                          var_item,
+                          var_iter);
 }
 
 
 bool dynamic_context::get_variable(
   const std::string& varname,
+  const QueryLoc& loc,
   store::Item_t& var_item,
   store::Iterator_t& var_iter)
 {
   var_item = NULL;
   var_iter = NULL;
-  return lookup_var_value("var:" + varname, var_item, var_iter);
+  return lookup_var_value("var:" + varname, loc, var_item, var_iter);
 }
 
 
 bool dynamic_context::lookup_var_value(
     const std::string& key,
+    const QueryLoc& loc,
     store::Item_t& var_item,
     store::Iterator_t& var_iter)
 {
@@ -452,18 +456,43 @@ bool dynamic_context::lookup_var_value(
   if(!keymap.get(key, val))
   {
     if (theParent)
-      return theParent->lookup_var_value(key, var_item, var_iter);
+      return theParent->lookup_var_value(key, loc, var_item, var_iter);
     else
-      return false; // variable not found
+      return false;
   }
 
   if (val.in_progress)
-    ZORBA_ERROR (XQST0054);
+    ZORBA_ERROR_LOC_DESC_OSS(XPDY0002, loc, "Variable does not have a value");
 
   if (val.type == dynamic_context::dctx_value_t::var_item_val)
     var_item = val.val.var_item;
   else
     var_iter = val.val.var_temp_seq->getIterator();
+
+  return true;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool dynamic_context::exists_variable(const store::Item_t& varname)
+{
+  return exists_variable("var:" + varname->getStringValue()->str());
+}
+
+
+bool dynamic_context::exists_variable(const std::string& key)
+{
+  dctx_value_t val;
+
+  if(!keymap.get(key, val))
+  {
+    if (theParent)
+      return theParent->exists_variable(key);
+    else
+      return false; // variable not found
+  }
 
   return true;
 }

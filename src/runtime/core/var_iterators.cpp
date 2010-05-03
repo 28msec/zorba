@@ -151,10 +151,7 @@ bool CtxVarExistsIterator::nextImpl(store::Item_t& result, PlanState& planState)
 	}
   else
   {
-    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result,
-                                               dctx->get_variable(varName,
-                                                                  varItem,
-                                                                  varIter)),
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, dctx->exists_variable(varName)),
                state);
   }
   STACK_END (state);
@@ -195,7 +192,7 @@ bool CtxVariableIterator::nextImpl(store::Item_t& result, PlanState& planState) 
 	}
   else
   {
-    planState.theDynamicContext->get_variable(varName, result, state->theIter);
+    planState.theDynamicContext->get_variable(varName, loc, result, state->theIter);
 
     if (result != NULL)
     {
