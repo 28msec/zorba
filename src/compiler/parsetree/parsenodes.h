@@ -5453,14 +5453,16 @@ class LiteralFunctionItem: public exprnode
 {
   private:
     rchandle<QName> theQName;
-    Integer& theArity;
+    Integer* theArity;
 
   public:
-    LiteralFunctionItem(const QueryLoc& loc_, rchandle<QName> aQName, Integer& aArity):
+    ~LiteralFunctionItem();
+
+    LiteralFunctionItem(const QueryLoc& loc_, rchandle<QName> aQName, Integer* aArity):
       exprnode(loc_), theQName(aQName), theArity(aArity){}
 
-      rchandle<QName> getQName() const { return theQName; }
-      const Integer& getArity() const { return theArity; }
+    rchandle<QName> getQName() const { return theQName; }
+    const Integer& getArity() const { return *theArity; }
 
     void accept(parsenode_visitor&) const;
 };

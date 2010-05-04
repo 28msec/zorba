@@ -5290,6 +5290,10 @@ void FTOptionDecl::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
+LiteralFunctionItem::~LiteralFunctionItem()
+{
+  delete theArity;
+}
 
 void LiteralFunctionItem::accept(parsenode_visitor& v) const
 {
