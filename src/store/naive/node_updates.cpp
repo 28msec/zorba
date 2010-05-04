@@ -1170,6 +1170,8 @@ void ElementNode::replaceContent(UpdReplaceElemContent& upd)
   newChild->setOrdPath(this, 0, store::StoreConsts::textNode);
   newChild->connect(this, 0);
 
+  upd.theNewChild = NULL;
+
   removeType(upd);
 }
 

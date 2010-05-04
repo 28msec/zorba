@@ -1,8 +1,11 @@
 module namespace xqddf-test = "http://www.zorba-xquery.com/modules/xqddf/test";
+
 import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 
 declare collection xqddf-test:white-collection as node()*;
+
 declare collection xqddf-test:blue-collection as node()*;
+
 declare ordered collection xqddf-test:ordered-collection as node()*;
 
 declare variable $xqddf-test:white-collection := xs:QName("xqddf-test:white-collection");
