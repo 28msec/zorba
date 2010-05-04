@@ -1149,6 +1149,18 @@ void extension_expr::compute_scripting_kind()
   checkSimpleExpr(theExpr);
 }
 
+expr_t extension_expr::clone(substitution_t& subst) const {
+  rchandle<extension_expr> lClone = (
+  theExpr == 0 ? new extension_expr(theSctx, get_loc())
+               : new extension_expr(theSctx, get_loc(), theExpr->clone()) );
+  // pragm doesn't contain expressions. Thus, it is not cloned.
+  for ( std::vector<rchandle<pragma> >::const_iterator lIter = thePragmas.begin();
+        lIter != thePragmas.end();
+        ++lIter ) {
+    lClone->add(*lIter);
+  }
+  return lClone.getp();
+}
 
 /////////////////////////////////////////////////////////////////////////
 //                                                                     //
@@ -1747,6 +1759,10 @@ void copy_clause::serialize(::zorba::serialization::Archiver& ar)
   ar & theExpr;
 }
 
+copy_clause_t copy_clause::clone(expr::substitution_t& subst) const {
+  ZORBA_ASSERT(theVar && theExpr);
+  return new copy_clause(theVar->clone(subst), theExpr->clone(subst)); 
+}
 
 transform_expr::transform_expr(
     static_context* sctx,
@@ -1816,7 +1832,19 @@ void transform_expr::compute_scripting_kind()
   checkNonUpdating(theReturnExpr);
 }
 
-
+expr_t transform_expr::clone(substitution_t& subst) const {
+  ZORBA_ASSERT(theModifyExpr && theReturnExpr);
+  rchandle<transform_expr> lClone(new transform_expr(theSctx, 
+                                    get_loc(), 
+                                    theModifyExpr?theModifyExpr->clone(subst):0, 
+                                    theReturnExpr?theReturnExpr->clone(subst):0));  
+  for ( std::vector<copy_clause_t>::const_iterator lIter = theCopyClauses.begin();
+        lIter != theCopyClauses.end();
+        ++lIter) {
+    lClone->add_back((*lIter)->clone(subst));
+  }
+  return lClone.getp();
+}
 
 } /* namespace zorba */
 /* vim:set ts=2 sw=2: */

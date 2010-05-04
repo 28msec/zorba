@@ -862,7 +862,7 @@ public:
 
   void compute_scripting_kind();
 
-  // TODO clone ????
+  expr_t clone(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 
@@ -1441,6 +1441,9 @@ public:
                     ("," "$" VarName ":=" ExprSingle)*
                     "modify"  ExprSingle "return" ExprSingle
 ********************************************************************************/
+class copy_clause;
+typedef rchandle<copy_clause> copy_clause_t;
+
 class copy_clause : public SimpleRCObject
 {
   friend class expr;
@@ -1463,12 +1466,10 @@ public:
 
   expr* getExpr() const { return theExpr.getp(); }
 
+  copy_clause_t clone(expr::substitution_t& s) const;
+
   std::ostream& put(std::ostream&) const;
 };
-
-
-typedef rchandle<copy_clause> copy_clause_t;
-
 
 
 class transform_expr : public expr
@@ -1515,7 +1516,7 @@ public:
 
   void compute_scripting_kind();
 
-  // TODO : clone()
+  expr_t clone(substitution_t& s) const;
 
   void accept(expr_visitor&);
 
