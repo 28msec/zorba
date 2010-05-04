@@ -899,6 +899,9 @@ public:
 
   [177] CatchErrorVal ::= "$" VarName
 ********************************************************************************/
+class catch_clause;
+typedef rchandle<catch_clause> catch_clause_t;
+
 class catch_clause : public SimpleRCObject 
 {
   friend class expr;
@@ -939,10 +942,9 @@ public:
   void set_error_item_var(varref_t a) { theErrorItemVar = a; }
 
   const var_expr* get_error_item_var() const { return theErrorItemVar.getp(); }
+
+  catch_clause_t clone(expr::substitution_t& subst) const;
 };
-
-
-typedef rchandle<catch_clause> catch_clause_t;
 
 
 class trycatch_expr : public expr 
@@ -977,7 +979,7 @@ public:
 
   void compute_scripting_kind();
 
-  // TODO clone() ????
+  expr_t clone(substitution_t& subst) const;
 
   void accept(expr_visitor&);
 

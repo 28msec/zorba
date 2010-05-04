@@ -1,0 +1,11 @@
+Iterator tree for const-folded expr:
+<GenericArithIterator_AddOperation id="0x1f57030">
+  <SingletonIterator value="xs:integer(1)" id="0x1f57910"/>
+  <SingletonIterator value="xs:integer(1)" id="0x1f5aab0"/>
+</GenericArithIterator_AddOperation>
+
+Iterator tree for main query:
+<TryCatchIterator id="0x1f57ab0">
+  <SingletonIterator value="xs:integer(2)" id="0x1f56500"/>
+  <SingletonIterator value="xs:string(err)" id="0x1f56590"/>
+</TryCatchIterator>

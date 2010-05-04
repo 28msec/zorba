@@ -1240,6 +1240,38 @@ void trycatch_expr::compute_scripting_kind()
   }
 }
 
+catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
+{
+  catch_clause_t lClause(new catch_clause());
+  for (nt_list_t::const_iterator lIter = theNameTests.begin();
+       lIter != theNameTests.end(); ++lIter) {
+    lClause->add_nametest_h(lIter->getp());
+  }
+  if (theErrorCodeVar) {
+    lClause->set_error_code_var(theErrorCodeVar->clone(subst));
+  }
+  if (theErrorDescVar) {
+    lClause->set_error_desc_var(theErrorDescVar->clone(subst));
+  }
+  if (theErrorItemVar) {
+    lClause->set_error_item_var(theErrorItemVar->clone(subst));
+  }
+  return lClause.getp();
+}
+
+expr_t trycatch_expr::clone(substitution_t& subst) const
+{
+  std::auto_ptr<trycatch_expr> lTryCatch(
+      new trycatch_expr(theSctx, get_loc(), theTryExpr));
+  for (std::vector<expr_t>::const_iterator lIter = theCatchExprs.begin();
+       lIter != theCatchExprs.end(); ++lIter) {
+    lTryCatch->add_catch_expr((*lIter)->clone());
+  }
+  for (uint32_t i = 0; i < clause_count(); ++i) {
+    lTryCatch->add_clause(theCatchClauses[i]->clone(subst));
+  }
+  return lTryCatch.release();
+}
 
 /*******************************************************************************
 
