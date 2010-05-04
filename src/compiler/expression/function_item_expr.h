@@ -97,13 +97,14 @@ class function_item_expr: public expr
 
 private:
   store::Item_t        theQName;
-	function           * theFunction;
+	function_t           theFunction;
   uint32_t             theArity;
   std::vector<expr_t>  theScopedVariables;
 
 public:
   SERIALIZABLE_CLASS(function_item_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(function_item_expr, expr)
+  function_item_expr(::zorba::serialization::Archiver &ar);
+
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -122,7 +123,7 @@ public:
 	
   void add_variable(expr* var);
 
-  void set_function(function* udf);
+  void set_function(user_function_t& udf);
 
 	const function* get_function() const { return theFunction; }
 	

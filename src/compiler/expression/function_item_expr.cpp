@@ -19,6 +19,7 @@
 #include "compiler/expression/expr_visitor.h"
 
 #include "functions/function.h"
+#include "functions/udf.h"
 #include "functions/signature.h"
 
 using namespace std;
@@ -78,6 +79,10 @@ function_item_expr::function_item_expr(
   compute_scripting_kind();
 }
 
+function_item_expr::function_item_expr(::zorba::serialization::Archiver &ar)
+  : expr(ar)
+{
+}
 
 function_item_expr::function_item_expr(
     static_context* sctx,
@@ -112,7 +117,7 @@ void function_item_expr::add_variable(expr* var)
 }
 
 
-void function_item_expr::set_function(function* udf) 
+void function_item_expr::set_function(user_function_t& udf) 
 {
   theFunction = udf; 
   theArity = udf->get_signature().arg_count();

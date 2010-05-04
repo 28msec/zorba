@@ -8791,11 +8791,11 @@ void end_visit(const InlineFunction& v, void* aState)
   }
 
   // Create the udf obj.
-  user_function* udf = new user_function(loc,
-                                         signature(0, paramTypes, returnType),
-                                         body.getp(),
-                                         ParseConstants::fn_read,
-                                         false);
+  user_function_t udf(new user_function(loc,
+                                        signature(0, paramTypes, returnType),
+                                        body.getp(),
+                                        ParseConstants::fn_read,
+                                        false));
   udf->setArgVars(argVars);
 
   // Get the function_item_expr and set its function to the udf created above.

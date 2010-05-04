@@ -422,8 +422,8 @@ std::ostream& function_item_expr::put(std::ostream& os) const
   }
   else
   {
-    os << " inline udf (" << theFunction << ") [\n";
-    reinterpret_cast<const user_function*>(theFunction)->getBody()->put(os);
+    os << " inline udf (" << theFunction.getp() << ") [\n";
+    reinterpret_cast<const user_function*>(theFunction.getp())->getBody()->put(os);
     CLOSE_EXPR;
   }
 }

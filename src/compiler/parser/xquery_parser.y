@@ -4828,6 +4828,7 @@ InlineFunction :
         FUNCTION FunctionSig EnclosedExpr
         {
           $$ = new InlineFunction(LOC (@$), &*$2->param, &*$2->ret, dynamic_cast<EnclosedExpr *>($3));
+          delete $2;
         }
     ;
 
