@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include <stdio.h>
 #include <memory.h>
 #include <string>
@@ -164,6 +163,11 @@ void FastXmlLoader::abortload()
     //delete ctx;
   }
 
+  if(ctxt)
+  {
+    xmlCtxtReset(ctxt);
+    xmlFreeParserCtxt(ctxt);
+  }
   ctxt = NULL;
 }
 
@@ -288,7 +292,6 @@ store::Item_t FastXmlLoader::loadXml(
 
       if (theErrorManager->hasErrors())
       {
-        xmlFreeParserCtxt(ctxt);
         abortload();
         return NULL;
       }
@@ -298,7 +301,6 @@ store::Item_t FastXmlLoader::loadXml(
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0020_LOADER_IO_ERROR,
                                 "Unknown I/O error");
-      xmlFreeParserCtxt(ctxt);
       abortload();
       return NULL;
     }
@@ -307,14 +309,15 @@ store::Item_t FastXmlLoader::loadXml(
   }
   catch(...)
   {
-    xmlFreeParserCtxt(ctxt);
     abortload();
     return NULL;
   }
 
   bool ok = ctxt->wellFormed != 0;
 
+  xmlCtxtReset(ctxt);
   xmlFreeParserCtxt(ctxt);
+  ctxt = NULL;
 
   // The doc may be well formed, but it may have other kinds of errors,
   // e.g., unresolved ns prefixes.
