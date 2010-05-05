@@ -43,7 +43,7 @@ Iterator tree for main query:
             <ReturnClause>
               <ElementIterator>
                 <SingletonIterator value="xs:QName(,,gruppe)"/>
-                <AttributeIterator qname="anzahl">
+                <AttributeIterator qname="xs:QName(,,anzahl)">
                   <EmptyIterator/>
                 </AttributeIterator>
                 <EnclosedIterator attr_cont="false">

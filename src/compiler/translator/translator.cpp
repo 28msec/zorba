@@ -6705,7 +6705,7 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
 
   if (TypeOps::is_subtype(*type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION))
   {
-    const const_expr* ce = node.dyn_cast<const_expr> ().getp();
+    const const_expr* ce = node.dyn_cast<const_expr>().getp();
 
     if (ce != NULL &&
         TypeOps::is_equal(*CTXTS->create_value_type(ce->get_val()),
@@ -6714,19 +6714,17 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
       store::Item_t castLiteral;
       try
       {
-        xqpStringStore_t strval = ce->get_val()->getStringValue();
-        GenericCast::instance()->castToQName(castLiteral, strval, ns_ctx);
+        GenericCast::instance()->castToQName(castLiteral,
+                                             ce->get_val(),
+                                             ns_ctx,
+                                             false,
+                                             *CTXTS,
+                                             loc);
       }
       catch (error::ZorbaError& e)
       {
         if (isCast)
         {
-          if(e.theQueryLine == 0)
-          {
-            e.theQueryColumn = loc.getColumnBegin();
-            e.theQueryFileName = loc.getFilename();
-            e.theQueryLine = loc.getLineBegin();
-          }
           throw e;
         }
         else
@@ -6738,7 +6736,7 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
         }
       }
 
-      assert (castLiteral != NULL || ! isCast);
+      assert(castLiteral != NULL || ! isCast);
 
       if (isCast)
         return new const_expr(theRootSctx, loc, castLiteral);
@@ -6747,7 +6745,6 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
     }
     else
     {
-
       xqtref_t qnameType = (type->get_quantifier() == TypeConstants::QUANT_ONE ?
                             GENV_TYPESYSTEM.QNAME_TYPE_ONE :
                             GENV_TYPESYSTEM.QNAME_TYPE_QUESTION);
@@ -9464,7 +9461,7 @@ void end_visit(const CompElemConstructor& v, void* /*visit_state*/)
     nameExpr = pop_nodestack();
 
     expr_t atomExpr = wrap_in_atomization(nameExpr);
-    nameExpr = new name_cast_expr(theRootSctx, loc, atomExpr.getp(), ns_ctx);
+    nameExpr = new name_cast_expr(theRootSctx, loc, atomExpr.getp(), ns_ctx, false);
   }
 
   push_nodestack (new elem_expr(theRootSctx, loc, nameExpr, contentExpr, ns_ctx));
@@ -9507,7 +9504,7 @@ void end_visit(const CompAttrConstructor& v, void* /*visit_state*/)
   {
     nameExpr = pop_nodestack();
     expr_t atomExpr = wrap_in_atomization(nameExpr);
-    nameExpr = new name_cast_expr(theRootSctx, loc, atomExpr.getp(), ns_ctx);
+    nameExpr = new name_cast_expr(theRootSctx, loc, atomExpr.getp(), ns_ctx, true);
   }
 
   attrExpr = new attr_expr(theRootSctx, loc, nameExpr, valueExpr);
@@ -10233,12 +10230,17 @@ void end_visit(const RenameExpr& v, void* /*visit_state*/)
   expr_t nameExpr = pop_nodestack();
   expr_t targetExpr = pop_nodestack();
 
-  if (nameExpr->is_updating() || targetExpr->is_updating()) {
+  if (nameExpr->is_updating() || targetExpr->is_updating()) 
+  {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
-  rchandle<fo_expr> atomExpr = (fo_expr*)wrap_in_atomization (nameExpr).getp();
-  nameExpr = new name_cast_expr(theRootSctx, loc, atomExpr.getp(), ns_ctx);
+  nameExpr = wrap_in_atomization(nameExpr).getp();
+
+  // We use a name_cast_expr here for static typing reasons. However, during codegen,
+  // we are not going to generate a NameCastIterator, because we don't always know at
+  // compile time whether the target will an element or an attribute node.
+  nameExpr = new name_cast_expr(theRootSctx, loc, nameExpr.getp(), ns_ctx, false);
 
   expr_t renameExpr = new rename_expr(theRootSctx, loc, targetExpr, nameExpr);
 

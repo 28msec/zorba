@@ -22,7 +22,7 @@ Iterator tree for main query:
   <ReturnClause>
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,item)"/>
-      <AttributeIterator qname="name">
+      <AttributeIterator qname="xs:QName(,,name)">
         <EnclosedIterator attr_cont="true">
           <FnDataIterator>
             <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">

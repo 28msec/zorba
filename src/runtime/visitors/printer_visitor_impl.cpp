@@ -1119,7 +1119,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
     thePrinter.startBeginVisit("AttributeIterator", ++theId);
     if (a.getQName() != NULL)
     {
-      xqpStringStore_t qname = a.getQName()->getStringValue();
+      xqpStringStore_t qname = a.getQName()->show().getStore();
       thePrinter.addAttribute("qname", qname->str());
     }
     printCommons(&a, theId);

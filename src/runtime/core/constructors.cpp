@@ -1039,10 +1039,12 @@ NameCastIterator::NameCastIterator(
     static_context* sctx,
     const QueryLoc& loc,
     PlanIter_t& aChild,
-    const namespace_context* aNCtx)
+    const namespace_context* aNCtx,
+    bool isAttrName)
   :
   UnaryBaseIterator<NameCastIterator, PlanIteratorState>(sctx, loc, aChild),
-  theNCtx(const_cast<namespace_context*>(aNCtx))
+  theNCtx(const_cast<namespace_context*>(aNCtx)),
+  theIsAttrName(isAttrName)
 {
 }
 
@@ -1075,31 +1077,27 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
                          "Sequences with more than one item cannot be cast to QName.");
   }
 
-  lItemType = planState.theCompilerCB->theRootSctx->get_typemanager()->
-              create_value_type(result);
-
-  if (TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
+  try
   {
-    /* do nothing */
+    temp = result;
+    valid = GenericCast::instance()->castToQName(result,
+                                                 temp,
+                                                 &*theNCtx,
+                                                 theIsAttrName,
+                                                 *theSctx->get_typemanager(),
+                                                 loc);
   }
-  else if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.STRING_TYPE_ONE) &&
-           !TypeOps::is_equal(*lItemType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  catch (error::ZorbaError& e)
   {
-    ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
-                         "Item cannot be cast to QName.");
-  }
-  else
-  {
-    try
-    {
-      strval = result->getStringValue();
-      valid = GenericCast::instance()->castToQName(result, strval, &*theNCtx);
-    }
-    catch (...)
+    if (e.theErrorCode != XPTY0004)
     {
       // the returned error codes are wrong for name casting => they must be changed
       ZORBA_ERROR_LOC_DESC(XQDY0074, loc, 
                            "Item cannot be cast to QName.");
+    }
+    else
+    {
+      throw e;
     }
   }
 

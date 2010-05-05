@@ -64,7 +64,7 @@ public:
    * Executes the string casting of the passed string to an item of the passed
    * target type.
    */
-  static bool castToAtomic (
+  static bool castToAtomic(
         store::Item_t& result,
         xqpStringStore_t& aStr, 
         const XQType* aTargetType,
@@ -74,25 +74,25 @@ public:
    * type or a subtype of the passed targetType, the passed item is directly
    * returned.
    */
-  static bool castToAtomic (
+  static bool castToAtomic(
         store::Item_t& result,
         store::Item_t& aItem, 
         const XQType* aTargetType,
         const TypeManager& tm, 
         namespace_context* aNCtx = 0);
 
-  static bool castToSimple (
+  static bool castToSimple(
         xqpStringStore_t& aStr, 
         const xqtref_t& aTargetType,
         std::vector<store::Item_t>& aResultList);
 
-  /**
-   * Casts the passed string to xs:QName if possible.
-   */
   static bool castToQName(
         store::Item_t& result,
-        xqpStringStore_t& aStr,
-        namespace_context* aNCtx = 0);
+        const store::Item_t& item,
+        namespace_context* aNCtx,
+        bool attrName,
+        const TypeManager& tm,
+        const QueryLoc& loc);
 
   bool castableToNCName(const xqpStringStore* str) const;
 

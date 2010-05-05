@@ -1877,7 +1877,25 @@ void end_visit (rename_expr& v)
   CODEGEN_TRACE_OUT("");
   PlanIter_t lName = pop_itstack();
   PlanIter_t lTarget = pop_itstack();
-  PlanIter_t lRename = new RenameIterator(sctx, qloc, lTarget, lName);
+  PlanIter_t lRename;
+
+  expr* nameExpr = v.getNameExpr();
+
+  if (nameExpr->get_expr_kind() == name_cast_expr_kind)
+  {
+    name_cast_expr* nameCastExpr = static_cast<name_cast_expr*>(nameExpr);
+
+    lRename = new RenameIterator(sctx,
+                                 qloc,
+                                 lTarget,
+                                 lName,
+                                 nameCastExpr->get_namespace_context());
+  }
+  else
+  {
+    lRename = new RenameIterator(sctx, qloc, lTarget, lName, NULL);
+  }
+
   push_itstack(&*lRename);
 }
 
@@ -2143,7 +2161,8 @@ void end_visit(name_cast_expr& v)
   push_itstack(new NameCastIterator(sctx,
                                     qloc,
                                     child,
-                                    v.get_namespace_context()));
+                                    v.get_namespace_context(),
+                                    v.is_attr_name()));
 }
 
 

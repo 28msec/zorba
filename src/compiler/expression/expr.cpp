@@ -635,11 +635,13 @@ name_cast_expr::name_cast_expr(
     static_context* sctx,
     const QueryLoc& loc,
     expr_t inputExpr,
-    const namespace_context* aNCtx)
+    const namespace_context* aNCtx,
+    bool isAttrName)
   :
   expr(sctx, loc, name_cast_expr_kind),
   theInputExpr(inputExpr),
-  theNCtx(const_cast<namespace_context*>(aNCtx)) 
+  theNCtx(const_cast<namespace_context*>(aNCtx)),
+  theIsAttrName(isAttrName)
 {
   compute_scripting_kind();
 }
@@ -650,6 +652,7 @@ void name_cast_expr::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, (expr*)this);
   ar & theInputExpr;
   ar & theNCtx;
+  ar & theIsAttrName;
 }
 
 
@@ -661,7 +664,7 @@ void name_cast_expr::compute_scripting_kind()
 }
 
 
-const namespace_context* name_cast_expr::get_namespace_context() const
+namespace_context* name_cast_expr::get_namespace_context() const
 {
   return theNCtx.getp();
 }
@@ -672,7 +675,8 @@ expr_t name_cast_expr::clone(substitution_t& subst) const
   return new name_cast_expr(theSctx,
                             get_loc(),
                             get_input()->clone(subst),
-                            get_namespace_context());
+                            get_namespace_context(),
+                            theIsAttrName);
 }
 
 

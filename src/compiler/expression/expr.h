@@ -53,7 +53,6 @@ class signature;
 
 
 
-
 /*******************************************************************************
   [68] IfExpr ::= "if" "(" Expr ")" "then" ExprSingle "else" ExprSingle
 ********************************************************************************/
@@ -461,6 +460,7 @@ class name_cast_expr : public expr
 private:
   expr_t             theInputExpr;
   NamespaceContext_t theNCtx;
+  bool               theIsAttrName;
 
 public:
   SERIALIZABLE_CLASS(name_cast_expr)
@@ -468,11 +468,18 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  name_cast_expr(static_context* sctx, const QueryLoc&, expr_t, const namespace_context*);
+  name_cast_expr(
+        static_context* sctx,
+        const QueryLoc&,
+        expr_t,
+        const namespace_context*,
+        bool isAttr);
 
   expr* get_input() const { return theInputExpr.getp(); }
 
-  const namespace_context* get_namespace_context() const;
+  namespace_context* get_namespace_context() const;
+
+  bool is_attr_name() const { return theIsAttrName; }
 
   void compute_scripting_kind();
 
@@ -1411,8 +1418,8 @@ class rename_expr : public expr
   friend class expr;
 
 protected:
-	expr_t theTargetExpr;
-	expr_t theNameExpr;
+	expr_t             theTargetExpr;
+	expr_t             theNameExpr;
 
 public:
   SERIALIZABLE_CLASS(rename_expr)
@@ -1420,7 +1427,11 @@ public:
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-	rename_expr(static_context* sctx,	const QueryLoc&, expr_t, expr_t);
+	rename_expr(
+        static_context* sctx,
+        const QueryLoc&,
+        expr_t,
+        expr_t);
 
 	expr* getTargetExpr() const { return theTargetExpr.getp(); }
 

@@ -35,7 +35,11 @@
 #include "types/typemanagerimpl.h"
 #include "types/schema/schema.h"
 #include "types/casting.h"
+
 #include "context/static_context.h"
+
+#include "compiler/parser/query_loc.h"
+
 
 namespace zorba
 {
@@ -1432,11 +1436,6 @@ bool GenericCast::castToAtomic(
     const XQType* aTargetType,
     namespace_context* aNsCtx)
 {
-#if 0
-  return GENV_ITEMFACTORY->createString(result, aStr)
-      && castToAtomic(result, result, aTargetType, aNCtx);
-
-#else
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   store::ItemFactory* lFactory = GENV_ITEMFACTORY;
 
@@ -1508,7 +1507,6 @@ bool GenericCast::castToAtomic(
   }
 
   return valid;
-#endif
 }
 
 
@@ -1700,20 +1698,77 @@ bool GenericCast::castToSimple(
 
 
 /*******************************************************************************
-  Casts a string to a qname.
+  Casts an atomic item to a qname, if possible.
 ********************************************************************************/
-bool GenericCast::castToQName (
+bool GenericCast::castToQName(
     store::Item_t& result,
-    xqpStringStore_t& qname,
-    namespace_context* aNCtx)
+    const store::Item_t& item,
+    namespace_context* nsCtx,
+    bool isAttrName,
+    const TypeManager& tm,
+    const QueryLoc& loc)
 {
-  return GENV_ITEMFACTORY->createString(result, qname)
-    && castToAtomic(result,
-                    result,
-                    &*GENV_TYPESYSTEM.QNAME_TYPE_ONE,
-                    GENV_TYPESYSTEM,
-                    aNCtx); 
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+
+  xqtref_t sourceType = tm.create_named_type(item->getType(), 
+                                             TypeConstants::QUANT_ONE);
+
+  ZORBA_ASSERT(item->isAtomic());
+  ZORBA_ASSERT(sourceType != NULL);
+
+  if (TypeOps::is_subtype(*sourceType, *rtm.QNAME_TYPE_ONE))
+  {
+    result = item;
+    return true;
+  }
+  else if (!TypeOps::is_subtype(*sourceType, *rtm.STRING_TYPE_ONE) &&
+           !TypeOps::is_equal(*sourceType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc, 
+                             "Item of type " << sourceType->toString()
+                             << " cannot be cast to QName.");
+  }
+
+  ErrorInfo errorInfo = { sourceType.getp(), rtm.QNAME_TYPE_ONE.getp() };
+
+  xqpStringStore_t strval = doTrim(item->getStringValue());
+
+  int32_t idx = strval->bytePositionOf(":");
+  int32_t lidx = strval->byteLastPositionOf(":", 1);
+  if (idx != lidx)
+    throwError(FORG0001, errorInfo);
+
+  xqpStringStore_t nsuri;
+  xqpStringStore_t prefix;
+  
+  if (idx < 0)
+  {
+    prefix = new xqpStringStore("");
+    if (nsCtx && !isAttrName)
+      nsCtx->findBinding(prefix, nsuri);
+  }
+  else 
+  {
+    prefix = strval->byteSubstr(0, idx);
+
+    if (!GenericCast::instance()->castableToNCName(prefix))
+      throwError(FORG0001, errorInfo);
+
+    if (nsCtx && !nsCtx->findBinding(prefix, nsuri))
+      throwError(FONS0004, errorInfo);
+  }
+
+  xqpStringStore_t local = strval->substr(idx + 1);
+
+  if (!GenericCast::instance()->castableToNCName(local))
+    throwError(FORG0001, errorInfo);
+
+  if (nsuri == NULL)
+    nsuri = new xqpStringStore("");
+
+  return GENV_ITEMFACTORY->createQName(result, nsuri, prefix, local);
 }
+
 
 /*******************************************************************************
   NCName				  ::= NCNameStartChar NCNameChar* // An XML Name, minus the ":" 

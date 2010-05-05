@@ -29,12 +29,14 @@
 #include "runtime/visitors/planiter_visitor.h"
 
 #include "types/root_typemanager.h"
+#include "types/casting.h"
 
 #include "compiler/xqddf/collection_decl.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
 #include "context/static_context_consts.h"
+#include "context/namespace_context.h"
 
 #include "system/globalenv.h"
 
@@ -364,6 +366,16 @@ ReplaceIterator::ReplaceIterator (
 }
 
 
+void ReplaceIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<ReplaceIterator, PlanIteratorState>*)this);
+
+  SERIALIZE_ENUM(store::UpdateConsts::ReplaceType, theType);
+  ar & theDoCopy;
+}
+
+
 bool
 ReplaceIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
@@ -564,12 +576,35 @@ BINARY_ACCEPT(ReplaceIterator);
 /*******************************************************************************
 
 ********************************************************************************/
+RenameIterator::RenameIterator (
+    static_context* sctx,
+    const QueryLoc& aLoc,
+    PlanIter_t target,
+    PlanIter_t source,
+    const NamespaceContext_t& nsctx)
+  :
+  BinaryBaseIterator<RenameIterator, PlanIteratorState>(sctx, aLoc, target, source),
+  theNsCtx(nsctx)
+{ 
+}
+
+
+void RenameIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (BinaryBaseIterator<RenameIterator, PlanIteratorState>*)this);
+
+  ar & theNsCtx;
+}
+
+
 bool
 RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 {
   store::StoreConsts::NodeKind lTargetKind;
   store::Item_t lTarget;
   store::Item_t lNewname;
+  store::Item_t qnameItem;
   store::Item_t temp;
   std::auto_ptr<store::PUL> lPul;
 
@@ -600,11 +635,44 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
 
   areNodeModifiersViolated(theSctx, lTarget, loc);
 
-  // because of codegen, it can be assumed that newname is already a qname 
-  consumeNext(lNewname, theChild1, aPlanState);
+  if (!consumeNext(lNewname, theChild1, aPlanState))
+  {
+    ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
+                         "Empty sequences cannot be cast to QName.");
+  }
+
+  if (consumeNext(temp, theChild1, aPlanState))
+  {
+    ZORBA_ERROR_LOC_DESC(XPTY0004, loc, 
+                         "Sequences with more than one item cannot be cast to QName.");
+  }
+
+  try
+  {
+    GenericCast::instance()->
+    castToQName(qnameItem,
+                lNewname,
+                theNsCtx.getp(),
+                (lTargetKind == store::StoreConsts::attributeNode),
+                *theSctx->get_typemanager(),
+                loc);
+  }
+  catch (error::ZorbaError& e)
+  {
+    if (e.theErrorCode != XPTY0004)
+    {
+      // the returned error codes are wrong for name casting => they must be changed
+      ZORBA_ERROR_LOC_DESC(XQDY0074, loc, 
+                           "Item cannot be cast to QName.");
+    }
+    else
+    {
+      throw e;
+    }
+  }
 
   lPul.reset(GENV_ITEMFACTORY->createPendingUpdateList());
-  lPul->addRename(lTarget, lNewname);
+  lPul->addRename(lTarget, qnameItem);
 
   result = lPul.release();
   STACK_PUSH(true, lState);

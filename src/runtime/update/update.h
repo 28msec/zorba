@@ -26,6 +26,7 @@
 
 namespace zorba {
 
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -90,14 +91,7 @@ public:
   ReplaceIterator,
   BinaryBaseIterator<ReplaceIterator, PlanIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (BinaryBaseIterator<ReplaceIterator, PlanIteratorState>*)this);
-
-    SERIALIZE_ENUM(store::UpdateConsts::ReplaceType, theType);
-    ar & theDoCopy;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   ReplaceIterator(
@@ -118,7 +112,36 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-BINARY_ITER(RenameIterator);
+class RenameIterator : public BinaryBaseIterator<RenameIterator,
+                                                 PlanIteratorState>
+{
+private:
+  NamespaceContext_t theNsCtx;
+
+public:
+  SERIALIZABLE_CLASS(RenameIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  RenameIterator,
+  BinaryBaseIterator<RenameIterator, PlanIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  RenameIterator(
+    static_context* sctx,
+    const QueryLoc& aLoc,
+    PlanIter_t target,
+    PlanIter_t source,
+    const NamespaceContext_t& nsctx);
+
+  ~RenameIterator() {}
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t&, PlanState&) const;
+};
+
 
 
 /*******************************************************************************

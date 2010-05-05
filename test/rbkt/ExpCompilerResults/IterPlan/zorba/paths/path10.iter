@@ -16,14 +16,14 @@ Iterator tree for main query:
               </EnclosedIterator>
               <ElementIterator>
                 <SingletonIterator value="xs:QName(,,c)"/>
-                <AttributeIterator qname="id">
+                <AttributeIterator qname="xs:QName(,,id)">
                   <SingletonIterator value="xs:string(1)"/>
                 </AttributeIterator>
                 <ElementIterator>
                   <SingletonIterator value="xs:QName(,,b)"/>
                   <ElementIterator>
                     <SingletonIterator value="xs:QName(,,c)"/>
-                    <AttributeIterator qname="id">
+                    <AttributeIterator qname="xs:QName(,,id)">
                       <SingletonIterator value="xs:string(3)"/>
                     </AttributeIterator>
                   </ElementIterator>
@@ -31,7 +31,7 @@ Iterator tree for main query:
               </ElementIterator>
               <ElementIterator>
                 <SingletonIterator value="xs:QName(,,c)"/>
-                <AttributeIterator qname="id">
+                <AttributeIterator qname="xs:QName(,,id)">
                   <SingletonIterator value="xs:string(2)"/>
                 </AttributeIterator>
               </ElementIterator>
@@ -56,7 +56,7 @@ Iterator tree for main query:
                 </TextIterator>
                 <ElementIterator>
                   <SingletonIterator value="xs:QName(,,c)"/>
-                  <AttributeIterator qname="id">
+                  <AttributeIterator qname="xs:QName(,,id)">
                     <SingletonIterator value="xs:string(4)"/>
                   </AttributeIterator>
                 </ElementIterator>

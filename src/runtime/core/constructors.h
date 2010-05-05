@@ -402,8 +402,8 @@ public:
 
 
 /*******************************************************************************
-  NameCast Iterator casts QNames of computed elements that are not known
-  till execution time.
+  NameCast Iterator casts QNames of computed elements or attributes that are not
+  known till execution time.
 ********************************************************************************/
 class NameCastIterator : public UnaryBaseIterator<NameCastIterator,
                                                   PlanIteratorState>
@@ -411,6 +411,7 @@ class NameCastIterator : public UnaryBaseIterator<NameCastIterator,
   friend class PrinterVisitor;
 private:
   NamespaceContext_t theNCtx;
+  bool               theIsAttrName;
 
 public:
   SERIALIZABLE_CLASS(NameCastIterator);
@@ -432,7 +433,8 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t& aChild,
-        const namespace_context* aNCtx);
+        const namespace_context* aNCtx,
+        bool isAttrName);
 
   virtual ~NameCastIterator();
 

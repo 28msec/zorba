@@ -78,7 +78,7 @@ Iterator tree for main query:
   <ReturnClause>
     <ElementIterator>
       <SingletonIterator value="xs:QName(,,item)"/>
-      <AttributeIterator qname="person">
+      <AttributeIterator qname="xs:QName(,,person)">
         <EnclosedIterator attr_cont="true">
           <UnhoistIterator>
             <LetVarIterator varname="$$opt_temp_2"/>
