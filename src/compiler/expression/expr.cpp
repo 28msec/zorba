@@ -1768,7 +1768,9 @@ void copy_clause::serialize(::zorba::serialization::Archiver& ar)
 
 copy_clause_t copy_clause::clone(expr::substitution_t& subst) const {
   ZORBA_ASSERT(theVar && theExpr);
-  return new copy_clause(theVar->clone(subst), theExpr->clone(subst)); 
+  return new copy_clause(
+    static_cast<var_expr*>(theVar->clone(subst).getp()), 
+    theExpr->clone(subst));   
 }
 
 transform_expr::transform_expr(
