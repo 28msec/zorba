@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -25,14 +25,14 @@
 
 #include "zorbautils/mutex.h"
 
-#include "common/shared_types.h" 
+#include "common/shared_types.h"
 
 #include "zorbatypes/xqpstring.h"
 
 #include "zorbaserialization/class_serializer.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 class RCObject;
@@ -51,7 +51,7 @@ class CompilerCB;
   - theFileName :
   The filename of the query.
 
-  - theStaticContext : 
+  - theStaticContext :
   rchandle to the root static context for this xquery. This sctx may be (a) a
   child of the zorba root sctx, or (b) a child of an sctx that was created by
   the application, or (c) if this XQuery obj is a clone of another XQuery obj,
@@ -124,7 +124,7 @@ class CompilerCB;
 
   - theSAX2Handler :
   sax content handler that provide event-based xml parser
- 
+
 ********************************************************************************/
 class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseClass
 {
@@ -151,7 +151,7 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
     void serialize(::zorba::serialization::Archiver& ar);
 
   public:
-    long* getSharedRefCounter() const { return NULL; }  
+    long* getSharedRefCounter() const { return NULL; }
 
     SYNC_CODE(virtual RCLock* getRCLock() const { return &theRCLock; })
 
@@ -173,8 +173,8 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
 
   CompilerCB                       * theCompilerCB;
 
-  PlanProxy_t                        thePlan; 
-  
+  PlanProxy_t                        thePlan;
+
   // dynamic stuff
   dynamic_context                  * theDynamicContext;
 
@@ -183,12 +183,12 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   std::vector<ResultIteratorImpl*>   theResultIterators;
 
   // utility stuff
-  error::ErrorManager              * theErrorManager; 
-  ErrorHandler                     * theErrorHandler; 
-  bool                               theUserErrorHandler; 
+  error::ErrorManager              * theErrorManager;
+  ErrorHandler                     * theErrorHandler;
+  bool                               theUserErrorHandler;
 
-  SAX2_ContentHandler              * theSAX2Handler; 
-    
+  SAX2_ContentHandler              * theSAX2Handler;
+
   bool                               theIsClosed;
 
 
@@ -211,6 +211,10 @@ public:
 
   void
   registerErrorHandler(ErrorHandler*);
+
+  // Returns NULL if no user ErrorHandler is registered
+  ErrorHandler*
+  getRegisteredErrorHandler();
 
   void
   resetErrorHandler();
@@ -246,16 +250,16 @@ public:
   void
   compile(const String&);
 
-  void 
+  void
   compile(const String&, const Zorba_CompilerHints_t& aHints);
-      
-  void 
+
+  void
   compile(const String&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
-  
-  void 
+
+  void
   compile(std::istream&, const Zorba_CompilerHints_t& aHints);
-    
-  void 
+
+  void
   compile(std::istream&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
 
   void
@@ -272,7 +276,7 @@ public:
 
   void
   registerSAXHandler(SAX2_ContentHandler *  aSAXHandler);
-    
+
   void
   executeSAX(SAX2_ContentHandler *  aSAXHandler);
 
@@ -297,7 +301,7 @@ public:
   isUpdating() const;
 
   bool
-  saveExecutionPlan(std::ostream& os, 
+  saveExecutionPlan(std::ostream& os,
                     Zorba_binary_plan_format_t archive_format = ZORBA_USE_BINARY_ARCHIVE,
                     Zorba_save_plan_options_t save_options = DONT_SAVE_UNUSED_FUNCTIONS);
 
@@ -315,7 +319,7 @@ public:
 
   std::string
   getProfileName() const;
-  
+
   void
   debug( unsigned short aCommandPort, unsigned short anEventPort );
 
@@ -341,9 +345,9 @@ public:
     unsigned short anEventPort = 9000);
 
 protected:
-    
+
   XQueryImpl();
-      
+
   void doCompile(
         std::istream&,
         const Zorba_CompilerHints_t& aHints,
@@ -351,7 +355,7 @@ protected:
 
   PlanWrapper_t generateWrapper();
 
-  // special serialize and applyUpdate function that is used by debugger 
+  // special serialize and applyUpdate function that is used by debugger
   // and by the public serialize and applyUpdate functions, respectively.
   // they are passed an opened PlanWrapper
   // important: this function does not (read/write) lock the store. this
@@ -362,7 +366,7 @@ protected:
   // after this function has finished, the PlanWrapper also needs to be
   // closed by the caller
   void serialize(
-        std::ostream&, 
+        std::ostream&,
         PlanWrapper_t& aWrapper,
         const Zorba_SerializerOptions_t* = NULL);
 
@@ -384,8 +388,11 @@ protected:
 
   // check whether the query has not been compiled, and if not, fire an error
   void checkNotCompiled() const;
- 
+
   void checkIsDebugMode() const;
+
+  // returns true if there are active iterators, false otherwise
+  bool activeIterators() const;
 };
 
 

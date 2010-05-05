@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,8 +47,8 @@
 
 namespace zorba {
 
-#define ZORBA_DCTX_TRY try 
- 
+#define ZORBA_DCTX_TRY try
+
 #define ZORBA_DCTX_CATCH  catch (error::ZorbaError& e) { \
     ZorbaImpl::notifyError(theQuery->theErrorHandler, e); \
   } catch (std::exception& e) { \
@@ -67,7 +67,7 @@ DynamicContextImpl::DynamicContextImpl(const XQueryImpl* aQuery)
 }
 
 
-DynamicContextImpl::~DynamicContextImpl() 
+DynamicContextImpl::~DynamicContextImpl()
 {
 }
 
@@ -110,7 +110,7 @@ DynamicContextImpl::setVariable(
     Iterator* lIter = aIterator.get();
     if (!lIter)
       ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
-        
+
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
     xqpStringStore_t lString = Unmarshaller::getInternalString(aQName);
@@ -127,7 +127,7 @@ DynamicContextImpl::setVariable(
 
 bool
 DynamicContextImpl::setVariable(
-    const String& aNamespace, 
+    const String& aNamespace,
     const String& aLocalname,
     const Iterator_t& aIterator )
 {
@@ -138,7 +138,7 @@ DynamicContextImpl::setVariable(
     Iterator* lIter = aIterator.get();
     if (!lIter)
       ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid Iterator given");
-        
+
     store::Iterator_t lRes = Unmarshaller::getInternalIterator(lIter);
 
     xqpStringStore_t lNamespace = Unmarshaller::getInternalString(aNamespace);
@@ -174,7 +174,7 @@ DynamicContextImpl::getVariable(
     store::Item_t lItem;
     store::Iterator_t lIter;
     theCtx->get_variable(lExpandedName, QueryLoc::null, lItem, lIter);
-    if (! lItem.isNull()) 
+    if (! lItem.isNull())
     {
       aItem = lItem;
     }
@@ -210,7 +210,7 @@ DynamicContextImpl::setVariableAsDocument(
 
     store::Item_t docItem;
     docItem = uriResolver->resolve(docUriItem, theStaticContext, true, false);
-    
+
     if(docItem.isNull())
       return false;
 
@@ -235,7 +235,7 @@ DynamicContextImpl::setVariableAsDocument(
                                                            theStaticContext,
                                                            loc);
         ZORBA_ASSERT(success);
-      
+
         if (docItem != validatedNode)
         {
           GENV_STORE.deleteDocument(docUri);
@@ -262,7 +262,7 @@ DynamicContextImpl::setVariableAsDocument(
 bool
 DynamicContextImpl::setVariableAsDocument(
     const String& aVarName,
-    const String& aDocUri, 
+    const String& aDocUri,
     std::auto_ptr<std::istream> aStream,
     validation_mode_t aMode)
 {
@@ -296,7 +296,7 @@ DynamicContextImpl::setVariableAsDocument(
                                                            theStaticContext,
                                                            loc);
         ZORBA_ASSERT(success);
-      
+
         if (docItem != validatedNode)
         {
           GENV_STORE.deleteDocument(docUri);
@@ -340,7 +340,7 @@ DynamicContextImpl::setContextItem ( const Item& aItem )
   return false;
 }
 
-  
+
 bool
 DynamicContextImpl::setContextItemAsDocument (
     const String& aDocURI,
@@ -383,7 +383,7 @@ DynamicContextImpl::setContextItemAsDocument (
 
     store::Item_t   docItem;
     docItem = uri_resolver->resolve(uriItem, theStaticContext, true, false);
-    
+
     if(docItem.isNull())
       return false;
 
@@ -421,18 +421,18 @@ DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
     checkNoIterators();
 
     store::Item_t lItem = Unmarshaller::getInternalItem(aDateTimeItem);
-    
+
     ZorbaImpl::checkItem(lItem);
 
     xqtref_t lItemType = theStaticContext->get_typemanager()->
                          create_named_type(lItem->getType(),
                                            TypeConstants::QUANT_ONE);
 
-    if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE)) 
+    if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
     {
       ZORBA_ERROR_DESC_OSS(API0014_INVALID_ARGUMENT,
-                           "Given item of type [" << lItemType->toString() 
-                           << "] is not a subtype of [" 
+                           "Given item of type [" << lItemType->toString()
+                           << "] is not a subtype of ["
                            << GENV_TYPESYSTEM.DATETIME_TYPE_ONE->toString() << "]");
     }
 
@@ -443,7 +443,7 @@ DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
   return false;
 }
 
-  
+
 Item
 DynamicContextImpl::getCurrentDateTime( ) const
 {
@@ -503,13 +503,8 @@ DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
 
 void DynamicContextImpl::checkNoIterators()
 {
-  ulong numIters = theQuery->theResultIterators.size();
-
-  for (ulong i = 0; i < numIters; i++)
-  {
-    if (theQuery->theResultIterators[i]->isActive())
-      ZORBA_ERROR(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS);
-  }
+  if (theQuery->activeIterators())
+    ZORBA_ERROR(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS);
 }
 
 
@@ -523,6 +518,7 @@ DynamicContextImpl::getDefaultCollection() const
   ZORBA_DCTX_CATCH
   return Item();
 }
+
 
 bool
 DynamicContextImpl::addExternalFunctionParam (

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -50,7 +50,7 @@
 #include "compiler/api/compiler_api.h"
 #include "compiler/api/compilercb.h"
 
-#include "runtime/base/plan_iterator.h" 
+#include "runtime/base/plan_iterator.h"
 #include "runtime/api/plan_wrapper.h"
 #include "runtime/visitors/iterprinter.h"
 #include "runtime/visitors/printer_visitor_api.h"
@@ -66,7 +66,7 @@
 #include "debugger/zorba_debugger_server.h"
 #include "debugger/zorba_debugger_commons.h"
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(XQueryImpl::PlanProxy)
@@ -131,11 +131,11 @@ XQueryImpl::XQueryImpl()
 XQueryImpl::~XQueryImpl()
 {
   // only release resouces if not already released
-  // be careful with having non-pointers/rchandles as members in xqueryimpl 
+  // be careful with having non-pointers/rchandles as members in xqueryimpl
   if (!theIsClosed)
     close();
 }
-  
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -153,17 +153,17 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theCompilerCB;
   ar & theSctxMap;
-  ar & thePlan; 
+  ar & thePlan;
   ar & theStaticContext;
   if(!ar.is_serializing_out())
   {
     if(theStaticContext)
       RCHelper::addReference (theStaticContext);
-    theDynamicContextWrapper = NULL; 
-    theStaticContextWrapper = NULL;//new StaticContextImpl(theStaticContext, theErrorHandler); 
-    
+    theDynamicContextWrapper = NULL;
+    theStaticContextWrapper = NULL;//new StaticContextImpl(theStaticContext, theErrorHandler);
+
     theIsClosed = false;
-    
+
     theCompilerCB->theErrorManager = theErrorManager;
   }
 }
@@ -232,7 +232,7 @@ XQueryImpl::clone() const
     lImpl->registerErrorHandler(theErrorHandler);
     lImpl->thePlan = thePlan;
     lImpl->theFileName = theFileName;
-    
+
     // child static context
     lImpl->theStaticContext = theStaticContext->create_child_context();
     RCHelper::addReference(lImpl->theStaticContext);
@@ -249,7 +249,7 @@ XQueryImpl::clone() const
 
 /**
  * Error management
- */ 
+ */
 void
 XQueryImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
 {
@@ -258,9 +258,9 @@ XQueryImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
     SYNC_CODE(AutoMutex lock(&theCloningMutex);)
 
     checkNotClosed();
-        
+
     assert(theErrorHandler);
-    if ( ! theUserErrorHandler ) 
+    if ( ! theUserErrorHandler )
     {
       delete theErrorHandler;
     }
@@ -271,6 +271,24 @@ XQueryImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
   ZORBA_CATCH
 }
 
+// Returns NULL if no user ErrorHandler is registered
+ErrorHandler*
+XQueryImpl::getRegisteredErrorHandler()
+{
+  ErrorHandler* result = NULL;
+
+  ZORBA_TRY
+
+    SYNC_CODE(AutoMutex lock(&theCloningMutex);)
+
+    checkNotClosed();
+
+    if (theUserErrorHandler)
+      result = theErrorHandler;
+
+  ZORBA_CATCH
+  return result;
+}
 
 /*******************************************************************************
 
@@ -285,7 +303,7 @@ XQueryImpl::resetErrorHandler()
     checkNotClosed();
 
     assert (theErrorHandler);
-    if ( ! theUserErrorHandler ) 
+    if ( ! theUserErrorHandler )
       return;
 
     theErrorHandler = new DefaultErrorHandler();
@@ -350,7 +368,7 @@ XQueryImpl::getDynamicContext() const
       theDynamicContextWrapper = new DynamicContextImpl(this);
 
     return theDynamicContextWrapper;
-        
+
   ZORBA_CATCH
   return 0;
 }
@@ -401,7 +419,7 @@ XQueryImpl::executeSAX()
   checkNotClosed();
   checkCompiled();
 
-  if (isUpdating()) 
+  if (isUpdating())
   {
     ZORBA_ERROR_DESC(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY,
       "Can't perform SAX serialization with an updating query.");
@@ -412,10 +430,10 @@ XQueryImpl::executeSAX()
   Zorba_SerializerOptions_t opt;
   SerializerImpl::setSerializationParameters(lSerializer, opt);
 
-  try 
+  try
   {
     lPlan->open();
-    if (theSAX2Handler != NULL) 
+    if (theSAX2Handler != NULL)
     {
       lSerializer.serialize((intern::Serializable*)&*lPlan, std::cerr, theSAX2Handler);
       std::cerr << std::endl;
@@ -449,7 +467,7 @@ void
 XQueryImpl::parse(std::istream& aQuery)
 {
   ZORBA_TRY
-    if ( ! theStaticContext ) 
+    if ( ! theStaticContext )
     {
       // no context given => use the default one (i.e. a child of the root static context)
       theStaticContext = GENV.getRootStaticContext().create_child_context();
@@ -483,7 +501,7 @@ XQueryImpl::parse(std::istream& aQuery)
 void XQueryImpl::compile(const String& aQuery)
 {
   Zorba_CompilerHints_t lHints;
-  return compile(aQuery, lHints); 
+  return compile(aQuery, lHints);
 }
 
 
@@ -527,7 +545,7 @@ void XQueryImpl::compile(
 ********************************************************************************/
 void XQueryImpl::compile(
     const String& aQuery,
-    const StaticContext_t& aStaticContext, 
+    const StaticContext_t& aStaticContext,
     const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
@@ -555,7 +573,7 @@ void XQueryImpl::compile(
 ********************************************************************************/
 void XQueryImpl::compile(
     std::istream& aQuery,
-    const StaticContext_t& aStaticContext, 
+    const StaticContext_t& aStaticContext,
     const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
@@ -582,7 +600,7 @@ void XQueryImpl::compile(
 ********************************************************************************/
 void XQueryImpl::loadProlog(
     const String& aQuery,
-    const StaticContext_t& aStaticContext, 
+    const StaticContext_t& aStaticContext,
     const Zorba_CompilerHints_t& aHints)
 {
   ZORBA_TRY
@@ -620,7 +638,7 @@ void XQueryImpl::doCompile(
 
     theStaticContext->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
   }
-  else 
+  else
   {
     if (theStaticContext->get_local_typemanager() == NULL)
       theStaticContext->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
@@ -662,7 +680,7 @@ void XQueryImpl::doCompile(
   }
 
   // let's compile
-  PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName); 
+  PlanIter_t planRoot = lCompiler.compile(aQuery, theFileName);
 
   SYNC_CODE(AutoMutex lock(&theCloningMutex);)
 
@@ -670,7 +688,7 @@ void XQueryImpl::doCompile(
 }
 
 
-/** 
+/**
  * various ways to execute a query
  */
 
@@ -691,12 +709,12 @@ void XQueryImpl::execute(
 
   SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-  try 
+  try
   {
     lPlan->open();
     serialize(os, lPlan, opt);
   }
-  catch (...) 
+  catch (...)
   {
     lPlan->close();
     throw;
@@ -727,12 +745,12 @@ void XQueryImpl::execute(
 
   SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
 
-  try 
+  try
   {
     lPlan->open();
     serialize(aOutStream, lPlan, aCallbackFunction, aCallbackData, aSerOptions);
   }
-  catch (...) 
+  catch (...)
   {
     lPlan->close();
     throw;
@@ -755,7 +773,7 @@ void XQueryImpl::execute()
     checkNotClosed();
     checkCompiled();
 
-    if (!isUpdating()) 
+    if (!isUpdating())
     {
       ZORBA_ERROR_DESC(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY,
                        "Can't execute a non-updating query.");
@@ -766,7 +784,7 @@ void XQueryImpl::execute()
     SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::WRITE);)
 
     Iterator_t lIter(new ResultIteratorImpl(this, lPlan));
-  
+
     // call next once in order to apply updates
     // close is called in the destructor
     lIter->open();
@@ -792,7 +810,7 @@ void XQueryImpl::serialize(
 
     serializer lSerializer(theErrorManager);
 
-    if (opt != NULL) 
+    if (opt != NULL)
     {
       const Zorba_SerializerOptions_t lOptions = *opt;
       SerializerImpl::setSerializationParameters(lSerializer, lOptions);
@@ -818,7 +836,7 @@ void XQueryImpl::serialize(
 
     serializer lSerializer(theErrorManager);
 
-    if (opt != NULL) 
+    if (opt != NULL)
     {
       const Zorba_SerializerOptions_t lOptions = *opt;
       SerializerImpl::setSerializationParameters(lSerializer, lOptions);
@@ -882,13 +900,26 @@ PlanWrapper_t XQueryImpl::generateWrapper()
   return lPlan;
 }
 
+/*******************************************************************************
+  returns true if there are active iterators, false otherwise
+********************************************************************************/
+bool XQueryImpl::activeIterators() const
+{
+  ulong numIters = theResultIterators.size();
+
+  for (ulong i = 0; i < numIters; i++)
+    if (theResultIterators[i]->isActive())
+      return true;
+
+  return false;
+}
 
 /*******************************************************************************
 
 ********************************************************************************/
 void XQueryImpl::checkNotClosed() const
 {
-  if (theIsClosed) 
+  if (theIsClosed)
   {
     ZORBA_ERROR_DESC(API0022_QUERY_ALREADY_CLOSED,
                      "Can't perform the operation because the query is already closed");
@@ -901,13 +932,13 @@ void XQueryImpl::checkNotClosed() const
 ********************************************************************************/
 void XQueryImpl::checkCompiled() const
 {
-  if ( ! thePlan ) 
+  if ( ! thePlan )
   {
-    ZORBA_ERROR_DESC(API0003_XQUERY_NOT_COMPILED, 
+    ZORBA_ERROR_DESC(API0003_XQUERY_NOT_COMPILED,
                      "Can't perform the operation because the query is not compiled");
   }
 }
-  
+
 
 /*******************************************************************************
 
@@ -915,9 +946,9 @@ void XQueryImpl::checkCompiled() const
 void
 XQueryImpl::checkNotCompiled() const
 {
-  if ( thePlan ) 
+  if ( thePlan )
   {
-    ZORBA_ERROR_DESC(API0004_XQUERY_ALREADY_COMPILED, 
+    ZORBA_ERROR_DESC(API0004_XQUERY_ALREADY_COMPILED,
                      "Can't perform the operation because the query has already been compiled");
   }
 }
@@ -973,7 +1004,7 @@ void XQueryImpl::checkIsDebugMode() const
 void XQueryImpl::debug( unsigned short aCommandPort, unsigned short anEventPort )
 {
   Zorba_SerializerOptions lSerOptions;
-  lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;  
+  lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
   debug(std::cout, lSerOptions, aCommandPort, anEventPort);
 }
 
@@ -1037,7 +1068,7 @@ XQueryImpl::printPlan( std::ostream& aStream, bool aDotFormat ) const
 
 std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery)
 {
-  aQuery->execute(os); 
+  aQuery->execute(os);
   return os;
 }
 
@@ -1045,11 +1076,11 @@ std::ostream& operator<< (std::ostream& os, XQuery* aQuery)
 {
   XQueryImpl* lQuery = dynamic_cast<XQueryImpl*>(aQuery);
   ZORBA_ASSERT (lQuery != NULL);
-  lQuery->execute(os); 
+  lQuery->execute(os);
   return os;
 }
 
-bool XQueryImpl::saveExecutionPlan(std::ostream &os, 
+bool XQueryImpl::saveExecutionPlan(std::ostream &os,
                                    Zorba_binary_plan_format_t archive_format,
                                    Zorba_save_plan_options_t save_options)
 {

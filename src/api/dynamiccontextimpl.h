@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,7 @@ class XQueryImpl;
 
 /*******************************************************************************
 
-  Wrapper of the internal dynamic_context class. 
+  Wrapper of the internal dynamic_context class.
 
   An instance of DynamicContextImpl is created when the application asks for
   the dynamic context of a query (see XQueryImpl::getDynamicContext() method).
@@ -38,7 +38,7 @@ class XQueryImpl;
 
   theCtx :
   Pointer to the internal dynamic_context obj (which is owned by the XQuery obj).
-  
+
   theStaticContext :
   Pointer to the internal static_context obj (which is owned by the XQuery obj).
   Access to the static context is needed to resolve names, etc.
@@ -52,6 +52,9 @@ class DynamicContextImpl : public DynamicContext
 {
   friend class Unmarshaller; // needs to get the context out of this class
   friend class XQueryImpl;
+  friend class StatelessExtFunctionCallIterator;  // StatelessExtFunctionCallIterator needs to
+                                                  // create a wrapper to a dynamic_context to pass it to the external function
+
 
 protected:
   const XQueryImpl          * theQuery;
@@ -104,7 +107,7 @@ public:
 
   virtual bool
   setContextItemAsDocument(
-        const String& aDocURI, 
+        const String& aDocURI,
         std::auto_ptr<std::istream> aInStream);
 
   virtual bool
@@ -115,7 +118,7 @@ public:
 
   virtual bool
   setCurrentDateTime( const Item& aDateTimeItem );
-      
+
   virtual Item
   getCurrentDateTime() const;
 

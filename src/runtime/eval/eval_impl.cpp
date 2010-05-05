@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,18 +27,17 @@
 #include "context/dynamic_context.h"
 #include "context/static_context.h"
 
-using namespace std;
 
 namespace zorba {
 
-PlanIter_t compile(
+static PlanIter_t compile(
     CompilerCB* ccb,
-    xqp_string query, 
+    xqp_string query,
     checked_vector<store::Item_t> varnames,
-    checked_vector<xqtref_t> vartypes) 
+    checked_vector<xqtref_t> vartypes)
 {
   XQueryCompiler compiler(ccb);
-  istringstream os(query);
+  std::istringstream os(query);
   xqpStringStore_t dummyname = new xqpStringStore("");
   parsenode_t ast = compiler.parse(os, dummyname);
   QueryLoc loc;
@@ -48,14 +47,14 @@ PlanIter_t compile(
     ZORBA_ERROR_LOC(XPST0003, loc);
 
   rchandle<Prolog> prolog = mm->get_prolog();
-  if (prolog == NULL) 
+  if (prolog == NULL)
   {
     prolog = new Prolog(loc, NULL, NULL);
     mm->set_prolog(prolog);
   }
 
   rchandle<VFO_DeclList> vfo = prolog->get_vfo_list();
-  if (vfo == NULL) 
+  if (vfo == NULL)
   {
     vfo = new VFO_DeclList(loc);
     prolog->set_vfo_list(vfo);
@@ -70,7 +69,7 @@ PlanIter_t compile(
                                 true));
   }
   // TODO: give eval'ed code the types of the variables (for optimization)
-  
+
   return compiler.compile(ast);
 }
 
@@ -86,28 +85,24 @@ void EvalIterator::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t item;
   short sctxid;
-
   EvalIteratorState* state;
+
   DEFAULT_STACK_INIT(EvalIteratorState, state, planState);
-
-  // set up eval state's ccb
-  state->ccb.reset(new CompilerCB(*planState.theCompilerCB));
-
-  state->ccb->theRootSctx = getStaticContext(planState)->create_child_context();
-
-  sctxid = state->ccb->theSctxMap->size() + 1;
-
-  (*planState.theCompilerCB->theSctxMap)[sctxid] = state->ccb->theRootSctx; 
 
   CONSUME(item, 0);
 
   {
+    // set up eval state's ccb
+    state->ccb.reset(new CompilerCB(*planState.theCompilerCB));
+    state->ccb->theRootSctx = getStaticContext(planState)->create_child_context();
+    sctxid = state->ccb->theSctxMap->size() + 1;
+    (*planState.theCompilerCB->theSctxMap)[sctxid] = state->ccb->theRootSctx;
     state->dctx.reset(new dynamic_context(planState.dctx()));
-    
+
     state->eval_plan.reset(new PlanWrapper(compile(state->ccb.get(),
                                                    &*item->getStringValue(),
                                                    varnames,
@@ -116,9 +111,10 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                            state->dctx.get(),
                                            planState.theQuery, // HACK/TODO: use the right query (static or dynamic context)
                                            planState.theStackDepth + 1));
+
     state->eval_plan->checkDepth(loc);
-    
-    for (unsigned i = 0; i < theChildren.size() - 1; i++) 
+
+    for (unsigned i = 0; i < theChildren.size() - 1; i++)
     {
       store::Iterator_t lIter = new PlanIteratorWrapper(theChildren[i + 1], planState);
       // TODO: is saving an open iterator efficient?
@@ -128,7 +124,7 @@ bool EvalIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     }
   }
 
-  while (state->eval_plan->next(result)) 
+  while (state->eval_plan->next(result))
   {
     STACK_PUSH(true, state);
   }
