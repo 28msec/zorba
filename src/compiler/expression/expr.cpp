@@ -1154,9 +1154,10 @@ void extension_expr::compute_scripting_kind()
 }
 
 expr_t extension_expr::clone(substitution_t& subst) const {
-  rchandle<extension_expr> lClone = (
-  theExpr == 0 ? new extension_expr(theSctx, get_loc())
-               : new extension_expr(theSctx, get_loc(), theExpr->clone()) );
+  rchandle<extension_expr> lClone(0);
+  lClone = (
+    theExpr == 0 ? new extension_expr(theSctx, get_loc())
+                 : new extension_expr(theSctx, get_loc(), theExpr->clone()) );
   // pragm doesn't contain expressions. Thus, it is not cloned.
   for ( std::vector<rchandle<pragma> >::const_iterator lIter = thePragmas.begin();
         lIter != thePragmas.end();

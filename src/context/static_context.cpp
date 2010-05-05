@@ -1607,7 +1607,7 @@ void static_context::bind_fn(
       theFunctionArityMap = new FunctionArityMap(0, NULL, 16, false);
     }
 
-    std::vector<function_t>* functions;
+    std::vector<function_t>* functions = 0;
 
     if (theFunctionArityMap->get(qname2, functions))
     {
