@@ -74,6 +74,7 @@ int canonicalizeAndCompare(
     while (!lRefInStream.eof()) 
     {
       memset(buf, 0, 2048);
+      memset(buf2, 0, 2048);
 
       lRefInStream.read(buf, 2048);
 
@@ -110,8 +111,8 @@ int canonicalizeAndCompare(
         ++bufp2;
       }
 
-      if (*bufp == '\0')
-        *bufp2 = *bufp;
+//       if (*bufp == '\0')
+//         *bufp2 = *bufp;
 
       lTmpRefResult.write(buf2, bufp2 - buf2);
     }
