@@ -65,6 +65,8 @@ public:
 	
 	void compute_scripting_kind();
 
+  expr_t clone(substitution_t& s) const;
+
 	void accept(expr_visitor&);
 
 	std::ostream& put(std::ostream& os) const;
@@ -134,6 +136,8 @@ public:
   const std::vector<expr_t>& get_vars() const { return theScopedVariables; }
 
 	void compute_scripting_kind();
+
+  expr_t clone(substitution_t& s) const;
 	
 	void accept(expr_visitor&);
 
