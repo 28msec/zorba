@@ -1264,13 +1264,16 @@ catch_clause_t catch_clause::clone(expr::substitution_t& subst) const
     lClause->add_nametest_h(lIter->getp());
   }
   if (theErrorCodeVar) {
-    lClause->set_error_code_var(theErrorCodeVar->clone(subst));
+    lClause->set_error_code_var(
+        static_cast<var_expr*>(theErrorCodeVar->clone(subst).getp()));
   }
   if (theErrorDescVar) {
-    lClause->set_error_desc_var(theErrorDescVar->clone(subst));
+    lClause->set_error_desc_var(
+        static_cast<var_expr*>(theErrorDescVar->clone(subst).getp()));
   }
   if (theErrorItemVar) {
-    lClause->set_error_item_var(theErrorItemVar->clone(subst));
+    lClause->set_error_item_var(
+        static_cast<var_expr*>(theErrorItemVar->clone(subst).getp()));
   }
   return lClause.getp();
 }
