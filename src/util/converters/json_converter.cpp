@@ -236,7 +236,7 @@ namespace zorba
     json::parser lParser;
     json::value* lValue = lParser.parse(lUCS4, lUCS4Len);
     std::wstring lErr = lParser.printerrors();
-    delete[] lUCS4;
+    free(lUCS4);
 
     //transform from UCS-4 to UTF-8
     aErrorLog = xqpString(lErr.c_str()).getStore();

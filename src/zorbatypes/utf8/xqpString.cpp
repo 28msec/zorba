@@ -1759,52 +1759,48 @@ xqpString::tokenize(
 }
 
 
-wchar_t * xqpString::getWCS(xqpString source)
+wchar_t * xqpString::getWCS(xqpString aSrc,
+                           int32_t *aDestLen)
 {
-  int32_t destCapacity =  source.length()*2 + 1;
-  wchar_t* destWCS;
-  destWCS = new wchar_t[destCapacity];
-  int32_t destLen;
-
-  UnicodeString unicodeStr = getUnicodeString(source.getStore());
-  int32_t srcLen = unicodeStr.length();
-  UChar* srcBuf = unicodeStr.getBuffer(srcLen);
-  UErrorCode status = U_ZERO_ERROR;
-
-  wchar_t* ret =  u_strToWCS(destWCS, destCapacity, &destLen, srcBuf, srcLen, &status);
-  unicodeStr.releaseBuffer (srcLen);
-
-  if(U_FAILURE(status))
-  {
-    assert(false);
-  }
-
-  return ret;
+  return getWCS(aSrc.c_str(), aSrc.length(), aDestLen);
 }
 
 wchar_t * xqpString::getWCS(const char * aSrc,
                             const unsigned int aSrcLen,
                             int32_t *aDestLen)
 {
-  int32_t destCapacity =  aSrcLen*2 + 1;
-  wchar_t* destWCS;
-  destWCS = new wchar_t[destCapacity];
-//   int32_t destLen;
+  wchar_t* wDest = NULL;
+  int32_t wDestLen = 0;
+  int32_t reqLen= 0;
 
   UnicodeString unicodeStr = getUnicodeString(aSrc, aSrcLen);
-  int32_t srcLen = unicodeStr.length();
-  UChar* srcBuf = unicodeStr.getBuffer(srcLen);
+  const UChar* srcBuf = unicodeStr.getBuffer();
+  int32_t uSrcLen = unicodeStr.length();
   UErrorCode status = U_ZERO_ERROR;
 
-  wchar_t* ret =  u_strToWCS(destWCS, destCapacity, aDestLen, srcBuf, aSrcLen, &status);
-  unicodeStr.releaseBuffer (aSrcLen);
+  if(NULL != srcBuf)
+  {
+    //pre-flight
+    u_strToWCS(wDest, wDestLen, &reqLen, srcBuf, uSrcLen, &status);
+
+    if(status == U_BUFFER_OVERFLOW_ERROR)
+    {
+      status=U_ZERO_ERROR;
+      wDest = (wchar_t*) malloc(sizeof(wchar_t) * (reqLen+1));
+      wDestLen = reqLen + 1;
+      u_strToWCS(wDest, wDestLen, &reqLen, srcBuf, uSrcLen, &status);
+    }
+  }
+
+  unicodeStr.releaseBuffer ();
 
   if(U_FAILURE(status))
   {
     assert(false);
   }
 
-  return ret;
+  *aDestLen = wDestLen;
+  return wDest;
 }
 
 void xqpString::append_in_place(const char c)

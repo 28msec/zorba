@@ -689,11 +689,12 @@ public:
   tokenize(xqpString pattern, xqpString flags, int32_t *start_pos, bool *hasmatched) const;
 
   /**  Transforms a string encoded as UTF-8 into UCS-4.
-   *  @param source UTF-8 encoded string.
+   *  @param aSrc UTF-8 encoded string.
+   *  @param aDestLen the length of the resulted UCS-4 encoded string.
    *  @return a sequence of wchar_t units(UCS-4 encoded).
    */
   static wchar_t *
-  getWCS(xqpString source);
+  getWCS(xqpString aSrc, int32_t *aDestLen);
 
   static wchar_t *
   getWCS(const char * aSrc, const unsigned int aSrcLen, int32_t *aDestLen);
