@@ -426,6 +426,7 @@ public:
     (UnaryBaseIterator<NameCastIterator, PlanIteratorState>*)this);
 
     ar & theNCtx;
+	ar & theIsAttrName;
   }
 
 public:
