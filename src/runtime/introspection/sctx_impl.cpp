@@ -356,6 +356,7 @@ bool StaticallyKnownDocumentsIterator::nextImpl(
     PlanState& aPlanState) const
 {
   StaticallyKnownDocumentsIteratorState* state;
+  
   DEFAULT_STACK_INIT(StaticallyKnownDocumentsIteratorState, state, aPlanState);
 
   theSctx->get_all_documents(state->theDocuments);
