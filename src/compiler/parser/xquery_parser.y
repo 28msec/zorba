@@ -82,7 +82,6 @@ typedef std::pair<std::string,std::string> string_pair_t;
 #define SYMTAB_PUT( s ) driver.symtab.put( s )
 #define LOC( p ) driver.createQueryLoc( p )
 
-using namespace std;
 
 namespace zorba
 {
@@ -94,6 +93,7 @@ namespace parser
 
 #define YYDEBUG 1
 
+using namespace std;
 using namespace zorba;
 
 %}
@@ -936,10 +936,9 @@ template<typename T> inline void release_hack( T *ref ) {
 // %right DIV EXCEPT
 
 
-
 /*
-    To enable memory deallocation during error recovery, use %destructor.
-*/
+ *  To enable memory deallocation during error recovery, use %destructor.
+ */
 /*%printer    { debug_stream() << *$$; }    */
 /*%printer    { debug_stream () << $$; }    */
 /*%destructor { delete $$; }              */
@@ -953,8 +952,35 @@ template<typename T> inline void release_hack( T *ref ) {
 %{
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_scanner.h"
+
 #undef yylex
 #define yylex driver.lexer->lex
+
+/*
+ *  Functions to validate lists of properties
+ */
+// Returns false if validation fails and the parser should call YYERROR, true otherwise
+bool validate_collection_properties(parsenode* props, location& loc, parsenode* qname, xquery_driver& driver)
+{
+  XQUERY_ERROR err = CollectionDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
+  if (err != XQ_NO_ERROR) {
+    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), err, static_cast<QName*>(qname)->get_qname(), true));
+    return false;
+  }
+  return true;
+}
+
+// Returns false if validation fails and the parser should call YYERROR, true otherwise
+bool validate_index_properties(parsenode* props, location& loc, parsenode* qname, xquery_driver& driver)
+{
+  XQUERY_ERROR err = IndexDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
+  if (err != XQ_NO_ERROR) {
+    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), err, static_cast<QName*>(qname)->get_qname(), true));
+    return false;
+  }
+  return true;
+}
+
 %}
 
 /*
@@ -1131,8 +1157,8 @@ VFO_Decl
     ;
 
 
-// [6e] 
-DecimalFormatDecl 
+// [6e]
+DecimalFormatDecl
     :  DECLARE  DEFAULT  DECIMAL_FORMAT  DecimalFormatParamList
        {
          $$ = new DecimalFormatNode(LOC(@$), $4);
@@ -1428,7 +1454,7 @@ ModuleImport :
     }
   | IMPORT MODULE URI_LITERAL AT URILiteralList
     {
-      $$ = new ModuleImport(LOC(@$), 
+      $$ = new ModuleImport(LOC(@$),
                             SYMTAB($3),
                             dynamic_cast<URILiteralList*>($5));
       dynamic_cast<ModuleImport *>($$)->setComment(SYMTAB($2));
@@ -1609,76 +1635,98 @@ CollectionDecl :
     {
       $$ = new CollectionDecl( LOC(@$),
                               static_cast<QName*>($3),
-                              0,
-                              0,
-                              0);
+                              NULL,
+                              NULL,
+                              NULL);
     }
   | DECLARE COLLECTION QNAME NodeModifier
     {
       $$ = new CollectionDecl( LOC(@$),
                               static_cast<QName*>($3),
-                              0,
+                              NULL,
                               static_cast<NodeModifier*>($4),
-                              0);
+                              NULL);
     }
   | DECLARE COLLECTION QNAME AS CollectionTypeDecl
     {
       $$ = new CollectionDecl( LOC(@$),
                               static_cast<QName*>($3),
-                              0,
-                              0,
+                              NULL,
+                              NULL,
                               static_cast<SequenceType*>($5));
     }
   | DECLARE COLLECTION QNAME AS CollectionTypeDecl NodeModifier
     {
       $$ = new CollectionDecl( LOC(@$),
                               static_cast<QName*>($3),
-                              0,
+                              NULL,
                               static_cast<NodeModifier*>($6),
                               static_cast<SequenceType*>($5));
     }
   | DECLARE DeclPropertyList COLLECTION QNAME
     {
+      if (!validate_collection_properties($2, @$, $4, driver)) {
+        delete $2; delete $4; // these need to be deleted explicitly, as bison does not free them
+        YYERROR;
+      }
+
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
                                static_cast<DeclPropertyList*>($2), 0, 0);
+      delete $2;
     }
   | DECLARE DeclPropertyList COLLECTION QNAME NodeModifier
     {
+      if (!validate_collection_properties($2, @$, $4, driver )) {
+        delete $2; delete $4;  delete $5; // these need to be deleted explicitly, as bison does not free them
+        YYERROR;
+      }
+
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
                                static_cast<DeclPropertyList*>($2),
                                static_cast<NodeModifier*>($5),
-                               0);
+                               NULL);
+      delete $2;
     }
   | DECLARE DeclPropertyList COLLECTION QNAME AS CollectionTypeDecl
     {
+      if (!validate_collection_properties($2, @$, $4, driver)) {
+        delete $2; delete $4; delete $6; // these need to be deleted explicitly, as bison does not free them
+        YYERROR;
+      }
+
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
                                static_cast<DeclPropertyList*>($2),
-                               0,
+                               NULL,
                                static_cast<SequenceType*>($6));
+      delete $2;
     }
   | DECLARE DeclPropertyList COLLECTION QNAME AS CollectionTypeDecl NodeModifier
     {
+      if (!validate_collection_properties($2, @$, $4, driver)) {
+        delete $2; delete $4; delete $6; delete $7; // these need to be deleted explicitly, as bison does not free them
+        YYERROR;
+      }
+
       $$ = new CollectionDecl( LOC(@$),
                                static_cast<QName*>($4),
                                static_cast<DeclPropertyList*>($2),
                                static_cast<NodeModifier*>($7),
                                static_cast<SequenceType*>($6));
+      delete $2;
     }
   ;
 
 CollectionTypeDecl :
     KindTest
     {
-            $$ = static_cast<parsenode*>(
-           new SequenceType( LOC(@$), $1, NULL));
+      $$ = static_cast<parsenode*>(new SequenceType( LOC(@$), $1, NULL));
     }
   | KindTest OccurrenceIndicator
     {
-            $$ = static_cast<parsenode*>(
-           new SequenceType( LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2)));
+      $$ = static_cast<parsenode*>(new SequenceType( LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2)));
     }
 ;
 
@@ -1700,15 +1748,21 @@ IndexDecl :
                          static_cast<QName*>($3),
                          $6,
                          dynamic_cast<IndexKeyList*>($8),
-                         new DeclPropertyList( LOC(@$)));
+                         NULL);
     }
   | DECLARE DeclPropertyList INDEX QNAME ON NODES PathExpr BY IndexKeyList
     {
+      if (!validate_index_properties($2, @$, $4, driver)) {
+        delete $2; delete $4; delete $7; delete $9; // these need to be deleted explicitly, as bison does not free them
+        YYERROR;
+      }
+
       $$ = new IndexDecl( LOC(@$),
                          static_cast<QName*>($4),
                          $7,
                          dynamic_cast<IndexKeyList*>($9),
                          dynamic_cast<DeclPropertyList*>($2));
+      delete $2;
     }
   ;
 
@@ -4847,7 +4901,7 @@ FunctionTest :
 
 // [190] FunctionTest
 // ------------
-AnyFunctionTest : 
+AnyFunctionTest :
         FUNCTION LPAR STAR RPAR
         {
             $$ = new AnyFunctionTest(LOC(@$));
@@ -6168,14 +6222,13 @@ const char *the_tumbling = "tumbling", *the_sliding = "sliding",
 } // namespace parser
 
 /*
-    The error member function registers the errors to the driver.
-*/
-
+ *  The error member function registers the errors to the driver.
+ */
 void xquery_parser::error(zorba::xquery_parser::location_type const& loc, std::string const& msg)
 {
-    driver.set_expr(
-        new ParseErrorNode (driver.createQueryLoc (loc), XPST0003, msg)
-    );
+  driver.set_expr(
+    new ParseErrorNode (driver.createQueryLoc (loc), XPST0003, msg)
+  );
 }
 
 } // namespace zorba
@@ -6184,12 +6237,12 @@ void xquery_parser::error(zorba::xquery_parser::location_type const& loc, std::s
 #if 0
 static void print_token_value(FILE *file, int type, YYSTYPE value)
 {
-    if (type==VAR) {
-        fprintf (file, "%s", value.tptr->name);
-    }
-    else if (type==NUM) {
-        fprintf (file, "%d", value.val);
-    }
+  if (type==VAR) {
+    fprintf (file, "%s", value.tptr->name);
+  }
+  else if (type==NUM) {
+    fprintf (file, "%d", value.val);
+  }
 }
 #endif
 /* vim:set et sw=4 ts=4: */

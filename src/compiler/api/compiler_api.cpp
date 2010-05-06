@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -30,8 +30,8 @@
 #include "compiler/api/compiler_api_impl.h"
 #include "compiler/api/compilercb.h"
 #include "compiler/parser/xquery_driver.h"
-#include "compiler/parsetree/parsenodes.h" 
-#include "compiler/parsetree/parsenodes.h" 
+#include "compiler/parsetree/parsenodes.h"
+#include "compiler/parsetree/parsenodes.h"
 #include "compiler/expression/expr_base.h"
 #include "compiler/translator/translator.h"
 #include "compiler/rewriter/framework/rewriter_context.h"
@@ -47,10 +47,10 @@
 #include "zorbatypes/URI.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
-static void print_ast_tree(const parsenode *n, const std::string& name) 
+static void print_ast_tree(const parsenode *n, const std::string& name)
 {
   std::cout << "AST for " << name << "\n";
   print_parsetree_xml(std::cout, n);
@@ -62,7 +62,7 @@ static void print_xqdoc_tree(
     const parsenode* n,
     const xqpStringStore_t& name,
     std::ostream& anOutput,
-    store::Item_t aDateTime) 
+    store::Item_t aDateTime)
 {
   print_parsetree_xqdoc(anOutput, n, name->str(), aDateTime);
 }
@@ -71,11 +71,11 @@ static void print_xqdoc_tree(
 /*******************************************************************************
 
 ********************************************************************************/
-XQueryCompiler::XQueryCompiler(CompilerCB* aCompilerCB) 
+XQueryCompiler::XQueryCompiler(CompilerCB* aCompilerCB)
   :
   theCompilerCB(aCompilerCB),
   theResolver(0)
-{ 
+{
 }
 
 
@@ -102,7 +102,7 @@ void XQueryCompiler::parseOnly(
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIter_t XQueryCompiler::compile(parsenode_t ast) 
+PlanIter_t XQueryCompiler::compile(parsenode_t ast)
 {
   expr_t lExpr = normalize(ast);
   lExpr = optimize(lExpr);
@@ -160,11 +160,11 @@ parsenode_t XQueryCompiler::parse(
     const xqpStringStore_t& aFileName)
 {
   // TODO: move these out
-  if (Properties::instance()->printAst()) 
+  if (Properties::instance()->printAst())
   {
     theCompilerCB->theConfig.parse_cb = print_ast_tree;
   }
-  
+
   std::istream* xquery_stream = &aXQuery;
 
 #ifdef ZORBA_XQUERYX
@@ -216,10 +216,13 @@ parsenode_t XQueryCompiler::parse(
 #endif
   parsenode_t node = lDriver.get_expr();
 
-  if (typeid (*node) == typeid (ParseErrorNode)) 
+  if (typeid (*node) == typeid (ParseErrorNode))
   {
-    ParseErrorNode* err = static_cast<ParseErrorNode *> (&*node);
-    ZORBA_ERROR_LOC_DESC( XPST0003, err->get_location (), err->msg);
+    ParseErrorNode* err = static_cast<ParseErrorNode *>(&*node);
+    if (err->useParam)
+      ZORBA_ERROR_LOC_PARAM(err->err, err->get_location(), err->msg, "");
+    else
+      ZORBA_ERROR_LOC_DESC(err->err, err->get_location(), err->msg);
   }
 
   return node;
@@ -233,7 +236,7 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
 {
   expr_t lExpr = translate(*aParsenode, theCompilerCB);
 
-  if ( lExpr == NULL ) 
+  if ( lExpr == NULL )
   {
     // TODO: can this happen?
     ZORBA_ERROR(API0002_COMPILE_FAILED);
@@ -248,14 +251,14 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t XQueryCompiler::optimize(expr_t lExpr) 
+expr_t XQueryCompiler::optimize(expr_t lExpr)
 {
-  if (theCompilerCB->theConfig.opt_level > CompilerCB::config::O0) 
+  if (theCompilerCB->theConfig.opt_level > CompilerCB::config::O0)
   {
     RewriterContext rCtx(theCompilerCB, lExpr);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
     lExpr = rCtx.getRoot();
-    
+
     if (theCompilerCB->theConfig.optimize_cb != NULL)
       theCompilerCB->theConfig.optimize_cb (&*lExpr, "query");
   }
@@ -287,11 +290,11 @@ parsenode_t XQueryCompiler::createMainModule(
   // bugfix for #2934414
   // Check the library module's URI for validity. Raise an error with the
   // location of the module declaration if the URI is not valid.
-  try 
+  try
   {
     URI lURI(lib_namespace.getp());
   }
-  catch (error::ZorbaError& e) 
+  catch (error::ZorbaError& e)
   {
     ZORBA_ERROR_LOC_DESC(XQST0046,
                          mod_ast->get_decl()->get_location(),

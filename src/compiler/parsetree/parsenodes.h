@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -240,7 +240,7 @@ class DecimalFormatNode;
 // [] Moved here the definitions for FunctionSig and VarNameAndType from the
 // Bison parser file
 // ---------------
-class FunctionSig 
+class FunctionSig
 {
 public:
   rchandle<ParamList> param;
@@ -254,7 +254,7 @@ public:
 };
 
 
-class VarNameAndType 
+class VarNameAndType
 {
 public:
   rchandle<QName>        theName;
@@ -336,7 +336,7 @@ public:
     rchandle<QueryBody>,
     rchandle<Prolog>,
     rchandle<VersionDecl> = NULL);
-  
+
   rchandle<Prolog> get_prolog() const { return prolog_h; }
 
   rchandle<QueryBody> get_query_body() const { return query_body_h; }
@@ -501,7 +501,7 @@ class OrderingModeDecl : public parsenode
 {
 protected:
   StaticContextConsts::ordering_mode_t mode;
-    
+
 public:
   OrderingModeDecl(
     const QueryLoc&,
@@ -755,9 +755,9 @@ protected:
 public:
   URILiteralList(const QueryLoc&);
 
-  void push_back(const std::string& uri) 
+  void push_back(const std::string& uri)
   {
-    theUris.push_back(new xqpStringStore(uri)); 
+    theUris.push_back(new xqpStringStore(uri));
   }
 
   const xqpStringStore_t& operator[](int i) const { return theUris[i]; }
@@ -880,7 +880,7 @@ public:
 
 
 /*******************************************************************************
-  [*] DeclProperty ::= ("const" | "append-only" | "queue" | "mutable" | 
+  [*] DeclProperty ::= ("const" | "append-only" | "queue" | "mutable" |
                         "ordered" | "unordered" |
                         "unique" | "non" "unique" |
                         "value" "range" | "value" "equality" |
@@ -896,7 +896,7 @@ public:
     :
     parsenode(loc),
     theProperty(p)
-  { 
+  {
   }
 
   StaticContextConsts::declaration_property_t getProperty() const { return theProperty; }
@@ -971,7 +971,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class VarDeclWithInit : public VarDeclBase 
+class VarDeclWithInit : public VarDeclBase
 {
 protected:
   rchandle<exprnode> initexpr_h;
@@ -1024,7 +1024,7 @@ public:
                            ((":=" VarValue) |
                             ("external" (":=" VarDefaultValue)?))
 ********************************************************************************/
-class CtxItemDecl : public parsenode 
+class CtxItemDecl : public parsenode
 {
   rchandle<exprnode> expr;
 
@@ -1096,7 +1096,7 @@ public:
   ParseConstants::function_type_t get_type() const { return type; }
 
   void set_type(ParseConstants::function_type_t t) { type = t; }
- 
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -1137,7 +1137,7 @@ protected:
 
 public:
   Param(
-    const QueryLoc& loc, 
+    const QueryLoc& loc,
     rchandle<QName> name,
     rchandle<SequenceType> type);
 
@@ -1151,16 +1151,16 @@ public:
 
 
 /*******************************************************************************
-  [*] CollectionDecl ::= "declare" CollProperties "collection" QName 
+  [*] CollectionDecl ::= "declare" CollProperties "collection" QName
                          ("as" CollectionTypeDecl)?
-                         ("with" NodeModifier "nodes")? 
+                         ("with" NodeModifier "nodes")?
 
   [*] CollProperties ::= ("const" | "mutable" | "append-only" | "queue" |
                           "ordered" | "unordered")*
 
   [*] NodeModifier ::= ("read-only" | "mutable")
 
-  [*] CollectionTypeDecl ::= KindTest OccurenceIndicator? 
+  [*] CollectionTypeDecl ::= KindTest OccurenceIndicator?
 ********************************************************************************/
 class CollectionDecl : public parsenode
 {
@@ -1179,6 +1179,10 @@ public:
         NodeModifier* aNodeModifier,
         SequenceType* aTypeDecl);
 
+  // The function returns an XQuery error if the validation fails,
+  // and XQ_NO_ERROR otherwise
+  static XQUERY_ERROR validatePropertyList(DeclPropertyList* props);
+
   const QName* getName() const { return theName.getp(); }
 
   StaticContextConsts::declaration_property_t getUpdateMode() const
@@ -1191,7 +1195,7 @@ public:
     return theOrderMode;
   }
 
-  const NodeModifier* getNodeModifier() const 
+  const NodeModifier* getNodeModifier() const
   {
     return theNodeModifier.getp();
   }
@@ -1214,7 +1218,7 @@ public:
   NodeModifier(
         const QueryLoc&                      aLoc,
         StaticContextConsts::node_modifier_t aModifier)
-    : 
+    :
     parsenode(aLoc),
     theModifier(aModifier)
   {}
@@ -1230,7 +1234,7 @@ public:
                 "on" "nodes" IndexDomainExpr "by" IndexKeyList
 
   IndexPropertyList := ("unique" | "non" "unique" |
-                        "value" "range" | "value" "equality" | 
+                        "value" "range" | "value" "equality" |
                         "automatically" "maintained" | "manually" "maintained")*
 
   IndexDomainExpr := PathExpr
@@ -1243,7 +1247,7 @@ public:
 
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 ********************************************************************************/
-class IndexDecl : public parsenode 
+class IndexDecl : public parsenode
 {
 protected:
   rchandle<QName>        theName;
@@ -1261,6 +1265,10 @@ public:
         exprnode* domainExpr,
         IndexKeyList* key,
         DeclPropertyList* props);
+
+  // The function returns an XQuery error if the validation fails,
+  // and XQ_NO_ERROR otherwise
+  static XQUERY_ERROR validatePropertyList(DeclPropertyList* props);
 
   const QName* getName() const { return theName.getp(); }
 
@@ -1280,7 +1288,7 @@ public:
 /***************************************************************************//**
   IndexKeyList ::= IndexKeySpec ("," IndexKeySpec)*
 ********************************************************************************/
-class IndexKeyList : public parsenode 
+class IndexKeyList : public parsenode
 {
 protected:
   std::vector<rchandle<IndexKeySpec> > theKeySpecs;
@@ -1307,7 +1315,7 @@ public:
 
   OrderCollationSpec ::= "collation" URILiteral
 ********************************************************************************/
-class IndexKeySpec : public parsenode 
+class IndexKeySpec : public parsenode
 {
 protected:
   rchandle<exprnode>           theExpr;
@@ -1339,23 +1347,23 @@ public:
 
 
 /***************************************************************************//**
-  IntegrityConstraintDecl ::= "declare" "unchecked"? "integrity" "constraint" 
+  IntegrityConstraintDecl ::= "declare" "unchecked"? "integrity" "constraint"
       QName ICType
   ICType ::= ICCollSimpleCheck | ICCollUniqueKey | ICCollForeachNode |
              ICNodeOfType | ICForeighKey
   ICCollSimpleCheck ::= "on" "collection" QName "$" QName "check" ExprSimple
-  ICCollUniqueKey   ::= "on" "collection" QNAME "$" QName "check" "unique" 
+  ICCollUniqueKey   ::= "on" "collection" QNAME "$" QName "check" "unique"
                         "key" "(" Expr ")"
   ICCollForeachNode ::= "on" "collection" QNAME "foreach" "node" "$" QName
                         "check" ExprSingle
   ICNodeOfType      ::= "on" "node" QName "of""type" KindTest "check" ExprSingle
-  ICForeighKey      ::= "on" "foreign" "key" 
-                        "from" "collection" QName "node" "$" QName "keys" 
+  ICForeighKey      ::= "on" "foreign" "key"
+                        "from" "collection" QName "node" "$" QName "keys"
                            "(" Expr ")"
-                        "to" "collection" QName "node" "$" QName "keys" 
-                           "(" Expr ")"                        
+                        "to" "collection" QName "node" "$" QName "keys"
+                           "(" Expr ")"
 *******************************************************************************/
-class IntegrityConstraintDecl : public parsenode 
+class IntegrityConstraintDecl : public parsenode
 {
 public:
   enum ICKind
@@ -1368,8 +1376,8 @@ protected:
 
 public:
   IntegrityConstraintDecl(
-        const QueryLoc& loc, 
-        QName* name, 
+        const QueryLoc& loc,
+        QName* name,
         ICKind icKind);
 
   const QName* getName() const { return theICName.getp(); }
@@ -1387,16 +1395,16 @@ protected:
 
 public:
   ICColl(
-        const QueryLoc& loc, 
-        QName* name, 
+        const QueryLoc& loc,
+        QName* name,
         ICKind icKind,
         QName* collName)
     :
-    IntegrityConstraintDecl(loc, name, icKind), 
-    theCollName(collName) 
+    IntegrityConstraintDecl(loc, name, icKind),
+    theCollName(collName)
   {
   }
-  
+
   const QName* getCollName() const { return theCollName.getp(); }
 };
 
@@ -1409,21 +1417,21 @@ protected:
 
 public:
   ICCollSimpleCheck(
-        const QueryLoc& loc, 
-        QName* name, 
+        const QueryLoc& loc,
+        QName* name,
         QName* collName,
         QName* collVarName,
         rchandle<exprnode> exprSingle)
     :
     ICColl(loc,
-           name, 
+           name,
            IntegrityConstraintDecl::coll_check_simple,
-           collName), 
+           collName),
     theCollVarName(collVarName),
     theExprSingle(exprSingle)
   {
   }
-  
+
   const QName* getCollVarName() const { return theCollVarName.getp(); }
 
   const exprnode* getExpr() const { return theExprSingle.getp(); }
@@ -1432,7 +1440,7 @@ public:
 };
 
 
-class ICCollUniqueKeyCheck 
+class ICCollUniqueKeyCheck
   : public ICColl
 {
 protected:
@@ -1440,21 +1448,21 @@ protected:
   rchandle<exprnode>     theExpr;
 
 public:
-  ICCollUniqueKeyCheck ( const QueryLoc& loc, 
-                         QName* name, 
+  ICCollUniqueKeyCheck ( const QueryLoc& loc,
+                         QName* name,
                          QName* collName,
                          QName* nodeVarName,
                          rchandle<exprnode> expr)
     :
-    ICColl(loc, 
-           name, 
+    ICColl(loc,
+           name,
            IntegrityConstraintDecl::coll_check_unique_key,
-           collName), 
+           collName),
     theNodeVarName(nodeVarName),
     theExpr(expr)
   {
   }
-  
+
   const QName* getNodeVarName() const { return theNodeVarName.getp(); }
   const exprnode* getExpr() const { return theExpr.getp(); }
 
@@ -1462,7 +1470,7 @@ public:
 };
 
 
-class ICCollForeachNode 
+class ICCollForeachNode
   : public ICColl
 {
 protected:
@@ -1470,28 +1478,28 @@ protected:
   rchandle<exprnode>     theExprSingle;
 
 public:
-  ICCollForeachNode ( const QueryLoc& loc, 
-                      QName* name, 
+  ICCollForeachNode ( const QueryLoc& loc,
+                      QName* name,
                       QName* collName,
                       QName* collVarName,
-                      rchandle<exprnode> exprSingle) 
+                      rchandle<exprnode> exprSingle)
     :
     ICColl(loc,
-           name, 
+           name,
            IntegrityConstraintDecl::coll_foreach_node,
-           collName), 
+           collName),
     theCollVarName(collVarName),
     theExprSingle(exprSingle)
   {
   }
-  
+
   const QName* getCollVarName() const { return theCollVarName.getp(); }
   const exprnode* getExpr() const { return theExprSingle.getp(); }
 
   virtual void accept(parsenode_visitor&) const;
 };
 
-class ICForeignKey 
+class ICForeignKey
   : public IntegrityConstraintDecl
 {
 protected:
@@ -1503,27 +1511,27 @@ protected:
   rchandle<exprnode>     theToExpr;
 
 public:
-  ICForeignKey ( const QueryLoc& loc, 
-                 QName* name, 
+  ICForeignKey ( const QueryLoc& loc,
+                 QName* name,
                  QName* fromCollName,
                  QName* fromNodeVarName,
                  rchandle<exprnode> fromExpr,
                  QName* toCollName,
                  QName* toNodeVarName,
-                 rchandle<exprnode> toExpr) 
+                 rchandle<exprnode> toExpr)
     :
     IntegrityConstraintDecl(loc,
-                            name, 
-                            IntegrityConstraintDecl::foreign_key), 
+                            name,
+                            IntegrityConstraintDecl::foreign_key),
     theFromCollName(fromCollName),
     theFromNodeVarName(fromNodeVarName),
     theFromExpr(fromExpr),
     theToCollName(toCollName),
     theToNodeVarName(toNodeVarName),
-    theToExpr(toExpr) 
+    theToExpr(toExpr)
   {
   }
-  
+
   const QName* getFromCollName() const { return theFromCollName; }
   const QName* getFromNodeVarName() const { return theFromNodeVarName; }
   const exprnode* getFromExpr() const { return theFromExpr.getp(); }
@@ -1549,7 +1557,7 @@ public:
     rchandle<exprnode>);
 
   rchandle<exprnode> get_expr() const { return expr_h; }
-  
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -1570,7 +1578,7 @@ public:
   QueryBody();
 
   rchandle<exprnode> get_expr() const { return expr_h; }
-  
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -1586,7 +1594,7 @@ public:
 
   - If the Expr is an ApplyExpr, no Expr parsenode is generated. Instead, a
     BlockBody parsenode is generated, whose children are the ConcatExprs that
-    comprise the ApplyExpr. 
+    comprise the ApplyExpr.
 
   - If the Expr is a ConcatExpr, then an Expr parsenode is generated, whose
     children are the ExprSingles that comparise the ConcatExpr.
@@ -1599,10 +1607,10 @@ protected:
 public:
   Expr(const QueryLoc&);
 
-  void push_back(rchandle<exprnode> expr_h) 
+  void push_back(rchandle<exprnode> expr_h)
   {
     expr_hv.push_back(expr_h);
-    // update the location of the current expression to 
+    // update the location of the current expression to
     // end at the location of the last child that was added
     loc.setLineEnd(expr_h->get_location().getLineEnd());
     loc.setColumnEnd(expr_h->get_location().getColumnEnd());
@@ -1617,7 +1625,7 @@ public:
 
 
 /*******************************************************************************
-  [39] ExprSingle ::= 
+  [39] ExprSingle ::=
 
   ** XQuery 1.1 exprs
                       FLWORExpr |
@@ -1688,7 +1696,7 @@ public:
   4. In the case of any Expr that is an ApplyExpr.
 
   4. In the case of a WhileExpr if the Block that appears in the WhileExpr
-     syntax did not generate a BlockBody itself (i.e., case 3 above). In this 
+     syntax did not generate a BlockBody itself (i.e., case 3 above). In this
      case, the BlockBody has a single child, which is the Expr node generated
      by Block.
 
@@ -1740,7 +1748,7 @@ public:
 
   InitialClause ::= ForClause | LetClause
 
-  FLWORClauseList ::= (ForClause | LetClause)* 
+  FLWORClauseList ::= (ForClause | LetClause)*
                       WhereCluase?
                       GroupByClause?
                       OrderByClause?
@@ -1792,7 +1800,7 @@ protected:
 
   - For the traditional FLWOR:
 
-  FLWORClauseList ::= (ForClause | LetClause)* 
+  FLWORClauseList ::= (ForClause | LetClause)*
                       WhereCluase?
                       GroupByClause?
                       OrderByClause?
@@ -1825,7 +1833,7 @@ public:
                   OrderByClause |
                   CountClause
 ********************************************************************************/
-class FLWORClause : public parsenode 
+class FLWORClause : public parsenode
 {
 public:
   FLWORClause(const QueryLoc& loc) : parsenode(loc) {}
@@ -1835,7 +1843,7 @@ public:
 /*******************************************************************************
   ForOrLetClause ::= ForClause | LetClause
 ********************************************************************************/
-class ForOrLetClause : public FLWORClause 
+class ForOrLetClause : public FLWORClause
 {
 public:
   typedef enum { for_clause, let_clause } for_or_let_t;
@@ -1902,7 +1910,7 @@ protected:
   rchandle<PositionalVar> posvar_h;
   rchandle<FTScoreVar>    ftscorevar_h;
   rchandle<exprnode>      valexpr_h;
-  
+
 public:
   VarInDecl(
     const QueryLoc&,
@@ -2087,7 +2095,7 @@ class GroupSpecList : public parsenode
 {
 protected:
   std::vector<rchandle<GroupSpec> > spec_hv;
- 
+
 public:
   GroupSpecList(const QueryLoc&);
 
@@ -2150,7 +2158,7 @@ protected:
   rchandle<OrderSpecList> spec_list_h;
   bool stable_b;
   const FLWORExpr *flwor;
-    
+
 public:
   OrderByClause(
     const QueryLoc&,
@@ -2250,7 +2258,7 @@ protected:
 
 public:
   OrderDirSpec(const QueryLoc&, ParseConstants::dir_spec_t dir_spec);
-  
+
   ParseConstants::dir_spec_t getValue() const { return dir_spec; }
 
   void accept(parsenode_visitor&) const;
@@ -2320,7 +2328,7 @@ class ReturnExpr: public exprnode
   SlidingWindowClause ::= "sliding" "window" WindowVarDecl
                           WindowStartCondition WindowEndCondition
 ********************************************************************************/
-class WindowClause : public FLWORClause 
+class WindowClause : public FLWORClause
 {
 public:
   typedef enum { tumbling_window, sliding_window } win_clause_t;
@@ -2363,7 +2371,7 @@ public:
 /*******************************************************************************
   WindowVarDecl ::= "$" VarName TypeDeclaration? "in"  ExprSingle
 ********************************************************************************/
-class WindowVarDecl : public VarDeclWithInit 
+class WindowVarDecl : public VarDeclWithInit
 {
 public:
   WindowVarDecl (
@@ -2385,7 +2393,7 @@ public:
 
   WindowEndCondition ::= "only"? "end" WindowVars "when" ExprSingle
 ********************************************************************************/
-class FLWORWinCond : public parsenode 
+class FLWORWinCond : public parsenode
 {
   rchandle<WindowVars> winvars;
   rchandle<exprnode> val;
@@ -2422,7 +2430,7 @@ public:
                  ("previous" "$" PreviousItem)?
                  ("next" "$" NextItem)?
 ********************************************************************************/
-class WindowVars : public parsenode 
+class WindowVars : public parsenode
 {
   rchandle<PositionalVar> posvar;
   rchandle<QName> curr;
@@ -2436,7 +2444,7 @@ public:
         rchandle<QName> curr_,
         rchandle<QName> prev_,
         rchandle<QName> next_)
-    : 
+    :
     parsenode(loc),
     posvar(posvar_),
     curr(curr_),
@@ -2654,7 +2662,7 @@ public:
     rchandle<QName> varname,
     rchandle<SequenceType>,
     rchandle<exprnode>);
-    
+
   CaseClause(
     const QueryLoc&,
     rchandle<SequenceType>,
@@ -2808,7 +2816,7 @@ public:
   GeneralComp();
 
   enum ParseConstants::gencomp_t get_type() const { return type; }
-  
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -2829,7 +2837,7 @@ public:
   ValueComp();
 
   enum ParseConstants::valcomp_t get_type() const { return type; }
-  
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -2850,7 +2858,7 @@ public:
   NodeComp();
 
   enum ParseConstants::nodecomp_t get_type() const { return type; }
-  
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -3085,7 +3093,7 @@ public:
     const QueryLoc&,
     rchandle<exprnode>,
     rchandle<SingleType>);
-  
+
   rchandle<exprnode> get_unary_expr() const { return unary_expr_h; }
   rchandle<SingleType> get_singletype() const { return singletype_h; }
 
@@ -3313,7 +3321,7 @@ class RelativePathExpr : public exprnode
 protected:
   enum ParseConstants::steptype_t step_type;
   rchandle<exprnode> step_expr_h;
-  rchandle<exprnode> relpath_expr_h;  
+  rchandle<exprnode> relpath_expr_h;
 
 public:
   RelativePathExpr(
@@ -3322,11 +3330,11 @@ public:
     rchandle<exprnode>,
     rchandle<exprnode>);
 
-  enum ParseConstants::steptype_t get_step_type() const { return step_type; } 
+  enum ParseConstants::steptype_t get_step_type() const { return step_type; }
 
   rchandle<exprnode> get_step_expr() const { return step_expr_h; }
 
-  rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }  
+  rchandle<exprnode> get_relpath_expr() const { return relpath_expr_h; }
 
   virtual void accept(parsenode_visitor&) const;
 };
@@ -3427,13 +3435,13 @@ class AbbrevForwardStep : public parsenode
 protected:
   rchandle<parsenode> node_test_h;
   bool attr_b;
-  
+
 public:
   AbbrevForwardStep(
     const QueryLoc&,
     rchandle<parsenode>,
     bool attr_b);
-    
+
   const parsenode* get_node_test() const { return node_test_h.getp(); }
 
   bool get_attr_bit() const { return attr_b; }
@@ -3532,7 +3540,7 @@ protected:
   enum ParseConstants::wildcard_t theKind;
   xqpStringStore_t                thePrefix;
   xqpStringStore_t                theLocalName;
-  
+
 public:
   Wildcard(
     const QueryLoc& loc_,
@@ -3662,7 +3670,7 @@ public:
 
   [178] IntegerLiteral ::= Digits
 
-  [179] DecimalLiteral :: ("." Digits) | (Digits "." [0-9]*) 
+  [179] DecimalLiteral :: ("." Digits) | (Digits "." [0-9]*)
 
   [180] DoubleLiteral ::= (("." Digits) | (Digits ("." [0-9]*)?)) [eE] [+-]? Digits
 ********************************************************************************/
@@ -3677,7 +3685,7 @@ protected:
     virtual std::string toString () const = 0;
   };
 
-  template<typename T> class Value : public ValueBase 
+  template<typename T> class Value : public ValueBase
   {
   public:
     T data;
@@ -3759,7 +3767,7 @@ public:
   rchandle<exprnode> get_expr() const { return expr_h; }
 
   void accept(parsenode_visitor&) const;
-};  
+};
 
 
 /*******************************************************************************
@@ -3769,14 +3777,14 @@ class ContextItemExpr : public exprnode
 {
 protected:
   bool placeholder;
-  
+
 public:
   ContextItemExpr(const QueryLoc&, bool _placeholder = false);
 
   bool is_placeholder() const { return placeholder; }
 
   void accept(parsenode_visitor&) const;
-};  
+};
 
 
 /*******************************************************************************
@@ -3870,7 +3878,7 @@ public:
                               DirPIConstructor
 
   [119]  DirElemConstructor ::= "<" QName DirAttributeList?
-                                ("/>" | (">" DirElemContentList? "</" QName S? ">")) 
+                                ("/>" | (">" DirElemContentList? "</" QName S? ">"))
 
   [120] DirAttributeList ::= DirAttr | DirAttributeList DirAttr
 
@@ -3949,7 +3957,7 @@ public:
 /*******************************************************************************
   [119]  DirElemConstructor ::= "<" QName DirAttributeList
                                 ("/>" |
-                                 (">" DirElemContentList? "</" QName S? ">")) 
+                                 (">" DirElemContentList? "</" QName S? ">"))
 ********************************************************************************/
 class DirElemConstructor : public exprnode
 {
@@ -4009,7 +4017,7 @@ class DirAttr : public parsenode
 protected:
   rchandle<QName>             theName;
   rchandle<DirAttributeValue> theValue;
-  
+
 public:
   DirAttr(
         const QueryLoc&,
@@ -4069,7 +4077,7 @@ class QuoteAttrContentList : public parsenode
 {
 protected:
   std::vector<rchandle<QuoteAttrValueContent> > quot_atval_content_hv;
-  
+
 public:
   QuoteAttrContentList(const QueryLoc&);
 
@@ -4094,18 +4102,18 @@ class AposAttrContentList : public parsenode
 {
 protected:
   std::vector<rchandle<AposAttrValueContent> > apos_atval_content_hv;
-  
+
 public:
   AposAttrContentList(const QueryLoc&);
 
   void push_back(rchandle<AposAttrValueContent> apos_atval_content_h)
   {
-    apos_atval_content_hv.push_back(apos_atval_content_h); 
+    apos_atval_content_hv.push_back(apos_atval_content_h);
   }
 
   rchandle<AposAttrValueContent> operator[](int i) const
   {
-    return apos_atval_content_hv[i]; 
+    return apos_atval_content_hv[i];
   }
 
   void accept(parsenode_visitor&) const;
@@ -4652,9 +4660,9 @@ public:
   ItemType(
     const QueryLoc&,
     bool item_test_b);
-    
+
   ItemType(const QueryLoc&);
-    
+
   bool get_item_test_bit() const { return item_test_b; }
 
   virtual  void accept(parsenode_visitor&) const;
@@ -4673,7 +4681,7 @@ public:
   AtomicType(
     const QueryLoc&,
     rchandle<QName>);
-    
+
   rchandle<QName> get_qname() const { return qname_h; }
 
   void accept(parsenode_visitor&) const;
@@ -4718,7 +4726,7 @@ public:
   DocumentTest(const QueryLoc&);
 
   DocumentTest(const QueryLoc&, rchandle<ElementTest>);
-  
+
   DocumentTest(const QueryLoc&, rchandle<SchemaElementTest>);
 
   rchandle<ElementTest> get_elem_test() const
@@ -4901,7 +4909,7 @@ public:
   rchandle<QName> get_name() const { return qname_h; }
 
   bool get_optional_bit() const { return optional_b; }
-  
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -4931,7 +4939,7 @@ public:
 
   rchandle<exprnode> getExprSingle() const { return theExprSingle; }
 
-  rchandle<CatchListExpr> getCatchListExpr() const 
+  rchandle<CatchListExpr> getCatchListExpr() const
   {
     return theCatchListExpr.cast<CatchListExpr> ();
   }
@@ -5063,7 +5071,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class ExitExpr : public exprnode 
+class ExitExpr : public exprnode
 {
   rchandle<exprnode> value_h;
 public:
@@ -5083,7 +5091,7 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
-class AssignExpr : public exprnode 
+class AssignExpr : public exprnode
 {
   rchandle<QName>    theName;
   rchandle<exprnode> value_h;
@@ -5159,7 +5167,7 @@ public:
   Note: EvalVarDeclList is actually represented by a VarGetsDeclList parsenode
         and EvalVarDecls are  represented by VarGetsDec parsenodes.
 ********************************************************************************/
-class EvalExpr : public exprnode 
+class EvalExpr : public exprnode
 {
 protected:
   rchandle <VarGetsDeclList> vgdl;
@@ -5174,7 +5182,7 @@ public:
       vgdl(vgdl_),
       expr_h(expr_.dyn_cast<exprnode> ())
   {}
-  
+
   rchandle<VarGetsDeclList> get_vars () const { return vgdl; }
 
   rchandle<exprnode> get_expr () const { return expr_h; }
@@ -5403,16 +5411,16 @@ class CopyVarList : public exprnode
 {
 protected:
   std::vector<rchandle<VarBinding> > var_bindings;
-  
+
 public:
   CopyVarList(const QueryLoc& loc);
 
-  void push_back(rchandle<VarBinding> binding) 
+  void push_back(rchandle<VarBinding> binding)
   {
     var_bindings.push_back(binding);
   }
 
-  rchandle<VarBinding> operator[](int i) const 
+  rchandle<VarBinding> operator[](int i) const
   {
     return var_bindings[i];
   }
@@ -5537,7 +5545,7 @@ class TypedFunctionTest : public parsenode
 protected:
   rchandle<TypeList>     theArgTypes;
   rchandle<SequenceType> theReturnType;
-  
+
 public:
   TypedFunctionTest(
     const QueryLoc& loc_,
@@ -5553,7 +5561,7 @@ public:
   : parsenode(loc_),
     theArgTypes(aTypeList),
     theReturnType(aReturnType) {}
-  
+
   const rchandle<TypeList>& getArgumentTypes() const { return theArgTypes; }
   const rchandle<SequenceType>& getReturnType() const { return theReturnType; }
 
@@ -5575,13 +5583,13 @@ public:
     const QueryLoc& loc_,
     rchandle<exprnode> aPrimaryExpr
   ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(0){}
-  
+
   DynamicFunctionInvocation(
     const QueryLoc& loc_,
     rchandle<exprnode> aPrimaryExpr,
     rchandle<ArgList> aArgList
   ): exprnode(loc_), thePrimaryExpr(aPrimaryExpr), theArgList(aArgList){}
-  
+
   rchandle<exprnode> getPrimaryExpr() const { return thePrimaryExpr; }
   rchandle<ArgList> getArgList() const { return theArgList; }
 
@@ -6090,7 +6098,7 @@ public:
     FTRange const*
   );
   ~FTThesaurusID();
-  
+
   std::string const& get_uri() const { return uri_; }
   std::string const& get_relationship() const { return relationship_; }
   FTRange const* get_levels() const { return levels_; }

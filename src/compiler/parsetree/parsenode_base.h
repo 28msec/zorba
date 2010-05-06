@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -60,7 +60,7 @@ class XQDocumentable: public parsenode
   private:
     std::string theStringComment;
     mutable const XQDocComment* theComment;
-  
+
   public:
     XQDocumentable(const QueryLoc& loc): parsenode(loc), theComment(0){}
     ~XQDocumentable(){ delete theComment; }
@@ -90,7 +90,6 @@ public:
 	exprnode(const QueryLoc& loc) : parsenode(loc) { }
 
 public:
-
 	virtual void accept(parsenode_visitor&) const = 0;
 
 };
@@ -99,12 +98,13 @@ class ZORBA_DLL_PUBLIC ParseErrorNode : public parsenode {
 public:
   XQUERY_ERROR err;
   std::string msg;
-  ParseErrorNode (const QueryLoc& loc_,
-                  XQUERY_ERROR err_ = XPST0003, std::string msg_ = "")
-    : parsenode (loc_), err (err_), msg (msg_)
+  bool useParam;   // if true, msg is a parameter for the ZORBA_ERROR_LOC_PARAM() macro
+
+  ParseErrorNode (const QueryLoc& loc_, XQUERY_ERROR err_ = XPST0003, std::string msg_ = "", bool useParam_ = false)
+    :
+    parsenode (loc_), err(err_), msg(msg_), useParam(useParam_)
   {}
 
-public:
 	void accept(parsenode_visitor&) const {}
 };
 
