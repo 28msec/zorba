@@ -39,6 +39,7 @@
 
 #include "api/unmarshaller.h"
 #include "api/xqueryimpl.h"
+#include "api/staticcontextimpl.h"
 
 
 namespace zorba {
@@ -508,11 +509,12 @@ bool StatelessExtFunctionCallIterator::nextImpl(
     {
       lNonePureFct = dynamic_cast<const NonePureStatelessExternalFunction*>(theFunction);
       ZORBA_ASSERT(lNonePureFct);
-
       ZORBA_ASSERT(planState.theQuery);
-      state->theResult = lNonePureFct->evaluate(state->m_extArgs,
-                                               planState.theQuery->getStaticContext(),
-                                               planState.theQuery->getDynamicContext());
+
+      StaticContextImpl theSctxWrapper(planState.theCompilerCB->theRootSctx, planState.theQuery->getRegisteredErrorHandler()); 
+
+      // state->theResult = lNonePureFct->evaluate(state->m_extArgs, planState.theQuery->getStaticContext(), planState.theQuery->getDynamicContext());
+      state->theResult = lNonePureFct->evaluate(state->m_extArgs, &theSctxWrapper, planState.theQuery->getDynamicContext());
     }
 
   }
