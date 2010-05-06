@@ -26,7 +26,8 @@
 #include "system/globalenv.h"
 #include "zorbaserialization/serialization_engine.h"
 
-namespace zorba {
+namespace zorba
+{
 
 
 /***************************************************************************//**

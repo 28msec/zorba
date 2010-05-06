@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,8 +47,8 @@ UpdatePrimitive::UpdatePrimitive(PULImpl* pul, store::Item_t& target)
 {
   theTarget.transfer(target);
 }
-    
-    
+
+
 UpdatePrimitive::UpdatePrimitive(CollectionPul* pul, store::Item_t& target)
   :
   thePul(pul->thePul),
@@ -82,9 +82,9 @@ UpdatePrimitive::UpdatePrimitive(CollectionPul* pul)
 
 
 UpdatePrimitive::~UpdatePrimitive()
-{ 
+{
 }
-    
+
 
 /*******************************************************************************
 
@@ -424,7 +424,7 @@ void UpdSetElementType::apply()
 
     if (theHaveTypedValue)
     {
-      ZORBA_FATAL(target->numChildren() == 1, "");
+	  ZORBA_FATAL(target->numChildren() == 1, "");
       ZORBA_FATAL(target->getChild(0)->getNodeKind() == store::StoreConsts::textNode, "");
 
       TextNode* textChild = reinterpret_cast<TextNode*>(target->getChild(0));
@@ -610,7 +610,7 @@ void UpdPut::apply()
       DocumentNode* doc = GET_STORE().getNodeFactory().createDocumentNode();
       doc->setTree(elem->getTree());
       doc->setOrdPath(NULL, 1, store::StoreConsts::documentNode);
-      
+
       doc->insertChild(elem, 0);
 
       store::Item_t docItem(doc);
@@ -656,7 +656,7 @@ void UpdPut::undo()
 
 /*******************************************************************************
 
-********************************************************************************/ 
+********************************************************************************/
 UpdCollection::UpdCollection(
     CollectionPul* pul,
     store::Item_t& name,
