@@ -241,17 +241,20 @@ static void match_tokens( FTTokenIterator doc_tokens,
   while ( doc_tokens.hasNext() ) {
     FTTokenIterator const doc_tokens_copy( doc_tokens );
     query_tokens.reset();
-    FTToken const *dt_start = 0, *dt_end, *qt;
-    bool matches = true;
-    while ( doc_tokens.next( &dt_end ) && query_tokens.next( &qt ) ) {
+    FTToken const *dt_start = 0, *dt_end = 0;
+    while ( doc_tokens.hasNext() && query_tokens.hasNext() ) {
+      dt_end = &doc_tokens.current();
       if ( !dt_start )
         dt_start = dt_end;
-      if ( dt_end->word != qt->word ) {
-        matches = false;
+      FTToken const &qt = query_tokens.current();
+      if ( dt_end->word != qt.word ) {
+        //matches = false;
         break;
       }
+      doc_tokens.next();
+      query_tokens.next();
     }
-    if ( matches && !query_tokens.hasNext() ) {
+    if ( !query_tokens.hasNext() ) {
       ft_token_span ts;
       ts.pos.start  = dt_start->pos;
       ts.pos.end    = dt_end->pos;
@@ -571,8 +574,7 @@ static void apply_ftwords_all( FTTokenIterator &search_ctx,
                                FTToken::int_t query_pos,
                                ft_all_matches &result ) {
   if ( query_tokens.hasNext() ) {
-    FTTokenIterator::index_t const i = query_tokens.index();
-    FTTokenIterator first_query_token( query_tokens, i, i + 1 );
+    FTTokenIterator first_query_token( query_tokens.iterator() );
     query_tokens.next();
 
     ft_all_matches first_am;
@@ -596,8 +598,7 @@ static void apply_ftwords_any( FTTokenIterator &search_ctx,
                                FTToken::int_t query_pos,
                                ft_all_matches &result ) {
   if ( query_tokens.hasNext() ) {
-    FTTokenIterator::index_t const i = query_tokens.index();
-    FTTokenIterator first_query_token( query_tokens, i, i + 1 );
+    FTTokenIterator first_query_token( query_tokens.iterator() );
     query_tokens.next();
 
     ft_all_matches first_am;
@@ -627,8 +628,7 @@ static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
     ft_all_matches_seq all_am_seq;
     for ( FTToken::int_t pos = 0; query_tokens.hasNext();
           ++pos, query_tokens.next() ) {
-      FTTokenIterator::index_t const i = query_tokens.index();
-      FTTokenIterator query_token( query_tokens, i, i + 1 );
+      FTTokenIterator query_token( query_tokens.iterator() );
       ft_all_matches am;
       apply_query_tokens_as_phrase(
         search_ctx, query_token, query_pos + pos, am

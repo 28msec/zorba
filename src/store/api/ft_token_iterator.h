@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "store/api/ft_token.h"
+#include "zorbaerrors/Assert.h"
 
 namespace zorba {
 
@@ -42,38 +43,19 @@ public:
   FTTokenIterator( FTTokens const &tokens, index_t begin, index_t end ) :
     tokens_( &tokens ), begin_( begin ), end_( end )
   {
-    next_ = begin_;
+    ZORBA_ASSERT( end <= tokens_->size() );
+    ZORBA_ASSERT( begin <= end );
+    pos_ = begin_;
   }
 
   /**
-   * Constructs an FTTokenIterator.
+   * Gets the current token.
    *
-   * @param it      The other iterator.
-   * @param begin   The index of the beginning token.
-   * @param end     One greater than the index of the ending token.
+   * @return Returns said token.
    */
-  FTTokenIterator( FTTokenIterator const &it, index_t begin, index_t end ) :
-    tokens_( it.tokens_ ), begin_( begin ), end_( end )
-  {
-    next_ = begin_;
-  }
-
-  /**
-   * Gets the beginning index.
-   *
-   * @return Returns said index.
-   */
-  index_t begin() const {
-    return begin_;
-  }
-
-  /**
-   * Gets one past the ending index.
-   *
-   * @return Returns said index.
-   */
-  index_t end() const {
-    return end_;
+  FTToken const& current() const {
+    ZORBA_ASSERT( hasNext() );
+    return (*tokens_)[ pos_ ];
   }
 
   /**
@@ -92,7 +74,15 @@ public:
    * @return Returns <code>true</code> only if there is a next token.
    */
   bool hasNext() const {
-    return next_ < end_;
+    return pos_ < end_;
+  }
+
+  /**
+   * Creates a new iterator for the current element.
+   */
+  FTTokenIterator iterator() const {
+    ZORBA_ASSERT( hasNext() );
+    return FTTokenIterator( *tokens_, pos_, pos_ + 1 );
   }
 
   /**
@@ -105,40 +95,24 @@ public:
   bool next( FTToken const **ppToken = 0 ) {
     if ( hasNext() ) {
       if ( ppToken )
-        *ppToken = &((*tokens_)[ next_ ]);
-      ++next_;
+        *ppToken = &current();
+      ++pos_;
       return true;
     }
     return false;
   }
 
   /**
-   * Gets the TODO
-   */
-  index_t index() const {
-    return next_;
-  }
-
-  /**
    * Resets this iterator to the beginning.
    */
   void reset() {
-    next_ = begin_;
-  }
-
-  /**
-   * Gets the tokens over which this iterator is iterating.
-   *
-   * @return Returns said tokens.
-   */
-  FTTokens const& tokens() const {
-    return *tokens_;
+    pos_ = begin_;
   }
 
 private:
   FTTokens const *tokens_;              // pointer to allow operator=()
   index_t begin_, end_;                 // non-const to allow operator=()
-  index_t next_;
+  index_t pos_;
 };
 
 } // namespace zorba

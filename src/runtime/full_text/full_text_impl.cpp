@@ -69,6 +69,8 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
     }
   }
 
+  cout << "ftcontains=" << (ftcontains ? "true" : "false") << endl;
+
   STACK_PUSH( GENV_ITEMFACTORY->createBoolean( result, ftcontains ), state );
   STACK_END( state );
 }
