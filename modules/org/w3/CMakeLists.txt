@@ -14,5 +14,4 @@
 
 # all external module libraries are generated in the directory
 # of the corresponding .xq file
-ADD_SUBDIRECTORY(expath)
-ADD_SUBDIRECTORY(w3)
+ADD_SUBDIRECTORY(www)
