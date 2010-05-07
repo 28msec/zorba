@@ -1,4 +1,28 @@
 Zorba - The XQuery Processor
+version 1.2
+  * more introspection functions (e.g. in-scope-element and in-scope-attribute)
+  * first prototype for higher order functions from XQuery 1.1
+  * JSON module in (com/zorba-xquery/www/modules/json)
+  * huge performance improvements
+  * added an Atom schema to the build-in schemas
+  * register a callback function in the static context that is called
+    if a collection or index declaration is processed (compiled)
+  * nondeterministic (instead of sequential) functions in the file module
+  * reference counting the store (de)initialization
+  * many bug fixes; for example
+    - compile with Xerces 3.1
+    - loading external functions (prefix problem)
+    - plan serializer fixes
+    - serialization fixes
+    - base64 decoder
+    - loading documents with general entities
+    - EXPATH http-client fixes
+    - not hoisting nondeterministic functions
+    - scripting related fixes
+    - unicode related fixes (e.g. for parameters to the doc function)
+    - StaticContext::loadProlog fix
+    - SAX serialization fix
+
 version 1.0
   * Changes in the C++ API
     * Removed ResultIterator class. All public API methods use simply
