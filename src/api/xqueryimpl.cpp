@@ -712,6 +712,22 @@ void XQueryImpl::execute(
   try
   {
     lPlan->open();
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+    return;
+  } catch (FlowCtlException&) {
+    ZorbaImpl::notifyError(theErrorHandler, "User interrupt");
+    return;
+  } catch (std::exception& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e.what());
+    return;
+  } catch (...) {
+    ZorbaImpl::notifyError(theErrorHandler);
+    return;
+  }
+
+  try
+  {
     serialize(os, lPlan, opt);
   }
   catch (...)
@@ -748,6 +764,21 @@ void XQueryImpl::execute(
   try
   {
     lPlan->open();
+  } catch (error::ZorbaError& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+    return;
+  } catch (FlowCtlException&) {
+    ZorbaImpl::notifyError(theErrorHandler, "User interrupt");
+    return;
+  } catch (std::exception& e) {
+    ZorbaImpl::notifyError(theErrorHandler, e.what());
+    return;
+  } catch (...) {
+    ZorbaImpl::notifyError(theErrorHandler);
+    return;
+  }
+
+  try {
     serialize(aOutStream, lPlan, aCallbackFunction, aCallbackData, aSerOptions);
   }
   catch (...)

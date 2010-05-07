@@ -3379,6 +3379,7 @@ ValidateExpr
             $$ = new ValidateExpr(
                 LOC(@$), dynamic_cast<TypeName*>($3)->get_name(), $5
             );
+            delete $3;
         }
     ;
 
