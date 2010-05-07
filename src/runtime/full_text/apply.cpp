@@ -221,6 +221,7 @@ static void join_includes( ft_match::includes_t const &includes,
   result.push_back( si );
 }
 
+#if 0
 static void dump( char const *label, FTTokenIterator it ) {
   it.reset();
   cout << label << flush;
@@ -229,14 +230,15 @@ static void dump( char const *label, FTTokenIterator it ) {
     cout << " \"" << t->word << '"';
   cout << endl;
 }
+#endif
 
 static void match_tokens( FTTokenIterator doc_tokens,
                           FTTokenIterator query_tokens,
                           ft_token_spans &result ) {
-
+#if 0
   dump( "match_tokens(): doc_tokens: ", doc_tokens );
   dump( "match_tokens(): query_tokens: ", query_tokens );
-
+#endif
   doc_tokens.reset();
   while ( doc_tokens.hasNext() ) {
     FTTokenIterator const doc_tokens_copy( doc_tokens );
@@ -247,10 +249,8 @@ static void match_tokens( FTTokenIterator doc_tokens,
       if ( !dt_start )
         dt_start = dt_end;
       FTToken const &qt = query_tokens.current();
-      if ( dt_end->word != qt.word ) {
-        //matches = false;
+      if ( dt_end->word != qt.word )
         break;
-      }
       doc_tokens.next();
       query_tokens.next();
     }

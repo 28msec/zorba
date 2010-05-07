@@ -82,7 +82,7 @@ private:
   }
 
   FTTokenIterator search_context_;
-  PlanState plan_state_;
+  PlanState &plan_state_;
   std::stack<ft_all_matches*> eval_stack_;
 };
 
