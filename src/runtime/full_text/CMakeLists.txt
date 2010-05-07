@@ -17,7 +17,6 @@ SET(FULLTEXT_SRCS
     full_text_impl.cpp
     ftcontains_visitor.cpp
     apply.cpp
-    plan_iter_collector.cpp
     )
 
 # vim:set et sw=4 ts=4:
