@@ -443,10 +443,10 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
     flwor_clause* mostInnerVarClause = mostInnerVar->get_flwor_clause();
 
     flwor_expr* innerFlwor = NULL;
-    ulong innerPosInStack;
-    ulong innerPosInSeq;
-    ulong mostInnerVarPos;
-    sequential_expr* innerSeqExpr;
+    ulong innerPosInStack = 0;
+    ulong innerPosInSeq = 0;
+    ulong mostInnerVarPos = 0;
+    sequential_expr* innerSeqExpr = NULL;
 
     findFlworForVar(rCtx,
                     mostInnerVar,
@@ -528,9 +528,9 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
     // before this flwor.
     flwor_expr* outerFlworExpr = NULL;
     sequential_expr* outerSeqExpr;
-    ulong outerPosInStack;
-    ulong outerPosInSeq;
-    ulong dummy;
+    ulong outerPosInStack = 0;
+    ulong outerPosInSeq = 0;
+    ulong dummy = 0;
 
     findFlworForVar(rCtx,
                     predInfo.theOuterVar,
