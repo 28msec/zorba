@@ -53,7 +53,7 @@ public:
   virtual ~FTContainsIterator();
 
   void accept( PlanIterVisitor& ) const;
-
+  uint32_t getStateSizeOfSubtree() const;
   void openImpl( PlanState&, uint32_t& );
   bool nextImpl( store::Item_t&, PlanState& ) const;
   void resetImpl( PlanState& ) const;

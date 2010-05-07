@@ -17,10 +17,11 @@
 #include "common/common.h"
 #include "runtime/full_text/ftcontains_visitor.h"
 #include "runtime/full_text/full_text.h"
+#include "runtime/full_text/plan_iter_collector.h"
 #include "runtime/full_text/stl_helpers.h"
 #include "store/api/ft_token_iterator.h"
-#include "store/api/item_factory.h"
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
 #include "system/globalenv.h"
 #include "zorbatypes/utf8.h"
 
@@ -44,6 +45,19 @@ FTContainsIterator::FTContainsIterator(
   ZORBA_ASSERT( search_context );
   ZORBA_ASSERT( ftselection );
   sub_iters_.swap( sub_iters );
+}
+
+uint32_t FTContainsIterator::getStateSizeOfSubtree() const {
+  PlanIterCollectorVisitor v;
+  ftselection_->accept( v );
+
+  typedef PlanIterCollectorVisitor::PlanIterList_t PlanIterList_t;
+
+  uint32_t size = 0;
+  FOR_EACH( PlanIterList_t, it, v.getPlanIterList() ) {
+    size += (*it)->getStateSizeOfSubtree();
+  }
+  return base_type::getStateSizeOfSubtree() + size;
 }
 
 void FTContainsIterator::serialize( serialization::Archiver &ar ) {
