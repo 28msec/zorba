@@ -33,13 +33,16 @@ namespace zorba {
 FTContainsIterator::FTContainsIterator(
   static_context *sctx,
   QueryLoc const &loc,
-  PlanIter_t &search_context, PlanIter_t &ftignore_option,
-  ftexpr *ftselection,
+  PlanIter_t search_context,
+  PlanIter_t ftignore_option,
+  ftexpr_t ftselection,
   sub_iter_list_t &sub_iters
 ) : 
   base_type( sctx, loc, search_context, ftignore_option ),
   ftselection_( ftselection )
 {
+  ZORBA_ASSERT( search_context );
+  ZORBA_ASSERT( ftselection );
   sub_iters_.swap( sub_iters );
 }
 
@@ -58,9 +61,9 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
   while ( !ftcontains && consumeNext( item, theChild0.getp(), plan_state ) ) {
-    FTTokenIterator token_it = item->getDocumentTokens();
-    if ( !token_it.empty() ) {
-      ftcontains_visitor v( token_it, plan_state );
+    FTTokenIterator doc_tokens( item->getDocumentTokens() );
+    if ( !doc_tokens.empty() ) {
+      ftcontains_visitor v( doc_tokens, plan_state );
       ftselection_->accept( v );
       ftcontains = v.ftcontains();
     }
@@ -72,29 +75,20 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
 
 void FTContainsIterator::openImpl( PlanState &state, uint32_t &offset ) {
   base_type::openImpl( state, offset );
-  theChild0->open( state, offset );
-  if ( theChild1 ) // the optional FTIgnoreOption
-    theChild1->open( state, offset );
   MUTATE_EACH( sub_iter_list_t, i, sub_iters_ ) {
     (*i)->open( state, offset );
   }
 }
 
 void FTContainsIterator::closeImpl( PlanState &state ) {
-  base_type::closeImpl( state );
-  theChild0->close( state );
-  if ( theChild1 ) // the optional FTIgnoreOption
-    theChild1->close( state );
   MUTATE_EACH( sub_iter_list_t, i, sub_iters_ ) {
     (*i)->close( state );
   }
+  base_type::closeImpl( state );
 }
 
 void FTContainsIterator::resetImpl( PlanState &state ) const {
   base_type::resetImpl( state );
-  theChild0->reset( state );
-  if ( theChild1 ) // the optional FTIgnoreOption
-    theChild1->reset( state );
   FOR_EACH( sub_iter_list_t, i, sub_iters_ ) {
     (*i)->reset( state );
   }

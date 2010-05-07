@@ -131,8 +131,14 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times_expr)
   if ( !DO_END_VISIT( vr0 ) ) ; else (V).end_visit( *this ); \
   return vr0
 
-#define EV_ACCEPT( EXPR, V ) \
-  if ( !(EXPR) ) ; else (EXPR)->accept( V )
+#define EV_ACCEPT( EXPR, V )                  \
+    if ( !(EXPR) ) ; else (EXPR)->accept( V )
+
+#define EV_ACCEPT_NULL( EXPR, V )                     \
+  {                                                   \
+    expr_visitor *const ev = (V).get_expr_visitor();  \
+    if ( ev && (EXPR) ) (EXPR)->accept( *ev );        \
+  }
 
 #define ACCEPT( FTEXPR, V ) \
   if ( !(FTEXPR) ) ; else   \
@@ -143,7 +149,6 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times_expr)
         DO_CHILDREN( vr0 ) && i != (S).end(); \
         ++i )                                 \
     ACCEPT( *i, V );
-
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -163,25 +168,24 @@ void ft_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (expr*)this );
 }
 
-
 ///////////////////////////////////////////////////////////////////////////////
-
 
 ftcontains_expr::ftcontains_expr(
   static_context* sctx,
   QueryLoc const &loc,
-  range_expr_t range,
+  expr_t range,
   ftexpr *ftselection,
-  union_expr_t ftignore
+  expr_t ftignore
 ) :
   ft_expr( sctx, loc ),
   range_( range ),
   ftselection_( ftselection ),
   ftignore_( ftignore )
 {
+  ZORBA_ASSERT( range );
+  ZORBA_ASSERT( ftselection );
   compute_scripting_kind();
 }
-
 
 void ftcontains_expr::accept( expr_visitor &v ) {
   if ( v.begin_visit( *this ) ) {
@@ -205,7 +209,6 @@ void ftcontains_expr::serialize( serialization::Archiver &ar )
   ar & ftignore_;
 }
 
-
 ostream& ftcontains_expr::put( ostream& o ) const
 {
   //BEGIN_EXPR (ftcontains_expr);
@@ -219,9 +222,6 @@ ostream& ftcontains_expr::put( ostream& o ) const
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-
-ftexpr::~ftexpr() {
-}
 
 void ftexpr::serialize( serialization::Archiver &ar ) {
   ar & loc_;
@@ -500,10 +500,6 @@ ftpos_filter::ftpos_filter( QueryLoc const &loc ) :
 {
 }
 
-void ftpos_filter::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftexpr*)this );
-}
-
 ftprimary_with_options_expr::ftprimary_with_options_expr(
   QueryLoc const &loc
 ) :
@@ -537,8 +533,8 @@ void ftprimary_with_options_expr::serialize( serialization::Archiver &ar ) {
 ftrange_expr::ftrange_expr(
   QueryLoc const &loc,
   ft_range_mode::type mode,
-  additive_expr_t expr1,
-  additive_expr_t expr2
+  expr_t expr1,
+  expr_t expr2
 ) :
   ftexpr( loc ),
   mode_( mode ),
@@ -549,9 +545,8 @@ ftrange_expr::ftrange_expr(
 
 ft_visit_result::type ftrange_expr::accept( ftselection_visitor &v ) {
   BEGIN_VISIT( v );
-  expr_visitor* v2 = v.get_expr_visitor();
-  EV_ACCEPT( expr1_, *v2 );
-  EV_ACCEPT( expr2_, *v2 );
+  EV_ACCEPT_NULL( expr1_, v );
+  EV_ACCEPT_NULL( expr2_, v );
   END_VISIT( v );
 }
 
@@ -599,14 +594,15 @@ ftselection_expr::~ftselection_expr() {
 
 ft_visit_result::type ftselection_expr::accept( ftselection_visitor &v ) {
   BEGIN_VISIT( v );
+  ACCEPT( ftor_, v );
   ACCEPT_SEQ( ftpos_filter_list_t, list_, v );
   END_VISIT( v );
 }
 
 void ftselection_expr::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftexpr*)this );
-  ar & list_;
   ar & ftor_;
+  ar & list_;
 }
 
 ftstem_option::ftstem_option(
@@ -790,7 +786,7 @@ void ftwild_card_option::serialize( serialization::Archiver &ar ) {
 
 ftwindow_filter::ftwindow_filter(
   QueryLoc const &loc,
-  rchandle<additive_expr> window,
+  expr_t window,
   ft_unit::type unit )
 :
   ftpos_filter( loc ),
@@ -801,7 +797,7 @@ ftwindow_filter::ftwindow_filter(
 
 ft_visit_result::type ftwindow_filter::accept( ftselection_visitor &v ) {
   BEGIN_VISIT( v );
-  EV_ACCEPT( window_, *v.get_expr_visitor() );
+  EV_ACCEPT_NULL( window_, v );
   END_VISIT( v );
 }
 
@@ -824,7 +820,7 @@ ftwords_expr::ftwords_expr(
 
 ft_visit_result::type ftwords_expr::accept( ftselection_visitor &v ) {
   BEGIN_VISIT( v );
-  EV_ACCEPT( expr_, *v.get_expr_visitor() );
+  EV_ACCEPT_NULL( expr_, v );
   END_VISIT( v );
 }
 

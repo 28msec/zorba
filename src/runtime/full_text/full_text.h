@@ -45,8 +45,9 @@ public:
   FTContainsIterator(
     static_context*,
     QueryLoc const&,
-    PlanIter_t &search_context, PlanIter_t &ftignore_option,
-    ftexpr *ftselection,
+    PlanIter_t search_context,
+    PlanIter_t ftignore_option,
+    ftexpr_t ftselection,
     sub_iter_list_t&
   );
   virtual ~FTContainsIterator();
@@ -54,11 +55,11 @@ public:
   void accept( PlanIterVisitor& ) const;
 
   void openImpl( PlanState&, uint32_t& );
-  bool nextImpl( store::Item_t &result, PlanState& ) const;
+  bool nextImpl( store::Item_t&, PlanState& ) const;
   void resetImpl( PlanState& ) const;
   void closeImpl( PlanState& );
 private:
-  ftexpr *ftselection_;
+  ftexpr_t ftselection_;
   sub_iter_list_t sub_iters_;
 };
 

@@ -221,21 +221,37 @@ static void join_includes( ft_match::includes_t const &includes,
   result.push_back( si );
 }
 
-static void match_tokens( FTTokenIterator &doc_tokens,
-                          FTTokenIterator &query_tokens,
+static void dump( char const *label, FTTokenIterator it ) {
+  it.reset();
+  cout << label << flush;
+  FTToken const *t;
+  while ( it.next( &t ) )
+    cout << " \"" << t->word << '"';
+  cout << endl;
+}
+
+static void match_tokens( FTTokenIterator doc_tokens,
+                          FTTokenIterator query_tokens,
                           ft_token_spans &result ) {
+
+  dump( "match_tokens(): doc_tokens: ", doc_tokens );
+  dump( "match_tokens(): query_tokens: ", query_tokens );
+
   doc_tokens.reset();
   while ( doc_tokens.hasNext() ) {
     FTTokenIterator const doc_tokens_copy( doc_tokens );
     query_tokens.reset();
     FTToken const *dt_start = 0, *dt_end, *qt;
+    bool matches = true;
     while ( doc_tokens.next( &dt_end ) && query_tokens.next( &qt ) ) {
       if ( !dt_start )
         dt_start = dt_end;
-      if ( dt_end->word != qt->word )
+      if ( dt_end->word != qt->word ) {
+        matches = false;
         break;
+      }
     }
-    if ( !query_tokens.hasNext() ) {
+    if ( matches && !query_tokens.hasNext() ) {
       ft_token_span ts;
       ts.pos.start  = dt_start->pos;
       ts.pos.end    = dt_end->pos;
@@ -554,7 +570,7 @@ static void apply_ftwords_all( FTTokenIterator &search_ctx,
                                FTTokenIterator &query_tokens,
                                FTToken::int_t query_pos,
                                ft_all_matches &result ) {
-  if ( !query_tokens.empty() ) {
+  if ( query_tokens.hasNext() ) {
     FTTokenIterator::index_t const i = query_tokens.index();
     FTTokenIterator first_query_token( query_tokens, i, i + 1 );
     query_tokens.next();
@@ -579,7 +595,7 @@ static void apply_ftwords_any( FTTokenIterator &search_ctx,
                                FTTokenIterator &query_tokens,
                                FTToken::int_t query_pos,
                                ft_all_matches &result ) {
-  if ( !query_tokens.empty() ) {
+  if ( query_tokens.hasNext() ) {
     FTTokenIterator::index_t const i = query_tokens.index();
     FTTokenIterator first_query_token( query_tokens, i, i + 1 );
     query_tokens.next();

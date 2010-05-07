@@ -2780,7 +2780,7 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftor_expr )
 ft_visit_result::type V::begin_visit( ftprimary_with_options_expr &e ) {
   ACCEPT( e.get_weight(), *plan_visitor_ );
   PlanIter_t it = plan_visitor_->pop_itstack();
-  ZORBA_ASSERT( plan_visitor_->itstack.empty() );
+  //ZORBA_ASSERT( plan_visitor_->itstack.empty() );
   e.set_plan_iter( it );
   sub_iters_.push_back( it );
   return ft_visit_result::no_end;
@@ -2795,7 +2795,7 @@ ft_visit_result::type V::begin_visit( ftrange_expr &e ) {
     it2 = plan_visitor_->pop_itstack();
   }
   PlanIter_t it1 = plan_visitor_->pop_itstack();
-  ZORBA_ASSERT( plan_visitor_->itstack.empty() );
+  //ZORBA_ASSERT( plan_visitor_->itstack.empty() );
   e.set_plan_iters( it1, it2 );
   sub_iters_.push_back( it1 );
   sub_iters_.push_back( it2 );
@@ -2809,7 +2809,7 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftunary_not_expr )
 ft_visit_result::type V::begin_visit( ftwords_expr &e ) {
   ACCEPT( e.get_expr(), *plan_visitor_ );
   PlanIter_t it = plan_visitor_->pop_itstack();
-  ZORBA_ASSERT( plan_visitor_->itstack.empty() );
+  //ZORBA_ASSERT( plan_visitor_->itstack.empty() );
   e.set_plan_iter( it );
   sub_iters_.push_back( it );
   return ft_visit_result::no_end;
@@ -2826,7 +2826,7 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftscope_filter )
 ft_visit_result::type V::begin_visit( ftwindow_filter &f ) {
   ACCEPT( f.get_window(), *plan_visitor_ );
   PlanIter_t it = plan_visitor_->pop_itstack();
-  ZORBA_ASSERT( plan_visitor_->itstack.empty() );
+  //ZORBA_ASSERT( plan_visitor_->itstack.empty() );
   f.set_plan_iter( it );
   sub_iters_.push_back( it );
   return ft_visit_result::no_end;

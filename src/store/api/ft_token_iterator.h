@@ -105,7 +105,7 @@ public:
   bool next( FTToken const **ppToken = 0 ) {
     if ( hasNext() ) {
       if ( ppToken )
-        *ppToken = &(*tokens_)[ next_ ];
+        *ppToken = &((*tokens_)[ next_ ]);
       ++next_;
       return true;
     }
@@ -113,9 +113,9 @@ public:
   }
 
   /**
-   * Gets the
+   * Gets the TODO
    */
-  index_t index() {
+  index_t index() const {
     return next_;
   }
 

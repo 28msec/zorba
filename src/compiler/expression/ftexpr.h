@@ -26,11 +26,33 @@
 #include "compiler/parser/ft_types.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "runtime/base/plan_iterator.h"
+#include "zorbatypes/rchandle.h"
 
 namespace zorba {
 
 class ftselection_visitor;
 
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Base class for full-text expression classes.
+ */
+class ftexpr : public SimpleRCObject {
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(ftexpr)
+  void serialize( serialization::Archiver& );
+
+  virtual ft_visit_result::type accept( ftselection_visitor& ) = 0;
+  QueryLoc const& get_loc() const { return loc_; }
+
+protected:
+  ftexpr( QueryLoc const &loc ) : loc_( loc ) {
+  }
+
+private:
+  QueryLoc loc_;
+};
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -62,62 +84,35 @@ class ftcontains_expr : public ft_expr
   friend class ExprIterator;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(ftcontains_expr)
+  SERIALIZABLE_CLASS(ftcontains_expr)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcontains_expr,ft_expr)
   void serialize( serialization::Archiver& );
 
   ftcontains_expr(
     static_context* sctx,
     QueryLoc const&,
-    range_expr_t range,
+    expr_t range,
     ftexpr *ftselection,
-    union_expr_t ftignore
+    expr_t ftignore
   );
 
   void compute_scripting_kind();
 
-  range_expr_t get_range() const { return range_; }
-
-  ftexpr* get_ftselection() const { return ftselection_; }
-
-  union_expr_t get_ignore() const { return ftignore_; }
+  expr_t get_range() const { return range_; }
+  ftexpr_t get_ftselection() const { return ftselection_; }
+  expr_t get_ignore() const { return ftignore_; }
 
   void accept( expr_visitor& );
 
   std::ostream& put( std::ostream& ) const;
 
 private:
-  range_expr_t         range_;
-  ftexpr             * ftselection_;
-  union_expr_t         ftignore_;
+  expr_t range_;
+  ftexpr_t ftselection_;
+  expr_t ftignore_;
 
-  std::vector<expr_t>  ftselection_exprs_;
+  std::vector<expr_t> ftselection_exprs_;
 };
-
-
-///////////////////////////////////////////////////////////////////////////////
-
-/**
- * Base class for full-text expression classes.
- */
-class ftexpr : public serialization::SerializeBaseClass {
-public:
-  SERIALIZABLE_ABSTRACT_CLASS(ftexpr)
-  void serialize( serialization::Archiver& );
-
-  virtual ~ftexpr();
-
-  virtual ft_visit_result::type accept( ftselection_visitor& ) = 0;
-  QueryLoc const& get_loc() const { return loc_; }
-
-protected:
-  ftexpr( QueryLoc const &loc ) : loc_( loc ) {
-  }
-
-private:
-  QueryLoc loc_;
-};
-
 
 ////////// FTMatchOptions /////////////////////////////////////////////////////
 
@@ -502,8 +497,8 @@ public:
   ftexpr const* get_ftor() const { return ftor_; };
 
 private:
-  ftpos_filter_list_t list_;
   ftexpr *ftor_;
+  ftpos_filter_list_t list_;
 };
 
 
@@ -535,7 +530,6 @@ class ftpos_filter : public ftexpr {
 public:
   SERIALIZABLE_ABSTRACT_CLASS(ftpos_filter)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftpos_filter,ftexpr)
-  void serialize( serialization::Archiver& );
 
 protected:
   ftpos_filter( QueryLoc const& );
@@ -613,11 +607,11 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftwindow_filter,ftpos_filter)
   void serialize( serialization::Archiver& );
 
-  ftwindow_filter( QueryLoc const&, additive_expr_t, ft_unit::type );
+  ftwindow_filter( QueryLoc const&, expr_t, ft_unit::type );
 
   ft_visit_result::type accept( ftselection_visitor& );
   ft_unit::type get_unit() const { return unit_; }
-  additive_expr_t get_window() const { return window_; }
+  expr_t get_window() const { return window_; }
 
   PlanIter_t get_plan_iter() const { return plan_iter_; }
 
@@ -626,7 +620,7 @@ public:
   }
 
 private:
-  additive_expr_t window_;
+  expr_t window_;
   ft_unit::type unit_;
   PlanIter_t plan_iter_;
 };
@@ -743,13 +737,13 @@ public:
   ftrange_expr(
     QueryLoc const&,
     ft_range_mode::type,
-    additive_expr_t expr1,
-    additive_expr_t expr2 = NULL
+    expr_t expr1,
+    expr_t expr2 = NULL
   );
 
   ft_visit_result::type accept( ftselection_visitor& );
-  additive_expr_t get_expr1() const { return expr1_; }
-  additive_expr_t get_expr2() const { return expr2_; }
+  expr_t get_expr1() const { return expr1_; }
+  expr_t get_expr2() const { return expr2_; }
   ft_range_mode::type get_mode() const { return mode_; }
 
   PlanIter_t get_plan_iter1() const { return it1_; }
@@ -762,8 +756,8 @@ public:
 
 private:
   ft_range_mode::type mode_;
-  additive_expr_t expr1_;
-  additive_expr_t expr2_;
+  expr_t expr1_;
+  expr_t expr2_;
   PlanIter_t it1_;
   PlanIter_t it2_;
 };

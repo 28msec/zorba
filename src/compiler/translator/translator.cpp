@@ -10728,14 +10728,16 @@ void *begin_visit (const FTContainsExpr& v) {
 void end_visit (const FTContainsExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 
-  union_expr_t ftignore = NULL;
+  expr_t ftignore = NULL;
   if ( v.get_ignore() )
-    ftignore = pop_nodestack().dyn_cast<union_expr>();
+    ftignore = pop_nodestack();
 
   ftselection_expr *const ftselection =
     dynamic_cast<ftselection_expr*>( pop_ftstack() );
+  ZORBA_ASSERT( ftselection );
 
-  range_expr_t range = pop_nodestack().dyn_cast<range_expr>();
+  expr_t range = pop_nodestack();
+  ZORBA_ASSERT( range );
 
   ftcontains_expr *const e = new ftcontains_expr(
     theRootSctx, v.get_location(), range, ftselection, ftignore

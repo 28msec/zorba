@@ -44,7 +44,8 @@ const int FTContainsIterator::class_versions_count =
 void FTContainsIterator::accept( PlanIterVisitor &v ) const {
   v.beginVisit( *this );
   theChild0->accept( v );
-  theChild1->accept( v );
+  if ( theChild1 )                      // optional ftignore
+    theChild1->accept( v );
   v.endVisit( *this );
 }
 

@@ -32,6 +32,8 @@ namespace zorba {
 #undef min
 #endif
 
+///////////////////////////////////////////////////////////////////////////////
+
 ftcontains_visitor::ftcontains_visitor( FTTokenIterator &search_context,
                                         PlanState &state ) :
   search_context_( search_context ),
@@ -59,8 +61,6 @@ bool ftcontains_visitor::ftcontains() const {
       return true;
   return false;
 }
-
-
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -142,10 +142,12 @@ ft_visit_result::type V::begin_visit( ftwords_expr &e ) {
 void V::end_visit( ftwords_expr &e ) {
   store::Item_t item;
   PlanIterator::consumeNext( item, e.get_plan_iter(), plan_state_ );
-  FTTokenIterator qtokens = item->getQueryTokens();
-  FTToken::int_t query_pos = 0;
+  FTTokenIterator query_tokens( item->getQueryTokens() );
+  FTToken::int_t query_pos = 0;         // TODO: what should this really be?
   ft_all_matches *const result = new ft_all_matches;
-  apply_ftwords( search_context_, qtokens, query_pos, e.get_mode(), *result );
+  apply_ftwords(
+    search_context_, query_tokens, query_pos, e.get_mode(), *result
+  );
   push( result );
 }
 

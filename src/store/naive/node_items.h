@@ -241,7 +241,7 @@ class XmlNodeTokenizer : public Tokenizer::Callback {
 public:
   typedef XmlTree::FTTokens FTTokens;
 
-  XmlNodeTokenizer( Tokenizer &tokenizer, FTTokens tokens ) :
+  XmlNodeTokenizer( Tokenizer &tokenizer, FTTokens &tokens ) :
     tokenizer_( tokenizer ),
     tokens_( tokens )
   {
