@@ -10978,7 +10978,7 @@ void end_visit (const FTRange& v, void* /*visit_state*/) {
     pop_nodestack(); // pop the sentinel
 
   ftrange_expr *const r = new ftrange_expr(
-    v.get_location(), v.get_mode(), e1, e2
+    v.get_location(), v.get_mode(), e1.getp(), e2.getp()
   );
   push_ftstack( r );
 }
