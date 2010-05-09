@@ -2736,6 +2736,7 @@ void end_visit (order_expr& v)
 bool begin_visit(ftcontains_expr& v)
 {
   CODEGEN_TRACE_IN("");
+  push_itstack( NULL ); // sentinel
   return true;
 }
 
@@ -2743,8 +2744,17 @@ void end_visit(ftcontains_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  PlanIter_t ftignore_it = pop_itstack();
-  PlanIter_t ftrange_it = pop_itstack();
+  PlanIter_t it1 = pop_itstack();
+  PlanIter_t it2 = pop_itstack();
+
+  PlanIter_t ftrange_it, ftignore_it;
+  if ( it2 ) {
+    ftignore_it = it1;
+    ftrange_it = it2;
+    pop_itstack(); // remove sentinel
+  } else {
+    ftrange_it = it1;
+  }
 
   PlanIter_t ftcontains_it = new FTContainsIterator(
     sctx, qloc, ftrange_it, ftignore_it, v.get_ftselection(),
@@ -2765,8 +2775,6 @@ PlanIter_t result()
 };
 
 
-
-
 #define V plan_ftexpr_visitor
 
 #define ACCEPT( EXPR, V )                   \
@@ -2778,27 +2786,29 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmild_not_expr )
 DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftor_expr )
 
 ft_visit_result::type V::begin_visit( ftprimary_with_options_expr &e ) {
-  ACCEPT( e.get_weight(), *plan_visitor_ );
-  PlanIter_t it = plan_visitor_->pop_itstack();
-  //ZORBA_ASSERT( plan_visitor_->itstack.empty() );
-  e.set_plan_iter( it );
-  sub_iters_.push_back( it );
+  if ( e.get_weight() ) {
+    e.get_weight()->accept( *plan_visitor_ );
+    PlanIter_t it = plan_visitor_->pop_itstack();
+    e.set_plan_iter( it );
+    sub_iters_.push_back( it );
+  }
   return ft_visit_result::no_end;
 }
 DEF_FTEXPR_VISITOR_END_VISIT( V, ftprimary_with_options_expr )
 
 ft_visit_result::type V::begin_visit( ftrange_expr &e ) {
-  PlanIter_t it2 = NULL;
   ACCEPT( e.get_expr1(), *plan_visitor_ );
+  PlanIter_t it1 = plan_visitor_->pop_itstack();
+  sub_iters_.push_back( it1 );
+
+  PlanIter_t it2;
   if ( e.get_expr2() ) {
     e.get_expr2()->accept( *plan_visitor_ );
     it2 = plan_visitor_->pop_itstack();
+    sub_iters_.push_back( it2 );
   }
-  PlanIter_t it1 = plan_visitor_->pop_itstack();
-  //ZORBA_ASSERT( plan_visitor_->itstack.empty() );
+
   e.set_plan_iters( it1, it2 );
-  sub_iters_.push_back( it1 );
-  sub_iters_.push_back( it2 );
   return ft_visit_result::no_end;
 }
 DEF_FTEXPR_VISITOR_END_VISIT( V, ftrange_expr )
@@ -2809,7 +2819,6 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftunary_not_expr )
 ft_visit_result::type V::begin_visit( ftwords_expr &e ) {
   ACCEPT( e.get_expr(), *plan_visitor_ );
   PlanIter_t it = plan_visitor_->pop_itstack();
-  //ZORBA_ASSERT( plan_visitor_->itstack.empty() );
   e.set_plan_iter( it );
   sub_iters_.push_back( it );
   return ft_visit_result::no_end;
@@ -2826,7 +2835,6 @@ DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftscope_filter )
 ft_visit_result::type V::begin_visit( ftwindow_filter &f ) {
   ACCEPT( f.get_window(), *plan_visitor_ );
   PlanIter_t it = plan_visitor_->pop_itstack();
-  //ZORBA_ASSERT( plan_visitor_->itstack.empty() );
   f.set_plan_iter( it );
   sub_iters_.push_back( it );
   return ft_visit_result::no_end;
