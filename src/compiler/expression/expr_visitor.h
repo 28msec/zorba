@@ -21,7 +21,7 @@
 namespace zorba 
 {
 
-class ftselection_visitor;
+class ftnode_visitor;
 
 class expr_visitor
 {
@@ -29,7 +29,7 @@ public:
 
   virtual ~expr_visitor() { }
 
-  virtual ftselection_visitor* get_ftselection_visitor() = 0;
+  virtual ftnode_visitor* get_ftnode_visitor() = 0;
 
 #define DECL_EXPR_VISITOR_VISIT_MEM_FNS(C)  \
   virtual bool begin_visit( C& ) = 0;       \

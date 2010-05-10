@@ -21,7 +21,7 @@
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/fo_expr.h"
-#include "compiler/expression/ftexpr_classes.h"
+#include "compiler/expression/ftnode_classes.h"
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/ft_types.h"
 #include "compiler/parsetree/parsenodes.h"
@@ -30,24 +30,21 @@
 
 namespace zorba {
 
-class ftselection_visitor;
-
-
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
  * Base class for full-text expression classes.
  */
-class ftexpr : public SimpleRCObject {
+class ftnode : public SimpleRCObject {
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(ftexpr)
+  SERIALIZABLE_ABSTRACT_CLASS(ftnode)
   void serialize( serialization::Archiver& );
 
-  virtual ft_visit_result::type accept( ftselection_visitor& ) = 0;
+  virtual ft_visit_result::type accept( ftnode_visitor& ) = 0;
   QueryLoc const& get_loc() const { return loc_; }
 
 protected:
-  ftexpr( QueryLoc const &loc ) : loc_( loc ) {
+  ftnode( QueryLoc const &loc ) : loc_( loc ) {
   }
 
 private:
@@ -57,49 +54,28 @@ private:
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An ft_expr is-an expr that is the abstract base class for all full-text
- * expressions.  It is also the interface between the expr tree and the ftexpr
- * tree.
+ * An ftcontains_expr is-an expr for the FTContainsExpr.
  */
-class ft_expr : public expr {
-public:
-  SERIALIZABLE_ABSTRACT_CLASS(ft_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ft_expr,expr)
-  void serialize( serialization::Archiver& );
-
-  ~ft_expr();
-
-  std::ostream& put( std::ostream& ) const;
-
-protected:
-  ft_expr( static_context* sctx, const QueryLoc& );
-};
-
-
-/**
- * An ftcontains_expr is-an ft_expr for the FTContainsExpr.
- */
-class ftcontains_expr : public ft_expr 
-{
+class ftcontains_expr : public expr {
   friend class ExprIterator;
 
 public:
   SERIALIZABLE_CLASS(ftcontains_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcontains_expr,ft_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftcontains_expr,expr)
   void serialize( serialization::Archiver& );
 
   ftcontains_expr(
     static_context* sctx,
     QueryLoc const&,
     expr_t range,
-    ftexpr *ftselection,
+    ftnode *ftselection,
     expr_t ftignore
   );
 
   void compute_scripting_kind();
 
   expr_t get_range() const { return range_; }
-  ftexpr_t get_ftselection() const { return ftselection_; }
+  ftnode_t get_ftselection() const { return ftselection_; }
   expr_t get_ignore() const { return ftignore_; }
 
   void accept( expr_visitor& );
@@ -108,7 +84,7 @@ public:
 
 private:
   expr_t range_;
-  ftexpr_t ftselection_;
+  ftnode_t ftselection_;
   expr_t ftignore_;
 
   std::vector<expr_t> ftselection_exprs_;
@@ -116,14 +92,14 @@ private:
 
 ////////// FTMatchOptions /////////////////////////////////////////////////////
 
-class ftmatch_option : public ftexpr {
+class ftmatch_option : public ftnode {
 public:
   SERIALIZABLE_ABSTRACT_CLASS(ftmatch_option)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmatch_option,ftexpr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmatch_option,ftnode)
   void serialize( serialization::Archiver& );
 
 protected:
-  ftmatch_option( QueryLoc const &loc ) : ftexpr( loc ) { }
+  ftmatch_option( QueryLoc const &loc ) : ftnode( loc ) { }
 };
 
 
@@ -138,7 +114,7 @@ public:
     ft_case_mode::type = ft_case_mode::DEFAULT
   );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   ft_case_mode::type get_mode() const { return mode_; }
 
 private:
@@ -157,7 +133,7 @@ public:
     ft_diacritics_mode::type = ft_diacritics_mode::DEFAULT
   );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   ft_diacritics_mode::type get_mode() const { return mode_; }
 
 private:
@@ -177,7 +153,7 @@ public:
     std::string const &val
   );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   rchandle<QName> get_qname() const { return qname_; }
   std::string const& get_val() const { return val_; }
 
@@ -198,7 +174,7 @@ public:
     std::string const &language
   );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   std::string const& get_language() const { return language_; }
 
 private:
@@ -217,7 +193,7 @@ public:
     ft_stem_mode::type = ft_stem_mode::DEFAULT
   );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   ft_stem_mode::type get_mode() const { return mode_; }
 
 private:
@@ -225,10 +201,10 @@ private:
 };
 
 
-class ftstop_words : public ftexpr {
+class ftstop_words : public ftnode {
 public:
   SERIALIZABLE_CLASS(ftstop_words)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftstop_words,ftexpr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftstop_words,ftnode)
   void serialize( serialization::Archiver& );
 
   typedef std::list<std::string> list_t;
@@ -240,7 +216,7 @@ public:
     ft_stop_words_unex::type = ft_stop_words_unex::union_
   );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   std::string const& get_uri() const { return uri_; }
   list_t const& get_list() const { return list_; }
   ft_stop_words_unex::type get_mode() const { return mode_; }
@@ -273,7 +249,7 @@ public:
 
   ~ftstop_word_option();
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   ft_stop_words_mode::type get_mode() const { return mode_; }
   stop_word_list_t const& get_stop_words() const { return stop_words_; }
 
@@ -283,29 +259,29 @@ private:
 };
 
 
-class ftthesaurus_id : public ftexpr {
+class ftthesaurus_id : public ftnode {
 public:
   SERIALIZABLE_CLASS(ftthesaurus_id)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftthesaurus_id,ftexpr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftthesaurus_id,ftnode)
   void serialize( serialization::Archiver& );
 
   ftthesaurus_id(
     QueryLoc const&,
     std::string const &uri,
     std::string const &relationship,
-    ftrange_expr *levels
+    ftrange *levels
   );
   ~ftthesaurus_id();
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   std::string const& get_uri() const { return uri_; }
   std::string const& get_relationship() const { return relationship_; }
-  ftrange_expr const* get_levels() const { return levels_; }
+  ftrange const* get_levels() const { return levels_; }
 
 private:
   std::string uri_;
   std::string relationship_;
-  ftrange_expr *levels_;
+  ftrange *levels_;
 };
 
 
@@ -328,7 +304,7 @@ public:
   thesaurus_id_list_t const& get_thesaurus_id_list() const
     { return thesaurus_id_list_; }
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   bool includes_default() const { return includes_default_; }
   bool no_thesaurus() const { return no_thesaurus_; }
 
@@ -350,7 +326,7 @@ public:
     ft_wild_card_mode::type = ft_wild_card_mode::DEFAULT
   );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   ft_wild_card_mode::type get_mode() const { return mode_; }
 
 private:
@@ -358,16 +334,16 @@ private:
 };
 
 
-class ftmatch_options : public ftexpr {
+class ftmatch_options : public ftnode {
 public:
   SERIALIZABLE_CLASS(ftmatch_options)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmatch_options,ftexpr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmatch_options,ftnode)
   void serialize( serialization::Archiver& );
 
   ftmatch_options( QueryLoc const& );
   ~ftmatch_options();
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
 
   ftcase_option const* get_case_option() const { return case_option_; }
 
@@ -444,92 +420,92 @@ private:
 
 ////////// FTPrimary //////////////////////////////////////////////////////////
 
-class ftprimary_expr : public ftexpr {
+class ftprimary : public ftnode {
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(ftprimary_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftprimary_expr,ftexpr)
+  SERIALIZABLE_ABSTRACT_CLASS(ftprimary)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftprimary,ftnode)
   void serialize( serialization::Archiver &ar ) {
-    serialize_baseclass( ar, (ftexpr*)this );
+    serialize_baseclass( ar, (ftnode*)this );
   }
 
 protected:
-  ftprimary_expr( QueryLoc const &loc ) : ftexpr( loc ) { }
+  ftprimary( QueryLoc const &loc ) : ftnode( loc ) { }
 };
 
 
-class ftextension_selection_expr : public ftprimary_expr {
+class ftextension_selection : public ftprimary {
 public:
-  SERIALIZABLE_CLASS(ftextension_selection_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftextension_selection_expr,ftprimary_expr)
+  SERIALIZABLE_CLASS(ftextension_selection)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftextension_selection,ftprimary)
   void serialize( serialization::Archiver& );
 
-  ftextension_selection_expr(
+  ftextension_selection(
     QueryLoc const&,
     /* TODO: pragma_list, */
-    ftselection_expr*
+    ftselection*
   );
 
-  ft_visit_result::type accept( ftselection_visitor& );
-  ftselection_expr const* get_ftselection() const { return ftselection_; }
+  ft_visit_result::type accept( ftnode_visitor& );
+  ftselection const* get_ftselection() const { return ftselection_; }
 
 private:
-  ftselection_expr *ftselection_;
+  ftselection *ftselection_;
 };
 
 
-class ftselection_expr : public ftprimary_expr {
+class ftselection : public ftprimary {
 public:
-  SERIALIZABLE_CLASS(ftselection_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftselection_expr,ftprimary_expr)
+  SERIALIZABLE_CLASS(ftselection)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftselection,ftprimary)
   void serialize( serialization::Archiver& );
 
   typedef std::list<ftpos_filter*> ftpos_filter_list_t;
 
-  ftselection_expr(
+  ftselection(
     QueryLoc const&,
-    ftexpr *ftor,
+    ftnode *ftor,
     ftpos_filter_list_t&
   );
-  ~ftselection_expr();
+  ~ftselection();
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   ftpos_filter_list_t const& get_ftpos_filter_list() const { return list_; }
-  ftexpr const* get_ftor() const { return ftor_; };
+  ftnode const* get_ftor() const { return ftor_; };
 
 private:
-  ftexpr *ftor_;
+  ftnode *ftor_;
   ftpos_filter_list_t list_;
 };
 
 
-class ftwords_times_expr : public ftprimary_expr {
+class ftwords_times : public ftprimary {
 public:
-  SERIALIZABLE_CLASS(ftwords_times_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftwords_times_expr,ftprimary_expr)
+  SERIALIZABLE_CLASS(ftwords_times)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftwords_times,ftprimary)
   void serialize( serialization::Archiver& );
 
-  ftwords_times_expr(
+  ftwords_times(
     QueryLoc const&,
-    ftwords_expr*,
-    ftrange_expr* = NULL
+    ftwords*,
+    ftrange* = NULL
   );
-  ~ftwords_times_expr();
+  ~ftwords_times();
 
-  ft_visit_result::type accept( ftselection_visitor& );
-  ftwords_expr const* get_words() const { return ftwords_; }
-  ftrange_expr const* get_times() const { return fttimes_; }
+  ft_visit_result::type accept( ftnode_visitor& );
+  ftwords const* get_words() const { return ftwords_; }
+  ftrange const* get_times() const { return fttimes_; }
 
 private:
-  ftwords_expr *ftwords_;
-  ftrange_expr *fttimes_;
+  ftwords *ftwords_;
+  ftrange *fttimes_;
 };
 
 //////// FTPosFilter //////////////////////////////////////////////////////////
 
-class ftpos_filter : public ftexpr {
+class ftpos_filter : public ftnode {
 public:
   SERIALIZABLE_ABSTRACT_CLASS(ftpos_filter)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftpos_filter,ftexpr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftpos_filter,ftnode)
 
 protected:
   ftpos_filter( QueryLoc const& );
@@ -546,7 +522,7 @@ public:
 
   ftcontent_filter( QueryLoc const&, ft_content_mode::type );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   ft_content_mode::type get_mode() const { return mode_; }
 
 private:
@@ -560,14 +536,14 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftdistance_filter,ftpos_filter)
   void serialize( serialization::Archiver& );
 
-  ftdistance_filter( QueryLoc const&, ftrange_expr*, ft_unit::type );
+  ftdistance_filter( QueryLoc const&, ftrange*, ft_unit::type );
 
-  ft_visit_result::type accept( ftselection_visitor& );
-  ftrange_expr const* get_range() const { return range_; }
+  ft_visit_result::type accept( ftnode_visitor& );
+  ftrange const* get_range() const { return range_; }
   ft_unit::type get_unit() const { return unit_; }
 
 private:
-  ftrange_expr *range_;
+  ftrange *range_;
   ft_unit::type unit_;
 };
 
@@ -578,7 +554,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftorder_filter,ftpos_filter)
   void serialize( serialization::Archiver& );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   ftorder_filter( QueryLoc const& );
 };
 
@@ -591,7 +567,7 @@ public:
 
   ftscope_filter( QueryLoc const&, ft_scope::type, ft_big_unit::type );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   ft_scope::type get_scope() const { return scope_; }
   ft_big_unit::type get_unit() const { return unit_; }
 
@@ -609,7 +585,7 @@ public:
 
   ftwindow_filter( QueryLoc const&, expr_t, ft_unit::type );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   ft_unit::type get_unit() const { return unit_; }
   expr_t get_window() const { return window_; }
 
@@ -627,77 +603,77 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-class ftand_expr : public ftexpr {
+class ftand : public ftnode {
 public:
-  SERIALIZABLE_CLASS(ftand_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftand_expr,ftexpr)
+  SERIALIZABLE_CLASS(ftand)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftand,ftnode)
   void serialize( serialization::Archiver& );
 
-  typedef std::list<ftexpr*> ftexpr_list_t;
+  typedef std::list<ftnode*> ftnode_list_t;
 
-  ftand_expr( QueryLoc const&, ftexpr_list_t& );
-  ~ftand_expr();
+  ftand( QueryLoc const&, ftnode_list_t& );
+  ~ftand();
 
-  ft_visit_result::type accept( ftselection_visitor& );
-  ftexpr_list_t& get_expr_list() { return list_; }
-  ftexpr_list_t const& get_expr_list() const { return list_; }
+  ft_visit_result::type accept( ftnode_visitor& );
+  ftnode_list_t& get_node_list() { return list_; }
+  ftnode_list_t const& get_node_list() const { return list_; }
 
 private:
-  ftexpr_list_t list_;
+  ftnode_list_t list_;
 };
 
 
-class ftmild_not_expr : public ftexpr {
+class ftmild_not : public ftnode {
 public:
-  SERIALIZABLE_CLASS(ftmild_not_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmild_not_expr,ftexpr)
+  SERIALIZABLE_CLASS(ftmild_not)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftmild_not,ftnode)
   void serialize( serialization::Archiver& );
 
-  typedef std::list<ftexpr*> ftexpr_list_t;
+  typedef std::list<ftnode*> ftnode_list_t;
 
-  ftmild_not_expr( QueryLoc const&, ftexpr_list_t& );
-  ~ftmild_not_expr();
+  ftmild_not( QueryLoc const&, ftnode_list_t& );
+  ~ftmild_not();
 
-  ft_visit_result::type accept( ftselection_visitor& );
-  ftexpr_list_t& get_expr_list() { return list_; }
-  ftexpr_list_t const& get_expr_list() const { return list_; }
+  ft_visit_result::type accept( ftnode_visitor& );
+  ftnode_list_t& get_node_list() { return list_; }
+  ftnode_list_t const& get_node_list() const { return list_; }
 
 private:
-  ftexpr_list_t list_;
+  ftnode_list_t list_;
 };
 
 
-class ftor_expr : public ftexpr {
+class ftor : public ftnode {
 public:
-  SERIALIZABLE_CLASS(ftor_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftor_expr,ftexpr)
+  SERIALIZABLE_CLASS(ftor)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftor,ftnode)
   void serialize( serialization::Archiver& );
 
-  typedef std::list<ftexpr*> ftexpr_list_t;
+  typedef std::list<ftnode*> ftnode_list_t;
 
-  ftor_expr( QueryLoc const&, ftexpr_list_t& );
-  ~ftor_expr();
+  ftor( QueryLoc const&, ftnode_list_t& );
+  ~ftor();
 
-  ft_visit_result::type accept( ftselection_visitor& );
-  ftexpr_list_t& get_expr_list() { return list_; }
-  ftexpr_list_t const& get_expr_list() const { return list_; }
+  ft_visit_result::type accept( ftnode_visitor& );
+  ftnode_list_t& get_node_list() { return list_; }
+  ftnode_list_t const& get_node_list() const { return list_; }
 
 private:
-  ftexpr_list_t list_;
+  ftnode_list_t list_;
 };
 
 
-class ftprimary_with_options_expr : public ftexpr {
+class ftprimary_with_options : public ftnode {
 public:
-  SERIALIZABLE_CLASS(ftprimary_with_options_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftprimary_with_options_expr,ftexpr)
+  SERIALIZABLE_CLASS(ftprimary_with_options)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftprimary_with_options,ftnode)
   void serialize( serialization::Archiver& );
 
-  ftprimary_with_options_expr( QueryLoc const& );
-  ~ftprimary_with_options_expr();
+  ftprimary_with_options( QueryLoc const& );
+  ~ftprimary_with_options();
 
-  ft_visit_result::type accept( ftselection_visitor& );
-  ftprimary_expr const* get_primary() const { return primary_; }
+  ft_visit_result::type accept( ftnode_visitor& );
+  ftprimary const* get_primary() const { return primary_; }
   ftmatch_options const* get_match_options() const { return match_options_; }
   PlanIter_t get_plan_iter() const { return plan_iter_; }
   expr_t get_weight() const { return weight_; }
@@ -711,9 +687,9 @@ public:
     plan_iter_ = it;
   }
 
-  void set_primary( ftprimary_expr *e ) {
+  void set_primary( ftprimary *p ) {
     delete primary_;
-    primary_ = e;
+    primary_ = p;
   }
 
   void set_weight( expr_t e ) {
@@ -721,27 +697,27 @@ public:
   }
 
 private:
-  ftprimary_expr *primary_;
+  ftprimary *primary_;
   ftmatch_options *match_options_;
   expr_t weight_;
   PlanIter_t plan_iter_;
 };
 
 
-class ftrange_expr : public ftexpr {
+class ftrange : public ftnode {
 public:
-  SERIALIZABLE_CLASS(ftrange_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftrange_expr,ftexpr)
+  SERIALIZABLE_CLASS(ftrange)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftrange,ftnode)
   void serialize( serialization::Archiver& );
 
-  ftrange_expr(
+  ftrange(
     QueryLoc const&,
     ft_range_mode::type,
     expr_t expr1,
     expr_t expr2 = NULL
   );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   expr_t get_expr1() const { return expr1_; }
   expr_t get_expr2() const { return expr2_; }
   ft_range_mode::type get_mode() const { return mode_; }
@@ -763,36 +739,36 @@ private:
 };
 
 
-class ftunary_not_expr : public ftexpr {
+class ftunary_not : public ftnode {
 public:
-  SERIALIZABLE_CLASS(ftunary_not_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftunary_not_expr,ftexpr)
+  SERIALIZABLE_CLASS(ftunary_not)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftunary_not,ftnode)
   void serialize( serialization::Archiver& );
 
-  ftunary_not_expr( QueryLoc const&, ftexpr *subexpr );
-  ~ftunary_not_expr();
+  ftunary_not( QueryLoc const&, ftnode *subnode );
+  ~ftunary_not();
 
-  ft_visit_result::type accept( ftselection_visitor& );
-  ftexpr const* get_subexpr() const { return subexpr_; }
+  ft_visit_result::type accept( ftnode_visitor& );
+  ftnode const* get_subnode() const { return subnode_; }
 
 private:
-  ftexpr *subexpr_;
+  ftnode *subnode_;
 };
 
 
-class ftwords_expr : public ftexpr {
+class ftwords : public ftnode {
 public:
-  SERIALIZABLE_CLASS(ftwords_expr)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftwords_expr,ftexpr)
+  SERIALIZABLE_CLASS(ftwords)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(ftwords,ftnode)
   void serialize( serialization::Archiver& );
 
-  ftwords_expr(
+  ftwords(
     QueryLoc const&,
     expr_t,
     ft_anyall_mode::type = ft_anyall_mode::DEFAULT
   );
 
-  ft_visit_result::type accept( ftselection_visitor& );
+  ft_visit_result::type accept( ftnode_visitor& );
   expr_t get_expr() const { return expr_; }
   ft_anyall_mode::type get_mode() const { return mode_; }
   PlanIter_t get_plan_iter() const { return plan_iter_; }

@@ -19,13 +19,13 @@
 
 #include <stack>
 
-#include "compiler/expression/ftexpr_visitor.h"
+#include "compiler/expression/ftnode_visitor.h"
 #include "runtime/base/plan_iterator.h"
 #include "runtime/full_text/ft_matches.h"
 
 namespace zorba {
 
-class ftcontains_visitor : public ftselection_visitor {
+class ftcontains_visitor : public ftnode_visitor {
 public:
   ftcontains_visitor( FTTokenIterator &search_context, PlanState& );
 
@@ -33,38 +33,38 @@ public:
 
   bool ftcontains() const;
 
-  expr_visitor* get_expr_visitor() { return NULL; }
+  expr_visitor* get_expr_visitor();
 
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmild_not_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftor_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftprimary_with_options_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftrange_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftselection_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftunary_not_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_times_expr );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftand );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftextension_selection );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftmild_not );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftor );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftprimary_with_options );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftrange );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftselection );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftunary_not );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwords );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwords_times );
 
   // FTPosFilters
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcontent_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdistance_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftorder_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftscope_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwindow_filter );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftcontent_filter );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftdistance_filter );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftorder_filter );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftscope_filter );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwindow_filter );
 
   // FTMatchOptions
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_options );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_words );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftcase_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftextension_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftmatch_options );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftstem_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftstop_words );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
 
 private:
   void push( ft_all_matches *m ) {

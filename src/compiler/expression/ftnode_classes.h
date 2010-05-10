@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FTEXPR_CLASSES_H
-#define ZORBA_FTEXPR_CLASSES_H
+#ifndef ZORBA_FTNODE_CLASSES_H
+#define ZORBA_FTNODE_CLASSES_H
 
 #include "zorbatypes/rchandle.h"
 
 namespace zorba {
 
-class ftexpr;
-class ftexpr_visitor;
+class ftnode;
+class ftnode_visitor;
 class pass_thru_expr_visitor;
 
 namespace ft_visit_result {
@@ -34,38 +34,38 @@ namespace ft_visit_result {
   };
 }
 
-typedef rchandle<ftexpr> ftexpr_t;
+typedef rchandle<ftnode> ftnode_t;
 
-class ftand_expr;
+class ftand;
 class ftcase_option;
 class ftcontent_filter;
 class ftdiacritics_option;
 class ftdistance_filter;
 class ftextension_option;
-class ftextension_selection_expr;
+class ftextension_selection;
 class ftlanguage_option;
 class ftmatch_option;
 class ftmatch_options;
-class ftmild_not_expr;
+class ftmild_not;
 class ftorder_filter;
-class ftor_expr;
+class ftor;
 class ftpos_filter;
 class ftprimary;
-class ftprimary_with_options_expr;
-class ftrange_expr;
+class ftprimary_with_options;
+class ftrange;
 class ftscope_filter;
-class ftselection_expr;
+class ftselection;
 class ftstem_option;
 class ftstop_word_option;
 class ftstop_words;
 class ftthesaurus_id;
 class ftthesaurus_option;
-class ftunary_not_expr;
+class ftunary_not;
 class ftwild_card_option;
 class ftwindow_filter;
-class ftwords_expr;
-class ftwords_times_expr;
+class ftwords;
+class ftwords_times;
 
 } // namespace zorba
-#endif /* ZORBA_FTEXPR_CLASSES_H */
+#endif /* ZORBA_FTNODE_CLASSES_H */
 /* vim:set et sw=2 ts=2: */

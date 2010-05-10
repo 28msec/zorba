@@ -25,7 +25,7 @@
  ******************************************************************************/
 
 #include "common/shared_types.h"
-#include "compiler/expression/ftexpr.h"
+#include "compiler/expression/ft_expr.h"
 #include "runtime/base/binarybase.h"
 #include "zorbatypes/representations.h"
 
@@ -47,7 +47,7 @@ public:
     QueryLoc const&,
     PlanIter_t search_context,
     PlanIter_t ftignore_option,
-    ftexpr_t ftselection,
+    ftnode_t ftselection,
     sub_iter_list_t&
   );
   virtual ~FTContainsIterator();
@@ -59,7 +59,7 @@ public:
   void resetImpl( PlanState& ) const;
   void closeImpl( PlanState& );
 private:
-  ftexpr_t ftselection_;
+  ftnode_t ftselection_;
   sub_iter_list_t sub_iters_;
 };
 

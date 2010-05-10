@@ -20,8 +20,8 @@
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/function_item_expr.h"
-#include "compiler/expression/ftexpr.h"
-#include "compiler/expression/ftexpr_visitor.h"
+#include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftnode_visitor.h"
 
 #include "zorbaerrors/Assert.h"
 
@@ -60,10 +60,10 @@ ExprIterator::ExprIterator(expr* e)
   {
     ftcontains_expr* ftExpr = static_cast<ftcontains_expr*>(e);
 
-    next_iter_ftselection_visitor ftselVisitor;
-    ftExpr->get_ftselection()->accept(ftselVisitor);
+    FTNodeExprCollector exprCollector;
+    ftExpr->get_ftselection()->accept(exprCollector);
 
-    ftExpr->ftselection_exprs_.swap(ftselVisitor.get_sub_expr_list());
+    ftExpr->ftselection_exprs_.swap(exprCollector.get_expr_list());
   }
 
   next();

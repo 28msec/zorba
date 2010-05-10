@@ -35,7 +35,7 @@ FTContainsIterator::FTContainsIterator(
   QueryLoc const &loc,
   PlanIter_t search_context,
   PlanIter_t ftignore_option,
-  ftexpr_t ftselection,
+  ftnode_t ftselection,
   sub_iter_list_t &sub_iters
 ) : 
   base_type( sctx, loc, search_context, ftignore_option ),

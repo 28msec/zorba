@@ -31,14 +31,14 @@
 #include "compiler/api/compilercb.h"
 #include "compiler/codegen/plan_visitor.h"
 #include "compiler/expression/expr.h"
-#include "compiler/expression/fo_expr.h"
-#include "compiler/expression/ftexpr.h"
-#include "compiler/expression/ftexpr_visitor.h"
-#include "compiler/expression/var_expr.h"
-#include "compiler/expression/flwor_expr.h"
-#include "compiler/expression/path_expr.h"
-#include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/expr_visitor.h"
+#include "compiler/expression/flwor_expr.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftnode_visitor.h"
+#include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/path_expr.h"
+#include "compiler/expression/var_expr.h"
 #include "compiler/parser/parse_constants.h"
 
 #include "context/namespace_context.h"
@@ -229,8 +229,7 @@ typedef rchandle<FlworClauseVarMap> FlworClauseVarMap_t;
 /******************************************************************************
 
 *******************************************************************************/
-class plan_ftexpr_visitor : public ftselection_visitor 
-{
+class plan_ftnode_visitor : public ftnode_visitor {
 public:
   typedef list<PlanIter_t> PlanIter_list_t;
 
@@ -239,46 +238,45 @@ private:
   list<PlanIter_t>   sub_iters_;
 
 public:
-  plan_ftexpr_visitor( plan_visitor* v ) : plan_visitor_( v ) { }
+  plan_ftnode_visitor( plan_visitor* v ) : plan_visitor_( v ) { }
 
-  expr_visitor* get_expr_visitor() 
-  {
+  expr_visitor* get_expr_visitor() {
     return reinterpret_cast<expr_visitor*>(plan_visitor_);
   }
 
   PlanIter_list_t& get_sub_iters() { return sub_iters_; }
 
 protected:
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftand_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_selection_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmild_not_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftor_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftprimary_with_options_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftrange_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftselection_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftunary_not_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_expr );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwords_times_expr );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftand );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftextension_selection );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftmild_not );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftor );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftprimary_with_options );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftrange );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftselection );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftunary_not );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwords );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwords_times );
 
   // FTPosFilters
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcontent_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdistance_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftorder_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftscope_filter );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwindow_filter );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftcontent_filter );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftdistance_filter );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftorder_filter );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftscope_filter );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwindow_filter );
 
   // FTMatchOptions
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftcase_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftextension_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftmatch_options );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstem_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftstop_words );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
-  DECL_FTEXPR_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftcase_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftdiacritics_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftextension_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftlanguage_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftmatch_options );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftstem_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftstop_word_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftstop_words );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
+  DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
 };
 
 
@@ -287,7 +285,7 @@ protected:
 ********************************************************************************/
 class plan_visitor : public expr_visitor
 {
-  friend class plan_ftexpr_visitor;
+  friend class plan_ftnode_visitor;
 protected:
   static vector<PlanIter_t>              no_var_iters;
 
@@ -309,7 +307,7 @@ protected:
 
   std::stack<ZorbaDebugIterator*>        theDebuggerStack;
 
-  plan_ftexpr_visitor                  * plan_ftexpr_visitor_;
+  plan_ftnode_visitor                  * plan_ftnode_visitor_;
 
 public:
 
@@ -321,7 +319,7 @@ plan_visitor(
   arg_var_iter_map(arg_var_map),
   theCCB(ccb)
 {
-  plan_ftexpr_visitor_ = new plan_ftexpr_visitor( this );
+  plan_ftnode_visitor_ = new plan_ftnode_visitor( this );
 }
 
 
@@ -337,13 +335,13 @@ plan_visitor(
     copy_var_iter_map.end(),
     vector_destroyer<ForVarIter_t>()
   );
-  delete plan_ftexpr_visitor_;
+  delete plan_ftnode_visitor_;
 }
 
 
-ftselection_visitor* get_ftselection_visitor() 
+ftnode_visitor* get_ftnode_visitor() 
 {
-  return plan_ftexpr_visitor_;
+  return plan_ftnode_visitor_;
 }
 
 
@@ -2758,7 +2756,7 @@ void end_visit(ftcontains_expr& v)
 
   PlanIter_t ftcontains_it = new FTContainsIterator(
     sctx, qloc, ftrange_it, ftignore_it, v.get_ftselection(),
-    plan_ftexpr_visitor_->get_sub_iters()
+    plan_ftnode_visitor_->get_sub_iters()
   );
 
   push_itstack( ftcontains_it );
@@ -2775,62 +2773,62 @@ PlanIter_t result()
 };
 
 
-#define V plan_ftexpr_visitor
+#define V plan_ftnode_visitor
 
 #define ACCEPT( EXPR, V )                   \
   if ( !(EXPR) ) ; else (EXPR)->accept( V )
 
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftand_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_selection_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmild_not_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftor_expr )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftand )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_selection )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftmild_not )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftor )
 
-ft_visit_result::type V::begin_visit( ftprimary_with_options_expr &e ) {
-  if ( e.get_weight() ) {
-    e.get_weight()->accept( *plan_visitor_ );
+ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
+  if ( pwo.get_weight() ) {
+    pwo.get_weight()->accept( *plan_visitor_ );
     PlanIter_t it = plan_visitor_->pop_itstack();
-    e.set_plan_iter( it );
+    pwo.set_plan_iter( it );
     sub_iters_.push_back( it );
   }
   return ft_visit_result::no_end;
 }
-DEF_FTEXPR_VISITOR_END_VISIT( V, ftprimary_with_options_expr )
+DEF_FTNODE_VISITOR_END_VISIT( V, ftprimary_with_options )
 
-ft_visit_result::type V::begin_visit( ftrange_expr &e ) {
-  ACCEPT( e.get_expr1(), *plan_visitor_ );
+ft_visit_result::type V::begin_visit( ftrange &r ) {
+  ACCEPT( r.get_expr1(), *plan_visitor_ );
   PlanIter_t it1 = plan_visitor_->pop_itstack();
   sub_iters_.push_back( it1 );
 
   PlanIter_t it2;
-  if ( e.get_expr2() ) {
-    e.get_expr2()->accept( *plan_visitor_ );
+  if ( r.get_expr2() ) {
+    r.get_expr2()->accept( *plan_visitor_ );
     it2 = plan_visitor_->pop_itstack();
     sub_iters_.push_back( it2 );
   }
 
-  e.set_plan_iters( it1, it2 );
+  r.set_plan_iters( it1, it2 );
   return ft_visit_result::no_end;
 }
-DEF_FTEXPR_VISITOR_END_VISIT( V, ftrange_expr )
+DEF_FTNODE_VISITOR_END_VISIT( V, ftrange )
 
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftselection_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftunary_not_expr )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftselection )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftunary_not )
 
-ft_visit_result::type V::begin_visit( ftwords_expr &e ) {
-  ACCEPT( e.get_expr(), *plan_visitor_ );
+ft_visit_result::type V::begin_visit( ftwords &w ) {
+  ACCEPT( w.get_expr(), *plan_visitor_ );
   PlanIter_t it = plan_visitor_->pop_itstack();
-  e.set_plan_iter( it );
+  w.set_plan_iter( it );
   sub_iters_.push_back( it );
   return ft_visit_result::no_end;
 }
-DEF_FTEXPR_VISITOR_END_VISIT( V, ftwords_expr )
+DEF_FTNODE_VISITOR_END_VISIT( V, ftwords )
 
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwords_times_expr )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwords_times )
 
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcontent_filter )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdistance_filter )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftorder_filter )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftscope_filter )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftcontent_filter )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftdistance_filter )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftorder_filter )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftscope_filter )
 
 ft_visit_result::type V::begin_visit( ftwindow_filter &f ) {
   ACCEPT( f.get_window(), *plan_visitor_ );
@@ -2839,19 +2837,19 @@ ft_visit_result::type V::begin_visit( ftwindow_filter &f ) {
   sub_iters_.push_back( it );
   return ft_visit_result::no_end;
 }
-DEF_FTEXPR_VISITOR_END_VISIT( V, ftwindow_filter )
+DEF_FTNODE_VISITOR_END_VISIT( V, ftwindow_filter )
 
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmatch_options )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstem_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_id )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftmatch_options )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstem_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_id )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
 
 #undef V
 

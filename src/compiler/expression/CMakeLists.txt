@@ -22,7 +22,8 @@ SET(EXPRESSION_SRCS
     path_expr.cpp
     flwor_expr.cpp
     fo_expr.cpp
-    ftexpr.cpp
-    ftexpr_visitor.cpp
+    ft_expr.cpp
+    ftnode_visitor.cpp
     function_item_expr.cpp)
 
+# vim:set et sw=4 ts=4:

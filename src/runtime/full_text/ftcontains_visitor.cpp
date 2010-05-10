@@ -16,7 +16,7 @@
 
 #include <limits>
 
-#include "compiler/expression/ftexpr.h"
+#include "compiler/expression/ft_expr.h"
 #include "runtime/full_text/apply.h"
 #include "runtime/full_text/ftcontains_visitor.h"
 #include "runtime/full_text/stl_helpers.h"
@@ -62,16 +62,20 @@ bool ftcontains_visitor::ftcontains() const {
   return false;
 }
 
+expr_visitor* ftcontains_visitor::get_expr_visitor() {
+  return NULL;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 #define V ftcontains_visitor
 
-ft_visit_result::type V::begin_visit( ftand_expr &e ) {
+ft_visit_result::type V::begin_visit( ftand &a ) {
   push( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
 
-void V::end_visit( ftand_expr &e ) {
+void V::end_visit( ftand &a ) {
   while ( true ) {
     ft_all_matches *const ami = pop();
     if ( !ami )
@@ -85,14 +89,14 @@ void V::end_visit( ftand_expr &e ) {
   }
 }
 
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_selection_expr )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_selection )
 
-ft_visit_result::type V::begin_visit( ftmild_not_expr &e ) {
+ft_visit_result::type V::begin_visit( ftmild_not &mn ) {
   push( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
 
-void V::end_visit( ftmild_not_expr &e ) {
+void V::end_visit( ftmild_not &mn ) {
   while ( true ) {
     ft_all_matches *const ami = pop();
     if ( !ami )
@@ -106,12 +110,12 @@ void V::end_visit( ftmild_not_expr &e ) {
   }
 }
 
-ft_visit_result::type V::begin_visit( ftor_expr &e ) {
+ft_visit_result::type V::begin_visit( ftor &o ) {
   push( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
 
-void V::end_visit( ftor_expr &e ) {
+void V::end_visit( ftor &o ) {
   while ( true ) {
     ft_all_matches *const ami = pop();
     if ( !ami )
@@ -125,46 +129,46 @@ void V::end_visit( ftor_expr &e ) {
   }
 }
 
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftprimary_with_options_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftrange_expr )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftselection_expr )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftprimary_with_options )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftrange )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftselection )
 
-DEF_FTEXPR_VISITOR_BEGIN_VISIT( V, ftunary_not_expr )
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftunary_not )
 
-void V::end_visit( ftunary_not_expr& ) {
+void V::end_visit( ftunary_not& ) {
   apply_ftunary_not( *top() );
 }
 
-ft_visit_result::type V::begin_visit( ftwords_expr &e ) {
+ft_visit_result::type V::begin_visit( ftwords &w ) {
   return ft_visit_result::proceed;
 }
 
-void V::end_visit( ftwords_expr &e ) {
+void V::end_visit( ftwords &w ) {
   store::Item_t item;
-  PlanIterator::consumeNext( item, e.get_plan_iter(), plan_state_ );
+  PlanIterator::consumeNext( item, w.get_plan_iter(), plan_state_ );
   FTTokenIterator query_tokens( item->getQueryTokens() );
   FTToken::int_t query_pos = 0;         // TODO: what should this really be?
   ft_all_matches *const result = new ft_all_matches;
   apply_ftwords(
-    search_context_, query_tokens, query_pos, e.get_mode(), *result
+    search_context_, query_tokens, query_pos, w.get_mode(), *result
   );
   push( result );
 }
 
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwords_times_expr )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwords_times )
 
 ////////// FTPosFilters ///////////////////////////////////////////////////////
 
-DEF_FTEXPR_VISITOR_BEGIN_VISIT( V, ftcontent_filter )
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftcontent_filter )
 
 void V::end_visit( ftcontent_filter &f ) {
   apply_ftcontent( *top(), f.get_mode() );
 }
 
-DEF_FTEXPR_VISITOR_BEGIN_VISIT( V, ftdistance_filter )
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftdistance_filter )
 
 void V::end_visit( ftdistance_filter &f ) {
-  ftrange_expr const *const range = f.get_range();
+  ftrange const *const range = f.get_range();
 
   store::Item_t item1;
   PlanIterator::consumeNext( item1, range->get_plan_iter1(), plan_state_ );
@@ -197,13 +201,13 @@ void V::end_visit( ftdistance_filter &f ) {
   delete am;
 }
 
-DEF_FTEXPR_VISITOR_BEGIN_VISIT( V, ftorder_filter )
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftorder_filter )
 
 void V::end_visit( ftorder_filter &f ) {
   apply_ftorder( *top() );
 }
 
-DEF_FTEXPR_VISITOR_BEGIN_VISIT( V, ftscope_filter )
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftscope_filter )
 
 void V::end_visit( ftscope_filter &f ) {
   ft_all_matches *const am = pop();
@@ -213,7 +217,7 @@ void V::end_visit( ftscope_filter &f ) {
   delete am;
 }
 
-DEF_FTEXPR_VISITOR_BEGIN_VISIT( V, ftwindow_filter )
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwindow_filter )
 
 void V::end_visit( ftwindow_filter &f ) {
   store::Item_t item;
@@ -227,17 +231,17 @@ void V::end_visit( ftwindow_filter &f ) {
 
 ////////// FTMatchOptions /////////////////////////////////////////////////////
 
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftextension_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftmatch_options )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstem_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_id )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_option )
-DEF_FTEXPR_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftmatch_options )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstem_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_id )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
 
 #undef V
 
