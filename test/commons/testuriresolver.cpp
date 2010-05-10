@@ -289,7 +289,7 @@ std::auto_ptr<ModuleURIResolverResult> TestModuleURIResolver::resolve(
   {
     result->setError(URIResolverResult::UR_NOERROR);
   }
-  else 
+  else
   {
     result->setError(URIResolverResult::UR_XQST0059);
     std::stringstream lErrorStream;
