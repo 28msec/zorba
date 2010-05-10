@@ -226,7 +226,7 @@ ft_visit_result::type ftand::accept( ftnode_visitor &v ) {
 }
 
 void ftand::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   ar & list_;
 }
 
@@ -322,7 +322,7 @@ ft_visit_result::type ftextension_selection::accept( ftnode_visitor &v ) {
 }
 
 void ftextension_selection::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
 }
 
 ftextension_option::ftextension_option(
@@ -367,7 +367,7 @@ void ftlanguage_option::serialize( serialization::Archiver &ar ) {
 }
 
 void ftmatch_option::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
 }
 
 ftmatch_options::ftmatch_options(
@@ -408,7 +408,7 @@ ft_visit_result::type ftmatch_options::accept( ftnode_visitor &v ) {
 }
 
 void ftmatch_options::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   ar & case_option_;
   ar & extension_option_;
   ar & language_option_;
@@ -435,7 +435,7 @@ ft_visit_result::type ftmild_not::accept( ftnode_visitor &v ) {
 }
 
 void ftmild_not::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   ar & list_;
 }
 
@@ -456,7 +456,7 @@ ft_visit_result::type ftor::accept( ftnode_visitor &v ) {
 }
 
 void ftor::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   ar & list_;
 }
 
@@ -503,7 +503,7 @@ ft_visit_result::type ftprimary_with_options::accept( ftnode_visitor &v ) {
 }
 
 void ftprimary_with_options::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   ar & primary_;
   ar & match_options_;
   ar & weight_;
@@ -530,7 +530,7 @@ ft_visit_result::type ftrange::accept( ftnode_visitor &v ) {
 }
 
 void ftrange::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   SERIALIZE_ENUM(ft_range_mode::type,mode_);
   ar & expr1_;
   ar & expr2_;
@@ -579,7 +579,7 @@ ft_visit_result::type ftselection::accept( ftnode_visitor &v ) {
 }
 
 void ftselection::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   ar & ftor_;
   ar & list_;
 }
@@ -622,7 +622,7 @@ ft_visit_result::type ftstop_words::accept( ftnode_visitor &v ) {
 }
 
 void ftstop_words::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   ar & uri_;
   ar & list_;
   SERIALIZE_ENUM(ft_stop_words_unex::type,mode_);
@@ -688,7 +688,7 @@ ft_visit_result::type ftthesaurus_id::accept( ftnode_visitor &v ) {
 }
 
 void ftthesaurus_id::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   ar & uri_;
   ar & relationship_;
   ar & levels_;
@@ -740,7 +740,7 @@ ft_visit_result::type ftunary_not::accept( ftnode_visitor &v ) {
 }
 
 void ftunary_not::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   ar & subnode_;
 }
 
@@ -804,7 +804,7 @@ ft_visit_result::type ftwords::accept( ftnode_visitor &v ) {
 }
 
 void ftwords::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   ar & expr_;
   SERIALIZE_ENUM( ft_anyall_mode::type, mode_ );
 }
@@ -834,7 +834,7 @@ ft_visit_result::type ftwords_times::accept( ftnode_visitor &v ) {
 }
 
 void ftwords_times::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftselection*)this );
+  serialize_baseclass( ar, (ftnode*)this );
   ar & ftwords_;
   ar & fttimes_;
 }
