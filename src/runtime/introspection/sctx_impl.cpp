@@ -254,7 +254,7 @@ bool StaticNamespaceBindingIterator::nextImpl(
 
   consumeNext(lName, theChildren[0].getp(), aPlanState);
 
-  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc))
+  if (theSctx->lookup_ns(ns, lName->getStringValue(), loc, MAX_ZORBA_ERROR_CODE))
     STACK_PUSH(GENV_ITEMFACTORY->createString(aResult, ns), state);
 
   STACK_END(state);
@@ -356,7 +356,7 @@ bool StaticallyKnownDocumentsIterator::nextImpl(
     PlanState& aPlanState) const
 {
   StaticallyKnownDocumentsIteratorState* state;
-  
+
   DEFAULT_STACK_INIT(StaticallyKnownDocumentsIteratorState, state, aPlanState);
 
   theSctx->get_all_documents(state->theDocuments);
