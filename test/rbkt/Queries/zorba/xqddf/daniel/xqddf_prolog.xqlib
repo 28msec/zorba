@@ -18,7 +18,7 @@ by fn:string(./location) as xs:string;
 
 declare manually maintained value range index xqddf-test:index2
 on nodes xqddf:collection(xs:QName("xqddf-test:white-collection"))
-by fn:count(.//category) as xs:integer;
+by fn:count(.//incategory) as xs:integer;
 
 declare variable $xqddf-test:index1 := xs:QName("xqddf-test:index1");
 declare variable $xqddf-test:index2 := xs:QName("xqddf-test:index2");

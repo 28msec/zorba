@@ -1744,20 +1744,10 @@ xqpString xqpString::substr(xqpStringStore::distance_type index) const
   }
 
 
-  wchar_t * xqpString::getWCS(xqpString source)
-  {//more of a workaround
-    int32_t destCapacity =  source.length();
-    wchar_t* destWCS;
-    destWCS = new wchar_t[destCapacity + 1];
-    const char *cs = source.c_str();
-    int i=0;
-    while(cs[i])
-    {
-      destWCS[i] = cs[i];
-      i++;
-    }
-    destWCS[i] = 0;
-    return destWCS;
+  wchar_t * xqpString::getWCS(xqpString aSrc,
+                           int32_t *aDestLen)
+  {  
+    return getWCS(aSrc.c_str(), aSrc.length(), aDestLen);
   }
 
   wchar_t * xqpString::getWCS(const char * aSrc, 

@@ -673,7 +673,7 @@ public:
        *  @return a sequence of wchar_t units(UCS-4 encoded).
        */
       static wchar_t *
-      getWCS(xqpString source);
+      getWCS(xqpString source, int32_t *aDestLen);
 
       static wchar_t *
       getWCS(const char * aSrc, const unsigned int aSrcLen, int32_t *aDestLen);
