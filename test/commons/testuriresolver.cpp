@@ -281,9 +281,7 @@ std::auto_ptr<ModuleURIResolverResult> TestModuleURIResolver::resolve(
   filename = filename.substr(7); // strip the "file://" prefix
 #endif
 
-  std::istream  *lStream = new std::ifstream(filename.c_str());
-  std::auto_ptr<std::istream> lModule(lStream);
-  result->theModule = lModule.get();
+  result->theModule = new std::ifstream(filename.c_str());
 
   if (result->theModule->good())
   {
