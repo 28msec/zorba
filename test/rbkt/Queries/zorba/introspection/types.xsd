@@ -1,0 +1,42 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:types="http://www.zorba-xquery.com/types"
+           targetNamespace="http://www.zorba-xquery.com/types"
+           elementFormDefault="qualified" attributeFormDefault="qualified">
+
+  <xs:attribute name="myAttribute" type ="xs:string"/>
+
+  <xs:simpleType name = "mySimpleType">
+    <xs:restriction base = "xs:int">
+     <xs:minInclusive value = "1"/>
+     <xs:maxInclusive value = "50"/>
+   </xs:restriction>
+  </xs:simpleType>
+ 
+  <xs:complexType name = "myComplex">
+  </xs:complexType>
+
+  <xs:element name="myProduct">
+     <xs:complexType>
+       <xs:attribute name="prodid" type="xs:positiveInteger"/>
+     </xs:complexType>
+  </xs:element>
+
+  <xs:group name="custGroup">
+    <xs:sequence>
+      <xs:element name="customer" type="xs:string"/>
+      <xs:element name="orderdetails" type="xs:string"/>
+      <xs:element name="billto" type="xs:string"/>
+      <xs:element name="shipto" type="xs:string"/>
+    </xs:sequence>
+  </xs:group>
+
+  <xs:attributeGroup name="personattr">
+    <xs:attribute name="attr1" type="xs:string"/>
+    <xs:attribute name="attr2" type="xs:integer"/>
+  </xs:attributeGroup>
+
+  <xs:complexType name="person">
+    <xs:attributeGroup ref="types:personattr"/>
+  </xs:complexType> 
+
+</xs:schema>

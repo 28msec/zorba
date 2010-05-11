@@ -1,3 +1,3 @@
 import module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx"; 
 
-sctx:default-collection-type()
+sctx:statically-known-document-type("document-not-known")
