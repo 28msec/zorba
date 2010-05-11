@@ -18,17 +18,8 @@
 
 #ifdef ZORBA_XQUERYX
 
-#include <libxml/xmlmemory.h>
-#include <libxml/debugXML.h>
-#include <libxml/HTMLtree.h>
-#include <libxml/xmlIO.h>
-#include <libxml/DOCBparser.h>
-#include <libxml/xinclude.h>
-#include <libxml/catalog.h>
 #include <libxslt/xslt.h>
-//#include <libxslt/xsltinternals.h>
 #include <libxslt/transform.h>
-#include <libxslt/xsltutils.h>
 
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
 #include "compiler/xqueryx/xqueryx_xslt.h"
