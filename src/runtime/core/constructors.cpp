@@ -512,6 +512,7 @@ void AttributeIterator::serialize(::zorba::serialization::Archiver& ar)
   (BinaryBaseIterator<AttributeIterator, PlanIteratorState>*)this);
 
   ar & theQName;
+  ar & theIsId;
   ar & theIsRoot;
 }
 

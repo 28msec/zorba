@@ -68,7 +68,11 @@ public:
   DocumentIterator(static_context* sctx, const QueryLoc& loc, PlanIter_t& aChild)
     :
     UnaryBaseIterator<DocumentIterator, PlanIteratorState>(sctx, loc, aChild)
-  {}
+  {
+    theTypePreserve = false;//pre initialize things to avoid valgrind warnings during serialization
+    theNsPreserve = false;
+    theNsInherit = false;
+  }
 
   void accept(PlanIterVisitor& v) const;
 
@@ -426,7 +430,7 @@ public:
     (UnaryBaseIterator<NameCastIterator, PlanIteratorState>*)this);
 
     ar & theNCtx;
-	ar & theIsAttrName;
+	  ar & theIsAttrName;
   }
 
 public:

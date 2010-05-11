@@ -61,6 +61,7 @@ void LetIterator::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theVarName;
   ar & theLetVars;
+  ar & theLazyEval;
   ar & theNeedsMat;
 }
 
