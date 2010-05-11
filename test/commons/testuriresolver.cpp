@@ -294,6 +294,8 @@ std::auto_ptr<ModuleURIResolverResult> TestModuleURIResolver::resolve(
     lErrorStream << "Module file not found " << filename;
     std::cout << "Module file not found " << filename << std::endl;
     result->setErrorDescription(lErrorStream.str());
+    delete result->theModule;
+    result->theModule = 0;
   }
 
   return std::auto_ptr<ModuleURIResolverResult>(result.release());
