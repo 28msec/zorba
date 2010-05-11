@@ -116,6 +116,7 @@ PlanIter_t fn_reverse::codegen(
 
 
 
+
 PlanIter_t fn_one_or_more::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -331,12 +332,26 @@ void populate_context_sequences(static_context* sctx)
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 
-  DECL(sctx, fn_zorba_int_subsequence,
-      (createQName("http://www.zorba-xquery.com/zorba/internal-functions","fn-zorba","int-subsequence"),
+  DECL(sctx, fn_zorba_subsequence_int,
+      (createQName("http://www.zorba-xquery.com/zorba/internal-functions","fn-zorba","subsequence-int"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+
+  DECL(sctx, fn_zorba_subsequence_int,
+      (createQName("http://www.zorba-xquery.com/zorba/internal-functions","fn-zorba","subsequence-int"),
       GENV_TYPESYSTEM.ITEM_TYPE_STAR,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+
+  DECL(sctx, fn_zorba_sequence_point_access,
+      (createQName("http://www.zorba-xquery.com/zorba/internal-functions","fn-zorba","sequence-point-access"),
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.ITEM_TYPE_QUESTION));
 
 
   DECL(sctx, fn_zero_or_one,

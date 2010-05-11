@@ -208,6 +208,9 @@ public:
   store::Iterator_t theSourceIter;
   store::Item_t     theItem;
 
+  ulong             thePos;
+  ulong             theLastPos;
+
   LetVarState();
 
   ~LetVarState();
@@ -224,7 +227,7 @@ private:
   store::Item_t  theVarName;
   xqp_long       theTargetPos;
   PlanIter_t     theTargetPosIter;
-  bool           theResetSource;
+  PlanIter_t     theTargetLenIter;
 
 public:
   SERIALIZABLE_CLASS(LetVarIterator);
@@ -243,33 +246,17 @@ public:
 
   ~LetVarIterator() {}
 
-  bool getResetSource() const { return theResetSource; }
+  bool setTargetPos(xqp_long v);
 
-  void setResetSource(bool v) { theResetSource = v; }
+  bool setTargetPosIter(const PlanIter_t& v);
 
-  bool setTargetPos(xqp_long v) 
-  {
-    if (theTargetPos == 0 && theTargetPosIter == NULL)
-    {
-      theTargetPos = v;
-      return true;
-    }
-    return false;
-  }
-
-  bool setTargetPosIter(const PlanIter_t& v) 
-  {
-    if (theTargetPos == 0 && theTargetPosIter == NULL)
-    {
-      theTargetPosIter = v; 
-      return true;
-    }
-    return false;
-  }
+  bool setTargetLenIter(const PlanIter_t& v);
 
   xqp_long getTargetPos() const { return theTargetPos; }
 
   PlanIterator* getTargetPosIter() const { return theTargetPosIter.getp(); }
+
+  PlanIterator* getTargetLenIter() const { return theTargetLenIter.getp(); }
 
   store::Item* getVarName() const { return theVarName.getp(); }
 

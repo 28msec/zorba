@@ -263,12 +263,13 @@ RULE_REWRITE_POST(SpecializeOperations)
   {
     fo_expr* fo = static_cast<fo_expr *>(node);
     const function* fn = fo->get_func();
+    FunctionConsts::FunctionKind fnKind = fn->getKind();
 
     if (! fn->specializable())
       return NULL;
 
-    if (fn->getKind() == FunctionConsts::FN_SUM_1 ||
-        fn->getKind() == FunctionConsts::FN_SUM_2)
+    if (fnKind == FunctionConsts::FN_SUM_1 ||
+        fnKind == FunctionConsts::FN_SUM_2)
     {
       expr_t argExpr = fo->get_arg(0);
       xqtref_t argType = argExpr->get_return_type();
@@ -293,8 +294,8 @@ RULE_REWRITE_POST(SpecializeOperations)
         return node;
       }
     }
-    else if (fn->getKind() == FunctionConsts::OP_UNARY_MINUS_1 ||
-             fn->getKind() == FunctionConsts::OP_UNARY_PLUS_1)
+    else if (fnKind == FunctionConsts::OP_UNARY_MINUS_1 ||
+             fnKind == FunctionConsts::OP_UNARY_PLUS_1)
     {
       expr_t argExpr = fo->get_arg(0);
       xqtref_t argType = argExpr->get_return_type();
@@ -306,6 +307,43 @@ RULE_REWRITE_POST(SpecializeOperations)
       {
         fo->set_func(replacement);
         return node;
+      }
+    }
+    else if (fnKind == FunctionConsts::FN_SUBSEQUENCE_2 ||
+             fnKind == FunctionConsts::FN_SUBSEQUENCE_3)
+    {
+      expr_t posExpr = fo->get_arg(1);
+      if (posExpr->get_expr_kind() == promote_expr_kind)
+      {
+        promote_expr* promoteExpr = static_cast<promote_expr*>(posExpr.getp());
+        posExpr = promoteExpr->get_input();
+      }
+
+      xqtref_t posType = posExpr->get_return_type();
+
+      if (fo->num_args() == 3)
+      {
+        expr_t lenExpr = fo->get_arg(2);
+        if (lenExpr->get_expr_kind() == promote_expr_kind)
+        {
+          promote_expr* promoteExpr = static_cast<promote_expr*>(lenExpr.getp());
+          lenExpr = promoteExpr->get_input();
+        }
+
+        xqtref_t lenType = lenExpr->get_return_type();
+
+        if (TypeOps::is_subtype(*posType, *rtm.INTEGER_TYPE_ONE) &&
+            TypeOps::is_subtype(*lenType, *rtm.INTEGER_TYPE_ONE))
+        {
+          fo->set_func(GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_3));
+          fo->set_arg(1, posExpr);
+          fo->set_arg(1, lenExpr);
+        }
+      }
+      else if (TypeOps::is_subtype(*posType, *rtm.INTEGER_TYPE_ONE))
+      {
+        fo->set_func(GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_2));
+        fo->set_arg(1, posExpr);
       }
     }
     else if (fo->num_args() == 2) 

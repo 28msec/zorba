@@ -357,30 +357,30 @@ FnSubsequenceIteratorState::~FnSubsequenceIteratorState() {}
 
 void FnSubsequenceIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
-  theRemaining = xqp_integer::parseInt(0);
+  theRemaining = 0;
   theIsChildReset = false;
 }
 
 void FnSubsequenceIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
-  theRemaining = xqp_integer::parseInt(0);
+  theRemaining = 0;
   theIsChildReset = false;
 }
 // </FnSubsequenceIterator>
 
 
-// <IntSubsequenceIterator>
-const char* IntSubsequenceIterator::class_name_str = "IntSubsequenceIterator";
-IntSubsequenceIterator::class_factory<IntSubsequenceIterator>
-IntSubsequenceIterator::g_class_factory;
+// <SubsequenceIntIterator>
+const char* SubsequenceIntIterator::class_name_str = "SubsequenceIntIterator";
+SubsequenceIntIterator::class_factory<SubsequenceIntIterator>
+SubsequenceIntIterator::g_class_factory;
 
 const serialization::ClassVersion 
-IntSubsequenceIterator::class_versions[] ={{ 1, 0x000905, false}};
+SubsequenceIntIterator::class_versions[] ={{ 1, 0x000905, false}};
 
-const int IntSubsequenceIterator::class_versions_count =
-sizeof(IntSubsequenceIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+const int SubsequenceIntIterator::class_versions_count =
+sizeof(SubsequenceIntIterator::class_versions)/sizeof(struct serialization::ClassVersion);
 
-void IntSubsequenceIterator::accept(PlanIterVisitor& v) const {
+void SubsequenceIntIterator::accept(PlanIterVisitor& v) const {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
@@ -392,23 +392,67 @@ void IntSubsequenceIterator::accept(PlanIterVisitor& v) const {
   v.endVisit(*this);
 }
 
-IntSubsequenceIterator::~IntSubsequenceIterator() {}
+SubsequenceIntIterator::~SubsequenceIntIterator() {}
 
-IntSubsequenceIteratorState::IntSubsequenceIteratorState() {}
+SubsequenceIntIteratorState::SubsequenceIntIteratorState() {}
 
-IntSubsequenceIteratorState::~IntSubsequenceIteratorState() {}
+SubsequenceIntIteratorState::~SubsequenceIntIteratorState() {}
 
 
-void IntSubsequenceIteratorState::init(PlanState& planState) {
+void SubsequenceIntIteratorState::init(PlanState& planState) {
   PlanIteratorState::init(planState);
   theRemaining = 0;
+  theIsChildReset = false;
 }
 
-void IntSubsequenceIteratorState::reset(PlanState& planState) {
+void SubsequenceIntIteratorState::reset(PlanState& planState) {
   PlanIteratorState::reset(planState);
   theRemaining = 0;
+  theIsChildReset = false;
 }
-// </IntSubsequenceIterator>
+// </SubsequenceIntIterator>
+
+
+// <SequencePointAccessIterator>
+const char* SequencePointAccessIterator::class_name_str = "SequencePointAccessIterator";
+SequencePointAccessIterator::class_factory<SequencePointAccessIterator>
+SequencePointAccessIterator::g_class_factory;
+
+const serialization::ClassVersion 
+SequencePointAccessIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int SequencePointAccessIterator::class_versions_count =
+sizeof(SequencePointAccessIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void SequencePointAccessIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+SequencePointAccessIterator::~SequencePointAccessIterator() {}
+
+SequencePointAccessIteratorState::SequencePointAccessIteratorState() {}
+
+SequencePointAccessIteratorState::~SequencePointAccessIteratorState() {}
+
+
+void SequencePointAccessIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+  theIsChildReset = false;
+}
+
+void SequencePointAccessIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+  theIsChildReset = false;
+}
+// </SequencePointAccessIterator>
 
 
 // <FnZeroOrOneIterator>

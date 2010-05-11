@@ -312,7 +312,40 @@ void LetVarIterator::serialize(::zorba::serialization::Archiver& ar)
   ar & theVarName;
   ar & theTargetPos;
   ar & theTargetPosIter;
-  ar & theResetSource;
+  ar & theTargetLenIter;
+}
+
+
+bool LetVarIterator::setTargetPos(xqp_long v) 
+{
+  if (theTargetPos == 0 && theTargetPosIter == NULL)
+  {
+    theTargetPos = v;
+    return true;
+  }
+  return false;
+}
+
+
+bool LetVarIterator::setTargetPosIter(const PlanIter_t& v) 
+{
+  if (theTargetPos == 0 && theTargetPosIter == NULL)
+  {
+    theTargetPosIter = v; 
+    return true;
+  }
+  return false;
+}
+
+
+bool LetVarIterator::setTargetLenIter(const PlanIter_t& v) 
+{
+  if (theTargetPos == 0 && theTargetLenIter == NULL)
+  {
+    theTargetLenIter = v; 
+    return true;
+  }
+  return false;
 }
 
 
@@ -332,14 +365,17 @@ void LetVarIterator::bind(store::TempSeq_t& value, PlanState& planState)
 
   state->theTempSeq = value;
 
-  if (theTargetPos > 0)
+  if (theTargetPosIter == NULL)
   {
-    value->getItem(theTargetPos, state->theItem);
-  }
-  else if (theTargetPosIter == NULL)
-  {
-    state->theSourceIter = state->theTempSeq->getIterator();
-    state->theSourceIter->open();
+    if (theTargetPos > 0)
+    {
+      value->getItem(theTargetPos, state->theItem);
+    }
+    else 
+    {
+      state->theSourceIter = state->theTempSeq->getIterator();
+      state->theSourceIter->open();
+    }
   }
 }
 
@@ -355,14 +391,17 @@ void LetVarIterator::bind(
 
   state->theTempSeq = value;
 
-  if (theTargetPos > 0)
+  if (theTargetPosIter == NULL)
   {
-    value->getItem(startPos + theTargetPos - 1, state->theItem);
-  }
-  else if (theTargetPosIter == NULL)
-  {
-    state->theSourceIter = state->theTempSeq->getIterator(startPos, endPos, true);
-    state->theSourceIter->open();
+    if (theTargetPos > 0)
+    {
+      value->getItem(startPos + theTargetPos - 1, state->theItem);
+    }
+    else
+    {
+      state->theSourceIter = state->theTempSeq->getIterator(startPos, endPos, true);
+      state->theSourceIter->open();
+    }
   }
 }
 
@@ -374,7 +413,12 @@ void LetVarIterator::openImpl(
   NoaryBaseIterator<LetVarIterator, LetVarState>::openImpl(planState, offset);
 
   if (theTargetPosIter != NULL)
+  {
     theTargetPosIter->open(planState, offset);
+
+    if (theTargetLenIter != NULL)
+      theTargetLenIter->open(planState, offset);
+  }
 }
 
 
@@ -383,7 +427,12 @@ void LetVarIterator::resetImpl(PlanState& planState) const
   NoaryBaseIterator<LetVarIterator, LetVarState>::resetImpl(planState);
 
   if (theTargetPosIter != NULL)
+  {
     theTargetPosIter->reset(planState);
+
+    if (theTargetLenIter != NULL)
+      theTargetLenIter->reset(planState);
+  }
 }
 
 
@@ -392,36 +441,76 @@ void LetVarIterator::closeImpl(PlanState& planState)
   NoaryBaseIterator<LetVarIterator, LetVarState>::closeImpl(planState);
 
   if (theTargetPosIter != NULL)
+  {
     theTargetPosIter->close(planState);
+
+    if (theTargetLenIter != NULL)
+      theTargetLenIter->close(planState);
+  }
 }
 
 
 bool LetVarIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t posItem;
-  xqp_long pos;
+  store::Item_t lenItem;
+  xqp_long startPos;
+  xqp_long len;
 
   LetVarState* state;
   DEFAULT_STACK_INIT(LetVarState, state, planState);
 
-  if (theTargetPos > 0)
+  if (theTargetPosIter != NULL)
   {
-    result = state->theItem;
-    if (result)
-      STACK_PUSH(true, state);
-  }
-  else if (theTargetPosIter != NULL)
-  {
+    result = NULL;
+
     if (!consumeNext(posItem, theTargetPosIter, planState))
     {
       ZORBA_ASSERT(false);
     }
 
-    pos = posItem->getLongValue();
+    startPos = posItem->getLongValue();
 
-    if (pos > 0)
-      state->theTempSeq->getItem(pos, result);
+    if (theTargetLenIter == NULL)
+    {
+      if (startPos > 0)
+        state->theTempSeq->getItem(startPos, result);
 
+      if (result)
+        STACK_PUSH(true, state);
+    }
+    else
+    {
+      if (!consumeNext(lenItem, theTargetLenIter, planState))
+      {
+        ZORBA_ASSERT(false);
+      }
+
+      len = lenItem->getLongValue();
+
+      if (startPos <= 0)
+      {
+        len += startPos - 1;
+        startPos = 1;
+      }
+
+      state->theLastPos = startPos + len;
+      state->thePos = startPos;
+
+      while (state->thePos < state->theLastPos)
+      {
+        state->theTempSeq->getItem(state->thePos++, result);
+
+        if (result)
+          STACK_PUSH(true, state);
+        else
+          break;
+      }
+    }
+  }
+  else if (theTargetPos > 0)
+  {
+    result = state->theItem;
     if (result)
       STACK_PUSH(true, state);
   }
@@ -442,7 +531,12 @@ uint32_t LetVarIterator::getStateSizeOfSubtree() const
 {
   if (theTargetPosIter != NULL)
   {
-    return theTargetPosIter->getStateSizeOfSubtree() + getStateSize();
+    uint32_t size = theTargetPosIter->getStateSizeOfSubtree() + getStateSize();
+
+   if (theTargetLenIter != NULL)
+     size += theTargetLenIter->getStateSizeOfSubtree();
+
+    return size;
   }
   else
   {
@@ -457,6 +551,9 @@ void LetVarIterator::accept(PlanIterVisitor& v) const
 
   if (theTargetPosIter != NULL)
     theTargetPosIter->accept(v);
+
+  if (theTargetLenIter != NULL)
+    theTargetLenIter->accept(v);
 
   v.endVisit(*this);
 }

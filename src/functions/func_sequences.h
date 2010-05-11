@@ -192,13 +192,36 @@ public:
 };
 
 
-//fn-zorba:int-subsequence
-class fn_zorba_int_subsequence : public function
+//fn-zorba:subsequence-int
+class fn_zorba_subsequence_int : public function
 {
 public:
-  fn_zorba_int_subsequence(const signature& sig)
+  fn_zorba_subsequence_int(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.arg_count() == 2 ?
+                FunctionConsts::FN_ZORBA_SUBSEQUENCE_INT_2 :
+                FunctionConsts::FN_ZORBA_SUBSEQUENCE_INT_3);
+  }
+
+  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+
+  bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
+
+  bool propagatesSortedNodes(ulong producer) const { return producer == 0; }
+
+  COMPUTE_ANNOTATION_DECL();
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba:sequence-point-access
+class fn_zorba_sequence_point_access : public function
+{
+public:
+  fn_zorba_sequence_point_access(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_INT_SUBSEQUENCE_3)
+    function(sig, FunctionConsts::FN_ZORBA_SEQUENCE_POINT_ACCESS_2)
   {
   }
 

@@ -501,7 +501,7 @@ bool ParentAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
 
 /*******************************************************************************
-
+  Returns the ancestors in document order (top-down)
 ********************************************************************************/
 bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -551,7 +551,7 @@ bool AncestorAxisIterator::nextImpl(store::Item_t& result, PlanState& planState)
 
 
 /*******************************************************************************
-
+  Returns the ancestors in reverse document order (bottom-up)
 ********************************************************************************/
 bool AncestorReverseAxisIterator::nextImpl(
     store::Item_t& result,

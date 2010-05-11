@@ -462,7 +462,7 @@ public:
 class FnSubsequenceIteratorState : public PlanIteratorState
 {
 public:
-  xqp_integer theRemaining; //
+  xqp_long theRemaining; //
   bool theIsChildReset; //
 
   FnSubsequenceIteratorState();
@@ -507,50 +507,104 @@ public:
 
 /**
  * 
- *    zorbaop:int-subsequence
+ *    zorbaop:subsequence-int
  *  
  * Author: Zorba Team
  */
-class IntSubsequenceIteratorState : public PlanIteratorState
+class SubsequenceIntIteratorState : public PlanIteratorState
 {
 public:
   xqp_long theRemaining; //
+  bool theIsChildReset; //
 
-  IntSubsequenceIteratorState();
+  SubsequenceIntIteratorState();
 
-  ~IntSubsequenceIteratorState();
+  ~SubsequenceIntIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class IntSubsequenceIterator : public NaryBaseIterator<IntSubsequenceIterator, IntSubsequenceIteratorState>
+class SubsequenceIntIterator : public NaryBaseIterator<SubsequenceIntIterator, SubsequenceIntIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(IntSubsequenceIterator);
+  SERIALIZABLE_CLASS(SubsequenceIntIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IntSubsequenceIterator,
-    NaryBaseIterator<IntSubsequenceIterator, IntSubsequenceIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SubsequenceIntIterator,
+    NaryBaseIterator<SubsequenceIntIterator, SubsequenceIntIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<IntSubsequenceIterator, IntSubsequenceIteratorState>*)this);
+    (NaryBaseIterator<SubsequenceIntIterator, SubsequenceIntIteratorState>*)this);
   }
 
-  IntSubsequenceIterator(
+  SubsequenceIntIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<IntSubsequenceIterator, IntSubsequenceIteratorState>(sctx, loc, children)
+    NaryBaseIterator<SubsequenceIntIterator, SubsequenceIntIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~IntSubsequenceIterator();
+  virtual ~SubsequenceIntIterator();
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void resetImpl(PlanState&) const;
+};
+
+
+/**
+ * 
+ *    zorbaop:sequence-point-access
+ *  
+ * Author: Zorba Team
+ */
+class SequencePointAccessIteratorState : public PlanIteratorState
+{
+public:
+  bool theIsChildReset; //
+
+  SequencePointAccessIteratorState();
+
+  ~SequencePointAccessIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class SequencePointAccessIterator : public NaryBaseIterator<SequencePointAccessIterator, SequencePointAccessIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(SequencePointAccessIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(SequencePointAccessIterator,
+    NaryBaseIterator<SequencePointAccessIterator, SequencePointAccessIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<SequencePointAccessIterator, SequencePointAccessIteratorState>*)this);
+  }
+
+  SequencePointAccessIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<SequencePointAccessIterator, SequencePointAccessIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~SequencePointAccessIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+
+  void resetImpl(PlanState&) const;
 };
 
 

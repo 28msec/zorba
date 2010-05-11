@@ -681,6 +681,11 @@ static expr_t partial_eval_logic(
 
 /*******************************************************************************
   count(expr) = int_const
+
+  1. if int_const < 0  --> false
+  2. if int_const == 0 --> fn:empty(expr)
+  3. if int_const == 1 --> fn:exactly-one-noraise(expr)
+  4. if int_const > 1  --> fn:exactly-one-noraise(fn:subsequence(expr, int_const, 2))
 ********************************************************************************/
 static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 {
@@ -738,12 +743,12 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
       args[1] = dpos;
       args[2] = new const_expr(val_expr->get_sctx(),
                                LOC(val_expr),
-                               xqp_integer::parseInt(2));
+                               xqp_double(2.0));
 
       expr_t subseq_expr = fix_annotations(
                            new fo_expr(count_expr->get_sctx(),
                                        LOC (count_expr),
-                                       GET_BUILTIN_FUNCTION(FN_ZORBA_INT_SUBSEQUENCE_3),
+                                       GET_BUILTIN_FUNCTION(FN_SUBSEQUENCE_3),
                                        args));
 
       return fix_annotations(new fo_expr(fo.get_sctx(),

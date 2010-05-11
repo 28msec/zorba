@@ -299,6 +299,8 @@ public:
       vset->insert(v2);
 
       graph[v1] = vset;
+
+      //std::cout << "Allocated new vset : " << vset << std::endl << std::endl;
     }
     else
     {
@@ -315,6 +317,8 @@ public:
     GraphImpl::iterator end = theGraph.end();
     for (; ite != end; ++ite)
     {
+      //std::cout << "De-allocated vset : " << (*ite).second << std::endl << std::endl;
+
       delete (*ite).second;
     }
   }
@@ -562,6 +566,11 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
 
     if (var == NULL)
     {
+      for (g_ite = v_graph.begin(); g_ite != g_end; ++g_ite)
+      {
+        delete (*g_ite).second;
+      }
+
       reportCycle((*varDecls.begin())->get_loc(), 0);
     }
 
@@ -7055,7 +7064,7 @@ void end_visit(const Pragma& v, void* /*visit_state*/)
   return for $dot2 in subsequence($dot1/c, predExpr, 1)
          return $dot2
 ********************************************************************************/
-void *begin_visit (const PathExpr& v)
+void* begin_visit(const PathExpr& v)
 {
   TRACE_VISIT();
 
@@ -8287,7 +8296,46 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   // Some special processing is required for certain "fn" functions
   if (fn_ns->byteEqual(XQUERY_FN_NS, strlen(XQUERY_FN_NS)))
   {
-    if (*localName == "position" && numArgs == 0)
+    if (*localName == "subsequence" && (numArgs == 2 || numArgs == 3))
+    {
+      function* f = NULL;
+
+      std::reverse(arguments.begin(), arguments.end());
+
+      xqtref_t posType = arguments[1]->get_return_type();
+
+      if (numArgs == 2)
+      {
+        if (TypeOps::is_subtype(*posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR))
+        {
+          f = GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_2);
+        }
+        else
+        {
+          f = GET_BUILTIN_FUNCTION(FN_SUBSEQUENCE_2);
+        }
+      }
+      else
+      {
+        xqtref_t lenType = arguments[2]->get_return_type();
+
+        if (TypeOps::is_subtype(*posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR) &&
+            TypeOps::is_subtype(*lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR))
+        {
+          f = GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_3);
+        }
+        else
+        {
+          f = GET_BUILTIN_FUNCTION(FN_SUBSEQUENCE_3);
+        }
+      }
+
+      fo_expr_t foExpr = new fo_expr(theRootSctx, loc, f, arguments);
+      normalize_fo(foExpr);
+      push_nodestack(foExpr.getp());
+      return;
+    }
+    else if (*localName == "position" && numArgs == 0)
     {
       push_nodestack(lookup_ctx_var(DOT_POS_VARNAME, loc).getp());
       return;

@@ -13,18 +13,16 @@ Iterator tree for main query:
   <ReturnClause>
     <FnConcatIterator>
       <FnCountIterator>
-        <IntSubsequenceIterator>
+        <SequencePointAccessIterator>
           <LetVarIterator varname="x" targetPos="2"/>
           <SingletonIterator value="xs:integer(1)"/>
-          <SingletonIterator value="xs:integer(1)"/>
-        </IntSubsequenceIterator>
+        </SequencePointAccessIterator>
       </FnCountIterator>
       <FnCountIterator>
-        <IntSubsequenceIterator>
+        <SequencePointAccessIterator>
           <LetVarIterator varname="x" targetPos="1"/>
           <SingletonIterator value="xs:integer(2)"/>
-          <SingletonIterator value="xs:integer(1)"/>
-        </IntSubsequenceIterator>
+        </SequencePointAccessIterator>
       </FnCountIterator>
     </FnConcatIterator>
   </ReturnClause>

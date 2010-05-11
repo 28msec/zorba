@@ -465,10 +465,8 @@ void FnSubsequenceIterator::resetImpl(PlanState& planState) const
 bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
 {
   store::Item_t startPosItem;
-  xqp_integer startPos;
+  xqp_long startPos;
   store::Item_t lengthItem;
-  xqp_integer zero = xqp_integer::parseInt (0);
-  xqp_integer minus_one = xqp_integer::parseInt (-1);
 
   FnSubsequenceIteratorState* state;
   DEFAULT_STACK_INIT(FnSubsequenceIteratorState, state, planState);
@@ -476,36 +474,115 @@ bool FnSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState
   state->theIsChildReset = false;
 
   CONSUME(startPosItem, 1);
-  xqp_integer::parseDouble(startPosItem->getDoubleValue().round(), startPos);
-  startPos += minus_one;
+  startPos = startPosItem->getDoubleValue().round().getNumber() - 1;
   
   if (theChildren.size() == 3) 
   {
     CONSUME(lengthItem, 2);
-    xqp_integer::parseDouble(lengthItem->getDoubleValue().round(),
-                             state->theRemaining);
+    state->theRemaining = lengthItem->getDoubleValue().round().getNumber();
   }
 
-  if (startPos < zero)
+  if (startPos < 0)
   {
     if (theChildren.size() >= 3)
       state->theRemaining += startPos;
 
-    startPos = zero;
+    startPos = 0;
   }
 
   // If a length is specified and it is <= 0, return the empty sequence
-  if (theChildren.size() == 3 && state->theRemaining <= zero)
+  if (theChildren.size() == 3 && state->theRemaining <= 0)
     goto done;
 
   // Consume and skip all input items that are before the startPos
-  for (; startPos > zero; --startPos)
+  for (; startPos > 0; --startPos)
   {
     if (!CONSUME(result, 0))
       goto done;
   }
 
-  while ((theChildren.size() < 3 || state->theRemaining > xqp_integer::parseInt(0)) &&
+  while ((theChildren.size() < 3 || state->theRemaining > 0) &&
+         CONSUME(result, 0))
+  {
+    if (theChildren.size () >= 3)
+      state->theRemaining--;
+
+    STACK_PUSH (true, state);
+  }
+
+done:
+  theChildren[0]->reset(planState);
+  state->theIsChildReset = true;
+
+  STACK_END(state);
+}
+
+
+
+/*******************************************************************************
+  15.1.10 fn:subsequence
+********************************************************************************/
+void SubsequenceIntIterator::resetImpl(PlanState& planState) const
+{
+  SubsequenceIntIteratorState* state = 
+  StateTraitsImpl<SubsequenceIntIteratorState>::getState(planState, theStateOffset);
+
+  if (state->theIsChildReset)
+  {
+    state->reset(planState);
+    
+    theChildren[1]->reset(planState);
+    if (theChildren.size() > 2)
+      theChildren[2]->reset(planState);
+  }
+  else
+  {
+    NaryBaseIterator<SubsequenceIntIterator, SubsequenceIntIteratorState>::
+    resetImpl(planState);
+  }
+}
+
+
+bool SubsequenceIntIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+{
+  store::Item_t startPosItem;
+  xqp_long startPos;
+  store::Item_t lengthItem;
+
+  SubsequenceIntIteratorState* state;
+  DEFAULT_STACK_INIT(SubsequenceIntIteratorState, state, planState);
+  
+  state->theIsChildReset = false;
+
+  CONSUME(startPosItem, 1);
+  startPos = startPosItem->getLongValue() - 1;
+  
+  if (theChildren.size() == 3) 
+  {
+    CONSUME(lengthItem, 2);
+    state->theRemaining = lengthItem->getLongValue();
+  }
+
+  if (startPos < 0)
+  {
+    if (theChildren.size() >= 3)
+      state->theRemaining += startPos;
+
+    startPos = 0;
+  }
+
+  // If a length is specified and it is <= 0, return the empty sequence
+  if (theChildren.size() == 3 && state->theRemaining <= 0)
+    goto done;
+
+  // Consume and skip all input items that are before the startPos
+  for (; startPos > 0; --startPos)
+  {
+    if (!CONSUME(result, 0))
+      goto done;
+  }
+
+  while ((theChildren.size() < 3 || state->theRemaining > 0) &&
          CONSUME(result, 0))
   {
     if (theChildren.size () >= 3)
@@ -523,38 +600,45 @@ done:
 
 
 /*******************************************************************************
-  zorbaop:internal-subsequence
+  zorbaop:sequence-point-access
 ********************************************************************************/
-bool IntSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+void SequencePointAccessIterator::resetImpl(PlanState& planState) const
+{
+  SequencePointAccessIteratorState* state = 
+  StateTraitsImpl<SequencePointAccessIteratorState>::getState(planState, theStateOffset);
+
+  if (state->theIsChildReset)
+  {
+    state->reset(planState);
+    
+    theChildren[1]->reset(planState);
+  }
+  else
+  {
+    NaryBaseIterator<SequencePointAccessIterator, SequencePointAccessIteratorState>::
+    resetImpl(planState);
+  }
+}
+
+
+bool SequencePointAccessIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const 
 {
   store::Item_t startPosItem;
-  xqpStringStore_t startPosStr;
   xqp_long startPos;
-  store::Item_t lengthItem;
-  xqpStringStore_t lengthStr;
-  xqp_long length;
 
-  IntSubsequenceIteratorState* state;
-  DEFAULT_STACK_INIT(IntSubsequenceIteratorState, state, planState);
+  SequencePointAccessIteratorState* state;
+  DEFAULT_STACK_INIT(SequencePointAccessIteratorState, state, planState);
+
+  state->theIsChildReset = false;
   
   CONSUME(startPosItem, 1);
-  startPosStr = startPosItem->getStringValue();
-  if (! NumConversions::strToLongLong(startPosStr.getp(), startPos))
-  {
-    ZORBA_ASSERT(false);
-  }
+  startPos = startPosItem->getLongValue();
   
-  CONSUME(lengthItem, 2);
-  lengthStr = lengthItem->getStringValue();
-  if (! NumConversions::strToLongLong(lengthStr.getp(), length))
-  {
-    ZORBA_ASSERT(false);
-  }
-
-  if (startPos <= 0 || length <= 0)
+  if (startPos <= 0)
     goto done;
 
-  state->theRemaining = length;
   --startPos;
 
   // Consume and skip all input items that are before the startPos
@@ -564,15 +648,14 @@ bool IntSubsequenceIterator::nextImpl(store::Item_t& result, PlanState& planStat
       goto done;
   }
 
-  while (state->theRemaining > 0 && CONSUME(result, 0))
+  if (CONSUME(result, 0))
   {
-    state->theRemaining--;
-
     STACK_PUSH(true, state);
   }
 
 done:
   theChildren[0]->reset(planState);
+  state->theIsChildReset = true;
 
   STACK_END(state);
 }

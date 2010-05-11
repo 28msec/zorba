@@ -369,8 +369,8 @@
 
   <zorba:state>
 
-    <zorba:member type="xqp_integer" name="theRemaining"
-                  defaultValue="xqp_integer::parseInt(0)" brief=""/>
+    <zorba:member type="xqp_long" name="theRemaining"
+                  defaultValue="0" brief=""/>
     <zorba:member type="bool" name="theIsChildReset" defaultValue="false"/>
 
   </zorba:state>
@@ -380,22 +380,69 @@
 
 <!--
 /*******************************************************************************
-   zorbaop:int-subsequence
+  zorbaop:subsequence-int
 ********************************************************************************/
 -->
-<zorba:iterator name="IntSubsequenceIterator">
+<zorba:iterator name="SubsequenceIntIterator" 
+                generateResetImpl="true">
     
   <zorba:description author="Zorba Team">
-    zorbaop:int-subsequence
+    zorbaop:subsequence-int
   </zorba:description>
   
   <zorba:function generateCodegen="false">
 
-    <zorba:signature localname="int-subsequence" prefix="fn-zorba">
+    <zorba:signature localname="subsequence-int" prefix="fn-zorba">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:signature localname="subsequence-int" prefix="fn-zorba">
       <zorba:param>item()*</zorba:param>
       <zorba:param>xs:integer</zorba:param>
       <zorba:param>xs:integer</zorba:param>
       <zorba:output>item()*</zorba:output>
+    </zorba:signature>
+
+    <zorba:methods>
+      <zorba:getReturnType/>
+      <zorba:propagatesDistinctNodes producer="0"/>
+      <zorba:propagatesSortedNodes producer="0"/>
+      <zorba:compute_annotation/>
+    </zorba:methods>
+
+  </zorba:function>
+
+  <zorba:state>
+
+    <zorba:member type="xqp_long" name="theRemaining"
+                  defaultValue="0" brief=""/>
+    <zorba:member type="bool" name="theIsChildReset" defaultValue="false"/>
+
+  </zorba:state>
+  
+</zorba:iterator>
+
+
+<!--
+/*******************************************************************************
+   zorbaop:sequence-point-access
+********************************************************************************/
+-->
+<zorba:iterator name="SequencePointAccessIterator"
+                generateResetImpl="true">
+    
+  <zorba:description author="Zorba Team">
+    zorbaop:sequence-point-access
+  </zorba:description>
+  
+  <zorba:function generateCodegen="false">
+
+    <zorba:signature localname="sequence-point-access" prefix="fn-zorba">
+      <zorba:param>item()*</zorba:param>
+      <zorba:param>xs:integer</zorba:param>
+      <zorba:output>item()?</zorba:output>
     </zorba:signature>
 
     <zorba:methods>
@@ -408,8 +455,7 @@
   </zorba:function>
 
   <zorba:state>
-    <zorba:member type="xqp_long" name="theRemaining"
-                  defaultValue="0" brief=""/>
+    <zorba:member type="bool" name="theIsChildReset" defaultValue="false"/>
   </zorba:state>
   
 </zorba:iterator>

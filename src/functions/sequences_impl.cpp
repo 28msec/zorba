@@ -302,10 +302,10 @@ PlanIter_t fn_subsequence::codegen(
 }
 
 
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
-xqtref_t fn_zorba_int_subsequence::getReturnType(
+*******************************************************************************/
+xqtref_t fn_zorba_subsequence_int::getReturnType(
     const std::vector<xqtref_t>& arg_types) const
 {
   return arg_types[0]->get_manager()->
@@ -313,7 +313,7 @@ xqtref_t fn_zorba_int_subsequence::getReturnType(
 }
 
 
-void fn_zorba_int_subsequence::compute_annotation(
+void fn_zorba_subsequence_int::compute_annotation(
     AnnotationHolder* parent,
     std::vector<AnnotationHolder *>& kids,
     Annotations::Key k) const
@@ -330,7 +330,7 @@ void fn_zorba_int_subsequence::compute_annotation(
 }
 
 
-PlanIter_t fn_zorba_int_subsequence::codegen(
+PlanIter_t fn_zorba_subsequence_int::codegen(
     CompilerCB* /*cb*/,
     static_context* aSctx,
     const QueryLoc& aLoc,
@@ -347,57 +347,128 @@ PlanIter_t fn_zorba_int_subsequence::codegen(
 
   LetVarIterator* inputVarIter;
 
-  if (lenExpr != NULL && lenExpr->get_expr_kind() == const_expr_kind)
+  if (inputExpr->get_expr_kind() == relpath_expr_kind &&
+      posExpr->get_expr_kind() == const_expr_kind && 
+      lenExpr != NULL &&
+      lenExpr->get_expr_kind() == const_expr_kind)
   {
-    store::Item* lenItem = static_cast<const const_expr*>(lenExpr)->get_val();
-    xqp_long len = lenItem->getLongValue();
+    xqp_long pos = static_cast<const const_expr*>(posExpr)->
+                      get_val()->getLongValue();
 
-    if (len == 1)
+    xqp_long len = static_cast<const const_expr*>(lenExpr)->
+                      get_val()->getLongValue();
+
+    const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
+
+    ulong numSteps = pathExpr->numSteps();
+
+    if (pos > 0 && len == 1 && numSteps == 2)
     {
-      if (posExpr->get_expr_kind() == const_expr_kind)
-      {
-        store::Item* posItem = static_cast<const const_expr*>(posExpr)->get_val();
-        xqp_long pos = posItem->getLongValue();
+      AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
+      assert(input != NULL);
 
-        if (inputExpr->get_expr_kind() == relpath_expr_kind)
-        {
-          const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
-
-          ulong numSteps = pathExpr->numSteps();
-
-          if (pos > 0 && numSteps == 2)
-          {
-            AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
-            assert(input != NULL);
-
-            if (input->setTargetPos(pos-1))
-              return aArgs[0];
-          }
-        }
-        else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
-        {
-          if (inputVarIter->setTargetPos(pos))
-            return aArgs[0];
-        }
-      }
-      else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
-      {
-#if 1
-        const var_expr* inputVar = inputExpr->get_var();
-
-        if (inputVar != NULL &&
-            inputVar->get_kind() != var_expr::win_var &&
-            inputVarIter->setTargetPosIter(aArgs[1]))
-          return aArgs[0];
-#else
-        if (inputVarIter->setTargetPosIter(aArgs[1]))
-          return aArgs[0];
-#endif
-      }
+      if (input->setTargetPos(pos-1))
+        return aArgs[0];
+    }
+  }
+  else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
+  {
+    const var_expr* inputVar = inputExpr->get_var();
+    if (inputVar != NULL &&
+        lenExpr != NULL &&
+        inputVar->get_kind() != var_expr::win_var &&
+        inputVarIter->setTargetPosIter(aArgs[1]) &&
+        inputVarIter->setTargetLenIter(aArgs[2]))
+    {
+      return aArgs[0];
     }
   }
 
-  return new IntSubsequenceIterator(aSctx, aLoc, aArgs);
+  return new SubsequenceIntIterator(aSctx, aLoc, aArgs);
+}
+
+
+
+/*******************************************************************************
+
+********************************************************************************/
+xqtref_t fn_zorba_sequence_point_access::getReturnType(
+    const std::vector<xqtref_t>& arg_types) const
+{
+  return arg_types[0]->get_manager()->
+         create_type(*arg_types[0], TypeConstants::QUANT_QUESTION);
+}
+
+
+void fn_zorba_sequence_point_access::compute_annotation(
+    AnnotationHolder* parent,
+    std::vector<AnnotationHolder *>& kids,
+    Annotations::Key k) const
+{
+  switch (k) 
+  {
+  case Annotations::IGNORES_SORTED_NODES:
+  case Annotations::IGNORES_DUP_NODES:
+    // don't use single_seq_fun default propagation rule
+    return;
+  default: 
+    ZORBA_ASSERT(false);
+  }
+}
+
+
+PlanIter_t fn_zorba_sequence_point_access::codegen(
+    CompilerCB* /*cb*/,
+    static_context* aSctx,
+    const QueryLoc& aLoc,
+    std::vector<PlanIter_t>& aArgs,
+    AnnotationHolder& aAnn) const
+{
+  fo_expr& subseqExpr = static_cast<fo_expr&>(aAnn);
+
+  const expr* inputExpr = subseqExpr.get_arg(0);
+
+  const expr* posExpr = subseqExpr.get_arg(1);
+
+  LetVarIterator* inputVarIter;
+
+  if (posExpr->get_expr_kind() == const_expr_kind)
+  {
+    store::Item* posItem = static_cast<const const_expr*>(posExpr)->get_val();
+    xqp_long pos = posItem->getLongValue();
+
+    if (inputExpr->get_expr_kind() == relpath_expr_kind)
+    {
+      const relpath_expr* pathExpr = static_cast<const relpath_expr*>(inputExpr);
+      
+      ulong numSteps = pathExpr->numSteps();
+
+      if (pos > 0 && numSteps == 2)
+      {
+        AxisIteratorHelper* input = dynamic_cast<AxisIteratorHelper*>(aArgs[0].getp());
+        assert(input != NULL);
+        
+        if (input->setTargetPos(pos-1))
+          return aArgs[0];
+      }
+    }
+    else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
+    {
+      if (inputVarIter->setTargetPos(pos))
+        return aArgs[0];
+    }
+  }
+  else if ((inputVarIter = dynamic_cast<LetVarIterator*>(aArgs[0].getp())) != NULL)
+  {
+    const var_expr* inputVar = inputExpr->get_var();
+      
+    if (inputVar != NULL &&
+        inputVar->get_kind() != var_expr::win_var &&
+        inputVarIter->setTargetPosIter(aArgs[1]))
+      return aArgs[0];
+  }
+
+  return new SequencePointAccessIterator(aSctx, aLoc, aArgs);
 }
 
 

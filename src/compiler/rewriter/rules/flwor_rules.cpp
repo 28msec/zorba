@@ -719,19 +719,16 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
       is_subseq_pred(rCtx, flwor, whereExpr, posVar, posExpr) &&
       count_variable_uses(flwor, posVar, &rCtx, 2) <= 1)
   {
-    function* subseq = GET_BUILTIN_FUNCTION(FN_ZORBA_INT_SUBSEQUENCE_3);
+    function* seq_point = GET_BUILTIN_FUNCTION(FN_ZORBA_SEQUENCE_POINT_ACCESS_2);
     expr* domainExpr = posVar->get_for_clause()->get_expr();
 
-    std::vector<expr_t> args(3);
+    std::vector<expr_t> args(2);
     args[0] = domainExpr;
     args[1] = posExpr;
-    args[2] = new const_expr(posExpr->get_sctx(),
-                             LOC(posExpr),
-                             xqp_integer::parseInt(1));
 
     rchandle<fo_expr> result = new fo_expr(whereExpr->get_sctx(),
                                            LOC(whereExpr),
-                                           subseq,
+                                           seq_point,
                                            args);
     fix_annotations(&*result);
     for_clause* clause = posVar->get_for_clause();
@@ -754,8 +751,9 @@ RULE_REWRITE_POST(RefactorPredFLWOR)
 
 /*******************************************************************************
   Checks whether "condExpr" has the form '$posVar = posExpr', where posExpr is 
-  an expression whose type is xs:positiveInteger, or an integer literal with
-  value >= 1.
+  an integer literal with value >= 1, or an expression whose type is xs:Integer
+  and which does not reference the for var associated with posVar nor any other
+  vars that are defined after that for var.
 ********************************************************************************/
 static bool is_subseq_pred(
     RewriterContext& rCtx,

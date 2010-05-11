@@ -352,22 +352,6 @@ void expr::compute_return_type(bool deep, bool* modified)
       }
       break;
     }
-    case FunctionConsts::FN_ZORBA_INT_SUBSEQUENCE_3:
-    {
-      const_expr* lenExpr = dynamic_cast<const_expr*>(e->theArgs[2].getp());
-      
-      if (lenExpr != NULL)
-      {
-        store::Item* val = lenExpr->get_val();
-        xqp_long len = val->getLongValue();
-        if (len == 1)
-        {
-          newType = tm->create_type(*e->theArgs[0]->get_return_type(),
-                                    TypeConstants::QUANT_QUESTION);
-        }
-      }
-      break;
-    }
     default:
       break;
     }

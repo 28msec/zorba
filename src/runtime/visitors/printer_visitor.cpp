@@ -2486,18 +2486,32 @@ void PrinterVisitor::endVisit ( const FnSubsequenceIterator& ) {
 // </FnSubsequenceIterator>
 
 
-// <IntSubsequenceIterator>
-void PrinterVisitor::beginVisit ( const IntSubsequenceIterator& a) {
-  thePrinter.startBeginVisit("IntSubsequenceIterator", ++theId);
+// <SubsequenceIntIterator>
+void PrinterVisitor::beginVisit ( const SubsequenceIntIterator& a) {
+  thePrinter.startBeginVisit("SubsequenceIntIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit( theId );
 }
 
-void PrinterVisitor::endVisit ( const IntSubsequenceIterator& ) {
+void PrinterVisitor::endVisit ( const SubsequenceIntIterator& ) {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
-// </IntSubsequenceIterator>
+// </SubsequenceIntIterator>
+
+
+// <SequencePointAccessIterator>
+void PrinterVisitor::beginVisit ( const SequencePointAccessIterator& a) {
+  thePrinter.startBeginVisit("SequencePointAccessIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const SequencePointAccessIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </SequencePointAccessIterator>
 
 
 // <FnZeroOrOneIterator>
