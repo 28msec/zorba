@@ -1156,7 +1156,11 @@ void PULImpl::mergeUpdateList(
           }
 
           if (j < numTargetUpdates)
+          {
+            delete otherUpd;
+            otherList[i] = NULL;
             continue;
+          }
         }
         break;
       }
@@ -1800,15 +1804,40 @@ void CollectionPul::finalizeUpdates()
     {
       UpdatePrimitive* upd = theReplaceNodeList[i];
 
-      XmlNode* node = BASE_NODE(
-                      upd->getKind() == store::UpdateConsts::UP_REPLACE_CHILD ?
-                      static_cast<UpdReplaceChild*>(upd)->theChild :
-                      static_cast<UpdReplaceAttribute*>(upd)->theAttr);
+      if (upd->getKind() == store::UpdateConsts::UP_REPLACE_CHILD)
+      {
+        UpdReplaceChild* upd2 = static_cast<UpdReplaceChild*>(upd);
 
-      // To make the detach() method work properly, we must set the node's
-      // parent back to what it used to be.
-      node->theParent = INTERNAL_NODE(upd->theTarget);
-      node->detach();
+        XmlNode* node = BASE_NODE(upd2->theChild);
+
+        // To make the detach() method work properly, we must set the node's
+        // parent back to what it used to be.
+        node->theParent = INTERNAL_NODE(upd->theTarget);
+        node->detach();
+
+        if (upd2->theLeftMergedNode != NULL)
+        {
+          node = BASE_NODE(upd2->theLeftMergedNode);
+          node->theParent = INTERNAL_NODE(upd2->theTarget);
+          node->detach();
+        }
+
+        if (upd2->theRightMergedNode != NULL)
+        {
+          node = BASE_NODE(upd2->theRightMergedNode);
+          node->theParent = INTERNAL_NODE(upd2->theTarget);
+          node->detach();
+        }
+      }
+      else
+      {
+        XmlNode* node = BASE_NODE(static_cast<UpdReplaceAttribute*>(upd)->theAttr);
+
+        // To make the detach() method work properly, we must set the node's
+        // parent back to what it used to be.
+        node->theParent = INTERNAL_NODE(upd->theTarget);
+        node->detach();
+      }
     }
 
     numUpdates = theReplaceContentList.size();
@@ -1834,6 +1863,13 @@ void CollectionPul::finalizeUpdates()
       if (upd->theParent != NULL)
       {
         XmlNode* target = BASE_NODE(upd->theTarget);
+        target->theParent = upd->theParent;
+        target->detach();
+      }
+
+      if (upd->theRightSibling != NULL)
+      {
+        XmlNode* target = BASE_NODE(upd->theRightSibling);
         target->theParent = upd->theParent;
         target->detach();
       }

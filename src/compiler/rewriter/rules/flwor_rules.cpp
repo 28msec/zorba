@@ -159,7 +159,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
     var_ptr_set diff;
     set_intersection(myVars.varset.begin(), myVars.varset.end(),
                      whereVars.begin(), whereVars.end(),
-                     inserter(diff, diff.begin()));
+                     std::inserter(diff, diff.begin()));
     if (diff.empty())
     {
       expr_t oldWhere = whereExpr;

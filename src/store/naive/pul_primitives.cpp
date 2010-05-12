@@ -34,6 +34,11 @@
 
 namespace zorba { namespace simplestore {
 
+#if 0
+#define TRACE(msg) std::cout << msg << << std::endl << std::endl;
+#else
+#define TRACE(msg)
+#endif
 
 /*******************************************************************************
 
@@ -46,6 +51,8 @@ UpdatePrimitive::UpdatePrimitive(PULImpl* pul, store::Item_t& target)
   theRemoveType(false)
 {
   theTarget.transfer(target);
+
+  TRACE("Allocated upd : " << this << " in pul : " << thePul);
 }
 
 
@@ -57,6 +64,8 @@ UpdatePrimitive::UpdatePrimitive(CollectionPul* pul, store::Item_t& target)
   theRemoveType(false)
 {
   theTarget.transfer(target);
+
+  TRACE("Allocated upd : " << this << " in pul : " << thePul);
 }
 
 
@@ -68,6 +77,7 @@ UpdatePrimitive::UpdatePrimitive(PULImpl* pul)
   theIsApplied(false),
   theRemoveType(false)
 {
+  TRACE("Allocated upd : " << this << " in pul : " << thePul );
 }
 
 
@@ -78,11 +88,13 @@ UpdatePrimitive::UpdatePrimitive(CollectionPul* pul)
   theIsApplied(false),
   theRemoveType(false)
 {
+  TRACE("Allocated upd : " << this << " in pul : " << thePul);
 }
 
 
 UpdatePrimitive::~UpdatePrimitive()
 {
+  TRACE("De-Allocated upd : " << this << " in pul : " << thePul);
 }
 
 

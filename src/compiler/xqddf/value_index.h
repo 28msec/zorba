@@ -53,7 +53,8 @@ typedef rchandle<DocIndexer> DocIndexer_t;
                 "on" "nodes" IndexDomainExpr "by" IndexKeyList
 
   IndexPropertyList := ("unique" | "non" "unique" |
-                        "value" "range" | "value" "equality" | 
+                        "value" "range" | "value" "equality" |
+                        "general" "range" | "general" "equality" | 
                         "automatically" "maintained" | "manually" "maintained")*
 
   IndexDomainExpr := PathExpr
@@ -181,6 +182,7 @@ private:
 
   bool                            theIsUnique;
   bool                            theIsTemp;
+  bool                            theIsGeneral;
   MaintenanceMode                 theMaintenanceMode;
   ContainerKind                   theContainerKind;
 

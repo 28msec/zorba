@@ -105,6 +105,8 @@ class StaticContextConsts
     // Index Ordering
     decl_value_equality,
     decl_value_range,
+    decl_general_equality,
+    decl_general_range,
 
     // Index uniqueness
     decl_unique,       

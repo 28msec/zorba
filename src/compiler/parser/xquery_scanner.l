@@ -467,6 +467,7 @@ typedef zorba::xquery_parser::token token;
 "range" { return token::RANGE; }
 "equality" { return token::EQUALITY; }
 "on" { return token::ON; }
+"general" { return token::GENERAL; }
 
 "integrity" { return token::INTEGRITY; }
 "constraint" { return token::CONSTRAINT; }

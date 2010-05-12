@@ -517,6 +517,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token ON                               "'on'"
 %token RANGE                            "'range'"
 %token EQUALITY                         "'equality'"
+%token GENERAL                          "'general'"
 
 %token INTEGRITY                        "'integrity'"
 %token CONSTRAINT                       "'constraint'"
@@ -1606,6 +1607,18 @@ DeclProperty
         {
             $$ = new DeclProperty(
                 LOC(@$), StaticContextConsts::decl_value_range
+            );
+        }
+    |   GENERAL EQUALITY
+        {
+            $$ = new DeclProperty(
+                LOC(@$), StaticContextConsts::decl_general_equality
+            );
+        }
+    |   GENERAL RANGE
+        {
+            $$ = new DeclProperty(
+                LOC(@$), StaticContextConsts::decl_general_range
             );
         }
     |   UNIQUE
@@ -5290,6 +5303,7 @@ KEYWORD
     |   MOST { $$ = SYMTAB_PUT("most"); }
     |   SKIP { $$ = SYMTAB_PUT("skip"); }
     |   COPY { $$ = SYMTAB_PUT("copy"); }
+    |   GENERAL { $$ = SYMTAB_PUT("general"); }
     |   VALUE { $$ = SYMTAB_PUT("value"); }
     |   VAL_EQ { $$ = SYMTAB_PUT("eq"); }
     |   VAL_NE { $$ = SYMTAB_PUT("ne"); }

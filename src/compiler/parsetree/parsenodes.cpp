@@ -880,30 +880,33 @@ XQUERY_ERROR CollectionDecl::validatePropertyList(DeclPropertyList* props)
   bool setOrderMode = false;
 
   for (ulong i = 0; i < props->size(); ++i)
+  {
     switch (props->getProperty(i)->getProperty())
     {
     case StaticContextConsts::decl_ordered:
     case StaticContextConsts::decl_unordered:
+    {
       if (setOrderMode)
         return XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
-        // ZORBA_ERROR_LOC_PARAM(XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES, loc, aName->get_qname(), "");
+
       setOrderMode = true;
       break;
-
+    }
     case StaticContextConsts::decl_mutable:
     case StaticContextConsts::decl_queue:
     case StaticContextConsts::decl_append_only:
     case StaticContextConsts::decl_const:
+    {
       if (setUpdateMode)
         return XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES;
-        // ZORBA_ERROR_LOC_PARAM(XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES, loc, aName->get_qname(), "");
+
       setUpdateMode = true;
       break;
-
+    }
     default:
       return XDST0006_COLLECTION_INVALID_PROPERTY_VALUE;
-       // ZORBA_ERROR_LOC_PARAM(XDST0006_COLLECTION_INVALID_PROPERTY_VALUE, loc, aName->get_qname(), StaticContextConsts::toString(prop));
     } // switch
+  }
 
   return XQ_NO_ERROR;
 }
@@ -993,6 +996,7 @@ IndexDecl::IndexDecl(
   } // for
 }
 
+
 XQUERY_ERROR IndexDecl::validatePropertyList(DeclPropertyList* props)
 {
   if (props == NULL)
@@ -1008,17 +1012,20 @@ XQUERY_ERROR IndexDecl::validatePropertyList(DeclPropertyList* props)
     {
     case StaticContextConsts::decl_unique:
     case StaticContextConsts::decl_non_unique:
+    {
       if (setUnique)
         return XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-        // ZORBA_ERROR_LOC_PARAM(XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES, loc, name->get_qname(), "");
+
       setUnique = true;
       break;
-
+    }
     case StaticContextConsts::decl_value_equality:
     case StaticContextConsts::decl_value_range:
+    case StaticContextConsts::decl_general_equality:
+    case StaticContextConsts::decl_general_range:
       if (setOrdered)
         return XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-        // ZORBA_ERROR_LOC_PARAM(XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES, loc, name->get_qname(), "");
+
       setOrdered = true;
       break;
 
@@ -1026,15 +1033,14 @@ XQUERY_ERROR IndexDecl::validatePropertyList(DeclPropertyList* props)
     case StaticContextConsts::decl_automatic:
       if (setAutomatic)
         return XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
-        // ZORBA_ERROR_LOC_PARAM(XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES, loc, name->get_qname(), "")
+
       setAutomatic = true;
       break;
 
     default:
       return XDST0026_INDEX_INVALID_PROPERTY_VALUE;
-        // ZORBA_ERROR_LOC_PARAM(XDST0026_INDEX_INVALID_PROPERTY_VALUE, loc, name->get_qname(), StaticContextConsts::toString(prop));
-    } // switch
-  } //s for
+    }
+  }
 
   return XQ_NO_ERROR;
 }

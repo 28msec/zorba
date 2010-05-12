@@ -40,7 +40,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 31 "/home/mbrantner/zorba/trunk/src/compiler/parser/xquery_parser.y"
+#line 31 "/home/markos/zorba/zorba/src/compiler/parser/xquery_parser.y"
 
 #include <list>
 #include <string>
@@ -72,7 +72,7 @@ typedef std::pair<std::string,std::string> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 76 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 76 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -86,7 +86,7 @@ typedef std::pair<std::string,std::string> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 90 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 90 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
@@ -96,7 +96,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 100 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 100 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -144,7 +144,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 148 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 148 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -156,7 +156,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 145 "/home/mbrantner/zorba/trunk/src/compiler/parser/xquery_parser.y"
+#line 145 "/home/markos/zorba/zorba/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -180,7 +180,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 184 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 184 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -481,27 +481,28 @@ namespace zorba {
      ON = 546,
      RANGE = 547,
      EQUALITY = 548,
-     INTEGRITY = 549,
-     CONSTRAINT = 550,
-     CHECK = 551,
-     KEY = 552,
-     FOREACH = 553,
-     FOREIGN = 554,
-     KEYS = 555,
-     BYTE_ORDER_MARK_UTF8 = 556,
-     RANGE_REDUCE = 557,
-     ADDITIVE_REDUCE = 558,
-     MULTIPLICATIVE_REDUCE = 559,
-     UNION_REDUCE = 560,
-     INTERSECT_EXCEPT_REDUCE = 561,
-     QVARINDECLLIST_REDUCE = 562,
-     COMMA_DOLLAR = 563,
-     UNARY_PREC = 564,
-     SEQUENCE_TYPE_REDUCE = 565,
-     OCCURS_STAR = 566,
-     OCCURS_PLUS = 567,
-     OCCURS_HOOK = 568,
-     STEP_REDUCE = 569
+     GENERAL = 549,
+     INTEGRITY = 550,
+     CONSTRAINT = 551,
+     CHECK = 552,
+     KEY = 553,
+     FOREACH = 554,
+     FOREIGN = 555,
+     KEYS = 556,
+     BYTE_ORDER_MARK_UTF8 = 557,
+     RANGE_REDUCE = 558,
+     ADDITIVE_REDUCE = 559,
+     MULTIPLICATIVE_REDUCE = 560,
+     UNION_REDUCE = 561,
+     INTERSECT_EXCEPT_REDUCE = 562,
+     QVARINDECLLIST_REDUCE = 563,
+     COMMA_DOLLAR = 564,
+     UNARY_PREC = 565,
+     SEQUENCE_TYPE_REDUCE = 566,
+     OCCURS_STAR = 567,
+     OCCURS_PLUS = 568,
+     OCCURS_HOOK = 569,
+     STEP_REDUCE = 570
    };
 
     };
@@ -678,7 +679,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 682 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
+#line 683 "/home/markos/zorba/zorba/build-gdb/src/compiler/parser/xquery_parser.hpp"
 
 
 
