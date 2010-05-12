@@ -208,6 +208,7 @@ public:
 class UpdInsertChildren : public UpdatePrimitive
 {
   friend class PULImpl;
+  friend class CollectionPul;
   friend class XmlNode;
   friend class InternalNode;
 

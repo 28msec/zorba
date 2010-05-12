@@ -27,22 +27,6 @@ namespace zorba { namespace store {
 class  UpdateConsts
 {
 public:
-  typedef enum 
-  {
-    INSERT_BEFORE,
-    INSERT_AFTER,
-    INSERT_INTO,
-    INSERT_INTO_FIRST,
-    INSERT_INTO_LAST,
-    INSERT_ATTRIBUTES,
-    REMOVE,
-    REPLACE_NODE,
-    REPLACE_CONTENT,
-    REPLACE_VALUE,
-    RENAME
-  }
-  UpdateKind;
-
   typedef enum
   {
     INTO,
@@ -127,36 +111,6 @@ public:
           k == UP_REPLACE_ATTRIBUTE);
   }
 
-  static std::string toString(UpdateKind k)
-  {
-    switch(k) 
-    {
-      case INSERT_BEFORE:
-        return "insert_before";
-      case INSERT_AFTER:
-        return "insert_after";
-      case INSERT_INTO:
-        return "insert_into";
-      case INSERT_INTO_FIRST:
-        return "insert_into_first";
-      case INSERT_INTO_LAST:
-        return "insert_into_last";
-      case INSERT_ATTRIBUTES:
-        return "insert_attributes";
-      case REMOVE:
-        return "delete";
-      case REPLACE_NODE:
-        return "replace_node";
-      case REPLACE_CONTENT:
-        return "replace_content";
-      case REPLACE_VALUE:
-        return "replace_value";
-      case RENAME:
-        return "rename";
-      default:
-        return "<unknown UpdateKind>";
-    }
-  }
 
 static std::string toString(UpdPrimKind k)
 {

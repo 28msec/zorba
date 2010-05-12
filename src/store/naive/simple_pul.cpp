@@ -1874,6 +1874,35 @@ void CollectionPul::finalizeUpdates()
         target->detach();
       }
     }
+
+    numUpdates = theInsertList.size();
+    for (ulong i = 0; i < numUpdates; ++i)
+    {
+      UpdInsertChildren* upd = static_cast<UpdInsertChildren*>(theInsertList[i]);
+
+      if (upd->theMergedNode != NULL)
+      {
+        XmlNode* node = BASE_NODE(upd->theMergedNode);
+        node->theParent = INTERNAL_NODE(upd->theTarget);
+        node->detach();
+      }
+    }
+
+    numUpdates = theDoFirstList.size();
+    for (ulong i = 0; i < numUpdates; ++i)
+    {
+      if (theDoFirstList[i]->getKind() != store::UpdateConsts::UP_INSERT_INTO)
+        continue;
+
+      UpdInsertChildren* upd = static_cast<UpdInsertChildren*>(theDoFirstList[i]);
+
+      if (upd->theMergedNode != NULL)
+      {
+        XmlNode* node = BASE_NODE(upd->theMergedNode);
+        node->theParent = INTERNAL_NODE(upd->theTarget);
+        node->detach();
+      }
+    }
   }
   catch (...)
   {
