@@ -303,22 +303,7 @@ itemfactory(int argc, char* argv[])
     UNIT_ASSERT ( !lItem.isNaN() );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
 
-    lItem = lFactory->createDouble("-inf");
-    UNIT_ASSERT ( lItem.isPosOrNegInf() );
-    UNIT_ASSERT ( !lItem.isNaN() );
-    UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
-
-    lItem = lFactory->createDouble("inf");
-    UNIT_ASSERT ( lItem.isPosOrNegInf() );
-    UNIT_ASSERT ( !lItem.isNaN() );
-    UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
-
-    lItem = lFactory->createDouble("NAN");
-    UNIT_ASSERT ( !lItem.isPosOrNegInf() );
-    UNIT_ASSERT ( lItem.isNaN() );
-    UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
-
-    lItem = lFactory->createDouble("nAn");
+    lItem = lFactory->createDouble("NaN");
     UNIT_ASSERT ( !lItem.isPosOrNegInf() );
     UNIT_ASSERT ( lItem.isNaN() );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
@@ -342,22 +327,7 @@ itemfactory(int argc, char* argv[])
     UNIT_ASSERT ( !lItem.isNaN() );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
 
-    lItem = lFactory->createFloat("-inf");
-    UNIT_ASSERT ( lItem.isPosOrNegInf() );
-    UNIT_ASSERT ( !lItem.isNaN() );
-    UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
-
-    lItem = lFactory->createFloat("inf");
-    UNIT_ASSERT ( lItem.isPosOrNegInf() );
-    UNIT_ASSERT ( !lItem.isNaN() );
-    UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
-
-    lItem = lFactory->createFloat("NAN");
-    UNIT_ASSERT ( !lItem.isPosOrNegInf() );
-    UNIT_ASSERT ( lItem.isNaN() );
-    UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );
-
-    lItem = lFactory->createFloat("nAn");
+    lItem = lFactory->createFloat("NaN");
     UNIT_ASSERT ( !lItem.isPosOrNegInf() );
     UNIT_ASSERT ( lItem.isNaN() );
     UNIT_ASSERT ( !lItem.getAtomizationValue().isNull() );

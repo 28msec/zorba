@@ -170,38 +170,38 @@ FloatImpl<FloatType>& FloatImpl<FloatType>::inf_neg()
 template <typename FloatType>
 bool FloatImpl<FloatType>::parseInfNaNString(const char* aCharStar, FloatImpl& aFloatImpl) 
 {
-#if defined (ZORBA_HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) )
-    if (strcasecmp(aCharStar, "inf") == 0 || strcasecmp(aCharStar, "+inf") == 0 )
-#else
-    if (_stricmp(aCharStar, "inf") == 0 || _stricmp(aCharStar, "+inf") == 0 )
-#endif
-    {
-      
-      aFloatImpl.theFloating = FloatImpl<FloatType>::inf_pos().theFloating;
-      return true;
-    }
-#if defined (ZORBA_HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) )
-    else if (strcasecmp(aCharStar, "-inf") == 0 )
-#else
-    else if (_stricmp(aCharStar, "-inf") == 0 )
-#endif
-    {
-      aFloatImpl.theFloating = FloatImpl<FloatType>::inf_neg().theFloating;
-      return true;
-    }
-#if defined (ZORBA_HAVE_STRCASECMP_FUNCTION) && (! defined (WIN32) )
-    else if (strcasecmp(aCharStar, "nan") == 0 )
-#else
-    else if (_stricmp(aCharStar, "nan") == 0 )
-#endif
-    {
-      aFloatImpl.theFloating = FloatImpl<FloatType>::nan().theFloating;
-      return true;
-    }
-    else
-    {
-      return false;
-    }
+  std::string lString(aCharStar);
+
+  //Whitespace is ignored because it's not in the lexical space 
+  std::string::size_type pos = lString.find_last_not_of(' ');
+  if(pos != std::string::npos)
+  {
+    lString.erase(pos + 1);
+    pos = lString.find_first_not_of(' ');
+    if(pos != std::string::npos)
+      lString.erase(0, pos);
+  }
+  else lString.erase(lString.begin(), lString.end());
+
+  if (strcmp(lString.c_str(), "INF") == 0)
+  {
+    aFloatImpl.theFloating = FloatImpl<FloatType>::inf_pos().theFloating;
+    return true;
+  }
+  else if (strcmp(lString.c_str(), "-INF") == 0 )
+  {
+    aFloatImpl.theFloating = FloatImpl<FloatType>::inf_neg().theFloating;
+    return true;
+  }
+  else if (strcmp(lString.c_str(), "NaN") == 0 )
+  {
+    aFloatImpl.theFloating = FloatImpl<FloatType>::nan().theFloating;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 

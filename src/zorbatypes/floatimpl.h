@@ -133,11 +133,11 @@ public:
   inf_neg();
 
   /**
-   * Checks if the passed number in string format is NaN, inf, 
-   * -inf, negative or non-negative number.
+   * Checks if the passed number in string format is NaN, INF,
+   * -INF, negative or non-negative number.
    * @param aNumber Number in string format
    * @param parsed number
-   * @return false if aNumber is not parsable to inf or nan 
+   * @return false if aNumber is not parsable to INF or nan
    */
   static bool 
   parseInfNaNString(const char* aNumber, FloatImpl& aFloatImpl);
