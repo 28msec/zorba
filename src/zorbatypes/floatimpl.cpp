@@ -531,13 +531,18 @@ template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::round(Integer aPrecision) const
 {
   FloatImpl lFloatImpl;
-  if (isFinite()) 
+  if (isFinite() && !isZero())
   {
 #ifndef ZORBA_NO_BIGNUMBERS
     MAPM mapmval = Decimal::round(theFloating, aPrecision.theInteger);
-    char  strval[200];
-    mapmval.toString(strval, ZORBA_FLOAT_POINT_PRECISION);
-    parseString(strval, lFloatImpl);
+    if(IS_NEGATIVE(theFloating) && IS_ZERO(mapmval))
+      lFloatImpl = zero_neg();
+    else
+    {
+      char  strval[200];
+      mapmval.toString(strval, ZORBA_FLOAT_POINT_PRECISION);
+      parseString(strval, lFloatImpl);
+    }
 #else
     lFloatImpl.theFloating = Decimal::round(theFloating, aPrecision.theInteger);
 #endif
@@ -553,13 +558,18 @@ template <typename FloatType>
 FloatImpl<FloatType> FloatImpl<FloatType>::roundHalfToEven(Integer aPrecision) const
 {
   FloatImpl lFloatImpl;
-  if (isFinite()) 
+  if (isFinite() && !isZero())
   {
 #ifndef ZORBA_NO_BIGNUMBERS
     MAPM mapmval = Decimal::roundHalfToEven(theFloating, aPrecision.theInteger);
-    char  strval[200];
-    mapmval.toString(strval, ZORBA_FLOAT_POINT_PRECISION);
-    parseString(strval, lFloatImpl);
+    if(IS_NEGATIVE(theFloating) && IS_ZERO(mapmval))
+      lFloatImpl = zero_neg();
+    else
+    {
+      char  strval[200];
+      mapmval.toString(strval, ZORBA_FLOAT_POINT_PRECISION);
+      parseString(strval, lFloatImpl);
+    }
 #else
     lFloatImpl.theFloating = Decimal::roundHalfToEven(theFloating, aPrecision.theInteger);
 #endif
