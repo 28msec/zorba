@@ -607,8 +607,8 @@ void UpdPut::apply()
     // the uri passed as an arg to fn:put, but the target tree may already
     // have a doc uri, which we should not overwrite. Another reason that we
     // have to copy is that if the target node is an element node, we wrap it
-    // with a doc node, but thi not be possible would if the target node
-    // has a parent already.
+    // with a doc node, but this would not be possible if the target node had
+    // a parent already.
     store::CopyMode copymode;
     copymode.set(true, true, true, true);
     theTarget = theTarget->copy(NULL, 0, copymode);
@@ -624,6 +624,7 @@ void UpdPut::apply()
       doc->setOrdPath(NULL, 1, store::StoreConsts::documentNode);
 
       doc->insertChild(elem, 0);
+      doc->getTree()->setRoot(doc);
 
       store::Item_t docItem(doc);
 
