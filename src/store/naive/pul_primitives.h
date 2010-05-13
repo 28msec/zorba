@@ -288,6 +288,7 @@ protected:
 
   ulong                       theNumApplied;
   std::vector<store::Item*>   theNewBindings;
+  ulong                       thePos;
 
 public:
   UpdReplaceAttribute(

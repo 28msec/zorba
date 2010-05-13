@@ -990,6 +990,8 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
 
   ulong pos = oldAttr->disconnect();
 
+  upd.thePos = pos;
+
   ulong numNewAttrs = upd.theNewAttrs.size();
 
   for (ulong i = 0; i < numNewAttrs; i++)
@@ -1021,7 +1023,16 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
 void ElementNode::restoreAttribute(UpdReplaceAttribute& upd)
 {
   if (upd.theNumApplied == 0)
+  {
+    if (upd.theIsApplied)
+    {
+      XmlNode* attr = BASE_NODE(upd.theAttr);
+      attr->connect(this, upd.thePos);
+      restoreType(upd.theTypeUndoList);
+    }
+
     return;
+  }
 
   XmlNode* attr = BASE_NODE(upd.theAttr);
 
