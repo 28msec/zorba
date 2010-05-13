@@ -21,6 +21,7 @@
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftnode.h"
 #include "compiler/expression/ftnode_visitor.h"
 
 #include "zorbaerrors/Assert.h"

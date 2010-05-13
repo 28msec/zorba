@@ -22,6 +22,8 @@
 namespace zorba {
 
 class ftnode;
+typedef rchandle<ftnode> ftnode_t;
+
 class ftnode_visitor;
 class pass_thru_expr_visitor;
 
@@ -33,8 +35,6 @@ namespace ft_visit_result {
     neither     = no_children | no_end
   };
 }
-
-typedef rchandle<ftnode> ftnode_t;
 
 class ftand;
 class ftcase_option;

@@ -15,7 +15,7 @@
  */
 
 #include "compiler/expression/expr_visitor.h"
-#include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftnode.h"
 #include "compiler/expression/ftnode_visitor.h"
 
 using namespace std;

@@ -50,6 +50,7 @@ void FTContainsIterator::accept( PlanIterVisitor &v ) const {
 }
 
 FTContainsIterator::~FTContainsIterator() {
+  // nothing to do
 }
 
 }

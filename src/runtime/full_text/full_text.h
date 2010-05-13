@@ -25,7 +25,7 @@
  ******************************************************************************/
 
 #include "common/shared_types.h"
-#include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftnode.h"
 #include "runtime/base/binarybase.h"
 #include "zorbatypes/representations.h"
 

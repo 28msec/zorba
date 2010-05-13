@@ -23,6 +23,7 @@ SET(EXPRESSION_SRCS
     flwor_expr.cpp
     fo_expr.cpp
     ft_expr.cpp
+    ftnode.cpp
     ftnode_visitor.cpp
     function_item_expr.cpp)
 

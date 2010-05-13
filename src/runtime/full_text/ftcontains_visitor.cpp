@@ -17,6 +17,7 @@
 #include <limits>
 
 #include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftnode.h"
 #include "runtime/full_text/apply.h"
 #include "runtime/full_text/ftcontains_visitor.h"
 #include "runtime/full_text/stl_helpers.h"

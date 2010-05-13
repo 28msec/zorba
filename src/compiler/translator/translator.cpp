@@ -51,6 +51,7 @@
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftnode.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
@@ -1229,30 +1230,31 @@ xqtref_t pop_tstack()
   return pop_stack(theTypeStack);
 }
 
-/*******************************************************************************
-  Pop the top n ftnodes from theFTNodeStack and return the last expr that was popped.
-********************************************************************************/
-ftnode* pop_ftstack(int n = 1)
+/******************************************************************************
+  Pop the top count ftnodes from theFTNodeStack and return the last expr that
+  was popped.
+ ******************************************************************************/
+ftnode* pop_ftstack(int count = 1)
 {
-  ZORBA_ASSERT(n >= 0);
+  ZORBA_ASSERT(count >= 0);
 
-  ftnode *e = NULL;
-  while ( n-- > 0 ) {
+  ftnode *n = NULL;
+  while ( count-- > 0 ) {
     ZORBA_FATAL( !theFTNodeStack.empty(), "" );
-    e = theFTNodeStack.top();
+    n = theFTNodeStack.top();
     theFTNodeStack.pop();
 
 #ifndef NDEBUG
     if ( Properties::instance()->traceTranslator() ) {
       cout << "Popped from ftnode stack:\n";
-      if ( e )
-        ;//cout << *e << endl;
+      if ( n )
+        cout << *n << endl;
       else
         cout << "NULL" << endl;
     }
 #endif
   }
-  return e;
+  return n;
 }
 
 
@@ -10722,11 +10724,17 @@ void end_visit (const FTAnd& v, void* /*visit_state*/) {
 
   ftand::ftnode_list_t list;
   while ( true ) {
+    cout << "end_visit(FTAnd&): " << flush;
     ftnode *const n = pop_ftstack();
-    if ( !n )
+    if ( !n ) {
+      cout << "NULL ftstack" << endl;
       break;
-    if ( !flatten<ftand>( n ) )
+    }
+    if ( !flatten<ftand>( n ) ) {
+      cout << "!flatten" << endl;
       list.push_back( n );
+    } else
+      cout << "flatten" << endl;
   }
   push_ftstack( new ftand( v.get_location(), list ) );
 }
@@ -10924,18 +10932,18 @@ void end_visit (const FTLanguageOption& v, void* /*visit_state*/) {
 
 void *begin_visit (const FTMatchOptions& v) {
   TRACE_VISIT ();
-  ftmatch_options *const mo = new ftmatch_options( v.get_location() );
-  ftprimary_with_options *const pwo =
-    dynamic_cast<ftprimary_with_options*>( top_ftstack() );
-  ZORBA_ASSERT( pwo );
-  pwo->set_match_options( mo );
-  push_ftstack( mo );
+  push_ftstack( new ftmatch_options( v.get_location() ) );
   return no_state;
 }
 
 void end_visit (const FTMatchOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  pop_ftstack();
+  ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( pop_ftstack() );
+  ZORBA_ASSERT( mo );
+  ftprimary_with_options *const pwo =
+    dynamic_cast<ftprimary_with_options*>( top_ftstack() );
+  ZORBA_ASSERT( pwo );
+  pwo->set_match_options( mo );
 }
 
 void *begin_visit (const FTMildNot& v) {
@@ -11007,7 +11015,12 @@ void *begin_visit (const FTPrimaryWithOptions& v) {
 
 void end_visit (const FTPrimaryWithOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  // nothing to do
+  ftprimary *const p = dynamic_cast<ftprimary*>( pop_ftstack() );
+  ZORBA_ASSERT( p );
+  ftprimary_with_options *const pwo =
+    dynamic_cast<ftprimary_with_options*>( top_ftstack() );
+  ZORBA_ASSERT( pwo );
+  pwo->set_primary( p );
 }
 
 void *begin_visit (const FTRange& v) {
@@ -11023,6 +11036,10 @@ void end_visit (const FTRange& v, void* /*visit_state*/) {
   expr_t e1 = pop_nodestack();
   if ( e1 )
     pop_nodestack(); // pop the sentinel
+  else {
+    e1 = e2;
+    e2 = NULL;
+  }
 
   ftrange *const r = new ftrange(
     v.get_location(), v.get_mode(), e1.getp(), e2.getp()
@@ -11205,6 +11222,7 @@ void end_visit (const FTWeight& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   ftprimary_with_options *const pwo =
     dynamic_cast<ftprimary_with_options*>( top_ftstack() );
+  ZORBA_ASSERT( pwo );
   pwo->set_weight( pop_nodestack() );
 }
 
@@ -11262,7 +11280,6 @@ void *begin_visit (const FTWordsTimes& v) {
 
 void end_visit (const FTWordsTimes& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
   ftrange *const times = dynamic_cast<ftrange*>( top_ftstack() );
   if ( times )
     pop_ftstack();
