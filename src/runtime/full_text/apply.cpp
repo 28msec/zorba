@@ -22,8 +22,8 @@
 
 #include "runtime/full_text/apply.h"
 #include "runtime/full_text/ft_token.h"
-#include "runtime/full_text/stl_helpers.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbautils/stl_helpers.h"
 
 #ifdef WIN32
 // Windows annoyingly defines these as macros.
@@ -37,7 +37,7 @@ namespace zorba {
 
 typedef set<ft_token_span::int_t> ft_pos_set;
 
-////////// Helper algorithms /////////////////////////////////////////////////
+////////// Helper algorithms //////////////////////////////////////////////////
 
 /**
  * Given an ft_all_matches, see if all of its includes/excludes are empty.

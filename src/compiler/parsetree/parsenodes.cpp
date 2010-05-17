@@ -16,7 +16,7 @@
 
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbautils/container_util.h"
+#include "zorbautils/stl_helpers.h"
 
 #include "types/typemanager.h"
 
@@ -4552,7 +4552,7 @@ FTSelection::FTSelection(
 
 FTSelection::~FTSelection() {
   delete ftor_;
-  delete_ptr_container( pos_filter_list_ );
+  delete_ptr_seq( pos_filter_list_ );
 }
 
 void FTSelection::accept( parsenode_visitor &v ) const
@@ -4705,7 +4705,7 @@ FTMatchOptions::FTMatchOptions(
 }
 
 FTMatchOptions::~FTMatchOptions() {
-  delete_ptr_container( match_options_ );
+  delete_ptr_seq( match_options_ );
 }
 
 void FTMatchOptions::accept( parsenode_visitor &v ) const
@@ -4889,7 +4889,7 @@ FTThesaurusOption::FTThesaurusOption(
 }
 
 FTThesaurusOption::~FTThesaurusOption() {
-  delete_ptr_container( thesaurus_id_list_ );
+  delete_ptr_seq( thesaurus_id_list_ );
 }
 
 
@@ -4943,7 +4943,7 @@ FTStopWordOption::FTStopWordOption(
 
 FTStopWordOption::~FTStopWordOption() {
   delete stop_words_;
-  delete_ptr_container( incl_excl_list_ );
+  delete_ptr_seq( incl_excl_list_ );
 }
 
 

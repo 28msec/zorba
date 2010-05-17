@@ -61,6 +61,15 @@ void copy_seq( SequenceType const &from, SequenceType &to ) {
 }
 
 /**
+ * Given a seq<T*>, deletes all the elements.
+ */
+template<typename SequenceType> inline
+void delete_ptr_seq( SequenceType &seq ) {
+  MUTATE_EACH( typename SequenceType, i, seq )
+    delete *i;
+}
+
+/**
  * Moves the first element of the first sequence to the back of the second.
  */
 template<typename SequenceType> inline
