@@ -167,7 +167,7 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
   PUT_ATTR( OS, LABEL, FT_ENUM::string_of[ LABEL##_ ] )
 
 #define PUT_EXPR(OS,EXPR) \
-  if ( !(EXPR) ) ; else { PUT(OS); (EXPR)->put(OS); }
+  if ( !(EXPR) ) ; else (EXPR)->put(OS)
 
 #define PUT_NODE(OS,NODE) \
   if ( !(NODE) ) ; else (NODE)->put(OS)
