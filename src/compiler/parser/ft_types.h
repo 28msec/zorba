@@ -62,7 +62,7 @@ namespace zorba {
   namespace ft_diacritics_mode {
     enum type {
       insensitive,
-      senstive
+      sensitive
     };
     type const DEFAULT = insensitive;
     extern char const *const string_of[];

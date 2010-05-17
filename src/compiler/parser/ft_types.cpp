@@ -57,7 +57,7 @@ namespace zorba {
   namespace ft_diacritics_mode {
     char const *const string_of[] = {
       ENUM_STR( insensitive ),
-      ENUM_STR( senstive )
+      ENUM_STR( sensitive )
     };
   }
 

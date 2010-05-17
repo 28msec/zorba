@@ -5874,7 +5874,7 @@ FTDiacriticsOption
     :   DIACRITICS SENSITIVE
         {
             $$ = new FTDiacriticsOption(
-                LOC(@$), ft_diacritics_mode::senstive
+                LOC(@$), ft_diacritics_mode::sensitive
             );
         }
     |   DIACRITICS INSENSITIVE

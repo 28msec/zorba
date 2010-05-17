@@ -17,8 +17,7 @@
 #ifndef ZORBA_FULL_TEXT_APPLY_H
 #define ZORBA_FULL_TEXT_APPLY_H
 
-#include <list>
-
+#include "compiler/expression/ftnode.h"
 #include "compiler/parser/ft_types.h"
 #include "runtime/full_text/ft_matches.h"
 #include "store/api/ft_token_iterator.h"
@@ -30,14 +29,14 @@ void apply_ftand( ft_all_matches const&, ft_all_matches const&,
 
 void apply_ftcontent( ft_all_matches&, ft_content_mode::type );
 
-void apply_ftor( ft_all_matches const&, ft_all_matches const&,
-                 ft_all_matches &result );
+void apply_ftdistance( ft_all_matches const&, int at_least, int at_most,
+                       ft_unit::type, ft_all_matches &result );
 
 void apply_ftmild_not( ft_all_matches const&, ft_all_matches const&,
                        ft_all_matches &result );
 
-void apply_ftdistance( ft_all_matches const&, int at_least, int at_most,
-                       ft_unit::type, ft_all_matches &result );
+void apply_ftor( ft_all_matches const&, ft_all_matches const&,
+                 ft_all_matches &result );
 
 void apply_ftorder( ft_all_matches& );
 
@@ -52,7 +51,7 @@ void apply_ftwindow( ft_all_matches const&, int window_size, ft_unit::type,
 void apply_ftwords( FTTokenIterator &search_ctx,
                     FTTokenIterator &query_tokens,
                     FTToken::int_t query_pos, ft_anyall_mode::type,
-                    ft_all_matches &result );
+                    ftmatch_options const&, ft_all_matches &result );
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_APPLY_H */

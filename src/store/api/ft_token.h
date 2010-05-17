@@ -32,6 +32,11 @@ struct FTToken {
   typedef unsigned int_t;
 
   /**
+   * The string type uses for the token itself.
+   */
+  typedef std::string word_t;
+
+  /**
    * Constructs an FTToken for a token from an XML document.
    *
    * @param utf8_s    The token string encoded in UTF-8.  It need not be
@@ -63,7 +68,7 @@ struct FTToken {
   /**
    * The token.
    */
-  std::string word;
+  word_t word;
 
   /**
    * The token position within either the source XML document or query.

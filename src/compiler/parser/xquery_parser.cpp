@@ -10624,7 +10624,7 @@ namespace zorba {
 #line 5875 "/home/markos/zorba/zorba/src/compiler/parser/xquery_parser.y"
     {
             (yyval.node) = new FTDiacriticsOption(
-                LOC((yyloc)), ft_diacritics_mode::senstive
+                LOC((yyloc)), ft_diacritics_mode::sensitive
             );
         }
     break;

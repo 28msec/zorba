@@ -34,18 +34,32 @@ namespace zorba {
 
 ////////// Inlines ////////////////////////////////////////////////////////////
 
-inline void ftcontains_visitor::push( ft_all_matches *m ) {
-  eval_stack_.push( m );
+inline void ftcontains_visitor::push_matches( ft_all_matches *am ) {
+  matches_stack_.push( am );
 }
 
-inline ft_all_matches* ftcontains_visitor::top() const {
-  return eval_stack_.top();
+inline ft_all_matches* ftcontains_visitor::top_matches() const {
+  return matches_stack_.top();
 }
 
-inline ft_all_matches* ftcontains_visitor::pop() {
-  ft_all_matches *const m = top();
-  eval_stack_.pop();
-  return m;
+inline ft_all_matches* ftcontains_visitor::pop_matches() {
+  ft_all_matches *const am = top_matches();
+  matches_stack_.pop();
+  return am;
+}
+
+inline void ftcontains_visitor::push_options( ftmatch_options const *mo ) {
+  options_stack_.push( mo );
+}
+
+inline ftmatch_options const* ftcontains_visitor::top_options() const {
+  return options_stack_.top();
+}
+
+inline ftmatch_options const* ftcontains_visitor::pop_options() {
+  ftmatch_options const *const mo = top_options();
+  options_stack_.pop();
+  return mo;
 }
 
 ////////// PUSH/POP macros ////////////////////////////////////////////////////
@@ -56,13 +70,19 @@ inline void pop_helper( int line ) {
   cout << "POP @ line " << line << endl;
 }
 
-#define PUSH(X)   cout << "PUSH @ line " << __LINE__ << endl; push(X)
-#define POP(X)    ( pop_helper(__LINE__), pop(X) )
+#define PUSH_MATCHES(M) \
+  cout << "PUSH @ line " << __LINE__ << endl; push_matches(M)
+
+#define POP_MATCHES(M) \
+  ( pop_helper(__LINE__), pop_matches(M) )
 
 #else
 
-#define PUSH(X)   push(X)
-#define POP(X)    pop(X)
+#define PUSH_MATCHES(M) push_matches(M)
+#define POP_MATCHES(M)  pop_matches(M)
+
+#define PUSH_OPTIONS(O) push_options(O)
+#define POP_OPTIONS(O)  pop_options(O)
 
 #endif
 
@@ -77,14 +97,15 @@ ftcontains_visitor::ftcontains_visitor( FTTokenIterator &search_context,
 }
 
 ftcontains_visitor::~ftcontains_visitor() {
-  while ( !eval_stack_.empty() )
-    delete pop();
+  while ( !matches_stack_.empty() )
+    delete pop_matches();
+  ZORBA_ASSERT( options_stack_.empty() );
 }
 
 bool ftcontains_visitor::ftcontains() const {
-  if ( eval_stack_.empty() )
+  if ( matches_stack_.empty() )
     return false;
-  ft_all_matches const &am = *top();
+  ft_all_matches const &am = *top_matches();
   if ( am.empty() )
     return false;
   //
@@ -136,20 +157,20 @@ expr_visitor* ftcontains_visitor::get_expr_visitor() {
 
 ft_visit_result::type V::begin_visit( ftand &a ) {
   BEGIN_VISIT( ftand );
-  PUSH( NULL ); // sentinel
+  PUSH_MATCHES( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
 
 void V::end_visit( ftand &a ) {
   while ( true ) {
-    ft_all_matches *const ami = POP(), *const amj = POP();
+    ft_all_matches *const ami = POP_MATCHES(), *const amj = POP_MATCHES();
     if ( !amj ) {
-      PUSH( ami );
+      PUSH_MATCHES( ami );
       break;
     }
     ft_all_matches *const result = new ft_all_matches;
     apply_ftand( *ami, *amj, *result );
-    PUSH( result );
+    PUSH_MATCHES( result );
     delete ami;
     delete amj;
   }
@@ -160,20 +181,20 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_selection )
 
 ft_visit_result::type V::begin_visit( ftmild_not &mn ) {
   BEGIN_VISIT( ftmild_not );
-  PUSH( NULL ); // sentinel
+  PUSH_MATCHES( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
 
 void V::end_visit( ftmild_not &mn ) {
   while ( true ) {
-    ft_all_matches *const ami = POP(), *const amj = POP();
+    ft_all_matches *const ami = POP_MATCHES(), *const amj = POP_MATCHES();
     if ( !amj ) {
-      PUSH( ami );
+      PUSH_MATCHES( ami );
       break;
     }
     ft_all_matches *const result = new ft_all_matches;
     apply_ftmild_not( *ami, *amj, *result );
-    PUSH( result );
+    PUSH_MATCHES( result );
     delete ami;
     delete amj;
   }
@@ -182,33 +203,41 @@ void V::end_visit( ftmild_not &mn ) {
 
 ft_visit_result::type V::begin_visit( ftor &o ) {
   BEGIN_VISIT( ftor );
-  PUSH( NULL ); // sentinel
+  PUSH_MATCHES( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
 
 void V::end_visit( ftor &o ) {
   while ( true ) {
-    ft_all_matches *const ami = POP(), *const amj = POP();
+    ft_all_matches *const ami = POP_MATCHES(), *const amj = POP_MATCHES();
     if ( !amj ) {
-      PUSH( ami );
+      PUSH_MATCHES( ami );
       break;
     }
     ft_all_matches *const result = new ft_all_matches;
     apply_ftor( *ami, *amj, *result );
-    PUSH( result );
+    PUSH_MATCHES( result );
     delete ami;
     delete amj;
   }
   END_VISIT();
 }
 
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftprimary_with_options )
+ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
+  BEGIN_VISIT( ftprimary_with_options );
+  PUSH_OPTIONS( pwo.get_match_options() );
+  return ft_visit_result::proceed;
+}
+void V::end_visit( ftprimary_with_options& ) {
+  POP_OPTIONS();
+}
+
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftrange )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftselection )
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftunary_not )
 void V::end_visit( ftunary_not& ) {
-  apply_ftunary_not( *top() );
+  apply_ftunary_not( *top_matches() );
   END_VISIT();
 }
 
@@ -220,9 +249,10 @@ void V::end_visit( ftwords &w ) {
   FTToken::int_t query_pos = 0;         // TODO: what should this really be?
   ft_all_matches *const result = new ft_all_matches;
   apply_ftwords(
-    search_context_, query_tokens, query_pos, w.get_mode(), *result
+    search_context_, query_tokens, query_pos, w.get_mode(), *top_options(),
+    *result
   );
-  PUSH( result );
+  PUSH_MATCHES( result );
   END_VISIT();
 }
 
@@ -232,7 +262,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwords_times )
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftcontent_filter )
 void V::end_visit( ftcontent_filter &f ) {
-  apply_ftcontent( *top(), f.get_mode() );
+  apply_ftcontent( *top_matches(), f.get_mode() );
   END_VISIT();
 }
 
@@ -264,26 +294,26 @@ void V::end_visit( ftdistance_filter &f ) {
       break;
   }
 
-  ft_all_matches *const am = POP();
+  ft_all_matches *const am = POP_MATCHES();
   ft_all_matches *const result = new ft_all_matches;
   apply_ftdistance( *am, at_least, at_most, f.get_unit(), *result );
-  PUSH( result );
+  PUSH_MATCHES( result );
   delete am;
   END_VISIT();
 }
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftorder_filter )
 void V::end_visit( ftorder_filter &f ) {
-  apply_ftorder( *top() );
+  apply_ftorder( *top_matches() );
   END_VISIT();
 }
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftscope_filter )
 void V::end_visit( ftscope_filter &f ) {
-  ft_all_matches *const am = POP();
+  ft_all_matches *const am = POP_MATCHES();
   ft_all_matches *const result = new ft_all_matches;
   apply_ftscope( *am, f.get_scope(), f.get_unit(), *result );
-  PUSH( result );
+  PUSH_MATCHES( result );
   delete am;
   END_VISIT();
 }
@@ -292,10 +322,10 @@ DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwindow_filter )
 void V::end_visit( ftwindow_filter &f ) {
   store::Item_t item;
   PlanIterator::consumeNext( item, f.get_plan_iter(), plan_state_ );
-  ft_all_matches *const am = POP();
+  ft_all_matches *const am = POP_MATCHES();
   ft_all_matches *const result = new ft_all_matches;
   apply_ftwindow( *am, item->getIntValue(), f.get_unit(), *result );
-  PUSH( result );
+  PUSH_MATCHES( result );
   delete am;
   END_VISIT();
 }
