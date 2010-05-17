@@ -417,7 +417,7 @@ void operator&(Archiver &ar, char &obj)
   if(ar.is_serializing_out())
   {
     char  strtemp[30];
-    sprintf(strtemp, "%c", obj);
+    sprintf(strtemp, "%d", (int)obj);
 
     ar.add_simple_field("char", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
@@ -436,7 +436,9 @@ void operator&(Archiver &ar, char &obj)
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_simple_field(retval, type, "char", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    sscanf(value.c_str(), "%c", &obj);
+    int   int_obj;
+    sscanf(value.c_str(), "%d", &int_obj);
+    obj = (char)int_obj;
 
     ar.register_reference(id, field_treat, &obj);
   }
@@ -447,7 +449,7 @@ void operator&(Archiver &ar, unsigned char &obj)
   if(ar.is_serializing_out())
   {
     char  strtemp[30];
-    sprintf(strtemp, "%c", obj);
+    sprintf(strtemp, "%u", (unsigned int)obj);
 
     ar.add_simple_field("unsigned char", strtemp, &obj, ARCHIVE_FIELD_NORMAL);
   }
@@ -466,9 +468,9 @@ void operator&(Archiver &ar, unsigned char &obj)
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_simple_field(retval, type, "unsigned char", is_simple, field_treat, ARCHIVE_FIELD_NORMAL, id);
-    char ctemp;
-    sscanf(value.c_str(), "%c", &ctemp);
-    obj = (unsigned char)ctemp;
+    unsigned int int_obj;
+    sscanf(value.c_str(), "%u", &int_obj);
+    obj = (unsigned char)int_obj;
 
     ar.register_reference(id, field_treat, &obj);
   }
