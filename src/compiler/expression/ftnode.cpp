@@ -18,6 +18,7 @@
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/ftnode_visitor.h"
 #include "zorbautils/container_util.h"
+#include "zorbautils/indent.h"
 
 using namespace std;
 
@@ -145,22 +146,13 @@ END_SERIALIZABLE_CLASS_VERSIONS(ftwords_times)
 
 ////////// put() macros ///////////////////////////////////////////////////////
 
-int const IndentSize = 2;
-static int put_indent;
-
-#define PUT(OS)             OS << string( put_indent, ' ' )
-#define BEGIN_PUT(OS,LABEL) PUT(OS) << #LABEL
-#define INDENT_PUT(OS)      OS << (put_indent += IndentSize, " [\n")
-#define PUT_NODE(OS,NODE)   if ( !(NODE) ) ; else (NODE)->put(OS)
-#define PUT_EXPR(OS,EXPR)   if ( !(EXPR) ) ; else { PUT(OS); (EXPR)->put(OS); }
-#define OUTDENT_PUT(OS)     put_indent -= IndentSize; PUT(OS) << "]\n"
-#define END_PUT(OS)         return OS
-
-#define BEGIN_INDENT_PUT(OS,LABEL) \
-  BEGIN_PUT(OS,LABEL); INDENT_PUT(OS)
-
-#define OUTDENT_END_PUT(OS) \
-  OUTDENT_PUT(OS); END_PUT(OS)
+#define PUT(OS)                     OS << indent
+#define BEGIN_PUT(OS,LABEL)         PUT(OS) << #LABEL
+#define INDENT_PUT(OS)              OS << " [\n" << inc_indent
+#define BEGIN_INDENT_PUT(OS,LABEL)  BEGIN_PUT(OS,LABEL); INDENT_PUT(OS)
+#define OUTDENT_PUT(OS)             OS << dec_indent << indent << "]\n"
+#define END_PUT(OS)                 return OS
+#define OUTDENT_END_PUT(OS)         OUTDENT_PUT(OS); END_PUT(OS)
 
 #define PUT_ATTR(LABEL,VALUE) \
   " " #LABEL "=" << VALUE
@@ -170,6 +162,12 @@ static int put_indent;
 
 #define PUT_ENUM(FT_ENUM,LABEL) \
   PUT_ATTR( LABEL, FT_ENUM::string_of[ LABEL##_ ] )
+
+#define PUT_EXPR(OS,EXPR) \
+  if ( !(EXPR) ) ; else { PUT(OS); (EXPR)->put(OS); }
+
+#define PUT_NODE(OS,NODE) \
+  if ( !(NODE) ) ; else (NODE)->put(OS)
 
 #define PUT_SEQ(OS,T,SEQ) \
   for ( T::const_iterator i = (SEQ).begin(); i != (SEQ).end(); ++i ) \

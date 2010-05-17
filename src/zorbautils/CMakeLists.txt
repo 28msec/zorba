@@ -17,6 +17,7 @@ SET(ZORBAUTILS_SRCS
     thread.cpp
     mutex.cpp
     condition.cpp
+    indent.cpp
     latch.cpp
     lock.cpp
     runnable.cpp
