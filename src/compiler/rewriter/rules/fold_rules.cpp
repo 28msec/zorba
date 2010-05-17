@@ -44,6 +44,8 @@
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
 
+#include <iterator>
+
 using namespace std;
 
 namespace zorba {

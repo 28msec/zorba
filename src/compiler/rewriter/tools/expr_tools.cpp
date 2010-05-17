@@ -23,6 +23,8 @@
 
 #include "types/typeops.h"
 
+#include <iterator>
+
 namespace zorba
 {
 

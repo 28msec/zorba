@@ -54,7 +54,7 @@ int parse_int(
     return 1;
 
   result = 0;
-  while (s[position+delta] >= '0' && s[position+delta] <= '9' && position+delta < s.size())
+  while (position+delta < s.size() && s[position+delta] >= '0' && s[position+delta] <= '9')
   {
     result = 10*result + s[position+delta] - '0';
     position++;
@@ -97,7 +97,7 @@ ZORBA_DLL_PUBLIC inline double parse_frac(std::string& s, unsigned int& position
 
   double temp = 0.1;
   result = 0;
-  while (s[position] >= '0' && s[position] <= '9' && position < s.size())
+  while (position < s.size() && s[position] >= '0' && s[position] <= '9')
   {
     result += temp * (s[position] - '0');
     temp /= 10;

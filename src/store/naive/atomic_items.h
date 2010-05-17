@@ -1591,7 +1591,7 @@ protected:
   friend class BasicItemFactory;
   UnsignedByteItemNaive(xqp_ubyte aValue) : theValue(aValue) {}
 
-  UnsignedByteItemNaive() {}
+  UnsignedByteItemNaive() : theValue(0) {}
 
 public:
   xqp_decimal getDecimalValue() const;

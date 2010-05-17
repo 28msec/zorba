@@ -36,6 +36,9 @@
 #ifndef _MSC_STDINT_H_ // [
 #define _MSC_STDINT_H_
 
+// Exclude this file for Visual Studio >= 2010 (_MSC_VER == 1600 for Visual Studio 2010)
+#if _MSC_VER < 1600
+
 #if _MSC_VER > 1000
 #pragma once
 #endif
@@ -222,5 +225,6 @@ typedef uint64_t  uintmax_t;
 
 #endif // __STDC_CONSTANT_MACROS ]
 
+#endif // _MSC_VER < 1600 ]
 
 #endif // _MSC_STDINT_H_ ]

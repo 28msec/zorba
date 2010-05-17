@@ -19,6 +19,7 @@
 
 #include <algorithm>
 #include <set>
+#include <iterator>
 
 namespace zorba {
 

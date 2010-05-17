@@ -138,11 +138,13 @@ class ZORBA_DLL_PUBLIC TypeIdentifier : public SmartObject {
     bool m_uriWildcard;
     String m_localName;
     bool m_localNameWildcard;
+    TypeIdentifier_t m_contentType;
+};
+
 #ifdef WIN32
   template class ZORBA_DLL_PUBLIC  zorba::SmartPtr<TypeIdentifier>;
 #endif
-    TypeIdentifier_t m_contentType;
-};
+
 
 } /* namespace zorba */
 

@@ -17,6 +17,8 @@
 #include "store/api/item.h"
 #include "types/typeops.h"
 
+#include <iterator>
+
 using namespace std;
 
 namespace zorba {
