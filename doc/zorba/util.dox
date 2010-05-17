@@ -1,15 +1,15 @@
 /** \page util The "Zorba util" functions
 
 <ul>
-   <li> Table of Contents
-   <ul>
-     <li> \ref intro_util
-     <ul>
-       <li> \ref namespace_util
-     </ul>
-     <li> \ref signatures_util
-     <ul>
-      <li> \ref tidyLib
+  <li> Table of Contents
+  <ul>
+    <li> \ref intro_util
+    <ul>
+      <li> \ref namespace_util
+    </ul>
+    <li> \ref signatures_util
+    <ul>
+    <li> \ref tidyLib
       <ul>
         <li> \ref tidy
         <li> \ref tdoc
@@ -21,14 +21,8 @@
       </ul>
       <li> \ref parse_util
       <li> \ref serialize_util
-      <li> \ref base64_util
-        <ul>
-          <li> \ref base64_encode
-          <li> \ref base64_decode
-        </ul>
-     </ul>
-     <li> \ref apendix_util
-   </ul>
+      <li> \ref apendix_util
+    </ul>
  </ul>
 
 \section intro_util 1 Introduction
@@ -202,22 +196,6 @@ The serialization is done with "omit-xml-declaration" parameter set to true
 In the following, we demonstrate the use of the serialize-to-string function.
 
 \include util_serialize_to_string1.xq
-
-\section base64_util 2.5 Functions to encode/decode base64
-
-\subsection base64_encode 2.5.1 zorba-util:base64Encode 
-\code
-  declare function base64Encode($value as xs:string) as xs:base64Binary
-\endcode
-
-This function takes a string and encodes it to a base64 value.
-
-\subsection base64_decode 2.5.2 zorba-util:base64Decode 
-\code
-  declare function base64Decode($value as xs:base64Binary) as xs:string
-\endcode
-
-This function takes a base64 value and decodes it to string.
 
 \section apendix_util Appendix A:  Error codes
 

@@ -106,6 +106,9 @@ Launch the Zorba command line debugger.
 --debug-server
 Launch the Zorba debugger server and wait for incomming client connections.
 
+--debug-server-host
+Set the host, on which the debugger server is run
+
 --no-colors
 Use no colors in the debugger client.
 
