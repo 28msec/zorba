@@ -36,24 +36,24 @@
 #include "functions/function.h"
 #include "functions/udf.h"
 
+#include "zorbautils/indent.h"
 
 using namespace std;
 
 namespace zorba 
 {
   
+#define BEGIN_PUT(LABEL) \
+  os << indent << #LABEL << expr_addr(this) << " [\n" << inc_indent
 
-static int printdepth0 = -2;
+#define BEGIN_PUT1(LABEL,S1) \
+  os << indent << #LABEL << ' ' << (S1) << expr_addr(this) << " [\n" << inc_indent
 
-#define DENT      string(printdepth0, ' ')
-#define UNDENT    printdepth0 -= 2;
-#define INDENT    (printdepth0 += 2, DENT)
+#define END_PUT() \
+  os << dec_indent << indent << "]\n"; return os;
 
-#define BEGIN_EXPR( descr) os << INDENT << #descr << expr_addr (this) << " [\n"
-
-#define CLOSE_EXPR os << DENT << "]\n"; UNDENT; return os;
-
-#define PUT_SUB( descr, sub ) do { if ((sub) != NULL) { os << DENT << (descr) << "\n"; (sub)->put (os); } } while (0)
+#define PUT_SUB( LABEL, EXPR ) \
+  if ( !(EXPR) ) ; else { os << indent << (LABEL) << "\n" << inc_indent; (EXPR)->put(os); os << dec_indent; }
 
 
 static inline xqp_string qname_to_string(store::Item_t qname) 
@@ -94,9 +94,9 @@ static inline string expr_addr(const void* e)
 
 std::ostream& debugger_expr::put(std::ostream& os) const
 {
-  BEGIN_EXPR (debugger_expr);
+  BEGIN_PUT( debugger_expr );
   theExpr->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 std::ostream& wrapper_expr::put(std::ostream& os) const
@@ -109,33 +109,32 @@ std::ostream& wrapper_expr::put(std::ostream& os) const
   {
     const var_expr* varExpr = static_cast<const var_expr*>(get_expr());
 
-    os << INDENT << "var_ref [ " << expr_addr(this) << " ";
+    os << indent << "var_ref [" << expr_addr(this) << " ";
     put_qname(varExpr->get_name(), os);
-    os << expr_addr(varExpr) << " ]" << std::endl;
-    UNDENT;
+    os << expr_addr(varExpr) << " ]" << endl;
     return os;
   }
   else
   {
-    BEGIN_EXPR(wrapper_expr);
+    BEGIN_PUT( wrapper_expr );
     get_expr()->put(os);
-    CLOSE_EXPR;
+    END_PUT();
   }
 #endif
 }
 
 ostream& sequential_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (sequential_expr);
+  BEGIN_PUT( sequential_expr );
   for (checked_vector<expr_t>::const_iterator i = this->theArgs.begin ();
        i != theArgs.end (); i++)
     (*i)->put (os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& var_expr::put(ostream& os) const
 {
-  os << INDENT << "var kind=" << decode_var_kind(get_kind()) << expr_addr(this);
+  os << indent << "var kind=" << decode_var_kind(get_kind()) << expr_addr(this);
   if (theName != NULL)
   {
     os << " name=";
@@ -150,7 +149,6 @@ ostream& var_expr::put(ostream& os) const
 #endif
 
   os << endl;
-  UNDENT;
   return os;
 }
 
@@ -158,16 +156,16 @@ ostream& var_expr::put(ostream& os) const
 ostream& for_clause::put(ostream& os) const
 {
 #if VERBOSE
-  BEGIN_EXPR(FOR);
+  BEGIN_PUT( FOR );
 
   theVarExpr->put(os);
-  PUT_SUB ("AT", thePosVarExpr);
-  PUT_SUB ("SCORE", theScoreVarExpr);
+  PUT_SUB( "AT", thePosVarExpr );
+  PUT_SUB( "SCORE", theScoreVarExpr );
 
   PUT_SUB("IN", theDomainExpr);
 
 #else
-  os << INDENT << "FOR" << expr_addr(this) << " ";
+  os << indent << "FOR" << expr_addr(this) << " " << inc_indent;
 
   put_qname(theVarExpr->get_name(), os);
   os << expr_addr(theVarExpr.getp());
@@ -177,102 +175,98 @@ ostream& for_clause::put(ostream& os) const
     put_qname(thePosVarExpr->get_name(), os);
     os << expr_addr(thePosVarExpr.getp());
   }
-  os << std::endl << DENT << "[\n";
+  os << endl << indent << "[\n";
 
   theDomainExpr->put(os);
 #endif
 
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 
 ostream& let_clause::put(ostream& os) const
 {
 #if VERBOSE
-  BEGIN_EXPR(LET);
+  BEGIN_PUT( LET );
 
   theVarExpr->put(os);
-  PUT_SUB ("SCORE", theScoreVarExpr);
+  PUT_SUB( "SCORE", theScoreVarExpr );
 
   PUT_SUB(":=", theDomainExpr);
 
 #else
-  os << INDENT << "LET" << expr_addr(this) << " ";
+  os << indent << "LET" << expr_addr(this) << " ";
   put_qname(theVarExpr->get_name(), os);
-  os << expr_addr(theVarExpr.getp()) << std::endl << DENT << "[\n";
+  os << expr_addr(theVarExpr.getp()) << " [\n" << inc_indent;
 
   theDomainExpr->put(os);
 #endif
 
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& window_clause::put(ostream& os) const
 {
-  BEGIN_EXPR (WINDOW);
-
+  BEGIN_PUT( WINDOW );
   theVarExpr->put(os);
-
-  PUT_SUB("IN", theDomainExpr);
-
-  PUT_SUB ("START", theWinStartCond.getp());
-  PUT_SUB ("STOP", theWinStopCond.getp());
-
-  CLOSE_EXPR;
+  PUT_SUB( "IN", theDomainExpr );
+  PUT_SUB( "START", theWinStartCond.getp() );
+  PUT_SUB( "STOP", theWinStopCond.getp() );
+  END_PUT();
 }
 
 
 ostream& flwor_wincond::vars::put( ostream& os) const
 {
-  BEGIN_EXPR (flwor_wincond::vars);
-  PUT_SUB ("AT", posvar);
-  PUT_SUB ("CURR", curr);
-  PUT_SUB ("NEXT", next);
-  PUT_SUB ("PREV", prev);
-  CLOSE_EXPR;
+  BEGIN_PUT( flwor_wincond::vars );
+  PUT_SUB( "AT", posvar );
+  PUT_SUB( "CURR", curr );
+  PUT_SUB( "NEXT", next );
+  PUT_SUB( "PREV", prev );
+  END_PUT();
 }
 
 ostream& flwor_wincond::put( ostream& os) const
 {
-  BEGIN_EXPR (flwor_wincond);
-  PUT_SUB ("IN-VARS", &get_in_vars());
-  PUT_SUB ("OUT-VARS", &get_out_vars());
-  PUT_SUB ("WHEN", theCondExpr);
-  CLOSE_EXPR;
+  BEGIN_PUT( flwor_wincond );
+  PUT_SUB( "IN-VARS", &get_in_vars() );
+  PUT_SUB( "OUT-VARS", &get_out_vars() );
+  PUT_SUB( "WHEN", theCondExpr );
+  END_PUT();
 }
 
 
 ostream& group_clause::put( ostream& os ) const 
 {
-  BEGIN_EXPR (group_clause);
+  BEGIN_PUT( group_clause );
 
-  os << DENT << "GROUP BY EXPRS";
+  os << indent << "GROUP BY EXPRS";
 
   for (unsigned i = 0; i < theGroupVars.size(); i++) 
   {
     PUT_SUB("", theGroupVars[i].first);
-    os << DENT << "-->" << theGroupVars[i].second.getp() << std::endl;
+    os << indent << "-->" << theGroupVars[i].second.getp() << endl;
   }
   os << endl;
 
-  os << DENT << "NON GROUP BY VARS ";
+  os << indent << "NON GROUP BY VARS ";
 
   for (unsigned i = 0; i < theNonGroupVars.size(); i++) 
   {
     PUT_SUB("", theNonGroupVars[i].first);
-    os << DENT << "-->" << theNonGroupVars[i].second.getp() << std::endl;
+    os << indent << "-->" << theNonGroupVars[i].second.getp() << endl;
   }
   os << endl;
 
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 
 ostream& orderby_clause::put( ostream &os ) const 
 {
-  BEGIN_EXPR(orderby_clause);
+  BEGIN_PUT( orderby_clause );
 
-  //os << DENT << "ORDER BY ";
+  //os << indent << "ORDER BY ";
 
   unsigned numColumns = num_columns();
 
@@ -283,7 +277,7 @@ ostream& orderby_clause::put( ostream &os ) const
 #if 0
   os << endl;
 
-  os << DENT << "VAR REBINDS ";
+  os << indent << "VAR REBINDS ";
   for (unsigned i = 0; i < theRebindList.size (); i++) 
   {
     os << "$";
@@ -293,13 +287,13 @@ ostream& orderby_clause::put( ostream &os ) const
   }
   os << endl;
 #endif
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 
 ostream& flwor_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (flwor_expr);
+  BEGIN_PUT( flwor_expr );
 
   for (unsigned i = 0; i < num_clauses(); i++) 
   {
@@ -307,11 +301,11 @@ ostream& flwor_expr::put( ostream& os) const
 
     if (c.get_kind() == flwor_clause::where_clause)
     {
-      PUT_SUB ("WHERE", static_cast<const where_clause *>(&c)->get_expr());
+      PUT_SUB( "WHERE", static_cast<const where_clause *>(&c)->get_expr() );
     }
     else if (c.get_kind() == flwor_clause::count_clause) 
     {
-      os << DENT << "COUNT $"; 
+      os << indent << "COUNT $"; 
       put_qname(static_cast<const count_clause *>(&c)->get_var()->get_name(), os);
       os << endl;
     }
@@ -337,29 +331,30 @@ ostream& flwor_expr::put( ostream& os) const
     }
   }
 
-  os << DENT << "RETURN\n";
+  os << indent << "RETURN\n" << inc_indent;
   if (theReturnExpr == NULL) 
   {
-    os << "NULL";
+    os << indent << "NULL";
   }
   else 
   {
     theReturnExpr->put(os);
   }
-  CLOSE_EXPR;
+  os << dec_indent;
+  END_PUT();
 }
 
 ostream& promote_expr::put(ostream& os) const
 {
-  os << INDENT << "promote_expr " << theTargetType->toString()
-     << expr_addr (this) << " [\n";
+  os << indent << "promote_expr " << theTargetType->toString()
+     << expr_addr (this) << " [\n" << inc_indent;
   theInputExpr->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& trycatch_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (trycatch_expr);
+  BEGIN_PUT( trycatch_expr );
 
   theTryExpr->put(os);
 
@@ -368,37 +363,37 @@ ostream& trycatch_expr::put( ostream& os) const
   for (ulong i = 0; i < numClauses; ++i)
   {
     catch_clause_t cc = theCatchClauses[i];
-    os << DENT << "CATCH ";
+    os << indent << "CATCH ";
     os << "\n";
     theCatchExprs[i]->put(os);
   }
-  os << DENT << "]\n";
+  os << indent << "]\n";
   return os;
 }
 
 ostream& eval_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (eval_expr);
+  BEGIN_PUT( eval_expr );
   theExpr->put (os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 
 ostream& if_expr::put( ostream& os) const
 {
-  BEGIN_EXPR(if_expr);
+  BEGIN_PUT( if_expr );
   theCondExpr->put(os);
   PUT_SUB("THEN", theThenExpr);
   PUT_SUB("ELSE", theElseExpr);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& fo_expr::put( ostream& os) const
 {
   const store::Item* qname = theFunction->getName();
 
-  os << INDENT << qname->getStringValue() << "/" << num_args()
-     << expr_addr(this) << " [\n";
+  os << indent << qname->getStringValue() << "/" << num_args()
+     << expr_addr(this) << " [\n" << inc_indent;
 
   ulong numArgs = theArgs.size();
 
@@ -407,98 +402,90 @@ ostream& fo_expr::put( ostream& os) const
     theArgs[i]->put(os);
   }
 
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 
 ostream& ftcontains_expr::put( ostream &os ) const {
-  BEGIN_EXPR( ftcontains_expr );
-  INDENT;
+  BEGIN_PUT( ftcontains_expr );
   PUT_SUB( "RANGE", range_ );
-  os << DENT; ftselection_->put( os );
+  ftselection_->put( os );
   PUT_SUB( "IGNORE", ftignore_ );
-  UNDENT;
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 
 std::ostream& function_item_expr::put(std::ostream& os) const
 {
-  os << INDENT << "funtion_item_expr " << expr_addr(this);
+  os << indent << "funtion_item_expr " << expr_addr(this) << inc_indent;
 
   if (theQName != NULL)
   {
     os << " " << theQName->getStringValue() << "/" << theArity;
-    UNDENT;
-    os << std::endl;
+    os << dec_indent << endl;
     return os;
   }
   else
   {
     os << " inline udf (" << theFunction.getp() << ") [\n";
     reinterpret_cast<const user_function*>(theFunction.getp())->getBody()->put(os);
-    CLOSE_EXPR;
+    END_PUT();
   }
 }
 
 
 ostream& dynamic_function_invocation_expr::put(ostream& os) const
 {
-  os << INDENT << "dynamic_function_invocation_expr " << expr_addr(this)
-     << " [\n";
+  BEGIN_PUT( dynamic_function_invocation_expr );
 
   theExpr->put(os);
 
   for (ulong i = 0; i < theArgs.size(); ++i)
     theArgs[i]->put(os);
 
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 
 ostream& instanceof_expr::put( ostream& os) const
 {
-  os << INDENT << "instanceof_expr " << theTargetType->toString()
-     << expr_addr (this) << " [\n";
+  BEGIN_PUT1( instanceof_expr, theTargetType->toString() );
   theInputExpr->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& treat_expr::put( ostream& os) const
 {
-  os << INDENT << "treat_expr " << theTargetType->toString()
-     << expr_addr (this) << " [\n";
+  BEGIN_PUT1( treat_expr, theTargetType->toString() );
   theInputExpr->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& castable_expr::put( ostream& os) const
 {
-  os << INDENT << "castable_expr " << theTargetType->toString()
-     << expr_addr (this) << " [\n";
+  BEGIN_PUT1( castable_expr, theTargetType->toString() );
   theInputExpr->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& cast_expr::put( ostream& os) const
 {
-  os << INDENT << "cast_expr " << theTargetType->toString()
-     << expr_addr (this) << " [\n";
+  BEGIN_PUT1( cast_expr, theTargetType->toString() );
   theInputExpr->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& name_cast_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (name_cast_expr);
+  BEGIN_PUT( name_cast_expr );
   theInputExpr->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 
 ostream& validate_expr::put(ostream& os) const
 {
-  BEGIN_EXPR(validate_expr);
+  BEGIN_PUT( validate_expr );
 
   switch (theMode) 
   {
@@ -508,26 +495,25 @@ ostream& validate_expr::put(ostream& os) const
   default: os << "??\n";
   }
   theExpr->put(os) << endl;
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 
 ostream& extension_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (extension_expr);
+  BEGIN_PUT( extension_expr );
 
-  os << INDENT;
-  os << "?"; put_qname (thePragmas[0]->theQName, os);
-  os << " " << thePragmas[0]->theContent << endl;
-  UNDENT;
+  os << inc_indent << indent;
+  os << '?'; put_qname (thePragmas[0]->theQName, os);
+  os << ' ' << thePragmas[0]->theContent << endl << dec_indent;
 
   theExpr->put(os) << endl;
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& relpath_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (relpath_expr);
+  BEGIN_PUT( relpath_expr );
   
   for (std::vector<expr_t>::const_iterator it = begin(); it != end(); ++it)
   {
@@ -538,13 +524,12 @@ ostream& relpath_expr::put( ostream& os) const
     }
     else
     {
-      os << INDENT << "REL STEP " ;
+      os << inc_indent << indent << "REL STEP " ;
       expr->put(os);
-      os << std::endl;
-      UNDENT;
+      os << endl << dec_indent;
     }
   }
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& axis_step_expr::put(ostream& os) const
@@ -640,25 +625,25 @@ ostream& match_expr::put(ostream& os) const
 
 ostream& const_expr::put(ostream& os) const
 {
-  os << INDENT << "const_expr" << expr_addr(this) << " ";
+  os << indent << "const_expr" << expr_addr(this) << " [ ";
   if (theValue->isFunction())
   {
-    os << "functrion item [ " << theValue->show().c_str() << " ]\n";
+    os << "functrion item [ " << theValue->show().c_str() << " ]";
   }
   else
   {
     os << get_val()->getType()->getStringValue()->c_str()
-       << " [ " << theValue->getStringValue() << " ]\n";
+       << " [ " << theValue->getStringValue() << " ]";
   }
-  UNDENT;
+  os << " ]\n";
   return os;
 }
 
 
 ostream& order_expr::put(ostream& os) const
 {
-  os << INDENT << "order_expr" << expr_addr (this) << "\n";
-  os << DENT << "[ ";
+  os << indent << "order_expr" << expr_addr (this) << "\n" << inc_indent
+     << indent << "[ ";
 
   switch (theType) 
   {
@@ -667,103 +652,96 @@ ostream& order_expr::put(ostream& os) const
   default: os << "??\n";
   }
   theExpr->put(os) << endl;
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 
 ostream& elem_expr::put(ostream& os) const
 {
-  BEGIN_EXPR(elem_expr);
-
+  BEGIN_PUT( elem_expr );
   if (theQNameExpr != NULL)
     theQNameExpr->put(os);
   if (theAttrs != NULL)
     theAttrs->put(os);
   if (theContent != NULL)
     theContent->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& doc_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (doc_expr);
-
+  BEGIN_PUT( doc_expr );
   theContent->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& attr_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (attr_expr);
+  BEGIN_PUT( attr_expr );
 
   theQNameExpr->put (os);
-  PUT_SUB ("=", theValueExpr);
-  CLOSE_EXPR;
+  PUT_SUB( "=", theValueExpr );
+  END_PUT();
 }
 
 ostream& text_expr::put(ostream& os) const
 {
-  BEGIN_EXPR(text_expr);
-
+  BEGIN_PUT( text_expr );
   theContentExpr->put(os);
-
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& pi_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (pi_expr);
-
-  PUT_SUB ("TARGET", theTargetExpr);
-
-  PUT_SUB ("CONTENT", theContentExpr);
-
-  CLOSE_EXPR;
+  BEGIN_PUT( pi_expr );
+  PUT_SUB( "TARGET", theTargetExpr );
+  PUT_SUB( "CONTENT", theContentExpr );
+  END_PUT();
 }
 
 
 ostream& insert_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (insert_expr);
+  BEGIN_PUT( insert_expr );
   theSourceExpr->put(os);
-  PUT_SUB (",", theTargetExpr);
-  CLOSE_EXPR;
+  PUT_SUB( ",", theTargetExpr );
+  END_PUT();
 }
 
 ostream& delete_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (delete_expr);
+  BEGIN_PUT( delete_expr );
   theTargetExpr->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& replace_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (replace_expr);
+  BEGIN_PUT( replace_expr );
   theTargetExpr->put(os);
-  PUT_SUB (",", theReplaceExpr);
-  CLOSE_EXPR;
+  PUT_SUB( ",", theReplaceExpr );
+  END_PUT();
 }
 
 ostream& rename_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (rename_expr);
+  BEGIN_PUT( rename_expr );
   theTargetExpr->put(os);
-  PUT_SUB (",", theNameExpr);
-  CLOSE_EXPR;
+  PUT_SUB( ",", theNameExpr );
+  END_PUT();
 }
 
 ostream& copy_clause::put( ostream& os) const
 {
-  BEGIN_EXPR (copy);
+  BEGIN_PUT( copy );
   theVar->put(os);
   theExpr->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& transform_expr::put( ostream& os) const
 {
-  BEGIN_EXPR (transform_expr);
+  BEGIN_PUT( transform_expr );
   for (vector<rchandle<copy_clause> >::const_iterator it = theCopyClauses.begin();
        it != theCopyClauses.end(); ++it)
   {
@@ -771,28 +749,28 @@ ostream& transform_expr::put( ostream& os) const
     e->put(os);
   }
   theModifyExpr->put(os);
-  PUT_SUB (",", theReturnExpr);
-  CLOSE_EXPR;
+  PUT_SUB( ",", theReturnExpr );
+  END_PUT();
 }
 
 ostream& exit_expr::put( ostream& os) const
 {
-  BEGIN_EXPR(exit_expr);
+  BEGIN_PUT( exit_expr );
   theExpr->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 ostream& flowctl_expr::put( ostream& os) const
 {
-  BEGIN_EXPR(flowctl_expr);
-  CLOSE_EXPR;
+  BEGIN_PUT( flowctl_expr );
+  END_PUT();
 }
 
 ostream& while_expr::put( ostream& os) const
 {
-  BEGIN_EXPR(while_expr);
+  BEGIN_PUT( while_expr );
   theBody->put(os);
-  CLOSE_EXPR;
+  END_PUT();
 }
 
 }  // namespace zorba
