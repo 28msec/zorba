@@ -23,7 +23,7 @@
 #include "runtime/full_text/apply.h"
 #include "runtime/full_text/ft_token.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbautils/stl_helpers.h"
+#include "zorbautils/stl_util.h"
 
 #ifdef WIN32
 // Windows annoyingly defines these as macros.

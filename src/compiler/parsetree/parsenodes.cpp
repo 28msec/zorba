@@ -16,7 +16,7 @@
 
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbautils/stl_helpers.h"
+#include "zorbautils/stl_util.h"
 
 #include "types/typemanager.h"
 

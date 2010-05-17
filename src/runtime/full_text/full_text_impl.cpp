@@ -22,7 +22,7 @@
 #include "store/api/item.h"
 #include "system/globalenv.h"
 #include "zorbatypes/utf8.h"
-#include "zorbautils/stl_helpers.h"
+#include "zorbautils/stl_util.h"
 
 using namespace std;
 

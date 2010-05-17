@@ -20,7 +20,7 @@
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/apply.h"
 #include "runtime/full_text/ftcontains_visitor.h"
-#include "zorbautils/stl_helpers.h"
+#include "zorbautils/stl_util.h"
 
 using namespace std;
 
