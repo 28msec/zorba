@@ -32,6 +32,40 @@ namespace zorba {
 #undef min
 #endif
 
+////////// Inlines ////////////////////////////////////////////////////////////
+
+inline void ftcontains_visitor::push( ft_all_matches *m ) {
+  eval_stack_.push( m );
+}
+
+inline ft_all_matches* ftcontains_visitor::top() const {
+  return eval_stack_.top();
+}
+
+inline ft_all_matches* ftcontains_visitor::pop() {
+  ft_all_matches *const m = top();
+  eval_stack_.pop();
+  return m;
+}
+
+////////// PUSH/POP macros ////////////////////////////////////////////////////
+
+#if 0
+
+inline void pop_helper( int line ) {
+  cout << "POP @ line " << line << endl;
+}
+
+#define PUSH(X)   cout << "PUSH @ line " << __LINE__ << endl; push(X)
+#define POP(X)    ( pop_helper(__LINE__), pop(X) )
+
+#else
+
+#define PUSH(X)   push(X)
+#define POP(X)    pop(X)
+
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 
 ftcontains_visitor::ftcontains_visitor( FTTokenIterator &search_context,
@@ -66,37 +100,7 @@ expr_visitor* ftcontains_visitor::get_expr_visitor() {
   return NULL;
 }
 
-inline void ftcontains_visitor::push( ft_all_matches *m ) {
-  eval_stack_.push( m );
-}
-
-inline ft_all_matches* ftcontains_visitor::top() const {
-  return eval_stack_.top();
-}
-
-inline ft_all_matches* ftcontains_visitor::pop() {
-  ft_all_matches *const m = top();
-  eval_stack_.pop();
-  return m;
-}
-
-#if 0
-
-inline void pop_helper( int line ) {
-  cout << "POP @ line " << line << endl;
-}
-
-#define PUSH(X)   cout << "PUSH @ line " << __LINE__ << endl; push(X)
-#define POP(X)    ( pop_helper(__LINE__), pop(X) )
-
-#else
-
-#define PUSH(X)   push(X)
-#define POP(X)    pop(X)
-
-#endif
-
-///////////////////////////////////////////////////////////////////////////////
+////////// Visit macros ///////////////////////////////////////////////////////
 
 #if 0
 
