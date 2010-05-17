@@ -67,19 +67,9 @@ public:
   DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
 
 private:
-  void push( ft_all_matches *m ) {
-    eval_stack_.push( m );
-  }
-
-  ft_all_matches* pop() {
-    ft_all_matches *const m = top();
-    eval_stack_.pop();
-    return m;
-  }
-
-  ft_all_matches* top() const {
-    return eval_stack_.top();
-  }
+  void push( ft_all_matches *m );
+  ft_all_matches* pop();
+  ft_all_matches* top() const;
 
   FTTokenIterator search_context_;
   PlanState &plan_state_;

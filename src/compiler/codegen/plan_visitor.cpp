@@ -229,21 +229,15 @@ typedef rchandle<FlworClauseVarMap> FlworClauseVarMap_t;
 
 /******************************************************************************
 
-*******************************************************************************/
+ ******************************************************************************/
+
 class plan_ftnode_visitor : public ftnode_visitor {
 public:
   typedef list<PlanIter_t> PlanIter_list_t;
 
-private:
-  plan_visitor     * plan_visitor_;
-  list<PlanIter_t>   sub_iters_;
-
-public:
   plan_ftnode_visitor( plan_visitor* v ) : plan_visitor_( v ) { }
 
-  expr_visitor* get_expr_visitor() {
-    return reinterpret_cast<expr_visitor*>(plan_visitor_);
-  }
+  expr_visitor* get_expr_visitor();
 
   PlanIter_list_t& get_sub_iters() { return sub_iters_; }
 
@@ -278,12 +272,17 @@ protected:
   DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftthesaurus_id );
   DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftthesaurus_option );
   DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
+
+private:
+  plan_visitor *plan_visitor_;
+  PlanIter_list_t sub_iters_;
 };
 
 
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
+ ******************************************************************************/
+
 class plan_visitor : public expr_visitor
 {
   friend class plan_ftnode_visitor;
@@ -2735,7 +2734,6 @@ void end_visit (order_expr& v)
 bool begin_visit(ftcontains_expr& v)
 {
   CODEGEN_TRACE_IN("");
-  push_itstack( NULL ); // sentinel
   return true;
 }
 
@@ -2743,17 +2741,8 @@ void end_visit(ftcontains_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
-  PlanIter_t it1 = pop_itstack();
-  PlanIter_t it2 = pop_itstack();
-
-  PlanIter_t ftrange_it, ftignore_it;
-  if ( it2 ) {
-    ftignore_it = it1;
-    ftrange_it = it2;
-    pop_itstack(); // remove sentinel
-  } else {
-    ftrange_it = it1;
-  }
+  PlanIter_t ftignore_it = v.get_ignore() ? pop_itstack() : NULL;
+  PlanIter_t ftrange_it = pop_itstack();
 
   PlanIter_t ftcontains_it = new FTContainsIterator(
     sctx, qloc, ftrange_it, ftignore_it, v.get_ftselection(),
@@ -2773,72 +2762,69 @@ PlanIter_t result()
 
 };
 
+///////////////////////////////////////////////////////////////////////////////
 
 #define V plan_ftnode_visitor
 
-#define ACCEPT( EXPR, V )                   \
-  if ( !(EXPR) ) ; else (EXPR)->accept( V )
+//
+// This member function is defined here to avoid an improper cast.
+//
+expr_visitor* V::get_expr_visitor() {
+  return plan_visitor_;
+}
 
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftand )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_selection )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftmild_not )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftor )
 
-ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftprimary_with_options );
+void V::end_visit( ftprimary_with_options &pwo ) {
   if ( pwo.get_weight() ) {
-    pwo.get_weight()->accept( *plan_visitor_ );
     PlanIter_t it = plan_visitor_->pop_itstack();
     pwo.set_plan_iter( it );
     sub_iters_.push_back( it );
   }
-  return ft_visit_result::no_end;
 }
-DEF_FTNODE_VISITOR_END_VISIT( V, ftprimary_with_options )
 
-ft_visit_result::type V::begin_visit( ftrange &r ) {
-  ACCEPT( r.get_expr1(), *plan_visitor_ );
-  PlanIter_t it1 = plan_visitor_->pop_itstack();
-  sub_iters_.push_back( it1 );
-
-  PlanIter_t it2;
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftrange );
+void V::end_visit( ftrange &r ) {
+  PlanIter_t it2 = plan_visitor_->pop_itstack();
+  PlanIter_t it1;
   if ( r.get_expr2() ) {
-    r.get_expr2()->accept( *plan_visitor_ );
-    it2 = plan_visitor_->pop_itstack();
-    sub_iters_.push_back( it2 );
+    it1 = plan_visitor_->pop_itstack();
+  } else {
+    it1 = it2;
+    it2 = NULL;
   }
-
+  sub_iters_.push_back( it1 );
+  if ( it2 )
+    sub_iters_.push_back( it2 );
   r.set_plan_iters( it1, it2 );
-  return ft_visit_result::no_end;
 }
-DEF_FTNODE_VISITOR_END_VISIT( V, ftrange )
 
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftselection )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftunary_not )
 
-ft_visit_result::type V::begin_visit( ftwords &w ) {
-  ACCEPT( w.get_expr(), *plan_visitor_ );
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords );
+void V::end_visit( ftwords &w ) {
   PlanIter_t it = plan_visitor_->pop_itstack();
   w.set_plan_iter( it );
   sub_iters_.push_back( it );
-  return ft_visit_result::no_end;
 }
-DEF_FTNODE_VISITOR_END_VISIT( V, ftwords )
 
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwords_times )
-
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftcontent_filter )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftdistance_filter )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftorder_filter )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftscope_filter )
 
-ft_visit_result::type V::begin_visit( ftwindow_filter &f ) {
-  ACCEPT( f.get_window(), *plan_visitor_ );
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwindow_filter );
+void V::end_visit( ftwindow_filter &f ) {
   PlanIter_t it = plan_visitor_->pop_itstack();
   f.set_plan_iter( it );
   sub_iters_.push_back( it );
-  return ft_visit_result::no_end;
 }
-DEF_FTNODE_VISITOR_END_VISIT( V, ftwindow_filter )
 
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )

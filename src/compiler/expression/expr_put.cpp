@@ -25,6 +25,8 @@
 
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
+#include "compiler/expression/ft_expr.h"
+#include "compiler/expression/ftnode.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
@@ -409,6 +411,17 @@ ostream& fo_expr::put( ostream& os) const
 }
 
 
+ostream& ftcontains_expr::put( ostream &os ) const {
+  BEGIN_EXPR( ftcontains_expr );
+  INDENT;
+  PUT_SUB( "RANGE", range_ );
+  os << DENT; ftselection_->put( os );
+  PUT_SUB( "IGNORE", ftignore_ );
+  UNDENT;
+  CLOSE_EXPR;
+}
+
+
 std::ostream& function_item_expr::put(std::ostream& os) const
 {
   os << INDENT << "funtion_item_expr " << expr_addr(this);
@@ -783,3 +796,4 @@ ostream& while_expr::put( ostream& os) const
 }
 
 }  // namespace zorba
+/* vim:set et sw=2 ts=2: */

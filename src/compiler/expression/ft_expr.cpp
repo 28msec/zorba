@@ -70,16 +70,5 @@ void ftcontains_expr::serialize( serialization::Archiver &ar )
   ar & ftignore_;
 }
 
-ostream& ftcontains_expr::put( ostream& o ) const {
-  //BEGIN_EXPR (ftcontains_expr);
-  range_->put( o ) << endl;
-  o << "ftcontains\n";
-  //ftselection_->put( o ) << endl;
-  if ( ftignore_ )
-    ftignore_->put( o );
-  //CLOSE_EXPR;
-  return o;
-}
-
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */

@@ -10747,17 +10747,11 @@ void end_visit (const FTAnd& v, void* /*visit_state*/) {
 
   ftand::ftnode_list_t list;
   while ( true ) {
-    cout << "end_visit(FTAnd&): " << flush;
     ftnode *const n = pop_ftstack();
-    if ( !n ) {
-      cout << "NULL ftstack" << endl;
+    if ( !n )
       break;
-    }
-    if ( !flatten<ftand>( n ) ) {
-      cout << "!flatten" << endl;
+    if ( !flatten<ftand>( n ) )
       list.push_back( n );
-    } else
-      cout << "flatten" << endl;
   }
   push_ftstack( new ftand( v.get_location(), list ) );
 }

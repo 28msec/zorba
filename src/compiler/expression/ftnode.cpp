@@ -558,6 +558,7 @@ ft_visit_result::type ftprimary_with_options::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( primary_, v );
   ACCEPT( match_options_, v );
+  EV_ACCEPT( weight_, v );
   END_VISIT( v );
 }
 
