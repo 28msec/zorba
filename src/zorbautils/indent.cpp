@@ -20,7 +20,22 @@ using namespace std;
 
 namespace zorba {
 
+/**
+ * Gets the current indentation amount for the given ostream.
+ *
+ * @param os The ostream to get the indentation amount for.
+ * @return Returns a modifyable reference to said indentation.
+ */
 int get_ostream_indent_index() {
+  //
+  // This function is out-of-line because it has a static constant within it.
+  // It has a static constant within it to guarantee (1) initialization before
+  // use and (2) initialization happens exactly once.
+  //
+  // See: "Standard C++ IOStreams and Locales: Advanced Programmer's Guide and
+  // Reference," Angelika Langer and Klaus Kreft, Addison-Wesley, 2000, section
+  // 3.3.1.1: "Initializing and Maintaining the iword/pword Index."
+  //
   static int const index = ios_base::xalloc();
   return index;
 }

@@ -133,7 +133,7 @@ ft_token_span::int_t max( FTTokenSpanSequenceType &seq,
   max( SEQ, &ft_token_span::SEP, &ft_token_span::start_end::IP )
 
 /**
- * Find the max query_pos among all the match's include/exclude lists.
+ * Finds the max query_pos among all the match's include/exclude lists.
  */
 ft_string_match::int_t max_query_pos( ft_all_matches const &am ) {
   ft_string_match::int_t result = numeric_limits<ft_string_match::int_t>::min();
@@ -232,6 +232,9 @@ static void dump( char const *label, FTTokenIterator it ) {
 }
 #endif
 
+/**
+ * Matches query tokens against document tokens.
+ */
 static void match_tokens( FTTokenIterator doc_tokens,
                           FTTokenIterator query_tokens,
                           ft_token_spans &result ) {
@@ -270,6 +273,9 @@ static void match_tokens( FTTokenIterator doc_tokens,
   }
 }
 
+/**
+ * Checks whether the given ft_token_span spans the given token position.
+ */
 inline bool token_covers_pos( ft_token_span const &ts,
                               ft_token_span::int_t token_pos ) {
   return token_pos >= ts.pos.start && token_pos <= ts.pos.end;
