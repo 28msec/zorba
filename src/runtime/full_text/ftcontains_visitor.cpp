@@ -80,11 +80,11 @@ inline ft_all_matches* ftcontains_visitor::pop() {
   return m;
 }
 
+#if 0
+
 inline void pop_helper( int line ) {
   cout << "POP @ line " << line << endl;
 }
-
-#if 0
 
 #define PUSH(X)   cout << "PUSH @ line " << __LINE__ << endl; push(X)
 #define POP(X)    ( pop_helper(__LINE__), pop(X) )
@@ -100,13 +100,11 @@ inline void pop_helper( int line ) {
 
 #if 0
 
-static int indent;
-
 #define BEGIN_VISIT(LABEL) \
-  cout << string( (indent++ * 2), ' ' ) << #LABEL << endl
+  cout << indent << #LABEL << endl << inc_indent
 
-#define END_VISIT(RETURN) \
-  --indent
+#define END_VISIT() \
+  cout << dec_indent
 
 #else
 
@@ -114,8 +112,6 @@ static int indent;
 #define END_VISIT()         /* nothing */
 
 #endif /* NDEBUG */
-
-#define V ftcontains_visitor
 
 #undef DEF_FTNODE_VISITOR_BEGIN_VISIT
 #define DEF_FTNODE_VISITOR_BEGIN_VISIT(V,C)     \
@@ -131,6 +127,8 @@ static int indent;
   }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+#define V ftcontains_visitor
 
 ft_visit_result::type V::begin_visit( ftand &a ) {
   BEGIN_VISIT( ftand );
