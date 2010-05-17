@@ -101,13 +101,29 @@ public:
 };
 
 
-//op:index-entry-builder
-class op_index_entry_builder : public function
+//op:value-index-entry-builder
+class op_value_index_entry_builder : public function
 {
 public:
-  op_index_entry_builder(const signature& sig)
+  op_value_index_entry_builder(const signature& sig)
     :
-    function(sig, FunctionConsts::OP_INDEX_ENTRY_BUILDER_N)
+    function(sig, FunctionConsts::OP_VALUE_INDEX_ENTRY_BUILDER_N)
+  {
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+//op:general-index-entry-builder
+class op_general_index_entry_builder : public function
+{
+public:
+  op_general_index_entry_builder(const signature& sig)
+    :
+    function(sig, FunctionConsts::OP_GENERAL_INDEX_ENTRY_BUILDER_N)
   {
   }
 

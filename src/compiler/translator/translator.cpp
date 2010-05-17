@@ -747,11 +747,25 @@ public:
   module participating in a query. The instance is destroyed when the translation
   of the associated module is finished.
 
-  theCCB               : The control block for the whole query. (see
-                         compiler/api/compilercb.h).
+  theRootTranslator :
+  -------------------
 
-  theModulesInfo       : Pointer to the unique ModulesInfo instance (see class
-                         ModulesInfo above).
+  Pointer to the root translator (The root translator points to itself).
+
+  theRTM :
+  --------
+
+  Reference to the root type manager (cached here for convenience).
+
+  theCCB :
+  --------
+
+  The control block for the whole query. (see compiler/api/compilercb.h).
+
+  theModulesInfo :
+  ----------------
+
+  Pointer to the unique ModulesInfo instance (see class ModulesInfo above).
 
   theModulesStack      : A set containing the ns uris of all the modules in the
                          chain of module imports from this module up to the main
@@ -1101,39 +1115,33 @@ TranslatorImpl(
 
     theModuleNamespace = theEmptyString;
     theModulePrefix = theEmptyString;
+
+    theRootTranslator = this;
   }
 }
 
 
 const xqpStringStore_t& getEmptyString() const
 {
-  return (theRootTranslator == NULL ?
-          theEmptyString :
-          theRootTranslator->theEmptyString);
+  return theRootTranslator->theEmptyString;
 }
 
 
 const QName* getDotVarName() const
 {
-  return (theRootTranslator == NULL ?
-          theDotVarName.getp() :
-          theRootTranslator->theDotVarName.getp());
+  return theRootTranslator->theDotVarName.getp();
 }
 
 
 const QName* getDotPosVarName() const
 {
-  return (theRootTranslator == NULL ?
-          theDotPosVarName.getp() :
-          theRootTranslator->theDotPosVarName.getp());
+  return theRootTranslator->theDotPosVarName.getp();
 }
 
 
 const QName* getLastIdxVarName() const
 {
-  return (theRootTranslator == NULL ?
-          theLastIdxVarName.getp() :
-          theRootTranslator->theLastIdxVarName.getp());
+  return theRootTranslator->theLastIdxVarName.getp();
 }
 
 
@@ -1158,7 +1166,7 @@ expr_t pop_nodestack(int n = 1)
     {
       cout << "Popped from nodestack:\n";
       if (e_h != NULL)
-        e_h->put( cout ) << endl;
+        e_h->put(cout) << endl;
       else
         cout << "NULL" << endl;
     }
@@ -1167,10 +1175,6 @@ expr_t pop_nodestack(int n = 1)
   return e_h;
 }
 
-expr_t top_nodestack() {
-  ZORBA_FATAL( !theNodeStack.empty(), "" );
-  return theNodeStack.top();
-}
 
 /*******************************************************************************
   Push the given expr into theNodeStack.
@@ -1203,6 +1207,17 @@ expr_t peek_nodestk_or_null()
 
 
 /*******************************************************************************
+  Return rchandle to the expr at the top of theNodeStack (crash if theNodeStack
+  is empty).
+********************************************************************************/
+expr_t top_nodestack() 
+{
+  ZORBA_FATAL( !theNodeStack.empty(), "" );
+  return theNodeStack.top();
+}
+
+
+/*******************************************************************************
   Check if the top expr in theNodeStack is an axis_step, and if so return
   rchandle to it (but do not pop). Otherwise, raise error.
 ********************************************************************************/
@@ -1230,22 +1245,25 @@ xqtref_t pop_tstack()
   return pop_stack(theTypeStack);
 }
 
-/******************************************************************************
+
+/*****************************************************************************
   Pop the top count ftnodes from theFTNodeStack and return the last expr that
   was popped.
- ******************************************************************************/
+******************************************************************************/
 ftnode* pop_ftstack(int count = 1)
 {
   ZORBA_ASSERT(count >= 0);
 
   ftnode *n = NULL;
-  while ( count-- > 0 ) {
+  while ( count-- > 0 ) 
+  {
     ZORBA_FATAL( !theFTNodeStack.empty(), "" );
     n = theFTNodeStack.top();
     theFTNodeStack.pop();
 
 #ifndef NDEBUG
-    if ( Properties::instance()->traceTranslator() ) {
+    if ( Properties::instance()->traceTranslator() ) 
+    {
       cout << "Popped from ftnode stack:\n";
       if ( n )
         cout << *n << endl;
@@ -1261,28 +1279,31 @@ ftnode* pop_ftstack(int count = 1)
 /******************************************************************************
   Push the given expr into theFTNodeStack.
  ******************************************************************************/
-inline void push_ftstack( ftnode *n ) {
+inline void push_ftstack( ftnode *n ) 
+{
   theFTNodeStack.push( n );
 }
 
-inline ftnode* top_ftstack() {
+
+inline ftnode* top_ftstack() 
+{
   ZORBA_FATAL( !theFTNodeStack.empty(), "" );
   return theFTNodeStack.top();
 }
 
 
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
+*******************************************************************************/
 inline bool inLibraryModule()
 {
   return export_sctx != NULL;
 }
 
 
-/*******************************************************************************
+/******************************************************************************
 
-********************************************************************************/
+*******************************************************************************/
 inline short sctxid()
 {
   return theCurrSctxId;
@@ -1393,6 +1414,7 @@ void expand_elem_qname(
                        qname->get_localname(),
                        loc);
 }
+
 
 /*******************************************************************************
 
@@ -3868,6 +3890,7 @@ void* begin_visit(const IndexDecl& v)
   expand_function_qname(qnameItem, qname, qname->get_location());
 
   ValueIndex_t index = new ValueIndex(theSctx, loc, qnameItem);
+  index->setGeneral(v.isGeneral());
   index->setUnique(v.isUnique());
   index->setMethod(v.isOrdered() ? ValueIndex::TREE : ValueIndex::HASH);
   if (v.isAutomatic())
@@ -3969,7 +3992,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 
   ValueIndex* index = theIndexDecl;
 
-  for(long i = numColumns - 1; i >= 0; --i)
+  for (long i = numColumns - 1; i >= 0; --i)
   {
     const IndexKeySpec* keySpec = v.getKeySpec(i);
     const OrderCollationSpec* collationSpec = keySpec->getCollationSpec();
@@ -11445,6 +11468,10 @@ expr_t translate_aux(
 }
 
 
+
+/*******************************************************************************
+  Translate a main module.
+********************************************************************************/
 expr_t translate(const parsenode& root, CompilerCB* ccb)
 {
   set<string> mod_stack;

@@ -15,12 +15,12 @@
  */
  
 #include "runtime/indexing/index_ddl.h"
+
 #include "functions/func_index_ddl.h"
 
 
 namespace zorba
 {
-
 
 
 PlanIter_t fn_zorba_ddl_create_index::codegen(
@@ -32,6 +32,7 @@ PlanIter_t fn_zorba_ddl_create_index::codegen(
 {
   return new CreateIndexIterator(sctx, loc, argv[0]);
 }
+
 
 PlanIter_t fn_zorba_ddl_delete_index::codegen(
   CompilerCB*,
@@ -54,7 +55,8 @@ PlanIter_t fn_zorba_ddl_refresh_index::codegen(
   return new RefreshIndexIterator(sctx, loc, argv[0]);
 }
 
-PlanIter_t op_index_entry_builder::codegen(
+
+PlanIter_t op_value_index_entry_builder::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -63,6 +65,18 @@ PlanIter_t op_index_entry_builder::codegen(
 {
   return new IndexEntryBuilderIterator(sctx, loc, argv);
 }
+
+
+PlanIter_t op_general_index_entry_builder::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IndexEntryBuilderIterator(sctx, loc, argv);
+}
+
 
 PlanIter_t fn_zorba_ddl_probe_index_point::codegen(
   CompilerCB*,
@@ -74,6 +88,7 @@ PlanIter_t fn_zorba_ddl_probe_index_point::codegen(
   return new IndexPointProbeIterator(sctx, loc, argv);
 }
 
+
 PlanIter_t fn_zorba_ddl_probe_index_range::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -83,6 +98,7 @@ PlanIter_t fn_zorba_ddl_probe_index_range::codegen(
 {
   return new IndexRangeProbeIterator(sctx, loc, argv);
 }
+
 
 void populate_context_index_ddl(static_context* sctx)
 {
@@ -111,8 +127,14 @@ void populate_context_index_ddl(static_context* sctx)
       GENV_TYPESYSTEM.EMPTY_TYPE));
 
 
-  DECL(sctx, op_index_entry_builder,
-      (createQName("http://www.w3.org/2005/xpath-functions","op","index-entry-builder"),
+  DECL(sctx, op_value_index_entry_builder,
+      (createQName("http://www.w3.org/2005/xpath-functions","op","value-index-entry-builder"),
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+      true,
+      GENV_TYPESYSTEM.ITEM_TYPE_STAR));
+
+  DECL(sctx, op_general_index_entry_builder,
+      (createQName("http://www.w3.org/2005/xpath-functions","op","general-index-entry-builder"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       true,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));

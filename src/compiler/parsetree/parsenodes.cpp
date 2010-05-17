@@ -959,11 +959,12 @@ IndexDecl::IndexDecl(
   theName(name),
   theDomainExpr(domainExpr),
   theKey(key),
+  theIsGeneral(false),
   theIsUnique(false),
   theIsOrdered(false),
   theIsAutomatic(true)
 {
-  // Note: the DeclPropertyList is validated
+  // Note: the DeclPropertyList has bee validated already by the parser
 
   if (properties == NULL)
     return;
@@ -984,6 +985,12 @@ IndexDecl::IndexDecl(
     case StaticContextConsts::decl_value_equality:
     case StaticContextConsts::decl_value_range:
       theIsOrdered = (prop == StaticContextConsts::decl_value_range);
+      break;
+
+    case StaticContextConsts::decl_general_equality:
+    case StaticContextConsts::decl_general_range:
+      theIsGeneral = true;
+      theIsOrdered = (prop == StaticContextConsts::decl_general_range);
       break;
 
     case StaticContextConsts::decl_manual:

@@ -1229,12 +1229,13 @@ public:
 };
 
 
-/***************************************************************************//**
+/**************************************************************************//**
   IndexDecl ::= "declare" IndexPropertyList "index" QName
                 "on" "nodes" IndexDomainExpr "by" IndexKeyList
 
   IndexPropertyList := ("unique" | "non" "unique" |
                         "value" "range" | "value" "equality" |
+                        "general" "range" | "general" "equality" |
                         "automatically" "maintained" | "manually" "maintained")*
 
   IndexDomainExpr := PathExpr
@@ -1246,7 +1247,7 @@ public:
   AtomicType := QName
 
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
-********************************************************************************/
+*******************************************************************************/
 class IndexDecl : public parsenode
 {
 protected:
@@ -1254,6 +1255,7 @@ protected:
   rchandle<exprnode>     theDomainExpr;
   rchandle<IndexKeyList> theKey;
 
+  bool                   theIsGeneral;
   bool                   theIsUnique;
   bool                   theIsOrdered;
   bool                   theIsAutomatic;
@@ -1273,6 +1275,8 @@ public:
   const QName* getName() const { return theName.getp(); }
 
   const exprnode* getDomainExpr() const { return theDomainExpr; }
+
+  bool isGeneral() const { return theIsGeneral; }
 
   bool isUnique() const { return theIsUnique; }
 
@@ -6289,4 +6293,11 @@ private:
 
 } // namespace zorba
 #endif  /*  ZORBA_PARSENODES_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+
 /* vim:set et sw=2 ts=2: */

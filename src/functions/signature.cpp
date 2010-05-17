@@ -207,8 +207,8 @@ signature::signature(
   copy (_argv.begin (), _argv.end (), back_inserter (argv));
 }
 
-bool
-signature::equals(const signature& s) const
+
+bool signature::equals(const signature& s) const
 {
   if (arg_count() != s.arg_count())
     return false;

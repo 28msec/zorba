@@ -51,6 +51,7 @@ ValueIndex::ValueIndex(
   :
   theSctx(sctx),
   theName(name),
+  theIsGeneral(false),
   theIsUnique(false),
   theIsTemp(false),
   theMaintenanceMode(MANUAL),
@@ -76,6 +77,7 @@ void ValueIndex::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theSctx;
   ar & theName;
+  ar & theIsGeneral;
   ar & theIsUnique;
   ar & theIsTemp;
   SERIALIZE_ENUM(MaintenanceMode, theMaintenanceMode);
@@ -203,19 +205,17 @@ void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 }
 
 
-/*******************************************************************************
-  Check that the domain expr
-  (a) is deterministic,
-  (b) does not have any free variables,
-  (c) does not reference any input functions other than dc:collection()
-  (d) the arg to each xqddf:collection is a const qname
-********************************************************************************/
+/******************************************************************************
+  Check that the domain and key exprs satisfy the constraints specified by the
+  XQDDF spec.
+*******************************************************************************/
 void ValueIndex::analyze()
 {
   store::Item_t dotQName;
   GENV_ITEMFACTORY->createQName(dotQName, "", "", "$$dot");
   expr* dotVar = NULL;
 
+  // Get the var_expr representing the context item, if it is defined
   try
   {
     theSctx->lookup_var(dotQName, QueryLoc::null, XPST0008);
@@ -230,6 +230,7 @@ void ValueIndex::analyze()
 
   std::vector<var_expr*> varExprs;
 
+  // Check constraints on the domain expr
   analyzeExprInternal(getDomainExpr(),
                       theSourceNames,
                       theDomainSourceExprs,
@@ -242,6 +243,14 @@ void ValueIndex::analyze()
 
   ulong numKeys = theKeyExprs.size();
 
+  if (theIsGeneral && numKeys > 1)
+  {
+    ZORBA_ERROR_LOC_PARAM(XDST0035_INDEX_GENERAL_MULTIKEY, 
+                          theKeyExprs[1]->get_loc(),
+                          theName->getStringValue(), "");
+  }
+
+  // Check constraints on the key exprs
   for (ulong i = 0; i < numKeys; ++i)
   {
     analyzeExprInternal(theKeyExprs[i].getp(),
@@ -251,6 +260,9 @@ void ValueIndex::analyze()
                         dotVar);
   }
 
+  // If the index is declared as "automatically maintained", check whether
+  // automatic maintence can be done efficiently, and if so, set the appropriate
+  // maintenance mode.
   if (keySources.empty() &&
       theDomainSourceExprs.size() == 1 &&
       theMaintenanceMode != MANUAL)
@@ -261,6 +273,10 @@ void ValueIndex::analyze()
 
   if (theMaintenanceMode == REBUILD)
   {
+    // If the index is declared as "automatically maintained", then 
+    // theMaintenanceMode is initially set to REBUILD. If theMaintenanceMode
+    // is not changed above (to DOC_MAP), then we throw an error because we
+    // don't want to automatically rebuild the full index with every update. 
     ZORBA_ERROR_LOC_PARAM(XDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE,
                           getDomainExpr()->get_loc(),
                           theName->getStringValue(), "");
@@ -268,6 +284,18 @@ void ValueIndex::analyze()
 }
 
 
+/*******************************************************************************
+  Check that the given expr
+  (a) is deterministic,
+  (b) does not reference any variables other than those in varExprs
+  (c) does not reference the given dotVar
+  (c) does not reference any input functions other than xqddf:collection(qname)
+  (d) the arg to each xqddf:collection is a const qname
+
+  If the above conditions are met, the method will return the qnames of all the
+  accessed collections and the fo exprs representing the xqddf:collection
+  invocations.
+********************************************************************************/
 void ValueIndex::analyzeExprInternal(
     expr* e,
     std::vector<store::Item*>& sourceNames,
@@ -408,7 +436,13 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 
   clonedExprs[0] = domainVarExpr;
 
-  function* f = GET_BUILTIN_FUNCTION(OP_INDEX_ENTRY_BUILDER_N);
+  function* f = NULL;
+
+  if (theIsGeneral)
+    f = GET_BUILTIN_FUNCTION(OP_GENERAL_INDEX_ENTRY_BUILDER_N);
+  else
+    f = GET_BUILTIN_FUNCTION(OP_VALUE_INDEX_ENTRY_BUILDER_N);
+
   ZORBA_ASSERT(f != NULL);
 
   fo_expr_t returnExpr =  new fo_expr(sctx, loc, f, clonedExprs);
@@ -519,7 +553,13 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
 
   clonedExprs[0] = domainVarExpr;
 
-  function* f = GET_BUILTIN_FUNCTION(OP_INDEX_ENTRY_BUILDER_N);
+  function* f = NULL;
+
+  if (theIsGeneral)
+    f = GET_BUILTIN_FUNCTION(OP_GENERAL_INDEX_ENTRY_BUILDER_N);
+  else
+    f = GET_BUILTIN_FUNCTION(OP_VALUE_INDEX_ENTRY_BUILDER_N);
+
   ZORBA_ASSERT(f != NULL);
 
   fo_expr_t returnExpr =  new fo_expr(sctx, loc, f, clonedExprs);

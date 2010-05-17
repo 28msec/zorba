@@ -712,28 +712,31 @@ void XQueryImpl::execute(
   try
   {
     lPlan->open();
-  } catch (error::ZorbaError& e) {
+    serialize(os, lPlan, opt);
+  }
+  catch (error::ZorbaError& e)
+  {
+    lPlan->close();
     ZorbaImpl::notifyError(theErrorHandler, e);
     return;
-  } catch (FlowCtlException&) {
+  }
+  catch (FlowCtlException&)
+  {
+    lPlan->close();
     ZorbaImpl::notifyError(theErrorHandler, "User interrupt");
     return;
-  } catch (std::exception& e) {
+  }
+  catch (std::exception& e)
+  {
+    lPlan->close();
     ZorbaImpl::notifyError(theErrorHandler, e.what());
     return;
-  } catch (...) {
-    ZorbaImpl::notifyError(theErrorHandler);
-    return;
-  }
-
-  try
-  {
-    serialize(os, lPlan, opt);
   }
   catch (...)
   {
     lPlan->close();
-    throw;
+    ZorbaImpl::notifyError(theErrorHandler);
+    return;
   }
 
   lPlan->close();
@@ -764,27 +767,31 @@ void XQueryImpl::execute(
   try
   {
     lPlan->open();
-  } catch (error::ZorbaError& e) {
+    serialize(aOutStream, lPlan, aCallbackFunction, aCallbackData, aSerOptions);
+  }
+  catch (error::ZorbaError& e)
+  {
+    lPlan->close();
     ZorbaImpl::notifyError(theErrorHandler, e);
     return;
-  } catch (FlowCtlException&) {
+  }
+  catch (FlowCtlException&)
+  {
+    lPlan->close();
     ZorbaImpl::notifyError(theErrorHandler, "User interrupt");
     return;
-  } catch (std::exception& e) {
+  }
+  catch (std::exception& e)
+  {
+    lPlan->close();
     ZorbaImpl::notifyError(theErrorHandler, e.what());
     return;
-  } catch (...) {
-    ZorbaImpl::notifyError(theErrorHandler);
-    return;
-  }
-
-  try {
-    serialize(aOutStream, lPlan, aCallbackFunction, aCallbackData, aSerOptions);
   }
   catch (...)
   {
     lPlan->close();
-    throw;
+    ZorbaImpl::notifyError(theErrorHandler);
+    return;
   }
 
   lPlan->close();
@@ -818,9 +825,36 @@ void XQueryImpl::execute()
 
     // call next once in order to apply updates
     // close is called in the destructor
-    lIter->open();
-    Item lItem;
-    lIter->next(lItem);
+    try
+    {
+      lIter->open();
+      Item lItem;
+      lIter->next(lItem);
+    }
+    catch (error::ZorbaError& e)
+    {
+      lPlan->close();
+      ZorbaImpl::notifyError(theErrorHandler, e);
+      return;
+    }
+    catch (FlowCtlException&)
+    {
+      lPlan->close();
+      ZorbaImpl::notifyError(theErrorHandler, "User interrupt");
+      return;
+    }
+    catch (std::exception& e)
+    {
+      lPlan->close();
+      ZorbaImpl::notifyError(theErrorHandler, e.what());
+      return;
+    }
+    catch (...)
+    {
+      lPlan->close();
+      ZorbaImpl::notifyError(theErrorHandler);
+      return;
+    }
 
     theDocLoadingUserTime = theDynamicContext->theDocLoadingUserTime;
     theDocLoadingTime = theDynamicContext->theDocLoadingTime;
@@ -837,19 +871,15 @@ void XQueryImpl::serialize(
     PlanWrapper_t& aWrapper,
     const Zorba_SerializerOptions_t* opt)
 {
-  ZORBA_TRY
+  serializer lSerializer(theErrorManager);
 
-    serializer lSerializer(theErrorManager);
+  if (opt != NULL)
+  {
+    const Zorba_SerializerOptions_t lOptions = *opt;
+    SerializerImpl::setSerializationParameters(lSerializer, lOptions);
+  }
 
-    if (opt != NULL)
-    {
-      const Zorba_SerializerOptions_t lOptions = *opt;
-      SerializerImpl::setSerializationParameters(lSerializer, lOptions);
-    }
-
-    lSerializer.serialize((intern::Serializable*)aWrapper, os);
-
-  ZORBA_CATCH
+  lSerializer.serialize((intern::Serializable*)aWrapper, os);
 }
 
 
@@ -863,19 +893,16 @@ void XQueryImpl::serialize(
     void* aHandlerData,
     const Zorba_SerializerOptions_t* opt /*= NULL*/)
 {
-  ZORBA_TRY
+  serializer lSerializer(theErrorManager);
+  
+  if (opt != NULL)
+  {
+    const Zorba_SerializerOptions_t lOptions = *opt;
+    SerializerImpl::setSerializationParameters(lSerializer, lOptions);
+  }
 
-    serializer lSerializer(theErrorManager);
-
-    if (opt != NULL)
-    {
-      const Zorba_SerializerOptions_t lOptions = *opt;
-      SerializerImpl::setSerializationParameters(lSerializer, lOptions);
-    }
-
-    lSerializer.serialize((intern::Serializable*)aWrapper,
-                          os, aHandler, aHandlerData);
-  ZORBA_CATCH
+  lSerializer.serialize((intern::Serializable*)aWrapper,
+                        os, aHandler, aHandlerData);
 }
 
 

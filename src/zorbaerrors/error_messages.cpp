@@ -685,6 +685,9 @@ DEF_ERR_CODE(XDST0033_INDEX_NON_SIMPLE_EXPR, XDST0033,
 DEF_ERR_CODE(XDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE, XDST0034,
 "Index /s cannot be automatically maintained.")
 
+DEF_ERR_CODE(XDST0035_INDEX_GENERAL_MULTIKEY, XDST0035,
+"Index /s cannot be both a general index and have more than one key expressions")
+
 DEF_ERR_CODE(XDST0041_IC_IS_ALREADY_DECLARED, XDST0041,
              "An integrity constraint with URI /s is declared already.")
 

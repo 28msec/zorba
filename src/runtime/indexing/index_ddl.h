@@ -144,7 +144,6 @@ public:
 
 
 /**
- * 
  *  drop-index($indexName as xs:QName) as ()
  *
  *  This is an updating function. During normal runtime (see DropIndexIterator),
@@ -226,16 +225,15 @@ public:
 };
 
 
-/**
- * 
- *    
- * Author: Zorba Team
- */
+/******************************************************************************
+
+*******************************************************************************/
 class IndexEntryBuilderIteratorState : public PlanIteratorState
 {
 public:
-  uint32_t theCurChild; //the current child
+  uint32_t theCurChild;
 
+public:
   IndexEntryBuilderIteratorState();
 
   ~IndexEntryBuilderIteratorState();

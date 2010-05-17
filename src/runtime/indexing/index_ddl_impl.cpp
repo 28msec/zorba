@@ -39,35 +39,36 @@ namespace zorba
 
 ********************************************************************************/
 void createIndexSpec(
-    ValueIndex* zorbaIndex,
+    ValueIndex* indexDecl,
     store::IndexSpecification& spec)
 {
-  const std::vector<xqtref_t>& keyTypes(zorbaIndex->getKeyTypes());
-  const std::vector<OrderModifier>& keyModifiers(zorbaIndex->getOrderModifiers());
+  const std::vector<xqtref_t>& keyTypes(indexDecl->getKeyTypes());
+  const std::vector<OrderModifier>& keyModifiers(indexDecl->getOrderModifiers());
   ulong numColumns = keyTypes.size();
 
   spec.resize(numColumns);
 
-  for(ulong i = 0; i < numColumns; ++i) 
+  for (ulong i = 0; i < numColumns; ++i) 
   {
     const XQType& t = *keyTypes[i];
     spec.theKeyTypes[i] = t.get_qname();
     spec.theCollations.push_back(keyModifiers[i].theCollation);
   }
 
-  spec.theIsUnique = zorbaIndex->getUnique();
-  spec.theIsSorted = zorbaIndex->getMethod() == ValueIndex::TREE;
-  spec.theIsTemp = zorbaIndex->isTemp();
+  spec.theIsGeneral = indexDecl->isGeneral();
+  spec.theIsUnique = indexDecl->getUnique();
+  spec.theIsSorted = indexDecl->getMethod() == ValueIndex::TREE;
+  spec.theIsTemp = indexDecl->isTemp();
   spec.theIsThreadSafe = true;
-  spec.theIsAutomatic = zorbaIndex->getMaintenanceMode() != ValueIndex::MANUAL;
+  spec.theIsAutomatic = indexDecl->getMaintenanceMode() != ValueIndex::MANUAL;
 
-  ulong numSources = zorbaIndex->numSources();
+  ulong numSources = indexDecl->numSources();
 
   spec.theSources.resize(numSources);
 
   for (ulong i = 0; i < numSources; ++i)
   {
-    spec.theSources[i] = const_cast<store::Item*>(zorbaIndex->getSourceName(i));
+    spec.theSources[i] = const_cast<store::Item*>(indexDecl->getSourceName(i));
   }
 }
 
@@ -79,7 +80,7 @@ bool CreateInternalIndexIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  ValueIndex* zorbaIndex;
+  ValueIndex* indexDecl;
   store::IndexSpecification spec;
   store::Iterator_t planIteratorWrapper;
   store::Index_t storeIndex;
@@ -87,16 +88,16 @@ bool CreateInternalIndexIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  zorbaIndex = theSctx->lookup_index(theQName);
-  ZORBA_ASSERT(zorbaIndex);
+  indexDecl = theSctx->lookup_index(theQName);
+  ZORBA_ASSERT(indexDecl);
 
   planIteratorWrapper = new PlanIteratorWrapper(theChild, planState);
 
-  createIndexSpec(zorbaIndex, spec);
+  createIndexSpec(indexDecl, spec);
 
   try
   {
-    storeIndex = GENV_STORE.createIndex(zorbaIndex->getName(), spec, planIteratorWrapper);
+    storeIndex = GENV_STORE.createIndex(indexDecl->getName(), spec, planIteratorWrapper);
   }
   catch(error::ZorbaError& e)
   {
@@ -106,12 +107,12 @@ bool CreateInternalIndexIterator::nextImpl(
 
   try
   {
-    planState.dctx()->bindIndex(zorbaIndex->getName(), storeIndex);
+    planState.dctx()->bindIndex(indexDecl->getName(), storeIndex);
   }
   catch(...)
   {
     // Dynamic context raises error if index exists already
-    GENV_STORE.deleteIndex(zorbaIndex->getName());
+    GENV_STORE.deleteIndex(indexDecl->getName());
     throw;
   }
 
@@ -125,7 +126,7 @@ bool CreateInternalIndexIterator::nextImpl(
 bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
-  ValueIndex_t zorbaIndex;
+  ValueIndex_t indexDecl;
   store::IndexSpecification spec;
   PlanIter_t buildPlan;
   store::Iterator_t planWrapper;
@@ -139,7 +140,7 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   if (!consumeNext(qname, theChild, planState))
     ZORBA_ASSERT(false);
 
-  if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
+  if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                           qname->getStringValue()->c_str(), "");
@@ -151,11 +152,11 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
                           qname->getStringValue()->c_str(), "");
   }
 
-  buildPlan = zorbaIndex->getBuildPlan(ccb, loc); 
+  buildPlan = indexDecl->getBuildPlan(ccb, loc); 
   
   planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL); 
 
-  createIndexSpec(zorbaIndex, spec);
+  createIndexSpec(indexDecl, spec);
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 
@@ -210,7 +211,7 @@ bool RefreshIndexIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t qname;
-  ValueIndex_t zorbaIndex;
+  ValueIndex_t indexDecl;
   PlanIter_t buildPlan;
   store::Iterator_t planWrapper;
 
@@ -223,7 +224,7 @@ bool RefreshIndexIterator::nextImpl(
   if (!consumeNext(qname, theChild, planState))
     ZORBA_ASSERT(false);
 
-  if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
+  if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                           qname->getStringValue()->c_str(), "");
@@ -235,7 +236,7 @@ bool RefreshIndexIterator::nextImpl(
                           qname->getStringValue()->c_str(), "");
   }
 
-  buildPlan = zorbaIndex->getBuildPlan(ccb, loc); 
+  buildPlan = indexDecl->getBuildPlan(ccb, loc); 
   
   planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL); 
 

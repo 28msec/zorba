@@ -99,7 +99,8 @@ typedef rchandle<DocIndexer> DocIndexer_t;
 
   theName           : The qname that identifies the index.
 
-  theIsUnique       : Whether it is a unique index or not.
+  theIsGeneral      :
+  theIsUnique       : Whether it is a unique index or not. 
   theIsTemp         : Whether it is a temp index or not. A temp index is an index
                       that is created on-the-fly to optimize a query by converting
                       a nested-lopp join to a hashjoin (see index_join_rule.cpp).
@@ -180,9 +181,9 @@ private:
 
   store::Item_t                   theName;
 
+  bool                            theIsGeneral;
   bool                            theIsUnique;
   bool                            theIsTemp;
-  bool                            theIsGeneral;
   MaintenanceMode                 theMaintenanceMode;
   ContainerKind                   theContainerKind;
 
@@ -215,6 +216,10 @@ public:
   static_context* getSctx() const { return theSctx; }
 
   store::Item* getName() const;
+
+  bool isGeneral() const { return theIsGeneral; }
+
+  void setGeneral(bool gen) { theIsGeneral = gen; }
 
   bool getUnique() const { return theIsUnique; }
 

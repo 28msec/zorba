@@ -49,6 +49,7 @@ typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
                     that of theKeyTypes; if a type of a key column is not string, 
                     the associated entry in theCollations is simply ignored.   
   theTimezone     : The timezone is needed to compare date/time key values.
+  theIsGeneral    : Whether the index is "general" or not. 
   theIsUnique     : Whether the index is unique, i.e., there is exactly one
                     value associated with each key.
   theIsSorted     : Whether the index is sorted by its key values or not.
@@ -63,23 +64,25 @@ typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
 class IndexSpecification
 {
 public:
-  std::vector<store::Item_t>                theKeyTypes;
-  store::Item_t                             theValueType;
-  std::vector<std::string>                  theCollations;
-  long                                      theTimezone;
+  std::vector<store::Item_t>     theKeyTypes;
+  store::Item_t                  theValueType;
+  std::vector<std::string>       theCollations;
+  long                           theTimezone;
 
-  bool                                      theIsUnique;
-  bool                                      theIsSorted;
-  bool                                      theIsTemp;
-  bool                                      theIsThreadSafe;
-  bool                                      theIsAutomatic;
+  bool                           theIsGeneral;
+  bool                           theIsUnique;
+  bool                           theIsSorted;
+  bool                           theIsTemp;
+  bool                           theIsThreadSafe;
+  bool                           theIsAutomatic;
 
-  std::vector<store::Item_t>                theSources;
+  std::vector<store::Item_t>     theSources;
 
 public:
   IndexSpecification()
     :
     theTimezone(0),
+    theIsGeneral(false),
     theIsUnique(false),
     theIsSorted(false),
     theIsTemp(false),
@@ -92,6 +95,7 @@ public:
     theKeyTypes(numColumns),
     theCollations(numColumns),
     theTimezone(0),
+    theIsGeneral(false),
     theIsUnique(false),
     theIsSorted(false),
     theIsTemp(false),
@@ -105,7 +109,7 @@ public:
     theValueType = NULL;
     theCollations.clear();
     theTimezone = 0;
-    theIsUnique = theIsSorted = theIsTemp = theIsThreadSafe = false;
+    theIsGeneral = theIsUnique = theIsSorted = theIsTemp = theIsThreadSafe = false;
   }
 
   void resize(ulong numColumns)
@@ -116,9 +120,9 @@ public:
 };
 
 
-/***************************************************************************//**
+/**************************************************************************//**
   Class IndexKey represents an index key as a vector of item handles. 
-********************************************************************************/
+*******************************************************************************/
 class IndexKey : public ItemVector
 {
 public:
@@ -126,9 +130,9 @@ public:
 };
 
 
-/***************************************************************************//**
+/**************************************************************************//**
   Class ValueSet represents a value set as a vector of item handles.
-********************************************************************************/
+*******************************************************************************/
 class IndexValue : public store::ItemVector
 {
 public:
@@ -136,15 +140,15 @@ public:
 };
 
 
-/***************************************************************************//**
+/**************************************************************************//**
   An index delta is a set of [domain-node, associated-key] pairs. 
-********************************************************************************/
+*******************************************************************************/
 typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
 
 
-/***************************************************************************//**
+/**************************************************************************//**
 
-  Abstract value index class.
+  Abstract index class. It represents both "value" and "general" indexes.
 
   From the store's point of view, a "value index" is a container that implements
   an N:1 mapping (i.e., a function) from item tuples to item bags. (In practice,
@@ -163,12 +167,11 @@ typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
      all items in a key column must belong to the same branch of the XMLSchema
      type hierarchy.
 
-
   The bag of items associated with each key tuple is referred to as an "index 
   value". The number of items in each index value can shrink or grow over time
   independently from other index values. 
 
-********************************************************************************/
+*******************************************************************************/
 class Index : public RCObject
 {
 protected:
