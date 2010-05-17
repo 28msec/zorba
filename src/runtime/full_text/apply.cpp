@@ -247,10 +247,10 @@ static bool match_tokens( FTToken const &i, FTToken const &j,
         // do nothing
         break;
       case ft_case_mode::lower:
-        // TODO
+        // TODO: make the query string lower-case
         break;
       case ft_case_mode::upper:
-        // TODO
+        // TODO: make the query string upper-case
         break;
     }
   }

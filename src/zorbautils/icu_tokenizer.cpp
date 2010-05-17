@@ -31,14 +31,22 @@ namespace zorba {
 UChar32 const SubChar = 0xFFFD;         // replacement character
 
 /**
- * Converts a UTF-8 string to UTF-16.  The caller is responsible to deleting
- * the returned string.
+ * Converts a UTF-8 string to UTF-16.
+ *
+ * @param utf8_s          The UTF-8 string to convert.  It need not be
+ *                        null-terminated.
+ * @param utf8_len        The length of the UTF-8 string.
+ * @param utf16_len_ptr   A pointer to an int32_t to receive the length of the
+ *                        UTF-16 string.
+ *
+ * @return Returns a pointer to the UTF-16 string.  It is not null-terminated.
+ * The caller is responsible for deleting the string.
  */
 static UChar* utf8_to_utf16( char const *utf8_s, int32_t utf8_len,
                              int32_t *utf16_len_ptr ) {
   int32_t utf16_len;
   UErrorCode err = U_ZERO_ERROR;
-  u_strFromUTF8WithSub(
+  u_strFromUTF8WithSub(                 // pre-flight to get utf16_len
     NULL, 0, &utf16_len,
     utf8_s, utf8_len,
     SubChar, NULL,
@@ -60,14 +68,22 @@ static UChar* utf8_to_utf16( char const *utf8_s, int32_t utf8_len,
 }
 
 /**
- * Converts a UTF-16 string to UTF-8.  The caller is responsible to deleting
- * the returned string.
+ * Converts a UTF-16 string to UTF-8.
+ *
+ * @param utf16_s         The UTF-16 string to convert.  It need not be
+ *                        null-terminated.
+ * @param utf16_len       The length of the UTF-8 string.
+ * @param utf8_len_ptr    A pointer to an int32_t to receive the length of the
+ *                        UTF-8 string.
+ *
+ * @return Returns a pointer to the UTF-8 string.  It is not null-terminated.
+ * The caller is responsible for deleting the string.
  */
 static char* utf16_to_utf8( UChar const *utf16_s, int32_t utf16_len,
                             int32_t *utf8_len_ptr = 0 ) {
   int32_t utf8_len;
   UErrorCode err = U_ZERO_ERROR;
-  u_strToUTF8WithSub(
+  u_strToUTF8WithSub(                   // pre-flight to get utf8_len
     NULL, 0, &utf8_len,
     utf16_s, utf16_len,
     SubChar, NULL,
