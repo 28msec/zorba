@@ -27,7 +27,7 @@ endif (CCLIENT_INCLUDE_DIRS AND CCLIENT_LIBRARIES)
 find_path(
   CCLIENT_INCLUDE
   NAMES linkage.c
-  PATHS ${CCLIENT_LIBRARY_DIRS} /usr/include/imap
+  PATHS ${CCLIENT_LIBRARY_DIRS} /usr/include/imap /usr/include/c-client
   DOC "Include directory for the CCLient library linkage (the path to 'linkage.c' file)")
 mark_as_advanced(CCLIENT_INCLUDE)
 

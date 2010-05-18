@@ -74,6 +74,26 @@ In order to build Zorba, you need the following libraries and development header
 - CMake supports multiple build configurations (e.g. Debug, Release, or MinSizeRel. By default, Zorba is build with the Release configuration. To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel), you can pass an additional parameter to CMake, e.g. <tt>cmake -D CMAKE_BUILD_TYPE=Debug [ZORBA]</tt>.
 - Zorba has other options as well. You can tweak the performance and library footprint by enabling or disabling various features from Zorba. Details here \ref zorba_options.
 
+\section linux Note for Linux Users 
+On Linux 64Bit, you might discover a problem with the optional package cclient. E.g. on Ubuntu 64Bit, you might discover the following:
+\code
+Linking CXX shared library libsmtp.so
+/usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/4.4.3/../../../../lib/libc-client.a(osdep.o): relocation R_X86_64_32 against `server_input_wait' can not be used when making a shared object; recompile with -fPIC
+/usr/lib/gcc/x86_64-linux-gnu/4.4.3/../../../../lib/libc-client.a: could not read symbols: Bad value
+\endcode
+To fix this, you need to compile c-client yourself. The commands to compile c-client correctly are:
+\code
+cd <some_directory>
+wget ftp://ftp.cac.washington.edu/imap/imap-2007e.tar.gz
+tar -xf imap-2007e.tar.gz
+cd imap-2007e
+make slx EXTRACFLAGS="-I/usr/include/openssl -fPIC"
+\endcode
+Afterwards, you need to pass the variables CCLIENT_INCLUDE and CCLIENT_LIBRARY to cmake:
+\code
+cmake -DCCLIENT_INCLUDE=<some_directory>/imap-2007e/c-client/ -DCCLIENT_LIBRARY=<some_directory>/imap-2007e/c-client/c-client.a <path_to_zorba_srcs>
+\endcode
+
 \section mac Note for Mac OS Users 
 
 The easiest way to install the required packages (like CMake, etc.) is
