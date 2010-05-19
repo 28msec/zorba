@@ -155,13 +155,13 @@ expr_visitor* ftcontains_visitor::get_expr_visitor() {
 
 #define V ftcontains_visitor
 
-ft_visit_result::type V::begin_visit( ftand &a ) {
+ft_visit_result::type V::begin_visit( ftand& ) {
   BEGIN_VISIT( ftand );
   PUSH_MATCHES( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
 
-void V::end_visit( ftand &a ) {
+void V::end_visit( ftand& ) {
   while ( true ) {
     ft_all_matches *const ami = POP_MATCHES(), *const amj = POP_MATCHES();
     if ( !amj ) {
@@ -179,13 +179,13 @@ void V::end_visit( ftand &a ) {
 
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_selection )
 
-ft_visit_result::type V::begin_visit( ftmild_not &mn ) {
+ft_visit_result::type V::begin_visit( ftmild_not& ) {
   BEGIN_VISIT( ftmild_not );
   PUSH_MATCHES( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
 
-void V::end_visit( ftmild_not &mn ) {
+void V::end_visit( ftmild_not& ) {
   while ( true ) {
     ft_all_matches *const ami = POP_MATCHES(), *const amj = POP_MATCHES();
     if ( !amj ) {
@@ -201,13 +201,13 @@ void V::end_visit( ftmild_not &mn ) {
   END_VISIT();
 }
 
-ft_visit_result::type V::begin_visit( ftor &o ) {
+ft_visit_result::type V::begin_visit( ftor& ) {
   BEGIN_VISIT( ftor );
   PUSH_MATCHES( NULL ); // sentinel
   return ft_visit_result::proceed;
 }
 
-void V::end_visit( ftor &o ) {
+void V::end_visit( ftor& ) {
   while ( true ) {
     ft_all_matches *const ami = POP_MATCHES(), *const amj = POP_MATCHES();
     if ( !amj ) {
@@ -230,6 +230,7 @@ ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
 }
 void V::end_visit( ftprimary_with_options& ) {
   POP_OPTIONS();
+  END_VISIT();
 }
 
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftrange )
@@ -303,7 +304,7 @@ void V::end_visit( ftdistance_filter &f ) {
 }
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftorder_filter )
-void V::end_visit( ftorder_filter &f ) {
+void V::end_visit( ftorder_filter& ) {
   apply_ftorder( *top_matches() );
   END_VISIT();
 }
