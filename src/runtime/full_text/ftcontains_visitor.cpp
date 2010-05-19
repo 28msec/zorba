@@ -244,14 +244,19 @@ void V::end_visit( ftunary_not& ) {
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords )
 void V::end_visit( ftwords &w ) {
+  ftmatch_options const &options = *top_options();
+  if ( ftwild_card_option const *const wc = options.get_wild_card_option() ) {
+    if ( wc->get_mode() == ft_wild_card_mode::with ) {
+      // TODO: affects query tokenization
+    }
+  }
   store::Item_t item;
   PlanIterator::consumeNext( item, w.get_plan_iter(), plan_state_ );
   FTTokenIterator query_tokens( item->getQueryTokens() );
   FTToken::int_t query_pos = 0;         // TODO: what should this really be?
   ft_all_matches *const result = new ft_all_matches;
   apply_ftwords(
-    search_context_, query_tokens, query_pos, w.get_mode(), *top_options(),
-    *result
+    search_context_, query_tokens, query_pos, w.get_mode(), options, *result
   );
   PUSH_MATCHES( result );
   END_VISIT();
