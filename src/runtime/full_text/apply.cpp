@@ -304,8 +304,8 @@ static bool match_tokens( FTToken const &i, FTToken const &j,
     // TODO
   }
 
-  if ( ftwild_card_option const *const w = options.get_wild_card_option() ) {
-    switch ( w->get_mode() ) {
+  if ( ftwild_card_option const *const wc = options.get_wild_card_option() ) {
+    switch ( wc->get_mode() ) {
       case ft_wild_card_mode::with:
         // TODO
         break;
