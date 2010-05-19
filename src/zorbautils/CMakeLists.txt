@@ -22,7 +22,8 @@ SET(ZORBAUTILS_SRCS
     lock.cpp
     runnable.cpp
     tokenizer.cpp
-    icu_tokenizer.cpp)
+    icu_tokenizer.cpp
+    unicode_util.cpp)
 
 IF (ZORBA_WITH_LIBXML2_SAX)
     SET(ZORBAUTILS_SRCS ${ZORBAUTILS_SRCS} SAXParser.cpp)

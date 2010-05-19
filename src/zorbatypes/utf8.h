@@ -427,7 +427,7 @@ octet_iterator XMLEncode(uint32_t cp, octet_iterator result)
   
   return result;
 }
-  
+
 
 /**
  * Given the iterator to the beginning of the UTF-8 sequence, it returns the code point.
@@ -437,7 +437,7 @@ octet_iterator XMLEncode(uint32_t cp, octet_iterator result)
  * @note After the function returns, @param it is incremented to point to the beginning
  * of the next code point
  */
-template <typename octet_iterator>
+template <typename octet_iterator> inline
 uint32_t UTF8Decode(octet_iterator& it)
 {
   return next(it);
@@ -452,94 +452,10 @@ uint32_t UTF8Decode(octet_iterator& it)
  * @note After the function returns, @param it is decremented to point to the beginning
  * of the previous code point
  */
-template <typename octet_iterator>
+template <typename octet_iterator> inline
 uint32_t UTF8DecodePrev(octet_iterator& it)
 {
   return prior(it);
-}
-
-
-/**
- *Converts a UTF-16 encoded string to UTF-8.
- *
- *@param start: an iterator pointing to the beginning of the UTF-16 encoded string to convert.
- *@param end: an iterator pointing to pass-the-end of the UTF-16 encoded string to convert.
- *@param result: an output iterator to the place in the UTF-8 string where to append the result of conversion.
- *@return An iterator pointing after the appended UTF-8 string.
- */
-template <typename u16bit_iterator, typename octet_iterator>
-octet_iterator UTF16toUTF8 (u16bit_iterator start, u16bit_iterator end, octet_iterator result)
-{
-  while (start != end) {
-    uint32_t cp = mask16(*start++);
-    // Take care of surrogate pairs first
-    if (is_surrogate(cp)) {
-      uint32_t trail_surrogate = mask16(*start++);
-      cp = (cp << 10) + trail_surrogate + SURROGATE_OFFSET;
-    }
-    result = append(cp, result);
-  }
-  return result;
-}
-
-
-/**
- *Converts an UTF-8 encoded string to UTF-16
- *
- *@param start: an iterator pointing to the beginning of the UTF-8 encoded string to convert.
- *@param end: an iterator pointing to pass-the-end of the UTF-8 encoded string to convert.
- *@param result: an output iterator to the place in the UTF-16 string where to append the result of conversion.
- *@Return: An iterator pointing after the appended UTF-16 string.
- */
-template <typename u16bit_iterator, typename octet_iterator>
-u16bit_iterator UTF8toUTF16 (octet_iterator start, octet_iterator end, u16bit_iterator result)
-{
-  while (start != end) {
-    uint32_t cp = next(start);
-    if (cp > 0xffff) { //make a surrogate pair
-      *result++ = static_cast<uint16_t>((cp >> 10)   + LEAD_OFFSET);
-      *result++ = static_cast<uint16_t>((cp & 0x3ff) + TRAIL_SURROGATE_MIN);
-    }
-    else
-      *result++ = static_cast<uint16_t>(cp);
-  }
-  return result;
-}
-
-
-/**
- *Converts a UTF-32 encoded string to UTF-8.
- *
- *@param start: an iterator pointing to the beginning of the UTF-32 encoded string to convert.
- *@param end: an iterator pointing to pass-the-end of the UTF-32 encoded string to convert.
- *@param result: an output iterator to the place in the UTF-8 string where to append the result of conversion.
- *@Return: An iterator pointing after the appended UTF-8 string.
- */
-template <typename octet_iterator, typename u32bit_iterator>
-octet_iterator UTF32toUTF8 (u32bit_iterator start, u32bit_iterator end, octet_iterator result)
-{
-  while (start != end)
-    result = append(*(start++), result);
-  
-  return result;
-}
-
-
-/**
- *Converts a UTF-8 encoded string to UTF-32.
- *
- *@param start: an iterator pointing to the beginning of the UTF-8 encoded string to convert.
- *@param end: an iterator pointing to pass-the-end of the UTF-8 encoded string to convert.
- *@param result: an output iterator to the place in the UTF-32 string where to append the result of conversion.
- *@Return: An iterator pointing after the appended UTF-32 string.
- */
-template <typename octet_iterator, typename u32bit_iterator>
-u32bit_iterator UTF8toUTF32 (octet_iterator start, octet_iterator end, u32bit_iterator result)
-{
-  while (start < end)
-    (*result++) = next(start);
-  
-  return result;
 }
 
 #endif//#ifndef ZORBA_NO_UNICODE
