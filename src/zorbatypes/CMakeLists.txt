@@ -20,7 +20,6 @@ SET(ZORBATYPES_SRCS
   binary.cpp
   URI.cpp
   transcoder.cpp
-  utf8/Unicode_util.cpp
   codepoint_iterator.cpp
   collation_manager.cpp
   chartype.cpp

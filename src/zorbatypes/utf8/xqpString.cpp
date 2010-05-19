@@ -21,10 +21,10 @@
 #include "zorbatypes/xqpstring.h"
 
 #ifndef ZORBA_NO_UNICODE
-#include "zorbatypes/Unicode_util.h"
 #include "zorbatypes/utf8.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbatypes/collation_manager.h"
+#include "zorbautils/unicode_util.h"
 
 #include <cstdio>
 #include <stdio.h>

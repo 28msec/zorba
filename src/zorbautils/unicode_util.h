@@ -21,6 +21,28 @@
 
 namespace zorba {
 
+ZORBA_DLL_PUBLIC bool isLower( uint32_t c );
+
+ZORBA_DLL_PUBLIC bool isUpper( uint32_t c );
+
+/**
+ * This is a simple case folding (where string lengths don't change) so only
+ * the mappings with status C and S are taken into account. The mappings with
+ * status T are ignored.
+ *
+ * See: * ftp://ftp.unicode.org/Public/5.1.0/ucd/CaseFolding-5.1.0d10.txt
+ */
+ZORBA_DLL_PUBLIC uint32_t toUpper(uint32_t c);
+
+/**
+ * This is a simple case folding (where string lengths don't change) so only
+ * the mappings with status C and S are taken into account. The mappings with
+ * status T are ignored.
+ *
+ * See: * ftp://ftp.unicode.org/Public/5.1.0/ucd/CaseFolding-5.1.0d10.txt
+ */
+ZORBA_DLL_PUBLIC uint32_t toLower(uint32_t c);
+
 /**
  * Converts a UTF-8 string to UTF-16.
  *
@@ -33,8 +55,8 @@ namespace zorba {
  * @return Returns a pointer to the UTF-16 string.  It is not null-terminated.
  * The caller is responsible for deleting the string.
  */
-UChar* utf8_to_utf16( char const *utf8_s, int32_t utf8_len,
-                      int32_t *utf16_len_ptr );
+ZORBA_DLL_PUBLIC UChar* utf8_to_utf16( char const *utf8_s, int32_t utf8_len,
+                                       int32_t *utf16_len_ptr );
 
 /**
  * Converts a UTF-16 string to UTF-8.
