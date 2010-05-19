@@ -323,3 +323,13 @@ declare function sctx:boundary-space-policy() as xs:string external;
  : @see http://www.w3.org/TR/xquery/#dt-copy-namespaces-mode
  :)
 declare function sctx:copy-namespaces-mode() as xs:string+ external;
+
+(:~
+ : Retrieves the value of an option that is declared in the prolog
+ : of the module.
+ :
+ : @param $name the name of the option value to retrieve
+ : @return the value of the option if contained in the static context
+ :         or the empty sequence otherwise.
+ :)
+declare function sctx:option($name as xs:QName) as xs:string? external;

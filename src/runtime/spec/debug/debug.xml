@@ -14,7 +14,7 @@
 <zorba:source>
     <zorba:include form="Quoted">store/api/item.h</zorba:include>
 </zorba:source>
-    
+
 <!--
 /*******************************************************************************
  * Debug iterators:trace

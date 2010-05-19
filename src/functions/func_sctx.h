@@ -402,6 +402,20 @@ public:
 };
 
 
+//fn-zorba-introspect-sctx:option
+class fn_zorba_introspect_sctx_option : public function
+{
+public:
+  fn_zorba_introspect_sctx_option(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_OPTION_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

@@ -1129,4 +1129,27 @@ void DeclaredICsIteratorState::reset(PlanState& planState)
   }
 }
 
+/*******************************************************************************
+********************************************************************************/
+bool
+OptionIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState)
+  const
+{
+  PlanIteratorState *lState;
+  store::Item_t      lName;
+  xqpStringStore_t   lValue;
+
+  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+
+  if (theSctx->lookup_option(lName.getp(), lValue)) {
+    GENV_ITEMFACTORY->createString(aResult, lValue);
+    STACK_PUSH( true, lState );
+  } else {
+    STACK_PUSH( false, lState );
+  }
+  STACK_END (lState);
+}
+
 } /* namespace zorba */

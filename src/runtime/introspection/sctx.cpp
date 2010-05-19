@@ -841,5 +841,33 @@ void DeclaredICsIteratorState::init(PlanState& planState) {
 // </DeclaredICsIterator>
 
 
+// <OptionIterator>
+const char* OptionIterator::class_name_str = "OptionIterator";
+OptionIterator::class_factory<OptionIterator>
+OptionIterator::g_class_factory;
+
+const serialization::ClassVersion 
+OptionIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int OptionIterator::class_versions_count =
+sizeof(OptionIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void OptionIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+OptionIterator::~OptionIterator() {}
+
+// </OptionIterator>
+
+
 
 }

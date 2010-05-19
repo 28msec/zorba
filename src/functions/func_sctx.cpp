@@ -290,6 +290,16 @@ PlanIter_t fn_zorba_introspect_sctx_declared_integrity_constraints::codegen(
   return new DeclaredICsIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_introspect_sctx_option::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new OptionIterator(sctx, loc, argv);
+}
+
 void populate_context_sctx(static_context* sctx)
 {
   DECL(sctx, fn_zorba_introspect_sctx_is_declared_collection,
@@ -426,6 +436,12 @@ void populate_context_sctx(static_context* sctx)
   DECL(sctx, fn_zorba_introspect_sctx_declared_integrity_constraints,
       (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","declared-integrity-constraints"),
       GENV_TYPESYSTEM.QNAME_TYPE_STAR));
+
+
+  DECL(sctx, fn_zorba_introspect_sctx_option,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","option"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
 
 }
 

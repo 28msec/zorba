@@ -374,6 +374,9 @@ namespace zorba {
     void beginVisit( const DeclaredICsIterator& );
     void endVisit  ( const DeclaredICsIterator& );
 
+    void beginVisit( const OptionIterator& );
+    void endVisit  ( const OptionIterator& );
+
     void beginVisit( const SqrtIterator& );
     void endVisit  ( const SqrtIterator& );
 

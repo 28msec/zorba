@@ -1162,6 +1162,42 @@ public:
 };
 
 
+/**
+ * 
+ *      sc:option
+ *    
+ * Author: Zorba Team
+ */
+class OptionIterator : public NaryBaseIterator<OptionIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(OptionIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(OptionIterator,
+    NaryBaseIterator<OptionIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<OptionIterator, PlanIteratorState>*)this);
+  }
+
+  OptionIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<OptionIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~OptionIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

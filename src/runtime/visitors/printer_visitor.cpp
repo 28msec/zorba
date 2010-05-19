@@ -1631,6 +1631,20 @@ void PrinterVisitor::endVisit ( const DeclaredICsIterator& ) {
 // </DeclaredICsIterator>
 
 
+// <OptionIterator>
+void PrinterVisitor::beginVisit ( const OptionIterator& a) {
+  thePrinter.startBeginVisit("OptionIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const OptionIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </OptionIterator>
+
+
 // <SqrtIterator>
 void PrinterVisitor::beginVisit ( const SqrtIterator& a) {
   thePrinter.startBeginVisit("SqrtIterator", ++theId);
