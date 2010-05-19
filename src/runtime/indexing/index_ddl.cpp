@@ -13,14 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
-// ******************************************
-// *                                        *
-// * THIS IS A GENERATED FILE. DO NOT EDIT! *
-// * SEE .xml FILE WITH SAME NAME           *
-// *                                        *
-// ******************************************
-
 #include "runtime/visitors/planiter_visitor.h"
 #include "runtime/indexing/index_ddl.h"
 #include "runtime/api/plan_wrapper.h"
@@ -39,6 +31,7 @@
 
 #include "types/typeimpl.h"
 #include "types/typeops.h"
+#include "types/casting.h"
 
 #include "context/static_context.h"
 #include "context/dynamic_context.h"
@@ -47,15 +40,23 @@ namespace zorba
 {
 
 
+static void checkKeyType(
+    const QueryLoc& loc,
+    TypeManager* tm,
+    const ValueIndex* indexDecl,
+    ulong keyNo,
+    store::Item_t& searchKey);
+
+
 /*******************************************************************************
 
 ********************************************************************************/
 void createIndexSpec(
-    ValueIndex* zorbaIndex,
+    ValueIndex* indexDecl,
     store::IndexSpecification& spec)
 {
-  const std::vector<xqtref_t>& keyTypes(zorbaIndex->getKeyTypes());
-  const std::vector<OrderModifier>& keyModifiers(zorbaIndex->getOrderModifiers());
+  const std::vector<xqtref_t>& keyTypes(indexDecl->getKeyTypes());
+  const std::vector<OrderModifier>& keyModifiers(indexDecl->getOrderModifiers());
   ulong numColumns = keyTypes.size();
 
   spec.resize(numColumns);
@@ -67,19 +68,20 @@ void createIndexSpec(
     spec.theCollations.push_back(keyModifiers[i].theCollation);
   }
 
-  spec.theIsUnique = zorbaIndex->getUnique();
-  spec.theIsSorted = zorbaIndex->getMethod() == ValueIndex::TREE;
-  spec.theIsTemp = zorbaIndex->isTemp();
+  spec.theIsGeneral = indexDecl->isGeneral();
+  spec.theIsUnique = indexDecl->getUnique();
+  spec.theIsSorted = indexDecl->getMethod() == ValueIndex::TREE;
+  spec.theIsTemp = indexDecl->isTemp();
   spec.theIsThreadSafe = true;
-  spec.theIsAutomatic = zorbaIndex->getMaintenanceMode() != ValueIndex::MANUAL;
+  spec.theIsAutomatic = indexDecl->getMaintenanceMode() != ValueIndex::MANUAL;
 
-  ulong numSources = zorbaIndex->numSources();
+  ulong numSources = indexDecl->numSources();
 
   spec.theSources.resize(numSources);
 
   for (ulong i = 0; i < numSources; ++i)
   {
-    spec.theSources[i] = const_cast<store::Item*>(zorbaIndex->getSourceName(i));
+    spec.theSources[i] = const_cast<store::Item*>(indexDecl->getSourceName(i));
   }
 }
 
@@ -108,7 +110,7 @@ bool CreateInternalIndexIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  ValueIndex* zorbaIndex;
+  ValueIndex* indexDecl;
   store::IndexSpecification spec;
   store::Iterator_t planIteratorWrapper;
   store::Index_t storeIndex;
@@ -116,16 +118,16 @@ bool CreateInternalIndexIterator::nextImpl(
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
-  zorbaIndex = theSctx->lookup_index(theQName);
-  ZORBA_ASSERT(zorbaIndex);
+  indexDecl = theSctx->lookup_index(theQName);
+  ZORBA_ASSERT(indexDecl);
 
   planIteratorWrapper = new PlanIteratorWrapper(theChild, planState);
 
-  createIndexSpec(zorbaIndex, spec);
+  createIndexSpec(indexDecl, spec);
 
   try
   {
-    storeIndex = GENV_STORE.createIndex(zorbaIndex->getName(), spec, planIteratorWrapper);
+    storeIndex = GENV_STORE.createIndex(indexDecl->getName(), spec, planIteratorWrapper);
   }
   catch(error::ZorbaError& e)
   {
@@ -135,12 +137,12 @@ bool CreateInternalIndexIterator::nextImpl(
 
   try
   {
-    planState.dctx()->bindIndex(zorbaIndex->getName(), storeIndex);
+    planState.dctx()->bindIndex(indexDecl->getName(), storeIndex);
   }
   catch(...)
   {
     // Dynamic context raises error if index exists already
-    GENV_STORE.deleteIndex(zorbaIndex->getName());
+    GENV_STORE.deleteIndex(indexDecl->getName());
     throw;
   }
 
@@ -181,7 +183,7 @@ CreateIndexIterator::~CreateIndexIterator()
 bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
-  ValueIndex_t zorbaIndex;
+  ValueIndex_t indexDecl;
   store::IndexSpecification spec;
   PlanIter_t buildPlan;
   store::Iterator_t planWrapper;
@@ -195,7 +197,7 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
   if (!consumeNext(qname, theChild, planState))
     ZORBA_ASSERT(false);
 
-  if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
+  if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                           qname->getStringValue()->c_str(), "");
@@ -207,11 +209,11 @@ bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) 
                           qname->getStringValue()->c_str(), "");
   }
 
-  buildPlan = zorbaIndex->getBuildPlan(ccb, loc); 
+  buildPlan = indexDecl->getBuildPlan(ccb, loc); 
   
   planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL); 
 
-  createIndexSpec(zorbaIndex, spec);
+  createIndexSpec(indexDecl, spec);
 
   result = GENV_ITEMFACTORY->createPendingUpdateList();
 
@@ -322,7 +324,7 @@ bool RefreshIndexIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t qname;
-  ValueIndex_t zorbaIndex;
+  ValueIndex_t indexDecl;
   PlanIter_t buildPlan;
   store::Iterator_t planWrapper;
 
@@ -335,7 +337,7 @@ bool RefreshIndexIterator::nextImpl(
   if (!consumeNext(qname, theChild, planState))
     ZORBA_ASSERT(false);
 
-  if ((zorbaIndex = theSctx->lookup_index(qname)) == NULL)
+  if ((indexDecl = theSctx->lookup_index(qname)) == NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
                           qname->getStringValue()->c_str(), "");
@@ -347,7 +349,7 @@ bool RefreshIndexIterator::nextImpl(
                           qname->getStringValue()->c_str(), "");
   }
 
-  buildPlan = zorbaIndex->getBuildPlan(ccb, loc); 
+  buildPlan = indexDecl->getBuildPlan(ccb, loc); 
   
   planWrapper = new PlanWrapper(buildPlan, ccb, dctx, NULL); 
 
@@ -554,20 +556,9 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
       break;
     }
 
-    if (keyItem != NULL)
+    if (keyItem != NULL && theCheckKeyType)
     {
-      xqtref_t searchKeyType = theSctx->get_typemanager()->create_value_type(keyItem);
-      xqtref_t indexKeyType = (state->theIndexDecl->getKeyTypes())[i-1];
-
-      if (!TypeOps::is_subtype(*searchKeyType, *indexKeyType))
-      {
-        ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                                 "The type of a search key does not mathch the type"
-                                 << " of the corresponding index key. The search key"
-                                 << " has type " << searchKeyType->toString()
-                                 << " and the expected key type is "
-                                 << indexKeyType->toString());
-      }
+      checkKeyType(loc, theSctx->get_typemanager(), state->theIndexDecl, i-1, keyItem);
     }
 
     cond->pushItem(keyItem);
@@ -710,7 +701,9 @@ bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 
   cond = state->theIndex->createBoxCondition();
 
-  for(ulong i = 1; i < numChildren; i += 6) 
+  ulong keyNo;
+  ulong i;
+  for (i = 1, keyNo = 0; i < numChildren; i += 6, ++keyNo) 
   {
     store::Item_t tempLeft;
     store::Item_t tempRight;
@@ -742,6 +735,16 @@ bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
     bool inclLeft = tempInclLeft->getBooleanValue();
     bool inclRight = tempInclRight->getBooleanValue();
 
+    if (tempLeft != NULL && theCheckKeyType)
+    {
+      checkKeyType(loc, theSctx->get_typemanager(), indexDecl, keyNo, tempLeft);
+    }
+
+    if (tempRight != NULL && theCheckKeyType)
+    {
+      checkKeyType(loc, theSctx->get_typemanager(), indexDecl, keyNo, tempRight);
+    }
+
     cond->pushRange(tempLeft, tempRight, haveLeft, haveRight, inclLeft, inclRight);
   }
 
@@ -770,7 +773,40 @@ void IndexRangeProbeIterator::accept(PlanIterVisitor& v) const
   v.endVisit(*this);
 }
 
-// </IndexRangeProbeIterator>
+
+void checkKeyType(
+    const QueryLoc& loc,
+    TypeManager* tm,
+    const ValueIndex* indexDecl,
+    ulong keyNo,
+    store::Item_t& searchKey)
+{
+  xqtref_t searchKeyType = tm->create_value_type(searchKey);
+  xqtref_t indexKeyType = TypeOps::prime_type(*(indexDecl->getKeyTypes())[keyNo]);
+  
+  if (!TypeOps::is_equal(*searchKeyType, *indexKeyType))
+  {
+    if (!TypeOps::is_subtype(*searchKeyType, *indexKeyType))
+    {
+      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
+                               "The type of a search key does not mathch the type"
+                               << " of the corresponding index key. The search key"
+                               << " has type " << searchKeyType->toString()
+                               << " and the expected key type is "
+                               << indexKeyType->toString());
+    }
+    
+    // promote the search key to a value whose type is the that of the
+    // index key type
+    store::Item_t tmp;
+    tmp.transfer(searchKey);
+    if (! GenericCast::castToAtomic(searchKey, tmp, indexKeyType.getp(), *tm))
+    {
+      ZORBA_ASSERT(false);
+    }
+  }
+}
+
 
 
 

@@ -59,7 +59,7 @@ declare function auctions:probe-range-id($indexName as xs:QName, $id as xs:strin
 {
   xqddf:probe-index-range($indexName,
                           $id,
-                          1,
+                          "",
                           xs:boolean("true"), 
                           xs:boolean("false"),
                           xs:boolean("true"),
@@ -80,11 +80,11 @@ declare function auctions:probe-point-city($indexName as xs:QName, $city as xs:s
 declare function auctions:probe-range-city($indexName as xs:QName, $city as xs:string)
 {
   xqddf:probe-index-range($indexName,
-                        $city,
-                        1,
-                        xs:boolean("true"),
-                        xs:boolean("false"),
-                        xs:boolean("true"),
-                        xs:boolean("false"))
+                          $city,
+                          "",
+                          xs:boolean("true"),
+                          xs:boolean("false"),
+                          xs:boolean("true"),
+                          xs:boolean("false"))
 };
 

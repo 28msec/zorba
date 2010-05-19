@@ -273,15 +273,12 @@ public:
 };
 
 
-/**
- * 
- *  probe-index-point($indexName as xs:QName,
- *                    $key1      as anyAtomic?,
- *                    ...,
- *                    $keyN      as anyAtomic?) as node()*
- *    
- * Author: Zorba Team
- */
+/******************************************************************************
+   probe-index-point($indexName as xs:QName,
+                     $key1      as anyAtomic?,
+                     ...,
+                     $keyN      as anyAtomic?) as node()*
+ *********************************************************************************/
 class IndexPointProbeIteratorState : public PlanIteratorState
 {
 public:
@@ -298,16 +295,20 @@ public:
   void reset(PlanState&);
 };
 
+
 class IndexPointProbeIterator : public NaryBaseIterator<IndexPointProbeIterator, 
                                                         IndexPointProbeIteratorState>
-{ 
+{
+protected:
+  bool theCheckKeyType;
+
 public:
   SERIALIZABLE_CLASS(IndexPointProbeIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexPointProbeIterator,
   NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>);
 
-  void serialize( ::zorba::serialization::Archiver& ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>*)this);
@@ -318,8 +319,11 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>(sctx, loc, children)
-  {}
+    NaryBaseIterator<IndexPointProbeIterator,
+                     IndexPointProbeIteratorState>(sctx, loc, children),
+    theCheckKeyType(true)
+  {
+  }
 
   virtual ~IndexPointProbeIterator();
 
@@ -361,13 +365,17 @@ public:
   ~IndexRangeProbeIteratorState();
 
   void init(PlanState&);
+
   void reset(PlanState&);
 };
 
 
 class IndexRangeProbeIterator : public NaryBaseIterator<IndexRangeProbeIterator,
                                                         IndexRangeProbeIteratorState>
-{ 
+{
+protected:
+  bool theCheckKeyType;
+
 public:
   SERIALIZABLE_CLASS(IndexRangeProbeIterator);
 
@@ -385,8 +393,11 @@ public:
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>(sctx, loc, children)
-  {}
+    NaryBaseIterator<IndexRangeProbeIterator,
+                     IndexRangeProbeIteratorState>(sctx, loc, children),
+    theCheckKeyType(true)
+  {
+  }
 
   virtual ~IndexRangeProbeIterator();
 

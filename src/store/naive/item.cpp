@@ -377,7 +377,7 @@ xqp_ubyte Item::getUnsignedByteValue() const
 /** 
  * Accessor for xs:float
  */
-const xqp_float& Item::getFloatValue() const
+xqp_float Item::getFloatValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getFloatValue() not defined for items of type "
@@ -390,7 +390,7 @@ const xqp_float& Item::getFloatValue() const
 /** 
  * Accessor for xs:double
  */
-const xqp_double& Item::getDoubleValue() const
+xqp_double Item::getDoubleValue() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0040_TYPE_ERROR,
                         "Item::getDoubleValue() not defined for items of type "

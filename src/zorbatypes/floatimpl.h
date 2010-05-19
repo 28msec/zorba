@@ -34,11 +34,9 @@ class FloatCommons
   static const xqpStringStore_t& get_INF_NEG_STR();
   static const xqpStringStore_t& get_NOT_A_NUM_STR();
 
-  static Double
-  parseFloat(const Float&);
+  static Double parseFloat(const Float&);
    
-  static Float 
-  parseDouble(const Double&);
+  static Float parseDouble(const Double&);
 };
 
 

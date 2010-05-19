@@ -254,29 +254,27 @@ public:
 
   /** Accessor for xs:base64Binary
    */
-  virtual xqp_base64Binary 
-  getBase64BinaryValue() const;
+  virtual xqp_base64Binary getBase64BinaryValue() const;
 
   /** Accessor for xs:boolean
    */
-  virtual bool 
-  getBooleanValue() const;
+  virtual bool getBooleanValue() const;
 
   /** Accessor for xs:double
    */
-  virtual const xqp_double&
-  getDoubleValue() const;
+  virtual xqp_double getDoubleValue() const;
 
-  /** Accessor for xs:float
+  /** 
+   * Accessor for xs:float
    */
-  virtual const xqp_float&
-  getFloatValue() const;
+  virtual xqp_float getFloatValue() const;
 
-  /** Accessor for xs:decimal, xs:(nonPositive | negative | nonNegativeInteger | positive)integer,
-   * xs:(unsigned)long, xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
+  /** 
+   * Accessor for xs:decimal, xs:nonPositiveInteger, negativeInteger,
+   * nonNegativeInteger, positive)integer, xs:long, xs:unsignedLong,
+   * xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte
    */
-  virtual xqp_decimal
-  getDecimalValue() const;
+  virtual xqp_decimal getDecimalValue() const;
 
   /** Accessor for xs:(nonPositive | negative | nonNegativeInteger | positive)integer,
    * xs:(unsigned)long, xs:(unsigned)int, xs:(unsigned)short, xs:(unsigned)byte

@@ -3997,28 +3997,49 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     const IndexKeySpec* keySpec = v.getKeySpec(i);
     const OrderCollationSpec* collationSpec = keySpec->getCollationSpec();
 
-    xqtref_t type = pop_tstack();
+    expr_t keyExpr = pop_nodestack();
 
-    if (TypeOps::is_equal(*type, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
-        TypeOps::is_equal(*type, *theRTM.UNTYPED_ATOMIC_TYPE_ONE))
+    if (!keyExpr->is_simple())
     {
-      ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
+      ZORBA_ERROR_LOC_PARAM(XDST0033_INDEX_NON_SIMPLE_EXPR, keyExpr->get_loc(),
                             index->getName()->getStringValue(), "");
     }
 
-    if (index->getMethod() == ValueIndex::TREE &&
-        (TypeOps::is_subtype(*type, *theRTM.QNAME_TYPE_ONE) ||
-         TypeOps::is_subtype(*type, *theRTM.NOTATION_TYPE_ONE) ||
-         TypeOps::is_subtype(*type, *theRTM.BASE64BINARY_TYPE_ONE) ||
-         TypeOps::is_subtype(*type, *theRTM.HEXBINARY_TYPE_ONE) ||
-         TypeOps::is_subtype(*type, *theRTM.GYEAR_MONTH_TYPE_ONE) ||
-         TypeOps::is_subtype(*type, *theRTM.GYEAR_TYPE_ONE) ||
-         TypeOps::is_subtype(*type, *theRTM.GMONTH_TYPE_ONE) ||
-         TypeOps::is_subtype(*type, *theRTM.GMONTH_DAY_TYPE_ONE) ||
-         TypeOps::is_subtype(*type, *theRTM.GDAY_TYPE_ONE)))
+    xqtref_t type;
+
+    if (keySpec->getType() == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
-                            index->getName()->getStringValue(), "");
+      if (!index->isGeneral())
+      {
+        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
+                              index->getName()->getStringValue(), "");
+      }
+    }
+    else
+    {
+      type = pop_tstack();
+
+      if (TypeOps::is_equal(*type, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
+          TypeOps::is_equal(*type, *theRTM.UNTYPED_ATOMIC_TYPE_ONE))
+      {
+        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
+                              index->getName()->getStringValue(), "");
+      }
+
+      if (index->getMethod() == ValueIndex::TREE &&
+          (TypeOps::is_subtype(*type, *theRTM.QNAME_TYPE_ONE) ||
+           TypeOps::is_subtype(*type, *theRTM.NOTATION_TYPE_ONE) ||
+           TypeOps::is_subtype(*type, *theRTM.BASE64BINARY_TYPE_ONE) ||
+           TypeOps::is_subtype(*type, *theRTM.HEXBINARY_TYPE_ONE) ||
+           TypeOps::is_subtype(*type, *theRTM.GYEAR_MONTH_TYPE_ONE) ||
+           TypeOps::is_subtype(*type, *theRTM.GYEAR_TYPE_ONE) ||
+           TypeOps::is_subtype(*type, *theRTM.GMONTH_TYPE_ONE) ||
+           TypeOps::is_subtype(*type, *theRTM.GMONTH_DAY_TYPE_ONE) ||
+           TypeOps::is_subtype(*type, *theRTM.GDAY_TYPE_ONE)))
+      {
+        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
+                              index->getName()->getStringValue(), "");
+      }
     }
 
     keyTypes[i] = type;
@@ -4036,14 +4057,6 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     keyModifiers[i].theAscending = true;
     keyModifiers[i].theEmptyLeast = true;
     keyModifiers[i].theCollation = collationUri;
-
-    expr_t keyExpr = pop_nodestack();
-
-    if (!keyExpr->is_simple())
-    {
-      ZORBA_ERROR_LOC_PARAM(XDST0033_INDEX_NON_SIMPLE_EXPR, keyExpr->get_loc(),
-                            index->getName()->getStringValue(), "");
-    }
 
     keyExpr = wrap_in_atomization(keyExpr);
     keyExpr = wrap_in_type_match(keyExpr, type, XDTY0011_INDEX_KEY_TYPE_ERROR);

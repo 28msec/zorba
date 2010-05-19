@@ -141,9 +141,9 @@ public:
 
   bool getBooleanValue() const { return theBaseItem->getBooleanValue(); }
 
-  const xqp_double& getDoubleValue() const { return theBaseItem->getDoubleValue(); }
+  xqp_double getDoubleValue() const { return theBaseItem->getDoubleValue(); }
 
-  const xqp_float& getFloatValue() const { return theBaseItem->getFloatValue(); }
+  xqp_float getFloatValue() const { return theBaseItem->getFloatValue(); }
 
   xqp_decimal getDecimalValue() const { return theBaseItem->getDecimalValue(); }
 
@@ -721,18 +721,19 @@ public:
 ********************************************************************************/
 class DoubleItemNaive : public AtomicItem
 {
+  friend class BasicItemFactory;
+
 protected:
 	xqp_double theValue;
 
 protected:
   // make sure that only created by the factory
-  friend class BasicItemFactory;
 	DoubleItemNaive(const xqp_double& aValue) : theValue( aValue ) {}
 
   DoubleItemNaive() {}
 
 public:
-	const xqp_double& getDoubleValue() const { return theValue; }
+	xqp_double getDoubleValue() const { return theValue; }
 	
   bool isNaN() const;
   bool isPosOrNegInf() const;
@@ -785,9 +786,12 @@ protected:
   FloatItemNaive() {}
 
 public:
-  const xqp_float& getFloatValue() const { return theValue; }
+  xqp_float getFloatValue() const { return theValue; }
+
+  xqp_double getDoubleValue() const { return FloatCommons::parseFloat(theValue); }
 	
   bool isNaN() const;
+
   bool isPosOrNegInf() const;
 
   store::Item* getType() const;
@@ -813,7 +817,7 @@ public:
     return theValue.compare(other->getFloatValue());
   }
 
-  store::Item_t getEBV( ) const;
+  store::Item_t getEBV() const;
 
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
@@ -849,11 +853,11 @@ public:
 ********************************************************************************/
 class DecimalItemNaive : public AtomicItem
 {
+  friend class BasicItemFactory;
+
 protected:
   xqp_decimal theValue;
 
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
   DecimalItemNaive(const xqp_decimal& aValue) : theValue(aValue) {}
 
   DecimalItemNaive() {}
@@ -901,18 +905,19 @@ public:
 ********************************************************************************/
 class IntegerItemNaive : public AtomicItem
 {
+  friend class BasicItemFactory;
+
 protected:
   xqp_integer theValue;
 
 protected:
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
   IntegerItemNaive(const xqp_integer& aValue) : theValue ( aValue ) {}
 
   IntegerItemNaive() {}
 
 public:
   xqp_integer getIntegerValue() const { return theValue; }
+
   xqp_decimal getDecimalValue() const;
 
   virtual xqp_long getLongValue() const;
@@ -971,9 +976,9 @@ public:
 ********************************************************************************/
 class NonPositiveIntegerItemNaive : public IntegerItemNaive
 {
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
+
+protected:
   NonPositiveIntegerItemNaive(const xqp_integer& aValue) : IntegerItemNaive(aValue) {}
 
   NonPositiveIntegerItemNaive() {}
@@ -990,9 +995,9 @@ public:
 ********************************************************************************/
 class NegativeIntegerItemNaive : public IntegerItemNaive
 {
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
+
+protected:
   NegativeIntegerItemNaive(const xqp_integer& aValue) : IntegerItemNaive(aValue) {}
 
   NegativeIntegerItemNaive() {}
@@ -1053,12 +1058,12 @@ public:
 ********************************************************************************/
 class LongItemNaive : public AtomicItem 
 {
+  friend class BasicItemFactory;
+
 protected:
   xqp_long theValue;
   
 protected:
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
   LongItemNaive(xqp_long aValue) : theValue(aValue) {}
 
   LongItemNaive() {}

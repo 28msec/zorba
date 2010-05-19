@@ -1242,7 +1242,7 @@ public:
 
   IndexKeyList := IndexKeySpec+
 
-  IndexKeySpec := PathExpr AtomicType IndexKeyOrderModifier
+  IndexKeySpec := PathExpr "as" AtomicType? IndexKeyOrderModifier
 
   AtomicType := QName
 
@@ -1311,7 +1311,7 @@ public:
 
 
 /*******************************************************************************
-  IndexKeySpec ::= PathExpr "as" AtomicType IndexKeyOrderModifier
+  IndexKeySpec ::= PathExpr "as" AtomicType? IndexKeyOrderModifier
 
   IndexKeyOrderModifier ::= OrderDirSpec? OrderCollationSpec?
 
