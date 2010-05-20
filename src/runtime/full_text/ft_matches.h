@@ -42,23 +42,6 @@ struct ft_string_match : ft_token_span {
   bool is_contiguous;
 };
 
-#if 0
-inline bool operator<( ft_string_match const &i, ft_string_match const &j ) {
-  return i.token < j.token;
-}
-
-inline bool operator>( ft_string_match const &i, ft_string_match const &j ) {
-  return i.token > j.token;
-}
-
-inline ft_token_span& get_token( ft_string_match &sm ) {
-  return sm.token;
-}
-inline ft_token_span const& get_token( ft_string_match const &sm ) {
-  return sm.token;
-}
-#endif
-
 /**
  * An ft_string_include is an ft_string_match that describes an ft_token_span
  * that must be contained in the document.
