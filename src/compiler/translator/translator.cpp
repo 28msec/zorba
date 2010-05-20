@@ -10970,10 +10970,12 @@ void end_visit (const FTMatchOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( pop_ftstack() );
   ZORBA_ASSERT( mo );
+  ftnode *const ftprimary = pop_ftstack();
   ftprimary_with_options *const pwo =
     dynamic_cast<ftprimary_with_options*>( top_ftstack() );
   ZORBA_ASSERT( pwo );
   pwo->set_match_options( mo );
+  push_ftstack( ftprimary );
 }
 
 void *begin_visit (const FTMildNot& v) {
