@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FULL_TEXT_FT_TOKEN_H
-#define ZORBA_FULL_TEXT_FT_TOKEN_H
+#ifndef ZORBA_FULL_TEXT_FT_TOKEN_SPAN_H
+#define ZORBA_FULL_TEXT_FT_TOKEN_SPAN_H
 
 #include <iostream>
 #include <list>
@@ -69,5 +69,5 @@ inline std::ostream& operator<<( std::ostream &o, ft_token_span const &ts ) {
 typedef std::list<ft_token_span> ft_token_spans;
 
 } // namespace zorba
-#endif  /* ZORBA_FULL_TEXT_FT_TOKEN_H */
+#endif  /* ZORBA_FULL_TEXT_FT_TOKEN_SPAN_H */
 /* vim:set et sw=2 ts=2: */

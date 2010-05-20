@@ -21,7 +21,7 @@
 #include <zorba/error.h>
 
 #include "runtime/full_text/apply.h"
-#include "runtime/full_text/ft_token.h"
+#include "runtime/full_text/ft_token_span.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/stl_util.h"
 
