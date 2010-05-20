@@ -24,6 +24,8 @@
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
 /**
  * An ft_token_span represents a contiguous collection of tokens from an XML
  * document.
@@ -45,6 +47,13 @@ struct ft_token_span {
   typedef int_t const ft_token_span::start_end::*int_ptr;
 };
 
+/**
+ * An ft_token_spans contains zero or more ft_token_span objects.
+ */
+typedef std::list<ft_token_span> ft_token_spans;
+
+////////// Comparison operators ///////////////////////////////////////////////
+
 inline bool operator<( ft_token_span const &tsi, ft_token_span const &tsj ) {
   return  tsi.pos.start < tsj.pos.start ||
           (tsi.pos.start == tsj.pos.start && tsi.pos.end < tsj.pos.end);
@@ -54,6 +63,8 @@ inline bool operator>( ft_token_span const &tsi, ft_token_span const &tsj ) {
   return  tsi.pos.start > tsj.pos.start ||
           (tsi.pos.start == tsj.pos.start && tsi.pos.end > tsj.pos.end);
 }
+
+////////// Insertion operators ////////////////////////////////////////////////
 
 inline std::ostream& operator<<( std::ostream &o,
                                  ft_token_span::start_end const &se ) {
@@ -66,7 +77,7 @@ inline std::ostream& operator<<( std::ostream &o, ft_token_span const &ts ) {
             << " para=" << ts.para << '}';
 }
 
-typedef std::list<ft_token_span> ft_token_spans;
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_FT_TOKEN_SPAN_H */

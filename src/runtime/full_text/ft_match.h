@@ -97,6 +97,8 @@ private:
  */
 typedef std::list<ft_match> ft_all_matches;
 
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_FT_MATCH_H */
 /* vim:set et sw=2 ts=2: */
