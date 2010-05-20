@@ -38,7 +38,7 @@ void apply_ftmild_not( ft_all_matches const&, ft_all_matches const&,
 void apply_ftor( ft_all_matches const&, ft_all_matches const&,
                  ft_all_matches &result );
 
-void apply_ftorder( ft_all_matches& );
+void apply_ftorder( ft_all_matches const&, ft_all_matches &result );
 
 void apply_ftscope( ft_all_matches const&, ft_scope::type, ft_big_unit::type,
                     ft_all_matches &result );

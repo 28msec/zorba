@@ -310,7 +310,11 @@ void V::end_visit( ftdistance_filter &f ) {
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftorder_filter )
 void V::end_visit( ftorder_filter& ) {
-  apply_ftorder( *top_matches() );
+  ft_all_matches *const am = POP_MATCHES();
+  ft_all_matches *const result = new ft_all_matches;
+  apply_ftorder( *am, *result );
+  PUSH_MATCHES( result );
+  delete am;
   END_VISIT();
 }
 

@@ -423,8 +423,33 @@ void apply_ftor( ft_all_matches const &ami, ft_all_matches const &amj,
 
 ////////// ApplyFTOrder ///////////////////////////////////////////////////////
 
-void apply_ftorder( ft_all_matches &am ) {
-  // TODO
+void apply_ftorder( ft_all_matches const &am, ft_all_matches &result ) {
+  FOR_EACH( ft_all_matches, m, am ) {
+    FOR_EACH( ft_match::includes_t, i1, m->includes ) {
+      FOR_EACH( ft_match::includes_t, i2, m->includes ) {
+        if ( &*i1 == &*i2 )
+          continue;
+        if (   ( i1->pos.start <= i2->pos.start
+              && i1->query_pos <= i2->query_pos )
+            || ( i1->pos.start >= i2->pos.start
+              && i1->query_pos >= i2->query_pos ) ) {
+          ft_match m_new;
+          copy_seq( m->includes, m_new.includes );
+          FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
+            FOR_EACH( ft_match::includes_t, i, m->includes ) {
+              if (   ( e->pos.start <= i->pos.start 
+                    && e->query_pos <= i->query_pos )
+                  || ( e->pos.start >= i->pos.start
+                    && e->query_pos >= i->query_pos ) ) {
+                m_new.excludes.push_back( *e );
+              }
+            }
+          }
+          result.push_back( m_new );
+        }
+      }
+    }
+  }
 }
 
 ////////// ApplyFTScope ///////////////////////////////////////////////////////
