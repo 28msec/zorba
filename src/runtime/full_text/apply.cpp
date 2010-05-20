@@ -35,6 +35,9 @@ using namespace std;
 
 namespace zorba {
 
+bool match_tokens( FTToken::string_t const&, FTToken::string_t const&,
+                   ftmatch_options const& );
+
 typedef set<ft_token_span::int_t> ft_pos_set;
 
 ////////// Helper algorithms //////////////////////////////////////////////////
@@ -233,99 +236,12 @@ static void dump( char const *label, FTTokenIterator it ) {
 #endif
 
 /**
- * Test whether the 2 given tokens match given the match options.
- */
-static bool match_tokens( FTToken const &i, FTToken const &j,
-                          ftmatch_options const &options ) {
-
-  if ( ftcase_option const *const c = options.get_case_option() ) {
-    switch ( c->get_mode() ) {
-      case ft_case_mode::insensitive:
-        // TODO
-        break;
-      case ft_case_mode::sensitive:
-        // do nothing
-        break;
-      case ft_case_mode::lower:
-        // TODO: make the query string lower-case
-        break;
-      case ft_case_mode::upper:
-        // TODO: make the query string upper-case
-        break;
-    }
-  }
-
-  if ( ftdiacritics_option const *const d = options.get_diacritics_option() ) {
-    switch ( d->get_mode() ) {
-      case ft_diacritics_mode::insensitive:
-        // TODO
-        break;
-      case ft_diacritics_mode::sensitive:
-        // do nothing
-        break;
-    }
-  }
-
-  if ( ftextension_option const *const e = options.get_extension_option() ) {
-    // TODO
-  }
-
-  if ( ftlanguage_option const *const l = options.get_language_option() ) {
-    // string const &lang = l->get_language();
-    // TODO
-  }
-
-  if ( ftstem_option const *const s = options.get_stem_option() ) {
-    switch ( s->get_mode() ) {
-      case ft_stem_mode::with:
-        // TODO
-        break;
-      case ft_stem_mode::without:
-        // do nothing
-        break;
-    }
-  }
-
-  if ( ftstop_word_option const *const sw = options.get_stop_word_option() ) {
-    switch ( sw->get_mode() ) {
-      case ft_stop_words_mode::with:
-        // TODO
-        break;
-      case ft_stop_words_mode::with_default:
-        // TODO
-        break;
-      case ft_stop_words_mode::without:
-        // do nothing
-        break;
-    }
-  }
-
-  if ( ftthesaurus_option const *const t = options.get_thesaurus_option() ) {
-    // TODO
-  }
-
-  if ( ftwild_card_option const *const wc = options.get_wild_card_option() ) {
-    switch ( wc->get_mode() ) {
-      case ft_wild_card_mode::with:
-        // TODO
-        break;
-      case ft_wild_card_mode::without:
-        // do nothing
-        break;
-    }
-  }
-
-  return i.word == j.word;
-}
-
-/**
  * Matches query tokens against document tokens.
  */
 static void match_tokens( FTTokenIterator doc_tokens,
                           FTTokenIterator query_tokens,
                           ftmatch_options const &options,
                           ft_token_spans &result ) {
-
 #if 0
   dump( "match_tokens(): doc_tokens: ", doc_tokens );
   dump( "match_tokens(): query_tokens: ", query_tokens );
@@ -340,7 +256,7 @@ static void match_tokens( FTTokenIterator doc_tokens,
       if ( !dt_start )
         dt_start = dt_end;
       FTToken const &qt = query_tokens.current();
-      if ( !match_tokens( *dt_end, qt, options ) )
+      if ( !match_tokens( dt_end->word, qt.word, options ) )
         break;
       doc_tokens.next();
       query_tokens.next();

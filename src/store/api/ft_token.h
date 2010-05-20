@@ -17,7 +17,7 @@
 #ifndef ZORBA_FT_TOKEN_H
 #define ZORBA_FT_TOKEN_H
 
-#include <string>
+#include "zorbatypes/xqpstring.h"
 
 namespace zorba {
 
@@ -34,7 +34,7 @@ struct FTToken {
   /**
    * The string type uses for the token itself.
    */
-  typedef std::string word_t;
+  typedef xqpStringStore string_t;
 
   /**
    * Constructs an FTToken for a token from an XML document.
@@ -68,7 +68,7 @@ struct FTToken {
   /**
    * The token.
    */
-  word_t word;
+  string_t word;
 
   /**
    * The token position within either the source XML document or query.

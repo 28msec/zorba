@@ -16,6 +16,7 @@ SET(FULLTEXT_SRCS
     full_text.cpp
     full_text_impl.cpp
     ftcontains_visitor.cpp
+    match_tokens.cpp
     apply.cpp
     )
 
