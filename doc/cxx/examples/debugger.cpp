@@ -18,17 +18,16 @@
 #include <cassert>
 #include <map>
 #include <cstdlib>
-#include "common/common.h"
 #include <time.h>
 #include <limits.h>
-#ifdef UNIX
-#  include <sys/time.h>
-#endif
 
 #include <zorba/zorba.h>
 #include <zorba/debugger_client.h>
 #include <zorba/debugger_default_event_handler.h>
 #include <zorba/store_manager.h>
+#ifdef UNIX
+#  include <sys/time.h>
+#endif
 
 #ifdef WIN32
 #include <windows.h>

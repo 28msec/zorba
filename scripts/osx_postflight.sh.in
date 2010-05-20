@@ -12,9 +12,15 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-ln -s $2/usr/local/lib/libicudata.38.1.dylib $2/usr/local/lib/libicudata.38.dylib
-ln -s $2/usr/local/lib/libicui18n.38.1.dylib $2/usr/local/lib/libicui18n.38.dylib
-ln -s $2/usr/local/lib/libicuuc.38.1.dylib $2/usr/local/lib/libicuuc.38.dylib
-ln -s $2/usr/local/lib/libxerces-c.28.0.dylib $2/usr/local/lib/libxerces-c.28.dylib
+ln -s $2/usr/local/lib/libicudata.43.1.dylib $2/usr/local/lib/libicudata.43.dylib
+ln -s $2/usr/local/lib/libicui18n.43.1.dylib $2/usr/local/lib/libicui18n.43.dylib
+ln -s $2/usr/local/lib/libicuuc.43.1.dylib $2/usr/local/lib/libicuuc.43.dylib
+ln -s $2/usr/local/lib/libxerces-c.3.0.dylib $2/usr/local/lib/libxerces-c.3.dylib
 ln -s $2/usr/local/lib/libxml2.2.7.2.dylib $2/usr/local/lib/libxml2.dylib
 ln -s $2/usr/local/lib/libxml2.2.7.2.dylib $2/usr/local/lib/libxml2.2.dylib
+ln -s $2/usr/local/lib/libicudata.43.1.dylib $2/usr/local/lib/libicudata.dylib
+ln -s $2/usr/local/lib/libicui18n.43.1.dylib $2/usr/local/lib/libicui18n.dylib
+ln -s $2/usr/local/lib/libicuuc.43.1.dylib $2/usr/local/lib/libicuuc.dylib
+ln -s $2/usr/local/lib/libxerces-c.3.0.dylib $2/usr/local/lib/libxerces-c.dylib
+ln -s $2/usr/local/lib/libxml2.2.7.2.dylib $2/usr/local/lib/libxml2.dylib
+exit 0
