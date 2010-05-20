@@ -1210,7 +1210,7 @@ expr_t peek_nodestk_or_null()
   Return rchandle to the expr at the top of theNodeStack (crash if theNodeStack
   is empty).
 ********************************************************************************/
-expr_t top_nodestack() 
+expr_t top_nodestack()
 {
   ZORBA_FATAL( !theNodeStack.empty(), "" );
   return theNodeStack.top();
@@ -1255,14 +1255,14 @@ ftnode* pop_ftstack(int count = 1)
   ZORBA_ASSERT(count >= 0);
 
   ftnode *n = NULL;
-  while ( count-- > 0 ) 
+  while ( count-- > 0 )
   {
     ZORBA_FATAL( !theFTNodeStack.empty(), "" );
     n = theFTNodeStack.top();
     theFTNodeStack.pop();
 
 #ifndef NDEBUG
-    if ( Properties::instance()->traceTranslator() ) 
+    if ( Properties::instance()->traceTranslator() )
     {
       cout << "Popped from ftnode stack:\n";
       if ( n )
@@ -1279,13 +1279,13 @@ ftnode* pop_ftstack(int count = 1)
 /******************************************************************************
   Push the given expr into theFTNodeStack.
  ******************************************************************************/
-inline void push_ftstack( ftnode *n ) 
+inline void push_ftstack( ftnode *n )
 {
   theFTNodeStack.push( n );
 }
 
 
-inline ftnode* top_ftstack() 
+inline ftnode* top_ftstack()
 {
   ZORBA_FATAL( !theFTNodeStack.empty(), "" );
   return theFTNodeStack.top();
@@ -3246,7 +3246,7 @@ void* begin_visit(const VFO_DeclList& v)
       ZORBA_ASSERT(ef != NULL);
 
       expr_script_kind_t lScriptKind;
-      switch (func_decl->get_type()) 
+      switch (func_decl->get_type())
       {
       case ParseConstants::fn_extern_update:
         lScriptKind = UPDATE_EXPR;
@@ -4878,6 +4878,7 @@ void end_visit(const Expr& v, void* /*visit_state*/)
   ** XQuery 1.1 exprs
                       FLWORExpr |
                       QuantifiedExpr |
+                      SwitchExpr |
                       TypeswitchExpr |
                       IfExpr |
                       OrExpr |
@@ -6106,6 +6107,150 @@ void end_visit(const QVarInDecl& v, void* /*visit_state*/)
   ZORBA_ASSERT(flworExpr != NULL);
 
   flworExpr->add_clause(wrap_in_forclause(domainExpr, varExpr, NULL));
+}
+
+
+/*******************************************************************************
+  [71]      SwitchExpr        ::=      "switch" "(" Expr ")" SwitchCaseClause+ "default" "return" ExprSingle
+  [72]      SwitchCaseClause  ::=      ("case" SwitchCaseOperand)+ "return" ExprSingle
+
+  A switch expr is translated into a flwor expr. For example, a switch of
+  the following form:
+
+  switch E
+  case $c11 return E1
+  case $c21
+  case $c22 return E2
+  ......
+  case $cn1 return En
+  default return Ed
+
+  is translated into:
+
+  let $sv := E
+  return if ($sv = $c11 or $sv = $c12 or ...) then
+           return E1
+         else if ($sv = $c21 or $sv = $c22 or ...) then
+           return E2
+         ....
+         else if ($sv = $cn1 or $sv = $cn2 or ...) then
+           return En
+         else
+           return Ed
+********************************************************************************/
+void* begin_visit(const SwitchExpr& v)
+{
+  TRACE_VISIT();
+
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
+    ZORBA_ERROR_LOC_DESC(XPST0003, loc, "Switch expressions are a feature that is only available in XQuery 1.1 or later.");
+
+  var_expr_t sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
+  v.get_switch_expr()->accept(*this);
+  expr_t se = pop_nodestack();
+
+  if (se->is_updating())
+  {
+    ZORBA_ERROR_LOC(XUST0001, loc);
+  }
+
+  // flworExpr = [let $sv := E return NULL]
+  expr_t flworExpr = wrap_in_let_flwor(se, sv, NULL);
+
+  // retExpr = [Ed]
+  v.get_default_expr()->accept(*this);
+  expr_t retExpr = pop_nodestack();
+
+  const SwitchCaseClauseList* clauses = v.get_clause_list();
+  for (vector<rchandle<SwitchCaseClause> >::const_reverse_iterator it = clauses->rbegin();
+       it != clauses->rend();
+       ++it)
+  {
+    const SwitchCaseClause* switchCaseClause = &**it;
+    const QueryLoc& loc = switchCaseClause->get_location();
+    expr_t condExpr = NULL;
+
+    const SwitchCaseOperandList* operands = switchCaseClause->get_operand_list();
+    for (vector<rchandle<exprnode> >::const_iterator it = operands->begin();
+         it != operands->end();
+         ++it)
+    {
+      const exprnode* operand = &**it;
+      operand->accept(*this);
+      expr_t operandExpr = pop_nodestack();
+      // operandExpr = [$sv = $cij]
+      operandExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_EQUAL_2), sv, operandExpr);
+
+      if (condExpr.getp() == NULL)
+        condExpr = operandExpr;
+      else
+      {
+        // condExpr = [$sv = $ci1 or $sv = $ci2 or ...]
+        condExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_OR_2), condExpr, operandExpr);
+      }
+    } // for
+
+    switchCaseClause->get_return_expr()->accept(*this);
+    expr_t caseReturnExpr = pop_nodestack();
+
+    // retExpr = [if (condExpr) then caseReturnExpr else retExpr]
+    retExpr = new if_expr(theRootSctx, loc, condExpr, caseReturnExpr, retExpr);
+
+  } // for
+
+  static_cast<flwor_expr*>(flworExpr.getp())->set_return_expr(retExpr);
+  push_nodestack(flworExpr);
+
+  // Return NULL so that SwitchExpr::accept() will not call accept() on the
+  // children of the SwitchExpr parsenode.
+  return NULL;
+}
+
+void end_visit (const SwitchExpr& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+  // shouldn't get here, begin_visit() rejects visitor
+  ZORBA_ASSERT (false);
+}
+
+void* begin_visit(const SwitchCaseClause& v)
+{
+  TRACE_VISIT();
+
+  return NULL;
+}
+
+void end_visit (const SwitchCaseClause& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT ();
+  // shouldn't get here, begin_visit() rejects visitor
+  ZORBA_ASSERT (false);
+}
+
+void* begin_visit(const SwitchCaseClauseList& v)
+{
+  TRACE_VISIT();
+  // shouldn't get here
+  ZORBA_ASSERT(false);
+  return no_state;
+}
+
+void end_visit(const SwitchCaseClauseList& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+}
+
+void* begin_visit(const SwitchCaseOperandList& v)
+{
+  TRACE_VISIT();
+  // shouldn't get here
+  ZORBA_ASSERT(false);
+  return no_state;
+}
+
+void end_visit(const SwitchCaseOperandList& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
 }
 
 
@@ -7596,7 +7741,7 @@ void* begin_visit(const AbbrevForwardStep& v)
 
   rchandle<axis_step_expr> ase = expect_axis_step_top();
 
-  if (v.get_attr_bit()) 
+  if (v.get_attr_bit())
   {
     ase->setAxis(axis_kind_attribute);
   }
@@ -9949,7 +10094,7 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
 
     if (contentType == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "element type", 
+      ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "element type",
                             typeNameItem->getStringValue()->c_str());
     }
   }
@@ -10068,7 +10213,7 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
 
     if (contentType == NULL)
     {
-      ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "attribute type", 
+      ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "attribute type",
                             typeNameItem->getStringValue()->c_str());
     }
   }
@@ -10257,7 +10402,7 @@ void end_visit(const PITest& v, void* /*visit_state*/)
 
 
 /* update-related */
-void* begin_visit(const DeleteExpr& v) 
+void* begin_visit(const DeleteExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
@@ -10316,7 +10461,7 @@ void end_visit(const RenameExpr& v, void* /*visit_state*/)
   expr_t nameExpr = pop_nodestack();
   expr_t targetExpr = pop_nodestack();
 
-  if (nameExpr->is_updating() || targetExpr->is_updating()) 
+  if (nameExpr->is_updating() || targetExpr->is_updating())
   {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }

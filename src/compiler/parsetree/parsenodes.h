@@ -217,6 +217,9 @@ class SchemaPrefix;
 class SequenceType;
 class SignList;
 class SingleType;
+class SwitchCaseClause;
+class SwitchCaseClauseList;
+class SwitchCaseOperandList;
 class TextTest;
 class TransformExpr;
 class TreatExpr;
@@ -2574,6 +2577,119 @@ public:
   void accept(parsenode_visitor&) const;
 };
 
+
+/*******************************************************************************
+  [71] SwitchExpr ::= "switch" "(" Expr ")" SwitchCaseClause+ "default" "return" ExprSingle
+********************************************************************************/
+class SwitchExpr : public exprnode
+{
+protected:
+  rchandle<exprnode> switch_expr_h;
+  rchandle<SwitchCaseClauseList> clause_list_h;
+  rchandle<exprnode> default_expr_h;
+
+public:
+  SwitchExpr(const QueryLoc&,
+                   rchandle<exprnode>,
+                   rchandle<SwitchCaseClauseList>,
+                   rchandle<exprnode>);
+
+  rchandle<exprnode> get_switch_expr() const { return switch_expr_h; }
+
+  rchandle<SwitchCaseClauseList> get_clause_list() const { return clause_list_h; }
+
+  rchandle<exprnode> get_default_expr() const { return default_expr_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class SwitchCaseClauseList : public parsenode
+{
+protected:
+  std::vector<rchandle<SwitchCaseClause> > clause_hv;
+
+public:
+  SwitchCaseClauseList(const QueryLoc&);
+
+  void push_back(rchandle<SwitchCaseClause> clause_h)
+  { clause_hv.push_back(clause_h); }
+
+  rchandle<SwitchCaseClause> operator[](int i) const
+  { return clause_hv[i]; }
+
+  std::vector<rchandle<SwitchCaseClause> >::const_iterator begin() const
+  { return clause_hv.begin(); }
+
+  std::vector<rchandle<SwitchCaseClause> >::const_iterator end() const
+  { return clause_hv.end(); }
+
+  std::vector<rchandle<SwitchCaseClause> >::const_reverse_iterator rbegin() const
+  { return clause_hv.rbegin(); }
+
+  std::vector<rchandle<SwitchCaseClause> >::const_reverse_iterator rend() const
+  { return clause_hv.rend(); }
+
+  uint32_t size () const
+  { return clause_hv.size (); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [72]  SwitchCaseClause  ::=  ("case" SwitchCaseOperand)+ "return" ExprSingle
+********************************************************************************/
+class SwitchCaseClause : public exprnode
+{
+protected:
+  rchandle<SwitchCaseOperandList> operand_list_h;
+  rchandle<exprnode> return_expr_h;
+
+public:
+  SwitchCaseClause(const QueryLoc&,
+               rchandle<SwitchCaseOperandList>,
+               rchandle<exprnode>);
+
+  rchandle<SwitchCaseOperandList> get_operand_list() const { return operand_list_h; }
+
+  rchandle<exprnode> get_return_expr() const { return return_expr_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class SwitchCaseOperandList : public parsenode
+{
+protected:
+  std::vector<rchandle<exprnode> > operand_hv;
+
+public:
+  SwitchCaseOperandList(const QueryLoc&);
+
+  void push_back(rchandle<exprnode> operand_h)
+  { operand_hv.push_back(operand_h); }
+
+  rchandle<exprnode> operator[](int i) const
+  { return operand_hv[i]; }
+
+  std::vector<rchandle<exprnode> >::const_iterator begin() const
+  { return operand_hv.begin(); }
+
+  std::vector<rchandle<exprnode> >::const_iterator end() const
+  { return operand_hv.end(); }
+
+  std::vector<rchandle<exprnode> >::const_reverse_iterator rbegin() const
+  { return operand_hv.rbegin(); }
+
+  std::vector<rchandle<exprnode> >::const_reverse_iterator rend() const
+  { return operand_hv.rend(); }
+
+  uint32_t size () const
+  { return operand_hv.size (); }
+
+  void accept(parsenode_visitor&) const;
+};
 
 /*******************************************************************************
   [66] TypeswitchExpr ::= "typeswitch" "(" Expr ")"

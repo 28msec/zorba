@@ -1974,6 +1974,92 @@ void QVarInDecl::accept( parsenode_visitor &v ) const
 }
 
 
+// [71] SwitchExpr
+// -------------------
+SwitchExpr::SwitchExpr(
+  const QueryLoc& loc_,
+  rchandle<exprnode> _switch_expr_h,
+  rchandle<SwitchCaseClauseList> _clause_list_h,
+  rchandle<exprnode> _default_expr_h)
+:
+  exprnode(loc_),
+  switch_expr_h(_switch_expr_h),
+  clause_list_h(_clause_list_h),
+  default_expr_h(_default_expr_h)
+{}
+
+void SwitchExpr::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT_CHK(switch_expr_h);
+  ACCEPT_CHK(default_expr_h);
+  ACCEPT_CHK(clause_list_h);
+  END_VISITOR();
+}
+
+
+// [71a] SwitchCaseClauseList
+// --------------------
+SwitchCaseClauseList::SwitchCaseClauseList(
+  const QueryLoc& loc_)
+:
+  parsenode(loc_)
+{
+}
+
+void SwitchCaseClauseList::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  vector<rchandle<SwitchCaseClause> >::const_reverse_iterator it = clause_hv.rbegin();
+  for (; it!=clause_hv.rend(); ++it) {
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
+  }
+  END_VISITOR();
+}
+
+
+// [72] SwitchCaseClause
+// -------------------
+SwitchCaseClause::SwitchCaseClause(
+  const QueryLoc& loc_,
+  rchandle<SwitchCaseOperandList> _operand_list_h,
+  rchandle<exprnode> _return_expr_h)
+:
+  exprnode(loc_),
+  operand_list_h(_operand_list_h),
+  return_expr_h(_return_expr_h)
+{}
+
+void SwitchCaseClause::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  ACCEPT_CHK(return_expr_h);
+  ACCEPT_CHK(operand_list_h);
+  END_VISITOR();
+}
+
+// [72a] SwitchCaseOperandList
+// --------------------
+SwitchCaseOperandList::SwitchCaseOperandList(
+  const QueryLoc& loc_)
+:
+  parsenode(loc_)
+{
+}
+
+void SwitchCaseOperandList::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  vector<rchandle<exprnode> >::const_reverse_iterator it = operand_hv.rbegin();
+  for (; it!=operand_hv.rend(); ++it) {
+    const parsenode *e_p = &**it;
+    ACCEPT_CHK (e_p);
+  }
+  END_VISITOR();
+}
+
+
 // [43] TypeswitchExpr
 // -------------------
 TypeswitchExpr::TypeswitchExpr(

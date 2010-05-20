@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,10 +28,10 @@
 
 
 #define DEFAULT_BEGIN_VISIT(type)                    \
-  void* begin_visit(const type&){ return no_state; } 
+  void* begin_visit(const type&){ return no_state; }
 
 #define DEFAULT_END_VISIT(type)                      \
-  void end_visit(const type&, void*){}              
+  void end_visit(const type&, void*){}
 
 #define DEFAULT_VISIT(type)                          \
   DEFAULT_BEGIN_VISIT(type)                          \
@@ -78,7 +78,7 @@ void* begin_visit(const AbbrevForwardStep& n)
 
 
 DEFAULT_END_VISIT(AbbrevForwardStep)
-  
+
 
 DEFAULT_BEGIN_VISIT (AnyKindTest)
 
@@ -97,7 +97,7 @@ void* begin_visit(const AposAttrValueContent& n)
   if(!n.get_apos_atcontent().empty())
   {
     os << n.get_apos_atcontent();
-  } 
+  }
   else
   {
     n.get_common_content()->accept(*this);
@@ -118,10 +118,10 @@ void* begin_visit(const ArgList& n)
     }
     const exprnode* e_p = &*(n[i]);
     e_p->accept(*this);
-  } 
+  }
   return 0;
 }
-  
+
 
 DEFAULT_END_VISIT (ArgList)
 
@@ -132,15 +132,15 @@ void end_visit(const AtomicType& n, void* state)
 {
   os << n.get_qname()->get_qname();
 }
-  
-  
+
+
 void* begin_visit(const AttributeTest& n)
 {
   os << "attribute(";
   return no_state;
 }
-  
-  
+
+
 void end_visit(const AttributeTest& n, void*)
 {
   os << ")";
@@ -155,8 +155,8 @@ void* begin_visit(const BaseURIDecl& n)
 
 
 DEFAULT_END_VISIT (BaseURIDecl);
-    
-  
+
+
 void* begin_visit(const BoundarySpaceDecl& n)
 {
   os << "declare boundary-space ";
@@ -176,7 +176,7 @@ void* begin_visit(const BoundarySpaceDecl& n)
 }
 
 DEFAULT_END_VISIT (BoundarySpaceDecl)
-  
+
 
 void* begin_visit(const CaseClause& n)
 {
@@ -193,7 +193,7 @@ void* begin_visit(const CaseClause& n)
 
 
 DEFAULT_END_VISIT (CaseClause)
-  
+
 
 DEFAULT_VISIT (CaseClauseList) //@checked
 
@@ -203,7 +203,7 @@ void* begin_visit(const CommentTest& n)
   os << "comment()";
   return no_state;
 }
-  
+
 
 DEFAULT_END_VISIT (CommentTest);
 
@@ -257,7 +257,7 @@ void* begin_visit(const CopyNamespacesDecl& n)
 }
 
 DEFAULT_END_VISIT (CopyNamespacesDecl)
-  
+
 void* begin_visit(const DefaultCollationDecl& n)
 {
   os << "declare default collation " << n.get_collation();
@@ -297,7 +297,7 @@ DEFAULT_END_VISIT (DefaultNamespaceDecl)
     DEFAULT_VISIT (DirAttributeList) //@checked
 
     void* begin_visit(const DirAttributeValue& n)
-    { 
+    {
       if(n.get_quot_attr_content())
       {
         os << '"';
@@ -358,7 +358,7 @@ void* begin_visit(const EmptyOrderDecl& n)
   }
   return 0;
 }
-  
+
 
 DEFAULT_END_VISIT (EmptyOrderDecl)
 
@@ -407,7 +407,7 @@ DEFAULT_END_VISIT (EmptyOrderDecl)
 
 
 void* begin_visit(const FunctionDecl& n)
-{ 
+{
   Parameters lParameters;
   os << "declare ";
   switch(n.get_type()) {
@@ -437,7 +437,7 @@ void* begin_visit(const FunctionDecl& n)
     os << lReturnType.str();
     lParameters.push(lReturnType.str());
   }
-  if(n.get_body()) { 
+  if(n.get_body()) {
     os << '{';
     n.get_body()->accept(*this);
     os << '}';
@@ -446,13 +446,13 @@ void* begin_visit(const FunctionDecl& n)
             n.get_type() == ParseConstants::fn_extern_sequential) {
     os << " external";
   }
-  
-  if(n.get_paramlist()) 
+
+  if(n.get_paramlist())
   {
     const rchandle<ParamList> paramList = n.get_paramlist();
     for (vector<rchandle<Param> >::const_iterator it = paramList->begin();
          it != paramList->end();
-         ++it) 
+         ++it)
     {
       const Param* param = &**it;
       stringstream lParamString;
@@ -463,10 +463,10 @@ void* begin_visit(const FunctionDecl& n)
   theFunctionIndex.insert(make_pair(n.get_name()->get_qname(), lParameters));
   return 0;
 }
-  
+
 
 DEFAULT_END_VISIT (FunctionDecl)
-  
+
 
 void* begin_visit(const GeneralComp& n)
 {
@@ -493,7 +493,7 @@ void* begin_visit(const GeneralComp& n)
   }
   return no_state;
 }
-  
+
 
 DEFAULT_END_VISIT (GeneralComp)
 
@@ -505,7 +505,7 @@ DEFAULT_END_VISIT (GeneralComp)
     DEFAULT_END_VISIT (ItemType)
 
     void* begin_visit(const LetClause& n)
-    { 
+    {
       os << "let ";
       switch(n.for_or_let())
       {
@@ -542,7 +542,7 @@ DEFAULT_END_VISIT (GeneralComp)
       os << n.get_uri();
       if(n.get_at_list())
       {
-        n.get_at_list()->accept(*this); 
+        n.get_at_list()->accept(*this);
       }
       return 0;
     }
@@ -554,7 +554,7 @@ DEFAULT_END_VISIT (GeneralComp)
       {
         os << n.getQName()->get_qname();
       } else {
-        n.getWildcard()->accept(*this); 
+        n.getWildcard()->accept(*this);
       }
       return no_state;
     }
@@ -565,7 +565,7 @@ DEFAULT_END_VISIT (GeneralComp)
     void* begin_visit(const NodeComp& n)
     {
       switch(n.get_type())
-      { 
+      {
         case ParseConstants::op_is:
           os << "is";
           break;
@@ -689,7 +689,7 @@ void* begin_visit(const OrderEmptySpec& n)
   }
   return 0;
 }
-  
+
 DEFAULT_END_VISIT (OrderEmptySpec)
 
 DEFAULT_VISIT (OrderModifierPN)//@checked
@@ -756,7 +756,7 @@ void* begin_visit(const Param& n)
 
 
 DEFAULT_END_VISIT (Param)
-    
+
 
 
 void* begin_visit(const ParamList& n)
@@ -786,7 +786,7 @@ DEFAULT_END_VISIT (ParamList)
       os << "at $" << n.get_name()->get_qname();
       return 0;
     }
-    DEFAULT_END_VISIT (PositionalVar)\
+    DEFAULT_END_VISIT (PositionalVar)
 
     void* begin_visit(const Pragma& n)
     {
@@ -892,7 +892,7 @@ DEFAULT_END_VISIT (ParamList)
       }
       os << n.get_uri() << " at ";
       n.get_at_list()->accept(*this);
-      return 0;  
+      return 0;
     }
     DEFAULT_END_VISIT (SchemaImport)
 
@@ -913,7 +913,7 @@ DEFAULT_END_VISIT (ParamList)
         os << '-';
       } else {
         os << '+';
-      } 
+      }
       return 0;
     }
     DEFAULT_END_VISIT (SignList)
@@ -1030,7 +1030,7 @@ DEFAULT_END_VISIT (ParamList)
 
     void* begin_visit(const VarGetsDecl& n)
     {
-      os << "$" << n.get_name()->get_qname() << " "; 
+      os << "$" << n.get_name()->get_qname() << " ";
       if(n.get_typedecl())
       {
         os << "as ";
@@ -1311,7 +1311,7 @@ DEFAULT_END_VISIT (ParamList)
       os << "processing-instruction";
       if(!n.get_target().empty())
       {
-        os << n.get_target();  
+        os << n.get_target();
       } else {
         os << '{';
         n.get_target_expr()->accept(*this);
@@ -1376,7 +1376,7 @@ DEFAULT_END_VISIT (ParamList)
 
     void* begin_visit(const DirPIConstructor& n)
     {
-      os << "<? " << n.get_pi_target() << " " << n.get_pi_content() << " ?>"; 
+      os << "<? " << n.get_pi_target() << " " << n.get_pi_content() << " ?>";
       return 0;
     }
     DEFAULT_END_VISIT (DirPIConstructor)
@@ -1540,7 +1540,7 @@ DEFAULT_END_VISIT (ParamList)
     void* begin_visit(const QuantifiedExpr& n)
     {
       switch(n.get_qmode())
-      { 
+      {
         case ParseConstants::quant_some:
           os << " some $";
           break;
@@ -1605,6 +1605,31 @@ DEFAULT_END_VISIT (ParamList)
       return 0;
     }
     DEFAULT_END_VISIT (TreatExpr)
+
+    void* begin_visit(const SwitchExpr& n)
+    {
+      os << "switch(";
+      n.get_switch_expr()->accept(*this);
+      os << ')';
+      n.get_clause_list()->accept(*this);
+      os << " default return";
+      n.get_default_expr()->accept(*this);
+      return 0;
+    }
+    DEFAULT_END_VISIT (SwitchExpr)
+
+    void* begin_visit(const SwitchCaseClause& n)
+    {
+      n.get_operand_list()->accept(*this);
+      os << " return";
+      n.get_return_expr()->accept(*this);
+      return 0;
+    }
+    DEFAULT_END_VISIT (SwitchCaseClause)
+
+    DEFAULT_VISIT (SwitchCaseClauseList)
+
+    DEFAULT_VISIT (SwitchCaseOperandList)
 
 
     void* begin_visit(const TypeswitchExpr& n)
@@ -1884,7 +1909,7 @@ DEFAULT_END_VISIT (ParamList)
   DEFAULT_VISIT (ExitExpr);
   DEFAULT_VISIT (WhileExpr);
   DEFAULT_VISIT (FlowCtlStatement);
-  
+
     DEFAULT_VISIT (LiteralFunctionItem);
     DEFAULT_VISIT (InlineFunction);
     DEFAULT_VISIT (AnyFunctionTest);

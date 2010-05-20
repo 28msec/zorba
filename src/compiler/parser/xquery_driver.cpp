@@ -1,18 +1,28 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+
+#ifdef _WIN32
+  // Include the NOMINMAX definition before windwows.h is included,
+  // so that min and max macros are not defined, and std::max and std::min
+  // uses do not generate errors on Windows.
+#define NOMINMAX
+#endif
+
+
 #include <fstream>
 #include "system/properties.h"
 #include "compiler/parser/xquery_driver.h"
@@ -23,8 +33,8 @@
 #  pragma GCC diagnostic ignored "-Wparentheses"
 #endif
 
-#include "compiler/parser/xquery_parser.hpp"
 #include "compiler/parser/xquery_scanner.h"
+#include "compiler/parser/xquery_parser.hpp"
 
 #ifdef __GNUC__
 #  pragma GCC diagnostic warning "-Wparentheses"
@@ -34,9 +44,7 @@
 #include "context/static_context.h"
 #include "zorbaerrors/error_manager.h"
 
-using namespace std;
-
-namespace zorba 
+namespace zorba
 {
 
 xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
@@ -44,14 +52,14 @@ xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
   symtab(initial_heapsize),
   expr_p (NULL),
   theCompilerCB(aCompilerCB)
-{ 
+{
 }
 
 
 bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 {
   int ch[3];
-  
+
   theFilename = aFilename.c_str();
 
   // process the UTF16 Byte Order Mark = \xEF\xBB\xBF
@@ -80,12 +88,13 @@ bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 
   xquery_scanner scanner(this, &in);
   scanner.set_yy_flex_debug(Properties::instance()->traceScanning());
-//  scanner.set_yy_flex_debug(true);
   this->lexer = &scanner;
+  // scanner.set_yy_flex_debug(true); // debugging purposes
 
-  zorba::xquery_parser parser(*this);
+  xquery_parser parser(*this);
   parser.set_debug_level(Properties::instance()->traceParsing());
-//  parser.set_debug_level(true);
+  // parser.set_debug_level(true); // debugging purposes
+
   return (parser.parse() == 0);
 }
 
@@ -101,14 +110,14 @@ bool xquery_driver::parse_string(const xqpString& input)
   return parse_stream(iss);
 }
 
-void xquery_driver::set_expr(parsenode* e_p) 
+void xquery_driver::set_expr(parsenode* e_p)
 {
   if (theCompilerCB->theConfig.parse_cb != NULL)
     theCompilerCB->theConfig.parse_cb(e_p, theCompilerCB->theRootSctx->get_entity_retrieval_uri()->str());
   expr_p = e_p;
 }
 
-QueryLoc xquery_driver::createQueryLoc(const zorba::location& aLoc) 
+QueryLoc xquery_driver::createQueryLoc(const zorba::location& aLoc)
 {
   QueryLoc lLoc;
   lLoc.setFilename(aLoc.begin.filename);

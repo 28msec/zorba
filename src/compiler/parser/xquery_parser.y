@@ -29,6 +29,7 @@
 %error-verbose
 
 %code requires {
+
 #include <list>
 #include <string>
 #include <vector>
@@ -66,6 +67,13 @@ typedef std::pair<std::string,std::string> string_pair_t;
 */
 
 %{
+
+#ifdef _WIN32
+  // Include the NOMINMAX definition before windwows.h is included,
+  // so that min and max macros are not defined, and std::max and std::min
+  // uses do not generate errors on Windows.
+#define NOMINMAX
+#endif
 
 #include "common/common.h"
 
@@ -202,14 +210,13 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> PRAGMA_LITERAL_AND_END_PRAGMA "'pragma literal'"
 %token <sval> QNAME_SVAL_AND_END_PRAGMA     "'QName #)'"
 %token <sval> PREFIX_WILDCARD               "'*:QName'"
-%token <sval> QNAME_SVAL                    "'QName_sval'"
+%token <sval> QNAME_SVAL                    'qualified name'
 %token <sval> QUOTE_ATTR_CONTENT            "'quote attribute content'"
 %token <sval> STRING_LITERAL                "'STRING'"
 %token <sval> XML_COMMENT_LITERAL           "'XML comment'"
 
 %type <sval> URI_LITERAL                    "'URI'"
 %type <sval> NCNAME                         "'NCName'"
-/* %type <sval> NCNAME_NOKW                 "'NCName(non keyword)'" */
 %type <sval> KEYWORD                        "'KEYWORD'"
 
 %token <sval> DECLARE                       "'declare'"
@@ -259,6 +266,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token STABLE                           "'stable'"
 %token TEXT                             "'text'"
 %token TUMBLING                         "'tumbling'"
+%token SWITCH                           "'switch'"
 %token TYPESWITCH                       "'typeswitch'"
 %token UPDATING                         "'updating'"
 %token VALIDATE                         "'validate'"
@@ -626,6 +634,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> Setter
 %type <node> SignList
 %type <node> SingleType
+%type <node> SwitchCaseClause
+%type <node> SwitchCaseClauseList
+%type <node> SwitchCaseOperandList
 %type <node> TextTest
 %type <node> TypeDeclaration
 %type <node> TypeName
@@ -713,6 +724,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> RelativePathExpr
 %type <expr> StepExpr
 %type <expr> StringLiteral
+%type <expr> SwitchExpr
 %type <expr> TreatExpr
 %type <expr> TypeswitchExpr
 %type <expr> UnaryExpr
@@ -846,13 +858,13 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDeclUpdating FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList
+%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDeclUpdating FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
 
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -2239,6 +2251,7 @@ ConcatExpr
 ExprSingle
     :   FLWORExpr
     |   QuantifiedExpr
+    |   SwitchExpr
     |   TypeswitchExpr
     |   IfExpr
     |   OrExpr
@@ -2889,26 +2902,26 @@ QuantifiedExpr
 
 // [42a]
 QVarInDeclList
-    :   QVarInDecl %prec QVARINDECLLIST_REDUCE
-        {
-            QVarInDeclList *qvidl = new QVarInDeclList( LOC(@$) );
-            qvidl->push_back( dynamic_cast<QVarInDecl*>($1) );
-            $$ = qvidl;
+  :   QVarInDecl %prec QVARINDECLLIST_REDUCE
+    {
+      QVarInDeclList *qvidl = new QVarInDeclList( LOC(@$) );
+      qvidl->push_back( dynamic_cast<QVarInDecl*>($1) );
+      $$ = qvidl;
 
-        }
-    |   QVarInDeclList COMMA DOLLAR QVarInDecl
-        {
-            QVarInDeclList *qvidl = dynamic_cast<QVarInDeclList*>($1);
-            qvidl->push_back( dynamic_cast<QVarInDecl*>($4) );
-            $$ = $1;
-        }
-    ;
+    }
+  | QVarInDeclList COMMA DOLLAR QVarInDecl
+    {
+      QVarInDeclList *qvidl = dynamic_cast<QVarInDeclList*>($1);
+      qvidl->push_back( dynamic_cast<QVarInDecl*>($4) );
+      $$ = $1;
+    }
+;
 
 
 // [42b] QVarInDecl
 // ----------------
-QVarInDecl :
-    QNAME _IN  ExprSingle
+QVarInDecl
+    :  QNAME _IN  ExprSingle
     {
       $$ = new QVarInDecl(LOC(@$), static_cast<QName*>($1), $3);
     }
@@ -2920,6 +2933,52 @@ QVarInDecl :
                           $4);
     }
 ;
+
+// SwitchExpr
+// -------------------
+SwitchExpr :
+    SWITCH  LPAR  Expr  RPAR  SwitchCaseClauseList  DEFAULT  RETURN  ExprSingle
+    {
+      $$ = new SwitchExpr(LOC(@$), $3, static_cast<SwitchCaseClauseList*>($5), $8);
+    }
+  ;
+
+SwitchCaseClauseList :
+    SwitchCaseClause
+    {
+      SwitchCaseClauseList* scc_list_p = new SwitchCaseClauseList(LOC(@$));
+      scc_list_p->push_back(static_cast<SwitchCaseClause*>($1));
+      $$ = scc_list_p;
+    }
+  | SwitchCaseClauseList SwitchCaseClause
+    {
+      SwitchCaseClauseList* scc_list_p = static_cast<SwitchCaseClauseList*>($1);
+      scc_list_p->push_back(static_cast<SwitchCaseClause*>($2));
+      $$ = $1;
+    }
+  ;
+
+SwitchCaseClause :
+    SwitchCaseOperandList  RETURN  ExprSingle
+    {
+      $$ = new SwitchCaseClause(LOC(@$), dynamic_cast<SwitchCaseOperandList*>($1), $3);
+    }
+  ;
+
+SwitchCaseOperandList :
+    CASE  ExprSingle
+    {
+      SwitchCaseOperandList* sco_list_p = new SwitchCaseOperandList(LOC(@$));
+      sco_list_p->push_back($2);
+      $$ = sco_list_p;
+    }
+  | SwitchCaseOperandList CASE  ExprSingle
+    {
+      SwitchCaseOperandList* sco_list_p = static_cast<SwitchCaseOperandList*>($1);
+      sco_list_p->push_back($3);
+      $$ = $1;
+    }
+  ;
 
 
 // [43] TypeswitchExpr
@@ -5229,6 +5288,25 @@ NCNAME
 
 /*_______________________________________________________________________
  *                                                                       *
+ *  Eval productions                                                     *
+ *                                                                       *
+ *_______________________________________________________________________*/
+
+  EvalExpr
+  : USING DOLLAR EvalVarDeclList EVAL LBRACE ExprSingle RBRACE
+    {
+      $$ = new EvalExpr(
+        LOC(@$), dynamic_cast<VarGetsDeclList *> ($3), $6
+        );
+    }
+  | EVAL LBRACE ExprSingle RBRACE
+    {
+      $$ = new EvalExpr( LOC(@$), new VarGetsDeclList( LOC(@$) ), $3 );
+    }
+    ;
+
+/*_______________________________________________________________________
+ *                                                                       *
  *  All QNames                                                           *
  *                                                                       *
  *_______________________________________________________________________*/
@@ -5242,25 +5320,6 @@ QNAME
             $$ = new QName( LOC(@$), SYMTAB($1) );
         }
   ;
-
-/*_______________________________________________________________________
- *                                                                       *
- *  Eval productions                                                     *
- *                                                                       *
- *_______________________________________________________________________*/
-
-EvalExpr
-    :   USING DOLLAR EvalVarDeclList EVAL LBRACE ExprSingle RBRACE
-        {
-            $$ = new EvalExpr(
-                LOC(@$), dynamic_cast<VarGetsDeclList *> ($3), $6
-            );
-        }
-    |   EVAL LBRACE ExprSingle RBRACE
-        {
-            $$ = new EvalExpr( LOC(@$), new VarGetsDeclList( LOC(@$) ), $3 );
-        }
-    ;
 
 KEYWORD
     :   XQUERY { $$ = SYMTAB_PUT("xquery"); }

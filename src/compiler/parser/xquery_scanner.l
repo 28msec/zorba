@@ -350,6 +350,7 @@ typedef zorba::xquery_parser::token token;
 "while" { return token::WHILE; }
 "set" { return token::SET; }
 "validate" { return token::VALIDATE; }
+"switch" { return token::SWITCH; }
 "typeswitch" { return token::TYPESWITCH; }
 "eval" { return token::EVAL; }
 "element" { return token::ELEMENT; }

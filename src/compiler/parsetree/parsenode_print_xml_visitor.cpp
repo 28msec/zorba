@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -102,8 +102,8 @@ void *begin_visit(const DefaultNamespaceDecl &n)
 {
     INDENT;
 
-    os << "<DefaultNamespaceDecl mode='" 
-       << (n.get_mode () == ParseConstants::ns_element_default ? "element" : "function") 
+    os << "<DefaultNamespaceDecl mode='"
+       << (n.get_mode () == ParseConstants::ns_element_default ? "element" : "function")
        << "' uri='" << n.get_default_namespace () << "'" << IDS;
 
     os << "/>";
@@ -120,7 +120,7 @@ void *begin_visit(const DirAttr &n)
 {
     INDENT;
 
-    os << "<DirAttr pos='" << n.get_location() << "' name='" 
+    os << "<DirAttr pos='" << n.get_location() << "' name='"
        << n.get_name()->get_qname() << "' ptr='" << &n << "'";
 
     os << ">";
@@ -160,7 +160,7 @@ void *begin_visit(const GeneralComp &n)
     os << "<GeneralComp" << IDS;
 
     os << "/>";
-    
+
     NL;
 
     return no_state;
@@ -184,12 +184,12 @@ void *begin_visit(const MainModule  &n)
 void *begin_visit(const ModuleDecl &n)
 {
   INDENT;
-  
+
   os << "<ModuleDecl" << IDS;
   os << " prefix='" << n.get_prefix() << "' "
      << "target_namespace='" << n.get_target_namespace() << "'";
   os << ">";
-  
+
   INDENT_INC; NL;
   return no_state;
 }
@@ -197,12 +197,12 @@ void *begin_visit(const ModuleDecl &n)
 void *begin_visit(const ModuleImport &n)
 {
   INDENT;
-  
+
   os << "<ModuleImport" << IDS;
   os << " prefix='" << n.get_prefix() << "' "
      << "target_namespace='" << n.get_uri() << "'";
   os << ">";
-  
+
   INDENT_INC; NL;
   return no_state;
 }
@@ -221,7 +221,7 @@ void *begin_visit(const NameTest &n)
     // However fixing this would impact the translator.
     // So we "visit" here.
     if (n.getQName () != NULL) n.getQName ()->accept (*this);
-    
+
     return no_state;
 }
 
@@ -340,13 +340,13 @@ void *begin_visit (const URILiteralList &n)
   os << ">";
 
   INDENT_INC; NL;
-    
-  for (ulong i = 0; i < n.size(); i++) 
+
+  for (ulong i = 0; i < n.size(); i++)
   {
     INDENT;
     os << "<URI>" << n [i] << "</URI>" << "\n";
   }
-  
+
   return no_state;
 }
 
@@ -499,7 +499,7 @@ void *begin_visit(const NumericLiteral &n)
 {
     INDENT;
 
-    os << "<NumericLiteral" << IDS << " type='" 
+    os << "<NumericLiteral" << IDS << " type='"
        << ParseConstants::decode_numeric_type (n.get_type ()) << "' val='" << n.toString () << "'";
 
     os << "/>";
@@ -535,7 +535,7 @@ void *begin_visit(const RelativePathExpr &n)
 }
 
 END_TAG(RelativePathExpr)
-    
+
 
 void *begin_visit(const TypeswitchExpr &n)
 {
@@ -567,7 +567,7 @@ void *begin_visit(const VarBinding &n)
 {
     INDENT;
 
-    os << "<VarBinding varname='" << n.get_varname() 
+    os << "<VarBinding varname='" << n.get_varname()
        << "' npos='" << n.get_location() << "' ptr='" << &n << "'";
 
     os << ">";
@@ -630,7 +630,7 @@ void *begin_visit(const TypedFunctionTest& n)
   os << "pos='" << n.get_location() << "' ptr='" << &n << "'";
   os << ">";
   INDENT_INC; NL;
-  return no_state;  
+  return no_state;
 }
 
 END_TAG(TypedFunctionTest)
@@ -779,6 +779,10 @@ BEGIN_END_TAG (TransformExpr)
 BEGIN_END_TAG (TreatExpr)
 BEGIN_END_TAG (TryExpr)
 BEGIN_END_TAG (TypeName)
+BEGIN_END_TAG (SwitchExpr)
+BEGIN_END_TAG (SwitchCaseClause)
+BEGIN_END_TAG (SwitchCaseClauseList)
+BEGIN_END_TAG (SwitchCaseOperandList)
 END_TAG (TypeswitchExpr)
 BEGIN_END_TAG (UnaryExpr)
 BEGIN_END_TAG (UnionExpr)

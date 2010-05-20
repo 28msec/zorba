@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,7 +28,7 @@ using namespace std;
 
 namespace zorba {
 
-class ParseNodePrintXQDocVisitor : public parsenode_visitor 
+class ParseNodePrintXQDocVisitor : public parsenode_visitor
 {
 private:
   string getFileName(const string& aFileName)
@@ -77,7 +77,7 @@ private:
       }
 
       os << "<xqdoc:comment>" << endl;
-      
+
       // description
       if (!aComment->getDescription().empty()) {
         printCommentFragment(os, aComment->getDescription(), "xqdoc:description");
@@ -128,7 +128,7 @@ private:
         printCommentFragment(os, lAnnotation.getValue(), "xqdoc:since");
       }
 
-      os << "</xqdoc:comment>" << endl; 
+      os << "</xqdoc:comment>" << endl;
     }
   }
 
@@ -137,7 +137,7 @@ private:
     os << "<" << aTag << ">";
     // wrap all text (except tags) into CDATA sections
     xqpString lString(aString.c_str());
-    xqpString lRes = lString.replace("(.*?)(<.*?>)", "<![CDATA[$1]]>$2", "");  
+    xqpString lRes = lString.replace("(.*?)(<.*?>)", "<![CDATA[$1]]>$2", "");
     // if the description didn't contain tags
     if (lRes.size() == lString.size()) {
       os << "<![CDATA[";
@@ -172,7 +172,7 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
   string lContent;
   os << "<?xml version='1.0' ?>" << endl ;
   os << "<xqdoc:xqdoc xmlns:xqdoc='http://www.xqdoc.org/1.0'>" << endl ;
-   
+
   os << "<xqdoc:control>" << endl ;
     os << "<xqdoc:date>" << aDateTime->getStringValue() << "</xqdoc:date>" << endl ;
     os << "<xqdoc:version>1.0</xqdoc:version>" << endl ;
@@ -181,7 +181,7 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
   p->accept(*this);
 
   lContent = theImports.str();
-  if (!lContent.empty()) { 
+  if (!lContent.empty()) {
     os << "<xqdoc:imports>";
       os << lContent;
     os << "</xqdoc:imports>" << endl ;
@@ -237,9 +237,9 @@ void end_visit(const ModuleDecl& n, void* /*visit_state*/)
 {
   os << "<xqdoc:uri>" << n.get_target_namespace() << "</xqdoc:uri>" << endl;
   os << "<xqdoc:name>" << theFileName << "</xqdoc:name>" << endl;
-  
+
   print_comment(os, n.getComment());
-  
+
   os << "</xqdoc:module>" ;
 }
 
@@ -253,7 +253,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 {
   print_comment(theFunctions, n.getComment());
   theFunctions << "<xqdoc:name>" << n.get_name()->get_localname() << "</xqdoc:name>" << endl;
-  theFunctions << "<xqdoc:signature><![CDATA["; 
+  theFunctions << "<xqdoc:signature><![CDATA[";
   FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(), n.get_paramlist(), n.get_return_type(), 0, n.get_type());
   FunctionIndex lIndex = print_parsetree_xquery(theFunctions, &lFunctionDeclClone);
   theFunctions << "]]></xqdoc:signature>" << endl ;
@@ -271,7 +271,7 @@ void end_visit(const VarDecl& n, void*)
   theVariables << "<xqdoc:uri>" << n.get_name()->get_localname()->c_str()
                << "</xqdoc:uri>" ;
   print_comment(theVariables, n.getComment());
-  
+
   theVariables << "</xqdoc:variable>" << endl ;
 }
 
@@ -286,7 +286,7 @@ void end_visit(const ModuleImport& n, void*)
 {
   theImports << "<xqdoc:uri>" << n.get_uri() << "</xqdoc:uri>";
   print_comment(theImports, n.getComment());
-  
+
   theImports << "</xqdoc:import>" << endl;
 }
 
@@ -463,6 +463,10 @@ XQDOC_NO_BEGIN_END_TAG (TransformExpr)
 XQDOC_NO_BEGIN_END_TAG (TreatExpr)
 XQDOC_NO_BEGIN_END_TAG (TryExpr)
 XQDOC_NO_BEGIN_END_TAG (TypeName)
+XQDOC_NO_BEGIN_END_TAG (SwitchExpr)
+XQDOC_NO_BEGIN_END_TAG (SwitchCaseClause)
+XQDOC_NO_BEGIN_END_TAG (SwitchCaseClauseList)
+XQDOC_NO_BEGIN_END_TAG (SwitchCaseOperandList)
 XQDOC_NO_BEGIN_END_TAG (TypeswitchExpr)
 XQDOC_NO_BEGIN_END_TAG (UnaryExpr)
 XQDOC_NO_BEGIN_END_TAG (UnionExpr)
@@ -498,7 +502,7 @@ void print_parsetree_xqdoc(
   ostream&            os,
   const parsenode*    p,
   const string&       aFileName,
-  const store::Item_t& aDateTime) 
+  const store::Item_t& aDateTime)
 {
   ParseNodePrintXQDocVisitor v(os, aFileName);
   v.print(p, aDateTime);

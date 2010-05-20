@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,11 +23,11 @@
 // actual parsendoe classes.
 #include "compiler/parsetree/parsenodes.h"
 
-namespace zorba 
+namespace zorba
 {
 
 /*______________________________________________________________________
-|  
+|
 |  Design note: Visitor pattern.  See, for example:
 |  "Modern C++ Design" by Andrei Alexandrescu, Addison Wesley (2001),
 |  Chapter 10.
@@ -35,7 +35,7 @@ namespace zorba
 
 class parsenode_visitor
 {
-public: 
+public:
   virtual ~parsenode_visitor() { }
 
   static void *no_state;
@@ -189,6 +189,10 @@ public:
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( RelativePathExpr );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( StringLiteral );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( TreatExpr );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( SwitchExpr );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( SwitchCaseClause );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( SwitchCaseClauseList );
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( SwitchCaseOperandList );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( TypeswitchExpr );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( UnaryExpr );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( UnionExpr );
@@ -262,7 +266,7 @@ public:
 
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( LiteralFunctionItem );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( InlineFunction );
-  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( AnyFunctionTest ); 
+  DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( AnyFunctionTest );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( TypeList );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( TypedFunctionTest );
   DECL_PARSENODE_VISITOR_VISIT_MEM_FNS( DynamicFunctionInvocation );
