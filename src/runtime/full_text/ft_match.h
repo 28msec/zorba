@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_FULL_TEXT_MATCHES_H
-#define ZORBA_FULL_TEXT_MATCHES_H
+#ifndef ZORBA_FULL_TEXT_FT_MATCH_H
+#define ZORBA_FULL_TEXT_FT_MATCH_H
 
 #include <algorithm>
 #include <list>
@@ -98,5 +98,5 @@ private:
 typedef std::list<ft_match> ft_all_matches;
 
 } // namespace zorba
-#endif  /* ZORBA_FULL_TEXT_MATCHES_H */
+#endif  /* ZORBA_FULL_TEXT_FT_MATCH_H */
 /* vim:set et sw=2 ts=2: */

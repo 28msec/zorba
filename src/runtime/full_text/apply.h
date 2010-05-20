@@ -19,7 +19,7 @@
 
 #include "compiler/expression/ftnode.h"
 #include "compiler/parser/ft_types.h"
-#include "runtime/full_text/ft_matches.h"
+#include "runtime/full_text/ft_match.h"
 #include "store/api/ft_token_iterator.h"
 
 namespace zorba {
