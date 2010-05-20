@@ -1111,13 +1111,19 @@ bool str_down(
       return aFactory->createLanguage(result, lString);
     break;
   case TypeConstants::XS_NMTOKEN:
-    if (GenericCast::instance()->castableToNMToken(lString))
-      return aFactory->createNMTOKEN(result, lString);
-    break;
+    {
+      xqpStringStore_t lTrimStr = doTrim(lString);
+      if (GenericCast::instance()->castableToNMToken(lTrimStr))
+        return aFactory->createNMTOKEN(result, lTrimStr);
+      break;
+    }
   case TypeConstants::XS_NAME:
-    if (GenericCast::instance()->castableToName(lString))
-      return aFactory->createName(result, lString);
+  {
+    xqpStringStore_t lTrimStr = doTrim(lString);
+    if (GenericCast::instance()->castableToName(lTrimStr))
+      return aFactory->createName(result, lTrimStr);
     break;
+  }
   case TypeConstants::XS_NCNAME:
     if (GenericCast::instance()->castableToNCName(lString))
       return aFactory->createNCName(result, lString);
@@ -1813,7 +1819,7 @@ bool GenericCast::castableToNormalizedString(const xqpStringStore *str) const
   std::vector<uint32_t>::size_type i, sz = cps.size();
 
   if (sz == 0) {
-    return false;
+    return true;
   }
 
   for(i = 0; i < sz; ++i) {
@@ -1835,7 +1841,7 @@ bool GenericCast::castableToToken(const xqpStringStore *str) const
   std::vector<uint32_t>::size_type i, sz = cps.size();
 
   if (sz == 0) {
-    return false;
+    return true;
   }
 
   bool spaceSeen = false;
@@ -1873,8 +1879,7 @@ bool GenericCast::castableToLanguage(const xqpStringStore *str) const
   if (sz == 0) {
     return false;
   }
-
-  /* automaton for [a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})* */
+  /* automation for [a-zA-Z]{1,8}(-[a-zA-Z0-9]{1,8})* */
   bool firstBlock = true;
   i = 0;
   uint32_t blkIdx = 0;
@@ -1885,6 +1890,7 @@ bool GenericCast::castableToLanguage(const xqpStringStore *str) const
         return false;
       }
       blkIdx = 0;
+      firstBlock = false;
       ++i;
       continue;
     }
@@ -1907,7 +1913,6 @@ bool GenericCast::castableToLanguage(const xqpStringStore *str) const
   }
   return true;
 }
-
 
 bool GenericCast::castableToNMToken(const xqpStringStore *str)
 {
@@ -1950,7 +1955,7 @@ bool GenericCast::castableToName(const xqpStringStore *str)
   for (i = 0; i < sz; ++i) 
   {
     cp = cps[i];
-    if (!(XQCharType::isLetter(cp) || cp == '_' || cp == ':')) 
+    if (!(XQCharType::isLetter(cp) || cp == '_' || cp == ':') )
     {
       if (i == 0) 
       {
