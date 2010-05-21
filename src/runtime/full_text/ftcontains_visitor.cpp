@@ -290,24 +290,24 @@ void V::end_visit( ftdistance_filter &f ) {
   store::Item_t item1;
   PlanIterator::consumeNext( item1, range->get_plan_iter1(), plan_state_ );
 
-  int at_least = 0;
-  int at_most = numeric_limits<int>::max();
+  ft_int at_least = 0;
+  ft_int at_most = numeric_limits<ft_int>::max();
 
   switch ( range->get_mode() ) {
     case ft_range_mode::at_least:
-      at_least = item1->getIntValue();
+      at_least = to_ft_int( item1->getIntegerValue() );
       break;
     case ft_range_mode::at_most:
-      at_most = item1->getIntValue();
+      at_most = to_ft_int( item1->getIntegerValue() );
       break;
     case ft_range_mode::exactly:
-      at_least = at_most = item1->getIntValue();
+      at_least = at_most = to_ft_int( item1->getIntegerValue() );
       break;
     case ft_range_mode::from_to:
-      at_least = item1->getIntValue();
+      at_least = to_ft_int( item1->getIntegerValue() );
       store::Item_t item2;
       PlanIterator::consumeNext( item2, range->get_plan_iter2(), plan_state_ );
-      at_most = item2->getIntValue();
+      at_most = to_ft_int( item2->getIntegerValue() );
       break;
   }
 
@@ -345,7 +345,9 @@ void V::end_visit( ftwindow_filter &f ) {
   PlanIterator::consumeNext( item, f.get_plan_iter(), plan_state_ );
   ft_all_matches *const am = POP_MATCHES();
   ft_all_matches *const result = new ft_all_matches;
-  apply_ftwindow( *am, item->getIntValue(), f.get_unit(), *result );
+  apply_ftwindow(
+    *am, to_ft_int( item->getIntegerValue() ), f.get_unit(), *result
+  );
   PUSH_MATCHES( result );
   delete am;
   END_VISIT();

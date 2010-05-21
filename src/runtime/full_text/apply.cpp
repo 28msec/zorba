@@ -142,14 +142,11 @@ static void sort( ft_token_span const *&tsi, ft_token_span const *&tsj ) {
  * Computes the distance of N between 2 ft_token_spans where N is specified by
  * the pointer-to-member.
  */
-static ft_token_span::distance_t distance( ft_token_span const &tsi,
-                                           ft_token_span const &tsj,
-                                           ft_token_span::start_end_ptr sep ) {
+static ft_int distance( ft_token_span const &tsi, ft_token_span const &tsj,
+                        ft_token_span::start_end_ptr sep ) {
   ft_token_span const *pi = &tsi, *pj = &tsj;
   sort( pi, pj );
-  return  static_cast<ft_token_span::distance_t>( (pj->*sep).start )
-        - static_cast<ft_token_span::distance_t>( (pi->*sep).end   )
-        - 1;
+  return (pj->*sep).start - (pi->*sep).end - 1;
 }
 
 /**
@@ -396,7 +393,8 @@ void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode ) {
 
 ////////// ApplyFTDistance ////////////////////////////////////////////////////
 
-void apply_ftdistance( ft_all_matches const &am, int at_least, int at_most,
+void apply_ftdistance( ft_all_matches const &am,
+                       ft_int at_least, ft_int at_most,
                        ft_unit::type unit, ft_all_matches &result ) {
   BEGIN_APPLY( apply_ftdistance );
   PUT_ARG( at_least );
@@ -413,7 +411,7 @@ void apply_ftdistance( ft_all_matches const &am, int at_least, int at_most,
         ft_match::includes_t::const_iterator j = i;
         if ( ++j == m->includes.end() )
           break;
-        ft_token_span::distance_t const d = distance( *i, *j, sep );
+        ft_int const d = distance( *i, *j, sep );
         if ( d < at_least || d > at_most ) {
           satisfies = false;
           break;
@@ -425,7 +423,7 @@ void apply_ftdistance( ft_all_matches const &am, int at_least, int at_most,
       join_includes( m->includes, m_new.includes );
       FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
         FOR_EACH( ft_match::includes_t, i, m->includes ) {
-          ft_token_span::distance_t const d = distance( *i, *e, sep );
+          ft_int const d = distance( *i, *e, sep );
           if ( d >= at_least && d <= at_most ) {
             m_new.excludes.push_back( *e );
             break;
@@ -824,7 +822,7 @@ void apply_ftwords( FTTokenIterator &search_ctx,
 
 ////////// ApplyFTWindow //////////////////////////////////////////////////////
 
-void apply_ftwindow( ft_all_matches const &am, int window_size,
+void apply_ftwindow( ft_all_matches const &am, ft_int window_size,
                      ft_unit::type unit, ft_all_matches &result ) {
   BEGIN_APPLY( apply_ftwindow );
   PUT_ARG( window_size );

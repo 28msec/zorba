@@ -21,15 +21,26 @@
 #include "compiler/parser/ft_types.h"
 #include "runtime/full_text/ft_match.h"
 #include "store/api/ft_token_iterator.h"
+#include "zorbatypes/numconversions.h"
 
 namespace zorba {
+
+typedef xqp_uint ft_int;
+
+inline ft_int to_ft_int( xqp_integer const &i ) {
+  ft_int result;
+  if ( !NumConversions::integerToUInt( i, result ) ) {
+    // TODO
+  }
+  return result;
+}
 
 void apply_ftand( ft_all_matches const&, ft_all_matches const&,
                   ft_all_matches &result );
 
 void apply_ftcontent( ft_all_matches&, ft_content_mode::type );
 
-void apply_ftdistance( ft_all_matches const&, int at_least, int at_most,
+void apply_ftdistance( ft_all_matches const&, ft_int at_least, ft_int at_most,
                        ft_unit::type, ft_all_matches &result );
 
 void apply_ftmild_not( ft_all_matches const&, ft_all_matches const&,
@@ -45,7 +56,7 @@ void apply_ftscope( ft_all_matches const&, ft_scope::type, ft_big_unit::type,
 
 void apply_ftunary_not( ft_all_matches& );
 
-void apply_ftwindow( ft_all_matches const&, int window_size, ft_unit::type,
+void apply_ftwindow( ft_all_matches const&, ft_int window_size, ft_unit::type,
                      ft_all_matches &result );
 
 void apply_ftwords( FTTokenIterator &search_ctx,

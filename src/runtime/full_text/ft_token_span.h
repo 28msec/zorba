@@ -32,7 +32,6 @@ namespace zorba {
  */
 struct ft_token_span {
   typedef FTToken::int_t int_t;
-  typedef int distance_t;               // this MUST be a signed type
 
   struct start_end {
     int_t start;
