@@ -10908,8 +10908,13 @@ void end_visit (const FTAnd& v, void* /*visit_state*/) {
     ftnode *const n = pop_ftstack();
     if ( !n )
       break;
-    if ( !flatten<ftand>( n ) )
-      list.push_back( n );
+    if ( !flatten<ftand>( n ) ) {
+      //
+      // We must use push_front() to maintain original left-to-right order of
+      // the query.
+      //
+      list.push_front( n );
+    }
   }
   push_ftstack( new ftand( v.get_location(), list ) );
 }
@@ -11137,8 +11142,13 @@ void end_visit (const FTMildNot& v, void* /*visit_state*/) {
     ftnode *const n = pop_ftstack();
     if ( !n )
       break;
-    if ( !flatten<ftmild_not>( n ) )
-      list.push_back( n );
+    if ( !flatten<ftmild_not>( n ) ) {
+      //
+      // We must use push_front() to maintain original left-to-right order of
+      // the query.
+      //
+      list.push_front( n );
+    }
   }
   push_ftstack( new ftmild_not( v.get_location(), list ) );
 }
@@ -11167,8 +11177,13 @@ void end_visit (const FTOr& v, void* /*visit_state*/) {
     ftnode *const n = pop_ftstack();
     if ( !n )
       break;
-    if ( !flatten<ftor>( n ) )
-      list.push_back( n );
+    if ( !flatten<ftor>( n ) ) {
+      //
+      // We must use push_front() to maintain original left-to-right order of
+      // the query.
+      //
+      list.push_front( n );
+    }
   }
   push_ftstack( new ftor( v.get_location(), list ) );
 }
