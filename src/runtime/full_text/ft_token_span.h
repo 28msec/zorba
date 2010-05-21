@@ -72,7 +72,7 @@ inline std::ostream& operator<<( std::ostream &o,
 }
 
 inline std::ostream& operator<<( std::ostream &o, ft_token_span const &ts ) {
-  return  o << "{ pos=" << ts.pos
+  return  o << "{TS: pos=" << ts.pos
             << " sent=" << ts.sent
             << " para=" << ts.para << '}';
 }

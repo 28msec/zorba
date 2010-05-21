@@ -20,6 +20,7 @@
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/apply.h"
 #include "runtime/full_text/ftcontains_visitor.h"
+#include "zorbautils/indent.h"
 #include "zorbautils/stl_util.h"
 
 using namespace std;
@@ -163,16 +164,18 @@ ft_visit_result::type V::begin_visit( ftand& ) {
 
 void V::end_visit( ftand& ) {
   while ( true ) {
-    ft_all_matches *const ami = POP_MATCHES(), *const amj = POP_MATCHES();
-    if ( !amj ) {
-      PUSH_MATCHES( ami );
+    // the popping order is significant for FTOrder
+    ft_all_matches *const am_right = POP_MATCHES();
+    ft_all_matches *const am_left  = POP_MATCHES();
+    if ( !am_left ) {
+      PUSH_MATCHES( am_right );
       break;
     }
     ft_all_matches *const result = new ft_all_matches;
-    apply_ftand( *ami, *amj, *result );
+    apply_ftand( *am_left, *am_right, *result );
     PUSH_MATCHES( result );
-    delete ami;
-    delete amj;
+    delete am_left;
+    delete am_right;
   }
   END_VISIT();
 }
@@ -187,16 +190,18 @@ ft_visit_result::type V::begin_visit( ftmild_not& ) {
 
 void V::end_visit( ftmild_not& ) {
   while ( true ) {
-    ft_all_matches *const ami = POP_MATCHES(), *const amj = POP_MATCHES();
-    if ( !amj ) {
-      PUSH_MATCHES( ami );
+    // the popping order is significant for FTOrder
+    ft_all_matches *const am_right = POP_MATCHES();
+    ft_all_matches *const am_left  = POP_MATCHES();
+    if ( !am_left ) {
+      PUSH_MATCHES( am_right );
       break;
     }
     ft_all_matches *const result = new ft_all_matches;
-    apply_ftmild_not( *ami, *amj, *result );
+    apply_ftmild_not( *am_left, *am_right, *result );
     PUSH_MATCHES( result );
-    delete ami;
-    delete amj;
+    delete am_left;
+    delete am_right;
   }
   END_VISIT();
 }
@@ -209,16 +214,18 @@ ft_visit_result::type V::begin_visit( ftor& ) {
 
 void V::end_visit( ftor& ) {
   while ( true ) {
-    ft_all_matches *const ami = POP_MATCHES(), *const amj = POP_MATCHES();
-    if ( !amj ) {
-      PUSH_MATCHES( ami );
+    // the popping order is significant for FTOrder
+    ft_all_matches *const am_right = POP_MATCHES();
+    ft_all_matches *const am_left  = POP_MATCHES();
+    if ( !am_left ) {
+      PUSH_MATCHES( am_right );
       break;
     }
     ft_all_matches *const result = new ft_all_matches;
-    apply_ftor( *ami, *amj, *result );
+    apply_ftor( *am_left, *am_right, *result );
     PUSH_MATCHES( result );
-    delete ami;
-    delete amj;
+    delete am_left;
+    delete am_right;
   }
   END_VISIT();
 }
@@ -234,7 +241,12 @@ void V::end_visit( ftprimary_with_options& ) {
 }
 
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftrange )
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftselection )
+
+ft_visit_result::type V::begin_visit( ftselection& ) {
+  query_pos_ = 0;
+  return ft_visit_result::proceed;
+}
+DEF_FTNODE_VISITOR_END_VISIT( V, ftselection )
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftunary_not )
 void V::end_visit( ftunary_not& ) {
@@ -253,10 +265,9 @@ void V::end_visit( ftwords &w ) {
   store::Item_t item;
   PlanIterator::consumeNext( item, w.get_plan_iter(), plan_state_ );
   FTTokenIterator query_tokens( item->getQueryTokens() );
-  FTToken::int_t query_pos = 0;         // TODO: what should this really be?
   ft_all_matches *const result = new ft_all_matches;
   apply_ftwords(
-    search_context_, query_tokens, query_pos, w.get_mode(), options, *result
+    search_context_, query_tokens, ++query_pos_, w.get_mode(), options, *result
   );
   PUSH_MATCHES( result );
   END_VISIT();

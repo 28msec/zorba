@@ -83,6 +83,7 @@ private:
 
   FTTokenIterator search_context_;
   PlanState &plan_state_;
+  FTToken::int_t query_pos_;
 };
 
 } // namespace zorba

@@ -23,6 +23,7 @@
 #include "runtime/full_text/apply.h"
 #include "runtime/full_text/ft_token_span.h"
 #include "zorbaerrors/error_manager.h"
+#include "zorbautils/indent.h"
 #include "zorbautils/stl_util.h"
 
 #ifdef WIN32
@@ -32,6 +33,42 @@
 #endif
 
 using namespace std;
+
+////////// Debugging macros ///////////////////////////////////////////////////
+
+//#define DEBUG_FT 1
+
+#ifdef DEBUG_FT
+
+#define BEGIN_APPLY(NAME) \
+  cout << #NAME "()\n" << inc_indent
+
+#define PUT_ALL_MATCHES(ARG) \
+  cout << indent << "ARG " #ARG "\n" \
+       << inc_indent << (ARG) << dec_indent << endl
+
+#define PUT_ARG(ARG) \
+  cout << indent << "ARG " #ARG "=" << (ARG) << endl
+
+#define PUT_ENUM(FT_ENUM,ARG) \
+  cout << indent << "ARG " #ARG "=" << FT_ENUM::string_of[ ARG ]
+
+#define END_APPLY(RESULT) \
+  cout  << indent << "RESULT\n" \
+        << inc_indent << (RESULT) << dec_indent << endl \
+        << dec_indent
+
+#else
+
+#define BEGIN_APPLY(NAME)     /* nothing */
+#define PUT_ALL_MATCHES(ARG)  /* nothing */
+#define PUT_ARG(ARG)          /* nothing */
+#define PUT_ENUM(FT_ENUM,ARG) /* nothing */
+#define END_APPLY(RESULT)     /* nothing */
+
+#endif /* DEBUG_FT */
+
+///////////////////////////////////////////////////////////////////////////////
 
 namespace zorba {
 
@@ -224,13 +261,13 @@ static void join_includes( ft_match::includes_t const &includes,
   result.push_back( si );
 }
 
-#if 0
+#ifdef DEBUG_FT
 static void dump( char const *label, FTTokenIterator it ) {
   it.reset();
-  cout << label << flush;
+  cout << indent << label << ' ';
   FTToken const *t;
   while ( it.next( &t ) )
-    cout << " \"" << t->word << '"';
+    cout << *t;
   cout << endl;
 }
 #endif
@@ -242,9 +279,9 @@ static void match_tokens( FTTokenIterator doc_tokens,
                           FTTokenIterator query_tokens,
                           ftmatch_options const &options,
                           ft_token_spans &result ) {
-#if 0
-  dump( "match_tokens(): doc_tokens: ", doc_tokens );
-  dump( "match_tokens(): query_tokens: ", query_tokens );
+#ifdef DEBUG_FT
+  dump( "match_tokens(): d_tokens: ", doc_tokens );
+  dump( "match_tokens(): q_tokens: ", query_tokens );
 #endif
   doc_tokens.reset();
   while ( doc_tokens.hasNext() ) {
@@ -289,6 +326,10 @@ inline bool token_covers_pos( ft_token_span const &ts,
 
 void apply_ftand( ft_all_matches const &ami, ft_all_matches const &amj,
                   ft_all_matches &result ) {
+  BEGIN_APPLY( apply_ftand );
+  PUT_ALL_MATCHES( ami );
+  PUT_ALL_MATCHES( amj );
+
   FOR_EACH( ft_all_matches, mi, ami ) {
     FOR_EACH( ft_all_matches, mj, amj ) {
       ft_match m_new;
@@ -299,11 +340,17 @@ void apply_ftand( ft_all_matches const &ami, ft_all_matches const &amj,
       result.push_back( m_new );
     }
   }
+
+  END_APPLY( result );
 }
 
 ////////// ApplyFTContent /////////////////////////////////////////////////////
 
 void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode ) {
+  BEGIN_APPLY( apply_ftcontent );
+  PUT_ENUM( ft_content_mode, mode );
+  PUT_ALL_MATCHES( am );
+
   ft_token_span::int_t const start_pos = 0;  // TODO: get_lowest_token_pos();
   ft_token_span::int_t const end_pos = 0;    // TODO: get_highest_token_pos();
 
@@ -343,12 +390,20 @@ void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode ) {
         m = am.erase( m );
     }
   }
+
+  END_APPLY( am );
 }
 
 ////////// ApplyFTDistance ////////////////////////////////////////////////////
 
 void apply_ftdistance( ft_all_matches const &am, int at_least, int at_most,
                        ft_unit::type unit, ft_all_matches &result ) {
+  BEGIN_APPLY( apply_ftdistance );
+  PUT_ARG( at_least );
+  PUT_ARG( at_most );
+  PUT_ENUM( ft_unit, unit );
+  PUT_ALL_MATCHES( am );
+
   ft_token_span::start_end_ptr const sep = get_sep_for( unit );
   FOR_EACH( ft_all_matches, m, am ) {
     bool satisfies = true;
@@ -380,13 +435,19 @@ void apply_ftdistance( ft_all_matches const &am, int at_least, int at_most,
       result.push_back( m_new );
     }
   }
+
+  END_APPLY( result );
 }
 
 ////////// ApplyFTMildNot /////////////////////////////////////////////////////
 
 void apply_ftmild_not( ft_all_matches const &ami, ft_all_matches const &amj,
                        ft_all_matches &result ) {
-  
+
+  BEGIN_APPLY( apply_ftmild_not );
+  PUT_ALL_MATCHES( ami );
+  PUT_ALL_MATCHES( amj );
+
   if ( all_empty( ami, &ft_match::excludes ) ||
        all_empty( amj, &ft_match::excludes ) )
     ZORBA_ERROR( FTDY0017 );
@@ -411,45 +472,66 @@ void apply_ftmild_not( ft_all_matches const &ami, ft_all_matches const &amj,
       }
     }
   }
+
+  END_APPLY( result );
 }
 
 ////////// ApplyFTOr //////////////////////////////////////////////////////////
 
 void apply_ftor( ft_all_matches const &ami, ft_all_matches const &amj,
                  ft_all_matches &result ) {
+  BEGIN_APPLY( apply_ftor );
+  PUT_ALL_MATCHES( ami );
+  PUT_ALL_MATCHES( amj );
+
   copy_seq( ami, result );
   copy_seq( amj, result );
+
+  END_APPLY( result );
 }
 
 ////////// ApplyFTOrder ///////////////////////////////////////////////////////
 
+/**
+ * Helper function for apply_ftorder().
+ */
+inline bool ordered( ft_string_match const &smi, ft_string_match const &smj ) {
+  return
+    ( smi.pos.start <= smj.pos.start && smi.query_pos <= smj.query_pos ) ||
+    ( smi.pos.start >= smj.pos.start && smi.query_pos >= smj.query_pos );
+}
+
 void apply_ftorder( ft_all_matches const &am, ft_all_matches &result ) {
+  BEGIN_APPLY( apply_ftorder );
+  PUT_ALL_MATCHES( am );
+
   FOR_EACH( ft_all_matches, m, am ) {
+    bool satisfies = true;
     FOR_EACH( ft_match::includes_t, i1, m->includes ) {
       FOR_EACH( ft_match::includes_t, i2, m->includes ) {
         if ( &*i1 == &*i2 )
           continue;
-        if (   ( i1->pos.start <= i2->pos.start
-              && i1->query_pos <= i2->query_pos )
-            || ( i1->pos.start >= i2->pos.start
-              && i1->query_pos >= i2->query_pos ) ) {
-          ft_match m_new;
-          copy_seq( m->includes, m_new.includes );
-          FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
-            FOR_EACH( ft_match::includes_t, i, m->includes ) {
-              if (   ( e->pos.start <= i->pos.start 
-                    && e->query_pos <= i->query_pos )
-                  || ( e->pos.start >= i->pos.start
-                    && e->query_pos >= i->query_pos ) ) {
-                m_new.excludes.push_back( *e );
-              }
-            }
-          }
-          result.push_back( m_new );
+        if ( !ordered( *i1, *i2 ) ) {
+          satisfies = false;
+          break;
         }
       }
     }
+    if ( satisfies ) {
+      ft_match m_new;
+      copy_seq( m->includes, m_new.includes );
+      FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
+        FOR_EACH( ft_match::includes_t, i, m->includes ) {
+          if ( ordered( *e, *i ) ) {
+            m_new.excludes.push_back( *e );
+          }
+        }
+      }
+      result.push_back( m_new );
+    }
   }
+
+  END_APPLY( result );
 }
 
 ////////// ApplyFTScope ///////////////////////////////////////////////////////
@@ -457,6 +539,9 @@ void apply_ftorder( ft_all_matches const &am, ft_all_matches &result ) {
 static void apply_ftscope_diff( ft_all_matches const &am,
                                 ft_token_span::start_end_ptr sep,
                                 ft_all_matches &result ) {
+  BEGIN_APPLY( apply_ftscope_diff );
+  PUT_ALL_MATCHES( am );
+
   FOR_EACH( ft_all_matches, m, am ) {
     FOR_EACH( ft_match::includes_t, i1, m->includes ) {
       FOR_EACH( ft_match::includes_t, i2, m->includes ) {
@@ -483,6 +568,8 @@ static void apply_ftscope_diff( ft_all_matches const &am,
       }
     }
   }
+
+  END_APPLY( result );
 }
 
 /**
@@ -501,6 +588,9 @@ static bool every_start_is( ft_match::includes_t const &includes,
 static void apply_ftscope_same( ft_all_matches const &am,
                                 ft_token_span::start_end_ptr sep,
                                 ft_all_matches &result ) {
+  BEGIN_APPLY( apply_ftscope_same );
+  PUT_ALL_MATCHES( am );
+
   FOR_EACH( ft_all_matches, m, am ) {
     FOR_EACH( ft_match::includes_t, i1, m->includes ) {
       FOR_EACH( ft_match::includes_t, i2, m->includes ) {
@@ -524,6 +614,8 @@ static void apply_ftscope_same( ft_all_matches const &am,
       }
     }
   }
+
+  END_APPLY( result );
 }
 
 void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
@@ -550,8 +642,13 @@ void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
 ////////// ApplyFTUnaryNot ////////////////////////////////////////////////////
 
 void apply_ftunary_not( ft_all_matches &am ) {
+  BEGIN_APPLY( apply_ftunary_not );
+  PUT_ALL_MATCHES( am );
+
   MUTATE_EACH( ft_all_matches, m, am )
     m->includes.swap( m->excludes );
+
+  END_APPLY( am );
 }
 
 ////////// ApplyFTWords ///////////////////////////////////////////////////////
@@ -630,7 +727,10 @@ static void apply_ftwords_all( FTTokenIterator &search_ctx,
       apply_ftwords_all(
         search_ctx, query_tokens, query_pos, options, rest_am
       );
-      apply_ftand( first_am, rest_am, result );
+      if ( rest_am.empty() )
+        result.swap( first_am );
+      else
+        apply_ftand( first_am, rest_am, result );
     } else {
       result.swap( first_am );
     }
@@ -657,7 +757,10 @@ static void apply_ftwords_any( FTTokenIterator &search_ctx,
 
     ft_all_matches rest_am;
     apply_ftwords_any( search_ctx, query_tokens, query_pos, options, rest_am );
-    apply_ftor( first_am, rest_am, result );
+    if ( rest_am.empty() )
+      result.swap( first_am );
+    else
+      apply_ftor( first_am, rest_am, result );
   }
 }
 
@@ -723,6 +826,11 @@ void apply_ftwords( FTTokenIterator &search_ctx,
 
 void apply_ftwindow( ft_all_matches const &am, int window_size,
                      ft_unit::type unit, ft_all_matches &result ) {
+  BEGIN_APPLY( apply_ftwindow );
+  PUT_ARG( window_size );
+  PUT_ENUM( ft_unit, unit );
+  PUT_ALL_MATCHES( am );
+
   ft_token_span::start_end_ptr const sep = get_sep_for( unit );
   FOR_EACH( ft_all_matches, m, am ) {
     ft_token_span::int_t const min_pos = MIN( m->includes, pos, start );
@@ -740,6 +848,8 @@ void apply_ftwindow( ft_all_matches const &am, int window_size,
       result.push_back( m_new );
     }
   }
+
+  END_APPLY( result );
 }
 
 } // namespace zorba

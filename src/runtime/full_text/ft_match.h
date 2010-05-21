@@ -42,6 +42,8 @@ struct ft_string_match : ft_token_span {
   bool is_contiguous;
 };
 
+std::ostream& operator<<( std::ostream&, ft_string_match const& );
+
 /**
  * An ft_string_include is an ft_string_match that describes an ft_token_span
  * that must be contained in the document.
@@ -96,6 +98,9 @@ private:
  * An ft_all_matches contains zero or more ft_match objects.
  */
 typedef std::list<ft_match> ft_all_matches;
+
+std::ostream& operator<<( std::ostream&, ft_match const& );
+std::ostream& operator<<( std::ostream&, ft_all_matches const& );
 
 ///////////////////////////////////////////////////////////////////////////////
 
