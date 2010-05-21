@@ -17,9 +17,13 @@
 #ifndef ZORBA_FT_TOKEN_H
 #define ZORBA_FT_TOKEN_H
 
+#include <iostream>
+
 #include "zorbatypes/xqpstring.h"
 
 namespace zorba {
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * An FTToken is a full-text token from either an XML document or a query.
@@ -32,7 +36,7 @@ struct FTToken {
   typedef unsigned int_t;
 
   /**
-   * The string type uses for the token itself.
+   * The string type for the token itself.
    */
   typedef xqpStringStore string_t;
 
@@ -87,6 +91,22 @@ struct FTToken {
    */
   int_t para;
 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * Inserts a text representation of an FTToken into an ostream.
+ *
+ * @param o The ostream to insert into.
+ * @param t The FTToken to insert.
+ * @return Returns the given ostream.
+ */
+inline std::ostream& operator<<( std::ostream &o, FTToken const &t ) {
+  return  o << "[FTToken: \"" << t.word << "\" "
+            << t.pos << ',' << t.sent << ',' << t.para << ']';
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 #endif  /* ZORBA_FT_TOKEN_H */
