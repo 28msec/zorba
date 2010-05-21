@@ -22,6 +22,7 @@
 
 #include "runtime/full_text/apply.h"
 #include "runtime/full_text/ft_token_span.h"
+#include "system/properties.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/indent.h"
 #include "zorbautils/stl_util.h"
@@ -34,31 +35,39 @@
 
 using namespace std;
 
+namespace zorba {
+
 ////////// Debugging macros ///////////////////////////////////////////////////
 
-//#define DEBUG_FT 1
+#ifndef NDEBUG
 
-#ifdef DEBUG_FT
+#define DOUT Properties::instance()->debug_out()
+#define TRACE_FULL_TEXT Properties::instance()->traceFulltext()
 
-#define BEGIN_APPLY(NAME) \
-  cout << #NAME "()\n" << inc_indent
+#define BEGIN_APPLY(NAME)             \
+  if ( !TRACE_FULL_TEXT ) ; else      \
+  DOUT << "\n" #NAME "()\n" << inc_indent
 
-#define PUT_ALL_MATCHES(ARG) \
-  cout << indent << "ARG " #ARG "\n" \
-       << inc_indent << (ARG) << dec_indent << endl
+#define PUT_ALL_MATCHES(ARG)                        \
+  if ( !TRACE_FULL_TEXT ) ; else                    \
+  DOUT << indent << "ARG " #ARG "\n"                \
+       << inc_indent << (ARG) << dec_indent
 
-#define PUT_ARG(ARG) \
-  cout << indent << "ARG " #ARG "=" << (ARG) << endl
+#define PUT_ARG(ARG)                                  \
+  if ( !TRACE_FULL_TEXT ) ; else                      \
+  DOUT << indent << "ARG " #ARG "=" << (ARG) << endl
 
-#define PUT_ENUM(FT_ENUM,ARG) \
-  cout << indent << "ARG " #ARG "=" << FT_ENUM::string_of[ ARG ]
+#define PUT_ENUM(FT_ENUM,ARG)                                             \
+  if ( !TRACE_FULL_TEXT ) ; else                                          \
+  DOUT << indent << "ARG " #ARG "=" << FT_ENUM::string_of[ ARG ] << endl
 
-#define END_APPLY(RESULT) \
-  cout  << indent << "RESULT\n" \
-        << inc_indent << (RESULT) << dec_indent << endl \
+#define END_APPLY(RESULT)                       \
+  if ( !TRACE_FULL_TEXT ) ; else                \
+  DOUT  << indent << "RESULT\n"                 \
+        << inc_indent << (RESULT) << dec_indent \
         << dec_indent
 
-#else
+#else /* NDEBUG */
 
 #define BEGIN_APPLY(NAME)     /* nothing */
 #define PUT_ALL_MATCHES(ARG)  /* nothing */
@@ -66,11 +75,9 @@ using namespace std;
 #define PUT_ENUM(FT_ENUM,ARG) /* nothing */
 #define END_APPLY(RESULT)     /* nothing */
 
-#endif /* DEBUG_FT */
+#endif /* NDEBUG */
 
 ///////////////////////////////////////////////////////////////////////////////
-
-namespace zorba {
 
 bool match_tokens( FTToken::string_t const&, FTToken::string_t const&,
                    ftmatch_options const& );

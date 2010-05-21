@@ -20,6 +20,7 @@
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/apply.h"
 #include "runtime/full_text/ftcontains_visitor.h"
+#include "system/properties.h"
 #include "zorbautils/indent.h"
 #include "zorbautils/stl_util.h"
 
@@ -65,19 +66,31 @@ inline ftmatch_options const* ftcontains_visitor::pop_options() {
 
 ////////// PUSH/POP macros ////////////////////////////////////////////////////
 
-#if 0
+#ifndef NDEBUG
 
-inline void pop_helper( int line ) {
-  cout << "POP @ line " << line << endl;
+#define DOUT Properties::instance()->debug_out()
+#define TRACE_FULL_TEXT Properties::instance()->traceFulltext()
+
+inline void pop_helper( char const *what, int line ) {
+  if ( TRACE_FULL_TEXT )
+    DOUT << "POP " << what << " @ line " << line << endl;
 }
 
-#define PUSH_MATCHES(M) \
-  cout << "PUSH @ line " << __LINE__ << endl; push_matches(M)
+#define PUSH_MATCHES(M)                                       \
+  if ( !TRACE_FULL_TEXT ) ; else                              \
+  DOUT << "PUSH MATCHES @ line " << __LINE__ << endl; push_matches(M)
 
 #define POP_MATCHES(M) \
-  ( pop_helper(__LINE__), pop_matches(M) )
+  ( pop_helper( "MATCHES", __LINE__ ), pop_matches(M) )
 
-#else
+#define PUSH_OPTIONS(O)                                               \
+  if ( !TRACE_FULL_TEXT ) ; else                                      \
+  DOUT << "PUSH OPTIONS @ line " << __LINE__ << endl; push_options(O)
+
+#define POP_OPTIONS(O) \
+  ( pop_helper( "OPTIONS", __LINE__ ), pop_options(O) )
+
+#else /* NDEBUG */
 
 #define PUSH_MATCHES(M) push_matches(M)
 #define POP_MATCHES(M)  pop_matches(M)
@@ -85,7 +98,7 @@ inline void pop_helper( int line ) {
 #define PUSH_OPTIONS(O) push_options(O)
 #define POP_OPTIONS(O)  pop_options(O)
 
-#endif
+#endif /* NDEBUG */
 
 ///////////////////////////////////////////////////////////////////////////////
 

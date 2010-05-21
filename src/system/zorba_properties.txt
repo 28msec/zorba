@@ -30,6 +30,7 @@
 #ifndef NDEBUG
       ("trace-translator,l", "trace the translator")
       ("trace-codegen,c", "trace the codegenerator")
+      ("trace-fulltext", "trace full-text evaluation")
 #endif
       ("debug", "compile the query in debug mode")
       ("compile-only", "only compile (don't execute)")

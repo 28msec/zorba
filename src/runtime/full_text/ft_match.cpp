@@ -17,10 +17,17 @@
 #include "runtime/full_text/ft_match.h"
 #include "zorbautils/indent.h"
 #include "zorbautils/stl_util.h"
+#include "zorbautils/omanip.h"
 
 using namespace std;
 
 namespace zorba {
+
+inline ostream& print_addr( ostream &o, void const *obj ) {
+  return o << "0x" << hex << reinterpret_cast<unsigned long>( obj ) << dec;
+}
+
+DEF_OMANIP( print_addr, void const*, obj )
 
 ostream& operator<<( ostream &o, ft_string_match const &sm ) {
   return  o << "{SM: "
@@ -31,7 +38,7 @@ ostream& operator<<( ostream &o, ft_string_match const &sm ) {
 }
 
 ostream& operator<<( ostream &o, ft_match const &m ) {
-  o << indent << "ft_match @ " << hex << (unsigned long)&m << endl;
+  o << indent << "ft_match @ " << print_addr( &m ) << endl;
   if ( !m.includes.empty() ) {
     o << inc_indent << indent << "INCLUDES\n" << inc_indent;
     FOR_EACH( ft_match::includes_t, i, m.includes )
@@ -48,7 +55,7 @@ ostream& operator<<( ostream &o, ft_match const &m ) {
 }
 
 ostream& operator<<( ostream &o, ft_all_matches const &am ) {
-  o << indent << "ft_all_matches @ " << hex << (unsigned long)&am << endl;
+  o << indent << "ft_all_matches @ " << print_addr( &am ) << endl;
   if ( !am.empty() ) {
     o << inc_indent;
     FOR_EACH( ft_all_matches, m, am )

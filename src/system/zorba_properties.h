@@ -33,7 +33,7 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC ZorbaProperties : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", NULL };
+    static const char *result [] = { "--trace-parsing", "--trace-scanning", "--use-serializer", "--optimizer", "--result-file", "--debug-file", "--abort", "--query", "--print-query", "--print-time", "--print-ast", "--print-xqdoc", "--print-translated", "--print-normalized", "--print-optimized", "--print-iterator-tree", "--print-item-flow", "--print-static-types", "--dump-lib", "--stable-iterator-ids", "--no-tree-ids", "--print-intermediate-opt", "--force-gflwor", "--reorder-globals", "--specialize-num", "--specialize-cmp", "--inline-udf", "--loop-hoisting", "--infer-joins", "--trace-translator", "--trace-codegen", "--trace-fulltext", "--debug", "--compile-only", "--tz", "--external-var", "--serializer-param", "--iter-plan-test", "--dot-plan-file", NULL };
     return result;
   }
   bool theTraceParsing;
@@ -67,6 +67,7 @@ protected:
   bool theInferJoins;
   bool theTraceTranslator;
   bool theTraceCodegen;
+  bool theTraceFulltext;
   bool theDebug;
   bool theCompileOnly;
   int theTz;
@@ -104,6 +105,7 @@ protected:
     theInferJoins = true;
     theTraceTranslator = false;
     theTraceCodegen = false;
+    theTraceFulltext = false;
     theDebug = false;
     theCompileOnly = false;
     theIterPlanTest = false;
@@ -140,6 +142,7 @@ public:
   const bool &inferJoins () const { return theInferJoins; }
   const bool &traceTranslator () const { return theTraceTranslator; }
   const bool &traceCodegen () const { return theTraceCodegen; }
+  const bool &traceFulltext () const { return theTraceFulltext; }
   const bool &debug () const { return theDebug; }
   const bool &compileOnly () const { return theCompileOnly; }
   const int &tz () const { return theTz; }
@@ -273,6 +276,9 @@ public:
       else if (strcmp (*argv, "--trace-codegen") == 0 || strncmp (*argv, "-c", 2) == 0) {
         theTraceCodegen = true;
       }
+      else if (strcmp (*argv, "--trace-fulltext") == 0) {
+        theTraceFulltext = true;
+      }
 #endif
       else if (strcmp (*argv, "--debug") == 0) {
         theDebug = true;
@@ -351,6 +357,7 @@ public:
 #ifndef NDEBUG
 "--trace-translator, -l\ntrace the translator\n\n"
 "--trace-codegen, -c\ntrace the codegenerator\n\n"
+"--trace-fulltext\ntrace full-text evaluation\n\n"
 #endif
 "--debug\ncompile the query in debug mode\n\n"
 "--compile-only\nonly compile (don't execute)\n\n"
