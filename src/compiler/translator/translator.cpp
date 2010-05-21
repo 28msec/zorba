@@ -10910,8 +10910,8 @@ void end_visit (const FTAnd& v, void* /*visit_state*/) {
       break;
     if ( !flatten<ftand>( n ) ) {
       //
-      // We must use push_front() to maintain original left-to-right order of
-      // the query.
+      // We must use push_front() to maintain the original left-to-right order
+      // of the query.
       //
       list.push_front( n );
     }
@@ -11144,8 +11144,8 @@ void end_visit (const FTMildNot& v, void* /*visit_state*/) {
       break;
     if ( !flatten<ftmild_not>( n ) ) {
       //
-      // We must use push_front() to maintain original left-to-right order of
-      // the query.
+      // We must use push_front() to maintain the original left-to-right order
+      // of the query.
       //
       list.push_front( n );
     }
@@ -11179,8 +11179,8 @@ void end_visit (const FTOr& v, void* /*visit_state*/) {
       break;
     if ( !flatten<ftor>( n ) ) {
       //
-      // We must use push_front() to maintain original left-to-right order of
-      // the query.
+      // We must use push_front() to maintain the original left-to-right order
+      // of the query.
       //
       list.push_front( n );
     }
