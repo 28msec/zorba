@@ -6210,36 +6210,19 @@ FTTimes
 FTRange
     :   EXACTLY AdditiveExpr
         {
-            $$ = new FTRange(
-                LOC(@$),
-                ft_range_mode::exactly,
-                dynamic_cast<AdditiveExpr*>($2)
-            );
+            $$ = new FTRange( LOC(@$), ft_range_mode::exactly, $2 );
         }
     |   AT LEAST AdditiveExpr
         {
-            $$ = new FTRange(
-                LOC(@$),
-                ft_range_mode::at_least,
-                dynamic_cast<AdditiveExpr*>($3)
-            );
+            $$ = new FTRange( LOC(@$), ft_range_mode::at_least, $3 );
         }
     |   AT MOST AdditiveExpr
         {
-            $$ = new FTRange(
-                LOC(@$),
-                ft_range_mode::at_most,
-                dynamic_cast<AdditiveExpr*>($3)
-            );
+            $$ = new FTRange( LOC(@$), ft_range_mode::at_most, $3 );
         }
     |   FROM AdditiveExpr TO AdditiveExpr
         {
-            $$ = new FTRange(
-                LOC(@$),
-                ft_range_mode::from_to,
-                dynamic_cast<AdditiveExpr*>($2),
-                dynamic_cast<AdditiveExpr*>($4)
-            );
+            $$ = new FTRange( LOC(@$), ft_range_mode::from_to, $2, $4 );
         }
     ;
 

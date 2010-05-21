@@ -11118,7 +11118,7 @@ namespace zorba {
             (yyval.node) = new FTRange(
                 LOC((yyloc)),
                 ft_range_mode::exactly,
-                dynamic_cast<AdditiveExpr*>((yysemantic_stack_[(2) - (2)].expr))
+                (yysemantic_stack_[(2) - (2)].expr)
             );
         }
     break;
@@ -11131,7 +11131,7 @@ namespace zorba {
             (yyval.node) = new FTRange(
                 LOC((yyloc)),
                 ft_range_mode::at_least,
-                dynamic_cast<AdditiveExpr*>((yysemantic_stack_[(3) - (3)].expr))
+                (yysemantic_stack_[(3) - (3)].expr)
             );
         }
     break;
@@ -11144,7 +11144,7 @@ namespace zorba {
             (yyval.node) = new FTRange(
                 LOC((yyloc)),
                 ft_range_mode::at_most,
-                dynamic_cast<AdditiveExpr*>((yysemantic_stack_[(3) - (3)].expr))
+                (yysemantic_stack_[(3) - (3)].expr)
             );
         }
     break;
@@ -11157,8 +11157,8 @@ namespace zorba {
             (yyval.node) = new FTRange(
                 LOC((yyloc)),
                 ft_range_mode::from_to,
-                dynamic_cast<AdditiveExpr*>((yysemantic_stack_[(4) - (2)].expr)),
-                dynamic_cast<AdditiveExpr*>((yysemantic_stack_[(4) - (4)].expr))
+                (yysemantic_stack_[(4) - (2)].expr),
+                (yysemantic_stack_[(4) - (4)].expr)
             );
         }
     break;
