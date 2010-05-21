@@ -32,18 +32,48 @@ namespace zorba {
  */
 template<typename ArgType> class omanip {
 public:
+
+  /**
+   * The signature of functions this omanip can handle.
+   */
   typedef std::ostream& (*func_type)( std::ostream&, ArgType );
 
-  omanip( func_type f, ArgType const &arg ) : f_( f ), arg_( arg ) { }
+  /**
+   * Constructs an omanip.
+   *
+   * @param f   The function to call when this omanip is inserted into an
+   *            ostream.
+   * @param arg The argument to be passed to the function.
+   */
+  omanip( func_type f, ArgType const &arg ) : f_( f ), arg_( arg )
+  {
+  }
 
+  /**
+   * Inserts the given omanip into the given ostream.  This has the effect of
+   * calling the function and argument bound to the omanip at the time of its
+   * construction.
+   *
+   * @param o The ostream to insert into.
+   * @param m The omanip to insert.
+   */
   friend std::ostream& operator<<( std::ostream &o, omanip const &m ) {
     return (*m.f_)( o, m.arg_ );
   }
+
 private:
   func_type const f_;
   ArgType const arg_;
 };
 
+/**
+ * Defines an ostream manipulator "thunk" function that calls an existing
+ * non-manipulator function having the same name.
+ *
+ * @param FN_NAME   The name of the existing function.
+ * @param ARG_TYPE  The type of the non-ostream argument.
+ * @param ARG_NAME  The name of the non-ostream argument.
+ */
 #define DEF_OMANIP(FN_NAME,ARG_TYPE,ARG_NAME)             \
   inline omanip<ARG_TYPE> FN_NAME( ARG_TYPE ARG_NAME ) {  \
     return omanip<ARG_TYPE>( FN_NAME, ARG_NAME );         \
