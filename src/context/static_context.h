@@ -98,6 +98,31 @@ public:
 };
 
 
+/*******************************************************************************
+
+********************************************************************************/
+struct PrologOption : public ::zorba::serialization::SerializeBaseClass
+{
+  store::Item_t    theName;
+  xqpStringStore_t theValue;
+
+public:
+  SERIALIZABLE_CLASS(PrologOption)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(PrologOption)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  PrologOption() {}
+
+  PrologOption(const store::Item* name, const xqpStringStore* value)
+    :
+    theName(const_cast<store::Item*>(name)),
+    theValue(const_cast<xqpStringStore*>(value))
+  {
+  }
+};
+
+
 /***************************************************************************//**
   XQuery 1.1 static context
 	[http://www.w3.org/TR/xquery/#id-xq-context-components]
@@ -341,7 +366,7 @@ class static_context : public SimpleRCObject
 
   typedef serializable_ItemPointerHashMap<std::vector<function_t>* > FunctionArityMap;
 
-  typedef serializable_ItemPointerHashMap<xqpStringStore_t> OptionMap;
+  typedef serializable_ItemPointerHashMap<PrologOption> OptionMap;
 
   typedef serializable_HashMapStrHandle<xqpStringStore_t> NamespaceBindings;
 
@@ -695,7 +720,7 @@ public:
   //
   // Options
   //
-  void bind_option(const store::Item* qname, const xqpStringStore_t& option);
+  void bind_option(const store::Item* qname, const xqpStringStore* option);
 
   bool lookup_option(const store::Item* qname, xqpStringStore_t& option) const;
 

@@ -75,6 +75,9 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
 END_SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
 
+SERIALIZABLE_CLASS_VERSIONS(PrologOption)
+END_SERIALIZABLE_CLASS_VERSIONS(PrologOption)
+
 SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
 END_SERIALIZABLE_CLASS_VERSIONS(static_context::ctx_module_t)
 
@@ -82,9 +85,9 @@ SERIALIZABLE_CLASS_VERSIONS(static_context)
 END_SERIALIZABLE_CLASS_VERSIONS(static_context)
 
 
-/***************************************************************************//**
+/**************************************************************************//**
 
-********************************************************************************/
+*******************************************************************************/
 void BaseUriInfo::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & thePrologBaseUri;
@@ -96,9 +99,19 @@ void BaseUriInfo::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-/***************************************************************************//**
+/**************************************************************************//**
 
-********************************************************************************/
+*******************************************************************************/
+void PrologOption::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theName;
+  ar & theValue;
+}
+
+
+/**************************************************************************//**
+
+*******************************************************************************/
 void static_context::ctx_module_t::serialize(serialization::Archiver& ar)
 {
   if(ar.is_serializing_out())
@@ -2479,7 +2492,7 @@ void static_context::get_collations(std::vector<std::string>& collations) const
 ********************************************************************************/
 void static_context::bind_option(
     const store::Item* qname,
-    const xqpStringStore_t& option)
+    const xqpStringStore* value)
 {
   if (theOptionMap == NULL)
   {
@@ -2488,10 +2501,11 @@ void static_context::bind_option(
 
   store::Item* qname2 = const_cast<store::Item*>(qname);
 
+  PrologOption option(qname, value);
+
   if (!theOptionMap->update(qname2, option))
   {
-    xqpStringStore_t tmp = option;
-    theOptionMap->insert(qname2, tmp);
+    theOptionMap->insert(qname2, option);
   }
 }
 
@@ -2501,15 +2515,18 @@ void static_context::bind_option(
 ********************************************************************************/
 bool static_context::lookup_option(
     const store::Item* qname,
-    xqpStringStore_t& option) const
+    xqpStringStore_t& value) const
 {
   store::Item* qname2 = const_cast<store::Item*>(qname);
+  PrologOption option;
   const static_context* sctx = this;
   while (sctx != NULL)
   {
     if (theOptionMap && theOptionMap->get(qname2, option))
+    {
+      value = option.theValue;
       return true;
-
+    }
     sctx = sctx->theParent;
   }
 
