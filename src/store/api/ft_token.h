@@ -46,13 +46,13 @@ struct FTToken {
    * @param utf8_s    The token string encoded in UTF-8.  It need not be
    *                  null-terminated.
    * @param len       The number of chars in the token string.
-   * @param token_no  The token number.  Token numbers start at 0.
-   * @param sent_no   The sentence number.  Sentence numbers start at 0.
-   * @param para_no   The paragraph number.  Paragraph numbers start at 0.
+   * @param token_no  The token number.  Token numbers start at 1.
+   * @param sent_no   The sentence number.  Sentence numbers start at 1.
+   * @param para_no   The paragraph number.  Paragraph numbers start at 1.
    */
   FTToken( char const *utf8_s, int len,
-           int_t pos_, int_t sent_, int_t para_ ) :
-    word( utf8_s, len ), pos( pos_ ), sent( sent_ ), para( para_ )
+           int_t token_no, int_t sent_, int_t para_ ) :
+    word( utf8_s, len ), pos( token_no ), sent( sent_ ), para( para_ )
   {
   }
 
@@ -62,10 +62,10 @@ struct FTToken {
    * @param utf8_s    The token string encoded in UTF-8.  It need not be
    *                  null-terminated.
    * @param len       The number of chars in the token string.
-   * @param token_no  The token number.  Token numbers start at 0.
+   * @param token_no  The token number.  Token numbers start at 1.
    */
-  FTToken( char const *utf8_s, int len, int_t pos_ ) :
-    word( utf8_s, len ), pos( pos_ ), sent( 0 ), para( 0 )
+  FTToken( char const *utf8_s, int len, int_t token_no ) :
+    word( utf8_s, len ), pos( token_no ), sent( 0 ), para( 0 )
   {
   }
 
@@ -75,19 +75,20 @@ struct FTToken {
   string_t word;
 
   /**
-   * The token position within either the source XML document or query.
+   * The token position within either the source XML document or query.  Token
+   * positions start at 1.
    */
   int_t pos;
 
   /**
    * The sentence number within the source XML document.  Sentence numbers
-   * start at zero.  For query tokens, this is always zero.
+   * start at 1.  For query tokens, this is always 0.
    */
   int_t sent;
 
   /**
    * The paragraph number within the source XML document.  Paragraph numbers
-   * start at zero.  For query tokens, this is always zero.
+   * start at 1.  For query tokens, this is always 0.
    */
   int_t para;
 };

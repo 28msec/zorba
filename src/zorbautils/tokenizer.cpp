@@ -19,7 +19,12 @@
 namespace zorba {
 
 Tokenizer::Tokenizer() {
-  token_no_ = sent_no_ = para_no_ = 0;
+  token_no_ = sent_no_ = 1;
+  //
+  // Initialize para_no_ to 0 rather than 1 because inc_para() is always called
+  // at least once prior to any token being parsed.
+  //
+  para_no_ = 0;
 }
 
 Tokenizer::~Tokenizer() {
