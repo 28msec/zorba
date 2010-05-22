@@ -55,6 +55,35 @@ class xquery_driver;
 typedef std::list<std::string> string_list_t;
 typedef std::pair<std::string,std::string> string_pair_t;
 
+class scanner_error {
+public:
+  std::string msg;
+
+public:
+  scanner_error(std::string _msg) : msg(_msg) { };
+
+  static scanner_error* unrecognizedCharErr(const char* _error_token)
+  {
+    std::string token;
+    // translate some common non-printable characters for better readability.
+    if (*_error_token == '\t')
+      token = "\\t";
+    else if (*_error_token == '\n')
+      token = "\\n";
+    else if (*_error_token == '\r')
+      token = "\\r";
+    else if (*_error_token == ' ')
+      token = "<blank>";
+    else
+      token = _error_token;
+
+    scanner_error* err = new scanner_error("syntax error, unexpected character '" + token + "'");
+    return err;
+  };
+
+};
+
+
 
 } // %code requires
 
@@ -96,6 +125,7 @@ namespace zorba
 namespace parser
 {
   extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor, *the_declare, *the_create;
+
 }
 }
 
@@ -145,7 +175,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %}
 */
 
-
 /*
 **  Semantic values cannot use real objects, but only pointers to them.
 */
@@ -160,7 +189,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
     xqp_integer *ival;
     xqp_double *dval;
     xqp_decimal *decval;
-    XQUERY_ERROR err;
+    scanner_error *err;
     string_list_t *strlist;
     string_pair_t *strpair;
     std::vector<string_pair_t> *vstrpair;
@@ -210,7 +239,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> PRAGMA_LITERAL_AND_END_PRAGMA "'pragma literal'"
 %token <sval> QNAME_SVAL_AND_END_PRAGMA     "'QName #)'"
 %token <sval> PREFIX_WILDCARD               "'*:QName'"
-%token <sval> QNAME_SVAL                    'qualified name'
+%token <sval> QNAME_SVAL                    "'QName'"
 %token <sval> QUOTE_ATTR_CONTENT            "'quote attribute content'"
 %token <sval> STRING_LITERAL                "'STRING'"
 %token <sval> XML_COMMENT_LITERAL           "'XML comment'"
@@ -292,22 +321,21 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %type <name_test_list> NameTestList
 
-%token ANCESTOR_AXIS                    "'ancestor::'"
-%token ANCESTOR_OR_SELF_AXIS            "'ancestor-or-self::'"
+%token ANCESTOR                         "'ancestor'"
+%token ANCESTOR_OR_SELF                 "'ancestor-or-self'"
 %token AND                              "'and'"
 %token APOS                             "'''"
 %token AS                               "'as'"
 %token ASCENDING                        "'ascending'"
 %token AT                               "'at'"
 %token ATTRIBUTE                        "'attribute'"
-%token ATTRIBUTE_AXIS                   "'attribute::'"
 %token AT_SIGN                          "'@'"
 %token CASE                             "'case'"
 %token CASTABLE                         "'castable'"
 %token CAST                             "'cast'"
 %token CDATA_BEGIN                      "'CDATA[['"
 %token CDATA_END                        "']]'"
-%token CHILD_AXIS                       "'child::'"
+%token CHILD                            "'child'"
 %token COLLATION                        "'collation'"
 %token COMMA                            "','"
 %token COMMENT_BEGIN                    "'(:'"
@@ -316,13 +344,14 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token CONTEXT                          "'context'"
 %token VARIABLE                         "'variable'"
 %token DEFAULT                          "'default'"
-%token DESCENDANT_AXIS                  "'descendant::'"
-%token DESCENDANT_OR_SELF_AXIS          "'descendant-or-self::'"
+%token DESCENDANT                       "'descendant'"
+%token DESCENDANT_OR_SELF               "'descendant-or-self'"
 %token DESCENDING                       "'descending'"
 %token DIV                              "'div'"
 %token DOLLAR                           "'$'"
 %token DOT                              "'.'"
 %token DOT_DOT                          "'..'"
+%token DOUBLE_COLON                     "'::'"
 %token DOUBLE_LBRACE                    "'{{'"
 %token <dval> DOUBLE_LITERAL            "'DOUBLE'"
 %token DOUBLE_RBRACE                    "'<double {>'"
@@ -338,8 +367,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token EVERY                            "'every'"
 %token EXCEPT                           "'except'"
 %token EXTERNAL                         "'external'"
-%token FOLLOWING_AXIS                   "'following::'"
-%token FOLLOWING_SIBLING_AXIS           "'following-sibling::'"
+%token FOLLOWING                        "'following'"
+%token FOLLOWING_SIBLING                "'following-sibling'"
 %token FOLLOWS                          "'follows'"
 %token GE                               "'>='"
 %token GETS                             "':='"
@@ -372,15 +401,15 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token ORDERED                          "'ordered'"
 %token BY                               "'by'"
 %token GROUP                            "'group'"
-%token PARENT_AXIS                      "'parent::'"
+%token PARENT                           "'parent'"
 %token PI_BEGIN                         "'<?'"
 %token PI_END                           "'?>'"
 %token PLUS                             "'+'"
 %token PRAGMA_BEGIN                     "'PRAGMA BEGIN'"
 %token PRAGMA_END                       "'PRAGMA END'"
 %token PRECEDES                         "'<<'"
-%token PRECEDING_AXIS                   "'preceding::'"
-%token PRECEDING_SIBLING_AXIS           "'preceding-sibling::'"
+%token PRECEDING                        "'preceding'"
+%token PRECEDING_SIBLING                "'preceding-sibling'"
 %token PRESERVE                         "'preserve'"
 %token QUOTE                            "'\"'"
 %token RBRACE                           "'}'"
@@ -389,14 +418,14 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token RPAR                             "')'"
 %token SATISFIES                        "'satisfies'"
 %token SCHEMA_ATTRIBUTE_LPAR            "'<schema attribute ('"
-%token SELF_AXIS                        "'self::'"
+%token SELF                             "'self'"
 %token SEMI                             "';'"
 %token SLASH                            "'/'"
 %token SLASH_SLASH                      "'//'"
 %token STAR                             "'*'"
 %token START_TAG_END                    "</ (start tag end)"
 %token STRIP                            "'strip'"
-%token TAG_END                          "> (tag end)"
+%token TAG_END                          "'> (tag end)'"
 %token THEN                             "'then'"
 %token TO                               "'to'"
 %token TREAT                            "'treat'"
@@ -537,7 +566,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* Byte Order Marks                  */
 /* --------------------------------- */
-%token BYTE_ORDER_MARK_UTF8       "'BOM_UTF8'"
+%token BYTE_ORDER_MARK_UTF8             "'BOM_UTF8'"
 
 /* Leading slash handling expression */
 /* --------------------------------- */
@@ -545,6 +574,10 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* left-hand sides: syntax only */
 /* ---------------------------- */
+
+    /* placeholder node for reducing UNRECOGNIZED and generating an error */
+%type <node> UnrecognizedToken
+
 %type <node> AbbrevForwardStep
 %type <node> AnyKindTest
 %type <node> AposAttrContentList
@@ -1005,11 +1038,30 @@ bool validate_index_properties(parsenode* props, location& loc, parsenode* qname
 
 Module
     :   ModuleWithoutBOM
-    |   BYTE_ORDER_MARK_UTF8 ModuleWithoutBOM
+    |   BYTE_ORDER_MARK_UTF8  ModuleWithoutBOM
         {
             $$ = $2;
         }
-  ;
+        // Dummy rules, should never get here. Upon encountering an UnrecognizedToken, an error is generated
+    |   UnrecognizedToken { $$ = NULL; }
+    |   ModuleWithoutBOM  UnrecognizedToken { $$ = NULL; }
+    |   BYTE_ORDER_MARK_UTF8  UnrecognizedToken { $$ = NULL; }
+    |   BYTE_ORDER_MARK_UTF8  ModuleWithoutBOM  UnrecognizedToken { $$ = NULL; }
+    ;
+
+UnrecognizedToken
+    :   UNRECOGNIZED
+        {
+          // Catch unrecognized tokens and report them
+          $$ = NULL;
+          if ($1 != NULL)
+            error(@$, $1->msg);
+          else
+            error(@$, std::string("syntax error, unexpected character"));
+          delete $1;
+          YYERROR;
+        }
+    ;
 
 
 // [1]
@@ -3665,35 +3717,35 @@ ForwardStep
 
 // [72]
 ForwardAxis
-    :   CHILD_AXIS
+    :   CHILD  DOUBLE_COLON
         {
             $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_child );
         }
-    |   DESCENDANT_AXIS
+    |   DESCENDANT  DOUBLE_COLON
         {
             $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_descendant);
         }
-    |   ATTRIBUTE_AXIS
+    |   ATTRIBUTE  DOUBLE_COLON
         {
             $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_attribute );
         }
-    |   SELF_AXIS
+    |   SELF  DOUBLE_COLON
         {
             $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_self );
         }
-    |   DESCENDANT_OR_SELF_AXIS
+    |   DESCENDANT_OR_SELF  DOUBLE_COLON
         {
             $$ = new ForwardAxis(
                 LOC(@$), ParseConstants::axis_descendant_or_self
             );
         }
-    |   FOLLOWING_SIBLING_AXIS
+    |   FOLLOWING_SIBLING  DOUBLE_COLON
         {
             $$ = new ForwardAxis(
                 LOC(@$), ParseConstants::axis_following_sibling
             );
         }
-    |   FOLLOWING_AXIS
+    |   FOLLOWING  DOUBLE_COLON
         {
             $$ = new ForwardAxis( LOC(@$), ParseConstants::axis_following );
         }
@@ -3728,25 +3780,25 @@ ReverseStep
 
 // [75]
 ReverseAxis
-    :   PARENT_AXIS
+    :   PARENT  DOUBLE_COLON
         {
             $$ = new ReverseAxis( LOC(@$), ParseConstants::axis_parent );
         }
-    |   ANCESTOR_AXIS
+    |   ANCESTOR  DOUBLE_COLON
         {
             $$ = new ReverseAxis( LOC(@$), ParseConstants::axis_ancestor );
         }
-    |   PRECEDING_SIBLING_AXIS
+    |   PRECEDING_SIBLING  DOUBLE_COLON
         {
             $$ = new ReverseAxis(
                 LOC(@$), ParseConstants::axis_preceding_sibling
             );
         }
-    |   PRECEDING_AXIS
+    |   PRECEDING  DOUBLE_COLON
         {
             $$ = new ReverseAxis( LOC(@$), ParseConstants::axis_preceding );
         }
-    |   ANCESTOR_OR_SELF_AXIS
+    |   ANCESTOR_OR_SELF  DOUBLE_COLON
         {
             $$ = new ReverseAxis(
                 LOC(@$), ParseConstants::axis_ancestor_or_self
@@ -5315,226 +5367,6 @@ NCNAME
     }
     ;
 
-/*_______________________________________________________________________
- *                                                                       *
- *  All QNames                                                           *
- *                                                                       *
- *_______________________________________________________________________*/
-QNAME
-    :   QNAME_SVAL
-        {
-            $$ = new QName( LOC(@$), SYMTAB($1) );
-        }
-    |   KEYWORD
-        {
-            $$ = new QName( LOC(@$), SYMTAB($1) );
-        }
-  ;
-
-KEYWORD
-    :   XQUERY { $$ = SYMTAB_PUT("xquery"); }
-    |   _EMPTY { $$ = SYMTAB_PUT("empty"); }
-    |   ATTRIBUTE { $$ = SYMTAB_PUT("attribute"); }
-    |   COMMENT { $$ = SYMTAB_PUT("comment"); }
-    |   DOCUMENT_NODE { $$ = SYMTAB_PUT("document-node"); }
-    |   ELEMENT { $$ = SYMTAB_PUT("element"); }
-    |   ITEM { $$ = SYMTAB_PUT("item"); }
-    |   IF { $$ = SYMTAB_PUT("if"); }
-    |   NODE { $$ = SYMTAB_PUT("node"); }
-    |   PROCESSING_INSTRUCTION { $$ = SYMTAB_PUT("processing-instruction"); }
-    |   SCHEMA_ATTRIBUTE { $$ = SYMTAB_PUT("schema-attribute"); }
-    |   SCHEMA_ELEMENT { $$ = SYMTAB_PUT("schema-element"); }
-    |   TEXT { $$ = SYMTAB_PUT("text"); }
-    |   TYPESWITCH { $$ = SYMTAB_PUT("typeswitch"); }
-    |   EMPTY_SEQUENCE { $$ = SYMTAB_PUT("empty-sequence"); }
-    |   BOUNDARY_SPACE { $$ = SYMTAB_PUT("boundary-space"); }
-    |   FT_OPTION { $$ = SYMTAB_PUT("ft-option"); }
-    |   BASE_URI { $$ = SYMTAB_PUT("base-uri"); }
-    |   LAX { $$ = SYMTAB_PUT("lax"); }
-    |   _STRICT { $$ = SYMTAB_PUT("strict"); }
-    |   IDIV { $$ = SYMTAB_PUT("idiv"); }
-    |   DOCUMENT { $$ = SYMTAB_PUT("document"); }
-    |   FTNOT { $$ = SYMTAB_PUT("ftnot"); }
-    |   NOT { $$ = SYMTAB_PUT("not"); }
-    |   SENSITIVE { $$ = SYMTAB_PUT("sensitive"); }
-    |   INSENSITIVE { $$ = SYMTAB_PUT("insensitive"); }
-    |   DIACRITICS { $$ = SYMTAB_PUT("diacritics"); }
-    |   WITHOUT { $$ = SYMTAB_PUT("without"); }
-    |   STEMMING { $$ = SYMTAB_PUT("stemming"); }
-    |   THESAURUS { $$ = SYMTAB_PUT("thesaurus"); }
-    |   STOP { $$ = SYMTAB_PUT("stop"); }
-    |   WILDCARDS { $$ = SYMTAB_PUT("wildcards"); }
-    |   ENTIRE { $$ = SYMTAB_PUT("entire"); }
-    |   CONTENT { $$ = SYMTAB_PUT("content"); }
-    |   WORD { $$ = SYMTAB_PUT("word"); }
-    |   START { $$ = SYMTAB_PUT("start"); }
-    |   END { $$ = SYMTAB_PUT("end"); }
-    |   MOST { $$ = SYMTAB_PUT("most"); }
-    |   SKIP { $$ = SYMTAB_PUT("skip"); }
-    |   COPY { $$ = SYMTAB_PUT("copy"); }
-    |   GENERAL { $$ = SYMTAB_PUT("general"); }
-    |   VALUE { $$ = SYMTAB_PUT("value"); }
-    |   VAL_EQ { $$ = SYMTAB_PUT("eq"); }
-    |   VAL_NE { $$ = SYMTAB_PUT("ne"); }
-    |   VAL_LT { $$ = SYMTAB_PUT("lt"); }
-    |   VAL_LE { $$ = SYMTAB_PUT("le"); }
-    |   VAL_GT { $$ = SYMTAB_PUT("gt"); }
-    |   VAL_GE { $$ = SYMTAB_PUT("ge"); }
-    |   AT { $$ = SYMTAB_PUT("at"); }
-    |   CONTEXT { $$ = SYMTAB_PUT("context"); }
-    |   VARIABLE { $$ = SYMTAB_PUT("variable"); }
-    |   RETURN { $$ = SYMTAB_PUT("return"); }
-    |   FOR { $$ = SYMTAB_PUT("for"); }
-    |   OUTER { $$ = SYMTAB_PUT("outer"); }
-    |   SLIDING { $$ = SYMTAB_PUT("sliding"); }
-    |   TUMBLING { $$ = SYMTAB_PUT("tumbling"); }
-    |   PREVIOUS { $$ = SYMTAB_PUT("previous"); }
-    |   NEXT { $$ = SYMTAB_PUT("next"); }
-    |   ONLY { $$ = SYMTAB_PUT("only"); }
-    |   WHEN { $$ = SYMTAB_PUT("when"); }
-    |   COUNT { $$ = SYMTAB_PUT("count"); }
-    |   _IN { $$ = SYMTAB_PUT("in"); }
-    |   LET { $$ = SYMTAB_PUT("let"); }
-    |   WHERE { $$ = SYMTAB_PUT("where"); }
-    |   BY { $$ = SYMTAB_PUT("by"); }
-    |   GROUP { $$ = SYMTAB_PUT("group"); }
-    |   ORDER { $$ = SYMTAB_PUT("order"); }
-    |   STABLE { $$ = SYMTAB_PUT("stable"); }
-    |   ASCENDING { $$ = SYMTAB_PUT("ascending"); }
-    |   DESCENDING { $$ = SYMTAB_PUT("descending"); }
-    |   GREATEST { $$ = SYMTAB_PUT("greatest"); }
-    |   LEAST { $$ = SYMTAB_PUT("least"); }
-    |   COLLATION { $$ = SYMTAB_PUT("collation"); }
-    |   SOME { $$ = SYMTAB_PUT("some"); }
-    |   EVERY { $$ = SYMTAB_PUT("every"); }
-    |   SATISFIES { $$ = SYMTAB_PUT("satisfies"); }
-    |   CASE { $$ = SYMTAB_PUT("case"); }
-    |   AS { $$ = SYMTAB_PUT("as"); }
-    |   THEN { $$ = SYMTAB_PUT("then"); }
-    |   ELSE { $$ = SYMTAB_PUT("else"); }
-    |   OR { $$ = SYMTAB_PUT("or"); }
-    |   AND { $$ = SYMTAB_PUT("and"); }
-    |   INSTANCE { $$ = SYMTAB_PUT("instance"); }
-    |   OF { $$ = SYMTAB_PUT("of"); }
-    |   CASTABLE { $$ = SYMTAB_PUT("castable"); }
-    |   TO { $$ = SYMTAB_PUT("to"); }
-    |   DIV { $$ = SYMTAB_PUT("div"); }
-    |   MOD { $$ = SYMTAB_PUT("mod"); }
-    |   UNION { $$ = SYMTAB_PUT("union"); }
-    |   INTERSECT { $$ = SYMTAB_PUT("intersect"); }
-    |   EXCEPT { $$ = SYMTAB_PUT("except"); }
-    |   VALIDATE { $$ = SYMTAB_PUT("validate"); }
-    |   CAST { $$ = SYMTAB_PUT("cast"); }
-    |   TREAT { $$ = SYMTAB_PUT("treat"); }
-    |   IS { $$ = SYMTAB_PUT("is"); }
-    |   PRESERVE { $$ = SYMTAB_PUT("preserve"); }
-    |   STRIP { $$ = SYMTAB_PUT("strip"); }
-    |   NAMESPACE { $$ = SYMTAB_PUT("namespace"); }
-    |   EXTERNAL { $$ = SYMTAB_PUT("external"); }
-    |   ENCODING { $$ = SYMTAB_PUT("encoding"); }
-    |   NO_PRESERVE { $$ = SYMTAB_PUT("no-preserve"); }
-    |   INHERIT { $$ = SYMTAB_PUT("inherit"); }
-    |   NO_INHERIT { $$ = SYMTAB_PUT("no-inherit"); }
-    |   DECLARE { $$ = SYMTAB_PUT("declare"); }
-    |   CONSTRUCTION { $$ = SYMTAB_PUT("construction"); }
-    |   ORDERING { $$ = SYMTAB_PUT("ordering"); }
-    |   DEFAULT { $$ = SYMTAB_PUT("default"); }
-    |   COPY_NAMESPACES { $$ = SYMTAB_PUT("copy-namespaces"); }
-    |   OPTION { $$ = SYMTAB_PUT("option"); }
-    |   VERSION { $$ = SYMTAB_PUT("version"); }
-    |   IMPORT { $$ = SYMTAB_PUT("import"); }
-    |   SCHEMA { $$ = SYMTAB_PUT("schema"); }
-    |   MODULE { $$ = SYMTAB_PUT("module"); }
-    |   FUNCTION { $$ = SYMTAB_PUT("function"); }
-    |   SCORE { $$ = SYMTAB_PUT("score"); }
-    |   CONTAINS { $$ = SYMTAB_PUT("contains"); }
-    |   WEIGHT { $$ = SYMTAB_PUT("weight"); }
-    |   WINDOW { $$ = SYMTAB_PUT("window"); }
-    |   DISTANCE { $$ = SYMTAB_PUT("distance"); }
-    |   OCCURS { $$ = SYMTAB_PUT("occurs"); }
-    |   TIMES { $$ = SYMTAB_PUT("times"); }
-    |   SAME { $$ = SYMTAB_PUT("same"); }
-    |   DIFFERENT { $$ = SYMTAB_PUT("different"); }
-    |   LOWERCASE { $$ = SYMTAB_PUT("lowercase"); }
-    |   UPPERCASE { $$ = SYMTAB_PUT("uppercase"); }
-    |   RELATIONSHIP { $$ = SYMTAB_PUT("relationship"); }
-    |   LEVELS { $$ = SYMTAB_PUT("levels"); }
-    |   LANGUAGE { $$ = SYMTAB_PUT("language"); }
-    |   ANY { $$ = SYMTAB_PUT("any"); }
-    |   ALL { $$ = SYMTAB_PUT("all"); }
-    |   PHRASE { $$ = SYMTAB_PUT("phrase"); }
-    |   EXACTLY { $$ = SYMTAB_PUT("exactly"); }
-    |   FROM { $$ = SYMTAB_PUT("from"); }
-    |   WORDS { $$ = SYMTAB_PUT("words"); }
-    |   SENTENCES { $$ = SYMTAB_PUT("sentences"); }
-    |   SENTENCE { $$ = SYMTAB_PUT("sentence"); }
-    |   PARAGRAPH { $$ = SYMTAB_PUT("paragraph"); }
-    |   REPLACE { $$ = SYMTAB_PUT("replace"); }
-    |   MODIFY { $$ = SYMTAB_PUT("modify"); }
-    |   FIRST { $$ = SYMTAB_PUT("first"); }
-    |   INSERT { $$ = SYMTAB_PUT("insert"); }
-    |   BEFORE { $$ = SYMTAB_PUT("before"); }
-    |   AFTER { $$ = SYMTAB_PUT("after"); }
-    |   REVALIDATION { $$ = SYMTAB_PUT("revalidation"); }
-    |   WITH { $$ = SYMTAB_PUT("with"); }
-    |   NODES { $$ = SYMTAB_PUT("nodes"); }
-    |   RENAME { $$ = SYMTAB_PUT("rename"); }
-    |   LAST { $$ = SYMTAB_PUT("last"); }
-    |   _DELETE { $$ = SYMTAB_PUT("delete"); }
-    |   INTO { $$ = SYMTAB_PUT("into"); }
-    |   SIMPLE { $$ = SYMTAB_PUT("simple"); }
-    |   SEQUENTIAL { $$ = SYMTAB_PUT("sequential"); }
-    |   UPDATING { $$ = SYMTAB_PUT("updating"); }
-    |   DETERMINISTIC { $$ = SYMTAB_PUT("deterministic"); }
-    |   NONDETERMINISTIC { $$ = SYMTAB_PUT("nondeterministic"); }
-    |   ORDERED { $$ = SYMTAB_PUT("ordered"); }
-    |   UNORDERED { $$ = SYMTAB_PUT("unordered"); }
-    |   RETURNING { $$ = SYMTAB_PUT("returning"); }
-    |   BLOCK { $$ = SYMTAB_PUT("block"); }
-    |   EXIT { $$ = SYMTAB_PUT("exit"); }
-    |   LOOP { $$ = SYMTAB_PUT("loop"); }
-    |   WHILE { $$ = SYMTAB_PUT("while"); }
-    |   BREAK { $$ = SYMTAB_PUT("break"); }
-    |   CONTINUE { $$ = SYMTAB_PUT("continue"); }
-    |   TRY { $$ = SYMTAB_PUT("try"); }
-    |   CATCH { $$ = SYMTAB_PUT("catch"); }
-    |   EVAL { $$ = SYMTAB_PUT("eval"); }
-    |   USING { $$ = SYMTAB_PUT("using"); }
-    |   SET { $$ = SYMTAB_PUT("set"); }
-    |   INDEX { $$ = SYMTAB_PUT("index"); }
-    |   UNIQUE { $$ = SYMTAB_PUT("unique"); }
-    |   NON { $$ = SYMTAB_PUT("non"); }
-    |   ON { $$ = SYMTAB_PUT("on"); }
-    |   RANGE { $$ = SYMTAB_PUT("range"); }
-    |   EQUALITY { $$ = SYMTAB_PUT("equality"); }
-    |   MANUALLY { $$ = SYMTAB_PUT("manually"); }
-    |   AUTOMATICALLY { $$ = SYMTAB_PUT("automatically"); }
-    |   MAINTAINED { $$ = SYMTAB_PUT("maintained"); }
-    |   DECIMAL_FORMAT { $$ = SYMTAB_PUT("decimal-format"); }
-    |   DECIMAL_SEPARATOR { $$ = SYMTAB_PUT("decimal-separator"); }
-    |   GROUPING_SEPARATOR { $$ = SYMTAB_PUT("grouping-separator"); }
-    |   INFINITY_VALUE { $$ = SYMTAB_PUT("infinity"); }
-    |   MINUS_SIGN { $$ = SYMTAB_PUT("minus-sign"); }
-    |   NaN { $$ = SYMTAB_PUT("NaN"); }
-    |   PERCENT { $$ = SYMTAB_PUT("percent"); }
-    |   PER_MILLE { $$ = SYMTAB_PUT("per-mille"); }
-    |   ZERO_DIGIT { $$ = SYMTAB_PUT("zero-digit"); }
-    |   DIGIT { $$ = SYMTAB_PUT("digit"); }
-    |   PATTERN_SEPARATOR { $$ = SYMTAB_PUT("pattern-separator"); }
-    |   COLLECTION { $$ = SYMTAB_PUT("collection"); }
-    |   CONSTOPT { $$ = SYMTAB_PUT("const"); }
-    |   APPEND_ONLY { $$ = SYMTAB_PUT("append-only"); }
-    |   QUEUE { $$ = SYMTAB_PUT("queue"); }
-    |   MUTABLE { $$ = SYMTAB_PUT("mutable"); }
-    |   READ_ONLY { $$ = SYMTAB_PUT("read-only"); }
-    |   INTEGRITY { $$ = SYMTAB_PUT("integrity"); }
-    |   CONSTRAINT { $$ = SYMTAB_PUT("constraint"); }
-    |   CHECK { $$ = SYMTAB_PUT("check"); }
-    |   KEY { $$ = SYMTAB_PUT("key"); }
-    |   FOREACH { $$ = SYMTAB_PUT("foreach"); }
-    |   FOREIGN { $$ = SYMTAB_PUT("foreign"); }
-    |   KEYS { $$ = SYMTAB_PUT("keys"); }
-    ;
 
 /*_______________________________________________________________________
  *                                                                       *
@@ -6275,6 +6107,235 @@ FTIgnoreOption
             $$ = new FTIgnoreOption( LOC(@$), static_cast<UnionExpr*>($3) );
         }
     ;
+
+
+/*_______________________________________________________________________
+ *                                                                       *
+ *  All QNames                                                           *
+ *                                                                       *
+ *_______________________________________________________________________*/
+QNAME
+    :   QNAME_SVAL
+        {
+          $$ = new QName( LOC(@$), SYMTAB($1) );
+        }
+    |   KEYWORD
+        {
+          $$ = new QName( LOC(@$), SYMTAB($1) );
+        }
+    ;
+
+KEYWORD
+    :   XQUERY { $$ = SYMTAB_PUT("xquery"); }
+    |   _EMPTY { $$ = SYMTAB_PUT("empty"); }
+    |   ATTRIBUTE { $$ = SYMTAB_PUT("attribute"); }
+    |   COMMENT { $$ = SYMTAB_PUT("comment"); }
+    |   DOCUMENT_NODE { $$ = SYMTAB_PUT("document-node"); }
+    |   ELEMENT { $$ = SYMTAB_PUT("element"); }
+    |   ITEM { $$ = SYMTAB_PUT("item"); }
+    |   IF { $$ = SYMTAB_PUT("if"); }
+    |   NODE { $$ = SYMTAB_PUT("node"); }
+    |   PROCESSING_INSTRUCTION { $$ = SYMTAB_PUT("processing-instruction"); }
+    |   SCHEMA_ATTRIBUTE { $$ = SYMTAB_PUT("schema-attribute"); }
+    |   SCHEMA_ELEMENT { $$ = SYMTAB_PUT("schema-element"); }
+    |   TEXT { $$ = SYMTAB_PUT("text"); }
+    |   TYPESWITCH { $$ = SYMTAB_PUT("typeswitch"); }
+    |   EMPTY_SEQUENCE { $$ = SYMTAB_PUT("empty-sequence"); }
+    |   BOUNDARY_SPACE { $$ = SYMTAB_PUT("boundary-space"); }
+    |   FT_OPTION { $$ = SYMTAB_PUT("ft-option"); }
+    |   BASE_URI { $$ = SYMTAB_PUT("base-uri"); }
+    |   LAX { $$ = SYMTAB_PUT("lax"); }
+    |   _STRICT { $$ = SYMTAB_PUT("strict"); }
+    |   IDIV { $$ = SYMTAB_PUT("idiv"); }
+    |   DOCUMENT { $$ = SYMTAB_PUT("document"); }
+    |   FTNOT { $$ = SYMTAB_PUT("ftnot"); }
+    |   NOT { $$ = SYMTAB_PUT("not"); }
+    |   SENSITIVE { $$ = SYMTAB_PUT("sensitive"); }
+    |   INSENSITIVE { $$ = SYMTAB_PUT("insensitive"); }
+    |   DIACRITICS { $$ = SYMTAB_PUT("diacritics"); }
+    |   WITHOUT { $$ = SYMTAB_PUT("without"); }
+    |   STEMMING { $$ = SYMTAB_PUT("stemming"); }
+    |   THESAURUS { $$ = SYMTAB_PUT("thesaurus"); }
+    |   STOP { $$ = SYMTAB_PUT("stop"); }
+    |   WILDCARDS { $$ = SYMTAB_PUT("wildcards"); }
+    |   ENTIRE { $$ = SYMTAB_PUT("entire"); }
+    |   CONTENT { $$ = SYMTAB_PUT("content"); }
+    |   WORD { $$ = SYMTAB_PUT("word"); }
+    |   START { $$ = SYMTAB_PUT("start"); }
+    |   END { $$ = SYMTAB_PUT("end"); }
+    |   MOST { $$ = SYMTAB_PUT("most"); }
+    |   SKIP { $$ = SYMTAB_PUT("skip"); }
+    |   COPY { $$ = SYMTAB_PUT("copy"); }
+    |   GENERAL { $$ = SYMTAB_PUT("general"); }
+    |   VALUE { $$ = SYMTAB_PUT("value"); }
+    |   VAL_EQ { $$ = SYMTAB_PUT("eq"); }
+    |   VAL_NE { $$ = SYMTAB_PUT("ne"); }
+    |   VAL_LT { $$ = SYMTAB_PUT("lt"); }
+    |   VAL_LE { $$ = SYMTAB_PUT("le"); }
+    |   VAL_GT { $$ = SYMTAB_PUT("gt"); }
+    |   VAL_GE { $$ = SYMTAB_PUT("ge"); }
+    |   AT { $$ = SYMTAB_PUT("at"); }
+    |   CONTEXT { $$ = SYMTAB_PUT("context"); }
+    |   VARIABLE { $$ = SYMTAB_PUT("variable"); }
+    |   RETURN { $$ = SYMTAB_PUT("return"); }
+    |   FOR { $$ = SYMTAB_PUT("for"); }
+    |   OUTER { $$ = SYMTAB_PUT("outer"); }
+    |   SLIDING { $$ = SYMTAB_PUT("sliding"); }
+    |   TUMBLING { $$ = SYMTAB_PUT("tumbling"); }
+    |   PREVIOUS { $$ = SYMTAB_PUT("previous"); }
+    |   NEXT { $$ = SYMTAB_PUT("next"); }
+    |   ONLY { $$ = SYMTAB_PUT("only"); }
+    |   WHEN { $$ = SYMTAB_PUT("when"); }
+    |   COUNT { $$ = SYMTAB_PUT("count"); }
+    |   _IN { $$ = SYMTAB_PUT("in"); }
+    |   LET { $$ = SYMTAB_PUT("let"); }
+    |   WHERE { $$ = SYMTAB_PUT("where"); }
+    |   BY { $$ = SYMTAB_PUT("by"); }
+    |   GROUP { $$ = SYMTAB_PUT("group"); }
+    |   ORDER { $$ = SYMTAB_PUT("order"); }
+    |   STABLE { $$ = SYMTAB_PUT("stable"); }
+    |   ASCENDING { $$ = SYMTAB_PUT("ascending"); }
+    |   DESCENDING { $$ = SYMTAB_PUT("descending"); }
+    |   GREATEST { $$ = SYMTAB_PUT("greatest"); }
+    |   LEAST { $$ = SYMTAB_PUT("least"); }
+    |   COLLATION { $$ = SYMTAB_PUT("collation"); }
+    |   SOME { $$ = SYMTAB_PUT("some"); }
+    |   EVERY { $$ = SYMTAB_PUT("every"); }
+    |   SATISFIES { $$ = SYMTAB_PUT("satisfies"); }
+    |   CASE { $$ = SYMTAB_PUT("case"); }
+    |   AS { $$ = SYMTAB_PUT("as"); }
+    |   THEN { $$ = SYMTAB_PUT("then"); }
+    |   ELSE { $$ = SYMTAB_PUT("else"); }
+    |   OR { $$ = SYMTAB_PUT("or"); }
+    |   AND { $$ = SYMTAB_PUT("and"); }
+    |   INSTANCE { $$ = SYMTAB_PUT("instance"); }
+    |   OF { $$ = SYMTAB_PUT("of"); }
+    |   CASTABLE { $$ = SYMTAB_PUT("castable"); }
+    |   TO { $$ = SYMTAB_PUT("to"); }
+    |   DIV { $$ = SYMTAB_PUT("div"); }
+    |   MOD { $$ = SYMTAB_PUT("mod"); }
+    |   UNION { $$ = SYMTAB_PUT("union"); }
+    |   INTERSECT { $$ = SYMTAB_PUT("intersect"); }
+    |   EXCEPT { $$ = SYMTAB_PUT("except"); }
+    |   VALIDATE { $$ = SYMTAB_PUT("validate"); }
+    |   CAST { $$ = SYMTAB_PUT("cast"); }
+    |   TREAT { $$ = SYMTAB_PUT("treat"); }
+    |   IS { $$ = SYMTAB_PUT("is"); }
+    |   PRESERVE { $$ = SYMTAB_PUT("preserve"); }
+    |   STRIP { $$ = SYMTAB_PUT("strip"); }
+    |   NAMESPACE { $$ = SYMTAB_PUT("namespace"); }
+    |   EXTERNAL { $$ = SYMTAB_PUT("external"); }
+    |   ENCODING { $$ = SYMTAB_PUT("encoding"); }
+    |   NO_PRESERVE { $$ = SYMTAB_PUT("no-preserve"); }
+    |   INHERIT { $$ = SYMTAB_PUT("inherit"); }
+    |   NO_INHERIT { $$ = SYMTAB_PUT("no-inherit"); }
+    |   DECLARE { $$ = SYMTAB_PUT("declare"); }
+    |   CONSTRUCTION { $$ = SYMTAB_PUT("construction"); }
+    |   ORDERING { $$ = SYMTAB_PUT("ordering"); }
+    |   DEFAULT { $$ = SYMTAB_PUT("default"); }
+    |   COPY_NAMESPACES { $$ = SYMTAB_PUT("copy-namespaces"); }
+    |   OPTION { $$ = SYMTAB_PUT("option"); }
+    |   VERSION { $$ = SYMTAB_PUT("version"); }
+    |   IMPORT { $$ = SYMTAB_PUT("import"); }
+    |   SCHEMA { $$ = SYMTAB_PUT("schema"); }
+    |   MODULE { $$ = SYMTAB_PUT("module"); }
+    |   FUNCTION { $$ = SYMTAB_PUT("function"); }
+    |   SCORE { $$ = SYMTAB_PUT("score"); }
+    |   CONTAINS { $$ = SYMTAB_PUT("contains"); }
+    |   WEIGHT { $$ = SYMTAB_PUT("weight"); }
+    |   WINDOW { $$ = SYMTAB_PUT("window"); }
+    |   DISTANCE { $$ = SYMTAB_PUT("distance"); }
+    |   OCCURS { $$ = SYMTAB_PUT("occurs"); }
+    |   TIMES { $$ = SYMTAB_PUT("times"); }
+    |   SAME { $$ = SYMTAB_PUT("same"); }
+    |   DIFFERENT { $$ = SYMTAB_PUT("different"); }
+    |   LOWERCASE { $$ = SYMTAB_PUT("lowercase"); }
+    |   UPPERCASE { $$ = SYMTAB_PUT("uppercase"); }
+    |   RELATIONSHIP { $$ = SYMTAB_PUT("relationship"); }
+    |   LEVELS { $$ = SYMTAB_PUT("levels"); }
+    |   LANGUAGE { $$ = SYMTAB_PUT("language"); }
+    |   ANY { $$ = SYMTAB_PUT("any"); }
+    |   ALL { $$ = SYMTAB_PUT("all"); }
+    |   PHRASE { $$ = SYMTAB_PUT("phrase"); }
+    |   EXACTLY { $$ = SYMTAB_PUT("exactly"); }
+    |   FROM { $$ = SYMTAB_PUT("from"); }
+    |   WORDS { $$ = SYMTAB_PUT("words"); }
+    |   SENTENCES { $$ = SYMTAB_PUT("sentences"); }
+    |   SENTENCE { $$ = SYMTAB_PUT("sentence"); }
+    |   PARAGRAPH { $$ = SYMTAB_PUT("paragraph"); }
+    |   REPLACE { $$ = SYMTAB_PUT("replace"); }
+    |   MODIFY { $$ = SYMTAB_PUT("modify"); }
+    |   FIRST { $$ = SYMTAB_PUT("first"); }
+    |   INSERT { $$ = SYMTAB_PUT("insert"); }
+    |   BEFORE { $$ = SYMTAB_PUT("before"); }
+    |   AFTER { $$ = SYMTAB_PUT("after"); }
+    |   REVALIDATION { $$ = SYMTAB_PUT("revalidation"); }
+    |   WITH { $$ = SYMTAB_PUT("with"); }
+    |   NODES { $$ = SYMTAB_PUT("nodes"); }
+    |   RENAME { $$ = SYMTAB_PUT("rename"); }
+    |   LAST { $$ = SYMTAB_PUT("last"); }
+    |   _DELETE { $$ = SYMTAB_PUT("delete"); }
+    |   INTO { $$ = SYMTAB_PUT("into"); }
+    |   SIMPLE { $$ = SYMTAB_PUT("simple"); }
+    |   SEQUENTIAL { $$ = SYMTAB_PUT("sequential"); }
+    |   UPDATING { $$ = SYMTAB_PUT("updating"); }
+    |   DETERMINISTIC { $$ = SYMTAB_PUT("deterministic"); }
+    |   NONDETERMINISTIC { $$ = SYMTAB_PUT("nondeterministic"); }
+    |   ORDERED { $$ = SYMTAB_PUT("ordered"); }
+    |   UNORDERED { $$ = SYMTAB_PUT("unordered"); }
+    |   RETURNING { $$ = SYMTAB_PUT("returning"); }
+    |   BLOCK { $$ = SYMTAB_PUT("block"); }
+    |   EXIT { $$ = SYMTAB_PUT("exit"); }
+    |   LOOP { $$ = SYMTAB_PUT("loop"); }
+    |   WHILE { $$ = SYMTAB_PUT("while"); }
+    |   BREAK { $$ = SYMTAB_PUT("break"); }
+    |   CONTINUE { $$ = SYMTAB_PUT("continue"); }
+    |   TRY { $$ = SYMTAB_PUT("try"); }
+    |   CATCH { $$ = SYMTAB_PUT("catch"); }
+    |   EVAL { $$ = SYMTAB_PUT("eval"); }
+    |   USING { $$ = SYMTAB_PUT("using"); }
+    |   SET { $$ = SYMTAB_PUT("set"); }
+    |   INDEX { $$ = SYMTAB_PUT("index"); }
+    |   UNIQUE { $$ = SYMTAB_PUT("unique"); }
+    |   NON { $$ = SYMTAB_PUT("non"); }
+    |   ON { $$ = SYMTAB_PUT("on"); }
+    |   RANGE { $$ = SYMTAB_PUT("range"); }
+    |   EQUALITY { $$ = SYMTAB_PUT("equality"); }
+    |   MANUALLY { $$ = SYMTAB_PUT("manually"); }
+    |   AUTOMATICALLY { $$ = SYMTAB_PUT("automatically"); }
+    |   MAINTAINED { $$ = SYMTAB_PUT("maintained"); }
+    |   DECIMAL_FORMAT { $$ = SYMTAB_PUT("decimal-format"); }
+    |   DECIMAL_SEPARATOR { $$ = SYMTAB_PUT("decimal-separator"); }
+    |   GROUPING_SEPARATOR { $$ = SYMTAB_PUT("grouping-separator"); }
+    |   INFINITY_VALUE { $$ = SYMTAB_PUT("infinity"); }
+    |   MINUS_SIGN { $$ = SYMTAB_PUT("minus-sign"); }
+    |   NaN { $$ = SYMTAB_PUT("NaN"); }
+    |   PERCENT { $$ = SYMTAB_PUT("percent"); }
+    |   PER_MILLE { $$ = SYMTAB_PUT("per-mille"); }
+    |   ZERO_DIGIT { $$ = SYMTAB_PUT("zero-digit"); }
+    |   DIGIT { $$ = SYMTAB_PUT("digit"); }
+    |   PATTERN_SEPARATOR { $$ = SYMTAB_PUT("pattern-separator"); }
+    |   COLLECTION { $$ = SYMTAB_PUT("collection"); }
+    |   CONSTOPT { $$ = SYMTAB_PUT("const"); }
+    |   APPEND_ONLY { $$ = SYMTAB_PUT("append-only"); }
+    |   QUEUE { $$ = SYMTAB_PUT("queue"); }
+    |   MUTABLE { $$ = SYMTAB_PUT("mutable"); }
+    |   READ_ONLY { $$ = SYMTAB_PUT("read-only"); }
+    |   INTEGRITY { $$ = SYMTAB_PUT("integrity"); }
+    |   CONSTRAINT { $$ = SYMTAB_PUT("constraint"); }
+    |   CHECK { $$ = SYMTAB_PUT("check"); }
+    |   KEY { $$ = SYMTAB_PUT("key"); }
+    |   FOREACH { $$ = SYMTAB_PUT("foreach"); }
+    |   FOREIGN { $$ = SYMTAB_PUT("foreign"); }
+    |   KEYS { $$ = SYMTAB_PUT("keys"); }
+    |   ANCESTOR { $$ = SYMTAB_PUT("ancestor"); }
+    |   CHILD { $$ = SYMTAB_PUT("child"); }
+    |   DESCENDANT { $$ = SYMTAB_PUT("descendant"); }
+    |   PARENT { $$ = SYMTAB_PUT("parent"); }
+    |   PRECEDING { $$ = SYMTAB_PUT("preceding"); }
+    |   SELF { $$ = SYMTAB_PUT("self"); }
+    ;
+
 
 %%
 

@@ -20,7 +20,6 @@
 #endif
 
 #include "zorbatypes/representations.h"
-
 #include "common/common.h"
 
 #include <cstdlib>
@@ -115,6 +114,7 @@ typedef zorba::xquery_parser::token_type token_type;
 */
 std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION */
 
+
 #ifdef YY_USER_ACTION
 #undef YY_USER_ACTION
 #endif
@@ -136,7 +136,6 @@ std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION *
   yylloc->step();\
   yylloc->columns(yyleng - last_endl);\
 }
-
 
 %}
 
@@ -308,7 +307,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 
 
 %{
-typedef zorba::xquery_parser::token token;
+  typedef zorba::xquery_parser::token token;
 %}
 
 
@@ -338,6 +337,20 @@ typedef zorba::xquery_parser::token token;
 "]" { return token::RBRACK; }
 "$" { return token::DOLLAR; }
 "#" { return token::HASH; }
+"::" { return token::DOUBLE_COLON; }
+
+"declare" {
+  std::string lDocComment = theDriver->theDocComment;
+  yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
+  theDriver->theDocComment = "";
+  return token::DECLARE;
+}
+"module" {
+  std::string lDocComment = theDriver->theDocComment;
+  yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
+  theDriver->theDocComment = "";
+  return token::MODULE;
+}
 
 "if" { return token::IF; }
 "returning" { return token::RETURNING; }
@@ -353,18 +366,10 @@ typedef zorba::xquery_parser::token token;
 "switch" { return token::SWITCH; }
 "typeswitch" { return token::TYPESWITCH; }
 "eval" { return token::EVAL; }
-"element" { return token::ELEMENT; }
-"attribute" { return token::ATTRIBUTE; }
 "document" { return token::DOCUMENT; }
 "text" { return token::TEXT; }
 "processing-instruction" { return token::PROCESSING_INSTRUCTION; }
 "comment" { return token::COMMENT; }
-"declare" {
-  std::string lDocComment = theDriver->theDocComment;
-  yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
-  theDriver->theDocComment = "";
-  return token::DECLARE;
-}
 "function" { return token::FUNCTION; }
 "deterministic" { return token::DETERMINISTIC; }
 "nondeterministic" { return token::NONDETERMINISTIC; }
@@ -378,35 +383,28 @@ typedef zorba::xquery_parser::token token;
 "node" { return token::NODE; }
 "document-node" { return token::DOCUMENT_NODE; }
 
-"ancestor-or-self::" { return token::ANCESTOR_OR_SELF_AXIS; }
-"ancestor::" { return token::ANCESTOR_AXIS; }
-"attribute::" { return token::ATTRIBUTE_AXIS; }
-"child::" { return token::CHILD_AXIS; }
-"descendant-or-self::" { return token::DESCENDANT_OR_SELF_AXIS; }
-"descendant::" { return token::DESCENDANT_AXIS; }
-"following-sibling::" { return token::FOLLOWING_SIBLING_AXIS; }
-"following::" { return token::FOLLOWING_AXIS; }
-"parent::" { return token::PARENT_AXIS; }
-"preceding-sibling::" { return token::PRECEDING_SIBLING_AXIS; }
-"preceding::" { return token::PRECEDING_AXIS; }
-"self::" { return token::SELF_AXIS;}
+  /* Axes */
+"ancestor-or-self" { return token::ANCESTOR_OR_SELF; }
+"ancestor" { return token::ANCESTOR; }
+"child" { return token::CHILD; }
+"descendant-or-self" { return token::DESCENDANT_OR_SELF; }
+"descendant" { return token::DESCENDANT; }
+"following-sibling" { return token::FOLLOWING_SIBLING; }
+"following" { return token::FOLLOWING; }
+"parent" { return token::PARENT; }
+"preceding-sibling" { return token::PRECEDING_SIBLING; }
+"preceding" { return token::PRECEDING; }
+"self" { return token::SELF;}
 
+"element" {  return token::ELEMENT; }
+"attribute" { return token::ATTRIBUTE; }
 "construction" { return token::CONSTRUCTION; }
 "default" { return token::DEFAULT; }
 "order" { return token::ORDER; }
 "collation" { return token::COLLATION; }
 "namespace" { return token::NAMESPACE; }
-"module" {
-  std::string lDocComment = theDriver->theDocComment;
-  yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
-  theDriver->theDocComment = "";
-  return token::MODULE;
-}
-
 "base-uri" { return token::BASE_URI; }
-"import" {
-  return token::IMPORT;
-}
+"import" { return token::IMPORT; }
 "schema" { return token::SCHEMA; }
 "copy-namespaces" { return token::COPY_NAMESPACES; }
 "for" { return token::FOR; }
@@ -433,6 +431,7 @@ typedef zorba::xquery_parser::token token;
 "revalidation" { return token::REVALIDATION;}
 "as" { return token::AS; }
 
+  /* Decimal format */
 "decimal-format" { return token::DECIMAL_FORMAT; }
 "decimal-separator" { return token::DECIMAL_SEPARATOR; }
 "grouping-separator" { return token::GROUPING_SEPARATOR; }
@@ -610,6 +609,8 @@ typedef zorba::xquery_parser::token token;
 "encoding" { return token::ENCODING; }
 
 
+
+
   /* TODO: fix 'if (1) then 2 else processing-instruction' */
 
 
@@ -660,21 +661,19 @@ typedef zorba::xquery_parser::token token;
    | State transitions
    |______________________________________________________________________*/
 
+  /* transition to MODE_XML_COMMENT */
+  /* ------------------------------ */
 "<!--" { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
+
 
   /* transition to PROCESSING_INSTRUCTION */
   /* ------------------------------------ */
-"<?" {
-  PUSH_STATE(MODE_PROCESSING_INSTRUCTION);
-  return token::PI_BEGIN;
-}
+"<?" { PUSH_STATE(MODE_PROCESSING_INSTRUCTION);return token::PI_BEGIN; }
+
 
   /* transition to CDATA_SECTION */
   /* --------------------------- */
-"<![CDATA[" {
-  // PUSH_AND_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR);
-  return token::CDATA_BEGIN;
-}
+"<![CDATA[" { /* PUSH_AND_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR); */ return token::CDATA_BEGIN; }
 
 
   /* transition to MODE_START_TAG */
@@ -704,6 +703,7 @@ typedef zorba::xquery_parser::token token;
   /* ------------------ */
 "{" { PUSH_STATE(INITIAL); return token::LBRACE; }
 
+
   /* pop previous state */
   /* ------------------ */
 "}" {
@@ -718,7 +718,6 @@ typedef zorba::xquery_parser::token token;
 }
 
   /* END <MODE INITIAL> */
-
 
 
   /*______________________________________________________________________
@@ -758,6 +757,12 @@ typedef zorba::xquery_parser::token token;
 
 
   /* } */ /* MODE_OCCURRENCE_INDICATOR> */
+
+  /*
+    <MODE_COMPUTED_CONSTRUCTOR>{QName} { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_COMPUTED_CONSTR, put_qname(yytext, yyleng)); }
+  <MODE_COMPUTED_CONSTURCTOR>{S}      {  }
+  <MODE_COMPUTED_CONSTRUCTOR>{CatchAll} { POP_STATE(); yyless(0); }
+   */
 
 
   /*______________________________________________________________________
@@ -803,7 +808,7 @@ typedef zorba::xquery_parser::token token;
 <MODE_START_TAG>{S} { return token::BLANK; }
 <MODE_START_TAG>"/>" { POP_STATE(); return token::EMPTY_TAG_END; }
 <MODE_START_TAG>{QName} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng)); }
-<MODE_START_TAG>{CatchAll} { return token::UNRECOGNIZED; }
+<MODE_START_TAG>{CatchAll} { yylval->err = scanner_error::unrecognizedCharErr(yytext); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________
@@ -869,7 +874,7 @@ typedef zorba::xquery_parser::token token;
 <MODE_EXPR_COMMENT>":)" { POP_STATE(); }
 <MODE_EXPR_COMMENT>"(:" { PUSH_STATE(MODE_EXPR_COMMENT); }
 <MODE_EXPR_COMMENT>.|"\n" { /* do nothing */ }
-<MODE_EXPR_COMMENT><<EOF>> { return token::UNRECOGNIZED; }
+<MODE_EXPR_COMMENT><<EOF>> { yylval->err = new scanner_error("syntax error, unexpected end of file, unterminated comment"); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________
@@ -881,8 +886,6 @@ typedef zorba::xquery_parser::token token;
    | of other characters in this state.
    |______________________________________________________________________*/
 
-  /* <MODE_EXPR_COMMENT>{  */
-
 <MODE_EXPR_DOC_COMMENT>":)" { POP_STATE(); }
 <MODE_EXPR_DOC_COMMENT>.|"\n" {
   if(theDriver->theDocComment.empty())
@@ -891,11 +894,7 @@ typedef zorba::xquery_parser::token token;
   }
   theDriver->theDocComment += yytext;
 }
-<MODE_EXPR_DOC_COMMENT><<EOF>> { return token::UNRECOGNIZED; }
-
-  /* } */  /* END <MODE_EXPR_COMMENT> */
-
-
+<MODE_EXPR_DOC_COMMENT><<EOF>> { yylval->err = new scanner_error("syntax error, unexpected end of file, unterminated comment"); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________
@@ -986,7 +985,10 @@ typedef zorba::xquery_parser::token token;
    |______________________________________________________________________*/
 
 
-<*>. return token::UNRECOGNIZED;
+<*>. {
+    yylval->err = scanner_error::unrecognizedCharErr(yytext);
+    return token::UNRECOGNIZED;
+}
 
 
   /* END OF FLEX RULES */

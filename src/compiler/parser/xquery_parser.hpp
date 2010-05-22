@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 34 of lalr1.cc  */
-#line 31 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+#line 31 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
 
 #include <list>
@@ -66,12 +66,41 @@ class xquery_driver;
 typedef std::list<std::string> string_list_t;
 typedef std::pair<std::string,std::string> string_pair_t;
 
+class scanner_error {
+public:
+  std::string msg;
+
+public:
+  scanner_error(std::string _msg) : msg(_msg) { };
+
+  static scanner_error* unrecognizedCharErr(const char* _error_token)
+  {
+    std::string token;
+    // translate some common non-printable characters for better readability.
+    if (*_error_token == '\t')
+      token = "\\t";
+    else if (*_error_token == '\n')
+      token = "\\n";
+    else if (*_error_token == '\r')
+      token = "\\r";
+    else if (*_error_token == ' ')
+      token = "<blank>";
+    else
+      token = _error_token;
+
+    scanner_error* err = new scanner_error("syntax error, unexpected character '" + token + "'");
+    return err;
+  };
+
+};
+
+
 
 
 
 
 /* Line 34 of lalr1.cc  */
-#line 75 "/home/colea/work/xquery_temp1/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 104 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -82,14 +111,14 @@ typedef std::pair<std::string,std::string> string_pair_t;
 namespace zorba {
 
 /* Line 34 of lalr1.cc  */
-#line 86 "/home/colea/work/xquery_temp1/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 115 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
 } // zorba
 
 /* Line 34 of lalr1.cc  */
-#line 93 "/home/colea/work/xquery_temp1/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 122 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -134,7 +163,7 @@ do {							\
 namespace zorba {
 
 /* Line 34 of lalr1.cc  */
-#line 138 "/home/colea/work/xquery_temp1/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 167 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -146,7 +175,7 @@ namespace zorba {
     {
 
 /* Line 34 of lalr1.cc  */
-#line 153 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
+#line 182 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -157,7 +186,7 @@ namespace zorba {
     xqp_integer *ival;
     xqp_double *dval;
     xqp_decimal *decval;
-    XQUERY_ERROR err;
+    scanner_error *err;
     string_list_t *strlist;
     string_pair_t *strpair;
     std::vector<string_pair_t> *vstrpair;
@@ -170,7 +199,7 @@ namespace zorba {
 
 
 /* Line 34 of lalr1.cc  */
-#line 174 "/home/colea/work/xquery_temp1/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 203 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -261,37 +290,37 @@ namespace zorba {
      ZERO_DIGIT = 336,
      DIGIT = 337,
      PATTERN_SEPARATOR = 338,
-     ANCESTOR_AXIS = 339,
-     ANCESTOR_OR_SELF_AXIS = 340,
+     ANCESTOR = 339,
+     ANCESTOR_OR_SELF = 340,
      AND = 341,
      APOS = 342,
      AS = 343,
      ASCENDING = 344,
      AT = 345,
      ATTRIBUTE = 346,
-     ATTRIBUTE_AXIS = 347,
-     AT_SIGN = 348,
-     CASE = 349,
-     CASTABLE = 350,
-     CAST = 351,
-     CDATA_BEGIN = 352,
-     CDATA_END = 353,
-     CHILD_AXIS = 354,
-     COLLATION = 355,
-     COMMA = 356,
-     COMMENT_BEGIN = 357,
-     COMMENT_END = 358,
-     DECIMAL_LITERAL = 359,
-     CONTEXT = 360,
-     VARIABLE = 361,
-     DEFAULT = 362,
-     DESCENDANT_AXIS = 363,
-     DESCENDANT_OR_SELF_AXIS = 364,
-     DESCENDING = 365,
-     DIV = 366,
-     DOLLAR = 367,
-     DOT = 368,
-     DOT_DOT = 369,
+     AT_SIGN = 347,
+     CASE = 348,
+     CASTABLE = 349,
+     CAST = 350,
+     CDATA_BEGIN = 351,
+     CDATA_END = 352,
+     CHILD = 353,
+     COLLATION = 354,
+     COMMA = 355,
+     COMMENT_BEGIN = 356,
+     COMMENT_END = 357,
+     DECIMAL_LITERAL = 358,
+     CONTEXT = 359,
+     VARIABLE = 360,
+     DEFAULT = 361,
+     DESCENDANT = 362,
+     DESCENDANT_OR_SELF = 363,
+     DESCENDING = 364,
+     DIV = 365,
+     DOLLAR = 366,
+     DOT = 367,
+     DOT_DOT = 368,
+     DOUBLE_COLON = 369,
      DOUBLE_LBRACE = 370,
      DOUBLE_LITERAL = 371,
      DOUBLE_RBRACE = 372,
@@ -307,8 +336,8 @@ namespace zorba {
      EVERY = 382,
      EXCEPT = 383,
      EXTERNAL = 384,
-     FOLLOWING_AXIS = 385,
-     FOLLOWING_SIBLING_AXIS = 386,
+     FOLLOWING = 385,
+     FOLLOWING_SIBLING = 386,
      FOLLOWS = 387,
      GE = 388,
      GETS = 389,
@@ -341,15 +370,15 @@ namespace zorba {
      ORDERED = 416,
      BY = 417,
      GROUP = 418,
-     PARENT_AXIS = 419,
+     PARENT = 419,
      PI_BEGIN = 420,
      PI_END = 421,
      PLUS = 422,
      PRAGMA_BEGIN = 423,
      PRAGMA_END = 424,
      PRECEDES = 425,
-     PRECEDING_AXIS = 426,
-     PRECEDING_SIBLING_AXIS = 427,
+     PRECEDING = 426,
+     PRECEDING_SIBLING = 427,
      PRESERVE = 428,
      QUOTE = 429,
      RBRACE = 430,
@@ -358,7 +387,7 @@ namespace zorba {
      RPAR = 433,
      SATISFIES = 434,
      SCHEMA_ATTRIBUTE_LPAR = 435,
-     SELF_AXIS = 436,
+     SELF = 436,
      SEMI = 437,
      SLASH = 438,
      SLASH_SLASH = 439,
@@ -667,7 +696,7 @@ namespace zorba {
 } // zorba
 
 /* Line 34 of lalr1.cc  */
-#line 671 "/home/colea/work/xquery_temp1/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 700 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
