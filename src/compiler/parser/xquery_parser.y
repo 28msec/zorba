@@ -578,9 +578,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> ForwardStep
 %type <node> FunctionDecl
 %type <node> FunctionDecl2
-%type <node> FunctionDecl3
+%type <node> FunctionDeclSimple
 %type <node> FunctionDeclUpdating
-%type <node> FunctionDecl4
+%type <node> FunctionDeclSequential
 %type <node> Import
 %type <node> ItemType
 %type <node> KindTest
@@ -858,7 +858,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDecl3 FunctionDeclUpdating FunctionDecl4 Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating FunctionDeclSequential Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
@@ -2029,42 +2029,51 @@ FunctionDecl
     |   DECLARE NONDETERMINISTIC FunctionDecl2
         {
             FunctionDecl *fd = dynamic_cast<FunctionDecl*>($3);
+            if (fd->type != ParseConstants::fn_extern && fd->type != ParseConstants::fn_extern_sequential && fd->type != ParseConstants::fn_extern_update)
+            {
+              delete $3;
+              error(@$, "Only external functions may be declared nondeterministic");
+              YYERROR;
+            }
             fd->setComment( SYMTAB($1) );
             fd->deterministic = false;
-            $$ = fd;
+            $$ = $3;
         }
     |   DECLARE DETERMINISTIC FunctionDecl2
         {
-            dynamic_cast<FunctionDecl*>($3)->setComment( SYMTAB($1) );
+            FunctionDecl *fd = dynamic_cast<FunctionDecl*>($3);
+            if (fd->type != ParseConstants::fn_extern && fd->type != ParseConstants::fn_extern_sequential && fd->type != ParseConstants::fn_extern_update)
+            {
+              delete $3;
+              error(@$, "Only external functions may be declared deterministic");
+              YYERROR;
+            }
+            fd->setComment( SYMTAB($1) );
             $$ = $3;
         }
   ;
 
 FunctionDecl2 :
-    FunctionDecl3
+    FunctionDeclSimple
     {
       $$ = $1;
     }
-  | SIMPLE FunctionDecl3
+  | SIMPLE FunctionDeclSimple
     {
       $$ = $2;
     }
-  | UPDATING FunctionDeclUpdating
+  | FunctionDeclUpdating
     {
-      FunctionDecl *fd = dynamic_cast<FunctionDecl*>($2);
-      fd->type = (fd->type == ParseConstants::fn_extern ?
-                  ParseConstants::fn_extern_update :
-                  ParseConstants::fn_update);
-      $$ = fd;
+      $$ = $1;
     }
-  | SEQUENTIAL FunctionDecl4
+  | FunctionDeclSequential
     {
-      $$ = $2;
+      $$ = $1;
     }
-;
+  ;
 
 
-FunctionDecl3 :
+FunctionDeclSimple :
     FUNCTION QNAME FunctionSig BracedExpr
     {
       $$ = new FunctionDecl(LOC (@$),
@@ -2088,49 +2097,50 @@ FunctionDecl3 :
   ;
 
 
-FunctionDecl4 :
-    FUNCTION QNAME FunctionSig Block
+FunctionDeclSequential :
+    SEQUENTIAL FUNCTION QNAME FunctionSig Block
     {
       $$ = new FunctionDecl(LOC (@$),
-                            static_cast<QName*>($2),
-                            &* $3->param,
-                            &* $3->ret,
-                            $4,
+                            static_cast<QName*>($3),
+                            &* $4->param,
+                            &* $4->ret,
+                            $5,
                             ParseConstants::fn_sequential);
-      delete $3;
+      delete $4;
     }
-  | FUNCTION QNAME FunctionSig EXTERNAL
+  | SEQUENTIAL FUNCTION QNAME FunctionSig EXTERNAL
     {
       $$ = new FunctionDecl(LOC (@$),
-                            static_cast<QName*>($2),
-                            &* $3->param,
-                            &* $3->ret,
+                            static_cast<QName*>($3),
+                            &* $4->param,
+                            &* $4->ret,
                             NULL,
                             ParseConstants::fn_extern_sequential);
-      delete $3;
+      delete $4;
     }
   ;
 
 
 FunctionDeclUpdating :
-    FUNCTION QNAME FunctionSig LBRACE ConcatExpr RBRACE
+    UPDATING FUNCTION QNAME FunctionSig LBRACE ConcatExpr RBRACE
     {
       $$ = new FunctionDecl(LOC (@$),
-                            static_cast<QName*>($2),
-                            &* $3->param, &* $3->ret,
-                            $5,
-                            ParseConstants::fn_read);
-      delete $3;
+                            static_cast<QName*>($3),
+                            &* $4->param,
+                            &* $4->ret,
+                            $6,
+                            ParseConstants::fn_update);
+      delete $4;
     }
-  | FUNCTION QNAME FunctionSig EXTERNAL
+  | UPDATING FUNCTION QNAME FunctionSig EXTERNAL
     {
       $$ = new FunctionDecl(LOC (@$),
-                            static_cast<QName*>($2),
-                            &* $3->param,
-                            &* $3->ret,
+                            static_cast<QName*>($3),
+                            &* $4->param,
+                            &* $4->ret,
                             NULL,
-                            ParseConstants::fn_extern);
-      delete $3;
+                            ParseConstants::fn_extern_update);
+      delete $4;
     }
   ;
 

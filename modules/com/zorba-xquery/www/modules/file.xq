@@ -92,7 +92,7 @@ declare nondeterministic function file:files(
  : @param $pattern The file name condition to be checked.
  : @return A sequence of file names matching the pattern.
  :)
-declare nondeterministic function file:files(
+declare function file:files(
   $path as xs:string,
   $pattern as xs:string
 ) as xs:string* {
@@ -111,7 +111,7 @@ declare nondeterministic function file:files(
  :        should be searched recursively.
  : @return A sequence of file names matching the pattern.
  :)
-declare nondeterministic function file:files(
+declare function file:files(
   $path as xs:string,
   $pattern as xs:string,
   $recursive as xs:boolean
