@@ -240,7 +240,7 @@ ftcontent_filter::ftcontent_filter(
   QueryLoc const &loc, ft_content_mode::type mode
 ) :
   ftpos_filter( loc ),
-  mode_( mode_ )
+  mode_( mode )
 {
 }
 
