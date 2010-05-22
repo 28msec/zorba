@@ -120,6 +120,10 @@ Specify a timeout in seconds. After the specified time, the execution of the que
 
 --module-path
 Module paths added to the built-in resolver, i.e. where module imports are looking for modules.
+
+--install-path
+The path where the modules are searched.
+
 \endverbatim
 
 \section commandlineexamples Examples

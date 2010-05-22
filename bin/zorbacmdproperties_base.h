@@ -33,7 +33,7 @@ namespace zorbacmd {
 class ZorbaCMDPropertiesBase : public ::zorba::PropertiesBase {
 protected:
   const char **get_all_options () const {
-    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--debug-server-host", "--no-colors", "--no-logo", "--timeout", "--module-path", NULL };
+    static const char *result [] = { "--timing", "--output-file", "--serialization-parameter", "--serialize-html", "--serialize-text", "--indent", "--print-query", "--print-errors-as-xml", "--byte-order-mark", "--omit-xml-declaration", "--base-uri", "--boundary-space", "--default-collation", "--construction-mode", "--ordering-mode", "--multiple", "--query", "--as-files", "--external-variable", "--context-item", "--optimization-level", "--lib-module", "--parse-only", "--compile-only", "--no-serializer", "--debug-ports", "--debug", "--debug-server", "--debug-server-host", "--no-colors", "--no-logo", "--timeout", "--module-path", "--install-path", NULL };
     return result;
   }
   bool theTiming;
@@ -127,13 +127,11 @@ public:
   const bool &noColors () const { return theNoColors; }
   const bool &noLogo () const { return theNoLogo; }
   const long &timeout () const { return theTimeout; }
-  const std::string &installPath () const { return theInstallPath; }
   const std::string &modulePath () const { return theModulePath; }
+  const std::string &installPath () const { return theInstallPath; }
 
   std::string load_argv (int argc, const char **argv) {
     if (argv == NULL) return "";
-
-    init_val(*argv, theInstallPath, 0);
 
     std::string result;
     for (++argv; *argv != NULL; ++argv) {
@@ -272,6 +270,11 @@ public:
         if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
         if (*argv == NULL) { result = "No value given for --module-path option"; break; }        init_val (*argv, theModulePath, d);
       }
+      else if (strcmp (*argv, "--install-path") == 0) {
+        int d = 2;
+        if ((*argv) [1] == '-' || (*argv) [2] == '\0') { d = 0; ++argv; }
+        if (*argv == NULL) { result = "No value given for --install-path option"; break; }        init_val (*argv, theInstallPath, d);
+      }
       else if (strcmp (*argv, "--") == 0) {
         copy_args (++argv);
         break;
@@ -321,6 +324,7 @@ public:
 "--no-logo\nPrint no logo when starting the debugger client or server.\n\n"
 "--timeout\nSpecify a timeout in seconds. After the specified time, the execution of the query will be aborted.\n\n"
 "--module-path\nModule paths added to the built-in resolver, i.e. where module imports are looking for modules.\n\n"
+"--install-path\nThe path where the modules are searched.\n\n"
 ;
   }
 
