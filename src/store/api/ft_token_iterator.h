@@ -49,6 +49,15 @@ public:
   }
 
   /**
+   * One greater than the index of the ending token.
+   *
+   * @return Returns said index.
+   */
+  index_t begin() const {
+    return begin_;
+  }
+
+  /**
    * Gets the current token.
    *
    * @return Returns said token.
@@ -66,6 +75,15 @@ public:
    */
   bool empty() const {
     return begin_ == end_;
+  }
+
+  /**
+   * The index of the beginning token.
+   *
+   * @return Returns said index.
+   */
+  index_t end() const {
+    return end_;
   }
 
   /**

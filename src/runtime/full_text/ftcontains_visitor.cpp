@@ -292,7 +292,10 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwords_times )
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftcontent_filter )
 void V::end_visit( ftcontent_filter &f ) {
-  apply_ftcontent( *top_matches(), f.get_mode() );
+  apply_ftcontent(
+    *top_matches(), f.get_mode(),
+    search_context_.begin(), search_context_.end() - 1
+  );
   END_VISIT();
 }
 

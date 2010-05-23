@@ -38,7 +38,8 @@ inline ft_int to_ft_int( xqp_integer const &i ) {
 void apply_ftand( ft_all_matches const&, ft_all_matches const&,
                   ft_all_matches &result );
 
-void apply_ftcontent( ft_all_matches&, ft_content_mode::type );
+void apply_ftcontent( ft_all_matches&, ft_content_mode::type,
+                      ft_int lowest_pos, ft_int highest_pos );
 
 void apply_ftdistance( ft_all_matches const&, ft_int at_least, ft_int at_most,
                        ft_unit::type, ft_all_matches &result );
