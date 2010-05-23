@@ -23,7 +23,7 @@
 #include "compiler/expression/expr_consts.h"
 #include "compiler/semantic_annotations/annotation_holder.h"
 
-#include "functions/function_enum.h"
+#include "functions/function_consts.h"
 
 #include "types/typeimpl.h"
 

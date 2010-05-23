@@ -2073,7 +2073,7 @@ void end_visit(fo_expr& v)
   else
   {
     ZORBA_ERROR_LOC_PARAM(XPST0017, loc,
-                          func->get_signature().get_name()->getStringValue(),
+                          func->getSignature().get_name()->getStringValue(),
                           argv.size());
   }
 }

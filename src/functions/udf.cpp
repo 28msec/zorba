@@ -34,8 +34,6 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(user_function)
 END_SERIALIZABLE_CLASS_VERSIONS(user_function)
 
-SERIALIZABLE_CLASS_VERSIONS(external_function)
-END_SERIALIZABLE_CLASS_VERSIONS(external_function)
 
 /*******************************************************************************
 
@@ -44,16 +42,12 @@ user_function::user_function(
     const QueryLoc& loc, 
     const signature& sig, 
     expr_t expr_body, 
-    enum ParseConstants::function_type_t ftype,
-    bool deterministic)
+    expr_script_kind_t scriptingKind)
   :
   function(sig),
   theLoc(loc), 
   theBodyExpr(expr_body), 
-  theUpdateType(ftype == ParseConstants::fn_update ?
-                UPDATE_EXPR :
-                ftype == ParseConstants::fn_sequential ? SEQUENTIAL_EXPR : SIMPLE_EXPR),
-  theIsDeterministic(deterministic),
+  theScriptingKind(scriptingKind),
   theIsLeaf(true)
 {
 }
@@ -87,8 +81,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
 
   serialize_baseclass(ar, (function*)this);
   ar & theLoc;
-  SERIALIZE_ENUM(expr_script_kind_t, theUpdateType);
-  ar & theIsDeterministic;
+  SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
   ar & theIsLeaf;
   ar & thePlan;
   ar & theArgVarRefs;

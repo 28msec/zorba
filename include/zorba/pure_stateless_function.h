@@ -22,25 +22,28 @@
 
 #include <zorba/stateless_function.h>
 
-namespace zorba {
+namespace zorba 
+{
 
-  class ZORBA_DLL_PUBLIC PureStatelessExternalFunction 
-    : public StatelessExternalFunction
-  {
-    public:
-      virtual ~PureStatelessExternalFunction() {}
+class ZORBA_DLL_PUBLIC PureStatelessExternalFunction :
+public StatelessExternalFunction
+{
+ public:
+  virtual ~PureStatelessExternalFunction() {}
 
-      virtual String
-      getURI() const = 0;
+  virtual String
+  getURI() const = 0;
 
-      virtual String
-      getLocalName() const = 0;
+  virtual String
+  getLocalName() const = 0;
 
-      virtual ItemSequence_t
-      evaluate(const Arguments_t&) const = 0;
+  virtual ItemSequence_t
+  evaluate(const Arguments_t&) const = 0;
 
-      virtual bool
-      isDeterministic() const { return true; }
-  };
+  virtual bool
+  isContextual() const { return false; }
+};
+
+
 } /* namespace zorba */
 #endif

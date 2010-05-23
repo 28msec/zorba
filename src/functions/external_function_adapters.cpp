@@ -20,26 +20,45 @@
 namespace zorba 
 {
 
+SERIALIZABLE_CLASS_VERSIONS(external_function)
+END_SERIALIZABLE_CLASS_VERSIONS(external_function)
+
+
 SERIALIZABLE_CLASS_VERSIONS(stateless_external_function_adapter)
 END_SERIALIZABLE_CLASS_VERSIONS(stateless_external_function_adapter)
 
 
 stateless_external_function_adapter::stateless_external_function_adapter(
+    const QueryLoc& loc, 
     const signature& sig,
-    StatelessExternalFunction *function, 
-    expr_script_kind_t aUpdateType,
-    const xqpStringStore_t& aNamespace)
+    StatelessExternalFunction* function, 
+    expr_script_kind_t scriptingType,
+    bool deterministic,
+    const xqpStringStore_t& ns)
   :
-  external_function(sig),
-  m_function(function),
-  theUpdateType(aUpdateType),
-  theNamespace(aNamespace)
+  external_function(loc, sig),
+  theFunction(function),
+  theScriptingKind(scriptingType),
+  theNamespace(ns)
 {
+  setDeterministic(deterministic);
 }
 
 
 stateless_external_function_adapter::~stateless_external_function_adapter()
 {
+}
+
+
+void stateless_external_function_adapter::serialize(::zorba::serialization::Archiver& ar)
+{
+  zorba::serialization::serialize_baseclass(ar, (external_function*)this);
+
+  if(!ar.is_serializing_out())
+    theFunction = NULL;//don't serialize this for now
+
+  SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
+  ar & theNamespace;
 }
 
 
@@ -53,7 +72,7 @@ PlanIter_t stateless_external_function_adapter::codegen(
   return new StatelessExtFunctionCallIterator(sctx,
                                               loc,
                                               argv,
-                                              m_function,
+                                              theFunction,
                                               isUpdating(),
                                               theNamespace);
 }

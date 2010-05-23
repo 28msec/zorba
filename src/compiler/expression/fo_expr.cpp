@@ -130,7 +130,7 @@ void fo_expr::serialize(::zorba::serialization::Archiver &ar)
 
 const signature& fo_expr::get_signature() const
 {
-  return theFunction->get_signature();
+  return theFunction->getSignature();
 }
 
 

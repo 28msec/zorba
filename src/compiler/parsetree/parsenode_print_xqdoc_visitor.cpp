@@ -254,7 +254,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   print_comment(theFunctions, n.getComment());
   theFunctions << "<xqdoc:name>" << n.get_name()->get_localname() << "</xqdoc:name>" << endl;
   theFunctions << "<xqdoc:signature><![CDATA[";
-  FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(), n.get_paramlist(), n.get_return_type(), 0, n.get_type());
+  FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(), n.get_paramlist(), n.get_return_type(), 0, n.get_kind());
   FunctionIndex lIndex = print_parsetree_xquery(theFunctions, &lFunctionDeclClone);
   theFunctions << "]]></xqdoc:signature>" << endl ;
   theFunctions << "</xqdoc:function>" << endl ;

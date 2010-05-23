@@ -39,23 +39,24 @@ namespace zorba
   i.e., an fo_expr is created that points to the udf obj and also has a vector
   of pointers to the arg exprs appearing in the function call.
 
-  theLoc        : The query location where this udf is declared at.
-  theBodyExpr   : The expr tree representing what this function is doing. It is
-                  the result of translating the udf declaration (so for a udf
-                  with one or more params, it is the flwor expr described above).
-                  Note: translation of udf declarations includes normalization
-                  and optimization of the expr tree.
-  theArgVars    : The internally generated arg vars (the $xi_ vars described above)
+  theLoc           : The query location where this udf is declared at.
+  theBodyExpr      : The expr tree representing what this function is doing.
+                     It is the result of translating the udf declaration (so
+                     for a udf with one or more params, it is the flwor expr
+                     described above). Note: translation of udf declarations
+                     includes normalization and optimization of the expr tree.
+  theArgVars       : The internally generated arg vars (the $xi_ vars described
+                     above)
 
-  theUpdateType : The update type of this udf.
-  deterministic :
-  leaf          : True if this udf does not invoke any other udfs
+  theScriptingKind : The update type of this udf.
 
-  thePlan       :
-  theArgVarRefs : Each arg var is referenced at most once in the function body.
-                  So, for each arg var, this vector stores the LetVarIterator
-                  that represents the reference to that var (or NULL if the arg 
-                  var is not referenced at all).
+  theIsLeaf        : True if this udf does not invoke any other udfs
+
+  thePlan          :
+  theArgVarRefs    : Each arg var is referenced at most once in the function
+                     body. So, for each arg var, this vector stores the
+                     LetVarIterator that represents the reference to that var
+                     (or NULL if the arg var is not referenced at all).
 ********************************************************************************/
 class user_function : public function 
 {
@@ -65,8 +66,7 @@ private:
   expr_t                    theBodyExpr;
   std::vector<var_expr_t>   theArgVars;
 
-  expr_script_kind_t        theUpdateType;
-  bool                      theIsDeterministic;
+  expr_script_kind_t        theScriptingKind;
   bool                      theIsLeaf;
   
   PlanIter_t                thePlan;
@@ -82,24 +82,21 @@ public:
         const QueryLoc& loc,
         const signature& sig,
         expr_t expr_body, 
-        ParseConstants::function_type_t,
-        bool deterministic);
+        expr_script_kind_t kind);
 
   virtual ~user_function();
 
   const QueryLoc& get_location() const;
 
-  bool is_builtin() const { return false; }
+  bool isBuiltin() const { return false; }
 
-  bool is_external() const { return false; }
+  bool isExternal() const { return false; }
 
-  bool is_udf() const { return true; }
+  bool isUdf() const { return true; }
 
-  expr_script_kind_t getUpdateType() const { return theUpdateType; }
+  expr_script_kind_t getUpdateType() const { return theScriptingKind; }
 
   //xqtref_t getUDFReturnType(static_context* sctx) const;
-
-  bool isDeterministic() const { return theIsDeterministic; }
 
   void setLeaf(bool v) { theIsLeaf = v; }
 
@@ -125,36 +122,6 @@ public:
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
         AnnotationHolder& ann) const; 
-};
-
-
-/*******************************************************************************
-
-********************************************************************************/
-class external_function : public function 
-{
-public:
-  SERIALIZABLE_ABSTRACT_CLASS(external_function)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(external_function, function)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    zorba::serialization::serialize_baseclass(ar, (function*)this);
-  }
-
-public:
-  external_function(const signature& sig) 
-    :
-    function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-  }
-
-  virtual ~external_function() { }
-
-  bool is_builtin() const { return false; }
-
-  bool is_external() const { return true; }
-
-  bool is_udf() const { return false; }
 };
 
 

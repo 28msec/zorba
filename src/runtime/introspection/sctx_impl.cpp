@@ -612,7 +612,7 @@ bool FunctionArgumentsCountIterator::nextImpl(
   consumeNext(lName, theChildren[0].getp(), aPlanState);
   theSctx->find_functions(lName, funcs);
   for (unsigned int i=0; i<funcs.size(); i++)
-    lState->arities.push_back(funcs[i]->get_arity());
+    lState->arities.push_back(funcs[i]->getArity());
 
   lState->position = 0;
   while (lState->position < lState->arities.size())

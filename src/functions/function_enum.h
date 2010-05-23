@@ -20,17 +20,6 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
-#ifndef ZORBA_ZORBA_FUNCTIONS_FUNCTION_CONSTS_H
-#define ZORBA_ZORBA_FUNCTIONS_FUNCTION_CONSTS_H
-namespace zorba{
-  
-class FunctionConsts
-{
-  
-public:
-typedef enum {
-  FN_UNKNOWN,
-#include "functions/function_consts.h"
   FN_NODE_NAME_1,
   FN_NILLED_1,
   FN_STRING_1,
@@ -268,24 +257,6 @@ typedef enum {
   FN_TOKENIZE_2,
   FN_TOKENIZE_3,
   XQDOC_XQDOC_1,
-  FN_MAX_FUNC
-} FunctionKind;
 
 
-typedef enum 
-{ 
-  NO = 0,
-  YES,
-  PRESERVE
-} AnnotationValue;
 
-
-typedef enum
-{
-  DoDistinct    = 1,   // Used by fn:zore-or-one and fn:exaclty-one 
-  SkipCodeGen   = 2,
-  hasFnNamespace = 4
-} AnnotationFlags;
-};
-} //namespace zorba
-#endif 

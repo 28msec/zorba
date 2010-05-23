@@ -1650,7 +1650,7 @@ void static_context::unbind_fn(
 
   if (theFunctionMap != NULL && theFunctionMap->get(qname2, f))
   {
-    if (f->get_arity() == arity)
+    if (f->getArity() == arity)
     {
       theFunctionMap->remove(qname2);
       return;
@@ -1663,7 +1663,7 @@ void static_context::unbind_fn(
       ulong numFunctions = fv->size();
       for (ulong i = 0; i < numFunctions; ++i)
       {
-        if ((*fv)[i]->get_arity() == arity)
+        if ((*fv)[i]->getArity() == arity)
         {
           (*fv).erase((*fv).begin() + i);
           return;
@@ -1691,7 +1691,7 @@ function* static_context::lookup_fn(
 
   if (theFunctionMap != NULL && theFunctionMap->get(qname2, f))
   {
-    if (f->get_arity() == arity || f->isVariadic())
+    if (f->getArity() == arity || f->isVariadic())
       return f.getp();
 
     std::vector<function_t>* fv = NULL;
@@ -1701,7 +1701,7 @@ function* static_context::lookup_fn(
       ulong numFunctions = fv->size();
       for (ulong i = 0; i < numFunctions; ++i)
       {
-        if ((*fv)[i]->get_arity() == arity)
+        if ((*fv)[i]->getArity() == arity)
           return (*fv)[i].getp();
       }
     }
@@ -2925,7 +2925,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     for (; ite != end; ++ite)
     {
       function_t f = (*ite).second;
-      bind_fn(ite.getKey(), f, f->get_arity(), loc);
+      bind_fn(ite.getKey(), f, f->getArity(), loc);
     }
   }
 
@@ -2948,7 +2948,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       for (ulong i = 0; i < num; ++i)
       {
         function_t& f = (*fv)[i];
-        bind_fn((*ite).first, f, f->get_arity(), loc);
+        bind_fn((*ite).first, f, f->getArity(), loc);
       }
     }
   }

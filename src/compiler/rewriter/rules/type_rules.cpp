@@ -144,12 +144,12 @@ RULE_REWRITE_POST(InferUDFTypes)
 
   expr_t bodyExpr = udf->getBody();
   xqtref_t bodyType = bodyExpr->get_return_type();
-  xqtref_t declaredType = udf->get_signature().return_type();
+  xqtref_t declaredType = udf->getSignature().return_type();
 
   if (!TypeOps::is_equal(*bodyType, *declaredType) &&
       TypeOps::is_subtype(*bodyType, *declaredType))
   {
-    udf->get_signature().return_type() = bodyType;
+    udf->getSignature().return_type() = bodyType;
     return node;
   }
 

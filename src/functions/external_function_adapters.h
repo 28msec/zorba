@@ -21,52 +21,85 @@
 
 #include "common/shared_types.h"
 
-#include "functions/udf.h"
+#include "functions/function.h"
 
 namespace zorba 
 {
 
+/*******************************************************************************
+
+********************************************************************************/
+class external_function : public function 
+{
+protected:
+  QueryLoc  theLoc;
+
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(external_function)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(external_function, function)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    zorba::serialization::serialize_baseclass(ar, (function*)this);
+  }
+
+public:
+   external_function(const QueryLoc& loc, const signature& sig) 
+    :
+    function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+  }
+
+  virtual ~external_function() { }
+
+  bool isBuiltin() const { return false; }
+
+  bool isExternal() const { return true; }
+
+  bool isUdf() const { return false; }
+};
+
+
 class stateless_external_function_adapter : public external_function 
 {
 private:
-  StatelessExternalFunction * m_function;
-  expr_script_kind_t          theUpdateType;
+  StatelessExternalFunction * theFunction;
+  expr_script_kind_t          theScriptingKind;
   xqpStringStore_t            theNamespace;
 
 public:
   SERIALIZABLE_CLASS(stateless_external_function_adapter)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(stateless_external_function_adapter, external_function)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    zorba::serialization::serialize_baseclass(ar, (external_function*)this);
-    if(!ar.is_serializing_out())
-      m_function = NULL;//don't serialize this for now
-    SERIALIZE_ENUM(expr_script_kind_t, theUpdateType);
-    ar & theNamespace;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   stateless_external_function_adapter(
+        const QueryLoc& loc,
         const signature& sig, 
-        StatelessExternalFunction *function,
-        expr_script_kind_t aUpdateType,
-        const xqpStringStore_t& aPrefix);
+        StatelessExternalFunction* function,
+        expr_script_kind_t scriptingType,
+        bool deterministic,
+        const xqpStringStore_t& ns);
   
   ~stateless_external_function_adapter();
 
-  virtual expr_script_kind_t getUpdateType() const { return theUpdateType; }
-
-  virtual bool isDeterministic() const { return m_function->isDeterministic(); }
+  virtual expr_script_kind_t getUpdateType() const { return theScriptingKind; }
 
   PlanIter_t codegen(
-    CompilerCB* /*cb*/,
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& argv,
-    AnnotationHolder& ann) const;
+        CompilerCB* /*cb*/,
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const;
 };
 
 
 } /* namespace zorba */
 #endif  /* ZORBA_EXTERNAL_FUNCTION_ADAPTERS_H */
+
 /* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

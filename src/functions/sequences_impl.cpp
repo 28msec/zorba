@@ -101,31 +101,31 @@ function* fn_sum::specialize(
 
   if (TypeOps::is_subtype(*argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
   {
-    return (get_arity() == 1 ?
+    return (getArity() == 1 ?
             GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
             GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
   }
   else if (TypeOps::is_subtype(*argType, *rtm.DOUBLE_TYPE_STAR))
   {
-    return (get_arity() == 1 ?
+    return (getArity() == 1 ?
             GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
             GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
   }
   else if (TypeOps::is_subtype(*argType, *rtm.FLOAT_TYPE_STAR))
   {
-    return (get_arity() == 1 ?
+    return (getArity() == 1 ?
             GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_1) :
             GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_2));
   }
   else if (TypeOps::is_subtype(*argType, *rtm.INTEGER_TYPE_STAR))
   {
-    return (get_arity() == 1 ?
+    return (getArity() == 1 ?
             GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_1) :
             GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_2));
   }
   else if (TypeOps::is_subtype(*argType, *rtm.DECIMAL_TYPE_STAR))
   {
-    return (get_arity() == 1 ?
+    return (getArity() == 1 ?
             GET_BUILTIN_FUNCTION(FN_SUM_DECIMAL_1) :
             GET_BUILTIN_FUNCTION(FN_SUM_DECIMAL_2));
   }

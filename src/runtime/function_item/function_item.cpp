@@ -93,7 +93,7 @@ uint32_t FunctionItem::getArity() const
 
 const signature& FunctionItem::getSignature() const
 {
-  return theExpr->get_function()->get_signature();
+  return theExpr->get_function()->getSignature();
 }
 
 

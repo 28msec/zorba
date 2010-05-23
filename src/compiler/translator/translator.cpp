@@ -67,6 +67,7 @@
 
 #include "functions/library.h"
 #include "functions/signature.h"
+#include "functions/udf.h"
 #include "functions/external_function_adapters.h"
 
 #include "store/api/item.h"
@@ -3153,7 +3154,7 @@ void* begin_visit(const VFO_DeclList& v)
       func_decl->get_return_type()->accept(*this);
       return_type = pop_tstack();
     }
-    else if (func_decl->get_type() == ParseConstants::fn_extern_update)
+    else if (func_decl->get_kind() == ParseConstants::fn_extern_update)
     {
       return_type = theRTM.EMPTY_TYPE;
     }
@@ -3185,9 +3186,26 @@ void* begin_visit(const VFO_DeclList& v)
     // Create the function object.
     signature sig(qnameItem, arg_types, return_type);
 
+    // Get the scripting kind of the function
+    expr_script_kind_t scriptKind;
+    switch (func_decl->get_kind())
+    {
+    case ParseConstants::fn_update:
+    case ParseConstants::fn_extern_update:
+      scriptKind = UPDATE_EXPR;
+      break;
+    case ParseConstants::fn_sequential:
+    case ParseConstants::fn_extern_sequential:
+      scriptKind = SEQUENTIAL_EXPR;
+      break;
+    default:
+      scriptKind = SIMPLE_EXPR;
+    }
+
+    // create the function object
     function_t f;
 
-    switch(func_decl->get_type())
+    switch(func_decl->get_kind())
     {
     case ParseConstants::fn_extern_update:
     case ParseConstants::fn_extern:
@@ -3201,7 +3219,7 @@ void* begin_visit(const VFO_DeclList& v)
         // in debug mode, we make sure that the types of the functions
         // and the return type are equal to the one that is declared in
         // the module
-        const signature& s = f->get_signature();
+        const signature& s = f->getSignature();
         if (!sig.equals(s))
         {
           ZORBA_ERROR_LOC_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
@@ -3214,7 +3232,7 @@ void* begin_visit(const VFO_DeclList& v)
         }
 
         // update the isDeterministic flag with the value found in the func_decl
-        f->setIsDeterministic(func_decl->deterministic);
+        f->setDeterministic(func_decl->is_deterministic());
 
         // continue with the next declaration, because we don't add already
         // built-in functions to the static context
@@ -3233,6 +3251,7 @@ void* begin_visit(const VFO_DeclList& v)
       {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
+
       // The external function must be registered already in the static context
       // via the StaticContextImpl::registerExternalModule() user api.
       if (ef == NULL)
@@ -3245,22 +3264,11 @@ void* begin_visit(const VFO_DeclList& v)
 
       ZORBA_ASSERT(ef != NULL);
 
-      expr_script_kind_t lScriptKind;
-      switch (func_decl->get_type())
-      {
-      case ParseConstants::fn_extern_update:
-        lScriptKind = UPDATE_EXPR;
-        break;
-      case ParseConstants::fn_extern_sequential:
-        lScriptKind = SEQUENTIAL_EXPR;
-        break;
-      default:
-        lScriptKind = SIMPLE_EXPR;
-      }
-
-      f = new stateless_external_function_adapter(sig,
+      f = new stateless_external_function_adapter(loc,
+                                                  sig,
                                                   ef,
-                                                  lScriptKind,
+                                                  scriptKind,
+                                                  func_decl->is_deterministic(),
                                                   qnameItem->getNamespace());
       break;
     }
@@ -3271,8 +3279,7 @@ void* begin_visit(const VFO_DeclList& v)
       f = new user_function(loc,
                             sig,
                             NULL, // no body for now
-                            func_decl->get_type(),
-                            func_decl->deterministic);
+                            scriptKind);
       break;
     }
     default:
@@ -3512,7 +3519,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   theCurrentPrologVFDecl.setNull();
 
   expr_t body;
-  ParseConstants::function_type_t lFuncType = v.get_type();
+  ParseConstants::function_type_t lFuncType = v.get_kind();
   bool is_external = (lFuncType == ParseConstants::fn_extern ||
                       lFuncType == ParseConstants::fn_extern_update ||
                       lFuncType == ParseConstants::fn_extern_sequential);
@@ -3564,8 +3571,8 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     if (body->is_sequential() && lFuncType != ParseConstants::fn_sequential)
     {
       ZORBA_ERROR_LOC_DESC_OSS(XPST0003, loc,
-                               "Only a sequential function can have a body that "
-                               << "is sequential expression");
+                               "Only a function that is declared as sequential can"
+                               << " have a body that is a sequential expression");
     }
 
     // Under section 2.2.2 "Category Rules", it states: If the body of a
@@ -3597,7 +3604,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     // Optimize the function body. This has to be done here because
     // we have the correct static context here (udfs declared in a library module
     // must be compiled in the context of that module).
-    xqtref_t returnType = udf->get_signature().return_type();
+    xqtref_t returnType = udf->getSignature().return_type();
 
     if (TypeOps::is_builtin_simple(*returnType))
     {
@@ -3621,12 +3628,12 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         body = rCtx.getRoot();
 #if 1
         xqtref_t bodyType = body->get_return_type();
-        xqtref_t declaredType = udf->get_signature().return_type();
+        xqtref_t declaredType = udf->getSignature().return_type();
 
         if (!TypeOps::is_equal(*bodyType, *declaredType) &&
             TypeOps::is_subtype(*bodyType, *declaredType))
         {
-          udf->get_signature().return_type() = bodyType;
+          udf->getSignature().return_type() = bodyType;
           if (!udf->isLeaf())
             continue;
         }
@@ -8835,7 +8842,7 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), to_string(arity));
   }
 
-  if (!fn->is_udf())
+  if (!fn->isUdf())
   {
     std::vector<expr_t> foArgs(arity);
     std::vector<var_expr_t> udfArgs(arity);
@@ -8851,10 +8858,9 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
     expr_t body = new fo_expr(theRootSctx, loc, fn, foArgs);
 
     user_function* udf = new user_function(loc,
-                                           fn->get_signature(),
+                                           fn->getSignature(),
                                            body,
-                                           ParseConstants::fn_read,
-                                           false);
+                                           fn->getUpdateType());
     udf->setArgVars(udfArgs);
 
     fn = udf;
@@ -9021,8 +9027,7 @@ void end_visit(const InlineFunction& v, void* aState)
   user_function_t udf(new user_function(loc,
                                         signature(0, paramTypes, returnType),
                                         body.getp(),
-                                        ParseConstants::fn_read,
-                                        false));
+                                        body->get_scripting_kind()));
   udf->setArgVars(argVars);
 
   // Get the function_item_expr and set its function to the udf created above.

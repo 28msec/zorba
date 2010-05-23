@@ -130,7 +130,7 @@ void function_item_expr::add_variable(expr* var)
 void function_item_expr::set_function(user_function_t& udf) 
 {
   theFunction = udf; 
-  theArity = udf->get_signature().arg_count();
+  theArity = udf->getSignature().arg_count();
 }
 
 

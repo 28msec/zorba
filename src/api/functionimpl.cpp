@@ -21,36 +21,39 @@
 #include "functions/function.h"
 #include "zorbaerrors/errors.h"
 
-namespace zorba {
+namespace zorba 
+{
 
-bool
-FunctionImpl::isUpdating() const
+bool FunctionImpl::isUpdating() const
 {
   return theFunction->isUpdating();
 }
 
-bool
-FunctionImpl::requiresDynamicContext() const
+
+bool FunctionImpl::requiresDynamicContext() const
 {
   return theFunction->accessesDynCtx();
 }
 
-Item
-FunctionImpl::getFunctionName() const
+
+Item FunctionImpl::getFunctionName() const
 {
-  try {
+  try 
+  {
     Item lFunctionName(theFunction->getName());
     return lFunctionName;
-  } catch (error::ZorbaError& e) {
+  } 
+  catch (error::ZorbaError& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
   return Item(0);
 }
 
-int
-FunctionImpl::getArity() const
+
+int FunctionImpl::getArity() const
 {
-  return theFunction->get_arity();
+  return theFunction->getArity();
 }
 
 } /* namespace zorba */

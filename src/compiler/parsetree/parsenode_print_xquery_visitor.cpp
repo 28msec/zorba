@@ -410,7 +410,7 @@ void* begin_visit(const FunctionDecl& n)
 {
   Parameters lParameters;
   os << "declare ";
-  switch(n.get_type()) {
+  switch(n.get_kind()) {
   case ParseConstants::fn_update:
   case ParseConstants::fn_extern_update:
     os << "updating ";
@@ -441,9 +441,9 @@ void* begin_visit(const FunctionDecl& n)
     os << '{';
     n.get_body()->accept(*this);
     os << '}';
-  } else if(n.get_type() == ParseConstants::fn_extern ||
-            n.get_type() == ParseConstants::fn_extern_update ||
-            n.get_type() == ParseConstants::fn_extern_sequential) {
+  } else if(n.get_kind() == ParseConstants::fn_extern ||
+            n.get_kind() == ParseConstants::fn_extern_update ||
+            n.get_kind() == ParseConstants::fn_extern_sequential) {
     os << " external";
   }
 

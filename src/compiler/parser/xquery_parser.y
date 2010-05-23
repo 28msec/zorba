@@ -2080,21 +2080,25 @@ FunctionDecl
         }
     |   DECLARE NONDETERMINISTIC FunctionDecl2
         {
-            FunctionDecl *fd = dynamic_cast<FunctionDecl*>($3);
-            if (fd->type != ParseConstants::fn_extern && fd->type != ParseConstants::fn_extern_sequential && fd->type != ParseConstants::fn_extern_update)
+            FunctionDecl* fd = dynamic_cast<FunctionDecl*>($3);
+            if (fd->get_kind() != ParseConstants::fn_extern &&
+                fd->get_kind() != ParseConstants::fn_extern_sequential &&
+                fd->get_kind() != ParseConstants::fn_extern_update)
             {
               delete $3;
               error(@$, "Only external functions may be declared nondeterministic");
               YYERROR;
             }
             fd->setComment( SYMTAB($1) );
-            fd->deterministic = false;
+            fd->set_deterministic(false);
             $$ = $3;
         }
     |   DECLARE DETERMINISTIC FunctionDecl2
         {
-            FunctionDecl *fd = dynamic_cast<FunctionDecl*>($3);
-            if (fd->type != ParseConstants::fn_extern && fd->type != ParseConstants::fn_extern_sequential && fd->type != ParseConstants::fn_extern_update)
+            FunctionDecl* fd = dynamic_cast<FunctionDecl*>($3);
+            if (fd->get_kind() != ParseConstants::fn_extern &&
+                fd->get_kind() != ParseConstants::fn_extern_sequential &&
+                fd->get_kind() != ParseConstants::fn_extern_update)
             {
               delete $3;
               error(@$, "Only external functions may be declared deterministic");

@@ -1067,15 +1067,13 @@ public:
 ********************************************************************************/
 class FunctionDecl : public XQDocumentable
 {
-public:
-  ParseConstants::function_type_t type;
 protected:
   rchandle<QName> name_h;
   rchandle<ParamList> paramlist_h;
   rchandle<exprnode> body_h;
   rchandle<SequenceType> return_type_h;
-public:
-  bool deterministic;
+  ParseConstants::function_type_t theKind;
+  bool theDeterministic;
 
 public:
   FunctionDecl(
@@ -1096,9 +1094,13 @@ public:
 
   rchandle<SequenceType> get_return_type() const { return return_type_h; }
 
-  ParseConstants::function_type_t get_type() const { return type; }
+  ParseConstants::function_type_t get_kind() const { return theKind; }
 
-  void set_type(ParseConstants::function_type_t t) { type = t; }
+  void set_kind(ParseConstants::function_type_t t) { theKind = t; }
+
+  void set_deterministic(bool v)  { theDeterministic = v; }
+
+  bool is_deterministic() const { return theDeterministic; }
 
   void accept(parsenode_visitor&) const;
 };

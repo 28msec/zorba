@@ -46,7 +46,7 @@
   {                                                                     \
     function_t type##_ptr(new type(signature sig));                     \
     const store::Item* fname = type##_ptr->getName();                   \
-    ulong cnt = type##_ptr->get_signature().arg_count();                \
+    ulong cnt = type##_ptr->getSignature().arg_count();                 \
     DEBUG_FN_DECL(fname, cnt);                                          \
     sctx->bind_fn(fname, type##_ptr, cnt, QueryLoc::null);              \
     BuiltinFunctionLibrary::theFunctions[type##_ptr->getKind()] = type##_ptr.getp(); \

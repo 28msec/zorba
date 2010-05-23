@@ -23,32 +23,30 @@ namespace zorba {
   class function;
   class ErrorHandler;
 
-  class ZORBA_DLL_PUBLIC FunctionImpl : public Function
+class ZORBA_DLL_PUBLIC FunctionImpl : public Function
+{
+protected:
+  function     * theFunction;
+  ErrorHandler * theErrorHandler;
+
+ public:
+  virtual ~FunctionImpl() {}
+
+  FunctionImpl(function* aFunction, ErrorHandler* aErrorHandler) 
+    :
+    theFunction(aFunction),
+    theErrorHandler(aErrorHandler)
   {
-    public:
-      virtual ~FunctionImpl() {}
+  }
 
-      FunctionImpl(function* aFunction, ErrorHandler* aErrorHandler) 
-        : theFunction(aFunction),
-          theErrorHandler(aErrorHandler) {}
+  virtual bool isUpdating() const;
 
-      virtual bool
-      isUpdating() const;
+  virtual bool requiresDynamicContext() const;
 
-      virtual bool
-      requiresDynamicContext() const;
+  virtual Item getFunctionName() const;
 
-      virtual Item
-      getFunctionName() const;
-
-      virtual int
-      getArity() const;
-
-    protected:
-      function* theFunction;
-      ErrorHandler* theErrorHandler;
-
-  };
+  virtual int getArity() const;
+};
 
 } /* namespace zorba */
 #endif

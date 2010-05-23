@@ -19,7 +19,7 @@
 
 #include "functions/single_seq_func.h"
 #include "functions/function_impl.h"
-#include "functions/function_enum.h"
+#include "functions/function_consts.h"
 
 #include "zorbautils/checked_vector.h"
 

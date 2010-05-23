@@ -20,7 +20,7 @@
 
 #include "common/shared_types.h"
 
-#include "functions/function_enum.h"
+#include "functions/function_consts.h"
 #include "functions/signature.h"
 
 #include "compiler/parser/parse_constants.h"
@@ -47,7 +47,6 @@ protected:
 	signature                    theSignature;
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
-  bool                         theIsDeterministic;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(function)
@@ -65,13 +64,13 @@ public:
 
 	const store::Item* getName() const { return theSignature.get_name(); }
 
-	void set_signature(signature& sig) { theSignature = sig; }
+	void setSignature(signature& sig) { theSignature = sig; }
 
-  const signature& get_signature() const { return theSignature; }
+  const signature& getSignature() const { return theSignature; }
 
-  signature& get_signature() { return theSignature; }
+  signature& getSignature() { return theSignature; }
 
-  ulong get_arity() const { return theSignature.arg_count(); }
+  ulong getArity() const { return theSignature.arg_count(); }
 
   bool isVariadic() const { return theSignature.is_variadic(); }
 
@@ -90,17 +89,28 @@ public:
     return (theFlags & flag) != 0;
   }
 
-	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
+  bool isDeterministic() const 
+  {
+    return testFlag(FunctionConsts::isDeterministic);
+  }
+
+  void setDeterministic(bool v) 
+  {
+    if (v)
+      setFlag(FunctionConsts::isDeterministic);
+    else
+      resetFlag(FunctionConsts::isDeterministic);
+  }
 
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 
   bool isSequential() const { return getUpdateType() == SEQUENTIAL_EXPR; }
 
-  virtual bool is_builtin() const { return true; }
+  virtual bool isBuiltin() const { return true; }
 
-  virtual bool is_external() const { return false; }
+  virtual bool isExternal() const { return false; }
 
-  virtual bool is_udf() const { return false; }
+  virtual bool isUdf() const { return false; }
 
   virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
 
@@ -139,10 +149,6 @@ public:
 
   virtual bool isSource() const { return false; }
 
-  virtual bool isDeterministic() const { return theIsDeterministic; }
-
-  virtual void setIsDeterministic(bool isDeterministic) { theIsDeterministic = isDeterministic; }
-
   virtual bool isMap(ulong input) const;
 
   virtual FunctionConsts::AnnotationValue producesDistinctNodes() const;
@@ -152,6 +158,8 @@ public:
   virtual bool propagatesSortedNodes(ulong input) const { return false; }
 
   virtual bool propagatesDistinctNodes(ulong input) const { return false; }
+
+	virtual bool validate_args(std::vector<PlanIter_t>& argv) const;
 
   virtual void compute_annotation(
         AnnotationHolder* foExpr,

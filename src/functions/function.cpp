@@ -43,20 +43,25 @@ function::function(const signature& sig)
   :
   theSignature(sig),
   theKind(FunctionConsts::FN_UNKNOWN),
-  theFlags(0),
-  theIsDeterministic(true)
+  theFlags(0)
 {
   const store::Item* lName = getName();
   //lName may be null for inlined functions
   if(lName != 0 &&
      getName()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
-    setFlag(FunctionConsts::hasFnNamespace);
-
-  zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
-
-  if(ar.is_loading_hardcoded_objects())
   {
-    //register this hardcoded object to help plan serialization
+    setFlag(FunctionConsts::hasFnNamespace);
+  }
+
+  setDeterministic(true);
+
+  zorba::serialization::Archiver& ar = 
+  *::zorba::serialization::ClassSerializer::getInstance()->
+  getArchiverForHardcodedObjects();
+
+  if (ar.is_loading_hardcoded_objects())
+  {
+    // register this hardcoded object to help plan serialization
     function* this_ptr = this;
     ar & this_ptr;
   }
@@ -70,17 +75,20 @@ function::function(const signature& sig, FunctionConsts::FunctionKind kind)
   :
   theSignature(sig),
   theKind(kind),
-  theFlags(0),
-  theIsDeterministic(true)
+  theFlags(0)
 {
-  if(getName()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
+  if (getName()->getNamespace()->byteEqual(XQUERY_FN_NS, sizeof(XQUERY_FN_NS)-1))
     setFlag(FunctionConsts::hasFnNamespace);
 
-  zorba::serialization::Archiver& ar = *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects();
+  zorba::serialization::Archiver& ar =
+  *::zorba::serialization::ClassSerializer::getInstance()->
+  getArchiverForHardcodedObjects();
+
+  setDeterministic(true);
 
   if(ar.is_loading_hardcoded_objects())
   {
-    //register this hardcoded object to help plan serialization
+    // register this hardcoded object to help plan serialization
     function* this_ptr = this;
     ar & this_ptr;
   }
@@ -95,7 +103,6 @@ void function::serialize(::zorba::serialization::Archiver& ar)
   ar & theSignature;
   SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
   ar & theFlags;
-  ar & theIsDeterministic;
 }
 
 

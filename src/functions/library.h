@@ -16,7 +16,7 @@
 #ifndef ZORBA_FUNCTION_LIBRARY_H
 #define ZORBA_FUNCTION_LIBRARY_H
 
-#include "functions/function_enum.h"
+#include "functions/function_consts.h"
 
 
 namespace zorba 

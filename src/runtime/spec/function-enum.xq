@@ -14,41 +14,12 @@ let $funcs := distinct-values(
                 return gen:function-kind($sig)
               )
 return
-  string-join ((
-    gen:add-copyright(),
-    gen:add-guard-open('ZORBA_FUNCTIONS_FUNCTION_CONSTS'),
-    'namespace zorba{',
-    $gen:indent, 'class FunctionConsts',
-    '{',
-    $gen:indent, 'public:',
-    'typedef enum {',
-     '  FN_UNKNOWN,',
-     '#include "functions/function_consts.h"',
-     for $func at $i in $funcs
-     return concat (
-      $gen:indent,
-      $func,
-      ','
-     ),
-    '  FN_MAX_FUNC',
-    '} FunctionKind;',
-    $gen:newline,
-    'typedef enum ',
-    '{ ',
-    '  NO = 0,',
-    '  YES,',
-    '  PRESERVE',
-    '} AnnotationValue;',
-    $gen:newline,
-    'typedef enum',
-    '{',
-    '  DoDistinct    = 1,   // Used by fn:zore-or-one and fn:exaclty-one ',
-    '  SkipCodeGen   = 2,',
-    '  hasFnNamespace = 4',
-    '} AnnotationFlags;',
-    '};',
-    '} //namespace zorba',
-    gen:add-guard-close()),
-    $gen:newline
-  ),
-  $gen:newline
+  string-join(
+    (
+      gen:add-copyright(),
+      for $func at $i in $funcs
+      return concat($gen:indent, $func, ','),
+      $gen:newline,
+      $gen:newline
+    ),
+    $gen:newline)

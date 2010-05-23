@@ -13,9 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- // include in function_enum.h 
- // this file is used until all functions
- // are generated
+#ifndef ZORBA_ZORBA_FUNCTIONS_FUNCTION_CONSTS
+#define ZORBA_ZORBA_FUNCTIONS_FUNCTION_CONSTS
+
+namespace zorba
+{
+  
+class FunctionConsts
+{
+  
+public:
+
+typedef enum 
+{ 
+  FN_UNKNOWN,
+
   FN_UNORDERED_1,
 
   FN_ZORBA_DDL_PROBE_INDEX_RANGE_N,
@@ -150,4 +162,42 @@
   OP_HOIST_1,
   OP_UNHOIST_1,
 
-    FN_FOP_1,
+  FN_FOP_1,
+
+#include "functions/function_enum.h"
+
+  FN_MAX_FUNC
+
+} FunctionKind;
+
+
+typedef enum 
+{ 
+  NO = 0,
+  YES,
+  PRESERVE
+} AnnotationValue;
+
+
+typedef enum
+{
+  DoDistinct    = 1,   // Used by fn:zore-or-one and fn:exaclty-one 
+  SkipCodeGen   = 2,
+  hasFnNamespace = 4,
+  isDeterministic = 8
+} AnnotationFlags;
+
+};
+
+}
+
+#endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+
+/* vim:set ts=2 sw=2: */
+

@@ -498,7 +498,7 @@ bool StatelessExtFunctionCallIterator::nextImpl(
 
   try 
   {
-    if (theFunction->isDeterministic()) 
+    if (!theFunction->isContextual()) 
     {
       lPureFct = dynamic_cast<const PureStatelessExternalFunction*>(theFunction);
       ZORBA_ASSERT(lPureFct);
