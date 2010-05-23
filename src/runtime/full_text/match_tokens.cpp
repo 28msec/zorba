@@ -93,7 +93,9 @@ bool match_tokens( FTToken::string_t const &ti, FTToken::string_t const &tj,
   }
 
   if ( ftthesaurus_option const *const t = options.get_thesaurus_option() ) {
-    // TODO
+    if ( !t->no_thesaurus() ) {
+      // TODO
+    }
   }
 
   if ( ftwild_card_option const *const wc = options.get_wild_card_option() ) {
