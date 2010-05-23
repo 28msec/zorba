@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,7 +37,7 @@
 #include "zorbaserialization/serialization_engine.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 
@@ -46,9 +46,9 @@ namespace zorba
 #ifndef DEBUG_RT
 #define DEBUG_RT(e, t) print_expr_and_type(e, t)
 
-static xqtref_t print_expr_and_type(expr* e, xqtref_t t) 
+static xqtref_t print_expr_and_type(expr* e, xqtref_t t)
 {
-  if (Properties::instance()->printStaticTypes ()) 
+  if (Properties::instance()->printStaticTypes ())
   {
     std::cout << "Return type for " << e << ":\n";
     e->put(std::cout);
@@ -78,16 +78,16 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 /*******************************************************************************
 
 ********************************************************************************/
-  expr::expr(static_context* sctx, const QueryLoc& loc, expr_kind_t k) 
+  expr::expr(static_context* sctx, const QueryLoc& loc, expr_kind_t k)
   :
   theSctx(sctx),
   theLoc(loc),
   theKind(k),
-  theFlags1(0) 
+  theFlags1(0)
 {
   theScriptingKind = UNKNOWN_SCRIPTING_KIND;
 
-  // This is the default. The constructors for certain exprs set different values. 
+  // This is the default. The constructors for certain exprs set different values.
   setNonDiscardable(ANNOTATION_FALSE);
   setUnfoldable(ANNOTATION_FALSE);
 }
@@ -96,7 +96,7 @@ expr_t* expr::iter_done = &expr::iter_end_expr;
 /*******************************************************************************
 
 ********************************************************************************/
-expr::~expr() 
+expr::~expr()
 {
 }
 
@@ -143,14 +143,14 @@ bool expr::is_updating() const
   return theScriptingKind == UPDATE_EXPR;
 }
 
-  
+
 bool expr::is_sequential() const
 {
   assert(theScriptingKind != UNKNOWN_SCRIPTING_KIND);
 
   return theScriptingKind == SEQUENTIAL_EXPR;
 }
-  
+
 
 bool expr::is_vacuous() const
 {
@@ -177,15 +177,15 @@ bool expr::is_updating_or_vacuous() const
 
 
 expr_script_kind_t expr::scripting_kind_anding(
-    expr_script_kind_t type1, 
-    expr_script_kind_t type2, 
+    expr_script_kind_t type1,
+    expr_script_kind_t type2,
     const QueryLoc& loc)
 {
   switch(type1)
   {
   case VACUOUS_EXPR:
   {
-    switch(type2) 
+    switch(type2)
     {
     case VACUOUS_EXPR:
       return VACUOUS_EXPR;
@@ -207,7 +207,7 @@ expr_script_kind_t expr::scripting_kind_anding(
   }
   case SIMPLE_EXPR:
   {
-    switch(type2) 
+    switch(type2)
     {
     case VACUOUS_EXPR:
       return SIMPLE_EXPR;
@@ -230,7 +230,7 @@ expr_script_kind_t expr::scripting_kind_anding(
   }
   case UPDATE_EXPR:
   {
-    switch(type2) 
+    switch(type2)
     {
     case VACUOUS_EXPR:
       return UPDATE_EXPR;
@@ -254,7 +254,7 @@ expr_script_kind_t expr::scripting_kind_anding(
   }
   case SEQUENTIAL_EXPR:
   {
-    switch(type2) 
+    switch(type2)
     {
     case VACUOUS_EXPR:
       return SEQUENTIAL_EXPR;
@@ -270,7 +270,7 @@ expr_script_kind_t expr::scripting_kind_anding(
       return SEQUENTIAL_EXPR;
 
     default:
-      ZORBA_ASSERT(false); 
+      ZORBA_ASSERT(false);
     }
 
     break;
@@ -283,19 +283,19 @@ expr_script_kind_t expr::scripting_kind_anding(
 
   return SIMPLE_EXPR;
 }
- 
+
 
 /*******************************************************************************
 
 ********************************************************************************/
-expr_t expr::clone() const 
+expr_t expr::clone() const
 {
   substitution_t subst;
   return clone(subst);
 }
 
 
-expr_t expr::clone(substitution_t& subst) const 
+expr_t expr::clone(substitution_t& subst) const
 {
   ZORBA_ERROR_LOC(XQP0019_INTERNAL_ERROR, get_loc());
   return NULL;
@@ -311,7 +311,7 @@ DEF_EXPR_ACCEPT (expr)
 /*******************************************************************************
 
 ********************************************************************************/
-void expr::accept_children(expr_visitor& v) 
+void expr::accept_children(expr_visitor& v)
 {
   ExprIterator iter(this);
   while (!iter.done())
@@ -327,7 +327,7 @@ void expr::accept_children(expr_visitor& v)
 /*******************************************************************************
 
 ********************************************************************************/
-std::string expr::toString() const 
+std::string expr::toString() const
 {
   std::ostringstream oss;
   put(oss);
@@ -437,6 +437,44 @@ void expr::setDirectAnnotations()
   }
 }
 
+/*******************************************************************************
+
+********************************************************************************/
+bool expr::contains_nondeterministic() const
+{
+  /*
+  if (e->get_expr_kind() == fo_expr_kind)
+  {
+    const fo_expr* fo = static_cast<const fo_expr*>(e);
+    if (!fo->get_func()->isDeterministic())
+      return true;
+
+    const user_function* udf = dynamic_cast<user_function*>(e->get_sctx()->lookup_fn(fo->get_fname(), fo->num_args()));
+    if (udf != NULL)
+      return contains_nondeterministic(udf->getBody());
+    else
+      return true;
+  }
+  */
+
+  if (get_expr_kind() == fo_expr_kind)
+  {
+    const fo_expr* fo = static_cast<const fo_expr*>(this);
+    if (!fo->get_func()->isDeterministic())
+      return true;
+  }
+
+  ExprConstIterator iter(this);
+  while(!iter.done())
+  {
+    const expr* ce = iter.get_expr();
+    if (ce != NULL && ce->contains_nondeterministic())
+        return true;
+    iter.next();
+  }
+
+  return false;
+}
 
 /*******************************************************************************
 
@@ -512,7 +550,7 @@ bool expr::isUnfoldable() const
 ********************************************************************************/
 bool expr::is_constant() const
 {
-  if (get_expr_kind() == var_expr_kind) 
+  if (get_expr_kind() == var_expr_kind)
   {
     return false;
   }
@@ -520,7 +558,7 @@ bool expr::is_constant() const
   ExprConstIterator iter(this);
   while (!iter.done())
   {
-    if (!iter.get_expr()->is_constant()) 
+    if (!iter.get_expr()->is_constant())
     {
       return false;
     }
@@ -644,8 +682,8 @@ const var_expr* expr::get_var() const
   v1 == CONCATENATE { v1i, i = 1, ..., N }, where
 
   v1 is the value of E1 when E2 is bound to v2 and
-  v1i is the value of E1 when E2 is bound to the i-th item in v2 
- 
+  v1i is the value of E1 when E2 is bound to the i-th item in v2
+
   If the method returns true, then "this" is guaranteed to be a map. If it
   returns false, it may still be a map, but this algorithm could not determine
   that.
@@ -678,7 +716,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     return true;
   }
 
-  switch(get_expr_kind()) 
+  switch(get_expr_kind())
   {
   case debugger_expr_kind:
   {
@@ -707,7 +745,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
     const fo_expr* foExpr = static_cast<const fo_expr *>(this);
     const function* func = foExpr->get_func();
     ulong numArgs = foExpr->num_args();
-    
+
     for (ulong i = 0; i < numArgs; ++i)
     {
       const expr* argExpr = foExpr->get_arg(i);
@@ -786,7 +824,7 @@ bool expr::is_map_internal(const expr* e, bool& found) const
 
         if (startCond && startCond->get_cond()->contains_expr(e))
           return false;
-        
+
         if (stopCond && stopCond->get_cond()->contains_expr(e))
           return false;
 
@@ -989,22 +1027,22 @@ const store::Item* expr::getQName(static_context* sctx) const
   else if (get_expr_kind() == promote_expr_kind)
   {
     // We get here if the optimizer is turned off.
-    
+
     const promote_expr* promoteExpr = static_cast<const promote_expr*>(this);
-    
+
     const expr* argExpr = promoteExpr->get_input();
     const fo_expr* dataExpr = dynamic_cast<const fo_expr*>(argExpr);
-    
+
     if (dataExpr != NULL &&
         dataExpr->get_func()->getKind() == FunctionConsts::FN_DATA_1)
     {
       argExpr = dataExpr->get_arg(0);
       const const_expr* qnameExpr = dynamic_cast<const const_expr*>(argExpr);
-      
+
       if (qnameExpr != NULL)
       {
         xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
-        
+
         if (TypeOps::is_subtype(*valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
         {
           return qnameExpr->get_val();

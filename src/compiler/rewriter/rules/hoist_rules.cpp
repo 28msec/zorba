@@ -18,6 +18,7 @@
 #include "context/static_context.h"
 
 #include "functions/library.h"
+#include "functions/udf.h"
 
 #include "compiler/rewriter/rules/ruleset.h"
 #include "compiler/rewriter/tools/expr_tools.h"
@@ -62,8 +63,6 @@ static bool contains_var(
 static bool is_enclosed_expr(const expr*);
 
 static bool contains_updates(const expr*);
-
-static bool contains_nondeterministic(const expr*);
 
 
 /*******************************************************************************
@@ -392,7 +391,8 @@ static bool non_hoistable(const expr* e)
       k == match_expr_kind ||
       (k == wrapper_expr_kind && non_hoistable(static_cast<const wrapper_expr*>(e)->get_expr())) ||
       is_already_hoisted(e) ||
-      contains_nondeterministic(e) ||
+      e->contains_nondeterministic() ||
+      // contains_nondeterministic(e) ||
       e->get_scripting_kind() == SEQUENTIAL_EXPR)
   {
     return true;
@@ -460,45 +460,6 @@ static bool contains_updates(const expr* e)
 
   return false;
 }
-
-/*******************************************************************************
-  The function returns false for non-deterministic FO expressions, and true
-  for all other expressions
-********************************************************************************/
-static bool is_deterministic(const expr* e)
-{
-  if (e->get_expr_kind() == fo_expr_kind)
-  {
-    const fo_expr* fo = static_cast<const fo_expr*>(e);
-    return fo->get_func()->isDeterministic();
-  }
-
-  return true;
-}
-
-/*******************************************************************************
-  Returns true if the expressions contains a non-deterministic function call
-********************************************************************************/
-static bool contains_nondeterministic(const expr* e)
-{
-  if (!is_deterministic(e))
-    return true;
-
-  ExprConstIterator iter(e);
-  while(!iter.done())
-  {
-    const expr* ce = iter.get_expr();
-    if (ce)
-    {
-      if (contains_nondeterministic(ce))
-        return true;
-    }
-    iter.next();
-  }
-
-  return false;
-}
-
 
 }
 /* vim:set ts=2 sw=2: */

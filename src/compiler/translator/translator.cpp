@@ -3166,8 +3166,6 @@ void* begin_visit(const VFO_DeclList& v)
 
     const xqpStringStore* ns = qnameItem->getNamespace();
 
-    // std::cout << "--> Translate func: " << qnameItem->getStringValue() << std::endl;
-
     // function must be declared in a non-NULL namespace
     if(ns->empty())
       ZORBA_ERROR_LOC (XQST0060, loc);
@@ -3651,6 +3649,8 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
       udf->setBody(body);
       udf->setArgVars(args);
     }
+    // recalculate the non-deterministic flag on the optimized body
+    udf->setDeterministic(udf->isDeterministic() && !body->contains_nondeterministic());
 
     break;
   }
@@ -8862,6 +8862,8 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
                                            body,
                                            fn->getUpdateType());
     udf->setArgVars(udfArgs);
+    // recalculate the non-deterministic flag on the optimized body
+    udf->setDeterministic(udf->isDeterministic() && !body->contains_nondeterministic());
 
     fn = udf;
   }
@@ -9029,6 +9031,8 @@ void end_visit(const InlineFunction& v, void* aState)
                                         body.getp(),
                                         body->get_scripting_kind()));
   udf->setArgVars(argVars);
+  // recalculate the non-deterministic flag on the optimized body
+  udf->setDeterministic(udf->isDeterministic() && !body->contains_nondeterministic());
 
   // Get the function_item_expr and set its function to the udf created above.
   function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,13 +31,15 @@
 
 #include "store/api/item.h"
 #include "zorba_test_setting.h"
+#include "zorba/exception.h"
+
 #ifndef ZORBA_MINIMAL_STORE
 #include <zorba/store_manager.h>
 #else
 #include "store/minimal/min_store.h"
 #endif
 
-// Global variable g_abort_on_error is used to generate an abort() when an 
+// Global variable g_abort_on_error is used to generate an abort() when an
 // error is encountered, to aid debugging
 #ifndef NDEBUG
 #ifdef BUILDING_ZORBA_STATIC
@@ -54,7 +56,7 @@ using namespace std;
 
 void set_var (string name, string val, DynamicContext* dctx)
 {
-  if (name [name.size () - 1] == ':') 
+  if (name [name.size () - 1] == ':')
   {
     name = name.substr (0, name.size () - 1);
     Item lItem = Zorba::getInstance(NULL)->getItemFactory()->createString(val);
@@ -96,7 +98,7 @@ int _tmain(int argc, _TCHAR* argv[])
                       ZORBA_OPT_LEVEL_O0);
 
   // output file (either a file or the standard out if no file is specified)
-  auto_ptr<ostream> outputFile (lProp->resultFile ().empty () 
+  auto_ptr<ostream> outputFile (lProp->resultFile ().empty ()
                                 ? NULL : new ofstream (lProp->resultFile().c_str()));
   ostream *resultFile = outputFile.get ();
   if (resultFile == NULL)
@@ -121,7 +123,7 @@ int _tmain(int argc, _TCHAR* argv[])
   } else {
     qfile.reset (new istringstream(lProp->query ()));
   }
-  
+
   // print the query if requested
   if (lProp->printQuery()) {
     lProp->debug_out ()<< "Query text:\n";
@@ -132,12 +134,12 @@ int _tmain(int argc, _TCHAR* argv[])
 
   // Instantiate the simple store
 #ifdef ZORBA_MINIMAL_STORE
-  zorba::storeminimal::SimpleStore* store = 
+  zorba::storeminimal::SimpleStore* store =
         zorba::storeminimal::SimpleStore::getInstance();
 #else
   void* store = zorba::StoreManager::getStore();
 #endif
-      
+
   // Set the g_abort_on_exception flag in error_manager.cpp
 #ifndef NDEBUG
   if (lProp->abort())
@@ -150,7 +152,7 @@ int _tmain(int argc, _TCHAR* argv[])
   // start parsing the query
   XQuery_t query = zengine->createQuery ();
 
-  if (lProp->debug()) 
+  if (lProp->debug())
   {
     query->setDebugMode(lProp->debug());
     Zorba_CompilerHints lHints;
@@ -159,10 +161,13 @@ int _tmain(int argc, _TCHAR* argv[])
 
   if (! lProp->inlineQuery())
     query->setFileName (path.get_path ());
-  
+
   try {
     query->compile(*qfile, chints);
-  } catch (ZorbaException &e) {
+  } catch (QueryException& e) {
+    cerr << "Compilation error: " << e << endl;
+    return 1;
+  } catch (ZorbaException& e) {
     // no need to close because the object is not valid
     cerr << "Compilation error: " << e << endl;
     return 1;
@@ -185,9 +190,10 @@ int _tmain(int argc, _TCHAR* argv[])
     query->printPlan(*printPlanFile, true);
   }
 
+  int return_code = 0;
   if (! lProp->compileOnly ()) {
     // output the result (either using xml serialization or using show)
-  
+
     try {
       if (lProp->useSerializer()) {
         Zorba_SerializerOptions opts = Zorba_SerializerOptions::SerializerOptionsFromStringParams(lProp->getSerializerParameters());
@@ -204,22 +210,17 @@ int _tmain(int argc, _TCHAR* argv[])
         }
         result->close();
       }
+    } catch (QueryException& e) {
+      cerr << "Execution error: " << e << endl;
+      return_code = 2;
     } catch (ZorbaException &e) {
-      query->close();
-      zengine->shutdown();
-      zorba::StoreManager::shutdownStore(store);
-      cerr << "Execution error: ";
-      if (dynamic_cast<QueryException *> (&e) != NULL)
-        cerr << (QueryException &) e;
-      else
-        cerr << e;
-      cerr << endl;
-      return 2;
+      cerr << "Execution error: " << e << endl;
+      return_code = 2;
     }
   }
 
   query->close();
   zengine->shutdown();
   zorba::StoreManager::shutdownStore(store);
-  return 0;
+  return return_code;
 }

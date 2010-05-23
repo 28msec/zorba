@@ -109,7 +109,7 @@ public:
   typedef substitution_t::iterator subst_iter_t;
 
 
-  typedef enum 
+  typedef enum
   {
     ANNOTATION_UNKNOWN = 0,
     ANNOTATION_FALSE,
@@ -210,6 +210,9 @@ public:
   void setDirectAnnotations();
 
   bool is_constant() const;
+
+  // returns true if the expression or any subexpression contains a nondeterministic function call
+  bool contains_nondeterministic() const;
 
   void replace_expr(const expr* oldExpr, const expr* newExpr);
 
