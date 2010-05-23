@@ -530,9 +530,8 @@ void apply_ftorder( ft_all_matches const &am, ft_all_matches &result ) {
       copy_seq( m->includes, m_new.includes );
       FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
         FOR_EACH( ft_match::includes_t, i, m->includes ) {
-          if ( ordered( *e, *i ) ) {
+          if ( ordered( *e, *i ) )
             m_new.excludes.push_back( *e );
-          }
         }
       }
       result.push_back( m_new );
