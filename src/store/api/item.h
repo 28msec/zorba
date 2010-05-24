@@ -624,15 +624,15 @@ public:
   /* -------------------- Methods for Full-Text --------------------- */
 
   /**
-   * Gets the tokens for this item.
+   * Gets the document tokens for this item.
    */
-  virtual FTTokenIterator
+  virtual FTTokenIterator_t
   getDocumentTokens() const;
 
   /**
-   * Gets the tokens for this item.
+   * Gets the query tokens for this item.
    */
-  virtual FTTokenIterator
+  virtual FTTokenIterator_t
   getQueryTokens() const;
 
 }; 

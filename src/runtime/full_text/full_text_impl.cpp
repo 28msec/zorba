@@ -33,15 +33,15 @@ namespace zorba {
 FTContainsIterator::FTContainsIterator(
   static_context *sctx,
   QueryLoc const &loc,
-  PlanIter_t search_context,
+  PlanIter_t search_ctx,
   PlanIter_t ftignore_option,
   ftnode_t ftselection,
   sub_iter_list_t &sub_iters
 ) : 
-  base_type( sctx, loc, search_context, ftignore_option ),
+  base_type( sctx, loc, search_ctx, ftignore_option ),
   ftselection_( ftselection )
 {
-  ZORBA_ASSERT( search_context );
+  ZORBA_ASSERT( search_ctx );
   ZORBA_ASSERT( ftselection );
   sub_iters_.swap( sub_iters );
 }
@@ -69,8 +69,8 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
 
   while ( !ftcontains && consumeNext( item, theChild0.getp(), plan_state ) ) {
-    FTTokenIterator doc_tokens( item->getDocumentTokens() );
-    if ( !doc_tokens.empty() ) {
+    FTTokenIterator_t doc_tokens( item->getDocumentTokens() );
+    if ( !doc_tokens->empty() ) {
       ftcontains_visitor v( doc_tokens, plan_state );
       ftselection_->accept( v );
       ftcontains = v.ftcontains();

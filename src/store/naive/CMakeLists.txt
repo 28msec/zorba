@@ -47,6 +47,7 @@ SET(ZORBA_STORE_IMPL_SRCS
     inmemorystore.cpp
     inmemorystorec.cpp
     dataguide.cpp
+    naive_ft_token_iterator.cpp
 )
 
 IF(ZORBA_STORE_MSDOM)

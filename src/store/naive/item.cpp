@@ -140,18 +140,18 @@ xqpStringStore* Item::getStringValueP() const
   return 0;
 }
 
-FTTokenIterator Item::getDocumentTokens() const
+FTTokenIterator_t Item::getDocumentTokens() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return *(FTTokenIterator*)0;
+  return FTTokenIterator_t( NULL );
 }
 
-FTTokenIterator Item::getQueryTokens() const
+FTTokenIterator_t Item::getQueryTokens() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());
-  return *(FTTokenIterator*)0;
+  return FTTokenIterator_t( NULL );
 }
 
 

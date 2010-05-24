@@ -438,7 +438,7 @@ public:
 
   virtual xqp_string show() const;
 
-  FTTokenIterator getQueryTokens() const;
+  FTTokenIterator_t getQueryTokens() const;
 };
 
 /**

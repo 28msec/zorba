@@ -21,7 +21,7 @@
 
 #include <zorba/error.h>
 
-#include "store/api/ft_token_iterator.h"
+#include "store/naive/naive_ft_token_iterator.h"
 #include "store/naive/shared_types.h"
 #include "store/naive/text_node_content.h"
 #include "store/naive/item_vector.h"
@@ -150,7 +150,7 @@ extern NodeVector dummyVector;
 class XmlTree
 {
 public:
-  typedef FTTokenIterator::FTTokens FTTokens;
+  typedef NaiveFTTokenIterator::FTTokens FTTokens;
   typedef FTTokens::size_type FTTokenIndex_t;
   friend class XmlNode;
 
@@ -495,7 +495,7 @@ public:
   uint32_t getFlags() { return theFlags; }
   void setFlags(uint32_t flags) { theFlags = flags; }
 
-  FTTokenIterator getDocumentTokens() const;
+  FTTokenIterator_t getDocumentTokens() const;
 
 protected:
   virtual xqpStringStore_t getBaseURIInternal(bool& local) const;

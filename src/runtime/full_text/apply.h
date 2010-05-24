@@ -63,8 +63,8 @@ void apply_ftunary_not( ft_all_matches& );
 void apply_ftwindow( ft_all_matches const&, ft_int window_size, ft_unit::type,
                      ft_all_matches &result );
 
-void apply_ftwords( FTTokenIterator &search_ctx,
-                    FTTokenIterator &query_tokens,
+void apply_ftwords( FTTokenIterator_t &search_ctx,
+                    FTTokenIterator_t &query_tokens,
                     FTToken::int_t query_pos, ft_anyall_mode::type,
                     ftmatch_options const&, ft_all_matches &result );
 

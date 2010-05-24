@@ -3078,14 +3078,16 @@ void TextNode::tokenize( XmlNodeTokenizer &tokenizer ) {
   tokenizer.endTokenization( *this );
 }
 
-FTTokenIterator XmlNode::getDocumentTokens() const {
+FTTokenIterator_t XmlNode::getDocumentTokens() const {
   XmlTree::FTTokens &tokens = getTree()->getTokens();
   if ( !hasTokens() ) {
     icu_tokenizer tokenizer;
     XmlNodeTokenizer xml_tokenizer( tokenizer, tokens );
     getRoot()->tokenize( xml_tokenizer );
   }
-  return FTTokenIterator( tokens, theBeginTokenIndex, theEndTokenIndex );
+  return FTTokenIterator_t(
+    new NaiveFTTokenIterator( tokens, theBeginTokenIndex, theEndTokenIndex )
+  );
 }
 
 } // namespace store

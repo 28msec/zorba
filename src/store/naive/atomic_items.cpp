@@ -341,14 +341,16 @@ void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
   tokens_.push_back( t );
 }
 
-FTTokenIterator StringItemNaive::getQueryTokens() const {
+FTTokenIterator_t StringItemNaive::getQueryTokens() const {
   if ( theTokens.empty() ) {
     icu_tokenizer tokenizer;
     AtomicItemTokenizer atomic_tokenizer( tokenizer, theTokens );
     xqpStringStore const *const xText = getStringValue();
     atomic_tokenizer.tokenize( xText->c_str(), xText->size() );
   }
-  return FTTokenIterator( theTokens, 0, theTokens.size() );
+  return FTTokenIterator_t(
+    new NaiveFTTokenIterator( theTokens, 0, theTokens.size() )
+  );
 }
 
 

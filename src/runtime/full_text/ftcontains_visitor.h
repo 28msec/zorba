@@ -28,7 +28,7 @@ namespace zorba {
 
 class ftcontains_visitor : public ftnode_visitor {
 public:
-  ftcontains_visitor( FTTokenIterator &search_context, PlanState& );
+  ftcontains_visitor( FTTokenIterator_t &search_ctx, PlanState& );
 
   ~ftcontains_visitor();
 
@@ -84,7 +84,7 @@ private:
 
   void eval_ftrange( ftrange const&, ft_int *at_least, ft_int *at_most );
 
-  FTTokenIterator search_context_;
+  FTTokenIterator_t &search_ctx_;
   PlanState &plan_state_;
   FTToken::int_t query_pos_;
 };

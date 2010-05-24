@@ -102,9 +102,9 @@ inline void pop_helper( char const *what, int line ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ftcontains_visitor::ftcontains_visitor( FTTokenIterator &search_context,
+ftcontains_visitor::ftcontains_visitor( FTTokenIterator_t &search_ctx,
                                         PlanState &state ) :
-  search_context_( search_context ),
+  search_ctx_( search_ctx ),
   plan_state_( state )
 {
   // do nothing
@@ -298,10 +298,10 @@ void V::end_visit( ftwords &w ) {
   }
   store::Item_t item;
   PlanIterator::consumeNext( item, w.get_plan_iter(), plan_state_ );
-  FTTokenIterator query_tokens( item->getQueryTokens() );
+  FTTokenIterator_t query_tokens( item->getQueryTokens() );
   auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftwords(
-    search_context_, query_tokens, ++query_pos_, w.get_mode(), options, *result
+    search_ctx_, query_tokens, ++query_pos_, w.get_mode(), options, *result
   );
   PUSH_MATCHES( result.release() );
   END_VISIT();
@@ -325,8 +325,7 @@ void V::end_visit( ftwords_times &wt ) {
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftcontent_filter )
 void V::end_visit( ftcontent_filter &f ) {
   apply_ftcontent(
-    *top_matches(), f.get_mode(),
-    search_context_.begin(), search_context_.end() - 1
+    *top_matches(), f.get_mode(), search_ctx_->begin(), search_ctx_->end() - 1
   );
   END_VISIT();
 }

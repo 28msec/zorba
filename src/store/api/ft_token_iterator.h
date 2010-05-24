@@ -20,52 +20,35 @@
 #include <vector>
 
 #include "store/api/ft_token.h"
+#include "zorbatypes/rchandle.h"
 #include "zorbaerrors/Assert.h"
 
 namespace zorba {
+
+class FTTokenIterator;
+typedef rchandle<FTTokenIterator> FTTokenIterator_t;
 
 /**
  * An <code>FTTokenIterator</code> iterates over a sequence of full-text
  * tokens.
  */
-class ZORBA_DLL_PUBLIC FTTokenIterator {
+class ZORBA_DLL_PUBLIC FTTokenIterator : public SimpleRCObject {
 public:
-  typedef std::vector<FTToken> FTTokens;
-  typedef FTTokens::size_type index_t;
+  typedef unsigned index_t;
 
   /**
-   * Constructs an FTTokenIterator.
-   *
-   * @param tokens  The tokens.
-   * @param begin   The index of the beginning token.
-   * @param end     One greater than the index of the ending token.
-   */
-  FTTokenIterator( FTTokens const &tokens, index_t begin, index_t end ) :
-    tokens_( &tokens ), begin_( begin ), end_( end )
-  {
-    ZORBA_ASSERT( end <= tokens_->size() );
-    ZORBA_ASSERT( begin <= end );
-    pos_ = begin_;
-  }
-
-  /**
-   * One greater than the index of the ending token.
+   * The index of the beginning token.
    *
    * @return Returns said index.
    */
-  index_t begin() const {
-    return begin_;
-  }
+  virtual index_t begin() const = 0;
 
   /**
    * Gets the current token.
    *
    * @return Returns said token.
    */
-  FTToken const& current() const {
-    ZORBA_ASSERT( hasNext() );
-    return (*tokens_)[ pos_ ];
-  }
+  virtual FTToken const& current() const = 0;
 
   /**
    * Checks whether there are any tokens to iterate over.
@@ -73,35 +56,26 @@ public:
    * @return Returns <code>true</code> only if there are no tokens to iterate
    * over.
    */
-  bool empty() const {
-    return begin_ == end_;
-  }
+  virtual bool empty() const = 0;
 
   /**
-   * The index of the beginning token.
+   * One greater than the index of the ending token.
    *
    * @return Returns said index.
    */
-  index_t end() const {
-    return end_;
-  }
+  virtual index_t end() const = 0;
 
   /**
    * Checks whether there is a next token.
    *
    * @return Returns <code>true</code> only if there is a next token.
    */
-  bool hasNext() const {
-    return pos_ < end_;
-  }
+  virtual bool hasNext() const = 0;
 
   /**
    * Creates a new iterator for the current element.
    */
-  FTTokenIterator iterator() const {
-    ZORBA_ASSERT( hasNext() );
-    return FTTokenIterator( *tokens_, pos_, pos_ + 1 );
-  }
+  virtual FTTokenIterator_t iterator() const = 0;
 
   /**
    * Obtains the next token and advances the iterator.
@@ -110,27 +84,29 @@ public:
    * advance the iterator only.
    * @return Returns <code>true</code> only if there is a next token.
    */
-  bool next( FTToken const **ppToken = 0 ) {
-    if ( hasNext() ) {
-      if ( ppToken )
-        *ppToken = &current();
-      ++pos_;
-      return true;
-    }
-    return false;
-  }
+  virtual bool next( FTToken const **ppToken = 0 ) = 0;
+
+  /**
+   * Gets the index of the current token.
+   *
+   * @return Returns said index.
+   */
+  virtual index_t pos() const = 0;
+
+  /**
+   * Sets the index of the current token.
+   *
+   * @param i The index.
+   */
+  virtual void pos( index_t i ) = 0;
 
   /**
    * Resets this iterator to the beginning.
    */
   void reset() {
-    pos_ = begin_;
+    pos( begin() );
   }
 
-private:
-  FTTokens const *tokens_;              // pointer to allow operator=()
-  index_t begin_, end_;                 // non-const to allow operator=()
-  index_t pos_;
 };
 
 } // namespace zorba

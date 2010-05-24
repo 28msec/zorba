@@ -45,7 +45,7 @@ public:
   FTContainsIterator(
     static_context*,
     QueryLoc const&,
-    PlanIter_t search_context,
+    PlanIter_t search_ctx,
     PlanIter_t ftignore_option,
     ftnode_t ftselection,
     sub_iter_list_t&
