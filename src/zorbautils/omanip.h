@@ -47,7 +47,7 @@ public:
    *              ostream.
    * @param arg1  The argument to be passed to the function.
    */
-  omanip1( func_type f, Arg1Type const &arg1 ) :
+  omanip1( func_type f, Arg1Type arg1 ) :
     f_( f ), arg1_( arg1 )
   {
   }
@@ -109,7 +109,7 @@ public:
    * @param arg1  The first argument to be passed to the function.
    * @param arg2  The second argument to be passed to the function.
    */
-  omanip2( func_type f, Arg1Type const &arg1, Arg2Type const &arg2 ) :
+  omanip2( func_type f, Arg1Type arg1, Arg2Type arg2 ) :
     f_( f ), arg1_( arg1 ), arg2_( arg2 )
   {
   }
