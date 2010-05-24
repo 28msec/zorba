@@ -89,12 +89,12 @@ public:
     return (theFlags & flag) != 0;
   }
 
-  bool isDeterministic() const
+  bool isDeterministic() const 
   {
     return testFlag(FunctionConsts::isDeterministic);
   }
 
-  void setDeterministic(bool v)
+  void setDeterministic(bool v) 
   {
     if (v)
       setFlag(FunctionConsts::isDeterministic);

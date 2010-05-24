@@ -356,7 +356,8 @@ bool SimpleCollection::findNode(const store::Item* node, ulong& position) const
 
   position = n->getTree()->getPosition();
 
-  if (BASE_NODE(theXmlTrees[position])->getTreeId() == n->getTreeId())
+  if (position < theXmlTrees.size() &&
+      BASE_NODE(theXmlTrees[position])->getTreeId() == n->getTreeId())
   {
     return true;
   }
