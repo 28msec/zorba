@@ -15,6 +15,7 @@
  */
 
 #include <limits>
+#include <memory>
 
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
@@ -203,18 +204,16 @@ ft_visit_result::type V::begin_visit( ftand& ) {
 
 void V::end_visit( ftand& ) {
   while ( true ) {
-    // the popping order is significant for FTOrder
-    ft_all_matches *const am_right = POP_MATCHES();
-    ft_all_matches *const am_left  = POP_MATCHES();
-    if ( !am_left ) {
-      PUSH_MATCHES( am_right );
+    // the popping order is significant
+    auto_ptr<ft_all_matches> am_right( POP_MATCHES() );
+    auto_ptr<ft_all_matches> am_left( POP_MATCHES() );
+    if ( !am_left.get() ) {
+      PUSH_MATCHES( am_right.release() );
       break;
     }
-    ft_all_matches *const result = new ft_all_matches;
+    auto_ptr<ft_all_matches> result( new ft_all_matches );
     apply_ftand( *am_left, *am_right, *result );
-    PUSH_MATCHES( result );
-    delete am_left;
-    delete am_right;
+    PUSH_MATCHES( result.release() );
   }
   END_VISIT();
 }
@@ -229,18 +228,16 @@ ft_visit_result::type V::begin_visit( ftmild_not& ) {
 
 void V::end_visit( ftmild_not& ) {
   while ( true ) {
-    // the popping order is significant for FTOrder
-    ft_all_matches *const am_right = POP_MATCHES();
-    ft_all_matches *const am_left  = POP_MATCHES();
-    if ( !am_left ) {
-      PUSH_MATCHES( am_right );
+    // the popping order is significant
+    auto_ptr<ft_all_matches> am_right( POP_MATCHES() );
+    auto_ptr<ft_all_matches> am_left( POP_MATCHES() );
+    if ( !am_left.get() ) {
+      PUSH_MATCHES( am_right.release() );
       break;
     }
-    ft_all_matches *const result = new ft_all_matches;
+    auto_ptr<ft_all_matches> result( new ft_all_matches );
     apply_ftmild_not( *am_left, *am_right, *result );
-    PUSH_MATCHES( result );
-    delete am_left;
-    delete am_right;
+    PUSH_MATCHES( result.release() );
   }
   END_VISIT();
 }
@@ -253,18 +250,16 @@ ft_visit_result::type V::begin_visit( ftor& ) {
 
 void V::end_visit( ftor& ) {
   while ( true ) {
-    // the popping order is significant for FTOrder
-    ft_all_matches *const am_right = POP_MATCHES();
-    ft_all_matches *const am_left  = POP_MATCHES();
-    if ( !am_left ) {
-      PUSH_MATCHES( am_right );
+    // the popping order is significant
+    auto_ptr<ft_all_matches> am_right( POP_MATCHES() );
+    auto_ptr<ft_all_matches> am_left( POP_MATCHES() );
+    if ( !am_left.get() ) {
+      PUSH_MATCHES( am_right.release() );
       break;
     }
-    ft_all_matches *const result = new ft_all_matches;
+    auto_ptr<ft_all_matches> result( new ft_all_matches );
     apply_ftor( *am_left, *am_right, *result );
-    PUSH_MATCHES( result );
-    delete am_left;
-    delete am_right;
+    PUSH_MATCHES( result.release() );
   }
   END_VISIT();
 }
@@ -304,11 +299,11 @@ void V::end_visit( ftwords &w ) {
   store::Item_t item;
   PlanIterator::consumeNext( item, w.get_plan_iter(), plan_state_ );
   FTTokenIterator query_tokens( item->getQueryTokens() );
-  ft_all_matches *const result = new ft_all_matches;
+  auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftwords(
     search_context_, query_tokens, ++query_pos_, w.get_mode(), options, *result
   );
-  PUSH_MATCHES( result );
+  PUSH_MATCHES( result.release() );
   END_VISIT();
 }
 
@@ -317,11 +312,10 @@ void V::end_visit( ftwords_times &wt ) {
   if ( ftrange const *const range = wt.get_times() ) {
     ft_int at_least, at_most;
     eval_ftrange( *range, &at_least, &at_most );
-    ft_all_matches *const am = POP_MATCHES();
-    ft_all_matches *const result = new ft_all_matches;
+    auto_ptr<ft_all_matches> const am( POP_MATCHES() );
+    auto_ptr<ft_all_matches> result( new ft_all_matches );
     apply_fttimes( *am, range->get_mode(), at_least, at_most, *result );
-    PUSH_MATCHES( result );
-    delete am;
+    PUSH_MATCHES( result.release() );
   }
   END_VISIT();
 }
@@ -341,31 +335,28 @@ DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftdistance_filter )
 void V::end_visit( ftdistance_filter &f ) {
   ft_int at_least, at_most;
   eval_ftrange( *f.get_range(), &at_least, &at_most );
-  ft_all_matches *const am = POP_MATCHES();
-  ft_all_matches *const result = new ft_all_matches;
+  auto_ptr<ft_all_matches> const am( POP_MATCHES() );
+  auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftdistance( *am, at_least, at_most, f.get_unit(), *result );
-  PUSH_MATCHES( result );
-  delete am;
+  PUSH_MATCHES( result.release() );
   END_VISIT();
 }
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftorder_filter )
 void V::end_visit( ftorder_filter& ) {
-  ft_all_matches *const am = POP_MATCHES();
-  ft_all_matches *const result = new ft_all_matches;
+  auto_ptr<ft_all_matches> const am( POP_MATCHES() );
+  auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftorder( *am, *result );
-  PUSH_MATCHES( result );
-  delete am;
+  PUSH_MATCHES( result.release() );
   END_VISIT();
 }
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftscope_filter )
 void V::end_visit( ftscope_filter &f ) {
-  ft_all_matches *const am = POP_MATCHES();
-  ft_all_matches *const result = new ft_all_matches;
+  auto_ptr<ft_all_matches> const am( POP_MATCHES() );
+  auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftscope( *am, f.get_scope(), f.get_unit(), *result );
-  PUSH_MATCHES( result );
-  delete am;
+  PUSH_MATCHES( result.release() );
   END_VISIT();
 }
 
@@ -373,13 +364,12 @@ DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwindow_filter )
 void V::end_visit( ftwindow_filter &f ) {
   store::Item_t item;
   PlanIterator::consumeNext( item, f.get_plan_iter(), plan_state_ );
-  ft_all_matches *const am = POP_MATCHES();
-  ft_all_matches *const result = new ft_all_matches;
+  auto_ptr<ft_all_matches> const am( POP_MATCHES() );
+  auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftwindow(
     *am, to_ft_int( item->getIntegerValue() ), f.get_unit(), *result
   );
-  PUSH_MATCHES( result );
-  delete am;
+  PUSH_MATCHES( result.release() );
   END_VISIT();
 }
 
