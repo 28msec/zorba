@@ -55,6 +55,9 @@ void apply_ftorder( ft_all_matches const&, ft_all_matches &result );
 void apply_ftscope( ft_all_matches const&, ft_scope::type, ft_big_unit::type,
                     ft_all_matches &result );
 
+void apply_fttimes( ft_all_matches const&, ft_range_mode::type mode,
+                    ft_int at_least, ft_int at_most, ft_all_matches &result );
+
 void apply_ftunary_not( ft_all_matches& );
 
 void apply_ftwindow( ft_all_matches const&, ft_int window_size, ft_unit::type,

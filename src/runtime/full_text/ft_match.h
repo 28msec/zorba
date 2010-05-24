@@ -95,9 +95,14 @@ private:
 };
 
 /**
+ * An ft_match_seq contains zero or more ft_match objects.
+ */
+typedef std::list<ft_match> ft_match_seq;
+
+/**
  * An ft_all_matches contains zero or more ft_match objects.
  */
-typedef std::list<ft_match> ft_all_matches;
+typedef ft_match_seq ft_all_matches;
 
 std::ostream& operator<<( std::ostream&, ft_match const& );
 std::ostream& operator<<( std::ostream&, ft_all_matches const& );

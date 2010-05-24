@@ -21,6 +21,7 @@
 
 #include "compiler/expression/ftnode_visitor.h"
 #include "runtime/base/plan_iterator.h"
+#include "runtime/full_text/apply.h"
 #include "runtime/full_text/ft_match.h"
 
 namespace zorba {
@@ -80,6 +81,8 @@ private:
   void push_options( ftmatch_options const* );
   ftmatch_options const* pop_options();
   ftmatch_options const* top_options() const;
+
+  void eval_ftrange( ftrange const&, ft_int *at_least, ft_int *at_most );
 
   FTTokenIterator search_context_;
   PlanState &plan_state_;

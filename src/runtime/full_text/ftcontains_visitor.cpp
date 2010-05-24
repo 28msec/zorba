@@ -18,7 +18,6 @@
 
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
-#include "runtime/full_text/apply.h"
 #include "runtime/full_text/ftcontains_visitor.h"
 #include "system/properties.h"
 #include "zorbautils/indent.h"
@@ -114,6 +113,33 @@ ftcontains_visitor::~ftcontains_visitor() {
   while ( !matches_stack_.empty() )
     delete pop_matches();
   ZORBA_ASSERT( options_stack_.empty() );
+}
+
+void ftcontains_visitor::eval_ftrange( ftrange const &range,
+                                       ft_int *at_least, ft_int *at_most ) {
+  store::Item_t item1;
+  PlanIterator::consumeNext( item1, range.get_plan_iter1(), plan_state_ );
+
+  *at_least = 0;
+  *at_most = numeric_limits<ft_int>::max();
+
+  switch ( range.get_mode() ) {
+    case ft_range_mode::at_least:
+      *at_least = to_ft_int( item1->getIntegerValue() );
+      break;
+    case ft_range_mode::at_most:
+      *at_most = to_ft_int( item1->getIntegerValue() );
+      break;
+    case ft_range_mode::exactly:
+      *at_least = *at_most = to_ft_int( item1->getIntegerValue() );
+      break;
+    case ft_range_mode::from_to:
+      *at_least = to_ft_int( item1->getIntegerValue() );
+      store::Item_t item2;
+      PlanIterator::consumeNext( item2, range.get_plan_iter2(), plan_state_ );
+      *at_most = to_ft_int( item2->getIntegerValue() );
+      break;
+  }
 }
 
 bool ftcontains_visitor::ftcontains() const {
@@ -286,7 +312,19 @@ void V::end_visit( ftwords &w ) {
   END_VISIT();
 }
 
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwords_times )
+DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords_times )
+void V::end_visit( ftwords_times &wt ) {
+  if ( ftrange const *const range = wt.get_times() ) {
+    ft_int at_least, at_most;
+    eval_ftrange( *range, &at_least, &at_most );
+    ft_all_matches *const am = POP_MATCHES();
+    ft_all_matches *const result = new ft_all_matches;
+    apply_fttimes( *am, range->get_mode(), at_least, at_most, *result );
+    PUSH_MATCHES( result );
+    delete am;
+  }
+  END_VISIT();
+}
 
 ////////// FTPosFilters ///////////////////////////////////////////////////////
 
@@ -301,32 +339,8 @@ void V::end_visit( ftcontent_filter &f ) {
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftdistance_filter )
 void V::end_visit( ftdistance_filter &f ) {
-  ftrange const *const range = f.get_range();
-
-  store::Item_t item1;
-  PlanIterator::consumeNext( item1, range->get_plan_iter1(), plan_state_ );
-
-  ft_int at_least = 0;
-  ft_int at_most = numeric_limits<ft_int>::max();
-
-  switch ( range->get_mode() ) {
-    case ft_range_mode::at_least:
-      at_least = to_ft_int( item1->getIntegerValue() );
-      break;
-    case ft_range_mode::at_most:
-      at_most = to_ft_int( item1->getIntegerValue() );
-      break;
-    case ft_range_mode::exactly:
-      at_least = at_most = to_ft_int( item1->getIntegerValue() );
-      break;
-    case ft_range_mode::from_to:
-      at_least = to_ft_int( item1->getIntegerValue() );
-      store::Item_t item2;
-      PlanIterator::consumeNext( item2, range->get_plan_iter2(), plan_state_ );
-      at_most = to_ft_int( item2->getIntegerValue() );
-      break;
-  }
-
+  ft_int at_least, at_most;
+  eval_ftrange( *f.get_range(), &at_least, &at_most );
   ft_all_matches *const am = POP_MATCHES();
   ft_all_matches *const result = new ft_all_matches;
   apply_ftdistance( *am, at_least, at_most, f.get_unit(), *result );

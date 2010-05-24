@@ -341,12 +341,17 @@ void apply_ftand( ft_all_matches const &ami, ft_all_matches const &amj,
 
 ////////// ApplyFTContent /////////////////////////////////////////////////////
 
+//#define DEBUG_FTCONTENT 1
+
 /**
  * Helper function for applyft_content(): checks if the given ft_token_span
  * spans the given token position.
  */
 inline bool token_covers_pos( ft_token_span const &ts,
                               ft_token_span::int_t token_pos ) {
+#ifdef DEBUG_FTCONTENT
+  DOUT << indent << "pos=" << token_pos << " in [" << ts.pos.start << ',' << ts.pos.end << "] => " << (token_pos >= ts.pos.start && token_pos <= ts.pos.end ? 'T' : 'F') << endl;
+#endif
   return token_pos >= ts.pos.start && token_pos <= ts.pos.end;
 }
 
@@ -360,20 +365,41 @@ void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode,
 
   if ( mode == ft_content_mode::entire ) {
     for ( ft_all_matches::iterator m = am.begin(); m != am.end(); ) {
+#ifdef DEBUG_FTCONTENT
+      DOUT << indent << "match loop" << inc_indent << endl;
+#endif
       bool every_satisfies = true;
       for ( ft_token_span::int_t pos = start_pos; pos <= end_pos; ++pos ) {
+#ifdef DEBUG_FTCONTENT
+        DOUT << indent << "pos loop: " << pos << inc_indent << endl;
+#endif
         bool some_satisfies = false;
         FOR_EACH( ft_match::includes_t, i, m->includes ) {
+#ifdef DEBUG_FTCONTENT
+          DOUT << indent << "include loop" << inc_indent << endl;
+#endif
           if ( i->is_contiguous && token_covers_pos( *i, pos ) ) {
+#ifdef DEBUG_FTCONTENT
+            DOUT << indent << "some_satisfies=true" << dec_indent << endl;
+#endif
             some_satisfies = true;
             break;
           }
+#ifdef DEBUG_FTCONTENT
+          DOUT << dec_indent;
+#endif
         }
+#ifdef DEBUG_FTCONTENT
+        DOUT << dec_indent;
+#endif
         if ( !some_satisfies ) {
           every_satisfies = false;
           break;
         }
       }
+#ifdef DEBUG_FTCONTENT
+      DOUT << dec_indent;
+#endif
       if ( every_satisfies )
         ++m;
       else
@@ -644,6 +670,70 @@ void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
       apply_ftscope_diff( am, sep, result );
       break;
   }
+}
+
+////////// ApplyFTTimes ///////////////////////////////////////////////////////
+
+static void form_combinations( ft_match_seq const &ms, ft_int k,
+                               ft_match_seq &result ) {
+  ft_int count = ms.size();
+  if ( !k || count < k )
+    return;
+  if ( count == k )
+    result = ms;
+  else {
+    ft_match_seq rest( ms );
+    ft_match const first = POP_FRONT( rest );
+    form_combinations( rest, k, result );
+
+    ft_match_seq temp;
+    form_combinations( rest, k - 1, temp );
+    FOR_EACH( ft_match_seq, combination, temp ) {
+      ft_match m_new;
+      copy_seq( first.includes, m_new.includes );
+      copy_seq( first.excludes, m_new.excludes );
+      copy_seq( combination->includes, m_new.includes );
+      copy_seq( combination->excludes, m_new.excludes );
+      result.push_back( m_new );
+    }
+  }
+}
+
+static void form_combinations_at_least( ft_match_seq const &ms, ft_int times,
+                                        ft_match_seq &result ) {
+  ft_int const count = ms.size();
+  for ( ft_int k = times; k <= count; ++k ) {
+    ft_match_seq temp;
+    form_combinations( ms, k, temp );
+    copy_seq( temp, result );
+  }
+}
+
+static void form_range( ft_match_seq const &ms, ft_int at_least, ft_int at_most,
+                        ft_match_seq &result ) {
+  if ( at_least <= at_most ) {
+    ft_all_matches ami, amj;
+    form_combinations( ms, at_least, ami );
+    form_combinations( ms, at_most, amj );
+    apply_ftunary_not( amj );
+    apply_ftand( ami, amj, result );
+  }
+}
+
+void apply_fttimes( ft_all_matches const &am, ft_range_mode::type mode,
+                    ft_int at_least, ft_int at_most, ft_all_matches &result ) {
+  BEGIN_APPLY( apply_fttimes );
+  PUT_ENUM( ft_range_mode, mode );
+  PUT_ARG( at_least );
+  PUT_ARG( at_most );
+  PUT_ALL_MATCHES( am );
+
+  if ( mode == ft_range_mode::at_least )
+    form_combinations_at_least( am, at_least, result );
+  else
+    form_range( am, at_least, at_most, result );
+
+  END_APPLY( result );
 }
 
 ////////// ApplyFTUnaryNot ////////////////////////////////////////////////////
