@@ -115,7 +115,7 @@ Iterator tree for main query:
           <ReturnClause>
             <ElementIterator>
               <SingletonIterator value="xs:QName(,,term)"/>
-              <AttributeIterator qname="count">
+              <AttributeIterator qname="xs:QName(,,count)">
                 <EnclosedIterator attr_cont="true">
                   <FnCountIterator>
                     <flwor::FLWORIterator>

@@ -30,7 +30,7 @@ Iterator tree for main query:
       </ElementIterator>
       <ElementIterator>
         <SingletonIterator value="xs:QName(,,table)"/>
-        <AttributeIterator qname="border">
+        <AttributeIterator qname="xs:QName(,,border)">
           <SingletonIterator value="xs:string(1)"/>
         </AttributeIterator>
         <FnConcatIterator>
@@ -114,7 +114,7 @@ Iterator tree for main query:
                             <SingletonIterator value="xs:integer(2)"/>
                           </NumArithIterator_ModOperation>
                         </FnBooleanIterator>
-                        <AttributeIterator qname="bgcolor">
+                        <AttributeIterator qname="xs:QName(,,bgcolor)">
                           <EnclosedIterator attr_cont="true">
                             <SingletonIterator value="xs:string(Lavender)"/>
                           </EnclosedIterator>
@@ -124,7 +124,7 @@ Iterator tree for main query:
                     </EnclosedIterator>
                     <ElementIterator>
                       <SingletonIterator value="xs:QName(,,td)"/>
-                      <AttributeIterator qname="align">
+                      <AttributeIterator qname="xs:QName(,,align)">
                         <SingletonIterator value="xs:string(center)"/>
                       </AttributeIterator>
                       <EnclosedIterator attr_cont="false">
@@ -133,7 +133,7 @@ Iterator tree for main query:
                     </ElementIterator>
                     <ElementIterator>
                       <SingletonIterator value="xs:QName(,,td)"/>
-                      <AttributeIterator qname="align">
+                      <AttributeIterator qname="xs:QName(,,align)">
                         <SingletonIterator value="xs:string(center)"/>
                       </AttributeIterator>
                       <EnclosedIterator attr_cont="false">
@@ -142,7 +142,7 @@ Iterator tree for main query:
                     </ElementIterator>
                     <ElementIterator>
                       <SingletonIterator value="xs:QName(,,td)"/>
-                      <AttributeIterator qname="align">
+                      <AttributeIterator qname="xs:QName(,,align)">
                         <SingletonIterator value="xs:string(center)"/>
                       </AttributeIterator>
                       <EnclosedIterator attr_cont="false">
@@ -153,7 +153,7 @@ Iterator tree for main query:
                     </ElementIterator>
                     <ElementIterator>
                       <SingletonIterator value="xs:QName(,,td)"/>
-                      <AttributeIterator qname="align">
+                      <AttributeIterator qname="xs:QName(,,align)">
                         <SingletonIterator value="xs:string(center)"/>
                       </AttributeIterator>
                       <EnclosedIterator attr_cont="false">

@@ -24,6 +24,9 @@
 #include "context/static_context.h"
 #include "context/standard_uri_resolvers.h"
 
+#include "functions/function.h"
+#include "functions/udf.h"
+#include "types/typeops.h"
 #include "types/root_typemanager.h"
 #include "types/typemanagerimpl.h"
 
@@ -104,7 +107,7 @@ void XQueryCompiler::parseOnly(
 ********************************************************************************/
 PlanIter_t XQueryCompiler::compile(parsenode_t ast)
 {
-  expr_t lExpr = normalize(ast);
+  expr_t lExpr = normalize(ast); // also does the translation
   lExpr = optimize(lExpr);
 
 #if 0
@@ -253,15 +256,71 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
 ********************************************************************************/
 expr_t XQueryCompiler::optimize(expr_t lExpr)
 {
-  if (theCompilerCB->theConfig.opt_level > CompilerCB::config::O0)
-  {
-    RewriterContext rCtx(theCompilerCB, lExpr);
-    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
-    lExpr = rCtx.getRoot();
+  if (theCompilerCB->theConfig.opt_level <= CompilerCB::config::O0)
+    return lExpr;
 
-    if (theCompilerCB->theConfig.optimize_cb != NULL)
-      theCompilerCB->theConfig.optimize_cb (&*lExpr, "query");
+  /*
+   * Optimize all UDFs
+   */
+  // Gather all udfs from static contexts
+  std::set<user_function*> all_udfs;
+  for ( std::map<short, static_context_t>::iterator it = theCompilerCB->theSctxMap->begin();
+        it != theCompilerCB->theSctxMap->end();
+        ++it)
+  {
+    std::vector<function*> funcs;
+    it->second->get_functions(funcs);
+    for (unsigned int j=0; j<funcs.size(); j++ )
+    {
+      if (funcs[j]->isUdf() && !funcs[j]->isExternal())
+        all_udfs.insert(dynamic_cast<user_function*>(funcs[j]));
+    }
   }
+
+  // Optimize them
+  for (std::set<user_function*>::iterator it = all_udfs.begin(); it != all_udfs.end(); ++it)
+  {
+    user_function* udf = *it;
+    ZORBA_ASSERT ( udf != NULL );
+    expr_t body = udf->getBody();
+    while ( true )
+    {
+      RewriterContext rCtx ( theCompilerCB, body );
+      GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite ( rCtx );
+      body = rCtx.getRoot();
+#if 1
+      xqtref_t bodyType = body->get_return_type();
+      xqtref_t declaredType = udf->getSignature().return_type();
+
+      if ( !TypeOps::is_equal ( *bodyType, *declaredType ) &&
+            TypeOps::is_subtype ( *bodyType, *declaredType ) )
+      {
+        udf->getSignature().return_type() = bodyType;
+        if ( !udf->isLeaf() )
+          continue;
+      }
+#endif
+      udf->setBody ( body );
+      break;
+    }
+
+    if ( theCompilerCB->theConfig.optimize_cb != NULL )
+      theCompilerCB->theConfig.optimize_cb ( &*body, udf->getName()->getStringValue()->c_str() );
+
+      // recalculate the non-deterministic flag on the optimized body
+    udf->setDeterministic ( udf->isDeterministic() && !body->contains_nondeterministic() );
+  } // for
+
+
+  /*
+   * Optimize the main query
+   */
+  RewriterContext rCtx ( theCompilerCB, lExpr );
+  GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite ( rCtx );
+  lExpr = rCtx.getRoot();
+
+  if ( theCompilerCB->theConfig.optimize_cb != NULL )
+    theCompilerCB->theConfig.optimize_cb ( &*lExpr, "query" );
 
   return lExpr;
 }

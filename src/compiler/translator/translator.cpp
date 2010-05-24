@@ -3617,6 +3617,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     if (theCCB->theConfig.translate_cb != NULL)
       theCCB->theConfig.translate_cb(&*body, v.get_name()->get_qname());
 
+    /* TODO: delete this
     if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
     {
       while (true)
@@ -3645,6 +3646,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
         theCCB->theConfig.optimize_cb(&*body, v.get_name()->get_qname());
     }
     else
+    */
     {
       udf->setBody(body);
       udf->setArgVars(args);
