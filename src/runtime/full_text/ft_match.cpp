@@ -27,7 +27,7 @@ inline ostream& print_addr( ostream &o, void const *obj ) {
   return o << "0x" << hex << reinterpret_cast<unsigned long>( obj ) << dec;
 }
 
-DEF_OMANIP( print_addr, void const*, obj )
+DEF_OMANIP1( print_addr, void const*, obj )
 
 ostream& operator<<( ostream &o, ft_string_match const &sm ) {
   return  o << "{SM: "

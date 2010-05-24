@@ -22,48 +22,51 @@
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
 /**
- * An omanip is a class for assisting in the creating of ostream manipulators
+ * An omanip1 is a class for assisting in the creation of ostream manipulators
  * by storing a pointer to a function and its argument to be called later via
  * operator<<().
  *
  * See also: "Standard C++ IOStreams and Locales," Angelika Langer and Klaus
  * Kreft, Addison-Wesley, pp. 179-191.
  */
-template<typename ArgType> class omanip {
+template<typename Arg1Type> class omanip1 {
 public:
 
   /**
-   * The signature of functions this omanip can handle.
+   * The signature of functions this omanip1 can handle.
    */
-  typedef std::ostream& (*func_type)( std::ostream&, ArgType );
+  typedef std::ostream& (*func_type)( std::ostream&, Arg1Type );
 
   /**
-   * Constructs an omanip.
+   * Constructs an omanip1.
    *
-   * @param f   The function to call when this omanip is inserted into an
-   *            ostream.
-   * @param arg The argument to be passed to the function.
+   * @param f     The function to call when this omanip1 is inserted into an
+   *              ostream.
+   * @param arg1  The argument to be passed to the function.
    */
-  omanip( func_type f, ArgType const &arg ) : f_( f ), arg_( arg )
+  omanip1( func_type f, Arg1Type const &arg1 ) :
+    f_( f ), arg1_( arg1 )
   {
   }
 
   /**
-   * Inserts the given omanip into the given ostream.  This has the effect of
-   * calling the function and argument bound to the omanip at the time of its
+   * Inserts the given omanip1 into the given ostream.  This has the effect of
+   * calling the function and argument bound to the omanip1 at the time of its
    * construction.
    *
    * @param o The ostream to insert into.
-   * @param m The omanip to insert.
+   * @param m The omanip1 to insert.
    */
-  friend std::ostream& operator<<( std::ostream &o, omanip const &m ) {
-    return (*m.f_)( o, m.arg_ );
+  friend std::ostream& operator<<( std::ostream &o, omanip1 const &m ) {
+    return (*m.f_)( o, m.arg1_ );
   }
 
 private:
   func_type const f_;
-  ArgType const arg_;
+  Arg1Type const arg1_;
 };
 
 /**
@@ -71,13 +74,81 @@ private:
  * non-manipulator function having the same name.
  *
  * @param FN_NAME   The name of the existing function.
- * @param ARG_TYPE  The type of the non-ostream argument.
- * @param ARG_NAME  The name of the non-ostream argument.
+ * @param ARG1_TYPE The type of the non-ostream argument.
+ * @param ARG1_NAME The name of the non-ostream argument.
  */
-#define DEF_OMANIP(FN_NAME,ARG_TYPE,ARG_NAME)             \
-  inline omanip<ARG_TYPE> FN_NAME( ARG_TYPE ARG_NAME ) {  \
-    return omanip<ARG_TYPE>( FN_NAME, ARG_NAME );         \
+#define DEF_OMANIP1(FN_NAME,ARG1_TYPE,ARG1_NAME)      \
+  inline omanip1<ARG1_TYPE>                           \
+  FN_NAME( ARG1_TYPE ARG1_NAME ) {                    \
+    return omanip1<ARG1_TYPE>( FN_NAME, ARG1_NAME );  \
   }
+
+///////////////////////////////////////////////////////////////////////////////
+
+/**
+ * An omanip2 is a class for assisting in the creation of ostream manipulators
+ * by storing a pointer to a function and its arguments to be called later via
+ * operator<<().
+ *
+ * See also: "Standard C++ IOStreams and Locales," Angelika Langer and Klaus
+ * Kreft, Addison-Wesley, pp. 179-191.
+ */
+template<typename Arg1Type, typename Arg2Type> class omanip2 {
+public:
+
+  /**
+   * The signature of functions this omanip2 can handle.
+   */
+  typedef std::ostream& (*func_type)( std::ostream&, Arg1Type, Arg2Type );
+
+  /**
+   * Constructs an omanip2.
+   *
+   * @param f     The function to call when this omanip2 is inserted into an
+   *              ostream.
+   * @param arg1  The first argument to be passed to the function.
+   * @param arg2  The second argument to be passed to the function.
+   */
+  omanip2( func_type f, Arg1Type const &arg1, Arg2Type const &arg2 ) :
+    f_( f ), arg1_( arg1 ), arg2_( arg2 )
+  {
+  }
+
+  /**
+   * Inserts the given omanip2 into the given ostream.  This has the effect of
+   * calling the function and argument bound to the omanip2 at the time of its
+   * construction.
+   *
+   * @param o The ostream to insert into.
+   * @param m The omanip2 to insert.
+   */
+  friend std::ostream& operator<<( std::ostream &o, omanip2 const &m ) {
+    return (*m.f_)( o, m.arg1_, m.arg2_ );
+  }
+
+private:
+  func_type const f_;
+  Arg1Type const arg1_;
+  Arg2Type const arg2_;
+};
+
+/**
+ * Defines an ostream manipulator "thunk" function that calls an existing
+ * non-manipulator function having the same name.
+ *
+ * @param FN_NAME   The name of the existing function.
+ * @param ARG1_TYPE The type of the first non-ostream argument.
+ * @param ARG1_NAME The name of the first non-ostream argument.
+ * @param ARG2_TYPE The type of the second non-ostream argument.
+ * @param ARG2_NAME The name of the second non-ostream argument.
+ */
+#define DEF_OMANIP2(FN_NAME,ARG1_TYPE,ARG1_NAME,ARG2_TYPE,ARG2_NAME)      \
+  inline omanip2<ARG1_TYPE,ARG2_TYPE>                                     \
+  FN_NAME( ARG1_TYPE ARG1_NAME, ARG2_TYPE ARG2_NAME ) {                   \
+    return omanip2<ARG1_TYPE,ARG2_TYPE>( FN_NAME, ARG1_NAME, ARG2_NAME ); \
+  }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 
