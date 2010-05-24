@@ -80,7 +80,7 @@ SchemaLocationEntityResolver::SchemaLocationEntityResolver(
     std::string& location)
   :
   theLocation(location),
-  theLogicalURI(logical_uri) 
+  theLogicalURI(logical_uri)
 {
 }
 
@@ -92,7 +92,7 @@ InputSource* SchemaLocationEntityResolver::resolveEntity(
   TRACE("pId: " << StrX(publicId) << "  sId: " << StrX(systemID) );;
 
 
-  if (XMLString::compareString(systemID, theLogicalURI) == 0) 
+  if (XMLString::compareString(systemID, theLogicalURI) == 0)
   {
     XMLChArray xerces_xsdURL (theLocation.c_str());
     XMLURL url (xerces_xsdURL.get ());
@@ -102,7 +102,7 @@ InputSource* SchemaLocationEntityResolver::resolveEntity(
     // can spool in data from the referenced source.
     return new URLInputSource(url);
   }
-  else 
+  else
   {
     return NULL;
   }
@@ -129,7 +129,7 @@ void Schema::initialize()
   {
     std::cerr   << "Error during Xerces-C initialization! Message:\n"
                 << StrX(toCatch.getMessage()) << std::endl;
-    return;         
+    return;
   }
 #endif
 }
@@ -143,7 +143,7 @@ void Schema::terminate()
 #ifndef ZORBA_NO_XMLSCHEMA
   if (theIsInitialized)
   {
-    XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();    
+    XERCES_CPP_NAMESPACE::XMLPlatformUtils::Terminate();
     theIsInitialized = false;
   }
 #endif
@@ -162,7 +162,7 @@ Schema::Schema()
 }
 
 
-Schema::Schema(::zorba::serialization::Archiver &ar) 
+Schema::Schema(::zorba::serialization::Archiver &ar)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
   initialize();
@@ -201,8 +201,8 @@ void Schema::printXSDInfo(bool excludeBuiltIn)
 /*******************************************************************************
   Registers an imported schema into the curent grammar
 *******************************************************************************/
-void Schema::registerXSD(const char* xsdURL, 
-                         std::string& location, 
+void Schema::registerXSD(const char* xsdURL,
+                         std::string& location,
                          const QueryLoc& loc)
 {
   std::auto_ptr<SAX2XMLReader> parser;
@@ -237,16 +237,16 @@ void Schema::registerXSD(const char* xsdURL,
 
     parser->setProperty(XMLUni::fgXercesScannerName,
                         (void *)XMLUni::fgSGXMLScanner);
-    
+
     // this doesn't seem to work
     //XMLChArray extSchemaLocation("namespace /location/file.xsd");
-    //parser->setFeature(XMLUni::fgXercesSchemaExternalSchemaLocation, 
+    //parser->setFeature(XMLUni::fgXercesSchemaExternalSchemaLocation,
     //  extSchemaLocation.get());
-    
-    
+
+
     LoadSchemaErrorHandler handler(loc);
     parser->setErrorHandler(&handler);
-    
+
     XMLChArray xerces_xsdURL(xsdURL);
     SchemaLocationEntityResolver lEntityResolver(xerces_xsdURL.get(), location);
     parser->setEntityResolver(&lEntityResolver);
@@ -302,9 +302,9 @@ void Schema::getTypeNameFromElementName(
 {
   XSTypeDefinition* typeDef = getTypeDefForElement(qname);
 
-  if (!typeDef) 
+  if (!typeDef)
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-element", 
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-element",
                           qname->getStringValue()->c_str());
   }
 
@@ -328,9 +328,9 @@ void Schema::getTypeNameFromAttributeName(
 {
   XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
 
-  if (!typeDef) 
+  if (!typeDef)
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute", 
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute",
                           qname->getStringValue()->c_str());
   }
 
@@ -345,7 +345,7 @@ void Schema::getTypeNameFromAttributeName(
 
 
 /*******************************************************************************
-  Returns an XQType for a global schema element definition if defined, 
+  Returns an XQType for a global schema element definition if defined,
   otherwise NULL
 *******************************************************************************/
 xqtref_t Schema::createXQTypeFromElementName(
@@ -377,7 +377,7 @@ xqtref_t Schema::createXQTypeFromElementName(
 
 
 /*******************************************************************************
-  Returns an XQType for a global schema attribute definition if defined, 
+  Returns an XQType for a global schema attribute definition if defined,
   otherwise NULL
 *******************************************************************************/
 xqtref_t Schema::createXQTypeFromAttributeName(
@@ -387,9 +387,9 @@ xqtref_t Schema::createXQTypeFromAttributeName(
 {
   XSTypeDefinition* typeDef = getTypeDefForAttribute(qname);
 
-  if (!typeDef) 
+  if (!typeDef)
   {
-    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute", 
+    ZORBA_ERROR_LOC_PARAM(XPST0008, loc, "schema-attribute",
                           qname->getStringValue()->c_str());
   }
 
@@ -408,7 +408,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
   XSTypeDefinition* typeDef = NULL;
   xqtref_t res;
 
-  TRACE("typeManager: " << typeManager << " type qname: " 
+  TRACE("typeManager: " << typeManager << " type qname: "
         << qname->getLocalName()->c_str() << "@"
         << qname->getNamespace()->c_str());
 
@@ -419,8 +419,8 @@ xqtref_t Schema::createXQTypeFromTypeName(
   const char* local_cstr = qname->getLocalName()->c_str();
 
     // check the cache first
-  std::string key = qname->getLocalName()->str() + ":" + 
-    qname->getNamespace()->str() + " " + 
+  std::string key = qname->getLocalName()->str() + ":" +
+    qname->getNamespace()->str() + " " +
     TypeOps::decode_quantifier(TypeConstants::QUANT_ONE);
 
   if( theUdTypesCache->get(key, res) )
@@ -429,23 +429,23 @@ xqtref_t Schema::createXQTypeFromTypeName(
     // not found in cache, make a new one
   XMLChArray local(local_cstr);
   XMLChArray uri(nsuri_cstr);
-  
+
   bool modelHasChanged;
   XSModel* xsModel = theGrammarPool->getXSModel(modelHasChanged);
 
   typeDef = xsModel->getTypeDefinition(local, uri);
-  
+
   if ( typeDef == NULL )
   {
-    // Go through all the top level type and element definitions and 
-    // add annonymous types to the cache 
+    // Go through all the top level type and element definitions and
+    // add annonymous types to the cache
     //( maybe stop whenever it's found - a small optimization )
     // this is required only when the multiple queries are executed in
     // the same run with the current API, but with empty schema context
 
     TRACE("lookingFor: key:'" << key);
     checkForAnonymousTypes(typeManager);
-    
+
     if( theUdTypesCache->get(key, res) )
       return res;
 
@@ -453,7 +453,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
     res = NULL;
     TRACE("No type definition for " << local << "@" << uri);
     TRACE("add to TypesCache: key:'" << key << "'  t:"
-          << ( res==NULL ? "NULL" : 
+          << ( res==NULL ? "NULL" :
                TypeOps::decode_quantifier(res->get_quantifier())) );
     // stick it in the cache even if it's NULL
     theUdTypesCache->put(key, res);
@@ -462,7 +462,7 @@ xqtref_t Schema::createXQTypeFromTypeName(
   {
     res = createXQTypeFromTypeDefinition(typeManager, typeDef);
   }
-  
+
   return res;
 }
 
@@ -490,7 +490,7 @@ void Schema::getSubstitutionHeadForElement(
   XSModel* model = theGrammarPool->getXSModel(xsModelWasChanged);
 
   XSElementDeclaration* decl = model->getElementDeclaration(local, uri);
-  
+
   if (decl)
   {
     XSElementDeclaration* substHead = decl->getSubstitutionGroupAffiliation();
@@ -506,7 +506,7 @@ void Schema::getSubstitutionHeadForElement(
       xqpStringStore_t lNamespace;
       transcode(nsuri, lNamespace);
 
-      GENV_ITEMFACTORY->createQName(result, lNamespace, lPrefix, lLocal);      
+      GENV_ITEMFACTORY->createQName(result, lNamespace, lPrefix, lLocal);
     }
   }
 }
@@ -519,7 +519,7 @@ XSTypeDefinition* Schema::getTypeDefForElement(const store::Item* qname)
 {
   XSTypeDefinition* typeDef = NULL;
 
-  TRACE(" element qname: " << qname->getLocalName()->c_str() << "@" << 
+  TRACE(" element qname: " << qname->getLocalName()->c_str() << "@" <<
         qname->getNamespace()->c_str());
 
   if (theGrammarPool == NULL)
@@ -532,19 +532,19 @@ XSTypeDefinition* Schema::getTypeDefForElement(const store::Item* qname)
   XSModel* model = theGrammarPool->getXSModel(xsModelWasChanged);
 
   XSElementDeclaration* decl = model->getElementDeclaration(local, uri);
-  
+
   if (decl)
   {
     typeDef = decl->getTypeDefinition();
 
-    // this works only on the element that is a substitution, 
+    // this works only on the element that is a substitution,
     // not on substitution base element
-    //XSElementDeclaration * substGroup = 
+    //XSElementDeclaration * substGroup =
     //  decl->getSubstitutionGroupAffiliation();
-    
+
     //if ( substGroup )
     //{
-    //    TRACE(" substitutionGroup qname: " << StrX(substGroup->getName()) << 
+    //    TRACE(" substitutionGroup qname: " << StrX(substGroup->getName()) <<
     //      "@" << StrX(substGroup->getNamespace()) << "\n");
     //}
   }
@@ -560,7 +560,7 @@ XSTypeDefinition* Schema::getTypeDefForAttribute(const store::Item* qname)
 {
   XSTypeDefinition* typeDef = NULL;
 
-  TRACE(" attribute qname: " << qname->getLocalName()->c_str() << "@" << 
+  TRACE(" attribute qname: " << qname->getLocalName()->c_str() << "@" <<
         qname->getNamespace()->c_str());
 
   if (theGrammarPool == NULL)
@@ -573,7 +573,7 @@ XSTypeDefinition* Schema::getTypeDefForAttribute(const store::Item* qname)
   XSModel* model = theGrammarPool->getXSModel(xsModelWasChanged);
 
   XSAttributeDeclaration* decl = model->getAttributeDeclaration(local, uri);
-  
+
   if (decl)
     typeDef = decl->getTypeDefinition();
 
@@ -582,7 +582,7 @@ XSTypeDefinition* Schema::getTypeDefForAttribute(const store::Item* qname)
 
 
 /*******************************************************************************
-  Creates a zorba schema type for a schema type definition  
+  Creates a zorba schema type for a schema type definition
 *******************************************************************************/
 xqtref_t Schema::createXQTypeFromTypeDefinition(
     const TypeManager* typeManager,
@@ -593,7 +593,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
     ZORBA_ASSERT(false);
     return NULL;
   }
-  
+
   xqtref_t result;
 
   if (xsTypeDef->getTypeCategory() == XSTypeDefinition::SIMPLE_TYPE)
@@ -607,23 +607,23 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
     {
       const XMLCh* local = xsTypeDef->getName();
 
-      result = createXQTypeFromTypeDefForBuiltinTypes(typeManager, strUri, 
+      result = createXQTypeFromTypeDefForBuiltinTypes(typeManager, strUri,
                                                       local);
     }
     else
     {
       // must be a user defined simple type
-      XSSimpleTypeDefinition * xsSimpleTypeDef = 
+      XSSimpleTypeDefinition * xsSimpleTypeDef =
         (XSSimpleTypeDefinition *)xsTypeDef;
-      
+
       xqpStringStore_t lPrefix = new xqpStringStore("");
       xqpStringStore_t lLocal;
       transcode(xsTypeDef->getName(), lLocal);
-      
+
       store::Item_t qname;
       GENV_ITEMFACTORY->createQName(qname, strUri, lPrefix, lLocal);
-      
-      
+
+
       switch ( xsSimpleTypeDef->getVariety() )
       {
       case XSSimpleTypeDefinition::VARIETY_ATOMIC:
@@ -632,53 +632,53 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         if ( !baseTypeDef )
         {
           //error allway must have a baseType
-          ZORBA_ASSERT(false);             
+          ZORBA_ASSERT(false);
           result = NULL;
         }
-        
+
         xqtref_t baseXQType = createXQTypeFromTypeDefinition(typeManager,
             baseTypeDef);
-        
+
         xqtref_t xqType = xqtref_t(new UserDefinedXQType(typeManager,
                                                  qname,
                                                  baseXQType,
                                                  TypeConstants::QUANT_ONE,
                                                  UserDefinedXQType::ATOMIC_TYPE,
                                                  XQType::SIMPLE_CONTENT_KIND));
-        
+
         result = xqType;
       }
       break;
-      
+
       case XSSimpleTypeDefinition::VARIETY_LIST:
       {
         XSSimpleTypeDefinition * itemTypeDef = xsSimpleTypeDef->getItemType();
         if ( !itemTypeDef )
         {
           //error since VARIETY is LIST must have an itemType
-          ZORBA_ASSERT(false);             
+          ZORBA_ASSERT(false);
           result = NULL;
         }
         xqtref_t itemXQType = createXQTypeFromTypeDefinition(typeManager,
             itemTypeDef);
-        
+
         if ( itemXQType->type_kind() == XQType::USER_DEFINED_KIND )
         {   // if UDT add it to the cache, otherwise it will get lost
-          addTypeToCache(itemXQType);    
+          addTypeToCache(itemXQType);
         }
-        
+
         //cout << " creating UDT Simple List Type: " <<
         //  qname->getLocalName()->c_str() <<  "@" <<
-        //  qname->getNamespace()->c_str() << " of " << itemXQType->toString() 
+        //  qname->getNamespace()->c_str() << " of " << itemXQType->toString()
         //    << endl; cout.flush();
-        
+
         xqtref_t xqType = xqtref_t(
             new UserDefinedXQType(typeManager,
                                   qname,
                                   NULL /*GENV_TYPESYSTEM.ANY_SIMPLE_TYPE*/,
                                   TypeConstants::QUANT_ONE,
                                   itemXQType.getp()));
-        
+
         //cout << "   created UDT Simple List Type: " << xqType->toString() <<
         //  endl; cout.flush();
         addTypeToCache(xqType);
@@ -686,47 +686,47 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         result = xqType;
       }
       break;
-      
+
       case XSSimpleTypeDefinition::VARIETY_UNION:
       {
-        XSSimpleTypeDefinitionList * memberTypesDefList = 
+        XSSimpleTypeDefinitionList * memberTypesDefList =
             xsSimpleTypeDef->getMemberTypes();
 
         if ( !memberTypesDefList )
         {
           //error since VARIETY is UNION must have a memberTypesDefList
-          ZORBA_ASSERT(false);             
+          ZORBA_ASSERT(false);
           result = NULL;
         }
-        
-        //cout << " creating UDT Simple Union Type: " << 
-        // qname->getLocalName()->c_str() << "@" << 
+
+        //cout << " creating UDT Simple Union Type: " <<
+        // qname->getLocalName()->c_str() << "@" <<
         // qname->getNamespace()->c_str() << " of: ";
         std::vector<xqtref_t> unionItemTypes;
-        
+
         for ( unsigned int i = 0; i < memberTypesDefList->size(); i++)
         {
-          XSSimpleTypeDefinition* itemTypeDef = 
+          XSSimpleTypeDefinition* itemTypeDef =
             memberTypesDefList->elementAt(i);
           xqtref_t itemXQType = createXQTypeFromTypeDefinition(typeManager,
                                                                itemTypeDef);
-          unionItemTypes.push_back(itemXQType);                        
+          unionItemTypes.push_back(itemXQType);
           //cout << " " << itemXQType->toString();
-          
+
           if ( itemXQType->type_kind() == XQType::USER_DEFINED_KIND )
           {   // if UDT add it to the cache, otherwise it will get lost
-            addTypeToCache(itemXQType);    
+            addTypeToCache(itemXQType);
           }
         }
         //cout << endl; cout.flush();
-        
+
         xqtref_t xqType = xqtref_t(
             new UserDefinedXQType(typeManager,
                                   qname,
                                   NULL /*GENV_TYPESYSTEM.ANY_SIMPLE_TYPE*/,
                                   TypeConstants::QUANT_ONE,
                                   unionItemTypes));
-        
+
         //cout << "   created UDT Union Type: " << xqType->toString() << endl;
         //  cout.flush();
         addTypeToCache(xqType);
@@ -734,22 +734,22 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         result = xqType;
       }
       break;
-      
+
       case XSSimpleTypeDefinition::VARIETY_ABSENT:
         // Xerces source says it must be anySimpleType
         result = GENV_TYPESYSTEM.ANY_SIMPLE_TYPE;
         break;
-        
+
       default:
-        ZORBA_ASSERT(false);            
+        ZORBA_ASSERT(false);
       }
-      
+
       checkForAnonymousTypesInType(typeManager, xsTypeDef);
 
     } // end user defined simple types
   }     // end simple types
-  else 
-  {  
+  else
+  {
     // is not a simple type has to be complex
     ZORBA_ASSERT( xsTypeDef->getTypeCategory()==XSTypeDefinition::COMPLEX_TYPE);
 
@@ -757,11 +757,11 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
     const XMLCh* uri = xsTypeDef->getNamespace();
     xqpStringStore_t strUri;
     transcode(uri, strUri);
-    
+
     if ( XMLString::equals(strUri->c_str (), Schema::XSD_NAMESPACE) )
     {
       const XMLCh* local = xsTypeDef->getName();
-      // maybe there is a better way than comparing strings 
+      // maybe there is a better way than comparing strings
       // but it seems Xerces doesn't have a code for built-in types
       if ( XMLString::equals(XMLChArray("anyType").get(), local) )
       {
@@ -770,7 +770,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
       else if ( XMLString::equals(XMLChArray("untyped").get(), local) )
       {
         result = GENV_TYPESYSTEM.UNTYPED_TYPE;
-      }            
+      }
       else
       {
         // there are no other non simple known types in xsd namespace
@@ -784,20 +784,20 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
       if ( !baseTypeDef )
       {
         //error allways must have a baseType
-        ZORBA_ASSERT(false);             
+        ZORBA_ASSERT(false);
         result = NULL;
       }
-      
+
       xqtref_t baseXQType = createXQTypeFromTypeDefinition(typeManager,
           baseTypeDef);
-      
+
       xqpStringStore_t lPrefix = new xqpStringStore("");
       xqpStringStore_t lLocal;
       transcode(xsTypeDef->getName(), lLocal);
-      
+
       store::Item_t qname;
       GENV_ITEMFACTORY->createQName(qname, strUri, lPrefix, lLocal);
-      TRACE("udComplexType: " << StrX(xsTypeDef->getName()) << " @ " << 
+      TRACE("udComplexType: " << StrX(xsTypeDef->getName()) << " @ " <<
             StrX(xsTypeDef->getNamespace()) );
 
       // get content type
@@ -805,7 +805,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
         static_cast<XSComplexTypeDefinition*>(xsTypeDef);
 
       XQType::content_kind_t contentType;
-      
+
       switch(xsComplexTypeDef->getContentType())
       {
       case XSComplexTypeDefinition::CONTENTTYPE_MIXED:
@@ -823,38 +823,38 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
       default:
         ZORBA_ASSERT(false);
       }
-      
-      xqtref_t xqType = 
+
+      xqtref_t xqType =
             xqtref_t(new UserDefinedXQType(typeManager,
                                            qname,
                                            baseXQType,
                                            TypeConstants::QUANT_ONE,
                                            UserDefinedXQType::COMPLEX_TYPE,
                                            contentType));
-        
+
       result = xqType;
 
       addTypeToCache(xqType);
 
-      //check if it contains anonymous types (they are not available through 
+      //check if it contains anonymous types (they are not available through
       //  xsModel API) add them to the cache
       checkForAnonymousTypesInType(typeManager, xsTypeDef);
     }
-  } 
-  
+  }
+
   return result;
 }
 
 
 xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
-    const TypeManager* typeManager, xqpStringStore_t strUri, 
+    const TypeManager* typeManager, xqpStringStore_t strUri,
     const XMLCh* local)
 {
   xqtref_t result;
-    
+
   ZORBA_ASSERT( XMLString::equals(strUri->c_str(), Schema::XSD_NAMESPACE) );
 
-  // maybe there is a better way than comparing strings 
+  // maybe there is a better way than comparing strings
   // but it seems Xerces doesn't have a code for built-in types
   if ( XMLString::equals(SchemaSymbols::fgDT_STRING, local) )
   {
@@ -1020,7 +1020,7 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
                                   XML_SCHEMA_NS,
                                   "XS",
                                   "IDREFS");
-    
+
     result = new UserDefinedXQType(typeManager,
                                    qname,
                                    NULL,
@@ -1034,7 +1034,7 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
                                   XML_SCHEMA_NS,
                                   "XS",
                                   "ENTITIES");
-    
+
     result = new UserDefinedXQType(typeManager,
                                    qname,
                                    NULL,
@@ -1056,12 +1056,12 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
   // YearMonthDuration and DayTimeDuration are not in schema spec
   else
   {
-    // type not covered  
-    std::cout << "Assertion Error: Type unknown " << StrX(local).localForm() << 
-      "@" << Schema::XSD_NAMESPACE; std::cout.flush(); 
+    // type not covered
+    std::cout << "Assertion Error: Type unknown " << StrX(local).localForm() <<
+      "@" << Schema::XSD_NAMESPACE; std::cout.flush();
     ZORBA_ASSERT(false);
     result = NULL;
-  }  
+  }
 
   return result;
 }
@@ -1092,7 +1092,7 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
     // only if typeDef is Anonymous will be added to the cache
     addAnonymousTypeToCache(typeManager, elemDecl->getTypeDefinition());
   }
-  
+
   XSNamedMap<XSObject> * attrDefs =
       model->getComponents(XSConstants::ATTRIBUTE_DECLARATION);
   for( uint i = 0; i<attrDefs->getLength(); i++)
@@ -1121,7 +1121,7 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
       }
     }
   }
-  
+
   XSNamedMap<XSObject> * modelGroupDefs =
       model->getComponents(XSConstants::MODEL_GROUP_DEFINITION);
   for( uint i = 0; i<modelGroupDefs->getLength(); i++)
@@ -1129,24 +1129,27 @@ void Schema::checkForAnonymousTypes(const TypeManager* typeManager)
     XSModelGroupDefinition* modelGroupDef =
         (XSModelGroupDefinition*)modelGroupDefs->item(i);
     XSModelGroup *xsModelGroup = modelGroupDef->getModelGroup();
-    XSParticleList *xsParticleList = xsModelGroup->getParticles();
-    if (xsParticleList)
+    if (xsModelGroup)
     {
-      for (unsigned i = 0; i < xsParticleList->size(); i++)
+      XSParticleList *xsParticleList = xsModelGroup->getParticles();
+      if (xsParticleList)
       {
-        checkForAnonymousTypesInParticle(typeManager,
-                                         xsParticleList->elementAt(i));
+        for (unsigned i = 0; i < xsParticleList->size(); i++)
+        {
+          checkForAnonymousTypesInParticle(typeManager,
+                                           xsParticleList->elementAt(i));
+        }
       }
     }
   }
 }
 
-void Schema::checkForAnonymousTypesInType(const TypeManager* typeManager, 
+void Schema::checkForAnonymousTypesInType(const TypeManager* typeManager,
                                           XSTypeDefinition* xsTypeDef)
 {
     TRACE(" type: " << StrX(xsTypeDef->getName()) << "@" <<
         StrX(xsTypeDef->getNamespace()));
-    
+
     XSTypeDefinition *xsBaseTypeDef = xsTypeDef->getBaseType();
     if (xsBaseTypeDef)
     {
@@ -1191,7 +1194,7 @@ void Schema::checkForAnonymousTypesInParticle(const TypeManager* typeManager,
 
         if ( xsElement->getScope() != XSConstants::SCOPE_GLOBAL )
         {
-          // if reference to a global definition skip it, 
+          // if reference to a global definition skip it,
           // otherwise infinite loop
           XSTypeDefinition* xsParticleTypeDef = xsElement->getTypeDefinition();
           addAnonymousTypeToCache(typeManager, xsParticleTypeDef);
@@ -1225,7 +1228,7 @@ void Schema::addAnonymousTypeToCache(
     return;
   }
 
-  xqtref_t baseXQType = 
+  xqtref_t baseXQType =
     createXQTypeFromTypeDefinition(typeManager, baseTypeDef);
 
   const XMLCh* uri = xsTypeDef->getNamespace();
@@ -1234,11 +1237,11 @@ void Schema::addAnonymousTypeToCache(
   xqpStringStore_t lPrefix = new xqpStringStore("");
   xqpStringStore_t lLocal;
   transcode(xsTypeDef->getName(), lLocal);
-  
+
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, strUri, lPrefix, lLocal);
-  
-  
+
+
   switch( xsTypeDef->getTypeCategory() )
   {
   case XSTypeDefinition::SIMPLE_TYPE:
@@ -1253,9 +1256,9 @@ void Schema::addAnonymousTypeToCache(
       // get content type
       XSComplexTypeDefinition* xsComplexTypeDef =
         static_cast<XSComplexTypeDefinition*> (xsTypeDef);
-      
+
       XQType::content_kind_t contentType;
-      
+
       switch (xsComplexTypeDef->getContentType())
       {
       case XSComplexTypeDefinition::CONTENTTYPE_MIXED :
@@ -1273,17 +1276,17 @@ void Schema::addAnonymousTypeToCache(
       default:
         ZORBA_ASSERT(false);
       }
-      
-      xqtref_t xqType = 
+
+      xqtref_t xqType =
         xqtref_t(new UserDefinedXQType(typeManager,
                                        qname,
                                        baseXQType,
                                        TypeConstants::QUANT_ONE,
                                        UserDefinedXQType::COMPLEX_TYPE,
                                        contentType));
-  
+
       addTypeToCache(xqType);
-    
+
       // check f0r it's containing annonymous types
       checkForAnonymousTypesInType(typeManager, xsComplexTypeDef);
     }
@@ -1324,10 +1327,10 @@ void Schema::addTypeToCache(xqtref_t itemXQType)
 ********************************************************************************/
 bool Schema::parseUserSimpleTypes(
     xqpStringStore_t& textValue,
-    const xqtref_t& aTargetType, 
+    const xqtref_t& aTargetType,
     std::vector<store::Item_t> &resultList)
 {
-  //cout << "parseUserSimpleTypes: '" << textValue << "' to " <<  
+  //cout << "parseUserSimpleTypes: '" << textValue << "' to " <<
   //  aTargetType->toString() << endl; cout.flush();
 
   if ( aTargetType->type_kind() != XQType::USER_DEFINED_KIND )
@@ -1335,9 +1338,9 @@ bool Schema::parseUserSimpleTypes(
     // must be a built in type
     store::Item_t atomicResult;
     //todo add nsCtx
-    bool res = GenericCast::instance()->castToAtomic(atomicResult, textValue, 
+    bool res = GenericCast::instance()->castToAtomic(atomicResult, textValue,
                                                      aTargetType);
-    
+
     if ( res == false )
     {
       return false;
@@ -1348,22 +1351,22 @@ bool Schema::parseUserSimpleTypes(
       return true;
     }
   }
-  
-  const UserDefinedXQType* udXQType = 
+
+  const UserDefinedXQType* udXQType =
     static_cast<const UserDefinedXQType*>(aTargetType.getp());
-  
+
   ZORBA_ASSERT( udXQType->isAtomic() || udXQType->isList() ||
       udXQType->isUnion() );
-  
+
   bool hasResult = false;
-  
+
   switch ( udXQType->getTypeCategory() )
   {
   case UserDefinedXQType::ATOMIC_TYPE:
   {
     store::Item_t atomicResult;
     hasResult = parseUserAtomicTypes(textValue, aTargetType, atomicResult);
-    
+
     if ( !hasResult )
       return false;
     else
@@ -1373,14 +1376,14 @@ bool Schema::parseUserSimpleTypes(
     }
   }
   break;
-  
+
   case UserDefinedXQType::LIST_TYPE:
-  
+
     return parseUserListTypes(textValue, aTargetType, resultList);
     break;
 
   case UserDefinedXQType::UNION_TYPE:
-  
+
     return parseUserUnionTypes(textValue, aTargetType, resultList);
     break;
 
@@ -1389,7 +1392,7 @@ bool Schema::parseUserSimpleTypes(
     ZORBA_ASSERT( false);
     break;
   }
-  
+
   return false;
 }
 
@@ -1400,26 +1403,26 @@ bool Schema::parseUserSimpleTypes(
 ********************************************************************************/
 bool Schema::parseUserAtomicTypes(
     xqpStringStore_t& textValue,
-    const xqtref_t& aTargetType, 
+    const xqtref_t& aTargetType,
     store::Item_t& result)
 {
   TRACE("parsing '" << *textValue << "' to " << aTargetType->toString());
 
   ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
-  const UserDefinedXQType* udXQType = 
+  const UserDefinedXQType* udXQType =
     static_cast<const UserDefinedXQType*>(aTargetType.getp());
   ZORBA_ASSERT( udXQType->isAtomic() );
-    
+
   const store::Item* typeQName = udXQType->get_qname();
 
 #ifndef ZORBA_NO_XMLSCHEMA
   XMLChArray localPart (typeQName->getLocalName());
   XMLChArray uriStr (typeQName->getNamespace());
-    
+
   bool wasError = false;
 
-  try 
+  try
   {
     // Create grammar resolver and string pool that we pass to the scanner
     std::auto_ptr<GrammarResolver> fGrammarResolver(
@@ -1429,17 +1432,17 @@ bool Schema::parseUserAtomicTypes(
     // retrieve Grammar for the uri
     SchemaGrammar* sGrammar = (SchemaGrammar*) fGrammarResolver->
         getGrammar(uriStr);
-    if (sGrammar) 
+    if (sGrammar)
     {
       DatatypeValidator* xsiTypeDV = fGrammarResolver->
           getDatatypeValidator(uriStr, localPart);
-      
-      if (!xsiTypeDV) 
+
+      if (!xsiTypeDV)
       {
         // when complex simple content type use the base type
         // find the first basetype that has a DataTypeValidator
         const UserDefinedXQType* tmpXQType = udXQType;
-        
+
         while (xsiTypeDV == NULL && tmpXQType != NULL)
         {
           xqtref_t baseXQType = tmpXQType->getBaseType();
@@ -1448,10 +1451,10 @@ bool Schema::parseUserAtomicTypes(
             store::Item_t baseTypeQName = baseXQType->get_qname();
             XMLChArray baseLocalPart (baseTypeQName->getLocalName());
             XMLChArray baseUriStr (baseTypeQName->getNamespace());
-            
+
             xsiTypeDV = fGrammarResolver->
                 getDatatypeValidator(baseUriStr, baseLocalPart);
-            
+
             tmpXQType = NULL;
             if (baseXQType->type_kind() == XQType::USER_DEFINED_KIND)
             {
@@ -1462,7 +1465,7 @@ bool Schema::parseUserAtomicTypes(
         }
       }
 
-      if (!xsiTypeDV) 
+      if (!xsiTypeDV)
       {
         ZORBA_ERROR_DESC_OSS(FORG0001,
                              "Type '" << TypeOps::toString (*aTargetType)
@@ -1479,9 +1482,9 @@ bool Schema::parseUserAtomicTypes(
                            "Uri '" << typeQName->getNamespace()->str()
                            << "' not found in current schema context.");
       wasError = true;
-      
+
     }
-    
+
     if (wasError)
       return false;
   }
@@ -1490,14 +1493,14 @@ bool Schema::parseUserAtomicTypes(
     xqpStringStore_t msg;
     transcode(idve.getMessage(), msg);
 
-    ZORBA_ERROR_DESC_OSS(FORG0001, 
+    ZORBA_ERROR_DESC_OSS(FORG0001,
                          "String '" << textValue->trim(" \n\r\t",4)->c_str() <<
-                         "' cannot be cast to '" << 
+                         "' cannot be cast to '" <<
                          TypeOps::toString( *aTargetType ) << "' : "
                          << msg->c_str());
     return false;
   }
-  catch(const OutOfMemoryException&) 
+  catch(const OutOfMemoryException&)
   {
     throw;
   }
@@ -1509,18 +1512,18 @@ bool Schema::parseUserAtomicTypes(
     throw;
   }
 #endif //ZORBA_NO_XMLSCHEMA
-  
+
   // find the non user defined base type
   const XQType* baseType = udXQType->getBaseType().getp();
-  
+
   while (baseType->type_kind() == XQType::USER_DEFINED_KIND)
-  {        
+  {
     const UserDefinedXQType* udt =
         static_cast<const UserDefinedXQType*>(baseType);
 
     baseType = udt->getBaseType().getp();
   }
-  
+
   // create a UserTypedAtomicItem with the built-in value
   store::Item_t baseItem;
   if (GenericCast::castToAtomic(baseItem, textValue, baseType))
@@ -1537,7 +1540,7 @@ bool Schema::parseUserAtomicTypes(
 void splitToAtomicTextValues(
     const xqpStringStore_t& textValue,
     std::vector<xqp_string>& atomicTextValues)
-{   
+{
   xqp_string normalizedTextValue(textValue->normalizeSpace());
   checked_vector<uint32_t> codes = normalizedTextValue.getCodepoints();
 
@@ -1553,25 +1556,25 @@ void splitToAtomicTextValues(
     }
     i++;
   }
-  
+
   if ( start < (i-1) )
-    atomicTextValues.push_back(normalizedTextValue.substr(start, i-start));    
+    atomicTextValues.push_back(normalizedTextValue.substr(start, i-start));
 }
 
 
 
 // user list types
 bool Schema::parseUserListTypes(
-    const xqpStringStore_t& textValue, 
+    const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType,
     std::vector<store::Item_t> &resultList)
 {
   ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
-  //cout << "parseUserListTypes: '" << textValue << "' to " << 
+  //cout << "parseUserListTypes: '" << textValue << "' to " <<
   //  aTargetType->toString() << endl; cout.flush();
 
-  const UserDefinedXQType* udXQType = 
+  const UserDefinedXQType* udXQType =
     static_cast<const UserDefinedXQType*>(aTargetType.getp());
   ZORBA_ASSERT( udXQType->isList() );
 
@@ -1582,7 +1585,7 @@ bool Schema::parseUserListTypes(
   //split text into atoms
   std::vector<xqp_string> atomicTextValues;
   splitToAtomicTextValues(textValue, atomicTextValues);
-    
+
   for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
   {
     TRACE("trying parsing '" << *textValue << "' to " <<
@@ -1593,17 +1596,17 @@ bool Schema::parseUserListTypes(
                                     resultList);
     hasResult = hasResult && res;
   }
-  
+
   return hasResult;
 }
 
 // user union types
 bool Schema::parseUserUnionTypes(
     xqpStringStore_t& textValue,
-    const xqtref_t& aTargetType, 
+    const xqtref_t& aTargetType,
     std::vector<store::Item_t> &resultList)
 {
-    //cout << "parseUserUnionTypes: '" << textValue << "'" <<  " to " << 
+    //cout << "parseUserUnionTypes: '" << textValue << "'" <<  " to " <<
     //  aTargetType->toString() << endl; cout.flush();
 
     ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
@@ -1616,9 +1619,9 @@ bool Schema::parseUserUnionTypes(
     std::vector<xqtref_t> unionItemTypes = udXQType->getUnionItemTypes();
 
     for ( unsigned int i = 0; i < unionItemTypes.size(); i++)
-    {        
+    {
       if (isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
-      {                
+      {
         return parseUserSimpleTypes(textValue, unionItemTypes[i], resultList);
       }
     }
@@ -1632,7 +1635,7 @@ bool Schema::isCastableUserSimpleTypes(
     const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType)
 {
-    //cout << "isCastableUserSimpleTypes: '" << textValue << "' to " << 
+    //cout << "isCastableUserSimpleTypes: '" << textValue << "' to " <<
     //  aTargetType->toString() << endl; cout.flush();
 
     if ( aTargetType->type_kind() != XQType::USER_DEFINED_KIND )
@@ -1646,7 +1649,7 @@ bool Schema::isCastableUserSimpleTypes(
 
     ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
-    const UserDefinedXQType* udXQType = 
+    const UserDefinedXQType* udXQType =
       static_cast<const UserDefinedXQType*>(aTargetType.getp());
 
     ZORBA_ASSERT( udXQType->isAtomic() || udXQType->isList() ||
@@ -1659,7 +1662,7 @@ bool Schema::isCastableUserSimpleTypes(
         return isCastableUserAtomicTypes( textValue, aTargetType );
         break;
 
-    case UserDefinedXQType::LIST_TYPE:  
+    case UserDefinedXQType::LIST_TYPE:
         return isCastableUserListTypes( textValue, aTargetType );
         break;
 
@@ -1674,61 +1677,61 @@ bool Schema::isCastableUserSimpleTypes(
     }
 
     return false;;
-}        
+}
 
 // user defined atomic types
 bool Schema::isCastableUserAtomicTypes(
     const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType)
 {
-    //cout << "isCastableUserAtomicTypes: '" << textValue << "' to " << 
+    //cout << "isCastableUserAtomicTypes: '" << textValue << "' to " <<
     //  aTargetType->toString() << endl; cout.flush();
     xqpStringStore_t text = textValue;
     return GenericCast::instance()->isCastable( text, aTargetType.getp());
-}        
+}
 
 // user defined list types
 bool Schema::isCastableUserListTypes(
     const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType)
 {
-  //cout << "isCastableUserListTypes: '" << textValue << "' to " << 
+  //cout << "isCastableUserListTypes: '" << textValue << "' to " <<
   //  aTargetType->toString() << endl; cout.flush();
   ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
-  
-  const UserDefinedXQType* udXQType = 
+
+  const UserDefinedXQType* udXQType =
     static_cast<const UserDefinedXQType*>(aTargetType.getp());
   ZORBA_ASSERT( udXQType->isList() );
 
   bool hasResult = true;
   const XQType* listItemType = udXQType->getListItemType();
-    
+
   //split text into atoms
   std::vector<xqp_string> atomicTextValues;
   splitToAtomicTextValues(textValue, atomicTextValues);
-    
+
   for ( unsigned int i = 0; i<atomicTextValues.size() ; i++ )
   {
-    bool res = isCastableUserSimpleTypes(atomicTextValues[i].getStore(), 
+    bool res = isCastableUserSimpleTypes(atomicTextValues[i].getStore(),
                                          xqtref_t(listItemType));
     hasResult = hasResult && res;
   }
-  
+
   return hasResult;
-} 
-       
+}
+
 
 // user defined union types
 bool Schema::isCastableUserUnionTypes(
     const xqpStringStore_t& textValue,
     const xqtref_t& aTargetType)
 {
-    //cout << "isCastableUserUnionTypes: '" << textValue << "' to " << 
+    //cout << "isCastableUserUnionTypes: '" << textValue << "' to " <<
     //  aTargetType->toString() << endl; cout.flush();
 
     ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
-    const UserDefinedXQType* udXQType = 
+    const UserDefinedXQType* udXQType =
       static_cast<const UserDefinedXQType*>(aTargetType.getp());
     ZORBA_ASSERT( udXQType->isUnion() );
 
@@ -1736,13 +1739,13 @@ bool Schema::isCastableUserUnionTypes(
     std::vector<xqtref_t> unionItemTypes = udXQType->getUnionItemTypes();
 
     for ( unsigned int i = 0; i<unionItemTypes.size(); i++)
-    {        
+    {
       if ( isCastableUserSimpleTypes(textValue, unionItemTypes[i]))
         return true;
     }
 
     return false;
-}        
+}
 
 void Schema::serialize(::zorba::serialization::Archiver &ar)
 {
@@ -1760,7 +1763,7 @@ void Schema::serialize(::zorba::serialization::Archiver &ar)
        unsigned int  size = 0;
        unsigned char *binchars = NULL;
        try
-       {    
+       {
          theGrammarPool->serializeGrammars(&binmemoutputstream);
          size = binmemoutputstream.getSize();
          binchars = (unsigned char*)binmemoutputstream.getRawBuffer();
