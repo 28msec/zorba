@@ -183,7 +183,7 @@ ExecFunction::evaluate(
       << std::endl;
   }
 
-#else
+#else //not WIN32
 
   int outfp;
   int errfp;
@@ -215,7 +215,7 @@ ExecFunction::evaluate(
         << std::endl;
     }
   }
-#endif
+#endif // WIN32
 
   zorba::Item lResult;
   create_result_node(lResult, lStdout.str(), lStderr.str(), status,
