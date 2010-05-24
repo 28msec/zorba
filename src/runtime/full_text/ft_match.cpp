@@ -37,25 +37,28 @@ ostream& operator<<( ostream &o, ft_string_match const &sm ) {
             << '}';
 }
 
-ostream& operator<<( ostream &o, ft_match const &m ) {
-  o << indent << "ft_match @ " << print_addr( &m ) << endl;
-  if ( !m.includes.empty() ) {
-    o << inc_indent << indent << "INCLUDES\n" << inc_indent;
-    FOR_EACH( ft_match::includes_t, i, m.includes )
-      o << indent << *i << endl;
-    o << dec_indent << dec_indent;
-  }
-  if ( !m.excludes.empty() ) {
-    o << inc_indent << indent << "EXCLUDES\n" << indent;
-    FOR_EACH( ft_match::excludes_t, e, m.excludes )
-      o << indent << *e << endl;
+static ostream& print_string_matches( ostream &o, char const *label,
+                                      ft_match::string_matches_t const &sm ) {
+  if ( !sm.empty() ) {
+    o << inc_indent << indent << label << '\n' << inc_indent;
+    FOR_EACH( ft_match::string_matches_t, i, sm )
+      o << indent << *i << '\n';
     o << dec_indent << dec_indent;
   }
   return o;
 }
 
+DEF_OMANIP2( print_string_matches, char const*, label,
+             ft_match::string_matches_t const&, sm )
+
+ostream& operator<<( ostream &o, ft_match const &m ) {
+  return  o << indent << "ft_match @ " << print_addr( &m ) << '\n'
+            << print_string_matches( "INCLUDES", m.includes )
+            << print_string_matches( "EXCLUDES", m.excludes );
+}
+
 ostream& operator<<( ostream &o, ft_all_matches const &am ) {
-  o << indent << "ft_all_matches @ " << print_addr( &am ) << endl;
+  o << indent << "ft_all_matches @ " << print_addr( &am ) << '\n';
   if ( !am.empty() ) {
     o << inc_indent;
     FOR_EACH( ft_all_matches, m, am )
