@@ -195,13 +195,13 @@ function (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile
     execute_process (COMMAND "${svn}" add "${filepath}"
       OUTPUT_VARIABLE output ERROR_VARIABLE output RESULT_VARIABLE result)
     file (APPEND "${changeslogfile}" "${output}")
-    if (result_var)
+    if (result)
       set (${result_var} ${result} PARENT_SCOPE)
       return ()
     endif ()
   endforeach (filepath ${addfiles})
 
   # Remove temporary unpackaged workingset
-  #file (REMOVE_RECURSE "${chgdir}")
+  file (REMOVE_RECURSE "${chgdir}")
 
 endfunction (svn_unpackage)
