@@ -69,6 +69,15 @@ void delete_ptr_seq( SequenceType &seq ) {
     delete *i;
 }
 
+/**
+ * Moves the first element of the first sequence to the back of the second.
+ */
+template<typename SequenceType> inline
+void move_front_to_back( SequenceType &from, SequenceType &to ) {
+  to.push_back( from.front() );
+  from.pop_front();
+}
+
 } // namespace zorba
 #endif  /* ZORBA_STL_UTIL_H */
 /* vim:set et sw=2 ts=2: */

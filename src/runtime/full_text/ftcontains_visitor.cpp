@@ -21,6 +21,7 @@
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/ftcontains_visitor.h"
 #include "system/properties.h"
+#include "zorbatypes/numconversions.h"
 #include "zorbautils/indent.h"
 #include "zorbautils/stl_util.h"
 
@@ -35,6 +36,14 @@ namespace zorba {
 #endif
 
 ////////// Inlines ////////////////////////////////////////////////////////////
+
+inline ft_int to_ft_int( xqp_integer const &i ) {
+  ft_int result;
+  if ( !NumConversions::integerToUInt( i, result ) ) {
+    // TODO
+  }
+  return result;
+}
 
 inline void ftcontains_visitor::push_matches( ft_all_matches *am ) {
   matches_stack_.push( am );
@@ -296,14 +305,22 @@ void V::end_visit( ftwords &w ) {
       // TODO: affects query tokenization
     }
   }
+
   store::Item_t item;
-  PlanIterator::consumeNext( item, w.get_plan_iter(), plan_state_ );
-  FTTokenIterator_t query_tokens( item->getQueryTokens() );
-  auto_ptr<ft_all_matches> result( new ft_all_matches );
-  apply_ftwords(
-    search_ctx_, query_tokens, ++query_pos_, w.get_mode(), options, *result
-  );
-  PUSH_MATCHES( result.release() );
+  FTQueryItemSeq query_items;
+  while ( PlanIterator::consumeNext( item, w.get_plan_iter(), plan_state_ ) ) {
+    FTQueryItem const qi( item->getQueryTokens() );
+    if ( !qi->empty() )
+      query_items.push_back( qi );
+  }
+
+  if ( !query_items.empty() ) {
+    auto_ptr<ft_all_matches> result( new ft_all_matches );
+    apply_ftwords(
+      search_ctx_, query_items, ++query_pos_, w.get_mode(), options, *result
+    );
+    PUSH_MATCHES( result.release() );
+  }
   END_VISIT();
 }
 

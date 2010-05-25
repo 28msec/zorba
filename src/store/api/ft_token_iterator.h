@@ -25,9 +25,6 @@
 
 namespace zorba {
 
-class FTTokenIterator;
-typedef rchandle<FTTokenIterator> FTTokenIterator_t;
-
 /**
  * An <code>FTTokenIterator</code> iterates over a sequence of full-text
  * tokens.
@@ -78,9 +75,11 @@ public:
   virtual bool hasNext() const = 0;
 
   /**
-   * Creates a new iterator for the current element.
+   * Marks the iterator's position so that it can be returned to later.
+   *
+   * @param set If true, sets a mark; if false, returns to the previous mark.
    */
-  virtual FTTokenIterator_t iterator() const = 0;
+  virtual void mark( bool set ) = 0;
 
   /**
    * Obtains the next token and advances the iterator.
@@ -92,27 +91,13 @@ public:
   virtual bool next( FTToken const **ppToken = 0 ) = 0;
 
   /**
-   * Gets the index of the current token.
-   *
-   * @return Returns said index.
+   * Resets this iterator and the mark to the beginning.
    */
-  virtual index_t pos() const = 0;
-
-  /**
-   * Sets the index of the current token.
-   *
-   * @param i The index.
-   */
-  virtual void pos( index_t i ) = 0;
-
-  /**
-   * Resets this iterator to the beginning.
-   */
-  void reset() {
-    pos( begin() );
-  }
+  virtual void reset() = 0;
 
 };
+
+typedef rchandle<FTTokenIterator> FTTokenIterator_t;
 
 } // namespace zorba
 #endif  /* ZORBA_FT_TOKEN_ITERATOR_H */

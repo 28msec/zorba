@@ -16,9 +16,10 @@ SET(FULLTEXT_SRCS
     full_text.cpp
     full_text_impl.cpp
     ft_match.cpp
+    match_tokens.cpp
+    ft_query_item_seq.cpp
     apply.cpp
     ftcontains_visitor.cpp
-    match_tokens.cpp
     )
 
 # vim:set et sw=4 ts=4:

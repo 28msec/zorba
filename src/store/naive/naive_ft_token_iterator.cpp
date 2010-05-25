@@ -25,9 +25,9 @@ NaiveFTTokenIterator::NaiveFTTokenIterator( FTTokens const &tokens,
                                             index_t begin, index_t end ) :
   tokens_( &tokens ), begin_( begin ), end_( end )
 {
-  ZORBA_ASSERT( end <= tokens_->size() );
-  ZORBA_ASSERT( begin <= end );
-  pos_ = begin_;
+  ZORBA_ASSERT( end_ <= tokens_->size() );
+  ZORBA_ASSERT( begin_ <= end_ );
+  mark_ = pos_ = begin_;
 }
 
 FTTokenIterator::index_t NaiveFTTokenIterator::begin() const {
@@ -51,35 +51,25 @@ bool NaiveFTTokenIterator::hasNext() const {
   return pos_ < end_;
 }
 
-FTTokenIterator_t NaiveFTTokenIterator::iterator() const {
-  ZORBA_ASSERT( hasNext() );
-  return FTTokenIterator_t(
-    new NaiveFTTokenIterator( *tokens_, pos_, pos_ + 1 )
-  );
+void NaiveFTTokenIterator::mark( bool set ) {
+  if ( set )
+    mark_ = pos_;
+  else
+    pos_ = mark_;
 }
 
 bool NaiveFTTokenIterator::next( FTToken const **ppToken ) {
   if ( hasNext() ) {
     if ( ppToken )
-      *ppToken = &current();
+      *ppToken = &(*tokens_)[ pos_ ];
     ++pos_;
     return true;
   }
   return false;
 }
 
-FTTokenIterator::index_t NaiveFTTokenIterator::pos() const {
-  return pos_;
-}
-
-void NaiveFTTokenIterator::pos( index_t i ) {
-  ZORBA_ASSERT( i >= begin_ );
-  ZORBA_ASSERT( i <= end_ );
-  pos_ = i;
-}
-
 void NaiveFTTokenIterator::reset() {
-  pos_ = begin_;
+  mark_ = pos_ = begin_;
 }
 
 } // namespace zorba

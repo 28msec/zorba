@@ -38,16 +38,14 @@ public:
   bool empty() const;
   index_t end() const;
   bool hasNext() const;
-  FTTokenIterator_t iterator() const;
+  void mark( bool );
   bool next( FTToken const **ppToken = 0 );
-  index_t pos() const;
-  void pos( index_t );
   void reset();
 
 private:
   FTTokens const *tokens_;              // pointer to allow operator=()
   index_t begin_, end_;                 // non-const to allow operator=()
-  index_t pos_;
+  index_t pos_, mark_;
 };
 
 } // namespace zorba
