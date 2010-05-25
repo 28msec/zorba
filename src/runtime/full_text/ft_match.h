@@ -35,7 +35,7 @@ struct ft_string_match : ft_token_span {
 
   /**
    * The query_pos attribute specifies the position of the query token in the
-   * query.  This attribute is needed for FTOrders.
+   * query.  This attribute is needed for FTOrder.
    */
   int_t query_pos;
 
