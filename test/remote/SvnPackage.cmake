@@ -28,11 +28,11 @@ MACRO (find_prereqs)
 
   # create path to execute zorba
   IF (WIN32)
-		IF(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
-			SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/scripts/zorba_cmake.bat")
-		ELSE(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
-			SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/zorba.exe")
-		ENDIF(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
+    IF(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
+      SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/scripts/zorba_cmake.bat")
+    ELSE(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
+      SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/zorba.exe")
+    ENDIF(NOT ZORBA_WIN_PUT_ALL_BINARIES_IN_SAME_DIR)
   ELSE (WIN32)
     SET(ZORBA_EXE_SCRIPT "${ZORBA_BUILD_DIR}/bin/zorba")
   ENDIF (WIN32)
@@ -133,7 +133,10 @@ endmacro (svn_package)
 #   tmpdir - directory to temporarily unpack changefile into
 #   svnlogfile - file to output SVN checkout messages into
 #   changeslogfile - file to output change-application log messages into
-macro (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile)
+#   result_var - if the variable named by "result" is non-zero or contains a
+#     message after svn_unpackage() returns, an error was encountered
+function (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile
+    result_var)
   find_prereqs ()
 
   # Unpack changes.tgz into working dir
@@ -173,8 +176,12 @@ macro (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile)
     # These are absolute paths from the client; convert to relative paths
     file (RELATIVE_PATH relpath "${clientroot}" "${filepath}")
     execute_process (COMMAND "${svn}" delete "${svndir}/${relpath}"
-      OUTPUT_VARIABLE output ERROR_VARIABLE output)
+      OUTPUT_VARIABLE output ERROR_VARIABLE output RESULT_VARIABLE result)
     file (APPEND "${changeslogfile}" "${output}")
+    if (result_var)
+      set (${result_var} ${result} PARENT_SCOPE)
+      return ()
+    endif ()
   endforeach (filepath ${deletefiles})
 
   # Now add any new files, using the local output of "svn status" to
@@ -186,11 +193,15 @@ macro (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile)
   get_files_with_status (addfiles "${chgdir}/svn-status.xml" "" unversioned)
   foreach (filepath ${addfiles})
     execute_process (COMMAND "${svn}" add "${filepath}"
-      OUTPUT_VARIABLE output ERROR_VARIABLE output)
+      OUTPUT_VARIABLE output ERROR_VARIABLE output RESULT_VARIABLE result)
     file (APPEND "${changeslogfile}" "${output}")
+    if (result_var)
+      set (${result_var} ${result} PARENT_SCOPE)
+      return ()
+    endif ()
   endforeach (filepath ${addfiles})
 
   # Remove temporary unpackaged workingset
-  file (REMOVE_RECURSE "${chgdir}")
+  #file (REMOVE_RECURSE "${chgdir}")
 
-endmacro (svn_unpackage)
+endfunction (svn_unpackage)
