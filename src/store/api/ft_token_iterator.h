@@ -37,6 +37,11 @@ public:
   typedef unsigned index_t;
 
   /**
+   * Destroys this iterator.
+   */
+  virtual ~FTTokenIterator() { }
+
+  /**
    * The index of the beginning token.
    *
    * @return Returns said index.
