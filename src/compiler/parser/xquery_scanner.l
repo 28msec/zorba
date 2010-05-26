@@ -636,6 +636,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 
 {IntegerLiteral}[a-zA-Z_][0-9a-zA-Z_]* {
   /* invalid integer literal */
+  yylval->err = scanner_error::unrecognizedIntegerErr(yytext);
   return token::UNRECOGNIZED;
 }
 
@@ -874,7 +875,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_EXPR_COMMENT>":)" { POP_STATE(); }
 <MODE_EXPR_COMMENT>"(:" { PUSH_STATE(MODE_EXPR_COMMENT); }
 <MODE_EXPR_COMMENT>.|"\n" { /* do nothing */ }
-<MODE_EXPR_COMMENT><<EOF>> { yylval->err = new scanner_error("syntax error, unexpected end of file, unterminated comment"); return token::UNRECOGNIZED; }
+<MODE_EXPR_COMMENT><<EOF>> { yylval->err = scanner_error::unterminatedCommentErr(); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________
@@ -894,7 +895,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
   }
   theDriver->theDocComment += yytext;
 }
-<MODE_EXPR_DOC_COMMENT><<EOF>> { yylval->err = new scanner_error("syntax error, unexpected end of file, unterminated comment"); return token::UNRECOGNIZED; }
+<MODE_EXPR_DOC_COMMENT><<EOF>> { yylval->err = scanner_error::unterminatedCommentErr(); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________
@@ -1032,7 +1033,7 @@ std::string start_state(int state)
     case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
     case MODE_XQUERY_VERSION: return "MODE_XQUERY_VERSION";
     case MODE_CATCH: return "MODE_CATCH";
-    default: return "Something's drastically wrong here, unrecognized start state!\n";
+    default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_state() in xquery_scanner.l \n";
   }
 }
 

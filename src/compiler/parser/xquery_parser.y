@@ -77,10 +77,18 @@ public:
     else
       token = _error_token;
 
-    scanner_error* err = new scanner_error("syntax error, unexpected character '" + token + "'");
-    return err;
+    return new scanner_error("syntax error, unexpected character '" + token + "'");
   };
 
+  static scanner_error* unterminatedCommentErr()
+  {
+    return new scanner_error("syntax error, unexpected end of file, unterminated comment");
+  }
+
+  static scanner_error* unrecognizedIntegerErr(const char* _error_token)
+  {
+    return new scanner_error(std::string("syntax error, unexpected '") + _error_token + "', separator needed after numeric literal");
+  }
 };
 
 
@@ -1054,11 +1062,11 @@ UnrecognizedToken
         {
           // Catch unrecognized tokens and report them
           $$ = NULL;
-          if ($1 != NULL)
+          if ($1 != NULL) {
             error(@$, $1->msg);
-          else
+            delete $1;
+          } else
             error(@$, std::string("syntax error, unexpected character"));
-          delete $1;
           YYERROR;
         }
     ;
@@ -6338,6 +6346,11 @@ KEYWORD
     |   PARENT { $$ = SYMTAB_PUT("parent"); }
     |   PRECEDING { $$ = SYMTAB_PUT("preceding"); }
     |   SELF { $$ = SYMTAB_PUT("self"); }
+    |   FOLLOWING { $$ = SYMTAB_PUT("following"); }
+    |   ANCESTOR_OR_SELF { $$ = SYMTAB_PUT("ancestor-or-self"); }
+    |   DESCENDANT_OR_SELF { $$ = SYMTAB_PUT("descendant-or-self"); }
+    |   FOLLOWING_SIBLING { $$ = SYMTAB_PUT("following-sibling"); }
+    |   PRECEDING_SIBLING { $$ = SYMTAB_PUT("preceding-sibling"); }
     ;
 
 
