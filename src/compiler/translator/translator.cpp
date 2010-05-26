@@ -11432,10 +11432,20 @@ void *begin_visit (const FTWords& v) {
 
 void end_visit (const FTWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  expr_t e( pop_nodestack() );
+//
+// If the 0 is changed to a 1 and you run the following query, the code will
+// get stuck in the optimizer:
+//
+//  let $x := <foo>hello, world</foo>
+//  return $x contains text "hello"
+//
+#if 0
+  e = wrap_in_atomization( e );
+  e = wrap_in_type_promotion( e, theRTM.STRING_TYPE_STAR );
+#endif
   ftwords *const w = new ftwords(
-    v.get_location(),
-    pop_nodestack(),
-    v.get_any_all_option()->get_option()
+    v.get_location(), e, v.get_any_all_option()->get_option()
   );
   push_ftstack( w );
 }
