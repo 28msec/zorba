@@ -240,7 +240,7 @@ public:
 
   bool is_constant() const;
 
-  bool contains_nondeterministic() const;
+  bool is_nondeterministic() const;
 
   void replace_expr(const expr* oldExpr, const expr* newExpr);
 

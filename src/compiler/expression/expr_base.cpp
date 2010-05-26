@@ -441,7 +441,7 @@ void expr::setDirectAnnotations()
 /*******************************************************************************
   Returns true if the expr contains a nondeterministic function call
 ********************************************************************************/
-bool expr::contains_nondeterministic() const
+bool expr::is_nondeterministic() const
 {
   if (get_expr_kind() == fo_expr_kind)
   {
@@ -454,7 +454,7 @@ bool expr::contains_nondeterministic() const
   while(!iter.done())
   {
     const expr* ce = iter.get_expr();
-    if (ce != NULL && ce->contains_nondeterministic())
+    if (ce != NULL && ce->is_nondeterministic())
         return true;
     iter.next();
   }

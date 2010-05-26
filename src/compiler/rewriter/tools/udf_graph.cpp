@@ -38,6 +38,22 @@
 namespace zorba 
 {
 
+
+/*******************************************************************************
+
+********************************************************************************/
+UDFGraph::UDFGraph(expr* e) 
+  :
+  theExpr(e),
+  theNodes(32, false),
+  theRoot(NULL),
+  theVisitId(0)
+{
+  if (e != NULL)
+    build(e);
+}
+
+
 /*******************************************************************************
 
 ********************************************************************************/
@@ -213,11 +229,49 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
 /*******************************************************************************
 
 ********************************************************************************/
+void UDFGraph::inferDeterminism()
+{
+  inferDeterminism(theRoot, ++theVisitId);
+}
+
+
+bool UDFGraph::inferDeterminism(UDFNode* node, ulong visit)
+{
+  if (node->theVisitId == visit)
+    return node->theUDF->isDeterministic();
+
+  node->theVisitId = visit;
+
+  bool deterministic = true;
+
+  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  {
+    if (inferDeterminism(node->theChildren[i], visit) == false)
+      deterministic = false;
+  }
+
+  if (node != theRoot)
+  {
+    if (deterministic)
+    {
+      deterministic = !node->theUDF->getBody()->is_nondeterministic();
+    }
+
+    node->theUDF->setDeterministic(deterministic);
+  }
+
+  return deterministic;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void UDFGraph::display(std::ostream& o)
 {
   display(o, theRoot);
 
-  o << std::endl <<std::endl;
+  o << std::endl << std::endl;
 }
 
 
@@ -240,4 +294,3 @@ void UDFGraph::display(std::ostream& o, UDFNode* node)
 
 
 }
-

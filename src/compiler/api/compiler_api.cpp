@@ -267,14 +267,21 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
     return lExpr;
 
   // Build the call-graph among the udfs that are actually used in the query
-  // program, and then optimize those udfs.
-  UDFGraph udfGraph;
-  udfGraph.build(lExpr.getp());
+  // program.
+  UDFGraph udfGraph(lExpr.getp());
+
+  // By default all UDFs are marked as deterministic. Now, we find which udfs
+  // are actually non-deterministic and mark them as such. This has to be done
+  // before optimization.
+  udfGraph.inferDeterminism();
+
+  // Optimize the udfs.
   udfGraph.optimizeUDFs(theCompilerCB);
 
   // Optimize the main expr (i.e., the top expr of the main module).
   RewriterContext rCtx(theCompilerCB, lExpr);
   GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
+
   lExpr = rCtx.getRoot();
 
   if ( theCompilerCB->theConfig.optimize_cb != NULL )

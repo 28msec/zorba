@@ -3617,9 +3617,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     udf->setBody(body);
     udf->setArgVars(args);
 
-    // Calculate the non-deterministic flag based on the body expr
-    udf->setDeterministic(udf->isDeterministic() && !body->contains_nondeterministic());
-
     break;
   }
   case ParseConstants::fn_extern:
@@ -8830,8 +8827,6 @@ void end_visit(const LiteralFunctionItem& v, void* /*visit_state*/)
                                            body,
                                            fn->getUpdateType());
     udf->setArgVars(udfArgs);
-    // recalculate the non-deterministic flag on the optimized body
-    udf->setDeterministic(udf->isDeterministic() && !body->contains_nondeterministic());
 
     fn = udf;
   }
@@ -8964,6 +8959,8 @@ void end_visit(const InlineFunction& v, void* aState)
     }
   }
 
+  bool deterministic = !body->is_nondeterministic();
+
   if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
   {
     RewriterContext rCtx(theCCB, body);
@@ -8999,8 +8996,7 @@ void end_visit(const InlineFunction& v, void* aState)
                                         body.getp(),
                                         body->get_scripting_kind()));
   udf->setArgVars(argVars);
-  // recalculate the non-deterministic flag on the optimized body
-  udf->setDeterministic(udf->isDeterministic() && !body->contains_nondeterministic());
+  udf->setDeterministic(deterministic);
 
   // Get the function_item_expr and set its function to the udf created above.
   function_item_expr* fiExpr = dynamic_cast<function_item_expr*>(
