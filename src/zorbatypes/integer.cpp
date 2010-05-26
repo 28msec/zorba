@@ -31,19 +31,24 @@
 #define IS_NEGATIVE(mapm_obj)             (mapm_obj < 0)
 #endif
 
-namespace zorba {
+namespace zorba 
+{
+
 SERIALIZABLE_CLASS_VERSIONS(Integer)
 END_SERIALIZABLE_CLASS_VERSIONS(Integer)
 
 
-Integer& Integer::zero() {
+Integer& Integer::zero() 
+{
   static Integer lValue(IMAPM(0));
   return lValue;
 }
 
+
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
 HashCharPtrObjPtrLimited<Integer>   Integer::parsed_integers;
 #endif
+
 
 bool Integer::parseString(const char* aCharStar, Integer& aInteger) 
 {
@@ -172,6 +177,7 @@ bool Integer::parseString(const char* aCharStar, Integer& aInteger)
     return true;
   }
 }
+
 
 bool Integer::parseStringUnsigned(const char* aStarChar, Integer& aUInteger) 
 {
@@ -584,14 +590,9 @@ xqpStringStore_t Integer::toString() const
 uint32_t Integer::hash() const
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  Integer lInteger(theInteger % MAPM::get65535());
-  if (lInteger < Integer::zero())
-    lInteger = -lInteger;
-  uint32_t lHash;
-  NumConversions::integerToUInt(lInteger, lHash);
-  return lHash;
+  return theInteger.hash();
 #else
-  return (uint32_t)theInteger%65535;
+  return static_cast<uint32_t>(theInteger);
 #endif
 }
 

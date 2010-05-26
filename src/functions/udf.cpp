@@ -21,6 +21,10 @@
 #include "compiler/expression/expr.h"
 #include "compiler/semantic_annotations/tsv_annotation.h"
 #include "compiler/semantic_annotations/annotation_keys.h"
+#include "compiler/api/compiler_api.h"
+#include "compiler/api/compilercb.h"
+#include "compiler/rewriter/framework/rewriter_context.h"
+#include "compiler/rewriter/framework/rewriter.h"
 
 #include "functions/udf.h"
 #include "functions/function_impl.h"
@@ -48,7 +52,8 @@ user_function::user_function(
   theLoc(loc), 
   theBodyExpr(expr_body), 
   theScriptingKind(scriptingKind),
-  theIsLeaf(true)
+  theIsLeaf(true),
+  theIsOptimized(false)
 {
 }
 
@@ -83,6 +88,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   ar & theLoc;
   SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
   ar & theIsLeaf;
+  ar & theIsOptimized;
   ar & thePlan;
   ar & theArgVarRefs;
 }
@@ -175,6 +181,17 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
 {
   if (thePlan == NULL) 
   {
+    if (!theIsOptimized)
+    {
+      expr_t body = getBody();
+      RewriterContext rctx(ccb, body);
+      GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
+      body = rctx.getRoot();
+      setBody(body);
+
+      theIsOptimized = true;
+    }
+
     std::vector<std::vector<LetVarIter_t> > param_iter_vec(theArgVars.size());
     hash64map<std::vector<LetVarIter_t> *> param_map;
 

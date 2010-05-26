@@ -118,6 +118,27 @@ public:
   } BoolAnnotationValue;
 
 
+  typedef enum
+  {
+    PRODUCES_SORTED_NODES   = 0,
+    PRODUCES_DISTINCT_NODES = 2,
+    IGNORES_SORTED_NODES    = 4,
+    IGNORES_DUPLICATE_NODES = 6,
+    NON_DISCARDABLE         = 8,
+    UNFOLDABLE              = 10
+  } Annotationkey;
+
+  typedef enum
+  {
+    PRODUCES_SORTED_NODES_MASK   = 0x003,
+    PRODUCES_DISTINCT_NODES_MASK = 0x00C,
+    IGNORES_SORTED_NODES_MASK  = 0x030,
+    IGNORES_DUPLICATE_NODES_MASK  = 0x0C0,
+    NON_DISCARDABLE_MASK         = 0x300,
+    UNFOLDABLE_MASK              = 0xC00
+  } AnnotationMask;
+
+
 protected:
   static expr_t      iter_end_expr;
   static expr_t    * iter_done;
@@ -195,6 +216,14 @@ public:
 
   void setProducesDistinctNodes(BoolAnnotationValue v);
 
+  BoolAnnotationValue getIgnoresSortedNodes() const;
+
+  void setIgnoresSortedNodes(BoolAnnotationValue v);
+
+  BoolAnnotationValue getIgnoresDuplicateNodes() const;
+
+  void setIgnoresDuplicateNodes(BoolAnnotationValue v);
+
   BoolAnnotationValue getNonDiscardable() const;
 
   bool isNonDiscardable() const;
@@ -211,7 +240,6 @@ public:
 
   bool is_constant() const;
 
-  // returns true if the expression or any subexpression contains a nondeterministic function call
   bool contains_nondeterministic() const;
 
   void replace_expr(const expr* oldExpr, const expr* newExpr);

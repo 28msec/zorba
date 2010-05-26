@@ -29,7 +29,8 @@
 #include "zorbaserialization/serialization_engine.h"
 
 
-namespace zorba {
+namespace zorba 
+{
 #ifndef ZORBA_NO_BIGNUMBERS
   typedef MAPM    IMAPM;
 #else
@@ -38,7 +39,7 @@ namespace zorba {
 #endif
 
 // exported for testing only
-  class ZORBA_DLL_PUBLIC Integer : public ::zorba::serialization::SerializeBaseClass
+class ZORBA_DLL_PUBLIC Integer : public ::zorba::serialization::SerializeBaseClass
 {
   friend class Decimal;
     
@@ -46,34 +47,6 @@ namespace zorba {
 
   friend class NumConversions;
 
-private:
-  IMAPM theInteger;
-
-  Integer(IMAPM aInteger) : theInteger(aInteger) { }
-    
-public:
-  SERIALIZABLE_CLASS(Integer)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(Integer)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theInteger;
-  }
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-public:
-  static  HashCharPtrObjPtrLimited<Integer>  parsed_integers;
-#endif
-
-public:
-  Integer() : theInteger(0) { }
-  Integer(const Integer& aInteger) : ::zorba::serialization::SerializeBaseClass(), theInteger(aInteger.theInteger) { }
-  virtual ~Integer() {}
-
-private:
-  static MAPM 
-  longlongToMAPM(long long);
-      
-  static IMAPM
-  floatingToInteger(MAPM theFloating);
 public:
   /**
    * @return integer that represents 0
@@ -113,132 +86,107 @@ public:
   /**
    * Parsing form Decimal to Integer. Decimal places are cut of.
    */
-  static Integer
-  parseDecimal(const Decimal&);
+  static Integer parseDecimal(const Decimal&);
   
-  static Integer
-  parseLongLong(long long);
+  static Integer parseLongLong(long long);
 
-  static Integer
-  parseULongLong(unsigned long long);
+  static Integer parseULongLong(unsigned long long);
 
-  static Integer
-  parseInt(int32_t);
+  static Integer parseInt(int32_t);
 
-  static Integer
-  parseUInt(uint32_t);
+  static Integer parseUInt(uint32_t);
 
-  static Integer
-  parseLong(long aLong);
+  static Integer parseLong(long aLong);
 
-  static Integer
-  parseULong(unsigned long);
+  static Integer parseULong(unsigned long);
 
-  static Integer
-  parseSizeT(size_t);
+  static Integer parseSizeT(size_t);
 
-  Integer& 
-  operator=(const Integer&);
-
-  Integer 
-  operator+(const Integer&) const;
+private:
+  static MAPM longlongToMAPM(long long);
       
-  Decimal 
-  operator+(const Decimal&) const;
+  static IMAPM floatingToInteger(MAPM theFloating);
 
-  Integer& 
-  operator+=(const Integer&);
+private:
+  IMAPM theInteger;
 
-  Integer
-  operator-(const Integer&) const;
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+public:
+  static  HashCharPtrObjPtrLimited<Integer>  parsed_integers;
+#endif
+
+public:
+  SERIALIZABLE_CLASS(Integer)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(Integer)
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    ar & theInteger;
+  }
+
+public:
+  Integer() : theInteger(0) { }
+
+  Integer(const Integer& aInteger) 
+    :
+    ::zorba::serialization::SerializeBaseClass(), theInteger(aInteger.theInteger) 
+  { 
+  }
+
+  virtual ~Integer() {}
+
+  Integer& operator=(const Integer&);
+
+  Integer operator+(const Integer&) const;
       
-  Decimal 
-  operator-(const Decimal&) const;
+  Decimal operator+(const Decimal&) const;
+
+  Integer& operator+=(const Integer&);
+
+  Integer operator-(const Integer&) const;
+      
+  Decimal operator-(const Decimal&) const;
 
   Integer& operator-=(const Integer&);
       
-  Integer 
-  operator*(const Integer&) const;
+  Integer operator*(const Integer&) const;
       
-  Decimal 
-  operator*(const Decimal&) const;
+  Decimal operator*(const Decimal&) const;
 
-  Integer& 
-  operator*=(const Integer&);
+  Integer& operator*=(const Integer&);
 
-  Integer 
-  operator/(const Integer&) const;
+  Integer operator/(const Integer&) const;
      
-  Decimal 
-  operator/(const Decimal&) const;
+  Decimal operator/(const Decimal&) const;
 
   Integer& operator/=(const Integer&);
       
-  Integer 
-  operator%(const Integer&) const;
+  Integer operator%(const Integer&) const;
       
-  Decimal 
-  operator%(const Decimal&) const;
+  Decimal operator%(const Decimal&) const;
 
-  Integer& 
-  operator%=(const Integer&);
+  Integer& operator%=(const Integer&);
 
-  Integer 
-  operator-() const; 
+  Integer operator-() const; 
       
   /** prefix */
-  Integer& 
-  operator++();
+  Integer& operator++();
       
   /** postfix */
-  Integer 
-  operator++(int);
+  Integer operator++(int);
       
   /** prefix */
-  Integer& 
-  operator--();
+  Integer& operator--();
       
   /** postfix */
-  Integer 
-  operator--(int);
+  Integer operator--(int);
       
-  Integer 
-  round(Integer aPrecision) const; 
+  Integer round(Integer aPrecision) const; 
       
-  Integer 
-  roundHalfToEven(Integer aPrecision) const;
+  Integer roundHalfToEven(Integer aPrecision) const;
 
   Integer sqrt() const;
 
   Double  pow(Integer p) const;
-
-  bool
-  operator==(const Integer& aInteger) const { return theInteger == aInteger.theInteger; } 
-      
-  bool
-  operator!=(const Integer& aInteger) const { return theInteger != aInteger.theInteger; } 
-      
-  bool
-  operator<(const Integer& aInteger) const { return theInteger < aInteger.theInteger; } 
-
-  bool
-  operator>(const Integer& aInteger) const 
-  {
-    return theInteger > aInteger.theInteger; 
-  } 
-      
-
-  bool
-  operator>=(const Integer& aInteger) const 
-  {
-    return theInteger >= aInteger.theInteger; 
-  } 
-  
-  bool
-  operator<=(const Integer& aInteger) const 
-  {
-    return theInteger <= aInteger.theInteger; 
-  } 
 
   long compare(const Integer& aInteger) const
   {
@@ -254,39 +202,68 @@ public:
 #endif
   }
 
-  bool
-  operator==(const Decimal&) const;
-
-  bool
-  operator!=(const Decimal&) const;
+  bool operator==(const Integer& aInteger) const 
+  {
+    return theInteger == aInteger.theInteger;
+  } 
       
-  bool
-  operator<(const Decimal&) const;
-
-  bool
-  operator<=(const Decimal&) const;
-
-  bool
-  operator>(const Decimal&) const;
+  bool operator!=(const Integer& aInteger) const 
+  {
+    return theInteger != aInteger.theInteger;
+  } 
       
-  bool
-  operator>=(const Decimal&) const;
+  bool operator<(const Integer& aInteger) const 
+  {
+    return theInteger < aInteger.theInteger;
+  } 
 
-  bool
-  operator<=(const Double&) const;
+  bool operator>(const Integer& aInteger) const 
+  {
+    return theInteger > aInteger.theInteger; 
+  } 
       
-  bool
-  operator>=(const Double&) const;
+  bool operator>=(const Integer& aInteger) const 
+  {
+    return theInteger >= aInteger.theInteger; 
+  } 
+  
+  bool operator<=(const Integer& aInteger) const 
+  {
+    return theInteger <= aInteger.theInteger; 
+  } 
 
-  xqpStringStore_t
-  toString() const;
+  bool operator==(const Decimal&) const;
 
-  uint32_t 
-  hash() const;
-}; // class Integer
+  bool operator!=(const Decimal&) const;
+      
+  bool operator<(const Decimal&) const;
+
+  bool operator<=(const Decimal&) const;
+
+  bool operator>(const Decimal&) const;
+      
+  bool operator>=(const Decimal&) const;
+
+  bool operator<=(const Double&) const;
+      
+  bool operator>=(const Double&) const;
+
+  xqpStringStore_t toString() const;
+
+  uint32_t hash() const;
+
+private:
+  Integer(const IMAPM& aInteger) : theInteger(aInteger) { }
+};
 
    
 std::ostream& operator<<(std::ostream& os, const Integer&);
 
 } /* namespace zorba */
 #endif // ZORBA_INTEGER_H
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

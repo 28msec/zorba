@@ -168,66 +168,71 @@ void SimpleStore::init()
 ********************************************************************************/
 void SimpleStore::initTypeNames()
 {
+  const char* ns = XS_URI;
+  BasicItemFactory* f = theItemFactory;
+
   theSchemaTypeNames.resize(XS_LAST);
 
-  theItemFactory->createQName(theSchemaTypeNames[0], XS_URI, "", "untyped");
-  theItemFactory->createQName(theSchemaTypeNames[1], XS_URI, "", "untypedAtomic");
-  theItemFactory->createQName(theSchemaTypeNames[2], XS_URI, "", "anyType");
-  theItemFactory->createQName(theSchemaTypeNames[3], XS_URI, "", "anySimpleType");
-  theItemFactory->createQName(theSchemaTypeNames[4], XS_URI, "", "anyAtomicType");
+  f->createQName(theSchemaTypeNames[XS_UNTYPED],        ns, "", "untyped");
+  f->createQName(theSchemaTypeNames[XS_UNTYPED_ATOMIC], ns, "", "untypedAtomic");
+  f->createQName(theSchemaTypeNames[XS_ANY],            ns, "", "anyType");
+  f->createQName(theSchemaTypeNames[XS_ANY_SIMPLE],     ns, "", "anySimpleType");
+  f->createQName(theSchemaTypeNames[XS_ANY_ATOMIC],     ns, "", "anyAtomicType");
 
-  theItemFactory->createQName(theSchemaTypeNames[5], XS_URI, "", "string");
-  theItemFactory->createQName(theSchemaTypeNames[6], XS_URI, "", "normalizedString");
-  theItemFactory->createQName(theSchemaTypeNames[7], XS_URI, "", "language");
-  theItemFactory->createQName(theSchemaTypeNames[8], XS_URI, "", "token");
-  theItemFactory->createQName(theSchemaTypeNames[9], XS_URI, "", "NMTOKEN");
+  f->createQName(theSchemaTypeNames[XS_QNAME],          ns, "", "QName");
 
-  theItemFactory->createQName(theSchemaTypeNames[10], XS_URI, "", "anyURI");
-  theItemFactory->createQName(theSchemaTypeNames[11], XS_URI, "", "Name");
-  theItemFactory->createQName(theSchemaTypeNames[12], XS_URI, "", "NCName");
-  theItemFactory->createQName(theSchemaTypeNames[13], XS_URI, "", "QName");
-  theItemFactory->createQName(theSchemaTypeNames[14], XS_URI, "", "notation");
+  f->createQName(theSchemaTypeNames[XS_STRING],         ns, "", "string");
+  f->createQName(theSchemaTypeNames[XS_NORMALIZED_STRING], ns, "", "normalizedString");
+  f->createQName(theSchemaTypeNames[XS_TOKEN],          ns, "", "language");
+  f->createQName(theSchemaTypeNames[XS_NMTOKEN],        ns, "", "token");
+  f->createQName(theSchemaTypeNames[XS_LANGUAGE],       ns, "", "NMTOKEN");
+  f->createQName(theSchemaTypeNames[XS_NAME],           ns, "", "Name");
+  f->createQName(theSchemaTypeNames[XS_NCNAME],         ns, "", "NCName");
+  f->createQName(theSchemaTypeNames[XS_ANY_URI],        ns, "", "anyURI");
+  f->createQName(theSchemaTypeNames[XS_ID],             ns, "", "ID");
+  f->createQName(theSchemaTypeNames[XS_IDREF],          ns, "", "IDREF");
+  f->createQName(theSchemaTypeNames[XS_ENTITY],         ns, "", "ENTITY");
 
-  theItemFactory->createQName(theSchemaTypeNames[15], XS_URI, "", "ID");
-  theItemFactory->createQName(theSchemaTypeNames[16], XS_URI, "", "IDREF");
+  f->createQName(theSchemaTypeNames[XS_NOTATION],       ns, "", "notation");
 
-  theItemFactory->createQName(theSchemaTypeNames[17], XS_URI, "", "ENTITY");
 
-  theItemFactory->createQName(theSchemaTypeNames[18], XS_URI, "", "dateTime");
-  theItemFactory->createQName(theSchemaTypeNames[19], XS_URI, "", "date");
-  theItemFactory->createQName(theSchemaTypeNames[20], XS_URI, "", "time");
-  theItemFactory->createQName(theSchemaTypeNames[21], XS_URI, "", "duration");
-  theItemFactory->createQName(theSchemaTypeNames[22], XS_URI, "", "dayTimeDuration");
-  theItemFactory->createQName(theSchemaTypeNames[23], XS_URI, "", "yearMonthDuration");
+  f->createQName(theSchemaTypeNames[XS_DATETIME],       ns, "", "dateTime");
+  f->createQName(theSchemaTypeNames[XS_DATE],           ns, "", "date");
+  f->createQName(theSchemaTypeNames[XS_TIME],           ns, "", "time");
+  f->createQName(theSchemaTypeNames[XS_GYEAR_MONTH],    ns, "", "gYearMonth");
+  f->createQName(theSchemaTypeNames[XS_GYEAR],          ns, "", "gYear");
+  f->createQName(theSchemaTypeNames[XS_GMONTH_DAY],     ns, "", "gMonthDay");
+  f->createQName(theSchemaTypeNames[XS_GDAY],           ns, "", "gDay");
+  f->createQName(theSchemaTypeNames[XS_GMONTH],         ns, "", "gMonth");
 
-  theItemFactory->createQName(theSchemaTypeNames[24], XS_URI, "", "float");
-  theItemFactory->createQName(theSchemaTypeNames[25], XS_URI, "", "double");
-  theItemFactory->createQName(theSchemaTypeNames[26], XS_URI, "", "decimal");
-  theItemFactory->createQName(theSchemaTypeNames[27], XS_URI, "", "integer");
-  theItemFactory->createQName(theSchemaTypeNames[28], XS_URI, "", "nonPositiveInteger");
-  theItemFactory->createQName(theSchemaTypeNames[29], XS_URI, "", "nonNegativeInteger");
-  theItemFactory->createQName(theSchemaTypeNames[30], XS_URI, "", "negativeInteger");
-  theItemFactory->createQName(theSchemaTypeNames[31], XS_URI, "", "positiveInteger");
+  f->createQName(theSchemaTypeNames[XS_DURATION],       ns, "", "duration");
+  f->createQName(theSchemaTypeNames[XS_DT_DURATION],    ns, "", "dayTimeDuration");
+  f->createQName(theSchemaTypeNames[XS_YM_DURATION],    ns, "", "yearMonthDuration");
 
-  theItemFactory->createQName(theSchemaTypeNames[32], XS_URI, "", "long");
-  theItemFactory->createQName(theSchemaTypeNames[33], XS_URI, "", "int");
-  theItemFactory->createQName(theSchemaTypeNames[34], XS_URI, "", "short");
-  theItemFactory->createQName(theSchemaTypeNames[35], XS_URI, "", "byte");
-  theItemFactory->createQName(theSchemaTypeNames[36], XS_URI, "", "unsignedLong");
-  theItemFactory->createQName(theSchemaTypeNames[37], XS_URI, "", "unsignedInt");
-  theItemFactory->createQName(theSchemaTypeNames[38], XS_URI, "", "unsignedShort");
-  theItemFactory->createQName(theSchemaTypeNames[39], XS_URI, "", "unsignedByte");
+  f->createQName(theSchemaTypeNames[XS_FLOAT],          ns, "", "float");
+  f->createQName(theSchemaTypeNames[XS_DOUBLE],         ns, "", "double");
+  f->createQName(theSchemaTypeNames[XS_DECIMAL],        ns, "", "decimal");
+  f->createQName(theSchemaTypeNames[XS_INTEGER],        ns, "", "integer");
+  f->createQName(theSchemaTypeNames[XS_NON_POSITIVE_INTEGER], ns, "", "nonPositiveInteger");
+  f->createQName(theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER], ns, "", "nonNegativeInteger");
+  f->createQName(theSchemaTypeNames[XS_NEGATIVE_INTEGER], ns, "", "negativeInteger");
+  f->createQName(theSchemaTypeNames[XS_POSITIVE_INTEGER], ns, "", "positiveInteger");
 
-  theItemFactory->createQName(theSchemaTypeNames[40], XS_URI, "", "gYearMonth");
-  theItemFactory->createQName(theSchemaTypeNames[41], XS_URI, "", "gYear");
-  theItemFactory->createQName(theSchemaTypeNames[42], XS_URI, "", "gMonthDay");
-  theItemFactory->createQName(theSchemaTypeNames[43], XS_URI, "", "gDay");
-  theItemFactory->createQName(theSchemaTypeNames[44], XS_URI, "", "gMonth");
+  f->createQName(theSchemaTypeNames[XS_LONG],           ns, "", "long");
+  f->createQName(theSchemaTypeNames[XS_INT],            ns, "", "int");
+  f->createQName(theSchemaTypeNames[XS_SHORT],          ns, "", "short");
+  f->createQName(theSchemaTypeNames[XS_BYTE],           ns, "", "byte");
+  f->createQName(theSchemaTypeNames[XS_UNSIGNED_LONG],  ns, "", "unsignedLong");
+  f->createQName(theSchemaTypeNames[XS_UNSIGNED_INT],   ns, "", "unsignedInt");
+  f->createQName(theSchemaTypeNames[XS_UNSIGNED_SHORT], ns, "", "unsignedShort");
+  f->createQName(theSchemaTypeNames[XS_UNSIGNED_BYTE],  ns, "", "unsignedByte");
 
-  theItemFactory->createQName(theSchemaTypeNames[45], XS_URI, "", "base64Binary");
-  theItemFactory->createQName(theSchemaTypeNames[46], XS_URI, "", "hexBinary");
-  theItemFactory->createQName(theSchemaTypeNames[47], XS_URI, "", "boolean");
-  theItemFactory->createQName(theSchemaTypeNames[48], ZXSE_URI, "zxse", "tuple");
+  f->createQName(theSchemaTypeNames[XS_BASE64BINARY],   ns, "", "base64Binary");
+  f->createQName(theSchemaTypeNames[XS_HEXBINARY],      ns, "", "hexBinary");
+  f->createQName(theSchemaTypeNames[XS_BOOLEAN],        ns, "", "boolean");
+
+  f->createQName(theSchemaTypeNames[ZXSE_ERROR], ZXSE_URI, "zxse", "error");
+  f->createQName(theSchemaTypeNames[ZXSE_TUPLE], ZXSE_URI, "zxse", "tuple");
 }
 
 

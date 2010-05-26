@@ -1,0 +1,243 @@
+/*
+ * Copyright 2006-2008 The FLWOR Foundation.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#include <algorithm>
+
+#include "compiler/rewriter/tools/udf_graph.h"
+
+#include "compiler/api/compiler_api.h"
+#include "compiler/api/compilercb.h"
+
+#include "compiler/expression/expr_base.h"
+#include "compiler/expression/fo_expr.h"
+#include "compiler/expression/function_item_expr.h"
+#include "compiler/expression/expr_iter.h"
+
+#include "compiler/rewriter/framework/rewriter_context.h"
+#include "compiler/rewriter/framework/rewriter.h"
+
+#include "functions/udf.h"
+
+#include "types/typeops.h"
+
+#include "zorbautils/indent.h"
+
+
+namespace zorba 
+{
+
+/*******************************************************************************
+
+********************************************************************************/
+UDFGraph::~UDFGraph()
+{
+  UDFMap::iterator ite = theNodes.begin();
+  UDFMap::iterator end = theNodes.end();
+  for (; ite != end; ++ite)
+  {
+    delete (*ite).second;
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UDFGraph::build(const expr* e)
+{
+  user_function* dummy = NULL;
+  theRoot = new UDFNode(NULL);
+  theNodes.insert(dummy, theRoot);
+
+  std::vector<user_function*> callChain;
+  callChain.push_back(NULL);
+
+  build(e, callChain);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain)
+{
+  expr_kind_t kind = curExpr->get_expr_kind();
+
+  if (kind == fo_expr_kind || kind == function_item_expr_kind)
+  {
+    user_function* udf = NULL;
+
+    if (kind == fo_expr_kind)
+    {
+      const fo_expr* fo = static_cast<const fo_expr*>(curExpr);
+      udf = dynamic_cast<user_function*>(fo->get_func());
+    }
+    else
+    {
+      const function_item_expr* fi = static_cast<const function_item_expr*>(curExpr);
+      udf = dynamic_cast<user_function*>(fi->get_function());
+    }
+
+    if (udf != NULL)
+    {
+      if (std::find(callChain.begin(), callChain.end(), udf) == callChain.end())
+      {
+        bool found = theNodes.find(udf);
+
+        addEdge(callChain.back(), udf);
+
+        callChain.push_back(udf);
+
+        // If this is the first time we see the current udf, do a recursive
+        // call on its body expr.
+        if (!found && udf->getBody())
+        {
+          build(udf->getBody(), callChain);
+        }
+
+        callChain.pop_back();
+      }
+    }
+  }
+
+  ExprConstIterator iter(curExpr);
+  while (!iter.done()) 
+  {
+    build(iter.get_expr(), callChain);
+
+    iter.next();
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UDFGraph::addEdge(user_function* caller, user_function* callee)
+{
+  UDFNode* callerNode = NULL;
+  UDFNode* calleeNode = NULL;
+
+  if (!theNodes.get(caller, callerNode))
+  {
+    callerNode = new UDFNode(caller);
+    theNodes.insert(caller, callerNode);
+  }
+
+  if (!theNodes.get(callee, calleeNode))
+  {
+    calleeNode = new UDFNode(callee);
+    theNodes.insert(callee, calleeNode);
+  }
+
+  callerNode->theChildren.push_back(calleeNode);
+  calleeNode->theParents.push_back(callerNode);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UDFGraph::optimizeUDFs(CompilerCB* ccb)
+{
+  optimizeUDFs(ccb, theRoot, ++theVisitId);
+}
+
+
+void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
+{
+  if (node->theVisitId == visit)
+    return;
+
+  node->theVisitId = visit;
+
+  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  {
+    optimizeUDFs(ccb, node->theChildren[i], visit);
+  }
+
+  if (node == theRoot)
+    return;
+
+  user_function* udf = node->theUDF;
+  expr_t body = udf->getBody();
+
+  while (true)
+  {
+    RewriterContext rctx(ccb, body);
+    GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
+    body = rctx.getRoot();
+#if 1
+    xqtref_t bodyType = body->get_return_type();
+    xqtref_t declaredType = udf->getSignature().return_type();
+
+    if ( !TypeOps::is_equal(*bodyType, *declaredType) &&
+         TypeOps::is_subtype(*bodyType, *declaredType))
+    {
+      udf->getSignature().return_type() = bodyType;
+      if (!udf->isLeaf())
+        continue;
+    }
+#endif
+    udf->setBody(body);
+    udf->setOptimized(true);
+    break;
+  }
+
+  if (ccb->theConfig.optimize_cb != NULL)
+  {
+    if (udf->getName())
+    {
+      ccb->theConfig.optimize_cb(body, udf->getName()->getStringValue()->c_str());
+    }
+    else
+    {
+      ccb->theConfig.optimize_cb(body, "inline function");
+    }
+  }
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void UDFGraph::display(std::ostream& o)
+{
+  display(o, theRoot);
+
+  o << std::endl <<std::endl;
+}
+
+
+void UDFGraph::display(std::ostream& o, UDFNode* node)
+{
+  if (node == theRoot)
+    o << indent << "Root Node" << std::endl;
+  else
+    o << indent << node->theUDF->getName()->show() << std::endl;
+
+  o << inc_indent;
+
+  for (ulong i = 0; i < node->theChildren.size(); ++i)
+  {
+    display(o, node->theChildren[i]);
+  }
+
+  o << dec_indent;
+}
+
+
+}
+

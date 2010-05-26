@@ -750,13 +750,7 @@ MAPM mapm_65535(65535);
 uint32_t Decimal::hash() const
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  Decimal lDecimal(theDecimal %  mapm_65535);
-  if (lDecimal < Decimal::zero())
-    lDecimal = -lDecimal;
-  Integer lInteger = Integer::parseDecimal(lDecimal);
-  uint32_t lHash;
-  NumConversions::integerToUInt(lInteger, lHash);
-  return lHash;
+  return theDecimal.hash();
 #else
   return (((uint32_t)theDecimal)%65535);
 #endif

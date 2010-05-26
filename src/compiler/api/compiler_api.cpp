@@ -26,22 +26,29 @@
 
 #include "functions/function.h"
 #include "functions/udf.h"
+
 #include "types/typeops.h"
 #include "types/root_typemanager.h"
 #include "types/typemanagerimpl.h"
 
 #include "compiler/api/compiler_api_impl.h"
 #include "compiler/api/compilercb.h"
+
 #include "compiler/parser/xquery_driver.h"
 #include "compiler/parsetree/parsenodes.h"
 #include "compiler/parsetree/parsenodes.h"
-#include "compiler/expression/expr_base.h"
-#include "compiler/translator/translator.h"
-#include "compiler/rewriter/framework/rewriter_context.h"
-#include "compiler/rewriter/framework/rewriter.h"
-#include "compiler/codegen/plan_visitor.h"
 #include "compiler/parsetree/parsenode_print_xml_visitor.h"
 #include "compiler/parsetree/parsenode_print_xqdoc_visitor.h"
+
+#include "compiler/expression/expr_base.h"
+
+#include "compiler/translator/translator.h"
+
+#include "compiler/rewriter/framework/rewriter_context.h"
+#include "compiler/rewriter/framework/rewriter.h"
+#include "compiler/rewriter/tools/udf_graph.h"
+
+#include "compiler/codegen/plan_visitor.h"
 #ifdef ZORBA_XQUERYX
 #include "compiler/xqueryx/xqueryx_to_xquery.h"
 #endif
@@ -259,68 +266,19 @@ expr_t XQueryCompiler::optimize(expr_t lExpr)
   if (theCompilerCB->theConfig.opt_level <= CompilerCB::config::O0)
     return lExpr;
 
-  /*
-   * Optimize all UDFs
-   */
-  // Gather all udfs from static contexts
-  std::set<user_function*> all_udfs;
-  for ( std::map<short, static_context_t>::iterator it = theCompilerCB->theSctxMap->begin();
-        it != theCompilerCB->theSctxMap->end();
-        ++it)
-  {
-    std::vector<function*> funcs;
-    it->second->get_functions(funcs);
-    for (unsigned int j=0; j<funcs.size(); j++ )
-    {
-      if (funcs[j]->isUdf() && !funcs[j]->isExternal())
-        all_udfs.insert(dynamic_cast<user_function*>(funcs[j]));
-    }
-  }
+  // Build the call-graph among the udfs that are actually used in the query
+  // program, and then optimize those udfs.
+  UDFGraph udfGraph;
+  udfGraph.build(lExpr.getp());
+  udfGraph.optimizeUDFs(theCompilerCB);
 
-  // Optimize them
-  for (std::set<user_function*>::iterator it = all_udfs.begin(); it != all_udfs.end(); ++it)
-  {
-    user_function* udf = *it;
-    ZORBA_ASSERT ( udf != NULL );
-    expr_t body = udf->getBody();
-    while ( true )
-    {
-      RewriterContext rCtx ( theCompilerCB, body );
-      GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite ( rCtx );
-      body = rCtx.getRoot();
-#if 1
-      xqtref_t bodyType = body->get_return_type();
-      xqtref_t declaredType = udf->getSignature().return_type();
-
-      if ( !TypeOps::is_equal ( *bodyType, *declaredType ) &&
-            TypeOps::is_subtype ( *bodyType, *declaredType ) )
-      {
-        udf->getSignature().return_type() = bodyType;
-        if ( !udf->isLeaf() )
-          continue;
-      }
-#endif
-      udf->setBody ( body );
-      break;
-    }
-
-    if ( theCompilerCB->theConfig.optimize_cb != NULL )
-      theCompilerCB->theConfig.optimize_cb ( &*body, udf->getName()->getStringValue()->c_str() );
-
-      // recalculate the non-deterministic flag on the optimized body
-    udf->setDeterministic ( udf->isDeterministic() && !body->contains_nondeterministic() );
-  } // for
-
-
-  /*
-   * Optimize the main query
-   */
-  RewriterContext rCtx ( theCompilerCB, lExpr );
-  GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite ( rCtx );
+  // Optimize the main expr (i.e., the top expr of the main module).
+  RewriterContext rCtx(theCompilerCB, lExpr);
+  GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
   lExpr = rCtx.getRoot();
 
   if ( theCompilerCB->theConfig.optimize_cb != NULL )
-    theCompilerCB->theConfig.optimize_cb ( &*lExpr, "query" );
+    theCompilerCB->theConfig.optimize_cb(lExpr.getp(), "main query");
 
   return lExpr;
 }

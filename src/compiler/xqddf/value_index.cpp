@@ -411,6 +411,8 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   var_expr_t newdot = new var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
   var_expr_t newpos = new var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
 
+  for_clause* fc = new for_clause(sctx, dotloc, newdot, newdom, newpos);
+
   //
   // Clone the key exprs, replacing their references to the 2 domain variables
   // with the clones of these variables.
@@ -429,8 +431,6 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // for $newdot at $newpos in new_domain_expr
   // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr)
   //
-
-  for_clause* fc = new for_clause(sctx, dotloc, newdot, newdom, newpos);
 
   expr_t domainVarExpr(new wrapper_expr(sctx, loc, newdot.getp()));
 

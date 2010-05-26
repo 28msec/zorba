@@ -116,6 +116,8 @@ public:
 
   static bool doubleToLong(const xqp_double&, long&);
 
+  static bool integerToLong(const xqp_integer&, xqp_long&);
+
   static bool integerToUInt(const xqp_integer&, xqp_uint&);
 
   static bool floatToInt(const xqp_float&, xqp_int&);

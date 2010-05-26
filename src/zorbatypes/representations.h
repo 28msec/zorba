@@ -53,10 +53,10 @@ namespace zorba
   typedef Integer             xqp_uinteger;
   typedef int32_t             xqp_int;
   typedef uint32_t            xqp_uint;
-  typedef long long           xqp_long;
-  typedef unsigned long long  xqp_ulong;
-  typedef short               xqp_short;
-  typedef unsigned short      xqp_ushort;
+  typedef int64_t             xqp_long;
+  typedef uint64_t            xqp_ulong;
+  typedef int16_t             xqp_short;
+  typedef uint16_t            xqp_ushort;
   typedef char                xqp_byte;
   typedef unsigned char       xqp_ubyte;
   typedef Decimal             xqp_decimal;

@@ -3599,9 +3599,6 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
                          lookup_fn(v.get_name(), numParams, loc));
     ZORBA_ASSERT(udf != NULL);
 
-    // Optimize the function body. This has to be done here because
-    // we have the correct static context here (udfs declared in a library module
-    // must be compiled in the context of that module).
     xqtref_t returnType = udf->getSignature().return_type();
 
     if (TypeOps::is_builtin_simple(*returnType))
@@ -3617,41 +3614,10 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     if (theCCB->theConfig.translate_cb != NULL)
       theCCB->theConfig.translate_cb(&*body, v.get_name()->get_qname());
 
-    /* TODO: delete this
-    if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
-    {
-      while (true)
-      {
-        RewriterContext rCtx(theCCB, body);
-        GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
-        body = rCtx.getRoot();
-#if 1
-        xqtref_t bodyType = body->get_return_type();
-        xqtref_t declaredType = udf->getSignature().return_type();
+    udf->setBody(body);
+    udf->setArgVars(args);
 
-        if (!TypeOps::is_equal(*bodyType, *declaredType) &&
-            TypeOps::is_subtype(*bodyType, *declaredType))
-        {
-          udf->getSignature().return_type() = bodyType;
-          if (!udf->isLeaf())
-            continue;
-        }
-#endif
-        udf->setBody(body);
-        udf->setArgVars(args);
-        break;
-      }
-
-      if (theCCB->theConfig.optimize_cb != NULL)
-        theCCB->theConfig.optimize_cb(&*body, v.get_name()->get_qname());
-    }
-    else
-    */
-    {
-      udf->setBody(body);
-      udf->setArgVars(args);
-    }
-    // recalculate the non-deterministic flag on the optimized body
+    // Calculate the non-deterministic flag based on the body expr
     udf->setDeterministic(udf->isDeterministic() && !body->contains_nondeterministic());
 
     break;

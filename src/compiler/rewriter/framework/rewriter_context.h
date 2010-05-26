@@ -76,8 +76,6 @@ public:
   std::vector<expr_t>          theFlworStack;
   std::vector<bool>            theIsModifiedStack;
 
-  std::vector<user_function*>  theUDFCallChain;
-
 public:
   RewriterContext(CompilerCB* cb, expr_t root);
 

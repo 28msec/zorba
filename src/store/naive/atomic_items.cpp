@@ -459,6 +459,7 @@ xqp_string IDItemImpl::show() const
   return "xs:ID(" + theValue->str() + ")";
 }
 
+
 /*******************************************************************************
   class IDREFItemImpl
 ********************************************************************************/
@@ -471,6 +472,7 @@ xqp_string IDREFItemImpl::show() const
 {
   return "xs:IDREF(" + theValue->str() + ")";
 }
+
 
 /*******************************************************************************
   class ENTITYItemImpl
@@ -506,43 +508,40 @@ void DateTimeItemNaive::getStringValue(std::string& buf) const
 }
 
 
-store::Item* DateTimeItemNaive::getType() const
+SchemaTypeCode DateTimeItemNaive::getTypeCode() const 
 {
   switch (theValue.getFacet())
   {
-  case DateTime::DATE_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_DATE];
-    break;
-      
-  case DateTime::TIME_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_TIME];
-    break;
-    
   case DateTime::GYEARMONTH_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_GYEAR_MONTH];
-    break;
+    return XS_GYEAR_MONTH;
     
   case DateTime::GYEAR_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_GYEAR];
-    break;
+    return XS_GYEAR;
     
   case DateTime::GMONTH_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_GMONTH];
-    break;
+    return XS_GMONTH;
 
   case DateTime::GMONTHDAY_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_GMONTH_DAY];
-    break;
+    return XS_GMONTH_DAY;
     
   case DateTime::GDAY_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_GDAY];
-    break;
+    return XS_GDAY;
 
-  default:
+  case DateTime::DATE_FACET:
+    return XS_DATE;
+      
+  case DateTime::TIME_FACET:
+    return XS_TIME;
+
   case DateTime::DATETIME_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_DATETIME];
-    break;
+    return XS_DATETIME;
   }
+}
+
+
+store::Item* DateTimeItemNaive::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[getTypeCode()];
 }
 
 
@@ -641,25 +640,30 @@ const xqp_duration& DurationItemNaive::getDurationValue() const
   return theValue;
 }
 
+
 const xqp_dayTimeDuration& DurationItemNaive::getDayTimeDurationValue() const
 {
   return theValue;
 }
+
 
 const xqp_yearMonthDuration& DurationItemNaive::getYearMonthDurationValue() const
 {
   return theValue;
 }
 
+
 xqpStringStore_t DurationItemNaive::getStringValue() const
 {
   return theValue.toString();
 }
 
+
 void DurationItemNaive::getStringValue(xqpStringStore_t& strval) const
 {
   strval = theValue.toString();
 }
+
 
 void DurationItemNaive::getStringValue(std::string& buf) const
 {
@@ -667,23 +671,26 @@ void DurationItemNaive::getStringValue(std::string& buf) const
 }
 
 
-store::Item* DurationItemNaive::getType() const
+SchemaTypeCode DurationItemNaive::getTypeCode() const
 {
   switch (theValue.getFacet())
   {
-  default:
   case Duration::DURATION_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_DURATION];
-    break;
+    return XS_DURATION;
 
   case Duration::DAYTIMEDURATION_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_DT_DURATION];
-    break;
+    return XS_DT_DURATION;
 
   case Duration::YEARMONTHDURATION_FACET:
-    return GET_STORE().theSchemaTypeNames[XS_YM_DURATION];
-    break;
+  default:
+    return XS_YM_DURATION;
   }
+}
+
+
+store::Item* DurationItemNaive::getType() const
+{
+  return GET_STORE().theSchemaTypeNames[getTypeCode()];
 }
 
 
@@ -693,15 +700,12 @@ store::Item_t DurationItemNaive::getEBV() const
   return NULL;
 }
 
+
 xqp_string DurationItemNaive::show() const
 {
   return theValue.toString().getp();
 }
 
-uint32_t DurationItemNaive::hash(long timezone, const XQPCollator* aCollation) const
-{
-  return theValue.hash();
-}
 
 
 /*******************************************************************************
@@ -872,15 +876,15 @@ xqp_string DecimalItemNaive::show() const
 
 
 /*******************************************************************************
-  class IntegerItemNaive
+  class IntegerItem
 ********************************************************************************/
-xqp_decimal IntegerItemNaive::getDecimalValue() const
+xqp_decimal IntegerItem::getDecimalValue() const
 {
   return Decimal::parseInteger(theValue);
 }
 
 
-xqp_long IntegerItemNaive::getLongValue() const
+xqp_long IntegerItem::getLongValue() const
 {
   xqpStringStore_t strval = NumConversions::integerToStr(theValue);
   xqp_long val;
@@ -892,13 +896,13 @@ xqp_long IntegerItemNaive::getLongValue() const
 }
 
 
-store::Item* IntegerItemNaive::getType() const
+store::Item* IntegerItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_INTEGER];
 }
 
 
-store::Item_t IntegerItemNaive::getEBV() const
+store::Item_t IntegerItem::getEBV() const
 {
   bool b = ( theValue != xqp_integer::parseInt(0) );
   store::Item_t bVal;
@@ -907,52 +911,52 @@ store::Item_t IntegerItemNaive::getEBV() const
 }
 
 
-xqpStringStore_t IntegerItemNaive::getStringValue() const
+xqpStringStore_t IntegerItem::getStringValue() const
 {
   return NumConversions::integerToStr(theValue);
 }
 
 
-void IntegerItemNaive::getStringValue(xqpStringStore_t& strval) const
+void IntegerItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = NumConversions::integerToStr(theValue);
 }
 
 
-void IntegerItemNaive::getStringValue(std::string& buf) const
+void IntegerItem::getStringValue(std::string& buf) const
 {
   buf += NumConversions::integerToStr(theValue)->c_str();
 }
 
-xqp_string IntegerItemNaive::show() const
+xqp_string IntegerItem::show() const
 {
   return "xs:integer(" + getStringValue()->str() + ")";
 }
 
 
 /*******************************************************************************
-  class NonPositiveIntegerItemNaive
+  class NonPositiveIntegerItem
 ********************************************************************************/
-store::Item* NonPositiveIntegerItemNaive::getType() const 
+store::Item* NonPositiveIntegerItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_NON_POSITIVE_INTEGER];
 }
 
-xqp_string NonPositiveIntegerItemNaive::show() const 
+xqp_string NonPositiveIntegerItem::show() const 
 {
   return "xs:nonPositiveInteger(" + getStringValue()->str() + ")";
 }
 
   
 /*******************************************************************************
-  class NegativeIntegerItemNaive
+  class NegativeIntegerItem
 ********************************************************************************/
-store::Item* NegativeIntegerItemNaive::getType() const 
+store::Item* NegativeIntegerItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_NEGATIVE_INTEGER];
 }
 
-xqp_string NegativeIntegerItemNaive::show() const 
+xqp_string NegativeIntegerItem::show() const 
 {
   return "xs:negativeInteger(" + getStringValue()->str() + ")";
 }
@@ -961,27 +965,27 @@ xqp_string NegativeIntegerItemNaive::show() const
 /*******************************************************************************
   class NonNegativeINtegerItemNaive
 ********************************************************************************/
-store::Item* NonNegativeIntegerItemNaive::getType() const 
+store::Item* NonNegativeIntegerItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_NON_NEGATIVE_INTEGER];
 }
 
-xqp_string NonNegativeIntegerItemNaive::show() const 
+xqp_string NonNegativeIntegerItem::show() const 
 {
   return "xs:nonNegativeInteger(" + getStringValue()->str() + ")";
 }
 
 
 /*******************************************************************************
-  class PositiveIntegerItemNaive
+  class PositiveIntegerItem
 ********************************************************************************/
-store::Item* PositiveIntegerItemNaive::getType() const 
+store::Item* PositiveIntegerItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_POSITIVE_INTEGER];
 }
 
 
-xqp_string PositiveIntegerItemNaive::show() const 
+xqp_string PositiveIntegerItem::show() const 
 {
   return "xs:positiveInteger(" + getStringValue()->str() + ")";
 }

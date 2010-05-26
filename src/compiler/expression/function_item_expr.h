@@ -127,7 +127,7 @@ public:
 
   void set_function(user_function_t& udf);
 
-	const function* get_function() const { return theFunction; }
+	function* get_function() const { return theFunction.getp(); }
 	
   const store::Item_t& get_qname() const { return theQName; }
 

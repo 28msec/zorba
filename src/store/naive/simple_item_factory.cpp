@@ -225,7 +225,7 @@ bool BasicItemFactory::createDecimal(store::Item_t& result, const xqp_decimal& v
 
 bool BasicItemFactory::createInteger(store::Item_t& result, const xqp_integer& value)
 {
-  result = new IntegerItemNaive ( value );
+  result = new IntegerItem( value );
   return true;
 }
 
@@ -235,7 +235,7 @@ bool BasicItemFactory::createNonPositiveInteger(
     const xqp_integer& value)
 {
   ZORBA_ASSERT(value <= Integer::parseInt(0));
-  result = new NonPositiveIntegerItemNaive( value );
+  result = new NonPositiveIntegerItem( value );
   return true;
 }
 
@@ -245,7 +245,7 @@ bool BasicItemFactory::createNegativeInteger(
     const xqp_integer& value)
 {
   ZORBA_ASSERT(value < xqp_integer::parseInt(0));
-  result = new NegativeIntegerItemNaive(value);
+  result = new NegativeIntegerItem(value);
   return true;
 }
 
@@ -254,7 +254,7 @@ bool BasicItemFactory::createNonNegativeInteger(
     store::Item_t& result,
     const xqp_uinteger& value )
 {
-  result = new NonNegativeIntegerItemNaive ( value );
+  result = new NonNegativeIntegerItem( value );
   return true;
 }
 
@@ -265,7 +265,7 @@ bool BasicItemFactory::createPositiveInteger(
     const xqp_uinteger& value)
 {
   ZORBA_ASSERT(value > Integer::parseInt(0));
-  result = new PositiveIntegerItemNaive( value );
+  result = new PositiveIntegerItem( value );
   return true;
 }
 

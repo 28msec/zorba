@@ -437,26 +437,12 @@ void expr::setDirectAnnotations()
   }
 }
 
-/*******************************************************************************
 
+/*******************************************************************************
+  Returns true if the expr contains a nondeterministic function call
 ********************************************************************************/
 bool expr::contains_nondeterministic() const
 {
-  /*
-  if (e->get_expr_kind() == fo_expr_kind)
-  {
-    const fo_expr* fo = static_cast<const fo_expr*>(e);
-    if (!fo->get_func()->isDeterministic())
-      return true;
-
-    const user_function* udf = dynamic_cast<user_function*>(e->get_sctx()->lookup_fn(fo->get_fname(), fo->num_args()));
-    if (udf != NULL)
-      return contains_nondeterministic(udf->getBody());
-    else
-      return true;
-  }
-  */
-
   if (get_expr_kind() == fo_expr_kind)
   {
     const fo_expr* fo = static_cast<const fo_expr*>(this);
@@ -481,40 +467,70 @@ bool expr::contains_nondeterministic() const
 ********************************************************************************/
 expr::BoolAnnotationValue expr::getProducesSortedNodes() const
 {
-  return (BoolAnnotationValue)(theFlags1 & 0x3);
+  return (BoolAnnotationValue)(theFlags1 & PRODUCES_SORTED_NODES_MASK);
 }
 
 
 void expr::setProducesSortedNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~0x3;
+  theFlags1 &= ~PRODUCES_SORTED_NODES_MASK;
   theFlags1 |= v;
 }
 
 
 expr::BoolAnnotationValue expr::getProducesDistinctNodes() const
 {
-  return (BoolAnnotationValue)((theFlags1 & 0xC) >> 2);
+  return (BoolAnnotationValue)
+         ((theFlags1 & PRODUCES_DISTINCT_NODES_MASK) >> PRODUCES_DISTINCT_NODES);
 }
 
 
 void expr::setProducesDistinctNodes(BoolAnnotationValue v)
 {
-  theFlags1 &= ~0xC;
-  theFlags1 |= (v << 2);
+  theFlags1 &= ~PRODUCES_DISTINCT_NODES_MASK;
+  theFlags1 |= (v << PRODUCES_DISTINCT_NODES);
+}
+
+
+expr::BoolAnnotationValue expr::getIgnoresSortedNodes() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & IGNORES_SORTED_NODES_MASK) >> IGNORES_SORTED_NODES);
+}
+
+
+void expr::setIgnoresSortedNodes(BoolAnnotationValue v)
+{
+  theFlags1 &= ~IGNORES_SORTED_NODES_MASK;
+  theFlags1 |= (v << IGNORES_SORTED_NODES);
+}
+
+
+expr::BoolAnnotationValue expr::getIgnoresDuplicateNodes() const
+{
+  return (BoolAnnotationValue)
+         ((theFlags1 & IGNORES_DUPLICATE_NODES_MASK) >> IGNORES_DUPLICATE_NODES);
+}
+
+
+void expr::setIgnoresDuplicateNodes(BoolAnnotationValue v)
+{
+  theFlags1 &= ~IGNORES_DUPLICATE_NODES_MASK;
+  theFlags1 |= (v << IGNORES_DUPLICATE_NODES);
 }
 
 
 expr::BoolAnnotationValue expr::getNonDiscardable() const
 {
-  return (BoolAnnotationValue)((theFlags1 & 0x30) >> 4);
+  return (BoolAnnotationValue)
+         ((theFlags1 & NON_DISCARDABLE_MASK) >> NON_DISCARDABLE);
 }
 
 
 void expr::setNonDiscardable(BoolAnnotationValue v)
 {
-  theFlags1 &= ~0x30;
-  theFlags1 |= (v << 4);
+  theFlags1 &= ~NON_DISCARDABLE_MASK;
+  theFlags1 |= (v << NON_DISCARDABLE);
 }
 
 
@@ -527,14 +543,15 @@ bool expr::isNonDiscardable() const
 
 expr::BoolAnnotationValue expr::getUnfoldable() const
 {
-  return (BoolAnnotationValue)((theFlags1 & 0xC0) >> 6);
+  return (BoolAnnotationValue)
+         ((theFlags1 & UNFOLDABLE_MASK) >> UNFOLDABLE);
 }
 
 
 void expr::setUnfoldable(BoolAnnotationValue v)
 {
-  theFlags1 &= ~0xC0;
-  theFlags1 |= (v << 6);
+  theFlags1 &= ~UNFOLDABLE_MASK;
+  theFlags1 |= (v << UNFOLDABLE);
 }
 
 

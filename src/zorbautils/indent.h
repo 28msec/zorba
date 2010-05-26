@@ -30,7 +30,8 @@ int get_ostream_indent_index();
  * @return Returns a modifyable reference to said indentation.
  */
 template<typename charT,typename Traits> inline
-long& get_indent( std::basic_ostream<charT,Traits> &os ) {
+long& get_indent( std::basic_ostream<charT,Traits> &os ) 
+{
   //
   // See: "Standard C++ IOStreams and Locales: Advanced Programmer's Guide and
   // Reference," Angelika Langer and Klaus Kreft, Addison-Wesley, 2000, section
@@ -47,7 +48,8 @@ long& get_indent( std::basic_ostream<charT,Traits> &os ) {
  */
 template<typename charT,typename Traits> inline
 std::basic_ostream<charT,Traits>&
-inc_indent( std::basic_ostream<charT,Traits> &os ) {
+inc_indent( std::basic_ostream<charT,Traits> &os ) 
+{
   get_indent( os ) += 2;
   return os;
 }
@@ -60,7 +62,8 @@ inc_indent( std::basic_ostream<charT,Traits> &os ) {
  */
 template<typename charT,typename Traits> inline
 std::basic_ostream<charT,Traits>&
-dec_indent( std::basic_ostream<charT,Traits> &os ) {
+dec_indent( std::basic_ostream<charT,Traits> &os ) 
+{
   long &indent = get_indent( os );
   if ( (indent -= 2) < 0 )
     indent = 0;
@@ -76,7 +79,8 @@ dec_indent( std::basic_ostream<charT,Traits> &os ) {
  */
 template<typename charT,typename Traits> inline
 std::basic_ostream<charT,Traits>&
-indent( std::basic_ostream<charT,Traits> &os ) {
+indent( std::basic_ostream<charT,Traits> &os ) 
+{
   for ( int i = get_indent( os ); i > 0; --i )
     os << ' ';
   return os;
@@ -85,4 +89,11 @@ indent( std::basic_ostream<charT,Traits> &os ) {
 } // namespace zorba
 
 #endif /* ZORBA_INDENT_H */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
+
 /* vim:set et sw=2 ts=2: */

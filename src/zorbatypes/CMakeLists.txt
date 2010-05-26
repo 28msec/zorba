@@ -13,6 +13,7 @@
 # limitations under the License.
 
 SET(ZORBATYPES_SRCS 
+  m_apm.cpp
   decimal.cpp
   floatimpl.cpp
   integer.cpp

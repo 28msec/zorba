@@ -20,6 +20,7 @@
 #include <vector>
 
 #include "store/api/item.h"
+#include "store/naive/store_defs.h"
 
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
@@ -65,8 +66,13 @@ public:
 
   store::Item_t getAtomizationValue() const;
 
+  virtual SchemaTypeCode getTypeCode() const = 0;
+
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 };
+
+
+typedef rchandle<AtomicItem> AtomicItem_t;
 
 
 /*******************************************************************************
@@ -74,12 +80,13 @@ public:
 ********************************************************************************/
 class UserTypedAtomicItemImpl : public AtomicItem
 {
-protected:
-  store::Item_t theBaseItem;
-  store::Item_t theTypeName;
-
-  // make sure that only created by the factory
   friend class BasicItemFactory;
+
+protected:
+  AtomicItem_t   theBaseItem;
+  store::Item_t  theTypeName;
+
+protected:
   UserTypedAtomicItemImpl(
         store::Item_t& baseItem,
         store::Item_t& typeName)
@@ -92,6 +99,8 @@ protected:
 
 public:
   const store::Item* getBaseItem() const { return theBaseItem; }
+
+  SchemaTypeCode getTypeCode() const { return theBaseItem->getTypeCode(); }
 
   store::Item* getType() const { return theTypeName.getp(); }
 
@@ -171,29 +180,65 @@ public:
 
   bool isPosOrNegInf() const { return theBaseItem->isPosOrNegInf(); }
 
-  const xqp_dateTime& getDateTimeValue() const { return theBaseItem->getDateTimeValue(); }
+  const xqp_dateTime& getDateTimeValue() const 
+  {
+    return theBaseItem->getDateTimeValue(); 
+  }
 
-  const xqp_date& getDateValue() const { return theBaseItem->getDateValue(); }
+  const xqp_date& getDateValue() const 
+  {
+    return theBaseItem->getDateValue(); 
+  }
 
-  const xqp_time& getTimeValue() const { return theBaseItem->getTimeValue(); }
+  const xqp_time& getTimeValue() const 
+  {
+    return theBaseItem->getTimeValue(); 
+  }
 
-  const xqp_gYearMonth& getGYearMonthValue() const { return theBaseItem->getGYearMonthValue(); }
+  const xqp_gYearMonth& getGYearMonthValue() const 
+  {
+    return theBaseItem->getGYearMonthValue(); 
+  }
 
-  const xqp_gYear& getGYearValue() const { return theBaseItem->getGYearValue(); }
+  const xqp_gYear& getGYearValue() const 
+  {
+    return theBaseItem->getGYearValue(); 
+  }
 
-  const xqp_gMonth& getGMonthValue() const { return theBaseItem->getGMonthValue(); }
+  const xqp_gMonth& getGMonthValue() const 
+  {
+    return theBaseItem->getGMonthValue(); 
+  }
 
-  const xqp_gMonthDay& getGMonthDayValue() const { return theBaseItem->getGMonthDayValue(); }
+  const xqp_gMonthDay& getGMonthDayValue() const 
+  {
+    return theBaseItem->getGMonthDayValue(); 
+  }
 
-  const xqp_gDay& getGDayValue() const { return theBaseItem->getGDayValue(); }
+  const xqp_gDay& getGDayValue() const 
+  {
+    return theBaseItem->getGDayValue(); 
+  }
 
-  const xqp_duration& getDurationValue() const { return theBaseItem->getDurationValue(); }
+  const xqp_duration& getDurationValue() const 
+  {
+    return theBaseItem->getDurationValue(); 
+  }
 
-  const xqp_dayTimeDuration& getDayTimeDurationValue() const { return theBaseItem->getDayTimeDurationValue(); }
+  const xqp_dayTimeDuration& getDayTimeDurationValue() const 
+  {
+    return theBaseItem->getDayTimeDurationValue(); 
+  }
 
-  const xqp_yearMonthDuration& getYearMonthDurationValue() const { return theBaseItem->getYearMonthDurationValue(); }
+  const xqp_yearMonthDuration& getYearMonthDurationValue() const
+  {
+    return theBaseItem->getYearMonthDurationValue();
+  }
 
-  std::vector<xqp_string> getStringVectorValue() const { return theBaseItem->getStringVectorValue(); }
+  std::vector<xqp_string> getStringVectorValue() const 
+  {
+    return theBaseItem->getStringVectorValue();
+  }
 
   xqp_string show() const { return theBaseItem->show(); }
 };
@@ -204,16 +249,19 @@ public:
 ********************************************************************************/
 class UntypedAtomicItemImpl : public AtomicItem
 {
+  friend class BasicItemFactory;
+
 protected:
   xqpStringStore_t theValue;
 
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
+protected:
   UntypedAtomicItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
 
   UntypedAtomicItemImpl() {}
 
 public:
+  SchemaTypeCode getTypeCode() const { return XS_UNTYPED_ATOMIC; }
+
   store::Item* getType( ) const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
@@ -317,6 +365,8 @@ public:
 
   xqpStringStore* getLocalName() const { return getNormalized()->theUnion.theLocal; }
 
+  SchemaTypeCode getTypeCode() const { return XS_QNAME; }
+
   store::Item* getType() const;
 
   store::Item_t getEBV() const;
@@ -356,6 +406,8 @@ protected:
   AnyUriItemImpl() {}
 
 public:
+  SchemaTypeCode getTypeCode() const { return XS_ANY_URI; }
+
   store::Item* getType( ) const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
@@ -413,7 +465,10 @@ protected:
   friend class AtomicItemTokenizer;
 
 public:
-  virtual store::Item* getType( ) const;
+
+  virtual SchemaTypeCode getTypeCode() const { return XS_STRING; }
+
+  virtual store::Item* getType() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
@@ -441,10 +496,12 @@ public:
   FTTokenIterator_t getQueryTokens() const;
 };
 
+
 /**
  * An <code>AtomicItemTokenizer</code> is-a Tokenizer::Callback TODO
  */
-class AtomicItemTokenizer : public Tokenizer::Callback {
+class AtomicItemTokenizer : public Tokenizer::Callback 
+{
 public:
   typedef StringItemNaive::FTTokens FTTokens;
 
@@ -472,12 +529,14 @@ private:
 ********************************************************************************/
 class NormalizedStringItemImpl : public StringItemNaive
 {
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
+
+protected:
   NormalizedStringItemImpl(xqpStringStore_t& value) : StringItemNaive(value) {}
 
 public:
+  virtual SchemaTypeCode getTypeCode() const { return XS_NORMALIZED_STRING; }
+
   virtual store::Item* getType() const;
 
   virtual xqp_string show() const;
@@ -489,28 +548,16 @@ public:
 ********************************************************************************/
 class TokenItemImpl : public NormalizedStringItemImpl
 {
+  friend class BasicItemFactory;
+
 public:
   TokenItemImpl(xqpStringStore_t& value) : NormalizedStringItemImpl(value) {}
 
+  virtual SchemaTypeCode getTypeCode() const { return XS_TOKEN; }
+
   virtual store::Item* getType() const;
+
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
-
-  virtual xqp_string show() const;
-};
-
-
-/*******************************************************************************
-  class LanguageItem
-********************************************************************************/
-class LanguageItemImpl : public TokenItemImpl
-{
-protected:
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
-  LanguageItemImpl(xqpStringStore_t& value) : TokenItemImpl(value) {}
-
-public:
-  virtual store::Item* getType() const;
 
   virtual xqp_string show() const;
 };
@@ -521,12 +568,33 @@ public:
 ********************************************************************************/
 class NMTOKENItemImpl : public TokenItemImpl
 {
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
+
+protected:
   NMTOKENItemImpl(xqpStringStore_t& value) : TokenItemImpl(value) {}
 
 public:
+  virtual SchemaTypeCode getTypeCode() const { return XS_NMTOKEN; }
+
+  virtual store::Item* getType() const;
+
+  virtual xqp_string show() const;
+};
+
+
+/*******************************************************************************
+  class LanguageItem
+********************************************************************************/
+class LanguageItemImpl : public TokenItemImpl
+{
+  friend class BasicItemFactory;
+
+protected:
+  LanguageItemImpl(xqpStringStore_t& value) : TokenItemImpl(value) {}
+
+public:
+  virtual SchemaTypeCode getTypeCode() const { return XS_LANGUAGE; }
+
   virtual store::Item* getType() const;
 
   virtual xqp_string show() const;
@@ -538,12 +606,14 @@ public:
 ********************************************************************************/
 class NameItemImpl : public TokenItemImpl
 {
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
+
+protected:
   NameItemImpl(xqpStringStore_t& value) : TokenItemImpl(value) {}
 
 public:
+  virtual SchemaTypeCode getTypeCode() const { return XS_NAME; }
+
   virtual store::Item* getType() const;
 
   virtual xqp_string show() const;
@@ -555,12 +625,14 @@ public:
 ********************************************************************************/
 class NCNameItemImpl : public NameItemImpl
 {
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
+
+protected:
   NCNameItemImpl(xqpStringStore_t& value) : NameItemImpl(value) {}
 
 public:
+  virtual SchemaTypeCode getTypeCode() const { return XS_NCNAME; }
+
   virtual store::Item* getType() const;
 
   virtual xqp_string show() const;
@@ -572,12 +644,14 @@ public:
 ********************************************************************************/
 class IDItemImpl : public NCNameItemImpl
 {
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
+
+protected:
   IDItemImpl(xqpStringStore_t& value) : NCNameItemImpl(value) { }
 
 public:
+  SchemaTypeCode getTypeCode() const { return XS_ID; }
+
   store::Item* getType() const;
 
   virtual xqp_string show() const;
@@ -588,12 +662,14 @@ public:
 ********************************************************************************/
 class IDREFItemImpl : public NCNameItemImpl
 {
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
+
+protected:
   IDREFItemImpl(xqpStringStore_t& value) : NCNameItemImpl(value) { }
 
 public:
+  SchemaTypeCode getTypeCode() const { return XS_IDREF; }
+
   store::Item* getType() const;
 
   virtual xqp_string show() const;
@@ -604,12 +680,14 @@ public:
 ********************************************************************************/
 class ENTITYItemImpl : public NCNameItemImpl
 {
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
+
+protected:
   ENTITYItemImpl(xqpStringStore_t& value) : NCNameItemImpl(value) { }
 
 public:
+  SchemaTypeCode getTypeCode() const { return XS_ENTITY; }
+
   store::Item* getType() const;
 
   virtual xqp_string show() const;
@@ -621,23 +699,33 @@ public:
 ********************************************************************************/
 class DateTimeItemNaive : public AtomicItem
 {
+  friend class BasicItemFactory;
+
 protected:
   DateTime theValue;
 
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
+protected:
   DateTimeItemNaive(const DateTime* aValue) : theValue(*aValue) { };
   
 public:
   const xqp_dateTime& getDateTimeValue() const { return theValue; }
+
   const xqp_date& getDateValue() const { return theValue; }
+
   const xqp_time& getTimeValue() const { return theValue; }
+
   const xqp_gYearMonth& getGYearMonthValue() const { return theValue; }
+
   const xqp_gYear& getGYearValue() const { return theValue; }
+
   const xqp_gMonth& getGMonthValue() const { return theValue; }
+
   const xqp_gMonthDay& getGMonthDayValue() const { return theValue; }
+
   const xqp_gDay& getGDayValue() const { return theValue; }
   
+  SchemaTypeCode getTypeCode() const;
+
   store::Item* getType() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
@@ -652,7 +740,7 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const;
 
-  store::Item_t getEBV( ) const;
+  store::Item_t getEBV() const;
 
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
@@ -670,28 +758,31 @@ protected:
 ********************************************************************************/
 class DurationItemNaive : public AtomicItem
 {
+  friend class BasicItemFactory;
+
 protected:
   Duration theValue;
 
 protected:
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
   DurationItemNaive(const xqp_duration* aValue) : theValue(*aValue) { };
 
   DurationItemNaive() {}
 
 public:
-  xqpStringStore_t getStringValue() const;
-  void getStringValue(xqpStringStore_t& strval) const;
-  void getStringValue(std::string& buf) const;
-
   const xqp_duration& getDurationValue() const;
+
   const xqp_dayTimeDuration& getDayTimeDurationValue() const;
+
   const xqp_yearMonthDuration& getYearMonthDurationValue() const;
+
+  SchemaTypeCode getTypeCode() const;
 
   store::Item* getType() const;
 
-  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
+  {
+    return theValue.hash();
+  }
 
   bool equals(
         const store::Item* other,
@@ -710,7 +801,11 @@ public:
     return theValue.compare(other->getDurationValue());
   }
 
-  store::Item_t getEBV( ) const;
+  store::Item_t getEBV() const;
+
+  xqpStringStore_t getStringValue() const;
+  void getStringValue(xqpStringStore_t& strval) const;
+  void getStringValue(std::string& buf) const;
 
   xqp_string show() const;
 };
@@ -727,7 +822,6 @@ protected:
 	xqp_double theValue;
 
 protected:
-  // make sure that only created by the factory
 	DoubleItemNaive(const xqp_double& aValue) : theValue( aValue ) {}
 
   DoubleItemNaive() {}
@@ -737,6 +831,8 @@ public:
 	
   bool isNaN() const;
   bool isPosOrNegInf() const;
+
+  SchemaTypeCode getTypeCode() const { return XS_DOUBLE; }
 
 	store::Item* getType() const;
 
@@ -776,11 +872,12 @@ public:
 ********************************************************************************/
 class FloatItemNaive : public AtomicItem
 {
+  friend class BasicItemFactory;
+
+protected:
   xqp_float theValue;
 
 protected:
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
   FloatItemNaive(const xqp_float& aValue) : theValue ( aValue ) {}
 
   FloatItemNaive() {}
@@ -793,6 +890,8 @@ public:
   bool isNaN() const;
 
   bool isPosOrNegInf() const;
+
+  SchemaTypeCode getTypeCode() const { return XS_FLOAT; }
 
   store::Item* getType() const;
 
@@ -854,6 +953,7 @@ public:
 class DecimalItemNaive : public AtomicItem
 {
   friend class BasicItemFactory;
+  friend class IndexBoxConditionImpl;
 
 protected:
   xqp_decimal theValue;
@@ -864,6 +964,8 @@ protected:
 
 public:
   xqp_decimal getDecimalValue() const { return theValue; }
+
+  SchemaTypeCode getTypeCode() const { return XS_DECIMAL; }
 
   store::Item* getType() const;
 
@@ -901,9 +1003,9 @@ public:
 
 
 /*******************************************************************************
-  class IntegerItemNaive
+  class IntegerItem
 ********************************************************************************/
-class IntegerItemNaive : public AtomicItem
+class IntegerItem : public AtomicItem
 {
   friend class BasicItemFactory;
 
@@ -911,9 +1013,9 @@ protected:
   xqp_integer theValue;
 
 protected:
-  IntegerItemNaive(const xqp_integer& aValue) : theValue ( aValue ) {}
+  IntegerItem(const xqp_integer& aValue) : theValue ( aValue ) {}
 
-  IntegerItemNaive() {}
+  IntegerItem() {}
 
 public:
   xqp_integer getIntegerValue() const { return theValue; }
@@ -921,6 +1023,8 @@ public:
   xqp_decimal getDecimalValue() const;
 
   virtual xqp_long getLongValue() const;
+
+  virtual SchemaTypeCode getTypeCode() const { return XS_INTEGER; }
 
   virtual store::Item* getType() const;
 
@@ -972,18 +1076,20 @@ public:
 
 
 /*******************************************************************************
-  class NonPositiveIntegerItemNaive
+  class NonPositiveIntegerItem
 ********************************************************************************/
-class NonPositiveIntegerItemNaive : public IntegerItemNaive
+class NonPositiveIntegerItem : public IntegerItem
 {
   friend class BasicItemFactory;
 
 protected:
-  NonPositiveIntegerItemNaive(const xqp_integer& aValue) : IntegerItemNaive(aValue) {}
+  NonPositiveIntegerItem(const xqp_integer& aValue) : IntegerItem(aValue) {}
 
-  NonPositiveIntegerItemNaive() {}
+  NonPositiveIntegerItem() {}
     
 public:
+  SchemaTypeCode getTypeCode() const { return XS_NON_POSITIVE_INTEGER; }
+
   store::Item* getType() const;
 
   xqp_string show() const;
@@ -991,18 +1097,20 @@ public:
 
 
 /*******************************************************************************
-  class NegativeIntegerItemNaive
+  class NegativeIntegerItem
 ********************************************************************************/
-class NegativeIntegerItemNaive : public IntegerItemNaive
+class NegativeIntegerItem : public IntegerItem
 {
   friend class BasicItemFactory;
 
 protected:
-  NegativeIntegerItemNaive(const xqp_integer& aValue) : IntegerItemNaive(aValue) {}
+  NegativeIntegerItem(const xqp_integer& aValue) : IntegerItem(aValue) {}
 
-  NegativeIntegerItemNaive() {}
+  NegativeIntegerItem() {}
     
 public:
+  SchemaTypeCode getTypeCode() const { return XS_NEGATIVE_INTEGER; }
+
   store::Item* getType() const;
 
   xqp_string show() const;
@@ -1010,21 +1118,23 @@ public:
   
 
 /*******************************************************************************
-  class NonNegativeIntegerItemNaive
+  class NonNegativeIntegerItem
 
   Note: xqp_uinteger is typedef of Integer
 ********************************************************************************/
-class NonNegativeIntegerItemNaive : public IntegerItemNaive
+class NonNegativeIntegerItem : public IntegerItem
 {
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
-  NonNegativeIntegerItemNaive(const xqp_uinteger& aValue) : IntegerItemNaive(aValue) {}
 
-  NonNegativeIntegerItemNaive() {}
+protected:
+  NonNegativeIntegerItem(const xqp_uinteger& aValue) : IntegerItem(aValue) {}
+
+  NonNegativeIntegerItem() {}
 
 public:
   xqp_uinteger getUnsignedIntegerValue() const { return theValue; }
+
+  SchemaTypeCode getTypeCode() const { return XS_NON_NEGATIVE_INTEGER; }
 
   store::Item* getType() const;
 
@@ -1033,19 +1143,21 @@ public:
 
 
 /*******************************************************************************
-  class PositiveIntegerItemNaive
+  class PositiveIntegerItem
 ********************************************************************************/
-class PositiveIntegerItemNaive : public  IntegerItemNaive
+class PositiveIntegerItem : public  IntegerItem
 {
-protected:
-  // make sure that only created by the factory
   friend class BasicItemFactory;
-  PositiveIntegerItemNaive(const xqp_uinteger& aValue) : IntegerItemNaive(aValue) { }
 
-  PositiveIntegerItemNaive() {}
+protected:
+  PositiveIntegerItem(const xqp_uinteger& aValue) : IntegerItem(aValue) { }
+
+  PositiveIntegerItem() {}
 
 public:
   xqp_uinteger getUnsignedIntegerValue() const { return theValue; }
+
+  SchemaTypeCode getTypeCode() const { return XS_POSITIVE_INTEGER; }
 
   store::Item* getType() const;
 
@@ -1074,6 +1186,8 @@ public:
   xqp_integer getIntegerValue() const;
   
   xqp_long getLongValue() const { return theValue; }
+
+  SchemaTypeCode getTypeCode() const { return XS_LONG; }
 
   store::Item* getType() const;
 
@@ -1131,11 +1245,12 @@ public:
 ********************************************************************************/
 class IntItemNaive : public AtomicItem
 {
-protected:
-  xqp_int theValue;
-
-  // make sure that only created by the factory
   friend class BasicItemFactory;
+
+protected:
+  int32_t theValue;
+
+protected:
   IntItemNaive(xqp_int aValue) : theValue(aValue) {}
 
   IntItemNaive() {}
@@ -1151,11 +1266,13 @@ public:
 
   int32_t getIntValue() const { return theValue; }
     
+  SchemaTypeCode getTypeCode() const { return XS_INT; }
+
   store::Item* getType( ) const;
 
-  virtual uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
+  uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
   {
-    return uint32_t(32767) + theValue;
+    return static_cast<uint32_t>(theValue);
   }
 
   bool equals(
@@ -1205,11 +1322,12 @@ public:
 ********************************************************************************/  
 class ShortItemNaive : public AtomicItem 
 {
+  friend class BasicItemFactory;
+
 protected:
   xqp_short theValue;
-  
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
+
+protected:
   ShortItemNaive ( xqp_short aValue)  : theValue(aValue) {}
 
   ShortItemNaive() {}
@@ -1225,11 +1343,13 @@ public:
 
   xqp_short getShortValue() const { return theValue; }
   
+  SchemaTypeCode getTypeCode() const { return XS_SHORT; }
+
   store::Item* getType() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
   {
-    return theValue;
+    return static_cast<uint32_t>(theValue);
   }
 
   bool equals(
@@ -1281,11 +1401,12 @@ public:
 ********************************************************************************/
 class ByteItemNaive : public AtomicItem 
 {
+  friend class BasicItemFactory;
+
 protected:
   xqp_byte theValue;
-  
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
+
+protected:  
   ByteItemNaive(xqp_byte aValue) : theValue(aValue) {}
 
   ByteItemNaive() {}
@@ -1302,6 +1423,8 @@ public:
   xqp_short getShortValue() const { return static_cast<xqp_short>(theValue); }
   
   xqp_byte getByteValue() const { return theValue; }
+
+  SchemaTypeCode getTypeCode() const { return XS_BYTE; }
 
   store::Item* getType() const;
 
@@ -1359,11 +1482,11 @@ public:
 ********************************************************************************/
 class UnsignedLongItemNaive : public AtomicItem 
 {
+  friend class BasicItemFactory;
+
 protected:
   xqp_ulong theValue;
   
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
   UnsignedLongItemNaive(xqp_ulong aValue) : theValue(aValue) {}
 
   UnsignedLongItemNaive() {}
@@ -1379,6 +1502,8 @@ protected:
 
   xqp_ulong getUnsignedLongValue() const { return theValue; }
   
+  SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_LONG; }
+
   store::Item* getType() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
@@ -1433,12 +1558,12 @@ protected:
 ********************************************************************************/
 class UnsignedIntItemNaive : public AtomicItem 
 {
+  friend class BasicItemFactory;
+
 protected:
   xqp_uint theValue;
   
 protected:
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
   UnsignedIntItemNaive(xqp_uint aValue) : theValue(aValue) {}
 
   UnsignedIntItemNaive() {}
@@ -1456,6 +1581,8 @@ public:
 
   xqp_uint getUnsignedIntValue() const { return theValue; }
   
+  SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_INT; }
+
   store::Item* getType() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
@@ -1510,12 +1637,12 @@ public:
 ********************************************************************************/
 class UnsignedShortItemNaive : public AtomicItem 
 {
+  friend class BasicItemFactory;
+
 protected:
   xqp_ushort theValue;
   
 protected:
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
   UnsignedShortItemNaive ( xqp_ushort aValue) : theValue(aValue) {}
 
   UnsignedShortItemNaive() {}
@@ -1535,11 +1662,13 @@ public:
 
   bool isNaN() const { return false; }
 
+  SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_SHORT; }
+
   store::Item* getType() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
   {
-    return theValue;
+    return static_cast<uint32_t>(theValue);
   }
 
   bool equals(
@@ -1615,11 +1744,13 @@ public:
 
   bool isNaN() const { return false; }
 
+  SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_BYTE; }
+
   store::Item* getType() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const
   {
-    return theValue;
+    return static_cast<uint32_t>(theValue);
   }
 
   bool equals(
@@ -1681,6 +1812,8 @@ protected:
 public:
   xqp_boolean getBooleanValue() const { return theValue; }
 
+  SchemaTypeCode getTypeCode() const { return XS_BOOLEAN; }
+
   store::Item* getType() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
@@ -1718,17 +1851,20 @@ public:
 ********************************************************************************/
 class Base64BinaryItemNaive : public AtomicItem 
 {
+  friend class BasicItemFactory;
+
 protected:
   xqp_base64Binary theValue;
 
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
+protected:
   Base64BinaryItemNaive(xqp_base64Binary aValue) : theValue(aValue) {}
 
   Base64BinaryItemNaive() {}
 
 public:
   xqp_base64Binary getBase64BinaryValue() const { return theValue; }
+
+  SchemaTypeCode getTypeCode() const { return XS_BASE64BINARY; }
 
   store::Item* getType() const;
 
@@ -1755,17 +1891,20 @@ public:
 ********************************************************************************/
 class HexBinaryItemNaive : public AtomicItem 
 {
+  friend class BasicItemFactory;
+
 protected:
   xqp_hexBinary theValue;
 
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
+protected:
   HexBinaryItemNaive(xqp_hexBinary aValue) : theValue(aValue) {}
 
   HexBinaryItemNaive() {}
 
 public:
   xqp_hexBinary getHexBinaryValue() const { return theValue; }
+
+  SchemaTypeCode getTypeCode() const { return XS_HEXBINARY; }
 
   store::Item* getType() const;
 
@@ -1805,11 +1944,12 @@ public:
 ********************************************************************************/
 class ErrorItemNaive : public AtomicItem 
 {
+  friend class BasicItemFactory;
+
 protected:
   error::ZorbaError * theError;
 
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
+protected:
   ErrorItemNaive(error::ZorbaError* error) : theError(error) {}
 
 public:
@@ -1818,6 +1958,8 @@ public:
   bool isError() const  { return true; }
 
   error::ZorbaError* getError() const { return theError; }
+
+  SchemaTypeCode getTypeCode() const { return ZXSE_ERROR; }
 
   xqp_string show() const;
 

@@ -352,17 +352,29 @@ bool NumConversions::doubleToLong(const xqp_double& aDouble, long& aLong)
     aLong = (long)aDouble.theFloating;
     return true;
 #endif
-  }
+}
 
-  
+
+bool NumConversions::integerToLong(const xqp_integer& aInteger, xqp_long& aLong) 
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  xqpStringStore_t lStr = aInteger.toString();
+  return NumConversions::strToLongLong(lStr, aLong);
+#else
+  aLong = (xqp_uint)aInteger.theInteger;
+  return true;
+#endif
+}
+
+
 bool NumConversions::integerToUInt(const xqp_integer& aInteger, xqp_uint& aUInt) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-    xqpStringStore_t lStr = aInteger.toString();
-    return NumConversions::strToUInt(lStr, aUInt);
+  xqpStringStore_t lStr = aInteger.toString();
+  return NumConversions::strToUInt(lStr, aUInt);
 #else
-    aUInt = (xqp_uint)aInteger.theInteger;
-    return true;
+  aUInt = (xqp_uint)aInteger.theInteger;
+  return true;
 #endif
 }
 

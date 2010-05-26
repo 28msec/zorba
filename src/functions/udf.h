@@ -68,7 +68,8 @@ private:
 
   expr_script_kind_t        theScriptingKind;
   bool                      theIsLeaf;
-  
+
+  bool                      theIsOptimized;
   PlanIter_t                thePlan;
   std::vector<LetVarIter_t> theArgVarRefs;
 
@@ -101,6 +102,8 @@ public:
   void setLeaf(bool v) { theIsLeaf = v; }
 
   bool isLeaf() const { return theIsLeaf; }
+
+  void setOptimized(bool v) { theIsOptimized = v; }
 
   void setBody(expr_t body);
 

@@ -43,33 +43,31 @@ class ZORBA_DLL_PUBLIC  Decimal  : public ::zorba::serialization::SerializeBaseC
     friend class FloatImpl;
   friend class NumConversions;
 
-private:
-  MAPM theDecimal;
-  Decimal(MAPM aDecimal) : theDecimal(aDecimal) { }
-
-
 public:
-  SERIALIZABLE_CLASS(Decimal)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(Decimal)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theDecimal;
-  }
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-public:
-  static  HashCharPtrObjPtrLimited<Decimal>  parsed_decimals;
-#endif
+  static Decimal& zero();
 
-public:
-  Decimal() : theDecimal(0) { }
+  static bool parseString(const char*, Decimal&);
 
-  Decimal(const Decimal& aDecimal) 
-    :
-  ::zorba::serialization::SerializeBaseClass(), theDecimal(aDecimal.theDecimal) { }
+  static bool parseNativeDouble(double, Decimal&);
 
-  virtual ~Decimal() {}
+  static Decimal parseLong(long aLong);
 
-public:
+  static Decimal parseULong(unsigned long aULong);
+
+  static Decimal parseInteger(const Integer& aInteger);
+
+  static Decimal parseLongLong(long long);
+
+  static Decimal parseULongLong(unsigned long long);
+
+  static Decimal parseInt(int32_t aInt);
+
+  static Decimal parseUInt(uint32_t aUInt);
+
+  static bool parseFloat(const Float&, Decimal&);
+
+  static bool parseDouble(const Double&, Decimal&);
+
 #ifndef ZORBA_NO_BIGNUMBERS
   //static MAPM round(const MAPM &aValue, int aPrecision);
   static MAPM round(const MAPM &aValue, const MAPM &aPrecision);
@@ -86,19 +84,32 @@ private:
 
   static void reduceFloatingPointString(char *str);
 
+private:
+  MAPM theDecimal;
+
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
 public:
-  static Decimal& zero();
-  static bool parseString(const char*, Decimal&);
-  static bool parseNativeDouble(double, Decimal&);
-  static Decimal parseLong(long aLong);
-  static Decimal parseULong(unsigned long aULong);
-  static Decimal parseInteger(const Integer& aInteger);
-  static Decimal parseLongLong(long long);
-  static Decimal parseULongLong(unsigned long long);
-  static Decimal parseInt(int32_t aInt);
-  static Decimal parseUInt(uint32_t aUInt);
-  static bool parseFloat(const Float&, Decimal&);
-  static bool parseDouble(const Double&, Decimal&);
+  static  HashCharPtrObjPtrLimited<Decimal>  parsed_decimals;
+#endif
+
+public:
+  SERIALIZABLE_CLASS(Decimal)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(Decimal)
+  void serialize(::zorba::serialization::Archiver &ar)
+  {
+    ar & theDecimal;
+  }
+
+public:
+  Decimal() : theDecimal(0) { }
+
+  Decimal(const Decimal& aDecimal) 
+    :
+    ::zorba::serialization::SerializeBaseClass(), theDecimal(aDecimal.theDecimal) 
+  {
+  }
+
+  virtual ~Decimal() {}
 
   Decimal& operator=(const Decimal&);
 
@@ -133,6 +144,7 @@ public:
   Decimal& operator%=(const Decimal&);
 
   Decimal operator-() const; 
+
 #ifndef ZORBA_NO_BIGNUMBERS
   Decimal floor() const { return Decimal(theDecimal.floor()); }
   Decimal ceil() const { return Decimal(theDecimal.ceil()); }
@@ -140,29 +152,14 @@ public:
   Decimal floor() const { return Decimal(::floor(theDecimal)); }
   Decimal ceil() const { return Decimal(::ceil(theDecimal)); }
 #endif
+
   Decimal round() const;
+
   Decimal round(Integer aPrecision) const; 
+
   Decimal roundHalfToEven(Integer aPrecision) const;
 
-  Decimal sqrt () const;
-
-  bool operator==(const Integer&) const;
-  bool operator==(const Decimal& aDecimal) const { return theDecimal == aDecimal.theDecimal; }
-
-  bool operator!=(const Integer&) const;
-  bool operator!=(const Decimal& aDecimal) const { return theDecimal != aDecimal.theDecimal; }
-
-  bool operator<(const Integer&) const;
-  bool operator<(const Decimal& aDecimal) const { return theDecimal < aDecimal.theDecimal; }
-
-  bool operator<=(const Integer&) const;
-  bool operator<=(const Decimal& aDecimal) const { return theDecimal <= aDecimal.theDecimal; }
-
-  bool operator>(const Integer&) const;
-  bool operator>(const Decimal& aDecimal) const { return theDecimal > aDecimal.theDecimal; }
-
-  bool operator>=(const Integer&) const;
-  bool operator>=(const Decimal& aDecimal) const { return theDecimal >= aDecimal.theDecimal; }
+  Decimal sqrt() const;
 
   long compare(const Decimal& other) const
   {
@@ -175,6 +172,48 @@ public:
 #endif
   }
 
+  bool operator==(const Decimal& aDecimal) const 
+  {
+    return theDecimal == aDecimal.theDecimal;
+  }
+
+  bool operator!=(const Decimal& aDecimal) const 
+  {
+    return theDecimal != aDecimal.theDecimal;
+  }
+
+  bool operator<(const Decimal& aDecimal) const 
+  {
+    return theDecimal < aDecimal.theDecimal;
+  }
+
+  bool operator<=(const Decimal& aDecimal) const 
+  {
+    return theDecimal <= aDecimal.theDecimal;
+  }
+
+  bool operator>(const Decimal& aDecimal) const 
+  {
+    return theDecimal > aDecimal.theDecimal; 
+  }
+
+  bool operator>=(const Decimal& aDecimal) const 
+  {
+    return theDecimal >= aDecimal.theDecimal;
+  }
+
+  bool operator==(const Integer&) const;
+
+  bool operator!=(const Integer&) const;
+
+  bool operator<(const Integer&) const;
+
+  bool operator<=(const Integer&) const;
+
+  bool operator>(const Integer&) const;
+
+  bool operator>=(const Integer&) const;
+
   xqpStringStore_t toString() const;
 
   xqpStringStore_t toIntegerString() const;
@@ -182,7 +221,10 @@ public:
   uint32_t hash() const;
 
   int getValueAsInt();
-}; // class Decimal
+
+private:
+  Decimal(const MAPM& aDecimal) : theDecimal(aDecimal) { }
+};
 
   
  std::ostream& operator<<(std::ostream& os, const Decimal&);
@@ -191,3 +233,8 @@ public:
 
 #endif // ZORBA_DECIMAL_H
 
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
