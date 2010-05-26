@@ -85,6 +85,11 @@ public:
     return new scanner_error("syntax error, unexpected end of file, unterminated comment");
   }
 
+  static scanner_error* unrecognizedToken(const char* _error_token)
+  {
+    return new scanner_error(std::string("syntax error, unexpected '") + _error_token + "'");
+  }
+
   static scanner_error* unrecognizedIntegerErr(const char* _error_token)
   {
     return new scanner_error(std::string("syntax error, unexpected '") + _error_token + "', separator needed after numeric literal");

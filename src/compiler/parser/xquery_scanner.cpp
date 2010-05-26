@@ -2728,41 +2728,41 @@ static yyconst flex_int16_t yy_chk[7871] =
 
 static yyconst flex_int16_t yy_rule_linenum[318] =
     {   0,
-      324,  325,  326,  327,  328,  329,  330,  331,  332,  333,
-      334,  335,  336,  337,  338,  339,  340,  342,  348,  355,
-      356,  357,  358,  359,  360,  361,  362,  363,  364,  365,
-      366,  367,  368,  369,  370,  371,  372,  373,  374,  375,
-      376,  377,  378,  379,  380,  381,  382,  383,  384,  387,
-      388,  389,  390,  391,  392,  393,  394,  395,  396,  397,
-      399,  400,  401,  402,  403,  404,  405,  406,  407,  408,
-      409,  410,  411,  412,  413,  414,  415,  416,  417,  418,
-      419,  420,  421,  422,  423,  424,  425,  426,  427,  428,
-      429,  430,  431,  432,  435,  436,  437,  438,  439,  440,
+      326,  327,  328,  329,  330,  331,  332,  333,  334,  335,
+      336,  337,  338,  339,  340,  341,  342,  344,  350,  357,
+      358,  359,  360,  361,  362,  363,  364,  365,  366,  367,
+      368,  369,  370,  371,  372,  373,  374,  375,  376,  377,
+      378,  379,  380,  381,  382,  383,  384,  385,  386,  389,
+      390,  391,  392,  393,  394,  395,  396,  397,  398,  399,
+      401,  402,  403,  404,  405,  406,  407,  408,  409,  410,
+      411,  412,  413,  414,  415,  416,  417,  418,  419,  420,
+      421,  422,  423,  424,  425,  426,  427,  428,  429,  430,
+      431,  432,  433,  434,  437,  438,  439,  440,  441,  442,
 
-      441,  442,  443,  444,  445,  447,  454,  455,  456,  457,
-      458,  459,  461,  462,  463,  464,  465,  466,  467,  468,
-      469,  470,  472,  473,  474,  475,  476,  477,  478,  486,
-      487,  488,  489,  490,  491,  492,  493,  494,  495,  496,
-      497,  498,  499,  500,  501,  502,  503,  504,  505,  506,
-      507,  508,  509,  510,  511,  512,  513,  514,  515,  516,
-      517,  518,  519,  520,  521,  522,  523,  524,  525,  526,
-      527,  528,  529,  530,  531,  532,  533,  534,  535,  536,
-      537,  538,  539,  540,  541,  542,  543,  544,  545,  546,
-      547,  548,  549,  550,  551,  552,  553,  554,  555,  556,
+      443,  444,  445,  446,  447,  449,  456,  457,  458,  459,
+      460,  461,  463,  464,  465,  466,  467,  468,  469,  470,
+      471,  472,  474,  475,  476,  477,  478,  479,  480,  488,
+      489,  490,  491,  492,  493,  494,  495,  496,  497,  498,
+      499,  500,  501,  502,  503,  504,  505,  506,  507,  508,
+      509,  510,  511,  512,  513,  514,  515,  516,  517,  518,
+      519,  520,  521,  522,  523,  524,  525,  526,  527,  528,
+      529,  530,  531,  532,  533,  534,  535,  536,  537,  538,
+      539,  540,  541,  542,  543,  544,  545,  546,  547,  548,
+      549,  550,  551,  552,  553,  554,  555,  556,  557,  558,
 
-      557,  558,  559,  560,  561,  562,  563,  564,  572,  573,
-      574,  575,  576,  577,  578,  579,  580,  581,  582,  583,
-      585,  586,  587,  588,  589,  590,  591,  593,  594,  595,
-      596,  597,  598,  599,  600,  601,  602,  603,  604,  605,
-      606,  607,  608,  609,  622,  627,  632,  637,  643,  647,
-      651,  655,  667,  672,  677,  682,  687,  692,  697,  705,
-      710,  717,  778,  779,  780,  791,  805,  806,  807,  808,
-      809,  810,  811,  812,  829,  830,  831,  832,  833,  834,
-      835,  836,  837,  838,  839,  850,  851,  862,  863,  875,
-      876,  877,  890,  891,  909,  910,  911,  922,  936,  937,
+      559,  560,  561,  562,  563,  564,  565,  566,  574,  575,
+      576,  577,  578,  579,  580,  581,  582,  583,  584,  585,
+      587,  588,  589,  590,  591,  592,  593,  595,  596,  597,
+      598,  599,  600,  601,  602,  603,  604,  605,  606,  607,
+      608,  609,  610,  611,  624,  629,  634,  639,  645,  649,
+      653,  657,  669,  674,  679,  684,  689,  694,  699,  707,
+      712,  719,  780,  781,  782,  793,  807,  808,  809,  810,
+      811,  812,  813,  814,  831,  832,  833,  834,  835,  836,
+      837,  838,  839,  840,  841,  852,  853,  864,  865,  877,
+      878,  879,  892,  893,  911,  912,  913,  924,  938,  939,
 
-      954,  955,  956,  957,  958,  959,  960,  961,  973,  974,
-      975,  976,  977,  978,  979,  980,  989
+      956,  957,  958,  959,  960,  961,  962,  963,  975,  976,
+      977,  978,  979,  980,  981,  982,  991
     } ;
 
 /* The intent behind this definition is that it'll catch
@@ -2840,18 +2840,20 @@ typedef zorba::xquery_parser::token_type token_type;
         PUSH_STATE(pushed); \
     } while(0)
 
-#define TRY_SVAL_TOKEN( ttype, put )                                    \
+#define TRY_SVAL_TOKEN( ttype, put, yytext )                            \
   do {                                                                  \
     off_t res = getDriver()->symtab.put;                                \
-    if (res < 0) return token::UNRECOGNIZED;                            \
-    else {                                                              \
+    if (res < 0) {                                                      \
+      yylval->err = scanner_error::unrecognizedToken(yytext);           \
+      return token::UNRECOGNIZED;                                       \
+    } else {                                                            \
       yylval->sval = res;                                               \
       return token::ttype;                                              \
     }                                                                   \
   } while (0)
 
 #define TRY_STR_LIT( ttype, put, yytext, yyleng ) \
-  TRY_SVAL_TOKEN (ttype, put (yytext, yyleng))
+  TRY_SVAL_TOKEN (ttype, put (yytext, yyleng), yytext)
 
 #define TRY_STRINGLIT( ttype, yytext, yyleng ) \
   TRY_STR_LIT (ttype, put_stringlit, yytext, yyleng)
@@ -2995,9 +2997,9 @@ std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION *
 
 /* Try-Catch Modes */
 
-#line 310 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 312 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
   typedef zorba::xquery_parser::token token;
-#line 3001 "xquery_scanner.yy.cpp"
+#line 3003 "xquery_scanner.yy.cpp"
 
 #define INITIAL 0
 #define MODE_APOS_ATTRIBUTE_CONTENT 1
@@ -3185,7 +3187,7 @@ YY_DECL
 	register int yy_act;
     
 /* %% [7.0] user's declarations go here */
-#line 314 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 316 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 
 
   /*______________________________________________________________________
@@ -3196,7 +3198,7 @@ YY_DECL
    |  expression or subexpression.
    |______________________________________________________________________*/
 
-#line 3200 "xquery_scanner.yy.cpp"
+#line 3202 "xquery_scanner.yy.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -3313,92 +3315,92 @@ do_action:	/* This label is used only to access EOF actions. */
 
 case 1:
 YY_RULE_SETUP
-#line 324 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 326 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::LPAR; }
 	YY_BREAK
 case 2:
 YY_RULE_SETUP
-#line 325 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 327 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SEMI; }
 	YY_BREAK
 case 3:
 YY_RULE_SETUP
-#line 326 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 328 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::COMMA; }
 	YY_BREAK
 case 4:
 YY_RULE_SETUP
-#line 327 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 329 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::MINUS; }
 	YY_BREAK
 case 5:
 YY_RULE_SETUP
-#line 328 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 330 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PLUS; }
 	YY_BREAK
 case 6:
 YY_RULE_SETUP
-#line 329 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 331 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SLASH; }
 	YY_BREAK
 case 7:
 YY_RULE_SETUP
-#line 330 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 332 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SLASH_SLASH; }
 	YY_BREAK
 case 8:
 YY_RULE_SETUP
-#line 331 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 333 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::AT_SIGN; }
 	YY_BREAK
 case 9:
 YY_RULE_SETUP
-#line 332 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 334 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::RPAR; }
 	YY_BREAK
 case 10:
 YY_RULE_SETUP
-#line 333 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 335 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::STAR; }
 	YY_BREAK
 case 11:
 YY_RULE_SETUP
-#line 334 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 336 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOT_DOT; }
 	YY_BREAK
 case 12:
 YY_RULE_SETUP
-#line 335 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 337 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOT; }
 	YY_BREAK
 case 13:
 YY_RULE_SETUP
-#line 336 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 338 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::HOOK; }
 	YY_BREAK
 case 14:
 YY_RULE_SETUP
-#line 337 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 339 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::RBRACK; }
 	YY_BREAK
 case 15:
 YY_RULE_SETUP
-#line 338 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 340 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOLLAR; }
 	YY_BREAK
 case 16:
 YY_RULE_SETUP
-#line 339 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 341 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::HASH; }
 	YY_BREAK
 case 17:
 YY_RULE_SETUP
-#line 340 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 342 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_COLON; }
 	YY_BREAK
 case 18:
 YY_RULE_SETUP
-#line 342 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 344 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   std::string lDocComment = theDriver->theDocComment;
   yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
@@ -3408,7 +3410,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 19:
 YY_RULE_SETUP
-#line 348 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 350 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   std::string lDocComment = theDriver->theDocComment;
   yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
@@ -3418,439 +3420,439 @@ YY_RULE_SETUP
 	YY_BREAK
 case 20:
 YY_RULE_SETUP
-#line 355 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 357 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::IF; }
 	YY_BREAK
 case 21:
 YY_RULE_SETUP
-#line 356 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 358 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::RETURNING; }
 	YY_BREAK
 case 22:
 YY_RULE_SETUP
-#line 357 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 359 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::BLOCK; }
 	YY_BREAK
 case 23:
 YY_RULE_SETUP
-#line 358 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 360 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::EXIT; }
 	YY_BREAK
 case 24:
 YY_RULE_SETUP
-#line 359 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 361 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::WITH; }
 	YY_BREAK
 case 25:
 YY_RULE_SETUP
-#line 360 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 362 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::BREAK; }
 	YY_BREAK
 case 26:
 YY_RULE_SETUP
-#line 361 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 363 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::LOOP; }
 	YY_BREAK
 case 27:
 YY_RULE_SETUP
-#line 362 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 364 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CONTINUE; }
 	YY_BREAK
 case 28:
 YY_RULE_SETUP
-#line 363 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 365 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::WHILE; }
 	YY_BREAK
 case 29:
 YY_RULE_SETUP
-#line 364 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 366 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SET; }
 	YY_BREAK
 case 30:
 YY_RULE_SETUP
-#line 365 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 367 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::VALIDATE; }
 	YY_BREAK
 case 31:
 YY_RULE_SETUP
-#line 366 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 368 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SWITCH; }
 	YY_BREAK
 case 32:
 YY_RULE_SETUP
-#line 367 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 369 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::TYPESWITCH; }
 	YY_BREAK
 case 33:
 YY_RULE_SETUP
-#line 368 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 370 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::EVAL; }
 	YY_BREAK
 case 34:
 YY_RULE_SETUP
-#line 369 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 371 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOCUMENT; }
 	YY_BREAK
 case 35:
 YY_RULE_SETUP
-#line 370 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 372 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::TEXT; }
 	YY_BREAK
 case 36:
 YY_RULE_SETUP
-#line 371 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 373 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PROCESSING_INSTRUCTION; }
 	YY_BREAK
 case 37:
 YY_RULE_SETUP
-#line 372 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 374 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::COMMENT; }
 	YY_BREAK
 case 38:
 YY_RULE_SETUP
-#line 373 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 375 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FUNCTION; }
 	YY_BREAK
 case 39:
 YY_RULE_SETUP
-#line 374 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 376 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DETERMINISTIC; }
 	YY_BREAK
 case 40:
 YY_RULE_SETUP
-#line 375 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 377 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NONDETERMINISTIC; }
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
-#line 376 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 378 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SIMPLE; }
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
-#line 377 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 379 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::UPDATING; }
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 378 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 380 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SEQUENTIAL; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 379 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 381 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ORDERED;}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 380 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 382 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::UNORDERED; }
 	YY_BREAK
 case 46:
 YY_RULE_SETUP
-#line 381 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 383 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SCHEMA_ELEMENT; }
 	YY_BREAK
 case 47:
 YY_RULE_SETUP
-#line 382 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 384 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SCHEMA_ATTRIBUTE; }
 	YY_BREAK
 case 48:
 YY_RULE_SETUP
-#line 383 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 385 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NODE; }
 	YY_BREAK
 case 49:
 YY_RULE_SETUP
-#line 384 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 386 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOCUMENT_NODE; }
 	YY_BREAK
 /* Axes */
 case 50:
 YY_RULE_SETUP
-#line 387 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 389 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ANCESTOR_OR_SELF; }
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
-#line 388 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 390 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ANCESTOR; }
 	YY_BREAK
 case 52:
 YY_RULE_SETUP
-#line 389 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 391 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CHILD; }
 	YY_BREAK
 case 53:
 YY_RULE_SETUP
-#line 390 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 392 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DESCENDANT_OR_SELF; }
 	YY_BREAK
 case 54:
 YY_RULE_SETUP
-#line 391 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 393 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DESCENDANT; }
 	YY_BREAK
 case 55:
 YY_RULE_SETUP
-#line 392 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 394 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FOLLOWING_SIBLING; }
 	YY_BREAK
 case 56:
 YY_RULE_SETUP
-#line 393 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 395 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FOLLOWING; }
 	YY_BREAK
 case 57:
 YY_RULE_SETUP
-#line 394 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 396 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PARENT; }
 	YY_BREAK
 case 58:
 YY_RULE_SETUP
-#line 395 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 397 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PRECEDING_SIBLING; }
 	YY_BREAK
 case 59:
 YY_RULE_SETUP
-#line 396 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 398 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PRECEDING; }
 	YY_BREAK
 case 60:
 YY_RULE_SETUP
-#line 397 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 399 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SELF;}
 	YY_BREAK
 case 61:
 YY_RULE_SETUP
-#line 399 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 401 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {  return token::ELEMENT; }
 	YY_BREAK
 case 62:
 YY_RULE_SETUP
-#line 400 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 402 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ATTRIBUTE; }
 	YY_BREAK
 case 63:
 YY_RULE_SETUP
-#line 401 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 403 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CONSTRUCTION; }
 	YY_BREAK
 case 64:
 YY_RULE_SETUP
-#line 402 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 404 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DEFAULT; }
 	YY_BREAK
 case 65:
 YY_RULE_SETUP
-#line 403 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 405 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ORDER; }
 	YY_BREAK
 case 66:
 YY_RULE_SETUP
-#line 404 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 406 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::COLLATION; }
 	YY_BREAK
 case 67:
 YY_RULE_SETUP
-#line 405 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 407 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NAMESPACE; }
 	YY_BREAK
 case 68:
 YY_RULE_SETUP
-#line 406 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 408 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::BASE_URI; }
 	YY_BREAK
 case 69:
 YY_RULE_SETUP
-#line 407 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 409 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::IMPORT; }
 	YY_BREAK
 case 70:
 YY_RULE_SETUP
-#line 408 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 410 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SCHEMA; }
 	YY_BREAK
 case 71:
 YY_RULE_SETUP
-#line 409 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 411 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::COPY_NAMESPACES; }
 	YY_BREAK
 case 72:
 YY_RULE_SETUP
-#line 410 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 412 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FOR; }
 	YY_BREAK
 case 73:
 YY_RULE_SETUP
-#line 411 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 413 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::OUTER; }
 	YY_BREAK
 case 74:
 YY_RULE_SETUP
-#line 412 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 414 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::LET; }
 	YY_BREAK
 case 75:
 YY_RULE_SETUP
-#line 413 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 415 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SLIDING; }
 	YY_BREAK
 case 76:
 YY_RULE_SETUP
-#line 414 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 416 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::TUMBLING; }
 	YY_BREAK
 case 77:
 YY_RULE_SETUP
-#line 415 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 417 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PREVIOUS; }
 	YY_BREAK
 case 78:
 YY_RULE_SETUP
-#line 416 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 418 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NEXT; }
 	YY_BREAK
 case 79:
 YY_RULE_SETUP
-#line 417 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 419 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ONLY; }
 	YY_BREAK
 case 80:
 YY_RULE_SETUP
-#line 418 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 420 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::WHEN; }
 	YY_BREAK
 case 81:
 YY_RULE_SETUP
-#line 419 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 421 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::COUNT; }
 	YY_BREAK
 case 82:
 YY_RULE_SETUP
-#line 420 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 422 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::USING; }
 	YY_BREAK
 case 83:
 YY_RULE_SETUP
-#line 421 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 423 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SOME; }
 	YY_BREAK
 case 84:
 YY_RULE_SETUP
-#line 422 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 424 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::EVERY; }
 	YY_BREAK
 case 85:
 YY_RULE_SETUP
-#line 423 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 425 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CONTEXT; }
 	YY_BREAK
 case 86:
 YY_RULE_SETUP
-#line 424 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 426 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::VARIABLE; }
 	YY_BREAK
 case 87:
 YY_RULE_SETUP
-#line 425 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 427 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::BOUNDARY_SPACE; }
 	YY_BREAK
 case 88:
 YY_RULE_SETUP
-#line 426 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 428 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ORDERING; }
 	YY_BREAK
 case 89:
 YY_RULE_SETUP
-#line 427 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 429 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::XQUERY; }
 	YY_BREAK
 case 90:
 YY_RULE_SETUP
-#line 428 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 430 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::VERSION; }
 	YY_BREAK
 case 91:
 YY_RULE_SETUP
-#line 429 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 431 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::OPTION; }
 	YY_BREAK
 case 92:
 YY_RULE_SETUP
-#line 430 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 432 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::AT; }
 	YY_BREAK
 case 93:
 YY_RULE_SETUP
-#line 431 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 433 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::REVALIDATION;}
 	YY_BREAK
 case 94:
 YY_RULE_SETUP
-#line 432 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 434 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::AS; }
 	YY_BREAK
 /* Decimal format */
 case 95:
 YY_RULE_SETUP
-#line 435 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 437 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DECIMAL_FORMAT; }
 	YY_BREAK
 case 96:
 YY_RULE_SETUP
-#line 436 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 438 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DECIMAL_SEPARATOR; }
 	YY_BREAK
 case 97:
 YY_RULE_SETUP
-#line 437 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 439 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::GROUPING_SEPARATOR; }
 	YY_BREAK
 case 98:
 YY_RULE_SETUP
-#line 438 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 440 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::INFINITY_VALUE; }
 	YY_BREAK
 case 99:
 YY_RULE_SETUP
-#line 439 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 441 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::MINUS_SIGN; }
 	YY_BREAK
 case 100:
 YY_RULE_SETUP
-#line 440 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 442 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NaN; }
 	YY_BREAK
 case 101:
 YY_RULE_SETUP
-#line 441 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 443 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PERCENT; }
 	YY_BREAK
 case 102:
 YY_RULE_SETUP
-#line 442 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 444 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PER_MILLE; }
 	YY_BREAK
 case 103:
 YY_RULE_SETUP
-#line 443 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 445 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ZERO_DIGIT; }
 	YY_BREAK
 case 104:
 YY_RULE_SETUP
-#line 444 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 446 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DIGIT; }
 	YY_BREAK
 case 105:
 YY_RULE_SETUP
-#line 445 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 447 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PATTERN_SEPARATOR; }
 	YY_BREAK
 case 106:
 YY_RULE_SETUP
-#line 447 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 449 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::TRY;}
 	YY_BREAK
 /*______________________________________________________________________
@@ -3859,117 +3861,117 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 107:
 YY_RULE_SETUP
-#line 454 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 456 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::COLLECTION; }
 	YY_BREAK
 case 108:
 YY_RULE_SETUP
-#line 455 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 457 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CONSTOPT; }
 	YY_BREAK
 case 109:
 YY_RULE_SETUP
-#line 456 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 458 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::APPEND_ONLY; }
 	YY_BREAK
 case 110:
 YY_RULE_SETUP
-#line 457 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 459 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::QUEUE; }
 	YY_BREAK
 case 111:
 YY_RULE_SETUP
-#line 458 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 460 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::MUTABLE; }
 	YY_BREAK
 case 112:
 YY_RULE_SETUP
-#line 459 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 461 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::READ_ONLY; }
 	YY_BREAK
 case 113:
 YY_RULE_SETUP
-#line 461 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 463 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::INDEX; }
 	YY_BREAK
 case 114:
 YY_RULE_SETUP
-#line 462 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 464 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::UNIQUE; }
 	YY_BREAK
 case 115:
 YY_RULE_SETUP
-#line 463 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 465 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NON; }
 	YY_BREAK
 case 116:
 YY_RULE_SETUP
-#line 464 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 466 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::MANUALLY; }
 	YY_BREAK
 case 117:
 YY_RULE_SETUP
-#line 465 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 467 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::AUTOMATICALLY; }
 	YY_BREAK
 case 118:
 YY_RULE_SETUP
-#line 466 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 468 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::MAINTAINED; }
 	YY_BREAK
 case 119:
 YY_RULE_SETUP
-#line 467 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 469 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::RANGE; }
 	YY_BREAK
 case 120:
 YY_RULE_SETUP
-#line 468 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 470 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::EQUALITY; }
 	YY_BREAK
 case 121:
 YY_RULE_SETUP
-#line 469 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 471 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ON; }
 	YY_BREAK
 case 122:
 YY_RULE_SETUP
-#line 470 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 472 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::GENERAL; }
 	YY_BREAK
 case 123:
 YY_RULE_SETUP
-#line 472 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 474 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::INTEGRITY; }
 	YY_BREAK
 case 124:
 YY_RULE_SETUP
-#line 473 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 475 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CONSTRAINT; }
 	YY_BREAK
 case 125:
 YY_RULE_SETUP
-#line 474 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 476 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CHECK; }
 	YY_BREAK
 case 126:
 YY_RULE_SETUP
-#line 475 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 477 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::KEY; }
 	YY_BREAK
 case 127:
 YY_RULE_SETUP
-#line 476 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 478 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FOREACH; }
 	YY_BREAK
 case 128:
 YY_RULE_SETUP
-#line 477 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 479 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FOREIGN; }
 	YY_BREAK
 case 129:
 YY_RULE_SETUP
-#line 478 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 480 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::KEYS; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -3978,397 +3980,397 @@ YY_RULE_SETUP
      |______________________________________________________________________*/
 case 130:
 YY_RULE_SETUP
-#line 486 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 488 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CONTAINS; }
 	YY_BREAK
 case 131:
 YY_RULE_SETUP
-#line 487 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 489 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FTAND; }
 	YY_BREAK
 case 132:
 YY_RULE_SETUP
-#line 488 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 490 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FTOR; }
 	YY_BREAK
 case 133:
 YY_RULE_SETUP
-#line 489 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 491 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FTNOT; }
 	YY_BREAK
 case 134:
 YY_RULE_SETUP
-#line 490 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 492 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NOT; }
 	YY_BREAK
 case 135:
 YY_RULE_SETUP
-#line 491 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 493 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::_IN; }
 	YY_BREAK
 case 136:
 YY_RULE_SETUP
-#line 492 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 494 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ALL; }
 	YY_BREAK
 case 137:
 YY_RULE_SETUP
-#line 493 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 495 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::WORDS; }
 	YY_BREAK
 case 138:
 YY_RULE_SETUP
-#line 494 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 496 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ANY; }
 	YY_BREAK
 case 139:
 YY_RULE_SETUP
-#line 495 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 497 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::WORD; }
 	YY_BREAK
 case 140:
 YY_RULE_SETUP
-#line 496 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 498 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::END; }
 	YY_BREAK
 case 141:
 YY_RULE_SETUP
-#line 497 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 499 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::LEAST; }
 	YY_BREAK
 case 142:
 YY_RULE_SETUP
-#line 498 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 500 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::MOST; }
 	YY_BREAK
 case 143:
 YY_RULE_SETUP
-#line 499 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 501 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::START; }
 	YY_BREAK
 case 144:
 YY_RULE_SETUP
-#line 500 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 502 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CASE; }
 	YY_BREAK
 case 145:
 YY_RULE_SETUP
-#line 501 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 503 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::INSENSITIVE; }
 	YY_BREAK
 case 146:
 YY_RULE_SETUP
-#line 502 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 504 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SENSITIVE; }
 	YY_BREAK
 case 147:
 YY_RULE_SETUP
-#line 503 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 505 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FT_OPTION; }
 	YY_BREAK
 case 148:
 YY_RULE_SETUP
-#line 504 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 506 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DIACRITICS; }
 	YY_BREAK
 case 149:
 YY_RULE_SETUP
-#line 505 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 507 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DIFFERENT; }
 	YY_BREAK
 case 150:
 YY_RULE_SETUP
-#line 506 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 508 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DISTANCE; }
 	YY_BREAK
 case 151:
 YY_RULE_SETUP
-#line 507 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 509 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ENTIRE; }
 	YY_BREAK
 case 152:
 YY_RULE_SETUP
-#line 508 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 510 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CONTENT; }
 	YY_BREAK
 case 153:
 YY_RULE_SETUP
-#line 509 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 511 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::EXACTLY; }
 	YY_BREAK
 case 154:
 YY_RULE_SETUP
-#line 510 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 512 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FROM; }
 	YY_BREAK
 case 155:
 YY_RULE_SETUP
-#line 511 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 513 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::LANGUAGE; }
 	YY_BREAK
 case 156:
 YY_RULE_SETUP
-#line 512 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 514 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::LEVELS; }
 	YY_BREAK
 case 157:
 YY_RULE_SETUP
-#line 513 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 515 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::LOWERCASE; }
 	YY_BREAK
 case 158:
 YY_RULE_SETUP
-#line 514 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 516 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NO; }
 	YY_BREAK
 case 159:
 YY_RULE_SETUP
-#line 515 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 517 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::OCCURS; }
 	YY_BREAK
 case 160:
 YY_RULE_SETUP
-#line 516 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 518 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PARAGRAPH; }
 	YY_BREAK
 case 161:
 YY_RULE_SETUP
-#line 517 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 519 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PHRASE; }
 	YY_BREAK
 case 162:
 YY_RULE_SETUP
-#line 518 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 520 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::RELATIONSHIP; }
 	YY_BREAK
 case 163:
 YY_RULE_SETUP
-#line 519 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 521 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SAME; }
 	YY_BREAK
 case 164:
 YY_RULE_SETUP
-#line 520 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 522 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SCORE; }
 	YY_BREAK
 case 165:
 YY_RULE_SETUP
-#line 521 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 523 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SENTENCE; }
 	YY_BREAK
 case 166:
 YY_RULE_SETUP
-#line 522 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 524 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SENTENCES; }
 	YY_BREAK
 case 167:
 YY_RULE_SETUP
-#line 523 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 525 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::TIMES; }
 	YY_BREAK
 case 168:
 YY_RULE_SETUP
-#line 524 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 526 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::UPPERCASE; }
 	YY_BREAK
 case 169:
 YY_RULE_SETUP
-#line 525 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 527 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::WEIGHT; }
 	YY_BREAK
 case 170:
 YY_RULE_SETUP
-#line 526 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 528 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::WINDOW; }
 	YY_BREAK
 case 171:
 YY_RULE_SETUP
-#line 527 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 529 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::WITHOUT; }
 	YY_BREAK
 case 172:
 YY_RULE_SETUP
-#line 528 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 530 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::STEMMING; }
 	YY_BREAK
 case 173:
 YY_RULE_SETUP
-#line 529 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 531 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::STOP; }
 	YY_BREAK
 case 174:
 YY_RULE_SETUP
-#line 530 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 532 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::THESAURUS; }
 	YY_BREAK
 case 175:
 YY_RULE_SETUP
-#line 531 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 533 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::WILDCARDS; }
 	YY_BREAK
 case 176:
 YY_RULE_SETUP
-#line 532 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 534 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::GETS; }
 	YY_BREAK
 case 177:
 YY_RULE_SETUP
-#line 533 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 535 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DIV; }
 	YY_BREAK
 case 178:
 YY_RULE_SETUP
-#line 534 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 536 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::EQUALS; }
 	YY_BREAK
 case 179:
 YY_RULE_SETUP
-#line 535 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 537 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::EXCEPT; }
 	YY_BREAK
 case 180:
 YY_RULE_SETUP
-#line 536 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 538 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_EQ; }
 	YY_BREAK
 case 181:
 YY_RULE_SETUP
-#line 537 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 539 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_GE; }
 	YY_BREAK
 case 182:
 YY_RULE_SETUP
-#line 538 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 540 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_GT; }
 	YY_BREAK
 case 183:
 YY_RULE_SETUP
-#line 539 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 541 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_LE; }
 	YY_BREAK
 case 184:
 YY_RULE_SETUP
-#line 540 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 542 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_LT; }
 	YY_BREAK
 case 185:
 YY_RULE_SETUP
-#line 541 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 543 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::VAL_NE; }
 	YY_BREAK
 case 186:
 YY_RULE_SETUP
-#line 542 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 544 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::GE; }
 	YY_BREAK
 case 187:
 YY_RULE_SETUP
-#line 543 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 545 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FOLLOWS; }
 	YY_BREAK
 case 188:
 YY_RULE_SETUP
-#line 544 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 546 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::GT; }
 	YY_BREAK
 case 189:
 YY_RULE_SETUP
-#line 545 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 547 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::IDIV; }
 	YY_BREAK
 case 190:
 YY_RULE_SETUP
-#line 546 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 548 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::INTERSECT; }
 	YY_BREAK
 case 191:
 YY_RULE_SETUP
-#line 547 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 549 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::IS; }
 	YY_BREAK
 case 192:
 YY_RULE_SETUP
-#line 548 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 550 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::LBRACK; }
 	YY_BREAK
 case 193:
 YY_RULE_SETUP
-#line 549 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 551 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::LE; }
 	YY_BREAK
 case 194:
 YY_RULE_SETUP
-#line 550 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 552 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PRECEDES; }
 	YY_BREAK
 case 195:
 YY_RULE_SETUP
-#line 551 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 553 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::MOD; }
 	YY_BREAK
 case 196:
 YY_RULE_SETUP
-#line 552 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 554 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NE; }
 	YY_BREAK
 case 197:
 YY_RULE_SETUP
-#line 553 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 555 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::GROUP; }
 	YY_BREAK
 case 198:
 YY_RULE_SETUP
-#line 554 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 556 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::BY; }
 	YY_BREAK
 case 199:
 YY_RULE_SETUP
-#line 555 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 557 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::STABLE; }
 	YY_BREAK
 case 200:
 YY_RULE_SETUP
-#line 556 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 558 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::OR; }
 	YY_BREAK
 case 201:
 YY_RULE_SETUP
-#line 557 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 559 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::RETURN; }
 	YY_BREAK
 case 202:
 YY_RULE_SETUP
-#line 558 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 560 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SATISFIES; }
 	YY_BREAK
 case 203:
 YY_RULE_SETUP
-#line 559 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 561 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::TO; }
 	YY_BREAK
 case 204:
 YY_RULE_SETUP
-#line 560 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 562 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::UNION; }
 	YY_BREAK
 case 205:
 YY_RULE_SETUP
-#line 561 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 563 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::VBAR; }
 	YY_BREAK
 case 206:
 YY_RULE_SETUP
-#line 562 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 564 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::WHERE; }
 	YY_BREAK
 case 207:
 YY_RULE_SETUP
-#line 563 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 565 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::PRESERVE; }
 	YY_BREAK
 case 208:
 YY_RULE_SETUP
-#line 564 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 566 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::STRIP; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4377,182 +4379,182 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 209:
 YY_RULE_SETUP
-#line 572 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 574 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::INSERT; }
 	YY_BREAK
 case 210:
 YY_RULE_SETUP
-#line 573 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 575 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::_DELETE; }
 	YY_BREAK
 case 211:
 YY_RULE_SETUP
-#line 574 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 576 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::REPLACE; }
 	YY_BREAK
 case 212:
 YY_RULE_SETUP
-#line 575 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 577 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::VALUE; }
 	YY_BREAK
 case 213:
 YY_RULE_SETUP
-#line 576 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 578 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::OF; }
 	YY_BREAK
 case 214:
 YY_RULE_SETUP
-#line 577 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 579 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::RENAME; }
 	YY_BREAK
 case 215:
 YY_RULE_SETUP
-#line 578 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 580 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::COPY; }
 	YY_BREAK
 case 216:
 YY_RULE_SETUP
-#line 579 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 581 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NODES; }
 	YY_BREAK
 case 217:
 YY_RULE_SETUP
-#line 580 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 582 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::INTO; }
 	YY_BREAK
 case 218:
 YY_RULE_SETUP
-#line 581 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 583 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::AFTER; }
 	YY_BREAK
 case 219:
 YY_RULE_SETUP
-#line 582 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 584 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::BEFORE; }
 	YY_BREAK
 case 220:
 YY_RULE_SETUP
-#line 583 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 585 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::MODIFY; }
 	YY_BREAK
 case 221:
 YY_RULE_SETUP
-#line 585 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 587 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::_STRICT; }
 	YY_BREAK
 case 222:
 YY_RULE_SETUP
-#line 586 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 588 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::LAX; }
 	YY_BREAK
 case 223:
 YY_RULE_SETUP
-#line 587 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 589 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::SKIP; }
 	YY_BREAK
 case 224:
 YY_RULE_SETUP
-#line 588 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 590 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::THEN; }
 	YY_BREAK
 case 225:
 YY_RULE_SETUP
-#line 589 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 591 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ELSE; }
 	YY_BREAK
 case 226:
 YY_RULE_SETUP
-#line 590 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 592 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::EXTERNAL; }
 	YY_BREAK
 case 227:
 YY_RULE_SETUP
-#line 591 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 593 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::AND; }
 	YY_BREAK
 case 228:
 YY_RULE_SETUP
-#line 593 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 595 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::INHERIT; }
 	YY_BREAK
 case 229:
 YY_RULE_SETUP
-#line 594 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 596 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NO_INHERIT; }
 	YY_BREAK
 case 230:
 YY_RULE_SETUP
-#line 595 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 597 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::NO_PRESERVE; }
 	YY_BREAK
 case 231:
 YY_RULE_SETUP
-#line 596 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 598 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::EMPTY_SEQUENCE; }
 	YY_BREAK
 case 232:
 YY_RULE_SETUP
-#line 597 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 599 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ITEM; }
 	YY_BREAK
 case 233:
 YY_RULE_SETUP
-#line 598 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 600 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CAST; }
 	YY_BREAK
 case 234:
 YY_RULE_SETUP
-#line 599 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 601 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CASTABLE; }
 	YY_BREAK
 case 235:
 YY_RULE_SETUP
-#line 600 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 602 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::INSTANCE;}
 	YY_BREAK
 case 236:
 YY_RULE_SETUP
-#line 601 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 603 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::TREAT; }
 	YY_BREAK
 case 237:
 YY_RULE_SETUP
-#line 602 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 604 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::FIRST; }
 	YY_BREAK
 case 238:
 YY_RULE_SETUP
-#line 603 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 605 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::LAST; }
 	YY_BREAK
 case 239:
 YY_RULE_SETUP
-#line 604 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 606 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::CATCH; }
 	YY_BREAK
 case 240:
 YY_RULE_SETUP
-#line 605 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 607 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::_EMPTY; }
 	YY_BREAK
 case 241:
 YY_RULE_SETUP
-#line 606 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 608 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::GREATEST; }
 	YY_BREAK
 case 242:
 YY_RULE_SETUP
-#line 607 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 609 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ASCENDING; }
 	YY_BREAK
 case 243:
 YY_RULE_SETUP
-#line 608 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 610 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DESCENDING; }
 	YY_BREAK
 case 244:
 YY_RULE_SETUP
-#line 609 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 611 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ENCODING; }
 	YY_BREAK
 /* TODO: fix 'if (1) then 2 else processing-instruction' */
@@ -4562,7 +4564,7 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 245:
 YY_RULE_SETUP
-#line 622 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 624 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->ival = getDriver()->symtab.integerval(yytext, yyleng);
   return token::INTEGER_LITERAL;
@@ -4570,7 +4572,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 246:
 YY_RULE_SETUP
-#line 627 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 629 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->decval = getDriver()->symtab.decimalval(yytext, yyleng);
   return token::DECIMAL_LITERAL;
@@ -4578,7 +4580,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 247:
 YY_RULE_SETUP
-#line 632 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 634 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   yylval->dval = getDriver()->symtab.doubleval(yytext, yyleng);
   return token::DOUBLE_LITERAL;
@@ -4586,7 +4588,7 @@ YY_RULE_SETUP
 	YY_BREAK
 case 248:
 YY_RULE_SETUP
-#line 637 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 639 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* invalid integer literal */
   yylval->err = scanner_error::unrecognizedIntegerErr(yytext);
@@ -4595,29 +4597,29 @@ YY_RULE_SETUP
 	YY_BREAK
 case 249:
 YY_RULE_SETUP
-#line 643 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 645 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-  TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
+  TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2), yytext);
 }
 	YY_BREAK
 case 250:
 YY_RULE_SETUP
-#line 647 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 649 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-  TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng));
+  TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext);
 }
 	YY_BREAK
 case 251:
 YY_RULE_SETUP
-#line 651 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 653 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
-  TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
+  TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2), yytext);
 }
 	YY_BREAK
 case 252:
 /* rule 252 can match eol */
 YY_RULE_SETUP
-#line 655 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 657 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
 }
@@ -4630,49 +4632,49 @@ YY_RULE_SETUP
 /* ------------------------------ */
 case 253:
 YY_RULE_SETUP
-#line 667 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 669 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
 	YY_BREAK
 /* transition to PROCESSING_INSTRUCTION */
 /* ------------------------------------ */
 case 254:
 YY_RULE_SETUP
-#line 672 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 674 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_PROCESSING_INSTRUCTION);return token::PI_BEGIN; }
 	YY_BREAK
 /* transition to CDATA_SECTION */
 /* --------------------------- */
 case 255:
 YY_RULE_SETUP
-#line 677 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 679 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { /* PUSH_AND_BEGIN (MODE_CDATA_SECTION, MODE_OPERATOR); */ return token::CDATA_BEGIN; }
 	YY_BREAK
 /* transition to MODE_START_TAG */
 /* ---------------------------- */
 case 256:
 YY_RULE_SETUP
-#line 682 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 684 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 	YY_BREAK
 /* transition to MODE_EXPR_DOC_COMMENT */
 /* ----------------------------------- */
 case 257:
 YY_RULE_SETUP
-#line 687 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 689 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_EXPR_DOC_COMMENT); }
 	YY_BREAK
 /* transition to MODE_EXPR_COMMENT */
 /* ------------------------------- */
 case 258:
 YY_RULE_SETUP
-#line 692 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 694 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_EXPR_COMMENT); }
 	YY_BREAK
 /* transition to PRAGMA */
 /* -------------------- */
 case 259:
 YY_RULE_SETUP
-#line 697 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 699 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   BEGIN MODE_PRAGMA;
   return token::PRAGMA_BEGIN;
@@ -4682,14 +4684,14 @@ YY_RULE_SETUP
 /* ------------------ */
 case 260:
 YY_RULE_SETUP
-#line 705 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 707 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 /* pop previous state */
 /* ------------------ */
 case 261:
 YY_RULE_SETUP
-#line 710 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 712 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   if (yy_get_start_stack_ptr() > 0)   // The lexer will catch the unexpected right brace and generate a syntax error
     POP_STATE();
@@ -4699,7 +4701,7 @@ YY_RULE_SETUP
 case 262:
 /* rule 262 can match eol */
 YY_RULE_SETUP
-#line 717 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 719 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   /* eat up whitespace */
 }
@@ -4753,18 +4755,18 @@ YY_RULE_SETUP
 case 263:
 /* rule 263 can match eol */
 YY_RULE_SETUP
-#line 778 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng, true, true)); }
+#line 780 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
 	YY_BREAK
 case 264:
 YY_RULE_SETUP
-#line 779 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2)); }
+#line 781 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2), yytext); }
 	YY_BREAK
 case 265:
 /* rule 265 can match eol */
 YY_RULE_SETUP
-#line 780 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 782 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { /* continue lexing */ }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4777,8 +4779,8 @@ YY_RULE_SETUP
 case 266:
 /* rule 266 can match eol */
 YY_RULE_SETUP
-#line 791 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ BEGIN INITIAL; TRY_SVAL_TOKEN(PRAGMA_LITERAL_AND_END_PRAGMA, put(yytext, yyleng-2)); }
+#line 793 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ BEGIN INITIAL; TRY_SVAL_TOKEN(PRAGMA_LITERAL_AND_END_PRAGMA, put(yytext, yyleng-2), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
    |
@@ -4792,43 +4794,43 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 267:
 YY_RULE_SETUP
-#line 805 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 807 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_ELEMENT_CONTENT; return token::TAG_END; }
 	YY_BREAK
 case 268:
 YY_RULE_SETUP
-#line 806 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 808 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_QUOTE_ATTRIBUTE_CONTENT; return token::QUOTE; }
 	YY_BREAK
 case 269:
 YY_RULE_SETUP
-#line 807 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 809 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_APOS_ATTRIBUTE_CONTENT; return token::APOS; }
 	YY_BREAK
 case 270:
 YY_RULE_SETUP
-#line 808 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 810 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::EQUALS; }
 	YY_BREAK
 case 271:
 /* rule 271 can match eol */
 YY_RULE_SETUP
-#line 809 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 811 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::BLANK; }
 	YY_BREAK
 case 272:
 YY_RULE_SETUP
-#line 810 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 812 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::EMPTY_TAG_END; }
 	YY_BREAK
 case 273:
 YY_RULE_SETUP
-#line 811 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng)); }
+#line 813 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 	YY_BREAK
 case 274:
 YY_RULE_SETUP
-#line 812 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 814 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { yylval->err = scanner_error::unrecognizedCharErr(yytext); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4846,58 +4848,58 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 275:
 YY_RULE_SETUP
-#line 829 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 831 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_END_TAG; return token::START_TAG_END; }
 	YY_BREAK
 case 276:
 YY_RULE_SETUP
-#line 830 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 832 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 case 277:
 YY_RULE_SETUP
-#line 831 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 833 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_XML_COMMENT); return token::XML_COMMENT_BEGIN; }
 	YY_BREAK
 case 278:
 YY_RULE_SETUP
-#line 832 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 834 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_PROCESSING_INSTRUCTION); return token::PI_BEGIN; }
 	YY_BREAK
 case 279:
 YY_RULE_SETUP
-#line 833 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 835 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_CDATA_SECTION); return token::CDATA_BEGIN; }
 	YY_BREAK
 case 280:
 YY_RULE_SETUP
-#line 834 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 836 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
 	YY_BREAK
 case 281:
 /* rule 281 can match eol */
 YY_RULE_SETUP
-#line 835 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, 1)); }
+#line 837 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, 1), yytext); }
 	YY_BREAK
 case 282:
 YY_RULE_SETUP
-#line 836 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng)); }
+#line 838 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng), yytext); }
 	YY_BREAK
 case 283:
 YY_RULE_SETUP
-#line 837 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 839 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 284:
 YY_RULE_SETUP
-#line 838 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 840 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 285:
 YY_RULE_SETUP
-#line 839 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 841 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4909,14 +4911,14 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 286:
 YY_RULE_SETUP
-#line 850 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 852 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::TAG_END; }
 	YY_BREAK
 case 287:
 /* rule 287 can match eol */
 YY_RULE_SETUP
-#line 851 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true)); }
+#line 853 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
    |
@@ -4927,14 +4929,14 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 288:
 YY_RULE_SETUP
-#line 862 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 864 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::XML_COMMENT_END; }
 	YY_BREAK
 case 289:
 /* rule 289 can match eol */
 YY_RULE_SETUP
-#line 863 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng)); }
+#line 865 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
    |
@@ -4946,22 +4948,22 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 290:
 YY_RULE_SETUP
-#line 875 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 877 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); }
 	YY_BREAK
 case 291:
 YY_RULE_SETUP
-#line 876 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 878 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(MODE_EXPR_COMMENT); }
 	YY_BREAK
 case 292:
 /* rule 292 can match eol */
 YY_RULE_SETUP
-#line 877 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 879 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { /* do nothing */ }
 	YY_BREAK
 case YY_STATE_EOF(MODE_EXPR_COMMENT):
-#line 878 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 880 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { yylval->err = scanner_error::unterminatedCommentErr(); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -4974,13 +4976,13 @@ case YY_STATE_EOF(MODE_EXPR_COMMENT):
    |______________________________________________________________________*/
 case 293:
 YY_RULE_SETUP
-#line 890 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 892 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); }
 	YY_BREAK
 case 294:
 /* rule 294 can match eol */
 YY_RULE_SETUP
-#line 891 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 893 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   if(theDriver->theDocComment.empty())
   {
@@ -4990,7 +4992,7 @@ YY_RULE_SETUP
 }
 	YY_BREAK
 case YY_STATE_EOF(MODE_EXPR_DOC_COMMENT):
-#line 898 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 900 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { yylval->err = scanner_error::unterminatedCommentErr(); return token::UNRECOGNIZED; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5003,18 +5005,18 @@ case YY_STATE_EOF(MODE_EXPR_DOC_COMMENT):
 case 295:
 /* rule 295 can match eol */
 YY_RULE_SETUP
-#line 909 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 911 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
 	YY_BREAK
 case 296:
 YY_RULE_SETUP
-#line 910 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 912 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { POP_STATE(); return token::PI_END; }
 	YY_BREAK
 case 297:
 YY_RULE_SETUP
-#line 911 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-/* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng)); }
+#line 913 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+/* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng), yytext); }
 	YY_BREAK
 /*______________________________________________________________________
    |
@@ -5026,10 +5028,10 @@ YY_RULE_SETUP
 case 298:
 /* rule 298 can match eol */
 YY_RULE_SETUP
-#line 922 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 924 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
   POP_STATE();
-  TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2));
+  TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2), yytext);
 }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5041,13 +5043,13 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 299:
 YY_RULE_SETUP
-#line 936 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3)); }
+#line 938 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3), yytext); }
 	YY_BREAK
 case 300:
 /* rule 300 can match eol */
 YY_RULE_SETUP
-#line 937 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 939 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { yymore(); }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5065,43 +5067,43 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 301:
 YY_RULE_SETUP
-#line 954 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 956 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_START_TAG; return token::QUOTE; }
 	YY_BREAK
 case 302:
 YY_RULE_SETUP
-#line 955 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 957 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_STATE(INITIAL); return token::LBRACE; }
 	YY_BREAK
 case 303:
 YY_RULE_SETUP
-#line 956 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 958 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ESCAPE_QUOTE; }
 	YY_BREAK
 case 304:
 /* rule 304 can match eol */
 YY_RULE_SETUP
-#line 957 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2)); }
+#line 959 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
 	YY_BREAK
 case 305:
 YY_RULE_SETUP
-#line 958 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
+#line 960 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
 	YY_BREAK
 case 306:
 YY_RULE_SETUP
-#line 959 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 961 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 307:
 YY_RULE_SETUP
-#line 960 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 962 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 308:
 YY_RULE_SETUP
-#line 961 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 963 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5114,43 +5116,43 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 309:
 YY_RULE_SETUP
-#line 973 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 975 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { BEGIN MODE_START_TAG; return token::APOS; }
 	YY_BREAK
 case 310:
 YY_RULE_SETUP
-#line 974 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 976 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT); return token::LBRACE; }
 	YY_BREAK
 case 311:
 YY_RULE_SETUP
-#line 975 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 977 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::ESCAPE_APOS; }
 	YY_BREAK
 case 312:
 /* rule 312 can match eol */
 YY_RULE_SETUP
-#line 976 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, 2)); }
+#line 978 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
 	YY_BREAK
 case 313:
 YY_RULE_SETUP
-#line 977 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
-{ TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
+#line 979 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+{ TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
 	YY_BREAK
 case 314:
 YY_RULE_SETUP
-#line 978 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 980 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 	YY_BREAK
 case 315:
 YY_RULE_SETUP
-#line 979 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 981 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_LBRACE; }
 	YY_BREAK
 case 316:
 YY_RULE_SETUP
-#line 980 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 982 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 { return token::DOUBLE_RBRACE; }
 	YY_BREAK
 /*______________________________________________________________________
@@ -5159,7 +5161,7 @@ YY_RULE_SETUP
    |______________________________________________________________________*/
 case 317:
 YY_RULE_SETUP
-#line 989 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 991 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 {
     yylval->err = scanner_error::unrecognizedCharErr(yytext);
     return token::UNRECOGNIZED;
@@ -5168,10 +5170,10 @@ YY_RULE_SETUP
 /* END OF FLEX RULES */
 case 318:
 YY_RULE_SETUP
-#line 998 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1000 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 ECHO;
 	YY_BREAK
-#line 5175 "xquery_scanner.yy.cpp"
+#line 5177 "xquery_scanner.yy.cpp"
 case YY_STATE_EOF(INITIAL):
 case YY_STATE_EOF(MODE_APOS_ATTRIBUTE_CONTENT):
 case YY_STATE_EOF(MODE_CDATA_SECTION):
@@ -6249,7 +6251,7 @@ void Zorbafree (void * ptr )
 
 /* %ok-for-header */
 
-#line 998 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
+#line 1000 "/home/colea/work/xquery/src/compiler/parser/xquery_scanner.l"
 
 
 

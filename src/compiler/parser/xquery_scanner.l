@@ -65,18 +65,20 @@ typedef zorba::xquery_parser::token_type token_type;
         PUSH_STATE(pushed); \
     } while(0)
 
-#define TRY_SVAL_TOKEN( ttype, put )                                    \
+#define TRY_SVAL_TOKEN( ttype, put, yytext )                            \
   do {                                                                  \
     off_t res = getDriver()->symtab.put;                                \
-    if (res < 0) return token::UNRECOGNIZED;                            \
-    else {                                                              \
+    if (res < 0) {                                                      \
+      yylval->err = scanner_error::unrecognizedToken(yytext);           \
+      return token::UNRECOGNIZED;                                       \
+    } else {                                                            \
       yylval->sval = res;                                               \
       return token::ttype;                                              \
     }                                                                   \
   } while (0)
 
 #define TRY_STR_LIT( ttype, put, yytext, yyleng ) \
-  TRY_SVAL_TOKEN (ttype, put (yytext, yyleng))
+  TRY_SVAL_TOKEN (ttype, put (yytext, yyleng), yytext)
 
 #define TRY_STRINGLIT( ttype, yytext, yyleng ) \
   TRY_STR_LIT (ttype, put_stringlit, yytext, yyleng)
@@ -641,15 +643,15 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 }
 
 {NCName}":*" {
-  TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2));
+  TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2), yytext);
 }
 
 {QName} {
-  TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng));
+  TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext);
 }
 
 "*:"{NCName} {
-  TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2));
+  TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2), yytext);
 }
 
 {StringLiteral} {
@@ -775,8 +777,8 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    | OPERATOR state.
    |______________________________________________________________________*/
 
-<MODE_PRAGMA>{QName}{SPNoComment} { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng, true, true)); }
-<MODE_PRAGMA>{QName}"#)" { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2)); }
+<MODE_PRAGMA>{QName}{SPNoComment} { BEGIN MODE_PRAGMACONTENTS; TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng, true, true), yytext); }
+<MODE_PRAGMA>{QName}"#)" { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_SVAL_AND_END_PRAGMA, put_qname(yytext, yyleng-2), yytext); }
 <MODE_PRAGMA>{S} { /* continue lexing */ }
 
 
@@ -788,7 +790,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    | out of this state when a '#)' pattern is recognized.
    |______________________________________________________________________*/
 
-<MODE_PRAGMACONTENTS>{PragmaChars}"#)" { BEGIN INITIAL; TRY_SVAL_TOKEN(PRAGMA_LITERAL_AND_END_PRAGMA, put(yytext, yyleng-2)); }
+<MODE_PRAGMACONTENTS>{PragmaChars}"#)" { BEGIN INITIAL; TRY_SVAL_TOKEN(PRAGMA_LITERAL_AND_END_PRAGMA, put(yytext, yyleng-2), yytext); }
 
 
   /*______________________________________________________________________
@@ -808,7 +810,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_START_TAG>"=" { return token::EQUALS; }
 <MODE_START_TAG>{S} { return token::BLANK; }
 <MODE_START_TAG>"/>" { POP_STATE(); return token::EMPTY_TAG_END; }
-<MODE_START_TAG>{QName} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng)); }
+<MODE_START_TAG>{QName} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 <MODE_START_TAG>{CatchAll} { yylval->err = scanner_error::unrecognizedCharErr(yytext); return token::UNRECOGNIZED; }
 
 
@@ -832,8 +834,8 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_ELEMENT_CONTENT>"<?" { PUSH_STATE(MODE_PROCESSING_INSTRUCTION); return token::PI_BEGIN; }
 <MODE_ELEMENT_CONTENT>"<![CDATA[" { PUSH_STATE(MODE_CDATA_SECTION); return token::CDATA_BEGIN; }
 <MODE_ELEMENT_CONTENT>"<" { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
-<MODE_ELEMENT_CONTENT>{ElementContentChar}+ { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, 1)); }
-<MODE_ELEMENT_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng)); }
+<MODE_ELEMENT_CONTENT>{ElementContentChar}+ { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, 1), yytext); }
+<MODE_ELEMENT_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng), yytext); }
 <MODE_ELEMENT_CONTENT>{CharRef}+ { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_ELEMENT_CONTENT>"{{" { return token::DOUBLE_LBRACE; }
 <MODE_ELEMENT_CONTENT>"}}" { return token::DOUBLE_RBRACE; }
@@ -848,7 +850,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    |______________________________________________________________________*/
 
 <MODE_END_TAG>">" { POP_STATE(); return token::TAG_END; }
-<MODE_END_TAG>{QName}{S} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true)); }
+<MODE_END_TAG>{QName}{S} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true), yytext); }
 
 
   /*______________________________________________________________________
@@ -860,7 +862,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    |______________________________________________________________________*/
 
 <MODE_XML_COMMENT>"-->" { POP_STATE(); return token::XML_COMMENT_END; }
-<MODE_XML_COMMENT>{XMLCommentChar}* { TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng)); }
+<MODE_XML_COMMENT>{XMLCommentChar}* { TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng), yytext); }
 
 
   /*______________________________________________________________________
@@ -908,7 +910,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 
 <MODE_PROCESSING_INSTRUCTION>{SP} { BEGIN MODE_PROCESSING_INSTRUCTION_CONTENT; /* continue lexing */ }
 <MODE_PROCESSING_INSTRUCTION>"?>" { POP_STATE(); return token::PI_END; }
-<MODE_PROCESSING_INSTRUCTION>{NCName} /* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng)); }
+<MODE_PROCESSING_INSTRUCTION>{NCName} /* PITarget */    { TRY_SVAL_TOKEN (NCNAME_SVAL, put(yytext, yyleng), yytext); }
 
 
   /*______________________________________________________________________
@@ -921,7 +923,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 
 <MODE_PROCESSING_INSTRUCTION_CONTENT>{PIChars}"?>" {
   POP_STATE();
-  TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2));
+  TRY_SVAL_TOKEN (CHAR_LITERAL_AND_PI_END, put(yytext, yyleng-2), yytext);
 }
 
 
@@ -933,7 +935,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    | recognized.
    |______________________________________________________________________*/
 
-<MODE_CDATA_SECTION>"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3)); }
+<MODE_CDATA_SECTION>"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3), yytext); }
 <MODE_CDATA_SECTION>{Char} { yymore(); }
 
 
@@ -954,8 +956,8 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_QUOTE_ATTRIBUTE_CONTENT>\" { BEGIN MODE_START_TAG; return token::QUOTE; }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>"{" { PUSH_STATE(INITIAL); return token::LBRACE; }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>{EscapeQuot} { return token::ESCAPE_QUOTE; }
-<MODE_QUOTE_ATTRIBUTE_CONTENT>{QuotAttrContentChar}+ { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2)); }
-<MODE_QUOTE_ATTRIBUTE_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>{QuotAttrContentChar}+ { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>{CharRef}+ { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>"{{" { return token::DOUBLE_LBRACE; }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>"}}" { return token::DOUBLE_RBRACE; }
@@ -973,8 +975,8 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_APOS_ATTRIBUTE_CONTENT>\'                     { BEGIN MODE_START_TAG; return token::APOS; }
 <MODE_APOS_ATTRIBUTE_CONTENT>"{"                    { PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT); return token::LBRACE; }
 <MODE_APOS_ATTRIBUTE_CONTENT>{EscapeApos}           { return token::ESCAPE_APOS; }
-<MODE_APOS_ATTRIBUTE_CONTENT>{AposAttrContentChar}+ { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, 2)); }
-<MODE_APOS_ATTRIBUTE_CONTENT>{PredefinedEntityRef}  { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng)); }
+<MODE_APOS_ATTRIBUTE_CONTENT>{AposAttrContentChar}+ { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
+<MODE_APOS_ATTRIBUTE_CONTENT>{PredefinedEntityRef}  { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
 <MODE_APOS_ATTRIBUTE_CONTENT>{CharRef}+             { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_APOS_ATTRIBUTE_CONTENT>"{{"                   { return token::DOUBLE_LBRACE; }
 <MODE_APOS_ATTRIBUTE_CONTENT>"}}"                   { return token::DOUBLE_RBRACE; }
