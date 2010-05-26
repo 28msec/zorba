@@ -326,22 +326,20 @@ void apply_ftand( ft_all_matches const &ami, ft_all_matches const &amj,
   PUT_ALL_MATCHES( amj );
 
   FOR_EACH( ft_all_matches, mi, ami ) {
+    ft_match m_new;
+    copy_seq( mi->includes, m_new.includes );
+    copy_seq( mi->excludes, m_new.excludes );
     FOR_EACH( ft_all_matches, mj, amj ) {
-      ft_match m_new;
-      copy_seq( mi->includes, m_new.includes );
       copy_seq( mj->includes, m_new.includes );
-      copy_seq( mi->excludes, m_new.excludes );
       copy_seq( mj->excludes, m_new.excludes );
-      result.push_back( m_new );
     }
+    result.push_back( m_new );
   }
 
   END_APPLY( result );
 }
 
 ////////// ApplyFTContent /////////////////////////////////////////////////////
-
-//#define DEBUG_FTCONTENT 1
 
 /**
  * Helper function for applyft_content(): checks if the given ft_token_span
@@ -650,13 +648,24 @@ void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
 
 ////////// ApplyFTTimes ///////////////////////////////////////////////////////
 
+/**
+ * Finds all combinations of exactly \c k elements from \c ms and, for each
+ * such combination, constructs a match whose children are copies of all the
+ * children of all the elements in the combination.
+ *
+ * @param ms      The match-sequence to form combinations of.
+ * @param k       The number of combinations of elements.
+ * @param result  The cumulative result.
+ *
+ * @return Returns the sequence of all such matches.
+ */
 static void form_combinations( ft_match_seq const &ms, ft_int k,
                                ft_match_seq &result ) {
-  ft_int count = ms.size();
+  ft_int const count = ms.size();
   if ( !k || count < k )
     return;
   if ( count == k )
-    result = ms;
+    copy_seq( ms, result );
   else {
     ft_match_seq rest( ms );
     ft_match const first = POP_FRONT( rest );
@@ -675,13 +684,22 @@ static void form_combinations( ft_match_seq const &ms, ft_int k,
   }
 }
 
+/**
+ * Finds all combinations of \c times or more elements from \c ms and, for each
+ * such combination, constructs a match whose children are copies of all the
+ * children of all the elements in the combination.
+ *
+ * @param ms      The match-sequence to form combinations of.
+ * @param times   The number of combinations of elements.
+ * @param result  The result.
+ *
+ * @return Return the sequence of all such matches.
+ */
 static void form_combinations_at_least( ft_match_seq const &ms, ft_int times,
                                         ft_match_seq &result ) {
   ft_int const count = ms.size();
   for ( ft_int k = times; k <= count; ++k ) {
-    ft_match_seq temp;
-    form_combinations( ms, k, temp );
-    copy_seq( temp, result );
+    form_combinations( ms, k, result );
   }
 }
 
@@ -689,8 +707,8 @@ static void form_range( ft_match_seq const &ms, ft_int at_least, ft_int at_most,
                         ft_match_seq &result ) {
   if ( at_least <= at_most ) {
     ft_all_matches ami, amj;
-    form_combinations( ms, at_least, ami );
-    form_combinations( ms, at_most, amj );
+    form_combinations_at_least( ms, at_least, ami );
+    form_combinations_at_least( ms, at_most + 1, amj );
     apply_ftunary_not( amj );
     apply_ftand( ami, amj, result );
   }
