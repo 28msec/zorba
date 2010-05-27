@@ -119,7 +119,6 @@ ftcontains_visitor::ftcontains_visitor( FTTokenIterator_t &search_ctx,
 ftcontains_visitor::~ftcontains_visitor() {
   while ( !matches_stack_.empty() )
     delete pop_matches();
-  ZORBA_ASSERT( options_stack_.empty() );
 }
 
 void ftcontains_visitor::eval_ftrange( ftrange const &range,
