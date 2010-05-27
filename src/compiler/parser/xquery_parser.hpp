@@ -113,7 +113,7 @@ public:
 
 
 /* Line 34 of lalr1.cc  */
-#line 117 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 117 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -124,14 +124,14 @@ public:
 namespace zorba {
 
 /* Line 34 of lalr1.cc  */
-#line 128 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 128 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
 } // zorba
 
 /* Line 34 of lalr1.cc  */
-#line 135 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 135 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -176,7 +176,7 @@ do {							\
 namespace zorba {
 
 /* Line 34 of lalr1.cc  */
-#line 180 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 180 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -212,7 +212,7 @@ namespace zorba {
 
 
 /* Line 34 of lalr1.cc  */
-#line 216 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 216 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -709,7 +709,7 @@ namespace zorba {
 } // zorba
 
 /* Line 34 of lalr1.cc  */
-#line 713 "/home/colea/work/xquery/build/src/compiler/parser/xquery_parser.hpp"
+#line 713 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
 
 

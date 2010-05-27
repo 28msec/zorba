@@ -6157,6 +6157,7 @@ KEYWORD
     |   SCHEMA_ELEMENT { $$ = SYMTAB_PUT("schema-element"); }
     |   TEXT { $$ = SYMTAB_PUT("text"); }
     |   TYPESWITCH { $$ = SYMTAB_PUT("typeswitch"); }
+    |   SWITCH { $$ = SYMTAB_PUT("switch"); }
     |   EMPTY_SEQUENCE { $$ = SYMTAB_PUT("empty-sequence"); }
     |   BOUNDARY_SPACE { $$ = SYMTAB_PUT("boundary-space"); }
     |   FT_OPTION { $$ = SYMTAB_PUT("ft-option"); }
