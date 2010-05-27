@@ -82,32 +82,29 @@ inline ftmatch_options const* ftcontains_visitor::pop_options() {
 
 inline void pop_helper( char const *what, int line ) {
   if ( TRACE_FULL_TEXT )
-    DOUT << "POP " << what << " @ line " << line << endl;
+    DOUT << indent << "(pop " << what << " @ line " << line << ")\n";
 }
 
-#define PUSH_MATCHES(M)                                       \
-  if ( !TRACE_FULL_TEXT ) ; else                              \
-  DOUT << "PUSH MATCHES @ line " << __LINE__ << endl; push_matches(M)
+#define PUSH(WHAT,OBJ) \
+  if ( !TRACE_FULL_TEXT ) ; else                                    \
+  DOUT << indent << "(push " #WHAT " @ line " << __LINE__ << ")\n"; \
+  push_##WHAT(OBJ)
 
-#define POP_MATCHES(M) \
-  ( pop_helper( "MATCHES", __LINE__ ), pop_matches(M) )
-
-#define PUSH_OPTIONS(O)                                               \
-  if ( !TRACE_FULL_TEXT ) ; else                                      \
-  DOUT << "PUSH OPTIONS @ line " << __LINE__ << endl; push_options(O)
-
-#define POP_OPTIONS(O) \
-  ( pop_helper( "OPTIONS", __LINE__ ), pop_options(O) )
+#define POP(WHAT) \
+  ( pop_helper( #WHAT, __LINE__ ), pop_##WHAT() )
 
 #else /* NDEBUG */
 
-#define PUSH_MATCHES(M) push_matches(M)
-#define POP_MATCHES(M)  pop_matches(M)
-
-#define PUSH_OPTIONS(O) push_options(O)
-#define POP_OPTIONS(O)  pop_options(O)
+#define PUSH(WHAT,OBJ)  push_##WHAT(OBJ)
+#define POP(WHAT)       pop_##WHAT()
 
 #endif /* NDEBUG */
+
+#define PUSH_MATCHES(M) PUSH(matches,M)
+#define POP_MATCHES()   POP(matches)
+
+#define PUSH_OPTIONS(O) PUSH(options,O)
+#define POP_OPTIONS()   POP(options)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -173,20 +170,13 @@ expr_visitor* ftcontains_visitor::get_expr_visitor() {
 
 ////////// Visit macros ///////////////////////////////////////////////////////
 
-#if 0
+#ifndef NDEBUG
 
 #define BEGIN_VISIT(LABEL) \
-  cout << indent << #LABEL << endl << inc_indent
+  cout << indent << "BEGIN " #LABEL << endl << inc_indent
 
-#define END_VISIT() \
-  cout << dec_indent
-
-#else
-
-#define BEGIN_VISIT(LABEL)  /* nothing */
-#define END_VISIT()         /* nothing */
-
-#endif /* NDEBUG */
+#define END_VISIT(LABEL) \
+  cout << dec_indent << indent << "END " #LABEL << endl
 
 #undef DEF_FTNODE_VISITOR_BEGIN_VISIT
 #define DEF_FTNODE_VISITOR_BEGIN_VISIT(V,C)     \
@@ -198,8 +188,15 @@ expr_visitor* ftcontains_visitor::get_expr_visitor() {
 #undef DEF_FTNODE_VISITOR_END_VISIT
 #define DEF_FTNODE_VISITOR_END_VISIT(V,C)   \
   void V::end_visit( C& ) {                 \
-    END_VISIT();                            \
+    END_VISIT(C);                           \
   }
+
+#else /* NDEBUG */
+
+#define BEGIN_VISIT(LABEL)  /* nothing */
+#define END_VISIT(LABEL)    /* nothing */
+
+#endif /* NDEBUG */
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -224,7 +221,7 @@ void V::end_visit( ftand& ) {
     apply_ftand( *am_left, *am_right, *result );
     PUSH_MATCHES( result.release() );
   }
-  END_VISIT();
+  END_VISIT( ftand );
 }
 
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_selection )
@@ -248,7 +245,7 @@ void V::end_visit( ftmild_not& ) {
     apply_ftmild_not( *am_left, *am_right, *result );
     PUSH_MATCHES( result.release() );
   }
-  END_VISIT();
+  END_VISIT( ftmild_not );
 }
 
 ft_visit_result::type V::begin_visit( ftor& ) {
@@ -270,7 +267,7 @@ void V::end_visit( ftor& ) {
     apply_ftor( *am_left, *am_right, *result );
     PUSH_MATCHES( result.release() );
   }
-  END_VISIT();
+  END_VISIT( ftor );
 }
 
 ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
@@ -280,7 +277,7 @@ ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
 }
 void V::end_visit( ftprimary_with_options& ) {
   POP_OPTIONS();
-  END_VISIT();
+  END_VISIT( ftprimary_with_options );
 }
 
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftrange )
@@ -294,7 +291,7 @@ DEF_FTNODE_VISITOR_END_VISIT( V, ftselection )
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftunary_not )
 void V::end_visit( ftunary_not& ) {
   apply_ftunary_not( *top_matches() );
-  END_VISIT();
+  END_VISIT( ftunary_not );
 }
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords )
@@ -321,7 +318,7 @@ void V::end_visit( ftwords &w ) {
     );
     PUSH_MATCHES( result.release() );
   }
-  END_VISIT();
+  END_VISIT( ftwords );
 }
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords_times )
@@ -334,7 +331,7 @@ void V::end_visit( ftwords_times &wt ) {
     apply_fttimes( *am, range->get_mode(), at_least, at_most, *result );
     PUSH_MATCHES( result.release() );
   }
-  END_VISIT();
+  END_VISIT( ftwords_times );
 }
 
 ////////// FTPosFilters ///////////////////////////////////////////////////////
@@ -344,7 +341,7 @@ void V::end_visit( ftcontent_filter &f ) {
   apply_ftcontent(
     *top_matches(), f.get_mode(), search_ctx_->begin(), search_ctx_->end() - 1
   );
-  END_VISIT();
+  END_VISIT( ftcontent_filter );
 }
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftdistance_filter )
@@ -355,7 +352,7 @@ void V::end_visit( ftdistance_filter &f ) {
   auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftdistance( *am, at_least, at_most, f.get_unit(), *result );
   PUSH_MATCHES( result.release() );
-  END_VISIT();
+  END_VISIT( ftdistance_filter );
 }
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftorder_filter )
@@ -364,7 +361,7 @@ void V::end_visit( ftorder_filter& ) {
   auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftorder( *am, *result );
   PUSH_MATCHES( result.release() );
-  END_VISIT();
+  END_VISIT( ftorder_filter );
 }
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftscope_filter )
@@ -373,7 +370,7 @@ void V::end_visit( ftscope_filter &f ) {
   auto_ptr<ft_all_matches> result( new ft_all_matches );
   apply_ftscope( *am, f.get_scope(), f.get_unit(), *result );
   PUSH_MATCHES( result.release() );
-  END_VISIT();
+  END_VISIT( ftscope_filter );
 }
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwindow_filter )
@@ -386,7 +383,7 @@ void V::end_visit( ftwindow_filter &f ) {
     *am, to_ft_int( item->getIntegerValue() ), f.get_unit(), *result
   );
   PUSH_MATCHES( result.release() );
-  END_VISIT();
+  END_VISIT( ftwindow_filter );
 }
 
 ////////// FTMatchOptions /////////////////////////////////////////////////////
