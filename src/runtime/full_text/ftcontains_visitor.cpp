@@ -20,10 +20,13 @@
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/ftcontains_visitor.h"
-#include "system/properties.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbautils/indent.h"
 #include "zorbautils/stl_util.h"
+
+#ifndef NDEBUG
+#include "system/properties.h"
+#endif
 
 using namespace std;
 
@@ -73,6 +76,71 @@ inline ftmatch_options const* ftcontains_visitor::pop_options() {
   return mo;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+
+ftcontains_visitor::ftcontains_visitor( FTTokenIterator_t &search_ctx,
+                                        PlanState &state ) :
+  search_ctx_( search_ctx ),
+  plan_state_( state )
+{
+  // do nothing
+}
+
+ftcontains_visitor::~ftcontains_visitor() {
+  while ( !matches_stack_.empty() )
+    delete pop_matches();
+}
+
+void ftcontains_visitor::eval_ftrange( ftrange const &range,
+                                       ft_int *at_least, ft_int *at_most ) {
+  *at_least = 0;
+  *at_most = numeric_limits<ft_int>::max();
+  ft_int const int1 = get_int( range.get_plan_iter1() );
+
+  switch ( range.get_mode() ) {
+    case ft_range_mode::at_least:
+      *at_least = int1;
+      break;
+    case ft_range_mode::at_most:
+      *at_most = int1;
+      break;
+    case ft_range_mode::exactly:
+      *at_least = *at_most = int1;
+      break;
+    case ft_range_mode::from_to:
+      *at_least = int1;
+      *at_most = get_int( range.get_plan_iter2() );
+      break;
+  }
+}
+
+bool ftcontains_visitor::ftcontains() const {
+  if ( matches_stack_.empty() )
+    return false;
+  ft_all_matches const &am = *top_matches();
+  if ( am.empty() )
+    return false;
+  //
+  // See spec section 4.3.
+  //
+  FOR_EACH( ft_all_matches, m, am )
+    if ( m->excludes.empty() )
+      return true;
+  return false;
+}
+
+expr_visitor* ftcontains_visitor::get_expr_visitor() {
+  return NULL;
+}
+
+ft_int ftcontains_visitor::get_int( PlanIter_t iter ) {
+  store::Item_t item;
+  iter->reset( plan_state_ );
+	bool const got_item = PlanIterator::consumeNext( item, iter, plan_state_ );
+  ZORBA_ASSERT( got_item );
+  return to_ft_int( item->getIntegerValue() );
+}
+
 ////////// PUSH/POP macros ////////////////////////////////////////////////////
 
 #ifndef NDEBUG
@@ -105,67 +173,6 @@ inline void pop_helper( char const *what, int line ) {
 
 #define PUSH_OPTIONS(O) PUSH(options,O)
 #define POP_OPTIONS()   POP(options)
-
-///////////////////////////////////////////////////////////////////////////////
-
-ftcontains_visitor::ftcontains_visitor( FTTokenIterator_t &search_ctx,
-                                        PlanState &state ) :
-  search_ctx_( search_ctx ),
-  plan_state_( state )
-{
-  // do nothing
-}
-
-ftcontains_visitor::~ftcontains_visitor() {
-  while ( !matches_stack_.empty() )
-    delete pop_matches();
-}
-
-void ftcontains_visitor::eval_ftrange( ftrange const &range,
-                                       ft_int *at_least, ft_int *at_most ) {
-  store::Item_t item1;
-  PlanIterator::consumeNext( item1, range.get_plan_iter1(), plan_state_ );
-
-  *at_least = 0;
-  *at_most = numeric_limits<ft_int>::max();
-
-  switch ( range.get_mode() ) {
-    case ft_range_mode::at_least:
-      *at_least = to_ft_int( item1->getIntegerValue() );
-      break;
-    case ft_range_mode::at_most:
-      *at_most = to_ft_int( item1->getIntegerValue() );
-      break;
-    case ft_range_mode::exactly:
-      *at_least = *at_most = to_ft_int( item1->getIntegerValue() );
-      break;
-    case ft_range_mode::from_to:
-      *at_least = to_ft_int( item1->getIntegerValue() );
-      store::Item_t item2;
-      PlanIterator::consumeNext( item2, range.get_plan_iter2(), plan_state_ );
-      *at_most = to_ft_int( item2->getIntegerValue() );
-      break;
-  }
-}
-
-bool ftcontains_visitor::ftcontains() const {
-  if ( matches_stack_.empty() )
-    return false;
-  ft_all_matches const &am = *top_matches();
-  if ( am.empty() )
-    return false;
-  //
-  // See spec section 4.3.
-  //
-  FOR_EACH( ft_all_matches, m, am )
-    if ( m->excludes.empty() )
-      return true;
-  return false;
-}
-
-expr_visitor* ftcontains_visitor::get_expr_visitor() {
-  return NULL;
-}
 
 ////////// Visit macros ///////////////////////////////////////////////////////
 
@@ -304,8 +311,11 @@ void V::end_visit( ftwords &w ) {
   }
 
   store::Item_t item;
+  PlanIter_t plan_iter = w.get_plan_iter();
+  plan_iter->reset( plan_state_ );
   FTQueryItemSeq query_items;
-  while ( PlanIterator::consumeNext( item, w.get_plan_iter(), plan_state_ ) ) {
+
+  while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
     FTQueryItem const qi( item->getQueryTokens() );
     if ( !qi->empty() )
       query_items.push_back( qi );
@@ -375,13 +385,9 @@ void V::end_visit( ftscope_filter &f ) {
 
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwindow_filter )
 void V::end_visit( ftwindow_filter &f ) {
-  store::Item_t item;
-  PlanIterator::consumeNext( item, f.get_plan_iter(), plan_state_ );
   auto_ptr<ft_all_matches> const am( POP_MATCHES() );
   auto_ptr<ft_all_matches> result( new ft_all_matches );
-  apply_ftwindow(
-    *am, to_ft_int( item->getIntegerValue() ), f.get_unit(), *result
-  );
+  apply_ftwindow( *am, get_int( f.get_plan_iter() ), f.get_unit(), *result );
   PUSH_MATCHES( result.release() );
   END_VISIT( ftwindow_filter );
 }

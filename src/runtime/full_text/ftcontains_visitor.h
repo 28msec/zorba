@@ -83,6 +83,7 @@ private:
   ftmatch_options const* top_options() const;
 
   void eval_ftrange( ftrange const&, ft_int *at_least, ft_int *at_most );
+  ft_int get_int( PlanIter_t );
 
   FTTokenIterator_t &search_ctx_;
   PlanState &plan_state_;
