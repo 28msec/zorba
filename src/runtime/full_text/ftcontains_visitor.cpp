@@ -283,6 +283,7 @@ void V::end_visit( ftprimary_with_options& ) {
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftrange )
 
 ft_visit_result::type V::begin_visit( ftselection& ) {
+  BEGIN_VISIT( ftselection );
   query_pos_ = 0;
   return ft_visit_result::proceed;
 }
