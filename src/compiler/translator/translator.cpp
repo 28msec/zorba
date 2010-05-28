@@ -6117,17 +6117,37 @@ void* begin_visit(const SwitchExpr& v)
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
     ZORBA_ERROR_LOC_DESC(XPST0003, loc, "Switch expressions are a feature that is only available in XQuery 1.1 or later.");
 
-  var_expr_t sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
   v.get_switch_expr()->accept(*this);
   expr_t se = pop_nodestack();
-
   if (se->is_updating())
   {
     ZORBA_ERROR_LOC(XUST0001, loc);
   }
 
-  // flworExpr = [let $sv := E return NULL]
-  expr_t flworExpr = wrap_in_let_flwor(se, sv, NULL);
+  // wrap in atomization
+  se = wrap_in_atomization(se);
+
+  // atomizedFlwor = [let $atomv := data(E) return NULL]
+  var_expr_t atomv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
+  expr_t atomizedFlwor = wrap_in_let_flwor(se, atomv, NULL);
+
+  // atomizedFlwor =
+  //  [let $atomv := data(E)
+  //   return
+  //     let $sv :=
+  //          if ($atomv instanceof xs:untypedAtomic)
+  //          then $atomv cast as xs:string
+  //          else $atomv
+  //     return NULL]
+  static_cast<flwor_expr*>(atomizedFlwor.getp())->set_return_expr(
+    new if_expr(theRootSctx, loc,
+      new instanceof_expr(theRootSctx, loc, atomv.getp(), theRTM.UNTYPED_ATOMIC_TYPE_ONE),
+      new cast_expr(theRootSctx, loc, atomv.getp(), theRTM.STRING_TYPE_ONE),
+      atomv.getp()));
+
+  // flworExpr = [let $sv := atomizedFlwor return NULL]
+  var_expr_t sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
+  expr_t flworExpr = wrap_in_let_flwor(atomizedFlwor, sv, NULL);
 
   // retExpr = [Ed]
   v.get_default_expr()->accept(*this);
@@ -6150,8 +6170,16 @@ void* begin_visit(const SwitchExpr& v)
       const exprnode* operand = &**it;
       operand->accept(*this);
       expr_t operandExpr = pop_nodestack();
-      // operandExpr = [$sv = $cij]
-      operandExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_EQUAL_2), sv, operandExpr);
+      operandExpr = wrap_in_atomization(operandExpr);
+
+      // surround comparison in try/catch
+      trycatch_expr* tce = new trycatch_expr(theRootSctx, loc, new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2), sv, operandExpr));
+      catch_clause* cc = new catch_clause();
+      cc->add_nametest_h(new NodeNameTest(NULL, NULL));
+      tce->add_clause(cc);
+      tce->add_catch_expr(new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_FALSE_0)));
+
+      operandExpr = tce;
 
       if (condExpr.getp() == NULL)
         condExpr = operandExpr;
