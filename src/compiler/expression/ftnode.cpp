@@ -293,6 +293,7 @@ ftdistance_filter::ftdistance_filter(
   range_( range ),
   unit_( unit )
 {
+  ZORBA_ASSERT( range_ );
 }
 
 ft_visit_result::type ftdistance_filter::accept( ftnode_visitor &v ) {
@@ -917,6 +918,7 @@ ftwindow_filter::ftwindow_filter(
   window_( window ),
   unit_( unit )
 {
+  ZORBA_ASSERT( window_ );
 }
 
 ft_visit_result::type ftwindow_filter::accept( ftnode_visitor &v ) {
