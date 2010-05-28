@@ -303,15 +303,17 @@ void apply_ftand( ft_all_matches const &ami, ft_all_matches const &amj,
   PUT_ALL_MATCHES( ami );
   PUT_ALL_MATCHES( amj );
 
-  FOR_EACH( ft_all_matches, mi, ami ) {
-    ft_match m_new;
-    copy_seq( mi->includes, m_new.includes );
-    copy_seq( mi->excludes, m_new.excludes );
-    FOR_EACH( ft_all_matches, mj, amj ) {
-      copy_seq( mj->includes, m_new.includes );
-      copy_seq( mj->excludes, m_new.excludes );
+  if ( !amj.empty() ) {
+    FOR_EACH( ft_all_matches, mi, ami ) {
+      ft_match m_new;
+      copy_seq( mi->includes, m_new.includes );
+      copy_seq( mi->excludes, m_new.excludes );
+      FOR_EACH( ft_all_matches, mj, amj ) {
+        copy_seq( mj->includes, m_new.includes );
+        copy_seq( mj->excludes, m_new.excludes );
+      }
+      result.push_back( m_new );
     }
-    result.push_back( m_new );
   }
 
   END_APPLY( result );
@@ -653,8 +655,12 @@ void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
  */
 static void form_combinations( ft_match_seq const &ms, ft_int k,
                                ft_match_seq &result ) {
+  if ( !k ) {
+    result.push_back( ft_match() );
+    return;
+  }
   ft_int const count = ms.size();
-  if ( !k || count < k )
+  if ( count < k )
     return;
   if ( count == k )
     copy_seq( ms, result );
