@@ -186,6 +186,40 @@ inline void pop_helper( char const *what, int line ) {
 #define END_VISIT(LABEL) \
   cout << dec_indent << indent << "END " #LABEL << endl
 
+#else /* NDEBUG */
+
+#define BEGIN_VISIT(LABEL)  /* nothing */
+#define END_VISIT(LABEL)    /* nothing */
+
+#endif /* NDEBUG */
+
+#define V ftcontains_visitor
+
+////////// FTMatchOptions /////////////////////////////////////////////////////
+
+//
+// We define these first (before redefining DEF_FTNODE_VISITOR_BEGIN_VISIT and
+// DEF_FTNODE_VISITOR_END_VISIT) so they don't print debugging information.  We
+// don't care about printing debugging information for these since they're all
+// empty.  All FTMatchOptions are "hoisted" up into ftprimary_with_options and
+// passed around as a unit (an ftmatch_options*).
+//
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftmatch_options )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstem_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_id )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_option )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
+
+////////// The "main" FT nodes ////////////////////////////////////////////////
+
+#ifndef NDEBUG
+
 #undef DEF_FTNODE_VISITOR_BEGIN_VISIT
 #define DEF_FTNODE_VISITOR_BEGIN_VISIT(V,C)     \
   ft_visit_result::type V::begin_visit( C& ) {  \
@@ -199,16 +233,7 @@ inline void pop_helper( char const *what, int line ) {
     END_VISIT(C);                           \
   }
 
-#else /* NDEBUG */
-
-#define BEGIN_VISIT(LABEL)  /* nothing */
-#define END_VISIT(LABEL)    /* nothing */
-
 #endif /* NDEBUG */
-
-///////////////////////////////////////////////////////////////////////////////
-
-#define V ftcontains_visitor
 
 ft_visit_result::type V::begin_visit( ftand& ) {
   BEGIN_VISIT( ftand );
@@ -408,20 +433,6 @@ void V::end_visit( ftwindow_filter &f ) {
   PUSH_MATCHES( result.release() );
   END_VISIT( ftwindow_filter );
 }
-
-////////// FTMatchOptions /////////////////////////////////////////////////////
-
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_option )
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option )
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftmatch_options )
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstem_option )
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_id )
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftthesaurus_option )
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
 
 #undef V
 
