@@ -42,6 +42,12 @@ namespace zorba {
 
 ////////// Inlines ////////////////////////////////////////////////////////////
 
+inline void set_error_query_loc( error::ZorbaError &e, QueryLoc const &loc ) {
+  e.setQueryLocation(
+    loc.getLineBegin(), loc.getColumnBegin(), loc.getFilename()
+  );
+}
+
 inline ft_int to_ft_int( xqp_integer const &i ) {
   ft_int result;
   if ( !NumConversions::integerToUInt( i, result ) ) {
@@ -285,10 +291,7 @@ void V::end_visit( ftmild_not &mn ) {
       // the QueryLoc, set it here after the fact.  (We don't pass it the
       // QueryLoc so we don't "pollute" the API.)
       //
-      QueryLoc const &loc = mn.get_loc();
-      e.setQueryLocation(
-        loc.getLineBegin(), loc.getColumnBegin(), loc.getFilename()
-      );
+      set_error_query_loc( e, mn.get_loc() );
       throw;
     }
   }
@@ -374,12 +377,23 @@ void V::end_visit( ftwords &w ) {
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords_times )
 void V::end_visit( ftwords_times &wt ) {
   if ( ftrange const *const range = wt.get_times() ) {
-    ft_int at_least, at_most;
-    eval_ftrange( *range, &at_least, &at_most );
-    auto_ptr<ft_all_matches> const am( POP_MATCHES() );
-    auto_ptr<ft_all_matches> result( new ft_all_matches );
-    apply_fttimes( *am, range->get_mode(), at_least, at_most, *result );
-    PUSH_MATCHES( result.release() );
+    try {
+      ft_int at_least, at_most;
+      eval_ftrange( *range, &at_least, &at_most );
+      auto_ptr<ft_all_matches> const am( POP_MATCHES() );
+      auto_ptr<ft_all_matches> result( new ft_all_matches );
+      apply_fttimes( *am, range->get_mode(), at_least, at_most, *result );
+      PUSH_MATCHES( result.release() );
+    }
+    catch ( error::ZorbaError &e ) {
+      //
+      // Since apply_fttimes() can throw a ZorbaError and we don't pass it the
+      // QueryLoc, set it here after the fact.  (We don't pass it the QueryLoc
+      // so we don't "pollute" the API.)
+      //
+      set_error_query_loc( e, wt.get_loc() );
+      throw;
+    }
   }
   END_VISIT( ftwords_times );
 }

@@ -720,6 +720,9 @@ void apply_fttimes( ft_all_matches const &am, ft_range_mode::type mode,
   PUT_ARG( at_most );
   PUT_ALL_MATCHES( am );
 
+  if ( !all_empty( am, &ft_match::excludes ) )
+    ZORBA_ERROR( XPST0003 );
+
   if ( mode == ft_range_mode::at_least )
     form_combinations_at_least( am, at_least, result );
   else
