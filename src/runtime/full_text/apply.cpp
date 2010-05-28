@@ -278,27 +278,27 @@ static void dump( char const *label, FTTokenIterator &it ) {
 /**
  * Matches query tokens against document tokens.
  */
-static void match_tokens( FTTokenIterator_t &doc_tokens,
-                          FTQueryItemSeqIterator &query_tokens,
+static void match_tokens( FTTokenIterator &doc_tokens,
+                          FTTokenIterator &query_tokens,
                           ftmatch_options const &options,
                           ft_token_spans &result ) {
 #ifdef DEBUG_FT
   dump( "match_tokens(): d_tokens: ", *doc_tokens );
   dump( "match_tokens(): q_tokens: ", query_tokens );
 #endif
-  doc_tokens->reset();
-  while ( doc_tokens->hasNext() ) {
-    doc_tokens->mark( true );
+  doc_tokens.reset();
+  while ( doc_tokens.hasNext() ) {
+    doc_tokens.mark( true );
     query_tokens.reset();
     FTToken const *dt_start = 0, *dt_end = 0;
-    while ( doc_tokens->hasNext() && query_tokens.hasNext() ) {
-      dt_end = &doc_tokens->current();
+    while ( doc_tokens.hasNext() && query_tokens.hasNext() ) {
+      dt_end = &doc_tokens.current();
       if ( !dt_start )
         dt_start = dt_end;
       FTToken const &qt = query_tokens.current();
       if ( !match_tokens( dt_end->word, qt.word, options ) )
         break;
-      doc_tokens->next();
+      doc_tokens.next();
       query_tokens.next();
     }
     if ( !query_tokens.hasNext() ) {
@@ -311,8 +311,8 @@ static void match_tokens( FTTokenIterator_t &doc_tokens,
       ts.para.end   = dt_end->para;
       result.push_back( ts );
     } else {
-      doc_tokens->mark( false );
-      doc_tokens->next();
+      doc_tokens.mark( false );
+      doc_tokens.next();
     }
   }
 }
@@ -746,8 +746,8 @@ void apply_ftunary_not( ft_all_matches &am ) {
 
 typedef list<ft_all_matches> ft_all_matches_seq;
 
-static void apply_query_tokens_as_phrase( FTTokenIterator_t &search_ctx,
-                                          FTQueryItemSeqIterator &query_tokens,
+static void apply_query_tokens_as_phrase( FTTokenIterator &search_ctx,
+                                          FTTokenIterator &query_tokens,
                                           FTToken::int_t query_pos,
                                           ftmatch_options const &options,
                                           ft_all_matches &result ) {
@@ -790,7 +790,7 @@ static void make_conj_disj( ft_all_matches const &cur_res,
   }
 }
 
-static void apply_ftwords_phrase( FTTokenIterator_t &search_ctx,
+static void apply_ftwords_phrase( FTTokenIterator &search_ctx,
                                   FTQueryItemSeq &query_items,
                                   FTToken::int_t query_pos,
                                   ftmatch_options const &options,
@@ -808,7 +808,7 @@ static void apply_ftwords_phrase( FTTokenIterator_t &search_ctx,
   }
 }
 
-static void apply_ftwords_all( FTTokenIterator_t &search_ctx,
+static void apply_ftwords_all( FTTokenIterator &search_ctx,
                                FTQueryItemSeq &query_items,
                                FTToken::int_t query_pos,
                                ftmatch_options const &options,
@@ -845,7 +845,7 @@ static void apply_ftwords_all( FTTokenIterator_t &search_ctx,
   }
 }
 
-static void apply_ftwords_any( FTTokenIterator_t &search_ctx,
+static void apply_ftwords_any( FTTokenIterator &search_ctx,
                                FTQueryItemSeq &query_items,
                                FTToken::int_t query_pos,
                                ftmatch_options const &options,
@@ -882,7 +882,7 @@ static void apply_ftwords_any( FTTokenIterator_t &search_ctx,
  * the code is the same except that the former calls MakeDisjunction() and the
  * latter calls MakeConjunction().
  */
-static void apply_ftwords_xxx_word( FTTokenIterator_t &search_ctx,
+static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
                                     FTQueryItemSeq &query_items,
                                     FTToken::int_t query_pos,
                                     ftmatch_options const &options,
@@ -914,7 +914,7 @@ static void apply_ftwords_xxx_word( FTTokenIterator_t &search_ctx,
   }
 }
 
-void apply_ftwords( FTTokenIterator_t &search_ctx,
+void apply_ftwords( FTTokenIterator &search_ctx,
                     FTQueryItemSeq &query_items,
                     FTToken::int_t query_pos,
                     ft_anyall_mode::type mode,

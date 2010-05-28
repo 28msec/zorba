@@ -340,7 +340,8 @@ void V::end_visit( ftwords &w ) {
   if ( !query_items.empty() ) {
     auto_ptr<ft_all_matches> result( new ft_all_matches );
     apply_ftwords(
-      search_ctx_, query_items, ++query_pos_, w.get_mode(), options, *result
+      *search_ctx_.getp(), query_items, ++query_pos_, w.get_mode(), options,
+      *result
     );
     PUSH_MATCHES( result.release() );
   }
