@@ -21,10 +21,10 @@ using namespace std;
 namespace zorba {
 
 /**
- * Gets the current indentation amount for the given ostream.
+ * Gets the current indentation amount index for the given ostream.
  *
- * @param os The ostream to get the indentation amount for.
- * @return Returns a modifyable reference to said indentation.
+ * @param os The ostream to get the indentation amount index for.
+ * @return Returns a modifyable reference to said indentation index.
  */
 int get_ostream_indent_index() {
   //
