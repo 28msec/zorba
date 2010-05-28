@@ -26,19 +26,20 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * This corresponds to element(fts::queryItem).
+ * This corresponds to <code>element(fts::queryItem)</code>.
  */
 typedef FTTokenIterator_t FTQueryItem;
 
 /**
- * This corresponds to element(fts::queryItem)*.
+ * This corresponds to <code>element(fts::queryItem)*</code>.
  */
 typedef std::list<FTQueryItem> FTQueryItemSeq;
 
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
- * An FTQueryItemSeqIterator is-an FTTokenIterator TODO
+ * An FTQueryItemSeqIterator is-an FTTokenIterator that iterates over an
+ * FTQueryItemSeq.
  */
 class FTQueryItemSeqIterator : public FTTokenIterator {
 public:
