@@ -86,11 +86,11 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     ulong numIndices = indexes.size();
 
-    std::vector<ValueIndex*> zorbaIndexes(numIndices); 
+    std::vector<IndexDecl*> zorbaIndexes(numIndices); 
 
     for (ulong i = 0; i < numIndices; ++i)
     {
-      ValueIndex* zorbaIndex = theSctx->lookup_index(indexes[i]->getName());
+      IndexDecl* zorbaIndex = theSctx->lookup_index(indexes[i]->getName());
       
       if (zorbaIndex == NULL)
       {
@@ -98,7 +98,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                               indexes[i]->getName()->getStringValue()->c_str(), "");
       }
 
-      if (zorbaIndex->getMaintenanceMode() == ValueIndex::DOC_MAP)
+      if (zorbaIndex->getMaintenanceMode() == IndexDecl::DOC_MAP)
       {
         DocIndexer* docIndexer = zorbaIndex->getDocIndexer(ccb, loc);
         assert(docIndexer != NULL);
@@ -125,9 +125,9 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
         for (ulong i = 0; i < numIndices; ++i)
         {
-          ValueIndex* zorbaIndex = zorbaIndexes[i];
+          IndexDecl* zorbaIndex = zorbaIndexes[i];
 
-          if (zorbaIndex->getMaintenanceMode() == ValueIndex::REBUILD)
+          if (zorbaIndex->getMaintenanceMode() == IndexDecl::REBUILD)
           {
             PlanIter_t buildPlan = zorbaIndex->getBuildPlan(ccb, loc);
 

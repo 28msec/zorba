@@ -43,7 +43,7 @@ namespace zorba
 static void checkKeyType(
     const QueryLoc& loc,
     TypeManager* tm,
-    const ValueIndex* indexDecl,
+    const IndexDecl* indexDecl,
     ulong keyNo,
     store::Item_t& searchKey);
 
@@ -52,7 +52,7 @@ static void checkKeyType(
 
 ********************************************************************************/
 void createIndexSpec(
-    ValueIndex* indexDecl,
+    IndexDecl* indexDecl,
     store::IndexSpecification& spec)
 {
   const std::vector<xqtref_t>& keyTypes(indexDecl->getKeyTypes());
@@ -70,10 +70,10 @@ void createIndexSpec(
 
   spec.theIsGeneral = indexDecl->isGeneral();
   spec.theIsUnique = indexDecl->getUnique();
-  spec.theIsSorted = indexDecl->getMethod() == ValueIndex::TREE;
+  spec.theIsSorted = indexDecl->getMethod() == IndexDecl::TREE;
   spec.theIsTemp = indexDecl->isTemp();
   spec.theIsThreadSafe = true;
-  spec.theIsAutomatic = indexDecl->getMaintenanceMode() != ValueIndex::MANUAL;
+  spec.theIsAutomatic = indexDecl->getMaintenanceMode() != IndexDecl::MANUAL;
 
   ulong numSources = indexDecl->numSources();
 
@@ -110,7 +110,7 @@ bool CreateInternalIndexIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  ValueIndex* indexDecl;
+  IndexDecl* indexDecl;
   store::IndexSpecification spec;
   store::Iterator_t planIteratorWrapper;
   store::Index_t storeIndex;
@@ -183,7 +183,7 @@ CreateIndexIterator::~CreateIndexIterator()
 bool CreateIndexIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
-  ValueIndex_t indexDecl;
+  IndexDecl_t indexDecl;
   store::IndexSpecification spec;
   PlanIter_t buildPlan;
   store::Iterator_t planWrapper;
@@ -324,7 +324,7 @@ bool RefreshIndexIterator::nextImpl(
     PlanState& planState) const
 {
   store::Item_t qname;
-  ValueIndex_t indexDecl;
+  IndexDecl_t indexDecl;
   PlanIter_t buildPlan;
   store::Iterator_t planWrapper;
 
@@ -646,7 +646,7 @@ IndexRangeProbeIterator::~IndexRangeProbeIterator()
 bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t qname;
-  ValueIndex_t indexDecl;
+  IndexDecl_t indexDecl;
   store::IndexBoxCondition_t cond;
   ulong numChildren = theChildren.size();
   bool status;
@@ -667,7 +667,7 @@ bool IndexRangeProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
                             qname->getStringValue()->c_str(), "");
     }
 
-    if (indexDecl->getMethod() != ValueIndex::TREE)
+    if (indexDecl->getMethod() != IndexDecl::TREE)
     {
       ZORBA_ERROR_LOC_PARAM(XDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, loc,
                             qname->getStringValue()->c_str(), "");
@@ -777,7 +777,7 @@ void IndexRangeProbeIterator::accept(PlanIterVisitor& v) const
 void checkKeyType(
     const QueryLoc& loc,
     TypeManager* tm,
-    const ValueIndex* indexDecl,
+    const IndexDecl* indexDecl,
     ulong keyNo,
     store::Item_t& searchKey)
 {

@@ -50,6 +50,22 @@ case __LINE__:;                                                     \
 } while (0)
 
 
+#define EXPR_ITER_NEXT2(subExprHandleP)                             \
+do                                                                  \
+{                                                                   \
+  theState = __LINE__;                                              \
+  theCurrentChild = (subExprHandleP);                               \
+                                                                    \
+  if (*(subExprHandleP) != NULL)                                    \
+  {                                                                 \
+    return;                                                         \
+  }                                                                 \
+                                                                    \
+case __LINE__:;                                                     \
+                                                                    \
+} while (0)
+
+
 
 ExprIterator::ExprIterator(expr* e) 
   :
@@ -64,7 +80,7 @@ ExprIterator::ExprIterator(expr* e)
     FTNodeExprCollector exprCollector;
     ftExpr->get_ftselection()->accept(exprCollector);
 
-    ftExpr->ftselection_exprs_.swap(exprCollector.get_expr_list());
+    theFTSelectionExprs.swap(exprCollector.get_expr_list());
   }
 
   next();
@@ -597,11 +613,11 @@ void ExprIterator::next()
 
     EXPR_ITER_NEXT(ftExpr->range_);
 
-    theArgsIter = ftExpr->ftselection_exprs_.begin();
-    theArgsEnd = ftExpr->ftselection_exprs_.end();
-    for (; theArgsIter != theArgsEnd; ++theArgsIter)
+    theFTSelectionExprsIter = theFTSelectionExprs.begin();
+    theFTSelectionExprsEnd = theFTSelectionExprs.end();
+    for (; theFTSelectionExprsIter != theFTSelectionExprsEnd; ++theFTSelectionExprsIter)
     {
-      EXPR_ITER_NEXT(*theArgsIter);
+      EXPR_ITER_NEXT2(*theFTSelectionExprsIter);
     }
 
     EXPR_ITER_NEXT(ftExpr->ftignore_);

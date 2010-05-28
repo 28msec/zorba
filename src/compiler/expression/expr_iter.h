@@ -49,6 +49,10 @@ protected:
   std::vector<copy_clause_t>::iterator   theCopyClauseIter;
   std::vector<copy_clause_t>::iterator   theCopyClauseEnd;
 
+  std::vector<expr_t*>                   theFTSelectionExprs;
+  std::vector<expr_t*>::iterator         theFTSelectionExprsIter;
+  std::vector<expr_t*>::iterator         theFTSelectionExprsEnd;
+
 public:
   ExprIterator(expr* e);
 

@@ -948,7 +948,7 @@ void NodeModifier::accept( parsenode_visitor &v ) const
 
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 ********************************************************************************/
-IndexDecl::IndexDecl(
+AST_IndexDecl::AST_IndexDecl(
     const QueryLoc& loc,
     QName* name,
     exprnode* domainExpr,
@@ -1004,7 +1004,7 @@ IndexDecl::IndexDecl(
 }
 
 
-XQUERY_ERROR IndexDecl::validatePropertyList(DeclPropertyList* props)
+XQUERY_ERROR AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
 {
   if (props == NULL)
     return XQ_NO_ERROR;
@@ -1052,7 +1052,7 @@ XQUERY_ERROR IndexDecl::validatePropertyList(DeclPropertyList* props)
   return XQ_NO_ERROR;
 }
 
-void IndexDecl::accept( parsenode_visitor &v ) const
+void AST_IndexDecl::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
 

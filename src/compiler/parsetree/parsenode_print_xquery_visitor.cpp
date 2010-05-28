@@ -1005,7 +1005,7 @@ DEFAULT_END_VISIT (ParamList)
 
     DEFAULT_VISIT (CollectionDecl)
     DEFAULT_VISIT (NodeModifier)
-    DEFAULT_VISIT (IndexDecl)
+    DEFAULT_VISIT (AST_IndexDecl)
     DEFAULT_VISIT (IndexKeySpec)
     DEFAULT_VISIT (IndexKeyList)
     DEFAULT_VISIT (IntegrityConstraintDecl)

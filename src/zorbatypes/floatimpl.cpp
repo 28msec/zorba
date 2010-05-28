@@ -664,10 +664,11 @@ bool FloatImpl<float>::isNegZero() const
     return false;
 }
 
+
 template <typename FloatType>
 uint32_t FloatImpl<FloatType>::hash() const
 {
-  return ((uint32_t)theFloating) % 65535;
+  return static_cast<uint32_t>(theFloating);
 }
 
 

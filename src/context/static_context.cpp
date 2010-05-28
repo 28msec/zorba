@@ -2144,7 +2144,7 @@ void static_context::set_collection_callback(
 ********************************************************************************/
 void static_context::bind_index(
     const store::Item* qname,
-    ValueIndex_t& index,
+    IndexDecl_t& index,
     const QueryLoc& loc)
 {
   if (lookup_index(qname) != NULL)
@@ -2165,9 +2165,9 @@ void static_context::bind_index(
 /***************************************************************************//**
 
 ********************************************************************************/
-ValueIndex* static_context::lookup_index(const store::Item* qname) const
+IndexDecl* static_context::lookup_index(const store::Item* qname) const
 {
-  ValueIndex_t index;
+  IndexDecl_t index;
   store::Item* qname2 = const_cast<store::Item*>(qname);
 
   if (theIndexMap && theIndexMap->get(qname2, index))
@@ -2182,7 +2182,7 @@ ValueIndex* static_context::lookup_index(const store::Item* qname) const
 ********************************************************************************/
 store::Iterator_t static_context::index_names() const
 {
-  return new SctxMapIterator<ValueIndex>(this, &static_context::index_map);
+  return new SctxMapIterator<IndexDecl>(this, &static_context::index_map);
 }
 
 
@@ -2190,14 +2190,14 @@ store::Iterator_t static_context::index_names() const
 
 ********************************************************************************/
 index_maintenance_mode_t
-to_index_maintenance_mode(const ValueIndex::MaintenanceMode& mode)
+to_index_maintenance_mode(const IndexDecl::MaintenanceMode& mode)
 {
   index_maintenance_mode_t lRes;
   switch (mode)
   {
-  case ValueIndex::MANUAL: lRes = index_manual; break;
-  case ValueIndex::REBUILD: lRes = index_automatic; break;
-  case ValueIndex::DOC_MAP: lRes = index_manual; break; // TODO
+  case IndexDecl::MANUAL: lRes = index_manual; break;
+  case IndexDecl::REBUILD: lRes = index_automatic; break;
+  case IndexDecl::DOC_MAP: lRes = index_manual; break; // TODO
   default: ZORBA_ASSERT(false);
   }
   return lRes;
@@ -2207,13 +2207,13 @@ to_index_maintenance_mode(const ValueIndex::MaintenanceMode& mode)
 
 ********************************************************************************/
 index_container_kind_t
-to_index_container_kind(const ValueIndex::ContainerKind& kind)
+to_index_container_kind(const IndexDecl::ContainerKind& kind)
 {
   index_container_kind_t lRes;
   switch (kind)
   {
-    case ValueIndex::HASH: lRes = index_hash; break;
-    case ValueIndex::TREE: lRes = index_tree; break;
+    case IndexDecl::HASH: lRes = index_hash; break;
+    case IndexDecl::TREE: lRes = index_tree; break;
     default: ZORBA_ASSERT(false);
   }
   return lRes;
@@ -2235,7 +2235,7 @@ void static_context::set_index_callback(
 /******************************************************************************
 
 ********************************************************************************/
-void static_context::call_index_callback(const ValueIndex_t& index)
+void static_context::call_index_callback(const IndexDecl_t& index)
 {
   if (theIndexCallback)
   {
@@ -2986,7 +2986,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     IndexMap::iterator idx_end = module->theIndexMap->end();
     for (; idx_iter != idx_end; ++idx_iter)
     {
-      std::pair<store::Item*, rchandle<ValueIndex> > pair = (*idx_iter);
+      std::pair<store::Item*, rchandle<IndexDecl> > pair = (*idx_iter);
 
       if (!theIndexMap->insert(pair.first, pair.second))
       {

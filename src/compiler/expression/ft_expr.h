@@ -57,8 +57,6 @@ private:
   expr_t range_;
   ftnode_t ftselection_;
   expr_t ftignore_;
-
-  std::vector<expr_t> ftselection_exprs_;
 };
 
 } // namespace zorba

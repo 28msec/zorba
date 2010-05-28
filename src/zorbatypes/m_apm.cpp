@@ -47,9 +47,13 @@ uint32_t MAPM::hash() const
     }
   }
 
-  return zorba::hashfun::h32(&(cval()->m_apm_exponent),
-                             sizeof(int*),
-                             zorba::hashfun::h32(cval()->m_apm_data,
-                                                 cval()->m_apm_datalength));
+  // In all other cases, hash it as double
+  char buffer[exponent() + 3];
+  toIntegerString(buffer);
+  std::stringstream strstream(buffer);
+  double doublev;
+  strstream >> doublev;
+  assert(strstream.eof());
+  return static_cast<uint32_t>(doublev);
 }
 

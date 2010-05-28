@@ -43,15 +43,15 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftor );
 
 ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
   if ( pwo.get_weight().getp() )
-    push_back( pwo.get_weight().getp() );
+    push_back( &pwo.get_weight() );
   return ft_visit_result::no_end;
 }
 DEF_FTNODE_VISITOR_END_VISIT( V, ftprimary_with_options );
 
 ft_visit_result::type V::begin_visit( ftrange &r ) {
-  push_back( r.get_expr1().getp() );
+  push_back( &r.get_expr1() );
   if ( r.get_expr2() )
-    push_back( r.get_expr2().getp() );
+    push_back( &r.get_expr2() );
   return ft_visit_result::no_end;
 }
 DEF_FTNODE_VISITOR_END_VISIT( V, ftrange );
@@ -60,7 +60,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftselection );
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftunary_not );
 
 ft_visit_result::type V::begin_visit( ftwords &w ) {
-  push_back( w.get_expr() );
+  push_back( &w.get_expr() );
   return ft_visit_result::no_end;
 }
 DEF_FTNODE_VISITOR_END_VISIT( V, ftwords );
@@ -74,7 +74,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftorder_filter );
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftscope_filter );
 
 ft_visit_result::type V::begin_visit( ftwindow_filter &wf ) {
-  push_back( wf.get_window().getp() );
+  push_back( &wf.get_window() );
   return ft_visit_result::no_end;
 }
 DEF_FTNODE_VISITOR_END_VISIT( V, ftwindow_filter )

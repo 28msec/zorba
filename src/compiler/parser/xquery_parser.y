@@ -1019,22 +1019,38 @@ template<typename T> inline void release_hack( T *ref ) {
  *  Functions to validate lists of properties
  */
 // Returns false if validation fails and the parser should call YYERROR, true otherwise
-bool validate_collection_properties(parsenode* props, location& loc, parsenode* qname, xquery_driver& driver)
+bool validate_collection_properties(
+    parsenode* props,
+    location& loc,
+    parsenode* qname,
+    xquery_driver& driver)
 {
   XQUERY_ERROR err = CollectionDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
-  if (err != XQ_NO_ERROR) {
-    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), err, static_cast<QName*>(qname)->get_qname(), true));
+  if (err != XQ_NO_ERROR) 
+  {
+    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc),
+                                       err,
+                                       static_cast<QName*>(qname)->get_qname(),
+                                       true));
     return false;
   }
   return true;
 }
 
 // Returns false if validation fails and the parser should call YYERROR, true otherwise
-bool validate_index_properties(parsenode* props, location& loc, parsenode* qname, xquery_driver& driver)
+bool validate_index_properties(
+    parsenode* props,
+    location& loc,
+    parsenode* qname,
+    xquery_driver& driver)
 {
-  XQUERY_ERROR err = IndexDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
-  if (err != XQ_NO_ERROR) {
-    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), err, static_cast<QName*>(qname)->get_qname(), true));
+  XQUERY_ERROR err = AST_IndexDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
+  if (err != XQ_NO_ERROR) 
+  {
+    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc),
+                                       err,
+                                       static_cast<QName*>(qname)->get_qname(),
+                                       true));
     return false;
   }
   return true;
@@ -1834,20 +1850,21 @@ NodeModifier :
 IndexDecl :
     DECLARE INDEX QNAME ON NODES PathExpr BY IndexKeyList
     {
-      $$ = new IndexDecl( LOC(@$),
-                         static_cast<QName*>($3),
-                         $6,
-                         dynamic_cast<IndexKeyList*>($8),
-                         NULL);
+      $$ = new AST_IndexDecl(LOC(@$),
+                             static_cast<QName*>($3),
+                             $6,
+                             dynamic_cast<IndexKeyList*>($8),
+                             NULL);
     }
   | DECLARE DeclPropertyList INDEX QNAME ON NODES PathExpr BY IndexKeyList
     {
-      if (!validate_index_properties($2, @$, $4, driver)) {
+      if (!validate_index_properties($2, @$, $4, driver)) 
+      {
         delete $2; delete $4; delete $7; delete $9; // these need to be deleted explicitly, as bison does not free them
         YYERROR;
       }
 
-      $$ = new IndexDecl( LOC(@$),
+      $$ = new AST_IndexDecl(LOC(@$),
                          static_cast<QName*>($4),
                          $7,
                          dynamic_cast<IndexKeyList*>($9),

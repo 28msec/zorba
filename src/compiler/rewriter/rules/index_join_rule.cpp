@@ -570,9 +570,9 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   fc->set_expr(probeExpr.getp());
 
   //
-  // Create the ValueIndex obj
+  // Create the IndexDecl obj
   //
-  ValueIndex_t idx = new ValueIndex(sctx, loc, qname);
+  IndexDecl_t idx = new IndexDecl(sctx, loc, qname);
 
   idx->setDomainExpr(domainExpr);
 

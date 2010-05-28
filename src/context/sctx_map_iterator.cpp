@@ -125,7 +125,7 @@ SctxMapIterator<T>::close()
 
 
 template class SctxMapIterator<StaticallyKnownCollection>;
-template class SctxMapIterator<ValueIndex>;
+template class SctxMapIterator<IndexDecl>;
 template class SctxMapIterator<ValueIC>;
   
 } /* namespace zorba */

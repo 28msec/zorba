@@ -40,10 +40,10 @@ typedef rchandle<DocIndexer> DocIndexer_t;
   is applied). Thus, for each domain node D, a tuple K of N atomic values is
   constructed, and an entry mapping K to D is inserted to the index data structure.
  
-  Class ValueIndex represents an index declaration, which describes the index
+  Class IndexDecl represents an index declaration, which describes the index
   properties and the domain and key expressions and their types. An instance
-  of ValueIndex is constructed by the translator for each DECLARE INDEX stmt
-  that appears in an imported data module. A (index_qname --> ValueIndex obj)
+  of IndexDecl is constructed by the translator for each DECLARE INDEX stmt
+  that appears in an imported data module. A (index_qname --> IndexDecl obj)
   mapping is also registered in the static context during translation.
 
   The DECLARE INDEX syntax is the following:
@@ -159,7 +159,7 @@ typedef rchandle<DocIndexer> DocIndexer_t;
                       that is being updated within collection C, and using these
                       entries, maintain the index appropriately.
 ********************************************************************************/
-class ValueIndex : public SimpleRCObject 
+class IndexDecl : public SimpleRCObject 
 {
 public:
   typedef enum 
@@ -204,14 +204,14 @@ private:
   DocIndexer_t                    theDocIndexer; 
 
 public:
-  SERIALIZABLE_CLASS(ValueIndex)
-  ValueIndex(::zorba::serialization::Archiver& ar);
+  SERIALIZABLE_CLASS(IndexDecl)
+  IndexDecl(::zorba::serialization::Archiver& ar);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  ValueIndex(static_context* sctx, const QueryLoc& loc, const store::Item_t& name);
+  IndexDecl(static_context* sctx, const QueryLoc& loc, const store::Item_t& name);
 
-  ~ValueIndex();
+  ~IndexDecl();
 
   static_context* getSctx() const { return theSctx; }
 
@@ -289,7 +289,7 @@ private:
 };
 
 
-typedef rchandle<ValueIndex> ValueIndex_t;
+typedef rchandle<IndexDecl> IndexDecl_t;
 
 }
 

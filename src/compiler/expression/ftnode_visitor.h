@@ -95,7 +95,7 @@ protected:
  */
 class FTNodeExprCollector : public ftnode_visitor {
 public:
-  typedef std::vector<expr_t> expr_list_t;
+  typedef std::vector<expr_t*> expr_list_t;
 
   expr_visitor* get_expr_visitor();
 
@@ -136,7 +136,7 @@ protected:
   DECL_FTNODE_VISITOR_VISIT_MEM_FNS( ftwild_card_option );
 
 private:
-  void push_back( expr_t e ) {
+  void push_back( expr_t* e ) {
     expr_list_.push_back( e );
   }
 

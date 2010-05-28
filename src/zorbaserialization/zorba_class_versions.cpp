@@ -83,7 +83,7 @@ END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_HashMap)
 // ItemPointerHashMapCmp
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, StaticallyKnownCollection_t>, 1)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, ValueIndex_t>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, IndexDecl_t>, 2)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, ValueIC_t>, 3)
 
@@ -99,7 +99,7 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_Ha
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, StaticallyKnownCollection_t, ItemPointerHashMapCmp>, 1)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, ValueIndex_t, ItemPointerHashMapCmp>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, IndexDecl_t, ItemPointerHashMapCmp>, 2)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, ValueIC_t, ItemPointerHashMapCmp>, 3)
 
@@ -121,7 +121,7 @@ END_SERIALIZABLE_TEMPLATE_VERSIONS(serializable_ItemPointerHashMap)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<StaticallyKnownCollection_t>, 1)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<ValueIndex_t>, 2)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<IndexDecl_t>, 2)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<ValueIC_t>, 3)
 

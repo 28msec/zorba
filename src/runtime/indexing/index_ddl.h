@@ -28,7 +28,7 @@
 namespace zorba 
 {
 
-class ValueIndex;
+class IndexDecl;
 
 
 /**
@@ -97,7 +97,7 @@ public:
  *  the store and populates it according to the index definition.
  *
  *  The specification for the index to create is taken from the static context,
- *  which stores a mapping from the index uri to ValueIndex obj (defined in
+ *  which stores a mapping from the index uri to IndexDecl obj (defined in
  *  indexing/value_index.h).
  *
  *  The population of the index is done by a runtime plan that implements
@@ -283,7 +283,7 @@ class IndexPointProbeIteratorState : public PlanIteratorState
 {
 public:
   const store::Item            * theQname; 
-  const ValueIndex             * theIndexDecl;
+  const IndexDecl              * theIndexDecl;
   store::Index                 * theIndex; 
   store::IndexProbeIterator_t    theIterator;
 

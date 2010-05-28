@@ -42,7 +42,7 @@ class var_expr;
 class function;
 class XQType;
 class ExternalModule;
-class ValueIndex;
+class IndexDecl;
 class QueryLoc;
 class namespace_node;
 class user_function;
@@ -52,8 +52,8 @@ class XQPCollator;
 template <class V> class serializable_ItemPointerHashMap;
 template <class V> class serializable_HashMapStrHandle;
 
-class ValueIndex;
-typedef rchandle<ValueIndex> ValueIndex_t;
+class IndexDecl;
+typedef rchandle<IndexDecl> IndexDecl_t;
 
 class ValueIC;
 typedef rchandle<ValueIC> ValueIC_t;
@@ -356,7 +356,7 @@ class static_context : public SimpleRCObject
 {
   typedef serializable_ItemPointerHashMap<StaticallyKnownCollection_t> CollectionMap;
 
-  typedef serializable_ItemPointerHashMap<ValueIndex_t> IndexMap;
+  typedef serializable_ItemPointerHashMap<IndexDecl_t> IndexMap;
 
   typedef serializable_ItemPointerHashMap<ValueIC_t> ICMap;
 
@@ -682,9 +682,9 @@ public:
   //
   // XQDDF Indexes
   //
-  void bind_index(const store::Item* qname, ValueIndex_t& vi, const QueryLoc& loc);
+  void bind_index(const store::Item* qname, IndexDecl_t& vi, const QueryLoc& loc);
 
-  ValueIndex* lookup_index(const store::Item* qname) const;
+  IndexDecl* lookup_index(const store::Item* qname) const;
 
   store::Iterator_t index_names() const;
 
@@ -786,7 +786,7 @@ public:
       IndexCallback aCallbackFunction,
       void* aCallbackData);
 
-  void call_index_callback(const ValueIndex_t& index);
+  void call_index_callback(const IndexDecl_t& index);
 
 protected:
   static_context();

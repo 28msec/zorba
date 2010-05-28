@@ -569,7 +569,7 @@ public:
 
   ft_visit_result::type accept( ftnode_visitor& );
   ft_unit::type get_unit() const { return unit_; }
-  expr_t get_window() const { return window_; }
+  expr_t& get_window() { return window_; }
   std::ostream& put( std::ostream& ) const;
 
   PlanIter_t get_plan_iter() const { return plan_iter_; }
@@ -662,7 +662,7 @@ public:
   ftprimary const* get_primary() const { return primary_; }
   ftmatch_options const* get_match_options() const { return match_options_; }
   PlanIter_t get_plan_iter() const { return plan_iter_; }
-  expr_t get_weight() const { return weight_; }
+  expr_t& get_weight() { return weight_; }
   std::ostream& put( std::ostream& ) const;
 
   void set_match_options( ftmatch_options *o ) {
@@ -705,8 +705,8 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  expr_t get_expr1() const { return expr1_; }
-  expr_t get_expr2() const { return expr2_; }
+  expr_t& get_expr1() { return expr1_; }
+  expr_t& get_expr2() { return expr2_; }
   ft_range_mode::type get_mode() const { return mode_; }
   std::ostream& put( std::ostream& ) const;
 
@@ -758,7 +758,7 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  expr_t get_expr() const { return expr_; }
+  expr_t& get_expr() { return expr_; }
   ft_anyall_mode::type get_mode() const { return mode_; }
   std::ostream& put( std::ostream& ) const;
 

@@ -37,14 +37,14 @@
 namespace zorba
 {
 
-SERIALIZABLE_CLASS_VERSIONS(ValueIndex)
-END_SERIALIZABLE_CLASS_VERSIONS(ValueIndex)
+SERIALIZABLE_CLASS_VERSIONS(IndexDecl)
+END_SERIALIZABLE_CLASS_VERSIONS(IndexDecl)
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-ValueIndex::ValueIndex(
+IndexDecl::IndexDecl(
     static_context* sctx,
     const QueryLoc& loc,
     const store::Item_t& name)
@@ -63,7 +63,7 @@ ValueIndex::ValueIndex(
 /*******************************************************************************
 
 ********************************************************************************/
-ValueIndex::ValueIndex(::zorba::serialization::Archiver& ar)
+IndexDecl::IndexDecl(::zorba::serialization::Archiver& ar)
   :
   SimpleRCObject(ar)
 {
@@ -73,7 +73,7 @@ ValueIndex::ValueIndex(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-void ValueIndex::serialize(::zorba::serialization::Archiver& ar)
+void IndexDecl::serialize(::zorba::serialization::Archiver& ar)
 {
   ar & theSctx;
   ar & theName;
@@ -95,7 +95,7 @@ void ValueIndex::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-ValueIndex::~ValueIndex()
+IndexDecl::~IndexDecl()
 {
 }
 
@@ -103,7 +103,7 @@ ValueIndex::~ValueIndex()
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item* ValueIndex::getName() const
+store::Item* IndexDecl::getName() const
 {
   return theName.getp();
 }
@@ -112,13 +112,13 @@ store::Item* ValueIndex::getName() const
 /*******************************************************************************
 
 ********************************************************************************/
-expr* ValueIndex::getDomainExpr() const
+expr* IndexDecl::getDomainExpr() const
 {
   return theDomainClause->get_expr();
 }
 
 
-void ValueIndex::setDomainExpr(expr_t domainExpr)
+void IndexDecl::setDomainExpr(expr_t domainExpr)
 {
   if (theDomainClause == NULL)
     theDomainClause = new for_clause(domainExpr->get_sctx(),
@@ -130,13 +130,13 @@ void ValueIndex::setDomainExpr(expr_t domainExpr)
 }
 
 
-var_expr* ValueIndex::getDomainVariable() const
+var_expr* IndexDecl::getDomainVariable() const
 {
   return theDomainClause->get_var();
 }
 
 
-void ValueIndex::setDomainVariable(var_expr_t domainVar)
+void IndexDecl::setDomainVariable(var_expr_t domainVar)
 {
   if (theDomainClause == NULL)
     theDomainClause = new for_clause(domainVar->get_sctx(),
@@ -148,13 +148,13 @@ void ValueIndex::setDomainVariable(var_expr_t domainVar)
 }
 
 
-var_expr* ValueIndex::getDomainPositionVariable() const
+var_expr* IndexDecl::getDomainPositionVariable() const
 {
   return theDomainClause->get_pos_var();
 }
 
 
-void ValueIndex::setDomainPositionVariable(var_expr_t domainPosVar)
+void IndexDecl::setDomainPositionVariable(var_expr_t domainPosVar)
 {
   theDomainClause->set_pos_var(domainPosVar);
 }
@@ -163,13 +163,13 @@ void ValueIndex::setDomainPositionVariable(var_expr_t domainPosVar)
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<expr_t>& ValueIndex::getKeyExpressions() const
+const std::vector<expr_t>& IndexDecl::getKeyExpressions() const
 {
   return theKeyExprs;
 }
 
 
-void ValueIndex::setKeyExpressions(const std::vector<expr_t>& keyExprs)
+void IndexDecl::setKeyExpressions(const std::vector<expr_t>& keyExprs)
 {
   theKeyExprs = keyExprs;
 }
@@ -178,13 +178,13 @@ void ValueIndex::setKeyExpressions(const std::vector<expr_t>& keyExprs)
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<xqtref_t>& ValueIndex::getKeyTypes() const
+const std::vector<xqtref_t>& IndexDecl::getKeyTypes() const
 {
   return theKeyTypes;
 }
 
 
-void ValueIndex::setKeyTypes(const std::vector<xqtref_t>& keyTypes)
+void IndexDecl::setKeyTypes(const std::vector<xqtref_t>& keyTypes)
 {
   theKeyTypes = keyTypes;
 }
@@ -193,13 +193,13 @@ void ValueIndex::setKeyTypes(const std::vector<xqtref_t>& keyTypes)
 /*******************************************************************************
 
 ********************************************************************************/
-const std::vector<OrderModifier>& ValueIndex::getOrderModifiers() const
+const std::vector<OrderModifier>& IndexDecl::getOrderModifiers() const
 {
   return theOrderModifiers;
 }
 
 
-void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
+void IndexDecl::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
 {
   theOrderModifiers = modifiers;
 }
@@ -209,7 +209,7 @@ void ValueIndex::setOrderModifiers(const std::vector<OrderModifier>& modifiers)
   Check that the domain and key exprs satisfy the constraints specified by the
   XQDDF spec.
 *******************************************************************************/
-void ValueIndex::analyze()
+void IndexDecl::analyze()
 {
   store::Item_t dotQName;
   GENV_ITEMFACTORY->createQName(dotQName, "", "", "$$dot");
@@ -296,7 +296,7 @@ void ValueIndex::analyze()
   accessed collections and the fo exprs representing the xqddf:collection
   invocations.
 ********************************************************************************/
-void ValueIndex::analyzeExprInternal(
+void IndexDecl::analyzeExprInternal(
     expr* e,
     std::vector<store::Item*>& sourceNames,
     std::vector<expr*>& sourceExprs,
@@ -384,7 +384,7 @@ void ValueIndex::analyzeExprInternal(
 /*******************************************************************************
 
 ********************************************************************************/
-expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
+expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 {
   if (theBuildExpr != NULL)
     return theBuildExpr.getp();
@@ -465,7 +465,7 @@ expr* ValueIndex::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 /*******************************************************************************
 
 ********************************************************************************/
-PlanIterator* ValueIndex::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
+PlanIterator* IndexDecl::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
 {
   if (theBuildPlan != NULL)
     return theBuildPlan.getp();
@@ -481,7 +481,7 @@ PlanIterator* ValueIndex::getBuildPlan(CompilerCB* ccb, const QueryLoc& loc)
 /*******************************************************************************
 
 ********************************************************************************/
-DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
+DocIndexer* IndexDecl::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
 {
   if (theDocIndexer != NULL)
     return theDocIndexer.getp();
@@ -589,7 +589,7 @@ DocIndexer* ValueIndex::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
 }
 
 
-std::string ValueIndex::toString()
+std::string IndexDecl::toString()
 {
   std::ostringstream os;
 

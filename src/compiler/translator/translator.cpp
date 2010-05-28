@@ -914,7 +914,7 @@ public:
   theIndexDecl :
   --------------
 
-  Used during the translation of an index declaration to hold the ValueIndex obj.
+  Used during the translation of an index declaration to hold the IndexDecl obj.
 
   theIsInIndexDomain :
   --------------------
@@ -1008,7 +1008,7 @@ protected:
 
   stack<NodeSortInfo>                  theNodeSortStack;
 
-  ValueIndex_t                         theIndexDecl;
+  IndexDecl_t                          theIndexDecl;
   bool                                 theIsInIndexDomain;
 
   bool                                 hadBSpaceDecl;
@@ -3841,11 +3841,11 @@ void end_visit(const NodeModifier& v, void* /*visit_state*/)
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 
   Translation of an index declaration involves the creation and setting-up of
-  a ValueIndex obj (see compiler/indexing/value_index.h) and the creation in
+  a IndexDecl obj (see compiler/indexing/value_index.h) and the creation in
   the current sctx (which is the root sctx of the current module) of a binding
-  between the index uri and this ValueIndex obj.
+  between the index uri and this IndexDecl obj.
 ********************************************************************************/
-void* begin_visit(const IndexDecl& v)
+void* begin_visit(const AST_IndexDecl& v)
 {
   TRACE_VISIT();
 
@@ -3861,12 +3861,12 @@ void* begin_visit(const IndexDecl& v)
   store::Item_t qnameItem;
   expand_function_qname(qnameItem, qname, qname->get_location());
 
-  ValueIndex_t index = new ValueIndex(theSctx, loc, qnameItem);
+  IndexDecl_t index = new IndexDecl(theSctx, loc, qnameItem);
   index->setGeneral(v.isGeneral());
   index->setUnique(v.isUnique());
-  index->setMethod(v.isOrdered() ? ValueIndex::TREE : ValueIndex::HASH);
+  index->setMethod(v.isOrdered() ? IndexDecl::TREE : IndexDecl::HASH);
   if (v.isAutomatic())
-    index->setMaintenanceMode(ValueIndex::REBUILD);
+    index->setMaintenanceMode(IndexDecl::REBUILD);
 
   theIndexDecl = index;
   theIsInIndexDomain = true;
@@ -3874,11 +3874,11 @@ void* begin_visit(const IndexDecl& v)
   return no_state;
 }
 
-void end_visit(const IndexDecl& v, void* /*visit_state*/)
+void end_visit(const AST_IndexDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  ValueIndex_t index = theIndexDecl;
+  IndexDecl_t index = theIndexDecl;
   theIndexDecl = NULL;
 
   index->analyze();
@@ -3904,7 +3904,7 @@ void* begin_visit(const IndexKeyList& v)
 
   theIsInIndexDomain = false;
 
-  ValueIndex* index = theIndexDecl;
+  IndexDecl* index = theIndexDecl;
 
   expr_t domainExpr = pop_nodestack();
 
@@ -3962,7 +3962,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
   std::vector<xqtref_t> keyTypes(numColumns);
   std::vector<OrderModifier> keyModifiers(numColumns);
 
-  ValueIndex* index = theIndexDecl;
+  IndexDecl* index = theIndexDecl;
 
   for (long i = numColumns - 1; i >= 0; --i)
   {
@@ -3998,7 +3998,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
                               index->getName()->getStringValue(), "");
       }
 
-      if (index->getMethod() == ValueIndex::TREE &&
+      if (index->getMethod() == IndexDecl::TREE &&
           (TypeOps::is_subtype(*type, *theRTM.QNAME_TYPE_ONE) ||
            TypeOps::is_subtype(*type, *theRTM.NOTATION_TYPE_ONE) ||
            TypeOps::is_subtype(*type, *theRTM.BASE64BINARY_TYPE_ONE) ||
@@ -4096,9 +4096,9 @@ void end_visit(const IndexKeySpec& v, void* /*visit_state*/)
                            "(" Expr ")"
 
   Translation of an integrity constraint declaration involves the creation and
-  setting-up of a ValueIndex obj (see indexing/value_index.h) and the creation
+  setting-up of a IndexDecl obj (see indexing/value_index.h) and the creation
   in the current sctx (which is the root sctx of the current module) of a
-  binding between the index uri and this ValueIndex obj.
+  binding between the index uri and this IndexDecl obj.
 *******************************************************************************/
 void* begin_visit(const IntegrityConstraintDecl& v)
 {
@@ -11464,7 +11464,7 @@ void end_visit (const FTWords& v, void* /*visit_state*/) {
 //  let $x := <foo>hello, world</foo>
 //  return $x contains text "hello"
 //
-#if 0
+#if 1
   e = wrap_in_atomization( e );
   e = wrap_in_type_promotion( e, theRTM.STRING_TYPE_STAR );
 #endif

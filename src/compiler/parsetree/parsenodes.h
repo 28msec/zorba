@@ -1253,7 +1253,7 @@ public:
 
   IndexKeyOrderModifier := ("ascending" | "descending")? ("collation" UriLiteral)?
 *******************************************************************************/
-class IndexDecl : public parsenode
+class AST_IndexDecl : public parsenode
 {
 protected:
   rchandle<QName>        theName;
@@ -1266,7 +1266,7 @@ protected:
   bool                   theIsAutomatic;
 
 public:
-  IndexDecl (
+  AST_IndexDecl(
         const QueryLoc& loc,
         QName* name,
         exprnode* domainExpr,
