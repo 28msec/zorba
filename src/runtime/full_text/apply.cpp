@@ -134,28 +134,6 @@ template<typename T> inline bool is_max_valid( T n ) {
 }
 
 /**
- * Sorts the 2 ft_token_spans by their positions.
- */
-static void sort( ft_token_span const *&tsi, ft_token_span const *&tsj ) {
-  if ( *tsi > *tsj ) {
-    ft_token_span const *const temp = tsi;
-    tsi = tsj;
-    tsj = temp;
-  }
-}
-
-/**
- * Computes the distance of N between 2 ft_token_spans where N is specified by
- * the pointer-to-member.
- */
-static ft_int distance( ft_token_span const &tsi, ft_token_span const &tsj,
-                        ft_token_span::start_end_ptr sep ) {
-  ft_token_span const *pi = &tsi, *pj = &tsj;
-  sort( pi, pj );
-  return (pj->*sep).start - (pi->*sep).end - 1;
-}
-
-/**
  * Computes max(N) from the given sequence of ft_token_spans where N is
  * specified by the pointers-to-members.
  */
@@ -402,6 +380,20 @@ void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode,
 }
 
 ////////// ApplyFTDistance ////////////////////////////////////////////////////
+
+/**
+ * Computes the distance of N between 2 ft_token_spans where N is specified by
+ * the pointer-to-member.
+ */
+static ft_int distance( ft_token_span const &tsi, ft_token_span const &tsj,
+                        ft_token_span::start_end_ptr sep ) {
+  ft_token_span const *p1, *p2;
+  if ( tsi > tsj )                      // do it this way to remain "stable"
+    p1 = &tsj, p2 = &tsi;
+  else
+    p1 = &tsi, p2 = &tsj;
+  return (p2->*sep).start - (p1->*sep).end - 1;
+}
 
 void apply_ftdistance( ft_all_matches const &am,
                        ft_int at_least, ft_int at_most,
