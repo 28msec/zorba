@@ -590,7 +590,49 @@ xqpStringStore_t Integer::toString() const
 uint32_t Integer::hash() const
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  return theInteger.hash();
+  char buffer[1024];
+  char* bufferp = (theInteger.exponent() + 3 > 1024 ?
+                   new char[theInteger.exponent() + 3] :
+                   buffer);
+
+  if (theInteger.sign() < 0)
+  {
+    if (theInteger >= MAPM::getMinInt64())
+    {
+      // hash it as int64
+      theInteger.toIntegerString(bufferp);
+      std::stringstream strstream(bufferp);
+      int64_t longv;
+      strstream >> longv;
+      assert(strstream.eof());
+      if (bufferp != buffer)
+        delete bufferp;
+      return static_cast<uint32_t>(longv & 0xffffffff);
+    }
+  }
+  else if (theInteger <= MAPM::getMaxUInt64())
+  {
+    // hash it as uint64
+    theInteger.toIntegerString(bufferp);
+    std::stringstream strstream(bufferp);
+    uint64_t longv;
+    strstream >> longv;
+    assert(strstream.eof());
+    if (bufferp != buffer)
+      delete bufferp;
+    return static_cast<uint32_t>(longv & 0xffffffff);
+  }
+
+  // In all other cases, hash it as double
+  theInteger.toFixPtString(bufferp, ZORBA_FLOAT_POINT_PRECISION);
+  std::stringstream strstream(bufferp);
+  double doublev;
+  strstream >> doublev;
+  assert(strstream.eof());
+  if (bufferp != buffer)
+    delete bufferp;
+  return static_cast<uint32_t>(doublev);
+
 #else
   return static_cast<uint32_t>(theInteger);
 #endif
@@ -602,5 +644,6 @@ std::ostream& operator<<(std::ostream& os, const Integer& aInteger)
   os << aInteger.toString()->str();
   return os;
 }
+
 
 } // namespace zorba

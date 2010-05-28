@@ -745,12 +745,55 @@ xqpStringStore_t Decimal::toIntegerString() const
 }
 
 
-MAPM mapm_65535(65535);
-
 uint32_t Decimal::hash() const
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  return theDecimal.hash();
+  char buffer[1024];
+  char* bufferp = (theDecimal.exponent() + 3 > 1024 ?
+                   new char[theDecimal.exponent() + 3] :
+                   buffer);
+
+  if (theDecimal.is_integer())
+  {
+    if (theDecimal.sign() < 0)
+    {
+      if (theDecimal >= MAPM::getMinInt64())
+      {
+        // hash it as int64
+        theDecimal.toIntegerString(bufferp);
+        std::stringstream strstream(bufferp);
+        int64_t longv;
+        strstream >> longv;
+        assert(strstream.eof());
+        if (bufferp != buffer)
+          delete bufferp;
+        return static_cast<uint32_t>(longv & 0xffffffff);
+      }
+    }
+    else if (theDecimal <= MAPM::getMaxUInt64())
+    {
+      // hash it as uint64
+      theDecimal.toIntegerString(bufferp);
+      std::stringstream strstream(bufferp);
+      uint64_t longv;
+      strstream >> longv;
+      assert(strstream.eof());
+      if (bufferp != buffer)
+        delete bufferp;
+      return static_cast<uint32_t>(longv & 0xffffffff);
+    }
+  }
+
+  // In all other cases, hash it as double
+  theDecimal.toFixPtString(bufferp, ZORBA_FLOAT_POINT_PRECISION);
+  std::stringstream strstream(bufferp);
+  double doublev;
+  strstream >> doublev;
+  assert(strstream.eof());
+  if (bufferp != buffer)
+    delete bufferp;
+  return static_cast<uint32_t>(doublev);
+
 #else
   return (((uint32_t)theDecimal)%65535);
 #endif

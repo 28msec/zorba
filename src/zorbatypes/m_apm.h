@@ -380,9 +380,6 @@ public:
 	}
 	
 
-  /* hashing */
-  uint32_t hash() const;
-
 	/* Comparison operators */
 	bool operator==(const MAPM &m) const /* Equality operator */
   {return m_apm_compare(cval(),m.cval())==0;}
