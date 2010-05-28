@@ -19,7 +19,9 @@
 
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
+#include "compiler/parser/query_loc.h"
 #include "runtime/full_text/ftcontains_visitor.h"
+#include "zorbaerrors/error_manager.h"
 #include "zorbatypes/numconversions.h"
 #include "zorbautils/indent.h"
 #include "zorbautils/stl_util.h"
@@ -238,7 +240,7 @@ ft_visit_result::type V::begin_visit( ftmild_not& ) {
   return ft_visit_result::proceed;
 }
 
-void V::end_visit( ftmild_not& ) {
+void V::end_visit( ftmild_not &mn ) {
   while ( true ) {
     // the popping order is significant
     auto_ptr<ft_all_matches> am_right( POP_MATCHES() );
@@ -247,9 +249,23 @@ void V::end_visit( ftmild_not& ) {
       PUSH_MATCHES( am_right.release() );
       break;
     }
-    auto_ptr<ft_all_matches> result( new ft_all_matches );
-    apply_ftmild_not( *am_left, *am_right, *result );
-    PUSH_MATCHES( result.release() );
+    try {
+      auto_ptr<ft_all_matches> result( new ft_all_matches );
+      apply_ftmild_not( *am_left, *am_right, *result );
+      PUSH_MATCHES( result.release() );
+    }
+    catch ( error::ZorbaError &e ) {
+      //
+      // Since apply_ftmild_not() can throw a ZorbaError and we don't pass it
+      // the QueryLoc, set it here after the fact.  (We don't pass it the
+      // QueryLoc so we don't "pollute" the API.)
+      //
+      QueryLoc const &loc = mn.get_loc();
+      e.setQueryLocation(
+        loc.getLineBegin(), loc.getColumnBegin(), loc.getFilename()
+      );
+      throw;
+    }
   }
   END_VISIT( ftmild_not );
 }
