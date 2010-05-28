@@ -195,20 +195,20 @@ inline void pop_helper( char const *what, int line ) {
 
 #define V ftcontains_visitor
 
-////////// FTMatchOptions /////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 //
 // We define these first (before redefining DEF_FTNODE_VISITOR_BEGIN_VISIT and
 // DEF_FTNODE_VISITOR_END_VISIT) so they don't print debugging information.  We
 // don't care about printing debugging information for these since they're all
-// empty.  All FTMatchOptions are "hoisted" up into ftprimary_with_options and
-// passed around as a unit (an ftmatch_options*).
+// empty.
 //
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftcase_option )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftdiacritics_option )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftextension_option )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftlanguage_option )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftmatch_options )
+DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftrange )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstem_option )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_word_option )
 DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftstop_words )
@@ -326,8 +326,6 @@ void V::end_visit( ftprimary_with_options& ) {
   POP_OPTIONS();
   END_VISIT( ftprimary_with_options );
 }
-
-DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftrange )
 
 ft_visit_result::type V::begin_visit( ftselection& ) {
   BEGIN_VISIT( ftselection );
