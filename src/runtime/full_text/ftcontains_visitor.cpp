@@ -28,7 +28,9 @@
 
 #ifndef NDEBUG
 #include "system/properties.h"
-#endif
+#define DOUT Properties::instance()->debug_out()
+#define TRACE_FULL_TEXT Properties::instance()->traceFulltext()
+#endif /* NDEBUG */
 
 using namespace std;
 
@@ -186,10 +188,12 @@ inline void pop_helper( char const *what, int line ) {
 
 #ifndef NDEBUG
 
-#define BEGIN_VISIT(LABEL) \
+#define BEGIN_VISIT(LABEL)                                \
+  if ( !TRACE_FULL_TEXT ); else                           \
   cout << indent << "BEGIN " #LABEL << endl << inc_indent
 
-#define END_VISIT(LABEL) \
+#define END_VISIT(LABEL)                                \
+  if ( !TRACE_FULL_TEXT ); else                         \
   cout << dec_indent << indent << "END " #LABEL << endl
 
 #else /* NDEBUG */
