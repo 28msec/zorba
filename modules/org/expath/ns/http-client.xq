@@ -64,8 +64,8 @@ import schema namespace https = "http://expath.org/ns/http-client";
  :  is one (or several, in case of multipart) response body, the response bodies
  :  are the next items in the sequence.
  :)
-declare function http:send-request(
-  $request as element(https:request, https:requestType)?,
+declare sequential function http:send-request(
+  $request as element(https:request)?,
   $href as xs:string?,
   $bodies as item()*) as item()+ {
   if (fn:empty($href) and fn:empty($request)) then
@@ -78,7 +78,8 @@ declare function http:send-request(
     fn:error($err:HCV01,
       "The number of bodies without children is not equal the size of the bodies sequence")
   else
-    let $result := httpclientimpl:http-send-request-impl(http:set-content-type($request),
+    let $req := if ($request) then validate { http:set-content-type($request) } else ()
+    let $result := httpclientimpl:http-send-request-impl($req,
                                                          $href,
                                                          $bodies)
     return (validate {$result[1]}, fn:subsequence($result, 2))
@@ -93,8 +94,8 @@ declare function http:send-request(
  : @return see return value of
  :  <a href="#send-request-3">send-request#3</a>
  :)
-declare function http:send-request (
-  $request as element(https:request, https:requestType)) as item()+ {
+declare sequential function http:send-request (
+  $request as element(https:request)) as item()+ {
   http:send-request($request,(),())
 };
 
@@ -109,8 +110,8 @@ declare function http:send-request (
  : @return see return of
  :  <a href="#send-request-3">send-request#3</a>
  :)
-declare function http:send-request(
-  $request as element(https:request, https:requestType)?,
+declare sequential function http:send-request(
+  $request as element(https:request)?,
   $href as xs:string?) as item()+ {
   http:send-request($request,$href,())  
 };
@@ -126,9 +127,8 @@ declare function http:send-request(
  : @return a https:body element with a @method attribute 
  :)
 declare function http:create-body (
-  $body as element(https:body, https:bodyType))
-    as element(https:body, https:bodyType) {
-  validate {
+  $body as element(https:body))
+    as element(https:body) {
     <https:body>{$body/@*}
     {
       if ($body/@method) then
@@ -147,7 +147,6 @@ declare function http:create-body (
     }
     {$body/node()}
     </https:body>
-  }
 };
 
 (:~
@@ -161,15 +160,15 @@ declare function http:create-body (
  : @return a copy of $multipart with all $multipart/body/@method set 
  :)
 declare function http:create-multipart (
-  $multipart as element(https:multipart, https:multipartType))
-    as element(https:multipart, https:multipartType) {
+  $multipart as element(https:multipart))
+    as element(https:multipart) {
   validate {
     <https:multipart>{$multipart/@*}
     {
     for $x in $multipart/node()
     return
       typeswitch($x)
-        case element(https:body, https:bodyType) return http:create-body($x)
+        case element(https:body) return http:create-body($x)
         default return $x
     }
     </https:multipart>
@@ -187,8 +186,8 @@ declare function http:create-multipart (
  : @return A copy of $request with all request//body/@method set.
  :)
 declare function http:set-content-type(
-  $request as element(https:request, https:requestType)?)
-    as element(https:request, https:requestType)? {
+  $request as element(https:request)?)
+    as element(https:request)? {
   if ($request) then
     validate
     {
@@ -197,8 +196,8 @@ declare function http:set-content-type(
       for $x in $request/node()
       return
         typeswitch($x)
-          case element(https:body, https:bodyType) return http:create-body($x)
-          case element(https:multipart, https:multipartType) return http:create-multipart($x)
+          case element(https:body) return http:create-body($x)
+          case element(https:multipart) return http:create-multipart($x)
           default return $x
       }
       </http:request>

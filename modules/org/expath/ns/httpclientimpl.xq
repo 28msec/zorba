@@ -39,7 +39,7 @@ import schema namespace http = "http://expath.org/ns/http-client";
  :
  : @return @see http://www.expath.org/mod/http-client;send-request
  :)
-declare function httpclientimpl:http-send-request-impl (
+declare sequential function httpclientimpl:http-send-request-impl (
   $request as element(http:request, http:requestType)?,
   $href as xs:string?,
   $bodies as item()*
