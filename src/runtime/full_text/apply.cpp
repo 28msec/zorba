@@ -737,8 +737,11 @@ void apply_ftunary_not( ft_all_matches &am ) {
   BEGIN_APPLY( apply_ftunary_not );
   PUT_ALL_MATCHES( am );
 
-  MUTATE_EACH( ft_all_matches, m, am )
-    m->includes.swap( m->excludes );
+  if ( am.empty() )
+    am.push_back( ft_match() );
+  else
+    MUTATE_EACH( ft_all_matches, m, am )
+      m->includes.swap( m->excludes );
 
   END_APPLY( am );
 }
