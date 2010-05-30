@@ -134,6 +134,21 @@ template<typename T> inline bool is_max_valid( T n ) {
 }
 
 /**
+ * Computes max(N) from the given sequence of struct objects having an IntType
+ * member.
+ */
+template<typename SequenceType,typename IntType>
+IntType max( SequenceType &seq, IntType SequenceType::value_type::*ip ) {
+  IntType result = numeric_limits<IntType>::min();
+  FOR_EACH( typename SequenceType, i, seq ) {
+    IntType const n = (*i).*ip;
+    if ( n > result )
+      result = n;
+  }
+  return result;
+}
+
+/**
  * Computes max(N) from the given sequence of ft_token_spans where N is
  * specified by the pointers-to-members.
  */
@@ -150,28 +165,8 @@ ft_token_span::int_t max( FTTokenSpanSequenceType &seq,
   return result;
 }
 
-#define MAX(SEQ,SEP,IP) \
+#define MAX_TS(SEQ,SEP,IP) \
   max( SEQ, &ft_token_span::SEP, &ft_token_span::start_end::IP )
-
-/**
- * Finds the max query_pos among all the match's include/exclude lists.
- */
-ft_string_match::int_t max_query_pos( ft_all_matches const &am ) {
-  ft_string_match::int_t result = numeric_limits<ft_string_match::int_t>::min();
-  FOR_EACH( ft_all_matches, m, am ) {
-    FOR_EACH( ft_match::includes_t, i, m->includes ) {
-      ft_string_match::int_t const n = i->query_pos;
-      if ( n > result )
-        result = n;
-    }
-    FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
-      ft_string_match::int_t const n = e->query_pos;
-      if ( n > result )
-        result = n;
-    }
-  }
-  return result;
-}
 
 /**
  * Computes min(N) from the given sequence of ft_token_spans where N is
@@ -190,7 +185,7 @@ ft_token_span::int_t min( FTTokenSpanSequenceType &seq,
   return result;
 }
 
-#define MIN(SEQ,SEP,IP) \
+#define MIN_TS(SEQ,SEP,IP) \
   min( SEQ, &ft_token_span::SEP, &ft_token_span::start_end::IP )
 
 /**
@@ -210,8 +205,8 @@ static void join_includes( ft_match::includes_t const &includes,
   if ( includes.empty() )
     return;
 
-  ft_token_span::int_t const min_pos = MIN( includes, pos, start );
-  ft_token_span::int_t const max_pos = MAX( includes, pos, end );
+  ft_token_span::int_t const min_pos = MIN_TS( includes, pos, start );
+  ft_token_span::int_t const max_pos = MAX_TS( includes, pos, end );
   bool is_contiguous = true;
 
   FOR_EACH( ft_match::includes_t, i, includes ) {
@@ -233,10 +228,10 @@ static void join_includes( ft_match::includes_t const &includes,
   ft_string_include si;
   si.pos.start     = min_pos;
   si.pos.end       = max_pos;
-  si.sent.start    = MIN( includes, sent, start );
-  si.sent.end      = MAX( includes, sent, end   );
-  si.para.start    = MIN( includes, para, start );
-  si.para.end      = MAX( includes, para, end   );
+  si.sent.start    = MIN_TS( includes, sent, start );
+  si.sent.end      = MAX_TS( includes, sent, end   );
+  si.para.start    = MIN_TS( includes, para, start );
+  si.para.end      = MAX_TS( includes, para, end   );
   si.query_pos     = includes.begin()->query_pos;
   si.is_contiguous = is_contiguous;
   result.push_back( si );
@@ -384,8 +379,8 @@ void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode,
 ////////// ApplyFTDistance ////////////////////////////////////////////////////
 
 /**
- * Computes the distance of N between 2 ft_token_spans where N is specified by
- * the pointer-to-member.
+ * Helper function for apply_ftdistance(): computes the distance of N between 2
+ * ft_token_spans where N is specified by the pointer-to-member.
  */
 static ft_int distance( ft_token_span const &tsi, ft_token_span const &tsj,
                         ft_token_span::start_end_ptr sep ) {
@@ -495,7 +490,8 @@ void apply_ftor( ft_all_matches const &ami, ft_all_matches const &amj,
 ////////// ApplyFTOrder ///////////////////////////////////////////////////////
 
 /**
- * Helper function for apply_ftorder().
+ * Helper function for apply_ftorder(): checks whether the given two string
+ * matches are ordered.
  */
 inline bool ordered( ft_string_match const &smi, ft_string_match const &smj ) {
   return
@@ -574,7 +570,8 @@ static void apply_ftscope_diff( ft_all_matches const &am,
 }
 
 /**
- * Helper function for apply_ftscope_same().
+ * Helper function for apply_ftscope_same(): checks if every start
+ * pos/sent/para equals the given start.
  */
 static bool every_start_is( ft_match::includes_t const &includes,
                             ft_token_span::start_end_ptr sep,
@@ -643,7 +640,7 @@ void apply_ftscope( ft_all_matches const &am, ft_scope::type scope,
 ////////// ApplyFTTimes ///////////////////////////////////////////////////////
 
 /**
- * Finds all combinations of exactly \c k elements from \c ms and, for each
+ * Finds all combinations of exactly \a k elements from \a ms and, for each
  * such combination, constructs a match whose children are copies of all the
  * children of all the elements in the combination.
  *
@@ -683,7 +680,7 @@ static void form_combinations( ft_match_seq const &ms, ft_int k,
 }
 
 /**
- * Finds all combinations of \c times or more elements from \c ms and, for each
+ * Finds all combinations of \a times or more elements from \a ms and, for each
  * such combination, constructs a match whose children are copies of all the
  * children of all the elements in the combination.
  *
@@ -701,6 +698,19 @@ static void form_combinations_at_least( ft_match_seq const &ms, ft_int times,
   }
 }
 
+/**
+ * Finds all combinations of at least \a at_least and at most \a at_most
+ * elements from \a ms and, for each such combination, constructs a match whose
+ * children are copies of all the children of all the elements in the
+ * combination.
+ *
+ * @param ms        The match-sequence to form combinations of.
+ * @param at_least  The least number of combinations of elements.
+ * @param at_most   The most number of combinations of elements.
+ * @param result    The result.
+ *
+ * @return Return the sequence of all such matches.
+ */
 static void form_range( ft_match_seq const &ms, ft_int at_least, ft_int at_most,
                         ft_match_seq &result ) {
   if ( at_least <= at_most ) {
@@ -749,6 +759,24 @@ void apply_ftunary_not( ft_all_matches &am ) {
 ////////// ApplyFTWords ///////////////////////////////////////////////////////
 
 typedef list<ft_all_matches> ft_all_matches_seq;
+
+/**
+ * Helper function for apply_ftwords(): finds the max query_pos among all the
+ * match's include/exclude lists.
+ */
+static ft_string_match::int_t max_query_pos( ft_all_matches const &am ) {
+  typedef ft_string_match::int_t int_t;
+  int_t result = numeric_limits<int_t>::min();
+  FOR_EACH( ft_all_matches, m, am ) {
+    int_t const mi = max( m->includes, &ft_string_match::query_pos );
+    if ( mi > result )
+      result = mi;
+    int_t const me = max( m->excludes, &ft_string_match::query_pos );
+    if ( me > result )
+      result = me;
+  }
+  return result;
+}
 
 static void apply_query_tokens_as_phrase( FTTokenIterator &search_ctx,
                                           FTTokenIterator &query_tokens,
@@ -882,9 +910,10 @@ static void apply_ftwords_any( FTTokenIterator &search_ctx,
 }
 
 /**
- * This function combines ApplyFTWordsAnyWord() and ApplyFTWordsAllWord() since
- * the code is the same except that the former calls MakeDisjunction() and the
- * latter calls MakeConjunction().
+ * Helper function for apply_ftwords(): this function combines
+ * \c ApplyFTWordsAnyWord() and \c ApplyFTWordsAllWord() since the code is the
+ * same except that the former calls \c MakeDisjunction() and the latter calls
+ * \c MakeConjunction().
  */
 static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
                                     FTQueryItemSeq &query_items,
@@ -960,8 +989,8 @@ void apply_ftwindow( ft_all_matches const &am, ft_int window_size,
 
   ft_token_span::start_end_ptr const sep = get_sep_for( unit );
   FOR_EACH( ft_all_matches, m, am ) {
-    ft_token_span::int_t const min_pos = MIN( m->includes, pos, start );
-    ft_token_span::int_t const max_pos = MAX( m->includes, pos, end );
+    ft_token_span::int_t const min_pos = MIN_TS( m->includes, pos, start );
+    ft_token_span::int_t const max_pos = MAX_TS( m->includes, pos, end );
     for ( ft_token_span::int_t win_start_pos = max_pos - window_size + 1;
           win_start_pos < min_pos; ++win_start_pos ) {
       ft_token_span::int_t const win_end_pos = win_start_pos + window_size - 1;
