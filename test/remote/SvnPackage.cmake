@@ -178,7 +178,7 @@ function (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile
     execute_process (COMMAND "${svn}" delete "${svndir}/${relpath}"
       OUTPUT_VARIABLE output ERROR_VARIABLE output RESULT_VARIABLE result)
     file (APPEND "${changeslogfile}" "${output}")
-    if (result_var)
+    if (result)
       set (${result_var} ${result} PARENT_SCOPE)
       return ()
     endif ()
