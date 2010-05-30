@@ -166,8 +166,17 @@ ft_token_span::int_t max( FTTokenSpanSequenceType &seq,
   return result;
 }
 
-#define MAX_TS(SEQ,SEP,IP) \
-  max( SEQ, &ft_token_span::SEP, &ft_token_span::start_end::IP )
+/**
+ * Shorthand for calling max() with a sep (P)ointer and an ip (N)ame.
+ */
+#define MAX_PN(SEQ,SEP,IP_NAME) \
+  max( SEQ, SEP, &ft_token_span::start_end::IP_NAME )
+
+/**
+ * Shorthand for calling max() with a sep (N)ame and an ip (N)ame.
+ */
+#define MAX_NN(SEQ,SEP_NAME,IP_NAME) \
+  MAX_PN( SEQ, &ft_token_span::SEP_NAME, IP_NAME )
 
 /**
  * Computes min(N) from the given sequence of ft_token_spans where N is
@@ -187,8 +196,17 @@ ft_token_span::int_t min( FTTokenSpanSequenceType &seq,
   return result;
 }
 
-#define MIN_TS(SEQ,SEP,IP) \
-  min( SEQ, &ft_token_span::SEP, &ft_token_span::start_end::IP )
+/**
+ * Shorthand for calling min() with a sep (P)ointer and an ip (N)ame.
+ */
+#define MIN_PN(SEQ,SEP,IP_NAME) \
+  min( SEQ, SEP, &ft_token_span::start_end::IP_NAME )
+
+/**
+ * Shorthand for calling min() with a sep (N)ame and an ip (N)ame.
+ */
+#define MIN_NN(SEQ,SEP_NAME,IP_NAME) \
+  MIN_PN( SEQ, &ft_token_span::SEP_NAME, IP_NAME )
 
 /**
  * From [1] 4.2.6.8:
@@ -209,8 +227,8 @@ static void join_includes( ft_match::includes_t const &includes,
 
   typedef ft_token_span::int_t int_t;
 
-  int_t const min_pos = MIN_TS( includes, pos, start );
-  int_t const max_pos = MAX_TS( includes, pos, end );
+  int_t const min_pos = MIN_NN( includes, pos, start );
+  int_t const max_pos = MAX_NN( includes, pos, end );
 
   bool is_contiguous = true;
   FOR_EACH( ft_match::includes_t, i, includes ) {
@@ -232,10 +250,10 @@ static void join_includes( ft_match::includes_t const &includes,
   ft_string_include si;
   si.pos.start     = min_pos;
   si.pos.end       = max_pos;
-  si.sent.start    = MIN_TS( includes, sent, start );
-  si.sent.end      = MAX_TS( includes, sent, end   );
-  si.para.start    = MIN_TS( includes, para, start );
-  si.para.end      = MAX_TS( includes, para, end   );
+  si.sent.start    = MIN_NN( includes, sent, start );
+  si.sent.end      = MAX_NN( includes, sent, end   );
+  si.para.start    = MIN_NN( includes, para, start );
+  si.para.end      = MAX_NN( includes, para, end   );
   si.query_pos     = includes.begin()->query_pos;
   si.is_contiguous = is_contiguous;
   result.push_back( si );
@@ -992,20 +1010,27 @@ void apply_ftwindow( ft_all_matches const &am, ft_int window_size,
   PUT_ENUM( ft_unit, unit );
   PUT_ALL_MATCHES( am );
 
-  typedef ft_token_span::int_t int_t;
+  //
+  // Token positions are unsigned, but we must used signed arithmetic here, so
+  // declare a signed integer type and cast all values to it.
+  //
+  typedef long signed_t;
+
+  signed_t const s_window_size = window_size;
 
   ft_token_span::start_end_ptr const sep = get_sep_for( unit );
   FOR_EACH( ft_all_matches, m, am ) {
-    int_t const min_pos = MIN_TS( m->includes, pos, start );
-    int_t const max_pos = MAX_TS( m->includes, pos, end );
-    for ( int_t win_start_pos = max_pos - window_size + 1;
-          win_start_pos < min_pos; ++win_start_pos ) {
-      int_t const win_end_pos = win_start_pos + window_size - 1;
+    signed_t const s_min_pos = MIN_PN( m->includes, sep, start );
+    signed_t const s_max_pos = MIN_PN( m->includes, sep, end );
+    for ( signed_t s_win_start_pos = s_max_pos - s_window_size + 1;
+          s_win_start_pos <= s_min_pos; ++s_win_start_pos ) {
+      signed_t const s_win_end_pos = s_win_start_pos + s_window_size - 1;
       ft_match m_new;
       join_includes( m->includes, m_new.includes );
       FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
-        if ( ((*e).*sep).start >= win_start_pos &&
-             ((*e).*sep).end <= win_end_pos )
+        signed_t const s_start = ((*e).*sep).start;
+        signed_t const s_end   = ((*e).*sep).end;
+        if ( s_start >= s_win_start_pos && s_end <= s_win_end_pos )
           m_new.excludes.push_back( *e );
       }
       result.push_back( m_new );
