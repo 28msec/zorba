@@ -38,18 +38,18 @@ ostream& operator<<( ostream &o, ft_string_match const &sm ) {
 }
 
 static ostream& print_string_matches( ostream &o, char const *label,
-                                      ft_match::string_matches_t const &sm ) {
-  if ( !sm.empty() ) {
+                                      ft_string_matches const &sms ) {
+  if ( !sms.empty() ) {
     o << inc_indent << indent << label << '\n' << inc_indent;
-    FOR_EACH( ft_match::string_matches_t, i, sm )
-      o << indent << *i << '\n';
+    FOR_EACH( ft_string_matches, sm, sms )
+      o << indent << *sm << '\n';
     o << dec_indent << dec_indent;
   }
   return o;
 }
 
 DEF_OMANIP2( print_string_matches, char const*, label,
-             ft_match::string_matches_t const&, sm )
+             ft_string_matches const&, sms )
 
 ostream& operator<<( ostream &o, ft_match const &m ) {
   return  o << indent << "ft_match @ " << print_addr( &m ) << '\n'

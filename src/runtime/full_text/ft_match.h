@@ -56,6 +56,11 @@ typedef ft_string_match ft_string_include;
  */
 typedef ft_string_match ft_string_exclude;
 
+/**
+ * An ft_string_matches contains zero or more ft_string_match objects.
+ */
+typedef std::list<ft_string_match> ft_string_matches;
+
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -63,10 +68,8 @@ typedef ft_string_match ft_string_exclude;
  */
 class ft_match {
 public:
-  typedef std::list<ft_string_match> string_matches_t;
-
-  typedef string_matches_t includes_t;
-  typedef string_matches_t excludes_t;
+  typedef ft_string_matches includes_t;
+  typedef ft_string_matches excludes_t;
 
 #if 0
   includes_t const& includes() const { return includes_; }
@@ -84,7 +87,7 @@ public:
     //}
   }
 
-  typedef string_matches_t ft_match::*string_match_ptr;
+  typedef ft_string_matches ft_match::*string_match_ptr;
 
 private:
   mutable bool includes_sorted_;
