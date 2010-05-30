@@ -98,16 +98,20 @@ static bool all_empty( ft_all_matches const &am,
 }
 
 /**
+ * Shorthand for calling \c all_empty() with an \c ft_match (N)ame.
+ */
+#define ALL_EMPTY_N(ALL_MATCHES,SMP_NAME) \
+  all_empty( ALL_MATCHES, &ft_match::SMP_NAME )
+
+/**
  * Given a sequence of ft_string_include objects, constructs a set of all the
  * positions spanned by all the contained tokens.
  */
-static ft_pos_set
-covered_include_positions( ft_match::includes_t const &includes ) {
-  ft_pos_set s;
+static void covered_include_positions( ft_match::includes_t const &includes,
+                                       ft_pos_set &result ) {
   FOR_EACH( ft_match::includes_t, i, includes )
     for ( ft_token_span::int_t pos = i->pos.start; pos <= i->pos.end; ++pos )
-      s.insert( pos );
-  return s;
+      result.insert( pos );
 }
 
 /**
@@ -238,7 +242,8 @@ static void join_includes( ft_match::includes_t const &includes,
     }
   }
   if ( is_contiguous ) {
-    ft_pos_set const pos_set = covered_include_positions( includes );
+    ft_pos_set pos_set;
+    covered_include_positions( includes, pos_set );
     for ( int_t pos = min_pos; pos <= max_pos; ++pos ) {
       if ( !contains( pos_set, pos ) ) {
         is_contiguous = false;
@@ -463,33 +468,44 @@ void apply_ftdistance( ft_all_matches const &am,
 
 void apply_ftmild_not( ft_all_matches const &ami, ft_all_matches const &amj,
                        ft_all_matches &result ) {
-
   BEGIN_APPLY( apply_ftmild_not );
   PUT_ALL_MATCHES( ami );
   PUT_ALL_MATCHES( amj );
 
-  if ( all_empty( ami, &ft_match::excludes ) ||
-       all_empty( amj, &ft_match::excludes ) )
+  if ( !ALL_EMPTY_N( ami, excludes ) || !ALL_EMPTY_N( amj, excludes ) )
     ZORBA_ERROR( FTDY0017 );
 
-  if ( all_empty( amj, &ft_match::includes ) )
+  if ( ALL_EMPTY_N( amj, includes ) )
     result = ami;
   else {
-    typedef vector<ft_pos_set> ft_pos_set_cache_t;
+    typedef list<ft_pos_set> ft_pos_set_cache_t;
 
     ft_pos_set_cache_t psj_cache( amj.size() );
     FOR_EACH( ft_all_matches, mj, amj ) {
-      psj_cache.push_back( covered_include_positions( mj->includes ) );
+      psj_cache.push_back( ft_pos_set() );
+      covered_include_positions( mj->includes, psj_cache.back() );
     }
 
     FOR_EACH( ft_all_matches, mi, ami ) {
-      ft_pos_set const psi = covered_include_positions( mi->includes );
+      ft_pos_set psi;
+      covered_include_positions( mi->includes, psi );
+
+      bool every_satisfies = true;
       FOR_EACH( ft_pos_set_cache_t, psj, psj_cache ) {
+        bool some_satisfies = false;
         FOR_EACH( ft_pos_set, pos, psi ) {
-          if ( !contains( *psj, *pos ) )
-            result.push_back( *mi );
+          if ( !contains( *psj, *pos ) ) {
+            some_satisfies = true;
+            break;
+          }
+        }
+        if ( !some_satisfies ) {
+          every_satisfies = false;
+          break;
         }
       }
+      if ( every_satisfies )
+        result.push_back( *mi );
     }
   }
 
@@ -753,7 +769,7 @@ void apply_fttimes( ft_all_matches const &am, ft_range_mode::type mode,
   PUT_ARG( at_most );
   PUT_ALL_MATCHES( am );
 
-  if ( !all_empty( am, &ft_match::excludes ) )
+  if ( !ALL_EMPTY_N( am, excludes ) )
     ZORBA_ERROR( XPST0003 );
 
   if ( mode == ft_range_mode::at_least )
