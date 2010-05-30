@@ -1017,8 +1017,8 @@ void apply_ftwindow( ft_all_matches const &am, ft_int window_size,
   typedef long signed_t;
 
   signed_t const s_window_size = window_size;
-
   ft_token_span::start_end_ptr const sep = get_sep_for( unit );
+
   FOR_EACH( ft_all_matches, m, am ) {
     signed_t const s_min_pos = MIN_PN( m->includes, sep, start );
     signed_t const s_max_pos = MIN_PN( m->includes, sep, end );
