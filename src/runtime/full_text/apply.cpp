@@ -156,9 +156,10 @@ template<typename FTTokenSpanSequenceType>
 ft_token_span::int_t max( FTTokenSpanSequenceType &seq,
                           ft_token_span::start_end_ptr sep,
                           ft_token_span::int_ptr ip ) {
-  ft_token_span::int_t result = numeric_limits<ft_token_span::int_t>::min();
+  typedef ft_token_span::int_t int_t;
+  int_t result = numeric_limits<int_t>::min();
   FOR_EACH( typename FTTokenSpanSequenceType, ts, seq ) {
-    ft_token_span::int_t const n = (*ts).*sep.*ip;
+    int_t const n = (*ts).*sep.*ip;
     if ( n > result )
       result = n;
   }
@@ -176,9 +177,10 @@ template<typename FTTokenSpanSequenceType>
 ft_token_span::int_t min( FTTokenSpanSequenceType &seq,
                           ft_token_span::start_end_ptr sep,
                           ft_token_span::int_ptr ip ) {
-  ft_token_span::int_t result = numeric_limits<ft_token_span::int_t>::max();
+  typedef ft_token_span::int_t int_t;
+  int_t result = numeric_limits<int_t>::max();
   FOR_EACH( typename FTTokenSpanSequenceType, ts, seq ) {
-    ft_token_span::int_t const n = (*ts).*sep.*ip;
+    int_t const n = (*ts).*sep.*ip;
     if ( n < result )
       result = n;
   }
@@ -205,10 +207,12 @@ static void join_includes( ft_match::includes_t const &includes,
   if ( includes.empty() )
     return;
 
-  ft_token_span::int_t const min_pos = MIN_TS( includes, pos, start );
-  ft_token_span::int_t const max_pos = MAX_TS( includes, pos, end );
-  bool is_contiguous = true;
+  typedef ft_token_span::int_t int_t;
 
+  int_t const min_pos = MIN_TS( includes, pos, start );
+  int_t const max_pos = MAX_TS( includes, pos, end );
+
+  bool is_contiguous = true;
   FOR_EACH( ft_match::includes_t, i, includes ) {
     if ( !i->is_contiguous ) {
       is_contiguous = false;
@@ -217,7 +221,7 @@ static void join_includes( ft_match::includes_t const &includes,
   }
   if ( is_contiguous ) {
     ft_pos_set const pos_set = covered_include_positions( includes );
-    for ( ft_token_span::int_t pos = min_pos; pos <= max_pos; ++pos ) {
+    for ( int_t pos = min_pos; pos <= max_pos; ++pos ) {
       if ( !contains( pos_set, pos ) ) {
         is_contiguous = false;
         break;
@@ -333,10 +337,12 @@ void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode,
   PUT_ARG( end_pos );
   PUT_ALL_MATCHES( am );
 
+  typedef ft_token_span::int_t int_t;
+
   if ( mode == ft_content_mode::entire ) {
     for ( ft_all_matches::iterator m = am.begin(); m != am.end(); ) {
       bool every_satisfies = true;
-      for ( ft_token_span::int_t pos = start_pos; pos <= end_pos; ++pos ) {
+      for ( int_t pos = start_pos; pos <= end_pos; ++pos ) {
         bool some_satisfies = false;
         FOR_EACH( ft_match::includes_t, i, m->includes ) {
           if ( i->is_contiguous && token_covers_pos( *i, pos ) ) {
@@ -355,8 +361,7 @@ void apply_ftcontent( ft_all_matches &am, ft_content_mode::type mode,
         m = am.erase( m );
     }
   } else {
-    ft_token_span::int_t const pos = mode == ft_content_mode::at_start ?
-      start_pos : end_pos;
+    int_t const pos = mode == ft_content_mode::at_start ? start_pos : end_pos;
 
     for ( ft_all_matches::iterator m = am.begin(); m != am.end(); ) {
       bool some_satisfies = false;
@@ -987,13 +992,15 @@ void apply_ftwindow( ft_all_matches const &am, ft_int window_size,
   PUT_ENUM( ft_unit, unit );
   PUT_ALL_MATCHES( am );
 
+  typedef ft_token_span::int_t int_t;
+
   ft_token_span::start_end_ptr const sep = get_sep_for( unit );
   FOR_EACH( ft_all_matches, m, am ) {
-    ft_token_span::int_t const min_pos = MIN_TS( m->includes, pos, start );
-    ft_token_span::int_t const max_pos = MAX_TS( m->includes, pos, end );
-    for ( ft_token_span::int_t win_start_pos = max_pos - window_size + 1;
+    int_t const min_pos = MIN_TS( m->includes, pos, start );
+    int_t const max_pos = MAX_TS( m->includes, pos, end );
+    for ( int_t win_start_pos = max_pos - window_size + 1;
           win_start_pos < min_pos; ++win_start_pos ) {
-      ft_token_span::int_t const win_end_pos = win_start_pos + window_size - 1;
+      int_t const win_end_pos = win_start_pos + window_size - 1;
       ft_match m_new;
       join_includes( m->includes, m_new.includes );
       FOR_EACH( ft_match::excludes_t, e, m->excludes ) {
