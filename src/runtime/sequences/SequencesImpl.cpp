@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,7 +29,6 @@
 #include <zorbatypes/datetime.h>
 #include <zorbatypes/duration.h>
 #include <zorbatypes/floatimpl.h>
-#include "util/time.h"
 
 #include "compiler/api/compilercb.h"
 
@@ -54,12 +53,8 @@
 #include "context/internal_uri_resolvers.h"
 
 
-namespace zorbatm = zorba::time;
-
-using namespace std;
-
 namespace zorba {
-  
+
 SERIALIZABLE_CLASS_VERSIONS(FnMinMaxIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnMinMaxIterator)
 
@@ -91,7 +86,7 @@ static XQPCollator* getCollator(
   if (PlanIterator::consumeNext(temp, iter, planState))
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
                            "A sequence of more then one item is not allowed as collation parameter");
-    
+
   xqtref_t lCollationItemType = sctx->get_typemanager()->create_value_type(lCollationItem);
 
   return sctx->get_collator(lCollationItem->getStringValue()->str(), loc);
@@ -115,17 +110,17 @@ FnMinMaxIterator::FnMinMaxIterator(
     std::vector<PlanIter_t>& aChildren,
     Type aType)
   :
-  NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>(sctx, loc, aChildren), 
+  NaryBaseIterator<FnMinMaxIterator, PlanIteratorState>(sctx, loc, aChildren),
   theType(aType),
   theCompareType((aType == MIN ?
                   CompareConsts::VALUE_LESS :
-                  CompareConsts::VALUE_GREATER)) 
-{ 
+                  CompareConsts::VALUE_GREATER))
+{
 }
 
 
-bool 
-FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool
+FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lRunningItem = NULL;
   xqtref_t lMaxType;
@@ -150,22 +145,22 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   if (consumeNext(lRunningItem, theChildren[0].getp(), planState))
   {
-    do 
+    do
     {
       // casting of untyped atomic
       xqtref_t lRunningType = tm.create_value_type(lRunningItem);
 
-      if (TypeOps::is_subtype(*lRunningType, *rtm.UNTYPED_ATOMIC_TYPE_ONE)) 
+      if (TypeOps::is_subtype(*lRunningType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
       {
         GenericCast::castToAtomic(lRunningItem, lRunningItem, &*rtm.DOUBLE_TYPE_ONE, tm);
         lRunningType = rtm.DOUBLE_TYPE_ONE;
       }
 
       // implementation dependent: return the first occurence)
-      if (lRunningItem->isNaN()) 
+      if (lRunningItem->isNaN())
       {
-        /** It must be checked if the sequence contains any 
-         * xs:double("NaN") [xs:double("NaN") is returned] or 
+        /** It must be checked if the sequence contains any
+         * xs:double("NaN") [xs:double("NaN") is returned] or
          * only xs:float("NaN")'s [xs:float("NaN") is returned]'.
          */
         result = lRunningItem;
@@ -175,23 +170,23 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         lMaxType = tm.create_value_type (result);
       }
 
-      if (result != 0) 
+      if (result != 0)
       {
         // Type Promotion
         store::Item_t lItemCur;
-        if (!GenericCast::promote(lItemCur, lRunningItem, &*lMaxType, tm)) 
+        if (!GenericCast::promote(lItemCur, lRunningItem, &*lMaxType, tm))
         {
           if (GenericCast::promote(lItemCur, result, &*lRunningType, tm))
           {
             result.transfer(lItemCur);
             lMaxType = tm.create_value_type(result);
-          } 
-          else 
+          }
+          else
           {
             ZORBA_ERROR_LOC_DESC( FORG0006, loc,  "Promotion not possible");
           }
         }
-        else 
+        else
         {
           lRunningItem.transfer(lItemCur);
           lRunningType = tm.create_value_type(lRunningItem);
@@ -205,13 +200,13 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                              theCompareType,
                                              &tm,
                                              timezone,
-                                             lCollator) ) 
+                                             lCollator) )
         {
           lMaxType = lRunningType;
           result.transfer(lRunningItem);
         }
       }
-      else 
+      else
       {
         lMaxType = lRunningType;
         result.transfer(lRunningItem);
@@ -219,7 +214,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
       elems_in_seq++;
     } while (consumeNext(lRunningItem, theChildren[0].getp(), planState));
-    
+
     if(elems_in_seq == 1)
     {
       //check type compatibility
@@ -238,7 +233,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   } // if non-empty seq
 
   STACK_END (state);
-  
+
   }
   catch(error::ZorbaError &e)
   {
@@ -285,7 +280,7 @@ void FnIdIteratorState::reset(PlanState& planState)
 }
 
 
-bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t  id;
   store::Item*   child = 0;
@@ -395,7 +390,7 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   STACK_END (state);
 }
-  
+
 
 /*******************************************************************************
   15.5.3 fn:idref
@@ -419,7 +414,7 @@ void FnIdRefIteratorState::reset(PlanState& planState)
 }
 
 
-bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const 
+bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t     id;
   store::Item*      child = NULL;
@@ -566,7 +561,7 @@ bool FnIdRefIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
                 break;
               }
             }
-            
+
             typedValueIte->close();
 
             if (isMatchingId)
