@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- 
+
 #include "runtime/visitors/printer_visitor.h"
 
 #include "types/typeops.h"
@@ -122,21 +122,21 @@ void PrinterVisitor::beginVisit ( const NodeSortIterator& a )
   thePrinter.endBeginVisit( theId);
 }
 
-void PrinterVisitor::endVisit ( const NodeSortIterator& ) 
+void PrinterVisitor::endVisit ( const NodeSortIterator& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
 #if 0
-void PrinterVisitor::beginVisit ( const PathIterator& a ) 
+void PrinterVisitor::beginVisit ( const PathIterator& a )
 {
   thePrinter.startBeginVisit("PathIterator", ++theId);
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const PathIterator& ) 
+void PrinterVisitor::endVisit(const PathIterator& )
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -151,7 +151,7 @@ void PrinterVisitor::beginVisit ( const SelfAxisIterator& a )
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const SelfAxisIterator&) 
+void PrinterVisitor::endVisit(const SelfAxisIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -439,7 +439,7 @@ void PrinterVisitor::beginVisit ( const
 SpecificNumArithIterator<DivideOperation,
                     TypeConstants::XS_DOUBLE>& a)
 {
-   
+
   thePrinter.startBeginVisit("SpecificNumArithIterator_DivideOperation_DOUBLE",
                              ++theId);
   printCommons( &a, theId );
@@ -640,7 +640,7 @@ void PrinterVisitor::endVisit(const ForVarIterator& )
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit(const LetVarIterator& a) 
+void PrinterVisitor::beginVisit(const LetVarIterator& a)
 {
   thePrinter.startBeginVisit("LetVarIterator", ++theId);
 
@@ -742,7 +742,7 @@ void PrinterVisitor::beginVisitFlworForVariable(
       if (i < numRefs-1)
         str << " ";
     }
-    
+
     if (! Properties::instance()->noTreeIds())
       thePrinter.addAttribute("pos-referenced-by", str.str());
   }
@@ -1112,6 +1112,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (FnBooleanIterator)
   PRINTER_VISITOR_DEFINITION (LogicIterator)
   PRINTER_VISITOR_DEFINITION (CompareIterator)
+  PRINTER_VISITOR_DEFINITION (AtomicValuesEquivalenceIterator)
   PRINTER_VISITOR_DEFINITION (ElementIterator)
 
   void PrinterVisitor::beginVisit(const AttributeIterator& a)
@@ -1126,7 +1127,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
     thePrinter.endBeginVisit(theId);
   }
 
-  void PrinterVisitor::endVisit(const AttributeIterator& ) 
+  void PrinterVisitor::endVisit(const AttributeIterator& )
   {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();
@@ -1198,7 +1199,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_AXIS_DEFINITION (FollowingAxisIterator)
 
 
-  void PrinterVisitor::beginVisit(const CreateInternalIndexIterator& a) 
+  void PrinterVisitor::beginVisit(const CreateInternalIndexIterator& a)
   {
     thePrinter.startBeginVisit("CreateInternalIndexIterator", ++theId);
     thePrinter.addAttribute("name", a.getName()->show());
@@ -1206,7 +1207,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
     thePrinter.endBeginVisit(theId);
   }
 
-  void PrinterVisitor::endVisit(const CreateInternalIndexIterator&) 
+  void PrinterVisitor::endVisit(const CreateInternalIndexIterator&)
   {
     thePrinter.startEndVisit();
     thePrinter.endEndVisit();

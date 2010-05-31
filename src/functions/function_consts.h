@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -18,14 +18,14 @@
 
 namespace zorba
 {
-  
+
 class FunctionConsts
 {
-  
+
 public:
 
-typedef enum 
-{ 
+typedef enum
+{
   FN_UNKNOWN,
 
   FN_UNORDERED_1,
@@ -64,6 +64,8 @@ typedef enum
   OP_GREATER_EQUAL_2,
   OP_LESS_2,
   OP_GREATER_2,
+
+  OP_ATOMIC_VALUES_EQUIVALENT_2,
 
   OP_VALUE_EQUAL_2,
   OP_VALUE_EQUAL_DOUBLE_2,
@@ -171,8 +173,8 @@ typedef enum
 } FunctionKind;
 
 
-typedef enum 
-{ 
+typedef enum
+{
   NO = 0,
   YES,
   PRESERVE
@@ -181,7 +183,7 @@ typedef enum
 
 typedef enum
 {
-  DoDistinct    = 1,   // Used by fn:zore-or-one and fn:exaclty-one 
+  DoDistinct    = 1,   // Used by fn:zore-or-one and fn:exaclty-one
   SkipCodeGen   = 2,
   hasFnNamespace = 4,
   isDeterministic = 8

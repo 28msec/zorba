@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,6 +24,7 @@
 #endif
   class LogicIterator;
   class CompareIterator;
+  class AtomicValuesEquivalenceIterator;
   class UDFunctionCallIterator;
   class StatelessExtFunctionCallIterator;
   class ElementIterator;
@@ -159,7 +160,7 @@
 
   class HoistIterator;
   class UnhoistIterator;
-  
+
 class IndexRangeProbeIterator;
 class IndexPointProbeIterator;
 class IndexEntryBuilderIterator;
@@ -174,4 +175,4 @@ class DynamicFnCallIterator;
  #define PLAN_ITER_VISITOR(class)                \
   virtual void beginVisit ( const class& ) = 0;  \
   virtual void endVisit ( const class& ) = 0
- 
+

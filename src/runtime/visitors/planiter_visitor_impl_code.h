@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,37 +16,39 @@
   PLAN_ITER_VISITOR (FnBooleanIterator);
 
   PLAN_ITER_VISITOR (LogicIterator);
-       
+
   PLAN_ITER_VISITOR (CompareIterator);
-       
+
+  PLAN_ITER_VISITOR (AtomicValuesEquivalenceIterator);
+
   PLAN_ITER_VISITOR (ElementIterator);
-       
+
   PLAN_ITER_VISITOR (AttributeIterator );
-      
+
   PLAN_ITER_VISITOR (DocumentIterator);
-      
+
   PLAN_ITER_VISITOR (DocumentContentIterator);
-       
+
   PLAN_ITER_VISITOR (UDFunctionCallIterator);
-       
+
   PLAN_ITER_VISITOR (StatelessExtFunctionCallIterator);
-       
+
   PLAN_ITER_VISITOR (CommentIterator);
-       
+
   PLAN_ITER_VISITOR (PiIterator);
-       
+
   PLAN_ITER_VISITOR (SingletonIterator);
 
   PLAN_ITER_VISITOR (EmptyIterator);
-       
+
   PLAN_ITER_VISITOR (ForVarIterator);
-       
+
   PLAN_ITER_VISITOR (LetVarIterator);
 
   PLAN_ITER_VISITOR (EnclosedIterator);
-      
+
   PLAN_ITER_VISITOR (IfThenElseIterator);
- 
+
   PLAN_ITER_VISITOR (TryCatchIterator);
 
   PLAN_ITER_VISITOR (NodeDistinctIterator);
@@ -56,43 +58,43 @@
   //PLAN_ITER_VISITOR (PathIterator);
 
   PLAN_ITER_VISITOR (SelfAxisIterator);
-       
+
   PLAN_ITER_VISITOR (AttributeAxisIterator);
-       
+
   PLAN_ITER_VISITOR (ParentAxisIterator);
-       
+
   PLAN_ITER_VISITOR (AncestorAxisIterator);
 
   PLAN_ITER_VISITOR (AncestorReverseAxisIterator);
-       
+
   PLAN_ITER_VISITOR (AncestorSelfAxisIterator);
-       
+
   PLAN_ITER_VISITOR (AncestorSelfReverseAxisIterator);
 
   PLAN_ITER_VISITOR (RSiblingAxisIterator);
-       
+
   PLAN_ITER_VISITOR (LSiblingAxisIterator);
 
   PLAN_ITER_VISITOR (LSiblingReverseAxisIterator);
 
   PLAN_ITER_VISITOR (ChildAxisIterator);
-       
+
   PLAN_ITER_VISITOR (DescendantAxisIterator);
-       
+
   PLAN_ITER_VISITOR (DescendantSelfAxisIterator);
-       
+
   PLAN_ITER_VISITOR (PrecedingAxisIterator);
 
   PLAN_ITER_VISITOR (PrecedingReverseAxisIterator);
-       
+
   PLAN_ITER_VISITOR (FollowingAxisIterator);
 
   PLAN_ITER_VISITOR (InstanceOfIterator);
-       
+
   PLAN_ITER_VISITOR (TreatIterator);
 
   PLAN_ITER_VISITOR (EitherNodesOrAtomicsIterator);
-              
+
   virtual void beginVisit ( const NumArithIterator<AddOperation>& ) = 0;
   virtual void beginVisit ( const NumArithIterator<SubtractOperation>& ) = 0;
   virtual void beginVisit ( const NumArithIterator<MultiplyOperation>& ) = 0;
@@ -105,7 +107,7 @@
   virtual void endVisit ( const NumArithIterator<DivideOperation>& ) = 0;
   virtual void endVisit ( const NumArithIterator<IntegerDivideOperation>& ) = 0;
   virtual void endVisit ( const NumArithIterator<ModOperation>& ) = 0;
-    
+
   virtual void beginVisit ( const GenericArithIterator<AddOperation>& ) = 0;
   virtual void beginVisit ( const GenericArithIterator<SubtractOperation>& ) = 0;
   virtual void beginVisit ( const GenericArithIterator<MultiplyOperation>& ) = 0;
@@ -118,7 +120,7 @@
   virtual void endVisit ( const GenericArithIterator<DivideOperation>& ) = 0;
   virtual void endVisit ( const GenericArithIterator<IntegerDivideOperation>& ) = 0;
   virtual void endVisit ( const GenericArithIterator<ModOperation>& ) = 0;
-    
+
   virtual void beginVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_DECIMAL>& ) = 0;
   virtual void beginVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_INTEGER>& ) = 0;
   virtual void beginVisit ( const SpecificNumArithIterator<AddOperation, TypeConstants::XS_FLOAT>& ) = 0;
@@ -174,7 +176,7 @@
   PLAN_ITER_VISITOR (OpNumericUnaryIterator);
 
   PLAN_ITER_VISITOR (OpDoubleUnaryIterator);
-    
+
   PLAN_ITER_VISITOR (FnIdIterator);
 
   PLAN_ITER_VISITOR (FnIdRefIterator);
@@ -186,25 +188,25 @@
   PLAN_ITER_VISITOR (CreateTupleIterator);
 
   PLAN_ITER_VISITOR (GetTupleFieldIterator);
-            
+
   PLAN_ITER_VISITOR (flwor::FLWORIterator);
 
   PLAN_ITER_VISITOR (flwor::TupleStreamIterator);
-    
+
   PLAN_ITER_VISITOR (flwor::TupleSourceIterator);
-    
+
   PLAN_ITER_VISITOR (flwor::ForIterator);
-    
+
   PLAN_ITER_VISITOR (flwor::OuterForIterator);
-    
+
   PLAN_ITER_VISITOR (flwor::LetIterator);
-    
+
   PLAN_ITER_VISITOR (flwor::GroupByIterator);
 
   PLAN_ITER_VISITOR (flwor::OrderByIterator);
-    
+
   PLAN_ITER_VISITOR (flwor::WhereIterator);
-    
+
   PLAN_ITER_VISITOR (flwor::CountIterator);
 
   PLAN_ITER_VISITOR (flwor::WindowIterator);
@@ -212,21 +214,21 @@
   virtual void beginVisitFlworWhereClause(const PlanIterator&) = 0;
 
   virtual void endVisitFlworWhereClause(const PlanIterator&) = 0;
-    
+
   virtual void beginVisitFlworLetVariable(
         bool,
         const xqpStringStore_t,
         const std::vector<PlanIter_t>&) = 0;
 
   virtual void endVisitFlworLetVariable() = 0;
-    
+
   virtual void beginVisitFlworForVariable(
        const xqpStringStore_t,
        const std::vector<PlanIter_t>&,
        const std::vector<PlanIter_t>&) = 0;
 
   virtual void endVisitFlworForVariable() = 0;
-    
+
   virtual void beginVisitGroupByClause() = 0;
 
   virtual void endVisitGroupByClause() = 0;
@@ -246,11 +248,11 @@
   virtual void beginVisitNonGroupVariable(const std::vector<LetVarIter_t>&) = 0;
 
   virtual void endVisitNonGroupVariable() = 0;
-    
+
   virtual void beginVisitOrderBy(const PlanIterator&) = 0;
 
   virtual void endVisitOrderBy(const PlanIterator&) = 0;
-    
+
   virtual void beginVisitOrderByForVariable(
         ForVarIter_t inputVar,
         const std::vector<PlanIter_t>& varRefs) = 0;
@@ -278,7 +280,7 @@
   virtual void beginVisitFlworReturn(const PlanIterator&) = 0;
 
   virtual void endVisitFlworReturn(const PlanIterator&) = 0;
-      
+
   PLAN_ITER_VISITOR (CastIterator);
 
   PLAN_ITER_VISITOR (NameCastIterator);

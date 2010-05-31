@@ -6131,6 +6131,7 @@ void* begin_visit(const SwitchExpr& v)
   var_expr_t atomv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
   expr_t atomizedFlwor = wrap_in_let_flwor(se, atomv, NULL);
 
+  // TODO: cast as xs:string should not really be necessary
   // atomizedFlwor =
   //  [let $atomv := data(E)
   //   return
@@ -6171,15 +6172,7 @@ void* begin_visit(const SwitchExpr& v)
       operand->accept(*this);
       expr_t operandExpr = pop_nodestack();
       operandExpr = wrap_in_atomization(operandExpr);
-
-      // surround comparison in try/catch
-      trycatch_expr* tce = new trycatch_expr(theRootSctx, loc, new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2), sv, operandExpr));
-      catch_clause* cc = new catch_clause();
-      cc->add_nametest_h(new NodeNameTest(NULL, NULL));
-      tce->add_clause(cc);
-      tce->add_catch_expr(new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(FN_FALSE_0)));
-
-      operandExpr = tce;
+      operandExpr = new fo_expr(theRootSctx, loc, GET_BUILTIN_FUNCTION(OP_ATOMIC_VALUES_EQUIVALENT_2), sv, operandExpr);
 
       if (condExpr.getp() == NULL)
         condExpr = operandExpr;
@@ -11233,16 +11226,9 @@ void end_visit (const FTRange& v, void* /*visit_state*/) {
     e2 = NULL;
   }
 
-  if ( e1 ) {
-    e1 = wrap_in_atomization( e1 );
-    e1 = wrap_in_type_promotion( e1, theRTM.INTEGER_TYPE_ONE );
-  }
-  if ( e2 ) {
-    e2 = wrap_in_atomization( e2 );
-    e2 = wrap_in_type_promotion( e2, theRTM.INTEGER_TYPE_ONE );
-  }
-
-  ftrange *const r = new ftrange( v.get_location(), v.get_mode(), e1, e2 );
+  ftrange *const r = new ftrange(
+    v.get_location(), v.get_mode(), e1.getp(), e2.getp()
+  );
   push_ftstack( r );
 }
 
@@ -11448,11 +11434,9 @@ void *begin_visit (const FTWindow& v) {
 
 void end_visit (const FTWindow& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  expr_t e( pop_nodestack() );
-  e = wrap_in_atomization( e );
-  e = wrap_in_type_promotion( e, theRTM.INTEGER_TYPE_ONE );
   ftwindow_filter *const wf = new ftwindow_filter(
-    v.get_location(), e, v.get_unit()->get_unit()
+    v.get_location(), dynamic_cast<additive_expr*>(pop_nodestack().getp()),
+    v.get_unit()->get_unit()
   );
   push_ftstack( wf );
 }
@@ -11466,8 +11450,17 @@ void *begin_visit (const FTWords& v) {
 void end_visit (const FTWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   expr_t e( pop_nodestack() );
+//
+// If the 0 is changed to a 1 and you run the following query, the code will
+// get stuck in the optimizer:
+//
+//  let $x := <foo>hello, world</foo>
+//  return $x contains text "hello"
+//
+#if 1
   e = wrap_in_atomization( e );
   e = wrap_in_type_promotion( e, theRTM.STRING_TYPE_STAR );
+#endif
   ftwords *const w = new ftwords(
     v.get_location(), e, v.get_any_all_option()->get_option()
   );

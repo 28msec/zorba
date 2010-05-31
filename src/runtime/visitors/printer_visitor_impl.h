@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,7 +15,7 @@
  */
 #define DECLARE_VISITOR(class)          \
   void beginVisit ( const class& a );   \
-  void endVisit   ( const class& );  
+  void endVisit   ( const class& );
 
     void printNameOrKindTest(const AxisIteratorHelper* a);
     void beginVisit( const SingletonIterator& a);
@@ -194,6 +194,7 @@
   DECLARE_VISITOR (FnBooleanIterator)
   DECLARE_VISITOR (LogicIterator)
   DECLARE_VISITOR (CompareIterator)
+  DECLARE_VISITOR (AtomicValuesEquivalenceIterator)
   DECLARE_VISITOR (ElementIterator)
   DECLARE_VISITOR (AttributeIterator)
   DECLARE_VISITOR (DocumentIterator)

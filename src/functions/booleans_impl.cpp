@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -37,7 +37,7 @@ namespace zorba
   Glass GenericOpComparison is the base class for both value and general
   comparisons.
 ********************************************************************************/
-class GenericOpComparison : public function 
+class GenericOpComparison : public function
 {
 public:
   GenericOpComparison(const signature& sig, FunctionConsts::FunctionKind kind)
@@ -83,7 +83,7 @@ void GenericOpComparison::compute_annotation(
     std::vector<AnnotationHolder *> &kids,
     Annotations::Key k) const
 {
-  switch (k) 
+  switch (k)
   {
   case Annotations::IGNORES_SORTED_NODES:
   case Annotations::IGNORES_DUP_NODES:
@@ -95,17 +95,17 @@ void GenericOpComparison::compute_annotation(
   }
 }
 
-  
+
 function* GenericOpComparison::specialize(
     static_context* sctx,
-    const std::vector<xqtref_t>& argTypes) const 
+    const std::vector<xqtref_t>& argTypes) const
 {
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
 
   if (! (TypeOps::is_builtin_atomic(*t0) && TypeOps::is_builtin_atomic(*t1)))
     return NULL;
-    
+
   TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
   TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
 
@@ -114,20 +114,20 @@ function* GenericOpComparison::specialize(
       tc0 == TypeConstants::XS_ANY_ATOMIC ||
       tc1 == TypeConstants::XS_ANY_ATOMIC)
     return NULL;
-  
+
   return toValueComp(sctx);
 }
-  
+
 
 /*******************************************************************************
   class ValueOpComparison
 ********************************************************************************/
-class ValueOpComparison : public GenericOpComparison 
+class ValueOpComparison : public GenericOpComparison
 {
 public:
-  ValueOpComparison(const signature& sig, FunctionConsts::FunctionKind kind) 
+  ValueOpComparison(const signature& sig, FunctionConsts::FunctionKind kind)
     :
-    GenericOpComparison(sig, kind) 
+    GenericOpComparison(sig, kind)
   {
   }
 
@@ -146,20 +146,20 @@ xqtref_t ValueOpComparison::getReturnType(const std::vector<xqtref_t>& arg_types
   xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
   TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
 
-  for (int i = 0; i < 2; i++) 
+  for (int i = 0; i < 2; i++)
   {
     if (TypeOps::is_equal (*empty, *arg_types [i]))
       return empty;
 
     TypeConstants::quantifier_t aq = TypeOps::quantifier(*arg_types[i]);
-    if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR) 
+    if (aq == TypeConstants::QUANT_QUESTION || aq == TypeConstants::QUANT_STAR)
     {
       quant = TypeConstants::QUANT_QUESTION;
     }
   }
 
   return (quant == TypeConstants::QUANT_QUESTION ?
-          GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION : 
+          GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION :
           GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE);
 }
 
@@ -192,35 +192,35 @@ xqtref_t ValueOpComparison::getReturnType(const std::vector<xqtref_t>& arg_types
 
 function* ValueOpComparison::specialize(
     static_context* sctx,
-    const std::vector<xqtref_t>& argTypes) const 
+    const std::vector<xqtref_t>& argTypes) const
 {
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
 
-  if (TypeOps::is_builtin_simple(*t0) && TypeOps::is_builtin_simple(*t1)) 
+  if (TypeOps::is_builtin_simple(*t0) && TypeOps::is_builtin_simple(*t1))
   {
     TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
     TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);
 
-    if (tc0 == tc1) 
+    if (tc0 == tc1)
     {
-      switch(tc0) 
+      switch(tc0)
       {
       case TypeConstants::XS_DOUBLE:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, DOUBLE);
-        
+
       case TypeConstants::XS_DECIMAL:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, DECIMAL);
-        
+
       case TypeConstants::XS_FLOAT:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, FLOAT);
-        
+
       case TypeConstants::XS_INTEGER:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, INTEGER);
-        
+
       case TypeConstants::XS_STRING:
         SPECIALIZE_VALUE_COMP_FUNCTION(theKind, STRING);
-        
+
       default:
         return NULL;
       }
@@ -228,7 +228,7 @@ function* ValueOpComparison::specialize(
   }
   return NULL;
 }
-  
+
 
 /*******************************************************************************
 
@@ -241,12 +241,12 @@ function* ValueOpComparison::specialize(
 
   class op_value_greater_double : TypedValueComparison<CompareConsts::GREATER,
                                                        TypeConstants::XS_DOUBLE>
-          
+
 
 ********************************************************************************/
 
 template<enum CompareConsts::CompareType CC>
-class SpecificValueComparison : public ValueOpComparison 
+class SpecificValueComparison : public ValueOpComparison
 {
 public:
   SpecificValueComparison(const signature& sig, FunctionConsts::FunctionKind kind)
@@ -258,7 +258,7 @@ public:
   virtual PlanIter_t createIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv ) const 
+        std::vector<PlanIter_t>& argv ) const
   {
     return new CompareIterator(sctx, loc, argv[0], argv[1], CC);
   }
@@ -266,10 +266,10 @@ public:
 
 
 template<enum CompareConsts::CompareType CC, TypeConstants::atomic_type_code_t t>
-class TypedValueComparison : public SpecificValueComparison<CC> 
+class TypedValueComparison : public SpecificValueComparison<CC>
 {
 public:
-  TypedValueComparison(const signature& sig, FunctionConsts::FunctionKind kind) 
+  TypedValueComparison(const signature& sig, FunctionConsts::FunctionKind kind)
     :
     SpecificValueComparison<CC>(sig, kind)
   {
@@ -280,7 +280,7 @@ public:
   PlanIter_t createIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv) const 
+        std::vector<PlanIter_t>& argv) const
   {
     return new TypedValueCompareIterator<t> (sctx, loc, argv, CC);
   }
@@ -331,7 +331,7 @@ DECL_SPECIFIC_TYPED_OP (OP, op, decimal, DECIMAL);                      \
 DECL_SPECIFIC_TYPED_OP (OP, op, float, FLOAT);                          \
 DECL_SPECIFIC_TYPED_OP (OP, op, integer, INTEGER);                      \
 DECL_SPECIFIC_TYPED_OP (OP, op, string, STRING)
-  
+
 
 DECL_SPECIFIC_OPS (EQUAL, equal);
 DECL_SPECIFIC_OPS (NOT_EQUAL, not_equal);
@@ -348,7 +348,7 @@ DECL_SPECIFIC_OPS (LESS_EQUAL, less_equal);
 /*******************************************************************************
   class GeneralOpComparison
 ********************************************************************************/
-class GeneralOpComparison : public GenericOpComparison 
+class GeneralOpComparison : public GenericOpComparison
 {
 public:
   GeneralOpComparison(const signature& sig, FunctionConsts::FunctionKind kind)
@@ -368,7 +368,7 @@ public:
 class op_equal : public GeneralOpComparison
 {
 public:
-  op_equal(const signature& sig) 
+  op_equal(const signature& sig)
     :
     GeneralOpComparison(sig, FunctionConsts::OP_EQUAL_2)
   {
@@ -377,7 +377,7 @@ public:
   PlanIter_t createIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv) const 
+        std::vector<PlanIter_t>& argv) const
   {
     return new CompareIterator(sctx,
                                loc,
@@ -386,7 +386,7 @@ public:
                                CompareConsts::GENERAL_EQUAL);
   }
 
-  function* toValueComp(static_context* sctx) const 
+  function* toValueComp(static_context* sctx) const
   {
     return GET_BUILTIN_FUNCTION(OP_VALUE_EQUAL_2);
   }
@@ -394,14 +394,14 @@ public:
   CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_EQUAL;
-  }   
+  }
 };
 
 
 class op_not_equal : public GeneralOpComparison
 {
 public:
-  op_not_equal(const signature& sig) 
+  op_not_equal(const signature& sig)
     :
     GeneralOpComparison(sig, FunctionConsts::OP_NOT_EQUAL_2)
   {
@@ -410,7 +410,7 @@ public:
   PlanIter_t createIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv) const 
+        std::vector<PlanIter_t>& argv) const
   {
     return new CompareIterator(sctx,
                                loc,
@@ -422,9 +422,9 @@ public:
   CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_NOT_EQUAL;
-  } 
+  }
 
-  function* toValueComp(static_context* sctx) const 
+  function* toValueComp(static_context* sctx) const
   {
     return GET_BUILTIN_FUNCTION(OP_VALUE_NOT_EQUAL_2);
   }
@@ -434,7 +434,7 @@ public:
 class op_less_equal : public GeneralOpComparison
 {
 public:
-  op_less_equal(const signature& sig) 
+  op_less_equal(const signature& sig)
     :
     GeneralOpComparison(sig, FunctionConsts::OP_LESS_EQUAL_2)
   {
@@ -443,7 +443,7 @@ public:
   PlanIter_t createIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv) const 
+        std::vector<PlanIter_t>& argv) const
   {
     return new CompareIterator(sctx,
                                loc,
@@ -455,9 +455,9 @@ public:
   CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_LESS_EQUAL;
-  } 
+  }
 
-  function* toValueComp(static_context* sctx) const 
+  function* toValueComp(static_context* sctx) const
   {
     return GET_BUILTIN_FUNCTION(OP_VALUE_LESS_EQUAL_2);
   }
@@ -467,7 +467,7 @@ public:
 class op_less : public GeneralOpComparison
 {
 public:
-  op_less(const signature& sig) 
+  op_less(const signature& sig)
     :
     GeneralOpComparison(sig, FunctionConsts::OP_LESS_2)
   {
@@ -476,7 +476,7 @@ public:
   PlanIter_t createIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv) const 
+        std::vector<PlanIter_t>& argv) const
   {
     return new CompareIterator(sctx,
                                loc,
@@ -488,9 +488,9 @@ public:
   CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_LESS;
-  } 
+  }
 
-  function* toValueComp(static_context* sctx) const 
+  function* toValueComp(static_context* sctx) const
   {
     return GET_BUILTIN_FUNCTION(OP_VALUE_LESS_2);
   }
@@ -500,7 +500,7 @@ public:
 class op_greater_equal : public GeneralOpComparison
 {
 public:
-  op_greater_equal(const signature& sig) 
+  op_greater_equal(const signature& sig)
     :
     GeneralOpComparison(sig, FunctionConsts::OP_GREATER_EQUAL_2)
   {
@@ -509,7 +509,7 @@ public:
   PlanIter_t createIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv) const 
+        std::vector<PlanIter_t>& argv) const
   {
     return new CompareIterator(sctx,
                                loc,
@@ -521,9 +521,9 @@ public:
   CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_GREATER_EQUAL;
-  } 
+  }
 
-  function* toValueComp(static_context* sctx) const 
+  function* toValueComp(static_context* sctx) const
   {
     return GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_EQUAL_2);
   }
@@ -533,7 +533,7 @@ public:
 class op_greater : public GeneralOpComparison
 {
 public:
-  op_greater(const signature& sig) 
+  op_greater(const signature& sig)
     :
     GeneralOpComparison(sig, FunctionConsts::OP_GREATER_2)
   {
@@ -542,7 +542,7 @@ public:
   PlanIter_t createIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& argv) const 
+        std::vector<PlanIter_t>& argv) const
   {
     return new CompareIterator(sctx,
                                loc,
@@ -554,9 +554,9 @@ public:
   CompareConsts::CompareType comparisonKind() const
   {
     return CompareConsts::GENERAL_GREATER;
-  } 
+  }
 
-  function* toValueComp(static_context* sctx) const 
+  function* toValueComp(static_context* sctx) const
   {
     return GET_BUILTIN_FUNCTION(OP_VALUE_GREATER_2);
   }
@@ -567,10 +567,10 @@ public:
   Logic Operators (and/or)
 ********************************************************************************/
 
-class op_and : public function 
+class op_and : public function
 {
 public:
-  op_and (const signature& sig) 
+  op_and (const signature& sig)
     :
     function(sig, FunctionConsts::OP_AND_2)
   {
@@ -586,9 +586,9 @@ public:
     return new LogicIterator(sctx, loc, argv[0], argv[1], LogicIterator::AND);
   }
 };
-  
 
-class op_or : public function 
+
+class op_or : public function
 {
 public:
   op_or (const signature& sig)
@@ -607,7 +607,7 @@ public:
     return new LogicIterator(sctx, loc, argv[0], argv[1], LogicIterator::OR);
   }
 };
-  
+
 
 /*******************************************************************************
   9 Functions and Operators on Boolean Values
@@ -617,7 +617,7 @@ public:
   9.3.1 fn:not
 ********************************************************************************/
 
-class fn_true : public function 
+class fn_true : public function
 {
 public:
   fn_true(const signature& sig) : function(sig, FunctionConsts::FN_TRUE_0) {}
@@ -634,10 +634,10 @@ public:
     return new SingletonIterator(sctx, loc, res);
   }
 };
-  
 
 
-class fn_false : public function 
+
+class fn_false : public function
 {
 public:
   fn_false(const signature& sig) : function(sig, FunctionConsts::FN_FALSE_0) {}
@@ -654,9 +654,9 @@ public:
     return new SingletonIterator(sctx, loc, res);
   }
 };
-  
 
-class fn_not : public function 
+
+class fn_not : public function
 {
 public:
   fn_not(const signature& sig) : function(sig, FunctionConsts::FN_NOT_1) {}
@@ -677,7 +677,7 @@ public:
 /*******************************************************************************
   fn:boolean
 ********************************************************************************/
-class fn_boolean : public function 
+class fn_boolean : public function
 {
 public:
   fn_boolean(const signature& sig) : function(sig, FunctionConsts::FN_BOOLEAN_1)
@@ -695,9 +695,34 @@ public:
   }
 };
 
+/*******************************************************************************
+  Atomic Values Equivalent comparing function
+
+  http://www.w3.org/TR/xquery-11/#dt-equivalence-two-atomic-values
+********************************************************************************/
+class op_atomic_values_equivalent : public function
+{
+public:
+  op_atomic_values_equivalent(const signature& sig) : function(sig, FunctionConsts::OP_ATOMIC_VALUES_EQUIVALENT_2)
+  {
+  }
+
+  PlanIter_t codegen(
+                    CompilerCB* /*cb*/,
+                    static_context* sctx,
+                    const QueryLoc& loc,
+                    std::vector<PlanIter_t>& argv,
+                    AnnotationHolder& ann) const
+  {
+    return new AtomicValuesEquivalenceIterator(sctx,
+                               loc,
+                               argv[0],
+                               argv[1]);
+  }
+};
 
 
-void populateContext_Comparison(static_context* sctx) 
+void populateContext_Comparison(static_context* sctx)
 {
 // General Comparison;
 DECL(sctx, op_equal,
@@ -738,14 +763,14 @@ DECL(sctx, op_less_equal,
 // end Generic Comparison
 
 // Value Comparison
- 
+
 #define DECL_TYPED_VAL( sctx, op, name, type, xqt )                     \
   DECL(sctx, op_value_##op##_##type,                                    \
        (createQName (XQUERY_OP_NS, "op", "value-" name "-" #type),      \
         GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                            \
         GENV_TYPESYSTEM.xqt##_TYPE_QUESTION,                            \
         GENV_TYPESYSTEM.BOOLEAN_TYPE_QUESTION))
- 
+
 #define DECL_ALL_VAL( sctx, op, name )                                  \
   DECL(sctx, op_value_##op,                                             \
        (createQName (XQUERY_OP_NS, "op", "value-" name),                \
@@ -771,10 +796,19 @@ DECL(sctx, op_less_equal,
 
 // end Value Comparison
 
+// Atomic Values Equivalent comparing function
+// http://www.w3.org/TR/xquery-11/#dt-equivalence-two-atomic-values
+DECL(sctx, op_atomic_values_equivalent,
+    (createQName(ZORBA_OP_NS, "op", "atomic-values-equivalent"),
+     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+     GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+     GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE));
+// end Atomic Values Equivalent
+
 }
 
 
-void populate_context_booleans_impl(static_context* sctx) 
+void populate_context_booleans_impl(static_context* sctx)
 {
 // start Boolean
 DECL(sctx, fn_true,

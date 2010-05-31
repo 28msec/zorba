@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,7 +40,7 @@ class GenericCast;
 /*******************************************************************************
   15.1.1 fn:boolean
   fn:boolean($arg as item()*) as xs:boolean
-  
+
   Computes the effective boolean value of the sequence $arg.
 ********************************************************************************/
 class FnBooleanIterator : public UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>
@@ -52,12 +52,12 @@ public:
   SERIALIZABLE_CLASS(FnBooleanIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  FnBooleanIterator, 
+  FnBooleanIterator,
   UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, 
+    serialize_baseclass(ar,
     (UnaryBaseIterator<FnBooleanIterator, PlanIteratorState>*)this);
 
     ar & theNegate;
@@ -101,10 +101,10 @@ public:
   enum LogicType {
     AND, OR
   };
-    
+
 private:
   LogicType theLogicType;
-      
+
 public:
   SERIALIZABLE_CLASS(LogicIterator);
 
@@ -158,7 +158,7 @@ public:
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
-    serialize_baseclass(ar, 
+    serialize_baseclass(ar,
     (BinaryBaseIterator<CompareIterator, PlanIteratorState>*)this);
 
     SERIALIZE_ENUM(CompareConsts::CompareType, theCompType)
@@ -181,13 +181,13 @@ public:
   void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
-      
+
   /**
    * Checks if the two passed items contain the same value (without castings
    * and promotions which are used in general and value comparison).
    *
-   * @param item0 
-   * @param item1 
+   * @param item0
+   * @param item1
    * @param aCollation optional collation parameter (passed as pointer to make
    *        it possible to be set to 0)
    * @return  1, if item0 == item1
@@ -202,11 +202,11 @@ public:
         XQPCollator* aCollation);
 
   /**
-   * Compares two items (without castings and promotions which are used in general 
+   * Compares two items (without castings and promotions which are used in general
    * and value comparison).
-   * @param item0 
-   * @param item1 
-   * @param aCollation optional collation parameter (passed as pointer to make 
+   * @param item0
+   * @param item1
+   * @param aCollation optional collation parameter (passed as pointer to make
    *        it possible to be set to 0)
    * @return -1, if item0 &lt; item1
    *          0, if item0 == item1
@@ -219,23 +219,23 @@ public:
         const store::Item_t& aItem0,
         const store::Item_t& aItem1,
         const TypeManager* typemgr,
-        long timezone, 
+        long timezone,
         XQPCollator* aCollation);
 
   /**
-   * Value comparison of the passed two items with the operator 
+   * Value comparison of the passed two items with the operator
    * which is defined in the CompareIterator object.
    *
-   * @param item0 
-   * @param item1 
+   * @param item0
+   * @param item1
    * @param aCompType
    * @param aCollation optional collation parameter
-   * @return 
+   * @return
    */
   static bool valueComparison(
         const QueryLoc& loc,
         store::Item_t& aItem0,
-        store::Item_t& aItem1, 
+        store::Item_t& aItem1,
         CompareConsts::CompareType aCompType,
         const TypeManager* typemgr,
         long timezone,
@@ -244,26 +244,26 @@ public:
   /**
    * Value Equal on the passed items
    *
-   * @param aItem0 
-   * @param aItem1 
-   * @param aCollation optional collation parameter 
+   * @param aItem0
+   * @param aItem1
+   * @param aCollation optional collation parameter
    * @return 1 (equal), 0 (not equal), -2 (value equal not possible)
    */
   static long valueEqual(
         store::Item_t& aItem0,
         store::Item_t& aItem1,
         const TypeManager* typemgr,
-        long timezone, 
+        long timezone,
         XQPCollator* aCollation);
-      
+
   /**
    * Value Comparison on the passed items
-   * @param aItem0 
-   * @param aItem1 
-   * @param aCollation options collation parameter 
+   * @param aItem0
+   * @param aItem1
+   * @param aCollation options collation parameter
    * @return -1 (smaller),
    *          0 (equal),
-   *          1 (bigger), 
+   *          1 (bigger),
    *          2 (not equal, not bigger, not smaller),
    *         -2 (value comparison not possible)
    */
@@ -271,18 +271,18 @@ public:
         store::Item_t& aItem0,
         store::Item_t& aItem1,
         const TypeManager* typemgr,
-        long timezone, 
+        long timezone,
         XQPCollator* aCollation);
 
   /**
-   * General comparison of the passed two items with the operator 
+   * General comparison of the passed two items with the operator
    * which is defined in the CompareIterator object.
    *
-   * @param item0 
-   * @param item1 
+   * @param item0
+   * @param item1
    * @param aCompType
    * @param aCollation optional collation parameter
-   * @return 
+   * @return
    */
   static bool generalComparison(
         const QueryLoc& loc,
@@ -292,12 +292,12 @@ public:
         const TypeManager* typemgr,
         long timezone,
         XQPCollator*   aCollation);
-      
+
   /**
    * General Equal on the passed items
-   * @param aItem0 
-   * @param aItem1 
-   * @param aCollation options collation parameter 
+   * @param aItem0
+   * @param aItem1
+   * @param aCollation options collation parameter
    * @return 1 (equal), 0 (not equal), -2 (general equal not possible)
    */
   static long generalEqual(
@@ -306,13 +306,13 @@ public:
         const TypeManager* typemgr,
         long timezone,
         XQPCollator* aCollation);
-      
+
   /**
    * General Comparison on the passed items
-   * @param aItem0 
-   * @param aItem1 
+   * @param aItem0
+   * @param aItem1
    * @param aCollation options collation parameter (passed as pointer to make it possible to be set to 0)
-   * @return -1 (smaller), 0 (equal), 1 (bigger), 
+   * @return -1 (smaller), 0 (equal), 1 (bigger),
    *          2 (not equal, not bigger, not smaller), -2 (general comparison not possible)
    */
   static long generalCompare(
@@ -321,7 +321,7 @@ public:
         const TypeManager* typemgr,
         long timezone,
         XQPCollator* aCollation);
-      
+
 private:
   static void valueCasting(
         const TypeManager* typemgr,
@@ -374,7 +374,7 @@ public:
         std::vector<PlanIter_t>& children,
         CompareConsts::CompareType aCompType)
     :
-    NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>(sctx, loc, children), 
+    NaryBaseIterator<TypedValueCompareIterator<ATC>, PlanIteratorState>(sctx, loc, children),
     theCompType(aCompType),
     theTimezone (0),
     theCollation(NULL)
@@ -387,6 +387,54 @@ public:
   void openImpl(PlanState& planState, uint32_t& offset);
 
   bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
+/*******************************************************************************
+  Atomic Values Equivalence Iterator
+
+  http://www.w3.org/TR/xquery-11/#dt-equivalence-two-atomic-values
+********************************************************************************/
+class AtomicValuesEquivalenceIterator : public BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>
+{
+private:
+  CompareConsts::CompareType  theCompType;
+  TypeManager               * theTypeManager;
+  long                        theTimezone;
+  XQPCollator               * theCollation;
+
+public:
+  SERIALIZABLE_CLASS(AtomicValuesEquivalenceIterator);
+
+  AtomicValuesEquivalenceIterator(::zorba::serialization::Archiver& ar)
+    :
+    BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>(ar),
+    theTypeManager(NULL),
+    theTimezone(0),
+    theCollation(NULL)
+  {
+  }
+
+  void serialize(::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar, (BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>*)this);
+
+    SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
+    ar & theTimezone;
+    ar & theCollation;
+  }
+
+public:
+  AtomicValuesEquivalenceIterator(static_context* sctx,
+                    const QueryLoc& loc,
+                    PlanIter_t theChild0,
+                    PlanIter_t theChild1);
+
+  void accept(PlanIterVisitor& v) const;
+
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+
 };
 
 }
