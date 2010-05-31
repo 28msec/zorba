@@ -966,8 +966,9 @@ static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
     for ( FTToken::int_t pos = 0; query_tokens.hasNext();
           ++pos, query_tokens.next() ) {
 
+      FTQueryItem &query_item = query_tokens.currentItem();
       FTQueryItemSeq qi_seq;
-      qi_seq.push_back( query_tokens.currentItem() );
+      qi_seq.push_back( query_item );
       FTQueryItemSeqIterator query_token( qi_seq );
 
       ft_all_matches am;
