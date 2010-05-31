@@ -24,7 +24,7 @@ FTQueryItemSeqIterator::FTQueryItemSeqIterator( FTQueryItemSeq &qi_seq ) :
   qi_seq_( &qi_seq )
 {
   ZORBA_ASSERT( !qi_seq_->empty() );
-  mark_ = qi_ = qi_seq_->begin();
+  reset();
 }
 
 FTQueryItemSeqIterator::index_t FTQueryItemSeqIterator::begin() const {
@@ -67,23 +67,29 @@ void FTQueryItemSeqIterator::mark( bool set ) {
 }
 
 bool FTQueryItemSeqIterator::next( FTToken const **ppToken ) {
+  bool got_token = false;
   if ( qi_ != qi_seq_->end() ) {
-    while ( true ) {
-      if ( (*qi_)->hasNext() )
-        return (*qi_)->next( ppToken );
+    while ( !got_token ) {
+      if ( (*qi_)->next( ppToken ) ) {
+        got_token = true;
+        if ( (*qi_)->hasNext() )
+          break;
+        //
+        // Unless qi_ is at the end, must always leave it at a position such
+        // that (*qi_)->current() is valid.
+        //
+      }
       if ( ++qi_ == qi_seq_->end() )
         break;
       (*qi_)->reset();
     }
   }
-  return false;
+  return got_token;
 }
 
 void FTQueryItemSeqIterator::reset() {
-  MUTATE_EACH( FTQueryItemSeq, qi, *qi_seq_ ) {
-    (*qi)->reset();
-  }
   mark_ = qi_ = qi_seq_->begin();
+  (*qi_)->reset();
 }
 
 } // namespace zorba
