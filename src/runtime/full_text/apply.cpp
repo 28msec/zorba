@@ -1024,7 +1024,7 @@ void apply_ftwindow( ft_all_matches const &am, ft_int window_size,
   PUT_ALL_MATCHES( am );
 
   //
-  // Token positions are unsigned, but we must used signed arithmetic here, so
+  // Token positions are unsigned, but we must use signed arithmetic here:
   // declare a signed integer type and cast all values to it.
   //
   typedef long signed_t;
