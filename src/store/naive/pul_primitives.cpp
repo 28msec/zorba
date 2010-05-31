@@ -1109,30 +1109,20 @@ UpdRefreshIndex::~UpdRefreshIndex()
 }
 
 
-void UpdRefreshIndex::apply()
-{
-  SimpleStore* store = &GET_STORE();
-
-  if ((theIndex = store->getIndex(theQName)) == NULL)
-  {
-    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
-                      theQName->getStringValue()->c_str(), "");
-  }
-
-  store->deleteIndex(theQName);
-
-  try
-  {
-    store->createIndex(theQName, theIndex->getSpecification(), theSourceIter);
-  }
-  catch (...)
-  {
-    store->addIndex(theIndex);
-    throw;
-  }
-
-  theIsApplied = true;
-}
+void UpdRefreshIndex::apply()                                                                                   
+{                                                                                                               
+  SimpleStore& store = GET_STORE();                                                                             
+                                                                                                                
+  if ((theIndex = store.getIndex(theQName)) == NULL)                                                            
+  {                                                                                                             
+    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,                                                             
+                      theQName->getStringValue()->c_str(), "");                                                 
+  }                                                                                                             
+                                                                                                                
+  store.refreshIndex(theQName, theIndex->getSpecification(), theSourceIter);                                    
+                                                                                                                
+  theIsApplied = true;                                                                                          
+}  
 
 
 void UpdRefreshIndex::undo()

@@ -221,6 +221,11 @@ public:
         const store::IndexSpecification& spec,
         store::Iterator* sourceIter);
 
+  store::Index_t refreshIndex(
+        const store::Item_t& qname,
+        const store::IndexSpecification& spec,
+        store::Iterator* sourceIter);
+
   void addIndex(store::Index_t& index);
 
   store::Index* getIndex(const store::Item* qname);

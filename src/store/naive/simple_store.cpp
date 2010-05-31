@@ -514,6 +514,39 @@ void SimpleStore::populateIndex(
   aSourceIter->close();
 }
 
+/*******************************************************************************
+  Refreshes an index with a given URI and return an rchandle to the index object.
+  If an index with the given URI exists already and the index we want to create
+  is not a temporary one, raise an error.
+********************************************************************************/
+store::Index_t SimpleStore::refreshIndex(
+    const store::Item_t& qname,
+    const store::IndexSpecification& spec,
+    store::Iterator* sourceIter)
+{
+  store::Index_t index;
+  store::Item* non_const_items = const_cast<store::Item*>(qname.getp());
+
+  if (!theIndices.get(non_const_items, index))
+  {
+    ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
+                      qname->getStringValue()->c_str(), ""); 
+  }
+
+  deleteIndex(qname);
+
+  try  
+  {
+    createIndex(qname, index->getSpecification(), sourceIter);
+  }
+  catch (...)
+  {
+    addIndex(index);
+    throw;
+  }
+
+  return index;
+}
 
 /*******************************************************************************
 
