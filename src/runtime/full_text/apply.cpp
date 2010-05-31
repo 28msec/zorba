@@ -266,10 +266,10 @@ static void join_includes( ft_match::includes_t const &includes,
 
 #ifdef DEBUG_FT
 static void dump( char const *label, FTTokenIterator &it ) {
-  it->reset();
-  cout << indent << label << ' ';
+  it.reset();
+  cout << indent << label;
   FTToken const *t;
-  while ( it->next( &t ) )
+  while ( it.next( &t ) )
     cout << *t;
   cout << endl;
 }
@@ -283,7 +283,7 @@ static void match_tokens( FTTokenIterator &doc_tokens,
                           ftmatch_options const &options,
                           ft_token_spans &result ) {
 #ifdef DEBUG_FT
-  dump( "match_tokens(): d_tokens: ", *doc_tokens );
+  dump( "match_tokens(): d_tokens: ", doc_tokens );
   dump( "match_tokens(): q_tokens: ", query_tokens );
 #endif
   doc_tokens.reset();
