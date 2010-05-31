@@ -904,10 +904,7 @@ static void apply_ftwords_all( FTTokenIterator &search_ctx,
       apply_ftwords_all(
         search_ctx, query_items, query_pos, options, rest_am
       );
-      if ( rest_am.empty() )
-        result.swap( first_am );
-      else
-        apply_ftand( first_am, rest_am, result );
+      apply_ftand( first_am, rest_am, result );
     } else {
       result.swap( first_am );
     }
