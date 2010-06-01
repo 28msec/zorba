@@ -67,11 +67,11 @@ void FTQueryItemSeqIterator::mark( bool set ) {
 }
 
 bool FTQueryItemSeqIterator::next( FTToken const **ppToken ) {
-  bool got_token = false;
+  bool got_next = false;
   if ( qi_ != qi_seq_->end() ) {
-    while ( !got_token ) {
+    while ( !got_next ) {
       if ( (*qi_)->next( ppToken ) ) {
-        got_token = true;
+        got_next = true;
         if ( (*qi_)->hasNext() )
           break;
         //
@@ -84,7 +84,7 @@ bool FTQueryItemSeqIterator::next( FTToken const **ppToken ) {
       (*qi_)->reset();
     }
   }
-  return got_token;
+  return got_next;
 }
 
 void FTQueryItemSeqIterator::reset() {
