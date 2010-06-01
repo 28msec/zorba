@@ -418,6 +418,7 @@ public:
   {
     serialize_baseclass(ar, (BinaryBaseIterator<AtomicValuesEquivalenceIterator, PlanIteratorState>*)this);
 
+	SERIALIZE_ENUM(CompareConsts::CompareType, theCompType);
     SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
     ar & theTimezone;
     ar & theCollation;

@@ -21,7 +21,8 @@
 #ifndef M__APM__INCLUDED
 #define M__APM__INCLUDED
 
-#include "zorbamisc/config/platform.h"
+//#include "zorbamisc/config/platform.h"
+#include <zorba/config.h>
 
 #ifdef __cplusplus
 /* Comment this line out if you've compiled the library as C++. */

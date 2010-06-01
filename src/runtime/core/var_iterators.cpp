@@ -202,6 +202,7 @@ CtxVarIterator::CtxVarIterator(
 void CtxVarIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (NoaryBaseIterator<CtxVarIterator, CtxVarState>*)this);
+  ar & theVarName;
   ar & theTargetPos;
   ar & theTargetPosIter;
   ar & theTargetLenIter;
