@@ -36,16 +36,8 @@ namespace zorba {
   for ( TYPE::iterator IT = (SEQ).begin(); IT != (SEQ).end(); ++IT )
 
 /**
- * A less-verbose way to pop the first element from a sequence.  This is done
- * as a macro rather than an inline template function because the former is
- * more efficient: the latter requires an extra construction/destruction.
- */
-#define POP_FRONT(SEQ) \
-  (SEQ).front(); (SEQ).pop_front()
-
-/**
- * Determines whether the given set<T> contains a particular element in a
- * less-verbose way.
+ * A less-verbose way to determine whether the given set<T> contains a
+ * particular element.
  */
 template<typename T> inline
 bool contains( std::set<T> const &s, T const &t ) {
@@ -53,7 +45,7 @@ bool contains( std::set<T> const &s, T const &t ) {
 }
 
 /**
- * Copies the given sequence in a less-verbose way.
+ * A less-verbose way to copy the given sequence.
  */
 template<typename SequenceType> inline
 void copy_seq( SequenceType const &from, SequenceType &to ) {
@@ -76,6 +68,16 @@ template<typename SequenceType> inline
 void move_front_to_back( SequenceType &from, SequenceType &to ) {
   to.push_back( from.front() );
   from.pop_front();
+}
+
+/**
+ * A less-verbose way to pop the first element from a sequence.
+ */
+template<typename SequenceType> inline
+typename SequenceType::value_type pop_front( SequenceType &seq ) {
+  typename SequenceType::value_type const value( seq.front() );
+  seq.pop_front();
+  return value;
 }
 
 } // namespace zorba

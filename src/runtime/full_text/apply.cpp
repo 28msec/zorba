@@ -703,7 +703,7 @@ static void form_combinations( ft_match_seq const &ms, ft_int k,
     copy_seq( ms, result );
   else {
     ft_match_seq rest( ms );
-    ft_match const first = POP_FRONT( rest );
+    ft_match const first( pop_front( rest ) );
     form_combinations( rest, k, result );
 
     ft_match_seq temp;
@@ -855,7 +855,7 @@ static void make_conj_disj( ft_all_matches const &cur_res,
   if ( rest.empty() )
     result = cur_res;
   else {
-    ft_all_matches const first_am = POP_FRONT( rest );
+    ft_all_matches const first_am( pop_front( rest ) );
     ft_all_matches new_cur_res;
     apply_fn( cur_res, first_am, new_cur_res );
     make_conj_disj( new_cur_res, rest, apply_fn, result );
@@ -978,7 +978,7 @@ static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
       );
       all_am_seq.push_back( am );
     }
-    ft_all_matches const first_am = POP_FRONT( all_am_seq );
+    ft_all_matches const first_am( pop_front( all_am_seq ) );
     make_conj_disj( first_am, all_am_seq, apply_fn, result );
 
     END_APPLY( result );
