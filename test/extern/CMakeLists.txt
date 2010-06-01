@@ -14,17 +14,11 @@
 
 
 ZORBA_GENERATE_STORE_SPECIFIC_EXES("test_extern_func" "test_extern_func.cpp" "" "" "")
+
+# Test 1
 ZORBA_ADD_TEST_ALLSTORES(test/extern_func_1 test_extern_func --test1)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/extern_func_1 PASS_REGULAR_EXPRESSION myns)
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(test/extern_func_1 PASS_REGULAR_EXPRESSION myns)
 
-
-# create the result directory for all tests
-#IF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
-#    FILE(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
-#ENDIF (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/QueryResults/)
-
-
-#
-#
-#
-#ADD_SUBDIRECTORY(Queries)
+# nondeterm-1
+ZORBA_ADD_TEST_ALLSTORES(test/extern_nondeterm_1 test_extern_func --nondeterm ${CMAKE_CURRENT_SOURCE_DIR}/nondeterm-1.xq)
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(test/extern_nondeterm_1 PASS_REGULAR_EXPRESSION "1 2 3")
