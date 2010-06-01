@@ -125,10 +125,10 @@ FOREACH(ZORBA_STORE_NAME ${ZORBA_STORE_NAMES})
   # adding an ifdef zorba_*_EXPRTS for each registered store
   IF (${ZORBA_STORE_NAME} STREQUAL "simplestore")
     SET(GET_CURRENT_LIB_SUFFIX_CODE 
-          "${GET_CURRENT_LIB_SUFFIX_CODE}\#ifdef zorba_${ZORBA_STORE_NAME}_EXPORTS${EOL}return \"\";${EOL}\#endif")
+          "${GET_CURRENT_LIB_SUFFIX_CODE}\#ifdef zorba_${ZORBA_STORE_NAME}_EXPORTS${EOL}return \"\";${EOL}\#endif${EOL}")
   ELSE (${ZORBA_STORE_NAME} STREQUAL "simplestore")
     SET(GET_CURRENT_LIB_SUFFIX_CODE 
-          "${GET_CURRENT_LIB_SUFFIX_CODE}\#ifdef zorba_${ZORBA_STORE_NAME}_EXPORTS${EOL}return \"_${ZORBA_STORE_NAME}\";${EOL}\#endif")
+          "${GET_CURRENT_LIB_SUFFIX_CODE}\#ifdef zorba_${ZORBA_STORE_NAME}_EXPORTS${EOL}return \"_${ZORBA_STORE_NAME}\";${EOL}\#endif${EOL}")
   ENDIF (${ZORBA_STORE_NAME} STREQUAL "simplestore")
 ENDFOREACH(ZORBA_STORE_NAME)
 
