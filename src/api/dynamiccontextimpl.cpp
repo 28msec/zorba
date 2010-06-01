@@ -41,6 +41,7 @@
 #include "store/api/item.h"
 #include "store/api/store.h"
 #include "store/api/item_factory.h"
+#include "store/api/temp_seq.h"
 
 #include "zorbaerrors/Assert.h"
 
@@ -171,17 +172,20 @@ DynamicContextImpl::getVariable(
                                                      lNamespace,
                                                      lLocalname);
 
-    store::Item_t lItem;
-    store::Iterator_t lIter;
-    theCtx->get_variable(lExpandedName, QueryLoc::null, lItem, lIter);
-    if (! lItem.isNull())
+    store::Item_t item;
+    store::TempSeq_t tempseq;
+    theCtx->get_variable(lExpandedName, QueryLoc::null, item, tempseq);
+    if (! item.isNull())
     {
-      aItem = lItem;
+      aItem = item;
     }
-    if (! lIter.isNull()) {
-      Iterator_t lIt(new StoreIteratorImpl(lIter, theQuery->theErrorHandler));
+    else if (! tempseq.isNull()) 
+    {
+      store::Iterator_t seqIter = tempseq->getIterator();
+      Iterator_t lIt(new StoreIteratorImpl(seqIter, theQuery->theErrorHandler));
       aIterator = lIt;
     }
+
     return true;
   }
   ZORBA_DCTX_CATCH

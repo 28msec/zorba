@@ -27,9 +27,9 @@ Iterator tree for main query:
     </CtxVarAssignIterator>
   </SequentialIterator>
   <TreatIterator type="xs:integer" quant="">
-    <CtxVariableIterator>
+    <CtxVarIterator>
       <SingletonIterator value="xs:string(414:height)"/>
-    </CtxVariableIterator>
+    </CtxVarIterator>
   </TreatIterator>
   <SequentialIterator>
     <CtxVarDeclIterator>
@@ -41,9 +41,9 @@ Iterator tree for main query:
     </CtxVarAssignIterator>
   </SequentialIterator>
   <TreatIterator type="xs:integer" quant="">
-    <CtxVariableIterator>
+    <CtxVarIterator>
       <SingletonIterator value="xs:string(413:width)"/>
-    </CtxVariableIterator>
+    </CtxVarIterator>
   </TreatIterator>
   <FnConcatIterator>
     <StringJoinIterator>
@@ -52,14 +52,14 @@ Iterator tree for main query:
         <StringJoinIterator>
           <FnConcatIterator>
             <FnStringIterator>
-              <CtxVariableIterator>
+              <CtxVarIterator>
                 <SingletonIterator value="xs:string(413:width)"/>
-              </CtxVariableIterator>
+              </CtxVarIterator>
             </FnStringIterator>
             <FnStringIterator>
-              <CtxVariableIterator>
+              <CtxVarIterator>
                 <SingletonIterator value="xs:string(414:height)"/>
-              </CtxVariableIterator>
+              </CtxVarIterator>
             </FnStringIterator>
           </FnConcatIterator>
           <SingletonIterator value="xs:string( )"/>
@@ -68,20 +68,20 @@ Iterator tree for main query:
         <flwor::FLWORIterator>
           <ForVariable name="aspect-ratio">
             <SpecificNumArithIterator_DivideOperation_DECIMAL>
-              <CtxVariableIterator>
+              <CtxVarIterator>
                 <SingletonIterator value="xs:string(413:width)"/>
-              </CtxVariableIterator>
-              <CtxVariableIterator>
+              </CtxVarIterator>
+              <CtxVarIterator>
                 <SingletonIterator value="xs:string(414:height)"/>
-              </CtxVariableIterator>
+              </CtxVarIterator>
             </SpecificNumArithIterator_DivideOperation_DECIMAL>
           </ForVariable>
           <ForVariable name="y">
             <OpToIterator>
               <SingletonIterator value="xs:integer(1)"/>
-              <CtxVariableIterator>
+              <CtxVarIterator>
                 <SingletonIterator value="xs:string(414:height)"/>
-              </CtxVariableIterator>
+              </CtxVarIterator>
             </OpToIterator>
           </ForVariable>
           <ForVariable name="y-recentered">
@@ -90,9 +90,9 @@ Iterator tree for main query:
                 <OpNumericUnaryIterator>
                   <ForVarIterator varname="y"/>
                 </OpNumericUnaryIterator>
-                <CtxVariableIterator>
+                <CtxVarIterator>
                   <SingletonIterator value="xs:string(414:height)"/>
-                </CtxVariableIterator>
+                </CtxVarIterator>
               </SpecificNumArithIterator_DivideOperation_DECIMAL>
               <SingletonIterator value="xs:decimal(0.5)"/>
             </SpecificNumArithIterator_AddOperation_DECIMAL>
@@ -100,9 +100,9 @@ Iterator tree for main query:
           <ForVariable name="x">
             <OpToIterator>
               <SingletonIterator value="xs:integer(1)"/>
-              <CtxVariableIterator>
+              <CtxVarIterator>
                 <SingletonIterator value="xs:string(413:width)"/>
-              </CtxVariableIterator>
+              </CtxVarIterator>
             </OpToIterator>
           </ForVariable>
           <ReturnClause>
@@ -111,18 +111,18 @@ Iterator tree for main query:
                 <ForVariable name="channel">
                   <UDFunctionCallIterator>
                     <TreatIterator type="[NodeXQType elementNode  content=[XQType ANY_TYPE_KIND*]]" quant="">
-                      <CtxVariableIterator>
+                      <CtxVarIterator>
                         <SingletonIterator value="xs:string(415:scene)"/>
-                      </CtxVariableIterator>
+                      </CtxVarIterator>
                     </TreatIterator>
                     <PromoteIterator type="xs:double">
                       <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
                         <SpecificNumArithIterator_SubtractOperation_DECIMAL>
                           <SpecificNumArithIterator_DivideOperation_DECIMAL>
                             <ForVarIterator varname="x"/>
-                            <CtxVariableIterator>
+                            <CtxVarIterator>
                               <SingletonIterator value="xs:string(413:width)"/>
-                            </CtxVariableIterator>
+                            </CtxVarIterator>
                           </SpecificNumArithIterator_DivideOperation_DECIMAL>
                           <SingletonIterator value="xs:decimal(0.5)"/>
                         </SpecificNumArithIterator_SubtractOperation_DECIMAL>

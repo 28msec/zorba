@@ -708,12 +708,11 @@ void general_var_codegen(const var_expr& var)
     xqpString varname = var.get_name()->getStringValue().getp();
     if (varname == DOT_VAR)
     {
-      vector<PlanIter_t> ctx_args;
       store::Item_t qname;
       xqpStringStore_t dot = new xqpStringStore(".");
       ITEM_FACTORY->createString(qname, dot);
-      ctx_args.push_back(new SingletonIterator(sctx, qloc, qname));
-      push_itstack(new CtxVariableIterator(sctx, qloc, ctx_args));
+      PlanIter_t varnameIter = new SingletonIterator(sctx, qloc, qname);
+      push_itstack(new CtxVarIterator(sctx, qloc, varnameIter));
     }
     else if (varname == DOT_POS_VAR)
     {

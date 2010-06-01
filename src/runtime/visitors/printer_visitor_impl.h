@@ -227,7 +227,7 @@
   DECLARE_VISITOR (flwor::OrderByIterator)
   DECLARE_VISITOR (flwor::WindowIterator)
   DECLARE_VISITOR (NameCastIterator)
-  DECLARE_VISITOR (CtxVariableIterator)
+  DECLARE_VISITOR (CtxVarIterator)
   DECLARE_VISITOR (CtxVarDeclIterator)
   DECLARE_VISITOR (CtxVarAssignIterator)
   DECLARE_VISITOR (CtxVarExistsIterator)

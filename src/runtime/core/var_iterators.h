@@ -20,6 +20,7 @@
 
 #include "runtime/base/noarybase.h" 
 #include "runtime/base/narybase.h"
+#include "runtime/base/unarybase.h"
 
 #include "zorbatypes/representations.h"
 
@@ -116,18 +117,78 @@ NARY_ITER(CtxVarExistsIterator);
   (b) Through the user API provided by DynamicContextImpl class (see methods
       setVariable, setContextItem, etc).
 ********************************************************************************/
-class CtxVariableIteratorState : public  PlanIteratorState 
+class CtxVarState : public  PlanIteratorState 
 {
 public:
-  CtxVariableIteratorState();
-  
-  ~CtxVariableIteratorState();
+  store::TempSeq_t  theTempSeq;
 
-  store::Iterator_t theIter;
+  store::Iterator_t theSourceIter;
+  store::Item_t     theItem;
+
+  ulong             thePos;
+  ulong             theLastPos;
+
+public:
+  CtxVarState();
+  
+  ~CtxVarState();
+
+  void reset(PlanState& planState);
 };
 
 
-NARY_ITER_STATE(CtxVariableIterator, CtxVariableIteratorState);
+class CtxVarIterator : public UnaryBaseIterator<CtxVarIterator, CtxVarState>
+{
+private:
+  store::Item_t  theVarName;
+  xqp_long       theTargetPos;
+  PlanIter_t     theTargetPosIter;
+  PlanIter_t     theTargetLenIter;
+
+public:
+  SERIALIZABLE_CLASS(CtxVarIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(
+  CtxVarIterator, 
+  UnaryBaseIterator<CtxVarIterator, CtxVarState>);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  CtxVarIterator(
+        static_context* sctx,
+        const QueryLoc& loc, 
+        PlanIter_t& varnameIter);
+
+  ~CtxVarIterator() {}
+
+  bool setTargetPos(xqp_long v);
+
+  bool setTargetPosIter(const PlanIter_t& v);
+
+  bool setTargetLenIter(const PlanIter_t& v);
+
+  xqp_long getTargetPos() const { return theTargetPos; }
+
+  PlanIterator* getTargetPosIter() const { return theTargetPosIter.getp(); }
+
+  PlanIterator* getTargetLenIter() const { return theTargetLenIter.getp(); }
+
+  store::Item* getVarName() const { return theVarName.getp(); }
+
+  void accept(PlanIterVisitor& v) const;
+
+  uint32_t getStateSizeOfSubtree() const;
+
+  void openImpl(PlanState& planState, uint32_t& offset);
+
+  void resetImpl(PlanState& planState) const;
+
+  void closeImpl(PlanState& planState);
+
+  bool nextImpl(store::Item_t& result, PlanState& planState) const;
+};
+
 
 
 /*******************************************************************************
@@ -211,11 +272,10 @@ public:
   ulong             thePos;
   ulong             theLastPos;
 
+public:
   LetVarState();
 
   ~LetVarState();
-
-  void init(PlanState& planState)  { PlanIteratorState::init(planState); }
 
   void reset(PlanState& planState);
 };

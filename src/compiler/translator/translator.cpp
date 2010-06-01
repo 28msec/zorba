@@ -985,7 +985,7 @@ protected:
   ulong                                print_depth;
   int                                  scope_depth;
 
-  varref_t                             theDotVar;
+  var_expr_t                           theDotVar;
 
   xqtref_t                             ctx_item_type;
 
@@ -1917,7 +1917,7 @@ for_clause_t wrap_in_forclause(expr_t expr, bool add_posvar)
 
   var_expr_t pv = (add_posvar ?
                    create_temp_var(expr->get_loc(), var_expr::pos_var) :
-                   varref_t (NULL));
+                   var_expr_t (NULL));
 
   return wrap_in_forclause(expr, fv, pv);
 }

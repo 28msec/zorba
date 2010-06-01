@@ -183,9 +183,9 @@ void SimpleStore::initTypeNames()
 
   f->createQName(theSchemaTypeNames[XS_STRING],         ns, "", "string");
   f->createQName(theSchemaTypeNames[XS_NORMALIZED_STRING], ns, "", "normalizedString");
-  f->createQName(theSchemaTypeNames[XS_TOKEN],          ns, "", "language");
-  f->createQName(theSchemaTypeNames[XS_NMTOKEN],        ns, "", "token");
-  f->createQName(theSchemaTypeNames[XS_LANGUAGE],       ns, "", "NMTOKEN");
+  f->createQName(theSchemaTypeNames[XS_TOKEN],          ns, "", "token");
+  f->createQName(theSchemaTypeNames[XS_NMTOKEN],        ns, "", "NMTOKEN");
+  f->createQName(theSchemaTypeNames[XS_LANGUAGE],       ns, "", "language");
   f->createQName(theSchemaTypeNames[XS_NAME],           ns, "", "Name");
   f->createQName(theSchemaTypeNames[XS_NCNAME],         ns, "", "NCName");
   f->createQName(theSchemaTypeNames[XS_ANY_URI],        ns, "", "anyURI");
@@ -193,7 +193,7 @@ void SimpleStore::initTypeNames()
   f->createQName(theSchemaTypeNames[XS_IDREF],          ns, "", "IDREF");
   f->createQName(theSchemaTypeNames[XS_ENTITY],         ns, "", "ENTITY");
 
-  f->createQName(theSchemaTypeNames[XS_NOTATION],       ns, "", "notation");
+  f->createQName(theSchemaTypeNames[XS_NOTATION],       ns, "", "NOTATION");
 
 
   f->createQName(theSchemaTypeNames[XS_DATETIME],       ns, "", "dateTime");

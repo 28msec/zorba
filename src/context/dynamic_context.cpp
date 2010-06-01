@@ -387,7 +387,8 @@ void dynamic_context::set_variable(
     const std::string& var_name,
     store::Item_t& var_item)
 {
-  if (var_name.empty()) return;
+  if (var_name.empty()) 
+    return;
 
   string key = "var:" + var_name;
   dctx_value_t v;
@@ -422,26 +423,26 @@ bool dynamic_context::get_variable(
     const store::Item_t& varname,
     const QueryLoc& loc,
     store::Item_t& var_item,
-    store::Iterator_t& var_iter)
+    store::TempSeq_t& var_seq)
 {
   var_item = NULL;
-  var_iter = NULL;
+  var_seq = NULL;
   return lookup_var_value("var:" + varname->getStringValue()->str(),
                           loc,
                           var_item,
-                          var_iter);
+                          var_seq);
 }
 
 
 bool dynamic_context::get_variable(
-  const std::string& varname,
-  const QueryLoc& loc,
-  store::Item_t& var_item,
-  store::Iterator_t& var_iter)
+    const std::string& varname,
+    const QueryLoc& loc,
+    store::Item_t& var_item,
+    store::TempSeq_t& var_seq)
 {
   var_item = NULL;
-  var_iter = NULL;
-  return lookup_var_value("var:" + varname, loc, var_item, var_iter);
+  var_seq = NULL;
+  return lookup_var_value("var:" + varname, loc, var_item, var_seq);
 }
 
 
@@ -449,14 +450,14 @@ bool dynamic_context::lookup_var_value(
     const std::string& key,
     const QueryLoc& loc,
     store::Item_t& var_item,
-    store::Iterator_t& var_iter)
+    store::TempSeq_t& var_seq)
 {
   dctx_value_t val;
 
   if(!keymap.get(key, val))
   {
     if (theParent)
-      return theParent->lookup_var_value(key, loc, var_item, var_iter);
+      return theParent->lookup_var_value(key, loc, var_item, var_seq);
     else
       return false;
   }
@@ -467,7 +468,7 @@ bool dynamic_context::lookup_var_value(
   if (val.type == dynamic_context::dctx_value_t::var_item_val)
     var_item = val.val.var_item;
   else
-    var_iter = val.val.var_temp_seq->getIterator();
+    var_seq = val.val.var_temp_seq;
 
   return true;
 }
@@ -601,10 +602,9 @@ store::IC* dynamic_context::getIC(const store::Item* qname)
 /*******************************************************************************
 
 ********************************************************************************/
-bool
-dynamic_context::addExternalFunctionParam (
-  const std::string& aName,
-  void* aValue )
+bool dynamic_context::addExternalFunctionParam (
+    const std::string& aName,
+    void* aValue )
 {
   dctx_value_t val;
   val.type = dynamic_context::dctx_value_t::ext_func_param;
@@ -617,8 +617,7 @@ dynamic_context::addExternalFunctionParam (
 /*******************************************************************************
 
 ********************************************************************************/
-bool
-dynamic_context::getExternalFunctionParam (
+bool dynamic_context::getExternalFunctionParam (
   const std::string& aName,
   void*& aValue) const
 {
@@ -637,6 +636,7 @@ dynamic_context::getExternalFunctionParam (
   aValue = val.func_param;
   return true;
 }
+
 
 std::vector<xqp_string>* dynamic_context::get_all_keymap_keys() const
 {

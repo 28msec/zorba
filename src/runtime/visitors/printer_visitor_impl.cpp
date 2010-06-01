@@ -1165,7 +1165,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (flwor::OrderByIterator)
   PRINTER_VISITOR_DEFINITION (flwor::WindowIterator)
   PRINTER_VISITOR_DEFINITION (NameCastIterator)
-  PRINTER_VISITOR_DEFINITION (CtxVariableIterator)
+  PRINTER_VISITOR_DEFINITION (CtxVarIterator)
   PRINTER_VISITOR_DEFINITION (CtxVarDeclIterator)
   PRINTER_VISITOR_DEFINITION (CtxVarAssignIterator)
   PRINTER_VISITOR_DEFINITION (CtxVarExistsIterator)

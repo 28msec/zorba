@@ -159,6 +159,8 @@ public:
 
   const var_expr* get_pos_var() const;
 
+  bool is_context_item() const;
+
   void compute_scripting_kind();
 
   expr_t clone(substitution_t& subst) const;

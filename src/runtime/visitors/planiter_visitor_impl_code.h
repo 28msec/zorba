@@ -291,7 +291,7 @@
 
   PLAN_ITER_VISITOR (FnDateTimeConstructorIterator);
 
-  PLAN_ITER_VISITOR (CtxVariableIterator);
+  PLAN_ITER_VISITOR (CtxVarIterator);
 
   PLAN_ITER_VISITOR (CtxVarDeclIterator);
 

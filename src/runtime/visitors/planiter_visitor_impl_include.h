@@ -103,7 +103,7 @@
   class NameCastIterator;
   class CastableIterator;
   class PromoteIterator;
-  class CtxVariableIterator;
+  class CtxVarIterator;
   class CtxVarDeclIterator;
   class CtxVarAssignIterator;
   class CtxVarExistsIterator;

@@ -124,9 +124,9 @@ public:
   ctxvariable(varName)
 
   This internal function is used to represent references to prolog or block-local
-  variables. During runtime, it retrieves from the dymanic context the iterator
+  variables. During runtime, it retrieves from the dymanic context the temp seq
   (or single item) that is associated with varName and returns, one-at-a-time,
-  the items produced by that iterator.
+  the items stored in that temp seq..
 ********************************************************************************/ 
 class ctx_variable : public function
 {
@@ -139,7 +139,15 @@ public:
 
   bool accessesDynCtx() const { return true; }
 
-  DEFAULT_NARY_CODEGEN(CtxVariableIterator);
+  PlanIter_t codegen(
+        CompilerCB* cb,
+        static_context* sctx, 
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& argv,
+        AnnotationHolder& ann) const
+  {
+    return new CtxVarIterator(sctx, loc, argv[0]); 
+  }
 };
 
 
