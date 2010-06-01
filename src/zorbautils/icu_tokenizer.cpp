@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <unicode/unistr.h>
 #include <zorba/error.h>
 
 #include "zorbaerrors/error_manager.h"
