@@ -290,18 +290,19 @@ static void match_tokens( FTTokenIterator &doc_tokens,
   while ( doc_tokens.hasNext() ) {
     doc_tokens.mark( true );
     query_tokens.reset();
-    FTToken const *dt_start = 0, *dt_end = 0;
-    while ( doc_tokens.hasNext() && query_tokens.hasNext() ) {
-      dt_end = &doc_tokens.current();
+    FTToken const *dt, *dt_start = 0, *dt_end, *qt;
+    bool all_matched = false;
+    while ( doc_tokens.next( &dt ) && query_tokens.next( &qt ) ) {
       if ( !dt_start )
-        dt_start = dt_end;
-      FTToken const &qt = query_tokens.current();
-      if ( !match_tokens( dt_end->word, qt.word, options ) )
+        dt_start = dt;
+      dt_end = dt;
+      all_matched = true;
+      if ( !match_tokens( dt->word, qt->word, options ) ) {
+        all_matched = false;
         break;
-      doc_tokens.next();
-      query_tokens.next();
+      }
     }
-    if ( !query_tokens.hasNext() ) {
+    if ( all_matched ) {
       ft_token_span ts;
       ts.pos.start  = dt_start->pos;
       ts.pos.end    = dt_end->pos;
