@@ -25,6 +25,9 @@
 
 namespace zorba {
 
+class FTTokenIterator;
+typedef rchandle<FTTokenIterator> FTTokenIterator_t;
+
 /**
  * An <code>FTTokenIterator</code> iterates over a sequence of full-text
  * tokens.
@@ -32,6 +35,15 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC FTTokenIterator : public SimpleRCObject {
 public:
   typedef unsigned index_t;
+
+  /**
+   * A <code>Mark</code> holds the position state of an iterator.
+   */
+  class Mark : public SimpleRCObject {
+  protected:
+    Mark() { }
+  };
+  typedef rchandle<Mark> Mark_t;
 
   /**
    * Destroys this iterator.
@@ -46,11 +58,11 @@ public:
   virtual index_t begin() const = 0;
 
   /**
-   * Gets the current token.
+   * Clones this iterator.
    *
-   * @return Returns said token.
+   * @return Returns said clone.
    */
-  virtual FTToken const& current() const = 0;
+  virtual FTTokenIterator_t clone() const = 0;
 
   /**
    * Checks whether there are any tokens to iterate over.
@@ -75,13 +87,6 @@ public:
   virtual bool hasNext() const = 0;
 
   /**
-   * Marks the iterator's position so that it can be returned to later.
-   *
-   * @param set If true, sets a mark; if false, returns to the previous mark.
-   */
-  virtual void mark( bool set ) = 0;
-
-  /**
    * Obtains the next token and advances the iterator.
    *
    * @param ppToken A pointer to the next token is put here; may be null to
@@ -91,13 +96,25 @@ public:
   virtual bool next( FTToken const **ppToken = 0 ) = 0;
 
   /**
-   * Resets this iterator and the mark to the beginning.
+   * Gets the current position.
+   *
+   * @return Returns said position.
+   */
+  virtual Mark_t pos() const = 0;
+
+  /**
+   * Sets the current position.
+   *
+   * @param mark The position to set this iterator to.
+   */
+  virtual void pos( Mark_t const &mark ) = 0;
+
+  /**
+   * Resets this iterator to the beginning.
    */
   virtual void reset() = 0;
 
 };
-
-typedef rchandle<FTTokenIterator> FTTokenIterator_t;
 
 } // namespace zorba
 #endif  /* ZORBA_FT_TOKEN_ITERATOR_H */

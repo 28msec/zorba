@@ -21,6 +21,7 @@
 #include <zorba/error.h>
 
 #include "runtime/full_text/apply.h"
+#include "runtime/full_text/ft_single_token_iterator.h"
 #include "runtime/full_text/ft_token_span.h"
 #include "system/properties.h"
 #include "zorbaerrors/error_manager.h"
@@ -288,7 +289,7 @@ static void match_tokens( FTTokenIterator &doc_tokens,
 #endif
   doc_tokens.reset();
   while ( doc_tokens.hasNext() ) {
-    doc_tokens.mark( true );
+    FTTokenIterator::Mark_t const mark( doc_tokens.pos() );
     query_tokens.reset();
     FTToken const *dt, *dt_start = 0, *dt_end, *qt;
     bool all_matched = false;
@@ -312,7 +313,7 @@ static void match_tokens( FTTokenIterator &doc_tokens,
       ts.para.end   = dt_end->para;
       result.push_back( ts );
     } else {
-      doc_tokens.mark( false );
+      doc_tokens.pos( mark );
       doc_tokens.next();
     }
   }
@@ -964,21 +965,21 @@ static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
     PUT_ARG( query_pos );
 
     ft_all_matches_seq all_am_seq;
-    for ( FTToken::int_t pos = 0; query_tokens.hasNext();
-          ++pos, query_tokens.next() ) {
+    FTToken const *t;
 
-      FTQueryItem &query_item = query_tokens.currentItem();
-      FTQueryItemSeq qi_seq;
-      qi_seq.push_back( query_item );
-      FTQueryItemSeqIterator query_token( qi_seq );
-
+    for ( FTToken::int_t pos = 0; query_tokens.next( &t ); ++pos ) {
+      FTTokenIterator::index_t const qt_pos = query_tokens.begin() + pos;
+      FTSingleTokenIterator query_token( *t, qt_pos, qt_pos + 1 );
       ft_all_matches am;
       apply_query_tokens_as_phrase(
         search_ctx, query_token, query_pos + pos, options, am
       );
       all_am_seq.push_back( am );
     }
-    ft_all_matches const first_am( pop_front( all_am_seq ) );
+
+    ft_all_matches first_am;
+    if ( !all_am_seq.empty() )
+      first_am = pop_front( all_am_seq );
     make_conj_disj( first_am, all_am_seq, apply_fn, result );
 
     END_APPLY( result );

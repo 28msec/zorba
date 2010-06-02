@@ -18,6 +18,7 @@ SET(FULLTEXT_SRCS
     ft_match.cpp
     match_tokens.cpp
     ft_query_item_seq.cpp
+    ft_single_token_iterator.cpp
     apply.cpp
     ftcontains_visitor.cpp
     )

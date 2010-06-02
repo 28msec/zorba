@@ -14,33 +14,33 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_NAIVE_FT_TOKEN_ITERATOR_H
-#define ZORBA_NAIVE_FT_TOKEN_ITERATOR_H
+#ifndef ZORBA_FULL_TEXT_SINGLE_TOKEN_ITERATOR_H
+#define ZORBA_FULL_TEXT_SINGLE_TOKEN_ITERATOR_H
 
-#include <vector>
+#include <list>
 
 #include "store/api/ft_token_iterator.h"
 
 namespace zorba {
 
-/**
- * A <code>NaiveFTTokenIterator</code> is-an FTTokenIterator for the naive
- * store.
- */
-class ZORBA_DLL_PUBLIC NaiveFTTokenIterator : public FTTokenIterator {
-public:
-  typedef std::vector<FTToken> FTTokens;
+///////////////////////////////////////////////////////////////////////////////
 
-  NaiveFTTokenIterator( FTTokens const&, index_t begin, index_t end );
+/**
+ * An FTQueryItemSeqIterator is-an FTTokenIterator that iterates over a single
+ * token.
+ */
+class FTSingleTokenIterator : public FTTokenIterator {
+public:
+  FTSingleTokenIterator( FTToken const&, index_t, index_t );
 
   index_t begin() const;
   FTTokenIterator_t clone() const;
   bool empty() const;
   index_t end() const;
   bool hasNext() const;
-  bool next( FTToken const **ppToken = 0 );
   Mark_t pos() const;
   void pos( Mark_t const& );
+  bool next( FTToken const** = 0 );
   void reset();
 
 private:
@@ -49,11 +49,13 @@ private:
     index_t const pos_;
   };
 
-  FTTokens const &tokens_;
+  FTToken const &token_;
   index_t const begin_, end_;
   index_t pos_;
 };
 
+///////////////////////////////////////////////////////////////////////////////
+
 } // namespace zorba
-#endif  /* ZORBA_NAIVE_FT_TOKEN_ITERATOR_H */
+#endif  /* ZORBA_FULL_TEXT_SINGLE_TOKEN_ITERATOR_H */
 /* vim:set et sw=2 ts=2: */

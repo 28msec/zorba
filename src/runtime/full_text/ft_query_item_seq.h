@@ -44,23 +44,33 @@ typedef std::list<FTQueryItem> FTQueryItemSeq;
 class FTQueryItemSeqIterator : public FTTokenIterator {
 public:
   FTQueryItemSeqIterator( FTQueryItemSeq& );
-
-  FTQueryItem& currentItem() const {
-    return *qi_;
-  }
+  FTQueryItemSeqIterator( FTQueryItemSeq* );
+  ~FTQueryItemSeqIterator();
 
   index_t begin() const;
-  FTToken const& current() const;
+  FTTokenIterator_t clone() const;
   bool empty() const;
   index_t end() const;
   bool hasNext() const;
-  void mark( bool );
-  bool next( FTToken const **ppToken = 0 );
+  Mark_t pos() const;
+  void pos( Mark_t const& );
+  void pos( FTTokenIterator_t const& );
+  bool next( FTToken const** = 0 );
   void reset();
 
 private:
-  FTQueryItemSeq *qi_seq_;              // pointer to allow operator=()
-  FTQueryItemSeq::iterator qi_, mark_;
+  typedef std::list<Mark_t> MarkSeq;
+
+  struct LocalMark : Mark {
+    MarkSeq marks_;
+    FTQueryItemSeq::iterator qi_;
+  };
+
+  void init();
+
+  FTQueryItemSeq *const qi_seq_;
+  FTQueryItemSeq::iterator qi_;
+  bool const delete_seq_;
 };
 
 ///////////////////////////////////////////////////////////////////////////////
