@@ -31,7 +31,7 @@ namespace zorba {
  */
 class FTSingleTokenIterator : public FTTokenIterator {
 public:
-  FTSingleTokenIterator( FTToken const&, index_t, index_t );
+  FTSingleTokenIterator( FTToken const&, index_t );
 
   index_t begin() const;
   FTTokenIterator_t clone() const;
@@ -50,7 +50,7 @@ private:
   };
 
   FTToken const &token_;
-  index_t const begin_, end_;
+  index_t const begin_;
   index_t pos_;
 };
 

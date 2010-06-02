@@ -23,14 +23,14 @@ namespace zorba {
 ////////// Constructor(s), cloning ////////////////////////////////////////////
 
 FTSingleTokenIterator::FTSingleTokenIterator( FTToken const &token,
-                                              index_t begin, index_t end ) :
-  token_( token ), begin_( begin ), end_( end )
+                                              index_t begin ) :
+  token_( token ), begin_( begin )
 {
   reset();
 }
 
 FTTokenIterator_t FTSingleTokenIterator::clone() const {
-  return FTTokenIterator_t( new FTSingleTokenIterator( token_, begin_, end_ ) );
+  return FTTokenIterator_t( new FTSingleTokenIterator( token_, begin_ ) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -40,15 +40,15 @@ FTSingleTokenIterator::index_t FTSingleTokenIterator::begin() const {
 }
 
 bool FTSingleTokenIterator::empty() const {
-  return begin_ == end_;
+  return false;
 }
 
 FTSingleTokenIterator::index_t FTSingleTokenIterator::end() const {
-  return end_;
+  return begin_ + 1;
 }
 
 bool FTSingleTokenIterator::hasNext() const {
-  return pos_ < end_;
+  return pos_ == begin_;
 }
 
 FTTokenIterator::Mark_t FTSingleTokenIterator::pos() const {
@@ -60,7 +60,7 @@ void FTSingleTokenIterator::pos( Mark_t const &mark ) {
 }
 
 bool FTSingleTokenIterator::next( FTToken const **ppToken ) {
-  if ( pos_ < end_ ) {
+  if ( pos_ == begin_ ) {
     if ( ppToken )
       *ppToken = &token_;
     ++pos_;

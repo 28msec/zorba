@@ -968,8 +968,7 @@ static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
     FTToken const *t;
 
     for ( FTToken::int_t pos = 0; query_tokens.next( &t ); ++pos ) {
-      FTTokenIterator::index_t const qt_pos = query_tokens.begin() + pos;
-      FTSingleTokenIterator query_token( *t, qt_pos, qt_pos + 1 );
+      FTSingleTokenIterator query_token( *t, query_tokens.begin() + pos );
       ft_all_matches am;
       apply_query_tokens_as_phrase(
         search_ctx, query_token, query_pos + pos, options, am
