@@ -1037,7 +1037,7 @@ void apply_ftwindow( ft_all_matches const &am, ft_int window_size,
 
   FOR_EACH( ft_all_matches, m, am ) {
     signed_t const s_min_pos = MIN_PN( m->includes, sep, start );
-    signed_t const s_max_pos = MIN_PN( m->includes, sep, end );
+    signed_t const s_max_pos = MAX_PN( m->includes, sep, end );
     for ( signed_t s_win_start_pos = s_max_pos - s_window_size + 1;
           s_win_start_pos <= s_min_pos; ++s_win_start_pos ) {
       signed_t const s_win_end_pos = s_win_start_pos + s_window_size - 1;

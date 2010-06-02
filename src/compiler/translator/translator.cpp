@@ -11226,9 +11226,16 @@ void end_visit (const FTRange& v, void* /*visit_state*/) {
     e2 = NULL;
   }
 
-  ftrange *const r = new ftrange(
-    v.get_location(), v.get_mode(), e1.getp(), e2.getp()
-  );
+  if ( e1 ) {
+    e1 = wrap_in_atomization( e1 );
+    e1 = wrap_in_type_promotion( e1, theRTM.INTEGER_TYPE_ONE );
+  }
+  if ( e2 ) {
+    e2 = wrap_in_atomization( e2 );
+    e2 = wrap_in_type_promotion( e2, theRTM.INTEGER_TYPE_ONE );
+  }
+
+  ftrange *const r = new ftrange( v.get_location(), v.get_mode(), e1, e2 );
   push_ftstack( r );
 }
 
@@ -11434,9 +11441,11 @@ void *begin_visit (const FTWindow& v) {
 
 void end_visit (const FTWindow& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  expr_t e( pop_nodestack() );
+  e = wrap_in_atomization( e );
+  e = wrap_in_type_promotion( e, theRTM.INTEGER_TYPE_ONE );
   ftwindow_filter *const wf = new ftwindow_filter(
-    v.get_location(), dynamic_cast<additive_expr*>(pop_nodestack().getp()),
-    v.get_unit()->get_unit()
+    v.get_location(), e, v.get_unit()->get_unit()
   );
   push_ftstack( wf );
 }
@@ -11450,17 +11459,8 @@ void *begin_visit (const FTWords& v) {
 void end_visit (const FTWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
   expr_t e( pop_nodestack() );
-//
-// If the 0 is changed to a 1 and you run the following query, the code will
-// get stuck in the optimizer:
-//
-//  let $x := <foo>hello, world</foo>
-//  return $x contains text "hello"
-//
-#if 1
   e = wrap_in_atomization( e );
   e = wrap_in_type_promotion( e, theRTM.STRING_TYPE_STAR );
-#endif
   ftwords *const w = new ftwords(
     v.get_location(), e, v.get_any_all_option()->get_option()
   );
