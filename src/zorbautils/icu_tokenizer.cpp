@@ -59,7 +59,7 @@ void icu_tokenizer::tokenize( char const *utf8_s, int utf8_len,
   );
 
   // This UnicodeString wraps the existing buffer: no copy is made.
-  UnicodeString const utf16_s( false, utf16_buf.get(), utf16_len );
+  UnicodeString const utf16_s( utf16_buf.get(), utf16_len );//( false, utf16_buf.get(), utf16_len );
 
   word_it_->setText( utf16_s );
   int32_t word_start = word_it_->first(), word_end = word_it_->next();
