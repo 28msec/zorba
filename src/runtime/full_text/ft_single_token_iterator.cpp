@@ -39,10 +39,6 @@ FTSingleTokenIterator::index_t FTSingleTokenIterator::begin() const {
   return begin_;
 }
 
-bool FTSingleTokenIterator::empty() const {
-  return false;
-}
-
 FTSingleTokenIterator::index_t FTSingleTokenIterator::end() const {
   return begin_ + 1;
 }

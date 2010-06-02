@@ -869,7 +869,7 @@ static void apply_ftwords_phrase( FTTokenIterator &search_ctx,
                                   ftmatch_options const &options,
                                   ft_all_matches &result ) {
   FTQueryItemSeqIterator query_tokens( query_items );
-  if ( !query_tokens.empty() ) {
+  if ( query_tokens.hasNext() ) {
     BEGIN_APPLY( apply_ftwords_phrase );
     PUT_ARG( query_pos );
 
@@ -960,7 +960,7 @@ static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
                                     apply_fn_3arg_t apply_fn,
                                     ft_all_matches &result ) {
   FTQueryItemSeqIterator query_tokens( query_items );
-  if ( !query_tokens.empty() ) {
+  if ( query_tokens.hasNext() ) {
     BEGIN_APPLY( apply_ftwords_xxx_word );
     PUT_ARG( query_pos );
 

@@ -70,7 +70,7 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
 
   while ( !ftcontains && consumeNext( item, theChild0.getp(), plan_state ) ) {
     FTTokenIterator_t doc_tokens( item->getDocumentTokens() );
-    if ( !doc_tokens->empty() ) {
+    if ( doc_tokens->hasNext() ) {
       ftcontains_visitor v( doc_tokens, plan_state );
       ftselection_->accept( v );
       ftcontains = v.ftcontains();

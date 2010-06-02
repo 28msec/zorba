@@ -59,14 +59,6 @@ FTQueryItemSeqIterator::index_t FTQueryItemSeqIterator::begin() const {
   return qi_seq_->front()->begin();
 }
 
-bool FTQueryItemSeqIterator::empty() const {
-  FOR_EACH( FTQueryItemSeq, qi, *qi_seq_ ) {
-    if ( !(*qi)->empty() )
-      return false;
-  }
-  return true;
-}
-
 FTQueryItemSeqIterator::index_t FTQueryItemSeqIterator::end() const {
   return qi_seq_->back()->end();
 }

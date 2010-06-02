@@ -40,10 +40,6 @@ FTTokenIterator_t NaiveFTTokenIterator::clone() const {
   return FTTokenIterator_t( copy );
 }
 
-bool NaiveFTTokenIterator::empty() const {
-  return begin_ == end_;
-}
-
 FTTokenIterator::index_t NaiveFTTokenIterator::end() const {
   return end_;
 }

@@ -65,14 +65,6 @@ public:
   virtual FTTokenIterator_t clone() const = 0;
 
   /**
-   * Checks whether there are any tokens to iterate over.
-   *
-   * @return Returns <code>true</code> only if there are no tokens to iterate
-   * over.
-   */
-  virtual bool empty() const = 0;
-
-  /**
    * One greater than the index of the ending token.
    *
    * @return Returns said index.

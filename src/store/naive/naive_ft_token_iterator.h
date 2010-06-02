@@ -35,7 +35,6 @@ public:
 
   index_t begin() const;
   FTTokenIterator_t clone() const;
-  bool empty() const;
   index_t end() const;
   bool hasNext() const;
   bool next( FTToken const **ppToken = 0 );

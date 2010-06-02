@@ -363,7 +363,7 @@ void V::end_visit( ftwords &w ) {
 
   while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
     FTQueryItem const qi( item->getQueryTokens() );
-    if ( !qi->empty() )
+    if ( qi->hasNext() )
       query_items.push_back( qi );
   }
 
