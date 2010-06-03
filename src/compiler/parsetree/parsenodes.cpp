@@ -5045,7 +5045,7 @@ void FTStopWordOption::accept( parsenode_visitor &v ) const
 FTStopWords::FTStopWords(
   QueryLoc const &loc,
   std::string const &uri,
-  stop_word_list_t *stop_words
+  list_t *stop_words
 ) :
   parsenode( loc ),
   uri_( uri )

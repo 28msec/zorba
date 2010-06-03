@@ -6263,22 +6263,22 @@ private:
 
 class FTStopWords : public parsenode {
 public:
-  typedef std::list<std::string> stop_word_list_t;
+  typedef std::list<std::string> list_t;
 
   FTStopWords(
     QueryLoc const&,
     std::string const &uri,
-    stop_word_list_t*
+    list_t*
   );
 
   std::string const& get_uri() const { return uri_; }
-  stop_word_list_t const& get_stop_words() const { return stop_words_; }
+  list_t const& get_stop_words() const { return stop_words_; }
 
   void accept( parsenode_visitor& ) const;
 
 private:
   std::string const uri_;
-  stop_word_list_t stop_words_;
+  list_t stop_words_;
 };
 
 

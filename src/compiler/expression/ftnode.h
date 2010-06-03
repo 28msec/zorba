@@ -205,7 +205,7 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftstop_word_option,ftmatch_option)
   void serialize( serialization::Archiver& );
 
-  typedef std::list<ftstop_words*> stop_word_list_t;
+  typedef std::list<ftstop_words*> list_t;
 
   ftstop_word_option(
     QueryLoc const&,
@@ -214,7 +214,7 @@ public:
 
   ftstop_word_option(
     QueryLoc const&,
-    stop_word_list_t&,
+    list_t&,
     ft_stop_words_mode::type = ft_stop_words_mode::DEFAULT
   );
 
@@ -222,11 +222,11 @@ public:
 
   ft_visit_result::type accept( ftnode_visitor& );
   ft_stop_words_mode::type get_mode() const { return mode_; }
-  stop_word_list_t const& get_stop_words() const { return stop_words_; }
+  list_t const& get_stop_words() const { return stop_words_; }
   std::ostream& put( std::ostream& ) const;
 
 private:
-  stop_word_list_t stop_words_;
+  list_t stop_words_;
   ft_stop_words_mode::type mode_;
 };
 

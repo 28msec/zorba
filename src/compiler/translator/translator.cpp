@@ -11311,7 +11311,7 @@ void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
   if ( v.get_mode() == ft_stop_words_mode::without )
     return;
 
-  ftstop_word_option::stop_word_list_t stop_words;
+  ftstop_word_option::list_t stop_words;
   while ( true ) {
     ftnode *const n = top_ftstack();
     if ( ftstop_words *const sw = dynamic_cast<ftstop_words*>( n ) ) {
