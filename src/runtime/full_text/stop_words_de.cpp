@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "runtime/full_text/utf8_chars.h"
+
 namespace zorba {
 
 extern char const *const stop_words_de[] = {
@@ -50,7 +52,7 @@ extern char const *const stop_words_de[] = {
   "das",
   "dasselbe",
   "dazu",
-  "da\xDF",
+  "da" szlig,
   "dein",
   "deine",
   "deinem",
@@ -107,7 +109,7 @@ extern char const *const stop_words_de[] = {
   "euren",
   "eurer",
   "eures",
-  "f\xFC" "r",
+  "f" uuml "r",
   "gegen",
   "gewesen",
   "hab",
@@ -152,8 +154,8 @@ extern char const *const stop_words_de[] = {
   "keinen",
   "keiner",
   "keines",
-  "k\xF6nnen",
-  "k\xF6nnte",
+  "k" ouml "nnen",
+  "k" ouml "nnte",
   "machen",
   "man",
   "manche",
@@ -202,7 +204,7 @@ extern char const *const stop_words_de[] = {
   "sollte",
   "sondern",
   "sonst",
-  "\xFC" "ber",
+  uuml "ber",
   "um",
   "und",
   "uns",
@@ -216,7 +218,7 @@ extern char const *const stop_words_de[] = {
   "vom",
   "von",
   "vor",
-  "w\xE4hrend",
+  "w" auml "hrend",
   "war",
   "waren",
   "warst",
@@ -241,8 +243,8 @@ extern char const *const stop_words_de[] = {
   "wo",
   "wollen",
   "wollte",
-  "w\xFC" "rde",
-  "w\xFC" "rden",
+  "w" uuml "rde",
+  "w" uuml "rden",
   "zu",
   "zum",
   "zur",
