@@ -251,6 +251,7 @@ ft_visit_result::type ftcontent_filter::accept( ftnode_visitor &v ) {
 
 void ftcontent_filter::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftpos_filter*)this );
+  SERIALIZE_ENUM(ft_content_mode::type, mode_);
 }
 
 ostream& ftcontent_filter::put( ostream &o ) const {
@@ -340,7 +341,8 @@ ostream& ftextension_selection::put( ostream &o ) const {
 }
 
 void ftextension_selection::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftnode*)this );
+  serialize_baseclass( ar, (ftprimary*)this );
+  ar & ftselection_;
 }
 
 ftextension_option::ftextension_option(
@@ -381,6 +383,12 @@ ftlanguage_option::ftlanguage_option(
 {
 }
 
+void ftlanguage_option::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass( ar, (ftmatch_option*)this );
+  ar & language_;
+}
+
+
 ft_visit_result::type ftlanguage_option::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   END_VISIT( v );
@@ -390,11 +398,6 @@ ostream& ftlanguage_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftlanguage_option );
   PUT_ATTR( o, lang, language_ ) << endl;
   END_PUT( o );
-}
-
-void ftlanguage_option::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftmatch_option*)this );
-  ar & language_;
 }
 
 void ftmatch_option::serialize( serialization::Archiver &ar ) {
@@ -410,6 +413,7 @@ ftmatch_options::ftmatch_options(
   extension_option_( NULL ),
   language_option_( new ftlanguage_option( loc, "" ) ),
   stem_option_( new ftstem_option( loc ) ),
+  stop_word_option_( NULL ),
   thesaurus_option_( NULL ),
   wild_card_option_( new ftwild_card_option( loc ) )
 {
@@ -454,6 +458,7 @@ ostream& ftmatch_options::put( ostream &o ) const {
 void ftmatch_options::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   ar & case_option_;
+  ar & diacritics_option_;
   ar & extension_option_;
   ar & language_option_;
   ar & stem_option_;
@@ -576,6 +581,7 @@ void ftprimary_with_options::serialize( serialization::Archiver &ar ) {
   ar & primary_;
   ar & match_options_;
   ar & weight_;
+  ar & plan_iter_;
 }
 
 ftrange::ftrange(
@@ -611,6 +617,8 @@ void ftrange::serialize( serialization::Archiver &ar ) {
   SERIALIZE_ENUM(ft_range_mode::type,mode_);
   ar & expr1_;
   ar & expr2_;
+  ar & it1_;
+  ar & it2_;
 }
 
 ftscope_filter::ftscope_filter(
@@ -670,7 +678,7 @@ ostream& ftselection::put( ostream &o ) const {
 }
 
 void ftselection::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftnode*)this );
+  serialize_baseclass( ar, (ftprimary*)this );
   ar & ftor_;
   ar & list_;
 }
@@ -939,6 +947,7 @@ void ftwindow_filter::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftpos_filter*)this );
   ar & window_;
   SERIALIZE_ENUM(ft_unit::type,unit_);
+  ar & plan_iter_;
 }
 
 ftwords::ftwords(
@@ -970,6 +979,7 @@ void ftwords::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftnode*)this );
   ar & expr_;
   SERIALIZE_ENUM( ft_anyall_mode::type, mode_ );
+  ar & plan_iter_;
 }
 
 ftwords_times::ftwords_times(
@@ -1004,7 +1014,7 @@ ostream& ftwords_times::put( ostream &o ) const {
 }
 
 void ftwords_times::serialize( serialization::Archiver &ar ) {
-  serialize_baseclass( ar, (ftnode*)this );
+  serialize_baseclass( ar, (ftprimary*)this );
   ar & ftwords_;
   ar & fttimes_;
 }
