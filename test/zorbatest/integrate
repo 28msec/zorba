@@ -117,7 +117,7 @@ $ROOT/process_test_results
 if test -s acceptance_failures.xmlfrag; then
   export ACCEPTANCE_FAILURES=1
   echo Some acceptance tests failed, see $PWD/index.html
-  export COMMITTERS=`echo '//span [@id="committers"]' | $ROOT/xquery -s index.html - | cut -f 2- -d'>' | cut -f1 -d'<'`
+#  export COMMITTERS=`echo '//span [@id="committers"]' | $ROOT/xquery -s index.html - | cut -f 2- -d'>' | cut -f1 -d'<'`
   test "x$TEST_MODE" != "xlocal" && echo Committers: $COMMITTERS
 else
   echo 'All acceptance tests passed'

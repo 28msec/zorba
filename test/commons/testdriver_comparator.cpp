@@ -38,7 +38,8 @@ int canonicalizeAndCompare(
     const std::string& aComparisonMethod,
     const char* aRefFile,
     const char* aResultFile,
-    const std::string& aRBKTBinDir)
+    const std::string& aRBKTBinDir,
+    std::ostream& aOutput)
 {
   xmlDocPtr lRefResult_ptr;
   xmlDocPtr lResult_ptr;
@@ -61,7 +62,7 @@ int canonicalizeAndCompare(
     std::ifstream lRefInStream(aRefFile);
     if (!lRefInStream.good())
     {
-      std::cout << "Failed to open ref file " << aRefFile << std::endl;
+      aOutput << "Failed to open ref file " << aRefFile << std::endl;
       return 8;
     }
 
@@ -129,7 +130,7 @@ int canonicalizeAndCompare(
     std::ifstream lInStream(aResultFile);
     if (!lInStream.good())
     {
-      std::cout << "Failed to open result file " << aResultFile << std::endl;
+      aOutput << "Failed to open result file " << aResultFile << std::endl;
       return 8;
     }
 
@@ -151,12 +152,12 @@ int canonicalizeAndCompare(
   }
   else if (aComparisonMethod.compare("Error") == 0 ) 
   {
-    std::cout << "an error was expected but we got a result" << std::endl;
+    aOutput << "an error was expected but we got a result" << std::endl;
     return 8;
   }
   else if (aComparisonMethod.compare("Inspect") == 0 ) 
   {
-    std::cout << "result must be inspected by humans." << std::endl;
+    aOutput << "result must be inspected by humans." << std::endl;
     return 0;
   }
   else if (aComparisonMethod.compare("Ignore") == 0 ) 
@@ -166,7 +167,7 @@ int canonicalizeAndCompare(
   }
   else 
   {
-    std::cout << "comparison method not supported: " << aComparisonMethod << std::endl;
+    aOutput << "comparison method not supported: " << aComparisonMethod << std::endl;
     return 9;
   }
 
@@ -205,41 +206,41 @@ int canonicalizeAndCompare(
                          lLine, lCol, lPos, lRefLine, lResultLine);
   if (!lRes) 
   {
-    std::cout << std::endl
+    aOutput << std::endl
               << "Actual and Reference canonical results are not identical"
               << std::endl << std::endl
               << "Actual Canonical Result: "
               << std::endl << std::endl;
 
-    printFile(std::cout, lCanonicalResFile);
+    printFile(aOutput, lCanonicalResFile);
 
-    std::cout << std::endl << std::endl;
+    aOutput << std::endl << std::endl;
 
-    std::cout << "Reference Canonical Result: "
+    aOutput << "Reference Canonical Result: "
               << std::endl << std::endl;
 
-    zorba::printFile(std::cout, lCanonicalRefFile);
+    zorba::printFile(aOutput, lCanonicalRefFile);
 
-    std::cout << std::endl << std::endl;
+    aOutput << std::endl << std::endl;
 
-    std::cout << "See line " << lLine << ", col " << lCol 
+    aOutput << "See line " << lLine << ", col " << lCol 
               << " of expected result. " << std::endl;
-    std::cout << "Actual:   <";
+    aOutput << "Actual:   <";
 
     if( -1 != lPos )
-      printPart(std::cout, aResultFile, lPos, 15);
+      printPart(aOutput, aResultFile, lPos, 15);
     else
-      std::cout << lResultLine;
+      aOutput << lResultLine;
 
-    std::cout << ">" << std::endl;
-    std::cout << "Expected: <";
+    aOutput << ">" << std::endl;
+    aOutput << "Expected: <";
 
     if( -1 != lPos )
-      printPart(std::cout, aRefFile, lPos, 15);
+      printPart(aOutput, aRefFile, lPos, 15);
     else
-      std::cout << lRefLine;
+      aOutput << lRefLine;
 
-    std::cout << ">" << std::endl;
+    aOutput << ">" << std::endl;
 
     return 8;
   }
@@ -261,7 +262,8 @@ bool fileEquals(
     int& aCol,
     int& aPos,
     std::string& aRefLine,
-    std::string& aResLine)
+    std::string& aResLine,
+    std::ostream& aOutput)
 {
   std::ifstream li(aRefFile);
   std::ifstream ri(aResFile); 
@@ -269,13 +271,13 @@ bool fileEquals(
 
   if (!li.good())
   {
-    std::cout << "Failed to open ref file " << aRefFile << std::endl;
+    aOutput << "Failed to open ref file " << aRefFile << std::endl;
     return false;
   }
 
   if (!ri.good())
   {
-    std::cout << "Failed to open results file " << aResFile << std::endl;
+    aOutput << "Failed to open results file " << aResFile << std::endl;
     return false;
   }
 

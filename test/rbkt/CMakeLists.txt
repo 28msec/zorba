@@ -42,56 +42,46 @@ ZORBA_GENERATE_STORE_SPECIFIC_EXES("testdriver" "${TESTDRIVER_SRCS}" "" "" "")
 
 
 #
-# Compile and build the multi-threaded testdriver executable
+# Compile and build the multi-threaded testdriver executable, if boost
+# available
 #
 
-#SET(ZORBA_BUILD_MT_TESTDRIVER 1)
-
-IF (ZORBA_BUILD_MT_TESTDRIVER)
-
 INCLUDE(${CMAKE_MODULE_PATH}/FindBoost.cmake)
-
-SET (REQUIRED_BOOST_PACKAGES filesystem)
-
-FIND_PACKAGE(Boost REQUIRED COMPONENTS ${REQUIRED_BOOST_PACKAGES})
-
-IF (NOT Boost_FOUND)
-  MESSAGE(FATAL "Boost not found")
-ELSE (NOT Boost_FOUND)
+FIND_PACKAGE(Boost COMPONENTS filesystem)
+IF (NOT Boost_FILESYSTEM_FOUND)
+  MESSAGE(STATUS "Boost filesystem component not found - not building multithreaded test driver")
+ELSE (NOT Boost_FILESYSTEM_FOUND)
   MESSAGE(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
   MESSAGE(STATUS "      Boost: ${Boost_LIBRARY_DIRS}")
 
+  SET (ZORBATEST_TESTDRIVER_MT_AVAILABLE TRUE)
+
   INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
   LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
-ENDIF (NOT Boost_FOUND)
 
-SET (TESTDRIVER_MT_SRCS
-  testdriver_mt.cpp
-  testdriver_common.cpp
-  ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
-  ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp
-  )
+  SET (TESTDRIVER_MT_SRCS
+    testdriver_mt.cpp
+    testdriver_common.cpp
+    ${CMAKE_SOURCE_DIR}/test/commons/testdriver_comparator.cpp
+    ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp
+    )
 
-ADD_EXECUTABLE(testdriver_mt ${TESTDRIVER_MT_SRCS})
+  ADD_EXECUTABLE(testdriver_mt ${TESTDRIVER_MT_SRCS})
+  TARGET_LINK_LIBRARIES(testdriver_mt zorba_simplestore boost_filesystem-mt)
+  IF (ZORBA_BUILD_STATIC_LIBRARY)
+    ADD_EXECUTABLE(testdriver_mt_static testdriver_mt.cpp)
+    SET_TARGET_PROPERTIES(testdriver_mt_static
+      PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
+    TARGET_LINK_LIBRARIES(testdriver_mt_static
+      zorba_simplestore_static
+      boost_filesystem-mt)
+  ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
-TARGET_LINK_LIBRARIES(testdriver_mt
-                      zorba_simplestore
-                      boost_filesystem-mt)
+  SET (ZORBATEST_USE_MT_XQTS NO CACHE BOOLEAN
+    "If true, use testdriver_mt (when available) for running XQTS")
+  MARK_AS_ADVANCED (ZORBATEST_USE_MT_XQTS)
 
-IF (ZORBA_BUILD_STATIC_LIBRARY)
-
-  ADD_EXECUTABLE(testdriver_mt_static testdriver_mt.cpp)
-
-  SET_TARGET_PROPERTIES(testdriver_mt_static PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
-
-  TARGET_LINK_LIBRARIES(testdriver_mt_static
-                        zorba_simplestore_static
-                        boost_filesystem-mt)
-
-ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
-
-ENDIF(ZORBA_BUILD_MT_TESTDRIVER)
-
+ENDIF (NOT Boost_FILESYSTEM_FOUND)
 
 INCLUDE(ZorbaAddTest)
 

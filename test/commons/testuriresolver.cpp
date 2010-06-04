@@ -113,7 +113,7 @@ TestSchemaURIResolver::resolve (
     result -> setError ( URIResolverResult::UR_XQST0059 );
     std::stringstream lErrorStream;
     lErrorStream << "Schema not found " << aURI.getStringValue();
-    std::cout << "Schema not found " << aURI.getStringValue() << std::endl;
+    //std::cerr << "Schema not found " << aURI.getStringValue() << std::endl;
     result->setErrorDescription(lErrorStream.str());
   }
   
@@ -247,7 +247,7 @@ std::auto_ptr<ModuleURIResolverResult> TestModuleURIResolver::resolveTargetNames
     result->setError(URIResolverResult::UR_XQST0059);
     std::stringstream lErrorStream;
     lErrorStream << "Module not found " << nsURI;
-    std::cout << "Module not found " << nsURI << std::endl;
+    //std::cerr << "Module not found " << nsURI << std::endl;
     result->setErrorDescription(lErrorStream.str());
   }
 
@@ -292,7 +292,7 @@ std::auto_ptr<ModuleURIResolverResult> TestModuleURIResolver::resolve(
     result->setError(URIResolverResult::UR_XQST0059);
     std::stringstream lErrorStream;
     lErrorStream << "Module file not found " << filename;
-    std::cout << "Module file not found " << filename << std::endl;
+    //std::cerr << "Module file not found " << filename << std::endl;
     result->setErrorDescription(lErrorStream.str());
     delete result->theModule;
     result->theModule = 0;

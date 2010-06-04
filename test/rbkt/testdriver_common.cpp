@@ -112,7 +112,7 @@ bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aS
 /*******************************************************************************
   Print all errors that were raised
 ********************************************************************************/
-void printErrors(const TestErrorHandler& errHandler, const char* msg, bool printInFile)
+void printErrors(const TestErrorHandler& errHandler, const char* msg, bool printInFile, std::ostream& output)
 {
   if (!errHandler.errors()) 
   {
@@ -137,7 +137,7 @@ void printErrors(const TestErrorHandler& errHandler, const char* msg, bool print
     if (printInFile)
       errFile << msg << ":" << std::endl;
     else
-      std::cout << msg << ":" << std::endl;
+      output << msg << ":" << std::endl;
   }
   
   const std::vector<std::string>& errors = errHandler.getErrorList();
@@ -152,7 +152,7 @@ void printErrors(const TestErrorHandler& errHandler, const char* msg, bool print
     if (printInFile)
       errFile << *codeIter << ": " << *descIter << std::endl;
     else
-      std::cout << *codeIter << ": " << *descIter << std::endl;
+      output << *codeIter << ": " << *descIter << std::endl;
   }
   return;
 }
@@ -236,14 +236,14 @@ zorba::Item createItem(DriverContext& driverCtx, std::string strValue)
             type == "NOTATION")
     {
       //not supported
-      std::cout << "Type {" << type << "} not supported." << std::endl;
+      std::cerr << "Type {" << type << "} not supported." << std::endl;
       return  NULL; 
     }
     else if(type == "anyURI")
       return itemfactory->createAnyURI(val);
     else
       //only primitive types allowed, see http://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
-      std::cout << "Type {" << type
+      std::cerr << "Type {" << type
                 << "} is not a primitive data type.\n Derived types not supported."
                 << std::endl;
       return  NULL;
@@ -279,7 +279,7 @@ void createDynamicContext(
   {
     int lTimezone = atoi(spec.getTimezone().c_str());
     
-    std::cout << "timezone " << lTimezone << std::endl;
+    std::cerr << "timezone " << lTimezone << std::endl;
     dctx->setImplicitTimezone(lTimezone);
   }
 
@@ -373,7 +373,7 @@ void set_var(
     std::ifstream* is = new std::ifstream(val_fname);
     if (! is || !is->is_open() ) 
     {
-      std::cout << "Could not open file `" << val_fname << "' for variable `"
+      std::cerr << "Could not open file `" << val_fname << "' for variable `"
                 << name << "'" << std::endl;
       assert (false);
     }

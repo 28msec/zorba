@@ -18,6 +18,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <set>
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
@@ -79,8 +80,6 @@ std::string rbkt_bin_dir = zorba::RBKT_BINARY_DIR;
 
   theQueryStates     : For each query, whether the query was run successfuly or not.
 
-  theHaveErrors      : True if at least one query run was not successful.
-
   theQueryLocks      :
   theGlobalLock      :
 
@@ -108,13 +107,14 @@ public:
 
   long                          theNumThreads;
 
-  volatile bool                 theHaveErrors;
+  std::ostream&                 theOutput;
 
   std::vector<zorba::Mutex*>    theQueryLocks;
   zorba::Mutex                  theGlobalLock;
 
 public:
-  Queries() : theNumRunsPerQuery(1), theNumThreads(1), theHaveErrors(false) {}
+  Queries(std::ostream& lOutput)
+    : theNumRunsPerQuery(1), theNumThreads(1), theOutput(lOutput) {}
 
   ~Queries();
 
@@ -243,7 +243,7 @@ void createPath(const fs::path& filePath, std::ofstream& fileStream)
 
     if (!fileStream.good())
     {
-      std::cout << "Could not open file: " 
+      std::cerr << "Could not open file: " 
                 << filePath.native_file_string().c_str() << std::endl;
       abort();
     }
@@ -254,18 +254,19 @@ void createPath(const fs::path& filePath, std::ofstream& fileStream)
 /*******************************************************************************
 
 ********************************************************************************/
-bool checkErrors(const Specification& lSpec, const TestErrorHandler& errHandler) 
+bool checkErrors(const Specification& lSpec, const TestErrorHandler& errHandler, std::ostream& lOutput) 
 {
   if (isErrorExpected(errHandler, &lSpec)) 
   {
     printErrors(errHandler,
-                "The following execution errors occurred as expected",
-                true);
+      "The following execution errors occurred as expected",
+      true,
+      lOutput);
     return true;
   }
   else
   {
-    printErrors(errHandler, "Unexpected errors executing query", true);
+    printErrors(errHandler, "Unexpected errors executing query", true, lOutput);
 
     std::ofstream errFile(errHandler.getErrorFile().c_str());
 
@@ -351,8 +352,8 @@ void* thread_main(void* param)
 
     if (queryNo < 0)
     {
-      std::cout << "Thread " << tno << " finished " << std::endl;
-      std::cout << std::endl << "Number of canonicaliations = " << numCanon << std::endl;
+      queries->theOutput << "Thread " << tno << " finished " << std::endl;
+      queries->theOutput << std::endl << "Number of canonicaliations = " << numCanon << std::endl;
       queries->theGlobalLock.unlock();
       return 0;
     }
@@ -369,8 +370,8 @@ void* thread_main(void* param)
     ulong pos = testName.find("Queries");
     testName = testName.substr(pos + 8);
 
-    std::cout << "*** " << queryNo << " : " << testName
-              << " by thread " << tno << std::endl << std::endl;
+    queries->theOutput << "*** " << queryNo << " : " << testName
+                       << " by thread " << tno << std::endl << std::endl;
 
     // Form the full pathname for the .spec file that may be associated
     // with this query. If the .spec file exists, read its contents to
@@ -471,11 +472,11 @@ void* thread_main(void* param)
       }
       catch(...)
       {
-        std::cerr << "FAILURE : thread " << tno << " query " << queryNo
-                  << " : " << queries->theQueryFilenames[queryNo]
-                  << std::endl << std::endl 
-                  << "Reason: received an unexpected exception during compilation"
-                  << std::endl << std::endl;
+        queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
+                           << " : " << queries->theQueryFilenames[queryNo]
+                           << std::endl
+                           << "Reason: received an unexpected exception during compilation"
+                           << std::endl << std::endl;
 
         queries->theQueryLocks[queryNo]->unlock();
         failure = true;
@@ -484,19 +485,19 @@ void* thread_main(void* param)
 
       if (errHandler.errors())
       {
-        if (checkErrors(querySpec, errHandler))
+        if (checkErrors(querySpec, errHandler, queries->theOutput))
         {
           queries->theQueryLocks[queryNo]->unlock();
           goto done;
         }
         else
         {
-          std::cout << "FAILURE : thread " << tno << " query " << queryNo
-                    << " : " << queries->theQueryFilenames[queryNo]
-                    << std::endl << std::endl 
-                    << "Reason: received the following unexpected compilation errors : ";
-          printErrors(errHandler, NULL, false);
-          std::cerr << std::endl << std::endl;
+          queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
+                             << " : " << queries->theQueryFilenames[queryNo]
+                             << std::endl
+                             << "Reason: received the following unexpected compilation errors : ";
+          printErrors(errHandler, NULL, false, queries->theOutput);
+          queries->theOutput << std::endl << std::endl;
 
           queries->theQueryLocks[queryNo]->unlock();
           failure = true;
@@ -535,11 +536,11 @@ void* thread_main(void* param)
     }
     catch(...)
     {
-      std::cerr << "FAILURE : thread " << tno << " query " << queryNo
-                << " : " << queries->theQueryFilenames[queryNo]
-                << std::endl << std::endl 
-                << "Reason: received an unexpected exception during execution"
-                << std::endl << std::endl;
+      queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
+                         << " : " << queries->theQueryFilenames[queryNo]
+                         << std::endl
+                         << "Reason: received an unexpected exception during execution"
+                         << std::endl << std::endl;
       failure = true;
       goto done;
     }
@@ -549,14 +550,14 @@ void* thread_main(void* param)
     //
     if (errHandler.errors())
     {
-      if (!checkErrors(querySpec, errHandler))
+      if (!checkErrors(querySpec, errHandler, queries->theOutput))
       {
-        std::cerr << "FAILURE : thread " << tno << " query " << queryNo
-                  << " : " << queries->theQueryFilenames[queryNo]
-                  << std::endl << std::endl 
-                  << "Reason: received the following unexpected errors : ";
-        printErrors(errHandler, NULL, false);
-        std::cerr << std::endl << std::endl;
+        queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
+                           << " : " << queries->theQueryFilenames[queryNo]
+                           << std::endl
+                           << "Reason: received the following unexpected errors : ";
+        printErrors(errHandler, NULL, false, queries->theOutput);
+        queries->theOutput << std::endl << std::endl;
 
         failure = true;
         goto done;
@@ -564,18 +565,18 @@ void* thread_main(void* param)
     }
     else if (querySpec.errorsSize() > 0 && !refFileSpecified)
     {
-      std::cout << "FAILURE : thread " << tno << " query " << queryNo
-                << " : " << queries->theQueryFilenames[queryNo]
-                << std::endl << std::endl
-                << "Reason: should have received one of the following expected errors : ";
+      queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
+                         << " : " << queries->theQueryFilenames[queryNo]
+                         << std::endl
+                         << "Reason: should have received one of the following expected errors : ";
 
       for (std::vector<std::string>::const_iterator lIter = querySpec.errorsBegin();
            lIter != querySpec.errorsEnd();
            ++lIter)
       {
-        std::cerr << " " << *lIter;
+        queries->theOutput << " " << *lIter;
       }
-      std::cerr << std::endl << std::endl;
+      queries->theOutput << std::endl << std::endl;
 
       failure = true;
       goto done;
@@ -593,7 +594,8 @@ void* thread_main(void* param)
         std::string lRefLine, lResultLine;
         bool success = zorba::fileEquals(refFilePath, resFilePath,
                                          lLine, lCol, lPos,
-                                         lRefLine, lResultLine);
+                                         lRefLine, lResultLine,
+                                         queries->theOutput);
         if (success)
         {
           foundRefFile = true;
@@ -604,7 +606,8 @@ void* thread_main(void* param)
         int lCanonicalRes = zorba::canonicalizeAndCompare(querySpec.getComparisonMethod(),
                                                           refFilePath,
                                                           resFilePath,
-                                                          rbkt_bin_dir);
+                                                          rbkt_bin_dir,
+                                                          queries->theOutput);
         if (lCanonicalRes == 0)
         {
           foundRefFile = true;
@@ -619,19 +622,19 @@ void* thread_main(void* param)
       {
         if (!foundRefFile)
         {
-          std::cout << "FAILURE : thread " << tno << " query " << queryNo
-                    << " : " << queries->theQueryFilenames[queryNo]
-                    << std::endl << std::endl
-                    << "Reason: no reference result files exist."
-                    << std::endl << std::endl;
+          queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
+                             << " : " << queries->theQueryFilenames[queryNo]
+                             << std::endl
+                             << "Reason: no reference result files exist."
+                             << std::endl << std::endl;
         }
         else
         {
-          std::cerr << "FAILURE : thread " << tno << " query " << queryNo
-                    << " : " << queries->theQueryFilenames[queryNo]
-                    << std::endl << std::endl
-                    << "Reason: result does not match any of the expected results"
-                    << std::endl << std::endl;
+          queries->theOutput << "FAILURE : thread " << tno << " query " << queryNo
+                             << " : " << queries->theQueryFilenames[queryNo]
+                             << std::endl
+                             << "Reason: result does not match any of the expected results"
+                             << std::endl << std::endl;
         }
 
         failure = true;
@@ -643,7 +646,6 @@ done:
     if (failure)
     {
       zorba::AutoMutex(queries->theQueryLocks[queryNo]);
-      queries->theHaveErrors = true;
       queries->theQueryStates[queryNo] = false;
     }
 
@@ -654,8 +656,10 @@ done:
 
 void usage()
 {
-  std::cerr << "\nusage: testdriver_mt -b <bucket> [-t <numThreads>] [-n <runsPerQuery>]"
+  std::cerr << "\nusage: testdriver_mt -b <bucket> [-t <numThreads>] [-n <runsPerQuery>]" << std::endl
+            << "  [-e <expected-failures file>] [-o <report logfile>] [-q]"
             << std::endl;
+  std::cerr << "  -q - Quiet; only a summary report will be displayed." << std::endl;
   exit(1);
 }
 
@@ -675,12 +679,15 @@ main(int argc, char** argv)
   std::string refsDir;
   std::string reportFilename = "mt.log";
   std::string reportFilepath;
+  std::string knownFailuresFilepath;
+  bool haveKnownFailures = false;
+  bool quiet = false;
 
   fs::path bucketPath;
+  std::set<std::string> knownFailures;
 
   long numThreads = 1;
-
-  Queries queries;
+  long numRunsPerQuery = 1;
 
   signal(SIGSEGV, sigHandler);
 
@@ -702,8 +709,8 @@ main(int argc, char** argv)
     else if (!strcmp(argv[arg], "-n"))
     {
       arg++;
-      queries.theNumRunsPerQuery = atol(argv[arg]);
-      if (queries.theNumRunsPerQuery <= 0)
+      numRunsPerQuery = atol(argv[arg]);
+      if (numRunsPerQuery <= 0)
         usage();
     }
     else if (!strcmp(argv[arg], "-b"))
@@ -716,6 +723,16 @@ main(int argc, char** argv)
       arg++;
       reportFilename = argv[arg]; 
     }
+    else if (!strcmp(argv[arg], "-k"))
+    {
+      arg++;
+      knownFailuresFilepath = argv[arg];
+      haveKnownFailures = true;
+    }
+    else if (!strcmp(argv[arg], "-q"))
+    {
+      quiet = true;
+    }
     else
     {
       usage();
@@ -724,7 +741,22 @@ main(int argc, char** argv)
     arg++;
   }
 
+  // This is a cheap and easy way to make a "null" ostream:
+  std::ostringstream nullstream;
+  nullstream.clear(std::ios::badbit);
+  Queries queries(quiet ? nullstream : std::cout);
+  queries.theNumRunsPerQuery = numRunsPerQuery;
   queries.theNumThreads = numThreads;
+
+  // Unfortunately there are still places SOMEwhere (in zorba? in a
+  // dependent library?) that output to stderr. It's important for the
+  // remote queue in particular that -q actually work, so we attempt
+  // to shut them up here. QQQ if we can figure out where those
+  // messages are coming from it would be better to fix those than
+  // take this heavy-handed approach.
+  if (quiet) {
+    close(2);
+  }
 
   //
   // Create the full pathname for the top-level query, results, and ref-results
@@ -782,8 +814,8 @@ main(int argc, char** argv)
   //
   // Search and collect all the query files in the bucket.
   //
-  std::cout << "Searching for queries in directory " << queries.theQueriesDir
-            << std::endl << std::endl;
+  queries.theOutput << "Searching for queries in directory "
+                    << queries.theQueriesDir << std::endl << std::endl;
 
   fs::recursive_directory_iterator endDirIte;
   fs::recursive_directory_iterator dirIte(queries.theQueriesDir);
@@ -812,8 +844,9 @@ main(int argc, char** argv)
 
   queries.theNumQueries = queries.theQueryFilenames.size();
 
-  std::cout << queries.theNumQueries << " queries were found in directory "
-            << queries.theQueriesDir << std::endl << std::endl;
+  queries.theOutput << queries.theNumQueries
+                    << " queries were found in directory "
+                    << queries.theQueriesDir << std::endl << std::endl;
 
   //
   // Prepare the Queries container
@@ -853,43 +886,108 @@ main(int argc, char** argv)
     pthread_join(threads[i], &thread_result);
   }
 
-  //
-  // Produce report about failed tests
-  //
-  std::ofstream reportFile(reportFilepath.c_str());
+  queries.theOutput << std::endl
+                    << "***********************************************************************"
+                    << std::endl;
 
-  std::ostringstream tmp;
+  //
+  // If known-failures file specified, load it into a map for quick lookups.
+  //
+  if (haveKnownFailures) {
+    queries.theOutput << std::endl << "Loading known failures file "
+                      << knownFailuresFilepath << "..." << std::endl;
+    std::ifstream knownFailuresFile(knownFailuresFilepath.c_str());
+    while (knownFailuresFile.good()) {
+      std::string testname;
+      getline(knownFailuresFile, testname);
+      knownFailures.insert(testname);
+    }
+    queries.theOutput << "Loaded " << knownFailures.size() 
+                      << " known failures" << std::endl << std::endl;
+  }
+
+  //
+  // Produce report about failed tests - report will look different
+  // depending on whether we have a known-failures file and can report
+  // on regressions/progressions or not. Also keep a running list of
+  // failed tests.
+  //
+  std::ostringstream report;
+  std::ostringstream failedTests;
   long numFailures = 0;
-  
-  if (queries.theHaveErrors)
+  long numRegressions = 0;
+  long numProgressions = 0;
+
+  std::string pathPrefix = "test/rbkt/" + bucketName;
+
+  for (long i = 0; i < queries.theNumQueries; i++)
   {
-    std::string pathPrefix = "test/rbkt/" + bucketName;
+    fs::path queryPath = fs::path(pathPrefix) / (queries.theQueryFilenames[i]);
+    fs::path queryName = fs::change_extension(queryPath, "");
+    bool queryWasKnownToFail = false;
+    if (haveKnownFailures) {
+      queryWasKnownToFail =
+        (knownFailures.count(queryName.file_string()) != 0);
+    }
 
-    for (long i = 0; i < queries.theNumQueries; i++)
+    if (queries.theQueryStates[i] == false)
     {
-      if (queries.theQueryStates[i] == false)
+      numFailures++;
+      failedTests << queryName.file_string() << std::endl;
+
+      if (haveKnownFailures && !queryWasKnownToFail)
       {
-        numFailures++;
-
-        fs::path queryPath = fs::path(pathPrefix) /
-                             (queries.theQueryFilenames[i]);
-
-        fs::path queryName = fs::change_extension(queryPath, "");
-
-        tmp << i << ":" << queryName.file_string() << std::endl;
-        reportFile << i << ":" << queryName.file_string() << std::endl;
+        numRegressions++;
+        report << "REGRESSION:" << i << ":"
+               << queryName.file_string() << std::endl;
+      }
+      else if (!haveKnownFailures)
+      {
+        report << i << ":" << queryName.file_string() << std::endl;
+      }
+    }
+    else
+    {
+      if (haveKnownFailures && queryWasKnownToFail)
+      {
+        numProgressions++;
+        report << "Progression:" << i << ":"
+               << queryName.file_string() << std::endl;
       }
     }
   }
 
-  std::cout << std::endl << std::endl
-            << "***********************************************************************"
-            << std::endl << std::endl << "Number of queries run = " 
+  std::ofstream reportFile(reportFilepath.c_str());
+  reportFile << report.str();
+
+  // Don't use theOutput here - this is the summary we always want to
+  // see
+  std::cout << "Number of queries run = " 
             << queries.theNumQueries << std::endl << "Number of failures = " 
             << numFailures << std::endl;
 
-  if (numFailures > 0)
-    std::cout << std::endl << "Failed queries: " << std::endl << tmp.str() << std::endl;
+  if (haveKnownFailures)
+  {
+    std::cout << "Number of regressions = " << numRegressions << std::endl;
+    std::cout << "Number of progressions = " << numProgressions << std::endl;
+    if (report.str().length() > 0) {
+      std::cout << std::endl << "Individual test reports:" << std::endl
+                << report.str() << std::endl;
+    }
+    if (numRegressions == 0 && numProgressions > 0) {
+      std::cout << "No regressions and some progressions!" << std::endl
+                << "Updating known failures file "
+                << knownFailuresFilepath << std::endl;
+      std::ofstream knownFailuresFile(knownFailuresFilepath.c_str());
+      knownFailuresFile << failedTests.str();
+    }
+  }
+  else
+  {
+    if (report.str().length() > 0)
+      std::cout << std::endl << "Failed queries: " << std::endl
+                << report.str() << std::endl;
+  }
 
   //
   // shutdown
@@ -899,8 +997,12 @@ main(int argc, char** argv)
   zorba->shutdown();
   zorba::StoreManager::shutdownStore(store);
 
-  if (queries.theHaveErrors)
-    return 1;
+  if (haveKnownFailures)
+  {
+    return (numRegressions == 0) ? 0 : 1;
+  }
   else
-    return 0;
+  {
+    return (numFailures == 0) ? 0 : 1;
+  }
 }

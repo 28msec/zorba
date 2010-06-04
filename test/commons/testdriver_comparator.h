@@ -17,17 +17,19 @@
 #define TEST_TESTDRIVER_COMPARATOR
 
 #include <zorba/zorba.h>
+#include <iostream>
 
 namespace zorba {
 
 bool
-fileEquals(const char* aRefFile, const char* aResFile, int& aLine, int& aCol, int& aPos, std::string& aRefLine, std::string& aResLine);
+fileEquals(const char* aRefFile, const char* aResFile, int& aLine, int& aCol, int& aPos, std::string& aRefLine, std::string& aResLine, std::ostream& = std::cout);
 
 int
 canonicalizeAndCompare(const std::string& aComparisonMethod,
                        const char* aRefFile,
                        const char* aResultFile,
-                       const std::string& aRBKTBinDir);
+                       const std::string& aRBKTBinDir,
+                       std::ostream& = std::cout);
 
 void
 printFile(std::ostream& os, const std::string &aInFile);

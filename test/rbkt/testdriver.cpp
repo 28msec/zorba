@@ -20,6 +20,7 @@
 #include <string>
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 
 #include "testdriverconfig.h" // SRC and BIN dir definitions
@@ -283,6 +284,9 @@ main(int argc, char** argv)
     zorba::printFile(std::cout, lQueryFile.get_path());
     std::cout << "=== end of Query ===" << std::endl;
 
+    // Stopwatch starts now
+    struct timeval start_time, end_time;
+    gettimeofday(&start_time, NULL);
 
     // create and compile the query
     std::string lQueryString;
@@ -397,6 +401,9 @@ main(int argc, char** argv)
         
         lQuery->execute(lResFileStream, &lSerOptions);
       }
+
+      // Stopwatch ends here
+      gettimeofday(&end_time, NULL);
       
       if (lSpec.errorsSize() == 0 && ! lRefFileExists )
       {
@@ -490,13 +497,19 @@ main(int argc, char** argv)
         ++i;
       } // for 
 
-      if (lResultMatches) {
-        continue; // in case there are more queries, we have to execute all of them
-      } else {
+      if (!lResultMatches) {
         std::cout << "testdriver: none of the reference results matched" << std::endl;
         return 8;
       }
     }
+
+    // Check timing
+    // QQQ only do this if .spec file says to
+    long mstime = ( (end_time.tv_sec - start_time.tv_sec) * 1000000
+      + (end_time.tv_usec - start_time.tv_usec) );
+
+    std::cout << "testdriver: test runtime was " << mstime << "us" << std::endl;
+
   } // for (int testcnt = 1; i < argc; ++i, ++testcnt)
   std::cout << "testdriver: success" << std::endl;
   return 0;

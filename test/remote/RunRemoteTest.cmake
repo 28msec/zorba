@@ -20,6 +20,7 @@
 #   Valid options:
 #      changelist = svn changelist to submit (defaults to default changelist)
 #      ZORBA_BUILD_DIR = zorba build directory (defaults to src_dir/build)
+#      message = the checkin message (defaults to opening user's editor)
 #      commit = set to "no" to prevent remote queue from committing changes
 #               (default "yes")
 
@@ -71,6 +72,8 @@ svn_package ("${srcdir}" "${CMAKE_ZORBA_BUILD_DIR}/remotequeue"
 message ("Submitting job ${changefile}....")
 if (commit STREQUAL "no")
   set (commitargs -m "DO NOT COMMIT")
+elseif (message)
+  set (commitargs -m "${message}")
 endif (commit STREQUAL "no")
 execute_process (COMMAND
                  "${svn}" import ${commitargs}

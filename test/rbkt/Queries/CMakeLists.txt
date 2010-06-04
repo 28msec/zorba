@@ -34,7 +34,8 @@ IF(ZORBA_TEST_XQUERYX)
   ENDIF (TESTFILES_XQX)
 ENDIF(ZORBA_TEST_XQUERYX)
 
-# collect all chained test queries (suffix .cxq) in all subdirectories of this dir
+# collect all chained test queries (suffix .cxq) in all subdirectories
+# of this dir
 FILE(GLOB_RECURSE CHAINED_TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS "*.cxq")
 
 SET(TESTCOUNTER 0)
@@ -55,7 +56,8 @@ IF(${cxqNO} STRGREATER "0")
     SET(PARAM ${TF_PATH})
   ENDFOREACH(CHAINED_TESTFILE)
 
-  # foreach chained test create a list with all the test files and sort it alphabetically
+  # foreach chained test create a list with all the test files and
+  # sort it alphabetically
   FOREACH(CT ${CHAINED_TESTS_LIST})
 
     # create the name of the test and put it in TEST_NAME variable
@@ -92,6 +94,8 @@ IF(${cxqNO} STRGREATER "0")
   ENDFOREACH(CT)
 ENDIF(${cxqNO} STRGREATER "0")
 
+# Flag to remember whether we found the XQTS here or not
+SET(FOUND_XQTS 0)
 
 FOREACH(TESTFILE ${TESTFILES})
   # All testfile paths end in .xq or .xqx. Strip that part off to form
@@ -128,6 +132,16 @@ FOREACH(TESTFILE ${TESTFILES})
       SET(SKIP_TEST 1)
     ENDIF(NEEDS_FILE)
   ENDIF(NOT ZORBA_WITH_FILE_ACCESS)
+  IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
+    # If this is an XQTS test and we want to use testdriver_mt instead,
+    # don't add the traditional testdriver version, but remember that
+    # we found some
+    IF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
+      SET (SKIP_TEST 1)
+      SET (FOUND_XQTS 1)
+    ENDIF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
+  ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
+
 
   IF(NOT SKIP_TEST)
 
@@ -142,63 +156,77 @@ FOREACH(TESTFILE ${TESTFILES})
 
   ENDIF(NOT SKIP_TEST)
 
-
 ENDFOREACH(TESTFILE)
 
-SET(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS  ON CACHE BOOL "Bool var that says if w3c testing results are to be submited to w3c, or just for internal testing. If they are for internal testing then we can mark some failing tests as expected results.")
+SET(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS ON CACHE BOOL "Bool var that says if w3c testing results are to be submited to w3c, or just for internal testing. If they are for internal testing then we can mark some failing tests as expected results.")
+MARK_AS_ADVANCED(ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
 
-IF(ZORBA_TEST_XQUERYX)
-IF(NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
-		#double utf-8 encoding in the xml xqueryx
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/EncodeURIfunc/K-EncodeURIfunc-4 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/EscapeHTMLURIFunc/K-EscapeHTMLURIFunc-5 PROPERTIES WILL_FAIL TRUE)
+IF (FOUND_XQTS)
 
-		#difference in dealing whitespaces: new line in xml xqueryx is converted to &#xA;
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/Construct/DirectConElem/DirectConElemAttr/Constr-attr-ws-1 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/Construct/DirectConElem/DirectConElemAttr/Constr-attr-ws-2 PROPERTIES WILL_FAIL TRUE)
-    
-    #test seems to be correct, only that it slightly differs from the original xquery test
-		SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/Operators/CompExpr/ValComp/DurationDateTimeOp/gYearEQ/op-gYear-equal-2 PROPERTIES WILL_FAIL TRUE)
-    
-    #test seems to be correct, only that it slightly differs from the original xquery test
-		SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/BaseURIProlog/base-URI-13 PROPERTIES WILL_FAIL TRUE)
+  IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
 
-    #test seems to be correct, only that it slightly differs from the original xquery test (empty least instead of empty greatest)
-		SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-10 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-11 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-12 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-13 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-2 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-24 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-25 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-26 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-27 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-3 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-4 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-5 PROPERTIES WILL_FAIL TRUE)
+    MESSAGE (STATUS "Adding multi-threaded XQTS test")
+    ZORBA_ADD_TEST_SIMPLE(xqts testdriver_mt -q -b w3c_testsuite
+      -k "${CMAKE_CURRENT_SOURCE_DIR}/w3c_known_failures.txt")
+
+  ELSE (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
     
-    #test result is correct; version encoding is specified in a comment and ignored
-		SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/VersionProlog/K-VersionProlog-3 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/VersionProlog/K-VersionProlog-4 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/VersionProlog/version_declaration-010 PROPERTIES WILL_FAIL TRUE)
+    IF(ZORBA_TEST_XQUERYX)
+      IF(NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
+        #double utf-8 encoding in the xml xqueryx
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/EncodeURIfunc/K-EncodeURIfunc-4 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/EscapeHTMLURIFunc/K-EscapeHTMLURIFunc-5 PROPERTIES WILL_FAIL TRUE)
+
+        #difference in dealing whitespaces: new line in xml xqueryx is converted to &#xA;
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/Construct/DirectConElem/DirectConElemAttr/Constr-attr-ws-1 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/Construct/DirectConElem/DirectConElemAttr/Constr-attr-ws-2 PROPERTIES WILL_FAIL TRUE)
     
-    #test seems to be correct, only that it slightly differs from the original xquery test
-		SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/seqExprTypes/SeqExprCast/K2-SeqExprCast-2 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/seqExprTypes/SeqExprCastable/K-SeqExprCastable-21 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/seqExprTypes/SeqExprCastable/K-SeqExprCastable-36 PROPERTIES WILL_FAIL TRUE)
+        #test seems to be correct, only that it slightly differs from the original xquery test
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/Operators/CompExpr/ValComp/DurationDateTimeOp/gYearEQ/op-gYear-equal-2 PROPERTIES WILL_FAIL TRUE)
     
-    #double utf-8 encoding in the xml xqueryx
-		SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/AssDisassStringFunc/StringToCodepointFunc/fn-string-to-codepoints1args-4 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/EncodeURIfunc/fn-encode-for-uri1args-2 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/EscapeHTMLURIFunc/fn-escape-html-uri1args-2 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/IRIToURIfunc/fn-iri-to-uri1args-2 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-12 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-19 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-20 PROPERTIES WILL_FAIL TRUE)
-    SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-21 PROPERTIES WILL_FAIL TRUE)
+        #test seems to be correct, only that it slightly differs from the original xquery test
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/BaseURIProlog/base-URI-13 PROPERTIES WILL_FAIL TRUE)
+
+        #test seems to be correct, only that it slightly differs from the original xquery test (empty least instead of empty greatest)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-10 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-11 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-12 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-13 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-2 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-24 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-25 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-26 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-27 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-3 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-4 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/EmptyOrderProlog/emptyorderdecl-5 PROPERTIES WILL_FAIL TRUE)
     
-ENDIF(NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
-ENDIF(ZORBA_TEST_XQUERYX)
+        #test result is correct; version encoding is specified in a comment and ignored
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/VersionProlog/K-VersionProlog-3 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/VersionProlog/K-VersionProlog-4 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/PrologExpr/VersionProlog/version_declaration-010 PROPERTIES WILL_FAIL TRUE)
+
+        #test seems to be correct, only that it slightly differs from the original xquery test
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/seqExprTypes/SeqExprCast/K2-SeqExprCast-2 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/seqExprTypes/SeqExprCastable/K-SeqExprCastable-21 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Expressions/seqExprTypes/SeqExprCastable/K-SeqExprCastable-36 PROPERTIES WILL_FAIL TRUE)
+  
+        #double utf-8 encoding in the xml xqueryx
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/AssDisassStringFunc/StringToCodepointFunc/fn-string-to-codepoints1args-4 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/EncodeURIfunc/fn-encode-for-uri1args-2 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/EscapeHTMLURIFunc/fn-escape-html-uri1args-2 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/Functions/AllStringFunc/EscapingFuncs/IRIToURIfunc/fn-iri-to-uri1args-2 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-12 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-19 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-20 PROPERTIES WILL_FAIL TRUE)
+        SET_TESTS_PROPERTIES (test/rbkt/w3c_testsuite/XQueryX/StringToCodepointFunc/K-StringToCodepointFunc-21 PROPERTIES WILL_FAIL TRUE)
+
+      ENDIF(NOT ZORBA_TEST_W3C_TO_SUBMIT_RESULTS)
+    ENDIF(ZORBA_TEST_XQUERYX)
+
+  ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
+
+ENDIF (FOUND_XQTS)
 
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue

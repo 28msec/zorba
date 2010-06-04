@@ -151,7 +151,8 @@ bool isErrorExpected(
 void printErrors(
     const TestErrorHandler& errHandler,
     const char* msg,
-    bool printInFile);
+    bool printInFile,
+    std::ostream& output = std::cout);
 
 Zorba_CompilerHints getCompilerHints();
 
