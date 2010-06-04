@@ -544,6 +544,10 @@ ftpos_filter::ftpos_filter( QueryLoc const &loc ) :
 {
 }
 
+void ftpos_filter::serialize( serialization::Archiver &ar ) {
+  serialize_baseclass( ar, (ftnode*)this );
+}
+
 ftprimary_with_options::ftprimary_with_options(
   QueryLoc const &loc
 ) :

@@ -486,10 +486,7 @@ class ftpos_filter : public ftnode {
 public:
   SERIALIZABLE_ABSTRACT_CLASS(ftpos_filter)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(ftpos_filter,ftnode)
-  void serialize( serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar, (ftnode*)this);
-  }
+  void serialize( serialization::Archiver& );
 
 protected:
   ftpos_filter( QueryLoc const& );
