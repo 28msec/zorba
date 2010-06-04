@@ -192,6 +192,10 @@ public:
   ft_stop_words_unex::type get_mode() const { return mode_; }
   std::ostream& put( std::ostream& ) const;
 
+  void set_mode( ft_stop_words_unex::type mode ) {
+    mode_ = mode;
+  }
+
 private:
   std::string uri_;
   list_t list_;

@@ -15,12 +15,18 @@
 SET(FULLTEXT_SRCS
     full_text.cpp
     full_text_impl.cpp
+    lang.cpp
     ft_match.cpp
     match_tokens.cpp
     ft_query_item_seq.cpp
     ft_single_token_iterator.cpp
     apply.cpp
     ftcontains_visitor.cpp
+    ft_stop_words_set.cpp
+    stop_words_de.cpp
+    stop_words_en.cpp
+    stop_words_es.cpp
+    stop_words_fr.cpp
     )
 
 # vim:set et sw=4 ts=4:

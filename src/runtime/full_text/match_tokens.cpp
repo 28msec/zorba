@@ -15,7 +15,9 @@
  */
 
 #include "compiler/expression/ftnode.h"
+#include "runtime/full_text/ft_stop_words_set.h"
 #include "store/api/ft_token.h"
+#include "zorbautils/stl_util.h"
 
 using namespace std;
 
@@ -23,26 +25,35 @@ namespace zorba {
 
 /**
  * Test whether the 2 given tokens match given the match options.
+ *
+ * @param dts         The document token string.
+ * @param qts         The query token string.
+ * @param options     The match options to use.
+ * @param stop_words  The stop words to use.
  */
-bool match_tokens( FTToken::string_t const &ti, FTToken::string_t const &tj,
-                   ftmatch_options const &options ) {
-  FTToken::string_t ti2, tj2;
-  FTToken::string_t const *pi = &ti, *pj = &tj;
+bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
+                   ftmatch_options const &options,
+                   ft_stop_words_set const *stop_words ) {
+  FTToken::string_t dts2, qts2;
+  FTToken::string_t const *pdts = &dts, *pqts = &qts;
+  bool qt_is_lower = false;
 
   if ( ftcase_option const *const c = options.get_case_option() ) {
     switch ( c->get_mode() ) {
       case ft_case_mode::insensitive:
-        ti2 = *pi->lowercase(); pi = &ti2;
-        tj2 = *pj->lowercase(); pj = &tj2;
+        dts2 = *pdts->lowercase(), pdts = &dts2;
+        qts2 = *pqts->lowercase(), pqts = &qts2;
+        qt_is_lower = true;
         break;
       case ft_case_mode::sensitive:
         // do nothing
         break;
       case ft_case_mode::lower:
-        tj2 = *pj->lowercase(); pj = &tj2;
+        qts2 = *pqts->lowercase(); pqts = &qts2;
+        qt_is_lower = true;
         break;
       case ft_case_mode::upper:
-        tj2 = *pj->uppercase(); pj = &tj2;
+        qts2 = *pqts->uppercase(); pqts = &qts2;
         break;
     }
   }
@@ -78,18 +89,21 @@ bool match_tokens( FTToken::string_t const &ti, FTToken::string_t const &tj,
     }
   }
 
-  if ( ftstop_word_option const *const sw = options.get_stop_word_option() ) {
-    switch ( sw->get_mode() ) {
-      case ft_stop_words_mode::with:
-        // TODO
-        break;
-      case ft_stop_words_mode::with_default:
-        // TODO
-        break;
-      case ft_stop_words_mode::without:
-        // do nothing
-        break;
-    }
+  if ( stop_words ) {
+    //
+    // Perform stop-word comparison case-insensitively.  If the query token has
+    // already been converted to lower-case above, just use it as-is; otherwise
+    // convert to lower-case here.
+    //
+    // Note, however, that the spec isn't clear on whether this should be done
+    // case-insensitively.
+    //
+    FTToken::string_t lcqts;            // lower case query token string
+    FTToken::string_t const *const plcqts = qt_is_lower ?
+      pqts : (lcqts = *pqts->lowercase(), &lcqts);
+
+    if ( stop_words->contains( plcqts->str() ) )
+      return true;
   }
 
   if ( ftthesaurus_option const *const t = options.get_thesaurus_option() ) {
@@ -109,7 +123,7 @@ bool match_tokens( FTToken::string_t const &ti, FTToken::string_t const &tj,
     }
   }
 
-  return *pi == *pj;
+  return *pdts == *pqts;
 }
 
 } // namespace zorba

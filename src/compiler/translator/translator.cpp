@@ -11058,37 +11058,6 @@ void end_visit (const FTIgnoreOption& v, void* /*visit_state*/) {
   // nothing to do
 }
 
-void *begin_visit (const FTStopWords& v) {
-  TRACE_VISIT ();
-  // nothing to do
-  return no_state;
-}
-
-void end_visit (const FTStopWords& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  ftstop_words *const sw =
-    new ftstop_words( v.get_location(), v.get_uri(), v.get_stop_words() );
-  push_ftstack( sw );
-}
-
-void *begin_visit (const FTStopWordsInclExcl& v) {
-  TRACE_VISIT ();
-  // nothing to do
-  return no_state;
-}
-
-void end_visit (const FTStopWordsInclExcl& v, void* /*visit_state*/) {
-  TRACE_VISIT_OUT ();
-  FTStopWords const *const stop_words = v.get_stop_words();
-  ftstop_words *const sw = new ftstop_words(
-    v.get_location(),
-    stop_words->get_uri(),
-    stop_words->get_stop_words(),
-    v.get_mode()
-  );
-  push_ftstack( sw );
-}
-
 void *begin_visit (const FTLanguageOption& v) {
   TRACE_VISIT ();
   // nothing to do
@@ -11297,6 +11266,33 @@ void end_visit (const FTStemOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   mo->set_stem_option( so );
+}
+
+void *begin_visit (const FTStopWords& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTStopWords& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+  ftstop_words *const sw =
+    new ftstop_words( v.get_location(), v.get_uri(), v.get_stop_words() );
+  push_ftstack( sw );
+}
+
+void *begin_visit (const FTStopWordsInclExcl& v) {
+  TRACE_VISIT ();
+  // nothing to do
+  return no_state;
+}
+
+void end_visit (const FTStopWordsInclExcl& v, void* /*visit_state*/) {
+  TRACE_VISIT_OUT ();
+
+  ftstop_words *const sw = dynamic_cast<ftstop_words*>( top_ftstack() );
+  ZORBA_ASSERT( sw );
+  sw->set_mode( v.get_mode() );
 }
 
 void *begin_visit (const FTStopWordOption& v) {

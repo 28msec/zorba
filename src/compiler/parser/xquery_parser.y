@@ -5972,7 +5972,7 @@ FTStopWords
         }
     |   LPAR STRING_LITERAL_list RPAR
         {
-            $$ = new FTStopWords( LOC(@$), NULL, $2 );
+            $$ = new FTStopWords( LOC(@$), "", $2 );
         }
     ;
 
