@@ -21,44 +21,32 @@ using namespace std;
 
 namespace zorba {
 
-extern char const *const stop_words_de[];
-extern char const *const stop_words_en[];
-extern char const *const stop_words_es[];
-extern char const *const stop_words_fr[];
-
 typedef char const *const *ft_stop_table;
 
 ///////////////////////////////////////////////////////////////////////////////
 
+#define LANG(CODE)                                \
+  lang::CODE:                                     \
+    extern char const *const stop_words_##CODE[]; \
+    return stop_words_##CODE
+
 static ft_stop_table get_table( lang::iso639_1 code ) {
   switch ( code ) {
-    case lang::de:
-      return stop_words_de;
-    case lang::fr:
-      return stop_words_fr;
-    case lang::en:
-      return stop_words_en;
-    case lang::es:
-      return stop_words_es;
+    case LANG(da);
+    case LANG(de);
+    case LANG(en);
+    case LANG(es);
+    case LANG(fi);
+    case LANG(fr);
+    case LANG(hu);
+    case LANG(it);
+    case LANG(nl);
+    case LANG(no);
+    case LANG(pt);
+    case LANG(sv);
+
 #if 0
-    case land::da:
-      return stop_words_da;
-    case land::fi:
-      return stop_words_fi;
-    case land::hu:
-      return stop_words_hu;
-    case land::nl:
-      return stop_words_nl;
-    case land::no:
-      return stop_words_no;
-    case land::pt:
-      return stop_words_pt;
-    case land::ro:
-      return stop_words_ro;
-    case land::ru:
-      return stop_words_ru;
-    case land::sv:
-      return stop_words_sv;
+    case LANG(ru);
 #endif
     default:
       return 0;

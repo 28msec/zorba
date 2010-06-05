@@ -16,6 +16,9 @@
 
 namespace zorba {
 
+//
+// These words come from http://snowball.tartarus.org/.
+//
 extern char const *const stop_words_en[] = {
   "a",
   "about",

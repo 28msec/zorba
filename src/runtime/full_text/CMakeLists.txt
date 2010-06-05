@@ -23,10 +23,18 @@ SET(FULLTEXT_SRCS
     apply.cpp
     ftcontains_visitor.cpp
     ft_stop_words_set.cpp
+    stop_words_da.cpp
     stop_words_de.cpp
     stop_words_en.cpp
     stop_words_es.cpp
+    stop_words_fi.cpp
     stop_words_fr.cpp
+    stop_words_hu.cpp
+    stop_words_it.cpp
+    stop_words_nl.cpp
+    stop_words_no.cpp
+    stop_words_pt.cpp
+    stop_words_sv.cpp
     )
 
 # vim:set et sw=4 ts=4:
