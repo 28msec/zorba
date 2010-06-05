@@ -17,6 +17,9 @@
 #ifndef ZORBA_FULL_TEXT_UTF8_CHARS_H
 #define ZORBA_FULL_TEXT_UTF8_CHARS_H
 
+//
+// UTF-8 byte sequences for ISO 8859-1 characters.
+//
 #define aacute  "\xC3\xA1"
 #define agrave  "\xC3\xA0"
 #define auml    "\xC3\xA4"
