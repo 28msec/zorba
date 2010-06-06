@@ -59,13 +59,8 @@ bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
   }
 
   if ( ftdiacritics_option const *const d = options.get_diacritics_option() ) {
-    switch ( d->get_mode() ) {
-      case ft_diacritics_mode::insensitive:
-        // TODO
-        break;
-      case ft_diacritics_mode::sensitive:
-        // do nothing
-        break;
+    if ( d->get_mode() == ft_diacritics_mode::insensitive ) {
+      // TODO
     }
   }
 
@@ -79,13 +74,8 @@ bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
   }
 
   if ( ftstem_option const *const s = options.get_stem_option() ) {
-    switch ( s->get_mode() ) {
-      case ft_stem_mode::with:
-        // TODO
-        break;
-      case ft_stem_mode::without:
-        // do nothing
-        break;
+    if ( s->get_mode() == ft_stem_mode::with ) {
+      // TODO
     }
   }
 
@@ -113,13 +103,8 @@ bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
   }
 
   if ( ftwild_card_option const *const wc = options.get_wild_card_option() ) {
-    switch ( wc->get_mode() ) {
-      case ft_wild_card_mode::with:
-        // TODO
-        break;
-      case ft_wild_card_mode::without:
-        // do nothing
-        break;
+    if ( wc->get_mode() == ft_wild_card_mode::with ) {
+      // TODO
     }
   }
 
