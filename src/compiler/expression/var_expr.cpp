@@ -254,6 +254,7 @@ void var_expr::accept(expr_visitor& v)
 ********************************************************************************/
 void global_binding::serialize(::zorba::serialization::Archiver& ar)
 {
+  serialize_baseclass(ar, (std::pair<varref_t, expr_t>*)this);
   ar & ext;
 }
 

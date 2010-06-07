@@ -306,6 +306,79 @@ void operator&(Archiver &ar, std::pair<T1, T2> &obj)
 }
 
 template<typename T1, typename T2>
+void operator&(Archiver &ar, std::pair<T1, T2> *&obj)
+{
+  if(ar.is_serializing_out())
+  {
+    if((obj == NULL))
+    {
+      ar.add_compound_field("NULL", 
+                            1 ,//class_version
+                            !FIELD_IS_CLASS, "NULL", 
+                            NULL,//(SerializeBaseClass*)obj, 
+                            ARCHIVE_FIELD_IS_NULL);
+      return;
+    }
+    bool is_ref;
+    is_ref = ar.add_compound_field("std::pair<T1, T2>", 0, !FIELD_IS_CLASS, "", &obj, ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_IS_PTR);
+    if(!is_ref)
+    {
+      ar & obj->first;
+      ar & obj->second;
+      ar.add_end_compound_field();
+    }
+  }
+  else
+  {
+    char  *type;
+    std::string value;
+    int   id;
+    int   version;
+    bool  is_simple;
+    bool  is_class;
+    enum  ArchiveFieldTreat field_treat;
+    int   referencing;
+    bool  retval;
+    retval = ar.read_next_field(&type, &value, &id, &version, &is_simple, &is_class, &field_treat, &referencing);
+    if(!retval && ar.get_read_optional_field())
+      return;
+    ar.check_nonclass_field(retval, type, "std::pair<T1, T2>", is_simple, is_class, field_treat, (ArchiveFieldTreat)-1, id);
+    if(field_treat == ARCHIVE_FIELD_IS_NULL)
+    {
+      obj = NULL;
+      ar.read_end_current_level();
+      return;
+    }
+    void *new_obj;
+    if(field_treat == ARCHIVE_FIELD_IS_PTR)
+    {
+      obj = new std::pair<T1, T2>;
+      ar.register_reference(id, field_treat, &obj);
+
+      ar & obj->first;
+      ar & obj->second;
+      ar.read_end_current_level();
+    }
+    else if(field_treat == ARCHIVE_FIELD_IS_BASECLASS)
+    {
+      ar & obj->first;
+      ar & obj->second;
+      ar.read_end_current_level();
+    }
+    else if((new_obj = ar.get_reference_value(referencing)))// ARCHIVE_FIELD_IS_REFERENCING
+    {
+      obj = (std::pair<T1, T2>*)new_obj;
+      if(!obj)
+      {
+        ZORBA_SER_ERROR_DESC_OSS(SRL0002_INCOMPATIBLE_INPUT_FIELD, id);
+      }
+    }
+    else
+      ar.register_delay_reference((void**)&obj, !FIELD_IS_CLASS, "std::pair<T1, T2>", referencing);
+  }
+}
+
+template<typename T1, typename T2>
 void operator&(Archiver &ar, std::map<T1, T2> *&obj)
 {
   if(ar.is_serializing_out())
@@ -320,7 +393,7 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
       return;
     }
     bool is_ref;
-    is_ref = ar.add_compound_field("std::map<T1, T2>", 0, !FIELD_IS_CLASS, "", obj, ARCHIVE_FIELD_IS_PTR);
+    is_ref = ar.add_compound_field("std::map<T1, T2>", 0, !FIELD_IS_CLASS, "", obj, ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_IS_PTR);
     if(!is_ref)
     {
       ar.set_is_temp_field_one_level(true);
@@ -366,6 +439,22 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
       obj = new std::map<T1, T2>;
       ar.register_reference(id, field_treat, obj);
 
+      ar.set_is_temp_field_one_level(true);
+      int s;
+      ar & s;
+      typename std::map<T1, T2>::iterator  it;
+      std::pair<T1, T2>   p;
+      for(int i=0;i<s;i++)
+      {
+        ar & p.first;
+        ar & p.second;
+        obj->insert(p);
+      }
+      ar.set_is_temp_field_one_level(false);
+      ar.read_end_current_level();
+    }
+    else if(field_treat == ARCHIVE_FIELD_IS_BASECLASS)
+    {
       ar.set_is_temp_field_one_level(true);
       int s;
       ar & s;
