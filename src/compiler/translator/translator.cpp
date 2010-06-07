@@ -605,10 +605,11 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
   std::set<const var_expr*> visited;
 
   std::stack<std::pair<ulong, const var_expr*> > todo;  // format: action code + var_expr
-
-  for (v_ite = theVarDecls.begin(); v_ite != v_end; ++v_ite)
+  for (std::vector<const var_expr*>::const_reverse_iterator it = theVarDecls.rbegin();
+       it != theVarDecls.rend();
+       ++it)
   {
-    todo.push(std::pair<ulong, const var_expr*>(1, (*v_ite)));
+    todo.push(std::pair<ulong, const var_expr*>(1, (*it)));
   }
 
   while (! todo.empty())
@@ -669,6 +670,7 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
        i != topsorted_vars.end(); ++i)
   {
     std::map<const var_expr*, global_binding>::iterator p = gvmap.find(*i);
+
     if (p != gvmap.end())
       prologVarBindings.push_back((*p).second);
   }
