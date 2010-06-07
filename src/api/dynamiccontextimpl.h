@@ -66,6 +66,13 @@ protected:
 protected:
   DynamicContextImpl(const XQueryImpl* aQuery);
 
+  // Used by StatelessExtFunctionCallIterator to create a temporary wrapper
+  DynamicContextImpl(const XQueryImpl* aQuery, dynamic_context* aDctx, static_context* aSctx)
+    :
+    theQuery(aQuery), theCtx(aDctx), theStaticContext(aSctx)
+  {
+  }
+
   virtual ~DynamicContextImpl();
 
 public:

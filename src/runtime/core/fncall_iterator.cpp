@@ -40,6 +40,7 @@
 #include "api/unmarshaller.h"
 #include "api/xqueryimpl.h"
 #include "api/staticcontextimpl.h"
+#include "api/dynamiccontextimpl.h"
 
 
 namespace zorba {
@@ -382,7 +383,7 @@ StatelessExtFunctionCallIteratorState::~StatelessExtFunctionCallIteratorState()
 {
   ulong n = m_extArgs.size();
 
-  for (ulong i = 0; i < n; ++i) 
+  for (ulong i = 0; i < n; ++i)
   {
     delete m_extArgs[i];
   }
@@ -496,9 +497,9 @@ bool StatelessExtFunctionCallIterator::nextImpl(
   StatelessExtFunctionCallIteratorState* state;
   DEFAULT_STACK_INIT(StatelessExtFunctionCallIteratorState, state, planState);
 
-  try 
+  try
   {
-    if (!theFunction->isContextual()) 
+    if (!theFunction->isContextual())
     {
       lPureFct = dynamic_cast<const PureStatelessExternalFunction*>(theFunction);
       ZORBA_ASSERT(lPureFct);
@@ -509,16 +510,24 @@ bool StatelessExtFunctionCallIterator::nextImpl(
     {
       lNonePureFct = dynamic_cast<const NonePureStatelessExternalFunction*>(theFunction);
       ZORBA_ASSERT(lNonePureFct);
-      ZORBA_ASSERT(planState.theQuery);
+      // ZORBA_ASSERT(planState.theQuery); // The planState.theQuery maybe null, e.g. in the case of constant-folding of global variable expressions
 
-      StaticContextImpl theSctxWrapper(planState.theCompilerCB->theRootSctx, planState.theQuery->getRegisteredErrorHandler()); 
+      StaticContextImpl theSctxWrapper(planState.theCompilerCB->theRootSctx, planState.theQuery == NULL? NULL : planState.theQuery->getRegisteredErrorHandler());
+
+      if (planState.theQuery != NULL)
+        state->theResult = lNonePureFct->evaluate(state->m_extArgs, &theSctxWrapper, planState.theQuery->getDynamicContext());
+      else
+      {
+        DynamicContextImpl theDctxWrapper(NULL, planState.theDynamicContext, planState.theCompilerCB->theRootSctx);
+        state->theResult = lNonePureFct->evaluate(state->m_extArgs, &theSctxWrapper, &theDctxWrapper);
+      }
 
       // state->theResult = lNonePureFct->evaluate(state->m_extArgs, planState.theQuery->getStaticContext(), planState.theQuery->getDynamicContext());
-      state->theResult = lNonePureFct->evaluate(state->m_extArgs, &theSctxWrapper, planState.theQuery->getDynamicContext());
-    }
 
-  }
-  catch(const ZorbaException& e) 
+    } // if (!theFunction->isContextual())
+
+  } // try
+  catch(const ZorbaException& e)
   {
     // take all information from the exception raised in
     // the external function (e.g. file name) + add loc information
@@ -532,16 +541,16 @@ bool StatelessExtFunctionCallIterator::nextImpl(
   }
   while (true)
   {
-    try 
+    try
     {
       if (state->theResult.get() == NULL) // This will happen if the user's external function returns a zorba::ItemSequence_t(NULL)
         break;
 
-      if (!state->theResult->next(lOutsideItem)) 
+      if (!state->theResult->next(lOutsideItem))
       {
         break;
       }
-    } 
+    }
     catch(const ZorbaException& e)
     {
       // take all information from the exception raised in
