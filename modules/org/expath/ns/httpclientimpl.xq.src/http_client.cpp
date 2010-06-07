@@ -13,13 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#include "http_client.h"
 #include <curl/curl.h>
-
-#include <zorba/zorba.h>
-#include <zorba/serializer.h>
-#include <zorba/external_module.h>
-#include <zorba/external_function.h>
-#include <zorba/singleton_item_sequence.h>
 
 #include "http_request_handler.h"
 #include "request_parser.h"
@@ -27,32 +22,13 @@
 #include "http_response_parser.h"
 
 namespace zorba {
-namespace http_client {
-  class HttpSendFunction : public NonePureStatelessExternalFunction {
-  protected:
-    const ExternalModule*     theModule;
-    ItemFactory*              theFactory;
 
+  namespace http_client {
 
-  public:
-    HttpSendFunction(const ExternalModule* aModule) 
-      : 
-        theModule(aModule),
-        theFactory(Zorba::getInstance(0)->getItemFactory()) {}
-    
-    virtual ~HttpSendFunction() {}
-
-  public:
-    virtual String
-    getURI() const { return theModule->getURI(); }
-
-    virtual String
-    getLocalName() const { return "http-send-request-impl"; }
-
-    virtual ItemSequence_t 
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
-      const StaticContext* aStaticContext, const DynamicContext* aDynamicContext)
-      const 
+    ItemSequence_t
+    general_evaluate(const StatelessExternalFunction::Arguments_t& args,
+      const StaticContext* aStaticContext, const DynamicContext* aDynamicContext,
+      ItemFactory* aFactory)
     {
       CURL* lCURL = curl_easy_init();
       CURLM* lCURLM = curl_multi_init();
@@ -79,7 +55,7 @@ namespace http_client {
         curl_easy_setopt(lCURL, CURLOPT_URL, lHref.getStringValue().c_str());
       }
       curl_easy_setopt(lCURL, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-      HttpResponseHandler lRespHandler(theFactory);
+      HttpResponseHandler lRespHandler(aFactory);
       //This gives the ownership of lCurl to the HttpResponseParser
       String lOverrideContentType;
       if (lHandler.get())
@@ -94,47 +70,22 @@ namespace http_client {
 
       return ItemSequence_t(lRespHandler.getResult());
     }
-  }; // class http_request
 
-  class HttpClientModule : public ExternalModule {
-  protected:
-    HttpSendFunction* theFunction;
-
-  public:
-    virtual ~HttpClientModule() { delete theFunction; }
-    HttpClientModule() 
+    ItemSequence_t 
+    HttpSendFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+      const StaticContext* aStaticContext, const DynamicContext* aDynamicContext) const 
     {
-      theFunction = new HttpSendFunction(this);
+      return general_evaluate(args, aStaticContext, aDynamicContext, theFactory);
     }
 
-    virtual String
-    getURI() const { return "http://expath.org/ns/httpclientimpl"; }
-
-    virtual StatelessExternalFunction*
-    getExternalFunction(String aLocalname) const
+    HttpClientModule::~HttpClientModule()
     {
-      return theFunction;
-    }
-
-    virtual void
-    destroy()
-    {
-      if (!dynamic_cast<HttpClientModule*>(this)) {
-        return;
+      for (FuncMap_t::const_iterator lIter = theFunctions.begin();
+           lIter != theFunctions.end(); ++lIter) {
+        delete lIter->second;
       }
-      delete this;
+      theFunctions.clear();
     }
-  };
-} // namespace http_request
+
+  } // namespace http_request
 } // namespace zorba
-
-
-#ifdef WIN32
-#  define DLL_EXPORT __declspec(dllexport)
-#else
-#  define DLL_EXPORT __attribute__ ((visibility("default")))
-#endif
-
-extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
-  return new zorba::http_client::HttpClientModule();
-}
