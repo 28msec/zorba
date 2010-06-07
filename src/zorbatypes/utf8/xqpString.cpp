@@ -140,7 +140,7 @@ static uint32_t parse_regex_flags(const char* flag_cstr)
   return flags;
 }
 
-xqpStringStore::xqpStringStore(checked_vector<uint32_t> &aCpVector, ulong aStart, ulong aSize)
+xqpStringStore::xqpStringStore(checked_vector<uint32_t> &aCpVector, size_type aStart, size_type aSize)
 {
   char lSeq[5];
   checked_vector<uint32_t>::iterator it;
@@ -317,7 +317,7 @@ void xqpStringStore::serialize(serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-ulong xqpStringStore::numChars() const
+xqpStringStore::size_type xqpStringStore::numChars() const
 {
   const char* c = c_str();
   return UTF8Distance(c, c + bytes());
@@ -327,7 +327,7 @@ ulong xqpStringStore::numChars() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore::char_type xqpStringStore::charAt(ulong charPos) const
+xqpStringStore::char_type xqpStringStore::charAt(size_type charPos) const
 {
   const char* c = c_str();
 
@@ -411,7 +411,7 @@ bool xqpStringStore::operator==(xqpStringStore::char_type ch) const
 /*******************************************************************************
 
 ********************************************************************************/
-bool xqpStringStore::byteEqual(const char* other, ulong otherBytes) const
+bool xqpStringStore::byteEqual(const char* other, size_type otherBytes) const
 {
   if(bytes() == otherBytes && memcmp(c_str(), other, otherBytes) == 0)
     return true;
@@ -435,7 +435,7 @@ bool xqpStringStore::byteEqual(const xqpStringStore* other) const
 /*******************************************************************************
   Determine if "suffix" is a suffix of "this"
 ********************************************************************************/
-bool xqpStringStore::byteEndsWith(const char* suffix, ulong suffixLen) const
+bool xqpStringStore::byteEndsWith(const char* suffix, size_type suffixLen) const
 {
   //TODO check if this condition is enough
   long pos = byteLastPositionOf(suffix, suffixLen);
@@ -450,13 +450,13 @@ bool xqpStringStore::byteEndsWith(const char* suffix, ulong suffixLen) const
 ********************************************************************************/
 long xqpStringStore::bytePositionOf(
     const char* substr,
-    ulong substrLen,
-    ulong bytePos) const
+    size_type substrLen,
+    size_type bytePos) const
 {
   if (empty())
     return -1;
 
-  ulong lRes = theString.find(substr, bytePos, substrLen);
+  size_type lRes = theString.find(substr, bytePos, substrLen);
   if (lRes == std::string::npos)
     return -1;
   else
@@ -467,7 +467,7 @@ long xqpStringStore::bytePositionOf(
 /*******************************************************************************
 
 ********************************************************************************/
-long xqpStringStore::byteLastPositionOf(const char* substr, ulong substrLen) const
+long xqpStringStore::byteLastPositionOf(const char* substr, size_type substrLen) const
 {
   size_t lRes = theString.rfind(substr, theString.size(), substrLen);
 
@@ -483,8 +483,8 @@ long xqpStringStore::byteLastPositionOf(const char* substr, ulong substrLen) con
   bytePos + lenght - 1
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::byteSubstr(
-    ulong bytePos,
-    ulong length) const
+    size_type bytePos,
+    size_type length) const
 {
   return new xqpStringStore(theString.substr(bytePos, length));
 }
@@ -748,7 +748,7 @@ xqpStringStore_t xqpStringStore::lowercase() const
   given set S of chars. S is defined as the 1st "len" chars in the "start"
   string.
 ********************************************************************************/
-xqpStringStore_t xqpStringStore::trimL(const char* start, ulong len) const
+xqpStringStore_t xqpStringStore::trimL(const char* start, size_type len) const
 {
   if(empty() || 0 == len)
     return const_cast<xqpStringStore *>(this);
@@ -797,7 +797,7 @@ xqpStringStore_t xqpStringStore::trimL(const char* start, ulong len) const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t xqpStringStore::trimR(const char* start, ulong len) const
+xqpStringStore_t xqpStringStore::trimR(const char* start, size_type len) const
 {
   if (empty() || 0 == len)
     return const_cast<xqpStringStore *>(this);
@@ -842,7 +842,7 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, ulong len) const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t xqpStringStore::trim(const char* start, ulong len) const
+xqpStringStore_t xqpStringStore::trim(const char* start, size_type len) const
 {
   if(empty() || 0 == len)
     return new xqpStringStore(*this);
@@ -1213,7 +1213,7 @@ const char HEX2DEC[256] =
 void xqpStringStore::encodeForUri(
     xqpStringStore_t& result,
     const char* start,
-    ulong length) const
+    size_type length) const
 {
   const char DEC2HEX[16 + 1] = "0123456789ABCDEF";
 
@@ -1254,9 +1254,9 @@ void xqpStringStore::decodeFromUri(xqpStringStore_t& result) const
 {
   std::ostringstream os;
 
-  ulong srcLen = theString.length();
+  size_type srcLen = theString.length();
 
-  for (ulong i = 0; i < srcLen; ++i) 
+  for (size_type i = 0; i < srcLen; ++i) 
   {
     const char* c = c_str() + i;
 
@@ -1339,7 +1339,7 @@ void xqpStringStore::append_in_place(const char* str)
 /*******************************************************************************
 
 ********************************************************************************/
-void xqpStringStore::append_in_place(const char* str, ulong len)
+void xqpStringStore::append_in_place(const char* str, size_type len)
 {
   theString.append(str, len);
 }
