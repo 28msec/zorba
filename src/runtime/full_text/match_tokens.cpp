@@ -23,6 +23,21 @@ using namespace std;
 
 namespace zorba {
 
+static void strip_diacritics( FTToken::string_t const &ts,
+                              FTToken::string_t &result ) {
+  static xqpStringStore const mode( "NFKD" );
+  FTToken::string_t const ts_normalized( *ts.normalize( &mode ) );
+  string const &s = ts_normalized.str();
+  string buf;
+  buf.reserve( s.length() );
+  FOR_EACH( string, i, s ) {
+    char const c = *i;
+    if ( isascii( c ) )
+      buf.push_back( c );
+  }
+  result = buf;
+}
+
 /**
  * Test whether the 2 given tokens match given the match options.
  *
@@ -80,12 +95,6 @@ bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
     }
   }
 
-  if ( ftdiacritics_option const *const d = options.get_diacritics_option() ) {
-    if ( d->get_mode() == ft_diacritics_mode::insensitive ) {
-      // TODO
-    }
-  }
-
   if ( ftextension_option const *const e = options.get_extension_option() ) {
     // TODO
   }
@@ -93,6 +102,13 @@ bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
   if ( ftstem_option const *const s = options.get_stem_option() ) {
     if ( s->get_mode() == ft_stem_mode::with ) {
       // TODO
+    }
+  }
+
+  if ( ftdiacritics_option const *const d = options.get_diacritics_option() ) {
+    if ( d->get_mode() == ft_diacritics_mode::insensitive ) {
+      strip_diacritics( *pdts, dts2 ), pdts = &dts2;
+      strip_diacritics( *pqts, qts2 ), pqts = &qts2;
     }
   }
 
