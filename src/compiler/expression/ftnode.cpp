@@ -14,9 +14,13 @@
  * limitations under the License.
  */
 
+#include <zorba/error.h>
+
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/ftnode_visitor.h"
+#include "types/casting.h"
+#include "zorbaerrors/error_manager.h"
 #include "zorbautils/indent.h"
 #include "zorbautils/stl_util.h"
 
@@ -381,6 +385,9 @@ ftlanguage_option::ftlanguage_option(
   ftmatch_option( loc ),
   language_( lang )
 {
+  xqpStringStore const xlang( lang );   // stupid hack
+  if ( !GenericCast::instance()->castableToLanguage( &xlang ) )
+    ZORBA_ERROR_LOC( XPTY0004, loc );
 }
 
 void ftlanguage_option::serialize( serialization::Archiver &ar ) {
@@ -411,7 +418,7 @@ ftmatch_options::ftmatch_options(
   case_option_( new ftcase_option( loc ) ),
   diacritics_option_( new ftdiacritics_option( loc ) ),
   extension_option_( NULL ),
-  language_option_( new ftlanguage_option( loc, "" ) ),
+  language_option_( NULL ),
   stem_option_( new ftstem_option( loc ) ),
   stop_word_option_( NULL ),
   thesaurus_option_( NULL ),
