@@ -616,6 +616,9 @@ namespace zorba {
     void beginVisit( const FnDocAvailableIterator& );
     void endVisit  ( const FnDocAvailableIterator& );
 
+    void beginVisit( const UtilsParseIterator& );
+    void endVisit  ( const UtilsParseIterator& );
+
     void beginVisit( const FnParseIterator& );
     void endVisit  ( const FnParseIterator& );
 

@@ -921,6 +921,34 @@ FnDocAvailableIterator::~FnDocAvailableIterator() {}
 // </FnDocAvailableIterator>
 
 
+// <UtilsParseIterator>
+const char* UtilsParseIterator::class_name_str = "UtilsParseIterator";
+UtilsParseIterator::class_factory<UtilsParseIterator>
+UtilsParseIterator::g_class_factory;
+
+const serialization::ClassVersion 
+UtilsParseIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int UtilsParseIterator::class_versions_count =
+sizeof(UtilsParseIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void UtilsParseIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+UtilsParseIterator::~UtilsParseIterator() {}
+
+// </UtilsParseIterator>
+
+
 // <FnParseIterator>
 const char* FnParseIterator::class_name_str = "FnParseIterator";
 FnParseIterator::class_factory<FnParseIterator>

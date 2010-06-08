@@ -407,6 +407,8 @@ namespace zorba{
 
     class FnDocAvailableIterator;
 
+    class UtilsParseIterator;
+
     class FnParseIterator;
 
     class CodepointsToStringIterator;
@@ -1036,6 +1038,9 @@ public:
 
     virtual void beginVisit ( const FnDocAvailableIterator& ) = 0;
     virtual void endVisit   ( const FnDocAvailableIterator& ) = 0;
+
+    virtual void beginVisit ( const UtilsParseIterator& ) = 0;
+    virtual void endVisit   ( const UtilsParseIterator& ) = 0;
 
     virtual void beginVisit ( const FnParseIterator& ) = 0;
     virtual void endVisit   ( const FnParseIterator& ) = 0;

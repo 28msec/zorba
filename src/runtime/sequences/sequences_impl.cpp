@@ -1692,7 +1692,7 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
 /*******************************************************************************
   Zorba-defined parse function
 ********************************************************************************/
-bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool UtilsParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Store& lStore = GENV.getStore();
   xqpString         docString;
@@ -1713,6 +1713,41 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   STACK_END (state);
 }
 
+/*******************************************************************************
+  fn:parse function defined in XQuery 1.1 Functions & Operators
+********************************************************************************/
+bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Store& lStore = GENV.getStore();
+  xqpString         docString;
+  xqpStringStore_t  baseUri;
+  std::auto_ptr<std::istringstream> iss;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  consumeNext (result, theChildren [0].getp (), planState);
+
+  docString = result->getStringValueP ();
+  iss.reset (new std::istringstream (docString.c_str()));
+
+  // optional base URI argument
+  if (theChildren.size() == 2) {
+    consumeNext(result, theChildren[1].getp(), planState);
+    ZORBA_ASSERT(result);
+    baseUri = result->getStringValueP();
+  } else {
+    baseUri = theSctx->get_base_uri();
+  }
+
+  try {
+    result = lStore.loadDocument(baseUri, *iss, false);
+  } catch (error::ZorbaError& e) {
+    ZORBA_ERROR_LOC_DESC(FODC0006, loc, e.theDescription);
+  }
+  STACK_PUSH(true, state);
+  STACK_END (state);
+}
 
 
 } /* namespace zorba */

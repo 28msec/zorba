@@ -638,6 +638,8 @@ typedef enum
 
   FODC0005, //Invalid argument to fn:doc or fn:doc-available.
 
+  FODC0006, // content passed to fn:parse is not valid
+
   FODT0001, // = 140, //Overflow/underflow in date/time operation.
 
   FODT0002, //Overflow/underflow in duration operation.

@@ -2752,6 +2752,20 @@ void PrinterVisitor::endVisit ( const FnDocAvailableIterator& ) {
 // </FnDocAvailableIterator>
 
 
+// <UtilsParseIterator>
+void PrinterVisitor::beginVisit ( const UtilsParseIterator& a) {
+  thePrinter.startBeginVisit("UtilsParseIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const UtilsParseIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </UtilsParseIterator>
+
+
 // <FnParseIterator>
 void PrinterVisitor::beginVisit ( const FnParseIterator& a) {
   thePrinter.startBeginVisit("FnParseIterator", ++theId);

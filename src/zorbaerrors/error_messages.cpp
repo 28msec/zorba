@@ -71,6 +71,7 @@ DEF_ERR_CODE (FODC0002, FODC0002, "Error retrieving the resource with uri {/s}.\
 DEF_ERR_CODE (FODC0003, FODC0003, "Function stability not defined.")
 DEF_ERR_CODE (FODC0004, FODC0004, "Invalid argument to fn:collection {/s}.")
 DEF_ERR_CODE (FODC0005, FODC0005, "Invalid argument to fn:doc or fn:doc-available {/s}")
+DEF_ERR_CODE (FODC0006, FODC0006, "Argument to fn:parse is not well-formed.")
 DEF_ERR_CODE (FODT0001, FODT0001, "Overflow/underflow in date/time operation.")
 DEF_ERR_CODE (FODT0002, FODT0002, "Overflow/underflow in duration operation.")
 DEF_ERR_CODE (FODT0003, FODT0003, "Invalid timezone value.")

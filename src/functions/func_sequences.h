@@ -464,6 +464,25 @@ public:
 };
 
 
+//fn:parse
+class fn_parse : public function
+{
+public:
+  fn_parse(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.arg_count() == 1 ?
+                FunctionConsts::FN_PARSE_1 :
+                FunctionConsts::FN_PARSE_2);
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  bool isSource() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 
