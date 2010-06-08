@@ -511,6 +511,7 @@ void FastXmlLoader::startElement(
     const xmlChar ** attributes)
 {
   SimpleStore& store = GET_STORE();
+  NodeFactory& nfactory = store.getNodeFactory();
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
   QNamePool& qnpool = store.getQNamePool();
@@ -528,10 +529,9 @@ void FastXmlLoader::startElement(
                                            reinterpret_cast<const char*>(lname));
     
     // Create the element node and push it to the node stack
-    ElementNode* elemNode = store.getNodeFactory().createElementNode(
-                                          nodeName,
-                                          numBindings,
-                                          numAttributes);
+    ElementNode* elemNode = nfactory.createElementNode(nodeName,
+                                                       numBindings,
+                                                       numAttributes);
     if (nodeStack.empty())
       loader.setRoot(elemNode);
 
@@ -555,7 +555,7 @@ void FastXmlLoader::startElement(
       // siblings of this element node.
       for (long i = loader.theNodeStack.size() - 1;
            loader.theNodeStack[i] != NULL;
-           i--)
+           --i)
       {
         XmlNode* sib = loader.theNodeStack[i];
         if (sib->getNodeKind() == store::StoreConsts::elementNode &&
@@ -656,13 +656,19 @@ void FastXmlLoader::startElement(
         store::Item_t typedValue;
         GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, value);
 
-        AttributeNode* attrNode = 
-            GET_STORE().getNodeFactory().createAttributeNode(qname);
+        AttributeNode* attrNode = nfactory.createAttributeNode(qname);
         attrNode->theParent = elemNode;
         attrNode->setId(loader.theTree, &loader.theOrdPath);
         attrNode->theTypedValue.transfer(typedValue);
 
         attrNodes.set(attrNode, i);
+
+        if (attrNode->isBaseUri())
+        {
+          xqpStringStore_t baseUri = attrNode->theTypedValue->getStringValue();
+          xqpStringStore_t nullUri;
+          elemNode->addBaseUriProperty(baseUri, nullUri);
+        }
 
         loader.theOrdPath.nextChild();
 

@@ -651,9 +651,8 @@ class ElementNode : public InternalNode
 {
   friend class XmlNode;
   friend class AttributeNode;
-
   friend class FastXmlLoader;
-
+  friend class NodeFactory;
   friend class UpdSetElementType;
   friend class UpdReplaceContent;
 
@@ -662,8 +661,8 @@ protected:
   store::Item_t         theTypeName;
   NsBindingsContext_t   theNsContext;
 
-  // make sure that only created by the factory
-  friend class NodeFactory;
+protected:
+
   ElementNode(
         store::Item_t& nodeName,
         ulong          numBindings,

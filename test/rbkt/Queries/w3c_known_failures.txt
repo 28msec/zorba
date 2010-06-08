@@ -17,10 +17,6 @@ test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-7
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-lang/functx-fn-lang-4
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-lang/functx-fn-lang-1
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-lang/functx-fn-lang-all
-test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-base-uri/functx-fn-base-uri-2
-test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-base-uri/functx-fn-base-uri-all
-test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-base-uri/functx-fn-base-uri-3
-test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-base-uri/functx-fn-base-uri-1
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-namespace-uri-for-prefix/functx-fn-namespace-uri-for-prefix-all
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-deep-equal/functx-fn-deep-equal-all
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-deep-equal/functx-fn-deep-equal-5
