@@ -782,7 +782,7 @@ bool IndexGeneralPointProbeIterator::nextImpl(
     state->theCondition->clear();
     state->theCondition->pushItem(keyItem);
 
-    state->theIterator->init(state->theCondition);
+    state->theIterator->init(state->theCondition.getp());
     state->theIterator->open();
 
     while (state->theIterator->next(result)) 
