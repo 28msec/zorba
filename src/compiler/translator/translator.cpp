@@ -6983,7 +6983,7 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
     if (isCast)
       return new cast_expr(theRootSctx, loc, wrap_in_atomization(node), type);
     else
-      return new castable_expr(theRootSctx, loc, node, type);
+      return new castable_expr(theRootSctx, loc, wrap_in_atomization(node), type);
   }
 }
 
