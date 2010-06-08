@@ -38,6 +38,26 @@ bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
   FTToken::string_t const *pdts = &dts, *pqts = &qts;
   bool qt_is_lower = false;
 
+  if ( ftlanguage_option const *const l = options.get_language_option() ) {
+    // string const &lang = l->get_language();
+    // TODO
+  }
+
+  if ( stop_words ) {
+    //
+    // Perform stop-word comparison early so as not to waste time doing the
+    // stuff below for stop-words.
+    //
+    // Perform stop-word comparison case-insensitively.  Note, however, that
+    // the XQuery Full Text spec currently isn't clear on whether this should
+    // be done case-insensitively.  See W3C Bug 9858.
+    //
+    qts2 = *pqts->lowercase(), pqts = &qts2;
+    if ( stop_words->contains( pqts->str() ) )
+      return true;
+    qt_is_lower = true;
+  }
+
   if ( ftcase_option const *const c = options.get_case_option() ) {
     switch ( c->get_mode() ) {
       case ft_case_mode::insensitive:
@@ -49,11 +69,13 @@ bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
         // do nothing
         break;
       case ft_case_mode::lower:
-        qts2 = *pqts->lowercase(); pqts = &qts2;
-        qt_is_lower = true;
+        if ( !qt_is_lower ) {
+          qts2 = *pqts->lowercase(), pqts = &qts2;
+          qt_is_lower = true;
+        }
         break;
       case ft_case_mode::upper:
-        qts2 = *pqts->uppercase(); pqts = &qts2;
+        qts2 = *pqts->uppercase(), pqts = &qts2;
         break;
     }
   }
@@ -68,32 +90,10 @@ bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
     // TODO
   }
 
-  if ( ftlanguage_option const *const l = options.get_language_option() ) {
-    // string const &lang = l->get_language();
-    // TODO
-  }
-
   if ( ftstem_option const *const s = options.get_stem_option() ) {
     if ( s->get_mode() == ft_stem_mode::with ) {
       // TODO
     }
-  }
-
-  if ( stop_words ) {
-    //
-    // Perform stop-word comparison case-insensitively.  If the query token has
-    // already been converted to lower-case above, just use it as-is; otherwise
-    // convert to lower-case here.
-    //
-    // Note, however, that the spec isn't clear on whether this should be done
-    // case-insensitively.
-    //
-    FTToken::string_t lcqts;            // lower case query token string
-    FTToken::string_t const *const plcqts = qt_is_lower ?
-      pqts : (lcqts = *pqts->lowercase(), &lcqts);
-
-    if ( stop_words->contains( plcqts->str() ) )
-      return true;
   }
 
   if ( ftthesaurus_option const *const t = options.get_thesaurus_option() ) {
