@@ -16,8 +16,25 @@
 ZORBA_GENERATE_STORE_SPECIFIC_EXES("test_extern_func" "test_extern_func.cpp" "" "" "")
 
 # Test 1
-ZORBA_ADD_TEST_ALLSTORES         (test/extern_func_1 test_extern_func --test1)
-ZORBA_SET_TEST_PROPERTY_ALLSTORES(test/extern_func_1 PASS_REGULAR_EXPRESSION myns)
+ZORBA_ADD_TEST_ALLSTORES         (test/extern-func-1 test_extern_func --test1 ${CMAKE_CURRENT_SOURCE_DIR}/extern-func-1.xq)
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(test/extern-func-1 PASS_REGULAR_EXPRESSION myns)
+
+# Test 2
+ZORBA_ADD_TEST_ALLSTORES         (test/extern-func-2 test_extern_func --test2 ${CMAKE_CURRENT_SOURCE_DIR}/extern-func-module-2.xq)
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(test/extern-func-2 PASS_REGULAR_EXPRESSION myns)
+
+# Test 3
+ZORBA_ADD_TEST_ALLSTORES         (test/extern-func-3 test_extern_func --test2 ${CMAKE_CURRENT_SOURCE_DIR}/extern-func-module-3.xq)
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(test/extern-func-3 PASS_REGULAR_EXPRESSION myns)
+
+# Test 4
+ZORBA_ADD_TEST_ALLSTORES         (test/extern-func-4 test_extern_func --test2 ${CMAKE_CURRENT_SOURCE_DIR}/extern-func-module-4.xq)
+ZORBA_SET_TEST_PROPERTY_ALLSTORES(test/extern-func-4 PASS_REGULAR_EXPRESSION myns)
+
+
+#
+# Tests for nondeterministic external functions
+#
 
 # nondeterm-1
 ZORBA_ADD_TEST_ALLSTORES         (test/extern_nondeterm_1 test_extern_func --nondeterm ${CMAKE_CURRENT_SOURCE_DIR}/nondeterm-1.xq)

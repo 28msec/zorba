@@ -76,14 +76,17 @@ static expr_t execute (
   PlanIter_t plan = codegen ("const-folded expr", node, compilercb);
   QueryLoc loc = LOC (node);
   store::Item_t item;
+
+  CompilerCB expr_ccb(*compilercb);
+  expr_ccb.theRootSctx = node->get_sctx();
   try
   {
     PlanWrapperHolder pw(new PlanWrapper(plan,
-                                         compilercb,
+                                         &expr_ccb,
                                          0,      // dynamic ctx
                                          NULL,   // xquery
                                          0,      // stack depth
-                                         compilercb->theTimeout));
+                                         expr_ccb.theTimeout));
     for (;;)
     {
       if (!pw->next(item))

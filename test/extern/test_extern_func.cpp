@@ -88,9 +88,7 @@ public:
         const StaticContext* sctx,
         const DynamicContext* dctx) const
   {
-    // std::cout << sctx->getNamespaceURIByPrefix("ns2") << std::endl;
     SingletonItemSequence* seq = new SingletonItemSequence(theModule->getItemFactory()->createString(sctx->getNamespaceURIByPrefix("ns2")));
-
     return ItemSequence_t(seq);
   }
 };
@@ -152,11 +150,30 @@ StatelessExternalFunction* TestExternalModule::getExternalFunction(String aLocal
   Tests
 
 ********************************************************************************/
-int test1()
+std::string load_file(const char* filename)
+{
+  // read the input file
+  std::ifstream in(filename);
+  if (!in.is_open())
+  {
+    std::cerr << "Error: could not open input file \"" << filename << "\"" << std::endl;
+    return "";
+  }
+
+  char c;
+  std::string str;
+  while (in.get(c))
+    str += c;
+
+  return str;
+}
+
+int test1(const char* filename)
 {
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
 
+  std::string str = load_file(filename);
   try
   {
     StaticContext_t sctx = lZorba->createStaticContext();
@@ -164,16 +181,11 @@ int test1()
     sctx->registerModule(&module);
 
     std::ostringstream queryText;
-    queryText << "declare namespace extern=\"urn:extern\";" << std::endl
-              << "eval {" << std::endl
-              << "  'declare namespace ns2 = \"myns\";" << std::endl
-              << "   declare function extern:bar() external;" << std::endl
-              << "   extern:bar()'" << std::endl
-              << "}" << std::endl;
-
+    queryText << str;
 
     XQuery_t query = lZorba->compileQuery(queryText.str(), sctx);
     std::cout << query << std::endl;
+
   } catch (ZorbaException& e) {
     std::cerr << e << std::endl;
     return 1;
@@ -185,10 +197,8 @@ int test1()
   return 0;
 }
 
-int test2()
+int test2(const char* module_filename)
 {
-  // TODO: test2 not finished yet
-
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
 
@@ -199,21 +209,12 @@ int test2()
     sctx->registerModule(&module);
 
     std::ostringstream queryText;
-    queryText << "import module namespace extern_func = \"http://www.zorba-xquery.com/extern_func\" at \"/home/colea/work/xquery_temp4/build_fast/test/test_extern_func_module.xq\";"
-              << "extern_func:test() " << std::endl;
-              // << "foo:bar()" << std::endl;
+    queryText << "import module namespace extern = \"urn:extern\" at \"" << module_filename << "\";"
+              << "extern:test() " << std::endl;
 
-    /*
-    queryText << "declare namespace foo=\"urn:foo\";" << std::endl
-              << "eval {" << std::endl
-              << " 'declare namespace ns2 = \"myns\";" << std::endl
-              << "  declare function foo:bar1() external;" << std::endl
-              << " foo:bar1()'" << std::endl
-              << "}" << std::endl;
-    */
-
-  XQuery_t query = lZorba->compileQuery(queryText.str(), sctx);
+    XQuery_t query = lZorba->compileQuery(queryText.str(), sctx);
     std::cout << query << std::endl;
+
   } catch (ZorbaException& e) {
     std::cerr << e << std::endl;
     return 1;
@@ -230,19 +231,7 @@ int test_nondeterm(const char* filename)
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
 
-  // read the input file
-  std::ifstream in(filename);
-  if (!in.is_open())
-  {
-    std::cerr << "Error: could not open input file \"" << filename << "\"" << std::endl;
-    return 1;
-  }
-
-  char c;
-  std::string str;
-  while (in.get(c))
-    str += c;
-
+  std::string str = load_file(filename);
   try
   {
     StaticContext_t sctx = lZorba->createStaticContext();
@@ -272,10 +261,10 @@ int main(int argc, char** argv)
   if (argc <= 1)
     return 0;
 
-  if (strcmp (argv[1], "--test1") == 0) {
-    test1();
-  } else if (strcmp (argv[1], "--test2") == 0) {
-    test2();
+  if (strcmp (argv[1], "--test1") == 0 && argc>=3) {
+    test1(argv[2]);
+  } else if (strcmp (argv[1], "--test2") == 0 && argc>=3) {
+    test2(argv[2]);
   } else if (strcmp (argv[1], "--nondeterm") == 0 && argc>=3) {
     test_nondeterm(argv[2]);
   }
