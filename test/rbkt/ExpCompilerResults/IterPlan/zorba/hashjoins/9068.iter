@@ -18,10 +18,10 @@ Iterator tree for main query:
             </UnhoistIterator>
           </ForVariable>
           <ReturnClause>
-            <IndexEntryBuilderIterator>
+            <ValueIndexEntryBuilderIterator>
               <ForVarIterator varname="$$opt_temp_3"/>
               <ForVarIterator varname="$$opt_temp_3"/>
-            </IndexEntryBuilderIterator>
+            </ValueIndexEntryBuilderIterator>
           </ReturnClause>
         </flwor::FLWORIterator>
       </CreateInternalIndexIterator>

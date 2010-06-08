@@ -19,6 +19,8 @@
 #include "store/naive/node_iterators.h"
 #include "store/naive/simple_temp_seq.h"
 #include "store/naive/simple_index.h"
+#include "store/naive/simple_index_value.h"
+#include "store/naive/simple_index_general.h"
 
 
 namespace zorba { namespace simplestore {
@@ -57,8 +59,17 @@ store::AttributesIterator* SimpleIteratorFactory::createAttributesIterator()
 store::IndexProbeIterator* SimpleIteratorFactory::createIndexProbeIterator(
     const store::Index_t& index)
 {
-  if (reinterpret_cast<IndexImpl*>(index.getp())->isSorted())
+  IndexImpl* idx = reinterpret_cast<IndexImpl*>(index.getp());
+
+  if (idx->isGeneral() && idx->isSorted())
+    ZORBA_ASSERT(false);
+
+  else if (idx->isGeneral())
+    return new GeneralHashProbeIterator(index);
+
+  else if (idx->isSorted())
     return new STLMapProbeIterator(index);
+
   else
     return new HashProbeIterator(index);
 }

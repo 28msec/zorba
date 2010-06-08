@@ -26,12 +26,20 @@ namespace store
 
 class IC;
 
-  /**
-   * Integrity Constraints class. Contains the name of the IC and the
-   * collection name.
-   */
+
+/**
+ * Integrity Constraints class. Contains the name of the IC and the
+ * collection name.
+ */
 class IC : public RCObject
 {
+public:
+  enum ICKind
+  { 
+    ic_collection,
+    ic_foreignkey 
+  };
+
 protected:
   SYNC_CODE(mutable RCLock theRCLock;)
 
@@ -39,9 +47,6 @@ public:
   SYNC_CODE(RCLock* getRCLock() const { return &theRCLock; })
 
   long* getSharedRefCounter() const { return NULL; } 
-
-  enum ICKind
-    { ic_collection, ic_foreignkey };
 
 public:
   virtual ~IC() {}

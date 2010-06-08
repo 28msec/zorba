@@ -18,6 +18,7 @@
 
 #include "store/naive/store_config.h"
 #include "store/naive/shared_types.h"
+#include "store/naive/store_defs.h"
 
 #if (defined (WIN32) || defined (WINCE))
 #include "store/naive/node_items.h"
@@ -114,7 +115,8 @@ public:
   xqpStringStore_t              theEmptyNs;
   xqpStringStore_t              theXmlSchemaNs;
 
-  checked_vector<store::Item_t> theSchemaTypeNames;
+  std::vector<store::Item_t>    theSchemaTypeNames;
+  std::map<store::Item*, SchemaTypeCode> theSchemaTypeCodes;
 
 protected:
   ulong                         theNumUsers;
@@ -145,32 +147,16 @@ protected:
 
   long                          theTraceLevel;
 
-protected:
-  SimpleStore();
+public:
+  static void populateValueIndex(
+      const store::Index_t& index,
+      store::Iterator* sourceIter,
+      ulong numColumns);
 
-  virtual ~SimpleStore();
-
-  void init();
-
-  void initTypeNames();
-
-  // function to create the node and item factory
-  // those functions are called from init and 
-  // shutdown, respectively.
-  // Having this functionality factorized allows
-  // other to derive from the SimpleStore and
-  // provide their own factories
-  virtual NodeFactory* createNodeFactory() const;
-
-  virtual void destroyNodeFactory(NodeFactory*) const;
-
-  virtual BasicItemFactory* createItemFactory() const;
-
-  virtual void destroyItemFactory(BasicItemFactory*) const;
-
-  virtual CollectionSet* createCollectionSet() const;
-
-  virtual void destroyCollectionSet(CollectionSet*) const;
+  static void populateGeneralIndex(
+      const store::Index_t& index,
+      store::Iterator* sourceIter,
+      ulong numColumns);
 
 public:
   void shutdown(bool soft = true);
@@ -210,11 +196,6 @@ public:
   void addCollection(store::Collection_t& collection);
 
   store::Iterator_t listCollectionNames();
-
-  static void populateIndex(
-      const store::Index_t& aIndex,
-      store::Iterator* aSourceIter,
-      ulong aNumColumns);
 
   store::Index_t createIndex(
         const store::Item_t& qname,
@@ -308,6 +289,33 @@ public:
         xqpStringStore_t docUri,
         xqpStringStore_t baseUri);
 #endif
+
+protected:
+  SimpleStore();
+
+  virtual ~SimpleStore();
+
+  void init();
+
+  void initTypeNames();
+
+  // function to create the node and item factory
+  // those functions are called from init and 
+  // shutdown, respectively.
+  // Having this functionality factorized allows
+  // other to derive from the SimpleStore and
+  // provide their own factories
+  virtual NodeFactory* createNodeFactory() const;
+
+  virtual void destroyNodeFactory(NodeFactory*) const;
+
+  virtual BasicItemFactory* createItemFactory() const;
+
+  virtual void destroyItemFactory(BasicItemFactory*) const;
+
+  virtual CollectionSet* createCollectionSet() const;
+
+  virtual void destroyCollectionSet(CollectionSet*) const;
 };
 
 

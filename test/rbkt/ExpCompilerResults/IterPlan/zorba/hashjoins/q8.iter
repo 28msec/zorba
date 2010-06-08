@@ -26,7 +26,7 @@ Iterator tree for main query:
             </UnhoistIterator>
           </ForVariable>
           <ReturnClause>
-            <IndexEntryBuilderIterator>
+            <ValueIndexEntryBuilderIterator>
               <ForVarIterator varname="$$opt_temp_2"/>
               <CastIterator type="xs:string">
                 <FnDataIterator>
@@ -37,7 +37,7 @@ Iterator tree for main query:
                   </AttributeAxisIterator>
                 </FnDataIterator>
               </CastIterator>
-            </IndexEntryBuilderIterator>
+            </ValueIndexEntryBuilderIterator>
           </ReturnClause>
         </flwor::FLWORIterator>
       </CreateInternalIndexIterator>

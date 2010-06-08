@@ -239,6 +239,8 @@ public:
 
   void setMethod(ContainerKind kind) { theContainerKind = kind; }
 
+  bool isOrdered() const { return theContainerKind == TREE; }
+
   expr* getDomainExpr() const;
 
   void setDomainExpr(expr_t domainExpr);

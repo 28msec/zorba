@@ -381,9 +381,17 @@ void IndexDecl::analyzeExprInternal(
 }
 
 
-/*******************************************************************************
+/******************************************************************************
+  Create the expression that "builds" the index, if not done already. The expr
+  to build is the following:
 
-********************************************************************************/
+  for $newdot at $newpos in cloned_domain_expr
+  return index-entry-builder($$newdot, cloned_key1_expr, ..., cloned_keyN_expr)
+
+  The runtime plan corresponding to this expr is given to the store, which
+  then populates the index by creating entries out of the items returned by
+  this expr.
+*******************************************************************************/
 expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
 {
   if (theBuildExpr != NULL)
@@ -411,7 +419,14 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   var_expr_t newdot = new var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
   var_expr_t newpos = new var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
 
-  for_clause* fc = new for_clause(sctx, dotloc, newdot, newdom, newpos);
+  //
+  // Create for clause (this has to be done here so that the cloned dot var gets
+  // associated with the cloned domain expr; this is needed before cloning the
+  // key expr) :
+  //
+  // for $newdot at $newpos in new_domain_expr
+  //
+  for_clause_t fc = new for_clause(sctx, dotloc, newdot, newdom, newpos);
 
   //
   // Clone the key exprs, replacing their references to the 2 domain variables

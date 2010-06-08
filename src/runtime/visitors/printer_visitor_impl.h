@@ -278,7 +278,10 @@
 
   DECLARE_VISITOR(IndexRangeProbeIterator);
   DECLARE_VISITOR(IndexPointProbeIterator);
-  DECLARE_VISITOR(IndexEntryBuilderIterator);
+  DECLARE_VISITOR(IndexGeneralPointProbeIterator);
+  DECLARE_VISITOR(IndexGeneralRangeProbeIterator);
+  DECLARE_VISITOR(ValueIndexEntryBuilderIterator);
+  DECLARE_VISITOR(GeneralIndexEntryBuilderIterator);
   DECLARE_VISITOR(RefreshIndexIterator);
   DECLARE_VISITOR(CreateIndexIterator);
   DECLARE_VISITOR(CreateInternalIndexIterator);

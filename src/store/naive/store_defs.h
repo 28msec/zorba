@@ -47,6 +47,10 @@ namespace simplestore {
 #define COMMENT_NODE(item) (reinterpret_cast<CommentNode*>((item).getp()))
 
 
+/*******************************************************************************
+  !!! ATTENTION: The order of thr enum values within SchemaTypeCode is important.
+  !!! DO NOT change this order!!!!
+********************************************************************************/
 enum SchemaTypeCode
 {
   XS_UNTYPED = 0,
@@ -57,7 +61,11 @@ enum SchemaTypeCode
   XS_ANY_SIMPLE,
   XS_ANY_ATOMIC,
 
+  XS_ANY_URI,
+
   XS_QNAME,
+
+  XS_NOTATION,
 
   XS_STRING,
   XS_NORMALIZED_STRING,
@@ -66,12 +74,9 @@ enum SchemaTypeCode
   XS_LANGUAGE,
   XS_NAME,
   XS_NCNAME,
-  XS_ANY_URI,
   XS_ID,
   XS_IDREF,
   XS_ENTITY,
-
-  XS_NOTATION,
 
   XS_DATETIME,
   XS_DATE,

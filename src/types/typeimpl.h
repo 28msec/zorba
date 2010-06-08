@@ -270,6 +270,8 @@ public:
   } content_kind_t;
 
 
+  static std::string contentKindStr(XQType::content_kind_t contentKind);
+
 protected:
   static const char            * KIND_STRINGS[XQType::MAX_TYPE_KIND];
 
@@ -314,9 +316,7 @@ public:
 
   virtual store::Item_t get_qname() const { return rchandle<store::Item>(); }
 
-  bool get_isBuiltin() const { return theIsBuiltin; }
-
-  static std::string contentKindStr(XQType::content_kind_t contentKind);
+  virtual xqtref_t getBaseBuiltinType() const { return this; }
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 
@@ -712,16 +712,7 @@ private:
 public:
   SERIALIZABLE_CLASS(UserDefinedXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(UserDefinedXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-    ar & m_qname;
-    ar & m_baseType;
-    SERIALIZE_ENUM(type_category_t, m_typeCategory);
-    SERIALIZE_ENUM(content_kind_t, m_contentKind);
-    ar & m_listItemType;
-    ar & m_unionItemTypes;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   // constructor for Atomic and Complex types
@@ -766,6 +757,8 @@ public:
   type_category_t getTypeCategory() const { return m_typeCategory; }
 
   xqtref_t getBaseType() const { return m_baseType; }
+
+  xqtref_t getBaseBuiltinType() const;
 
   const XQType* getListItemType() const { return m_listItemType.getp(); }
 

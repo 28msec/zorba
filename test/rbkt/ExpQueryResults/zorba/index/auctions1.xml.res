@@ -5,3 +5,52 @@
  
 
 <person id="person0"><city>Macon</city></person><person id="person2"><city>Paris</city></person><person id="person3"><city>Palo Alto</city></person><person id="person4"><city>Madison</city></person><person id="person5"><city>San Jose</city></person><person id="person7"><city>Lyon</city></person><person id="person8"><city>Zihuatenejo</city></person><person id="person9"><city>Iraklion</city></person><person id="person10"><city>Phoenix</city></person><person id="person13"><city>Havana</city></person><person id="person14"><city>Mobile</city></person><person id="person16"><city>Great</city></person><person id="person17"><city>Mendocino</city></person><person id="person21"><city>La Roche</city></person><person id="person22"><city>Marceille</city></person><person id="person23"><city>Ruen</city></person><person id="person24"><city>Los Gatos</city></person>
+
+<person id="person1"><watches>
+<watch open_auction="open_auction2"/>
+<watch open_auction="open_auction4"/>
+<watch open_auction="open_auction5"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction9"/>
+<watch open_auction="open_auction0"/>
+</watches></person><person id="person2"><watches>
+<watch open_auction="open_auction0"/>
+<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction2"/>
+<watch open_auction="open_auction4"/>
+</watches></person><person id="person3"><watches>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction10"/>
+<watch open_auction="open_auction2"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction5"/>
+</watches></person><person id="person7"><watches>
+<watch open_auction="open_auction10"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction10"/>
+</watches></person><person id="person8"><watches>
+<watch open_auction="open_auction2"/>
+<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction8"/>
+<watch open_auction="open_auction8"/>
+<watch open_auction="open_auction2"/>
+</watches></person><person id="person15"><watches>
+<watch open_auction="open_auction9"/>
+<watch open_auction="open_auction1"/>
+<watch open_auction="open_auction2"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction8"/>
+<watch open_auction="open_auction8"/>
+</watches></person><person id="person21"><watches>
+<watch open_auction="open_auction3"/>
+<watch open_auction="open_auction9"/>
+<watch open_auction="open_auction0"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction2"/>
+</watches></person><person id="person23"><watches>
+<watch open_auction="open_auction6"/>
+<watch open_auction="open_auction4"/>
+</watches></person>

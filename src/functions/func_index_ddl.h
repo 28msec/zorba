@@ -134,12 +134,12 @@ public:
 
 
 //fn-zorba-ddl:probe-index-point
-class fn_zorba_ddl_probe_index_point : public function
+class fn_zorba_ddl_index_value_point_probe : public function
 {
 public:
-  fn_zorba_ddl_probe_index_point(const signature& sig)
+  fn_zorba_ddl_index_value_point_probe(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_N)
+    function(sig, FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_POINT_PROBE_N)
   {
   }
 
@@ -154,13 +154,30 @@ public:
 };
 
 
-//fn-zorba-ddl:probe-index-range
-class fn_zorba_ddl_probe_index_range : public function
+//fn-zorba-ddl:general-probe-index-point
+class fn_zorba_ddl_index_general_point_probe : public function
 {
 public:
-  fn_zorba_ddl_probe_index_range(const signature& sig)
+  fn_zorba_ddl_index_general_point_probe(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_N)
+    function(sig, FunctionConsts::FN_ZORBA_DDL_INDEX_GENERAL_POINT_PROBE_N)
+  {
+  }
+
+  bool accessesDynCtx() const { return true; }
+
+  CODEGEN_DECL();
+};
+
+
+
+//fn-zorba-ddl:probe-index-range
+class fn_zorba_ddl_index_value_range_probe : public function
+{
+public:
+  fn_zorba_ddl_index_value_range_probe(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_RANGE_PROBE_N)
   {
   }
 
@@ -170,6 +187,22 @@ public:
   {
     return FunctionConsts::YES;
   }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-ddl:general-probe-index-range
+class fn_zorba_ddl_index_general_range_probe : public function
+{
+public:
+  fn_zorba_ddl_index_general_range_probe(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_DDL_INDEX_GENERAL_RANGE_PROBE_N)
+  {
+  }
+
+  bool accessesDynCtx() const { return true; }
 
   CODEGEN_DECL();
 };

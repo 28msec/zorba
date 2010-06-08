@@ -1828,22 +1828,24 @@ CollectionDecl :
 CollectionTypeDecl :
     KindTest
     {
-      $$ = static_cast<parsenode*>(new SequenceType( LOC(@$), $1, NULL));
+      $$ = static_cast<parsenode*>(new SequenceType(LOC(@$), $1, NULL));
     }
   | KindTest OccurrenceIndicator
     {
-      $$ = static_cast<parsenode*>(new SequenceType( LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2)));
+      $$ = static_cast<parsenode*>(new SequenceType(LOC(@$),
+                                                    $1,
+                                                    dynamic_cast<OccurrenceIndicator*>($2)));
     }
 ;
 
 NodeModifier :
     WITH READ_ONLY NODES
     {
-      $$ = new NodeModifier( LOC(@$), StaticContextConsts::read_only);
+      $$ = new NodeModifier(LOC(@$), StaticContextConsts::read_only);
     }
   | WITH MUTABLE NODES
     {
-      $$ = new NodeModifier( LOC(@$), StaticContextConsts::mutable_node);
+      $$ = new NodeModifier(LOC(@$), StaticContextConsts::mutable_node);
     }
   ;
 
@@ -1865,10 +1867,10 @@ IndexDecl :
       }
 
       $$ = new AST_IndexDecl(LOC(@$),
-                         static_cast<QName*>($4),
-                         $7,
-                         dynamic_cast<IndexKeyList*>($9),
-                         dynamic_cast<DeclPropertyList*>($2));
+                             static_cast<QName*>($4),
+                             $7,
+                             dynamic_cast<IndexKeyList*>($9),
+                             dynamic_cast<DeclPropertyList*>($2));
       delete $2;
     }
   ;
@@ -1876,7 +1878,7 @@ IndexDecl :
 IndexKeyList :
     IndexKeySpec
     {
-      IndexKeyList* keyList = new IndexKeyList( LOC(@$));
+      IndexKeyList* keyList = new IndexKeyList(LOC(@$));
       keyList->addKeySpec(dynamic_cast<IndexKeySpec*>($1));
       $$ = keyList;
     }
@@ -1888,19 +1890,31 @@ IndexKeyList :
 ;
 
 IndexKeySpec :
-    PathExpr AS AtomicType
+    PathExpr 
     {
-      $$ = new IndexKeySpec( LOC(@$),
+      $$ = new IndexKeySpec(LOC(@$), $1, NULL, NULL);
+    }
+  |
+    PathExpr TypeDeclaration
+    {
+      $$ = new IndexKeySpec(LOC(@$),
                             $1,
-                            dynamic_cast<AtomicType*>($3),
+                            dynamic_cast<SequenceType*>($2),
                             NULL);
     }
-  | PathExpr AS AtomicType OrderCollationSpec
+  | PathExpr OrderCollationSpec
     {
-      $$ = new IndexKeySpec( LOC(@$),
+      $$ = new IndexKeySpec(LOC(@$),
                             $1,
-                            dynamic_cast<AtomicType*>($3),
-                            dynamic_cast<OrderCollationSpec*>($4));
+                            NULL,
+                            dynamic_cast<OrderCollationSpec*>($2));
+    }
+  | PathExpr TypeDeclaration OrderCollationSpec
+    {
+      $$ = new IndexKeySpec(LOC(@$),
+                            $1,
+                            dynamic_cast<SequenceType*>($2),
+                            dynamic_cast<OrderCollationSpec*>($3));
     }
   ;
 
@@ -1908,7 +1922,7 @@ IntegrityConstraintDecl :
     DECLARE INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
     DOLLAR QNAME CHECK ExprSingle
     {
-      $$ = new ICCollSimpleCheck( LOC(@$),
+      $$ = new ICCollSimpleCheck(LOC(@$),
                                  static_cast<QName*>($4),
                                  static_cast<QName*>($7),
                                  static_cast<QName*>($9),
@@ -1918,7 +1932,7 @@ IntegrityConstraintDecl :
     DECLARE INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
     NODE DOLLAR QNAME CHECK UNIQUE KEY PathExpr
     {
-      $$ = new ICCollUniqueKeyCheck( LOC(@$),
+      $$ = new ICCollUniqueKeyCheck(LOC(@$),
                                     static_cast<QName*>($4),
                                     static_cast<QName*>($7),
                                     static_cast<QName*>($10),
@@ -1928,7 +1942,7 @@ IntegrityConstraintDecl :
     DECLARE INTEGRITY CONSTRAINT QNAME ON COLLECTION QNAME
     FOREACH NODE DOLLAR QNAME CHECK ExprSingle
     {
-      $$ = new ICCollForeachNode( LOC(@$),
+      $$ = new ICCollForeachNode(LOC(@$),
                                  static_cast<QName*>($4),
                                  static_cast<QName*>($7),
                                  static_cast<QName*>($11),

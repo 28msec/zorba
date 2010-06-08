@@ -1661,7 +1661,7 @@ void normalize_fo(fo_expr* foExpr)
 
   const function* func = foExpr->get_func();
 
-  if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_N &&
+  if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_RANGE_PROBE_N &&
       (n == 0 || (n - 1) % 6 != 0))
   {
     const store::Item* qname = NULL;
@@ -1679,7 +1679,7 @@ void normalize_fo(fo_expr* foExpr)
     {
       ZORBA_ERROR_LOC_DESC(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS,
                            foExpr->get_loc(),
-                           "Invalid number of arguments in index probe");
+                           "Invalid number of arguments in index value probe");
     }
   }
 
@@ -1689,14 +1689,14 @@ void normalize_fo(fo_expr* foExpr)
 
     xqtref_t paramType;
 
-    if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_N)
+    if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_POINT_PROBE_N)
     {
       if (i == 0)
         paramType = sign[i];
       else
         paramType = theRTM.ANY_ATOMIC_TYPE_ONE;
     }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_N)
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_RANGE_PROBE_N)
     {
       if (i == 0)
         paramType = sign[i];
@@ -1919,7 +1919,7 @@ for_clause_t wrap_in_forclause(expr_t expr, bool add_posvar)
 
   var_expr_t pv = (add_posvar ?
                    create_temp_var(expr->get_loc(), var_expr::pos_var) :
-                   var_expr_t (NULL));
+                   var_expr_t(NULL));
 
   return wrap_in_forclause(expr, fv, pv);
 }
@@ -3979,7 +3979,10 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
                             index->getName()->getStringValue(), "");
     }
 
+    keyExpr = wrap_in_atomization(keyExpr);
+
     xqtref_t type;
+    xqtref_t ptype;
 
     if (keySpec->getType() == NULL)
     {
@@ -3992,33 +3995,50 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     else
     {
       type = pop_tstack();
+      ptype = TypeOps::prime_type(*type);
 
-      if (TypeOps::is_equal(*type, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
-          TypeOps::is_equal(*type, *theRTM.UNTYPED_ATOMIC_TYPE_ONE))
+      if (!TypeOps::is_subtype(*ptype, *theRTM.ANY_ATOMIC_TYPE_STAR))
+      {
+        ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
+                              index->getName()->getStringValue(), "");
+      }
+
+      if (TypeOps::is_equal(*ptype, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
+          TypeOps::is_equal(*ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
                               index->getName()->getStringValue(), "");
       }
 
       if (index->getMethod() == IndexDecl::TREE &&
-          (TypeOps::is_subtype(*type, *theRTM.QNAME_TYPE_ONE) ||
-           TypeOps::is_subtype(*type, *theRTM.NOTATION_TYPE_ONE) ||
-           TypeOps::is_subtype(*type, *theRTM.BASE64BINARY_TYPE_ONE) ||
-           TypeOps::is_subtype(*type, *theRTM.HEXBINARY_TYPE_ONE) ||
-           TypeOps::is_subtype(*type, *theRTM.GYEAR_MONTH_TYPE_ONE) ||
-           TypeOps::is_subtype(*type, *theRTM.GYEAR_TYPE_ONE) ||
-           TypeOps::is_subtype(*type, *theRTM.GMONTH_TYPE_ONE) ||
-           TypeOps::is_subtype(*type, *theRTM.GMONTH_DAY_TYPE_ONE) ||
-           TypeOps::is_subtype(*type, *theRTM.GDAY_TYPE_ONE)))
+          (TypeOps::is_subtype(*ptype, *theRTM.QNAME_TYPE_ONE) ||
+           TypeOps::is_subtype(*ptype, *theRTM.NOTATION_TYPE_ONE) ||
+           TypeOps::is_subtype(*ptype, *theRTM.BASE64BINARY_TYPE_ONE) ||
+           TypeOps::is_subtype(*ptype, *theRTM.HEXBINARY_TYPE_ONE) ||
+           TypeOps::is_subtype(*ptype, *theRTM.GYEAR_MONTH_TYPE_ONE) ||
+           TypeOps::is_subtype(*ptype, *theRTM.GYEAR_TYPE_ONE) ||
+           TypeOps::is_subtype(*ptype, *theRTM.GMONTH_TYPE_ONE) ||
+           TypeOps::is_subtype(*ptype, *theRTM.GMONTH_DAY_TYPE_ONE) ||
+           TypeOps::is_subtype(*ptype, *theRTM.GDAY_TYPE_ONE)))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
                               index->getName()->getStringValue(), "");
       }
+
+      keyExpr = wrap_in_type_match(keyExpr, type, XDTY0011_INDEX_KEY_TYPE_ERROR);
     }
 
-    keyTypes[i] = type;
+    if (index->isGeneral())
+    {
+      keyExpr = new fo_expr(theRootSctx,
+                            keyExpr->get_loc(),
+                            GET_BUILTIN_FUNCTION(FN_DISTINCT_VALUES_1),
+                            keyExpr);
+    }
 
-    std::string collationUri = theSctx->get_default_collation(loc);
+    keyTypes[i] = ptype->getBaseBuiltinType();
+
+    std::string collationUri;
 
     if (collationSpec != NULL)
     {
@@ -4027,13 +4047,14 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       if (! theSctx->is_known_collation(collationUri))
         ZORBA_ERROR_LOC(XQST0076, keySpec->get_location());
     }
+    else if (ptype != NULL && TypeOps::is_subtype(*ptype, *theRTM.STRING_TYPE_ONE))
+    {
+      collationUri = theSctx->get_default_collation(loc);
+    }
 
     keyModifiers[i].theAscending = true;
     keyModifiers[i].theEmptyLeast = true;
     keyModifiers[i].theCollation = collationUri;
-
-    keyExpr = wrap_in_atomization(keyExpr);
-    keyExpr = wrap_in_type_match(keyExpr, type, XDTY0011_INDEX_KEY_TYPE_ERROR);
 
     std::ostringstream msg;
     msg << "key expr " << i << " for index " << index->getName()->getStringValue()->str();
@@ -6085,8 +6106,11 @@ void end_visit(const QVarInDecl& v, void* /*visit_state*/)
 
 
 /*******************************************************************************
-  [71]      SwitchExpr        ::=      "switch" "(" Expr ")" SwitchCaseClause+ "default" "return" ExprSingle
-  [72]      SwitchCaseClause  ::=      ("case" SwitchCaseOperand)+ "return" ExprSingle
+  [71] SwitchExpr ::= "switch" "(" Expr ")"
+                      SwitchCaseClause+
+                      "default" "return" ExprSingle
+
+  [72] SwitchCaseClause ::= ("case" SwitchCaseOperand)+ "return" ExprSingle
 
   A switch expr is translated into a flwor expr. For example, a switch of
   the following form:
@@ -6117,7 +6141,8 @@ void* begin_visit(const SwitchExpr& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
-    ZORBA_ERROR_LOC_DESC(XPST0003, loc, "Switch expressions are a feature that is only available in XQuery 1.1 or later.");
+    ZORBA_ERROR_LOC_DESC(XPST0003, loc,
+                         "Switch expressions are a feature that is only available in XQuery 1.1 or later.");
 
   v.get_switch_expr()->accept(*this);
   expr_t se = pop_nodestack();
@@ -6130,7 +6155,9 @@ void* begin_visit(const SwitchExpr& v)
   se = wrap_in_atomization(se);
 
   // atomizedFlwor = [let $atomv := data(E) return NULL]
-  var_expr_t atomv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
+  var_expr_t atomv = create_temp_var(v.get_switch_expr()->get_location(),
+                                     var_expr::let_var);
+
   expr_t atomizedFlwor = wrap_in_let_flwor(se, atomv, NULL);
 
   // TODO: cast as xs:string should not really be necessary
@@ -6143,10 +6170,17 @@ void* begin_visit(const SwitchExpr& v)
   //          else $atomv
   //     return NULL]
   static_cast<flwor_expr*>(atomizedFlwor.getp())->set_return_expr(
-    new if_expr(theRootSctx, loc,
-      new instanceof_expr(theRootSctx, loc, atomv.getp(), theRTM.UNTYPED_ATOMIC_TYPE_ONE),
-      new cast_expr(theRootSctx, loc, atomv.getp(), theRTM.STRING_TYPE_ONE),
-      atomv.getp()));
+    new if_expr(theRootSctx,
+                loc,
+                new instanceof_expr(theRootSctx,
+                                    loc,
+                                    atomv.getp(),
+                                    theRTM.UNTYPED_ATOMIC_TYPE_ONE),
+                new cast_expr(theRootSctx,
+                              loc,
+                              atomv.getp(),
+                              theRTM.STRING_TYPE_ONE),
+                atomv.getp()));
 
   // flworExpr = [let $sv := atomizedFlwor return NULL]
   var_expr_t sv = create_temp_var(v.get_switch_expr()->get_location(), var_expr::let_var);
@@ -8729,10 +8763,20 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
     normalize_fo(foExpr);
 
-    if (f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_N ||
-        f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_N)
+    if (f->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_RANGE_PROBE_N ||
+        f->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_POINT_PROBE_N)
     {
       FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_NODES_ASC_1;
+
+      foExpr = new fo_expr(theRootSctx,
+                           foExpr->get_loc(),
+                           BuiltinFunctionLibrary::getFunction(fkind),
+                           foExpr);
+    }
+    else if (f->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_GENERAL_POINT_PROBE_N ||
+             f->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_GENERAL_RANGE_PROBE_N)
+    {
+      FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
 
       foExpr = new fo_expr(theRootSctx,
                            foExpr->get_loc(),

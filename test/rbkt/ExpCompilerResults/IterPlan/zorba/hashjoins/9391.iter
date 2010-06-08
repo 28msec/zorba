@@ -19,14 +19,14 @@ Iterator tree for main query:
             </UnhoistIterator>
           </ForVariable>
           <ReturnClause>
-            <IndexEntryBuilderIterator>
+            <ValueIndexEntryBuilderIterator>
               <ForVarIterator varname="$$opt_temp_1"/>
               <FnCountIterator>
                 <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,author)" typename="*" nill allowed="0">
                   <ForVarIterator varname="$$opt_temp_1"/>
                 </ChildAxisIterator>
               </FnCountIterator>
-            </IndexEntryBuilderIterator>
+            </ValueIndexEntryBuilderIterator>
           </ReturnClause>
         </flwor::FLWORIterator>
       </CreateInternalIndexIterator>

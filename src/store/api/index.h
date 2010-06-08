@@ -41,13 +41,14 @@ typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
 /***************************************************************************//**
   Specification for creating a value index.
 
-  theKeyTypes     : The data types of the key columns. Each type must be atomic,
-                    and for sorted indices, it must have an ordering.
-  theValueType    : The data type of the items associated with the keys.
-  theCollations   : The names of the collations to use when comparing the string
-                    columns of two keys. The size of this vector is the same as
-                    that of theKeyTypes; if a type of a key column is not string, 
-                    the associated entry in theCollations is simply ignored.   
+  theNumKeyColumns: The number of columns in each key.
+  theKeyTypes     : The data types of the key columns. Each type must be a 
+                    builtin atomic type, and for sorted indices, it must have
+                    an ordering.
+  theCollations   : The names (uris) of the collations to use when comparing the
+                    string columns of two keys. The size of this vector is equal
+                    to theNumKeyColumns; if a type of a key column is not string, 
+                    the associated entry in theCollations is the empty string.   
   theTimezone     : The timezone is needed to compare date/time key values.
   theIsGeneral    : Whether the index is "general" or not. 
   theIsUnique     : Whether the index is unique, i.e., there is exactly one
@@ -64,8 +65,8 @@ typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
 class IndexSpecification
 {
 public:
+  ulong                          theNumKeyColumns;
   std::vector<store::Item_t>     theKeyTypes;
-  store::Item_t                  theValueType;
   std::vector<std::string>       theCollations;
   long                           theTimezone;
 
@@ -106,7 +107,6 @@ public:
   void clear()
   {
     theKeyTypes.clear();
-    theValueType = NULL;
     theCollations.clear();
     theTimezone = 0;
     theIsGeneral = theIsUnique = theIsSorted = theIsTemp = theIsThreadSafe = false;
@@ -127,16 +127,6 @@ class IndexKey : public ItemVector
 {
 public:
   IndexKey(ulong size = 0) : ItemVector(size) {}
-};
-
-
-/**************************************************************************//**
-  Class ValueSet represents a value set as a vector of item handles.
-*******************************************************************************/
-class IndexValue : public store::ItemVector
-{
-public:
-  IndexValue(ulong size = 0) : store::ItemVector(size) {}
 };
 
 
@@ -218,19 +208,6 @@ public:
    * IndexBoxCondition below)
    */
   virtual IndexBoxCondition_t createBoxCondition() = 0;
-
-  /**
-   *  Fast-track probing method. Given an index key, return the first item in
-   *  the associated value set. This method is most useful in the case of unique
-   *  indices (i.e., when the value set of each key consists of a single item),
-   *  as it avoids the overhead of creating an IndexProbeIterator and iterating
-   *  over the result set.
-   *
-   *  @param key The key we are searching for.
-   *  @param result The first item in the value set of the key.
-   *  @return True if the key was actually in the index. False otherwise.
-   */
-  virtual bool probe(const IndexKey& key, Item_t& result) = 0;
 };
 
 

@@ -561,11 +561,12 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
   //
   // Replace the expr defining the inner var with an index probe.
   //
-  fo_expr_t probeExpr = new fo_expr(sctx,
-                                    loc,
-                                    GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_PROBE_INDEX_POINT_N),
-                                    qnameExpr,
-                                    const_cast<expr*>(predInfo.theOuterOp));
+  fo_expr_t probeExpr = 
+  new fo_expr(sctx,
+              loc,
+              GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_INDEX_VALUE_POINT_PROBE_N),
+              qnameExpr,
+              const_cast<expr*>(predInfo.theOuterOp));
 
   fc->set_expr(probeExpr.getp());
 

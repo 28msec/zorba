@@ -902,7 +902,7 @@ public:
         long timezone = 0,
         const XQPCollator* aCollation = 0) const
   {
-    return theValue == other->getFloatValue();
+    return getDoubleValue() == other->getDoubleValue();
   }
 
   long compare(
@@ -913,7 +913,7 @@ public:
     if (theValue.isNaN() || other->getFloatValue().isNaN())
       return 2;
 
-    return theValue.compare(other->getFloatValue());
+    return getDoubleValue().compare(other->getDoubleValue());
   }
 
   store::Item_t getEBV() const;

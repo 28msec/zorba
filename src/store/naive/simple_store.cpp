@@ -37,6 +37,8 @@
 #include "store/naive/simple_collection.h"
 #include "store/naive/collection_set.h"
 #include "store/naive/simple_index.h"
+#include "store/naive/simple_index_value.h"
+#include "store/naive/simple_index_general.h"
 #include "store/naive/simple_ic.h"
 #include "store/naive/qname_pool.h"
 #include "store/naive/loader.h"
@@ -179,7 +181,11 @@ void SimpleStore::initTypeNames()
   f->createQName(theSchemaTypeNames[XS_ANY_SIMPLE],     ns, "", "anySimpleType");
   f->createQName(theSchemaTypeNames[XS_ANY_ATOMIC],     ns, "", "anyAtomicType");
 
+  f->createQName(theSchemaTypeNames[XS_ANY_URI],        ns, "", "anyURI");
+
   f->createQName(theSchemaTypeNames[XS_QNAME],          ns, "", "QName");
+
+  f->createQName(theSchemaTypeNames[XS_NOTATION],       ns, "", "NOTATION");
 
   f->createQName(theSchemaTypeNames[XS_STRING],         ns, "", "string");
   f->createQName(theSchemaTypeNames[XS_NORMALIZED_STRING], ns, "", "normalizedString");
@@ -188,13 +194,9 @@ void SimpleStore::initTypeNames()
   f->createQName(theSchemaTypeNames[XS_LANGUAGE],       ns, "", "language");
   f->createQName(theSchemaTypeNames[XS_NAME],           ns, "", "Name");
   f->createQName(theSchemaTypeNames[XS_NCNAME],         ns, "", "NCName");
-  f->createQName(theSchemaTypeNames[XS_ANY_URI],        ns, "", "anyURI");
   f->createQName(theSchemaTypeNames[XS_ID],             ns, "", "ID");
   f->createQName(theSchemaTypeNames[XS_IDREF],          ns, "", "IDREF");
   f->createQName(theSchemaTypeNames[XS_ENTITY],         ns, "", "ENTITY");
-
-  f->createQName(theSchemaTypeNames[XS_NOTATION],       ns, "", "NOTATION");
-
 
   f->createQName(theSchemaTypeNames[XS_DATETIME],       ns, "", "dateTime");
   f->createQName(theSchemaTypeNames[XS_DATE],           ns, "", "date");
@@ -233,6 +235,11 @@ void SimpleStore::initTypeNames()
 
   f->createQName(theSchemaTypeNames[ZXSE_ERROR], ZXSE_URI, "zxse", "error");
   f->createQName(theSchemaTypeNames[ZXSE_TUPLE], ZXSE_URI, "zxse", "tuple");
+
+  for (ulong i = 0; i < XS_LAST; ++i)
+  {
+    theSchemaTypeCodes[theSchemaTypeNames[i].getp()] = static_cast<SchemaTypeCode>(i);
+  }
 }
 
 
@@ -438,16 +445,25 @@ store::Index_t SimpleStore::createIndex(
                       qname->getStringValue()->c_str(), "");
   }
 
-  if (spec.theIsSorted)
+  if (spec.theIsGeneral && spec.theIsSorted)
+  {
+    ZORBA_ASSERT(false);
+  }
+  else if (spec.theIsSorted)
   {
     index = new STLMapIndex(qname, spec);
+    populateValueIndex(index, sourceIter, spec.theNumKeyColumns);
+  }
+  else if (spec.theIsGeneral)
+  {
+    index = new GeneralHashIndex(qname, spec);
+    populateGeneralIndex(index, sourceIter, spec.theNumKeyColumns);
   }
   else
   {
-    index = new HashIndex(qname, spec);
+    index = new ValueHashIndex(qname, spec);
+    populateValueIndex(index, sourceIter, spec.theNumKeyColumns);
   }
-
-  populateIndex(index, sourceIter, spec.theKeyTypes.size());
 
   if (!spec.theIsTemp)
   {
@@ -461,7 +477,7 @@ store::Index_t SimpleStore::createIndex(
 /*******************************************************************************
 
 ********************************************************************************/
-void SimpleStore::populateIndex(
+void SimpleStore::populateValueIndex(
     const store::Index_t& aIndex,
     store::Iterator* aSourceIter,
     ulong aNumColumns)
@@ -513,6 +529,79 @@ void SimpleStore::populateIndex(
 
   aSourceIter->close();
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void SimpleStore::populateGeneralIndex(
+    const store::Index_t& idx,
+    store::Iterator* sourceIter,
+    ulong numColumns)
+{
+  store::Item_t domainNode;
+  store::Item_t item;
+  store::IndexKey* key = NULL;
+
+  GeneralIndex* index = static_cast<GeneralIndex*>(idx.getp());
+
+  sourceIter->open();
+
+  index->startInsertSession();
+
+  try
+  {
+    if (sourceIter->next(domainNode))
+    {
+      bool more = true;
+
+      while (more)
+      {
+        if (domainNode->getCollection() == NULL && !index->isTemporary())
+        {
+          ZORBA_ERROR_PARAM(XDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
+                            index->getName()->getStringValue(), "");
+        }
+        
+        while ((more = sourceIter->next(item)))
+        {
+          if (item->isNode())
+          {
+            domainNode.transfer(item);
+            break;
+          }
+
+          if (key == NULL)
+            key = new store::IndexKey(numColumns);
+
+          (*key)[0].transfer(item);
+
+          // have to copy because index->insert() will transfer the given node
+          store::Item_t node = domainNode;
+
+          index->insert(key, node);
+        }
+      }
+    }
+  }
+  catch(...)
+  {
+    if (key != NULL)
+      delete key;
+
+    sourceIter->close();
+    index->stopInsertSession();
+
+    throw;
+  }
+
+  if (key != NULL)
+    delete key;
+
+  sourceIter->close();
+  index->stopInsertSession();
+}
+
 
 /*******************************************************************************
   Refreshes an index with a given URI and return an rchandle to the index object.

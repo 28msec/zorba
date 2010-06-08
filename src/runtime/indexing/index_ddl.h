@@ -228,44 +228,102 @@ public:
 /******************************************************************************
 
 *******************************************************************************/
-class IndexEntryBuilderIteratorState : public PlanIteratorState
+class ValueIndexEntryBuilderIteratorState : public PlanIteratorState
 {
 public:
   uint32_t theCurChild;
 
 public:
-  IndexEntryBuilderIteratorState();
+  ValueIndexEntryBuilderIteratorState();
 
-  ~IndexEntryBuilderIteratorState();
+  ~ValueIndexEntryBuilderIteratorState();
 
   void init(PlanState&);
   void reset(PlanState&);
 };
 
-class IndexEntryBuilderIterator : public NaryBaseIterator<IndexEntryBuilderIterator, 
-                                                          IndexEntryBuilderIteratorState>
+
+class ValueIndexEntryBuilderIterator : 
+public NaryBaseIterator<ValueIndexEntryBuilderIterator, 
+                        ValueIndexEntryBuilderIteratorState>
 { 
 public:
-  SERIALIZABLE_CLASS(IndexEntryBuilderIterator);
+  SERIALIZABLE_CLASS(ValueIndexEntryBuilderIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexEntryBuilderIterator,
-    NaryBaseIterator<IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ValueIndexEntryBuilderIterator,
+  NaryBaseIterator<ValueIndexEntryBuilderIterator, ValueIndexEntryBuilderIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>*)this);
+    (NaryBaseIterator<ValueIndexEntryBuilderIterator,
+                      ValueIndexEntryBuilderIteratorState>*)this);
   }
 
-  IndexEntryBuilderIterator(
+  ValueIndexEntryBuilderIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<IndexEntryBuilderIterator, IndexEntryBuilderIteratorState>(sctx, loc, children)
+    NaryBaseIterator<ValueIndexEntryBuilderIterator,
+                     ValueIndexEntryBuilderIteratorState>(sctx, loc, children)
   {}
 
-  virtual ~IndexEntryBuilderIterator();
+  virtual ~ValueIndexEntryBuilderIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/******************************************************************************
+
+*******************************************************************************/
+class GeneralIndexEntryBuilderIteratorState : public PlanIteratorState
+{
+public:
+  uint32_t theCurChild;
+
+public:
+  GeneralIndexEntryBuilderIteratorState();
+
+  ~GeneralIndexEntryBuilderIteratorState();
+
+  void init(PlanState&);
+
+  void reset(PlanState&);
+};
+
+
+class GeneralIndexEntryBuilderIterator :
+public NaryBaseIterator<GeneralIndexEntryBuilderIterator, 
+                        GeneralIndexEntryBuilderIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(GeneralIndexEntryBuilderIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(GeneralIndexEntryBuilderIterator,
+  NaryBaseIterator<GeneralIndexEntryBuilderIterator,
+                   GeneralIndexEntryBuilderIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<GeneralIndexEntryBuilderIterator,
+                      GeneralIndexEntryBuilderIteratorState>*)this);
+  }
+
+  GeneralIndexEntryBuilderIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<GeneralIndexEntryBuilderIterator,
+                     GeneralIndexEntryBuilderIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~GeneralIndexEntryBuilderIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -292,6 +350,7 @@ public:
   ~IndexPointProbeIteratorState();
 
   void init(PlanState&);
+
   void reset(PlanState&);
 };
 
@@ -315,17 +374,57 @@ public:
   }
 
   IndexPointProbeIterator(
-    static_context* sctx,
-    const QueryLoc& loc,
-    std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<IndexPointProbeIterator,
-                     IndexPointProbeIteratorState>(sctx, loc, children),
-    theCheckKeyType(true)
-  {
-  }
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& children);
 
-  virtual ~IndexPointProbeIterator();
+  ~IndexPointProbeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/******************************************************************************
+   general-probe-index-point($indexName as xs:QName,
+                             $key1      as anyAtomic*,
+                              ...,
+                             $keyN      as anyAtomic*) as node()*
+ *********************************************************************************/
+class IndexGeneralPointProbeIteratorState : public IndexPointProbeIteratorState
+{
+public:
+  store::IndexPointCondition_t theCondition;
+
+public:
+  IndexGeneralPointProbeIteratorState();
+
+  ~IndexGeneralPointProbeIteratorState();
+};
+
+
+class IndexGeneralPointProbeIterator : 
+public NaryBaseIterator<IndexGeneralPointProbeIterator, 
+                        IndexGeneralPointProbeIteratorState>
+{
+protected:
+  bool theCheckKeyType;
+
+public:
+  SERIALIZABLE_CLASS(IndexGeneralPointProbeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexGeneralPointProbeIterator,
+  NaryBaseIterator<IndexGeneralPointProbeIterator, IndexGeneralPointProbeIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+  IndexGeneralPointProbeIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& children);
+
+  ~IndexGeneralPointProbeIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -360,6 +459,7 @@ public:
   store::Index                * theIndex;
   store::IndexProbeIterator_t   theIterator;
 
+public:
   IndexRangeProbeIteratorState();
 
   ~IndexRangeProbeIteratorState();
@@ -382,29 +482,58 @@ public:
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexRangeProbeIterator,
   NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
   IndexRangeProbeIterator(
         static_context* sctx,
         const QueryLoc& loc,
-        std::vector<PlanIter_t>& children)
-    : 
-    NaryBaseIterator<IndexRangeProbeIterator,
-                     IndexRangeProbeIteratorState>(sctx, loc, children),
-    theCheckKeyType(true)
-  {
-  }
+        std::vector<PlanIter_t>& children);
 
-  virtual ~IndexRangeProbeIterator();
+  ~IndexRangeProbeIterator();
 
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
 };
+
+
+/*******************************************************************************
+   general-probe-index-range($indexName                as xs:QName,
+                             $range1LowerBound         as anyAtomic?,
+                             $range1UpperBound         as anyAtomic?,
+                             $range1HaveLowerBound     as boolean,
+                             $range1HaveupperBound     as boolean,
+                             $range1LowerBoundIncluded as boolean,
+                             $range1upperBoundIncluded as boolean,
+                            ) as node()*
+********************************************************************************/
+class IndexGeneralRangeProbeIterator : 
+public NaryBaseIterator<IndexGeneralRangeProbeIterator, 
+                        IndexRangeProbeIteratorState>
+{
+protected:
+  bool theCheckKeyType;
+
+public:
+  SERIALIZABLE_CLASS(IndexGeneralRangeProbeIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexGeneralRangeProbeIterator,
+  NaryBaseIterator<IndexGeneralRangeProbeIterator, IndexRangeProbeIteratorState>);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+  IndexGeneralRangeProbeIterator(
+        static_context* sctx,
+        const QueryLoc& loc,
+        std::vector<PlanIter_t>& children);
+
+  ~IndexGeneralRangeProbeIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
 
 
 }

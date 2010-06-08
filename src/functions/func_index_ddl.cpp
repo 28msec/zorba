@@ -63,7 +63,7 @@ PlanIter_t op_value_index_entry_builder::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IndexEntryBuilderIterator(sctx, loc, argv);
+  return new ValueIndexEntryBuilderIterator(sctx, loc, argv);
 }
 
 
@@ -74,11 +74,11 @@ PlanIter_t op_general_index_entry_builder::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IndexEntryBuilderIterator(sctx, loc, argv);
+  return new GeneralIndexEntryBuilderIterator(sctx, loc, argv);
 }
 
 
-PlanIter_t fn_zorba_ddl_probe_index_point::codegen(
+PlanIter_t fn_zorba_ddl_index_value_point_probe::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -89,7 +89,18 @@ PlanIter_t fn_zorba_ddl_probe_index_point::codegen(
 }
 
 
-PlanIter_t fn_zorba_ddl_probe_index_range::codegen(
+PlanIter_t fn_zorba_ddl_index_general_point_probe::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IndexGeneralPointProbeIterator(sctx, loc, argv);
+}
+
+
+PlanIter_t fn_zorba_ddl_index_value_range_probe::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
@@ -97,6 +108,17 @@ PlanIter_t fn_zorba_ddl_probe_index_range::codegen(
   AnnotationHolder& ann) const
 {
   return new IndexRangeProbeIterator(sctx, loc, argv);
+}
+
+
+PlanIter_t fn_zorba_ddl_index_general_range_probe::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new IndexGeneralRangeProbeIterator(sctx, loc, argv);
 }
 
 
@@ -128,31 +150,59 @@ void populate_context_index_ddl(static_context* sctx)
 
 
   DECL(sctx, op_value_index_entry_builder,
-      (createQName("http://www.w3.org/2005/xpath-functions","op","value-index-entry-builder"),
+      (createQName("http://www.w3.org/2005/xpath-functions",
+                   "op",
+                   "value-index-entry-builder"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       true,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
   DECL(sctx, op_general_index_entry_builder,
-      (createQName("http://www.w3.org/2005/xpath-functions","op","general-index-entry-builder"),
+      (createQName("http://www.w3.org/2005/xpath-functions",
+                   "op",
+                   "general-index-entry-builder"),
       GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
       true,
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 
-  DECL(sctx, fn_zorba_ddl_probe_index_point,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","probe-index-point"),
+  DECL(sctx, fn_zorba_ddl_index_value_point_probe,
+      (createQName("http://www.zorba-xquery.com/modules/xqddf",
+                   "fn-zorba-ddl",
+                   "probe-index-point"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       true,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
+  DECL(sctx, fn_zorba_ddl_index_general_point_probe,
+      (createQName("http://www.zorba-xquery.com/modules/xqddf",
+                   "fn-zorba-ddl",
+                   "general-probe-index-point"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
-  DECL(sctx, fn_zorba_ddl_probe_index_range,
-      (createQName("http://www.zorba-xquery.com/modules/xqddf","fn-zorba-ddl","probe-index-range"),
+
+  DECL(sctx, fn_zorba_ddl_index_value_range_probe,
+      (createQName("http://www.zorba-xquery.com/modules/xqddf",
+                   "fn-zorba-ddl",
+                   "probe-index-range"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       true,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
+  DECL(sctx, fn_zorba_ddl_index_general_range_probe,
+      (createQName("http://www.zorba-xquery.com/modules/xqddf",
+                   "fn-zorba-ddl",
+                   "general-probe-index-range"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+      GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
+      GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE,
+      GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 }
 
 

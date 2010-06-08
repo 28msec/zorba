@@ -1216,8 +1216,11 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION(CreateIndexIterator);
   PRINTER_VISITOR_DEFINITION(DeleteIndexIterator);
   PRINTER_VISITOR_DEFINITION(RefreshIndexIterator);
-  PRINTER_VISITOR_DEFINITION(IndexEntryBuilderIterator);
+  PRINTER_VISITOR_DEFINITION(ValueIndexEntryBuilderIterator);
+  PRINTER_VISITOR_DEFINITION(GeneralIndexEntryBuilderIterator);
   PRINTER_VISITOR_DEFINITION(IndexPointProbeIterator);
+  PRINTER_VISITOR_DEFINITION(IndexGeneralPointProbeIterator);
+  PRINTER_VISITOR_DEFINITION(IndexGeneralRangeProbeIterator);
   PRINTER_VISITOR_DEFINITION(IndexRangeProbeIterator);
 
   PRINTER_VISITOR_DEFINITION(DynamicFnCallIterator);

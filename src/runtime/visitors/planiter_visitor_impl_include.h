@@ -163,7 +163,10 @@
 
 class IndexRangeProbeIterator;
 class IndexPointProbeIterator;
-class IndexEntryBuilderIterator;
+class IndexGeneralPointProbeIterator;
+class IndexGeneralRangeProbeIterator;
+class ValueIndexEntryBuilderIterator;
+class GeneralIndexEntryBuilderIterator;
 class RefreshIndexIterator;
 class CreateIndexIterator;
 class CreateInternalIndexIterator;

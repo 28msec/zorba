@@ -1560,13 +1560,7 @@ bool GenericCast::castToAtomic(
   ATOMIC_CODE_T lSourceTypeCode;
   ATOMIC_CODE_T lTargetTypeCode = TypeOps::get_atomic_type_code(*aTargetType);
 
-  while (lSourceType->type_kind() == XQType::USER_DEFINED_KIND)
-  {
-    const UserDefinedXQType* lSourceUDType = 
-      reinterpret_cast<const UserDefinedXQType*>(lSourceType.getp());
-
-    lSourceType = lSourceUDType->getBaseType();
-  }
+  lSourceType = lSourceType->getBaseBuiltinType();
 
   ZORBA_ASSERT(TypeOps::is_builtin_atomic(*lSourceType));
 

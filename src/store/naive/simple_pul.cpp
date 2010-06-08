@@ -1591,10 +1591,10 @@ void CollectionPul::refreshIndices()
     //
     // Referesh the index w.r.t. modified docs.
     //
-    HashIndex::CompareFunction keyCmp(index->getNumColumns(),
-                                      index->getTimezone(),
-                                      index->getCollators());
-
+    IndexCompareFunction keyCmp(index->getNumColumns(),
+                                index->getTimezone(),
+                                index->getCollators());
+    
     store::IndexDelta& beforeDelta = theBeforeIndexDeltas[idx];
     store::IndexDelta& afterDelta = theAfterIndexDeltas[idx];
 

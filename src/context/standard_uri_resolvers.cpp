@@ -156,7 +156,7 @@ StandardDocumentURIResolver::resolve(
                          "Can't retrieve the http:// or https:// URI "
                          << lURI.toString());
 #endif
-    }
+  }
   else
   {
     xqpString   q;

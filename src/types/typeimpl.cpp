@@ -593,6 +593,34 @@ UserDefinedXQType::UserDefinedXQType(
 }
 
 
+void UserDefinedXQType::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+  ar & m_qname;
+  ar & m_baseType;
+  SERIALIZE_ENUM(type_category_t, m_typeCategory);
+  SERIALIZE_ENUM(content_kind_t, m_contentKind);
+  ar & m_listItemType;
+  ar & m_unionItemTypes;
+}
+
+
+xqtref_t UserDefinedXQType::getBaseBuiltinType() const
+{
+  xqtref_t builtinType = m_baseType;
+
+  while (builtinType->type_kind() == XQType::USER_DEFINED_KIND)
+  {
+    const UserDefinedXQType* tmp = 
+    reinterpret_cast<const UserDefinedXQType*>(builtinType.getp());
+
+    builtinType = tmp->getBaseType();
+  }
+
+  return builtinType;
+}
+
+
 bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
 {
   if (subType.type_kind() != XQType::USER_DEFINED_KIND)

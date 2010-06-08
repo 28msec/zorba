@@ -1247,7 +1247,7 @@ public:
 
   IndexKeyList := IndexKeySpec+
 
-  IndexKeySpec := PathExpr "as" AtomicType? IndexKeyOrderModifier
+  IndexKeySpec := PathExpr TypeDeclaration? IndexKeyOrderModifier
 
   AtomicType := QName
 
@@ -1316,7 +1316,7 @@ public:
 
 
 /*******************************************************************************
-  IndexKeySpec ::= PathExpr "as" AtomicType? IndexKeyOrderModifier
+  IndexKeySpec ::= PathExpr TypeDeclaration? IndexKeyOrderModifier
 
   IndexKeyOrderModifier ::= OrderDirSpec? OrderCollationSpec?
 
@@ -1328,14 +1328,14 @@ class IndexKeySpec : public parsenode
 {
 protected:
   rchandle<exprnode>           theExpr;
-  rchandle<AtomicType>         theType;
+  rchandle<SequenceType>       theType;
   rchandle<OrderCollationSpec> theCollationSpec;
 
 public:
   IndexKeySpec(
     const QueryLoc& loc,
     exprnode* expr,
-    AtomicType* type,
+    SequenceType* type,
     OrderCollationSpec* collation)
     :
     parsenode(loc),
@@ -1347,7 +1347,7 @@ public:
 
   const exprnode* getExpr() const { return theExpr.getp(); }
 
-  const AtomicType* getType() const { return theType.getp(); }
+  const SequenceType* getType() const { return theType.getp(); }
 
   const OrderCollationSpec* getCollationSpec() const { return theCollationSpec.getp(); }
 

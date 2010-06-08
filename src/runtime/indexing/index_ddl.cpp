@@ -45,7 +45,81 @@ static void checkKeyType(
     TypeManager* tm,
     const IndexDecl* indexDecl,
     ulong keyNo,
-    store::Item_t& searchKey);
+    store::Item_t& searchKey)
+{
+  xqtref_t searchKeyType = tm->create_value_type(searchKey);
+  xqtref_t indexKeyType = (indexDecl->getKeyTypes())[keyNo];
+
+  if (indexKeyType != NULL &&
+      !TypeOps::is_subtype(*searchKeyType, *indexKeyType))
+  {
+    ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
+                             "The type of a search key does not mathch the type"
+                             << " of the corresponding index key for index "
+                             << indexDecl->getName()->getStringValue()->c_str()
+                             << ". The search key has type "
+                             << searchKeyType->toString()
+                             << " and the expected key type is "
+                             << indexKeyType->toString());
+  }
+  else if (indexKeyType == NULL)
+  {
+    ZORBA_ASSERT(indexDecl->isGeneral());
+
+    if (indexDecl->isOrdered() &&
+        (TypeOps::is_subtype(*searchKeyType, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE) ||
+         TypeOps::is_subtype(*searchKeyType, *GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE)))
+    {
+      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc, 
+                               "The type of a search key is not valid for");
+    }
+  }
+
+#if 0  
+  if (!TypeOps::is_equal(*searchKeyType, *indexKeyType))
+  {
+    // promote the search key to a value whose type is the that of the
+    // index key type
+    store::Item_t tmp;
+    tmp.transfer(searchKey);
+    if (! GenericCast::castToAtomic(searchKey, tmp, indexKeyType.getp(), *tm))
+    {
+      ZORBA_ASSERT(false);
+    }
+  }
+#endif
+}
+
+
+SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CreateInternalIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(CreateIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(DeleteIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(DeleteIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(RefreshIndexIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(ValueIndexEntryBuilderIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexEntryBuilderIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(GeneralIndexEntryBuilderIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(GeneralIndexEntryBuilderIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(IndexPointProbeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(IndexPointProbeIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(IndexRangeProbeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(IndexRangeProbeIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(IndexGeneralPointProbeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(IndexGeneralPointProbeIterator)
+
+SERIALIZABLE_CLASS_VERSIONS(IndexGeneralRangeProbeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(IndexGeneralRangeProbeIterator)
 
 
 /*******************************************************************************
@@ -59,6 +133,7 @@ void createIndexSpec(
   const std::vector<OrderModifier>& keyModifiers(indexDecl->getOrderModifiers());
   ulong numColumns = keyTypes.size();
 
+  spec.theNumKeyColumns = numColumns;
   spec.resize(numColumns);
 
   for(ulong i = 0; i < numColumns; ++i) 
@@ -89,17 +164,6 @@ void createIndexSpec(
 /*******************************************************************************
   CreateInternalIndexIterator
 ********************************************************************************/
-const char* CreateInternalIndexIterator::class_name_str = "CreateInternalIndexIterator";
-CreateInternalIndexIterator::class_factory<CreateInternalIndexIterator>
-CreateInternalIndexIterator::g_class_factory;
-
-const serialization::ClassVersion 
-CreateInternalIndexIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int CreateInternalIndexIterator::class_versions_count =
-sizeof(CreateInternalIndexIterator::class_versions) /
-sizeof(struct serialization::ClassVersion);
-
 
 CreateInternalIndexIterator::~CreateInternalIndexIterator() 
 {
@@ -163,17 +227,6 @@ void CreateInternalIndexIterator::accept(PlanIterVisitor& v) const
 /*******************************************************************************
   CreateIndexIterator
 ********************************************************************************/
-const char* CreateIndexIterator::class_name_str = "CreateIndexIterator";
-CreateIndexIterator::class_factory<CreateIndexIterator>
-CreateIndexIterator::g_class_factory;
-
-const serialization::ClassVersion 
-CreateIndexIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int CreateIndexIterator::class_versions_count =
-sizeof(CreateIndexIterator::class_versions) /
-sizeof(struct serialization::ClassVersion);
-
 
 CreateIndexIterator::~CreateIndexIterator() 
 {
@@ -238,17 +291,6 @@ void CreateIndexIterator::accept(PlanIterVisitor& v) const
 /*******************************************************************************
   DeleteIndexIterator
 ********************************************************************************/
-const char* DeleteIndexIterator::class_name_str = "DeleteIndexIterator";
-DeleteIndexIterator::class_factory<DeleteIndexIterator>
-DeleteIndexIterator::g_class_factory;
-
-const serialization::ClassVersion 
-DeleteIndexIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int DeleteIndexIterator::class_versions_count =
-sizeof(DeleteIndexIterator::class_versions) /
-sizeof(struct serialization::ClassVersion);
-
 
 DeleteIndexIterator::~DeleteIndexIterator() 
 {
@@ -301,18 +343,6 @@ void DeleteIndexIterator::accept(PlanIterVisitor& v) const
 /*******************************************************************************
   RefreshIndexIterator
 ********************************************************************************/
-
-const char* RefreshIndexIterator::class_name_str = "RefreshIndexIterator";
-RefreshIndexIterator::class_factory<RefreshIndexIterator>
-RefreshIndexIterator::g_class_factory;
-
-const serialization::ClassVersion 
-RefreshIndexIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int RefreshIndexIterator::class_versions_count =
-sizeof(RefreshIndexIterator::class_versions) /
-sizeof(struct serialization::ClassVersion);
-
 
 RefreshIndexIterator::~RefreshIndexIterator() 
 {
@@ -375,55 +405,44 @@ void RefreshIndexIterator::accept(PlanIterVisitor& v) const
 
 
 /*******************************************************************************
-  IndexEntryBuilderIterator
+  ValueIndexEntryBuilderIterator
 ********************************************************************************/
 
-const char* IndexEntryBuilderIterator::class_name_str = "IndexEntryBuilderIterator";
-IndexEntryBuilderIterator::class_factory<IndexEntryBuilderIterator>
-IndexEntryBuilderIterator::g_class_factory;
-
-const serialization::ClassVersion 
-IndexEntryBuilderIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int IndexEntryBuilderIterator::class_versions_count =
-sizeof(IndexEntryBuilderIterator::class_versions) /
-sizeof(struct serialization::ClassVersion);
-
-
-
-IndexEntryBuilderIteratorState::IndexEntryBuilderIteratorState() 
-{
-}
-
-IndexEntryBuilderIteratorState::~IndexEntryBuilderIteratorState() 
+ValueIndexEntryBuilderIteratorState:: ValueIndexEntryBuilderIteratorState() 
 {
 }
 
 
-void IndexEntryBuilderIteratorState::init(PlanState& planState) 
+ValueIndexEntryBuilderIteratorState::~ValueIndexEntryBuilderIteratorState() 
+{
+}
+
+
+void ValueIndexEntryBuilderIteratorState::init(PlanState& planState) 
 {
   PlanIteratorState::init(planState);
   theCurChild = 0;
 }
 
-void IndexEntryBuilderIteratorState::reset(PlanState& planState) 
+
+void ValueIndexEntryBuilderIteratorState::reset(PlanState& planState) 
 {
   PlanIteratorState::reset(planState);
   theCurChild = 0;
 }
 
 
-IndexEntryBuilderIterator::~IndexEntryBuilderIterator() 
+ValueIndexEntryBuilderIterator::~ValueIndexEntryBuilderIterator() 
 {
 }
 
 
-bool IndexEntryBuilderIterator::nextImpl(
+bool ValueIndexEntryBuilderIterator::nextImpl(
     store::Item_t& result,
     PlanState& planState) const
 {
-  IndexEntryBuilderIteratorState* state;
-  DEFAULT_STACK_INIT(IndexEntryBuilderIteratorState, state, planState);
+  ValueIndexEntryBuilderIteratorState* state;
+  DEFAULT_STACK_INIT(ValueIndexEntryBuilderIteratorState, state, planState);
 
   for (; state->theCurChild < theChildren.size(); ++state->theCurChild) 
   {
@@ -437,13 +456,81 @@ bool IndexEntryBuilderIterator::nextImpl(
 }
 
 
-void IndexEntryBuilderIterator::accept(PlanIterVisitor& v) const 
+void ValueIndexEntryBuilderIterator::accept(PlanIterVisitor& v) const 
 {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
+  for ( ; lIter != lEnd; ++lIter )
+  {
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+
+/*******************************************************************************
+  GeneralIndexEntryBuilderIterator
+********************************************************************************/
+
+GeneralIndexEntryBuilderIteratorState::GeneralIndexEntryBuilderIteratorState() 
+{
+}
+
+
+GeneralIndexEntryBuilderIteratorState::~GeneralIndexEntryBuilderIteratorState() 
+{
+}
+
+
+void GeneralIndexEntryBuilderIteratorState::init(PlanState& planState) 
+{
+  PlanIteratorState::init(planState);
+  theCurChild = 0;
+}
+
+
+void GeneralIndexEntryBuilderIteratorState::reset(PlanState& planState) 
+{
+  PlanIteratorState::reset(planState);
+  theCurChild = 0;
+}
+
+
+GeneralIndexEntryBuilderIterator::~GeneralIndexEntryBuilderIterator() 
+{
+}
+
+
+bool GeneralIndexEntryBuilderIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  GeneralIndexEntryBuilderIteratorState* state;
+  DEFAULT_STACK_INIT(GeneralIndexEntryBuilderIteratorState, state, planState);
+
+  for (; state->theCurChild < theChildren.size(); ++state->theCurChild) 
+  {
+    while (consumeNext(result, theChildren[state->theCurChild].getp(), planState))
+    {
+      STACK_PUSH(true, state);
+    }
+  }
+  
+  STACK_END(state);
+}
+
+
+void GeneralIndexEntryBuilderIterator::accept(PlanIterVisitor& v) const 
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter )
+  {
     (*lIter)->accept(v);
   }
 
@@ -454,18 +541,6 @@ void IndexEntryBuilderIterator::accept(PlanIterVisitor& v) const
 /*******************************************************************************
   IndexPointProbeIterator
 ********************************************************************************/
-
-const char* IndexPointProbeIterator::class_name_str = "IndexPointProbeIterator";
-IndexPointProbeIterator::class_factory<IndexPointProbeIterator>
-IndexPointProbeIterator::g_class_factory;
-
-const serialization::ClassVersion 
-IndexPointProbeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int IndexPointProbeIterator::class_versions_count =
-sizeof(IndexPointProbeIterator::class_versions) /
-sizeof(struct serialization::ClassVersion);
-
 
 IndexPointProbeIteratorState::IndexPointProbeIteratorState() 
 {
@@ -486,6 +561,7 @@ void IndexPointProbeIteratorState::init(PlanState& planState)
   theIterator = NULL;
 }
 
+
 void IndexPointProbeIteratorState::reset(PlanState& state)
 {
   PlanIteratorState::reset(state);
@@ -493,6 +569,18 @@ void IndexPointProbeIteratorState::reset(PlanState& state)
   {
     theIterator->close();
   }
+}
+
+
+IndexPointProbeIterator::IndexPointProbeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+  : 
+  NaryBaseIterator<IndexPointProbeIterator,
+                   IndexPointProbeIteratorState>(sctx, loc, children),
+  theCheckKeyType(true)
+{
 }
 
 
@@ -594,20 +682,138 @@ void IndexPointProbeIterator::accept(PlanIterVisitor& v) const
 
 
 /*******************************************************************************
+  IndexGeneralPointProbeIterator
+********************************************************************************/
+IndexGeneralPointProbeIteratorState::IndexGeneralPointProbeIteratorState()
+{
+}
+
+
+IndexGeneralPointProbeIteratorState::~IndexGeneralPointProbeIteratorState()
+{
+}
+
+
+IndexGeneralPointProbeIterator::IndexGeneralPointProbeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+  : 
+  NaryBaseIterator<IndexGeneralPointProbeIterator,
+                   IndexGeneralPointProbeIteratorState>(sctx, loc, children),
+  theCheckKeyType(true)
+{
+}
+
+
+IndexGeneralPointProbeIterator::~IndexGeneralPointProbeIterator() 
+{
+}
+
+
+void IndexGeneralPointProbeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IndexGeneralPointProbeIterator,
+                    IndexGeneralPointProbeIteratorState>*)this);
+}
+
+
+bool IndexGeneralPointProbeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
+{
+  store::Item_t qnameItem;
+  store::Item_t keyItem;
+  ulong numChildren = theChildren.size();
+  bool status;
+
+  IndexGeneralPointProbeIteratorState* state;
+  DEFAULT_STACK_INIT(IndexGeneralPointProbeIteratorState, state, planState);
+
+  status = consumeNext(qnameItem, theChildren[0], planState);
+  ZORBA_ASSERT(status);
+
+  if (state->theQname == NULL || !state->theQname->equals(qnameItem)) 
+  {
+    state->theQname = qnameItem;
+
+    if ((state->theIndexDecl = theSctx->lookup_index(qnameItem)) == NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XDDY0021_INDEX_IS_NOT_DECLARED, loc,
+                            qnameItem->getStringValue()->c_str(), "");
+    }
+
+    if (state->theIndexDecl->getKeyExpressions().size() != numChildren-1 ||
+        (state->theIndexDecl->isGeneral() && numChildren != 2))
+    {
+      ZORBA_ERROR_LOC_PARAM(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, loc,
+                            qnameItem->getStringValue()->c_str(), "");
+    }
+
+    state->theIndex = (state->theIndexDecl->isTemp() ?
+                       planState.dctx()->getIndex(qnameItem) :
+                       GENV_STORE.getIndex(state->theQname));
+
+    if (state->theIndex == NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XDDY0023_INDEX_DOES_NOT_EXIST, loc,
+                            qnameItem->getStringValue()->c_str(), "");
+    }
+
+    state->theIterator = GENV_STORE.getIteratorFactory()->
+                         createIndexProbeIterator(state->theIndex);
+  }
+
+  if (state->theCondition == NULL)
+    state->theCondition = state->theIndex->createPointCondition();
+
+  while (consumeNext(keyItem, theChildren[1], planState)) 
+  {
+    if (keyItem == NULL)
+      // We may reach here in the case of internally-generated hashjoins
+      continue;
+
+    if (theCheckKeyType)
+    {
+      checkKeyType(loc, theSctx->get_typemanager(), state->theIndexDecl, 0, keyItem);
+    }
+
+    state->theCondition->clear();
+    state->theCondition->pushItem(keyItem);
+
+    state->theIterator->init(state->theCondition);
+    state->theIterator->open();
+
+    while (state->theIterator->next(result)) 
+    {
+      STACK_PUSH(true, state);
+    }
+
+    state->theIterator->close();
+  }
+
+  STACK_END(state);
+}
+
+
+void IndexGeneralPointProbeIterator::accept(PlanIterVisitor& v) const 
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+
+/*******************************************************************************
   IndexRangeProbeIterator
 ********************************************************************************/
-
-const char* IndexRangeProbeIterator::class_name_str = "IndexRangeProbeIterator";
-IndexRangeProbeIterator::class_factory<IndexRangeProbeIterator>
-IndexRangeProbeIterator::g_class_factory;
-
-const serialization::ClassVersion 
-IndexRangeProbeIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int IndexRangeProbeIterator::class_versions_count =
-sizeof(IndexRangeProbeIterator::class_versions) /
-sizeof(struct serialization::ClassVersion);
-
 
 IndexRangeProbeIteratorState::IndexRangeProbeIteratorState() 
 {
@@ -638,8 +844,29 @@ void IndexRangeProbeIteratorState::reset(PlanState& state)
 }
 
 
+IndexRangeProbeIterator::IndexRangeProbeIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+  : 
+  NaryBaseIterator<IndexRangeProbeIterator,
+                   IndexRangeProbeIteratorState>(sctx, loc, children),
+  theCheckKeyType(true)
+{
+}
+
+
 IndexRangeProbeIterator::~IndexRangeProbeIterator() 
 {
+}
+
+
+void IndexRangeProbeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>*)this);
+
+  ar & theCheckKeyType;
 }
 
 
@@ -766,7 +993,8 @@ void IndexRangeProbeIterator::accept(PlanIterVisitor& v) const
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
+  for ( ; lIter != lEnd; ++lIter )
+  {
     (*lIter)->accept(v);
   }
 
@@ -774,40 +1002,58 @@ void IndexRangeProbeIterator::accept(PlanIterVisitor& v) const
 }
 
 
-void checkKeyType(
+/*******************************************************************************
+  IndexRangeProbeIterator
+********************************************************************************/
+
+
+IndexGeneralRangeProbeIterator::IndexGeneralRangeProbeIterator(
+    static_context* sctx,
     const QueryLoc& loc,
-    TypeManager* tm,
-    const IndexDecl* indexDecl,
-    ulong keyNo,
-    store::Item_t& searchKey)
+    std::vector<PlanIter_t>& children)
+  : 
+  NaryBaseIterator<IndexGeneralRangeProbeIterator,
+                   IndexRangeProbeIteratorState>(sctx, loc, children),
+  theCheckKeyType(true)
 {
-  xqtref_t searchKeyType = tm->create_value_type(searchKey);
-  xqtref_t indexKeyType = TypeOps::prime_type(*(indexDecl->getKeyTypes())[keyNo]);
-  
-  if (!TypeOps::is_equal(*searchKeyType, *indexKeyType))
-  {
-    if (!TypeOps::is_subtype(*searchKeyType, *indexKeyType))
-    {
-      ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
-                               "The type of a search key does not mathch the type"
-                               << " of the corresponding index key. The search key"
-                               << " has type " << searchKeyType->toString()
-                               << " and the expected key type is "
-                               << indexKeyType->toString());
-    }
-    
-    // promote the search key to a value whose type is the that of the
-    // index key type
-    store::Item_t tmp;
-    tmp.transfer(searchKey);
-    if (! GenericCast::castToAtomic(searchKey, tmp, indexKeyType.getp(), *tm))
-    {
-      ZORBA_ASSERT(false);
-    }
-  }
 }
 
 
+IndexGeneralRangeProbeIterator::~IndexGeneralRangeProbeIterator() 
+{
+}
+
+
+void IndexGeneralRangeProbeIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (NaryBaseIterator<IndexGeneralRangeProbeIterator, IndexRangeProbeIteratorState>*)this);
+
+  ar & theCheckKeyType;
+}
+
+
+bool IndexGeneralRangeProbeIterator::nextImpl(
+    store::Item_t& result, 
+    PlanState& aPlanState) const
+{
+  return false;
+}
+
+
+void IndexGeneralRangeProbeIterator::accept(PlanIterVisitor& v) const 
+{
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter )
+  {
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
 
 
 }

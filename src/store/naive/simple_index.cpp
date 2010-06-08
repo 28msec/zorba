@@ -32,75 +32,10 @@ namespace zorba
 namespace simplestore 
 {
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  Index                                                                      //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/******************************************************************************
-
-********************************************************************************/
-IndexImpl::IndexImpl(
-    const store::Item_t& qname,
-    const store::IndexSpecification& spec)
-  :
-  theQname(qname),
-  theSpec(spec),
-  theNumColumns(theSpec.theKeyTypes.size())
-{
-  theCollators.resize(theNumColumns);
-
-  for (ulong i = 0; i < theNumColumns; ++i)
-  {
-    if (spec.theKeyTypes[i] == GET_STORE().theSchemaTypeNames[XS_STRING] ||
-        spec.theKeyTypes[i] == GET_STORE().theSchemaTypeNames[XS_NORMALIZED_STRING])
-    {
-      theCollators[i] = CollationFactory::createCollator(spec.theCollations[i]);
-    }
-    else
-    {
-      theCollators[i] = NULL;
-    }
-  }
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-IndexImpl::~IndexImpl()
-{
-  for (ulong i = 0; i < theNumColumns; i++)
-  {
-    if (theCollators[i])
-      delete theCollators[i]; 
-  }
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-store::IndexPointCondition_t IndexImpl::createPointCondition()
-{
-  return new IndexPointConditionImpl(this);
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-store::IndexBoxCondition_t IndexImpl::createBoxCondition()
-{
-  return new IndexBoxConditionImpl(this);
-}
-
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  Hash Index                                                                 //
+//  IndexCompareFunction                                                       //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -108,7 +43,7 @@ store::IndexBoxCondition_t IndexImpl::createBoxCondition()
 /******************************************************************************
 
 ********************************************************************************/
-uint32_t HashIndex::CompareFunction::hash(const store::IndexKey* key) const
+uint32_t IndexCompareFunction::hash(const store::IndexKey* key) const
 {
   uint32_t hval = FNV_32_INIT;
 
@@ -128,7 +63,7 @@ uint32_t HashIndex::CompareFunction::hash(const store::IndexKey* key) const
 /******************************************************************************
 
 ********************************************************************************/
-bool HashIndex::CompareFunction::equal(
+bool IndexCompareFunction::equal(
     const store::IndexKey* key1,
     const store::IndexKey* key2) const
 {
@@ -151,155 +86,10 @@ bool HashIndex::CompareFunction::equal(
 }
 
 
-/******************************************************************************
-
-********************************************************************************/
-HashIndex::HashIndex(
-    const store::Item_t& qname,
-    const store::IndexSpecification& spec)
-  :
-  IndexImpl(qname, spec),
-  theCompFunction(theNumColumns, spec.theTimezone, theCollators),
-  theMap(theCompFunction, 1024, spec.theIsThreadSafe)
-{
-}
-  
-
-/******************************************************************************
-
-********************************************************************************/
-HashIndex::~HashIndex()
-{
-  IndexMap::iterator ite = theMap.begin();
-  IndexMap::iterator end = theMap.end();
- 
-  for (; ite != end; ++ite)
-  {
-    //std::cout << "Index Entry Delete [" << (*ite).first << "," 
-    //          << (*ite).second << "]" << std::endl;
-
-    delete (*ite).first;
-    delete (*ite).second;
-  }
-}
-
-
-/*******************************************************************************a
-
-********************************************************************************/
-void HashIndex::clear()
-{
-  theMap.clear();
-}
-
-
-/*******************************************************************************
-  Insert the given item in the value set of the given key. If the key is not
-  in the index already, then the key itself is inserted as well. Return true
-  if the key was already in the index, false otherwise
-********************************************************************************/
-bool HashIndex::insert(store::IndexKey*& key, store::Item_t& value)
-{
-  if (key->size() != theNumColumns)
-  {
-    ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_INSERT,
-                      theQname->getStringValue(), key->toString());
-  }
-
-  store::IndexValue* valueSet = NULL;
-
-  if (theMap.get(key, valueSet))
-  {
-    if (isUnique())
-    {
-      ZORBA_ERROR_PARAM(XDDY0024_INDEX_UNIQUE_VIOLATION,
-                        theQname->getStringValue(), "");
-    }
-
-    valueSet->resize(valueSet->size() + 1);
-    (*valueSet)[valueSet->size()-1].transfer(value);
-    
-    return true;
-  }
-
-  valueSet = new store::IndexValue(1);
-  (*valueSet)[0].transfer(value);
-  
-  //std::cout << "Index Entry Insert [" << key << "," 
-  //          << valueSet << "]" << std::endl;
-
-  const store::IndexKey* key2 = key;
-  theMap.insert(key2, valueSet);
-  key = NULL; // ownership of the key obj passes to the index.
-
-  return false;
-} 
-
-
-
-/******************************************************************************
-  Remove the given item from the value set of the given key. If the value set
-  of the key becomes empty, then the key itself is removed from the index.
-  Retrun false if the item is not in the value set of the key, or if the key 
-  itself is not in the index; true otherwise.
-********************************************************************************/
-bool HashIndex::remove(const store::IndexKey* key, store::Item_t& value)
-{
-  if (key->size() != theNumColumns)
-  {
-    ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_REMOVE,
-                      theQname->getStringValue()->c_str(), key->toString());
-  }
-
-  IndexMap::iterator pos = theMap.get(key);
-
-  if (pos != theMap.end())
-  {
-    const store::IndexKey* keyp = (*pos).first;
-    store::IndexValue* valueSet = (*pos).second;
-
-    store::IndexValue::iterator valIte = std::find(valueSet->begin(),
-                                                   valueSet->end(),
-                                                   value);
-
-    if (valIte != valueSet->end())
-      valueSet->theItems.erase(valIte);
-
-    if (valueSet->empty())
-    {
-      theMap.remove(pos);
-      delete keyp;
-      delete valueSet;
-    }
-
-    return true;
-  }
-
-  return false;
-} 
-
-
-/******************************************************************************
-
-********************************************************************************/
-bool HashIndex::probe(const store::IndexKey& key, store::Item_t& result)
-{
-  return false;
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  STL Map Index                                                              //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
 /*******************************************************************************
 
 ********************************************************************************/
-long STLMapIndex::CompareFunction::compare(
+long IndexCompareFunction::compare(
     const store::IndexKey* key1,
     const store::IndexKey* key2) const
 {
@@ -352,32 +142,36 @@ long STLMapIndex::CompareFunction::compare(
 }
 
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Index                                                                      //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+
 /******************************************************************************
 
 ********************************************************************************/
-STLMapIndex::STLMapIndex(
+IndexImpl::IndexImpl(
     const store::Item_t& qname,
     const store::IndexSpecification& spec)
   :
-  IndexImpl(qname, spec),
-  theCompFunction(theNumColumns, spec.theTimezone, theCollators),
-  theMap(theCompFunction)
+  theQname(qname),
+  theSpec(spec),
+  theNumColumns(theSpec.theNumKeyColumns)
 {
-}
+  theCollators.resize(theNumColumns);
 
-
-/******************************************************************************
-
-********************************************************************************/
-STLMapIndex::~STLMapIndex()
-{
-  IndexMap::iterator ite = theMap.begin();
-  IndexMap::iterator end = theMap.end();
- 
-  for (; ite != end; ++ite)
+  for (ulong i = 0; i < theNumColumns; ++i)
   {
-    delete (*ite).first;
-    delete (*ite).second;
+    if (!spec.theCollations[i].empty())
+    {
+      theCollators[i] = CollationFactory::createCollator(spec.theCollations[i]);
+    }
+    else
+    {
+      theCollators[i] = NULL;
+    }
   }
 }
 
@@ -385,150 +179,12 @@ STLMapIndex::~STLMapIndex()
 /******************************************************************************
 
 ********************************************************************************/
-void STLMapIndex::clear()
+IndexImpl::~IndexImpl()
 {
-  theMap.clear();
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-bool STLMapIndex::insert(store::IndexKey*& key, store::Item_t& value)
-{
-  if (key->size() != theNumColumns)
-  {
-    ZORBA_ERROR_PARAM(STR0003_INDEX_PARTIAL_KEY_INSERT,
-                      theQname->getStringValue()->c_str(), key->toString());
-  }
-
-  SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
-
-#if 0
-  std::cout << "inserting entry : [(";
-
   for (ulong i = 0; i < theNumColumns; i++)
   {
-    if (key[i] != NULL)
-      std::cout << key[i]->getStringValue()->c_str() << ", ";
-    else
-      std::cout << "NULL, ";
-  }
-
-  std::cout << "), " << value->getStringValue()->c_str() << "]" << std::endl;
-#endif
-
-  // TODO: optimize this using the lower_bound() method.
-  IndexMap::iterator pos = theMap.find(key);
-
-  if (pos != theMap.end())
-  {
-    if (isUnique())
-    {
-      ZORBA_ERROR_PARAM(XDDY0024_INDEX_UNIQUE_VIOLATION,
-                        theQname->getStringValue(), "");
-    }
-
-    pos->second->transfer_back(value);
-    return true;
-  }
-
-  store::IndexValue* valueSet = new store::IndexValue(1);
-  (*valueSet)[0].transfer(value);
-
-  theMap.insert(STLMapPair(key, valueSet));
-  key = NULL; // ownership of the key obj passes to the index.
-
-  return false;
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-bool STLMapIndex::remove(const store::IndexKey* key, store::Item_t& value)
-{
-  if (key->size() != theNumColumns)
-  {
-    ZORBA_ERROR_PARAM(STR0004_INDEX_PARTIAL_KEY_REMOVE,
-                      theQname->getStringValue()->c_str(), "");
-  }
-
-  SYNC_CODE(AutoMutex lock((isThreadSafe() ? &theMapMutex : NULL));)
-
-  IndexMap::iterator pos = theMap.find(key);
-
-  if (pos != theMap.end())
-  {
-    const store::IndexKey* keyp = pos->first;
-    store::IndexValue* valueSet = (*pos).second;
-
-    store::IndexValue::iterator valIte = std::find(valueSet->begin(),
-                                                   valueSet->end(),
-                                                   value);
-
-    if (valIte != valueSet->end())
-      valueSet->theItems.erase(valIte);
-
-    if (valueSet->empty())
-    {
-      theMap.erase(pos);
-      delete keyp;
-      delete valueSet;
-    }
-
-    return true;
-  }
-
-  return false;
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-bool STLMapIndex::probe(const store::IndexKey& key, store::Item_t& result)
-{
-  return false;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  HashProbeIterator                                                          //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
-
-
-/******************************************************************************
-
-********************************************************************************/
-void HashProbeIterator::init(const store::IndexCondition_t& cond)
-{
-  if (cond->getKind() != store::IndexCondition::EXACT_KEY)
-  {
-    ZORBA_ERROR_PARAM(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
-                      theIndex->getName()->getStringValue()->c_str(), 
-                      cond->getKindString());
-  }
-
-  theCondition = reinterpret_cast<IndexPointConditionImpl*>(cond.getp());
-
-  store::IndexKey* key = &(theCondition->theKey);
-
-  if (key->size() != theIndex->getNumColumns())
-  {
-    ZORBA_ERROR_PARAM(STR0005_INDEX_PARTIAL_KEY_PROBE,
-                      theIndex->getName()->getStringValue()->c_str(),
-                      key->toString());
-  }
-
-  theIndex->theMap.get(key, theResultSet);
-
-  if (theResultSet)
-  {
-    theIte = theResultSet->begin();
-    theEnd = theResultSet->end();
+    if (theCollators[i])
+      delete theCollators[i]; 
   }
 }
 
@@ -536,330 +192,24 @@ void HashProbeIterator::init(const store::IndexCondition_t& cond)
 /******************************************************************************
 
 ********************************************************************************/
-void HashProbeIterator::open()
+store::IndexPointCondition_t IndexImpl::createPointCondition()
 {
-  if (theResultSet)
-    theIte = theResultSet->begin();
+  return new IndexPointConditionImpl(this);
 }
 
 
 /******************************************************************************
 
 ********************************************************************************/
-void HashProbeIterator::reset()
+store::IndexBoxCondition_t IndexImpl::createBoxCondition()
 {
-  if (theResultSet)
-    theIte = theResultSet->begin(); 
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-void HashProbeIterator::close()
-{
-  theCondition = NULL;
-  theResultSet = NULL;
-}
-
-
-/******************************************************************************
-  TODO : need sync on result vector
-********************************************************************************/
-bool HashProbeIterator::next(store::Item_t& result)
-{
-  if (theResultSet && theIte != theEnd)
-  {
-    result = (*theIte);
-    ++theIte;
-    return true;
-  }
-
-  return false;
+  return new IndexBoxConditionImpl(this);
 }
 
 
 
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  STLMapProbeIterator                                                        //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
 
 
-/******************************************************************************
-
-********************************************************************************/
-void STLMapProbeIterator::init(const store::IndexCondition_t& cond)
-{
-  if (cond->getKind() == store::IndexCondition::EXACT_KEY)
-  {
-    thePointCond = reinterpret_cast<IndexPointConditionImpl*>(cond.getp());
-
-    initExact();
-  }
-  else
-  {
-    theBoxCond = reinterpret_cast<IndexBoxConditionImpl*>(cond.getp());
-
-    initBox();
-  }
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-void STLMapProbeIterator::initExact()
-{
-  const store::IndexKey& key = thePointCond->theKey;
-
-  if (key.size() != theIndex->theNumColumns)
-  {
-    ZORBA_ERROR_PARAM(STR0005_INDEX_PARTIAL_KEY_PROBE,
-                      theIndex->getName()->getStringValue()->c_str(), 
-                      key.toString());
-  }
-
-  theMapBegin = theIndex->theMap.find(&key);
-
-  if (theMapBegin != theIndex->theMap.end())
-  {
-    theMapEnd = theMapBegin;
-    ++theMapEnd;
-  }
-  else
-  {
-    theMapEnd = theMapBegin;
-  }
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-void STLMapProbeIterator::initBox()
-{
-  ulong numRanges = theBoxCond->numRanges();
-
-  if (numRanges == 0)
-  {
-    theMapBegin = theIndex->theMap.begin();
-    theMapEnd = theIndex->theMap.end();
-    return;
-  }
-
-  if (numRanges > theIndex->getNumColumns())
-  {
-    ZORBA_ERROR_PARAM(STR0006_INDEX_INVALID_BOX_PROBE, 
-                      theIndex->getName()->getStringValue()->c_str(),
-                      "The box condition has more columns than the index");
-  }
-
-  theDoExtraFiltering = (numRanges > 1);
-
-  long timezone = theIndex->getTimezone();
-
-  bool haveLowerBound = true;
-  bool haveUpperBound = true;
-  bool lowIncl = true;
-  bool highIncl = true;
-
-  store::IndexKey& lowerBounds = theBoxCond->theLowerBounds;
-  store::IndexKey& upperBounds = theBoxCond->theUpperBounds;
-
-  const std::vector<IndexBoxConditionImpl::RangeFlags>& flags = 
-    theBoxCond->theRangeFlags;
-
-  //
-  // Check if there is going to be a lower/upper bound
-  //
-  if (!flags[0].theHaveLowerBound)
-  {
-    theMapBegin = theIndex->theMap.begin();
-    haveLowerBound = false;
-  }
-
-  if (!flags[0].theHaveUpperBound)
-  {
-    theMapEnd = theIndex->theMap.end();
-    haveUpperBound = false;
-  }
-
-  //
-  // Neither lower nor upper bound, so we are going to scan the whole index.
-  //
-  if (!haveLowerBound && !haveUpperBound)
-  {
-    theMapBegin = theIndex->theMap.begin();
-    theMapEnd = theIndex->theMap.end();
-    return;
-  }
-
-  //
-  // Adjust the lower and/or upper bound index keys before probing the index.
-  //
-  for (ulong i = 0; i < numRanges; i++)
-  {
-    const XQPCollator* collator = theIndex->getCollator(i);
-
-    if (haveLowerBound)
-    {
-      if (flags[i].theHaveLowerBound)
-      {
-        if (!flags[i].theLowerBoundIncl)
-          lowIncl = false;
-      }
-      else
-      {
-        lowerBounds[i] = IndexBoxConditionImpl::theNegInf;
-      }
-    }
-
-    if (haveUpperBound)
-    {
-      if (flags[i].theHaveUpperBound)
-      {
-        if (!flags[i].theUpperBoundIncl)
-          highIncl = false;
-      }
-      else
-      {
-        upperBounds[i] = IndexBoxConditionImpl::thePosInf;
-      }
-    }
-
-    if (flags[i].theHaveLowerBound && flags[i].theHaveUpperBound)
-    {
-      long comp = lowerBounds[i]->compare(upperBounds[i], timezone, collator);
-
-      if (comp > 0 || 
-          (comp == 0 && (!flags[i].theLowerBoundIncl || !flags[i].theUpperBoundIncl)))
-      { 
-        ZORBA_ERROR_PARAM(STR0006_INDEX_INVALID_BOX_PROBE, 
-                          theIndex->getName()->getStringValue()->c_str(),
-                          theBoxCond->toString());
-      }
-    }
-  }
-
-  //
-  // Do the probing
-  //
-  if (haveLowerBound && lowIncl)
-  {
-    theMapBegin = theIndex->theMap.lower_bound(&lowerBounds);
-
-    if (theMapBegin == theIndex->theMap.end())
-    {
-      theMapEnd = theMapBegin;
-      return;
-    }
-  }
-  else if (haveLowerBound)
-  {
-    theMapBegin = theIndex->theMap.upper_bound(&lowerBounds);
-
-    if (theMapBegin == theIndex->theMap.end())
-    {
-      theMapEnd = theMapBegin;
-      return;
-    }
-  }
-
-  if (haveUpperBound && highIncl)
-  {
-    theMapEnd = theIndex->theMap.upper_bound(&upperBounds);
-  }
-  else if (haveUpperBound)
-  {
-    theMapEnd = theIndex->theMap.lower_bound(&upperBounds);
-  }
-
-  if (theMapEnd == theMapBegin)
-  {
-    theMapEnd = theMapBegin = theIndex->theMap.end();
-    return;
-  }
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-void STLMapProbeIterator::open()
-{
-  if (theMapBegin != theIndex->theMap.end())
-  {
-    theMapIte = theMapBegin;
-
-    theResultSet = theMapBegin->second;
-    theIte = theResultSet->begin();
-    theEnd = theResultSet->end();
-  }
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-void STLMapProbeIterator::reset()
-{
-  if (theMapBegin != theIndex->theMap.end())
-  {
-    theMapIte = theMapBegin;
-
-    theResultSet = theMapIte->second;
-    theIte = theResultSet->begin();
-    theEnd = theResultSet->end();
-  }
-}
-
-
-/******************************************************************************
-
-********************************************************************************/
-void STLMapProbeIterator::close()
-{
-  thePointCond = NULL;
-  theBoxCond = NULL;
-  theResultSet = NULL;
-}
-
-
-/******************************************************************************
-  TODO : need sync on result vector
-********************************************************************************/
-bool STLMapProbeIterator::next(store::Item_t& result)
-{
-  while (theResultSet != NULL)
-  {
-    while (theIte != theEnd)
-    {
-      result = (*theIte);
-      ++theIte;
-      return true;
-    }
-
-    theResultSet = NULL;
-    theMapIte++;
-
-    while (theMapIte != theMapEnd)
-    {
-      if (!theDoExtraFiltering || theBoxCond->test(*(theMapIte->first)))
-      {
-        theResultSet = theMapIte->second;
-        theIte = theResultSet->begin();
-        theEnd = theResultSet->end();
-        break;
-      }
-
-      theMapIte++;
-    }
-  }
-
-  return false;
-}
 
 
 /////////////////////////////////////////////////////////////////////////////////
