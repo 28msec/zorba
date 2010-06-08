@@ -10664,6 +10664,10 @@ void* begin_visit(const TryExpr& v)
 {
   TRACE_VISIT();
 
+  if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
+    ZORBA_ERROR_LOC_DESC(XPST0003, loc,
+                         "try/catch expressions are a feature that is only available in XQuery 1.1 or later.");
+
   theTryStack.push_back(&v);
 
   return no_state;
