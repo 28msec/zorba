@@ -49,13 +49,33 @@ ZORBA_GENERATE_STORE_SPECIFIC_EXES("testdriver" "${TESTDRIVER_SRCS}" "" "" "")
 INCLUDE(${CMAKE_MODULE_PATH}/FindBoost.cmake)
 FIND_PACKAGE(Boost COMPONENTS filesystem)
 IF (NOT Boost_FILESYSTEM_FOUND)
-  MESSAGE(STATUS "Boost filesystem component not found - not building multithreaded test driver")
+  MESSAGE(STATUS "Boost filesystem or system component not found - not building multithreaded test driver")
 ELSE (NOT Boost_FILESYSTEM_FOUND)
-  MESSAGE(STATUS "Found Boost: ${Boost_INCLUDE_DIRS}")
-  MESSAGE(STATUS "      Boost: ${Boost_LIBRARY_DIRS}")
+  MESSAGE(STATUS "Found Boost v${Boost_LIB_VERSION}: ${Boost_INCLUDE_DIRS}")
+  MESSAGE(STATUS "      Boost lib path: ${Boost_LIBRARY_DIRS}")
 
+  # Assume this is OK for the moment...
   SET (ZORBATEST_TESTDRIVER_MT_AVAILABLE TRUE)
 
+  IF (Boost_MAJOR_VERSION EQUAL 1 AND Boost_MINOR_VERSION GREATER 34)
+    # Boost 1.35 and above included a separate "system" component. In
+    # at least some versions, filesystem depends on system - and the
+    # Mac linker apparently does not figure this out. Therefore we
+    # need to link it explicitly, which means we need to find it
+    # first.
+    FIND_PACKAGE(Boost COMPONENTS system)
+    IF (NOT Boost_SYSTEM_FOUND)
+      MESSAGE(STATUS "Did NOT find Boost SYSTEM component - not building multithreaded test driver")
+      SET (ZORBATEST_TESTDRIVER_MT_AVAILABLE FALSE)
+    ELSE (NOT Boost_SYSTEM_FOUND)
+      SET (Boost_system_lib "boost_system-mt")
+    ENDIF (NOT Boost_SYSTEM_FOUND)
+    
+  ENDIF (Boost_MAJOR_VERSION EQUAL 1 AND Boost_MINOR_VERSION GREATER 34)
+
+ENDIF (NOT Boost_FILESYSTEM_FOUND)
+
+IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE)
   INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS})
   LINK_DIRECTORIES(${Boost_LIBRARY_DIRS})
 
@@ -67,21 +87,21 @@ ELSE (NOT Boost_FILESYSTEM_FOUND)
     )
 
   ADD_EXECUTABLE(testdriver_mt ${TESTDRIVER_MT_SRCS})
-  TARGET_LINK_LIBRARIES(testdriver_mt zorba_simplestore boost_filesystem-mt)
+  TARGET_LINK_LIBRARIES(testdriver_mt zorba_simplestore
+    boost_filesystem-mt ${Boost_system_lib})
   IF (ZORBA_BUILD_STATIC_LIBRARY)
     ADD_EXECUTABLE(testdriver_mt_static testdriver_mt.cpp)
     SET_TARGET_PROPERTIES(testdriver_mt_static
       PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
     TARGET_LINK_LIBRARIES(testdriver_mt_static
-      zorba_simplestore_static
-      boost_filesystem-mt)
+      zorba_simplestore_static boost_filesystem-mt ${Boost_system_lib})
   ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
   SET (ZORBATEST_USE_MT_XQTS NO CACHE BOOLEAN
     "If true, use testdriver_mt (when available) for running XQTS")
   MARK_AS_ADVANCED (ZORBATEST_USE_MT_XQTS)
 
-ENDIF (NOT Boost_FILESYSTEM_FOUND)
+ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE)
 
 INCLUDE(ZorbaAddTest)
 
