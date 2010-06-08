@@ -21,57 +21,120 @@
 
 using namespace std;
 
-static char const *const iso639_1_table[] = {
-  "ar",
-  "bg",
-  "cs",
-  "cy",
-  "da",
-  "de",
-  "el",
-  "en",
-  "es",
-  "fa",
-  "fi",
-  "fr",
-  "ga",
-  "gd",
-  "he",
-  "hr",
-  "hu",
-  "hy",
-  "id",
-  "is",
-  "it",
-  "ja",
-  "ko",
-  "la",
-  "my",
-  "nb",
-  "nl",
-  "nn",
-  "no",
-  "pl",
-  "pt",
-  "ro",
-  "ru",
-  "th",
-  "tr",
-  "uk",
-  "zh",
-};
-
 namespace zorba {
 namespace lang {
 
-iso639_1::type find( char const *lang ) {
-  static char const *const *const end =
-    iso639_1_table + sizeof( iso639_1_table ) / sizeof( char* );
+///////////////////////////////////////////////////////////////////////////////
 
-  char const *const *const x = ::lower_bound( iso639_1_table, end, lang );
-  return x != end ?
-    static_cast<iso639_1::type>( x - iso639_1_table ) : iso639_1::unknown;
+namespace iso639_1 {
+
+type find( char const *lang ) {
+  static char const *const table[] = {
+    "da", // Danish
+    "de", // German
+    "en", // English
+    "es", // Spanish
+    "fi", // Finnish
+    "fr", // French
+    "hu", // Hungarian
+    "it", // Italian
+    "nl", // Dutch
+    "no", // Norwegian
+    "pt", // Portuguese
+    "ro", // Romanian
+    "ru", // Russian
+    "sv", // Swedish
+    "tr", // Turkish
+  };
+  static char const *const *const end =
+    table + sizeof( table ) / sizeof( char* );
+
+  char const *const *const entry = ::lower_bound( table, end, lang );
+  return entry != end ? static_cast<type>( entry - table ) : unknown;
 }
+
+} // namespace iso639_1
+
+///////////////////////////////////////////////////////////////////////////////
+
+namespace iso639_2 {
+
+type find( char const *lang ) {
+  static char const *const table[] = {
+    "dan",  // Danish
+    "deu",  // German (T)
+    "dut",  // Dutch (B)
+    "eng",  // English
+    "fin",  // Finnish
+    "fra",  // French (T)
+    "fre",  // French (B)
+    "ger",  // German (B)
+    "hun",  // Hungarian
+    "ita",  // Italian
+    "nld",  // Dutch (T)
+    "nor",  // Norwegian
+    "por",  // Portuguese
+    "ron",  // Romanian (T)
+    "rum",  // Romanian (B)
+    "rus",  // Russian
+    "spa",  // Spanish
+    "swe",  // Swedish
+    "tur",  // Turkish
+  };
+  static char const *const *const end =
+    table + sizeof( table ) / sizeof( char* );
+
+  char const *const *const entry = ::lower_bound( table, end, lang );
+  return entry != end ? static_cast<type>( entry - table ) : unknown;
+}
+
+} // namespace iso639_2
+
+///////////////////////////////////////////////////////////////////////////////
+
+iso639_1::type find( char const *lang ) {
+  static iso639_1::type const table[] = {
+    iso639_1::da, // Danish
+    iso639_1::de, // German (T)
+    iso639_1::nl, // Dutch (B)
+    iso639_1::en, // English
+    iso639_1::fi, // Finnish
+    iso639_1::fr, // French (T)
+    iso639_1::fr, // French (B)
+    iso639_1::de, // German (B)
+    iso639_1::hu, // Hungarian
+    iso639_1::it, // Italian
+    iso639_1::nl, // Dutch (T)
+    iso639_1::no, // Norwegian
+    iso639_1::pt, // Portuguese
+    iso639_1::ro, // Romanian (T)
+    iso639_1::ro, // Romanian (B)
+    iso639_1::ru, // Russian
+    iso639_1::es, // Spanish
+    iso639_1::sv, // Swedish
+    iso639_1::tr, // Turkish
+  };
+  static iso639_1::type const *const end =
+    table + sizeof( table ) / sizeof( iso639_1::type );
+
+  iso639_1::type const code_639_1 = iso639_1::find( lang );
+  if ( code_639_1 != iso639_1::unknown )
+    return code_639_1;
+
+  iso639_2::type const code_639_2 = iso639_2::find( lang );
+  if ( code_639_2 != iso639_2::unknown ) {
+    //
+    // Map the ISO 639-2 code to ISO 639-1.
+    //
+    iso639_1::type const *const entry = ::lower_bound( table, end, code_639_1 );
+    if ( entry != end )
+      return *entry;
+  }
+
+  return iso639_1::unknown;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace lang
 } // namespace zorba

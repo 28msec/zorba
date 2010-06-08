@@ -22,27 +22,76 @@ namespace zorba {
 
     namespace iso639_1 {
       enum type {
-        da, // Danish
-        de, // German
-        en, // English
-        es, // Spanish
-        fi, // Finnish
-        fr, // French
-        hu, // Hungarian
-        it, // Italian
-        nl, // Dutch
-        no, // Norwegian
-        pt, // Portuguese
-        ro, // Romanian
-        ru, // Russian
-        sv, // Swedish
-        tr, // Turkish
+        da,   // Danish
+        de,   // German
+        en,   // English
+        es,   // Spanish
+        fi,   // Finnish
+        fr,   // French
+        hu,   // Hungarian
+        it,   // Italian
+        nl,   // Dutch
+        no,   // Norwegian
+        pt,   // Portuguese
+        ro,   // Romanian
+        ru,   // Russian
+        sv,   // Swedish
+        tr,   // Turkish
 
         unknown
       };
 
+      /**
+       * Finds the ISO 639-1 language code enumeration from the given string.
+       *
+       * @param lang The string literal for an ISO 639-1 langauge code.
+       * @return Returns said enumeration or <code>unknown</code>.
+       */
       type find( char const *lang );
     }
+
+    namespace iso639_2 {
+      enum type {
+        dan,  // Danish
+        deu,  // German (T)
+        dut,  // Dutch (B)
+        eng,  // English
+        fin,  // Finnish
+        fra,  // French (T)
+        fre,  // French (B)
+        ger,  // German (B)
+        hun,  // Hungarian
+        ita,  // Italian
+        nld,  // Dutch (T)
+        nor,  // Norwegian
+        por,  // Portuguese
+        ron,  // Romanian (T)
+        rum,  // Romanian (B)
+        rus,  // Russian
+        spa,  // Spanish
+        swe,  // Swedish
+        tur,  // Turkish
+
+        unknown
+      };
+
+      /**
+       * Finds the ISO 639-2 language code enumeration from the given string.
+       *
+       * @param lang The string literal for an ISO 639-2 langauge code.
+       * @return Returns said enumeration or <code>unknown</code>.
+       */
+      type find( char const *lang );
+    }
+
+    /**
+     * Finds the ISO 639-1 language code enumeration from the given string.
+     *
+     * @param lang The string literal for either an ISO 639-1 or an ISO 639-2
+     * langauge code.
+     * @return Returns said enumeration or <code>unknown</code>.
+     */
+    iso639_1::type find( char const *lang );
 
   } // namespace lang
 }
