@@ -1003,8 +1003,12 @@ void apply_ftwords( FTTokenIterator &search_ctx,
 
   auto_ptr<ft_stop_words_set const> stop_words;
   if ( ftstop_word_option const *const sw = options.get_stop_word_option() ) {
-    if ( sw->get_mode() != ft_stop_words_mode::without )
-      stop_words.reset( ft_stop_words_set::construct( *sw, lang::en ) );
+    if ( sw->get_mode() != ft_stop_words_mode::without ) {
+      stop_words.reset(
+        // TODO: must change lang
+        ft_stop_words_set::construct( *sw, lang::iso639_1::en )
+      );
+    }
   }
 
   switch ( mode ) {

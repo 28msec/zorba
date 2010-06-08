@@ -64,12 +64,13 @@ static char const *const iso639_1_table[] = {
 namespace zorba {
 namespace lang {
 
-iso639_1 find( char const *lang ) {
+iso639_1::type find( char const *lang ) {
   static char const *const *const end =
     iso639_1_table + sizeof( iso639_1_table ) / sizeof( char* );
 
   char const *const *const x = ::lower_bound( iso639_1_table, end, lang );
-  return x != end ? static_cast<iso639_1>( x - iso639_1_table ) : unknown_639_1;
+  return x != end ?
+    static_cast<iso639_1::type>( x - iso639_1_table ) : iso639_1::unknown;
 }
 
 } // namespace lang

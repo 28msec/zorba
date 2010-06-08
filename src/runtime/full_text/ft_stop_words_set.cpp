@@ -26,11 +26,11 @@ typedef char const *const *ft_stop_table;
 ///////////////////////////////////////////////////////////////////////////////
 
 #define LANG(CODE)                                \
-  lang::CODE:                                     \
+  lang::iso639_1::CODE:                           \
     extern char const *const stop_words_##CODE[]; \
     return stop_words_##CODE
 
-static ft_stop_table get_table( lang::iso639_1 code ) {
+static ft_stop_table get_table( lang::iso639_1::type code ) {
   switch ( code ) {
     case LANG(da);
     case LANG(de);
@@ -57,7 +57,7 @@ static ft_stop_table get_table( lang::iso639_1 code ) {
 
 ft_stop_words_set const*
 ft_stop_words_set::construct( ftstop_word_option const &option,
-                              lang::iso639_1 code ) {
+                              lang::iso639_1::type code ) {
   bool must_delete;
   set_t *word_set;
 
@@ -107,9 +107,9 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
 }
 
 ft_stop_words_set::set_t*
-ft_stop_words_set::get_default_word_set_for( lang::iso639_1 code ) {
-  static set_t* cached_word_sets[ lang::unknown_639_1 ];
-  if ( code == lang::unknown_639_1 )
+ft_stop_words_set::get_default_word_set_for( lang::iso639_1::type code ) {
+  static set_t* cached_word_sets[ lang::iso639_1::unknown ];
+  if ( code == lang::iso639_1::unknown )
     return 0;
   set_t *&word_set = cached_word_sets[ code ];
   if ( !word_set ) {

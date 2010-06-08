@@ -18,31 +18,33 @@
 #define ZORBA_LANG_H
 
 namespace zorba {
-
   namespace lang {
-    enum iso639_1 {
-      da, // Danish
-      de, // German
-      en, // English
-      es, // Spanish
-      fi, // Finnish
-      fr, // French
-      hu, // Hungarian
-      it, // Italian
-      nl, // Dutch
-      no, // Norwegian
-      pt, // Portuguese
-      ro, // Romanian
-      ru, // Russian
-      sv, // Swedish
-      tr, // Turkish
 
-      unknown_639_1
-    };
+    namespace iso639_1 {
+      enum type {
+        da, // Danish
+        de, // German
+        en, // English
+        es, // Spanish
+        fi, // Finnish
+        fr, // French
+        hu, // Hungarian
+        it, // Italian
+        nl, // Dutch
+        no, // Norwegian
+        pt, // Portuguese
+        ro, // Romanian
+        ru, // Russian
+        sv, // Swedish
+        tr, // Turkish
 
-    iso639_1 find( char const *lang );
-  }
+        unknown
+      };
 
+      type find( char const *lang );
+    }
+
+  } // namespace lang
 }
 #endif  /* ZORBA_LANG_H */
 /* vim:set et sw=2 ts=2: */
