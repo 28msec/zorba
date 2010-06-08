@@ -201,7 +201,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocFunc/fn-doc-35
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocFunc/fn-doc-28
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocFunc/fn-doc-23
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocFunc/fn-doc-27
-test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocFunc/fn-doc-17
 test/rbkt/w3c_testsuite/XQuery/Functions/AccessorFunc/DataFunc/fn-datamixedcontent-1
 test/rbkt/w3c_testsuite/XQuery/Functions/AccessorFunc/BaseURIFunc/K2-BaseURIFunc-21
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeFunc/NodeLangFunc/K2-NodeLangFunc-2
@@ -255,14 +254,6 @@ test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validate-constraints-2
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validate-constraints-4
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-27
-test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-505
-test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-423
-test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/SeqExprCastable/K2-SeqExprCastable-6
-test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/SeqExprCastable/K2-SeqExprCastable-7
-test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-210
-test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-420
-test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-422
-test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/SeqExprCast/K2-SeqExprCast-424
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/CopyNamespacesProlog/K2-CopyNamespacesProlog-9
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWithout/K2-ExternalVariablesWithout-18

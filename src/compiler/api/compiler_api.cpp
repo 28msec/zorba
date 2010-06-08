@@ -313,10 +313,18 @@ parsenode_t XQueryCompiler::createMainModule(
 
   // bugfix for #2934414
   // Check the library module's URI for validity. Raise an error with the
-  // location of the module declaration if the URI is not valid.
+  // location of the module declaration if the URI is not a valid absolute URI.
   try
   {
     URI lURI(lib_namespace.getp());
+    if(!lURI.is_absolute())
+    {
+      xqpStringStore_t lURIstr = lURI.toString();
+      
+      ZORBA_ERROR_LOC_DESC(XQST0046,
+                           mod_ast->get_decl()->get_location(),
+                           "The passed URI is not absolute, it's relative.");
+    }
   }
   catch (error::ZorbaError& e)
   {

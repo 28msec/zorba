@@ -25,6 +25,17 @@ using namespace std;
 
 namespace zorba {
 
+  /*
+  ---------------------------------------------------------------------------
+  URI-reference = [ absoluteURI | relativeURI ] [ "#" fragment ]
+  absoluteURI   = scheme ":" ( hier_part | opaque_part )
+  relativeURI   = ( net_path | abs_path | rel_path ) [ "?" query ]
+  ---------------------------------------------------------------------------
+  query         = *uric
+
+  fragment      = *uric
+---------------------------------------------------------------------------
+  */
 
 /*******************************************************************************
   is the given char a hex allowed one
@@ -532,7 +543,7 @@ URI::URI(const URI& base_uri, const xqpStringStore* uri, bool validate)
 
 
 /*******************************************************************************
-  constructs a new uri by relativizing the full_uri agsinst the base_uri
+  constructs a new uri by relativizing the full_uri against the base_uri
 ********************************************************************************/
 URI::URI(const URI& full_uri, const URI& base_uri)
    :
@@ -660,12 +671,12 @@ void URI::initialize(const xqpStringStore* uri, bool have_base)
       (lColonIdx > lFragmentIdx && lFragmentIdx != -1)) 
   {
     // A standalone base is a valid URI
-    if (valid && 
-        (lColonIdx == 0 || (!have_base && lFragmentIdx != 0)) &&
-        lTrimmedURILength > 0) 
+    if (valid &&
+        (lColonIdx == 0 || (!have_base && lFragmentIdx > 0)) &&
+        lTrimmedURILength > 0)
     {
-      ZORBA_ERROR_DESC_OSS(XQST0046,
-                           "URI \"" << lTrimmedURI << "\" doesn't have an URI scheme");
+       ZORBA_ERROR_DESC_OSS(XQST0046,
+                            "URI \"" << lTrimmedURI << "\" doesn't have an URI scheme");
     }
   }
   else
@@ -684,7 +695,7 @@ void URI::initialize(const xqpStringStore* uri, bool have_base)
   if (lAuthUri->byteSubstr(0, 2)->byteEqual("//", 2)) 
   {
     lIndex += 2;
-    if (lIndex >= lTrimmedURILength) 
+    if (lIndex >= lTrimmedURILength)
     {
       ZORBA_ERROR_DESC_OSS(XQST0046,
                            "Authority is misssing in URI \"" << lTrimmedURI << "\" .");
@@ -780,7 +791,22 @@ void URI::initializeScheme(const xqpStringStore* uri)
 
 
 /*******************************************************************************
+  authority     = server | reg_name
 
+  reg_name      = 1*( unreserved | escaped | "$" | "," |
+                      ";" | ":" | "@" | "&" | "=" | "+" )
+
+  server        = [ [ userinfo "@" ] hostport ]
+  userinfo      = *( unreserved | escaped |
+                      ";" | ":" | "&" | "=" | "+" | "$" | "," )
+
+  hostport      = host [ ":" port ]
+  host          = hostname | IPv4address
+  hostname      = *( domainlabel "." ) toplabel [ "." ]
+  domainlabel   = alphanum | alphanum *( alphanum | "-" ) alphanum
+  toplabel      = alpha | alpha *( alphanum | "-" ) alphanum
+  IPv4address   = 1*digit "." 1*digit "." 1*digit "." 1*digit
+  port          = *digit
 ********************************************************************************/
 void URI::initializeAuthority(const xqpStringStore* uri)
 {
@@ -912,7 +938,25 @@ bool URI::is_valid_server_based_authority(
 
 
 /*******************************************************************************
+  hier_part     = ( net_path | abs_path ) [ "?" query ]
+  opaque_part   = uric_no_slash *uric
 
+  uric_no_slash = unreserved | escaped | ";" | "?" | ":" | "@" |
+                  "&" | "=" | "+" | "$" | ","
+
+  net_path      = "//" authority [ abs_path ]
+  abs_path      = "/"  path_segments
+  rel_path      = rel_segment [ abs_path ]
+
+  rel_segment   = 1*( unreserved | escaped |
+                  ";" | "@" | "&" | "=" | "+" | "$" | "," )
+
+  path          = [ abs_path | opaque_part ]
+  path_segments = segment *( "/" segment )
+  segment       = *pchar *( ";" param )
+  param         = *pchar
+  pchar         = unreserved | escaped |
+                  ":" | "@" | "&" | "=" | "+" | "$" | ","
 ********************************************************************************/
 void URI::initializePath(const xqpStringStore* uri)
 {
@@ -949,7 +993,15 @@ void URI::initializePath(const xqpStringStore* uri)
         {
           if ( lIndex + 2 >= lEnd )
           {
-            // TODO check hex and throw errors
+            ZORBA_ERROR_DESC_OSS(XQST0046,
+                           "Invalid hex sequence in URI \"" << uri->c_str() << "\" .");
+          }
+          uint32_t lHex1 = lCodepoints[++lIndex];
+          uint32_t lHex2 = lCodepoints[++lIndex];
+          if(!is_hex(lHex1) || !is_hex(lHex2))
+          {
+            ZORBA_ERROR_DESC_OSS(XQST0046,
+                           "Invalid hex sequence in URI \"" << uri->c_str() << "\" : \"%" << char(lHex1) << char(lHex2) << "\".");
           }
         }
         else if (!is_unreserved_char(lCp) && !is_path_character(lCp) && valid)

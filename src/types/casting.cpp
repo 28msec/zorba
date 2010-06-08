@@ -19,6 +19,7 @@
 #include "zorbatypes/datetime.h"
 #include "zorbatypes/duration.h"
 #include "zorbatypes/chartype.h"
+#include "zorbatypes/URI.h"
 
 #include "zorbaerrors/error_manager.h"
 #include "zorbaerrors/Assert.h"
@@ -331,9 +332,16 @@ inline bool str_hxB(store::Item_t& result, const store::Item* aItem, xqpStringSt
 
 inline bool str_aURI(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
 {
-// TODO createAnyURI does not always succeed
-  xqpStringStore_t strval2 = doTrim(strval);
-  return aFactory->createAnyURI(result, strval2);
+  try
+  {
+    URI uriVal(strval);
+    return aFactory->createAnyURI(result, uriVal.toString()->c_str());
+  }
+  catch (error::ZorbaError& e)
+  {
+    ZORBA_ERROR_DESC_OSS(FORG0001, e.theDescription);
+    return false;
+  }
 }
 
 

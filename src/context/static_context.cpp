@@ -887,9 +887,11 @@ void static_context::compute_base_uri()
     try
     {
       URI lCheckValid(userBaseUri);
-      // is already absolute baseuri
-      theBaseUriInfo->theBaseUri = lCheckValid.toString();
-      return; // valid (absolute) uri
+      if(lCheckValid.is_absolute())
+      {
+        theBaseUriInfo->theBaseUri = lCheckValid.toString();
+        return; // valid (absolute) uri
+      }
     }
     catch (error::ZorbaError&)
     {
