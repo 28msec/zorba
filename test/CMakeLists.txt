@@ -66,39 +66,4 @@ ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspath1 PASS_REGULAR_EXPRESSION /)
 ZORBA_ADD_TEST_ALLSTORES (test/fspath2 path_test --path d1/d2/../../../../d3//)
 ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspath2 PASS_REGULAR_EXPRESSION ../../d3)
 
-IF(NOT ZORBA_MINIMAL_STORE)
-# 
-# # test_store
-# 
-#  SET(TEST_STORE_SRCS
-#      timer.cpp
-#      test_store.cpp)
-#  
-#  ADD_EXECUTABLE(test_store ${TEST_STORE_SRCS})
-#  
-#  TARGET_LINK_LIBRARIES(test_store zorba_simplestore)
-#  
-
-# # test_index
-# 
-#  SET(TEST_INDEX_SRCS
-#      test_index.cpp)
-#  
-#  ADD_EXECUTABLE(test_index ${TEST_INDEX_SRCS})
-#  
-#  TARGET_LINK_LIBRARIES(test_index zorba_simplestore)
-  
-
-#  # test_ordpath
-#
-#  SET(TEST_ORDPATH_SRCS
-#      test_ordpath.cpp)
-#  
-#  SET(requiredlibs-testordpath ${requiredlibs-testordpath})
-#  
-#  ADD_EXECUTABLE(test_ordpath ${TEST_ORDPATH_SRCS})
-#  
-#  TARGET_LINK_LIBRARIES(test_ordpath zorba)
-#  
-ENDIF(NOT ZORBA_MINIMAL_STORE)
   

@@ -39,26 +39,36 @@ import schema namespace https = "http://expath.org/ns/http-client";
 (:~
  : This function sends an HTTP request and returns the corresponding 
  : response. It supports HTTP multi-part messages.
- : If the content type of a request is html, http-client will tidy it
+ :
+ : <p>
+ : If the content type of a response is html, http-client will tidy it
  : automatically. If you want to prevent that, you can also set your
  : own by settin the override-media-type attribute in the http:request
  : element.
  : When tidying, it will use the follwong tidy options:
- : - TidyXmlOut=yes
- : - TidyDoctypeMode=TidyDoctypeOmit
- : - TidyQuoteNbsp=yes
- : - TidyCharEncoding="utf8"
- : - TidyNewline="LF"
+ : <ul>
+ :   <li>TidyXmlOut=yes</li>
+ :   <li>TidyDoctypeMode=TidyDoctypeOmit</li>
+ :   <li>TidyQuoteNbsp=yes</li>
+ :   <li>TidyCharEncoding="utf8"</li>
+ :   <li>TidyNewline="LF"</li>
+ : </ul>
+ : </p>
+ :
+ : <p>
  : Please also referr to the official documentation at
  : <a href="http://expath.org/modules/http-client.html">expath.org</a>
  : For further information (especially about the http:request and
  : http:response elements) see also the xml schema and its annotations
  : (located in $zorba_install_dir/modules/org/expath/ns/).
+ : </p>
  : 
+ : <p>
  : Also note that the function is declared as sequential (see XQuery Scripting).
  : Sequential functions are allowed to have side effects. For example, most probably,
  : an HTTP POST request is a request that has side effects because it adds/changes
  : a remote resource.
+ : </p>
  :
  : @param $request Contains the various parameters of the request. See the
  :  documentation of the type requestType in the schema definition.
@@ -122,22 +132,33 @@ declare sequential function http:send-request(
 (:~
  : This function sends an HTTP request and returns the corresponding 
  : response. It supports HTTP multi-part messages.
+ :
+ : <p>
  : If the content type of a request is html, http-client will tidy it
  : automatically. If you want to prevent that, you can also set your
  : own by settin the override-media-type attribute in the http:request
  : element.
  : When tidying, it will use the follwong tidy options:
- : - TidyXmlOut=yes
- : - TidyDoctypeMode=TidyDoctypeOmit
- : - TidyQuoteNbsp=yes
- : - TidyCharEncoding="utf8"
- : - TidyNewline="LF"
+ : <ul>
+ :   <li>TidyXmlOut=yes</li>
+ :   <li>TidyDoctypeMode=TidyDoctypeOmit</li>
+ :   <li>TidyQuoteNbsp=yes</li>
+ :   <li>TidyCharEncoding="utf8"</li>
+ :   <li>TidyNewline="LF"</li>
+ : </ul>
+ : </p>
+ :
+ : <p>
+ : If the content type of a request is html, http-client will tidy it
  : Please also referr to the official documentation at
  : <a href="http://expath.org/modules/http-client.html">expath.org</a>
  : For further information (especially about the http:request and
  : http:response elements) see also the xml schema and its annotations
  : (located in $zorba_install_dir/modules/org/expath/ns/).
+ : </p>
  : 
+ : <p>
+ : If the content type of a request is html, http-client will tidy it
  : Also note that the function is <b>not</b> declared as sequential.
  : That is, the query processor is free to optimize invocations of this
  : function. For example, a call to this function within a for expression
@@ -146,6 +167,7 @@ declare sequential function http:send-request(
  : (in particular it doesn't have any side effects). Usually, this
  : function will be used for retrieving resources using HTTP GET or HEAD
  : which are known to not change during the execution of the query.
+ : </p>
  :
  : @param $request Contains the various parameters of the request. See the
  :  documentation of the type requestType in the schema definition.
@@ -207,27 +229,38 @@ declare function http:send-request-deterministic(
 (:~
  : This function sends an HTTP request and returns the corresponding 
  : response. It supports HTTP multi-part messages.
+ :
+ : <p>
+ : If the content type of a request is html, http-client will tidy it
  : If the content type of a request is html, http-client will tidy it
  : automatically. If you want to prevent that, you can also set your
  : own by settin the override-media-type attribute in the http:request
  : element.
  : When tidying, it will use the follwong tidy options:
- : - TidyXmlOut=yes
- : - TidyDoctypeMode=TidyDoctypeOmit
- : - TidyQuoteNbsp=yes
- : - TidyCharEncoding="utf8"
- : - TidyNewline="LF"
+ : <ul>
+ :   <li>TidyXmlOut=yes</li>
+ :   <li>TidyDoctypeMode=TidyDoctypeOmit</li>
+ :   <li>TidyQuoteNbsp=yes</li>
+ :   <li>TidyCharEncoding="utf8"</li>
+ :   <li>TidyNewline="LF"</li>
+ : </ul>
+ : </p>
+ :
+ : <p>
  : Please also referr to the official documentation at
  : <a href="http://expath.org/modules/http-client.html">expath.org</a>
  : For further information (especially about the http:request and
  : http:response elements) see also the xml schema and its annotations
  : (located in $zorba_install_dir/modules/org/expath/ns/).
+ : </p>
  : 
+ : <p>
  : Also note that the function is  declared as nondeterministic but not
  : sequential. Usually, this function will be used for retrieving resources
  : using HTTP GET or HEAD which are known to change during the execution of
  : the query, i.e. return a different result with each invocation of the
  : function.
+ : </p>
  :
  : @param $request Contains the various parameters of the request. See the
  :  documentation of the type requestType in the schema definition.
