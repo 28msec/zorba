@@ -312,7 +312,7 @@ void xqpStringStore::serialize(serialization::Archiver &ar)
 /*******************************************************************************
 
 ********************************************************************************/
-size_type xqpStringStore::numChars() const
+xqpStringStore::size_type xqpStringStore::numChars() const
 {
   return theString.size();
 }
