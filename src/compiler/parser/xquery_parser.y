@@ -430,7 +430,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token RETURN                           "'return'"
 %token RPAR                             "')'"
 %token SATISFIES                        "'satisfies'"
-%token SCHEMA_ATTRIBUTE_LPAR            "'<schema attribute ('"
 %token SELF                             "'self'"
 %token SEMI                             "';'"
 %token SLASH                            "'/'"
@@ -1026,7 +1025,7 @@ bool validate_collection_properties(
     xquery_driver& driver)
 {
   XQUERY_ERROR err = CollectionDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
-  if (err != XQ_NO_ERROR) 
+  if (err != XQ_NO_ERROR)
   {
     driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc),
                                        err,
@@ -1045,7 +1044,7 @@ bool validate_index_properties(
     xquery_driver& driver)
 {
   XQUERY_ERROR err = AST_IndexDecl::validatePropertyList(static_cast<DeclPropertyList*>(props));
-  if (err != XQ_NO_ERROR) 
+  if (err != XQ_NO_ERROR)
   {
     driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc),
                                        err,
@@ -1860,7 +1859,7 @@ IndexDecl :
     }
   | DECLARE DeclPropertyList INDEX QNAME ON NODES PathExpr BY IndexKeyList
     {
-      if (!validate_index_properties($2, @$, $4, driver)) 
+      if (!validate_index_properties($2, @$, $4, driver))
       {
         delete $2; delete $4; delete $7; delete $9; // these need to be deleted explicitly, as bison does not free them
         YYERROR;
@@ -1890,7 +1889,7 @@ IndexKeyList :
 ;
 
 IndexKeySpec :
-    PathExpr 
+    PathExpr
     {
       $$ = new IndexKeySpec(LOC(@$), $1, NULL, NULL);
     }
@@ -4907,9 +4906,9 @@ AttributeTest
 
 // [129]
 SchemaAttributeTest
-    :   SCHEMA_ATTRIBUTE_LPAR QNAME RPAR
+    :   SCHEMA_ATTRIBUTE LPAR QNAME RPAR
         {
-            $$ = new SchemaAttributeTest( LOC(@$), static_cast<QName*>($2) );
+            $$ = new SchemaAttributeTest( LOC(@$), static_cast<QName*>($3) );
         }
     ;
 

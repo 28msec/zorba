@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,7 @@
 
 #include <zorba/util/file.h>
 
-#if ! defined (WIN32) && ! defined (APPLE) && ! defined (__FreeBSD__)
+#if !defined (WIN32) && !defined (APPLE) && !defined (__FreeBSD__) && !defined(_XOPEN_SOURCE)
 #define _XOPEN_SOURCE 600  // getcwd
 #endif
 
@@ -29,7 +29,7 @@
 #endif
 #include <stdio.h>
 
-#if defined (WIN32) 
+#if defined (WIN32)
 #include <tchar.h>
 #ifndef _WIN32_WCE
 #include <io.h>
@@ -111,8 +111,8 @@ filesystem_path::resolve_relative ()
   if (! is_complete ()) {
 #ifdef WIN32
     // call GetFullPathName as per
-    // http://msdn.microsoft.com/en-us/library/aa364963(VS.85).aspx 
-    
+    // http://msdn.microsoft.com/en-us/library/aa364963(VS.85).aspx
+
 #ifndef WINCE//for win ce don't bother with relative paths
     char fullpath[1024];
     fullpath[0] = 0;
@@ -296,11 +296,11 @@ enum file::filetype file::get_filetype() {
       return (type = type_non_existent);
     }
     error(__FUNCTION__,"stat failed on " +get_path ());
-  } 
+  }
   size  = st.st_size;
   return (type  = (st.st_mode & S_IFDIR)  ? type_directory :
                   (st.st_mode & S_IFREG ) ? type_file :
-                  //(st.st_mode & S_IFLNK)  ? type_link : 
+                  //(st.st_mode & S_IFLNK)  ? type_link :
                   type_invalid );
 
 #else
@@ -336,7 +336,7 @@ enum file::filetype file::get_filetype() {
     CloseHandle(hFile);
     return type;
   }
-#endif  
+#endif
 }
 
 time_t
@@ -364,7 +364,7 @@ void file::create() {
   int fd = ::creat(c_str(),0666);
   if (fd < 0) error(__FUNCTION__, "failed to create file " + get_path ());
   ::close(fd);
-  set_filetype(type_file); 
+  set_filetype(type_file);
 #else
 #ifdef UNICODE
   TCHAR path_str[1024];
@@ -374,19 +374,19 @@ void file::create() {
 #else
   const char  *path_str = c_str();
 #endif
-  HANDLE fd = CreateFile(path_str,GENERIC_READ | GENERIC_WRITE, 
+  HANDLE fd = CreateFile(path_str,GENERIC_READ | GENERIC_WRITE,
                       FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
                       CREATE_ALWAYS, 0, NULL);
-  if (fd == INVALID_HANDLE_VALUE) 
+  if (fd == INVALID_HANDLE_VALUE)
     error(__FUNCTION__, "failed to create file " + get_path ());
   CloseHandle(fd);
-  set_filetype(type_file); 
+  set_filetype(type_file);
 #endif
 }
 
 
 void file::mkdir() {
-#if ! defined (WIN32) 
+#if ! defined (WIN32)
   if (::mkdir(c_str(),0777)) {
     ostringstream oss;
     oss<<"mkdir failed ["<<strerror(errno) << "]"<<"] for: " << get_path ();
@@ -424,7 +424,7 @@ void file::deep_mkdir () {
 }
 
 void file::remove(bool ignore) {
-#if ! defined (WIN32) 
+#if ! defined (WIN32)
   if (::remove(c_str())) {
     if (!ignore) {
       error(__FUNCTION__, "failed to remove " + get_path ());
@@ -453,7 +453,7 @@ void file::remove(bool ignore) {
 
 
 void file::rmdir(bool ignore) {
-#if ! defined (WIN32) 
+#if ! defined (WIN32)
   if (::rmdir(c_str())) {
     if (!ignore) {
       error(__FUNCTION__, "rmdir failed on " + get_path ());
@@ -480,7 +480,7 @@ void file::rmdir(bool ignore) {
 #ifndef _WIN32_WCE
 void file::chdir() {
   if (!is_directory()) return;
-#if ! defined (WIN32) 
+#if ! defined (WIN32)
   if (::chdir(c_str())) {
     error(__FUNCTION__, "chdir failed on " + get_path ());
   }
@@ -493,7 +493,7 @@ void file::chdir() {
 #endif
 
 void file::rename(std::string const& newpath) {
-#if ! defined (WIN32) 
+#if ! defined (WIN32)
   if (::rename(c_str(), newpath.c_str())) {
     ostringstream oss;
     oss << get_path () << " to " << newpath;

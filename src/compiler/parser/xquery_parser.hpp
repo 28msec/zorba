@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 34 of lalr1.cc  */
-#line 31 "/Users/markuspilman/work/zorba_svn/src/compiler/parser/xquery_parser.y"
+#line 31 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
 
 #include <list>
@@ -113,7 +113,7 @@ public:
 
 
 /* Line 34 of lalr1.cc  */
-#line 117 "/Users/markuspilman/work/zorba_svn/build/src/compiler/parser/xquery_parser.hpp"
+#line 117 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -124,14 +124,14 @@ public:
 namespace zorba {
 
 /* Line 34 of lalr1.cc  */
-#line 128 "/Users/markuspilman/work/zorba_svn/build/src/compiler/parser/xquery_parser.hpp"
+#line 128 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
 } // zorba
 
 /* Line 34 of lalr1.cc  */
-#line 135 "/Users/markuspilman/work/zorba_svn/build/src/compiler/parser/xquery_parser.hpp"
+#line 135 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -176,7 +176,7 @@ do {							\
 namespace zorba {
 
 /* Line 34 of lalr1.cc  */
-#line 180 "/Users/markuspilman/work/zorba_svn/build/src/compiler/parser/xquery_parser.hpp"
+#line 180 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -188,7 +188,7 @@ namespace zorba {
     {
 
 /* Line 34 of lalr1.cc  */
-#line 195 "/Users/markuspilman/work/zorba_svn/src/compiler/parser/xquery_parser.y"
+#line 195 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -212,7 +212,7 @@ namespace zorba {
 
 
 /* Line 34 of lalr1.cc  */
-#line 216 "/Users/markuspilman/work/zorba_svn/build/src/compiler/parser/xquery_parser.hpp"
+#line 216 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -399,143 +399,142 @@ namespace zorba {
      RETURN = 432,
      RPAR = 433,
      SATISFIES = 434,
-     SCHEMA_ATTRIBUTE_LPAR = 435,
-     SELF = 436,
-     SEMI = 437,
-     SLASH = 438,
-     SLASH_SLASH = 439,
-     STAR = 440,
-     START_TAG_END = 441,
-     STRIP = 442,
-     TAG_END = 443,
-     THEN = 444,
-     TO = 445,
-     TREAT = 446,
-     UNION = 447,
-     UNORDERED = 448,
-     VAL_EQ = 449,
-     VAL_GE = 450,
-     VAL_GT = 451,
-     VAL_LE = 452,
-     VAL_LT = 453,
-     VAL_NE = 454,
-     VALUECOMP = 455,
-     VBAR = 456,
-     EMPTY_SEQUENCE = 457,
-     WHERE = 458,
-     XML_COMMENT_BEGIN = 459,
-     XML_COMMENT_END = 460,
-     XQUERY = 461,
-     VERSION = 462,
-     END_PRAGMA = 463,
-     START = 464,
-     AFTER = 465,
-     BEFORE = 466,
-     REVALIDATION = 467,
-     _STRICT = 468,
-     LAX = 469,
-     SKIP = 470,
-     _DELETE = 471,
-     NODE = 472,
-     INSERT = 473,
-     NODES = 474,
-     RENAME = 475,
-     REPLACE = 476,
-     VALUE = 477,
-     OF = 478,
-     FIRST = 479,
-     INTO = 480,
-     LAST = 481,
-     MODIFY = 482,
-     COPY = 483,
-     WITH = 484,
-     BLOCK = 485,
-     BREAK = 486,
-     CONTINUE = 487,
-     EXIT = 488,
-     LOOP = 489,
-     RETURNING = 490,
-     WHILE = 491,
-     TRY = 492,
-     CATCH = 493,
-     USING = 494,
-     ALL = 495,
-     ANY = 496,
-     CONTAINS = 497,
-     CONTENT = 498,
-     DIACRITICS = 499,
-     DIFFERENT = 500,
-     DISTANCE = 501,
-     END = 502,
-     ENTIRE = 503,
-     EXACTLY = 504,
-     FROM = 505,
-     FTAND = 506,
-     FTNOT = 507,
-     NOT = 508,
-     FT_OPTION = 509,
-     FTOR = 510,
-     INSENSITIVE = 511,
-     LANGUAGE = 512,
-     LEVELS = 513,
-     LOWERCASE = 514,
-     OCCURS = 515,
-     PARAGRAPH = 516,
-     PARAGRAPHS = 517,
-     PHRASE = 518,
-     RELATIONSHIP = 519,
-     SAME = 520,
-     SCORE = 521,
-     SENSITIVE = 522,
-     SENTENCE = 523,
-     SENTENCES = 524,
-     STEMMING = 525,
-     STOP = 526,
-     THESAURUS = 527,
-     TIMES = 528,
-     UPPERCASE = 529,
-     WEIGHT = 530,
-     WILDCARDS = 531,
-     WINDOW = 532,
-     WITHOUT = 533,
-     WORDS = 534,
-     COLLECTION = 535,
-     CONSTOPT = 536,
-     APPEND_ONLY = 537,
-     QUEUE = 538,
-     MUTABLE = 539,
-     READ_ONLY = 540,
-     UNIQUE = 541,
-     NON = 542,
-     INDEX = 543,
-     MANUALLY = 544,
-     AUTOMATICALLY = 545,
-     MAINTAINED = 546,
-     ON = 547,
-     RANGE = 548,
-     EQUALITY = 549,
-     GENERAL = 550,
-     INTEGRITY = 551,
-     CONSTRAINT = 552,
-     CHECK = 553,
-     KEY = 554,
-     FOREACH = 555,
-     FOREIGN = 556,
-     KEYS = 557,
-     BYTE_ORDER_MARK_UTF8 = 558,
-     RANGE_REDUCE = 559,
-     ADDITIVE_REDUCE = 560,
-     MULTIPLICATIVE_REDUCE = 561,
-     UNION_REDUCE = 562,
-     INTERSECT_EXCEPT_REDUCE = 563,
-     QVARINDECLLIST_REDUCE = 564,
-     COMMA_DOLLAR = 565,
-     UNARY_PREC = 566,
-     SEQUENCE_TYPE_REDUCE = 567,
-     OCCURS_STAR = 568,
-     OCCURS_PLUS = 569,
-     OCCURS_HOOK = 570,
-     STEP_REDUCE = 571
+     SELF = 435,
+     SEMI = 436,
+     SLASH = 437,
+     SLASH_SLASH = 438,
+     STAR = 439,
+     START_TAG_END = 440,
+     STRIP = 441,
+     TAG_END = 442,
+     THEN = 443,
+     TO = 444,
+     TREAT = 445,
+     UNION = 446,
+     UNORDERED = 447,
+     VAL_EQ = 448,
+     VAL_GE = 449,
+     VAL_GT = 450,
+     VAL_LE = 451,
+     VAL_LT = 452,
+     VAL_NE = 453,
+     VALUECOMP = 454,
+     VBAR = 455,
+     EMPTY_SEQUENCE = 456,
+     WHERE = 457,
+     XML_COMMENT_BEGIN = 458,
+     XML_COMMENT_END = 459,
+     XQUERY = 460,
+     VERSION = 461,
+     END_PRAGMA = 462,
+     START = 463,
+     AFTER = 464,
+     BEFORE = 465,
+     REVALIDATION = 466,
+     _STRICT = 467,
+     LAX = 468,
+     SKIP = 469,
+     _DELETE = 470,
+     NODE = 471,
+     INSERT = 472,
+     NODES = 473,
+     RENAME = 474,
+     REPLACE = 475,
+     VALUE = 476,
+     OF = 477,
+     FIRST = 478,
+     INTO = 479,
+     LAST = 480,
+     MODIFY = 481,
+     COPY = 482,
+     WITH = 483,
+     BLOCK = 484,
+     BREAK = 485,
+     CONTINUE = 486,
+     EXIT = 487,
+     LOOP = 488,
+     RETURNING = 489,
+     WHILE = 490,
+     TRY = 491,
+     CATCH = 492,
+     USING = 493,
+     ALL = 494,
+     ANY = 495,
+     CONTAINS = 496,
+     CONTENT = 497,
+     DIACRITICS = 498,
+     DIFFERENT = 499,
+     DISTANCE = 500,
+     END = 501,
+     ENTIRE = 502,
+     EXACTLY = 503,
+     FROM = 504,
+     FTAND = 505,
+     FTNOT = 506,
+     NOT = 507,
+     FT_OPTION = 508,
+     FTOR = 509,
+     INSENSITIVE = 510,
+     LANGUAGE = 511,
+     LEVELS = 512,
+     LOWERCASE = 513,
+     OCCURS = 514,
+     PARAGRAPH = 515,
+     PARAGRAPHS = 516,
+     PHRASE = 517,
+     RELATIONSHIP = 518,
+     SAME = 519,
+     SCORE = 520,
+     SENSITIVE = 521,
+     SENTENCE = 522,
+     SENTENCES = 523,
+     STEMMING = 524,
+     STOP = 525,
+     THESAURUS = 526,
+     TIMES = 527,
+     UPPERCASE = 528,
+     WEIGHT = 529,
+     WILDCARDS = 530,
+     WINDOW = 531,
+     WITHOUT = 532,
+     WORDS = 533,
+     COLLECTION = 534,
+     CONSTOPT = 535,
+     APPEND_ONLY = 536,
+     QUEUE = 537,
+     MUTABLE = 538,
+     READ_ONLY = 539,
+     UNIQUE = 540,
+     NON = 541,
+     INDEX = 542,
+     MANUALLY = 543,
+     AUTOMATICALLY = 544,
+     MAINTAINED = 545,
+     ON = 546,
+     RANGE = 547,
+     EQUALITY = 548,
+     GENERAL = 549,
+     INTEGRITY = 550,
+     CONSTRAINT = 551,
+     CHECK = 552,
+     KEY = 553,
+     FOREACH = 554,
+     FOREIGN = 555,
+     KEYS = 556,
+     BYTE_ORDER_MARK_UTF8 = 557,
+     RANGE_REDUCE = 558,
+     ADDITIVE_REDUCE = 559,
+     MULTIPLICATIVE_REDUCE = 560,
+     UNION_REDUCE = 561,
+     INTERSECT_EXCEPT_REDUCE = 562,
+     QVARINDECLLIST_REDUCE = 563,
+     COMMA_DOLLAR = 564,
+     UNARY_PREC = 565,
+     SEQUENCE_TYPE_REDUCE = 566,
+     OCCURS_STAR = 567,
+     OCCURS_PLUS = 568,
+     OCCURS_HOOK = 569,
+     STEP_REDUCE = 570
    };
 
     };
@@ -709,7 +708,7 @@ namespace zorba {
 } // zorba
 
 /* Line 34 of lalr1.cc  */
-#line 713 "/Users/markuspilman/work/zorba_svn/build/src/compiler/parser/xquery_parser.hpp"
+#line 712 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
 
 
