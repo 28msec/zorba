@@ -771,6 +771,13 @@ typedef enum
 
   FTDY0017, // Invalid expression on the left-hand side of a not-in
 
+  FTST0009,
+  // It may be a static error if, during the static analysis phase, the query
+  // is found to contain a language identifier in a language option that the
+  // implementation does not support. The implementation may choose not to
+  // raise this error and instead provide some other implementation-defined
+  // behavior.
+
   //
   // ZORBA errors
   //

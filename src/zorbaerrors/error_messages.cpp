@@ -101,6 +101,7 @@ DEF_ERR_CODE(FOUP0001, FOUP0001, "It is a dynamic error if the first operand of 
 DEF_ERR_CODE(FOUP0002, FOUP0002, "It is a dynamic error if the second operand of fn:put is not a valid lexical representation of the xs:anyURI type.")
 
 DEF_ERR_CODE(FTDY0017, FTDY0017, "Invalid expression on the left-hand side of a not-in.")
+DEF_ERR_CODE(FTST0009, FTST0009, "Unsupported language: {/s}")
 
 //
 // Serialization Errors

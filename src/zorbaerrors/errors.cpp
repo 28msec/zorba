@@ -222,7 +222,8 @@ bool ZorbaError::isXQueryStaticError() const
   return ((XQST0009 <= theErrorCode && theErrorCode <= XQST0093) ||
           (XUST0001 <= theErrorCode && theErrorCode <= XUST0003) ||
           theErrorCode == XUST0028 ||
-          (XDST0000_MIN <= theErrorCode && theErrorCode <= XDST0000_MAX));
+          (XDST0000_MIN <= theErrorCode && theErrorCode <= XDST0000_MAX)) ||
+	  theErrorCode == FTST0009;
 }
 
   
