@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,14 +35,14 @@
 #include "zorbautils/indent.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-UDFGraph::UDFGraph(expr* e) 
+UDFGraph::UDFGraph(expr* e)
   :
   theExpr(e),
   theNodes(32, false),
@@ -129,7 +129,7 @@ void UDFGraph::build(const expr* curExpr, std::vector<user_function*>& callChain
   }
 
   ExprConstIterator iter(curExpr);
-  while (!iter.done()) 
+  while (!iter.done())
   {
     build(iter.get_expr(), callChain);
 
@@ -190,7 +190,7 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
   user_function* udf = node->theUDF;
   expr_t body = udf->getBody();
 
-  while (true)
+  while (body != NULL)           // was while (true), the body can be NULL when using Plan Serialization
   {
     RewriterContext rctx(ccb, body);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
@@ -254,7 +254,10 @@ bool UDFGraph::inferDeterminism(UDFNode* node, ulong visit)
   {
     if (deterministic)
     {
-      deterministic = !node->theUDF->getBody()->is_nondeterministic();
+      if (node->theUDF->getBody() != NULL) // Body can be NULL when using Plan Serialization. In this case nondeterministic is already computed
+        deterministic = !node->theUDF->getBody()->is_nondeterministic();
+      else
+        deterministic = node->theUDF->isDeterministic();
     }
 
     node->theUDF->setDeterministic(deterministic);
