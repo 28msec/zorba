@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-IF(COMMAND cmake_policy)
+IF(COMMAND cmake_policy AND POLICY CMP0009)
   # Note: We'd like to set this to NEW, but unfortunately CMake 2.6.4 is
   # simply broken in this regard and will not follow symlinks even when
   # FOLLOW_SYMLINKS is specified. Even more unfortunately, setting it to
@@ -21,7 +21,7 @@ IF(COMMAND cmake_policy)
   # work, and leaving FOLLOW_SYMLINKS in the FILE(GLOB_RECURSE) calls
   # as a reminder that symlinks will be followed.
   CMAKE_POLICY(SET CMP0009 OLD)
-ENDIF(COMMAND cmake_policy)
+ENDIF(COMMAND cmake_policy AND POLICY CMP0009)
 
 MESSAGE(STATUS "Adding tests for CTest")
 INCLUDE(ZorbaAddTest)
