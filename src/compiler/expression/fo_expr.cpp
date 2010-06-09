@@ -189,9 +189,14 @@ void fo_expr::compute_scripting_kind()
 
       expr_script_kind_t argKind = theArgs[i]->get_scripting_kind();
 
-      if (argKind == UPDATE_EXPR || argKind == SEQUENTIAL_EXPR)
+      if (argKind == UPDATE_EXPR)
       {
         ZORBA_ERROR_LOC(XUST0001, theArgs[i]->get_loc());
+      }
+      if (argKind == SEQUENTIAL_EXPR)
+      {
+        ZORBA_ERROR_LOC_DESC(XUST0001, theArgs[i]->get_loc(),
+            "A sequential expression is not allowed at this position.");
       }
     }
   }

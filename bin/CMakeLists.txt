@@ -77,4 +77,8 @@ IF (BUILDING_SIMPLESTORE)
   # test for bug #2934414
   ZORBA_ADD_TEST_ALLSTORES(bin/zorba_compilechk3 zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/mymod2.xq" -f -l -x)
   ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_compilechk3 PASS_REGULAR_EXPRESSION ".*XQST0046.*mymod2.xq' lineStart='1' columnStart='1' lineEnd='1' columnEnd='1'.*")
+
+  # check error message for sequential expressions used in a wrong location
+  ZORBA_ADD_TEST_ALLSTORES(bin/zorba_sequential_err_msg zorbacmd -q "${CMAKE_CURRENT_SOURCE_DIR}/test/sequential_expr_err.xq" -f -l -x)
+  ZORBA_SET_TEST_PROPERTY_ALLSTORES(bin/zorba_sequential_err_msg PASS_REGULAR_EXPRESSION ".*XUST0001.*lineStart='6' columnStart='9' lineEnd='6' columnEnd='9'.*>A sequential expression is not allowed at this position.")
 ENDIF(BUILDING_SIMPLESTORE)
