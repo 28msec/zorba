@@ -1,1 +1,1 @@
-fn:base-uri(fn:parse("<a xml:base='foo'/>", "http://example.org/"))
+fn:base-uri(fn:parse("<a xml:base='foo'/>", "http://example.org/")/a)

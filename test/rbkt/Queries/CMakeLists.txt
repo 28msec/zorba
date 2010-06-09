@@ -242,6 +242,4 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic1 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic3 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic4 2962715)
 
-EXPECTED_FAILURE(test/rbkt/zorba/xquery11/parse3 3013096)
-EXPECTED_FAILURE(test/rbkt/zorba/xquery11/parse4 3013096)
 # --------------------------------------------------------------------------

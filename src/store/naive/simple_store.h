@@ -233,12 +233,14 @@ public:
   store::IC* getIC(const store::Item* icQName);
 
   store::Item_t loadDocument(
-        const xqpStringStore_t& uri,
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& docUri,
         std::istream& stream,
         bool storeDocument);
 
   store::Item_t loadDocument(
-        const xqpStringStore_t& uri,
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& docUri,
         std::istream* stream,
         bool storeDocument);
 

@@ -196,7 +196,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocFunc/fn-doc-28
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocFunc/fn-doc-23
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocFunc/fn-doc-27
 test/rbkt/w3c_testsuite/XQuery/Functions/AccessorFunc/DataFunc/fn-datamixedcontent-1
-test/rbkt/w3c_testsuite/XQuery/Functions/AccessorFunc/BaseURIFunc/K2-BaseURIFunc-21
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeFunc/NodeLangFunc/K2-NodeLangFunc-2
 test/rbkt/w3c_testsuite/XQuery/Functions/TraceFunc/fn-trace-10
 test/rbkt/w3c_testsuite/XQuery/Functions/TraceFunc/fn-trace-4

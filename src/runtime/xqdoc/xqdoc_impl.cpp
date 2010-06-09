@@ -98,7 +98,10 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
     lInput.str(lOutput.str());
 
-    result = GENV_STORE.loadDocument(lFileName.theStrStore, lInput, false);
+    result = GENV_STORE.loadDocument(lFileName.theStrStore,
+                                     lFileName.theStrStore,
+                                     lInput,
+                                     false);
 
     STACK_PUSH(true, state);
   }

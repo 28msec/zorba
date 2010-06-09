@@ -104,7 +104,8 @@ public:
   virtual ~XmlLoader() {}
 
   virtual store::Item_t loadXml(
-        const xqpStringStore_t& docuri,
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& docUri,
         std::istream& xmlStream) = 0;
 };
 
@@ -213,13 +214,26 @@ class NsBindingsContext;
 ********************************************************************************/
 class FastXmlLoader : public XmlLoader
 {
+  struct PathStepInfo
+  {
+    ElementNode    * theNode;
+    xqpStringStore * theBaseUri;
+
+    PathStepInfo(ElementNode* node, xqpStringStore* uri)
+      :
+      theNode(node),
+      theBaseUri(uri) 
+    {
+    }
+  };
+
 protected:
   XmlTree                        * theTree;
   OrdPathStack                     theOrdPath;
 
   XmlNode                        * theRootNode;
   zorba::Stack<XmlNode*>           theNodeStack;
-  zorba::Stack<ElementNode*>       thePathStack;
+  zorba::Stack<PathStepInfo>       thePathStack;
   std::stack<NsBindingsContext*>   theBindingsStack;
 
 #ifdef DATAGUIDE
@@ -234,7 +248,10 @@ public:
 
   ~FastXmlLoader();
 
-  store::Item_t loadXml(const xqpStringStore_t& uri, std::istream& xmlStream);
+  store::Item_t loadXml(
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& uri,
+        std::istream& xmlStream);
 
 protected:
   void abortload();
@@ -290,16 +307,21 @@ public:
 
   static void warning(void * ctx, const char * msg, ... );
 
-  static xmlEntityPtr	getEntity	(void * ctx, 					 
-                                 const xmlChar * name);
-  static xmlEntityPtr getParameterEntity (void *ctx,
-				                          const xmlChar *name);
-  static void entityDecl (void *ctx,
-				  const xmlChar *name,
-				  int type,
-				  const xmlChar *publicId,
-				  const xmlChar *systemId,
-				  xmlChar *content);
+  static xmlEntityPtr	getEntity(
+        void * ctx, 					 
+        const xmlChar * name);
+
+  static xmlEntityPtr getParameterEntity(
+        void *ctx,
+        const xmlChar *name);
+
+  static void entityDecl(
+        void *ctx,
+        const xmlChar *name,
+        int type,
+        const xmlChar *publicId,
+        const xmlChar *systemId,
+        xmlChar *content);
 };
 
 

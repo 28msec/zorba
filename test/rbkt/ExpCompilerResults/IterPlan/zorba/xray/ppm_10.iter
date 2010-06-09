@@ -2,6 +2,34 @@ Iterator tree for main query:
 <SequentialIterator>
   <SequentialIterator>
     <CtxVarDeclIterator>
+      <SingletonIterator value="xs:string(413:width)"/>
+    </CtxVarDeclIterator>
+    <CtxVarAssignIterator>
+      <SingletonIterator value="xs:string(413:width)"/>
+      <SingletonIterator value="xs:integer(10)"/>
+    </CtxVarAssignIterator>
+  </SequentialIterator>
+  <TreatIterator type="xs:integer" quant="">
+    <CtxVarIterator>
+      <SingletonIterator value="xs:string(413:width)"/>
+    </CtxVarIterator>
+  </TreatIterator>
+  <SequentialIterator>
+    <CtxVarDeclIterator>
+      <SingletonIterator value="xs:string(414:height)"/>
+    </CtxVarDeclIterator>
+    <CtxVarAssignIterator>
+      <SingletonIterator value="xs:string(414:height)"/>
+      <SingletonIterator value="xs:integer(10)"/>
+    </CtxVarAssignIterator>
+  </SequentialIterator>
+  <TreatIterator type="xs:integer" quant="">
+    <CtxVarIterator>
+      <SingletonIterator value="xs:string(414:height)"/>
+    </CtxVarIterator>
+  </TreatIterator>
+  <SequentialIterator>
+    <CtxVarDeclIterator>
       <SingletonIterator value="xs:string(415:scene)"/>
     </CtxVarDeclIterator>
     <CtxVarAssignIterator>
@@ -17,34 +45,6 @@ Iterator tree for main query:
       </UDFunctionCallIterator>
     </CtxVarAssignIterator>
   </SequentialIterator>
-  <SequentialIterator>
-    <CtxVarDeclIterator>
-      <SingletonIterator value="xs:string(414:height)"/>
-    </CtxVarDeclIterator>
-    <CtxVarAssignIterator>
-      <SingletonIterator value="xs:string(414:height)"/>
-      <SingletonIterator value="xs:integer(10)"/>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
-  <TreatIterator type="xs:integer" quant="">
-    <CtxVarIterator>
-      <SingletonIterator value="xs:string(414:height)"/>
-    </CtxVarIterator>
-  </TreatIterator>
-  <SequentialIterator>
-    <CtxVarDeclIterator>
-      <SingletonIterator value="xs:string(413:width)"/>
-    </CtxVarDeclIterator>
-    <CtxVarAssignIterator>
-      <SingletonIterator value="xs:string(413:width)"/>
-      <SingletonIterator value="xs:integer(10)"/>
-    </CtxVarAssignIterator>
-  </SequentialIterator>
-  <TreatIterator type="xs:integer" quant="">
-    <CtxVarIterator>
-      <SingletonIterator value="xs:string(413:width)"/>
-    </CtxVarIterator>
-  </TreatIterator>
   <FnConcatIterator>
     <StringJoinIterator>
       <FnConcatIterator>

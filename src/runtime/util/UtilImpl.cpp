@@ -49,13 +49,14 @@ NARY_ACCEPT(ZorbaTDocIterator);
 bool
 ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  store::Item_t       item, itemOpt;
-  xqp_string          xmlString, diag;
-  xqpStringStore_t    buf(new xqpStringStore(""));
-  xqpStringStore_t    options;
-  std::istringstream  is(std::istringstream::in);
+  store::Item_t item, itemOpt;
+  xqp_string xmlString, diag;
+  xqpStringStore_t docUri = new xqpStringStore("");
+  xqpStringStore_t baseUri = theSctx->get_base_uri();
+  xqpStringStore_t options;
+  std::istringstream is(std::istringstream::in);
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (consumeNext(item, theChildren[0].getp(), planState))
@@ -64,11 +65,14 @@ ZorbaTidyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       consumeNext(itemOpt, theChildren[1].getp(), planState))
       options = itemOpt->getStringValue();
 
-    if( tidy(item->getStringValue()->c_str(), xmlString, diag, (theChildren.size() > 1?options->c_str():NULL)) >= 0)
+    if( tidy(item->getStringValue()->c_str(),
+             xmlString,
+             diag,
+             (theChildren.size() > 1?options->c_str():NULL)) >= 0)
     {
       //if tidy returns a value >0 a warning should be raised
       is.str(xmlString);
-      result = GENV_STORE.loadDocument(buf, is, false);
+      result = GENV_STORE.loadDocument(baseUri, docUri, is, false);
       STACK_PUSH(result != NULL, state);
     }
     else

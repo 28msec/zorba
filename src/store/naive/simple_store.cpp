@@ -923,28 +923,28 @@ store::Iterator_t SimpleStore::listCollectionNames()
 
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
-    const xqpStringStore_t& uri,
+    const xqpStringStore_t& baseUri,
+    const xqpStringStore_t& docUri,
     std::istream& stream,
     bool storeDocument)
 {
-  if (uri == NULL)
+  if (docUri == NULL)
     return NULL;
 
-  const xqpStringStore* urip = uri.getp();
+  const xqpStringStore* urip = docUri.getp();
 
   XmlNode_t root;
   bool found = theDocuments.get(urip, root);
 
   if (found)
   {
-    //+ daniel theDocuments.remove(uri);
     return root.getp();
   }
 
   error::ErrorManager lErrorManager;
   std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
 
-  root = loader->loadXml(uri, stream);
+  root = loader->loadXml(baseUri, docUri, stream);
   if (lErrorManager.hasErrors())
   {
     ZORBA_ERROR_PARAM(lErrorManager.getErrors().front().theErrorCode,
@@ -964,14 +964,16 @@ store::Item_t SimpleStore::loadDocument(
   by Zorba.
 ********************************************************************************/
 store::Item_t SimpleStore::loadDocument(
-    const xqpStringStore_t& uri,
+    const xqpStringStore_t& baseUri,
+    const xqpStringStore_t& docUri,
     std::istream* stream,
     bool storeDocument)
 {
   store::Item_t docitem;
-  try{
+  try
+  {
     //do full loading for now
-    docitem = loadDocument(uri, *stream, storeDocument);
+    docitem = loadDocument(baseUri, docUri, *stream, storeDocument);
     delete stream;
   }
   catch(...)

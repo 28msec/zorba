@@ -278,7 +278,7 @@ class XmlNode : public store::Item
 {
   friend class XmlTree;
   friend class XmlNodeTokenizer;
-
+  friend class NodeFactory;
   friend class InternalNode;
   friend class DocumentNode;
   friend class ElementNode;
@@ -321,19 +321,14 @@ public:
   };
 
 protected:
-  //XmlTree  * theTree;
   OrdPath           theOrdPath;
   InternalNode    * theParent;
   uint32_t          theFlags;
 
-  mutable XmlTree::FTTokenIndex_t theBeginTokenIndex, theEndTokenIndex;
+  mutable XmlTree::FTTokenIndex_t theBeginTokenIndex;
+  mutable XmlTree::FTTokenIndex_t theEndTokenIndex;
 
-  bool hasTokens() const {
-    return theBeginTokenIndex != theEndTokenIndex;
-  }
-
-  // make sure that only created by the factory
-  friend class NodeFactory;
+protected:
 
   XmlNode(store::StoreConsts::NodeKind nodeKind)
     :
@@ -351,14 +346,22 @@ protected:
         store::StoreConsts::NodeKind nodeKind);
 
   XmlNode()
-    : theParent(0)
+    :
+    theParent(0)
   {
     initTokens();
   }
 
-  void initTokens() {
+  void initTokens() 
+  {
     theBeginTokenIndex = theEndTokenIndex = 0;
   }
+
+  bool hasTokens() const 
+  {
+    return theBeginTokenIndex != theEndTokenIndex;
+  }
+
 
 public:
 #ifndef NDEBUG
@@ -591,10 +594,9 @@ protected:
 ********************************************************************************/
 class DocumentNode : public InternalNode
 {
-protected:
-  //friend class FastXmlLoader;
-  // make sure that only created by the factory
   friend class NodeFactory;
+
+protected:
   DocumentNode(
         XmlTree*                tree,
         const xqpStringStore_t& baseUri,
@@ -830,14 +832,13 @@ class AttributeNode : public XmlNode
   friend class ElementNode;
   friend class FastXmlLoader;
   friend class UpdSetAttributeType;
+  friend class NodeFactory;
 
 protected:
   store::Item_t   theName;
   store::Item_t   theTypeName;
   store::Item_t   theTypedValue;
 
-  // make sure that only created by the factory
-  friend class NodeFactory;
   AttributeNode(store::Item_t&  attrName);
 
   AttributeNode(
@@ -931,12 +932,12 @@ class TextNode : public XmlNode
   friend class FastXmlLoader;
   friend class UpdInsertChildren;
   friend class UpdSetElementType;
+  friend class NodeFactory;
 
 protected:
   TextNodeContent theContent;
 
-  // make sure that only created by the factory
-  friend class NodeFactory;
+protected:
   TextNode(xqpStringStore_t& content);
 
   TextNode(
@@ -1031,15 +1032,15 @@ class PiNode : public XmlNode
 {
   friend class XmlNode;
   friend class FastXmlLoader;
+  friend class NodeFactory;
 
- protected:
+protected:
   xqpStringStore_t theTarget;
   xqpStringStore_t theContent;
 
   store::Item_t    theName;
 
-  // make sure that only created by the factory
-  friend class NodeFactory;
+protected:
   PiNode(xqpStringStore_t& target, xqpStringStore_t& content);
 
   PiNode(
@@ -1089,12 +1090,12 @@ class CommentNode : public XmlNode
 {
   friend class XmlNode;
   friend class FastXmlLoader;
+  friend class NodeFactory;
 
 protected:
   xqpStringStore_t theContent;
 
-  // make sure that only created by the factory
-  friend class NodeFactory;
+protected:
   CommentNode(xqpStringStore_t& content);
 
   CommentNode(

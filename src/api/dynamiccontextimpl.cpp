@@ -277,8 +277,9 @@ DynamicContextImpl::setVariableAsDocument(
     TypeManager* tm = theStaticContext->get_typemanager();
 
     xqpStringStore_t docUri = Unmarshaller::getInternalString(aDocUri);
+    xqpStringStore_t baseUri = theStaticContext->get_base_uri();
 
-    store::Item_t docItem = GENV_STORE.loadDocument(docUri, *(aStream.get()));
+    store::Item_t docItem = GENV_STORE.loadDocument(baseUri, docUri, *(aStream.get()));
 
 #ifndef ZORBA_NO_XMLSCHEMA
     if (!docItem->isValidated())
@@ -313,7 +314,7 @@ DynamicContextImpl::setVariableAsDocument(
     else if (tm->getSchema() == NULL || aMode == validate_skip)
     {
       GENV_STORE.deleteDocument(docUri);
-      docItem = GENV_STORE.loadDocument(docUri, *(aStream.get()));
+      docItem = GENV_STORE.loadDocument(baseUri, docUri, *(aStream.get()));
     }
 #endif
 
@@ -346,19 +347,20 @@ DynamicContextImpl::setContextItem ( const Item& aItem )
 
 
 bool
-DynamicContextImpl::setContextItemAsDocument (
+DynamicContextImpl::setContextItemAsDocument(
     const String& aDocURI,
-    std::auto_ptr<std::istream> aInStream )
+    std::auto_ptr<std::istream> aInStream)
 {
   ZORBA_DCTX_TRY
   {
     checkNoIterators();
 
-    xqpStringStore* lInternalDocURI = Unmarshaller::getInternalString(aDocURI);
+    xqpStringStore* docUri = Unmarshaller::getInternalString(aDocURI);
+    xqpStringStore_t baseUri = theStaticContext->get_base_uri();
 
-    store::Item_t lDocItem = GENV_STORE.loadDocument(lInternalDocURI, *(aInStream.get()));
+    store::Item_t docItem = GENV_STORE.loadDocument(baseUri, docUri, *(aInStream.get()));
 
-    setContextItem ( Item(lDocItem) );
+    setContextItem ( Item(docItem) );
     return true;
   }
   ZORBA_DCTX_CATCH
@@ -367,31 +369,28 @@ DynamicContextImpl::setContextItemAsDocument (
 
 
 bool
-DynamicContextImpl::setContextItemAsDocument (
+DynamicContextImpl::setContextItemAsDocument(
     const String& aDocURI)
 {
   ZORBA_DCTX_TRY
   {
     checkNoIterators();
 
-    xqpString uriString (Unmarshaller::getInternalString(aDocURI));
-    InternalDocumentURIResolver   *uri_resolver;
+    xqpStringStore_t uriString = Unmarshaller::getInternalString(aDocURI);
+
+    InternalDocumentURIResolver* uri_resolver;
     uri_resolver = theStaticContext->get_document_uri_resolver();
 
-    store::Item_t   uriItem;
+    store::Item_t uriItem;
+    GENV_ITEMFACTORY->createAnyURI(uriItem, uriString);
 
-    zorba::store::ItemFactory* item_factory = GENV_ITEMFACTORY;
-
-    xqpStringStore_t uriStore = uriString.getStore();
-    item_factory->createAnyURI(uriItem, uriStore);
-
-    store::Item_t   docItem;
+    store::Item_t docItem;
     docItem = uri_resolver->resolve(uriItem, theStaticContext, true, false);
 
     if(docItem.isNull())
       return false;
 
-    return setContextItem ( Item(docItem) );
+    return setContextItem(Item(docItem));
   }
   ZORBA_DCTX_CATCH
   return false;

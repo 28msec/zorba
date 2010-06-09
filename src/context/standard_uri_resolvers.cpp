@@ -60,6 +60,8 @@ StandardDocumentURIResolver::resolve(
 
   store::Store& lStore = GENV.getStore();
 
+  xqpStringStore_t baseUri = aStaticContext->get_base_uri();
+
   xqpString lURIString = xqpString(&*aURI->getStringValue());
   URI lURI(lURIString.getStore(), validate);
 
@@ -84,17 +86,19 @@ StandardDocumentURIResolver::resolve(
     {
 #ifdef ZORBA_WITH_TIDY
       std::stringstream out;
-      xqp_string        diag;
-      int res = tidy(lInStream, out, diag, (NULL != tidyUserOpt? tidyUserOpt->getStringValue()->c_str(): NULL));
-      if( res < 0){
+      xqp_string diag;
+      int res = tidy(lInStream,
+                     out,
+                     diag,
+                     (NULL != tidyUserOpt ?
+                      tidyUserOpt->getStringValue()->c_str() :
+                      NULL));
+      if( res < 0)
+      {
         ZORBA_ERROR_DESC_OSS(API0036_TIDY_ERROR, diag.c_str());
       }
-      /*
-        else if(res > 0){
-        //raise a warning
-      }*/
 
-      lResultDoc = lStore.loadDocument(lURI.toString(), out);
+      lResultDoc = lStore.loadDocument(baseUri, lURI.toString(), out);
 #else
       ZORBA_ASSERT(!tidying);
 #endif
@@ -102,7 +106,7 @@ StandardDocumentURIResolver::resolve(
     else
     {
       // parse exception must be caught by the caller
-      lResultDoc = lStore.loadDocument(lURI.toString(), lInStream);
+      lResultDoc = lStore.loadDocument(baseUri, lURI.toString(), lInStream);
     }
 
     // result can't be null, because we already asked the store if he has it
@@ -120,7 +124,8 @@ StandardDocumentURIResolver::resolve(
     int result = http_get(lURI.toString()->c_str(), iss);
 
     if (result != 0)
-      ZORBA_ERROR_DESC_OSS(FODC0002, "File not found or accessible. Could not make HTTP call");
+      ZORBA_ERROR_DESC_OSS(FODC0002,
+                           "File not found or accessible. Could not make HTTP call");
 
     if (tidying)
     {
@@ -133,12 +138,8 @@ StandardDocumentURIResolver::resolve(
       {
         ZORBA_ERROR_DESC_OSS(API0036_TIDY_ERROR, diag.c_str());
       }
-      /*
-        else if(res > 0){
-        //raise a warning
-      }*/
 
-      lResultDoc = lStore.loadDocument(lURI.toString(), out);
+      lResultDoc = lStore.loadDocument(baseUri, lURI.toString(), out);
 #else
       ZORBA_ASSERT(!tidying);
 #endif
@@ -146,7 +147,7 @@ StandardDocumentURIResolver::resolve(
     else
     {
       // parse exception must be caught by the caller
-      lResultDoc = lStore.loadDocument(lURI.toString(), iss);
+      lResultDoc = lStore.loadDocument(baseUri, lURI.toString(), iss);
     }
 
     // result can't be null, because we already asked the store if he has it

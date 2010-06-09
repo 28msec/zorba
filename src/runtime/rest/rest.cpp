@@ -274,6 +274,7 @@ int processReply(const QueryLoc& aLoc,
   xqpString content_type;
   store::Item_t payload, error_node, headers_node, text_code, status_code;
   store::Item_t doc = NULL;
+  xqpStringStore_t baseUri = sctx->get_base_uri();
 
   createNodeHelper(NULL, planState, sctx, "result", &result); 
   createNodeHelper(result, planState, sctx, "status-code", &status_code);
@@ -362,108 +363,113 @@ int processReply(const QueryLoc& aLoc,
     switch (doc_type)
     {
     case 4:
-      {
-        store::Item_t temp;
+    {
+      store::Item_t temp;
 
-        if(tidyUserOpt == NULL)
+      if(tidyUserOpt == NULL)
+      {
+        std::istream is(theStreamBuffer);
+        try 
         {
-          std::istream is(theStreamBuffer);
-          try {
-            temp = GENV_STORE.loadDocument(lUriString.theStrStore, is, false);
-          }
-          catch(error::ZorbaError& lError) {
-            ZORBA_ERROR_LOC_DESC(lError.theErrorCode, aLoc, "Malformed REST response.");
-          }
+          temp = GENV_STORE.loadDocument(baseUri, lUriString.theStrStore, is, false);
         }
-        else
+        catch(error::ZorbaError& lError) 
         {
+          ZORBA_ERROR_LOC_DESC(lError.theErrorCode, aLoc, "Malformed REST response.");
+        }
+      }
+      else
+      {
 #ifdef ZORBA_WITH_TIDY
-          std::string         input;
-          char                lBuf[1024];
-          int                 lRes = 0;
-          xqp_string          diag, strOut;
-
-          std::istream lStream(theStreamBuffer);
-          while ( (lRes = readSome(lStream, lBuf, 1023)) > 0 ) {
-            lBuf[lRes] = 0;
-            input += lBuf;
-          }
-
-          int res = tidy(input.c_str(), strOut, diag, (NULL != tidyUserOpt? tidyUserOpt: NULL));
-          if( res < 0){
-            ZORBA_ERROR_DESC_OSS(API0036_TIDY_ERROR, diag.c_str());
-          }
-
-          std::istringstream is(strOut, istringstream::in);
-#else
-		      std::istream is(theStreamBuffer);
-#endif
-          temp = GENV_STORE.loadDocument(lUriString.theStrStore, is, false);
-        }
+        std::string         input;
+        char                lBuf[1024];
+        int                 lRes = 0;
+        xqp_string          diag, strOut;
         
-        if (temp != NULL)
+        std::istream lStream(theStreamBuffer);
+        while ( (lRes = readSome(lStream, lBuf, 1023)) > 0 ) 
         {
-          store::Iterator_t doc_children = temp->getChildren();
-          doc_children->open();
-          CopyMode copyMode;
-          copyMode.theDoCopy = false;
-          while (doc_children->next(doc))
-            doc->copy(payload, -1, copyMode);
+          lBuf[lRes] = 0;
+          input += lBuf;
         }
-        else
-        {
-          // xml could not parsed
-          ZORBA_ERROR(STR0021_LOADER_PARSING_ERROR);
+
+        int res = tidy(input.c_str(), strOut, diag, (NULL != tidyUserOpt? tidyUserOpt: NULL));
+        if( res < 0){
+          ZORBA_ERROR_DESC_OSS(API0036_TIDY_ERROR, diag.c_str());
         }
+
+        std::istringstream is(strOut, istringstream::in);
+#else
+        std::istream is(theStreamBuffer);
+#endif
+        temp = GENV_STORE.loadDocument(baseUri, lUriString.theStrStore, is, false);
       }
-      break;
+        
+      if (temp != NULL)
+      {
+        store::Iterator_t doc_children = temp->getChildren();
+        doc_children->open();
+        CopyMode copyMode;
+        copyMode.theDoCopy = false;
+        while (doc_children->next(doc))
+          doc->copy(payload, -1, copyMode);
+      }
+      else
+      {
+        // xml could not parsed
+        ZORBA_ERROR(STR0021_LOADER_PARSING_ERROR);
+      }
+    }
+    break;
+
     case 3:  // xml
+    {
+      store::Item_t temp;
+      std::istream is(theStreamBuffer);
+      temp = GENV_STORE.loadDocument(baseUri, lUriString.theStrStore, is, false);
+      if (temp != NULL)
       {
-        store::Item_t temp;
-        std::istream is(theStreamBuffer);
-        temp = GENV_STORE.loadDocument(lUriString.theStrStore, is, false);
-		    if (temp != NULL)
-        {
-          store::Iterator_t doc_children = temp->getChildren();
-          doc_children->open();
-          CopyMode copyMode;
-          copyMode.theDoCopy = false;
-          while (doc_children->next(doc)) {
-            doc->copy(payload, -1, copyMode);
-          }
-        }
-        else
-        {
-          // xml could not be parsed
-          ZORBA_ERROR(STR0021_LOADER_PARSING_ERROR);
+        store::Iterator_t doc_children = temp->getChildren();
+        doc_children->open();
+        CopyMode copyMode;
+        copyMode.theDoCopy = false;
+        while (doc_children->next(doc)) {
+          doc->copy(payload, -1, copyMode);
         }
       }
-      break;
-
+      else
+      {
+        // xml could not be parsed
+        ZORBA_ERROR(STR0021_LOADER_PARSING_ERROR);
+      }
+    }
+    break;
+    
     case 2:  // text
-      {
-        store::Item_t temp_item;
-        stringstream str;
-        str << theStreamBuffer;
-        xqpString temp = str.str();
-        GENV_ITEMFACTORY->createTextNode(temp_item, payload, -1, temp.theStrStore);
-      }
-      break;
-
+    {
+      store::Item_t temp_item;
+      stringstream str;
+      str << theStreamBuffer;
+      xqpString temp = str.str();
+      GENV_ITEMFACTORY->createTextNode(temp_item, payload, -1, temp.theStrStore);
+    }
+    break;
+    
     case 1:  // base64
-      {
-        store::Item_t temp_item;
-        xqp_base64Binary base64;
-        std::istream is(theStreamBuffer);
-        xqpString temp = Base64::encode(is);
-        GENV_ITEMFACTORY->createTextNode(temp_item, payload, -1, temp.theStrStore);
-      }
-      break;
+    {
+      store::Item_t temp_item;
+      xqp_base64Binary base64;
+      std::istream is(theStreamBuffer);
+      xqpString temp = Base64::encode(is);
+      GENV_ITEMFACTORY->createTextNode(temp_item, payload, -1, temp.theStrStore);
+    }
+    break;
     }
   }
     
   return 0;
 }
+
 
 static size_t getHeaderData(void *ptr, size_t size, size_t nmemb, void *aState)
 {

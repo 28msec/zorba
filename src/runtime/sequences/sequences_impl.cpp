@@ -1695,20 +1695,28 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
 bool UtilsParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Store& lStore = GENV.getStore();
-  xqpString         docString;
-  xqpStringStore_t  tmpString(new xqpStringStore(""));
+  xqpStringStore_t docString;
+  xqpStringStore_t baseUri = theSctx->get_base_uri();
+  xqpStringStore_t docUri = new xqpStringStore("");
   std::auto_ptr<std::istringstream> iss;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
-  consumeNext (result, theChildren [0].getp (), planState);
-  docString = result->getStringValueP ();
-  iss.reset (new std::istringstream (docString.c_str()));
-  try {
-    result = lStore.loadDocument(tmpString, *iss, false);
-  } catch (error::ZorbaError& e) {
+
+  consumeNext(result, theChildren[0].getp(), planState);
+
+  docString = result->getStringValue();
+  iss.reset(new std::istringstream(docString->c_str()));
+
+  try 
+  {
+    result = lStore.loadDocument(baseUri, docUri, *iss, false);
+  }
+  catch (error::ZorbaError& e)
+  {
     ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
   }
+
   STACK_PUSH(true, state);
   STACK_END (state);
 }
@@ -1719,8 +1727,9 @@ bool UtilsParseIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Store& lStore = GENV.getStore();
-  xqpString         docString;
-  xqpStringStore_t  baseUri;
+  xqpStringStore_t docString;
+  xqpStringStore_t baseUri;
+  xqpStringStore_t docUri = new xqpStringStore("");
   std::auto_ptr<std::istringstream> iss;
 
   PlanIteratorState* state;
@@ -1728,21 +1737,27 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
   consumeNext (result, theChildren [0].getp (), planState);
 
-  docString = result->getStringValueP ();
-  iss.reset (new std::istringstream (docString.c_str()));
+  docString = result->getStringValue();
+  iss.reset (new std::istringstream (docString->c_str()));
 
   // optional base URI argument
-  if (theChildren.size() == 2) {
+  if (theChildren.size() == 2)
+  {
     consumeNext(result, theChildren[1].getp(), planState);
     ZORBA_ASSERT(result);
-    baseUri = result->getStringValueP();
-  } else {
+    baseUri = result->getStringValue();
+  }
+  else
+  {
     baseUri = theSctx->get_base_uri();
   }
 
-  try {
-    result = lStore.loadDocument(baseUri, *iss, false);
-  } catch (error::ZorbaError& e) {
+  try 
+  {
+    result = lStore.loadDocument(baseUri, docUri, *iss, false);
+  }
+  catch (error::ZorbaError& e)
+  {
     ZORBA_ERROR_LOC_DESC(FODC0006, loc, e.theDescription);
   }
   STACK_PUSH(true, state);

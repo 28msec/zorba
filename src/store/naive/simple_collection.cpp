@@ -74,8 +74,9 @@ store::Item_t SimpleCollection::loadDocument(
   error::ErrorManager lErrorManager;
   std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
   xqpStringStore_t docUri;
+  xqpStringStore_t baseUri;
 
-  store::Item_t root = loader->loadXml(docUri, stream);
+  store::Item_t root = loader->loadXml(baseUri, docUri, stream);
 
   if (lErrorManager.hasErrors()) 
   {

@@ -145,6 +145,8 @@ void FastXmlLoader::abortload()
       node->destroy();
   }
 
+  thePathStack.clear();
+
 #ifdef DATAGUIDE
   if(!theGuideStack.empty())
   {
@@ -168,6 +170,7 @@ void FastXmlLoader::abortload()
     xmlCtxtReset(ctxt);
     xmlFreeParserCtxt(ctxt);
   }
+
   ctxt = NULL;
 }
 
@@ -234,26 +237,31 @@ long FastXmlLoader::readPacket(std::istream& stream, char* buf, long size)
 
 ********************************************************************************/
 store::Item_t FastXmlLoader::loadXml(
-    const xqpStringStore_t& uri,
+    const xqpStringStore_t& baseUri,
+    const xqpStringStore_t& docUri,
     std::istream& stream)
 {
-//  xmlParserCtxtPtr ctxt = NULL;
+  //  xmlParserCtxtPtr ctxt = NULL;
   theTree = GET_STORE().getNodeFactory().createXmlTree();
 
-  xmlSubstituteEntitiesDefault (1);
+  xmlSubstituteEntitiesDefault(1);
 
-  if (uri == NULL)
+  if (docUri == NULL)
   {
     std::ostringstream uristream;
     uristream << "zorba://internalDocumentURI-" << theTree->getId();
 
     theDocUri = new xqpStringStore(uristream.str().c_str());
+    thePathStack.push(PathStepInfo(NULL, NULL));
   }
   else
   {
-    theDocUri = uri;
+    theDocUri = docUri;
+    thePathStack.push(PathStepInfo(NULL, baseUri.getp()));
   }
+
   theTree->setDocUri(theDocUri);
+  theTree->setBaseUri(baseUri);
 
   try
   {
@@ -276,7 +284,11 @@ store::Item_t FastXmlLoader::loadXml(
       return NULL;
     }
 
-    ctxt = xmlCreatePushParserCtxt(&theSaxHandler, this, theBuffer, numChars, uri.getp() ? uri->c_str() : NULL);
+    ctxt = xmlCreatePushParserCtxt(&theSaxHandler,
+                                   this,
+                                   theBuffer,
+                                   numChars,
+                                   docUri.getp() ? docUri->c_str() : NULL);
 
     if (ctxt == NULL)
     {
@@ -310,6 +322,7 @@ store::Item_t FastXmlLoader::loadXml(
   catch(...)
   {
     abortload();
+    thePathStack.clear();
     return NULL;
   }
 
@@ -346,6 +359,9 @@ store::Item_t FastXmlLoader::loadXml(
     return NULL;
   }
 
+  thePathStack.pop();
+  assert(thePathStack.empty());
+
   XmlNode* resultNode;
   resultNode = theRootNode;
   reset();
@@ -370,7 +386,7 @@ void FastXmlLoader::startDocument(void * ctx)
     loader.setRoot(docNode);
     loader.theNodeStack.push(docNode);
     loader.theNodeStack.push(NULL);
-
+    
 #ifdef DATAGUIDE
     if (loader.theBuildDataGuide)
     {
@@ -516,7 +532,8 @@ void FastXmlLoader::startElement(
   ZORBA_LOADER_CHECK_ERROR(loader);
   QNamePool& qnpool = store.getQNamePool();
   zorba::Stack<XmlNode*>& nodeStack = loader.theNodeStack;
-  zorba::Stack<ElementNode*>& pathStack = loader.thePathStack;
+  zorba::Stack<PathStepInfo>& pathStack = loader.thePathStack;
+  xqpStringStore_t baseUri;
 
   try
   {
@@ -586,18 +603,14 @@ void FastXmlLoader::startElement(
 
     // Check for recursiveness, i.e., whether this node is a descendant of
     // another noide with the same name
-    for (long i = pathStack.size() - 1; i >= 0; --i)
+    for (long i = pathStack.size() - 1; i >= 1; --i)
     {
-      if (pathStack[i]->theName->equals(elemNode->theName))
+      if (pathStack[i].theNode->theName->equals(elemNode->theName))
       {
-        pathStack[i]->setRecursive();
+        pathStack[i].theNode->setRecursive();
         break;
       }
     }
-
-    nodeStack.push((XmlNode*)elemNode);
-    nodeStack.push(NULL);
-    pathStack.push(elemNode);
 
     // Assign the current node id to this node, and compute the next node id.
     elemNode->setId(loader.theTree, &loader.theOrdPath);
@@ -665,9 +678,18 @@ void FastXmlLoader::startElement(
 
         if (attrNode->isBaseUri())
         {
-          xqpStringStore_t baseUri = attrNode->theTypedValue->getStringValue();
-          xqpStringStore_t nullUri;
-          elemNode->addBaseUriProperty(baseUri, nullUri);
+          baseUri = pathStack.top().theBaseUri;
+          xqpStringStore_t localUri = attrNode->theTypedValue->getStringValue();
+          if (baseUri == NULL)
+          {
+            elemNode->addBaseUriProperty(localUri, baseUri);
+          }
+          else
+          {
+            elemNode->addBaseUriProperty(baseUri, localUri);
+          }
+
+          baseUri = elemNode->getBaseURI();
         }
 
         loader.theOrdPath.nextChild();
@@ -682,6 +704,10 @@ void FastXmlLoader::startElement(
                       << attrNode->getOrdPath().show() << std::endl);
       }
     }
+
+    nodeStack.push((XmlNode*)elemNode);
+    nodeStack.push(NULL);
+    pathStack.push(PathStepInfo(elemNode, baseUri.getp()));
   }
   catch (error::ZorbaError& e)
   {
@@ -714,7 +740,7 @@ void  FastXmlLoader::endElement(
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
 
-  zorba::Stack<ElementNode*>& pathStack = loader.thePathStack;
+  zorba::Stack<PathStepInfo>& pathStack = loader.thePathStack;
   zorba::Stack<XmlNode*>& nodeStack = loader.theNodeStack;
   ulong stackSize = nodeStack.size();
   ulong firstChildPos;
@@ -1022,7 +1048,7 @@ void FastXmlLoader::error(void * ctx, const char * msg, ... )
   vsprintf(buf, msg, args);
   va_end(args);
   ZORBA_ERROR_DESC_CONTINUE(loader->theErrorManager,
-    STR0021_LOADER_PARSING_ERROR, buf);
+                            STR0021_LOADER_PARSING_ERROR, buf);
 }
 
 
@@ -1044,8 +1070,13 @@ void FastXmlLoader::warning(void * ctx, const char * msg, ... )
   std::cerr << buf << std::endl;
 }
 
-xmlEntityPtr	FastXmlLoader::getEntity	(void * ctx, 					 
-                                         const xmlChar * name)
+
+/*******************************************************************************
+
+********************************************************************************/
+xmlEntityPtr	FastXmlLoader::getEntity(
+    void * ctx, 					 
+    const xmlChar * name)
 {
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
 //  ZORBA_LOADER_CHECK_ERROR(loader);
@@ -1057,19 +1088,23 @@ xmlEntityPtr	FastXmlLoader::getEntity	(void * ctx,
   return xmlGetDocEntity(loader.ctxt->myDoc, name);
 }
 
-xmlEntityPtr FastXmlLoader::getParameterEntity (void *ctx,
-			                          const xmlChar *name)
+
+xmlEntityPtr FastXmlLoader::getParameterEntity(
+    void *ctx,
+    const xmlChar *name)
 {
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   return xmlGetParameterEntity(loader.ctxt->myDoc, name);
 }
 
-void FastXmlLoader::entityDecl (void *ctx,
-				const xmlChar *name,
-				int   type,
-				const xmlChar *publicId,
-				const xmlChar *systemId,
-				xmlChar *content)
+
+void FastXmlLoader::entityDecl(
+    void *ctx,
+    const xmlChar *name,
+    int   type,
+    const xmlChar *publicId,
+    const xmlChar *systemId,
+    xmlChar *content)
 {
   FastXmlLoader& loader = *(static_cast<FastXmlLoader *>( ctx ));
   ZORBA_LOADER_CHECK_ERROR(loader);

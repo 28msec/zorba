@@ -152,13 +152,15 @@ public:
   /**
    * Load a document to the store. The document is loaded from an input stream.
    *
-   * @param uri The uri of the document to load. This uri can be used to refer
+   * @param baseUri The base uri of the document to load.
+   * @param docUri The uri of the document to load. This uri can be used to refer
    *        to the document in the store.
    * @return rchandle to the newly created document or NULL if a document with
    *         the given uri exists already.
    */
   virtual Item_t loadDocument(
-         const xqpStringStore_t& uri,
+         const xqpStringStore_t& baseUri,
+         const xqpStringStore_t& docUri,
          std::istream& stream,
          bool storeDocument = true) = 0;
 
@@ -166,8 +168,9 @@ public:
    * Load a document to the store. The document is loaded from an input stream.
    * Do the lazy loading of document. The stream will be freed by Zorba when finished.
    *
-   * @param uri The uri of the document to load. This uri can be used to refer to
-   *        the document in the store.
+   * @param baseUri The base uri of the document to load.
+   * @param docUri The uri of the document to load. This uri can be used to refer
+   *        to the document in the store.
    * @param stream User heap allocated stream. This will be freed by Zorba when
    *        finishing loading doc.
    * @param storeDocument The optional parameter storeDocument specifies whether
@@ -177,7 +180,8 @@ public:
    *         the given uri exists already.
    */
   virtual Item_t loadDocument(
-        const xqpStringStore_t& uri,
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& docUri,
         std::istream* stream,
         bool storeDocument = true) = 0;
 
