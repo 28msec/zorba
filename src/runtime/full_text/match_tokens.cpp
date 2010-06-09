@@ -63,7 +63,7 @@ bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
   bool qt_is_lower = false;
 
   if ( ftlanguage_option const *const l = options.get_language_option() ) {
-    // string const &lang = l->get_language();
+    // lang::iso639_1::type const lang_code = l->get_language();
     // TODO
   }
 

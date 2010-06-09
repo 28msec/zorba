@@ -40,6 +40,7 @@ namespace zorba {
 
         unknown
       };
+      extern char const *const string_of[];
 
       /**
        * Finds the ISO 639-1 language code enumeration from the given string.
@@ -74,6 +75,7 @@ namespace zorba {
 
         unknown
       };
+      extern char const *const string_of[];
 
       /**
        * Finds the ISO 639-2 language code enumeration from the given string.

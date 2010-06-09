@@ -16,6 +16,8 @@
 
 #include <algorithm>
 
+#include <iostream>
+
 #include "zorbautils/lang.h"
 #include "zorbautils/less.h"
 
@@ -26,31 +28,42 @@ namespace lang {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+inline int find_index( char const *const *begin, char const *const *end,
+                       char const *lang ) {
+  char const *const *const entry =
+    ::lower_bound( begin, end, lang, less<char const*>() );
+  return entry != end && ::strcmp( lang, *entry ) == 0 ? entry - begin : -1;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 namespace iso639_1 {
 
-type find( char const *lang ) {
-  static char const *const table[] = {  // these MUST be in sorted order
-    "da", // Danish
-    "de", // German
-    "en", // English
-    "es", // Spanish
-    "fi", // Finnish
-    "fr", // French
-    "hu", // Hungarian
-    "it", // Italian
-    "nl", // Dutch
-    "no", // Norwegian
-    "pt", // Portuguese
-    "ro", // Romanian
-    "ru", // Russian
-    "sv", // Swedish
-    "tr", // Turkish
-  };
-  static char const *const *const end =
-    table + sizeof( table ) / sizeof( char* );
+char const *const string_of[] = {
+  "da", // Danish
+  "de", // German
+  "en", // English
+  "es", // Spanish
+  "fi", // Finnish
+  "fr", // French
+  "hu", // Hungarian
+  "it", // Italian
+  "nl", // Dutch
+  "no", // Norwegian
+  "pt", // Portuguese
+  "ro", // Romanian
+  "ru", // Russian
+  "sv", // Swedish
+  "tr", // Turkish
+  "unknown"
+};
 
-  char const *const *const entry = ::lower_bound( table, end, lang );
-  return entry != end ? static_cast<type>( entry - table ) : unknown;
+type find( char const *lang ) {
+  static char const *const *const end =
+    string_of + sizeof( string_of ) / sizeof( char* );
+
+  int const index = find_index( string_of, end, lang );
+  return index >= 0 ? static_cast<type>( index ) : unknown;
 }
 
 } // namespace iso639_1
@@ -59,33 +72,35 @@ type find( char const *lang ) {
 
 namespace iso639_2 {
 
-type find( char const *lang ) {
-  static char const *const table[] = {  // these MUST be in sorted order
-    "dan",  // Danish
-    "deu",  // German (T)
-    "dut",  // Dutch (B)
-    "eng",  // English
-    "fin",  // Finnish
-    "fra",  // French (T)
-    "fre",  // French (B)
-    "ger",  // German (B)
-    "hun",  // Hungarian
-    "ita",  // Italian
-    "nld",  // Dutch (T)
-    "nor",  // Norwegian
-    "por",  // Portuguese
-    "ron",  // Romanian (T)
-    "rum",  // Romanian (B)
-    "rus",  // Russian
-    "spa",  // Spanish
-    "swe",  // Swedish
-    "tur",  // Turkish
-  };
-  static char const *const *const end =
-    table + sizeof( table ) / sizeof( char* );
+char const *const string_of[] = {
+  "dan",  // Danish
+  "deu",  // German (T)
+  "dut",  // Dutch (B)
+  "eng",  // English
+  "fin",  // Finnish
+  "fra",  // French (T)
+  "fre",  // French (B)
+  "ger",  // German (B)
+  "hun",  // Hungarian
+  "ita",  // Italian
+  "nld",  // Dutch (T)
+  "nor",  // Norwegian
+  "por",  // Portuguese
+  "ron",  // Romanian (T)
+  "rum",  // Romanian (B)
+  "rus",  // Russian
+  "spa",  // Spanish
+  "swe",  // Swedish
+  "tur",  // Turkish
+  "unknown"
+};
 
-  char const *const *const entry = ::lower_bound( table, end, lang );
-  return entry != end ? static_cast<type>( entry - table ) : unknown;
+type find( char const *lang ) {
+  static char const *const *const end =
+    string_of + sizeof( string_of ) / sizeof( char* );
+
+  int const index = find_index( string_of, end, lang );
+  return index >= 0 ? static_cast<type>( index ) : unknown;
 }
 
 } // namespace iso639_2

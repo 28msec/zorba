@@ -1001,10 +1001,11 @@ void apply_ftwords( FTTokenIterator &search_ctx,
                     ftmatch_options const &options,
                     ft_all_matches &result ) {
 
-  lang::iso639_1::type lang_code = lang::iso639_1::en; // TODO: change
-  if ( ftlanguage_option const *const l = options.get_language_option() ) {
-    // TODO
-  }
+  lang::iso639_1::type lang_code;
+  if ( ftlanguage_option const *const l = options.get_language_option() )
+    lang_code = l->get_language();
+  else
+    lang_code = lang::iso639_1::en; // TODO: change
 
   auto_ptr<ft_stop_words_set const> stop_words;
   if ( ftstop_word_option const *const sw = options.get_stop_word_option() ) {

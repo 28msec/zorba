@@ -26,6 +26,7 @@
 #include "compiler/parsetree/parsenodes.h"
 #include "runtime/base/plan_iterator.h"
 #include "zorbatypes/rchandle.h"
+#include "zorbautils/lang.h"
 
 namespace zorba {
 
@@ -143,11 +144,11 @@ public:
   );
 
   ft_visit_result::type accept( ftnode_visitor& );
-  std::string const& get_language() const { return language_; }
+  lang::iso639_1::type get_language() const { return lang_code_; }
   std::ostream& put( std::ostream& ) const;
 
 private:
-  std::string language_;
+  lang::iso639_1::type lang_code_;
 };
 
 
