@@ -1019,8 +1019,8 @@ void apply_ftwords( FTTokenIterator &search_ctx,
       break;
     case ft_anyall_mode::any_word:
       apply_ftwords_xxx_word(
-        search_ctx, query_items, query_pos, options, stop_words.get(), &apply_ftor,
-        result
+        search_ctx, query_items, query_pos, options, stop_words.get(),
+        &apply_ftor, result
       );
       break;
     case ft_anyall_mode::all:
@@ -1030,8 +1030,8 @@ void apply_ftwords( FTTokenIterator &search_ctx,
       break;
     case ft_anyall_mode::all_words:
       apply_ftwords_xxx_word(
-        search_ctx, query_items, query_pos, options, stop_words.get(), &apply_ftand,
-        result
+        search_ctx, query_items, query_pos, options, stop_words.get(),
+        &apply_ftand, result
       );
       break;
     case ft_anyall_mode::phrase:
