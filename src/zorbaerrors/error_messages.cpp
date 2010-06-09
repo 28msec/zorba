@@ -1051,4 +1051,4 @@ DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code)
 
 } /* namespace error */
 } /* namespace zorba */
-/* vim:set wt sw=2 ts=2: */
+/* vim:set et sw=2 ts=2: */
