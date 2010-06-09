@@ -16,7 +16,7 @@
 
 #include <algorithm>
 
-#include "runtime/full_text/lang.h"
+#include "zorbautils/lang.h"
 #include "zorbautils/less.h"
 
 using namespace std;
@@ -29,7 +29,7 @@ namespace lang {
 namespace iso639_1 {
 
 type find( char const *lang ) {
-  static char const *const table[] = {
+  static char const *const table[] = {  // these MUST be in sorted order
     "da", // Danish
     "de", // German
     "en", // English
@@ -60,7 +60,7 @@ type find( char const *lang ) {
 namespace iso639_2 {
 
 type find( char const *lang ) {
-  static char const *const table[] = {
+  static char const *const table[] = {  // these MUST be in sorted order
     "dan",  // Danish
     "deu",  // German (T)
     "dut",  // Dutch (B)
@@ -93,45 +93,35 @@ type find( char const *lang ) {
 ///////////////////////////////////////////////////////////////////////////////
 
 iso639_1::type find( char const *lang ) {
-  static iso639_1::type const table[] = {
-    iso639_1::da, // Danish
-    iso639_1::de, // German (T)
-    iso639_1::nl, // Dutch (B)
-    iso639_1::en, // English
-    iso639_1::fi, // Finnish
-    iso639_1::fr, // French (T)
-    iso639_1::fr, // French (B)
-    iso639_1::de, // German (B)
-    iso639_1::hu, // Hungarian
-    iso639_1::it, // Italian
-    iso639_1::nl, // Dutch (T)
-    iso639_1::no, // Norwegian
-    iso639_1::pt, // Portuguese
-    iso639_1::ro, // Romanian (T)
-    iso639_1::ro, // Romanian (B)
-    iso639_1::ru, // Russian
-    iso639_1::es, // Spanish
-    iso639_1::sv, // Swedish
-    iso639_1::tr, // Turkish
-  };
-  static iso639_1::type const *const end =
-    table + sizeof( table ) / sizeof( iso639_1::type );
+  using namespace iso639_1;
 
-  iso639_1::type const code_639_1 = iso639_1::find( lang );
-  if ( code_639_1 != iso639_1::unknown )
+  type const code_639_1 = iso639_1::find( lang );
+  if ( code_639_1 != unknown )
     return code_639_1;
 
-  iso639_2::type const code_639_2 = iso639_2::find( lang );
-  if ( code_639_2 != iso639_2::unknown ) {
-    //
-    // Map the ISO 639-2 code to ISO 639-1.
-    //
-    iso639_1::type const *const entry = ::lower_bound( table, end, code_639_1 );
-    if ( entry != end )
-      return *entry;
-  }
-
-  return iso639_1::unknown;
+  static type const iso639_2_to_639_1[] = {
+    da, // dan
+    de, // deu
+    nl, // dut
+    en, // eng
+    fi, // fin
+    fr, // fra
+    fr, // fre
+    de, // ger
+    hu, // hun
+    it, // ita
+    nl, // nld
+    no, // nor
+    pt, // por
+    ro, // ron
+    ro, // rum
+    ru, // rus
+    es, // spa
+    sv, // swe
+    tr, // tur
+    unknown
+  };
+  return iso639_2_to_639_1[ iso639_2::find( lang ) ];
 }
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -21,7 +21,7 @@
 #include <string>
 
 #include "compiler/expression/ftnode.h"
-#include "runtime/full_text/lang.h"
+#include "zorbautils/lang.h"
 
 namespace zorba {
 

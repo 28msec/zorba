@@ -15,7 +15,6 @@
 SET(FULLTEXT_SRCS
     full_text.cpp
     full_text_impl.cpp
-    lang.cpp
     ft_match.cpp
     match_tokens.cpp
     ft_query_item_seq.cpp

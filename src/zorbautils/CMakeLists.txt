@@ -19,6 +19,7 @@ SET(ZORBAUTILS_SRCS
     condition.cpp
     indent.cpp
     latch.cpp
+    lang.cpp
     lock.cpp
     runnable.cpp
     tokenizer.cpp
