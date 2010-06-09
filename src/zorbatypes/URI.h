@@ -100,7 +100,7 @@ protected:
   // true if the constructed URI is valid
   bool                      valid;
 
- public:
+public:
   URI(const xqpStringStore* uri, bool validate = true);
 
   URI(const URI& base_uri, const xqpStringStore* uri, bool validate = true);
