@@ -332,8 +332,7 @@ ZorbaDebuggerClientImpl::addBreakpoint(const String &aFileName, const unsigned i
 {
   xqpString lFilename = Unmarshaller::getInternalString(aFileName);
   QueryLoc loc;
-  std::string lTmp(lFilename);
-  loc.setFilename(&lTmp);
+  loc.setFilename(lFilename);
   loc.setLineBegin(aLineNo);
   theLastId++;
   QueryLocation_t lLocation = addBreakpoint(loc);

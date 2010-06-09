@@ -36,9 +36,9 @@ class CompilerCB;
 class ZORBA_DLL_PUBLIC xquery_driver
 {
 public:
-  std::string theDocComment;
+  std::stringstream theDocComment;
   std::string theMainModuleDocComment;
-  std::string theFilename;
+  xqpString theFilename;
   symbol_table symtab;
   rchandle<parsenode> expr_p;
   CompilerCB* theCompilerCB;

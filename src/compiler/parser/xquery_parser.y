@@ -168,7 +168,7 @@ using namespace zorba;
 %locations
 %initial-action
 {
-    @$.begin.filename = @$.end.filename = &(driver.theFilename);
+    @$.begin.filename = @$.end.filename = &(driver.theFilename.getStore()->str());
 };
 
 

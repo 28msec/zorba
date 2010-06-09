@@ -60,7 +60,7 @@ bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 {
   int ch[3];
 
-  theFilename = aFilename.c_str();
+  theFilename = aFilename;
 
   // process the UTF16 Byte Order Mark = \xEF\xBB\xBF
   if (in.peek() == 0xEF)
@@ -120,7 +120,7 @@ void xquery_driver::set_expr(parsenode* e_p)
 QueryLoc xquery_driver::createQueryLoc(const zorba::location& aLoc)
 {
   QueryLoc lLoc;
-  lLoc.setFilename(aLoc.begin.filename);
+  lLoc.setFilename(aLoc.begin.filename->c_str());
   lLoc.setLineBegin(aLoc.begin.line);
   lLoc.setColumnBegin(aLoc.begin.column);
   lLoc.setLineEnd(aLoc.end.line);

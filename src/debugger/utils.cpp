@@ -55,7 +55,7 @@ namespace zorba { namespace debugger {
           ++it;
         }
       } 
-      loc.setFilename( &filename );
+      loc.setFilename( filename );
       delete lFileName;
     }
 

@@ -342,15 +342,15 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 "::" { return token::DOUBLE_COLON; }
 
 "declare" {
-  std::string lDocComment = theDriver->theDocComment;
+  std::string lDocComment = theDriver->theDocComment.str();
   yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
-  theDriver->theDocComment = "";
+  theDriver->theDocComment.str("");
   return token::DECLARE;
 }
 "module" {
-  std::string lDocComment = theDriver->theDocComment;
+  std::string lDocComment = theDriver->theDocComment.str();
   yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
-  theDriver->theDocComment = "";
+  theDriver->theDocComment.str("");
   return token::MODULE;
 }
 
@@ -701,7 +701,6 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
   return token::PRAGMA_BEGIN;
 }
 
-
   /* push initial state */
   /* ------------------ */
 "{" { PUSH_STATE(INITIAL); return token::LBRACE; }
@@ -889,14 +888,10 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    | of other characters in this state.
    |______________________________________________________________________*/
 
-<MODE_EXPR_DOC_COMMENT>":)" { POP_STATE(); }
-<MODE_EXPR_DOC_COMMENT>.|"\n" {
-  if(theDriver->theDocComment.empty())
-  {
-    theDriver->theMainModuleDocComment = theDriver->theDocComment;
-  }
-  theDriver->theDocComment += yytext;
-}
+<MODE_EXPR_DOC_COMMENT>[^:]* { getDriver()->theDocComment << yytext; }
+<MODE_EXPR_DOC_COMMENT>"\n" { getDriver()->theDocComment << yytext; }
+<MODE_EXPR_DOC_COMMENT>":"+[^)] { getDriver()->theDocComment << yytext; }
+<MODE_EXPR_DOC_COMMENT>":"+")" { POP_STATE(); }
 <MODE_EXPR_DOC_COMMENT><<EOF>> { yylval->err = scanner_error::unterminatedCommentErr(); return token::UNRECOGNIZED; }
 
 

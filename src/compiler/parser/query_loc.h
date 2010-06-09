@@ -42,7 +42,6 @@ private:
   unsigned int theColumnBegin;
   unsigned int theLineEnd;
   unsigned int theColumnEnd;
-  //std::string  theFunctionName;
 
 public:
   SERIALIZABLE_CLASS(QueryLoc)
@@ -57,9 +56,9 @@ public:
   virtual ~QueryLoc() {}
 
 public:
-  xqpString getFilename() const { return theFilename; }
+  const xqpString& getFilename() const { return theFilename; }
  
-  void setFilename(std::string* aFilename) { theFilename = *aFilename; }
+  void setFilename(xqpString aFilename);
 
   unsigned int getLineBegin() const { return theLineBegin; }  
    

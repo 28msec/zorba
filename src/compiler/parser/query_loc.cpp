@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-#include "compiler/parser/query_loc.h"
-
 #include <ostream>
+
+#include "compiler/parser/query_loc.h"
 
 namespace zorba 
 {
@@ -29,7 +29,7 @@ QueryLoc QueryLoc::null;
 
 QueryLoc::QueryLoc()
  :
-  theFilename(""),
+ theFilename(""),
   theLineBegin (0),
   theColumnBegin (0),
   theLineEnd (0),
@@ -60,6 +60,10 @@ void QueryLoc::serialize(::zorba::serialization::Archiver &ar)
   ar & theColumnEnd;
 }
 
+void QueryLoc::setFilename(xqpString aFilename)
+{
+  theFilename = aFilename;
+}
 
 std::ostream& operator<<(std::ostream& aOstr, const QueryLoc& aQueryLoc) 
 {

@@ -234,8 +234,7 @@ namespace zorba{
 		std::cerr << "Test suspended event message" << std::endl;
 
 		QueryLoc loc;
-		std::string lFilename( "data.xq" );
-		loc.setFilename( &lFilename );
+    loc.setFilename( "data.xq" );
 		loc.setLineBegin( 1 );
 		loc.setColumnBegin( 1 );
 		loc.setLineEnd( 1 );
@@ -283,8 +282,7 @@ namespace zorba{
 	{
 		std::cerr << "Test set message" << std::endl;
 		QueryLoc loc;
-		std::string lFilename( "data.xq" );
-		loc.setFilename( &lFilename );
+    loc.setFilename( "data.xq" );
 		loc.setLineBegin( 1 );
 		loc.setColumnBegin( 1 );
 		loc.setLineEnd( 1 );
