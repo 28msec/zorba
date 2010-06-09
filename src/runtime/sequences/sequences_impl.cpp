@@ -1729,6 +1729,7 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   store::Store& lStore = GENV.getStore();
   xqpStringStore_t docString;
   xqpStringStore_t baseUri;
+  URI              lValidatedBaseUri;
   xqpStringStore_t docUri = new xqpStringStore("");
   std::auto_ptr<std::istringstream> iss;
 
@@ -1745,6 +1746,18 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     consumeNext(result, theChildren[1].getp(), planState);
     ZORBA_ASSERT(result);
+    try {
+      lValidatedBaseUri = URI(result->getStringValueP());
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC_OSS(FODC0007, loc,
+          "Base URI passed as second argument to fn:parse is not a valid URI; "
+          << e.theDescription);
+    }
+
+    if (!lValidatedBaseUri.is_absolute()) {
+      ZORBA_ERROR_LOC_DESC(FODC0007, loc,
+          "Base URI passed as second argument to fn:parse is not an absolute URI.");
+    }
     baseUri = result->getStringValue();
   }
   else

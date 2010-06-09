@@ -640,6 +640,8 @@ typedef enum
 
   FODC0006, // content passed to fn:parse is not valid
 
+  FODC0007, // base URI passed to fn:parse is not a valid absolute URI
+
   FODT0001, // = 140, //Overflow/underflow in date/time operation.
 
   FODT0002, //Overflow/underflow in duration operation.

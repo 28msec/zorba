@@ -4,6 +4,7 @@ version 1.4
   * new (non)deterministic send-request functions in the http-client module
   * fixed an issue with a wrong static context being used in eval queries (see bug item #2979317)
   * Added XQuery 1.1 Switch expressions (only available in 1.1 processing mode)
+  * Added the fn:parse function from XQuery Functions and Operators 1.1
 
 version 1.2
   * more introspection functions (e.g. in-scope-element and in-scope-attribute)
