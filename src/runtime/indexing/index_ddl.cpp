@@ -716,6 +716,7 @@ void IndexGeneralPointProbeIterator::serialize(::zorba::serialization::Archiver&
   serialize_baseclass(ar,
   (NaryBaseIterator<IndexGeneralPointProbeIterator,
                     IndexGeneralPointProbeIteratorState>*)this);
+	ar & theCheckKeyType;
 }
 
 

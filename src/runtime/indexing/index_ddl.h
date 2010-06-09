@@ -371,6 +371,7 @@ public:
   {
     serialize_baseclass(ar,
     (NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>*)this);
+	ar & theCheckKeyType;
   }
 
   IndexPointProbeIterator(

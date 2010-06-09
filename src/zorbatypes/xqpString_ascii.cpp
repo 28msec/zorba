@@ -84,7 +84,7 @@ static xqpStringStore_t getXqpString(UnicodeString source)
   Return an UnicodeString (UTF-16 encoded) version of the string.
 ********************************************************************************/
 /*
-static UnicodeString getUnicodeString(const char* aSrc, const ulong aLen)
+static UnicodeString getUnicodeString(const char* aSrc, const size_type aLen)
 {
   UnicodeString lRet;
   UErrorCode lStatus = U_ZERO_ERROR;
@@ -136,7 +136,7 @@ static uint32_t parse_regex_flags(const char* flag_cstr)
   return flags;
 }
 
-xqpStringStore::xqpStringStore(checked_vector<uint32_t> &aCpVector, ulong aStart, ulong aSize)
+xqpStringStore::xqpStringStore(checked_vector<uint32_t> &aCpVector, size_type aStart, size_type aSize)
 {
   checked_vector<uint32_t>::iterator it;
 
@@ -312,7 +312,7 @@ void xqpStringStore::serialize(serialization::Archiver &ar)
 /*******************************************************************************
 
 ********************************************************************************/
-ulong xqpStringStore::numChars() const
+size_type xqpStringStore::numChars() const
 {
   return theString.size();
 }
@@ -320,7 +320,7 @@ ulong xqpStringStore::numChars() const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore::char_type xqpStringStore::charAt(ulong charPos) const
+xqpStringStore::char_type xqpStringStore::charAt(size_type charPos) const
 {
   return theString[charPos];
 }
@@ -331,7 +331,7 @@ xqpStringStore::char_type xqpStringStore::charAt(ulong charPos) const
 checked_vector<uint32_t> xqpStringStore::getCodepoints() const
 {
   checked_vector<uint32_t> tt;
-  ulong vLength;
+  size_type vLength;
   
   vLength = numChars() + 1;
   const unsigned char* c = (unsigned char*)c_str();
@@ -381,7 +381,7 @@ bool xqpStringStore::operator==(xqpStringStore::char_type ch) const
 /*******************************************************************************
 
 ********************************************************************************/
-bool xqpStringStore::byteEqual(const char* other, ulong otherBytes) const
+bool xqpStringStore::byteEqual(const char* other, size_type otherBytes) const
 {
   if(bytes() != otherBytes)
     return false;
@@ -432,7 +432,7 @@ bool xqpStringStore::byteEqual(const xqpStringStore* other) const
 /*******************************************************************************
   Determine if "suffix" is a suffix of "this"
 ********************************************************************************/
-bool xqpStringStore::byteEndsWith(const char* suffix, ulong suffixLen) const
+bool xqpStringStore::byteEndsWith(const char* suffix, size_type suffixLen) const
 {
   std::string::size_type  len = bytes();
   if(suffixLen > len)
@@ -448,13 +448,13 @@ bool xqpStringStore::byteEndsWith(const char* suffix, ulong suffixLen) const
 ********************************************************************************/
 long xqpStringStore::bytePositionOf(
     const char* substr,
-    ulong substrLen,
-    ulong bytePos) const
+    size_type substrLen,
+    size_type bytePos) const
 {
   if (empty())
     return -1;
 
-  ulong lRes = theString.find(substr, bytePos, substrLen);
+  size_type lRes = theString.find(substr, bytePos, substrLen);
   if (lRes == std::string::npos)
     return -1;
   else
@@ -465,7 +465,7 @@ long xqpStringStore::bytePositionOf(
 /*******************************************************************************
 
 ********************************************************************************/
-long xqpStringStore::byteLastPositionOf(const char* substr, ulong substrLen) const
+long xqpStringStore::byteLastPositionOf(const char* substr, size_type substrLen) const
 {
   size_t lRes = theString.rfind(substr, theString.size(), substrLen);
 
@@ -481,8 +481,8 @@ long xqpStringStore::byteLastPositionOf(const char* substr, ulong substrLen) con
   bytePos + lenght - 1
 ********************************************************************************/
 xqpStringStore_t xqpStringStore::byteSubstr(
-    ulong bytePos,
-    ulong length) const
+    size_type bytePos,
+    size_type length) const
 {
   return new xqpStringStore(theString.substr(bytePos, length));
 }
@@ -649,7 +649,7 @@ xqpStringStore_t xqpStringStore::lowercase() const
   given set S of chars. S is defined as the 1st "len" chars in the "start"
   string. 
 ********************************************************************************/
-xqpStringStore_t xqpStringStore::trimL(const char* start, ulong len) const
+xqpStringStore_t xqpStringStore::trimL(const char* start, size_type len) const
 {
   if(empty() || 0 == len)
     return new xqpStringStore(*this);
@@ -690,7 +690,7 @@ xqpStringStore_t xqpStringStore::trimL(const char* start, ulong len) const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t xqpStringStore::trimR(const char* start, ulong len) const
+xqpStringStore_t xqpStringStore::trimR(const char* start, size_type len) const
 {
   if(empty() || 0 == len )
     return new xqpStringStore(*this);
@@ -729,7 +729,7 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, ulong len) const
 /*******************************************************************************
 
 ********************************************************************************/
-xqpStringStore_t xqpStringStore::trim(const char* start, ulong len) const
+xqpStringStore_t xqpStringStore::trim(const char* start, size_type len) const
 {
   if(empty() || 0 == len)
     return new xqpStringStore(*this);
@@ -743,7 +743,7 @@ xqpStringStore_t xqpStringStore::trim(const char* start, ulong len) const
   int   off1 = 0;
   int   off2 = sz-1;
   bool  found = true;
-  ulong   i;
+  size_type   i;
 
   while(c[off1] && found)
   {
@@ -1178,7 +1178,7 @@ const char HEX2DEC[256] =
 void xqpStringStore::encodeForUri(
     xqpStringStore_t& result,
     const char* start,
-    ulong length) const
+    size_type length) const
 {
   const char DEC2HEX[16 + 1] = "0123456789ABCDEF";
 
@@ -1219,9 +1219,9 @@ void xqpStringStore::decodeFromUri(xqpStringStore_t& result) const
 {
   std::ostringstream os;
 
-  ulong srcLen = theString.length();
+  size_type srcLen = theString.length();
 
-  for (ulong i = 0; i < srcLen; ++i) 
+  for (size_type i = 0; i < srcLen; ++i) 
   {
     const char* c = c_str() + i;
 
@@ -1296,7 +1296,7 @@ void xqpStringStore::append_in_place(const char *str)
 /*******************************************************************************
 
 ********************************************************************************/
-void xqpStringStore::append_in_place(const char *str, ulong len)
+void xqpStringStore::append_in_place(const char *str, size_type len)
 {
   theString.append(str, len);
 }

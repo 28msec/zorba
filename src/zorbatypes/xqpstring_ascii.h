@@ -42,6 +42,7 @@ public:
   typedef ptrdiff_t distance_type;
   typedef uint32_t char_type;
 
+  typedef ulong   size_type;
 protected:
   SYNC_CODE(mutable RCLock  theRCLock;)
 
@@ -75,7 +76,7 @@ public:
 
   xqpStringStore(const char* start, const char* end) : theString(start, end) {}
 
-  xqpStringStore(const char* start, ulong len) : theString(start, len) {}
+  xqpStringStore(const char* start, size_type len) : theString(start, len) {}
 
   xqpStringStore(const char* other) : theString(other) {}
 
@@ -93,7 +94,7 @@ public:
     xqpStringStore(aCpVector, 0, aCpVector.size());
   }
 
-  xqpStringStore(checked_vector<uint32_t> &aCpVector, ulong aStart, ulong aSize);
+  xqpStringStore(checked_vector<uint32_t> &aCpVector, size_type aStart, size_type aSize);
 
   ~xqpStringStore();
 
@@ -113,17 +114,17 @@ public:
 
   bool empty() const { return theString.empty(); }
 
-  ulong bytes() const { return theString.size(); }
+  size_type bytes() const { return theString.size(); }
 
-  ulong size() const { return theString.size(); }
+  size_type size() const { return theString.size(); }
 
-  ulong numChars() const;
+  size_type numChars() const;
 
-  char_type charAt(ulong charPos) const;
+  char_type charAt(size_type charPos) const;
 
-  char byteAt (ulong bytePos) const { return str () [bytePos]; }
+  char byteAt(size_type bytePos) const { return theString[bytePos]; }
 
-  char operator[](ulong bytePos) const { return str()[bytePos]; }
+  char operator[](size_type bytePos) const { return theString[bytePos]; }
 
   checked_vector<uint32_t> getCodepoints() const;
 
@@ -141,11 +142,11 @@ public:
 
   bool operator!=(const xqpStringStore& other) const { return !byteEqual(&other); }
 
-  bool byteEqual(const char* other, ulong otherLen) const;
+  bool byteEqual(const char* other, size_type otherLen) const;
 
   bool byteEqual(const xqpStringStore* other) const;
 
-  long byteCompare(const char* other, ulong otherLen)
+  long byteCompare(const char* other, size_type otherLen)
   {
     long res = theString.compare(0, theString.size(), other, otherLen);
     return (res < 0 ? -1 : (res > 0 ? 1 : 0));
@@ -156,40 +157,40 @@ public:
     return byteCompare(other->c_str(), other->bytes());
   }
 
-  long byteCompare(ulong bytePos, ulong numBytes, const char* other) const
+  long byteCompare(size_type bytePos, size_type numBytes, const char* other) const
   {
     int res = theString.compare(bytePos, numBytes, other);
     return (res < 0 ? -1 : (res > 0 ? 1 : 0));
   }
 
   long byteCompare(
-        ulong bytePos,
-        ulong numBytes,
+        size_type bytePos,
+        size_type numBytes,
         const std::string& other,
-        ulong bytePosOther,
-        ulong numBytesOther)
+        size_type bytePosOther,
+        size_type numBytesOther)
   {
     long res = theString.compare(bytePos, numBytes, other, bytePosOther, numBytesOther);
     return (res < 0 ? -1 : (res > 0 ? 1 : 0));
   }
 
-  bool byteStartsWith(const char* prefix, ulong prefixLen)
+  bool byteStartsWith(const char* prefix, size_type prefixLen)
   {
     return byteCompare(0, prefixLen, prefix) == 0;
   }
 
-  bool byteEndsWith(const char* suffix, ulong suffixLen) const;
+  bool byteEndsWith(const char* suffix, size_type suffixLen) const;
 
   long bytePositionOf(const char* substr) const
   {
     return bytePositionOf(substr, strlen(substr), 0);
   }
 
-  long bytePositionOf(const char* substr, ulong substrLen, ulong bytePos) const;
+  long bytePositionOf(const char* substr, size_type substrLen, size_type bytePos) const;
 
-  long byteLastPositionOf(const char* substr, ulong substrLen) const;
+  long byteLastPositionOf(const char* substr, size_type substrLen) const;
 
-  xqpStringStore_t byteSubstr(ulong bytePos, ulong length) const;
+  xqpStringStore_t byteSubstr(size_type bytePos, size_type length) const;
 
   bool equals(const xqpStringStore* src, const XQPCollator* coll = 0) const
   {
@@ -220,11 +221,11 @@ public:
 
   xqpStringStore_t lowercase() const;
 
-  xqpStringStore_t trimL(const char* start, ulong len) const;
+  xqpStringStore_t trimL(const char* start, size_type len) const;
 
-  xqpStringStore_t trimR(const char* start, ulong len) const;
+  xqpStringStore_t trimR(const char* start, size_type len) const;
 
-  xqpStringStore_t trim(const char* start, ulong len) const;
+  xqpStringStore_t trim(const char* start, size_type len) const;
 
   xqpStringStore_t  trimL() const
   {
@@ -263,7 +264,7 @@ public:
   void encodeForUri(
         xqpStringStore_t& result,
         const char* start = NULL,
-        ulong length = 0) const;
+        size_type length = 0) const;
 
   void decodeFromUri(xqpStringStore_t& result) const;
 
@@ -282,7 +283,7 @@ public:
 
   void append_in_place(const char *str);
 
-  void append_in_place(const char *str, ulong len);
+  void append_in_place(const char *str, size_type len);
 
   xqpStringStore& operator+=(const xqpStringStore_t& suffix);
 
@@ -333,8 +334,8 @@ public:
      */
     xqpString(const char* src);
 
-    /**Construct a xqpString given a wchar_t.
-     * @param src %Source wchar_t string
+    /**Construct a xqpString(UTF-8 encoded) given a wchar_t(UCS-4 encoded).
+     * @param src %Source wchar_t string(UCS-4 encoded)
      */
     xqpString(const wchar_t * src);
 
@@ -669,11 +670,12 @@ public:
       tokenize(xqpString pattern, xqpString flags, int32_t *start_pos, bool *hasmatched) const;
 
       /**  Transforms a string encoded as UTF-8 into UCS-4.
-       *  @param source UTF-8 encoded string.
+       *  @param aSrc UTF-8 encoded string.
+       *  @param aDestLen the length of the resulted UCS-4 encoded string.
        *  @return a sequence of wchar_t units(UCS-4 encoded).
        */
       static wchar_t *
-      getWCS(xqpString source, int32_t *aDestLen);
+      getWCS(xqpString aSrc, int32_t *aDestLen);
 
       static wchar_t *
       getWCS(const char * aSrc, const unsigned int aSrcLen, int32_t *aDestLen);

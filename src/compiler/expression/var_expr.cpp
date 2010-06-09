@@ -33,8 +33,8 @@ SERIALIZABLE_CLASS_VERSIONS(var_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(var_expr)
 
 
-ulong var_expr::theVarCounter = 0; //used for giving var_exprs unique ids
-
+ulong    var_expr::theVarCounter = 0; //used for giving var_exprs unique ids
+Mutex    var_expr::theVarCounterMutex;
 
 /*******************************************************************************
 
@@ -81,7 +81,9 @@ var_expr::var_expr(
   theFlworClause(NULL),
   theCopyClause(NULL)
 {
+  theVarCounterMutex.lock();
   theUniqueId = theVarCounter++;
+  theVarCounterMutex.unlock();
 
   compute_scripting_kind();
 
@@ -98,14 +100,21 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(var_kind, theKind);
   ar & theName;
   ar & theDeclaredType;
-  //+ar & theFlworClause;
-  //+ar & theCopyClause;
+  ar & theFlworClause;
+  ar & theCopyClause;
+  //if(!ar.is_serializing_out())
+  //{
+  //  theFlworClause = NULL;
+  //  theCopyClause = NULL;
+  //}
+  ar & theUniqueId;
   if(!ar.is_serializing_out())
   {
-    theFlworClause = NULL;
-    theCopyClause = NULL;
+    theVarCounterMutex.lock();
+    if(theUniqueId >= theVarCounter)
+      theVarCounter = theUniqueId+1;
+    theVarCounterMutex.unlock();
   }
-  ar & theUniqueId;
 }
 
 

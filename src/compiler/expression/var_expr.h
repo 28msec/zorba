@@ -19,6 +19,7 @@
 #include "compiler/expression/expr_base.h"
 
 #include "zorbaserialization/class_serializer.h"
+#include "zorbautils/mutex.h"
 
 namespace zorba {
 
@@ -106,6 +107,7 @@ public:
 
 protected:
   static ulong   theVarCounter;
+  static Mutex   theVarCounterMutex;
 
   ulong          theUniqueId;
 
