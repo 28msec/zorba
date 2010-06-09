@@ -192,6 +192,8 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
 
   while (body != NULL)           // was while (true), the body can be NULL when using Plan Serialization
   {
+    udf->setOptimized(true);     // Set the Optimized flag in advance to prevent an infinte loop (for recursive functions, an optimization could be attempted again)
+
     RewriterContext rctx(ccb, body);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
     body = rctx.getRoot();
@@ -207,8 +209,8 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
         continue;
     }
 #endif
+
     udf->setBody(body);
-    udf->setOptimized(true);
     break;
   }
 
