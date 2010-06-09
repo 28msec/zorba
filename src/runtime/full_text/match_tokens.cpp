@@ -23,6 +23,13 @@ using namespace std;
 
 namespace zorba {
 
+///////////////////////////////////////////////////////////////////////////////
+
+static void stem_word( FTToken::string_t const &ts,
+                       FTToken::string_t &result ) {
+  // TODO: placeholder
+}
+
 static void strip_diacritics( FTToken::string_t const &ts,
                               FTToken::string_t &result ) {
   static xqpStringStore const mode( "NFKD" );
@@ -37,6 +44,8 @@ static void strip_diacritics( FTToken::string_t const &ts,
   }
   result = buf;
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 /**
  * Test whether the 2 given tokens match given the match options.
@@ -101,7 +110,8 @@ bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
 
   if ( ftstem_option const *const s = options.get_stem_option() ) {
     if ( s->get_mode() == ft_stem_mode::with ) {
-      // TODO
+      stem_word( *pdts, dts2 ), pdts = &dts2;
+      stem_word( *pqts, qts2 ), pqts = &qts2;
     }
   }
 
@@ -126,6 +136,8 @@ bool match_tokens( FTToken::string_t const &dts, FTToken::string_t const &qts,
 
   return *pdts == *pqts;
 }
+
+///////////////////////////////////////////////////////////////////////////////
 
 } // namespace zorba
 /* vim:set et sw=2 ts=2: */
