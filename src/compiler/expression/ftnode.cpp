@@ -387,7 +387,7 @@ ftlanguage_option::ftlanguage_option(
 {
   xqpStringStore const xlang( lang );   // stupid hack
   if ( !GenericCast::instance()->castableToLanguage( &xlang ) )
-    ZORBA_ERROR_LOC( XPTY0004, loc );
+    ZORBA_ERROR_LOC_PARAM( XPTY0004, loc, lang, NULL );
 }
 
 void ftlanguage_option::serialize( serialization::Archiver &ar ) {
