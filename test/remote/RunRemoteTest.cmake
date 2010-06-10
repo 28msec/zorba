@@ -62,6 +62,11 @@ include ("${cwd}/SvnPackage.cmake")
 svn_package ("${srcdir}" "${CMAKE_ZORBA_BUILD_DIR}/remotequeue"
              "${changelist}" changefile)
 
+# Testing option: Don't submit job at all if "packageonly" is set
+if (packageonly)
+  message (FATAL_ERROR "Not submitting job as requested!")
+endif ()
+
 # Copy the local changes to the remotequeue svn repository.  In
 # future, we could pass data to the remote queue (such as test suites
 # to run, etc.) with properties on the checkin. For now at least, if
