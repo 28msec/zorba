@@ -13,15 +13,16 @@
 # limitations under the License.
 
 SET(FULLTEXT_SRCS
-    full_text.cpp
-    full_text_impl.cpp
     ft_match.cpp
-    match_tokens.cpp
     ft_query_item_seq.cpp
     ft_single_token_iterator.cpp
+    ft_stemmer.cpp
+    ft_stop_words_set.cpp
+    ft_token_matcher.cpp
     apply.cpp
     ftcontains_visitor.cpp
-    ft_stop_words_set.cpp
+    full_text.cpp
+    full_text_impl.cpp
     stop_words_da.cpp
     stop_words_de.cpp
     stop_words_en.cpp
@@ -35,5 +36,7 @@ SET(FULLTEXT_SRCS
     stop_words_pt.cpp
     stop_words_sv.cpp
     )
+
+ADD_SRC_SUBFOLDER(FULLTEXT_SRCS stemmer LIBSTEMMER_SRCS)
 
 # vim:set et sw=4 ts=4:

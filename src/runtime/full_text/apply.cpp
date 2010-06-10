@@ -23,6 +23,7 @@
 #include "runtime/full_text/apply.h"
 #include "runtime/full_text/ft_single_token_iterator.h"
 #include "runtime/full_text/ft_stop_words_set.h"
+#include "runtime/full_text/ft_token_matcher.h"
 #include "runtime/full_text/ft_token_span.h"
 #include "system/properties.h"
 #include "util/indent.h"
@@ -79,9 +80,6 @@ namespace zorba {
 #endif /* NDEBUG */
 
 ///////////////////////////////////////////////////////////////////////////////
-
-bool match_tokens( FTToken::string_t const&, FTToken::string_t const&,
-                   ftmatch_options const&, ft_stop_words_set const* );
 
 typedef set<ft_token_span::int_t> ft_pos_set;
 
@@ -282,8 +280,7 @@ static void dump( char const *label, FTTokenIterator &it ) {
  */
 static void match_tokens( FTTokenIterator &doc_tokens,
                           FTTokenIterator &query_tokens,
-                          ftmatch_options const &options,
-                          ft_stop_words_set const *stop_words,
+                          ft_token_matcher const &matcher,
                           ft_token_spans &result ) {
 #ifdef DEBUG_FT
   dump( "match_tokens(): d_tokens: ", doc_tokens );
@@ -300,7 +297,7 @@ static void match_tokens( FTTokenIterator &doc_tokens,
         dt_start = dt;
       dt_end = dt;
       all_matched = true;
-      if ( !match_tokens( dt->word, qt->word, options, stop_words ) ) {
+      if ( !matcher.match( dt->word, qt->word ) ) {
         all_matched = false;
         break;
       }
@@ -824,14 +821,13 @@ static ft_string_match::int_t max_query_pos( ft_all_matches const &am ) {
 static void apply_query_tokens_as_phrase( FTTokenIterator &search_ctx,
                                           FTTokenIterator &query_tokens,
                                           FTToken::int_t query_pos,
-                                          ftmatch_options const &options,
-                                          ft_stop_words_set const *stop_words,
+                                          ft_token_matcher const &matcher,
                                           ft_all_matches &result ) {
   BEGIN_APPLY( apply_query_tokens_as_phrase );
   PUT_ARG( query_pos );
 
   ft_token_spans token_spans;
-  match_tokens( search_ctx, query_tokens, options, stop_words, token_spans );
+  match_tokens( search_ctx, query_tokens, matcher, token_spans );
   FOR_EACH( ft_token_spans, ts, token_spans ) {
     ft_string_include si;
     si.pos.start  = ts->pos.start;
@@ -869,8 +865,7 @@ static void make_conj_disj( ft_all_matches const &cur_res,
 static void apply_ftwords_phrase( FTTokenIterator &search_ctx,
                                   FTQueryItemSeq &query_items,
                                   FTToken::int_t query_pos,
-                                  ftmatch_options const &options,
-                                  ft_stop_words_set const *stop_words,
+                                  ft_token_matcher const &matcher,
                                   ft_all_matches &result ) {
   FTQueryItemSeqIterator query_tokens( query_items );
   if ( query_tokens.hasNext() ) {
@@ -878,7 +873,7 @@ static void apply_ftwords_phrase( FTTokenIterator &search_ctx,
     PUT_ARG( query_pos );
 
     apply_query_tokens_as_phrase(
-      search_ctx, query_tokens, query_pos, options, stop_words, result
+      search_ctx, query_tokens, query_pos, matcher, result
     );
 
     END_APPLY( result );
@@ -888,8 +883,7 @@ static void apply_ftwords_phrase( FTTokenIterator &search_ctx,
 static void apply_ftwords_all( FTTokenIterator &search_ctx,
                                FTQueryItemSeq &query_items,
                                FTToken::int_t query_pos,
-                               ftmatch_options const &options,
-                               ft_stop_words_set const *stop_words,
+                               ft_token_matcher const &matcher,
                                ft_all_matches &result ) {
   if ( !query_items.empty() ) {
     BEGIN_APPLY( apply_ftwords_all );
@@ -900,7 +894,7 @@ static void apply_ftwords_all( FTTokenIterator &search_ctx,
 
     ft_all_matches first_am;
     apply_ftwords_phrase(
-      search_ctx, first_query_item, query_pos, options, stop_words, first_am
+      search_ctx, first_query_item, query_pos, matcher, first_am
     );
 
     if ( !query_items.empty() ) {
@@ -909,7 +903,7 @@ static void apply_ftwords_all( FTTokenIterator &search_ctx,
         query_pos = temp_pos + 1;
       ft_all_matches rest_am;
       apply_ftwords_all(
-        search_ctx, query_items, query_pos, options, stop_words, rest_am
+        search_ctx, query_items, query_pos, matcher, rest_am
       );
       apply_ftand( first_am, rest_am, result );
     } else {
@@ -923,8 +917,7 @@ static void apply_ftwords_all( FTTokenIterator &search_ctx,
 static void apply_ftwords_any( FTTokenIterator &search_ctx,
                                FTQueryItemSeq &query_items,
                                FTToken::int_t query_pos,
-                               ftmatch_options const &options,
-                               ft_stop_words_set const *stop_words,
+                               ft_token_matcher const &matcher,
                                ft_all_matches &result ) {
   if ( !query_items.empty() ) {
     BEGIN_APPLY( apply_ftwords_any );
@@ -935,7 +928,7 @@ static void apply_ftwords_any( FTTokenIterator &search_ctx,
 
     ft_all_matches first_am;
     apply_ftwords_phrase(
-      search_ctx, first_query_item, query_pos, options, stop_words, first_am
+      search_ctx, first_query_item, query_pos, matcher, first_am
     );
 
     FTToken::int_t const temp_pos = max_query_pos( first_am );
@@ -943,9 +936,7 @@ static void apply_ftwords_any( FTTokenIterator &search_ctx,
       query_pos = temp_pos + 1;
 
     ft_all_matches rest_am;
-    apply_ftwords_any(
-      search_ctx, query_items, query_pos, options, stop_words, rest_am
-    );
+    apply_ftwords_any( search_ctx, query_items, query_pos, matcher, rest_am );
     if ( rest_am.empty() )
       result.swap( first_am );
     else
@@ -964,8 +955,7 @@ static void apply_ftwords_any( FTTokenIterator &search_ctx,
 static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
                                     FTQueryItemSeq &query_items,
                                     FTToken::int_t query_pos,
-                                    ftmatch_options const &options,
-                                    ft_stop_words_set const *stop_words,
+                                    ft_token_matcher const &matcher,
                                     apply_fn_3arg_t apply_fn,
                                     ft_all_matches &result ) {
   FTQueryItemSeqIterator query_tokens( query_items );
@@ -980,7 +970,7 @@ static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
       FTSingleTokenIterator query_token( *t, query_tokens.begin() + pos );
       ft_all_matches am;
       apply_query_tokens_as_phrase(
-        search_ctx, query_token, query_pos + pos, options, stop_words, am
+        search_ctx, query_token, query_pos + pos, matcher, am
       );
       all_am_seq.push_back( am );
     }
@@ -1000,45 +990,27 @@ void apply_ftwords( FTTokenIterator &search_ctx,
                     ft_anyall_mode::type mode,
                     ftmatch_options const &options,
                     ft_all_matches &result ) {
-
-  lang::iso639_1::type lang_code;
-  if ( ftlanguage_option const *const l = options.get_language_option() )
-    lang_code = l->get_language();
-  else
-    lang_code = lang::iso639_1::en; // TODO: change
-
-  auto_ptr<ft_stop_words_set const> stop_words;
-  if ( ftstop_word_option const *const sw = options.get_stop_word_option() ) {
-    if ( sw->get_mode() != ft_stop_words_mode::without )
-      stop_words.reset( ft_stop_words_set::construct( *sw, lang_code ) );
-  }
-
+  ft_token_matcher const matcher( options );
   switch ( mode ) {
     case ft_anyall_mode::any:
-      apply_ftwords_any(
-        search_ctx, query_items, query_pos, options, stop_words.get(), result
-      );
+      apply_ftwords_any( search_ctx, query_items, query_pos, matcher, result );
       break;
     case ft_anyall_mode::any_word:
       apply_ftwords_xxx_word(
-        search_ctx, query_items, query_pos, options, stop_words.get(),
-        &apply_ftor, result
+        search_ctx, query_items, query_pos, matcher, &apply_ftor, result
       );
       break;
     case ft_anyall_mode::all:
-      apply_ftwords_all(
-        search_ctx, query_items, query_pos, options, stop_words.get(), result
-      );
+      apply_ftwords_all( search_ctx, query_items, query_pos, matcher, result );
       break;
     case ft_anyall_mode::all_words:
       apply_ftwords_xxx_word(
-        search_ctx, query_items, query_pos, options, stop_words.get(),
-        &apply_ftand, result
+        search_ctx, query_items, query_pos, matcher, &apply_ftand, result
       );
       break;
     case ft_anyall_mode::phrase:
       apply_ftwords_phrase(
-        search_ctx, query_items, query_pos, options, stop_words.get(), result
+        search_ctx, query_items, query_pos, matcher, result
       );
       break;
   }

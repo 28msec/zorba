@@ -1,0 +1,5 @@
+This is a stripped-down version of libstemmer_c.
+
++ Removed all non-source files.
++ Removed examples.
++ Removed non-UTF-8 encodings.
