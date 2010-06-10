@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,7 +32,7 @@
 #include "types/typeops.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 SERIALIZABLE_CLASS_VERSIONS(user_function)
@@ -43,14 +43,14 @@ END_SERIALIZABLE_CLASS_VERSIONS(user_function)
 
 ********************************************************************************/
 user_function::user_function(
-    const QueryLoc& loc, 
-    const signature& sig, 
-    expr_t expr_body, 
+    const QueryLoc& loc,
+    const signature& sig,
+    expr_t expr_body,
     expr_script_kind_t scriptingKind)
   :
   function(sig),
-  theLoc(loc), 
-  theBodyExpr(expr_body), 
+  theLoc(loc),
+  theBodyExpr(expr_body),
   theScriptingKind(scriptingKind),
   theIsLeaf(true),
   theIsOptimized(false)
@@ -174,7 +174,7 @@ const std::vector<var_expr_t>& user_function::getArgVars() const
 {
   return theArgVars;
 }
-  
+
 
 /*******************************************************************************
 
@@ -200,9 +200,9 @@ const std::vector<LetVarIter_t>& user_function::getArgVarRefIters() const
 ********************************************************************************/
 PlanIter_t user_function::getPlan(CompilerCB* ccb)
 {
-  if (thePlan == NULL) 
+  if (thePlan == NULL)
   {
-    if (!theIsOptimized)
+    if (!theIsOptimized && ccb->theConfig.opt_level > CompilerCB::config::O0)
     {
       expr_t body = getBody();
       RewriterContext rctx(ccb, body);
@@ -220,7 +220,7 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
     {
       param_map.put((uint64_t)&*theArgVars[i], &param_iter_vec[i]);
     }
-    
+
     const store::Item* lName = getName();
     //lName may be null of inlined functions
     thePlan = zorba::codegen((lName == 0 ?
@@ -230,10 +230,10 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
                              ccb,
                              &param_map);
 
-    for (ulong i = 0; i < param_iter_vec.size(); ++i) 
+    for (ulong i = 0; i < param_iter_vec.size(); ++i)
     {
       std::vector<LetVarIter_t>& vec = param_iter_vec[i];
-      switch(vec.size()) 
+      switch(vec.size())
       {
         case 0:
           theArgVarRefs.push_back(NULL);
