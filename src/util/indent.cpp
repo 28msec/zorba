@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "zorbautils/indent.h"
+#include "util/indent.h"
 
 using namespace std;
 
@@ -35,6 +35,9 @@ int get_ostream_indent_index() {
   // See: "Standard C++ IOStreams and Locales: Advanced Programmer's Guide and
   // Reference," Angelika Langer and Klaus Kreft, Addison-Wesley, 2000, section
   // 3.3.1.1: "Initializing and Maintaining the iword/pword Index."
+  //
+  // See: "The C++ Programming Language," Bjarne Stroustrup, Addison-Wesley,
+  // 2000, section 10.4.8: "Local Static Store."
   //
   static int const index = ios_base::xalloc();
   return index;

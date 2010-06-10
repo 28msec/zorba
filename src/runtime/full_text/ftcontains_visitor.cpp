@@ -21,10 +21,10 @@
 #include "compiler/expression/ftnode.h"
 #include "compiler/parser/query_loc.h"
 #include "runtime/full_text/ftcontains_visitor.h"
+#include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/numconversions.h"
-#include "zorbautils/indent.h"
 
 #ifndef NDEBUG
 #include "system/properties.h"

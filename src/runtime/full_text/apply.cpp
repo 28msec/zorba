@@ -25,9 +25,9 @@
 #include "runtime/full_text/ft_stop_words_set.h"
 #include "runtime/full_text/ft_token_span.h"
 #include "system/properties.h"
+#include "util/indent.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbautils/indent.h"
 
 #ifdef WIN32
 // Windows annoyingly defines these as macros.

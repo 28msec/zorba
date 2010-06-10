@@ -32,7 +32,7 @@
 
 #include "types/typeops.h"
 
-#include "zorbautils/indent.h"
+#include "util/indent.h"
 
 
 namespace zorba
