@@ -408,7 +408,7 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
         ar.dont_allow_delay();
         ar & (*it).second;
       }
-      ar.set_is_temp_field_one_level(true);
+      ar.set_is_temp_field_one_level(false);
       ar.add_end_compound_field();
     }
   }

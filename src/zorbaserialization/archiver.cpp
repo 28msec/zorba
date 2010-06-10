@@ -45,7 +45,8 @@ archive_field::archive_field(const char *type, bool is_simple, bool is_class,
               int version, enum ArchiveFieldTreat  field_treat,
               archive_field *refered,
               int only_for_eval,
-              ENUM_ALLOW_DELAY allow_delay)
+              ENUM_ALLOW_DELAY allow_delay,
+              unsigned int level)
 {
   this->type = strdup(type);
   this->type_str_pos_in_pool = 0;//initialy is the number of references to this field
@@ -70,6 +71,8 @@ archive_field::archive_field(const char *type, bool is_simple, bool is_class,
 
   this->only_for_eval = only_for_eval;
   this->allow_delay2 = allow_delay;
+
+  this->level = level;
 }
 
 archive_field::~archive_field()
@@ -115,7 +118,7 @@ Archiver::Archiver(bool is_serializing_out, bool internal_archive)
   if(is_serializing_out)
   {
     //create the top most field
-    out_fields = new archive_field("", false, false, NULL, NULL, 0, ARCHIVE_FIELD_NORMAL, NULL, false, ALLOW_DELAY);
+    out_fields = new archive_field("", false, false, NULL, NULL, 0, ARCHIVE_FIELD_NORMAL, NULL, false, ALLOW_DELAY, 0);
     current_compound_field = out_fields;
   }
 
@@ -205,7 +208,7 @@ bool Archiver::add_simple_field(const char *type,
   }
 
 
-  new_field = new archive_field(type, true, false, value, orig_ptr, 0, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay2);
+  new_field = new archive_field(type, true, false, value, orig_ptr, 0, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay2, current_level);
   allow_delay2 = ALLOW_DELAY;
   if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && orig_ptr &&
     !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
@@ -317,7 +320,7 @@ bool Archiver::add_compound_field(const char *type,
     ptr = NULL;
   }
 
-  new_field = new archive_field(type, false, is_class, info, ptr, version, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay2);
+  new_field = new archive_field(type, false, is_class, info, ptr, version, field_treat, ref_field, get_serialize_only_for_eval(), allow_delay2, current_level);
   allow_delay2 = ALLOW_DELAY;
   if(!ref_field && (field_treat != ARCHIVE_FIELD_IS_BASECLASS) && ptr &&
       !get_is_temp_field() && (!get_is_temp_field_one_level() || ((field_treat == ARCHIVE_FIELD_IS_PTR) && !get_is_temp_field_also_for_ptr())))
@@ -761,7 +764,7 @@ archive_field* Archiver::replace_with_null(archive_field *current_field)
     archive_field   *null_field = new archive_field("NULL",
                                                     current_field->is_simple,
                                                     current_field->is_class, "", NULL, 0,
-                                                    ARCHIVE_FIELD_IS_NULL, NULL, false, ALLOW_DELAY);
+                                                    ARCHIVE_FIELD_IS_NULL, NULL, false, ALLOW_DELAY, current_field->level);
     null_field->id = ++nr_ids;
     replace_field(null_field, current_field);
     current_field->parent = NULL;

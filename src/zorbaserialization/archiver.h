@@ -93,6 +93,7 @@ public:
   unsigned int   referencing;
   unsigned int   id;
   unsigned int   order;///order in the tree
+  unsigned int   level;
   bool  is_class;
   const char  *value;//for simple fields
   unsigned int   value_str_pos_in_pool;
@@ -115,7 +116,8 @@ public:
                 int version, enum ArchiveFieldTreat  field_treat,
                 archive_field *refered,
                 int only_for_eval,
-                ENUM_ALLOW_DELAY allow_delay);
+                ENUM_ALLOW_DELAY allow_delay,
+                unsigned int level);
   ~archive_field();
 };
 
@@ -182,8 +184,8 @@ protected:
   bool  read_optional;
   int   is_temp_field;
   //bool  is_temp_field_one_level;
-  int   current_level;
-  std::stack< std::pair<int, bool> >   limit_temp_level_stack;
+  unsigned int   current_level;
+  std::stack< std::pair<unsigned int, bool> >   limit_temp_level_stack;
   bool  internal_archive;
   int   only_for_eval;
   bool  serialize_everything;
@@ -379,9 +381,28 @@ public:
   bool get_is_temp_field_one_level() 
   {
     //if(get_is_temp_field()) return true;
-    return !limit_temp_level_stack.empty() && (limit_temp_level_stack.top().first == current_level);
+    if(limit_temp_level_stack.empty())
+      return false;
+    else if(limit_temp_level_stack.top().first == current_level)
+      return true;
+    else
+    {
+      unsigned int   lastlevel = limit_temp_level_stack.top().first;
+      archive_field   *temp_field = current_compound_field;
+      while(temp_field && (temp_field->level >= lastlevel))
+      {
+        if((temp_field->field_treat == ARCHIVE_FIELD_IS_PTR) ||
+           (temp_field->field_treat == ARCHIVE_FIELD_IS_REFERENCING))
+           return false;
+        temp_field = temp_field->parent;
+      }
+      if(temp_field)
+        return true;
+      else
+        return false;
+    }
   } 
-  bool get_is_temp_field_also_for_ptr() {return limit_temp_level_stack.top().second;} 
+  bool get_is_temp_field_also_for_ptr() {return (limit_temp_level_stack.top().first == current_level) && limit_temp_level_stack.top().second;} 
 
   int get_nr_ids();
 

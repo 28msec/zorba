@@ -100,8 +100,8 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   SERIALIZE_ENUM(var_kind, theKind);
   ar & theName;
   ar & theDeclaredType;
-  ar & theFlworClause;
-  ar & theCopyClause;
+  //ar & theFlworClause;
+  //ar & theCopyClause;
   //if(!ar.is_serializing_out())
   //{
   //  theFlworClause = NULL;
