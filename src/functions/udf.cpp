@@ -81,7 +81,7 @@ user_function::~user_function()
 ********************************************************************************/
 void user_function::serialize(::zorba::serialization::Archiver& ar)
 {
-  bool  save_plan = true;
+  //bool  save_plan = true;
   if(ar.is_serializing_out())
   {
     try{
@@ -90,7 +90,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
     catch(...)
     {
       //cannot compile user defined function, maybe it is not even used, so don't fire an error yet
-      save_plan = false;
+      //save_plan = false;
     }
   }
   else
@@ -101,16 +101,16 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
 
   serialize_baseclass(ar, (function*)this);
   ar & theLoc;
+  ar & theBodyExpr;
+  ar & theArgVars;
   SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
   ar & theIsLeaf;
   ar & theIsOptimized;
-  ar.set_is_temp_field(true);
-  ar & save_plan;
-  ar.set_is_temp_field(false);
-  if(save_plan)
+  //ar.set_is_temp_field(true);
+  //ar & save_plan;
+  //ar.set_is_temp_field(false);
+  //if(save_plan)
     ar & thePlan;
-  else
-    ar & theBodyExpr;
   ar & theArgVarRefs;
 }
 
