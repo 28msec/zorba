@@ -102,11 +102,11 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theDeclaredType;
   //ar & theFlworClause;
   //ar & theCopyClause;
-  //if(!ar.is_serializing_out())
-  //{
-  //  theFlworClause = NULL;
-  //  theCopyClause = NULL;
-  //}
+  if(!ar.is_serializing_out())
+  {
+    theFlworClause = NULL;
+    theCopyClause = NULL;
+  }
   ar & theUniqueId;
   if(!ar.is_serializing_out())
   {
