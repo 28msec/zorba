@@ -18,8 +18,10 @@
 #define ZORBA_STL_UTIL_H
 
 #include <algorithm>
+#include <cassert>
 #include <set>
 #include <iterator>
+#include <stack>
 
 namespace zorba {
 
@@ -42,6 +44,17 @@ namespace zorba {
 template<typename T> inline
 bool contains( std::set<T> const &s, T const &t ) {
   return s.find( t ) != s.end();
+}
+
+/**
+ * Like std::copy(), but copy at most N elements.
+ */
+template<typename InputIterator, typename SizeType, typename OutputIterator>
+inline OutputIterator copy_n( InputIterator first, SizeType count, 
+                              OutputIterator result ) {
+  for ( SizeType i = 0; i < count; ++i, *result++ = *first++ )
+    ;
+  return result;
 }
 
 /**
@@ -78,6 +91,23 @@ typename SequenceType::value_type pop_front( SequenceType &seq ) {
   typename SequenceType::value_type const value( seq.front() );
   seq.pop_front();
   return value;
+}
+
+template<typename T> class stack_generator {
+  std::stack<T> &stk;
+public:
+  stack_generator (std::stack<T> &stk_) : stk (stk_) { }
+  T operator()() {
+    assert( !stk.empty() );
+    T const x = stk.top();
+    stk.pop();
+    return x;
+  }
+};
+
+template<typename T> inline
+stack_generator<T> stack_to_generator(std::stack<T> &stk) {
+  return stack_generator<T>( stk );
 }
 
 } // namespace zorba

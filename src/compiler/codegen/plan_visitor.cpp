@@ -22,7 +22,7 @@
 #include "zorbaerrors/Assert.h"
 
 #include "util/tracer.h"
-#include "util/stl_extra.h"
+#include "util/stl_util.h"
 #include "util/hashmap32.h"
 
 #include "system/globalenv.h"

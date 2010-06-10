@@ -15,8 +15,8 @@
  */
 
 #include "runtime/full_text/ft_match.h"
+#include "util/stl_util.h"
 #include "zorbautils/indent.h"
-#include "zorbautils/stl_util.h"
 #include "zorbautils/omanip.h"
 
 using namespace std;

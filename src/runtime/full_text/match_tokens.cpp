@@ -17,7 +17,7 @@
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/ft_stop_words_set.h"
 #include "store/api/ft_token.h"
-#include "zorbautils/stl_util.h"
+#include "util/stl_util.h"
 
 using namespace std;
 

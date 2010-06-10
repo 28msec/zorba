@@ -18,11 +18,11 @@
 #include "runtime/full_text/ftcontains_visitor.h"
 #include "runtime/full_text/full_text.h"
 #include "store/api/ft_token_iterator.h"
-#include "store/api/item_factory.h"
 #include "store/api/item.h"
+#include "store/api/item_factory.h"
 #include "system/globalenv.h"
+#include "util/stl_util.h"
 #include "zorbatypes/utf8.h"
-#include "zorbautils/stl_util.h"
 
 using namespace std;
 

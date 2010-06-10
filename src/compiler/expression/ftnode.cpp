@@ -20,9 +20,9 @@
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/ftnode_visitor.h"
 #include "types/casting.h"
+#include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/indent.h"
-#include "zorbautils/stl_util.h"
 
 using namespace std;
 

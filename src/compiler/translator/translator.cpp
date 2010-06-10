@@ -26,7 +26,7 @@
 
 #include "common/common.h"
 
-#include "util/stl_extra.h"
+#include "util/stl_util.h"
 #include "util/tracer.h"
 
 #include "types/node_test.h"

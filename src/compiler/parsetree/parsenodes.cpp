@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
+#include "util/stl_util.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
-#include "zorbautils/stl_util.h"
 
 #include "types/typemanager.h"
 
