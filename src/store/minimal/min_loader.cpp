@@ -552,13 +552,17 @@ bool XmlLoader::read_attributes(store::NsBindings *nsbindings,//ElementNode *ele
     //else if((attr.name.prefix != NULL) && attr.name.prefix->byteEqual("xmlns"))
     else if((attr.name.prefix_len == 5) && !strcmp(attr.name.prefix, "xmlns"))
     {
-      if((attr.name.localname_len == 3) && (!strcmp(attr.name.localname, "xml")) && (!temp_buff.byteEqual(XML_NS, sizeof(XML_NS)-1)))
+      if((attr.name.localname_len == 3) && (!strcmp(attr.name.localname, "xml"))
+          && (!temp_buff.byteEqual(XML_NS, sizeof(XML_NS)-1)))
         return false;
-      if((attr.name.localname_len == 2) && (!strcmp(attr.name.localname, "xs")) && (!temp_buff.byteEqual(XML_SCHEMA_NS, sizeof(XML_SCHEMA_NS)-1)))
+      if((attr.name.localname_len == 2) && (!strcmp(attr.name.localname, "xs"))
+          && (!temp_buff.byteEqual(XML_SCHEMA_NS, sizeof(XML_SCHEMA_NS)-1)))
         return false;
-      if((attr.name.localname_len == 3) && (!strcmp(attr.name.localname, "xsi")) && (!temp_buff.byteEqual(XSI_NS, sizeof(XSI_NS)-1)))
+      if((attr.name.localname_len == 3) && (!strcmp(attr.name.localname, "xsi"))
+          && (!temp_buff.byteEqual(XSI_NS, sizeof(XSI_NS)-1)))
         return false;
-      if((attr.name.localname_len == 5) && !strcmp(attr.name.localname, "xmlns"))
+      if((attr.name.localname_len == 5) && (!strcmp(attr.name.localname, "xmlns"))
+          && (!temp_buff.byteEqual(XMLNS_NS, sizeof(XMLNS_NS)-1)))
         return false;
 
     //  nsbind.first =  name.localname.getp();

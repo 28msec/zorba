@@ -2697,7 +2697,7 @@ void* begin_visit(const NamespaceDecl& v)
   xqpStringStore_t pre = v.get_prefix();
   xqpStringStore_t uri = v.get_uri();
 
-  if (*pre == "xml" || *pre == "xmlns" || *uri == XML_NS)
+  if (*pre == "xml" || *pre == "xmlns" || *uri == XML_NS || *uri == XMLNS_NS)
     ZORBA_ERROR_LOC(XQST0070, loc);
 
   theSctx->bind_ns(pre, uri, loc);
@@ -9458,8 +9458,13 @@ void *begin_visit (const CDataSection& v) {
 
 void end_visit (const CDataSection& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  expr_t content = new const_expr (theRootSctx, loc, v.get_cdata_content ());
-  push_nodestack (new text_expr (theRootSctx, loc, text_expr::text_constructor, content));
+  std::string lCDATA_content = v.get_cdata_content ();
+  // Skip empty CDATA sections
+  if(!lCDATA_content.empty())
+  {
+    expr_t content = new const_expr (theRootSctx, loc, lCDATA_content);
+    push_nodestack (new text_expr (theRootSctx, loc, text_expr::text_constructor, content));
+  }
 }
 
 

@@ -2061,7 +2061,15 @@ AttributeNode::AttributeNode(
   {
     if (attrName->getPrefix()->empty() && !attrName->getNamespace()->empty())
     {
-      xqpStringStore_t prefix(new xqpStringStore("XXX"));
+      xqpStringStore_t prefix;
+      xqpStringStore_t lAttrNs = attrName->getNamespace();
+      if(*lAttrNs == XML_NS)
+        prefix = new xqpStringStore("xml");
+      else if(*lAttrNs == XMLNS_NS)
+        prefix = new xqpStringStore("xmlns");
+      else
+        prefix = new xqpStringStore("XXX");
+
       GET_FACTORY().createQName(attrName,
                                 attrName->getNamespace(),
                                 prefix,
