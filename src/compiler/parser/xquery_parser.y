@@ -48,53 +48,9 @@
 #  pragma GCC diagnostic warning "-Wparentheses"
 #endif
 
-namespace zorba {
-class xquery_driver;
-}
-
 typedef std::list<std::string> string_list_t;
 typedef std::pair<std::string,std::string> string_pair_t;
 
-class scanner_error {
-public:
-  std::string msg;
-
-public:
-  scanner_error(std::string _msg) : msg(_msg) { };
-
-  static scanner_error* unrecognizedCharErr(const char* _error_token)
-  {
-    std::string token;
-    // translate some common non-printable characters for better readability.
-    if (*_error_token == '\t')
-      token = "\\t";
-    else if (*_error_token == '\n')
-      token = "\\n";
-    else if (*_error_token == '\r')
-      token = "\\r";
-    else if (*_error_token == ' ')
-      token = "<blank>";
-    else
-      token = _error_token;
-
-    return new scanner_error("syntax error, unexpected character '" + token + "'");
-  };
-
-  static scanner_error* unterminatedCommentErr()
-  {
-    return new scanner_error("syntax error, unexpected end of file, unterminated comment");
-  }
-
-  static scanner_error* unrecognizedToken(const char* _error_token)
-  {
-    return new scanner_error(std::string("syntax error, unexpected '") + _error_token + "'");
-  }
-
-  static scanner_error* unrecognizedIntegerErr(const char* _error_token)
-  {
-    return new scanner_error(std::string("syntax error, unexpected '") + _error_token + "', separator needed after numeric literal");
-  }
-};
 
 
 
@@ -127,6 +83,7 @@ public:
 #include "compiler/parser/parse_constants.h"
 #include "compiler/api/compilercb.h"
 #include "store/api/update_consts.h"
+#include "compiler/parser/xquery_driver.h"
 
 #define SYMTAB( n ) driver.symtab.get( (off_t)n )
 #define SYMTAB_PUT( s ) driver.symtab.put( s )
@@ -202,7 +159,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
     xqp_integer *ival;
     xqp_double *dval;
     xqp_decimal *decval;
-    scanner_error *err;
+    ZorbaParserError *err;
     string_list_t *strlist;
     string_pair_t *strpair;
     std::vector<string_pair_t> *vstrpair;
@@ -1008,7 +965,6 @@ template<typename T> inline void release_hack( T *ref ) {
 **  driver.
 */
 %{
-#include "compiler/parser/xquery_driver.h"
 #include "compiler/parser/xquery_scanner.h"
 
 #undef yylex
@@ -1084,7 +1040,6 @@ UnrecognizedToken
           $$ = NULL;
           if ($1 != NULL) {
             error(@$, $1->msg);
-            delete $1;
           } else
             error(@$, std::string("syntax error, unexpected character"));
           YYERROR;
@@ -3798,6 +3753,21 @@ ForwardAxis
         }
     ;
 
+  /*
+
+    |   NAMESPACE  DOUBLE_COLON
+        {
+            $$ = NULL;
+            // Namespace axis is not supported. Zorba must raise XPST0010
+            driver.set_expr(new ParseErrorNode(driver.createQueryLoc(@$),
+                                               XPST0010,
+                                               "Namespace axis is not supported",
+                                               false));
+            YYERROR;
+        }
+  */
+
+
 // [73]
 AbbrevForwardStep
     :   NodeTest
@@ -4127,6 +4097,7 @@ FunctionCall
                 dynamic_cast<ArgList*>($3)
             );
         }
+
     ;
 
 // [91a]
@@ -6407,9 +6378,10 @@ const char *the_tumbling = "tumbling", *the_sliding = "sliding",
  */
 void xquery_parser::error(zorba::xquery_parser::location_type const& loc, std::string const& msg)
 {
-  driver.set_expr(
-    new ParseErrorNode (driver.createQueryLoc (loc), XPST0003, msg)
-  );
+  if (driver.parserError != NULL)
+    driver.set_expr(new ParseErrorNode(driver.parserError->loc, XPST0003, driver.parserError->msg));
+  else
+    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), XPST0003, msg));
 }
 
 } // namespace zorba

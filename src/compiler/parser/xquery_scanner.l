@@ -30,6 +30,7 @@
 
 using namespace std;
 
+#include "compiler/parser/xquery_driver.h"
 
 #ifdef __GNUC__
   // disable a warning in location.hh which comes with bison
@@ -44,7 +45,7 @@ using namespace std;
 #endif
 
 #include "compiler/parser/xquery_scanner.h"
-#include "compiler/parser/xquery_driver.h"
+
 
 typedef zorba::xquery_parser::token token;
 typedef zorba::xquery_parser::token_type token_type;
@@ -69,7 +70,7 @@ typedef zorba::xquery_parser::token_type token_type;
   do {                                                                  \
     off_t res = getDriver()->symtab.put;                                \
     if (res < 0) {                                                      \
-      yylval->err = scanner_error::unrecognizedToken(yytext);           \
+      yylval->err = getDriver()->unrecognizedToken(yytext, *yylloc);    \
       return token::UNRECOGNIZED;                                       \
     } else {                                                            \
       yylval->sval = res;                                               \
@@ -638,7 +639,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 
 {IntegerLiteral}[a-zA-Z_][0-9a-zA-Z_]* {
   /* invalid integer literal */
-  yylval->err = scanner_error::unrecognizedIntegerErr(yytext);
+  yylval->err = getDriver()->unrecognizedIntegerErr(yytext, *yylloc);
   return token::UNRECOGNIZED;
 }
 
@@ -810,7 +811,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_START_TAG>{S} { return token::BLANK; }
 <MODE_START_TAG>"/>" { POP_STATE(); return token::EMPTY_TAG_END; }
 <MODE_START_TAG>{QName} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
-<MODE_START_TAG>{CatchAll} { yylval->err = scanner_error::unrecognizedCharErr(yytext); return token::UNRECOGNIZED; }
+<MODE_START_TAG>{CatchAll} { yylval->err = getDriver()->unrecognizedCharErr(yytext, *yylloc); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________
@@ -876,7 +877,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_EXPR_COMMENT>":)" { POP_STATE(); }
 <MODE_EXPR_COMMENT>"(:" { PUSH_STATE(MODE_EXPR_COMMENT); }
 <MODE_EXPR_COMMENT>.|"\n" { /* do nothing */ }
-<MODE_EXPR_COMMENT><<EOF>> { yylval->err = scanner_error::unterminatedCommentErr(); return token::UNRECOGNIZED; }
+<MODE_EXPR_COMMENT><<EOF>> { yylval->err = getDriver()->unterminatedCommentErr(*yylloc); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________
@@ -892,7 +893,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_EXPR_DOC_COMMENT>"\n" { getDriver()->theDocComment << yytext; }
 <MODE_EXPR_DOC_COMMENT>":"+[^)] { getDriver()->theDocComment << yytext; }
 <MODE_EXPR_DOC_COMMENT>":"+")" { POP_STATE(); }
-<MODE_EXPR_DOC_COMMENT><<EOF>> { yylval->err = scanner_error::unterminatedCommentErr(); return token::UNRECOGNIZED; }
+<MODE_EXPR_DOC_COMMENT><<EOF>> { yylval->err = getDriver()->unterminatedCommentErr(*yylloc); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________
@@ -984,7 +985,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 
 
 <*>. {
-    yylval->err = scanner_error::unrecognizedCharErr(yytext);
+    yylval->err = getDriver()->unrecognizedCharErr(yytext, *yylloc);
     return token::UNRECOGNIZED;
 }
 

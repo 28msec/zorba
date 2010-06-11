@@ -59,53 +59,9 @@
 #  pragma GCC diagnostic warning "-Wparentheses"
 #endif
 
-namespace zorba {
-class xquery_driver;
-}
-
 typedef std::list<std::string> string_list_t;
 typedef std::pair<std::string,std::string> string_pair_t;
 
-class scanner_error {
-public:
-  std::string msg;
-
-public:
-  scanner_error(std::string _msg) : msg(_msg) { };
-
-  static scanner_error* unrecognizedCharErr(const char* _error_token)
-  {
-    std::string token;
-    // translate some common non-printable characters for better readability.
-    if (*_error_token == '\t')
-      token = "\\t";
-    else if (*_error_token == '\n')
-      token = "\\n";
-    else if (*_error_token == '\r')
-      token = "\\r";
-    else if (*_error_token == ' ')
-      token = "<blank>";
-    else
-      token = _error_token;
-
-    return new scanner_error("syntax error, unexpected character '" + token + "'");
-  };
-
-  static scanner_error* unterminatedCommentErr()
-  {
-    return new scanner_error("syntax error, unexpected end of file, unterminated comment");
-  }
-
-  static scanner_error* unrecognizedToken(const char* _error_token)
-  {
-    return new scanner_error(std::string("syntax error, unexpected '") + _error_token + "'");
-  }
-
-  static scanner_error* unrecognizedIntegerErr(const char* _error_token)
-  {
-    return new scanner_error(std::string("syntax error, unexpected '") + _error_token + "', separator needed after numeric literal");
-  }
-};
 
 
 
@@ -113,7 +69,7 @@ public:
 
 
 /* Line 34 of lalr1.cc  */
-#line 117 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 73 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -124,14 +80,14 @@ public:
 namespace zorba {
 
 /* Line 34 of lalr1.cc  */
-#line 128 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 84 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
 } // zorba
 
 /* Line 34 of lalr1.cc  */
-#line 135 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 91 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -176,7 +132,7 @@ do {							\
 namespace zorba {
 
 /* Line 34 of lalr1.cc  */
-#line 180 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 136 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -188,7 +144,7 @@ namespace zorba {
     {
 
 /* Line 34 of lalr1.cc  */
-#line 195 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 152 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -199,7 +155,7 @@ namespace zorba {
     xqp_integer *ival;
     xqp_double *dval;
     xqp_decimal *decval;
-    scanner_error *err;
+    ZorbaParserError *err;
     string_list_t *strlist;
     string_pair_t *strpair;
     std::vector<string_pair_t> *vstrpair;
@@ -212,7 +168,7 @@ namespace zorba {
 
 
 /* Line 34 of lalr1.cc  */
-#line 216 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 172 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -708,7 +664,7 @@ namespace zorba {
 } // zorba
 
 /* Line 34 of lalr1.cc  */
-#line 712 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 668 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
 
 
 

@@ -32,6 +32,18 @@ class parsenode;
 class CompilerCB;
 
 
+class ZorbaParserError
+{
+public:
+  std::string msg;
+  QueryLoc loc;
+
+public:
+  ZorbaParserError(std::string _msg) : msg(_msg) { };
+  ZorbaParserError(std::string _msg, const location& aLoc);
+
+};
+
 // exported for unit testing only
 class ZORBA_DLL_PUBLIC xquery_driver
 {
@@ -42,9 +54,10 @@ public:
   symbol_table symtab;
   rchandle<parsenode> expr_p;
   CompilerCB* theCompilerCB;
+  ZorbaParserError* parserError;
 
   xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize = 1024);
-  virtual ~xquery_driver() {}
+  virtual ~xquery_driver();
 
   bool parse_stream(std::istream& in, const xqpString& aFilename = "");
   bool parse_string(const xqpString& input);
@@ -53,9 +66,15 @@ public:
 	void set_expr(parsenode* e_p);
 	parsenode* get_expr() { return expr_p; }
 
-  QueryLoc createQueryLoc(const location& aLoc);
+  static QueryLoc createQueryLoc(const location& aLoc);
 
   class xquery_scanner* lexer;
+
+  // Error generators
+  ZorbaParserError* unrecognizedCharErr(const char* _error_token, const location& loc);
+  ZorbaParserError* unterminatedCommentErr(const location& loc);
+  ZorbaParserError* unrecognizedToken(const char* _error_token, const location& loc);
+  ZorbaParserError* unrecognizedIntegerErr(const char* _error_token, const location& loc);
 };
 
 }	/* namespace zorba */

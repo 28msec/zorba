@@ -47,14 +47,64 @@
 namespace zorba
 {
 
+ZorbaParserError::ZorbaParserError(std::string _msg, const location& aLoc)
+  :
+  msg(_msg), loc(xquery_driver::createQueryLoc(aLoc))
+{
+}
+
 xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
   :
   symtab(initial_heapsize),
   expr_p (NULL),
-  theCompilerCB(aCompilerCB)
+  theCompilerCB(aCompilerCB),
+  parserError(NULL)
 {
 }
 
+xquery_driver::~xquery_driver()
+{
+  if (parserError)
+    delete parserError;
+}
+
+// Error generators
+ZorbaParserError* xquery_driver::unrecognizedCharErr(const char* _error_token, const location& loc)
+{
+  std::string token;
+    // translate some common non-printable characters for better readability.
+  if (*_error_token == '\t')
+    token = "\\t";
+  else if (*_error_token == '\n')
+    token = "\\n";
+  else if (*_error_token == '\r')
+    token = "\\r";
+  else if (*_error_token == ' ')
+    token = "<blank>";
+  else
+    token = _error_token;
+
+  parserError = new ZorbaParserError("syntax error, unexpected character '" + token + "'", loc);
+  return parserError;
+};
+
+ZorbaParserError* xquery_driver::unterminatedCommentErr(const location& loc)
+{
+  parserError = new ZorbaParserError("syntax error, unexpected end of file, unterminated comment", loc);
+  return parserError;
+}
+
+ZorbaParserError* xquery_driver::unrecognizedToken(const char* _error_token, const location& loc)
+{
+  parserError = new ZorbaParserError(std::string("syntax error, unexpected '") + _error_token + "'", loc);
+  return parserError;
+}
+
+ZorbaParserError* xquery_driver::unrecognizedIntegerErr(const char* _error_token, const location& loc)
+{
+  parserError = new ZorbaParserError(std::string("syntax error, unexpected '") + _error_token + "', separator needed after numeric literal", loc);
+  return parserError;
+}
 
 bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 {
