@@ -571,8 +571,10 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
 
   ar & theVariablesMap;
 
+  ar.set_serialize_only_for_eval(true);
   ar & theFunctionMap;
   ar & theFunctionArityMap;
+  ar.set_serialize_only_for_eval(false);
 
   ar & theCollectionMap;
   
