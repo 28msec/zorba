@@ -67,7 +67,7 @@ case __LINE__:;                                                     \
 
 
 
-ExprIterator::ExprIterator(expr* e) 
+ExprIterator::ExprIterator(expr* e)
   :
   theExpr(e),
   theCurrentChild(NULL),
@@ -111,6 +111,10 @@ void ExprIterator::next()
     {
       c = (theClausesIter)->getp();
 
+      // TODO: temporary fix
+      if (c == NULL)
+        break;
+
       if (c->get_kind() == flwor_clause::for_clause)
       {
         EXPR_ITER_NEXT(static_cast<for_clause *>(c)->theDomainExpr);
@@ -126,20 +130,20 @@ void ExprIterator::next()
         for (theWincondIter = 0; theWincondIter < 2; ++theWincondIter)
         {
           wc = static_cast<window_clause *>(theClausesIter->getp());
-          
+
           wincond = (theWincondIter == 0 ?
                      wc->theWinStartCond.getp() :
                      wc->theWinStopCond.getp());
-          
+
           if (wincond != 0)
             EXPR_ITER_NEXT(wincond->theCondExpr);
         }
-        
+
         wc = static_cast<window_clause *>(theClausesIter->getp());
-        
+
         EXPR_ITER_NEXT(wc->theDomainExpr);
       }
-      
+
       else if (c->get_kind() == flwor_clause::where_clause)
       {
         EXPR_ITER_NEXT(static_cast<where_clause *>(c)->theWhereExpr);
@@ -148,7 +152,7 @@ void ExprIterator::next()
       else if (c->get_kind() == flwor_clause::group_clause)
       {
         gc = static_cast<group_clause *>(c);
-        
+
         theGroupVarsIter = gc->theGroupVars.begin();
         theGroupVarsEnd = gc->theGroupVars.end();
         theNonGroupVarsIter = gc->theNonGroupVars.begin();
@@ -170,7 +174,7 @@ void ExprIterator::next()
       else if (c->get_kind() == flwor_clause::order_clause)
       {
         oc = static_cast<orderby_clause *>(c);
-        
+
         theArgsIter = oc->theOrderingExprs.begin();
         theArgsEnd = oc->theOrderingExprs.end();
 
@@ -273,7 +277,7 @@ void ExprIterator::next()
   case instanceof_expr_kind:
   case castable_expr_kind:
   {
-    cast_or_castable_base_expr* castExpr = 
+    cast_or_castable_base_expr* castExpr =
     static_cast<cast_or_castable_base_expr*>(theExpr);
 
     EXPR_ITER_BEGIN();
@@ -465,7 +469,7 @@ void ExprIterator::next()
 
   case dynamic_function_invocation_expr_kind:
   {
-    dynamic_function_invocation_expr* dfiExpr = 
+    dynamic_function_invocation_expr* dfiExpr =
     static_cast<dynamic_function_invocation_expr*>(theExpr);
 
     EXPR_ITER_BEGIN();
