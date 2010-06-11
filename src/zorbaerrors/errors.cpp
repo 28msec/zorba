@@ -186,13 +186,15 @@ ZorbaError::prefix() const
 
 bool ZorbaError::isXPathStaticError() const
 {
-  return (XPST0001 <= theErrorCode && theErrorCode <= XPST0083);
+  return (XPST0001 <= theErrorCode && theErrorCode <= XPST0083) ||
+         theErrorCode == FTST0009;
 }
 
       
 bool ZorbaError::isXPathDynamicError() const
 {
-  return (XPDY0002 <= theErrorCode && theErrorCode <= XPDY0050);
+  return  (XPDY0002 <= theErrorCode && theErrorCode <= XPDY0050) ||
+          theErrorCode == FTDY0020;
 }
 
       
@@ -212,6 +214,7 @@ bool ZorbaError::isXQueryDynamicError() const
           theErrorCode == XUDY0029 ||
           theErrorCode == XUDY0030 ||
           theErrorCode == XUDY0031 ||
+          theErrorCode == FTDY0020 ||
           (XDDY0000_MIN <= theErrorCode && theErrorCode <= XDDY0000_MAX) ||
           (XTDE1310 <= theErrorCode && theErrorCode <= XTDE1350));
 }
@@ -223,7 +226,7 @@ bool ZorbaError::isXQueryStaticError() const
           (XUST0001 <= theErrorCode && theErrorCode <= XUST0003) ||
           theErrorCode == XUST0028 ||
           (XDST0000_MIN <= theErrorCode && theErrorCode <= XDST0000_MAX)) ||
-	  theErrorCode == FTST0009;
+          theErrorCode == FTST0009;
 }
 
   
@@ -304,3 +307,4 @@ ZorbaWarning::ZorbaWarning(
 
 } /* namespace error */
 } /* namespace zorba */
+/* vim:set et sw=2 ts=2: */

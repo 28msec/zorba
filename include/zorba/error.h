@@ -695,81 +695,97 @@ typedef enum
   //
   // Serialization errors
   //
+
   SENR0001, // = 160,
-  //  It is an error if an item in S6 in sequence normalization is an attribute node or a namespace node.
+  // It is an error if an item in S6 in sequence normalization is an attribute
+  // node or a namespace node.
 
   SERE0003,
-  //  It is an error if the serializer is unable to satisfy the rules for 
-  //  either a well-formed XML document entity or a well-formed XML external 
-  //  general parsed entity, or both, except for content modified by the 
-  //  character expansion phase of serialization.
+  // It is an error if the serializer is unable to satisfy the rules for 
+  // either a well-formed XML document entity or a well-formed XML external 
+  // general parsed entity, or both, except for content modified by the 
+  // character expansion phase of serialization.
 
   SEPM0004,
-  //  It is an error to specify the doctype-system parameter, or to specify 
-  //  the standalone parameter with a value other than omit, if the instance 
-  //  of the data model contains text nodes or multiple element nodes as 
-  //  children of the root node.
+  // It is an error to specify the doctype-system parameter, or to specify 
+  // the standalone parameter with a value other than omit, if the instance 
+  // of the data model contains text nodes or multiple element nodes as 
+  // children of the root node.
 
   SERE0005,
-  //  It is an error if the serialized result would contain an NCName Names
-  //  that contains a character that is not permitted by the version of 
-  //  Namespaces in XML specified by the version parameter.
+  // It is an error if the serialized result would contain an NCName Names
+  // that contains a character that is not permitted by the version of 
+  // Namespaces in XML specified by the version parameter.
 
   SERE0006,
-  //  It is an error if the serialized result would contain a character 
-  //  that is not permitted by the version of XML specified by the version
-  //  parameter.
+  // It is an error if the serialized result would contain a character 
+  // that is not permitted by the version of XML specified by the version
+  // parameter.
 
   SESU0007,
-  //  It is an error if an output encoding other than UTF-8 or UTF-16 is requested and the serializer 
-  //  does not support that encoding.
+  // It is an error if an output encoding other than UTF-8 or UTF-16 is
+  // requested and the serializer does not support that encoding.
 
   SERE0008,
-  //  It is an error if a character that cannot be represented in the encoding that the serializer is using 
-  //  for output appears in a context where character references are not allowed (for example if the character
-  //  occurs in the name of an element).
+  // It is an error if a character that cannot be represented in the encoding
+  // that the serializer is using for output appears in a context where
+  // character references are not allowed (for example if the character occurs
+  // in the name of an element).
 
   SEPM0009,
-  //  It is an error if the omit-xml-declaration parameter has the value yes, and the standalone attribute 
-  //  has a value other than omit; or the version parameter has a value other than 1.0 and the doctype-system 
-  //  parameter is specified.
+  // It is an error if the omit-xml-declaration parameter has the value yes,
+  // and the standalone attribute has a value other than omit; or the version
+  // parameter has a value other than 1.0 and the doctype-system parameter is
+  // specified.
 
   SEPM0010,
-  //  It is an error if the output method is xml, the value of the undeclare-prefixes parameter is yes, and
-  //  the value of the version parameter is 1.0.
+  // It is an error if the output method is xml, the value of the
+  // undeclare-prefixes parameter is yes, and the value of the version
+  // parameter is 1.0.
 
   SESU0011,
-  //  It is an error if the value of the normalization-form parameter specifies a normalization form that 
-  //  is not supported by the serializer.
+  // It is an error if the value of the normalization-form parameter specifies
+  // a normalization form that is not supported by the serializer.
 
   SERE0012, // = 170,
-  //  It is an error if the value of the normalization-form parameter is fully-normalized and any relevant 
-  //  construct of the result begins with a combining character.
+  // It is an error if the value of the normalization-form parameter is
+  // fully-normalized and any relevant construct of the result begins with a
+  // combining character.
 
   SESU0013,
-  //  It is an error if the serializer does not support the version of XML or HTML specified by the version parameter.
+  // It is an error if the serializer does not support the version of XML or
+  // HTML specified by the version parameter.
 
   SERE0014,
-  //  It is an error to use the HTML output method when characters which are legal in XML but not in HTML,
-  //  specifically the control characters #x7F-#x9F, appear in the instance of the data model.
+  // It is an error to use the HTML output method when characters which are
+  // legal in XML but not in HTML, specifically the control characters
+  // #x7F-#x9F, appear in the instance of the data model.
 
   SERE0015,
-  //  It is an error to use the HTML output method when > appears within a processing instruction in the data model
-  //  instance being serialized.
+  // It is an error to use the HTML output method when > appears within a
+  // processing instruction in the data model instance being serialized.
 
   SEPM0016,
   // It is a an error if a parameter value is invalid for the defined domain.
 
   XTDE1310,
-  // It is a non-recoverable dynamic error if the picture string does not satisfy the format-number function rules.
+  // It is a non-recoverable dynamic error if the picture string does not
+  // satisfy the format-number function rules.
 
   XTDE1340,
-  // It is a non-recoverable dynamic error if the syntax of the picture is incorrect. 
+  // It is a non-recoverable dynamic error if the syntax of the picture is
+  // incorrect.
 
   XTDE1350,
-  // It is a non-recoverable dynamic error if a component specifier within the picture refers to components that are not available in the given type of $value.
+  // It is a non-recoverable dynamic error if a component specifier within the
+  // picture refers to components that are not available in the given type of
+  // $value.
 
   FTDY0017, // Invalid expression on the left-hand side of a not-in
+
+  FTDY0020,
+  // It is a dynamic error if, when "wildcards" is in effect, a query string
+  // violates wildcard syntax.
 
   FTST0009,
   // It may be a static error if, during the static analysis phase, the query

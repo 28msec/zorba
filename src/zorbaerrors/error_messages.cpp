@@ -102,6 +102,7 @@ DEF_ERR_CODE(FOUP0002, FOUP0002, "It is a dynamic error if the second operand of
 
 DEF_ERR_CODE(FTDY0017, FTDY0017, "Invalid expression on the left-hand side of a not-in.")
 DEF_ERR_CODE(FTST0009, FTST0009, "Unsupported language: {/s}")
+DEF_ERR_CODE(FTDY0020, FTDY0020, "Wildcard syntax error in query string.")
 
 //
 // Serialization Errors
