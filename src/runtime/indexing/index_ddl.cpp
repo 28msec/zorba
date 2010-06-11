@@ -408,7 +408,7 @@ void RefreshIndexIterator::accept(PlanIterVisitor& v) const
   ValueIndexEntryBuilderIterator
 ********************************************************************************/
 
-ValueIndexEntryBuilderIteratorState:: ValueIndexEntryBuilderIteratorState() 
+ValueIndexEntryBuilderIteratorState::ValueIndexEntryBuilderIteratorState() 
 {
 }
 
