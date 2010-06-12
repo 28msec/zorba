@@ -38,6 +38,68 @@ namespace zorba {
   for ( TYPE::iterator IT = (SEQ).begin(); IT != (SEQ).end(); ++IT )
 
 /**
+ * An auto_vec<T> is like the standard auto_ptr<T> but works where T is a
+ * pointer to a T[] and so delete[] must be used.
+ */
+template<typename T> class auto_vec {
+public:
+  typedef T element_type;
+
+  explicit auto_vec( element_type *p = 0 ) throw() : p_( p ) {
+  }
+
+  auto_vec( auto_vec &a ) throw() : p_( a.release() ) {
+  }
+
+  template<typename U>
+  auto_vec( auto_vec<U> &a ) throw() : p_( a.release() ) {
+  }
+
+  ~auto_vec() {
+    delete[] p_;
+  }
+
+  auto_vec& operator=( auto_vec &a ) throw() {
+    reset( a.release() );
+    return *this;
+  }
+
+  template<typename U>
+  auto_vec& operator=( auto_vec<U> &a ) throw() {
+    reset( a.release() );
+    return *this;
+  }
+
+  element_type* get() const throw() {
+    return p_;
+  }
+
+  element_type* release() throw() {
+    element_type *const tmp = p_;
+    p_ = 0;
+    return tmp;
+  }
+
+  void reset( element_type *p = 0 ) throw() {
+    if ( p != p_ ) {
+      delete[] p_;
+      p_ = p;
+    }
+  }
+
+  element_type& operator*() const throw() {
+    return *p_;
+  }
+
+  element_type& operator[]( int i ) const throw() {
+    return p_[i];
+  }
+
+private:
+  element_type *p_;
+};
+
+/**
  * A less-verbose way to determine whether the given set<T> contains a
  * particular element.
  */
