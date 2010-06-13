@@ -39,6 +39,7 @@ protected:
   std::vector<expr_t>::iterator          theArgsEnd;
 
   flwor_expr::clause_list_t::iterator    theClausesIter;
+  flwor_expr::clause_list_t::iterator    theClausesBegin;
   flwor_expr::clause_list_t::iterator    theClausesEnd;
   flwor_clause::rebind_list_t::iterator  theGroupVarsIter;
   flwor_clause::rebind_list_t::iterator  theGroupVarsEnd;

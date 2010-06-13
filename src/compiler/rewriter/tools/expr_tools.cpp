@@ -137,6 +137,8 @@ void index_flwor_vars(
         add_var(fc->get_var(), numVars, varidmap, idvarmap);
         add_var(fc->get_pos_var(), numVars, varidmap, idvarmap);
         add_var(fc->get_score_var(), numVars, varidmap, idvarmap);
+
+        index_flwor_vars(fc->get_expr(), numVars, varidmap, idvarmap);
       }
       else if (c->get_kind() == flwor_clause::let_clause)
       {
@@ -144,12 +146,16 @@ void index_flwor_vars(
 
         add_var(lc->get_var(), numVars, varidmap, idvarmap);
         add_var(lc->get_score_var(), numVars, varidmap, idvarmap);
+
+        index_flwor_vars(lc->get_expr(), numVars, varidmap, idvarmap);
       }
       else if (c->get_kind() == flwor_clause::window_clause)
       {
         const window_clause* wc = static_cast<const window_clause *>(c);
 
         add_var(wc->get_var(), numVars, varidmap, idvarmap);
+
+        index_flwor_vars(wc->get_expr(), numVars, varidmap, idvarmap);
 
         flwor_wincond* startCond = wc->get_win_start();
         flwor_wincond* stopCond = wc->get_win_stop();
@@ -186,18 +192,37 @@ void index_flwor_vars(
 
         add_var(cc->get_var(), numVars, varidmap, idvarmap);
       }
-    }
-  }
+      else if (c->get_kind() == flwor_clause::where_clause)
+      {
+        const where_clause* wc = static_cast<const where_clause *>(c);
 
-  ExprConstIterator iter(e);
-  while(!iter.done()) 
-  {
-    const expr* ce = iter.get_expr();
-    if (ce) 
-    {
-      index_flwor_vars(ce, numVars, varidmap, idvarmap);
+        index_flwor_vars(wc->get_expr(), numVars, varidmap, idvarmap);
+      }
+      else if (c->get_kind() == flwor_clause::order_clause)
+      {
+        const orderby_clause* obc = static_cast<const orderby_clause *>(c);
+        ulong numExprs = obc->num_columns();
+        for (ulong i = 0; i < numExprs; ++i)
+        {
+          index_flwor_vars(obc->get_column_expr(i), numVars, varidmap, idvarmap);
+        }
+      }
     }
-    iter.next();
+
+    index_flwor_vars(flwor->get_return_expr(), numVars, varidmap, idvarmap);
+  }
+  else
+  {
+    ExprConstIterator iter(e);
+    while(!iter.done()) 
+    {
+      const expr* ce = iter.get_expr();
+      if (ce) 
+      {
+        index_flwor_vars(ce, numVars, varidmap, idvarmap);
+      }
+      iter.next();
+    }
   }
 }
 
@@ -218,7 +243,9 @@ static void add_wincond_vars(
   add_var(inVars.curr.getp(), numVars, varidmap, idvarmap);
   add_var(inVars.prev.getp(), numVars, varidmap, idvarmap);
   add_var(inVars.next.getp(), numVars, varidmap, idvarmap);
-          
+
+  index_flwor_vars(cond->get_cond(), numVars, varidmap, idvarmap);
+
   add_var(outVars.posvar.getp(), numVars, varidmap, idvarmap);
   add_var(outVars.curr.getp(), numVars, varidmap, idvarmap);
   add_var(outVars.prev.getp(), numVars, varidmap, idvarmap);

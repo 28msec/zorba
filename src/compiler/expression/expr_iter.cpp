@@ -104,16 +104,13 @@ void ExprIterator::next()
 
     EXPR_ITER_BEGIN();
 
+    theClausesBegin = flworExpr->theClauses.begin();
     theClausesIter = flworExpr->theClauses.begin();
     theClausesEnd = flworExpr->theClauses.end();
 
     for (; theClausesIter != theClausesEnd; ++(theClausesIter))
     {
       c = (theClausesIter)->getp();
-
-      // TODO: temporary fix
-      if (c == NULL)
-        break;
 
       if (c->get_kind() == flwor_clause::for_clause)
       {
@@ -182,6 +179,16 @@ void ExprIterator::next()
         {
           EXPR_ITER_NEXT(*theArgsIter);
         }
+      }
+
+      if (theClausesEnd != flworExpr->theClauses.end())
+      {
+        ulong pos = theClausesIter - theClausesBegin;
+        if (pos >= flworExpr->num_clauses())
+          break;
+
+        theClausesEnd = flworExpr->theClauses.end();
+        theClausesIter = flworExpr->theClauses.begin() + pos;
       }
     }
 

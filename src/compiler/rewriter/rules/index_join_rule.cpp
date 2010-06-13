@@ -44,7 +44,7 @@ static var_expr* findForVar(static_context*, RewriterContext&, const expr*, ulon
 
 static bool checkVarDependency(RewriterContext&, expr*, ulong);
 
-static bool expandVars(RewriterContext&, expr*, ulong, int&);
+static bool expandVars(RewriterContext&, expr*, ulong, long&);
 
 static void findFlworForVar(RewriterContext&, const var_expr*, flwor_expr*&,
                             sequential_expr*&, ulong&, ulong&, ulong&);
@@ -393,7 +393,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   for_clause* fc = predInfo.theInnerVar->get_for_clause();
 
-  int maxInnerVarId = -1;
+  long maxInnerVarId = -1;
 
   // The index domain expr is the expr that defines the inner var, expanded, if
   // possible, so that it does not reference any variables defined after the outer
@@ -432,7 +432,7 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
     // The domain expr depends on some flwor var that is defined before the outer
     // var. In this case, we find the flwor expr defining the inner-most var V
     // referenced by the domain expr of the index. Let F be this flwor expr. If
-    // F does not define the other var as well, then we create the index in the
+    // F does not define the outer var as well, then we create the index in the
     // return expr of F. Otherwise, we first break up F by creating a sub-flwor
     // expr (subF) and moving all clauses of F that appear after V's defining
     // clause into subF, making the return expr of f be the return expr of subF,
@@ -456,10 +456,11 @@ static bool rewriteJoin(RewriterContext& rCtx, PredicateInfo& predInfo)
                     innerPosInStack,
                     innerPosInSeq);
 
-    if (innerFlwor->defines_variable(predInfo.theOuterVar) >= 0)
-    {
-      ulong numClauses = innerFlwor->num_clauses();
+    ulong numClauses = innerFlwor->num_clauses();
 
+    if (innerFlwor->defines_variable(predInfo.theOuterVar) >= 0 ||
+        mostInnerVarPos < numClauses-1)
+    {
       ZORBA_ASSERT(mostInnerVarPos < numClauses-1);
 
       const QueryLoc& nestedLoc = mostInnerVarClause->get_loc();
@@ -629,7 +630,7 @@ static bool expandVars(
     RewriterContext& rCtx,
     expr* subExpr,
     ulong outerVarId,
-    int& maxVarId)
+    long& maxVarId)
 {
   if (subExpr->get_expr_kind() == wrapper_expr_kind)
   {
@@ -638,9 +639,12 @@ static bool expandVars(
     if (wrapper->get_expr()->get_expr_kind() == var_expr_kind)
     {
       var_expr* var = reinterpret_cast<var_expr*>(wrapper->get_expr());
-      ulong varid = (*rCtx.theVarIdMap)[var];
+      long varid = -1;
 
-      if (varid > outerVarId)
+      if (rCtx.theVarIdMap->find(var) != rCtx.theVarIdMap->end())
+        varid = (*rCtx.theVarIdMap)[var];
+      
+      if (varid > (long)outerVarId)
       {
         if (var->get_kind() == var_expr::let_var)
         {
@@ -667,7 +671,7 @@ static bool expandVars(
       }
       else
       {
-        if ((long)varid > maxVarId)
+        if (varid > maxVarId)
           maxVarId = varid;
 
         return true;
