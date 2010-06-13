@@ -19,9 +19,9 @@
 
 #include <vector>
 
-#include "store/api/ft_token.h"
-#include "zorbatypes/rchandle.h"
 #include "zorbaerrors/Assert.h"
+#include "zorbatypes/ft_token.h"
+#include "zorbatypes/rchandle.h"
 
 namespace zorba {
 

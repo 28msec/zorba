@@ -21,8 +21,8 @@
 #include "runtime/full_text/ft_stop_words_set.h"
 #include "runtime/full_text/ft_token_matcher.h"
 #include "runtime/full_text/icu_wildcard_matcher.h"
-#include "store/api/ft_token.h"
 #include "util/stl_util.h"
+#include "zorbatypes/ft_token.h"
 
 using namespace std;
 

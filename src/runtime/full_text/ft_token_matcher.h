@@ -20,7 +20,7 @@
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/ft_stemmer.h"
 #include "runtime/full_text/ft_stop_words_set.h"
-#include "store/api/ft_token.h"
+#include "zorbatypes/ft_token.h"
 
 namespace zorba {
 

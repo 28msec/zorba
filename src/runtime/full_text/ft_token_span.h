@@ -20,7 +20,7 @@
 #include <iostream>
 #include <list>
 
-#include "store/api/ft_token.h"
+#include "zorbatypes/ft_token.h"
 
 namespace zorba {
 
