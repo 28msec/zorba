@@ -18,6 +18,7 @@ SET(FULLTEXT_SRCS
     ft_single_token_iterator.cpp
     ft_stemmer.cpp
     ft_stop_words_set.cpp
+    icu_wildcard_matcher.cpp
     ft_token_matcher.cpp
     apply.cpp
     ftcontains_visitor.cpp

@@ -350,11 +350,9 @@ void V::end_visit( ftunary_not& ) {
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords )
 void V::end_visit( ftwords &w ) {
   ftmatch_options const &options = *top_options();
-  if ( ftwild_card_option const *const wc = options.get_wild_card_option() ) {
-    if ( wc->get_mode() == ft_wild_card_mode::with ) {
-      // TODO: affects query tokenization
-    }
-  }
+  bool wildcards = false;
+  if ( ftwild_card_option const *const wc = options.get_wild_card_option() )
+    wildcards = wc->get_mode() == ft_wild_card_mode::with;
 
   store::Item_t item;
   PlanIter_t plan_iter = w.get_plan_iter();
@@ -362,9 +360,20 @@ void V::end_visit( ftwords &w ) {
   FTQueryItemSeq query_items;
 
   while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
-    FTQueryItem const qi( item->getQueryTokens() );
-    if ( qi->hasNext() )
-      query_items.push_back( qi );
+    try {
+      FTQueryItem const qi( item->getQueryTokens( wildcards ) );
+      if ( qi->hasNext() )
+        query_items.push_back( qi );
+    }
+    catch ( error::ZorbaError &e ) {
+      //
+      // Since getQueryTokens() can throw a ZorbaError and we don't pass it the
+      // QueryLoc, set it here after the fact.  (We don't pass it the QueryLoc
+      // so we don't "pollute" the API.)
+      //
+      set_error_query_loc( e, w.get_loc() );
+      throw;
+    }
   }
 
   if ( !query_items.empty() ) {

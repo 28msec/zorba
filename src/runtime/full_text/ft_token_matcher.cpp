@@ -20,6 +20,7 @@
 #include "runtime/full_text/ft_stemmer.h"
 #include "runtime/full_text/ft_stop_words_set.h"
 #include "runtime/full_text/ft_token_matcher.h"
+#include "runtime/full_text/icu_wildcard_matcher.h"
 #include "store/api/ft_token.h"
 #include "util/stl_util.h"
 
@@ -154,7 +155,9 @@ bool ft_token_matcher::match( FTToken::string_t const &dts,
 
   if ( ftwild_card_option const *const wc = options_.get_wild_card_option() ) {
     if ( wc->get_mode() == ft_wild_card_mode::with ) {
-      // TODO
+      icu_wildcard_matcher matcher;
+      matcher.compile( pqts->str() );
+      return matcher.matches( pdts->str() );
     }
   }
 

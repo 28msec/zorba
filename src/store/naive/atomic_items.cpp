@@ -341,9 +341,9 @@ void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
   tokens_.push_back( t );
 }
 
-FTTokenIterator_t StringItemNaive::getQueryTokens() const {
+FTTokenIterator_t StringItemNaive::getQueryTokens( bool wildcards ) const {
   if ( theTokens.empty() ) {
-    icu_tokenizer tokenizer;
+    icu_tokenizer tokenizer( wildcards );
     AtomicItemTokenizer atomic_tokenizer( tokenizer, theTokens );
     xqpStringStore const *const xText = getStringValue();
     atomic_tokenizer.tokenize( xText->c_str(), xText->size() );

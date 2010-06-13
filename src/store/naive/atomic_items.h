@@ -493,7 +493,7 @@ public:
 
   virtual xqp_string show() const;
 
-  FTTokenIterator_t getQueryTokens() const;
+  FTTokenIterator_t getQueryTokens( bool wildcards = false ) const;
 };
 
 

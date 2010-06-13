@@ -631,9 +631,11 @@ public:
 
   /**
    * Gets the query tokens for this item.
+   *
+   * @param wildcards If true, allow XQuery wildcard syntax in tokens.
    */
   virtual FTTokenIterator_t
-  getQueryTokens() const;
+  getQueryTokens( bool wildcards = false ) const;
 
 }; 
 
