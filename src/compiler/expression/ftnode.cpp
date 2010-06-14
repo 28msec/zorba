@@ -780,9 +780,14 @@ ft_visit_result::type ftstop_word_option::accept( ftnode_visitor &v ) {
 ostream& ftstop_word_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftstop_word_option );
   PUT_ENUM( o, ft_stop_words_mode, mode );
-  INDENT_PUT( o );
-  PUT_SEQ( o, list_t, stop_words_ );
-  OUTDENT_END_PUT( o );
+  if ( stop_words_.empty() )
+    o << endl;
+  else {
+    INDENT_PUT( o );
+    PUT_SEQ( o, list_t, stop_words_ );
+    OUTDENT_PUT( o );
+  }
+  END_PUT( o );
 }
 
 void ftstop_word_option::serialize( serialization::Archiver &ar ) {
