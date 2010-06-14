@@ -102,10 +102,10 @@ icu_tokenizer::icu_tokenizer( bool wildcards ) : wildcards_( wildcards ) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-#define IF_GOT_BACKSLASH_GOTO(GOTO)   \
+#define HANDLE_BACKSLASH()            \
   if ( !got_backslash ) ; else {      \
     got_backslash = in_wild = false;  \
-    goto GOTO;                        \
+    break;                            \
   }
 
 #define IF_GOT_BACKSLASH_APPEND_AND_GOTO(GOTO)  \
@@ -151,7 +151,7 @@ void icu_tokenizer::tokenize( char const *utf8_s, int utf8_len,
     auto_vec<char> const utf8_buf(
       utf16_to_utf8( utf16_buf.get() + word_start, utf16_len, &utf8_len )
     );
-    int32_t const status = word_it_->getRuleStatus();
+    int32_t const rule_status = word_it_->getRuleStatus();
 
     //
     // "Junk" tokens are whitespace and punctuation -- except some punctuation
@@ -163,53 +163,52 @@ void icu_tokenizer::tokenize( char const *utf8_s, int utf8_len,
     cout << "GOT: \"" << string( utf8_buf.get(), utf8_len ) << "\" ";
 #   endif
 
-    if ( IS_WORD_BREAK( NONE, status ) ) {
+    if ( IS_WORD_BREAK( NONE, rule_status ) ) {
       //
       // "NONE" tokens are what ICU calls whitespace and punctuation.
       //
 #     if DEBUG_TOKENIZER
       cout << "(NONE)" << endl;
 #     endif
-      if ( !wildcards_ )
-        goto junk;
-      char const c = *utf8_buf;
-      switch ( c ) {
-        case '.':
-          IF_GOT_BACKSLASH_GOTO( junk );
-          in_wild = true;
-          goto set_token;
-        case '\\':
-          IF_GOT_BACKSLASH_GOTO( junk );
-          got_backslash = true;
-          goto junk;
-        case '*':
-        case '+':
-        case '?':
-        case '{':
-          if ( in_brace )
-            ZORBA_ERROR( FTDY0020 );
-          IF_GOT_BACKSLASH_GOTO( junk );
-          if ( in_wild ) {
-            in_brace = c == '{';
+      if ( wildcards_ ) {
+        switch ( *utf8_buf ) {
+          case '.':
+            HANDLE_BACKSLASH();
+            in_wild = true;
             goto set_token;
-          }
-          goto junk;
-        case '}':
-          IF_GOT_BACKSLASH_GOTO( junk );
-          if ( in_brace ) {
-            in_brace = false;
-            goto set_token;
-          }
-          if ( in_wild )
-            ZORBA_ERROR( FTDY0020 );
-          goto junk;
-        default:
-          in_wild = false;
-          goto junk;
+          case '\\':
+            HANDLE_BACKSLASH();
+            got_backslash = true;
+            break;
+          case '*':
+          case '+':
+          case '?':
+          case '{':
+            if ( in_brace )
+              ZORBA_ERROR( FTDY0020 );
+            HANDLE_BACKSLASH();
+            if ( in_wild ) {
+              in_brace = *utf8_buf == '{';
+              goto set_token;
+            }
+            break;
+          case '}':
+            HANDLE_BACKSLASH();
+            if ( in_brace ) {
+              in_brace = false;
+              goto set_token;
+            }
+            if ( in_wild )
+              ZORBA_ERROR( FTDY0020 );
+            break;
+          default:
+            in_wild = false;
+        }
       }
+      is_junk = true;
     }
 
-    if ( IS_WORD_BREAK( NUMBER, status ) ) {
+    else if ( IS_WORD_BREAK( NUMBER, rule_status ) ) {
       //
       // "NUMBER" tokens are obviously for numbers.  Note that a sequence of
       // digits containing a ',' (e.g., "1,2") is considered a single token by
@@ -219,44 +218,40 @@ void icu_tokenizer::tokenize( char const *utf8_s, int utf8_len,
       cout << "(NUMBER)" << endl;
 #     endif
       IF_GOT_BACKSLASH_APPEND_AND_GOTO( next );
-      if ( !in_wild && !in_brace )
-        goto send;
-      //
-      // Validate that the token matches the regex "[0-9]+,[0-9]+".
-      //
-      char const *c = utf8_buf.get();
-      int i;
-      for ( i = 0; i < utf8_len; ++i, ++c ) {
-        if ( i && *c == ',' )
-          break;
-        if ( !isdigit( *c ) )
+      if ( in_brace ) {
+        //
+        // Validate that the token matches the regex "[0-9]+,[0-9]+".
+        //
+        char const *c = utf8_buf.get();
+        int i;
+        for ( i = 0; i < utf8_len; ++i, ++c ) {
+          if ( i && *c == ',' )
+            break;
+          if ( !isdigit( *c ) )
+            ZORBA_ERROR( FTDY0020 );
+        }
+        if ( i == utf8_len || *c != ',' )
           ZORBA_ERROR( FTDY0020 );
+        for ( ++i, ++c; i < utf8_len; ++i, ++c ) {
+          if ( !isdigit( *c ) )
+            ZORBA_ERROR( FTDY0020 );
+        }
       }
-      if ( i == utf8_len || *c != ',' )
-        ZORBA_ERROR( FTDY0020 );
-      for ( ++i, ++c; i < utf8_len; ++i, ++c ) {
-        if ( !isdigit( *c ) )
-          ZORBA_ERROR( FTDY0020 );
-      }
-      goto set_token;
     }
 
-    //
-    // "OTHER" tokens are for non-whitespace, non-digits, and non-numbers,
-    // i.e., word tokens.
-    //
-#   if DEBUG_TOKENIZER
-    cout << "(OTHER)" << endl;
-#   endif
-    if ( in_brace )
-      ZORBA_ERROR( FTDY0020 );
-    IF_GOT_BACKSLASH_APPEND_AND_GOTO( next );
-    goto send;
+    else {
+      //
+      // "OTHER" tokens are for non-whitespace, non-digits, and non-numbers,
+      // i.e., word tokens.
+      //
+#     if DEBUG_TOKENIZER
+      cout << "(OTHER)" << endl;
+#     endif
+      if ( in_brace )
+        ZORBA_ERROR( FTDY0020 );
+      IF_GOT_BACKSLASH_APPEND_AND_GOTO( next );
+    }
 
-junk:
-    is_junk = true;
-
-send:
     if ( !in_wild && !got_backslash )
       t.send_to( callback );
 
