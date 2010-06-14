@@ -20,6 +20,7 @@
 #include <stack>
 
 #include "compiler/expression/ftnode_visitor.h"
+#include "context/static_context.h"
 #include "runtime/base/plan_iterator.h"
 #include "runtime/full_text/apply.h"    /* for ft_int */
 #include "runtime/full_text/ft_match.h"
@@ -28,7 +29,8 @@ namespace zorba {
 
 class ftcontains_visitor : public ftnode_visitor {
 public:
-  ftcontains_visitor( FTTokenIterator_t &search_ctx, PlanState& );
+  ftcontains_visitor( FTTokenIterator_t &search_ctx, static_context const&,
+                      PlanState& );
 
   ~ftcontains_visitor();
 
@@ -86,6 +88,7 @@ private:
   ft_int get_int( PlanIter_t );
 
   FTTokenIterator_t &search_ctx_;
+  static_context const &static_ctx_;
   PlanState &plan_state_;
   FTToken::int_t query_pos_;
 };

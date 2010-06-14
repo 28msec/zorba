@@ -11135,14 +11135,7 @@ void *begin_visit (const FTMatchOptions& v) {
 
 void end_visit (const FTMatchOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( pop_ftstack() );
-  ZORBA_ASSERT( mo );
-  ftnode *const ftprimary = pop_ftstack();
-  ftprimary_with_options *const pwo =
-    dynamic_cast<ftprimary_with_options*>( top_ftstack() );
-  ZORBA_ASSERT( pwo );
-  pwo->set_match_options( mo );
-  push_ftstack( ftprimary );
+  // nothing to do
 }
 
 void *begin_visit (const FTMildNot& v) {
@@ -11172,12 +11165,15 @@ void end_visit (const FTMildNot& v, void* /*visit_state*/) {
 
 void *begin_visit (const FTOptionDecl& v) {
   TRACE_VISIT ();
+  // nothing to do
   return no_state;
 }
 
 void end_visit (const FTOptionDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  // TODO
+  ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( pop_ftstack() );
+  ZORBA_ASSERT( mo );
+  theSctx->set_match_options( mo );
 }
 
 void *begin_visit (const FTOr& v) {
@@ -11224,12 +11220,17 @@ void *begin_visit (const FTPrimaryWithOptions& v) {
 
 void end_visit (const FTPrimaryWithOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+  ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
+  if ( mo ) 
+    pop_ftstack();
   ftprimary *const p = dynamic_cast<ftprimary*>( pop_ftstack() );
   ZORBA_ASSERT( p );
   ftprimary_with_options *const pwo =
     dynamic_cast<ftprimary_with_options*>( top_ftstack() );
   ZORBA_ASSERT( pwo );
   pwo->set_primary( p );
+  if ( mo )
+    pwo->set_match_options( mo );
 }
 
 void *begin_visit (const FTRange& v) {

@@ -38,6 +38,7 @@ namespace zorba
 {
 
 class expr;
+class ftmatch_options;
 class var_expr;
 class function;
 class XQType;
@@ -453,6 +454,8 @@ protected:
 
   OptionMap                             * theOptionMap;
 
+  ftmatch_options const                 * theFTMatchOptions;
+
   StaticContextConsts::xquery_version_t      theXQueryVersion;
 
   StaticContextConsts::xpath_compatibility_t theXPathCompatibility;
@@ -770,6 +773,13 @@ public:
 
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
 
+  ftmatch_options const* get_match_options() const {
+    return theFTMatchOptions;
+  }
+
+  void set_match_options( ftmatch_options const *mo ) {
+    theFTMatchOptions = mo;
+  }
 
   //
   // Merge in the static context of a module
@@ -814,3 +824,4 @@ protected:
  * mode: c++
  * End:
  */
+/* vim:set et sw=2 ts=2: */

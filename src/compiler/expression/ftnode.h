@@ -386,6 +386,8 @@ public:
     wild_card_option_ = o;
   }
 
+  void set_missing_defaults();
+
   std::ostream& put( std::ostream& ) const;
 
 private:

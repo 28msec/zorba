@@ -64,14 +64,16 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
   bool ftcontains = false;
   store::Item_t item;                   // for the search context
+  static_context const *static_ctx;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
+  static_ctx = getStaticContext( plan_state );
 
   while ( !ftcontains && consumeNext( item, theChild0.getp(), plan_state ) ) {
     FTTokenIterator_t doc_tokens( item->getDocumentTokens() );
     if ( doc_tokens->hasNext() ) {
-      ftcontains_visitor v( doc_tokens, plan_state );
+      ftcontains_visitor v( doc_tokens, *static_ctx, plan_state );
       ftselection_->accept( v );
       ftcontains = v.ftcontains();
     }

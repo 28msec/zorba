@@ -109,8 +109,10 @@ static void replace_match_options( ftmatch_options const *older,
 ////////// ftcontains_visitor member functions ////////////////////////////////
 
 ftcontains_visitor::ftcontains_visitor( FTTokenIterator_t &search_ctx,
+                                        static_context const &static_ctx,
                                         PlanState &state ) :
   search_ctx_( search_ctx ),
+  static_ctx_( static_ctx ),
   plan_state_( state )
 {
   // do nothing
@@ -346,10 +348,17 @@ void V::end_visit( ftor& ) {
 
 ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
   BEGIN_VISIT( ftprimary_with_options );
-  ftmatch_options *const copy = new ftmatch_options( *pwo.get_match_options() );
-  if ( !options_stack_.empty() )
-    replace_match_options( top_options(), copy );
-  PUSH_OPTIONS( copy );
+
+  ftmatch_options const *const older = options_stack_.empty() ?
+    static_ctx_.get_match_options() : top_options();
+  ftmatch_options *const newer =
+    new ftmatch_options( *pwo.get_match_options() );
+
+  if ( older )
+    replace_match_options( older, newer );
+  newer->set_missing_defaults();
+
+  PUSH_OPTIONS( newer );
   return ft_visit_result::proceed;
 }
 void V::end_visit( ftprimary_with_options& ) {

@@ -416,15 +416,7 @@ void ftmatch_option::serialize( serialization::Archiver &ar ) {
 ftmatch_options::ftmatch_options(
   QueryLoc const &loc
 ) :
-  ftnode( loc ),
-  case_option_( new ftcase_option( loc ) ),
-  diacritics_option_( new ftdiacritics_option( loc ) ),
-  extension_option_( NULL ),
-  language_option_( NULL ),
-  stem_option_( new ftstem_option( loc ) ),
-  stop_word_option_( new ftstop_word_option( loc ) ),
-  thesaurus_option_( NULL ),
-  wild_card_option_( new ftwild_card_option( loc ) )
+  ftnode( loc )
 {
 }
 
@@ -464,6 +456,22 @@ void ftmatch_options::serialize( serialization::Archiver &ar ) {
   ar & stop_word_option_;
   ar & thesaurus_option_;
   ar & wild_card_option_;
+}
+
+void ftmatch_options::set_missing_defaults() {
+  if ( !case_option_ )
+    case_option_ = new ftcase_option( get_loc() );
+  if ( !diacritics_option_ )
+    diacritics_option_ = new ftdiacritics_option( get_loc() );
+  // extension_option_
+  // language_option_
+  if ( !stem_option_ )
+    stem_option_ = new ftstem_option( get_loc() );
+  if ( !stop_word_option_ )
+    stop_word_option_ = new ftstop_word_option( get_loc() );
+  // thesaurus_option_
+  if ( !wild_card_option_ )
+    wild_card_option_ = new ftwild_card_option( get_loc() );
 }
 
 ftmild_not::ftmild_not( QueryLoc const &loc, ftnode_list_t &list ) :
