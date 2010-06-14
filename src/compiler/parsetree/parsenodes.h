@@ -5845,7 +5845,7 @@ public:
   );
   ~FTOptionDecl();
 
-  FTMatchOptions const* get_match_option() const { return match_options_; }
+  FTMatchOptions const* get_match_options() const { return match_options_; }
 
   void accept( parsenode_visitor& ) const;
 
