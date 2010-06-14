@@ -261,11 +261,12 @@ send:
       t.send_to( callback );
 
 set_token:
-    if ( !is_junk )
+    if ( !is_junk ) {
       if ( in_wild || got_backslash )
         t.append( utf8_buf.get(), utf8_len );
       else
         t.set( utf8_buf.get(), utf8_len, token_no_++, sent_no_, para_no_ );
+    }
 
 next:
     word_start = word_end, word_end = word_it_->next();
