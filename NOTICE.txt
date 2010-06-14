@@ -60,6 +60,54 @@ contains the following notice:
    ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 
+The files in src/runtime/full_text/stemmer is copyright 2001 Dr. Martin Porter
+and contains the following notice:
+
+   All the software given out on this Snowball site is covered by the BSD
+   License (see http://www.opensource.org/licenses/bsd-license.html), with
+   Copyright (c) 2001, Dr Martin Porter, and (for the Java developments)
+   Copyright (c) 2002, Richard Boulton.
+
+   Essentially, all this means is that you can do what you like with the code,
+   except claim another Copyright for it, or claim that it is issued under a
+   different license. The software is also issued without warranties, which
+   means that if anyone suffers through its use, they cannot come back and sue
+   you. You also have to alert anyone to whom you give the Snowball software to
+   the fact that it is covered by the BSD license.
+
+   We have not bothered to insert the licensing arrangement into the text of
+   the Snowball software.
+
+
+The file src/util/less.h is copyright 2998 Paul J. Lucas and contains the
+following notice:
+
+   Redistribution and use in source and binary forms, with or without
+   modification, are permitted provided that the following conditions are met:
+   
+    o  Redistributions of source code must retain the above copyright notice,
+       this list of conditions and the following disclaimer.
+  
+    o  Redistributions in binary form must reproduce the above copyright
+       notice, this list of conditions and the following disclaimer in the
+       documentation and/or other materials provided with the distribution.
+  
+    o  The name of the author may not be used to endorse or promote products
+       derived from this software without specific prior written permission.
+  
+   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+   POSSIBILITY OF SUCH DAMAGE.
+
+
 Furthermore, this software depends / makes use of:
 
      * LIBXML2 2.2.16 or higher (http://xmlsoft.org/ ) 
