@@ -47,6 +47,12 @@ public:
 
   virtual zorba::StatelessExternalFunction*
   getExternalFunction(zorba::String aLocalname) const;
+
+  virtual void
+  destroy();
+
+  virtual
+  ~DateTimeModule();
 };
 
 

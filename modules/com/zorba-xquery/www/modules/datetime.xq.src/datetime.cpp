@@ -117,6 +117,28 @@ DateTimeModule::getExternalFunction(zorba::String aLocalname) const
   return lFunc;
 }
 
+/******************************************************************************
+ *****************************************************************************/
+DateTimeModule::~DateTimeModule()
+{
+  for (FuncMap_t::const_iterator lIter = theFunctions.begin();
+       lIter != theFunctions.end(); ++lIter) {
+    delete lIter->second;
+  }
+  theFunctions.clear();
+}
+
+/******************************************************************************
+ *****************************************************************************/
+void
+DateTimeModule::destroy()
+{
+  if (!dynamic_cast<DateTimeModule*>(this)) {
+    return;
+  }
+  delete this;
+}
+
 } /* namespace datetimemodule */ } /* namespace zorba */
 
 #ifdef WIN32
