@@ -2,9 +2,23 @@ Zorba - The XQuery Processor
 version 1.4
   * added a datetime library module with nondeterministic functions
   * new (non)deterministic send-request functions in the http-client module
+  * the http-client's send-request function accepts a non-validated request parameter
   * fixed an issue with a wrong static context being used in eval queries (see bug item #2979317)
-  * Added XQuery 1.1 Switch expressions (only available in 1.1 processing mode)
-  * Added the fn:parse function from XQuery Functions and Operators 1.1
+  * added XQuery 1.1 Switch expressions (only available in 1.1 processing mode)
+  * added the fn:parse function from XQuery Functions and Operators 1.1
+  * improved error reporting for parser errors
+  * improved error reporting for errors regarding sequential expressions
+  * bug fixes
+    - accept relative URIs in xs:anyURI constructors (#2988209)
+    - direct element/attribute construction (#2999765)
+    - deep-equal (#2999772)
+    - schema-attribute(*) is parsed as a function call instead of a node test (#2993286)
+    - handling xml:base attributes during doc loading (#3013096)
+    - fixed build with CMake 2.6.0 on Debian Lenny
+    - try-catch error if XQuery version < 1.1 (#3005344)
+    - W3C test suite bugs CastableAs649 and CastableAs650 (#2999777)
+    - assertion in StatelessExtFunctionCallIterator (#3012651)
+  * optimization of fn:subsequence
 
 version 1.2
   * more introspection functions (e.g. in-scope-element and in-scope-attribute)
