@@ -86,7 +86,27 @@ inline ftmatch_options const* ftcontains_visitor::pop_options() {
   return mo;
 }
 
-///////////////////////////////////////////////////////////////////////////////
+////////// Local functions ////////////////////////////////////////////////////
+
+#define GET_OPTION(O) get_##O##_option()
+
+#define REPLACE_OPTION(O)                                     \
+  if ( newer->GET_OPTION(O) || !older->GET_OPTION(O) ) ; else \
+    newer->set_##O##_option( older->GET_OPTION(O) )
+
+static void replace_match_options( ftmatch_options const *older,
+                                   ftmatch_options *newer ) {
+  REPLACE_OPTION( case );
+  REPLACE_OPTION( diacritics );
+  REPLACE_OPTION( extension );
+  REPLACE_OPTION( language );
+  REPLACE_OPTION( stem );
+  REPLACE_OPTION( stop_word );
+  REPLACE_OPTION( thesaurus );
+  REPLACE_OPTION( wild_card );
+}
+
+////////// ftcontains_visitor member functions ////////////////////////////////
 
 ftcontains_visitor::ftcontains_visitor( FTTokenIterator_t &search_ctx,
                                         PlanState &state ) :
@@ -326,11 +346,14 @@ void V::end_visit( ftor& ) {
 
 ft_visit_result::type V::begin_visit( ftprimary_with_options &pwo ) {
   BEGIN_VISIT( ftprimary_with_options );
-  PUSH_OPTIONS( pwo.get_match_options() );
+  ftmatch_options *const copy = new ftmatch_options( *pwo.get_match_options() );
+  if ( !options_stack_.empty() )
+    replace_match_options( top_options(), copy );
+  PUSH_OPTIONS( copy );
   return ft_visit_result::proceed;
 }
 void V::end_visit( ftprimary_with_options& ) {
-  POP_OPTIONS();
+  delete POP_OPTIONS();
   END_VISIT( ftprimary_with_options );
 }
 

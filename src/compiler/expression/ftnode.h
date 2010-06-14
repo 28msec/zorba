@@ -87,6 +87,7 @@ public:
 private:
   ft_case_mode::type mode_;
 };
+typedef rchandle<ftcase_option> ftcase_option_t;
 
 
 class ftdiacritics_option : public ftmatch_option {
@@ -107,6 +108,7 @@ public:
 private:
   ft_diacritics_mode::type mode_;
 };
+typedef rchandle<ftdiacritics_option> ftdiacritics_option_t;
 
 
 class ftextension_option : public ftmatch_option {
@@ -130,6 +132,7 @@ private:
   rchandle<QName> qname_;
   std::string val_;
 };
+typedef rchandle<ftextension_option> ftextension_option_t;
 
 
 class ftlanguage_option : public ftmatch_option {
@@ -150,6 +153,7 @@ public:
 private:
   lang::iso639_1::type lang_code_;
 };
+typedef rchandle<ftlanguage_option> ftlanguage_option_t;
 
 
 class ftstem_option : public ftmatch_option {
@@ -170,6 +174,7 @@ public:
 private:
   ft_stem_mode::type mode_;
 };
+typedef rchandle<ftstem_option> ftstem_option_t;
 
 
 class ftstop_words : public ftnode {
@@ -234,6 +239,7 @@ private:
   list_t stop_words_;
   ft_stop_words_mode::type mode_;
 };
+typedef rchandle<ftstop_word_option> ftstop_word_option_t;
 
 
 class ftthesaurus_id : public ftnode {
@@ -292,6 +298,7 @@ private:
   bool includes_default_;
   bool no_thesaurus_;
 };
+typedef rchandle<ftthesaurus_option> ftthesaurus_option_t;
 
 
 class ftwild_card_option : public ftmatch_option {
@@ -312,6 +319,7 @@ public:
 private:
   ft_wild_card_mode::type mode_;
 };
+typedef rchandle<ftwild_card_option> ftwild_card_option_t;
 
 
 class ftmatch_options : public ftnode {
@@ -321,83 +329,74 @@ public:
   void serialize( serialization::Archiver& );
 
   ftmatch_options( QueryLoc const& );
-  ~ftmatch_options();
 
   ft_visit_result::type accept( ftnode_visitor& );
 
-  ftcase_option const* get_case_option() const { return case_option_; }
+  ftcase_option const* get_case_option() const { return case_option_.getp(); }
 
   ftdiacritics_option const* get_diacritics_option() const
-    { return diacritics_option_; }
+    { return diacritics_option_.getp(); }
 
   ftextension_option const* get_extension_option() const
-    { return extension_option_; }
+    { return extension_option_.getp(); }
 
   ftlanguage_option const* get_language_option() const
-    { return language_option_; }
+    { return language_option_.getp(); }
 
-  ftstem_option const* get_stem_option() const { return stem_option_; }
+  ftstem_option const* get_stem_option() const { return stem_option_.getp(); }
 
   ftstop_word_option const* get_stop_word_option() const
-    { return stop_word_option_; }
+    { return stop_word_option_.getp(); }
 
   ftthesaurus_option const* get_thesaurus_option() const
-    { return thesaurus_option_; }
+    { return thesaurus_option_.getp(); }
 
   ftwild_card_option const* get_wild_card_option() const
-    { return wild_card_option_; }
+    { return wild_card_option_.getp(); }
 
-  void set_case_option( ftcase_option *o ) {
-    delete case_option_;
+  void set_case_option( ftcase_option const *o ) {
     case_option_ = o;
   }
 
-  void set_diacritics_option( ftdiacritics_option *o ) {
-    delete diacritics_option_;
+  void set_diacritics_option( ftdiacritics_option const *o ) {
     diacritics_option_ = o;
   }
 
-  void set_extension_option( ftextension_option *o ) {
-    delete extension_option_;
+  void set_extension_option( ftextension_option const *o ) {
     extension_option_ = o;
   }
 
-  void set_language_option( ftlanguage_option *o ) {
-    delete language_option_;
+  void set_language_option( ftlanguage_option const *o ) {
     language_option_ = o;
   }
 
-  void set_stem_option( ftstem_option *o ) {
-    delete stem_option_;
+  void set_stem_option( ftstem_option const *o ) {
     stem_option_ = o;
   }
 
-  void set_stop_word_option( ftstop_word_option *o ) {
-    delete stop_word_option_;
+  void set_stop_word_option( ftstop_word_option const *o ) {
     stop_word_option_ = o;
   }
 
-  void set_thesaurus_option( ftthesaurus_option *o ) {
-    delete thesaurus_option_;
+  void set_thesaurus_option( ftthesaurus_option const *o ) {
     thesaurus_option_ = o;
   }
 
-  void set_wild_card_option( ftwild_card_option *o ) {
-    delete wild_card_option_;
+  void set_wild_card_option( ftwild_card_option const *o ) {
     wild_card_option_ = o;
   }
 
   std::ostream& put( std::ostream& ) const;
 
 private:
-  ftcase_option *case_option_;
-  ftdiacritics_option *diacritics_option_;
-  ftextension_option *extension_option_;
-  ftlanguage_option *language_option_;
-  ftstem_option *stem_option_;
-  ftstop_word_option *stop_word_option_;
-  ftthesaurus_option *thesaurus_option_;
-  ftwild_card_option *wild_card_option_;
+  ftcase_option_t case_option_;
+  ftdiacritics_option_t diacritics_option_;
+  ftextension_option_t extension_option_;
+  ftlanguage_option_t language_option_;
+  ftstem_option_t stem_option_;
+  ftstop_word_option_t stop_word_option_;
+  ftthesaurus_option_t thesaurus_option_;
+  ftwild_card_option_t wild_card_option_;
 };
 
 ////////// FTPrimary //////////////////////////////////////////////////////////

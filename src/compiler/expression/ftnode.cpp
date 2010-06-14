@@ -422,20 +422,10 @@ ftmatch_options::ftmatch_options(
   extension_option_( NULL ),
   language_option_( NULL ),
   stem_option_( new ftstem_option( loc ) ),
-  stop_word_option_( NULL ),
+  stop_word_option_( new ftstop_word_option( loc ) ),
   thesaurus_option_( NULL ),
   wild_card_option_( new ftwild_card_option( loc ) )
 {
-}
-
-ftmatch_options::~ftmatch_options() {
-  delete case_option_;
-  delete extension_option_;
-  delete language_option_;
-  delete stem_option_;
-  delete stop_word_option_;
-  delete thesaurus_option_;
-  delete wild_card_option_;
 }
 
 ft_visit_result::type ftmatch_options::accept( ftnode_visitor &v ) {
