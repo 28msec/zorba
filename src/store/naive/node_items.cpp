@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -52,7 +52,7 @@ namespace zorba { namespace simplestore {
 /*******************************************************************************
 
 ********************************************************************************/
-XmlTree::XmlTree() 
+XmlTree::XmlTree()
 {
 }
 
@@ -74,7 +74,7 @@ XmlTree::XmlTree(XmlNode* root, ulong id)
 /*******************************************************************************
 
 ********************************************************************************/
-void XmlTree::setCollection(SimpleCollection* collection, ulong pos) 
+void XmlTree::setCollection(SimpleCollection* collection, ulong pos)
 {
   ZORBA_ASSERT(collection == NULL || theCollection == NULL);
 
@@ -134,7 +134,7 @@ void XmlTree::free() throw()
   become the parent of C.
 
   If P is NULL, C becomes the root (and single node) of T. In this case, C's
-  ordpath is the root one (= 1). 
+  ordpath is the root one (= 1).
 
   If P != NULL and pos >= 0, C will become the "pos"-th child/attribute of P.
   In this case, the ordpath of C is computed based on the ordpaths of its left
@@ -186,7 +186,7 @@ XmlNode::XmlNode(
 
 ********************************************************************************/
 #ifndef NDEBUG
-XmlNode::~XmlNode() 
+XmlNode::~XmlNode()
 {
   NODE_TRACE1("Deleted " << store::StoreConsts::toString(getNodeKind()) << this);
 }
@@ -229,7 +229,7 @@ void XmlNode::setOrdPath(
     elemParent = reinterpret_cast<ElementNode*>(parent);
     numAttrs =  elemParent->numAttributes();
   }
-                    
+
   if (nodeKind == store::StoreConsts::attributeNode)
   {
     if (pos < 0)
@@ -431,7 +431,7 @@ xqpStringStore_t XmlNode::getBaseURIInternal(bool& local) const
              is greater or equal to the current number of attrs/children in P,
              then the copied tree is appended to P's attributes/children.
   copymode : Encapsulates the construction-mode and copy-namespace-mode
-             components of the query's static context. 
+             components of the query's static context.
 ********************************************************************************/
 store::Item* XmlNode::copy(
     store::Item* inParent,
@@ -481,7 +481,7 @@ void XmlNode::connect(InternalNode* parent, ulong pos) throw()
 
 
 /*******************************************************************************
-  Disconnect "this" node from its parent, if any. 
+  Disconnect "this" node from its parent, if any.
 ********************************************************************************/
 long XmlNode::disconnect() throw()
 {
@@ -504,7 +504,7 @@ long XmlNode::disconnect() throw()
       ZORBA_FATAL(pos < theParent->numChildren(), "");
       theParent->children().remove(pos);
     }
-    
+
     theParent = NULL;
 
     return pos;
@@ -547,7 +547,7 @@ void XmlNode::destroyInternal() throw()
     {
       elemNode->getChild(i)->destroyInternal();
     }
-    
+
     for (ulong i = 0; i < numAttrs; i++)
     {
       elemNode->getAttr(i)->destroyInternal();
@@ -866,7 +866,7 @@ xqp_string DocumentNode::show() const
   {
     strStream << item->show();
   }
-  
+
   strStream << std::endl << "</document>";
 
   return strStream.str().c_str();
@@ -938,7 +938,7 @@ ElementNode::ElementNode(
     if (haveTypedValue)
     {
       setHaveValue();
-      
+
       if (haveEmptyValue)
         setHaveEmptyValue();
     }
@@ -961,7 +961,7 @@ ElementNode::ElementNode(
       if (parent && parent->getNodeKind() == store::StoreConsts::elementNode)
         setNsContext(reinterpret_cast<ElementNode*>(parent)->getNsContext());
     }
-    
+
     // Note: Setting the base uri property of "this" involves the creation of an
     // attribute node having "this" as the parent. So, if addBaseUriProperty()
     // fails, we must manually remove that attribute to avoid memory leak.
@@ -1011,11 +1011,11 @@ ElementNode::ElementNode(
   }
 
   NODE_TRACE1("Constructed element node " << this << " parent = "
-              << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos 
+              << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " name = " << *theName->getStringValue()
-              << " type = " << (theTypeName ? 
+              << " type = " << (theTypeName ?
                                 theTypeName->getStringValue()->c_str() :
                                 "untyped"));
 }
@@ -1051,7 +1051,7 @@ XmlNode* ElementNode::copyInternal(
     rootNsContext = reinterpret_cast<ElementNode*>(rootParent)->getNsContext();
 
   if (copymode.theTypePreserve)
-  { 
+  {
     typeName = theTypeName;
     haveValue = this->haveValue();
     haveEmptyValue = this->haveEmptyValue();
@@ -1077,7 +1077,7 @@ XmlNode* ElementNode::copyInternal(
     copyNode = NodeFactory::instance().createElementNode(
                  tree, parent, pos, nodeName, typeName,
                  haveValue, haveEmptyValue, inSubstGroup,
-                 NULL, // local bindings 
+                 NULL, // local bindings
                  baseUri);
 
     if (rootCopy == NULL)
@@ -1300,7 +1300,7 @@ store::Item* ElementNode::getType() const
 {
   return (theTypeName != NULL ?
           theTypeName.getp() :
-          GET_STORE().theSchemaTypeNames[XS_UNTYPED].getp()); 
+          GET_STORE().theSchemaTypeNames[XS_UNTYPED].getp());
 }
 
 
@@ -1390,7 +1390,8 @@ void ElementNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
   {
     ZORBA_ERROR_DESC_OSS(FOTY0012,
                         "The element node " << *theName->getStringValue()
-                        << " with type " << *theTypeName->getStringValue()
+                        << " with type " <<
+                        ( theTypeName ? *theTypeName->getStringValue() : "'no type'" )
                         << " does not have a typed value");
   }
 }
@@ -1637,7 +1638,7 @@ const store::NsBindings& ElementNode::getLocalBindings() const
   is resolved.
 
   This method is used by the ElementNode and AttributeNode constructors with
-  replacePrefix set to true. It is also used by updating methods with 
+  replacePrefix set to true. It is also used by updating methods with
   replacePrefix set to false.
 ********************************************************************************/
 bool ElementNode::addBindingForQName(
@@ -1849,7 +1850,7 @@ void ElementNode::checkUniqueAttrs() const
   by resolving the "relUri" based on the absolute "absUri". However, if "relUri"
   is an absolute uri already, the base-uri property of the node is set to "relUri".
   It is also possible that "relUri" is NULL, in which case, the base-uri property
-  of the node is set to "absUri". 
+  of the node is set to "absUri".
 
   It is assumed that both "absUri" and "relUri" (if not NULL) are well-formed uri
   strings.
@@ -1871,15 +1872,15 @@ void ElementNode::addBaseUriProperty(
     GET_STORE().getItemFactory()->createAnyURI(typedValue, absUri);
   }
   else
-  { 
+  {
     xqpStringStore_t resolvedUriString;
-    try 
+    try
     {
       URI absoluteURI(&*absUri);
       URI resolvedURI(absoluteURI, &*relUri);
       resolvedUriString = resolvedURI.toString();
     }
-    catch (error::ZorbaError&) 
+    catch (error::ZorbaError&)
     {
       resolvedUriString.transfer(relUri);
     }
@@ -1893,10 +1894,10 @@ void ElementNode::addBaseUriProperty(
   // the this pointer is used in the constructor to
   // attach it to the parent
   GET_STORE().getNodeFactory().createAttributeNode(
-    NULL,  // xml tree 
+    NULL,  // xml tree
     this,  // parent
     0,     // position
-    qname, 
+    qname,
     typeName,
     typedValue,
     false, // isListVale
@@ -1926,7 +1927,7 @@ void ElementNode::adjustBaseUriProperty(
     GET_STORE().getItemFactory()->createAnyURI(typedValue, absUri);
   }
   else
-  { 
+  {
     xqpStringStore_t resolvedUriString;
     try
     {
@@ -2095,7 +2096,7 @@ AttributeNode::AttributeNode(
     {
       // If this is an explicit base uri attribute, (a) set or update the base-uri
       // property of the parent, and (b) create an additional hidden base-uri attr
-      // with the resolved version ofthe given uri. 
+      // with the resolved version ofthe given uri.
       if (isBaseUri() && !isHidden())
       {
         xqpStringStore_t parentBaseUri = parent->getBaseURI();
@@ -2114,7 +2115,7 @@ AttributeNode::AttributeNode(
             }
           }
         }
-        
+
         if (parentBaseUri == NULL)
           parent->addBaseUriProperty(baseUri, parentBaseUri);
         else
@@ -2122,7 +2123,7 @@ AttributeNode::AttributeNode(
       }
 
       // Else, add the ns binding implied by the attr name into the in-scope ns
-      // bindings of the parent (if this ns binding is not there already) 
+      // bindings of the parent (if this ns binding is not there already)
       else if (!isHidden())
       {
         parent->addBindingForQName(theName, true, true);
@@ -2143,7 +2144,7 @@ AttributeNode::AttributeNode(
   }
 
   NODE_TRACE1("Constructed attribute node " << this << " parent = "
-              << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos 
+              << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
               << " tree = " << getTree()->getId() << ":" << getTree()
               << " ordpath = " << theOrdPath.show()
               << " name = " << *theName->getStringValue()
@@ -2198,12 +2199,12 @@ XmlNode* AttributeNode::copyInternal(
       GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, rch);
     }
   }
-  
+
   try
   {
     if (parent == NULL)
       tree = GET_STORE().getNodeFactory().createXmlTree();
-    
+
     else if (parent == rootParent)
       reinterpret_cast<ElementNode*>(parent)->checkUniqueAttr(nodeName);
 
@@ -2219,7 +2220,7 @@ XmlNode* AttributeNode::copyInternal(
     delete tree;
     throw;
   }
-  
+
   NODE_TRACE1("Copied attribute node " << this << " to node " << copyNode
               << " name = " << theName->show() << " parent = "
               << std::hex << (parent ? (ulong)parent : 0) << " pos = " << pos
@@ -2236,7 +2237,7 @@ store::Item* AttributeNode::getType() const
 {
   return (theTypeName != NULL ?
           theTypeName.getp() :
-          GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp()); 
+          GET_STORE().theSchemaTypeNames[XS_UNTYPED_ATOMIC].getp());
 }
 
 
@@ -2351,7 +2352,7 @@ void AttributeNode::getStringValue(xqpStringStore_t& strval) const
 }
 
 
-void AttributeNode::getStringValue(std::string& buf) const 
+void AttributeNode::getStringValue(std::string& buf) const
 {
   if (haveListValue())
   {
@@ -2405,7 +2406,7 @@ TextNode::TextNode(xqpStringStore_t& content)
 
 /*******************************************************************************
   Note: constructor does NOT check if the new text node will be adjacent to an
-  existing text node of the parent. This is so because sometimes we know that 
+  existing text node of the parent. This is so because sometimes we know that
   this case cannot arise (e.g. when the text node is created as part of a subtree
   copy, and the root node of that subtree is not a text node), so we save the
   overhead of checking. When a check is required, it is the responsibility of
@@ -2469,7 +2470,7 @@ TextNode::TextNode(
   p->children().push_back(this);
 
   NODE_TRACE1("Constructed text node " << this << " parent = "
-              << std::hex << (parent ? (ulong)parent : 0) 
+              << std::hex << (parent ? (ulong)parent : 0)
               << " ordpath = " << theOrdPath.show() << " content = "
               << getValue()->getStringValue()->c_str());
 }
@@ -2509,7 +2510,7 @@ XmlNode* TextNode::copyInternal(
         // Merge adjacent text nodes.
         ulong numChildren = parent->numChildren();
         ulong pos2 = (pos >= 0 ? pos : numChildren);
-   
+
         XmlNode* lsib = (pos2 > 0 ? parent->getChild(pos2-1) : NULL);
         XmlNode* rsib = (pos2 < numChildren ? parent->getChild(pos2) : NULL);
 
@@ -2529,7 +2530,7 @@ XmlNode* TextNode::copyInternal(
         {
           TextNode* textSibling = reinterpret_cast<TextNode*>(rsib);
           ZORBA_ASSERT(!textSibling->isTyped());
-          
+
           textContent = getStringValue()->append(textSibling->getText());
           textSibling->setText(textContent);
           copyNode = textSibling;
@@ -2588,7 +2589,7 @@ XmlNode* TextNode::copyInternal(
 /*******************************************************************************
 
 ********************************************************************************/
-bool TextNode::isTyped() const 
+bool TextNode::isTyped() const
 {
   return (theFlags & IsTyped) != 0;
 }
@@ -2655,7 +2656,7 @@ void TextNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
   }
   else
   {
-    rch = getText(); 
+    rch = getText();
     GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
   }
   iter = NULL;
@@ -2673,7 +2674,7 @@ store::Item_t TextNode::getAtomizationValue() const
   }
   else
   {
-    rch = getText(); 
+    rch = getText();
   }
   GET_STORE().getItemFactory()->createUntypedAtomic(val, rch);
   return val;
@@ -2703,7 +2704,7 @@ bool TextNode::isIdRefsInternal() const
 
     if (haveListValue())
     {
-      const ItemVector& values = *reinterpret_cast<ItemVector*>(value); 
+      const ItemVector& values = *reinterpret_cast<ItemVector*>(value);
       ulong numValues = values.size();
 
       for (ulong i = 0; i < numValues; ++i)
@@ -2769,7 +2770,7 @@ void TextNode::getStringValue(std::string& buf) const
 ********************************************************************************/
 xqp_string TextNode::show() const
 {
-    return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">", 
+    return xqpString::concat("<text nid=\"", theOrdPath.show(), "\">",
                            getStringValue(), "</text>");
 }
 
@@ -2895,7 +2896,7 @@ store::Item* PiNode::getType() const
 
 void PiNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  xqpStringStore_t rch = theContent; 
+  xqpStringStore_t rch = theContent;
   GET_STORE().getItemFactory()->createString(val, rch);
   iter = NULL;
 }
@@ -2903,7 +2904,7 @@ void PiNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 
 store::Item_t PiNode::getAtomizationValue() const
 {
-  xqpStringStore_t rch = theContent; 
+  xqpStringStore_t rch = theContent;
   store::Item_t val;
   GET_STORE().getItemFactory()->createString(val, rch);
   return val;
@@ -3027,7 +3028,7 @@ store::Item* CommentNode::getType() const
 
 void CommentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
-  xqpStringStore_t rch = theContent; 
+  xqpStringStore_t rch = theContent;
   GET_STORE().getItemFactory()->createString(val, rch);
   iter = NULL;
 }
@@ -3035,7 +3036,7 @@ void CommentNode::getTypedValue(store::Item_t& val, store::Iterator_t& iter) con
 
 store::Item_t CommentNode::getAtomizationValue() const
 {
-  xqpStringStore_t rch = theContent; 
+  xqpStringStore_t rch = theContent;
   store::Item_t val;
   GET_STORE().getItemFactory()->createString(val, rch);
   return val;

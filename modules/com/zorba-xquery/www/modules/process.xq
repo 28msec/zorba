@@ -16,6 +16,11 @@
 
 (:~
  : Module provides funtions to execute a command.
+ : Examples:
+ :    import module namespace proc = "http://www.zorba-xquery.com/modules/process"; 
+ :    proc:exec("ls"),
+ :    proc:exec("md5sum", "file.txt"),
+ :    
  :)
 module namespace process = "http://www.zorba-xquery.com/modules/process";
 

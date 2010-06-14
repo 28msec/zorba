@@ -56,22 +56,24 @@ void create_result_node(
   zorba::Item lOutputQName = aFactory->createQName("", "stdout");
   zorba::Item lErrorQName = aFactory->createQName("", "stderr");
   zorba::Item lNullItem;
+  zorba::Item lTypeName = aFactory->createQName("http://www.w3.org/2001/XMLSchema", "string");
+
   std::vector<std::pair<zorba::String, zorba::String> > lNSBindings;
 
   // root node called result
   aResult = aFactory->createElementNode(
-      lNullItem, lResultQName, lNullItem, false, false, lNSBindings);
+      lNullItem, lResultQName, lTypeName, true, false, lNSBindings);
 
   // <result><output> aStandardOut </output></result>
   zorba::Item lOutput;
   lOutput = aFactory->createElementNode(
-      aResult, lOutputQName, lNullItem, false, false, lNSBindings);
+      aResult, lOutputQName, lTypeName, true, false, lNSBindings);
   aFactory->createTextNode(lOutput, aStandardOut);
 
   // <result><error> aErrorOut </error></result>
   zorba::Item lError;
   lError = aFactory->createElementNode(
-      aResult, lErrorQName, lNullItem, false, false, lNSBindings);
+      aResult, lErrorQName, lTypeName, true, false, lNSBindings);
   aFactory->createTextNode(lError, aErrorOut);
 
   // <result><exit-code> aExitCode </exit-code></result>
@@ -134,8 +136,8 @@ pid_t zorba_popen(const char *command, int *infp, int *outfp, int *errfp)
         *errfp = p_stderr[READ];
 
     close(p_stdin[READ]);   // We only write to the forks stdin anyway
-	  close(p_stdout[WRITE]); // and we only read from its stdout
-	  close(p_stderr[WRITE]); // and we only read from its stderr
+    close(p_stdout[WRITE]); // and we only read from its stdout
+    close(p_stderr[WRITE]); // and we only read from its stderr
 
     return pid;
 }
@@ -198,14 +200,21 @@ ExecFunction::evaluate(
   else
   {
     char outbuf[PATH_MAX];
-    while ( read(outfp, outbuf, PATH_MAX) > 0 )
+    int length = 0;
+    while ( (length=read(outfp, outbuf, PATH_MAX)) > 0 )
+    {
+      outbuf[length] = '\0';
       lStdout << outbuf;
+    }
 
     status = close(outfp);
 
     char errbuf[PATH_MAX];
-    while ( read(errfp, errbuf, PATH_MAX) > 0 )
+    while ( (length=read(errfp, errbuf, PATH_MAX)) > 0 )
+    {
+      errbuf[length] = '\0';
       lStderr << errbuf;
+    }
 
     status = close(errfp);
 
