@@ -37,6 +37,8 @@
 
 namespace zorba {
 
+/*******************************************************************************
+********************************************************************************/
 bool
 XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
@@ -47,8 +49,6 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   std::string uriStr;
   std::string fileUrl;
   std::auto_ptr<std::istream> lFile;
-  std::stringstream lOutput;
-  std::istringstream lInput;
   static_context* lSctx;
   short sctxid;
   StandardModuleURIResolver* lModuleResolver = 0;
@@ -89,19 +89,15 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   // now, do the real work
   if(lFile.get() && lFile->good())
   {
-    // retrieve the xqdoc elements as string and parse them
-    // TODO: this could be done more efficiently if Items are returned immediately
-    lCompiler.xqdoc(*lFile.get(),
-                    lFileName.theStrStore,
-                    lOutput,
-                    planState.dctx()->get_current_date_time());
-
-    lInput.str(lOutput.str());
-
-    result = GENV_STORE.loadDocument(lFileName.theStrStore,
-                                     lFileName.theStrStore,
-                                     lInput,
-                                     false);
+    try {
+      // retrieve the xqdoc elements 
+      lCompiler.xqdoc(*lFile.get(),
+                      lFileName.theStrStore,
+                      result,
+                      planState.dctx()->get_current_date_time());
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
 
     STACK_PUSH(true, state);
   }
@@ -109,6 +105,48 @@ XQDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     ZORBA_ERROR_LOC_DESC_OSS(XQST0046, loc, "No module could be found at " << lURI);
   }
+  STACK_END(state);
+}
+
+/*******************************************************************************
+********************************************************************************/
+bool
+XQDocContentIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  short sctxid;
+  store::Item_t lItem;
+  xqpStringStore_t lFileName(new xqpStringStore(""));
+
+  // setup a new CompilerCB and a new XQueryCompiler 
+  CompilerCB lCompilerCB(*planState.theCompilerCB);
+  lCompilerCB.theRootSctx = GENV.getRootStaticContext().create_child_context();
+  sctxid = planState.theCompilerCB->theSctxMap->size() + 1;
+  (*planState.theCompilerCB->theSctxMap)[sctxid] = lCompilerCB.theRootSctx; 
+
+  // the XQueryCompiler's constructor destroys the existing type manager 
+  // in the static context. Hence, we create a new one
+  XQueryCompiler lCompiler(&lCompilerCB);
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  // retrieve the URI of the module to generate xqdoc for
+  consumeNext(lItem, theChildren[0].getp(), planState);
+
+  try {
+    std::istringstream is(lItem->getStringValue()->c_str());
+
+    // retrieve the xqdoc elements
+    lCompiler.xqdoc(is,
+                    lFileName,
+                    result,
+                    planState.dctx()->get_current_date_time());
+  } catch (error::ZorbaError& e) {
+    ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+  }
+
+  STACK_PUSH(true, state);
+
   STACK_END(state);
 }
 

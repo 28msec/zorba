@@ -7,14 +7,16 @@ declare copy-namespaces preserve, inherit;
 
 
 (:~
- : This variable contains the modules directory path in the source directory
+ : This variable contains the modules directory path in the
+ : source directory
  :)
 declare variable $modulesPath as xs:string external;
 
 
 (:~
- : This function generates the XQDoc XML for all the modules found in $modulesPath
- : and write the resulting XML documents in $targetPath. The hierarchy is preserved. 
+ : This function generates the XQDoc XML for all the modules found in
+ : $modulesPath : and write the resulting XML documents in $targetPath.
+ : The hierarchy is preserved. 
  :
  : @param $modulePath where to search for modules recursively.
 :)
@@ -26,7 +28,7 @@ declare sequential function local:testXQDoc($modulesPath as xs:string) {
         then
             local:testXQDoc($filePath)
         else if (matches($file, "\.xq$")) then (
-            let $xqdoc := xqd:xqdoc(file:path-to-uri($filePath))/xqdoc:xqdoc
+            let $xqdoc := xqd:xqdoc(file:path-to-uri($filePath))/self::xqdoc:xqdoc
             return (
                 local:test-functions($xqdoc),
                 local:test-variables($xqdoc)
@@ -35,13 +37,18 @@ declare sequential function local:testXQDoc($modulesPath as xs:string) {
         else ()
 };
 
-declare function local:test-functions($xqdoc as element(xqdoc:xqdoc)) as xs:string* {
+declare function local:test-functions(
+  $xqdoc as element(xqdoc:xqdoc)
+)as xs:string* {
     let $module := $xqdoc/xqdoc:module
     for $function in $xqdoc/xqdoc:functions/xqdoc:function
     return local:test-function($module, $function)
 };
 
-declare function local:test-function($module as element(xqdoc:module), $function as element(xqdoc:function)) as xs:string* {
+declare function local:test-function(
+  $module as element(xqdoc:module),
+  $function as element(xqdoc:function)
+) as xs:string* {
     let $signature := $function/xqdoc:signature
     let $paramCount := count(tokenize($signature, "\$")) - 1
     let $params := $function/xqdoc:comment/xqdoc:param
@@ -77,13 +84,18 @@ declare function local:test-function($module as element(xqdoc:module), $function
     )
 };
 
-declare function local:test-variables($xqdoc as element(xqdoc:xqdoc)) as xs:string* {
+declare function local:test-variables(
+  $xqdoc as element(xqdoc:xqdoc)
+) as xs:string* {
     let $module := $xqdoc/xqdoc:module
     for $variable in $xqdoc/xqdoc:variables/xqdoc:variable
     return local:test-variable($module, $variable)
 };
 
-declare function local:test-variable($module as element(xqdoc:module), $variable as element(xqdoc:variable)) as xs:string* {
+declare function local:test-variable(
+  $module as element(xqdoc:module),
+  $variable as element(xqdoc:variable)
+) as xs:string* {
     let $hasDescr := exists($variable/xqdoc:comment/xqdoc:description)
     return
         (: Test for variable description :)

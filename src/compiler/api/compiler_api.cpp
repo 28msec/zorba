@@ -68,16 +68,6 @@ static void print_ast_tree(const parsenode *n, const std::string& name)
 }
 
 
-static void print_xqdoc_tree(
-    const parsenode* n,
-    const xqpStringStore_t& name,
-    std::ostream& anOutput,
-    store::Item_t aDateTime)
-{
-  print_parsetree_xqdoc(anOutput, n, name->str(), aDateTime);
-}
-
-
 /*******************************************************************************
 
 ********************************************************************************/
@@ -134,14 +124,14 @@ PlanIter_t XQueryCompiler::compile(parsenode_t ast)
 
 ********************************************************************************/
 void XQueryCompiler::xqdoc(
-    std::istream& aXQuery,
+    std::istream&           aXQuery,
     const xqpStringStore_t& aFileName,
-    std::ostream& anOutput,
-    const store::Item_t& aDateTime)
+    store::Item_t&          aResult,
+    const store::Item_t&    aDateTime)
 {
   parsenode_t lAST = parse(aXQuery, aFileName);
 
-  print_xqdoc_tree(lAST.getp(), aFileName, anOutput, aDateTime);
+  print_parsetree_xqdoc(aResult, lAST.getp(), aFileName->c_str(), aDateTime);
 }
 
 

@@ -173,7 +173,7 @@ declare function math:modf ($arg as xs:double) as xs:double+ external;
 (:~
  : Compute x^y.
  : If y = 0 then result is 1.
- : If x = 0 and y < 0 then result is INF.
+ : If x = 0 and y &lt; 0 then result is INF.
  : Arguments should not be greater than 264.
  :
  : @param $x the x

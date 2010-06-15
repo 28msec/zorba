@@ -46,7 +46,7 @@ public:
   void xqdoc(
         std::istream& aXQuery,
         const xqpStringStore_t& aFileName,
-        std::ostream& anOutput,
+        store::Item_t& aResult,
         const store::Item_t& aDateTime);
 
   parsenode_t parse(std::istream& aXQuery, const xqpStringStore_t& aFileName);

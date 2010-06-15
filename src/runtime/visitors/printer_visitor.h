@@ -697,6 +697,9 @@ namespace zorba {
     void beginVisit( const XQDocIterator& );
     void endVisit  ( const XQDocIterator& );
 
+    void beginVisit( const XQDocContentIterator& );
+    void endVisit  ( const XQDocContentIterator& );
+
   }; //class PrinterVisitor
 } //namespace zorba
 

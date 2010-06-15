@@ -99,7 +99,7 @@ namespace zorba {
       std::string                 theDeprecatedComment;
 
       bool
-      trimLine(std::string& line);
+      startsWithColon(std::string& line);
 
       bool
       isAnAnnotationLine(const std::string& aLine);

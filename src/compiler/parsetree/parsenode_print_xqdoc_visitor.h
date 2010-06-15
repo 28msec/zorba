@@ -24,7 +24,11 @@
 
 namespace zorba {
 
-  void print_parsetree_xqdoc (std::ostream &, const parsenode *p, const std::string&, const store::Item_t& aDateTime);
+  void print_parsetree_xqdoc (
+      store::Item_t&,
+      const parsenode *p,
+      const std::string&,
+      const store::Item_t& aDateTime);
 
 } // namespace
 

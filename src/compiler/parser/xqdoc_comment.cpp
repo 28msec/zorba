@@ -38,24 +38,28 @@ XQDocComment::XQDocComment(const std::string& aComment)
   // be treated the same
   lComment << ":" << aComment;
 
+  std::ostringstream lDesc;
+
   while(std::getline(lComment, lLine, '\n'))
   {
     // remove the leading and trailing whitespaces, and the leading ':'
-    if (!trimLine(lLine) || lLine.empty()) {
+    if (!startsWithColon(lLine) || lLine.empty()) {
       // the line did not start with a ':' preceeded by whitespaces or
       // if the line is empty, ignore it and proceed to the following
       continue;      
     }
 
     // if the line contains an annotation, than we finish the description
-    if (lLine.at(0) == '@') {
+    String lTmp = lLine;
+    lTmp.trim(" \t");
+    if (lTmp.charAt(0) == '@') {
       lDescriptionState = false;
       if (!lAnntotation.empty()) {
         parseAnnotation(lAnntotation);
       }
-      lAnntotation = lLine;
+      lAnntotation = lTmp.c_str();
     } else if (lDescriptionState) {
-      theDescription += lLine + " ";
+      lDesc << lLine << std::endl;
     } else {
       lAnntotation += " " + lLine;
     }
@@ -64,21 +68,18 @@ XQDocComment::XQDocComment(const std::string& aComment)
     parseAnnotation(lAnntotation);
   }
 
-  // normalize spaces in the description
-  String lTemp(theDescription);
-  lTemp.normalizeSpace();
-  theDescription = std::string(lTemp.c_str());
+  theDescription = lDesc.str();
 }
 
 bool
-XQDocComment::trimLine(std::string& aLine)
+XQDocComment::startsWithColon(std::string& aLine)
 {
   String lResult(aLine);
   lResult.trim(" \t");
 
   if (lResult.charAt(0) == ':') {
     lResult = lResult.substring(1);
-    lResult.trim(" \t");
+    //lResult.trim(" \t");
     aLine = std::string(lResult.c_str());
   } else {
     return false;

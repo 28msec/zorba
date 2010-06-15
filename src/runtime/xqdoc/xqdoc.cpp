@@ -57,5 +57,33 @@ XQDocIterator::~XQDocIterator() {}
 // </XQDocIterator>
 
 
+// <XQDocContentIterator>
+const char* XQDocContentIterator::class_name_str = "XQDocContentIterator";
+XQDocContentIterator::class_factory<XQDocContentIterator>
+XQDocContentIterator::g_class_factory;
+
+const serialization::ClassVersion 
+XQDocContentIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int XQDocContentIterator::class_versions_count =
+sizeof(XQDocContentIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void XQDocContentIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+XQDocContentIterator::~XQDocContentIterator() {}
+
+// </XQDocContentIterator>
+
+
 
 }

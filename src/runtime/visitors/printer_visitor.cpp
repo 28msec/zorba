@@ -3130,4 +3130,18 @@ void PrinterVisitor::endVisit ( const XQDocIterator& ) {
 // </XQDocIterator>
 
 
+// <XQDocContentIterator>
+void PrinterVisitor::beginVisit ( const XQDocContentIterator& a) {
+  thePrinter.startBeginVisit("XQDocContentIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const XQDocContentIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </XQDocContentIterator>
+
+
 }

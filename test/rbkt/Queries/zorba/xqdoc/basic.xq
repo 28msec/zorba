@@ -9,7 +9,7 @@ declare sequential function local:remove-date($xqdoc)
   exit returning $xqdoc;
 };
 
-let $xqdoc as document-node (schema-element(xqds:xqdoc)) := 
+let $xqdoc as schema-element(xqds:xqdoc) := 
   validate lax {
     xqd:xqdoc("gdata.xqlib")
   }

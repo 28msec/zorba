@@ -67,6 +67,40 @@ public:
 };
 
 
+/**
+ * zorba:XQDoc
+ * Author: Zorba Team
+ */
+class XQDocContentIterator : public NaryBaseIterator<XQDocContentIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(XQDocContentIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(XQDocContentIterator,
+    NaryBaseIterator<XQDocContentIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<XQDocContentIterator, PlanIteratorState>*)this);
+  }
+
+  XQDocContentIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<XQDocContentIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~XQDocContentIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

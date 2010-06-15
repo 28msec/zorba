@@ -461,6 +461,8 @@ namespace zorba{
 
     class XQDocIterator;
 
+    class XQDocContentIterator;
+
 
 #include "runtime/visitors/planiter_visitor_impl_include.h"
 /**
@@ -1119,6 +1121,9 @@ public:
 
     virtual void beginVisit ( const XQDocIterator& ) = 0;
     virtual void endVisit   ( const XQDocIterator& ) = 0;
+
+    virtual void beginVisit ( const XQDocContentIterator& ) = 0;
+    virtual void endVisit   ( const XQDocContentIterator& ) = 0;
 
   }; //class PlanIterVisitor
 } //namespace zorba

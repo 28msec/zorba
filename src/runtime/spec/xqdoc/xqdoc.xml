@@ -12,7 +12,6 @@
 
 <!--
 /*******************************************************************************
- Zorba XQDoc
 ********************************************************************************/
 -->
 <zorba:iterator name="XQDocIterator" arity="nary">
@@ -21,6 +20,23 @@
 
   <zorba:function>
     <zorba:signature localname="xqdoc" prefix="xqdoc">
+      <zorba:param>xs:string</zorba:param>
+      <zorba:output>element()</zorba:output>
+    </zorba:signature>
+  </zorba:function>
+    
+</zorba:iterator>
+
+<!--
+/*******************************************************************************
+********************************************************************************/
+-->
+<zorba:iterator name="XQDocContentIterator" arity="nary">
+
+  <zorba:description author="Zorba Team">zorba:XQDoc</zorba:description>
+
+  <zorba:function>
+    <zorba:signature localname="xqdoc-content" prefix="xqdoc">
       <zorba:param>xs:string</zorba:param>
       <zorba:output>element()</zorba:output>
     </zorba:signature>

@@ -52,6 +52,20 @@ public:
 };
 
 
+//xqdoc:xqdoc-content
+class xqdoc_xqdoc_content : public function
+{
+public:
+  xqdoc_xqdoc_content(const signature& sig)
+    :
+    function(sig, FunctionConsts::XQDOC_XQDOC_CONTENT_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

@@ -23,6 +23,12 @@
 
 #include <compiler/parser/xqdoc_comment.h>
 #include <types/typemanager.h>
+#include "store/api/item_factory.h"
+#include "store/api/item.h"
+#include "store/api/store.h"
+#include "store/api/copymode.h"
+#include "store/api/iterator.h"
+#include "system/globalenv.h"
 
 using namespace std;
 
@@ -41,7 +47,7 @@ private:
     }
   }
 
-  void print_comment(ostream& os, const XQDocComment* aComment)
+  void print_comment(store::Item_t& result, const XQDocComment* aComment)
   {
     if (aComment == 0) {
       return;
@@ -76,131 +82,202 @@ private:
         }
       }
 
-      os << "<xqdoc:comment>" << endl;
+      store::Item_t lCommentQName, lCommentElem;
+
+      theFactory->createQName(lCommentQName, theXQDocNS, theXQDocPrefix, "comment");
+
+      theFactory->createElementNode(
+          lCommentElem, result, -1, lCommentQName, theTypeName,
+          true, false, theNSBindings, theBaseURI);
 
       // description
       if (!aComment->getDescription().empty()) {
-        printCommentFragment(os, aComment->getDescription(), "xqdoc:description");
+        printCommentFragment(lCommentElem, aComment->getDescription(), "description");
       }
 
       // author
       for (lIt = lAuthorAnn.begin(); lIt != lAuthorAnn.end(); ++lIt) {
         const XQDocAnnotation lAnnotation = *lIt;
-        printCommentFragment(os, lAnnotation.getValue(), "xqdoc:author");
+        printCommentFragment(lCommentElem, lAnnotation.getValue(), "author");
       }
 
       // version
       if (aComment->hasVersion()) {
-        printCommentFragment(os, aComment->getVersion(), "xqdoc:version");
+        printCommentFragment(lCommentElem, aComment->getVersion(), "version");
       }
 
       // param
       for (lIt = lParamAnn.begin(); lIt != lParamAnn.end(); ++lIt) {
         const XQDocAnnotation lAnnotation = *lIt;
-        printCommentFragment(os, lAnnotation.getValue(), "xqdoc:param");
+        printCommentFragment(lCommentElem, lAnnotation.getValue(), "param");
       }
 
       // return
       if (aComment->hasReturn()) {
-        printCommentFragment(os, aComment->getReturn(), "xqdoc:return");
+        printCommentFragment(lCommentElem, aComment->getReturn(), "return");
       }
 
       // error
       for (lIt = lErrorAnn.begin(); lIt != lErrorAnn.end(); ++lIt) {
         const XQDocAnnotation lAnnotation = *lIt;
-        printCommentFragment(os, lAnnotation.getValue(), "xqdoc:error");
+        printCommentFragment(lCommentElem, lAnnotation.getValue(), "error");
       }
 
       // deprecated
       if (aComment->isDeprecated()) {
-        printCommentFragment(os, aComment->getDeprecatedComment(), "xqdoc:deprecated");
+        printCommentFragment(lCommentElem, aComment->getDeprecatedComment(), "deprecated");
       }
 
       // see
       for (lIt = lSeeAnn.begin(); lIt != lSeeAnn.end(); ++lIt) {
         const XQDocAnnotation lAnnotation = *lIt;
-        printCommentFragment(os, lAnnotation.getValue(), "xqdoc:see");
+        printCommentFragment(lCommentElem, lAnnotation.getValue(), "see");
       }
 
       // since
       for (lIt = lSinceAnn.begin(); lIt != lSinceAnn.end(); ++lIt) {
         const XQDocAnnotation lAnnotation = *lIt;
-        printCommentFragment(os, lAnnotation.getValue(), "xqdoc:since");
+        printCommentFragment(lCommentElem, lAnnotation.getValue(), "since");
       }
-
-      os << "</xqdoc:comment>" << endl;
     }
   }
 
-  void printCommentFragment(ostream& os, std::string aString, std::string aTag)
+  void printCommentFragment(store::Item_t& aParent, std::string aString, std::string aTag)
   {
-    os << "<" << aTag << ">";
-    // wrap all text (except tags) into CDATA sections
-    xqpString lString(aString.c_str());
-    xqpString lRes = lString.replace("(.*?)(<.*?>)", "<![CDATA[$1]]>$2", "");
-    // if the description didn't contain tags
-    if (lRes.size() == lString.size()) {
-      os << "<![CDATA[";
+    store::Item_t lQName, lElem, lText;
+
+    theFactory->createQName(lQName, theXQDocNS, theXQDocPrefix, aTag.c_str());
+    theFactory->createElementNode(
+        lElem, aParent, -1, lQName, theTypeName,
+        true, false, theNSBindings, theBaseURI);
+
+    // parse the contents of the description in order
+    // to be able to get proper XHTML tags
+    // Therefore, we have to insert an artificial root tag
+    // which is removed afterwards.
+    std::ostringstream os;
+    os << "<root>" << aString << "</root>";
+    std::istringstream is(os.str());
+
+    try {
+      store::Item_t lContent = GENV_STORE.loadDocument(theBaseURI, theBaseURI, is, false);
+      store::Iterator_t lIter = lContent->getChildren();
+      store::Item_t lRootElem;
+      lIter->open();
+      if (lIter->next(lRootElem)) {
+        store::Iterator_t lIter2 = lRootElem->getChildren();
+        lIter2->open();
+        size_t i = 0;
+        store::Item_t lTmp;
+        while (lIter2->next(lTmp)) {
+          store::CopyMode lMode;
+          // insert every element into the that that we create
+          lTmp->copy(lElem, i++, lMode);
+        }
+      }
+
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, 
+        "The xqdoc documentation contains an error that doesn't allow the document to be parsed as XML. "
+        << e.theDescription << " '" << aString << "'");
     }
-    os << lRes.trim();
-    if (lRes.size() == lString.size()) {
-      os << "]]>";
-    }
-    os << "</" << aTag << ">" << endl ;
   }
 
 protected:
-  int           theIndent;
-  ostream&      os;
-  const string  theFileName;
-  stringstream  theImports;
-  stringstream  theVariables;
-  stringstream  theFunctions;
+  store::Item_t&      theResult;
+
+  store::Item_t       theModule;
+  store::Item_t       theImports;
+  store::Item_t       theVariables;
+  store::Item_t       theFunctions;
+
+  const char*         theXQDocNS;
+  const char*         theXQDocPrefix;
+
+  xqpStringStore_t    theFileName;
+  xqpStringStore_t    theBaseURI;
+  xqpStringStore_t    theVersion;
+  store::NsBindings   theNSBindings;
+  store::Item_t       theTypeName;
+  
+  store::ItemFactory* theFactory;
+
   string        theQuery;
 
 public:
 
-ParseNodePrintXQDocVisitor(ostream &aStream, const string& aFileName)
-  : theIndent(0),
-    os(aStream),
-    theFileName(getFileName(aFileName))
+ParseNodePrintXQDocVisitor(store::Item_t &aResult, const string& aFileName)
+  : theResult(aResult),
+    theXQDocNS("http://www.xqdoc.org/1.0"),
+    theXQDocPrefix("xqdoc"),
+    theFileName(new xqpStringStore(getFileName(aFileName))),
+    theBaseURI(new xqpStringStore("http://www.xqdoc.org/1.0")),
+    theVersion(new xqpStringStore("1.0")),
+    theFactory(GENV_ITEMFACTORY)
 {
 }
 
 void print(const parsenode* p, const store::Item_t& aDateTime)
 {
-  string lContent;
-  os << "<?xml version='1.0' ?>" << endl ;
-  os << "<xqdoc:xqdoc xmlns:xqdoc='http://www.xqdoc.org/1.0'>" << endl ;
+  store::Item_t lXQDocQName, lControlQName, lDateQName, lVersionQName,
+                lImportsQName, lVariablesQName, lFunctionsQName, lModuleQName;
 
-  os << "<xqdoc:control>" << endl ;
-    os << "<xqdoc:date>" << aDateTime->getStringValue() << "</xqdoc:date>" << endl ;
-    os << "<xqdoc:version>1.0</xqdoc:version>" << endl ;
-  os << "</xqdoc:control>" << endl ;
+  store::Item_t lControlElem, lDateElem, lVersionElem,
+                lDateText, lVersionText;
 
+  theFactory->createQName(lXQDocQName, theXQDocNS, theXQDocPrefix, "xqdoc");
+  theFactory->createQName(lControlQName, theXQDocNS, theXQDocPrefix, "control");
+  theFactory->createQName(lDateQName, theXQDocNS, theXQDocPrefix, "date");
+  theFactory->createQName(lVersionQName, theXQDocNS, theXQDocPrefix, "version");
+  theFactory->createQName(lImportsQName, theXQDocNS, theXQDocPrefix, "imports");
+  theFactory->createQName(lVariablesQName, theXQDocNS, theXQDocPrefix, "variables");
+  theFactory->createQName(lFunctionsQName, theXQDocNS, theXQDocPrefix, "functions");
+  theFactory->createQName(lModuleQName, theXQDocNS, theXQDocPrefix, "module");
+
+  // create the prolog
+  // <xqdoc><control><date/><version/></control>
+  theFactory->createElementNode(
+      theResult, NULL, -1, lXQDocQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  // control, module, imports, functions
+  theFactory->createElementNode(
+      lControlElem, theResult, -1, lControlQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  theFactory->createElementNode(
+      theModule, theResult, -1, lModuleQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  theFactory->createElementNode(
+      theImports, theResult, -1, lImportsQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  theFactory->createElementNode(
+      theVariables, theResult, -1, lVariablesQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  theFactory->createElementNode(
+      theFunctions, theResult, -1, lFunctionsQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  // date version
+  theFactory->createElementNode(
+      lDateElem, lControlElem, -1, lDateQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  theFactory->createElementNode(
+      lVersionElem, lControlElem, -1, lVersionQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  xqpStringStore_t lDate = aDateTime->getStringValue();
+  theFactory->createTextNode(lDateText, lDateElem.getp(), -1, lDate);
+
+  theFactory->createTextNode(lVersionText, lVersionElem, -1, theVersion);
+
+    
   p->accept(*this);
 
-  lContent = theImports.str();
-  if (!lContent.empty()) {
-    os << "<xqdoc:imports>";
-      os << lContent;
-    os << "</xqdoc:imports>" << endl ;
-  }
-
-  lContent = theVariables.str();
-  if (!lContent.empty()) {
-    os << "<xqdoc:variables>";
-      os << lContent;
-    os << "</xqdoc:variables>" << endl ;
-  }
-
-  lContent = theFunctions.str();
-  if (!lContent.empty()) {
-    os << "<xqdoc:functions>" ;
-      os << lContent;
-    os << "</xqdoc:functions>" << endl ;
-  }
-  os << "</xqdoc:xqdoc>" << endl ;
 }
 
 #define IDS \
@@ -225,69 +302,129 @@ XQDOC_NO_BEGIN_END_TAG (DefaultNamespaceDecl)
 XQDOC_NO_BEGIN_END_TAG (DirAttr)
 XQDOC_NO_BEGIN_END_TAG (ForwardAxis)
 XQDOC_NO_BEGIN_END_TAG (GeneralComp)
+
+// TODO: main module 
 XQDOC_NO_BEGIN_END_TAG (MainModule)
 
-void* begin_visit(const ModuleDecl& /*n*/)
-{
-  os << "<xqdoc:module type='library'>";
-  return no_state;
-}
+XQDOC_NO_BEGIN_TAG (ModuleDecl)
 
 void end_visit(const ModuleDecl& n, void* /*visit_state*/)
 {
-  os << "<xqdoc:uri>" << n.get_target_namespace() << "</xqdoc:uri>" << endl;
-  os << "<xqdoc:name>" << theFileName << "</xqdoc:name>" << endl;
+  store::Item_t lURIQName, lNameQName, lTypeQName;
 
-  print_comment(os, n.getComment());
+  store::Item_t lURIElem, lNameElem, lTypeAttr, lURIText, lNameText;
 
-  os << "</xqdoc:module>" ;
+  theFactory->createQName(lURIQName, theXQDocNS, theXQDocPrefix, "uri");
+  theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
+  theFactory->createQName(lTypeQName, "", "", "type");
+
+  store::Item_t lAttrValue;
+  xqpStringStore_t lAttrString(new xqpStringStore("library"));
+  theFactory->createString(lAttrValue, lAttrString);
+
+  theFactory->createAttributeNode(
+      lTypeAttr, theModule, -1, lTypeQName, theTypeName, lAttrValue);
+
+  theFactory->createElementNode(
+      lURIElem, theModule, -1, lURIQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  xqpStringStore_t lTargetNS = n.get_target_namespace();
+  theFactory->createTextNode(lURIText, lURIElem.getp(), -1, lTargetNS);
+
+  theFactory->createElementNode(
+      lNameElem, theModule, -1, lNameQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+  theFactory->createTextNode(lNameText, lNameElem, -1, theFileName);
+
+  print_comment(theModule, n.getComment());
 }
 
-void* begin_visit(const FunctionDecl& /*n*/)
-{
-  theFunctions << "<xqdoc:function>";
-  return no_state;
-}
+XQDOC_NO_BEGIN_TAG (FunctionDecl)
 
 void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 {
-  print_comment(theFunctions, n.getComment());
-  theFunctions << "<xqdoc:name>" << n.get_name()->get_localname() << "</xqdoc:name>" << endl;
-  theFunctions << "<xqdoc:signature><![CDATA[";
+  store::Item_t lFuncQName, lNameQName, lSigQName;
+  store::Item_t lFuncElem, lNameElem, lSigElem, lFuncText, lNameText, lSigText;
+
+  theFactory->createQName(lFuncQName, theXQDocNS, theXQDocPrefix, "function");
+  theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
+  theFactory->createQName(lSigQName, theXQDocNS, theXQDocPrefix, "signature");
+
+  theFactory->createElementNode(
+      lFuncElem, theFunctions, -1, lFuncQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  print_comment(lFuncElem, n.getComment());
+
+  theFactory->createElementNode(
+      lNameElem, lFuncElem, -1, lNameQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  theFactory->createElementNode(
+      lSigElem,  lFuncElem, -1, lSigQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+
+  xqpStringStore_t lNameString = n.get_name()->get_localname();
+  theFactory->createTextNode(lNameText, lNameElem, -1, lNameString);
+
+  std::ostringstream lSig;
+
   FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(), n.get_paramlist(), n.get_return_type(), 0, n.get_kind());
-  FunctionIndex lIndex = print_parsetree_xquery(theFunctions, &lFunctionDeclClone);
-  theFunctions << "]]></xqdoc:signature>" << endl ;
-  theFunctions << "</xqdoc:function>" << endl ;
+  FunctionIndex lIndex = print_parsetree_xquery(lSig, &lFunctionDeclClone);
+
+  xqpStringStore_t lSigString = new xqpStringStore(lSig.str());
+  theFactory->createTextNode(lSigText, lSigElem, -1, lSigString);
 }
 
-void* begin_visit(const VarDecl&)
-{
-  theVariables << "<xqdoc:variable>";
-  return no_state;
-}
+XQDOC_NO_BEGIN_TAG (VarDecl)
 
 void end_visit(const VarDecl& n, void*)
 {
-  theVariables << "<xqdoc:uri>" << n.get_name()->get_localname()->c_str()
-               << "</xqdoc:uri>" ;
-  print_comment(theVariables, n.getComment());
+  store::Item_t lVariableQName, lUriQName;
+  store::Item_t lVariableElem, lUriElem, lUriText;
 
-  theVariables << "</xqdoc:variable>" << endl ;
+  theFactory->createQName(lVariableQName, theXQDocNS, theXQDocPrefix, "variable");
+  theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
+
+  theFactory->createElementNode(
+      lVariableElem, theVariables, -1, lVariableQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  theFactory->createElementNode(
+      lUriElem, lVariableElem, -1, lUriQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  xqpStringStore_t lUriString(new xqpStringStore(n.get_name()->get_localname()->c_str()));
+  theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
+
+  print_comment(lVariableElem, n.getComment());
 }
 
 
-void* begin_visit(const ModuleImport&)
-{
-  theImports << "<xqdoc:import>";
-  return no_state;
-}
+XQDOC_NO_BEGIN_TAG (ModuleImport)
 
 void end_visit(const ModuleImport& n, void*)
 {
-  theImports << "<xqdoc:uri>" << n.get_uri() << "</xqdoc:uri>";
-  print_comment(theImports, n.getComment());
+  store::Item_t lImportQName, lUriQName;
+  store::Item_t lImportElem, lUriElem, lUriText;
 
-  theImports << "</xqdoc:import>" << endl;
+  theFactory->createQName(lImportQName, theXQDocNS, theXQDocPrefix, "import");
+  theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
+
+  theFactory->createElementNode(
+      lImportElem, theImports, -1, lImportQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  theFactory->createElementNode(
+      lUriElem, lImportElem, -1, lUriQName, theTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  xqpStringStore_t lUriString(new xqpStringStore(n.get_uri()->c_str()));
+  theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
+
+  print_comment(lImportElem, n.getComment());
 }
 
 XQDOC_NO_BEGIN_END_TAG (AdditiveExpr)
@@ -499,12 +636,12 @@ XQDOC_NO_BEGIN_END_TAG (DynamicFunctionInvocation)
 };
 
 void print_parsetree_xqdoc(
-  ostream&            os,
+  store::Item_t&      result,
   const parsenode*    p,
   const string&       aFileName,
   const store::Item_t& aDateTime)
 {
-  ParseNodePrintXQDocVisitor v(os, aFileName);
+  ParseNodePrintXQDocVisitor v(result, aFileName);
   v.print(p, aDateTime);
 }
 

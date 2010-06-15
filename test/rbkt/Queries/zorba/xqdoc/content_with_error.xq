@@ -9,10 +9,17 @@ declare sequential function local:remove-date($xqdoc)
   exit returning $xqdoc;
 };
 
-
-let $xqdoc as schema-element(xqds:xqdoc) := 
+let $content := "
+  (:~
+   : <p>
+   :)
+  module namespace foo = 'http://www.example.com/';
+"
+let $xqdoc as document-node (schema-element(xqds:xqdoc)) := 
   validate lax {
-    xqd:xqdoc("unorderedAnnotations.xqlib")
+    xqd:xqdoc-content($content)
   }
 return
   local:remove-date($xqdoc)
+
+
