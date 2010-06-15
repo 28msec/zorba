@@ -20,6 +20,7 @@
 #include <iostream>
 
 #include "zorbatypes/xqpstring.h"
+#include "zorbautils/lang.h"
 
 namespace zorba {
 
@@ -49,10 +50,13 @@ struct FTToken {
    * @param token_no  The token number.  Token numbers start at 0.
    * @param sent_no   The sentence number.  Sentence numbers start at 0.
    * @param para_no   The paragraph number.  Paragraph numbers start at 0.
+   * @param lang      The language of the soken string.
    */
   FTToken( char const *utf8_s, int len,
-           int_t token_no, int_t sent_, int_t para_ ) :
-    word( utf8_s, len ), pos( token_no ), sent( sent_ ), para( para_ )
+           int_t token_no, int_t sent_, int_t para_,
+           lang::iso639_1::type lang_ = lang::iso639_1::unknown ) :
+    word( utf8_s, len ), lang( lang_ ),
+    pos( token_no ), sent( sent_ ), para( para_ )
   {
   }
 
@@ -63,9 +67,11 @@ struct FTToken {
    *                  null-terminated.
    * @param len       The number of chars in the token string.
    * @param token_no  The token number.  Token numbers start at 0.
+   * @param lang      The language of the soken string.
    */
-  FTToken( char const *utf8_s, int len, int_t token_no ) :
-    word( utf8_s, len ), pos( token_no ), sent( 0 ), para( 0 )
+  FTToken( char const *utf8_s, int len, int_t token_no,
+           lang::iso639_1::type lang_ = lang::iso639_1::unknown ) :
+    word( utf8_s, len ), lang( lang_ ), pos( token_no ), sent( 0 ), para( 0 )
   {
   }
 
@@ -73,6 +79,11 @@ struct FTToken {
    * The token.
    */
   string_t word;
+
+  /**
+   * The langauge of the token.
+   */
+  lang::iso639_1::type lang;
 
   /**
    * The token position within either the source XML document or query.  Token
@@ -103,7 +114,8 @@ struct FTToken {
  * @return Returns the given ostream.
  */
 inline std::ostream& operator<<( std::ostream &o, FTToken const &t ) {
-  return  o << "[FTToken: \"" << t.word << "\" "
+  return  o << "[FTToken: \"" << t.word << "\" ("
+            << lang::iso639_1::string_of[ t.lang ] << ") "
             << t.pos << ',' << t.sent << ',' << t.para << ']';
 }
 

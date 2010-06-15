@@ -37,16 +37,16 @@
 #include "store/naive/node_factory.h"
 #include "store/naive/store_manager_impl.h"
 
+using namespace std;
 
 namespace zorba { namespace simplestore {
 
 
-
-/////////////////////////////////////////////////////////////////////////////////
-//                                                                             //
-//  XmlTree                                                                    //
-//                                                                             //
-/////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+//                                                                            //
+//  XmlTree                                                                   //
+//                                                                            //
+////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
@@ -3067,7 +3067,7 @@ void XmlNodeTokenizer::endTokenization( XmlNode &node ) {
 
 void XmlNodeTokenizer::operator()( char const *utf8_s, int utf8_len,
                                    int token_no, int sent_no, int para_no ) {
-  FTToken t( utf8_s, utf8_len, token_no, sent_no, para_no );
+  FTToken t( utf8_s, utf8_len, token_no, sent_no, para_no, get_lang() );
   tokens_.push_back( t );
 }
 
@@ -3081,6 +3081,25 @@ void InternalNode::tokenize( XmlNodeTokenizer &tokenizer ) {
   for ( ulong i = 0; i < numChildren(); ++i )
     getChild( i )->tokenize( tokenizer );
   tokenizer.endTokenization( *this );
+}
+
+void ElementNode::tokenize( XmlNodeTokenizer &tokenizer ) {
+  store::Iterator_t attributes = getAttributes();
+  attributes->open();
+  store::Item_t at;
+  bool found_lang = false;
+  while ( !found_lang && attributes->next( at ) ) {
+    Item const *const name = at->getNodeName();
+    if ( *name->getLocalName() == "lang" && *name->getNamespace() == XML_NS ) {
+      tokenizer.push_lang( lang::find( at->getStringValue()->str().c_str() ) );
+      found_lang = true;
+    }
+  }
+  attributes->close();
+
+  InternalNode::tokenize( tokenizer );
+  if ( found_lang )
+    tokenizer.pop_lang();
 }
 
 void TextNode::tokenize( XmlNodeTokenizer &tokenizer ) {

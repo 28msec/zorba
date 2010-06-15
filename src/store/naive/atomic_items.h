@@ -493,7 +493,9 @@ public:
 
   virtual xqp_string show() const;
 
-  FTTokenIterator_t getQueryTokens( bool wildcards = false ) const;
+  FTTokenIterator_t
+  getQueryTokens( lang::iso639_1::type = lang::iso639_1::unknown,
+                  bool wildcards = false ) const;
 };
 
 
@@ -505,9 +507,11 @@ class AtomicItemTokenizer : public Tokenizer::Callback
 public:
   typedef StringItemNaive::FTTokens FTTokens;
 
-  AtomicItemTokenizer( Tokenizer &tokenizer, FTTokens &tokens ) :
+  AtomicItemTokenizer( Tokenizer &tokenizer, lang::iso639_1::type lang,
+                       FTTokens &tokens ) :
     tokenizer_( tokenizer ),
-    tokens_( tokens )
+    tokens_( tokens ),
+    lang_( lang )
   {
   }
 
@@ -521,6 +525,7 @@ public:
 private:
   Tokenizer &tokenizer_;
   FTTokens &tokens_;
+  lang::iso639_1::type const lang_;
 };
 
 

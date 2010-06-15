@@ -337,14 +337,15 @@ xqp_string StringItemNaive::show() const
 
 void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
                                       int token_no, int sent_no, int para_no ) {
-  FTToken t( utf8_s, utf8_len, token_no );
+  FTToken t( utf8_s, utf8_len, token_no, lang_ );
   tokens_.push_back( t );
 }
 
-FTTokenIterator_t StringItemNaive::getQueryTokens( bool wildcards ) const {
+FTTokenIterator_t StringItemNaive::getQueryTokens( lang::iso639_1::type lang,
+                                                   bool wildcards ) const {
   if ( theTokens.empty() ) {
     icu_tokenizer tokenizer( wildcards );
-    AtomicItemTokenizer atomic_tokenizer( tokenizer, theTokens );
+    AtomicItemTokenizer atomic_tokenizer( tokenizer, lang, theTokens );
     xqpStringStore const *const xText = getStringValue();
     atomic_tokenizer.tokenize( xText->c_str(), xText->size() );
   }

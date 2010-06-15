@@ -17,6 +17,7 @@
 #ifndef ZORBA_SIMPLE_STORE_NODE_ITEMS
 #define ZORBA_SIMPLE_STORE_NODE_ITEMS
 
+#include <stack>
 #include <vector>
 
 #include <zorba/error.h>
@@ -36,9 +37,10 @@
 
 #include "store/api/item.h"
 
-#include "zorbautils/fatal.h"
-#include "zorbautils/tokenizer.h"
 #include "zorbaerrors/Assert.h"
+#include "zorbautils/fatal.h"
+#include "zorbautils/lang.h"
+#include "zorbautils/tokenizer.h"
 
 
 namespace zorba 
@@ -245,6 +247,7 @@ public:
     tokenizer_( tokenizer ),
     tokens_( tokens )
   {
+    push_lang( lang::iso639_1::unknown );
   }
 
   void operator()( char const *utf8_s, int utf8_len,
@@ -257,13 +260,28 @@ public:
     tokenizer_.inc_para();
   }
 
+  lang::iso639_1::type get_lang() const {
+    return lang_stack_.top();
+  }
+
+  void push_lang( lang::iso639_1::type lang_code ) {
+    lang_stack_.push( lang_code );
+  }
+
+  void pop_lang() {
+    lang_stack_.pop();
+  }
+
   void tokenize( char const *utf8_s, int len ) {
     tokenizer_.tokenize( utf8_s, len, *this );
   }
 
 private:
+  typedef std::stack<lang::iso639_1::type> lang_stack_t;
+
   Tokenizer &tokenizer_;
   FTTokens &tokens_;
+  lang_stack_t lang_stack_;
 };
 
 /******************************************************************************
@@ -804,6 +822,8 @@ public:
 
   void replaceName(UpdRenameElem& upd);
   void restoreName(UpdRenameElem& upd);
+
+  void tokenize( XmlNodeTokenizer& );
 
 protected:
   xqpStringStore_t getBaseURIInternal(bool& local) const;

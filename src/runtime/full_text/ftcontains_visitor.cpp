@@ -382,9 +382,16 @@ void V::end_visit( ftunary_not& ) {
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords )
 void V::end_visit( ftwords &w ) {
   ftmatch_options const &options = *top_options();
+
   bool wildcards = false;
   if ( ftwild_card_option const *const wc = options.get_wild_card_option() )
     wildcards = wc->get_mode() == ft_wild_card_mode::with;
+
+  lang::iso639_1::type lang_code;
+  if ( ftlanguage_option const *const l = options.get_language_option() )
+    lang_code = l->get_language();
+  else
+    lang_code = lang::iso639_1::unknown;
 
   store::Item_t item;
   PlanIter_t plan_iter = w.get_plan_iter();
@@ -393,7 +400,7 @@ void V::end_visit( ftwords &w ) {
 
   while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
     try {
-      FTQueryItem const qi( item->getQueryTokens( wildcards ) );
+      FTQueryItem const qi( item->getQueryTokens( lang_code, wildcards ) );
       if ( qi->hasNext() )
         query_items.push_back( qi );
     }

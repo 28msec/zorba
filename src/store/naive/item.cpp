@@ -147,7 +147,7 @@ FTTokenIterator_t Item::getDocumentTokens() const
   return FTTokenIterator_t( NULL );
 }
 
-FTTokenIterator_t Item::getQueryTokens( bool ) const
+FTTokenIterator_t Item::getQueryTokens( lang::iso639_1::type, bool ) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());

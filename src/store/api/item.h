@@ -23,6 +23,7 @@
 
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
+#include "zorbautils/lang.h"
 
 #include "store/api/ft_token_iterator.h"
 #include "store/api/shared_types.h"
@@ -635,7 +636,8 @@ public:
    * @param wildcards If true, allow XQuery wildcard syntax in tokens.
    */
   virtual FTTokenIterator_t
-  getQueryTokens( bool wildcards = false ) const;
+  getQueryTokens( lang::iso639_1::type = lang::iso639_1::unknown,
+                  bool wildcards = false ) const;
 
 }; 
 

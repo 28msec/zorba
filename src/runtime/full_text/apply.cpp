@@ -293,6 +293,7 @@ static void match_tokens( FTTokenIterator &doc_tokens,
     FTToken const *dt, *dt_start = 0, *dt_end, *qt;
     bool all_matched = false;
     while ( doc_tokens.next( &dt ) && query_tokens.next( &qt ) ) {
+      cout << *qt << endl;
       if ( !dt_start )
         dt_start = dt;
       dt_end = dt;
