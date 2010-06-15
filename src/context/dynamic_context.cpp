@@ -138,23 +138,23 @@ dynamic_context::dynamic_context(dynamic_context* parent)
 
   if(parent == NULL)
   {
+    int lTimeShift = 0;
 #if defined (WIN32)
     struct _timeb timebuffer;
     _ftime_s( &timebuffer );
     struct ::tm gmtm;
     localtime_s(&gmtm, &timebuffer.time); //thread safe localtime on Windows
+    if (gmtm.tm_isdst != 0)
+      lTimeShift = -timebuffer.timezone*60 + 3600;
 #else
     struct timeb timebuffer;
     ftime( &timebuffer );
     struct ::tm gmtm;
     localtime_r(&timebuffer.time, &gmtm); //thread safe localtime on Linux
+    lTimeShift = gmtm.tm_gmtoff;
 #endif
 
-    int lSummerTimeShift = 0;
-    if (gmtm.tm_isdst != 0)
-      lSummerTimeShift = 3600;
-
-    set_implicit_timezone(-timebuffer.timezone * 60 + lSummerTimeShift);//in seconds
+    set_implicit_timezone(lTimeShift);//in seconds
 
     GENV_ITEMFACTORY->createDateTime(current_date_time_item,
                                      gmtm.tm_year + 1900,
