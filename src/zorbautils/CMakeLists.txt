@@ -23,9 +23,13 @@ SET(ZORBAUTILS_SRCS
     runnable.cpp
     tokenizer.cpp
     icu_tokenizer.cpp
+    stemmer.cpp
     unicode_util.cpp)
 
 IF (ZORBA_WITH_LIBXML2_SAX)
     SET(ZORBAUTILS_SRCS ${ZORBAUTILS_SRCS} SAXParser.cpp)
 ENDIF (ZORBA_WITH_LIBXML2_SAX)
 
+ADD_SRC_SUBFOLDER(ZORBAUTILS_SRCS stemmer LIBSTEMMER_SRCS)
+
+# vim:set et sw=4 ts=4:

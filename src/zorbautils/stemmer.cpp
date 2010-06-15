@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#include "runtime/full_text/ft_stemmer.h"
 #include "zorbautils/fatal.h"
+#include "zorbautils/stemmer.h"
 
 using namespace std;
 
@@ -23,28 +23,28 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ft_stemmer::ft_stemmer( lang::iso639_1::type lang_code ) :
+stemmer::stemmer( lang::iso639_1::type lang_code ) :
   stemmer_( sb_stemmer_new( lang::iso639_1::string_of[ lang_code ], NULL ) )
 {
   ZORBA_FATAL( stemmer_, "out of memory" );
 }
 
-ft_stemmer::~ft_stemmer() {
+stemmer::~stemmer() {
   sb_stemmer_delete( stemmer_ );
 }
 
-ft_stemmer const* ft_stemmer::get( lang::iso639_1::type lang_code ) {
-  static ft_stemmer* cached_stemmers[ lang::iso639_1::unknown ];
+stemmer const* stemmer::get( lang::iso639_1::type lang_code ) {
+  static stemmer* cached_stemmers[ lang::iso639_1::unknown ];
   static Mutex mutex;
 
   AutoMutex const lock( &mutex );
-  ft_stemmer *&stemmer = cached_stemmers[ lang_code ];
-  if ( !stemmer )
-    stemmer = new ft_stemmer( lang_code );
-  return stemmer;
+  stemmer *&ptr = cached_stemmers[ lang_code ];
+  if ( !ptr )
+    ptr = new stemmer( lang_code );
+  return ptr;
 }
 
-void ft_stemmer::stem( string const &word, string &result ) const {
+void stemmer::stem( string const &word, string &result ) const {
   //
   // We need a mutex since the libstemmer library is not thread-safe.
   //

@@ -18,9 +18,9 @@
 #define ZORBA_FULL_TEXT_FT_TOKEN_MATCHER_H
 
 #include "compiler/expression/ftnode.h"
-#include "runtime/full_text/ft_stemmer.h"
 #include "runtime/full_text/ft_stop_words_set.h"
 #include "zorbatypes/ft_token.h"
+#include "zorbautils/stemmer.h"
 
 namespace zorba {
 
@@ -40,7 +40,7 @@ public:
 
 private:
   ftmatch_options const &options_;
-  ft_stemmer const *stemmer_;
+  stemmer const *stemmer_;
   ft_stop_words_set const *stop_words_;
 };
 

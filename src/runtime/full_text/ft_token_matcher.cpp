@@ -17,12 +17,12 @@
 #include <cctype>
 
 #include "compiler/expression/ftnode.h"
-#include "runtime/full_text/ft_stemmer.h"
 #include "runtime/full_text/ft_stop_words_set.h"
 #include "runtime/full_text/ft_token_matcher.h"
 #include "runtime/full_text/icu_wildcard_matcher.h"
 #include "util/stl_util.h"
 #include "zorbatypes/ft_token.h"
+#include "zorbautils/stemmer.h"
 
 using namespace std;
 
@@ -61,7 +61,7 @@ ft_token_matcher::ft_token_matcher( ftmatch_options const &options ) :
   stemmer_ = NULL;
   if ( ftstem_option const *const s = options_.get_stem_option() ) {
     if ( s->get_mode() == ft_stem_mode::with )
-      stemmer_ = ft_stemmer::get( lang_code );
+      stemmer_ = stemmer::get( lang_code );
   }
 
   stop_words_ = NULL;

@@ -16,7 +16,6 @@ SET(FULLTEXT_SRCS
     ft_match.cpp
     ft_query_item_seq.cpp
     ft_single_token_iterator.cpp
-    ft_stemmer.cpp
     ft_stop_words_set.cpp
     icu_wildcard_matcher.cpp
     ft_token_matcher.cpp
@@ -37,7 +36,5 @@ SET(FULLTEXT_SRCS
     stop_words_pt.cpp
     stop_words_sv.cpp
     )
-
-ADD_SRC_SUBFOLDER(FULLTEXT_SRCS stemmer LIBSTEMMER_SRCS)
 
 # vim:set et sw=4 ts=4:

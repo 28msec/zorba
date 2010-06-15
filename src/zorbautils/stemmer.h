@@ -14,22 +14,22 @@
  * limitations under the License.
  */
  
-#ifndef ZORBA_RUNTIME_FULL_TEXT_FT_STEMMER_H
-#define ZORBA_RUNTIME_FULL_TEXT_FT_STEMMER_H
+#ifndef ZORBA_STEMMER_H
+#define ZORBA_STEMMER_H
 
 #include <string>
 
-#include "runtime/full_text/stemmer/include/libstemmer.h"
 #include "zorbautils/lang.h"
 #include "zorbautils/mutex.h"
+#include "zorbautils/stemmer/include/libstemmer.h"
 
 namespace zorba {
 
-class ft_stemmer {
+class stemmer {
 public:
-  ~ft_stemmer();
+  ~stemmer();
 
-  static ft_stemmer const* get( lang::iso639_1::type );
+  static stemmer const* get( lang::iso639_1::type );
 
   void stem( std::string const &word, std::string &result ) const;
 
@@ -37,13 +37,13 @@ private:
   sb_stemmer *const stemmer_;
   mutable Mutex mutex_;
 
-  ft_stemmer( lang::iso639_1::type );
+  stemmer( lang::iso639_1::type );
 
   // forbid these
-  ft_stemmer( ft_stemmer const& );
-  ft_stemmer& operator=( ft_stemmer const& );
+  stemmer( stemmer const& );
+  stemmer& operator=( stemmer const& );
 };
 
 } // namespace zorba
-#endif  /* ZORBA_RUNTIME_FULL_TEXT_FT_STEMMER_H */
+#endif  /* ZORBA_STEMMER_H */
 /* vim:set et sw=2 ts=2: */
