@@ -454,7 +454,7 @@ protected:
 
   OptionMap                             * theOptionMap;
 
-  ftmatch_options const                 * theFTMatchOptions;
+  ftmatch_options                       * theFTMatchOptions;
 
   StaticContextConsts::xquery_version_t      theXQueryVersion;
 
@@ -777,7 +777,7 @@ public:
     return theFTMatchOptions;
   }
 
-  void set_match_options( ftmatch_options const *mo ) {
+  void set_match_options( ftmatch_options *mo ) {
     theFTMatchOptions = mo;
   }
 

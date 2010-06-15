@@ -39,6 +39,7 @@
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
+#include "compiler/expression/ftnode.h"
 #include "compiler/xqddf/collection_decl.h"
 #include "compiler/xqddf/value_index.h"
 #include "compiler/xqddf/value_ic.h"
@@ -210,6 +211,7 @@ static_context::static_context()
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
+  theFTMatchOptions(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
@@ -251,6 +253,7 @@ static_context::static_context(static_context* parent)
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
+  theFTMatchOptions(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
@@ -294,6 +297,7 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
+  theFTMatchOptions(NULL),
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
@@ -591,6 +595,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theDefaultCollation;
 
   ar & theOptionMap;
+  ar & theFTMatchOptions;
 
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
   SERIALIZE_ENUM(StaticContextConsts::xpath_compatibility_t, theXPathCompatibility);
