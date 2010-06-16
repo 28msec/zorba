@@ -32,9 +32,10 @@ public:
   typedef std::vector<FTToken> FTTokens;
 
   NaiveFTTokenIterator( FTTokens const&, index_t begin, index_t end );
+  NaiveFTTokenIterator( FTTokens const* );
+  ~NaiveFTTokenIterator();
 
   index_t begin() const;
-  FTTokenIterator_t clone() const;
   index_t end() const;
   bool hasNext() const;
   bool next( FTToken const **ppToken = 0 );
@@ -48,9 +49,12 @@ private:
     index_t const pos_;
   };
 
-  FTTokens const &tokens_;
+  FTTokens const *tokens_;
   index_t const begin_, end_;
   index_t pos_;
+  bool const must_delete_;
+
+  void init();
 };
 
 } // namespace zorba

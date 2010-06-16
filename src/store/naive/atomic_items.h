@@ -21,6 +21,7 @@
 
 #include "store/api/item.h"
 #include "store/naive/store_defs.h"
+#include "store/naive/naive_ft_token_iterator.h"
 
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
@@ -459,9 +460,6 @@ protected:
 
   StringItemNaive() {}
 
-  typedef std::vector<FTToken> FTTokens;
-  mutable FTTokens theTokens;
-
   friend class AtomicItemTokenizer;
 
 public:
@@ -505,7 +503,7 @@ public:
 class AtomicItemTokenizer : public Tokenizer::Callback 
 {
 public:
-  typedef StringItemNaive::FTTokens FTTokens;
+  typedef NaiveFTTokenIterator::FTTokens FTTokens;
 
   AtomicItemTokenizer( Tokenizer &tokenizer, lang::iso639_1::type lang,
                        FTTokens &tokens ) :

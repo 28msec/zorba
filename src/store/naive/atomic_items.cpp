@@ -343,15 +343,12 @@ void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
 
 FTTokenIterator_t StringItemNaive::getQueryTokens( lang::iso639_1::type lang,
                                                    bool wildcards ) const {
-  if ( theTokens.empty() ) {
-    icu_tokenizer tokenizer( wildcards );
-    AtomicItemTokenizer atomic_tokenizer( tokenizer, lang, theTokens );
-    xqpStringStore const *const xText = getStringValue();
-    atomic_tokenizer.tokenize( xText->c_str(), xText->size() );
-  }
-  return FTTokenIterator_t(
-    new NaiveFTTokenIterator( theTokens, 0, theTokens.size() )
-  );
+  icu_tokenizer tokenizer( wildcards );
+  NaiveFTTokenIterator::FTTokens *tokens = new NaiveFTTokenIterator::FTTokens;
+  AtomicItemTokenizer atomic_tokenizer( tokenizer, lang, *tokens );
+  xqpStringStore const *const xText = getStringValue();
+  atomic_tokenizer.tokenize( xText->c_str(), xText->size() );
+  return FTTokenIterator_t( new NaiveFTTokenIterator( tokens ) );
 }
 
 

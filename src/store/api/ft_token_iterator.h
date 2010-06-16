@@ -58,13 +58,6 @@ public:
   virtual index_t begin() const = 0;
 
   /**
-   * Clones this iterator.
-   *
-   * @return Returns said clone.
-   */
-  virtual FTTokenIterator_t clone() const = 0;
-
-  /**
    * One greater than the index of the ending token.
    *
    * @return Returns said index.

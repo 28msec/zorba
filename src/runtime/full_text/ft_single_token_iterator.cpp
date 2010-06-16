@@ -29,10 +29,6 @@ FTSingleTokenIterator::FTSingleTokenIterator( FTToken const &token,
   reset();
 }
 
-FTTokenIterator_t FTSingleTokenIterator::clone() const {
-  return FTTokenIterator_t( new FTSingleTokenIterator( token_, begin_ ) );
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 FTSingleTokenIterator::index_t FTSingleTokenIterator::begin() const {

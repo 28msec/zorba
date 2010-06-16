@@ -39,15 +39,6 @@ FTQueryItemSeqIterator::~FTQueryItemSeqIterator() {
     delete qi_seq_;
 }
 
-FTTokenIterator_t FTQueryItemSeqIterator::clone() const {
-  FTQueryItemSeq *const qi_seq_copy = new FTQueryItemSeq;
-  FOR_EACH( FTQueryItemSeq, qi, *qi_seq_ ) {
-    qi_seq_copy->push_back( (*qi)->clone() );
-  }
-  FTTokenIterator *const copy = new FTQueryItemSeqIterator( qi_seq_copy );
-  return FTTokenIterator_t( copy );
-}
-
 void FTQueryItemSeqIterator::init() {
   ZORBA_ASSERT( !qi_seq_->empty() );
   reset();

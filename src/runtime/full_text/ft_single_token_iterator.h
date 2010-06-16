@@ -34,7 +34,6 @@ public:
   FTSingleTokenIterator( FTToken const&, index_t );
 
   index_t begin() const;
-  FTTokenIterator_t clone() const;
   index_t end() const;
   bool hasNext() const;
   Mark_t pos() const;
