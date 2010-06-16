@@ -301,6 +301,10 @@ ftdistance_filter::ftdistance_filter(
   ZORBA_ASSERT( range_ );
 }
 
+ftdistance_filter::~ftdistance_filter() {
+  delete range_;
+}
+
 ft_visit_result::type ftdistance_filter::accept( ftnode_visitor &v ) {
   BEGIN_VISIT( v );
   ACCEPT( range_, v );
@@ -330,6 +334,10 @@ ftextension_selection::ftextension_selection(
   /* TODO: pragma_list_( pragma_list ), */
   ftselection_( selection )
 {
+}
+
+ftextension_selection::~ftextension_selection() {
+  delete ftselection_;
 }
 
 ft_visit_result::type ftextension_selection::accept( ftnode_visitor &v ) {
@@ -671,6 +679,7 @@ ftselection::ftselection(
 }
 
 ftselection::~ftselection() {
+  delete ftor_;
   delete_ptr_seq( list_ );
 }
 

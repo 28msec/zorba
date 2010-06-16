@@ -427,6 +427,7 @@ public:
     /* TODO: pragma_list, */
     ftselection*
   );
+  ~ftextension_selection();
 
   ft_visit_result::type accept( ftnode_visitor& );
   ftselection const* get_ftselection() const { return ftselection_; }
@@ -523,6 +524,7 @@ public:
   void serialize( serialization::Archiver& );
 
   ftdistance_filter( QueryLoc const&, ftrange*, ft_unit::type );
+  ~ftdistance_filter();
 
   ft_visit_result::type accept( ftnode_visitor& );
   ftrange const* get_range() const { return range_; }
