@@ -379,7 +379,7 @@ DebuggerHandler::help(const std::vector<std::string>& aArgs) const
     cerr << endl;
     cerr << "Usage: (run | r)" << endl;
     cerr << endl;
-    cerr << "Run the query. If the query is suspended, this command restarts"
+    cerr << "Run the query. If the query is suspended, this command restarts "
          << "the execution." << endl;
     cerr << endl;
   } else if (aArgs[1] == "continue" || aArgs[1] == "c") {
@@ -418,10 +418,8 @@ DebuggerHandler::help(const std::vector<std::string>& aArgs) const
     cerr << endl;
     cerr << "Usage: (break | b) [(file_name | namespace)] <line_number>" << endl;
     cerr << endl;
-    cerr << "Sets a breakpoint at a given location. This command handles "
-         << "file paths and module namespaces. If the filename or module "
-         << "namespace is only given as a part, the engine sets the "
-         << "breakpoint choses one." << endl;
+    cerr << "Sets a breakpoint at a given location. This command handles both"
+         << "file paths and module namespaces." << endl;
     cerr << endl;
   } else if (aArgs[1] == "watch" || aArgs[1] == "w") {
     cerr << endl;
@@ -435,7 +433,7 @@ DebuggerHandler::help(const std::vector<std::string>& aArgs) const
     cerr << endl;
     cerr << "List XQuery source code or breakpoints." << endl;
     cerr << endl;
-    cerr << "The argument is optional. With no argument is provided, when "
+    cerr << "The argument is optional. With no argument, when "
          << "the execution is IDLE, the entire source code of the main "
          << "module is displayed. During the SUSPENDED state the command "
          << "displays the source code of the module where the execution is "
