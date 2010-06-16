@@ -66,4 +66,5 @@ ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspath1 PASS_REGULAR_EXPRESSION /)
 ZORBA_ADD_TEST_ALLSTORES (test/fspath2 path_test --path d1/d2/../../../../d3//)
 ZORBA_SET_TEST_PROPERTY_ALLSTORES (test/fspath2 PASS_REGULAR_EXPRESSION ../../d3)
 
-  
+# External testsuites
+ADD_SUBDIRECTORY(testsuites)

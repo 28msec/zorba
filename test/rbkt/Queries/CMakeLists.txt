@@ -13,22 +13,17 @@
 # limitations under the License.
 
 IF(COMMAND cmake_policy AND POLICY CMP0009)
-  # Note: We'd like to set this to NEW, but unfortunately CMake 2.6.4 is
-  # simply broken in this regard and will not follow symlinks even when
-  # FOLLOW_SYMLINKS is specified. Even more unfortunately, setting it to
-  # OLD does not defeat the CMP0009 warning message when running CMake.
-  # There's no win here. I'm leaving it set to OLD so at least symlinks
-  # work, and leaving FOLLOW_SYMLINKS in the FILE(GLOB_RECURSE) calls
-  # as a reminder that symlinks will be followed.
-  CMAKE_POLICY(SET CMP0009 OLD)
+  CMAKE_POLICY(SET CMP0009 NEW)
 ENDIF(COMMAND cmake_policy AND POLICY CMP0009)
 
 MESSAGE(STATUS "Adding tests for CTest")
 INCLUDE(ZorbaAddTest)
 
-FILE(GLOB_RECURSE TESTFILES RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" FOLLOW_SYMLINKS "*.xq")
+FILE(GLOB_RECURSE TESTFILES FOLLOW_SYMLINKS 
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" "*.xq")
 IF(ZORBA_TEST_XQUERYX)
-  FILE(GLOB_RECURSE TESTFILES_XQX RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS "*.xqx")
+  FILE(GLOB_RECURSE TESTFILES_XQX FOLLOW_SYMLINKS 
+    RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS "*.xqx")
   IF (TESTFILES_XQX)
     LIST(APPEND TESTFILES ${TESTFILES_XQX})
   ENDIF (TESTFILES_XQX)
@@ -36,7 +31,8 @@ ENDIF(ZORBA_TEST_XQUERYX)
 
 # collect all chained test queries (suffix .cxq) in all subdirectories
 # of this dir
-FILE(GLOB_RECURSE CHAINED_TESTFILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} FOLLOW_SYMLINKS "*.cxq")
+FILE(GLOB_RECURSE CHAINED_TESTFILES FOLLOW_SYMLINKS
+  RELATIVE "${CMAKE_CURRENT_SOURCE_DIR}" FOLLOW_SYMLINKS "*.cxq")
 
 SET(TESTCOUNTER 0)
 
