@@ -487,7 +487,10 @@ ReplyMessage* ZorbaDebuggerRuntime::listSource()
   for (unsigned long i = lCommand->getFirstline();
     i < lCommand->getLastline() && lStream.good(); ++i) {
     std::getline(lStream, lCurrLine);
-    lOut << lCurrLine << std::endl;
+    lOut << lCurrLine;
+    if (lStream.good()) {
+      lOut << std::endl;
+    }
   }
   return new ListReply(
     theCurrentMessage->getId(), DEBUGGER_NO_ERROR, lOut.str());
