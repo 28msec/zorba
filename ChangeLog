@@ -20,6 +20,7 @@ version 1.4
     - assertion in StatelessExtFunctionCallIterator (#3012651)
   * optimization of fn:subsequence
   * new xqDoc function (xqdoc-content) taking a documented module as string
+  * new xqDoc feature; reporting functions invoked from within a particular function
 
 version 1.2
   * more introspection functions (e.g. in-scope-element and in-scope-attribute)

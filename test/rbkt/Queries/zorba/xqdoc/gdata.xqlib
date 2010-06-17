@@ -20,6 +20,7 @@ import module namespace rest = "http://www.zorba-xquery.com/zorba/rest-functions
  :)
 import schema namespace atom = "http://www.w3.org/2005/Atom" at "atom.xsd";
 
+
 declare variable $gdata:version := "3.0";
 (:~
  : Google ID

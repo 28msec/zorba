@@ -16,7 +16,7 @@
 #include "parsenode_print_xqdoc_visitor.h"
 
 #include <ostream>
-#include <stack>
+#include <map>
 
 #include <compiler/parsetree/parsenode_print_xquery_visitor.h>
 #include <compiler/parsetree/parsenode_visitor.h>
@@ -191,6 +191,13 @@ protected:
   store::Item_t       theVariables;
   store::Item_t       theFunctions;
 
+  // set of functions being invoked in the function
+  // whoes declaration is currently being processed
+  std::map<std::string, store::Item_t>  theInvokedFunc;
+
+  // prefix -> uri
+  std::map<std::string, xqpStringStore_t> theNamespaces;
+
   const char*         theXQDocNS;
   const char*         theXQDocPrefix;
 
@@ -216,6 +223,9 @@ ParseNodePrintXQDocVisitor(store::Item_t &aResult, const string& aFileName)
     theTypeName(GENV_TYPESYSTEM.XS_UNTYPED_QNAME),
     theFactory(GENV_ITEMFACTORY)
 {
+  theNamespaces["fn"] = new xqpStringStore("http://www.w3.org/2005/xpath-functions");
+  theNamespaces[""] = new xqpStringStore("http://www.w3.org/2005/xpath-functions");
+  theNamespaces["xs"] = new xqpStringStore("http://www.w3.org/2001/XMLSchema");;
 }
 
 void print(const parsenode* p, const store::Item_t& aDateTime)
@@ -299,15 +309,25 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
 
 XQDOC_NO_BEGIN_END_TAG (AbbrevForwardStep)
 XQDOC_NO_BEGIN_END_TAG (CaseClause)
-XQDOC_NO_BEGIN_END_TAG (DefaultNamespaceDecl)
 XQDOC_NO_BEGIN_END_TAG (DirAttr)
 XQDOC_NO_BEGIN_END_TAG (ForwardAxis)
 XQDOC_NO_BEGIN_END_TAG (GeneralComp)
 
+XQDOC_NO_BEGIN_TAG (DefaultNamespaceDecl)
+
+void end_visit(const DefaultNamespaceDecl& n, void* /*visit_state*/)
+{
+  if (n.get_mode() == ParseConstants::ns_function_default)
+    theNamespaces[""] = n.get_default_namespace();
+}
+
 // TODO: main module 
 XQDOC_NO_BEGIN_END_TAG (MainModule)
 
-XQDOC_NO_BEGIN_TAG (ModuleDecl)
+void *begin_visit(const ModuleDecl& n) {
+  theNamespaces[n.get_prefix()->c_str()] = n.get_target_namespace();
+  return no_state;
+}
 
 void end_visit(const ModuleDecl& n, void* /*visit_state*/)
 {
@@ -371,11 +391,79 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 
   std::ostringstream lSig;
 
-  FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(), n.get_paramlist(), n.get_return_type(), 0, n.get_kind());
+  FunctionDecl lFunctionDeclClone(n.get_location(), n.get_name(),
+      n.get_paramlist(),
+      n.get_return_type(),
+      0,
+      n.get_kind());
+
   FunctionIndex lIndex = print_parsetree_xquery(lSig, &lFunctionDeclClone);
 
   xqpStringStore_t lSigString = new xqpStringStore(lSig.str());
   theFactory->createTextNode(lSigText, lSigElem, -1, lSigString);
+
+  // add all invoked function elements as children to the end of the current
+  // function element. After this, clear the set of invoked functions
+  // to be prepared for the next function declaration
+  size_t i = 3;
+  for (std::map<std::string, store::Item_t>::const_iterator lIter = theInvokedFunc.begin();
+       lIter != theInvokedFunc.end(); ++lIter) {
+    store::CopyMode lCopyMode;
+    (*lIter).second->copy(lFuncElem.getp(), i++, lCopyMode);
+  }
+  theInvokedFunc.clear();
+}
+
+XQDOC_NO_BEGIN_TAG (FunctionCall)
+
+void end_visit(const FunctionCall& n, void*)
+{
+  store::Item_t lInvokedQName, lUriQName, lNameQName;
+  store::Item_t lInvokedElem, lUriElem, lNameElem;
+  store::Item_t lUriText, lNameText;
+
+  theFactory->createQName(lInvokedQName, theXQDocNS, theXQDocPrefix, "invoked");
+  theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
+  theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
+
+  theFactory->createElementNode(
+      lInvokedElem, NULL, -1, lInvokedQName, theTypeName,
+      false, false, theNSBindings, theBaseURI);
+
+  rchandle<QName> lFuncName = n.get_fname();
+
+  theFactory->createElementNode(
+      lUriElem, lInvokedElem, -1, lUriQName, theTypeName,
+      false, false, theNSBindings, theBaseURI);
+
+  std::string lPrefix = lFuncName->get_prefix()->c_str();
+
+  xqpStringStore_t lNS = theNamespaces[lPrefix];
+  if (!lNS) {
+    ZORBA_ERROR_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR,
+       "Could not generate the xqDoc documentation; no namespace declared for prefix "
+       << lPrefix
+    );
+  }
+
+  std::ostringstream lLocalName;
+  lLocalName << lFuncName->get_localname()
+             << "#" << (n.get_arg_list()?n.get_arg_list()->size():0);
+  xqpStringStore_t lLocalNameString(new xqpStringStore(lLocalName.str().c_str()));
+
+  std::ostringstream lKey;
+  lKey << lNS << lLocalNameString;
+
+  theFactory->createTextNode(lUriText, lUriElem.getp(), -1, lNS);
+
+  theFactory->createElementNode(
+      lNameElem, lInvokedElem, -1, lNameQName, theTypeName,
+      false, false, theNSBindings, theBaseURI);
+
+  theFactory->createTextNode(lNameText, lNameElem.getp(), -1, lLocalNameString);
+
+  // collect distinct invocation elements
+  theInvokedFunc[lKey.str()] = lInvokedElem;
 }
 
 XQDOC_NO_BEGIN_TAG (VarDecl)
@@ -425,6 +513,10 @@ void end_visit(const ModuleImport& n, void*)
   theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
 
   print_comment(lImportElem, n.getComment());
+
+  // collect prefix -> uri mappings for properly
+  // reporting function invocations (see FunctionCall)
+  theNamespaces[n.get_prefix()->c_str()] = n.get_uri();
 }
 
 XQDOC_NO_BEGIN_END_TAG (AdditiveExpr)
@@ -525,7 +617,6 @@ XQDOC_NO_BEGIN_END_TAG (FTWindow)
 XQDOC_NO_BEGIN_END_TAG (FTWords)
 XQDOC_NO_BEGIN_END_TAG (FTWordsTimes)
 XQDOC_NO_BEGIN_END_TAG (FTWordsValue)
-XQDOC_NO_BEGIN_END_TAG (FunctionCall)
 XQDOC_NO_BEGIN_END_TAG (GroupByClause)
 XQDOC_NO_BEGIN_END_TAG (GroupCollationSpec)
 XQDOC_NO_BEGIN_END_TAG (GroupSpec)
