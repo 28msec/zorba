@@ -157,7 +157,7 @@ inline bool str_dbl(store::Item_t& result, const store::Item* aItem, xqpStringSt
 inline bool str_dec(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context* nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_decimal n;
-  if (NumConversions::starCharToDecimal(strval->c_str(), n))
+  if (NumConversions::strToDecimal(strval->c_str(), n))
     return aFactory->createDecimal(result, n);
 
   throwError(FORG0001, aErrorInfo);
@@ -168,7 +168,7 @@ inline bool str_dec(store::Item_t& result, const store::Item* aItem, xqpStringSt
 inline bool str_int(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context* nsCtx, const ErrorInfo& aErrorInfo)
 {
   xqp_integer n;
-  if (NumConversions::starCharToInteger(strval->c_str(), n))
+  if (NumConversions::strToInteger(strval->c_str(), n))
     return aFactory->createInteger(result, n);
 
   throwError(FORG0001, aErrorInfo);
@@ -1189,7 +1189,7 @@ bool int_down(
     xqp_long n;
     xqpStringStore_t lString;
     aItem->getStringValue(lString);
-    if (NumConversions::strToLongLong(lString.getp(), n))
+    if (NumConversions::strToLong(lString->c_str(), n))
       return aFactory->createLong(result, n);
     break;
   }
@@ -1198,7 +1198,7 @@ bool int_down(
     xqp_int n;
     xqpStringStore_t lString;
     aItem->getStringValue(lString);
-    if (NumConversions::strToInt(lString.getp(), n))
+    if (NumConversions::strToInt(lString->c_str(), n))
       return aFactory->createInt(result, n);
     break;
   }
@@ -1207,7 +1207,7 @@ bool int_down(
     xqp_short n;
     xqpStringStore_t lString;
     aItem->getStringValue(lString);
-    if (NumConversions::strToShort(lString.getp(), n))
+    if (NumConversions::strToShort(lString->c_str(), n))
       return aFactory->createShort(result, n);
     break;
   }
@@ -1216,7 +1216,7 @@ bool int_down(
     xqp_byte n;
     xqpStringStore_t lString;
     aItem->getStringValue(lString);
-    if (NumConversions::strToByte(lString.getp(), n))
+    if (NumConversions::strToByte(lString->c_str(), n))
       return aFactory->createByte(result, n);
     break;
   }
@@ -1232,7 +1232,7 @@ bool int_down(
     xqp_ulong n;
     xqpStringStore_t lString;
     aItem->getStringValue(lString);
-    if (NumConversions::strToULongLong(lString.getp(), n))
+    if (NumConversions::strToULong(lString->c_str(), n))
       return aFactory->createUnsignedLong(result, n);
     break;
   }
@@ -1241,7 +1241,7 @@ bool int_down(
     xqp_uint n;
     xqpStringStore_t lString;
     aItem->getStringValue(lString);
-    if (NumConversions::strToUInt(lString.getp(), n))
+    if (NumConversions::strToUInt(lString->c_str(), n))
       return aFactory->createUnsignedInt(result, n);
     break;
   }
@@ -1250,7 +1250,7 @@ bool int_down(
     xqp_ushort n;
     xqpStringStore_t lString;
     aItem->getStringValue(lString);
-    if (NumConversions::strToUShort(lString.getp(), n))
+    if (NumConversions::strToUShort(lString->c_str(), n))
       return aFactory->createUnsignedShort(result, n);
     break;
   }
@@ -1259,7 +1259,7 @@ bool int_down(
     xqp_ubyte n;
     xqpStringStore_t lString;
     aItem->getStringValue(lString);
-    if (NumConversions::strToUByte(lString.getp(), n))
+    if (NumConversions::strToUByte(lString->c_str(), n))
       return aFactory->createUnsignedByte(result, n);
     break;
   }

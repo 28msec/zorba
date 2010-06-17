@@ -300,8 +300,8 @@ Duration* Duration::operator*(const Double& value) const
 {
   Double result;
   Double dSeconds;
-  long seconds;
-  long frac_seconds;
+  xqp_long seconds;
+  xqp_long frac_seconds;
 
   if (facet == DURATION_FACET)
   {
@@ -314,10 +314,10 @@ Duration* Duration::operator*(const Double& value) const
   result = getTotalSeconds() * value;
   result = result.round(significants);
   dSeconds = result.round();
-  NumConversions::doubleToLong(dSeconds.floor(), seconds);
+  NumConversions::doubleToLongLong(dSeconds.floor(), seconds);
 
   result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
-  NumConversions::doubleToLong(result.round(), frac_seconds);
+  NumConversions::doubleToLongLong(result.round(), frac_seconds);
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
@@ -327,8 +327,8 @@ Duration* Duration::operator/(const Double& value) const
 {
   Double result;
   Double dSeconds;
-  long seconds;
-  long frac_seconds;
+  xqp_long seconds;
+  xqp_long frac_seconds;
 
   if (facet == DURATION_FACET)
   {
@@ -341,10 +341,10 @@ Duration* Duration::operator/(const Double& value) const
   result = getTotalSeconds() / value;
   result = result.round(significants);
   dSeconds = result.round();
-  NumConversions::doubleToLong(dSeconds.floor(), seconds);
+  NumConversions::doubleToLongLong(dSeconds.floor(), seconds);
 
   result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
-  NumConversions::doubleToLong(result.round(), frac_seconds);
+  NumConversions::doubleToLongLong(result.round(), frac_seconds);
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
@@ -774,13 +774,13 @@ xqpStringStore_t Duration::toString() const
   {
     if (data[YEAR_DATA] != 0)
     {
-      *result += NumConversions::longToStr(data[YEAR_DATA]);
+      *result += NumConversions::intToStr(data[YEAR_DATA]);
       *result += "Y";
     }
 
     if (data[MONTH_DATA] != 0)
     {
-      *result += NumConversions::longToStr(data[MONTH_DATA]);
+      *result += NumConversions::intToStr(data[MONTH_DATA]);
       *result += "M";
     }
   }
@@ -789,7 +789,7 @@ xqpStringStore_t Duration::toString() const
   {
     if (data[DAY_DATA] != 0)
     {
-      *result += NumConversions::longToStr(data[DAY_DATA]);
+      *result += NumConversions::intToStr(data[DAY_DATA]);
       *result += "D";
     }
 
@@ -804,13 +804,13 @@ xqpStringStore_t Duration::toString() const
 
     if (data[HOUR_DATA] != 0)
     {     
-      *result += NumConversions::longToStr(data[HOUR_DATA]);
+      *result += NumConversions::intToStr(data[HOUR_DATA]);
       *result += "H";
     }
 
     if (data[MINUTE_DATA] != 0)
     {
-      *result += NumConversions::longToStr(data[MINUTE_DATA]);
+      *result += NumConversions::intToStr(data[MINUTE_DATA]);
       *result += "M";
     }
 

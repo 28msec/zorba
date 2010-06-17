@@ -356,7 +356,7 @@ namespace zorbac {
           String lStringValue = me->theItem.getStringValue();
           const char* strvalue = lStringValue.c_str();
           xqp_int intvalue;
-          if ( ! NumConversions::starCharToInt(strvalue, intvalue)) {
+          if ( ! NumConversions::strToInt(strvalue, intvalue)) {
             return XQC_TYPE_ERROR;
           }
           (*value) = static_cast<int> (intvalue);
@@ -395,7 +395,7 @@ namespace zorbac {
           String lStringValue = me->theItem.getStringValue();
           const char* strvalue = lStringValue.c_str();
           xqp_double doublevalue;
-          if ( ! NumConversions::starCharToDouble(strvalue, doublevalue)) {
+          if ( ! NumConversions::strToDouble(strvalue, doublevalue)) {
             return XQC_TYPE_ERROR;
           }
           (*value) = static_cast<double> (doublevalue.getNumber());

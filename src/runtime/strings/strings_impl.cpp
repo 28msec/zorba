@@ -67,7 +67,7 @@ CodepointsToStringIterator::nextImpl(store::Item_t& result, PlanState& planState
       {
         xqpStringStore_t lUtf8Code = item->getIntegerValue().toString();
         xqp_uint lCode;
-        if (NumConversions::strToUInt(lUtf8Code, lCode)) 
+        if (NumConversions::strToUInt(lUtf8Code->c_str(), lCode)) 
         {
           char seq[5] = {0,0,0,0,0};
           try

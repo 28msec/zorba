@@ -184,7 +184,7 @@ protected:
   FACET_TYPE facet;
 
   bool is_negative;
-  long data[7];
+  int32_t data[7];
 public:
   SERIALIZABLE_CLASS(Duration)
   SERIALIZABLE_CLASS_CONSTRUCTOR(Duration)

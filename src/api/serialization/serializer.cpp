@@ -181,7 +181,7 @@ std::string serializer::emitter::expand_string(
       if (cp >= 0x10000 && cp <= 0x10FFFF)
       {
         temp = chars;
-        lTranscoder << "&#" << NumConversions::longToStr(UTF8Decode(temp))->c_str()
+        lTranscoder << "&#" << NumConversions::uintToStr(UTF8Decode(temp))->c_str()
                     << ";";
         chars += (skip-1);
         skip = 0;

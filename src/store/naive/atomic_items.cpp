@@ -889,7 +889,7 @@ xqp_long IntegerItem::getLongValue() const
 {
   xqpStringStore_t strval = NumConversions::integerToStr(theValue);
   xqp_long val;
-  if (! NumConversions::strToLongLong(strval, val))
+  if (! NumConversions::strToLong(strval->c_str(), val))
   {
     ZORBA_ERROR_DESC(FORG0001, "Failed to downcast an integer value to a long value");
   }

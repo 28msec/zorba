@@ -209,21 +209,21 @@ off_t symbol_table::put_commentcontent(char const* yytext, uint32_t yyleng)
 xqp_decimal* symbol_table::decimalval(char const* text, uint32_t length)
 {
   xqp_decimal lDecimal;
-  NumConversions::starCharToDecimal(text, lDecimal);
+  NumConversions::strToDecimal(text, lDecimal);
   return new xqp_decimal(lDecimal);
 }
 
 xqp_double* symbol_table::doubleval(char const* text, uint32_t length)
 {
   xqp_double lDouble;
-  NumConversions::starCharToDouble(text, lDouble);
+  NumConversions::strToDouble(text, lDouble);
   return new xqp_double(lDouble);
 }
 
 xqp_integer* symbol_table::integerval(char const* text, uint32_t length)
 {
   xqp_integer lInteger;
-  NumConversions::starCharToInteger(text, lInteger);
+  NumConversions::strToInteger(text, lInteger);
   return new xqp_integer(lInteger);
 }
 

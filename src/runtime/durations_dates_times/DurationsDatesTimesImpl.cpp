@@ -185,13 +185,13 @@ static void format_number(xqpStringStore_t& str, long number, Modifier& modifier
 
   if (modifier.presentation_modifier->bytes() > 0 && modifier.presentation_modifier->byteAt(0) == '0')
   {
-    temp.append_in_place(NumConversions::longToStr(number)->c_str());
+    temp.append_in_place(NumConversions::longLongToStr(number)->c_str());
     while (temp.bytes() < modifier.presentation_modifier->bytes())
       temp = "0" + temp;
   }
   else // "1" or fallback
   {
-    temp.append_in_place(NumConversions::longToStr(number)->c_str());
+    temp.append_in_place(NumConversions::longLongToStr(number)->c_str());
   }
 
   if (modifier.second_modifier->byteEqual("o", 1))

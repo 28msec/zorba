@@ -23,21 +23,168 @@ namespace zorba
 {
 
 
-bool NumConversions::isNegZero(const xqpStringStore_t& aStr) 
+bool NumConversions::isNegative(const char*& chp, bool& isNegZero) 
 {
-  xqpStringStore_t lStr = aStr->trim(" \n\r\t", 4);
-  size_t lLength = lStr->bytes();
-  const char* lChars = lStr->c_str();
-  if (lChars[0] == '-') 
+  isNegZero = false;
+
+  char ch = *chp;
+
+  while (ch != '\0' && 
+         (ch == ' ' || ch == '\t' || ch == '\n' || ch == '\r'))
   {
-    for (size_t i = 1; i < lLength; ++i) 
+    ++chp;
+    ch = *chp;
+  }
+
+  if (ch == '-')
+  {
+    while (ch != '\0' && ch == '0')
     {
-      if (lChars[i] != '0') 
-      {
-        return false;
-      }
+      ++chp;
+      ch = *chp;
     }
+
+    if (ch == '\0')
+    {
+      isNegZero = true;
+      return false;
+    }
+
     return true;
+  }
+
+  return false;
+}
+
+
+bool NumConversions::strToDouble(const char* aStr, xqp_double& aDouble)
+{
+  return Double::parseString(aStr, aDouble);
+}
+  
+
+bool NumConversions::strToFloat(const char* aStr, xqp_float& aFloat) 
+{
+  return Float::parseString(aStr, aFloat);
+}
+
+
+bool NumConversions::strToDecimal(const char* aStr, xqp_decimal& aDecimal)
+{
+  return Decimal::parseString(aStr, aDecimal);
+}
+
+
+bool NumConversions::strToInteger(const char* aStr, xqp_integer& aInteger) 
+{
+  return Integer::parseString(aStr, aInteger);
+}
+
+
+bool NumConversions::strToUInteger(const char* aStr, xqp_uinteger& aUInteger)
+{
+  return Integer::parseStringUnsigned(aStr, aUInteger);
+}
+
+
+bool NumConversions::strToLong(const char* aStr, xqp_long& aLong)
+{
+  std::stringstream lStream;
+  return lStream << aStr && lStream >> aLong && lStream.eof();
+}
+
+
+bool NumConversions::strToULong(const char* aStr, xqp_ulong& aULong)
+{
+  const char* chp = aStr;
+  bool negZero;
+
+  if (isNegative(chp, negZero))
+  {
+    return false;
+  }
+
+  if (negZero)
+  {
+    aULong = 0;
+    return true;
+  }
+
+  std::stringstream lStream;
+  return lStream << chp && lStream >> aULong && lStream.eof();
+}
+
+
+bool NumConversions::strToInt(const char* aCharStar, xqp_int& aInt)
+{
+  std::stringstream lStream;
+  return lStream << aCharStar && lStream >> aInt && lStream.eof();
+}
+
+
+bool NumConversions::strToUInt(const char* aStr, xqp_uint& aUInt)
+{
+  const char* chp = aStr;
+  bool negZero;
+
+  if (isNegative(chp, negZero))
+  {
+    return false;
+  }
+
+  if (negZero)
+  {
+    aUInt = 0;
+    return true;
+  }
+
+  std::stringstream lStream;
+  return lStream << aStr && lStream >> aUInt && lStream.eof();
+}
+
+
+bool NumConversions::strToShort(const char* aStr, xqp_short& aShort)
+{
+  std::stringstream lStream;
+  return lStream << aStr && lStream >> aShort && lStream.eof();
+}
+
+
+bool NumConversions::strToUShort(const char* aStr, xqp_ushort& aUShort)
+{
+  const char* chp = aStr;
+  bool negZero;
+
+  if (isNegative(chp, negZero))
+  {
+    return false;
+  }
+
+  if (negZero)
+  {
+    aUShort = 0;
+    return true;
+  }
+
+  std::stringstream lStream;
+  return lStream << aStr && lStream >> aUShort && lStream.eof();
+}
+
+
+bool NumConversions::strToByte(const char* aStr, xqp_byte& aByte)
+{
+  short lShort;
+  if (strToShort(aStr, lShort)) 
+  {
+    if (lShort >= -128 && lShort <= 127)
+    {
+      aByte = (xqp_byte)lShort;
+      return true;
+    } 
+    else
+    {
+      return false;
+    }
   }
   else
   {
@@ -46,15 +193,43 @@ bool NumConversions::isNegZero(const xqpStringStore_t& aStr)
 }
 
 
-bool NumConversions::starCharToInteger(const char* aCharStar, xqp_integer& aInteger) 
+bool NumConversions::strToUByte(const char* aStr, xqp_ubyte& aUByte)
 {
-  return Integer::parseString(aCharStar, aInteger);
+  unsigned short lUShort;
+  if (strToUShort(aStr, lUShort))
+  {
+    if (lUShort <= 255) 
+    {
+      aUByte = (xqp_ubyte)lUShort;
+      return true;
+    }
+    else
+    {
+      return false;
+    }
+  }
+  else
+  {
+    return false;
+  }
 }
 
 
-bool NumConversions::strToInteger(const xqpStringStore_t& aStr, xqp_integer& aInteger)
+xqpStringStore_t NumConversions::doubleToStr(xqp_double aDouble)
 {
-  return starCharToInteger(aStr->c_str(), aInteger);
+  return aDouble.toString();
+}
+
+
+xqpStringStore_t NumConversions::floatToStr(xqp_float aFloat)
+{
+  return aFloat.toString();
+}
+
+
+xqpStringStore_t NumConversions::decimalToStr(xqp_decimal aDecimal)
+{
+  return aDecimal.toString();
 }
 
 
@@ -64,63 +239,9 @@ xqpStringStore_t NumConversions::integerToStr(xqp_integer aInteger)
 }
 
 
-bool NumConversions::strToUInteger(const xqpStringStore_t& aStr, xqp_uinteger& aUInteger)
-{
-  return Integer::parseStringUnsigned(aStr->c_str(), aUInteger);
-}
-
-
 xqpStringStore_t NumConversions::uintegerToStr(xqp_uinteger aUInteger)
 {
   return aUInteger.toString();
-}
-
-
-bool NumConversions::starCharToInt(const char* aCharStar, xqp_int& aInt)
-{
-  std::stringstream lStream;
-  return lStream << aCharStar && lStream >> aInt && lStream.eof();
-}
-
-
-bool NumConversions::strToInt(const xqpStringStore_t& aStr, xqp_int& aInt) 
-{
-  return starCharToInt(aStr->c_str(), aInt);
-}
-
-
-xqpStringStore_t NumConversions::intToStr(xqp_int aInt)
-{
-  std::stringstream lStream;
-  lStream << aInt;
-  return new xqpStringStore(lStream.str());
-}
-
-
-bool NumConversions::strToUInt(const xqpStringStore_t& aStr, xqp_uint& aUInt)
-{
-  if ( isNegZero(aStr)) 
-  {
-    aUInt = 0;
-    return true;
-  }
-  std::stringstream lStream;
-  return lStream << aStr->c_str() && lStream >> aUInt && lStream.eof();
-}
-
-
-xqpStringStore_t NumConversions::uintToStr(xqp_uint aUInt)
-{
-  std::stringstream lStream;
-  lStream << aUInt;
-  return new xqpStringStore(lStream.str());
-}
-
-
-bool NumConversions::strToLongLong(const xqpStringStore_t& aStr, xqp_long& aLong)
-{
-  std::stringstream lStream;
-  return lStream << aStr->c_str() && lStream >> aLong && lStream.eof();
 }
 
 
@@ -132,33 +253,6 @@ xqpStringStore_t NumConversions::longLongToStr(xqp_long aLong)
 }
 
 
-bool NumConversions::strToLong(const xqpStringStore_t& aStr, long& aLong)
-{
-  std::stringstream lStream;
-  return lStream << aStr->c_str() && lStream >> aLong && lStream.eof();
-}
-  
-
-xqpStringStore_t NumConversions::longToStr(long aLong) 
-{
-  std::stringstream lStream;
-  lStream << aLong;
-  return new xqpStringStore(lStream.str());
-}
-
-
-bool NumConversions::strToULongLong(const xqpStringStore_t& aStr, xqp_ulong& aULong)
-{
-  if ( isNegZero(aStr))
-  {
-    aULong = 0;
-    return true;
-  }
-  std::stringstream lStream;
-  return lStream << aStr->c_str() && lStream >> aULong && lStream.eof();
-}
-
-
 xqpStringStore_t NumConversions::ulongLongToStr(xqp_ulong aULong)
 {
   std::stringstream lStream;
@@ -167,18 +261,19 @@ xqpStringStore_t NumConversions::ulongLongToStr(xqp_ulong aULong)
 }
 
 
-xqpStringStore_t NumConversions::ulongToStr(unsigned long aULong) 
+xqpStringStore_t NumConversions::intToStr(xqp_int aInt)
 {
   std::stringstream lStream;
-  lStream << aULong;
+  lStream << aInt;
   return new xqpStringStore(lStream.str());
 }
 
 
-bool NumConversions::strToShort(const xqpStringStore_t& aStr, xqp_short& aShort)
+xqpStringStore_t NumConversions::uintToStr(xqp_uint aUInt)
 {
   std::stringstream lStream;
-  return lStream << aStr->c_str() && lStream >> aShort && lStream.eof();
+  lStream << aUInt;
+  return new xqpStringStore(lStream.str());
 }
 
 
@@ -190,18 +285,6 @@ xqpStringStore_t NumConversions::shortToStr(xqp_short aShort)
 }
 
 
-bool NumConversions::strToUShort(const xqpStringStore_t& aStr, xqp_ushort& aUShort)
-{
-  if ( isNegZero(aStr )) 
-  {
-    aUShort = 0;
-    return true;
-  }
-  std::stringstream lStream;
-  return lStream << aStr->c_str() && lStream >> aUShort && lStream.eof();
-}
-
-
 xqpStringStore_t NumConversions::ushortToStr(xqp_ushort aUShort)
 {
   std::stringstream lStream;
@@ -209,102 +292,13 @@ xqpStringStore_t NumConversions::ushortToStr(xqp_ushort aUShort)
   return new xqpStringStore(lStream.str());
 }
 
-
-bool NumConversions::starCharToDecimal(const char* aCharStar, xqp_decimal& aDecimal)
-{
-  return Decimal::parseString(aCharStar, aDecimal);
-}
-
-
-bool NumConversions::strToDecimal(const xqpStringStore_t& aStr, xqp_decimal& aDecimal) 
-{
-  return starCharToDecimal(aStr->c_str(), aDecimal);
-}
   
-
-xqpStringStore_t NumConversions::decimalToStr(xqp_decimal aDecimal)
-{
-  return aDecimal.toString();
-}
-
-  
-bool NumConversions::starCharToFloat(const char* aCharStar, xqp_float& aFloat) 
-{
-  return Float::parseString(aCharStar, aFloat);
-}
-
-
-bool NumConversions::strToFloat(const xqpStringStore_t& aStr, xqp_float& aFloat)
-{
-  return NumConversions::starCharToFloat(aStr->c_str(), aFloat);
-}
-
-
-xqpStringStore_t NumConversions::floatToStr(xqp_float aFloat)
-{
-  return aFloat.toString();
-}
-
-
-bool NumConversions::starCharToDouble(const char* aCharStar, xqp_double& aDouble)
-{
-  return Double::parseString(aCharStar, aDouble);
-}
-  
-
-bool NumConversions::strToDouble(const xqpStringStore_t& aStr, xqp_double& aDouble) 
-{
-  return starCharToDouble(aStr->c_str(), aDouble);
-}
-  
-
-xqpStringStore_t NumConversions::doubleToStr(xqp_double aDouble)
-{
-  return aDouble.toString();
-}
-
-  
-bool NumConversions::strToByte(const xqpStringStore_t& aStr, xqp_byte& aByte)
-{
-  short lShort;
-  if (strToShort(aStr, lShort)) 
-  {
-    if (lShort >= -128 && lShort <= 127) 
-    {
-      aByte = (xqp_byte)lShort;
-      return true;
-    } 
-    else
-      return false;
-  }
-  else
-    return false;
-}
-  
-
 xqpStringStore_t NumConversions::byteToStr(xqp_byte aByte)
 {
   return shortToStr(aByte);
 }
   
 
-bool NumConversions::strToUByte(const xqpStringStore_t& aStr, xqp_ubyte& aUByte)
-{
-  unsigned short lUShort;
-  if (strToUShort(aStr, lUShort)) 
-  {
-    if (lUShort <= 255) {
-      aUByte = (xqp_ubyte)lUShort;
-      return true;
-    }
-    else
-      return false;
-  }
-  else
-    return false;
-}
-
-  
 xqpStringStore_t NumConversions::ubyteToStr(xqp_ubyte aUByte)
 {
   return ushortToStr(aUByte);
@@ -316,50 +310,147 @@ xqpStringStore_t NumConversions::sizetToStr(size_t aSizeT)
   std::stringstream lStream;
   lStream << aSizeT;
   return new xqpStringStore(lStream.str());
-  }
+}
 
  
 bool NumConversions::doubleToInt(const xqp_double& aDouble, xqp_int& aInt) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
   xqpStringStore_t lStr = aDouble.toIntegerString();
-  return NumConversions::strToInt(lStr, aInt);
+  return NumConversions::strToInt(lStr->c_str(), aInt);
 #else
   aInt = (xqp_int)aDouble.theFloating;
   return true;
 #endif
 }
 
-  
+
 bool NumConversions::doubleToLongLong(const xqp_double& aDouble, xqp_long& aLong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
   xqpStringStore_t lStr = aDouble.toIntegerString();
-  return NumConversions::strToLongLong(lStr, aLong);
+  return NumConversions::strToLong(lStr->c_str(), aLong);
 #else
   aLong = (xqp_long)aDouble.theFloating;
   return true;
 #endif
 }
 
-  
-bool NumConversions::doubleToLong(const xqp_double& aDouble, long& aLong) 
+
+bool NumConversions::floatToInt(const xqp_float& aFloat, xqp_int& aInt) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-    xqpStringStore_t lStr = aDouble.toIntegerString();
-    return NumConversions::strToLong(lStr, aLong);
+  xqpStringStore_t lStr = aFloat.toIntegerString();
+  return NumConversions::strToInt(lStr->c_str(), aInt);
 #else
-    aLong = (long)aDouble.theFloating;
-    return true;
+  aInt = (xqp_int)aFloat.theFloating;
+  return true;
 #endif
 }
 
 
+bool NumConversions::decimalToInteger(const xqp_decimal& aDecimal, xqp_integer& aInteger)
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  if (aDecimal.isInteger())
+  {
+    xqpStringStore_t lStr = aDecimal.toString();
+    return NumConversions::strToInteger(lStr->c_str(), aInteger);
+  }
+  else
+  {
+    return false;
+  }
+#else
+  ZORBA_ASSERT(false);
+#endif
+}
+
+
+bool NumConversions::decimalToULong(const xqp_decimal& aDecimal, xqp_ulong& aULong)
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  if (aDecimal.isULong())
+  {
+    xqpStringStore_t lStr = aDecimal.toString();
+    return NumConversions::strToULong(lStr->c_str(), aULong);
+  }
+  else
+  {
+    return false;
+  }
+#else
+  ZORBA_ASSERT(false);
+#endif
+}
+
+
+bool NumConversions::decimalToLong(const xqp_decimal& aDecimal, xqp_long& aLong)
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  if (aDecimal.isLong())
+  {
+    xqpStringStore_t lStr = aDecimal.toString();
+    return NumConversions::strToLong(lStr->c_str(), aLong);
+  }
+  else
+  {
+    return false;
+  }
+#else
+  ZORBA_ASSERT(false);
+#endif
+}
+
+
+bool NumConversions::decimalToUInt(const xqp_decimal& aDecimal, xqp_uint& aUInt)
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  if (aDecimal.isUInt())
+  {
+    xqpStringStore_t lStr = aDecimal.toString();
+    return NumConversions::strToUInt(lStr->c_str(), aUInt);
+  }
+  else
+  {
+    return false;
+  }
+#else
+  ZORBA_ASSERT(false);
+#endif
+}
+
+
+bool NumConversions::decimalToInt(const xqp_decimal& aDecimal, xqp_int& aInt) 
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  if (aDecimal.isInt())
+  {
+    xqpStringStore_t lStr = aDecimal.toString();
+    return NumConversions::strToInt(lStr->c_str(), aInt);
+  }
+  else
+  {
+    return false;
+  }
+#else
+  ZORBA_ASSERT(false);
+#endif
+}
+
+  
 bool NumConversions::integerToLong(const xqp_integer& aInteger, xqp_long& aLong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStr = aInteger.toString();
-  return NumConversions::strToLongLong(lStr, aLong);
+  if (aInteger.isLong())
+  {
+    xqpStringStore_t lStr = aInteger.toString();
+    return NumConversions::strToLong(lStr->c_str(), aLong);
+  }
+  else
+  {
+    return false;
+  }
 #else
   aLong = (xqp_uint)aInteger.theInteger;
   return true;
@@ -370,36 +461,39 @@ bool NumConversions::integerToLong(const xqp_integer& aInteger, xqp_long& aLong)
 bool NumConversions::integerToUInt(const xqp_integer& aInteger, xqp_uint& aUInt) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStr = aInteger.toString();
-  return NumConversions::strToUInt(lStr, aUInt);
+  if (aInteger.isUInt())
+  {
+    xqpStringStore_t lStr = aInteger.toString();
+    return NumConversions::strToUInt(lStr->c_str(), aUInt);
+  }
+  else
+  {
+    return false;
+  }
 #else
   aUInt = (xqp_uint)aInteger.theInteger;
   return true;
 #endif
 }
 
-  
-bool NumConversions::floatToInt(const xqp_float& aFloat, xqp_int& aInt) 
+
+bool NumConversions::integerToInt(const xqp_integer& aInteger, xqp_int& aInt) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-    xqpStringStore_t lStr = aFloat.toIntegerString();
-    return NumConversions::strToInt(lStr, aInt);
+  if (aInteger.isInt())
+  {
+    xqpStringStore_t lStr = aInteger.toString();
+    return NumConversions::strToInt(lStr->c_str(), aInt);
+  }
+  else
+  {
+    return false;
+  }
 #else
-    aInt = (xqp_int)aFloat.theFloating;
-    return true;
+  aInt = (xqp_int)aInteger.theInteger;
+  return true;
 #endif
 }
 
-  
-bool NumConversions::decimalToInt(const xqp_decimal& aDecimal, xqp_int& aInt) 
-{
-#ifndef ZORBA_NO_BIGNUMBERS
-    xqpStringStore_t lStr = aDecimal.toIntegerString();
-    return NumConversions::strToInt(lStr, aInt);
-#else
-    aInt = (xqp_int)aDecimal.theDecimal;
-    return true;
-#endif
-}
 
 } /* namespace zorba */

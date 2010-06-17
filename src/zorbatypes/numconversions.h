@@ -30,102 +30,109 @@ namespace zorba {
  */
 class ZORBA_DLL_PUBLIC NumConversions 
 {
-private:
-  static bool isNegZero(const xqpStringStore_t& aStr);
-
 public:
-  /**********************************************************************************
-   * String to Numeric and Numeric to String Conversions
-   *********************************************************************************/
-  static bool starCharToInteger(const char* aCharStar, xqp_integer& aInteger);
 
-  static bool strToInteger(const xqpStringStore_t& aStr, xqp_integer& aInteger);
+  /*****************************************************************************
+    String to Numeric Conversions
+  ******************************************************************************/
 
-  static xqpStringStore_t integerToStr(xqp_integer aInteger);
+  static bool strToDouble(const char* aStr, xqp_double& aDouble);
 
-  static bool strToUInteger(const xqpStringStore_t& aStr, xqp_uinteger& aUInteger);
+  static bool strToFloat(const char* aStr, xqp_float& aFloat);
 
-  static xqpStringStore_t uintegerToStr(xqp_uinteger aUInteger);
+  static bool strToDecimal(const char* aStr, xqp_decimal& aDecimal);
 
-  static bool starCharToInt(const char* aStarChar, xqp_int& aInt);
+  static bool strToInteger(const char* aCharStar, xqp_integer& aInteger);
 
-  static bool strToInt(const xqpStringStore_t& aStr, xqp_int& aInt);
+  static bool strToUInteger(const char* aStr, xqp_uinteger& aUInteger);
 
-  static xqpStringStore_t intToStr(xqp_int aInt);
+  static bool strToLong(const char* aStr, xqp_long& aLong);
 
-  static bool strToUInt(const xqpStringStore_t& aStr, xqp_uint& aUInt);
+  static bool strToULong(const char* aStr, xqp_ulong& aULong);
 
-  static xqpStringStore_t uintToStr(xqp_uint aUInt);
+  static bool strToInt(const char* aStarChar, xqp_int& aInt);
 
-  static bool strToLongLong(const xqpStringStore_t& aStr, xqp_long& aLong);
+  static bool strToUInt(const char* aStr, xqp_uint& aUInt);
 
-  static xqpStringStore_t longLongToStr(xqp_long aLong);
+  static bool strToShort(const char* aStr, xqp_short& aShort);
 
-  static bool strToLong(const xqpStringStore_t& aStr, long&);
+  static bool strToUShort(const char* aStr, xqp_ushort& aUShort);
 
-  static xqpStringStore_t longToStr(long aLong);
+  static bool strToByte(const char* aStr, xqp_byte& aByte);
 
-  static bool strToULongLong(const xqpStringStore_t& aStr, xqp_ulong& aULong);
+  static bool strToUByte(const char* aStr, xqp_ubyte& aUByte);
 
-  static xqpStringStore_t ulongLongToStr(xqp_ulong aULong);
 
-  static xqpStringStore_t ulongToStr(unsigned long);
-
-  static bool strToShort(const xqpStringStore_t& aStr, xqp_short& aShort);
-
-  static xqpStringStore_t shortToStr(xqp_short aShort);
-
-  static bool strToUShort(const xqpStringStore_t& aStr, xqp_ushort& aUShort);
-
-  static xqpStringStore_t ushortToStr(xqp_ushort aUShort);
-
-  static bool starCharToDecimal(const char* aStarChar, xqp_decimal& aDecimal);
-
-  static bool strToDecimal(const xqpStringStore_t& aStr, xqp_decimal& aDecimal);
-
-  static xqpStringStore_t decimalToStr(xqp_decimal aDecimal);
-
-  static bool starCharToFloat(const char* aStarChar, xqp_float& aFloat);
-
-  static bool strToFloat(const xqpStringStore_t& aStr, xqp_float& aFloat);
-
-  static xqpStringStore_t floatToStr(xqp_float aFloat);
-
-  static bool starCharToDouble(const char* aStarChar, xqp_double& aDouble);
-
-  static bool strToDouble(const xqpStringStore_t& aStr, xqp_double& aDouble);
+  /*****************************************************************************
+    Numeric to String Conversions
+  ******************************************************************************/
 
   static xqpStringStore_t doubleToStr(xqp_double aDouble);
 
-  static bool strToByte(const xqpStringStore_t& aStr, xqp_byte& aByte);
+  static xqpStringStore_t floatToStr(xqp_float aFloat);
+
+  static xqpStringStore_t decimalToStr(xqp_decimal aDecimal);
+
+  static xqpStringStore_t integerToStr(xqp_integer aInteger);
+
+  static xqpStringStore_t uintegerToStr(xqp_uinteger aUInteger);
+
+  static xqpStringStore_t longLongToStr(xqp_long aLong);
+
+  static xqpStringStore_t ulongLongToStr(xqp_ulong aULong);
+
+  static xqpStringStore_t intToStr(xqp_int aInt);
+
+  static xqpStringStore_t uintToStr(xqp_uint aUInt);
+
+  static xqpStringStore_t shortToStr(xqp_short aShort);
+
+  static xqpStringStore_t ushortToStr(xqp_ushort aUShort);
 
   static xqpStringStore_t byteToStr(xqp_byte aByte);
-
-  static bool strToUByte(const xqpStringStore_t& aStr, xqp_ubyte& aUByte);
 
   static xqpStringStore_t ubyteToStr(xqp_ubyte aUByte);
 
   static xqpStringStore_t sizetToStr(size_t);
 
-  /********************************************************************************
-   * Numeric to Numeric Conversions
-   * *****************************************************************************/
-  static bool doubleToInt(const xqp_double&, xqp_int&);
 
-  static bool doubleToLongLong(const xqp_double&, xqp_long&);
+  /*****************************************************************************
+    Numeric to Numeric Conversions
+  ******************************************************************************/
 
-  static bool doubleToLong(const xqp_double&, long&);
+  static bool decimalToInteger(const xqp_decimal&, xqp_integer&);
+
+  static bool decimalToULong(const xqp_decimal&, xqp_ulong&);
+
+  static bool decimalToLong(const xqp_decimal&, xqp_long&);
+
+  static bool decimalToUInt(const xqp_decimal&, xqp_uint&);
+
+  static bool decimalToInt(const xqp_decimal&, xqp_int&);
 
   static bool integerToLong(const xqp_integer&, xqp_long&);
 
   static bool integerToUInt(const xqp_integer&, xqp_uint&);
 
+  static bool integerToInt(const xqp_integer&, xqp_int&);
+
+  static bool doubleToInt(const xqp_double&, xqp_int&);
+
+  static bool doubleToLongLong(const xqp_double&, xqp_long&);
+
   static bool floatToInt(const xqp_float&, xqp_int&);
 
-  static bool decimalToInt(const xqp_decimal&, xqp_int&);
+private:
+  static bool isNegative(const char*& chp, bool& isNegZero);
 };
 
 
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

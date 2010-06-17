@@ -57,7 +57,7 @@ RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       consumeNext(item, theChildren[0].getp(), planState))
   {
     seed = item->getIntegerValue().toString();
-    NumConversions::strToUInt(seed, seedInt);
+    NumConversions::strToUInt(seed->c_str(), seedInt);
     std::srand((unsigned int)seedInt);
   }
   else

@@ -471,7 +471,7 @@ bool XercesParseUtils::parseXSFloat(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_float n;
-    if (NumConversions::strToFloat(textValue2.getp(), n))
+    if (NumConversions::strToFloat(textValue2->c_str(), n))
     {
       return factory->createFloat(result, n);
     }
@@ -509,7 +509,7 @@ bool XercesParseUtils::parseXSDouble(
     xqpStringStore_t textValue2 = textValue->normalizeSpace();
     store::ItemFactory* factory = GENV_ITEMFACTORY;
     xqp_double n;
-    if (NumConversions::strToDouble(textValue2.getp(), n))
+    if (NumConversions::strToDouble(textValue2->c_str(), n))
     {
       return factory->createDouble(result, n);
     }
