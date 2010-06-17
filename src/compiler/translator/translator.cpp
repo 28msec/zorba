@@ -4026,6 +4026,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       }
 
       keyExpr = wrap_in_type_match(keyExpr, type, XDTY0011_INDEX_KEY_TYPE_ERROR);
+
+      keyTypes[i] = ptype->getBaseBuiltinType();
     }
 
     if (index->isGeneral())
@@ -4035,8 +4037,6 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
                             GET_BUILTIN_FUNCTION(FN_DISTINCT_VALUES_1),
                             keyExpr);
     }
-
-    keyTypes[i] = ptype->getBaseBuiltinType();
 
     std::string collationUri;
 

@@ -195,7 +195,7 @@ bool BasicItemFactory::createENTITIES(store::Item_t& result, xqpStringStore_t& v
 
 bool BasicItemFactory::createUntypedAtomic(store::Item_t& result, xqpStringStore_t& value)
 {
-  result = new UntypedAtomicItemImpl(value);
+  result = new UntypedAtomicItem(value);
   return true;
 }
 
@@ -218,7 +218,7 @@ bool BasicItemFactory::createFloat(store::Item_t& result,  const xqp_float& valu
 
 bool BasicItemFactory::createDecimal(store::Item_t& result, const xqp_decimal& value)
 {
-  result = new DecimalItemNaive(value);
+  result = new DecimalItem(value);
   return true;
 }
 
@@ -272,7 +272,7 @@ bool BasicItemFactory::createPositiveInteger(
 
 bool BasicItemFactory::createLong(store::Item_t& result,  xqp_long value)
 {
-  result = new LongItemNaive ( value );
+  result = new LongItem(value);
   return true;
 }
 
@@ -300,7 +300,7 @@ bool BasicItemFactory::createByte(store::Item_t& result,  xqp_byte value)
 
 bool BasicItemFactory::createUnsignedLong(store::Item_t& result, xqp_ulong value)
 {
-  result = new UnsignedLongItemNaive( value );
+  result = new UnsignedLongItem(value);
   return true;
 }
 

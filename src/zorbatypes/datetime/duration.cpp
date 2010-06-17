@@ -300,8 +300,8 @@ Duration* Duration::operator*(const Double& value) const
 {
   Double result;
   Double dSeconds;
-  xqp_long seconds;
-  xqp_long frac_seconds;
+  int32_t seconds;
+  int32_t frac_seconds;
 
   if (facet == DURATION_FACET)
   {
@@ -314,10 +314,11 @@ Duration* Duration::operator*(const Double& value) const
   result = getTotalSeconds() * value;
   result = result.round(significants);
   dSeconds = result.round();
-  NumConversions::doubleToLongLong(dSeconds.floor(), seconds);
+  NumConversions::doubleToInt(dSeconds.floor(), seconds);
 
   result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
-  NumConversions::doubleToLongLong(result.round(), frac_seconds);
+
+  NumConversions::doubleToInt(result.round(), frac_seconds);
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
   return d;
@@ -327,8 +328,8 @@ Duration* Duration::operator/(const Double& value) const
 {
   Double result;
   Double dSeconds;
-  xqp_long seconds;
-  xqp_long frac_seconds;
+  int32_t seconds;
+  int32_t frac_seconds;
 
   if (facet == DURATION_FACET)
   {
@@ -341,10 +342,10 @@ Duration* Duration::operator/(const Double& value) const
   result = getTotalSeconds() / value;
   result = result.round(significants);
   dSeconds = result.round();
-  NumConversions::doubleToLongLong(dSeconds.floor(), seconds);
+  NumConversions::doubleToInt(dSeconds.floor(), seconds);
 
   result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
-  NumConversions::doubleToLongLong(result.round(), frac_seconds);
+  NumConversions::doubleToInt(result.round(), frac_seconds);
 
   Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
   return d;

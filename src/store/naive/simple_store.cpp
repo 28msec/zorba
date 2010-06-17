@@ -176,10 +176,13 @@ void SimpleStore::initTypeNames()
   theSchemaTypeNames.resize(XS_LAST);
 
   f->createQName(theSchemaTypeNames[XS_UNTYPED],        ns, "", "untyped");
-  f->createQName(theSchemaTypeNames[XS_UNTYPED_ATOMIC], ns, "", "untypedAtomic");
   f->createQName(theSchemaTypeNames[XS_ANY],            ns, "", "anyType");
+
   f->createQName(theSchemaTypeNames[XS_ANY_SIMPLE],     ns, "", "anySimpleType");
+
   f->createQName(theSchemaTypeNames[XS_ANY_ATOMIC],     ns, "", "anyAtomicType");
+
+  f->createQName(theSchemaTypeNames[XS_UNTYPED_ATOMIC], ns, "", "untypedAtomic");
 
   f->createQName(theSchemaTypeNames[XS_ANY_URI],        ns, "", "anyURI");
 

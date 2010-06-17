@@ -55,11 +55,13 @@ enum SchemaTypeCode
 {
   XS_UNTYPED = 0,
 
-  XS_UNTYPED_ATOMIC,
-
   XS_ANY,
+
   XS_ANY_SIMPLE,
+
   XS_ANY_ATOMIC,
+
+  XS_UNTYPED_ATOMIC,
 
   XS_ANY_URI,
 

@@ -288,8 +288,8 @@ std::ostream& operator<<(std::ostream& os, const IndexPointConditionImpl& cond)
 
 
 // TODO: proper initialization order is not guaranteed => use factory instead
-store::Item_t IndexBoxConditionImpl::theNegInf(new DecimalItemNaive);
-store::Item_t IndexBoxConditionImpl::thePosInf(new DecimalItemNaive);
+store::Item_t IndexBoxConditionImpl::theNegInf(new DecimalItem);
+store::Item_t IndexBoxConditionImpl::thePosInf(new DecimalItem);
 
 
 /*******************************************************************************

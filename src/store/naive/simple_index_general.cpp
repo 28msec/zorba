@@ -17,7 +17,9 @@
 #include "store/naive/simple_index_general.h"
 #include "store/naive/simple_store.h"
 #include "store/naive/atomic_items.h"
+#include "store/naive/simple_item_factory.h"
 
+#include "zorbatypes/floatimpl.h"
 
 namespace zorba 
 { 
@@ -116,7 +118,13 @@ GeneralHashIndex::~GeneralHashIndex()
 *******************************************************************************/
 bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
 {
-  AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
+  store::Item_t castItem;
+
+  const AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
+
+  if (keyItem->getBaseItem() != NULL)
+    keyItem = static_cast<const AtomicItem*>(keyItem->getBaseItem());
+
   SchemaTypeCode keyType = keyItem->getTypeCode();
 
   if (theSpec.theKeyTypes[0] != NULL)
@@ -126,8 +134,17 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
 
   switch (keyType)
   {
+  case XS_ANY_URI:
   case XS_QNAME:
   case XS_NOTATION:
+  case XS_DATETIME:
+  case XS_DATE:
+  case XS_TIME:
+  case XS_GYEAR_MONTH:
+  case XS_GYEAR:
+  case XS_GMONTH_DAY:
+  case XS_GDAY:
+  case XS_GMONTH:
   case XS_BASE64BINARY:
   case XS_HEXBINARY:
   case XS_BOOLEAN:
@@ -143,7 +160,47 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
 
   case XS_DECIMAL:
   {
-    return false;
+    bool found = false;
+    const DecimalItem* decItem = static_cast<const DecimalItem*>(keyItem);
+
+    xqp_decimal decValue = decItem->getDecimalValue();
+
+    decItem->castToLong(castItem);
+    if (castItem != NULL)
+    {
+      (*key)[0].transfer(castItem);
+      goto longmap;
+    }
+
+    decItem->castToInteger(castItem);
+    if (castItem != NULL)
+    {
+      (*key)[0].transfer(castItem);
+      goto integermap;
+    }
+
+    decItem->castToDouble(castItem);
+
+    store::IndexKey* doubleKey = new store::IndexKey(1);
+    (*doubleKey)[0].transfer(castItem);
+    
+    try
+    {
+      found = insertInMap(key, node, theMaps[XS_DECIMAL]);
+      insertInMap(doubleKey, node, theMaps[XS_DOUBLE]);
+    }
+    catch(...)
+    {
+      if (doubleKey != NULL)
+        delete doubleKey;
+      
+      throw;
+    }
+    
+    if (doubleKey != NULL)
+      delete doubleKey;
+    
+    return found;
   }
 
   case XS_INTEGER:
@@ -152,23 +209,72 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
   case XS_NEGATIVE_INTEGER:
   case XS_POSITIVE_INTEGER:
   {
-    return false;
+integermap:
+    bool found = false;
+
+    const IntegerItem* integerItem = static_cast<const IntegerItem*>(keyItem);
+
+    xqp_integer integerValue = integerItem->getIntegerValue();
+
+    integerItem->castToLong(castItem);
+    if (castItem != NULL)
+    {
+      (*key)[0].transfer(castItem);
+      goto longmap;
+    }
+
+    integerItem->castToDouble(castItem);
+
+    store::IndexKey* doubleKey = new store::IndexKey(1);
+    (*doubleKey)[0].transfer(castItem);
+
+    try
+    {
+      found = insertInMap(key, node, theMaps[XS_INTEGER]);
+      insertInMap(doubleKey, node, theMaps[XS_DOUBLE]);
+    }
+    catch(...)
+    {
+      if (doubleKey != NULL)
+        delete doubleKey;
+
+      throw;
+    }
+
+    if (doubleKey != NULL)
+      delete doubleKey;
+
+    return found;
   }
 
   case XS_LONG:
   case XS_INT:
   case XS_SHORT:
   case XS_BYTE:
-  {
-    return insertInMap(key, node, theMaps[XS_LONG]);
-  }
-
-  case XS_UNSIGNED_LONG:
   case XS_UNSIGNED_INT:
   case XS_UNSIGNED_SHORT:
   case XS_UNSIGNED_BYTE:
   {
-    return insertInMap(key, node, theMaps[XS_UNSIGNED_LONG]);
+longmap:
+    return insertInMap(key, node, theMaps[XS_LONG]);
+  }
+
+  case XS_UNSIGNED_LONG:
+  {
+    const UnsignedLongItem* ulongItem = static_cast<const UnsignedLongItem*>(keyItem);
+    
+    ulongItem->castToLong(castItem);
+    if (castItem != NULL)
+    {
+      (*key)[0].transfer(castItem);
+      goto longmap;
+    }
+    else
+    {
+      ulongItem->castToInteger(castItem);
+      (*key)[0].transfer(castItem);
+      goto integermap;
+    }
   }
 
   case XS_STRING:
@@ -187,7 +293,80 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
 
   case XS_UNTYPED_ATOMIC:
   {
-    return false;
+    bool found = false;
+    const UntypedAtomicItem* untypedItem = static_cast<const UntypedAtomicItem*>(keyItem);
+
+    store::IndexKey* castKey = new store::IndexKey(1);
+
+    try
+    {
+      // cast to xs:string
+      untypedItem->castToString(castItem);
+
+      (*castKey)[0].transfer(castItem);
+      found = insertInMap(castKey, node, theMaps[XS_STRING]);
+
+      // cast to xs:long
+      untypedItem->castToLong(castItem);
+      if (castItem != NULL)
+      {
+        if (castKey == NULL) castKey = new store::IndexKey(1);
+        (*castKey)[0].transfer(castItem);
+        found = found || insertInMap(castKey, node, theMaps[XS_LONG]);
+      }
+      else
+      {
+        // cast to xs:integer
+        untypedItem->castToInteger(castItem);
+        if (castItem != NULL)
+        {
+          if (castKey == NULL) castKey = new store::IndexKey(1);
+          (*castKey)[0].transfer(castItem);
+          found = found || insertInMap(castKey, node, theMaps[XS_INTEGER]);
+
+          // cast to xs:double as well
+          untypedItem->castToDouble(castItem);
+          assert(castItem != NULL);
+          if (castKey == NULL) castKey = new store::IndexKey(1);
+          (*castKey)[0].transfer(castItem);
+          found = found || insertInMap(castKey, node, theMaps[XS_DECIMAL]);
+        }
+        else
+        {
+          // cast to xs:decimal
+          untypedItem->castToDecimal(castItem);
+          if (castItem != NULL)
+          {
+            if (castKey == NULL) castKey = new store::IndexKey(1);
+            (*castKey)[0].transfer(castItem);
+            found = found || insertInMap(castKey, node, theMaps[XS_DECIMAL]);
+
+            // cast to xs:double as well
+            untypedItem->castToDouble(castItem);
+            assert(castItem != NULL);
+            if (castKey == NULL) castKey = new store::IndexKey(1);
+            (*castKey)[0].transfer(castItem);
+            found = found || insertInMap(castKey, node, theMaps[XS_DECIMAL]);
+          }
+          else
+          {
+            // cast as xs:dateTime
+          }
+        }
+      }
+    }
+    catch(...)
+    {
+      if (castKey != NULL)
+        delete castKey;
+
+      throw;
+    }
+
+    if (castKey != NULL)
+      delete castKey;
+
+    return found;
   }
 
   default:

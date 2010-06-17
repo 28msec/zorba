@@ -183,12 +183,13 @@ protected:
   
   FACET_TYPE facet;
 
-  bool is_negative;
+  bool    is_negative;
   int32_t data[7];
+
 public:
   SERIALIZABLE_CLASS(Duration)
   SERIALIZABLE_CLASS_CONSTRUCTOR(Duration)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar)
   {
     SERIALIZE_ENUM(FACET_TYPE, facet);
     ar & is_negative;

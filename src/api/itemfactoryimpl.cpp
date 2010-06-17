@@ -386,7 +386,8 @@ namespace zorba {
   {
     store::Item_t lItem;
     Integer lInteger;
-    lInteger = Integer::parseLong(aValue);
+    lInteger = Integer::parseULong(aValue);
+
     theItemFactory->createPositiveInteger(lItem, lInteger);
     return &*lItem;
   }

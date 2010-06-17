@@ -138,8 +138,11 @@ void createIndexSpec(
 
   for(ulong i = 0; i < numColumns; ++i) 
   {
-    const XQType& t = *keyTypes[i];
-    spec.theKeyTypes[i] = t.get_qname();
+    if (keyTypes[i] != NULL)
+    {
+      const XQType& t = *keyTypes[i];
+      spec.theKeyTypes[i] = t.get_qname();
+    }
     spec.theCollations.push_back(keyModifiers[i].theCollation);
   }
 

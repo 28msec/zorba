@@ -50,7 +50,7 @@ RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   xqpStringStore_t seed;
   xqp_uint         seedInt;
 
-  PlanIteratorState *state;
+  PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if((theChildren.size() == 1) &&

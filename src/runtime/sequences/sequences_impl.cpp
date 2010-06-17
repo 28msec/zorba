@@ -1151,8 +1151,7 @@ done:
 /*******************************************************************************
   15.4.1 fn:count
 ********************************************************************************/
-bool
-FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t lSequenceItem;
   ulong lCount = 0;
@@ -1168,7 +1167,7 @@ FnCountIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_PUSH(GENV_ITEMFACTORY->createInteger(result, Integer::parseULong(lCount)),
              state);
 
-  STACK_END (state);
+  STACK_END(state);
 }
 
 

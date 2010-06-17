@@ -37,6 +37,9 @@ namespace zorba
 namespace simplestore
 {
 
+class AtomicItemTokenizer;
+
+
 /*****************************************************************************
 
  *****************************************************************************/
@@ -99,7 +102,7 @@ protected:
   UserTypedAtomicItemImpl() {}
 
 public:
-  const store::Item* getBaseItem() const { return theBaseItem; }
+  const store::Item* getBaseItem() const { return theBaseItem.getp(); }
 
   SchemaTypeCode getTypeCode() const { return theBaseItem->getTypeCode(); }
 
@@ -248,7 +251,7 @@ public:
 /*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
-class UntypedAtomicItemImpl : public AtomicItem
+class UntypedAtomicItem : public AtomicItem
 {
   friend class BasicItemFactory;
 
@@ -256,11 +259,21 @@ protected:
   xqpStringStore_t theValue;
 
 protected:
-  UntypedAtomicItemImpl(xqpStringStore_t& value) { theValue.transfer(value); }
+  UntypedAtomicItem(xqpStringStore_t& value) { theValue.transfer(value); }
 
-  UntypedAtomicItemImpl() {}
+  UntypedAtomicItem() {}
 
 public:
+  void castToString(store::Item_t& result) const;
+
+  void castToDouble(store::Item_t& result) const;
+
+  void castToDecimal(store::Item_t& result) const;
+
+  void castToInteger(store::Item_t& result) const;
+
+  void castToLong(store::Item_t& result) const;
+
   SchemaTypeCode getTypeCode() const { return XS_UNTYPED_ATOMIC; }
 
   store::Item* getType( ) const;
@@ -447,20 +460,18 @@ public:
   class StringItem
  *****************************************************************************/
 
-class AtomicItemTokenizer;
-
 class StringItemNaive : public AtomicItem
 {
+  friend class BasicItemFactory;
+  friend class AtomicItemTokenizer;
+
 protected:
   xqpStringStore_t theValue;
 
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
+protected:
   StringItemNaive(xqpStringStore_t& value) { theValue.transfer(value); }
 
   StringItemNaive() {}
-
-  friend class AtomicItemTokenizer;
 
 public:
 
@@ -953,7 +964,7 @@ public:
                                        unsingedByte
 
 ********************************************************************************/
-class DecimalItemNaive : public AtomicItem
+class DecimalItem : public AtomicItem
 {
   friend class BasicItemFactory;
   friend class IndexBoxConditionImpl;
@@ -961,12 +972,18 @@ class DecimalItemNaive : public AtomicItem
 protected:
   xqp_decimal theValue;
 
-  DecimalItemNaive(const xqp_decimal& aValue) : theValue(aValue) {}
+  DecimalItem(const xqp_decimal& aValue) : theValue(aValue) {}
 
-  DecimalItemNaive() {}
+  DecimalItem() {}
 
 public:
   xqp_decimal getDecimalValue() const { return theValue; }
+
+  void castToDouble(store::Item_t& result) const;
+
+  void castToInteger(store::Item_t& result) const;
+
+  void castToLong(store::Item_t& result) const;
 
   SchemaTypeCode getTypeCode() const { return XS_DECIMAL; }
 
@@ -1021,11 +1038,15 @@ protected:
   IntegerItem() {}
 
 public:
-  xqp_integer getIntegerValue() const { return theValue; }
-
   xqp_decimal getDecimalValue() const;
 
-  virtual xqp_long getLongValue() const;
+  xqp_integer getIntegerValue() const { return theValue; }
+
+  xqp_long getLongValue() const;
+
+  void castToDouble(store::Item_t& result) const;
+
+  void castToLong(store::Item_t& result) const;
 
   virtual SchemaTypeCode getTypeCode() const { return XS_INTEGER; }
 
@@ -1171,7 +1192,7 @@ public:
 /*******************************************************************************
   class LongItemNaive
 ********************************************************************************/
-class LongItemNaive : public AtomicItem 
+class LongItem : public AtomicItem 
 {
   friend class BasicItemFactory;
 
@@ -1179,9 +1200,9 @@ protected:
   xqp_long theValue;
   
 protected:
-  LongItemNaive(xqp_long aValue) : theValue(aValue) {}
+  LongItem(xqp_long aValue) : theValue(aValue) {}
 
-  LongItemNaive() {}
+  LongItem() {}
 
 public:
   xqp_decimal getDecimalValue() const;
@@ -1481,18 +1502,18 @@ public:
 
 
 /*******************************************************************************
-  class UnsignedLongItemNaive
+  class UnsignedLongItem
 ********************************************************************************/
-class UnsignedLongItemNaive : public AtomicItem 
+class UnsignedLongItem : public AtomicItem 
 {
   friend class BasicItemFactory;
 
 protected:
   xqp_ulong theValue;
   
-  UnsignedLongItemNaive(xqp_ulong aValue) : theValue(aValue) {}
+  UnsignedLongItem(xqp_ulong aValue) : theValue(aValue) {}
 
-  UnsignedLongItemNaive() {}
+  UnsignedLongItem() {}
 
  public:
   bool isNaN() const { return false; }
@@ -1505,6 +1526,10 @@ protected:
 
   xqp_ulong getUnsignedLongValue() const { return theValue; }
   
+  void castToInteger(store::Item_t& result) const;
+
+  void castToLong(store::Item_t& result) const;
+
   SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_LONG; }
 
   store::Item* getType() const;
@@ -1580,6 +1605,8 @@ public:
 
   xqp_uinteger getUnsignedIntegerValue() const;
 
+  xqp_long getLongValue() const { return static_cast<xqp_long>(theValue); }
+
   xqp_ulong getUnsignedLongValue() const { return static_cast<xqp_ulong>(theValue); }
 
   xqp_uint getUnsignedIntValue() const { return theValue; }
@@ -1604,7 +1631,14 @@ public:
     }
     catch (error::ZorbaError&)
     {
-      return getDecimalValue() == other->getDecimalValue();
+      try
+      {
+        return getLongValue() == other->getLongValue();
+      }
+      catch (error::ZorbaError&)
+      {
+        return getDecimalValue() == other->getDecimalValue();
+      }
     }
   }
 
@@ -1657,6 +1691,8 @@ public:
 
   xqp_uinteger getUnsignedIntegerValue() const;
 
+  xqp_long getLongValue() const { return static_cast<xqp_long>(theValue); }
+
   xqp_ulong getUnsignedLongValue() const { return static_cast<xqp_ulong>(theValue); }
 
   xqp_uint getUnsignedIntValue() const { return static_cast<xqp_uint>(theValue); }
@@ -1685,7 +1721,14 @@ public:
     }
     catch (error::ZorbaError&)
     {
-      return getDecimalValue() == other->getDecimalValue();
+      try
+      {
+        return getLongValue() == other->getLongValue();
+      }
+      catch (error::ZorbaError&)
+      {
+        return getDecimalValue() == other->getDecimalValue();
+      }
     }
   }
 
@@ -1737,6 +1780,8 @@ public:
 
   xqp_uinteger getUnsignedIntegerValue() const;
 
+  xqp_long getLongValue() const { return static_cast<xqp_long>(theValue); }
+
   xqp_ulong getUnsignedLongValue() const { return static_cast<xqp_ulong>(theValue); }
 
   xqp_uint getUnsignedIntValue() const { return static_cast<xqp_uint>(theValue); }
@@ -1767,7 +1812,14 @@ public:
     }
     catch (error::ZorbaError&)
     {
-      return getDecimalValue() == other->getDecimalValue();
+      try
+      {
+        return getLongValue() == other->getLongValue();
+      }
+      catch (error::ZorbaError&)
+      {
+        return getDecimalValue() == other->getDecimalValue();
+      }
     }
   }
 
