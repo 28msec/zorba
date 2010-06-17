@@ -479,13 +479,13 @@ ReplyMessage* ZorbaDebuggerRuntime::listSource()
   //  }
   //}
   std::ifstream lStream(lFile.c_str());
-  for (unsigned long i = 0; i < lCommand->getFirstline() && lStream.good(); ++i)
+  for (unsigned long i = 1; i < lCommand->getFirstline() && lStream.good(); ++i)
   {
     std::getline(lStream, lCurrLine);
   }
   std::stringstream lOut;
   for (unsigned long i = lCommand->getFirstline();
-    i < lCommand->getLastline() && lStream.good(); ++i) {
+    i <= lCommand->getLastline() && lStream.good(); ++i) {
     std::getline(lStream, lCurrLine);
     lOut << lCurrLine;
     if (lStream.good()) {
