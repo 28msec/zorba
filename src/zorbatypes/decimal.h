@@ -26,7 +26,7 @@
 #endif
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/zorbatypes_decl.h"
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 
 namespace zorba {
@@ -39,8 +39,10 @@ typedef double    MAPM;
 class ZORBA_DLL_PUBLIC  Decimal  : public ::zorba::serialization::SerializeBaseClass
 {
   friend class Integer;
+
   template <typename Type>
     friend class FloatImpl;
+
   friend class NumConversions;
 
 public:
@@ -50,28 +52,25 @@ public:
 
   static bool parseNativeDouble(double, Decimal&);
 
-  static Decimal parseLong(long aLong);
+  static bool parseFloat(const Float&, Decimal&);
 
-  static Decimal parseULong(unsigned long aULong);
-
-  static Decimal parseInteger(const Integer& aInteger);
+  static bool parseDouble(const Double&, Decimal&);
 
   static Decimal parseLongLong(long long);
 
   static Decimal parseULongLong(unsigned long long);
 
+  static Decimal parseLong(long aLong);
+
+  static Decimal parseInteger(const Integer& aInteger);
+
   static Decimal parseInt(int32_t aInt);
 
   static Decimal parseUInt(uint32_t aUInt);
 
-  static bool parseFloat(const Float&, Decimal&);
-
-  static bool parseDouble(const Double&, Decimal&);
-
 #ifndef ZORBA_NO_BIGNUMBERS
-  //static MAPM round(const MAPM &aValue, int aPrecision);
-  static MAPM round(const MAPM &aValue, const MAPM &aPrecision);
-  static MAPM roundHalfToEven(const MAPM &aValue, const MAPM &aPrecision);
+  static MAPM round(const MAPM &aValue, const MAPM& aPrecision);
+  static MAPM roundHalfToEven(const MAPM& aValue, const MAPM& aPrecision);
 #else
   static MAPM round(MAPM aValue, int aPrecision);
   static MAPM roundHalfToEven(MAPM aValue, int aPrecision);
@@ -82,7 +81,7 @@ private:
         MAPM,
         int precision=ZORBA_FLOAT_POINT_PRECISION);
 
-  static void reduceFloatingPointString(char *str);
+  static void reduceFloatingPointString(char* str);
 
 private:
   MAPM theDecimal;
@@ -95,10 +94,7 @@ public:
 public:
   SERIALIZABLE_CLASS(Decimal)
   SERIALIZABLE_CLASS_CONSTRUCTOR(Decimal)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theDecimal;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   Decimal() : theDecimal(0) { }
@@ -214,13 +210,51 @@ public:
 
   bool operator>=(const Integer&) const;
 
+  uint32_t hash() const;
+
   xqpStringStore_t toString() const;
 
   xqpStringStore_t toIntegerString() const;
 
-  uint32_t hash() const;
+  bool isInteger() const
+  {
+    return theDecimal.is_integer();
+  }
 
-  int getValueAsInt();
+  bool isULong() const
+  {
+    return (theDecimal.is_integer() &&
+            theDecimal.sign() >= 0 &&
+            theDecimal < MAPM::getMaxUInt64());
+  }
+
+  bool isLong() const
+  {
+    return (theDecimal.is_integer() && 
+            theDecimal < MAPM::getMaxInt64() &&
+            theDecimal > MAPM::getMinInt64());
+  }
+
+  bool isUInt() const
+  {
+    return (theDecimal.is_integer() &&
+            theDecimal.sign() >= 0 &&
+            theDecimal < MAPM::getMaxUInt32());
+  }
+
+  bool isInt() const
+  {
+    return (theDecimal.is_integer() && 
+            theDecimal < MAPM::getMaxInt32() &&
+            theDecimal > MAPM::getMinInt32());
+  }
+
+  bool isNegative() const
+  {
+    return theDecimal.sign() < 0;
+  }
+
+  int getValueAsInt() const;
 
 private:
   Decimal(const MAPM& aDecimal) : theDecimal(aDecimal) { }

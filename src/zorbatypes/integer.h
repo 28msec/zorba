@@ -26,7 +26,7 @@
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/zorbatypes_decl.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 
 namespace zorba 
@@ -37,6 +37,12 @@ namespace zorba
   typedef int     IMAPM;
   typedef double  MAPM;
 #endif
+
+typedef int32_t   xqp_int;
+typedef uint32_t  xqp_uint;
+typedef int64_t   xqp_long;
+typedef uint64_t  xqp_ulong;
+
 
 // exported for testing only
 class ZORBA_DLL_PUBLIC Integer : public ::zorba::serialization::SerializeBaseClass
@@ -88,22 +94,18 @@ public:
    */
   static Integer parseDecimal(const Decimal&);
   
-  static Integer parseLongLong(long long);
+  static Integer parseLong(xqp_long);
 
-  static Integer parseULongLong(unsigned long long);
+  static Integer parseULong(xqp_ulong);
 
-  static Integer parseInt(int32_t);
+  static Integer parseInt(xqp_int);
 
-  static Integer parseUInt(uint32_t);
-
-  static Integer parseLong(long aLong);
-
-  static Integer parseULong(unsigned long);
+  static Integer parseUInt(xqp_uint);
 
   static Integer parseSizeT(size_t);
 
 private:
-  static MAPM longlongToMAPM(long long);
+  static MAPM longlongToMAPM(xqp_long);
       
   static IMAPM floatingToInteger(MAPM theFloating);
 
@@ -118,10 +120,7 @@ public:
 public:
   SERIALIZABLE_CLASS(Integer)
   SERIALIZABLE_CLASS_CONSTRUCTOR(Integer)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    ar & theInteger;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   Integer() : theInteger(0) { }
@@ -251,6 +250,30 @@ public:
   xqpStringStore_t toString() const;
 
   uint32_t hash() const;
+
+  bool isULong() const
+  {
+    return (theInteger.sign() >= 0 &&
+            theInteger < MAPM::getMaxUInt64());
+  }
+
+  bool isLong() const
+  {
+    return (theInteger < MAPM::getMaxInt64() &&
+            theInteger > MAPM::getMinInt64());
+  }
+
+  bool isUInt() const
+  {
+    return (theInteger.sign() >= 0 &&
+            theInteger < MAPM::getMaxUInt32());
+  }
+
+  bool isInt() const
+  {
+    return (theInteger < MAPM::getMaxInt32() &&
+            theInteger > MAPM::getMinInt32());
+  }
 
 private:
   Integer(const IMAPM& aInteger) : theInteger(aInteger) { }

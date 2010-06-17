@@ -248,7 +248,7 @@ Integer Integer::parseDecimal(const Decimal& aDecimal)
 }
 
 
-Integer Integer::parseLongLong(long long aLong) 
+Integer Integer::parseLong(xqp_long aLong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
   xqpStringStore_t lStrRep = NumConversions::longLongToStr(aLong);
@@ -260,7 +260,7 @@ Integer Integer::parseLongLong(long long aLong)
 }
 
 
-Integer Integer::parseULongLong(unsigned long long aULong) 
+Integer Integer::parseULong(xqp_ulong aULong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
   xqpStringStore_t lStrRep = NumConversions::ulongLongToStr(aULong);
@@ -292,25 +292,6 @@ Integer Integer::parseUInt(uint32_t aUInt)
 }
 
 
-Integer Integer::parseLong(long aLong) 
-{ 
-  MAPM lNumber = aLong;
-  return Integer(lNumber);
-}
-
-
-Integer Integer::parseULong(unsigned long aULong) 
-{
-#ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::ulongLongToStr(aULong);
-  MAPM lNumber = lStrRep->c_str();
-  return Integer(lNumber);
-#else
-  return Integer((IMAPM)aULong);
-#endif
-}
-
-
 Integer Integer::parseSizeT(size_t aSizeT) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
@@ -323,13 +304,19 @@ Integer Integer::parseSizeT(size_t aSizeT)
 }
 
 
+void Integer::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theInteger;
+}
+
+
 Integer& Integer::operator=(const Integer& aInteger) 
 {
   theInteger = aInteger.theInteger;
   return *this;
 }
 
-MAPM Integer::longlongToMAPM(long long aLong) 
+MAPM Integer::longlongToMAPM(xqp_long aLong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
   xqpStringStore_t lStrRep = NumConversions::longLongToStr(aLong);

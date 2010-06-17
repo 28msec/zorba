@@ -31,19 +31,24 @@
 #define IS_NEGATIVE(mapm_obj)             (mapm_obj < 0)
 #endif
 
-namespace zorba {
+namespace zorba 
+{
+
 SERIALIZABLE_CLASS_VERSIONS(Decimal)
 END_SERIALIZABLE_CLASS_VERSIONS(Decimal)
 
 
-Decimal& Decimal::zero() {
+#ifdef ZORBA_NUMERIC_OPTIMIZATION
+HashCharPtrObjPtrLimited<Decimal>   Decimal::parsed_decimals;
+#endif
+
+
+Decimal& Decimal::zero() 
+{
   static Decimal lValue(MAPM(0));
   return lValue;
 }
 
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-HashCharPtrObjPtrLimited<Decimal>   Decimal::parsed_decimals;
-#endif
 
 bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal) 
 {
@@ -181,64 +186,48 @@ bool Decimal::parseString(const char* aCharStar, Decimal& aDecimal)
   }
 }
 
-bool Decimal::parseNativeDouble(double aDouble, Decimal& aDecimal) {
-  if (
-       aDouble == aDouble
-    && aDouble != std::numeric_limits<double>::infinity()
-    && aDouble != -std::numeric_limits<double>::infinity()
-  ) {
+
+bool Decimal::parseNativeDouble(double aDouble, Decimal& aDecimal) 
+{
+  if (aDouble == aDouble &&
+      aDouble != std::numeric_limits<double>::infinity() &&
+      aDouble != -std::numeric_limits<double>::infinity())
+  {
     aDecimal.theDecimal = aDouble;
     return true;
   }
-  else {
+  else
+  {
     return false;
   }
 }
 
 
-Decimal Decimal::parseLong(long aLong) 
+bool Decimal::parseFloat(const Float& aFloat, Decimal& aDecimal)
 {
-  MAPM lNumber = aLong;
-  return Decimal(lNumber);
-}
-
-Decimal Decimal::parseULong(unsigned long aULong) 
-{
-#ifndef ZORBA_NO_BIGNUMBERS
-  MAPM lNumber = NumConversions::ulongToStr(aULong)->c_str();
-#else
-  MAPM lNumber = aULong;
-#endif
-  return Decimal(lNumber);
-}
-
-Decimal Decimal::parseInteger(const Integer& aInteger) 
-{
-  Decimal lDecimal;
-  lDecimal.theDecimal = aInteger.theInteger;
-  return lDecimal;
-}
-
-Decimal Decimal::parseInt(int32_t aInt) 
-{
-  Decimal lDecimal;
-  lDecimal.theDecimal = aInt;
-  return lDecimal;
+  if (aFloat.isFinite()) 
+  {
+    aDecimal.theDecimal = aFloat.theFloating;
+    return true;
+  } 
+  else
+  {
+    return false;
+  }
 }
 
 
-Decimal Decimal::parseUInt(uint32_t aUInt) 
+bool Decimal::parseDouble(const Double& aDouble, Decimal& aDecimal)
 {
-#ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::uintToStr(aUInt);
-  Decimal lDecimal;
-  lDecimal.theDecimal = lStrRep->c_str();
-  return lDecimal;
-#else
-  Decimal lDecimal;
-  lDecimal.theDecimal = aUInt;
-  return lDecimal;
-#endif
+  if (aDouble.isFinite()) 
+  {
+    aDecimal.theDecimal = aDouble.theFloating;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 
@@ -272,31 +261,47 @@ Decimal Decimal::parseULongLong(unsigned long long aULong)
 }
 
 
-bool Decimal::parseFloat(const Float& aFloat, Decimal& aDecimal)
+Decimal Decimal::parseLong(long aLong) 
 {
-  if (aFloat.isFinite()) {
-    aDecimal.theDecimal = aFloat.theFloating;
-    return true;
-  } 
-  else {
-    return false;
-  }
+  MAPM lNumber = aLong;
+  return Decimal(lNumber);
 }
 
 
-bool Decimal::parseDouble(const Double& aDouble, Decimal& aDecimal)
+Decimal Decimal::parseInteger(const Integer& aInteger) 
 {
-  if (aDouble.isFinite()) {
-    aDecimal.theDecimal = aDouble.theFloating;
-    return true;
-  }
-  else {
-    return false;
-  }
+  Decimal lDecimal;
+  lDecimal.theDecimal = aInteger.theInteger;
+  return lDecimal;
 }
+
+
+Decimal Decimal::parseInt(int32_t aInt) 
+{
+  Decimal lDecimal;
+  lDecimal.theDecimal = aInt;
+  return lDecimal;
+}
+
+
+Decimal Decimal::parseUInt(uint32_t aUInt) 
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  xqpStringStore_t lStrRep = NumConversions::uintToStr(aUInt);
+  Decimal lDecimal;
+  lDecimal.theDecimal = lStrRep->c_str();
+  return lDecimal;
+#else
+  Decimal lDecimal;
+  lDecimal.theDecimal = aUInt;
+  return lDecimal;
+#endif
+}
+
 
 #ifndef ZORBA_NO_BIGNUMBERS
-MAPM Decimal::round(const MAPM &aValue, const MAPM &aPrecision) {
+MAPM Decimal::round(const MAPM& aValue, const MAPM& aPrecision) 
+{
   MAPM aExp = MAPM(10).pow(aPrecision);
   MAPM aCur = aValue * aExp;
   aCur += MAPM::get0_5();
@@ -305,20 +310,25 @@ MAPM Decimal::round(const MAPM &aValue, const MAPM &aPrecision) {
   return aCur;
 }
 
-MAPM Decimal::roundHalfToEven(const MAPM &aValue, const MAPM &aPrecision) {
+
+MAPM Decimal::roundHalfToEven(const MAPM &aValue, const MAPM &aPrecision) 
+{
   MAPM aExp = MAPM(10).pow(aPrecision);
   MAPM aCur = aValue * aExp;
   bool aHalfVal;
   aHalfVal = ((aCur - MAPM::get0_5()) == aCur.floor());
   aCur += MAPM::get0_5();
   aCur = aCur.floor();
-  if (aHalfVal && aCur.is_odd()) {
+  if (aHalfVal && aCur.is_odd()) 
+  {
     aCur -= 1;
   }
   aCur /= aExp;
   return aCur;
 }
+
 #else
+
 MAPM Decimal::round(MAPM aValue, int aPrecision) 
 {
   if(aPrecision >= 0)
@@ -373,182 +383,6 @@ MAPM Decimal::roundHalfToEven(MAPM aValue, int aPrecision)
 }
 #endif
 
-Decimal& Decimal::operator=(const Decimal& aDecimal) {
-  theDecimal = aDecimal.theDecimal;
-  return *this;
-}
-
-Decimal Decimal::operator+(const Integer& aInteger) const {
-  return Decimal(theDecimal + aInteger.theInteger);
-}
-
-Decimal Decimal::operator+(const Decimal& aDecimal) const {
-  return Decimal(theDecimal + aDecimal.theDecimal);
-}
-
-Decimal& Decimal::operator+=(const Integer& aInteger) {
-  theDecimal += aInteger.theInteger;
-  return *this;
-}
-
-Decimal& Decimal::operator+=(const Decimal& aDecimal) {
-  theDecimal += aDecimal.theDecimal;
-  return *this;
-}
-
-Decimal Decimal::operator-(const Integer& aInteger) const {
-  return Decimal(theDecimal - aInteger.theInteger);
-}
-
-Decimal Decimal::operator-(const Decimal& aDecimal) const {
-  return Decimal(theDecimal - aDecimal.theDecimal);
-}
-
-Decimal& Decimal::operator-=(const Integer& aInteger) {
-  theDecimal -= aInteger.theInteger;
-  return *this;
-}
-
-Decimal& Decimal::operator-=(const Decimal& aDecimal) {
-  theDecimal -= aDecimal.theDecimal;
-  return *this;
-}
-
-Decimal Decimal::operator*(const Integer& aInteger) const {
-  return Decimal(theDecimal * aInteger.theInteger);
-}
-
-Decimal Decimal::operator*(const Decimal& aDecimal) const {
-  return Decimal(theDecimal * aDecimal.theDecimal);
-}
-
-Decimal& Decimal::operator*=(const Integer& aInteger) {
-  theDecimal *= aInteger.theInteger;
-  return *this;
-}
-
-Decimal& Decimal::operator*=(const Decimal& aDecimal) {
-  theDecimal *= aDecimal.theDecimal;
-  return *this;
-}
-
-Decimal Decimal::operator/(const Integer& aInteger) const {
-  MAPM lRes = theDecimal / aInteger.theInteger;
-  return Decimal(lRes);
-}
-
-Decimal Decimal::operator/(const Decimal& aDecimal) const {
-  MAPM lRes = theDecimal / aDecimal.theDecimal;
-  return Decimal(lRes);
-}
-
-Decimal& Decimal::operator/=(const Integer& aInteger) {
-  theDecimal /= aInteger.theInteger;
-  return *this;
-}
-
-
-Decimal& Decimal::operator/=(const Decimal& aDecimal) {
-  theDecimal /= aDecimal.theDecimal;
-  return *this;
-}
-
-Decimal Decimal::operator%(const Integer& aInteger) const {
-#ifndef ZORBA_NO_BIGNUMBERS
-  MAPM lRes = theDecimal % aInteger.theInteger;
-#else
-  MAPM lRes = fmod(theDecimal, aInteger.theInteger);
-#endif
-  return Decimal(lRes);
-}
-
-Decimal Decimal::operator%(const Decimal& aDecimal) const {
-#ifndef ZORBA_NO_BIGNUMBERS
-  MAPM lRes = theDecimal % aDecimal.theDecimal;
-#else
-  MAPM lRes = fmod(theDecimal, aDecimal.theDecimal);
-#endif
-  return Decimal(lRes);
-}
-
-Decimal& Decimal::operator%=(const Integer& aInteger) {
-#ifndef ZORBA_NO_BIGNUMBERS
-  theDecimal = theDecimal % aInteger.theInteger;
-#else
-  theDecimal = fmod(theDecimal, aInteger.theInteger);
-#endif
-  return *this;
-}
-
-Decimal& Decimal::operator%=(const Decimal& aDecimal) {
-#ifndef ZORBA_NO_BIGNUMBERS
-  theDecimal = theDecimal % aDecimal.theDecimal;
-#else
-  MAPM lRes = fmod(theDecimal, aDecimal.theDecimal);
-#endif
-  return *this;
-}
-
-Decimal Decimal::operator-() const {
-  return Decimal(-theDecimal);
-}
-
-Decimal Decimal::round() const {
-  return round(Integer::zero());
-}
-
-Decimal Decimal::round(Integer aPrecision) const {
-  return Decimal(Decimal::round(theDecimal, aPrecision.theInteger));
-}
-
-Decimal Decimal::roundHalfToEven(Integer aPrecision) const {
-  return Decimal(Decimal::roundHalfToEven(theDecimal, aPrecision.theInteger));
-}
-
-Decimal Decimal::sqrt() const {
-#ifndef ZORBA_NO_BIGNUMBERS
-  return Decimal (theDecimal.sqrt ());
-#else
-  return ::sqrt(theDecimal);
-#endif
-}
-
-
-bool Decimal::operator==(const Integer& aInteger) const 
-{ 
-  return theDecimal == aInteger.theInteger;
-}
-
-
-bool Decimal::operator!=(const Integer& aInteger) const 
-{ 
-  return theDecimal != aInteger.theInteger;
-}
-
-
-bool Decimal::operator<(const Integer& aInteger) const 
-{ 
-  return theDecimal < aInteger.theInteger;
-}
-
-
-bool Decimal::operator<=(const Integer& aInteger) const 
-{ 
-  return theDecimal <= aInteger.theInteger;
-}
-
-
-bool Decimal::operator>(const Integer& aInteger) const 
-{ 
-  return theDecimal > aInteger.theInteger;
-}
-
-
-bool Decimal::operator>=(const Integer& aInteger) const 
-{ 
-  return theDecimal >= aInteger.theInteger;
-}
-
 
 xqpStringStore_t Decimal::decimalToString(MAPM theValue, int precision) 
 {
@@ -556,7 +390,8 @@ xqpStringStore_t Decimal::decimalToString(MAPM theValue, int precision)
 #ifndef ZORBA_NO_BIGNUMBERS
   char lBuffer[1024];
   theValue.toFixPtString(lBuffer, precision);
-  if(precision < ZORBA_FLOAT_POINT_PRECISION)
+
+  if (precision < ZORBA_FLOAT_POINT_PRECISION)
     do_reduce = true;
 #else
   char lBuffer[174];
@@ -575,7 +410,8 @@ xqpStringStore_t Decimal::decimalToString(MAPM theValue, int precision)
   if(strchr(lBuffer,'.') != 0) 
   {
     // remove trailing 0's
-    char* lastChar=lBuffer+strlen(lBuffer)-1;
+    char* lastChar = lBuffer + strlen(lBuffer) - 1;
+
     while(*lastChar == '0') 
     {
       *lastChar--=0;
@@ -602,7 +438,6 @@ xqpStringStore_t Decimal::decimalToString(MAPM theValue, int precision)
   strcpy(str1, "0.000009999998");
   Decimal::reduceFloatingPointString(str1);
 */
-
 
   if(do_reduce)
     Decimal::reduceFloatingPointString(lBuffer);
@@ -726,22 +561,236 @@ nextDigit:
 }
 
 
-xqpStringStore_t Decimal::toString() const 
+void Decimal::serialize(::zorba::serialization::Archiver& ar)
 {
-  return decimalToString(theDecimal);
+  ar & theDecimal;
 }
 
 
-xqpStringStore_t Decimal::toIntegerString() const 
+Decimal& Decimal::operator=(const Decimal& aDecimal) 
+{
+  theDecimal = aDecimal.theDecimal;
+  return *this;
+}
+
+
+Decimal Decimal::operator+(const Integer& aInteger) const 
+{
+  return Decimal(theDecimal + aInteger.theInteger);
+}
+
+
+Decimal Decimal::operator+(const Decimal& aDecimal) const 
+{
+  return Decimal(theDecimal + aDecimal.theDecimal);
+}
+
+
+Decimal& Decimal::operator+=(const Integer& aInteger) 
+{
+  theDecimal += aInteger.theInteger;
+  return *this;
+}
+
+
+Decimal& Decimal::operator+=(const Decimal& aDecimal) 
+{
+  theDecimal += aDecimal.theDecimal;
+  return *this;
+}
+
+
+Decimal Decimal::operator-(const Integer& aInteger) const 
+{
+  return Decimal(theDecimal - aInteger.theInteger);
+}
+
+
+Decimal Decimal::operator-(const Decimal& aDecimal) const 
+{
+  return Decimal(theDecimal - aDecimal.theDecimal);
+}
+
+
+Decimal& Decimal::operator-=(const Integer& aInteger) 
+{
+  theDecimal -= aInteger.theInteger;
+  return *this;
+}
+
+
+Decimal& Decimal::operator-=(const Decimal& aDecimal) 
+{
+  theDecimal -= aDecimal.theDecimal;
+  return *this;
+}
+
+
+Decimal Decimal::operator*(const Integer& aInteger) const 
+{
+  return Decimal(theDecimal * aInteger.theInteger);
+}
+
+
+Decimal Decimal::operator*(const Decimal& aDecimal) const 
+{
+  return Decimal(theDecimal * aDecimal.theDecimal);
+}
+
+
+Decimal& Decimal::operator*=(const Integer& aInteger) 
+{
+  theDecimal *= aInteger.theInteger;
+  return *this;
+}
+
+
+Decimal& Decimal::operator*=(const Decimal& aDecimal) 
+{
+  theDecimal *= aDecimal.theDecimal;
+  return *this;
+}
+
+
+Decimal Decimal::operator/(const Integer& aInteger) const 
+{
+  MAPM lRes = theDecimal / aInteger.theInteger;
+  return Decimal(lRes);
+}
+
+
+Decimal Decimal::operator/(const Decimal& aDecimal) const 
+{
+  MAPM lRes = theDecimal / aDecimal.theDecimal;
+  return Decimal(lRes);
+}
+
+
+Decimal& Decimal::operator/=(const Integer& aInteger) 
+{
+  theDecimal /= aInteger.theInteger;
+  return *this;
+}
+
+
+Decimal& Decimal::operator/=(const Decimal& aDecimal) 
+{
+  theDecimal /= aDecimal.theDecimal;
+  return *this;
+}
+
+
+Decimal Decimal::operator%(const Integer& aInteger) const 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  char lBuffer[1024];
-  theDecimal.toIntegerString(lBuffer);
+  MAPM lRes = theDecimal % aInteger.theInteger;
 #else
-  char lBuffer[124];
-  sprintf(lBuffer, "%d", (int)theDecimal);
+  MAPM lRes = fmod(theDecimal, aInteger.theInteger);
 #endif
-  return new xqpStringStore(lBuffer);
+  return Decimal(lRes);
+}
+
+
+Decimal Decimal::operator%(const Decimal& aDecimal) const 
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  MAPM lRes = theDecimal % aDecimal.theDecimal;
+#else
+  MAPM lRes = fmod(theDecimal, aDecimal.theDecimal);
+#endif
+  return Decimal(lRes);
+}
+
+
+Decimal& Decimal::operator%=(const Integer& aInteger) 
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  theDecimal = theDecimal % aInteger.theInteger;
+#else
+  theDecimal = fmod(theDecimal, aInteger.theInteger);
+#endif
+  return *this;
+}
+
+
+Decimal& Decimal::operator%=(const Decimal& aDecimal) 
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  theDecimal = theDecimal % aDecimal.theDecimal;
+#else
+  MAPM lRes = fmod(theDecimal, aDecimal.theDecimal);
+#endif
+  return *this;
+}
+
+
+Decimal Decimal::operator-() const 
+{
+  return Decimal(-theDecimal);
+}
+
+
+Decimal Decimal::round() const 
+{
+  return round(Integer::zero());
+}
+
+
+Decimal Decimal::round(Integer aPrecision) const 
+{
+  return Decimal(Decimal::round(theDecimal, aPrecision.theInteger));
+}
+
+
+Decimal Decimal::roundHalfToEven(Integer aPrecision) const 
+{
+  return Decimal(Decimal::roundHalfToEven(theDecimal, aPrecision.theInteger));
+}
+
+
+Decimal Decimal::sqrt() const 
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  return Decimal (theDecimal.sqrt ());
+#else
+  return ::sqrt(theDecimal);
+#endif
+}
+
+
+bool Decimal::operator==(const Integer& aInteger) const 
+{ 
+  return theDecimal == aInteger.theInteger;
+}
+
+
+bool Decimal::operator!=(const Integer& aInteger) const 
+{ 
+  return theDecimal != aInteger.theInteger;
+}
+
+
+bool Decimal::operator<(const Integer& aInteger) const 
+{ 
+  return theDecimal < aInteger.theInteger;
+}
+
+
+bool Decimal::operator<=(const Integer& aInteger) const 
+{ 
+  return theDecimal <= aInteger.theInteger;
+}
+
+
+bool Decimal::operator>(const Integer& aInteger) const 
+{ 
+  return theDecimal > aInteger.theInteger;
+}
+
+
+bool Decimal::operator>=(const Integer& aInteger) const 
+{ 
+  return theDecimal >= aInteger.theInteger;
 }
 
 
@@ -800,6 +849,33 @@ uint32_t Decimal::hash() const
 }
 
 
+xqpStringStore_t Decimal::toString() const 
+{
+  return decimalToString(theDecimal);
+}
+
+
+xqpStringStore_t Decimal::toIntegerString() const 
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  char lBuffer[1024];
+  theDecimal.toIntegerString(lBuffer);
+#else
+  char lBuffer[124];
+  sprintf(lBuffer, "%d", (int)theDecimal);
+#endif
+  return new xqpStringStore(lBuffer);
+}
+
+
+int Decimal::getValueAsInt() const
+{
+  xqpStringStore_t strtemp = toIntegerString();
+  return atoi(strtemp->c_str());
+}
+
+
+
 std::ostream& operator<<(std::ostream& os, const Decimal& aDecimal) 
 {
   os << aDecimal.toString()->str();
@@ -807,11 +883,6 @@ std::ostream& operator<<(std::ostream& os, const Decimal& aDecimal)
 }
 
 
-int Decimal::getValueAsInt()
-{
-  xqpStringStore_t strtemp = toIntegerString();
-  return atoi(strtemp->c_str());
-}
 
 } // namespace zorba
 

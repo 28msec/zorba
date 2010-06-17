@@ -155,7 +155,7 @@ namespace zorba {
     store::Item_t lItem;
 
     // no error possible
-    Decimal lDecimal = Decimal::parseULong(aValue);
+    Decimal lDecimal = Decimal::parseULongLong(aValue);
     theItemFactory->createDecimal(lItem, lDecimal);
     return &*lItem;
   }
@@ -191,7 +191,7 @@ namespace zorba {
   ItemFactoryImpl::createInteger(long long aInteger)
   {
     store::Item_t lItem;
-    Integer lInteger = Integer::parseLongLong(aInteger);
+    Integer lInteger = Integer::parseLong(aInteger);
     theItemFactory->createInteger(lItem, lInteger);
     return &*lItem;
   }
@@ -353,7 +353,7 @@ namespace zorba {
     store::Item_t lItem;
     if (aValue < 0) {
       Integer lInteger;
-      lInteger = Integer::parseLongLong(aValue);
+      lInteger = Integer::parseLong(aValue);
       theItemFactory->createNegativeInteger(lItem, lInteger);
     }
     return &*lItem;
@@ -364,7 +364,7 @@ namespace zorba {
   {
     store::Item_t lItem;
     Integer lInteger;
-    lInteger = Integer::parseULongLong(aValue);
+    lInteger = Integer::parseULong(aValue);
     theItemFactory->createNonNegativeInteger(lItem, lInteger);
     return &*lItem;
   }
@@ -375,7 +375,7 @@ namespace zorba {
     store::Item_t lItem;
     if (aValue < 0) {
       Integer lInteger;
-      lInteger = Integer::parseLongLong(aValue);
+      lInteger = Integer::parseLong(aValue);
       theItemFactory->createNonPositiveInteger(lItem, lInteger);
     }
     return &*lItem;
@@ -386,7 +386,7 @@ namespace zorba {
   {
     store::Item_t lItem;
     Integer lInteger;
-    lInteger = Integer::parseLongLong(aValue);
+    lInteger = Integer::parseLong(aValue);
     theItemFactory->createPositiveInteger(lItem, lInteger);
     return &*lItem;
   }

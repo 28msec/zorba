@@ -116,8 +116,6 @@ GeneralHashIndex::~GeneralHashIndex()
 *******************************************************************************/
 bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
 {
-  BasicItemFactory& factory = GET_FACTORY();
-
   AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
   SchemaTypeCode keyType = keyItem->getTypeCode();
 

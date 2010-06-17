@@ -1000,7 +1000,7 @@ xqp_decimal LongItemNaive::getDecimalValue() const
 
 xqp_integer LongItemNaive::getIntegerValue() const 
 {
-  return Integer::parseLongLong(theValue);
+  return Integer::parseLong(theValue);
 }
 
 
@@ -1215,13 +1215,13 @@ xqp_decimal UnsignedLongItemNaive::getDecimalValue() const
 
 xqp_integer UnsignedLongItemNaive::getIntegerValue() const 
 {
-  return Integer::parseULongLong(theValue);
+  return Integer::parseULong(theValue);
 }
 
 
 xqp_uinteger UnsignedLongItemNaive::getUnsignedIntegerValue() const 
 {
-  return Integer::parseULongLong(theValue);
+  return Integer::parseULong(theValue);
 }
 
 

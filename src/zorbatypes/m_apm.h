@@ -189,23 +189,16 @@ int MM_cpp_min_precision;
 
 class MAPM 
 {
-protected:
-
-  /*
-    The M_APM structure here is implemented as a reference-
-    counted, copy-on-write data structure-- this makes copies
-    very fast, but that's why it's so ugly.  A MAPM object is 
-    basically just a wrapper around a (possibly shared) 
-    M_APM_struct myVal.
-  */
-
-
-	M_APM myVal;  /* myVal is a pointer to a ref-counted M_APM_struct */
-
 public:
   static MAPM& getMaxUInt64()
   {
     static MAPM lInstance("18446744073709551615");
+    return lInstance;
+  }
+
+  static MAPM& getMaxInt64()
+  {
+    static MAPM lInstance("9223372036854775807");
     return lInstance;
   }
 
@@ -215,11 +208,39 @@ public:
     return lInstance;
   }
 
+  static MAPM& getMaxUInt32()
+  {
+    static MAPM lInstance("4294967295");
+    return lInstance;
+  }
+
+  static MAPM& getMaxInt32()
+  {
+    static MAPM lInstance("2147483647");
+    return lInstance;
+  }
+
+  static MAPM& getMinInt32()
+  {
+    static MAPM lInstance("-2147483648");
+    return lInstance;
+  }
+
   static MAPM& get0_5()
   {
     static MAPM lInstance(0.5);
     return lInstance;
   }
+
+protected:
+
+  /*
+    The M_APM structure here is implemented as a reference-counted, copy-on-write
+    data structure. This makes copies very fast, but that's why it's so ugly. A
+    MAPM obj is basically just a wrapper around a (possibly shared) M_APM_struct.
+  */
+
+	M_APM myVal;  /* myVal is a pointer to a ref-counted M_APM_struct */
 
 protected:
 

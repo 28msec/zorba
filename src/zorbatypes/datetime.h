@@ -20,12 +20,12 @@
 #include "zorbatypes/timezone.h"
 #include "zorbatypes/duration.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 namespace zorba
 {
 
-class   InvalidTimezoneException : public std::exception
+class InvalidTimezoneException : public std::exception
 {
 };
   
@@ -62,20 +62,26 @@ public:
     FRACSECONDS_DATA = 6
   } DATA_TYPE;
 
+
   static const int FACET_MEMBERS[8][8];
 
   // fractional seconds have 6 digits. 0.1 seconds are represented as 100000,
   // 0.01 seconds as 10000, etc.
   static const int FRAC_SECONDS_UPPER_LIMIT; // = 1000000, maximum 6 digits
 
+protected:
+  FACET_TYPE facet;
+
+  int        data[7];
+      
+  TimeZone   the_time_zone;
 
 public:
   /**
    *  Returns 0 on success
    *  Returns 2 if both the Date and the Time have a timezone, and they differ (FORG0008)
    */
-  static int
-  createDateTime(
+  static int createDateTime(
         const DateTime* date,
         const DateTime* time,
         DateTime& result);
@@ -85,8 +91,7 @@ public:
    *  years. No TimeZone.
    *  Returns 0 on success
    */
-  static int
-  createDateTime(
+  static int createDateTime(
         int years,
         int months,
         int days,
@@ -101,8 +106,7 @@ public:
    *  years. TimeZone may be NULL
    *  Returns 0 on success
    */
-  static int
-  createDateTime(
+  static int createDateTime(
         int years,
         int months,
         int days,
@@ -113,11 +117,11 @@ public:
         DateTime& dt);
       
   /**
-   *  The function will use the absolute values of all int parameters except years. TimeZone may be NULL
+   *  The function will use the absolute values of all int parameters except
+   *  years. TimeZone may be NULL
    *  Returns 0 on success
    */
-  static int
-  createDateTime(
+  static int createDateTime(
         int years,
         int months,
         int days,
@@ -133,8 +137,7 @@ public:
    *  TimeZone may be NULL
    *  Returns 0 on success
    */
-  static int
-  createDate(
+  static int createDate(
         int years,
         int months,
         int days,
@@ -146,8 +149,7 @@ public:
    *  is a reference
    *  Returns 0 on success
    */
-  static int
-  createTime(
+  static int createTime(
         int hours,
         int minutes,
         double seconds,
@@ -158,86 +160,103 @@ public:
    *  The function will use the absolute value of the months parameter.
    *  Returns 0 on success
    */
-  static int
-  createGYearMonth(int years, int months, DateTime& dt);
+  static int createGYearMonth(int years, int months, DateTime& dt);
   
   /**
    *  Returns 0 on success
    */
-  static int
-  createGYear(int years, DateTime& dt);
+  static int createGYear(int years, DateTime& dt);
 
   /**
    *  The function will use the absolute values of all int parameters.
    *  Returns 0 on success
    */
-  static int
-  createGMonth(int months, DateTime& dt);
+  static int createGMonth(int months, DateTime& dt);
 
   /**
    *  The function will use the absolute values of all int parameters.
    *  Returns 0 on success
    */
-  static int
-  createGMonthDay(int months, int days, DateTime& dt);
+  static int createGMonthDay(int months, int days, DateTime& dt);
   
   /**
    *  The function will use the absolute values of all int parameters.
    *  Returns 0 on success
    */
-  static int
-  createGDay(int days, DateTime& dt);
+  static int createGDay(int days, DateTime& dt);
 
-  static int
-  getLocalTime(DateTime& dt);
+  static int getLocalTime(DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int 
-  parseDateTime(const xqpString& s, DateTime& dt);
+  static int parseDateTime(const xqpString& s, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int
-  parseDate(const xqpString& s, DateTime& dt);
+  static int parseDate(const xqpString& s, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int
-  parseTime(const xqpString& s, DateTime& dt);
+  static int parseTime(const xqpString& s, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int 
-  parseGYearMonth(const xqpString& s, DateTime& dt);
+  static int parseGYearMonth(const xqpString& s, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int 
-  parseGYear(const xqpString& s, DateTime& dt);
+  static int parseGYear(const xqpString& s, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int 
-  parseGMonth(const xqpString& s, DateTime& dt);
+  static int parseGMonth(const xqpString& s, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int 
-  parseGMonthDay(const xqpString& s, DateTime& dt);
+  static int parseGMonthDay(const xqpString& s, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int 
-  parseGDay(const xqpString& s, DateTime& dt);
+  static int parseGDay(const xqpString& s, DateTime& dt);
+
+  static int getDayOfWeek(int year, int month, int day);
+
+  static int getDayOfYear(int year, int month, int day);
+
+  static int getWeekInYear(int year, int month, int day);
+
+  static int getWeekInMonth(int year, int month, int day);
+
+  static bool isLeapYear(int year);  
+
+protected:
+  static int parse_date(
+        std::string& ss,
+        unsigned int& position,
+        int& year,
+        int& month,
+        int& day);
+
+  static int parse_time(
+        std::string& ss,
+        unsigned int& position,
+        int& hour,
+        int& minute,
+        int& seconds,
+        int& frac_seconds);
+
+public:
+  SERIALIZABLE_CLASS(DateTime)
+  SERIALIZABLE_CLASS_CONSTRUCTOR(DateTime)
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   DateTime();
@@ -248,49 +267,35 @@ public:
 
   DateTime& operator=(const DateTime* dt);
 
-      
   /**
    *  Creates a new DateTime object from the given one, adjusting it to the newly 
    *  given facet. Useful for casting. Will always return 0.
    */
-  int 
-  createWithNewFacet(FACET_TYPE new_facet, DateTime& dt) const;
+  int createWithNewFacet(FACET_TYPE new_facet, DateTime& dt) const;
 
-  xqpString 
-  toString() const;
+  xqpString toString() const;
       
-  DateTime*
-  getDate() const;
+  DateTime* getDate() const;
 
-  DateTime*
-  getTime() const;
+  DateTime* getTime() const;
       
-  int 
-  getYear() const;
+  int getYear() const;
       
-  int 
-  getMonth() const;
+  int getMonth() const;
 
-  int 
-  getDay() const;
+  int getDay() const;
       
-  int 
-  getHours() const;
+  int getHours() const;
       
-  int 
-  getMinutes() const;
+  int getMinutes() const;
       
-  xqp_decimal 
-  getSeconds() const;
+  xqp_decimal getSeconds() const;
   
-  int
-  getIntSeconds() const;
+  int getIntSeconds() const;
   
-  int 
-  getFractionalSeconds() const;  
+  int getFractionalSeconds() const;  
       
-  TimeZone
-  getTimezone() const;
+  TimeZone getTimezone() const;
 
   /**
    *  Returns -1 if the DateTime is less than the given DateTime
@@ -300,23 +305,18 @@ public:
    *  Throws InvalidTimezoneException if the given timezone is not valid.
    *
    */
-  int 
-  compare(const DateTime* dt, long timezone_seconds) const;
+  int compare(const DateTime* dt, long timezone_seconds) const;
       
-  uint32_t 
-  hash(int implicit_timezone_seconds) const;
+  uint32_t hash(int implicit_timezone_seconds) const;
 
-  DateTime* 
-  addDuration(const Duration& d, bool adjust_facet = true) const;
+  DateTime* addDuration(const Duration& d, bool adjust_facet = true) const;
 
-  DateTime* 
-  subtractDuration(const Duration& d, bool adjust_facet = true) const;
+  DateTime* subtractDuration(const Duration& d, bool adjust_facet = true) const;
 
   /**
    *  Throws InvalidTimezoneException if the given timezone is not valid.
    */
-  Duration*
-  subtractDateTime(const DateTime* dt, int implicit_timezone_seconds) const;
+  Duration* subtractDateTime(const DateTime* dt, int implicit_timezone_seconds) const;
       
   /**
    *  Throws InvalidTimezoneException if the given timezone is not valid.
@@ -346,49 +346,22 @@ public:
   int getWeekInYear() const;
   int getWeekInMonth() const;
   bool isLeapYear() const;
-
-  static int getDayOfWeek(int year, int month, int day);
-  static int getDayOfYear(int year, int month, int day);
-  static int getWeekInYear(int year, int month, int day);
-  static int getWeekInMonth(int year, int month, int day);
-  static bool isLeapYear(int year);  
   
       
 protected:
-  static int
-  parse_date(std::string& ss,
-             unsigned int& position,
-             int& year,
-             int& month,
-             int& day);
-
-  static int
-  parse_time(std::string& ss,
-             unsigned int& position,
-             int& hour,
-             int& minute,
-             int& seconds,
-             int& frac_seconds);
-
   Duration* toDayTimeDuration() const;
 
   void adjustToFacet();
 
   void setFacet(FACET_TYPE a_facet);
-
-  
-protected:
-  FACET_TYPE facet;
-
-  int data[7];
-      
-  TimeZone the_time_zone;
-public:
-  SERIALIZABLE_CLASS(DateTime)
-  SERIALIZABLE_CLASS_CONSTRUCTOR(DateTime)
-  void serialize(::zorba::serialization::Archiver &ar);
 };
 
 } /* namespace xqp */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
