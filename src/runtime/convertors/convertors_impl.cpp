@@ -318,7 +318,6 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 {
   store::Item_t   rootNode;
   store::Item_t   typeName;
-  typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   store::NsBindings   ns_bindings;
   checked_vector<xqpString>  line;
 
@@ -431,6 +430,7 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     {
       store::Item_t   row_node_name_copy = state->row_node_name;
       xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+      typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(result, rootNode.getp(), -1, 
                                           row_node_name_copy, typeName, 
                                           false, false, ns_bindings, 
@@ -451,6 +451,7 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
         }
         column_node_name = state->header_qnames[i];
         xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
                                             false, false, ns_bindings, 
@@ -460,6 +461,7 @@ ZorbaCSV2XMLIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
       {
         column_node_name = state->default_column_node_name;
         xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
                                             false, false, ns_bindings, 
@@ -481,7 +483,6 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
 {
   store::Item_t   rootNode;
   store::Item_t   typeName;
-  typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   store::NsBindings   ns_bindings;
   checked_vector<xqpString>  line;
 
@@ -608,6 +609,7 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
     {
       store::Item_t   row_node_name_copy = state->row_node_name;
       xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+      typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(result, rootNode.getp(), -1, 
                                           row_node_name_copy, typeName, 
                                            false, false, ns_bindings, 
@@ -628,6 +630,7 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
         }
         column_node_name = state->header_qnames[i];
         xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
                                             false, false, ns_bindings, 
@@ -637,6 +640,7 @@ ZorbaCSV2XMLFromFileIterator::nextImpl(store::Item_t& result,
       {
         column_node_name = state->default_column_node_name;
         xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
                                             false, false, ns_bindings, 
@@ -709,7 +713,6 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
 {
   store::Item_t   rootNode;
   store::Item_t   typeName;
-  typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   store::NsBindings   ns_bindings;
   checked_vector<xqpString>  line;
 
@@ -802,6 +805,7 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
     {
       store::Item_t   row_node_name_copy = state->row_node_name;
       xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+      typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(result, rootNode.getp(), -1, 
                                           row_node_name_copy, typeName, 
                                           false, false, ns_bindings, 
@@ -822,6 +826,7 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
         }
         column_node_name = state->header_qnames[i];
         xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
                                             false, false, ns_bindings, 
@@ -831,6 +836,7 @@ ZorbaTXT2XMLIterator::nextImpl(store::Item_t& result,
       {
         column_node_name = state->default_column_node_name;
         xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
                                             false, false, ns_bindings, 
@@ -852,7 +858,6 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
 {
   store::Item_t   rootNode;
   store::Item_t   typeName;
-  typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   store::NsBindings   ns_bindings;
   checked_vector<xqpString>  line;
 
@@ -959,6 +964,7 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
     {
       store::Item_t   row_node_name_copy = state->row_node_name;
       xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+      typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       GENV_ITEMFACTORY->createElementNode(result, rootNode.getp(), -1, 
                                           row_node_name_copy, typeName, 
                                           false, false, ns_bindings, 
@@ -979,6 +985,7 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
         }
         column_node_name = state->header_qnames[i];
         xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), 
                                             -1, column_node_name, typeName, 
                                             false, false, ns_bindings, 
@@ -988,6 +995,7 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
       {
         column_node_name = state->default_column_node_name;
         xqpStringStore_t    baseUri_copy = state->baseUri.getStore();
+        typeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
         GENV_ITEMFACTORY->createElementNode(fieldNode, result.getp(), -1, 
                                             column_node_name, typeName, 
                                             false, false, ns_bindings, 
