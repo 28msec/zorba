@@ -231,9 +231,14 @@ bool AxisIteratorHelper::nameOrKindTest(
       {
         // return false if doc node has more than 1 element child
         if (elemTest != match_no_test)
+        {
           return false;
+        }
         else
+        {
           elemTest = theDocTestKind;
+          node = child.getp();
+        }
       }
     }
 
