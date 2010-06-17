@@ -26,21 +26,27 @@ IF (SWIG_FOUND AND BUILDING_SIMPLESTORE)
   SET(SWIG_MODULE_zorba_api_EXTRA_DEPS ${SWIG_FILES})
   SET(SWIG_MODULE_libzorba_api_EXTRA_DEPS ${SWIG_FILES})
 
+  # on apple and cmake 2.8, the generated swig libraries are prefixed with "lib"
+  SET(ZORBA_SWIG_LIB_PREFIX)
+  IF (APPLE AND CMAKE_MINOR_VERSION GREATER 6)
+    SET(ZORBA_SWIG_LIB_PREFIX "lib")
+  ENDIF (APPLE AND CMAKE_MINOR_VERSION GREATER 6)
+
   ADD_SUBDIRECTORY(python)
   IF(NOT WIN32 OR CYGWIN)
-  ADD_SUBDIRECTORY(php)
+    ADD_SUBDIRECTORY(php)
   ENDIF(NOT WIN32 OR CYGWIN)
-  ADD_SUBDIRECTORY(java)
+    ADD_SUBDIRECTORY(java)
 
   IF(NOT WIN32 OR CYGWIN)
-  # ruby module on Mac OS doesn't link because cmake is generating
-  # -framework ruby instead of -framework Ruby
-  IF (APPLE AND UNIVERSAL )
-    MESSAGE ( STATUS "Ruby module can't be built Universal" )
-  ELSE( APPLE AND UNIVERSAL )
-    MESSAGE ( STATUS "Ruby module being built non-Universal" )
-    ADD_SUBDIRECTORY(ruby)
-  ENDIF ( APPLE AND UNIVERSAL )
+    # ruby module on Mac OS doesn't link because cmake is generating
+    # -framework ruby instead of -framework Ruby
+    IF (APPLE AND UNIVERSAL )
+      MESSAGE ( STATUS "Ruby module can't be built Universal" )
+    ELSE( APPLE AND UNIVERSAL )
+      MESSAGE ( STATUS "Ruby module being built non-Universal" )
+      ADD_SUBDIRECTORY(ruby)
+    ENDIF ( APPLE AND UNIVERSAL )
   ENDIF(NOT WIN32 OR CYGWIN)
 
 ELSE(SWIG_FOUND)
