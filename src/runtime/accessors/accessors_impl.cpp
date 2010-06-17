@@ -150,7 +150,12 @@ FnDataIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       assert(result->isNode());
 
       itemNode.transfer(result);
-      itemNode->getTypedValue(result, state->theTypedValueIter);
+      try {
+        itemNode->getTypedValue(result, state->theTypedValueIter);
+      } catch (error::ZorbaError& e) {
+        // throw error with query location
+        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+      }
 
       if (state->theTypedValueIter == NULL)
       {

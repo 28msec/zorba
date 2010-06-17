@@ -70,6 +70,9 @@ namespace zorba { namespace http_client {
   theIsInsideMultipart(false),
   theNamespace("http://expath.org/ns/http-client")
   {
+    String lXSNS = "http://www.w3.org/2001/XMLSchema";
+    String lUntypedLocalName = "untyped";
+    theUntypedQName = theFactory->createQName(lXSNS, lUntypedLocalName);
   }
 
   void HttpResponseHandler::begin()
@@ -83,7 +86,7 @@ namespace zorba { namespace http_client {
     String lLocalName = "response";
     Item lNodeName = theFactory->createQName(theNamespace, lLocalName);
     theResponse = theFactory->createElementNode(lNullParent, lNodeName,
-      lNullType, false, false, std::vector<std::pair<String, String> >());
+      theUntypedQName, false, false, std::vector<std::pair<String, String> >());
     theFactory->createAttributeNode(theResponse,
       theFactory->createQName("", "status"), lNullType,
       theFactory->createInteger(aStatus));
@@ -121,7 +124,7 @@ namespace zorba { namespace http_client {
     Item lParent = theIsInsideMultipart ? theMultipart : theResponse;
     Item lNullType;
     Item lElem = theFactory->createElementNode(lParent,
-      theFactory->createQName(theNamespace, "header"), lNullType, false,
+      theFactory->createQName(theNamespace, "header"), theUntypedQName, false,
       true, std::vector<std::pair<String, String> >());
     theFactory->createAttributeNode(lElem, theFactory->createQName("", "name"),
       lNullType, theFactory->createString(aName));
@@ -136,7 +139,7 @@ namespace zorba { namespace http_client {
     Item lParent = theIsInsideMultipart ? theMultipart : theResponse;
     Item lNullType;
     Item lElem = theFactory->createElementNode(lParent,
-      theFactory->createQName(theNamespace, "body"), lNullType, false,
+      theFactory->createQName(theNamespace, "body"), theUntypedQName, false,
       true, std::vector<std::pair<String, String> >());
     theFactory->createAttributeNode(lElem,
       theFactory->createQName("", "media-type"),
@@ -157,7 +160,7 @@ namespace zorba { namespace http_client {
     theIsInsideMultipart = true;
     Item lNullType;
     Item lElem = theFactory->createElementNode(theResponse,
-      theFactory->createQName(theNamespace, "body"), lNullType, false,
+      theFactory->createQName(theNamespace, "body"), theUntypedQName, false,
       true, std::vector<std::pair<String, String> >());
     theFactory->createAttributeNode(lElem,
       theFactory->createQName("", "content-type"),

@@ -22,7 +22,7 @@
 #include <compiler/parsetree/parsenode_visitor.h>
 
 #include <compiler/parser/xqdoc_comment.h>
-#include <types/typemanager.h>
+#include "types/root_typemanager.h"
 #include "store/api/item_factory.h"
 #include "store/api/item.h"
 #include "store/api/store.h"
@@ -213,6 +213,7 @@ ParseNodePrintXQDocVisitor(store::Item_t &aResult, const string& aFileName)
     theFileName(new xqpStringStore(getFileName(aFileName))),
     theBaseURI(new xqpStringStore("http://www.xqdoc.org/1.0")),
     theVersion(new xqpStringStore("1.0")),
+    theTypeName(GENV_TYPESYSTEM.XS_UNTYPED_QNAME),
     theFactory(GENV_ITEMFACTORY)
 {
 }
@@ -362,9 +363,8 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
       true, false, theNSBindings, theBaseURI);
 
   theFactory->createElementNode(
-      lSigElem,  lFuncElem, -1, lSigQName, theTypeName,
+      lSigElem, lFuncElem, -1, lSigQName, theTypeName,
       true, false, theNSBindings, theBaseURI);
-
 
   xqpStringStore_t lNameString = n.get_name()->get_localname();
   theFactory->createTextNode(lNameText, lNameElem, -1, lNameString);
