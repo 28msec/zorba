@@ -533,6 +533,9 @@ SchemaTypeCode DateTimeItemNaive::getTypeCode() const
 
   case DateTime::DATETIME_FACET:
     return XS_DATETIME;
+
+  default:
+    ZORBA_ASSERT(false);
   }
 }
 
