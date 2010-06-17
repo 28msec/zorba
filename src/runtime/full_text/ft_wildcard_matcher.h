@@ -25,6 +25,8 @@ class ft_wildcard_matcher {
 public:
   virtual ~ft_wildcard_matcher() { }
 
+  static ft_wildcard_matcher* create();
+
   virtual void compile( std::string const &xquery_pattern ) = 0;
   virtual bool matches( std::string const &string ) const = 0;
 };

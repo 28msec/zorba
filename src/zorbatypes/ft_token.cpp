@@ -17,7 +17,7 @@
 #include <iomanip>
 #include <string>
 
-#include "runtime/full_text/icu_wildcard_matcher.h"
+#include "runtime/full_text/ft_wildcard_matcher.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbatypes/ft_token.h"
@@ -164,7 +164,7 @@ ft_wildcard_matcher const& FTToken::matcher( int selector ) const {
     qt_.matcher_ = NULL;
   }
   if ( !qt_.matcher_ ) {
-    qt_.matcher_ = new icu_wildcard_matcher;
+    qt_.matcher_ = ft_wildcard_matcher::create();
     qt_.matcher_->compile( value( selector ) );
     qt_.selector_ = selector;
   }
