@@ -23,28 +23,31 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-stemmer::stemmer( lang::iso639_1::type lang_code ) :
+Stemmer::Stemmer( lang::iso639_1::type lang_code ) :
   stemmer_( sb_stemmer_new( lang::iso639_1::string_of[ lang_code ], NULL ) )
 {
   ZORBA_FATAL( stemmer_, "out of memory" );
 }
 
-stemmer::~stemmer() {
+Stemmer::~Stemmer() {
   sb_stemmer_delete( stemmer_ );
 }
 
-stemmer const* stemmer::get( lang::iso639_1::type lang_code ) {
-  static stemmer* cached_stemmers[ lang::iso639_1::unknown ];
+Stemmer const* Stemmer::get( lang::iso639_1::type lang_code ) {
+  static Stemmer* cached_stemmers[ lang::iso639_1::unknown ];
   static Mutex mutex;
 
+  if ( lang_code == lang::iso639_1::unknown )
+    lang_code = lang::iso639_1::en;     // TODO: change
+
   AutoMutex const lock( &mutex );
-  stemmer *&ptr = cached_stemmers[ lang_code ];
+  Stemmer *&ptr = cached_stemmers[ lang_code ];
   if ( !ptr )
-    ptr = new stemmer( lang_code );
+    ptr = new Stemmer( lang_code );
   return ptr;
 }
 
-void stemmer::stem( string const &word, string &result ) const {
+void Stemmer::stem( string const &word, string &result ) const {
   //
   // We need a mutex since the libstemmer library is not thread-safe.
   //

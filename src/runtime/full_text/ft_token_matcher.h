@@ -20,7 +20,7 @@
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/ft_stop_words_set.h"
 #include "zorbatypes/ft_token.h"
-#include "zorbautils/stemmer.h"
+#include "zorbautils/lang.h"
 
 namespace zorba {
 
@@ -32,18 +32,19 @@ public:
   /**
    * Test whether the 2 given tokens match given the match options.
    *
-   * @param dts The document token string.
-   * @param qts The query token string.
+   * @param dt The document token.
+   * @param qt The query token.
    */
-  bool match( FTToken::string_t const &dts, FTToken::string_t const &qts )
-    const;
+  bool match( FTToken const &dt, FTToken const &qt ) const;
 
 private:
   ftmatch_options const &options_;
-  stemmer const *stemmer_;
-  ft_stop_words_set const *stop_words_;
+  bool const diacritics_insensitive_;
+  lang::iso639_1::type const lang_;
+  bool const stemming_;
+  ft_stop_words_set const *const stop_words_;
+  bool const wildcards_;
 };
-
 
 } // namespace zorba
 #endif /* ZORBA_FULL_TEXT_FT_TOKEN_MATCHER_H */

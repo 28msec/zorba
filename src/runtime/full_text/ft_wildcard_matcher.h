@@ -29,6 +29,22 @@ public:
   virtual bool matches( std::string const &string ) const = 0;
 };
 
+inline bool operator==( ft_wildcard_matcher const &m, std::string const &s ) {
+  return m.matches( s );
+}
+
+inline bool operator==( std::string const &s, ft_wildcard_matcher const &m ) {
+  return m == s;
+}
+
+inline bool operator!=( ft_wildcard_matcher const &m, std::string const &s ) {
+  return !( m == s );
+}
+
+inline bool operator!=( std::string const &s, ft_wildcard_matcher const &m ) {
+  return !( s == m );
+}
+
 } // namespace zorba
 #endif  /* ZORBA_FULL_TEXT_FT_WILDCARD_MATCHER_H */
 /* vim:set et sw=2 ts=2: */

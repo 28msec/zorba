@@ -23,7 +23,8 @@ SET(ZORBATYPES_SRCS
   codepoint_iterator.cpp
   collation_manager.cpp
   chartype.cpp
-  rchandle.cpp)
+  rchandle.cpp
+  ft_token.cpp)
   
 IF(ZORBA_NO_UNICODE)
   LIST(APPEND ZORBATYPES_SRCS 

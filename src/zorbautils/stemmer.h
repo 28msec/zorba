@@ -25,11 +25,11 @@
 
 namespace zorba {
 
-class stemmer {
+class Stemmer {
 public:
-  ~stemmer();
+  ~Stemmer();
 
-  static stemmer const* get( lang::iso639_1::type );
+  static Stemmer const* get( lang::iso639_1::type );
 
   void stem( std::string const &word, std::string &result ) const;
 
@@ -37,11 +37,11 @@ private:
   sb_stemmer *const stemmer_;
   mutable Mutex mutex_;
 
-  stemmer( lang::iso639_1::type );
+  Stemmer( lang::iso639_1::type );
 
   // forbid these
-  stemmer( stemmer const& );
-  stemmer& operator=( stemmer const& );
+  Stemmer( Stemmer const& );
+  Stemmer& operator=( Stemmer const& );
 };
 
 } // namespace zorba

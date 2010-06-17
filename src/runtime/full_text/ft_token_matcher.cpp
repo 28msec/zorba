@@ -19,10 +19,8 @@
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/ft_stop_words_set.h"
 #include "runtime/full_text/ft_token_matcher.h"
-#include "runtime/full_text/icu_wildcard_matcher.h"
+#include "runtime/full_text/ft_wildcard_matcher.h"
 #include "util/stl_util.h"
-#include "zorbatypes/ft_token.h"
-#include "zorbautils/stemmer.h"
 
 using namespace std;
 
@@ -30,70 +28,60 @@ namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-static void strip_diacritics( FTToken::string_t const &ts,
-                              FTToken::string_t &result ) {
-  static xqpStringStore const mode( "NFKD" );
-  FTToken::string_t const ts_normalized( *ts.normalize( &mode ) );
+inline bool get_diacritics_insensitive( ftmatch_options const &options ) {
+  if ( ftdiacritics_option const *const d = options.get_diacritics_option() )
+    return d->get_mode() == ft_diacritics_mode::insensitive;
+  return false;
+}
 
-  string const &from = ts_normalized.str();
-  string &to = result.str();
-  to.clear();
-  to.reserve( from.length() );
+inline lang::iso639_1::type get_lang( ftmatch_options const &options ) {
+  if ( ftlanguage_option const *const l = options.get_language_option() )
+    return l->get_language();
+  return lang::iso639_1::en; // TODO: change
+}
 
-  FOR_EACH( string, i, from ) {
-    char const c = *i;
-    if ( isascii( c ) )
-      to.push_back( c );
+inline bool get_stemming( ftmatch_options const &options ) {
+  if ( ftstem_option const *const s = options.get_stem_option() )
+    return s->get_mode() == ft_stem_mode::with;
+  return false;
+}
+
+inline ft_stop_words_set const* get_stop_words( ftmatch_options const &options,
+                                                lang::iso639_1::type lang ) {
+  if ( ftstop_word_option const *const sw = options.get_stop_word_option() ) {
+    if ( sw->get_mode() != ft_stop_words_mode::without )
+      return ft_stop_words_set::construct( *sw, lang );
   }
+  return NULL;
+}
+
+inline bool get_wildcards( ftmatch_options const &options ) {
+  if ( ftwild_card_option const *const wc = options.get_wild_card_option() )
+    return wc->get_mode() == ft_wild_card_mode::with;
+  return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
 ft_token_matcher::ft_token_matcher( ftmatch_options const &options ) :
-  options_( options )
+  options_( options ),
+  diacritics_insensitive_( get_diacritics_insensitive( options ) ),
+  lang_( get_lang( options ) ),
+  stemming_( get_stemming( options ) ),
+  stop_words_( get_stop_words( options, lang_ ) ),
+  wildcards_( get_wildcards( options ) )
 {
-  lang::iso639_1::type lang_code;
-  if ( ftlanguage_option const *const l = options_.get_language_option() )
-    lang_code = l->get_language();
-  else
-    lang_code = lang::iso639_1::en; // TODO: change
-
-  stemmer_ = NULL;
-  if ( ftstem_option const *const s = options_.get_stem_option() ) {
-    if ( s->get_mode() == ft_stem_mode::with )
-      stemmer_ = stemmer::get( lang_code );
-  }
-
-  stop_words_ = NULL;
-  if ( ftstop_word_option const *const sw = options_.get_stop_word_option() ) {
-    if ( sw->get_mode() != ft_stop_words_mode::without )
-      stop_words_ = ft_stop_words_set::construct( *sw, lang_code );
-  }
 }
 
 ft_token_matcher::~ft_token_matcher() {
-  delete stemmer_;
   delete stop_words_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
 
-bool ft_token_matcher::match( FTToken::string_t const &dts,
-                              FTToken::string_t const &qts ) const {
-  FTToken::string_t dts2, qts2;
-  FTToken::string_t const *pdts = &dts, *pqts = &qts;
-  bool dt_is_lower = false, qt_is_lower = false;
-
-#define LOWERCASE(TOKEN) \
-  if ( !TOKEN##_is_lower ) { \
-    TOKEN##s2 = *p##TOKEN##s->lowercase(), p##TOKEN##s = &TOKEN##s2; \
-    TOKEN##_is_lower = true; \
-  }
-
-  if ( ftlanguage_option const *const l = options_.get_language_option() ) {
-    // lang::iso639_1::type const lang_code = l->get_language();
-    // TODO
-  }
+bool ft_token_matcher::match( FTToken const &dt, FTToken const &qt ) const {
+  int dt_selector = FTToken::original;
+  int qt_selector = FTToken::original;
 
   if ( stop_words_ ) {
     //
@@ -104,25 +92,24 @@ bool ft_token_matcher::match( FTToken::string_t const &dts,
     // the XQuery Full Text spec currently isn't clear on whether this should
     // be done case-insensitively.  See W3C Bug 9858.
     //
-    LOWERCASE(qt);
-    if ( stop_words_->contains( pqts->str() ) )
+    if ( stop_words_->contains( qt.value( FTToken::lower ) ) )
       return true;
   }
 
   if ( ftcase_option const *const c = options_.get_case_option() ) {
     switch ( c->get_mode() ) {
       case ft_case_mode::insensitive:
-        LOWERCASE(dt);
-        LOWERCASE(qt);
+        dt_selector |= FTToken::lower;
+        qt_selector |= FTToken::lower;
         break;
       case ft_case_mode::sensitive:
         // do nothing
         break;
       case ft_case_mode::lower:
-        LOWERCASE(qt);
+        qt_selector |= FTToken::lower;
         break;
       case ft_case_mode::upper:
-        qts2 = *pqts->uppercase(), pqts = &qts2;
+        qt_selector |= FTToken::upper;
         break;
     }
   }
@@ -131,20 +118,14 @@ bool ft_token_matcher::match( FTToken::string_t const &dts,
     // TODO
   }
 
-  if ( stemmer_ ) {
-    LOWERCASE(dt);
-    LOWERCASE(qt);
-    stemmer_->stem( pdts->str(), dts2.str() ), pdts = &dts2;
-    stemmer_->stem( pqts->str(), qts2.str() ), pqts = &qts2;
-    //cerr << "d_stem=" << dts2.str() << endl;
-    //cerr << "q_stem=" << qts2.str() << endl;
+  if ( stemming_ ) {
+    dt_selector |= FTToken::stem;
+    qt_selector |= FTToken::stem;
   }
 
-  if ( ftdiacritics_option const *const d = options_.get_diacritics_option() ) {
-    if ( d->get_mode() == ft_diacritics_mode::insensitive ) {
-      strip_diacritics( *pdts, dts2 ), pdts = &dts2;
-      strip_diacritics( *pqts, qts2 ), pqts = &qts2;
-    }
+  if ( diacritics_insensitive_ ) {
+    dt_selector |= FTToken::ascii;
+    qt_selector |= FTToken::ascii;
   }
 
   if ( ftthesaurus_option const *const t = options_.get_thesaurus_option() ) {
@@ -153,15 +134,11 @@ bool ft_token_matcher::match( FTToken::string_t const &dts,
     }
   }
 
-  if ( ftwild_card_option const *const wc = options_.get_wild_card_option() ) {
-    if ( wc->get_mode() == ft_wild_card_mode::with ) {
-      icu_wildcard_matcher matcher;
-      matcher.compile( pqts->str() );
-      return matcher.matches( pdts->str() );
-    }
+  if ( wildcards_ ) {
+    return qt.matcher( qt_selector ).matches( dt.value( dt_selector ) );
   }
 
-  return *pdts == *pqts;
+  return dt.value( dt_selector, lang_ ) == qt.value( qt_selector, lang_ );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
