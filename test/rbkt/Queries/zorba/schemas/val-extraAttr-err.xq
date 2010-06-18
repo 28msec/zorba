@@ -4,7 +4,7 @@ import schema namespace
 
 validate 
 {
-    <product xmlns='simple.xsd'
+    <product xmlns='http://www.zorba-xquery.com/simple.xsd'
        extraAttribute='att value'>
     	<name>p1</name>
     	<number>1</number>

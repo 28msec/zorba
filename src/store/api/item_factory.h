@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@
 #include "store/api/shared_types.h"
 
 
-namespace zorba { 
+namespace zorba {
 
 namespace error
 {
@@ -45,9 +45,9 @@ class ItemFactory
 {
 public:
   virtual ~ItemFactory() {}
-  
+
 public:
-			
+
   /**
    * Create an atomic item with a given user-defined data type.
    */
@@ -78,7 +78,7 @@ public:
    * @param value string representation of the value
    */
   virtual bool createNCName(Item_t& result, xqpStringStore_t& value) = 0;
-    
+
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#anyURI]
    * @param value parsed value
@@ -215,7 +215,7 @@ public:
         const xqp_time* time) = 0;
 
   virtual bool createDateTime(
-        Item_t& result,  
+        Item_t& result,
         short year,
         short month,
         short day,
@@ -233,7 +233,7 @@ public:
    * @param timeZone_hours Difference in hours to UTC
    */
   virtual bool createDateTime(
-        Item_t& result,  
+        Item_t& result,
         short year , short month, short day,
         short hour, short minute, double second,
         short timeZone_hours) = 0;
@@ -254,7 +254,7 @@ public:
 
 
   virtual bool createDate(Item_t& result, const xqp_date* value) = 0;
-  
+
   /**
    * @param year
    * @param month
@@ -272,7 +272,7 @@ public:
    *
    */
   virtual bool createTime(Item_t& result, const xqp_time* value) = 0;
-  
+
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#time]
    * @param value string representation of the value
@@ -336,7 +336,7 @@ public:
   virtual bool createGMonthDay(Item_t& result, short month, short day) = 0;
 
   virtual bool createGYear(Item_t& result, const xqp_gYear* value) = 0;
-  
+
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#gYear]
    * @param value string representation of the value
@@ -367,7 +367,7 @@ public:
   virtual bool createYearMonthDuration(Item_t& result, xqp_yearMonthDuration* value ) = 0;
 
   virtual bool createDayTimeDuration(Item_t& result, xqp_dayTimeDuration* value ) = 0;
-  
+
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#duration]
    * @param value string representation of the value
@@ -395,7 +395,7 @@ public:
    * @param value string representation of the value
    */
   virtual bool createENTITIES(Item_t& result, xqpStringStore_t& value) = 0;
-  
+
   /**
    * Specification: [http://www.w3.org/TR/xmlschema-2/#ENTITY]
    * @param value string representation of the value
@@ -472,7 +472,7 @@ public:
 
   /**
    * Create a new document node N and make it the root (and single node) of
-   * a new XML tree. 
+   * a new XML tree.
    *
    * @param result        The new node N created by this method.
    * @param baseUri       The base uri of N. It may be NULL.
@@ -488,7 +488,7 @@ public:
   /**
    * Create a new element node N and place it at a given position among the
    * children of a given parent node. If no parent is given, N becomes the
-   * root (and single node) of a new XML tree. 
+   * root (and single node) of a new XML tree.
    *
    * @param result         The new node N created by this method
    * @param parent         The parent P of the new node; may be NULL.
@@ -497,6 +497,7 @@ public:
    *                       children, then N is appended to the list of children.
    * @param nodeName       The fully qualified name of the new node.
    * @param typeName       The fully qualified name of the new node's type.
+   *                       Not allowed to be NULL, use xsd:untyped instead.
    * @param haveTypedValue Whether the node has a typed value or not (element
    *                       nodes with complex type and element-only content do
    *                       not have typed value).
@@ -504,9 +505,9 @@ public:
    *                       sequence. This is the case if the element has a
    *                       complex type with empty content.
    * @param localBindings  A set of namespace bindings. The namespaces property
-   *                       of N will be the union of this set and the namespaces 
+   *                       of N will be the union of this set and the namespaces
    *                       property of P.
-   * @param baseUri        The base uri of N. It may be NULL, in which case, the 
+   * @param baseUri        The base uri of N. It may be NULL, in which case, the
    *                       base-uri property of N is the same as that of P.
    * @return               Always true (if any errors occur, the method throws
    *                       exceptions)
@@ -526,7 +527,7 @@ public:
   /**
    * Create a new attribute node N and place it at a given position among the
    * attributes of a given parent node. If no parent is given, N becomes the
-   * root (and single node) of a new XML tree. 
+   * root (and single node) of a new XML tree.
    *
    * @param result     The new node N created by this method
    * @param parent     The parent P of the new node; may be NULL.
@@ -561,7 +562,7 @@ public:
   /**
    * Create a new text node N and place it at a given position among the
    * children of a given parent node. If no parent is given, N becomes the
-   * root (and single node) of a new XML tree. 
+   * root (and single node) of a new XML tree.
    *
    * @param result  The new node N created by this method
    * @param parent  The parent P of the new node; may be NULL.
@@ -590,7 +591,7 @@ public:
   /**
    * Create a new processing instruction node N and place it at a given position
    * among the children of a given parent node. If no parent is given, N becomes
-   * the root (and single node) of a new XML tree. 
+   * the root (and single node) of a new XML tree.
    *
    * @param result  The new node N created by this method
    * @param parent  The parent P of the new node; may be NULL.
@@ -613,7 +614,7 @@ public:
   /**
    * Create a new comment node N and place it at a given position among the
    * children of a given parent node. If no parent is given, N becomes the
-   * root (and single node) of a new XML tree. 
+   * root (and single node) of a new XML tree.
    *
    * @param result  The new node N created by this method
    * @param parent  The parent P of the new node; may be NULL.

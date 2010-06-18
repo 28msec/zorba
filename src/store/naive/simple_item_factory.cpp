@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -353,7 +353,7 @@ bool BasicItemFactory::createDateTime(
 {
   std::auto_ptr<DateTimeItemNaive> dtin(new DateTimeItemNaive());
   int err = DateTime::createDateTime(date, time, dtin->theValue);
-  if (err == 0) 
+  if (err == 0)
   {
     result = dtin.get();
     dtin.release();
@@ -404,7 +404,7 @@ bool BasicItemFactory::createDateTime(
     result = new DateTimeItemNaive(&dt);
     return true;
   }
-  else 
+  else
   {
     result = NULL;
     return false;
@@ -417,8 +417,8 @@ bool BasicItemFactory::createDateTime(
     const xqp_string& value )
 {
   DateTime dt;
-  
-  if (DateTime::parseDateTime(value, dt) == 0) 
+
+  if (DateTime::parseDateTime(value, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -436,16 +436,16 @@ bool BasicItemFactory::createDateTime(
     const store::Item_t& date,
     const store::Item_t& time)
 {
-  if (date.isNull() || time.isNull()) 
+  if (date.isNull() || time.isNull())
   {
     result = NULL;
     return false;
-  } 
+  }
   else
   {
-    if (! createDateTime(result, &date->getDateValue(), &time->getTimeValue())) 
+    if (! createDateTime(result, &date->getDateValue(), &time->getTimeValue()))
       ZORBA_ERROR(FORG0008);
-    
+
     return true;
   }
 }
@@ -466,8 +466,8 @@ bool BasicItemFactory::createDate(
 {
   DateTime dt;
   TimeZone tz;
-  
-  if(DateTime::createDate(year, month, day, &tz, dt) == 0) 
+
+  if(DateTime::createDate(year, month, day, &tz, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -483,8 +483,8 @@ bool BasicItemFactory::createDate(
 bool BasicItemFactory::createDate (store::Item_t& result,  const xqp_string& value )
 {
   DateTime dt;
-  
-  if (DateTime::parseDate(value, dt) == 0) 
+
+  if (DateTime::parseDate(value, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -507,8 +507,8 @@ bool BasicItemFactory::createTime(store::Item_t& result, const xqp_time* value)
 bool BasicItemFactory::createTime(store::Item_t& result, const xqp_string& value)
 {
   DateTime dt;
-  
-  if( DateTime::parseTime(value, dt) == 0 ) 
+
+  if( DateTime::parseTime(value, dt) == 0 )
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -529,8 +529,8 @@ bool BasicItemFactory::createTime(
 {
   DateTime dt;
   TimeZone tz;
-  
-  if( DateTime::createTime(hour, minute, second, &tz, dt) == 0 ) 
+
+  if( DateTime::createTime(hour, minute, second, &tz, dt) == 0 )
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -552,8 +552,8 @@ bool BasicItemFactory::createTime(
 {
   DateTime dt;
   TimeZone tz(timeZone_hours);
-  
-  if(DateTime::createTime(hour, minute, second, &tz, dt) == 0) 
+
+  if(DateTime::createTime(hour, minute, second, &tz, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -576,8 +576,8 @@ bool BasicItemFactory::createGDay(store::Item_t& result, const xqp_gDay* value)
 bool BasicItemFactory::createGDay(store::Item_t& result,  const xqp_string& value)
 {
   DateTime dt;
-  
-  if (DateTime::parseGDay(value, dt) == 0) 
+
+  if (DateTime::parseGDay(value, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -593,8 +593,8 @@ bool BasicItemFactory::createGDay(store::Item_t& result,  const xqp_string& valu
 bool BasicItemFactory::createGDay(store::Item_t& result,  short day)
 {
   DateTime dt;
-  
-  if (DateTime::createGDay(day, dt) == 0) 
+
+  if (DateTime::createGDay(day, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -617,7 +617,7 @@ bool BasicItemFactory::createGMonth(store::Item_t& result, const xqp_gMonth* val
 bool BasicItemFactory::createGMonth(store::Item_t& result, const xqp_string& value)
 {
   DateTime dt;
-  
+
   if (DateTime::parseGMonth(value, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
@@ -635,12 +635,12 @@ bool BasicItemFactory::createGMonth(store::Item_t& result, short month)
 {
   DateTime dt;
 
-  if(DateTime::createGMonth(month, dt) == 0) 
+  if(DateTime::createGMonth(month, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
   }
-  else 
+  else
   {
     result = NULL;
     return false;
@@ -662,8 +662,8 @@ bool BasicItemFactory::createGMonthDay(
     const xqp_string& value )
 {
   DateTime dt;
-  
-  if (DateTime::parseGMonthDay(value, dt) == 0) 
+
+  if (DateTime::parseGMonthDay(value, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -680,7 +680,7 @@ bool BasicItemFactory::createGMonthDay(store::Item_t& result,  short month, shor
 {
   DateTime dt;
 
-  if(DateTime::createGMonthDay(month, day, dt) == 0) 
+  if(DateTime::createGMonthDay(month, day, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -701,8 +701,8 @@ bool BasicItemFactory::createGYear(store::Item_t& result, const xqp_gYear* value
 bool BasicItemFactory::createGYear(store::Item_t& result,  const xqp_string& value)
 {
   DateTime dt;
-  
-  if (DateTime::parseGYear(value, dt) == 0) 
+
+  if (DateTime::parseGYear(value, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -717,7 +717,7 @@ bool BasicItemFactory::createGYear(store::Item_t& result,  short year)
 {
   DateTime dt;
 
-  if(DateTime::createGYear(year, dt) == 0) 
+  if(DateTime::createGYear(year, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -744,13 +744,13 @@ bool BasicItemFactory::createGYearMonth(
     const xqp_string& value)
 {
   DateTime dt;
-  
-  if (DateTime::parseGYearMonth(value, dt) == 0) 
+
+  if (DateTime::parseGYearMonth(value, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
   }
-  else 
+  else
   {
     result = NULL;
     return false;
@@ -765,12 +765,12 @@ bool BasicItemFactory::createGYearMonth(
 {
   DateTime dt;
 
-  if(DateTime::createGYearMonth(year, month, dt) == 0) 
+  if(DateTime::createGYearMonth(year, month, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
   }
-  else 
+  else
   {
     result = NULL;
     return false;
@@ -797,7 +797,7 @@ bool BasicItemFactory::createDuration(
     result = new DurationItemNaive(&d);
     return true;
   }
-  
+
   result = NULL;
   return false;
 }
@@ -837,7 +837,7 @@ bool BasicItemFactory::createDayTimeDuration(store::Item_t& result, xqp_dayTimeD
 
 bool BasicItemFactory::createHexBinary (store::Item_t& result,  xqp_hexBinary value )
 {
-  result = new HexBinaryItemNaive ( value ); 
+  result = new HexBinaryItemNaive ( value );
   return true;
 }
 
@@ -888,7 +888,7 @@ bool BasicItemFactory::createDocumentNode(
 /*******************************************************************************
   Create a new element node N and place it as the pos-th child of a given parent
   node. If no parent is given, N becomes the root (and single node) of a new XML
-  tree. 
+  tree.
 
   parent        : The parent P of the new element node; may be NULL.
   pos           : The position, among the children of P, that N will occupy.
@@ -896,6 +896,7 @@ bool BasicItemFactory::createDocumentNode(
                   N is appended to the list of children.
   nodeName      : The node-name property of N.
   typeName      : The type-name property of N.
+                  Not allowed to be NULL, use xsd:untyped instead.
   haveTypedValue: Whether the node has a typed value or not (element nodes with
                   complex type and element-only content do not have typed value).
   haveEmptyValue: True if the typed value of the node is the empty sequence.
@@ -908,11 +909,11 @@ bool BasicItemFactory::createDocumentNode(
                   all the ns bindings of P that are not overwritten by S1 or the
                   ns binding implied by N's qname. Note: when called from an
                   element constructor iterator, S1 is the set of ns bindings
-                  defined by ns decalration attrs that appear inside the 
+                  defined by ns decalration attrs that appear inside the
                   constructor expr itself.
-  baseUri       : The base-uri property of N. It may be NULL, in which case, 
+  baseUri       : The base-uri property of N. It may be NULL, in which case,
                   the base-uri property of N is the same as that of P. If P
-                  is NULL, then baseUri will NOT be null (see 
+                  is NULL, then baseUri will NOT be null (see
                   runtime/core/constructors.cpp).
 
   The haveTypedValue and haveEmptyValue properties are actually a function of
@@ -935,6 +936,9 @@ bool BasicItemFactory::createElementNode(
 {
   XmlTree* xmlTree = NULL;
   ElementNode* n = NULL;
+
+  //if ( typeName == NULL )
+  //  ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "NULL not allowed for typeName, use xsd:untyped instead.");
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||
@@ -973,7 +977,7 @@ bool BasicItemFactory::createElementNode(
 /*******************************************************************************
   Create a new attribute node N and place it as the pos-th attribute of a given
   parent node. If no parent is given, N becomes the root (and single node) of a
-  new XML tree. 
+  new XML tree.
 
   parent        : The parent P of the new attribute node; may be NULL.
   pos           : The position, among the attributes of P, that N will occupy.
@@ -1037,7 +1041,7 @@ bool BasicItemFactory::createAttributeNode(
 /*******************************************************************************
   Create a new attribute node N and place it as the pos-th attribute of a given
   parent node. If no parent is given, N becomes the root (and single node) of a
-  new XML tree. 
+  new XML tree.
 
   parent        : The parent P of the new attribute node; may be NULL.
   pos           : The position, among the attributes of P, that N will occupy.
@@ -1075,7 +1079,7 @@ bool BasicItemFactory::createAttributeNode(
     }
 
     store::Item_t typedValue = new ItemVector(typedValueV);
- 
+
     node = GET_STORE().getNodeFactory().createAttributeNode(xmlTree,
                              pnode,
                              pos,
@@ -1100,8 +1104,8 @@ bool BasicItemFactory::createAttributeNode(
   Create a new text node N and place it as the pos-th child of a given parent
   node. If no parent is given, N becomes the root (and single node) of a
   new XML tree. If N is going to be placed next to an existing text node T,
-  then no new text node is actually created, but instead the givan content 
-  is concatanated with the content of T. 
+  then no new text node is actually created, but instead the givan content
+  is concatanated with the content of T.
 
   parent        : The parent P of the new text node; may be NULL.
   pos           : The position, among the children of P, that N will occupy.
@@ -1181,7 +1185,7 @@ bool BasicItemFactory::createTextNode(
 /*******************************************************************************
   Create a new text node N to store the typed value of a given element node P
   (the parent of N) that has simple type or complex type with simple content.
-  P is not allowed to have any other text or element children. 
+  P is not allowed to have any other text or element children.
 
   parent        : The parent P of the new text node; must not be NULL.
   content       : The typed value of P.
@@ -1217,7 +1221,7 @@ bool BasicItemFactory::createTextNode(
 /*******************************************************************************
   Create a new pi node N and place it as the pos-th child of a given parent
   node. If no parent is given, N becomes the root (and single node) of a
-  new XML tree. 
+  new XML tree.
 
   parent        : The parent P of the new pi node; may be NULL.
   pos           : The position, among the children of P, that N will occupy.
@@ -1265,7 +1269,7 @@ bool BasicItemFactory::createPiNode(
 /*******************************************************************************
   Create a new comment node N and place it as the pos-th child of a given parent
   node. If no parent is given, N becomes the root (and single node) of a
-  new XML tree. 
+  new XML tree.
 
   parent        : The parent P of the new comment node; may be NULL.
   pos           : The position, among the children of P, that N will occupy.

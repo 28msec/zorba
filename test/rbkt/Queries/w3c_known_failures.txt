@@ -228,7 +228,6 @@ test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-sc-8
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validate-constraints-3
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-25
-test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-23
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validate-constraints-2
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validate-constraints-4
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-27

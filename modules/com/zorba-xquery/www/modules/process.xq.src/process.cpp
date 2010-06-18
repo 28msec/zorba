@@ -56,13 +56,13 @@ void create_result_node(
   zorba::Item lOutputQName = aFactory->createQName("", "stdout");
   zorba::Item lErrorQName = aFactory->createQName("", "stderr");
   zorba::Item lNullItem;
-  zorba::Item lTypeName = aFactory->createQName("http://www.w3.org/2001/XMLSchema", "string");
+  zorba::Item lTypeName = aFactory->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
 
   std::vector<std::pair<zorba::String, zorba::String> > lNSBindings;
 
   // root node called result
   aResult = aFactory->createElementNode(
-      lNullItem, lResultQName, lTypeName, true, false, lNSBindings);
+      lNullItem, lResultQName, lTypeName, false, false, lNSBindings);
 
   // <result><output> aStandardOut </output></result>
   zorba::Item lOutput;
@@ -79,7 +79,7 @@ void create_result_node(
   // <result><exit-code> aExitCode </exit-code></result>
   zorba::Item lExitCode;
   lExitCode = aFactory->createElementNode(
-      aResult, lExitCodeQName, lNullItem, false, false, lNSBindings);
+      aResult, lExitCodeQName, lTypeName, true, false, lNSBindings);
   std::ostringstream lExitCodeString;
   lExitCodeString << aExitCode;
   aFactory->createTextNode(lExitCode, lExitCodeString.str());

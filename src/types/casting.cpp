@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -68,9 +68,9 @@ struct ErrorInfo
 
 inline void throwError(XQUERY_ERROR aErrorCode, const ErrorInfo& aInfo)
 {
-  ZORBA_ERROR_DESC_OSS(aErrorCode, 
+  ZORBA_ERROR_DESC_OSS(aErrorCode,
                        "Passed item (of type " << TypeOps::toString(*aInfo.theSourceType)
-                       << ") is not castable to passed target type (" 
+                       << ") is not castable to passed target type ("
                        << TypeOps::toString (*aInfo.theTargetType) << ").");
 
 };
@@ -355,14 +355,14 @@ inline bool str_QN(store::Item_t& result, const store::Item* aItem, xqpStringSto
 
   xqpStringStore_t lUri;
   xqpStringStore_t lPrefix;
-  
+
   if (idx < 0)
   {
     lPrefix = new xqpStringStore("");
     if (nsCtx)
       nsCtx->findBinding(lPrefix, lUri);
   }
-  else 
+  else
   {
     lPrefix = str->byteSubstr(0, idx);
 
@@ -382,8 +382,8 @@ inline bool str_QN(store::Item_t& result, const store::Item* aItem, xqpStringSto
     lUri = new xqpStringStore("");
 
   return aFactory->createQName(result,
-                               lUri, 
-                               lPrefix, 
+                               lUri,
+                               lPrefix,
                                lLocal);
 }
 
@@ -398,7 +398,7 @@ inline bool uA_str(store::Item_t& result, const store::Item* aItem, xqpStringSto
 {
   xqpStringStore_t strval2;
   aItem->getStringValue(strval2);
-  return aFactory->createString(result, strval2);  
+  return aFactory->createString(result, strval2);
 }
 
 inline bool uA_flt(store::Item_t& result, const store::Item* aItem, xqpStringStore_t& strval, store::ItemFactory* aFactory, namespace_context *nsCtx, const ErrorInfo& aErrorInfo)
@@ -1095,7 +1095,7 @@ inline bool NOT_str(store::Item_t& result, const store::Item* aItem, xqpStringSt
 ********************************************************************************/
 bool str_down(
     store::Item_t& result,
-    const store::Item* aItem, 
+    const store::Item* aItem,
     RootTypeManager& aTS,
     ATOMIC_CODE_T aTargetAtomicType,
     store::ItemFactory* aFactory,
@@ -1162,7 +1162,7 @@ bool str_down(
 ********************************************************************************/
 bool int_down(
     store::Item_t& result,
-    const store::Item* aItem, 
+    const store::Item* aItem,
     RootTypeManager& aTS,
     ATOMIC_CODE_T aTargetAtomicType,
     store::ItemFactory* aFactory,
@@ -1282,10 +1282,10 @@ bool int_down(
   For each builtin atomic type T, this array maps the typecode of T to an
   index to be used in addessing theCastingMatrix.
 ********************************************************************************/
-const int GenericCast::theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE] = 
+const int GenericCast::theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE] =
 {
   -1,  //  0 XS_ANY_ATOMIC
-   1,  //  1 XS_STRING 
+   1,  //  1 XS_STRING
    1,  //  2 XS_NORMALIZED_STRING
    1,  //  3 XS_TOKEN
    1,  //  4 XS_LANGUAGE
@@ -1297,7 +1297,7 @@ const int GenericCast::theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE] =
    1,  // 10 XS_ENTITY
    0,  // 11 XS_UNTYPED_ATOMIC
    9,  // 12 XS_DATETIME
-  11,  // 13 XS_DATE 
+  11,  // 13 XS_DATE
   10,  // 14 XS_TIME
    6,  // 15 XS_DURATION
    8,  // 16 XS_DT_DURATION
@@ -1335,9 +1335,9 @@ const int GenericCast::theMapping[TypeConstants::ATOMIC_TYPE_CODE_LIST_SIZE] =
 /*******************************************************************************
 
 ********************************************************************************/
-const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[23] = 
+const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[23] =
 {
-/*uA*/  0, /*str*/ str_down, /*flt*/ 0, /*dbl*/ 0, /*dec*/ 0, /*int*/ int_down, /*dur*/ 0, 
+/*uA*/  0, /*str*/ str_down, /*flt*/ 0, /*dbl*/ 0, /*dec*/ 0, /*int*/ int_down, /*dur*/ 0,
 /*yMD*/ 0, /*dTD*/ 0, /*dT*/  0, /*tim*/ 0, /*dat*/ 0, /*gYM*/ 0, /*gYr*/ 0, /*gMD*/ 0,
 /*gDay*/0, /*gMon*/0, /*bool*/0, /*b64*/ 0, /*hxB*/ 0, /*aURI*/0, /*QN*/  0, /*NOT*/ 0
 };
@@ -1346,17 +1346,17 @@ const GenericCast::DownCastFunc GenericCast::theDownCastMatrix[23] =
 /*******************************************************************************
 
 ********************************************************************************/
-const GenericCast::CastFunc GenericCast::theCastMatrix[23][23] = 
+const GenericCast::CastFunc GenericCast::theCastMatrix[23][23] =
 {
           /*uA*/     /*str*/    /*flt*/    /*dbl*/    /*dec*/    /*int*/    /*dur*/    /*yMD*/    /*dTD*/    /*dT*/
           /*tim*/    /*dat*/    /*gYM*/    /*gYr*/    /*gMD*/    /*gDay*/   /*gMon*/   /*bool*/   /*b64*/    /*hxB*/
           /*aURI*/   /*QN*/     /*NOT*/
 /*uA*/   {&uA_uA,    &uA_str,   &uA_flt,   &uA_dbl,   &uA_dec,   &uA_int,   &uA_dur,   &uA_yMD,   &uA_dTD,   &uA_dT,
-          &uA_tim,   &uA_dat,   &uA_gYM,   &uA_gYr,   &uA_gMD,   &uA_gDay,  &uA_gMon,  &uA_bool,  &uA_b64,   &uA_hxB, 
+          &uA_tim,   &uA_dat,   &uA_gYM,   &uA_gYr,   &uA_gMD,   &uA_gDay,  &uA_gMon,  &uA_bool,  &uA_b64,   &uA_hxB,
           &uA_aURI,  0,         0},
 
 /*str*/  {&str_uA,   &str_str,  &str_flt,  &str_dbl,  &str_dec,  &str_int,  &str_dur,  &str_yMD,  &str_dTD,  &str_dT,
-          &str_tim,  &str_dat,  &str_gYM,  &str_gYr,  &str_gMD,  &str_gDay, &str_gMon, &str_bool, &str_b64,  &str_hxB, 
+          &str_tim,  &str_dat,  &str_gYM,  &str_gYr,  &str_gMD,  &str_gDay, &str_gMon, &str_bool, &str_b64,  &str_hxB,
           &str_aURI, &str_QN,   &str_NOT},
 
 /*flt*/  {&flt_uA,   &flt_str,  &flt_flt,  &flt_dbl,  &flt_dec,  &flt_int,  0,         0,         0,         0,
@@ -1461,12 +1461,12 @@ bool GenericCast::castToAtomic(
     throwError(XPST0051, lErrorInfo);
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND) 
+  if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)
   {
-    const TypeManager* tm = aTargetType->get_manager(); 
+    const TypeManager* tm = aTargetType->get_manager();
 
     store::Item_t baseItem;
-    bool success = tm->getSchema()->parseUserAtomicTypes(aStr, 
+    bool success = tm->getSchema()->parseUserAtomicTypes(aStr,
                                                          aTargetType,
                                                          baseItem);
     if (success)
@@ -1501,7 +1501,7 @@ bool GenericCast::castToAtomic(
     valid = (*lCastFunc)(result,
                          lItem,
                          aStr,
-                         lFactory, 
+                         lFactory,
                          aNsCtx,
                          lErrorInfo);
   }
@@ -1513,9 +1513,9 @@ bool GenericCast::castToAtomic(
       lTargetTypeCode != TypeConstants::XS_INTEGER)
   {
     valid = (*lDownCastFunc)(result,
-                             &*result, 
-                             rtm, 
-                             lTargetTypeCode, 
+                             &*result,
+                             rtm,
+                             lTargetTypeCode,
                              lFactory,
                              lErrorInfo);
   }
@@ -1526,11 +1526,11 @@ bool GenericCast::castToAtomic(
 
 /*******************************************************************************
   Cast, if possible, a given item SI to an atomic item TI of a given type TT.
-  If I1 is not  
+  If I1 is not
 ********************************************************************************/
 bool GenericCast::castToAtomic(
     store::Item_t&       result,
-    store::Item_t&       aItem, 
+    store::Item_t&       aItem,
     const XQType*        aTargetType,
     const TypeManager&   tm,
     namespace_context*   aNCtx)
@@ -1538,7 +1538,7 @@ bool GenericCast::castToAtomic(
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   store::ItemFactory* lFactory = GENV_ITEMFACTORY;
 
-  xqtref_t lSourceType = tm.create_named_type(aItem->getType(), 
+  xqtref_t lSourceType = tm.create_named_type(aItem->getType(),
                                               TypeConstants::QUANT_ONE);
 
   ZORBA_ASSERT(aItem->isAtomic());
@@ -1557,14 +1557,14 @@ bool GenericCast::castToAtomic(
     throwError(XPST0051, lErrorInfo);
 
 #ifndef ZORBA_NO_XMLSCHEMA
-  if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND) 
+  if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)
   {
     castToUserDefinedType(result, aItem, lSourceType.getp(), aTargetType);
     return result != NULL;
   }
 #endif // ZORBA_NO_XMLSCHEMA
 
-  xqpStringStore_t lSourceString; 
+  xqpStringStore_t lSourceString;
   ATOMIC_CODE_T lSourceTypeCode;
   ATOMIC_CODE_T lTargetTypeCode = TypeOps::get_atomic_type_code(*aTargetType);
 
@@ -1605,7 +1605,7 @@ bool GenericCast::castToAtomic(
   bool valid = (*lCastFunc)(result,
                             aItem,
                             lSourceString,
-                            lFactory, 
+                            lFactory,
                             aNCtx,
                             lErrorInfo);
 
@@ -1616,9 +1616,9 @@ bool GenericCast::castToAtomic(
       lTargetTypeCode != TypeConstants::XS_INTEGER)
   {
     valid = (*lDownCastFunc)(result,
-                             &*result, 
-                             rtm, 
-                             lTargetTypeCode, 
+                             &*result,
+                             rtm,
+                             lTargetTypeCode,
                              lFactory,
                              lErrorInfo);
   }
@@ -1645,16 +1645,16 @@ void castToUserDefinedType(
   //           << aTargetType->get_qname()->getLocalName()->c_str() << " @ "
   //           << aTargetType->get_qname()->getNamespace()->c_str() << "\n";
 
-  const TypeManager* lTypeManager = aTargetType->get_manager(); 
+  const TypeManager* lTypeManager = aTargetType->get_manager();
   Schema* schema = lTypeManager->getSchema();
 
   if (aSourceType->type_kind() != XQType::ATOMIC_TYPE_KIND ||
       (TypeOps::get_atomic_type_code(*aSourceType) != TypeConstants::XS_STRING))
   {
-    throwError(FORG0001, lErrorInfo); 
+    throwError(FORG0001, lErrorInfo);
   }
 
-  const UserDefinedXQType* udt = 
+  const UserDefinedXQType* udt =
     static_cast<const UserDefinedXQType*>(aTargetType);
 
   switch ( udt->getTypeCategory() )
@@ -1664,9 +1664,9 @@ void castToUserDefinedType(
     xqpStringStore_t strValue;
     aItem->getStringValue(strValue);
     store::Item_t baseItem;
-    bool hasResult = schema->parseUserAtomicTypes(strValue, aTargetType, 
+    bool hasResult = schema->parseUserAtomicTypes(strValue, aTargetType,
                                                   baseItem);
-    
+
     if ( hasResult )
     {
       store::Item_t typeName = udt->get_qname();
@@ -1675,15 +1675,15 @@ void castToUserDefinedType(
     }
   }
   break;
-  
+
   case UserDefinedXQType::LIST_TYPE:
   case UserDefinedXQType::UNION_TYPE:
-  case UserDefinedXQType::COMPLEX_TYPE:       
+  case UserDefinedXQType::COMPLEX_TYPE:
   default:
     ZORBA_ASSERT( false);
     break;
   }
-  
+
   result = NULL;
 }
 
@@ -1692,11 +1692,11 @@ void castToUserDefinedType(
 
 ********************************************************************************/
 bool GenericCast::castToSimple(
-    xqpStringStore_t& aStr, 
+    xqpStringStore_t& aStr,
     const xqtref_t& aTargetType,
     std::vector<store::Item_t> &aResultList)
 {
-  const TypeManager* lTypeManager = aTargetType->get_manager(); 
+  const TypeManager* lTypeManager = aTargetType->get_manager();
 
   //std::cout << "-castToSimple: " << aStr.c_str() << " tgtType: " << aTargetType->get_qname()->getLocalName()->c_str() << " @ " << aTargetType->get_qname()->getNamespace()->c_str() << "\n";
 
@@ -1718,7 +1718,7 @@ bool GenericCast::castToQName(
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t sourceType = tm.create_named_type(item->getType(), 
+  xqtref_t sourceType = tm.create_named_type(item->getType(),
                                              TypeConstants::QUANT_ONE);
 
   ZORBA_ASSERT(item->isAtomic());
@@ -1732,7 +1732,7 @@ bool GenericCast::castToQName(
   else if (!TypeOps::is_subtype(*sourceType, *rtm.STRING_TYPE_ONE) &&
            !TypeOps::is_equal(*sourceType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
-    ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc, 
+    ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
                              "Item of type " << sourceType->toString()
                              << " cannot be cast to QName.");
   }
@@ -1748,14 +1748,14 @@ bool GenericCast::castToQName(
 
   xqpStringStore_t nsuri;
   xqpStringStore_t prefix;
-  
+
   if (idx < 0)
   {
     prefix = new xqpStringStore("");
     if (nsCtx && !isAttrName)
       nsCtx->findBinding(prefix, nsuri);
   }
-  else 
+  else
   {
     prefix = strval->byteSubstr(0, idx);
 
@@ -1779,11 +1779,11 @@ bool GenericCast::castToQName(
 
 
 /*******************************************************************************
-  NCName				  ::= NCNameStartChar NCNameChar* // An XML Name, minus the ":" 
-  NCNameChar      ::= NameChar - ':' 
-  NCNameStartChar ::= Letter | '_' 
+  NCName				  ::= NCNameStartChar NCNameChar* // An XML Name, minus the ":"
+  NCNameChar      ::= NameChar - ':'
+  NCNameStartChar ::= Letter | '_'
   NameChar			  ::= Letter | Digit | '.' | '-' | '_' | ':' | CombiningChar |
-                      Extender 
+                      Extender
 ********************************************************************************/
 bool GenericCast::castableToNCName(const xqpStringStore* str) const
 {
@@ -1949,17 +1949,17 @@ bool GenericCast::castableToName(const xqpStringStore *str)
   std::vector<uint32_t> cps = str->getCodepoints();
   std::vector<uint32_t>::size_type i, sz = cps.size();
 
-  if (sz == 0) 
+  if (sz == 0)
   {
     return false;
   }
 
-  for (i = 0; i < sz; ++i) 
+  for (i = 0; i < sz; ++i)
   {
     cp = cps[i];
     if (!(XQCharType::isLetter(cp) || cp == '_' || cp == ':') )
     {
-      if (i == 0) 
+      if (i == 0)
       {
         return false;
       }
@@ -1968,7 +1968,7 @@ bool GenericCast::castableToName(const xqpStringStore *str)
         || XQCharType::isExtender(cp)
         || XQCharType::isCombiningChar(cp)
         || cp == '.'
-        || cp == '-')) 
+        || cp == '-'))
       {
         return false;
       }
@@ -1990,7 +1990,7 @@ bool GenericCast::isCastable(
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
   {
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
-    if (!udt->isComplex()) 
+    if (!udt->isComplex())
     {
       return tm.getSchema()->
              isCastableUserSimpleTypes(aItem->getStringValue(),
@@ -1998,8 +1998,8 @@ bool GenericCast::isCastable(
     }
   }
 #endif // ZORBA_NO_XMLSCHEMA
-    
-    xqtref_t lSourceType = tm.create_named_type(aItem->getType(), 
+
+    xqtref_t lSourceType = tm.create_named_type(aItem->getType(),
                                                 TypeConstants::QUANT_ONE);
 
     TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
@@ -2014,7 +2014,7 @@ bool GenericCast::isCastable(
       break;
     case TypeConstants::MAYBE_CASTABLE:
     {
-      try 
+      try
       {
         store::Item_t temp = aItem;
         return castToAtomic(temp, temp, aTargetType, tm);
@@ -2070,27 +2070,27 @@ bool GenericCast::promote(
   {
     return GenericCast::castToAtomic(result, aItem, aTargetType, tm);
   }
-  else if (TypeOps::is_subtype(*aTargetType, *typesys.FLOAT_TYPE_ONE)) 
+  else if (TypeOps::is_subtype(*aTargetType, *typesys.FLOAT_TYPE_ONE))
   {
     // decimal --> xs:float
-    if (TypeOps::is_subtype(*lItemType, *typesys.DECIMAL_TYPE_ONE)) 
+    if (TypeOps::is_subtype(*lItemType, *typesys.DECIMAL_TYPE_ONE))
     {
-      return GenericCast::castToAtomic(result, aItem, aTargetType, tm); 
+      return GenericCast::castToAtomic(result, aItem, aTargetType, tm);
     }
   }
   else if (TypeOps::is_subtype(*aTargetType, *typesys.DOUBLE_TYPE_ONE))
   {
     // Decimal/Float --> xs:double
     if (TypeOps::is_subtype(*lItemType, *typesys.DECIMAL_TYPE_ONE) ||
-        TypeOps::is_subtype(*lItemType, *typesys.FLOAT_TYPE_ONE)) 
+        TypeOps::is_subtype(*lItemType, *typesys.FLOAT_TYPE_ONE))
     {
       return GenericCast::castToAtomic(result, aItem, aTargetType, tm);
     }
   }
-  else if (TypeOps::is_subtype(*aTargetType, *typesys.STRING_TYPE_ONE)) 
+  else if (TypeOps::is_subtype(*aTargetType, *typesys.STRING_TYPE_ONE))
   {
     // URI --> xs:String Promotion
-    if (TypeOps::is_subtype(*lItemType, *typesys.ANY_URI_TYPE_ONE)) 
+    if (TypeOps::is_subtype(*lItemType, *typesys.ANY_URI_TYPE_ONE))
     {
       return GenericCast::castToAtomic(result, aItem, &*typesys.STRING_TYPE_ONE, tm);
     }
