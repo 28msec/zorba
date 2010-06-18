@@ -96,9 +96,10 @@
 #cmakedefine ZORBA_HAVE_PTHREAD_MUTEX
 
 /* Configure Zorba features*/
+#cmakedefine ZORBA_NO_BIGNUMBERS
+#cmakedefine ZORBA_NO_FULL_TEXT
 #cmakedefine ZORBA_NO_UNICODE
 #cmakedefine ZORBA_NO_XMLSCHEMA
-#cmakedefine ZORBA_NO_BIGNUMBERS
 #cmakedefine ZORBA_NUMERIC_OPTIMIZATION
 
 /* XQueryX */
