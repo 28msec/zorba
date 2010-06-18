@@ -55,8 +55,6 @@ RULE(MarkFreeVars);
 
 RULE(HoistExprsOutOfLoops);
 
-RULE(IndexJoin);
-
 RULE(InlineFunctions);
 
 RULE(PartialEval);
@@ -87,6 +85,15 @@ class MarkExprs : public RewriteRule
 {
 public:
   MarkExprs() : RewriteRule(RewriteRule::MarkExprs, "MarkExprs") {}
+
+  expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
+};
+
+
+class IndexJoinRule : public RewriteRule 
+{
+public:
+  IndexJoinRule() : RewriteRule(RewriteRule::IndexJoin, "IndexJoin") {}
 
   expr_t apply(RewriterContext& rCtx, expr* node, bool& modified);
 };

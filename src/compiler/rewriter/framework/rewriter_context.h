@@ -74,7 +74,6 @@ public:
   IdVarMap                   * theIdVarMap;
   ExprVarsMap                * theExprVarsMap;
   std::vector<expr_t>          theFlworStack;
-  std::vector<bool>            theIsModifiedStack;
 
 public:
   RewriterContext(CompilerCB* cb, expr_t root);

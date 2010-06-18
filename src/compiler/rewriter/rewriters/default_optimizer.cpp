@@ -67,7 +67,6 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
   RuleOnceDriver<EliminateNodeOps> driverEliminateNodeOps;
   SingletonRuleMajorDriver<SpecializeOperations> driverSpecializeOperations;
   RuleOnceDriver<HoistExprsOutOfLoops> driverHoistExprsOutOfLoops;
-  RuleOnceDriver<IndexJoin> driverIndexJoin;
 
   SingletonRuleMajorDriver<MarkFreeVars> driverMarkFreeVars;
   FoldRules driverFoldRules;
@@ -151,11 +150,55 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
     goto repeat4;
   }
 
+  // Loop Hoisting
   if (Properties::instance()->loopHoisting())
     driverHoistExprsOutOfLoops.rewrite(rCtx);
 
+  // Index Joins
   if (Properties::instance()->inferJoins())
-    driverIndexJoin.rewrite(rCtx);
+  {
+    IndexJoinRule rule;
+    bool local_modified = false;
+
+    rCtx.theVarIdMap = new VarIdMap;
+    rCtx.theIdVarMap = new IdVarMap;
+    rCtx.theExprVarsMap = new ExprVarsMap;
+
+    ulong numVars = 0;
+    index_flwor_vars(rCtx.getRoot(), numVars, *rCtx.theVarIdMap, rCtx.theIdVarMap);
+
+    do
+    {
+      assert(rCtx.theFlworStack.empty());
+
+      rCtx.theExprVarsMap->clear();
+
+      DynamicBitset freeset(numVars);
+      build_expr_to_vars_map(rCtx.getRoot(),
+                             *rCtx.theVarIdMap,
+                             freeset,
+                             *rCtx.theExprVarsMap);
+
+      local_modified = false; 
+
+      expr_t e = rule.apply(rCtx, rCtx.getRoot().getp(), local_modified);
+
+      if (e != rCtx.getRoot())
+        rCtx.setRoot(e);
+
+      if (local_modified)
+      {
+        modified = true;
+
+        if (Properties::instance()->printIntermediateOpt()) 
+        {
+          std::cout << "After index join : " << std::endl;
+          rCtx.getRoot()->put(std::cout) << std::endl;
+        }
+      }
+    }
+    while (local_modified);
+  }
 
   return modified;
 }
