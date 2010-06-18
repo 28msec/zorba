@@ -656,10 +656,12 @@ done:
 
 void usage()
 {
-  std::cerr << "\nusage: testdriver_mt -b <bucket> [-t <numThreads>] [-n <runsPerQuery>]" << std::endl
-            << "  [-e <expected-failures file>] [-o <report logfile>] [-q]"
-            << std::endl;
-  std::cerr << "  -q - Quiet; only a summary report will be displayed." << std::endl;
+  std::cerr << "\nusage: testdriver_mt -b <bucket> [options]       OR" << std::endl
+            << "       testdriver_mt -p <path-to-bucket> [options]" << std::endl
+            << "Options:" << std::endl
+            << "  [-t <numThreads>] [-n <runsPerQuery>] [-e test-name] [-q]" << std::endl
+            << "  [-k <known-failures file>] [-o <report logfile>]" << std::endl
+            << "  -q - Quiet; only a summary report will be displayed." << std::endl;
   exit(1);
 }
 
@@ -668,12 +670,13 @@ int
 #ifdef _WIN32_WCE
 _tmain(int argc, _TCHAR* argv[])
 #else
-main(int argc, char** argv)
+  main(int argc, char** argv)
 #endif
 {
   zorba::Properties::load(0, NULL);
 
   std::string bucketName;
+  std::string bucketPath;
   std::string queriesDir;
   std::string resultsDir;
   std::string refsDir;
@@ -683,8 +686,10 @@ main(int argc, char** argv)
   bool haveKnownFailures = false;
   bool quiet = false;
 
-  fs::path bucketPath;
+  fs::path path;
   std::set<std::string> knownFailures;
+
+  std::vector<std::string> testNames;
 
   long numThreads = 1;
   long numRunsPerQuery = 1;
@@ -692,9 +697,6 @@ main(int argc, char** argv)
   signal(SIGSEGV, sigHandler);
 
   // Parse the arg list
-  if ( argc < 3 || argc > 7)
-    usage();
-
   long arg = 1;
  
   while (arg < argc)
@@ -717,6 +719,16 @@ main(int argc, char** argv)
     {
       arg++;
       bucketName = argv[arg]; 
+    }
+    else if (!strcmp(argv[arg], "-p"))
+    {
+      arg++;
+      bucketPath = argv[arg];
+    }
+    else if (!strcmp(argv[arg], "-e"))
+    {
+      arg++;
+      testNames.push_back(argv[arg]);
     }
     else if (!strcmp(argv[arg], "-o"))
     {
@@ -741,6 +753,10 @@ main(int argc, char** argv)
     arg++;
   }
 
+  if (bucketName == "" && bucketPath == "") {
+    usage();
+  }
+
   // This is a cheap and easy way to make a "null" ostream:
   std::ostringstream nullstream;
   nullstream.clear(std::ios::badbit);
@@ -762,9 +778,17 @@ main(int argc, char** argv)
   // Create the full pathname for the top-level query, results, and ref-results
   // directories
   //
-  queriesDir = zorba::RBKT_SRC_DIR + "/Queries/" + bucketName;
+  if (bucketPath == "") {
+    bucketPath = zorba::RBKT_SRC_DIR;
+    // QQQ Probably should have an option for specifying alternative
+    // resultsDir too
+  }
+  else {
+    rbkt_src_dir = bucketPath;
+  }
+  queriesDir = bucketPath + "/Queries/" + bucketName;
   resultsDir = zorba::RBKT_BINARY_DIR + "/QueryResults/" + bucketName;
-  refsDir = zorba::RBKT_SRC_DIR + "/ExpQueryResults/" + bucketName;
+  refsDir = bucketPath + "/ExpQueryResults/" + bucketName;
 
   queries.theIsW3Cbucket = (bucketName.find("w3c_testsuite") != std::string::npos);
 
@@ -783,63 +807,69 @@ main(int argc, char** argv)
   // Make sure the directories exist. For the results dir, if it doesn't exist,
   // it is created.
   //
-  bucketPath = fs::system_complete(fs::path(queriesDir, fs::native));
-  if (!fs::is_directory(bucketPath))
+  path = fs::system_complete(fs::path(queriesDir, fs::native));
+  if (!fs::is_directory(path))
   {
     std::cerr << "The directory " << queriesDir << " could not be found" << std::endl;
     exit(2);
   }
-  queries.theQueriesDir = bucketPath.native_directory_string();
+  queries.theQueriesDir = path.native_directory_string();
 
-  bucketPath = fs::system_complete(fs::path(refsDir, fs::native));
-  if (!fs::is_directory(bucketPath))
+  path = fs::system_complete(fs::path(refsDir, fs::native));
+  if (!fs::is_directory(path))
   {
     std::cerr << "The directory " << refsDir << " could not be found" << std::endl;
     exit(2);
   }
-  queries.theRefsDir = bucketPath.native_directory_string();
+  queries.theRefsDir = path.native_directory_string();
 
-  bucketPath = fs::system_complete(fs::path(resultsDir, fs::native));
-  if (!fs::exists(bucketPath))
+  path = fs::system_complete(fs::path(resultsDir, fs::native));
+  if (!fs::exists(path))
   {
-    fs::create_directories(bucketPath);
+    fs::create_directories(path);
   }
-  else if (!fs::is_directory(bucketPath))
+  else if (!fs::is_directory(path))
   {
     std::cerr << "The pathname " << resultsDir << " is not a directory" << std::endl;
     exit(2);
   }
-  queries.theResultsDir = bucketPath.native_directory_string();
+  queries.theResultsDir = path.native_directory_string();
 
   //
-  // Search and collect all the query files in the bucket.
+  // Search and collect all the query files in the bucket, unless some
+  // specific test names were mentioned.
   //
-  queries.theOutput << "Searching for queries in directory "
-                    << queries.theQueriesDir << std::endl << std::endl;
+  if (testNames.size() == 0) {
+    queries.theOutput << "Searching for queries in directory "
+                      << queries.theQueriesDir << std::endl << std::endl;
 
-  fs::recursive_directory_iterator endDirIte;
-  fs::recursive_directory_iterator dirIte(queries.theQueriesDir);
+    fs::recursive_directory_iterator endDirIte;
+    fs::recursive_directory_iterator dirIte(queries.theQueriesDir);
 
-  for (; dirIte != endDirIte; dirIte++)
-  {
-    fs::path queryPath = *dirIte;
-
-    if (!fs::is_regular(queryPath))
+    for (; dirIte != endDirIte; dirIte++)
     {
-      //std::cerr << "Found non-regular file " << queryPath.string() << std::endl;
-      continue;
+      fs::path queryPath = *dirIte;
+
+      if (!fs::is_regular(queryPath))
+      {
+        //std::cerr << "Found non-regular file " << queryPath.string() << std::endl;
+        continue;
+      }
+
+      if (fs::extension(queryPath) != ".xq")
+      {
+        //std::cerr << "Found no-query file " << queryPath.string() << std::endl;
+        continue;
+      }
+
+      std::string queryFile = queryPath.file_string();
+      std::string relativeQueryFile = queryFile.substr(queries.theQueriesDir.size());
+
+      queries.theQueryFilenames.push_back(relativeQueryFile);
     }
-
-    if (fs::extension(queryPath) != ".xq")
-    {
-      //std::cerr << "Found no-query file " << queryPath.string() << std::endl;
-      continue;
-    }
-
-    std::string queryFile = queryPath.file_string();
-    std::string relativeQueryFile = queryFile.substr(queries.theQueriesDir.size());
-
-    queries.theQueryFilenames.push_back(relativeQueryFile);
+  }
+  else {
+    queries.theQueryFilenames = testNames;
   }
 
   queries.theNumQueries = queries.theQueryFilenames.size();
