@@ -18,6 +18,8 @@
 #include <iterator>
 #include <stack>
 
+#include <zorba/config.h>
+
 #include "zorbautils/fatal.h"
 #include "zorbautils/strutil.h"
 #include "zorbatypes/URI.h"
@@ -50,8 +52,10 @@
 #include "compiler/parsetree/parsenode_visitor.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
+#ifndef ZORBA_NO_FULL_TEXT
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/path_expr.h"
@@ -1000,7 +1004,9 @@ protected:
 
   stack<expr_t>                        theNodeStack;
 
+#ifndef ZORBA_NO_FULL_TEXT
   stack<ftnode*>                       theFTNodeStack;
+#endif
 
   stack<xqtref_t>                      theTypeStack;
 
@@ -1249,6 +1255,7 @@ xqtref_t pop_tstack()
 }
 
 
+#ifndef ZORBA_NO_FULL_TEXT
 /*****************************************************************************
   Pop the top count ftnodes from theFTNodeStack and return the last expr that
   was popped.
@@ -1293,6 +1300,7 @@ inline ftnode* top_ftstack()
   ZORBA_FATAL( !theFTNodeStack.empty(), "" );
   return theFTNodeStack.top();
 }
+#endif /* ZORBA_NO_FULL_TEXT */
 
 
 /******************************************************************************
@@ -10928,6 +10936,7 @@ void end_visit(const FlowCtlStatement& v, void* visit_state)
 
 ////////// full-text-related //////////////////////////////////////////////////
 
+#ifndef ZORBA_NO_FULL_TEXT
 template<typename FTNodeType> bool flatten( ftnode *n ) {
   if ( FTNodeType *const n2 = dynamic_cast<FTNodeType*>( n ) ) {
     typename FTNodeType::ftnode_list_t list = n2->get_node_list();
@@ -10941,16 +10950,19 @@ template<typename FTNodeType> bool flatten( ftnode *n ) {
   }
   return false;
 }
+#endif /* ZORBA_NO_FULL_TEXT */
 
 void *begin_visit (const FTAnd& v) {
   TRACE_VISIT ();
+#ifndef ZORBA_NO_FULL_TEXT
   push_ftstack( NULL ); // sentinel
+#endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
 
 void end_visit (const FTAnd& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+#ifndef ZORBA_NO_FULL_TEXT
   ftand::ftnode_list_t list;
   while ( true ) {
     ftnode *const n = pop_ftstack();
@@ -10965,6 +10977,7 @@ void end_visit (const FTAnd& v, void* /*visit_state*/) {
     }
   }
   push_ftstack( new ftand( v.get_location(), list ) );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTAnyallOption& v) {
@@ -10997,21 +11010,27 @@ void *begin_visit (const FTCaseOption& v) {
 
 void end_visit (const FTCaseOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftcase_option *const co = new ftcase_option( v.get_location(), v.get_mode() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   mo->set_case_option( co );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTContainsExpr& v) {
   TRACE_VISIT ();
-  // nothing to do
+#ifdef ZORBA_NO_FULL_TEXT
+  ZORBA_ERROR_LOC_DESC(
+    XPST0003, v.get_location(), "full-text is not enabled in this build"
+  );
+#endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
 
 void end_visit (const FTContainsExpr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+#ifndef ZORBA_NO_FULL_TEXT
   expr_t ftignore = NULL;
   if ( v.get_ignore() )
     ftignore = pop_nodestack();
@@ -11026,6 +11045,7 @@ void end_visit (const FTContainsExpr& v, void* /*visit_state*/) {
     theRootSctx, v.get_location(), range, selection, ftignore
   );
   push_nodestack( e );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTContent& v) {
@@ -11036,7 +11056,9 @@ void *begin_visit (const FTContent& v) {
 
 void end_visit (const FTContent& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   push_ftstack( new ftcontent_filter( v.get_location(), v.get_mode() ) );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTDiacriticsOption& v) {
@@ -11047,11 +11069,13 @@ void *begin_visit (const FTDiacriticsOption& v) {
 
 void end_visit (const FTDiacriticsOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftdiacritics_option *const d =
     new ftdiacritics_option( v.get_location(), v.get_mode() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   mo->set_diacritics_option( d );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTDistance& v) {
@@ -11062,12 +11086,14 @@ void *begin_visit (const FTDistance& v) {
 
 void end_visit (const FTDistance& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftdistance_filter *const df = new ftdistance_filter(
     v.get_location(),
     dynamic_cast<ftrange*>( pop_ftstack() ),
     v.get_unit()->get_unit()
   );
   push_ftstack( df );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTExtensionOption& v) {
@@ -11078,11 +11104,13 @@ void *begin_visit (const FTExtensionOption& v) {
 
 void end_visit (const FTExtensionOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftextension_option *const eo =
     new ftextension_option( v.get_location(), v.get_qname(), v.get_val() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   mo->set_extension_option( eo );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTExtensionSelection& v) {
@@ -11093,6 +11121,7 @@ void *begin_visit (const FTExtensionSelection& v) {
 
 void end_visit (const FTExtensionSelection& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftselection *const s = dynamic_cast<ftselection*>( top_ftstack() );
   if ( s )
     pop_ftstack();
@@ -11100,6 +11129,7 @@ void end_visit (const FTExtensionSelection& v, void* /*visit_state*/) {
     v.get_location(), /* TODO: pragma_list, */ s
   );
   push_ftstack( es );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTIgnoreOption& v) {
@@ -11121,15 +11151,19 @@ void *begin_visit (const FTLanguageOption& v) {
 
 void end_visit (const FTLanguageOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftlanguage_option *const lo = new ftlanguage_option( loc, v.get_language() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   mo->set_language_option( lo );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTMatchOptions& v) {
   TRACE_VISIT ();
+#ifndef ZORBA_NO_FULL_TEXT
   push_ftstack( new ftmatch_options( v.get_location() ) );
+#endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
 
@@ -11140,13 +11174,15 @@ void end_visit (const FTMatchOptions& v, void* /*visit_state*/) {
 
 void *begin_visit (const FTMildNot& v) {
   TRACE_VISIT ();
+#ifndef ZORBA_NO_FULL_TEXT
   push_ftstack( NULL ); // sentinel
+#endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
 
 void end_visit (const FTMildNot& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+#ifndef ZORBA_NO_FULL_TEXT
   ftmild_not::ftnode_list_t list;
   while ( true ) {
     ftnode *const n = pop_ftstack();
@@ -11161,6 +11197,7 @@ void end_visit (const FTMildNot& v, void* /*visit_state*/) {
     }
   }
   push_ftstack( new ftmild_not( v.get_location(), list ) );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTOptionDecl& v) {
@@ -11171,20 +11208,24 @@ void *begin_visit (const FTOptionDecl& v) {
 
 void end_visit (const FTOptionDecl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( pop_ftstack() );
   ZORBA_ASSERT( mo );
   theSctx->set_match_options( mo );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTOr& v) {
   TRACE_VISIT ();
-  push_ftstack( NULL );
+#ifndef ZORBA_NO_FULL_TEXT
+  push_ftstack( NULL ); // sentinel
+#endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
 
 void end_visit (const FTOr& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+#ifndef ZORBA_NO_FULL_TEXT
   ftor::ftnode_list_t list;
   while ( true ) {
     ftnode *const n = pop_ftstack();
@@ -11199,6 +11240,7 @@ void end_visit (const FTOr& v, void* /*visit_state*/) {
     }
   }
   push_ftstack( new ftor( v.get_location(), list ) );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTOrder& v) {
@@ -11209,17 +11251,22 @@ void *begin_visit (const FTOrder& v) {
 
 void end_visit (const FTOrder& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   push_ftstack( new ftorder_filter( v.get_location() ) );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTPrimaryWithOptions& v) {
   TRACE_VISIT ();
+#ifndef ZORBA_NO_FULL_TEXT
   push_ftstack( new ftprimary_with_options( v.get_location() ) );
+#endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
 
 void end_visit (const FTPrimaryWithOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   if ( mo ) 
     pop_ftstack();
@@ -11231,17 +11278,20 @@ void end_visit (const FTPrimaryWithOptions& v, void* /*visit_state*/) {
   pwo->set_primary( p );
   if ( mo )
     pwo->set_match_options( mo );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTRange& v) {
   TRACE_VISIT ();
+#ifndef ZORBA_NO_FULL_TEXT
   push_nodestack( NULL ); // sentinel
+#endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
 
 void end_visit (const FTRange& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+#ifndef ZORBA_NO_FULL_TEXT
   expr_t e2 = pop_nodestack();
   expr_t e1 = pop_nodestack();
   if ( e1 )
@@ -11262,6 +11312,7 @@ void end_visit (const FTRange& v, void* /*visit_state*/) {
 
   ftrange *const r = new ftrange( v.get_location(), v.get_mode(), e1, e2 );
   push_ftstack( r );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTScope& v) {
@@ -11272,10 +11323,12 @@ void *begin_visit (const FTScope& v) {
 
 void end_visit (const FTScope& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftscope_filter *const sf = new ftscope_filter(
     v.get_location(), v.get_scope(), v.get_big_unit()->get_unit()
   );
   push_ftstack( sf );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTScoreVar& v) {
@@ -11297,7 +11350,7 @@ void *begin_visit (const FTSelection& v) {
 
 void end_visit (const FTSelection& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+#ifndef ZORBA_NO_FULL_TEXT
   ftselection::ftpos_filter_list_t list;
   while ( true ) {
     ftnode *const n = pop_ftstack();
@@ -11308,6 +11361,7 @@ void end_visit (const FTSelection& v, void* /*visit_state*/) {
       break;
     }
   }
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTStemOption& v) {
@@ -11318,10 +11372,12 @@ void *begin_visit (const FTStemOption& v) {
 
 void end_visit (const FTStemOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftstem_option *const so = new ftstem_option( v.get_location(), v.get_mode() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   mo->set_stem_option( so );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTStopWords& v) {
@@ -11332,9 +11388,11 @@ void *begin_visit (const FTStopWords& v) {
 
 void end_visit (const FTStopWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftstop_words *const sw =
     new ftstop_words( v.get_location(), v.get_uri(), v.get_stop_words() );
   push_ftstack( sw );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTStopWordsInclExcl& v) {
@@ -11345,10 +11403,11 @@ void *begin_visit (const FTStopWordsInclExcl& v) {
 
 void end_visit (const FTStopWordsInclExcl& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+#ifndef ZORBA_NO_FULL_TEXT
   ftstop_words *const sw = dynamic_cast<ftstop_words*>( top_ftstack() );
   ZORBA_ASSERT( sw );
   sw->set_mode( v.get_mode() );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTStopWordOption& v) {
@@ -11359,7 +11418,7 @@ void *begin_visit (const FTStopWordOption& v) {
 
 void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+#ifndef ZORBA_NO_FULL_TEXT
   if ( v.get_mode() == ft_stop_words_mode::without )
     return;
 
@@ -11379,6 +11438,7 @@ void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   mo->set_stop_word_option( swo );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTThesaurusID& v) {
@@ -11389,6 +11449,7 @@ void *begin_visit (const FTThesaurusID& v) {
 
 void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftthesaurus_id *const ti = new ftthesaurus_id(
     v.get_location(),
     v.get_uri(),
@@ -11396,17 +11457,20 @@ void end_visit (const FTThesaurusID& v, void* /*visit_state*/) {
     v.get_levels() ? dynamic_cast<ftrange*>( pop_ftstack() ) : NULL
   );
   push_ftstack( ti );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTThesaurusOption& v) {
   TRACE_VISIT ();
+#ifndef ZORBA_NO_FULL_TEXT
   push_ftstack( NULL ); // sentinel
+#endif /* ZORBA_NO_FULL_TEXT */
   return no_state;
 }
 
 void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-
+#ifndef ZORBA_NO_FULL_TEXT
   ftthesaurus_option::thesaurus_id_list_t list;
   while ( true ) {
     ftthesaurus_id *const ti = dynamic_cast<ftthesaurus_id*>( pop_ftstack() );
@@ -11421,6 +11485,7 @@ void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   mo->set_thesaurus_option( to );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTTimes& v) {
@@ -11442,7 +11507,9 @@ void *begin_visit (const FTUnaryNot& v) {
 
 void end_visit (const FTUnaryNot& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   push_ftstack( new ftunary_not( v.get_location(), pop_ftstack() ) );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTUnit& v) {
@@ -11464,10 +11531,12 @@ void *begin_visit (const FTWeight& v) {
 
 void end_visit (const FTWeight& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftprimary_with_options *const pwo =
     dynamic_cast<ftprimary_with_options*>( top_ftstack() );
   ZORBA_ASSERT( pwo );
   pwo->set_weight( pop_nodestack() );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTWildCardOption& v) {
@@ -11478,11 +11547,13 @@ void *begin_visit (const FTWildCardOption& v) {
 
 void end_visit (const FTWildCardOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftwild_card_option *const wco =
     new ftwild_card_option( v.get_location(), v.get_mode() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
   mo->set_wild_card_option( wco );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTWindow& v) {
@@ -11493,6 +11564,7 @@ void *begin_visit (const FTWindow& v) {
 
 void end_visit (const FTWindow& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   expr_t e( pop_nodestack() );
   e = wrap_in_atomization( e );
   e = wrap_in_type_promotion( e, theRTM.INTEGER_TYPE_ONE );
@@ -11500,6 +11572,7 @@ void end_visit (const FTWindow& v, void* /*visit_state*/) {
     v.get_location(), e, v.get_unit()->get_unit()
   );
   push_ftstack( wf );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTWords& v) {
@@ -11510,6 +11583,7 @@ void *begin_visit (const FTWords& v) {
 
 void end_visit (const FTWords& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   expr_t e( pop_nodestack() );
   e = wrap_in_atomization( e );
   e = wrap_in_type_promotion( e, theRTM.STRING_TYPE_STAR );
@@ -11517,6 +11591,7 @@ void end_visit (const FTWords& v, void* /*visit_state*/) {
     v.get_location(), e, v.get_any_all_option()->get_option()
   );
   push_ftstack( w );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTWordsTimes& v) {
@@ -11527,15 +11602,16 @@ void *begin_visit (const FTWordsTimes& v) {
 
 void end_visit (const FTWordsTimes& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
+#ifndef ZORBA_NO_FULL_TEXT
   ftrange *const times = dynamic_cast<ftrange*>( top_ftstack() );
   if ( times )
     pop_ftstack();
   ftwords *const words = dynamic_cast<ftwords*>( pop_ftstack() );
   push_ftstack( new ftwords_times( v.get_location(), words, times ) );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
-void *begin_visit (const FTWordsValue& v)
-{
+void *begin_visit (const FTWordsValue& v) {
   TRACE_VISIT ();
   // nothing to do
   return no_state;
