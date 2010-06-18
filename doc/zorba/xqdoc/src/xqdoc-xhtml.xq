@@ -4,12 +4,42 @@ import module namespace util = "http://www.zorba-xquery.com/zorba/util-functions
 
 declare namespace xqdoc = "http://www.xqdoc.org/1.0";
 
-declare function xhtml:doc($xqdoc)
+declare function xhtml:doc($xqdoc, $menu)
 {
-    <html>{
-        xhtml:header($xqdoc),
-        xhtml:body($xqdoc)
-    }</html>
+<html>
+  <head>
+    <title>Documentation for {xhtml:module-uri($xqdoc)}</title>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <meta content="PRIVATE" http-equiv="CACHE-CONTROL" />
+    <meta content="-1" http-equiv="Expires" />
+    <title>Zorba - XQuery API XQDoc Documentation</title>
+    <link rel="stylesheet" type="text/css" href="css/main.css" />
+    <link rel="stylesheet" href="css/jquery.treeview.css" />
+    <link rel="stylesheet" href="css/screen.css" />
+    <script src="lib/jquery.js" type="text/javascript"> </script>
+    <script src="lib/jquery.cookie.js" type="text/javascript"> </script>
+    <script src="lib/jquery.treeview.js" type="text/javascript"> </script>
+    <script type="text/javascript">
+      $(function() &#123;
+        $("#documentation").treeview(&#123;
+            animated: "fast",
+            collapsed: true,
+            unique: false,
+            persist: "cookie"
+        &#125;);
+      &#125;)
+    </script>
+  </head>
+  <body>
+  <div id="main">
+    <div id="leftMenu">
+    {$menu}
+    </div>
+    <div id="rightcontent">{xhtml:body($xqdoc)}
+    </div>
+  </div>
+  </body>
+</html>
 };
 
 declare function xhtml:header($xqdoc)

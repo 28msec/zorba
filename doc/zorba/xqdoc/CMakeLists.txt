@@ -29,13 +29,29 @@ LIST(APPEND XQDOC_DEPENDS ${XQDOC_TEMPLATES})
 FILE(GLOB_RECURSE XQDOC_GENERATORS ${CMAKE_CURRENT_SOURCE_DIR}/src/*)
 LIST(APPEND XQDOC_DEPENDS ${XQDOC_GENERATORS})
 
-# copy images and stylesheets required by the xqdoc generated xhtml page
-CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/styles/zorba.css
-               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/css/zorba.css COPYONLY)
+# copy stylesheets, images and lib required by the xqdoc generated xhtml page
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/styles/jquery.treeview.css
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/css/jquery.treeview.css COPYONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/styles/main.css
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/css/main.css COPYONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/styles/screen.css
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/css/screen.css COPYONLY)
+
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/S.gif
                ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/S.gif COPYONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/U.gif
                ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/U.gif COPYONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/treeview-default.gif
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/treeview-default.gif COPYONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/treeview-default-line.gif
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/treeview-default-line.gif COPYONLY)
+
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/lib/jquery.cookie.js
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/lib/jquery.cookie.js COPYONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/lib/jquery.js
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/lib/jquery.js COPYONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/lib/jquery.treeview.js
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/lib/jquery.treeview.js COPYONLY)
 
 # Finally, add the xqdoc command,
 # therefore, a working zorba cmd is required.
@@ -47,7 +63,6 @@ ADD_CUSTOM_TARGET(xqdoc
     -e "\"modulesPath:=${CMAKE_SOURCE_DIR}/modules\""
     -e "\"xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}\""
     -e "\"indexHtmlPath:=${CMAKE_CURRENT_SOURCE_DIR}/templates/index.html\""
-    -e "\"cssFileName:=css/zorba.css\""
     -o "\"${CMAKE_CURRENT_BINARY_DIR}/xhtml/index.html\""
   DEPENDS
     ${XQDOC_DEPENDS}

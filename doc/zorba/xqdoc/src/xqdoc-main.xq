@@ -19,6 +19,16 @@ declare variable $examplePath as xs:string* := (
 );
 
 (:~
+ : This variable contains categories in the left menu
+ :)
+declare variable $moduleCategories as xs:string* := (
+'http://expath.org/ns',
+'http://www.zorba-xquery.com/modules'
+);
+
+declare variable $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>API Documentation</strong></span></ul>;
+
+(:~
  : This variable contains the modules directory path in the source directory.
  :)
 declare variable $modulesPath as xs:string external;
@@ -38,12 +48,6 @@ declare variable $xqdocXmlPath as xs:string := fn:concat($xqdocBuildPath, file:p
  :)
 declare variable $xqdocXhtmlPath as xs:string := fn:concat($xqdocBuildPath, file:path-separator(), "xhtml");
 
-(:~
- : This variable points to the CSS file to use when generating the XHTML.
- : The path is relative to the taget path of the index.html.
- :)
-declare variable $cssFileName as xs:string external;
-
 declare variable $stepBacks as xs:string := "../../../../../../../../../../../../../../../../../../../../";
 
 (:~
@@ -52,6 +56,24 @@ declare variable $stepBacks as xs:string := "../../../../../../../../../../../..
 declare variable $indexHtmlPath as xs:string external;
 
 declare variable $indexCollector := <modules/>;
+
+declare sequential function local:clearFolder($folderPath as xs:string, $pattern as xs:string) as xs:string*
+{
+  if(fn:not(file:exists($folderPath))) then
+    return
+  else
+    for $file in file:files($folderPath, $pattern, fn:true())
+    let $filePath := fn:concat($folderPath, file:path-separator(), $file)
+    return
+      try {
+        file:remove($filePath);
+        concat("
+  SUCCESS: ", $filePath);
+      } catch * ($error_code) {
+        concat("
+  FAILED: ", $filePath)
+      }
+};
 
 (:~
  : This function generates the XQDoc XML for all the modules found in $modulesPath
@@ -71,17 +93,18 @@ declare sequential function local:generateXQDocXml() as xs:string*
   let $moduleDoc := $xqdoc/xqdoc:xqdoc/xqdoc:module
   let $moduleName := $moduleDoc/xqdoc:name
   let $moduleUri := $moduleDoc/xqdoc:uri
-  let $xqdocFileDir := fn:concat($xqdocXmlPath, file:path-separator(), $file)
-  let $xqdocFileName := fn:concat($xqdocFileDir, file:path-separator(), "xqdoc.xml")
   return
     try {
-      file:mkdirs($xqdocFileDir, false());
+      file:mkdirs($xqdocXmlPath, false());
+      let $x := fn:count(file:files($xqdocXmlPath, "\.xml$", fn:true())) + 1
+      let $xqdocFileName := fn:concat($xqdocXmlPath, file:path-separator(), fn:string($x), "_xqdoc.xml")
+      return          
       file:write($xqdocFileName, $xqdoc, <s method="xml" indent="yes" />/@*);
       concat("
-SUCCESS: ", $moduleUri, " (", $xqdocFileName, ")");
+SUCCESS: ", $moduleUri, " (", ()(:$xqdocFileName:), ")");
     } catch * ($error_code) {
       concat("
-FAILED: ", $moduleUri, " (", $xqdocFileName, ")")
+FAILED: ", $moduleUri, " (", ()(:$xqdocFileName:), ")")
     }
 };
 
@@ -102,16 +125,18 @@ declare sequential function local:removeInternalFunctionality($xqdoc as node()) 
  : documents found in $xqdocPath and writes the resulting pages to in
  : $targetPath. The hierarchy is preserved. 
  :
- : @param $xqdocPath where to search for XML XQDoc documents recursively.
- : @param $targetPath where to generate the XQDoc XHTML pages.
+ : @param $indexPath path to the XHTML index page.
+ : @param $menu the node containing the left menu
  :)
-declare sequential function local:generateXQDocXhtml() as xs:string* 
+declare sequential function local:generateXQDocXhtml($indexPath as xs:string, $menu) as xs:string* 
 {
+  let $indexHtmlDoc := file:read-xml($indexPath)
+  return
   for $file in file:files($xqdocXmlPath, "\.xml$", fn:true())
   let $stepsFromIndex := fn:count(fn:tokenize($file, fn:concat("\", file:path-separator()))) - 2
   let $xmlFilePath := concat($xqdocXmlPath, file:path-separator(), $file)
-  let $xhtmlFilePath := concat($xqdocXhtmlPath, file:path-separator(), fn:replace($file, "xq.xqdoc\.xml", "html"))
-  let $relativeXhtmlFilePath := fn:replace($file, "xq.xqdoc\.xml", "html")
+  let $xhtmlFilePath := concat($xqdocXhtmlPath, file:path-separator(), fn:replace($file, "\.xml$", ".html"))
+  let $relativeXhtmlFilePath := fn:replace($file, "\.xml$", ".html")
   let $xhtmlFileDir := 
     let $segments := fn:tokenize($xhtmlFilePath, fn:concat("\", file:path-separator()))
     let $lastSegm := $segments[fn:count($segments)] 
@@ -122,16 +147,13 @@ declare sequential function local:generateXQDocXhtml() as xs:string*
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleName := $moduleDoc/xqdoc:name
       let $moduleUri := $moduleDoc/xqdoc:uri
-      let $xhtml := xqdg:doc($xqdoc)
+      let $xhtml := xqdg:doc($xqdoc, $menu)
       return block {
         file:mkdirs($xhtmlFileDir, false());
 
         local:configure-xhtml($xhtml, $stepsFromIndex);
 
         file:write($xhtmlFilePath, $xhtml, <s method="xhtml" indent="yes" />/@*);
-        
-        (: This will remember the generated modules for the index.html :)
-        local:collectModule($moduleDoc, $relativeXhtmlFilePath);
 
         concat("
 SUCCESS: ", $moduleUri, " (", $xhtmlFilePath, ")");
@@ -142,6 +164,31 @@ FAILED: ", $xhtmlFilePath)
     }
 };
 
+(:~
+ : This function gathers the names of the XQDoc XHTML pages for all the XQDoc XML
+ : documents found in $xqdocXmlPath. The hierarchy is preserved. 
+ :)
+declare sequential function local:gatherModules()
+{
+  for $file in file:files($xqdocXmlPath, "\.xml$", fn:true())
+  let $xmlFilePath := concat($xqdocXmlPath, file:path-separator(), $file)
+  let $relativeXhtmlFilePath := fn:replace($file, "\.xml$", ".html")
+  return
+  try {
+      let $xqdoc := local:removeInternalFunctionality(file:read-xml($xmlFilePath)/xqdoc:xqdoc)
+      let $moduleDoc := $xqdoc/xqdoc:module
+      let $moduleUri := $moduleDoc/xqdoc:uri
+      return block {
+        local:collectModule($moduleDoc, $relativeXhtmlFilePath);
+        concat("
+SUCCESS: ", $moduleUri, " (", $xmlFilePath, ")");
+      }
+    } catch * ($error_code) {
+      concat("
+FAILED: ", $xmlFilePath)
+    }  
+};
+
 declare sequential function local:collectModule ($module, $relativeFileName as xs:string) {
     let $moduleName := $module/xqdoc:name,
         $moduleUri := $module/xqdoc:uri
@@ -149,6 +196,48 @@ declare sequential function local:collectModule ($module, $relativeFileName as x
         insert node <module uri="{$moduleUri/text()}" file="{$relativeFileName}" /> as last into $indexCollector;
     ();
 };    
+
+(:~
+ : This function returns the left menu needed in the index.html and also all the XHTML module pages.
+ :)
+declare sequential function local:createLeftMenu($menu)
+{
+  for $cat in $moduleCategories
+  return block {
+    if(fn:index-of($moduleCategories, $cat) = fn:count($moduleCategories)) then
+      insert nodes <li class='expandable lastExpandable'><div class='hitarea expandable-hitarea'>{' '}</div>
+      <span class='leftMenu'>{$cat}</span>
+          <ul style='display: none;'>
+          {
+          for $module in $indexCollector/module
+          order by fn:data($module/@uri)
+          return block {
+            if(fn:starts-with(fn:string($module/@uri),$cat)) then
+              <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</a></li>
+            else ()
+            };
+          }
+          </ul></li> 
+      as last into $menu
+    else
+      insert nodes <li class='expandable'><div class="hitarea expandable-hitarea">{' '}</div>
+      <span class='leftMenu'>{$cat}</span>
+          <ul style='display: none;'>
+          {
+          for $module in $indexCollector/module
+          order by fn:data($module/@uri)
+          return block {
+            if(fn:starts-with(fn:string($module/@uri),$cat)) then
+              <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</a></li>
+            else ()
+            };
+          }
+          </ul></li> 
+      as last into $menu
+  };
+
+  $menu;
+};
 
 declare sequential function local:getFilePath ($filename as xs:string) as xs:string*
 {
@@ -163,19 +252,16 @@ declare sequential function local:getFilePath ($filename as xs:string) as xs:str
     ()
 };
 
-declare function local:get-path-to-index ($stepsBack) as xs:string {
+declare function local:get-path-to-index ($stepsBack) as xs:string 
+{
   fn:substring($stepBacks, 1, 3 * $stepsBack)
 };
 
 
-declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs:integer) {
-  (: add a stylesheet :)
+declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs:integer) 
+{
   let $pathToIndex := local:get-path-to-index($stepsFromIndex)
-  let $cssPath := concat($pathToIndex, $cssFileName)
-  return    
-    replace value of node $xhtml/*:head/*:link/@href with $cssPath
-  ;    
-
+  return
   (: replace the <test> nodes with eiter links to the actual files or inline the actual files based on the 'type' attribute value :)
   for $file in $xhtml//*:include
   let $type := $file/@type
@@ -214,7 +300,8 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
         <a href="{$xqsSpec}" title="{$type}" target="_blank"><img src="{concat($imagesPath, "S.gif")}" /></a>
     else ();
   };
-
+  
+  (: set :)
   $xhtml;
 };
 
@@ -222,18 +309,18 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
 (:~
  : This function reads, updates and returns the new index.html.
  :
- : @param $xqdocPath Where to search for XML XQDoc documents recursively.
+ : @param $indexPath Where to search for XML XQDoc documents recursively.
  : @return The content of the new index.html.
  :)
-declare sequential function local:generateIndexHtml($indexPath as xs:string) as document-node() {
+declare sequential function local:generateIndexHtml($indexPath as xs:string, $menu) as document-node() {
     let $indexHtmlDoc := file:read-xml($indexPath)
     return block {
-        insert nodes
-            for $module in $indexCollector/module
-            order by fn:data($module/@uri)
-            return
-                (<a href="{$module/@file}">{data($module/@uri)}</a>, <br />)
-        as last into $indexHtmlDoc/*:html/*:body;
+        insert nodes $menu
+        as last into $indexHtmlDoc/*:html/*:body/*:div[@id='main']/*:div[@id='leftMenu'];
+        
+        insert node
+          <title>Zorba API Documentation</title>
+          as first into $indexHtmlDoc/*:html/*:head; 
         
         $indexHtmlDoc;
     }
@@ -241,7 +328,10 @@ declare sequential function local:generateIndexHtml($indexPath as xs:string) as 
 
 (: generate the XQDoc XML for all the modules :)
 if (file:mkdirs($xqdocXmlPath, false())) then
+(
+  local:clearFolder($xqdocXmlPath,"\.xml$"),
   local:generateXQDocXml()
+)
 else
   error()
 ;
@@ -250,11 +340,16 @@ else
 let $absoluteXhtmlDir := concat($xqdocBuildPath, "/xhtml")
 return
 if (file:mkdirs($absoluteXhtmlDir, false())) then
-  local:generateXQDocXhtml()
+(
+  local:clearFolder($xqdocXhtmlPath,"xqdoc\.html$"),
+  local:gatherModules(),
+  local:createLeftMenu($menu),
+  local:generateXQDocXhtml($indexHtmlPath, $menu)
+)
 else
   error()
 ;
 
-let $doc := local:generateIndexHtml($indexHtmlPath)
+let $doc := local:generateIndexHtml($indexHtmlPath, $menu)
 return local:configure-xhtml($doc/*:html, 0)
 ;

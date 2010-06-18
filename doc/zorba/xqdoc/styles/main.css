@@ -1,0 +1,218 @@
+/****************
+ HEADER
+ *****************/
+
+body {
+    font-family:"Arial";
+    color: #000000;
+    font-size:14px;
+    margin: 0px;
+    padding: 0px;
+}
+
+img {
+    border: 0
+}
+
+h1 {
+    font-size: 20pt;
+}
+
+h2 {
+    margin-bottom: 12px;
+    padding-left: 10px;
+    font-size: 14pt;
+}
+
+h3 {
+    font-size: 10pt;
+}
+
+h4 {
+    margin-bottom: 5px;
+    font-size: 10pt;
+}
+
+a.screenshot img  {
+    background:none repeat scroll 0 0 white;
+    border:1px solid #BBBBBB;
+    margin:7px 14px 7px 0;
+    padding:5px;
+}
+
+li{
+    padding: 6px 5px;
+}
+
+
+/****************
+ LINKS
+ *****************/
+
+span.leftMenu {
+    color: #666666;
+    cursor: pointer;
+}
+
+a {
+    color: #666666;
+    cursor: pointer;
+}
+
+a:link , a:visited {
+    text-decoration: none;
+}
+
+a:hover , a:active {
+    text-decoration: underline;
+}
+
+/****************
+ MENU
+ *****************/
+
+div#leftMenu{
+    border-right: 1px solid #808080;
+    float: left;
+    width: 280px;
+    padding: 10px;
+}
+
+div#leftMenu h1{
+    background-color:#FFFFFF;
+    color:#888888;
+    font-size:80%;
+    margin:20px 0 10px;
+    padding:3px 0 2px 5px;
+}
+ul.leftMenu{
+    list-style: none;
+    padding-left: 5px;
+}
+
+ul.leftMenu li{
+    padding: 5px 5px 2px 5px;
+}
+.leftmenu_active{
+    color: #B93333;
+    font-weight: bolder;
+}
+
+/****************
+ MAIN CONTENT
+ *****************/
+
+ table.default{
+    border: 1px dotted #CCCCCC;
+ }
+
+ table.default td{
+    padding: 10px;
+    margin: 0px;
+ }
+
+ table.default th{
+    padding: 15px 5px 5px 5px;
+    color: #666666;
+ }
+
+table {
+    font-size: 11pt
+}
+table.funclist {
+    width: 100%;
+    border-style: solid;
+    border-width: 1px;
+    border-collapse: collapse;
+}
+table.parameter {
+    border: none;
+    border-collapse: collapse;
+    margin-left: 40px;
+}
+td {
+    border-style: solid;
+    border-width: 1px;
+    padding: 5px;
+    margin: 0;
+}
+td.type {
+    width: 50pt;
+    text-align: center;
+}
+td.parameter {
+    border: none;
+    margin-left: 0px;
+    vertical-align: top;
+    text-align: left;
+    padding-left: 0;
+    padding-bottom: 0;
+}
+
+div#sitecontainer {
+    padding:10px;
+    min-height:100%;
+}
+
+div#main{
+    padding: 5px;
+}
+div#centeredcontent{
+    padding: 10px 20px;
+    margin-left: 200px;
+    margin-right: 200px;
+}
+div#rightcontent{
+    border-left: 1px solid #808080;
+    padding: 10px 20px;
+    margin-left: 300px; /* width of the left menu plus padding */
+}
+div#leftcontent{
+    padding: 10px 20px;
+    margin-right: 270px; /* width of the right menu plus padding */
+}
+
+pre {
+    margin-bottom: 0;
+}
+pre.signature {
+    border: 1px solid #CCCCCC;
+    background-color: #f5f5f5;
+    padding: 10px;
+}
+pre.fragment {
+    border: 1px solid #CCCCCC;
+    background-color: #f5f5f5;
+    margin-top: 4px;
+    margin-bottom: 4px;
+    margin-left: 2px;
+    margin-right: 8px;
+    padding-left: 6px;
+    padding-right: 6px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+font-size: 100%;
+}
+
+div.section {
+    background-color: /*#AF0A1B*/#B93333;
+    color: #FFFFFF;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    padding-left: 10px;
+    font-size: 16pt;
+    font-weight: bold;
+}
+div.subsection {
+    font-size: 13pt;
+    font-weight: bold;
+    margin-top: 6px;
+}
+
+div.subsubsection {
+    font-size: 11pt;
+    margin-bottom: 6px;
+    margin-top: 6px;
+    font-weight: bold;
+}
+
