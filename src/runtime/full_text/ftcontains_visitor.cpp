@@ -391,7 +391,7 @@ void V::end_visit( ftwords &w ) {
   if ( ftlanguage_option const *const l = options.get_language_option() )
     lang_code = l->get_language();
   else
-    lang_code = lang::iso639_1::unknown;
+    lang_code = lang::get_default();
 
   store::Item_t item;
   PlanIter_t plan_iter = w.get_plan_iter();

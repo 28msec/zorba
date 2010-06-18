@@ -139,6 +139,10 @@ iso639_1::type find( char const *lang ) {
   return iso639_2_to_639_1[ iso639_2::find( lang ) ];
 }
 
+iso639_1::type get_default() {
+  return iso639_1::en; // TODO: implement a real solution
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 } // namespace lang

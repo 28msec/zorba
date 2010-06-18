@@ -37,7 +37,8 @@ inline bool get_diacritics_insensitive( ftmatch_options const &options ) {
 inline lang::iso639_1::type get_lang( ftmatch_options const &options ) {
   if ( ftlanguage_option const *const l = options.get_language_option() )
     return l->get_language();
-  return lang::iso639_1::en; // TODO: change
+  cout << "default_lang=" << lang::iso639_1::string_of[ lang::get_default() ] << endl;
+  return lang::get_default();
 }
 
 inline bool get_stemming( ftmatch_options const &options ) {

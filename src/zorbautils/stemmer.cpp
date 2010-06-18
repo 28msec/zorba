@@ -37,8 +37,11 @@ Stemmer const* Stemmer::get( lang::iso639_1::type lang_code ) {
   static Stemmer* cached_stemmers[ lang::iso639_1::unknown ];
   static Mutex mutex;
 
-  if ( lang_code == lang::iso639_1::unknown )
-    lang_code = lang::iso639_1::en;     // TODO: change
+  if ( lang_code == lang::iso639_1::unknown ) {
+    lang_code = lang::get_default();
+    if ( lang_code == lang::iso639_1::unknown )
+      lang_code = lang::iso639_1::en;
+  }
 
   AutoMutex const lock( &mutex );
   Stemmer *&ptr = cached_stemmers[ lang_code ];

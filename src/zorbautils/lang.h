@@ -95,6 +95,14 @@ namespace zorba {
      */
     iso639_1::type find( char const *lang );
 
+    /**
+     * Gets the default ISO 639-1 language code enumeration for the host
+     * system.
+     *
+     * @return Returns said enumeration or <code>unknown</code>.
+     */
+    iso639_1::type get_default();
+
   } // namespace lang
 }
 #endif  /* ZORBA_LANG_H */
