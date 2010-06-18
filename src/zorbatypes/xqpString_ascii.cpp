@@ -161,13 +161,13 @@ bool xqpStringStore::is_whitespace(uint32_t cp)
   Returns true if the characters given as 'start' and 'length' contain the
   codepoint 'cp'.
 ********************************************************************************/
-bool xqpStringStore::is_contained(const char* start, uint16_t length, uint32_t cp)
+bool xqpStringStore::is_contained(const char* start, size_type length, uint32_t cp)
 {
   if( length != 0 && start != NULL) 
   {
     for(uint16_t i = 0; i < length; ++i)
     {
-      if(start[i] == cp) 
+      if((uint32_t)start[i] == cp) 
       {
         return true;
       }
@@ -600,7 +600,7 @@ xqpStringStore_t xqpStringStore::reverse() const
 
   for (unsigned int i=0; i<len; i++)
   {
-    ch = theString[len-1-i];//UTF8DecodePrev(c);
+    ch = c[len-1-i];//UTF8DecodePrev(c);
     result->append_in_place(ch);
   }
 

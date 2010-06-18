@@ -51,7 +51,7 @@ protected:
 public:
   static bool is_whitespace(uint32_t cp);
 
-  static bool is_contained(const char* start, uint16_t length, uint32_t cp);
+  static bool is_contained(const char* start, size_type length, uint32_t cp);
 
   static bool is_unreservedCP(uint32_t cp);
 

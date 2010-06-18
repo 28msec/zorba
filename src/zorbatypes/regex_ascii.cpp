@@ -494,7 +494,7 @@ bool  CRegexAscii_regex::get_indexed_match(int index,
                                            const char **matched_source, 
                                            int *matched_len)
 {
-  if(!index || index > subregex.size())
+  if(!index || index > (int)subregex.size())
     return false;
   CRegexAscii_regex *subr = subregex[index-1];
   *matched_source = subr->matched_source;
@@ -819,7 +819,7 @@ bool CRegexAscii_branch::match_piece_iter_normal(
   next_it++;
   if(next_it == piece_list.end())
   {
-    if(match_lens.size() > min)
+    if((int)match_lens.size() > min)
     {
       *matched_len = timeslen;
       return true;
