@@ -16,6 +16,7 @@
 #include <algorithm>
 
 #include "store/naive/simple_index_value.h"
+#include "zorbaerrors/error_manager.h"
 
 
 namespace zorba 
