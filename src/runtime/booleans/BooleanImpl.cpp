@@ -95,6 +95,15 @@ bool FnBooleanIterator::effectiveBooleanValue(
   {
     // node => true
     result = negate ^ true;
+
+    while (consumeNext(temp, iter, planState))
+    {
+      if (!temp->isNode())
+      {
+        ZORBA_ERROR_LOC_DESC(FORG0006, loc,
+                             "Wrong arguments in fn:boolean function.");
+      }
+    }
   }
   else
   {
@@ -110,7 +119,9 @@ bool FnBooleanIterator::effectiveBooleanValue(
       // => effective boolean value is defined in the items
       temp = item->getEBV();
       result = negate ? (negate ^ temp->getBooleanValue()) : temp->getBooleanValue();
-    } else {
+    }
+    else
+    {
       ZORBA_ERROR_LOC_DESC(FORG0006, loc,
                            "Wrong arguments in fn:boolean function.");
     }
