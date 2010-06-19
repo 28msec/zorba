@@ -16,8 +16,6 @@
 
 #include <algorithm>
 
-#include <iostream>
-
 #include "util/less.h"
 #include "zorbautils/lang.h"
 
