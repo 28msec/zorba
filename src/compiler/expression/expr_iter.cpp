@@ -14,15 +14,19 @@
  * limitations under the License.
  */
 
+#include <zorba/config.h>
+
 #include "compiler/expression/expr_iter.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/fo_expr.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/function_item_expr.h"
+#ifndef ZORBA_NO_FULL_TEXT
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/ftnode_visitor.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 
 #include "zorbaerrors/Assert.h"
 
@@ -73,6 +77,7 @@ ExprIterator::ExprIterator(expr* e)
   theCurrentChild(NULL),
   theState(0)
 {
+#ifndef ZORBA_NO_FULL_TEXT
   if (e->get_expr_kind() == ft_expr_kind)
   {
     ftcontains_expr* ftExpr = static_cast<ftcontains_expr*>(e);
@@ -82,6 +87,7 @@ ExprIterator::ExprIterator(expr* e)
 
     theFTSelectionExprs.swap(exprCollector.get_expr_list());
   }
+#endif /* ZORBA_NO_FULL_TEXT */
 
   next();
 }
@@ -616,6 +622,7 @@ void ExprIterator::next()
     break;
   }
 
+#ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:
   {
     ftcontains_expr* ftExpr = static_cast<ftcontains_expr*>(theExpr);
@@ -636,6 +643,7 @@ void ExprIterator::next()
     EXPR_ITER_END();
     break;
   }
+#endif /* ZORBA_NO_FULL_TEXT */
 
   default:
   {

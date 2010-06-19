@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include "zorbautils/tokenizer.h"
+#include "zorbautils/icu_tokenizer.h"
 
 namespace zorba {
 
@@ -24,6 +24,10 @@ Tokenizer::Tokenizer() {
 
 Tokenizer::~Tokenizer() {
   // do nothing
+}
+
+Tokenizer* Tokenizer::create( bool wildcards ) {
+  return new ICU_Tokenizer( wildcards );
 }
 
 Tokenizer::Callback::~Callback() {

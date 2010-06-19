@@ -19,6 +19,7 @@
 #include <stack>
 #include <vector>
 
+#include <zorba/config.h>
 #include "zorbaerrors/Assert.h"
 
 #include "util/tracer.h"
@@ -34,9 +35,11 @@
 #include "compiler/expression/expr_visitor.h"
 #include "compiler/expression/flwor_expr.h"
 #include "compiler/expression/fo_expr.h"
+#ifndef ZORBA_NO_FULL_TEXT
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/expression/ftnode_visitor.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 #include "compiler/expression/function_item_expr.h"
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/var_expr.h"
@@ -231,6 +234,8 @@ typedef rchandle<FlworClauseVarMap> FlworClauseVarMap_t;
 
  ******************************************************************************/
 
+#ifndef ZORBA_NO_FULL_TEXT
+
 class plan_ftnode_visitor : public ftnode_visitor {
 public:
   typedef list<PlanIter_t> PlanIter_list_t;
@@ -278,6 +283,7 @@ private:
   PlanIter_list_t sub_iters_;
 };
 
+#endif /* ZORBA_NO_FULL_TEXT */
 
 /******************************************************************************
 
@@ -285,7 +291,9 @@ private:
 
 class plan_visitor : public expr_visitor
 {
+#ifndef ZORBA_NO_FULL_TEXT
   friend class plan_ftnode_visitor;
+#endif /* ZORBA_NO_FULL_TEXT */
 protected:
   static vector<PlanIter_t>              no_var_iters;
 
@@ -307,7 +315,9 @@ protected:
 
   std::stack<ZorbaDebugIterator*>        theDebuggerStack;
 
+#ifndef ZORBA_NO_FULL_TEXT
   plan_ftnode_visitor                  * plan_ftnode_visitor_;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 public:
 
@@ -319,7 +329,9 @@ plan_visitor(
   arg_var_iter_map(arg_var_map),
   theCCB(ccb)
 {
+#ifndef ZORBA_NO_FULL_TEXT
   plan_ftnode_visitor_ = new plan_ftnode_visitor( this );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 
@@ -335,14 +347,18 @@ plan_visitor(
     copy_var_iter_map.end(),
     vector_destroyer<ForVarIter_t>()
   );
+#ifndef ZORBA_NO_FULL_TEXT
   delete plan_ftnode_visitor_;
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 
+#ifndef ZORBA_NO_FULL_TEXT
 ftnode_visitor* get_ftnode_visitor() 
 {
   return plan_ftnode_visitor_;
 }
+#endif /* ZORBA_NO_FULL_TEXT */
 
 
 PlanIter_t pop_itstack()
@@ -2730,6 +2746,7 @@ void end_visit (order_expr& v)
 }
 
 
+#ifndef ZORBA_NO_FULL_TEXT
 bool begin_visit(ftcontains_expr& v)
 {
   CODEGEN_TRACE_IN("");
@@ -2739,7 +2756,6 @@ bool begin_visit(ftcontains_expr& v)
 void end_visit(ftcontains_expr& v)
 {
   CODEGEN_TRACE_OUT("");
-
   PlanIter_t ftignore_it = v.get_ignore() ? pop_itstack() : NULL;
   PlanIter_t ftrange_it = pop_itstack();
 
@@ -2750,6 +2766,7 @@ void end_visit(ftcontains_expr& v)
 
   push_itstack( ftcontains_it );
 }
+#endif /* ZORBA_NO_FULL_TEXT */
 
 
 PlanIter_t result()
@@ -2762,6 +2779,8 @@ PlanIter_t result()
 };
 
 ///////////////////////////////////////////////////////////////////////////////
+
+#ifndef ZORBA_NO_FULL_TEXT
 
 #define V plan_ftnode_visitor
 
@@ -2839,6 +2858,7 @@ DEF_FTNODE_VISITOR_VISIT_MEM_FNS( V, ftwild_card_option )
 
 #undef V
 
+#endif /* ZORBA_NO_FULL_TEXT */
 
 /******************************************************************************
 

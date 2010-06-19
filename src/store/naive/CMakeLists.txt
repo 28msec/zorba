@@ -49,15 +49,20 @@ SET(ZORBA_STORE_IMPL_SRCS
     inmemorystore.cpp
     inmemorystorec.cpp
     dataguide.cpp
-    naive_ft_token_iterator.cpp
 )
 
+IF (NOT ZORBA_NO_FULL_TEXT)
+  LIST(APPEND ZORBA_STORE_IMPL_SRCS naive_ft_token_iterator.cpp)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
+
 IF(ZORBA_STORE_MSDOM)
-	LIST(APPEND ZORBA_STORE_IMPL_SRCS		msdom_addon/msdom_node_items.cpp)
-	LIST(APPEND ZORBA_STORE_IMPL_SRCS		msdom_addon/import_msdom.cpp)
-	LIST(APPEND ZORBA_STORE_IMPL_SRCS		msdom_addon/import_impl.cpp)
+  LIST(APPEND ZORBA_STORE_IMPL_SRCS   msdom_addon/msdom_node_items.cpp)
+  LIST(APPEND ZORBA_STORE_IMPL_SRCS   msdom_addon/import_msdom.cpp)
+  LIST(APPEND ZORBA_STORE_IMPL_SRCS   msdom_addon/import_impl.cpp)
 ELSE(ZORBA_STORE_MSDOM)
-#	LIST(APPEND ZORBA_STORE_IMPL_SRCS		node_items.cpp)
+# LIST(APPEND ZORBA_STORE_IMPL_SRCS   node_items.cpp)
 ENDIF(ZORBA_STORE_MSDOM)
 
 CONFIGURE_FILE(${CMAKE_SOURCE_DIR}/src/store/naive/store_config.h.cmake ${CMAKE_BINARY_DIR}/src/store/naive/store_config.h)
+
+# vim:set et sw=2 ts=2:

@@ -140,6 +140,8 @@ xqpStringStore* Item::getStringValueP() const
   return 0;
 }
 
+#ifndef ZORBA_NO_FULL_TEXT
+
 FTTokenIterator_t Item::getDocumentTokens() const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
@@ -154,6 +156,7 @@ FTTokenIterator_t Item::getQueryTokens( lang::iso639_1::type, bool ) const
   return FTTokenIterator_t( NULL );
 }
 
+#endif /* ZORBA_NO_FULL_TEXT */
 
 /* ---------------------  Methods for AtomicValues --------------------------- */
 

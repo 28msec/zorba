@@ -16,6 +16,7 @@
 #ifndef ZORBA_ABSTRACT_EXPR_VISITOR_H
 #define ZORBA_ABSTRACT_EXPR_VISITOR_H
 
+#include <zorba/config.h>
 #include "common/shared_types.h"
 #include "compiler/expression/expr_visitor.h"
 
@@ -57,7 +58,9 @@ public:
   EXPR_VISITOR_METHODS (flowctl_expr);
   EXPR_VISITOR_METHODS (flwor_expr);
   EXPR_VISITOR_METHODS (fo_expr);
+#ifndef ZORBA_NO_FULL_TEXT
   EXPR_VISITOR_METHODS (ftcontains_expr);
+#endif /* ZORBA_NO_FULL_TEXT */
   EXPR_VISITOR_METHODS (function_def_expr);
   EXPR_VISITOR_METHODS (if_expr);
   EXPR_VISITOR_METHODS (insert_expr);

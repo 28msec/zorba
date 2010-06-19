@@ -21,15 +21,19 @@ SET(ZORBAUTILS_SRCS
     lang.cpp
     lock.cpp
     runnable.cpp
-    tokenizer.cpp
-    icu_tokenizer.cpp
-    stemmer.cpp
     unicode_util.cpp)
 
 IF (ZORBA_WITH_LIBXML2_SAX)
-    SET(ZORBAUTILS_SRCS ${ZORBAUTILS_SRCS} SAXParser.cpp)
+  SET(ZORBAUTILS_SRCS ${ZORBAUTILS_SRCS} SAXParser.cpp)
 ENDIF (ZORBA_WITH_LIBXML2_SAX)
 
-ADD_SRC_SUBFOLDER(ZORBAUTILS_SRCS stemmer LIBSTEMMER_SRCS)
+IF (NOT ZORBA_NO_FULL_TEXT)
+  LIST(APPEND ZORBAUTILS_SRCS
+    tokenizer.cpp
+    icu_tokenizer.cpp
+    stemmer.cpp)
+  ADD_SRC_SUBFOLDER(ZORBAUTILS_SRCS stemmer LIBSTEMMER_SRCS)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
 
-# vim:set et sw=4 ts=4:
+
+# vim:set et sw=2 ts=2:

@@ -17,11 +17,14 @@
 #ifndef ZORBA_STORE_ATOMIC_ITEMS_H
 #define ZORBA_STORE_ATOMIC_ITEMS_H
 
+#include <zorba/config.h>
 #include <vector>
 
 #include "store/api/item.h"
 #include "store/naive/store_defs.h"
+#ifndef ZORBA_NO_FULL_TEXT
 #include "store/naive/naive_ft_token_iterator.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
@@ -502,12 +505,15 @@ public:
 
   virtual xqp_string show() const;
 
+#ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t
   getQueryTokens( lang::iso639_1::type = lang::iso639_1::unknown,
                   bool wildcards = false ) const;
+#endif /* ZORBA_NO_FULL_TEXT */
 };
 
 
+#ifndef ZORBA_NO_FULL_TEXT
 /**
  * An <code>AtomicItemTokenizer</code> is-a Tokenizer::Callback TODO
  */
@@ -536,6 +542,7 @@ private:
   FTTokens &tokens_;
   lang::iso639_1::type const lang_;
 };
+#endif /* ZORBA_NO_FULL_TEXT */
 
 
 /*******************************************************************************

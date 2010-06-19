@@ -17,16 +17,10 @@
 #ifndef ZORBA_FT_TOKEN_ITERATOR_H
 #define ZORBA_FT_TOKEN_ITERATOR_H
 
-#include <vector>
-
-#include "zorbaerrors/Assert.h"
 #include "zorbatypes/ft_token.h"
 #include "zorbatypes/rchandle.h"
 
 namespace zorba {
-
-class FTTokenIterator;
-typedef rchandle<FTTokenIterator> FTTokenIterator_t;
 
 /**
  * An <code>FTTokenIterator</code> iterates over a sequence of full-text
@@ -100,6 +94,8 @@ public:
   virtual void reset() = 0;
 
 };
+
+typedef rchandle<FTTokenIterator> FTTokenIterator_t;
 
 } // namespace zorba
 #endif  /* ZORBA_FT_TOKEN_ITERATOR_H */

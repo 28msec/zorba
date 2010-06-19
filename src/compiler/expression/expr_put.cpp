@@ -19,14 +19,18 @@
 #include <string>
 #include <vector>
 
+#include <zorba/config.h>
+
 #include "system/properties.h"
 
 #include "context/static_context_consts.h"
 
 #include "compiler/expression/expr.h"
 #include "compiler/expression/fo_expr.h"
+#ifndef ZORBA_NO_FULL_TEXT
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 #include "compiler/expression/path_expr.h"
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/flwor_expr.h"
@@ -406,6 +410,7 @@ ostream& fo_expr::put( ostream& os) const
 }
 
 
+#ifndef ZORBA_NO_FULL_TEXT
 ostream& ftcontains_expr::put( ostream &os ) const {
   BEGIN_PUT( ftcontains_expr );
   PUT_SUB( "RANGE", range_ );
@@ -413,6 +418,7 @@ ostream& ftcontains_expr::put( ostream &os ) const {
   PUT_SUB( "IGNORE", ftignore_ );
   END_PUT();
 }
+#endif /* ZORBA_NO_FULL_TEXT */
 
 
 std::ostream& function_item_expr::put(std::ostream& os) const

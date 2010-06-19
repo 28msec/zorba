@@ -21,7 +21,9 @@
 #include "zorbaerrors/error_manager.h"
 
 using namespace std;
+#ifndef ZORBA_NO_UNICODE
 U_NAMESPACE_USE
+#endif
 
 #define TABLE_SIZE(A) ( sizeof(A) / sizeof((A)[0]) )
 
@@ -1096,6 +1098,8 @@ uint32_t toUpper( uint32_t c ) {
   
 ///////////////////////////////////////////////////////////////////////////////
 
+#ifndef ZORBA_NO_UNICODE
+
 UChar32 const SubChar = 0xFFFD;         // replacement character
 
 /**
@@ -1171,6 +1175,8 @@ char* utf16_to_utf8( UChar const *utf16_s, int32_t utf16_len,
     ZORBA_ERROR( XQP0035_ILLEGAL_UTF16_BYTE );
   return utf8_buf;
 }
+
+#endif /* ZORBA_NO_UNICODE */
 
 ///////////////////////////////////////////////////////////////////////////////
 

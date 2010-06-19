@@ -16,12 +16,15 @@
 #ifndef ZORBA_COMPILER_EXPR_VISITOR_H
 #define ZORBA_COMPILER_EXPR_VISITOR_H
 
+#include <zorba/config.h>
 #include "compiler/expression/expr_classes.h"
 
 namespace zorba 
 {
 
+#ifndef ZORBA_NO_FULL_TEXT
 class ftnode_visitor;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 class expr_visitor
 {
@@ -29,7 +32,9 @@ public:
 
   virtual ~expr_visitor() { }
 
+#ifndef ZORBA_NO_FULL_TEXT
   virtual ftnode_visitor* get_ftnode_visitor() = 0;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 #define DECL_EXPR_VISITOR_VISIT_MEM_FNS(C)  \
   virtual bool begin_visit( C& ) = 0;       \
@@ -46,7 +51,9 @@ public:
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( eval_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( if_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( fo_expr );
+#ifndef ZORBA_NO_FULL_TEXT
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( ftcontains_expr );
+#endif /* ZORBA_NO_FULL_TEXT */
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( instanceof_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( treat_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( castable_expr );

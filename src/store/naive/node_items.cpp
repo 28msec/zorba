@@ -17,10 +17,14 @@
 #include <stack>
 #include <memory>
 
+#include <zorba/config.h>
+
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbatypes/URI.h"
-#include "zorbautils/icu_tokenizer.h"
+#ifndef ZORBA_NO_FULL_TEXT
+#include "zorbautils/tokenizer.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 
 #include "store/api/copymode.h"
 #include "store/naive/atomic_items.h"
@@ -178,7 +182,9 @@ XmlNode::XmlNode(
     setOrdPath(parent, pos, nodeKind);
   }
 
+#ifndef ZORBA_NO_FULL_TEXT
   initTokens();
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 
@@ -3051,6 +3057,8 @@ xqp_string CommentNode::show() const
   return "<!--" + theContent->str() + "-->";
 }
 
+#ifndef ZORBA_NO_FULL_TEXT
+
 /******************************************************************************
  *
  *  Full-text
@@ -3066,8 +3074,8 @@ void XmlNodeTokenizer::endTokenization( XmlNode &node ) {
 }
 
 void XmlNodeTokenizer::operator()( char const *utf8_s, int utf8_len,
-                                   int token_no, int sent_no, int para_no ) {
-  FTToken t( utf8_s, utf8_len, token_no, sent_no, para_no, get_lang() );
+                                   int pos, int sent, int para ) {
+  FTToken t( utf8_s, utf8_len, pos, sent, para, get_lang() );
   tokens_.push_back( t );
 }
 
@@ -3112,14 +3120,16 @@ void TextNode::tokenize( XmlNodeTokenizer &tokenizer ) {
 FTTokenIterator_t XmlNode::getDocumentTokens() const {
   XmlTree::FTTokens &tokens = getTree()->getTokens();
   if ( !hasTokens() ) {
-    icu_tokenizer tokenizer;
-    XmlNodeTokenizer xml_tokenizer( tokenizer, tokens );
+    auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
+    XmlNodeTokenizer xml_tokenizer( *tokenizer, tokens );
     getRoot()->tokenize( xml_tokenizer );
   }
   return FTTokenIterator_t(
     new NaiveFTTokenIterator( tokens, theBeginTokenIndex, theEndTokenIndex )
   );
 }
+
+#endif /* ZORBA_NO_FULL_TEXT */
 
 } // namespace store
 } // namespace zorba

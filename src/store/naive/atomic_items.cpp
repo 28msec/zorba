@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <memory>
+
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 
@@ -42,6 +44,8 @@
 
 #define CREATE_BOOLITEM(item, aValue) \
   GET_STORE().getItemFactory()->createBoolean(item, aValue)
+
+using namespace std;
 
 namespace zorba { namespace simplestore {
 
@@ -400,6 +404,8 @@ xqp_string StringItemNaive::show() const
   return "xs:string(" + theValue->str() + ")";
 }
 
+#ifndef ZORBA_NO_FULL_TEXT
+
 void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
                                       int token_no, int sent_no, int para_no ) {
   FTToken t( utf8_s, utf8_len, token_no, lang_ );
@@ -408,14 +414,15 @@ void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
 
 FTTokenIterator_t StringItemNaive::getQueryTokens( lang::iso639_1::type lang,
                                                    bool wildcards ) const {
-  icu_tokenizer tokenizer( wildcards );
+  auto_ptr<Tokenizer> tokenizer( Tokenizer::create( wildcards ) );
   NaiveFTTokenIterator::FTTokens *tokens = new NaiveFTTokenIterator::FTTokens;
-  AtomicItemTokenizer atomic_tokenizer( tokenizer, lang, *tokens );
+  AtomicItemTokenizer atomic_tokenizer( *tokenizer, lang, *tokens );
   xqpStringStore const *const xText = getStringValue();
   atomic_tokenizer.tokenize( xText->c_str(), xText->size() );
   return FTTokenIterator_t( new NaiveFTTokenIterator( tokens ) );
 }
 
+#endif /* ZORBA_NO_FULL_TEXT */
 
 /*******************************************************************************
   class NormalizedStringItemImpl

@@ -137,6 +137,12 @@ FOREACH(TESTFILE ${TESTFILES})
       SET (FOUND_XQTS 1)
     ENDIF (TESTNAME MATCHES "^test/rbkt/w3c_testsuite")
   ENDIF (ZORBATEST_TESTDRIVER_MT_AVAILABLE AND ZORBATEST_USE_MT_XQTS)
+  IF (ZORBA_NO_FULL_TEXT)
+    STRING(REGEX MATCH "fulltext/" NEEDS_FULL_TEXT "${TESTNAME}")
+    IF (NEEDS_FULL_TEXT)
+      SET (SKIP_TEST 1)
+    ENDIF (NEEDS_FULL_TEXT)
+  ENDIF (ZORBA_NO_FULL_TEXT)
 
 
   IF(NOT SKIP_TEST)
@@ -239,3 +245,4 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic3 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic4 2962715)
 
 # --------------------------------------------------------------------------
+# vim:set et sw=2 ts=2:

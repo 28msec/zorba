@@ -23,8 +23,7 @@ SET(ZORBATYPES_SRCS
   codepoint_iterator.cpp
   collation_manager.cpp
   chartype.cpp
-  rchandle.cpp
-  ft_token.cpp)
+  rchandle.cpp)
   
 IF(ZORBA_NO_UNICODE)
   LIST(APPEND ZORBATYPES_SRCS 
@@ -37,5 +36,11 @@ ELSE(ZORBA_NO_UNICODE)
     )
 ENDIF(ZORBA_NO_UNICODE)
 
+IF (NOT ZORBA_NO_FULL_TEXT)
+  LIST(APPEND ZORBATYPES_SRCS ft_token.cpp)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
+
 ADD_SRC_SUBFOLDER(ZORBATYPES_SRCS mapm     MAPM_SRCS)
 ADD_SRC_SUBFOLDER(ZORBATYPES_SRCS datetime DATETIME_SRCS)
+
+# vim:set et sw=2 ts=2:

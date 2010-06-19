@@ -39,7 +39,9 @@
 
 #include "compiler/expression/expr_base.h"
 #include "compiler/expression/var_expr.h"
+#ifndef ZORBA_NO_FULL_TEXT
 #include "compiler/expression/ftnode.h"
+#endif /* ZORBA_NO_FULL_TEXT */
 #include "compiler/xqddf/collection_decl.h"
 #include "compiler/xqddf/value_index.h"
 #include "compiler/xqddf/value_ic.h"
@@ -211,7 +213,9 @@ static_context::static_context()
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
+#ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
+#endif /* ZORBA_NO_FULL_TEXT */
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
@@ -253,7 +257,9 @@ static_context::static_context(static_context* parent)
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
+#ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
+#endif /* ZORBA_NO_FULL_TEXT */
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
@@ -297,7 +303,9 @@ static_context::static_context(::zorba::serialization::Archiver& ar)
   theCollationMap(NULL),
   theDefaultCollation(NULL),
   theOptionMap(NULL),
+#ifndef ZORBA_NO_FULL_TEXT
   theFTMatchOptions(NULL),
+#endif /* ZORBA_NO_FULL_TEXT */
   theXQueryVersion(StaticContextConsts::xquery_version_unknown),
   theXPathCompatibility(StaticContextConsts::xpath_unknown),
   theConstructionMode(StaticContextConsts::cons_unknown),
@@ -595,7 +603,9 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar & theDefaultCollation;
 
   ar & theOptionMap;
+#ifndef ZORBA_NO_FULL_TEXT
   ar & theFTMatchOptions;
+#endif /* ZORBA_NO_FULL_TEXT */
 
   SERIALIZE_ENUM(StaticContextConsts::xquery_version_t, theXQueryVersion);
   SERIALIZE_ENUM(StaticContextConsts::xpath_compatibility_t, theXPathCompatibility);

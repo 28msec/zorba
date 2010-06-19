@@ -19,6 +19,7 @@
 #include <memory>
 #include <set>
 
+#include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 
 #ifdef WIN32
@@ -38,7 +39,9 @@ namespace zorba
 {
 
 class expr;
+#ifndef ZORBA_NO_FULL_TEXT
 class ftmatch_options;
+#endif /* ZORBA_NO_FULL_TEXT */
 class var_expr;
 class function;
 class XQType;
@@ -454,7 +457,9 @@ protected:
 
   OptionMap                             * theOptionMap;
 
+#ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options                       * theFTMatchOptions;
+#endif /* ZORBA_NO_FULL_TEXT */
 
   StaticContextConsts::xquery_version_t      theXQueryVersion;
 
@@ -773,6 +778,7 @@ public:
 
   DecimalFormat_t get_decimal_format(const store::Item_t& qname);
 
+#ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options const* get_match_options() const {
     return theFTMatchOptions;
   }
@@ -780,6 +786,7 @@ public:
   void set_match_options( ftmatch_options *mo ) {
     theFTMatchOptions = mo;
   }
+#endif /* ZORBA_NO_FULL_TEXT */
 
   //
   // Merge in the static context of a module

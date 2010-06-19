@@ -16,6 +16,8 @@
 #ifndef ZORBA_COMPILER_EXPR_BASE_H
 #define ZORBA_COMPILER_EXPR_BASE_H
 
+#include <zorba/config.h>
+
 #include "common/shared_types.h"
 
 #include "compiler/parser/query_loc.h"
@@ -61,7 +63,9 @@ enum expr_kind_t
   flowctl_expr_kind,
   flwor_expr_kind,
   fo_expr_kind,
+#ifndef ZORBA_NO_FULL_TEXT
 	ft_expr_kind,
+#endif /* ZORBA_NO_FULL_TEXT */
   gflwor_expr_kind,
   if_expr_kind,
   insert_expr_kind,

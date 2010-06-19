@@ -23,9 +23,12 @@
 
 #include "zorbatypes/xqpstring.h"
 #include "zorbatypes/representations.h"
-#include "zorbautils/lang.h"
 
+#ifndef ZORBA_NO_FULL_TEXT
 #include "store/api/ft_token_iterator.h"
+#include "zorbautils/lang.h"
+#endif /* ZORBA_NO_FULL_TEXT */
+
 #include "store/api/shared_types.h"
 
 namespace zorba 
@@ -624,6 +627,8 @@ public:
 
   /* -------------------- Methods for Full-Text --------------------- */
 
+#ifndef ZORBA_NO_FULL_TEXT
+
   /**
    * Gets the document tokens for this item.
    */
@@ -639,6 +644,7 @@ public:
   getQueryTokens( lang::iso639_1::type = lang::iso639_1::unknown,
                   bool wildcards = false ) const;
 
+#endif /* ZORBA_NO_FULL_TEXT */
 }; 
 
 

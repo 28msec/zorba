@@ -22,9 +22,13 @@ SET(EXPRESSION_SRCS
     path_expr.cpp
     flwor_expr.cpp
     fo_expr.cpp
-    ft_expr.cpp
-    ftnode.cpp
-    ftnode_visitor.cpp
     function_item_expr.cpp)
 
-# vim:set et sw=4 ts=4:
+IF (NOT ZORBA_NO_FULL_TEXT)
+  LIST(APPEND EXPRESSION_SRCS
+    ft_expr.cpp
+    ftnode.cpp
+    ftnode_visitor.cpp)
+ENDIF (NOT ZORBA_NO_FULL_TEXT)
+
+# vim:set et sw=2 ts=2:

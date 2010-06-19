@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <zorba/config.h>
 #include "common/shared_types.h"
 
 namespace zorba 
@@ -23,7 +24,10 @@ namespace zorba
   class sequential_expr; class exit_expr; class while_expr; class flowctl_expr;
   class order_modifier; class flwor_expr; class case_clause; class promote_expr;
   class gflwor_expr; class trycatch_expr; class eval_expr; 
-  class if_expr; class fo_expr; class ftcontains_expr;
+  class if_expr; class fo_expr;
+#ifndef ZORBA_NO_FULL_TEXT
+  class ftcontains_expr;
+#endif /* ZORBA_NO_FULL_TEXT */
   class instanceof_expr; class treat_expr; class castable_expr; class cast_expr; class name_cast_expr;
   class validate_expr; class extension_expr; class relpath_expr;
   class axis_step_expr; class match_expr; class primary_expr; class const_expr;

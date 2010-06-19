@@ -16,6 +16,8 @@
 #ifndef ZORBA_COMPILER_EXPRESSIONS_EXPR_ITER
 #define ZORBA_COMPILER_EXPRESSIONS_EXPR_ITER
 
+#include <zorba/config.h>
+
 #include "common/shared_types.h"
 
 #include "compiler/expression/flwor_expr.h"
@@ -50,9 +52,11 @@ protected:
   std::vector<copy_clause_t>::iterator   theCopyClauseIter;
   std::vector<copy_clause_t>::iterator   theCopyClauseEnd;
 
+#ifndef ZORBA_NO_FULL_TEXT
   std::vector<expr_t*>                   theFTSelectionExprs;
   std::vector<expr_t*>::iterator         theFTSelectionExprsIter;
   std::vector<expr_t*>::iterator         theFTSelectionExprsEnd;
+#endif /* ZORBA_NO_FULL_TEXT */
 
 public:
   ExprIterator(expr* e);

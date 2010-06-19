@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+#include <zorba/config.h>
+
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_manager.h"
 
@@ -24,7 +27,6 @@
 #include "compiler/expression/var_expr.h"
 #include "compiler/expression/expr.h"
 #include "compiler/expression/expr_iter.h"
-
 #include "compiler/xqddf/collection_decl.h"
 
 #include "functions/function.h"
@@ -665,11 +667,13 @@ void expr::compute_return_type(bool deep, bool* modified)
     return;
   }
 
-	case ft_expr_kind:
+#ifndef ZORBA_NO_FULL_TEXT
+  case ft_expr_kind:
   {
     theType = GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
     return;
   }
+#endif /* ZORBA_NO_FULL_TEXT */
 
   default:
   {

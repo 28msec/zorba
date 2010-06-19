@@ -56,6 +56,15 @@ public:
   virtual ~Tokenizer();
 
   /**
+   * Creates a new Tokenizer.
+   *
+   * @param wildcards If <code>true</code>, allows XQuery wildcard syntax
+   * characters to be part of tokens.
+   * @return Returns said Tokenizer.
+   */
+  static Tokenizer* create( bool wildcards = false );
+
+  /**
    * Increments the current paragraph number by 1.
    */
   void inc_para() {

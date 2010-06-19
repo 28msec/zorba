@@ -79,7 +79,7 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-icu_tokenizer::icu_tokenizer( bool wildcards ) : wildcards_( wildcards ) {
+ICU_Tokenizer::ICU_Tokenizer( bool wildcards ) : wildcards_( wildcards ) {
   UErrorCode status = U_ZERO_ERROR;
 
   // TODO: get actual locale
@@ -118,7 +118,7 @@ icu_tokenizer::icu_tokenizer( bool wildcards ) : wildcards_( wildcards ) {
 #define IS_WORD_BREAK(TYPE,STATUS) \
   ( (STATUS) >= UBRK_WORD_##TYPE && (STATUS) < UBRK_WORD_##TYPE##_LIMIT )
 
-void icu_tokenizer::tokenize( char const *utf8_s, int utf8_len,
+void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
                               Callback &callback ) {
   int32_t utf16_len;
   auto_vec<UChar> const utf16_buf(

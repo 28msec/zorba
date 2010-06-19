@@ -17,7 +17,11 @@
 #ifndef ZORBA_UNICODE_UTIL_H
 #define ZORBA_UNICODE_UTIL_H
 
+#include <zorba/config.h>
+
+#ifndef ZORBA_NO_UNICODE
 #include <unicode/ustring.h>
+#endif /* ZORBA_NO_UNICODE */
 
 namespace zorba {
 
@@ -42,6 +46,8 @@ ZORBA_DLL_PUBLIC uint32_t toUpper(uint32_t c);
  * See: * ftp://ftp.unicode.org/Public/5.1.0/ucd/CaseFolding-5.1.0d10.txt
  */
 ZORBA_DLL_PUBLIC uint32_t toLower(uint32_t c);
+
+#ifndef ZORBA_NO_UNICODE
 
 /**
  * Converts a UTF-8 string to UTF-16.
@@ -72,6 +78,8 @@ ZORBA_DLL_PUBLIC UChar* utf8_to_utf16( char const *utf8_s, int32_t utf8_len,
  */
 char* utf16_to_utf8( UChar const *utf16_s, int32_t utf16_len,
                      int32_t *utf8_len_ptr );
+
+#endif /* ZORBA_NO_UNICODE */
 
 } // namespace zorba
 #endif /* ZORBA_UNICODE_UTIL_H */
