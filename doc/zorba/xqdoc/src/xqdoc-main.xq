@@ -126,9 +126,8 @@ declare sequential function local:removeInternalFunctionality($xqdoc as node()) 
  : $targetPath. The hierarchy is preserved. 
  :
  : @param $indexPath path to the XHTML index page.
- : @param $menu the node containing the left menu
  :)
-declare sequential function local:generateXQDocXhtml($indexPath as xs:string, $menu) as xs:string* 
+declare sequential function local:generateXQDocXhtml($indexPath as xs:string) as xs:string* 
 {
   let $indexHtmlDoc := file:read-xml($indexPath)
   return
@@ -147,6 +146,8 @@ declare sequential function local:generateXQDocXhtml($indexPath as xs:string, $m
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleName := $moduleDoc/xqdoc:name
       let $moduleUri := $moduleDoc/xqdoc:uri
+      let $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>API Documentation</strong></span></ul> 
+      let $menu := local:createLeftMenu($menu, $moduleUri)
       let $xhtml := xqdg:doc($xqdoc, $menu)
       return block {
         file:mkdirs($xhtmlFileDir, false());
@@ -200,7 +201,7 @@ declare sequential function local:collectModule ($module, $relativeFileName as x
 (:~
  : This function returns the left menu needed in the index.html and also all the XHTML module pages.
  :)
-declare sequential function local:createLeftMenu($menu)
+declare sequential function local:createLeftMenu($menu, $moduleUri)
 {
   for $cat in $moduleCategories
   return block {
@@ -212,8 +213,10 @@ declare sequential function local:createLeftMenu($menu)
           for $module in $indexCollector/module
           order by fn:data($module/@uri)
           return block {
-            if(fn:starts-with(fn:string($module/@uri),$cat)) then
+            if(fn:starts-with(fn:string($module/@uri),$cat) and fn:not($module/@uri = $moduleUri)) then
               <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</a></li>
+            else if(fn:starts-with(fn:string($module/@uri),$cat) and ($module/@uri = $moduleUri)) then
+              <li><span class="leftmenu_active">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</span></li>  
             else ()
             };
           }
@@ -227,8 +230,10 @@ declare sequential function local:createLeftMenu($menu)
           for $module in $indexCollector/module
           order by fn:data($module/@uri)
           return block {
-            if(fn:starts-with(fn:string($module/@uri),$cat)) then
+            if(fn:starts-with(fn:string($module/@uri),$cat) and fn:not($module/@uri = $moduleUri)) then
               <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</a></li>
+            else if(fn:starts-with(fn:string($module/@uri),$cat) and ($module/@uri = $moduleUri)) then
+              <li><span class="leftmenu_active">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</span></li>  
             else ()
             };
           }
@@ -301,7 +306,6 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
     else ();
   };
   
-  (: set :)
   $xhtml;
 };
 
@@ -343,13 +347,14 @@ if (file:mkdirs($absoluteXhtmlDir, false())) then
 (
   local:clearFolder($xqdocXhtmlPath,"xqdoc\.html$"),
   local:gatherModules(),
-  local:createLeftMenu($menu),
-  local:generateXQDocXhtml($indexHtmlPath, $menu)
+  local:generateXQDocXhtml($indexHtmlPath)
 )
 else
   error()
 ;
 
+let $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>API Documentation</strong></span></ul> 
+let $menu := local:createLeftMenu($menu, "index.html")
 let $doc := local:generateIndexHtml($indexHtmlPath, $menu)
 return local:configure-xhtml($doc/*:html, 0)
 ;
