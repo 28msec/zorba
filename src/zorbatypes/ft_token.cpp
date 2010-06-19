@@ -159,6 +159,7 @@ FTToken::string_t const& FTToken::valueImpl( int selector,
 }
 
 ft_wildcard_matcher const& FTToken::matcher( int selector ) const {
+  ZORBA_ASSERT( is_query_token() );
   if ( selector != qt_.selector_ ) {
     delete qt_.matcher_;
     qt_.matcher_ = NULL;
