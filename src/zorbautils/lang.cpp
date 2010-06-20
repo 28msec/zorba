@@ -14,9 +14,15 @@
  * limitations under the License.
  */
 
+#ifdef WIN32
+#include <windows.h>
+#endif /* WIN32 */
+
 #include <algorithm>
+#include <cstring>
 
 #include "util/less.h"
+#include "zorbaerrors/Assert.h"
 #include "zorbautils/lang.h"
 
 using namespace std;
@@ -137,8 +143,29 @@ iso639_1::type find( char const *lang ) {
   return iso639_2_to_639_1[ iso639_2::find( lang ) ];
 }
 
+inline char* lang_only( char *lang ) {
+  if ( char *const sep = ::strpbrk( lang, "-_" ) )
+    *sep = '\0';
+  return lang;
+}
+
 iso639_1::type get_default() {
-  return iso639_1::en; // TODO: implement a real solution
+  char const *lang;
+#ifdef WIN32
+  int const buf_size = ::GetLocaleInfoA(
+    LOCALE_USER_DEFAULT, LOCALE_SISO639LANGNAME, NULL, 0
+  );
+  ZORBA_ASSERT( buf_size );
+  auto_ptr<char> buf( new CHAR[ buf_size ] );
+  ::GetLocaleInfoA(
+    LOCALE_USER_DEFAULT, LOCALE_SISO639LANGNAME, buf.get(), buf_size
+  );
+  lang = lang_only( buf.get() );
+#else
+  lang = "en";  // TODO: implement a *nix solution
+#endif /* WIN32 */
+  iso639_1::type const lang_code = find( lang );
+  return lang_code != iso639_1::unknown ? lang_code : iso639_1::en;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
