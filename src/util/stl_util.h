@@ -19,8 +19,9 @@
 
 #include <algorithm>
 #include <cassert>
-#include <set>
+#include <cstring>
 #include <iterator>
+#include <set>
 #include <stack>
 
 namespace zorba {
@@ -143,6 +144,13 @@ template<typename SequenceType> inline
 void move_front_to_back( SequenceType &from, SequenceType &to ) {
   to.push_back( from.front() );
   from.pop_front();
+}
+
+/**
+ * Same as std::strdup(3) except it uses C++'s new[] rather than malloc(3).
+ */
+inline char* new_strdup( char const *s ) {
+  return std::strcpy( new char[ std::strlen( s ) + 1 ], s );
 }
 
 /**
