@@ -17,7 +17,7 @@
 #include <iomanip>
 #include <string>
 
-#include "runtime/full_text/ft_wildcard_matcher.h"
+#include "runtime/full_text/ft_wildcard.h"
 #include "util/stl_util.h"
 #include "zorbaerrors/Assert.h"
 #include "zorbatypes/ft_token.h"
@@ -73,7 +73,7 @@ inline void FTToken::fix_selector( int *selector ) {
 void FTToken::free() {
   delete mod_values_;
   if ( is_query_token() )
-    delete qt_.matcher_;
+    delete qt_.wildcard_;
 }
 
 void FTToken::init( iso639_1::type lang, int_t pos, int_t sent, int_t para ) {
@@ -81,7 +81,7 @@ void FTToken::init( iso639_1::type lang, int_t pos, int_t sent, int_t para ) {
   pos_  = pos ;
   para_ = para;
   if ( is_query_token() ) {
-    qt_.matcher_ = NULL;
+    qt_.wildcard_ = NULL;
     qt_.selector_ = original;
   } else {
     dt_.sent_ = sent;
@@ -158,18 +158,18 @@ FTToken::string_t const& FTToken::valueImpl( int selector,
   return *string_ref;
 }
 
-ft_wildcard_matcher const& FTToken::matcher( int selector ) const {
+ft_wildcard const& FTToken::wildcard( int selector ) const {
   ZORBA_ASSERT( is_query_token() );
   if ( selector != qt_.selector_ ) {
-    delete qt_.matcher_;
-    qt_.matcher_ = NULL;
+    delete qt_.wildcard_;
+    qt_.wildcard_ = NULL;
   }
-  if ( !qt_.matcher_ ) {
-    qt_.matcher_ = ft_wildcard_matcher::create();
-    qt_.matcher_->compile( value( selector ) );
+  if ( !qt_.wildcard_ ) {
+    qt_.wildcard_ = ft_wildcard::create();
+    qt_.wildcard_->compile( value( selector ) );
     qt_.selector_ = selector;
   }
-  return *qt_.matcher_;
+  return *qt_.wildcard_;
 }
 
 ///////////////////////////////////////////////////////////////////////////////

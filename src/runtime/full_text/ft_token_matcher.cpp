@@ -19,7 +19,7 @@
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/ft_stop_words_set.h"
 #include "runtime/full_text/ft_token_matcher.h"
-#include "runtime/full_text/ft_wildcard_matcher.h"
+#include "runtime/full_text/ft_wildcard.h"
 #include "util/stl_util.h"
 
 using namespace std;
@@ -135,7 +135,7 @@ bool ft_token_matcher::match( FTToken const &dt, FTToken const &qt ) const {
   }
 
   if ( wildcards_ ) {
-    return qt.matcher( qt_selector ).matches( dt.value( dt_selector ) );
+    return dt.value( dt_selector ) == qt.wildcard( qt_selector );
   }
 
   return dt.value( dt_selector, lang_ ) == qt.value( qt_selector, lang_ );

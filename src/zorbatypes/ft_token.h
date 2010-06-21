@@ -27,7 +27,7 @@
 
 namespace zorba {
 
-class ft_wildcard_matcher;
+class ft_wildcard;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -157,17 +157,22 @@ public:
   }
 
   /**
-   * Gets an ft_wildcard_matcher TODO
+   * Gets an ft_wildcard TODO
    *
    * @param selector The "bit-wise or" of Selectors.
-   * @return Returns said ft_wildcard_matcher.
+   * @return Returns said ft_wildcard.
    */
-  ft_wildcard_matcher const& matcher( int selector = original ) const;
+  ft_wildcard const& wildcard( int selector = original ) const;
 
 private:
   typedef xqpStringStore string_t;
   typedef rchandle<string_t> string_rc;
   typedef std::vector<string_rc> mod_values_t;
+
+  /**
+   * The smallest possible type to store a Selectors value.
+   */
+  typedef char selector_t;
 
   static int_t const QueryTokenMagicValue = static_cast<int_t>( ~0 );
 
@@ -195,17 +200,11 @@ private:
   struct qt_data {
 
     /**
-     * The smallest possible type to store a Selectors value.
-     */
-    typedef char selector_t;
-
-    /**
-     * The selector that was used at the time the ft_wildcard_matcher was
-     * created.
+     * The selector that was used at the time the ft_wildcard was created.
      */
     mutable selector_t selector_;
 
-    mutable ft_wildcard_matcher *matcher_;
+    mutable ft_wildcard *wildcard_;
   };
 
   /**

@@ -14,12 +14,16 @@
  * limitations under the License.
  */
 
-#include "runtime/full_text/icu_wildcard_matcher.h"
+#include "runtime/full_text/icu_wildcard.h"
 
 namespace zorba {
 
-ft_wildcard_matcher* ft_wildcard_matcher::create() {
-  return new icu_wildcard_matcher;
+ft_wildcard::~ft_wildcard() {
+  // do nothing
+}
+
+ft_wildcard* ft_wildcard::create() {
+  return new icu_wildcard;
 }
 
 } // namespace zorba

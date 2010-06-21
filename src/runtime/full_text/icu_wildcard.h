@@ -20,13 +20,13 @@
 #include <memory>
 #include <unicode/regex.h>
 
-#include "runtime/full_text/ft_wildcard_matcher.h"
+#include "runtime/full_text/ft_wildcard.h"
 
 namespace zorba {
 
-class icu_wildcard_matcher : public ft_wildcard_matcher {
+class icu_wildcard : public ft_wildcard {
 public:
-  icu_wildcard_matcher() { }
+  icu_wildcard() { }
 
   void compile( std::string const &xquery_pattern );
   bool matches( std::string const &string ) const;
@@ -36,8 +36,8 @@ private:
   RegexMatcher_ptr matcher_;
 
   // forbid these
-  icu_wildcard_matcher( icu_wildcard_matcher const& );
-  icu_wildcard_matcher& operator=( icu_wildcard_matcher const& );
+  icu_wildcard( icu_wildcard const& );
+  icu_wildcard& operator=( icu_wildcard const& );
 };
 
 } // namespace zorba

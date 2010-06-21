@@ -24,7 +24,7 @@ using namespace std;
 
 #if !STANDALONE_TEST
 # include <zorba/error.h>
-# include "runtime/full_text/icu_wildcard_matcher.h"
+# include "runtime/full_text/icu_wildcard.h"
 # include "util/stl_util.h"
 # include "zorbaerrors/error_manager.h"
 
@@ -142,7 +142,7 @@ static void xquery_to_icu_pattern( string const &xq_pat, string &icu_pat ) {
 
 U_NAMESPACE_USE
 
-void icu_wildcard_matcher::compile( string const &xq_pat ) {
+void icu_wildcard::compile( string const &xq_pat ) {
   string icu_pat;
   xquery_to_icu_pattern( xq_pat, icu_pat );
 #if DEBUG_MATCHER
@@ -155,7 +155,7 @@ void icu_wildcard_matcher::compile( string const &xq_pat ) {
     ZORBA_ERROR( FTDY0020 );
 }
 
-bool icu_wildcard_matcher::matches( string const &s ) const {
+bool icu_wildcard::matches( string const &s ) const {
   UnicodeString const u16_s( s.c_str() );
   matcher_->reset( u16_s );
   UErrorCode status = U_ZERO_ERROR;
