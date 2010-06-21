@@ -422,6 +422,9 @@ void* begin_visit(const FunctionDecl& n)
   default:
     break;
   }
+  if (n.is_deterministic()) {
+    os << "nondeterministic ";
+  }
   os << "function ";
   n.get_name()->accept(*this);
   os << '(';

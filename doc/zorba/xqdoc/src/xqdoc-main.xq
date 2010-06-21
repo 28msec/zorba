@@ -57,6 +57,15 @@ declare variable $indexHtmlPath as xs:string external;
 
 declare variable $indexCollector := <modules/>;
 
+declare function local:getFileName($moduleURI as xs:string) as xs:string
+{
+    replace(
+        replace($moduleURI, "/", "_"),
+        "http:__",
+        ""
+    )
+};
+
 declare sequential function local:clearFolder($folderPath as xs:string, $pattern as xs:string) as xs:string*
 {
   if(fn:not(file:exists($folderPath))) then
@@ -90,14 +99,14 @@ declare sequential function local:generateXQDocXml() as xs:string*
   for $file in file:files($filedirs, "\.xq$", fn:true())
   let $filePath := fn:concat($filedirs, file:path-separator(), $file)
   let $xqdoc := xqd:xqdoc(file:path-to-uri($filePath))
-  let $moduleDoc := $xqdoc/xqdoc:xqdoc/xqdoc:module
+  let $moduleDoc := $xqdoc/xqdoc:module
   let $moduleName := $moduleDoc/xqdoc:name
   let $moduleUri := $moduleDoc/xqdoc:uri
   return
     try {
       file:mkdirs($xqdocXmlPath, false());
       let $x := fn:count(file:files($xqdocXmlPath, "\.xml$", fn:true())) + 1
-      let $xqdocFileName := fn:concat($xqdocXmlPath, file:path-separator(), fn:string($x), "_xqdoc.xml")
+      let $xqdocFileName := fn:concat($xqdocXmlPath, file:path-separator(), local:getFileName($moduleUri), ".xml")
       return          
       file:write($xqdocFileName, $xqdoc, <s method="xml" indent="yes" />/@*);
       concat("
@@ -290,7 +299,8 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
 
   (: replace the function type description with images :)
   let $xquSpec := "http://www.w3.org/TR/xquery-update-10/",
-      $xqsSpec := "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function"
+      $xqsSpec := "http://www.w3.org/TR/xquery-sx-10/#dt-sequential-function",
+      $xq11Spec := "http://www.w3.org/TR/xquery-11/#FunctionDeclns"
   let $pathToIndex := local:get-path-to-index($stepsFromIndex)
   let $imagesPath := concat($pathToIndex, "images/")
   for $typeTd in $xhtml//*:td
@@ -303,6 +313,9 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
     else if (matches($type, "sequential")) then
       replace node $typeTd/text() with
         <a href="{$xqsSpec}" title="{$type}" target="_blank"><img src="{concat($imagesPath, "S.gif")}" /></a>
+    else if (matches($type, "nondeterministic")) then
+      replace node $typeTd/text() with
+        <a href="{$xq11Spec}" title="{$type}" target="_blank"><img src="{concat($imagesPath, "N.gif")}" /></a>
     else ();
   };
   

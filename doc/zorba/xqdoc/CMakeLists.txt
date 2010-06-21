@@ -41,6 +41,8 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/S.gif
                ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/S.gif COPYONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/U.gif
                ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/U.gif COPYONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/N.gif
+               ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/N.gif COPYONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/treeview-default.gif
                ${CMAKE_CURRENT_BINARY_DIR}/xhtml/images/treeview-default.gif COPYONLY)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/images/treeview-default-line.gif
