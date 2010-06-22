@@ -534,7 +534,7 @@ public:
                    int token_no, int sent_no, int para_no );
 
   void tokenize( char const *utf8_s, int len ) {
-    tokenizer_.tokenize( utf8_s, len, *this );
+    tokenizer_.tokenize( utf8_s, len, lang_, *this );
   }
 
 private:

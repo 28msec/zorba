@@ -119,6 +119,7 @@ ICU_Tokenizer::ICU_Tokenizer( bool wildcards ) : wildcards_( wildcards ) {
   ( (STATUS) >= UBRK_WORD_##TYPE && (STATUS) < UBRK_WORD_##TYPE##_LIMIT )
 
 void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
+                              locale::iso639_1::type lang,
                               Callback &callback ) {
   int32_t utf16_len;
   auto_vec<UChar> const utf16_buf(

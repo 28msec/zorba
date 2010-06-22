@@ -39,7 +39,7 @@ public:
    */
   ICU_Tokenizer( bool wildcards = false );
 
-  void tokenize( char const *utf8_s, int len, Callback& );
+  void tokenize( char const*, int, locale::iso639_1::type, Callback& );
 
 private:
   /**

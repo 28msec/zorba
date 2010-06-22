@@ -17,6 +17,8 @@
 #ifndef ZORBA_TOKENIZER_H
 #define ZORBA_TOKENIZER_H
 
+#include "zorbautils/locale.h"
+
 namespace zorba {
 
 /**
@@ -77,9 +79,11 @@ public:
    * @param utf8_s    The string to tokenize encoded in UTF-8.  It need not be
    *                  null-terminated.
    * @param len       The number of chars in the token string.
+   * @param lang      The language of the text.
    * @param callback  The Callback to call once per token.
    */
-  virtual void tokenize( char const *utf8_s, int len, Callback &callback ) = 0;
+  virtual void tokenize( char const *utf8_s, int len,
+                         locale::iso639_1::type lang, Callback &callback ) = 0;
 
 protected:
   Tokenizer();
