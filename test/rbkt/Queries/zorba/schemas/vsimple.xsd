@@ -1,0 +1,14 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+           xmlns:simple="http://zorba-xquery.com/test/vsimple.xsd" 
+           targetNamespace="http://zorba-xquery.com/test/vsimple.xsd" 
+           elementFormDefault="qualified" attributeFormDefault="qualified"
+>
+    <xs:element name="duration" type="xs:duration"/>
+    <xs:element name="dd">
+      <xs:complexType>
+        <xs:sequence>
+          <xs:element ref="simple:duration" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:element>
+</xs:schema>
