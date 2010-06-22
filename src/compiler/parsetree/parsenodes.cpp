@@ -737,7 +737,8 @@ FunctionDecl::FunctionDecl(
     rchandle<ParamList> _paramlist_h,
     rchandle<SequenceType> _return_type_h,
     rchandle<exprnode> _body_h,
-    enum ParseConstants::function_type_t _type)
+    enum ParseConstants::function_type_t _type,
+    bool deterministic)
   :
   XQDocumentable(loc_),
   name_h(_name_h),
@@ -745,7 +746,7 @@ FunctionDecl::FunctionDecl(
   body_h(_body_h),
   return_type_h(_return_type_h),
   theKind(_type),
-  theDeterministic(true)
+  theDeterministic(deterministic)
 {
 }
 

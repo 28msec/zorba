@@ -2135,7 +2135,8 @@ FunctionDeclSimple :
                             &* $3->param,
                             &* $3->ret,
                             $4,
-                            ParseConstants::fn_read);
+                            ParseConstants::fn_read,
+                            true);
       delete $3;
     }
   | FUNCTION QNAME FunctionSig EXTERNAL
@@ -2145,7 +2146,8 @@ FunctionDeclSimple :
                             &* $3->param,
                             &* $3->ret,
                             NULL,
-                            ParseConstants::fn_extern);
+                            ParseConstants::fn_extern,
+                            true);
       delete $3;
     }
   ;
@@ -2159,7 +2161,8 @@ FunctionDeclSequential :
                             &* $4->param,
                             &* $4->ret,
                             $5,
-                            ParseConstants::fn_sequential);
+                            ParseConstants::fn_sequential,
+                            true);
       delete $4;
     }
   | SEQUENTIAL FUNCTION QNAME FunctionSig EXTERNAL
@@ -2169,7 +2172,8 @@ FunctionDeclSequential :
                             &* $4->param,
                             &* $4->ret,
                             NULL,
-                            ParseConstants::fn_extern_sequential);
+                            ParseConstants::fn_extern_sequential,
+                            true);
       delete $4;
     }
   ;
@@ -2183,7 +2187,8 @@ FunctionDeclUpdating :
                             &* $4->param,
                             &* $4->ret,
                             $6,
-                            ParseConstants::fn_update);
+                            ParseConstants::fn_update,
+                            true);
       delete $4;
     }
   | UPDATING FUNCTION QNAME FunctionSig EXTERNAL
@@ -2193,7 +2198,8 @@ FunctionDeclUpdating :
                             &* $4->param,
                             &* $4->ret,
                             NULL,
-                            ParseConstants::fn_extern_update);
+                            ParseConstants::fn_extern_update,
+                            true);
       delete $4;
     }
   ;

@@ -302,6 +302,9 @@ void createDynamicContext(
       
     std::ifstream inputquery ( inputqueryfile.c_str() );
 
+    if (!inputquery.is_open())
+      std::cerr << "Could not open input query file: " << inputqueryfile.c_str() << std::endl;
+
     assert(inputquery.is_open());
 
     zorba::XQuery_t inputQuery = engine->compileQuery(inputquery,

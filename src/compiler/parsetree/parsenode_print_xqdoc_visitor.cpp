@@ -395,7 +395,8 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
       n.get_paramlist(),
       n.get_return_type(),
       0,
-      n.get_kind());
+      n.get_kind(),
+      n.is_deterministic());
 
   FunctionIndex lIndex = print_parsetree_xquery(lSig, &lFunctionDeclClone);
 

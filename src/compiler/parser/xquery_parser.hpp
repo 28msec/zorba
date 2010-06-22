@@ -38,7 +38,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 34 of lalr1.cc  */
-#line 31 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 31 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 
 
 #include <list>
@@ -69,7 +69,7 @@ typedef std::pair<std::string,std::string> string_pair_t;
 
 
 /* Line 34 of lalr1.cc  */
-#line 73 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 73 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -80,14 +80,14 @@ typedef std::pair<std::string,std::string> string_pair_t;
 namespace zorba {
 
 /* Line 34 of lalr1.cc  */
-#line 84 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 84 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
 } // zorba
 
 /* Line 34 of lalr1.cc  */
-#line 91 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 91 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -132,7 +132,7 @@ do {							\
 namespace zorba {
 
 /* Line 34 of lalr1.cc  */
-#line 136 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 136 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -144,7 +144,7 @@ namespace zorba {
     {
 
 /* Line 34 of lalr1.cc  */
-#line 152 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+#line 152 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -168,7 +168,7 @@ namespace zorba {
 
 
 /* Line 34 of lalr1.cc  */
-#line 172 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 172 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -664,7 +664,7 @@ namespace zorba {
 } // zorba
 
 /* Line 34 of lalr1.cc  */
-#line 668 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+#line 668 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

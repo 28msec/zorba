@@ -1082,7 +1082,8 @@ public:
         rchandle<ParamList>,
         rchandle<SequenceType>,
         rchandle<exprnode>,
-        ParseConstants::function_type_t type);
+        ParseConstants::function_type_t type,
+        bool deterministic);
 
   rchandle<QName> get_name() const { return name_h; }
 
