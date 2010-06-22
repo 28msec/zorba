@@ -711,6 +711,9 @@ void SchemaValidatorFilter::endElementEvent(
   if(theElementToProcess)
     processStartElement();
 
+  //cout << "   svf: endElementEvent: " << StrX(localname) << "@" << StrX(uri) <<
+  //    " type: " << StrX(typeName) << "  @" << StrX(typeURI) << endl;
+
   typeURI = SchemaSymbols::fgURI_SCHEMAFORSCHEMA;
   typeName = SchemaSymbols::fgATTVAL_ANYTYPE;
 
