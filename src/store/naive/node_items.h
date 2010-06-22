@@ -33,7 +33,7 @@
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include "store/naive/naive_ft_token_iterator.h"
-#include "zorbautils/lang.h"
+#include "zorbautils/locale.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
 #ifdef ZORBA_STORE_MSDOM
@@ -257,7 +257,7 @@ public:
     tokenizer_( tokenizer ),
     tokens_( tokens )
   {
-    push_lang( lang::iso639_1::unknown );
+    push_lang( locale::iso639_1::unknown );
   }
 
   void operator()( char const *utf8_s, int utf8_len,
@@ -270,12 +270,12 @@ public:
     tokenizer_.inc_para();
   }
 
-  lang::iso639_1::type get_lang() const {
+  locale::iso639_1::type get_lang() const {
     return lang_stack_.top();
   }
 
-  void push_lang( lang::iso639_1::type lang_code ) {
-    lang_stack_.push( lang_code );
+  void push_lang( locale::iso639_1::type lang ) {
+    lang_stack_.push( lang );
   }
 
   void pop_lang() {
@@ -287,7 +287,7 @@ public:
   }
 
 private:
-  typedef std::stack<lang::iso639_1::type> lang_stack_t;
+  typedef std::stack<locale::iso639_1::type> lang_stack_t;
 
   Tokenizer &tokenizer_;
   FTTokens &tokens_;

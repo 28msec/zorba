@@ -412,7 +412,7 @@ void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
   tokens_.push_back( t );
 }
 
-FTTokenIterator_t StringItemNaive::getQueryTokens( lang::iso639_1::type lang,
+FTTokenIterator_t StringItemNaive::getQueryTokens( locale::iso639_1::type lang,
                                                    bool wildcards ) const {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create( wildcards ) );
   NaiveFTTokenIterator::FTTokens *tokens = new NaiveFTTokenIterator::FTTokens;

@@ -507,7 +507,7 @@ public:
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t
-  getQueryTokens( lang::iso639_1::type = lang::iso639_1::unknown,
+  getQueryTokens( locale::iso639_1::type = locale::iso639_1::unknown,
                   bool wildcards = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 };
@@ -522,7 +522,7 @@ class AtomicItemTokenizer : public Tokenizer::Callback
 public:
   typedef NaiveFTTokenIterator::FTTokens FTTokens;
 
-  AtomicItemTokenizer( Tokenizer &tokenizer, lang::iso639_1::type lang,
+  AtomicItemTokenizer( Tokenizer &tokenizer, locale::iso639_1::type lang,
                        FTTokens &tokens ) :
     tokenizer_( tokenizer ),
     tokens_( tokens ),
@@ -540,7 +540,7 @@ public:
 private:
   Tokenizer &tokenizer_;
   FTTokens &tokens_;
-  lang::iso639_1::type const lang_;
+  locale::iso639_1::type const lang_;
 };
 #endif /* ZORBA_NO_FULL_TEXT */
 

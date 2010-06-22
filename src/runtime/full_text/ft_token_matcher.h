@@ -20,7 +20,7 @@
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/ft_stop_words_set.h"
 #include "zorbatypes/ft_token.h"
-#include "zorbautils/lang.h"
+#include "zorbautils/locale.h"
 
 namespace zorba {
 
@@ -40,7 +40,7 @@ public:
 private:
   ftmatch_options const &options_;
   bool const diacritics_insensitive_;
-  lang::iso639_1::type const lang_;
+  locale::iso639_1::type const lang_;
   bool const stemming_;
   ft_stop_words_set const *const stop_words_;
   bool const wildcards_;

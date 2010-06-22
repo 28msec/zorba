@@ -19,7 +19,7 @@
 
 #include <string>
 
-#include "zorbautils/lang.h"
+#include "zorbautils/locale.h"
 #include "zorbautils/mutex.h"
 #include "zorbautils/stemmer/include/libstemmer.h"
 
@@ -29,7 +29,7 @@ class Stemmer {
 public:
   ~Stemmer();
 
-  static Stemmer const* get( lang::iso639_1::type );
+  static Stemmer const* get( locale::iso639_1::type );
 
   void stem( std::string const &word, std::string &result ) const;
 
@@ -37,7 +37,7 @@ private:
   sb_stemmer *const stemmer_;
   mutable Mutex mutex_;
 
-  Stemmer( lang::iso639_1::type );
+  Stemmer( locale::iso639_1::type );
 
   // forbid these
   Stemmer( Stemmer const& );

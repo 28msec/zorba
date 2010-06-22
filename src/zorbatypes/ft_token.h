@@ -23,7 +23,7 @@
 
 #include "zorbatypes/rchandle.h"
 #include "zorbatypes/xqpstring.h"
-#include "zorbautils/lang.h"
+#include "zorbautils/locale.h"
 
 namespace zorba {
 
@@ -51,11 +51,11 @@ public:
    * @param token_no  The token number.  Token numbers start at 0.
    * @param sent_no   The sentence number.  Sentence numbers start at 0.
    * @param para_no   The paragraph number.  Paragraph numbers start at 0.
-   * @param lang_code The language of the soken string.
+   * @param lang      The language of the token string.
    */
   FTToken( char const *utf8_s, int len,
            int_t token_no, int_t sent_no, int_t para_no,
-           lang::iso639_1::type lang_code = lang::iso639_1::unknown );
+           locale::iso639_1::type lang = locale::iso639_1::unknown );
 
   /**
    * Constructs an FTToken for a token from a query.
@@ -64,10 +64,10 @@ public:
    *                  null-terminated.
    * @param len       The number of chars in the token string.
    * @param token_no  The token number.  Token numbers start at 0.
-   * @param lang_code The language of the soken string.
+   * @param lang      The language of the token string.
    */
   FTToken( char const *utf8_s, int len, int_t token_no,
-           lang::iso639_1::type lang_code = lang::iso639_1::unknown );
+           locale::iso639_1::type lang = locale::iso639_1::unknown );
 
   /**
    * Copy constructor.
@@ -93,7 +93,7 @@ public:
   /**
    * Gets the langauge of the token.
    */
-  lang::iso639_1::type lang() const {
+  locale::iso639_1::type lang() const {
     return lang_;
   }
 
@@ -150,7 +150,7 @@ public:
    */
   std::string const&
   value( int selector = original,
-         lang::iso639_1::type alt_lang = lang::iso639_1::unknown ) const {
+         locale::iso639_1::type alt_lang = locale::iso639_1::unknown ) const {
     if ( selector == original )         // optimize this case
       return value_->str();
     return valueImpl( selector, alt_lang ).str();
@@ -177,7 +177,7 @@ private:
   static int_t const QueryTokenMagicValue = static_cast<int_t>( ~0 );
 
   string_rc value_;                     ///< original value
-  lang::iso639_1::type lang_;           ///< language (if any)
+  locale::iso639_1::type lang_;         ///< language (if any)
   int_t pos_;                           ///< position
 
   /**
@@ -231,10 +231,10 @@ private:
 
   void copy( FTToken const& );
   void free();
-  void init( lang::iso639_1::type, int_t, int_t, int_t );
+  void init( locale::iso639_1::type, int_t, int_t, int_t );
 
   string_t const&
-  valueImpl( int, lang::iso639_1::type = lang::iso639_1::unknown ) const;
+  valueImpl( int, locale::iso639_1::type = locale::iso639_1::unknown ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////

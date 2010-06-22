@@ -23,6 +23,7 @@
 #include "util/stl_util.h"
 
 using namespace std;
+using namespace zorba::locale;
 
 namespace zorba {
 
@@ -34,10 +35,10 @@ inline bool get_diacritics_insensitive( ftmatch_options const &options ) {
   return false;
 }
 
-inline lang::iso639_1::type get_lang( ftmatch_options const &options ) {
+inline iso639_1::type get_lang( ftmatch_options const &options ) {
   if ( ftlanguage_option const *const l = options.get_language_option() )
     return l->get_language();
-  return lang::get_default();
+  return get_host_lang();
 }
 
 inline bool get_stemming( ftmatch_options const &options ) {
@@ -47,11 +48,9 @@ inline bool get_stemming( ftmatch_options const &options ) {
 }
 
 inline ft_stop_words_set const* get_stop_words( ftmatch_options const &options,
-                                                lang::iso639_1::type lang ) {
-  if ( ftstop_word_option const *const sw = options.get_stop_word_option() ) {
-    if ( sw->get_mode() != ft_stop_words_mode::without )
-      return ft_stop_words_set::construct( *sw, lang );
-  }
+                                                iso639_1::type lang ) {
+  if ( ftstop_word_option const *const sw = options.get_stop_word_option() )
+    return ft_stop_words_set::construct( *sw, lang );
   return NULL;
 }
 

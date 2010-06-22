@@ -3099,7 +3099,9 @@ void ElementNode::tokenize( XmlNodeTokenizer &tokenizer ) {
   while ( !found_lang && attributes->next( at ) ) {
     Item const *const name = at->getNodeName();
     if ( *name->getLocalName() == "lang" && *name->getNamespace() == XML_NS ) {
-      tokenizer.push_lang( lang::find( at->getStringValue()->str().c_str() ) );
+      tokenizer.push_lang(
+        locale::find_lang( at->getStringValue()->str().c_str() )
+      );
       found_lang = true;
     }
   }

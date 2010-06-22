@@ -395,14 +395,13 @@ ftlanguage_option::ftlanguage_option(
   xqpStringStore const xlang( lang );   // stupid hack
   if ( !GenericCast::instance()->castableToLanguage( &xlang ) )
     ZORBA_ERROR_LOC_PARAM( XPTY0004, loc, lang, NULL );
-  lang_code_ = lang::find( lang.c_str() );
-  if ( lang_code_ == lang::iso639_1::unknown )
+  if ( !(lang_ = locale::find_lang( lang.c_str() )) )
     ZORBA_ERROR_LOC_PARAM( FTST0009, loc, lang, NULL );
 }
 
 void ftlanguage_option::serialize( serialization::Archiver &ar ) {
   serialize_baseclass( ar, (ftmatch_option*)this );
-  SERIALIZE_ENUM(lang::iso639_1::type,lang_code_);
+  SERIALIZE_ENUM(locale::iso639_1::type,lang_);
 }
 
 
@@ -413,7 +412,7 @@ ft_visit_result::type ftlanguage_option::accept( ftnode_visitor &v ) {
 
 ostream& ftlanguage_option::put( ostream &o ) const {
   BEGIN_PUT( o, ftlanguage_option );
-  PUT_ENUM( o, lang::iso639_1, lang_code ) << endl;
+  PUT_ENUM( o, locale::iso639_1, lang ) << endl;
   END_PUT( o );
 }
 

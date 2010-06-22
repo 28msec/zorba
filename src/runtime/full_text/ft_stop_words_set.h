@@ -21,7 +21,7 @@
 #include <string>
 
 #include "compiler/expression/ftnode.h"
-#include "zorbautils/lang.h"
+#include "zorbautils/locale.h"
 
 namespace zorba {
 
@@ -33,7 +33,7 @@ public:
   }
 
   static ft_stop_words_set const* construct( ftstop_word_option const&,
-                                             lang::iso639_1::type );
+                                             locale::iso639_1::type );
 
   bool contains( std::string const &word ) const {
     return word_set_->find( word ) != word_set_->end();
@@ -50,7 +50,7 @@ private:
   {
   }
 
-  static set_t* get_default_word_set_for( lang::iso639_1::type );
+  static set_t* get_default_word_set_for( locale::iso639_1::type );
 
   // forbid these
   ft_stop_words_set( ft_stop_words_set const& );

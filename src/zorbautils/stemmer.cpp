@@ -18,13 +18,14 @@
 #include "zorbautils/stemmer.h"
 
 using namespace std;
+using namespace zorba::locale;
 
 namespace zorba {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-Stemmer::Stemmer( lang::iso639_1::type lang_code ) :
-  stemmer_( sb_stemmer_new( lang::iso639_1::string_of[ lang_code ], NULL ) )
+Stemmer::Stemmer( iso639_1::type lang ) :
+  stemmer_( sb_stemmer_new( iso639_1::string_of[ lang ], NULL ) )
 {
   ZORBA_FATAL( stemmer_, "out of memory" );
 }
@@ -33,20 +34,16 @@ Stemmer::~Stemmer() {
   sb_stemmer_delete( stemmer_ );
 }
 
-Stemmer const* Stemmer::get( lang::iso639_1::type lang_code ) {
-  static Stemmer* cached_stemmers[ lang::iso639_1::unknown ];
+Stemmer const* Stemmer::get( iso639_1::type lang ) {
+  static Stemmer* cached_stemmers[ iso639_1::NUM_ENTRIES ];
   static Mutex mutex;
 
-  if ( lang_code == lang::iso639_1::unknown ) {
-    lang_code = lang::get_default();
-    if ( lang_code == lang::iso639_1::unknown )
-      lang_code = lang::iso639_1::en;
-  }
-
+  if ( !lang )
+    lang = get_host_lang();
   AutoMutex const lock( &mutex );
-  Stemmer *&ptr = cached_stemmers[ lang_code ];
+  Stemmer *&ptr = cached_stemmers[ lang ];
   if ( !ptr )
-    ptr = new Stemmer( lang_code );
+    ptr = new Stemmer( lang );
   return ptr;
 }
 

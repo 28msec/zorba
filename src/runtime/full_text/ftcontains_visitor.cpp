@@ -387,11 +387,11 @@ void V::end_visit( ftwords &w ) {
   if ( ftwild_card_option const *const wc = options.get_wild_card_option() )
     wildcards = wc->get_mode() == ft_wild_card_mode::with;
 
-  lang::iso639_1::type lang_code;
+  locale::iso639_1::type lang;
   if ( ftlanguage_option const *const l = options.get_language_option() )
-    lang_code = l->get_language();
+    lang = l->get_language();
   else
-    lang_code = lang::get_default();
+    lang = locale::get_host_lang();
 
   store::Item_t item;
   PlanIter_t plan_iter = w.get_plan_iter();
@@ -400,7 +400,7 @@ void V::end_visit( ftwords &w ) {
 
   while ( PlanIterator::consumeNext( item, plan_iter, plan_state_ ) ) {
     try {
-      FTQueryItem const qi( item->getQueryTokens( lang_code, wildcards ) );
+      FTQueryItem const qi( item->getQueryTokens( lang, wildcards ) );
       if ( qi->hasNext() )
         query_items.push_back( qi );
     }

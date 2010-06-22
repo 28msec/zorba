@@ -26,7 +26,7 @@
 
 #ifndef ZORBA_NO_FULL_TEXT
 #include "store/api/ft_token_iterator.h"
-#include "zorbautils/lang.h"
+#include "zorbautils/locale.h"
 #endif /* ZORBA_NO_FULL_TEXT */
 
 #include "store/api/shared_types.h"
@@ -641,7 +641,7 @@ public:
    * @param wildcards If true, allow XQuery wildcard syntax in tokens.
    */
   virtual FTTokenIterator_t
-  getQueryTokens( lang::iso639_1::type = lang::iso639_1::unknown,
+  getQueryTokens( locale::iso639_1::type = locale::iso639_1::unknown,
                   bool wildcards = false ) const;
 
 #endif /* ZORBA_NO_FULL_TEXT */
