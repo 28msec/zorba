@@ -55,7 +55,7 @@ else
             <feature name='Minimum Conformance' supported='true' />
             <feature name='Schema Import Feature' supported='true' />
             <feature name='Schema Validation Feature' supported='true' />
-            <feature name='Static Typing Feature' supported='true' /> <!-- is this true -->
+            <feature name='Static Typing Feature' supported='false' />
             <feature name='Full Axis Feature' supported='true' />
             <feature name='Module Feature' supported='true' />
             <feature name='Serialization Feature' supported='true' />
