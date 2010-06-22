@@ -10414,15 +10414,23 @@ void end_visit(const PITest& v, void* /*visit_state*/)
   store::Item_t qname = NULL;
   if (target != "")
   {
-    xqpStringStore_t tmp = new xqpStringStore(target);
+    xqpStringStore_t lNormalizedTarget = new xqpStringStore(target);
 
-    if (!GenericCast::instance()->castableToNCName(tmp))
+    // bugfix for XQuery 1.1 (fixes test K2-NameTest-22)
+    // see W3C bug http://www.w3.org/Bugs/Public/show_bug.cgi?id=6559
+    // processing-instruction( N ) matches any processing-instruction node
+    // whose PITarget is equal to fn:normalize-space(N). If fn:normalize-space(N)
+    // is not in the lexical space of NCName, a type error is raised [err:XPTY0004]
+    lNormalizedTarget = lNormalizedTarget->normalizeSpace();
+
+    if (!GenericCast::instance()->castableToNCName(lNormalizedTarget))
     {
       ZORBA_ERROR_LOC_DESC(XPTY0004, loc,
                            "String literal in pi test cannot be converted to NCName");
     }
 
-    GENV_ITEMFACTORY->createQName(qname, NULL, NULL, target.c_str());
+    // bugfix (see above); pass normalized string instead of original target
+    GENV_ITEMFACTORY->createQName(qname, NULL, NULL, lNormalizedTarget->c_str());
   }
 
   if (axisExpr != NULL)

@@ -239,7 +239,6 @@ test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-14
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-11
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/K2-Steps-16
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/Steps-leading-lone-slash-13
-test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/NodeTestSection/NameTest/K2-NameTest-22
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/NodeTestSection/NameTest/K2-NameTest-5
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/K2-Steps-20
 test/rbkt/w3c_testsuite/XQuery/PathExpr/Steps/K2-Steps-15
