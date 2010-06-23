@@ -218,7 +218,7 @@ public:
 
   bool isInteger() const
   {
-    return theDecimal.is_integer();
+    return theDecimal.is_integer() != 0;
   }
 
   bool isULong() const
