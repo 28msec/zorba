@@ -10947,11 +10947,11 @@ void end_visit(const FlowCtlStatement& v, void* visit_state)
 #ifndef ZORBA_NO_FULL_TEXT
 template<typename FTNodeType> bool flatten( ftnode *n ) {
   if ( FTNodeType *const n2 = dynamic_cast<FTNodeType*>( n ) ) {
-    typename FTNodeType::ftnode_list_t list = n2->get_node_list();
+    typename FTNodeType::ftnode_list_t &list = n2->get_node_list();
     typename FTNodeType::ftnode_list_t::iterator i = list.begin();
     while ( i != list.end() ) {
       push_ftstack( *i );
-      list.erase( i++ );
+      i = list.erase( i );
     }
     delete n;
     return true;
