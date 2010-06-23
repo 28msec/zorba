@@ -328,14 +328,14 @@ void apply_ftand( ft_all_matches const &ami, ft_all_matches const &amj,
 
   if ( !amj.empty() ) {
     FOR_EACH( ft_all_matches, mi, ami ) {
-      ft_match m_new;
-      copy_seq( mi->includes, m_new.includes );
-      copy_seq( mi->excludes, m_new.excludes );
       FOR_EACH( ft_all_matches, mj, amj ) {
+        ft_match m_new;
+        copy_seq( mi->includes, m_new.includes );
+        copy_seq( mi->excludes, m_new.excludes );
         copy_seq( mj->includes, m_new.includes );
         copy_seq( mj->excludes, m_new.excludes );
+        result.push_back( m_new );
       }
-      result.push_back( m_new );
     }
   }
 
