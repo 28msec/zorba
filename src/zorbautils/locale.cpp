@@ -43,6 +43,9 @@ namespace locale {
 
 ///////////////////////////////////////////////////////////////////////////////
 
+/**
+ * A less-verbose way to use std::lower_bound.
+ */
 inline int find_index( char const *const *begin, char const *const *end,
                        char const *s ) {
   char const *const *const entry =
@@ -68,7 +71,20 @@ static char* get_win32_locale_info( int constant ) {
   return info;
 }
 
-#else
+#else /* WIN32 */
+
+/**
+ * Checks for and filters-out "useless" locales.
+ *
+ * @param loc The locale to check.
+ * @return If the locale is either useless or <code>NULL</code>, returns
+ * <code>NULL</code>; otherwise returns the locale.
+ */
+inline char const* filter_useless_locale( char const *loc ) {
+  if ( loc && (::strcmp( loc, "C" ) == 0 || ::strcmp( loc, "POSIX" ) == 0) )
+    return NULL;
+  return loc;
+}
 
 /**
  * Gets the environment's locale.
@@ -79,18 +95,12 @@ static char* get_unix_locale() {
   //
   // Try the environment locale first.
   //
-  char const *loc = ::setlocale( LC_ALL, "" );
-  if ( loc && (::strcmp( loc, "C" ) == 0 || ::strcmp( loc, "POSIX" ) == 0) ) {
-    //
-    // These locales aren't useful: ignore them.
-    //
-    loc = NULL;
-  }
+  char const *loc = filter_useless_locale( ::setlocale( LC_ALL, "" ) );
   if ( !loc ) {
     //
     // Try the "LANG" environment variable second.
     //
-    loc = ::getenv( "LANG" );
+    loc = filter_useless_locale( ::getenv( "LANG" ) );
   }
   return loc ? new_strdup( loc ) : NULL;
 }
@@ -469,10 +479,14 @@ iso3166_1::type get_host_country() {
 #   else
     country = get_unix_locale();
     if ( country ) {
-      if ( char *const sep = ::strchr( country, '.' ) )
-        *sep = '\0';
+      //
+      // Extract just the country from the locale, e.g., convert "en_US.UTF-8"
+      // to "US".
+      //
       if ( char *const sep = ::strpbrk( country, "_-" ) )
         country = sep + 1;
+      if ( char *const sep = ::strchr( country, '.' ) )
+        *sep = '\0';
     }
 #   endif /* WIN32 */
     if ( country ) {
@@ -497,6 +511,10 @@ iso639_1::type get_host_lang() {
 #   else
     lang_name = get_unix_locale();
     if ( lang_name ) {
+      //
+      // Extract just the language from the locale, e.g., convert "en_US.UTF-8"
+      // to "en".
+      //
       if ( char *const sep = ::strpbrk( lang_name, "-_" ) )
         *sep = '\0';
     }
