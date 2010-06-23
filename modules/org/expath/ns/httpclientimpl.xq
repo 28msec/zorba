@@ -48,36 +48,16 @@ declare sequential function httpclientimpl:http-send-request-impl (
 (:~
  : Helper function
  :
- : Do not use this function directly but use http://www.expath.org/mod/http-client;send-request
- : instead since this function does not all the error checking. So
- : calling this function directly can make zorba crash!!
+ : Do not use this function directly but use http://www.expath.org/mod/http-client;read
+ : instead since this function does not all the error checking.
  :
  : @param $request @see http://www.expath.org/mod/http-client;send-request
  : @param $href @see http://www.expath.org/mod/http-client;send-request
  : @param $bodies @see http://www.expath.org/mod/http-client;send-request
  :
- : @return @see http://www.expath.org/mod/http-client;send-request
+ : @return @see http://www.expath.org/mod/http-client;read
  :)
-declare function httpclientimpl:http-send-request-impl-deterministic (
-  $request as element(http:request, http:requestType)?,
-  $href as xs:string?,
-  $bodies as item()*
-) as item()+ external;
-
-(:~
- : Helper function
- :
- : Do not use this function directly but use http://www.expath.org/mod/http-client;send-request
- : instead since this function does not all the error checking. So
- : calling this function directly can make zorba crash!!
- :
- : @param $request @see http://www.expath.org/mod/http-client;send-request
- : @param $href @see http://www.expath.org/mod/http-client;send-request
- : @param $bodies @see http://www.expath.org/mod/http-client;send-request
- :
- : @return @see http://www.expath.org/mod/http-client;send-request
- :)
-declare nondeterministic function httpclientimpl:http-send-request-impl-nondeterministic (
+declare nondeterministic function httpclientimpl:http-read-impl (
   $request as element(http:request, http:requestType)?,
   $href as xs:string?,
   $bodies as item()*

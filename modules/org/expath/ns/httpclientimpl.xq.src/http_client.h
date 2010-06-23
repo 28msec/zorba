@@ -29,8 +29,7 @@ namespace zorba {
 
     public:
       HttpSendFunction(const ExternalModule* aModule) 
-        : 
-          theModule(aModule),
+        : theModule(aModule),
           theFactory(Zorba::getInstance(0)->getItemFactory()) {}
       
       virtual ~HttpSendFunction() {}
@@ -46,7 +45,20 @@ namespace zorba {
         evaluate(const StatelessExternalFunction::Arguments_t& args,
         const StaticContext* aStaticContext, const DynamicContext* aDynamicContext)
         const;
-    }; // class http_request
+    };
+
+    class HttpReadFunction : public HttpSendFunction {
+    public:
+      HttpReadFunction(const ExternalModule* aModule) 
+        : HttpSendFunction(aModule) {}
+      
+      virtual ~HttpReadFunction() {}
+
+    public:
+      virtual String
+      getLocalName() const { return "http-read-impl"; }
+
+    }; 
 
     class HttpClientModule : public ExternalModule {
     protected:
@@ -68,6 +80,11 @@ namespace zorba {
 
       HttpClientModule() 
       {
+        for (FuncMap_t::const_iterator lIter = theFunctions.begin();
+             lIter != theFunctions.end(); ++lIter) {
+          delete lIter->second;
+        }
+        theFunctions.clear();
       }
 
       virtual String
@@ -78,14 +95,10 @@ namespace zorba {
       {
         StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
         if (!lFunc) {
-          // currently, all three functinos are implemented using the same
-          // function class
           if (aLocalname.equals("http-send-request-impl")) {
             lFunc = new HttpSendFunction(this);
-          } else if (aLocalname.equals("http-send-request-impl-deterministic")) {
-            lFunc = new HttpSendFunction(this);
-          } else if (aLocalname.equals("http-send-request-impl-nondeterministic")) {
-            lFunc = new HttpSendFunction(this);
+          } else if (aLocalname.equals("http-read-impl")) {
+            lFunc = new HttpReadFunction(this);
           } 
         }
         return lFunc;
