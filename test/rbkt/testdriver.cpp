@@ -162,7 +162,9 @@ main(int argc, char** argv)
 
     // Check if this is w3c_testsuite test.
     std::string path = lQueryFileString;
-    bool isW3Ctest = ( path.find ( "w3c_testsuite" ) != std::string::npos );
+    bool isW3CXQTStest = ( path.find ( "w3c_testsuite" ) != std::string::npos );
+    bool isW3CFTtest = ( path.find ( "w3c_full_text_testsuite" ) != std::string::npos );
+    bool isW3Ctest = isW3CFTtest || isW3CXQTStest;
     std::string lQueryWithoutSuffix = 
     std::string(argv[i]).substr( 0, std::string(argv[i]).rfind('.') );
     std::auto_ptr<zorba::TestSchemaURIResolver>      resolver;
@@ -268,15 +270,16 @@ main(int argc, char** argv)
 
       if (isW3Ctest) 
       {
-        if (lQueryWithoutSuffix.find("XQueryX") != std::string::npos)
-          lRefFileTmpString = lRefFileTmpString.erase(14, 8);
-        else if (lQueryWithoutSuffix.find("XQuery") != std::string::npos)
-          lRefFileTmpString = lRefFileTmpString.erase(14, 7);
+        size_t pos = lQueryWithoutSuffix.find("XQueryX");
+        if (pos != std::string::npos)
+          lRefFileTmpString = lRefFileTmpString.erase(pos, 8);
+        pos = lQueryWithoutSuffix.find("XQuery");
+        if (pos != std::string::npos)
+          lRefFileTmpString = lRefFileTmpString.erase(pos, 7);
       }
   
       lRefFiles.push_back(zorba::file(rbkt_src_dir + "/ExpQueryResults/" +
                                       lRefFileTmpString + ".xml.res"));
-
       if (lRefFiles [0].exists())
         lRefFileExists = true;
     }
