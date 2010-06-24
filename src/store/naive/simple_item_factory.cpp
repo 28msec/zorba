@@ -937,8 +937,9 @@ bool BasicItemFactory::createElementNode(
   XmlTree* xmlTree = NULL;
   ElementNode* n = NULL;
 
-  //if ( typeName == NULL )
-  //  ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "NULL not allowed for typeName, use xsd:untyped instead.");
+  if ( typeName == NULL )
+    ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT,
+                     "NULL not allowed for typeName, use xsd:untyped instead.");
 
   assert(parent == NULL ||
          parent->getNodeKind() == store::StoreConsts::elementNode ||

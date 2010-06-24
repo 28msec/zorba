@@ -86,8 +86,9 @@ private:
 
       theFactory->createQName(lCommentQName, theXQDocNS, theXQDocPrefix, "comment");
 
+      store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
       theFactory->createElementNode(
-          lCommentElem, result, -1, lCommentQName, theTypeName,
+          lCommentElem, result, -1, lCommentQName, lTypeName,
           true, false, theNSBindings, theBaseURI);
 
       // description
@@ -146,9 +147,10 @@ private:
   {
     store::Item_t lQName, lElem, lText;
 
+    store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
     theFactory->createQName(lQName, theXQDocNS, theXQDocPrefix, aTag.c_str());
     theFactory->createElementNode(
-        lElem, aParent, -1, lQName, theTypeName,
+        lElem, aParent, -1, lQName, lTypeName,
         true, false, theNSBindings, theBaseURI);
 
     // parse the contents of the description in order
@@ -205,7 +207,6 @@ protected:
   xqpStringStore_t    theBaseURI;
   xqpStringStore_t    theVersion;
   store::NsBindings   theNSBindings;
-  store::Item_t       theTypeName;
   
   store::ItemFactory* theFactory;
 
@@ -220,7 +221,6 @@ ParseNodePrintXQDocVisitor(store::Item_t &aResult, const string& aFileName)
     theFileName(new xqpStringStore(getFileName(aFileName))),
     theBaseURI(new xqpStringStore("http://www.xqdoc.org/1.0")),
     theVersion(new xqpStringStore("1.0")),
-    theTypeName(GENV_TYPESYSTEM.XS_UNTYPED_QNAME),
     theFactory(GENV_ITEMFACTORY)
 {
   theNamespaces["fn"] = new xqpStringStore("http://www.w3.org/2005/xpath-functions");
@@ -245,40 +245,49 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
   theFactory->createQName(lFunctionsQName, theXQDocNS, theXQDocPrefix, "functions");
   theFactory->createQName(lModuleQName, theXQDocNS, theXQDocPrefix, "module");
 
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+    
   // create the prolog
   // <xqdoc><control><date/><version/></control>
   theFactory->createElementNode(
-      theResult, NULL, -1, lXQDocQName, theTypeName,
+      theResult, NULL, -1, lXQDocQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   // control, module, imports, functions
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lControlElem, theResult, -1, lControlQName, theTypeName,
+      lControlElem, theResult, -1, lControlQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      theModule, theResult, -1, lModuleQName, theTypeName,
+      theModule, theResult, -1, lModuleQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      theImports, theResult, -1, lImportsQName, theTypeName,
+      theImports, theResult, -1, lImportsQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      theVariables, theResult, -1, lVariablesQName, theTypeName,
+      theVariables, theResult, -1, lVariablesQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      theFunctions, theResult, -1, lFunctionsQName, theTypeName,
+      theFunctions, theResult, -1, lFunctionsQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   // date version
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lDateElem, lControlElem, -1, lDateQName, theTypeName,
+      lDateElem, lControlElem, -1, lDateQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lVersionElem, lControlElem, -1, lVersionQName, theTypeName,
+      lVersionElem, lControlElem, -1, lVersionQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   xqpStringStore_t lDate = aDateTime->getStringValue();
@@ -343,18 +352,21 @@ void end_visit(const ModuleDecl& n, void* /*visit_state*/)
   xqpStringStore_t lAttrString(new xqpStringStore("library"));
   theFactory->createString(lAttrValue, lAttrString);
 
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createAttributeNode(
-      lTypeAttr, theModule, -1, lTypeQName, theTypeName, lAttrValue);
+      lTypeAttr, theModule, -1, lTypeQName, lTypeName, lAttrValue);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lURIElem, theModule, -1, lURIQName, theTypeName,
+      lURIElem, theModule, -1, lURIQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   xqpStringStore_t lTargetNS = n.get_target_namespace();
   theFactory->createTextNode(lURIText, lURIElem.getp(), -1, lTargetNS);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lNameElem, theModule, -1, lNameQName, theTypeName,
+      lNameElem, theModule, -1, lNameQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
   theFactory->createTextNode(lNameText, lNameElem, -1, theFileName);
 
@@ -372,18 +384,21 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
   theFactory->createQName(lSigQName, theXQDocNS, theXQDocPrefix, "signature");
 
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lFuncElem, theFunctions, -1, lFuncQName, theTypeName,
+      lFuncElem, theFunctions, -1, lFuncQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   print_comment(lFuncElem, n.getComment());
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lNameElem, lFuncElem, -1, lNameQName, theTypeName,
+      lNameElem, lFuncElem, -1, lNameQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lSigElem, lFuncElem, -1, lSigQName, theTypeName,
+      lSigElem, lFuncElem, -1, lSigQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   xqpStringStore_t lNameString = n.get_name()->get_localname();
@@ -427,14 +442,16 @@ void end_visit(const FunctionCall& n, void*)
   theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
 
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lInvokedElem, NULL, -1, lInvokedQName, theTypeName,
+      lInvokedElem, NULL, -1, lInvokedQName, lTypeName,
       false, false, theNSBindings, theBaseURI);
 
   rchandle<QName> lFuncName = n.get_fname();
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lUriElem, lInvokedElem, -1, lUriQName, theTypeName,
+      lUriElem, lInvokedElem, -1, lUriQName, lTypeName,
       false, false, theNSBindings, theBaseURI);
 
   std::string lPrefix = lFuncName->get_prefix()->c_str();
@@ -457,8 +474,9 @@ void end_visit(const FunctionCall& n, void*)
 
   theFactory->createTextNode(lUriText, lUriElem.getp(), -1, lNS);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lNameElem, lInvokedElem, -1, lNameQName, theTypeName,
+      lNameElem, lInvokedElem, -1, lNameQName, lTypeName,
       false, false, theNSBindings, theBaseURI);
 
   theFactory->createTextNode(lNameText, lNameElem.getp(), -1, lLocalNameString);
@@ -477,12 +495,14 @@ void end_visit(const VarDecl& n, void*)
   theFactory->createQName(lVariableQName, theXQDocNS, theXQDocPrefix, "variable");
   theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
 
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lVariableElem, theVariables, -1, lVariableQName, theTypeName,
+      lVariableElem, theVariables, -1, lVariableQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lUriElem, lVariableElem, -1, lUriQName, theTypeName,
+      lUriElem, lVariableElem, -1, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   xqpStringStore_t lUriString(new xqpStringStore(n.get_name()->get_localname()->c_str()));
@@ -502,12 +522,14 @@ void end_visit(const ModuleImport& n, void*)
   theFactory->createQName(lImportQName, theXQDocNS, theXQDocPrefix, "import");
   theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
 
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lImportElem, theImports, -1, lImportQName, theTypeName,
+      lImportElem, theImports, -1, lImportQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
-      lUriElem, lImportElem, -1, lUriQName, theTypeName,
+      lUriElem, lImportElem, -1, lUriQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
 
   xqpStringStore_t lUriString(new xqpStringStore(n.get_uri()->c_str()));
