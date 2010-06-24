@@ -87,13 +87,11 @@
  : </ul>
  : </p>
  :
- : <b>Simple GET Request</b>
+ : <b>Simple GET Request (retrieving HTML)</b>
  :
  : <code>
  :   <pre>
- :   http:read(
- :      &lt;http:request href="www.example.com" method="get"/>
- :   )
+ :   http:read( &lt;http:request href="www.example.com" method="get"/>, () )
  :   </pre>
  : </code>
  : 
@@ -125,6 +123,22 @@
  :   &lt;/html&gt;
  :   </pre>
  : </code>
+ :
+ : <b>Simple GET Request (retrieving XHTML)</b>
+ :
+ : <code>
+ :   <pre>
+ :   declare namespace xhtml="http://www.w3.org/1999/xhtml";
+ :
+ :   http:read( &lt;http:request href="www.w3.org" method="get"/>, () )[2]//xhtml:body
+ :   </pre>
+ : </code>
+ :
+ : <p>
+ : This example shows how to retrieve an XHTML resource. Note, that the node test
+ : that is looking for the body element in the result requires the xhtml
+ : namespace to be specified.
+ : </p>
  :
  : <b>Simple POST Request</b>
  : 
