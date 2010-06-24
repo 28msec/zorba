@@ -631,17 +631,23 @@ public:
 
   /**
    * Gets the document tokens for this item.
+   *
+   * @param lang The language to use for tokenization.
+   * @return Returns an iterator over the document tokens.
    */
   virtual FTTokenIterator_t
-  getDocumentTokens() const;
+  getDocumentTokens( locale::iso639_1::type lang = locale::iso639_1::unknown )
+    const;
 
   /**
    * Gets the query tokens for this item.
    *
+   * @param lang The language to use for tokenization.
    * @param wildcards If true, allow XQuery wildcard syntax in tokens.
+   * @return Returns an iterator over the query tokens.
    */
   virtual FTTokenIterator_t
-  getQueryTokens( locale::iso639_1::type = locale::iso639_1::unknown,
+  getQueryTokens( locale::iso639_1::type lang = locale::iso639_1::unknown,
                   bool wildcards = false ) const;
 
 #endif /* ZORBA_NO_FULL_TEXT */

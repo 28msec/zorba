@@ -20,6 +20,7 @@
 #include "compiler/expression/ft_expr.h"
 #include "compiler/expression/ftnode.h"
 #include "compiler/parser/query_loc.h"
+#include "runtime/full_text/ft_util.h"
 #include "runtime/full_text/ftcontains_visitor.h"
 #include "util/indent.h"
 #include "util/stl_util.h"
@@ -382,16 +383,11 @@ void V::end_visit( ftunary_not& ) {
 DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords )
 void V::end_visit( ftwords &w ) {
   ftmatch_options const &options = *top_options();
+  locale::iso639_1::type const lang = get_lang_from( &options );
 
   bool wildcards = false;
   if ( ftwild_card_option const *const wc = options.get_wild_card_option() )
     wildcards = wc->get_mode() == ft_wild_card_mode::with;
-
-  locale::iso639_1::type lang;
-  if ( ftlanguage_option const *const l = options.get_language_option() )
-    lang = l->get_language();
-  else
-    lang = locale::get_host_lang();
 
   store::Item_t item;
   PlanIter_t plan_iter = w.get_plan_iter();

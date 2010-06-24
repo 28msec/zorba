@@ -15,6 +15,7 @@
  */
 
 #include <cctype>
+#include <memory>                       /* for auto_ptr */
 #include <unicode/unistr.h>
 
 #define DEBUG_TOKENIZER 0
@@ -27,10 +28,12 @@
 #include "util/stl_util.h"
 #include "zorbaerrors/error_manager.h"
 #include "zorbautils/icu_tokenizer.h"
+#include "zorbautils/mutex.h"
 #include "zorbautils/unicode_util.h"
 
 using namespace std;
 U_NAMESPACE_USE
+using namespace zorba::locale;
 
 namespace zorba {
 
@@ -79,25 +82,89 @@ private:
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ICU_Tokenizer::ICU_Tokenizer( bool wildcards ) : wildcards_( wildcards ) {
+/**
+ * For a given language, get its corresponding ICU Locale.
+ *
+ * @param lang The language to get the ICU locale for.
+ * @return Returns said Locale.
+ */
+static Locale const& get_icu_locale_for( iso639_1::type lang ) {
+  typedef map<iso639_1::type,Locale> locale_cache_t;
+  static locale_cache_t locale_cache;
+  static Mutex mutex;
+
+  if ( lang == iso639_1::unknown )
+    lang = get_host_lang();
+
+  AutoMutex const lock( &mutex );
+
+  locale_cache_t::const_iterator const i = locale_cache.find( lang );
+  if ( i != locale_cache.end() )
+    return i->second;
+
+  iso3166_1::type const country_code = get_host_country();
+  char const *const country = country_code != iso3166_1::unknown ?
+    iso3166_1::string_of[ country_code ] : NULL;
+  Locale &icu_locale = locale_cache[ lang ];
+  icu_locale = Locale( iso639_1::string_of[ lang ], country );
+  return icu_locale;
+}
+
+/**
+ * Creates the ICU word & sentence RuleBasedBreakIterators for the given
+ * language.
+ *
+ * @param lang The language to create the RuleBasedBreakIterators for.
+ * @param result The created iterators are put here.
+ */
+void ICU_Tokenizer::create_iterators( iso639_1::type lang,
+                                      ICU_Iterators &result ) {
+  typedef auto_ptr<RuleBasedBreakIterator> rbbi_ptr;
+
+  Locale const &icu_locale = get_icu_locale_for( lang );
   UErrorCode status = U_ZERO_ERROR;
 
-  // TODO: get actual locale
-  word_it_ = BreakIterator_ptr(
+  rbbi_ptr word_it(
     dynamic_cast<RuleBasedBreakIterator*>(
-      BreakIterator::createWordInstance( Locale::getUS(), status )
+      BreakIterator::createWordInstance( icu_locale, status )
     )
   );
   if ( U_FAILURE( status ) )
     ZORBA_ERROR( XQP0036_BREAKITERATOR_CREATION_FAILED );
 
-  sent_it_ = BreakIterator_ptr(
+  rbbi_ptr sent_it(
     dynamic_cast<RuleBasedBreakIterator*>(
       BreakIterator::createSentenceInstance( Locale::getUS(), status )
     )
   );
   if ( U_FAILURE( status ) )
     ZORBA_ERROR( XQP0036_BREAKITERATOR_CREATION_FAILED );
+
+  result.word_ = word_it.release();
+  result.sent_ = sent_it.release();
+}
+
+/**
+ * Gets the ICU word & sentence RuleBasedBreakIterators for the given language
+ * (creating them if necessary).
+ *
+ * @param lang The language to get the RuleBasedBreakIterators for.
+ * @return Returns said iterators.
+ */
+ICU_Tokenizer::ICU_Iterators&
+ICU_Tokenizer::get_iterators_for( iso639_1::type lang ) {
+  lang_iters_t::iterator i = lang_iters_.find( lang );
+  if ( i != lang_iters_.end() )
+    return i->second;
+  ICU_Iterators &iters = lang_iters_[ lang ];
+  create_iterators( lang, iters );
+  return iters;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+ICU_Tokenizer::ICU_Tokenizer( bool wildcards ) : wildcards_( wildcards ) {
+  // do nothing else
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -119,8 +186,9 @@ ICU_Tokenizer::ICU_Tokenizer( bool wildcards ) : wildcards_( wildcards ) {
   ( (STATUS) >= UBRK_WORD_##TYPE && (STATUS) < UBRK_WORD_##TYPE##_LIMIT )
 
 void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
-                              locale::iso639_1::type lang,
-                              Callback &callback ) {
+                              iso639_1::type lang, Callback &callback ) {
+  ICU_Iterators &iters = get_iterators_for( lang );
+
   int32_t utf16_len;
   auto_vec<UChar> const utf16_buf(
     utf8_to_utf16( utf8_s, utf8_len, &utf16_len )
@@ -129,11 +197,11 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
   // This UnicodeString wraps the existing buffer: no copy is made.
   UnicodeString const utf16_s( false, utf16_buf.get(), utf16_len );
 
-  word_it_->setText( utf16_s );
-  int32_t word_start = word_it_->first(), word_end = word_it_->next();
+  iters.word_->setText( utf16_s );
+  int32_t word_start = iters.word_->first(), word_end = iters.word_->next();
 
-  sent_it_->setText( utf16_s );
-  int32_t sent_start = sent_it_->first(), sent_end = sent_it_->next();
+  iters.sent_->setText( utf16_s );
+  int32_t sent_start = iters.sent_->first(), sent_end = iters.sent_->next();
 
   token t;
 
@@ -152,7 +220,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
     auto_vec<char> const utf8_buf(
       utf16_to_utf8( utf16_buf.get() + word_start, utf16_len, &utf8_len )
     );
-    int32_t const rule_status = word_it_->getRuleStatus();
+    int32_t const rule_status = iters.word_->getRuleStatus();
 
     //
     // "Junk" tokens are whitespace and punctuation -- except some punctuation
@@ -265,9 +333,9 @@ set_token:
     }
 
 next:
-    word_start = word_end, word_end = word_it_->next();
+    word_start = word_end, word_end = iters.word_->next();
     if ( word_end >= sent_end && sent_end != BreakIterator::DONE ) {
-      sent_start = sent_end, sent_end = sent_it_->next();
+      sent_start = sent_end, sent_end = iters.sent_->next();
       ++sent_no_;
     }
   } // while

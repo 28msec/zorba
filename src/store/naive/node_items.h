@@ -253,11 +253,12 @@ class XmlNodeTokenizer : public Tokenizer::Callback {
 public:
   typedef XmlTree::FTTokens FTTokens;
 
-  XmlNodeTokenizer( Tokenizer &tokenizer, FTTokens &tokens ) :
+  XmlNodeTokenizer( Tokenizer &tokenizer, FTTokens &tokens,
+                    locale::iso639_1::type lang ) :
     tokenizer_( tokenizer ),
     tokens_( tokens )
   {
-    push_lang( locale::iso639_1::unknown );
+    push_lang( lang );
   }
 
   void operator()( char const *utf8_s, int utf8_len,
@@ -533,7 +534,8 @@ public:
   void setFlags(uint32_t flags) { theFlags = flags; }
 
 #ifndef ZORBA_NO_FULL_TEXT
-  FTTokenIterator_t getDocumentTokens() const;
+  FTTokenIterator_t
+  getDocumentTokens( locale::iso639_1::type = locale::iso639_1::unknown ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
 
 protected:

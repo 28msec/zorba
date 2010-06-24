@@ -15,6 +15,7 @@
  */
 
 #include "common/common.h"
+#include "runtime/full_text/ft_util.h"
 #include "runtime/full_text/ftcontains_visitor.h"
 #include "runtime/full_text/full_text.h"
 #include "store/api/ft_token_iterator.h"
@@ -23,6 +24,7 @@
 #include "system/globalenv.h"
 #include "util/stl_util.h"
 #include "zorbatypes/utf8.h"
+#include "zorbautils/locale.h"
 
 using namespace std;
 
@@ -65,13 +67,17 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
   bool ftcontains = false;
   store::Item_t item;                   // for the search context
   static_context const *static_ctx;
+  ftmatch_options const *options;
+  locale::iso639_1::type lang;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
   static_ctx = getStaticContext( plan_state );
+  options = static_ctx->get_match_options();
+  lang = get_lang_from( options );
 
   while ( !ftcontains && consumeNext( item, theChild0.getp(), plan_state ) ) {
-    FTTokenIterator_t doc_tokens( item->getDocumentTokens() );
+    FTTokenIterator_t doc_tokens( item->getDocumentTokens( lang ) );
     if ( doc_tokens->hasNext() ) {
       ftcontains_visitor v( doc_tokens, *static_ctx, plan_state );
       ftselection_->accept( v );

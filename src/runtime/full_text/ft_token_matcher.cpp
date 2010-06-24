@@ -19,6 +19,7 @@
 #include "compiler/expression/ftnode.h"
 #include "runtime/full_text/ft_stop_words_set.h"
 #include "runtime/full_text/ft_token_matcher.h"
+#include "runtime/full_text/ft_util.h"
 #include "runtime/full_text/ft_wildcard.h"
 #include "util/stl_util.h"
 
@@ -33,12 +34,6 @@ inline bool get_diacritics_insensitive( ftmatch_options const &options ) {
   if ( ftdiacritics_option const *const d = options.get_diacritics_option() )
     return d->get_mode() == ft_diacritics_mode::insensitive;
   return false;
-}
-
-inline iso639_1::type get_lang( ftmatch_options const &options ) {
-  if ( ftlanguage_option const *const l = options.get_language_option() )
-    return l->get_language();
-  return get_host_lang();
 }
 
 inline bool get_stemming( ftmatch_options const &options ) {
@@ -65,7 +60,7 @@ inline bool get_wildcards( ftmatch_options const &options ) {
 ft_token_matcher::ft_token_matcher( ftmatch_options const &options ) :
   options_( options ),
   diacritics_insensitive_( get_diacritics_insensitive( options ) ),
-  lang_( get_lang( options ) ),
+  lang_( get_lang_from( &options ) ),
   stemming_( get_stemming( options ) ),
   stop_words_( get_stop_words( options, lang_ ) ),
   wildcards_( get_wildcards( options ) )

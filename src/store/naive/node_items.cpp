@@ -3119,11 +3119,12 @@ void TextNode::tokenize( XmlNodeTokenizer &tokenizer ) {
   tokenizer.endTokenization( *this );
 }
 
-FTTokenIterator_t XmlNode::getDocumentTokens() const {
+FTTokenIterator_t
+XmlNode::getDocumentTokens( locale::iso639_1::type lang ) const {
   XmlTree::FTTokens &tokens = getTree()->getTokens();
   if ( !hasTokens() ) {
     auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
-    XmlNodeTokenizer xml_tokenizer( *tokenizer, tokens );
+    XmlNodeTokenizer xml_tokenizer( *tokenizer, tokens, lang );
     getRoot()->tokenize( xml_tokenizer );
   }
   return FTTokenIterator_t(

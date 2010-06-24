@@ -142,7 +142,7 @@ xqpStringStore* Item::getStringValueP() const
 
 #ifndef ZORBA_NO_FULL_TEXT
 
-FTTokenIterator_t Item::getDocumentTokens() const
+FTTokenIterator_t Item::getDocumentTokens( locale::iso639_1::type lang ) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, getType()->getStringValue());

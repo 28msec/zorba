@@ -17,9 +17,10 @@
 #ifndef ZORBA_FULL_TEXT_ICU_TOKENIZER_H
 #define ZORBA_FULL_TEXT_ICU_TOKENIZER_H
 
-#include <memory>                       /* for auto_ptr */
+#include <map>
 #include <unicode/rbbi.h>               /* for RuleBasedBreakIterator */
 
+#include "zorbautils/locale.h"
 #include "zorbautils/tokenizer.h"
 
 namespace zorba {
@@ -42,19 +43,25 @@ public:
   void tokenize( char const*, int, locale::iso639_1::type, Callback& );
 
 private:
-  /**
-   * Use an auto_ptr to guarantee destruction in case the constructor throws an
-   * exception.
-   *
-   * See the C++ FAQ 17.4: How should I handle resources if my constructors may
-   * throw exceptions?
-   */ 
-  typedef std::auto_ptr<U_NAMESPACE_QUALIFIER RuleBasedBreakIterator>
-          BreakIterator_ptr;
+  struct ICU_Iterators {
+    RuleBasedBreakIterator *word_;
+    RuleBasedBreakIterator *sent_;
 
+    ICU_Iterators() : word_( 0 ), sent_( 0 ) { }
+
+    ~ICU_Iterators() {
+      delete word_;
+      delete sent_;
+    }
+  };
+
+  typedef std::map<locale::iso639_1::type,ICU_Iterators> lang_iters_t;
+
+  lang_iters_t lang_iters_;
   bool const wildcards_;
-  BreakIterator_ptr word_it_;
-  BreakIterator_ptr sent_it_;
+
+  static void create_iterators( locale::iso639_1::type, ICU_Iterators& );
+  ICU_Iterators& get_iterators_for( locale::iso639_1::type );
 };
 
 } // namespace zorba
