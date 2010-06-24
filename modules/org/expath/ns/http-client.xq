@@ -16,28 +16,40 @@
 
 (:~
  : <p>
- : The module provides functions making HTTP request.
- : Basically, the modules defines two functions, <code>http:send-request()</code>
- : and <code>http:read()</code> (both with several arities for the sake of ease
- : of use.) In general, these functions take a description of the HTTP request
- : to make as parameter, execute the request, and return a representation of
- : the HTTP response.
+ : This module provides an implementation of the
+ : <a href="http://expath.org/modules/http-client.html">EXPath Http Client</a>.
+ : It provides functions for making HTTP requests and is a superset of the
+ : module specified by EXPath.
+ : Specifically, it implements the <code>http:send-request()</code> functions
+ : as specified by EXPath. Moreover, it adds an additional function
+ : <code>http:read()</code> (with several arities for the sake of ease).
+ : </p>
+ :
+ : <p>
+ : In general, both functions take a description of the HTTP request to make
+ : as parameter, execute the request, and return a representation of the HTTP
+ : response.
  : </p>
  : 
  : <p>
  : The <code>http:send-request()</code> functions are declared as sequential. 
  : Sequential functions are allowed to have side effects. For example, most probably,
  : an HTTP POST request is a request that has side effects because it adds/changes
- : a remote resource.
- : In contrast, the <code>http:read()</code> functions are declared as nondeterministic.
- : HTTP requests performed using these functions are not allowed to have
- : side-effects.
+ : a remote resource. Such functions are an extension of XQuery and are specified in 
+ : the <a href="http://www.w3.org/TR/xquery-sx-10/">XQuery Scripting Extension</a>.
+ : Sequential functions are only allowed to be invoked in certain places (e.g.
+ : only from functions which are declared as sequential themselves).
+ : In contrast, the <code>http:read()</code> functions are declared as
+ : nondeterministic (see <a href="http://www.w3.org/TR/xquery-11/">XQuery 1.1</a>).
+ : HTTP requests performed using these functions are <b>not</b> allowed to have
+ : side effects.
  : </p>
  :
  : <p>
- : For all functions, the request is represented by an <code>http:request</code>
+ : For almost all functions (except <code>read</code> with one parameter),
+ : the request is represented by an <code>http:request</code>
  : element, specifying the URI, the HTTP method, the headers, and the body
- : content (for POST and PUT methods).
+ : content (for POST and PUT methods) of the HTTP request to make.
  : </p>
  :
  : <p>
@@ -75,9 +87,50 @@
  : </ul>
  : </p>
  :
+ : <b>Simple GET Request</b>
+ :
+ : <code>
+ :   <pre>
+ :   http:read(
+ :      &lt;http:request href="www.example.com" method="get"/>
+ :   )
+ :   </pre>
+ : </code>
+ : 
+ : returns
+ :
+ : <code>
+ :   <pre>
+ :   &lt;response xmlns="http://expath.org/ns/http-client" status="200" message="OK">
+ :     &lt;header name="Content-Type" value="text/html; charset=UTF-8"/>
+ :     &lt;header name="Content-Length" value="574"/>
+ :     ...
+ :     &lt;body media-type="text/html"/>
+ :   &lt;/response>
+ :   &lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"&gt;
+ :   &lt;html&gt;
+ :     &lt;head&gt;
+ :       &lt;meta http-equiv="Content-Type"
+ :       content="text/html; charset=utf-8" /&gt;
+ :       &lt;title&gt;Example Web Page&lt;/title&gt;
+ :     &lt;/head&gt;
+ :     &lt;body&gt;
+ :       &lt;p&gt;You have reached this web page by typing "example.com",
+ :       "example.net", or "example.org" into your web browser.&lt;/p&gt;
+ :       &lt;p&gt;These domain names are reserved for use in documentation and are
+ :       Not available for registration. See 
+ :       &lt;a href="http://www.rfc-editor.org/rfc/rfc2606.txt"&gt;RFC 2606&lt;/a&gt;,
+ :       Section 3.&lt;/p&gt;
+ :     &lt;/body&gt;
+ :   &lt;/html&gt;
+ :   </pre>
+ : </code>
+ :
+ : <b>Simple POST Request</b>
+ : 
  : <p>
- : Here is a simple example of call in XQuery, which sends a text content
- : by making an HTTP POST request.
+ : Here is a simple example which sends a text content by making an HTTP POST
+ : request.
  : </p>
  :
  : <code>
@@ -111,12 +164,6 @@
  : <a href="http://expath.org/modules/http-client.html#d2e183">specification</a>.
  : Analogously, the response element is also described in this
  : <a href="http://expath.org/modules/http-client.html#d2e483">specification</a>.
- : </p>
- :
- : <p>
- : Please note, that this module is an extension to the module specified
- : by EXPath because it adds some convenience functions and the nondeterministic
- : <code>read()</code> functions.
  : </p>
  :
  : @author Markus Pilman
@@ -232,7 +279,7 @@ declare sequential function http:send-request(
  : @param $href is the HTTP or HTTPS URI to send the request to. It must be a valid
  :  xs:anyURI, but is declared as a string to be able to pass literal strings
  :  (without requiring to explicitly cast it to an xs:anyURI.)
- : @param $content is the request body content, for HTTP methods that can
+ : @param $bodies is the request body content, for HTTP methods that can
  :  contain a body in the request (i.e. POST and PUT). It is an error, if this
  :  param is not the empty sequence for methods other then DELETE, GET, HEAD
  :  and OPTIONS.
@@ -267,7 +314,7 @@ declare function http:read(
  :      with three parameters.
  :
  : @param $request see parameter $request of <a href="#read-3">read</a> with three parameters
- : @param href see parameter $href of <a href="#read-3">read</a> with three parameters
+ : @param $href see parameter $href of <a href="#read-3">read</a> with three parameters
  : @return see return of <a href="#read-3">read</a> with three parameters
  :)
 declare function http:read(
@@ -288,7 +335,7 @@ declare function http:read(
  :
  : @see documentation of <a href="#read-3">read</a> with three parameters.
  :
- : @param $request see parameter $request of <a href="#read-3">read</a> with three parameters
+ : @param $href see parameter $href of <a href="#read-3">read</a> with three parameters
  : @return see return of <a href="#read-3">read</a> with three parameters
  :)
 declare function http:read(
@@ -394,7 +441,7 @@ declare function http:set-content-type(
  :
  : @param $request The request which needs to be checked.
  : @param $href The href which needs to be checked.
- : @param $href The bodies element which needs to be checked.
+ : @param $bodies The bodies element which needs to be checked.
  : @return true if the parameters are consistent. Otherwise,
  :         this function raises an error.
  :)
