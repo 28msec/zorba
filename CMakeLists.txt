@@ -118,6 +118,14 @@ INCLUDE(ExpectedFailure)
 #                                                                              #
 ################################################################################
 
+FOREACH (path "${CMAKE_PREFIX_PATH}")
+  IF (EXISTS "${path}")
+    MESSAGE("path entry: ${path}")
+  ELSE (EXISTS "${path}")
+    MESSAGE("Non-existing path!: ${path}")
+  ENDIF (EXISTS "${path}")
+ENDFOREACH (path)
+
 SET(requiredlibs)
 SET(requiredlibs-store)
 
