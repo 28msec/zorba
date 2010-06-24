@@ -361,9 +361,9 @@ char const *const string_of[] = {
   "ZW", // Zimbabwe
 };
 
-type find( char const *lang ) {
+type find( char const *country ) {
   DEF_END();
-  return FIND( lang );
+  return FIND( country );
 }
 
 } // namespace iso3166_1
