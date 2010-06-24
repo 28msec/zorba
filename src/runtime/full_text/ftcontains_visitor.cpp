@@ -384,10 +384,7 @@ DEF_FTNODE_VISITOR_BEGIN_VISIT( V, ftwords )
 void V::end_visit( ftwords &w ) {
   ftmatch_options const &options = *top_options();
   locale::iso639_1::type const lang = get_lang_from( &options );
-
-  bool wildcards = false;
-  if ( ftwild_card_option const *const wc = options.get_wild_card_option() )
-    wildcards = wc->get_mode() == ft_wild_card_mode::with;
+  bool const wildcards = get_wildcards_from( &options );
 
   store::Item_t item;
   PlanIter_t plan_iter = w.get_plan_iter();

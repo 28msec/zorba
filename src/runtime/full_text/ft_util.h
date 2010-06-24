@@ -37,6 +37,20 @@ inline locale::iso639_1::type get_lang_from( ftmatch_options const *options ) {
   return locale::iso639_1::unknown;
 }
 
+/**
+ * Gets whether wildcards are enabled from the given ftmatch_options, if any.
+ *
+ * @param options The ftmatch_options to check.  This may be <code>NULL</code>.
+ * @return Returns <code>true</code> only if the options is not
+ * <code>NULL</code> and the options contain an enabled wildcard option.
+ */
+inline bool get_wildcards_from( ftmatch_options const *options ) {
+  if ( options )
+    if ( ftwild_card_option const *const wc = options->get_wild_card_option() )
+      return wc->get_mode() == ft_wild_card_mode::with;
+  return false;
+}
+
 } // namespace zorba
 #endif /* ZORBA_FULL_TEXT_UTIL_H */
 /* vim:set et sw=2 ts=2: */

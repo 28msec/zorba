@@ -49,12 +49,6 @@ inline ft_stop_words_set const* get_stop_words( ftmatch_options const &options,
   return NULL;
 }
 
-inline bool get_wildcards( ftmatch_options const &options ) {
-  if ( ftwild_card_option const *const wc = options.get_wild_card_option() )
-    return wc->get_mode() == ft_wild_card_mode::with;
-  return false;
-}
-
 ///////////////////////////////////////////////////////////////////////////////
 
 ft_token_matcher::ft_token_matcher( ftmatch_options const &options ) :
@@ -63,7 +57,7 @@ ft_token_matcher::ft_token_matcher( ftmatch_options const &options ) :
   lang_( get_lang_from( &options ) ),
   stemming_( get_stemming( options ) ),
   stop_words_( get_stop_words( options, lang_ ) ),
-  wildcards_( get_wildcards( options ) )
+  wildcards_( get_wildcards_from( &options ) )
 {
 }
 
