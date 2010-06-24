@@ -1012,7 +1012,7 @@ each operation are provided in the subsequent chapters.
 \subsection indexes_in_action 2.1 Indexes in action - A simple example
 
 Let us assume the same news application we used in \ref collections_in_action.
-In this section we will how to create and use indexes on the collections of the
+In this section, we will show how to create and use indexes on the collections of the
 news organization. First, let us assume that each employee has a city where
 he/she is currently stationed at. We want to create an index that maps city
 names to the employees that are stationed in those cities. The index will
