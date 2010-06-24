@@ -26,7 +26,7 @@ declare variable $moduleCategories as xs:string* := (
 'http://www.zorba-xquery.com/modules'
 );
 
-declare variable $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>API Documentation</strong></span></ul>;
+declare variable $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>XQuery Libraries</strong></span></ul>;
 
 (:~
  : This variable contains the modules directory path in the source directory.
@@ -155,7 +155,7 @@ declare sequential function local:generateXQDocXhtml($indexPath as xs:string) as
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleName := $moduleDoc/xqdoc:name
       let $moduleUri := $moduleDoc/xqdoc:uri
-      let $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>API Documentation</strong></span></ul> 
+      let $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>XQuery Libraries</strong></span></ul> 
       let $menu := local:createLeftMenu($menu, $moduleUri)
       let $xhtml := xqdg:doc($xqdoc, $menu)
       return block {
@@ -322,6 +322,30 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
   $xhtml;
 };
 
+declare function local:createModuleTable() {
+  <ul>
+  {
+    for $cat in $moduleCategories
+    return 
+      (
+        <li> { $cat }
+          <ul>
+          {
+            for $module in $indexCollector/module
+            order by fn:data($module/@uri)
+            return
+              if (fn:starts-with(fn:string($module/@uri), $cat))
+              then
+                <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</a></li>
+              else ()
+          }
+          </ul>
+        </li>
+      )
+   }
+   </ul>
+};
+
 
 (:~
  : This function reads, updates and returns the new index.html.
@@ -329,15 +353,19 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
  : @param $indexPath Where to search for XML XQDoc documents recursively.
  : @return The content of the new index.html.
  :)
-declare sequential function local:generateIndexHtml($indexPath as xs:string, $menu) as document-node() {
+declare sequential function local:generateIndexHtml($indexPath as xs:string, $menu, $modules) as document-node() {
     let $indexHtmlDoc := file:read-xml($indexPath)
     return block {
         insert nodes $menu
         as last into $indexHtmlDoc/*:html/*:body/*:div[@id='main']/*:div[@id='leftMenu'];
-        
-        insert node
-          <title>Zorba API Documentation</title>
-          as first into $indexHtmlDoc/*:html/*:head; 
+
+        let $module_list := $indexHtmlDoc/*:html/*:body/*:div[@id='main']/*:div[@id='rightcontent']/*:div[@id='module_list']
+        return
+          if ($module_list)
+          then
+            insert node $modules as last into $module_list
+          else
+            ();
         
         $indexHtmlDoc;
     }
@@ -366,8 +394,12 @@ else
   error()
 ;
 
-let $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>API Documentation</strong></span></ul> 
+let $menu := <ul class="treeview" id="documentation">
+               <span class="leftMenu"><strong>XQuery Libraries</strong>
+               </span>
+             </ul> 
 let $menu := local:createLeftMenu($menu, "index.html")
-let $doc := local:generateIndexHtml($indexHtmlPath, $menu)
+let $modules := local:createModuleTable()
+let $doc := local:generateIndexHtml($indexHtmlPath, $menu, $modules)
 return local:configure-xhtml($doc/*:html, 0)
 ;

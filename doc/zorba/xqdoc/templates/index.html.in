@@ -4,7 +4,7 @@
     <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
     <meta content="PRIVATE" http-equiv="CACHE-CONTROL" />
     <meta content="-1" http-equiv="Expires" />
-    <title>Zorba - XQuery API XQDoc Documentation</title>
+    <title>XQuery Library Documentation</title>
     <link rel="stylesheet" type="text/css" href="css/main.css" />
     <link rel="stylesheet" href="css/jquery.treeview.css" />
     <link rel="stylesheet" href="css/screen.css" />
@@ -28,6 +28,12 @@
     <div id="leftMenu">
     </div>
     <div id="rightcontent">
+      <h1>XQuery Library Documentation</h1>
+      <h2><a href="http://www.zorba-xquery.com/" title="Zorba XQuery Processor">Zorba XQuery Processor @ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@</a></h2>
+      <p>
+      This document is the XQuery API specification of all the XQuery modules that are implemented the Zorba XQuery processor.
+      </p>
+      <div id="module_list"/>
     </div>
   </div>
 

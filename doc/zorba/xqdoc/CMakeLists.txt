@@ -29,6 +29,11 @@ LIST(APPEND XQDOC_DEPENDS ${XQDOC_TEMPLATES})
 FILE(GLOB_RECURSE XQDOC_GENERATORS ${CMAKE_CURRENT_SOURCE_DIR}/src/*)
 LIST(APPEND XQDOC_DEPENDS ${XQDOC_GENERATORS})
 
+
+# use the index.html template for the documentation
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/templates/index.html.in
+               ${CMAKE_CURRENT_BINARY_DIR}/templates/index.html)
+
 # copy stylesheets, images and lib required by the xqdoc generated xhtml page
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/styles/jquery.treeview.css
                ${CMAKE_CURRENT_BINARY_DIR}/xhtml/css/jquery.treeview.css COPYONLY)
@@ -64,7 +69,7 @@ ADD_CUSTOM_TARGET(xqdoc
     -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main.xq\""
     -e "\"modulesPath:=${CMAKE_SOURCE_DIR}/modules\""
     -e "\"xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}\""
-    -e "\"indexHtmlPath:=${CMAKE_CURRENT_SOURCE_DIR}/templates/index.html\""
+    -e "\"indexHtmlPath:=${CMAKE_CURRENT_BINARY_DIR}/templates/index.html\""
     -o "\"${CMAKE_CURRENT_BINARY_DIR}/xhtml/index.html\""
   DEPENDS
     ${XQDOC_DEPENDS}

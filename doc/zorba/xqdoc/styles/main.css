@@ -72,7 +72,6 @@ a:hover , a:active {
  *****************/
 
 div#leftMenu{
-    border-right: 1px solid #808080;
     float: left;
     width: 280px;
     padding: 10px;
@@ -164,8 +163,9 @@ div#centeredcontent{
 }
 div#rightcontent{
     border-left: 1px solid #808080;
+    left:300px;
     padding: 10px 20px;
-    margin-left: 300px; /* width of the left menu plus padding */
+    position:absolute
 }
 div#leftcontent{
     padding: 10px 20px;
