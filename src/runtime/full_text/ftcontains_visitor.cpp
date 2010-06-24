@@ -187,9 +187,11 @@ inline void pop_helper( char const *what, int line ) {
 }
 
 #define PUSH(WHAT,OBJ) \
-  if ( !TRACE_FULL_TEXT ) ; else                                    \
-  DOUT << indent << "(push " #WHAT " @ line " << __LINE__ << ")\n"; \
-  push_##WHAT(OBJ)
+  do {                                                                \
+    if ( !TRACE_FULL_TEXT ) ; else                                    \
+    DOUT << indent << "(push " #WHAT " @ line " << __LINE__ << ")\n"; \
+    push_##WHAT(OBJ);                                                 \
+  } while (0)
 
 #define POP(WHAT) \
   ( pop_helper( #WHAT, __LINE__ ), pop_##WHAT() )
