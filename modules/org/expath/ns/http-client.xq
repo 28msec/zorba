@@ -150,7 +150,7 @@
  : <code>
  :   <pre>
  :   http:send-request(
- :      http:request href="..." method="post">
+ :      &lt;http:request href="..." method="post">
  :         &lt;http:body content-type="text/plain">
  :            Hello, world!
  :         &lt;/http:body>
