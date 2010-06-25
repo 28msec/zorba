@@ -68,9 +68,9 @@ namespace zorba { namespace http_client {
       theCurrentContentType == "application/xml" ||
       theCurrentContentType == "text/xml-external-parsed-entity" ||
       theCurrentContentType == "application/xml-external-parsed-entity" ||
-      theCurrentContentType == "application/atom+xml") {
+      theCurrentContentType.find("+xml") == theCurrentContentType.size()-4) {
         lItem = createXmlItem(lStream);
-    } else if (theCurrentContentType == "text/html") {
+    } else if (theCurrentContentType.find("text/html") == 0) {
       lItem = createHtmlItem(lStream);
     } else if (theCurrentContentType.find("text/") == 0) {
       lItem = createTextItem(lStream);
