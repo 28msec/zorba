@@ -377,12 +377,14 @@ XQDOC_NO_BEGIN_TAG (FunctionDecl)
 
 void end_visit(const FunctionDecl& n, void* /*visit_state*/)
 {
-  store::Item_t lFuncQName, lNameQName, lSigQName;
+  store::Item_t lFuncQName, lNameQName, lSigQName, lArityQName;
   store::Item_t lFuncElem, lNameElem, lSigElem, lFuncText, lNameText, lSigText;
+  store::Item_t lArityAttr, lArityValue;
 
   theFactory->createQName(lFuncQName, theXQDocNS, theXQDocPrefix, "function");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
   theFactory->createQName(lSigQName, theXQDocNS, theXQDocPrefix, "signature");
+  theFactory->createQName(lArityQName, "", "", "arity");
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -395,6 +397,14 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
   theFactory->createElementNode(
       lNameElem, lFuncElem, -1, lNameQName, lTypeName,
       true, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  std::ostringstream lAttr;
+  lAttr << (n.get_param_count());
+  xqpStringStore_t lAttrString(new xqpStringStore(lAttr.str().c_str()));
+  theFactory->createString(lArityValue, lAttrString);
+  theFactory->createAttributeNode(
+      lArityQName, lNameElem, -1, lArityQName, lTypeName, lArityValue);
 
   lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -434,13 +444,14 @@ XQDOC_NO_BEGIN_TAG (FunctionCall)
 
 void end_visit(const FunctionCall& n, void*)
 {
-  store::Item_t lInvokedQName, lUriQName, lNameQName;
-  store::Item_t lInvokedElem, lUriElem, lNameElem;
-  store::Item_t lUriText, lNameText;
+  store::Item_t lInvokedQName, lUriQName, lNameQName, lArityQName;
+  store::Item_t lInvokedElem, lUriElem, lNameElem, lArityAttr;
+  store::Item_t lUriText, lNameText, lAttrValue;
 
   theFactory->createQName(lInvokedQName, theXQDocNS, theXQDocPrefix, "invoked");
   theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
   theFactory->createQName(lNameQName, theXQDocNS, theXQDocPrefix, "name");
+  theFactory->createQName(lArityQName, "", "", "arity");
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
   theFactory->createElementNode(
@@ -464,13 +475,11 @@ void end_visit(const FunctionCall& n, void*)
     );
   }
 
-  std::ostringstream lLocalName;
-  lLocalName << lFuncName->get_localname()
-             << "#" << (n.get_arg_list()?n.get_arg_list()->size():0);
-  xqpStringStore_t lLocalNameString(new xqpStringStore(lLocalName.str().c_str()));
+  xqpStringStore_t lLocalNameString = lFuncName->get_localname();
 
   std::ostringstream lKey;
-  lKey << lNS << lLocalNameString;
+  lKey << lNS << lLocalNameString
+             << "#" << (n.get_arg_list()?n.get_arg_list()->size():0);
 
   theFactory->createTextNode(lUriText, lUriElem.getp(), -1, lNS);
 
@@ -478,6 +487,14 @@ void end_visit(const FunctionCall& n, void*)
   theFactory->createElementNode(
       lNameElem, lInvokedElem, -1, lNameQName, lTypeName,
       false, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  std::ostringstream lAttr;
+  lAttr << (n.get_arg_list()?n.get_arg_list()->size():0);
+  xqpStringStore_t lAttrString(new xqpStringStore(lAttr.str().c_str()));
+  theFactory->createString(lAttrValue, lAttrString);
+  theFactory->createAttributeNode(
+      lArityQName, lNameElem, -1, lArityQName, lTypeName, lAttrValue);
 
   theFactory->createTextNode(lNameText, lNameElem.getp(), -1, lLocalNameString);
 

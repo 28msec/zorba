@@ -30,18 +30,28 @@
 		<xsd:restriction base="xsd:string"/>
 	</xsd:simpleType>
 
-	<!-- Simple type for defining the names associated
-	     with things such as functions or module common name. -->
+  <!-- Simple type for defining the names associated
+       with a module. -->
 	<xsd:simpleType name="name">
 		<xsd:restriction base="xsd:string"/>
 	</xsd:simpleType>
+
+	<!-- Complex type for defining the name and arity associated
+       with functions. -->
+  <xsd:complexType name="functionname">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="arity" type="xsd:integer"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
 
 	<!-- Complex type used for defining the functions
 	     invoked from within a particular function.  -->
 	<xsd:complexType name="invoked">
 		<xsd:sequence>
 			<xsd:element name="uri" type="uri"/>
-			<xsd:element name="name" type="name"/>
+			<xsd:element name="name" type="functionname"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -161,7 +171,7 @@
 				<xsd:complexType>
 					<xsd:sequence>
 						<xsd:element name="comment" type="comment" minOccurs="0"/>
-						<xsd:element name="name" type="name"/>
+						<xsd:element name="name" type="functionname"/>
 						<xsd:element name="signature" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
 						<xsd:choice minOccurs="0" maxOccurs="unbounded">
 							<xsd:element name="invoked" type="invoked" minOccurs="0" maxOccurs="unbounded"/>
