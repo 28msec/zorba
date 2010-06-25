@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 #include <zorba/error.h>
 
 #include "zorbaerrors/errors.h"
@@ -193,8 +194,7 @@ bool ZorbaError::isXPathStaticError() const
       
 bool ZorbaError::isXPathDynamicError() const
 {
-  return  (XPDY0002 <= theErrorCode && theErrorCode <= XPDY0050) ||
-          theErrorCode == FTDY0020;
+  return  (XPDY0002 <= theErrorCode && theErrorCode <= XPDY0050);
 }
 
       
@@ -214,9 +214,12 @@ bool ZorbaError::isXQueryDynamicError() const
           theErrorCode == XUDY0029 ||
           theErrorCode == XUDY0030 ||
           theErrorCode == XUDY0031 ||
-          theErrorCode == FTDY0020 ||
           (XDDY0000_MIN <= theErrorCode && theErrorCode <= XDDY0000_MAX) ||
-          (XTDE1310 <= theErrorCode && theErrorCode <= XTDE1350));
+          (XTDE1310 <= theErrorCode && theErrorCode <= XTDE1350))
+#ifndef ZORBA_NO_FULL_TEXT
+          || (theErrorCode >= FTDY0016 && theErrorCode <= FTDY0020)
+#endif /* ZORBA_NO_FULL_TEXT */
+          ;
 }
 
   
@@ -224,9 +227,14 @@ bool ZorbaError::isXQueryStaticError() const
 {
   return ((XQST0009 <= theErrorCode && theErrorCode <= XQST0093) ||
           (XUST0001 <= theErrorCode && theErrorCode <= XUST0003) ||
+          theErrorCode == FTST0019 ||
+          theErrorCode == XPST0003 ||
           theErrorCode == XUST0028 ||
-          (XDST0000_MIN <= theErrorCode && theErrorCode <= XDST0000_MAX)) ||
-          theErrorCode == FTST0009;
+          (XDST0000_MIN <= theErrorCode && theErrorCode <= XDST0000_MAX))
+#ifndef ZORBA_NO_FULL_TEXT
+          || (theErrorCode >= FTST0008 && theErrorCode <= FTST0019)
+#endif /* ZORBA_NO_FULL_TEXT */
+          ;
 }
 
   

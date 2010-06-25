@@ -100,9 +100,15 @@ DEF_ERR_CODE(FOUP0001, FOUP0001, "It is a dynamic error if the first operand of 
 
 DEF_ERR_CODE(FOUP0002, FOUP0002, "It is a dynamic error if the second operand of fn:put is not a valid lexical representation of the xs:anyURI type.")
 
-DEF_ERR_CODE(FTDY0017, FTDY0017, "Invalid expression on the left-hand side of a not-in.")
-DEF_ERR_CODE(FTST0009, FTST0009, "Unsupported language: {/s}")
+#ifndef ZORBA_NO_FULL_TEXT
+DEF_ERR_CODE(FTDY0016, FTDY0016, "Invalid weight value.")
+DEF_ERR_CODE(FTDY0017, FTDY0017, "Invalid expression for not-in.")
 DEF_ERR_CODE(FTDY0020, FTDY0020, "Wildcard syntax error in query string.")
+DEF_ERR_CODE(FTST0008, FTST0008, "Unknown stop-word list: {/s}")
+DEF_ERR_CODE(FTST0009, FTST0009, "Unsupported language: {/s}")
+DEF_ERR_CODE(FTST0018, FTST0018, "Unknown thesaurus: {/s}")
+DEF_ERR_CODE(FTST0019, FTST0019, "Multiply-specified match option: {/s}")
+#endif /* ZORBA_NO_FULL_TEXT */
 
 //
 // Serialization Errors

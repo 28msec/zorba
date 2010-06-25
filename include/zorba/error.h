@@ -57,7 +57,10 @@ typedef enum
   // that has not been assigned a value.
 
   XPST0003,
-  // an expression is not a valid instance of the grammar.
+  // It is a static error if an expression is not a valid instance of the
+  // grammar defined in A EBNF for XQuery 1.0 Grammar with Full Text extensions
+  // or of the grammar defined in B EBNF for XPath 2.0 Grammar with Full-Text
+  // extensions.
 
   XPST0005,
   // During the analysis phase, it is a static error if the static type
@@ -781,11 +784,26 @@ typedef enum
   // picture refers to components that are not available in the given type of
   // $value.
 
-  FTDY0017, // Invalid expression on the left-hand side of a not-in
+#ifndef ZORBA_NO_FULL_TEXT
+
+  FTDY0016,
+  // It is a dynamic error if a weight value is not within the required range
+  // of values; it is also a dynamic error if an implementation that does not
+  // support negative weights encounters a negative weight value.
+
+  FTDY0017,
+  // It is a dynamic error if an implementation encounters a mild not
+  // selection, one of whose operands evaluates to an AllMatches that contains
+  // a StringExclude.
 
   FTDY0020,
   // It is a dynamic error if, when "wildcards" is in effect, a query string
   // violates wildcard syntax.
+
+  FTST0008,
+  // It is a static error if, during the static analysis phase, the query is
+  // found to contain a stop word option that refers to a stop word list that
+  // is not found in the statically known stop word lists.
 
   FTST0009,
   // It may be a static error if, during the static analysis phase, the query
@@ -793,6 +811,17 @@ typedef enum
   // implementation does not support. The implementation may choose not to
   // raise this error and instead provide some other implementation-defined
   // behavior.
+
+  FTST0018,
+  // It is a static error if, during the static analysis phase, the query is
+  // found to contain a thesaurus option that refers to a thesaurus that is not
+  // found in the statically known thesauri.
+
+  FTST0019,
+  // It is a static error if, within a single FTMatchOptions, there is more
+  // than one match option of any given match option group.
+
+#endif /* ZORBA_NO_FULL_TEXT */
 
   //
   // ZORBA errors
