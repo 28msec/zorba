@@ -22,6 +22,7 @@
 #include <zorba/item.h>
 #include <zorba/xmldatamanager.h>
 #include <zorba/base64.h>
+#include <zorba/config.h>
 
 #include <tidy.h>
 #include <buffio.h>
@@ -264,16 +265,19 @@ namespace zorba { namespace http_client {
     TidyBuffer errbuf;
     tidyBufInit(&errbuf);
     TidyDoc tDoc = tidyCreate();
-    tidyOptSetBool(tDoc, TidyXmlOut, yes);
-    tidyOptSetInt(tDoc, TidyDoctypeMode, TidyDoctypeOmit);
-    tidyOptSetBool(tDoc, TidyQuoteNbsp, yes);
-    tidyOptSetValue(tDoc, TidyCharEncoding, "utf8");
-    tidyOptSetValue(tDoc, TidyNewline, "LF");
     tidySetErrorBuffer(tDoc, &errbuf);
     tidyParseString(tDoc, lInput);
+    tidyOptSetBool(tDoc, TidyXmlOut, yes);
+    tidyOptSetInt(tDoc, TidyDoctypeMode, TidyDoctypeOmit);
+    tidyOptSetBool(tDoc, TidyQuoteNbsp, no);
+    tidyOptSetValue(tDoc, TidyCharEncoding, "utf8");
+    tidyOptSetValue(tDoc, TidyNewline, "LF");
+    tidyOptSetBool(tDoc, TidyMark, no);
     tidySaveBuffer(tDoc, &output);
     std::string lResult((char*) output.bp, output.size);
-    lResult = replaceCodes(lResult);
+    // with replaceCodes, almost non of the outputs is parseable in the
+    // parseDocument call below
+    // lResult = replaceCodes(lResult);
     std::istringstream lStream(lResult);
 
     tidyBufFree(&output);
