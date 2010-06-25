@@ -11019,10 +11019,12 @@ void *begin_visit (const FTCaseOption& v) {
 void end_visit (const FTCaseOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftcase_option *const co = new ftcase_option( v.get_location(), v.get_mode() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
-  mo->set_case_option( co );
+  if ( mo->get_case_option() )
+    ZORBA_ERROR_LOC_DESC( FTST0019, v.get_location(), "case option" );
+  ftcase_option *const c = new ftcase_option( v.get_location(), v.get_mode() );
+  mo->set_case_option( c );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
@@ -11078,10 +11080,12 @@ void *begin_visit (const FTDiacriticsOption& v) {
 void end_visit (const FTDiacriticsOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftdiacritics_option *const d =
-    new ftdiacritics_option( v.get_location(), v.get_mode() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
+  if ( mo->get_diacritics_option() )
+    ZORBA_ERROR_LOC_DESC( FTST0019, v.get_location(), "diacritics option" );
+  ftdiacritics_option *const d =
+    new ftdiacritics_option( v.get_location(), v.get_mode() );
   mo->set_diacritics_option( d );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
@@ -11113,11 +11117,13 @@ void *begin_visit (const FTExtensionOption& v) {
 void end_visit (const FTExtensionOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftextension_option *const eo =
-    new ftextension_option( v.get_location(), v.get_qname(), v.get_val() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
-  mo->set_extension_option( eo );
+  if ( mo->get_extension_option() )
+    ZORBA_ERROR_LOC_DESC( FTST0019, v.get_location(), "extension option" );
+  ftextension_option *const e =
+    new ftextension_option( v.get_location(), v.get_qname(), v.get_val() );
+  mo->set_extension_option( e );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
@@ -11160,10 +11166,12 @@ void *begin_visit (const FTLanguageOption& v) {
 void end_visit (const FTLanguageOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftlanguage_option *const lo = new ftlanguage_option( loc, v.get_language() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
-  mo->set_language_option( lo );
+  if ( mo->get_language_option() )
+    ZORBA_ERROR_LOC_DESC( FTST0019, v.get_location(), "language option" );
+  ftlanguage_option *const l = new ftlanguage_option( loc, v.get_language() );
+  mo->set_language_option( l );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
@@ -11381,10 +11389,12 @@ void *begin_visit (const FTStemOption& v) {
 void end_visit (const FTStemOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftstem_option *const so = new ftstem_option( v.get_location(), v.get_mode() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
-  mo->set_stem_option( so );
+  if ( mo->get_stem_option() )
+    ZORBA_ERROR_LOC_DESC( FTST0019, v.get_location(), "stem option" );
+  ftstem_option *const s = new ftstem_option( v.get_location(), v.get_mode() );
+  mo->set_stem_option( s );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
@@ -11429,7 +11439,6 @@ void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
 #ifndef ZORBA_NO_FULL_TEXT
   if ( v.get_mode() == ft_stop_words_mode::without )
     return;
-
   ftstop_word_option::list_t stop_words;
   while ( true ) {
     ftnode *const n = top_ftstack();
@@ -11439,13 +11448,14 @@ void end_visit (const FTStopWordOption& v, void* /*visit_state*/) {
     } else
       break;
   }
-
-  ftstop_word_option *const swo = new ftstop_word_option(
-    v.get_location(), stop_words, v.get_mode()
-  );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
-  mo->set_stop_word_option( swo );
+  if ( mo->get_stop_word_option() )
+    ZORBA_ERROR_LOC_DESC( FTST0019, v.get_location(), "stop-word option" );
+  ftstop_word_option *const sw = new ftstop_word_option(
+    v.get_location(), stop_words, v.get_mode()
+  );
+  mo->set_stop_word_option( sw );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
@@ -11487,12 +11497,14 @@ void end_visit (const FTThesaurusOption& v, void* /*visit_state*/) {
     else
       break;
   }
-  ftthesaurus_option *const to = new ftthesaurus_option(
-    v.get_location(), list, v.includes_default(), v.no_thesaurus()
-  );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
-  mo->set_thesaurus_option( to );
+  if ( mo->get_thesaurus_option() )
+    ZORBA_ERROR_LOC_DESC( FTST0019, v.get_location(), "thesaurus option" );
+  ftthesaurus_option *const t = new ftthesaurus_option(
+    v.get_location(), list, v.includes_default(), v.no_thesaurus()
+  );
+  mo->set_thesaurus_option( t );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
@@ -11556,11 +11568,13 @@ void *begin_visit (const FTWildCardOption& v) {
 void end_visit (const FTWildCardOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
-  ftwild_card_option *const wco =
-    new ftwild_card_option( v.get_location(), v.get_mode() );
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
   ZORBA_ASSERT( mo );
-  mo->set_wild_card_option( wco );
+  if ( mo->get_wild_card_option() )
+    ZORBA_ERROR_LOC_DESC( FTST0019, v.get_location(), "wild-card option" );
+  ftwild_card_option *const wc =
+    new ftwild_card_option( v.get_location(), v.get_mode() );
+  mo->set_wild_card_option( wc );
 #endif /* ZORBA_NO_FULL_TEXT */
 }
 
