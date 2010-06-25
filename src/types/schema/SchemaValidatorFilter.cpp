@@ -34,6 +34,7 @@
 #endif
 
 #include <iostream>
+#include <sstream>
 
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/Assert.h"
@@ -1468,11 +1469,18 @@ XMLElementDecl *SchemaValidatorFilter::createElementDecl(
       elemDecl->setCreateReason(XMLElementDecl::JustFaultIn);
 
       XMLValid::Codes errorCode = XMLValid::ElementNotDefined;
-      // todo: cezar when Xerces adds UndeclaredGlobalElem
-      //if ( currentScope != Grammar::TOP_LEVEL_SCOPE )
-      //  errorCode = XMLValid::UndeclaredGlobalElem;
 
-      fValidator->emitError(errorCode, elemDecl->getFullName());
+      if ( theStrictValidation && currentScope == Grammar::TOP_LEVEL_SCOPE )
+      {
+        XQUERY_ERROR errorCode = XQDY0084;
+        std::ostringstream msg;
+        msg << "Schema global element definition not found: " <<
+          StrX(theLocalname.getRawBuffer()) << " @ " <<
+          StrX(fURIStringPool->getValueForId(uriId)) << ".";
+        ZORBA_ERROR_LOC_DESC( errorCode, theLoc, msg.str());
+      }
+      else
+        fValidator->emitError(errorCode, elemDecl->getFullName());
     }
   }
   else
@@ -1560,12 +1568,7 @@ void SchemaValidatorFilter::error(
   }
 
   //std::cout << XMLString::transcode(exc_msg.getRawBuffer()) << std::endl;
-
-  XQUERY_ERROR errorCode = XQDY0027;
-  if ( errCode == XMLValid::ElementNotDefined )
-    errorCode = XQDY0084;
-
-  ZORBA_ERROR_LOC_DESC( errorCode, theLoc,
+  ZORBA_ERROR_LOC_DESC( XQDY0027, theLoc,
       StrX(exc_msg.getRawBuffer()).localForm() );
 }
 
