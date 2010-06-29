@@ -38,6 +38,20 @@ void populate_context_nodes(static_context* sctx);
 
 
 
+//fn-zorba-ref2:node-reference
+class fn_zorba_ref2_node_reference : public function
+{
+public:
+  fn_zorba_ref2_node_reference(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_REF2_NODE_REFERENCE_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-ref:node-reference
 class fn_zorba_ref_node_reference : public function
 {
@@ -45,6 +59,20 @@ public:
   fn_zorba_ref_node_reference(const signature& sig)
     :
     function(sig, FunctionConsts::FN_ZORBA_REF_NODE_REFERENCE_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
+//fn-zorba-ref2:node-by-reference
+class fn_zorba_ref2_node_by_reference : public function
+{
+public:
+  fn_zorba_ref2_node_by_reference(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_REF2_NODE_BY_REFERENCE_1)
   {
   }
 

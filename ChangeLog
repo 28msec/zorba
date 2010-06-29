@@ -27,6 +27,8 @@ version 1.4
     and returns a valid XHTML document node (http://www.zorba-xquery.com/modules/tidy)
   * added a schema library module that provides XML schema related functions (e.g. schema-type)
     (http://www.zorba-xquery.com/modules/schema)
+  * added a node reference library module that provides functions to retrieve the URI
+    of a node and vice versa (http://www.zorba-xquery.com/modules/reference)
 
 version 1.2
   * more introspection functions (e.g. in-scope-element and in-scope-attribute)
