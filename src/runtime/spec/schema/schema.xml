@@ -54,6 +54,12 @@
     </zorba:signature>
   </zorba:function>
 
+  <zorba:function>
+    <zorba:signature localname="schema-type" prefix="fn-zorba-schema">
+      <zorba:param>item()</zorba:param>
+      <zorba:output>xs:QName</zorba:output>
+    </zorba:signature>
+  </zorba:function>
 
 </zorba:iterator>
 

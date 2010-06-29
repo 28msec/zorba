@@ -52,6 +52,20 @@ public:
 };
 
 
+//fn-zorba-schema:schema-type
+class fn_zorba_schema_schema_type : public function
+{
+public:
+  fn_zorba_schema_schema_type(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_SCHEMA_SCHEMA_TYPE_1)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

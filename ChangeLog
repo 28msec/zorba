@@ -23,6 +23,10 @@ version 1.4
   * new xqDoc function (xqdoc-content) taking a documented module as string
   * new xqDoc feature; reporting functions invoked from within a particular function
   * xqDoc schema change; name element for functions got an arity attribute
+  * added a tidy library module that provides functions to tidy an HTML string
+    and returns a valid XHTML document node (http://www.zorba-xquery.com/modules/tidy)
+  * added a schema library module that provides XML schema related functions (e.g. schema-type)
+    (http://www.zorba-xquery.com/modules/schema)
 
 version 1.2
   * more introspection functions (e.g. in-scope-element and in-scope-attribute)

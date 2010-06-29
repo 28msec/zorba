@@ -7,6 +7,7 @@
     <zorba:namespace uri="http://www.w3.org/2005/xpath-functions" define="XQUERY_OP_NS" prefix="op"/>
     <zorba:namespace uri="http://www.w3.org/2001/XMLSchema" define="XML_SCHEMA_NS" prefix="xs"/>  
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/util-functions" define="ZORBA_ALEXIS_FN_NS" prefix="fn-zorba-util"/>
+    <zorba:namespace uri="http://www.zorba-xquery.com/modules/schema" define="ZORBA_SCHEMA_FN_NS" prefix="fn-zorba-schema"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/internal-functions" define="ZORBA_FN_NS" prefix="fn-zorba"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/rest-functions" define="ZORBA_REST_FN_NS" prefix="fn-zorba-rest"/>
     <zorba:namespace uri="http://www.zorba-xquery.com/zorba/node-ref-functions" define="ZORBA_NODEREF_FN_NS" prefix="fn-zorba-ref"/> 
