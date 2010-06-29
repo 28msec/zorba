@@ -35,18 +35,21 @@
  : The <code>http:send-request()</code> functions are declared as sequential. 
  : Sequential functions are allowed to have side effects. For example, most probably,
  : an HTTP POST request is a request that has side effects because it adds/changes
- : a remote resource. Such functions are an extension of XQuery and are specified in 
- : the <a href="http://www.w3.org/TR/xquery-sx-10/">XQuery Scripting Extension</a>.
+ : a remote resource. Sequential functions are specified in the
+ : <a href="http://www.w3.org/TR/xquery-sx-10/">XQuery Scripting Extension</a>,
+ : which is an extension of XQuery.
  : Sequential functions are only allowed to be invoked in certain places (e.g.
  : only from functions which are declared as sequential themselves).
- : In contrast, the <code>http:read()</code> functions are declared as
- : nondeterministic (see <a href="http://www.w3.org/TR/xquery-11/">XQuery 1.1</a>).
+ : In contrast, the http:read() functions are not declared as sequential -
+ : they are declared as nondeterministic though (see
+ : <a href="http://www.w3.org/TR/xquery-11/">XQuery 1.1</a>), which
+ : means that several calls may return different results.
  : HTTP requests performed using these functions are <b>not</b> allowed to have
  : side effects.
  : </p>
  :
  : <p>
- : For almost all functions (except <code>read</code> with one parameter),
+ : For all functions (except <code>read</code> with one parameter),
  : the request is represented by an <code>http:request</code>
  : element, specifying the URI, the HTTP method, the headers, and the body
  : content (for POST and PUT methods) of the HTTP request to make.
@@ -81,9 +84,9 @@
  :         <li>TidyNewline="LF"</li>
  :       </ul>
  :  </li>
- :  <li>A xs:string item is returned if the media type has a text MIME type,
+ :  <li>An xs:string item is returned if the media type has a text MIME type,
  :     i.e. beginning with text/.</li>
- :  <li>A xs:base64Binary item is returned for all the other media types.</li>
+ :  <li>An xs:base64Binary item is returned for all the other media types.</li>
  : </ul>
  : </p>
  :
@@ -91,7 +94,7 @@
  :
  : <code>
  :   <pre>
- :   http:read( &lt;http:request href="www.example.com" method="get"/>, () )
+ :   http:read( "www.example.com" )
  :   </pre>
  : </code>
  : 
@@ -233,8 +236,7 @@ declare sequential function http:send-request(
 (:~
  : Function for convenience.
  :
- : The result of this function is equal to calling the send-request function
- : as follows:
+ : Calling this function is equivalent to calling
  :
  : <code>
  : http:send-request($request, (), ())
@@ -255,8 +257,7 @@ declare sequential function http:send-request (
 (:~
  : Function for convenience.
  :
- : The result of this function is equal to calling the send-request function
- : as follows:
+ : Calling this function is equivalent to calling
  :
  : <code>
  : http:send-request($request, $href, ())
@@ -281,9 +282,9 @@ declare sequential function http:send-request(
  : This function sends an HTTP request and returns the corresponding response. 
  :
  : <p>
- : This function is not sequential. Usually, this function should be used
- : for retrieving resources using HTTP GET or HEAD (i.e. HTTP requests which
- : are known to <b>not</b> have any side effects.
+ : This function is not sequential. It is used for retrieving resources and may only
+ : be used to send requests which are known to have no side effects, i.e.,
+ : usually GET or HEAD. 
  : </p>
  :
  : @param $request Contains the various parameters of the request. 
@@ -318,7 +319,7 @@ declare function http:read(
 (:~
  : Function for convenience.
  :
- : The result of this function is equal to calling the read function as follows:
+ : Calling this function is equivalent to calling 
  :
  : <code>
  : http:read($request, $href, ())
@@ -340,8 +341,7 @@ declare function http:read(
 (:~
  : Function for convenience.
  :
- : The result of this function is equal to calling the read function
- : as follows:
+ : Calling this function is equivalent to calling
  :
  : <code>
  : http:read((), $href, ())
