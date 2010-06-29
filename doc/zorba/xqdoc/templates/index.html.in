@@ -33,7 +33,7 @@
        </div>
        <center><h2><a href="http://www.zorba-xquery.com/" title="Zorba XQuery Processor">Zorba XQuery Processor @ZORBA_MAJOR_NUMBER@.@ZORBA_MINOR_NUMBER@</a></h2></center>
       <p>
-      This document is the XQuery API specification of all the XQuery modules that are implemented the Zorba XQuery processor.
+      This document contains a list of all the XQuery modules that come with the Zorba XQuery processor.
       </p>
       <div id="module_list"/>
     </div>
