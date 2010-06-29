@@ -1,7 +1,6 @@
-import module namespace
-fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
+import module namespace tidy = "http://www.zorba-xquery.com/modules/tidy";
 <test>
-<q1>{fn-zorba-util:tidy('<HTML>
+<q1>{tidy:tidy('<HTML>
 <HEAD>
 <TITLE>[ #426885 ] Definition list w/Center crashes</TITLE>
 </HEAD>
@@ -16,7 +15,7 @@ fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
 </UL>
 </BODY>
 </HTML>')}</q1>
-<q2>{fn-zorba-util:tidy('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<q2>{tidy:tidy('<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
 <head>
   <title>[#427663] Line endings not supported correctly</title>

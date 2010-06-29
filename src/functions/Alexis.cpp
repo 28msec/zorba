@@ -74,6 +74,17 @@ void populateContext_Alexis(static_context* sctx)
         GENV_TYPESYSTEM.STRING_TYPE_ONE,
         GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
         GENV_TYPESYSTEM.DOCUMENT_TYPE_QUESTION));
+
+  DECL(sctx, zorba_tidy,
+       (createQName(ZORBA_TIDY_FN_NS, "fn-zorba-util", "tidy"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE));
+
+  DECL(sctx, zorba_tidy,
+       (createQName(ZORBA_TIDY_FN_NS, "fn-zorba-util", "tidy"),
+        GENV_TYPESYSTEM.STRING_TYPE_ONE,
+        GENV_TYPESYSTEM.STRING_TYPE_QUESTION,
+        GENV_TYPESYSTEM.DOCUMENT_TYPE_ONE));
 #endif
 
 }

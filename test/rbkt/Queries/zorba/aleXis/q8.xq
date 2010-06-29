@@ -1,4 +1,3 @@
-import module namespace
-fn-zorba-util="http://www.zorba-xquery.com/zorba/util-functions";
+import module namespace tidy = "http://www.zorba-xquery.com/zorba/util-functions";
 
-fn-zorba-util:tdoc('http://tidy.sourceforge.net/libintro.html')
+tidy:tdoc('http://tidy.sourceforge.net/libintro.html')

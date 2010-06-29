@@ -44,6 +44,7 @@
 
 #define ZORBA_DDL_FN_NS             "http://www.zorba-xquery.com/modules/xqddf"
 #define ZORBA_CSV                   "http://www.zorba-xquery.com/modules/csv2xml"
+#define ZORBA_TIDY_FN_NS            "http://www.zorba-xquery.com/modules/tidy"
 
 #define ZORBA_COLLATION_NS_BASE "http://www.zorba-xquery.com/zorba/collations/"
 #define ZORBA_DEF_COLLATION_NS ZORBA_COLLATION_NS_BASE "IDENTICAL/en/US"
