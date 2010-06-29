@@ -1,4 +1,4 @@
-# Copyright 2006-2008 The FLWOR Foundation.
+# Copyright 2006-2010 The FLWOR Foundation.
 # 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,18 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ADD_SUBDIRECTORY(email)
-ADD_SUBDIRECTORY(security)
-
-IF(ZORBA_WITH_FILE_ACCESS)
-  GENERATE_MODULE_LIBRARY(file "")
-ENDIF(ZORBA_WITH_FILE_ACCESS)
-
-
-IF(ZORBA_WITH_PROCESS_ACCESS)
-  GENERATE_MODULE_LIBRARY(process "")
-ENDIF(ZORBA_WITH_PROCESS_ACCESS)
-
-GENERATE_MODULE_LIBRARY(serialize "")
-GENERATE_MODULE_LIBRARY(datetime "")
-
+GENERATE_MODULE_LIBRARY(hmac "")
