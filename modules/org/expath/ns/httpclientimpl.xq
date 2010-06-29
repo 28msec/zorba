@@ -40,7 +40,7 @@ import schema namespace http = "http://expath.org/ns/http-client";
  : @return @see http://www.expath.org/mod/http-client;send-request
  :)
 declare sequential function httpclientimpl:http-send-request-impl (
-  $request as element(http:request, http:requestType)?,
+  $request as element(http:request)?,
   $href as xs:string?,
   $bodies as item()*
 ) as item()+ external;
@@ -58,7 +58,7 @@ declare sequential function httpclientimpl:http-send-request-impl (
  : @return @see http://www.expath.org/mod/http-client;read
  :)
 declare nondeterministic function httpclientimpl:http-read-impl (
-  $request as element(http:request, http:requestType)?,
+  $request as element(http:request)?,
   $href as xs:string?,
   $bodies as item()*
 ) as item()+ external;

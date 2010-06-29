@@ -222,11 +222,11 @@ declare sequential function http:send-request(
   $bodies as item()*) as item()+ {
   if (http:check-params($request, $href, $bodies))
   then
-    let $req := if ($request) then validate { http:set-content-type($request) } else ()
+    let $req := if ($request) then http:set-content-type($request) else ()
     let $result := httpclientimpl:http-send-request-impl($req,
                                                          $href,
                                                          $bodies)
-    return (validate {$result[1]}, fn:subsequence($result, 2))
+    return ($result[1], fn:subsequence($result, 2))
   else ()
 };
 
@@ -309,9 +309,9 @@ declare function http:read(
   $bodies as item()*) as item()+ {
   if (http:check-params($request, $href, $bodies))
   then
-    let $req := if ($request) then validate { http:set-content-type($request) } else ()
+    let $req := if ($request) then http:set-content-type($request) else ()
     let $result := httpclientimpl:http-read-impl($req, $href, $bodies)
-    return (validate {$result[1]}, fn:subsequence($result, 2))
+    return ($result[1], fn:subsequence($result, 2))
   else ()
 };
 
@@ -404,7 +404,6 @@ declare function http:create-body (
 declare function http:create-multipart (
   $multipart as element(https:multipart))
     as element(https:multipart) {
-  validate {
     <https:multipart>{$multipart/@*}
     {
     for $x in $multipart/node()
@@ -414,7 +413,6 @@ declare function http:create-multipart (
         default return $x
     }
     </https:multipart>
-  }
 };
 
 
@@ -431,19 +429,16 @@ declare function http:set-content-type(
   $request as element(https:request)?)
     as element(https:request)? {
   if ($request) then
-    validate
+    <http:request>{$request/@*}
     {
-      <http:request>{$request/@*}
-      {
-      for $x in $request/node()
-      return
-        typeswitch($x)
-          case element(https:body) return http:create-body($x)
-          case element(https:multipart) return http:create-multipart($x)
-          default return $x
-      }
-      </http:request>
+    for $x in $request/node()
+    return
+      typeswitch($x)
+        case element(https:body) return http:create-body($x)
+        case element(https:multipart) return http:create-multipart($x)
+        default return $x
     }
+    </http:request>
   else ()
 };
 
