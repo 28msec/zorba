@@ -97,7 +97,7 @@ namespace zorba { namespace http_client {
       } else if (lLocalName == "href") {
         lHref = lItem.getStringValue();
       } else if (lLocalName == "status-only") {
-        lStatusOnly = lItem.getBooleanValue();
+        lStatusOnly = lItem.getStringValue().equals("true");
       } else if (lLocalName == "username") {
         lUsername = lItem.getStringValue();
       } else if (lLocalName == "password") {
