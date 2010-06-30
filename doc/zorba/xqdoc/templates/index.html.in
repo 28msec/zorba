@@ -24,10 +24,27 @@
     </script>
   </head>
   <body>
+<script src="http://www.google.com/jsapi" type="text/javascript"> </script>
+<script type="text/javascript">
+  google.load('search', '1', {language : 'en'});
+  google.setOnLoadCallback(function() {
+    var customSearchControl = new google.search.CustomSearchControl('001923125976056611009:rghy-r4to5y');
+    customSearchControl.setResultSetSize(google.search.Search.FILTERED_CSE_RESULTSET);
+    var options = new google.search.DrawOptions();
+    options.setSearchFormRoot('searchbox');
+    customSearchControl.draw('searchresults', options);
+  }, true);
+</script>
+<link rel="stylesheet" href="http://www.google.com/cse/style/look/minimalist.css" type="text/css" />
+
   <div id="main">
     <div id="leftMenu">
     </div>
     <div id="rightcontent">
+      <div id="searchbox">
+      </div>
+      <div id="searchresults">
+      </div>
       <div class="section">
          <span class="section">XQuery Library Documentation</span>
        </div>

@@ -161,11 +161,17 @@ div#centeredcontent{
     margin-left: 200px;
     margin-right: 200px;
 }
+div#searchbox {
+  text-align: right;
+  padding:5px 20px;
+  z-index: 500;
+}
 div#rightcontent{
     border-left: 1px solid #808080;
     left:300px;
     padding: 10px 20px;
-    position:absolute
+    position:absolute;
+    z-index: 490;
 }
 div#leftcontent{
     padding: 10px 20px;
