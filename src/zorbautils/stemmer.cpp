@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include <memory>
+
 #include "zorbautils/fatal.h"
 #include "zorbautils/stemmer.h"
 
@@ -35,16 +37,16 @@ Stemmer::~Stemmer() {
 }
 
 Stemmer const* Stemmer::get( iso639_1::type lang ) {
-  static Stemmer* cached_stemmers[ iso639_1::NUM_ENTRIES ];
+  static auto_ptr<Stemmer> cached_stemmers[ iso639_1::NUM_ENTRIES ];
   static Mutex mutex;
 
   if ( !lang )
     lang = get_host_lang();
   AutoMutex const lock( &mutex );
-  Stemmer *&ptr = cached_stemmers[ lang ];
-  if ( !ptr )
-    ptr = new Stemmer( lang );
-  return ptr;
+  auto_ptr<Stemmer> &ptr = cached_stemmers[ lang ];
+  if ( !ptr.get() )
+    ptr.reset( new Stemmer( lang ) );
+  return ptr.get();
 }
 
 void Stemmer::stem( string const &word, string &result ) const {
