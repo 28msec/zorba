@@ -33,6 +33,6 @@ IF(CCLIENT_FOUND)
 
 ELSE(CCLIENT_FOUND)
 
-  MESSAGE(STATUS "Warning: CClient library not found -- if you want to use Email functionality please set CCLIENT_INCLUDE and CCLIENT_LIBRARY parameters.")
+  MESSAGE(STATUS "CClient library not found -- if you want to use Email functionality please set CCLIENT_INCLUDE and CCLIENT_LIBRARY parameters.")
 
 ENDIF( CCLIENT_FOUND)
