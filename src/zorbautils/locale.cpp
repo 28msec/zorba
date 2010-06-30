@@ -29,9 +29,9 @@
 #include "util/less.h"
 #include "zorbautils/locale.h"
 
-#define DEF_END()                                     \
-  static char const *const *const end =               \
-    string_of + sizeof( string_of ) / sizeof( char* );
+#define DEF_END(CHAR_ARRAY)                             \
+  static char const *const *const end =                 \
+    CHAR_ARRAY + sizeof( CHAR_ARRAY ) / sizeof( char* );
 
 #define FIND(what) \
   static_cast<type>( find_index( string_of, end, what ) )
@@ -362,7 +362,7 @@ char const *const string_of[] = {
 };
 
 type find( char const *country ) {
-  DEF_END();
+  DEF_END( string_of );
   return FIND( country );
 }
 
@@ -392,7 +392,7 @@ char const *const string_of[] = {
 };
 
 type find( char const *lang ) {
-  DEF_END();
+  DEF_END( string_of );
   return FIND( lang );
 }
 
@@ -426,7 +426,7 @@ char const *const string_of[] = {
 };
 
 type find( char const *lang ) {
-  DEF_END();
+  DEF_END( string_of );
   return FIND( lang );
 }
 
