@@ -37,11 +37,9 @@
      <li> \ref XQDDF
      <li> \ref options
      <li> \ref trace
-     <li> \ref modules_page
      <li> Function Library API documentation
        <ul>
          <li> \ref zorba-io
-         <li> \ref converters
          <li> \ref fop
          <li> \ref REST (deprecated)
        </ul>
