@@ -116,6 +116,40 @@ public:
 
 
 /**
+ * Function for generating a random integer.
+ * Author: Zorba Team
+ */
+class PseudoRandomIterator : public NaryBaseIterator<PseudoRandomIterator, PlanIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(PseudoRandomIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(PseudoRandomIterator,
+    NaryBaseIterator<PseudoRandomIterator, PlanIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<PseudoRandomIterator, PlanIteratorState>*)this);
+  }
+
+  PseudoRandomIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<PseudoRandomIterator, PlanIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~PseudoRandomIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
+/**
  * generates UUID
  * Author: Zorba Team
  */

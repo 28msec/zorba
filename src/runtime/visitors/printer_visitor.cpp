@@ -2289,6 +2289,20 @@ void PrinterVisitor::endVisit ( const RandomIterator& ) {
 // </RandomIterator>
 
 
+// <PseudoRandomIterator>
+void PrinterVisitor::beginVisit ( const PseudoRandomIterator& a) {
+  thePrinter.startBeginVisit("PseudoRandomIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const PseudoRandomIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </PseudoRandomIterator>
+
+
 // <UuidIterator>
 void PrinterVisitor::beginVisit ( const UuidIterator& a) {
   thePrinter.startBeginVisit("UuidIterator", ++theId);

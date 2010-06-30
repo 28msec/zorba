@@ -69,6 +69,23 @@ public:
 };
 
 
+//fn-zorba-random:random
+class fn_zorba_random_random : public function
+{
+public:
+  fn_zorba_random_random(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
+  {
+    theKind = (sig.arg_count() == 0 ?
+                FunctionConsts::FN_ZORBA_RANDOM_RANDOM_0 :
+                FunctionConsts::FN_ZORBA_RANDOM_RANDOM_1);
+  }
+
+  bool isDeterministic() const { return false; }
+
+  CODEGEN_DECL();
+};
+
+
 //fn-zorba-util:uuid
 class fn_zorba_util_uuid : public function
 {

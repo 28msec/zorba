@@ -44,6 +44,34 @@ NumGenIterator::nextImpl ( store::Item_t& result, PlanState& planState ) const
 }
 
 bool
+PseudoRandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t    item;
+  xqpStringStore_t seed;
+  xqp_uint         seedInt;
+
+  PlanIteratorState* state;
+  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+
+  if((theChildren.size() == 1) &&
+      consumeNext(item, theChildren[0].getp(), planState))
+  {
+    seed = item->getIntegerValue().toString();
+    NumConversions::strToUInt(seed->c_str(), seedInt);
+    std::srand((unsigned int)seedInt);
+  }
+  else
+  {
+    std::srand((unsigned int)(time(NULL)));
+  }
+
+  GENV_ITEMFACTORY->createInteger(result, Integer::parseInt (std::rand()));
+  STACK_PUSH (true, state);
+
+  STACK_END (state);
+}
+
+bool
 RandomIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
   store::Item_t    item;

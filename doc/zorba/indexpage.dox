@@ -40,10 +40,7 @@
      <li> \ref modules_page
      <li> Function Library API documentation
        <ul>
-         <li> \ref <a class="el" href="../xqdoc/xhtml/index.html">xqDoc generated documentation</a>
-         <li> \ref deref
          <li> \ref zorba-io
-         <li> \ref util
          <li> \ref converters
          <li> \ref fop
          <li> \ref REST (deprecated)

@@ -95,6 +95,34 @@ RandomIterator::~RandomIterator() {}
 // </RandomIterator>
 
 
+// <PseudoRandomIterator>
+const char* PseudoRandomIterator::class_name_str = "PseudoRandomIterator";
+PseudoRandomIterator::class_factory<PseudoRandomIterator>
+PseudoRandomIterator::g_class_factory;
+
+const serialization::ClassVersion 
+PseudoRandomIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int PseudoRandomIterator::class_versions_count =
+sizeof(PseudoRandomIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void PseudoRandomIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+PseudoRandomIterator::~PseudoRandomIterator() {}
+
+// </PseudoRandomIterator>
+
+
 // <UuidIterator>
 const char* UuidIterator::class_name_str = "UuidIterator";
 UuidIterator::class_factory<UuidIterator>

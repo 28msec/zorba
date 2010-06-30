@@ -340,6 +340,8 @@ namespace zorba{
 
     class RandomIterator;
 
+    class PseudoRandomIterator;
+
     class UuidIterator;
 
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -940,6 +942,9 @@ public:
 
     virtual void beginVisit ( const RandomIterator& ) = 0;
     virtual void endVisit   ( const RandomIterator& ) = 0;
+
+    virtual void beginVisit ( const PseudoRandomIterator& ) = 0;
+    virtual void endVisit   ( const PseudoRandomIterator& ) = 0;
 
     virtual void beginVisit ( const UuidIterator& ) = 0;
     virtual void endVisit   ( const UuidIterator& ) = 0;

@@ -31,6 +31,8 @@ version 1.4
     of a node and vice versa (http://www.zorba-xquery.com/modules/reference)
   * added a hmac module (http://www.zorba-xquery.com/modules/security/hmac)
     that provides an sha1 function (e.g. used in OAuth)
+  * added a random module (http://www.zorba-xquery.com/modules/random)
+    that provides fuctions for generating (pseudo-)random integers and UUIDs.
 
 version 1.2
   * more introspection functions (e.g. in-scope-element and in-scope-attribute)

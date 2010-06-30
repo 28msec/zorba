@@ -50,6 +50,16 @@ PlanIter_t fn_zorba_util_random::codegen(
   return new RandomIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_random_random::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new PseudoRandomIterator(sctx, loc, argv);
+}
+
 PlanIter_t fn_zorba_util_uuid::codegen(
   CompilerCB*,
   static_context* sctx,
@@ -74,6 +84,17 @@ void populate_context_random(static_context* sctx)
 
   DECL(sctx, fn_zorba_util_random,
       (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","random"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+
+  DECL(sctx, fn_zorba_random_random,
+      (createQName("http://www.zorba-xquery.com/modules/random","fn-zorba-random","random"),
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
+
+
+  DECL(sctx, fn_zorba_random_random,
+      (createQName("http://www.zorba-xquery.com/modules/random","fn-zorba-random","random"),
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
       GENV_TYPESYSTEM.INTEGER_TYPE_ONE));
 

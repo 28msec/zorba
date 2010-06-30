@@ -515,6 +515,9 @@ namespace zorba {
     void beginVisit( const RandomIterator& );
     void endVisit  ( const RandomIterator& );
 
+    void beginVisit( const PseudoRandomIterator& );
+    void endVisit  ( const PseudoRandomIterator& );
+
     void beginVisit( const UuidIterator& );
     void endVisit  ( const UuidIterator& );
 
