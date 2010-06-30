@@ -41,8 +41,8 @@ public:
 public:
   ZorbaParserError(std::string _msg) : msg(_msg) { };
   ZorbaParserError(std::string _msg, const location& aLoc);
-
 };
+
 
 // exported for unit testing only
 class ZORBA_DLL_PUBLIC xquery_driver
@@ -74,7 +74,8 @@ public:
   ZorbaParserError* unrecognizedCharErr(const char* _error_token, const location& loc);
   ZorbaParserError* unterminatedCommentErr(const location& loc);
   ZorbaParserError* unrecognizedToken(const char* _error_token, const location& loc);
-  ZorbaParserError* unrecognizedIntegerErr(const char* _error_token, const location& loc);
+  ZorbaParserError* invalidCharRef(const char* _error_token, const location& loc);
+  ZorbaParserError* parserErr(const std::string& _message, const location& loc);
 };
 
 }	/* namespace zorba */

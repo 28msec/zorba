@@ -64,9 +64,10 @@ class xquery_driver;
 
 class xquery_scanner : public ZorbaFlexLexer
 {
-private:
+protected:
   xquery_driver* theDriver;
   int cond_stk_depth;
+  std::string yy_comp_constr_qname; // used by the scanner to temporarely save the qname of a computed constructor expression
 
 public:
   /** Create a new scanner object. The streams arg_yyin and arg_yyout default

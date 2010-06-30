@@ -66,7 +66,7 @@ typedef std::pair<std::string,std::string> string_pair_t;
 
 %{
 
-#ifdef _WIN32
+#ifdef WIN32
   // Include the NOMINMAX definition before windwows.h is included,
   // so that min and max macros are not defined, and std::max and std::min
   // uses do not generate errors on Windows.
@@ -75,7 +75,7 @@ typedef std::pair<std::string,std::string> string_pair_t;
 
 #include "common/common.h"
 
-#ifdef _WIN32
+#ifdef WIN32
 #pragma warning(disable: 4786)
 #endif
 
@@ -177,7 +177,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 **  $end. Similarly user friendly names are provided for each symbol.
 */
 
-%token  _EOF    0 "end of file"
+%token _EOF   0                             "'end of file'"
+
+%token <err>  UNRECOGNIZED                  "'unrecognized'"
 
 /* constant string tokens */
 %type <strval> WindowType
@@ -186,19 +188,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* tokens that contain embedded string literals */
 /* -------------------------------------------- */
-
-    /* %token <sval> ATTRIBUTE_QNAME_LBRACE  "'<attribute QName {>'" */
-    /* %token <sval> ELEMENT_QNAME_LBRACE    "'<QName {>'" */
-    /* %token <sval> AT_URI_LITERAL         "'<at URI>'" */
-    /* %token <sval> VARNAME                  "'variable name'" */
-
-%token <err>  UNRECOGNIZED                  "'unrecognized'"
-
 %token <sval> APOS_ATTR_CONTENT             "'apos attribute content'"
 %token <sval> CHAR_LITERAL                  "'char literal'"
 %token <sval> CHAR_LITERAL_AND_CDATA_END    "'char literal]]>'"
 %token <sval> CHAR_LITERAL_AND_PI_END       "'char literal and pi end'"
-%token <sval> CHAR_REF_LITERAL              "'#charref;'"
+%token <sval> CHAR_REF_LITERAL              "'&#charref;'"
 %token <sval> ELEMENT_CONTENT               "'element content'"
 %token <sval> ELEM_WILDCARD                 "'pref:*'"
 %token <sval> ENTITY_REF                    "'&entity;'"
@@ -209,6 +203,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> PRAGMA_LITERAL_AND_END_PRAGMA "'pragma literal'"
 %token <sval> QNAME_SVAL_AND_END_PRAGMA     "'QName #)'"
 %token <sval> PREFIX_WILDCARD               "'*:QName'"
+%token <sval> COMP_ELEMENT_QNAME_LBRACE     "'element QName {'"
+%token <sval> COMP_ATTRIBUTE_QNAME_LBRACE   "'attribute QName {'"
+%token <sval> COMP_PI_NCNAME_LBRACE         "'processing-instruction NCName {'"
 %token <sval> QNAME_SVAL                    "'QName'"
 %token <sval> QUOTE_ATTR_CONTENT            "'quote attribute content'"
 %token <sval> STRING_LITERAL                "'STRING'"
@@ -216,15 +213,21 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %type <sval> URI_LITERAL                    "'URI'"
 %type <sval> NCNAME                         "'NCName'"
-%type <sval> KEYWORD                        "'KEYWORD'"
 
 %token <sval> DECLARE                       "'declare'"
 %token <sval> MODULE                        "'module'"
 
+%type <strval> DecimalFormatParamName
+%type <node> DecimalFormatDecl
+%type <strpair> DecimalFormatParam
+%type <vstrpair> DecimalFormatParamList
+%type <name_test_list> NameTestList
+
+
 /* simple tokens */
 /* ------------- */
 
-%token BLANK                            "<blank>"
+%token BLANK                            "'<blank>'"
 
 %token BASE_URI                         "'base-uri'"
 %token BOUNDARY_SPACE                   "'boundary-space'"
@@ -272,6 +275,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token WHEN                             "'when'"
 %token WORD                             "'word'"
 
+    /* Decimal format tokens */
 %token DECIMAL_FORMAT                   "'decimal-format'"
 %token DECIMAL_SEPARATOR                "'decimal-separator'"
 %token GROUPING_SEPARATOR               "'grouping-separator'"
@@ -283,13 +287,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token ZERO_DIGIT                       "'zero-digit'"
 %token DIGIT                            "'digit'"
 %token PATTERN_SEPARATOR                "'pattern-separator'"
-
-%type <strval> DecimalFormatParamName
-%type <node> DecimalFormatDecl
-%type <strpair> DecimalFormatParam
-%type <vstrpair> DecimalFormatParamList
-
-%type <name_test_list> NameTestList
 
 %token ANCESTOR                         "'ancestor'"
 %token ANCESTOR_OR_SELF                 "'ancestor-or-self'"
@@ -375,8 +372,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token PI_BEGIN                         "'<?'"
 %token PI_END                           "'?>'"
 %token PLUS                             "'+'"
-%token PRAGMA_BEGIN                     "'PRAGMA BEGIN'"
-%token PRAGMA_END                       "'PRAGMA END'"
+%token PRAGMA_BEGIN                     "'(#'"
+%token PRAGMA_END                       "'#)'"
 %token PRECEDES                         "'<<'"
 %token PRECEDING                        "'preceding'"
 %token PRECEDING_SIBLING                "'preceding-sibling'"
@@ -392,7 +389,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token SLASH                            "'/'"
 %token SLASH_SLASH                      "'//'"
 %token STAR                             "'*'"
-%token START_TAG_END                    "</ (start tag end)"
+%token START_TAG_END                    "'</ (start tag end)'"
 %token STRIP                            "'strip'"
 %token TAG_END                          "'> (tag end)'"
 %token THEN                             "'then'"
@@ -414,7 +411,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token XML_COMMENT_END                  "'-->'"
 %token XQUERY                           "'xquery'"
 %token VERSION                          "'version'"
-%token END_PRAGMA                       "'#)'"
 %token START                            "'start'"
 
 /* update-related */
@@ -505,9 +501,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* Data Definition Facility */
 
 %token COLLECTION                       "'collection'"
-// Why is it not possible to delete the following two nodes??
-//%token NODE_TYPE                      "'node-type'"
-//%token NODE_MODIFIER                  "'node-modifier'"
 %token CONSTOPT                         "'const'"
 %token APPEND_ONLY                      "'append-only'"
 %token QUEUE                            "'queue'"
@@ -533,6 +526,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token FOREIGN                          "'foreign'"
 %token KEYS                             "'keys'"
 
+
 /* Byte Order Marks                  */
 /* --------------------------------- */
 %token BYTE_ORDER_MARK_UTF8             "'BOM_UTF8'"
@@ -541,11 +535,13 @@ static void print_token_value(FILE *, int, YYSTYPE);
 /* --------------------------------- */
 %type <expr> LeadingSlash
 
+/* placeholder node for reducing UNRECOGNIZED and generating an error */
+/* ---------------------------- */
+%type <node> UnrecognizedToken
+
+
 /* left-hand sides: syntax only */
 /* ---------------------------- */
-
-    /* placeholder node for reducing UNRECOGNIZED and generating an error */
-%type <node> UnrecognizedToken
 
 %type <node> AbbrevForwardStep
 %type <node> AnyKindTest
@@ -618,7 +614,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <node> Pragma
 %type <node> Pragma_list
 %type <node> PredicateList
-%type <node> Prolog
 %type <node> QVarInDecl
 %type <node> QVarInDeclList
 %type <node> QuoteAttrValueContent
@@ -740,7 +735,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <expr> AssignExpr
 %type <expr> FlowCtlStatement
 %type <expr> QNAME
-//%type <sval> QNAME                          "'QName'"
+%type <expr> FUNCTION_NAME
 
 %type <expr> FunctionItemExpr
 %type <expr> LiteralFunctionItem
@@ -825,7 +820,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <incl_excl_list> FTStopWordsInclExcl_list opt_FTStopWordsInclExcl_list
 %type <node> FTThesaurusID FTThesaurusID_or_default
 %type <sval> opt_relationship
-%type <node> opt_levels
 %type <thesaurus_id_list> FTThesaurus_list opt_FTThesaurus_list
 %type <node> FTThesaurusOption
 %type <node> FTTimes opt_FTTimes
@@ -841,12 +835,22 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <varnametype> VarNameAndType
 %type <strlist> STRING_LITERAL_list;
 
+
+
+/*
+ *  To enable memory deallocation during error recovery, use %destructor.
+ */
+
+// Module must not be destroyed since it is returned by the parser
+
+/*%printer    { debug_stream() << *$$; }    */
+/*%printer    { debug_stream () << $$; }    */
+/*%destructor { delete $$; }              */
+
 // destructors for token values
 %destructor { delete $$; } INTEGER_LITERAL
 %destructor { delete $$; } DOUBLE_LITERAL
 %destructor { delete $$; } DECIMAL_LITERAL
-
-// Module must not be destroyed since it is returned by the parser
 
 %{
 // HACK to trigger rchandle release: rchandles are freed when refcount == 0
@@ -860,13 +864,13 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating FunctionDeclSequential Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList Prolog QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating FunctionDeclSequential Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
 
 // exprnodes
-%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FTContainsExpr
+%destructor { release_hack( $$ ); } AdditiveExpr AndExpr AxisStep CDataSection CastExpr CastableExpr CommonContent ComparisonExpr CompAttrConstructor CompCommentConstructor CompDocConstructor CompElemConstructor CompPIConstructor CompTextConstructor ComputedConstructor Constructor ContextItemExpr DirCommentConstructor DirElemConstructor DirElemContent DirPIConstructor DirectConstructor BracedExpr Block BlockExpr EnclosedExpr Expr ConcatExpr ApplyExpr ExprSingle ExtensionExpr FLWORExpr ReturnExpr FilterExpr FunctionCall IfExpr InstanceofExpr IntersectExceptExpr Literal MultiplicativeExpr NumericLiteral OrExpr OrderedExpr ParenthesizedExpr PathExpr Predicate PrimaryExpr QuantifiedExpr QueryBody RangeExpr RelativePathExpr StepExpr StringLiteral TreatExpr SwitchExpr TypeswitchExpr UnaryExpr UnionExpr UnorderedExpr ValidateExpr ValueExpr VarRef TryExpr CatchListExpr CatchExpr EvalExpr DeleteExpr InsertExpr RenameExpr ReplaceExpr TransformExpr VarNameList VarNameDecl AssignExpr ExitExpr WhileExpr FlowCtlStatement QNAME FUNCTION_NAME FTContainsExpr
 
 // internal non-terminals with values
 %destructor { delete $$; } FunctionSig VarNameAndType NameTestList DecimalFormatParam DecimalFormatParamList
@@ -941,22 +945,6 @@ template<typename T> inline void release_hack( T *ref ) {
  *_____________________________________________________________________*/
 %nonassoc STEP_REDUCE
 %left SLASH SLASH_SLASH
-
-/*_____________________________________________________________________
- *
- * resolve shift-reduce conflicts between reserved words and QNames
- *_____________________________________________________________________*/
-
-// %right VALIDATE EXIT WITH
-// %right DIV EXCEPT
-
-
-/*
- *  To enable memory deallocation during error recovery, use %destructor.
- */
-/*%printer    { debug_stream() << *$$; }    */
-/*%printer    { debug_stream () << $$; }    */
-/*%destructor { delete $$; }              */
 
 
 /*
@@ -1046,7 +1034,6 @@ UnrecognizedToken
         }
     ;
 
-
 // [1]
 ModuleWithoutBOM
     :   MainModule
@@ -1073,7 +1060,7 @@ ModuleWithoutBOM
             $$ = $2;
             driver.set_expr( $$ );
         }
-  ;
+    ;
 
 // [2]
 VersionDecl
@@ -1090,35 +1077,47 @@ VersionDecl
 
 // [3]
 MainModule
-    :   Prolog QueryBody
+    :   SIND_DeclList SEMI QueryBody
         {
-            $$ = new MainModule(
-                LOC(@$),
-                static_cast<QueryBody*>($2),
-                static_cast<Prolog*>($1)
-            );
+          Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($1), NULL);
+          $$ = new MainModule(LOC(@$), static_cast<QueryBody*>($3), prolog);
+        }
+    |   VFO_DeclList SEMI QueryBody
+        {
+          Prolog* prolog = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($1));
+          $$ = new MainModule(LOC(@$), static_cast<QueryBody*>($3), prolog);
+        }
+    |   SIND_DeclList SEMI VFO_DeclList SEMI QueryBody
+        {
+          Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($1), static_cast<VFO_DeclList*>($3));
+          $$ = new MainModule(LOC(@$), static_cast<QueryBody*>($5), prolog);
         }
     |   QueryBody
         {
-            $$ = new MainModule( LOC(@$), static_cast<QueryBody*>($1), NULL );
+          $$ = new MainModule( LOC(@$), static_cast<QueryBody*>($1), NULL );
         }
-  ;
+    ;
 
 // [4]
 LibraryModule
     :   ModuleDecl
         {
-            $$ = new LibraryModule(
-                LOC(@$), static_cast<ModuleDecl*>($1), NULL
-            );
+          $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), NULL);
         }
-    |   ModuleDecl Prolog
+    |   ModuleDecl SIND_DeclList SEMI
         {
-            $$ = new LibraryModule(
-                LOC(@$),
-                static_cast<ModuleDecl*>($1),
-                static_cast<Prolog*>($2)
-            );
+          Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($2), NULL);
+          $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
+        }
+    |   ModuleDecl VFO_DeclList SEMI
+        {
+          Prolog* prolog = new Prolog(LOC(@$), NULL, static_cast<VFO_DeclList*>($2));
+          $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
+        }
+    |   ModuleDecl SIND_DeclList SEMI VFO_DeclList SEMI
+        {
+          Prolog* prolog = new Prolog(LOC(@$), static_cast<SIND_DeclList*>($2), static_cast<VFO_DeclList*>($4));
+          $$ = new LibraryModule(LOC(@$), static_cast<ModuleDecl*>($1), prolog);
         }
     ;
 
@@ -1128,26 +1127,6 @@ ModuleDecl
         {
             $$ = new ModuleDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
             dynamic_cast<ModuleDecl*>($$)->setComment( SYMTAB($1) );
-        }
-    ;
-
-// [6]
-Prolog
-    :   SIND_DeclList SEMI
-        {
-            $$ = new Prolog( LOC(@$), static_cast<SIND_DeclList*>($1), NULL );
-        }
-    |   VFO_DeclList SEMI
-        {
-            $$ = new Prolog( LOC(@$), NULL, static_cast<VFO_DeclList*>($1) );
-        }
-    |   SIND_DeclList SEMI VFO_DeclList SEMI
-        {
-            $$ = new Prolog(
-                LOC(@$),
-                static_cast<SIND_DeclList*>($1),
-                static_cast<VFO_DeclList*>($3)
-            );
         }
     ;
 
@@ -1161,8 +1140,7 @@ SIND_DeclList
         }
     |   SIND_DeclList SEMI SIND_Decl
         {
-            if ( SIND_DeclList *sdl = static_cast<SIND_DeclList*>($1) )
-                sdl->push_back( $3 );
+            ((SIND_DeclList*)$1)->push_back( $3 );
             $$ = $1;
         }
     ;
@@ -1177,8 +1155,7 @@ VFO_DeclList
         }
     |   VFO_DeclList SEMI VFO_Decl
         {
-            if ( VFO_DeclList *vdl = dynamic_cast<VFO_DeclList*>($1) )
-                vdl->push_back( $3 );
+            ((VFO_DeclList*)$1)->push_back( $3 );
             $$ = $1;
         }
     ;
@@ -1207,17 +1184,17 @@ VFO_Decl
 
 // [6e]
 DecimalFormatDecl
-    :  DECLARE  DEFAULT  DECIMAL_FORMAT  DecimalFormatParamList
-       {
-         $$ = new DecimalFormatNode(LOC(@$), $4);
-         delete $4;
-       }
-    |  DECLARE  DECIMAL_FORMAT  QNAME  DecimalFormatParamList
-       {
-         $$ = new DecimalFormatNode(LOC(@$), static_cast<QName*>($3), $4);
-         delete $4;
-       }
-;
+    :   DECLARE  DEFAULT  DECIMAL_FORMAT  DecimalFormatParamList
+        {
+          $$ = new DecimalFormatNode(LOC(@$), $4);
+          delete $4;
+        }
+    |   DECLARE  DECIMAL_FORMAT  QNAME  DecimalFormatParamList
+        {
+          $$ = new DecimalFormatNode(LOC(@$), static_cast<QName*>($3), $4);
+          delete $4;
+        }
+    ;
 
 
 DecimalFormatParamList
@@ -1277,11 +1254,6 @@ Import
     |   ModuleImport
     ;
 
-// [9]
-// Separator
-// (= SEMI)
-
-
 // [10]
 NamespaceDecl
     :   DECLARE NAMESPACE NCNAME EQUALS URI_LITERAL
@@ -1289,7 +1261,6 @@ NamespaceDecl
             $$ = new NamespaceDecl( LOC(@$), SYMTAB($3), SYMTAB($5) );
         }
     ;
-
 
 // [11]
 BoundarySpaceDecl
@@ -1951,9 +1922,7 @@ FunctionSig
         }
     |   LPAR ParamList RPAR AS SequenceType
         {
-            $$ = new FunctionSig(
-                dynamic_cast<ParamList*>($2), dynamic_cast<SequenceType*>($5)
-            );
+            $$ = new FunctionSig(dynamic_cast<ParamList*>($2), dynamic_cast<SequenceType*>($5));
         }
   ;
 
@@ -2128,7 +2097,7 @@ FunctionDecl2 :
 
 
 FunctionDeclSimple :
-    FUNCTION QNAME FunctionSig BracedExpr
+    FUNCTION FUNCTION_NAME FunctionSig BracedExpr
     {
       $$ = new FunctionDecl(LOC (@$),
                             static_cast<QName*>($2),
@@ -2139,7 +2108,7 @@ FunctionDeclSimple :
                             true);
       delete $3;
     }
-  | FUNCTION QNAME FunctionSig EXTERNAL
+  | FUNCTION FUNCTION_NAME FunctionSig EXTERNAL
     {
       $$ = new FunctionDecl(LOC (@$),
                             static_cast<QName*>($2),
@@ -2154,7 +2123,7 @@ FunctionDeclSimple :
 
 
 FunctionDeclSequential :
-    SEQUENTIAL FUNCTION QNAME FunctionSig Block
+    SEQUENTIAL FUNCTION FUNCTION_NAME FunctionSig Block
     {
       $$ = new FunctionDecl(LOC (@$),
                             static_cast<QName*>($3),
@@ -2165,7 +2134,7 @@ FunctionDeclSequential :
                             true);
       delete $4;
     }
-  | SEQUENTIAL FUNCTION QNAME FunctionSig EXTERNAL
+  | SEQUENTIAL FUNCTION FUNCTION_NAME FunctionSig EXTERNAL
     {
       $$ = new FunctionDecl(LOC (@$),
                             static_cast<QName*>($3),
@@ -2180,7 +2149,7 @@ FunctionDeclSequential :
 
 
 FunctionDeclUpdating :
-    UPDATING FUNCTION QNAME FunctionSig LBRACE ConcatExpr RBRACE
+    UPDATING FUNCTION FUNCTION_NAME FunctionSig LBRACE ConcatExpr RBRACE
     {
       $$ = new FunctionDecl(LOC (@$),
                             static_cast<QName*>($3),
@@ -2191,7 +2160,7 @@ FunctionDeclUpdating :
                             true);
       delete $4;
     }
-  | UPDATING FUNCTION QNAME FunctionSig EXTERNAL
+  | UPDATING FUNCTION FUNCTION_NAME FunctionSig EXTERNAL
     {
       $$ = new FunctionDecl(LOC (@$),
                             static_cast<QName*>($3),
@@ -3603,9 +3572,7 @@ Pragma
 PathExpr
     :   LeadingSlash
         {
-            $$ = new PathExpr(
-                LOC(@$), ParseConstants::path_leading_lone_slash, NULL
-            );
+            $$ = new PathExpr(LOC(@$), ParseConstants::path_leading_lone_slash, NULL);
         }
     |   LeadingSlash RelativePathExpr
         {
@@ -3634,7 +3601,7 @@ LeadingSlash
         {
             $$ = NULL;
         }
-  ;
+    ;
 
 // [68]
 RelativePathExpr
@@ -4091,11 +4058,11 @@ UnorderedExpr
 |
 |____________________________________________________________________*/
 FunctionCall
-    :   QNAME LPAR RPAR
+    :   FUNCTION_NAME LPAR RPAR
         {
             $$ = new FunctionCall( LOC(@$), static_cast<QName*>($1), NULL );
         }
-    |   QNAME LPAR ArgList RPAR
+    |   FUNCTION_NAME LPAR ArgList RPAR
         {
             $$ = new FunctionCall(
                 LOC(@$),
@@ -4528,17 +4495,13 @@ CompDocConstructor
 
 // [109]
 CompElemConstructor
-    :   ELEMENT QNAME LBRACE RBRACE
+    :   COMP_ELEMENT_QNAME_LBRACE RBRACE
         {
-            $$ = new CompElemConstructor(
-                LOC(@$), static_cast<QName*>($2), NULL
-            );
+            $$ = new CompElemConstructor(LOC(@$), new QName(LOC(@$), SYMTAB($1)), NULL);
         }
-    |   ELEMENT QNAME LBRACE Expr RBRACE
+    |   COMP_ELEMENT_QNAME_LBRACE Expr RBRACE
         {
-            $$ = new CompElemConstructor(
-                LOC(@$), static_cast<QName*>($2), $4
-            );
+            $$ = new CompElemConstructor(LOC(@$), new QName(LOC(@$), SYMTAB($1)), $2);
         }
     |   ELEMENT LBRACE Expr RBRACE LBRACE RBRACE
         {
@@ -4561,13 +4524,13 @@ ContentExpr :
 
 // [111]
 CompAttrConstructor
-    :   ATTRIBUTE QNAME LBRACE RBRACE
+    :   COMP_ATTRIBUTE_QNAME_LBRACE RBRACE
         {
-            $$ = new CompAttrConstructor( LOC(@$), $2, NULL );
+          $$ = new CompAttrConstructor( LOC(@$), new QName(LOC(@$), SYMTAB($1)), NULL );
         }
-    |   ATTRIBUTE QNAME LBRACE Expr RBRACE
+    |   COMP_ATTRIBUTE_QNAME_LBRACE Expr RBRACE
         {
-            $$ = new CompAttrConstructor( LOC(@$), $2, $4 );
+          $$ = new CompAttrConstructor( LOC(@$), new QName(LOC(@$), SYMTAB($1)), $2 );
         }
     |   ATTRIBUTE LBRACE Expr RBRACE LBRACE RBRACE
         {
@@ -4597,13 +4560,13 @@ CompCommentConstructor
 
 // [114]
 CompPIConstructor
-    :   PROCESSING_INSTRUCTION NCNAME LBRACE RBRACE
+    :   COMP_PI_NCNAME_LBRACE RBRACE
         {
-            $$ = new CompPIConstructor( LOC(@$), SYMTAB($2), NULL );
+            $$ = new CompPIConstructor( LOC(@$), SYMTAB($1), NULL );
         }
-    |   PROCESSING_INSTRUCTION NCNAME LBRACE Expr RBRACE
+    |   COMP_PI_NCNAME_LBRACE Expr RBRACE
         {
-            $$ = new CompPIConstructor( LOC(@$), SYMTAB($2), $4 );
+            $$ = new CompPIConstructor( LOC(@$), SYMTAB($1), $2 );
         }
     |   PROCESSING_INSTRUCTION LBRACE Expr RBRACE LBRACE RBRACE
         {
@@ -4647,9 +4610,7 @@ SequenceType
         }
     |   ItemType OccurrenceIndicator
         {
-            $$ = new SequenceType(
-                LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2)
-            );
+            $$ = new SequenceType(LOC(@$), $1, dynamic_cast<OccurrenceIndicator*>($2));
         }
     |   EMPTY_SEQUENCE LPAR RPAR
         {
@@ -5339,38 +5300,15 @@ NameTestList
             ntl->push_back( static_cast<NameTest*>($1) );
             $$ = ntl;
         }
-  |     NameTestList VBAR NameTest
+    |   NameTestList VBAR NameTest
         {
             CatchExpr::NameTestList *ntl =
                 static_cast<CatchExpr::NameTestList*>($1);
             ntl->push_back( static_cast<NameTest*>($3) );
             $$ = ntl;
         }
-  ;
-
-URI_LITERAL
-    :   STRING_LITERAL
     ;
 
-/*
-NCNAME
-    :   NCNAME_NOKW | KEYWORD { $$ = $1; }
-;
-*/
-
-NCNAME
-    :   NCNAME_SVAL
-    |   QNAME
-        {
-            std::auto_ptr<QName> lQName( static_cast<QName*>($1) );
-            std::string tmp = lQName->get_qname();
-            if ( tmp.find (':') != std::string::npos ) {
-                error(@1, "A NCName is expected, found a QName");
-                YYERROR;
-            }
-            $$ = SYMTAB_PUT(tmp.c_str());
-        }
-  ;
 
 /*_______________________________________________________________________
  *                                                                       *
@@ -5378,17 +5316,15 @@ NCNAME
  *                                                                       *
  *_______________________________________________________________________*/
 
-  EvalExpr
-  : USING DOLLAR EvalVarDeclList EVAL LBRACE ExprSingle RBRACE
-    {
-      $$ = new EvalExpr(
-        LOC(@$), dynamic_cast<VarGetsDeclList *> ($3), $6
-        );
-    }
-  | EVAL LBRACE ExprSingle RBRACE
-    {
-      $$ = new EvalExpr( LOC(@$), new VarGetsDeclList( LOC(@$) ), $3 );
-    }
+EvalExpr
+    :   USING DOLLAR EvalVarDeclList EVAL LBRACE ExprSingle RBRACE
+        {
+          $$ = new EvalExpr(LOC(@$), dynamic_cast<VarGetsDeclList *> ($3), $6);
+        }
+    |   EVAL LBRACE ExprSingle RBRACE
+        {
+          $$ = new EvalExpr( LOC(@$), new VarGetsDeclList( LOC(@$) ), $3 );
+        }
     ;
 
 
@@ -5898,11 +5834,13 @@ FTThesaurus_list
 
 // [172]
 FTThesaurusID
-    :   AT STRING_LITERAL opt_relationship opt_levels
+    :   AT STRING_LITERAL opt_relationship
         {
-            $$ = new FTThesaurusID(
-                LOC(@$), SYMTAB($2), SYMTAB($3), dynamic_cast<FTRange*>($4)
-            );
+            $$ = new FTThesaurusID(LOC(@$), SYMTAB($2), SYMTAB($3), NULL);
+        }
+    |   AT STRING_LITERAL opt_relationship FTRange LEVELS
+        {
+            $$ = new FTThesaurusID(LOC(@$), SYMTAB($2), SYMTAB($3), dynamic_cast<FTRange*>($4));
         }
     ;
 
@@ -5914,17 +5852,6 @@ opt_relationship
     |   RELATIONSHIP STRING_LITERAL
         {
             $$ = $2;
-        }
-    ;
-
-opt_levels
-    :   /* empty */
-        {
-            $$ = NULL;
-        }
-    |   FTRange LEVELS
-        {
-            $$ = $1;
         }
     ;
 
@@ -6138,232 +6065,244 @@ FTIgnoreOption
  *  All QNames                                                           *
  *                                                                       *
  *_______________________________________________________________________*/
-QNAME
-    :   QNAME_SVAL
+URI_LITERAL
+    :   STRING_LITERAL
+    ;
+
+NCNAME
+    :   NCNAME_SVAL
+    |   QNAME
         {
-          $$ = new QName( LOC(@$), SYMTAB($1) );
-        }
-    |   KEYWORD
-        {
-          $$ = new QName( LOC(@$), SYMTAB($1) );
+          std::auto_ptr<QName> lQName( static_cast<QName*>($1) );
+          std::string tmp = lQName->get_qname();
+          if ( tmp.find (':') != std::string::npos ) {
+            error(@1, "A NCName is expected, found a QName");
+            YYERROR;
+          }
+          $$ = SYMTAB_PUT(tmp.c_str());
         }
     ;
 
-KEYWORD
-    :   XQUERY { $$ = SYMTAB_PUT("xquery"); }
-    |   _EMPTY { $$ = SYMTAB_PUT("empty"); }
-    |   ATTRIBUTE { $$ = SYMTAB_PUT("attribute"); }
-    |   COMMENT { $$ = SYMTAB_PUT("comment"); }
-    |   DOCUMENT_NODE { $$ = SYMTAB_PUT("document-node"); }
-    |   ELEMENT { $$ = SYMTAB_PUT("element"); }
-    |   ITEM { $$ = SYMTAB_PUT("item"); }
-    |   IF { $$ = SYMTAB_PUT("if"); }
-    |   NODE { $$ = SYMTAB_PUT("node"); }
-    |   PROCESSING_INSTRUCTION { $$ = SYMTAB_PUT("processing-instruction"); }
-    |   SCHEMA_ATTRIBUTE { $$ = SYMTAB_PUT("schema-attribute"); }
-    |   SCHEMA_ELEMENT { $$ = SYMTAB_PUT("schema-element"); }
-    |   TEXT { $$ = SYMTAB_PUT("text"); }
-    |   TYPESWITCH { $$ = SYMTAB_PUT("typeswitch"); }
-    |   SWITCH { $$ = SYMTAB_PUT("switch"); }
-    |   EMPTY_SEQUENCE { $$ = SYMTAB_PUT("empty-sequence"); }
-    |   BOUNDARY_SPACE { $$ = SYMTAB_PUT("boundary-space"); }
-    |   FT_OPTION { $$ = SYMTAB_PUT("ft-option"); }
-    |   BASE_URI { $$ = SYMTAB_PUT("base-uri"); }
-    |   LAX { $$ = SYMTAB_PUT("lax"); }
-    |   _STRICT { $$ = SYMTAB_PUT("strict"); }
-    |   IDIV { $$ = SYMTAB_PUT("idiv"); }
-    |   DOCUMENT { $$ = SYMTAB_PUT("document"); }
-    |   FTNOT { $$ = SYMTAB_PUT("ftnot"); }
-    |   NOT { $$ = SYMTAB_PUT("not"); }
-    |   SENSITIVE { $$ = SYMTAB_PUT("sensitive"); }
-    |   INSENSITIVE { $$ = SYMTAB_PUT("insensitive"); }
-    |   DIACRITICS { $$ = SYMTAB_PUT("diacritics"); }
-    |   WITHOUT { $$ = SYMTAB_PUT("without"); }
-    |   STEMMING { $$ = SYMTAB_PUT("stemming"); }
-    |   THESAURUS { $$ = SYMTAB_PUT("thesaurus"); }
-    |   STOP { $$ = SYMTAB_PUT("stop"); }
-    |   WILDCARDS { $$ = SYMTAB_PUT("wildcards"); }
-    |   ENTIRE { $$ = SYMTAB_PUT("entire"); }
-    |   CONTENT { $$ = SYMTAB_PUT("content"); }
-    |   WORD { $$ = SYMTAB_PUT("word"); }
-    |   START { $$ = SYMTAB_PUT("start"); }
-    |   END { $$ = SYMTAB_PUT("end"); }
-    |   MOST { $$ = SYMTAB_PUT("most"); }
-    |   SKIP { $$ = SYMTAB_PUT("skip"); }
-    |   COPY { $$ = SYMTAB_PUT("copy"); }
-    |   GENERAL { $$ = SYMTAB_PUT("general"); }
-    |   VALUE { $$ = SYMTAB_PUT("value"); }
-    |   VAL_EQ { $$ = SYMTAB_PUT("eq"); }
-    |   VAL_NE { $$ = SYMTAB_PUT("ne"); }
-    |   VAL_LT { $$ = SYMTAB_PUT("lt"); }
-    |   VAL_LE { $$ = SYMTAB_PUT("le"); }
-    |   VAL_GT { $$ = SYMTAB_PUT("gt"); }
-    |   VAL_GE { $$ = SYMTAB_PUT("ge"); }
-    |   AT { $$ = SYMTAB_PUT("at"); }
-    |   CONTEXT { $$ = SYMTAB_PUT("context"); }
-    |   VARIABLE { $$ = SYMTAB_PUT("variable"); }
-    |   RETURN { $$ = SYMTAB_PUT("return"); }
-    |   FOR { $$ = SYMTAB_PUT("for"); }
-    |   OUTER { $$ = SYMTAB_PUT("outer"); }
-    |   SLIDING { $$ = SYMTAB_PUT("sliding"); }
-    |   TUMBLING { $$ = SYMTAB_PUT("tumbling"); }
-    |   PREVIOUS { $$ = SYMTAB_PUT("previous"); }
-    |   NEXT { $$ = SYMTAB_PUT("next"); }
-    |   ONLY { $$ = SYMTAB_PUT("only"); }
-    |   WHEN { $$ = SYMTAB_PUT("when"); }
-    |   COUNT { $$ = SYMTAB_PUT("count"); }
-    |   _IN { $$ = SYMTAB_PUT("in"); }
-    |   LET { $$ = SYMTAB_PUT("let"); }
-    |   WHERE { $$ = SYMTAB_PUT("where"); }
-    |   BY { $$ = SYMTAB_PUT("by"); }
-    |   GROUP { $$ = SYMTAB_PUT("group"); }
-    |   ORDER { $$ = SYMTAB_PUT("order"); }
-    |   STABLE { $$ = SYMTAB_PUT("stable"); }
-    |   ASCENDING { $$ = SYMTAB_PUT("ascending"); }
-    |   DESCENDING { $$ = SYMTAB_PUT("descending"); }
-    |   GREATEST { $$ = SYMTAB_PUT("greatest"); }
-    |   LEAST { $$ = SYMTAB_PUT("least"); }
-    |   COLLATION { $$ = SYMTAB_PUT("collation"); }
-    |   SOME { $$ = SYMTAB_PUT("some"); }
-    |   EVERY { $$ = SYMTAB_PUT("every"); }
-    |   SATISFIES { $$ = SYMTAB_PUT("satisfies"); }
-    |   CASE { $$ = SYMTAB_PUT("case"); }
-    |   AS { $$ = SYMTAB_PUT("as"); }
-    |   THEN { $$ = SYMTAB_PUT("then"); }
-    |   ELSE { $$ = SYMTAB_PUT("else"); }
-    |   OR { $$ = SYMTAB_PUT("or"); }
-    |   AND { $$ = SYMTAB_PUT("and"); }
-    |   INSTANCE { $$ = SYMTAB_PUT("instance"); }
-    |   OF { $$ = SYMTAB_PUT("of"); }
-    |   CASTABLE { $$ = SYMTAB_PUT("castable"); }
-    |   TO { $$ = SYMTAB_PUT("to"); }
-    |   DIV { $$ = SYMTAB_PUT("div"); }
-    |   MOD { $$ = SYMTAB_PUT("mod"); }
-    |   UNION { $$ = SYMTAB_PUT("union"); }
-    |   INTERSECT { $$ = SYMTAB_PUT("intersect"); }
-    |   EXCEPT { $$ = SYMTAB_PUT("except"); }
-    |   VALIDATE { $$ = SYMTAB_PUT("validate"); }
-    |   CAST { $$ = SYMTAB_PUT("cast"); }
-    |   TREAT { $$ = SYMTAB_PUT("treat"); }
-    |   IS { $$ = SYMTAB_PUT("is"); }
-    |   PRESERVE { $$ = SYMTAB_PUT("preserve"); }
-    |   STRIP { $$ = SYMTAB_PUT("strip"); }
-    |   NAMESPACE { $$ = SYMTAB_PUT("namespace"); }
-    |   EXTERNAL { $$ = SYMTAB_PUT("external"); }
-    |   ENCODING { $$ = SYMTAB_PUT("encoding"); }
-    |   NO_PRESERVE { $$ = SYMTAB_PUT("no-preserve"); }
-    |   INHERIT { $$ = SYMTAB_PUT("inherit"); }
-    |   NO_INHERIT { $$ = SYMTAB_PUT("no-inherit"); }
-    |   DECLARE { $$ = SYMTAB_PUT("declare"); }
-    |   CONSTRUCTION { $$ = SYMTAB_PUT("construction"); }
-    |   ORDERING { $$ = SYMTAB_PUT("ordering"); }
-    |   DEFAULT { $$ = SYMTAB_PUT("default"); }
-    |   COPY_NAMESPACES { $$ = SYMTAB_PUT("copy-namespaces"); }
-    |   OPTION { $$ = SYMTAB_PUT("option"); }
-    |   VERSION { $$ = SYMTAB_PUT("version"); }
-    |   IMPORT { $$ = SYMTAB_PUT("import"); }
-    |   SCHEMA { $$ = SYMTAB_PUT("schema"); }
-    |   MODULE { $$ = SYMTAB_PUT("module"); }
-    |   FUNCTION { $$ = SYMTAB_PUT("function"); }
-    |   SCORE { $$ = SYMTAB_PUT("score"); }
-    |   CONTAINS { $$ = SYMTAB_PUT("contains"); }
-    |   WEIGHT { $$ = SYMTAB_PUT("weight"); }
-    |   WINDOW { $$ = SYMTAB_PUT("window"); }
-    |   DISTANCE { $$ = SYMTAB_PUT("distance"); }
-    |   OCCURS { $$ = SYMTAB_PUT("occurs"); }
-    |   TIMES { $$ = SYMTAB_PUT("times"); }
-    |   SAME { $$ = SYMTAB_PUT("same"); }
-    |   DIFFERENT { $$ = SYMTAB_PUT("different"); }
-    |   LOWERCASE { $$ = SYMTAB_PUT("lowercase"); }
-    |   UPPERCASE { $$ = SYMTAB_PUT("uppercase"); }
-    |   RELATIONSHIP { $$ = SYMTAB_PUT("relationship"); }
-    |   LEVELS { $$ = SYMTAB_PUT("levels"); }
-    |   LANGUAGE { $$ = SYMTAB_PUT("language"); }
-    |   ANY { $$ = SYMTAB_PUT("any"); }
-    |   ALL { $$ = SYMTAB_PUT("all"); }
-    |   PHRASE { $$ = SYMTAB_PUT("phrase"); }
-    |   EXACTLY { $$ = SYMTAB_PUT("exactly"); }
-    |   FROM { $$ = SYMTAB_PUT("from"); }
-    |   WORDS { $$ = SYMTAB_PUT("words"); }
-    |   SENTENCES { $$ = SYMTAB_PUT("sentences"); }
-    |   SENTENCE { $$ = SYMTAB_PUT("sentence"); }
-    |   PARAGRAPH { $$ = SYMTAB_PUT("paragraph"); }
-    |   REPLACE { $$ = SYMTAB_PUT("replace"); }
-    |   MODIFY { $$ = SYMTAB_PUT("modify"); }
-    |   FIRST { $$ = SYMTAB_PUT("first"); }
-    |   INSERT { $$ = SYMTAB_PUT("insert"); }
-    |   BEFORE { $$ = SYMTAB_PUT("before"); }
-    |   AFTER { $$ = SYMTAB_PUT("after"); }
-    |   REVALIDATION { $$ = SYMTAB_PUT("revalidation"); }
-    |   WITH { $$ = SYMTAB_PUT("with"); }
-    |   NODES { $$ = SYMTAB_PUT("nodes"); }
-    |   RENAME { $$ = SYMTAB_PUT("rename"); }
-    |   LAST { $$ = SYMTAB_PUT("last"); }
-    |   _DELETE { $$ = SYMTAB_PUT("delete"); }
-    |   INTO { $$ = SYMTAB_PUT("into"); }
-    |   SIMPLE { $$ = SYMTAB_PUT("simple"); }
-    |   SEQUENTIAL { $$ = SYMTAB_PUT("sequential"); }
-    |   UPDATING { $$ = SYMTAB_PUT("updating"); }
-    |   DETERMINISTIC { $$ = SYMTAB_PUT("deterministic"); }
-    |   NONDETERMINISTIC { $$ = SYMTAB_PUT("nondeterministic"); }
-    |   ORDERED { $$ = SYMTAB_PUT("ordered"); }
-    |   UNORDERED { $$ = SYMTAB_PUT("unordered"); }
-    |   RETURNING { $$ = SYMTAB_PUT("returning"); }
-    |   BLOCK { $$ = SYMTAB_PUT("block"); }
-    |   EXIT { $$ = SYMTAB_PUT("exit"); }
-    |   LOOP { $$ = SYMTAB_PUT("loop"); }
-    |   WHILE { $$ = SYMTAB_PUT("while"); }
-    |   BREAK { $$ = SYMTAB_PUT("break"); }
-    |   CONTINUE { $$ = SYMTAB_PUT("continue"); }
-    |   TRY { $$ = SYMTAB_PUT("try"); }
-    |   CATCH { $$ = SYMTAB_PUT("catch"); }
-    |   EVAL { $$ = SYMTAB_PUT("eval"); }
-    |   USING { $$ = SYMTAB_PUT("using"); }
-    |   SET { $$ = SYMTAB_PUT("set"); }
-    |   INDEX { $$ = SYMTAB_PUT("index"); }
-    |   UNIQUE { $$ = SYMTAB_PUT("unique"); }
-    |   NON { $$ = SYMTAB_PUT("non"); }
-    |   ON { $$ = SYMTAB_PUT("on"); }
-    |   RANGE { $$ = SYMTAB_PUT("range"); }
-    |   EQUALITY { $$ = SYMTAB_PUT("equality"); }
-    |   MANUALLY { $$ = SYMTAB_PUT("manually"); }
-    |   AUTOMATICALLY { $$ = SYMTAB_PUT("automatically"); }
-    |   MAINTAINED { $$ = SYMTAB_PUT("maintained"); }
-    |   DECIMAL_FORMAT { $$ = SYMTAB_PUT("decimal-format"); }
-    |   DECIMAL_SEPARATOR { $$ = SYMTAB_PUT("decimal-separator"); }
-    |   GROUPING_SEPARATOR { $$ = SYMTAB_PUT("grouping-separator"); }
-    |   INFINITY_VALUE { $$ = SYMTAB_PUT("infinity"); }
-    |   MINUS_SIGN { $$ = SYMTAB_PUT("minus-sign"); }
-    |   NaN { $$ = SYMTAB_PUT("NaN"); }
-    |   PERCENT { $$ = SYMTAB_PUT("percent"); }
-    |   PER_MILLE { $$ = SYMTAB_PUT("per-mille"); }
-    |   ZERO_DIGIT { $$ = SYMTAB_PUT("zero-digit"); }
-    |   DIGIT { $$ = SYMTAB_PUT("digit"); }
-    |   PATTERN_SEPARATOR { $$ = SYMTAB_PUT("pattern-separator"); }
-    |   COLLECTION { $$ = SYMTAB_PUT("collection"); }
-    |   CONSTOPT { $$ = SYMTAB_PUT("const"); }
-    |   APPEND_ONLY { $$ = SYMTAB_PUT("append-only"); }
-    |   QUEUE { $$ = SYMTAB_PUT("queue"); }
-    |   MUTABLE { $$ = SYMTAB_PUT("mutable"); }
-    |   READ_ONLY { $$ = SYMTAB_PUT("read-only"); }
-    |   INTEGRITY { $$ = SYMTAB_PUT("integrity"); }
-    |   CONSTRAINT { $$ = SYMTAB_PUT("constraint"); }
-    |   CHECK { $$ = SYMTAB_PUT("check"); }
-    |   KEY { $$ = SYMTAB_PUT("key"); }
-    |   FOREACH { $$ = SYMTAB_PUT("foreach"); }
-    |   FOREIGN { $$ = SYMTAB_PUT("foreign"); }
-    |   KEYS { $$ = SYMTAB_PUT("keys"); }
-    |   ANCESTOR { $$ = SYMTAB_PUT("ancestor"); }
-    |   CHILD { $$ = SYMTAB_PUT("child"); }
-    |   DESCENDANT { $$ = SYMTAB_PUT("descendant"); }
-    |   PARENT { $$ = SYMTAB_PUT("parent"); }
-    |   PRECEDING { $$ = SYMTAB_PUT("preceding"); }
-    |   SELF { $$ = SYMTAB_PUT("self"); }
-    |   FOLLOWING { $$ = SYMTAB_PUT("following"); }
-    |   ANCESTOR_OR_SELF { $$ = SYMTAB_PUT("ancestor-or-self"); }
-    |   DESCENDANT_OR_SELF { $$ = SYMTAB_PUT("descendant-or-self"); }
-    |   FOLLOWING_SIBLING { $$ = SYMTAB_PUT("following-sibling"); }
-    |   PRECEDING_SIBLING { $$ = SYMTAB_PUT("preceding-sibling"); }
+QNAME
+    :   FUNCTION_NAME
+    |   ATTRIBUTE               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("attribute"))); }
+    |   COMMENT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("comment"))); }
+    |   DOCUMENT_NODE           { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("document-node"))); }
+    |   ELEMENT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("element"))); }
+    |   ITEM                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("item"))); }
+    |   IF                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("if"))); }
+    |   NODE                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("node"))); }
+    |   PROCESSING_INSTRUCTION  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("processing-instruction"))); }
+    |   SCHEMA_ATTRIBUTE        { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("schema-attribute"))); }
+    |   SCHEMA_ELEMENT          { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("schema-element"))); }
+    |   TEXT                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("text"))); }
+    |   TYPESWITCH              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("typeswitch"))); }
+    |   SWITCH                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("switch"))); }
+    |   EMPTY_SEQUENCE          { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("empty-sequence"))); }
+    |   WHILE                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("while"))); }
+    ;
+
+FUNCTION_NAME
+    :   QNAME_SVAL              { $$ = new QName(LOC(@$), SYMTAB($1)); }
+    |   XQUERY                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("xquery"))); }
+    |   _EMPTY                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("empty"))); }
+    |   BOUNDARY_SPACE          { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("boundary-space"))); }
+    |   FT_OPTION               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("ft-option"))); }
+    |   BASE_URI                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("base-uri"))); }
+    |   LAX                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("lax"))); }
+    |   _STRICT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("strict"))); }
+    |   IDIV                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("idiv"))); }
+    |   DOCUMENT                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("document"))); }
+    |   FTNOT                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("ftnot"))); }
+    |   NOT                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("not"))); }
+    |   SENSITIVE               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("sensitive"))); }
+    |   INSENSITIVE             { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("insensitive"))); }
+    |   DIACRITICS              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("diacritics"))); }
+    |   WITHOUT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("without"))); }
+    |   STEMMING                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("stemming"))); }
+    |   THESAURUS               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("thesaurus"))); }
+    |   STOP                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("stop"))); }
+    |   WILDCARDS               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("wildcards"))); }
+    |   ENTIRE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("entire"))); }
+    |   CONTENT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("content"))); }
+    |   WORD                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("word"))); }
+    |   START                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("start"))); }
+    |   END                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("end"))); }
+    |   MOST                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("most"))); }
+    |   SKIP                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("skip"))); }
+    |   COPY                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("copy"))); }
+    |   GENERAL                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("general"))); }
+    |   VALUE                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("value"))); }
+    |   VAL_EQ                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("eq"))); }
+    |   VAL_NE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("ne"))); }
+    |   VAL_LT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("lt"))); }
+    |   VAL_LE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("le"))); }
+    |   VAL_GT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("gt"))); }
+    |   VAL_GE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("ge"))); }
+    |   AT                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("at"))); }
+    |   CONTEXT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("context"))); }
+    |   VARIABLE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("variable"))); }
+    |   RETURN                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("return"))); }
+    |   FOR                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("for"))); }
+    |   OUTER                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("outer"))); }
+    |   SLIDING                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("sliding"))); }
+    |   TUMBLING                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("tumbling"))); }
+    |   PREVIOUS                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("previous"))); }
+    |   NEXT                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("next"))); }
+    |   ONLY                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("only"))); }
+    |   WHEN                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("when"))); }
+    |   COUNT                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("count"))); }
+    |   _IN                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("in"))); }
+    |   LET                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("let"))); }
+    |   WHERE                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("where"))); }
+    |   BY                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("by"))); }
+    |   GROUP                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("group"))); }
+    |   ORDER                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("order"))); }
+    |   STABLE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("stable"))); }
+    |   ASCENDING               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("ascending"))); }
+    |   DESCENDING              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("descending"))); }
+    |   GREATEST                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("greatest"))); }
+    |   LEAST                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("least"))); }
+    |   COLLATION               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("collation"))); }
+    |   SOME                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("some"))); }
+    |   EVERY                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("every"))); }
+    |   SATISFIES               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("satisfies"))); }
+    |   CASE                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("case"))); }
+    |   AS                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("as"))); }
+    |   THEN                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("then"))); }
+    |   ELSE                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("else"))); }
+    |   OR                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("or"))); }
+    |   AND                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("and"))); }
+    |   INSTANCE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("instance"))); }
+    |   OF                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("of"))); }
+    |   CASTABLE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("castable"))); }
+    |   TO                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("to"))); }
+    |   DIV                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("div"))); }
+    |   MOD                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("mod"))); }
+    |   UNION                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("union"))); }
+    |   INTERSECT               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("intersect"))); }
+    |   EXCEPT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("except"))); }
+    |   VALIDATE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("validate"))); }
+    |   CAST                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("cast"))); }
+    |   TREAT                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("treat"))); }
+    |   IS                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("is"))); }
+    |   PRESERVE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preserve"))); }
+    |   STRIP                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("strip"))); }
+    |   NAMESPACE               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("namespace"))); }
+    |   EXTERNAL                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("external"))); }
+    |   ENCODING                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("encoding"))); }
+    |   NO_PRESERVE             { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("no-preserve"))); }
+    |   INHERIT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("inherit"))); }
+    |   NO_INHERIT              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("no-inherit"))); }
+    |   DECLARE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("declare"))); }
+    |   CONSTRUCTION            { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("construction"))); }
+    |   ORDERING                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("ordering"))); }
+    |   DEFAULT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("default"))); }
+    |   COPY_NAMESPACES         { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("copy-namespaces"))); }
+    |   OPTION                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("option"))); }
+    |   VERSION                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("version"))); }
+    |   IMPORT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("import"))); }
+    |   SCHEMA                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("schema"))); }
+    |   MODULE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("module"))); }
+    |   FUNCTION                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("function"))); }
+    |   SCORE                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("score"))); }
+    |   CONTAINS                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("contains"))); }
+    |   WEIGHT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("weight"))); }
+    |   WINDOW                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("window"))); }
+    |   DISTANCE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("distance"))); }
+    |   OCCURS                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("occurs"))); }
+    |   TIMES                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("times"))); }
+    |   SAME                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("same"))); }
+    |   DIFFERENT               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("different"))); }
+    |   LOWERCASE               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("lowercase"))); }
+    |   UPPERCASE               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("uppercase"))); }
+    |   RELATIONSHIP            { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("relationship"))); }
+    |   LEVELS                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("levels"))); }
+    |   LANGUAGE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("language"))); }
+    |   ANY                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("any"))); }
+    |   ALL                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("all"))); }
+    |   PHRASE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("phrase"))); }
+    |   EXACTLY                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("exactly"))); }
+    |   FROM                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("from"))); }
+    |   WORDS                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("words"))); }
+    |   SENTENCES               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("sentences"))); }
+    |   SENTENCE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("sentence"))); }
+    |   PARAGRAPH               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("paragraph"))); }
+    |   REPLACE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("replace"))); }
+    |   MODIFY                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("modify"))); }
+    |   FIRST                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("first"))); }
+    |   INSERT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("insert"))); }
+    |   BEFORE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("before"))); }
+    |   AFTER                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("after"))); }
+    |   REVALIDATION            { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("revalidation"))); }
+    |   WITH                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("with"))); }
+    |   NODES                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("nodes"))); }
+    |   RENAME                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("rename"))); }
+    |   LAST                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("last"))); }
+    |   _DELETE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("delete"))); }
+    |   INTO                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("into"))); }
+    |   SIMPLE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("simple"))); }
+    |   SEQUENTIAL              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("sequential"))); }
+    |   UPDATING                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("updating"))); }
+    |   DETERMINISTIC           { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("deterministic"))); }
+    |   NONDETERMINISTIC        { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("nondeterministic"))); }
+    |   ORDERED                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("ordered"))); }
+    |   UNORDERED               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("unordered"))); }
+    |   RETURNING               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("returning"))); }
+    |   BLOCK                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("block"))); }
+    |   EXIT                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("exit"))); }
+    |   LOOP                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("loop"))); }
+    |   BREAK                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("break"))); }
+    |   CONTINUE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("continue"))); }
+    |   TRY                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("try"))); }
+    |   CATCH                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("catch"))); }
+    |   EVAL                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("eval"))); }
+    |   USING                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("using"))); }
+    |   SET                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("set"))); }
+    |   INDEX                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("index"))); }
+    |   UNIQUE                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("unique"))); }
+    |   NON                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("non"))); }
+    |   ON                      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("on"))); }
+    |   RANGE                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("range"))); }
+    |   EQUALITY                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("equality"))); }
+    |   MANUALLY                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("manually"))); }
+    |   AUTOMATICALLY           { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("automatically"))); }
+    |   MAINTAINED              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("maintained"))); }
+    |   DECIMAL_FORMAT          { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("decimal-format"))); }
+    |   DECIMAL_SEPARATOR       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("decimal-separator"))); }
+    |   GROUPING_SEPARATOR      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("grouping-separator"))); }
+    |   INFINITY_VALUE          { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("infinity"))); }
+    |   MINUS_SIGN              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("minus-sign"))); }
+    |   NaN                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("NaN"))); }
+    |   PERCENT                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("percent"))); }
+    |   PER_MILLE               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("per-mille"))); }
+    |   ZERO_DIGIT              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("zero-digit"))); }
+    |   DIGIT                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("digit"))); }
+    |   PATTERN_SEPARATOR       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("pattern-separator"))); }
+    |   COLLECTION              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("collection"))); }
+    |   CONSTOPT                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("const"))); }
+    |   APPEND_ONLY             { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("append-only"))); }
+    |   QUEUE                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("queue"))); }
+    |   MUTABLE                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("mutable"))); }
+    |   READ_ONLY               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("read-only"))); }
+    |   INTEGRITY               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("integrity"))); }
+    |   CONSTRAINT              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("constraint"))); }
+    |   CHECK                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("check"))); }
+    |   KEY                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("key"))); }
+    |   FOREACH                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("foreach"))); }
+    |   FOREIGN                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("foreign"))); }
+    |   KEYS                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("keys"))); }
+    |   ANCESTOR                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("ancestor"))); }
+    |   CHILD                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("child"))); }
+    |   DESCENDANT              { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("descendant"))); }
+    |   PARENT                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("parent"))); }
+    |   PRECEDING               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preceding"))); }
+    |   SELF                    { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("self"))); }
+    |   FOLLOWING               { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("following"))); }
+    |   ANCESTOR_OR_SELF        { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("ancestor-or-self"))); }
+    |   DESCENDANT_OR_SELF      { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("descendant-or-self"))); }
+    |   FOLLOWING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("following-sibling"))); }
+    |   PRECEDING_SIBLING       { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("preceding-sibling"))); }
     ;
 
 
@@ -6387,7 +6326,14 @@ void xquery_parser::error(zorba::xquery_parser::location_type const& loc, std::s
   if (driver.parserError != NULL)
     driver.set_expr(new ParseErrorNode(driver.parserError->loc, XPST0003, driver.parserError->msg));
   else
-    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), XPST0003, msg));
+  {
+    // remove the double quoting "''" from every token description
+    std::string message = msg;
+    int pos;
+    while ((pos = message.find("\"'")) != -1 || (pos = message.find("'\"")) != -1)
+      message.replace(pos, 2, "\"");
+    driver.set_expr(new ParseErrorNode(driver.createQueryLoc(loc), XPST0003, message));
+  }
 }
 
 } // namespace zorba

@@ -43,6 +43,7 @@
 #include "compiler/api/compilercb.h"
 #include "context/static_context.h"
 #include "zorbaerrors/error_manager.h"
+#include "compiler/parser/util.h"
 
 namespace zorba
 {
@@ -96,15 +97,46 @@ ZorbaParserError* xquery_driver::unterminatedCommentErr(const location& loc)
 
 ZorbaParserError* xquery_driver::unrecognizedToken(const char* _error_token, const location& loc)
 {
-  parserError = new ZorbaParserError(std::string("syntax error, unexpected '") + _error_token + "'", loc);
+  parserError = new ZorbaParserError(std::string("syntax error, unexpected \"") + _error_token + "\"", loc);
   return parserError;
 }
 
-ZorbaParserError* xquery_driver::unrecognizedIntegerErr(const char* _error_token, const location& loc)
+ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const location& loc)
 {
-  parserError = new ZorbaParserError(std::string("syntax error, unexpected '") + _error_token + "', separator needed after numeric literal", loc);
+  std::string ref = "";
+  std::string temp = _message;
+  std::string out;
+  temp = temp.substr(temp.find("&"));
+
+  // while (temp.size()>0 && xqpStringStore::starts_with_ref(temp.c_str()))
+  while (temp.size()>0 && decode_entity(temp.c_str(), &out) != -1)
+  {
+    temp = temp.substr(temp.find(";") + 1);
+    if (temp.find("&") != std::string::npos)
+      temp = temp.substr(temp.find("&"));
+  }
+
+  if (temp.find("&") != std::string::npos)
+  {
+    ref = "\"" + temp.substr(temp.find("&"), 6);
+    if (temp.size() == 7)
+      ref += "\"";
+    else if (temp.size() > 7)
+      ref += "...\"";
+    ref += " ";
+  }
+
+  parserError = new ZorbaParserError(std::string("syntax error, invalid character or entity reference " + ref + "in the string literal ") + _message, loc);
   return parserError;
 }
+
+
+ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const location& loc)
+{
+  parserError = new ZorbaParserError(_message, loc);
+  return parserError;
+}
+
 
 bool xquery_driver::parse_stream(std::istream& in, const xqpString& aFilename)
 {

@@ -15,9 +15,19 @@
  */
 %{ /* _*_ C++ _*_ */
 
+
+#ifdef WIN32
+  // Include the NOMINMAX definition before windwows.h is included,
+  // so that min and max macros are not defined, and std::max and std::min
+  // uses do not generate errors on Windows.
+#define NOMINMAX
+#endif
+
+
 #if defined (WIN32)
 #pragma warning(disable: 4786)
 #endif
+
 
 #include "zorbatypes/representations.h"
 #include "common/common.h"
@@ -66,11 +76,11 @@ typedef zorba::xquery_parser::token_type token_type;
         PUSH_STATE(pushed); \
     } while(0)
 
-#define TRY_SVAL_TOKEN( ttype, put, yytext )                            \
+#define TRY_TOKEN_INTERNAL(ttype, put, yytext, err_func)                \
   do {                                                                  \
     off_t res = getDriver()->symtab.put;                                \
     if (res < 0) {                                                      \
-      yylval->err = getDriver()->unrecognizedToken(yytext, *yylloc);    \
+      yylval->err = getDriver()->err_func(yytext, *yylloc);             \
       return token::UNRECOGNIZED;                                       \
     } else {                                                            \
       yylval->sval = res;                                               \
@@ -78,14 +88,36 @@ typedef zorba::xquery_parser::token_type token_type;
     }                                                                   \
   } while (0)
 
-#define TRY_STR_LIT( ttype, put, yytext, yyleng ) \
-  TRY_SVAL_TOKEN (ttype, put (yytext, yyleng), yytext)
+#define TRY_SVAL_TOKEN(ttype, put, yytext) \
+    TRY_TOKEN_INTERNAL(ttype, put, yytext, unrecognizedToken)
 
-#define TRY_STRINGLIT( ttype, yytext, yyleng ) \
-  TRY_STR_LIT (ttype, put_stringlit, yytext, yyleng)
 
-#define TRY_URILIT( ttype, yytext, yyleng ) \
-  TRY_STR_LIT (ttype, put_uri, yytext, yyleng)
+#define TRY_CHARREF_LITERAL(ttype, put, yytext, yyleng) \
+  TRY_TOKEN_INTERNAL(ttype, put (yytext, yyleng), yytext, unrecognizedToken)
+
+#define TRY_STRING_LITERAL(ttype, yytext, yyleng) \
+  TRY_TOKEN_INTERNAL(ttype, put_stringlit(yytext, yyleng), yytext, invalidCharRef)
+
+#define TRY_URI_LITERAL(ttype, yytext, yyleng ) \
+  TRY_TOKEN_INTERNAL(ttype, put_uri(yytext, yyleng), yytext, unrecognizedToken)
+
+
+#define COMP_CONSTR_ROLLBACK(invoke_yy_less)                            \
+  do {                                                                  \
+    int _STATE = YY_START;                                              \
+    POP_STATE();                                                        \
+    if (invoke_yy_less)                                                 \
+      yyless(0);                                                        \
+    if (yy_comp_constr_qname != "") {                                   \
+      unput(' ');                                                       \
+      for (int i=yy_comp_constr_qname.size()-1; i>=0; i--)              \
+        unput(yy_comp_constr_qname[i]);                                 \
+      yy_comp_constr_qname = "";                                        \
+    }                                                                   \
+    return _STATE==MODE_ELEM_COMP_CONSTR? token::ELEMENT : (            \
+           _STATE==MODE_ATTR_COMP_CONSTR? token::ATTRIBUTE :            \
+                                    token::PROCESSING_INSTRUCTION);     \
+  } while (0)
 
 /*
   Work around an incompatibility in flex (at least versions
@@ -103,6 +135,9 @@ typedef zorba::xquery_parser::token_type token_type;
 */
 #define yyterminate() return token::_EOF
 
+
+std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION */
+
 /*
   The macro YY_USER_ACTION can be defined to provide an action which is
   always executed prior to the matched rule's action.
@@ -115,9 +150,6 @@ typedef zorba::xquery_parser::token_type token_type;
   onto the end cursor to effectively ignore the blanks preceding tokens.
   Comments would be treated equally.
 */
-std::string start_state(int);   /* forward declaration, used by YY_USER_ACTION */
-
-
 #ifdef YY_USER_ACTION
 #undef YY_USER_ACTION
 #endif
@@ -223,8 +255,8 @@ QName       ({NCName}":")?{NCName}
    |
    |  Entity definitions
    |______________________________________________________________________*/
-CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+);
-PredefinedEntityRef   "&"(lt|gt|amp|quot|apos|nbsp);
+CharRef               "&#"([0-9]+|x([0-9]|[a-f]|[A-F])+)";"
+PredefinedEntityRef   "&"(lt|gt|amp|quot|apos|nbsp)";"
 Ref                   {CharRef}|{PredefinedEntityRef}
 
   /*_____________________________________________________________________
@@ -239,9 +271,14 @@ IntegerLiteral        [0-9]+
    |
    |  String literal definitions
    |______________________________________________________________________*/
-NonQuotAnd            [^""&]
-NonAposAnd            [^''&]
-StringLiteral         ({Quote}({EscapeQuot}|{Ref}|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|{Ref}|{NonAposAnd})*{Apos})
+NonQuotAnd                      [^""&]
+NonAposAnd                      [^''&]
+StringLiteral                   ({Quote}({EscapeQuot}|{Ref}|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|{Ref}|{NonAposAnd})*{Apos})
+
+  /* Invalid strings */
+InvalidRefStringLiteral         ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*{Quote})|({Apos}({EscapeApos}|"&"|{NonAposAnd})*{Apos})
+UnterminatedStringLiteral       ({Quote}({EscapeQuot}|"&"|{NonQuotAnd})*)|({Apos}({EscapeApos}|"&"|{NonAposAnd})*)
+
 
   /*_____________________________________________________________________
    |
@@ -273,40 +310,22 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    |______________________________________________________________________*/
 
 %x MODE_APOS_ATTRIBUTE_CONTENT
+%x MODE_QUOTE_ATTRIBUTE_CONTENT
+%x MODE_ELEM_COMP_CONSTR
+%x MODE_ATTR_COMP_CONSTR
+%x MODE_PI_COMP_CONSTR
 %x MODE_CDATA_SECTION
-%x MODE_CLOSE_KINDTEST
-%x MODE_DECLAREORDERING
 %x MODE_ELEMENT_CONTENT
 %x MODE_END_TAG
 %x MODE_EXPR_COMMENT
 %x MODE_EXPR_DOC_COMMENT
-%x MODE_ITEMTYPE
-%x MODE_KINDTEST
-%x MODE_KINDTESTFORPI
-%x MODE_NAMESPACEDECL
-%x MODE_NAMESPACEKEYWORD
 %x MODE_OCCURRENCE_INDICATOR
-%x MODE_OPERATOR
-%x MODE_OPTION
 %x MODE_PRAGMA
 %x MODE_PRAGMACONTENTS
-%x MODE_PROCESSING_INSTRUCTION_CTOR
 %x MODE_PROCESSING_INSTRUCTION
 %x MODE_PROCESSING_INSTRUCTION_CONTENT
-%x MODE_QUOTE_ATTRIBUTE_CONTENT
-%x MODE_SINGLETYPE
 %x MODE_START_TAG
-%x MODE_URITOOPERATOR
-%x MODE_VARNAME
-%x MODE_XMLSPACE_DECL
 %x MODE_XML_COMMENT
-%x MODE_XQUERY_VERSION
-
-/* Update Modes */
-%x MODE_DECLAREREVALIDATION
-
-/* Try-Catch Modes */
-%x MODE_CATCH
 
 
 %{
@@ -348,12 +367,18 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
   theDriver->theDocComment.str("");
   return token::DECLARE;
 }
+
 "module" {
   std::string lDocComment = theDriver->theDocComment.str();
   yylval->sval = getDriver()->symtab.put_commentcontent(lDocComment.c_str(), lDocComment.length());
   theDriver->theDocComment.str("");
   return token::MODULE;
 }
+    /* Tokens with state transitions */
+"element" {  PUSH_STATE(MODE_ELEM_COMP_CONSTR); }
+"attribute" { PUSH_STATE(MODE_ATTR_COMP_CONSTR); }
+"processing-instruction" { PUSH_STATE(MODE_PI_COMP_CONSTR); }
+
 
 "if" { return token::IF; }
 "returning" { return token::RETURNING; }
@@ -371,7 +396,6 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 "eval" { return token::EVAL; }
 "document" { return token::DOCUMENT; }
 "text" { return token::TEXT; }
-"processing-instruction" { return token::PROCESSING_INSTRUCTION; }
 "comment" { return token::COMMENT; }
 "function" { return token::FUNCTION; }
 "deterministic" { return token::DETERMINISTIC; }
@@ -385,22 +409,6 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 "schema-attribute" { return token::SCHEMA_ATTRIBUTE; }
 "node" { return token::NODE; }
 "document-node" { return token::DOCUMENT_NODE; }
-
-  /* Axes */
-"ancestor-or-self" { return token::ANCESTOR_OR_SELF; }
-"ancestor" { return token::ANCESTOR; }
-"child" { return token::CHILD; }
-"descendant-or-self" { return token::DESCENDANT_OR_SELF; }
-"descendant" { return token::DESCENDANT; }
-"following-sibling" { return token::FOLLOWING_SIBLING; }
-"following" { return token::FOLLOWING; }
-"parent" { return token::PARENT; }
-"preceding-sibling" { return token::PRECEDING_SIBLING; }
-"preceding" { return token::PRECEDING; }
-"self" { return token::SELF;}
-
-"element" {  return token::ELEMENT; }
-"attribute" { return token::ATTRIBUTE; }
 "construction" { return token::CONSTRUCTION; }
 "default" { return token::DEFAULT; }
 "order" { return token::ORDER; }
@@ -433,6 +441,20 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 "at" { return token::AT; }
 "revalidation" { return token::REVALIDATION;}
 "as" { return token::AS; }
+"try" { return token::TRY;}
+
+  /* Axes */
+"ancestor-or-self" { return token::ANCESTOR_OR_SELF; }
+"ancestor" { return token::ANCESTOR; }
+"child" { return token::CHILD; }
+"descendant-or-self" { return token::DESCENDANT_OR_SELF; }
+"descendant" { return token::DESCENDANT; }
+"following-sibling" { return token::FOLLOWING_SIBLING; }
+"following" { return token::FOLLOWING; }
+"parent" { return token::PARENT; }
+"preceding-sibling" { return token::PRECEDING_SIBLING; }
+"preceding" { return token::PRECEDING; }
+"self" { return token::SELF;}
 
   /* Decimal format */
 "decimal-format" { return token::DECIMAL_FORMAT; }
@@ -446,8 +468,6 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 "zero-digit" { return token::ZERO_DIGIT; }
 "digit" { return token::DIGIT; }
 "pattern-separator" { return token::PATTERN_SEPARATOR; }
-
-"try" { return token::TRY;}
 
   /*______________________________________________________________________
    |
@@ -612,11 +632,6 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 "encoding" { return token::ENCODING; }
 
 
-
-
-  /* TODO: fix 'if (1) then 2 else processing-instruction' */
-
-
   /*______________________________________________________________________
    |
    | Tokens with values
@@ -639,26 +654,21 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 
 {IntegerLiteral}[a-zA-Z_][0-9a-zA-Z_]* {
   /* invalid integer literal */
-  yylval->err = getDriver()->unrecognizedIntegerErr(yytext, *yylloc);
+  yylval->err = getDriver()->parserErr(std::string("syntax error, unexpected \"") + yytext + "\", separator needed after numeric literal", *yylloc);
   return token::UNRECOGNIZED;
 }
 
-{NCName}":*" {
-  TRY_SVAL_TOKEN (ELEM_WILDCARD, put_ncname(yytext, yyleng-2), yytext);
-}
+{NCName}":*"                  { TRY_SVAL_TOKEN(ELEM_WILDCARD, put_ncname(yytext, yyleng-2), yytext); }
 
-{QName} {
-  TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext);
-}
+{QName}                       { TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 
-"*:"{NCName} {
-  TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2), yytext);
-}
+"*:"{NCName}                  { TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2), yytext); }
 
-{StringLiteral} {
-  TRY_STRINGLIT (STRING_LITERAL, yytext, yyleng);
-}
+{StringLiteral}               { TRY_STRING_LITERAL(STRING_LITERAL, yytext, yyleng); }
 
+  /* Invalid string literals */
+{InvalidRefStringLiteral}     { yylval->err = getDriver()->invalidCharRef(yytext, *yylloc); return token::UNRECOGNIZED; }
+{UnterminatedStringLiteral}   { yylval->err = getDriver()->parserErr(std::string("syntax error, unterminated string literal \"") + yytext + "\"", *yylloc); return token::UNRECOGNIZED; }
 
   /*______________________________________________________________________
    |
@@ -697,10 +707,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 
   /* transition to PRAGMA */
   /* -------------------- */
-"(#" {
-  BEGIN MODE_PRAGMA;
-  return token::PRAGMA_BEGIN;
-}
+"(#" { BEGIN MODE_PRAGMA; return token::PRAGMA_BEGIN;}
 
   /* push initial state */
   /* ------------------ */
@@ -761,11 +768,46 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 
   /* } */ /* MODE_OCCURRENCE_INDICATOR> */
 
-  /*
-    <MODE_COMPUTED_CONSTRUCTOR>{QName} { BEGIN INITIAL; TRY_SVAL_TOKEN(QNAME_COMPUTED_CONSTR, put_qname(yytext, yyleng)); }
-  <MODE_COMPUTED_CONSTURCTOR>{S}      {  }
-  <MODE_COMPUTED_CONSTRUCTOR>{CatchAll} { POP_STATE(); yyless(0); }
-   */
+   /*______________________________________________________________________
+    |
+    | MODE_ELEM_COMP_CONSTR, MODE_ATTR_COMP_CONSTR and MODE_PI_COMP_CONSTR
+    | states
+    |
+    |______________________________________________________________________*/
+
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR>{QName}                     {
+  if (yy_comp_constr_qname == "")
+    yy_comp_constr_qname = yytext;
+  else
+    COMP_CONSTR_ROLLBACK(true);
+}
+<MODE_PI_COMP_CONSTR>{NCName}                                            {
+  if (yy_comp_constr_qname == "")
+    yy_comp_constr_qname = yytext;
+  else
+    COMP_CONSTR_ROLLBACK(true);
+}
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>"{"     {
+  if ( yy_comp_constr_qname == "")
+    COMP_CONSTR_ROLLBACK(true);
+  else
+  {
+    int _STATE = YY_START;
+    BEGIN INITIAL;
+    std::string temp = yy_comp_constr_qname;
+    yy_comp_constr_qname = "";
+    if (_STATE == MODE_ELEM_COMP_CONSTR)
+      TRY_SVAL_TOKEN(COMP_ELEMENT_QNAME_LBRACE, put_qname(temp.c_str(), temp.size()), temp.c_str());
+    else if (_STATE == MODE_ATTR_COMP_CONSTR)
+      TRY_SVAL_TOKEN(COMP_ATTRIBUTE_QNAME_LBRACE, put_qname(temp.c_str(), temp.size()), temp.c_str());
+    else
+      TRY_SVAL_TOKEN(COMP_PI_NCNAME_LBRACE, put_ncname(temp.c_str(), temp.size()), temp.c_str());
+  }
+}
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>"(:"       { PUSH_STATE(MODE_EXPR_COMMENT); }
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>{S}        { /* continue lexing */ }
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR><<EOF>>    { COMP_CONSTR_ROLLBACK(false); }
+<MODE_ELEM_COMP_CONSTR,MODE_ATTR_COMP_CONSTR,MODE_PI_COMP_CONSTR>{CatchAll} { COMP_CONSTR_ROLLBACK(true); }
 
 
   /*______________________________________________________________________
@@ -834,9 +876,9 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_ELEMENT_CONTENT>"<?" { PUSH_STATE(MODE_PROCESSING_INSTRUCTION); return token::PI_BEGIN; }
 <MODE_ELEMENT_CONTENT>"<![CDATA[" { PUSH_STATE(MODE_CDATA_SECTION); return token::CDATA_BEGIN; }
 <MODE_ELEMENT_CONTENT>"<" { PUSH_STATE(MODE_START_TAG); return token::LT_OR_START_TAG; }
-<MODE_ELEMENT_CONTENT>{ElementContentChar}+ { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put(yytext, yyleng, 1), yytext); }
-<MODE_ELEMENT_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN (ELEMENT_CONTENT, put_entityref(yytext, yyleng), yytext); }
-<MODE_ELEMENT_CONTENT>{CharRef}+ { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
+<MODE_ELEMENT_CONTENT>{ElementContentChar}+ { TRY_SVAL_TOKEN(ELEMENT_CONTENT, put(yytext, yyleng, 1), yytext); }
+<MODE_ELEMENT_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN(ELEMENT_CONTENT, put_entityref(yytext, yyleng), yytext); }
+<MODE_ELEMENT_CONTENT>{CharRef}+ { TRY_CHARREF_LITERAL(CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_ELEMENT_CONTENT>"{{" { return token::DOUBLE_LBRACE; }
 <MODE_ELEMENT_CONTENT>"}}" { return token::DOUBLE_RBRACE; }
 
@@ -874,9 +916,10 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    | of other characters in this state.
    |______________________________________________________________________*/
 
-<MODE_EXPR_COMMENT>":)" { POP_STATE(); }
-<MODE_EXPR_COMMENT>"(:" { PUSH_STATE(MODE_EXPR_COMMENT); }
-<MODE_EXPR_COMMENT>.|"\n" { /* do nothing */ }
+<MODE_EXPR_COMMENT>":)"    { POP_STATE(); }
+<MODE_EXPR_COMMENT>"(:"    { PUSH_STATE(MODE_EXPR_COMMENT); }
+<MODE_EXPR_COMMENT>[^:)(]+ { /* do nothing */ }
+<MODE_EXPR_COMMENT>.       { /* do nothing */ }
 <MODE_EXPR_COMMENT><<EOF>> { yylval->err = getDriver()->unterminatedCommentErr(*yylloc); return token::UNRECOGNIZED; }
 
 
@@ -889,11 +932,10 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    | of other characters in this state.
    |______________________________________________________________________*/
 
-<MODE_EXPR_DOC_COMMENT>[^:]* { getDriver()->theDocComment << yytext; }
-<MODE_EXPR_DOC_COMMENT>"\n" { getDriver()->theDocComment << yytext; }
+<MODE_EXPR_DOC_COMMENT>[^:]*    { getDriver()->theDocComment << yytext; }
 <MODE_EXPR_DOC_COMMENT>":"+[^)] { getDriver()->theDocComment << yytext; }
-<MODE_EXPR_DOC_COMMENT>":"+")" { POP_STATE(); }
-<MODE_EXPR_DOC_COMMENT><<EOF>> { yylval->err = getDriver()->unterminatedCommentErr(*yylloc); return token::UNRECOGNIZED; }
+<MODE_EXPR_DOC_COMMENT>":"+")"  { POP_STATE(); }
+<MODE_EXPR_DOC_COMMENT><<EOF>>  { yylval->err = getDriver()->unterminatedCommentErr(*yylloc); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________
@@ -952,9 +994,9 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_QUOTE_ATTRIBUTE_CONTENT>\" { BEGIN MODE_START_TAG; return token::QUOTE; }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>"{" { PUSH_STATE(INITIAL); return token::LBRACE; }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>{EscapeQuot} { return token::ESCAPE_QUOTE; }
-<MODE_QUOTE_ATTRIBUTE_CONTENT>{QuotAttrContentChar}+ { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
-<MODE_QUOTE_ATTRIBUTE_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN (QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
-<MODE_QUOTE_ATTRIBUTE_CONTENT>{CharRef}+ { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>{QuotAttrContentChar}+ { TRY_SVAL_TOKEN(QUOTE_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>{PredefinedEntityRef} { TRY_SVAL_TOKEN(QUOTE_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
+<MODE_QUOTE_ATTRIBUTE_CONTENT>{CharRef}+ { TRY_CHARREF_LITERAL(CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>"{{" { return token::DOUBLE_LBRACE; }
 <MODE_QUOTE_ATTRIBUTE_CONTENT>"}}" { return token::DOUBLE_RBRACE; }
 
@@ -971,9 +1013,9 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_APOS_ATTRIBUTE_CONTENT>\'                     { BEGIN MODE_START_TAG; return token::APOS; }
 <MODE_APOS_ATTRIBUTE_CONTENT>"{"                    { PUSH_AND_BEGIN (INITIAL, MODE_APOS_ATTRIBUTE_CONTENT); return token::LBRACE; }
 <MODE_APOS_ATTRIBUTE_CONTENT>{EscapeApos}           { return token::ESCAPE_APOS; }
-<MODE_APOS_ATTRIBUTE_CONTENT>{AposAttrContentChar}+ { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
-<MODE_APOS_ATTRIBUTE_CONTENT>{PredefinedEntityRef}  { TRY_SVAL_TOKEN (APOS_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
-<MODE_APOS_ATTRIBUTE_CONTENT>{CharRef}+             { TRY_STR_LIT (CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
+<MODE_APOS_ATTRIBUTE_CONTENT>{AposAttrContentChar}+ { TRY_SVAL_TOKEN(APOS_ATTR_CONTENT, put(yytext, yyleng, 2), yytext); }
+<MODE_APOS_ATTRIBUTE_CONTENT>{PredefinedEntityRef}  { TRY_SVAL_TOKEN(APOS_ATTR_CONTENT, put_entityref(yytext, yyleng), yytext); }
+<MODE_APOS_ATTRIBUTE_CONTENT>{CharRef}+             { TRY_CHARREF_LITERAL(CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_APOS_ATTRIBUTE_CONTENT>"{{"                   { return token::DOUBLE_LBRACE; }
 <MODE_APOS_ATTRIBUTE_CONTENT>"}}"                   { return token::DOUBLE_RBRACE; }
 
@@ -1002,35 +1044,21 @@ std::string start_state(int state)
   {
     case INITIAL: return "INITIAL";
     case MODE_APOS_ATTRIBUTE_CONTENT: return "MODE_APOS_ATTRIBUTE_CONTENT";
+    case MODE_ELEM_COMP_CONSTR: return "MODE_ELEM_COMP_CONSTR";
+    case MODE_ATTR_COMP_CONSTR: return "MODE_ATTR_COMP_CONSTR";
     case MODE_CDATA_SECTION: return "MODE_CDATA_SECTION";
-    case MODE_CLOSE_KINDTEST: return "MODE_CLOSE_KINDTEST";
-    case MODE_DECLAREORDERING: return "MODE_DECLAREORDERING";
     case MODE_ELEMENT_CONTENT: return "MODE_ELEMENT_CONTENT";
     case MODE_END_TAG: return "MODE_END_TAG";
     case MODE_EXPR_DOC_COMMENT: return "MODE_EXPR_DOC_COMMENT";
     case MODE_EXPR_COMMENT: return "MODE_EXPR_COMMENT";
-    case MODE_ITEMTYPE: return "MODE_ITEMTYPE";
-    case MODE_KINDTEST: return "MODE_KINDTEST";
-    case MODE_KINDTESTFORPI: return "MODE_KINDTESTFORPI";
-    case MODE_NAMESPACEDECL: return "MODE_NAMESPACEDECL";
-    case MODE_NAMESPACEKEYWORD: return "MODE_NAMESPACEKEYWORD";
     case MODE_OCCURRENCE_INDICATOR: return "MODE_OCCURRENCE_INDICATOR";
-    case MODE_OPERATOR: return "MODE_OPERATOR";
-    case MODE_OPTION: return "MODE_OPTION";
     case MODE_PRAGMA: return "MODE_PRAGMA";
     case MODE_PRAGMACONTENTS: return "MODE_PRAGMACONTENTS";
     case MODE_PROCESSING_INSTRUCTION: return "MODE_PROCESSING_INSTRUCTION";
     case MODE_PROCESSING_INSTRUCTION_CONTENT: return "MODE_PROCESSING_INSTRUCTION_CONTENT";
-    case MODE_PROCESSING_INSTRUCTION_CTOR: return "MODE_PROCESSING_INSTRUCTION_CTOR";
     case MODE_QUOTE_ATTRIBUTE_CONTENT: return "MODE_QUOTE_ATTRIBUTE_CONTENT";
-    case MODE_SINGLETYPE: return "MODE_SINGLETYPE";
     case MODE_START_TAG: return "MODE_START_TAG";
-    case MODE_URITOOPERATOR: return "MODE_URITOOPERATOR";
-    case MODE_VARNAME: return "MODE_VARNAME";
-    case MODE_XMLSPACE_DECL: return "MODE_XMLSPACE_DECL";
     case MODE_XML_COMMENT: return "MODE_XML_COMMENT";
-    case MODE_XQUERY_VERSION: return "MODE_XQUERY_VERSION";
-    case MODE_CATCH: return "MODE_CATCH";
     default: return "[zorba] Unrecognized start state. If a new state has been created, translation should be added to start_state() in xquery_scanner.l \n";
   }
 }
@@ -1042,10 +1070,14 @@ xquery_scanner::xquery_scanner(
   xquery_driver* aDriver,
   std::istream* i,
   std::ostream* o)
-: ZorbaFlexLexer(i, o), theDriver(aDriver), cond_stk_depth (0)
-{}
+  :
+  ZorbaFlexLexer(i, o), theDriver(aDriver), cond_stk_depth(0), yy_comp_constr_qname("")
+{
+}
 
-xquery_scanner::~xquery_scanner() {}
+xquery_scanner::~xquery_scanner()
+{
+}
 
 void xquery_scanner::set_yy_flex_debug(bool aBool)
 {

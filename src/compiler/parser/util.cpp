@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,12 +23,15 @@ using namespace std;
 namespace zorba {
 
 // TODO: reuse (better) code that is probably available elsewhere in Zorba
-int decode_entity (const char *in, string *out) 
+int decode_entity (const char *in, string *out)
 {
   QueryLoc loc;
   const char *start = in;
 
-  if (in [0] == '#') 
+  if (*in == '&')
+    ++in;
+
+  if (*in == '#')
   {
     ++in;
     int base = 10;
@@ -36,6 +39,9 @@ int decode_entity (const char *in, string *out)
 
     for (; *in == '0'; ++in)
       ;
+
+    if (*in =='+')  // strtoul allows a "+" in front of the number
+      return -1;
 
     unsigned long n = strtoul (in, (char **) &in, base);
 

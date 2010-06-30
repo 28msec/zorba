@@ -74,6 +74,12 @@ public:
 
   static bool is_Invalid_in_IRI(uint32_t cp);
 
+  // Returns true if the given string is a character or a predefined entity reference
+  static bool is_entity_or_char_ref(const char* str);
+
+  // Returns true if the given string starts with a character or a predefined entity reference
+  static bool starts_with_ref(const char* str);
+
   static uint32_t hash(const char* str);
 
 public:
@@ -239,13 +245,13 @@ public:
 
   xqpStringStore_t trim(const char* start, size_type len) const;
 
-  xqpStringStore_t trimL() const 
+  xqpStringStore_t trimL() const
   {
     static char seq = ' ';
     return trimL( &seq, 1 );
   }
 
-  xqpStringStore_t trimR() const 
+  xqpStringStore_t trimR() const
   {
     static char seq = ' ';
     return trimR( &seq, 1 );

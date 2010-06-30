@@ -121,12 +121,12 @@ xqpString::getUnicodeString(const xqpStringStore* aSrc)
 /*******************************************************************************
 
 ********************************************************************************/
-static uint32_t parse_regex_flags(const char* flag_cstr) 
+static uint32_t parse_regex_flags(const char* flag_cstr)
 {
   uint32_t flags = 0;
-  for (const char* p = flag_cstr; *p != '\0'; ++p) 
+  for (const char* p = flag_cstr; *p != '\0'; ++p)
   {
-    switch (*p) 
+    switch (*p)
     {
     case 'i': flags |= UREGEX_CASE_INSENSITIVE; break;
     case 's': flags |= UREGEX_DOTALL; break;
@@ -280,6 +280,68 @@ bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp)
   return ret;
 }
 
+/*******************************************************************************
+********************************************************************************/
+
+static bool is_digit(const char ch)
+{
+  return (ch >= '0' && ch <= '9');
+}
+
+static bool is_hex_digit(const char ch)
+{
+  return ((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F'));
+}
+
+bool xqpStringStore::is_entity_or_char_ref(const char* str)
+{
+  if (str == NULL)
+    return false;
+
+  int len = strlen(str);
+
+  if (len < 4 || str[0] != '&' || str[len-1] != ';')
+    return false;
+
+  if (0 == strcmp(str, "&lt;") || 0 == strcmp(str, "&gt;") || 0 == strcmp(str, "&amp;") || 0 == strcmp(str, "&quot;") || 0 == strcmp(str, "&apos;"))
+    return true;
+
+  if (str[1] != '#')
+    return false;
+
+  int start = 2;
+  bool hex = false;
+  if (str[2] == 'x')
+  {
+    start = 3;
+    hex = true;
+  }
+
+  for (int i = start; i<len-1; i++)
+    if ((!hex && !is_digit(str[i])) || (hex && (!is_hex_digit(str[i]))))
+      return false;
+
+  return true;
+}
+
+
+bool xqpStringStore::starts_with_ref(const char* str)
+{
+  if (str == NULL)
+    return false;
+
+  int pos = 0;
+  while (str[pos] != 0 && str[pos] != ';')
+    pos++;
+
+  if (str[pos] == 0)
+    return false;
+
+  std::string temp = str;
+  temp = temp.substr(0, pos+1);
+
+  return xqpStringStore::is_entity_or_char_ref(temp.c_str());
+}
 
 /*******************************************************************************
 
@@ -303,7 +365,7 @@ xqpStringStore::xqpStringStore(serialization::Archiver& ar)
 }
 
 
-xqpStringStore::~xqpStringStore() 
+xqpStringStore::~xqpStringStore()
 {
 }
 
@@ -445,7 +507,7 @@ bool xqpStringStore::byteEndsWith(const char* suffix, size_type suffixLen) const
 
 /*******************************************************************************
   Locate the first occurrence of the "substr" substring after the given byte
-  position of "this". Return the byte position into "this" of the start of 
+  position of "this". Return the byte position into "this" of the start of
   "substr", or -1 if not found.
 ********************************************************************************/
 long xqpStringStore::bytePositionOf(
@@ -631,15 +693,15 @@ bool xqpStringStore::matches(
 
   UnicodeString uspattern = xqpString::getUnicodeString(pattern, patternLength);
   UnicodeString us = xqpString::getUnicodeString(this);
-  
+
   RegexMatcher matcher(uspattern, parse_regex_flags(regexFlags), status);
 
-  if (U_FAILURE(status)) 
+  if (U_FAILURE(status))
   {
     throw zorbatypesException(pattern, ZorbatypesError::FORX0002);
     return false;
   }
-  
+
   matcher.reset(us);
 
   return matcher.find() != 0;
@@ -762,22 +824,22 @@ xqpStringStore_t xqpStringStore::trimL(const char* start, size_type len) const
     trimCP[i] = UTF8Decode(start);
 
   uint32_t StrLen;
-  for (StrLen = numChars(); StrLen > 0; --StrLen) 
+  for (StrLen = numChars(); StrLen > 0; --StrLen)
   {
     const char* oldc = c;
     uint32_t cp = UTF8Decode(c);
     bool found = true;
 
-    for(uint16_t i = 0; i < len; i++) 
+    for(uint16_t i = 0; i < len; i++)
     {
-      if(trimCP[i] == cp) 
+      if(trimCP[i] == cp)
       {
         found = false;
         break;
       }
     }
 
-    if (found) 
+    if (found)
     {
       c = oldc;
       break;
@@ -813,7 +875,7 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, size_type len) const
 
   uint32_t StrLen = numChars();
 
-  for (; StrLen > 0; --StrLen) 
+  for (; StrLen > 0; --StrLen)
   {
     const char *old_end = end;
     uint32_t cp = UTF8DecodePrev(end);
@@ -822,7 +884,7 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, size_type len) const
     for(i = 0; i < len && trimCP[i] != cp; i++)
       ;
 
-    if (i == len) 
+    if (i == len)
     {
       end = old_end;
       break;
@@ -832,7 +894,7 @@ xqpStringStore_t xqpStringStore::trimR(const char* start, size_type len) const
   if (trimCP != shortTrimCP)
     delete[] trimCP;
 
-  if (end0 == end) 
+  if (end0 == end)
     return const_cast<xqpStringStore *>(this);
   else
     return new xqpStringStore(str, end - str);
@@ -882,7 +944,7 @@ void xqpStringStore::replace(
 
   RegexMatcher matcher(uspattern, us, parse_regex_flags(regexFlags), status);
 
-  if (U_FAILURE(status)) 
+  if (U_FAILURE(status))
   {
     throw zorbatypesException(pattern->c_str(), ZorbatypesError::FORX0002);
   }
@@ -899,7 +961,7 @@ void xqpStringStore::replace(
   UnicodeString utf16result =
   matcher.replaceAll(xqpString::getUnicodeString(replacement), status);
 
-  if (U_FAILURE(status)) 
+  if (U_FAILURE(status))
   {
     result = new xqpStringStore("");
     // TODO: error
@@ -1142,7 +1204,7 @@ xqpStringStore_t xqpStringStore::iriToUri() const
 /*******************************************************************************
   The follwoing chars are safe for URIs:
 
-  x2D        (-), 
+  x2D        (-),
   x2E        (.),
   x30 to x39 (the digits from 0 to 9),
   x41 to x5A (the letters A to Z),
@@ -1256,15 +1318,15 @@ void xqpStringStore::decodeFromUri(xqpStringStore_t& result) const
 
   size_type srcLen = theString.length();
 
-  for (size_type i = 0; i < srcLen; ++i) 
+  for (size_type i = 0; i < srcLen; ++i)
   {
     const char* c = c_str() + i;
 
-    if  ((*c == '%') & (i < srcLen - 2)) 
+    if  ((*c == '%') & (i < srcLen - 2))
     {
       char dec1, dec2;
       if ( (dec1 = HEX2DEC[(const unsigned char) *(c + 1)]) != -1 &&
-           (dec2 = HEX2DEC[(const unsigned char) *(c + 2)]) != -1 ) 
+           (dec2 = HEX2DEC[(const unsigned char) *(c + 2)]) != -1 )
       {
         os <<  (char)((dec1 << 4) + dec2);
         i += 2;
@@ -1404,12 +1466,12 @@ xqpString::xqpString(const wchar_t * src)
   UnicodeString tmp;
   UErrorCode ErrorCode = U_ZERO_ERROR;
   UChar* dest = tmp.getBuffer(wcslen(src)+1);
-  
+
   int32_t DestLength;
 
   //convert from std::wstring to UTF16 encoded string
   u_strFromWCS(dest, wcslen(src) + 1, &DestLength, src, -1, &ErrorCode);
-  
+
   if(U_FAILURE(ErrorCode))
   {
     assert(false);
@@ -1425,7 +1487,7 @@ xqpString::xqpString(const wchar_t * src)
   if(U_FAILURE(ErrorCode))
   {
     assert(false);
-    
+
     theStrStore = new xqpStringStore("");
     delete[] target;
   }
@@ -1495,7 +1557,7 @@ xqpString& xqpString::operator+=(uint32_t cp)
   char seq[5] = {0,0,0,0,0};
   UTF8Encode(cp, seq);
   theStrStore = new xqpStringStore(theStrStore->theString + seq);
-  
+
   return *this;
 }
 
@@ -1683,13 +1745,13 @@ xqpString::matches(const xqpString& pattern, xqpString flags) const
   UErrorCode    status = U_ZERO_ERROR;
   UnicodeString uspattern = getUnicodeString (pattern.getStore()),
     us = getUnicodeString (this->getStore());
-  
+
   RegexMatcher matcher (uspattern, parse_regex_flags (flags.c_str ()), status);
   if (U_FAILURE(status)) {
     throw zorbatypesException(pattern.c_str(), ZorbatypesError::FORX0002);
     return false;
   }
-  
+
   matcher.reset (us);
   return matcher.find () != 0;
 }
