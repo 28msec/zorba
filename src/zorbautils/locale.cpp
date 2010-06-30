@@ -470,27 +470,27 @@ iso3166_1::type get_host_country() {
   // ICU's Locale::getDefault().getLanguage() should be used here, but it
   // sometimes returns "root" which isn't useful.
   //
-  static char *country;
+  static char *country_name;
   static iso3166_1::type country_code;
 
-  if ( !country ) {
+  if ( !country_name ) {
 #   ifdef WIN32
-    country = get_win32_locale_info( LOCALE_SISO3166CTRYNAME );
+    country_name = get_win32_locale_info( LOCALE_SISO3166CTRYNAME );
 #   else
-    country = get_unix_locale();
-    if ( country ) {
+    country_name = get_unix_locale();
+    if ( country_name ) {
       //
-      // Extract just the country from the locale, e.g., convert "en_US.UTF-8"
-      // to "US".
+      // Extract just the country's name from the locale, e.g., convert
+      // "en_US.UTF-8" to "US".
       //
-      if ( char *const sep = ::strpbrk( country, "_-" ) )
-        country = sep + 1;
-      if ( char *const sep = ::strchr( country, '.' ) )
+      if ( char *const sep = ::strpbrk( country_name, "_-" ) )
+        country_name = sep + 1;
+      if ( char *const sep = ::strchr( country_name, '.' ) )
         *sep = '\0';
     }
 #   endif /* WIN32 */
-    if ( country ) {
-      if ( iso3166_1::type const found_code = iso3166_1::find( country ) )
+    if ( country_name ) {
+      if ( iso3166_1::type const found_code = iso3166_1::find( country_name ) )
         country_code = found_code;
     }
   }
