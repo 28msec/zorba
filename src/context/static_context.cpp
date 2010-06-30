@@ -396,6 +396,8 @@ static_context::~static_context()
   if (theOptionMap)
     delete theOptionMap;
 
+  delete theFTMatchOptions;
+
   if (theDecimalFormats)
     delete theDecimalFormats;
 
