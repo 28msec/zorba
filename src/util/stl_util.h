@@ -96,6 +96,14 @@ public:
     return p_[i];
   }
 
+  operator bool() const {
+    return !!p_;
+  }
+
+  bool operator!() const {
+    return !p_;
+  }
+
 private:
   element_type *p_;
 };
