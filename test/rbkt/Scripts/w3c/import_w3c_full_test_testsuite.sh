@@ -68,7 +68,7 @@ cd "$unzip_dir"
 unzip $ZIP &>/dev/null
 
 echo Cleaning up previous data...
-rm -rf "$SRC/test/rbkt/Queries/w3c_full_text_testsuite" "$SRC/test/rbkt/ExpQueryResults/w3c_full_text_testsuite"
+rm -rf "$SRC/test/rbkt/Queries/w3c_full_text_testsuite" "$SRC/test/rbkt/ExpQueryResults/w3c_full_text_testsuite" "$SRC/test/rbkt/Scripts/w3c/w3c_full_text_reportingresults"
 
 mkdir -p "$SRC/test/rbkt/Queries/w3c_full_text_testsuite/TestSources"
 
