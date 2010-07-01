@@ -19,7 +19,8 @@
 namespace zorba {
 
 Tokenizer::Tokenizer() {
-  token_no_ = sent_no_ = para_no_ = 0;
+  token_no_ = para_no_ = 0;
+  sent_no_ = 1;
 }
 
 Tokenizer::~Tokenizer() {

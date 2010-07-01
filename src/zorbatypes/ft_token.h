@@ -49,8 +49,8 @@ public:
    *                  null-terminated.
    * @param len       The number of chars in the token string.
    * @param token_no  The token number.  Token numbers start at 0.
-   * @param sent_no   The sentence number.  Sentence numbers start at 0.
-   * @param para_no   The paragraph number.  Paragraph numbers start at 0.
+   * @param sent_no   The sentence number.  Sentence numbers start at 1.
+   * @param para_no   The paragraph number.  Paragraph numbers start at 1.
    * @param lang      The language of the token string.
    */
   FTToken( char const *utf8_s, int len,
@@ -99,7 +99,7 @@ public:
 
   /**
    * Gets the paragraph number within the source XML document.  Paragraph
-   * numbers start at zero.  For query tokens, this is always zero.
+   * numbers start at 1.  For query tokens, this is always 0.
    *
    * @return Returns said paragraph number.
    */
@@ -119,7 +119,7 @@ public:
 
   /**
    * Gets the sentence number within the source XML document.  Sentence numbers
-   * start at zero.  For query tokens, this is always zero.
+   * start at 1.  For query tokens, this is always 0.
    *
    * @return Returns said sentence number.
    */
