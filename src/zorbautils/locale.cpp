@@ -20,13 +20,13 @@
 #else
 # include <clocale>
 # include <cstdlib>                     /* for getenv(3) */
-# include "util/stl_util.h"
 #endif /* WIN32 */
 
 #include <algorithm>
 #include <cstring>
 
 #include "util/less.h"
+#include "util/stl_util.h"
 #include "zorbautils/locale.h"
 
 #define DEF_END(CHAR_ARRAY)                             \
@@ -470,27 +470,35 @@ iso3166_1::type get_host_country() {
   // ICU's Locale::getDefault().getLanguage() should be used here, but it
   // sometimes returns "root" which isn't useful.
   //
-  static char *country_name;
+  static auto_vec<char> country_name;
   static iso3166_1::type country_code;
 
   if ( !country_name ) {
 #   ifdef WIN32
-    country_name = get_win32_locale_info( LOCALE_SISO3166CTRYNAME );
+    char *loc_info = get_win32_locale_info( LOCALE_SISO3166CTRYNAME );
 #   else
-    country_name = get_unix_locale();
-    if ( country_name ) {
+    char *loc_info = get_unix_locale();
+    if ( loc_info ) {
       //
       // Extract just the country's name from the locale, e.g., convert
       // "en_US.UTF-8" to "US".
       //
-      if ( char *const sep = ::strpbrk( country_name, "_-" ) )
-        country_name = sep + 1;
-      if ( char *const sep = ::strchr( country_name, '.' ) )
+      if ( char *const sep = ::strchr( loc_info, '.' ) )
         *sep = '\0';
+      if ( char *const sep = ::strpbrk( loc_info, "_-" ) ) {
+        //
+        // We have to allocate a new string for just the country since auto_vec
+        // can't point to a character that isn't the first otherwise its call
+        // to delete[] will be undefined.
+        //
+        auto_vec<char> const old_loc_info( loc_info );
+        loc_info = new_strdup( sep + 1 );
+      }
     }
 #   endif /* WIN32 */
-    if ( country_name ) {
-      if ( iso3166_1::type const found_code = iso3166_1::find( country_name ) )
+    if ( loc_info ) {
+      country_name.reset( loc_info );
+      if ( iso3166_1::type const found_code = iso3166_1::find( loc_info ) )
         country_code = found_code;
     }
   }
@@ -502,25 +510,26 @@ iso639_1::type get_host_lang() {
   // ICU's Locale::getDefault().getLanguage() should be used here, but it
   // sometimes returns "root" which isn't useful.
   //
-  static char *lang_name;
+  static auto_vec<char> lang_name;
   static iso639_1::type lang_code = iso639_1::en;
 
   if ( !lang_name ) {
 #   ifdef WIN32
-    lang_name = get_win32_locale_info( LOCALE_SISO639LANGNAME );
+    char *const loc_info = get_win32_locale_info( LOCALE_SISO639LANGNAME );
 #   else
-    lang_name = get_unix_locale();
-    if ( lang_name ) {
+    char *const loc_info = get_unix_locale();
+    if ( loc_info ) {
       //
       // Extract just the language from the locale, e.g., convert "en_US.UTF-8"
       // to "en".
       //
-      if ( char *const sep = ::strpbrk( lang_name, "-_" ) )
+      if ( char *const sep = ::strpbrk( loc_info, "-_" ) )
         *sep = '\0';
     }
 #   endif /* WIN32 */
-    if ( lang_name ) {
-      if ( iso639_1::type const found_code = find_lang( lang_name ) )
+    if ( loc_info ) {
+      lang_name.reset( loc_info );
+      if ( iso639_1::type const found_code = find_lang( loc_info ) )
         lang_code = found_code;
     }
   }
