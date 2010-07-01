@@ -820,6 +820,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %type <incl_excl_list> FTStopWordsInclExcl_list opt_FTStopWordsInclExcl_list
 %type <node> FTThesaurusID FTThesaurusID_or_default
 %type <sval> opt_relationship
+%type <node> opt_levels
 %type <thesaurus_id_list> FTThesaurus_list opt_FTThesaurus_list
 %type <node> FTThesaurusOption
 %type <node> FTTimes opt_FTTimes
@@ -5834,13 +5835,11 @@ FTThesaurus_list
 
 // [172]
 FTThesaurusID
-    :   AT STRING_LITERAL opt_relationship
+    :   AT STRING_LITERAL opt_relationship opt_levels
         {
-            $$ = new FTThesaurusID(LOC(@$), SYMTAB($2), SYMTAB($3), NULL);
-        }
-    |   AT STRING_LITERAL opt_relationship FTRange LEVELS
-        {
-            $$ = new FTThesaurusID(LOC(@$), SYMTAB($2), SYMTAB($3), dynamic_cast<FTRange*>($4));
+            $$ = new FTThesaurusID(
+                LOC(@$), SYMTAB($2), SYMTAB($3), dynamic_cast<FTRange*>($4)
+            );
         }
     ;
 
@@ -5852,6 +5851,17 @@ opt_relationship
     |   RELATIONSHIP STRING_LITERAL
         {
             $$ = $2;
+        }
+    ;
+
+opt_levels
+    :   /* empty */
+        {
+            $$ = NULL;
+        }
+    |   FTRange LEVELS
+        {
+            $$ = $1;
         }
     ;
 
