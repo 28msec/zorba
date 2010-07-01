@@ -103,7 +103,7 @@ int canonicalizeAndCompare(
       // Convert \r\n to \n
       while (bufp != bufend && *bufp != '\0')
       {
-        if (*bufp == '\r' && *(bufp+1) == '\n')
+        if (*bufp == '\r' && bufp+1 != bufend && *(bufp+1) == '\n')
           ++bufp;
 
         *bufp2 = *bufp;
