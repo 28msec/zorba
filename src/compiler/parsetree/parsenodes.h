@@ -6218,7 +6218,7 @@ public:
     QueryLoc const&,
     std::string const &uri,
     std::string const &relationship,
-    FTRange const*
+    FTRange const* = NULL
   );
   ~FTThesaurusID();
 

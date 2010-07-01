@@ -820,7 +820,7 @@ ftthesaurus_id::ftthesaurus_id(
 ) :
   ftnode( loc ),
   uri_( uri ),
-  relationship_( relationship_ ),
+  relationship_( relationship ),
   levels_( levels )
 {
 }
