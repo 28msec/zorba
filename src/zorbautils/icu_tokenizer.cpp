@@ -194,6 +194,16 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
     utf8_to_utf16( utf8_s, utf8_len, &utf16_len )
   );
 
+  //
+  // ICU bizarrely treats newline and carriage-return as sentence terminators
+  // so convert all non-space whitespace characters to space characters.
+  //
+  UChar *c = utf16_buf.get();
+  for ( int i = 0; i < utf16_len; ++i, ++c ) {
+    if ( u_isspace( *c ) )
+      *c = L' ';
+  }
+
   // This UnicodeString wraps the existing buffer: no copy is made.
   UnicodeString const utf16_s( false, utf16_buf.get(), utf16_len );
 
