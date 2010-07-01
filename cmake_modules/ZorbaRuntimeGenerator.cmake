@@ -46,182 +46,149 @@ ELSE (EXISTS ${ZORBA_EXE_PATH})
   MESSAGE(STATUS "[WARNING] Zorba Command Line Utility was not found at \"${ZORBA_EXE_PATH}\".")
 ENDIF (EXISTS ${ZORBA_EXE_PATH})
 
-MACRO(CHECK_OUTPUT_EXISTS OUTPUT BINARY_DIR_OUTPUT)
+MACRO(CHECK_OUTPUT_EXISTS OUTPUT)
   IF (EXISTS "${OUTPUT}")
     MESSAGE(STATUS "Using the repository file for ${OUTPUT}. ")
-    # if (for whatever reason) the corresponding file in the build directory
-    # already exists, we delete it here. This way, we can make sure that the
-    # correct files are used. Otherwise the order of include paths would influence
-    # the decision made here (e.g. the one modified in src/compiler/parser/CMakeLists.txt)
-    IF (EXISTS "${BINARY_DIR_OUTPUT}")
-      FILE(REMOVE "${BINARY_DIR_OUTPUT}")
-    ENDIF (EXISTS "${BINARY_DIR_OUTPUT}")
   ELSE (EXISTS "${OUTPUT}")
     MESSAGE(FATAL_ERROR "Neither the Zorba Command Line Utility nor the files ${OUTPUT} are available. "
-                        "Can't proceed building Zorba.")
+                        "Can't proceed building Zorba."
+                        "(Try running \"svn update\" to restore them?)")
   ENDIF (EXISTS "${OUTPUT}")
 ENDMACRO(CHECK_OUTPUT_EXISTS)
 
 # macro used for generating the runtime's header and cpp files out of the xml specifications
-MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2 ZORBA_WORKS) 
-  SET(CPP_OUTPUT_BINARY_DIR "${CMAKE_BINARY_DIR}/${OUTPUT}.cpp")
-  SET(H_OUTPUT_BINARY_DIR   "${CMAKE_BINARY_DIR}/${OUTPUT}.h")
-  SET(CPP_OUTPUT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/${OUTPUT}.cpp")
-  SET(H_OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
+MACRO(RUNTIME_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE OUTPUT PARAM1 PARAM2)
+  SET(CPP_OUTPUT "${CMAKE_SOURCE_DIR}/${OUTPUT}.cpp")
+  SET(H_OUTPUT   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
 
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-     MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
-     ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
+     MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT}")
+     ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT}"
                         COMMAND ${ZORBA_EXE_SCRIPT} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
                            "-e" "\"${PARAM1}\"" "-e" "\"${PARAM2}\""
-                           "-o" "\"${CPP_OUTPUT_BINARY_DIR}\""
+                           "-o" "\"${CPP_OUTPUT}\""
                            "--serialize-text"
-                        COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
-                        "${CPP_OUTPUT_BINARY_DIR}"
-                        "${CPP_OUTPUT_SOURCE_DIR}"
                          DEPENDS ${CPP_QUERY} ${SPEC_FILE}
-                                 "${H_OUTPUT_BINARY_DIR}"
-                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq") # cpp always depends on .h
+                           "${H_OUTPUT}"
+                           "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq") # cpp always depends on .h
 
-     MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
-     ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
+     MESSAGE(STATUS "Added for generation: ${H_OUTPUT}")
+     ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT}"
                         COMMAND ${ZORBA_EXE_SCRIPT} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
                            "-e" "\"${PARAM1}\"" "-e" "\"${PARAM2}\""
-                           "-o" "\"${H_OUTPUT_BINARY_DIR}\""
+                           "-o" "\"${H_OUTPUT}\""
                            "--serialize-text"
-                        COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
-                        "${H_OUTPUT_BINARY_DIR}"
-                        "${H_OUTPUT_SOURCE_DIR}"
                          DEPENDS ${HEADER_QUERY} ${SPEC_FILE}
-                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
+                           "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
   ELSE (ZORBA_WORKS)
-    CHECK_OUTPUT_EXISTS("${CPP_OUTPUT_SOURCE_DIR}" "${CPP_OUTPUT_BINARY_DIR}")
-    CHECK_OUTPUT_EXISTS("${H_OUTPUT_SOURCE_DIR}" "${H_OUTPUT_BINARY_DIR}")
+    CHECK_OUTPUT_EXISTS("${CPP_OUTPUT}")
+    CHECK_OUTPUT_EXISTS("${H_OUTPUT}")
   ENDIF (ZORBA_WORKS)
 ENDMACRO(RUNTIME_GENERATOR)
 
-MACRO(PRINTER_VISITOR_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILES OUTPUT PARAM1 ZORBA_WORKS) 
-  SET(CPP_OUTPUT_BINARY_DIR "${CMAKE_BINARY_DIR}/${OUTPUT}.cpp")
-  SET(H_OUTPUT_BINARY_DIR   "${CMAKE_BINARY_DIR}/${OUTPUT}.h")
-  SET(CPP_OUTPUT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/${OUTPUT}.cpp")
-  SET(H_OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
+MACRO(PRINTER_VISITOR_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILES OUTPUT PARAM1) 
+  SET(CPP_OUTPUT "${CMAKE_SOURCE_DIR}/${OUTPUT}.cpp")
+  SET(H_OUTPUT   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
+
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-     MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
-     ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
+     MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT}")
+     ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT}"
                         COMMAND ${ZORBA_EXE_SCRIPT} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
-                           "-o" "\"${CPP_OUTPUT_BINARY_DIR}\""
+                           "-o" "\"${CPP_OUTPUT}\""
                            "-e" "\"${PARAM1}\""
                            "--serialize-text"
-                        COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
-                        "${CPP_OUTPUT_BINARY_DIR}"
-                        "${CPP_OUTPUT_SOURCE_DIR}"
                          DEPENDS ${CPP_QUERY} ${SPEC_FILES}
-                                 "${H_OUTPUT_BINARY_DIR}" # cpp always depends on .h
-                                 "${CMAKE_BINARY_DIR}/src/runtime/visitors/planiter_visitor.h"
-                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
+                           "${H_OUTPUT}" # cpp always depends on .h
+                           "${CMAKE_SOURCE_DIR}/src/runtime/visitors/planiter_visitor.h"
+                           "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
 
-     MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
-     ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
+     MESSAGE(STATUS "Added for generation: ${H_OUTPUT}")
+     ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT}"
                         COMMAND ${ZORBA_EXE_SCRIPT} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
-                           "-o" "\"${H_OUTPUT_BINARY_DIR}\""
+                           "-o" "\"${H_OUTPUT}\""
                            "-e" "\"${PARAM1}\""
                            "--serialize-text"
-                        COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
-                        "${H_OUTPUT_BINARY_DIR}"
-                        "${H_OUTPUT_SOURCE_DIR}"
                          DEPENDS ${HEADER_QUERY} ${SPEC_FILES}
-                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq"
+                           "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq"
                          )
   ELSE (ZORBA_WORKS)
-    CHECK_OUTPUT_EXISTS("${CPP_OUTPUT_SOURCE_DIR}" "${CPP_OUTPUT_BINARY_DIR}")
-    CHECK_OUTPUT_EXISTS("${H_OUTPUT_SOURCE_DIR}" "${H_OUTPUT_BINARY_DIR}")
+    CHECK_OUTPUT_EXISTS("${CPP_OUTPUT}")
+    CHECK_OUTPUT_EXISTS("${H_OUTPUT}")
   ENDIF (ZORBA_WORKS)
 ENDMACRO(PRINTER_VISITOR_GENERATOR)
 
-MACRO(PLANINTER_VISITOR_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1 ZORBA_WORKS) 
-  SET(H_OUTPUT_BINARY_DIR   "${CMAKE_BINARY_DIR}/${OUTPUT}.h")
-  SET(H_OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
+MACRO(PLANINTER_VISITOR_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1) 
+  SET(H_OUTPUT   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
+
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-     MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
-     ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
+     MESSAGE(STATUS "Added for generation: ${H_OUTPUT}")
+     ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT}"
                         COMMAND ${ZORBA_EXE_SCRIPT} 
                            "-q" "\"${HEADER_QUERY}\"" "-f" 
-                           "-o" "\"${H_OUTPUT_BINARY_DIR}\""
+                           "-o" "\"${H_OUTPUT}\""
                            "-e" "\"${PARAM1}\""
                            "--serialize-text"
-                        COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
-                        "${H_OUTPUT_BINARY_DIR}"
-                        "${H_OUTPUT_SOURCE_DIR}"
                          DEPENDS ${HEADER_QUERY} ${SPEC_FILES}
-                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
+                           "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
   ELSE (ZORBA_WORKS)
-    CHECK_OUTPUT_EXISTS("${H_OUTPUT_SOURCE_DIR}" "${H_OUTPUT_BINARY_DIR}")
+    CHECK_OUTPUT_EXISTS("${H_OUTPUT}")
   ENDIF (ZORBA_WORKS)
 ENDMACRO(PLANINTER_VISITOR_GENERATOR)
 
-MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2 ZORBA_WORKS) 
-  SET(CPP_OUTPUT_BINARY_DIR "${CMAKE_BINARY_DIR}/${OUTPUT}.cpp")
-  SET(H_OUTPUT_BINARY_DIR   "${CMAKE_BINARY_DIR}/${OUTPUT}.h")
-  SET(CPP_OUTPUT_SOURCE_DIR "${CMAKE_SOURCE_DIR}/${OUTPUT}.cpp")
-  SET(H_OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
+MACRO(CODEGEN_GENERATOR CPP_QUERY HEADER_QUERY SPEC_FILE  OUTPUT PARAM1 PARAM2) 
+  SET(CPP_OUTPUT "${CMAKE_SOURCE_DIR}/${OUTPUT}.cpp")
+  SET(H_OUTPUT   "${CMAKE_SOURCE_DIR}/${OUTPUT}.h")
+
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-     MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT_BINARY_DIR}")
-     ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT_BINARY_DIR}"
+     MESSAGE(STATUS "Added for generation: ${CPP_OUTPUT}")
+     ADD_CUSTOM_COMMAND(OUTPUT "${CPP_OUTPUT}"
                         COMMAND ${ZORBA_EXE_SCRIPT} 
                            "-q" "\"${CPP_QUERY}\"" "-f" 
-                           "-o" "\"${CPP_OUTPUT_BINARY_DIR}\""
+                           "-o" "\"${CPP_OUTPUT}\""
                            "-e" "\"${PARAM1}\""
                            "-e" "\"${PARAM2}\""
                            "--serialize-text"
-                        COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
-                        "${CPP_OUTPUT_BINARY_DIR}"
-                        "${CPP_OUTPUT_SOURCE_DIR}"
                          DEPENDS ${CPP_QUERY} ${SPEC_FILE} 
-                                 ${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml
-                                 "${H_OUTPUT_BINARY_DIR}" # cpp always depends on .h
-                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq"
+                           "${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml"
+                           "${H_OUTPUT}" # cpp always depends on .h
+                           "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq"
                        )
 
-     MESSAGE(STATUS "Added for generation: ${H_OUTPUT_BINARY_DIR}")
-     ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT_BINARY_DIR}"
+     MESSAGE(STATUS "Added for generation: ${H_OUTPUT}")
+     ADD_CUSTOM_COMMAND(OUTPUT "${H_OUTPUT}"
                         COMMAND ${ZORBA_EXE_SCRIPT} 
-                           "-q" "\"${HEADER_QUERY}\"" "-f" 
-                           "-o" "\"${H_OUTPUT_BINARY_DIR}\""
-                           "-e" "\"${PARAM1}\""
-                           "--serialize-text"
-                        COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
-                        "${H_OUTPUT_BINARY_DIR}"
-                        "${H_OUTPUT_SOURCE_DIR}"
+                          "-q" "\"${HEADER_QUERY}\"" "-f" 
+                          "-o" "\"${H_OUTPUT}\""
+                          "-e" "\"${PARAM1}\""
+                          "--serialize-text"
                          DEPENDS ${HEADER_QUERY} ${SPEC_FILE}
-                                 ${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml
-                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
+                           "${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml"
+                           "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
   ELSE (ZORBA_WORKS)
-    CHECK_OUTPUT_EXISTS("${CPP_OUTPUT_SOURCE_DIR}" "${CPP_OUTPUT_BINARY_DIR}")
-    CHECK_OUTPUT_EXISTS("${H_OUTPUT_SOURCE_DIR}" "${H_OUTPUT_BINARY_DIR}")
+    CHECK_OUTPUT_EXISTS("${CPP_OUTPUT}")
+    CHECK_OUTPUT_EXISTS("${H_OUTPUT}")
   ENDIF (ZORBA_WORKS)
 ENDMACRO(CODEGEN_GENERATOR)
 
-MACRO(FUNCTION_ENUM_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1 ZORBA_WORKS) 
-  SET(OUTPUT_BINARY_DIR   "${CMAKE_BINARY_DIR}/${OUTPUT}")
-  SET(OUTPUT_SOURCE_DIR   "${CMAKE_SOURCE_DIR}/${OUTPUT}")
+MACRO(FUNCTION_ENUM_GENERATOR HEADER_QUERY SPEC_FILES OUTPUT PARAM1) 
+  MESSAGE(STATUS "HELLO!: ${CMAKE_CURRENT_SOURCE_DIR}")
+  SET(SRC_OUTPUT   "${CMAKE_SOURCE_DIR}/${OUTPUT}")
+
   IF (ZORBA_WORKS) # only try to generate if zorbacmd is working 
-     MESSAGE(STATUS "Added for generation: ${OUTPUT_BINARY_DIR}")
-     ADD_CUSTOM_COMMAND(OUTPUT "${OUTPUT_BINARY_DIR}"
+     MESSAGE(STATUS "Added for generation: ${SRC_OUTPUT}")
+     ADD_CUSTOM_COMMAND(OUTPUT "${SRC_OUTPUT}"
                         COMMAND ${ZORBA_EXE_SCRIPT} 
-                           "-q" "\"${HEADER_QUERY}\"" "-f" 
-                           "-o" "\"${OUTPUT_BINARY_DIR}\""
-                           "-e" "\"${PARAM1}\""
-                           "--serialize-text"
-                        COMMAND "${CMAKE_COMMAND}" "-E" "copy_if_different"
-                        "${OUTPUT_BINARY_DIR}"
-                        "${OUTPUT_SOURCE_DIR}"
-                         DEPENDS ${HEADER_QUERY} ${SPEC_FILES}
-                                 "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
+                          "-q" "\"${HEADER_QUERY}\"" "-f" 
+                          "-o" "\"${SRC_OUTPUT}\""
+                          "-e" "\"${PARAM1}\""
+                          "--serialize-text"
+                        DEPENDS ${HEADER_QUERY} ${SPEC_FILES}
+                          "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
   ELSE (ZORBA_WORKS)
-    CHECK_OUTPUT_EXISTS("${OUTPUT_SOURCE_DIR}" "${OUTPUT_BINARY_DIR}")
+    CHECK_OUTPUT_EXISTS("${SRC_OUTPUT}")
   ENDIF (ZORBA_WORKS)
 ENDMACRO(FUNCTION_ENUM_GENERATOR)

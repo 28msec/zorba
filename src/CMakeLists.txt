@@ -34,17 +34,6 @@ LIST(REMOVE_ITEM SPEC_FILES "mappings.xml")
 LIST(SORT SPEC_FILES)
 SET(ABSOLUTE_SPEC_FILES)
 
-# create the corresponding directories in the src/runtime/ build directory
-IF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/runtime/visitors")
-  FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/runtime/visitors")
-  MESSAGE(STATUS "created directory ${CMAKE_BINARY_DIR}/src/runtime/visitors")
-ENDIF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/runtime/visitors")
-
-IF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/functions")
-  FILE(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/src/functions")
-  MESSAGE(STATUS "created directory ${CMAKE_BINARY_DIR}/src/functions")
-ENDIF (NOT EXISTS "${CMAKE_BINARY_DIR}/src/functions")
-
 FOREACH (SPEC_FILE ${SPEC_FILES})
   LIST(APPEND ABSOLUTE_SPEC_FILES "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}")
   GET_FILENAME_COMPONENT(DIR ${SPEC_FILE} PATH)
@@ -54,6 +43,26 @@ FOREACH (SPEC_FILE ${SPEC_FILES})
     MESSAGE(STATUS "created directory ${FULL_DIR}")
   ENDIF (NOT EXISTS "${FULL_DIR}")
 ENDFOREACH(SPEC_FILE)
+
+# We generate files in the source directory. This is a little bit
+# naughty, but it has a few pleasant benefits:
+# 1. Since Zorba itself is used to generate these files, there's a
+# chicken/egg problem unless we include these generated files in svn.
+# 2. When the files are re-generated, svn will automatically notice
+# they are changed, making it harder to forget to check them in.
+# This scheme just generally seems to be the least of the available evils.
+
+# One downside, however, is that if CMake knows they're generated
+# files, by default "make clean" will delete them. We can avoid this
+# problem by marking the src/ directory as "CLEAN_NO_CUSTOM", which
+# unfortunately only works in CMake 2.6 and higher. We check for this
+# version by looking for the command "cmake_policy", which was also
+# introduced in CMake 2.6.
+IF(COMMAND cmake_policy)
+  SET_PROPERTY(DIRECTORY PROPERTY CLEAN_NO_CUSTOM 1)
+ELSE (COMMAND cmake_policy)
+  MESSAGE(STATUS "Warning: when using CMake 2.4, typing 'make clean' will delete certain files in the src/functions and src/runtime directories! You can type 'svn update' to restore them.")
+ENDIF(COMMAND cmake_policy)
 
 ################################################################################
 #                                                                              #

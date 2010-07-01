@@ -22,8 +22,7 @@ SET(FUNCTION_HEADER_GENERATOR             "${CMAKE_SOURCE_DIR}/src/runtime/spec/
 FUNCTION_ENUM_GENERATOR(${FUNCTION_HEADER_GENERATOR}
                         "${ABSOLUTE_SPEC_FILES}"
                         "src/functions/function_enum.h"
-                        "file-list:=${SPEC_FILES}"
-                        ${ZORBA_WORKS})
+                        "file-list:=${SPEC_FILES}")
 
 SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/src/functions/function.h
                             PROPERTIES OBJECT_DEPENDS "${CMAKE_SOURCE_DIR}/src/functions/function_enum.h")
@@ -38,8 +37,7 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
                     ${CODEGEN_HEADER_GENERATOR} "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
                     "src/functions/func_${SPEC_PREFIX}"
                     "file:=${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
-                    "mappings:=${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml"
-                      ${ZORBA_WORKS})
+                    "mappings:=${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml")
   LIST(APPEND FUNCTIONS_SRCS
               "func_${SPEC_PREFIX}.cpp"
       )

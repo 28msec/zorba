@@ -33,8 +33,7 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
                     "${ABSOLUTE_SPEC_FILE_NAME}"
                     "src/runtime/${SPEC_PREFIX}"
                     "name:=runtime/${SPEC_PREFIX}"
-                    "input=${ABSOLUTE_SPEC_FILE_NAME}"
-                    ${ZORBA_WORKS})
+                    "input=${ABSOLUTE_SPEC_FILE_NAME}")
 
   LIST(APPEND RUNTIME_SRCS 
               "${SPEC_PREFIX}.cpp"
@@ -49,8 +48,7 @@ PRINTER_VISITOR_GENERATOR(${PRINTER_VISITOR_CPP_VISITOR_GENERATOR}
                           ${PRINTER_VISITOR_HEADER_GENERATOR}
                           "${ABSOLUTE_SPEC_FILES}"
                           "src/runtime/visitors/printer_visitor"
-                          "files:=${ABSOLUTE_SPEC_FILES}"
-                          ${ZORBA_WORKS})
+                          "files:=${ABSOLUTE_SPEC_FILES}")
 
 LIST(APPEND RUNTIME_SRCS
     visitors/printer_visitor.cpp
@@ -60,8 +58,7 @@ LIST(APPEND RUNTIME_SRCS
 PLANINTER_VISITOR_GENERATOR(${PLANINTER_VISITOR_HEADER_GENERATOR}
                             "${ABSOLUTE_SPEC_FILES}"
                             "src/runtime/visitors/planiter_visitor"
-                            "files:=${SPEC_FILES}"
-                            ${ZORBA_WORKS})
+                            "files:=${SPEC_FILES}")
 
 LIST(APPEND RUNTIME_SRCS
     visitors/printer_visitor_api.cpp
