@@ -92,13 +92,11 @@ static void xquery_to_icu_pattern( string const &xq_pat, string &icu_pat ) {
           icu_pat += '.';
           continue;
         case '{':
-          icu_pat += '.';
           icu_pat += '{';
           parse_digits( xq_pat, xq_c, ',', icu_pat );
           parse_digits( xq_pat, xq_c, '}', icu_pat );
           break;
         default:
-          icu_pat += '.';
           icu_pat += *xq_c;
           break;
       }
@@ -108,6 +106,7 @@ static void xquery_to_icu_pattern( string const &xq_pat, string &icu_pat ) {
     switch ( *xq_c ) {
       case '.':
         got_dot = true;
+        icu_pat += *xq_c;
         break;
       case '\\':
         got_backslash = true;
@@ -170,15 +169,21 @@ bool icu_wildcard::matches( string const &s ) const {
 
 static char const *const xq_patterns[] = {
   "hello",
+  "hello.",
   "hello*",
   "hello+",
   "hello?",
+  "hello\\.",
+  "hello\\*",
+  "hello\\+",
+  "hello\\?",
   "hello.world",
   "hello.*world",
   "hello.+world",
   "hello.?world",
   "hello.{2,15}world",
   "he..o",
+  "\\h\\e\\l\\l\\o",
   0
 };
 
