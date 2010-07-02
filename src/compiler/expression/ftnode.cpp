@@ -738,6 +738,8 @@ ftstop_words::ftstop_words(
   list_( stop_word_list ),
   mode_( mode )
 {
+  if ( !uri_.empty() )
+    ZORBA_ERROR_LOC_PARAM( FTST0008, loc, uri_, NULL );
 }
 
 ft_visit_result::type ftstop_words::accept( ftnode_visitor &v ) {
