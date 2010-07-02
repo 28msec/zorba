@@ -752,7 +752,7 @@ static void form_combinations_at_least( ft_match_seq const &ms, ft_int times,
  * @return Return the sequence of all such matches.
  */
 static void form_range( ft_match_seq const &ms, ft_int at_least, ft_int at_most,
-                        ft_match_seq &result ) {
+                        ft_all_matches &result ) {
   if ( at_least <= at_most ) {
     ft_all_matches ami, amj;
     form_combinations_at_least( ms, at_least, ami );
