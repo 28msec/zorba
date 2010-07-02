@@ -537,6 +537,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 "no" { return token::NO; }
 "occurs" { return token::OCCURS; }
 "paragraph" { return token::PARAGRAPH; }
+"paragraphs" { return token::PARAGRAPHS; }
 "phrase" { return token::PHRASE; }
 "relationship" { return token::RELATIONSHIP; }
 "same" { return token::SAME; }
