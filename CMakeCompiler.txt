@@ -154,8 +154,8 @@ IF(CMAKE_COMPILER_IS_GNUCC)
   IF(NOT CMAKE_C_FLAGS MATCHES "-Winit-self")
     SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Winit-self")
   ENDIF(NOT CMAKE_C_FLAGS MATCHES "-Winit-self")
-  # Bug 2936209 - apparently this option doesn't work in 4.0.1
- COMPARE_VERSION_STRINGS("${ZORBA_GNUCOMPILER_VERSION}" "4.0.1" ZORBA_GNUCOMPILER_COMPARISON)                        
+  # Bug 2936209 - apparently this option doesn't work in 4.0.1 . It seems it doesn't work before 4.2.4 either.
+ COMPARE_VERSION_STRINGS("${ZORBA_GNUCOMPILER_VERSION}" "4.2.4" ZORBA_GNUCOMPILER_COMPARISON)                        
  IF (ZORBA_GNUCOMPILER_COMPARISON GREATER 0)                                                                        
    MESSAGE(STATUS "GNU Compiler version greater than 4.0.1")                                                        
    IF(NOT CMAKE_C_FLAGS MATCHES "-Werror=declaration-after-statement")                                              
