@@ -23,7 +23,8 @@ declare variable $examplePath as xs:string* := (
  :)
 declare variable $moduleCategories as xs:string* := (
 'http://expath.org/ns',
-'http://www.zorba-xquery.com/modules'
+'http://www.zorba-xquery.com/modules',
+'http://www.w3.org/2005'
 );
 
 declare variable $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>XQuery Libraries</strong></span></ul>;

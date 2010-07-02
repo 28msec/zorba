@@ -69,10 +69,15 @@ void set_var (string name, string val, DynamicContext* dctx)
   {
     ifstream* is = new ifstream(val.c_str ());
     assert (*is);
-    if(name != ".")
-      dctx->setVariableAsDocument(name, val.c_str(), std::auto_ptr<std::istream>(is));
-    else
-      dctx->setContextItemAsDocument(val.c_str(), std::auto_ptr<std::istream>(is));
+    try {
+      if(name != ".")
+        dctx->setVariableAsDocument(name, val.c_str(), std::auto_ptr<std::istream>(is));
+      else
+        dctx->setContextItemAsDocument(val.c_str(), std::auto_ptr<std::istream>(is));
+    } catch (zorba::ZorbaException& e) {
+      std::cerr << "could not set external variable "  << e << std::endl;
+      exit(1);
+    }
   }
 }
 

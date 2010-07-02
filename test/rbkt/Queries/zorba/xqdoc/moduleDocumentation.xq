@@ -58,7 +58,7 @@ declare function local:test-function(
     let $hasReturn := exists($function/xqdoc:comment/xqdoc:return)
     return (
         (: Test for function description :)
-        if (not($hasDescr)) then
+        if (not($hasDescr) and not($module/xqdoc:uri eq "http://www.w3.org/2005/xpath-functions")) then
             concat("ERROR: Missing function description
     Module: ", $module/xqdoc:uri, "
     Function: ", $function/xqdoc:name, "
@@ -74,7 +74,7 @@ declare function local:test-function(
         else
             (),
         (: Test for documented return value :)
-        if (not($hasReturn)) then
+        if (not($hasReturn) and not($module/xqdoc:uri eq "http://www.w3.org/2005/xpath-functions")) then
             concat("ERROR: Return value not documented;
     Module: ", $module/xqdoc:uri, "
     Function: ", $function/xqdoc:name, "
