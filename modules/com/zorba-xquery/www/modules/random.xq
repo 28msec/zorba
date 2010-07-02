@@ -40,7 +40,8 @@ declare nondeterministic function random() as xs:integer external;
 declare nondeterministic function random($seed as xs:integer) as xs:integer external;
 
 (:~
- :  This function does not generate a DCE 1.1 variant UUIDs.
+ :  This function returns a uuid. Note, that the function is not stable,
+ :  that is, it returns a different UUID everytime the function is invoked.
  :
  : @return the generated UUID
  :)
