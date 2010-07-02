@@ -408,12 +408,23 @@ xqp_string StringItemNaive::show() const
 
 void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
                                       int token_no, int sent_no, int para_no ) {
-  FTToken t( utf8_s, utf8_len, token_no, lang_ );
+  FTToken t( utf8_s, utf8_len, token_no, sent_no, lang_ );
   tokens_.push_back( t );
 }
 
-FTTokenIterator_t StringItemNaive::getQueryTokens( locale::iso639_1::type lang,
-                                                   bool wildcards ) const {
+FTTokenIterator_t
+StringItemNaive::getDocumentTokens( locale::iso639_1::type lang) const {
+  auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
+  NaiveFTTokenIterator::FTTokens *tokens = new NaiveFTTokenIterator::FTTokens;
+  AtomicItemTokenizer atomic_tokenizer( *tokenizer, lang, *tokens );
+  xqpStringStore const *const xText = getStringValue();
+  atomic_tokenizer.tokenize( xText->c_str(), xText->size() );
+  return FTTokenIterator_t( new NaiveFTTokenIterator( tokens ) );
+}
+
+FTTokenIterator_t
+StringItemNaive::getQueryTokens( locale::iso639_1::type lang,
+                                 bool wildcards ) const {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create( wildcards ) );
   NaiveFTTokenIterator::FTTokens *tokens = new NaiveFTTokenIterator::FTTokens;
   AtomicItemTokenizer atomic_tokenizer( *tokenizer, lang, *tokens );

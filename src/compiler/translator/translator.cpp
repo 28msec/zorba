@@ -11370,9 +11370,13 @@ void end_visit (const FTSelection& v, void* /*visit_state*/) {
   ftselection::ftpos_filter_list_t list;
   while ( true ) {
     ftnode *const n = pop_ftstack();
-    if ( ftpos_filter *const pf = dynamic_cast<ftpos_filter*>( n ) )
-      list.push_back( pf );
-    else {
+    if ( ftpos_filter *const pf = dynamic_cast<ftpos_filter*>( n ) ) {
+      //
+      // We must use push_front() to maintain the original left-to-right order
+      // of the query.
+      //
+      list.push_front( pf );
+    } else {
       push_ftstack( new ftselection( v.get_location(), n, list ) );
       break;
     }

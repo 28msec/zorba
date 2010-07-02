@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#include <iomanip>
 #include <string>
 
 #include "runtime/full_text/ft_wildcard.h"
@@ -37,11 +36,11 @@ FTToken::FTToken( char const *utf8_s, int len,
   init( lang, pos, sent, para );
 }
 
-FTToken::FTToken( char const *utf8_s, int len, int_t pos,
+FTToken::FTToken( char const *utf8_s, int len, int_t pos, int_t sent,
                   iso639_1::type lang ) :
   value_( new string_t( utf8_s, len ) )
 {
-  init( lang, pos, 0, QueryTokenMagicValue );
+  init( lang, pos, sent, QueryTokenMagicValue );
 }
 
 FTToken& FTToken::operator=( FTToken const &from ) {
@@ -53,7 +52,7 @@ FTToken& FTToken::operator=( FTToken const &from ) {
 }
 
 void FTToken::copy( FTToken const &from ) {
-  init( from.lang_, from.pos_, from.dt_.sent_, from.para_ );
+  init( from.lang_, from.pos_, from.sent_, from.para_ );
   value_ = from.value_;
   if ( from.mod_values_ )
     mod_values_ = new mod_values_t( *from.mod_values_ );
@@ -80,11 +79,10 @@ void FTToken::init( iso639_1::type lang, int_t pos, int_t sent, int_t para ) {
   lang_ = lang;
   pos_  = pos ;
   para_ = para;
+  sent_ = sent;
   if ( is_query_token() ) {
     qt_.wildcard_ = NULL;
     qt_.selector_ = original;
-  } else {
-    dt_.sent_ = sent;
   }
   mod_values_ = NULL;
 }

@@ -48,13 +48,13 @@ public:
    * @param utf8_s    The token string encoded in UTF-8.  It need not be
    *                  null-terminated.
    * @param len       The number of chars in the token string.
-   * @param token_no  The token number.  Token numbers start at 0.
+   * @param pos_no    The position number.  Position numbers start at 0.
    * @param sent_no   The sentence number.  Sentence numbers start at 1.
    * @param para_no   The paragraph number.  Paragraph numbers start at 1.
    * @param lang      The language of the token string.
    */
   FTToken( char const *utf8_s, int len,
-           int_t token_no, int_t sent_no, int_t para_no,
+           int_t pos_no, int_t sent_no, int_t para_no,
            locale::iso639_1::type lang = locale::iso639_1::unknown );
 
   /**
@@ -63,10 +63,11 @@ public:
    * @param utf8_s    The token string encoded in UTF-8.  It need not be
    *                  null-terminated.
    * @param len       The number of chars in the token string.
-   * @param token_no  The token number.  Token numbers start at 0.
+   * @param pos_no    The position number.  Position numbers start at 0.
+   * @param sent_no   The sentence number.  Sentence numbers start at 1.
    * @param lang      The language of the token string.
    */
-  FTToken( char const *utf8_s, int len, int_t token_no,
+  FTToken( char const *utf8_s, int len, int_t pos_no, int_t sent_no,
            locale::iso639_1::type lang = locale::iso639_1::unknown );
 
   /**
@@ -119,12 +120,12 @@ public:
 
   /**
    * Gets the sentence number within the source XML document.  Sentence numbers
-   * start at 1.  For query tokens, this is always 0.
+   * start at 1.
    *
    * @return Returns said sentence number.
    */
   int_t sent() const {
-    return is_query_token() ? 0 : dt_.sent_;
+    return sent_;
   }
 
   /**
@@ -178,7 +179,8 @@ private:
 
   string_rc value_;                     ///< original value
   locale::iso639_1::type lang_;         ///< language (if any)
-  int_t pos_;                           ///< position
+  int_t pos_;                           ///< position number
+  int_t sent_;                          ///< sentence number
 
   /**
    * The token's paragraph number.  If this is QueryTokenMagicValue, it means
@@ -191,7 +193,7 @@ private:
    * Data only for document tokens.
    */
   struct dt_data {
-    int_t sent_;
+    // placeholder for future considerations
   };
 
   /**

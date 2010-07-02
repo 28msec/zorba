@@ -507,6 +507,9 @@ public:
 
 #ifndef ZORBA_NO_FULL_TEXT
   FTTokenIterator_t
+  getDocumentTokens( locale::iso639_1::type = locale::iso639_1::unknown ) const;
+
+  FTTokenIterator_t
   getQueryTokens( locale::iso639_1::type = locale::iso639_1::unknown,
                   bool wildcards = false ) const;
 #endif /* ZORBA_NO_FULL_TEXT */
