@@ -484,8 +484,8 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
 
 void operator&(Archiver &ar, short &obj);
 
-template<typename T1, typename T2>
-void operator&(Archiver &ar, std::map<T1, T2> &obj)
+template<typename T1, typename T2, class Tcomp>
+void operator&(Archiver &ar, std::map<T1, T2, Tcomp> &obj)
 {
   if(ar.is_serializing_out())
   {
@@ -496,7 +496,7 @@ void operator&(Archiver &ar, std::map<T1, T2> &obj)
       ar.set_is_temp_field_one_level(true);
       int s = (int)obj.size();
       ar & s;
-      typename std::map<T1, T2>::iterator  it;
+      typename std::map<T1, T2, Tcomp>::iterator  it;
       for(it=obj.begin(); it != obj.end(); it++)
       {
         T1  t1 = (*it).first;
@@ -530,7 +530,7 @@ void operator&(Archiver &ar, std::map<T1, T2> &obj)
     ar.set_is_temp_field_one_level(true);
     int s;
     ar & s;
-    typename std::map<T1, T2>::iterator  it;
+    //typename std::map<T1, T2>::iterator  it;
     std::pair<T1, T2>   p;
     for(int i=0;i<s;i++)
     {

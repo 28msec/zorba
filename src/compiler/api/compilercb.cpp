@@ -16,6 +16,7 @@
 
 #include "compiler/api/compilercb.h"
 #include "compiler/expression/expr_base.h"
+#include "debugger/zorba_debugger_commons.h"
 
 #include "context/static_context.h"
 
@@ -140,10 +141,11 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
   ar & theIsUpdating;
   ar & theSctxMap;
   ar & theRootSctx;
+  ar & theDebuggerCommons;
   if(!ar.is_serializing_out())
   {
     theErrorManager = NULL;//don't serialize this
-    theDebuggerCommons = NULL;
+    //theDebuggerCommons = NULL;
   }
   ar & theConfig;
   ar & theTimeout;

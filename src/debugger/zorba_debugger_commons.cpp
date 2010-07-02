@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #include "system/globalenv.h"
 
 #include "zorba_debugger_commons.h"
 
 #include "compiler/api/compilercb.h"
+#include "context/static_context.h"
 #include "context/dynamic_context.h"
 #include "zorbaerrors/Assert.h"
 
@@ -33,17 +33,55 @@
 
 namespace zorba {
 
+SERIALIZABLE_CLASS_VERSIONS(DebugLocation)
+END_SERIALIZABLE_CLASS_VERSIONS(DebugLocation)
+
+SERIALIZABLE_CLASS_VERSIONS(ZorbaDebuggerCommons)
+END_SERIALIZABLE_CLASS_VERSIONS(ZorbaDebuggerCommons)
+
+SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(DebuggerSingletonIterator)
+
 ZorbaDebuggerCommons::ZorbaDebuggerCommons(static_context* sctx)
 :
 theBreak(false),
 theCause(0),
 theExecEval(false)
 {
+  theRuntime = NULL;
+  theCurrentStaticContext = NULL;
+  theCurrentDynamicContext = NULL;
+  theCurrentIterator = NULL;
+  thePlanState = NULL;
+  theDebugIteratorState = NULL;
 }
 
 ZorbaDebuggerCommons::~ZorbaDebuggerCommons()
 {
 }
+
+void ZorbaDebuggerCommons::serialize( ::zorba::serialization::Archiver& ar)
+{
+  ar & theLocationMap;
+  ar & theUriFileMappingMap;
+  ar & theBreakpoints;
+  if(ar.is_serializing_out())
+    theRuntime = NULL;
+  ar & theCurrentStaticContext;
+  if(ar.is_serializing_out())
+    theCurrentDynamicContext = NULL;
+  ar & theBreak;
+  ar & theCause;
+  ar & theCurrentIterator;
+  ar & theBreakIterators;
+  if(ar.is_serializing_out())
+    thePlanState = NULL;
+  if(ar.is_serializing_out())
+    theDebugIteratorState = NULL;
+  ar & theEvalItem;
+  ar & theExecEval;
+}
+
 
 void ZorbaDebuggerCommons::setRuntime( ZorbaDebuggerRuntime* aRuntime )
 {
@@ -148,7 +186,7 @@ bool ZorbaDebuggerCommons::hasToBreakAt(const ZorbaDebugIterator* aIter)
     return false;
   }
 
-  std::list<const ZorbaDebugIterator*>::iterator lIter;
+  std::list</*const */ZorbaDebugIterator*>::iterator lIter;
   for (lIter = theBreakIterators.begin();
     lIter != theBreakIterators.end();
     lIter++) {
@@ -199,7 +237,7 @@ void ZorbaDebuggerCommons::setBreak( bool lBreak, SuspensionCause aCause )
 
 void ZorbaDebuggerCommons::setCurrentIterator( const ZorbaDebugIterator* aIterator )
 {
-  theCurrentIterator = aIterator;
+  theCurrentIterator = (ZorbaDebugIterator*)aIterator;
   //Test postconditions
   ZORBA_ASSERT(aIterator == theCurrentIterator);
 }
@@ -211,7 +249,7 @@ const ZorbaDebugIterator* ZorbaDebuggerCommons::getCurrentIterator() const
 
 void ZorbaDebuggerCommons::makeStepOut()
 {
-  const ZorbaDebugIterator* lIter = theCurrentIterator->getParent();
+  /*const */ZorbaDebugIterator* lIter = (ZorbaDebugIterator*)theCurrentIterator->getParent();
   if (lIter != NULL) {
     theBreakIterators.push_back(lIter);
   }
@@ -222,7 +260,7 @@ void ZorbaDebuggerCommons::makeStepOver()
   //Preconditions
   ZORBA_ASSERT(theCurrentIterator != NULL);
 
-  const ZorbaDebugIterator* lIter = theCurrentIterator->getOverIterator();
+  /*const*/ ZorbaDebugIterator* lIter = (ZorbaDebugIterator*)theCurrentIterator->getOverIterator();
   if (lIter != NULL) {
     theBreakIterators.push_back(lIter);
   }
@@ -256,9 +294,9 @@ ZorbaDebuggerCommons::eval(const xqpString& aExpr,
   return lRes;
 }
 
-store::Item_t* ZorbaDebuggerCommons::getEvalItem()
+store::Item_t ZorbaDebuggerCommons::getEvalItem()
 {
-  return &theEvalItem;
+  return theEvalItem;
 }
 
 void ZorbaDebuggerCommons::addModuleUriMapping( std::string aUri, 
@@ -301,6 +339,13 @@ void ZorbaDebuggerCommons::clearBreakpoint( unsigned int aId )
   }
 }
 
+void DebugLocation::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theFileName;
+  ar & theLineNumber;
+  ar & theQueryLocation;
+}
+
 bool DebugLocation::operator()( const DebugLocation_t& aLocation1, const DebugLocation_t& aLocation2 ) const
 {
   int c;
@@ -325,19 +370,25 @@ bool DebugLocation::operator()( const DebugLocation_t& aLocation1, const DebugLo
 
 store::Item* DebuggerSingletonIterator::getValue() const
 {
-  return theValue->getp();
+  return theValue;
 }
 
-void DebuggerSingletonIterator::setValue(store::Item_t* aValue)
+void DebuggerSingletonIterator::setValue(store::Item_t aValue)
 {
-  theValue = aValue;
+  theValue = aValue.getp();
 }
 
 DebuggerSingletonIterator::DebuggerSingletonIterator(
-  static_context* sctx, QueryLoc loc, store::Item_t* aValue ) :
+  static_context* sctx, QueryLoc loc, store::Item_t aValue ) :
 NoaryBaseIterator<DebuggerSingletonIterator, PlanIteratorState>(sctx, loc),
-theValue(aValue)
+theValue(aValue.getp())
 {
+}
+
+void DebuggerSingletonIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass( ar, (NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>*)this );
+  ar & theValue;
 }
 
 NOARY_ACCEPT(DebuggerSingletonIterator);
@@ -347,7 +398,7 @@ bool DebuggerSingletonIterator::nextImpl( store::Item_t& result,
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-  result = theValue->getp();
+  result = theValue;
   STACK_PUSH ( result != NULL, state );
   STACK_END (state);
 }

@@ -23,6 +23,7 @@
 #include "runtime/core/item_iterator.h"
 
 #include "debugger/debugger_common.h"
+#include "zorbaserialization/serialization_engine.h"
 
 struct Zorba_SerializerOptions;
 typedef struct Zorba_SerializerOptions Zorba_SerializerOptions_t;
@@ -37,10 +38,16 @@ namespace zorba {
   class ZorbaDebugIteratorState;
   struct DebugLocation;
   typedef struct DebugLocation DebugLocation_t;
-  struct DebugLocation {
+  struct DebugLocation : public zorba::serialization::SerializeBaseClass{
     std::string theFileName;
     unsigned long theLineNumber;
     QueryLoc theQueryLocation;
+    public:
+    DebugLocation() {}
+    SERIALIZABLE_CLASS(DebugLocation)
+    SERIALIZABLE_CLASS_CONSTRUCTOR(DebugLocation)
+    void serialize(::zorba::serialization::Archiver& ar);
+
     bool operator()(const DebugLocation_t& aLocation1,
       const DebugLocation_t& aLocation2) const;
   };
@@ -60,7 +67,7 @@ namespace zorba {
     */
     DebuggerSingletonIterator(static_context* sctx,
       QueryLoc loc,
-      store::Item_t* aValue);
+      store::Item_t aValue);
 
     virtual ~DebuggerSingletonIterator() {}
 
@@ -70,11 +77,15 @@ namespace zorba {
 
     bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
-    void setValue(store::Item_t* aValue);
+    void setValue(store::Item_t aValue);
     store::Item* getValue() const;
 
   protected:
-    store::Item_t* theValue;
+    store::Item* theValue;
+  public:
+    SERIALIZABLE_CLASS(DebuggerSingletonIterator)
+    SERIALIZABLE_CLASS_CONSTRUCTOR2T(DebuggerSingletonIterator, NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>)
+    void serialize(::zorba::serialization::Archiver& ar);
   };
 
   /**
@@ -85,7 +96,7 @@ namespace zorba {
   * the debug runtime and deliver information to the debugger runtime.
   *
   */
-  class ZorbaDebuggerCommons {
+  class ZorbaDebuggerCommons : public zorba::serialization::SerializeBaseClass{
     friend class TranslatorImpl;
   public: // Creation and destruction
     /**
@@ -95,6 +106,11 @@ namespace zorba {
     */
     ZorbaDebuggerCommons(static_context* sctx);
     virtual ~ZorbaDebuggerCommons();
+
+    SERIALIZABLE_CLASS(ZorbaDebuggerCommons);
+    SERIALIZABLE_CLASS_CONSTRUCTOR(ZorbaDebuggerCommons);
+    void serialize( ::zorba::serialization::Archiver& ar);
+
   public: // Commands
     //************************************
     // Method:    setRuntime
@@ -269,7 +285,7 @@ namespace zorba {
     * @brief Gets the item, which is used for all eval iterators of the debug
     * iterators.
     */
-    store::Item_t* getEvalItem();
+    store::Item_t getEvalItem();
 
     /**
     * @brief Gets a file path of a uri.
@@ -290,11 +306,11 @@ namespace zorba {
     dynamic_context*                               theCurrentDynamicContext;
     bool                                           theBreak;
     SuspensionCause                                theCause;
-    const ZorbaDebugIterator*                      theCurrentIterator;
+    /*const */ZorbaDebugIterator*                  theCurrentIterator;
     /**
     * @brief The list of step expressions.
     */
-    std::list<const ZorbaDebugIterator*>           theBreakIterators;
+    std::list</*const*/ ZorbaDebugIterator*>       theBreakIterators;
     PlanState*                                     thePlanState;
     ZorbaDebugIteratorState*                       theDebugIteratorState;
     store::Item_t                                  theEvalItem;
