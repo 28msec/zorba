@@ -979,7 +979,7 @@ bool InScopeElementGroupsIterator::nextImpl(
 #else // #ifndef ZORBA_NO_XMLSCHEMA
 
   // In case Zorba is compiled without schema, the function will return an empty sequence
-  DEFAULT_STACK_INIT(InScopeElementDeclarationsIteratorState, state, aPlanState);
+  DEFAULT_STACK_INIT(InScopeElementGroupsIteratorState, state, aPlanState);
   STACK_END (state);
 
 #endif // #ifndef ZORBA_NO_XMLSCHEMA
@@ -1062,7 +1062,7 @@ bool InScopeAttributeGroupsIterator::nextImpl(
 #else // #ifndef ZORBA_NO_XMLSCHEMA
 
   // In case Zorba is compiled without schema, the function will return an empty sequence
-  DEFAULT_STACK_INIT(InScopeElementDeclarationsIteratorState, state, aPlanState);
+  DEFAULT_STACK_INIT(InScopeAttributeGroupsIteratorState, state, aPlanState);
   STACK_END (state);
 
 #endif // #ifndef ZORBA_NO_XMLSCHEMA
