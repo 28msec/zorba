@@ -66,14 +66,21 @@ bool FnDateTimeConstructorIterator::nextImpl(store::Item_t& result, PlanState& p
 {
   store::Item_t item0;
   store::Item_t item1;
+  bool          b;
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
 
   if (!consumeNext(item0, theChild0.getp(), planState) || !consumeNext(item1, theChild1.getp(), planState))
     STACK_PUSH(false, state);
-  else
-    STACK_PUSH(GENV_ITEMFACTORY->createDateTime(result, item0, item1), state);
+  else {
+    try {
+      b = GENV_ITEMFACTORY->createDateTime(result, item0, item1);
+    } catch (error::ZorbaError& e) {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+    }
+    STACK_PUSH(b, state);
+  }
 
   STACK_END (state);
 }
