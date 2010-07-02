@@ -78,11 +78,11 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
 
   while ( !ftcontains && consumeNext( item, theChild0.getp(), plan_state ) ) {
     FTTokenIterator_t doc_tokens( item->getDocumentTokens( lang ) );
-    if ( doc_tokens->hasNext() ) {
+    //if ( doc_tokens->hasNext() ) {
       ftcontains_visitor v( doc_tokens, *static_ctx, plan_state );
       ftselection_->accept( v );
       ftcontains = v.ftcontains();
-    }
+    //}
   }
 
   STACK_PUSH( GENV_ITEMFACTORY->createBoolean( result, ftcontains ), state );
