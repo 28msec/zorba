@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<chemistry>
+
+    <elem>
+      <name>Hydrogen</name>
+      <num>1</num>
+      <groupnr>1</groupnr>
+      <test></test>
+    </elem>
+    <elem>
+      <name>Helium</name>
+      <num>2</num>
+      <groupnr>18</groupnr>
+    </elem>
+    <elem>
+      <name>Carbon</name>
+      <num>6</num>
+      <groupnr>14</groupnr>
+    </elem>
+    <elem>
+      <name>Oxygen</name>
+      <num>8</num>
+      <groupnr>16</groupnr>
+    </elem>
+    <elem>
+      <name>Argon</name>
+      <num>18</num>
+      <groupnr>18</groupnr>
+    </elem>
+
+    <compound>
+      <compoundName>H2O</compoundName>
+      <elemName>Hydrogen</elemName>
+      <cnt>2</cnt>
+    </compound>
+    <compound>
+      <compoundName>H2O</compoundName>
+      <elemName>Oxygen</elemName>
+      <cnt>1</cnt>
+    </compound>
+
+    <compound>
+      <compoundName>H2</compoundName>
+      <elemName>Hydrogen</elemName>
+      <cnt>2</cnt>
+    </compound>
+
+    <compound>
+      <compoundName>CH4</compoundName>
+      <elemName>Hydrogen</elemName>
+      <cnt>4</cnt>
+    </compound>
+    <compound>
+      <compoundName>CH4</compoundName>
+      <elemName>Carbon</elemName>
+      <cnt>1</cnt>
+    </compound>
+
+</chemistry>
+ 	  	 

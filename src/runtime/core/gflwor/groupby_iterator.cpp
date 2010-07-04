@@ -493,16 +493,13 @@ void GroupByIterator::bindGroupBy(
 
   for (ulong i = 0; i < numVars; ++i)
   {
-    store::TempSeq* nonGroupVar = (*nonGroupTuple)[i].getp();
+    store::TempSeq_t nonGroupVar = (*nonGroupTuple)[i].getp();
 
     ulong numVarRefs = theNonGroupingSpecs[i].theVarRefs.size();
 
     for (ulong j = 0; j < numVarRefs; ++j)
     {
-      store::Iterator_t nonGroupVarIte = nonGroupVar->getIterator();
-      nonGroupVarIte->open();
-
-      theNonGroupingSpecs[i].theVarRefs[j]->bind(nonGroupVarIte, aPlanState);
+      theNonGroupingSpecs[i].theVarRefs[j]->bind(nonGroupVar, aPlanState);
     }
   }
 }
