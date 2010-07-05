@@ -136,8 +136,7 @@ FTToken::string_t const& FTToken::valueImpl( int selector,
         string_ref = value_->uppercase();
         break;
       case stem: {
-        iso639_1::type const stem_lang =
-          lang_ != iso639_1::unknown ? lang_ : alt_lang;
+        iso639_1::type const stem_lang = lang_ ? lang_ : alt_lang;
         if ( Stemmer const *const stemmer = Stemmer::get( stem_lang ) ) {
           string_ref = new string_t;
           stemmer->stem( valueImpl( lower ).str(), string_ref->str() );
