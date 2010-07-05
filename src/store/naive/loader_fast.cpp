@@ -953,7 +953,8 @@ void FastXmlLoader::processingInstruction(
 
   try
   {
-    xqpStringStore_t content = new xqpStringStore(reinterpret_cast<const char*>(data));
+    // bugfix: handling PIs with no data (i.e. data being NULL)
+    xqpStringStore_t content = new xqpStringStore(data?reinterpret_cast<const char*>(data):"");
     xqpStringStore_t target = new xqpStringStore(reinterpret_cast<const char*>(targetp));
 
     XmlNode* piNode 
