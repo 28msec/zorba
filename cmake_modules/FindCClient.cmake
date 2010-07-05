@@ -32,11 +32,11 @@ find_path(
 mark_as_advanced(CCLIENT_INCLUDE)
 
 # Look for the library.
-find_file(
+find_library(
   CCLIENT_LIBRARY
-  NAMES libc-client.a libc-client4.a
+  NAMES c-client c-client4
   PATHS ${CCLIENT_LIBRARY_DIRS} /opt/local/lib /usr/lib
-  DOC "Library to link against for the email support (libc-client.a, libc-client4.a or cclient.lib)")
+  DOC "Library to link against for the email support (c-client, libc-client or cclient.lib)")
 
 if (CCLIENT_LIBRARY)
   MESSAGE(STATUS "Found CCLIENT library -- " ${CCLIENT_LIBRARY})
