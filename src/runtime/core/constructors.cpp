@@ -500,7 +500,7 @@ AttributeIterator::AttributeIterator(
     }
 
     if ((theQName->getNamespace()->byteEqual("http://www.w3.org/XML/1998/namespace", 36) &&
-        !theQName->getPrefix()->byteEqual("xml", 3)) ||
+        !theQName->getPrefix()->empty() && !theQName->getPrefix()->byteEqual("xml", 3)) ||
         (theQName->getPrefix()->byteEqual("xml", 3) &&
          !theQName->getNamespace()->byteEqual("http://www.w3.org/XML/1998/namespace", 36)))
     {
@@ -508,7 +508,7 @@ AttributeIterator::AttributeIterator(
     }
 
     if ((theQName->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) &&
-        !theQName->getPrefix()->byteEqual("xmlns", 5)) ||
+        !theQName->getPrefix()->empty() && !theQName->getPrefix()->byteEqual("xmlns", 5)) ||
         (theQName->getPrefix()->byteEqual("xmlns", 5) &&
          !theQName->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29)))
     {
