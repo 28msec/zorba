@@ -45,8 +45,8 @@ public:
      *                  null-terminated.
      * @param utf8_len  The number of chars in the token string.
      * @param token_no  The token number.  Token numbers start at 0.
-     * @param sent_no   The sentence number.  Sentence numbers start at 0.
-     * @param para_no   The paragraph number.  Paragraph numbers start at 0.
+     * @param sent_no   The sentence number.  Sentence numbers start at 1.
+     * @param para_no   The paragraph number.  Paragraph numbers start at 1.
      */
     virtual void operator()( char const *utf8_s, int utf8_len,
                              int token_no, int sent_no, int para_no ) = 0;
