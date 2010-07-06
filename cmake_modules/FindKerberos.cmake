@@ -38,7 +38,7 @@ else (KERBEROS_LIBRARY)
 endif (KERBEROS_LIBRARY)
 
 # Copy the results to the output variables.
-if(SASL_LIBRARY)
+if(KERBEROS_LIBRARY)
   set(KERBEROS_FOUND 1)
 else(KERBEROS_LIBRARY)
   set(KERBEROS_FOUND 0)
