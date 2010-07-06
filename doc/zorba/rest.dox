@@ -229,7 +229,7 @@ Contains the reply of the HTTP request.
 
 \code
   <zorba-rest:result>
-    <zorba-rest:status_code>code</zorba-rest:status_code>
+    <zorba-rest:status-code>code</zorba-rest:status-code>
     <zorba-rest:headers>
       <zorba-rest:header name="header name">header value</zorba:rest:header>
       ...
