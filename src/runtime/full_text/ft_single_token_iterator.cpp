@@ -51,14 +51,12 @@ void FTSingleTokenIterator::pos( Mark_t const &mark ) {
   pos_ = dynamic_cast<LocalMark const&>( *mark ).pos_;
 }
 
-bool FTSingleTokenIterator::next( FTToken const **ppToken ) {
+FTToken const* FTSingleTokenIterator::next() {
   if ( pos_ == begin_ ) {
-    if ( ppToken )
-      *ppToken = &token_;
     ++pos_;
-    return true;
+    return &token_;
   }
-  return false;
+  return 0;
 }
 
 void FTSingleTokenIterator::reset() {

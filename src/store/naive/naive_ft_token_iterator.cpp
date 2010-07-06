@@ -58,14 +58,8 @@ void NaiveFTTokenIterator::init() {
   ZORBA_ASSERT( begin_ <= end_ );
 }
 
-bool NaiveFTTokenIterator::next( FTToken const **ppToken ) {
-  if ( pos_ < end_ ) {
-    if ( ppToken )
-      *ppToken = &(*tokens_)[ pos_ ];
-    ++pos_;
-    return true;
-  }
-  return false;
+FTToken const* NaiveFTTokenIterator::next() {
+  return pos_ < end_ ? &(*tokens_)[ pos_++ ] : NULL;
 }
 
 FTTokenIterator::Mark_t NaiveFTTokenIterator::pos() const {

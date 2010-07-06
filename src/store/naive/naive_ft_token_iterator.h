@@ -38,7 +38,7 @@ public:
   index_t begin() const;
   index_t end() const;
   bool hasNext() const;
-  bool next( FTToken const **ppToken = 0 );
+  FTToken const* next();
   Mark_t pos() const;
   void pos( Mark_t const& );
   void reset();

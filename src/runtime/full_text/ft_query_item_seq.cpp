@@ -84,12 +84,11 @@ void FTQueryItemSeqIterator::pos( Mark_t const &mark ) {
   }
 }
 
-bool FTQueryItemSeqIterator::next( FTToken const **ppToken ) {
-  bool got_next = false;
+FTToken const* FTQueryItemSeqIterator::next() {
+  FTToken const *result = 0;
   if ( qi_ != qi_seq_->end() ) {
-    while ( !got_next ) {
-      if ( (*qi_)->next( ppToken ) ) {
-        got_next = true;
+    while ( !result ) {
+      if ( (result = (*qi_)->next()) ) {
         if ( (*qi_)->hasNext() )
           break;
       }
@@ -98,7 +97,7 @@ bool FTQueryItemSeqIterator::next( FTToken const **ppToken ) {
       (*qi_)->reset();
     }
   }
-  return got_next;
+  return result;
 }
 
 void FTQueryItemSeqIterator::reset() {

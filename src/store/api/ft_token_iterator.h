@@ -68,11 +68,10 @@ public:
   /**
    * Obtains the next token and advances the iterator.
    *
-   * @param ppToken A pointer to the next token is put here; may be null to
-   * advance the iterator only.
-   * @return Returns <code>true</code> only if there is a next token.
+   * @return Returns the next token or <code>NULL</code> if there is no next
+   * token.
    */
-  virtual bool next( FTToken const **ppToken = 0 ) = 0;
+  virtual FTToken const* next() = 0;
 
   /**
    * Gets the current position.

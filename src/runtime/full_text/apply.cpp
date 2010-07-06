@@ -269,7 +269,7 @@ static void dump( char const *label, FTTokenIterator &it ) {
   it.reset();
   cout << indent << label;
   FTToken const *t;
-  while ( it.next( &t ) )
+  while ( t = it.next() )
     cout << *t;
   cout << endl;
 }
@@ -292,7 +292,7 @@ static void match_tokens( FTTokenIterator &doc_tokens,
     query_tokens.reset();
     FTToken const *dt_start = 0, *dt_end, *dt, *qt;
     bool all_matched = true;
-    while ( doc_tokens.next( &dt ) && query_tokens.next( &qt ) ) {
+    while ( (dt = doc_tokens.next()) && (qt = query_tokens.next()) ) {
       if ( !matcher.match( *dt, *qt ) ) {
         all_matched = false;
         break;
@@ -965,7 +965,7 @@ static void apply_ftwords_xxx_word( FTTokenIterator &search_ctx,
     ft_all_matches_seq all_am_seq;
     FTToken const *t;
 
-    for ( FTToken::int_t pos = 0; query_tokens.next( &t ); ++pos ) {
+    for ( FTToken::int_t pos = 0; (t = query_tokens.next()); ++pos ) {
       FTSingleTokenIterator query_token( *t, query_tokens.begin() + pos );
       ft_all_matches am;
       apply_query_tokens_as_phrase(

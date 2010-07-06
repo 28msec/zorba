@@ -38,7 +38,7 @@ public:
   bool hasNext() const;
   Mark_t pos() const;
   void pos( Mark_t const& );
-  bool next( FTToken const** = 0 );
+  FTToken const* next();
   void reset();
 
 private:

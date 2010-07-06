@@ -53,7 +53,7 @@ public:
   Mark_t pos() const;
   void pos( Mark_t const& );
   void pos( FTTokenIterator_t const& );
-  bool next( FTToken const** = 0 );
+  FTToken const* next();
   void reset();
 
 private:
