@@ -66,7 +66,7 @@ declare function local:test-function(
         else
             (),
         (: Test for documented parameters :)
-        if ($docParamCount ne $paramCount) then
+        if ($docParamCount ne $paramCount and not($module/xqdoc:uri eq "http://www.w3.org/2005/xpath-functions")) then
             concat("ERROR: ", $missing, " parameter(s) not documented
     Module: ", $module/xqdoc:uri, "
     Function: ", $function/xqdoc:name, "
