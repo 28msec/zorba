@@ -25,7 +25,7 @@ module namespace random = "http://www.zorba-xquery.com/modules/random";
  :
  : @return a pseudo-random integer
  :)
-declare nondeterministic function random() as xs:integer external;
+declare nondeterministic function random:random() as xs:integer external;
 
 (:~
  : This function returns a pseudo-random integer
@@ -37,7 +37,7 @@ declare nondeterministic function random() as xs:integer external;
  : @param $seed the seed value for this pseudo-random integer sequence
  : @return a pseudo-random integer
  :)
-declare nondeterministic function random($seed as xs:integer) as xs:integer external;
+declare nondeterministic function random:random($seed as xs:integer) as xs:integer external;
 
 (:~
  :  This function returns a uuid. Note, that the function is not stable,
@@ -45,4 +45,4 @@ declare nondeterministic function random($seed as xs:integer) as xs:integer exte
  :
  : @return the generated UUID
  :)
-declare nondeterministic function uuid() as xs:string external;
+declare nondeterministic function random:uuid() as xs:string external;

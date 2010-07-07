@@ -61,9 +61,9 @@ public:
     theKind = (sig.arg_count() == 0 ?
                 FunctionConsts::FN_ZORBA_UTIL_RANDOM_0 :
                 FunctionConsts::FN_ZORBA_UTIL_RANDOM_1);
+  
+    setDeterministic(false);
   }
-
-  bool isDeterministic() const { return false; }
 
   CODEGEN_DECL();
 };
@@ -78,9 +78,9 @@ public:
     theKind = (sig.arg_count() == 0 ?
                 FunctionConsts::FN_ZORBA_RANDOM_RANDOM_0 :
                 FunctionConsts::FN_ZORBA_RANDOM_RANDOM_1);
+  
+    setDeterministic(false);
   }
-
-  bool isDeterministic() const { return false; }
 
   CODEGEN_DECL();
 };
@@ -90,13 +90,14 @@ public:
 class fn_zorba_util_uuid : public function
 {
 public:
-  fn_zorba_util_uuid(const signature& sig)
-    :
-    function(sig, FunctionConsts::FN_ZORBA_UTIL_UUID_0)
+  fn_zorba_util_uuid(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
+    theKind = (sig.arg_count() == 0 ?
+                FunctionConsts::FN_ZORBA_UTIL_UUID_0 :
+                FunctionConsts::FN_ZORBA_RANDOM_UUID_0);
+  
+    setDeterministic(false);
   }
-
-  bool isDeterministic() const { return false; }
 
   CODEGEN_DECL();
 };

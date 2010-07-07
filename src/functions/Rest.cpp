@@ -25,9 +25,10 @@ namespace zorba {
 class rest_head : public function
 {
 public:
-  rest_head(const signature& sig): function(sig){}
-
-  bool isDeterministic() const { return false; }
+  rest_head(const signature& sig): function(sig)
+  {
+    setDeterministic(false);
+  }
 
   bool isSource() const { return true; }
 
@@ -46,9 +47,10 @@ public:
 class rest_get : public function
 {
 public:
-  rest_get(const signature& sig) : function(sig) {}
-
-  bool isDeterministic() const { return false; }
+  rest_get(const signature& sig) : function(sig)
+  {
+    setDeterministic(false);
+  }
 
   bool isSource() const { return true; }
 
@@ -67,9 +69,10 @@ public:
 class rest_get_tidy : public function
 {
 public:
-  rest_get_tidy(const signature& sig) : function(sig) {}
-
-  bool isDeterministic() const { return false; }
+  rest_get_tidy(const signature& sig) : function(sig)
+  {
+    setDeterministic(false);
+  }
 
   bool isSource() const { return true; }
 
@@ -88,9 +91,10 @@ public:
 class rest_post : public function
 {
 public:
-  rest_post(const signature& sig) : function(sig) {}
-
-  bool isDeterministic() const { return false; }
+  rest_post(const signature& sig) : function(sig)
+  {
+    setDeterministic(false);
+  }
 
   bool isSource() const { return true; }
 
@@ -109,9 +113,10 @@ public:
 class rest_post_tidy : public function
 {
 public:
-  rest_post_tidy(const signature& sig) : function(sig) {}
-
-  bool isDeterministic() const { return false; }
+  rest_post_tidy(const signature& sig) : function(sig)
+  {
+    setDeterministic(false);
+  }
 
   bool isSource() const { return true; }
 
@@ -130,9 +135,10 @@ public:
 class rest_put : public function
 {
 public:
-  rest_put(const signature& sig) : function(sig) {}
-
-  bool isDeterministic() const { return false; }
+  rest_put(const signature& sig) : function(sig) 
+  {
+    setDeterministic(false);
+  }
 
   bool isSource() const { return true; }
 
@@ -143,9 +149,10 @@ public:
 class rest_delete : public function
 {
 public:
-  rest_delete(const signature& sig) : function(sig) {}
-
-  bool isDeterministic() const { return false; }
+  rest_delete(const signature& sig) : function(sig)
+  {
+    setDeterministic(false);
+  }
 
   bool isSource() const { return true; }
 

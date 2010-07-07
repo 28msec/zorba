@@ -105,6 +105,7 @@ public:
     theKind = (sig.arg_count() == 1 ?
                 FunctionConsts::FN_ROUND_HALF_TO_EVEN_1 :
                 FunctionConsts::FN_ROUND_HALF_TO_EVEN_2);
+  
   }
 
   CODEGEN_DECL();
@@ -120,6 +121,7 @@ public:
     theKind = (sig.arg_count() == 2 ?
                 FunctionConsts::FN_FORMAT_NUMBER_2 :
                 FunctionConsts::FN_FORMAT_NUMBER_3);
+  
   }
 
   CODEGEN_DECL();

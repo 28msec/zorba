@@ -103,6 +103,11 @@ void populate_context_random(static_context* sctx)
       (createQName("http://www.zorba-xquery.com/zorba/util-functions","fn-zorba-util","uuid"),
       GENV_TYPESYSTEM.STRING_TYPE_ONE));
 
+
+  DECL(sctx, fn_zorba_util_uuid,
+      (createQName("http://www.zorba-xquery.com/modules/random","fn-zorba-random","uuid"),
+      GENV_TYPESYSTEM.STRING_TYPE_ONE));
+
 }
 
 

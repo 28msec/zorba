@@ -74,6 +74,11 @@ declare function local:create-function($iter, $function) as xs:string?
           let $argCounts := for $sig in $signatures
                             return count($sig/zorba:param)
           let $numSignatures := count($argCounts)
+          let $setNoneDeterministic := if ($function/@isDeterministic = 'false')
+                                       then 
+                                         ($gen:newline, $gen:indent, $gen:indent,
+                                         "setDeterministic(false);")
+                                       else ""
           return 
             if ($numSignatures eq 1)
             then
@@ -89,6 +94,7 @@ declare function local:create-function($iter, $function) as xs:string?
                            $gen:newline, $gen:indent,
                            '{',
                            $gen:newline, $gen:indent,
+                           $setNoneDeterministic,
                            '}'),
                           '')
             else if ($numSignatures eq 2)
@@ -111,6 +117,8 @@ declare function local:create-function($iter, $function) as xs:string?
                            '                FunctionConsts::',
                            gen:function-kind($signatures[2]),
                            ');',
+                           $gen:newline, $gen:indent,
+                           $setNoneDeterministic,
                            $gen:newline, $gen:indent,
                            '}'),
                           '')
@@ -215,13 +223,6 @@ declare function local:add-methods($function) as xs:string*
       then
         string-join(($gen:newline, $gen:indent,
                      'bool isSource() const ',
-                     '{ return ', $meth/@returnValue, '; }',
-                      $gen:newline),'')
-
-      else if (name($meth) eq 'zorba:isDeterministic')
-      then
-        string-join(($gen:newline, $gen:indent,
-                     'bool isDeterministic() const ',
                      '{ return ', $meth/@returnValue, '; }',
                       $gen:newline),'')
 

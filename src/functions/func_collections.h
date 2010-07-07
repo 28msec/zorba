@@ -47,6 +47,7 @@ public:
     theKind = (sig.arg_count() == 0 ?
                 FunctionConsts::FN_COLLECTION_0 :
                 FunctionConsts::FN_COLLECTION_1);
+  
   }
 
   bool accessesDynCtx() const { return true; }
@@ -110,6 +111,7 @@ public:
     theKind = (sig.arg_count() == 1 ?
                 FunctionConsts::FN_ZORBA_DDL_CREATE_COLLECTION_1 :
                 FunctionConsts::FN_ZORBA_DDL_CREATE_COLLECTION_2);
+  
   }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
@@ -255,6 +257,7 @@ public:
     theKind = (sig.arg_count() == 1 ?
                 FunctionConsts::FN_ZORBA_DDL_DELETE_NODE_FIRST_1 :
                 FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_FIRST_2);
+  
   }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
@@ -274,6 +277,7 @@ public:
     theKind = (sig.arg_count() == 1 ?
                 FunctionConsts::FN_ZORBA_DDL_DELETE_NODE_LAST_1 :
                 FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_LAST_2);
+  
   }
 
   expr_script_kind_t getUpdateType() const { return UPDATE_EXPR; }
