@@ -4,650 +4,751 @@
 module namespace  fn = "http://www.w3.org/2005/xpath-functions";
 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-abs'>http://www.w3.org/TR/xpath-functions/#func-abs</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-abs">fn:abs</a>
  :)
-declare function fn:abs() external;
-
-
+declare function  fn:abs ($arg as numeric?) as numeric?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-adjust-date-to-timezone'>http://www.w3.org/TR/xpath-functions/#func-adjust-date-to-timezone</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-adjust-date-to-timezone">fn:adjust-date-to-timezone</a>
  :)
-declare function fn:adjust-date-to-timezone() external;
-
-
+declare function  fn:adjust-date-to-timezone ( $arg as xs:date?) as xs:date?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-adjust-dateTime-to-timezone'>http://www.w3.org/TR/xpath-functions/#func-adjust-dateTime-to-timezone</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-adjust-date-to-timezone">fn:adjust-date-to-timezone</a>
  :)
-declare function fn:adjust-dateTime-to-timezone() external;
-
-
+declare function  fn:adjust-date-to-timezone ( $arg as xs:date?, $timezone as xs:dayTimeDuration?) as xs:date?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-adjust-time-to-timezone'>http://www.w3.org/TR/xpath-functions/#func-adjust-time-to-timezone</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-adjust-dateTime-to-timezone">fn:adjust-dateTime-to-timezone</a>
  :)
-declare function fn:adjust-time-to-timezone() external;
-
-
+declare function  fn:adjust-dateTime-to-timezone ( $arg as xs:dateTime?) as xs:dateTime?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-avg'>http://www.w3.org/TR/xpath-functions/#func-avg</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-adjust-dateTime-to-timezone">fn:adjust-dateTime-to-timezone</a>
  :)
-declare function fn:avg() external;
-
-
+declare function  fn:adjust-dateTime-to-timezone ( $arg as xs:dateTime?, $timezone as xs:dayTimeDuration?) as xs:dateTime?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-base-uri'>http://www.w3.org/TR/xpath-functions/#func-base-uri</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-adjust-time-to-timezone">fn:adjust-time-to-timezone</a>
  :)
-declare function fn:base-uri() external;
-
-
+declare function  fn:adjust-time-to-timezone ( $arg as xs:time?) as xs:time?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-boolean'>http://www.w3.org/TR/xpath-functions/#func-boolean</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-adjust-time-to-timezone">fn:adjust-time-to-timezone</a>
  :)
-declare function fn:boolean() external;
-
-
+declare function  fn:adjust-time-to-timezone ( $arg as xs:time?, $timezone as xs:dayTimeDuration?) as xs:time?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-ceiling'>http://www.w3.org/TR/xpath-functions/#func-ceiling</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-avg">fn:avg</a>
  :)
-declare function fn:ceiling() external;
-
-
+declare function  fn:avg ($arg as xs:anyAtomicType*) as xs:anyAtomicType?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-codepoint-equal'>http://www.w3.org/TR/xpath-functions/#func-codepoint-equal</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-base-uri">fn:base-uri</a>
  :)
-declare function fn:codepoint-equal() external;
-
-
+declare function  fn:base-uri () as xs:anyURI?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-codepoints-to-string'>http://www.w3.org/TR/xpath-functions/#func-codepoints-to-string</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-base-uri">fn:base-uri</a>
  :)
-declare function fn:codepoints-to-string() external;
-
-
+declare function  fn:base-uri ($arg as node()?) as xs:anyURI?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-collection'>http://www.w3.org/TR/xpath-functions/#func-collection</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-boolean">fn:boolean</a>
  :)
-declare function fn:collection() external;
-
-
+declare function  fn:boolean ($arg as item()*) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-compare'>http://www.w3.org/TR/xpath-functions/#func-compare</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-ceiling">fn:ceiling</a>
  :)
-declare function fn:compare() external;
-
-
+declare function  fn:ceiling ($arg as numeric?) as numeric?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-concat'>http://www.w3.org/TR/xpath-functions/#func-concat</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-codepoint-equal">fn:codepoint-equal</a>
  :)
-declare function fn:concat() external;
-
-
+declare function  fn:codepoint-equal ($comparand1 as xs:string?, $comparand2 as xs:string?) as xs:boolean?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-contains'>http://www.w3.org/TR/xpath-functions/#func-contains</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-codepoints-to-string">fn:codepoints-to-string</a>
  :)
-declare function fn:contains() external;
-
-
+declare function  fn:codepoints-to-string ( $arg as xs:integer*) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-count'>http://www.w3.org/TR/xpath-functions/#func-count</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-collection">fn:collection</a>
  :)
-declare function fn:count() external;
-
-
+declare function  fn:collection () as node()*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-current-date'>http://www.w3.org/TR/xpath-functions/#func-current-date</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-collection">fn:collection</a>
  :)
-declare function fn:current-date() external;
-
-
+declare function  fn:collection ($arg as xs:string?) as node()*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-current-dateTime'>http://www.w3.org/TR/xpath-functions/#func-current-dateTime</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-compare">fn:compare</a>
  :)
-declare function fn:current-dateTime() external;
-
-
+declare function  fn:compare ($comparand1 as xs:string?, $comparand2 as xs:string?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-current-time'>http://www.w3.org/TR/xpath-functions/#func-current-time</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-compare">fn:compare</a>
  :)
-declare function fn:current-time() external;
-
-
+declare function  fn:compare ($comparand1 as xs:string?, $comparand2 as xs:string?, $collation as xs:string) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-data'>http://www.w3.org/TR/xpath-functions/#func-data</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-concat">fn:concat</a>
  :)
-declare function fn:data() external;
-
-
+declare function  fn:concat ($arg1 as xs:anyAtomicType?, $arg2 as xs:anyAtomicType?) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-day-from-date'>http://www.w3.org/TR/xpath-functions/#func-day-from-date</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-contains">fn:contains</a>
  :)
-declare function fn:day-from-date() external;
-
-
+declare function  fn:contains ($arg1 as xs:string?, $arg2 as xs:string?) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-day-from-dateTime'>http://www.w3.org/TR/xpath-functions/#func-day-from-dateTime</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-contains">fn:contains</a>
  :)
-declare function fn:day-from-dateTime() external;
-
-
+declare function  fn:contains ($arg1 as xs:string?, $arg2 as xs:string?, $collation as xs:string) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-days-from-duration'>http://www.w3.org/TR/xpath-functions/#func-days-from-duration</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-count">fn:count</a>
  :)
-declare function fn:days-from-duration() external;
-
-
+declare function  fn:count ($arg as item()*) as xs:integer  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-deep-equal'>http://www.w3.org/TR/xpath-functions/#func-deep-equal</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-current-date">fn:current-date</a>
  :)
-declare function fn:deep-equal() external;
-
-
+declare function  fn:current-date () as xs:date  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-default-collation'>http://www.w3.org/TR/xpath-functions/#func-default-collation</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-current-dateTime">fn:current-dateTime</a>
  :)
-declare function fn:default-collation() external;
-
-
+declare function  fn:current-dateTime () as xs:dateTime  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-distinct-values'>http://www.w3.org/TR/xpath-functions/#func-distinct-values</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-current-time">fn:current-time</a>
  :)
-declare function fn:distinct-values() external;
-
-
+declare function  fn:current-time () as xs:time  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-doc'>http://www.w3.org/TR/xpath-functions/#func-doc</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-data">fn:data</a>
  :)
-declare function fn:doc() external;
-
-
+declare function  fn:data ($arg as item()*) as xs:anyAtomicType*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-doc-available'>http://www.w3.org/TR/xpath-functions/#func-doc-available</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-dateTime">fn:dateTime</a>
  :)
-declare function fn:doc-available() external;
-
-
+declare function  fn:dateTime ($arg1 as xs:date?, $arg2 as xs:time?) as xs:dateTime?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-document-uri'>http://www.w3.org/TR/xpath-functions/#func-document-uri</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-day-from-date">fn:day-from-date</a>
  :)
-declare function fn:document-uri() external;
-
-
+declare function  fn:day-from-date ($arg as xs:date?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-empty'>http://www.w3.org/TR/xpath-functions/#func-empty</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-day-from-dateTime">fn:day-from-dateTime</a>
  :)
-declare function fn:empty() external;
-
-
+declare function  fn:day-from-dateTime ( $arg as xs:dateTime?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-encode-for-uri'>http://www.w3.org/TR/xpath-functions/#func-encode-for-uri</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-days-from-duration">fn:days-from-duration</a>
  :)
-declare function fn:encode-for-uri() external;
-
-
+declare function  fn:days-from-duration ( $arg as xs:duration?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-ends-with'>http://www.w3.org/TR/xpath-functions/#func-ends-with</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-deep-equal">fn:deep-equal</a>
  :)
-declare function fn:ends-with() external;
-
-
+declare function  fn:deep-equal ($parameter1 as item()*, $parameter2 as item()*) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-escape-html-uri'>http://www.w3.org/TR/xpath-functions/#func-escape-html-uri</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-deep-equal">fn:deep-equal</a>
  :)
-declare function fn:escape-html-uri() external;
-
-
+declare function  fn:deep-equal ($parameter1 as item()*, $parameter2 as item()*, $collation as string) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-exactly-one'>http://www.w3.org/TR/xpath-functions/#func-exactly-one</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-default-collation">fn:default-collation</a>
  :)
-declare function fn:exactly-one() external;
-
-
+declare function  fn:default-collation () as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-exists'>http://www.w3.org/TR/xpath-functions/#func-exists</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-distinct-values">fn:distinct-values</a>
  :)
-declare function fn:exists() external;
-
-
+declare function  fn:distinct-values ($arg as xs:anyAtomicType*) as xs:anyAtomicType*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-false'>http://www.w3.org/TR/xpath-functions/#func-false</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-distinct-values">fn:distinct-values</a>
  :)
-declare function fn:false() external;
-
-
+declare function  fn:distinct-values ($arg as xs:anyAtomicType*, $collation as xs:string) as xs:anyAtomicType*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-floor'>http://www.w3.org/TR/xpath-functions/#func-floor</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-doc">fn:doc</a>
  :)
-declare function fn:floor() external;
-
-
+declare function  fn:doc ($uri as xs:string?) as document-node()?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-hours-from-dateTime'>http://www.w3.org/TR/xpath-functions/#func-hours-from-dateTime</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-doc-available">fn:doc-available</a>
  :)
-declare function fn:hours-from-dateTime() external;
-
-
+declare function  fn:doc-available ($uri as xs:string?) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-hours-from-duration'>http://www.w3.org/TR/xpath-functions/#func-hours-from-duration</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-document-uri">fn:document-uri</a>
  :)
-declare function fn:hours-from-duration() external;
-
-
+declare function  fn:document-uri ($arg as node()?) as xs:anyURI?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-hours-from-time'>http://www.w3.org/TR/xpath-functions/#func-hours-from-time</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-empty">fn:empty</a>
  :)
-declare function fn:hours-from-time() external;
-
-
+declare function  fn:empty ($arg as item()*) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-id'>http://www.w3.org/TR/xpath-functions/#func-id</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-encode-for-uri">fn:encode-for-uri</a>
  :)
-declare function fn:id() external;
-
-
+declare function  fn:encode-for-uri ($uri-part as xs:string?) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-idref'>http://www.w3.org/TR/xpath-functions/#func-idref</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-ends-with">fn:ends-with</a>
  :)
-declare function fn:idref() external;
-
-
+declare function  fn:ends-with ($arg1 as xs:string?, $arg2 as xs:string?) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-implicit-timezone'>http://www.w3.org/TR/xpath-functions/#func-implicit-timezone</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-ends-with">fn:ends-with</a>
  :)
-declare function fn:implicit-timezone() external;
-
-
+declare function  fn:ends-with ($arg1 as xs:string?, $arg2 as xs:string?, $collation as xs:string) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-in-scope-prefixes'>http://www.w3.org/TR/xpath-functions/#func-in-scope-prefixes</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-error">fn:error</a>
  :)
-declare function fn:in-scope-prefixes() external;
-
-
+declare function  fn:error () as none  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-index-of'>http://www.w3.org/TR/xpath-functions/#func-index-of</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-error">fn:error</a>
  :)
-declare function fn:index-of() external;
-
-
+declare function  fn:error ($error as xs:QName) as none  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-insert-before'>http://www.w3.org/TR/xpath-functions/#func-insert-before</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-error">fn:error</a>
  :)
-declare function fn:insert-before() external;
-
-
+declare function  fn:error ($error as xs:QName?, $description as xs:string) as none  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-iri-to-uri'>http://www.w3.org/TR/xpath-functions/#func-iri-to-uri</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-error">fn:error</a>
  :)
-declare function fn:iri-to-uri() external;
-
-
+declare function  fn:error ($error as xs:QName?, $description as xs:string, $error-object as item()*) as none  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-lang'>http://www.w3.org/TR/xpath-functions/#func-lang</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-escape-html-uri">fn:escape-html-uri</a>
  :)
-declare function fn:lang() external;
-
-
+declare function  fn:escape-html-uri ($uri as xs:string?) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-last'>http://www.w3.org/TR/xpath-functions/#func-last</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-exactly-one">fn:exactly-one</a>
  :)
-declare function fn:last() external;
-
-
+declare function  fn:exactly-one ($arg as item()*) as item()  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-local-name'>http://www.w3.org/TR/xpath-functions/#func-local-name</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-exists">fn:exists</a>
  :)
-declare function fn:local-name() external;
-
-
+declare function  fn:exists ($arg as item()*) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-local-name-from-QName'>http://www.w3.org/TR/xpath-functions/#func-local-name-from-QName</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-false">fn:false</a>
  :)
-declare function fn:local-name-from-QName() external;
-
-
+declare function  fn:false () as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-lower-case'>http://www.w3.org/TR/xpath-functions/#func-lower-case</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-floor">fn:floor</a>
  :)
-declare function fn:lower-case() external;
-
-
+declare function  fn:floor ($arg as numeric?) as numeric?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-matches'>http://www.w3.org/TR/xpath-functions/#func-matches</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-hours-from-dateTime">fn:hours-from-dateTime</a>
  :)
-declare function fn:matches() external;
-
-
+declare function  fn:hours-from-dateTime ( $arg as xs:dateTime?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-max'>http://www.w3.org/TR/xpath-functions/#func-max</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-hours-from-duration">fn:hours-from-duration</a>
  :)
-declare function fn:max() external;
-
-
+declare function  fn:hours-from-duration ( $arg as xs:duration?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-min'>http://www.w3.org/TR/xpath-functions/#func-min</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-hours-from-time">fn:hours-from-time</a>
  :)
-declare function fn:min() external;
-
-
+declare function  fn:hours-from-time ($arg as xs:time?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-minutes-from-dateTime'>http://www.w3.org/TR/xpath-functions/#func-minutes-from-dateTime</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-id">fn:id</a>
  :)
-declare function fn:minutes-from-dateTime() external;
-
-
+declare function  fn:id ($arg as xs:string*) as element()*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-minutes-from-duration'>http://www.w3.org/TR/xpath-functions/#func-minutes-from-duration</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-id">fn:id</a>
  :)
-declare function fn:minutes-from-duration() external;
-
-
+declare function  fn:id ($arg as xs:string*, $node as node()) as element()*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-minutes-from-time'>http://www.w3.org/TR/xpath-functions/#func-minutes-from-time</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-idref">fn:idref</a>
  :)
-declare function fn:minutes-from-time() external;
-
-
+declare function  fn:idref ($arg as xs:string*) as node()*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-month-from-date'>http://www.w3.org/TR/xpath-functions/#func-month-from-date</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-idref">fn:idref</a>
  :)
-declare function fn:month-from-date() external;
-
-
+declare function  fn:idref ($arg as xs:string*, $node as node()) as node()*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-month-from-dateTime'>http://www.w3.org/TR/xpath-functions/#func-month-from-dateTime</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-implicit-timezone">fn:implicit-timezone</a>
  :)
-declare function fn:month-from-dateTime() external;
-
-
+declare function  fn:implicit-timezone () as xs:dayTimeDuration  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-months-from-duration'>http://www.w3.org/TR/xpath-functions/#func-months-from-duration</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-in-scope-prefixes">fn:in-scope-prefixes</a>
  :)
-declare function fn:months-from-duration() external;
-
-
+declare function  fn:in-scope-prefixes ( $element as element()) as xs:string*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-name'>http://www.w3.org/TR/xpath-functions/#func-name</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-index-of">fn:index-of</a>
  :)
-declare function fn:name() external;
-
-
+declare function  fn:index-of ($seqParam as xs:anyAtomicType*, $srchParam as xs:anyAtomicType) as xs:integer*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-namespace-uri'>http://www.w3.org/TR/xpath-functions/#func-namespace-uri</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-index-of">fn:index-of</a>
  :)
-declare function fn:namespace-uri() external;
-
-
+declare function  fn:index-of ($seqParam as xs:anyAtomicType*, $srchParam as xs:anyAtomicType, $collation as xs:string) as xs:integer*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-namespace-uri-for-prefix'>http://www.w3.org/TR/xpath-functions/#func-namespace-uri-for-prefix</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-insert-before">fn:insert-before</a>
  :)
-declare function fn:namespace-uri-for-prefix() external;
-
-
+declare function  fn:insert-before ($target as item()*, $position as xs:integer, $inserts as item()*) as item()*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-namespace-uri-from-QName'>http://www.w3.org/TR/xpath-functions/#func-namespace-uri-from-QName</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-iri-to-uri">fn:iri-to-uri</a>
  :)
-declare function fn:namespace-uri-from-QName() external;
-
-
+declare function  fn:iri-to-uri ($iri as xs:string?) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-nilled'>http://www.w3.org/TR/xpath-functions/#func-nilled</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-lang">fn:lang</a>
  :)
-declare function fn:nilled() external;
-
-
+declare function  fn:lang ($testlang as xs:string?) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-node-name'>http://www.w3.org/TR/xpath-functions/#func-node-name</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-lang">fn:lang</a>
  :)
-declare function fn:node-name() external;
-
-
+declare function  fn:lang ($testlang as xs:string?, $node as node()) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-normalize-space'>http://www.w3.org/TR/xpath-functions/#func-normalize-space</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-last">fn:last</a>
  :)
-declare function fn:normalize-space() external;
-
-
+declare function  fn:last () as xs:integer  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-normalize-unicode'>http://www.w3.org/TR/xpath-functions/#func-normalize-unicode</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-local-name">fn:local-name</a>
  :)
-declare function fn:normalize-unicode() external;
-
-
+declare function  fn:local-name () as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-not'>http://www.w3.org/TR/xpath-functions/#func-not</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-local-name">fn:local-name</a>
  :)
-declare function fn:not() external;
-
-
+declare function  fn:local-name ($arg as node()?) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-number'>http://www.w3.org/TR/xpath-functions/#func-number</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-local-name-from-QName">fn:local-name-from-QName</a>
  :)
-declare function fn:number() external;
-
-
+declare function  fn:local-name-from-QName ( $arg as xs:QName?) as xs:NCName?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-one-or-more'>http://www.w3.org/TR/xpath-functions/#func-one-or-more</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-lower-case">fn:lower-case</a>
  :)
-declare function fn:one-or-more() external;
-
-
+declare function  fn:lower-case ($arg as xs:string?) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-position'>http://www.w3.org/TR/xpath-functions/#func-position</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-matches">fn:matches</a>
  :)
-declare function fn:position() external;
-
-
+declare function  fn:matches ($input as xs:string?, $pattern as xs:string) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-prefix-from-QName'>http://www.w3.org/TR/xpath-functions/#func-prefix-from-QName</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-matches">fn:matches</a>
  :)
-declare function fn:prefix-from-QName() external;
-
-
+declare function  fn:matches ($input as xs:string?, $pattern as xs:string, $flags as xs:string) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-QName'>http://www.w3.org/TR/xpath-functions/#func-QName</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-max">fn:max</a>
  :)
-declare function fn:QName() external;
-
-
+declare function  fn:max ($arg as xs:anyAtomicType*) as xs:anyAtomicType?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-remove'>http://www.w3.org/TR/xpath-functions/#func-remove</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-max">fn:max</a>
  :)
-declare function fn:remove() external;
-
-
+declare function  fn:max ($arg as xs:anyAtomicType*, $collation as string) as xs:anyAtomicType?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-replace'>http://www.w3.org/TR/xpath-functions/#func-replace</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-min">fn:min</a>
  :)
-declare function fn:replace() external;
-
-
+declare function  fn:min ($arg as xs:anyAtomicType*) as xs:anyAtomicType?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-resolve-QName'>http://www.w3.org/TR/xpath-functions/#func-resolve-QName</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-min">fn:min</a>
  :)
-declare function fn:resolve-QName() external;
-
-
+declare function  fn:min ($arg as xs:anyAtomicType*, $collation as string) as xs:anyAtomicType?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-resolve-uri'>http://www.w3.org/TR/xpath-functions/#func-resolve-uri</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-minutes-from-dateTime">fn:minutes-from-dateTime</a>
  :)
-declare function fn:resolve-uri() external;
-
-
+declare function  fn:minutes-from-dateTime ( $arg as xs:dateTime?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-reverse'>http://www.w3.org/TR/xpath-functions/#func-reverse</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-minutes-from-duration">fn:minutes-from-duration</a>
  :)
-declare function fn:reverse() external;
-
-
+declare function  fn:minutes-from-duration ( $arg as xs:duration?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-root'>http://www.w3.org/TR/xpath-functions/#func-root</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-minutes-from-time">fn:minutes-from-time</a>
  :)
-declare function fn:root() external;
-
-
+declare function  fn:minutes-from-time ( $arg as xs:time?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-round'>http://www.w3.org/TR/xpath-functions/#func-round</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-month-from-date">fn:month-from-date</a>
  :)
-declare function fn:round() external;
-
-
+declare function  fn:month-from-date ($arg as xs:date?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-round-half-to-even'>http://www.w3.org/TR/xpath-functions/#func-round-half-to-even</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-month-from-dateTime">fn:month-from-dateTime</a>
  :)
-declare function fn:round-half-to-even() external;
-
-
+declare function  fn:month-from-dateTime ( $arg as xs:dateTime?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-seconds-from-dateTime'>http://www.w3.org/TR/xpath-functions/#func-seconds-from-dateTime</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-months-from-duration">fn:months-from-duration</a>
  :)
-declare function fn:seconds-from-dateTime() external;
-
-
+declare function  fn:months-from-duration ( $arg as xs:duration?) as xs:integer?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-seconds-from-duration'>http://www.w3.org/TR/xpath-functions/#func-seconds-from-duration</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-name">fn:name</a>
  :)
-declare function fn:seconds-from-duration() external;
-
-
+declare function  fn:name () as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-seconds-from-time'>http://www.w3.org/TR/xpath-functions/#func-seconds-from-time</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-name">fn:name</a>
  :)
-declare function fn:seconds-from-time() external;
-
-
+declare function  fn:name ($arg as node()?) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-starts-with'>http://www.w3.org/TR/xpath-functions/#func-starts-with</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-namespace-uri">fn:namespace-uri</a>
  :)
-declare function fn:starts-with() external;
-
-
+declare function  fn:namespace-uri () as xs:anyURI  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-static-base-uri'>http://www.w3.org/TR/xpath-functions/#func-static-base-uri</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-namespace-uri">fn:namespace-uri</a>
  :)
-declare function fn:static-base-uri() external;
-
-
+declare function  fn:namespace-uri ($arg as node()?) as xs:anyURI  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-string'>http://www.w3.org/TR/xpath-functions/#func-string</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-namespace-uri-for-prefix">fn:namespace-uri-for-prefix</a>
  :)
-declare function fn:string() external;
-
-
+declare function  fn:namespace-uri-for-prefix ( $prefix as xs:string?, $element as element()) as xs:anyURI?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-string-join'>http://www.w3.org/TR/xpath-functions/#func-string-join</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-namespace-uri-from-QName">fn:namespace-uri-from-QName</a>
  :)
-declare function fn:string-join() external;
-
-
+declare function  fn:namespace-uri-from-QName ( $arg as xs:QName?) as xs:anyURI?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-string-length'>http://www.w3.org/TR/xpath-functions/#func-string-length</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-nilled">fn:nilled</a>
  :)
-declare function fn:string-length() external;
-
-
+declare function  fn:nilled ($arg as node()?) as xs:boolean?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-string-to-codepoints'>http://www.w3.org/TR/xpath-functions/#func-string-to-codepoints</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-node-name">fn:node-name</a>
  :)
-declare function fn:string-to-codepoints() external;
-
-
+declare function  fn:node-name ($arg as node()?) as xs:QName?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-subsequence'>http://www.w3.org/TR/xpath-functions/#func-subsequence</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-normalize-space">fn:normalize-space</a>
  :)
-declare function fn:subsequence() external;
-
-
+declare function  fn:normalize-space () as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-substring'>http://www.w3.org/TR/xpath-functions/#func-substring</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-normalize-space">fn:normalize-space</a>
  :)
-declare function fn:substring() external;
-
-
+declare function  fn:normalize-space ($arg as xs:string?) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-substring-after'>http://www.w3.org/TR/xpath-functions/#func-substring-after</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-normalize-unicode">fn:normalize-unicode</a>
  :)
-declare function fn:substring-after() external;
-
-
+declare function  fn:normalize-unicode ( $arg as xs:string?) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-substring-before'>http://www.w3.org/TR/xpath-functions/#func-substring-before</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-normalize-unicode">fn:normalize-unicode</a>
  :)
-declare function fn:substring-before() external;
-
-
+declare function  fn:normalize-unicode ( $arg as xs:string?, $normalizationForm as xs:string) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-sum'>http://www.w3.org/TR/xpath-functions/#func-sum</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-not">fn:not</a>
  :)
-declare function fn:sum() external;
-
-
+declare function  fn:not ($arg as item()*) as xs:boolean  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-timezone-from-date'>http://www.w3.org/TR/xpath-functions/#func-timezone-from-date</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-number">fn:number</a>
  :)
-declare function fn:timezone-from-date() external;
-
-
+declare function  fn:number () as xs:double  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-timezone-from-dateTime'>http://www.w3.org/TR/xpath-functions/#func-timezone-from-dateTime</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-number">fn:number</a>
  :)
-declare function fn:timezone-from-dateTime() external;
-
-
+declare function  fn:number ($arg as xs:anyAtomicType?) as xs:double  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-timezone-from-time'>http://www.w3.org/TR/xpath-functions/#func-timezone-from-time</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-one-or-more">fn:one-or-more</a>
  :)
-declare function fn:timezone-from-time() external;
-
-
+declare function  fn:one-or-more ($arg as item()*) as item()+  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-tokenize'>http://www.w3.org/TR/xpath-functions/#func-tokenize</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-position">fn:position</a>
  :)
-declare function fn:tokenize() external;
-
-
+declare function  fn:position () as xs:integer  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-translate'>http://www.w3.org/TR/xpath-functions/#func-translate</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-prefix-from-QName">fn:prefix-from-QName</a>
  :)
-declare function fn:translate() external;
-
-
+declare function  fn:prefix-from-QName ( $arg as xs:QName?) as xs:NCName?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-true'>http://www.w3.org/TR/xpath-functions/#func-true</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-QName">fn:QName</a>
  :)
-declare function fn:true() external;
-
-
+declare function  fn:QName ($paramURI as xs:string?, $paramQName as xs:string) as xs:QName  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-unordered'>http://www.w3.org/TR/xpath-functions/#func-unordered</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-remove">fn:remove</a>
  :)
-declare function fn:unordered() external;
-
-
+declare function  fn:remove ($target as item()*, $position as xs:integer) as item()*  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-upper-case'>http://www.w3.org/TR/xpath-functions/#func-upper-case</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-replace">fn:replace</a>
  :)
-declare function fn:upper-case() external;
-
-
+declare function  fn:replace ($input as xs:string?, $pattern as xs:string, $replacement as xs:string) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-year-from-date'>http://www.w3.org/TR/xpath-functions/#func-year-from-date</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-replace">fn:replace</a>
  :)
-declare function fn:year-from-date() external;
-
-
+declare function  fn:replace ($input as xs:string?, $pattern as xs:string, $replacement as xs:string, $flags as xs:string) as xs:string  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-year-from-dateTime'>http://www.w3.org/TR/xpath-functions/#func-year-from-dateTime</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-resolve-QName">fn:resolve-QName</a>
  :)
-declare function fn:year-from-dateTime() external;
-
-
+declare function  fn:resolve-QName ($qname as xs:string?, $element as element()) as xs:QName?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-years-from-duration'>http://www.w3.org/TR/xpath-functions/#func-years-from-duration</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-resolve-uri">fn:resolve-uri</a>
  :)
-declare function fn:years-from-duration() external;
-
-
+declare function  fn:resolve-uri ($relative as xs:string?) as xs:anyURI?  external;
+ 
 (:~
- : @see for semantics please check <a href='http://www.w3.org/TR/xpath-functions/#func-zero-or-one'>http://www.w3.org/TR/xpath-functions/#func-zero-or-one</a> 
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-resolve-uri">fn:resolve-uri</a>
  :)
-declare function fn:zero-or-one() external;
-
-
+declare function  fn:resolve-uri ($relative as xs:string?, $base as xs:string) as xs:anyURI?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-reverse">fn:reverse</a>
+ :)
+declare function  fn:reverse ($arg as item()*) as item()*  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-root">fn:root</a>
+ :)
+declare function  fn:root () as node()  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-root">fn:root</a>
+ :)
+declare function  fn:root ($arg as node()?) as node()?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-round">fn:round</a>
+ :)
+declare function  fn:round ($arg as numeric?) as numeric?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-round-half-to-even">fn:round-half-to-even</a>
+ :)
+declare function  fn:round-half-to-even ( $arg as numeric?) as numeric?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-round-half-to-even">fn:round-half-to-even</a>
+ :)
+declare function  fn:round-half-to-even ( $arg as numeric?, $precision as xs:integer) as numeric?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-seconds-from-dateTime">fn:seconds-from-dateTime</a>
+ :)
+declare function  fn:seconds-from-dateTime ( $arg as xs:dateTime?) as xs:decimal?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-seconds-from-duration">fn:seconds-from-duration</a>
+ :)
+declare function  fn:seconds-from-duration ( $arg as xs:duration?) as xs:decimal?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-seconds-from-time">fn:seconds-from-time</a>
+ :)
+declare function  fn:seconds-from-time ( $arg as xs:time?) as xs:decimal?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-starts-with">fn:starts-with</a>
+ :)
+declare function  fn:starts-with ($arg1 as xs:string?, $arg2 as xs:string?) as xs:boolean  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-starts-with">fn:starts-with</a>
+ :)
+declare function  fn:starts-with ($arg1 as xs:string?, $arg2 as xs:string?, $collation as xs:string) as xs:boolean  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-static-base-uri">fn:static-base-uri</a>
+ :)
+declare function  fn:static-base-uri () as xs:anyURI?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-string">fn:string</a>
+ :)
+declare function  fn:string () as xs:string  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-string">fn:string</a>
+ :)
+declare function  fn:string ($arg as item()?) as xs:string  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-string-join">fn:string-join</a>
+ :)
+declare function  fn:string-join ($arg1 as xs:string*, $arg2 as xs:string) as xs:string  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-string-length">fn:string-length</a>
+ :)
+declare function  fn:string-length () as xs:integer  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-string-length">fn:string-length</a>
+ :)
+declare function  fn:string-length ($arg as xs:string?) as xs:integer  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-string-to-codepoints">fn:string-to-codepoints</a>
+ :)
+declare function  fn:string-to-codepoints ( $arg as xs:string?) as xs:integer*  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-subsequence">fn:subsequence</a>
+ :)
+declare function  fn:subsequence ($sourceSeq as item()*, $startingLoc as xs:double) as item()*  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-subsequence">fn:subsequence</a>
+ :)
+declare function  fn:subsequence ($sourceSeq as item()*, $startingLoc as xs:double, $length as xs:double) as item()*  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-substring">fn:substring</a>
+ :)
+declare function  fn:substring ($sourceString as xs:string?, $startingLoc as xs:double) as xs:string  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-substring">fn:substring</a>
+ :)
+declare function  fn:substring ($sourceString as xs:string?, $startingLoc as xs:double, $length as xs:double) as xs:string  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-substring-after">fn:substring-after</a>
+ :)
+declare function  fn:substring-after ($arg1 as xs:string?, $arg2 as xs:string?) as xs:string  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-substring-after">fn:substring-after</a>
+ :)
+declare function  fn:substring-after ($arg1 as xs:string?, $arg2 as xs:string?, $collation as xs:string) as xs:string  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-substring-before">fn:substring-before</a>
+ :)
+declare function  fn:substring-before ( $arg1 as xs:string?, $arg2 as xs:string?) as xs:string  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-substring-before">fn:substring-before</a>
+ :)
+declare function  fn:substring-before ( $arg1 as xs:string?, $arg2 as xs:string?, $collation as xs:string) as xs:string  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-sum">fn:sum</a>
+ :)
+declare function  fn:sum ($arg as xs:anyAtomicType*) as xs:anyAtomicType  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-sum">fn:sum</a>
+ :)
+declare function  fn:sum ($arg as xs:anyAtomicType*, $zero as xs:anyAtomicType?) as xs:anyAtomicType?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-timezone-from-date">fn:timezone-from-date</a>
+ :)
+declare function  fn:timezone-from-date ( $arg as xs:date?) as xs:dayTimeDuration?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-timezone-from-dateTime">fn:timezone-from-dateTime</a>
+ :)
+declare function  fn:timezone-from-dateTime ( $arg as xs:dateTime?) as xs:dayTimeDuration?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-timezone-from-time">fn:timezone-from-time</a>
+ :)
+declare function  fn:timezone-from-time ( $arg as xs:time?) as xs:dayTimeDuration?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-tokenize">fn:tokenize</a>
+ :)
+declare function  fn:tokenize ($input as xs:string?, $pattern as xs:string) as xs:string*  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-tokenize">fn:tokenize</a>
+ :)
+declare function  fn:tokenize ($input as xs:string?, $pattern as xs:string, $flags as xs:string) as xs:string*  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-trace">fn:trace</a>
+ :)
+declare function  fn:trace ($value as item()*, $label as xs:string) as item()*  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-translate">fn:translate</a>
+ :)
+declare function  fn:translate ($arg as xs:string?, $mapString as xs:string, $transString as xs:string) as xs:string  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-true">fn:true</a>
+ :)
+declare function  fn:true () as xs:boolean  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-unordered">fn:unordered</a>
+ :)
+declare function  fn:unordered ($sourceSeq as item()*) as item()*  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-upper-case">fn:upper-case</a>
+ :)
+declare function  fn:upper-case ($arg as xs:string?) as xs:string  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-year-from-date">fn:year-from-date</a>
+ :)
+declare function  fn:year-from-date ($arg as xs:date?) as xs:integer?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-year-from-dateTime">fn:year-from-dateTime</a>
+ :)
+declare function  fn:year-from-dateTime ( $arg as xs:dateTime?) as xs:integer?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-years-from-duration">fn:years-from-duration</a>
+ :)
+declare function  fn:years-from-duration ( $arg as xs:duration?) as xs:integer?  external;
+ 
+(:~
+ : @see for semantics please check <a href="http://www.w3.org/TR/xpath-functions/#func-zero-or-one">fn:zero-or-one</a>
+ :)
+declare function  fn:zero-or-one ($arg as item()*) as item()?  external;
