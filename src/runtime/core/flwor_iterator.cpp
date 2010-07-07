@@ -1029,7 +1029,7 @@ void FLWORIterator::materializeGroupResultForSort(
 
 /***************************************************************************//**
   All FOR and LET vars are bound when this method is called. The method computes
-  the order-by tuple T and then checks whether T is in the GroupMap already. If
+  the group-by tuple T and then checks whether T is in the GroupMap already. If
   not, it inserts T in the GroupMap, together with one temp sequence for each of
   the non-grouping vars, storing the current value of the non-grouping var. If
   yes, it appends to each of the temp sequences associated with T the current
@@ -1170,13 +1170,13 @@ void FLWORIterator::bindGroupBy(
 
   while (lNonGroupingSpecsIter != lNonGroupingSpecs.end())
   {
-    std::vector<LetVarIter_t>::const_iterator lOuterVarBindingIter = lNonGroupingSpecsIter->theVarRefs.begin();
+    std::vector<LetVarIter_t>::const_iterator lOuterVarBindingIter =
+    lNonGroupingSpecsIter->theVarRefs.begin();
+
     while (lOuterVarBindingIter != lNonGroupingSpecsIter->theVarRefs.end())
     {
       store::TempSeq_t lTmpSeq = *lOuterSeqIter;
-      store::Iterator_t lBindIterator = lTmpSeq->getIterator();
-      lBindIterator->open();
-      ( *lOuterVarBindingIter )->bind(lBindIterator , planState);
+      ( *lOuterVarBindingIter )->bind(lTmpSeq , planState);
       ++lOuterVarBindingIter;
     }
     ++lNonGroupingSpecsIter;
