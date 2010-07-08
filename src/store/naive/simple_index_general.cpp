@@ -153,6 +153,27 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
     return insertInMap(key, node, theMaps[keyType]);
   }
 
+  case XS_DURATION:
+  case XS_YM_DURATION:
+  case XS_DT_DURATION:
+  {
+    return insertInMap(key, node, theMaps[XS_DURATION]);
+  }
+
+  case XS_STRING:
+  case XS_NORMALIZED_STRING:
+  case XS_TOKEN:
+  case XS_NMTOKEN:
+  case XS_LANGUAGE:
+  case XS_NAME:
+  case XS_NCNAME:
+  case XS_ID:
+  case XS_IDREF:
+  case XS_ENTITY:
+  {
+    return insertInMap(key, node, theMaps[XS_STRING]);
+  }
+
   case XS_DOUBLE:
   case XS_FLOAT:
   {
@@ -276,20 +297,6 @@ longmap:
       (*key)[0].transfer(castItem);
       goto integermap;
     }
-  }
-
-  case XS_STRING:
-  case XS_NORMALIZED_STRING:
-  case XS_TOKEN:
-  case XS_NMTOKEN:
-  case XS_LANGUAGE:
-  case XS_NAME:
-  case XS_NCNAME:
-  case XS_ID:
-  case XS_IDREF:
-  case XS_ENTITY:
-  {
-    return insertInMap(key, node, theMaps[XS_STRING]);
   }
 
   case XS_UNTYPED_ATOMIC:

@@ -190,42 +190,42 @@ public:
   /**
    *  Returns 0 on success
    */
-  static int parseDateTime(const xqpString& s, DateTime& dt);
+  static int parseDateTime(const xqpStringStore_t& s, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int parseDate(const xqpString& s, DateTime& dt);
+  static int parseDate(const xqpStringStore_t& s, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int parseTime(const xqpString& s, DateTime& dt);
+  static int parseTime(const xqpStringStore_t& s, DateTime& dt);
       
   /**
    *  Returns 0 on success
    */
-  static int parseGYearMonth(const xqpString& s, DateTime& dt);
+  static int parseGYearMonth(const xqpStringStore_t& s, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGYear(const xqpString& s, DateTime& dt);
+  static int parseGYear(const xqpStringStore_t& s, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGMonth(const xqpString& s, DateTime& dt);
+  static int parseGMonth(const xqpStringStore_t& s, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGMonthDay(const xqpString& s, DateTime& dt);
+  static int parseGMonthDay(const xqpStringStore_t& s, DateTime& dt);
 
   /**
    *  Returns 0 on success
    */
-  static int parseGDay(const xqpString& s, DateTime& dt);
+  static int parseGDay(const xqpStringStore_t& s, DateTime& dt);
 
   static int getDayOfWeek(int year, int month, int day);
 
@@ -303,7 +303,6 @@ public:
    *  Returns 1 if the DateTime is greater than the given DateTime
    *
    *  Throws InvalidTimezoneException if the given timezone is not valid.
-   *
    */
   int compare(const DateTime* dt, long timezone_seconds) const;
       
@@ -339,14 +338,12 @@ public:
    *  For a given Date or DateTime, it will return the respective day of the week, 
    *  with the index being 0 based, with 0 being Sunday, 1 Monday, etc. If the give 
    *  DateTime does not have a Date or DateTime facet, the function will return -1.
-   *
    */ 
   int getDayOfWeek() const;
   int getDayOfYear() const;
   int getWeekInYear() const;
   int getWeekInMonth() const;
   bool isLeapYear() const;
-  
       
 protected:
   Duration* toDayTimeDuration() const;

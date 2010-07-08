@@ -1,0 +1,11 @@
+<data>
+  <item id="i1">
+    <foo>a</foo>
+  </item>
+  <item id="i2">
+    <foo>b</foo>
+  </item>
+  <item id="i3">
+    <foo>a</foo>
+  </item>
+</data>

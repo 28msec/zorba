@@ -124,7 +124,7 @@ public:
 
   bool createDateTime(store::Item_t& result, short year , short month, short day, short hour, short minute, double second, short timeZone_hours);
 
-  bool createDateTime(store::Item_t& result, const xqp_string& value);
+  bool createDateTime(store::Item_t& result, const xqpStringStore_t& value);
   
   bool createDateTime(store::Item_t& result, const store::Item_t&, const store::Item_t&);
 
@@ -132,11 +132,11 @@ public:
   
   bool createDate(store::Item_t& result, short year, short month, short day);
 
-  bool createDate(store::Item_t& result, const xqp_string& value);
+  bool createDate(store::Item_t& result, const xqpStringStore_t& value);
 
   bool createTime(store::Item_t& result, const xqp_time* value);
   
-  bool createTime(store::Item_t& result, const xqp_string& value );
+  bool createTime(store::Item_t& result, const xqpStringStore_t& value);
 
   bool createTime(store::Item_t& result, short hour, short minute, double second );
 
@@ -144,33 +144,33 @@ public:
 
   bool createGDay(store::Item_t& result, const xqp_gDay* value);
 
-  bool createGDay(store::Item_t& result, const xqp_string& value);
+  bool createGDay(store::Item_t& result, const xqpStringStore_t& value);
 
   bool createGDay(store::Item_t& result, short day);
 
   bool createGMonth(store::Item_t& result, const xqp_gMonth* value);
 
-  bool createGMonth(store::Item_t& result, const xqp_string& value);
+  bool createGMonth(store::Item_t& result, const xqpStringStore_t& value);
 
   bool createGMonth(store::Item_t& result, short month);
 
   bool createGMonthDay (store::Item_t& result, const xqp_gMonthDay* value);
 
-  bool createGMonthDay (store::Item_t& result,  const xqp_string& value );
+  bool createGMonthDay (store::Item_t& result,  const xqpStringStore_t& value);
 
-  bool createGMonthDay (store::Item_t& result,  short month, short day );
+  bool createGMonthDay (store::Item_t& result,  short month, short day);
 
   bool createGYear (store::Item_t& result, const xqp_gYear* value);
   
-  bool createGYear (store::Item_t& result,  const xqp_string& value );
+  bool createGYear (store::Item_t& result,  const xqpStringStore_t& value);
 
-  bool createGYear (store::Item_t& result,  short year );
+  bool createGYear (store::Item_t& result,  short year);
 
   bool createGYearMonth (store::Item_t& result, const xqp_gYearMonth* value);
 
-  bool createGYearMonth (store::Item_t& result,  const xqp_string& value );
+  bool createGYearMonth (store::Item_t& result,  const xqpStringStore_t& value);
 
-  bool createGYearMonth (store::Item_t& result,  short year, short month );
+  bool createGYearMonth (store::Item_t& result,  short year, short month);
 
   bool createDuration(store::Item_t& result, xqp_duration* value);
   

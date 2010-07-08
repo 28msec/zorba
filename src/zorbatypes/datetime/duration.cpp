@@ -115,6 +115,21 @@ Duration::Duration(FACET_TYPE facet_type, bool negative, long years, long months
   normalize();
 }
 
+
+void Duration::serialize(::zorba::serialization::Archiver& ar)
+{
+  SERIALIZE_ENUM(FACET_TYPE, facet);
+  ar & is_negative;
+  ar & data[0];
+  ar & data[1];
+  ar & data[2];
+  ar & data[3];
+  ar & data[4];
+  ar & data[5];
+  ar & data[6];
+}
+
+
 bool Duration::isNegative() const
 {
   return is_negative;

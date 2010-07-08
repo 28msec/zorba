@@ -306,6 +306,7 @@ int DateTime::createGDay(int days, DateTime& dt)
   return 0;
 }
 
+
 int DateTime::getLocalTime(DateTime& dt)
 {
   // TODO: check code on windows
@@ -335,22 +336,33 @@ int DateTime::getLocalTime(DateTime& dt)
 
 }
 
-int DateTime::parseDateTime(const xqpString& s, DateTime& dt)
+
+int DateTime::parseDateTime(const xqpStringStore_t& s, DateTime& dt)
 {
   unsigned int position = 0;
-  std::string ss = s.getStore()->str();
+  std::string ss = s->str();
 
   // DateTime is of form: '-'? yyyy '-' mm '-' dd 'T' hh ':' mm ':' ss ('.' s+)? (zzzzzz)?
 
   skip_whitespace(ss, position);
   dt.facet = DATETIME_FACET;
   
-  if (parse_date(ss, position, dt.data[YEAR_DATA], dt.data[MONTH_DATA], dt.data[DAY_DATA]))
+  if (parse_date(ss,
+                 position,
+                 dt.data[YEAR_DATA],
+                 dt.data[MONTH_DATA],
+                 dt.data[DAY_DATA]))
     return 1;
+
   if (position == ss.size() || ss[position++] != 'T')
     return 1;
   
-  if (parse_time(ss, position, dt.data[HOUR_DATA], dt.data[MINUTE_DATA], dt.data[SECONDS_DATA], dt.data[FRACSECONDS_DATA]))
+  if (parse_time(ss,
+                 position,
+                 dt.data[HOUR_DATA],
+                 dt.data[MINUTE_DATA],
+                 dt.data[SECONDS_DATA],
+                 dt.data[FRACSECONDS_DATA]))
     return 1;
     
   if (position < ss.size())
@@ -371,16 +383,20 @@ int DateTime::parseDateTime(const xqpString& s, DateTime& dt)
 }
 
 
-int DateTime::parseDate(const xqpString& s, DateTime& dt)
+int DateTime::parseDate(const xqpStringStore_t& s, DateTime& dt)
 {
   TimeZone tz;
   unsigned int position = 0;
-  std::string ss = s.getStore()->str();
+  std::string ss = s->str();
 
   skip_whitespace(ss, position);
   dt.facet = DATE_FACET;
   
-  if (parse_date(ss, position, dt.data[YEAR_DATA], dt.data[MONTH_DATA], dt.data[DAY_DATA]))
+  if (parse_date(ss,
+                 position,
+                 dt.data[YEAR_DATA],
+                 dt.data[MONTH_DATA],
+                 dt.data[DAY_DATA]))
     return 1;
 
   if (position < ss.size())
@@ -393,10 +409,10 @@ int DateTime::parseDate(const xqpString& s, DateTime& dt)
 }
 
 
-int DateTime::parseTime(const xqpString& s, DateTime& dt)
+int DateTime::parseTime(const xqpStringStore_t& s, DateTime& dt)
 {
   unsigned int position = 0;
-  std::string ss = s.getStore()->str();
+  std::string ss = s->str();
 
   skip_whitespace(ss, position);
   dt.facet = TIME_FACET;
@@ -417,10 +433,10 @@ int DateTime::parseTime(const xqpString& s, DateTime& dt)
 }
 
 
-int DateTime::parseGYearMonth(const xqpString& s, DateTime& dt)
+int DateTime::parseGYearMonth(const xqpStringStore_t& s, DateTime& dt)
 {
   unsigned int position = 0, temp_position = 0;
-  std::string ss = s.getStore()->str();
+  std::string ss = s->str();
   std::string temp;
 
   // GYearMonth of form: '-'? yyyy '-' mm zzzzzz?
@@ -448,10 +464,10 @@ int DateTime::parseGYearMonth(const xqpString& s, DateTime& dt)
 }
 
 
-int DateTime::parseGYear(const xqpString& s, DateTime& dt)
+int DateTime::parseGYear(const xqpStringStore_t& s, DateTime& dt)
 {
   unsigned int position = 0, temp_position = 0;
-  std::string ss = s.getStore()->str();
+  std::string ss = s->str();
   std::string temp;
 
   // GYear of form: '-'? yyyy zzzzzz?
@@ -479,10 +495,10 @@ int DateTime::parseGYear(const xqpString& s, DateTime& dt)
 }
 
 
-int DateTime::parseGMonth(const xqpString& s, DateTime& dt)
+int DateTime::parseGMonth(const xqpStringStore_t& s, DateTime& dt)
 {
   unsigned int position = 0, temp_position = 0;
-  std::string ss = s.getStore()->str();
+  std::string ss = s->str();
   std::string temp;
 
   // GMonth of form: --MM zzzzzz?
@@ -513,10 +529,10 @@ int DateTime::parseGMonth(const xqpString& s, DateTime& dt)
 }
 
 
-int DateTime::parseGMonthDay(const xqpString& s, DateTime& dt)
+int DateTime::parseGMonthDay(const xqpStringStore_t& s, DateTime& dt)
 {
   unsigned int position = 0, temp_position = 0;
-  std::string ss = s.getStore()->str();
+  std::string ss = s->str();
   std::string temp;
 
   // GMonthDay of form: --MM-DD zzzzzz?
@@ -550,10 +566,10 @@ int DateTime::parseGMonthDay(const xqpString& s, DateTime& dt)
 }
 
 
-int DateTime::parseGDay(const xqpString& s, DateTime& dt)
+int DateTime::parseGDay(const xqpStringStore_t& s, DateTime& dt)
 {
   unsigned int position = 0, temp_position = 0;
-  std::string ss = s.getStore()->str();
+  std::string ss = s->str();
   std::string temp;
 
   // GDay of form: ---DD zzzzzz?
@@ -834,11 +850,13 @@ int DateTime::getIntSeconds() const
   return data[SECONDS_DATA];
 }
   
+
 int DateTime::getFractionalSeconds() const
 {
   assert(data[FRACSECONDS_DATA] >= 0);
   return data[FRACSECONDS_DATA];
 }
+
 
 TimeZone DateTime::getTimezone() const
 {
@@ -1175,6 +1193,7 @@ void DateTime::setFacet(FACET_TYPE a_facet)
   adjustToFacet();
 }
 
+
 void DateTime::serialize(serialization::Archiver& ar)
 {
   SERIALIZE_ENUM(FACET_TYPE, facet);
@@ -1187,6 +1206,7 @@ void DateTime::serialize(serialization::Archiver& ar)
   ar & data[6];
   ar & the_time_zone;
 }
+
 
 void DateTime::adjustToFacet()
 {
@@ -1234,6 +1254,7 @@ void DateTime::adjustToFacet()
   }
 }
 
+
 int DateTime::getDayOfWeek(int year, int month, int day)
 {
   if (month < 3)
@@ -1253,6 +1274,7 @@ int DateTime::getDayOfWeek(int year, int month, int day)
          ) % 7;
 }
 
+
 int DateTime::getWeekInYear(int year, int month, int day)
 {
   int day_of_year = DateTime::getDayOfYear(year, month, day);
@@ -1262,6 +1284,7 @@ int DateTime::getWeekInYear(int year, int month, int day)
   
   return ((day_of_year + year_first_day_of_week - 2) / 7) + year_first_day_of_week < 5 ? 1 : 0;
 }
+
 
 int DateTime::getDayOfYear(int year, int month, int day)
 {
@@ -1276,6 +1299,7 @@ int DateTime::getDayOfYear(int year, int month, int day)
   return days[month-1] + day;
 }
 
+
 bool DateTime::isLeapYear(int year)
 {
   if (((year%4 == 0) && (year%100 != 0))
@@ -1286,31 +1310,37 @@ bool DateTime::isLeapYear(int year)
     return false;
 }
 
+
 int DateTime::getWeekInMonth(int year, int month, int day)
 {
   int first_day_of_week = DateTime::getDayOfWeek(year, month, 1);
   return ((day + first_day_of_week - 2) / 7) + (first_day_of_week < 5 ? 1 : 0);
 }
 
+
 bool DateTime::isLeapYear() const
 {
   return DateTime::isLeapYear(data[YEAR_DATA]);
 }
+
 
 int DateTime::getDayOfWeek() const
 {  
 	return DateTime::getDayOfWeek(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
 }
 
+
 int DateTime::getDayOfYear() const
 {
   return DateTime::getDayOfYear(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
 }
 
+
 int DateTime::getWeekInYear() const
 {
   return DateTime::getWeekInYear(data[YEAR_DATA], data[MONTH_DATA], data[DAY_DATA]);
 }
+
 
 int DateTime::getWeekInMonth() const
 {

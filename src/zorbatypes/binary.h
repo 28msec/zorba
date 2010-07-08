@@ -13,19 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_BINARY_H
-#define ZORBA_BINARY_H
+#ifndef ZORBA_ZORBATYPES_BINARY_H
+#define ZORBA_ZORBATYPES_BINARY_H
 
 #include <vector>
 #include <stdio.h>
 #include <zorba/config.h>
 #include "zorbatypes/xqpstring.h"
 
-#include "zorbaserialization/serialization_engine.h"
+#include "zorbaserialization/class_serializer.h"
 
 namespace zorba {
 
 class Base16;
+
+
 class ZORBA_DLL_PUBLIC Base64 : public ::zorba::serialization::SerializeBaseClass
 {
 private:
@@ -34,48 +36,67 @@ private:
 public:
   SERIALIZABLE_CLASS(Base64)
   SERIALIZABLE_CLASS_CONSTRUCTOR(Base64)
-  void serialize(::zorba::serialization::Archiver &ar)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  static bool parseString(const xqpStringStore_t& aString, Base64& aBase64) 
   {
-    ar & theData;
+    return parseString(aString->c_str(), aString->bytes(), aBase64);
   }
-public:
-  Base64(const Base64& aBase64) : ::zorba::serialization::SerializeBaseClass() { theData = aBase64.theData; }
-  explicit Base64(const Base16& aBase16);
-  Base64() {}
-  virtual ~Base64() {}
 
-  static bool parseString(const xqpString& aString, Base64& aBase64) {
-    return parseString(aString.c_str(), aString.length(), aBase64);
-  }
   static bool parseString(const char* aString, size_t aLength, Base64& aBase64);
-  static bool parseString(const char* aString, size_t aLength, Base64& aBase64, std::string& lErrorMessage);
 
-private:
-  void insertData(const char* aCharStar, size_t len);
-public:
-
-  const std::vector<char>& getData() const { return theData; }
-  size_t size() const { return theData.size(); }
-  bool equal(const Base64& aBase64) const;
-  xqpString str() const;
+  static bool parseString(
+        const char* aString, 
+        size_t aLength,
+        Base64& aBase64,
+        std::string& lErrorMessage);
 
   static void encode(const std::vector<char>&, std::vector<char>&);
-  static xqpString encode(std::istream& aStream);
+
+  static xqpStringStore_t encode(std::istream& aStream);
+
   static void encode(std::istream& aStream, Base64& aResult);
+
   static void encode(const xqpStringStore* aString, Base64&);
 
   static void decode(const std::vector<char>&, std::vector<char>&);
 
-  xqpString
-  decode() const;
+public:
+  Base64(const Base64& aBase64) 
+    :
+    ::zorba::serialization::SerializeBaseClass() 
+  {
+    theData = aBase64.theData;
+  }
 
-  void
-  decode(std::vector<char>&);
+  explicit Base64(const Base16& aBase16);
+
+  Base64() {}
+
+  virtual ~Base64() {}
+
+  const std::vector<char>& getData() const { return theData; }
+
+  size_t size() const { return theData.size(); }
+
+  bool equal(const Base64& aBase64) const;
+
+  xqpStringStore_t str() const;
+
+  xqpStringStore_t decode() const;
+
+  void decode(std::vector<char>&);
 
   uint32_t hash() const;
+
+private:
+  void insertData(const char* aCharStar, size_t len);
 };
 
- std::ostream& operator<<(std::ostream& os, const Base64& aBase64);
+
+std::ostream& operator<<(std::ostream& os, const Base64& aBase64);
+
 
 class ZORBA_DLL_PUBLIC Base16 : public ::zorba::serialization::SerializeBaseClass
 {
@@ -90,40 +111,59 @@ private:
   static size_t DECODE_OUTPUT;
 
 public:
+  static bool parseString(const xqpStringStore_t& aString, Base16& aBase16) 
+  {
+    return parseString(aString->c_str(), aString->bytes(), aBase16);
+  }
+
+  static bool parseString(const char* aString, size_t aLength, Base16& aBase16);
+
+  static void encode(const std::vector<char>&, std::vector<char>&);
+
+  static void decode(const std::vector<char>&, std::vector<char>&);
+
+public:
   SERIALIZABLE_CLASS(Base16)
   SERIALIZABLE_CLASS_CONSTRUCTOR(Base16)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    ar & theData;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
+
 public:
-  Base16(const Base16& aBase16) : ::zorba::serialization::SerializeBaseClass() { theData = aBase16.theData; }
+  Base16(const Base16& aBase16) 
+    :
+    ::zorba::serialization::SerializeBaseClass()
+  {
+    theData = aBase16.theData;
+  }
+  
   explicit Base16(const Base64& aBase64);
+  
   Base16() {}
+  
   virtual ~Base16() {}
 
-  static bool parseString(const xqpString& aString, Base16& aBase16) {
-    return parseString(aString.c_str(), aString.length(), aBase16);
-  }
-  static bool parseString(const char* aString, size_t aLength, Base16& aBase16);
+  const std::vector<char>& getData() const { return theData; }
+
+  size_t size() const { return theData.size(); }
+
+  bool equal(const Base16& aBase16) const;
+
+  xqpStringStore_t str() const;
+
+  uint32_t hash() const;
 
 private:
   void insertData(const char* aCharStar, size_t len);
-
-public:
-  const std::vector<char>& getData() const { return theData; }
-  size_t size() const { return theData.size(); }
-  bool equal(const Base16& aBase16) const;
-  xqpString str() const;
-
-  static void encode(const std::vector<char>&, std::vector<char>&);
-  static void decode(const std::vector<char>&, std::vector<char>&);
-
-  uint32_t hash() const;
 };
 
- std::ostream& operator<<(std::ostream& os, const Base16& aBase16);
+
+std::ostream& operator<<(std::ostream& os, const Base16& aBase16);
 
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

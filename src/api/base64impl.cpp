@@ -23,16 +23,17 @@
 
 namespace zorba { namespace encoding {
 
-String
-Base64::encode(String& aString) {
+String Base64::encode(String& aString) 
+{
   std::stringstream lStream;
   lStream << aString;
   return encode(lStream);
 }
 
-String
-Base64::encode(std::istream& aStream) {
-  return zorba::Base64::encode(aStream).getStore();
+
+String Base64::encode(std::istream& aStream) 
+{
+  return zorba::Base64::encode(aStream).getp();
 }
 
 // TODO: once the internal Base64 class is symmetrical

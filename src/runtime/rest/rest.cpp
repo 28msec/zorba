@@ -460,8 +460,8 @@ int processReply(const QueryLoc& aLoc,
       store::Item_t temp_item;
       xqp_base64Binary base64;
       std::istream is(theStreamBuffer);
-      xqpString temp = Base64::encode(is);
-      GENV_ITEMFACTORY->createTextNode(temp_item, payload, -1, temp.theStrStore);
+      xqpStringStore_t temp = Base64::encode(is);
+      GENV_ITEMFACTORY->createTextNode(temp_item, payload, -1, temp);
     }
     break;
     }

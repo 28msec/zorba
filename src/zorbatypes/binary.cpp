@@ -20,7 +20,9 @@
 #include "zorbaerrors/error_manager.h"
 #include "util/XmlWhitespace.h"
 
-namespace zorba {
+namespace zorba 
+{
+
 SERIALIZABLE_CLASS_VERSIONS(Base64)
 END_SERIALIZABLE_CLASS_VERSIONS(Base64)
 
@@ -28,125 +30,119 @@ SERIALIZABLE_CLASS_VERSIONS(Base16)
 END_SERIALIZABLE_CLASS_VERSIONS(Base16)
 
 
-Base64::Base64(const Base16& aBase16)
+static const std::string base64_chars = 
+             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+             "abcdefghijklmnopqrstuvwxyz"
+             "0123456789+/";
+
+
+inline bool is_base64(char c) 
 {
-  std::vector<char> lOrig;
-  Base16::decode(aBase16.getData(), lOrig);
-  Base64::encode(lOrig, theData);
+  return (isalnum(c) || (c == '+') || (c == '/'));
 }
+
 
 bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64)
 {
   aBase64.theData.clear();
-  try {
+  try 
+  {
     aBase64.insertData(aString, aLength);
-  } catch (...) {
+  }
+  catch (...) 
+  {
     return false;
   }
   return true;
 }
 
-bool Base64::parseString(const char* aString, size_t aLength,  Base64& aBase64, std::string& lErrorMessage)
+
+bool Base64::parseString(
+    const char* aString,
+    size_t aLength,
+    Base64& aBase64, 
+    std::string& lErrorMessage)
 {
   aBase64.theData.clear();
-  try {
+  try 
+  {
     aBase64.insertData(aString, aLength);
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e) 
+  {
     lErrorMessage = e.theDescription;
     return false;
   }
   return true;
 }
 
-void Base64::insertData(const char* aCharStar, size_t len)
+
+void Base64::encode(const xqpStringStore* aString, Base64& aResult)
 {
-  for (size_t i = 0; i < len; ++i)
+  std::vector<char> source;
+  source.resize(aString->bytes());
+  
+  const char* lTmp = aString->c_str();
+  const char* lRun = lTmp;
+  ulong numBytes = aString->bytes();
+  for (ulong i = 0; i < numBytes; ++i) 
   {
-    char lChar = aCharStar[i];
-    if (lChar == ' ')
-    {
-      // do nothing
-    }
-    else if ((lChar >= 65 && lChar <= 90)  // A-Z
-         || (lChar >= 97 && lChar <= 122) // a-z
-         || (lChar >= 48 && lChar <= 57)  // 0-9
-         || (lChar == 43)                 // +
-         || (lChar == 47))                // /
-    {
-      theData.push_back(lChar);
-    } else if (lChar == '=' && i > 0 && i == (len-2) && aCharStar[i+1] == '=' )
-    {
-      if (aCharStar[i-1] == 'A'
-       || aCharStar[i-1] == 'Q'
-       || aCharStar[i-1] == 'g'
-       || aCharStar[i-1] == 'w'
-      )
-      {
-        theData.push_back('=');
-        theData.push_back('=');
-        ++i;
-      } else {
-        ZORBA_ERROR_DESC(FORG0001,"In Base 64, '==' must be at the end and must be succeed by [AQgw]");
-      }
-    } else if (lChar == '=' && i > 0 && i == (len-1))
-    {
-      switch(aCharStar[i-1]) {
-      case 'A': case 'E': case 'I': case 'M': case 'Q': case 'U': case 'Y':
-      case 'c': case 'g': case 'k': case 'o': case 's': case 'w': case '0':
-      case '4': case '8':
-        theData.push_back('=');
-        break;
-      default:
-        ZORBA_ERROR_DESC(FORG0001,"In Base 64, '=' must be at the end and must be succeed by [AEIMQUYcgkosw048]");
-      }
-    } else if ( xmlWhitespaceChar(lChar) ) 
-	{
-	  // ignore it
-	}
-	else {
-      std::stringstream lStream;
-      lStream << "invalid character '" << aCharStar[i] << "' in Base64 value";
-      ZORBA_ERROR_DESC(FORG0001, lStream.str());
-    }
-  }
-  if (theData.size() % 4 != 0) {
-    ZORBA_ERROR_DESC(FORG0001, "Base64 input must be a multiple of four characters");
+    source[i] = (*lRun);
+    ++lRun;
   }
 
+#if 0
+  for (std::vector<char>::iterator lIter = source.begin();
+       lIter != source.end();
+       ++lIter) 
+  {
+    std::cout << (*lIter);
+  }
+
+  std::cout << std::endl;
+#endif
+
+  aResult.theData.clear();
+  encode(source, aResult.theData);
 }
 
-bool Base64::equal(const Base64& aBase64) const
+
+void Base64::encode(std::istream& aStream, Base64& aResult)
 {
-  if (size() != aBase64.size())
-    return false;
+  std::vector<char> source, result;
 
-  std::vector<char>::const_iterator lIter0 = theData.begin();
-  std::vector<char>::const_iterator lEnd0 = theData.end();
-  std::vector<char>::const_iterator lIter1 = aBase64.theData.begin();
+  while (aStream.good())
+    source.push_back((char)(aStream.get()));
 
-  for (; lIter0 != lEnd0 ; )
+  encode(source, result);
+  aResult.theData = result;
+}
+
+
+xqpStringStore_t Base64::encode(std::istream& aStream)
+{
+  std::vector<char> source;
+  std::vector<char> dest;
+
+  xqpStringStore_t result = new xqpStringStore("");
+  std::string& str = result->str();
+
+  char buf[1024];
+  while (!aStream.eof()) 
   {
-    if (*lIter0 != *lIter1)
-      return false;
-    ++lIter0; ++lIter1;
+    aStream.read(buf, 1024);
+    source.insert(source.end(), buf, buf + aStream.gcount());
   }
-  return true;
-}
 
-xqpString Base64::str() const {
-  std::stringstream lStream;
-  lStream << *this;
-  return lStream.str();
-}
+  encode(source, dest);
 
-inline bool is_base64(char c) {
-  return (isalnum(c) || (c == '+') || (c == '/'));
-}
+  str.resize(dest.size());
 
-static const std::string base64_chars = 
-             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-             "abcdefghijklmnopqrstuvwxyz"
-             "0123456789+/";
+  for (unsigned int i = 0; i < dest.size(); ++i)
+    str[i] = dest[i];
+
+  return result;
+}
 
 
 void Base64::encode(const std::vector<char>& aSource, std::vector<char>& aResult)
@@ -158,9 +154,11 @@ void Base64::encode(const std::vector<char>& aSource, std::vector<char>& aResult
   char char_array_3[3] = {'\0','\0','\0'};
   char char_array_4[4] = {'\0','\0','\0','\0'};
 
-  while (in_len--) {
+  while (in_len--) 
+  {
     char_array_3[i++] = aSource[lCurPos++];
-    if (i == 3) {
+    if (i == 3) 
+    {
       char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
       char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
       char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
@@ -191,52 +189,6 @@ void Base64::encode(const std::vector<char>& aSource, std::vector<char>& aResult
   }  
 }
 
-xqpString Base64::encode(std::istream& aStream)
-{
-  std::vector<char> source, result;
-  xqpString xqpResult;
-  
-  char buf[1024];
-  while (!aStream.eof()) {
-    aStream.read(buf, 1024);
-    source.insert(source.end(), buf, buf + aStream.gcount());
-  }
-
-  encode(source, result);
-  for (unsigned int i=0; i<result.size(); i++)
-    xqpResult.append_in_place(result[i]);
-  return xqpResult;
-}
-
-void Base64::encode( std::istream& aStream, Base64& aResult )
-{
-  std::vector<char> source, result;
-
-  while (aStream.good())
-    source.push_back((char)(aStream.get()));
-
-  encode(source, result);
-  aResult.theData = result;
-}
-    
-void Base64::encode(const xqpStringStore* aString, Base64& aResult)
-{
-  std::vector<char> source;
-  source.reserve(aString->str().length());
-  
-  const char* lTmp = aString->c_str();
-  const char* lRun = lTmp;
-  for (unsigned int i = 0; i < aString->str().length(); ++i) {
-    source.push_back((*lRun));
-    ++lRun;
-  }
-  for (std::vector<char>::iterator lIter = source.begin(); lIter != source.end(); ++lIter) {
-    std::cout << (*lIter);
-  }
-  std::cout << std::endl;
-  aResult.theData.clear();
-  encode(source, aResult.theData);
-}
 
 void Base64::decode(const std::vector<char>& aSource, std::vector<char>& aResult)
 {
@@ -277,23 +229,135 @@ void Base64::decode(const std::vector<char>& aSource, std::vector<char>& aResult
   }
 }
 
-xqpString
-Base64::decode() const
-{
-  std::vector<char> lDecodedData;
-  Base64::decode(theData, lDecodedData);
 
-  xqpString lResult;
-  for (unsigned int i=0; i< lDecodedData.size(); i++)
-    lResult.append_in_place( lDecodedData[i] );
-  return lResult;
+Base64::Base64(const Base16& aBase16)
+{
+  std::vector<char> lOrig;
+  Base16::decode(aBase16.getData(), lOrig);
+  Base64::encode(lOrig, theData);
 }
 
-void
-Base64::decode(std::vector<char>& aResult)
+
+void Base64::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theData;
+}
+
+
+void Base64::insertData(const char* aCharStar, size_t len)
+{
+  for (size_t i = 0; i < len; ++i)
+  {
+    char lChar = aCharStar[i];
+
+    if (lChar == ' ')
+    {
+      // do nothing
+    }
+    else if ((lChar >= 65 && lChar <= 90)  // A-Z
+         || (lChar >= 97 && lChar <= 122) // a-z
+         || (lChar >= 48 && lChar <= 57)  // 0-9
+         || (lChar == 43)                 // +
+         || (lChar == 47))                // /
+    {
+      theData.push_back(lChar);
+    }
+    else if (lChar == '=' && i > 0 && i == (len-2) && aCharStar[i+1] == '=' )
+    {
+      if (aCharStar[i-1] == 'A' ||
+          aCharStar[i-1] == 'Q' ||
+          aCharStar[i-1] == 'g' ||
+          aCharStar[i-1] == 'w')
+      {
+        theData.push_back('=');
+        theData.push_back('=');
+        ++i;
+      }
+      else
+      {
+        ZORBA_ERROR_DESC(FORG0001,"In Base 64, '==' must be at the end and must be succeed by [AQgw]");
+      }
+    }
+    else if (lChar == '=' && i > 0 && i == (len-1))
+    {
+      switch(aCharStar[i-1]) 
+      {
+      case 'A': case 'E': case 'I': case 'M': case 'Q': case 'U': case 'Y':
+      case 'c': case 'g': case 'k': case 'o': case 's': case 'w': case '0':
+      case '4': case '8':
+        theData.push_back('=');
+        break;
+      default:
+        ZORBA_ERROR_DESC(FORG0001,"In Base 64, '=' must be at the end and must be succeed by [AEIMQUYcgkosw048]");
+      }
+    }
+    else if ( xmlWhitespaceChar(lChar) ) 
+    {
+      // ignore it
+    }
+    else
+    {
+      std::stringstream lStream;
+      lStream << "invalid character '" << aCharStar[i] << "' in Base64 value";
+      ZORBA_ERROR_DESC(FORG0001, lStream.str());
+    }
+  }
+
+  if (theData.size() % 4 != 0) 
+  {
+    ZORBA_ERROR_DESC(FORG0001, "Base64 input must be a multiple of four characters");
+  }
+}
+
+
+bool Base64::equal(const Base64& aBase64) const
+{
+  if (size() != aBase64.size())
+    return false;
+
+  std::vector<char>::const_iterator lIter0 = theData.begin();
+  std::vector<char>::const_iterator lEnd0 = theData.end();
+  std::vector<char>::const_iterator lIter1 = aBase64.theData.begin();
+
+  for (; lIter0 != lEnd0 ; )
+  {
+    if (*lIter0 != *lIter1)
+      return false;
+    ++lIter0; ++lIter1;
+  }
+  return true;
+}
+
+
+xqpStringStore_t Base64::str() const 
+{
+  std::stringstream lStream;
+  lStream << *this;
+  return new xqpStringStore(lStream.str());
+}
+
+
+xqpStringStore_t Base64::decode() const
+{
+  std::vector<char> lDecodedData;
+
+  Base64::decode(theData, lDecodedData);
+
+  xqpStringStore_t result = new xqpStringStore(lDecodedData.size());
+  std::string& str = result->str();
+
+  for (unsigned int i = 0; i < lDecodedData.size(); ++i)
+    str[i] = lDecodedData[i];
+
+  return result;
+}
+
+
+void Base64::decode(std::vector<char>& aResult)
 {
   Base64::decode(theData, aResult);
 }
+
 
 uint32_t Base64::hash() const
 {
@@ -313,6 +377,7 @@ uint32_t Base64::hash() const
   return lHash;
 }
 
+
 std::ostream& operator<<(std::ostream& os, const Base64& aBase64)
 {
   std::vector<char>::const_iterator lIter = aBase64.getData().begin();
@@ -324,7 +389,9 @@ std::ostream& operator<<(std::ostream& os, const Base64& aBase64)
   return os;
 }
 
+
 const char* Base16::ENCODE_TABLE = "0123456789ABCDEF";
+
 const unsigned char Base16::DECODE_TABLE[ 0x80 ] = {
   /*00-07*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
   /*08-0f*/ 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -349,6 +416,7 @@ size_t Base16::ENCODE_OUTPUT = 2;
 size_t Base16::DECODE_INPUT = 2;
 size_t Base16::DECODE_OUTPUT = 1;
 
+
 Base16::Base16(const Base64& aBase64) : ::zorba::serialization::SerializeBaseClass()
 {
   std::vector<char> lOrig;
@@ -356,12 +424,22 @@ Base16::Base16(const Base64& aBase64) : ::zorba::serialization::SerializeBaseCla
   Base16::encode(lOrig, theData);
 }
 
+
+void Base16::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theData;
+}
+
+
 bool Base16::parseString(const char* aString, size_t aLength, Base16& aBase16)
 {
   aBase16.theData.clear();
-  try {
+  try 
+  {
     aBase16.insertData(aString, aLength);
-  } catch (...) {
+  }
+  catch (...)
+  {
     return false;
   }
   return true;
@@ -392,6 +470,7 @@ void Base16::insertData(const char* aCharStar, size_t len)
   }
 }
 
+
 bool Base16::equal(const Base16& aBase16) const
 {
   if (size() != aBase16.size())
@@ -410,11 +489,14 @@ bool Base16::equal(const Base16& aBase16) const
   return true;
 }
 
-xqpString Base16::str() const {
+
+xqpStringStore_t Base16::str() const 
+{
   std::stringstream lStream;
   lStream << *this;
-  return lStream.str();
+  return new xqpStringStore(lStream.str());
 }
+
 
 void Base16::encode(const std::vector<char>& aSource, std::vector<char>& aResult)
 {
@@ -432,6 +514,7 @@ void Base16::encode(const std::vector<char>& aSource, std::vector<char>& aResult
     aResult.push_back(ENCODE_TABLE[ (ch & 0x0f)      ]);
   }
 }
+
 
 void Base16::decode(const std::vector<char>& aSource, std::vector<char>& aResult)
 {
@@ -481,6 +564,8 @@ uint32_t Base16::hash() const
   }
   return lHash;
 }
+
+
 std::ostream& operator<<(std::ostream& os, const Base16& aBase16)
 {
   std::vector<char>::const_iterator lIter = aBase16.getData().begin();

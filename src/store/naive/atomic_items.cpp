@@ -21,6 +21,7 @@
 
 #include "zorbatypes/collation_manager.h"
 #include "zorbatypes/numconversions.h"
+#include "zorbatypes/URI.h"
 
 #include "zorbautils/hashfun.h"
 #include "zorbautils/icu_tokenizer.h"
@@ -70,10 +71,78 @@ void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
 /*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
+void UntypedAtomicItem::castToUri(store::Item_t& result) const
+{
+  try
+  {
+    URI uriVal(theValue);
+    GET_FACTORY().createAnyURI(result, uriVal.toString()->c_str());
+  }
+  catch (error::ZorbaError& e)
+  {
+    result = NULL;
+  }
+}
+
+
 void UntypedAtomicItem::castToString(store::Item_t& result) const
 {
   xqpStringStore_t tmp(theValue);
   GET_FACTORY().createString(result, tmp);
+}
+
+
+void UntypedAtomicItem::castToDateTime(store::Item_t& result) const
+{
+  GET_FACTORY().createDateTime(result, theValue);
+}
+
+
+void UntypedAtomicItem::castToDate(store::Item_t& result) const
+{
+  GET_FACTORY().createDate(result, theValue);
+}
+
+
+void UntypedAtomicItem::castToTime(store::Item_t& result) const
+{
+  GET_FACTORY().createTime(result, theValue);
+}
+
+
+void UntypedAtomicItem::castToGYear(store::Item_t& result) const
+{
+  GET_FACTORY().createGYear(result, theValue);
+}
+
+
+void UntypedAtomicItem::castToGYearMonth(store::Item_t& result) const
+{
+  GET_FACTORY().createGYearMonth(result, theValue);
+}
+
+
+void UntypedAtomicItem::castToGMonthDay(store::Item_t& result) const
+{
+  GET_FACTORY().createGMonthDay(result, theValue);
+}
+
+
+void UntypedAtomicItem::castToGMonth(store::Item_t& result) const
+{
+  GET_FACTORY().createGMonth(result, theValue);
+}
+
+
+void UntypedAtomicItem::castToGDay(store::Item_t& result) const
+{
+  GET_FACTORY().createGDay(result, theValue);
+}
+
+
+void UntypedAtomicItem::castToDuration(store::Item_t& result) const
+{
+  GET_FACTORY().createDuration(result, theValue);
 }
 
 
@@ -130,6 +199,53 @@ void UntypedAtomicItem::castToLong(store::Item_t& result) const
   {
     result = NULL;
   }
+}
+
+
+void UntypedAtomicItem::castToHexBinary(store::Item_t& result) const
+{
+  Base16 value;
+  if (Base16::parseString(theValue, value))
+  {
+    GET_FACTORY().createHexBinary(result, value);
+  }
+  else
+  {
+    result = NULL;
+  }
+}
+
+
+void UntypedAtomicItem::castToBase64Binary(store::Item_t& result) const
+{
+  Base64 value;
+  if (Base64::parseString(theValue, value))
+  {
+    GET_FACTORY().createBase64Binary(result, value);
+  }
+  else
+  {
+    result = NULL;
+  }
+}
+
+
+void UntypedAtomicItem::castToBoolean(store::Item_t& result) const
+{
+  xqpStringStore_t str = theValue->trim(" \t\r\n", 4);
+  bool value = true;
+
+  if (str->byteEqual("false", 5) || str->byteEqual("0", 1))
+  {
+    value = false;
+  }
+  else if (!str->byteEqual("true", 4) && !str->byteEqual("1", 1))
+  {
+    result = NULL;
+    return;
+  }
+
+  GET_FACTORY().createBoolean(result, value);
 }
 
 
@@ -407,13 +523,16 @@ xqp_string StringItemNaive::show() const
 #ifndef ZORBA_NO_FULL_TEXT
 
 void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
-                                      int token_no, int sent_no, int para_no ) {
+                                      int token_no, int sent_no, int para_no ) 
+{
   FTToken t( utf8_s, utf8_len, token_no, sent_no, lang_ );
   tokens_.push_back( t );
 }
 
+
 FTTokenIterator_t
-StringItemNaive::getDocumentTokens( locale::iso639_1::type lang) const {
+StringItemNaive::getDocumentTokens( locale::iso639_1::type lang) const 
+{
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
   NaiveFTTokenIterator::FTTokens *tokens = new NaiveFTTokenIterator::FTTokens;
   AtomicItemTokenizer atomic_tokenizer( *tokenizer, lang, *tokens );
@@ -422,9 +541,11 @@ StringItemNaive::getDocumentTokens( locale::iso639_1::type lang) const {
   return FTTokenIterator_t( new NaiveFTTokenIterator( tokens ) );
 }
 
+
 FTTokenIterator_t
 StringItemNaive::getQueryTokens( locale::iso639_1::type lang,
-                                 bool wildcards ) const {
+                                 bool wildcards ) const 
+{
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create( wildcards ) );
   NaiveFTTokenIterator::FTTokens *tokens = new NaiveFTTokenIterator::FTTokens;
   AtomicItemTokenizer atomic_tokenizer( *tokenizer, lang, *tokens );
@@ -719,43 +840,43 @@ xqp_string DateTimeItemNaive::show() const
 /*******************************************************************************
   class DurationItem
 ********************************************************************************/
-const xqp_duration& DurationItemNaive::getDurationValue() const
+const xqp_duration& DurationItem::getDurationValue() const
 {
   return theValue;
 }
 
 
-const xqp_dayTimeDuration& DurationItemNaive::getDayTimeDurationValue() const
+const xqp_dayTimeDuration& DurationItem::getDayTimeDurationValue() const
 {
   return theValue;
 }
 
 
-const xqp_yearMonthDuration& DurationItemNaive::getYearMonthDurationValue() const
+const xqp_yearMonthDuration& DurationItem::getYearMonthDurationValue() const
 {
   return theValue;
 }
 
 
-xqpStringStore_t DurationItemNaive::getStringValue() const
+xqpStringStore_t DurationItem::getStringValue() const
 {
   return theValue.toString();
 }
 
 
-void DurationItemNaive::getStringValue(xqpStringStore_t& strval) const
+void DurationItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = theValue.toString();
 }
 
 
-void DurationItemNaive::getStringValue(std::string& buf) const
+void DurationItem::getStringValue(std::string& buf) const
 {
   buf += theValue.toString()->c_str();
 }
 
 
-SchemaTypeCode DurationItemNaive::getTypeCode() const
+SchemaTypeCode DurationItem::getTypeCode() const
 {
   switch (theValue.getFacet())
   {
@@ -772,20 +893,20 @@ SchemaTypeCode DurationItemNaive::getTypeCode() const
 }
 
 
-store::Item* DurationItemNaive::getType() const
+store::Item* DurationItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[getTypeCode()];
 }
 
 
-store::Item_t DurationItemNaive::getEBV() const
+store::Item_t DurationItem::getEBV() const
 {
   ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for Duration!");
   return NULL;
 }
 
 
-xqp_string DurationItemNaive::show() const
+xqp_string DurationItem::show() const
 {
   return theValue.toString().getp();
 }
@@ -793,7 +914,7 @@ xqp_string DurationItemNaive::show() const
 
 
 /*******************************************************************************
-  class DoubleItemNaive
+  class DoubleItem
 ********************************************************************************/
 store::Item* DoubleItemNaive::getType() const
 {
@@ -1661,23 +1782,27 @@ store::Item* Base64BinaryItemNaive::getType() const
 
 xqpStringStore_t Base64BinaryItemNaive::getStringValue() const 
 {
-  return theValue.str().getStore();
+  return theValue.str();
 }
+
 
 void Base64BinaryItemNaive::getStringValue(xqpStringStore_t& strval) const
 {
-  strval = theValue.str().getStore();
+  strval = theValue.str();
 }
+
 
 void Base64BinaryItemNaive::getStringValue(std::string& buf) const
 {
-  buf += theValue.str().c_str();
+  buf += theValue.str()->c_str();
 }
+
 
 xqp_string Base64BinaryItemNaive::show() const 
 {
   return "xs:base64Binary(" + getStringValue()->str() + ")";
 }
+
 
 uint32_t
 Base64BinaryItemNaive::hash(long timezone, const XQPCollator* aCollation) const
@@ -1696,17 +1821,17 @@ store::Item* HexBinaryItemNaive::getType() const
 
 xqpStringStore_t HexBinaryItemNaive::getStringValue() const 
 {
-  return theValue.str().getStore();
+  return theValue.str();
 }
 
 void HexBinaryItemNaive::getStringValue(xqpStringStore_t& strval) const
 {
-  strval = theValue.str().getStore();
+  strval = theValue.str();
 }
 
 void HexBinaryItemNaive::getStringValue(std::string& buf) const
 {
-  buf += theValue.str().c_str();
+  buf += theValue.str()->c_str();
 }
 
 xqp_string HexBinaryItemNaive::show() const 

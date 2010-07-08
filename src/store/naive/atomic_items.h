@@ -267,7 +267,27 @@ protected:
   UntypedAtomicItem() {}
 
 public:
+  void castToUri(store::Item_t& result) const;
+
   void castToString(store::Item_t& result) const;
+
+  void castToDateTime(store::Item_t& result) const;
+
+  void castToDate(store::Item_t& result) const;
+
+  void castToTime(store::Item_t& result) const;
+
+  void castToGYear(store::Item_t& result) const;
+
+  void castToGYearMonth(store::Item_t& result) const;
+
+  void castToGMonthDay(store::Item_t& result) const;
+
+  void castToGMonth(store::Item_t& result) const;
+
+  void castToGDay(store::Item_t& result) const;
+
+  void castToDuration(store::Item_t& result) const;
 
   void castToDouble(store::Item_t& result) const;
 
@@ -277,9 +297,15 @@ public:
 
   void castToLong(store::Item_t& result) const;
 
+  void castToHexBinary(store::Item_t& result) const;
+
+  void castToBase64Binary(store::Item_t& result) const;
+
+  void castToBoolean(store::Item_t& result) const;
+
   SchemaTypeCode getTypeCode() const { return XS_UNTYPED_ATOMIC; }
 
-  store::Item* getType( ) const;
+  store::Item* getType() const;
 
   uint32_t hash(long timezone = 0, const XQPCollator* aCollation = 0) const;
 
@@ -780,7 +806,7 @@ protected:
 /*******************************************************************************
   class DurationItem
 ********************************************************************************/
-class DurationItemNaive : public AtomicItem
+class DurationItem : public AtomicItem
 {
   friend class BasicItemFactory;
 
@@ -788,9 +814,9 @@ protected:
   Duration theValue;
 
 protected:
-  DurationItemNaive(const xqp_duration* aValue) : theValue(*aValue) { };
+  DurationItem(const xqp_duration* aValue) : theValue(*aValue) { };
 
-  DurationItemNaive() {}
+  DurationItem() {}
 
 public:
   const xqp_duration& getDurationValue() const;

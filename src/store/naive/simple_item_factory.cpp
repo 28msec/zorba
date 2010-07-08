@@ -333,13 +333,6 @@ bool BasicItemFactory::createBoolean(store::Item_t& result, xqp_boolean value)
 }
 
 
-bool BasicItemFactory::createBase64Binary(store::Item_t& result, xqp_base64Binary value)
-{
-  result = new Base64BinaryItemNaive ( value );
-  return true;
-}
-
-
 bool BasicItemFactory::createDateTime(store::Item_t& result, const xqp_dateTime* value)
 {
   result = new DateTimeItemNaive(value);
@@ -414,7 +407,7 @@ bool BasicItemFactory::createDateTime(
 
 bool BasicItemFactory::createDateTime(
     store::Item_t& result,
-    const xqp_string& value )
+    const xqpStringStore_t& value)
 {
   DateTime dt;
 
@@ -480,7 +473,7 @@ bool BasicItemFactory::createDate(
 }
 
 
-bool BasicItemFactory::createDate (store::Item_t& result,  const xqp_string& value )
+bool BasicItemFactory::createDate(store::Item_t& result,  const xqpStringStore_t& value)
 {
   DateTime dt;
 
@@ -504,11 +497,11 @@ bool BasicItemFactory::createTime(store::Item_t& result, const xqp_time* value)
 }
 
 
-bool BasicItemFactory::createTime(store::Item_t& result, const xqp_string& value)
+bool BasicItemFactory::createTime(store::Item_t& result, const xqpStringStore_t& value)
 {
   DateTime dt;
 
-  if( DateTime::parseTime(value, dt) == 0 )
+  if( DateTime::parseTime(value, dt) == 0)
   {
     result = new DateTimeItemNaive(&dt);
     return true;
@@ -573,7 +566,7 @@ bool BasicItemFactory::createGDay(store::Item_t& result, const xqp_gDay* value)
 }
 
 
-bool BasicItemFactory::createGDay(store::Item_t& result,  const xqp_string& value)
+bool BasicItemFactory::createGDay(store::Item_t& result,  const xqpStringStore_t& value)
 {
   DateTime dt;
 
@@ -614,7 +607,7 @@ bool BasicItemFactory::createGMonth(store::Item_t& result, const xqp_gMonth* val
 }
 
 
-bool BasicItemFactory::createGMonth(store::Item_t& result, const xqp_string& value)
+bool BasicItemFactory::createGMonth(store::Item_t& result, const xqpStringStore_t& value)
 {
   DateTime dt;
 
@@ -659,7 +652,7 @@ bool BasicItemFactory::createGMonthDay(
 
 bool BasicItemFactory::createGMonthDay(
     store::Item_t& result,
-    const xqp_string& value )
+    const xqpStringStore_t& value)
 {
   DateTime dt;
 
@@ -698,7 +691,7 @@ bool BasicItemFactory::createGYear(store::Item_t& result, const xqp_gYear* value
 }
 
 
-bool BasicItemFactory::createGYear(store::Item_t& result,  const xqp_string& value)
+bool BasicItemFactory::createGYear(store::Item_t& result,  const xqpStringStore_t& value)
 {
   DateTime dt;
 
@@ -706,7 +699,9 @@ bool BasicItemFactory::createGYear(store::Item_t& result,  const xqp_string& val
   {
     result = new DateTimeItemNaive(&dt);
     return true;
-  } else {
+  }
+  else
+  {
     result = NULL;
     return false;
   }
@@ -732,7 +727,7 @@ bool BasicItemFactory::createGYear(store::Item_t& result,  short year)
 
 bool BasicItemFactory::createGYearMonth(
     store::Item_t& result,
-    const xqp_gYearMonth* value )
+    const xqp_gYearMonth* value)
 {
   result = new DateTimeItemNaive(value);
   return true;
@@ -741,7 +736,7 @@ bool BasicItemFactory::createGYearMonth(
 
 bool BasicItemFactory::createGYearMonth(
     store::Item_t& result,
-    const xqp_string& value)
+    const xqpStringStore_t& value)
 {
   DateTime dt;
 
@@ -780,9 +775,9 @@ bool BasicItemFactory::createGYearMonth(
 
 bool BasicItemFactory::createDuration(
     store::Item_t& result,
-    xqp_duration* value )
+    xqp_duration* value)
 {
-  result = new DurationItemNaive(value);
+  result = new DurationItem(value);
   return true;
 }
 
@@ -794,7 +789,7 @@ bool BasicItemFactory::createDuration(
   Duration d;
   if (Duration::parseDuration(value, d))
   {
-    result = new DurationItemNaive(&d);
+    result = new DurationItem(&d);
     return true;
   }
 
@@ -803,7 +798,7 @@ bool BasicItemFactory::createDuration(
 }
 
 
-bool BasicItemFactory::createDuration (
+bool BasicItemFactory::createDuration(
     store::Item_t& result,
     short   years,
     short   months,
@@ -813,7 +808,7 @@ bool BasicItemFactory::createDuration (
     double  seconds)
 {
   Duration d(Duration::DURATION_FACET, years, months, days, hours, minutes, seconds);
-  result = new DurationItemNaive(&d);
+  result = new DurationItem(&d);
   return true;
 }
 
@@ -822,22 +817,30 @@ bool BasicItemFactory::createYearMonthDuration(
     store::Item_t& result,
     xqp_yearMonthDuration* value )
 {
-  result = new DurationItemNaive(value);
+  result = new DurationItem(value);
   return true;
 }
 
 
-bool BasicItemFactory::createDayTimeDuration(store::Item_t& result, xqp_dayTimeDuration* value )
+bool BasicItemFactory::createDayTimeDuration(
+    store::Item_t& result,
+    xqp_dayTimeDuration* value)
 {
-  result = new DurationItemNaive(value);
+  result = new DurationItem(value);
   return true;
 }
 
 
-
-bool BasicItemFactory::createHexBinary (store::Item_t& result,  xqp_hexBinary value )
+bool BasicItemFactory::createBase64Binary(store::Item_t& result, xqp_base64Binary value)
 {
-  result = new HexBinaryItemNaive ( value );
+  result = new Base64BinaryItemNaive(value);
+  return true;
+}
+
+
+bool BasicItemFactory::createHexBinary(store::Item_t& result,  xqp_hexBinary value)
+{
+  result = new HexBinaryItemNaive(value);
   return true;
 }
 
