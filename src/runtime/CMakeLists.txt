@@ -15,11 +15,26 @@ SET(RUNTIME_SRCS)
 
 STRING(LENGTH "${CMAKE_SOURCE_DIR}/src/runtime/spec/" RUNTIME_SPEC_LENGTH)
 
-SET(RUNTIME_HEADER_GENERATOR "${CMAKE_SOURCE_DIR}/src/runtime/spec/iterator_h.xq")
-SET(RUNTIME_CPP_GENERATOR    "${CMAKE_SOURCE_DIR}/src/runtime/spec/iterator_cpp.xq")
-SET(PRINTER_VISITOR_HEADER_GENERATOR      "${CMAKE_SOURCE_DIR}/src/runtime/spec/printer_visitor_h.xq")
-SET(PRINTER_VISITOR_CPP_VISITOR_GENERATOR "${CMAKE_SOURCE_DIR}/src/runtime/spec/printer_visitor_cpp.xq")
-SET(PLANINTER_VISITOR_HEADER_GENERATOR    "${CMAKE_SOURCE_DIR}/src/runtime/spec/plan_iter_visitor_h.xq")
+SET(RUNTIME_HEADER_GENERATOR
+  "${CMAKE_SOURCE_DIR}/src/runtime/spec/iterator_h.xq")
+SET(RUNTIME_CPP_GENERATOR
+  "${CMAKE_SOURCE_DIR}/src/runtime/spec/iterator_cpp.xq")
+
+SET(PRINTER_VISITOR_HEADER_GENERATOR
+  "${CMAKE_SOURCE_DIR}/src/runtime/spec/printer_visitor_h.xq")
+SET(PRINTER_VISITOR_CPP_GENERATOR
+  "${CMAKE_SOURCE_DIR}/src/runtime/spec/printer_visitor_cpp.xq")
+SET(PLANITER_VISITOR_HEADER_GENERATOR
+  "${CMAKE_SOURCE_DIR}/src/runtime/spec/plan_iter_visitor_h.xq")
+
+SET(PRINTER_VISITOR_HEADER_FILE
+  "${CMAKE_BINARY_DIR}/src/runtime/visitors/printer_visitor.h")
+SET(PRINTER_VISITOR_CPP_FILE
+  "${CMAKE_BINARY_DIR}/src/runtime/visitors/printer_visitor.cpp")
+SET(PLANITER_VISITOR_HEADER_FILE
+  "${CMAKE_BINARY_DIR}/src/runtime/visitors/planiter_visitor.h")
+SET(CODEGEN_UTILS_FILE "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
+
 
 FOREACH(SPEC_FILE ${SPEC_FILES})
   STRING(LENGTH ${SPEC_FILE} SPEC_FILE_NAME_LENGTH)
@@ -27,40 +42,54 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
   STRING(SUBSTRING ${SPEC_FILE} 0 ${SPEC_PREFIX_LENGTH} SPEC_PREFIX)
 
   SET(ABSOLUTE_SPEC_FILE_NAME "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}")
-
-  RUNTIME_GENERATOR(${RUNTIME_CPP_GENERATOR}
-                    ${RUNTIME_HEADER_GENERATOR}
-                    "${ABSOLUTE_SPEC_FILE_NAME}"
-                    "src/runtime/${SPEC_PREFIX}"
-                    "name:=runtime/${SPEC_PREFIX}"
-                    "input=${ABSOLUTE_SPEC_FILE_NAME}")
+  # Generate .cpp and .h files. .cpp depends on .h.
+  ZORBA_RUNTIME_GENERATOR(
+    "${RUNTIME_HEADER_GENERATOR}"
+    "name:=runtime/${SPEC_PREFIX};input=${ABSOLUTE_SPEC_FILE_NAME}"
+    "${ABSOLUTE_SPEC_FILE_NAME}"
+    "${CODEGEN_UTILS_FILE}"
+    "${CMAKE_BINARY_DIR}/src/runtime/${SPEC_PREFIX}.h")
+  ZORBA_RUNTIME_GENERATOR(
+    "${RUNTIME_CPP_GENERATOR}"
+    "name:=runtime/${SPEC_PREFIX};input=${ABSOLUTE_SPEC_FILE_NAME}"
+    "${ABSOLUTE_SPEC_FILE_NAME}"
+    "${CMAKE_BINARY_DIR}/src/runtime/${SPEC_PREFIX}.h;${CODEGEN_UTILS_FILE}"
+    "${CMAKE_BINARY_DIR}/src/runtime/${SPEC_PREFIX}.cpp")
 
   LIST(APPEND RUNTIME_SRCS 
-              "${SPEC_PREFIX}.cpp"
-              "${SPEC_PREFIX}_impl.cpp")
+    "${SPEC_PREFIX}.cpp"
+    "${SPEC_PREFIX}_impl.cpp")
 ENDFOREACH(SPEC_FILE)
 
 # generate the printer_visitor.h and printer_visitor.cpp
 # given all the spec files as a list
 # the printer_visitor.cpp and printer_visitor_impl.cpp are added to the RUNTIME_SRCS
 # the printer_visitor.h depends on the planiter_visitor.h file
-PRINTER_VISITOR_GENERATOR(${PRINTER_VISITOR_CPP_VISITOR_GENERATOR}
-                          ${PRINTER_VISITOR_HEADER_GENERATOR}
-                          "${ABSOLUTE_SPEC_FILES}"
-                          "src/runtime/visitors/printer_visitor"
-                          "files:=${ABSOLUTE_SPEC_FILES}")
+ZORBA_RUNTIME_GENERATOR(
+  "${PRINTER_VISITOR_HEADER_GENERATOR}"
+  "" # No external variables for query
+  "${ABSOLUTE_SPEC_FILES}"
+  "${CODEGEN_UTILS_FILE}"
+  "${PRINTER_VISITOR_HEADER_FILE}")
+
+ZORBA_RUNTIME_GENERATOR(
+  "${PRINTER_VISITOR_CPP_GENERATOR}"
+  "" # No external variables for query
+  "${ABSOLUTE_SPEC_FILES}"
+  "${PRINTER_VISITOR_HEADER_FILE};${PLANITER_VISITOR_HEADER_FILE};${CODEGEN_UTILS_FILE}"
+  "${PRINTER_VISITOR_CPP_FILE}")
+
+ZORBA_RUNTIME_GENERATOR(
+  "${PLANITER_VISITOR_HEADER_GENERATOR}"
+  "" # No external variables for query
+  "${ABSOLUTE_SPEC_FILES}"
+  "${CODEGEN_UTILS_FILE}"
+  "${PLANITER_VISITOR_HEADER_FILE}")
+  
 
 LIST(APPEND RUNTIME_SRCS
     visitors/printer_visitor.cpp
     visitors/printer_visitor_impl.cpp
-)
-
-PLANINTER_VISITOR_GENERATOR(${PLANINTER_VISITOR_HEADER_GENERATOR}
-                            "${ABSOLUTE_SPEC_FILES}"
-                            "src/runtime/visitors/planiter_visitor"
-                            "files:=${SPEC_FILES}")
-
-LIST(APPEND RUNTIME_SRCS
     visitors/printer_visitor_api.cpp
     api/plan_iterator_wrapper.cpp
     api/plan_wrapper.cpp

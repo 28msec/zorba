@@ -44,26 +44,6 @@ FOREACH (SPEC_FILE ${SPEC_FILES})
   ENDIF (NOT EXISTS "${FULL_DIR}")
 ENDFOREACH(SPEC_FILE)
 
-# We generate files in the source directory. This is a little bit
-# naughty, but it has a few pleasant benefits:
-# 1. Since Zorba itself is used to generate these files, there's a
-# chicken/egg problem unless we include these generated files in svn.
-# 2. When the files are re-generated, svn will automatically notice
-# they are changed, making it harder to forget to check them in.
-# This scheme just generally seems to be the least of the available evils.
-
-# One downside, however, is that if CMake knows they're generated
-# files, by default "make clean" will delete them. We can avoid this
-# problem by marking the src/ directory as "CLEAN_NO_CUSTOM", which
-# unfortunately only works in CMake 2.6 and higher. We check for this
-# version by looking for the command "cmake_policy", which was also
-# introduced in CMake 2.6.
-IF(COMMAND cmake_policy)
-  SET_PROPERTY(DIRECTORY PROPERTY CLEAN_NO_CUSTOM 1)
-ELSE (COMMAND cmake_policy)
-  MESSAGE(STATUS "Warning: when using CMake 2.4, typing 'make clean' will delete certain files in the src/functions and src/runtime directories! You can type 'svn update' to restore them.")
-ENDIF(COMMAND cmake_policy)
-
 ################################################################################
 #                                                                              #
 # Build the zorba library                                                      #

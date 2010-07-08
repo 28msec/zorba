@@ -6,7 +6,7 @@ import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
 declare sequential function local:get-files($files as xs:string) as xs:string
 {
-  let $xml-files as xs:string* := tokenize($files,';')
+  let $xml-files as xs:string* := tokenize($files,',')
   let $temp := for $file in $xml-files return local:process-file($file)
   return string-join($temp, $gen:newline)
 };
@@ -83,7 +83,7 @@ declare function local:create-includes($files) as xs:string
     '#include "zorbautils/strutil.h"',
     $gen:newline, $gen:newline,
     string-join(
-      for $i in tokenize($files, ';') 
+      for $i in tokenize($files, ',') 
       let $xml-file := fn:replace(fn:substring-after($i, "src/runtime/spec/"), ".xml", ".h")
       return fn:concat('#include "runtime/', $xml-file, '"'), $gen:newline
     )

@@ -28,7 +28,7 @@ declare sequential function local:process-files(
     $files as xs:string, 
     $type as xs:string) as xs:string
 {
-  let $xml-files as xs:string* := tokenize($files,';')
+  let $xml-files as xs:string* := tokenize($files,',')
   let $temp := for $file in $xml-files return local:process-file($file, $type)
   return string-join($temp, $gen:newline)
 };

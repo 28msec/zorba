@@ -5,7 +5,7 @@ import module namespace file = "http://www.zorba-xquery.com/modules/file";
 
 declare sequential function local:get-files($files as xs:string) as xs:string
 {
-  let $xml-files as xs:string* := tokenize($files,';') 
+  let $xml-files as xs:string* := tokenize($files,',') 
   let $temp := for $file in $xml-files
                return local:process-file($file)
   return
