@@ -54,7 +54,7 @@ namespace zorba
     {
       //TODO implement excenption handling via external_function_data
       std::stringstream lErrorMessage;
-      lErrorMessage << "The SMTP server was not set in the static context. Please set SMTP username and password also if needed.";
+      lErrorMessage << "The SMTP server was not set. Please set SMTP username and password also if needed.";
       throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);
     }
     else

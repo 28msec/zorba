@@ -75,18 +75,29 @@
  : Zorba provides email support using the C-Client library part of <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>.<br/>
  : <h3><a name="mail_installation">2.1 Installation</a></h3>
  : <ul><li><strong>Unix/Linux/Mac OS</strong></li>
- : The easiest way is to install CClient library (for instance on Suse CClient is part of a package called 'imap-lib').<br/><br/>
- : If you want to get <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a> and compile it yourself, 
- : make sure the name of the library is prefixed by 'lib' and suffixed with '.a' (for example libc-client.a on Linux/Unix or libc-client4.a on Mac OS).<br/>
+ : There are some known issues with the CClient packages that come with diffrent Linux distributions.<br />
+ : On x32 bit OpenSuse and also on x64 bit Ubuntu we noticed that the CClient shared library is broken (undefined symbol: mm_dlog).<br />
+ : Due to that fact that Mark Crispin (the creator of CClient library) does not support CClient as a shared library but only as a static library (see <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html#6.3" target="_blank">FAQs shared library</a>),<br />
+ : we strongly suggest you want to get <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a> and compile it yourself. <br /> <br />
+ : Also please keep in mind that if SSL/TLS authentication is required buy the SMTP server then you first need to install <a href="http://www.openssl.org/" target="_blank">OpenSSL</a> and configure CClient to use it.<br />
+ : Make sure the name of the library is prefixed by 'lib' and suffixed with '.a' (for example libc-client.a on Linux/Unix or libc-client4.a on Mac OS).<br/>
  : After that is done recompile Zorba after setting:
  : <pre class="fragment">
  : -D CCLIENT_INCLUDE="path_to_imap_2007e\c-client"
  : -D CCLIENT_LIBRARY="path_to_imap_2007e\c-client\libc-client.a"
- : </pre>
+ : </pre><br />
+ :
+ : Here are some quick suggestions to build CClient on Linux:<br />
+ : <ul><li>x32 bit Linux</li><pre class="fragment">make lnp</pre><br />
+ : <li>x64 bit Linux</li> 
+ : <pre class="fragment">make lnp  EXTRACFLAGS="-I/usr/include/openssl -fPIC" EXTRAAUTHENTICATORS=gss</pre>
+ : in order to build with SSL and Kerberos support.<br /></ul>
+ : For more detailed build instructions please check out
+ : <a href="http://www.washington.edu/imap/documentation" target="_blank">UW IMAP toolkit 'Server Documentation'</a> and
+ : <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html" target="_blank">UW IMAP FAQs.</a><br />
  :
  : <li><strong>Windows</strong></li>
  : We suggest compiling <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a> and rebuilding Zorba after setting the following 2 flags: <br/>
- : assuming the C-Client sources are under /home/user/imap-2007e, <br/>
  : <pre class="fragment">
  : -D CCLIENT_INCLUDE="path_to_imap_2007e\c-client"
  : -D CCLIENT_LIBRARY="path_to_imap_2007e\c-client\release\cclient.lib"
@@ -98,14 +109,14 @@
  : import module namespace smtp= 'http://www.zorba-xquery.com/modules/email/smtp';<br /><br />
  : declare option smtp:SMTPServer <span>"smtp.gmail.com:587/tls/novalidate-cert"</span>;<br />
  : declare option smtp:SMTPUser <span>"user"</span>;<br />
- : declare option smtp:SMTPPwd <span>"password"</span>;<br />
+ : declare option smtp:SMTPPwd <span>"password"</span>;
  : </pre>
  : 
  : These is the meaning of each parameter: <br/>
  : <ul><li><strong>SMTPServer</strong></li>
  :  The SMTP server has to be specified as a string in the following form: <br/>
  :  <em> remote_system_name [":" port] [flags] </em> <br/>
- :  a complete list of usage see <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/email.html#apendix_naming">Appendix A: SMTP server naming conventions</a>
+ :  a complete list of usage see <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/xqdoc/xhtml/com/zorba-xquery/www/modules/email/smtp.html#apendix_naming">Appendix A: SMTP server naming conventions</a>
  : For example: <br/>
  :  <ul>
  :    <li>smtp.gmail.com:587/tls/novalidate-cert</li><br/>
