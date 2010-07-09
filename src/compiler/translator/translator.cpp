@@ -9268,7 +9268,10 @@ void end_visit(const DirAttr& v, void* /*visit_state*/)
     {
       xqpStringStore_t uri = constValueExpr->get_val()->getStringValue();
 
-      if (prefix->byteEqual("xml", 3) && !uri->byteEqual(XML_NS, strlen(XML_NS)))
+      if ((prefix->byteEqual("xml", 3) && !uri->byteEqual(XML_NS, strlen(XML_NS))) ||
+          (uri->byteEqual(XML_NS, strlen(XML_NS)) && !prefix->byteEqual("xml", 3)) ||
+          (prefix->byteEqual("xmlns", 5) && !uri->byteEqual(XMLNS_NS, strlen(XMLNS_NS))) ||
+          (uri->byteEqual(XMLNS_NS, strlen(XML_NS)) && !prefix->byteEqual("xmlns", 5)))
         ZORBA_ERROR_LOC (XQST0070, loc);
 
       theSctx->bind_ns(prefix, uri, loc, XQST0071);

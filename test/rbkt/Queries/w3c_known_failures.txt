@@ -40,9 +40,7 @@ test/rbkt/w3c_testsuite/XQuery/Expressions/PathExpr/PathExpressions/PathExpr-14
 test/rbkt/w3c_testsuite/XQuery/Expressions/Operators/ArithExpr/NumericOpr/NumericIntegerDivide/op-numeric-integer-dividedouble2args-4
 test/rbkt/w3c_testsuite/XQuery/Expressions/Operators/ArithExpr/NumericOpr/NumericIntegerDivide/op-numeric-integer-dividefloat2args-4
 test/rbkt/w3c_testsuite/XQuery/FullAxis/precedingAxis/preceding-22
-test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/K2-DirectConElem-35
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/K2-DirectConElem-47
-test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/K2-DirectConElem-37
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemAttr/K2-DirectConElemAttr-33
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemAttr/K2-DirectConElemAttr-75
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemContent/K2-DirectConElemContent-48
@@ -56,7 +54,6 @@ test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemNamespace/Di
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemNamespace/DirectConElemNamespace-3
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemNamespace/K2-DirectConElemNamespace-60
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemNamespace/K2-DirectConElemNamespace-76
-test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/K2-DirectConElem-36
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConOther/K2-DirectConOther-54
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConOther/K2-DirectConOther-52
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConOther/K2-DirectConOther-68
