@@ -202,8 +202,15 @@ bool CreateInternalIndexIterator::nextImpl(
     ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
   }
 
+  if (planState.dctx()->getIndex(indexDecl->getName()))
+    planState.dctx()->unbindIndex(indexDecl->getName());
+  planState.dctx()->bindIndex(indexDecl->getName(), storeIndex);
+
+  /* If the index existed already, it will be deleted first, so no exception will be thrown.
   try
   {
+    if (planState.dctx()->getIndex(indexDecl->getName())
+      planState.dctx()->unbindIndex(indexDecl->getName());
     planState.dctx()->bindIndex(indexDecl->getName(), storeIndex);
   }
   catch(...)
@@ -212,6 +219,7 @@ bool CreateInternalIndexIterator::nextImpl(
     GENV_STORE.deleteIndex(indexDecl->getName());
     throw;
   }
+  */
 
   STACK_END (state);
 }
