@@ -55,12 +55,12 @@ public:
     return value_.empty();
   }
 
-  void send_to( Tokenizer::Callback &callback ) {
+  void send( void *payload, Tokenizer::Callback &callback ) {
     if ( !empty() ) {
 #     if DEBUG_TOKENIZER
       cout << "TOKEN: \"" << value_ << "\"\n";
 #     endif
-      callback( value_.c_str(), value_.length(), pos_, sent_, para_ );
+      callback( value_.c_str(), value_.length(), pos_, sent_, para_, payload );
       clear();
     }
   }
@@ -186,7 +186,8 @@ ICU_Tokenizer::ICU_Tokenizer( bool wildcards ) : wildcards_( wildcards ) {
   ( (STATUS) >= UBRK_WORD_##TYPE && (STATUS) < UBRK_WORD_##TYPE##_LIMIT )
 
 void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
-                              iso639_1::type lang, Callback &callback ) {
+                              iso639_1::type lang, Callback &callback,
+                              void *payload ) {
   ICU_Iterators &iters = get_iterators_for( lang );
 
   int32_t utf16_len;
@@ -332,7 +333,7 @@ void ICU_Tokenizer::tokenize( char const *utf8_s, int utf8_len,
     }
 
     if ( !in_wild && !got_backslash )
-      t.send_to( callback );
+      t.send( payload, callback );
 
 set_token:
     if ( !is_junk ) {
@@ -352,7 +353,7 @@ next:
 
   if ( in_brace )
     ZORBA_ERROR( FTDY0020 );
-  t.send_to( callback );
+  t.send( payload, callback );
 }
 
 } // namespace zorba

@@ -3065,18 +3065,27 @@ xqp_string CommentNode::show() const
  *
  ******************************************************************************/
 
-void XmlNodeTokenizer::beginTokenization( XmlNode &node ) {
+inline void XmlNodeTokenizer::beginTokenization( XmlNode &node ) {
   node.theBeginTokenIndex = tokens_.size();
 }
 
-void XmlNodeTokenizer::endTokenization( XmlNode &node ) {
+inline void XmlNodeTokenizer::endTokenization( XmlNode &node ) {
   node.theEndTokenIndex = tokens_.size();
 }
 
 void XmlNodeTokenizer::operator()( char const *utf8_s, int utf8_len,
-                                   int pos, int sent, int para ) {
-  FTToken t( utf8_s, utf8_len, pos, sent, para, get_lang() );
+                                   int pos, int sent, int para,
+                                   void *payload ) {
+  store::Item const *const item = static_cast<store::Item*>( payload );
+  FTToken t( utf8_s, utf8_len, pos, sent, para, item, get_lang() );
   tokens_.push_back( t );
+}
+
+inline void XmlNodeTokenizer::tokenize( char const *utf8_s, int len ) {
+  tokenizer_.tokenize(
+    utf8_s, len, get_lang(), *this,
+    element_stack_.empty() ? NULL : static_cast<void*>( get_element() )
+  );
 }
 
 void XmlNode::tokenize( XmlNodeTokenizer& ) {
@@ -3107,7 +3116,9 @@ void ElementNode::tokenize( XmlNodeTokenizer &tokenizer ) {
   }
   attributes->close();
 
+  tokenizer.push_element( this );
   InternalNode::tokenize( tokenizer );
+  tokenizer.pop_element();
   if ( found_lang )
     tokenizer.pop_lang();
 }

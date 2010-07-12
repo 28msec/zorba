@@ -30,17 +30,19 @@ namespace zorba {
 ///////////////////////////////////////////////////////////////////////////////
 
 FTToken::FTToken( char const *utf8_s, int len,
-                  int_t pos, int_t sent, int_t para, iso639_1::type lang ) :
+                  int_t pos, int_t sent, int_t para,
+                  store::Item const *item,
+                  iso639_1::type lang ) :
   value_( new string_t( utf8_s, len ) )
 {
-  init( lang, pos, sent, para );
+  init( pos, sent, para, item, lang );
 }
 
 FTToken::FTToken( char const *utf8_s, int len, int_t pos, int_t sent,
                   iso639_1::type lang ) :
   value_( new string_t( utf8_s, len ) )
 {
-  init( lang, pos, sent, QueryTokenMagicValue );
+  init( pos, sent, QueryTokenMagicValue, NULL, lang );
 }
 
 FTToken& FTToken::operator=( FTToken const &from ) {
@@ -52,7 +54,7 @@ FTToken& FTToken::operator=( FTToken const &from ) {
 }
 
 void FTToken::copy( FTToken const &from ) {
-  init( from.lang_, from.pos_, from.sent_, from.para_ );
+  init( from.pos_, from.sent_, from.para_, from.dt_.item_, from.lang_ );
   value_ = from.value_;
   if ( from.mod_values_ )
     mod_values_ = new mod_values_t( *from.mod_values_ );
@@ -75,7 +77,8 @@ void FTToken::free() {
     delete qt_.wildcard_;
 }
 
-void FTToken::init( iso639_1::type lang, int_t pos, int_t sent, int_t para ) {
+void FTToken::init( int_t pos, int_t sent, int_t para, store::Item const *item,
+                    iso639_1::type lang ) {
   lang_ = lang;
   pos_  = pos ;
   para_ = para;
@@ -83,6 +86,8 @@ void FTToken::init( iso639_1::type lang, int_t pos, int_t sent, int_t para ) {
   if ( is_query_token() ) {
     qt_.wildcard_ = NULL;
     qt_.selector_ = original;
+  } else {
+    dt_.item_ = item;
   }
   mod_values_ = NULL;
 }

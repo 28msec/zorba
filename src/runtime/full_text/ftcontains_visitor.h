@@ -30,6 +30,7 @@ namespace zorba {
 class ftcontains_visitor : public ftnode_visitor {
 public:
   ftcontains_visitor( FTTokenIterator_t &search_ctx, static_context const&,
+                      store::Item const *ignore_item,
                       PlanState& );
 
   ~ftcontains_visitor();
@@ -89,6 +90,7 @@ private:
 
   FTTokenIterator_t &search_ctx_;
   static_context const &static_ctx_;
+  store::Item const *const ignore_item_;
   PlanState &plan_state_;
   FTToken::int_t query_pos_;
 };

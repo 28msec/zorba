@@ -523,8 +523,8 @@ xqp_string StringItemNaive::show() const
 #ifndef ZORBA_NO_FULL_TEXT
 
 void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
-                                      int token_no, int sent_no, int para_no ) 
-{
+                                      int token_no, int sent_no, int para_no,
+                                      void* ) {
   FTToken t( utf8_s, utf8_len, token_no, sent_no, lang_ );
   tokens_.push_back( t );
 }

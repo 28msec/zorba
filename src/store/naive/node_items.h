@@ -59,10 +59,15 @@ namespace store
 namespace simplestore 
 {
 
-class InternalNode;
 class AttributeNode;
-class NsBindingsContext;
+class CommentNode;
+class DocumentNode;
+class ElementNode;
 class GuideNode;
+class InternalNode;
+class NsBindingsContext;
+class PiNode;
+class TextNode;
 
 class UpdatePrimitive;
 class UpdDelete;
@@ -262,7 +267,7 @@ public:
   }
 
   void operator()( char const *utf8_s, int utf8_len,
-                   int pos, int sent, int para );
+                   int pos, int sent, int para, void* );
 
   void beginTokenization( XmlNode& );
   void endTokenization( XmlNode& );
@@ -271,8 +276,12 @@ public:
     tokenizer_.inc_para();
   }
 
-  locale::iso639_1::type get_lang() const {
-    return lang_stack_.top();
+  void push_element( ElementNode *element ) {
+    element_stack_.push( element );
+  }
+
+  void pop_element() {
+    element_stack_.pop();
   }
 
   void push_lang( locale::iso639_1::type lang ) {
@@ -283,15 +292,23 @@ public:
     lang_stack_.pop();
   }
 
-  void tokenize( char const *utf8_s, int len ) {
-    tokenizer_.tokenize( utf8_s, len, get_lang(), *this );
-  }
+  void tokenize( char const *utf8_s, int len );
 
 private:
   typedef std::stack<locale::iso639_1::type> lang_stack_t;
+  typedef std::stack<ElementNode*> element_stack_t;
+
+  ElementNode* get_element() const {
+    return element_stack_.top();
+  }
+
+  locale::iso639_1::type get_lang() const {
+    return lang_stack_.top();
+  }
 
   Tokenizer &tokenizer_;
   FTTokens &tokens_;
+  element_stack_t element_stack_;
   lang_stack_t lang_stack_;
 };
 #endif /* ZORBA_NO_FULL_TEXT */

@@ -11157,7 +11157,10 @@ void *begin_visit (const FTIgnoreOption& v) {
 
 void end_visit (const FTIgnoreOption& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
-  // nothing to do
+#ifndef ZORBA_NO_FULL_TEXT
+  expr_t e( pop_nodestack() );
+  push_nodestack( wrap_in_type_promotion( e, theRTM.ANY_NODE_TYPE_STAR ) );
+#endif /* ZORBA_NO_FULL_TEXT */
 }
 
 void *begin_visit (const FTLanguageOption& v) {

@@ -29,6 +29,10 @@ namespace zorba {
 
 class ft_wildcard;
 
+namespace store {
+  class Item;
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 
 /**
@@ -51,10 +55,11 @@ public:
    * @param pos_no    The position number.  Position numbers start at 0.
    * @param sent_no   The sentence number.  Sentence numbers start at 1.
    * @param para_no   The paragraph number.  Paragraph numbers start at 1.
+   * @param item      The Item this token came from.
    * @param lang      The language of the token string.
    */
   FTToken( char const *utf8_s, int len,
-           int_t pos_no, int_t sent_no, int_t para_no,
+           int_t pos_no, int_t sent_no, int_t para_no, store::Item const *item,
            locale::iso639_1::type lang = locale::iso639_1::unknown );
 
   /**
@@ -90,6 +95,15 @@ public:
    * Assignment operator.
    */
   FTToken& operator=( FTToken const &from );
+
+  /**
+   * Gets the Item this token came from.
+   *
+   * @return Returns said Item or <code>NULL</code> for query tokens.
+   */
+  store::Item const* item() const {
+    return is_query_token() ? NULL : dt_.item_;
+  }
 
   /**
    * Gets the langauge of the token.
@@ -193,7 +207,7 @@ private:
    * Data only for document tokens.
    */
   struct dt_data {
-    // placeholder for future considerations
+    store::Item const *item_;           ///< the Item this token came from
   };
 
   /**
@@ -233,7 +247,7 @@ private:
 
   void copy( FTToken const& );
   void free();
-  void init( locale::iso639_1::type, int_t, int_t, int_t );
+  void init( int_t, int_t, int_t, store::Item const*, locale::iso639_1::type );
 
   string_t const&
   valueImpl( int, locale::iso639_1::type = locale::iso639_1::unknown ) const;

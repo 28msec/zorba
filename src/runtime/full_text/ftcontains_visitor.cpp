@@ -111,9 +111,11 @@ static void replace_match_options( ftmatch_options const *older,
 
 ftcontains_visitor::ftcontains_visitor( FTTokenIterator_t &search_ctx,
                                         static_context const &static_ctx,
+                                        store::Item const *ignore_item,
                                         PlanState &state ) :
   search_ctx_( search_ctx ),
   static_ctx_( static_ctx ),
+  ignore_item_( ignore_item ),
   plan_state_( state )
 {
   // do nothing
@@ -413,8 +415,8 @@ void V::end_visit( ftwords &w ) {
   if ( !query_items.empty() ) {
     auto_ptr<ft_all_matches> result( new ft_all_matches );
     apply_ftwords(
-      *search_ctx_.getp(), query_items, ++query_pos_, w.get_mode(), options,
-      *result
+      *search_ctx_.getp(), query_items, ++query_pos_, ignore_item_,
+      w.get_mode(), options, *result
     );
     PUSH_MATCHES( result.release() );
   }

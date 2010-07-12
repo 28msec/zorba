@@ -47,9 +47,11 @@ public:
      * @param token_no  The token number.  Token numbers start at 0.
      * @param sent_no   The sentence number.  Sentence numbers start at 1.
      * @param para_no   The paragraph number.  Paragraph numbers start at 1.
+     * @param payload   Optional user-defined data.
      */
     virtual void operator()( char const *utf8_s, int utf8_len,
-                             int token_no, int sent_no, int para_no ) = 0;
+                             int token_no, int sent_no, int para_no,
+                             void *payload = 0 ) = 0;
   };
 
   /**
@@ -81,9 +83,11 @@ public:
    * @param len       The number of chars in the token string.
    * @param lang      The language of the text.
    * @param callback  The Callback to call once per token.
+   * @param payload   Optional user-defined data.
    */
   virtual void tokenize( char const *utf8_s, int len,
-                         locale::iso639_1::type lang, Callback &callback ) = 0;
+                         locale::iso639_1::type lang, Callback &callback,
+                         void *payload = 0 ) = 0;
 
 protected:
   Tokenizer();

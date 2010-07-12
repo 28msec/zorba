@@ -64,11 +64,13 @@ void FTContainsIterator::serialize( serialization::Archiver &ar ) {
 
 bool FTContainsIterator::nextImpl( store::Item_t &result,
                                    PlanState &plan_state ) const {
-  bool ftcontains = false;
-  store::Item_t item;                   // for the search context
+  PlanIterator const *const search_ctx = theChild0.getp();
+  PlanIterator const *const ftignore = theChild1.getp();
+  store::Item_t doc_item;
   static_context const *static_ctx;
   ftmatch_options const *options;
   locale::iso639_1::type lang;
+  bool ftcontains = false;
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
@@ -76,9 +78,14 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
   options = static_ctx->get_match_options();
   lang = get_lang_from( options );
 
-  while ( !ftcontains && consumeNext( item, theChild0.getp(), plan_state ) ) {
-    FTTokenIterator_t doc_tokens( item->getDocumentTokens( lang ) );
-    ftcontains_visitor v( doc_tokens, *static_ctx, plan_state );
+  while ( !ftcontains && consumeNext( doc_item, search_ctx, plan_state ) ) {
+    FTTokenIterator_t doc_tokens( doc_item->getDocumentTokens( lang ) );
+    store::Item_t ignore_item;
+    if ( ftignore )
+      consumeNext( ignore_item, ftignore, plan_state );
+    ftcontains_visitor v(
+      doc_tokens, *static_ctx, ignore_item.getp(), plan_state
+    );
     ftselection_->accept( v );
     ftcontains = v.ftcontains();
   }
