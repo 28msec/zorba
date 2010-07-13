@@ -58,9 +58,7 @@ test/rbkt/w3c_testsuite/XQuery/Construct/DirectConOther/K2-DirectConOther-54
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConOther/K2-DirectConOther-52
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConOther/K2-DirectConOther-68
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConOther/K2-DirectConOther-66
-test/rbkt/w3c_testsuite/XQuery/Construct/DirectConOther/K2-DirectConOther-51
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConOther/K2-DirectConOther-69
-test/rbkt/w3c_testsuite/XQuery/Construct/DirectConOther/K2-DirectConOther-50
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConOther/K2-DirectConOther-70
 test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ComputeConAttr/comp-attr-bad-name-1
 test/rbkt/w3c_testsuite/XQuery/Construct/ComputeCon/ConDocNode/K2-ConDocNode-2

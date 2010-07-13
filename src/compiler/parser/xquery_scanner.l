@@ -974,7 +974,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    | recognized.
    |______________________________________________________________________*/
 
-<MODE_CDATA_SECTION>"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3), yytext); }
+<MODE_CDATA_SECTION>"]]>" { POP_STATE(); TRY_SVAL_TOKEN (CHAR_LITERAL_AND_CDATA_END, put(yytext, yyleng-3, 1), yytext); }
 <MODE_CDATA_SECTION>{Char} { yymore(); }
 
 
