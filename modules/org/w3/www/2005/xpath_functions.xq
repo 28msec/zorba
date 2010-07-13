@@ -1,4 +1,11 @@
 (:~
+ : <p>This module contains all the functions specified in the
+ : W3C's XQuery 1.0 and XPath 2.0 Functions and Operators specification.</p>
+ :
+ : <p>A quick reference card of all those functions can be found at
+ : <a href="http://www.xml.dvint.com/docs/XQueryXMLSyntax.pdf">
+ : http://www.xml.dvint.com/docs/XQueryXMLSyntax.pdf</a>.</p>
+ :
  : @author www.w3c.org
  :)
 module namespace  fn = "http://www.w3.org/2005/xpath-functions";
