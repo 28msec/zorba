@@ -33,15 +33,13 @@ namespace store
 {
 
 
-const Item*
-Item::getBaseItem() const
+Item* Item::getBaseItem() const
 {
   return NULL;
 }
 
 
-Item*
-Item::getType( ) const
+Item* Item::getType( ) const
 {
   ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
                         __FUNCTION__, typeid (*this).name ());

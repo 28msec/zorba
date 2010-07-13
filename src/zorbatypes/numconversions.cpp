@@ -245,7 +245,7 @@ xqpStringStore_t NumConversions::uintegerToStr(xqp_uinteger aUInteger)
 }
 
 
-xqpStringStore_t NumConversions::longLongToStr(xqp_long aLong)
+xqpStringStore_t NumConversions::longToStr(xqp_long aLong)
 {
   std::stringstream lStream;
   lStream << aLong;
@@ -253,7 +253,7 @@ xqpStringStore_t NumConversions::longLongToStr(xqp_long aLong)
 }
 
 
-xqpStringStore_t NumConversions::ulongLongToStr(xqp_ulong aULong)
+xqpStringStore_t NumConversions::ulongToStr(xqp_ulong aULong)
 {
   std::stringstream lStream;
   lStream << aULong;
@@ -312,6 +312,18 @@ xqpStringStore_t NumConversions::sizetToStr(size_t aSizeT)
   return new xqpStringStore(lStream.str());
 }
 
+
+bool NumConversions::doubleToLong(const xqp_double& aDouble, xqp_long& aLong) 
+{
+#ifndef ZORBA_NO_BIGNUMBERS
+  xqpStringStore_t lStr = aDouble.toIntegerString();
+  return NumConversions::strToLong(lStr->c_str(), aLong);
+#else
+  aLong = (xqp_long)aDouble.theFloating;
+  return true;
+#endif
+}
+
  
 bool NumConversions::doubleToInt(const xqp_double& aDouble, xqp_int& aInt) 
 {
@@ -320,18 +332,6 @@ bool NumConversions::doubleToInt(const xqp_double& aDouble, xqp_int& aInt)
   return NumConversions::strToInt(lStr->c_str(), aInt);
 #else
   aInt = (xqp_int)aDouble.theFloating;
-  return true;
-#endif
-}
-
-
-bool NumConversions::doubleToLongLong(const xqp_double& aDouble, xqp_long& aLong) 
-{
-#ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStr = aDouble.toIntegerString();
-  return NumConversions::strToLong(lStr->c_str(), aLong);
-#else
-  aLong = (xqp_long)aDouble.theFloating;
   return true;
 #endif
 }
@@ -493,6 +493,22 @@ bool NumConversions::integerToInt(const xqp_integer& aInteger, xqp_int& aInt)
   aInt = (xqp_int)aInteger.theInteger;
   return true;
 #endif
+}
+
+
+bool NumConversions::longToDouble(const xqp_long& aLong, xqp_double& aDouble)
+{
+  double d = static_cast<double>(aLong);
+
+  if (aLong == static_cast<xqp_long>(d))
+  {
+    aDouble = d;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }
 
 

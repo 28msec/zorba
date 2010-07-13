@@ -219,11 +219,13 @@ bool Integer::parseStringUnsigned(const char* aStarChar, Integer& aUInteger)
   
 bool Integer::parseDouble(const Double& aDouble, Integer& aInteger) 
 {
-  if (aDouble.isFinite()) {
+  if (aDouble.isFinite()) 
+  {
     aInteger.theInteger = floatingToInteger(aDouble.theFloating);
     return true;
   }
-  else {
+  else 
+  {
     return false;
   }
 }
@@ -231,11 +233,13 @@ bool Integer::parseDouble(const Double& aDouble, Integer& aInteger)
 
 bool Integer::parseFloat(const Float& aFloat, Integer& aInteger) 
 {
-  if (aFloat.isFinite()) {
+  if (aFloat.isFinite()) 
+  {
     aInteger.theInteger = floatingToInteger(aFloat.theFloating);
     return true;
   }
-  else {
+  else
+  {
     return false;
   }
 }
@@ -248,10 +252,10 @@ Integer Integer::parseDecimal(const Decimal& aDecimal)
 }
 
 
-Integer Integer::parseLong(xqp_long aLong) 
+Integer Integer::parseLong(int64_t aLong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::longLongToStr(aLong);
+  xqpStringStore_t lStrRep = NumConversions::longToStr(aLong);
   MAPM lMAPM = lStrRep->c_str();
   return Integer(lMAPM);
 #else
@@ -260,10 +264,10 @@ Integer Integer::parseLong(xqp_long aLong)
 }
 
 
-Integer Integer::parseULong(xqp_ulong aULong) 
+Integer Integer::parseULong(uint64_t aULong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::ulongLongToStr(aULong);
+  xqpStringStore_t lStrRep = NumConversions::ulongToStr(aULong);
   MAPM lMAPM = lStrRep->c_str();
   return Integer(lMAPM);
 #else
@@ -314,16 +318,6 @@ Integer& Integer::operator=(const Integer& aInteger)
 {
   theInteger = aInteger.theInteger;
   return *this;
-}
-
-MAPM Integer::longlongToMAPM(xqp_long aLong) 
-{
-#ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::longLongToStr(aLong);
-  return MAPM(lStrRep->c_str());
-#else
-  return (MAPM)aLong;
-#endif
 }
 
 

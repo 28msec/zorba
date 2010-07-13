@@ -20,7 +20,7 @@
 #include "common/common.h"
 #include <math.h>
 #include "zorbatypes/zorbatypes_decl.h"
-#include "zorbatypes/xqpstring.h"
+#include "zorbatypes/representations.h"
 
 #include "zorbaserialization/class_serializer.h"
 
@@ -52,13 +52,95 @@ class ZORBA_DLL_PUBLIC FloatImpl : public ::zorba::serialization::SerializeBaseC
   friend class NumConversions;
 
 private:
-  FloatType             theFloating;
-  unsigned short        precision;
+  FloatType         theFloating;
+  unsigned short    precision;
 
 #ifdef ZORBA_NUMERIC_OPTIMIZATION
 public:
   static  HashCharPtrObjPtrLimited<FloatImpl>  parsed_floats;
 #endif
+
+public:
+  /**
+   * @return float or double that represents 0
+   */
+  static FloatImpl<FloatType>& zero();
+
+  /**
+   * @return float or double that represents -0
+   */
+  static FloatImpl<FloatType>& zero_neg();
+
+  /**
+   * @return float or double that represents +1
+   */
+  static FloatImpl<FloatType>& one();
+
+  /**
+   * @return float or double that represents -1
+   */
+  static FloatImpl<FloatType>& one_neg();
+
+  /**
+   * @return float or double that represents NaN
+   */
+  static FloatImpl<FloatType>& nan();
+
+  /**
+   * @return float or double that represents +INF
+   */
+  static FloatImpl<FloatType>& inf_pos();
+
+  /**
+   * @return float or double that represents -INF
+   */
+  static FloatImpl<FloatType>& inf_neg();
+
+  static int max_precision();
+
+  /**
+   * Parses string to float value
+   */
+  static bool parseString(const char* aCharStar, FloatImpl& aFloatImpl);
+
+  /**
+   * Parses float type (double of float) to float value
+   */
+  static FloatImpl<FloatType> parseFloatType(FloatType aFloatImpl);
+
+  static FloatImpl<FloatType> parseDecimal(const Decimal&);
+
+  static FloatImpl<FloatType> parseInteger(const Integer&);
+
+  /**
+   * Parses long to float value
+   */
+  static FloatImpl<FloatType> parseULong(uint64_t);
+
+  /**
+   * Parses long to float value
+   */
+  static FloatImpl<FloatType> parseLong(int64_t);
+
+  /**
+   * Parses int to float value
+   */
+  static FloatImpl<FloatType> parseInt(int32_t);
+
+  /**
+   * Parses int to float value
+   */
+  static FloatImpl<FloatType> parseUInt(uint32_t);
+
+protected:
+  /**
+   * Checks if the passed number in string format is NaN, INF,
+   * -INF, negative or non-negative number.
+   * @param aNumber Number in string format
+   * @param parsed number
+   * @return false if aNumber is not parsable to INF or nan
+   */
+  static bool parseInfNaNString(const char* aNumber, FloatImpl& aFloatImpl);
 
 public:
   SERIALIZABLE_TEMPLATE_CLASS(FloatImpl)
@@ -85,98 +167,52 @@ public:
 
   virtual ~FloatImpl() {}
 
-  FloatType getNumber() const { return theFloating; }
-
-public:
-  /**
-   * @return float or double that represents 0
-   */
-  static FloatImpl<FloatType>&
-  zero();
-
-  /**
-   * @return float or double that represents -0
-   */
-  static FloatImpl<FloatType>&
-  zero_neg();
-
-  /**
-   * @return float or double that represents +1
-   */
-  static FloatImpl<FloatType>&
-  one();
-
-  /**
-   * @return float or double that represents -1
-   */
-  static FloatImpl<FloatType>&
-  one_neg();
-
-  /**
-   * @return float or double that represents NaN
-   */
-  static FloatImpl<FloatType>&
-  nan();
-
-  /**
-   * @return float or double that represents +INF
-   */
-  static FloatImpl<FloatType>&
-  inf_pos();
-
-  /**
-   * @return float or double that represents -INF
-   */
-  static FloatImpl<FloatType>&
-  inf_neg();
-
-  /**
-   * Checks if the passed number in string format is NaN, INF,
-   * -INF, negative or non-negative number.
-   * @param aNumber Number in string format
-   * @param parsed number
-   * @return false if aNumber is not parsable to INF or nan
-   */
-  static bool 
-  parseInfNaNString(const char* aNumber, FloatImpl& aFloatImpl);
-
-  /**
-   * Parses string to float value
-   */
-  static bool
-  parseString(const char* aCharStar, FloatImpl& aFloatImpl);
-
-  /**
-   * Parses float type (double of float) to float value
-   */
-  static FloatImpl<FloatType>
-  parseFloatType(FloatType aFloatImpl);
-
-  /**
-   * Parses int to float value
-   */
-  static FloatImpl<FloatType>
-  parseInt(int32_t);
-
-  /**
-   * Parses long to float value
-   */
-  static FloatImpl<FloatType>
-  parseLong(long);
-
-  static FloatImpl<FloatType>
-  parseDecimal(const Decimal&);
-
-  static FloatImpl<FloatType>
-  parseInteger(const Integer&);
-
-  static int max_precision();
-
   FloatImpl<FloatType>& operator=(const FloatImpl& aFloatImpl) 
   {
     theFloating = aFloatImpl.theFloating;
     precision = aFloatImpl.precision;
     return *this;
+  }
+
+  FloatType getNumber() const { return theFloating; }
+
+  bool isNaN() const;
+
+  bool isFinite() const;
+
+  bool isPosInf() const;
+
+  bool isNegInf() const;
+
+  bool isNeg() const;
+
+  bool isPos() const;
+
+  bool isZero() const;
+
+  bool isPosZero() const;
+
+  bool isNegZero() const;
+
+  bool isInteger() const { return isFinite() && ::floor(theFloating) == theFloating; }
+
+  uint32_t hash() const;
+
+  bool operator==(const FloatImpl& aFloatImpl) const;
+
+  bool operator!=(const FloatImpl& aFloatImpl) const;
+
+  bool operator<(const FloatImpl& aFloatImpl) const;
+
+  bool operator<=(const FloatImpl& aFloatImpl) const;
+
+  bool operator>(const FloatImpl& aFloatImpl) const;
+
+  bool operator>=(const FloatImpl& aFloatImpl) const;
+
+  long compare(const FloatImpl& aFloatImpl) const
+  {
+    return (*this < aFloatImpl ? -1 : (*this == aFloatImpl ? 0 : 1));
   }
 
   FloatImpl<FloatType> operator+(const FloatImpl& aFloatImpl) const;
@@ -219,39 +255,48 @@ public:
     return *this;
   }
 
-  FloatImpl<FloatType> 
-  operator-() const;
+  FloatImpl<FloatType> operator-() const;
 
-  FloatImpl<FloatType> 
-  floor() const; 
+  FloatImpl<FloatType> floor() const; 
 
-  FloatImpl<FloatType>
-  ceil() const; 
+  FloatImpl<FloatType> ceil() const; 
 
-  FloatImpl<FloatType>
-  round() const;
+  FloatImpl<FloatType> round() const;
 
-  FloatImpl<FloatType> 
-  round(Integer aPrecision) const;
+  FloatImpl<FloatType> round(Integer aPrecision) const;
 
-  FloatImpl<FloatType> 
-  roundHalfToEven(Integer aPrecision) const;
+  FloatImpl<FloatType> roundHalfToEven(Integer aPrecision) const;
 
   FloatImpl<FloatType> sqrt() const;
+
   FloatImpl<FloatType> exp() const;
+
   FloatImpl<FloatType> log() const;
+
   FloatImpl<FloatType> log10() const;
+
   FloatImpl<FloatType> sin() const;
+
   FloatImpl<FloatType> cos() const;
+
   FloatImpl<FloatType> tan() const;
+
   FloatImpl<FloatType> asin() const;
+
   FloatImpl<FloatType> acos() const;
+
   FloatImpl<FloatType> atan() const;
+
   FloatImpl<FloatType> sinh() const;
+
   FloatImpl<FloatType> cosh() const;
+
   FloatImpl<FloatType> tanh() const;
+
   FloatImpl<FloatType> asinh() const;
+
   FloatImpl<FloatType> acosh() const;
+
   FloatImpl<FloatType> atanh() const;
 
   FloatImpl<FloatType> atan2(FloatImpl<FloatType> x) const;
@@ -264,48 +309,10 @@ public:
 
   void modf(FloatImpl<FloatType>& out_fraction, FloatImpl<FloatType>& out_integer) const;
 
-  bool isNaN() const;
-
-  bool isFinite() const;
-
-  bool isPosInf() const;
-
-  bool isNegInf() const;
-
-  bool isNeg() const;
-
-  bool isPos() const;
-
-  bool isZero() const;
-
-  bool isPosZero() const;
-
-  bool isNegZero() const;
-
-  bool operator==(const FloatImpl& aFloatImpl) const;
-
-  bool operator!=(const FloatImpl& aFloatImpl) const;
-
-  bool operator<(const FloatImpl& aFloatImpl) const;
-
-  bool operator<=(const FloatImpl& aFloatImpl) const;
-
-  bool operator>(const FloatImpl& aFloatImpl) const;
-
-  bool operator>=(const FloatImpl& aFloatImpl) const;
-
-  long compare(const FloatImpl& aFloatImpl) const
-  {
-    return (*this < aFloatImpl ? -1 : (*this == aFloatImpl ? 0 : 1));
-  }
-
   xqpStringStore_t toIntegerString() const;
   
-  xqpStringStore_t  toString(bool no_scientific_mode = false) const;
-
-  uint32_t hash() const;
-
-}; // class FloatImpl
+  xqpStringStore_t toString(bool no_scientific_mode = false) const;
+};
 
 
 std::ostream&

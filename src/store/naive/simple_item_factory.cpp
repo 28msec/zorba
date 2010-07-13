@@ -202,9 +202,9 @@ bool BasicItemFactory::createUntypedAtomic(store::Item_t& result, xqpStringStore
 
 bool BasicItemFactory::createDouble(
     store::Item_t& result,
-    const xqp_double& value )
+    const xqp_double& value)
 {
-  result = new DoubleItemNaive( value );
+  result = new DoubleItemNaive(value);
   return true;
 }
 
@@ -279,21 +279,21 @@ bool BasicItemFactory::createLong(store::Item_t& result,  xqp_long value)
 
 bool BasicItemFactory::createInt(store::Item_t& result,  xqp_int value)
 {
-  result = new IntItemNaive ( value );
+  result = new IntItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createShort(store::Item_t& result,  xqp_short value)
 {
-  result = new ShortItemNaive ( value );
+  result = new ShortItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createByte(store::Item_t& result,  xqp_byte value)
 {
-  result = new ByteItemNaive ( value );
+  result = new ByteItem(value);
   return true;
 }
 
@@ -307,21 +307,21 @@ bool BasicItemFactory::createUnsignedLong(store::Item_t& result, xqp_ulong value
 
 bool BasicItemFactory::createUnsignedInt(store::Item_t& result,  xqp_uint value)
 {
-  result = new UnsignedIntItemNaive( value );
+  result = new UnsignedIntItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createUnsignedShort(store::Item_t& result, xqp_ushort value)
 {
-  result = new UnsignedShortItemNaive( value );
+  result = new UnsignedShortItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createUnsignedByte(store::Item_t& result,  xqp_ubyte value)
 {
-  result = new UnsignedByteItemNaive ( value );
+  result = new UnsignedByteItem(value);
   return true;
 }
 

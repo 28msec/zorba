@@ -294,6 +294,14 @@ class plan_visitor : public expr_visitor
 #ifndef ZORBA_NO_FULL_TEXT
   friend class plan_ftnode_visitor;
 #endif /* ZORBA_NO_FULL_TEXT */
+
+  typedef enum
+  {
+    ELEMENT_CONTENT = 0,
+    ATTRIBUTE_CONTENT,
+    TEXT_CONTENT
+  } EnclosedExprContext;
+
 protected:
   static vector<PlanIter_t>              no_var_iters;
 
@@ -303,7 +311,7 @@ protected:
   stack<PlanIter_t>                      itstack;
 
   stack<expr*>                           theConstructorsStack;
-  stack<bool>                            theAttrContentStack;
+  stack<EnclosedExprContext>             theEnclosedContextStack;
 
   hash64map<vector<LetVarIter_t> *>    * arg_var_iter_map;
   hash64map<vector<LetVarIter_t> *>      catchvar_iter_map;
@@ -2080,8 +2088,13 @@ void end_visit(fo_expr& v)
         expr* e = pop_stack(theConstructorsStack);
         ZORBA_ASSERT(e == &v);
 
-        if (!theAttrContentStack.empty() && theAttrContentStack.top() == true)
-          dynamic_cast<EnclosedIterator*>(iter.getp())->setAttrContent();
+        if (!theEnclosedContextStack.empty())
+        {
+          if (theEnclosedContextStack.top() == ATTRIBUTE_CONTENT)
+            dynamic_cast<EnclosedIterator*>(iter.getp())->setAttrContent();
+          else if (theEnclosedContextStack.top() == TEXT_CONTENT)
+            dynamic_cast<EnclosedIterator*>(iter.getp())->setTextContent();
+        }
       }
     }
   }
@@ -2518,17 +2531,19 @@ void end_visit (match_expr& v)
 
 ********************************************************************************/
 
-bool begin_visit (doc_expr& v) {
+bool begin_visit (doc_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   theConstructorsStack.push(&v);
-  theAttrContentStack.push(false);
+  theEnclosedContextStack.push(ELEMENT_CONTENT);
 
   return true;
 }
 
 
-void end_visit (doc_expr& v) {
+void end_visit (doc_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 
   PlanIter_t lContent = pop_itstack();
@@ -2536,7 +2551,7 @@ void end_visit (doc_expr& v) {
   PlanIter_t lDocIter = new DocumentIterator(sctx, qloc, lContIter);
   push_itstack(lDocIter);
 
-  theAttrContentStack.pop();
+  theEnclosedContextStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
 }
@@ -2547,7 +2562,7 @@ bool begin_visit(elem_expr& v)
   CODEGEN_TRACE_IN("");
 
   theConstructorsStack.push(&v);
-  theAttrContentStack.push(false);
+  theEnclosedContextStack.push(ELEMENT_CONTENT);
 
   return true;
 }
@@ -2570,7 +2585,7 @@ void end_visit(elem_expr& v)
   lQNameIter = pop_itstack();
 
   bool isRoot = false;
-  theAttrContentStack.pop();
+  theEnclosedContextStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e == &v);
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top()))
@@ -2594,7 +2609,7 @@ bool begin_visit(attr_expr& v)
   CODEGEN_TRACE_IN("");
 
   theConstructorsStack.push(&v);
-  theAttrContentStack.push(true);
+  theEnclosedContextStack.push(ATTRIBUTE_CONTENT);
 
 	return true;
 }
@@ -2629,7 +2644,7 @@ void end_visit(attr_expr& v)
   }
 
   bool isRoot = false;
-  theAttrContentStack.pop();
+  theEnclosedContextStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
 
@@ -2654,19 +2669,24 @@ bool begin_visit(text_expr& v)
   CODEGEN_TRACE_IN ("");
 
   theConstructorsStack.push(&v);
-  theAttrContentStack.push(true);
+
+  if (v.get_type() == text_expr::text_constructor)
+    theEnclosedContextStack.push(TEXT_CONTENT);
+  else
+    theEnclosedContextStack.push(ATTRIBUTE_CONTENT);
 
 	return true;
 }
 
 
-void end_visit (text_expr& v) {
-  CODEGEN_TRACE_OUT ("");
+void end_visit(text_expr& v) 
+{
+  CODEGEN_TRACE_OUT("");
 
   PlanIter_t content = pop_itstack ();
 
   bool isRoot = false;
-  theAttrContentStack.pop();
+  theEnclosedContextStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())) 
@@ -2690,23 +2710,23 @@ void end_visit (text_expr& v) {
 }
 
 
-bool begin_visit (pi_expr& v) 
+bool begin_visit(pi_expr& v) 
 {
   CODEGEN_TRACE_IN("");
 
   theConstructorsStack.push(&v);
-  theAttrContentStack.push(true);
+  theEnclosedContextStack.push(ATTRIBUTE_CONTENT);
 
   return true;
 }
 
 
-void end_visit (pi_expr& v)
+void end_visit(pi_expr& v)
 {
   CODEGEN_TRACE_OUT("");
 
   bool isRoot = false;
-  theAttrContentStack.pop();
+  theEnclosedContextStack.pop();
   expr* e = pop_stack(theConstructorsStack);
   ZORBA_ASSERT(e = &v);
   if (theConstructorsStack.empty() || is_enclosed_expr(theConstructorsStack.top())) 
@@ -2720,13 +2740,13 @@ void end_visit (pi_expr& v)
 }
 
 
-bool begin_visit (const_expr& v)
+bool begin_visit(const_expr& v)
 {
-  CODEGEN_TRACE_IN ("");
+  CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (const_expr& v)
+void end_visit(const_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t it = new SingletonIterator(sctx, qloc, v.get_val());
@@ -2787,7 +2807,8 @@ PlanIter_t result()
 //
 // This member function is defined here to avoid an improper cast.
 //
-expr_visitor* V::get_expr_visitor() {
+expr_visitor* V::get_expr_visitor() 
+{
   return plan_visitor_;
 }
 

@@ -231,10 +231,17 @@ bool Decimal::parseDouble(const Double& aDouble, Decimal& aDecimal)
 }
 
 
-Decimal Decimal::parseLongLong(long long aLong) 
+Decimal Decimal::parseInteger(const Integer& aInteger) 
+{
+  Decimal lDecimal(aInteger.theInteger);
+  return lDecimal;
+}
+
+
+Decimal Decimal::parseLongLong(int64_t aLong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::longLongToStr(aLong);
+  xqpStringStore_t lStrRep = NumConversions::longToStr(aLong);
   Decimal lDecimal;
   lDecimal.theDecimal = lStrRep->c_str();
   return lDecimal;
@@ -246,10 +253,10 @@ Decimal Decimal::parseLongLong(long long aLong)
 }
 
 
-Decimal Decimal::parseULongLong(unsigned long long aULong) 
+Decimal Decimal::parseULongLong(uint64_t aULong) 
 {
 #ifndef ZORBA_NO_BIGNUMBERS
-  xqpStringStore_t lStrRep = NumConversions::ulongLongToStr(aULong);
+  xqpStringStore_t lStrRep = NumConversions::ulongToStr(aULong);
   Decimal lDecimal;
   lDecimal.theDecimal = lStrRep->c_str();
   return lDecimal;
@@ -258,21 +265,6 @@ Decimal Decimal::parseULongLong(unsigned long long aULong)
   lDecimal.theDecimal = (MAPM)aULong;
   return lDecimal;
 #endif
-}
-
-
-Decimal Decimal::parseLong(long aLong) 
-{
-  MAPM lNumber = aLong;
-  return Decimal(lNumber);
-}
-
-
-Decimal Decimal::parseInteger(const Integer& aInteger) 
-{
-  Decimal lDecimal;
-  lDecimal.theDecimal = aInteger.theInteger;
-  return lDecimal;
 }
 
 

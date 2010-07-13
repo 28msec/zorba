@@ -234,16 +234,6 @@ public:
 
 protected:
 
-  /*
-    The M_APM structure here is implemented as a reference-counted, copy-on-write
-    data structure. This makes copies very fast, but that's why it's so ugly. A
-    MAPM obj is basically just a wrapper around a (possibly shared) M_APM_struct.
-  */
-
-	M_APM myVal;  /* myVal is a pointer to a ref-counted M_APM_struct */
-
-protected:
-
 	static M_APM makeNew(void) 
 	{
 		M_APM val = m_apm_init();
@@ -262,6 +252,16 @@ protected:
 		if (val->m_apm_refcount == 0)
 			m_apm_free(val);
 	}
+
+protected:
+
+  /*
+    The M_APM structure here is implemented as a reference-counted, copy-on-write
+    data structure. This makes copies very fast, but that's why it's so ugly. A
+    MAPM obj is basically just a wrapper around a (possibly shared) M_APM_struct.
+  */
+
+	M_APM myVal;  /* myVal is a pointer to a ref-counted M_APM_struct */
 
 protected:
 	void create(void) { myVal = makeNew(); }

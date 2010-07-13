@@ -77,9 +77,9 @@ public:
 
   static xqpStringStore_t uintegerToStr(xqp_uinteger aUInteger);
 
-  static xqpStringStore_t longLongToStr(xqp_long aLong);
+  static xqpStringStore_t longToStr(xqp_long aLong);
 
-  static xqpStringStore_t ulongLongToStr(xqp_ulong aULong);
+  static xqpStringStore_t ulongToStr(xqp_ulong aULong);
 
   static xqpStringStore_t intToStr(xqp_int aInt);
 
@@ -100,6 +100,12 @@ public:
     Numeric to Numeric Conversions
   ******************************************************************************/
 
+  static bool doubleToInt(const xqp_double&, xqp_int&);
+
+  static bool doubleToLong(const xqp_double&, xqp_long&);
+
+  static bool floatToInt(const xqp_float&, xqp_int&);
+
   static bool decimalToInteger(const xqp_decimal&, xqp_integer&);
 
   static bool decimalToULong(const xqp_decimal&, xqp_ulong&);
@@ -116,11 +122,7 @@ public:
 
   static bool integerToInt(const xqp_integer&, xqp_int&);
 
-  static bool doubleToInt(const xqp_double&, xqp_int&);
-
-  static bool doubleToLongLong(const xqp_double&, xqp_long&);
-
-  static bool floatToInt(const xqp_float&, xqp_int&);
+  static bool longToDouble(const xqp_long& aLong, xqp_double& aDouble);
 
 private:
   static bool isNegative(const char*& chp, bool& isNegZero);

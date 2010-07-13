@@ -239,7 +239,7 @@ public:
    *         the underlying atomic item that stores the actual value and whose
    *         data type is a builtin atomic supertype of UT.
    */
-  virtual const store::Item* getBaseItem() const;
+  virtual store::Item* getBaseItem() const;
 
   /**
    *  getXValue functions:

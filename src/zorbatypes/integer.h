@@ -38,10 +38,6 @@ namespace zorba
   typedef double  MAPM;
 #endif
 
-typedef int32_t   xqp_int;
-typedef uint32_t  xqp_uint;
-typedef int64_t   xqp_long;
-typedef uint64_t  xqp_ulong;
 
 
 // exported for testing only
@@ -82,32 +78,30 @@ public:
   /**
    * Parsing form double to Integer. Decimal places are cut of.
    */
-  static bool parseDouble(const Double&, Integer&);
+  static bool parseDouble(const Double& val, Integer&);
 
   /**
    * Parsing form float to Integer. Decimal places are cut of.
    */
-  static bool parseFloat(const Float&, Integer&);
+  static bool parseFloat(const Float& val, Integer&);
 
   /**
    * Parsing form Decimal to Integer. Decimal places are cut of.
    */
   static Integer parseDecimal(const Decimal&);
   
-  static Integer parseLong(xqp_long);
+  static Integer parseLong(int64_t val);
 
-  static Integer parseULong(xqp_ulong);
+  static Integer parseULong(uint64_t val);
 
-  static Integer parseInt(xqp_int);
+  static Integer parseInt(int32_t val);
 
-  static Integer parseUInt(xqp_uint);
+  static Integer parseUInt(uint32_t val);
 
   static Integer parseSizeT(size_t);
 
 private:
-  static MAPM longlongToMAPM(xqp_long);
-      
-  static IMAPM floatingToInteger(MAPM theFloating);
+  static IMAPM floatingToInteger(MAPM floating);
 
 private:
   IMAPM theInteger;

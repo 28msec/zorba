@@ -61,10 +61,206 @@ store::Item_t AtomicItem::getAtomizationValue() const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) const
 {
   store::Item* lItem = const_cast<AtomicItem *>(this);
   val = lItem;
+}
+
+
+/*******************************************************************************
+  For numeric items or the untyped item: convert this item to a long item, 
+  if possible.
+********************************************************************************/
+void AtomicItem::castToLong(store::Item_t& result) const
+{
+  xqp_long longValue;
+
+  result = NULL;
+
+  switch (getTypeCode())
+  {
+  case XS_UNTYPED_ATOMIC:
+  {
+    const UntypedAtomicItem* item = static_cast<const UntypedAtomicItem*>(this);
+    if (NumConversions::strToLong(item->theValue->c_str(), longValue))
+      GET_FACTORY().createLong(result, longValue);
+
+    break;
+  }
+
+  case XS_DECIMAL:
+  {
+    const DecimalItem* item = static_cast<const DecimalItem*>(this);
+    if (NumConversions::decimalToLong(item->theValue, longValue))
+      GET_FACTORY().createLong(result, longValue);
+
+    break;
+  }
+
+  case XS_INTEGER:
+  case XS_NON_POSITIVE_INTEGER:
+  case XS_NEGATIVE_INTEGER:
+  case XS_NON_NEGATIVE_INTEGER:
+  case XS_POSITIVE_INTEGER:
+  {
+    const IntegerItem* item = static_cast<const IntegerItem*>(this);
+    if (NumConversions::integerToLong(item->theValue, longValue))
+      GET_FACTORY().createLong(result, longValue);
+
+    break;
+  }
+
+  case XS_UNSIGNED_LONG:
+  {
+    const UnsignedLongItem* item = static_cast<const UnsignedLongItem*>(this);
+    if ((item->theValue >> 63) == 0)
+    {
+      longValue = static_cast<xqp_long>(item->theValue);
+      GET_FACTORY().createLong(result, longValue);
+    }
+    break;
+  }
+
+  default:
+  {
+    ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                          __FUNCTION__, typeid (*this).name ());
+  }
+  }
+}
+
+
+/*******************************************************************************
+  For numeric items: convert this item to a double item. If the conversion is
+  a lossy one, set "lossy" to true, otherwise set "lossy" to false. If "force"
+  is true, the conversion is done always; otherwise, the conversion is done only
+  if it is lossy.
+********************************************************************************/
+void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) const
+{
+  xqp_double doubleValue;
+
+  result = NULL;
+
+  switch (getTypeCode())
+  {
+  case XS_DECIMAL:
+  {
+    const DecimalItem* item = static_cast<const DecimalItem*>(this);
+
+    doubleValue = xqp_double::parseDecimal(item->theValue);
+
+    xqp_decimal decValue;
+    Decimal::parseDouble(doubleValue, decValue);
+
+    lossy = (decValue != item->theValue);
+    break;
+  }
+
+  case XS_INTEGER:
+  case XS_NON_POSITIVE_INTEGER:
+  case XS_NEGATIVE_INTEGER:
+  case XS_NON_NEGATIVE_INTEGER:
+  case XS_POSITIVE_INTEGER:
+  {
+    const IntegerItem* item = static_cast<const IntegerItem*>(this);
+
+    doubleValue = xqp_double::parseInteger(item->theValue);
+
+    xqp_integer intValue;
+    Integer::parseDouble(doubleValue, intValue);
+
+    lossy = (intValue != item->theValue);
+    break;
+  }
+
+  case XS_UNSIGNED_LONG:
+  {
+    const UnsignedLongItem* item = static_cast<const UnsignedLongItem*>(this);
+
+    doubleValue = xqp_double::parseULong(item->theValue);
+
+    xqp_ulong ulongValue = static_cast<xqp_ulong>(doubleValue.getNumber());
+
+    lossy = (ulongValue != item->theValue);
+    break;
+  }
+  case XS_UNSIGNED_INT:
+  {
+    const UnsignedIntItem* item = static_cast<const UnsignedIntItem*>(this);
+
+    doubleValue = xqp_double::parseUInt(item->theValue);
+    lossy = false;
+    break;
+  }
+  case XS_UNSIGNED_SHORT:
+  {
+    const UnsignedShortItem* item = static_cast<const UnsignedShortItem*>(this);
+
+    doubleValue = xqp_double::parseUInt(item->theValue);
+
+    lossy = false;
+    break;
+  }
+  case XS_UNSIGNED_BYTE:
+  {
+    const UnsignedByteItem* item = static_cast<const UnsignedByteItem*>(this);
+
+    doubleValue = xqp_double::parseUInt(item->theValue);
+
+    lossy = false;
+    break;
+  }
+
+  case XS_LONG:
+  {
+    const LongItem* item = static_cast<const LongItem*>(this);
+
+    doubleValue = xqp_double::parseLong(item->theValue);
+
+    xqp_long longValue = static_cast<xqp_long>(doubleValue.getNumber());
+
+    lossy = (longValue != item->theValue);
+    break;
+  }
+  case XS_INT:
+  {
+    const IntItem* item = static_cast<const IntItem*>(this);
+
+    doubleValue = xqp_double::parseLong(item->theValue);
+    lossy = false;
+    break;
+  }
+  case XS_SHORT:
+  {
+    const ShortItem* item = static_cast<const ShortItem*>(this);
+
+    doubleValue = xqp_double::parseInt(item->theValue);
+    lossy = false;
+    break;
+  }
+  case XS_BYTE:
+  {
+    const ByteItem* item = static_cast<const ByteItem*>(this);
+
+    doubleValue = xqp_double::parseInt(item->theValue);
+    lossy = false;
+    break;
+  }
+
+  default:
+  {
+    ZORBA_ERROR_PARAM_OSS(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE,
+                          __FUNCTION__, typeid (*this).name ());
+  }
+  }
+
+  if (force || lossy)
+    GET_FACTORY().createDouble(result, doubleValue);
 }
 
 
@@ -180,20 +376,6 @@ void UntypedAtomicItem::castToInteger(store::Item_t& result) const
   if (NumConversions::strToInteger(theValue->c_str(), intValue))
   {
     GET_FACTORY().createInteger(result, intValue);
-  }
-  else
-  {
-    result = NULL;
-  }
-}
-
-
-void UntypedAtomicItem::castToLong(store::Item_t& result) const
-{
-  xqp_long longValue;
-  if (NumConversions::strToLong(theValue->c_str(), longValue))
-  {
-    GET_FACTORY().createLong(result, longValue);
   }
   else
   {
@@ -524,7 +706,8 @@ xqp_string StringItemNaive::show() const
 
 void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
                                       int token_no, int sent_no, int para_no,
-                                      void* ) {
+                                      void* ) 
+{
   FTToken t( utf8_s, utf8_len, token_no, sent_no, lang_ );
   tokens_.push_back( t );
 }
@@ -1040,34 +1223,6 @@ uint32_t FloatItemNaive::hash(long timezone, const XQPCollator* aCollation) cons
 /*******************************************************************************
   class DecimalItem
 ********************************************************************************/
-void DecimalItem::castToDouble(store::Item_t& result) const
-{
-  xqp_double doubleValue = xqp_double::parseDecimal(theValue);
-  GET_FACTORY().createDouble(result, doubleValue);
-}
-
-
-void DecimalItem::castToInteger(store::Item_t& result) const
-{
-  xqp_integer integerValue;
-
-  if (NumConversions::decimalToInteger(theValue, integerValue))
-    GET_FACTORY().createInteger(result, integerValue);
-  else
-    result = NULL;
-}
-
-
-void DecimalItem::castToLong(store::Item_t& result) const
-{
-  xqp_long longValue;
-
-  if (NumConversions::decimalToLong(theValue, longValue))
-    GET_FACTORY().createLong(result, longValue);
-  else
-    result = NULL;
-}
-
 
 store::Item* DecimalItem::getType() const
 {
@@ -1122,31 +1277,14 @@ xqp_decimal IntegerItem::getDecimalValue() const
 
 xqp_long IntegerItem::getLongValue() const
 {
-  xqpStringStore_t strval = NumConversions::integerToStr(theValue);
-  xqp_long val;
-  if (! NumConversions::strToLong(strval->c_str(), val))
-  {
-    ZORBA_ERROR_DESC(FORG0001, "Failed to downcast an integer value to a long value");
-  }
-  return val;
-}
-
-
-void IntegerItem::castToDouble(store::Item_t& result) const
-{
-  xqp_double doubleValue = xqp_double::parseInteger(theValue);
-  GET_FACTORY().createDouble(result, doubleValue);
-}
-
-
-void IntegerItem::castToLong(store::Item_t& result) const
-{
   xqp_long longValue;
 
   if (NumConversions::integerToLong(theValue, longValue))
-    GET_FACTORY().createLong(result, longValue);
-  else
-    result = NULL;
+    return longValue;
+
+  ZORBA_ERROR_DESC(FORG0001, "Failed to downcast an integer value to a long value");
+
+  return 0;
 }
 
 
@@ -1217,7 +1355,7 @@ xqp_string NegativeIntegerItem::show() const
 
 
 /*******************************************************************************
-  class NonNegativeINtegerItemNaive
+  class NonNegativeINtegerItem
 ********************************************************************************/
 store::Item* NonNegativeIntegerItem::getType() const 
 {
@@ -1246,7 +1384,7 @@ xqp_string PositiveIntegerItem::show() const
 
 
 /*******************************************************************************
-  class LongItemNaive
+  class LongItem
 ********************************************************************************/
 xqp_decimal LongItem::getDecimalValue() const 
 {
@@ -1277,19 +1415,19 @@ store::Item_t LongItem::getEBV() const
 
 xqpStringStore_t LongItem::getStringValue() const 
 {
-  return NumConversions::longLongToStr(theValue);
+  return NumConversions::longToStr(theValue);
 }
 
 
 void LongItem::getStringValue(xqpStringStore_t& strval) const
 {
-  strval = NumConversions::longLongToStr(theValue);
+  strval = NumConversions::longToStr(theValue);
 }
 
 
 void LongItem::getStringValue(std::string& buf) const
 {
-  buf +=  NumConversions::longLongToStr(theValue)->c_str();
+  buf +=  NumConversions::longToStr(theValue)->c_str();
 }
 
 
@@ -1300,27 +1438,27 @@ xqp_string LongItem::show() const
 
 
 /*******************************************************************************
-  class IntItemNaive
+  class IntItem
 ********************************************************************************/
-xqp_decimal IntItemNaive::getDecimalValue() const
+xqp_decimal IntItem::getDecimalValue() const
 {
-  return Decimal::parseInt( theValue );
+  return Decimal::parseInt(theValue);
 }
 
 
-xqp_integer IntItemNaive::getIntegerValue() const
+xqp_integer IntItem::getIntegerValue() const
 {
   return Integer::parseInt( theValue );
 }
 
 
-store::Item* IntItemNaive::getType() const
+store::Item* IntItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_INT];
 }
 
 
-store::Item_t IntItemNaive::getEBV() const
+store::Item_t IntItem::getEBV() const
 {
   bool b = ( theValue != (int32_t)0 );
   store::Item_t bVal;
@@ -1328,52 +1466,52 @@ store::Item_t IntItemNaive::getEBV() const
   return bVal;
 }
 
-xqpStringStore_t IntItemNaive::getStringValue() const
+xqpStringStore_t IntItem::getStringValue() const
 {
   return NumConversions::intToStr(theValue);
 }
 
 
-void IntItemNaive::getStringValue(xqpStringStore_t& strval) const
+void IntItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = NumConversions::intToStr(theValue);
 }
 
 
-void IntItemNaive::getStringValue(std::string& buf) const
+void IntItem::getStringValue(std::string& buf) const
 {
   buf += NumConversions::intToStr(theValue)->c_str();
 }
 
 
-xqp_string IntItemNaive::show() const
+xqp_string IntItem::show() const
 {
   return "xs:int(" + getStringValue()->str() + ")";
 }
 
 
 /*******************************************************************************
-  class ShortItemNaive
+  class ShortItem
 ********************************************************************************/
-xqp_decimal ShortItemNaive::getDecimalValue() const 
+xqp_decimal ShortItem::getDecimalValue() const 
 {
   return Decimal::parseInt((int32_t)theValue);
 }
 
 
-xqp_integer ShortItemNaive::getIntegerValue() const 
+xqp_integer ShortItem::getIntegerValue() const 
 {
   return Integer::parseInt((int32_t)theValue); 
 }
 
 
-store::Item* ShortItemNaive::getType() const 
+store::Item* ShortItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_SHORT];
 }
 
 
-store::Item_t ShortItemNaive::getEBV() const 
+store::Item_t ShortItem::getEBV() const 
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1382,52 +1520,52 @@ store::Item_t ShortItemNaive::getEBV() const
 }
 
 
-xqpStringStore_t ShortItemNaive::getStringValue() const 
+xqpStringStore_t ShortItem::getStringValue() const 
 {
   return NumConversions::shortToStr(theValue);
 }
 
 
-void ShortItemNaive::getStringValue(xqpStringStore_t& strval) const
+void ShortItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = NumConversions::shortToStr(theValue);
 }
 
 
-void ShortItemNaive::getStringValue(std::string& buf) const
+void ShortItem::getStringValue(std::string& buf) const
 {
   buf += NumConversions::shortToStr(theValue)->c_str();
 }
 
 
-xqp_string ShortItemNaive::show() const 
+xqp_string ShortItem::show() const 
 {
   return "xs:short(" + getStringValue()->str() + ")";
 }
 
 
 /*******************************************************************************
-  class ByteItemNaive
+  class ByteItem
 ********************************************************************************/
-xqp_decimal ByteItemNaive::getDecimalValue() const 
+xqp_decimal ByteItem::getDecimalValue() const 
 {
   return Decimal::parseInt((int32_t)theValue);
 }
 
 
-xqp_integer ByteItemNaive::getIntegerValue() const 
+xqp_integer ByteItem::getIntegerValue() const 
 {
   return Integer::parseInt((int32_t)theValue); 
 }
 
 
-store::Item* ByteItemNaive::getType() const 
+store::Item* ByteItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_BYTE];
 }
 
 
-store::Item_t ByteItemNaive::getEBV() const 
+store::Item_t ByteItem::getEBV() const 
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1436,25 +1574,25 @@ store::Item_t ByteItemNaive::getEBV() const
 }
 
 
-xqpStringStore_t ByteItemNaive::getStringValue() const 
+xqpStringStore_t ByteItem::getStringValue() const 
 {
   return NumConversions::byteToStr(theValue);
 }
 
 
-void ByteItemNaive::getStringValue(xqpStringStore_t& strval) const
+void ByteItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = NumConversions::byteToStr(theValue);
 }
 
 
-void ByteItemNaive::getStringValue(std::string& buf) const
+void ByteItem::getStringValue(std::string& buf) const
 {
   buf += NumConversions::byteToStr(theValue)->c_str();
 }
 
 
-xqp_string ByteItemNaive::show() const 
+xqp_string ByteItem::show() const 
 {
   return "xs:byte(" + getStringValue()->str() + ")";
 }
@@ -1481,27 +1619,6 @@ xqp_uinteger UnsignedLongItem::getUnsignedIntegerValue() const
 }
 
 
-void UnsignedLongItem::castToInteger(store::Item_t& result) const
-{
-  xqp_integer val = Integer::parseULong(theValue);
-  GET_FACTORY().createInteger(result, val);
-}
-
-
-void UnsignedLongItem::castToLong(store::Item_t& result) const
-{
-  if (theValue >> 63)
-  {
-    result = NULL;
-  }
-  else
-  {
-    xqp_long val = static_cast<xqp_long>(theValue);
-    GET_FACTORY().createLong(result, val);
-  }
-}
-
-
 store::Item* UnsignedLongItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_LONG];
@@ -1519,19 +1636,19 @@ store::Item_t UnsignedLongItem::getEBV() const
 
 xqpStringStore_t UnsignedLongItem::getStringValue() const 
 {
-  return NumConversions::ulongLongToStr(theValue);
+  return NumConversions::ulongToStr(theValue);
 }
 
 
 void UnsignedLongItem::getStringValue(xqpStringStore_t& strval) const
 {
-  strval = NumConversions::ulongLongToStr(theValue);
+  strval = NumConversions::ulongToStr(theValue);
 }
 
 
 void UnsignedLongItem::getStringValue(std::string& buf) const
 {
-  buf += NumConversions::ulongLongToStr(theValue)->c_str();
+  buf += NumConversions::ulongToStr(theValue)->c_str();
 }
 
 
@@ -1542,33 +1659,33 @@ xqp_string UnsignedLongItem::show() const
 
 
 /*******************************************************************************
-  class UnsignedIntItemNaive
+  class UnsignedIntItem
 ********************************************************************************/
-xqp_decimal UnsignedIntItemNaive::getDecimalValue() const 
+xqp_decimal UnsignedIntItem::getDecimalValue() const 
 {
   return Decimal::parseUInt(theValue);
 }
 
 
-xqp_integer UnsignedIntItemNaive::getIntegerValue() const 
+xqp_integer UnsignedIntItem::getIntegerValue() const 
 {
   return Integer::parseInt(theValue);
 }
 
 
-xqp_uinteger UnsignedIntItemNaive::getUnsignedIntegerValue() const 
+xqp_uinteger UnsignedIntItem::getUnsignedIntegerValue() const 
 {
   return Integer::parseInt(theValue);
 }
 
 
-store::Item* UnsignedIntItemNaive::getType() const 
+store::Item* UnsignedIntItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_INT];
 }
 
 
-store::Item_t UnsignedIntItemNaive::getEBV() const 
+store::Item_t UnsignedIntItem::getEBV() const 
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1577,58 +1694,58 @@ store::Item_t UnsignedIntItemNaive::getEBV() const
 }
 
 
-xqpStringStore_t UnsignedIntItemNaive::getStringValue() const 
+xqpStringStore_t UnsignedIntItem::getStringValue() const 
 {
   return NumConversions::uintToStr(theValue);
 }
 
 
-void UnsignedIntItemNaive::getStringValue(xqpStringStore_t& strval) const
+void UnsignedIntItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = NumConversions::uintToStr(theValue);
 }
 
 
-void UnsignedIntItemNaive::getStringValue(std::string& buf) const
+void UnsignedIntItem::getStringValue(std::string& buf) const
 {
   buf += NumConversions::uintToStr(theValue)->c_str();
 }
 
 
-xqp_string UnsignedIntItemNaive::show() const 
+xqp_string UnsignedIntItem::show() const 
 {
   return "xs:unsignedInt(" + getStringValue()->str() + ")";
 }
 
 
 /*******************************************************************************
-  class UnsignedShortItemNaive
+  class UnsignedShortItem
 ********************************************************************************/
-xqp_decimal UnsignedShortItemNaive::getDecimalValue() const 
+xqp_decimal UnsignedShortItem::getDecimalValue() const 
 {
   return Decimal::parseInt((uint32_t)theValue);
 }
 
 
-xqp_integer UnsignedShortItemNaive::getIntegerValue() const 
+xqp_integer UnsignedShortItem::getIntegerValue() const 
 {
   return Integer::parseInt((uint32_t)theValue);
 }
 
 
-xqp_uinteger UnsignedShortItemNaive::getUnsignedIntegerValue() const 
+xqp_uinteger UnsignedShortItem::getUnsignedIntegerValue() const 
 {
   return Integer::parseInt((uint32_t)theValue);
 }
 
 
-store::Item* UnsignedShortItemNaive::getType() const 
+store::Item* UnsignedShortItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_SHORT];
 }
 
 
-store::Item_t UnsignedShortItemNaive::getEBV() const 
+store::Item_t UnsignedShortItem::getEBV() const 
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1637,58 +1754,58 @@ store::Item_t UnsignedShortItemNaive::getEBV() const
 }
 
 
-xqpStringStore_t UnsignedShortItemNaive::getStringValue() const 
+xqpStringStore_t UnsignedShortItem::getStringValue() const 
 {
   return NumConversions::ushortToStr(theValue);
 }
 
 
-void UnsignedShortItemNaive::getStringValue(xqpStringStore_t& strval) const
+void UnsignedShortItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = NumConversions::ushortToStr(theValue);
 }
 
 
-void UnsignedShortItemNaive::getStringValue(std::string& buf) const
+void UnsignedShortItem::getStringValue(std::string& buf) const
 {
   buf += NumConversions::ushortToStr(theValue)->c_str();
 }
 
 
-xqp_string UnsignedShortItemNaive::show() const 
+xqp_string UnsignedShortItem::show() const 
 {
   return "xs:unsignedShort(" + getStringValue()->str() + ")";
 }
 
 
 /*******************************************************************************
-  class UnsignedByteItemNaive
+  class UnsignedByteItem
 ********************************************************************************/
-xqp_decimal UnsignedByteItemNaive::getDecimalValue() const 
+xqp_decimal UnsignedByteItem::getDecimalValue() const 
 {
   return Decimal::parseUInt((uint32_t)theValue);
 }
 
 
-xqp_integer UnsignedByteItemNaive::getIntegerValue() const 
+xqp_integer UnsignedByteItem::getIntegerValue() const 
 {
   return Integer::parseInt((uint32_t)theValue);
 }
 
 
-xqp_uinteger UnsignedByteItemNaive::getUnsignedIntegerValue() const 
+xqp_uinteger UnsignedByteItem::getUnsignedIntegerValue() const 
 {
   return Integer::parseInt(theValue);
 }
 
 
-store::Item* UnsignedByteItemNaive::getType() const 
+store::Item* UnsignedByteItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_UNSIGNED_BYTE];
 }
 
 
-store::Item_t UnsignedByteItemNaive::getEBV() const 
+store::Item_t UnsignedByteItem::getEBV() const 
 {
   bool b = (theValue != 0);
   store::Item_t bVal;
@@ -1697,25 +1814,25 @@ store::Item_t UnsignedByteItemNaive::getEBV() const
 }
 
 
-xqpStringStore_t UnsignedByteItemNaive::getStringValue() const 
+xqpStringStore_t UnsignedByteItem::getStringValue() const 
 {
   return NumConversions::ubyteToStr(theValue);
 }
 
 
-void UnsignedByteItemNaive::getStringValue(xqpStringStore_t& strval) const
+void UnsignedByteItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = NumConversions::ubyteToStr(theValue);
 }
 
 
-void UnsignedByteItemNaive::getStringValue(std::string& buf) const
+void UnsignedByteItem::getStringValue(std::string& buf) const
 {
   buf += NumConversions::ubyteToStr(theValue)->c_str();
 }
 
 
-xqp_string UnsignedByteItemNaive::show() const 
+xqp_string UnsignedByteItem::show() const 
 {
   return "xs:unsignedByte(" + getStringValue()->str() + ")";
 }

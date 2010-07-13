@@ -50,26 +50,24 @@ public:
 
   static bool parseString(const char*, Decimal&);
 
-  static bool parseNativeDouble(double, Decimal&);
+  static bool parseNativeDouble(double val, Decimal&);
 
-  static bool parseFloat(const Float&, Decimal&);
+  static bool parseFloat(const Float& val, Decimal&);
 
-  static bool parseDouble(const Double&, Decimal&);
+  static bool parseDouble(const Double& val, Decimal&);
 
-  static Decimal parseLongLong(long long);
+  static Decimal parseInteger(const Integer& val);
 
-  static Decimal parseULongLong(unsigned long long);
+  static Decimal parseLongLong(int64_t val);
 
-  static Decimal parseLong(long aLong);
+  static Decimal parseULongLong(uint64_t val);
 
-  static Decimal parseInteger(const Integer& aInteger);
+  static Decimal parseInt(int32_t val);
 
-  static Decimal parseInt(int32_t aInt);
-
-  static Decimal parseUInt(uint32_t aUInt);
+  static Decimal parseUInt(uint32_t val);
 
 #ifndef ZORBA_NO_BIGNUMBERS
-  static MAPM round(const MAPM &aValue, const MAPM& aPrecision);
+  static MAPM round(const MAPM& aValue, const MAPM& aPrecision);
   static MAPM roundHalfToEven(const MAPM& aValue, const MAPM& aPrecision);
 #else
   static MAPM round(MAPM aValue, int aPrecision);
@@ -79,17 +77,12 @@ public:
 private:
   static xqpStringStore_t decimalToString(
         MAPM,
-        int precision=ZORBA_FLOAT_POINT_PRECISION);
+        int precision = ZORBA_FLOAT_POINT_PRECISION);
 
   static void reduceFloatingPointString(char* str);
 
 private:
   MAPM theDecimal;
-
-#ifdef ZORBA_NUMERIC_OPTIMIZATION
-public:
-  static  HashCharPtrObjPtrLimited<Decimal>  parsed_decimals;
-#endif
 
 public:
   SERIALIZABLE_CLASS(Decimal)
@@ -104,6 +97,8 @@ public:
     ::zorba::serialization::SerializeBaseClass(), theDecimal(aDecimal.theDecimal) 
   {
   }
+  
+  Decimal(const MAPM& val) : theDecimal(val) { }
 
   virtual ~Decimal() {}
 
@@ -255,9 +250,6 @@ public:
   }
 
   int getValueAsInt() const;
-
-private:
-  Decimal(const MAPM& aDecimal) : theDecimal(aDecimal) { }
 };
 
   

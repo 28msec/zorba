@@ -500,7 +500,8 @@ AttributeIterator::AttributeIterator(
     }
 
     if ((theQName->getNamespace()->byteEqual("http://www.w3.org/XML/1998/namespace", 36) &&
-        !theQName->getPrefix()->empty() && !theQName->getPrefix()->byteEqual("xml", 3)) ||
+         !theQName->getPrefix()->empty() &&
+         !theQName->getPrefix()->byteEqual("xml", 3)) ||
         (theQName->getPrefix()->byteEqual("xml", 3) &&
          !theQName->getNamespace()->byteEqual("http://www.w3.org/XML/1998/namespace", 36)))
     {
@@ -508,7 +509,8 @@ AttributeIterator::AttributeIterator(
     }
 
     if ((theQName->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29) &&
-        !theQName->getPrefix()->empty() && !theQName->getPrefix()->byteEqual("xmlns", 5)) ||
+         !theQName->getPrefix()->empty() &&
+         !theQName->getPrefix()->byteEqual("xmlns", 5)) ||
         (theQName->getPrefix()->byteEqual("xmlns", 5) &&
          !theQName->getNamespace()->byteEqual("http://www.w3.org/2000/xmlns/", 29)))
     {
@@ -890,8 +892,19 @@ EnclosedIterator::EnclosedIterator (
     PlanIter_t& childIter)
   :
   UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState> ( sctx, loc, childIter ),
-  theAttrContent(false)
+  theAttrContent(false),
+  theTextContent(false)
 {
+}
+
+
+void EnclosedIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState>*)this);
+
+  ar & theAttrContent;
+  ar & theTextContent;
 }
 
 
@@ -900,9 +913,24 @@ bool EnclosedIterator::getAttrContent() const
   return theAttrContent;
 }
 
+
 void EnclosedIterator::setAttrContent()
 {
+  assert(theTextContent == false);
   theAttrContent = true;
+}
+
+
+bool EnclosedIterator::getTextContent() const
+{
+  return theTextContent;
+}
+
+
+void EnclosedIterator::setTextContent()
+{
+  assert(theAttrContent == false);
+  theTextContent = true;
 }
 
 
@@ -910,53 +938,59 @@ bool EnclosedIterator::nextImpl(store::Item_t& result, PlanState& planState) con
 {
   store::ItemFactory* factory = GENV_ITEMFACTORY;
   xqpStringStore_t strval;
+  std::string buf;
   std::stack<store::Item*>& path = planState.theNodeConstuctionPath;
 
   EnclosedIteratorState* state;
   DEFAULT_STACK_INIT(EnclosedIteratorState, state, planState);
 
-  if (theAttrContent)
+  if (theAttrContent || theTextContent)
   {
     while ( true )
     {
       if (!consumeNext(result, theChild, planState))
         break;
-
+ 
       if (result->isNode())
       {
-        STACK_PUSH(true, state);
+        store::Item_t typedValue;
+        store::Iterator_t typedIter;
+        result->getTypedValue(typedValue, typedIter);
+
+        if (typedIter == NULL)
+        {
+          typedValue->getStringValue(buf);
+          buf += " ";
+        }
+        else
+        {
+          while (typedIter->next(typedValue))
+          {
+            typedValue->getStringValue(buf);
+            buf += " ";
+          }
+        }
       }
       else
       {
-        strval = result->getStringValue();
-
-        {
-          std::string buf;
-          while(true) 
-          {
-            bool status = consumeNext(state->theContextItem, theChild, planState);
-            if (!status) 
-            {
-              state->theContextItem = NULL;
-              break;
-            }
-            if (!state->theContextItem->isAtomic())
-              break;
-
-            buf += " ";
-            buf += state->theContextItem->getStringValue()->str();
-          }
-
-          if (!buf.empty())
-            strval = strval->append(buf.c_str());
-        }
-
-        factory->createString(result, strval);
-        STACK_PUSH(true, state);
-
-        result.transfer(state->theContextItem);
-        STACK_PUSH(result != NULL, state);
+        result->getStringValue(buf);
+        buf += " ";
       }
+    }
+
+    if (buf.empty() && theTextContent)
+    {
+      STACK_PUSH(false, state);
+    }
+    else
+    {
+      // Erase the last space added in the above loop
+      if (!buf.empty())
+        buf.resize(buf.size() - 1);
+
+      strval = new xqpStringStore(buf);
+      factory->createString(result, strval);
+      STACK_PUSH(true, state);
     }
   }
   else

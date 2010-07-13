@@ -104,7 +104,8 @@ protected:
   bool insertInMap(
         store::IndexKey*& key,
         store::Item_t& node,
-        IndexMap*& targetMap);
+        IndexMap*& targetMap,
+        bool untyped);
 
   bool remove(
         const store::IndexKey* key,

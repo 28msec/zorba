@@ -373,7 +373,8 @@ class EnclosedIterator : public UnaryBaseIterator<EnclosedIterator,
 {
 private:
   bool theAttrContent;
-  
+  bool theTextContent;
+
 public:
   SERIALIZABLE_CLASS(EnclosedIterator);
 
@@ -381,13 +382,7 @@ public:
   EnclosedIterator,
   UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState>);
 
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<EnclosedIterator, EnclosedIteratorState>*)this);
-
-    ar & theAttrContent;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   EnclosedIterator(
@@ -398,6 +393,10 @@ public:
   bool getAttrContent() const;
 
   void setAttrContent();
+
+  bool getTextContent() const;
+
+  void setTextContent();
 
   void accept(PlanIterVisitor& v) const;
 

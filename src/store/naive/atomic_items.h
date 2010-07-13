@@ -76,6 +76,10 @@ public:
   virtual SchemaTypeCode getTypeCode() const = 0;
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
+
+  void castToLong(store::Item_t& result) const;
+
+  void coerceToDouble(store::Item_t& result, bool force, bool& lossy) const;
 };
 
 
@@ -88,6 +92,7 @@ typedef rchandle<AtomicItem> AtomicItem_t;
 class UserTypedAtomicItemImpl : public AtomicItem
 {
   friend class BasicItemFactory;
+  friend class AtomicItem;
 
 protected:
   AtomicItem_t   theBaseItem;
@@ -105,7 +110,7 @@ protected:
   UserTypedAtomicItemImpl() {}
 
 public:
-  const store::Item* getBaseItem() const { return theBaseItem.getp(); }
+  store::Item* getBaseItem() const { return theBaseItem.getp(); }
 
   SchemaTypeCode getTypeCode() const { return theBaseItem->getTypeCode(); }
 
@@ -257,6 +262,7 @@ public:
 class UntypedAtomicItem : public AtomicItem
 {
   friend class BasicItemFactory;
+  friend class AtomicItem;
 
 protected:
   xqpStringStore_t theValue;
@@ -294,8 +300,6 @@ public:
   void castToDecimal(store::Item_t& result) const;
 
   void castToInteger(store::Item_t& result) const;
-
-  void castToLong(store::Item_t& result) const;
 
   void castToHexBinary(store::Item_t& result) const;
 
@@ -1004,6 +1008,7 @@ class DecimalItem : public AtomicItem
 {
   friend class BasicItemFactory;
   friend class IndexBoxConditionImpl;
+  friend class AtomicItem;
 
 protected:
   xqp_decimal theValue;
@@ -1014,12 +1019,6 @@ protected:
 
 public:
   xqp_decimal getDecimalValue() const { return theValue; }
-
-  void castToDouble(store::Item_t& result) const;
-
-  void castToInteger(store::Item_t& result) const;
-
-  void castToLong(store::Item_t& result) const;
 
   SchemaTypeCode getTypeCode() const { return XS_DECIMAL; }
 
@@ -1046,9 +1045,9 @@ public:
     return theValue.compare(other->getDecimalValue());
   }
 
-  store::Item_t getEBV( ) const;
+  store::Item_t getEBV() const;
 
-  xqpStringStore_t getStringValue( ) const;
+  xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
 
@@ -1064,6 +1063,7 @@ public:
 class IntegerItem : public AtomicItem
 {
   friend class BasicItemFactory;
+  friend class AtomicItem;
 
 protected:
   xqp_integer theValue;
@@ -1079,10 +1079,6 @@ public:
   xqp_integer getIntegerValue() const { return theValue; }
 
   xqp_long getLongValue() const;
-
-  void castToDouble(store::Item_t& result) const;
-
-  void castToLong(store::Item_t& result) const;
 
   virtual SchemaTypeCode getTypeCode() const { return XS_INTEGER; }
 
@@ -1231,6 +1227,7 @@ public:
 class LongItem : public AtomicItem 
 {
   friend class BasicItemFactory;
+  friend class AtomicItem;
 
 protected:
   xqp_long theValue;
@@ -1301,19 +1298,20 @@ public:
 
 
 /*******************************************************************************
-  class IntItemNaive
+  class IntItem
 ********************************************************************************/
-class IntItemNaive : public AtomicItem
+class IntItem : public AtomicItem
 {
   friend class BasicItemFactory;
+  friend class AtomicItem;
 
 protected:
   int32_t theValue;
 
 protected:
-  IntItemNaive(xqp_int aValue) : theValue(aValue) {}
+  IntItem(xqp_int aValue) : theValue(aValue) {}
 
-  IntItemNaive() {}
+  IntItem() {}
 
 public:
   bool isNaN() const { return false; }
@@ -1378,19 +1376,20 @@ public:
 
 
 /*******************************************************************************
-  class ShortItemNaive
+  class ShortItem
 ********************************************************************************/  
-class ShortItemNaive : public AtomicItem 
+class ShortItem : public AtomicItem 
 {
   friend class BasicItemFactory;
+  friend class AtomicItem;
 
 protected:
   xqp_short theValue;
 
 protected:
-  ShortItemNaive ( xqp_short aValue)  : theValue(aValue) {}
+  ShortItem(xqp_short aValue)  : theValue(aValue) {}
 
-  ShortItemNaive() {}
+  ShortItem() {}
 
 public:
   xqp_decimal getDecimalValue() const;
@@ -1459,17 +1458,18 @@ public:
 /*******************************************************************************
   class ByteItemNaive
 ********************************************************************************/
-class ByteItemNaive : public AtomicItem 
+class ByteItem : public AtomicItem 
 {
   friend class BasicItemFactory;
+  friend class AtomicItem;
 
 protected:
   xqp_byte theValue;
 
 protected:  
-  ByteItemNaive(xqp_byte aValue) : theValue(aValue) {}
+  ByteItem(xqp_byte aValue) : theValue(aValue) {}
 
-  ByteItemNaive() {}
+  ByteItem() {}
 
 public:
   xqp_decimal getDecimalValue() const;
@@ -1543,10 +1543,12 @@ public:
 class UnsignedLongItem : public AtomicItem 
 {
   friend class BasicItemFactory;
+  friend class AtomicItem;
 
 protected:
   xqp_ulong theValue;
   
+protected:
   UnsignedLongItem(xqp_ulong aValue) : theValue(aValue) {}
 
   UnsignedLongItem() {}
@@ -1562,10 +1564,6 @@ protected:
 
   xqp_ulong getUnsignedLongValue() const { return theValue; }
   
-  void castToInteger(store::Item_t& result) const;
-
-  void castToLong(store::Item_t& result) const;
-
   SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_LONG; }
 
   store::Item* getType() const;
@@ -1618,19 +1616,20 @@ protected:
 
 
 /*******************************************************************************
-  class UnsignedIntItemNaive
+  class UnsignedIntItem
 ********************************************************************************/
-class UnsignedIntItemNaive : public AtomicItem 
+class UnsignedIntItem : public AtomicItem 
 {
   friend class BasicItemFactory;
+  friend class AtomicItem;
 
 protected:
   xqp_uint theValue;
   
 protected:
-  UnsignedIntItemNaive(xqp_uint aValue) : theValue(aValue) {}
+  UnsignedIntItem(xqp_uint aValue) : theValue(aValue) {}
 
-  UnsignedIntItemNaive() {}
+  UnsignedIntItem() {}
 
 public:
   bool isNaN() const { return false; }
@@ -1706,19 +1705,20 @@ public:
 
 
 /*******************************************************************************
-  class UnsignedShortItemNaive
+  class UnsignedShortItem
 ********************************************************************************/
-class UnsignedShortItemNaive : public AtomicItem 
+class UnsignedShortItem : public AtomicItem 
 {
   friend class BasicItemFactory;
+  friend class AtomicItem;
 
 protected:
   xqp_ushort theValue;
   
 protected:
-  UnsignedShortItemNaive ( xqp_ushort aValue) : theValue(aValue) {}
+  UnsignedShortItem(xqp_ushort aValue) : theValue(aValue) {}
 
-  UnsignedShortItemNaive() {}
+  UnsignedShortItem() {}
 
 public:
   xqp_decimal getDecimalValue() const;
@@ -1796,18 +1796,20 @@ public:
 
 
 /*******************************************************************************
-  class UnsignedByteItemNaive
+  class UnsignedByteItem
 ********************************************************************************/
-class UnsignedByteItemNaive : public AtomicItem 
+class UnsignedByteItem : public AtomicItem 
 {
+  friend class BasicItemFactory;
+  friend class AtomicItem;
+
 protected:
   xqp_ubyte theValue;
-  
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
-  UnsignedByteItemNaive(xqp_ubyte aValue) : theValue(aValue) {}
 
-  UnsignedByteItemNaive() : theValue(0) {}
+protected:
+  UnsignedByteItem(xqp_ubyte aValue) : theValue(aValue) {}
+
+  UnsignedByteItem() : theValue(0) {}
 
 public:
   xqp_decimal getDecimalValue() const;
@@ -1887,7 +1889,7 @@ public:
 
 
 /*******************************************************************************
-  class BooleanItemNaive
+  class BooleanItem
 ********************************************************************************/
 class BooleanItemNaive : public AtomicItem
 {

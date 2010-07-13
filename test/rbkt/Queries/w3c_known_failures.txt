@@ -41,8 +41,6 @@ test/rbkt/w3c_testsuite/XQuery/Expressions/Operators/ArithExpr/NumericOpr/Numeri
 test/rbkt/w3c_testsuite/XQuery/Expressions/Operators/ArithExpr/NumericOpr/NumericIntegerDivide/op-numeric-integer-dividefloat2args-4
 test/rbkt/w3c_testsuite/XQuery/FullAxis/precedingAxis/preceding-22
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/K2-DirectConElem-47
-test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemAttr/K2-DirectConElemAttr-33
-test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemAttr/K2-DirectConElemAttr-75
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemContent/K2-DirectConElemContent-48
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemNamespace/K2-DirectConElemNamespace-53
 test/rbkt/w3c_testsuite/XQuery/Construct/DirectConElem/DirectConElemNamespace/K2-DirectConElemNamespace-39
