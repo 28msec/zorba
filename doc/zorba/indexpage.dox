@@ -8,54 +8,54 @@
   allows a pluggable XML store (e.g. main memory, DOM stores, persistent disk-based large stores, S3 stores). 
   Zorba runs on most platforms and is available under the Apache license v2.
   
-  The following functionalities are implemented:
+  <b>Functionalities</b>
 
   <ul>
-   <li> XQuery 1.0 and XPath 2.0 (as in the W3C recommendation) with only limited support for schema validation.
-   <li> XQuery Update Facility 1.0 (as in the evolving W3C recommendation).
-   <li> An in-memory replaceable XML store implementing the XQuery Data Model (XDM) W3C recommendation.
-   <li> Group By (as in the evolving W3C XQuery 1.1 recommendation).
-   <li> Try-Catch (as in the evolving W3C recommendation).
-   <li> Eval Facility to dynamically evaluate a string and execute it as a query.
-   <li> APIs in various programming languages (i.e. C++, C, Python, and Ruby).
-   <li> Schema validation
+   <li> <a class="el" href="http://www.w3.org/TR/xquery/">XQuery 1.0 and XPath 2.0</a> (as in the W3C recommendation).
+   <li> <a class="el" href="http://www.w3.org/TR/2009/CR-xquery-update-10-20090609/">XQuery Update Facility 1.0</a> (as in the evolving W3C recommendation).
+   <li> <a class="el" href="http://www.w3.org/TR/2008/WD-xquery-sx-10-20081203/">XQuery Scripting Extension 1.0</a> (as in the evolving W3C recommendation)
+   <li> An in-memory replaceable XML store implementing the <a class="el" href="http://www.w3.org/TR/xpath-datamodel/">XQuery Data Model (XDM)</a> W3C recommendation.
+   <li> <a class="el" href="http://www.w3.org/TR/xquery-11/">XQuery 1.1</a> (upcoming W3C recommendation)
+     <ul>
+      <li> <a class="el" href="http://www.w3.org/TR/xquery-11/#id-group-by">Group By</a>
+      <li> <a class="el" href="http://www.w3.org/TR/xquery-11/#id-try-catch">Try-Catch</a>
+      <li> <a class="el" href="http://www.w3.org/TR/xquery-11/#id-windows">Windowing</a>
+      <li> <a class="el" href="http://www.w3.org/TR/xquery-11/#id-flwor-expressions">General FLWOR</a>
+      <li> <a class="el" href="http://www.w3.org/TR/xquery-11/#id-switch">Switch</a>
+      <li> <a class="el" href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">Nondeterministic functions</a>
+      <li> <a class="el" href="http://www.w3.org/TR/xquery-11/#id-function-invoke">partial support for higher-order functions</a>
+     </ul>
+   <li> \ref eval to dynamically evaluate a string and execute it as a query.
+   <li> \ref XQDDF (definition of collections, indexes, and integrity constraints)
   </ul>
 
- <ul>
-   <li> The User Guide
-   <ul>
-     <li> \ref build
-     <li> \ref installation
-     <li> XQuery 1.1<br/>
-       <ul>
-         <li> \ref groupby
-         <li> \ref gflwor
-         <li> \ref trycatch
-       </ul>
-     <li> \ref zorbascripting
-     <li> \ref eval
-     <li> \ref XQDDF
-     <li> \ref options
-     <li> \ref trace
-     <li> Function Library API documentation
-       <ul>
-         <li> \ref zorba-io
-         <li> \ref fop
-         <li> \ref REST (deprecated)
-       </ul>
-     </ul>
-     <li> \ref commandline
-     <li> \ref debugger
-     <li> Application Programming Interfaces (APIs)
-     <ul>
-       <li><a class="el" href="../../cxx/html/index.html">C++ API</a>
-       <li><a class="el" href="../../c/html/index.html">C API</a>
-       <li><a class="el" href="../../java/html/index.html">Java API</a>
-       <li><a class="el" href="../../python/html/index.html">Python API</a>
-       <li><a class="el" href="../../ruby/html/index.html">Ruby API</a>
-       <li><a class="el" href="../../php/html/index.html">PHP API</a>
-     </ul>
-     <li> \ref msdomstore
-   </ul>
+  <b> <a class="el" href="../xqdoc/xhtml/index.html">XQuery Modules</a></b>
+
+  <b>Application Programming Interfaces (APIs)</b>
+  <ul>
+    <li><a class="el" href="../../cxx/html/index.html">C++ API</a>
+    <li><a class="el" href="../../c/html/index.html">C API</a>
+    <li><a class="el" href="../../java/html/index.html">Java API</a>
+    <li><a class="el" href="../../python/html/index.html">Python API</a>
+    <li><a class="el" href="../../ruby/html/index.html">Ruby API</a>
+    <li><a class="el" href="../../php/html/index.html">PHP API</a>
+  </ul>
+
+  <b>Build and Installation Instructions</b>
+  <ul>
+    <li> \ref build
+    <li> \ref installation
+  </ul>
+
+  <b>Configuration</b>
+  <ul>
+    <li> \ref options
+    <li> \ref trace
+  </ul>
+
+  <b>Clients</b>
+  <ul>
+    <li> \ref commandline
+    <li> \ref debugger
  </ul>
  */
