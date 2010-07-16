@@ -183,6 +183,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   const expr* predExpr = predInfo.thePredicate;
 
   static_context* sctx = predExpr->get_sctx();
+  TypeManager* tm = sctx->get_typemanager();
 
   // skip fn:boolean() wrapper
   while (true)
@@ -251,7 +252,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   // The domain of the outer var must contain more than 1 item.
   xqtref_t outerDomainType = predInfo.theOuterVar->get_domain_expr()->get_return_type();
 
-  if (TypeOps::type_max_cnt(*outerDomainType) < 2)
+  if (TypeOps::type_max_cnt(tm, *outerDomainType) < 2)
     return false;
 
   // The expr that defines the inner var must not depend on the outer var.
@@ -267,8 +268,8 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   // Type checks
   xqtref_t outerType = predInfo.theOuterOp->get_return_type();
   xqtref_t innerType = predInfo.theInnerOp->get_return_type();
-  xqtref_t primeOuterType = TypeOps::prime_type(*outerType);
-  xqtref_t primeInnerType = TypeOps::prime_type(*innerType);
+  xqtref_t primeOuterType = TypeOps::prime_type(tm, *outerType);
+  xqtref_t primeInnerType = TypeOps::prime_type(tm, *innerType);
   TypeConstants::quantifier_t outerQuant = TypeOps::quantifier(*outerType);
   TypeConstants::quantifier_t innerQuant = TypeOps::quantifier(*innerType);
 
@@ -287,17 +288,17 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   // The type of the outer/inner operands in the join predicate must not be
   // xs:untypedAtomic or xs:anyAtomic.
-  if (TypeOps::is_equal(*primeOuterType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) ||
-      TypeOps::is_equal(*primeInnerType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
+  if (TypeOps::is_equal(tm, *primeOuterType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) ||
+      TypeOps::is_equal(tm, *primeInnerType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
     return false;
 
-  if (TypeOps::is_equal(*primeOuterType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE) ||
-      TypeOps::is_equal(*primeInnerType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
+  if (TypeOps::is_equal(tm, *primeOuterType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE) ||
+      TypeOps::is_equal(tm, *primeInnerType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
     return false;
 
   // The type of the outer operand in the join predicate must be a subtype
   // of the inner operand.
-  if (!TypeOps::is_subtype(*outerType, *innerType))
+  if (!TypeOps::is_subtype(tm, *outerType, *innerType))
     return false;
 
   return true;

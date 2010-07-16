@@ -78,9 +78,12 @@ public:
 
   bool isArithmeticFunction() const { return true; }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const
   {
-    return TypeOps::arithmetic_type(*arg_types[0],
+    return TypeOps::arithmetic_type(tm,
+                                    *arg_types[0],
                                     *arg_types[1],
                                     arithmeticKind() == ArithmeticConsts::DIVISION);
   }
@@ -558,7 +561,9 @@ public:
   {
   }
 
-  virtual xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const
+  virtual xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const
   {
     return arg_types[0];
   }
@@ -576,18 +581,20 @@ function* single_numeric_func::specialize(
     const std::vector<xqtref_t>& argTypes) const
 {
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
+  TypeManager* tm = sctx->get_typemanager();
+
   xqtref_t argType = argTypes[0];
 
   if (getKind() == FunctionConsts::OP_UNARY_PLUS_1)
   {
-    if (TypeOps::is_subtype(*argType, *rtm.DOUBLE_TYPE_ONE))
+    if (TypeOps::is_subtype(tm, *argType, *rtm.DOUBLE_TYPE_ONE))
     {
       return GET_BUILTIN_FUNCTION(OP_DOUBLE_UNARY_PLUS_1);
     }
   }
   else if (getKind() == FunctionConsts::OP_UNARY_MINUS_1)
   {
-    if (TypeOps::is_subtype(*argType, *rtm.DOUBLE_TYPE_ONE))
+    if (TypeOps::is_subtype(tm, *argType, *rtm.DOUBLE_TYPE_ONE))
     {
       return GET_BUILTIN_FUNCTION(OP_DOUBLE_UNARY_MINUS_1);
     }

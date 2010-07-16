@@ -447,6 +447,8 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
 
   if (!generic_compute(e)) 
   {
+    TypeManager* tm = e->get_type_manager();
+
     ulong num_steps = e->size();
     bool only_child_axes = true;
     ulong num_desc_axes = 0;
@@ -492,7 +494,7 @@ void DataflowAnnotationsComputer::compute_relpath_expr(relpath_expr* e)
     {
       xqtref_t crt = (*e)[0]->get_return_type();
 
-      if (TypeOps::type_max_cnt(*crt) <= 1) 
+      if (TypeOps::type_max_cnt(tm, *crt) <= 1) 
       {
         bool sorted = false;
         bool distinct = false;

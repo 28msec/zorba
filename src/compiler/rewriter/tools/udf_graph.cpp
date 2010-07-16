@@ -190,19 +190,23 @@ void UDFGraph::optimizeUDFs(CompilerCB* ccb, UDFNode* node, ulong visit)
   user_function* udf = node->theUDF;
   expr_t body = udf->getBody();
 
-  while (body != NULL)           // was while (true), the body can be NULL when using Plan Serialization
+  // Note: the body can be NULL when using Plan Serialization
+  while (body != NULL)
   {
     udf->setOptimized(true);     // Set the Optimized flag in advance to prevent an infinte loop (for recursive functions, an optimization could be attempted again)
 
     RewriterContext rctx(ccb, body);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rctx);
     body = rctx.getRoot();
+
+    TypeManager* tm = body->get_type_manager();
+
 #if 1
     xqtref_t bodyType = body->get_return_type();
     xqtref_t declaredType = udf->getSignature().return_type();
 
-    if ( !TypeOps::is_equal(*bodyType, *declaredType) &&
-         TypeOps::is_subtype(*bodyType, *declaredType))
+    if ( !TypeOps::is_equal(tm, *bodyType, *declaredType) &&
+         TypeOps::is_subtype(tm, *bodyType, *declaredType))
     {
       udf->getSignature().return_type() = bodyType;
       if (!udf->isLeaf())

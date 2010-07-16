@@ -210,7 +210,7 @@ signature::signature(
 }
 
 
-bool signature::equals(const signature& s) const
+bool signature::equals(const TypeManager* tm, const signature& s) const
 {
   if (arg_count() != s.arg_count())
     return false;
@@ -221,12 +221,15 @@ bool signature::equals(const signature& s) const
   //std::cout << return_type()->toString() << std::endl;
   //std::cout << s.return_type()->toString() << std::endl;
 
-  if (!TypeOps::is_equal(*return_type().getp(), *s.return_type().getp())) {
+  if (!TypeOps::is_equal(tm, *return_type().getp(), *s.return_type().getp())) 
+  {
     return false;
   }
 
-  for (size_t i = 0; i < argv.size(); ++i) {
-    if (!TypeOps::is_equal(*argv[i].getp(), *s.argv[i].getp())) {
+  for (size_t i = 0; i < argv.size(); ++i) 
+  {
+    if (!TypeOps::is_equal(tm, *argv[i].getp(), *s.argv[i].getp())) 
+    {
       return false;
     }
   }

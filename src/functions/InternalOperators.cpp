@@ -27,7 +27,12 @@ class zop_hoist : public function
 public:
   zop_hoist(const signature& sig) : function(sig, FunctionConsts::OP_HOIST_1) {}
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const
+  {
+    return arg_types[0];
+  }
 
   bool isMap(ulong input) const
   {
@@ -48,18 +53,17 @@ public:
 };
 
 
-xqtref_t zop_hoist::getReturnType(const std::vector<xqtref_t>& arg_types) const
-{
-  return arg_types[0];
-}
-
-
 class zop_unhoist : public function 
 {
 public:
   zop_unhoist(const signature& sig) : function(sig, FunctionConsts::OP_UNHOIST_1) {}
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const
+  {
+    return arg_types[0];
+  }
 
   bool isMap(ulong input) const
   {
@@ -78,12 +82,6 @@ public:
 
   DEFAULT_NARY_CODEGEN(UnhoistIterator);
 };
-
-
-xqtref_t zop_unhoist::getReturnType(const std::vector<xqtref_t>& arg_types) const
-{
-  return arg_types[0];
-}
 
 
 void populateContext_Hoisting(static_context* sctx)

@@ -27,32 +27,34 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_floor::getReturnType(const std::vector<xqtref_t>& argTypes) const 
+xqtref_t fn_floor::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& argTypes) const 
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   const XQType& argType = *argTypes[0];
   TypeConstants::quantifier_t quant = argType.get_quantifier();
 
-  if (TypeOps::is_subtype(argType, *rtm.DOUBLE_TYPE_QUESTION))
+  if (TypeOps::is_subtype(tm, argType, *rtm.DOUBLE_TYPE_QUESTION))
   {
     return (quant == TypeConstants::QUANT_ONE ? 
             rtm.DOUBLE_TYPE_ONE :
             rtm.DOUBLE_TYPE_QUESTION);
   }
-  else if (TypeOps::is_subtype(argType, *rtm.FLOAT_TYPE_QUESTION))
+  else if (TypeOps::is_subtype(tm, argType, *rtm.FLOAT_TYPE_QUESTION))
   {
     return (quant == TypeConstants::QUANT_ONE ? 
             rtm.FLOAT_TYPE_ONE :
             rtm.FLOAT_TYPE_QUESTION);
   }
-  else if (TypeOps::is_subtype(argType, *rtm.DECIMAL_TYPE_QUESTION))
+  else if (TypeOps::is_subtype(tm, argType, *rtm.DECIMAL_TYPE_QUESTION))
   {
     return (quant == TypeConstants::QUANT_ONE ? 
             rtm.DECIMAL_TYPE_ONE :
             rtm.DECIMAL_TYPE_QUESTION);
   }
-  else if (TypeOps::is_subtype(argType, *rtm.INTEGER_TYPE_QUESTION))
+  else if (TypeOps::is_subtype(tm, argType, *rtm.INTEGER_TYPE_QUESTION))
   {
     return (quant == TypeConstants::QUANT_ONE ? 
             rtm.INTEGER_TYPE_ONE :

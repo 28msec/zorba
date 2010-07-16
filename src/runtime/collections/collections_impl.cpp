@@ -1224,7 +1224,7 @@ void checkNodeType(
 {
   const TypeManager* tm = sctx->get_typemanager();
 
-  if (!TypeOps::is_treatable(node, *(collectionDecl->getNodeType()), tm)) 
+  if (!TypeOps::is_treatable(tm, node, *(collectionDecl->getNodeType())))
   {
     ZORBA_ERROR_LOC_PARAM(XDTY0001_COLLECTION_INVALID_NODE_TYPE, loc, 
                           collectionDecl->getName()->getStringValue(),

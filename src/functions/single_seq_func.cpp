@@ -27,7 +27,9 @@
 namespace zorba 
 {
 
-xqtref_t single_seq_function::getReturnType(const std::vector<xqtref_t>& arg_types) const
+xqtref_t single_seq_function::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
 {
   return arg_types[theInput]; 
 }

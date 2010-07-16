@@ -109,7 +109,7 @@ store::Item_t findAttributeItem(
     store::Item_t& attQName);
 
 bool typeHasValue(xqtref_t t);
-bool typeHasTypedValue(xqtref_t t);
+bool typeHasTypedValue(const TypeManager* tm, xqtref_t t);
 bool typeHasEmptyValue(xqtref_t t);
 
 #endif //ZORBA_NO_XMLSCHEMA
@@ -299,7 +299,7 @@ void processElement(
   if ( isNewType )
   {
     bool tHasValue      = typeHasValue(newType);
-    bool tHasTypedValue = typeHasTypedValue(newType);
+    bool tHasTypedValue = typeHasTypedValue(typeManager, newType);
     bool tHasEmptyValue = typeHasEmptyValue(newType);
 
 	if ( noOfChildren==0 )
@@ -318,7 +318,7 @@ void processElement(
 	  else if ( newType->type_kind()==XQType::USER_DEFINED_KIND )
 	  {
 		const UserDefinedXQType udXQType = static_cast<const UserDefinedXQType&>(*newType);
-		if ( udXQType.isSubTypeOf(*GENV_TYPESYSTEM.STRING_TYPE_ONE) )
+		if ( udXQType.isSubTypeOf(typeManager, *GENV_TYPESYSTEM.STRING_TYPE_ONE) )
 		{
 		  tHasEmptyValue = true;
 		  tHasTypedValue = false;
@@ -600,7 +600,8 @@ void processTextValue (
       // else isAtomic
     }
 
-    bool isResult = GenericCast::castToAtomic(result, textValue, type.getp(), &nsCtx);
+    bool isResult = GenericCast::castToAtomic(result, textValue, type.getp(),
+                                              typeManager, &nsCtx);
     if ( isResult )
       resultList.push_back(result);
   }
@@ -642,9 +643,9 @@ store::Item_t findAttributeItem(const store::Item *parent, store::Item_t &attQNa
  */
 bool typeHasValue(xqtref_t t)
 {
-  return (t->content_kind()==XQType::MIXED_CONTENT_KIND ||
-          t->content_kind()==XQType::SIMPLE_CONTENT_KIND ||
-          t->content_kind()==XQType::EMPTY_CONTENT_KIND);
+  return (t->content_kind() == XQType::MIXED_CONTENT_KIND ||
+          t->content_kind() == XQType::SIMPLE_CONTENT_KIND ||
+          t->content_kind() == XQType::EMPTY_CONTENT_KIND);
 }
 
 /**
@@ -654,10 +655,10 @@ bool typeHasValue(xqtref_t t)
   has no sub-elements). Again this flag is a function of the element's type only; not of
   the actual content of an element instance.
  */
-bool typeHasTypedValue(xqtref_t t)
+bool typeHasTypedValue(const TypeManager* tm, xqtref_t t)
 {
-  return t->content_kind()==XQType::SIMPLE_CONTENT_KIND &&
-         !TypeOps::is_equal(*t, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE );
+  return (t->content_kind() == XQType::SIMPLE_CONTENT_KIND &&
+          !TypeOps::is_equal(tm, *t, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE));
 }
 
 /**
@@ -667,7 +668,7 @@ bool typeHasTypedValue(xqtref_t t)
  */
 bool typeHasEmptyValue(xqtref_t t)
 {
-  return t->content_kind()==XQType::EMPTY_CONTENT_KIND;
+  return t->content_kind() == XQType::EMPTY_CONTENT_KIND;
 }
 
 #endif //ZORBA_NO_XMLSCHEMA

@@ -182,7 +182,7 @@ namespace zorba {
 
           // tell everybody that we are the iterator who suspended
           lCommons->setCurrentIterator(this);
-          lCommons->setCurrentStaticContext(getStaticContext(*planState));
+          lCommons->setCurrentStaticContext(getStaticContext());
           lCommons->setCurrentDynamicContext(planState->dctx());
           lCommons->setBreak(false);
           lCommons->setPlanState(planState);

@@ -333,11 +333,13 @@ public:
 
   virtual ~PlanIterator() {}
 
-  void setLocation (const QueryLoc& loc_) { loc = loc_; }
+  void setLocation(const QueryLoc& loc_) { loc = loc_; }
 
   uint32_t getStateOffset() const { return theStateOffset; }
 
-  static_context* getStaticContext(PlanState& planState) const { return theSctx; }
+  static_context* getStaticContext() const { return theSctx; }
+
+  TypeManager* getTypeManager() const;
 
   /**
    * Accept method for the PlanIterator-Tree-Visitor

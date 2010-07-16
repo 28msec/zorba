@@ -74,7 +74,7 @@ RULE_REWRITE_POST(InferUDFTypes)
   xqtref_t declaredType = udf->getSignature().return_type();
 
   if (!TypeOps::is_equal(*bodyType, *declaredType) &&
-      TypeOps::is_subtype(*bodyType, *declaredType))
+      TypeOps::is_subtype(tm, *bodyType, *declaredType))
   {
     udf->getSignature().return_type() = bodyType;
     return node;
@@ -90,6 +90,7 @@ RULE_REWRITE_POST(InferUDFTypes)
 RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
 {
   static_context* sctx = node->get_sctx();
+  TypeManager* tm = sctx->get_typemanager();
 
   fo_expr* fo;
 
@@ -99,7 +100,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     {
       expr_t arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
-      if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
+      if (TypeOps::is_subtype(tm, *arg_type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
         return arg;
       else
         return NULL;
@@ -109,7 +110,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     {
       expr_t arg = fo->get_arg(0);
       xqtref_t arg_type = arg->get_return_type();
-      if (TypeOps::is_subtype(*arg_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+      if (TypeOps::is_subtype(tm, *arg_type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
         return arg;
       else
         return NULL;
@@ -127,16 +128,16 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     // If arg type is subtype of target type, we can eliminate treat and promote
     // (because they are noops in this case), but not cast (which will actually
     // create a new item with the target type).
-    if (TypeOps::is_equal(*arg_type, *target_type) ||
+    if (TypeOps::is_equal(tm, *arg_type, *target_type) ||
         (node->get_expr_kind() != cast_expr_kind &&
-         TypeOps::is_subtype(*arg_type, *target_type)))
+         TypeOps::is_subtype(tm, *arg_type, *target_type)))
       return arg;
     
-    xqtref_t arg_ptype = TypeOps::prime_type(*arg_type);
-    xqtref_t target_ptype = TypeOps::prime_type(*target_type);
+    xqtref_t arg_ptype = TypeOps::prime_type(tm, *arg_type);
+    xqtref_t target_ptype = TypeOps::prime_type(tm, *target_type);
 
     if (node->get_expr_kind() == cast_expr_kind &&
-        TypeOps::is_equal(*arg_ptype, *target_ptype))
+        TypeOps::is_equal(tm, *arg_ptype, *target_ptype))
     {
       return new treat_expr(sctx,
                             node->get_loc(),
@@ -150,7 +151,7 @@ RULE_REWRITE_PRE(EliminateTypeEnforcingOperations)
     {
       treat_expr* te = dynamic_cast<treat_expr *> (pe);
 
-      if (te->get_check_prime() && TypeOps::is_subtype(*arg_ptype, *target_ptype))
+      if (te->get_check_prime() && TypeOps::is_subtype(tm, *arg_ptype, *target_ptype))
       {
         te->set_check_prime(false);
         return node;
@@ -183,6 +184,7 @@ RULE_REWRITE_POST(SpecializeOperations)
   const Properties& props = *Properties::instance();
 
   RootTypeManager& rtm = GENV_TYPESYSTEM;
+  TypeManager* tm = node->get_type_manager();
 
   static_context* sctx = node->get_sctx();
 
@@ -208,7 +210,7 @@ RULE_REWRITE_POST(SpecializeOperations)
       {
         fo->set_func(replacement);
 
-        if (TypeOps::is_subtype(*argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
+        if (TypeOps::is_subtype(tm, *argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
         {
           expr_t promoteExpr = new promote_expr(argExpr->get_sctx(),
                                                 argExpr->get_loc(),
@@ -259,15 +261,15 @@ RULE_REWRITE_POST(SpecializeOperations)
 
         xqtref_t lenType = lenExpr->get_return_type();
 
-        if (TypeOps::is_subtype(*posType, *rtm.INTEGER_TYPE_ONE) &&
-            TypeOps::is_subtype(*lenType, *rtm.INTEGER_TYPE_ONE))
+        if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE) &&
+            TypeOps::is_subtype(tm, *lenType, *rtm.INTEGER_TYPE_ONE))
         {
           fo->set_func(GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_3));
           fo->set_arg(1, posExpr);
           fo->set_arg(1, lenExpr);
         }
       }
-      else if (TypeOps::is_subtype(*posType, *rtm.INTEGER_TYPE_ONE))
+      else if (TypeOps::is_subtype(tm, *posType, *rtm.INTEGER_TYPE_ONE))
       {
         fo->set_func(GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_2));
         fo->set_arg(1, posExpr);
@@ -281,13 +283,13 @@ RULE_REWRITE_POST(SpecializeOperations)
       xqtref_t t0 = arg0->get_return_type();
       xqtref_t t1 = arg1->get_return_type();
 
-      if (TypeOps::type_max_cnt(*t0) > 1 || TypeOps::type_max_cnt(*t1) > 1)
+      if (TypeOps::type_max_cnt(tm, *t0) > 1 || TypeOps::type_max_cnt(tm, *t1) > 1)
         return NULL;
 
       if (props.specializeNum() && fn->isArithmeticFunction())
       {
-        if (! TypeOps::is_numeric_or_untyped(*t0) ||
-            ! TypeOps::is_numeric_or_untyped(*t1))
+        if (! TypeOps::is_numeric_or_untyped(tm, *t0) ||
+            ! TypeOps::is_numeric_or_untyped(tm, *t1))
           return NULL;
 
         if (specialize_numeric(fo, sctx) != NULL)
@@ -318,14 +320,14 @@ RULE_REWRITE_POST(SpecializeOperations)
             expr* arg = (i == 0 ? arg0 : arg1);
             xqtref_t type = (i == 0 ? t0 : t1);
 
-            if (TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION)) 
+            if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_QUESTION)) 
             {
               nargs[i] = new cast_expr(arg->get_sctx(),
                                        arg->get_loc(),
                                        arg,
                                        string_type);
             }
-            else if (! TypeOps::is_subtype(*type, *string_type)) 
+            else if (! TypeOps::is_subtype(tm, *type, *string_type)) 
             {
               string_cmp = false;
               break;
@@ -350,13 +352,15 @@ RULE_REWRITE_POST(SpecializeOperations)
               return node;
             } 
           }
-          else if (TypeOps::is_numeric(*t0) && TypeOps::is_numeric(*t1)) 
+          else if (TypeOps::is_numeric(tm, *t0) && TypeOps::is_numeric(tm, *t1)) 
           {
             xqtref_t aType = specialize_numeric(fo, sctx);
             if (aType != NULL)
             {
-              if (TypeOps::is_equal(*TypeOps::prime_type(*aType), *rtm.DECIMAL_TYPE_ONE)
-                  && TypeOps::is_subtype(*t0, *rtm.INTEGER_TYPE_ONE))
+              if (TypeOps::is_equal(tm,
+                                    *TypeOps::prime_type(tm, *aType),
+                                    *rtm.DECIMAL_TYPE_ONE) &&
+                  TypeOps::is_subtype(tm, *t0, *rtm.INTEGER_TYPE_ONE))
               {
                 expr_t tmp = fo->get_arg(0);
                 fo->set_arg(0, fo->get_arg(1));
@@ -392,8 +396,8 @@ RULE_REWRITE_POST(SpecializeOperations)
           expr* colExpr = obc->get_column_expr(j);
           xqtref_t colType = colExpr->get_return_type();
 
-          if (!TypeOps::is_equal(*colType, *GENV_TYPESYSTEM.EMPTY_TYPE) &&
-              TypeOps::is_subtype(*colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
+          if (!TypeOps::is_equal(tm, *colType, *GENV_TYPESYSTEM.EMPTY_TYPE) &&
+              TypeOps::is_subtype(tm, *colType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
           {
             expr_t castExpr = new cast_expr(colExpr->get_sctx(),
                                             colExpr->get_loc(),
@@ -417,6 +421,8 @@ RULE_REWRITE_POST(SpecializeOperations)
 
 static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
 {
+  TypeManager* tm = fo->get_type_manager();
+
   const function* fn = fo->get_func();
   expr* arg0 = fo->get_arg(0);
   expr* arg1 = fo->get_arg(1);
@@ -424,11 +430,12 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
   xqtref_t t1 = arg1->get_return_type();
 
   xqtref_t aType = 
-  TypeOps::arithmetic_type(*t0,
+  TypeOps::arithmetic_type(tm,
+                           *t0,
                            *t1,
                            fn->arithmeticKind() == ArithmeticConsts::DIVISION);
   
-  if (!TypeOps::is_numeric(*aType))
+  if (!TypeOps::is_numeric(tm, *aType))
   {
     return NULL;
   }
@@ -460,14 +467,16 @@ static xqtref_t specialize_numeric(fo_expr* fo, static_context* sctx)
 
 static expr_t wrap_in_num_promotion(expr* arg, xqtref_t oldt, xqtref_t t) 
 {
-  if (TypeOps::is_subtype(*oldt, *t))
+  TypeManager* tm = arg->get_type_manager();
+
+  if (TypeOps::is_subtype(tm, *oldt, *t))
     return NULL;
 
-  if (arg->get_expr_kind() == promote_expr_kind && TypeOps::type_max_cnt(*t) <= 1)
+  if (arg->get_expr_kind() == promote_expr_kind && TypeOps::type_max_cnt(tm, *t) <= 1)
   {
     promote_expr* pe = static_cast<promote_expr*>(arg);
     xqtref_t peType = pe->get_target_type();
-    if (TypeOps::is_equal(*peType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+    if (TypeOps::is_equal(tm, *peType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
       arg = pe->get_input();
   }
 

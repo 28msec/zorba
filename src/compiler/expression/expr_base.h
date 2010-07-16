@@ -183,6 +183,8 @@ public:
 
   static_context* get_sctx() const { return theSctx; }
 
+  TypeManager* get_type_manager() const;
+
   expr_script_kind_t get_scripting_kind() const;
 
   bool is_updating() const;

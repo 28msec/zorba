@@ -445,14 +445,13 @@ public:
 class SIND_DeclList : public parsenode
 {
 protected:
-  std::vector<rchandle<parsenode> > sind_hv;
+  std::vector<rchandle<parsenode> > theDecls;
+  std::vector<rchandle<parsenode> > theModuleImports;
 
 public:
   SIND_DeclList(const QueryLoc&);
 
-  void push_back(rchandle<parsenode> sind_h) { sind_hv.push_back(sind_h); }
-
-  rchandle<parsenode> operator[](int k) const { return sind_hv[k]; }
+  void push_back(rchandle<parsenode> decl);
 
   void accept(parsenode_visitor&) const;
 };

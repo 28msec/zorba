@@ -125,7 +125,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item_t lRunningItem = NULL;
   xqtref_t lMaxType;
 
-  const TypeManager& tm = *theSctx->get_typemanager();
+  const TypeManager* tm = theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   long timezone = planState.theDynamicContext->get_implicit_timezone();
@@ -148,9 +148,9 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     do
     {
       // casting of untyped atomic
-      xqtref_t lRunningType = tm.create_value_type(lRunningItem);
+      xqtref_t lRunningType = tm->create_value_type(lRunningItem);
 
-      if (TypeOps::is_subtype(*lRunningType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+      if (TypeOps::is_subtype(tm, *lRunningType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
       {
         GenericCast::castToAtomic(lRunningItem, lRunningItem, &*rtm.DOUBLE_TYPE_ONE, tm);
         lRunningType = rtm.DOUBLE_TYPE_ONE;
@@ -164,10 +164,10 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
          * only xs:float("NaN")'s [xs:float("NaN") is returned]'.
          */
         result = lRunningItem;
-        if (TypeOps::is_subtype(*lRunningType, *rtm.DOUBLE_TYPE_ONE))
+        if (TypeOps::is_subtype(tm, *lRunningType, *rtm.DOUBLE_TYPE_ONE))
           break;
 
-        lMaxType = tm.create_value_type (result);
+        lMaxType = tm->create_value_type(result);
       }
 
       if (result != 0)
@@ -179,7 +179,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           if (GenericCast::promote(lItemCur, result, &*lRunningType, tm))
           {
             result.transfer(lItemCur);
-            lMaxType = tm.create_value_type(result);
+            lMaxType = tm->create_value_type(result);
           }
           else
           {
@@ -189,7 +189,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         else
         {
           lRunningItem.transfer(lItemCur);
-          lRunningType = tm.create_value_type(lRunningItem);
+          lRunningType = tm->create_value_type(lRunningItem);
         }
 
         store::Item_t current_copy(lRunningItem);
@@ -198,7 +198,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                              current_copy,
                                              max_copy,
                                              theCompareType,
-                                             &tm,
+                                             tm,
                                              timezone,
                                              lCollator) )
         {
@@ -215,7 +215,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       elems_in_seq++;
     } while (consumeNext(lRunningItem, theChildren[0].getp(), planState));
 
-    if(elems_in_seq == 1)
+    if (elems_in_seq == 1)
     {
       //check type compatibility
       store::Item_t dummy1(result);
@@ -224,7 +224,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                        dummy1,
                                        dummy2,
                                        theCompareType,
-                                       &tm,
+                                       tm,
                                        timezone,
                                        lCollator);
     }

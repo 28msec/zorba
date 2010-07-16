@@ -888,6 +888,7 @@ static bool DeepEqual(
     XQPCollator* collator)
 {
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
+  TypeManager* tm = sctx->get_typemanager();
 
   if (item1.isNull() && item2.isNull())
     return true;
@@ -901,34 +902,33 @@ static bool DeepEqual(
   if (item1->isAtomic())
   {
     assert(item2->isAtomic());
-    TypeManager* typemgr = sctx->get_typemanager();
     long timezone = dctx->get_implicit_timezone();
 
     if (collator == NULL)
       collator = sctx->get_default_collator(QueryLoc::null);
 
     // check NaN
-    xqtref_t type1 = typemgr->create_value_type(item1.getp());
-    xqtref_t type2 = typemgr->create_value_type(item2.getp());
+    xqtref_t type1 = tm->create_value_type(item1.getp());
+    xqtref_t type2 = tm->create_value_type(item2.getp());
 
-    if (((TypeOps::is_subtype(*type1, *rtm.FLOAT_TYPE_ONE)
+    if (((TypeOps::is_subtype(tm, *type1, *rtm.FLOAT_TYPE_ONE)
           &&
           item1->getFloatValue().isNaN())
           ||
-          (TypeOps::is_subtype(*type1, *rtm.DOUBLE_TYPE_ONE)
+         (TypeOps::is_subtype(tm, *type1, *rtm.DOUBLE_TYPE_ONE)
           &&
           item1->getDoubleValue().isNaN()))
           &&
-          ((TypeOps::is_subtype(*type2, *rtm.FLOAT_TYPE_ONE)
+        ((TypeOps::is_subtype(tm, *type2, *rtm.FLOAT_TYPE_ONE)
           &&
           item2->getFloatValue().isNaN())
           ||
-          (TypeOps::is_subtype(*type2, *rtm.DOUBLE_TYPE_ONE)
+         (TypeOps::is_subtype(tm, *type2, *rtm.DOUBLE_TYPE_ONE)
           &&
           item2->getDoubleValue().isNaN())))
       return true;
 
-    return CompareIterator::valueEqual(item1, item2, typemgr, timezone, collator) > 0;
+    return CompareIterator::valueEqual(item1, item2, tm, timezone, collator) > 0;
   }
   else
   {
@@ -1183,7 +1183,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   int lCount = 0;
   bool lHitNumeric = false, lHitYearMonth = false, lHitDayTime = false;
 
-  const TypeManager& tm = *theSctx->get_typemanager();
+  const TypeManager* tm = theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   xqtref_t lUntypedAtomic     = rtm.UNTYPED_ATOMIC_TYPE_ONE;
@@ -1195,10 +1195,10 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
   {
-    lRunningType = tm.create_value_type(lRunningItem);
+    lRunningType = tm->create_value_type(lRunningItem);
 
-    if (TypeOps::is_numeric(*lRunningType) ||
-        TypeOps::is_equal(*lRunningType, *lUntypedAtomic))
+    if (TypeOps::is_numeric(tm, *lRunningType) ||
+        TypeOps::is_equal(tm, *lRunningType, *lUntypedAtomic))
     {
       lHitNumeric = true;
       if ( lHitYearMonth )
@@ -1213,21 +1213,21 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
                                  << lDayTimeDuration->toString() << ".");
 
     }
-    else if (TypeOps::is_equal (*lRunningType, *lYearMonthDuration))
+    else if (TypeOps::is_equal(tm, *lRunningType, *lYearMonthDuration))
     {
       lHitYearMonth = true;
-      if ( lHitNumeric )
+      if (lHitNumeric)
         ZORBA_ERROR_LOC_DESC_OSS(FORG0006, loc,
                                  "Invalid argument type " << lRunningType->toString()
                                  << " for function fn:avg. Expected a numeric type.");
-      if ( lHitDayTime )
+      if (lHitDayTime)
         ZORBA_ERROR_LOC_DESC_OSS(FORG0006, loc,
                                  "Invalid argument type " << lRunningType->toString()
                                  << " for function fn:avg. Expected type "
                                  << lDayTimeDuration->toString() << ".");
 
     }
-    else if (TypeOps::is_equal (*lRunningType, *lDayTimeDuration))
+    else if (TypeOps::is_equal(tm, *lRunningType, *lDayTimeDuration))
     {
       lHitDayTime = true;
       if ( lHitNumeric )
@@ -1256,7 +1256,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       // Must check all items in case FORG0006 is needed
       GenericArithIterator<AddOperation>::compute(lSumItem,
                                                   planState.theDynamicContext,
-                                                  &tm,
+                                                  tm,
                                                   loc,
                                                   lSumItem,
                                                   lRunningItem);
@@ -1268,7 +1268,7 @@ bool FnAvgIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     GENV_ITEMFACTORY->createInteger(countItem, Integer::parseInt (lCount));
     GenericArithIterator<DivideOperation>::compute(result,
                                                    planState.theDynamicContext,
-                                                   &tm,
+                                                   tm,
                                                    loc,
                                                    lSumItem,
                                                    countItem);
@@ -1290,7 +1290,7 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   xqtref_t      lResultType;
   xqtref_t      lRunningType;
 
-  const TypeManager& tm = *theSctx->get_typemanager();
+  const TypeManager* tm = theSctx->get_typemanager();
   const RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   PlanIteratorState* state;
@@ -1299,44 +1299,46 @@ bool FnSumIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if (consumeNext(result, theChildren[0].getp(), planState))
   {
     // casting of untyped atomic
-    lResultType = tm.create_value_type(result);
+    lResultType = tm->create_value_type(result);
 
-    if (TypeOps::is_subtype(*lResultType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if (TypeOps::is_subtype(tm, *lResultType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
       GenericCast::castToAtomic(result, result, &*rtm.DOUBLE_TYPE_ONE, tm);
       lResultType = rtm.DOUBLE_TYPE_ONE;
     }
 
-    if (!TypeOps::is_numeric(*lResultType) &&
-        !TypeOps::is_subtype(*lResultType, *rtm.DURATION_TYPE_ONE))
-      ZORBA_ERROR_LOC( FORG0006, loc );
+    if (!TypeOps::is_numeric(tm, *lResultType) &&
+        !TypeOps::is_subtype(tm, *lResultType, *rtm.DURATION_TYPE_ONE))
+      ZORBA_ERROR_LOC(FORG0006, loc);
 
     while (consumeNext(lRunningItem, theChildren[0].getp(), planState))
     {
       // casting of untyped atomic
-      lRunningType = tm.create_value_type(lRunningItem);
+      lRunningType = tm->create_value_type(lRunningItem);
 
-      if (TypeOps::is_subtype(*lRunningType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+      if (TypeOps::is_subtype(tm, *lRunningType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
       {
         GenericCast::castToAtomic(lRunningItem, lRunningItem, &*rtm.DOUBLE_TYPE_ONE, tm);
         lRunningType = rtm.DOUBLE_TYPE_ONE;
       }
 
       // handling of NaN
-      if (lRunningItem->isNaN()) {
+      if (lRunningItem->isNaN()) 
+      {
          result = lRunningItem;
         break;
       }
 
-      if((TypeOps::is_numeric(*lResultType) && TypeOps::is_numeric(*lRunningType)) ||
-         (TypeOps::is_subtype(*lResultType, *rtm.YM_DURATION_TYPE_ONE) &&
-          TypeOps::is_subtype(*lRunningType, *rtm.YM_DURATION_TYPE_ONE)) ||
-         (TypeOps::is_subtype(*lResultType, *rtm.DT_DURATION_TYPE_ONE) &&
-          TypeOps::is_subtype(*lRunningType, *rtm.DT_DURATION_TYPE_ONE)))
+      if((TypeOps::is_numeric(tm, *lResultType) &&
+          TypeOps::is_numeric(tm, *lRunningType)) ||
+         (TypeOps::is_subtype(tm, *lResultType, *rtm.YM_DURATION_TYPE_ONE) &&
+          TypeOps::is_subtype(tm, *lRunningType, *rtm.YM_DURATION_TYPE_ONE)) ||
+         (TypeOps::is_subtype(tm, *lResultType, *rtm.DT_DURATION_TYPE_ONE) &&
+          TypeOps::is_subtype(tm, *lRunningType, *rtm.DT_DURATION_TYPE_ONE)))
       {
         GenericArithIterator<AddOperation>::compute(result,
                                                     planState.theDynamicContext,
-                                                    &tm,
+                                                    tm,
                                                     loc,
                                                     result,
                                                     lRunningItem);
@@ -1790,15 +1792,20 @@ bool FnParseIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     consumeNext(result, theChildren[1].getp(), planState);
     ZORBA_ASSERT(result);
-    try {
+
+    try 
+    {
       lValidatedBaseUri = URI(result->getStringValueP());
-    } catch (error::ZorbaError& e) {
+    }
+    catch (error::ZorbaError& e)
+    {
       ZORBA_ERROR_LOC_DESC_OSS(FODC0007, loc,
           "Base URI passed as second argument to fn:parse is not a valid URI; "
           << e.theDescription);
     }
 
-    if (!lValidatedBaseUri.is_absolute()) {
+    if (!lValidatedBaseUri.is_absolute())
+    {
       ZORBA_ERROR_LOC_DESC(FODC0007, loc,
           "Base URI passed as second argument to fn:parse is not an absolute URI.");
     }

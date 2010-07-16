@@ -155,23 +155,24 @@ for_clause::for_clause(
 
   if (varExpr != NULL && sctx != NULL)
   {
+    TypeManager* tm = sctx->get_typemanager();
+
     xqtref_t declaredType = varExpr->get_type();
     if (declaredType != NULL)
     {
-      if (TypeOps::is_empty(*declaredType))
+      if (TypeOps::is_empty(tm, *declaredType))
         ZORBA_ERROR_LOC_PARAM(XPTY0004, loc, "empty-sequence()", "");
 
       xqtref_t domainType = domainExpr->get_return_type();
 
-      if (!TypeOps::is_subtype(*GENV_TYPESYSTEM.ITEM_TYPE_STAR, *declaredType))
+      if (!TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.ITEM_TYPE_STAR, *declaredType))
       {
-        declaredType = sctx->get_typemanager()->
-                       create_type(*declaredType, TypeConstants::QUANT_STAR);
+        declaredType = tm->create_type(*declaredType, TypeConstants::QUANT_STAR);
 
-        if (!TypeOps::is_subtype(*domainType, *declaredType))
+        if (!TypeOps::is_subtype(tm, *domainType, *declaredType))
         {
-          xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType);
-          if (TypeOps::is_equal(*varType, *GENV_TYPESYSTEM.NONE_TYPE))
+          xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
+          if (TypeOps::is_equal(tm, *varType, *GENV_TYPESYSTEM.NONE_TYPE))
           {
             ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, get_loc(), 
                                      "Cannot treat " << domainType->toString() 
@@ -287,16 +288,18 @@ let_clause::let_clause(
 
   if (varExpr != NULL && sctx != NULL)
   {
+    TypeManager* tm = sctx->get_typemanager();
+
     xqtref_t declaredType = varExpr->get_type();
     if (declaredType != NULL)
     {
       xqtref_t domainType = domainExpr->get_return_type();
 
-      if (!TypeOps::is_subtype(*GENV_TYPESYSTEM.ITEM_TYPE_STAR, *declaredType) &&
-          !TypeOps::is_subtype(*domainType, *declaredType))
+      if (!TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.ITEM_TYPE_STAR, *declaredType) &&
+          !TypeOps::is_subtype(tm, *domainType, *declaredType))
       {
-        xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType);
-        if (TypeOps::is_equal(*varType, *GENV_TYPESYSTEM.NONE_TYPE))
+        xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
+        if (TypeOps::is_equal(tm, *varType, *GENV_TYPESYSTEM.NONE_TYPE))
         {
           ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, get_loc(), 
                                    "Cannot treat " << domainType->toString() 
@@ -390,13 +393,15 @@ window_clause::window_clause(
 
   if (varExpr != NULL && sctx != NULL)
   {
+    TypeManager* tm = sctx->get_typemanager();
+
     xqtref_t varType = varExpr->get_type();
     if (varType != NULL)
     {
       xqtref_t domainType = domainExpr->get_return_type();
 
-      if (!TypeOps::is_subtype(*GENV_TYPESYSTEM.ITEM_TYPE_STAR, *varType) &&
-          !TypeOps::is_subtype(*domainType, *varType))
+      if (!TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.ITEM_TYPE_STAR, *varType) &&
+          !TypeOps::is_subtype(tm, *domainType, *varType))
       {
         domainExpr = new treat_expr(sctx, loc, domainExpr, varType, XPTY0004);
 
@@ -487,9 +492,11 @@ flwor_wincond::flwor_wincond(
 {
   if (sctx != NULL)
   {
+    TypeManager* tm = sctx->get_typemanager();
+
     xqtref_t condType = theCondExpr->get_return_type();
 
-    if(!TypeOps::is_equal(*condType, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
+    if(!TypeOps::is_equal(tm, *condType, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
     {
       theCondExpr = new fo_expr(theCondExpr->get_sctx(),
                                 theCondExpr->get_loc(),

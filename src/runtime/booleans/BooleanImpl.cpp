@@ -86,12 +86,14 @@ bool FnBooleanIterator::effectiveBooleanValue(
   store::Item_t item, temp;
   bool result;
 
+  TypeManager* tm = iter->getStaticContext()->get_typemanager();
+
   if (!consumeNext(item, iter, planState))
   {
     // empty sequence => false
     result = negate ^ false;
   }
-  else if ( item->isNode() )
+  else if (item->isNode())
   {
     // node => true
     result = negate ^ true;
@@ -107,13 +109,13 @@ bool FnBooleanIterator::effectiveBooleanValue(
   }
   else
   {
-    xqtref_t type = planState.theCompilerCB->theRootSctx->get_typemanager()->create_value_type(item);
-    if (( !consumeNext(temp, iter, planState))
-        && (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
-            || TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.STRING_TYPE_ONE )
-            || TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE )
-            || TypeOps::is_subtype ( *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE )
-            || TypeOps::is_numeric ( *type )))
+    xqtref_t type = tm->create_value_type(item);
+    if (( !consumeNext(temp, iter, planState)) &&
+        (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE)
+         || TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.STRING_TYPE_ONE)
+         || TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)
+         || TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE)
+         || TypeOps::is_numeric(tm, *type)))
     {
       // atomic type xs_boolean, xs_string, xs_anyURI, xs_untypedAtomic
       // => effective boolean value is defined in the items
@@ -498,36 +500,36 @@ void CompareIterator::valueCasting(
   xqtref_t type1 = tm->create_value_type(aItem1);
 
   // all untyped Atomics to String
-  if (TypeOps::is_subtype(*type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  if (TypeOps::is_subtype(tm, *type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
-    GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, *tm);
+    GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, tm);
 
-    if  (TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    if  (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, *tm);
+      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm);
     }
     else
     {
-      if (!GenericCast::promote(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, *tm))
+      if (!GenericCast::promote(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm))
         castItem1.transfer(aItem1);
     }
   }
-  else if (TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  else if (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
     if (!GenericCast::promote(const_cast<store::Item_t&>(castItem0),
                               aItem0,
                               &*rtm.STRING_TYPE_ONE,
-                              *tm))
+                              tm))
       castItem0.transfer(aItem0);
 
-    GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, *tm);
+    GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm);
   }
   else
   {
-    if (!GenericCast::promote(castItem0, aItem0, &*type1, *tm))
+    if (!GenericCast::promote(castItem0, aItem0, &*type1, tm))
       castItem0.transfer(aItem0);
 
-    if (!GenericCast::promote(castItem1, aItem1, &*type0, *tm))
+    if (!GenericCast::promote(castItem1, aItem1, &*type0, tm))
       castItem1.transfer(aItem1);
   }
 }
@@ -652,54 +654,54 @@ void CompareIterator::generalCasting(
   xqtref_t type0 = tm->create_value_type(aItem0);
   xqtref_t type1 = tm->create_value_type(aItem1);
 
-  if (TypeOps::is_subtype(*type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  if (TypeOps::is_subtype(tm, *type0, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
-    if (TypeOps::is_numeric(*type1))
+    if (TypeOps::is_numeric(tm, *type1))
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.DOUBLE_TYPE_ONE, *tm);
+      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.DOUBLE_TYPE_ONE, tm);
 
-      GenericCast::promote(castItem1, aItem1, &*rtm.DOUBLE_TYPE_ONE, *tm);
+      GenericCast::promote(castItem1, aItem1, &*rtm.DOUBLE_TYPE_ONE, tm);
     }
-    else if (TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+    else if (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, *tm);
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, *tm);
+      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, tm);
+      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm);
     }
-    else if (TypeOps::is_subtype(*type1, *rtm.STRING_TYPE_ONE))
+    else if (TypeOps::is_subtype(tm, *type1, *rtm.STRING_TYPE_ONE))
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, *tm);
+      GenericCast::castToAtomic(castItem0, aItem0, &*rtm.STRING_TYPE_ONE, tm);
       castItem1.transfer(aItem1);
     }
     else
     {
-      GenericCast::castToAtomic(castItem0, aItem0, &*type1, *tm);
+      GenericCast::castToAtomic(castItem0, aItem0, &*type1, tm);
       castItem1.transfer(aItem1);
     }
   }
-  else if (TypeOps::is_subtype(*type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  else if (TypeOps::is_subtype(tm, *type1, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
-    if (TypeOps::is_numeric(*type0))
+    if (TypeOps::is_numeric(tm, *type0))
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.DOUBLE_TYPE_ONE, *tm);
-      GenericCast::promote(castItem0, aItem0, &*rtm.DOUBLE_TYPE_ONE, *tm);
+      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.DOUBLE_TYPE_ONE, tm);
+      GenericCast::promote(castItem0, aItem0, &*rtm.DOUBLE_TYPE_ONE, tm);
     }
-    else if (TypeOps::is_subtype(*type0, *rtm.STRING_TYPE_ONE))
+    else if (TypeOps::is_subtype(tm, *type0, *rtm.STRING_TYPE_ONE))
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, *tm);
+      GenericCast::castToAtomic(castItem1, aItem1, &*rtm.STRING_TYPE_ONE, tm);
       castItem0.transfer(aItem0);
     }
     else
     {
-      GenericCast::castToAtomic(castItem1, aItem1, &*type0, *tm);
+      GenericCast::castToAtomic(castItem1, aItem1, &*type0, tm);
       castItem0.transfer(aItem0);
     }
   }
   else
   {
-    if (!GenericCast::promote(castItem0, aItem0, &*type1, *tm))
+    if (!GenericCast::promote(castItem0, aItem0, &*type1, tm))
       castItem0.transfer(aItem0);
 
-    if (!GenericCast::promote(castItem1, aItem1, &*type0, *tm))
+    if (!GenericCast::promote(castItem1, aItem1, &*type0, tm))
       castItem1.transfer(aItem1);
   }
 }
@@ -711,20 +713,20 @@ void CompareIterator::generalCasting(
 long CompareIterator::equal(
     const store::Item_t& aItem0,
     const store::Item_t& aItem1,
-    const TypeManager* typemgr,
+    const TypeManager* tm,
     long timezone,
     XQPCollator* aCollation)
 {
-  xqtref_t type0 = typemgr->create_value_type(aItem0.getp());
-  xqtref_t type1 = typemgr->create_value_type(aItem1.getp());
+  xqtref_t type0 = tm->create_value_type(aItem0.getp());
+  xqtref_t type1 = tm->create_value_type(aItem1.getp());
 
   try
   {
-    if (TypeOps::is_subtype(*type0, *type1))
+    if (TypeOps::is_subtype(tm, *type0, *type1))
     {
       return (aItem1->equals(aItem0, timezone, aCollation) ? 1 : 0);
     }
-    else if (TypeOps::is_subtype(*type1, *type0))
+    else if (TypeOps::is_subtype(tm, *type1, *type0))
     {
       return (aItem0->equals(aItem1, timezone, aCollation) ? 1 : 0);
     }
@@ -736,13 +738,13 @@ long CompareIterator::equal(
       // different branches under of the type-inheritance subtree rooted at
       // xs::duration (i.e. one is xs:yearMonthDuration and the other is
       // xs:dayTimeDuration).
-      if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
-          TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
+      if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
+          TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
       {
         return (aItem0->getIntegerValue() == aItem1->getIntegerValue() ? 1 : 0);
       }
-      else if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
-               TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+      else if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
+               TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
       {
         return (aItem0->getDurationValue() == aItem1->getDurationValue() ? 1 : 0);
       }
@@ -768,39 +770,50 @@ long CompareIterator::equal(
 long CompareIterator::compare(
     const store::Item_t& aItem0,
     const store::Item_t& aItem1,
-    const TypeManager* typemgr,
+    const TypeManager* tm,
     long timezone,
     XQPCollator* aCollation)
 {
-  xqtref_t type0 = typemgr->create_value_type(aItem0.getp());
-  xqtref_t type1 = typemgr->create_value_type(aItem1.getp());
+  xqtref_t type0 = tm->create_value_type(aItem0.getp());
+  xqtref_t type1 = tm->create_value_type(aItem1.getp());
 
-  try {
-    if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
-        TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+  try 
+  {
+    if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
+        TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
     {
-      if (TypeOps::is_equal(*type0, *type1) &&
-          !TypeOps::is_equal(*type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
+      if (TypeOps::is_equal(tm, *type0, *type1) &&
+          !TypeOps::is_equal(tm, *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
         return aItem0->compare(aItem1, timezone, aCollation);
       else
         return -2;
-    } else if (TypeOps::is_subtype(*type1, *type0)) {
+    }
+    else if (TypeOps::is_subtype(tm, *type1, *type0)) 
+    {
       return aItem0->compare(aItem1, timezone, aCollation);
-    } else if (TypeOps::is_subtype(*type0, *type1)) {
+    }
+    else if (TypeOps::is_subtype(tm, *type0, *type1)) 
+    {
       return -aItem1->compare(aItem0, timezone, aCollation);
-    } else {
+    }
+    else
+    {
       // There is 1 case when two types are order-comparable without one being a
       // subtype of the other: they belong to different branches under of the
       // type-inheritance subtree rooted at xs:Integer.
-      if (TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
-          TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
+      if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE) &&
+          TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
       {
         return aItem0->getIntegerValue().compare(aItem1->getIntegerValue());
-      } else {
+      }
+      else
+      {
         return -2;
       }
     }
-  } catch(error::ZorbaError& e) {
+  }
+  catch(error::ZorbaError& e) 
+  {
     if (e.theErrorCode == STR0040_TYPE_ERROR)
       return -2;
     else
@@ -945,12 +958,17 @@ void AtomicValuesEquivalenceIterator::openImpl(PlanState& planState, uint32_t& o
 }
 
 
-bool AtomicValuesEquivalenceIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool AtomicValuesEquivalenceIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t lItem0, lItem1, tItem0, tItem1;
   int count0, count1;
   xqtref_t type0, type1;
   bool are_equivalent;
+
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
+  TypeManager* tm = theSctx->get_typemanager();
 
   PlanIteratorState* state;
   DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
@@ -960,29 +978,39 @@ bool AtomicValuesEquivalenceIterator::nextImpl(store::Item_t& result, PlanState&
 
   if (consumeNext(lItem0, theChild0.getp(), planState))
     count0 = 1;
+
   if (count0 && consumeNext(tItem0, theChild0.getp(), planState))
     ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "Cannot test atomic values equivalence for sequences longer than one item.");
 
   if (consumeNext(lItem1, theChild1.getp(), planState))
     count1 = 1;
+
   if (count1 && consumeNext(tItem1, theChild1.getp(), planState))
     ZORBA_ERROR_LOC_DESC(XPTY0004, loc, "Cannot test atomic values equivalence for sequences longer than one item.");
 
   if (count0 == 0 && count1 == 0)
+  {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, true), state);
+  }
   else if ((count0 == 0 && count1 == 1) || (count0 == 1 && count1 == 0))
+  {
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, false), state);
+  }
   else
   {
     type0 = theTypeManager->create_value_type(lItem0.getp());
     type1 = theTypeManager->create_value_type(lItem1.getp());
 
-    if ((TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE) || TypeOps::is_subtype(*type0, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
+    if ((TypeOps::is_subtype(tm, *type0, *rtm.FLOAT_TYPE_ONE) ||
+         TypeOps::is_subtype(tm, *type0, *rtm.DOUBLE_TYPE_ONE))
         &&
-        (TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.FLOAT_TYPE_ONE) || TypeOps::is_subtype(*type1, *GENV_TYPESYSTEM.DOUBLE_TYPE_ONE))
+        (TypeOps::is_subtype(tm, *type1, *rtm.FLOAT_TYPE_ONE) ||
+         TypeOps::is_subtype(tm, *type1, *rtm.DOUBLE_TYPE_ONE))
         &&
         lItem0->isNaN() && lItem1->isNaN())
+    {
       STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, true), state);
+    }
     else
     {
       are_equivalent = (1 == CompareIterator::valueEqual(lItem0, lItem1, theTypeManager, theTimezone, theCollation));

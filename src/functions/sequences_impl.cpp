@@ -39,7 +39,9 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t op_concatenate::getReturnType(const std::vector<xqtref_t>& arg_types) const 
+xqtref_t op_concatenate::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const 
 {
   int sz = arg_types.size();
 
@@ -53,7 +55,7 @@ xqtref_t op_concatenate::getReturnType(const std::vector<xqtref_t>& arg_types) c
     TypeConstants::quantifier_t q = TypeConstants::QUANT_STAR;
     for (int i = 1; i < sz; i++) 
     {
-      t = TypeOps::union_type(*t, *arg_types[i]);
+      t = TypeOps::union_type(*t, *arg_types[i], tm);
       TypeConstants::quantifier_t pq = TypeOps::quantifier(*t);
       if (pq == TypeConstants::QUANT_ONE || pq == TypeConstants::QUANT_PLUS)
         q = TypeConstants::QUANT_PLUS;
@@ -96,34 +98,35 @@ function* fn_sum::specialize(
    const std::vector<xqtref_t>& argTypes) const
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
+  TypeManager* tm = sctx->get_typemanager();
 
   xqtref_t argType = argTypes[0];
 
-  if (TypeOps::is_subtype(*argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *argType, *rtm.UNTYPED_ATOMIC_TYPE_STAR))
   {
     return (getArity() == 1 ?
             GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
             GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
   }
-  else if (TypeOps::is_subtype(*argType, *rtm.DOUBLE_TYPE_STAR))
+  else if (TypeOps::is_subtype(tm, *argType, *rtm.DOUBLE_TYPE_STAR))
   {
     return (getArity() == 1 ?
             GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_1) :
             GET_BUILTIN_FUNCTION(FN_SUM_DOUBLE_2));
   }
-  else if (TypeOps::is_subtype(*argType, *rtm.FLOAT_TYPE_STAR))
+  else if (TypeOps::is_subtype(tm, *argType, *rtm.FLOAT_TYPE_STAR))
   {
     return (getArity() == 1 ?
             GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_1) :
             GET_BUILTIN_FUNCTION(FN_SUM_FLOAT_2));
   }
-  else if (TypeOps::is_subtype(*argType, *rtm.INTEGER_TYPE_STAR))
+  else if (TypeOps::is_subtype(tm, *argType, *rtm.INTEGER_TYPE_STAR))
   {
     return (getArity() == 1 ?
             GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_1) :
             GET_BUILTIN_FUNCTION(FN_SUM_INTEGER_2));
   }
-  else if (TypeOps::is_subtype(*argType, *rtm.DECIMAL_TYPE_STAR))
+  else if (TypeOps::is_subtype(tm, *argType, *rtm.DECIMAL_TYPE_STAR))
   {
     return (getArity() == 1 ?
             GET_BUILTIN_FUNCTION(FN_SUM_DECIMAL_1) :
@@ -140,10 +143,11 @@ function* fn_sum::specialize(
 
 ********************************************************************************/
 xqtref_t fn_one_or_more::getReturnType(
+    const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
 {
-  return arg_types[0]->get_manager()->
-         create_type(*TypeOps::prime_type(*arg_types[0]), TypeConstants::QUANT_PLUS);
+  return tm->create_type(*TypeOps::prime_type(tm, *arg_types[0]),
+                         TypeConstants::QUANT_PLUS);
 }
 
 
@@ -151,12 +155,13 @@ xqtref_t fn_one_or_more::getReturnType(
 
 ********************************************************************************/
 xqtref_t fn_exactly_one_noraise::getReturnType(
+    const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
 {
   if (theRaiseError)
-    return TypeOps::prime_type(*arg_types[0]);
+    return TypeOps::prime_type(tm, *arg_types[0]);
   else
-    return function::getReturnType(arg_types);
+    return function::getReturnType(tm, arg_types);
 }
 
 
@@ -232,10 +237,11 @@ PlanIter_t fn_except::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_subsequence::getReturnType(const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_subsequence::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
 {
-  return arg_types[0]->get_manager()->
-         create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
+  return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -306,10 +312,10 @@ PlanIter_t fn_subsequence::codegen(
 
 *******************************************************************************/
 xqtref_t fn_zorba_subsequence_int::getReturnType(
+    const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
 {
-  return arg_types[0]->get_manager()->
-         create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
+  return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -406,10 +412,10 @@ PlanIter_t fn_zorba_subsequence_int::codegen(
 
 ********************************************************************************/
 xqtref_t fn_zorba_sequence_point_access::getReturnType(
+    const TypeManager* tm,
     const std::vector<xqtref_t>& arg_types) const
 {
-  return arg_types[0]->get_manager()->
-         create_type(*arg_types[0], TypeConstants::QUANT_QUESTION);
+  return tm->create_type(*arg_types[0], TypeConstants::QUANT_QUESTION);
 }
 
 
@@ -500,12 +506,14 @@ PlanIter_t fn_zorba_sequence_point_access::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_zero_or_one::getReturnType(const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_zero_or_one::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
 {
   xqtref_t srcType = arg_types[0];
 
-  return srcType->get_manager()->
-         create_type(*TypeOps::prime_type(*srcType), TypeConstants::QUANT_QUESTION);
+  return tm->create_type(*TypeOps::prime_type(tm, *srcType),
+                         TypeConstants::QUANT_QUESTION);
 }
 
 PlanIter_t fn_zero_or_one::codegen(
@@ -525,7 +533,9 @@ PlanIter_t fn_zero_or_one::codegen(
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_distinct_values::getReturnType(const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_distinct_values::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
 {
   return arg_types[0];
 }
@@ -534,7 +544,9 @@ xqtref_t fn_distinct_values::getReturnType(const std::vector<xqtref_t>& arg_type
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_reverse::getReturnType(const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_reverse::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
 {
   return arg_types[0];
 }
@@ -543,10 +555,11 @@ xqtref_t fn_reverse::getReturnType(const std::vector<xqtref_t>& arg_types) const
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t fn_remove::getReturnType(const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_remove::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
 {
-  return arg_types[0]->get_manager()->
-         create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
+  return tm->create_type_x_quant(*arg_types[0], TypeConstants::QUANT_QUESTION);
 }
 
 

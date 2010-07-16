@@ -51,7 +51,7 @@ static void checkKeyType(
   xqtref_t indexKeyType = (indexDecl->getKeyTypes())[keyNo];
 
   if (indexKeyType != NULL &&
-      !TypeOps::is_subtype(*searchKeyType, *indexKeyType))
+      !TypeOps::is_subtype(tm, *searchKeyType, *indexKeyType))
   {
     ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
                              "The type of a search key does not mathch the type"
@@ -67,8 +67,8 @@ static void checkKeyType(
     ZORBA_ASSERT(indexDecl->isGeneral());
 
     if (indexDecl->isOrdered() &&
-        (TypeOps::is_subtype(*searchKeyType, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE) ||
-         TypeOps::is_subtype(*searchKeyType, *GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE)))
+        (TypeOps::is_subtype(tm, *searchKeyType, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE) ||
+         TypeOps::is_subtype(tm, *searchKeyType, *GENV_TYPESYSTEM.HEXBINARY_TYPE_ONE)))
     {
       ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc, 
                                "The type of a search key is not valid for");

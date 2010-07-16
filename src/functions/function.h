@@ -114,7 +114,9 @@ public:
 
   virtual expr_script_kind_t getUpdateType() const { return SIMPLE_EXPR; }
 
-  virtual xqtref_t getReturnType(const std::vector<xqtref_t>& argTypes) const;
+  virtual xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& argTypes) const;
 
   virtual function* specialize(
         static_context* sctx,

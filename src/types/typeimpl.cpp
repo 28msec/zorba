@@ -314,7 +314,7 @@ bool NodeXQType::is_untyped() const
 }
 
 
-bool NodeXQType::is_equal(const NodeXQType& other) const
+bool NodeXQType::is_equal(const TypeManager* tm, const NodeXQType& other) const
 {
   if (m_node_kind != other.m_node_kind)
     return false;
@@ -335,7 +335,7 @@ bool NodeXQType::is_equal(const NodeXQType& other) const
     return true;
 
   if (c1 != NULL && c2 != NULL)
-    return TypeOps::is_equal(*c1, *c2);
+    return TypeOps::is_equal(tm, *c1, *c2);
 
   if (c1 == NULL)
     return (c2->type_kind() == XQType::ANY_TYPE_KIND);
@@ -346,7 +346,7 @@ bool NodeXQType::is_equal(const NodeXQType& other) const
 }
 
 
-bool NodeXQType::is_subtype(const NodeXQType& supertype) const
+bool NodeXQType::is_subtype(const TypeManager* tm, const NodeXQType& supertype) const
 {
   if (supertype.m_node_kind == store::StoreConsts::anyNode)
     return true;
@@ -405,7 +405,7 @@ bool NodeXQType::is_subtype(const NodeXQType& supertype) const
 
   if (m_content_type != NULL && supertype.m_content_type != NULL)
   {
-    return TypeOps::is_subtype(*m_content_type, *supertype.m_content_type);
+    return TypeOps::is_subtype(tm, *m_content_type, *supertype.m_content_type);
   }
   else if (supertype.m_content_type == NULL)
   {
@@ -462,7 +462,7 @@ FunctionXQType::FunctionXQType(
 
 
 bool
-FunctionXQType::is_equal(const FunctionXQType& other) const
+FunctionXQType::is_equal(const TypeManager* tm, const FunctionXQType& other) const
 {
   return true;
 }
@@ -477,13 +477,17 @@ FunctionXQType::is_equal(const FunctionXQType& other) const
  * for values of I between 1 and N, subtype(Ba_I, Aa_I).
  */
 bool
-FunctionXQType::is_subtype(const FunctionXQType& supertype) const
+FunctionXQType::is_subtype(const TypeManager* tm, const FunctionXQType& supertype) const
 {
-  if (this->get_number_params() != supertype.get_number_params()) {
+  if (this->get_number_params() != supertype.get_number_params()) 
+  {
     return false;
   }
 
-  if (!TypeOps::is_subtype(*get_return_type().getp(), *supertype.get_return_type().getp())) {
+  if (!TypeOps::is_subtype(tm,
+                           *get_return_type().getp(),
+                           *supertype.get_return_type().getp()))
+  {
     return false;
   }
 
@@ -491,7 +495,7 @@ FunctionXQType::is_subtype(const FunctionXQType& supertype) const
   for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
        lIter != m_param_types.end(); ++lIter) 
   {
-    if (!TypeOps::is_subtype(*lIter->getp(), *supertype[i++].getp())) 
+    if (!TypeOps::is_subtype(tm, *lIter->getp(), *supertype[i++].getp())) 
     {
       return false;
     }
@@ -621,7 +625,7 @@ xqtref_t UserDefinedXQType::getBaseBuiltinType() const
 }
 
 
-bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
+bool UserDefinedXQType::isSuperTypeOf(const TypeManager* tm, const XQType& subType) const
 {
   if (subType.type_kind() != XQType::USER_DEFINED_KIND)
     return false;
@@ -630,7 +634,7 @@ bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
 
   do
   {
-    if (TypeOps::is_equal(*this, *subtype))
+    if (TypeOps::is_equal(tm, *this, *subtype))
       return true;
 
     if (subtype->type_kind() == XQType::USER_DEFINED_KIND)
@@ -648,13 +652,13 @@ bool UserDefinedXQType::isSuperTypeOf(const XQType& subType) const
 }
 
 
-bool UserDefinedXQType::isSubTypeOf(const XQType& supertype) const
+bool UserDefinedXQType::isSubTypeOf(const TypeManager* tm, const XQType& supertype) const
 {
   const XQType* subtype = this;
 
   do
   {
-    if (TypeOps::is_equal(*subtype, supertype))
+    if (TypeOps::is_equal(tm, *subtype, supertype))
       return true;
 
     if (subtype->type_kind() == XQType::USER_DEFINED_KIND)
@@ -667,13 +671,14 @@ bool UserDefinedXQType::isSubTypeOf(const XQType& supertype) const
     }
     else
     {
-      return TypeOps::is_subtype(*subtype, supertype);
+      return TypeOps::is_subtype(tm, *subtype, supertype);
     }
   }
   while(true);
 
   return false;
 }
+
 
 std::string UserDefinedXQType::typeCategoryStr(type_category_t typeCategory)
 {

@@ -74,7 +74,7 @@ bool FTContainsIterator::nextImpl( store::Item_t &result,
 
   PlanIteratorState *state;
   DEFAULT_STACK_INIT( PlanIteratorState, state, plan_state );
-  static_ctx = getStaticContext( plan_state );
+  static_ctx = getStaticContext();
   options = static_ctx->get_match_options();
   lang = get_lang_from( options );
 

@@ -78,7 +78,9 @@ public:
         const expr* self,
         expr* child) const;
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const
   {
     return arg_types[0]; 
   }

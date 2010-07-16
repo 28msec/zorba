@@ -528,7 +528,8 @@ StaticContextImpl::setBaseURI( const String& aBaseURI )
     xqpStringStore_t lBaseURI2 = lBaseURI;
     
     if(!GenericCast::instance()->isCastable(lBaseURI,
-                                            &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE)) 
+                                            &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
+                                            &GENV_TYPESYSTEM)) 
     {
       ZORBA_ERROR_DESC(XQP0020_INVALID_URI, lBaseURI);
     }
@@ -672,10 +673,12 @@ StaticContextImpl::getDocumentType(const String& aDocUri) const
 {
   xqtref_t xqType = theCtx->lookup_document(Unmarshaller::getInternalString(aDocUri));
   TypeIdentifier_t type = NULL;
-  if (xqType == NULL) {
+  if (xqType == NULL) 
+  {
     return NULL;
   }
-  return TypeOps::get_type_identifier(*xqType);
+
+  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
 }
 
 
@@ -685,9 +688,12 @@ StaticContextImpl::getDocumentType(const String& aDocUri) const
 void
 StaticContextImpl::setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver)
 {
-  try {
+  try 
+  {
     theCtx->set_collection_uri_resolver(new CollectionURIResolverWrapper(aCollectionUriResolver));
-  } catch (error::ZorbaError& e) {
+  } 
+  catch (error::ZorbaError& e) 
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
 }
@@ -735,7 +741,7 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
   {
     return NULL;
   }
-  return TypeOps::get_type_identifier(*xqType);
+  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *xqType);
 }
 
 
@@ -987,10 +993,11 @@ TypeIdentifier_t
 StaticContextImpl::getContextItemStaticType() const
 {
   xqtref_t type = theCtx->get_context_item_type();
-  if (type == NULL) {
+  if (type == NULL) 
+  {
     return NULL;
   }
-  return TypeOps::get_type_identifier(*type);
+  return TypeOps::get_type_identifier(theCtx->get_typemanager(), *type);
 }
 
 

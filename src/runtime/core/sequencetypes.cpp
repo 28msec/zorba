@@ -90,7 +90,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
 
   if (consumeNext(lTreatItem, theChild.getp(), planState))
   {
-    if (TypeOps::is_treatable(lTreatItem, *theSequenceType, tm))
+    if (TypeOps::is_treatable(tm, lTreatItem, *theSequenceType))
     {
       if (consumeNext(lTreatItem, theChild.getp(), planState))
       {
@@ -104,7 +104,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
           lResult = true;
           do
           {
-            if (!TypeOps::is_treatable(lTreatItem, *theSequenceType, tm))
+            if (!TypeOps::is_treatable(tm, lTreatItem, *theSequenceType))
             {
               lResult = false;
             }
@@ -125,7 +125,7 @@ bool InstanceOfIterator::nextImpl(store::Item_t& result, PlanState& planState) c
   {
     if ((lQuantifier == TypeConstants::QUANT_ONE ||
          lQuantifier == TypeConstants::QUANT_PLUS) &&
-        !TypeOps::is_equal(*ts.EMPTY_TYPE, *theSequenceType))
+        !TypeOps::is_equal(tm, *ts.EMPTY_TYPE, *theSequenceType))
     {
       lResult = false;
     }
@@ -154,7 +154,7 @@ CastIterator::CastIterator(
     const xqtref_t& aCastType)
   : UnaryBaseIterator<CastIterator, PlanIteratorState>(sctx, loc, aChild)
 {
-  theCastType = TypeOps::prime_type (*aCastType);
+  theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
   theQuantifier = TypeOps::quantifier(*aCastType);
 }
 
@@ -194,7 +194,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       {
         xqpStringStore_t strValue;
         lItem->getStringValue(strValue);
-        valid = GenericCast::castToAtomic(result, strValue, theCastType);
+        valid = GenericCast::castToAtomic(result, strValue, theCastType, tm);
       }
       catch (error::ZorbaError &e)
       {
@@ -205,7 +205,7 @@ bool CastIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     {
       try
       {
-        valid = GenericCast::castToAtomic(result, lItem, theCastType, *tm);
+        valid = GenericCast::castToAtomic(result, lItem, theCastType, tm);
       }
       catch (error::ZorbaError &e) 
       {
@@ -243,7 +243,7 @@ CastableIterator::CastableIterator(
 :
   UnaryBaseIterator<CastableIterator, PlanIteratorState>(sctx, aLoc, aChild)
 {
-  theCastType = TypeOps::prime_type (*aCastType);
+  theCastType = TypeOps::prime_type(sctx->get_typemanager(), *aCastType);
   theQuantifier = TypeOps::quantifier(*aCastType);
 }
 
@@ -277,7 +277,7 @@ bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) con
   }
   else
   {
-    lBool = GenericCast::isCastable(lItem, theCastType, *tm);
+    lBool = GenericCast::isCastable(lItem, theCastType, tm);
     if (lBool) 
     {
       if (consumeNext(lItem, theChild.getp(), planState)) 
@@ -291,7 +291,7 @@ bool CastableIterator::nextImpl(store::Item_t& result, PlanState& planState) con
         {
           do
           {
-            lBool = GenericCast::isCastable(lItem, theCastType, *tm);
+            lBool = GenericCast::isCastable(lItem, theCastType, tm);
           } while (lBool && consumeNext(lItem, theChild.getp(), planState));
         }
       }
@@ -318,7 +318,7 @@ PromoteIterator::PromoteIterator(
   :
   UnaryBaseIterator<PromoteIterator, PlanIteratorState>(sctx, aLoc, aChild)
 {
-  thePromoteType = TypeOps::prime_type(*aPromoteType);
+  thePromoteType = TypeOps::prime_type(sctx->get_typemanager(), *aPromoteType);
   theQuantifier = TypeOps::quantifier(*aPromoteType);
 }
 
@@ -358,7 +358,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
 
     try
     {
-      if (! GenericCast::promote(result, lItem, thePromoteType, *tm))
+      if (! GenericCast::promote(result, lItem, thePromoteType, tm))
       {
         ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
                                  "Type promotion not possible: " 
@@ -377,7 +377,7 @@ bool PromoteIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
   {
     do 
     {
-      if (! GenericCast::promote(result, lItem, thePromoteType, *tm))
+      if (! GenericCast::promote(result, lItem, thePromoteType, tm))
       {
         ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
                                  "Type promotion not possible: " 
@@ -415,7 +415,7 @@ TreatIterator::TreatIterator(
   check_prime(check_prime_),
   theErrorCode(aErrorCode)
 {
-  theTreatType = TypeOps::prime_type(*aTreatType);
+  theTreatType = TypeOps::prime_type(sctx->get_typemanager(), *aTreatType);
   theQuantifier = TypeOps::quantifier(*aTreatType);
 }
 
@@ -447,7 +447,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       "Cannot treat sequence with more than one item as <type>? or <type>.");
     }
 
-    if (check_prime && !TypeOps::is_treatable(result, *theTreatType, tm)) 
+    if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType)) 
     {
       ZORBA_ERROR_LOC_DESC_OSS(theErrorCode, loc,
                                "Cannot treat "
@@ -463,7 +463,7 @@ bool TreatIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     do 
     {
-      if (check_prime && !TypeOps::is_treatable(result, *theTreatType, tm)) 
+      if (check_prime && !TypeOps::is_treatable(tm, result, *theTreatType)) 
       {
         ZORBA_ERROR_LOC_DESC_OSS(theErrorCode, loc,
                                  "Cannot treat " 

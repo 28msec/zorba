@@ -20,9 +20,13 @@
 #include <zorba/typeident.h>
 #include <zorba/store_consts.h>
 
-#include "zorbatypes/rchandle.h"
 #include "common/shared_types.h"
+
+#include "zorbatypes/rchandle.h"
+
 #include "types/typeconstants.h"
+
+#include "compiler/parser/query_loc.h"
 
 #include "zorbaserialization/serialization_engine.h"
 
@@ -93,11 +97,15 @@ public:
 
   virtual xqtref_t create_named_atomic_type(
         store::Item* qname,
-        TypeConstants::quantifier_t quantifier) const = 0;
+        TypeConstants::quantifier_t quantifier,
+        const QueryLoc& loc = QueryLoc::null,
+        const XQUERY_ERROR& err = MAX_ZORBA_ERROR_CODE) const = 0;
 
   virtual xqtref_t create_named_type(
         store::Item* qname,
-        TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE) const = 0;
+        TypeConstants::quantifier_t quantifier = TypeConstants::QUANT_ONE,
+        const QueryLoc& loc = QueryLoc::null,
+        const XQUERY_ERROR& err = MAX_ZORBA_ERROR_CODE) const = 0;
 
   virtual xqtref_t create_any_item_type(
         TypeConstants::quantifier_t quantifier) const = 0;

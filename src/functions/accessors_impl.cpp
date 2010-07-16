@@ -33,16 +33,17 @@ namespace zorba
 /*******************************************************************************
   
 ********************************************************************************/
-xqtref_t fn_data::getReturnType(const std::vector<xqtref_t>& arg_types) const
+xqtref_t fn_data::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
 {
   RootTypeManager& RTM = GENV_TYPESYSTEM;
 
-  if (TypeOps::is_subtype(*arg_types[0], *RTM.ANY_ATOMIC_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *arg_types[0], *RTM.ANY_ATOMIC_TYPE_STAR))
     return arg_types[0];  // includes () case
 
   const XQType& argType = *arg_types[0];
   TypeConstants::quantifier_t q = TypeOps::quantifier(argType);
-  TypeManager* tm = argType.get_manager();
 
   if (argType.type_kind() == XQType::NODE_TYPE_KIND)
   {
@@ -71,11 +72,11 @@ xqtref_t fn_data::getReturnType(const std::vector<xqtref_t>& arg_types) const
                                  getListItemType();
         return tm->create_type(*itemType, TypeConstants::QUANT_STAR);
       }
-      else if (TypeOps::is_equal(*cType, *RTM.UNTYPED_TYPE))
+      else if (TypeOps::is_equal(tm, *cType, *RTM.UNTYPED_TYPE))
       {
         return tm->create_builtin_atomic_type(TypeConstants::XS_UNTYPED_ATOMIC, q);
       }
-      else if (TypeOps::is_subtype(*cType, *RTM.ANY_ATOMIC_TYPE_STAR))
+      else if (TypeOps::is_subtype(tm, *cType, *RTM.ANY_ATOMIC_TYPE_STAR))
       {
         return tm->create_type(*cType, q);
       }

@@ -78,10 +78,12 @@ public:
 class Schema : public ::zorba::serialization::SerializeBaseClass
 {
 public:
-    static const char* XSD_NAMESPACE;
+  static const char* XSD_NAMESPACE;
 
 private:
   static bool                            theIsInitialized;
+
+  TypeManager                          * theTypeManager;
 
 #ifndef ZORBA_NO_XMLSCHEMA
   XERCES_CPP_NAMESPACE::XMLGrammarPool * theGrammarPool;
@@ -94,7 +96,12 @@ public:
     static void terminate();
 
 public:
-    Schema();
+  SERIALIZABLE_CLASS(Schema)
+  Schema(::zorba::serialization::Archiver& ar);
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+    Schema(TypeManager* tm);
 
     virtual ~Schema();
 
@@ -136,6 +143,7 @@ public:
   xqtref_t createXQTypeFromAttributeName(
         const TypeManager* typeManager,
         const store::Item* qname,
+        const bool riseErrors,
         const QueryLoc& loc);
 
   xqtref_t createXQTypeFromTypeName(
@@ -215,15 +223,6 @@ private:
       XERCES_CPP_NAMESPACE::XSTypeDefinition* typeDef);
   void addTypeToCache(xqtref_t itemXQType);
 #endif // ZORBA_NO_XMLSCHEMA
-
-
-public:
-
-  SERIALIZABLE_CLASS(Schema)
-
-  Schema(::zorba::serialization::Archiver &ar);
-
-  void serialize(::zorba::serialization::Archiver &ar);
 };
 
 } // namespace zorba

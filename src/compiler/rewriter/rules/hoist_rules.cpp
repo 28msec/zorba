@@ -250,6 +250,8 @@ static expr_t try_hoisting(
     return NULL;
   }
 
+  TypeManager* tm = e->get_type_manager();
+
   std::map<const expr*, DynamicBitset>::const_iterator fvme = freevarMap.find(e);
   ZORBA_ASSERT(fvme != freevarMap.end());
   const DynamicBitset& varset = fvme->second;
@@ -303,7 +305,7 @@ static expr_t try_hoisting(
 
       inloop = (inloop ||
                 (flc->get_kind() == flwor_clause::for_clause &&
-                 TypeOps::type_max_cnt(*flc->get_expr()->get_return_type()) >= 2));
+                 TypeOps::type_max_cnt(tm, *flc->get_expr()->get_return_type()) >= 2));
     }
 
     if (!found)

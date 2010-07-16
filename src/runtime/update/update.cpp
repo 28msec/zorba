@@ -654,7 +654,7 @@ RenameIterator::nextImpl(store::Item_t& result, PlanState& aPlanState) const
                 lNewname,
                 theNsCtx.getp(),
                 (lTargetKind == store::StoreConsts::attributeNode),
-                *theSctx->get_typemanager(),
+                theSctx->get_typemanager(),
                 loc);
   }
   catch (error::ZorbaError& e)

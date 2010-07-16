@@ -52,6 +52,8 @@ namespace store
 class AxisIteratorHelper
 {
 protected:
+  TypeManager                * theTypeManager;
+
   match_test_t                 theTestKind;
   match_test_t                 theDocTestKind;
   store::StoreConsts::NodeKind theNodeKind;
@@ -65,6 +67,7 @@ protected:
 public:
   AxisIteratorHelper() 
     :
+    theTypeManager(NULL),
     theTestKind(match_anykind_test),
     theDocTestKind(match_no_test),
     theNodeKind(store::StoreConsts::anyNode),
@@ -149,6 +152,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (UnaryBaseIterator<AxisIter, State>*)this);
+    ar & theTypeManager;
     SERIALIZE_ENUM(match_test_t, theTestKind);
     SERIALIZE_ENUM(match_test_t, theDocTestKind);
     SERIALIZE_ENUM(store::StoreConsts::NodeKind, theNodeKind);
@@ -164,6 +168,7 @@ public:
     :
     UnaryBaseIterator<AxisIter, State>(sctx, loc, input)
   {
+    theTypeManager = sctx->get_typemanager();
   }
 
   virtual ~AxisIterator() {}

@@ -336,10 +336,10 @@ protected:
     m_quantifier(quantifier),
     theIsBuiltin(builtin)
   {
-    if(theIsBuiltin)
+    if (theIsBuiltin)
     {
-      //register this hardcoded object to help plan serialization
-      XQType  *this_ptr = this;
+      // register this hardcoded object to help plan serialization
+      XQType* this_ptr = this;
       *::zorba::serialization::ClassSerializer::getInstance()->getArchiverForHardcodedObjects() & this_ptr;
     }
   }
@@ -444,9 +444,9 @@ public:
 
   content_kind_t content_kind() const { return MIXED_CONTENT_KIND; };
 
-  bool is_equal(const NodeXQType& supertype) const;
+  bool is_equal(const TypeManager* tm, const NodeXQType& supertype) const;
 
-  bool is_subtype(const NodeXQType& supertype) const;
+  bool is_subtype(const TypeManager* tm, const NodeXQType& supertype) const;
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
@@ -491,9 +491,9 @@ public:
 
   xqtref_t get_return_type() const { return m_return_type; }
 
-  bool is_equal(const FunctionXQType& supertype) const;
+  bool is_equal(const TypeManager* tm, const FunctionXQType& supertype) const;
 
-  bool is_subtype(const FunctionXQType& supertype) const;
+  bool is_subtype(const TypeManager* tm, const FunctionXQType& supertype) const;
 
   virtual std::ostream& serialize_ostream(std::ostream& os) const;
 };
@@ -764,9 +764,9 @@ public:
 
   std::vector<xqtref_t> getUnionItemTypes()  const { return m_unionItemTypes; }
 
-  bool isSuperTypeOf(const XQType& subType) const;
+  bool isSuperTypeOf(const TypeManager* tm, const XQType& subType) const;
 
-  bool isSubTypeOf(const XQType& superType) const;
+  bool isSubTypeOf(const TypeManager* tm, const XQType& superType) const;
 
   static std::string typeCategoryStr(type_category_t typeCategory);
 

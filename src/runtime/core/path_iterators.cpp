@@ -263,7 +263,7 @@ doctest1:
       xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
         create_named_type(node->getType());
 
-      if ((!TypeOps::is_subtype(*atype, *theType)) ||
+      if ((!TypeOps::is_subtype(theTypeManager, *atype, *theType)) ||
           (theNilledAllowed == false &&
            node->getNilled()->getBooleanValue() == true))
         return false;
@@ -286,7 +286,7 @@ doctest2:
     xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
                      create_named_type(node->getType());
 
-    if ((!TypeOps::is_subtype(*atype, *theType)) ||
+    if ((!TypeOps::is_subtype(theTypeManager, *atype, *theType)) ||
         (theNilledAllowed == false &&
          node->getNilled()->getBooleanValue() == true))
       return false;
@@ -306,7 +306,7 @@ doctest2:
       xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
                        create_named_type(node->getType());
 
-      if (! TypeOps::is_subtype(*atype, *theType))
+      if (! TypeOps::is_subtype(theTypeManager, *atype, *theType))
         return false;
     }
 
@@ -323,7 +323,7 @@ doctest2:
     xqtref_t atype = planState.theCompilerCB->theRootSctx->get_typemanager()->
                      create_named_type(node->getType());
 
-    if (! TypeOps::is_subtype(*atype, *theType))
+    if (! TypeOps::is_subtype(theTypeManager, *atype, *theType))
       return false;
 
     return true;
@@ -361,7 +361,6 @@ doctest2:
     ZORBA_ASSERT(false && "Unknown kind test kind");
   }
 }
-
 
 
 /*******************************************************************************

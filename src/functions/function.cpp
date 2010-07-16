@@ -109,7 +109,9 @@ void function::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
-xqtref_t function::getReturnType(const std::vector<xqtref_t> &) const
+xqtref_t function::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>&) const
 {
   return theSignature.return_type();
 }
@@ -183,8 +185,10 @@ FunctionConsts::AnnotationValue function::producesDistinctNodes() const
 {
   xqtref_t rt = theSignature.return_type();
 
-  if (TypeOps::type_max_cnt(*rt) <= 1 ||
-      TypeOps::is_subtype(*rt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+  TypeManager* tm = rt->get_manager();
+
+  if (TypeOps::type_max_cnt(tm, *rt) <= 1 ||
+      TypeOps::is_subtype(tm, *rt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
   {
     return FunctionConsts::YES;
   }
@@ -201,8 +205,10 @@ FunctionConsts::AnnotationValue function::producesSortedNodes() const
 {
   xqtref_t rt = theSignature.return_type();
 
-  if (TypeOps::type_max_cnt(*rt) <= 1 ||
-      TypeOps::is_subtype(*rt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
+  TypeManager* tm = rt->get_manager();
+
+  if (TypeOps::type_max_cnt(tm, *rt) <= 1 ||
+      TypeOps::is_subtype(tm, *rt, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR))
   {
     return FunctionConsts::YES;
   }

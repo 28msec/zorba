@@ -68,6 +68,7 @@ public:
         store::Item_t& result,
         xqpStringStore_t& aStr, 
         const XQType* aTargetType,
+        const TypeManager* tm,
         namespace_context* aNCtx = 0);
   /**
    * Executes the casting of the passed item. If the passed item has the same
@@ -78,20 +79,21 @@ public:
         store::Item_t& result,
         store::Item_t& aItem, 
         const XQType* aTargetType,
-        const TypeManager& tm, 
+        const TypeManager* tm, 
         namespace_context* aNCtx = 0);
 
   static bool castToSimple(
         xqpStringStore_t& aStr, 
         const xqtref_t& aTargetType,
-        std::vector<store::Item_t>& aResultList);
+        std::vector<store::Item_t>& aResultList,
+        const TypeManager* tm);
 
   static bool castToQName(
         store::Item_t& result,
         const store::Item_t& item,
         namespace_context* aNCtx,
         bool attrName,
-        const TypeManager& tm,
+        const TypeManager* tm,
         const QueryLoc& loc);
 
   bool castableToNCName(const xqpStringStore* str) const;
@@ -115,7 +117,7 @@ public:
   static bool isCastable(
         const store::Item_t& aItem,
         const XQType* aTargetType,
-        const TypeManager& tm); 
+        const TypeManager* tm); 
 
   /**
    * Checks if the passed string is castable to the passed target type.
@@ -123,7 +125,10 @@ public:
    * @param aTargetType
    * @return true if castable, else false
    */
-  static bool isCastable(xqpStringStore_t& aStr, const XQType* aTargetType);
+  static bool isCastable(
+        xqpStringStore_t& aStr,
+        const XQType* aTargetType,
+        const TypeManager* tm);
 
   /**
    * Promotes the passed item to the passed target type.
@@ -137,7 +142,7 @@ public:
         store::Item_t& result,
         store::Item_t& aItem,
         const XQType* aTargetType,
-        const TypeManager& tm);
+        const TypeManager* tm);
 };
 
 } /* namespace zorba */

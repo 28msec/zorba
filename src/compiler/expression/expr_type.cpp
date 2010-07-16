@@ -89,6 +89,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   }
 
   TypeManager* tm = theSctx->get_typemanager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   expr_kind_t kind = get_expr_kind();
 
@@ -106,7 +107,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case trycatch_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.ITEM_TYPE_STAR; // TODO
+    theType = rtm.ITEM_TYPE_STAR; // TODO
     return;
   }
 
@@ -115,7 +116,8 @@ void expr::compute_return_type(bool deep, bool* modified)
     if_expr* e = static_cast<if_expr*>(this);
 
     newType = TypeOps::union_type(*e->theThenExpr->get_return_type(),
-                                  *e->theElseExpr->get_return_type());
+                                  *e->theElseExpr->get_return_type(),
+                                  tm);
     break;
   }
 
@@ -129,7 +131,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case validate_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE;
+    theType = rtm.ANY_NODE_TYPE_ONE;
     return;
   }
 
@@ -181,8 +183,6 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     var_expr* e = static_cast<var_expr*>(this);
 
-    RootTypeManager& rtm = GENV_TYPESYSTEM;
-
     xqtref_t derivedType;
     expr* domainExpr;
 
@@ -210,7 +210,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
       if (e->theKind == var_expr::for_var)
       {
-        derivedType = TypeOps::prime_type(*domainType);
+        derivedType = TypeOps::prime_type(tm, *domainType);
       }
       else if (e->theKind == var_expr::wincond_in_var ||
                e->theKind == var_expr::wincond_out_var)
@@ -218,11 +218,11 @@ void expr::compute_return_type(bool deep, bool* modified)
         // TODO: we can be a little more specific here: if the quantifier of the
         // domain type is PLUS or ONE, then the quantifier of the "current" cond
         // var is ONE.
-        derivedType = rtm.create_type(*domainType, TypeConstants::QUANT_QUESTION);
+        derivedType = tm->create_type(*domainType, TypeConstants::QUANT_QUESTION);
       }
       else if (e->theKind == var_expr::non_groupby_var)
       {
-        derivedType = rtm.create_type(*domainType, TypeConstants::QUANT_STAR);
+        derivedType = tm->create_type(*domainType, TypeConstants::QUANT_STAR);
       }
       else
       {
@@ -238,7 +238,7 @@ void expr::compute_return_type(bool deep, bool* modified)
     {
       newType = (e->theDeclaredType == NULL ?
                  derivedType :
-                 TypeOps::intersect_type(*derivedType, *e->theDeclaredType));
+                 TypeOps::intersect_type(*derivedType, *e->theDeclaredType, tm));
     }
     break;
   }
@@ -249,7 +249,7 @@ void expr::compute_return_type(bool deep, bool* modified)
 
     if (e->size() == 0)
     {
-      newType = GENV_TYPESYSTEM.EMPTY_TYPE;
+      newType = rtm.EMPTY_TYPE;
     }
     else if (e->size() == 1)
     {
@@ -259,14 +259,15 @@ void expr::compute_return_type(bool deep, bool* modified)
     {
       xqtref_t sourceType = e->theSteps[0]->get_return_type();
 
-      if (TypeOps::is_empty(*sourceType) || TypeOps::is_none(*sourceType))
+      if (TypeOps::is_empty(get_type_manager(), *sourceType) ||
+          TypeOps::is_none(get_type_manager(), *sourceType))
       {
         newType = sourceType;
       }
       else if (sourceType->type_kind() != XQType::NODE_TYPE_KIND)
       {
         ZORBA_ERROR_LOC(XPTY0020, get_loc());
-        theType = GENV_TYPESYSTEM.NONE_TYPE;
+        theType = rtm.NONE_TYPE;
         return;
       }
       else
@@ -293,14 +294,14 @@ void expr::compute_return_type(bool deep, bool* modified)
     axis_step_expr* e = static_cast<axis_step_expr*>(this);
 
     newType = (e->theNodeTest == NULL ?
-               GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE :
+               rtm.ANY_NODE_TYPE_ONE :
                e->theNodeTest->get_return_type());
     break;
   }
 
   case match_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE;
+    theType = rtm.ANY_NODE_TYPE_ONE;
     return;
   }
 
@@ -366,7 +367,7 @@ void expr::compute_return_type(bool deep, bool* modified)
       for (ulong i = 0; i < numArgs; ++i)
         types[i] = e->theArgs[i]->get_return_type();
     
-      newType = e->theFunction->getReturnType(types);
+      newType = e->theFunction->getReturnType(tm, types);
     }
 
     break;
@@ -380,11 +381,11 @@ void expr::compute_return_type(bool deep, bool* modified)
     TypeConstants::quantifier_t argQuant = argType->get_quantifier();
     TypeConstants::quantifier_t targetQuant = e->theTargetType->get_quantifier();
     
-    if (TypeOps::is_equal(*argType, *GENV_TYPESYSTEM.EMPTY_TYPE) &&
+    if (TypeOps::is_equal(tm, *argType, *rtm.EMPTY_TYPE) &&
         (targetQuant == TypeConstants::QUANT_QUESTION ||
          targetQuant == TypeConstants::QUANT_STAR))
     {
-      newType = GENV_TYPESYSTEM.EMPTY_TYPE;
+      newType = rtm.EMPTY_TYPE;
     }
     else
     {
@@ -400,14 +401,14 @@ void expr::compute_return_type(bool deep, bool* modified)
     treat_expr* e = static_cast<treat_expr*>(this);
 
     xqtref_t input_type = e->get_input()->get_return_type();
-    xqtref_t input_ptype = TypeOps::prime_type(*input_type);
-    xqtref_t target_ptype = TypeOps::prime_type(*e->theTargetType);
+    xqtref_t input_ptype = TypeOps::prime_type(tm, *input_type);
+    xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
     TypeConstants::quantifier_t q =
       TypeOps::intersect_quant(TypeOps::quantifier(*input_type),
                                TypeOps::quantifier(*e->theTargetType));
 
-    if (TypeOps::is_subtype(*input_ptype, *target_ptype)) 
+    if (TypeOps::is_subtype(tm, *input_ptype, *target_ptype)) 
     {
       newType = tm->create_type(*input_ptype, q);
     }
@@ -423,14 +424,14 @@ void expr::compute_return_type(bool deep, bool* modified)
     promote_expr* e = static_cast<promote_expr*>(this);
 
     xqtref_t in_type = e->theInputExpr->get_return_type();
-    xqtref_t in_ptype = TypeOps::prime_type(*in_type);
-    xqtref_t target_ptype = TypeOps::prime_type(*e->theTargetType);
+    xqtref_t in_ptype = TypeOps::prime_type(tm, *in_type);
+    xqtref_t target_ptype = TypeOps::prime_type(tm, *e->theTargetType);
 
     TypeConstants::quantifier_t q =
     TypeOps::intersect_quant(TypeOps::quantifier(*in_type),
                              TypeOps::quantifier(*e->theTargetType));
 
-    if (TypeOps::is_subtype(*in_ptype, *target_ptype))
+    if (TypeOps::is_subtype(tm, *in_ptype, *target_ptype))
     {
       newType = tm->create_type(*in_ptype, q);
     }
@@ -441,30 +442,29 @@ void expr::compute_return_type(bool deep, bool* modified)
     }
 
 #if 0
-    RootTypeManager& ts = GENV_TYPESYSTEM;
     // TODO: for nodes, the result would be none
-    if (TypeOps::is_equal (*in_ptype, *ts.UNTYPED_ATOMIC_TYPE_ONE))
+    if (TypeOps::is_equal(tm, *in_ptype, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
       return tm->create_type_x_quant(*target_ptype, q);
   
     // decimal --> float
-    if (TypeOps::is_subtype(*target_ptype, *ts.FLOAT_TYPE_ONE)) 
+    if (TypeOps::is_subtype(tm, *target_ptype, *rtm.FLOAT_TYPE_ONE)) 
     {
-      if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE))
+      if (TypeOps::is_subtype(tm, *in_ptype, *ts.DECIMAL_TYPE_ONE))
         return tm->create_type_x_quant(*target_ptype, q);
     }
   
     // decimal/float --> double
-    if (TypeOps::is_subtype(*target_ptype, *ts.DOUBLE_TYPE_ONE)) 
+    if (TypeOps::is_subtype(tm, *target_ptype, *rtm.DOUBLE_TYPE_ONE)) 
     {
-      if (TypeOps::is_subtype(*in_ptype, *ts.DECIMAL_TYPE_ONE) ||
-          TypeOps::is_subtype(*in_ptype, *ts.FLOAT_TYPE_ONE))
+      if (TypeOps::is_subtype(tm, *in_ptype, *rtm.DECIMAL_TYPE_ONE) ||
+          TypeOps::is_subtype(tm, *in_ptype, *rtm.FLOAT_TYPE_ONE))
         return tm->create_type_x_quant(*target_ptype, q);
     }
   
     // uri --> string
-    if (TypeOps::is_subtype(*target_ptype, *ts.STRING_TYPE_ONE)) 
+    if (TypeOps::is_subtype(tm, *target_ptype, *rtm.STRING_TYPE_ONE)) 
     {
-      if (TypeOps::is_subtype(*in_ptype, *ts.ANY_URI_TYPE_ONE))
+      if (TypeOps::is_subtype(tm, *in_ptype, *rtm.ANY_URI_TYPE_ONE))
         return tm->create_type_x_quant(*target_ptype, q);
     }
 #endif
@@ -474,13 +474,13 @@ void expr::compute_return_type(bool deep, bool* modified)
   case castable_expr_kind:
   case instanceof_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+    theType = rtm.BOOLEAN_TYPE_ONE;
     return;
   }
 
   case name_cast_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.QNAME_TYPE_ONE;
+    theType = rtm.QNAME_TYPE_ONE;
     return;
   }
 
@@ -503,8 +503,8 @@ void expr::compute_return_type(bool deep, bool* modified)
   {
     xqtref_t typeName =
       (theSctx->construction_mode() == StaticContextConsts::cons_preserve ?
-       GENV_TYPESYSTEM.ANY_TYPE : 
-       GENV_TYPESYSTEM.UNTYPED_TYPE);
+       rtm.ANY_TYPE : 
+       rtm.UNTYPED_TYPE);
 
     newType = tm->create_node_type(store::StoreConsts::elementNode,
                                    NULL,
@@ -544,10 +544,10 @@ void expr::compute_return_type(bool deep, bool* modified)
     {
       xqtref_t t = e->get_text()->get_return_type();
 
-      if (TypeOps::is_empty(*t))
+      if (TypeOps::is_empty(get_type_manager(), *t))
         newType = t;
 
-      else if (TypeOps::type_min_cnt(*t) == 0)
+      else if (TypeOps::type_min_cnt(tm, *t) == 0)
         q = TypeConstants::QUANT_QUESTION;
 
       nodeKind = store::StoreConsts::textNode;
@@ -602,31 +602,31 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case dynamic_function_invocation_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.ITEM_TYPE_STAR; // TODO
+    theType = rtm.ITEM_TYPE_STAR; // TODO
     return;
   }
 
   case function_item_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.ANY_FUNCTION_TYPE_ONE;
+    theType = rtm.ANY_FUNCTION_TYPE_ONE;
     return;
   }
 
   case extension_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.ITEM_TYPE_STAR; // TODO
+    theType = rtm.ITEM_TYPE_STAR; // TODO
     return;
   }
 
   case eval_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.ITEM_TYPE_STAR; // TODO
+    theType = rtm.ITEM_TYPE_STAR; // TODO
     return;
   }
 
   case debugger_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.ITEM_TYPE_STAR; // TODO
+    theType = rtm.ITEM_TYPE_STAR; // TODO
     return;
   }
 
@@ -635,7 +635,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   case rename_expr_kind:
   case replace_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.EMPTY_TYPE;
+    theType = rtm.EMPTY_TYPE;
     return;
   }
 
@@ -657,20 +657,20 @@ void expr::compute_return_type(bool deep, bool* modified)
 
   case flowctl_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.EMPTY_TYPE;
+    theType = rtm.EMPTY_TYPE;
     return;
   }
 
   case while_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.EMPTY_TYPE;
+    theType = rtm.EMPTY_TYPE;
     return;
   }
 
 #ifndef ZORBA_NO_FULL_TEXT
   case ft_expr_kind:
   {
-    theType = GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE;
+    theType = rtm.BOOLEAN_TYPE_ONE;
     return;
   }
 #endif /* ZORBA_NO_FULL_TEXT */
@@ -684,7 +684,7 @@ void expr::compute_return_type(bool deep, bool* modified)
   assert(newType != NULL);
 
   if (modified && 
-      (theType == NULL || !TypeOps::is_equal(*newType, *theType)))
+      (theType == NULL || !TypeOps::is_equal(tm, *newType, *theType)))
   {
     *modified = true;
   }
@@ -1081,12 +1081,12 @@ self:
   default:
   {
     ZORBA_ASSERT(false);
-    return GENV_TYPESYSTEM.NONE_TYPE;
+    return RTM.NONE_TYPE;
   }
   }
 
   ZORBA_ASSERT(false);
-  return GENV_TYPESYSTEM.NONE_TYPE;
+  return RTM.NONE_TYPE;
 }
 
 

@@ -638,7 +638,7 @@ void Validator::processTextValue (
       {
         // workaround for validating NOTATION with Xerces
         xqtref_t notationType = GENV_TYPESYSTEM.NOTATION_TYPE_ONE;
-        if ( udt.isSubTypeOf(*notationType.getp()) )
+        if ( udt.isSubTypeOf(typeManager, *notationType.getp()) )
         {
           // textValue must be in the form of URI:LOCAL
           int32_t colonIndex = textValue->bytePositionOf(":");
@@ -661,7 +661,7 @@ void Validator::processTextValue (
         resultList.push_back(result);
       }
       else if (udt.isComplex() &&
-               udt.content_kind()==XQType::SIMPLE_CONTENT_KIND )
+               udt.content_kind() == XQType::SIMPLE_CONTENT_KIND)
       {
         try
         {
@@ -669,7 +669,7 @@ void Validator::processTextValue (
           // type which has to be simple
           xqtref_t baseType = udt.getBaseType();
           bool res = GenericCast::castToSimple(textValue, baseType.getp(),
-                                               resultList);
+                                               resultList, typeManager);
 
           // if this assert fails it means the validator and zorba casting code
           // don't follow the same rules
@@ -684,7 +684,7 @@ void Validator::processTextValue (
       try
       {
         bool res = GenericCast::castToAtomic(result, textValue, type.getp(),
-                                             &nsCtx);
+                                             typeManager, &nsCtx);
         ZORBA_ASSERT(res);
         resultList.push_back(result);
       }

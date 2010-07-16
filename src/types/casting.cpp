@@ -1448,6 +1448,7 @@ bool GenericCast::castToAtomic(
     store::Item_t& result,
     xqpStringStore_t& aStr,
     const XQType* aTargetType,
+    const TypeManager* tm,
     namespace_context* aNsCtx)
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
@@ -1457,14 +1458,12 @@ bool GenericCast::castToAtomic(
 
   ErrorInfo lErrorInfo = {&*lSourceType, aTargetType};
 
-  if (!TypeOps::is_atomic(*aTargetType))
+  if (!TypeOps::is_atomic(tm, *aTargetType))
     throwError(XPST0051, lErrorInfo);
 
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND)
   {
-    const TypeManager* tm = aTargetType->get_manager();
-
     store::Item_t baseItem;
     bool success = tm->getSchema()->parseUserAtomicTypes(aStr,
                                                          aTargetType,
@@ -1532,18 +1531,20 @@ bool GenericCast::castToAtomic(
     store::Item_t&       result,
     store::Item_t&       aItem,
     const XQType*        aTargetType,
-    const TypeManager&   tm,
+    const TypeManager*   tm,
     namespace_context*   aNCtx)
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
   store::ItemFactory* lFactory = GENV_ITEMFACTORY;
 
-  xqtref_t lSourceType = tm.create_named_type(aItem->getType(),
-                                              TypeConstants::QUANT_ONE);
+  xqtref_t lSourceType = tm->create_named_type(aItem->getType(),
+                                               TypeConstants::QUANT_ONE,
+                                               QueryLoc::null,
+                                               XPTY0004);
 
   ZORBA_ASSERT(aItem->isAtomic());
   ZORBA_ASSERT(lSourceType != NULL);
-  ZORBA_ASSERT(TypeOps::is_atomic(*lSourceType));
+  ZORBA_ASSERT(TypeOps::is_atomic(tm, *lSourceType));
 
   // std::cout << "-castToAtomic: " << aItem.getp()->getStringValue()->c_str()
   //           << " srcType: " << lSourceType->get_qname()->getLocalName()->c_str()
@@ -1553,7 +1554,7 @@ bool GenericCast::castToAtomic(
 
   ErrorInfo lErrorInfo = {&*lSourceType, aTargetType};
 
-  if (!TypeOps::is_atomic(*aTargetType))
+  if (!TypeOps::is_atomic(tm, *aTargetType))
     throwError(XPST0051, lErrorInfo);
 
 #ifndef ZORBA_NO_XMLSCHEMA
@@ -1570,7 +1571,7 @@ bool GenericCast::castToAtomic(
 
   lSourceType = lSourceType->getBaseBuiltinType();
 
-  ZORBA_ASSERT(TypeOps::is_builtin_atomic(*lSourceType));
+  ZORBA_ASSERT(TypeOps::is_builtin_atomic(tm, *lSourceType));
 
   lSourceTypeCode = TypeOps::get_atomic_type_code(*lSourceType);
 
@@ -1694,14 +1695,12 @@ void castToUserDefinedType(
 bool GenericCast::castToSimple(
     xqpStringStore_t& aStr,
     const xqtref_t& aTargetType,
-    std::vector<store::Item_t> &aResultList)
+    std::vector<store::Item_t>& aResultList,
+    const TypeManager* tm)
 {
-  const TypeManager* lTypeManager = aTargetType->get_manager();
-
   //std::cout << "-castToSimple: " << aStr.c_str() << " tgtType: " << aTargetType->get_qname()->getLocalName()->c_str() << " @ " << aTargetType->get_qname()->getNamespace()->c_str() << "\n";
 
-  return lTypeManager->getSchema()->
-         parseUserSimpleTypes(aStr, aTargetType, aResultList);
+  return tm->getSchema()->parseUserSimpleTypes(aStr, aTargetType, aResultList);
 }
 
 
@@ -1713,24 +1712,26 @@ bool GenericCast::castToQName(
     const store::Item_t& item,
     namespace_context* nsCtx,
     bool isAttrName,
-    const TypeManager& tm,
+    const TypeManager* tm,
     const QueryLoc& loc)
 {
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t sourceType = tm.create_named_type(item->getType(),
-                                             TypeConstants::QUANT_ONE);
+  xqtref_t sourceType = tm->create_named_type(item->getType(),
+                                              TypeConstants::QUANT_ONE,
+                                              loc,
+                                              XPTY0004);
 
   ZORBA_ASSERT(item->isAtomic());
   ZORBA_ASSERT(sourceType != NULL);
 
-  if (TypeOps::is_subtype(*sourceType, *rtm.QNAME_TYPE_ONE))
+  if (TypeOps::is_subtype(tm, *sourceType, *rtm.QNAME_TYPE_ONE))
   {
     result = item;
     return true;
   }
-  else if (!TypeOps::is_subtype(*sourceType, *rtm.STRING_TYPE_ONE) &&
-           !TypeOps::is_equal(*sourceType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+  else if (!TypeOps::is_subtype(tm, *sourceType, *rtm.STRING_TYPE_ONE) &&
+           !TypeOps::is_equal(tm, *sourceType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
   {
     ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, loc,
                              "Item of type " << sourceType->toString()
@@ -1984,7 +1985,7 @@ bool GenericCast::castableToName(const xqpStringStore *str)
 bool GenericCast::isCastable(
     const store::Item_t& aItem,
     const XQType* aTargetType,
-    const TypeManager& tm)
+    const TypeManager* tm)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
   if (aTargetType->type_kind() == XQType::USER_DEFINED_KIND )
@@ -1992,15 +1993,17 @@ bool GenericCast::isCastable(
     const UserDefinedXQType* udt = static_cast<const UserDefinedXQType*>(aTargetType);
     if (!udt->isComplex())
     {
-      return tm.getSchema()->
+      return tm->getSchema()->
              isCastableUserSimpleTypes(aItem->getStringValue(),
                                        udt->getBaseType().getp());
     }
   }
 #endif // ZORBA_NO_XMLSCHEMA
 
-    xqtref_t lSourceType = tm.create_named_type(aItem->getType(),
-                                                TypeConstants::QUANT_ONE);
+    xqtref_t lSourceType = tm->create_named_type(aItem->getType(),
+                                                TypeConstants::QUANT_ONE,
+                                                QueryLoc::null,
+                                                XPTY0004);
 
     TypeConstants::castable_t lIsCastable = TypeOps::castability(*lSourceType,
                                                                  *aTargetType);
@@ -2035,11 +2038,12 @@ bool GenericCast::isCastable(
 ********************************************************************************/
 bool GenericCast::isCastable(
     xqpStringStore_t& aStr,
-    const XQType* aTargetType)
+    const XQType* aTargetType,
+    const TypeManager* tm)
 {
   store::Item_t lItem;
   GENV_ITEMFACTORY->createString(lItem, aStr);
-  return isCastable(lItem, aTargetType, GENV_TYPESYSTEM);
+  return isCastable(lItem, aTargetType, tm);
 }
 
 
@@ -2050,49 +2054,49 @@ bool GenericCast::promote(
     store::Item_t& result,
     store::Item_t& aItem,
     const XQType* aTargetType,
-    const TypeManager& tm)
+    const TypeManager* tm)
 {
-  RootTypeManager& typesys = GENV_TYPESYSTEM;
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
 
-  xqtref_t lItemType = tm.create_value_type(aItem);
+  xqtref_t lItemType = tm->create_value_type(aItem);
 
-  if (TypeOps::is_equal(*aTargetType, *typesys.NONE_TYPE))
+  if (TypeOps::is_equal(tm, *aTargetType, *rtm.NONE_TYPE))
       return false;
 
-  if (TypeOps::is_subtype(*lItemType, *aTargetType))
+  if (TypeOps::is_subtype(tm, *lItemType, *aTargetType))
   {
     result.transfer(aItem);
     return result != NULL;
   }
 
-  if (TypeOps::is_equal(*lItemType, *typesys.UNTYPED_ATOMIC_TYPE_ONE) &&
-      ! TypeOps::is_equal(*TypeOps::prime_type(*aTargetType), *typesys.QNAME_TYPE_ONE))
+  if (TypeOps::is_equal(tm, *lItemType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) &&
+      ! TypeOps::is_equal(tm, *TypeOps::prime_type(tm, *aTargetType), *rtm.QNAME_TYPE_ONE))
   {
     return GenericCast::castToAtomic(result, aItem, aTargetType, tm);
   }
-  else if (TypeOps::is_subtype(*aTargetType, *typesys.FLOAT_TYPE_ONE))
+  else if (TypeOps::is_subtype(tm, *aTargetType, *rtm.FLOAT_TYPE_ONE))
   {
     // decimal --> xs:float
-    if (TypeOps::is_subtype(*lItemType, *typesys.DECIMAL_TYPE_ONE))
+    if (TypeOps::is_subtype(tm, *lItemType, *rtm.DECIMAL_TYPE_ONE))
     {
       return GenericCast::castToAtomic(result, aItem, aTargetType, tm);
     }
   }
-  else if (TypeOps::is_subtype(*aTargetType, *typesys.DOUBLE_TYPE_ONE))
+  else if (TypeOps::is_subtype(tm, *aTargetType, *rtm.DOUBLE_TYPE_ONE))
   {
     // Decimal/Float --> xs:double
-    if (TypeOps::is_subtype(*lItemType, *typesys.DECIMAL_TYPE_ONE) ||
-        TypeOps::is_subtype(*lItemType, *typesys.FLOAT_TYPE_ONE))
+    if (TypeOps::is_subtype(tm, *lItemType, *rtm.DECIMAL_TYPE_ONE) ||
+        TypeOps::is_subtype(tm, *lItemType, *rtm.FLOAT_TYPE_ONE))
     {
       return GenericCast::castToAtomic(result, aItem, aTargetType, tm);
     }
   }
-  else if (TypeOps::is_subtype(*aTargetType, *typesys.STRING_TYPE_ONE))
+  else if (TypeOps::is_subtype(tm, *aTargetType, *rtm.STRING_TYPE_ONE))
   {
     // URI --> xs:String Promotion
-    if (TypeOps::is_subtype(*lItemType, *typesys.ANY_URI_TYPE_ONE))
+    if (TypeOps::is_subtype(tm, *lItemType, *rtm.ANY_URI_TYPE_ONE))
     {
-      return GenericCast::castToAtomic(result, aItem, &*typesys.STRING_TYPE_ONE, tm);
+      return GenericCast::castToAtomic(result, aItem, &*rtm.STRING_TYPE_ONE, tm);
     }
   }
 

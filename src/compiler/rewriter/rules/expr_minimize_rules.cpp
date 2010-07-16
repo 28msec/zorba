@@ -83,9 +83,11 @@ RULE_REWRITE_POST(ReplaceExprWithConstantOneWhenPossible)
 
 static expr_t get_constant_if_typequant_one(static_context* sctx, expr* e)
 {
+  TypeManager* tm = e->get_type_manager();
+
   if (e->get_expr_kind() != const_expr_kind) 
   {
-    if (TypeOps::type_cnt(*(e->get_return_type())) == 1) 
+    if (TypeOps::type_cnt(tm, *(e->get_return_type())) == 1) 
     {
       return new const_expr(e->get_sctx(), e->get_loc(), 1);
     }

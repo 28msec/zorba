@@ -619,7 +619,7 @@ bool NumArithIterator<Operation>::computeAtomic(
 
   bool isDivision = Operation::getOperationKind() == ArithmeticConsts::DIVISION;
 
-  xqtref_t resultType = TypeOps::arithmetic_type(*type0, *type1, isDivision);
+  xqtref_t resultType = TypeOps::arithmetic_type(tm, *type0, *type1, isDivision);
 
   try
   {
@@ -627,8 +627,8 @@ bool NumArithIterator<Operation>::computeAtomic(
     {
     case TypeConstants::XS_DOUBLE:
     {
-      GenericCast::castToAtomic(n0, item0, &*resultType, *tm);
-      GenericCast::castToAtomic(n1, item1, &*resultType, *tm);
+      GenericCast::castToAtomic(n0, item0, &*resultType, tm);
+      GenericCast::castToAtomic(n1, item1, &*resultType, tm);
 
       res = Operation::template
             computeSingleType<TypeConstants::XS_DOUBLE>
@@ -637,8 +637,8 @@ bool NumArithIterator<Operation>::computeAtomic(
     }
     case TypeConstants::XS_FLOAT:
     {
-      GenericCast::castToAtomic(n0, item0, &*resultType, *tm);
-      GenericCast::castToAtomic(n1, item1, &*resultType, *tm);
+      GenericCast::castToAtomic(n0, item0, &*resultType, tm);
+      GenericCast::castToAtomic(n1, item1, &*resultType, tm);
 
       res = Operation::template 
             computeSingleType<TypeConstants::XS_FLOAT>
@@ -647,8 +647,8 @@ bool NumArithIterator<Operation>::computeAtomic(
     }
     case TypeConstants::XS_DECIMAL:
     {
-      GenericCast::castToAtomic(n0, item0, &*resultType, *tm);
-      GenericCast::castToAtomic(n1, item1, &*resultType, *tm);
+      GenericCast::castToAtomic(n0, item0, &*resultType, tm);
+      GenericCast::castToAtomic(n1, item1, &*resultType, tm);
 
       res = Operation::template
             computeSingleType<TypeConstants::XS_DECIMAL>
@@ -657,8 +657,8 @@ bool NumArithIterator<Operation>::computeAtomic(
     }
     case TypeConstants::XS_INTEGER:
     {
-      GenericCast::castToAtomic(n0, item0, &*resultType, *tm);
-      GenericCast::castToAtomic(n1, item1, &*resultType, *tm);
+      GenericCast::castToAtomic(n0, item0, &*resultType, tm);
+      GenericCast::castToAtomic(n1, item1, &*resultType, tm);
 
        res = Operation::template 
             computeSingleType<TypeConstants::XS_INTEGER>
@@ -830,33 +830,33 @@ bool OpNumericUnaryIterator::nextImpl(store::Item_t& result, PlanState& planStat
 
     type = tm->create_value_type(item);
 
-    if ( TypeOps::is_subtype(*type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) )
+    if (TypeOps::is_subtype(tm, *type, *rtm.UNTYPED_ATOMIC_TYPE_ONE ) )
     {
-      GenericCast::castToAtomic(item, item, &*rtm.DOUBLE_TYPE_ONE, *tm);
+      GenericCast::castToAtomic(item, item, &*rtm.DOUBLE_TYPE_ONE, tm);
       type = rtm.DOUBLE_TYPE_ONE;
     }
     
     // TODO Optimizations (e.g. if item has already the correct type and value,
     // it does not have to be created newly)
-    if (TypeOps::is_subtype(*type, *rtm.DOUBLE_TYPE_ONE))
+    if (TypeOps::is_subtype(tm, *type, *rtm.DOUBLE_TYPE_ONE))
     {
       GENV_ITEMFACTORY->
       createDouble(result,
                    (thePlus ? item->getDoubleValue() : -item->getDoubleValue()));
     }
-    else if ( TypeOps::is_subtype ( *type, *rtm.FLOAT_TYPE_ONE ) )
+    else if ( TypeOps::is_subtype(tm, *type, *rtm.FLOAT_TYPE_ONE ) )
     {
       GENV_ITEMFACTORY->
       createFloat(result,
                   (thePlus ? item->getFloatValue() : -item->getFloatValue()));
     }
-    else if ( TypeOps::is_subtype ( *type, *rtm.INTEGER_TYPE_ONE ) )
+    else if ( TypeOps::is_subtype(tm, *type, *rtm.INTEGER_TYPE_ONE ) )
     {
       GENV_ITEMFACTORY->
       createInteger(result,
                     (thePlus ? item->getIntegerValue() : -item->getIntegerValue()));
     }
-    else if ( TypeOps::is_subtype ( *type, *rtm.DECIMAL_TYPE_ONE ) )
+    else if ( TypeOps::is_subtype(tm, *type, *rtm.DECIMAL_TYPE_ONE ) )
     {
       GENV_ITEMFACTORY->
       createDecimal(result,

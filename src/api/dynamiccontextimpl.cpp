@@ -427,11 +427,12 @@ DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
 
     ZorbaImpl::checkItem(lItem);
 
-    xqtref_t lItemType = theStaticContext->get_typemanager()->
-                         create_named_type(lItem->getType(),
-                                           TypeConstants::QUANT_ONE);
+    TypeManager* tm = theStaticContext->get_typemanager();
 
-    if (!TypeOps::is_subtype(*lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
+    xqtref_t lItemType = tm->create_named_type(lItem->getType(),
+                                               TypeConstants::QUANT_ONE);
+
+    if (!TypeOps::is_subtype(tm, *lItemType, *GENV_TYPESYSTEM.DATETIME_TYPE_ONE))
     {
       ZORBA_ERROR_DESC_OSS(API0014_INVALID_ARGUMENT,
                            "Given item of type [" << lItemType->toString()

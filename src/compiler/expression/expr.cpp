@@ -238,7 +238,8 @@ if_expr::if_expr(
   theElseExpr(elseExpr)
 {
   if (sctx != NULL &&
-      !TypeOps::is_equal(*condExpr->get_return_type(),
+      !TypeOps::is_equal(sctx->get_typemanager(), 
+                         *condExpr->get_return_type(),
                          *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
   {
     fo_expr* boolExpr = new fo_expr(sctx,

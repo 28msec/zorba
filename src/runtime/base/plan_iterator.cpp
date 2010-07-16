@@ -89,6 +89,12 @@ void PlanIterator::serialize(::zorba::serialization::Archiver &ar)
 }
 
 
+TypeManager* PlanIterator::getTypeManager() const
+{
+  return theSctx->get_typemanager();
+}
+
+
 #ifndef NDEBUG
 
 bool PlanIterator::consumeNext(

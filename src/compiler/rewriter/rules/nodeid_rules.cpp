@@ -180,14 +180,13 @@ static bool analyze_let_vars_consumer_props (flwor_expr* flwor)
 /*******************************************************************************
 
 ********************************************************************************/
-static void mark_casts(
-    const cast_or_castable_base_expr* node,
-    expr* input,
-    static_context* sctx) 
+static void mark_casts(const cast_or_castable_base_expr* node, expr* input)
 {
+  TypeManager* tm = node->get_type_manager();
+
   xqtref_t target = node->get_target_type();
 
-  if (TypeOps::is_empty(*target)) 
+  if (TypeOps::is_empty(node->get_type_manager(), *target)) 
   {
     TSVAnnotationValue::update_annotation(input,
                                           Annotations::IGNORES_SORTED_NODES,
@@ -219,7 +218,7 @@ static void mark_casts(
 
   bool ignores_dups = (q == TypeConstants::QUANT_STAR ||
                        (q == TypeConstants::QUANT_PLUS &&
-                        TypeOps::type_min_cnt(*input->get_return_type()) >= 1));
+                        TypeOps::type_min_cnt(tm, *input->get_return_type()) >= 1));
 
   if (is_cast)
   {
@@ -364,7 +363,7 @@ RULE_REWRITE_PRE(MarkConsumerNodeProps)
     if (ce != NULL) 
     {
       expr* input = ce->get_input();
-      mark_casts(ce, input, node->get_sctx());
+      mark_casts(ce, input);
       break;
     }
     else

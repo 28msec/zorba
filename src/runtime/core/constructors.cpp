@@ -1135,7 +1135,7 @@ bool NameCastIterator::nextImpl(store::Item_t& result, PlanState& planState) con
                                                  temp,
                                                  &*theNCtx,
                                                  theIsAttrName,
-                                                 *theSctx->get_typemanager(),
+                                                 theSctx->get_typemanager(),
                                                  loc);
   }
   catch (error::ZorbaError& e)

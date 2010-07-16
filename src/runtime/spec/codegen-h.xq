@@ -202,6 +202,9 @@ declare function local:add-methods($function) as xs:string*
       then
         string-join(($gen:newline, $gen:indent,
                      'xqtref_t getReturnType(',
+                     $gen:newline, $gen:indent, $gen:indent, $gen:indent, $gen:indent,
+                     'const TypeManager* tm,',
+                     $gen:newline, $gen:indent, $gen:indent, $gen:indent, $gen:indent,
                      'const std::vector&lt;xqtref_t&gt;&amp; arg_types) const;',
                      $gen:newline), '')
 

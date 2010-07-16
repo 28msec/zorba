@@ -268,6 +268,8 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
 static bool maybe_needs_implicit_timezone(const fo_expr* fo)
 {
+  TypeManager* tm = fo->get_type_manager();
+
   const function* f = fo->get_func();
   FunctionConsts::FunctionKind fkind = f->getKind();
   xqtref_t type0 = (fo->num_args() > 0 ? fo->get_arg(0)->get_return_type() : NULL);
@@ -275,7 +277,8 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo)
 
   return ( ((f->isComparisonFunction() ||
              f->arithmeticKind() == ArithmeticConsts::SUBTRACTION) &&
-            (TypeOps::maybe_date_time(*type0) || TypeOps::maybe_date_time(*type1)))
+            (TypeOps::maybe_date_time(tm, *type0) ||
+             TypeOps::maybe_date_time(tm, *type1)))
            ||
            ((fkind == FunctionConsts::FN_DISTINCT_VALUES_1 ||
              fkind == FunctionConsts::FN_DISTINCT_VALUES_2 ||
@@ -283,7 +286,7 @@ static bool maybe_needs_implicit_timezone(const fo_expr* fo)
              fkind == FunctionConsts::FN_MIN_2 ||
              fkind == FunctionConsts::FN_MAX_1 ||
              fkind == FunctionConsts::FN_MAX_2)
-            && TypeOps::maybe_date_time(*TypeOps::prime_type(*type0))) );
+            && TypeOps::maybe_date_time(tm, *TypeOps::prime_type(tm, *type0))) );
 }
 
 
@@ -421,6 +424,8 @@ static void remove_wincond_vars(
 
 RULE_REWRITE_PRE(FoldConst)
 {
+  TypeManager* tm = node->get_type_manager();
+
   xqtref_t rtype = node->get_return_type();
 
   // TODO: this computation could be moved to isUnfoldable() in fo_expr
@@ -437,7 +442,7 @@ RULE_REWRITE_PRE(FoldConst)
       get_varset_annotation (node, Annotations::FREE_VARS).empty() &&
       ! node->isUnfoldable() &&
       isDeterministicFunc &&
-      TypeOps::type_max_cnt(*rtype) <= 1)
+      TypeOps::type_max_cnt(tm, *rtype) <= 1)
     // &&
     //  (fold_expensive_ops ||
     //   node->get_annotation (Annotations::EXPENSIVE_OP) != TSVAnnotationValue::TRUE_VAL))
@@ -514,6 +519,8 @@ static bool already_folded (expr_t e, RewriterContext& rCtx)
 
 RULE_REWRITE_PRE(PartialEval)
 {
+  TypeManager* tm = node->get_type_manager();
+
   const castable_base_expr* cbe;
   if ((cbe = dynamic_cast<const castable_base_expr *>(node)) != NULL)
   {
@@ -524,13 +531,13 @@ RULE_REWRITE_PRE(PartialEval)
 
     xqtref_t arg_type = arg->get_return_type();
 
-    if (TypeOps::is_subtype(*arg_type, *cbe->get_target_type()))
+    if (TypeOps::is_subtype(tm, *arg_type, *cbe->get_target_type()))
     {
       return new const_expr(node->get_sctx(), LOC(node), true);
     }
     else if (node->get_expr_kind() == instanceof_expr_kind)
     {
-      return (TypeOps::intersect_type(*arg_type, *cbe->get_target_type()) ==
+      return (TypeOps::intersect_type(*arg_type, *cbe->get_target_type(), tm) ==
               GENV_TYPESYSTEM.NONE_TYPE ?
               new const_expr(node->get_sctx(), LOC(node), false) :
               NULL);
@@ -576,6 +583,8 @@ RULE_REWRITE_POST(PartialEval)
 
 static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
 {
+  TypeManager* tm = fo->get_type_manager();
+
   const function* f = fo->get_func();
   FunctionConsts::FunctionKind fkind = f->getKind();
 
@@ -597,7 +606,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
     expr_t arg = fo->get_arg(0);
     if (!arg->isNonDiscardable())
     {
-      int type_cnt = TypeOps::type_cnt(*arg->get_return_type());
+      int type_cnt = TypeOps::type_cnt(tm, *arg->get_return_type());
       if (type_cnt != -1)
         return new const_expr(fo->get_sctx(), fo->get_loc(), Integer::parseInt(type_cnt));
     }
@@ -607,7 +616,7 @@ static expr_t partial_eval_fo(RewriterContext& rCtx, fo_expr* fo)
   {
     expr_t arg = fo->get_arg(0);
     xqtref_t argType = arg->get_return_type();
-    if (TypeOps::is_subtype(*argType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS))
+    if (TypeOps::is_subtype(tm, *argType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_PLUS))
     {
       return new const_expr(fo->get_sctx(), fo->get_loc(), true);
     }
@@ -626,6 +635,8 @@ static expr_t partial_eval_logic(
     bool shortcircuit_val,
     RewriterContext& rCtx)
 {
+  TypeManager* tm = fo->get_type_manager();
+
   long nonConst1 = -1;
   long nonConst2 = -1;
 
@@ -668,7 +679,8 @@ static expr_t partial_eval_logic(
 
     expr_t arg = fo->get_arg(nonConst1);
 
-    if (! TypeOps::is_subtype(*arg->get_return_type(),
+    if (! TypeOps::is_subtype(tm,
+                              *arg->get_return_type(),
                               *GENV_TYPESYSTEM.BOOLEAN_TYPE_ONE))
     {
       arg = fix_annotations(new fo_expr(fo->get_sctx(),
@@ -713,7 +725,11 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
 
   store::Item* val = val_expr->get_val();
 
-  if (TypeOps::is_subtype(*tm->create_named_type(val->getType()),
+  if (TypeOps::is_subtype(tm,
+                          *tm->create_named_type(val->getType(),
+                                                 TypeConstants::QUANT_ONE,
+                                                 fo.get_loc(),
+                                                 XPTY0004),
                           *GENV_TYPESYSTEM.INTEGER_TYPE_ONE))
   {
     xqp_integer ival = val->getIntegerValue();
@@ -740,7 +756,7 @@ static expr_t partial_eval_eq(RewriterContext& rCtx, fo_expr& fo)
     {
       store::Item_t pVal;
       store::Item_t iVal = val;
-      GenericCast::promote(pVal, iVal, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, *tm);
+      GenericCast::promote(pVal, iVal, &*GENV_TYPESYSTEM.DOUBLE_TYPE_ONE, tm);
       expr_t dpos = new const_expr(val_expr->get_sctx(), LOC(val_expr), pVal);
 
       std::vector<expr_t> args(3);

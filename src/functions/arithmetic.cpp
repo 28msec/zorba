@@ -55,7 +55,9 @@ public:
 
   virtual bool isArithmeticFunction() const { return true; }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
   
   virtual bool specializable() const { return true; }
 
@@ -65,15 +67,18 @@ public:
 };
 
 
-xqtref_t binary_arith_func::getReturnType(const std::vector<xqtref_t>& arg_types) const 
+xqtref_t binary_arith_func::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const 
 {
-  bool numeric0 = TypeOps::is_numeric(*arg_types[0]);
-  bool numeric1 = TypeOps::is_numeric(*arg_types[1]);
+  bool numeric0 = TypeOps::is_numeric(tm, *arg_types[0]);
+  bool numeric1 = TypeOps::is_numeric(tm, *arg_types[1]);
   ArithmeticConsts::OperationKind arithKind = arithmeticKind();
 
   if (numeric0 && numeric1) 
   {
-    return TypeOps::arithmetic_type(*arg_types[0],
+    return TypeOps::arithmetic_type(tm,
+                                    *arg_types[0],
                                     *arg_types[1],
                                     arithKind == ArithmeticConsts::DIVISION);
   }
@@ -81,18 +86,18 @@ xqtref_t binary_arith_func::getReturnType(const std::vector<xqtref_t>& arg_types
            (arithKind == ArithmeticConsts::ADDITION ||
             arithKind == ArithmeticConsts::SUBTRACTION))
   {
-    return TypeOps::arithmetic_type(*arg_types[0], *arg_types[1], false);
+    return TypeOps::arithmetic_type(tm, *arg_types[0], *arg_types[1], false);
   }
            
 
-  if (TypeOps::is_empty(*arg_types [0]))
+  if (TypeOps::is_empty(tm, *arg_types [0]))
     return arg_types[0];
 
-  if (TypeOps::is_empty(*arg_types [1]))
+  if (TypeOps::is_empty(tm, *arg_types [1]))
     return arg_types[1];
 
-  int cnt1 = TypeOps::type_min_cnt(*arg_types [0]);
-  int cnt2 = TypeOps::type_min_cnt(*arg_types [0]);
+  int cnt1 = TypeOps::type_min_cnt(tm, *arg_types [0]);
+  int cnt2 = TypeOps::type_min_cnt(tm, *arg_types [0]);
   if (cnt2 < cnt1) cnt1 = cnt2;
 
   return (cnt1 == 0 ?
@@ -105,10 +110,12 @@ function* binary_arith_func::specialize(
     static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const 
 {
+  const TypeManager* tm = sctx->get_typemanager();
+
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
     
-  if (TypeOps::is_numeric(*t0) && TypeOps::is_numeric(*t1)) 
+  if (TypeOps::is_numeric(tm, *t0) && TypeOps::is_numeric(tm, *t1)) 
   {
     function* f1 = NULL;
     function* f2 = NULL;

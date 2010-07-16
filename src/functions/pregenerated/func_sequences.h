@@ -49,7 +49,9 @@ public:
   {
   }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
 
   COMPUTE_ANNOTATION_DECL();
 
@@ -113,7 +115,9 @@ public:
   
   }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
 
   CODEGEN_DECL();
 };
@@ -143,7 +147,9 @@ public:
   {
   }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
 
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
 
@@ -163,7 +169,9 @@ public:
   {
   }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
 
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
 
@@ -183,7 +191,9 @@ public:
   
   }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
 
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
 
@@ -207,7 +217,9 @@ public:
   
   }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
 
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
 
@@ -229,7 +241,9 @@ public:
   {
   }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
 
   bool propagatesDistinctNodes(ulong producer) const { return producer == 0; }
 
@@ -251,7 +265,9 @@ public:
   {
   }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
 
   CODEGEN_DECL();
 };
@@ -267,7 +283,9 @@ public:
   {
   }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
 
   bool isMap(ulong producer) const { return producer == 0; }
 

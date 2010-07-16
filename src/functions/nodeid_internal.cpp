@@ -53,6 +53,8 @@ function* op_node_sort_distinct::optimize(
     const expr* self,
     expr* child) const
 {
+  TypeManager* tm = sctx->get_typemanager();
+
   Annotations::Key ignoresSortedNodes = Annotations::IGNORES_SORTED_NODES;
   Annotations::Key ignoresDupNodes = Annotations::IGNORES_DUP_NODES;
 
@@ -76,14 +78,14 @@ function* op_node_sort_distinct::optimize(
   {
     xqtref_t inputType = child->get_return_type();
 
-    if (TypeOps::is_subtype(*inputType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
+    if (TypeOps::is_subtype(tm, *inputType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
     {
       // No action is required at all in this case, because the result is sure
       // to consist of atomic values only, and this is an allowed result given
       // that the NOA action is in "this" action set.
       return NULL;
     }
-    else if (TypeOps::is_subtype(*inputType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR))
+    else if (TypeOps::is_subtype(tm, *inputType, *GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR))
     {
       noa = false;
     }

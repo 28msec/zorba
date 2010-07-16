@@ -118,6 +118,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
 {
   const QueryLoc& loc = LOC(node);
   static_context* sctx = node->get_sctx();
+  TypeManager* tm = sctx->get_typemanager();
 
   flwor_expr* flworp = dynamic_cast<flwor_expr *>(node);
 
@@ -195,7 +196,7 @@ RULE_REWRITE_PRE(EliminateUnusedLetVars)
       xqtref_t domainType = domainExpr->get_return_type();
       var_expr* var = fc->get_var();
       TypeConstants::quantifier_t domainQuant = domainType->get_quantifier();
-      ulong domainCount = TypeOps::type_max_cnt(*domainType);
+      ulong domainCount = TypeOps::type_max_cnt(tm, *domainType);
       const var_expr* pvar = fc->get_pos_var();
 
       if (pvar != NULL && count_variable_uses(&flwor, pvar, &rCtx, 1) == 0)
@@ -434,6 +435,8 @@ static bool safe_to_fold_single_use(
   bool declared = false;
   expr_t referencingExpr = NULL;
 
+  TypeManager* tm = v->get_type_manager();
+
   expr* domainExpr = v->get_domain_expr();
 
   bool hasNodeConstr = domainExpr->contains_node_construction();
@@ -460,7 +463,7 @@ static bool safe_to_fold_single_use(
         {
           xqtref_t type = fc.get_expr()->get_return_type_with_empty_input(v);
 
-          if (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.EMPTY_TYPE))
+          if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.EMPTY_TYPE))
           {
             referencingExpr = fc.get_expr();
             break;
@@ -480,7 +483,7 @@ static bool safe_to_fold_single_use(
       // If the var is referenced inside a for loop with more than 1 iterations,
       // then we don't replace the var with its domain expr because the domain
       // expr will be computed once per iteration instead of just once.
-      if (TypeOps::type_max_cnt(*fc.get_expr()->get_return_type()) >= 2)
+      if (TypeOps::type_max_cnt(tm, *fc.get_expr()->get_return_type()) >= 2)
         return false;
 
       // test rbkt/zorba/extern/5890.xq illustrates why this check is needed
@@ -535,7 +538,7 @@ static bool safe_to_fold_single_use(
       xqtref_t type = 
       flwor.get_return_expr()->get_return_type_with_empty_input(v);
 
-      if (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.EMPTY_TYPE))
+      if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.EMPTY_TYPE))
         referencingExpr = flwor.get_return_expr();
     }
     else
@@ -568,6 +571,8 @@ static bool var_in_try_block_or_in_loop(
 {
   if (numRemainingRefs == 0)
     return false;
+
+  TypeManager* tm = v->get_type_manager();
 
   expr_kind_t kind = e->get_expr_kind();
 
@@ -621,7 +626,7 @@ static bool var_in_try_block_or_in_loop(
         }
 
         if (c.get_kind() == flwor_clause::for_clause &&
-            TypeOps::type_max_cnt(*flc.get_expr()->get_return_type()) >= 2)
+            TypeOps::type_max_cnt(tm, *flc.get_expr()->get_return_type()) >= 2)
         {
           return true;
         }
@@ -688,6 +693,8 @@ static bool var_in_try_block_or_in_loop(
 ********************************************************************************/
 RULE_REWRITE_PRE(RefactorPredFLWOR)
 {
+  TypeManager* tm = node->get_type_manager();
+
   flwor_expr* flwor = dynamic_cast<flwor_expr *>(node);
 
   if (flwor == NULL || flwor->is_general())
@@ -701,7 +708,7 @@ RULE_REWRITE_PRE(RefactorPredFLWOR)
   if (ifReturnExpr != NULL &&
       whereExpr == NULL &&
       ifReturnExpr->is_simple() &&
-      TypeOps::is_empty(*ifReturnExpr->get_else_expr()->get_return_type()))
+      TypeOps::is_empty(tm, *ifReturnExpr->get_else_expr()->get_return_type()))
   {
     expr_t cond = ifReturnExpr->get_cond_expr();
     expr_t then = ifReturnExpr->get_then_expr();
@@ -790,9 +797,12 @@ static bool is_subseq_pred(
       if (posConstExpr != NULL)
       {
         const store::Item* val = posConstExpr->get_val();
-        xqtref_t valType = tm->create_named_type(val->getType());
+        xqtref_t valType = tm->create_named_type(val->getType(),
+                                                 TypeConstants::QUANT_ONE,
+                                                 posConstExpr->get_loc(),
+                                                 XPTY0004);
 
-        if (TypeOps::is_subtype(*valType, *rtm.INTEGER_TYPE_ONE) &&
+        if (TypeOps::is_subtype(tm, *valType, *rtm.INTEGER_TYPE_ONE) &&
             val->getIntegerValue() >= xqp_integer::parseInt(1))
         {
           return true;
@@ -802,7 +812,7 @@ static bool is_subseq_pred(
       {
         xqtref_t posExprType = posExpr->get_return_type();
 
-        if (TypeOps::is_subtype(*posExprType, *rtm.INTEGER_TYPE_ONE))
+        if (TypeOps::is_subtype(tm, *posExprType, *rtm.INTEGER_TYPE_ONE))
         {
           VarIdMap varidMap;
           ulong numFlworVars = 0;

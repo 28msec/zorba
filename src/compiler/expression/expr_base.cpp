@@ -120,6 +120,15 @@ void expr::serialize(::zorba::serialization::Archiver& ar)
 /*******************************************************************************
 
 ********************************************************************************/
+TypeManager* expr::get_type_manager() const 
+{
+  return theSctx->get_typemanager(); 
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 expr_script_kind_t expr::get_scripting_kind() const
 {
   if (is_vacuous())
@@ -1036,7 +1045,7 @@ const store::Item* expr::getQName(static_context* sctx) const
   {
     xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
 
-    if (TypeOps::is_subtype(*valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
+    if (TypeOps::is_subtype(tm, *valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
     {
       return qnameExpr->get_val();
     }
@@ -1060,7 +1069,7 @@ const store::Item* expr::getQName(static_context* sctx) const
       {
         xqtref_t valueType = tm->create_value_type(qnameExpr->get_val());
 
-        if (TypeOps::is_subtype(*valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
+        if (TypeOps::is_subtype(tm, *valueType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE))
         {
           return qnameExpr->get_val();
         }

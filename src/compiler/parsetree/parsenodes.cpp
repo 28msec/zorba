@@ -257,22 +257,44 @@ void Prolog::accept( parsenode_visitor &v ) const
 /*******************************************************************************
   [6a] SIND_DeclList ::= SIND_Decl Separator | SIND_DeclList SIND_Decl Separator
 ********************************************************************************/
-SIND_DeclList::SIND_DeclList(const QueryLoc& loc_)
+SIND_DeclList::SIND_DeclList(const QueryLoc& loc)
   :
-  parsenode(loc_)
+  parsenode(loc)
 {
 }
 
 
-void SIND_DeclList::accept( parsenode_visitor &v ) const
+void SIND_DeclList::push_back(rchandle<parsenode> decl) 
+{
+  if (dynamic_cast<ModuleImport*>(decl.getp()) != NULL)
+  {
+    theModuleImports.push_back(decl);
+  }
+  else
+  {
+    theDecls.push_back(decl);
+  }
+}
+
+
+void SIND_DeclList::accept(parsenode_visitor &v) const
 {
   BEGIN_VISITOR();
 
-  for (vector<rchandle<parsenode> >::const_iterator it = sind_hv.begin();
-       it!=sind_hv.end(); ++it)
+  for (vector<rchandle<parsenode> >::const_iterator it = theDecls.begin();
+       it != theDecls.end();
+       ++it)
   {
-    ACCEPT_CHK ((*it));
+    ACCEPT_CHK((*it));
   }
+
+  for (vector<rchandle<parsenode> >::const_iterator it = theModuleImports.begin();
+       it != theModuleImports.end();
+       ++it)
+  {
+    ACCEPT_CHK((*it));
+  }
+
   END_VISITOR();
 }
 

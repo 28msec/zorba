@@ -38,7 +38,9 @@ public:
   {
   }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
 
   bool propagatesDistinctNodes(ulong producer) const
   {
@@ -54,7 +56,9 @@ public:
 };
 
 
-xqtref_t op_enclosed_expr::getReturnType(const std::vector<xqtref_t>& arg_types) const
+xqtref_t op_enclosed_expr::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
 {
   xqtref_t argType = arg_types[0];
 

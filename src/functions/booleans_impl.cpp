@@ -100,10 +100,11 @@ function* GenericOpComparison::specialize(
     static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const
 {
+  const TypeManager* tm = sctx->get_typemanager();
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
 
-  if (! (TypeOps::is_builtin_atomic(*t0) && TypeOps::is_builtin_atomic(*t1)))
+  if (! (TypeOps::is_builtin_atomic(tm, *t0) && TypeOps::is_builtin_atomic(tm, *t1)))
     return NULL;
 
   TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
@@ -133,7 +134,9 @@ public:
 
   bool isValueComparisonFunction() const { return true; }
 
-  xqtref_t getReturnType(const std::vector<xqtref_t>& arg_types) const;
+  xqtref_t getReturnType(
+        const TypeManager* tm,
+        const std::vector<xqtref_t>& arg_types) const;
 
   function* specialize(
         static_context* sctx,
@@ -141,14 +144,16 @@ public:
 };
 
 
-xqtref_t ValueOpComparison::getReturnType(const std::vector<xqtref_t>& arg_types) const
+xqtref_t ValueOpComparison::getReturnType(
+    const TypeManager* tm,
+    const std::vector<xqtref_t>& arg_types) const
 {
   xqtref_t empty = GENV_TYPESYSTEM.EMPTY_TYPE;
   TypeConstants::quantifier_t quant = TypeConstants::QUANT_ONE;
 
   for (int i = 0; i < 2; i++)
   {
-    if (TypeOps::is_equal (*empty, *arg_types [i]))
+    if (TypeOps::is_equal(tm, *empty, *arg_types [i]))
       return empty;
 
     TypeConstants::quantifier_t aq = TypeOps::quantifier(*arg_types[i]);
@@ -194,10 +199,11 @@ function* ValueOpComparison::specialize(
     static_context* sctx,
     const std::vector<xqtref_t>& argTypes) const
 {
+  const TypeManager* tm = sctx->get_typemanager();
   xqtref_t t0 = argTypes[0];
   xqtref_t t1 = argTypes[1];
 
-  if (TypeOps::is_builtin_simple(*t0) && TypeOps::is_builtin_simple(*t1))
+  if (TypeOps::is_builtin_simple(tm, *t0) && TypeOps::is_builtin_simple(tm, *t1))
   {
     TypeConstants::atomic_type_code_t tc0 = TypeOps::get_atomic_type_code(*t0);
     TypeConstants::atomic_type_code_t tc1 = TypeOps::get_atomic_type_code(*t1);

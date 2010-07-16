@@ -57,6 +57,7 @@
 
 #include "types/typemanager.h"
 #include "types/casting.h"
+#include "types/typeops.h"
 
 #include "functions/function.h"
 #include "functions/library.h"
@@ -2927,6 +2928,16 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     {
       const store::Item* qname = ite.getKey();
       var_expr_t ve = ite.getValue();
+
+      xqtref_t type = ve->get_return_type();
+      if (!TypeOps::is_in_scope(get_typemanager(), *type))
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
+                                 "The type " << type->toString()
+                                 << " is not among the in-scope types"
+                                 << " of the importing module");
+      }
+
       bind_var(qname, ve, loc, XQST0049);
     }
   }
@@ -2946,6 +2957,31 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     for (; ite != end; ++ite)
     {
       function_t f = (*ite).second;
+
+      const signature& sign = f->getSignature();
+      ulong numArgs = f->getArity();
+
+      for (ulong i = 0; i < numArgs; ++i)
+      {
+        xqtref_t type = sign[i];
+        if (!TypeOps::is_in_scope(get_typemanager(), *type))
+        {
+          ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
+                                   "The type " << type->toString()
+                                   << " is not among the in-scope types"
+                                   << " of the importing module");
+        }
+      }
+      
+      xqtref_t type = sign.return_type();
+      if (!TypeOps::is_in_scope(get_typemanager(), *type))
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
+                                 "The type " << type->toString()
+                                 << " is not among the in-scope types"
+                                 << " of the importing module");
+      }
+
       bind_fn(ite.getKey(), f, f->getArity(), loc);
     }
   }
@@ -2969,6 +3005,30 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       for (ulong i = 0; i < num; ++i)
       {
         function_t& f = (*fv)[i];
+        const signature& sign = f->getSignature();
+        ulong numArgs = f->getArity();
+
+        for (ulong i = 0; i < numArgs; ++i)
+        {
+          xqtref_t type = sign[i];
+          if (!TypeOps::is_in_scope(get_typemanager(), *type))
+          {
+            ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
+                                     "The type " << type->toString()
+                                     << " is not among the in-scope types"
+                                     << " of the importing module");
+          }
+        }
+
+        xqtref_t type = sign.return_type();
+        if (!TypeOps::is_in_scope(get_typemanager(), *type))
+        {
+          ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
+                                   "The type " << type->toString()
+                                   << " is not among the in-scope types"
+                                   << " of the importing module");
+        }
+        
         bind_fn((*ite).first, f, f->getArity(), loc);
       }
     }

@@ -153,7 +153,7 @@ do { if (state) ZORBA_ERROR(err); state = true; } while (0)
 ********************************************************************************/
 #define ITEM_FACTORY (GENV.getStore().getItemFactory())
 
-#define CTXTS theSctx->get_typemanager()
+#define CTX_TM theSctx->get_typemanager()
 
 
 /*******************************************************************************
@@ -804,7 +804,7 @@ public:
                          is stored in the expr obj, so that each expr will be
                          executed in the appropriate sctx.
 
-  theSctx               : The "current" static context node. It is initialized
+  theSctx              : The "current" static context node. It is initialized
                          with the root static context of the associated module.
 
   theSctxList:         : A list of static contexts which need to be kept alive
@@ -1663,6 +1663,8 @@ fo_expr* create_seq(const QueryLoc& loc)
 ********************************************************************************/
 void normalize_fo(fo_expr* foExpr)
 {
+  TypeManager* tm = foExpr->get_type_manager();
+
   const signature& sign = foExpr->get_signature();
 
   ulong n = foExpr->num_args();
@@ -1718,9 +1720,9 @@ void normalize_fo(fo_expr* foExpr)
       paramType = sign[i];
     }
 
-    xqtref_t param_prime_type = TypeOps::prime_type(*paramType);
+    xqtref_t param_prime_type = TypeOps::prime_type(tm, *paramType);
 
-    if (TypeOps::is_subtype(*param_prime_type, *theRTM.ANY_ATOMIC_TYPE_ONE))
+    if (TypeOps::is_subtype(tm, *param_prime_type, *theRTM.ANY_ATOMIC_TYPE_ONE))
     {
       argExpr = wrap_in_atomization(argExpr);
       argExpr = wrap_in_type_promotion(argExpr, paramType);
@@ -1785,9 +1787,11 @@ expr_t wrap_in_type_promotion(expr_t e, xqtref_t type)
 ********************************************************************************/
 expr_t wrap_in_type_match(expr_t e, xqtref_t type, XQUERY_ERROR errorCode = XPTY0004)
 {
+  TypeManager* tm = e->get_type_manager();
+
   // treat_expr should be avoided for updating expressions too,
   // but in that case "type" will be item()* anyway
-  return (TypeOps::is_subtype(*theRTM.ITEM_TYPE_STAR, *type) ?
+  return (TypeOps::is_subtype(tm, *theRTM.ITEM_TYPE_STAR, *type) ?
           e :
           new treat_expr(theRootSctx, e->get_loc(), e, type, errorCode));
 }
@@ -2998,9 +3002,12 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       std::string compURL;
       auto_ptr<istream> modfile;
 
-      try {
+      try 
+      {
         modfile.reset(standardModuleResolver->resolve(compURI, *theSctx, compURL));
-      } catch (error::ZorbaError& e) {
+      }
+      catch (error::ZorbaError& e) 
+      {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
 
@@ -3024,6 +3031,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 
       moduleRootSctx->set_entity_retrieval_uri(compURI2);
       moduleRootSctx->set_module_namespace(targetNS->str());
+      moduleRootSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
       short moduleRootSctxId = theCCB->theSctxMap->size() + 1;
       (*theCCB->theSctxMap)[moduleRootSctxId] = moduleRootSctx;
 
@@ -3109,6 +3117,8 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
 void* begin_visit(const VFO_DeclList& v)
 {
   TRACE_VISIT();
+
+  TypeManager* tm = CTX_TM;
 
   // Function declaration translation must be done in two passes because of
   // mutually recursive functions and also because the defining expr of a declared
@@ -3228,7 +3238,7 @@ void* begin_visit(const VFO_DeclList& v)
         // and the return type are equal to the one that is declared in
         // the module
         const signature& s = f->getSignature();
-        if (!sig.equals(s))
+        if (!sig.equals(tm, s))
         {
           ZORBA_ERROR_LOC_DESC_OSS(XQP0028_FUNCTION_IMPL_NOT_FOUND,
               loc,
@@ -3611,7 +3621,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     xqtref_t returnType = udf->getSignature().return_type();
 
-    if (TypeOps::is_builtin_simple(*returnType))
+    if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
     {
       body = wrap_in_atomization(body);
       body = wrap_in_type_promotion(body, returnType);
@@ -3745,6 +3755,8 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
+  TypeManager* tm = CTX_TM;
+
   // a collection declaration must allways be in a library module
   if (!inLibraryModule())
   {
@@ -3769,7 +3781,7 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   else
   {
     lCollectionType = pop_tstack();
-    lNodeType = TypeOps::prime_type(*lCollectionType);
+    lNodeType = TypeOps::prime_type(tm, *lCollectionType);
     quant = lCollectionType->get_quantifier();
   }
 
@@ -3966,6 +3978,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
+  TypeManager* tm = CTX_TM;
+
   ulong numColumns = v.size();
 
   std::vector<expr_t> keyExprs(numColumns);
@@ -4003,31 +4017,31 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     else
     {
       type = pop_tstack();
-      ptype = TypeOps::prime_type(*type);
+      ptype = TypeOps::prime_type(tm, *type);
 
-      if (!TypeOps::is_subtype(*ptype, *theRTM.ANY_ATOMIC_TYPE_STAR))
+      if (!TypeOps::is_subtype(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_STAR))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
                               index->getName()->getStringValue(), "");
       }
 
-      if (TypeOps::is_equal(*ptype, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
-          TypeOps::is_equal(*ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE))
+      if (TypeOps::is_equal(tm, *ptype, *theRTM.ANY_ATOMIC_TYPE_ONE) ||
+          TypeOps::is_equal(tm, *ptype, *theRTM.UNTYPED_ATOMIC_TYPE_ONE))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
                               index->getName()->getStringValue(), "");
       }
 
       if (index->getMethod() == IndexDecl::TREE &&
-          (TypeOps::is_subtype(*ptype, *theRTM.QNAME_TYPE_ONE) ||
-           TypeOps::is_subtype(*ptype, *theRTM.NOTATION_TYPE_ONE) ||
-           TypeOps::is_subtype(*ptype, *theRTM.BASE64BINARY_TYPE_ONE) ||
-           TypeOps::is_subtype(*ptype, *theRTM.HEXBINARY_TYPE_ONE) ||
-           TypeOps::is_subtype(*ptype, *theRTM.GYEAR_MONTH_TYPE_ONE) ||
-           TypeOps::is_subtype(*ptype, *theRTM.GYEAR_TYPE_ONE) ||
-           TypeOps::is_subtype(*ptype, *theRTM.GMONTH_TYPE_ONE) ||
-           TypeOps::is_subtype(*ptype, *theRTM.GMONTH_DAY_TYPE_ONE) ||
-           TypeOps::is_subtype(*ptype, *theRTM.GDAY_TYPE_ONE)))
+          (TypeOps::is_subtype(tm, *ptype, *theRTM.QNAME_TYPE_ONE) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.NOTATION_TYPE_ONE) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.BASE64BINARY_TYPE_ONE) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.HEXBINARY_TYPE_ONE) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GYEAR_MONTH_TYPE_ONE) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GYEAR_TYPE_ONE) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_TYPE_ONE) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GMONTH_DAY_TYPE_ONE) ||
+           TypeOps::is_subtype(tm, *ptype, *theRTM.GDAY_TYPE_ONE)))
       {
         ZORBA_ERROR_LOC_PARAM(XDST0027_INDEX_BAD_KEY_TYPE, keySpec->get_location(),
                               index->getName()->getStringValue(), "");
@@ -4055,7 +4069,7 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
       if (! theSctx->is_known_collation(collationUri))
         ZORBA_ERROR_LOC(XQST0076, keySpec->get_location());
     }
-    else if (ptype != NULL && TypeOps::is_subtype(*ptype, *theRTM.STRING_TYPE_ONE))
+    else if (ptype != NULL && TypeOps::is_subtype(tm, *ptype, *theRTM.STRING_TYPE_ONE))
     {
       collationUri = theSctx->get_default_collation(loc);
     }
@@ -6926,18 +6940,21 @@ void end_visit(const CastableExpr& v, void* /*visit_state*/)
 
 expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool isCast)
 {
-  if (TypeOps::is_equal(*type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE) ||
-      TypeOps::is_equal(*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION) ||
-      TypeOps::is_equal(*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE) ||
-      TypeOps::is_equal(*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+  TypeManager* tm = CTX_TM;
+
+  if (TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_ONE) ||
+      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION) ||
+      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE) ||
+      TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
     ZORBA_ERROR_LOC(XPST0080, loc);
 
-  if (TypeOps::is_subtype(*type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION))
+  if (TypeOps::is_subtype(tm, *type, *GENV_TYPESYSTEM.QNAME_TYPE_QUESTION))
   {
     const const_expr* ce = node.dyn_cast<const_expr>().getp();
 
     if (ce != NULL &&
-        TypeOps::is_equal(*CTXTS->create_value_type(ce->get_val()),
+        TypeOps::is_equal(tm,
+                          *tm->create_value_type(ce->get_val()),
                           *GENV_TYPESYSTEM.STRING_TYPE_ONE))
     {
       store::Item_t castLiteral;
@@ -6947,7 +6964,7 @@ expr_t create_cast_expr(const QueryLoc& loc, expr_t node, xqtref_t type, bool is
                                              ce->get_val(),
                                              ns_ctx,
                                              false,
-                                             *CTXTS,
+                                             CTX_TM,
                                              loc);
       }
       catch (error::ZorbaError& e)
@@ -7542,7 +7559,8 @@ void intermediate_visit(const RelativePathExpr& rpe, void* /*visit_state*/)
                                          GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
                                          errCode);
 
-      if (TypeOps::type_max_cnt(*sourceExpr->get_return_type()) > 1)
+      if (TypeOps::type_max_cnt(pathExpr->get_type_manager(),
+                                *sourceExpr->get_return_type()) > 1)
         theNodeSortStack.top().theSingleInput = false;
 
       pathExpr->add_back(sourceExpr);
@@ -8489,6 +8507,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
+  TypeManager* tm = CTX_TM;
+
   // Collect the arguments of this function in reverse order
   std::vector<expr_t> arguments;
 
@@ -8525,7 +8545,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
       if (numArgs == 2)
       {
-        if (TypeOps::is_subtype(*posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR))
+        if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR))
         {
           f = GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_2);
         }
@@ -8538,8 +8558,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
       {
         xqtref_t lenType = arguments[2]->get_return_type();
 
-        if (TypeOps::is_subtype(*posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR) &&
-            TypeOps::is_subtype(*lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR))
+        if (TypeOps::is_subtype(tm, *posType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR) &&
+            TypeOps::is_subtype(tm, *lenType, *GENV_TYPESYSTEM.INTEGER_TYPE_STAR))
         {
           f = GET_BUILTIN_FUNCTION(FN_ZORBA_SUBSEQUENCE_INT_3);
         }
@@ -8727,14 +8747,14 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
   numArgs = arguments.size();  // recompute size
 
   // Check if this is a call to a builtin constructor function
-  xqtref_t type = CTXTS->create_named_type(qnameItem,
-                                           TypeConstants::QUANT_QUESTION);
+  xqtref_t type = CTX_TM->create_named_type(qnameItem,
+                                            TypeConstants::QUANT_QUESTION);
 
   if (type != NULL)
   {
     if (numArgs != 1 ||
-        TypeOps::is_equal(*type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION) ||
-        TypeOps::is_equal(*type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
+        TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.NOTATION_TYPE_QUESTION) ||
+        TypeOps::is_equal(tm, *type, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION))
     {
       ZORBA_ERROR_LOC_PARAM(XPST0017, loc, qname->get_qname(), numArgs);
     }
@@ -9001,7 +9021,7 @@ void end_visit(const InlineFunction& v, void* aState)
   expr_t body = pop_nodestack();
   ZORBA_ASSERT(body != 0);
 
-  if (TypeOps::is_builtin_simple(*returnType))
+  if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
   {
     body = wrap_in_atomization(body);
     body = wrap_in_type_promotion(body, returnType);
@@ -9900,7 +9920,7 @@ void end_visit(const SingleType& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
   if (v.get_hook_bit())
-    theTypeStack.push(CTXTS->create_type(*pop_tstack(), TypeConstants::QUANT_QUESTION));
+    theTypeStack.push(CTX_TM->create_type(*pop_tstack(), TypeConstants::QUANT_QUESTION));
   // else leave type as it is on tstack
 }
 
@@ -9959,7 +9979,7 @@ void *begin_visit (const OccurrenceIndicator& v) {
   }
 
   if (q != TypeConstants::QUANT_ONE)
-    theTypeStack.push (CTXTS->create_type (*pop_tstack (), q));
+    theTypeStack.push (CTX_TM->create_type (*pop_tstack (), q));
 
   return no_state;
 }
@@ -9984,7 +10004,7 @@ void end_visit(const AtomicType& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_elem_qname(qnameItem, qname, loc);
 
-  xqtref_t t = CTXTS->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
+  xqtref_t t = CTX_TM->create_named_atomic_type(qnameItem, TypeConstants::QUANT_ONE);
 
   // some types that should never be parsed, like xs:untyped, are;
   // we catch them with is_simple()
@@ -10095,12 +10115,12 @@ void end_visit (const DocumentTest& v, void* /*visit_state*/)
   {
     xqtref_t elementOrSchemaTest = pop_tstack();
 
-    xqtref_t docTest = CTXTS->create_node_type(store::StoreConsts::documentNode,
-                                               NULL,
-                                               elementOrSchemaTest,
-                                               TypeConstants::QUANT_ONE,
-                                               false,
-                                               false);
+    xqtref_t docTest = CTX_TM->create_node_type(store::StoreConsts::documentNode,
+                                                NULL,
+                                                elementOrSchemaTest,
+                                                TypeConstants::QUANT_ONE,
+                                                false,
+                                                false);
     theTypeStack.push(docTest);
   }
 }
@@ -10145,7 +10165,7 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
 
   if (typeName != NULL)
   {
-    contentType = CTXTS->create_named_type(typeNameItem, TypeConstants::QUANT_ONE);
+    contentType = CTX_TM->create_named_type(typeNameItem, TypeConstants::QUANT_ONE);
 
     if (contentType == NULL)
     {
@@ -10168,12 +10188,12 @@ void end_visit (const ElementTest& v, void* /*visit_state*/)
   // Else, create a sequence-type match
   else
   {
-    xqtref_t seqmatch = CTXTS->create_node_type(store::StoreConsts::elementNode,
-                                                elemNameItem,
-                                                contentType,
-                                                TypeConstants::QUANT_ONE,
-                                                nillable,
-                                                false);
+    xqtref_t seqmatch = CTX_TM->create_node_type(store::StoreConsts::elementNode,
+                                                 elemNameItem,
+                                                 contentType,
+                                                 TypeConstants::QUANT_ONE,
+                                                 nillable,
+                                                 false);
     theTypeStack.push(seqmatch);
   }
 }
@@ -10201,7 +10221,7 @@ void* begin_visit(const SchemaElementTest& v)
   if (axisExpr != NULL)
   {
     store::Item_t typeQNameItem;
-    CTXTS->get_schema_element_typename(elemQNameItem, typeQNameItem, loc);
+    CTX_TM->get_schema_element_typename(elemQNameItem, typeQNameItem, loc);
 
     rchandle<match_expr> match = new match_expr(theRootSctx, loc);
     match->setTestKind(match_xs_elem_test);
@@ -10214,9 +10234,9 @@ void* begin_visit(const SchemaElementTest& v)
   {
     try
     {
-      xqtref_t seqmatch = CTXTS->create_schema_element_type(elemQNameItem,
-                                                            TypeConstants::QUANT_ONE,
-                                                            loc);
+      xqtref_t seqmatch = CTX_TM->create_schema_element_type(elemQNameItem,
+                                                             TypeConstants::QUANT_ONE,
+                                                             loc);
       theTypeStack.push(seqmatch);
     }
     catch (error::ZorbaError& e)
@@ -10264,7 +10284,7 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
   {
     expand_elem_qname(typeNameItem, typeName->get_name(), typeName->get_location());
 
-    contentType = CTXTS->create_named_type(typeNameItem, TypeConstants::QUANT_ONE);
+    contentType = CTX_TM->create_named_type(typeNameItem, TypeConstants::QUANT_ONE);
 
     if (contentType == NULL)
     {
@@ -10290,12 +10310,12 @@ void end_visit(const AttributeTest& v, void* /*visit_state*/)
   }
   else
   {
-    xqtref_t seqmatch = CTXTS->create_node_type(store::StoreConsts::attributeNode,
-                                                attrNameItem.getp(),
-                                                contentType,
-                                                TypeConstants::QUANT_ONE,
-                                                false,
-                                                false);
+    xqtref_t seqmatch = CTX_TM->create_node_type(store::StoreConsts::attributeNode,
+                                                 attrNameItem.getp(),
+                                                 contentType,
+                                                 TypeConstants::QUANT_ONE,
+                                                 false,
+                                                 false);
 
     theTypeStack.push(seqmatch);
   }
@@ -10317,7 +10337,7 @@ void* begin_visit(const SchemaAttributeTest& v)
   if (axisExpr != NULL)
   {
     store::Item_t typeQNameItem;
-    CTXTS->get_schema_attribute_typename(attrQNameItem, typeQNameItem, loc);
+    CTX_TM->get_schema_attribute_typename(attrQNameItem, typeQNameItem, loc);
 
     rchandle<match_expr> match = new match_expr(theRootSctx, loc);
     match->setTestKind(match_xs_attr_test);
@@ -10328,9 +10348,9 @@ void* begin_visit(const SchemaAttributeTest& v)
   }
   else
   {
-    xqtref_t seqmatch = CTXTS->create_schema_attribute_type(attrQNameItem,
-                                                            TypeConstants::QUANT_ONE,
-                                                            loc);
+    xqtref_t seqmatch = CTX_TM->create_schema_attribute_type(attrQNameItem,
+                                                             TypeConstants::QUANT_ONE,
+                                                             loc);
 
     theTypeStack.push(seqmatch);
   }

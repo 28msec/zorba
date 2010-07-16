@@ -1134,20 +1134,21 @@ struct wincond_var_iters
 
 bool nativeColumnSort(expr* colExpr)
 {
+  TypeManager* tm = colExpr->get_type_manager();
   RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   xqtref_t colType = colExpr->get_return_type();
 
-  if (TypeOps::is_subtype(*colType, *rtm.STRING_TYPE_STAR) ||
-      TypeOps::is_subtype(*colType, *rtm.DOUBLE_TYPE_STAR) ||
-      TypeOps::is_subtype(*colType, *rtm.FLOAT_TYPE_STAR) ||
-      TypeOps::is_subtype(*colType, *rtm.LONG_TYPE_STAR) ||
-      TypeOps::is_subtype(*colType, *rtm.UNSIGNED_LONG_TYPE_STAR) ||
-      TypeOps::is_equal(*TypeOps::prime_type(*colType), *rtm.DECIMAL_TYPE_ONE) ||
-      TypeOps::is_equal(*TypeOps::prime_type(*colType), *rtm.INTEGER_TYPE_ONE) ||
-      TypeOps::is_subtype(*colType, *rtm.DATE_TYPE_STAR) ||
-      TypeOps::is_subtype(*colType, *rtm.TIME_TYPE_STAR) ||
-      TypeOps::is_subtype(*colType, *rtm.DATETIME_TYPE_STAR))
+  if (TypeOps::is_subtype(tm, *colType, *rtm.STRING_TYPE_STAR) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.DOUBLE_TYPE_STAR) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.FLOAT_TYPE_STAR) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.LONG_TYPE_STAR) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.UNSIGNED_LONG_TYPE_STAR) ||
+      TypeOps::is_equal(tm, *TypeOps::prime_type(tm, *colType), *rtm.DECIMAL_TYPE_ONE) ||
+      TypeOps::is_equal(tm, *TypeOps::prime_type(tm, *colType), *rtm.INTEGER_TYPE_ONE) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.DATE_TYPE_STAR) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.TIME_TYPE_STAR) ||
+      TypeOps::is_subtype(tm, *colType, *rtm.DATETIME_TYPE_STAR))
     return true;
 
   return false;
@@ -1751,9 +1752,11 @@ void end_visit (if_expr& v)
 }
 
 
-bool begin_visit (insert_expr& v)
+bool begin_visit(insert_expr& v)
 {
   CODEGEN_TRACE_IN("");
+
+  TypeManager* tm = v.get_type_manager();
 
   store::UpdateConsts::InsertType kind  = v.getType();
 
@@ -1762,7 +1765,7 @@ bool begin_visit (insert_expr& v)
   xqtref_t targetType = targetExpr->get_return_type();
   xqtref_t sourceType = sourceExpr->get_return_type();
 
-  if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
+  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
 
 #if XQUF_STATIC_TYPING_SAFE
@@ -1771,21 +1774,21 @@ bool begin_visit (insert_expr& v)
       kind == store::UpdateConsts::AS_FIRST_INTO ||
       kind == store::UpdateConsts::AS_LAST_INTO)
   {
-    if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
-        TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
+    if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
+        TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
     {
       ZORBA_ERROR_LOC(XUTY0022, qloc);
     }
 
-    if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
+    if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
     {
       ZORBA_ERROR_LOC(XUTY0005, qloc);
     }
 
-    if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR) ||
-        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.TEXT_TYPE_STAR) ||
-        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) ||
-        TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
+    if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR) ||
+        TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.TEXT_TYPE_STAR) ||
+        TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) ||
+        TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
     {
       ZORBA_ERROR_LOC(XUTY0005, qloc);
     }
@@ -1800,24 +1803,24 @@ bool begin_visit (insert_expr& v)
       kind == store::UpdateConsts::AS_FIRST_INTO ||
       kind == store::UpdateConsts::AS_LAST_INTO)
   {
-    if (TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
-        TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
+    if (TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
+        TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ATTRIBUTE_TYPE_STAR))
     {
       ZORBA_ERROR_LOC(XUTY0022, qloc);
     }
 
-    if (!TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
-        !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR))
+    if (!TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.DOCUMENT_TYPE_STAR) &&
+        !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR))
     {
       ZORBA_ERROR_LOC(XUTY0005, qloc);
     }
   }
   else
   {
-    if (!TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR) &&
-        !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.TEXT_TYPE_STAR) &&
-        !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) &&
-        !TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
+    if (!TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.ELEMENT_TYPE_STAR) &&
+        !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.TEXT_TYPE_STAR) &&
+        !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.COMMENT_TYPE_STAR) &&
+        !TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.PI_TYPE_STAR))
     {
       ZORBA_ERROR_LOC(XUTY0006, qloc);
     }
@@ -1838,14 +1841,15 @@ void end_visit (insert_expr& v)
 }
 
 
-bool begin_visit (delete_expr& v)
+bool begin_visit(delete_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
   return true;
 }
 
-void end_visit (delete_expr& v)
+
+void end_visit(delete_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lTarget = pop_itstack();
@@ -1854,20 +1858,23 @@ void end_visit (delete_expr& v)
 }
 
 
-bool begin_visit (replace_expr& v)
+bool begin_visit(replace_expr& v)
 {
   CODEGEN_TRACE_IN("");
+
+  TypeManager* tm = v.get_type_manager();
 
   expr* targetExpr = v.getTargetExpr();
   xqtref_t targetType = targetExpr->get_return_type();
 
-  if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
+  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
 
   return true;
 }
 
-void end_visit (replace_expr& v)
+
+void end_visit(replace_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lReplacement = pop_itstack();
@@ -1880,20 +1887,24 @@ void end_visit (replace_expr& v)
   push_itstack(&*lReplace);
 }
 
-bool begin_visit (rename_expr& v)
+
+bool begin_visit(rename_expr& v)
 {
   CODEGEN_TRACE_IN("");
+
+  TypeManager* tm = v.get_type_manager();
 
   expr* targetExpr = v.getTargetExpr();
   xqtref_t targetType = targetExpr->get_return_type();
 
-  if (TypeOps::is_equal(*targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
+  if (TypeOps::is_equal(tm, *targetType, *GENV_TYPESYSTEM.EMPTY_TYPE))
     ZORBA_ERROR_LOC(XUDY0027, qloc);
 
   return true;
 }
 
-void end_visit (rename_expr& v)
+
+void end_visit(rename_expr& v)
 {
   CODEGEN_TRACE_OUT("");
   PlanIter_t lName = pop_itstack();
@@ -1921,9 +1932,11 @@ void end_visit (rename_expr& v)
 }
 
 
-bool begin_visit (transform_expr& v)
+bool begin_visit(transform_expr& v)
 {
   CODEGEN_TRACE_IN("");
+
+  TypeManager* tm = v.get_type_manager();
 
   vector<rchandle<copy_clause> >::const_iterator lIter = v.begin();
   vector<rchandle<copy_clause> >::const_iterator lEnd  = v.end();
@@ -1933,7 +1946,7 @@ bool begin_visit (transform_expr& v)
     expr_t sourceExpr = (*lIter)->getExpr();
     xqtref_t sourceType = sourceExpr->get_return_type();
 
-    if (TypeOps::is_subtype(*sourceType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
+    if (TypeOps::is_subtype(tm, *sourceType, *GENV_TYPESYSTEM.ANY_SIMPLE_TYPE))
       ZORBA_ERROR_LOC(XUTY0013, qloc);
 
     uint64_t k = (uint64_t) &*var;
@@ -2162,17 +2175,19 @@ bool begin_visit(name_cast_expr& v)
 {
   CODEGEN_TRACE_IN("");
 
+  TypeManager* tm = v.get_type_manager();
+
   expr* targetExpr = v.get_input();
   xqtref_t targetType = targetExpr->get_return_type();
 
-  if (TypeOps::is_subtype(*GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) ||
-      TypeOps::is_subtype(*GENV_TYPESYSTEM.QNAME_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) ||
-      TypeOps::is_subtype(*GENV_TYPESYSTEM.NCNAME_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.NCNAME_TYPE_ONE) ||
-      TypeOps::is_subtype(*GENV_TYPESYSTEM.STRING_TYPE_ONE, *targetType) ||
-      TypeOps::is_subtype(*targetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
+  if (TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE, *targetType) ||
+      TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) ||
+      TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.QNAME_TYPE_ONE, *targetType) ||
+      TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.QNAME_TYPE_ONE) ||
+      TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.NCNAME_TYPE_ONE, *targetType) ||
+      TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.NCNAME_TYPE_ONE) ||
+      TypeOps::is_subtype(tm, *GENV_TYPESYSTEM.STRING_TYPE_ONE, *targetType) ||
+      TypeOps::is_subtype(tm, *targetType, *GENV_TYPESYSTEM.STRING_TYPE_ONE))
     return true;
 
   ZORBA_ERROR_LOC(XPTY0004, qloc);
@@ -2267,7 +2282,8 @@ bool begin_visit (axis_step_expr& v)
   PlanIter_t& ite = peek_stack(itstack);
   PathIterator* pathIte = dynamic_cast<PathIterator*>(ite.getp());
 
-  if (pathIte == NULL) {
+  if (pathIte == NULL) 
+  {
     PlanIter_t inputStep = pop_itstack();
     pathIte = new PathIterator(sctx, qloc, inputStep);
     push_itstack(pathIte);
@@ -2280,7 +2296,8 @@ bool begin_visit (axis_step_expr& v)
 
   prd->setTestKind(testExpr->getTestKind());
 
-  if (testExpr->getTestKind() == match_name_test) {
+  if (testExpr->getTestKind() == match_name_test) 
+  {
     if (v.getAxis() == axis_kind_attribute)
       prd->setNodeKind(store::StoreConsts::attributeNode);
     else
@@ -2289,24 +2306,33 @@ bool begin_visit (axis_step_expr& v)
     match_wild_t wildKind = testExpr->getWildKind();
     prd->setWildKind(wildKind);
 
-    if (wildKind == match_no_wild) {
+    if (wildKind == match_no_wild) 
+    {
       prd->setQName(testExpr->getQName());
     }
-    else if (wildKind == match_prefix_wild) {
+    else if (wildKind == match_prefix_wild) 
+    {
       factory.createQName(qname, "", "*", testExpr->getWildName().c_str());
 
       prd->setQName(qname);
     }
-    else if (wildKind == match_name_wild) {
+    else if (wildKind == match_name_wild) 
+    {
       prd->setQName(testExpr->getQName());
     }
-  } else {
+  } 
+  else
+  {
     prd->setDocTestKind(testExpr->getDocTestKind());
     prd->setNodeKind(testExpr->getNodeKind());
     prd->setQName(testExpr->getQName());
-    store::Item *typeName = testExpr->getTypeName();
-    if (typeName != NULL) {
-      prd->setType(sctx->get_typemanager()->create_named_type(typeName));
+    store::Item* typeName = testExpr->getTypeName();
+    if (typeName != NULL) 
+    {
+      prd->setType(sctx->get_typemanager()->create_named_type(typeName,
+                                                              TypeConstants::QUANT_ONE,
+                                                              loc,
+                                                              XPTY0004));
     }
     prd->setNilledAllowed(testExpr->getNilledAllowed());
   }
@@ -2317,19 +2343,22 @@ bool begin_visit (axis_step_expr& v)
 }
 
 
-void end_visit (axis_step_expr& v) {
+void end_visit (axis_step_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 }
 
 
-bool begin_visit (match_expr& v) {
+bool begin_visit (match_expr& v) 
+{
   CODEGEN_TRACE_IN("");
 
   return true;
 }
 
 
-void end_visit (match_expr& v) {
+void end_visit (match_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
 }
 
