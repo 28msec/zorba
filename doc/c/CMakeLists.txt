@@ -12,9 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-IF (BUILDING_SIMPLESTORE)
-  ADD_SUBDIRECTORY(examples)
-ENDIF (BUILDING_SIMPLESTORE)
+ADD_SUBDIRECTORY(examples)
 
 ZORBA_DOXYGEN("${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}" "cdocs")
 
