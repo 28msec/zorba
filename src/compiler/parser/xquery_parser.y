@@ -181,9 +181,11 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %token <err>  UNRECOGNIZED                  "'unrecognized'"
 
+%type <node>  ERROR                         "'error'"
+
 /* constant string tokens */
 %type <strval> WindowType
-%type <strval> ForDollar
+%type <strval> ForStart
 %type <strval> FLWORWinCondType
 
 /* tokens that contain embedded string literals */
@@ -537,7 +539,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* placeholder node for reducing UNRECOGNIZED and generating an error */
 /* ---------------------------- */
-%type <node> UnrecognizedToken
+//%type <node> UnrecognizedToken
 
 
 /* left-hand sides: syntax only */
@@ -1015,13 +1017,18 @@ Module
         {
             $$ = $2;
         }
+    ;
+
         // Dummy rules, should never get here. Upon encountering an UnrecognizedToken, an error is generated
+        /*
     |   UnrecognizedToken { $$ = NULL; }
     |   ModuleWithoutBOM  UnrecognizedToken { $$ = NULL; }
     |   BYTE_ORDER_MARK_UTF8  UnrecognizedToken { $$ = NULL; }
     |   BYTE_ORDER_MARK_UTF8  ModuleWithoutBOM  UnrecognizedToken { $$ = NULL; }
     ;
+        */
 
+    /*
 UnrecognizedToken
     :   UNRECOGNIZED
         {
@@ -1034,6 +1041,17 @@ UnrecognizedToken
           YYERROR;
         }
     ;
+        */
+
+ERROR
+        // Special rule to get Bison out of some infinte loops. This can happen when the lexer
+        // throws an error and Bison finds an error too.
+    :   error UNRECOGNIZED
+        {
+            $$ = NULL; YYABORT;
+        }
+    ;
+
 
 // [1]
 ModuleWithoutBOM
@@ -1097,6 +1115,39 @@ MainModule
         {
           $$ = new MainModule( LOC(@$), static_cast<QueryBody*>($1), NULL );
         }
+    //  ============================ Improved error messages ============================
+    |   SIND_DeclList ERROR QueryBody
+        {
+          $$ = $1; $$ = $3; // to prevent the Bison warning
+          @1.step();
+          driver.parserErr("syntax error, missing semicolon \";\" after statement", @1);
+          error(@$, ""); // The error message will be taken from the driver
+          YYERROR;
+        }
+    |   VFO_DeclList ERROR QueryBody
+        {
+          $$ = $1; $$ = $3; // to prevent the Bison warning
+          @1.step();
+          driver.parserErr("syntax error, missing semicolon \";\" after declaration", @1);
+          error(@$, ""); // The error message will be taken from the driver
+          YYERROR;
+        }
+     |  SIND_DeclList SEMI VFO_DeclList ERROR QueryBody
+        {
+          $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
+          @3.step();
+          driver.parserErr("syntax error, missing semicolon \";\" after declaration", @3);
+          error(@$, ""); // The error message will be taken from the driver
+          YYERROR;
+        }
+     |  SIND_DeclList ERROR VFO_DeclList SEMI QueryBody
+        {
+          $$ = $1; $$ = $3; $$ = $5; // to prevent the Bison warning
+          @1.step();
+          driver.parserErr("syntax error, missing semicolon \";\" after statement", @1);
+          error(@$, ""); // The error message will be taken from the driver
+          YYERROR;
+        }
     ;
 
 // [4]
@@ -1144,6 +1195,15 @@ SIND_DeclList
             ((SIND_DeclList*)$1)->push_back( $3 );
             $$ = $1;
         }
+    |   SIND_DeclList ERROR SIND_Decl    //error catching
+        {
+            // error
+            $$ = $1; $$ = $3; // to prevent the Bison warning
+            @1.step();
+            driver.parserErr("syntax error, missing semicolon \";\" after declaration", @1);
+            error(@$, ""); // The error message will be taken from the driver
+            YYERROR;
+        }
     ;
 
 // [6b]
@@ -1158,6 +1218,14 @@ VFO_DeclList
         {
             ((VFO_DeclList*)$1)->push_back( $3 );
             $$ = $1;
+        }
+    |   VFO_DeclList ERROR VFO_Decl    //error catching
+        {
+            $$ = $1; $$ = $3; // to prevent the Bison warning
+            @1.step();
+            driver.parserErr("syntax error, missing semicolon \";\" after declaration", @1);
+            error(@$, ""); // The error message will be taken from the driver
+            YYERROR;
         }
     ;
 
@@ -2442,12 +2510,12 @@ FLWORClauseList
         }
   ;
 
-ForDollar
-    :   FOR DOLLAR
+ForStart
+    :   FOR
         {
             $$ = NULL;
         }
-    |   OUTER FOR DOLLAR
+    |   OUTER FOR
         {
             $$ = parser::the_ofor;
         }
@@ -2455,11 +2523,9 @@ ForDollar
 
 // [34]
 ForClause
-    :   ForDollar VarInDeclList
+    :   ForStart DOLLAR VarInDeclList
         {
-            $$ = new ForClause(
-                LOC(@$), dynamic_cast<VarInDeclList*>($2), $1 != NULL
-            );
+            $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3), $1 != NULL);
         }
     ;
 
@@ -2514,7 +2580,7 @@ VarInDecl :
                          $5);
     }
 /* full-text extensions */
-    |   QNAME FTScoreVar _IN ExprSingle
+  | QNAME FTScoreVar _IN ExprSingle
     {
       $$ = new VarInDecl(LOC(@$),
                          static_cast<QName*>($1),

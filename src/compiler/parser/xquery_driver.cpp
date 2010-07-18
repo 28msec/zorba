@@ -53,6 +53,12 @@ ZorbaParserError::ZorbaParserError(std::string _msg, const location& aLoc)
   msg(_msg), loc(xquery_driver::createQueryLoc(aLoc))
 {
 }
+ZorbaParserError::ZorbaParserError(std::string _msg, const QueryLoc& aLoc)
+  :
+  msg(_msg), loc(aLoc)
+{
+}
+
 
 xquery_driver::xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize)
   :
@@ -85,7 +91,7 @@ ZorbaParserError* xquery_driver::unrecognizedCharErr(const char* _error_token, c
   else
     token = _error_token;
 
-  parserError = new ZorbaParserError("syntax error, unexpected character '" + token + "'", loc);
+  parserError = new ZorbaParserError("syntax error, unexpected character \"" + token + "\"", loc);
   return parserError;
 };
 
@@ -132,6 +138,12 @@ ZorbaParserError* xquery_driver::invalidCharRef(const char* _message, const loca
 
 
 ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const location& loc)
+{
+  parserError = new ZorbaParserError(_message, loc);
+  return parserError;
+}
+
+ZorbaParserError* xquery_driver::parserErr(const std::string& _message, const QueryLoc& loc)
 {
   parserError = new ZorbaParserError(_message, loc);
   return parserError;
@@ -199,7 +211,7 @@ void xquery_driver::set_expr(parsenode* e_p)
   expr_p = e_p;
 }
 
-QueryLoc xquery_driver::createQueryLoc(const zorba::location& aLoc)
+QueryLoc xquery_driver::createQueryLoc(const location& aLoc)
 {
   QueryLoc lLoc;
   lLoc.setFilename(aLoc.begin.filename->c_str());

@@ -41,6 +41,7 @@ public:
 public:
   ZorbaParserError(std::string _msg) : msg(_msg) { };
   ZorbaParserError(std::string _msg, const location& aLoc);
+  ZorbaParserError(std::string _msg, const QueryLoc& aLoc);
 };
 
 
@@ -55,6 +56,7 @@ public:
   rchandle<parsenode> expr_p;
   CompilerCB* theCompilerCB;
   ZorbaParserError* parserError;
+  class xquery_scanner* lexer;
 
   xquery_driver(CompilerCB* aCompilerCB, uint32_t initial_heapsize = 1024);
   virtual ~xquery_driver();
@@ -67,15 +69,14 @@ public:
 	parsenode* get_expr() { return expr_p; }
 
   static QueryLoc createQueryLoc(const location& aLoc);
-
-  class xquery_scanner* lexer;
-
+  
   // Error generators
   ZorbaParserError* unrecognizedCharErr(const char* _error_token, const location& loc);
   ZorbaParserError* unterminatedCommentErr(const location& loc);
   ZorbaParserError* unrecognizedToken(const char* _error_token, const location& loc);
   ZorbaParserError* invalidCharRef(const char* _error_token, const location& loc);
   ZorbaParserError* parserErr(const std::string& _message, const location& loc);
+  ZorbaParserError* parserErr(const std::string& _message, const QueryLoc& loc);
 };
 
 }	/* namespace zorba */
