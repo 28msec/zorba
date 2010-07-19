@@ -40,13 +40,7 @@
 #include <zorbatypes/URI.h>
 #include <zorbautils/strutil.h>
 
-#include "zorba_test_setting.h"
-
-#ifndef ZORBA_MINIMAL_STORE
 #include <zorba/store_manager.h>
-#else
-#include "store/minimal/min_store.h"
-#endif
 
 #include "testdriver_comparator.h"
 
@@ -107,12 +101,7 @@ main(int argc, char** argv)
   loadProperties ();
 
   // Instantiate the store and the zorba query processor
-#ifdef ZORBA_MINIMAL_STORE
-  zorba::storeminimal::SimpleStore* store =
-  zorba::storeminimal::SimpleStore::getInstance();
-#else
   void* store = zorba::StoreManager::getStore();
-#endif
   if (store == NULL) return 20;
 
   zorba::Zorba * engine = zorba::Zorba::getInstance(store);

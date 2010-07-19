@@ -108,9 +108,6 @@
 /* Add the libxml2 sax parser */
 #cmakedefine ZORBA_WITH_LIBXML2_SAX
 
-/* to use minimal store or simplestore*/
-#cmakedefine  ZORBA_MINIMAL_STORE
-
 #ifndef BUILDING_ZORBA_STATIC
 
   #if defined WIN32 || defined CYGWIN

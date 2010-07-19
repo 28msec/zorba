@@ -29,22 +29,14 @@
 #    the variable will keep this value (i.e. store it in the cache file CMakeCache.txt)
 #    until you set a new one or edit the CMakeCache.txt file
 #
-SET(ZORBA_MINIMAL_STORE  OFF CACHE BOOL "Choose zorba minimal store for better performance")
-MESSAGE(STATUS "ZORBA_MINIMAL_STORE:               " ${ZORBA_MINIMAL_STORE})
-
 SET(ZORBA_NATIVE_STORE  ON CACHE BOOL "Choose zorba native store")
 MESSAGE(STATUS "ZORBA_NATIVE_STORE:               " ${ZORBA_NATIVE_STORE})
 
 # Adding store srcs
-IF (ZORBA_MINIMAL_STORE)
-  SET(ZORBA_STORE_DIRS "${CMAKE_SOURCE_DIR}/src/store/minimal" CACHE PATHS
-    "Path to the store directories. Must contain CMakeLists.txt defining the variables ZORBA_STORE_IMPL_SRCS and ZORBA_STORE_LIB_EXTENSION." FORCE)
-ELSE (ZORBA_MINIMAL_STORE)
-  IF(ZORBA_NATIVE_STORE)
-    SET(ZORBA_STORE_DIRS "${CMAKE_SOURCE_DIR}/src/store/naive" CACHE PATH "Path to the store directories. Must contain CMakeLists.txt defining the variable ZORBA_STORE_IMPL_SRCS.") 
-    SET(ZORBA_STORE_NAMES "simplestore" CACHE STRING "Names of the stores. Must have be in sync with ZORBA_STORE_DIRS")
-  ENDIF (ZORBA_NATIVE_STORE)
-ENDIF (ZORBA_MINIMAL_STORE)
+IF(ZORBA_NATIVE_STORE)
+  SET(ZORBA_STORE_DIRS "${CMAKE_SOURCE_DIR}/src/store/naive" CACHE PATH "Path to the store directories. Must contain CMakeLists.txt defining the variable ZORBA_STORE_IMPL_SRCS.") 
+  SET(ZORBA_STORE_NAMES "simplestore" CACHE STRING "Names of the stores. Must have be in sync with ZORBA_STORE_DIRS")
+ENDIF (ZORBA_NATIVE_STORE)
 
 MESSAGE(STATUS "ZORBA_STORE_DIRS " ${ZORBA_STORE_DIRS})
 MESSAGE(STATUS "ZORBA_STORE_NAMES " ${ZORBA_STORE_NAMES})

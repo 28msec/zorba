@@ -30,14 +30,9 @@
 #include <zorba/util/path.h>
 
 #include "store/api/item.h"
-#include "zorba_test_setting.h"
 #include "zorba/exception.h"
 
-#ifndef ZORBA_MINIMAL_STORE
 #include <zorba/store_manager.h>
-#else
-#include "store/minimal/min_store.h"
-#endif
 
 // Global variable g_abort_on_error is used to generate an abort() when an
 // error is encountered, to aid debugging
@@ -138,12 +133,7 @@ int _tmain(int argc, _TCHAR* argv[])
   }
 
   // Instantiate the simple store
-#ifdef ZORBA_MINIMAL_STORE
-  zorba::storeminimal::SimpleStore* store =
-        zorba::storeminimal::SimpleStore::getInstance();
-#else
   void* store = zorba::StoreManager::getStore();
-#endif
 
   // Set the g_abort_on_exception flag in error_manager.cpp
 #ifndef NDEBUG

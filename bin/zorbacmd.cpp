@@ -30,11 +30,7 @@
 
 #include <zorba/zorba.h>
 
-#ifndef ZORBA_MINIMAL_STORE
 #include <zorba/store_manager.h>
-#else
-#include "store/minimal/min_store.h"
-#endif
 
 #include <zorba/debugger_client.h>
 #include "debugger_server_runnable.h"
@@ -754,12 +750,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
   timing.startTimer(TimingInfo::INIT_TIMER, 2);
 
-#ifndef ZORBA_MINIMAL_STORE
   void* store = zorba::StoreManager::getStore();
-#else
-  zorba::storeminimal::SimpleStore* store =
-  zorba::storeminimal::SimpleStoreManager::getStore();
-#endif
 
   zorba::Zorba* lZorbaInstance = zorba::Zorba::getInstance(store);
 
