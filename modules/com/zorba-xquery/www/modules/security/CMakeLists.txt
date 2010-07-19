@@ -13,3 +13,4 @@
 # limitations under the License.
 
 GENERATE_MODULE_LIBRARY(hmac "")
+GENERATE_MODULE_LIBRARY(hash "")
