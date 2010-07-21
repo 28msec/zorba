@@ -33,6 +33,4 @@ SET(LIBSTEMMER_SRCS
     src_c/stem_UTF_8_turkish.c
     )
 
-INCLUDE_DIRECTORIES(AFTER ${CMAKE_CURRENT_SOURCE_DIR}/libstemmer)
-
 # vim:set et sw=4 ts=4:
