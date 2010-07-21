@@ -547,7 +547,8 @@ public:
   void insertSiblingsBefore(UpdInsertChildren& upd);
   void insertSiblingsAfter(UpdInsertChildren& upd);
 
-  uint32_t getFlags() { return theFlags; }
+  uint32_t getFlags() const { return theFlags; }
+
   void setFlags(uint32_t flags) { theFlags = flags; }
 
 #ifndef ZORBA_NO_FULL_TEXT

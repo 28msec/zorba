@@ -493,7 +493,7 @@ public:
   class StringItem
  *****************************************************************************/
 
-class StringItemNaive : public AtomicItem
+class StringItem : public AtomicItem
 {
   friend class BasicItemFactory;
   friend class AtomicItemTokenizer;
@@ -502,9 +502,9 @@ protected:
   xqpStringStore_t theValue;
 
 protected:
-  StringItemNaive(xqpStringStore_t& value) { theValue.transfer(value); }
+  StringItem(xqpStringStore_t& value) { theValue.transfer(value); }
 
-  StringItemNaive() {}
+  StringItem() {}
 
 public:
 
@@ -581,12 +581,12 @@ private:
 /*******************************************************************************
   class NormalizedStringItemImpl
 ********************************************************************************/
-class NormalizedStringItemImpl : public StringItemNaive
+class NormalizedStringItemImpl : public StringItem
 {
   friend class BasicItemFactory;
 
 protected:
-  NormalizedStringItemImpl(xqpStringStore_t& value) : StringItemNaive(value) {}
+  NormalizedStringItemImpl(xqpStringStore_t& value) : StringItem(value) {}
 
 public:
   virtual SchemaTypeCode getTypeCode() const { return XS_NORMALIZED_STRING; }
@@ -751,7 +751,7 @@ public:
 /*******************************************************************************
   class DateTimeItem
 ********************************************************************************/
-class DateTimeItemNaive : public AtomicItem
+class DateTimeItem : public AtomicItem
 {
   friend class BasicItemFactory;
 
@@ -759,8 +759,10 @@ protected:
   DateTime theValue;
 
 protected:
-  DateTimeItemNaive(const DateTime* aValue) : theValue(*aValue) { };
+  DateTimeItem(const DateTime* aValue) : theValue(*aValue) { };
   
+  DateTimeItem() { };
+
 public:
   const xqp_dateTime& getDateTimeValue() const { return theValue; }
 
@@ -801,9 +803,6 @@ public:
   void getStringValue(std::string& buf) const;
 
   xqp_string show() const;
-
-protected:
-  DateTimeItemNaive() { };
 };
 
 
@@ -866,9 +865,9 @@ public:
 
 
 /*******************************************************************************
-  class DoubleItemNaive
+  class DoubleItem
 ********************************************************************************/
-class DoubleItemNaive : public AtomicItem
+class DoubleItem : public AtomicItem
 {
   friend class BasicItemFactory;
 
@@ -876,9 +875,9 @@ protected:
 	xqp_double theValue;
 
 protected:
-	DoubleItemNaive(const xqp_double& aValue) : theValue( aValue ) {}
+	DoubleItem(const xqp_double& aValue) : theValue( aValue ) {}
 
-  DoubleItemNaive() {}
+  DoubleItem() {}
 
 public:
 	xqp_double getDoubleValue() const { return theValue; }
@@ -922,9 +921,9 @@ public:
 	
 
 /*******************************************************************************
-  class FloatItemNaive
+  class FloatItem
 ********************************************************************************/
-class FloatItemNaive : public AtomicItem
+class FloatItem : public AtomicItem
 {
   friend class BasicItemFactory;
 
@@ -932,9 +931,9 @@ protected:
   xqp_float theValue;
 
 protected:
-  FloatItemNaive(const xqp_float& aValue) : theValue ( aValue ) {}
+  FloatItem(const xqp_float& aValue) : theValue ( aValue ) {}
 
-  FloatItemNaive() {}
+  FloatItem() {}
 
 public:
   xqp_float getFloatValue() const { return theValue; }
@@ -981,7 +980,7 @@ public:
 
 
 /*******************************************************************************
-  class DecimalItemNaive
+  class DecimalItem
 
                                decimal
                                   |
@@ -1222,7 +1221,7 @@ public:
 
 
 /*******************************************************************************
-  class LongItemNaive
+  class LongItem
 ********************************************************************************/
 class LongItem : public AtomicItem 
 {
@@ -1456,7 +1455,7 @@ public:
 
 
 /*******************************************************************************
-  class ByteItemNaive
+  class ByteItem
 ********************************************************************************/
 class ByteItem : public AtomicItem 
 {
@@ -1891,16 +1890,17 @@ public:
 /*******************************************************************************
   class BooleanItem
 ********************************************************************************/
-class BooleanItemNaive : public AtomicItem
+class BooleanItem : public AtomicItem
 {
+ friend class BasicItemFactory;
+
 protected:
   xqp_boolean theValue;
 
-  // make sure that only created by the factory
-  friend class BasicItemFactory;
-  BooleanItemNaive(xqp_boolean aValue) : theValue(aValue) {}
+protected:
+  BooleanItem(xqp_boolean aValue) : theValue(aValue) {}
 
-  BooleanItemNaive() {}
+  BooleanItem() {}
 
 public:
   xqp_boolean getBooleanValue() const { return theValue; }
@@ -1940,9 +1940,9 @@ public:
   
 
 /*******************************************************************************
-  class Base64BinaryItemNaive
+  class Base64BinaryItem
 ********************************************************************************/
-class Base64BinaryItemNaive : public AtomicItem 
+class Base64BinaryItem : public AtomicItem 
 {
   friend class BasicItemFactory;
 
@@ -1950,9 +1950,9 @@ protected:
   xqp_base64Binary theValue;
 
 protected:
-  Base64BinaryItemNaive(xqp_base64Binary aValue) : theValue(aValue) {}
+  Base64BinaryItem(xqp_base64Binary aValue) : theValue(aValue) {}
 
-  Base64BinaryItemNaive() {}
+  Base64BinaryItem() {}
 
 public:
   xqp_base64Binary getBase64BinaryValue() const { return theValue; }
@@ -1980,9 +1980,9 @@ public:
 
 
 /*******************************************************************************
-  class HexBinaryItemNaive
+  class HexBinaryItem
 ********************************************************************************/
-class HexBinaryItemNaive : public AtomicItem 
+class HexBinaryItem : public AtomicItem 
 {
   friend class BasicItemFactory;
 
@@ -1990,9 +1990,9 @@ protected:
   xqp_hexBinary theValue;
 
 protected:
-  HexBinaryItemNaive(xqp_hexBinary aValue) : theValue(aValue) {}
+  HexBinaryItem(xqp_hexBinary aValue) : theValue(aValue) {}
 
-  HexBinaryItemNaive() {}
+  HexBinaryItem() {}
 
 public:
   xqp_hexBinary getHexBinaryValue() const { return theValue; }

@@ -35,6 +35,7 @@ public:
   {
     store::Item_t theNode;
     bool          theMultiKey;
+    bool          theUntyped;
   };
 
   typedef std::vector<NodeInfo>::const_iterator iterator;
@@ -45,7 +46,7 @@ protected:
 public:
   GeneralIndexValue(ulong size = 0) : theNodes(size) {}
 
-  void addNode(store::Item_t& node, bool multikey);
+  void addNode(store::Item_t& node, bool multikey, bool untyped);
 
   iterator begin() { return theNodes.begin(); }
   iterator end()   { return theNodes.end(); }

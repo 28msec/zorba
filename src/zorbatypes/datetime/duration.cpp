@@ -34,434 +34,200 @@ const int Duration::FRAC_SECONDS_UPPER_LIMIT = 1000000;
 static const long max_value[] = { 0, 12, 30, 24, 60, 60, Duration::FRAC_SECONDS_UPPER_LIMIT};
 
 
-Duration::Duration()
+/******************************************************************************
+  Parse a 'nS' string, with fractional seconds, returns true on success and
+  false on failure
+*******************************************************************************/
+static bool parse_s_string(
+    std::string ss,
+    unsigned int& position,
+    long& seconds,
+    long& frac_seconds)
 {
-  facet = DURATION_FACET;
-  is_negative = false;
-  for (int i=0; i <= FRACSECONDS_DATA; i++)
-    data[i] = 0;
-}
-
-Duration::Duration(FACET_TYPE facet_type) : facet(facet_type)
-{
-  is_negative = false;
-  for (int i=0; i <= FRACSECONDS_DATA; i++)
-    data[i] = 0;
-}
-
-Duration::Duration(FACET_TYPE facet_type, long years, long months, long days,
-         long hours, long minutes, double seconds)
-{
-  seconds = abs<double>(seconds);
-
-  is_negative = false;
-  if (years != 0 && years < 0)
-    is_negative = true;
-  else if (months != 0 && months < 0)
-    is_negative = true;
-  else if (days != 0 && days < 0)
-    is_negative = true;
-  else if (hours != 0 && hours < 0)
-    is_negative = true;
-  else if (minutes != 0 && minutes < 0)
-    is_negative = true;
-  else if (seconds != 0 && seconds < 0)
-    is_negative = true;
-
-  facet = facet_type;
-  data[YEAR_DATA] = abs<long>(years);
-  data[MONTH_DATA] = abs<long>(months);
-  data[DAY_DATA] = abs<long>(days);
-  data[HOUR_DATA] = abs<long>(hours);
-  data[MINUTE_DATA] = abs<long>(minutes);
-  data[SECONDS_DATA] = floor<double>(seconds);
-  data[FRACSECONDS_DATA] = round(frac(seconds) * FRAC_SECONDS_UPPER_LIMIT);
-
-  normalize();
-}
-
-
-Duration::Duration(FACET_TYPE facet_type, bool negative, long years, long months, long days,
-         long hours, long minutes, double seconds)
-{
-  seconds = abs<double>(seconds);
-
-  facet = facet_type;
-  is_negative = negative;
-  data[YEAR_DATA] = abs<long>(years);
-  data[MONTH_DATA] = abs<long>(months);
-  data[DAY_DATA] = abs<long>(days);
-  data[HOUR_DATA] = abs<long>(hours);
-  data[MINUTE_DATA] = abs<long>(minutes);
-  data[SECONDS_DATA] = floor<double>(seconds);
-  data[FRACSECONDS_DATA] = round(frac(seconds) * FRAC_SECONDS_UPPER_LIMIT);
-
-  normalize();
-}
-
-Duration::Duration(FACET_TYPE facet_type, bool negative, long years, long months, long days,
-           long hours, long minutes, int seconds, int frac_seconds)
-{
-  facet = facet_type;
-  is_negative = negative;
-  data[YEAR_DATA] = abs<long>(years);
-  data[MONTH_DATA] = abs<long>(months);
-  data[DAY_DATA] = abs<long>(days);
-  data[HOUR_DATA] = abs<long>(hours);
-  data[MINUTE_DATA] = abs<long>(minutes);
-  data[SECONDS_DATA] = abs<long>(seconds);
-  data[FRACSECONDS_DATA] = abs<long>(frac_seconds);
-
-  normalize();
-}
-
-
-void Duration::serialize(::zorba::serialization::Archiver& ar)
-{
-  SERIALIZE_ENUM(FACET_TYPE, facet);
-  ar & is_negative;
-  ar & data[0];
-  ar & data[1];
-  ar & data[2];
-  ar & data[3];
-  ar & data[4];
-  ar & data[5];
-  ar & data[6];
-}
-
-
-bool Duration::isNegative() const
-{
-  return is_negative;
-}
-
-long Duration::getYears() const
-{
-  return (is_negative? -1 : 1) * data[YEAR_DATA];
-}
-
-long Duration::getMonths() const
-{
-  return (is_negative? -1 : 1) * data[MONTH_DATA];
-}
-
-long Duration::getDays() const
-{
-  return (is_negative? -1 : 1) * data[DAY_DATA];
-}
-
-long Duration::getHours() const
-{
-  return (is_negative? -1 : 1) * data[HOUR_DATA];
-}
-
-long Duration::getMinutes() const
-{
-  return (is_negative? -1 : 1) * data[MINUTE_DATA];
-}
-
-xqp_decimal Duration::getSeconds() const
-{
-  return Decimal::parseInt(is_negative? -1 : 1) * (Decimal::parseInt(data[SECONDS_DATA]) + Decimal::parseInt(data[FRACSECONDS_DATA]) / Decimal::parseInt(FRAC_SECONDS_UPPER_LIMIT));
-}
-
-long Duration::getFractionalSeconds() const
-{
-  return (is_negative? -1 : 1) * data[FRACSECONDS_DATA];
-}
-
-long Duration::getIntSeconds() const
-{
-  return (is_negative? -1 : 1) * data[SECONDS_DATA];
-}
-
-Double Duration::getTotalSeconds() const
-{
-  return (is_negative? Double::parseLong(-1) : Double::parseLong(1))
-      * ((((((((Double::parseLong(data[YEAR_DATA]) * Double::parseLong(12)
-      + Double::parseLong(data[MONTH_DATA])) * Double::parseLong(30))
-      + Double::parseLong(data[DAY_DATA])) * Double::parseLong(24))
-      + Double::parseLong(data[HOUR_DATA])) * Double::parseLong(60))
-      + Double::parseLong(data[MINUTE_DATA])) * Double::parseLong(60))
-      + Double::parseLong(data[SECONDS_DATA])
-      + Double::parseFloatType(double(data[FRACSECONDS_DATA]) / FRAC_SECONDS_UPPER_LIMIT);
-}
-
-long Duration::getTotalMilliseconds() const
-{
-  return (is_negative? -1 : 1)
-      * (((((((((data[YEAR_DATA] * 12
-        + data[MONTH_DATA]) * 30)
-        + data[DAY_DATA]) * 24)
-        + data[HOUR_DATA]) * 60)
-        + data[MINUTE_DATA]) * 60)
-        + data[SECONDS_DATA])
-      * 1000 
-      + round(data[FRACSECONDS_DATA]/(FRAC_SECONDS_UPPER_LIMIT / 1000.0));
-}
-
-int Duration::fromTimezone(const TimeZone& t, Duration& d)
-{
-  if(!t.timeZoneNotSet())
-  {
-    d = Duration(DAYTIMEDURATION_FACET, t.isNegative(), 0, 0, 0, t.getHours(), t.getMinutes(), t.getIntSeconds(), t.getFractionalSeconds() );
-    return 0;
-  }
-  else
-    return 1;
-}
- 
-bool Duration::operator==(const Duration& d) const 
-{
-  if (is_negative != d.is_negative)
+  long result;
+  
+  if (position == ss.size() || parse_int(ss, position, result))
     return false;
-                 
-  for (int i=0; i<=FRACSECONDS_DATA; i++)
-    if (data[i] != d.data[i])
-      return false;
 
-  return true;
-}
+  if (position == ss.size())
+    return false;
 
-bool Duration::isZero() const
-{ 
-  for (int i=0; i<=FRACSECONDS_DATA; i++)
-    if (data[i] != 0)
-      return false;
-
-  return true;
-}
-
-int Duration::compare(const Duration& d, bool ignore_sign) const
-{
-  for (int i=0; i<=FRACSECONDS_DATA; i++)
+  if (ss[position] == 'S')
   {
-    if ( (is_negative && !ignore_sign ? -1 : 1) * data[i] >
-         (d.is_negative && !ignore_sign ? -1 : 1) * d.data[i])
+    position++;
+    seconds = result;
+  }
+  else if (ss[position] == '.')
+  {
+    position++;
+    seconds = result;
+    double temp_frac_seconds = 0;
+    if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
+      return false;
+
+    if (position == ss.size() || ss[position] != 'S')
+      return false;
+
+    position++;
+    frac_seconds = round(temp_frac_seconds * Duration::FRAC_SECONDS_UPPER_LIMIT);
+  }
+
+  return true;
+}
+
+
+/******************************************************************************
+  parse a 'nMnS' string, with fractional seconds
+*******************************************************************************/
+static bool parse_ms_string(
+    std::string ss,
+    unsigned int& position,
+    long& minutes,
+    long& seconds,
+    long& frac_seconds)
+{
+  long result;
+  
+  if (position == ss.size() || parse_int(ss, position, result))
+    return false;
+
+  if (position == ss.size())
+    return false;
+
+  if (ss[position] == 'M')
+  {
+    position++;
+    minutes = result;
+    if (position < ss.size() && !parse_s_string(ss, position, seconds, frac_seconds))
+      return false;
+  }
+  else if (ss[position] == 'S')
+  {
+    position++;
+    seconds = result;
+  }
+  else if (ss[position] == '.')
+  {
+    position++;
+    seconds = result;
+
+    double temp_frac_seconds = 0;
+    if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
+      return false;
+
+    if (position == ss.size() || ss[position] != 'S')
+      return false;
+
+    position++;
+    frac_seconds = round(temp_frac_seconds * Duration::FRAC_SECONDS_UPPER_LIMIT);
+  }
+
+  return true;
+}
+
+
+/******************************************************************************
+  parse a 'nHnMnS' string, with fractional seconds
+*******************************************************************************/
+static bool parse_hms_string(
+    std::string ss,
+    unsigned int& position,
+    long& hours,
+    long& minutes,
+    long& seconds,
+    long& frac_seconds)
+{
+  long result;
+  
+  if (position == ss.size() || parse_int(ss, position, result))
+    return false;
+
+  if (position == ss.size())
+    return false;
+
+  if (ss[position] == 'H')
+  {
+    position++;
+    hours = result;
+    if (position < ss.size() && !parse_ms_string(ss, position, minutes, seconds, frac_seconds))
+      return false;
+  }
+  else if (ss[position] == 'M')
+  {
+    position++;
+    minutes = result;
+    if (position < ss.size() && !parse_s_string(ss, position, seconds, frac_seconds))
+      return false;
+  }
+  else if (ss[position] == 'S')
+  {
+    position++;
+    seconds = result;
+  }
+  else if (ss[position] == '.')
+  {
+    position++;
+    seconds = result;
+
+    double temp_frac_seconds;
+    if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
+      return false;
+
+    if (position == ss.size() || ss[position] != 'S')
+      return false;
+
+    position++;
+    frac_seconds = round(temp_frac_seconds * Duration::FRAC_SECONDS_UPPER_LIMIT);
+  }
+
+  return true;
+}
+
+
+int Duration::parseDuration(const xqpStringStore_t& s, Duration& d)
+{
+  int pos, t_pos;
+  Duration dtd;
+
+  t_pos = s->bytePositionOf("T");
+  pos = s->bytePositionOf("M");
+  if (pos == -1)
+    pos = s->bytePositionOf("Y");
+  else if (t_pos != -1 && t_pos < pos)
+    pos = -1;
+
+  // Check month or year
+  if (pos != -1)
+  {
+    Duration ymd;
+    if (0 != Duration::parseYearMonthDuration(s->byteSubstr(0, pos+1), ymd))
       return 1;
 
-    else if ((is_negative && !ignore_sign ? -1 : 1) * data[i] <
-             (d.is_negative && !ignore_sign? -1 : 1) * d.data[i])
-      return -1;
+    d = Duration(ymd);
+    
+    if ((unsigned int)pos+1 < s->size())
+    {
+      if (0 != Duration::parseDayTimeDuration(s->substr(pos+1), dtd, true))
+        return 1;
+
+      for (int i = DAY_DATA; i <= FRACSECONDS_DATA; i++)
+        d.data[i] = dtd.data[i];
+    }
   }
+  else
+  {
+    // No month or year -- parse DayTime
+    if (0 != Duration::parseDayTimeDuration(s, dtd))
+      return 1;
+
+    d = dtd;
+  }
+
+  d.facet = DURATION_FACET;
   return 0;
 }
 
 
-Duration* Duration::operator+(const Duration& d) const
-{
-  int start_data;
-  int end_data;
-  Duration* result;
-
-  if (compare(d, true) == -1)
-    return d.operator+(*this);
-  
-  if (facet == YEARMONTHDURATION_FACET && d.facet == YEARMONTHDURATION_FACET)
-  {
-    start_data = MONTH_DATA;
-    end_data = YEAR_DATA;
-  }
-  else if (facet == DAYTIMEDURATION_FACET && d.facet == DAYTIMEDURATION_FACET)
-  {
-    start_data = FRACSECONDS_DATA;
-    end_data = DAY_DATA;
-  }
-  else
-  {
-    assert(0);
-    return NULL;
-  }
-  
-  result = new Duration(facet);
-  long carry = 0;
-  bool right_operand_sign = (is_negative != d.is_negative);
-  for (int i = start_data; i >= end_data; i--)
-  {
-    if (i == FRACSECONDS_DATA)
-    {
-      double sum = double(data[i] + (right_operand_sign? -1 : 1) * d.data[i]) / FRAC_SECONDS_UPPER_LIMIT;
-      result->data[FRACSECONDS_DATA] = round(frac(sum)*FRAC_SECONDS_UPPER_LIMIT);
-      carry = floor<double>(sum);
-    }
-    else
-    {
-      long sum = data[i] + (right_operand_sign? -1 : 1) * d.data[i] + carry;
-
-      if (i == end_data)
-      {
-        result->data[i] = sum;
-      }
-      else
-      {
-        carry = quotient<long>(sum, max_value[i]);
-        result->data[i] = modulo<long>(sum, max_value[i]);
-      }
-    }
-  }
-
-  result->is_negative = is_negative;
-  
-  return result;
-}
-
-Duration* Duration::operator-(const Duration& d) const
-{
-  std::auto_ptr<Duration> temp = std::auto_ptr<Duration>(d.toNegDuration());
-  return operator+(*temp);
-}
-      
-Duration* Duration::operator*(const Double& value) const
-{
-  Double result;
-  Double dSeconds;
-  int32_t seconds;
-  int32_t frac_seconds;
-
-  if (facet == DURATION_FACET)
-  {
-    assert(0);
-    return NULL;
-  }
-  
-  Integer significants = Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT);
-
-  result = getTotalSeconds() * value;
-  result = result.round(significants);
-  dSeconds = result.round();
-  NumConversions::doubleToInt(dSeconds.floor(), seconds);
-
-  result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
-
-  NumConversions::doubleToInt(result.round(), frac_seconds);
-
-  Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
-  return d;
-}
-      
-Duration* Duration::operator/(const Double& value) const
-{
-  Double result;
-  Double dSeconds;
-  int32_t seconds;
-  int32_t frac_seconds;
-
-  if (facet == DURATION_FACET)
-  {
-    assert(0);
-    return NULL;
-  }
-
-  Integer significants = Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT);
-
-  result = getTotalSeconds() / value;
-  result = result.round(significants);
-  dSeconds = result.round();
-  NumConversions::doubleToInt(dSeconds.floor(), seconds);
-
-  result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
-  NumConversions::doubleToInt(result.round(), frac_seconds);
-
-  Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
-  return d;
-}
-      
-Decimal Duration::operator/(const Duration& d) const
-{
-  Decimal op1, op2;
-
-  Decimal::parseDouble(getTotalSeconds(), op1);
-  Decimal::parseDouble(d.getTotalSeconds(), op2);
-  
-  return op1 / op2;
-}
-
-Duration* Duration::toNegDuration() const
-{
-  Duration* d = new Duration(*this);
-
-  if (!isZero())
-    d->is_negative = !d->is_negative;
-
-  return d;
-}
-      
-Duration* Duration::toDuration() const
-{
-  Duration* d = new Duration(*this);
-  d->facet = DURATION_FACET;
-  return d;
-}
-
-Duration* Duration::toYearMonthDuration() const
-{
-  Duration* d = new Duration(*this);
-
-  d->facet = YEARMONTHDURATION_FACET;
-  for (int i=DAY_DATA; i<=FRACSECONDS_DATA; i++)
-    d->data[i] = 0;
-  
-  return d;
-}
-
-Duration* Duration::toDayTimeDuration() const
-{
-  Duration* d = new Duration(*this);
-
-  d->data[MONTH_DATA] = 0;
-  d->data[YEAR_DATA] = 0;
-  d->facet = DAYTIMEDURATION_FACET;
-    
-  return d;
-}
-
-void Duration::normalize()
-{
-  long carry = 0;
-    
-  for (int i = SECONDS_DATA; i>YEAR_DATA; i--)
-  {
-    data[i] += carry;
-    carry = quotient<long>(data[i], max_value[i]);
-    data[i] = modulo<long>(data[i], max_value[i]);
-  }
-  
-  data[YEAR_DATA] += carry;
-
-  adjustToFacet();
-}
-
-void Duration::adjustToFacet()
-{
-  // assumes the data is normalized. Otherwise call normalize(), which will adjust to facet, too
-  if (facet == YEARMONTHDURATION_FACET)
-    for (int i=FRACSECONDS_DATA; i>=DAY_DATA; i--)
-    {
-      if ((data[i] >= max_value[i]/2 && !is_negative)
-          ||
-          (data[i] > max_value[i]/2 && is_negative))
-        data[i-1] += 1;
-
-      data[i] = 0;
-    }
-
-  if (facet == DAYTIMEDURATION_FACET)
-  {
-    data[DAY_DATA] += data[MONTH_DATA] * 30 + data[YEAR_DATA] * 12 * 30;
-    data[MONTH_DATA] = 0;
-    data[YEAR_DATA] = 0;
-  }
-
-  if (isZero())
-    is_negative = false;
-}
-
-void Duration::setFacet(FACET_TYPE a_facet)
-{
-  facet = a_facet;
-  normalize();
-}
-  
 int Duration::parseYearMonthDuration(const xqpStringStore_t& s, Duration& d)
 {
   std::string ss = s->str();
@@ -520,132 +286,8 @@ int Duration::parseYearMonthDuration(const xqpStringStore_t& s, Duration& d)
   d = Duration(YEARMONTHDURATION_FACET, negative, 0, months, 0, 0, 0, 0);
   return 0;
 }
-    
-    
-// parse a 'nS' string, with fractional seconds, returns true on success and false on failure
-static bool parse_s_string(std::string ss, unsigned int& position, long& seconds, long& frac_seconds)
-{
-  long result;
-  
-  if (position == ss.size() || parse_int(ss, position, result))
-    return false;
 
-  if (position == ss.size())
-    return false;
 
-  if (ss[position] == 'S')
-  {
-    position++;
-    seconds = result;
-  }
-  else if (ss[position] == '.')
-  {
-    position++;
-    seconds = result;
-    double temp_frac_seconds = 0;
-    if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
-      return false;
-
-    if (position == ss.size() || ss[position] != 'S')
-      return false;
-
-    position++;
-    frac_seconds = round(temp_frac_seconds * Duration::FRAC_SECONDS_UPPER_LIMIT);
-  }
-
-  return true;
-}
-
-// parse a 'nMnS' string, with fractional seconds
-static bool parse_ms_string(std::string ss, unsigned int& position, long& minutes, long& seconds, long& frac_seconds)
-{
-  long result;
-  
-  if (position == ss.size() || parse_int(ss, position, result))
-    return false;
-
-  if (position == ss.size())
-    return false;
-
-  if (ss[position] == 'M')
-  {
-    position++;
-    minutes = result;
-    if (position < ss.size() && !parse_s_string(ss, position, seconds, frac_seconds))
-      return false;
-  }
-  else if (ss[position] == 'S')
-  {
-    position++;
-    seconds = result;
-  }
-  else if (ss[position] == '.')
-  {
-    position++;
-    seconds = result;
-
-    double temp_frac_seconds = 0;
-    if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
-      return false;
-
-    if (position == ss.size() || ss[position] != 'S')
-      return false;
-
-    position++;
-    frac_seconds = round(temp_frac_seconds * Duration::FRAC_SECONDS_UPPER_LIMIT);
-  }
-
-  return true;
-}
-
-// parse a 'nHnMnS' string, with fractional seconds
-static bool parse_hms_string(std::string ss, unsigned int& position, long& hours, long& minutes, long& seconds, long& frac_seconds)
-{
-  long result;
-  
-  if (position == ss.size() || parse_int(ss, position, result))
-    return false;
-
-  if (position == ss.size())
-    return false;
-
-  if (ss[position] == 'H')
-  {
-    position++;
-    hours = result;
-    if (position < ss.size() && !parse_ms_string(ss, position, minutes, seconds, frac_seconds))
-      return false;
-  }
-  else if (ss[position] == 'M')
-  {
-    position++;
-    minutes = result;
-    if (position < ss.size() && !parse_s_string(ss, position, seconds, frac_seconds))
-      return false;
-  }
-  else if (ss[position] == 'S')
-  {
-    position++;
-    seconds = result;
-  }
-  else if (ss[position] == '.')
-  {
-    position++;
-    seconds = result;
-
-    double temp_frac_seconds;
-    if (position == ss.size() || parse_frac(ss, position, temp_frac_seconds))
-      return false;
-
-    if (position == ss.size() || ss[position] != 'S')
-      return false;
-
-    position++;
-    frac_seconds = round(temp_frac_seconds * Duration::FRAC_SECONDS_UPPER_LIMIT);
-  }
-
-  return true;
-}
 
 // Parse a 'PnDTnHnMnS' dateTime duration
 int Duration::parseDayTimeDuration(
@@ -720,49 +362,472 @@ int Duration::parseDayTimeDuration(
 }
 
 
-int Duration::parseDuration(const xqpStringStore_t& s, Duration& d)
+int Duration::fromTimezone(const TimeZone& t, Duration& d)
 {
-  int pos, t_pos;
-  Duration dtd;
-
-  t_pos = s->bytePositionOf("T");
-  pos = s->bytePositionOf("M");
-  if (pos == -1)
-    pos = s->bytePositionOf("Y");
-  else if (t_pos != -1 && t_pos < pos)
-    pos = -1;
-
-  // Check month or year
-  if (pos != -1)
+  if(!t.timeZoneNotSet())
   {
-    Duration ymd;
-    if (0 != Duration::parseYearMonthDuration(s->byteSubstr(0, pos+1), ymd))
-      return 1;
-
-    d = Duration(ymd);
-    
-    if ((unsigned int)pos+1 < s->size())
-    {
-      if (0 != Duration::parseDayTimeDuration(s->substr(pos+1), dtd, true))
-        return 1;
-
-      for (int i = DAY_DATA; i <= FRACSECONDS_DATA; i++)
-        d.data[i] = dtd.data[i];
-    }
+    d = Duration(DAYTIMEDURATION_FACET, t.isNegative(), 0, 0, 0, t.getHours(), t.getMinutes(), t.getIntSeconds(), t.getFractionalSeconds() );
+    return 0;
   }
   else
+    return 1;
+}
+ 
+
+
+Duration::Duration()
+{
+  facet = DURATION_FACET;
+  is_negative = false;
+  for (int i=0; i <= FRACSECONDS_DATA; i++)
+    data[i] = 0;
+}
+
+
+Duration::Duration(FACET_TYPE facet_type) : facet(facet_type)
+{
+  is_negative = false;
+  for (int i=0; i <= FRACSECONDS_DATA; i++)
+    data[i] = 0;
+}
+
+
+Duration::Duration(
+    FACET_TYPE facet_type,
+    long years,
+    long months,
+    long days,
+    long hours,
+    long minutes,
+    double seconds)
+{
+  seconds = abs<double>(seconds);
+
+  is_negative = false;
+  if (years != 0 && years < 0)
+    is_negative = true;
+  else if (months != 0 && months < 0)
+    is_negative = true;
+  else if (days != 0 && days < 0)
+    is_negative = true;
+  else if (hours != 0 && hours < 0)
+    is_negative = true;
+  else if (minutes != 0 && minutes < 0)
+    is_negative = true;
+  else if (seconds != 0 && seconds < 0)
+    is_negative = true;
+
+  facet = facet_type;
+  data[YEAR_DATA] = abs<long>(years);
+  data[MONTH_DATA] = abs<long>(months);
+  data[DAY_DATA] = abs<long>(days);
+  data[HOUR_DATA] = abs<long>(hours);
+  data[MINUTE_DATA] = abs<long>(minutes);
+  data[SECONDS_DATA] = floor<double>(seconds);
+  data[FRACSECONDS_DATA] = round(frac(seconds) * FRAC_SECONDS_UPPER_LIMIT);
+
+  normalize();
+}
+
+
+Duration::Duration(
+    FACET_TYPE facet_type,
+    bool negative, long years, long months, long days,
+    long hours, long minutes, double seconds)
+{
+  seconds = abs<double>(seconds);
+
+  facet = facet_type;
+  is_negative = negative;
+  data[YEAR_DATA] = abs<long>(years);
+  data[MONTH_DATA] = abs<long>(months);
+  data[DAY_DATA] = abs<long>(days);
+  data[HOUR_DATA] = abs<long>(hours);
+  data[MINUTE_DATA] = abs<long>(minutes);
+  data[SECONDS_DATA] = floor<double>(seconds);
+  data[FRACSECONDS_DATA] = round(frac(seconds) * FRAC_SECONDS_UPPER_LIMIT);
+
+  normalize();
+}
+
+
+Duration::Duration(
+    FACET_TYPE facet_type,
+    bool negative, long years, long months, long days,
+    long hours, long minutes, int seconds, int frac_seconds)
+{
+  facet = facet_type;
+  is_negative = negative;
+  data[YEAR_DATA] = abs<long>(years);
+  data[MONTH_DATA] = abs<long>(months);
+  data[DAY_DATA] = abs<long>(days);
+  data[HOUR_DATA] = abs<long>(hours);
+  data[MINUTE_DATA] = abs<long>(minutes);
+  data[SECONDS_DATA] = abs<long>(seconds);
+  data[FRACSECONDS_DATA] = abs<long>(frac_seconds);
+
+  normalize();
+}
+
+
+void Duration::serialize(::zorba::serialization::Archiver& ar)
+{
+  SERIALIZE_ENUM(FACET_TYPE, facet);
+  ar & is_negative;
+  ar & data[0];
+  ar & data[1];
+  ar & data[2];
+  ar & data[3];
+  ar & data[4];
+  ar & data[5];
+  ar & data[6];
+}
+
+
+bool Duration::isNegative() const
+{
+  return is_negative;
+}
+
+long Duration::getYears() const
+{
+  return (is_negative? -1 : 1) * data[YEAR_DATA];
+}
+
+
+long Duration::getMonths() const
+{
+  return (is_negative? -1 : 1) * data[MONTH_DATA];
+}
+
+
+long Duration::getDays() const
+{
+  return (is_negative? -1 : 1) * data[DAY_DATA];
+}
+
+
+long Duration::getHours() const
+{
+  return (is_negative? -1 : 1) * data[HOUR_DATA];
+}
+
+
+long Duration::getMinutes() const
+{
+  return (is_negative? -1 : 1) * data[MINUTE_DATA];
+}
+
+
+xqp_decimal Duration::getSeconds() const
+{
+  return Decimal::parseInt(is_negative? -1 : 1) * (Decimal::parseInt(data[SECONDS_DATA]) + Decimal::parseInt(data[FRACSECONDS_DATA]) / Decimal::parseInt(FRAC_SECONDS_UPPER_LIMIT));
+}
+
+
+long Duration::getFractionalSeconds() const
+{
+  return (is_negative? -1 : 1) * data[FRACSECONDS_DATA];
+}
+
+
+long Duration::getIntSeconds() const
+{
+  return (is_negative? -1 : 1) * data[SECONDS_DATA];
+}
+
+
+Double Duration::getTotalSeconds() const
+{
+  return (is_negative? Double::parseLong(-1) : Double::parseLong(1))
+      * ((((((((Double::parseLong(data[YEAR_DATA]) * Double::parseLong(12)
+      + Double::parseLong(data[MONTH_DATA])) * Double::parseLong(30))
+      + Double::parseLong(data[DAY_DATA])) * Double::parseLong(24))
+      + Double::parseLong(data[HOUR_DATA])) * Double::parseLong(60))
+      + Double::parseLong(data[MINUTE_DATA])) * Double::parseLong(60))
+      + Double::parseLong(data[SECONDS_DATA])
+      + Double::parseFloatType(double(data[FRACSECONDS_DATA]) / FRAC_SECONDS_UPPER_LIMIT);
+}
+
+
+long Duration::getTotalMilliseconds() const
+{
+  return (is_negative? -1 : 1)
+      * (((((((((data[YEAR_DATA] * 12
+        + data[MONTH_DATA]) * 30)
+        + data[DAY_DATA]) * 24)
+        + data[HOUR_DATA]) * 60)
+        + data[MINUTE_DATA]) * 60)
+        + data[SECONDS_DATA])
+      * 1000 
+      + round(data[FRACSECONDS_DATA]/(FRAC_SECONDS_UPPER_LIMIT / 1000.0));
+}
+
+
+bool Duration::operator==(const Duration& d) const 
+{
+  if (is_negative != d.is_negative)
+    return false;
+                 
+  for (int i=0; i<=FRACSECONDS_DATA; i++)
+    if (data[i] != d.data[i])
+      return false;
+
+  return true;
+}
+
+
+bool Duration::isZero() const
+{ 
+  for (int i=0; i<=FRACSECONDS_DATA; i++)
+    if (data[i] != 0)
+      return false;
+
+  return true;
+}
+
+
+int Duration::compare(const Duration& d, bool ignore_sign) const
+{
+  for (int i=0; i<=FRACSECONDS_DATA; i++)
   {
-    // No month or year -- parse DayTime
-    if (0 != Duration::parseDayTimeDuration(s, dtd))
+    if ( (is_negative && !ignore_sign ? -1 : 1) * data[i] >
+         (d.is_negative && !ignore_sign ? -1 : 1) * d.data[i])
       return 1;
 
-    d = dtd;
+    else if ((is_negative && !ignore_sign ? -1 : 1) * data[i] <
+             (d.is_negative && !ignore_sign? -1 : 1) * d.data[i])
+      return -1;
   }
-
-  d.facet = DURATION_FACET;
   return 0;
 }
 
+
+Duration* Duration::operator+(const Duration& d) const
+{
+  int start_data;
+  int end_data;
+  Duration* result;
+
+  if (compare(d, true) == -1)
+    return d.operator+(*this);
+  
+  if (facet == YEARMONTHDURATION_FACET && d.facet == YEARMONTHDURATION_FACET)
+  {
+    start_data = MONTH_DATA;
+    end_data = YEAR_DATA;
+  }
+  else if (facet == DAYTIMEDURATION_FACET && d.facet == DAYTIMEDURATION_FACET)
+  {
+    start_data = FRACSECONDS_DATA;
+    end_data = DAY_DATA;
+  }
+  else
+  {
+    assert(0);
+    return NULL;
+  }
+  
+  result = new Duration(facet);
+  long carry = 0;
+  bool right_operand_sign = (is_negative != d.is_negative);
+  for (int i = start_data; i >= end_data; i--)
+  {
+    if (i == FRACSECONDS_DATA)
+    {
+      double sum = double(data[i] + (right_operand_sign? -1 : 1) * d.data[i]) / FRAC_SECONDS_UPPER_LIMIT;
+      result->data[FRACSECONDS_DATA] = round(frac(sum)*FRAC_SECONDS_UPPER_LIMIT);
+      carry = floor<double>(sum);
+    }
+    else
+    {
+      long sum = data[i] + (right_operand_sign? -1 : 1) * d.data[i] + carry;
+
+      if (i == end_data)
+      {
+        result->data[i] = sum;
+      }
+      else
+      {
+        carry = quotient<long>(sum, max_value[i]);
+        result->data[i] = modulo<long>(sum, max_value[i]);
+      }
+    }
+  }
+
+  result->is_negative = is_negative;
+  
+  return result;
+}
+
+
+Duration* Duration::operator-(const Duration& d) const
+{
+  std::auto_ptr<Duration> temp = std::auto_ptr<Duration>(d.toNegDuration());
+  return operator+(*temp);
+}
+      
+
+Duration* Duration::operator*(const Double& value) const
+{
+  Double result;
+  Double dSeconds;
+  int32_t seconds;
+  int32_t frac_seconds;
+
+  if (facet == DURATION_FACET)
+  {
+    assert(0);
+    return NULL;
+  }
+  
+  Integer significants = Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT);
+
+  result = getTotalSeconds() * value;
+  result = result.round(significants);
+  dSeconds = result.round();
+  NumConversions::doubleToInt(dSeconds.floor(), seconds);
+
+  result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
+
+  NumConversions::doubleToInt(result.round(), frac_seconds);
+
+  Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
+  return d;
+}
+      
+
+Duration* Duration::operator/(const Double& value) const
+{
+  Double result;
+  Double dSeconds;
+  int32_t seconds;
+  int32_t frac_seconds;
+
+  if (facet == DURATION_FACET)
+  {
+    assert(0);
+    return NULL;
+  }
+
+  Integer significants = Integer::parseInt(FRAC_SECONDS_UPPER_LIMIT);
+
+  result = getTotalSeconds() / value;
+  result = result.round(significants);
+  dSeconds = result.round();
+  NumConversions::doubleToInt(dSeconds.floor(), seconds);
+
+  result = (result - dSeconds) * Double::parseInt(FRAC_SECONDS_UPPER_LIMIT);
+  NumConversions::doubleToInt(result.round(), frac_seconds);
+
+  Duration* d = new Duration(facet, seconds<0, 0, 0, 0, 0, 0, seconds, frac_seconds);
+  return d;
+}
+      
+
+Decimal Duration::operator/(const Duration& d) const
+{
+  Decimal op1, op2;
+
+  Decimal::parseDouble(getTotalSeconds(), op1);
+  Decimal::parseDouble(d.getTotalSeconds(), op2);
+  
+  return op1 / op2;
+}
+
+
+Duration* Duration::toNegDuration() const
+{
+  Duration* d = new Duration(*this);
+
+  if (!isZero())
+    d->is_negative = !d->is_negative;
+
+  return d;
+}
+      
+
+Duration* Duration::toDuration() const
+{
+  Duration* d = new Duration(*this);
+  d->facet = DURATION_FACET;
+  return d;
+}
+
+
+Duration* Duration::toYearMonthDuration() const
+{
+  Duration* d = new Duration(*this);
+
+  d->facet = YEARMONTHDURATION_FACET;
+  for (int i=DAY_DATA; i<=FRACSECONDS_DATA; i++)
+    d->data[i] = 0;
+  
+  return d;
+}
+
+
+Duration* Duration::toDayTimeDuration() const
+{
+  Duration* d = new Duration(*this);
+
+  d->data[MONTH_DATA] = 0;
+  d->data[YEAR_DATA] = 0;
+  d->facet = DAYTIMEDURATION_FACET;
+    
+  return d;
+}
+
+
+void Duration::normalize()
+{
+  long carry = 0;
+    
+  for (int i = SECONDS_DATA; i>YEAR_DATA; i--)
+  {
+    data[i] += carry;
+    carry = quotient<long>(data[i], max_value[i]);
+    data[i] = modulo<long>(data[i], max_value[i]);
+  }
+  
+  data[YEAR_DATA] += carry;
+
+  adjustToFacet();
+}
+
+
+void Duration::adjustToFacet()
+{
+  // assumes the data is normalized. Otherwise call normalize(), which will adjust to facet, too
+  if (facet == YEARMONTHDURATION_FACET)
+    for (int i=FRACSECONDS_DATA; i>=DAY_DATA; i--)
+    {
+      if ((data[i] >= max_value[i]/2 && !is_negative)
+          ||
+          (data[i] > max_value[i]/2 && is_negative))
+        data[i-1] += 1;
+
+      data[i] = 0;
+    }
+
+  if (facet == DAYTIMEDURATION_FACET)
+  {
+    data[DAY_DATA] += data[MONTH_DATA] * 30 + data[YEAR_DATA] * 12 * 30;
+    data[MONTH_DATA] = 0;
+    data[YEAR_DATA] = 0;
+  }
+
+  if (isZero())
+    is_negative = false;
+}
+
+
+void Duration::setFacet(FACET_TYPE a_facet)
+{
+  facet = a_facet;
+  normalize();
+}
+  
 
 xqpStringStore_t Duration::toString() const
 {

@@ -52,11 +52,12 @@ protected:
     SECONDS_DATA = 5,
     FRACSECONDS_DATA = 6
   } DATA_TYPE;
-  
+
+protected:  
   FACET_TYPE facet;
 
-  bool    is_negative;
-  int32_t data[7];
+  bool       is_negative;
+  int32_t    data[7];
 
 public:
   /**
@@ -160,35 +161,25 @@ public:
       
   Decimal operator/(const Duration& d) const;
 
-  virtual bool
-  isNegative() const;
+  virtual bool isNegative() const;
 
-  virtual bool
-  isZero() const;
+  virtual bool isZero() const;
 
-  virtual long
-  getYears() const;
+  virtual long getYears() const;
       
-  virtual long
-  getMonths() const;
+  virtual long getMonths() const;
       
-  virtual long
-  getDays() const;
+  virtual long getDays() const;
       
-  virtual long
-  getHours() const;
+  virtual long getHours() const;
       
-  virtual long
-  getMinutes() const;
+  virtual long getMinutes() const;
       
-  virtual xqp_decimal
-  getSeconds() const;
+  virtual xqp_decimal getSeconds() const;
 
-  virtual long
-  getFractionalSeconds() const;
+  virtual long getFractionalSeconds() const;
 
-  virtual long
-  getIntSeconds() const;
+  virtual long getIntSeconds() const;
 
   Double getTotalSeconds() const;
 

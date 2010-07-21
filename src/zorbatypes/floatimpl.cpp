@@ -932,11 +932,49 @@ xqpStringStore_t FloatImpl<FloatType>::toString(bool no_scientific_format) const
 
   if (no_scientific_format || (absVal < upper && absVal >= lower) || absVal == 0) 
   {
+#if 1
+    // This is the "spec" implementation, i.e., it is an exact application of
+    // the spec in  http://www.w3.org/TR/xpath-functions/#casting
     MAPM  decimal_mapm = theFloating;
 #ifndef ZORBA_NO_BIGNUMBERS
     decimal_mapm = decimal_mapm.round(precision);
 #endif
     return Decimal::decimalToString(decimal_mapm, max_precision());
+#else
+    std::stringstream stream;
+    stream.precision(7);
+    stream.setf(std::ios::fixed);
+    stream << theFloating;
+
+    xqpStringStore* result = new xqpStringStore(stream.str());
+
+    // remove non-significant trailing 0's
+    std::string& str = result->str();
+    long i = str.size() - 1;
+    while (str[i] == '0')
+      --i;
+
+    if (i >= 0)
+    {
+      long j = i;
+      while (str[j] != '.')
+        --j;
+
+      if (j >= 0)
+      {
+        if (j == i)
+        {
+          str.resize(i);
+        }
+        else
+        {
+          str.resize(i+1);
+        }
+      }
+    }
+
+    return result;
+#endif
   }
   else
   {
@@ -961,18 +999,23 @@ xqpStringStore_t FloatImpl<FloatType>::toString(bool no_scientific_format) const
     {
       if(*lZeros == '.')
         ++lZeros;
+
       lZeros[1] = 'E';
       lE++;
+
       if(*lE == '+')
         lE++;
+
       else if(*lE == '-')
       {
         lZeros++;
         lZeros[1] = '-';
         lE++;
       }
+
       while(*lE == '0')
         lE++;
+
       strcpy(lZeros+2, lE);
     }
     else

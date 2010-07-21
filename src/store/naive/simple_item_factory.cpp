@@ -103,7 +103,7 @@ bool BasicItemFactory::createAnyURI(store::Item_t& result, const char* value)
 
 bool BasicItemFactory::createString(store::Item_t& result, xqpStringStore_t& value)
 {
-  result = new StringItemNaive(value);
+  result = new StringItem(value);
   return true;
 }
 
@@ -204,14 +204,14 @@ bool BasicItemFactory::createDouble(
     store::Item_t& result,
     const xqp_double& value)
 {
-  result = new DoubleItemNaive(value);
+  result = new DoubleItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createFloat(store::Item_t& result,  const xqp_float& value)
 {
-  result = new FloatItemNaive( value );
+  result = new FloatItem(value);
   return true;
 }
 
@@ -328,14 +328,14 @@ bool BasicItemFactory::createUnsignedByte(store::Item_t& result,  xqp_ubyte valu
 
 bool BasicItemFactory::createBoolean(store::Item_t& result, xqp_boolean value)
 {
-  result = new BooleanItemNaive(value);
+  result = new BooleanItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createDateTime(store::Item_t& result, const xqp_dateTime* value)
 {
-  result = new DateTimeItemNaive(value);
+  result = new DateTimeItem(value);
   return true;
 }
 
@@ -344,7 +344,7 @@ bool BasicItemFactory::createDateTime(
     const xqp_date* date,
     const xqp_time* time)
 {
-  std::auto_ptr<DateTimeItemNaive> dtin(new DateTimeItemNaive());
+  std::auto_ptr<DateTimeItem> dtin(new DateTimeItem());
   int err = DateTime::createDateTime(date, time, dtin->theValue);
   if (err == 0)
   {
@@ -368,7 +368,7 @@ bool BasicItemFactory::createDateTime(
 
   if(DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -394,7 +394,7 @@ bool BasicItemFactory::createDateTime(
 
   if (DateTime::createDateTime(year, month, day, hour, minute, second, &tz, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -413,7 +413,7 @@ bool BasicItemFactory::createDateTime(
 
   if (DateTime::parseDateTime(value, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -446,7 +446,7 @@ bool BasicItemFactory::createDateTime(
 
 bool BasicItemFactory::createDate(store::Item_t& result, const xqp_date* value)
 {
-  result = new DateTimeItemNaive(value);
+  result = new DateTimeItem(value);
   return true;
 }
 
@@ -462,7 +462,7 @@ bool BasicItemFactory::createDate(
 
   if(DateTime::createDate(year, month, day, &tz, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -479,7 +479,7 @@ bool BasicItemFactory::createDate(store::Item_t& result,  const xqpStringStore_t
 
   if (DateTime::parseDate(value, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -492,7 +492,7 @@ bool BasicItemFactory::createDate(store::Item_t& result,  const xqpStringStore_t
 
 bool BasicItemFactory::createTime(store::Item_t& result, const xqp_time* value)
 {
-  result = new DateTimeItemNaive(value);
+  result = new DateTimeItem(value);
   return true;
 }
 
@@ -503,7 +503,7 @@ bool BasicItemFactory::createTime(store::Item_t& result, const xqpStringStore_t&
 
   if( DateTime::parseTime(value, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -525,7 +525,7 @@ bool BasicItemFactory::createTime(
 
   if( DateTime::createTime(hour, minute, second, &tz, dt) == 0 )
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -548,7 +548,7 @@ bool BasicItemFactory::createTime(
 
   if(DateTime::createTime(hour, minute, second, &tz, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -561,7 +561,7 @@ bool BasicItemFactory::createTime(
 
 bool BasicItemFactory::createGDay(store::Item_t& result, const xqp_gDay* value)
 {
-  result = new DateTimeItemNaive(value);
+  result = new DateTimeItem(value);
   return true;
 }
 
@@ -572,7 +572,7 @@ bool BasicItemFactory::createGDay(store::Item_t& result,  const xqpStringStore_t
 
   if (DateTime::parseGDay(value, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -589,7 +589,7 @@ bool BasicItemFactory::createGDay(store::Item_t& result,  short day)
 
   if (DateTime::createGDay(day, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -602,7 +602,7 @@ bool BasicItemFactory::createGDay(store::Item_t& result,  short day)
 
 bool BasicItemFactory::createGMonth(store::Item_t& result, const xqp_gMonth* value)
 {
-  result = new DateTimeItemNaive(value);
+  result = new DateTimeItem(value);
   return true;
 }
 
@@ -613,7 +613,7 @@ bool BasicItemFactory::createGMonth(store::Item_t& result, const xqpStringStore_
 
   if (DateTime::parseGMonth(value, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -630,7 +630,7 @@ bool BasicItemFactory::createGMonth(store::Item_t& result, short month)
 
   if(DateTime::createGMonth(month, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -645,7 +645,7 @@ bool BasicItemFactory::createGMonthDay(
     store::Item_t& result,
     const xqp_gMonthDay* value)
 {
-  result = new DateTimeItemNaive(value);
+  result = new DateTimeItem(value);
   return true;
 }
 
@@ -658,7 +658,7 @@ bool BasicItemFactory::createGMonthDay(
 
   if (DateTime::parseGMonthDay(value, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -675,7 +675,7 @@ bool BasicItemFactory::createGMonthDay(store::Item_t& result,  short month, shor
 
   if(DateTime::createGMonthDay(month, day, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   } else {
     result = NULL;
@@ -686,7 +686,7 @@ bool BasicItemFactory::createGMonthDay(store::Item_t& result,  short month, shor
 
 bool BasicItemFactory::createGYear(store::Item_t& result, const xqp_gYear* value)
 {
-  result = new DateTimeItemNaive(value);
+  result = new DateTimeItem(value);
   return true;
 }
 
@@ -697,7 +697,7 @@ bool BasicItemFactory::createGYear(store::Item_t& result,  const xqpStringStore_
 
   if (DateTime::parseGYear(value, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -714,7 +714,7 @@ bool BasicItemFactory::createGYear(store::Item_t& result,  short year)
 
   if(DateTime::createGYear(year, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -729,7 +729,7 @@ bool BasicItemFactory::createGYearMonth(
     store::Item_t& result,
     const xqp_gYearMonth* value)
 {
-  result = new DateTimeItemNaive(value);
+  result = new DateTimeItem(value);
   return true;
 }
 
@@ -742,7 +742,7 @@ bool BasicItemFactory::createGYearMonth(
 
   if (DateTime::parseGYearMonth(value, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -762,7 +762,7 @@ bool BasicItemFactory::createGYearMonth(
 
   if(DateTime::createGYearMonth(year, month, dt) == 0)
   {
-    result = new DateTimeItemNaive(&dt);
+    result = new DateTimeItem(&dt);
     return true;
   }
   else
@@ -833,14 +833,14 @@ bool BasicItemFactory::createDayTimeDuration(
 
 bool BasicItemFactory::createBase64Binary(store::Item_t& result, xqp_base64Binary value)
 {
-  result = new Base64BinaryItemNaive(value);
+  result = new Base64BinaryItem(value);
   return true;
 }
 
 
 bool BasicItemFactory::createHexBinary(store::Item_t& result,  xqp_hexBinary value)
 {
-  result = new HexBinaryItemNaive(value);
+  result = new HexBinaryItem(value);
   return true;
 }
 

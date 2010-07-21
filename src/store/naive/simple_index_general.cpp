@@ -38,12 +38,13 @@ namespace simplestore
 /******************************************************************************
 
 *******************************************************************************/
-void GeneralIndexValue::addNode(store::Item_t& node, bool multikey)
+void GeneralIndexValue::addNode(store::Item_t& node, bool multikey, bool untyped)
 {
   ulong numNodes = theNodes.size();
   theNodes.resize(numNodes + 1);
   theNodes[numNodes].theNode.transfer(node);
   theNodes[numNodes].theMultiKey = multikey;
+  theNodes[numNodes].theUntyped = untyped;
 }
 
 
@@ -342,6 +343,57 @@ longmap:
                 }
                 else
                 {
+                  // try casting to xs:gMonthDay
+                  untypedItem->castToGMonthDay(castItem);
+                  if (castItem != NULL)
+                  {
+                    ADD_IN_MAP(XS_GMONTH_DAY);
+                  }
+                  else
+                  {
+                    // try casting to xs:gDay
+                    untypedItem->castToGDay(castItem);
+                    if (castItem != NULL)
+                    {
+                      ADD_IN_MAP(XS_GDAY);
+                    }
+                    else
+                    {
+                      // try casting to xs:gMonth
+                      untypedItem->castToGMonth(castItem);
+                      if (castItem != NULL)
+                      {
+                        ADD_IN_MAP(XS_GMONTH);
+                      }
+                      else
+                      {
+                        // try casting to xs:duration
+                        untypedItem->castToDuration(castItem);
+                        if (castItem != NULL)
+                        {
+                          ADD_IN_MAP(XS_DURATION);
+                        }
+                        else
+                        {
+                          // try casting to xs:hexBinary
+                          untypedItem->castToHexBinary(castItem);
+                          if (castItem != NULL)
+                          {
+                            ADD_IN_MAP(XS_HEXBINARY);
+                          }
+                          else
+                          {
+                            // try casting to xs:hexBinary
+                            untypedItem->castToBase64Binary(castItem);
+                            if (castItem != NULL)
+                            {
+                              ADD_IN_MAP(XS_BASE64BINARY);
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -386,13 +438,13 @@ bool GeneralHashIndex::insertInMap(
                         theQname->getStringValue(), "");
     }
     
-    valueSet->addNode(node, multikey);
+    valueSet->addNode(node, multikey, untyped);
     
     return true;
   }
 
   valueSet = new GeneralIndexValue();
-  valueSet->addNode(node, multikey);
+  valueSet->addNode(node, multikey, untyped);
   
   //std::cout << "Index Entry Insert [" << key << "," 
   //          << valueSet << "]" << std::endl;

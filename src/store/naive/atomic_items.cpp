@@ -647,15 +647,15 @@ xqp_string AnyUriItemImpl::show() const
 
 
 /*******************************************************************************
-  class StringItemNaive
+  class StringItem
 ********************************************************************************/
-store::Item* StringItemNaive::getType() const
+store::Item* StringItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_STRING];
 }
 
 
-uint32_t StringItemNaive::hash(long timezone, const XQPCollator* aCollation) const
+uint32_t StringItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   if (aCollation == NULL || aCollation->doMemCmp())
     return xqpStringStore::hash(theValue->c_str());
@@ -664,7 +664,7 @@ uint32_t StringItemNaive::hash(long timezone, const XQPCollator* aCollation) con
 }
 
 
-bool StringItemNaive::equals(
+bool StringItem::equals(
     const store::Item* other,
     long timezone,
     const XQPCollator* aCollation) const
@@ -676,7 +676,7 @@ bool StringItemNaive::equals(
 }
   
 
-long StringItemNaive::compare(
+long StringItem::compare(
     const Item* other,
     long timezone,
     const XQPCollator* aCollation) const
@@ -688,7 +688,7 @@ long StringItemNaive::compare(
 }
 
 
-store::Item_t StringItemNaive::getEBV() const
+store::Item_t StringItem::getEBV() const
 {
   bool b = ! ( theValue->str() == "" );
   store::Item_t bVal;
@@ -697,7 +697,7 @@ store::Item_t StringItemNaive::getEBV() const
 }
 
 
-xqp_string StringItemNaive::show() const
+xqp_string StringItem::show() const
 {
   return "xs:string(" + theValue->str() + ")";
 }
@@ -714,7 +714,7 @@ void AtomicItemTokenizer::operator()( char const *utf8_s, int utf8_len,
 
 
 FTTokenIterator_t
-StringItemNaive::getDocumentTokens( locale::iso639_1::type lang) const 
+StringItem::getDocumentTokens( locale::iso639_1::type lang) const 
 {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create() );
   NaiveFTTokenIterator::FTTokens *tokens = new NaiveFTTokenIterator::FTTokens;
@@ -726,7 +726,7 @@ StringItemNaive::getDocumentTokens( locale::iso639_1::type lang) const
 
 
 FTTokenIterator_t
-StringItemNaive::getQueryTokens( locale::iso639_1::type lang,
+StringItem::getQueryTokens( locale::iso639_1::type lang,
                                  bool wildcards ) const 
 {
   auto_ptr<Tokenizer> tokenizer( Tokenizer::create( wildcards ) );
@@ -876,24 +876,24 @@ xqp_string ENTITYItemImpl::show() const
 /*******************************************************************************
   class DateTimeItem
 ********************************************************************************/
-xqpStringStore_t DateTimeItemNaive::getStringValue() const
+xqpStringStore_t DateTimeItem::getStringValue() const
 {
   return theValue.toString().getStore();
 }
 
 
-void DateTimeItemNaive::getStringValue(xqpStringStore_t& strval) const
+void DateTimeItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = theValue.toString().getStore();
 }
 
-void DateTimeItemNaive::getStringValue(std::string& buf) const
+void DateTimeItem::getStringValue(std::string& buf) const
 {
   buf += theValue.toString().c_str();
 }
 
 
-SchemaTypeCode DateTimeItemNaive::getTypeCode() const 
+SchemaTypeCode DateTimeItem::getTypeCode() const 
 {
   switch (theValue.getFacet())
   {
@@ -927,13 +927,13 @@ SchemaTypeCode DateTimeItemNaive::getTypeCode() const
 }
 
 
-store::Item* DateTimeItemNaive::getType() const
+store::Item* DateTimeItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[getTypeCode()];
 }
 
 
-bool DateTimeItemNaive::equals(
+bool DateTimeItem::equals(
     const store::Item* aItem,
     long timezone,
     const XQPCollator* coll) const
@@ -950,7 +950,7 @@ bool DateTimeItemNaive::equals(
 }
 
 
-long DateTimeItemNaive::compare(
+long DateTimeItem::compare(
     const Item* other,
     long timezone,
     const XQPCollator* aCollation) const
@@ -967,13 +967,13 @@ long DateTimeItemNaive::compare(
 }
 
 
-uint32_t DateTimeItemNaive::hash(long timezone, const XQPCollator* aCollation) const
+uint32_t DateTimeItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash(0);
 }
 
 
-store::Item_t DateTimeItemNaive::getEBV() const
+store::Item_t DateTimeItem::getEBV() const
 {
   switch (theValue.getFacet())
   {
@@ -1014,7 +1014,7 @@ store::Item_t DateTimeItemNaive::getEBV() const
 }
 
 
-xqp_string DateTimeItemNaive::show() const
+xqp_string DateTimeItem::show() const
 {
   return theValue.toString();
 }
@@ -1084,7 +1084,7 @@ store::Item* DurationItem::getType() const
 
 store::Item_t DurationItem::getEBV() const
 {
-  ZORBA_ERROR_DESC( FORG0006, "Effective Boolean Value is not defined for Duration!");
+  ZORBA_ERROR_DESC(FORG0006, "Effective Boolean Value is not defined for Duration!");
   return NULL;
 }
 
@@ -1099,13 +1099,13 @@ xqp_string DurationItem::show() const
 /*******************************************************************************
   class DoubleItem
 ********************************************************************************/
-store::Item* DoubleItemNaive::getType() const
+store::Item* DoubleItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_DOUBLE];
 }
 
 
-store::Item_t DoubleItemNaive::getEBV() const
+store::Item_t DoubleItem::getEBV() const
 {
   bool b;
   if (theValue.isNaN()) 
@@ -1122,56 +1122,56 @@ store::Item_t DoubleItemNaive::getEBV() const
 }
 
 
-xqpStringStore_t DoubleItemNaive::getStringValue() const
+xqpStringStore_t DoubleItem::getStringValue() const
 {
   return NumConversions::doubleToStr(theValue);
 }
 
-void DoubleItemNaive::getStringValue(xqpStringStore_t& strval) const
+void DoubleItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = NumConversions::doubleToStr(theValue);
 }
 
-void DoubleItemNaive::getStringValue(std::string& buf) const
+void DoubleItem::getStringValue(std::string& buf) const
 {
   buf += NumConversions::doubleToStr(theValue)->c_str();
 }
 
-xqp_string DoubleItemNaive::show() const
+xqp_string DoubleItem::show() const
 {
   return "xs:double(" + getStringValue()->str() + ")";
 }
 
 
-bool DoubleItemNaive::isNaN() const 
+bool DoubleItem::isNaN() const 
 {
   return theValue.isNaN();
 }
 
 
-bool DoubleItemNaive::isPosOrNegInf() const 
+bool DoubleItem::isPosOrNegInf() const 
 {
   return theValue.isPosInf() || theValue.isNegInf();
 }
 
 
 uint32_t
-DoubleItemNaive::hash(long timezone, const XQPCollator* aCollation) const
+DoubleItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
 
   
 /*******************************************************************************
-  class FloatItemNaive
+  class FloatItem
 ********************************************************************************/
-store::Item* FloatItemNaive::getType() const
+store::Item* FloatItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_FLOAT];
 }
 
 
-store::Item_t FloatItemNaive::getEBV() const
+store::Item_t FloatItem::getEBV() const
 {
   bool b;
   if (theValue.isNaN()) {
@@ -1184,37 +1184,37 @@ store::Item_t FloatItemNaive::getEBV() const
   return bVal;
 }
 
-xqpStringStore_t FloatItemNaive::getStringValue() const
+xqpStringStore_t FloatItem::getStringValue() const
 {
   return NumConversions::floatToStr(theValue);
 }
 
-void FloatItemNaive::getStringValue(xqpStringStore_t& strval) const
+void FloatItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = NumConversions::floatToStr(theValue);
 }
 
-void FloatItemNaive::getStringValue(std::string& buf) const
+void FloatItem::getStringValue(std::string& buf) const
 {
   buf += NumConversions::floatToStr(theValue)->c_str();
 }
 
-xqp_string FloatItemNaive::show() const
+xqp_string FloatItem::show() const
 {
   return "xs:float(" + getStringValue()->str() + ")";
 }
 
-bool FloatItemNaive::isNaN() const 
+bool FloatItem::isNaN() const 
 {
   return theValue.isNaN();
 }
 
-bool FloatItemNaive::isPosOrNegInf() const 
+bool FloatItem::isPosOrNegInf() const 
 {
   return theValue.isPosInf() || theValue.isNegInf();
 }
 
-uint32_t FloatItemNaive::hash(long timezone, const XQPCollator* aCollation) const
+uint32_t FloatItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
@@ -1839,24 +1839,24 @@ xqp_string UnsignedByteItem::show() const
 
 
 /*******************************************************************************
-  class BooleanItemNaive
+  class BooleanItem
 ********************************************************************************/
-store::Item* BooleanItemNaive::getType() const
+store::Item* BooleanItem::getType() const
 {
   return GET_STORE().theSchemaTypeNames[XS_BOOLEAN];
 }
 
-uint32_t BooleanItemNaive::hash ( long timezone, const XQPCollator* aCollation ) const
+uint32_t BooleanItem::hash ( long timezone, const XQPCollator* aCollation ) const
 {
   return theValue?0:1;
 }
 
-store::Item_t BooleanItemNaive::getEBV() const
+store::Item_t BooleanItem::getEBV() const
 {
   return this->getAtomizationValue();
 }
 
-xqpStringStore_t BooleanItemNaive::getStringValue() const
+xqpStringStore_t BooleanItem::getStringValue() const
 {
   if (theValue)
     return new xqpStringStore("true");
@@ -1864,7 +1864,7 @@ xqpStringStore_t BooleanItemNaive::getStringValue() const
     return new xqpStringStore("false");
 }
 
-void BooleanItemNaive::getStringValue(xqpStringStore_t& strval) const
+void BooleanItem::getStringValue(xqpStringStore_t& strval) const
 {
   if (theValue)
     strval = new xqpStringStore("true");
@@ -1872,7 +1872,7 @@ void BooleanItemNaive::getStringValue(xqpStringStore_t& strval) const
     strval = new xqpStringStore("false");
 }
 
-void BooleanItemNaive::getStringValue(std::string& buf) const
+void BooleanItem::getStringValue(std::string& buf) const
 {
   if (theValue)
     buf += "true";
@@ -1880,7 +1880,7 @@ void BooleanItemNaive::getStringValue(std::string& buf) const
     buf += "false";
 }
 
-xqp_string BooleanItemNaive::show() const
+xqp_string BooleanItem::show() const
 {
   return "xs:boolean(" + getStringValue()->str() + ")";
 }
@@ -1889,75 +1889,75 @@ xqp_string BooleanItemNaive::show() const
 
 
 /*******************************************************************************
-  class Base64BinaryItemNaive
+  class Base64BinaryItem
 ********************************************************************************/
-store::Item* Base64BinaryItemNaive::getType() const 
+store::Item* Base64BinaryItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_BASE64BINARY];
 }
 
 
-xqpStringStore_t Base64BinaryItemNaive::getStringValue() const 
+xqpStringStore_t Base64BinaryItem::getStringValue() const 
 {
   return theValue.str();
 }
 
 
-void Base64BinaryItemNaive::getStringValue(xqpStringStore_t& strval) const
+void Base64BinaryItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = theValue.str();
 }
 
 
-void Base64BinaryItemNaive::getStringValue(std::string& buf) const
+void Base64BinaryItem::getStringValue(std::string& buf) const
 {
   buf += theValue.str()->c_str();
 }
 
 
-xqp_string Base64BinaryItemNaive::show() const 
+xqp_string Base64BinaryItem::show() const 
 {
   return "xs:base64Binary(" + getStringValue()->str() + ")";
 }
 
 
 uint32_t
-Base64BinaryItemNaive::hash(long timezone, const XQPCollator* aCollation) const
+Base64BinaryItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
 
 /*******************************************************************************
-  class HexBinaryItemNaive
+  class HexBinaryItem
 ********************************************************************************/
-store::Item* HexBinaryItemNaive::getType() const 
+store::Item* HexBinaryItem::getType() const 
 {
   return GET_STORE().theSchemaTypeNames[XS_HEXBINARY];
 }
 
 
-xqpStringStore_t HexBinaryItemNaive::getStringValue() const 
+xqpStringStore_t HexBinaryItem::getStringValue() const 
 {
   return theValue.str();
 }
 
-void HexBinaryItemNaive::getStringValue(xqpStringStore_t& strval) const
+void HexBinaryItem::getStringValue(xqpStringStore_t& strval) const
 {
   strval = theValue.str();
 }
 
-void HexBinaryItemNaive::getStringValue(std::string& buf) const
+void HexBinaryItem::getStringValue(std::string& buf) const
 {
   buf += theValue.str()->c_str();
 }
 
-xqp_string HexBinaryItemNaive::show() const 
+xqp_string HexBinaryItem::show() const 
 {
   return "xs:hexBinary(" + getStringValue()->str() + ")";
 }
 
 uint32_t
-HexBinaryItemNaive::hash(long timezone, const XQPCollator* aCollation) const
+HexBinaryItem::hash(long timezone, const XQPCollator* aCollation) const
 {
   return theValue.hash();
 }
