@@ -1015,6 +1015,20 @@ xqtref_t Schema::createXQTypeFromTypeDefForBuiltinTypes(
   {
     result = GENV_TYPESYSTEM.NMTOKEN_TYPE_ONE;
   }
+  else if ( XMLString::equals(XMLChArray("NMTOKENS").get (), local) )
+  {
+	store::Item_t qname;
+	GENV_ITEMFACTORY->createQName(qname,
+								  XML_SCHEMA_NS,
+								  "XS",
+								  "NMTOKENS");
+
+	result = new UserDefinedXQType(typeManager,
+								   qname,
+								   NULL,
+								   TypeConstants::QUANT_ONE,
+								   GENV_TYPESYSTEM.NMTOKEN_TYPE_ONE.getp());
+  }
   else if ( XMLString::equals(XMLChArray("IDREF").get (), local) )
   {
     result = GENV_TYPESYSTEM.IDREF_TYPE_ONE;
