@@ -152,11 +152,27 @@ example_10( Zorba * aZorba )
   XQuery_t lQuery1 = aZorba->compileQuery("declare variable $i external; 1 to $i");
   XQuery_t lQuery2 = lQuery1->clone();
 
-  Iterator_t lIterator1 = lQuery1->iterator();
-  DynamicContext* lDynContext1 = lQuery1->getDynamicContext();
-  lDynContext1->setVariable("i", aZorba->getItemFactory()->createInteger(5));
+  Iterator_t lIterator1;
+  DynamicContext* lDynContext1 = NULL;
 
-  lIterator1->open();
+  try
+  {
+    lDynContext1 = lQuery1->getDynamicContext();
+    lDynContext1->setVariable("i", aZorba->getItemFactory()->createInteger(5));
+
+    lIterator1 = lQuery1->iterator();  
+    lIterator1->open();
+  }
+  catch (zorba::ZorbaException& e)
+  {
+    std::cout << e.getDescription() << std::endl;
+    throw;
+  }
+  catch (...)
+  {
+    std::cout << "EXCEPTION !!!!" << std::endl;
+    throw;
+  }
 
   Item lItem;
   while ( lIterator1->next(lItem) ) {

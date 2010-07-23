@@ -244,7 +244,7 @@ bool ZorbaError::isXQueryTypeError() const
           (XUTY0004 <= theErrorCode && theErrorCode <= XUTY0008) ||
           (XUTY0010 <= theErrorCode && theErrorCode <= XUTY0013) ||
           theErrorCode == XUTY0022 ||
-          theErrorCode == XDTY0001_COLLECTION_INVALID_NODE_TYPE);
+          (XDTY0000_MIN < theErrorCode && theErrorCode < XDTY0000_MAX));
 }
     
 
@@ -261,13 +261,6 @@ bool ZorbaError::isSerializationError() const
 }
     
  
-bool ZorbaError::isInternalError() const
-{
-  return XQP0000_DYNAMIC_RUNTIME_ERROR <= theErrorCode && 
-    theErrorCode <= MAX_ZORBA_ERROR_CODE;
-}
-  
-
 bool ZorbaError::isStaticError() const
 {
   return isXPathStaticError() || isXQueryStaticError();
@@ -286,10 +279,28 @@ bool ZorbaError::isTypeError() const
 }
 
 
+bool ZorbaError::isStoreError() const
+{
+  return STR0000_MIN < theErrorCode && theErrorCode < STR0000_MAX;
+}
+
+
+bool ZorbaError::isAPIError() const
+{
+  return API0000_MIN < theErrorCode && theErrorCode < API0000_MAX;
+}
+
+
+bool ZorbaError::isInternalError() const
+{
+  return XQP0000_MIN < theErrorCode && theErrorCode < XQP0000_MAX;
+}
+
+
 std::auto_ptr<ZorbaError> ZorbaError::clone() const
 {
-    std::auto_ptr<ZorbaError> err(new ZorbaError(*this));
-    return err;
+  std::auto_ptr<ZorbaError> err(new ZorbaError(*this));
+  return err;
 }
 
 

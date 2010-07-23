@@ -301,15 +301,21 @@ namespace zorba {
 
       /** \brief Close the query and release all aquired ressources.
        *
-       * While a query is compiled and/or active, it holds on to a couple of ressources.
-       * Before Zorba can be safely shutdown, all ressources must be released.
-       * For queries this can be done by calling close. However, if close is not
-       * called explicitly, it will be automatically called by the XQuery objects
-       * destructor, i.e. if the last smart pointer holding this XQuery object is destroyed.
+       * While a query is compiled and/or active, it holds on to a couple of
+       * ressources. Before Zorba can be safely shutdown, all ressources must
+       * be released. For queries this can be done by calling close. However,
+       * if close is not called explicitly, it will be automatically called by
+       * the XQuery object's destructor, when the last smart pointer pointing
+       * this XQuery object is destroyed. 
+
+       * Note: After an XQuery object is closed, calling close() again on the
+       * same object is a noop. However, calling any method other than close()
+       * on a closed XQuery object is prohibited (an error will be raised).
        *
-       * Note that calling close explicitly is usually not necessary. 
-       *
-       * @throw SystemException if the XQuery object has already been closed.
+       * Note: if an iterator has been created to retreive the result of an
+       * XQuery object (@see iterator()), that itrator will be closed when 
+       * the query is closed, and the association between XQuery object and
+       * Iterator object will be destroyed.
        */
       virtual void
       close() = 0;

@@ -79,8 +79,6 @@ void SimpleLazyTempSeq::init(store::Iterator_t& aIter, bool aCopy)
   theMatFinished = false;
   thePurgedUpTo = 0;
   theItems.clear();
-
-  theIterator->open();
 }
 
 

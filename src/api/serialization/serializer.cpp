@@ -1877,8 +1877,9 @@ serializer::serialize(
     }
 
     // PUL's cannot be serialized
-    if (lItem->isPul()) {
-      ZORBA_ERROR(API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
+    if (lItem->isPul()) 
+    {
+      ZORBA_ERROR(API0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);
@@ -1939,7 +1940,7 @@ void serializer::serialize(intern::Serializable* object,
 
     // PUL's cannot be serialized
     if (lItem->isPul()) {
-      ZORBA_ERROR(API0023_CANNOT_SERIALIZE_UPDATE_QUERY);
+      ZORBA_ERROR(API0007_CANNOT_SERIALIZE_PUL);
     }
 
     e->emit_item(&*lItem);

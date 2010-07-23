@@ -26,7 +26,7 @@
 namespace zorba {
 
 /*******************************************************************************
-    class PlanWraper
+
 ********************************************************************************/
 PlanWrapper::PlanWrapper(
     const PlanIter_t& aIter,
@@ -38,9 +38,7 @@ PlanWrapper::PlanWrapper(
   :
   theIterator(aIter),
   theDynamicContext(NULL),
-#ifndef NDEBUG
-  theIsOpened(false),
-#endif
+  theIsOpen(false),
   theTimeout(0)
 {
   assert (aCompilerCB);
@@ -70,11 +68,14 @@ PlanWrapper::PlanWrapper(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 PlanWrapper::~PlanWrapper()
 {
-#ifndef NDEBUG
-  assert(!theIsOpened);
-#endif
+  if (theIsOpen)
+    theIterator->close(*thePlanState);
+
   if (theTimeout) 
   {
     // Terminate could throw an exception
@@ -96,12 +97,12 @@ PlanWrapper::~PlanWrapper()
 }
 
 
-void
-PlanWrapper::open()
+/*******************************************************************************
+
+********************************************************************************/
+void PlanWrapper::open()
 {
-#ifndef NDEBUG
-  assert(!theIsOpened);
-#endif
+  ZORBA_ASSERT(!theIsOpen);
 
   uint32_t offset = 0;
   theIterator->open(*thePlanState, offset);
@@ -113,44 +114,46 @@ PlanWrapper::open()
     theTimeout->start();
   }
 
-#ifndef NDEBUG
-  theIsOpened = true;
-#endif
+  theIsOpen = true;
 }
 
 
-bool
-PlanWrapper::next(store::Item_t& result)
+/*******************************************************************************
+
+********************************************************************************/
+bool PlanWrapper::next(store::Item_t& result)
 {
-#ifndef NDEBUG
-  assert(theIsOpened);
-#endif
+  ZORBA_ASSERT(theIsOpen);
 
   return PlanIterator::consumeNext(result, theIterator.getp(), *thePlanState);
 }
 
 
-void
-PlanWrapper::reset()
+/*******************************************************************************
+
+********************************************************************************/
+void PlanWrapper::reset()
 {
-#ifndef NDEBUG
-  assert(theIsOpened);
-#endif
+  ZORBA_ASSERT(theIsOpen);
+
   theIterator->reset(*thePlanState); 
 }
 
 
-void PlanWrapper::close() throw ()
+/*******************************************************************************
+
+********************************************************************************/
+void PlanWrapper::close()
 {
+  ZORBA_ASSERT(theIsOpen);
+  
   theIterator->close(*thePlanState);
 
-#ifndef NDEBUG
-  theIsOpened = false;
-#endif
+  theIsOpen = false;
 }
 
 
-void PlanWrapper::checkDepth (const QueryLoc& loc)
+void PlanWrapper::checkDepth(const QueryLoc& loc)
 {
   thePlanState->checkDepth(loc);
 }

@@ -351,6 +351,8 @@ void dynamic_context::set_variable(
   if (! context_value(key, v, &map))
     ZORBA_ASSERT (false);
 
+  var_iterator->open();
+
   // For now, use eager eval because the assignment expression may reference
   // the variable itself, and the current value of the variable is overwriten
   // here by this temp sequence. TODO: use lazy eval if we know the the 
@@ -358,6 +360,8 @@ void dynamic_context::set_variable(
   store::TempSeq_t seq = GENV_STORE.createTempSeq(var_iterator, 
                                                   false, // no copy
                                                   false); // lazy eval
+
+  var_iterator->close();
 
   // variables can be set multiple times, so we need to make sure to remove
   // previously set temp sequences

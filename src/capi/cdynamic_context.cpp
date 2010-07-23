@@ -82,42 +82,47 @@ namespace zorbac {
     return &theXQCDynamic;
   }
 
-  XQC_Error 
-  CDynamicContext::set_context_item
-  (XQC_DynamicContext* context, XQC_Sequence* value)
-  {
-    DC_TRY {
-      CSequence* lSeq = CSequence::get(value);
-      Item lItem = lSeq->getCPPItem();
-      if (lItem.isNull()) {
-        return XQC_NO_CURRENT_ITEM;
-      }
 
-      me->theContext->setContextItem(lItem);
+XQC_Error 
+CDynamicContext::set_context_item(
+    XQC_DynamicContext* context,
+    XQC_Sequence* value)
+{
+  DC_TRY {
+    CSequence* lSeq = CSequence::get(value);
+    Item lItem = lSeq->getCPPItem();
+    if (lItem.isNull()) {
+      return XQC_NO_CURRENT_ITEM;
     }
-    DC_CATCH;
+    
+    me->theContext->setContextItem(lItem);
   }
+  DC_CATCH;
+}
 
-  XQC_Error
-  CDynamicContext::get_context_item
-  (const XQC_DynamicContext* context, XQC_Sequence** value)
-  {
-    DC_TRY {
-      Item lItem;
-      if (! me->theContext->getContextItem(lItem)) {
-        return XQC_NO_CURRENT_ITEM;
-      }
-      std::auto_ptr<SingleItemSequence> lItemSeq(new SingleItemSequence(lItem));
-      // Wrap in a CSequence to produce an XQC_Sequence. We pass
-      // "true" to make CSequence assume memory-management
-      // responsibility for the SingleItemSequence.
-      std::auto_ptr<CSequence> lSeq(new CSequence(lItemSeq.get(), true, NULL));
-      lItemSeq.release();
-      (*value) = lSeq.release()->getXQC();
-      return XQC_NO_ERROR;
+
+XQC_Error
+CDynamicContext::get_context_item(
+    const XQC_DynamicContext* context,
+    XQC_Sequence** value)
+{
+  DC_TRY {
+    Item lItem;
+    if (! me->theContext->getContextItem(lItem)) {
+      return XQC_NO_CURRENT_ITEM;
     }
-    DC_CATCH;
+    std::auto_ptr<SingleItemSequence> lItemSeq(new SingleItemSequence(lItem));
+    // Wrap in a CSequence to produce an XQC_Sequence. We pass
+    // "true" to make CSequence assume memory-management
+    // responsibility for the SingleItemSequence.
+    std::auto_ptr<CSequence> lSeq(new CSequence(lItemSeq.get(), true, NULL));
+    lItemSeq.release();
+    (*value) = lSeq.release()->getXQC();
+    return XQC_NO_ERROR;
   }
+  DC_CATCH;
+}
+  
 
 //   XQC_Error
 //   CDynamicContext::set_context_document
@@ -134,60 +139,67 @@ namespace zorbac {
 //   }
   
 
-  XQC_Error
-  CDynamicContext::set_variable
-  (XQC_DynamicContext* context, const char* uri, const char* name,
+XQC_Error
+CDynamicContext::set_variable(
+    XQC_DynamicContext* context,
+    const char* uri,
+    const char* name,
     XQC_Sequence* seq)
+{
+  DC_TRY 
   {
-    DC_TRY {
-      CSequence* lSeq = CSequence::get(seq);
-      Iterator_t lIter = lSeq->getCPPIterator();
+    CSequence* lSeq = CSequence::get(seq);
+    Iterator_t lIter = lSeq->getCPPIterator();
 
-      me->theContext->setVariable(uri == NULL ? "" : uri, name, lIter);
+    me->theContext->setVariable(uri == NULL ? "" : uri, name, lIter);
 
-      // XQC claims that the XQC_DynamicContext takes ownership,
-      // memory allocation-wise, of any XQC_Sequences passed to
-      // set_variable(). This seems weird, but hey.
-      me->theBoundVariables.push_back(seq);
-    }
-    DC_CATCH;
+    // XQC claims that the XQC_DynamicContext takes ownership,
+    // memory allocation-wise, of any XQC_Sequences passed to
+    // set_variable(). This seems weird, but hey.
+    me->theBoundVariables.push_back(seq);
   }
+  DC_CATCH;
+}
 
-  XQC_Error
-  CDynamicContext::get_variable
-  (const XQC_DynamicContext* context, const char* uri, const char* name,
+
+XQC_Error
+CDynamicContext::get_variable(
+    const XQC_DynamicContext* context,
+    const char* uri,
+    const char* name,
     XQC_Sequence** seq)
+{
+  DC_TRY 
   {
-    DC_TRY {
-      Item lItem;
-      Iterator_t lIter;
-      if (! me->theContext->getVariable(uri, name, lItem, lIter)) {
-        return XQC_INVALID_ARGUMENT;
-      }
+    Item lItem;
+    Iterator_t lIter;
+    if (! me->theContext->getVariable(uri, name, lItem, lIter)) {
+      return XQC_INVALID_ARGUMENT;
+    }
 
-      // We could have gotten a single Item or an Iterator. We assume
-      // the Item takes precedence if not null.
-      if (! lItem.isNull()) {
-        std::auto_ptr<SingleItemSequence> lItemSeq
-          (new SingleItemSequence(lItem));
-        // Wrap in a CSequence to produce an XQC_Sequence. We pass
-        // "true" to make CSequence assume memory-management
-        // responsibility for the SingleItemSequence.
-        std::auto_ptr<CSequence> lSeq
-          (new CSequence(lItemSeq.get(), true, NULL));
-
-        lItemSeq.release();
-        (*seq) = lSeq.release()->getXQC();
-        return XQC_NO_ERROR;
-      }
-
-      // Otherwise, the Iterator must be the value.
-      std::auto_ptr<CSequence> lSeq (new CSequence(lIter, me->theErrorHandler));
+    // We could have gotten a single Item or an Iterator. We assume
+    // the Item takes precedence if not null.
+    if (! lItem.isNull()) {
+      std::auto_ptr<SingleItemSequence> lItemSeq
+        (new SingleItemSequence(lItem));
+      // Wrap in a CSequence to produce an XQC_Sequence. We pass
+      // "true" to make CSequence assume memory-management
+      // responsibility for the SingleItemSequence.
+      std::auto_ptr<CSequence> lSeq
+        (new CSequence(lItemSeq.get(), true, NULL));
+      
+      lItemSeq.release();
       (*seq) = lSeq.release()->getXQC();
       return XQC_NO_ERROR;
     }
-    DC_CATCH;
+    
+    // Otherwise, the Iterator must be the value.
+    std::auto_ptr<CSequence> lSeq (new CSequence(lIter, me->theErrorHandler));
+    (*seq) = lSeq.release()->getXQC();
+    return XQC_NO_ERROR;
   }
+  DC_CATCH;
+}
   
 //   XQC_Error
 //   CDynamicContext::set_variable_document

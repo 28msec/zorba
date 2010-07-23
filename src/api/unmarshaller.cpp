@@ -31,82 +31,84 @@ namespace zorba {
  * convert its interface to the interface of the internal zorba
  * iterators.
  */
-  class NonStoreIteratorWrapper : public store::Iterator
+class NonStoreIteratorWrapper : public store::Iterator
+{
+private:
+  zorba::Iterator* theIter;
+
+public:
+  NonStoreIteratorWrapper(zorba::Iterator* aIter) : theIter(aIter)
   {
-    private:
-      zorba::Iterator* theIter;
-
-    public:
-      NonStoreIteratorWrapper(zorba::Iterator* aIter)
-        : theIter(aIter)
-      {
-      }
-
-      virtual void open()
-      {
-        theIter->open();
-      }
-
-      virtual bool next(store::Item_t& result)
-      {
-        Item lItem;
-        while ( theIter->next(lItem) ) {
-          result = Unmarshaller::getInternalItem(lItem);
-          return true;
-        }
-        result = NULL;
-        return false;
-      }
-
-      virtual void reset()
-      {
-        theIter->close();
-      }
-
-      virtual void close()
-      {
-        theIter->close();
-      }
-  };
-
-  store::Item*
-  Unmarshaller::getInternalItem(const Item& aItem)
-  {
-    return aItem.m_item;
   }
 
-  xqpStringStore*
-  Unmarshaller::getInternalString(const String& aString)
+  virtual void open()
   {
-    return aString.m_string;
+    theIter->open();
   }
 
-  static_context*
-  Unmarshaller::getInternalStaticContext(const StaticContext_t& aCtx)
+  virtual bool next(store::Item_t& result)
   {
-    return static_cast<StaticContextImpl*>(aCtx.get())->theCtx;
-  }
-
-  dynamic_context*
-  Unmarshaller::getInternalDynamicContext(DynamicContext* aCtx)
-  {
-    return static_cast<DynamicContextImpl*>(aCtx)->theCtx; 
-  }
-
-  store::Iterator_t
-  Unmarshaller::getInternalIterator(Iterator* aIter)
-  {
-    StoreIteratorImpl* lStoreIter = dynamic_cast<StoreIteratorImpl*> (aIter);
-    if (lStoreIter != NULL) {
-      return lStoreIter->theIterator;
+    Item lItem;
+    while ( theIter->next(lItem) ) 
+    {
+      result = Unmarshaller::getInternalItem(lItem);
+      return true;
     }
-    return store::Iterator_t(new NonStoreIteratorWrapper(aIter));
+    result = NULL;
+    return false;
   }
 
-  store::Collection_t
-  Unmarshaller::getInternalCollection(const Collection_t& aCollection)
+  virtual void reset()
   {
-    return static_cast<CollectionImpl*>(aCollection.get())->theCollection; 
+    theIter->close();
+    theIter->open();
   }
+  
+  virtual void close()
+  {
+    theIter->close();
+  }
+};
+
+
+store::Item* Unmarshaller::getInternalItem(const Item& aItem)
+{
+  return aItem.m_item;
+}
+
+
+xqpStringStore* Unmarshaller::getInternalString(const String& aString)
+{
+  return aString.m_string;
+}
+
+
+static_context* Unmarshaller::getInternalStaticContext(const StaticContext_t& aCtx)
+{
+  return static_cast<StaticContextImpl*>(aCtx.get())->theCtx;
+}
+
+
+dynamic_context* Unmarshaller::getInternalDynamicContext(DynamicContext* aCtx)
+{
+  return static_cast<DynamicContextImpl*>(aCtx)->theCtx; 
+}
+
+
+store::Iterator_t Unmarshaller::getInternalIterator(Iterator* aIter)
+{
+  StoreIteratorImpl* lStoreIter = dynamic_cast<StoreIteratorImpl*> (aIter);
+  if (lStoreIter != NULL) {
+    return lStoreIter->theIterator;
+  }
+  return store::Iterator_t(new NonStoreIteratorWrapper(aIter));
+}
+
+
+store::Collection_t Unmarshaller::getInternalCollection(const Collection_t& aCollection)
+{
+  return static_cast<CollectionImpl*>(aCollection.get())->theCollection; 
+}
+
 
 } /* namespace zorba */

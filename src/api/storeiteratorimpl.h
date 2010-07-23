@@ -26,33 +26,36 @@ class ErrorHandler;
 /*******************************************************************************
   Iterator used for iterating over an internal store::Iterator_t.
 ********************************************************************************/
-class StoreIteratorImpl  : public Iterator
+class StoreIteratorImpl : public Iterator
 {
-    friend class Unmarshaller;
-    friend class Item;
-    friend class DynamicContextImpl;
+  friend class Unmarshaller;
+  friend class Item;
+  friend class DynamicContextImpl;
 
-  protected:
-    store::Iterator_t theIterator; 
-    ErrorHandler*     theErrorHandler;
-    bool              theIsOpened;     
-    bool              theHaveLock;
+protected:
+  store::Iterator_t theIterator; 
+  ErrorHandler*     theErrorHandler;
+  bool              theIsOpen;     
+  bool              theHaveLock;
     
-    StoreIteratorImpl(store::Iterator_t, ErrorHandler*);
+  StoreIteratorImpl(store::Iterator_t, ErrorHandler*);
 
-  public:
-    virtual ~StoreIteratorImpl();
+public:
+  virtual ~StoreIteratorImpl();
     
-    virtual void 
-    open();
+  virtual void open();
     
-    virtual bool
-    next(Item&);
+  virtual bool next(Item&);
     
-    virtual void 
-    close();
+  virtual void close();
 };
   
 } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

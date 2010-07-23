@@ -22,44 +22,50 @@
 
 namespace zorba {
 
-  /** \brief Interface for an Iterator over an instance of the XML Data Model.
-    *
-    * Note: This class is reference counted. When writing multi-threaded clients,
-    * it is the responibility of the client code to synchronize assignments to the
-    * SmartPtr holding this object.
-    */
-  class ZORBA_DLL_PUBLIC Iterator : public ItemSequence, public SmartObject
-  {
-    public:
-      /** \brief Destructor
-       */
-      virtual ~Iterator() {}
+/** \brief Interface for an Iterator over an instance of the XML Data Model
+ *  (i.e., a sequence of items).
+ *
+ * Note: This class is reference counted. When writing multi-threaded clients,
+ * it is the responibility of the client code to synchronize assignments to the
+ * SmartPtr holding this object.
+ */
+class ZORBA_DLL_PUBLIC Iterator : public ItemSequence, public SmartObject
+{
+ public:
+  /** \brief Destructor
+   */
+  virtual ~Iterator() {}
 
-      /** \brief Start iterating
-       *
-       * This function needs to be called before calling next.
-       * @throw ZorbaException if an error occurs.
-       */
-      virtual void 
-      open() = 0;
+  /** \brief Start iterating.
+   *
+   * This function needs to be called before calling next() or close().
+   * It should not be called again until after close() has been called.
+   *
+   * @throw ZorbaException if an error occurs, or the iterator is open already.
+   */
+  virtual void 
+  open() = 0;
 
-      /** \brief Get the next Item of the sequence.
-       * @param aItem the next Item of the result sequence if true is returned by the function.
-       * @return true if the sequence is not exhausted, false otherwise.
-       * @throw ZorbaException if an error occurs during query execution or the Iterator has
-       *        not been opened.
-       */
-      virtual bool
-      next(Item& aItem) = 0;
+  /** \brief Get the next Item of the sequence.
+   *
+   * @param  aItem the next Item of the result sequence, if true is returned
+   *         by the function.
+   * @return false if all the items of the sequence have been returned already
+   *         by previous invocations of next(); true otherwise.
+   * @throw  ZorbaException if an error occurs, or the Iterator has not been opened.
+   */
+  virtual bool
+  next(Item& aItem) = 0;
+  
+  /** \brief Stop iterating.
+   *
+   * After calling close(), neither close() nor next() may be called again.
+   * However, the iterator may be re-opened (by calling open())
+   */
+  virtual void 
+  close() = 0;
+};
 
-      /** \brief Stop iterating.
-       *
-       * In order to call Iterator::next, open has to been called.
-       */
-      virtual void 
-      close() = 0;
-
-  };
 
 } /* namespace zorba */
 #endif

@@ -17,84 +17,115 @@
 
 #include <zorba/item.h>
 
+#include "api/zorbaimpl.h"
+
 #include "system/globalenv.h"
 
 #include "zorbaerrors/error_manager.h"
+
 #include "store/api/item.h"
 #include "store/api/iterator.h"
 #include "store/api/store.h"
 
 namespace zorba {
 
-#define RESULT_ITERATOR_TRY try {
- 
-#define RESULT_ITERATOR_CATCH                                  \
-} catch (error::ZorbaError& /*e*/)                             \
+#define VECTOR_ITERATOR_CATCH                                  \
+catch (error::ZorbaError& e)                                   \
 {                                                              \
+  ZorbaImpl::notifyError(theErrorHandler, e);                  \
 }                                                              \
-catch (std::exception& /*e*/)                                  \
+catch (std::exception& e)                                      \
 {                                                              \
+  ZorbaImpl::notifyError(theErrorHandler, e.what());           \
 }                                                              \
 catch (...)                                                    \
 {                                                              \
+  ZorbaImpl::notifyError(theErrorHandler);                     \
 } 
 
 
+/*******************************************************************************
+
+********************************************************************************/
 VectorIterator::VectorIterator(
     const std::vector<store::Item_t>& aVector,
     ErrorHandler* aErrorHandler)
   :
   theVector(aVector),
   theErrorHandler(aErrorHandler),
-  theIsOpened(false)
+  theIsOpen(false)
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 VectorIterator::~VectorIterator()
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void VectorIterator::open()
 {
-  RESULT_ITERATOR_TRY
-  if ( theIsOpened )
+  try
   {
-    ZORBA_ERROR_DESC(API0010_XQUERY_EXECUTION_NOT_STARTED,
-                     "Iterator has already been opened");
-  }
+    if (theIsOpen)  
+    {
+      ZORBA_ERROR(API0041_ITERATOR_IS_OPEN_ALREADY);
+    }
 
-  theIter = theVector.begin();
-  theIsOpened = true;
-  RESULT_ITERATOR_CATCH
+    theIter = theVector.begin();
+
+    theIsOpen = true;
+  }
+  VECTOR_ITERATOR_CATCH
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool VectorIterator::next(Item& aItem)
 {
-  RESULT_ITERATOR_TRY
-
-  if (!theIsOpened)  
+  try
   {
-    ZORBA_ERROR_DESC(API0010_XQUERY_EXECUTION_NOT_STARTED,
-                     "Iterator has not been opened");
-  }
+    if (!theIsOpen)  
+    {
+      ZORBA_ERROR(API0040_ITERATOR_IS_NOT_OPEN);
+    }
 
-  if (theIter == theVector.end()) 
-    return false;
+    if (theIter == theVector.end()) 
+      return false;
       
-  aItem = &**theIter;
-  ++theIter;
-  return true;
+    aItem = &**theIter;
+    ++theIter;
 
-  RESULT_ITERATOR_CATCH
+    return true;
+  }
+  VECTOR_ITERATOR_CATCH
   return false;
 }
 
+ 
+/*******************************************************************************
 
+********************************************************************************/
 void VectorIterator::close()
 {
+  try
+  {
+    if (!theIsOpen)  
+    {
+      ZORBA_ERROR(API0040_ITERATOR_IS_NOT_OPEN);
+    }
+
+    theIsOpen = false;
+  }
+  VECTOR_ITERATOR_CATCH
 }
 
 

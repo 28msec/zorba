@@ -50,20 +50,17 @@ namespace zorba {
 
 /*******************************************************************************
   Create a StaticContextImpl obj as well as an internal static_context obj S.
-  S is created as a child of the zorba root sctx. The new StaticContextImpl obj
-  owns S, and should delete it during destruction. This constructor is used
+  S is created as a child of the zorba root sctx. This constructor is used
   when the application wants to create its own static context to pass it as
   input to one or more queries.
 ********************************************************************************/
 StaticContextImpl::StaticContextImpl(ErrorHandler* aErrorHandler)
   :
-  theCtx(0),
-  theUserStaticContext(false),
   theErrorHandler(aErrorHandler),
   theUserErrorHandler(true)
 {
   theCtx = GENV.getRootStaticContext().create_child_context();
-  RCHelper::addReference (theCtx);
+
   if ( ! theErrorHandler ) 
   {
     theErrorHandler = new DefaultErrorHandler();
@@ -74,14 +71,12 @@ StaticContextImpl::StaticContextImpl(ErrorHandler* aErrorHandler)
 
 /*******************************************************************************
   Create a StaticContextImpl obj to wrap a given internal static_context obj S.
-  The new StaticContextImpl obj does not own S, and should not delete it during
-  destruction. This constructor is used when the static context of a query is
-  returned to the application (see XQueryImpl::getStaticContext()).
+  This constructor is used when the static context of a query is returned to
+  the application (see XQueryImpl::getStaticContext()).
 ********************************************************************************/
 StaticContextImpl::StaticContextImpl(static_context* aCtx, ErrorHandler* aErrorHandler)
   :
   theCtx(aCtx),
-  theUserStaticContext(true),
   theErrorHandler(aErrorHandler),
   theUserErrorHandler(true)
 {
@@ -93,80 +88,104 @@ StaticContextImpl::StaticContextImpl(static_context* aCtx, ErrorHandler* aErrorH
 }
 
 
+/*******************************************************************************
+  Create a StaticContextImpl obj as well as an internal static_context obj S.
+  S is created as a child of the static_context obj associated with the given
+  StaticContextImpl obj. This is a private constructor that is invoked by the
+  StaticContextImpl::createChildContext() method.
+********************************************************************************/
 StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   :
   StaticContext(),
-  theCtx(0), 
-  theUserStaticContext(false), // we are responsible to delete it
   theErrorHandler(aStaticContext.theErrorHandler),
   theUserErrorHandler(aStaticContext.theUserErrorHandler)
 {
   // hierarchy of contexts
   theCtx = aStaticContext.theCtx->create_child_context();
-  RCHelper::addReference (theCtx);
 
   // bugfix
   // if it's a default error handler, we need to create a new
   // one since every context has it's own non-user error handler
   // which he also needs to delete
-  if ( ! theUserErrorHandler ) {
+  if ( ! theUserErrorHandler ) 
+  {
     theErrorHandler = new DefaultErrorHandler();
   }
 
-  for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::const_iterator
-         lIter = aStaticContext.theModuleWrappers.begin();
-       lIter != aStaticContext. theModuleWrappers.end(); ++lIter) 
+  std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::const_iterator iter1;
+
+  for (iter1 = aStaticContext.theModuleWrappers.begin();
+       iter1 != aStaticContext.theModuleWrappers.end();
+       ++iter1) 
   {
-    addModuleURIResolver(lIter->first);
+    addModuleURIResolver(iter1->first);
   }
-  for (std::map<SchemaURIResolver*, SchemaURIResolverWrapper*>::const_iterator
-        lIter = aStaticContext.theSchemaWrappers.begin();
-        lIter != aStaticContext. theSchemaWrappers.end(); ++lIter) {
-    addSchemaURIResolver(lIter->first);
+
+  std::map<SchemaURIResolver*, SchemaURIResolverWrapper*>::const_iterator iter2;
+
+  for (iter2 = aStaticContext.theSchemaWrappers.begin();
+       iter2 != aStaticContext. theSchemaWrappers.end();
+       ++iter2) 
+  {
+    addSchemaURIResolver(iter2->first);
   }
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 StaticContextImpl::~StaticContextImpl()
 {
   for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::iterator
         lIter = theModuleWrappers.begin();
-        lIter != theModuleWrappers.end(); ++lIter) {
+        lIter != theModuleWrappers.end(); ++lIter) 
+  {
       theCtx->remove_module_uri_resolver(lIter->second);
       delete lIter->second;
   }
+
   theModuleWrappers.clear();
   for (std::map<SchemaURIResolver*, SchemaURIResolverWrapper*>::iterator
         lIter = theSchemaWrappers.begin();
-        lIter != theSchemaWrappers.end(); ++lIter) {
+        lIter != theSchemaWrappers.end(); ++lIter) 
+  {
       theCtx->remove_schema_uri_resolver(lIter->second);
       delete lIter->second;
   }
-  theSchemaWrappers.clear();
 
-  if ( ! theUserStaticContext )
-    RCHelper::removeReference (theCtx);
+  theSchemaWrappers.clear();
 
   if ( ! theUserErrorHandler )
     delete theErrorHandler;
 }
 
 
-StaticContext_t
-StaticContextImpl::createChildContext() const
+/*******************************************************************************
+
+********************************************************************************/
+StaticContext_t StaticContextImpl::createChildContext() const
 {
-  try {
+  try 
+  {
     StaticContext_t lContext(new StaticContextImpl(*this));
     return lContext;
-  } catch (error::ZorbaError& e) {
+  }
+  catch (error::ZorbaError& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e);
-  } catch (std::exception& e) {
+  }
+  catch (std::exception& e)
+  {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
   return StaticContext_t();
 }
 
-  
+
+/*******************************************************************************
+
+********************************************************************************/
 bool   
 StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
 {
@@ -180,7 +199,10 @@ StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
   return false;
 }
 
-  
+
+/*******************************************************************************
+
+********************************************************************************/
 String   
 StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
 {
@@ -204,6 +226,9 @@ StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool   
 StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
 {
@@ -216,7 +241,10 @@ StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
   return false;
 }
 
-  
+
+/*******************************************************************************
+
+********************************************************************************/
 String   
 StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
 {
@@ -236,6 +264,9 @@ StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool   
 StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
 {
@@ -248,7 +279,10 @@ StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
   return false;
 }
 
-  
+
+/*******************************************************************************
+
+********************************************************************************/
 String   
 StaticContextImpl::getDefaultFunctionNamespace( ) const
 {
@@ -268,6 +302,9 @@ StaticContextImpl::getDefaultFunctionNamespace( ) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void
 StaticContextImpl::addCollation( const String& URI )
 {
@@ -278,8 +315,10 @@ StaticContextImpl::addCollation( const String& URI )
 }
 
 
-void   
-StaticContextImpl::setDefaultCollation( const String& URI )
+/*******************************************************************************
+
+********************************************************************************/
+void StaticContextImpl::setDefaultCollation( const String& URI )
 {
   ZORBA_TRY
     xqpStringStore* lURI = Unmarshaller::getInternalString(URI);
@@ -288,8 +327,10 @@ StaticContextImpl::setDefaultCollation( const String& URI )
 }
 
 
-String 
-StaticContextImpl::getDefaultCollation() const
+/*******************************************************************************
+
+********************************************************************************/
+String StaticContextImpl::getDefaultCollation() const
 {
   try 
   {
@@ -307,8 +348,10 @@ StaticContextImpl::getDefaultCollation() const
 }
 
 
-bool   
-StaticContextImpl::setXQueryVersion(xquery_version_t version)
+/*******************************************************************************
+
+********************************************************************************/
+bool StaticContextImpl::setXQueryVersion(xquery_version_t version)
 {
   ZORBA_TRY
     if ( version == xquery_version_1_0)
@@ -321,8 +364,10 @@ StaticContextImpl::setXQueryVersion(xquery_version_t version)
 }
 
 
-xquery_version_t  
-StaticContextImpl::getXQueryVersion() const
+/*******************************************************************************
+
+********************************************************************************/
+xquery_version_t StaticContextImpl::getXQueryVersion() const
 {
   try {
     return theCtx->xquery_version()==StaticContextConsts::xquery_version_1_0?
@@ -336,8 +381,10 @@ StaticContextImpl::getXQueryVersion() const
 }
 
 
-bool   
-StaticContextImpl::setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode )
+/*******************************************************************************
+
+********************************************************************************/
+bool StaticContextImpl::setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode )
 {
   ZORBA_TRY
     if ( mode == xpath1_0)
@@ -350,8 +397,10 @@ StaticContextImpl::setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode )
 }
 
 
-xpath1_0compatib_mode_t  
-StaticContextImpl::getXPath1_0CompatibMode( ) const
+/*******************************************************************************
+
+********************************************************************************/
+xpath1_0compatib_mode_t StaticContextImpl::getXPath1_0CompatibMode( ) const
 {
   try 
   {
@@ -371,6 +420,9 @@ StaticContextImpl::getXPath1_0CompatibMode( ) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool   
 StaticContextImpl::setConstructionMode( construction_mode_t mode )
 {

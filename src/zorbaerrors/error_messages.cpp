@@ -155,33 +155,61 @@ DEF_ERR_CODE(XTDE1350, XTDE1350, "It is a non-recoverable dynamic error if a com
 //
 
 DEF_ERR_CODE(API0001_XQUERY_STRING_IS_EMPTY, API0001, "Empty query")
-DEF_ERR_CODE(API0002_COMPILE_FAILED, API0002, "Query compilation failed")
-DEF_ERR_CODE(API0003_XQUERY_NOT_COMPILED, API0003, "Query not compiled")
-DEF_ERR_CODE(API0004_XQUERY_ALREADY_COMPILED, API0004, "Query already compiled")
 
-DEF_ERR_CODE(API0020_DOCUMENT_ALREADY_EXISTS, API0020, "Another document with uri {/s} exists in the store already.")
+DEF_ERR_CODE(API0002_XQUERY_COMPILATION_FAILED, API0002, "Query compilation failed")
 
-DEF_ERR_CODE(API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, "The uri {/s} does not identify an XML node")
+DEF_ERR_CODE(API0003_XQUERY_NOT_COMPILED, API0003, "Query has not been compiled")
 
-DEF_ERR_CODE(API0023_CANNOT_SERIALIZE_UPDATE_QUERY, API0023, "Cannot serialize an updating query")
+DEF_ERR_CODE(API0004_XQUERY_ALREADY_COMPILED, API0004, "Query is already compiled")
 
-DEF_ERR_CODE(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY, API0024, "Cannot iterate over an updating query")
+DEF_ERR_CODE(API0005_XQUERY_ALREADY_EXECUTING, API0005, "Query is already executing")
 
-DEF_ERR_CODE(API0025_END_OF_SEQUENCE, API0025_END_OF_SEQUENCE, "Reached the end of the sequence")
+DEF_ERR_CODE(API0006_XQUERY_ALREADY_CLOSED, API0006, "Query is already closed")
 
-DEF_ERR_CODE(API0026_CANNOT_CLOSE_QUERY_WITH_ITERATORS, API0026, "Query cannot be closed because there are result iterators on it")
+DEF_ERR_CODE(API0007_CANNOT_SERIALIZE_PUL, API0007, "Cannot serialize a PUL")
 
-DEF_ERR_CODE(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS, API0027, "The query dynamic context cannot be updated because there are result iterators on the query")
+DEF_ERR_CODE(API0008_NOT_AN_UPDATE_XQUERY, API0008,
+"Cannot perform operation on a non-updating query")
 
-DEF_ERR_CODE(API0028_INVALID_NODE_URI, API0028, "The uri {/s} is not a valid node reference")
+DEF_ERR_CODE(API0009_XQUERY_NOT_COMPILED_IN_DEBUG_MODE, API0009,
+"Query has not been compiled in debug mode")
 
-DEF_ERR_CODE(API0030_NO_NODE_AT_GIVEN_POSITION, API0030, "There is no node at the given position {/s}, the collection has fewer nodes.");
+DEF_ERR_CODE(API0040_ITERATOR_IS_NOT_OPEN, API0040,
+"Cannot perform operation on iterator because it has not been opened")
 
-DEF_ERR_CODE(API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, API0033, "File or folder {/s} does not exist.");
+DEF_ERR_CODE(API0041_ITERATOR_IS_OPEN_ALREADY, API0041,
+"Cannot open iterator because it is open already")
 
-DEF_ERR_CODE(API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034, "File or folder {/s} could not be opened.");
+DEF_ERR_CODE(API0042_ITERATOR_QUERY_IS_CLOSED, API0042,
+"Cannot perform operation on iterator because it has been closed")
 
-DEF_ERR_CODE(API0035_COLLECTION_CANNOT_BE_SERIALIZED, API0035, "Collection {/s} can not be serialized.");
+
+DEF_ERR_CODE(API0020_DOCUMENT_ALREADY_EXISTS, API0020, 
+"Another document with uri {/s} exists in the store already.")
+
+DEF_ERR_CODE(API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, 
+"The uri {/s} does not identify an XML node")
+
+DEF_ERR_CODE(API0025_END_OF_SEQUENCE, API0025_END_OF_SEQUENCE, 
+"Reached the end of the sequence")
+
+DEF_ERR_CODE(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS, API0027, 
+"The query dynamic context cannot be updated because there are result iterators on the query")
+
+DEF_ERR_CODE(API0028_INVALID_NODE_URI, API0028, 
+"The uri {/s} is not a valid node reference")
+
+DEF_ERR_CODE(API0030_NO_NODE_AT_GIVEN_POSITION, API0030, 
+"There is no node at the given position {/s}, the collection has fewer nodes.");
+
+DEF_ERR_CODE(API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, API0033, 
+"File or folder {/s} does not exist.");
+
+DEF_ERR_CODE(API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034, 
+"File or folder {/s} could not be opened.");
+
+DEF_ERR_CODE(API0035_COLLECTION_CANNOT_BE_SERIALIZED, API0035, 
+"Collection {/s} can not be serialized.");
 
 DEF_ERR_CODE(API0036_TIDY_ERROR, API0036, "Error in Tidy library: {/s}.");
 

@@ -96,59 +96,45 @@ public:
 
   bool hasQueryLocation();
 
-  const xqpString&
-  localName() const;
+  const xqpString& localName() const;
 
-  const xqpString&
-  ns() const;
+  const xqpString& ns() const;
 
-  const xqpString&
-  prefix() const;
+  const xqpString& prefix() const;
 
-  virtual bool 
-  isXPathStaticError() const;
+  virtual bool isXPathStaticError() const;
 
-  virtual bool 
-  isXPathDynamicError() const;
+  virtual bool isXPathDynamicError() const;
       
-  virtual bool 
-  isXPathTypeError() const;
+  virtual bool isXPathTypeError() const;
       
-  virtual bool
-  isXQueryDynamicError() const;
+  virtual bool isXQueryDynamicError() const;
 
-  virtual bool 
-  isXQueryStaticError() const;
+  virtual bool isXQueryStaticError() const;
 
-  virtual bool 
-  isXQueryTypeError() const;
+  virtual bool isXQueryTypeError() const;
   
-  virtual bool 
-  isFunctionError() const;
+  virtual bool isFunctionError() const;
   
-  virtual bool
-  isSerializationError() const;
+  virtual bool isSerializationError() const;
   
-  virtual bool 
-  isInternalError() const;
+  virtual bool isStaticError() const;
   
-  virtual bool
-  isStaticError() const;
-  
-  virtual bool
-  isDynamicError() const;
+  virtual bool isDynamicError() const;
 
-  virtual bool
-  isTypeError() const;
+  virtual bool isTypeError() const;
 
-  virtual bool
-  isUserError() const  { return false; }
+  virtual bool isStoreError() const;
 
-  virtual std::auto_ptr<ZorbaError>
-  clone() const;
+  virtual bool isAPIError() const;
 
-  virtual void
-  raise() const { throw *this; }
+  virtual bool isInternalError() const;
+
+  virtual bool isUserError() const  { return false; }
+
+  virtual std::auto_ptr<ZorbaError> clone() const;
+
+  virtual void raise() const { throw *this; }
 };
 
 

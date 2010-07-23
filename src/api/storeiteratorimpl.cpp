@@ -19,18 +19,20 @@
 
 #include "system/globalenv.h"
 
+#include "api/zorbaimpl.h"
+
 #include "zorbaerrors/error_manager.h"
+
 #include "zorbautils/lock.h"
+
 #include "store/api/item.h"
 #include "store/api/iterator.h"
 #include "store/api/store.h"
 
 namespace zorba {
 
-#define STORE_ITERATOR_TRY try {
- 
-#define STORE_ITERATOR_CATCH                                  \
-} catch (error::ZorbaError& /*e*/)                             \
+#define STORE_ITERATOR_CATCH                                   \
+catch (error::ZorbaError& e)                                   \
 {                                                              \
   SYNC_CODE(                                                   \
   if (theHaveLock)                                             \
@@ -39,8 +41,9 @@ namespace zorba {
     theHaveLock = false;                                       \
   })                                                           \
                                                                \
+  ZorbaImpl::notifyError(theErrorHandler, e);                  \
 }                                                              \
-catch (std::exception& /*e*/)                                  \
+catch (std::exception& e)                                      \
 {                                                              \
   SYNC_CODE(                                                   \
   if (theHaveLock)                                             \
@@ -49,6 +52,7 @@ catch (std::exception& /*e*/)                                  \
     theHaveLock = false;                                       \
   })                                                           \
                                                                \
+  ZorbaImpl::notifyError(theErrorHandler, e.what());           \
 }                                                              \
 catch (...)                                                    \
 {                                                              \
@@ -59,34 +63,57 @@ catch (...)                                                    \
     theHaveLock = false;                                       \
   })                                                           \
                                                                \
+  ZorbaImpl::notifyError(theErrorHandler);                     \
 } 
 
 
-StoreIteratorImpl::StoreIteratorImpl
-(store::Iterator_t aIter, ErrorHandler* aErrorHandler)
+/*******************************************************************************
+
+********************************************************************************/
+StoreIteratorImpl::StoreIteratorImpl(
+    store::Iterator_t aIter,
+    ErrorHandler* aErrorHandler)
   :
   theIterator(aIter),
   theErrorHandler(aErrorHandler),
-  theIsOpened(false),
+  theIsOpen(false),
   theHaveLock(false)
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 StoreIteratorImpl::~StoreIteratorImpl()
 {
-  if (theIsOpened)
-    theIterator->close();
+  try
+  {
+    if (theIsOpen)
+    {
+      theIterator->close();
+    }
 
-  SYNC_CODE(
+    SYNC_CODE(
     if (theHaveLock)
       GENV_STORE.getGlobalLock().unlock();)
+  }
+  STORE_ITERATOR_CATCH
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void StoreIteratorImpl::open()
 {
-  STORE_ITERATOR_TRY
+  try
+  {
+    if (theIsOpen)  
+    {
+      ZORBA_ERROR(API0041_ITERATOR_IS_OPEN_ALREADY);
+    }
+
     SYNC_CODE(
     if (!theHaveLock)
     {
@@ -94,22 +121,24 @@ void StoreIteratorImpl::open()
       theHaveLock = true;
     })
     
-    if ( ! theIsOpened )
-    {
-      theIterator->open();
-      theIsOpened = true;
-    }
+    theIterator->open();
+    
+    theIsOpen = true;
+  }
   STORE_ITERATOR_CATCH
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool StoreIteratorImpl::next(Item& aItem)
 {
-  STORE_ITERATOR_TRY
-    if (!theIsOpened)  
+  try
+  {
+    if (!theIsOpen)  
     {
-      ZORBA_ERROR_DESC(API0010_XQUERY_EXECUTION_NOT_STARTED,
-                       "Iterator has not been opened");
+      ZORBA_ERROR(API0040_ITERATOR_IS_NOT_OPEN);
     }
 
     SYNC_CODE(
@@ -126,18 +155,27 @@ bool StoreIteratorImpl::next(Item& aItem)
       
     aItem = &*lItem;
     return true;
-
+  }
   STORE_ITERATOR_CATCH
   return false;
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 void StoreIteratorImpl::close()
 {
-  STORE_ITERATOR_TRY
-    if (theIsOpened) {
-      theIterator->reset();
+  try
+  {
+    if (!theIsOpen)  
+    {
+      ZORBA_ERROR(API0040_ITERATOR_IS_NOT_OPEN);
     }
+
+    theIterator->close();
+
+    theIsOpen = false;
 
     SYNC_CODE(
     if (theHaveLock)
@@ -145,7 +183,9 @@ void StoreIteratorImpl::close()
       GENV_STORE.getGlobalLock().unlock();
       theHaveLock = false;
     })
+  }
   STORE_ITERATOR_CATCH
 }
+
 
 } /* namespace zorba */

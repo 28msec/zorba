@@ -48,11 +48,12 @@ ZorbaUserError::~ZorbaUserError()
 {
 }
 
+
 std::auto_ptr<ZorbaError>
 ZorbaUserError::clone() const
 {
-    std::auto_ptr<ZorbaError> err(new ZorbaUserError(*this));
-    return err;
+  std::auto_ptr<ZorbaError> err(new ZorbaUserError(*this));
+  return err;
 }
     
 } /* namespace error */

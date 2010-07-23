@@ -64,7 +64,7 @@ DynamicContextImpl::DynamicContextImpl(const XQueryImpl* aQuery)
   theQuery(aQuery)
 {
   theCtx = theQuery->theDynamicContext;
-  theStaticContext = theQuery->theStaticContext;
+  theStaticContext = theQuery->theStaticContext.getp();
 }
 
 
@@ -73,10 +73,9 @@ DynamicContextImpl::~DynamicContextImpl()
 }
 
 
-bool
-DynamicContextImpl::setVariable(
+bool DynamicContextImpl::setVariable(
     const String& aQName,
-    const Item& aItem )
+    const Item& aItem)
 {
   ZORBA_DCTX_TRY
   {
@@ -487,8 +486,7 @@ DynamicContextImpl::getImplicitTimezone() const
 }
 
 
-bool
-DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
+bool DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
 {
   ZORBA_DCTX_TRY
   {
@@ -507,13 +505,12 @@ DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
 
 void DynamicContextImpl::checkNoIterators()
 {
-  if (theQuery->activeIterators())
+  if (theQuery->theExecuting)
     ZORBA_ERROR(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS);
 }
 
 
-Item
-DynamicContextImpl::getDefaultCollection() const
+Item DynamicContextImpl::getDefaultCollection() const
 {
   ZORBA_DCTX_TRY
   {
@@ -524,10 +521,9 @@ DynamicContextImpl::getDefaultCollection() const
 }
 
 
-bool
-DynamicContextImpl::addExternalFunctionParam (
+bool DynamicContextImpl::addExternalFunctionParam (
   const String& aName,
-  void* aValue )
+  void* aValue)
 {
   ZORBA_DCTX_TRY
   {
@@ -538,8 +534,7 @@ DynamicContextImpl::addExternalFunctionParam (
   return false;
 }
 
-bool
-DynamicContextImpl::getExternalFunctionParam (
+bool DynamicContextImpl::getExternalFunctionParam (
   const String& aName,
   void*& aValue) const
 {

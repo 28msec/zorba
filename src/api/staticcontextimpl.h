@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef XQP_STATIC_CONTEXT_IMPL_H
-#define XQP_STATIC_CONTEXT_IMPL_H
+#ifndef ZORBA_API_STATIC_CONTEXT_IMPL_H
+#define ZORBA_API_STATIC_CONTEXT_IMPL_H
 
 #include <zorba/typeident.h> 
 #include <zorba/static_context.h>
@@ -35,11 +35,14 @@ namespace zorba {
 
   theCtx               : rchandle to the internal static_context obj that is
                          wrapped by "this".
-  theUserStaticContext : If true, "this" does not own the static_context obj
-                         that is pointed to by theCtx, and so, during destruction,
-                         "this" should not delete theCtx. If false, "this" owns
-                         theCtx, and should delete it during destruction.
 
+  theSctxMap           :
+
+  theErrorHandler      : Pointer to an error handle to handle any errors raised
+                         by the methods of this class.
+  theUserErrorHandler  : If true, theErrorHandler is owned by "this", and it
+                         should be deleted when "this" is destroyed. Otherwise,
+                         theErrorHandler is not owned by "this".
 ********************************************************************************/
 class StaticContextImpl : public StaticContext
 {
@@ -47,15 +50,14 @@ class StaticContextImpl : public StaticContext
   friend class XQueryImpl;   // needed for accessing theSctxMap
 
  protected:
-  static_context                    * theCtx;
+  static_context_t                    theCtx;
+
   std::map<short, static_context_t>   theSctxMap;
-  bool                                theUserStaticContext;
 
   ErrorHandler                      * theErrorHandler;
   bool                                theUserErrorHandler;
 
-  // remeber all the resolver wrappers that this
-  // context has created
+  // remeber all the resolver wrappers that this context has created
   std::map<ModuleURIResolver*,
            ModuleURIResolverWrapper*> theModuleWrappers;
   std::map<SchemaURIResolver*,
@@ -66,30 +68,24 @@ class StaticContextImpl : public StaticContext
 
  public:
   StaticContextImpl(ErrorHandler*);
+
   StaticContextImpl(static_context*, ErrorHandler*);
 
   virtual ~StaticContextImpl();
 
-  void
-  loadProlog(const String&, const Zorba_CompilerHints_t &hints);
+  void loadProlog(const String&, const Zorba_CompilerHints_t &hints);
 
-  virtual StaticContext_t
-  createChildContext() const;
+  StaticContext_t createChildContext() const;
       
-  virtual bool   
-  addNamespace( const String& prefix, const String& URI );
+  bool addNamespace( const String& prefix, const String& URI );
       
-  virtual String   
-  getNamespaceURIByPrefix( const String& prefix ) const;
+  String getNamespaceURIByPrefix( const String& prefix ) const;
 
-  virtual bool   
-  setDefaultElementAndTypeNamespace( const String& URI );
+  bool setDefaultElementAndTypeNamespace( const String& URI );
       
-  virtual String   
-  getDefaultElementAndTypeNamespace( ) const;
+  String getDefaultElementAndTypeNamespace( ) const;
 
-  virtual bool   
-  setDefaultFunctionNamespace( const String& URI );
+  bool setDefaultFunctionNamespace( const String& URI );
       
   virtual String   
   getDefaultFunctionNamespace( ) const;

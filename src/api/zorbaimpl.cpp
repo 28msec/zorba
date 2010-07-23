@@ -38,6 +38,7 @@
 
 namespace zorba {
 
+
 class ZorbaImplStatics
 {
 public:
@@ -114,8 +115,8 @@ XQuery_t ZorbaImpl::createQuery(ErrorHandler* aErrorHandler)
   return lXQuery;
 }
 
-XQuery_t
-ZorbaImpl::compileQuery(
+
+XQuery_t ZorbaImpl::compileQuery(
     const String& aQuery,
     ErrorHandler* aErrorHandler)
 {
@@ -124,8 +125,7 @@ ZorbaImpl::compileQuery(
 }
 
 
-XQuery_t
-ZorbaImpl::compileQuery(
+XQuery_t ZorbaImpl::compileQuery(
     const String& aQuery,
     const StaticContext_t& aStaticContext,
     ErrorHandler* aErrorHandler)
@@ -135,8 +135,7 @@ ZorbaImpl::compileQuery(
 }
 
 
-XQuery_t
-ZorbaImpl::compileQuery(
+XQuery_t ZorbaImpl::compileQuery(
     const String& aQuery,
     const Zorba_CompilerHints_t& aHints,
     ErrorHandler* aErrorHandler)
@@ -149,8 +148,7 @@ ZorbaImpl::compileQuery(
 }
 
 
-XQuery_t
-ZorbaImpl::compileQuery(
+XQuery_t ZorbaImpl::compileQuery(
     const String& aQuery,
     const StaticContext_t& aStaticContext,
     const Zorba_CompilerHints_t& aHints,
@@ -164,16 +162,14 @@ ZorbaImpl::compileQuery(
 }
 
 
-XQuery_t
-ZorbaImpl::compileQuery(std::istream& aQuery, ErrorHandler* aErrorHandler)
+XQuery_t ZorbaImpl::compileQuery(std::istream& aQuery, ErrorHandler* aErrorHandler)
 {
   Zorba_CompilerHints_t lHints;
   return compileQuery(aQuery, lHints, aErrorHandler);
 }
 
 
-XQuery_t
-ZorbaImpl::compileQuery(
+XQuery_t ZorbaImpl::compileQuery(
     std::istream& aQuery,
     const StaticContext_t& aStaticContext,
     ErrorHandler* aErrorHandler)
@@ -183,8 +179,7 @@ ZorbaImpl::compileQuery(
 }
 
 
-XQuery_t
-ZorbaImpl::compileQuery(
+XQuery_t ZorbaImpl::compileQuery(
     std::istream& aQuery,
     const Zorba_CompilerHints_t& aHints,
     ErrorHandler* aErrorHandler)
@@ -197,8 +192,7 @@ ZorbaImpl::compileQuery(
 }
 
 
-XQuery_t
-ZorbaImpl::compileQuery(
+XQuery_t ZorbaImpl::compileQuery(
     std::istream& aQuery,
     const StaticContext_t& aStaticContext,
     const Zorba_CompilerHints_t& aHints,
@@ -215,8 +209,7 @@ ZorbaImpl::compileQuery(
 /*******************************************************************************
 
 ********************************************************************************/
-StaticContext_t
-ZorbaImpl::createStaticContext(ErrorHandler* aErrorHandler)
+StaticContext_t ZorbaImpl::createStaticContext(ErrorHandler* aErrorHandler)
 {
   return StaticContext_t(new StaticContextImpl(aErrorHandler));
 }
@@ -225,8 +218,7 @@ ZorbaImpl::createStaticContext(ErrorHandler* aErrorHandler)
 /*******************************************************************************
 
 ********************************************************************************/
-ItemFactory*
-ZorbaImpl::getItemFactory()
+ItemFactory* ZorbaImpl::getItemFactory()
 {
   return &ItemFactorySingleton::Instance();
 }
@@ -235,18 +227,17 @@ ZorbaImpl::getItemFactory()
 /*******************************************************************************
 
 ********************************************************************************/
-XmlDataManager*
-ZorbaImpl::getXmlDataManager()
+XmlDataManager* ZorbaImpl::getXmlDataManager()
 {
   return &XmlDataManagerSingleton::Instance();
 }
+
 
 /*******************************************************************************
   Convert an internal zorba error obj to a c++ api exception obj, and then
   notify the user about this error via the error handler.
 ********************************************************************************/
-void
-ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
+void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
 {
   if (aError.isUserError())
   {
@@ -306,6 +297,22 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
                             aError.theLineNumber);
     aErrorHandler->serializationError(lSerException);
   }
+  else if (aError.isStoreError())
+  {
+    SystemException lSystemException(aError.theErrorCode,
+                                     String(aError.theDescription.theStrStore),
+                                     String(aError.theFileName),
+                                     aError.theLineNumber);
+    aErrorHandler->systemError(lSystemException);
+  }
+  else if (aError.isAPIError())
+  {
+    SystemException lSystemException(aError.theErrorCode,
+                                     String(aError.theDescription.theStrStore),
+                                     String(aError.theFileName),
+                                     aError.theLineNumber);
+    aErrorHandler->systemError(lSystemException);
+  }
   else if (aError.isInternalError())
   {
     SystemException lSystemException(aError.theErrorCode,
@@ -321,17 +328,14 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aError)
 }
 
 
-void
-ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, const std::string& aDesc)
+void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, const std::string& aDesc)
 {
-  SystemException lSystemException(XQP0019_INTERNAL_ERROR,
-                                   String(aDesc), "", 0);
+  SystemException lSystemException(XQP0019_INTERNAL_ERROR, String(aDesc), "", 0);
   aErrorHandler->systemError(lSystemException);
 }
 
 
-void
-ZorbaImpl::notifyError(ErrorHandler* aErrorHandler)
+void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler)
 {
   SystemException lSystemException(XQP0019_INTERNAL_ERROR,
                                    "An internal error occured.", "", 0);
@@ -339,10 +343,11 @@ ZorbaImpl::notifyError(ErrorHandler* aErrorHandler)
 }
 
 
-void
-ZorbaImpl::checkItem(const store::Item_t& aItem)
+void ZorbaImpl::checkItem(const store::Item_t& aItem)
 {
   if (aItem == NULL)
     ZORBA_ERROR_DESC(API0014_INVALID_ARGUMENT, "Invalid item given");
 }
+
+
 } /* namespace zorba */

@@ -36,8 +36,6 @@
 
 namespace zorba {
 
-#define RESULT_ITER_TRY try
- 
 #define RESULT_ITER_CATCH                                      \
 catch (error::ZorbaError& e)                                   \
 {                                                              \
@@ -75,36 +73,67 @@ catch (...)                                                    \
 
 
 
+/*******************************************************************************
+
+********************************************************************************/
 ResultIteratorImpl::ResultIteratorImpl(
     XQueryImpl* aQuery,
     const PlanWrapper_t& aPlanWrapper)
   :
   theQuery(aQuery),
   thePlan(aPlanWrapper),
-  theIsOpened(false),
+  theIsOpen(false),
   theHaveLock(false)
 {
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 ResultIteratorImpl::~ResultIteratorImpl() 
 {
-  if (theIsOpened)
-    thePlan->close();
-
-  SYNC_CODE(
-  if (theHaveLock)
-    GENV_STORE.getGlobalLock().unlock();)
-
-  theQuery->removeResultIterator(this);
-}
- 
-
-void 
-ResultIteratorImpl::open()
-{
-  RESULT_ITER_TRY
+  try
   {
+    if (theIsOpen && thePlan)
+    {
+      thePlan->close();
+    }
+
+    SYNC_CODE(
+    if (theHaveLock)
+    {
+      GENV_STORE.getGlobalLock().unlock();
+      theHaveLock = false;
+    })
+
+    if (theQuery)
+    {
+      theQuery->removeResultIterator(this);
+      theQuery = NULL;
+    }
+  }
+  RESULT_ITER_CATCH
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ResultIteratorImpl::open()
+{
+  try
+  {
+    if (!thePlan)
+    {
+      ZORBA_ERROR(API0042_ITERATOR_QUERY_IS_CLOSED);
+    }
+
+    if (theIsOpen)  
+    {
+      ZORBA_ERROR(API0041_ITERATOR_IS_OPEN_ALREADY);
+    }
+
     SYNC_CODE(
     if (!theHaveLock)
     {
@@ -112,25 +141,29 @@ ResultIteratorImpl::open()
       theHaveLock = true;
     })
 
-    if ( ! theIsOpened )
-    {
-      thePlan->open();
-      theIsOpened = true;
-    }
+    thePlan->open();
+
+    theIsOpen = true;
   } 
   RESULT_ITER_CATCH
 }
 
 
-bool
-ResultIteratorImpl::next(Item& aItem)
+/*******************************************************************************
+
+********************************************************************************/
+bool ResultIteratorImpl::next(Item& aItem)
 {
-  RESULT_ITER_TRY
+  try
   {
-    if (!theIsOpened)  
+    if (!thePlan)
     {
-      ZORBA_ERROR_DESC(API0010_XQUERY_EXECUTION_NOT_STARTED,
-                       "ResultIterator has not been opened");
+      ZORBA_ERROR(API0042_ITERATOR_QUERY_IS_CLOSED);
+    }
+
+    if (!theIsOpen)  
+    {
+      ZORBA_ERROR(API0040_ITERATOR_IS_NOT_OPEN);
     }
 
     SYNC_CODE(
@@ -145,9 +178,6 @@ ResultIteratorImpl::next(Item& aItem)
     if (!thePlan->next(lItem))
       return false;
     
-    if (lItem->isPul())
-      ZORBA_ERROR(API0024_CANNOT_ITERATE_OVER_UPDATE_QUERY);
-
     aItem = &*lItem;
     return true;
   }
@@ -156,14 +186,26 @@ ResultIteratorImpl::next(Item& aItem)
 }
 
 
-void 
-ResultIteratorImpl::close()
+/*******************************************************************************
+
+********************************************************************************/
+void ResultIteratorImpl::close()
 {
-  RESULT_ITER_TRY
+  try
   {
-    if (theIsOpened) {
-      thePlan->reset();
+    if (!thePlan)
+    {
+      ZORBA_ERROR(API0042_ITERATOR_QUERY_IS_CLOSED);
     }
+
+    if (!theIsOpen)  
+    {
+      ZORBA_ERROR(API0040_ITERATOR_IS_NOT_OPEN);
+    }
+
+    thePlan->close();
+
+    theIsOpen = false;
 
     SYNC_CODE(
     if (theHaveLock)
@@ -174,5 +216,34 @@ ResultIteratorImpl::close()
   }
   RESULT_ITER_CATCH
 }
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void ResultIteratorImpl::closeInternal()
+{
+  if (theIsOpen)
+  {
+    thePlan->close();
+    thePlan = NULL;
+
+    theIsOpen = false;
+  }
+
+  SYNC_CODE(
+  if (theHaveLock)
+  {
+    GENV_STORE.getGlobalLock().unlock();
+    theHaveLock = false;
+  })
+
+  if (theQuery)
+  {
+    theQuery->removeResultIterator(this);
+    theQuery = NULL;
+  }
+}
+
 
 } /* namespace zorba */

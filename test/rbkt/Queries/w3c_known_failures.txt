@@ -259,6 +259,7 @@ test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-2
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-1
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-4
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-14
+test/rbkt/w3c_testsuite/XQuery/SchemaImport/SchemaImportProlog/modules-schema-context
 test/rbkt/w3c_testsuite/XQuery/Operators/SeqOp/SeqUnion/K2-SeqUnion-45
 test/rbkt/w3c_testsuite/XQuery/Operators/ArithExpr/NumericOpr/NumericUnaryMinus/K2-NumericUnaryMinus-8
 test/rbkt/w3c_testsuite/XQuery/Operators/ArithExpr/NumericOpr/NumericUnaryMinus/K2-NumericUnaryMinus-9

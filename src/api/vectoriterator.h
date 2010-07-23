@@ -36,20 +36,18 @@ protected:
   std::vector<store::Item_t>           theVector;
   std::vector<store::Item_t>::iterator theIter;
   ErrorHandler*                        theErrorHandler;
-  bool                                 theIsOpened;     
+  bool                                 theIsOpen;     
 
 public:
   VectorIterator(const std::vector<store::Item_t>&, ErrorHandler*);
+
   virtual ~VectorIterator();
 
-  virtual void 
-  open();
+  virtual void open();
 
-  virtual bool
-  next(Item&);
+  virtual bool next(Item&);
 
-  virtual void 
-  close();
+  virtual void close();
 };
 
 } /* namespace zorba */

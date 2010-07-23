@@ -99,8 +99,6 @@ void SimpleTempSeq::init(store::Iterator_t& iter, bool copy)
 
   theItems.clear();
 
-  iter->open();
-
   while (iter->next(curItem)) 
   {
     if (copy && curItem->isNode()) 
@@ -109,8 +107,6 @@ void SimpleTempSeq::init(store::Iterator_t& iter, bool copy)
     theItems.push_back(NULL);
     theItems.back().transfer(curItem);
   }
-
-  iter->close();
 }
 
 
@@ -122,8 +118,6 @@ void SimpleTempSeq::append(store::Iterator_t iter, bool copy)
   store::Item_t curItem;
   store::CopyMode lCopyMode;
 
-  iter->open();
-
   while (iter->next(curItem))
   {
     if (copy && curItem->isNode())
@@ -132,8 +126,6 @@ void SimpleTempSeq::append(store::Iterator_t iter, bool copy)
     theItems.push_back(NULL);
     theItems.back().transfer(curItem);
   }
-
-  iter->close();
 }
 
 

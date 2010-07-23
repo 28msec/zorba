@@ -52,14 +52,13 @@ class CompilerCB;
   The filename of the query.
 
   - theStaticContext :
-  rchandle to the root static context for this xquery. This sctx may be (a) a
-  child of the zorba root sctx, or (b) a child of an sctx that was created by
-  the application, or (c) if this XQuery obj is a clone of another XQuery obj,
-  a child of the root sctx of the other XQuery obj, or (d) if this XQuery obj
+  rchandle to the root sctx obj for this xquery. This sctx may be (a) a child
+  of the zorba root sctx, or (b) a child of an sctx that was created by the
+  application, or (c) if this XQuery obj is a clone of another XQuery obj, a
+  child of the root sctx of the other XQuery obj, or (d) if this XQuery obj
   is one that is created internally by StaticContextImpl::loadProlog(), the
   sctx that was created by the application. In cases (a), (b), and (c), the
-  root sctx of the query is owned by the query, and will be deleted during
-  the desctruction of the query.
+  root sctx of the query is created by the query itself.
 
   - theStaticContextWrapper :
   Pointer to a StaticContextImpl obj that wraps theStaticContext and which is
@@ -95,13 +94,18 @@ class CompilerCB;
 
   - theDynamicContextWrapper :
 
-  - theResultIterators :
-  There is an N:1 relationship between ResultIterator and XQuery objs. This
-  relationship is implemented by (a) theResultIterators vector, which contains
-  a ptr to each ResultIterator that has been created by the XQuery::iterator()
-  method, and (b) a ptr in each ResultIterator pointing back to the associated
-  XQuery. This way we can guarantee that no ResultIterator objs can exists when
-  their associated XQuery is closed (see ~ResultIterator() and XQuery::close()).
+  - theExecuting :
+  Set to true while the query is being executed. It is used that a second
+  execution of the same XQuery obj cannot be start while a previous execution
+  is still going on.
+
+  - theResultIterator :
+  There is an 0:1 relationship between ResultIterator and XQuery objs. This
+  relationship is implemented by (a) theResultIterator, which is a ptr to
+  a ResultIterator that has been created by the XQuery::iterator() method,
+  and (b) a ptr in this ResultIterator pointing back to the associated
+  XQuery. This way we can guarantee that no ResultIterator exists when its
+  associated XQuery is closed (see ~ResultIterator() and XQuery::close()).
 
   - theErrorManager :
   Each query has its own ErrorManager. The ErrorManager provides static methods
@@ -165,7 +169,7 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   // static stuff
   xqpStringStore_t                   theFileName;
 
-  static_context                   * theStaticContext;
+  static_context_t                   theStaticContext;
 
   mutable StaticContextImpl        * theStaticContextWrapper;
 
@@ -180,7 +184,11 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
 
   mutable DynamicContextImpl       * theDynamicContextWrapper;
 
-  std::vector<ResultIteratorImpl*>   theResultIterators;
+  ResultIteratorImpl               * theResultIterator;
+
+  bool                               theExecuting;
+
+  bool                               theIsClosed;
 
   // utility stuff
   error::ErrorManager              * theErrorManager;
@@ -188,9 +196,6 @@ class XQueryImpl : public XQuery , public ::zorba::serialization::SerializeBaseC
   bool                               theUserErrorHandler;
 
   SAX2_ContentHandler              * theSAX2Handler;
-
-  bool                               theIsClosed;
-
 
   SYNC_CODE(mutable Mutex            theCloningMutex;)
 
@@ -209,140 +214,121 @@ public:
 public:
   virtual ~XQueryImpl();
 
-  void
-  registerErrorHandler(ErrorHandler*);
+  void setFileName(const String&);
 
-  // Returns NULL if no user ErrorHandler is registered
-  ErrorHandler*
-  getRegisteredErrorHandler();
+  String getFileName();
 
-  void
-  resetErrorHandler();
+  void setTimeout(long aTimeout /* = -1 */);
 
-  void
-  setTimeout(long aTimeout /* = -1 */);
+  virtual double getDocLoadingUserTime() const;
 
-  void
-  execute(std::ostream&, const Zorba_SerializerOptions_t* = NULL);
+  long getDocLoadingTime() const;
 
-  virtual void
-  execute(
+  void setDebugMode(bool aDebugMode);
+
+  bool isDebugMode() const;
+
+  void setProfileName(std::string aProfileName);
+
+  std::string getProfileName() const;
+
+  void registerErrorHandler(ErrorHandler*);
+
+  ErrorHandler* getRegisteredErrorHandler();
+
+  void resetErrorHandler();
+
+  void compile(const String&);
+
+  void compile(
+        const String&,
+        const Zorba_CompilerHints_t& aHints);
+
+  void compile(
+        const String&,
+        const StaticContext_t&,
+        const Zorba_CompilerHints_t& aHints);
+
+  void compile(
+        std::istream&, 
+        const Zorba_CompilerHints_t& aHints);
+
+  void compile(
+        std::istream&,
+        const StaticContext_t&,
+        const Zorba_CompilerHints_t& aHints);
+
+  void loadProlog(
+        const String&,
+        const StaticContext_t&,
+        const Zorba_CompilerHints_t& aHints);
+
+  void parse(std::istream&);
+
+  const StaticContext* getStaticContext() const;
+
+  bool isUpdating() const;
+
+  bool saveExecutionPlan(
+        std::ostream& os,
+        Zorba_binary_plan_format_t archive_format = ZORBA_USE_BINARY_ARCHIVE,
+        Zorba_save_plan_options_t save_options = DONT_SAVE_UNUSED_FUNCTIONS);
+
+  bool loadExecutionPlan(std::istream& is, SerializationCallback* aCallback = 0);
+
+  void printPlan(std::ostream& aStream, bool aDotFormat = false) const;
+
+  DynamicContext* getDynamicContext() const;
+
+  void execute(std::ostream&, const Zorba_SerializerOptions_t* = NULL);
+
+  void execute(
         std::ostream& aOutStream,
         itemHandler aCallbackFunction,
         void* aCallbackData,
         const Zorba_SerializerOptions_t* aSerOptions = NULL);
 
-  void
-  execute();
+  void execute();
 
-  Iterator_t
-  iterator();
+  Iterator_t iterator();
 
-  DynamicContext*
-  getDynamicContext() const;
+  void registerSAXHandler(SAX2_ContentHandler *  aSAXHandler);
 
-  const StaticContext*
-  getStaticContext() const;
-
-  void
-  parse(std::istream&);
-
-  void
-  compile(const String&);
-
-  void
-  compile(const String&, const Zorba_CompilerHints_t& aHints);
-
-  void
-  compile(const String&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
-
-  void
-  compile(std::istream&, const Zorba_CompilerHints_t& aHints);
-
-  void
-  compile(std::istream&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
-
-  void
-  printPlan( std::ostream& aStream, bool aDotFormat = false ) const;
-
-  void
-  loadProlog(const String&, const StaticContext_t&, const Zorba_CompilerHints_t& aHints);
-
-  void
-  setFileName(const String&);
-
-  String
-  getFileName();
-
-  void
-  registerSAXHandler(SAX2_ContentHandler *  aSAXHandler);
-
-  void
-  executeSAX(SAX2_ContentHandler *  aSAXHandler);
+  void executeSAX(SAX2_ContentHandler *  aSAXHandler);
 
   void executeSAX();
 
-  virtual double
-  getDocLoadingUserTime() const;
+  void debug(
+        unsigned short aCommandPort,
+        unsigned short anEventPort );
 
-  long
-  getDocLoadingTime() const;
-
-  void
-  close();
-
-  bool
-  isClosed() const { return theIsClosed; }
-
-  XQuery_t
-  clone() const;
-
-  bool
-  isUpdating() const;
-
-  bool
-  saveExecutionPlan(std::ostream& os,
-                    Zorba_binary_plan_format_t archive_format = ZORBA_USE_BINARY_ARCHIVE,
-                    Zorba_save_plan_options_t save_options = DONT_SAVE_UNUSED_FUNCTIONS);
-
-  bool
-  loadExecutionPlan(std::istream& is, SerializationCallback* aCallback = 0);
-
-  void
-  setDebugMode( bool aDebugMode );
-
-  bool
-  isDebugMode() const;
-
-  void
-  setProfileName(std::string aProfileName);
-
-  std::string
-  getProfileName() const;
-
-  void
-  debug( unsigned short aCommandPort, unsigned short anEventPort );
-
-  void
-  debug(std::ostream& aOutStream,
+  void debug(
+        std::ostream& aOutStream,
         Zorba_SerializerOptions& aSerOptions,
-        unsigned short aCommandPort, unsigned short anEventPort);
+        unsigned short aCommandPort,
+        unsigned short anEventPort);
 
-  void
-  debug(std::ostream& aOutStream,
-    Zorba_SerializerOptions& aSerOptions,
-    const std::string& aHost,
-    unsigned short aCommandPort,
-    unsigned short anEventPort);
+  void debug(
+        std::ostream& aOutStream,
+        Zorba_SerializerOptions& aSerOptions,
+        const std::string& aHost,
+        unsigned short aCommandPort,
+        unsigned short anEventPort);
 
-  void
-  debug(std::ostream& aOutStream,
-    itemHandler aCallbackFunction,
-    void* aCallbackData,
-    Zorba_SerializerOptions& aSerOptions,
-    const std::string& aHost,
-    unsigned short aCommandPort = 8000,
-    unsigned short anEventPort = 9000);
+  void debug(
+        std::ostream& aOutStream,
+        itemHandler aCallbackFunction,
+        void* aCallbackData,
+        Zorba_SerializerOptions& aSerOptions,
+        const std::string& aHost,
+        unsigned short aCommandPort = 8000,
+        unsigned short anEventPort = 9000);
+
+  void close();
+
+  bool isClosed() const { return theIsClosed; }
+
+  XQuery_t clone() const;
 
 protected:
 
@@ -379,25 +365,21 @@ protected:
 
   void removeResultIterator(const ResultIteratorImpl* iter);
 
-  // check whether the query is open, and if not, fire an error
   void checkNotClosed() const;
 
-  // check whether the query has been compiled (successfully), and
-  // if not, fire an error
   void checkCompiled() const;
 
-  // check whether the query has not been compiled, and if not, fire an error
   void checkNotCompiled() const;
 
-  void checkIsDebugMode() const;
+  void checkNotExecuting() const;
 
-  // returns true if there are active iterators, false otherwise
-  bool activeIterators() const;
+  void checkIsDebugMode() const;
 };
 
 
-  std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery);
-  std::ostream& operator<< (std::ostream& os, XQuery* aQuery);
+std::ostream& operator<< (std::ostream& os, const XQuery_t& aQuery);
+
+std::ostream& operator<< (std::ostream& os, XQuery* aQuery);
 
 
 } /* namespace zorba */

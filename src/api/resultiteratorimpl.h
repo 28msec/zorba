@@ -33,33 +33,37 @@ class XQueryImpl;
 ********************************************************************************/
 class ResultIteratorImpl  : public Iterator
 {
-    friend class XQueryImpl;
-    friend class Unmarshaller;
+  friend class XQueryImpl;
+  friend class Unmarshaller;
 
-  protected:
-    XQueryImpl     * theQuery; 
-    PlanWrapper_t    thePlan;         
-    bool             theIsOpened;     
-    bool             theHaveLock;
+protected:
+  XQueryImpl     * theQuery; 
+  PlanWrapper_t    thePlan;         
+  bool             theIsOpen;
+  bool             theHaveLock;
 
-    ResultIteratorImpl(XQueryImpl*, const PlanWrapper_t&);
+  ResultIteratorImpl(XQueryImpl*, const PlanWrapper_t&);
 
-  public:
-    virtual ~ResultIteratorImpl();
+public:
+  ~ResultIteratorImpl();
 
-    virtual void 
-    open();
+  void open();
 
-    virtual bool
-    next(Item&);
+  bool next(Item&);
 
-    virtual void 
-    close();
+  void close();
 
-    bool isActive() const { return theHaveLock; }
+protected:
+  void closeInternal();
 };
 
 
 }
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

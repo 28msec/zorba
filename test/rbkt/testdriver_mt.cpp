@@ -753,7 +753,8 @@ _tmain(int argc, _TCHAR* argv[])
     arg++;
   }
 
-  if (bucketName == "" && bucketPath == "") {
+  if (bucketName == "" && bucketPath == "") 
+  {
     usage();
   }
 
@@ -868,7 +869,8 @@ _tmain(int argc, _TCHAR* argv[])
       queries.theQueryFilenames.push_back(relativeQueryFile);
     }
   }
-  else {
+  else 
+  {
     queries.theQueryFilenames = testNames;
   }
 
@@ -923,11 +925,13 @@ _tmain(int argc, _TCHAR* argv[])
   //
   // If known-failures file specified, load it into a map for quick lookups.
   //
-  if (haveKnownFailures) {
+  if (haveKnownFailures) 
+  {
     queries.theOutput << std::endl << "Loading known failures file "
                       << knownFailuresFilepath << "..." << std::endl;
     std::ifstream knownFailuresFile(knownFailuresFilepath.c_str());
-    while (knownFailuresFile.good()) {
+    while (knownFailuresFile.good()) 
+    {
       std::string testname;
       getline(knownFailuresFile, testname);
       knownFailures.insert(testname);
@@ -955,9 +959,9 @@ _tmain(int argc, _TCHAR* argv[])
     fs::path queryPath = fs::path(pathPrefix) / (queries.theQueryFilenames[i]);
     fs::path queryName = fs::change_extension(queryPath, "");
     bool queryWasKnownToFail = false;
-    if (haveKnownFailures) {
-      queryWasKnownToFail =
-        (knownFailures.count(queryName.file_string()) != 0);
+    if (haveKnownFailures) 
+    {
+      queryWasKnownToFail = (knownFailures.count(queryName.file_string()) != 0);
     }
 
     if (queries.theQueryStates[i] == false)
@@ -1000,11 +1004,13 @@ _tmain(int argc, _TCHAR* argv[])
   {
     std::cout << "Number of regressions = " << numRegressions << std::endl;
     std::cout << "Number of progressions = " << numProgressions << std::endl;
-    if (report.str().length() > 0) {
+    if (report.str().length() > 0) 
+    {
       std::cout << std::endl << "Individual test reports:" << std::endl
                 << report.str() << std::endl;
     }
-    if (numRegressions == 0 && numProgressions > 0) {
+    if (numRegressions == 0 && numProgressions > 0) 
+    {
       std::cout << "No regressions and some progressions!" << std::endl
                 << "Updating known failures file "
                 << knownFailuresFilepath << std::endl;

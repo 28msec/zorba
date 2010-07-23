@@ -239,7 +239,7 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
   if ( lExpr == NULL )
   {
     // TODO: can this happen?
-    ZORBA_ERROR(API0002_COMPILE_FAILED);
+    ZORBA_ERROR(API0002_XQUERY_COMPILATION_FAILED);
     return NULL;
   }
 
@@ -293,7 +293,7 @@ parsenode_t XQueryCompiler::createMainModule(
   LibraryModule* mod_ast = dynamic_cast<LibraryModule *>(&*aLibraryModule);
   if (mod_ast == NULL)
   {
-    ZORBA_ERROR_DESC_OSS(API0002_COMPILE_FAILED,
+    ZORBA_ERROR_DESC_OSS(API0002_XQUERY_COMPILATION_FAILED,
                         "given library module is not a valid module, e.g. "
                          << "the module declaration is missing");
 

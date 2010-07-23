@@ -64,9 +64,8 @@ protected:
 
   PlanState       * thePlanState;
 
-#ifndef NDEBUG
-  bool		          theIsOpened;
-#endif
+  bool		          theIsOpen;
+
   Timeout         * theTimeout;
   Mutex             theTimeoutMutex;
 
@@ -82,18 +81,17 @@ public:
 
   virtual ~PlanWrapper();
 
-  virtual void open();
+  void open();
 
-  virtual bool next(store::Item_t& item);
+  bool next(store::Item_t& item);
 
-  virtual void reset();
+  void reset();
 
-  virtual void close() throw ();
+  void close();
 
-  virtual void checkDepth(const QueryLoc& loc);
+  void checkDepth(const QueryLoc& loc);
 
-  // implementing the internal Serializable interface
-  virtual bool nextSerializableItem(store::Item_t& item);
+  bool nextSerializableItem(store::Item_t& item);
 };
 
 } /* namespace zorba */
