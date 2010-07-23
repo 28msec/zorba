@@ -1,0 +1,11 @@
+module namespace def = "http://www.david.ch/default";
+
+import schema namespace s = "http://www.zorba-xquery.com/schema/test/triangle_schema" at "triangle_schema.xsd";
+
+declare function def:with-schema-type($x as schema-element(http:cookie)) {
+  $x
+};
+
+declare function def:without-schema-type($x) {
+  $x
+};

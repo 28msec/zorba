@@ -244,6 +244,8 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic1 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic3 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic4 2962715)
 
+EXPECTED_FAILURE(test/rbkt/zorba/modules/mainModule21 3033534)
+
 IF (ZORBA_WITH_REST AND ZORBA_WITH_TIDY)
   EXPECTED_FAILURE(test/rbkt/zorba/http_client/http2-read-status-only 3020153)
 ENDIF (ZORBA_WITH_REST AND ZORBA_WITH_TIDY)
