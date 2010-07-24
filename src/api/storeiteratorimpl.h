@@ -48,6 +48,8 @@ public:
   virtual bool next(Item&);
     
   virtual void close();
+
+  bool isOpen() const { return theIsOpen; }
 };
   
 } /* namespace zorba */

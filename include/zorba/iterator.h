@@ -25,6 +25,12 @@ namespace zorba {
 /** \brief Interface for an Iterator over an instance of the XML Data Model
  *  (i.e., a sequence of items).
  *
+ * An iterator can be in one of the follwoing two states: open or not-open.
+ * When in open state, only methods isOpen(), next() and close() may be called.
+ * When in not-open state, only isOpen and open() may be called. The open()
+ * method changes the state from non-open to open, and the close() method
+ * changes the state from open to not-open.
+ *
  * Note: This class is reference counted. When writing multi-threaded clients,
  * it is the responibility of the client code to synchronize assignments to the
  * SmartPtr holding this object.
@@ -39,7 +45,9 @@ class ZORBA_DLL_PUBLIC Iterator : public ItemSequence, public SmartObject
   /** \brief Start iterating.
    *
    * This function needs to be called before calling next() or close().
-   * It should not be called again until after close() has been called.
+   * Its purpose is to create and initialize any resources that may be 
+   * needed during the iteration. It should not be called again until
+   * after close() has been called.
    *
    * @throw ZorbaException if an error occurs, or the iterator is open already.
    */
@@ -59,11 +67,18 @@ class ZORBA_DLL_PUBLIC Iterator : public ItemSequence, public SmartObject
   
   /** \brief Stop iterating.
    *
-   * After calling close(), neither close() nor next() may be called again.
-   * However, the iterator may be re-opened (by calling open())
+   * The purpose of this method is to release resources that were allocated
+   * during open. After calling close(), neither close() nor next() may be
+   * called again. However, the iterator may be re-opened (by calling open()).
    */
   virtual void 
   close() = 0;
+
+  /**
+   * brief Check whether the iterator is open or not
+   */
+  virtual bool
+  isOpen() const = 0;
 };
 
 

@@ -41,7 +41,8 @@ example_2(Zorba* aZorba)
   lIterator->open();
 
   Item lItem;
-  while ( lIterator->next(lItem) ) {
+  while ( lIterator->next(lItem) ) 
+  {
     std::cout << lItem.getStringValue() << std::endl;
   }
 
@@ -80,6 +81,7 @@ example_4(Zorba* aZorba)
   return false;
 }
 
+
 bool
 example_5(Zorba* aZorba)
 {
@@ -99,6 +101,7 @@ example_5(Zorba* aZorba)
 
   return false;
 }
+
 
 bool
 example_6(Zorba* aZorba)
@@ -146,13 +149,16 @@ example_9( Zorba * aZorba )
   return false;
 }
 
+
 bool
 example_10( Zorba * aZorba )
 {
+  Iterator_t lIterator1;
+  Iterator_t lIterator2;
+
   XQuery_t lQuery1 = aZorba->compileQuery("declare variable $i external; 1 to $i");
   XQuery_t lQuery2 = lQuery1->clone();
 
-  Iterator_t lIterator1;
   DynamicContext* lDynContext1 = NULL;
 
   try
@@ -162,6 +168,26 @@ example_10( Zorba * aZorba )
 
     lIterator1 = lQuery1->iterator();  
     lIterator1->open();
+
+    Item lItem;
+    while ( lIterator1->next(lItem) ) 
+    {
+      DynamicContext* lDynContext2 = lQuery2->getDynamicContext();
+      lDynContext2->setVariable("i", lItem);
+
+      lIterator2 = lQuery2->iterator();
+    
+      lIterator2->open();
+      while ( lIterator2->next(lItem) ) 
+      {
+        std::cout << lItem.getStringValue();
+      }
+      lIterator2->close();
+      
+      std::cout << std::endl;
+    }
+
+    lIterator1->close();
   }
   catch (zorba::ZorbaException& e)
   {
@@ -174,25 +200,9 @@ example_10( Zorba * aZorba )
     throw;
   }
 
-  Item lItem;
-  while ( lIterator1->next(lItem) ) {
-    DynamicContext* lDynContext2 = lQuery2->getDynamicContext();
-    lDynContext2->setVariable("i", lItem);
-
-    Iterator_t lIterator2 = lQuery2->iterator();
-    
-    lIterator2->open();
-    while ( lIterator2->next(lItem) ) {
-      std::cout << lItem.getStringValue();
-    }
-    lIterator2->close();
-    std::cout << std::endl;
-  }
-
-  lIterator1->close();
-
   return true;
 }
+
 
 bool
 example_11( Zorba * aZorba )

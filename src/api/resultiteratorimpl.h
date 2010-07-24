@@ -53,6 +53,8 @@ public:
 
   void close();
 
+  bool isOpen() const { return theIsOpen; }
+
 protected:
   void closeInternal();
 };

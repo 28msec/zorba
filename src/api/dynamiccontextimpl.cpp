@@ -474,8 +474,7 @@ DynamicContextImpl::setImplicitTimezone( int aTimezoneMinutes )
 }
 
 
-int
-DynamicContextImpl::getImplicitTimezone() const
+int DynamicContextImpl::getImplicitTimezone() const
 {
   ZORBA_DCTX_TRY
   {
@@ -486,7 +485,7 @@ DynamicContextImpl::getImplicitTimezone() const
 }
 
 
-bool DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
+bool DynamicContextImpl::setDefaultCollection(const Item& aCollectionUri)
 {
   ZORBA_DCTX_TRY
   {
@@ -505,8 +504,11 @@ bool DynamicContextImpl::setDefaultCollection( const Item& aCollectionUri )
 
 void DynamicContextImpl::checkNoIterators()
 {
-  if (theQuery->theExecuting)
+  if (theQuery->theResultIterator && 
+      theQuery->theResultIterator->isOpen())
+  {
     ZORBA_ERROR(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS);
+  }
 }
 
 
@@ -521,7 +523,7 @@ Item DynamicContextImpl::getDefaultCollection() const
 }
 
 
-bool DynamicContextImpl::addExternalFunctionParam (
+bool DynamicContextImpl::addExternalFunctionParam(
   const String& aName,
   void* aValue)
 {

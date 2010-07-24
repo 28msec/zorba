@@ -971,10 +971,6 @@ Iterator_t XQueryImpl::iterator()
     checkCompiled();
     checkNotExecuting();
 
-    assert(theResultIterator == NULL);
-
-    theExecuting = true;
-
     PlanWrapper_t lPlan = generateWrapper();
 
     theResultIterator = new ResultIteratorImpl(this, lPlan);
@@ -986,15 +982,18 @@ Iterator_t XQueryImpl::iterator()
 
 
 /*******************************************************************************
-  Called from ResultIteratorImpl::close() or from ResultIteratorImpl destructor.
+  Called from ResultIteratorImpl::closeInternal() or from ResultIteratorImpl
+  destructor.
 ********************************************************************************/
 void XQueryImpl::removeResultIterator(const ResultIteratorImpl* iter)
 {
   try
   {
-    assert(theResultIterator == iter);
-    theResultIterator = NULL;
-    theExecuting = false;
+    if (theResultIterator == iter)
+    {
+      theResultIterator = NULL;
+      theExecuting = false;
+    }
   }
   QUERY_CATCH
 }

@@ -124,7 +124,7 @@ void ResultIteratorImpl::open()
 {
   try
   {
-    if (!thePlan)
+    if (!thePlan || !theQuery)
     {
       ZORBA_ERROR(API0042_ITERATOR_QUERY_IS_CLOSED);
     }
@@ -144,6 +144,8 @@ void ResultIteratorImpl::open()
     thePlan->open();
 
     theIsOpen = true;
+
+    theQuery->theExecuting = true;
   } 
   RESULT_ITER_CATCH
 }
@@ -193,7 +195,7 @@ void ResultIteratorImpl::close()
 {
   try
   {
-    if (!thePlan)
+    if (!thePlan || !theQuery)
     {
       ZORBA_ERROR(API0042_ITERATOR_QUERY_IS_CLOSED);
     }
@@ -206,6 +208,8 @@ void ResultIteratorImpl::close()
     thePlan->close();
 
     theIsOpen = false;
+
+    theQuery->theExecuting = false;
 
     SYNC_CODE(
     if (theHaveLock)

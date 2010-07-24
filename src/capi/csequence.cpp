@@ -57,6 +57,8 @@ public:
     return theItems->next(item);
   }
 
+  bool isOpen() const { return true; }
+
 protected:
   ItemSequence* theItems;
 };
