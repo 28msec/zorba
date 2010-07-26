@@ -14,11 +14,15 @@
 #
 To generate a report for submitting to the W3C:
 
+0. In order to generate the report for XQueryX compile Zorba by setting:
+  ZORBA_XQUERYX=ON and ZORBA_TEST_XQUERYX=ON. These options are set to OFF by default.
+
 1. Import XQUTS.
 
 2. Run a CTest dashboard from your build directory:
 
-  ctest -T test -R w3c_update_testsuite
+  ctest -T test -R w3c_update_testsuite/XQuery or
+  ctest -T test -R w3c_update_testsuite/XQueryX
 
 3. From this directory (test/rbkt/Scripts/w3c), modify
    generate-submission.xq to reflect:
@@ -33,7 +37,7 @@ To generate a report for submitting to the W3C:
    Note that this assumes your build directory is ../../../build. If
    that is not true, specify the path to your build directory:
 
-  cmake -D ZORBA_BUILD_DIR=/path/to/build -P Submit.cmake
+  cmake -D ZORBA_BUILD_DIR=/path/to/build -P Submit.cmake > zorba-xquts-submission.xml
 
    The script depends on the XQUTS schema being located in
 
