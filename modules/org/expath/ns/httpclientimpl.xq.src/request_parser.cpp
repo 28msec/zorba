@@ -24,6 +24,7 @@
 #include <zorba/item.h>
 #include <zorba/zorbastring.h>
 #include <zorba/iterator.h>
+#include <zorba/store_consts.h>
 
 namespace zorba { namespace http_client {
   class AttributesSequence : public ItemSequence {
@@ -54,6 +55,8 @@ namespace zorba { namespace http_client {
 
   bool RequestParser::parseItem(const Item& aItem)
   {
+    if (aItem.getNodeKind() == store::StoreConsts::commentNode)
+      return true;
     Item lQName;
     aItem.getNodeName(lQName);
     String lLocalName = lQName.getLocalName();
