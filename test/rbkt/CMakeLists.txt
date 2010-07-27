@@ -86,16 +86,8 @@ IF (ZORBATEST_TESTDRIVER_MT_AVAILABLE)
     ${CMAKE_SOURCE_DIR}/test/commons/testuriresolver.cpp
     )
 
-  ADD_EXECUTABLE(testdriver_mt ${TESTDRIVER_MT_SRCS})
-  TARGET_LINK_LIBRARIES(testdriver_mt zorba_simplestore
-    boost_filesystem-mt ${Boost_system_lib})
-  IF (ZORBA_BUILD_STATIC_LIBRARY)
-    ADD_EXECUTABLE(testdriver_mt_static testdriver_mt.cpp)
-    SET_TARGET_PROPERTIES(testdriver_mt_static
-      PROPERTIES COMPILE_DEFINITIONS BUILDING_ZORBA_STATIC)
-    TARGET_LINK_LIBRARIES(testdriver_mt_static
-      zorba_simplestore_static boost_filesystem-mt ${Boost_system_lib})
-  ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
+  ZORBA_GENERATE_STORE_SPECIFIC_EXES(
+    "testdriver_mt" "${TESTDRIVER_MT_SRCS}" "${Boost_LIBRARIES}" "" "")
 
   SET (ZORBATEST_USE_MT_XQTS NO CACHE BOOLEAN
     "If true, use testdriver_mt (when available) for running XQTS")
