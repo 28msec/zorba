@@ -60,8 +60,21 @@ if (ZORBA_WORKS)
     list(APPEND extvarargs "-e" "${extvar}")
   endforeach(extvar)
   if(files)
-    string(REPLACE ";" "," files "${files}")
-    list(APPEND extvarargs "-e" "files:=${files}")
+    # Convert all spec filepaths to relative. Necessary on Windows
+    # because these will sometimes be passed to Zorba which in turn
+    # passes them to fn:doc(), and "c:/foo/bar" isn't a valid URI.
+    # Oddly, Zorba seems to evaluate paths relative to the query file,
+    # so use that as that base.  Also, because semicolons in CMake
+    # arguments end up being lists, we change the delimiter to a comma
+    # before passing to Zorba.
+    get_filename_component(query_dir "${query}" PATH)
+    set(relfiles)
+    foreach(file ${files})
+      file(RELATIVE_PATH relfile "${query_dir}" "${file}")
+      list(APPEND relfiles "${relfile}")
+    endforeach(file)
+    string(REPLACE ";" "," relfiles "${relfiles}")
+    list(APPEND extvarargs "-e" "files:=${relfiles}")
   endif(files)
   execute_process(COMMAND "${zorba_exe}"
     "-q" "${query}" "-f" 

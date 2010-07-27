@@ -84,7 +84,7 @@ declare function local:create-includes($files) as xs:string
     $gen:newline, $gen:newline,
     string-join(
       for $i in tokenize($files, ',') 
-      let $xml-file := fn:replace(fn:substring-after($i, "src/runtime/spec/"), ".xml", ".h")
+      let $xml-file := fn:replace($i, ".xml", ".h")
       return fn:concat('#include "runtime/', $xml-file, '"'), $gen:newline
     )
   )
