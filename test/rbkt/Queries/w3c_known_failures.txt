@@ -21,16 +21,11 @@ test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-namespace-uri-for-prefix/functx-
 test/rbkt/w3c_testsuite/XQuery/Expressions/FLWORExpr/OrderbyExpr/OrderbyExprWith/orderBy60
 test/rbkt/w3c_testsuite/XQuery/Expressions/FLWORExpr/ForExpr/ForExprWithout/K-ForExprWithout-49
 test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-10
-test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-16
-test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-17
-test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-19
-test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-18
 test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-9
 test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-1
 test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-8
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-10
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-8
-test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-charref-2
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/DirectConElem/DirectConElemContent/Constr-cont-nsmode-7
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConComment/Constr-compcomment-doubledash-4
 test/rbkt/w3c_testsuite/XQuery/Expressions/Construct/ComputeCon/ComputeConComment/Constr-compcomment-dash-4
@@ -259,7 +254,6 @@ test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-2
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-1
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-4
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-14
-test/rbkt/w3c_testsuite/XQuery/SchemaImport/SchemaImportProlog/modules-schema-context
 test/rbkt/w3c_testsuite/XQuery/Operators/SeqOp/SeqUnion/K2-SeqUnion-45
 test/rbkt/w3c_testsuite/XQuery/Operators/ArithExpr/NumericOpr/NumericUnaryMinus/K2-NumericUnaryMinus-8
 test/rbkt/w3c_testsuite/XQuery/Operators/ArithExpr/NumericOpr/NumericUnaryMinus/K2-NumericUnaryMinus-9

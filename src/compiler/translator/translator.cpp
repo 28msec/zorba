@@ -9737,7 +9737,7 @@ void end_visit (const CommonContent& v, void* /*visit_state*/)
     {
       int d = decode_entity(curRef, &content);
       if (d<0)
-        ZORBA_ERROR_LOC(XPST0003, loc);
+        ZORBA_ERROR_LOC(XQST0090, loc);
       else
         curRef += d;
 
