@@ -13,26 +13,31 @@
 # limitations under the License.
 # create the testing file and list of tests
 
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook_main.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook_main.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook.xq)
+
 IF(WIN32)
-CREATE_TEST_SOURCELIST(UnitTests
-  UnitTests.cpp
-  itemfactory.cpp
-  xmldatamanager.cpp
-  uri.cpp
-  multiple_runs.cpp
-  runnable.cpp
-  call_stack.cpp
-)
+  CREATE_TEST_SOURCELIST(UnitTests
+    UnitTests.cpp
+    itemfactory.cpp
+    xmldatamanager.cpp
+    uri.cpp
+    multiple_runs.cpp
+    runnable.cpp
+    plan_serializer.cpp
+    call_stack.cpp
+  )
 ELSE(WIN32)
- CREATE_TEST_SOURCELIST(UnitTests
- UnitTests.cpp
- itemfactory.cpp
- xmldatamanager.cpp
- uri.cpp
- call_stack.cpp
-# multithread_simple.cpp
-# multithread_stress_test.cpp
-)
+  CREATE_TEST_SOURCELIST(UnitTests
+    UnitTests.cpp
+    itemfactory.cpp
+    xmldatamanager.cpp
+    uri.cpp
+    plan_serializer.cpp
+    call_stack.cpp
+  # multithread_simple.cpp
+  # multithread_stress_test.cpp
+ )
 ENDIF(WIN32)
 
 # add the executable
@@ -50,5 +55,7 @@ FOREACH (test ${TestsToRun})
   SET (TestName "test/unit/${TName}")
   ZORBA_ADD_TEST_ALLSTORES(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
+
+EXPECTED_FAILURE(test/unit/plan_serializer 3035320)
 
 ADD_SUBDIRECTORY(debugger)
