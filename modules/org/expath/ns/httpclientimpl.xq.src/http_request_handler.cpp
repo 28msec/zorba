@@ -125,7 +125,25 @@ namespace zorba { namespace http_client {
     if (!theInsideMultipart) {
       theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValue.c_str());
     } else {
-      theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), (lValue).c_str());
+      if (aName == "Content-Disposition") {
+        int32_t lPos = 0;
+        bool lHasMatched;
+        do {
+          String lNextToken = aValue.tokenize(String(";"), String(""),
+                                              &lPos, &lHasMatched);
+          std::pair<String, String> lKeyValue = twinSplit(lNextToken);
+          if (lKeyValue.first == "name") {
+            theMultipartName = lKeyValue.second;
+            theMultipartName.trim("\"\'", 1);
+          }
+          else if (lKeyValue.first == "filename") {
+            theMultiPartFileName = lKeyValue.second;
+            theMultiPartFileName.trim("\"\'", 1);
+          }
+        } while (lHasMatched);
+      } else {
+        theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), (lValue).c_str());
+      }
     }
   }
 
@@ -141,7 +159,6 @@ namespace zorba { namespace http_client {
     if (!theInsideMultipart) {
       theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lContentType.c_str());
     } else {
-      theHeaderLists.push_back(NULL);
       theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), lContentType.c_str());
     }
   }
@@ -169,21 +186,33 @@ namespace zorba { namespace http_client {
       curl_easy_setopt(theCurl, CURLOPT_POSTFIELDSIZE, thePostDataString.length());
       curl_easy_setopt(theCurl, CURLOPT_POSTFIELDS, thePostData);
     } else {
-      curl_formadd(&thePost, &theLast,
-        CURLFORM_COPYNAME, "blub",
-        CURLFORM_COPYCONTENTS, thePostData,
-        CURLFORM_CONTENTSLENGTH, thePostDataString.length(),
-        CURLFORM_CONTENTHEADER, theHeaderLists.back(),
-        CURLFORM_END);
+      if (theMultiPartFileName == "")
+        curl_formadd(&thePost, &theLast,
+                     CURLFORM_COPYNAME, theMultipartName.c_str(),
+                     CURLFORM_COPYCONTENTS, thePostData,
+                     CURLFORM_CONTENTSLENGTH, thePostDataString.length(),
+                     CURLFORM_CONTENTHEADER, theHeaderLists.back(),
+                     CURLFORM_END);
+      else
+        curl_formadd(&thePost, &theLast,
+                     CURLFORM_COPYNAME, theMultipartName.c_str(),
+                     CURLFORM_BUFFER, theMultiPartFileName.c_str(),
+                     CURLFORM_BUFFERPTR, thePostData,
+                     CURLFORM_BUFFERLENGTH, thePostDataString.length(),
+                     CURLFORM_CONTENTHEADER, theHeaderLists.back(),
+                     CURLFORM_END);
     }
   }
 
   void HttpRequestHandler::beginMultipart(String aContentType, String aBoundary)
   {
+    theMultiPartFileName = "";
+    theMultipartName = "blubb";
     theInsideMultipart = true;
     std::string lValue = "Content-Type: ";
     lValue += aContentType.c_str();
     theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValue.c_str());
+    theHeaderLists.push_back(NULL);
   }
 
   void HttpRequestHandler::endMultipart()
@@ -221,5 +250,22 @@ namespace zorba { namespace http_client {
       Serializer::createSerializer(theLastSerializerOptions);
     SingletonItemSequence lSequence(aItem);
     lSerializer->serialize(&lSequence, *theSerStream);
+  }
+
+  std::pair<String, String>
+  HttpRequestHandler::twinSplit(const String& aStr)
+  {
+    int32_t lkeyPos = 0;
+    bool lHasValue;
+    String lKey = aStr.tokenize(String("="), String(""),
+                                      &lkeyPos, &lHasValue);
+    String lValue;
+    if (lHasValue) {
+      lValue = aStr.tokenize(String("="), String(""),
+                                          &lkeyPos, &lHasValue);
+    }
+    lKey.trim();
+    lValue.trim();
+    return std::pair<String, String>(lKey, lValue);
   }
 }}

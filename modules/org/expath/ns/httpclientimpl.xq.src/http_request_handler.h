@@ -43,6 +43,8 @@ namespace zorba { namespace http_client {
     std::string thePostDataString;
     const char* thePostData;
     long thePostDataSize;
+    String theMultipartName;
+    String theMultiPartFileName;
 
   public: //Constructions
     HttpRequestHandler(CURL* aCurl,
@@ -93,6 +95,7 @@ namespace zorba { namespace http_client {
 
   private: //Helper functions
     void cleanUpBody();
+    static std::pair<String, String> twinSplit(const String& aStr);
   };
 
 }}

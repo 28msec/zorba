@@ -309,6 +309,13 @@ public:
   const String&
   decodeFromUri();
 
+  /** \brief tokenizes a String
+    */
+  String tokenize(String pattern,
+                  String flags,
+                  int32_t* startPos,
+                  bool* hasMatched) const;
+
 private:
   friend class Unmarshaller;
   xqpStringStore *m_string;

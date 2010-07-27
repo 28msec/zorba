@@ -472,6 +472,20 @@ const String& String::decodeFromUri()
   return *this;
 }
 
+String String::tokenize(String pattern,
+                        String flags,
+                        int32_t *startPos,
+                        bool *hasMatched) const
+{
+  xqpString lStr(m_string);
+  xqpString lXqpRes =
+      lStr.tokenize(xqpString(Unmarshaller::getInternalString(pattern)),
+                    xqpString(Unmarshaller::getInternalString(flags)),
+                    startPos, hasMatched);
+  String lRes(lXqpRes.getStore());
+  return lRes;
+}
+
 
 std::ostream& operator <<(std::ostream& os, const String& str)
 {
