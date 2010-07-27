@@ -22,10 +22,13 @@
 
 #include <zorba/config.h>
 #include <zorba/error.h>
+#include <zorba/api_shared_types.h>
+#include <zorba/exception.h>
 
 #include "zorbamisc/ns_consts.h"
 #include "zorbatypes/xqpstring.h"
-
+#include "compiler/parser/query_loc.h"
+#include "store/api/item.h"
 
 namespace zorba 
 {
@@ -40,17 +43,20 @@ namespace error
 class ZORBA_DLL_PUBLIC ZorbaError : public ::zorba::serialization::SerializeBaseClass
 {
 public:
-  xqpString      theLocalName;
-  xqpString      thePrefix;
-  xqpString      theNamespace;
-  XQUERY_ERROR   theErrorCode;
-  xqpString      theDescription;
-  unsigned int   theQueryLine;
-  unsigned int   theQueryColumn;
-  std::string    theQueryFileName; // the name of the file where the error occured
-  std::string    theFileName; // source file
-  int            theLineNumber; // line number in the source file
-  bool           theDebug;
+  typedef std::pair<store::Item_t, QueryLoc> StackEntry_t;
+  typedef std::vector<StackEntry_t> StackTrace_t;
+  xqpString             theLocalName;
+  xqpString             thePrefix;
+  xqpString             theNamespace;
+  XQUERY_ERROR          theErrorCode;
+  xqpString             theDescription;
+  unsigned int          theQueryLine;
+  unsigned int          theQueryColumn;
+  std::string           theQueryFileName; // the name of the file where the error occured
+  std::string           theFileName; // source file
+  int                   theLineNumber; // line number in the source file
+  bool                  theDebug;
+  StackTrace_t theStackTrace;
 
 public:
   SERIALIZABLE_CLASS(ZorbaError)
@@ -135,6 +141,9 @@ public:
   virtual std::auto_ptr<ZorbaError> clone() const;
 
   virtual void raise() const { throw *this; }
+
+  virtual ZorbaException::StackTrace_t
+  getStackTrace() const;
 };
 
 

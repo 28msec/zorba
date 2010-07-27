@@ -22,6 +22,7 @@
 //#include "compiler/rewriter/tools/udf_graph.h"
 
 #include "system/properties.h"
+#include "compiler/api/compilercb.h"
 
 namespace zorba 
 {

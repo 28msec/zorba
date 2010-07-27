@@ -41,6 +41,7 @@
 #include "api/xqueryimpl.h"
 #include "api/staticcontextimpl.h"
 #include "api/dynamiccontextimpl.h"
+#include "errors/user_error.h"
 
 
 namespace zorba {
@@ -240,68 +241,75 @@ void UDFunctionCallIterator::closeImpl(PlanState& planState)
 ********************************************************************************/
 bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 {
-  bool success = true;
+  try {
+    bool success = true;
 
-  UDFunctionCallIteratorState* state;
-  DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
+    UDFunctionCallIteratorState* state;
+    DEFAULT_STACK_INIT(UDFunctionCallIteratorState, state, planState);
 
-  // Open the plan, if not done already. This cannot be done in the openImpl
-  // method because in the case of recursive functions, we will get into an
-  // infinite loop.
-  if (!state->thePlanOpen)
-  {
-    uint32_t planOffset = 0;
-    state->thePlan->open(*state->thePlanState, planOffset);
-    state->thePlanOpen = true;
-  }
-
-  // Bind the args.
-  {
-    const std::vector<LetVarIter_t>& argRefs = theUDF->getArgVarRefIters();
-
-    std::vector<LetVarIter_t>::const_iterator argRefsIte = argRefs.begin();
-    std::vector<LetVarIter_t>::const_iterator argRefsEnd = argRefs.end();
-    std::vector<store::Iterator_t>::iterator argWrapsIte = state->theArgWrappers.begin();
-
-    for (; argRefsIte != argRefsEnd; ++argRefsIte, ++argWrapsIte)
+    // Open the plan, if not done already. This cannot be done in the openImpl
+    // method because in the case of recursive functions, we will get into an
+    // infinite loop.
+    if (!state->thePlanOpen)
     {
-      const LetVarIter_t& argRef = (*argRefsIte);
-      if (argRef != NULL)
+      uint32_t planOffset = 0;
+      state->thePlan->open(*state->thePlanState, planOffset);
+      state->thePlanOpen = true;
+    }
+
+    // Bind the args.
+    {
+      const std::vector<LetVarIter_t>& argRefs = theUDF->getArgVarRefIters();
+
+      std::vector<LetVarIter_t>::const_iterator argRefsIte = argRefs.begin();
+      std::vector<LetVarIter_t>::const_iterator argRefsEnd = argRefs.end();
+      std::vector<store::Iterator_t>::iterator argWrapsIte = state->theArgWrappers.begin();
+
+      for (; argRefsIte != argRefsEnd; ++argRefsIte, ++argWrapsIte)
       {
-        argRef->bind(*argWrapsIte, *state->thePlanState);
+        const LetVarIter_t& argRef = (*argRefsIte);
+        if (argRef != NULL)
+        {
+          argRef->bind(*argWrapsIte, *state->thePlanState);
+        }
       }
     }
+
+    for (;;)
+    {
+      try
+      {
+        success = consumeNext(result, state->thePlan, *state->thePlanState);
+      }
+      catch (ExitException &e)
+      {
+        state->exitValue = e.val;
+        success = false;
+      }
+
+      if (success)
+      {
+        STACK_PUSH(true, state);
+      }
+      else
+      {
+        break;
+      }
+    }
+
+    if (state->exitValue != NULL)
+    {
+      while (state->exitValue->next(result))
+        STACK_PUSH(true, state);
+    }
+
+    STACK_END(state);
+  } catch (error::ZorbaError& err) {
+    err.theStackTrace.push_back(error::ZorbaError::StackEntry_t(
+        theUDF->getSignature().get_name(),
+        loc));
+    throw err;
   }
-
-  for (;;)
-  {
-    try
-    {
-      success = consumeNext(result, state->thePlan, *state->thePlanState);
-    }
-    catch (ExitException &e)
-    {
-      state->exitValue = e.val;
-      success = false;
-    }
-
-    if (success)
-    {
-      STACK_PUSH(true, state);
-    }
-    else
-    {
-      break;
-    }
-  }
-
-  if (state->exitValue != NULL)
-  {
-    while (state->exitValue->next(result))
-      STACK_PUSH(true, state);
-  }
-
-  STACK_END(state);
 }
 
 

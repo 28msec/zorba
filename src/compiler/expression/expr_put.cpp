@@ -382,6 +382,12 @@ ostream& eval_expr::put( ostream& os) const
   END_PUT();
 }
 
+ostream& dummy_expr::put( ostream& os) const
+{
+  BEGIN_PUT( eval_expr );
+  theExpr->put (os);
+  END_PUT();
+}
 
 ostream& if_expr::put( ostream& os) const
 {

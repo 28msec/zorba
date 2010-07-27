@@ -624,6 +624,13 @@ void expr::compute_return_type(bool deep, bool* modified)
     return;
   }
 
+  case dummy_expr_kind:
+  {
+    dummy_expr* e = static_cast<dummy_expr*>(this);
+    theType = e->theExpr->get_return_type();
+    return;
+  }
+
   case debugger_expr_kind:
   {
     theType = rtm.ITEM_TYPE_STAR; // TODO

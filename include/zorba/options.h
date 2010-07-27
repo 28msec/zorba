@@ -26,9 +26,14 @@
 /** \brief The optimization level used for optimizing the query. */
 typedef enum {
   ZORBA_OPT_LEVEL_O0, /**< Don't use any optimization. */
-  ZORBA_OPT_LEVEL_O1  /**< Use basic optimizations 
+  ZORBA_OPT_LEVEL_O1,  /**< Use basic optimizations
                            (e.g.\ removing sorting, removing duplicate elimination, 
                            or constant folding). */
+  ZORBA_OPT_LEVEL_O2  /** Use basic optimizations (like O1) and some
+                        * more optimizations (like not to generate an iterator
+                        * for inlined functions) - call stacks in case of
+                        * an exception are not generated.
+                        */
 } Zorba_opt_level_t;
 
 #if !defined(__cplusplus)

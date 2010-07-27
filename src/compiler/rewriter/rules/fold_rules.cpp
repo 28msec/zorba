@@ -820,7 +820,14 @@ RULE_REWRITE_POST(InlineFunctions)
         expr_t body = udf->getBody();
         body = body->clone(subst);
         body->clear_annotations();
-        return body;
+        if (rCtx.getCompilerCB()->theConfig.opt_level <= CompilerCB::config::O1)
+        {
+          dummy_expr* dummy = new dummy_expr(body);
+          dummy->setFunctionName(udf->getSignature().get_name());
+          return dummy;
+        } else {
+          return body;
+        }
         // TODO: this is caught here, because clone is not implemented for all expressions
       }
       catch (...)

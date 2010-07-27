@@ -21,6 +21,7 @@ CREATE_TEST_SOURCELIST(UnitTests
   uri.cpp
   multiple_runs.cpp
   runnable.cpp
+  call_stack.cpp
 )
 ELSE(WIN32)
  CREATE_TEST_SOURCELIST(UnitTests
@@ -28,6 +29,7 @@ ELSE(WIN32)
  itemfactory.cpp
  xmldatamanager.cpp
  uri.cpp
+ call_stack.cpp
 # multithread_simple.cpp
 # multithread_stress_test.cpp
 )

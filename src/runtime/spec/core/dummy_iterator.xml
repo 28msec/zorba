@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+/******************************************************************************
+* A dummy iterator to allow catch the stack in case of a dynamic exception
+******************************************************************************/
+-->
+
+<zorba:iterators
+  xmlns:zorba="http://www.zorba-xquery.com"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
+
+  <zorba:iterator name="DummyIterator">
+    <zorba:description author="Zorba Team">
+      This is just a dummy iterator, which calls
+      its children. This iterator is used to wrap
+      inlined expressions to be able to add the call
+      to the call stack in case of an exception.
+    </zorba:description>
+
+
+    <zorba:member type="store::Item_t" name="theFunctionName"
+      brief="stores the name of the function it substitutes"/>
+
+    <zorba:method return="void" name="setFunctionName" const="false">
+      <zorba:param type="store::Item_t" name="aFunctionName"/>
+    </zorba:method>
+  </zorba:iterator>
+</zorba:iterators>

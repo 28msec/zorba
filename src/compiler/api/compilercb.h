@@ -78,7 +78,8 @@ public:
     typedef enum 
     {
       O0,
-      O1
+      O1,
+      O2
     } opt_level_t;
     
     typedef void (* expr_callback) (const expr *, const std::string& name);

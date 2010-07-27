@@ -1062,6 +1062,48 @@ public:
   std::ostream& put(std::ostream&) const;
 };
 
+/***************************************************************************//**
+  dummy expression for call stack traces
+********************************************************************************/
+class dummy_expr : public expr
+{
+  friend class ExprIterator;
+  friend class expr;
+protected:
+  expr_t theExpr;
+  store::Item_t theFunctionName;
+public:
+  SERIALIZABLE_CLASS(dummy_expr);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(dummy_expr, expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+public:
+  dummy_expr(
+      static_context* sctx,
+      const QueryLoc& loc,
+      expr_t aChild);
+
+  dummy_expr(expr_t aExpr);
+
+  virtual ~dummy_expr();
+
+  void compute_scripting_kind();
+
+  void accept(expr_visitor&);
+
+  std::ostream& put(std::ostream&) const;
+
+  expr* get_expr() const { return theExpr.getp(); }
+
+  void setFunctionName(store::Item_t aFunctionName)
+  {
+    theFunctionName = aFunctionName;
+  }
+
+  store::Item_t getFunctionName() const
+  {
+    return theFunctionName;
+  }
+};
 
 /***************************************************************************//**
   debugger expression

@@ -48,6 +48,7 @@ public:
   EXPR_VISITOR_METHODS (cast_expr);
   EXPR_VISITOR_METHODS (const_expr);
   EXPR_VISITOR_METHODS (debugger_expr);
+  EXPR_VISITOR_METHODS (dummy_expr);
   EXPR_VISITOR_METHODS (delete_expr);
   EXPR_VISITOR_METHODS (doc_expr);
   EXPR_VISITOR_METHODS (elem_expr);

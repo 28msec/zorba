@@ -25,12 +25,14 @@ ZorbaException::ZorbaException(
     const XQUERY_ERROR& aErrorCode,
     const String& aDescription,
     const String& aFileName,
-    unsigned int aFileLineNumber)
+    unsigned int aFileLineNumber,
+    StackTrace_t queryLocs)
   :
   theErrorCode(aErrorCode),
   theDescription(aDescription),
   theFileName(aFileName),
-  theFileLineNumber(aFileLineNumber) 
+  theFileLineNumber(aFileLineNumber),
+  theStackTrace(queryLocs)
 {
 }
 
@@ -70,9 +72,10 @@ QueryException::QueryException(
     unsigned int afilelinenumber,
     const String& queryuri,
     unsigned int linebegin,
-    unsigned int columnbegin)
+    unsigned int columnbegin,
+    ZorbaException::StackTrace_t aStackTrace)
   :
-  ZorbaException(aErrorCode, aDescription, afilename, afilelinenumber),
+  ZorbaException(aErrorCode, aDescription, afilename, afilelinenumber, aStackTrace),
   theLineBegin(linebegin),
   theColumnBegin(columnbegin),
   theQueryURI(queryuri)
@@ -103,6 +106,12 @@ QueryException::getQueryURI() const
   return theQueryURI;
 }
 
+ZorbaException::StackTrace_t
+ZorbaException::getStackTrace() const
+{
+  return theStackTrace;
+}
+
 DynamicException::DynamicException(
     const XQUERY_ERROR& aErrorCode,
     const String& aDescription,
@@ -110,8 +119,16 @@ DynamicException::DynamicException(
     unsigned int afilelinenumber,
     const String& queryuri,
     unsigned int linebegin,
-    unsigned int columnbegin)
-  : QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin)
+    unsigned int columnbegin,
+    QueryException::StackTrace_t queryLocs)
+  : QueryException(aErrorCode,
+                   aDescription,
+                   afilename,
+                   afilelinenumber,
+                   queryuri,
+                   linebegin,
+                   columnbegin,
+                   queryLocs)
 {
 }
 
@@ -128,9 +145,10 @@ StaticException::StaticException(
     unsigned int afilelinenumber,
     const String& queryuri,
     unsigned int linebegin,
-    unsigned int columnbegin)
+    unsigned int columnbegin,
+    QueryException::StackTrace_t queryLocs)
   :
-  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin)
+  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin, queryLocs)
 {
 }
 
@@ -147,8 +165,9 @@ TypeException::TypeException(
     unsigned int afilelinenumber, 
     const String& queryuri,
     unsigned int linebegin,
-    unsigned int columnbegin)
-    : QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin) {}
+    unsigned int columnbegin,
+    QueryException::StackTrace_t queryLocs)
+    : QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin, queryLocs) {}
 
 TypeException::~TypeException() throw() 
 {
@@ -159,9 +178,10 @@ SerializationException::SerializationException(
     const XQUERY_ERROR& aErrorCode, 
     const String& aDescription,
     const String& aFilename,
-    unsigned int afilelinenumber)
+    unsigned int afilelinenumber,
+    ZorbaException::StackTrace_t aStackTrace)
   :
-  ZorbaException(aErrorCode, aDescription, aFilename, afilelinenumber)
+  ZorbaException(aErrorCode, aDescription, aFilename, afilelinenumber, aStackTrace)
 {
 }
 
@@ -177,9 +197,10 @@ UserException::UserException(
     unsigned int afilelinenumber,
     const String& queryuri,
     unsigned int linebegin,
-    unsigned int columnbegin)
+    unsigned int columnbegin,
+    QueryException::StackTrace_t queryLocs)
   :
-  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin)
+  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin, queryLocs)
 {
 }
 
@@ -191,9 +212,10 @@ UserException::UserException(
     const String& queryuri,
     unsigned int linebegin,
     unsigned int columnbegin,
+    QueryException::StackTrace_t queryLocs,
     const Iterator_t& aErrorObject)
   :
-  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin),
+  QueryException(aErrorCode, aDescription, afilename, afilelinenumber, queryuri, linebegin, columnbegin, queryLocs),
   theErrorObject(aErrorObject)
 {
 }
@@ -213,12 +235,22 @@ SystemException::SystemException(
     const XQUERY_ERROR& aErrorCode, 
     const String& aDescription,
     const String& aFilename,
-    unsigned int afilelinenumber)
+    unsigned int afilelinenumber,
+    ZorbaException::StackTrace_t aStackTrace)
   :
-  ZorbaException(aErrorCode, aDescription, aFilename, afilelinenumber)
+  ZorbaException(aErrorCode, aDescription, aFilename, afilelinenumber, aStackTrace)
 {
 }
 
+SystemException::SystemException(
+    const XQUERY_ERROR& aErrorCode,
+    const String& aDescription,
+    const String& aFilename,
+    unsigned int afilelinenumber)
+  :
+  ZorbaException(aErrorCode, aDescription, aFilename, afilelinenumber, ZorbaException::StackTrace_t())
+{
+}
 
 SystemException::~SystemException() throw() 
 {
@@ -227,8 +259,27 @@ SystemException::~SystemException() throw()
 
 std::ostream& operator<< (std::ostream& os, const ZorbaException& aException)
 {
-  return os << "[" << ZorbaException::getErrorCodeAsString(aException.getErrorCode()) << "] "
+  os << "[" << ZorbaException::getErrorCodeAsString(aException.getErrorCode()) << "] "
             << aException.getDescription();
+  ZorbaException::StackTrace_t lTrace = aException.getStackTrace();
+  if (!lTrace.empty()) {
+    os << std::endl << "Stack trace:" << std::endl;
+    for (QueryException::StackTrace_t::iterator i = lTrace.begin();
+         lTrace.end() != i; ++i)
+    {
+      QueryLocation_t loc = i->second;
+      Item name = i->first;
+      String functionName = name.getPrefix() == "" ? name.getLocalName() :
+                            name.getPrefix() + ":" + name.getLocalName();
+      os << "==================================================" << std::endl;
+      os << functionName << " ( " << name.getNamespace() << " )"<< std::endl;
+      os << loc->getFileName() << " at " << loc->getLineBegin()
+          << ":" << loc->getColumnBegin() << " - "
+          << loc->getLineEnd() << ":" << loc->getColumnEnd() << std::endl;
+    }
+    os << std::endl;
+  }
+  return os;
 }
 
 
@@ -236,18 +287,16 @@ std::ostream& operator<< (std::ostream& os, const QueryException& aException)
 {
 #ifndef NDEBUG
   return os << "Error in " << aException.getFileName()
-            << ":"  << aException.getFileLineNumber() 
-            << ". Query: <" << aException.getQueryURI()
-            << ">, line " << aException.getLineBegin() 
-            << ", column " << aException.getColumnBegin()
-            << ": " 
-            << (ZorbaException)aException;
+      << ":"  << aException.getFileLineNumber()
+      << ". Query: <" << aException.getQueryURI()
+      << ">, line " << aException.getLineBegin()
+      << ", column " << aException.getColumnBegin()
+      << ": " << (ZorbaException)aException << std::endl;
 #else
   return os << "Query: <" << aException.getQueryURI()
-            << ">, line " << aException.getLineBegin()
-            << ", column " << aException.getColumnBegin()
-            << ": "
-            << (ZorbaException)aException; 
+      << ">, line " << aException.getLineBegin()
+      << ", column " << aException.getColumnBegin()
+      << ": " << (ZorbaException)aException << std::endl;
 #endif
 }
 

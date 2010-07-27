@@ -16,10 +16,13 @@
 #ifndef ZORBA_EXCEPTION_API_H
 #define ZORBA_EXCEPTION_API_H
 
+#include <vector>
+
 #include <zorba/config.h>
 #include <zorba/error.h>
 #include <zorba/zorbastring.h>
 #include <zorba/iterator.h>
+#include <zorba/query_location.h>
 
 namespace zorba {
 
@@ -28,6 +31,8 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC ZorbaException
 {
  public:
+  typedef std::pair<zorba::Item, QueryLocation_t> StackEntry_t;
+  typedef std::vector<StackEntry_t> StackTrace_t;
   /** \brief Destructor
    */
   virtual ~ZorbaException() throw();
@@ -70,6 +75,14 @@ class ZORBA_DLL_PUBLIC ZorbaException
   static std::string
   getErrorCodeAsString(const XQUERY_ERROR& aErrorCode);
 
+  /** \brief Get the complete stack trace.
+    *
+    * @return a vector of query locations - the location of all
+    *         functions called.
+    */
+  virtual StackTrace_t
+  getStackTrace() const;
+
 protected:
   friend class ZorbaImpl;
   friend class ExternalFunctionData;
@@ -78,12 +91,14 @@ protected:
    *         can construct and throw exceptions.
    */
   ZorbaException(const XQUERY_ERROR&, const String& aDescription,
-                 const String& aFileName, unsigned int aFileLineNumber);
+                 const String& aFileName, unsigned int aFileLineNumber,
+                 StackTrace_t queryLocs);
 
   XQUERY_ERROR   theErrorCode;
   String         theDescription;
   String         theFileName;
-  unsigned int   theFileLineNumber;          
+  unsigned int   theFileLineNumber;
+  StackTrace_t  theStackTrace;
 };
 
 
@@ -133,12 +148,13 @@ protected:
         unsigned int afilelinenumber,
         const String& queryuri,
         unsigned int linebegin,
-        unsigned int columnbegin);
+        unsigned int columnbegin,
+        ZorbaException::StackTrace_t aStackTrace);
 
 protected:
-  unsigned int          theLineBegin;
-  unsigned int          theColumnBegin;
-  String                theQueryURI;
+  unsigned int  theLineBegin;
+  unsigned int  theColumnBegin;
+  String        theQueryURI;
 };
 
 
@@ -166,7 +182,8 @@ protected:
         unsigned int afilelinenumber,
         const String& queryuri,
         unsigned int linebegin,
-        unsigned int columnbegin);
+        unsigned int columnbegin,
+        ZorbaException::StackTrace_t aStackTrace);
 };
 
 
@@ -194,7 +211,8 @@ protected:
         unsigned int afilelinenumber,
         const String& queryuri,
         unsigned int linebegin,
-        unsigned int columnbegin);
+        unsigned int columnbegin,
+        ZorbaException::StackTrace_t aStackTrace);
 };
 
 
@@ -222,7 +240,8 @@ protected:
         unsigned int afilelinenumber,
         const String& queryuri,
         unsigned int linebegin,
-        unsigned int columnbegin);
+        unsigned int columnbegin,
+        ZorbaException::StackTrace_t aStackTrace);
 
 };
 
@@ -249,7 +268,8 @@ protected:
     const XQUERY_ERROR&,
     const String& aDescription,
     const String& afilename,
-    unsigned int afilelinenumber);
+    unsigned int afilelinenumber,
+    ZorbaException::StackTrace_t aStackTrace);
 
 };
 
@@ -283,7 +303,8 @@ protected:
         unsigned int afilelinenumber,
         const String& queryuri,
         unsigned int linebegin,
-        unsigned int columnbegin);
+        unsigned int columnbegin,
+        QueryException::StackTrace_t queryLocs);
 
   /** \brief Proctected constructor - only the %Zorba engine
    *         can construct and throw exceptions.
@@ -296,6 +317,7 @@ protected:
         const String& queryuri,
         unsigned int linebegin,
         unsigned int columnbegin,
+        QueryException::StackTrace_t queryLocs,
         const Iterator_t& aErrorObject);
 
   Iterator_t            theErrorObject;
@@ -320,8 +342,11 @@ protected:
    *         can construct and throw exceptions.
    */
   SystemException(const XQUERY_ERROR&, const String& aDescription,
-                  const String& afilename, unsigned int afilelinenumber);
+                  const String& afilename, unsigned int afilelinenumber,
+                  ZorbaException::StackTrace_t aStackTrace);
 
+  SystemException(const XQUERY_ERROR&, const String& aDescription,
+                  const String& afilename, unsigned int afilelinenumber);
 };
 
 

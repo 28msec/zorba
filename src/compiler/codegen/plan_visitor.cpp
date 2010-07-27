@@ -63,6 +63,7 @@
 #include "runtime/core/nodeid_iterators.h"
 #include "runtime/core/flwor_iterator.h"
 #include "runtime/core/trycatch.h"
+#include "runtime/core/dummy_iterator.h"
 #include "runtime/core/gflwor/common.h"
 #include "runtime/core/gflwor/groupby_iterator.h"
 #include "runtime/core/gflwor/tuplestream_iterator.h"
@@ -477,6 +478,22 @@ void end_visit(dynamic_function_invocation_expr& v)
   push_itstack(new DynamicFnCallIterator(sctx, qloc, argIters));
 }
 
+
+bool begin_visit(dummy_expr& v)
+{
+  CODEGEN_TRACE_IN("");
+  return true;
+}
+
+void end_visit(dummy_expr& v)
+{
+  CODEGEN_TRACE_OUT("");
+  std::vector<PlanIter_t> argv;
+  argv.push_back(pop_itstack());
+  std::auto_ptr<DummyIterator> lDummyIter(new DummyIterator(sctx, qloc, argv));
+  lDummyIter->setFunctionName(v.getFunctionName());
+  push_itstack(lDummyIter.release());
+}
 
 bool begin_visit (debugger_expr& v)
 {

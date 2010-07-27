@@ -18,6 +18,7 @@
 #include <istream>
 #include <zorba/stateless_function.h>
 #include <zorba/store_manager.h>
+#include <zorba/query_location.h>
 
 #include "api/xqueryimpl.h"
 #include "api/staticcontextimpl.h"
@@ -252,6 +253,7 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
                                  aError.theQueryFileName,
                                  aError.theQueryLine,
                                  aError.theQueryColumn,
+                                 aError.getStackTrace(),
                                  lIter);
     aErrorHandler->userError(lUserException);
   }
@@ -263,7 +265,8 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
                                      aError.theLineNumber,
                                      aError.theQueryFileName,
                                      aError.theQueryLine,
-                                     aError.theQueryColumn);
+                                     aError.theQueryColumn,
+                                     aError.getStackTrace());
     aErrorHandler->staticError(lStaticException);
   }
   else if (aError.isDynamicError())
@@ -274,7 +277,8 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
                                        aError.theLineNumber,
                                        aError.theQueryFileName,
                                        aError.theQueryLine,
-                                       aError.theQueryColumn);
+                                       aError.theQueryColumn,
+                                       aError.getStackTrace());
     aErrorHandler->dynamicError(lDynamicException);
   }
   else if (aError.isTypeError())
@@ -285,7 +289,8 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
                                  aError.theLineNumber,
                                  aError.theQueryFileName,
                                  aError.theQueryLine,
-                                 aError.theQueryColumn);
+                                 aError.theQueryColumn,
+                                 aError.getStackTrace());
     aErrorHandler->typeError(lTypeException);
   }
   else if (aError.isSerializationError())
@@ -294,7 +299,8 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
                             aError.theErrorCode,
                             String(aError.theDescription.theStrStore),
                             String(aError.theFileName),
-                            aError.theLineNumber);
+                            aError.theLineNumber,
+                            aError.getStackTrace());
     aErrorHandler->serializationError(lSerException);
   }
   else if (aError.isStoreError())
@@ -318,7 +324,8 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
     SystemException lSystemException(aError.theErrorCode,
                                      String(aError.theDescription.theStrStore),
                                      String(aError.theFileName),
-                                     aError.theLineNumber);
+                                     aError.theLineNumber,
+                                     aError.getStackTrace());
     aErrorHandler->systemError(lSystemException);
   }
   else
@@ -330,7 +337,9 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, error::ZorbaError& aErr
 
 void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, const std::string& aDesc)
 {
-  SystemException lSystemException(XQP0019_INTERNAL_ERROR, String(aDesc), "", 0);
+  SystemException lSystemException(XQP0019_INTERNAL_ERROR,
+                                   String(aDesc), "", 0,
+                                   ZorbaException::StackTrace_t());
   aErrorHandler->systemError(lSystemException);
 }
 
@@ -338,7 +347,8 @@ void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler, const std::string& aDes
 void ZorbaImpl::notifyError(ErrorHandler* aErrorHandler)
 {
   SystemException lSystemException(XQP0019_INTERNAL_ERROR,
-                                   "An internal error occured.", "", 0);
+                                   "An internal error occured.", "", 0,
+                                   ZorbaException::StackTrace_t());
   aErrorHandler->systemError(lSystemException);
 }
 

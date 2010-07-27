@@ -24,7 +24,8 @@ ExternalFunctionData::createZorbaException(
     const String& aFileName,
     unsigned int aFileLineNumber)
 {
-  return ZorbaException(aError, aDescription, aFileName, aFileLineNumber);
+  return ZorbaException(aError, aDescription, aFileName, aFileLineNumber,
+                        ZorbaException::StackTrace_t());
 }
 
 

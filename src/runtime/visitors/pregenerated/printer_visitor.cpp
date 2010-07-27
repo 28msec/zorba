@@ -40,6 +40,7 @@
 #include "runtime/collections/collections.h"
 #include "runtime/context/context.h"
 #include "runtime/convertors/convertors.h"
+#include "runtime/core/dummy_iterator.h"
 #include "runtime/debug/debug.h"
 #include "runtime/debug/zorba_debug_iterator.h"
 #include "runtime/durations_dates_times/durations_dates_times.h"
@@ -705,6 +706,20 @@ void PrinterVisitor::endVisit ( const ZorbaXML2TXTFILEIterator& ) {
   thePrinter.endEndVisit();
 }
 // </ZorbaXML2TXTFILEIterator>
+
+
+// <DummyIterator>
+void PrinterVisitor::beginVisit ( const DummyIterator& a) {
+  thePrinter.startBeginVisit("DummyIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const DummyIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </DummyIterator>
 
 
 // <TraceIterator>

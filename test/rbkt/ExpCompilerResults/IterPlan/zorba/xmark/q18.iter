@@ -18,18 +18,20 @@ Iterator tree for main query:
     </ChildAxisIterator>
   </ForVariable>
   <ReturnClause>
-    <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
-      <SingletonIterator value="xs:decimal(2.20371)"/>
-      <PromoteIterator type="xs:decimal">
-        <FnDataIterator>
-          <FnZeroOrOneIterator>
-            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,reserve)" typename="*" nill allowed="0">
-              <ForVarIterator varname="i"/>
-            </ChildAxisIterator>
-          </FnZeroOrOneIterator>
-        </FnDataIterator>
-      </PromoteIterator>
-    </SpecificNumArithIterator_MultiplyOperation_DECIMAL>
+    <DummyIterator>
+      <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
+        <SingletonIterator value="xs:decimal(2.20371)"/>
+        <PromoteIterator type="xs:decimal">
+          <FnDataIterator>
+            <FnZeroOrOneIterator>
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,reserve)" typename="*" nill allowed="0">
+                <ForVarIterator varname="i"/>
+              </ChildAxisIterator>
+            </FnZeroOrOneIterator>
+          </FnDataIterator>
+        </PromoteIterator>
+      </SpecificNumArithIterator_MultiplyOperation_DECIMAL>
+    </DummyIterator>
   </ReturnClause>
 </flwor::FLWORIterator>
 

@@ -18,6 +18,7 @@
 
 #include "common/shared_types.h"
 #include "compiler/rewriter/framework/sequential_rewriter.h"
+#include "compiler/api/compilercb.h"
 
 namespace zorba 
 {

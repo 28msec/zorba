@@ -1,6 +1,8 @@
 Iterator tree for main query:
-<TryCatchIterator>
-  <SingletonIterator value="xs:integer(2)"/>
-  <SingletonIterator value="xs:string(err)"/>
-</TryCatchIterator>
+<DummyIterator>
+  <TryCatchIterator>
+    <SingletonIterator value="xs:integer(2)"/>
+    <SingletonIterator value="xs:string(err)"/>
+  </TryCatchIterator>
+</DummyIterator>
 

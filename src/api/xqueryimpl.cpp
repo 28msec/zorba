@@ -484,9 +484,14 @@ void XQueryImpl::doCompile(
   // Set the compiler config.
   // If lib_module is set to true the query will be considered a library module
   theCompilerCB->theConfig.lib_module = aHints.lib_module;
-  theCompilerCB->theConfig.opt_level = (aHints.opt_level == ZORBA_OPT_LEVEL_O0 ?
-                                        CompilerCB::config::O0 :
-                                        CompilerCB::config::O1);
+  CompilerCB::config::opt_level_t optLevel;
+  if (aHints.opt_level == ZORBA_OPT_LEVEL_O0)
+    optLevel = CompilerCB::config::O0;
+  else if (aHints.opt_level == ZORBA_OPT_LEVEL_O2)
+    optLevel = CompilerCB::config::O2;
+  else
+    optLevel = CompilerCB::config::O1;
+  theCompilerCB->theConfig.opt_level = optLevel;
 
   XQueryCompiler lCompiler(theCompilerCB);
 

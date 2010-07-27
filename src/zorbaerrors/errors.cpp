@@ -18,6 +18,7 @@
 
 #include "zorbaerrors/errors.h"
 #include "zorbaerrors/error_messages.h"
+#include "debugger/query_locationimpl.h"
 
 namespace zorba { namespace error {
 
@@ -104,7 +105,8 @@ ZorbaError::ZorbaError(const ZorbaError& other)
   theQueryFileName(other.theQueryFileName),
   theFileName(other.theFileName),
   theLineNumber(other.theLineNumber),
-  theDebug(other.theDebug)
+  theDebug(other.theDebug),
+  theStackTrace(other.theStackTrace)
 {
 }
 
@@ -301,6 +303,18 @@ std::auto_ptr<ZorbaError> ZorbaError::clone() const
 {
   std::auto_ptr<ZorbaError> err(new ZorbaError(*this));
   return err;
+}
+
+QueryException::StackTrace_t ZorbaError::getStackTrace() const
+{
+  typedef error::ZorbaError::StackTrace_t locList_t;
+  QueryException::StackTrace_t lResult;
+  for (locList_t::const_iterator i = theStackTrace.begin();
+       i != theStackTrace.end(); ++i) {
+         lResult.push_back(QueryException::StackEntry_t(zorba::Item(i->first),
+                                        new QueryLocationImpl(i->second)));
+  }
+  return lResult;
 }
 
 

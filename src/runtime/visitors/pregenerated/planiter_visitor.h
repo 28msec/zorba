@@ -114,6 +114,8 @@ namespace zorba{
 
     class ZorbaXML2TXTFILEIterator;
 
+    class DummyIterator;
+
     class TraceIterator;
 
     class ReadLineIterator;
@@ -603,6 +605,9 @@ public:
 
     virtual void beginVisit ( const ZorbaXML2TXTFILEIterator& ) = 0;
     virtual void endVisit   ( const ZorbaXML2TXTFILEIterator& ) = 0;
+
+    virtual void beginVisit ( const DummyIterator& ) = 0;
+    virtual void endVisit   ( const DummyIterator& ) = 0;
 
     virtual void beginVisit ( const TraceIterator& ) = 0;
     virtual void endVisit   ( const TraceIterator& ) = 0;

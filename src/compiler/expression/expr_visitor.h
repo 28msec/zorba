@@ -41,6 +41,7 @@ public:
   virtual void end_visit( C& ) = 0
 
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( expr );
+  DECL_EXPR_VISITOR_VISIT_MEM_FNS( dummy_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( debugger_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( wrapper_expr );
   DECL_EXPR_VISITOR_VISIT_MEM_FNS( sequential_expr );

@@ -73,6 +73,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(trycatch_expr)
 SERIALIZABLE_CLASS_VERSIONS(eval_expr::eval_var)
 END_SERIALIZABLE_CLASS_VERSIONS(eval_expr::eval_var)
 
+SERIALIZABLE_CLASS_VERSIONS(dummy_expr::dummy_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(dummy_expr::dummy_expr)
+
 SERIALIZABLE_CLASS_VERSIONS(eval_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(eval_expr)
 
@@ -180,6 +183,7 @@ DEF_EXPR_ACCEPT (sequential_expr)
 DEF_EXPR_ACCEPT (promote_expr)
 DEF_EXPR_ACCEPT (trycatch_expr)
 DEF_EXPR_ACCEPT (eval_expr)
+DEF_EXPR_ACCEPT (dummy_expr)
 DEF_EXPR_ACCEPT (if_expr)
 DEF_EXPR_ACCEPT (instanceof_expr)
 DEF_EXPR_ACCEPT (treat_expr)
@@ -1324,6 +1328,41 @@ void eval_expr::serialize(::zorba::serialization::Archiver& ar)
 
 
 void eval_expr::compute_scripting_kind()
+{
+  theScriptingKind = theExpr->get_scripting_kind();
+}
+
+dummy_expr::~dummy_expr() {}
+
+dummy_expr::dummy_expr(static_context *sctx, const QueryLoc &loc, expr_t aChild)
+  :
+  expr(sctx, loc, aChild->get_expr_kind()),
+  theExpr(aChild)
+{
+  theKind = dummy_expr_kind;
+  bool modified;
+  compute_return_type(false, &modified);
+  compute_scripting_kind();
+}
+
+dummy_expr::dummy_expr(expr_t aExpr)
+  :
+  expr(aExpr->get_sctx(), aExpr->get_loc(), aExpr->get_expr_kind()),
+  theExpr(aExpr)
+{
+  theKind = dummy_expr_kind;
+  bool modified;
+  compute_return_type(false, &modified);
+  compute_scripting_kind();
+}
+
+void dummy_expr::serialize(::zorba::serialization::Archiver &ar)
+{
+  serialize_baseclass(ar, (expr*)this);
+  ar & theExpr;
+}
+
+void dummy_expr::compute_scripting_kind()
 {
   theScriptingKind = theExpr->get_scripting_kind();
 }

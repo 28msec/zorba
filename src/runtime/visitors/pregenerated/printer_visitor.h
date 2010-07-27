@@ -176,6 +176,9 @@ namespace zorba {
     void beginVisit( const ZorbaXML2TXTFILEIterator& );
     void endVisit  ( const ZorbaXML2TXTFILEIterator& );
 
+    void beginVisit( const DummyIterator& );
+    void endVisit  ( const DummyIterator& );
+
     void beginVisit( const TraceIterator& );
     void endVisit  ( const TraceIterator& );
 

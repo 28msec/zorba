@@ -17,11 +17,11 @@
 #define ZORBA_COMPILER_REWRITER_RULE_H
 
 #include "common/shared_types.h"
+#include "compiler/api/compilercb.h"
 
 
 namespace zorba {
 
-class CompilerCB;
 class RewriterContext;
 
 
@@ -57,10 +57,10 @@ public:
 
 private:
   RuleKind    theKind;
-  std::string theRuleName;     
+  std::string theRuleName;
 
 public:
-  RewriteRule(RuleKind k, const std::string& name) 
+  RewriteRule(RuleKind k, const std::string& name)
     :
     theKind(k),
     theRuleName(name)
@@ -83,7 +83,7 @@ public:
 class PrePostRewriteRule : public RewriteRule
 {
 public:
-  PrePostRewriteRule(RewriteRule::RuleKind k, const std::string& name) 
+  PrePostRewriteRule(RewriteRule::RuleKind k, const std::string& name)
     :
     RewriteRule(k, name)
   {
@@ -107,7 +107,8 @@ protected:
 class name : public PrePostRewriteRule                              \
 {                                                                   \
  public:                                                            \
-  name() : PrePostRewriteRule(RewriteRule::name, #name) { }         \
+ name()                                                             \
+   : PrePostRewriteRule(RewriteRule::name, #name) { }               \
                                                                     \
   ~name() { }                                                       \
                                                                     \
