@@ -243,7 +243,6 @@ expr_t XQueryCompiler::normalize(parsenode_t aParsenode)
     return NULL;
   }
 
-  theCompilerCB->setIsUpdating(lExpr->is_updating());
   return lExpr;
 }
 

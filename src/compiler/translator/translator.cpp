@@ -4831,7 +4831,12 @@ void end_visit(const QueryBody& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  expr_t resultExpr = wrap_in_globalvar_assign(pop_nodestack());
+  expr_t resultExpr = pop_nodestack();
+
+  if (resultExpr->is_updating())
+    theModulesInfo->theCCB->setIsUpdating(true);
+
+  resultExpr = wrap_in_globalvar_assign(resultExpr);
 
   push_nodestack(resultExpr);
 
@@ -5699,8 +5704,8 @@ void end_visit(const GroupByClause& v, void* /*visit_state*/)
   vector<string> collations;
   group_clause::rebind_list_t grouping_rebind;
   group_clause::rebind_list_t nongrouping_rebind;
-  varref_t input_var;
-  varref_t output_var;
+  var_expr_t input_var;
+  var_expr_t output_var;
 
   for (int i = numGroupSpecs - 1; i >= 0; i--)
   {
@@ -6400,7 +6405,7 @@ void* begin_visit(const TypeswitchExpr& v)
     xqtref_t type = pop_tstack();
 
     const QName* varname = caseClause->get_varname();
-    varref_t caseVar;
+    var_expr_t caseVar;
 
     if (varname)
     {
@@ -8371,9 +8376,44 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
 
   var_expr* ve = lookup_var(v.get_name(), loc, XPST0008);
 
-  if (ve->get_kind() == var_expr::prolog_var && !theCurrentPrologVFDecl.isNull())
+  if (ve->get_kind() == var_expr::prolog_var)
   {
-    thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
+    TypeManager* tm = CTX_TM;
+
+    xqtref_t declaredType = ve->get_type();
+
+    if (declaredType != NULL && !TypeOps::is_in_scope(tm, *declaredType))
+    {
+      XQUERY_ERROR err = XQST0036;
+
+      if (declaredType->get_manager() == tm)
+        err = XPTY0004;
+
+      if (theModuleNamespace->empty())
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(err, loc,
+                                 "The variable "
+                                 << ve->get_name()->getStringValue()->c_str()
+                                 << " has type " << declaredType->toString()
+                                 << ", which is not among the in-scope types"
+                                 << " of the main module."); 
+      }
+      else
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(err, loc,
+                                 "The variable "
+                                 << ve->get_name()->getStringValue()->c_str()
+                                 << " has type " << declaredType->toString()
+                                 << ", which is not among the in-scope types"
+                                 << " of module " 
+                                 << theModuleNamespace->c_str());
+      }
+    }
+
+    if (!theCurrentPrologVFDecl.isNull())
+    {
+      thePrologGraph.addEdge(theCurrentPrologVFDecl, ve);
+    }
   }
 
   push_nodestack(new wrapper_expr(theRootSctx, v.get_location(), rchandle<expr>(ve)));
@@ -8413,7 +8453,7 @@ void end_visit(const ParenthesizedExpr& v, void* /*visit_state*/)
 /*******************************************************************************
   [113] ContextItemExpr ::= "."
 ********************************************************************************/
-void *begin_visit (const ContextItemExpr& v)
+void* begin_visit(const ContextItemExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
@@ -8421,7 +8461,7 @@ void *begin_visit (const ContextItemExpr& v)
 
 void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   push_nodestack(DOT_REF);
 }
@@ -8430,15 +8470,15 @@ void end_visit (const ContextItemExpr& v, void* /*visit_state*/)
 /*******************************************************************************
   [114] OrderedExpr ::= "ordered" "{" Expr "}"
 ********************************************************************************/
-void *begin_visit (const OrderedExpr& v)
+void* begin_visit(const OrderedExpr& v)
 {
   TRACE_VISIT ();
   return no_state;
 }
 
-void end_visit (const OrderedExpr& v, void* /*visit_state*/)
+void end_visit(const OrderedExpr& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   push_nodestack(new order_expr(theRootSctx,
                                 loc,
@@ -8474,28 +8514,85 @@ void* begin_visit(const FunctionCall& v)
 {
   TRACE_VISIT();
 
-  if (!theCurrentPrologVFDecl.isNull())
+  rchandle<QName> qname = v.get_fname();
+
+  ulong numArgs = 0;
+  if (v.get_arg_list() != NULL)
+    numArgs = v.get_arg_list()->size();
+
+  function* f = lookup_fn(qname, numArgs, loc);
+
+  if (f != NULL && !theCurrentPrologVFDecl.isNull())
   {
-    rchandle<QName> qname = v.get_fname();
-
-    ulong numArgs = 0;
-    if (v.get_arg_list() != NULL)
-      numArgs = v.get_arg_list()->size();
-
-    function* f = lookup_fn(qname, numArgs, loc);
-
-    if (f != NULL)
+    if (f->isSequential() &&
+        theCurrentPrologVFDecl.getKind() == PrologGraphVertex::FUN &&
+        ! theCurrentPrologVFDecl.getFunction()->isSequential())
     {
-      if (f->isSequential() &&
-          theCurrentPrologVFDecl.getKind() == PrologGraphVertex::FUN &&
-          ! theCurrentPrologVFDecl.getFunction()->isSequential())
-      {
-        ZORBA_ERROR_LOC_DESC_OSS(XUST0001, loc,
-                                 "A sequantial function is called from a non sequential function");
-      }
+      ZORBA_ERROR_LOC_DESC_OSS(XUST0001, loc,
+                               "A sequantial function is called from a non sequential function");
+    }
+    
+    if (dynamic_cast<user_function*>(f) != NULL)
+      thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
+  }
 
-      if (dynamic_cast<user_function*>(f) != NULL)
-        thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
+  if (f != NULL && (f->isUdf() || f->isExternal()))
+  {
+    TypeManager* tm = CTX_TM;
+
+    const signature& sign = f->getSignature();
+
+    xqtref_t retType = sign.return_type();
+    if (!TypeOps::is_in_scope(tm, *retType))
+    {
+      if (theModuleNamespace->empty())
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
+                                 "The function "
+                                 << f->getName()->getStringValue()->c_str()
+                                 << " has type " << retType->toString()
+                                 << ", which is not among the in-scope types"
+                                 << " of the main module."); 
+      }
+      else
+      {
+        ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
+                                 "The function "
+                                 << f->getName()->getStringValue()->c_str()
+                                 << " has type " << retType->toString()
+                                 << ", which is not among the in-scope types"
+                                 << " of module " 
+                                 << theModuleNamespace->c_str());
+      }
+    }
+    
+    ulong numParams = f->getArity();
+
+    for (ulong i = 0; i < numParams; ++i)
+    {
+      xqtref_t type = sign[i];
+      if (!TypeOps::is_in_scope(tm, *type))
+      {
+        if (theModuleNamespace->empty())
+        {
+          ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
+                                   "The function "
+                                   << f->getName()->getStringValue()->c_str()
+                                   << " has type " << type->toString()
+                                   << ", which is not among the in-scope types"
+                                   << " of the main module."); 
+        }
+        else
+        {
+          ZORBA_ERROR_LOC_DESC_OSS(XQST0036, loc,
+                                   "The function "
+                                   << f->getName()->getStringValue()->c_str()
+                                   << " has type " << type->toString()
+                                   << ", which is not among the in-scope types"
+                                   << " of module " 
+                                   << theModuleNamespace->c_str());
+        }
+      }
     }
   }
 
@@ -10060,11 +10157,14 @@ void end_visit (const AnyKindTest& v, void* /*visit_state*/) {
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL) {
+  if (axisExpr != NULL) 
+  {
     rchandle<match_expr> me = new match_expr(theRootSctx, loc);
     me->setTestKind(match_anykind_test);
     axisExpr->setTest(me);
-  } else {
+  }
+  else
+  {
     theTypeStack.push(GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE);
   }
 }
@@ -10075,16 +10175,16 @@ void end_visit (const AnyKindTest& v, void* /*visit_state*/) {
   DocumentTest ::= "document-node" "(" (ElementTest | SchemaElementTest)? ")"
 
 ********************************************************************************/
-void *begin_visit (const DocumentTest& v)
+void* begin_visit(const DocumentTest& v)
 {
   TRACE_VISIT();
   return no_state;
 }
 
 
-void end_visit (const DocumentTest& v, void* /*visit_state*/)
+void end_visit(const DocumentTest& v, void* /*visit_state*/)
 {
-  TRACE_VISIT_OUT ();
+  TRACE_VISIT_OUT();
 
   ElementTest* elemTest = v.get_elem_test().getp();
   SchemaElementTest* schemaTest = v.get_schema_elem_test().getp();

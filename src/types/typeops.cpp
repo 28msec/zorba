@@ -162,8 +162,18 @@ bool TypeOps::is_in_scope(const TypeManager* tm, const XQType& type)
     const NodeXQType& ntype = static_cast<const NodeXQType&>(type);
     xqtref_t ctype = ntype.get_content_type();
 
-    if (ctype != NULL && tm->create_named_type(ctype->get_qname()) == NULL)
-      return false;
+    if (ctype != NULL)
+    {
+      if (ntype.get_node_kind() == store::StoreConsts::documentNode)
+      {
+        assert(!ntype.is_schema_test());
+        return is_in_scope(tm, *ctype);
+      }
+      else if (tm->create_named_type(ctype->get_qname()) == NULL)
+      {
+        return false;
+      }
+    }
 
     if (ntype.is_schema_test())
     {

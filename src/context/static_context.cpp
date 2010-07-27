@@ -2929,6 +2929,9 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       const store::Item* qname = ite.getKey();
       var_expr_t ve = ite.getValue();
 
+#if 0
+      // This check has been moved to the translator (in the translation of 
+      // a VarRef).
       xqtref_t type = ve->get_return_type();
       if (!TypeOps::is_in_scope(get_typemanager(), *type))
       {
@@ -2937,6 +2940,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
                                  << " is not among the in-scope types"
                                  << " of the importing module");
       }
+#endif
 
       bind_var(qname, ve, loc, XQST0049);
     }
@@ -2957,7 +2961,9 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     for (; ite != end; ++ite)
     {
       function_t f = (*ite).second;
-
+#if 0
+      // This check has been moved to the translator (in the translation of 
+      // a FunctionCall).
       const signature& sign = f->getSignature();
       ulong numArgs = f->getArity();
 
@@ -2981,7 +2987,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
                                  << " is not among the in-scope types"
                                  << " of the importing module");
       }
-
+#endif
       bind_fn(ite.getKey(), f, f->getArity(), loc);
     }
   }

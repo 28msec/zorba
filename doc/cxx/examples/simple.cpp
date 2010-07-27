@@ -19,6 +19,9 @@
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
+#include <zorba/serializer.h>
+#include <zorba/singleton_item_sequence.h>
+
 
 using namespace zorba;
 
@@ -31,6 +34,7 @@ example_1(Zorba* aZorba)
 
 	return true;
 }
+
 
 bool
 example_2(Zorba* aZorba)
@@ -50,6 +54,7 @@ example_2(Zorba* aZorba)
 
 	return true;
 }
+
 
 bool
 example_3(Zorba* aZorba)
@@ -117,6 +122,7 @@ example_6(Zorba* aZorba)
   return true;
 }
 
+
 bool
 example_7()
 {
@@ -125,6 +131,7 @@ example_7()
 
   return true;
 }
+
 
 bool
 example_8( Zorba * aZorba )
@@ -135,6 +142,7 @@ example_8( Zorba * aZorba )
   std::cout << lQuery << std::endl;
   return true;
 }
+
 
 bool
 example_9( Zorba * aZorba )
@@ -257,6 +265,7 @@ example_12(Zorba* aZorba)
 	return true;
 }
 
+
 bool
 example_13(Zorba* aZorba)
 {
@@ -277,6 +286,7 @@ example_13(Zorba* aZorba)
   return false;
 }
 
+
 bool
 example_14()
 {
@@ -285,6 +295,52 @@ example_14()
   str += "c";
 
   return (str == "abc");
+}
+
+
+bool
+example_15(Zorba* zorba)
+{
+  std::string queryString = 
+  "declare variable $foo := 1;\
+   \
+   insert node <child/> into /parent";
+
+  try
+  {
+    zorba::StaticContext_t sctx = zorba->createStaticContext();
+
+    zorba::XQuery_t query = zorba->compileQuery(queryString, sctx);
+
+    std::stringstream ss;
+    ss << "<parent/>";
+    zorba::Item context_item = zorba->getXmlDataManager()->parseDocument(ss);
+    zorba::DynamicContext* dctx = query->getDynamicContext();
+    dctx->setContextItem(context_item);
+
+    if( query->isUpdating() )
+    {
+      query->execute();
+
+      Zorba_SerializerOptions_t options;
+      zorba::Serializer_t serializer = zorba::Serializer::createSerializer(options);
+      zorba::SingletonItemSequence seq(context_item);
+      serializer->serialize(&seq, std::cout);
+    }
+    else
+    {
+      std::cerr << "The isUpdating() method should return true" << std::endl;
+      return false;
+    }
+
+    query->close();
+  }
+  catch( ... )
+  {
+    std::cerr << "exception thrown" << std::endl;
+  }
+
+  return true;
 }
 
 
@@ -363,6 +419,11 @@ simple(int argc, char* argv[])
 
   std::cout << "executing example 14" << std::endl;
   res = example_14();
+  if (!res) return 1;
+  std::cout << std::endl;
+
+  std::cout << "executing example 15" << std::endl;
+  res = example_15(lZorba);
   if (!res) return 1;
   std::cout << std::endl;
 
