@@ -89,7 +89,7 @@ enum expr_kind_t
   wrapper_expr_kind,
   dynamic_function_invocation_expr_kind,
   function_item_expr_kind,
-  dummy_expr_kind,
+  function_trace_expr_kind,
   unknown_expr_kind
 };
 
@@ -105,7 +105,7 @@ class expr : public AnnotationHolder
   friend class for_clause;
   friend class let_clause;
   friend class where_clause;
-  friend class dummy_expr;
+  friend class function_trace_expr;
 
 public:
   typedef rchandle<expr> expr_t;

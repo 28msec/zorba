@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<DummyIterator>
+<FunctionTraceIterator>
   <flwor::FLWORIterator>
     <LetVariable name="e" materialize="true">
       <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,r2)" typename="*" nill allowed="0" target_position="0">
@@ -148,5 +148,5 @@ Iterator tree for main query:
       </SequentialIterator>
     </ReturnClause>
   </flwor::FLWORIterator>
-</DummyIterator>
+</FunctionTraceIterator>
 

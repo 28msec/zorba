@@ -20,8 +20,8 @@
 // * SEE .xml FILE WITH SAME NAME           *
 // *                                        *
 // ******************************************
-#ifndef ZORBA_RUNTIME_CORE_DUMMY_ITERATOR_H
-#define ZORBA_RUNTIME_CORE_DUMMY_ITERATOR_H
+#ifndef ZORBA_RUNTIME_CORE_FUNCTION_TRACE_ITERATOR_H
+#define ZORBA_RUNTIME_CORE_FUNCTION_TRACE_ITERATOR_H
 
 
 #include "common/shared_types.h"
@@ -42,37 +42,37 @@ namespace zorba {
  *    
  * Author: Zorba Team
  */
-class DummyIterator : public NaryBaseIterator<DummyIterator, PlanIteratorState>
+class FunctionTraceIterator : public NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>
 { 
 protected:
   store::Item_t theFunctionName; //stores the name of the function it substitutes
 public:
-  SERIALIZABLE_CLASS(DummyIterator);
+  SERIALIZABLE_CLASS(FunctionTraceIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(DummyIterator,
-    NaryBaseIterator<DummyIterator, PlanIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionTraceIterator,
+    NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<DummyIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>*)this);
 
     ar & theFunctionName;
   }
 
-  DummyIterator(
+  FunctionTraceIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<DummyIterator, PlanIteratorState>(sctx, loc, children),
+    NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>(sctx, loc, children),
     theFunctionName()
   {}
 
-  virtual ~DummyIterator();
+  virtual ~FunctionTraceIterator();
 
 public:
-  void setFunctionName(store::Item_t aFunctionName);
+  void setFunctionName(const store::Item_t& aFunctionName);
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

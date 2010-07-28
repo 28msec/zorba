@@ -1,5 +1,5 @@
 Iterator tree for main query:
-<DummyIterator>
+<FunctionTraceIterator>
   <flwor::FLWORIterator>
     <ForVariable name="ancestor">
       <AncestorSelfAxisIterator test kind="match_name_test" qname="*" typename="*" nill allowed="0">
@@ -53,5 +53,5 @@ Iterator tree for main query:
       </FnConcatIterator>
     </ReturnClause>
   </flwor::FLWORIterator>
-</DummyIterator>
+</FunctionTraceIterator>
 

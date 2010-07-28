@@ -1065,7 +1065,7 @@ public:
 /***************************************************************************//**
   dummy expression for call stack traces
 ********************************************************************************/
-class dummy_expr : public expr
+class function_trace_expr : public expr
 {
   friend class ExprIterator;
   friend class expr;
@@ -1073,18 +1073,18 @@ protected:
   expr_t theExpr;
   store::Item_t theFunctionName;
 public:
-  SERIALIZABLE_CLASS(dummy_expr);
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(dummy_expr, expr)
+  SERIALIZABLE_CLASS(function_trace_expr);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(function_trace_expr, expr)
   void serialize(::zorba::serialization::Archiver& ar);
 public:
-  dummy_expr(
+  function_trace_expr(
       static_context* sctx,
       const QueryLoc& loc,
       expr_t aChild);
 
-  dummy_expr(expr_t aExpr);
+  function_trace_expr(expr_t aExpr);
 
-  virtual ~dummy_expr();
+  virtual ~function_trace_expr();
 
   void compute_scripting_kind();
 

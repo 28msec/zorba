@@ -11,7 +11,7 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://www.zorba-xquery.com ../runtime.xsd">
 
-  <zorba:iterator name="DummyIterator">
+  <zorba:iterator name="FunctionTraceIterator">
     <zorba:description author="Zorba Team">
       This is just a dummy iterator, which calls
       its children. This iterator is used to wrap
@@ -24,7 +24,7 @@
       brief="stores the name of the function it substitutes"/>
 
     <zorba:method return="void" name="setFunctionName" const="false">
-      <zorba:param type="store::Item_t" name="aFunctionName"/>
+      <zorba:param type="const store::Item_t&amp;" name="aFunctionName"/>
     </zorba:method>
   </zorba:iterator>
 </zorba:iterators>

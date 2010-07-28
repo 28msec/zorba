@@ -1,13 +1,13 @@
 #include <iostream>
 
-#include "runtime/core/dummy_iterator.h"
+#include "runtime/core/function_trace_iterator.h"
 
 #include "zorbaerrors/error_manager.h"
 #include "errors/user_error.h"
 
 namespace zorba {
 
-bool DummyIterator::nextImpl(store::Item_t &result, PlanState &aPlanState) const
+bool FunctionTraceIterator::nextImpl(store::Item_t &result, PlanState &aPlanState) const
 {
   try {
     PlanIteratorState* lState = 0;
@@ -24,7 +24,7 @@ bool DummyIterator::nextImpl(store::Item_t &result, PlanState &aPlanState) const
   }
 }
 
-void DummyIterator::setFunctionName(store::Item_t aFunctionName)
+void FunctionTraceIterator::setFunctionName(const store::Item_t& aFunctionName)
 {
   theFunctionName = aFunctionName;
 }

@@ -273,9 +273,8 @@ std::ostream& operator<< (std::ostream& os, const ZorbaException& aException)
                             name.getPrefix() + ":" + name.getLocalName();
       os << "==================================================" << std::endl;
       os << functionName << " ( " << name.getNamespace() << " )"<< std::endl;
-      os << loc->getFileName() << " at " << loc->getLineBegin()
-          << ":" << loc->getColumnBegin() << " - "
-          << loc->getLineEnd() << ":" << loc->getColumnEnd() << std::endl;
+      os << loc->getFileName() << " at line " << loc->getLineBegin()
+          << " column " << loc->getColumnBegin() << std::endl;
     }
     os << std::endl;
   }

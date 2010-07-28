@@ -26,7 +26,6 @@
   class CompareIterator;
   class AtomicValuesEquivalenceIterator;
   class UDFunctionCallIterator;
-  class DummyTraceIterator;
   class StatelessExtFunctionCallIterator;
   class ElementIterator;
   class AttributeIterator;

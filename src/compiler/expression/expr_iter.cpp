@@ -645,9 +645,9 @@ void ExprIterator::next()
   }
 #endif /* ZORBA_NO_FULL_TEXT */
 
-  case dummy_expr_kind:
+  case function_trace_expr_kind:
   {
-    dummy_expr* dummyExpr = static_cast<dummy_expr*>(theExpr);
+    function_trace_expr* dummyExpr = static_cast<function_trace_expr*>(theExpr);
     EXPR_ITER_BEGIN();
     EXPR_ITER_NEXT(dummyExpr->theExpr);
     EXPR_ITER_END();

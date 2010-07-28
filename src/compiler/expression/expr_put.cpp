@@ -382,9 +382,9 @@ ostream& eval_expr::put( ostream& os) const
   END_PUT();
 }
 
-ostream& dummy_expr::put( ostream& os) const
+ostream& function_trace_expr::put( ostream& os) const
 {
-  BEGIN_PUT( eval_expr );
+  BEGIN_PUT( function_trace_expr );
   theExpr->put (os);
   END_PUT();
 }

@@ -822,7 +822,7 @@ RULE_REWRITE_POST(InlineFunctions)
         body->clear_annotations();
         if (rCtx.getCompilerCB()->theConfig.opt_level <= CompilerCB::config::O1)
         {
-          dummy_expr* dummy = new dummy_expr(body);
+          function_trace_expr* dummy = new function_trace_expr(body);
           dummy->setFunctionName(udf->getSignature().get_name());
           return dummy;
         } else {

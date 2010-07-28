@@ -149,5 +149,7 @@ int call_stack (int argc, char* argv[])
     return 1;
   if (!test_call_stack2(lZorba))
     return 1;
+  if (!test_call_stack3(lZorba))
+    return 1;
   return 0;
 }

@@ -21,41 +21,17 @@
 // *                                        *
 // ******************************************
 
-#include "runtime/visitors/planiter_visitor.h"
-#include "runtime/core/dummy_iterator.h"
-#include "system/globalenv.h"
+
+#include "runtime/core/function_trace_iterator.h"
+#include "functions/func_function_trace_iterator.h"
+
+
+namespace zorba{
 
 
 
-namespace zorba {
-
-// <DummyIterator>
-const char* DummyIterator::class_name_str = "DummyIterator";
-DummyIterator::class_factory<DummyIterator>
-DummyIterator::g_class_factory;
-
-const serialization::ClassVersion 
-DummyIterator::class_versions[] ={{ 1, 0x000905, false}};
-
-const int DummyIterator::class_versions_count =
-sizeof(DummyIterator::class_versions)/sizeof(struct serialization::ClassVersion);
-
-void DummyIterator::accept(PlanIterVisitor& v) const {
-  v.beginVisit(*this);
-
-  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
-  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
-    (*lIter)->accept(v);
-  }
-
-  v.endVisit(*this);
-}
-
-DummyIterator::~DummyIterator() {}
-
-// </DummyIterator>
-
+void populate_context_function_trace_iterator(static_context* sctx)
+{}
 
 
 }

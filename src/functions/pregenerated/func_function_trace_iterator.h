@@ -22,8 +22,8 @@
 // ******************************************
 
 
-#ifndef ZORBA_FUNCTIONS_DUMMY_ITERATOR_H
-#define ZORBA_FUNCTIONS_DUMMY_ITERATOR_H
+#ifndef ZORBA_FUNCTIONS_FUNCTION_TRACE_ITERATOR_H
+#define ZORBA_FUNCTIONS_FUNCTION_TRACE_ITERATOR_H
 
 
 #include "common/shared_types.h"
@@ -33,7 +33,7 @@
 namespace zorba {
 
 
-void populate_context_dummy_iterator(static_context* sctx);
+void populate_context_function_trace_iterator(static_context* sctx);
 
 
 

@@ -114,7 +114,7 @@ namespace zorba{
 
     class ZorbaXML2TXTFILEIterator;
 
-    class DummyIterator;
+    class FunctionTraceIterator;
 
     class TraceIterator;
 
@@ -606,8 +606,8 @@ public:
     virtual void beginVisit ( const ZorbaXML2TXTFILEIterator& ) = 0;
     virtual void endVisit   ( const ZorbaXML2TXTFILEIterator& ) = 0;
 
-    virtual void beginVisit ( const DummyIterator& ) = 0;
-    virtual void endVisit   ( const DummyIterator& ) = 0;
+    virtual void beginVisit ( const FunctionTraceIterator& ) = 0;
+    virtual void endVisit   ( const FunctionTraceIterator& ) = 0;
 
     virtual void beginVisit ( const TraceIterator& ) = 0;
     virtual void endVisit   ( const TraceIterator& ) = 0;

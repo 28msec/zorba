@@ -624,9 +624,9 @@ void expr::compute_return_type(bool deep, bool* modified)
     return;
   }
 
-  case dummy_expr_kind:
+  case function_trace_expr_kind:
   {
-    dummy_expr* e = static_cast<dummy_expr*>(this);
+    function_trace_expr* e = static_cast<function_trace_expr*>(this);
     theType = e->theExpr->get_return_type();
     return;
   }

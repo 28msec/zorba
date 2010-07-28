@@ -18,7 +18,7 @@ Iterator tree for main query:
     </ChildAxisIterator>
   </ForVariable>
   <ReturnClause>
-    <DummyIterator>
+    <FunctionTraceIterator>
       <SpecificNumArithIterator_MultiplyOperation_DECIMAL>
         <SingletonIterator value="xs:decimal(2.20371)"/>
         <PromoteIterator type="xs:decimal">
@@ -31,7 +31,7 @@ Iterator tree for main query:
           </FnDataIterator>
         </PromoteIterator>
       </SpecificNumArithIterator_MultiplyOperation_DECIMAL>
-    </DummyIterator>
+    </FunctionTraceIterator>
   </ReturnClause>
 </flwor::FLWORIterator>
 
