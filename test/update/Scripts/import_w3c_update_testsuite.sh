@@ -39,7 +39,7 @@ fi
 
 ZIP=/tmp/XQUTS.zip
 echo Downloading test suite to zip $ZIP ...
-wget -c -O $ZIP http://dev.w3.org/2007/xquery-update-10-test-suite/Archive/XQUTS_1_0_0.zip
+wget -c -O $ZIP http://dev.w3.org/2007/xquery-update-10-test-suite/Archive/XQUTS_1_0_1.zip
 
 orig_pwd=`pwd`
 
