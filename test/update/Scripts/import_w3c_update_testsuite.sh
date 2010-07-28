@@ -2,15 +2,21 @@
 
 die() {
   echo
-  echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>] <zorba_repository>'
+  echo 'Arguments: [--workdir <workdir>] [--builddir <builddir>] [--xqutsurl <xqutsurl>] <zorba_repository>'
   echo '<zorba_repository> is the top-level SVN working copy'
   echo '<workdir> is a temp directory to download and unzip XQUTS (default: /tmp)'
   echo '<builddir> is the directory Zorba has been built in'
   echo '           (default: <zorba_repository>/build)'
+  echo '<xqutsurl> is the URL where the XQUTS archived version can be found'
+  echo '          (default: http://dev.w3.org/2007/xquery-update-10-test-suite/Archive/XQUTS_1_0_1.zip)'
+  echo '          (you can use for instance http://dev.w3.org/2007/xquery-update-10-test-suite/Archive/XQUTS_1_0_0.zip)'
   exit 1
 }
 
 WORK=/tmp
+XQUTSURL=http://dev.w3.org/2007/xquery-update-10-test-suite/Archive/XQUTS_1_0_1.zip
+XQUTSVERSION=1_0_1
+
 while [ $# -gt 1 ]
 do
   # --workdir to specify a working directory to download/unzip XQUTS
@@ -18,6 +24,10 @@ do
 
   # --builddir to specify Zorba build directory (default: srcdir/build)
   test "$1" = "--builddir" && { BUILD="$2"; shift; shift; }
+
+  # xqutsurl to specify the URL where XQUTS can be found
+  # default value: http://dev.w3.org/2007/xquery-update-10-test-suite/Archive/XQUTS_1_0_1.zip
+  test "$1" = "--xqutsurl" && { XQUTSURL="$2"; shift; shift; }
 done
 
 SRC="$1"
@@ -37,9 +47,9 @@ if test ! -d "$BUILD"; then
   exit 1
 fi
 
-ZIP=/tmp/XQUTS.zip
+ZIP=/tmp/XQUTS_$XQUTSVERSION.zip
 echo Downloading test suite to zip $ZIP ...
-wget -c -O $ZIP http://dev.w3.org/2007/xquery-update-10-test-suite/Archive/XQUTS_1_0_1.zip
+wget -c -O $ZIP $XQUTSURL
 
 orig_pwd=`pwd`
 
@@ -50,14 +60,14 @@ BUILD=$(cd "$BUILD" && pwd)
 echo Build dir is at $BUILD
 
 echo Unzipping test suite...
-unzip_dir=`mktemp -d "$WORK/xquts.XXXXXX"`
+unzip_dir=`mktemp -d "$WORK/xquts_$XQUTSVERSION.XXXXXX"`
 cd "$unzip_dir"
 unzip $ZIP &>/dev/null
 
 echo Cleaning up previous data...
 rm -rf "$SRC/test/update/Queries/w3c_update_testsuite" "$SRC/test/update/ExpectedTestResults/w3c_update_testsuite"
 
-echo Importing XQUTS...
+echo Importing XQUTS_$XQUTSVERSION ...
 mv Queries "$SRC/test/update/Queries/w3c_update_testsuite"
 mv ExpectedTestResults "$SRC/test/update/ExpectedTestResults/w3c_update_testsuite"
 mv TestSources "$SRC/test/update/Queries/w3c_update_testsuite"

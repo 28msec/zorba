@@ -27,8 +27,10 @@ To generate a report for submitting to the W3C:
 3. From this directory (test/rbkt/Scripts/w3c), modify
    generate-submission.xq to reflect:
 
-   - The version of Zorba and the svn revision tested
-   - The date run and the test suite version
+   - the node 'implementation', attribute 'version' - the version of Zorba and the svn revision tested
+   - node 'syntax' - either XQuery or XQueryX
+   - node 'test-run', attribute 'date-run' - the date run 
+   - node 'test-suite', attribute 'version' - the test suite version (for example 1.0.0 or 1.0.1)
 
 4. From this directory (test/update/Scripts), run
 
@@ -46,3 +48,15 @@ To generate a report for submitting to the W3C:
    The XQUTS import script puts this in place appropriately. If you do
    not run the import script, just copy the "ReportingResults"
    directory from the XQUTS download to w3c_update_reportingresults.
+
+In order to generate the HTML versions of the reports (XQUTSReport.html and XQUTSReportSimple.html) these are the additional steps that have to be followed:
+
+5. Go to the /tmp folder and unzip the XQUTS version you used to generate the report(s). Let's assume it is XQUTS_1_0_1.zip.
+
+6.  Copy the XML(s) into the /tmp/XQUTS_1_0_1/ReportingResults folder
+
+7.  Modify /tmp/XQUTS_1_0_1/ReportingResults/Results.xml by adding a result node for every report you copied at step 5.
+
+8.  From /tmp/XQUTS_1_0_1/ReportingResults/ run 'ant -buildfile Build.xml' in order to generate XQUTSReport.html and XQUTSReportSimple.html
+
+

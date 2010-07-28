@@ -15,6 +15,7 @@ die() {
 
 WORK=/tmp
 XQTSURL=http://dev.w3.org/2006/xquery-test-suite/PublicPagesStagingArea/XQTS_current.zip
+XQTSVERSION=current
 
 while [ $# -gt 1 ]
 do
@@ -49,7 +50,7 @@ fi
 
 #this could be a problem problem because if the version posted on the W3C site as XQTS_current.zip changes, the new version will not be downloaded by the import script.
 #Removing the previous downloaded version first would solve the problem but that would mean that each time the script is run it would download a fresh XQTS_current.zip and this is a problem with the niglies tests.
-ZIP="$WORK/XQTS_current.zip"
+ZIP="$WORK/XQTS_$XQTSVERSION.zip"
 
 echo Downloading test suite to zip $ZIP ...
 wget -c -O $ZIP $XQTSURL
@@ -63,7 +64,7 @@ BUILD=$(cd "$BUILD" && pwd)
 echo Build dir is at $BUILD
 
 echo Unzipping test suite...
-unzip_dir=`mktemp -d "$WORK/xqts.XXXXXX"`
+unzip_dir=`mktemp -d "$WORK/xqts_$XQTSVERSION.XXXXXX"`
 cd "$unzip_dir"
 unzip $ZIP &>/dev/null
 
@@ -72,6 +73,7 @@ rm -rf "$SRC/test/rbkt/Queries/w3c_testsuite" "$SRC/test/rbkt/ExpQueryResults/w3
 
 mkdir -p "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources"
 
+echo Importing XQTS_$XQUTSVERSION ...
 q=`mktemp "$WORK/xq.XXXXXX"`
 cat >"$q" <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
