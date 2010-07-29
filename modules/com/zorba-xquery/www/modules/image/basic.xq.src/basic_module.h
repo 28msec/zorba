@@ -21,52 +21,20 @@
 
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
-
+#include "image_module.h"
 
 namespace zorba {  namespace imagemodule { namespace basicmodule {
 
-class BasicModule : public ExternalModule 
+class BasicModule : public ImageModule 
 {
-private:
-  static ItemFactory* theFactory;
 
-  
-protected:
-  class ltstr
-  {
-  public:
-    bool operator()(const String& s1, const String& s2) const
-    {
-      return s1.compare(s2) < 0;
-    }
-  };
+  virtual StatelessExternalFunction*
+    getExternalFunction(String aLocalname) const;
+ 
 
-  typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
-
-  mutable FuncMap_t theFunctions;
-  
-public:
-  virtual ~BasicModule();
-  
   virtual String
   getURI() const { return "http://www.zorba-xquery.com/modules/image/basic"; }
-  
-  virtual StatelessExternalFunction*
-  getExternalFunction(String aLocalname) const;
 
-  virtual void
-  destroy();
-
-  static ItemFactory*
-  getItemFactory()
-  {
-    if(!theFactory)
-    {
-      theFactory = Zorba::getInstance(0)->getItemFactory();
-    }
-    
-    return theFactory;
-  }
 };
 
 } /* namespace basicmodule */
@@ -74,9 +42,3 @@ public:
 } /* namespace zorba */
 
 #endif /* ZORBA_IMAGEMODULE_BASICMODULE_BASICMODULE_H */
-
-/*
- * Local variables:
- * mode: c++
- * End:
- */

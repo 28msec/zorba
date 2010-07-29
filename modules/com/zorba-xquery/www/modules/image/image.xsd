@@ -22,7 +22,6 @@
             <xs:enumeration value="PNG"/>
             <xs:enumeration value="JPEG"/>
             <xs:enumeration value="TIFF"/>
-
         </xs:restriction>
     </xs:simpleType>
 
@@ -53,4 +52,68 @@
            <xs:enumeration value="PoissonNoise"/>
        </xs:restriction>
    </xs:simpleType>
+    
+    
+    <xs:simpleType name="compositeOperatorType">
+        <xs:annotation xml:lang="en">
+            <xs:documentation>
+                This type defines the different operators applicable for overlaying images.
+                OverCompositeOp: The result is the union of the the two image shapes with the composite image obscuring image in the region of overlap. 
+                InCompositeOp: The result is a simply composite image cut by the shape of image. None of the image data of image is included in the result.
+                OutCompositeOp: The resulting image is composite image with the shape of image cut out.
+                AtopCompositeOp: The result is the same shape as image image, with composite image obscuring image there the image shapes overlap. Note that this differs from OverCompositeOp because the portion of composite image outside of image's shape does not appear in the result.
+                XorCompositeOp: The result is the image data from both composite image and image that is outside the overlap region. The overlap region will be blank.
+                PlusCompositeOp: The result is just the sum of the  image data. Output values are cropped to 255 (no overflow). This operation is independent of the matte channels.
+                MinusCompositeOp: The result of composite image - image, with overflow cropped to zero. The matte chanel is ignored (set to 255, full coverage).
+                AddCompositeOp: The result of composite image + image, with overflow wrapping around (mod 256).
+                SubtractCompositeOp: The result of composite image - image, with underflow wrapping around (mod 256). The add and subtract operators can be used to perform reverible transformations.
+                DifferenceCompositeOp: The result of abs(composite image - image). This is useful for comparing two very similar images.
+                BumpmapCompositeOp: The result image shaded by composite image.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="OverCompositeOp"/>
+            <xs:enumeration value="InCompositeOp"/>
+            <xs:enumeration value="OutCompositeOp"/>
+            <xs:enumeration value="AtopCompositeOp"/>
+            <xs:enumeration value="XorCompositeOp"/>
+            <xs:enumeration value="PlusCompositeOp"/>
+            <xs:enumeration value="MinusCompositeOp"/>
+            <xs:enumeration value="AddCompositeOp"/>
+            <xs:enumeration value="SubtractCompositeOp"/>
+            <xs:enumeration value="DifferenceCompositeOp"/>
+            <xs:enumeration value="BumpmapCompositeOp"/>
+        </xs:restriction>
+    </xs:simpleType> 
+    
+    <xs:simpleType name="fontWeightType">
+        <xs:annotation xml:lang="en">
+            <xs:documentation>
+                This type defines the weights that a text can take.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int">
+            <xs:enumeration value="100"/>
+            <xs:enumeration value="200"/>
+            <xs:enumeration value="300"/>
+            <xs:enumeration value="400"/>
+            <xs:enumeration value="500"/>
+            <xs:enumeration value="600"/>
+            <xs:enumeration value="700"/>
+        </xs:restriction>
+    </xs:simpleType> 
+    
+    <xs:simpleType name="fontStyleType">
+        <xs:annotation xml:lang="en">
+            <xs:documentation>
+                This type defines the weights that a text can take.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Normal"/>
+            <xs:enumeration value="Italic"/>
+            <xs:enumeration value="Oblique"/>
+        </xs:restriction>
+    </xs:simpleType> 
+    
 </xs:schema>

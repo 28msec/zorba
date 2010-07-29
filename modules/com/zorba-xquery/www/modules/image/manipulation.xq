@@ -8,6 +8,7 @@
  : @see http://www.imagemagick.org/Magick++/
  :)
 module namespace man = 'http://www.zorba-xquery.com/modules/image/manipulation';
+import module namespace error = 'http://www.zorba-xquery.com/modules/image/error';
 
 (:~
  : Contains the definitions for color and noise types.
@@ -33,20 +34,21 @@ declare function man:resize($image as xs:base64Binary, $width as xs:unsignedInt,
 
 
 (:~
- : Returns the passed image with the current contents zoomed to the specified dimensions.
- :
+ : Zooms the passed image by the specified factor while keeping the ratio between width and height.
+ : 
  : @param $image is the image to resize.
- : @param $width is the new width for the image.
- : @param $height is the new height for the image.
- : @return A new image with the specified width and height.
+ : @param $ratio is the ratio for which to zoom by.
+ : @return A new image with the specified width and the height changed accordingly.
  : @error If the passed xs:base64Binary is not a valid image type.
+ : @error If the ratio is smaller or equal zero.
  :)
-declare function man:zoom($image as xs:base64Binary, $width as xs:unsignedInt, $height as xs:unsignedInt) as xs:base64Binary external;
+declare function man:zoom($image as xs:base64Binary, $ratio as xs:double) as xs:base64Binary external;
 
 
 
 (:~
  : Zooms the passed image while keeping the ratio between width and height.
+ : Contrary to the resize function, zoom makes the content of the image bigger or smaller.
  : 
  : @param $image is the image to resize.
  : @param $width is the new width for the image in pixels.
@@ -67,40 +69,38 @@ declare function man:zoom-by-width($image as xs:base64Binary, $width as xs:unsig
 declare function man:zoom-by-height($image as xs:base64Binary, $height as xs:unsignedInt) as xs:base64Binary external;
 
 
-
-(:~
- : Zooms the passed image by the specified factor while keeping the ratio between width and height.
- : 
- : @param $image is the image to resize.
- : @param $ratio is the ratio for which to zoom by.
- : @return A new image with the specified width and the height changed accordingly.
- : @error If the passed xs:base64Binary is not a valid image type.
- : @error If the ratio is smaller or equal zero.
- :)
-declare function man:zoom-by-ratio($image as xs:base64Binary, $ratio as xs:double) as xs:base64Binary external;
-
- 
-
-
-
-
-
-
 (:~
  : Returns the specified rectangle of the passed image as a new image.
+ : If the passed parameters for the sub-image specify a rectangle that isn't entirely in the image, then only the area of the rectangle that lies
+ : in the image will be returned.
  :
- : @param $image is the image to chop.
+ : @param $image is the image from which to extract a sub-image.
  : @param $left-upper-x is the x value of the upper left corner of the rectangle we want to chop out.
  : @param $left-upper-y is the y value of the upper left corner of the rectangle we want to chop out.
- : @param $right-lower-x is the x value of the lower right corner of the rectangle we want to chop out.
- : @param $right-lower-y is the y value of the lower right corner of the rectangle we want to chop out.
- : @return A new image chopped out of the passed image.
+ : @param $width is the width which the sub image should have. 
+ : @param $height is the height which the sub image should have.
+ : @return A new image containing the specified rectangle of the passed image.
  : @error If the passed xs:base64Binary is not a valid image.
  :)
 declare function man:sub-image($image as xs:base64Binary, $left-upper-x as xs:unsignedInt, $left-upper-y as xs:unsignedInt, 
-                                $right-lower-x as xs:unsignedInt, $right-lower-y as xs:unsignedInt) as xs:base64Binary external;
+                                $width as xs:unsignedInt, $height as xs:unsignedInt) as xs:base64Binary external;
                                 
                                 
+
+(:~
+ : Overlays $image with $overlay-image at the specfied position.
+ : 
+ : @param $image is the base image onto which we overlay the $overlay-image.
+ : @param $overlay-image is the image to overlay.
+ : @param $overlay-upper-left-x is the horizontal value of the left upper edge where the $overlay-image should be placed withing the base image.
+ : @param $overlay-upper-left-x is the horizontal value of the left upper edge where the $overlay-image should be placed withing the base image.
+ : @param $operator defines how the overlay image should be overlayed.
+ : @return A new image which consisting of $image overlayed with $overlay-image.
+ : @error If either of the passed xs:base64Binary's is not a valid image type.
+ :)
+declare function man:overlay($image as xs:base64Binary, $overlay-image as xs:base64Binary, $overlay-upper-left-x as xs:unsignedInt,
+                                $overlay-upper-left-y as xs:unsignedInt, $operator as image:compositeOperatorType) as xs:base64Binary external; 
+
 
 (:~
  : Returns a part of the passed image which is right of $upper-left-x and under $upper-left-y.
@@ -191,7 +191,7 @@ declare function man:add-noise($image as xs:base64Binary, $noise-type as image:n
 
 (:~ 
  : Blurs an image.
- :
+ : 
  : @param $image is the image to blur.
  : @param $radius is the radius of the Gaussian in pixels.
  : @param $sigma is the standard deviation of the Laplacian in pixels.
@@ -231,19 +231,11 @@ declare function man:enhance($image as xs:base64Binary) as xs:base64Binary exter
 declare function man:equalize($image as xs:base64Binary) as xs:base64Binary external;
 
 
-(:~
- : Edge an images (highlights edges in image) with automatic radius selection.
- : 
- : @param $image is the image to emboss.
- : @return A edged version of the passed image.
- : @error If the passed xs:base64Binary is not a valid image.
- :) 
-declare function man:edge($image as xs:base64Binary) as xs:base64Binary external;
-
 
 
 (:~
  : Edge an images (highlights edges in image).
+ : Pass a radius of 0 for autmatic radius selection.
  : 
  : @param $image is the image to emboss.
  : @param $radius specifies the radius of the pixel neighborhood, specify a radius of 0 for automatic radius selection.
@@ -267,7 +259,7 @@ declare function man:edge($image as xs:base64Binary, $radius as xs:unsignedInt) 
 declare function man:charcoal($image as xs:base64Binary, $radius as xs:double, $sigma as xs:double) as xs:base64Binary external; 
 
 (:~
- : Embosses an images (highlights edges with 3D manect).
+ : Embosses an images (highlights edges with 3D effect).
  : 
  : @param $image is the image to emboss.
  : @param $radius specifies the radius of the Gaussian in pixels.
@@ -290,6 +282,7 @@ declare function man:solarize($image as xs:base64Binary, $factor as xs:double) a
 (:~
  : Makes the two passed images appear as stereo image when viewed with red-blue glasses.
  : Both images should be same but from a slightly different angle for this to work.
+ : Both images should have the same size, if not, then the size of the left image will be taken.
  :
  : @param $left-image is the left image for the stereo image.
  : @param $right-image is the right image for the stereo image.
@@ -347,6 +340,7 @@ declare function man:contrast($image as xs:base64Binary, $sharpen as xs:double) 
 
 (:~
  : Gamma corrects image.
+ : Gamma values less than zero will erase the image.
  : 
  : @param $image is the image to gamma correct.
  : @param $gamma-value is the value for which to gamma correct the image.
@@ -357,6 +351,7 @@ declare function man:gamma($image as xs:base64Binary, $gamma-value as xs:double)
 
 (:~
  : Gamma corrects image for every color channel seperately.
+ : Gamma values less than zero for any color will erase the corresponding color.
  : 
  : @param $image is the image to gamma correct.
  : @param $gamma-red is the value for which to gamma correct the red channel of the image.
@@ -388,4 +383,15 @@ declare function man:implode($image as xs:base64Binary, $factor as xs:double) as
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
 declare function man:oil-paint($image as xs:base64Binary, $radius as xs:double) as xs:base64Binary external;      
-
+ 
+ 
+(:~
+ : Adds a digital watermark to $image based on the image $watermark.
+ : 
+ : @param $image is the image to which to apply the watermark.
+ : @param $watermark is the image which contains the watermark data.
+ : @return A version of $image with a digital watermark in form of $watermark.
+ : @error If any of the passed xs:base64Binaries are not a valid image type.
+ :)
+declare function man:watermark($image as xs:base64Binary, $watermark as xs:base64Binary) as xs:base64Binary external;  
+ 

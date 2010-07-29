@@ -16,8 +16,7 @@
 #ifndef ZORBA_IMAGEMODULE_BASICMODULE_BASIC_H
 #define ZORBA_IMAGEMODULE_BASICMODULE_BASIC_H
 
-#include <zorba/options.h>
-#include "basic_function.h"
+#include "image_function.h"
 
 namespace zorba { 
   
@@ -28,11 +27,11 @@ namespace zorba {
     
 //*****************************************************************************
 
-class WidthFunction : public BasicFunction 
+class WidthFunction : public zorba::imagemodule::ImageFunction 
 
   {
     public:
-      WidthFunction(const BasicModule* aModule);
+      WidthFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "width";}
 
       virtual ItemSequence_t
@@ -46,11 +45,11 @@ class WidthFunction : public BasicFunction
 //*****************************************************************************
 
 
-class HeightFunction : public BasicFunction 
+class HeightFunction : public zorba::imagemodule::ImageFunction 
 
   {
     public:
-      HeightFunction(const BasicModule* aModule);
+      HeightFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "height";}
 
       virtual ItemSequence_t
@@ -64,13 +63,10 @@ class HeightFunction : public BasicFunction
 //*****************************************************************************
 
 
-
-
-
-  class TypeFunction : public BasicFunction
+  class TypeFunction : public zorba::imagemodule::ImageFunction 
   {
     public:
-      TypeFunction(const BasicModule* aModule);
+      TypeFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "type"; }
 
       virtual ItemSequence_t
@@ -83,10 +79,10 @@ class HeightFunction : public BasicFunction
 //*****************************************************************************
 
 
-class ConvertFunction : public BasicFunction
+class ConvertFunction : public zorba::imagemodule::ImageFunction 
   {
     public:
-      ConvertFunction(const BasicModule* aModule);
+      ConvertFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "convert"; }
 
       virtual ItemSequence_t
@@ -98,11 +94,12 @@ class ConvertFunction : public BasicFunction
 
 //*****************************************************************************
 
-class CreateFunction : public BasicFunction
+
+class CompressFunction : public zorba::imagemodule::ImageFunction
   {
     public:
-      CreateFunction(const BasicModule* aModule);
-      virtual String getLocalName() const { return "create"; }
+      CompressFunction(const ImageModule* aModule);
+      virtual String getLocalName() const { return "compress"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -114,12 +111,11 @@ class CreateFunction : public BasicFunction
 
 //*****************************************************************************
 
-
-class CreateAnimatedGifFunction : public BasicFunction
+class CreateFunction : public zorba::imagemodule::ImageFunction 
   {
     public:
-      CreateAnimatedGifFunction(const BasicModule* aModule);
-      virtual String getLocalName() const { return "create-animated-gif"; }
+      CreateFunction(const ImageModule* aModule);
+      virtual String getLocalName() const { return "create"; }
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -127,6 +123,7 @@ class CreateAnimatedGifFunction : public BasicFunction
                const DynamicContext* aDynCtx) const;
 
   };
+
 
 
 } /* namespace basicmodule */  } /* namespace imagemodule */ }  /* namespace zorba */

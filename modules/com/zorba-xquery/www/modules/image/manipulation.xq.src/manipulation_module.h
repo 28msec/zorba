@@ -21,30 +21,14 @@
 
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
+#include "image_module.h"
 
 namespace zorba { namespace imagemodule { namespace manipulationmodule {
 
-class ManipulationModule : public ExternalModule
+class ManipulationModule : public zorba::imagemodule::ImageModule 
 {
-private:
-  static ItemFactory* theFactory;
 
-protected:
-  class ltstr
-  {
-  public:
-    bool operator()(const String& s1, const String& s2) const
-    {
-      return s1.compare(s2) < 0;
-    }
-  };
   
-  typedef std::map<String, StatelessExternalFunction*, ltstr> FuncMap_t;
-
-  mutable FuncMap_t theFunctions;
-  
-public:
-  virtual ~ManipulationModule();
   
   virtual String
   getURI() const { return "http://www.zorba-xquery.com/modules/image/manipulation"; }
@@ -52,19 +36,6 @@ public:
   virtual StatelessExternalFunction*
   getExternalFunction(String aLocalname) const;
 
-  virtual void
-  destroy();
-
-  static ItemFactory*
-  getItemFactory()
-  {
-    if(!theFactory)
-    {
-      theFactory = Zorba::getInstance(0)->getItemFactory();
-    }
-    
-    return theFactory;
-  }
 };
 
 

@@ -93,6 +93,11 @@ ENDIF(${cxqNO} STRGREATER "0")
 # Flag to remember whether we found the XQTS here or not
 SET(FOUND_XQTS 0)
 
+# Set ImageMagick found which is needed to determine if we have to skip the image module checks
+
+FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore)
+
+
 FOREACH(TESTFILE ${TESTFILES})
   # All testfile paths end in .xq or .xqx. Strip that part off to form
   # the test name.
@@ -143,7 +148,13 @@ FOREACH(TESTFILE ${TESTFILES})
       SET (SKIP_TEST 1)
     ENDIF (NEEDS_FULL_TEXT)
   ENDIF (ZORBA_NO_FULL_TEXT)
-
+  # Check if ImageMagick libraries are found, if not then skip tests
+  IF (NOT ImageMagick_FOUND)
+    STRING(REGEX MATCH "image/" NEEDS_MAGICK "${TESTNAME}")
+    IF (NEEDS_MAGICK)
+      SET (SKIP_TEST 1)
+    ENDIF (NEEDS_MAGICK)
+  ENDIF (NOT ImageMagick_FOUND)
 
   IF(NOT SKIP_TEST)
 

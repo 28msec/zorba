@@ -16,8 +16,7 @@
 #ifndef ZORBA_IMAGEMODULE_MANIPULATIONMODULE_MANIPULATION_H
 #define ZORBA_IMAGEMODULE_MANIPULATIONMODULE_MANIPULATION_H
 
-#include <zorba/options.h>
-#include "manipulation_function.h"
+#include "image_function.h"
 
 namespace zorba { 
   
@@ -30,10 +29,10 @@ namespace zorba {
     
 //*****************************************************************************
 
-  class ResizeFunction : public ManipulationFunction
+class ResizeFunction : public ImageFunction
   {
     public:
-      ResizeFunction(const ManipulationModule* aModule);
+      ResizeFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "resize"; }
 
       virtual ItemSequence_t
@@ -46,28 +45,10 @@ namespace zorba {
 //*****************************************************************************
 
 
-class  ZoomFunction : public ManipulationFunction
-
+class ZoomByWidthFunction : public ImageFunction
   {
     public:
-      ZoomFunction(const ManipulationModule* aModule);
-      virtual String getLocalName() const { return "zoom"; }
-
-      virtual ItemSequence_t
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-
-  };
-
-//*****************************************************************************
-
-
-class  ZoomByWidthFunction : public ManipulationFunction
-
-  {
-    public:
-      ZoomByWidthFunction(const ManipulationModule* aModule);
+      ZoomByWidthFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "zoom-by-width"; }
 
       virtual ItemSequence_t
@@ -80,11 +61,11 @@ class  ZoomByWidthFunction : public ManipulationFunction
 //*****************************************************************************
 
 
-class  ZoomByHeightFunction : public ManipulationFunction
+class ZoomByHeightFunction : public ImageFunction
 
   {
     public:
-      ZoomByHeightFunction(const ManipulationModule* aModule);
+      ZoomByHeightFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "zoom-by-height"; }
 
       virtual ItemSequence_t
@@ -94,16 +75,15 @@ class  ZoomByHeightFunction : public ManipulationFunction
 
   };
 
-
 //*****************************************************************************
 
 
-class  ZoomByRatioFunction : public ManipulationFunction
+class ZoomFunction : public ImageFunction
 
   {
     public:
-      ZoomByRatioFunction(const ManipulationModule* aModule);
-      virtual String getLocalName() const { return "zoom-by-ratio";}
+      ZoomFunction(const ImageModule* aModule);
+      virtual String getLocalName() const { return "zoom";}
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
@@ -114,13 +94,11 @@ class  ZoomByRatioFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-
-class  SubImageFunction : public ManipulationFunction
+class SubImageFunction : public ImageFunction
 
   {
     public:
-      SubImageFunction(const ManipulationModule* aModule);
+      SubImageFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "sub-image";}
 
       virtual ItemSequence_t
@@ -132,12 +110,27 @@ class  SubImageFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  ChopFunction : public ManipulationFunction
+class OverlayFunction : public ImageFunction
 
   {
     public:
-      ChopFunction(const ManipulationModule* aModule);
+      OverlayFunction(const ImageModule* aModule);
+      virtual String getLocalName() const { return "overlay";}
+
+      virtual ItemSequence_t
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+  };
+
+//*****************************************************************************
+
+class ChopFunction : public ImageFunction
+
+  {
+    public:
+      ChopFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "chop";}
 
       virtual ItemSequence_t
@@ -149,12 +142,11 @@ class  ChopFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  CropFunction : public ManipulationFunction
+class CropFunction : public ImageFunction
 
   {
     public:
-      CropFunction(const ManipulationModule* aModule);
+      CropFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "crop";}
 
       virtual ItemSequence_t
@@ -166,12 +158,11 @@ class  CropFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  RotateFunction : public ManipulationFunction
+class RotateFunction : public ImageFunction
 
   {
     public:
-      RotateFunction(const ManipulationModule* aModule);
+      RotateFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "rotate";}
 
       virtual ItemSequence_t
@@ -183,12 +174,11 @@ class  RotateFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  EraseFunction : public ManipulationFunction
+class EraseFunction : public ImageFunction
 
   {
     public:
-      EraseFunction(const ManipulationModule* aModule);
+      EraseFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "erase";}
       
       virtual ItemSequence_t
@@ -201,12 +191,11 @@ class  EraseFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  FlopFunction : public ManipulationFunction
+class  FlopFunction : public ImageFunction
 
   {
     public:
-      FlopFunction(const ManipulationModule* aModule);
+      FlopFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "flop";}
 
       virtual ItemSequence_t
@@ -218,12 +207,11 @@ class  FlopFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  FlipFunction : public ManipulationFunction
+class FlipFunction : public ImageFunction
 
   {
     public:
-      FlipFunction(const ManipulationModule* aModule);
+      FlipFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "flip";}
 
       virtual ItemSequence_t
@@ -235,12 +223,11 @@ class  FlipFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  TrimFunction : public ManipulationFunction
+class TrimFunction : public ImageFunction
 
   {
     public:
-      TrimFunction(const ManipulationModule* aModule);
+      TrimFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "trim";}
 
       virtual ItemSequence_t
@@ -252,12 +239,11 @@ class  TrimFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  AddNoiseFunction : public ManipulationFunction
+class AddNoiseFunction : public ImageFunction
 
   {
     public:
-      AddNoiseFunction(const ManipulationModule* aModule);
+      AddNoiseFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "add-noise";}
 
       virtual ItemSequence_t
@@ -269,12 +255,11 @@ class  AddNoiseFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  BlurFunction : public ManipulationFunction
+class BlurFunction : public ImageFunction
 
   {
     public:
-      BlurFunction(const ManipulationModule* aModule);
+      BlurFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "blur";}
 
       virtual ItemSequence_t
@@ -286,12 +271,11 @@ class  BlurFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  DespeckleFunction : public ManipulationFunction
+class DespeckleFunction : public ImageFunction
 
   {
     public:
-      DespeckleFunction(const ManipulationModule* aModule);
+      DespeckleFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "despeckle";}
 
       virtual ItemSequence_t
@@ -303,12 +287,11 @@ class  DespeckleFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  EnhanceFunction : public ManipulationFunction
+class EnhanceFunction : public ImageFunction
 
   {
     public:
-      EnhanceFunction(const ManipulationModule* aModule);
+      EnhanceFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "enhance";}
 
       virtual ItemSequence_t
@@ -320,12 +303,11 @@ class  EnhanceFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  EqualizeFunction : public ManipulationFunction
+class EqualizeFunction : public ImageFunction
 
   {
     public:
-      EqualizeFunction(const ManipulationModule* aModule);
+      EqualizeFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "despeckle";}
 
       virtual ItemSequence_t
@@ -337,12 +319,11 @@ class  EqualizeFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  EdgeFunction : public ManipulationFunction
+class EdgeFunction : public ImageFunction
 
   {
     public:
-      EdgeFunction(const ManipulationModule* aModule);
+      EdgeFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "edge";}
 
       virtual ItemSequence_t
@@ -354,12 +335,11 @@ class  EdgeFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-
-class  CharcoalFunction : public ManipulationFunction
+class CharcoalFunction : public ImageFunction
 
   {
     public:
-      CharcoalFunction(const ManipulationModule* aModule);
+      CharcoalFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "charcoal";}
 
       virtual ItemSequence_t
@@ -371,11 +351,11 @@ class  CharcoalFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-class  EmbossFunction : public ManipulationFunction
+class EmbossFunction : public ImageFunction
 
   {
     public:
-      EmbossFunction(const ManipulationModule* aModule);
+      EmbossFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "emboss";}
 
       virtual ItemSequence_t
@@ -387,11 +367,11 @@ class  EmbossFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-class  SolarizeFunction : public ManipulationFunction
+class SolarizeFunction : public ImageFunction
 
   {
     public:
-      SolarizeFunction(const ManipulationModule* aModule);
+      SolarizeFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "solarize";}
 
       virtual ItemSequence_t
@@ -403,11 +383,11 @@ class  SolarizeFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-class  StereoFunction : public ManipulationFunction
+class StereoFunction : public ImageFunction
 
   {
     public:
-      StereoFunction(const ManipulationModule* aModule);
+      StereoFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "stereo";}
 
       virtual ItemSequence_t
@@ -419,11 +399,11 @@ class  StereoFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-class  TransparentFunction : public ManipulationFunction
+class TransparentFunction : public ImageFunction
 
   {
     public:
-      TransparentFunction(const ManipulationModule* aModule);
+      TransparentFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "transparent";}
 
       virtual ItemSequence_t
@@ -435,11 +415,11 @@ class  TransparentFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-class  SwirlFunction : public ManipulationFunction
+class SwirlFunction : public ImageFunction
 
   {
     public:
-      SwirlFunction(const ManipulationModule* aModule);
+      SwirlFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "swirl";}
 
       virtual ItemSequence_t
@@ -451,11 +431,11 @@ class  SwirlFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-class  ReduceNoiseFunction : public ManipulationFunction
+class ReduceNoiseFunction : public ImageFunction
 
   {
     public:
-      ReduceNoiseFunction(const ManipulationModule* aModule);
+      ReduceNoiseFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "reduce-noise";}
 
       virtual ItemSequence_t
@@ -467,11 +447,11 @@ class  ReduceNoiseFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-class  ContrastFunction : public ManipulationFunction
+class ContrastFunction : public ImageFunction
 
   {
     public:
-      ContrastFunction(const ManipulationModule* aModule);
+      ContrastFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "contrast";}
 
       virtual ItemSequence_t
@@ -483,11 +463,11 @@ class  ContrastFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-class  GammaFunction : public ManipulationFunction
+class GammaFunction : public ImageFunction
 
   {
     public:
-      GammaFunction(const ManipulationModule* aModule);
+      GammaFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "gamma";}
 
       virtual ItemSequence_t
@@ -500,11 +480,11 @@ class  GammaFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-class  ImplodeFunction : public ManipulationFunction
+class ImplodeFunction : public ImageFunction
 
   {
     public:
-      ImplodeFunction(const ManipulationModule* aModule);
+      ImplodeFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "implode";}
 
       virtual ItemSequence_t
@@ -516,11 +496,11 @@ class  ImplodeFunction : public ManipulationFunction
 
 //*****************************************************************************
 
-class  OilPaintFunction : public ManipulationFunction
+class OilPaintFunction : public ImageFunction
 
   {
     public:
-      OilPaintFunction(const ManipulationModule* aModule);
+      OilPaintFunction(const ImageModule* aModule);
       virtual String getLocalName() const { return "oil-paint";}
 
       virtual ItemSequence_t
@@ -530,7 +510,21 @@ class  OilPaintFunction : public ManipulationFunction
 
   };
 
+//*****************************************************************************
 
+class WaterMarkFunction : public ImageFunction
+
+  {
+    public:
+      WaterMarkFunction(const ImageModule* aModule);
+      virtual String getLocalName() const { return "watermark";}
+
+      virtual ItemSequence_t
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+  };
 
 
 } /* namespace manipulationmodule */ } /* namespace imagemodule */ } /* namespace zorba */

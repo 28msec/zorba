@@ -33,13 +33,9 @@ namespace zorba { namespace encoding {
       static String
       encode(std::istream& aStream);
 
-      // TODO: once the internal Base64 class is symmetrical
-      // e.a. for each encode method, there must be a decode one
-      //static String
-      //decode(String& aString);
+      static String
+      decode(String& aString);
 
-      //static String
-      //decode(std::istream& aStream);
 
   };
 

@@ -17,9 +17,8 @@
 #ifndef ZORBA_IMAGEMODULE_IMAGE_FUNCTION_H
 #define ZORBA_IMAGEMODULE_IMAGE_FUNCTION_H
 
-#include <Magick++.h>
 #include <zorba/external_function.h>
-
+#include <Magick++.h>
 
 namespace zorba { namespace imagemodule {
 
@@ -29,12 +28,20 @@ namespace zorba { namespace imagemodule {
   class ImageFunction : public NonePureStatelessExternalFunction
   {
 
-
+    public:
+      ImageFunction(const ImageModule* module);
+      ~ImageFunction();
+    
 
     protected:
+  
+     const ImageModule* theModule;
+     virtual String 
+       getURI() const;
 
      static void throwImageError(const char* aMessage);   
-       
+      
+
      static void
         throwError(
           const std::string errorMessage,
@@ -45,12 +52,28 @@ namespace zorba { namespace imagemodule {
           const StatelessExternalFunction::Arguments_t& args,
           int pos);
 
-      static Magick::Image
-          getOneImageArg(const StatelessExternalFunction::Arguments_t& aArgs,
-          int aPos);
+
+      static bool
+        getOneBoolArg(
+            const StatelessExternalFunction::Arguments_t& args,
+            int pos);
 
 
-     static int 
+      static void 
+          getOneImageArg(
+            const StatelessExternalFunction::Arguments_t& aArgs,
+            int aPos,
+            Magick::Image& aImage);
+      
+      static void
+         getOneOrMoreImageArg(
+              const StatelessExternalFunction::Arguments_t& aArgs,
+              int aPos,
+              std::list<Magick::Image>& aImages,
+              const unsigned int aDelay,
+              const unsigned int aIterations);
+
+     static unsigned int 
           getOneUnsignedIntArg(const StatelessExternalFunction::Arguments_t& aArgs,
           int aPos);
 
@@ -63,30 +86,50 @@ namespace zorba { namespace imagemodule {
       static double  getOneDoubleArg(
           const StatelessExternalFunction::Arguments_t& args,
           int pos);
+        
+      static double  getOneOrNullDoubleArg (
+          const StatelessExternalFunction::Arguments_t& args,
+          int pos); 
+      
+        
+       static void setStrokeColor(
+            const StatelessExternalFunction::Arguments_t& aArgs,
+            int aPos,
+            std::list<Magick::Drawable>& lDrawable);
 
 
-       static Magick::ColorRGB getOneColorArg(
+       static void setOpaqueOrFill(
           const StatelessExternalFunction::Arguments_t& aArgs,
-          int aPos);
-
+          int aPos,
+          std::list<Magick::Drawable>& lDrawable);
+      
+        
+      static void getCoordinatesArgs(
+                const StatelessExternalFunction::Arguments_t& aArgs,
+                int aXPos,
+                int aYPos,
+                std::list<Magick::Coordinate>& aList);
 
 
       static String getEncodedStringFromBlob(Magick::Blob& aBlob);
     
       static String getEncodedStringFromImage(Magick::Image& aImage);
 
-      static Magick::Image getImageFromString(String aString);
+      static void getImageFromString(const String aString, Magick::Image& aImage);
       
       static void checkIfItemIsNull(Item& aItem); 
 
+      static bool getAntiAliasingArg(
+          const StatelessExternalFunction::Arguments_t& aArgs,
+          int aPos);
+
+      static double getStrokeWidthArg(
+          const StatelessExternalFunction::Arguments_t& aArgs,
+          int aPos);
 
   }; 
 
 
-
-
-
-} /* namespace imagemodule*/
-} /* namespace zorba */
+} /* namespace imagemodule*/ } /* namespace zorba */
 
 #endif // ZORBA_IMAGEMODULE_IMAGE_FUNCTION_H

@@ -19,18 +19,8 @@
 
 namespace zorba { namespace imagemodule {  namespace manipulationmodule {
 
-  ItemFactory* ManipulationModule::theFactory = 0;
 
 
-ManipulationModule::~ManipulationModule()
-{
-  for (FuncMap_t::const_iterator lIter = theFunctions.begin();
-       lIter != theFunctions.end(); ++lIter) {
-    delete lIter->second;
-  }
-  theFunctions.clear();
-}
-  
 StatelessExternalFunction*
 ManipulationModule::getExternalFunction(String aLocalname) const
 {
@@ -39,16 +29,16 @@ ManipulationModule::getExternalFunction(String aLocalname) const
     if (1 == 0) {
     } else if (aLocalname.equals("resize")) {
       lFunc = new ResizeFunction(this);
-    } else if (aLocalname.equals("zoom")) {
-      lFunc = new ZoomFunction(this);
     } else if (aLocalname.equals("zoom-by-width")) {
       lFunc = new ZoomByWidthFunction(this);
     } else if (aLocalname.equals("zoom-by-height")) {
       lFunc = new ZoomByHeightFunction(this);
-    } else if (aLocalname.equals("zoom-by-ratio")) {
-      lFunc = new ZoomByRatioFunction(this);
+    } else if (aLocalname.equals("zoom")) {
+      lFunc = new ZoomFunction(this);
     } else if (aLocalname.equals("sub-image")) {
       lFunc = new SubImageFunction(this);
+    } else if (aLocalname.equals("overlay")) {
+      lFunc = new OverlayFunction(this);
     } else if (aLocalname.equals("chop")) {
       lFunc = new ChopFunction(this);
     } else if (aLocalname.equals("crop")) {
@@ -97,18 +87,12 @@ ManipulationModule::getExternalFunction(String aLocalname) const
       lFunc = new ImplodeFunction(this);
     } else if (aLocalname.equals("oil-paint")) {
       lFunc = new OilPaintFunction(this); 
-    }
+    } else if (aLocalname.equals("watermark")) {
+      lFunc = new WaterMarkFunction(this);
+    }  
   }   
   return lFunc;
 }
 
-void
-ManipulationModule::destroy()
-{
-  if (!dynamic_cast<ManipulationModule*>(this)) {
-    return;
-  }
-  delete this;
-}
 
 } /* namespace manipulationmodule */ } /* namespace imagemodule */ } /* namespace zorba */

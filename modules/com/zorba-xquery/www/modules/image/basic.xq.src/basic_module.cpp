@@ -19,17 +19,6 @@
 
 namespace zorba { namespace imagemodule { namespace basicmodule {
 
-  ItemFactory* BasicModule::theFactory = 0;
-
-
-BasicModule::~BasicModule()
-{
-  for (FuncMap_t::const_iterator lIter = theFunctions.begin();
-       lIter != theFunctions.end(); ++lIter) {
-    delete lIter->second;
-  }
-  theFunctions.clear();
-}
   
 StatelessExternalFunction*
 BasicModule::getExternalFunction(String aLocalname) const
@@ -44,23 +33,14 @@ BasicModule::getExternalFunction(String aLocalname) const
     } else if (aLocalname.equals("type")) {
       lFunc = new TypeFunction(this);
     } else if (aLocalname.equals("convert")) {
-      lFunc = new ConvertFunction(this); 
+      lFunc = new ConvertFunction(this);
+    } else if (aLocalname.equals("compress")) {
+      lFunc = new CompressFunction(this);
     } else if (aLocalname.equals("create")) {
       lFunc = new CreateFunction(this); 
-    } else if (aLocalname.equals("create-animated-gif")) {
-      lFunc = new CreateAnimatedGifFunction(this);
     }   
   }
   return lFunc;
-}
-
-void
-BasicModule::destroy()
-{
-  if (!dynamic_cast<BasicModule*>(this)) {
-    return;
-  }
-  delete this;
 }
 
 } /* namespace basicmodule */ } /* namespace imagemodule */ } /* namespace zorba */

@@ -24,20 +24,16 @@
 #include "basic_module.h"
 
 
-
-namespace zorba {  namespace imagemodule { namespace basicmodule {
+namespace zorba { namespace imagemodule { namespace basicmodule {
 
 using namespace zorba::imagemodule;  
 
 
-
 //*****************************************************************************
 
-
-WidthFunction::WidthFunction(const BasicModule* aModule) : BasicFunction(aModule)
+WidthFunction::WidthFunction(const ImageModule* aModule) : ImageFunction(aModule)
 {
 }
-
 
 ItemSequence_t
 WidthFunction::evaluate(
@@ -47,7 +43,7 @@ WidthFunction::evaluate(
 {
 
   Magick::Image lImage;
-  lImage = ImageFunction::getOneImageArg(aArgs, 0);
+  ImageFunction::getOneImageArg(aArgs, 0, lImage);
   int lResult = lImage.columns();
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createInt(lResult)));
@@ -56,11 +52,9 @@ WidthFunction::evaluate(
 
 //*****************************************************************************
 
-
-HeightFunction::HeightFunction(const BasicModule* aModule) : BasicFunction(aModule)
+HeightFunction::HeightFunction(const ImageModule* aModule) : ImageFunction(aModule)
 {
 }
-
 
 ItemSequence_t
 HeightFunction::evaluate(
@@ -70,7 +64,7 @@ HeightFunction::evaluate(
 {
 
   Magick::Image lImage;
-  lImage = ImageFunction::getOneImageArg(aArgs, 0);
+  ImageFunction::getOneImageArg(aArgs, 0, lImage);
   int lResult = lImage.rows();
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createInt(lResult)));
@@ -79,10 +73,9 @@ HeightFunction::evaluate(
 
 //*****************************************************************************
 
-TypeFunction::TypeFunction(const BasicModule* aModule) : BasicFunction(aModule)
+TypeFunction::TypeFunction(const ImageModule* aModule) : ImageFunction(aModule)
 {
 }
-
 
 ItemSequence_t
 TypeFunction::evaluate(
@@ -118,7 +111,7 @@ TypeFunction::evaluate(
 
 //*****************************************************************************
 
-ConvertFunction::ConvertFunction(const BasicModule* aModule) : BasicFunction(aModule)
+ConvertFunction::ConvertFunction(const ImageModule* aModule) : ImageFunction(aModule)
 {
 }
 
@@ -131,7 +124,7 @@ ConvertFunction::evaluate(
 {
 
   Magick::Image lImage;
-  lImage = ImageFunction::getOneImageArg(aArgs, 0);
+  ImageFunction::getOneImageArg(aArgs, 0 , lImage);
   String lType;
   lType = ImageFunction::getOneStringArg(aArgs, 1);
     
@@ -146,7 +139,38 @@ ConvertFunction::evaluate(
 
 //*****************************************************************************
 
-CreateFunction::CreateFunction(const BasicModule* aModule) : BasicFunction(aModule)
+CompressFunction::CompressFunction(const ImageModule* aModule) : ImageFunction(aModule)
+{
+}
+
+
+ItemSequence_t
+CompressFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+
+  Magick::Image lImage;
+  ImageFunction::getOneImageArg(aArgs, 0 , lImage);
+  int lQuality = ImageFunction::getOneIntArg(aArgs, 1);
+  // make sure that we have at most a quality of 100 (highest possible value)
+  if (lQuality > 100) {
+    lQuality = 100;
+  } else if (lQuality < 0) {
+    lQuality = 0;
+  }
+  lImage.quality(lQuality); // Set output format 
+  String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
+  Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
+  ImageFunction::checkIfItemIsNull(lItem);
+  return ItemSequence_t(new SingletonItemSequence(lItem));
+
+}
+
+//*****************************************************************************
+
+CreateFunction::CreateFunction(const ImageModule* aModule) : ImageFunction(aModule)
 {
 }
 
@@ -159,71 +183,19 @@ CreateFunction::evaluate(
 {
   String lType;
   lType = ImageFunction::getOneStringArg(aArgs, 2);
-  const int width = ImageFunction::getOneUnsignedIntArg(aArgs, 0);
-  const int height = ImageFunction::getOneUnsignedIntArg(aArgs, 1);  
+  const unsigned int width = ImageFunction::getOneUnsignedIntArg(aArgs, 0);
+  const unsigned int height = ImageFunction::getOneUnsignedIntArg(aArgs, 1);  
   Magick::Image lBlankImage( Magick::Geometry(width, height), "white");
   lBlankImage.magick(lType.c_str()); // Set output format 
 
- 
   String lEncodedContent = ImageFunction::getEncodedStringFromImage(lBlankImage); 
-
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
-   
   ImageFunction::checkIfItemIsNull(lItem);
   return ItemSequence_t(new SingletonItemSequence(lItem));
                                                    
 }                        
 
-
 //*****************************************************************************
-
-CreateAnimatedGifFunction::CreateAnimatedGifFunction(const BasicModule* aModule) : BasicFunction(aModule)
-{
-}
-
-
-ItemSequence_t
-CreateAnimatedGifFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-  
-  int lDelay = ImageFunction::getOneUnsignedIntArg(aArgs, 1);
-  int lIterations = ImageFunction::getOneUnsignedIntArg(aArgs, 2);
-  // the list of images which occure in the animation
-  std::list<Magick::Image>  lImageList; 
-  // the animated image
-  Magick::Image lAnimatedImage;
-  Item lItem;
-  // make sure there is at least one item at the position
-  if (!aArgs[0]->next(lItem)) {
-    throwError("An empty sequence is not allowed as first parameter", XPTY0004);
-  }
-
-  Magick::Image lFirstImage = ImageFunction::getImageFromString(lItem.getStringValue());
-  lFirstImage.animationDelay(lDelay);
-  lFirstImage.animationIterations(lIterations);
-  lFirstImage.gifDisposeMethod(3);
-  lImageList.push_back(lFirstImage);  
-  Magick::Image lTempImage; 
-  while (aArgs[0]->next(lItem)) {
-    lTempImage = ImageFunction::getImageFromString(lItem.getStringValue());
-    lTempImage.animationDelay(lDelay);
-    lTempImage.gifDisposeMethod(3);
-    lImageList.push_back(lTempImage);
-  }
-  Magick::Blob lBlob;
-  Magick::writeImages(lImageList.begin(), lImageList.end(),  &lBlob, true);
-  String lEncodedContent = ImageFunction::getEncodedStringFromBlob(lBlob); 
-  
-  lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
-  ImageFunction::checkIfItemIsNull(lItem);
-  return ItemSequence_t(new SingletonItemSequence(lItem));
-}
-
-
-
 
 
 

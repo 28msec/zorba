@@ -1,4 +1,14 @@
+(:~
+ : This module provides functions to handle basic I/O for images including conversion between different formats.
+ : Available image formats are defined a schema at 'http://www.zorba-xquery.com/modules/image/image'.
+ : 
+ : @author Daniel Thomas
+ : @version 0.1
+ : @see http://www.zorba-xquery.com/modules/image/image
+ : @see http://www.imagemagick.org/Magick++/
+ :)
 module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
+import module namespace error = 'http://www.zorba-xquery.com/modules/image/error';
 
 (:~
  : Contains the definitions of the possible image types.
@@ -39,6 +49,16 @@ declare function basic:height($image as xs:base64Binary) as xs:unsignedInt exter
 declare function basic:convert($image as xs:base64Binary, $type as image:imageType) as xs:base64Binary external;
 
 
+(:~
+ : Set quality (compression) for JPG and PNG formats.
+ : Lowering the quality of an image will result in a less 'nice' image but can reduce image size.
+ :
+ : @param $image is the image for which we want to set the quality.
+ : @param $quality is the new quality for the image (a value from 0 to 100 with default 75)
+ : @return A new image with the quality set accordingly. 
+ : @error If the passed xs:base64Binary is not a valid image type.
+ :)
+declare function basic:compress($image as xs:base64Binary, $quality as xs:int) as xs:base64Binary external; 
 
 (:~
  : Returns the image type that is stored in the given xs:base64Binary or an empty sequence if the passed xs:base64Binary is not a valid image type.
@@ -59,24 +79,3 @@ declare function basic:type($image as xs:base64Binary) as image:imageType extern
  :)
 declare function basic:create($width as xs:unsignedInt, $height as xs:unsignedInt, $format as image:imageType) as xs:base64Binary external;
  
-
- 
-(:~
- : Creates an animated GIF image from the passed $images. The width and height of the first passed image will be used.
- :
- : @param $images are the images with which the animated GIF shall be created (in the right order).
- : @param $delay specifies how long a given image shows in the animated GIF in 1/100 of a second.
- : @param $iterations specifies how many times the animation loop should be executed (0 for endless loop).
- : @return A new image that is an animated GIF composed out of the passed images.
- : @error If any of the passed xs:base64Binary is not a valid image type.
- :)
-declare function basic:create-animated-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt) as xs:base64Binary external; 
-
-
-
-
-
-
-
-
-
