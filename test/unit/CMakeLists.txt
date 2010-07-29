@@ -26,6 +26,7 @@ IF(WIN32)
     runnable.cpp
     plan_serializer.cpp
     call_stack.cpp
+    static_context.cpp
   )
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
@@ -35,6 +36,7 @@ ELSE(WIN32)
     uri.cpp
     plan_serializer.cpp
     call_stack.cpp
+    static_context.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )
@@ -57,5 +59,6 @@ FOREACH (test ${TestsToRun})
 ENDFOREACH(test)
 
 EXPECTED_FAILURE(test/unit/plan_serializer 3035320)
+EXPECTED_FAILURE(test/unit/static_context  3036605)
 
 ADD_SUBDIRECTORY(debugger)
