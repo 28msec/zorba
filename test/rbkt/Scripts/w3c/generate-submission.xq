@@ -10,7 +10,7 @@ else
   validate {
     <test-suite-result>
        <implementation name="Zorba" 
-         version='1.0.0 (svn rev. 8152)'
+         version='1.4.0 (svn rev. 8626)'
          anonymous-result-column="false">
   
          <organization
@@ -53,12 +53,13 @@ else
          
          <features>
             <feature name='Minimum Conformance' supported='true' />
-            <feature name='Schema Import Feature' supported='true' />
-            <feature name='Schema Validation Feature' supported='true' />
-            <feature name='Static Typing Feature' supported='false' />
-            <feature name='Full Axis Feature' supported='true' />
-            <feature name='Module Feature' supported='true' />
-            <feature name='Serialization Feature' supported='true' />
+            <feature name='Schema Import' supported='true' />
+            <feature name='Schema Validation' supported='true' />
+            <feature name='Static Typing' supported='false' />
+            <feature name='Static Typing Extensions' supported='false' />
+            <feature name='Full Axis' supported='true' />
+            <feature name='Module' supported='true' />
+            <feature name='Serialization' supported='true' />
          </features>
          
          <context-properties>
@@ -81,8 +82,8 @@ else
 
        <syntax>XQuery</syntax>
 
-       <test-run dateRun="2010-04-28">
-          <test-suite version="1.0.2"/>
+       <test-run dateRun="2010-07-22">
+          <test-suite version="current"/>
           <transformation><p>Standard</p></transformation>
           <comparison><p>Standard</p></comparison>
           <otherComments><p>None</p></otherComments>
