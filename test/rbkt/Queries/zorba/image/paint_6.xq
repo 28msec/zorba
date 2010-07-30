@@ -36,7 +36,7 @@ ERROR:
 declare function local:test-draw-polygon() as xs:boolean {
     let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), (), (), (), ())
     let $draw-ref := file:read("images/paint/polygon.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -45,7 +45,7 @@ declare function local:test-draw-polygon() as xs:boolean {
 declare function local:test-draw-polygon-red() as xs:boolean {
     let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), (), (), ())
     let $draw-ref := file:read("images/paint/polygonRed.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -54,7 +54,7 @@ declare function local:test-draw-polygon-red() as xs:boolean {
 declare function local:test-draw-polygon-red-green() as xs:boolean {
     let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), image:colorType("#FF0000"),image:colorType("#00FF00"), (), ())
     let $draw-ref := file:read("images/paint/polygonRedGreen.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -63,7 +63,7 @@ declare function local:test-draw-polygon-red-green() as xs:boolean {
 declare function local:test-draw-polygon-wide() as xs:boolean {
     let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), image:colorType("#FF0000"),image:colorType("#00FF00"), 3, ())
     let $draw-ref := file:read("images/paint/polygonWide.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 
@@ -73,7 +73,7 @@ declare function local:test-draw-polygon-wide() as xs:boolean {
 declare function local:test-draw-polygon-anti-aliased() as xs:boolean {
     let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), image:colorType("#FF0000"),image:colorType("#00FF00"), 3,true())
     let $draw-ref := file:read("images/paint/polygonAntiAliased.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 

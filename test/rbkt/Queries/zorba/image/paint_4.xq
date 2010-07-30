@@ -36,7 +36,7 @@ ERROR:
 declare function local:test-draw-rectangle() as xs:boolean {
     let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, (), (), (), false())
     let $draw-ref := file:read("images/paint/rectangle.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -45,7 +45,7 @@ declare function local:test-draw-rectangle() as xs:boolean {
 declare function local:test-draw-rectangle-green() as xs:boolean {
     let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, image:colorType("#00AF00"), (), (), false())
     let $draw-ref := file:read("images/paint/rectangleGreen.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 
@@ -55,7 +55,7 @@ declare function local:test-draw-rectangle-green() as xs:boolean {
 declare function local:test-draw-rectangle-green-red() as xs:boolean {
     let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, image:colorType("#00AF00"), image:colorType("#A10000"), (), false())
     let $draw-ref := file:read("images/paint/rectangleGreenRed.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -64,7 +64,7 @@ declare function local:test-draw-rectangle-green-red() as xs:boolean {
 declare function local:test-draw-rectangle-green-red-wide() as xs:boolean {
     let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, image:colorType("#00AF00"), image:colorType("#A10000"), 5, false())
     let $draw-ref := file:read("images/paint/rectangleGreenRedWide.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -73,7 +73,7 @@ declare function local:test-draw-rectangle-green-red-wide() as xs:boolean {
 declare function local:test-draw-rectangle-anti-aliased() as xs:boolean {
     let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, image:colorType("#00AF00"), image:colorType("#A10000"), 5, true())
     let $draw-ref := file:read("images/paint/rectangleAntiAliased.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -82,7 +82,7 @@ declare function local:test-draw-rectangle-anti-aliased() as xs:boolean {
 declare function local:test-draw-rounded-rectangle() as xs:boolean {
     let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, (), (), (), ())
     let $draw-ref := file:read("images/paint/rectangleRounded.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -91,7 +91,7 @@ declare function local:test-draw-rounded-rectangle() as xs:boolean {
 declare function local:test-draw-rounded-rectangle-blue() as xs:boolean {
     let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, image:colorType("#0000FF"), (), (), ())
     let $draw-ref := file:read("images/paint/rectangleRoundedBlue.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 
@@ -101,7 +101,7 @@ declare function local:test-draw-rounded-rectangle-blue() as xs:boolean {
 declare function local:test-draw-rounded-rectangle-blue-green() as xs:boolean {
     let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, image:colorType("#0000FF"), image:colorType("#00FF00"), (), ())
     let $draw-ref := file:read("images/paint/rectangleRoundedBlueGreen.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -110,7 +110,7 @@ declare function local:test-draw-rounded-rectangle-blue-green() as xs:boolean {
 declare sequential function local:test-draw-rounded-rectangle-wide() as xs:boolean {
     let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, image:colorType("#0000FF"), image:colorType("#00FF00"), 3, ())
     let $draw-ref := file:read("images/paint/rectangleRoundedWide.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -119,7 +119,7 @@ declare sequential function local:test-draw-rounded-rectangle-wide() as xs:boole
 declare function local:test-draw-rounded-rectangle-anti-aliased() as xs:boolean {
     let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, image:colorType("#0000FF"), image:colorType("#00FF00"), (), true())
     let $draw-ref := file:read("images/paint/rectangleRoundedAntiAliased.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 

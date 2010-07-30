@@ -38,7 +38,7 @@ ERROR:
 declare function local:test-despeckle() as xs:boolean {
     let $despeckled := man:despeckle($local:jpg)
     let $despeckled-ref := file:read("images/manipulation/despeckledBird.jpg")
-    return($despeckled eq $despeckled-ref)
+    return basic:equals($despeckled, $despeckled-ref)
 };
 
 
@@ -48,7 +48,7 @@ declare function local:test-despeckle() as xs:boolean {
 declare function local:test-enhance() as xs:boolean {
     let $enhanced := man:enhance(man:enhance($local:jpg))
     let $enhanced-ref := file:read("images/manipulation/enhancedBird.jpg")
-    return($enhanced eq $enhanced-ref)
+    return basic:equals($enhanced, $enhanced-ref)
 };
 
 (:~
@@ -57,7 +57,7 @@ declare function local:test-enhance() as xs:boolean {
 declare function local:test-equalize() as xs:boolean {
     let $equalized := man:equalize($local:jpg)
     let $equalized-ref := file:read("images/manipulation/equalizedBird.jpg")
-    return($equalized eq $equalized-ref)
+    return basic:equals($equalized, $equalized-ref)
 };
 
 (:~
@@ -66,7 +66,7 @@ declare function local:test-equalize() as xs:boolean {
 declare function local:test-edge() as xs:boolean {
     let $edged := man:edge($local:jpg, xs:unsignedInt(0))
     let $edged-ref := file:read("images/manipulation/edgedBird.jpg")
-    return($edged eq $edged-ref)
+    return basic:equals($edged, $edged-ref)
 };
 
 
@@ -76,7 +76,7 @@ declare function local:test-edge() as xs:boolean {
 declare function local:test-charcoal() as xs:boolean {
     let $charcoaled := man:charcoal($local:jpg, -0.5, -0.5)
     let $charcoaled-ref := file:read("images/manipulation/charcoaledBird.jpg")
-    return($charcoaled eq $charcoaled-ref)
+    return basic:equals($charcoaled, $charcoaled-ref)
 };
 
 
@@ -86,7 +86,7 @@ declare function local:test-charcoal() as xs:boolean {
 declare function local:test-emboss() as xs:boolean {
     let $embossed := man:emboss($local:jpg, 0.1, 0.1)
     let $embossed-ref := file:read("images/manipulation/embossedBird.jpg")
-    return($embossed eq $embossed-ref)
+    return basic:equals($embossed,  $embossed-ref)
 };
 
 (:~
@@ -95,7 +95,7 @@ declare function local:test-emboss() as xs:boolean {
 declare function local:test-solarize() as xs:boolean {
     let $solarized := man:solarize($local:jpg, 0.3)
     let $solarized-ref := file:read("images/manipulation/solarizedBird.jpg")
-    return($solarized eq $solarized-ref)
+    return basic:equals($solarized, $solarized-ref)
 };
 
 

@@ -36,7 +36,7 @@ ERROR:
 declare function local:test-draw-poly-line() as xs:boolean {
     let $draw := paint:draw-poly-line($local:gif, (10,40,50, 200), (10, 80, 30, 200), (), (), (), ())
     let $draw-ref := file:read("images/paint/polyLine.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -45,7 +45,7 @@ declare function local:test-draw-poly-line() as xs:boolean {
 declare function local:test-draw-poly-line-anti-aliased() as xs:boolean {
     let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#000000"), (), (), true())
     let $draw-ref := file:read("images/paint/polyLineAntiAliased.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw,  $draw-ref)
 };
 
 
@@ -55,7 +55,7 @@ declare function local:test-draw-poly-line-anti-aliased() as xs:boolean {
 declare function local:test-draw-poly-line-red() as xs:boolean {
     let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), (), (), true())
     let $draw-ref := file:read("images/paint/polyLineRed.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -64,7 +64,7 @@ declare function local:test-draw-poly-line-red() as xs:boolean {
 declare function local:test-draw-poly-line-wide() as xs:boolean {
     let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), (), (), 5, true())
     let $draw-ref := file:read("images/paint/polyLineWide.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 
@@ -75,7 +75,7 @@ declare function local:test-draw-poly-line-wide() as xs:boolean {
 declare sequential function local:test-draw-filled-poly-line() as xs:boolean {
     let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), (), image:colorType("#000000"),  (), ())
     let $draw-ref := file:read("images/paint/polyLineFilled.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 
@@ -86,7 +86,7 @@ declare sequential function local:test-draw-filled-poly-line() as xs:boolean {
 declare function local:test-draw-filled-poly-line-red() as xs:boolean {
     let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), image:colorType("#000000"),  2, ())
     let $draw-ref := file:read("images/paint/polyLineFilledRed.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 
@@ -96,7 +96,7 @@ declare function local:test-draw-filled-poly-line-red() as xs:boolean {
 declare function local:test-draw-filled-poly-line-red-red() as xs:boolean {
     let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), image:colorType("#FF0000"), (), ())
     let $draw-ref := file:read("images/paint/polyLineFilledRedRed.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 
@@ -106,7 +106,7 @@ declare function local:test-draw-filled-poly-line-red-red() as xs:boolean {
 declare function local:test-draw-filled-poly-line-red-red-anti-alias() as xs:boolean {
     let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), image:colorType("#FF0000"), (), true())
     let $draw-ref := file:read("images/paint/polyLineFilledRedRedAntiAliased.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw,  $draw-ref)
 };
 
 

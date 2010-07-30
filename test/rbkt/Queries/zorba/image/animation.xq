@@ -4,6 +4,7 @@
  : @author Daniel Thomas
  :)
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
+import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
 import module namespace ani = 'http://www.zorba-xquery.com/modules/image/animation';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
 
@@ -35,7 +36,7 @@ declare function local:test-create-animated-gif() as xs:boolean {
     let $gif2 := file:read("images/bird2.gif")
     let $animatedGif := ani:create-animated-gif(($gif1, $gif2), xs:unsignedInt(10), xs:unsignedInt(0))
     let $animatedRef := file:read("images/animation/simple.gif")
-    return ($animatedGif eq $animatedRef)
+    return basic:equals($animatedGif, $animatedRef)
 };
 
 (:~
@@ -46,7 +47,7 @@ declare function local:test-create-morphed-gif() as xs:boolean {
     let $gif2 := file:read("images/bird2.gif")
     let $animatedGif := ani:create-morphed-gif(($gif1, $gif2), xs:unsignedInt(10), xs:unsignedInt(0), xs:unsignedInt(2  ))
     let $animatedRef := file:read("images/animation/morph.gif")
-    return ($animatedGif eq $animatedRef)
+    return basic:equals($animatedGif, $animatedRef)
 };
 
 

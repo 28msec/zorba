@@ -37,7 +37,7 @@ ERROR:
 declare function local:test-draw-circle() as xs:boolean {
     let $draw := paint:draw-circle($local:jpg, 20, 20, 10 , (), (), (), ())
     let $draw-ref := file:read("images/paint/circle.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 
@@ -47,7 +47,7 @@ declare function local:test-draw-circle() as xs:boolean {
 declare function local:test-draw-ellipse() as xs:boolean {
     let $draw := paint:draw-ellipse($local:jpg, 50, 50, 10, 20, (), (), (), ())
     let $draw-ref := file:read("images/paint/ellipse.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -56,7 +56,7 @@ declare function local:test-draw-ellipse() as xs:boolean {
 declare function local:test-draw-arc() as xs:boolean {
     let $draw := paint:draw-arc($local:jpg, 50, 50, 10, 20, 180, 270, (), (), (), ())
     let $draw-ref := file:read("images/paint/arc.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -65,7 +65,7 @@ declare function local:test-draw-arc() as xs:boolean {
 declare function local:test-draw-red-arc() as xs:boolean {
     let $draw := paint:draw-arc($local:jpg, 50, 50, 10, 20, 180, 270, image:colorType("#FF0000"), (), (), ())
     let $draw-ref := file:read("images/paint/arcRed.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -74,7 +74,7 @@ declare function local:test-draw-red-arc() as xs:boolean {
 declare function local:test-draw-red-green-arc() as xs:boolean {
     let $draw := paint:draw-arc($local:jpg, 50, 50, 10, 20, 180, 270, image:colorType("#FF0000"), image:colorType("#00AF00"), (), ())
     let $draw-ref := file:read("images/paint/arcRedGreen.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -83,7 +83,7 @@ declare function local:test-draw-red-green-arc() as xs:boolean {
 declare function local:test-draw-wide-arc() as xs:boolean {
     let $draw := paint:draw-arc($local:jpg, 50, 50, 10, 20, 180, 270, image:colorType("#FF0000"), image:colorType("#00AF00"), 5, ())
     let $draw-ref := file:read("images/paint/arcWide.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 
@@ -94,7 +94,7 @@ declare function local:test-draw-wide-arc() as xs:boolean {
 declare function local:test-draw-anti-aliased-arc() as xs:boolean {
     let $draw := paint:draw-arc($local:jpg, 50, 50, 10, 20, 180, 270, image:colorType("#FF0000"), image:colorType("#00AF00"), 5, true())
     let $draw-ref := file:read("images/paint/arcAntiAliased.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 

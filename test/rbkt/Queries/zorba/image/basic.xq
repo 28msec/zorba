@@ -52,7 +52,7 @@ declare function local:test-height() as xs:boolean {
 (:~
  : @return true if the basic:create function works.
  :)
-declare function local:test-create() as xs:boolean {
+declare sequential function local:test-create() as xs:boolean {
   let $blank-gif := basic:create(xs:unsignedInt(10), xs:unsignedInt(20), image:imageType("GIF"))
   let $blank-png := basic:create(xs:unsignedInt(10), xs:unsignedInt(20), image:imageType("PNG"))
   let $blank-jpg := basic:create(xs:unsignedInt(10), xs:unsignedInt(20), image:imageType("JPEG"))
@@ -61,39 +61,44 @@ declare function local:test-create() as xs:boolean {
   let $ref-jpg := file:read("images/blank.jpg")
   let $ref-tiff := file:read("images/blank.tiff")
   let $ref-png := file:read("images/blank.png")
-  return (($blank-gif eq $ref-gif) and ($blank-jpg eq $ref-jpg) and ($blank-tiff eq $ref-tiff) and ($blank-gif eq $ref-gif)) 
+  return (basic:equals($blank-gif, $ref-gif) and basic:equals($blank-png, $ref-png) and basic:equals($blank-jpg, $ref-jpg) and basic:equals($blank-tiff, $ref-tiff))
 };
 
 (:~
  : @return true if the basic:type function works.
  :)
 declare function local:test-type() as xs:boolean {
-    ((basic:type($local:png) eq image:imageType("PNG") and (basic:type($local:gif) eq image:imageType("GIF")) 
-    and (basic:type($local:tiff) eq image:imageType("TIFF")) and (basic:type($local:jpg) eq image:imageType("JPEG"))))
+    ((basic:type($local:png) eq "PNG") and (basic:type($local:gif) eq "GIF") 
+    and (basic:type($local:tiff) eq "TIFF") and (basic:type($local:jpg) eq "JPEG"))
 };
+
 
 (:~
  : @return true if the basic:convert function works.
- :)
+ :) 
 declare function local:test-convert() as xs:boolean {
     let $png-to-jpeg := basic:convert($local:png, image:imageType("JPEG"))
     let $png-to-tiff := basic:convert($local:png, image:imageType("TIFF"))
     let $png-to-gif := basic:convert($local:png, image:imageType("GIF"))
-    return (($png-to-jpeg eq $local:jpg) and ($png-to-tiff eq $local:tiff) and ($png-to-gif eq $local:gif))
+    return (basic:equals($png-to-jpeg, $local:jpg) and basic:equals($png-to-tiff, $local:tiff) and basic:equals($png-to-gif, $local:gif))
 };
 
 (:~
  : @return true if the basic:compress function works.
- :)
-declare sequential function local:test-compress() as xs:boolean {
+ :) 
+declare function local:test-compress() as xs:boolean {
     let $uncompressed := file:read("images/uncompressed.jpg")
-    let $compressed := basic:compress($uncompressed, xs:int(20))
+    let $compressed := basic:compress($uncompressed, xs:unsignedInt(20))
     let $compressed-ref := file:read("images/compressed.jpg") 
-    return ($compressed eq $compressed-ref)
+    return basic:equals($compressed, $compressed-ref)
 };
 
-
-
+(:~
+ : @return true if the basic:equals function works.
+ :)
+declare function local:test-equals() as xs:boolean {
+  (basic:equals($local:gif, $local:gif) and (not (basic:equals($local:gif, file:read("images/manipulation/gamma1Bird.gif")))))
+};
 
 declare sequential function local:main() as xs:string* {
 
@@ -119,33 +124,36 @@ declare sequential function local:main() as xs:string* {
       exit returning local:error(("Creation of images failed"))
     else ();
 
-  (: ==================================================================== :)
+  (: ==================================================================== :) 
 
   let $d := local:test-type()
   return
     if (fn:not($d)) then
         exit returning local:error("Getting types of images failed")  
     else ();
-    
   (: ==================================================================== :)
-
+  
   let $e := local:test-convert()
   return
     if (fn:not($e)) then
         exit returning local:error("Conversion of images failed")  
     else ();    
-    
+  
   (: ==================================================================== :)
-
+  
   let $f := local:test-compress()
   return
     if (fn:not($f)) then
         exit returning local:error("Compression of images failed")
     else ();   
-
+  
   (: ==================================================================== :)
 
-
+  let $g := local:test-equals()
+  return 
+    if (fn:not($g)) then
+      exit returning local:error("Equals function not working properly")
+    else ();  
 
   (: If all went well ... make sure the world knows! :)  
   "SUCCESS";

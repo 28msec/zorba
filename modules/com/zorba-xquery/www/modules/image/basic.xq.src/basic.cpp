@@ -153,7 +153,7 @@ CompressFunction::evaluate(
 
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aArgs, 0 , lImage);
-  int lQuality = ImageFunction::getOneIntArg(aArgs, 1);
+  int lQuality = ImageFunction::getOneUnsignedIntArg(aArgs, 1);
   // make sure that we have at most a quality of 100 (highest possible value)
   if (lQuality > 100) {
     lQuality = 100;
@@ -197,6 +197,26 @@ CreateFunction::evaluate(
 
 //*****************************************************************************
 
+EqualsFunction::EqualsFunction(const ImageModule* aModule) : ImageFunction(aModule)
+{
+}
+
+
+ItemSequence_t
+EqualsFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  Magick::Image lFirst;
+  Magick::Image lSecond;
+  ImageFunction::getOneImageArg(aArgs, 0, lFirst);
+  ImageFunction::getOneImageArg(aArgs, 1, lSecond);
+  bool lResult = lFirst.compare(lSecond);
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createBoolean(lResult)));
+
+}
 
 
 } /* namespace basicmodule */  } /* namespace imagemodule */ }  /* namespace zorba */

@@ -38,7 +38,7 @@ ERROR:
 declare function local:test-resize() as xs:boolean {
     let $resized := man:resize($local:gif, xs:unsignedInt(500), xs:unsignedInt(600))
     let $resized-ref as xs:base64Binary := file:read("images/manipulation/bigBird.gif")
-    return($resized eq $resized-ref)
+    return basic:equals($resized, $resized-ref)
 };
 
 
@@ -49,7 +49,7 @@ declare function local:test-resize() as xs:boolean {
 declare function local:test-zoom() as xs:boolean {
     let $zoomed := man:zoom($local:jpg, 2)
     let $ref-zoomed := file:read("images/manipulation/zoomedBird.jpg")
-    return ($zoomed eq $ref-zoomed)
+    return basic:equals($zoomed, $ref-zoomed)
 };
 
 
@@ -61,7 +61,7 @@ declare function local:test-zoom() as xs:boolean {
 declare function local:test-zoom-by-width() as xs:boolean {
     let $zoomed := man:zoom-by-width($local:jpg, xs:unsignedInt(268))
     let $ref-zoomed := file:read("images/manipulation/zoomedBird.jpg")
-    return ($zoomed eq $ref-zoomed)
+    return basic:equals($zoomed, $ref-zoomed)
 };
 
 (:~
@@ -70,7 +70,7 @@ declare function local:test-zoom-by-width() as xs:boolean {
 declare function local:test-zoom-by-height() as xs:boolean {
     let $zoomed := man:zoom-by-height($local:jpg, xs:unsignedInt(320))
     let $ref-zoomed := file:read("images/manipulation/zoomedBird.jpg")
-    return ($zoomed eq $ref-zoomed)
+    return basic:equals($zoomed, $ref-zoomed)
 };
 
 (:~
@@ -79,7 +79,7 @@ declare function local:test-zoom-by-height() as xs:boolean {
 declare function local:test-sub-image() as xs:boolean {
     let $sub := man:sub-image($local:jpg, xs:unsignedInt(20), xs:unsignedInt(20), xs:unsignedInt(200), xs:unsignedInt(30))
     let $ref-sub := file:read("images/manipulation/subBird.jpg")
-    return ($sub eq $ref-sub)
+    return basic:equals($sub, $ref-sub)
 };
 
 (:~
@@ -89,8 +89,8 @@ declare function local:test-overlay() {
     let $ref-overlay:= file:read("images/manipulation/overlayBird.jpg")
     let $ref-zoomed := file:read("images/manipulation/zoomedBird.jpg")
         
-    return (man:overlay($ref-zoomed, $local:png, xs:unsignedInt(50), xs:unsignedInt(50), 
-            image:compositeOperatorType("AtopCompositeOp")) eq $ref-overlay) 
+    return basic:equals(man:overlay($ref-zoomed, $local:png, xs:unsignedInt(50), xs:unsignedInt(50), 
+            image:compositeOperatorType("AtopCompositeOp")), $ref-overlay) 
 };
 
 

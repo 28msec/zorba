@@ -38,7 +38,7 @@ ERROR:
 declare function local:test-gamma() as xs:boolean {
     let $gamma1 := man:gamma($local:gif, 1.8)
     let $gamma1-ref := file:read("images/manipulation/gamma1Bird.gif")
-    return($gamma1 eq $gamma1-ref)
+    return basic:equals($gamma1, $gamma1-ref)
 };
 
 (:~
@@ -47,7 +47,7 @@ declare function local:test-gamma() as xs:boolean {
 declare function local:test-gamma-rgb() as xs:boolean {
     let $gamma2 := man:gamma($local:gif, 1.8, 4, 1)
     let $gamma2-ref := file:read("images/manipulation/gamma2Bird.gif")
-    return($gamma2 eq $gamma2-ref)
+    return basic:equals($gamma2, $gamma2-ref)
 };
 
 (:~
@@ -56,7 +56,7 @@ declare function local:test-gamma-rgb() as xs:boolean {
 declare function local:test-implode() as xs:boolean {
     let $implode := man:implode($local:gif, 0.6)
     let $implode-ref := file:read("images/manipulation/implodeBird.gif")
-    return($implode eq $implode-ref)
+    return basic:equals($implode, $implode-ref)
 };
 
 (:~
@@ -65,7 +65,7 @@ declare function local:test-implode() as xs:boolean {
 declare function local:test-oil-paint() as xs:boolean {
     let $oil-paint := man:oil-paint($local:gif, 0.6)
     let $oil-paint-ref := file:read("images/manipulation/oilPaintBird.gif")
-    return($oil-paint eq $oil-paint-ref)
+    return basic:equals($oil-paint,  $oil-paint-ref)
 };
 
 (:~
@@ -74,7 +74,7 @@ declare function local:test-oil-paint() as xs:boolean {
 declare function local:test-watermark() as xs:boolean {
   let $watermark := man:watermark($local:gif, $local:jpg)
   let $watermark-ref := file:read("images/manipulation/watermarked.gif")
-  return ($watermark eq $watermark-ref)
+  return basic:equals($watermark, $watermark-ref)
 
 };
 

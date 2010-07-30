@@ -35,7 +35,7 @@ ERROR:
 declare function local:test-rotate() as xs:boolean {
     let $rotated := man:rotate($local:jpg, xs:int(180))
     let $rotated-ref := file:read("images/manipulation/rotatedBird.jpg")
-    return($rotated eq $rotated-ref)
+    return basic:equals($rotated, $rotated-ref)
 };
 
 
@@ -46,7 +46,7 @@ declare function local:test-rotate() as xs:boolean {
 declare function local:test-erase() as xs:boolean {
     let $erased := man:erase($local:jpg)
     let $erased-ref := file:read("images/manipulation/erased.jpg")
-    return($erased eq $erased-ref)
+    return basic:equals($erased, $erased-ref)
 };
 
 (:~
@@ -55,7 +55,7 @@ declare function local:test-erase() as xs:boolean {
 declare function local:test-flop() as xs:boolean {
     let $flopped := man:flop($local:jpg)
     let $flopped-ref := file:read("images/manipulation/floppedBird.jpg")
-    return($flopped eq $flopped-ref)
+    return basic:equals($flopped, $flopped-ref)
 };
 
 
@@ -65,7 +65,7 @@ declare function local:test-flop() as xs:boolean {
 declare function local:test-flip() as xs:boolean {
     let $flipped := man:flip($local:jpg)
     let $flipped-ref := file:read("images/manipulation/flippedBird.jpg")
-    return($flipped eq $flipped-ref)
+    return basic:equals($flipped, $flipped-ref)
 };
 
 (:~
@@ -74,7 +74,7 @@ declare function local:test-flip() as xs:boolean {
 declare function local:test-trim() as xs:boolean {
     let $trimmed := man:trim($local:jpg)
     let $trimmed-ref := file:read("images/manipulation/trimmedBird.jpg")
-    return($trimmed eq $trimmed-ref)
+    return basic:equals($trimmed, $trimmed-ref)
 };
 
 
@@ -85,7 +85,7 @@ declare function local:test-trim() as xs:boolean {
 declare function local:test-blur() as xs:boolean {
     let $blurred := man:blur($local:jpg, xs:int(8), xs:int(-4))
     let $blurred-ref := file:read("images/manipulation/blurredBird.jpg")
-    return($blurred eq $blurred-ref)
+    return basic:equals($blurred, $blurred-ref)
 };
 
 

@@ -108,7 +108,6 @@ class CompressFunction : public zorba::imagemodule::ImageFunction
 
   };
 
-
 //*****************************************************************************
 
 class CreateFunction : public zorba::imagemodule::ImageFunction 
@@ -123,6 +122,22 @@ class CreateFunction : public zorba::imagemodule::ImageFunction
                const DynamicContext* aDynCtx) const;
 
   };
+
+//*****************************************************************************
+
+class EqualsFunction : public zorba::imagemodule::ImageFunction
+  {
+    public:
+      EqualsFunction(const ImageModule* aModule);
+      virtual String getLocalName() const { return "equals"; }
+
+      virtual ItemSequence_t
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+  };
+
 
 
 

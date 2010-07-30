@@ -36,7 +36,7 @@ ERROR:
 declare function local:test-draw-line() as xs:boolean {
     let $draw := paint:draw-line($local:gif, -20, -20, 80, 80, (), (), ())
     let $draw-ref := file:read("images/paint/line.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -45,7 +45,7 @@ declare function local:test-draw-line() as xs:boolean {
 declare function local:test-draw-line-color-red() {
     let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, image:colorType("#6F0000"), (), ())
     let $draw-ref := file:read("images/paint/redLine.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 
 };
 
@@ -55,7 +55,7 @@ declare function local:test-draw-line-color-red() {
 declare function local:test-draw-line-color-green() {
     let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, image:colorType("#006F00"), (), ())
     let $draw-ref := file:read("images/paint/greenLine.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 
 };
 
@@ -65,7 +65,7 @@ declare function local:test-draw-line-color-green() {
 declare function local:test-draw-line-color-blue() {
     let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, image:colorType("#00006F"), (), ())
     let $draw-ref := file:read("images/paint/blueLine.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 
 };
 
@@ -76,7 +76,7 @@ declare function local:test-stroke-width() {
     let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, image:colorType("#000000"), 10, false()) 
     let $draw2 := paint:draw-line($draw, 30, 0, 70, 90, image:colorType("#FF00FF"), 1, false())    
     let $draw2-ref := file:read("images/paint/wideLine.gif")
-    return($draw2 eq $draw2-ref)
+    return basic:equals($draw2, $draw2-ref)
 
 };
 

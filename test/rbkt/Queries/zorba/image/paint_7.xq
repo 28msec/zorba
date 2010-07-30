@@ -35,7 +35,7 @@ ERROR:
 declare function local:test-draw-text() as xs:boolean {
     let $draw := paint:draw-text($local:jpg, "Hello Zorba", 30, 40,  "Arial", (), (), (), ())
     let $draw-ref := file:read("images/paint/text.jpg")
-    return ($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 
@@ -45,7 +45,7 @@ declare function local:test-draw-text() as xs:boolean {
 declare function local:test-draw-text-helvetica() as xs:boolean {
     let $draw := paint:draw-text($local:jpg, "Hello Zorba", 30, 40,  "Helvetica", (), (), (), ())
     let $draw-ref := file:read("images/paint/textHelvetica.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -54,7 +54,7 @@ declare function local:test-draw-text-helvetica() as xs:boolean {
 declare function local:test-draw-text-red() as xs:boolean {
     let $draw := paint:draw-text($local:jpg, "Hello Zorba", 30, 40,  "Arial", (), (), (), image:colorType("#FF0000"))
     let $draw-ref := file:read("images/paint/textRed.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -63,7 +63,7 @@ declare function local:test-draw-text-red() as xs:boolean {
 declare function local:test-draw-text-big() as xs:boolean {
     let $draw := paint:draw-text($local:jpg, "Hello Zorba", 30, 40,  "Arial", 20, (), (), image:colorType("#FF0000"))
     let $draw-ref := file:read("images/paint/textBig.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -72,7 +72,7 @@ declare function local:test-draw-text-big() as xs:boolean {
 declare function local:test-draw-text-italic() as xs:boolean {
     let $draw := paint:draw-text($local:jpg, "Hello Zorba", 30, 40,  "Arial", (), (), image:fontStyleType("Italic"), image:colorType("#FF0000"))
     let $draw-ref := file:read("images/paint/textItalic.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -81,7 +81,7 @@ declare function local:test-draw-text-italic() as xs:boolean {
 declare function local:test-draw-text-oblique() as xs:boolean {
     let $draw := paint:draw-text($local:jpg, "Hello Zorba", 30, 40,  "Helvetica", (), (), image:fontStyleType("Oblique"), image:colorType("#FF0000"))
     let $draw-ref := file:read("images/paint/textOblique.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -90,7 +90,7 @@ declare function local:test-draw-text-oblique() as xs:boolean {
 declare function local:test-draw-text-heavy() as xs:boolean {
     let $draw := paint:draw-text($local:jpg, "Hello Zorba", 30, 40,  "Arial", (), image:fontWeightType(700), (), ())
     let $draw-ref := file:read("images/paint/textHeavy.jpg")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 

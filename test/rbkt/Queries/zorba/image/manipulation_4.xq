@@ -37,7 +37,7 @@ declare function local:test-stereo() as xs:boolean {
     let $right-image := man:zoom($local:jpg, 0.9)
     let $stereod := man:stereo($local:jpg, $right-image)
     let $stereod-ref := file:read("images/manipulation/stereodBird.jpg")
-    return($stereod eq $stereod-ref)
+    return basic:equals($stereod, $stereod-ref)
 };
 
 (:~
@@ -46,7 +46,7 @@ declare function local:test-stereo() as xs:boolean {
 declare function local:test-transparent() as xs:boolean {
     let $transparented := man:transparent($local:gif, image:colorType("#000000"))
     let $transparented-ref := file:read("images/manipulation/transparentedBird.gif")
-    return($transparented eq $transparented-ref)
+    return basic:equals($transparented, $transparented-ref)
 };
 
 (:~
@@ -55,7 +55,7 @@ declare function local:test-transparent() as xs:boolean {
 declare function local:test-swirl() as xs:boolean {
     let $swirled := man:swirl($local:gif, -500)
     let $swirled-ref := file:read("images/manipulation/swirledBird.gif")
-    return($swirled eq $swirled-ref)
+    return basic:equals($swirled, $swirled-ref)
 };
 
 (:~
@@ -64,7 +64,7 @@ declare function local:test-swirl() as xs:boolean {
 declare function local:test-reduce-noise() as xs:boolean {
     let $reduced := man:reduce-noise($local:gif, -0.4)
     let $reduced-ref := file:read("images/manipulation/reducedBird.gif")
-    return($reduced eq $reduced-ref)
+    return basic:equals($reduced, $reduced-ref)
 };
 
 
@@ -74,7 +74,7 @@ declare function local:test-reduce-noise() as xs:boolean {
 declare function local:test-contrast() as xs:boolean {
     let $contrasted := man:contrast($local:gif, 0.8)
     let $contrasted-ref := file:read("images/manipulation/contrastedBird.gif")
-    return($contrasted eq $contrasted-ref)
+    return basic:equals($contrasted, $contrasted-ref)
 };
 
 

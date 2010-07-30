@@ -36,7 +36,7 @@ ERROR:
 declare function local:test-draw-stroked-poly-line() as xs:boolean {
     let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, (), (), ())
     let $draw-ref := file:read("images/paint/polyLineStroked.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 
@@ -46,7 +46,7 @@ declare function local:test-draw-stroked-poly-line() as xs:boolean {
 declare function local:test-draw-stroked-poly-line-blue() as xs:boolean {
     let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, image:colorType("#0000FF"), (), ())
     let $draw-ref := file:read("images/paint/polyLineStrokedBlue.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -55,7 +55,7 @@ declare function local:test-draw-stroked-poly-line-blue() as xs:boolean {
 declare function local:test-draw-stroked-poly-line-wide() as xs:boolean {
     let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, (), 4, ())
     let $draw-ref := file:read("images/paint/polyLineStrokedWide.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 (:~
@@ -64,7 +64,7 @@ declare function local:test-draw-stroked-poly-line-wide() as xs:boolean {
 declare function local:test-draw-stroked-poly-line-anti-aliased() as xs:boolean {
     let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, (), (), true())
     let $draw-ref := file:read("images/paint/polyLineStrokedAntiAliased.gif")
-    return($draw eq $draw-ref)
+    return basic:equals($draw, $draw-ref)
 };
 
 declare sequential function local:main() as xs:string* {

@@ -38,6 +38,8 @@ BasicModule::getExternalFunction(String aLocalname) const
       lFunc = new CompressFunction(this);
     } else if (aLocalname.equals("create")) {
       lFunc = new CreateFunction(this); 
+    } else if (aLocalname.equals("equals")) {
+      lFunc = new EqualsFunction(this);
     }   
   }
   return lFunc;
