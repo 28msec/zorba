@@ -341,7 +341,7 @@
   PLAN_ITER_VISITOR(UnhoistIterator);
 
   PLAN_ITER_VISITOR(IndexRangeProbeIterator);
-  PLAN_ITER_VISITOR(IndexPointProbeIterator);
+  PLAN_ITER_VISITOR(IndexValuePointProbeIterator);
   PLAN_ITER_VISITOR(IndexGeneralPointProbeIterator);
   PLAN_ITER_VISITOR(IndexGeneralRangeProbeIterator);
   PLAN_ITER_VISITOR(ValueIndexEntryBuilderIterator);

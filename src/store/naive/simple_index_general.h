@@ -49,6 +49,7 @@ public:
   void addNode(store::Item_t& node, bool multikey, bool untyped);
 
   iterator begin() { return theNodes.begin(); }
+
   iterator end()   { return theNodes.end(); }
 };
 
@@ -67,6 +68,8 @@ protected:
   GeneralIndex(
         const store::Item_t& qname,
         const store::IndexSpecification& spec);
+
+  bool isTyped() const { return (theSpec.theKeyTypes[0] != NULL); }
 
   void startInsertSession() { theLastNode = NULL; }
 
@@ -120,23 +123,18 @@ protected:
 class GeneralHashProbeIterator : public store::IndexProbeIterator
 {
 protected:
-  rchandle<GeneralHashIndex>           theIndex;
+  rchandle<GeneralHashIndex>                 theIndex;
 
-  GeneralHashIndex::IndexMap         * theTargetMap;
+  rchandle<IndexPointConditionImpl>          theCondition;
 
-  rchandle<IndexPointConditionImpl>    theCondition;
-
-  GeneralIndexValue                  * theResultSet;
-  GeneralIndexValue::iterator          theIte;
-  GeneralIndexValue::iterator          theEnd;
+  std::vector<GeneralIndexValue*>            theResultSets;
+  std::vector<GeneralIndexValue*>::iterator  theResultSetsIte;
+  std::vector<GeneralIndexValue*>::iterator  theResultSetsEnd;
+  GeneralIndexValue::iterator                theIte;
+  GeneralIndexValue::iterator                theEnd;
 
 public:
-  GeneralHashProbeIterator(const store::Index_t& index) 
-    :
-    theResultSet(NULL)
-  {
-    theIndex = static_cast<GeneralHashIndex*>(index.getp());
-  }
+  GeneralHashProbeIterator(const store::Index_t& index);
 
   void init(const store::IndexCondition_t& cond);
 

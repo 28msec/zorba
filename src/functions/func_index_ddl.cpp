@@ -85,7 +85,7 @@ PlanIter_t fn_zorba_ddl_index_value_point_probe::codegen(
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IndexPointProbeIterator(sctx, loc, argv);
+  return new IndexValuePointProbeIterator(sctx, loc, argv);
 }
 
 

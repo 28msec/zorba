@@ -337,7 +337,7 @@ public:
                      ...,
                      $keyN      as anyAtomic?) as node()*
  *********************************************************************************/
-class IndexPointProbeIteratorState : public PlanIteratorState
+class IndexValuePointProbeIteratorState : public PlanIteratorState
 {
 public:
   const store::Item            * theQname; 
@@ -345,9 +345,9 @@ public:
   store::Index                 * theIndex; 
   store::IndexProbeIterator_t    theIterator;
 
-  IndexPointProbeIteratorState();
+  IndexValuePointProbeIteratorState();
 
-  ~IndexPointProbeIteratorState();
+  ~IndexValuePointProbeIteratorState();
 
   void init(PlanState&);
 
@@ -355,31 +355,33 @@ public:
 };
 
 
-class IndexPointProbeIterator : public NaryBaseIterator<IndexPointProbeIterator, 
-                                                        IndexPointProbeIteratorState>
+class IndexValuePointProbeIterator : 
+public NaryBaseIterator<IndexValuePointProbeIterator, 
+                        IndexValuePointProbeIteratorState>
 {
 protected:
   bool theCheckKeyType;
 
 public:
-  SERIALIZABLE_CLASS(IndexPointProbeIterator);
+  SERIALIZABLE_CLASS(IndexValuePointProbeIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexPointProbeIterator,
-  NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexValuePointProbeIterator,
+  NaryBaseIterator<IndexValuePointProbeIterator, IndexValuePointProbeIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<IndexPointProbeIterator, IndexPointProbeIteratorState>*)this);
-	ar & theCheckKeyType;
+    (NaryBaseIterator<IndexValuePointProbeIterator,
+                      IndexValuePointProbeIteratorState>*)this);
+    ar & theCheckKeyType;
   }
 
-  IndexPointProbeIterator(
+  IndexValuePointProbeIterator(
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children);
 
-  ~IndexPointProbeIterator();
+  ~IndexValuePointProbeIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -392,8 +394,8 @@ public:
                              $key1      as anyAtomic*,
                               ...,
                              $keyN      as anyAtomic*) as node()*
- *********************************************************************************/
-class IndexGeneralPointProbeIteratorState : public IndexPointProbeIteratorState
+********************************************************************************/
+class IndexGeneralPointProbeIteratorState : public IndexValuePointProbeIteratorState
 {
 public:
   store::IndexPointCondition_t theCondition;

@@ -143,7 +143,7 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
 
   SchemaTypeCode keyType = keyItem->getTypeCode();
 
-  if (theSpec.theKeyTypes[0] != NULL)
+  if (isTyped())
   {
     return insertInMap(key, node, theSingleMap, false);
   }
@@ -476,6 +476,19 @@ bool GeneralHashIndex::remove(const store::IndexKey* key, store::Item_t& item)
 /******************************************************************************
 
 ********************************************************************************/
+GeneralHashProbeIterator::GeneralHashProbeIterator(const store::Index_t& index) 
+  :
+  theResultSets(1)
+{
+  theIndex = static_cast<GeneralHashIndex*>(index.getp());
+    
+  theResultSets[0] = NULL;
+}
+
+
+/******************************************************************************
+
+********************************************************************************/
 void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
 {
   if (cond->getKind() != store::IndexCondition::EXACT_KEY)
@@ -484,8 +497,6 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
                       theIndex->getName()->getStringValue()->c_str(), 
                       cond->getKindString());
   }
-
-  theTargetMap = theIndex->theSingleMap;
 
   theCondition = reinterpret_cast<IndexPointConditionImpl*>(cond.getp());
 
@@ -498,12 +509,252 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
                       key->toString());
   }
 
-  theTargetMap->get(key, theResultSet);
+  GeneralHashIndex::IndexMap* targetMap = NULL;
 
-  if (theResultSet)
+  if (theIndex->isTyped())
   {
-    theIte = theResultSet->begin();
-    theEnd = theResultSet->end();
+    // Note: the runtime (or compiler) makes sure that the search key is a
+    // subtype of the index key type.
+
+    theIndex->theSingleMap->get(key, theResultSets[0]);
+  }
+  else
+  {
+    AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
+
+    if (keyItem->getBaseItem() != NULL)
+    {
+      keyItem = static_cast<AtomicItem*>(keyItem->getBaseItem());
+      (*key)[0] = keyItem;
+    }
+
+    SchemaTypeCode keyType = keyItem->getTypeCode();
+
+    switch (keyType)
+    {
+    case XS_ANY_URI:
+    {
+      targetMap = theIndex->theMaps[XS_ANY_URI];
+
+      if (targetMap != NULL)
+      {
+        targetMap->get(key, theResultSets[0]);
+      }
+
+      targetMap = theIndex->theMaps[XS_STRING];
+
+      if (targetMap != NULL)
+      {
+        store::Item_t stringItem;
+        xqpStringStore_t tmp = keyItem->getStringValue();
+        GET_FACTORY().createString(stringItem, tmp);
+        (*key)[0] = stringItem;
+
+        theResultSets.push_back(NULL);
+
+        targetMap->get(key, theResultSets[1]);
+      }
+      break;
+    }
+
+    case XS_QNAME:
+    case XS_NOTATION:
+    case XS_BASE64BINARY:
+    case XS_HEXBINARY:
+    case XS_BOOLEAN:
+    case XS_DATETIME:
+    case XS_DATE:
+    case XS_TIME:
+    case XS_GYEAR_MONTH:
+    case XS_GYEAR:
+    case XS_GMONTH_DAY:
+    case XS_GDAY:
+    case XS_GMONTH:
+    {
+      targetMap = theIndex->theMaps[keyType];
+
+      if (targetMap != NULL)
+      {
+        targetMap->get(key, theResultSets[0]);
+      }
+
+      break;
+    }
+
+    case XS_DURATION:
+    case XS_YM_DURATION:
+    case XS_DT_DURATION:
+    {
+      targetMap = theIndex->theMaps[XS_DURATION];
+
+      if (targetMap != NULL)
+      {
+        targetMap->get(key, theResultSets[0]);
+      }
+
+      break;
+    }
+
+    case XS_STRING:
+    case XS_NORMALIZED_STRING:
+    case XS_TOKEN:
+    case XS_NMTOKEN:
+    case XS_LANGUAGE:
+    case XS_NAME:
+    case XS_NCNAME:
+    case XS_ID:
+    case XS_IDREF:
+    case XS_ENTITY:
+    {
+      targetMap = theIndex->theMaps[XS_STRING];
+
+      if (targetMap != NULL)
+      {
+        targetMap->get(key, theResultSets[0]);
+      }
+
+      targetMap = theIndex->theMaps[XS_ANY_URI];
+
+      if (targetMap != NULL)
+      {
+        store::Item_t uriItem;
+        xqpStringStore_t tmp = keyItem->getStringValue();
+        GET_FACTORY().createAnyURI(uriItem, tmp);
+        (*key)[0] = uriItem;
+
+        theResultSets.push_back(NULL);
+
+        targetMap->get(key, theResultSets[1]);
+      }
+
+      break;
+    }
+
+    case XS_DOUBLE:
+    case XS_FLOAT:
+    {
+      targetMap = theIndex->theMaps[XS_DOUBLE];
+
+      if (targetMap != NULL)
+      {
+        targetMap->get(key, theResultSets[0]);
+      }
+
+      store::Item_t longItem;
+      keyItem->castToLong(longItem);
+
+      if (longItem != NULL)
+      {
+        targetMap = theIndex->theMaps[XS_LONG];
+
+        if (targetMap != NULL)
+        {
+          (*key)[0] = longItem;
+
+          theResultSets.push_back(NULL);
+
+          targetMap->get(key, theResultSets[1]);
+        }
+      }
+
+      break;
+    }
+
+    case XS_DECIMAL:
+    case XS_INTEGER:
+    case XS_NON_POSITIVE_INTEGER:
+    case XS_NEGATIVE_INTEGER:
+    case XS_NON_NEGATIVE_INTEGER:
+    case XS_POSITIVE_INTEGER:
+    case XS_UNSIGNED_LONG:
+    {
+      rchandle<AtomicItem> keyItem = static_cast<AtomicItem*>((*key)[0].getp());
+
+      store::Item_t doubleItem;
+      bool lossy;
+
+      keyItem->coerceToDouble(doubleItem, true, lossy);
+
+      targetMap = theIndex->theMaps[XS_DOUBLE];
+
+      if (targetMap != NULL)
+      {
+       (*key)[0] = doubleItem;
+
+        targetMap->get(key, theResultSets[0]);
+      }
+
+      targetMap = theIndex->theMaps[XS_LONG];
+
+      if (targetMap != NULL)
+      {
+        store::Item_t longItem;
+
+        keyItem->castToLong(longItem);
+
+        if (longItem != NULL)
+        {
+          (*key)[0] = longItem;
+
+          theResultSets.push_back(NULL);
+
+          targetMap->get(key, theResultSets[theResultSets.size() - 1]);
+        }
+      }
+
+      targetMap = theIndex->theMaps[XS_DECIMAL];
+
+      if (lossy && targetMap != NULL)
+      {
+        (*key)[0] = keyItem;
+
+        theResultSets.push_back(NULL);
+
+        targetMap->get(key, theResultSets[theResultSets.size() - 1]);
+      }
+
+      break;
+    }
+
+    case XS_LONG:
+    case XS_INT:
+    case XS_SHORT:
+    case XS_BYTE:
+    case XS_UNSIGNED_INT:
+    case XS_UNSIGNED_SHORT:
+    case XS_UNSIGNED_BYTE:
+    {
+      targetMap = theIndex->theMaps[XS_LONG];
+
+      if (targetMap != NULL)
+      {
+        targetMap->get(key, theResultSets[0]);
+      }
+
+      targetMap = theIndex->theMaps[XS_DOUBLE];
+
+      if (targetMap != NULL)
+      {
+        store::Item_t doubleItem;
+        bool lossy;
+
+        keyItem->coerceToDouble(doubleItem, true, lossy);
+
+        (*key)[0] = doubleItem;
+
+        theResultSets.push_back(NULL);
+
+        targetMap->get(key, theResultSets[1]);
+      }
+
+      break;
+    }
+
+    default:
+    {
+      ZORBA_ASSERT(false);
+    }
+    }
   }
 }
 
@@ -513,8 +764,19 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
 ********************************************************************************/
 void GeneralHashProbeIterator::open()
 {
-  if (theResultSet)
-    theIte = theResultSet->begin();
+  theResultSetsEnd = theResultSets.end();
+  theResultSetsIte = theResultSets.begin();
+
+  for (; theResultSetsIte != theResultSetsEnd; ++theResultSetsIte)
+  {
+    if (*theResultSetsIte != NULL)
+    {
+      theIte = (*theResultSetsIte)->begin();
+      theEnd = (*theResultSetsIte)->end();
+
+      break;
+    }
+  }
 }
 
 
@@ -523,8 +785,7 @@ void GeneralHashProbeIterator::open()
 ********************************************************************************/
 void GeneralHashProbeIterator::reset()
 {
-  if (theResultSet)
-    theIte = theResultSet->begin(); 
+  open();
 }
 
 
@@ -533,8 +794,6 @@ void GeneralHashProbeIterator::reset()
 ********************************************************************************/
 void GeneralHashProbeIterator::close()
 {
-  theCondition = NULL;
-  theResultSet = NULL;
 }
 
 
@@ -543,11 +802,22 @@ void GeneralHashProbeIterator::close()
 ********************************************************************************/
 bool GeneralHashProbeIterator::next(store::Item_t& result)
 {
-  if (theResultSet && theIte != theEnd)
+  while (theResultSetsIte != theResultSetsEnd)
   {
-    result = (*theIte).theNode;
-    ++theIte;
-    return true;
+    if (theIte != theEnd)
+    {
+      result = (*theIte).theNode;
+      ++theIte;
+      return true;
+    }
+
+    ++theResultSetsIte;
+
+    if (theResultSetsIte != theResultSetsEnd && *theResultSetsIte != NULL)
+    {
+      theIte = (*theResultSetsIte)->begin();
+      theEnd = (*theResultSetsIte)->end();
+    }
   }
 
   return false;

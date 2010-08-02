@@ -41,10 +41,10 @@ Iterator tree for main query:
               </OpToIterator>
             </ForVariable>
             <ForVariable name="book">
-              <IndexPointProbeIterator>
+              <IndexValuePointProbeIterator>
                 <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                 <ForVarIterator varname="anzahl"/>
-              </IndexPointProbeIterator>
+              </IndexValuePointProbeIterator>
             </ForVariable>
             <ReturnClause>
               <ElementIterator>

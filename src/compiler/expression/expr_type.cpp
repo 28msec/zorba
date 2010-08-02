@@ -172,9 +172,8 @@ void expr::compute_return_type(bool deep, bool* modified)
       }
     }
 
-    newType = 
-    tm->create_type_x_quant(*e->theReturnExpr->get_return_type(),
-                            quant);
+    newType = tm->create_type_x_quant(*e->theReturnExpr->get_return_type(),
+                                      quant);
 
     break;
   }

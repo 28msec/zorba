@@ -76,12 +76,12 @@ Iterator tree for main query:
           </HoistIterator>
         </LetVariable>
         <ForVariable name="a">
-          <IndexPointProbeIterator>
+          <IndexValuePointProbeIterator>
             <SingletonIterator value="xs:QName(,,tempIndex0)"/>
             <UnhoistIterator>
               <LetVarIterator varname="$$opt_temp_1"/>
             </UnhoistIterator>
-          </IndexPointProbeIterator>
+          </IndexValuePointProbeIterator>
         </ForVariable>
         <ReturnClause>
           <ElementIterator>

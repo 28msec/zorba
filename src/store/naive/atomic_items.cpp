@@ -73,7 +73,7 @@ void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
 
 /*******************************************************************************
   For numeric items or the untyped item: convert this item to a long item, 
-  if possible.
+  if possible, i.e., if the conversion is going to be lossless.
 ********************************************************************************/
 void AtomicItem::castToLong(store::Item_t& result) const
 {
@@ -87,6 +87,18 @@ void AtomicItem::castToLong(store::Item_t& result) const
   {
     const UntypedAtomicItem* item = static_cast<const UntypedAtomicItem*>(this);
     if (NumConversions::strToLong(item->theValue->c_str(), longValue))
+      GET_FACTORY().createLong(result, longValue);
+
+    break;
+  }
+
+  case XS_DOUBLE:
+  case XS_FLOAT:
+  {
+    double doubleValue = getDoubleValue().getNumber();
+    longValue = static_cast<xqp_long>(doubleValue);
+
+    if (doubleValue == static_cast<double>(longValue))
       GET_FACTORY().createLong(result, longValue);
 
     break;

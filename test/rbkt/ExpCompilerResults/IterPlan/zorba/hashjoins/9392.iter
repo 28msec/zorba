@@ -48,10 +48,10 @@ Iterator tree for main query:
                         </OpToIterator>
                       </ForVariable>
                       <ForVariable name="karte">
-                        <IndexPointProbeIterator>
+                        <IndexValuePointProbeIterator>
                           <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                           <ForVarIterator varname="anzahl"/>
-                        </IndexPointProbeIterator>
+                        </IndexValuePointProbeIterator>
                       </ForVariable>
                       <ReturnClause>
                         <ForVarIterator varname="anzahl"/>

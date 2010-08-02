@@ -74,20 +74,6 @@ static void checkKeyType(
                                "The type of a search key is not valid for");
     }
   }
-
-#if 0  
-  if (!TypeOps::is_equal(*searchKeyType, *indexKeyType))
-  {
-    // promote the search key to a value whose type is the that of the
-    // index key type
-    store::Item_t tmp;
-    tmp.transfer(searchKey);
-    if (! GenericCast::castToAtomic(searchKey, tmp, indexKeyType.getp(), *tm))
-    {
-      ZORBA_ASSERT(false);
-    }
-  }
-#endif
 }
 
 
@@ -109,8 +95,8 @@ END_SERIALIZABLE_CLASS_VERSIONS(ValueIndexEntryBuilderIterator)
 SERIALIZABLE_CLASS_VERSIONS(GeneralIndexEntryBuilderIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(GeneralIndexEntryBuilderIterator)
 
-SERIALIZABLE_CLASS_VERSIONS(IndexPointProbeIterator)
-END_SERIALIZABLE_CLASS_VERSIONS(IndexPointProbeIterator)
+SERIALIZABLE_CLASS_VERSIONS(IndexValuePointProbeIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(IndexValuePointProbeIterator)
 
 SERIALIZABLE_CLASS_VERSIONS(IndexRangeProbeIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(IndexRangeProbeIterator)
@@ -550,20 +536,20 @@ void GeneralIndexEntryBuilderIterator::accept(PlanIterVisitor& v) const
 
 
 /*******************************************************************************
-  IndexPointProbeIterator
+  IndexValuePointProbeIterator
 ********************************************************************************/
 
-IndexPointProbeIteratorState::IndexPointProbeIteratorState() 
+IndexValuePointProbeIteratorState::IndexValuePointProbeIteratorState() 
 {
 }
 
 
-IndexPointProbeIteratorState::~IndexPointProbeIteratorState() 
+IndexValuePointProbeIteratorState::~IndexValuePointProbeIteratorState() 
 {
 }
 
 
-void IndexPointProbeIteratorState::init(PlanState& planState) 
+void IndexValuePointProbeIteratorState::init(PlanState& planState) 
 {
   PlanIteratorState::init(planState);
   theQname = 0;
@@ -573,7 +559,7 @@ void IndexPointProbeIteratorState::init(PlanState& planState)
 }
 
 
-void IndexPointProbeIteratorState::reset(PlanState& state)
+void IndexValuePointProbeIteratorState::reset(PlanState& state)
 {
   PlanIteratorState::reset(state);
   if (theIterator != NULL) 
@@ -583,24 +569,26 @@ void IndexPointProbeIteratorState::reset(PlanState& state)
 }
 
 
-IndexPointProbeIterator::IndexPointProbeIterator(
+IndexValuePointProbeIterator::IndexValuePointProbeIterator(
     static_context* sctx,
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
   : 
-  NaryBaseIterator<IndexPointProbeIterator,
-                   IndexPointProbeIteratorState>(sctx, loc, children),
+  NaryBaseIterator<IndexValuePointProbeIterator,
+                   IndexValuePointProbeIteratorState>(sctx, loc, children),
   theCheckKeyType(true)
 {
 }
 
 
-IndexPointProbeIterator::~IndexPointProbeIterator() 
+IndexValuePointProbeIterator::~IndexValuePointProbeIterator() 
 {
 }
 
 
-bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+bool IndexValuePointProbeIterator::nextImpl(
+    store::Item_t& result,
+    PlanState& planState) const
 {
   store::Item_t qnameItem;
   store::Item_t keyItem;
@@ -609,8 +597,8 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
   ulong i;
   bool status;
 
-  IndexPointProbeIteratorState* state;
-  DEFAULT_STACK_INIT(IndexPointProbeIteratorState, state, planState);
+  IndexValuePointProbeIteratorState* state;
+  DEFAULT_STACK_INIT(IndexValuePointProbeIteratorState, state, planState);
 
   status = consumeNext(qnameItem, theChildren[0], planState);
   ZORBA_ASSERT(status);
@@ -678,13 +666,14 @@ bool IndexPointProbeIterator::nextImpl(store::Item_t& result, PlanState& planSta
 }
 
 
-void IndexPointProbeIterator::accept(PlanIterVisitor& v) const 
+void IndexValuePointProbeIterator::accept(PlanIterVisitor& v) const 
 {
   v.beginVisit(*this);
 
   std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
   std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
-  for ( ; lIter != lEnd; ++lIter ){
+  for ( ; lIter != lEnd; ++lIter )
+  {
     (*lIter)->accept(v);
   }
 

@@ -50,10 +50,10 @@ Iterator tree for main query:
                       <EnclosedIterator attr_cont="true">
                         <flwor::FLWORIterator>
                           <ForVariable name="karte">
-                            <IndexPointProbeIterator>
+                            <IndexValuePointProbeIterator>
                               <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                               <ForVarIterator varname="anzahl"/>
-                            </IndexPointProbeIterator>
+                            </IndexValuePointProbeIterator>
                           </ForVariable>
                           <ReturnClause>
                             <ForVarIterator varname="anzahl"/>

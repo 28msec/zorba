@@ -2483,7 +2483,7 @@ void* begin_visit(const Prolog& v)
 {
   TRACE_VISIT();
   return no_state;
-  }
+}
 
 void end_visit(const Prolog& v, void* /*visit_state*/)
 {
