@@ -16,6 +16,10 @@
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook_main.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook_main.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook.xq)
 
+#belongs to test external_function.cpp
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_mod.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_mod.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_main.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_main.xq)
+
 IF(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
@@ -27,6 +31,7 @@ IF(WIN32)
     plan_serializer.cpp
     call_stack.cpp
     static_context.cpp
+    external_function.cpp
   )
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
@@ -37,6 +42,7 @@ ELSE(WIN32)
     plan_serializer.cpp
     call_stack.cpp
     static_context.cpp
+    external_function.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )
@@ -60,5 +66,6 @@ ENDFOREACH(test)
 
 EXPECTED_FAILURE(test/unit/plan_serializer 3035320)
 EXPECTED_FAILURE(test/unit/static_context  3036605)
+EXPECTED_FAILURE(test/unit/external_function  3038298)
 
 ADD_SUBDIRECTORY(debugger)
