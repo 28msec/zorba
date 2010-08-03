@@ -141,6 +141,38 @@ bool test_call_stack3(Zorba* aZorba)
   return lResult;
 }
 
+bool test_call_stack4(Zorba* aZorba)
+{
+  bool lResult = true;
+  std::stringstream lStream;
+  lStream << "declare variable $a := 3;" << std::endl;
+  lStream << "" << std::endl;
+  lStream << "declare function local:foo()" << std::endl;
+  lStream << "{" << std::endl;
+  lStream << "   $a + $a, blubb" << std::endl;
+  lStream << "};" << std::endl;
+  lStream << "" << std::endl;
+  lStream << "for $i in 1 to 10" << std::endl;
+  lStream << "return local:foo()" << std::endl;
+  XQuery_t lQuery = aZorba->compileQuery(lStream);
+  try {
+    std::stringstream lQueryResult;
+    lQueryResult << lQuery;
+  } catch (ZorbaException& e) {
+    ZorbaException::StackTrace_t lTrace = e.getStackTrace();
+    if (lTrace.size() != 1)
+      return false;
+    Item lQName = lTrace[0].first;
+    if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
+      lResult = false;
+    if (lQName.getLocalName() != "foo")
+      lResult = false;
+  } catch (...) {
+    lResult = false;
+  }
+  return lResult;
+}
+
 int call_stack (int argc, char* argv[])
 {
   void* lStore = zorba::StoreManager::getStore();
@@ -150,6 +182,8 @@ int call_stack (int argc, char* argv[])
   if (!test_call_stack2(lZorba))
     return 1;
   if (!test_call_stack3(lZorba))
+    return 1;
+  if (!test_call_stack4(lZorba))
     return 1;
   return 0;
 }
