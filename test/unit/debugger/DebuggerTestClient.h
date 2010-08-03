@@ -44,8 +44,14 @@ public:
   void
   resume();
 
-	DebuggerTestHandler::DebugEvent
+  void
+  eval(std::string anExpr);
+
+  DebuggerTestHandler::DebugEvent
   getNextEvent();
+
+  std::pair<String, std::list<std::pair<String, String> > >
+  getLastEvent();
 
   QueryLocation_t
   addBreakpoint(std::string fileName, unsigned int aNumber);

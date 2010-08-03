@@ -53,11 +53,25 @@ namespace zorba {
 		m_client->run();
 	}
 
+  void
+  DebuggerTestClient::eval(std::string anExpr)
+  {
+    String lStr(anExpr);
+    m_client->eval(lStr);
+  }
+
+
 	DebuggerTestHandler::DebugEvent
   DebuggerTestClient::getNextEvent()
 	{
 		return m_handler->getNextEvent();
 	}
+
+  std::pair<String, std::list<std::pair<String, String> > 
+  >
+  DebuggerTestClient::getLastEvent() {
+    return m_handler->getLastEvent();
+  }
 
   void
   DebuggerTestClient::resume()
@@ -69,7 +83,7 @@ namespace zorba {
   DebuggerTestClient::addBreakpoint( std::string nspace, unsigned int lNumber )
   {
     QueryLocation_t lLocation(m_client->addBreakpoint(nspace, lNumber));
-    if(lLocation->getLineBegin() == 0) {
+    if(lLocation == NULL || lLocation->getLineBegin() == 0) {
       std::cerr << "Couldn't find an expression to break in " << nspace << " at line " << lNumber << "\n";
     } else {
       std::cerr << "Set breakpoint at: " <<  lLocation.get()->toString().c_str() << "\n";
@@ -103,4 +117,5 @@ namespace zorba {
   {
     m_client->clearBreakpoint(aId);
   }
+
 }

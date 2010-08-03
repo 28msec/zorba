@@ -237,11 +237,7 @@ int tidy(const std::istream& stream,
   TidyBuffer inputBuf;
   tidyBufAlloc(&inputBuf, size+1);
   
-#ifdef WIN32
-  pbuf->_Sgetn_s((char*)inputBuf.bp, size, size);
-#else
   pbuf->sgetn((char*)inputBuf.bp, size);
-#endif
   
   inputBuf.size = size;
   

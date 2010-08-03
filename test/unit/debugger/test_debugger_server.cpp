@@ -213,8 +213,7 @@ namespace zorba {
     return 0;
 
   } // int test_terminate_immediately
-
-
+  
 	int test_resume(Zorba* lZorba) {
 
     std::stringstream qs;
@@ -267,7 +266,7 @@ namespace zorba {
 
   } // int test_resume
 
-  int test_vars1(Zorba* aZorba) {
+  int test_vars(Zorba* aZorba) {
     std::stringstream qs;
     qs << "declare function local:test() {" << std::endl;
     qs << "  let $x := 1" << std::endl;
@@ -290,110 +289,48 @@ namespace zorba {
 
     sleep(1);
 
-    {
-      DebuggerTestClient client(lPorts.first, lPorts.second, qs);
+    DebuggerTestClient client(lPorts.first, lPorts.second, qs);
 
-      QueryLocation_t loc = client.addBreakpoint("test.xq", 4);
-      if (loc == NULL) {
-        return -1;
-      }
-      std::cout << "Breakpoint set at location " << loc << std::endl;
-
-      client.run();
-
-      sleep(1); // wait for the query to start
-
-      DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
-
-      if (evt != DebuggerTestHandler::SUSPENDED) {
-        std::cerr << "Query did not suspend at breakpoint" << std::endl;
-        return 2;
-      }
-
-      std::vector<std::string> lVars = client.getVariableNames();
-      for (std::vector<std::string>::const_iterator lIter = lVars.begin();
-           lIter != lVars.end(); ++lIter) {
-        std::cout << "received var " << *lIter << std::endl;
-      }
-
-      if (lVars.size() != 2 && lVars[0] != "$$dot" && lVars[1] != "x") {
-        std::cerr << "vars did not return correct variables" << std::endl;
-        client.terminate();
-        lServer.join();
-        return 3;
-      }
-
-      client.resume();
-
-      //while (evt != DebuggerTestHandler::TERMINATED) {
-      //  client.resume();
-      //  evt = client.getNextEvent();
-      //}
+    QueryLocation_t loc = client.addBreakpoint("test.xq", 4);
+    if (loc == NULL) {
+      client.terminate();
+      lServer.join();
+      return -1;
     }
+    std::cout << "Breakpoint set at location " << loc << std::endl;
+
+    client.run();
+
+    sleep(1); // wait for the query to start
+
+    DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
+
+    if (evt != DebuggerTestHandler::SUSPENDED) {
+      std::cerr << "Query did not suspend at breakpoint" << std::endl;
+      client.terminate();
+      lServer.join();
+      return 2;
+    }
+
+    std::vector<std::string> lVars = client.getVariableNames();
+    for (std::vector<std::string>::const_iterator lIter = lVars.begin();
+          lIter != lVars.end(); ++lIter) {
+      std::cout << "received var " << *lIter << std::endl;
+    }
+
+    if (lVars.size() != 2 || lVars[0] != "$$dot" || lVars[1] != "x") {
+      std::cerr << "vars did not return correct variables" << std::endl;
+      client.terminate();
+      lServer.join();
+      return 3;
+    }
+
+    client.terminate();
     lServer.join();
     return 0;
   }
 
-  int test_vars2(Zorba* aZorba) {
-    std::stringstream qs;
-    qs << "let $i := 1 to 10" << std::endl
-       << "return $i" << std::endl;
-
-    std::ostringstream lRes;
-    XQuery_t lQuery = createDebuggableQuery(aZorba, qs);
-
-    std::pair<short, short> lPorts = getRandomPorts();
-    Zorba_SerializerOptions lSerOptions;
-    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-    DebuggerServerRunnable lServer(lQuery, lRes, "127.0.0.1", lPorts.first,
-      lPorts.second, lSerOptions);
-    lServer.start();
-
-    sleep(1);
-
-    {
-      DebuggerTestClient client(lPorts.first, lPorts.second, qs);
-
-      QueryLocation_t loc = client.addBreakpoint("test.xq", 1);
-      if (loc == NULL) {
-        return -1;
-      }
-      std::cout << "Breakpoint set at location " << loc << std::endl;
-
-      client.run();
-
-      sleep(1); // wait for the query to start
-
-      DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
-
-      if (evt != DebuggerTestHandler::SUSPENDED) {
-        std::cerr << "Query did not suspend at breakpoint" << std::endl;
-        return 2;
-      }
-
-      std::vector<std::string> lVars = client.getVariableNames();
-      for (std::vector<std::string>::const_iterator lIter = lVars.begin();
-           lIter != lVars.end(); ++lIter) {
-        std::cout << "received var " << *lIter << std::endl;
-      }
-
-      if (lVars.size() != 1 || lVars[0] != "$$dot") {
-        std::cerr << "vars did not return correct variables" << std::endl;
-        client.terminate();
-        lServer.join();
-        return 3;
-      } else {
-        client.terminate();
-        lServer.join();
-        return 0;
-      }
-
-    }
-    lServer.join();
-    return 4;
-  }
-
-  int test_vars3(Zorba* aZorba) {
+  int test_vars_repeated(Zorba* aZorba) {
     std::stringstream qs;
     qs << "for $i in 1 to 10" << std::endl
        << "return $i" << std::endl;
@@ -410,47 +347,128 @@ namespace zorba {
 
     sleep(1);
 
-    {
-      DebuggerTestClient client(lPorts.first, lPorts.second, qs);
+    DebuggerTestClient client(lPorts.first, lPorts.second, qs);
 
-      QueryLocation_t loc = client.addBreakpoint("test.xq", 1);
-      if (loc == NULL) {
-        return -1;
-      }
-      std::cout << "Breakpoint set at location " << loc << std::endl;
-
-      client.run();
-
-      sleep(1); // wait for the query to start
-
-      DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
-
-      if (evt != DebuggerTestHandler::SUSPENDED) {
-        std::cerr << "Query did not suspend at breakpoint" << std::endl;
-        return 2;
-      }
-
-      std::vector<std::string> lVars = client.getVariableNames();
-      for (std::vector<std::string>::const_iterator lIter = lVars.begin();
-           lIter != lVars.end(); ++lIter) {
-        std::cout << "received var " << *lIter << std::endl;
-      }
-
-      if (lVars.size() != 1 || lVars[0] != "$$dot") {
-        std::cerr << "vars did not return correct variables" << std::endl;
-        client.terminate();
-        lServer.join();
-        return 3;
-      } else {
-        client.terminate();
-        lServer.join();
-        return 0;
-      }
-
+    QueryLocation_t loc = client.addBreakpoint("test.xq", 2);
+    if (loc == NULL) {
+      client.terminate();
+      lServer.join();
+      return -1;
     }
+    std::cout << "Breakpoint set at location " << loc << std::endl;
+
+    client.run();
+
+    sleep(1); // wait for the query to start
+
+    DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
+
+    if (evt != DebuggerTestHandler::SUSPENDED) {
+      std::cerr << "Query did not suspend at breakpoint" << std::endl;
+      client.terminate();
+      lServer.join();
+      return 2;
+    }
+
+    std::vector<std::string> lVars = client.getVariableNames();
+    for (std::vector<std::string>::const_iterator lIter = lVars.begin();
+          lIter != lVars.end(); ++lIter) {
+      std::cout << "received var " << *lIter << std::endl;
+    }
+
+    if (lVars.size() != 2 || lVars[0] != "$$dot" || lVars[1] != "i") {
+      std::cerr << "vars did not return correct variables" << std::endl;
+      client.terminate();
+      lServer.join();
+      return 3;
+    }
+
+    client.terminate();
     lServer.join();
-    return 4;
+    return 0;
   }
+
+  int test_eval(Zorba* lZorba) {
+
+    std::stringstream qs;
+    qs << "for $i in 1" << std::endl;
+    qs << "let $x := 2 * $i" << std::endl;
+    qs << "return $x" << std::endl;
+
+    std::ostringstream lRes;
+    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+
+    std::pair<short, short> lPorts = getRandomPorts();
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    DebuggerServerRunnable lServer(lQuery, lRes, "127.0.0.1", lPorts.first,
+      lPorts.second, lSerOptions);
+    lServer.start();
+
+    sleep(1);
+
+    DebuggerTestClient client(lPorts.first, lPorts.second, qs);
+
+    QueryLocation_t loc = client.addBreakpoint("test.xq", 2);
+    if (loc == NULL) {
+      return -1;
+    }
+    std::cout << "Breakpoint set at location " << loc << std::endl;
+
+    client.run();
+
+    sleep(1); // wait for the query to start
+
+    DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
+
+    if (evt != DebuggerTestHandler::SUSPENDED) {
+      std::cerr << "Query did not suspend at breakpoint" << std::endl;
+      return 2;
+    }
+
+    client.eval("1");
+
+    sleep(2); // wait for evaluation
+
+    std::pair<String, std::list<std::pair<String, String> > > lEvaled;
+    lEvaled = client.getLastEvent();
+
+    std::cout << "Received evaled expression: " << lEvaled.first << std::endl;
+
+    if (lEvaled.first != "1") {
+      std::cerr << "Bad evaluation (expression)" << std::endl;
+      return 3;
+    }
+
+    std::cout << "Received evaled list size: " << lEvaled.second.size() << std::endl;
+
+    if (lEvaled.second.size() != 1) {
+      std::cerr << "Bad evaluation result (size)" << std::endl;
+      return 4;
+    }
+
+    std::list<std::pair<String, String> >::const_reference lPair = lEvaled.second.front();
+
+    std::cout << "Received evaled expression value: " << lPair.first << std::endl;
+
+    if (lPair.first != "1") {
+      std::cerr << "Bad evaluation result (value)" << std::endl;
+      return 5;
+    }
+
+    std::cout << "Received evaled expression type: " << lPair.second << std::endl;
+
+    if (lPair.second != "integer") {
+      std::cerr << "Bad evaluation result (type)" << std::endl;
+      return 6;
+    }
+
+    client.terminate();
+    lServer.join();
+
+    return 0;
+
+  } // int test_eval
 
   int test_clear(Zorba* lZorba) {
 
@@ -521,47 +539,48 @@ int test_debugger_server (int argc, char* argv[]) {
   void* store = zorba::StoreManager::getStore();
   Zorba* lZorba = zorba::Zorba::getInstance(store);
 
+  std::cout << "---------------------" << std::endl;
   std::cout << "executing test_run" << std::endl;
   if (zorba::test_run(lZorba) != 0) {
   	return 1;
   }
-  std::cout << std::endl;
 
+  std::cout << "---------------------" << std::endl;
   std::cout << "executing test_terminate" << std::endl;
   if (zorba::test_terminate(lZorba) != 0) {
     return 1;
   }
-  std::cout << std::endl;
 
+  std::cout << "---------------------" << std::endl;
   std::cout << "executing test_terminate_immediately" << std::endl;
   if (zorba::test_terminate_immediately(lZorba) != 0) {
     return 1;
   }
-  std::cout << std::endl;
 
+  std::cout << "---------------------" << std::endl;
   std::cout << "executing test_resume" << std::endl;
   if (zorba::test_resume(lZorba) != 0) {
     return 1;
   }
 
-  std::cout << std::endl;
-
-  std::cout << "executing test_vars1" << std::endl;
-  if (zorba::test_vars1(lZorba) != 0) {
+  std::cout << "---------------------" << std::endl;
+  std::cout << "executing test_vars" << std::endl;
+  if (zorba::test_vars(lZorba) != 0) {
     return 1;
   }
 
-  std::cout << "executing test_vars2" << std::endl;
-  if (zorba::test_vars2(lZorba) != 0) {
+  std::cout << "---------------------" << std::endl;
+  std::cout << "executing test_vars_repeated" << std::endl;
+  if (zorba::test_vars_repeated(lZorba) != 0) {
     return 1;
   }
 
-  std::cout << "executing test_vars3" << std::endl;
-  if (zorba::test_vars3(lZorba) != 0) {
+  std::cout << "---------------------" << std::endl;
+  std::cout << "executing test_eval" << std::endl;
+  if (zorba::test_eval(lZorba) != 0) {
     return 1;
   }
 
-  std::cout << std::endl;
-	return 0;
+  return 0;
 }
 

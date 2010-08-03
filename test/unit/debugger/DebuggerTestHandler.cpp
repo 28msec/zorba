@@ -60,4 +60,16 @@ DebuggerTestHandler::DebugEvent DebuggerTestHandler::getNextEvent()
 DebuggerTestHandler::~DebuggerTestHandler()
 {
 }
+
+void
+DebuggerTestHandler::evaluated(String &anExpr, std::list<std::pair<String, String> > &aValuesAndTypes) {
+  theLastValuesAndTypes.first = anExpr;
+  theLastValuesAndTypes.second = aValuesAndTypes;
+}
+
+std::pair<String, std::list<std::pair<String, String> > >
+DebuggerTestHandler::getLastEvent() {
+  return theLastValuesAndTypes;
+}
+
 }

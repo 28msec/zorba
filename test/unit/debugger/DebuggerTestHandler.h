@@ -39,10 +39,19 @@ public:
 	};
 
 public:
-	DebugEvent getNextEvent();
+	DebugEvent
+  getNextEvent();
+
+  std::pair<String, std::list<std::pair<String, String> > >
+  getLastEvent();
+
+  void
+  evaluated(String &anExpr, std::list<std::pair<String, String> > &aValuesAndTypes);
 
 private:
 	zorba::ZorbaDebuggerClient* m_client;
+	std::pair<String, std::list<std::pair<String, String> > > theLastValuesAndTypes;
+
 };
 
 }

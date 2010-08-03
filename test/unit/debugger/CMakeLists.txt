@@ -35,3 +35,5 @@ FOREACH (test ${TestsToRun})
   	SET (TestName "test/unit/debugger/${TName}")
         ZORBA_ADD_TEST_ALLSTORES("${TestName}" DebuggerTests ${TName})
 ENDFOREACH(test)
+
+EXPECTED_FAILURE(test/unit/debugger/test_debugger_server 3038548)
