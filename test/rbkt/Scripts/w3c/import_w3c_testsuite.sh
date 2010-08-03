@@ -73,7 +73,7 @@ rm -rf "$SRC/test/rbkt/Queries/w3c_testsuite" "$SRC/test/rbkt/ExpQueryResults/w3
 
 mkdir -p "$SRC/test/rbkt/Queries/w3c_testsuite/TestSources"
 
-echo Importing XQTS_$XQUTSVERSION ...
+echo Importing XQTS_$XQTSVERSION ...
 q=`mktemp "$WORK/xq.XXXXXX"`
 cat >"$q" <<"EOF"
 declare default element namespace "http://www.w3.org/2005/02/query-test-XQTSCatalog";
@@ -115,7 +115,7 @@ string-join ((
 for $sch in //schema return concat ("%uri ", $sch/@uri, " ", $sch/@FileName), 
 for $src in //source return concat ("%src ", $src/@ID, " ", $src/@FileName),
 for $tc in //test-case
-let $out := $tc/output-file
+let $out := $tc//output-file
 let $cmp := $tc/output-file[1]/@compare (: assuming that all output-files have to be compared using the same comparison method :)
 let $ctx := $tc/contextItem
 let $dc  := $tc/defaultCollection
@@ -320,6 +320,7 @@ echo "Cleaning up work directory...$orig_pwd $unzip_dir"
 
 cd "$orig_pwd"
 rm -rf "$unzip_dir"
+rm -rf "$WORK/xq-res.txt"
 
 echo Done.
 
