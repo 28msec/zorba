@@ -16,6 +16,7 @@
 #include <zorba/config.h>
 #ifdef ZORBA_NO_UNICODE
 
+#include <memory>
 #include "zorbatypes/xqpstring_ascii.h"
 
 #include "zorbatypes/numconversions.h"

@@ -397,7 +397,9 @@ static_context::~static_context()
   if (theOptionMap)
     delete theOptionMap;
 
+#ifndef ZORBA_NO_FULL_TEXT
   delete theFTMatchOptions;
+#endif /* ZORBA_NO_FULL_TEXT */
 
   if (theDecimalFormats)
     delete theDecimalFormats;

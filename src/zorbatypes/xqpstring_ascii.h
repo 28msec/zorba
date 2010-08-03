@@ -78,6 +78,8 @@ public:
 
   xqpStringStore(const char* start, size_type len) : theString(start, len) {}
 
+  xqpStringStore(size_type len) : theString(len, '\0') {}
+
   xqpStringStore(const char* other) : theString(other) {}
 
   xqpStringStore(const std::string& other) : theString(other) {}

@@ -189,8 +189,11 @@ ZorbaError::prefix() const
 
 bool ZorbaError::isXPathStaticError() const
 {
-  return (XPST0001 <= theErrorCode && theErrorCode <= XPST0083) ||
-         theErrorCode == FTST0009;
+  return (XPST0001 <= theErrorCode && theErrorCode <= XPST0083)
+#ifndef ZORBA_NO_FULL_TEXT
+    || theErrorCode == FTST0009
+#endif /* ZORBA_NO_FULL_TEXT */
+    ;
 }
 
       
@@ -229,7 +232,9 @@ bool ZorbaError::isXQueryStaticError() const
 {
   return ((XQST0009 <= theErrorCode && theErrorCode <= XQST0093) ||
           (XUST0001 <= theErrorCode && theErrorCode <= XUST0003) ||
+#ifndef ZORBA_NO_FULL_TEXT
           theErrorCode == FTST0019 ||
+#endif /* ZORBA_NO_FULL_TEXT */
           theErrorCode == XPST0003 ||
           theErrorCode == XUST0028 ||
           (XDST0000_MIN <= theErrorCode && theErrorCode <= XDST0000_MAX))
