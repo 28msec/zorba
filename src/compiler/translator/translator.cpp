@@ -2035,7 +2035,7 @@ void wrap_in_debugger_expr(expr_t& aExpr)
   if (theCCB->theDebuggerCommons != NULL)
   {
     DebugLocation_t lLocation;
-    std::auto_ptr<debugger_expr> lExpr(new debugger_expr(theRootSctx,
+    std::auto_ptr<debugger_expr> lExpr(new debugger_expr(theSctx,
                                                          aExpr->get_loc(),
                                                          aExpr,
                                                          thePrologVars));

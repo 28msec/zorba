@@ -294,9 +294,9 @@ ZorbaDebuggerCommons::eval(const xqpString& aExpr,
   return lRes;
 }
 
-store::Item_t* ZorbaDebuggerCommons::getEvalItem()
+store::Item_t ZorbaDebuggerCommons::getEvalItem()
 {
-  return &theEvalItem;
+  return theEvalItem;
 }
 
 void ZorbaDebuggerCommons::addModuleUriMapping( std::string aUri, 
@@ -368,22 +368,16 @@ bool DebugLocation::operator()( const DebugLocation_t& aLocation1, const DebugLo
   return aLocation1.theLineNumber < aLocation2.theLineNumber;
 }
 
-store::Item* DebuggerSingletonIterator::getValue() const
-{
-  return theValue->getp();
-}
-
 DebuggerSingletonIterator::DebuggerSingletonIterator(
-  static_context* sctx, QueryLoc loc, store::Item_t* aValue ) :
+  static_context* sctx, QueryLoc loc, ZorbaDebuggerCommons* lCommons) :
 NoaryBaseIterator<DebuggerSingletonIterator, PlanIteratorState>(sctx, loc),
-theValue(aValue)
+theCommons(lCommons)
 {
 }
 
 void DebuggerSingletonIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass( ar, (NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>*)this );
-//  ar & theValue;
 }
 
 NOARY_ACCEPT(DebuggerSingletonIterator);
@@ -393,7 +387,7 @@ bool DebuggerSingletonIterator::nextImpl( store::Item_t& result,
 {
   PlanIteratorState* state;
   DEFAULT_STACK_INIT ( PlanIteratorState, state, planState );
-  result = theValue->getp();
+  result = theCommons->getEvalItem();
   STACK_PUSH ( result != NULL, state );
   STACK_END (state);
 }

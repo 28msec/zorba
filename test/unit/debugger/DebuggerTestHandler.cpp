@@ -67,6 +67,12 @@ DebuggerTestHandler::evaluated(String &anExpr, std::list<std::pair<String, Strin
   theLastValuesAndTypes.second = aValuesAndTypes;
 }
 
+void
+DebuggerTestHandler::evaluated(String &anExpr, String &aError)
+{
+  DefaultDebuggerEventHandler::evaluated(anExpr, aError);
+}
+
 std::pair<String, std::list<std::pair<String, String> > >
 DebuggerTestHandler::getLastEvent() {
   return theLastValuesAndTypes;

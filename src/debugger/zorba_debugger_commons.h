@@ -67,7 +67,7 @@ namespace zorba {
     */
     DebuggerSingletonIterator(static_context* sctx,
       QueryLoc loc,
-      store::Item_t* aValue);
+      ZorbaDebuggerCommons* lCommons);
 
     virtual ~DebuggerSingletonIterator() {}
 
@@ -77,18 +77,8 @@ namespace zorba {
 
     bool nextImpl(store::Item_t& result, PlanState& planState) const;
 
-    store::Item* getValue() const;
-
   protected:
-    /**
-    * @brief A reference to the expression evaluated.
-    *
-    * When evaluating an expression in the debugger client, the string that will be
-    * passed to the eval expression is stored at this address. All debug iterators
-    * get a reference to this location. This is because only one expression at a time
-    * can be evaluated by the client.
-    */
-    store::Item_t* theValue;
+    ZorbaDebuggerCommons* theCommons;
   public:
     SERIALIZABLE_CLASS(DebuggerSingletonIterator)
     SERIALIZABLE_CLASS_CONSTRUCTOR2T(DebuggerSingletonIterator, NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>)
@@ -292,7 +282,7 @@ namespace zorba {
     * @brief Gets the item, which is used for all eval iterators of the debug
     * iterators.
     */
-    store::Item_t* getEvalItem();
+    store::Item_t getEvalItem();
 
     /**
     * @brief Gets a file path of a uri.

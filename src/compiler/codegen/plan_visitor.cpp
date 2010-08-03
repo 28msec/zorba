@@ -527,7 +527,7 @@ void end_visit (debugger_expr& v)
   //create the eval iterator children
   argvEvalIter.push_back(new DebuggerSingletonIterator(sctx,
                                                        qloc,
-                                                       theCCB->theDebuggerCommons->getEvalItem()));
+                                                       theCCB->theDebuggerCommons));
   reverse (argvEvalIter.begin(), argvEvalIter.end());
 
   // get the debugger iterator from the debugger stack

@@ -48,6 +48,9 @@ public:
   void
   evaluated(String &anExpr, std::list<std::pair<String, String> > &aValuesAndTypes);
 
+  void
+  evaluated(String &anExpr, String &aError);
+
 private:
 	zorba::ZorbaDebuggerClient* m_client;
 	std::pair<String, std::list<std::pair<String, String> > > theLastValuesAndTypes;
