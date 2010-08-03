@@ -35,18 +35,18 @@ String Base64::encode(std::istream& aStream)
 {
   return zorba::Base64::encode(aStream).getp();
 }
+String
+Base64::decode(String& aString) {
+  std::stringstream lStream;
+  lStream << aString;
+  return decode(lStream);
+}
 
-// TODO: once the internal Base64 class is symmetrical
-// e.a. for each encode method, there must be a decode one
-//String
-//Base64::decode(String& aString) {
-//  return "";
-//}
-//
-//String
-//Base64::decode(std::istream& aStream) {
-//  return "";
-//}
+
+String
+Base64::decode(std::istream& aStream) {
+  return zorba::Base64::decode(aStream).getp();
+}
 
 
 } /* end namespace encoding */

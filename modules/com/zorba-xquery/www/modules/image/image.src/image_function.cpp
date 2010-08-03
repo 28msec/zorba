@@ -115,15 +115,17 @@ ImageFunction::getOneBoolArg(
 }
 
 
+
+
 void
-ImageFunction::setStrokeColor(
+ImageFunction::getOneColorArg(
      const StatelessExternalFunction::Arguments_t& aArgs,
      int aPos,
-     std::list<Magick::Drawable>& aDrawable)
+     Magick::ColorRGB& aColor) 
 {
   Item lItem;
   if (!aArgs[aPos]->next(lItem)) {
-    aDrawable.push_back(Magick::DrawableStrokeColor(Magick::ColorRGB(0.0,0.0,0.0))); 
+    aColor = Magick::ColorRGB(0.0,0.0,0.0);
     return;
   }
   zorba::String lTmpString = lItem.getStringValue();
@@ -133,73 +135,24 @@ ImageFunction::setStrokeColor(
                   << aPos << ". parameter.";
     throwError(lErrorMessage.str(), XPTY0004);
   }
-  int lRed = 0;
-  int lGreen = 0;
-  int lBlue = 0;
-  sscanf(lTmpString.substring(1,2).c_str(), "%x", &lRed);
-  sscanf(lTmpString.substring(3,2).c_str(), "%x", &lGreen);
-  sscanf(lTmpString.substring(5,2).c_str(), "%x", &lBlue);
-  aDrawable.push_back(Magick::DrawableStrokeColor(Magick::ColorRGB((double)lRed/(double)255.0, (double)lGreen/(double)255.0, (double)lBlue/(double)255.0))); 
-
+  getColorFromString(lTmpString, aColor);
 }  
 
-void
-ImageFunction::setOpaqueOrFill(
-      const StatelessExternalFunction::Arguments_t& aArgs,
-      int aPos,
-      std::list<Magick::Drawable>& aDrawable)
+
+
+void ImageFunction::getColorFromString(
+      const String aColorString,
+      Magick::ColorRGB& aColor)
 {
-  Item lItem;
-  if (!aArgs[aPos]->next(lItem)) {
-    aDrawable.push_back(Magick::DrawableFillOpacity(0));
-    return;
-  }
-  zorba::String lTmpString = lItem.getStringValue();
-  if (aArgs[aPos]->next(lItem)) {
-     std::stringstream lErrorMessage;
-    lErrorMessage << "A sequence of more then one item is not allowed as "
-                  << aPos  << ". parameter.";
-    throwError(lErrorMessage.str(), XPTY0004);
-  }
   int lRed = 0;
   int lGreen = 0;
   int lBlue = 0;
-  sscanf(lTmpString.substring(1,2).c_str(), "%x", &lRed);
-  sscanf(lTmpString.substring(3,2).c_str(), "%x", &lGreen);
-  sscanf(lTmpString.substring(5,2).c_str(), "%x", &lBlue);
-  aDrawable.push_back(Magick::DrawableFillColor(Magick::ColorRGB((double)lRed/(double)255.0, (double)lGreen/(double)255.0, (double)lBlue/(double)255.0)));
+  sscanf(aColorString.substring(1,2).c_str(), "%x", &lRed);
+  sscanf(aColorString.substring(3,2).c_str(), "%x", &lGreen);
+  sscanf(aColorString.substring(5,2).c_str(), "%x", &lBlue);
+  aColor = Magick::ColorRGB((double)lRed/(double)255.0, (double)lGreen/(double)255.0, (double)lBlue/(double)255.0);    
 
-}
-
-
-void
-ImageFunction::getCoordinatesArgs(
-      const StatelessExternalFunction::Arguments_t& aArgs,
-      int aXPos, 
-      int aYPos,
-      std::list<Magick::Coordinate>& aList) 
-{
-   // first make sure that there is at least one value at aXPos and aYPos 
-  Item lXItem, lYItem;
-  if (!aArgs[aXPos]->next(lXItem)) {
-      std::stringstream lErrorMessage;
-      lErrorMessage << "An empty-sequence is not allowed as "
-                  << (aXPos + 1) << ". parameter.";
-      throwError(lErrorMessage.str(), XPTY0004);
-   }  
-   double lX = lXItem.getDoubleValue();  
-   if (!aArgs[aYPos]->next(lYItem)) {
-     std::stringstream lErrorMessage; 
-     lErrorMessage << "An empty-sequence is not allowed as "
-                  << (aYPos + 1)  << ". parameter.";
-      throwError(lErrorMessage.str(), XPTY0004);
-   }
-  double lY = lYItem.getDoubleValue();
-  aList.push_back(Magick::Coordinate(lX, lY));
-  while((aArgs[aXPos]->next(lXItem)) && aArgs[aYPos]->next(lYItem)) {
-    aList.push_back(Magick::Coordinate(lXItem.getDoubleValue(), lYItem.getDoubleValue()));
-  } 
-}
+}  
 
 
 int

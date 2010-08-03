@@ -51,23 +51,6 @@ declare function local:test-enhance() as xs:boolean {
     return basic:equals($enhanced, $enhanced-ref)
 };
 
-(:~
- : @return true if the man:equalize function works.
- :)
-declare function local:test-equalize() as xs:boolean {
-    let $equalized := man:equalize($local:jpg)
-    let $equalized-ref := file:read("images/manipulation/equalizedBird.jpg")
-    return basic:equals($equalized, $equalized-ref)
-};
-
-(:~
- : @return true if the man:edge function works.
- :)
-declare function local:test-edge() as xs:boolean {
-    let $edged := man:edge($local:jpg, xs:unsignedInt(0))
-    let $edged-ref := file:read("images/manipulation/edgedBird.jpg")
-    return basic:equals($edged, $edged-ref)
-};
 
 
 (:~
@@ -79,15 +62,6 @@ declare function local:test-charcoal() as xs:boolean {
     return basic:equals($charcoaled, $charcoaled-ref)
 };
 
-
-(:~
- : @return true if the man:emboss function works.
- :)
-declare function local:test-emboss() as xs:boolean {
-    let $embossed := man:emboss($local:jpg, 0.1, 0.1)
-    let $embossed-ref := file:read("images/manipulation/embossedBird.jpg")
-    return basic:equals($embossed,  $embossed-ref)
-};
 
 (:~
  : @return true if the man:solarize function works.
@@ -113,30 +87,12 @@ declare sequential function local:main() as xs:string* {
       exit returning local:error(("Enhancing of images failed."))
     else ();
     
-  let $c := local:test-equalize()
-  return
-    if (fn:not($c)) then
-      exit returning local:error(("Equalizing of images failed."))
-    else ();
-  
-  let $d := local:test-edge()
-  return
-    if (fn:not($d)) then
-      exit returning local:error(("Edging of images failed."))
-    else ();
-  
   let $e := local:test-charcoal()
   return
     if (fn:not($e)) then
       exit returning local:error(("Charcoal of images failed."))
     else ();
     
-    
-  let $f := local:test-emboss()
-  return
-    if (fn:not($f)) then
-      exit returning local:error(("Emboss of images failed."))
-    else ();    
     
     
   let $g := local:test-solarize()

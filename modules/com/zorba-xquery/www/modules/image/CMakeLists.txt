@@ -1,9 +1,9 @@
 FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore)
 
 IF (ImageMagick_FOUND) 
-  MESSAGE("Found ImageMagick:  ${ImageMagick_FOUND}")
-  MESSAGE("Found ImageMagick include dirs ${ImageMagick_INCLUDE_DIRS}")
-  MESSAGE("Found ImageMagick libraries ${ImageMagick_LIBRARIES}")
+  MESSAGE(STATUS "Found ImageMagick:  ${ImageMagick_FOUND}")
+  MESSAGE(STATUS "Found ImageMagick include dirs ${ImageMagick_INCLUDE_DIRS}")
+  MESSAGE(STATUS "Found ImageMagick libraries ${ImageMagick_LIBRARIES}")
 
   INCLUDE_DIRECTORIES("${ImageMagick_INCLUDE_DIRS}")
   ADD_LIBRARY(image_commons STATIC image.src/image_function.cpp image.src/image_module.cpp) 

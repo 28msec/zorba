@@ -62,6 +62,8 @@ public:
 
   static void decode(const std::vector<char>&, std::vector<char>&);
 
+  static xqpStringStore_t decode(std::istream& aStream);
+
 public:
   Base64(const Base64& aBase64) 
     :

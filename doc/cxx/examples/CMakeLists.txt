@@ -28,6 +28,7 @@ SET (API_EXAMPLES
   execution_plans.cpp
   item_handler.cpp
   callback.cpp
+  binary.cpp
   )
 
 SET(API_EXAMPLES ${API_EXAMPLES} debugger.cpp)

@@ -212,7 +212,8 @@ EqualsFunction::evaluate(
   Magick::Image lSecond;
   ImageFunction::getOneImageArg(aArgs, 0, lFirst);
   ImageFunction::getOneImageArg(aArgs, 1, lSecond);
-  bool lResult = lFirst.compare(lSecond);
+  lFirst.compare(lSecond);
+  bool lResult = (lFirst.normalizedMeanError() < 0.0008);
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createBoolean(lResult)));
 

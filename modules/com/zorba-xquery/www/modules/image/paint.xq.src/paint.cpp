@@ -47,18 +47,28 @@ DrawPolyLineFunction::evaluate(
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aArgs, 0, lImage);
   std::list<Magick::Coordinate> lCoordinatesList;
-  ImageFunction::getCoordinatesArgs(aArgs, 1, 2, lCoordinatesList); 
-  
-  std::list<Magick::Drawable> lPolyLine;
+  Item lXItem;
+  Item lYItem;
+  while((aArgs[1]->next(lXItem)) && aArgs[2]->next(lYItem)) {
+    lCoordinatesList.push_back(Magick::Coordinate(lXItem.getDoubleValue(), lYItem.getDoubleValue()));
+  }
 
+  std::list<Magick::Drawable> lPolyLine;
   // get background color, if none is passed then set background to be opaque.
   double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 5);
   lPolyLine.push_back(Magick::DrawableStrokeWidth(lStrokeWidth)); 
   bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 6);
-  ImageFunction::setStrokeColor(aArgs, 3, lPolyLine);
-  ImageFunction::setOpaqueOrFill(aArgs, 4, lPolyLine);
-
-
+  Magick::ColorRGB lStrokeColor;
+  ImageFunction::getOneColorArg(aArgs, 3, lStrokeColor);
+  lPolyLine.push_back(Magick::DrawableStrokeColor(lStrokeColor));
+  Item lFillColorItem;
+  if (!aArgs[4]->next(lFillColorItem)) {
+    lPolyLine.push_back(Magick::DrawableFillOpacity(0));
+  } else {
+    Magick::ColorRGB lFillColor;
+    ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
+    lPolyLine.push_back(Magick::DrawableFillColor(lFillColor));
+  }  
   lPolyLine.push_back(Magick::DrawableStrokeAntialias(lAntiAlias));
   // push the coordinates into the drawable list (if not, they don't get painted ...)
   lPolyLine.push_back(Magick::DrawablePolyline(lCoordinatesList));
@@ -87,7 +97,12 @@ DrawStrokedPolyLineFunction::evaluate(
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aArgs, 0, lImage);
   std::list<Magick::Coordinate> lCoordinatesList;
-  ImageFunction::getCoordinatesArgs(aArgs, 1, 2, lCoordinatesList);
+  // get as much further coordinates as possible
+  Item lXItem;
+  Item lYItem;
+  while((aArgs[1]->next(lXItem)) && aArgs[2]->next(lYItem)) {
+    lCoordinatesList.push_back(Magick::Coordinate(lXItem.getDoubleValue(), lYItem.getDoubleValue()));
+  }
 
   std::list<Magick::Drawable> lPolyLine;
   // get stroke length and push it into poly-line
@@ -96,9 +111,9 @@ DrawStrokedPolyLineFunction::evaluate(
   double lPattern[] = {lStrokeLength, lGapLength, 0};
   lPolyLine.push_back(Magick::DrawableDashArray(lPattern));
   // check if a color was passed, if true, then set the stroke color  
-  ImageFunction::setStrokeColor(aArgs, 5, lPolyLine);
-
-  
+  Magick::ColorRGB lStrokeColor;             
+  ImageFunction::getOneColorArg(aArgs, 5, lStrokeColor);
+  lPolyLine.push_back(Magick::DrawableStrokeColor(lStrokeColor));
   double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 6);
   lPolyLine.push_back(Magick::DrawableStrokeWidth(lStrokeWidth));
   bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 7);
@@ -137,8 +152,19 @@ DrawRectangleFunction::evaluate(
 
   std::list<Magick::Drawable> lDrawable;
   // get stroke length and push it into poly-line
-  ImageFunction::setStrokeColor(aArgs, 5, lDrawable);
-  ImageFunction::setOpaqueOrFill(aArgs, 6, lDrawable);
+  Magick::ColorRGB lStrokeColor;             
+  ImageFunction::getOneColorArg(aArgs, 5, lStrokeColor);
+  lDrawable.push_back(Magick::DrawableStrokeColor(lStrokeColor));
+  Item lFillColorItem;                           
+  if (!aArgs[6]->next(lFillColorItem)) {         
+    lDrawable.push_back(Magick::DrawableFillOpacity(0));
+  } else {                                       
+    Magick::ColorRGB lFillColor;                 
+    ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
+    lDrawable.push_back(Magick::DrawableFillColor(lFillColor));
+  } 
+
+
   double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 7);
   lDrawable.push_back(Magick::DrawableStrokeWidth(lStrokeWidth));
   bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 8);
@@ -175,8 +201,20 @@ DrawRoundedRectangleFunction::evaluate(
 
   std::list<Magick::Drawable> lDrawable;
   // get stroke length and push it into poly-line
-  ImageFunction::setStrokeColor(aArgs, 7, lDrawable);
-  ImageFunction::setOpaqueOrFill(aArgs, 8, lDrawable);
+  Magick::ColorRGB lStrokeColor;             
+  ImageFunction::getOneColorArg(aArgs, 7, lStrokeColor);
+  lDrawable.push_back(Magick::DrawableStrokeColor(lStrokeColor));
+  Item lFillColorItem;                           
+  if (!aArgs[8]->next(lFillColorItem)) {         
+    lDrawable.push_back(Magick::DrawableFillOpacity(0));
+  } else {                                       
+    Magick::ColorRGB lFillColor;                 
+    ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
+    lDrawable.push_back(Magick::DrawableFillColor(lFillColor));
+  } 
+
+
+
   double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 9);
   lDrawable.push_back(Magick::DrawableStrokeWidth(lStrokeWidth));
   bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 10);
@@ -212,8 +250,18 @@ DrawArcFunction::evaluate(
   double lEndDegrees = ImageFunction::getOneDoubleArg(aArgs, 6);
   std::list<Magick::Drawable> lDrawable;
   // get stroke length and push it into poly-line
-  ImageFunction::setStrokeColor(aArgs, 7, lDrawable);
-  ImageFunction::setOpaqueOrFill(aArgs, 8, lDrawable);
+  Magick::ColorRGB lStrokeColor;             
+  ImageFunction::getOneColorArg(aArgs, 7, lStrokeColor);
+  lDrawable.push_back(Magick::DrawableStrokeColor(lStrokeColor));
+  Item lFillColorItem;                           
+  if (!aArgs[8]->next(lFillColorItem)) {         
+    lDrawable.push_back(Magick::DrawableFillOpacity(0));
+  } else {                                       
+    Magick::ColorRGB lFillColor;                 
+    ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
+    lDrawable.push_back(Magick::DrawableFillColor(lFillColor));
+  } 
+
   double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 9);
   lDrawable.push_back(Magick::DrawableStrokeWidth(lStrokeWidth));
   bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 10);
@@ -242,14 +290,27 @@ DrawPolygonFunction::evaluate(
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aArgs, 0, lImage);
   std::list<Magick::Coordinate> lCoordinatesList;
-  ImageFunction::getCoordinatesArgs(aArgs, 1, 2, lCoordinatesList);
+  // get as much further coordinates as possible
+  Item lXItem;
+  Item lYItem;
+  while((aArgs[1]->next(lXItem)) && aArgs[2]->next(lYItem)) {
+    lCoordinatesList.push_back(Magick::Coordinate(lXItem.getDoubleValue(), lYItem.getDoubleValue()));
+  }
 
   std::list<Magick::Drawable> lPolyLine;
-
   // check if a color was passed, if true, then set the stroke color  
-  ImageFunction::setStrokeColor(aArgs, 3, lPolyLine);
-  // get background color, if none is passed then set background to be opaque.
-  ImageFunction::setOpaqueOrFill(aArgs, 4, lPolyLine);
+  Magick::ColorRGB lStrokeColor;             
+  ImageFunction::getOneColorArg(aArgs, 3, lStrokeColor);
+  lPolyLine.push_back(Magick::DrawableStrokeColor(lStrokeColor));
+  Item lFillColorItem;                           
+  if (!aArgs[4]->next(lFillColorItem)) {         
+    lPolyLine.push_back(Magick::DrawableFillOpacity(0));
+  } else {                                       
+    Magick::ColorRGB lFillColor;                 
+    ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
+    lPolyLine.push_back(Magick::DrawableFillColor(lFillColor));
+  } 
+
   double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 5);
   lPolyLine.push_back(Magick::DrawableStrokeWidth(lStrokeWidth));
   bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 6);
@@ -321,6 +382,7 @@ DrawTextFunction::evaluate(
   
   // push all values into a drawable
   std::list<Magick::Drawable> lDrawable;
+  lDrawable.push_back(Magick::DrawableStrokeAntialias(false));
   lDrawable.push_back(Magick::DrawableStrokeColor(Magick::ColorRGB((double)lRed/255.0, (double)lGreen/255.0, (double)lBlue/255.0)));
   lDrawable.push_back(Magick::DrawableFillColor(Magick::ColorRGB((double)lRed/255.0, (double)lGreen/255.0, (double)lBlue/255.0)));
   lDrawable.push_back(Magick::DrawableFont(lFontFamily.c_str(), lFontStyle, lFontWeight, Magick::NormalStretch));

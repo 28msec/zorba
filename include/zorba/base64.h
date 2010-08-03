@@ -35,7 +35,9 @@ namespace zorba { namespace encoding {
 
       static String
       decode(String& aString);
-
+      
+      static String
+      decode(std::istream& aStream);  
 
   };
 

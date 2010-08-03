@@ -144,6 +144,31 @@ xqpStringStore_t Base64::encode(std::istream& aStream)
   return result;
 }
 
+xqpStringStore_t Base64::decode(std::istream& aStream)
+{
+  std::vector<char> source;
+  std::vector<char> dest;
+
+  xqpStringStore_t result = new xqpStringStore("");
+  std::string& str = result->str();
+
+  char buf[1024];
+  while (!aStream.eof()) 
+  {
+    aStream.read(buf, 1024);
+    source.insert(source.end(), buf, buf + aStream.gcount());
+  }
+
+  decode(source, dest);
+
+  str.resize(dest.size());
+
+  for (unsigned int i = 0; i < dest.size(); ++i)
+    str[i] = dest[i];
+
+  return result;
+}
+
 
 void Base64::encode(const std::vector<char>& aSource, std::vector<char>& aResult)
 {

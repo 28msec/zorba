@@ -92,24 +92,16 @@ namespace zorba { namespace imagemodule {
           int pos); 
       
         
-       static void setStrokeColor(
-            const StatelessExternalFunction::Arguments_t& aArgs,
-            int aPos,
-            std::list<Magick::Drawable>& lDrawable);
-
-
-       static void setOpaqueOrFill(
-          const StatelessExternalFunction::Arguments_t& aArgs,
-          int aPos,
-          std::list<Magick::Drawable>& lDrawable);
       
-        
-      static void getCoordinatesArgs(
-                const StatelessExternalFunction::Arguments_t& aArgs,
-                int aXPos,
-                int aYPos,
-                std::list<Magick::Coordinate>& aList);
 
+      static void getOneColorArg(
+           const StatelessExternalFunction::Arguments_t& aArgs,
+           int aPos,
+           Magick::ColorRGB& aColor);
+
+      static void getColorFromString(
+          const String aColorString,
+          Magick::ColorRGB& aColor);
 
       static String getEncodedStringFromBlob(Magick::Blob& aBlob);
     
