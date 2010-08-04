@@ -364,6 +364,7 @@ public:
     var_expr_t prev;
     var_expr_t next;
 
+    ~vars();
     void set_flwor_clause(flwor_clause* c);
 
     void clone(vars& cloneVars, expr::substitution_t& subst) const;
@@ -384,6 +385,7 @@ public:
         const vars& in_vars,
         const vars& out_vars,
         expr_t cond);
+  ~flwor_wincond();
 
   expr* get_cond() const { return theCondExpr.getp(); }
 

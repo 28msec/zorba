@@ -1801,6 +1801,11 @@ copy_clause::copy_clause(var_expr_t aVar, expr_t aExpr)
   theVar->set_copy_clause(this);
 }
 
+copy_clause::~copy_clause()
+{
+  if(theVar)
+    theVar->set_copy_clause(NULL);
+}
 
 void copy_clause::serialize(::zorba::serialization::Archiver& ar)
 {

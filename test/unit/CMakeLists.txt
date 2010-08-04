@@ -66,7 +66,6 @@ FOREACH (test ${TestsToRun})
   ZORBA_ADD_TEST_ALLSTORES(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
 
-EXPECTED_FAILURE(test/unit/plan_serializer 3035320)
 EXPECTED_FAILURE(test/unit/static_context  3036605)
 
 ADD_SUBDIRECTORY(debugger)

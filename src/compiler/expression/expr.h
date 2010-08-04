@@ -1514,6 +1514,7 @@ public:
 
 public:
   copy_clause(var_expr_t aVar, expr_t aExpr);
+  ~copy_clause();
 
   var_expr* getVar()  const { return theVar.getp(); }
 

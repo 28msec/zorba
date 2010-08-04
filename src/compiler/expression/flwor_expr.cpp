@@ -506,6 +506,15 @@ flwor_wincond::flwor_wincond(
   }
 }
 
+flwor_wincond::~flwor_wincond()
+{
+  set_flwor_clause(NULL);
+}
+
+flwor_wincond::vars::~vars()
+{
+//  set_flwor_clause(NULL);
+}
 
 void flwor_wincond::vars::set_flwor_clause(flwor_clause* c)
 {
