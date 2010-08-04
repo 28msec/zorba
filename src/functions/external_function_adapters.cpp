@@ -16,6 +16,7 @@
 #include "functions/external_function_adapters.h"
 
 #include "runtime/core/fncall_iterator.h"
+#include "api/unmarshaller.h"
 
 namespace zorba 
 {
@@ -47,14 +48,42 @@ external_function::external_function(
 void external_function::serialize(::zorba::serialization::Archiver& ar)
 {
   zorba::serialization::serialize_baseclass(ar, (function*)this);
-  
-  if(!ar.is_serializing_out())
-    theImpl = NULL;//don't serialize this for now
 
   ar & theLoc;
   ar & theModuleSctx;
   ar & theNamespace;
   SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
+
+  // also serialize the localname of the function
+  xqpStringStore_t lLocalName;
+  if (ar.is_serializing_out()) {
+    ZORBA_ASSERT(theImpl);
+    lLocalName = Unmarshaller::getInternalString(theImpl->getLocalName());
+  }
+  ar.set_is_temp_field(true);
+  ar & lLocalName;
+  ar.set_is_temp_field(false);
+
+  // if loaded, theImpl needs to be set immediately
+  // this is covered by test/unit/external_function.cpp
+  if(!ar.is_serializing_out()) {
+    try
+    {
+      theImpl = theModuleSctx->lookup_stateless_external_function(
+          theNamespace, lLocalName);
+    }
+    catch (error::ZorbaError& e)
+    {
+      ZORBA_ERROR_LOC_DESC(e.theErrorCode, theLoc, e.theDescription);
+    }
+
+    if (theImpl == NULL)
+    {
+      ZORBA_ERROR_LOC_PARAM(XQP0028_FUNCTION_IMPL_NOT_FOUND,
+                            theLoc, theNamespace, lLocalName);
+    }
+  }
+
 }
 
 

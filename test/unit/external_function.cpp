@@ -35,10 +35,6 @@ bool lCalled = false;
 class MySimpleExternalFunction : public NonePureStatelessExternalFunction
 {
 public:
-  MySimpleExternalFunction()
-  {
-  }
-
   String getURI() const { return "http://www.zorba-xquery.com/m"; }
 
   String getLocalName() const { return "bar"; }
@@ -53,17 +49,37 @@ public:
   }
 };
 
+class MySimpleExternalFunction2 : public NonePureStatelessExternalFunction
+{
+public:
+  String getURI() const { return "http://www.zorba-xquery.com/m"; }
+
+  String getLocalName() const { return "bar2"; }
+
+  ItemSequence_t evaluate(
+        const StatelessExternalFunction::Arguments_t& args,
+        const StaticContext* sctx,
+        const DynamicContext* dctx) const 
+  {
+    return ItemSequence_t(new EmptySequence());
+  }
+};
+
 class MyExternalModule : public ExternalModule
 {
 protected:
   MySimpleExternalFunction           bar;
+  MySimpleExternalFunction2          bar2;
 
 public:
   String getURI() const { return "http://www.zorba-xquery.com/m"; }
 
   StatelessExternalFunction* getExternalFunction(String aLocalname) const
   {
-    return const_cast<MySimpleExternalFunction*>(&bar);
+    if (aLocalname.equals("bar"))
+        return const_cast<MySimpleExternalFunction*>(&bar);
+    else
+        return const_cast<MySimpleExternalFunction2*>(&bar2);
   }
 };
 
@@ -80,7 +96,6 @@ class MySerializationCallback : public SerializationCallback
     }
 };
 
-
 int
 external_function(int argc, char* argv[]) 
 {
@@ -88,30 +103,58 @@ external_function(int argc, char* argv[])
   Zorba* lZorba = Zorba::getInstance(lStore);
 
   try {
-     std::ifstream lIn("ext_main.xq");
-     assert(lIn.good());
-     std::ostringstream lOut;
-     MyExternalModule lMod;
+    // test the sausalito use case
+    // serialize a query and afterwards execute it
+    // by calling a dynamic function (i.e. using eval) 
+    {
+      std::ifstream lIn("ext_main.xq");
+      assert(lIn.good());
+      std::ostringstream lOut;
+      MyExternalModule lMod;
 
-     {
-       StaticContext_t lSctx = lZorba->createStaticContext();
-       lSctx->registerModule(&lMod);
+      {
+        StaticContext_t lSctx = lZorba->createStaticContext();
+        lSctx->registerModule(&lMod);
 
-       XQuery_t lQuery = lZorba->compileQuery(lIn, lSctx);
-       lQuery->saveExecutionPlan(lOut, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
-       if (lCalled) {
-         return 1;
-       }
-     }
+        XQuery_t lQuery = lZorba->compileQuery(lIn, lSctx);
+        lQuery->saveExecutionPlan(lOut, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
 
-     {
-       MySerializationCallback lCallback;
+        zorba::DynamicContext* lDynContext = lQuery->getDynamicContext();
+        lDynContext->setVariable("local:foo",
+                                 lZorba->getItemFactory()->createString("foo")); 
+        // make sure constant folding doesn't happen, i.e. the function is not evaluated
+        if (lCalled) {
+          return 1;
+        }
+        
+        // evaluate the function and check if it was really called
+        std::cout << lQuery << std::endl;
+        if (!lCalled) {
+          return 2;
+        }
 
-       std::istringstream lIn(lOut.str());
-       XQuery_t lQuery = lZorba->createQuery();
-       lQuery->loadExecutionPlan(lIn, &lCallback);
-     }
+      }
 
+      {
+        MySerializationCallback lCallback;
+
+        // load the query saved above
+        // this tests if, when loaded, the functions of the static context
+        // that have not yet been compiled, can be compiled properly
+        std::istringstream lIn(lOut.str());
+        XQuery_t lQuery = lZorba->createQuery();
+        lQuery->loadExecutionPlan(lIn, &lCallback);
+
+        // set the parameter for evaluating a different dynamic function then
+        // in the test above
+        zorba::DynamicContext* lDynContext = lQuery->getDynamicContext();
+        lDynContext->setVariable("local:foo",
+                                 lZorba->getItemFactory()->createString("foo2")); 
+
+        // evaluate the query
+        std::cout << lQuery << std::endl;
+      }
+    }
   } catch (QueryException& qe) {
     std::cerr << qe << std::endl;
     return 1;
