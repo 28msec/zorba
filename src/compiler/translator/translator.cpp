@@ -3016,19 +3016,26 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
         ZORBA_ERROR_LOC_PARAM(XQST0059, loc, compURI, targetNS->c_str());
       }
 
-      // Get the query-level sctx. This is the user-specified sctx (if any) or
-      // the zorba default (root) sctx (if no user-specified sctx).
+      // Get the parent of the query root sctx. This is the user-specified sctx
+      // (if any) or the zorba root sctx (if no user-specified sctx).
       static_context_t independentSctx =
       static_cast<static_context *>(theCCB->theRootSctx->get_parent());
 
       // Create the root sctx for the imported module as a child of the
-      // query-level sctx. Register this sctx in the query-level sctx map.
+      // independentSctx. Register this sctx in the query-level sctx map.
       static_context* moduleRootSctx;
       if (theCCB->isLoadPrologQuery())
         moduleRootSctx = theCCB->theRootSctx->create_child_context();
       else
         moduleRootSctx = independentSctx->create_child_context();
 
+      if (*targetNS == "http://www.zorba-xquery.com/modules/file")
+      {
+        // We want the baseURI property of the module sctx to be the full
+        // pathname of the query file.
+        moduleRootSctx->set_encapsulating_entity_uri(
+                        theCCB->theRootSctx->get_entity_retrieval_uri());
+      }
       moduleRootSctx->set_entity_retrieval_uri(compURI2);
       moduleRootSctx->set_module_namespace(targetNS->str());
       moduleRootSctx->set_typemanager(new TypeManagerImpl(&GENV_TYPESYSTEM));
@@ -3282,12 +3289,13 @@ void* begin_visit(const VFO_DeclList& v)
 
       ZORBA_ASSERT(ef != NULL);
 
-      f = new stateless_external_function_adapter(loc,
-                                                  sig,
-                                                  ef,
-                                                  scriptKind,
-                                                  func_decl->is_deterministic(),
-                                                  qnameItem->getNamespace());
+      f = new external_function(loc,
+                                theSctx,
+                                qnameItem->getNamespace(),
+                                sig,
+                                scriptKind,
+                                func_decl->is_deterministic(),
+                                ef);
       break;
     }
     case ParseConstants::fn_sequential:

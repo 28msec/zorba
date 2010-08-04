@@ -147,6 +147,7 @@ protected:
   const StatelessExternalFunction * theFunction;
   bool                              theIsUpdating;
   xqpStringStore_t                  theNamespace;
+  static_context                  * theModuleSctx;
 
 public:
   SERIALIZABLE_CLASS(StatelessExtFunctionCallIterator);
@@ -165,7 +166,8 @@ public:
         std::vector<PlanIter_t>& args,
         const StatelessExternalFunction* function,
         bool isUpdating,
-        const xqpStringStore_t& ns);
+        const xqpStringStore_t& ns,
+        static_context* moduleSctx);
 
   virtual ~StatelessExtFunctionCallIterator();
 

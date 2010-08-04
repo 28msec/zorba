@@ -847,20 +847,14 @@ void static_context::set_base_uri(const xqpStringStore_t& uri, bool from_prolog)
 /***************************************************************************//**
   Base Uri Computation
 
-  from_prolog_baseuri          --> uri
-  baseuri                      --> uri
-  encapsulating_entity_baseuri --> uri
-  entity_retrieval_url         --> uri
-
-  current_absolute_baseuri     --> uri
-
   The from_prolog_baseuri is the one declared in the prolog. The baseuri is set
   explicitly from the C++/C api. If both the from_prolog_baseuri and the baseuri
   are set, the from_prolog_baseuri hides the baseuri.
 
   For the main module, the entity_retrieval_url is set by default to the name
   of file containing the query we are running. For library modules, it is set
-  to the location uri of each module component. It may also be set explicitly from the C++/C api.
+  to the location uri of each module component. It may also be set explicitly
+  from the C++/C api.
 ********************************************************************************/
 void static_context::compute_base_uri()
 {
@@ -909,7 +903,7 @@ void static_context::compute_base_uri()
     try
     {
       URI lCheckValid(userBaseUri);
-      if(lCheckValid.is_absolute())
+      if (lCheckValid.is_absolute())
       {
         theBaseUriInfo->theBaseUri = lCheckValid.toString();
         return; // valid (absolute) uri

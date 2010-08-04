@@ -32,57 +32,38 @@ namespace zorba
 class external_function : public function 
 {
 protected:
-  QueryLoc  theLoc;
+  QueryLoc                    theLoc;
+  static_context            * theModuleSctx;
+  xqpStringStore_t            theNamespace;
+  expr_script_kind_t          theScriptingKind;
+  StatelessExternalFunction * theImpl;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(external_function)
+  SERIALIZABLE_CLASS(external_function)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(external_function, function)
-  void serialize(::zorba::serialization::Archiver& ar)
-  {
-    zorba::serialization::serialize_baseclass(ar, (function*)this);
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-   external_function(const QueryLoc& loc, const signature& sig) 
-    :
-    function(sig, FunctionConsts::FN_UNKNOWN)
-  {
-  }
+  external_function(
+        const QueryLoc& loc,
+        static_context* modSctx,
+        const xqpStringStore_t& ns,
+        const signature& sig,
+        expr_script_kind_t scriptingType,
+        bool deterministic,
+        StatelessExternalFunction* impl);
 
-  virtual ~external_function() { }
+  ~external_function() { }
 
   bool isBuiltin() const { return false; }
 
   bool isExternal() const { return true; }
 
   bool isUdf() const { return false; }
-};
 
+  expr_script_kind_t getUpdateType() const { return theScriptingKind; }
 
-class stateless_external_function_adapter : public external_function 
-{
-private:
-  StatelessExternalFunction * theFunction;
-  expr_script_kind_t          theScriptingKind;
-  xqpStringStore_t            theNamespace;
-
-public:
-  SERIALIZABLE_CLASS(stateless_external_function_adapter)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(stateless_external_function_adapter, external_function)
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  stateless_external_function_adapter(
-        const QueryLoc& loc,
-        const signature& sig, 
-        StatelessExternalFunction* function,
-        expr_script_kind_t scriptingType,
-        bool deterministic,
-        const xqpStringStore_t& ns);
-  
-  ~stateless_external_function_adapter();
-
-  virtual expr_script_kind_t getUpdateType() const { return theScriptingKind; }
+  bool accessesDynCtx() const;
 
   PlanIter_t codegen(
         CompilerCB* /*cb*/,

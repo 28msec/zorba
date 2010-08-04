@@ -373,13 +373,15 @@ StatelessExtFunctionCallIterator::StatelessExtFunctionCallIterator(
     std::vector<PlanIter_t>& args,
     const StatelessExternalFunction* function,
     bool isUpdating,
-    const xqpStringStore_t& ns)
+    const xqpStringStore_t& ns,
+    static_context* moduleSctx)
   :
   NaryBaseIterator<StatelessExtFunctionCallIterator,
                    StatelessExtFunctionCallIteratorState>(sctx, loc, args),
   theFunction(function),
   theIsUpdating(isUpdating),
-  theNamespace(ns)
+  theNamespace(ns),
+  theModuleSctx(moduleSctx)
 {
 }
 
@@ -436,6 +438,7 @@ void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
   }
 
   ar & theIsUpdating;
+  ar & theModuleSctx;
 }
 
 
@@ -480,22 +483,32 @@ bool StatelessExtFunctionCallIterator::nextImpl(
     {
       lNonePureFct = dynamic_cast<const NonePureStatelessExternalFunction*>(theFunction);
       ZORBA_ASSERT(lNonePureFct);
-      // ZORBA_ASSERT(planState.theQuery); // The planState.theQuery maybe null, e.g. in the case of constant-folding of global variable expressions
 
-      StaticContextImpl theSctxWrapper(planState.theCompilerCB->theRootSctx, planState.theQuery == NULL? NULL : planState.theQuery->getRegisteredErrorHandler());
+      // The planState.theQuery maybe null, e.g. in the case of constant-folding
+      // of global variable expressions
+      // ZORBA_ASSERT(planState.theQuery); 
+
+      StaticContextImpl theSctxWrapper(theModuleSctx,
+                                       (planState.theQuery == NULL? 
+                                        NULL :
+                                        planState.theQuery->getRegisteredErrorHandler()));
 
       if (planState.theQuery != NULL)
-        state->theResult = lNonePureFct->evaluate(state->m_extArgs, &theSctxWrapper, planState.theQuery->getDynamicContext());
+      {
+        state->theResult = lNonePureFct->evaluate(state->m_extArgs,
+                                                  &theSctxWrapper,
+                                                  planState.theQuery->getDynamicContext());
+      }
       else
       {
-        DynamicContextImpl theDctxWrapper(NULL, planState.theDynamicContext, planState.theCompilerCB->theRootSctx);
-        state->theResult = lNonePureFct->evaluate(state->m_extArgs, &theSctxWrapper, &theDctxWrapper);
+        DynamicContextImpl theDctxWrapper(NULL,
+                                          planState.theDynamicContext,
+                                          theModuleSctx);
+        state->theResult = lNonePureFct->evaluate(state->m_extArgs,
+                                                  &theSctxWrapper,
+                                                  &theDctxWrapper);
       }
-
-      // state->theResult = lNonePureFct->evaluate(state->m_extArgs, planState.theQuery->getStaticContext(), planState.theQuery->getDynamicContext());
-
     } // if (!theFunction->isContextual())
-
   } // try
   catch(const ZorbaException& e)
   {
@@ -533,7 +546,9 @@ bool StatelessExtFunctionCallIterator::nextImpl(
                                                  loc.getColumnBegin(),
                                                  loc.getFilename());
     }
+
     result = Unmarshaller::getInternalItem(lOutsideItem);
+
     if (theIsUpdating)
     {
       if (!result->isPul())

@@ -66,6 +66,5 @@ ENDFOREACH(test)
 
 EXPECTED_FAILURE(test/unit/plan_serializer 3035320)
 EXPECTED_FAILURE(test/unit/static_context  3036605)
-EXPECTED_FAILURE(test/unit/external_function  3038298)
 
 ADD_SUBDIRECTORY(debugger)

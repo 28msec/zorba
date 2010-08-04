@@ -24,45 +24,47 @@ SERIALIZABLE_CLASS_VERSIONS(external_function)
 END_SERIALIZABLE_CLASS_VERSIONS(external_function)
 
 
-SERIALIZABLE_CLASS_VERSIONS(stateless_external_function_adapter)
-END_SERIALIZABLE_CLASS_VERSIONS(stateless_external_function_adapter)
-
-
-stateless_external_function_adapter::stateless_external_function_adapter(
-    const QueryLoc& loc, 
+external_function::external_function(
+    const QueryLoc& loc,
+    static_context* modSctx,
+    const xqpStringStore_t& ns,
     const signature& sig,
-    StatelessExternalFunction* function, 
     expr_script_kind_t scriptingType,
     bool deterministic,
-    const xqpStringStore_t& ns)
+    StatelessExternalFunction* impl) 
   :
-  external_function(loc, sig),
-  theFunction(function),
+  function(sig, FunctionConsts::FN_UNKNOWN),
+  theLoc(loc),
+  theModuleSctx(modSctx),
+  theNamespace(ns),
   theScriptingKind(scriptingType),
-  theNamespace(ns)
+  theImpl(impl)
 {
   setDeterministic(deterministic);
 }
 
 
-stateless_external_function_adapter::~stateless_external_function_adapter()
+void external_function::serialize(::zorba::serialization::Archiver& ar)
 {
-}
-
-
-void stateless_external_function_adapter::serialize(::zorba::serialization::Archiver& ar)
-{
-  zorba::serialization::serialize_baseclass(ar, (external_function*)this);
-
+  zorba::serialization::serialize_baseclass(ar, (function*)this);
+  
   if(!ar.is_serializing_out())
-    theFunction = NULL;//don't serialize this for now
+    theImpl = NULL;//don't serialize this for now
 
-  SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
+  ar & theLoc;
+  ar & theModuleSctx;
   ar & theNamespace;
+  SERIALIZE_ENUM(expr_script_kind_t, theScriptingKind);
 }
 
 
-PlanIter_t stateless_external_function_adapter::codegen(
+bool external_function::accessesDynCtx() const
+{
+  return theImpl->isContextual();
+}
+
+
+PlanIter_t external_function::codegen(
     CompilerCB* /*cb*/,
     static_context* sctx,
     const QueryLoc& loc,
@@ -72,9 +74,11 @@ PlanIter_t stateless_external_function_adapter::codegen(
   return new StatelessExtFunctionCallIterator(sctx,
                                               loc,
                                               argv,
-                                              theFunction,
+                                              theImpl,
                                               isUpdating(),
-                                              theNamespace);
+                                              theNamespace,
+                                              theModuleSctx);
 }
+
 
 }

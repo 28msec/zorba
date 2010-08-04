@@ -69,19 +69,14 @@ typedef rchandle<StaticallyKnownCollection> StaticallyKnownCollection_t;
 /*******************************************************************************
   Base Uri Computation
 
-  from_prolog_baseuri          --> uri
-  baseuri                      --> uri
-  encapsulating_entity_baseuri --> uri
-  entity_retrieval_url         --> uri
+  thePrologBaseUri is the one declared in the prolog. theApplicationBaseUri 
+  is set explicitly from the C++/C api. If both thePrologBaseUri and 
+  theApplicationBaseUri are set, thePrologBaseUri hides theApplicationBaseUri.
 
-  current_absolute_baseuri     --> uri
-
-  The from_prolog_baseuri is the one declared in the prolog. The baseuri is set
-  explicitly from the C++/C api. If both the from_prolog_baseuri and the baseuri
-  are set, the from_prolog_baseuri hides the baseuri.
-
-  The entity_retrieval_url is set by default to the name of file containing the
-  query we are running. It may also be set explicitly from the C++/C api.
+  theEntityRetrievalUri is set by default to the full pathname of the file
+  containing the query we are running (for the main module) or the url of
+  the module component (for lib modules). It may also be set explicitly
+  from the C++/C api.
 ********************************************************************************/
 struct BaseUriInfo : public ::zorba::serialization::SerializeBaseClass
 {
