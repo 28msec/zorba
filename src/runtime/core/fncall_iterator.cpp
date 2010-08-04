@@ -421,8 +421,8 @@ void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
     if(theNamespace)
     {
       QueryLoc loc;
-      theFunction = theSctx->lookup_stateless_external_function(theNamespace,
-                                                                lLocalname.getp());
+      theFunction = theSctx->lookup_external_function(theNamespace,
+                                                      lLocalname.getp());
       if (!theFunction)
       {
         ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
@@ -434,7 +434,9 @@ void StatelessExtFunctionCallIterator::serialize(serialization::Archiver& ar)
       }
     }
     else
+    {
       theFunction = NULL;
+    }
   }
 
   ar & theIsUpdating;

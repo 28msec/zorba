@@ -27,7 +27,13 @@ namespace zorba
 {
 
 /*******************************************************************************
-
+  theLoc           : The location of the declaration of this external function.
+  theModuleContext : The root sctx of the module containing the declaration.
+  theNamespace     : The namespace of the module containing the declaration.
+  theScriptingKind : Whether the external function is simple, updating, or
+                     sequential (this property is part of the declaration).
+  theImpl          : The user-provided c++ class that implements the external
+                     function.
 ********************************************************************************/
 class external_function : public function 
 {

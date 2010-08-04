@@ -648,7 +648,7 @@ public:
         ExternalModule* aModule,
         bool aDynamicallyLoaded = false);
 
-  StatelessExternalFunction* lookup_stateless_external_function(
+  StatelessExternalFunction* lookup_external_function(
         const xqpStringStore_t& prefix,
         const xqpStringStore_t& local);
 

@@ -1808,8 +1808,7 @@ void static_context::find_functions(
   external module that is created and loaded dynamically by zorba from a lib
   file that is stored somewhere in the in-scope module paths (see
   StandardModuleURIResolver::getExternalModule method and how this method is
-  invoked by the static_context::lookup_stateless_external_function method
-  below).
+  invoked by the static_context::lookup_external_function method below).
 ********************************************************************************/
 void static_context::bind_external_module(
     ExternalModule* aModule,
@@ -1840,7 +1839,7 @@ void static_context::bind_external_module(
   Find and return the implementation of an external function, given its namespace
   URI and local name.
 ********************************************************************************/
-StatelessExternalFunction* static_context::lookup_stateless_external_function(
+StatelessExternalFunction* static_context::lookup_external_function(
     const xqpStringStore_t& aURI,
     const xqpStringStore_t& aLocalName)
 {

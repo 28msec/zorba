@@ -56,7 +56,8 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
 
   // also serialize the localname of the function
   xqpStringStore_t lLocalName;
-  if (ar.is_serializing_out()) {
+  if (ar.is_serializing_out()) 
+  {
     ZORBA_ASSERT(theImpl);
     lLocalName = Unmarshaller::getInternalString(theImpl->getLocalName());
   }
@@ -66,11 +67,11 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
 
   // if loaded, theImpl needs to be set immediately
   // this is covered by test/unit/external_function.cpp
-  if(!ar.is_serializing_out()) {
+  if(!ar.is_serializing_out()) 
+  {
     try
     {
-      theImpl = theModuleSctx->lookup_stateless_external_function(
-          theNamespace, lLocalName);
+      theImpl = theModuleSctx->lookup_external_function(theNamespace, lLocalName);
     }
     catch (error::ZorbaError& e)
     {
@@ -83,7 +84,6 @@ void external_function::serialize(::zorba::serialization::Archiver& ar)
                             theLoc, theNamespace, lLocalName);
     }
   }
-
 }
 
 

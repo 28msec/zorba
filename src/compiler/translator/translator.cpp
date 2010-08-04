@@ -3269,8 +3269,8 @@ void* begin_visit(const VFO_DeclList& v)
       StatelessExternalFunction* ef = 0;
       try
       {
-        ef = theSctx->lookup_stateless_external_function(qnameItem->getNamespace(),
-                                                         qnameItem->getLocalName());
+        ef = theSctx->lookup_external_function(qnameItem->getNamespace(),
+                                               qnameItem->getLocalName());
       }
       catch (error::ZorbaError& e)
       {
@@ -3958,8 +3958,8 @@ void* begin_visit(const IndexKeyList& v)
   if (theCCB->theConfig.translate_cb != NULL)
     theCCB->theConfig.translate_cb(domainExpr.getp(), msg);
 
-  // Optimize the domain expr
-  if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
+  // Optimize the domain expr. We do this even if the optimizer is off.
+  //if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
   {
     RewriterContext rCtx(theCCB, domainExpr);
     GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
@@ -4092,8 +4092,8 @@ void end_visit(const IndexKeyList& v, void* /*visit_state*/)
     if (theCCB->theConfig.translate_cb != NULL)
       theCCB->theConfig.translate_cb(keyExpr.getp(), msg.str());
 
-    // Optimize the key expr
-    if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
+    // Optimize the key expr. We do this even if the optimizer is off.
+    // if (theCCB->theConfig.opt_level == CompilerCB::config::O1)
     {
       RewriterContext rCtx(theCCB, keyExpr);
       GENV_COMPILERSUBSYS.getDefaultOptimizingRewriter()->rewrite(rCtx);
