@@ -32,6 +32,7 @@ IF(WIN32)
     call_stack.cpp
     static_context.cpp
     external_function.cpp
+    debug_iter_serialization.cpp
   )
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
@@ -43,6 +44,7 @@ ELSE(WIN32)
     call_stack.cpp
     static_context.cpp
     external_function.cpp
+    debug_iter_serialization.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )
