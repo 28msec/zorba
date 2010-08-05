@@ -35,7 +35,7 @@ IF(WIN32)
     runnable.cpp
     plan_serializer.cpp
     call_stack.cpp
-    static_context.cpp
+    test_static_context.cpp
     external_function.cpp
     no_folding.cpp
     debug_iter_serialization.cpp
@@ -48,7 +48,7 @@ ELSE(WIN32)
     uri.cpp
     plan_serializer.cpp
     call_stack.cpp
-    static_context.cpp
+    test_static_context.cpp
     external_function.cpp
     no_folding.cpp
     debug_iter_serialization.cpp
@@ -73,7 +73,6 @@ FOREACH (test ${TestsToRun})
   ZORBA_ADD_TEST_ALLSTORES(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
 
-EXPECTED_FAILURE(test/unit/static_context  3036605)
 EXPECTED_FAILURE(test/unit/no_folding  3039990)
 
 ADD_SUBDIRECTORY(debugger)

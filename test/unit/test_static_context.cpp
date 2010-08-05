@@ -28,7 +28,7 @@ using namespace zorba;
 
 
 int
-static_context(int argc, char* argv[]) 
+test_static_context(int argc, char* argv[]) 
 {
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
@@ -38,24 +38,33 @@ static_context(int argc, char* argv[])
     StaticContext_t lSctx2 = lZorba->createStaticContext();
  
     Item lQName = lZorba->getItemFactory()->createQName(
-        "http://www.w3.org/2005/xpath-functions", "current-dateTime");
+                  "http://www.w3.org/2005/xpath-functions",
+                  "current-dateTime");
+
     lSctx1->disableFunction(lQName, 0);
  
     // test if function is disabled in static context 1
-    try {
-      XQuery_t lQuery = lZorba->compileQuery("fn:current-dateTime", lSctx1);
+    try 
+    {
+      XQuery_t lQuery = lZorba->compileQuery("fn:current-dateTime()", lSctx1);
       return 1; // must raise a function not found exception
-    } catch (QueryException& e) {
-      if (e.getErrorCode() != XPST0017) { // raise error if any other exception
+    }
+    catch (QueryException& e)
+    {
+      if (e.getErrorCode() != XPST0017)
+      { // raise error if any other exception
         std::cerr << e << std::endl;
         return 2;
       }
     }
 
     // test if function exists in static context 2
-    try {
-      XQuery_t lQuery = lZorba->compileQuery("fn:current-dateTime", lSctx2);
-    } catch (ZorbaException& e) {
+    try 
+    {
+      XQuery_t lQuery = lZorba->compileQuery("fn:current-dateTime()", lSctx2);
+    }
+    catch (ZorbaException& e)
+    {
       std::cerr << e << std::endl;
       return 3;
     }

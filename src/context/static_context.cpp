@@ -79,6 +79,9 @@ namespace zorba
 SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
 END_SERIALIZABLE_CLASS_VERSIONS(BaseUriInfo)
 
+SERIALIZABLE_CLASS_VERSIONS(FunctionInfo)
+END_SERIALIZABLE_CLASS_VERSIONS(FunctionInfo)
+
 SERIALIZABLE_CLASS_VERSIONS(PrologOption)
 END_SERIALIZABLE_CLASS_VERSIONS(PrologOption)
 
@@ -100,6 +103,49 @@ void BaseUriInfo::serialize(::zorba::serialization::Archiver& ar)
   ar & theEncapsulatingEntityUri;
 
   ar & theBaseUri;
+}
+
+
+/**************************************************************************//**
+
+*******************************************************************************/
+FunctionInfo::FunctionInfo() 
+  :
+  theIsDisabled(false)
+{
+}
+
+
+FunctionInfo::FunctionInfo(const function_t& f, bool disabled) 
+  :
+  theFunction(f),
+  theIsDisabled(disabled)
+{
+}
+  
+
+FunctionInfo::FunctionInfo(::zorba::serialization::Archiver& ar)
+  :
+  ::zorba::serialization::SerializeBaseClass()
+{
+}
+
+
+/**************************************************************************//**
+
+*******************************************************************************/
+FunctionInfo::~FunctionInfo()
+{
+}
+
+
+/**************************************************************************//**
+
+*******************************************************************************/
+void FunctionInfo::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theFunction;
+  ar & theIsDisabled;
 }
 
 
@@ -1625,107 +1671,166 @@ void static_context::bind_fn(
     theFunctionMap = new FunctionMap(0, NULL, size, false);
   }
 
-  function_t f_save = f;
+  FunctionInfo fi(f);
 
-  if (!theFunctionMap->insert(qname2, f))
+  if (!theFunctionMap->insert(qname2, fi))
   {
-    f = f_save;
+    // There is already a function F with the given qname in theFunctionMap.
+    // First, check if F is the same as f, which implies that f is disabled.
+    // In this case, re-enable f. Otherwise, we have to use theFunctionArityMap.
+    if (fi.theFunction == f)
+    {
+      ZORBA_ASSERT(fi.theIsDisabled);
+      fi.theIsDisabled = false;
+      return;
+    }
 
-    // There is already a function with the given qname in theFunctionMap. So,
-    // we have to use theFunctionArityMap.
+    fi.theFunction = f;
+    fi.theIsDisabled = false;
+
+    ZORBA_ASSERT(!f->isVariadic());
+
     if (theFunctionArityMap == NULL)
     {
       theFunctionArityMap = new FunctionArityMap(0, NULL, 16, false);
     }
 
-    std::vector<function_t>* functions = 0;
+    std::vector<FunctionInfo>* fv = 0;
 
-    if (theFunctionArityMap->get(qname2, functions))
+    if (theFunctionArityMap->get(qname2, fv))
     {
-      functions->push_back(f);
+      ulong numFunctions = fv->size();
+      for (ulong i = 0; i < numFunctions; ++i)
+      {
+        if ((*fv)[i].theFunction == f)
+        {
+          ZORBA_ASSERT((*fv)[i].theIsDisabled);
+          (*fv)[i].theIsDisabled = false;
+          return;
+        }
+      }
+
+      fv->push_back(fi);
     }
     else
     {
-      functions = new std::vector<function_t>(1);
-      (*functions)[0] = f;
-      theFunctionArityMap->insert(qname2, functions);
+      fv = new std::vector<FunctionInfo>(1);
+      (*fv)[0] = fi;
+      theFunctionArityMap->insert(qname2, fv);
     }
   }
 }
 
 
 /***************************************************************************//**
-  Search the static-context tree, starting from "this" and moving upwards,
-  looking for the function with the given qname and arity. If such a function
-  is found remove it from the sctx.
+  Remove the function with the given qname and arity from the in-scope functions
+  of this sctx.
 ********************************************************************************/
 void static_context::unbind_fn(
     const store::Item* qname,
     ulong arity)
 {
-  function_t f;
+  ZORBA_ASSERT(!is_global_root_sctx());
+
+  function* f = lookup_fn(qname, arity);
+
+  if (f == NULL)
+    return;
+
+  if (theFunctionMap == NULL)
+  {
+    theFunctionMap = new FunctionMap(0, NULL, 32, false);
+  }
+
+  FunctionInfo fi(f, true);
   store::Item* qname2 = const_cast<store::Item*>(qname);
 
-  if (theFunctionMap != NULL && theFunctionMap->get(qname2, f))
+  if (theFunctionMap->get(qname2, fi))
   {
-    if (f->getArity() == arity)
+    if (fi.theFunction.getp() == f)
     {
-      theFunctionMap->remove(qname2);
+      fi.theIsDisabled = true;
+      theFunctionMap->update(qname2, fi);
       return;
     }
 
-    std::vector<function_t>* fv = NULL;
+    if (theFunctionArityMap == NULL)
+    {
+      theFunctionArityMap = new FunctionArityMap(0, NULL, 16, false);
+    }
 
-    if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
+    std::vector<FunctionInfo>* fv = NULL;
+
+    if (theFunctionArityMap->get(qname2, fv))
     {
       ulong numFunctions = fv->size();
       for (ulong i = 0; i < numFunctions; ++i)
       {
-        if ((*fv)[i]->getArity() == arity)
+        if ((*fv)[i].theFunction.getp() == f)
         {
-          (*fv).erase((*fv).begin() + i);
+          (*fv)[i].theIsDisabled = true;
           return;
         }
       }
     }
-  }
 
-  if (theParent != NULL)
-    theParent->unbind_fn(qname2, arity);
+    fv = new std::vector<FunctionInfo>(1);
+    fi.theIsDisabled = true;
+    (*fv)[0] = fi;
+    theFunctionArityMap->insert(qname2, fv);
+  }
+  else
+  {
+    theFunctionMap->insert(qname2, fi);
+  }
 }
 
 
 /***************************************************************************//**
   Search the static-context tree, starting from "this" and moving upwards,
-  looking for the function with the given qname and arity. If no such function
-  is found return NULL. Otherwise, it return the associated function object.
+  looking for the 1st sctx obj that contains a binding for a function with
+  the given qname and arity. If no such binding is found return NULL. Otherwise,
+  return the associated function object (which may be NULL if the function
+  was disabled).
 ********************************************************************************/
 function* static_context::lookup_fn(
     const store::Item* qname,
     ulong arity)
 {
-  function_t f;
+  FunctionInfo fi;
   store::Item* qname2 = const_cast<store::Item*>(qname);
 
-  if (theFunctionMap != NULL && theFunctionMap->get(qname2, f))
+  static_context* sctx = this;
+
+  while (sctx != NULL)
   {
-    if (f->getArity() == arity || f->isVariadic())
-      return f.getp();
-
-    std::vector<function_t>* fv = NULL;
-
-    if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
+    if (sctx->theFunctionMap != NULL && sctx->theFunctionMap->get(qname2, fi))
     {
-      ulong numFunctions = fv->size();
-      for (ulong i = 0; i < numFunctions; ++i)
+      function* f = fi.theFunction.getp();
+
+      if (f->getArity() == arity || f->isVariadic())
       {
-        if ((*fv)[i]->getArity() == arity)
-          return (*fv)[i].getp();
+        return (fi.theIsDisabled ? NULL : f);
+      }
+
+      std::vector<FunctionInfo>* fv = NULL;
+      
+      if (sctx->theFunctionArityMap != NULL &&
+          sctx->theFunctionArityMap->get(qname2, fv))
+      {
+        ulong numFunctions = fv->size();
+        for (ulong i = 0; i < numFunctions; ++i)
+        {
+          if ((*fv)[i].theFunction->getArity() == arity)
+            return ((*fv)[i].theIsDisabled ? NULL : (*fv)[i].theFunction.getp());
+        }
       }
     }
+
+    sctx = sctx->theParent;
   }
 
-  return (theParent != NULL ? theParent->lookup_fn(qname2, arity) : NULL);
+  return NULL;
 }
 
 
@@ -1735,36 +1840,78 @@ function* static_context::lookup_fn(
 void static_context::get_functions(
     std::vector<function *>& functions) const
 {
-  if (theFunctionMap != NULL)
+  std::vector<function*> disabled;
+
+  const static_context* sctx = this;
+
+  while (sctx != NULL)
   {
-    FunctionMap::iterator ite = theFunctionMap->begin();
-    FunctionMap::iterator end = theFunctionMap->end();
-
-    for (; ite != end; ++ite)
+    if (sctx->theFunctionMap != NULL)
     {
-      functions.push_back((*ite).second);
-    }
-  }
+      FunctionMap::iterator ite = sctx->theFunctionMap->begin();
+      FunctionMap::iterator end = sctx->theFunctionMap->end();
 
-  if (theFunctionArityMap != NULL)
-  {
-    FunctionArityMap::iterator ite = theFunctionArityMap->begin();
-    FunctionArityMap::iterator end = theFunctionArityMap->end();
-
-    for (; ite != end; ++ite)
-    {
-      std::vector<function_t>* fv = (*ite).second;
-
-      ulong numFunctions = fv->size();
-      for (ulong i = 0; i < numFunctions; ++i)
+      for (; ite != end; ++ite)
       {
-        functions.push_back((*fv)[i].getp());
+        function* f = (*ite).second.theFunction.getp();
+
+        if (!(*ite).second.theIsDisabled)
+        {
+          std::vector<function*>::const_iterator ite2 = disabled.begin();
+          std::vector<function*>::const_iterator end2 = disabled.end();
+          for (; ite2 != end2; ++ite2)
+          {
+            if (f == *ite2)
+              break;
+          }
+
+          if (ite2 == end2)
+            functions.push_back(f);
+        }
+        else
+        {
+          disabled.push_back(f);
+        }
       }
     }
-  }
+    
+    if (sctx->theFunctionArityMap != NULL)
+    {
+      FunctionArityMap::iterator ite = sctx->theFunctionArityMap->begin();
+      FunctionArityMap::iterator end = sctx->theFunctionArityMap->end();
+      
+      for (; ite != end; ++ite)
+      {
+        std::vector<FunctionInfo>* fv = (*ite).second;
+        
+        ulong numFunctions = fv->size();
+        for (ulong i = 0; i < numFunctions; ++i)
+        {
+          function* f = (*fv)[i].theFunction.getp();
 
-  if (theParent != NULL)
-    theParent->get_functions(functions);
+          if (!(*fv)[i].theIsDisabled)
+          {
+            std::vector<function*>::const_iterator ite2 = disabled.begin();
+            std::vector<function*>::const_iterator end2 = disabled.end();
+            for (; ite2 != end2; ++ite2)
+            {
+              if (f == *ite2)
+                break;
+            }
+
+            if (ite2 == end2)
+              functions.push_back(f);
+          }
+          else
+          {
+            disabled.push_back(f);
+          }
+        }
+      }
+    }
+
+    sctx = sctx->theParent;
+  }
 }
 
 
@@ -1775,22 +1922,24 @@ void static_context::find_functions(
     const store::Item* qname,
     std::vector<function *>& functions) const
 {
-  function_t f;
+  FunctionInfo fi;
   store::Item* qname2 = const_cast<store::Item*>(qname);
 
-  if (theFunctionMap != NULL && theFunctionMap->get(qname2, f))
+  if (theFunctionMap != NULL && theFunctionMap->get(qname2, fi))
   {
-    functions.push_back(f.getp());
+    if (!fi.theIsDisabled)
+      functions.push_back(fi.theFunction.getp());
   }
 
-  std::vector<function_t>* fv = NULL;
+  std::vector<FunctionInfo>* fv = NULL;
 
   if (theFunctionArityMap != NULL && theFunctionArityMap->get(qname2, fv))
   {
     ulong numFunctions = fv->size();
     for (ulong i = 0; i < numFunctions; ++i)
     {
-      functions.push_back((*fv)[i].getp());
+      if (!(*fv)[i].theIsDisabled)
+        functions.push_back((*fv)[i].theFunction.getp());
     }
   }
 
@@ -2955,7 +3104,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     FunctionMap::iterator end = module->theFunctionMap->end();
     for (; ite != end; ++ite)
     {
-      function_t f = (*ite).second;
+      function_t f = (*ite).second.theFunction;
 #if 0
       // This check has been moved to the translator (in the translation of 
       // a FunctionCall).
@@ -3001,11 +3150,15 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     FunctionArityMap::iterator end = module->theFunctionArityMap->end();
     for (; ite != end; ++ite)
     {
-      std::vector<function_t>* fv = (*ite).second;
+      std::vector<FunctionInfo>* fv = (*ite).second;
       ulong num = fv->size();
       for (ulong i = 0; i < num; ++i)
       {
-        function_t& f = (*fv)[i];
+        function_t f = (*fv)[i].theFunction;
+
+#if 0
+      // This check has been moved to the translator (in the translation of 
+      // a FunctionCall).
         const signature& sign = f->getSignature();
         ulong numArgs = f->getArity();
 
@@ -3029,7 +3182,8 @@ void static_context::import_module(const static_context* module, const QueryLoc&
                                    << " is not among the in-scope types"
                                    << " of the importing module");
         }
-        
+#endif
+
         bind_fn((*ite).first, f, f->getArity(), loc);
       }
     }

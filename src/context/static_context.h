@@ -100,6 +100,30 @@ public:
 /*******************************************************************************
 
 ********************************************************************************/
+struct FunctionInfo : public ::zorba::serialization::SerializeBaseClass
+{
+  function_t  theFunction;
+  bool        theIsDisabled;
+
+public:
+  SERIALIZABLE_CLASS(FunctionInfo)
+
+  FunctionInfo(::zorba::serialization::Archiver& ar);
+
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  FunctionInfo();
+
+  FunctionInfo(const function_t& f, bool disabled = false);
+
+  ~FunctionInfo();
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
 struct PrologOption : public ::zorba::serialization::SerializeBaseClass
 {
   store::Item_t    theName;
@@ -361,9 +385,9 @@ class static_context : public SimpleRCObject
 
   typedef serializable_ItemPointerHashMap<var_expr_t> VariableMap;
 
-  typedef serializable_ItemPointerHashMap<function_t> FunctionMap;
+  typedef serializable_ItemPointerHashMap<FunctionInfo> FunctionMap;
 
-  typedef serializable_ItemPointerHashMap<std::vector<function_t>* > FunctionArityMap;
+  typedef serializable_ItemPointerHashMap<std::vector<FunctionInfo>* > FunctionArityMap;
 
   typedef serializable_ItemPointerHashMap<PrologOption> OptionMap;
 

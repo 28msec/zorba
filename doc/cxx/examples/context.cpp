@@ -283,8 +283,10 @@ context_example_10(Zorba* aZorba)
     lContext->findFunctions(lQName, lFunctions);
 
     std::cout << "Number of Functions " << lFunctions.size() << std::endl;
+
     for (std::vector<Function_t>::const_iterator lIter = lFunctions.begin();
-         lIter != lFunctions.end(); ++lIter) {
+         lIter != lFunctions.end(); ++lIter) 
+    {
       std::cout << "Function Name " << (*lIter)->getFunctionName().getStringValue() << std::endl;
       std::cout << "  requires dynamic context " << (*lIter)->requiresDynamicContext() << std::endl;
       std::cout << "  is updating " << (*lIter)->isUpdating() << std::endl;
@@ -293,13 +295,18 @@ context_example_10(Zorba* aZorba)
       lContext->disableFunction(*lIter);
     }
 
-    try {
+    try 
+    {
       XQuery_t lQuery = aZorba->compileQuery("fn:doc('test.xml')", lContext);
-    } catch (StaticException &se) {
+    } 
+    catch (StaticException &se) 
+    {
       std::cerr << se << std::endl;
       return true;
     }
-  } catch (ZorbaException &e) {
+  } 
+  catch (ZorbaException &e) 
+  {
     std::cerr << e << std::endl;
     return false;
   }

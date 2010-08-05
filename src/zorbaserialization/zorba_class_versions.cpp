@@ -87,9 +87,9 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_Ha
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, ValueIC_t>, 3)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, function_t>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, FunctionInfo>, 4)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, std::vector<function_t>* >, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, std::vector<FunctionInfo>* >, 5)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS2(serializable_HashEntry, serializable_HashEntry<store::Item*, xqpStringStore_t>, 6)
 
@@ -103,9 +103,9 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_Hash
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, ValueIC_t, ItemPointerHashMapCmp>, 3)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, function_t, ItemPointerHashMapCmp>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, FunctionInfo, ItemPointerHashMapCmp>, 4)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, std::vector<function_t>*, ItemPointerHashMapCmp>, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, std::vector<FunctionInfo>*, ItemPointerHashMapCmp>, 5)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS3(serializable_HashMap, serializable_HashMap<store::Item*, xqpStringStore_t, ItemPointerHashMapCmp>, 6)
 
@@ -125,9 +125,9 @@ SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, seriali
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<ValueIC_t>, 3)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<function_t>, 4)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<FunctionInfo>, 4)
 
-SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<std::vector<function_t>* >, 5)
+SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<std::vector<FunctionInfo>* >, 5)
 
 SERIALIZABLE_TEMPLATE_INSTANCE_VERSIONS(serializable_ItemPointerHashMap, serializable_ItemPointerHashMap<xqpStringStore_t>, 6)
 
