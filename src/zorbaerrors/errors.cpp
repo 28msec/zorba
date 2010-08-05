@@ -136,6 +136,7 @@ void ZorbaError::serialize(::zorba::serialization::Archiver& ar)
   ar & theLineNumber; // line number in the source file
   if(!ar.is_serializing_out())
     theDebug = false;
+  ar & theStackTrace;
 }
 
 
