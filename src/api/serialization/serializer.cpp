@@ -158,7 +158,9 @@ std::string serializer::emitter::expand_string(
   const unsigned char* chars = (const unsigned char*)str->c_str();
   const unsigned char* chars_end  = chars + str->bytes();
 
+#ifndef ZORBA_NO_UNICODE
   int skip = 0;
+#endif // ZORBA_NO_UNICODE
 
   for (; chars < chars_end; chars++ )
   {
