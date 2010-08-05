@@ -276,6 +276,68 @@ bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp)
   return ret;
 }
 
+/*******************************************************************************
+********************************************************************************/
+
+static bool is_digit(const char ch)
+{
+  return (ch >= '0' && ch <= '9');
+}
+
+static bool is_hex_digit(const char ch)
+{
+  return ((ch >= '0' && ch <= '9') || (ch >= 'a' && ch <= 'f') || (ch >= 'A' && ch <= 'F'));
+}
+
+bool xqpStringStore::is_entity_or_char_ref(const char* str)
+{
+  if (str == NULL)
+    return false;
+
+  int len = strlen(str);
+
+  if (len < 4 || str[0] != '&' || str[len-1] != ';')
+    return false;
+
+  if (0 == strcmp(str, "&lt;") || 0 == strcmp(str, "&gt;") || 0 == strcmp(str, "&amp;") || 0 == strcmp(str, "&quot;") || 0 == strcmp(str, "&apos;"))
+    return true;
+
+  if (str[1] != '#')
+    return false;
+
+  int start = 2;
+  bool hex = false;
+  if (str[2] == 'x')
+  {
+    start = 3;
+    hex = true;
+  }
+
+  for (int i = start; i<len-1; i++)
+    if ((!hex && !is_digit(str[i])) || (hex && (!is_hex_digit(str[i]))))
+      return false;
+
+  return true;
+}
+
+
+bool xqpStringStore::starts_with_ref(const char* str)
+{
+  if (str == NULL)
+    return false;
+
+  int pos = 0;
+  while (str[pos] != 0 && str[pos] != ';')
+    pos++;
+
+  if (str[pos] == 0)
+    return false;
+
+  std::string temp = str;
+  temp = temp.substr(0, pos+1);
+
+  return xqpStringStore::is_entity_or_char_ref(temp.c_str());
+}
 
 /*******************************************************************************
 
@@ -386,29 +448,9 @@ bool xqpStringStore::byteEqual(const char* other, size_type otherBytes) const
 {
   if(bytes() != otherBytes)
     return false;
-  
-  //compare strings from back to front
-  const char  *s1 = c_str();
-  uint32_t    llen = otherBytes>>2;
-  if(otherBytes >= 4)
-  {
-    const long *l2 = ((long*)other) + llen - 1;
-    const long *l1 = ((long*)s1) + llen - 1;
-    for(;l2>=(const long*)other;l2--, l1--)
-    {
-      if(*l1 != *l2)
-        return false;
-    }
-  }
-  s1 += llen<<2;
-  other += llen<<2;
-  while(*other)
-  {
-    if(*s1 != *other)
-      return false;
-    s1++;
-    other++;
-  }
+
+  if(strncmp(c_str(), other, otherBytes))
+    return false;
 
   return true;
 }

@@ -63,6 +63,12 @@ public:
 
   static bool is_Invalid_in_IRI(uint32_t cp);
 
+  // Returns true if the given string is a character or a predefined entity reference
+  static bool is_entity_or_char_ref(const char* str);
+
+  // Returns true if the given string starts with a character or a predefined entity reference
+  static bool starts_with_ref(const char* str);
+
   static uint32_t hash(const char* str);
 
 public:
