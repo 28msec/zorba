@@ -1768,7 +1768,7 @@ bool Schema::isCastableUserUnionTypes(
 
 void Schema::serialize(::zorba::serialization::Archiver &ar)
 {
-  ar & theTypeManager;
+  SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
 
 #ifndef ZORBA_NO_XMLSCHEMA
    ar & theUdTypesCache;
