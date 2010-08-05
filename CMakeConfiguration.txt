@@ -222,8 +222,6 @@ MESSAGE(STATUS "ZORBA_NUMERIC_OPTIMIZATION:               " ${ZORBA_NUMERIC_OPTI
 SET(ZORBA_USE_SWIG ON CACHE BOOL "use Swig to generate api for Python, Php and Ruby")
 MESSAGE(STATUS "ZORBA_USE_SWIG:               " ${ZORBA_USE_SWIG})
 
-SET(ZORBA_USE_SEPARATE_WINCE_SVN OFF CACHE BOOL "Daniel's flag")
-
 SET(ZORBA_XQUERYX OFF CACHE BOOL "Activate capability to compile XQueryX code (on/off)")
 MESSAGE(STATUS "ZORBA_XQUERYX:                " ${ZORBA_XQUERYX})
 
