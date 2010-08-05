@@ -20,6 +20,11 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_D
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_mod.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_mod.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_main.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_main.xq)
 
+#belongs to test no_folding.cpp
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/fold_mod1.xq ${CMAKE_CURRENT_BINARY_DIR}/fold_mod1.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/fold_mod2.xq ${CMAKE_CURRENT_BINARY_DIR}/fold_mod2.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/fold_main.xq ${CMAKE_CURRENT_BINARY_DIR}/fold_main.xq)
+
 IF(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
@@ -32,6 +37,7 @@ IF(WIN32)
     call_stack.cpp
     static_context.cpp
     external_function.cpp
+    no_folding.cpp
     debug_iter_serialization.cpp
   )
 ELSE(WIN32)
@@ -44,6 +50,7 @@ ELSE(WIN32)
     call_stack.cpp
     static_context.cpp
     external_function.cpp
+    no_folding.cpp
     debug_iter_serialization.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
@@ -67,5 +74,6 @@ FOREACH (test ${TestsToRun})
 ENDFOREACH(test)
 
 EXPECTED_FAILURE(test/unit/static_context  3036605)
+EXPECTED_FAILURE(test/unit/no_folding  3039990)
 
 ADD_SUBDIRECTORY(debugger)
