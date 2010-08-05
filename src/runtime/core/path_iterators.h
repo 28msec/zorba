@@ -152,7 +152,7 @@ public:
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar, (UnaryBaseIterator<AxisIter, State>*)this);
-    ar & theTypeManager;
+    SERIALIZE_TYPEMANAGER(TypeManager, theTypeManager);
     SERIALIZE_ENUM(match_test_t, theTestKind);
     SERIALIZE_ENUM(match_test_t, theDocTestKind);
     SERIALIZE_ENUM(store::StoreConsts::NodeKind, theNodeKind);
