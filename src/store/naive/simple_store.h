@@ -95,7 +95,8 @@ typedef ItemPointerHashMap<store::IC_t> ICSet;
                          of the collection to the collection container object.
   theIndices           : A hashmap that for each index, maps the qname of the
                          index to the index container object.
-  theICs               :
+  theICs               : A hashmap the for each integrity constraint, maps the
+                         qname of the ic to the ic's container object.
 ********************************************************************************/
 class SimpleStore : public store::Store
 {

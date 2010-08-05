@@ -420,6 +420,11 @@ XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
   return new FastXmlLoader(theItemFactory,
                            aErrorManager,
                            store::Properties::instance()->buildDataguide());
+  /* todo cezar enable when dtd option is passed*/
+//  return new DtdXmlLoader(theItemFactory,
+//                           aErrorManager,
+//                           store::Properties::instance()->buildDataguide());
+
 #else
 
   return new SimpleXmlLoader(theItemFactory,

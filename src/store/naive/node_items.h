@@ -345,6 +345,7 @@ class XmlNode : public store::Item
 
   friend class BasicItemFactory;
   friend class FastXmlLoader;
+  friend class DtdXmlLoader;
  
 public:
   enum NodeFlags
@@ -714,6 +715,7 @@ class ElementNode : public InternalNode
   friend class XmlNode;
   friend class AttributeNode;
   friend class FastXmlLoader;
+  friend class DtdXmlLoader;
   friend class NodeFactory;
   friend class UpdSetElementType;
   friend class UpdReplaceContent;
@@ -895,6 +897,7 @@ class AttributeNode : public XmlNode
   friend class XmlNode;
   friend class ElementNode;
   friend class FastXmlLoader;
+  friend class DtdXmlLoader;
   friend class UpdSetAttributeType;
   friend class NodeFactory;
 
@@ -994,6 +997,7 @@ class TextNode : public XmlNode
   friend class ElementNode;
   friend class BasicItemFactory;
   friend class FastXmlLoader;
+  friend class DtdXmlLoader;
   friend class UpdInsertChildren;
   friend class UpdSetElementType;
   friend class NodeFactory;
@@ -1098,6 +1102,7 @@ class PiNode : public XmlNode
 {
   friend class XmlNode;
   friend class FastXmlLoader;
+  friend class DtdXmlLoader;
   friend class NodeFactory;
 
 protected:
@@ -1156,6 +1161,7 @@ class CommentNode : public XmlNode
 {
   friend class XmlNode;
   friend class FastXmlLoader;
+  friend class DtdXmlLoader;
   friend class NodeFactory;
 
 protected:

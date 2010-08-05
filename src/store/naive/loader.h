@@ -324,6 +324,120 @@ public:
         xmlChar *content);
 };
 
+/*******************************************************************************
+
+  DtdXmlLoader - implements XmlLoader interface as FastXmlLoader but it uses 
+                 libxml2's tree parser to be able identify ID, IDREF and IDREFS
+               - has more functionality but uses more memory - potentialy slower
+                 for big documents 
+
+*******************************************************************************/
+class DtdXmlLoader : public XmlLoader
+{
+  struct PathStepInfo
+  {
+    ElementNode    * theNode;
+    xqpStringStore * theBaseUri;
+
+    PathStepInfo(ElementNode* node, xqpStringStore* uri)
+      :
+      theNode(node),
+      theBaseUri(uri) 
+    {
+    }
+  };
+
+protected:
+  XmlTree                        * theTree;
+  OrdPathStack                     theOrdPath;
+
+  XmlNode                        * theRootNode;
+  zorba::Stack<XmlNode*>           theNodeStack;
+  zorba::Stack<PathStepInfo>       thePathStack;
+  std::stack<NsBindingsContext*>   theBindingsStack;
+
+#ifdef DATAGUIDE
+  zorba::Stack<ElementGuideNode*>  theGuideStack;
+#endif
+
+public:
+  DtdXmlLoader(
+        BasicItemFactory* factory,
+        error::ErrorManager* errorManager,
+        bool dataguide);
+
+  ~DtdXmlLoader();
+
+  store::Item_t loadXml(
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& uri,
+        std::istream& xmlStream);
+
+protected:
+  void abortload();
+  void reset();
+  long readPacket(std::istream& stream, char* buf, long size);
+
+  void setRoot(XmlNode* root);
+
+  void* getElementNode();
+
+  void loadDocument(xmlDoc *doc);
+  void loadNode(xmlNode *node);
+
+public:
+  static void	startDocument(void * ctx);
+
+  static void endDocument(void * ctx);
+
+  static void startElement(
+        void * ctx, 
+        xmlNode *node);
+  
+  static void endElement(
+        void * ctx, 
+        xmlNode *node);
+
+  static void characters(
+        void * ctx,
+        const xmlChar * ch,
+        int len);
+
+  static void	cdataBlock(
+        void * ctx, 
+        const xmlChar * value, 
+        int len);
+
+  static void comment(
+        void * ctx, 
+        const xmlChar * value);
+
+  static void	processingInstruction(
+        void * ctx, 
+        const xmlChar * target, 
+        const xmlChar * data);
+
+  static void error(void * ctx, const char * msg, ... );
+
+  static void warning(void * ctx, const char * msg, ... );
+
+  static xmlEntityPtr	getEntity(
+        void * ctx, 					 
+        const xmlChar * name);
+
+  static xmlEntityPtr getParameterEntity(
+        void *ctx,
+        const xmlChar *name);
+
+  static void entityDecl(
+        void *ctx,
+        const xmlChar *name,
+        int type,
+        const xmlChar *publicId,
+        const xmlChar *systemId,
+        xmlChar *content);
+};
+
 
 } // namespace store
 } // namespace zorba
