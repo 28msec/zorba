@@ -117,6 +117,7 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theDebuggerCommons(cb.theDebuggerCommons),
   theIsLoadProlog(false),
   theIsUpdating(false),
+  theIsSerializingOut(false),
   theConfig(cb.theConfig),
   theTimeout(cb.theTimeout)
 {
@@ -126,7 +127,8 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
 CompilerCB::CompilerCB(::zorba::serialization::Archiver& ar)
   :
   ::zorba::serialization::SerializeBaseClass(),
-  theDebuggerCommons(NULL)
+  theDebuggerCommons(NULL),
+  theIsSerializingOut(false)
 {
 }
 

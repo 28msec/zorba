@@ -665,6 +665,8 @@ bool XQueryImpl::saveExecutionPlan(
     checkNotClosed();
     checkCompiled();
 
+    theCompilerCB->theIsSerializingOut = true;
+
     if (archive_format == ZORBA_USE_XML_ARCHIVE)
     {
       zorba::serialization::XmlArchiver   xmlar(&os);
@@ -685,9 +687,31 @@ bool XQueryImpl::saveExecutionPlan(
       serialize(bin_ar);
       bin_ar.serialize_out();
     }
+
+    theCompilerCB->theIsSerializingOut = false;
     return true;
   }
-  QUERY_CATCH
+  catch (error::ZorbaError& e)
+  {                           
+    theCompilerCB->theIsSerializingOut = false;
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }                           
+  catch (FlowCtlException&)   
+  {
+    theCompilerCB->theIsSerializingOut = false;
+    ZorbaImpl::notifyError(theErrorHandler, "User interrupt");
+  }                           
+  catch (std::exception& e)   
+  {
+    theCompilerCB->theIsSerializingOut = false;
+    ZorbaImpl::notifyError(theErrorHandler, e.what());
+  }                           
+  catch (...)                 
+  {
+    theCompilerCB->theIsSerializingOut = false;
+    ZorbaImpl::notifyError(theErrorHandler);   
+  }           
+
   return false;
 }
 

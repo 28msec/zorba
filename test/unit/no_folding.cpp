@@ -27,45 +27,51 @@
 #include <zorba/serialization_callback.h>
 #include <zorba/empty_sequence.h>
 
+#include "system/properties.h"
+
 
 using namespace zorba;
 
 namespace zorba { namespace no_folding {
 
-  bool lCalledBlockFolding = false;
+bool lCalledBlockFolding = false;
+
   
-  class FoldingFunction : public NonePureStatelessExternalFunction
+class FoldingFunction : public NonePureStatelessExternalFunction
+{
+public:
+  String getURI() const { return "http://www.zorba-xquery.com/mod2"; }
+  
+  String getLocalName() const { return "bar"; }
+  
+  ItemSequence_t evaluate(
+        const StatelessExternalFunction::Arguments_t& args,
+        const StaticContext* sctx,
+        const DynamicContext* dctx) const 
   {
-  public:
-    String getURI() const { return "http://www.zorba-xquery.com/mod2"; }
+    lCalledBlockFolding = true; // must not be reached because query is only compiled and not executed
+    return ItemSequence_t(new EmptySequence());
+  }
+};
+
   
-    String getLocalName() const { return "bar"; }
+class FoldingModule : public ExternalModule
+{
+protected:
+  FoldingFunction lFunc;
   
-    ItemSequence_t evaluate(
-          const StatelessExternalFunction::Arguments_t& args,
-          const StaticContext* sctx,
-          const DynamicContext* dctx) const 
-    {
-      lCalledBlockFolding = true; // must not be reached because query is only compiled and not executed
-      return ItemSequence_t(new EmptySequence());
-    }
-  };
+public:
+  String getURI() const { return "http://www.zorba-xquery.com/mod2"; }
   
-  class FoldingModule : public ExternalModule
+  StatelessExternalFunction* getExternalFunction(String aLocalname) const
   {
-  protected:
-    FoldingFunction lFunc;
-  
-  public:
-    String getURI() const { return "http://www.zorba-xquery.com/mod2"; }
-  
-    StatelessExternalFunction* getExternalFunction(String aLocalname) const
-    {
-        return const_cast<FoldingFunction*>(&lFunc);
-    }
-  };
+    return const_cast<FoldingFunction*>(&lFunc);
+  }
+};
+
 
 } /* namespace no_folding */ } /* namespace zorba */
+
 
 int
 no_folding(int argc, char* argv[]) 
@@ -73,7 +79,10 @@ no_folding(int argc, char* argv[])
   void* lStore = zorba::StoreManager::getStore();
   Zorba* lZorba = Zorba::getInstance(lStore);
 
-  try {
+  zorba::Properties::load(0, NULL);
+
+  try 
+  {
     // test the sausalito use case
     // serialize a query and afterwards execute it
     // by calling a dynamic function (i.e. using eval) 
@@ -94,7 +103,9 @@ no_folding(int argc, char* argv[])
 
         // make sure constant folding doesn't happen, i.e. the function is not evaluated
         // not even when serializing the plan
-        if (no_folding::lCalledBlockFolding) {
+        if (no_folding::lCalledBlockFolding) 
+        {
+          std::cerr << "Test failed !" << std::endl;
           return 1;
         }
       }

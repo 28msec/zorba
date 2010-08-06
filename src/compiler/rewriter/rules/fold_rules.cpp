@@ -130,6 +130,9 @@ static expr_t execute (
 
 
 /*******************************************************************************
+  Compute the NON_DISCARDABLE and UNFOLDABLE properties of expressions
+
+  The meaning/purpose of the NON_DISCARDABLE property is as follows:
   Some expressions can be computed (at leat partially) during compilation time
   based on the static type of their argument. For example, count(E) can be
   replaced by const 1 if the static type of E has quantifier 1. Also,
@@ -139,8 +142,6 @@ static expr_t execute (
   semantics is to return an error during runtime if the arg of the treat expr
   does not have the corect type. We call such exprs "impure", and flag them as
   non-discardable so that no (partial) evaluation of parent exprs is done.
-
-  Mark the exprs that should not be folded
 ********************************************************************************/
 expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 {
@@ -160,15 +161,11 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
 
     // If any of the children is nondiscardable, "this" is nondiscardable too.
     if (childExpr->isNonDiscardable())
-    {
       curNonDiscardable = expr::ANNOTATION_TRUE;
-    }
 
     // If any of the children is unfoldable, then "this" is unfoldable too.
     if (childExpr->isUnfoldable())
-    {
       curUnfoldable = expr::ANNOTATION_TRUE;
-    }
 
     iter.next();
   }
@@ -194,7 +191,7 @@ expr_t MarkExprs::apply(RewriterContext& rCtx, expr* node, bool& modified)
     // Do not fold functions that always require access to the dynamic context,
     // or may need to access the implicit timezone (which is also in the dynamic
     // constext).
-    if (f->accessesDynCtx () ||
+    if (f->accessesDynCtx() ||
         dynamic_cast<const fn_error*>(f) != NULL ||
         maybe_needs_implicit_timezone(fo) ||
         !f->isDeterministic())

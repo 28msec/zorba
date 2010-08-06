@@ -202,7 +202,15 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
 {
   if (thePlan == NULL)
   {
-    if (!theIsOptimized && ccb->theConfig.opt_level > CompilerCB::config::O0)
+    // Don't optimize body if we are in the process of serializing the query
+    // plan. In such a case, udfs have their getPlan() method called in some
+    // "random" order, and they will be optimized in this random order, instead
+    // of a bottom up order. This can have undesired effect, like const-folding
+    // exprs that contain calls to functions that are non-deterministic, or
+    // access the dynamic context. 
+    if (!theIsOptimized && 
+        ccb->theConfig.opt_level > CompilerCB::config::O0 &&
+        !ccb->theIsSerializingOut)
     {
       expr_t body = getBody();
       RewriterContext rctx(ccb, body);

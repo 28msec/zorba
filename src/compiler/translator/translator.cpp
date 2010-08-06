@@ -798,21 +798,35 @@ public:
                          this module. Used to check that the same schema is not
                          imported twice by this module.
 
-  theCurrSctxId        : The numeric id of the last sctx that was added to
-                         theSctxMap of the query (see api/xqueryimpl.h). Every
-                         time an expr is created, the current value of theCurSctxId
-                         is stored in the expr obj, so that each expr will be
-                         executed in the appropriate sctx.
+  theCurrSctxId :
+  ---------------
 
-  theSctx              : The "current" static context node. It is initialized
-                         with the root static context of the associated module.
+  The numeric id of the last sctx that was added to theSctxMap of the query
+  (see api/xqueryimpl.h). 
 
-  theSctxList:         : A list of static contexts which need to be kept alive
-                         during the translation of a module only. It's managed
-                         in push_scope and pop_scope. In DEBUGGER mode, this
-                         list remains empty.
+  theRootSctx :
+  -------------
 
-  theSctxIdStack       : In non-DEBUGGER mode, this stack remains empty.
+  The root sctx obj of the module that is being translated by this translator.
+  Every time an expr is created, theRootSctx is stored in the expr obj, so that 
+ each expr will be executed in the appropriate sctx.
+
+  theSctx :
+  ---------
+
+  The "current" static context node. It is initialized with theRootSctx.
+
+  theSctxList :
+  -------------
+
+  A list of static contexts which need to be kept alive only during the 
+  translation of a module. It's managed in push_scope and pop_scope. In
+  DEBUGGER mode, this list remains empty.
+
+  theSctxIdStack :
+  ----------------
+
+  In non-DEBUGGER mode, this stack remains empty.
 
   export_sctx          : In case this is a library module translator, export_sctx
                          is populated with the variable and function declarations

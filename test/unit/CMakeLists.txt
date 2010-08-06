@@ -73,6 +73,4 @@ FOREACH (test ${TestsToRun})
   ZORBA_ADD_TEST_ALLSTORES(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
 
-EXPECTED_FAILURE(test/unit/no_folding  3039990)
-
 ADD_SUBDIRECTORY(debugger)

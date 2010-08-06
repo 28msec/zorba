@@ -118,6 +118,8 @@ public:
 
   bool                                theIsUpdating;
 
+  bool                                theIsSerializingOut;
+
   config                              theConfig;
 
   long                                theTimeout;
