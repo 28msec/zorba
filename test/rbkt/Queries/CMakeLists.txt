@@ -237,6 +237,11 @@ IF (FOUND_XQTS)
 
 ENDIF (FOUND_XQTS)
 
+FIND_PACKAGE(geos)
+IF(NOT GEOS_FOUND)
+  SET_TESTS_PROPERTIES (test/rbkt/zorba/geo/envelope1 PROPERTIES WILL_FAIL TRUE)
+ENDIF(NOT GEOS_FOUND)
+
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue
 # !!! do not abuse this list or you will be prosecuted !!!

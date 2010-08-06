@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<gml:FeatureCollection
+xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+xmlns:gml="http://www.opengis.net/gml"
+xmlns:wfs="http://www.opengis.net/wfs"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns:xlink="http://www.w3.org/1999/xlink"
+xmlns:nen3610="http://www.ravi.nl/nen3610"
+xmlns="http://www.adv-online.de/namespaces/adv/gid/4.0"
+>
+	<gml:boundedBy>
+		<gml:Envelope srsName="urn:adv:crs:DE_DHDN_3GK3_NI100">
+			<gml:pos>3568912.140 5798882.760</gml:pos>
+			<gml:pos>3580879.680 5812112.870</gml:pos>
+		</gml:Envelope>
+	</gml:boundedBy>
+
+	<gml:featureMember>
+		<AX_Strasse gml:id="DENIBKG1000000T6">
+			<lebenszeitintervall>
+				<AA_Lebenszeitintervall>
+					<beginnt>2005-12-13T09:46:41Z</beginnt>
+				</AA_Lebenszeitintervall>
+			</lebenszeitintervall>
+			<modellart>
+				<AA_Modellart>
+					<advStandardModell>Basis-DLM</advStandardModell>
+				</AA_Modellart>
+			</modellart>
+			<bezeichnung>Katt'sche Straße</bezeichnung>
+			<widmung>1307</widmung>
+			<strassenschluessel>0324101161600</strassenschluessel>
+		</AX_Strasse>
+	</gml:featureMember>
+
+	<gml:featureMember>
+		<AX_Strassenachse gml:id="DENIBKG1000001UG">
+			<lebenszeitintervall>
+				<AA_Lebenszeitintervall>
+					<beginnt>2005-12-13T09:47:28Z</beginnt>
+				</AA_Lebenszeitintervall>
+			</lebenszeitintervall>
+			<modellart>
+				<AA_Modellart>
+					<advStandardModell>Basis-DLM</advStandardModell>
+				</AA_Modellart>
+			</modellart>
+			<istTeilVon xlink:href="urn:adv:oid:DENIBKG1000000T6" />
+			<position>
+				<gml:Curve srsName="urn:adv:crs:DE_DHDN_3GK3_NI100">
+					<gml:segments>
+						<gml:LineStringSegment>
+							<gml:pos>3577436.770 5804463.990</gml:pos>
+							<gml:pos>3577435.710 5804474.010</gml:pos>
+						</gml:LineStringSegment>
+						<gml:LineStringSegment>
+							<gml:pos>3577435.710 5804474.010</gml:pos>
+							<gml:pos>3577435.320 5804481.280</gml:pos>
+						</gml:LineStringSegment>
+					</gml:segments>
+				</gml:Curve>
+			</position>
+			<anzahlDerFahrstreifen>2</anzahlDerFahrstreifen>
+		</AX_Strassenachse>
+	</gml:featureMember>
+
+	<gml:featureMember>
+		<AX_Strasse gml:id="DENIBKG10000009Y">
+			<lebenszeitintervall>
+				<AA_Lebenszeitintervall>
+					<beginnt>2005-12-13T09:46:04Z</beginnt>
+				</AA_Lebenszeitintervall>
+			</lebenszeitintervall>
+			<modellart>
+				<AA_Modellart>
+					<advStandardModell>Basis-DLM</advStandardModell>
+				</AA_Modellart>
+			</modellart>
+			<widmung>1306</widmung>
+			<strassenschluessel>0324101806000</strassenschluessel>
+		</AX_Strasse>
+	</gml:featureMember>
+
+	<gml:featureMember>
+		<AX_Strassenachse gml:id="DENIBKG1000001A3">
+			<lebenszeitintervall>
+				<AA_Lebenszeitintervall>
+					<beginnt>2005-12-13T09:46:41Z</beginnt>
+				</AA_Lebenszeitintervall>
+			</lebenszeitintervall>
+			<modellart>
+				<AA_Modellart>
+					<advStandardModell>Basis-DLM</advStandardModell>
+				</AA_Modellart>
+			</modellart>
+			<istTeilVon xlink:href="urn:adv:oid:DENIBKG10000009Y" />
+			<position>
+				<gml:Curve srsName="urn:adv:crs:DE_DHDN_3GK3_NI100">
+					<gml:segments>
+						<gml:LineStringSegment>
+							<gml:pos>3577283.180 5809226.020</gml:pos>
+							<gml:pos>3577276.820 5809242.790</gml:pos>
+						</gml:LineStringSegment>
+						<gml:LineStringSegment>
+							<gml:pos>3577276.820 5809242.790</gml:pos>
+							<gml:pos>3577275.830 5809246.920</gml:pos>
+						</gml:LineStringSegment>
+						<gml:LineStringSegment>
+							<gml:pos>3577275.830 5809246.920</gml:pos>
+							<gml:pos>3577271.590 5809264.760</gml:pos>
+						</gml:LineStringSegment>
+						<gml:LineStringSegment>
+							<gml:pos>3577271.590 5809264.760</gml:pos>
+							<gml:pos>3577266.720 5809282.780</gml:pos>
+						</gml:LineStringSegment>
+					</gml:segments>
+				</gml:Curve>
+			</position>
+			<verkehrsbedeutungUeberoertlich>1000</verkehrsbedeutungUeberoertlich>
+			<breiteDerFahrbahn>4</breiteDerFahrbahn>
+		</AX_Strassenachse>
+	</gml:featureMember>
+
+</gml:FeatureCollection>

@@ -406,7 +406,7 @@ xqpStringStore::char_type xqpStringStore::charAt(size_type charPos) const
 checked_vector<uint32_t> xqpStringStore::getCodepoints() const
 {
   checked_vector<uint32_t> tt;
-  uint16_t vLength;
+  size_type vLength;
 
   vLength = numChars() + 1;
   const char* c = c_str();
