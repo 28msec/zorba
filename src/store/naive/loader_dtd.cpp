@@ -266,13 +266,14 @@ store::Item_t DtdXmlLoader::loadXml(
   theTree->setDocUri(theDocUri);
   theTree->setBaseUri(baseUri);
 
+  char *theBuffer = NULL;
   try
   {
     stream.seekg(0, std::ios::end);
     size_t fileSize = stream.tellg();
     stream.seekg(0, std::ios::beg);
 
-    char theBuffer[fileSize+1];
+    theBuffer = new char[fileSize+1];
     theBuffer[fileSize] = 0;
 
     long numChars = readPacket(stream, theBuffer, fileSize);
@@ -283,6 +284,7 @@ store::Item_t DtdXmlLoader::loadXml(
                                 STR0020_LOADER_IO_ERROR,
                                 "Unknown I/O error");
       abortload();
+      delete[] theBuffer;
       return NULL;
     }
     else if (numChars == 0)
@@ -290,6 +292,7 @@ store::Item_t DtdXmlLoader::loadXml(
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
                                 STR0020_LOADER_IO_ERROR,
                                 "No input data.");
+      delete[] theBuffer;
       abortload();
       return NULL;
     }
@@ -304,6 +307,7 @@ store::Item_t DtdXmlLoader::loadXml(
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0021_LOADER_PARSING_ERROR, 
                                 "Failed to initialize parser");
+      delete[] theBuffer;
       abortload();
 			return NULL;
     }
@@ -325,6 +329,7 @@ store::Item_t DtdXmlLoader::loadXml(
           ctxt->lastError.message << std::endl; std::cout.flush();
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0021_LOADER_PARSING_ERROR,
                                 "Unable to create tree");
+      delete[] theBuffer;
       abortload();
       return NULL;
     }
@@ -335,6 +340,7 @@ store::Item_t DtdXmlLoader::loadXml(
 
       if (theErrorManager->hasErrors())
       {
+        delete[] theBuffer;
         abortload();
         return NULL;
       }
@@ -344,14 +350,17 @@ store::Item_t DtdXmlLoader::loadXml(
     {
       ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0020_LOADER_IO_ERROR,
                                 "Unknown I/O error");
+      delete[] theBuffer;
       abortload();
       return NULL;
     }
 
     xmlParseChunk(ctxt, theBuffer, 0, 1);
+    delete[] theBuffer;
   }
   catch(...)
   {
+    delete[] theBuffer;
     abortload();
     thePathStack.clear();
     return NULL;
