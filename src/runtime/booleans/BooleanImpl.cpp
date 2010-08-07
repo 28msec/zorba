@@ -777,7 +777,7 @@ long CompareIterator::compare(
   xqtref_t type0 = tm->create_value_type(aItem0.getp());
   xqtref_t type1 = tm->create_value_type(aItem1.getp());
 
-  try 
+  try
   {
     if (TypeOps::is_subtype(tm, *type0, *GENV_TYPESYSTEM.DURATION_TYPE_ONE) &&
         TypeOps::is_subtype(tm, *type1, *GENV_TYPESYSTEM.DURATION_TYPE_ONE))
@@ -788,11 +788,11 @@ long CompareIterator::compare(
       else
         return -2;
     }
-    else if (TypeOps::is_subtype(tm, *type1, *type0)) 
+    else if (TypeOps::is_subtype(tm, *type1, *type0))
     {
       return aItem0->compare(aItem1, timezone, aCollation);
     }
-    else if (TypeOps::is_subtype(tm, *type0, *type1)) 
+    else if (TypeOps::is_subtype(tm, *type0, *type1))
     {
       return -aItem1->compare(aItem0, timezone, aCollation);
     }
@@ -812,7 +812,7 @@ long CompareIterator::compare(
       }
     }
   }
-  catch(error::ZorbaError& e) 
+  catch(error::ZorbaError& e)
   {
     if (e.theErrorCode == STR0040_TYPE_ERROR)
       return -2;
@@ -891,16 +891,17 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
         if ((nonempty = (cmp > -2))) bRes = (cmp == 1);
         break;
       case CompareConsts::VALUE_LESS_EQUAL:
-        if ((nonempty = (cmp > -2))) bRes = (cmp <= 0);
+        if ((nonempty = (cmp > -2))) bRes = (cmp == -1 || cmp == 0);
         break;
       case CompareConsts::VALUE_GREATER_EQUAL:
-        if ((nonempty = (cmp > -2))) bRes = (cmp >= 0);
+        if ((nonempty = (cmp > -2))) bRes = (cmp == 0 || cmp == 1);
         break;
       default:
         ZORBA_ASSERT (false);
       }
     }
-    }
+    } //switch
+
     if (nonempty)
       STACK_PUSH (GENV_ITEMFACTORY->createBoolean (result, bRes), state);
 
