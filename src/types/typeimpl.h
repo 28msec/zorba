@@ -465,12 +465,7 @@ private:
 public:
   SERIALIZABLE_CLASS(FunctionXQType)
   SERIALIZABLE_CLASS_CONSTRUCTOR2(FunctionXQType, XQType)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar, (XQType*)this);
-    // TODO serialize m_param_types
-    ar & m_return_type;
-  }
+  void serialize(::zorba::serialization::Archiver &ar);
 
 public:
   FunctionXQType(

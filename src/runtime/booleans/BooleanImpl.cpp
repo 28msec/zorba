@@ -879,28 +879,31 @@ bool TypedValueCompareIterator<ATC>::nextImpl(store::Item_t& result, PlanState& 
       break;
 
     default:
-    {
-      cmp = lItem0->compare (lItem1, theTimezone, theCollation);
-
-      switch (theCompType)
       {
-      case CompareConsts::VALUE_LESS:
-        if ((nonempty = (cmp > -2))) bRes = (cmp == -1);
-        break;
-      case CompareConsts::VALUE_GREATER:
-        if ((nonempty = (cmp > -2))) bRes = (cmp == 1);
-        break;
-      case CompareConsts::VALUE_LESS_EQUAL:
-        if ((nonempty = (cmp > -2))) bRes = (cmp == -1 || cmp == 0);
-        break;
-      case CompareConsts::VALUE_GREATER_EQUAL:
-        if ((nonempty = (cmp > -2))) bRes = (cmp == 0 || cmp == 1);
-        break;
-      default:
-        ZORBA_ASSERT (false);
-      }
-    }
-    } //switch
+        cmp = lItem0->compare (lItem1, theTimezone, theCollation);
+
+        if (cmp > -2)
+          nonempty = true;
+
+        switch (theCompType)
+        {
+        case CompareConsts::VALUE_LESS:
+          bRes = (cmp == -1);
+          break;
+        case CompareConsts::VALUE_GREATER:
+          bRes = (cmp == 1);
+          break;
+        case CompareConsts::VALUE_LESS_EQUAL:
+          bRes = (cmp == -1 || cmp == 0);
+          break;
+        case CompareConsts::VALUE_GREATER_EQUAL:
+          bRes = (cmp == 0 || cmp == 1);
+          break;
+        default:
+          ZORBA_ASSERT (false);
+        } // switch (theCompType)
+      } // default
+    } // switch (theCompType)
 
     if (nonempty)
       STACK_PUSH (GENV_ITEMFACTORY->createBoolean (result, bRes), state);

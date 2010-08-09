@@ -468,7 +468,7 @@ FunctionXQType::is_equal(const TypeManager* tm, const FunctionXQType& other) con
 }
 
 
-/** 
+/**
  * Bi is function(Ba_1, Ba_2, ... Ba_N) as Br,
  * Ai is function(Aa_1, Aa_2, ... Aa_M) as Ar,
  * Ai is subtype of Bi iff
@@ -479,7 +479,7 @@ FunctionXQType::is_equal(const TypeManager* tm, const FunctionXQType& other) con
 bool
 FunctionXQType::is_subtype(const TypeManager* tm, const FunctionXQType& supertype) const
 {
-  if (this->get_number_params() != supertype.get_number_params()) 
+  if (this->get_number_params() != supertype.get_number_params())
   {
     return false;
   }
@@ -493,9 +493,9 @@ FunctionXQType::is_subtype(const TypeManager* tm, const FunctionXQType& supertyp
 
   size_t i = 0;
   for (std::vector<xqtref_t>::const_iterator lIter = m_param_types.begin();
-       lIter != m_param_types.end(); ++lIter) 
+       lIter != m_param_types.end(); ++lIter)
   {
-    if (!TypeOps::is_subtype(tm, *lIter->getp(), *supertype[i++].getp())) 
+    if (!TypeOps::is_subtype(tm, *lIter->getp(), *supertype[i++].getp()))
     {
       return false;
     }
@@ -504,6 +504,12 @@ FunctionXQType::is_subtype(const TypeManager* tm, const FunctionXQType& supertyp
   return true;
 }
 
+void FunctionXQType::serialize(::zorba::serialization::Archiver &ar)
+{
+  serialize_baseclass(ar, (XQType*)this);
+  ar & m_param_types;
+  ar & m_return_type;
+}
 
 std::ostream&
 FunctionXQType::serialize_ostream(std::ostream& os) const
@@ -615,7 +621,7 @@ xqtref_t UserDefinedXQType::getBaseBuiltinType() const
 
   while (builtinType->type_kind() == XQType::USER_DEFINED_KIND)
   {
-    const UserDefinedXQType* tmp = 
+    const UserDefinedXQType* tmp =
     reinterpret_cast<const UserDefinedXQType*>(builtinType.getp());
 
     builtinType = tmp->getBaseType();

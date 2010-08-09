@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -79,7 +79,7 @@ function_item_expr::function_item_expr(
     const store::Item* aQName,
     function* f,
     uint32_t aArity)
-	: 
+	:
   expr(sctx, loc, function_item_expr_kind),
   theQName(const_cast<store::Item*>(aQName)),
   theFunction(f),
@@ -117,6 +117,7 @@ void function_item_expr::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, (expr*)this);
   ar & theQName;
   ar & theFunction;
+  ar & theArity;
   ar & theScopedVariables;
 }
 
@@ -127,9 +128,9 @@ void function_item_expr::add_variable(expr* var)
 }
 
 
-void function_item_expr::set_function(user_function_t& udf) 
+void function_item_expr::set_function(user_function_t& udf)
 {
-  theFunction = udf; 
+  theFunction = udf;
   theArity = udf->getSignature().arg_count();
 }
 
