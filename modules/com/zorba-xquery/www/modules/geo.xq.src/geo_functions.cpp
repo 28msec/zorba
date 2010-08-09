@@ -133,6 +133,14 @@ bool GeoFunction::getChild(zorba::Item &lItem, const char *localname, const char
   Iterator_t    children;
   children = lItem.getChildren();
   children->open();
+  bool retval = getChild(children, localname, ns, child_item);
+  children->close();
+  return retval;
+}
+
+bool GeoFunction::getChild(zorba::Iterator_t children, const char *localname, const char *ns, 
+                           zorba::Item &child_item) const
+{
   while(children->next(child_item))
   {
     if(child_item.getNodeKind() != store::StoreConsts::elementNode)
@@ -170,10 +178,13 @@ bool GeoFunction::checkOptionalAttribute(zorba::Item &item, const char *name, co
     String  attr_value = attr_item.getStringValue();
     if(!attr_value.byteEqual(value, strlen(value)))
     {
+      children->close();
       return false;
     }
+    children->close();
     return true;
   }
+  children->close();
   return true;
 }
 
@@ -187,66 +198,116 @@ const geos::geom::GeometryFactory   *GeoFunction::get_geometryFactory() const
 
 void GeoFunction::readPointPosCoordinates(zorba::Item &lItem, double *x, double *y) const
 {
-  zorba::Item   pos_item;
-  if(!getChild(lItem, "pos", "http://www.opengis.net/gml", pos_item))
-  {//get upset
+  Iterator_t    children;
+  children = lItem.getChildren();
+  children->open();
+  bool retval = readPointPosCoordinates(children, x, y);
+  children->close();
+  if(!retval)
+  {
     std::stringstream lErrorMessage;
-    lErrorMessage << "gml:Point node must have a gml:pos child";
+    lErrorMessage << "gml node must have a gml:pos child";
     throwError(lErrorMessage.str(), XPTY0004);
+  }
+}
+bool GeoFunction::readPointPosCoordinates(zorba::Iterator_t children, double *x, double *y) const
+{
+  zorba::Item   pos_item;
+  if(!getChild(children, "pos", "http://www.opengis.net/gml", pos_item))
+  {//get upset
+    //std::stringstream lErrorMessage;
+    //lErrorMessage << "gml:Point node must have a gml:pos child";
+    //throwError(lErrorMessage.str(), XPTY0004);
+    return false;
   }
 
   String    pos_string;
   pos_string = pos_item.getStringValue();
   *x = 0;
   *y = 0;
-  sscanf(pos_string.c_str(), "%lf %lf", x, y);
+  const char *str = pos_string.c_str();
+  while(((*str == ' ') ||
+        (*str == '\t') ||
+        (*str == '\n') ||
+        (*str == '\r')) &&
+        (*str != 0))
+     str++;
+  sscanf(str, "%lf", x);
+  while((*str != ' ') &&
+        (*str != '\t') &&
+        (*str != '\n') &&
+        (*str != '\r') &&
+        (*str != 0))
+     str++;
+  while(((*str == ' ') ||
+      (*str == '\t') ||
+      (*str == '\n') ||
+      (*str == '\r')) &&
+      (*str != 0))
+     str++;
+  sscanf(str, "%lf", y);
+  return true;
 }
 
 void GeoFunction::readPosListCoordinates(zorba::Item &lItem, geos::geom::CoordinateSequence *cl) const
 {
   zorba::Item   poslist_item;
-  if(!getChild(lItem, "posList", "http://www.opengis.net/gml", poslist_item))
+  if(getChild(lItem, "posList", "http://www.opengis.net/gml", poslist_item))
+  {
+    String    poslist_string;
+    poslist_string = poslist_item.getStringValue();
+    double x, y;
+    bool load_x = true;
+    const char *str_poslist = poslist_string.c_str();
+    while(((*str_poslist == ' ') ||
+          (*str_poslist == '\t') ||
+          (*str_poslist == '\n') ||
+          (*str_poslist == '\r')) &&
+          (*str_poslist != 0))
+       str_poslist++;
+    x = 0; y = 0;
+    while(str_poslist[0])
+    {
+      if(load_x)
+        x = atof(str_poslist);
+      else
+      {
+        y = atof(str_poslist);
+        cl->add(geos::geom::Coordinate(x, y));
+        x = 0; y = 0;
+      }
+      load_x = !load_x;
+      while((*str_poslist != ' ') &&
+            (*str_poslist != '\t') &&
+            (*str_poslist != '\n') &&
+            (*str_poslist != '\r') &&
+            (*str_poslist != 0))
+         str_poslist++;
+      while(((*str_poslist == ' ') ||
+          (*str_poslist == '\t') ||
+          (*str_poslist == '\n') ||
+          (*str_poslist == '\r')) &&
+          (*str_poslist != 0))
+         str_poslist++;
+    }
+  }
+  else if(getChild(lItem, "pos", "http://www.opengis.net/gml", poslist_item))
+  {
+    Iterator_t    children;
+    children = lItem.getChildren();
+    children->open();
+    double x = 0, y = 0;
+    while(readPointPosCoordinates(children, &x, &y))
+    {
+      cl->add(geos::geom::Coordinate(x, y));
+    }
+    children->close();
+  }
+  else
   {//get upset
     std::stringstream lErrorMessage;
     lErrorMessage << lItem.getLocalName() << " node must have a gml:posList child";
     throwError(lErrorMessage.str(), XPTY0004);
-  }
-
-  String    poslist_string;
-  poslist_string = poslist_item.getStringValue();
-  double x, y;
-  bool load_x = true;
-  const char *str_poslist = poslist_string.c_str();
-  while(((*str_poslist == ' ') ||
-        (*str_poslist == '\t') ||
-        (*str_poslist == '\n') ||
-        (*str_poslist == '\r')) &&
-        (*str_poslist != 0))
-     str_poslist++;
-  x = 0; y = 0;
-  while(str_poslist[0])
-  {
-    if(load_x)
-      x = atof(str_poslist);
-    else
-    {
-      y = atof(str_poslist);
-      cl->add(geos::geom::Coordinate(x, y));
-      x = 0; y = 0;
-    }
-    load_x = !load_x;
-    while((*str_poslist != ' ') &&
-          (*str_poslist != '\t') &&
-          (*str_poslist != '\n') &&
-          (*str_poslist != '\r') &&
-          (*str_poslist != 0))
-       str_poslist++;
-  while(((*str_poslist == ' ') ||
-        (*str_poslist == '\t') ||
-        (*str_poslist == '\n') ||
-        (*str_poslist == '\r')) &&
-        (*str_poslist != 0))
-       str_poslist++;
   }
 }
 
