@@ -62,10 +62,10 @@ static void fillAddr(const string &address, unsigned short port,
     theLock.unlock();
     throw DebuggerSocketException("Failed to resolve name (gethostbyname())");
   }
-  theLock.unlock();
   addr.sin_addr.s_addr = *((unsigned long *) host->h_addr_list[0]);
 
   addr.sin_port = htons(port);     // Assign port in network byte order
+  theLock.unlock();
 }
 
 // Socket Code
