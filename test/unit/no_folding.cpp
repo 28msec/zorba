@@ -32,7 +32,7 @@
 
 using namespace zorba;
 
-namespace zorba { namespace no_folding {
+namespace zorba { namespace nofolding {
 
 bool lCalledBlockFolding = false;
 
@@ -70,7 +70,7 @@ public:
 };
 
 
-} /* namespace no_folding */ } /* namespace zorba */
+} /* namespace nofolding */ } /* namespace zorba */
 
 
 int
@@ -90,7 +90,7 @@ no_folding(int argc, char* argv[])
       std::ifstream lIn("fold_main.xq");
       assert(lIn.good());
       std::ostringstream lOut;
-      no_folding::FoldingModule lMod;
+      nofolding::FoldingModule lMod;
 
       {
         StaticContext_t lSctx = lZorba->createStaticContext();
@@ -103,7 +103,7 @@ no_folding(int argc, char* argv[])
 
         // make sure constant folding doesn't happen, i.e. the function is not evaluated
         // not even when serializing the plan
-        if (no_folding::lCalledBlockFolding) 
+        if (nofolding::lCalledBlockFolding) 
         {
           std::cerr << "Test failed !" << std::endl;
           return 1;
