@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 #include <sstream>
+#include <iostream>
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
@@ -173,6 +174,33 @@ bool test_call_stack4(Zorba* aZorba)
   return lResult;
 }
 
+// error must only be addd to the stack trace if throw 
+// in the scope of the function's body.
+bool test_call_stack5(Zorba* aZorba)
+{
+  bool lResult = true;
+  std::stringstream lStream;
+  lStream << "declare function local:foo($x)" << std::endl;
+  lStream << "{" << std::endl;
+  lStream << "  $x" << std::endl;
+  lStream << "};" << std::endl;
+  lStream << "" << std::endl;
+  lStream << "let $x := fn:error(xs:QName('local:foo'))" << std::endl;
+  lStream << "return local:foo($x)" << std::endl;
+  XQuery_t lQuery = aZorba->compileQuery(lStream);
+  try {
+    std::stringstream lQueryResult;
+    lQueryResult << lQuery;
+  } catch (ZorbaException& e) {
+    ZorbaException::StackTrace_t lTrace = e.getStackTrace();
+    if (lTrace.size() != 0)
+      lResult = false;
+  } catch (...) {
+    lResult = false;
+  }
+  return lResult;
+}
+
 int call_stack (int argc, char* argv[])
 {
   void* lStore = zorba::StoreManager::getStore();
@@ -184,6 +212,8 @@ int call_stack (int argc, char* argv[])
   if (!test_call_stack3(lZorba))
     return 1;
   if (!test_call_stack4(lZorba))
+    return 1;
+  if (!test_call_stack5(lZorba))
     return 1;
   return 0;
 }
