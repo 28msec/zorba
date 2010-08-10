@@ -45,6 +45,12 @@ namespace zorba { namespace http_client {
     long thePostDataSize;
     String theMultipartName;
     String theMultiPartFileName;
+    // saved strings which won't be copied by curl
+    std::string theMethodString;
+    std::string theUserPW;
+    std::string theAuthMethod;
+    std::vector<std::string> theHeaderStrings;
+    std::string theContentType;
 
   public: //Constructions
     HttpRequestHandler(CURL* aCurl,

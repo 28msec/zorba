@@ -78,7 +78,9 @@ namespace zorba { namespace http_client {
                                         int aTimeout /*= -1*/ )
   {
     aMethod.uppercase();
-    curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, aMethod.c_str());
+    const char* lStr = aMethod.c_str();
+    theMethodString = lStr;
+    curl_easy_setopt(theCurl, CURLOPT_CUSTOMREQUEST, theMethodString.c_str());
     if (href != "") {
       curl_easy_setopt(theCurl, CURLOPT_URL, href.c_str());
     }
@@ -92,7 +94,8 @@ namespace zorba { namespace http_client {
     }
     if (aUsername != "" && !aSendAuthorization) {
       String lUserPw = aUsername + ":" + aPassword;
-      curl_easy_setopt(theCurl, CURLOPT_USERPWD, lUserPw.c_str());
+      theUserPW = lUserPw.c_str();
+      curl_easy_setopt(theCurl, CURLOPT_USERPWD, theUserPW.c_str());
       if (aAuthMethod.lowercase() == "basic") {
         curl_easy_setopt(theCurl, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
       } else if (aAuthMethod.lowercase() == "digest") {
@@ -104,10 +107,12 @@ namespace zorba { namespace http_client {
         String lAuthString = aUsername + ":" + aPassword;
         String lAuth = "Authorization: Basic ";
         lAuth += encoding::Base64::encode(lAuthString);
-        theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lAuth.c_str());
+        theAuthMethod = lAuth.c_str();
+        theHeaderLists[0] = curl_slist_append(theHeaderLists[0], theAuthMethod.c_str());
       } else if (aAuthMethod.lowercase() == "digest") {
         String lUserPw = aUsername + ":" + aPassword;
-        curl_easy_setopt(theCurl, CURLOPT_USERPWD, lUserPw.c_str());
+        theUserPW = lUserPw.c_str();
+        curl_easy_setopt(theCurl, CURLOPT_USERPWD, theUserPW.c_str());
         curl_easy_setopt(theCurl, CURLOPT_HTTPAUTH, CURLAUTH_DIGEST);
       }
     }
@@ -122,6 +127,7 @@ namespace zorba { namespace http_client {
     std::string lValue = aName.c_str();
     lValue += ":";
     lValue += aValue.c_str();
+    theHeaderStrings.push_back(lValue);
     if (!theInsideMultipart) {
       theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValue.c_str());
     } else {
@@ -154,12 +160,12 @@ namespace zorba { namespace http_client {
     theLastSerializerOptions = aSerializerOptions;
     theSerStream = new std::ostringstream();
     theCurrentContentType = aContentType;
-    std::string lContentType = "Content-Type: ";
-    lContentType += aContentType.c_str();
+    theContentType = "Content-Type: ";
+    theContentType += aContentType.c_str();
     if (!theInsideMultipart) {
-      theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lContentType.c_str());
+      theHeaderLists[0] = curl_slist_append(theHeaderLists[0], theContentType.c_str());
     } else {
-      theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), lContentType.c_str());
+      theHeaderLists.back() = curl_slist_append(theHeaderLists.back(), theContentType.c_str());
     }
   }
 
@@ -211,6 +217,7 @@ namespace zorba { namespace http_client {
     theInsideMultipart = true;
     std::string lValue = "Content-Type: ";
     lValue += aContentType.c_str();
+    theHeaderStrings.push_back (lValue);
     theHeaderLists[0] = curl_slist_append(theHeaderLists[0], lValue.c_str());
     theHeaderLists.push_back(NULL);
   }
