@@ -414,16 +414,19 @@ ulong SimpleStore::createTreeId()
 /*******************************************************************************
 
 ********************************************************************************/
-XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager)
+XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager,
+    store::LoadProperties& loadProperties)
 {
 #ifndef ZORBA_STORE_MSDOM
-  return new FastXmlLoader(theItemFactory,
-                           aErrorManager,
-                           store::Properties::instance()->buildDataguide());
-  /* todo cezar enable when dtd option is passed*/
-//  return new DtdXmlLoader(theItemFactory,
-//                           aErrorManager,
-//                           store::Properties::instance()->buildDataguide());
+
+  if ( loadProperties.getEnableDtd() )
+    return new DtdXmlLoader(theItemFactory,
+                            aErrorManager,
+                            store::Properties::instance()->buildDataguide());
+  else
+    return new FastXmlLoader(theItemFactory,
+                             aErrorManager,
+                             store::Properties::instance()->buildDataguide());
 
 #else
 
@@ -936,6 +939,37 @@ store::Item_t SimpleStore::loadDocument(
     std::istream& stream,
     bool storeDocument)
 {
+  store::LoadProperties lLoadProperties;
+  lLoadProperties.setStoreDocument(storeDocument);
+  return loadDocument(baseUri, docUri, stream, lLoadProperties);
+}
+
+
+/*******************************************************************************
+  For lazy loading...
+  Param stream is a heap pointer to an input stream. This is to be deallocated
+  by Zorba.
+********************************************************************************/
+store::Item_t SimpleStore::loadDocument(
+    const xqpStringStore_t& baseUri,
+    const xqpStringStore_t& docUri,
+    std::istream* stream,
+    bool storeDocument)
+{
+  store::LoadProperties lLoadProperties;
+  lLoadProperties.setStoreDocument(storeDocument);
+  return loadDocument(baseUri, docUri, stream, lLoadProperties);
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+store::Item_t SimpleStore::loadDocument(
+    const xqpStringStore_t& baseUri,
+    const xqpStringStore_t& docUri,
+    std::istream& stream,
+    store::LoadProperties& loadProperties)
+{
   if (docUri == NULL)
     return NULL;
 
@@ -950,7 +984,7 @@ store::Item_t SimpleStore::loadDocument(
   }
 
   error::ErrorManager lErrorManager;
-  std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager));
+  std::auto_ptr<XmlLoader> loader(getXmlLoader(&lErrorManager, loadProperties));
 
   root = loader->loadXml(baseUri, docUri, stream);
   if (lErrorManager.hasErrors())
@@ -959,7 +993,7 @@ store::Item_t SimpleStore::loadDocument(
                       lErrorManager.getErrors().front().theDescription, "");
   }
 
-  if (root != NULL && storeDocument)
+  if (root != NULL && loadProperties.getStoreDocument())
     theDocuments.insert(urip, root);
 
   return root.getp();
@@ -975,13 +1009,13 @@ store::Item_t SimpleStore::loadDocument(
     const xqpStringStore_t& baseUri,
     const xqpStringStore_t& docUri,
     std::istream* stream,
-    bool storeDocument)
+    store::LoadProperties& loadProperties)
 {
   store::Item_t docitem;
   try
   {
     //do full loading for now
-    docitem = loadDocument(baseUri, docUri, *stream, storeDocument);
+    docitem = loadDocument(baseUri, docUri, *stream, loadProperties);
     delete stream;
   }
   catch(...)

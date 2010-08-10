@@ -87,6 +87,28 @@ public:
         const String& xml_uri,
         validation_mode_t mode);
 
+  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
+  virtual bool
+  setVariableAsDocument(
+        const String& aQName,
+        const String& aDocURI,
+        std::auto_ptr<std::istream> aStream,
+        validation_mode_t mode);
+
+  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
+  virtual bool
+  setVariableAsDocument(
+        const String& aQName,
+        const String& xml_uri,
+        LoadProperties& aLoadProperties);
+
+  virtual bool
+  setVariableAsDocument(
+        const String& aQName,
+        const String& aDocURI,
+        std::auto_ptr<std::istream> aStream,
+        LoadProperties& aLoadProperties);
+
   virtual bool
   setVariable(
         const String& aQName,
@@ -103,22 +125,27 @@ public:
     Iterator_t& aIterator);
 
   virtual bool
-  setVariableAsDocument(
-        const String& aQName,
-        const String& aDocURI,
-        std::auto_ptr<std::istream> aStream,
-        validation_mode_t mode);
-
-  virtual bool
   setContextItem(const Item& aItem);
 
+  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
   virtual bool
   setContextItemAsDocument(
         const String& aDocURI,
         std::auto_ptr<std::istream> aInStream);
 
+  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
   virtual bool
   setContextItemAsDocument(const String& aDocURI);
+
+  virtual bool
+  setContextItemAsDocument(
+        const String& aDocURI,
+        std::auto_ptr<std::istream> aInStream,
+        LoadProperties& aLoadProperties);
+
+  virtual bool
+  setContextItemAsDocument(const String& aDocURI,
+                           LoadProperties& aLoadProperties);
 
   virtual bool
   getContextItem(Item& aItem);
@@ -151,6 +178,17 @@ public:
 
 protected:
   void checkNoIterators();
+
+  void validateIfNecesary(store::Item_t& docItem,
+                          xqpStringStore_t& docUri,
+                          store::Item_t& docUriItem,
+                          LoadProperties& aLoadProperties);
+
+  void validateIfNecesary(store::Item_t& docItem,
+                          xqpStringStore_t& docUri,
+                          xqpStringStore_t& baseUri,
+                          std::auto_ptr<std::istream> aInStream,
+                          LoadProperties& aLoadProperties);
 };
 
 } /* namespace zorba */

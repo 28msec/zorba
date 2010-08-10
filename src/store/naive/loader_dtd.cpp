@@ -334,7 +334,7 @@ store::Item_t DtdXmlLoader::loadXml(
       return NULL;
     }
     /****************/
-    while ((numChars = readPacket(stream, theBuffer, 6 /*INPUT_CHUNK_SIZE*/)) > 0)
+    while ((numChars = readPacket(stream, theBuffer, INPUT_CHUNK_SIZE)) > 0)
     {
       xmlParseChunk(ctxt, theBuffer, numChars, 0);
 

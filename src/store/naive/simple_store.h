@@ -176,7 +176,7 @@ public:
 
   long getTraceLevel() const { return theTraceLevel; }
 
-  XmlLoader* getXmlLoader(error::ErrorManager*);
+  XmlLoader* getXmlLoader(error::ErrorManager*, store::LoadProperties& loadProperties);
 
   ulong createCollectionId();
 
@@ -244,6 +244,18 @@ public:
         const xqpStringStore_t& docUri,
         std::istream* stream,
         bool storeDocument);
+
+  store::Item_t loadDocument(
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& docUri,
+        std::istream& stream,
+        store::LoadProperties& loadProperties);
+
+  store::Item_t loadDocument(
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& docUri,
+        std::istream* stream,
+        store::LoadProperties& loadProperties);
 
   void addNode(const xqpStringStore_t& uri, const store::Item_t& node);
 

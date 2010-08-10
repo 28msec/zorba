@@ -31,6 +31,7 @@ SYNC_CODE(class Lock;)
 namespace store 
 {
 
+class LoadProperties;
 class IndexSpecification;
 class IteratorFactory;
 
@@ -157,6 +158,7 @@ public:
    *        to the document in the store.
    * @return rchandle to the newly created document or NULL if a document with
    *         the given uri exists already.
+   * @deprecated Use loadDocument method with LoadProperties
    */
   virtual Item_t loadDocument(
          const xqpStringStore_t& baseUri,
@@ -178,12 +180,52 @@ public:
    *        documents)
    * @return rchandle to the newly created document or NULL if a document with
    *         the given uri exists already.
+   * @deprecated Use loadDocument method with LoadProperties
    */
   virtual Item_t loadDocument(
         const xqpStringStore_t& baseUri,
         const xqpStringStore_t& docUri,
         std::istream* stream,
         bool storeDocument = true) = 0;
+
+  /**
+   * Load a document to the store. The document is loaded from an input stream.
+   *
+   * @param baseUri The base uri of the document to load.
+   * @param docUri The uri of the document to load. This uri can be used to refer
+   *        to the document in the store.
+   * @param stream User heap allocated stream. This will NOT be freed by Zorba when
+   *        finishing loading doc.
+   * @param loadProperties Properties on how to do the document loading
+   * @return rchandle to the newly created document or NULL if a document with
+   *         the given uri exists already.
+   */
+  virtual Item_t loadDocument(
+         const xqpStringStore_t& baseUri,
+         const xqpStringStore_t& docUri,
+         std::istream& stream,
+         LoadProperties& loadProperties) = 0;
+
+  /**
+   * Load a document to the store. The document is loaded from an input stream.
+   * Do the lazy loading of document. The stream will be freed by Zorba when finished.
+   *
+   * @param baseUri The base uri of the document to load.
+   * @param docUri The uri of the document to load. This uri can be used to refer
+   *        to the document in the store.
+   * @param stream User heap allocated stream. This will be freed by Zorba when
+   *        finishing loading doc.
+   * @param loadProperties Properties on how to do the document loading
+   * @return rchandle to the newly created document or NULL if a document with
+   *         the given uri exists already.
+   * @deprecate
+   */
+  virtual Item_t loadDocument(
+        const xqpStringStore_t& baseUri,
+        const xqpStringStore_t& docUri,
+        std::istream* stream,
+        LoadProperties& loadProperties) = 0;
+
 
   /**
    * Get an rchandle to the root node of the document with the given uri.
@@ -313,6 +355,57 @@ public:
    * Returns integrity constraint  for this name, NULL if not active.
    */
   virtual IC* getIC(const Item* icQName)  = 0;
+};
+
+
+/**
+ * How should the document load be done
+ */
+class LoadProperties
+{
+private:
+  bool theStoreDocument;
+  bool theEnableDtdLoader;
+
+public:
+  LoadProperties() : theStoreDocument(true), theEnableDtdLoader(false) {}
+  virtual ~LoadProperties() {}
+
+  /**
+   * Set the property storeDocument, it specifies whether the document
+   * should be kept in the store (i.e. added to the set of documents)
+   */
+  void setStoreDocument(bool aStoreDocument)
+  {
+    theStoreDocument = aStoreDocument;
+  }
+
+  /**
+   * Get the property storeDocument, it specifies whether the document
+   * should be kept in the store (i.e. added to the set of documents)
+   */
+  bool getStoreDocument()
+  {
+    return theStoreDocument;
+  }
+
+  /**
+   * Set the property enableDtd, it specifies whether the document's
+   * dtd should be enabled when loading
+   */
+  void setEnableDtd(bool aEnableDtdLoader)
+  {
+    theEnableDtdLoader = aEnableDtdLoader;
+  }
+
+  /**
+   * Get the property enableDtd, it specifies whether the document's
+   * dtd should be enabled when loading
+   */
+  bool getEnableDtd()
+  {
+    return theEnableDtdLoader;
+  }
 };
 
 

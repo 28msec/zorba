@@ -29,11 +29,13 @@ static void set_var(
     zorba::DynamicContext* dctx,
     bool inlineFile,
     std::string name,
-    std::string val);
+    std::string val,
+    bool enableDtd);
 
 static void set_vars(
     DriverContext& driverCtx,
-    zorba::DynamicContext* dctx);
+    zorba::DynamicContext* dctx,
+    bool enableDtd);
 
 
 /*******************************************************************************
@@ -258,7 +260,8 @@ zorba::Item createItem(DriverContext& driverCtx, std::string strValue)
 void createDynamicContext(
     DriverContext& driverCtx,
     const zorba::StaticContext_t& sctx,
-    zorba::XQuery_t& query)
+    zorba::XQuery_t& query,
+    bool enableDtd)
 {
   zorba::Zorba* engine = driverCtx.theEngine;
   Specification& spec = *driverCtx.theSpec;
@@ -290,7 +293,7 @@ void createDynamicContext(
   }
   
   // Set external vars
-  set_vars(driverCtx, dctx);
+  set_vars(driverCtx, dctx, enableDtd);
 
   if (spec.hasInputQuery()) 
   {
@@ -322,7 +325,8 @@ void createDynamicContext(
 ********************************************************************************/
 void set_vars(
     DriverContext& driverCtx,
-    zorba::DynamicContext* dctx)
+    zorba::DynamicContext* dctx,
+    bool enableDtd)
 {
   Specification& spec = *driverCtx.theSpec;
 
@@ -334,7 +338,8 @@ void set_vars(
             dctx,
             (*lIter).theInline,
             (*lIter).theVarName,
-            (*lIter).theVarValue);
+            (*lIter).theVarValue,
+            enableDtd);
   }
   //std::cout << "=== end of setting variables ==" << std::endl;
 }
@@ -350,7 +355,8 @@ void set_var(
     zorba::DynamicContext* dctx,
     bool inlineFile,
     std::string name,
-    std::string val)
+    std::string val,
+    bool enableDtd)
 {
   zorba::str_replace_all(val, "$RBKT_SRC_DIR", driverCtx.theRbktSourceDir);
   zorba::str_replace_all(val, "$RBKT_BINARY_DIR", driverCtx.theRbktBinaryDir);
@@ -381,16 +387,21 @@ void set_var(
       assert (false);
     }
 
-		if(name != ".")
+
+    zorba::LoadProperties lLoadProperties;
+    lLoadProperties.setEnableDtd(enableDtd);
+
+    if(name != ".")
     {
+      lLoadProperties.setValidationMode(validate_lax);
 			dctx->setVariableAsDocument(name,
                                   val.c_str(),
                                   std::auto_ptr<std::istream>(is),
-                                  validate_lax);
+                                  lLoadProperties);
     }
 		else
     {
-			dctx->setContextItemAsDocument(val.c_str(), std::auto_ptr<std::istream>(is));
+			dctx->setContextItemAsDocument(val.c_str(), std::auto_ptr<std::istream>(is), lLoadProperties);
     }
   }
 }

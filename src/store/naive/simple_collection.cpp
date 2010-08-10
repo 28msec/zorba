@@ -72,7 +72,9 @@ store::Item_t SimpleCollection::loadDocument(
     long position)
 {
   error::ErrorManager lErrorManager;
-  std::auto_ptr<XmlLoader> loader(GET_STORE().getXmlLoader(&lErrorManager));
+  store::LoadProperties lLoadProperties;
+  std::auto_ptr<XmlLoader> loader(GET_STORE().
+      getXmlLoader(&lErrorManager, lLoadProperties));
   xqpStringStore_t docUri;
   xqpStringStore_t baseUri;
 

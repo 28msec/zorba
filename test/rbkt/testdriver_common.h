@@ -135,7 +135,8 @@ public:
 void createDynamicContext(
     DriverContext& driverCtx,
     const zorba::StaticContext_t& sctx,
-    zorba::XQuery_t& query);
+    zorba::XQuery_t& query,
+    bool enableDtd);
 
 
 void slurp_file(

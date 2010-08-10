@@ -40,7 +40,8 @@ public:
   Specification()
     : theInline(false),
       theComparisonMethod("Fragment"),
-      theUseIndent(false) 
+      theUseIndent(false),
+      theEnableDtd(false)
   {}
 
 private:
@@ -56,6 +57,7 @@ private:
   std::string              theComparisonMethod; // default is Fragment such that the user doesn't need to care about root tags for sequences etc
   std::string              theDefaultCollection;
   bool                     theUseIndent;
+  bool                     theEnableDtd;
 
   void setInline() {
     theInline = true;
@@ -154,6 +156,10 @@ public:
     return theUseIndent;
   }
 
+  bool getEnableDtd() const {
+    return theEnableDtd;
+  }
+
   void tokenize(const std::string& str,
                 std::vector<std::string>& tokens,
                 const std::string& delimiters)
@@ -195,6 +201,7 @@ public:
     std::vector<std::string>::iterator it;
 
     tokenize(lContent.str(), lines, "\n");
+    theEnableDtd = false;
 
     for(it = lines.begin(); it != lines.end(); ++it)
     {
@@ -210,17 +217,27 @@ public:
         {
           for(++lIter; lIter!=tokens.end(); ++lIter)
           {
-            if(*lIter != "-x"){ return false; }
-            ++lIter;
-            if(lIter->find(":=") == std::string::npos){ setInline(); }
-            if(lIter->find('=') == std::string::npos){ return false; }
-            if( theInline ){
-              setVarName(lIter->begin(), lIter->begin()+lIter->find('='));
-            } else {
-              setVarName(lIter->begin(), lIter->begin()+lIter->find(":="));
+            if (*lIter == "-x")
+            {
+              ++lIter;
+              if(lIter->find(":=") == std::string::npos){ setInline(); }
+              if(lIter->find('=') == std::string::npos){ return false; }
+              if( theInline ){
+                setVarName(lIter->begin(), lIter->begin()+lIter->find('='));
+              } else {
+                setVarName(lIter->begin(), lIter->begin()+lIter->find(":="));
+              }
+              setVarValue(lIter->begin()+lIter->find("=")+1, lIter->end());
+              addVariable();
             }
-            setVarValue(lIter->begin()+lIter->find("=")+1, lIter->end());
-            addVariable();
+            else if (*lIter == "--enable-dtd")
+            {
+              theEnableDtd = true;
+            }
+            else
+            {
+              return false;
+            }
           }
           break;
         }

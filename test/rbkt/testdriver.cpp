@@ -385,9 +385,17 @@ main(int argc, char** argv)
     }
 #endif
 
+    // need to set up the right loader before creating the dynamic context
+    bool enableDtd = false;
+    std::string ldtdStr = "dtd";
+    if ( lSpec.getEnableDtd() ||
+         lQueryWithoutSuffix.find(ldtdStr) != std::string::npos )
+      enableDtd = true;
+
     // Create dynamic context and set in it the external variables, the current
     // date & time, and the timezone.
-    createDynamicContext(driverContext, lContext, lQuery);
+    createDynamicContext(driverContext, lContext, lQuery, enableDtd);
+
 
     errors = -1;
     {
