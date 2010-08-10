@@ -62,7 +62,7 @@ public:
 
   FunctionConsts::FunctionKind getKind() const { return theKind; }
 
-	const store::Item* getName() const { return theSignature.get_name(); }
+	store::Item* getName() const { return theSignature.getName(); }
 
 	void setSignature(signature& sig) { theSignature = sig; }
 
@@ -70,9 +70,9 @@ public:
 
   signature& getSignature() { return theSignature; }
 
-  ulong getArity() const { return theSignature.arg_count(); }
+  ulong getArity() const { return theSignature.paramCount(); }
 
-  bool isVariadic() const { return theSignature.is_variadic(); }
+  bool isVariadic() const { return theSignature.isVariadic(); }
 
   void setFlag(FunctionConsts::AnnotationFlags flag)
   {

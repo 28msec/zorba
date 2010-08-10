@@ -106,7 +106,7 @@ declare function local:create-function($iter, $function) as xs:string?
                            $gen:newline, $gen:indent,
                            '{',
                            $gen:newline, $gen:indent,  $gen:indent,
-                           'theKind = (sig.arg_count() == ',
+                           'theKind = (sig.paramCount() == ',
                            xs:string($argCounts[1]),
                            ' ?',
                            $gen:newline,

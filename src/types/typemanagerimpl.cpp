@@ -690,9 +690,9 @@ xqtref_t TypeManagerImpl::create_value_type(const store::Item* item) const
   {
     const FunctionItem* lFItem = static_cast<const FunctionItem*>(item);
     const signature& lSig = lFItem->getSignature();
-    const xqtref_t& lRetType = lSig.return_type();
+    const xqtref_t& lRetType = lSig.returnType();
     std::vector<xqtref_t> lParamTypes;
-    for (uint32_t i = 0; i < lSig.arg_count(); ++i) 
+    for (uint32_t i = 0; i < lSig.paramCount(); ++i) 
     {
       lParamTypes.push_back(lSig[i]);
     }

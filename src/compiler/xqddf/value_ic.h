@@ -93,9 +93,9 @@ public:
     return theSctx; 
   }
 
-  const store::Item_t& getICName() const
+  store::Item* getICName() const
   {
-    return theName;
+    return theName.getp();
   }
 
   const store::Item_t& getCollectionName() const

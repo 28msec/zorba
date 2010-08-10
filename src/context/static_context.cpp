@@ -1464,7 +1464,6 @@ void static_context::get_namespace_bindings(
 
 ********************************************************************************/
 void static_context::bind_var(
-    const store::Item* qname,
     var_expr_t& varExpr,
     const QueryLoc& loc,
     const XQUERY_ERROR& err)
@@ -1474,9 +1473,9 @@ void static_context::bind_var(
     theVariablesMap = new VariableMap(0, NULL, 8, false);
   }
 
-  store::Item* qname2 = const_cast<store::Item*>(qname);
+  store::Item* qname = varExpr->get_name();
 
-  if (!theVariablesMap->insert(qname2, varExpr))
+  if (!theVariablesMap->insert(qname, varExpr))
   {
     ZORBA_ERROR_LOC_PARAM(err,loc, qname->getStringValue(), "");
   }
@@ -1651,19 +1650,18 @@ const XQType* static_context::get_context_item_type()
 
 ********************************************************************************/
 void static_context::bind_fn(
-    const store::Item* qname,
     function_t& f,
     ulong arity,
     const QueryLoc& loc)
 {
+  store::Item* qname = f->getName();
+
   if (!is_global_root_sctx() && lookup_fn(qname, arity) != NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XQST0034, loc,
                           qname->getStringValue(),
                           loc.getFilename());
   }
-
-  store::Item* qname2 = const_cast<store::Item*>(qname);
 
   if (theFunctionMap == NULL)
   {
@@ -1673,7 +1671,7 @@ void static_context::bind_fn(
 
   FunctionInfo fi(f);
 
-  if (!theFunctionMap->insert(qname2, fi))
+  if (!theFunctionMap->insert(qname, fi))
   {
     // There is already a function F with the given qname in theFunctionMap.
     // First, check if F is the same as f, which implies that f is disabled.
@@ -1697,7 +1695,7 @@ void static_context::bind_fn(
 
     std::vector<FunctionInfo>* fv = 0;
 
-    if (theFunctionArityMap->get(qname2, fv))
+    if (theFunctionArityMap->get(qname, fv))
     {
       ulong numFunctions = fv->size();
       for (ulong i = 0; i < numFunctions; ++i)
@@ -1716,7 +1714,7 @@ void static_context::bind_fn(
     {
       fv = new std::vector<FunctionInfo>(1);
       (*fv)[0] = fi;
-      theFunctionArityMap->insert(qname2, fv);
+      theFunctionArityMap->insert(qname, fv);
     }
   }
 }
@@ -1743,7 +1741,7 @@ void static_context::unbind_fn(
   }
 
   FunctionInfo fi(f, true);
-  store::Item* qname2 = const_cast<store::Item*>(qname);
+  store::Item* qname2 = const_cast<store::Item*>(f->getName());
 
   if (theFunctionMap->get(qname2, fi))
   {
@@ -2308,23 +2306,20 @@ void static_context::set_collection_callback(
 /***************************************************************************//**
 
 ********************************************************************************/
-void static_context::bind_index(
-    const store::Item* qname,
-    IndexDecl_t& index,
-    const QueryLoc& loc)
+void static_context::bind_index(IndexDecl_t& index, const QueryLoc& loc)
 {
+  store::Item* qname = const_cast<store::Item*>(index->getName());
+
   if (lookup_index(qname) != NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XDST0021_INDEX_ALREADY_DECLARED, loc,
                           qname->getStringValue(),  "");
   }
 
-  store::Item* qname2 = const_cast<store::Item*>(qname);
-
   if (theIndexMap == NULL)
     theIndexMap = new IndexMap(0, NULL, 8, false);
 
-  theIndexMap->insert(qname2, index);
+  theIndexMap->insert(qname, index);
 }
 
 
@@ -2434,22 +2429,21 @@ void static_context::call_index_callback(const IndexDecl_t& index)
 
 ********************************************************************************/
 void static_context::bind_ic(
-    const store::Item* qname,
     ValueIC_t& vic,
     const QueryLoc& loc)
 {
+  store::Item* qname = vic->getICName();
+
   if (lookup_ic(qname) != NULL)
   {
     ZORBA_ERROR_LOC_PARAM(XDST0041_IC_IS_ALREADY_DECLARED, loc,
                           qname->getStringValue(),  "");
   }
 
-  store::Item* qname2 = const_cast<store::Item*>(qname);
-
   if (theICMap == NULL)
     theICMap = new ICMap(0, NULL, 8, false);
 
-  theICMap->insert(qname2, vic);
+  theICMap->insert(qname, vic);
 }
 
 
@@ -2665,9 +2659,9 @@ void static_context::bind_option(
     theOptionMap = new OptionMap(0, NULL, 8, false);
   }
 
-  store::Item* qname2 = const_cast<store::Item*>(qname);
-
   PrologOption option(qname, value);
+
+  store::Item* qname2 = option.theName.getp();
 
   if (!theOptionMap->update(qname2, option))
   {
@@ -3070,7 +3064,6 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     VariableMap::iterator end = module->theVariablesMap->end();
     for (; ite != end; ++ite)
     {
-      const store::Item* qname = ite.getKey();
       var_expr_t ve = ite.getValue();
 
 #if 0
@@ -3086,7 +3079,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       }
 #endif
 
-      bind_var(qname, ve, loc, XQST0049);
+      bind_var(ve, loc, XQST0049);
     }
   }
 
@@ -3132,7 +3125,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
                                  << " of the importing module");
       }
 #endif
-      bind_fn(ite.getKey(), f, f->getArity(), loc);
+      bind_fn(f, f->getArity(), loc);
     }
   }
 
@@ -3184,7 +3177,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
         }
 #endif
 
-        bind_fn((*ite).first, f, f->getArity(), loc);
+        bind_fn(f, f->getArity(), loc);
       }
     }
   }

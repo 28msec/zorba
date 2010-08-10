@@ -820,9 +820,11 @@ RULE_REWRITE_POST(InlineFunctions)
         if (rCtx.getCompilerCB()->theConfig.opt_level <= CompilerCB::config::O1)
         {
           function_trace_expr* dummy = new function_trace_expr(body);
-          dummy->setFunctionName(udf->getSignature().get_name());
+          dummy->setFunctionName(udf->getName());
           return dummy;
-        } else {
+        }
+        else 
+        {
           return body;
         }
         // TODO: this is caught here, because clone is not implemented for all expressions

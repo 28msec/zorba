@@ -61,7 +61,7 @@ xqtref_t fn_floor::getReturnType(
             rtm.INTEGER_TYPE_QUESTION);
   }
 
-  return theSignature.return_type();
+  return theSignature.returnType();
 }
 
 

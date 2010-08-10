@@ -630,7 +630,6 @@ public:
   // Variables
   //
   void bind_var(
-        const store::Item* qname,
         var_expr_t& expr,
         const QueryLoc& loc,
         const XQUERY_ERROR& err);
@@ -652,11 +651,7 @@ public:
   //
   // Functions
   //
-  void bind_fn(
-        const store::Item* qname,
-        function_t& f,
-        ulong arity,
-        const QueryLoc& loc);
+  void bind_fn(function_t& f, ulong arity, const QueryLoc& loc);
 
   void unbind_fn(const store::Item* qname, ulong arity);
 
@@ -709,7 +704,7 @@ public:
   //
   // XQDDF Indexes
   //
-  void bind_index(const store::Item* qname, IndexDecl_t& vi, const QueryLoc& loc);
+  void bind_index(IndexDecl_t& vi, const QueryLoc& loc);
 
   IndexDecl* lookup_index(const store::Item* qname) const;
 
@@ -719,7 +714,7 @@ public:
   //
   // XQDDF Integrity Constraints
   //
-  void bind_ic(const store::Item* qname, ValueIC_t& vic, const QueryLoc& loc);
+  void bind_ic(ValueIC_t& vic, const QueryLoc& loc);
 
   ValueIC_t lookup_ic(const store::Item* qname) const;
 

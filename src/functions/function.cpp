@@ -113,7 +113,7 @@ xqtref_t function::getReturnType(
     const TypeManager* tm,
     const std::vector<xqtref_t>&) const
 {
-  return theSignature.return_type();
+  return theSignature.returnType();
 }
 
 
@@ -122,8 +122,8 @@ xqtref_t function::getReturnType(
 ********************************************************************************/
 bool function::validate_args(std::vector<PlanIter_t>& argv) const
 {
-  uint32_t n = theSignature.arg_count ();
-  return n == VARIADIC_SIG_SIZE || argv.size() == theSignature.arg_count();
+  uint32_t n = theSignature.paramCount ();
+  return n == VARIADIC_SIG_SIZE || argv.size() == theSignature.paramCount();
 }
 
 
@@ -168,8 +168,8 @@ void function::compute_annotation(
 ********************************************************************************/
 bool function::isMap(ulong input) const
 {
-  if (!theSignature.is_variadic() &&
-      theSignature.arg_count() > 0 &&
+  if (!theSignature.isVariadic() &&
+      theSignature.paramCount() > 0 &&
       (theSignature[input]->get_quantifier() == TypeConstants::QUANT_ONE ||
        theSignature[input]->get_quantifier() == TypeConstants::QUANT_QUESTION))
     return true;
@@ -183,7 +183,7 @@ bool function::isMap(ulong input) const
 ********************************************************************************/
 FunctionConsts::AnnotationValue function::producesDistinctNodes() const
 {
-  xqtref_t rt = theSignature.return_type();
+  xqtref_t rt = theSignature.returnType();
 
   TypeManager* tm = rt->get_manager();
 
@@ -203,7 +203,7 @@ FunctionConsts::AnnotationValue function::producesDistinctNodes() const
 ********************************************************************************/
 FunctionConsts::AnnotationValue function::producesSortedNodes() const
 {
-  xqtref_t rt = theSignature.return_type();
+  xqtref_t rt = theSignature.returnType();
 
   TypeManager* tm = rt->get_manager();
 

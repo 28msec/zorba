@@ -19,216 +19,240 @@
 
 #include <iterator>
 
-using namespace std;
 
-namespace zorba {
-SERIALIZABLE_CLASS_VERSIONS(signature_base)
-END_SERIALIZABLE_CLASS_VERSIONS(signature_base)
+namespace zorba 
+{
 
 SERIALIZABLE_CLASS_VERSIONS(signature)
 END_SERIALIZABLE_CLASS_VERSIONS(signature)
 
 
-signature::signature (
-    store::Item_t name,
-    xqtref_t arg1,
+signature::signature(
+    const store::Item_t& name,
+    const xqtref_t& paramType1,
     bool variadic,
-    xqtref_t return_type)
+    const xqtref_t& returnType)
   :
-  signature_base (variadic),
-  qname_p(name)
+  theQName(name),
+  theIsVariadic(variadic)
 {
-  argv.push_back(return_type);
-  argv.push_back(arg1);
-}
-
-signature::signature(
-  store::Item_t name,
-  xqtref_t return_type)
-:
-  qname_p(name)
-{
-  argv.push_back(return_type);
-}
-
-signature::signature(
-  store::Item_t name,
-  xqtref_t arg1,
-  xqtref_t return_type)
-:
-  qname_p(name)
-{
-  argv.push_back(return_type);
-  argv.push_back(arg1);
-}
-
-signature::signature(
-  store::Item_t name,
-  xqtref_t arg1,
-  xqtref_t arg2,
-  xqtref_t return_type)
-:
-  qname_p(name)
-{
-  argv.push_back(return_type);
-  argv.push_back(arg1);
-  argv.push_back(arg2);
-}
-
-signature::signature(
-  store::Item_t name,
-  xqtref_t arg1,
-  xqtref_t arg2,
-  xqtref_t arg3,
-  xqtref_t return_type)
-:
-  qname_p(name)
-{
-  argv.push_back(return_type);
-  argv.push_back(arg1);
-  argv.push_back(arg2);
-  argv.push_back(arg3);
-}
-
-signature::signature(
-  store::Item_t name,
-  xqtref_t arg1,
-  xqtref_t arg2,
-  xqtref_t arg3,
-  xqtref_t arg4,
-  xqtref_t return_type)
-:
-  qname_p(name)
-{
-  argv.push_back(return_type);
-  argv.push_back(arg1);
-  argv.push_back(arg2);
-  argv.push_back(arg3);
-  argv.push_back(arg4);
-}
-
-signature::signature(
-  store::Item_t name,
-  xqtref_t arg1,
-  xqtref_t arg2,
-  xqtref_t arg3,
-  xqtref_t arg4,
-  xqtref_t arg5,
-  xqtref_t return_type)
-:
-  qname_p(name)
-{
-  argv.push_back(return_type);
-  argv.push_back(arg1);
-  argv.push_back(arg2);
-  argv.push_back(arg3);
-  argv.push_back(arg4);
-  argv.push_back(arg5);  
+  theTypes.push_back(returnType);
+  theTypes.push_back(paramType1);
 }
 
 
 signature::signature(
-  store::Item_t name,
-  xqtref_t arg1,
-  xqtref_t arg2,
-  xqtref_t arg3,
-  xqtref_t arg4,
-  xqtref_t arg5,
-  xqtref_t arg6,
-  xqtref_t return_type)
-:
-  qname_p(name)
+    const store::Item_t& name,
+    const xqtref_t& returnType)
+  :
+  theQName(name),
+  theIsVariadic(false)
 {
-  argv.push_back(return_type);
-  argv.push_back(arg1);
-  argv.push_back(arg2);
-  argv.push_back(arg3);
-  argv.push_back(arg4);
-  argv.push_back(arg5);
-  argv.push_back(arg6);
-}
-
-  signature::signature(
-  store::Item_t name,
-  xqtref_t arg1,
-  xqtref_t arg2,
-  xqtref_t arg3,
-  xqtref_t arg4,
-  xqtref_t arg5,
-  xqtref_t arg6,
-  xqtref_t arg7,
-  xqtref_t return_type)
-:
-  qname_p(name)
-{
-  argv.push_back(return_type);
-  argv.push_back(arg1);
-  argv.push_back(arg2);
-  argv.push_back(arg3);
-  argv.push_back(arg4);
-  argv.push_back(arg5);
-  argv.push_back(arg6);
-  argv.push_back(arg7);
+  theTypes.push_back(returnType);
 }
 
 
 signature::signature(
-  store::Item_t name,
-  xqtref_t arg1,
-  xqtref_t arg2,
-  xqtref_t arg3,
-  xqtref_t arg4,
-  xqtref_t arg5,
-  xqtref_t arg6,
-  xqtref_t arg7,
-  xqtref_t arg8,
-  xqtref_t return_type)
-:
-  qname_p(name)
+    const store::Item_t& name,
+    const xqtref_t& paramType1,
+    const xqtref_t& returnType)
+  :
+  theQName(name),
+  theIsVariadic(false)
 {
-  argv.push_back(return_type);
-  argv.push_back(arg1);
-  argv.push_back(arg2);
-  argv.push_back(arg3);
-  argv.push_back(arg4);
-  argv.push_back(arg5);
-  argv.push_back(arg6);
-  argv.push_back(arg7);
-  argv.push_back(arg8);
+  theTypes.push_back(returnType);
+  theTypes.push_back(paramType1);
 }
 
 
 signature::signature(
-  store::Item_t name,
-  const vector<xqtref_t>& _argv,
-  xqtref_t return_type)
-:
-  qname_p(name)
+    const store::Item_t& name,
+    const xqtref_t& paramType1,
+    const xqtref_t& paramType2,
+    const xqtref_t& returnType)
+  :
+  theQName(name),
+  theIsVariadic(false)
 {
-  argv.push_back (return_type);
-  copy (_argv.begin (), _argv.end (), back_inserter (argv));
+  theTypes.push_back(returnType);
+  theTypes.push_back(paramType1);
+  theTypes.push_back(paramType2);
+}
+
+
+signature::signature(
+    const store::Item_t& name,
+    const xqtref_t& paramType1,
+    const xqtref_t& paramType2,
+    const xqtref_t& paramType3,
+    const xqtref_t& returnType)
+  :
+  theQName(name),
+  theIsVariadic(false)
+{
+  theTypes.push_back(returnType);
+  theTypes.push_back(paramType1);
+  theTypes.push_back(paramType2);
+  theTypes.push_back(paramType3);
+}
+
+
+signature::signature(
+    const store::Item_t& name,
+    const xqtref_t& paramType1,
+    const xqtref_t& paramType2,
+    const xqtref_t& paramType3,
+    const xqtref_t& paramType4,
+    const xqtref_t& returnType)
+  :
+  theQName(name),
+  theIsVariadic(false)
+{
+  theTypes.push_back(returnType);
+  theTypes.push_back(paramType1);
+  theTypes.push_back(paramType2);
+  theTypes.push_back(paramType3);
+  theTypes.push_back(paramType4);
+}
+
+
+signature::signature(
+    const store::Item_t& name,
+    const xqtref_t& paramType1,
+    const xqtref_t& paramType2,
+    const xqtref_t& paramType3,
+    const xqtref_t& paramType4,
+    const xqtref_t& paramType5,
+    const xqtref_t& returnType)
+  :
+  theQName(name),
+  theIsVariadic(false)
+{
+  theTypes.push_back(returnType);
+  theTypes.push_back(paramType1);
+  theTypes.push_back(paramType2);
+  theTypes.push_back(paramType3);
+  theTypes.push_back(paramType4);
+  theTypes.push_back(paramType5);  
+}
+
+
+signature::signature(
+    const store::Item_t& name,
+    const xqtref_t& paramType1,
+    const xqtref_t& paramType2,
+    const xqtref_t& paramType3,
+    const xqtref_t& paramType4,
+    const xqtref_t& paramType5,
+    const xqtref_t& paramType6,
+    const xqtref_t& returnType)
+  :
+  theQName(name),
+  theIsVariadic(false)
+{
+  theTypes.push_back(returnType);
+  theTypes.push_back(paramType1);
+  theTypes.push_back(paramType2);
+  theTypes.push_back(paramType3);
+  theTypes.push_back(paramType4);
+  theTypes.push_back(paramType5);
+  theTypes.push_back(paramType6);
+}
+
+
+signature::signature(
+    const store::Item_t& name,
+    const xqtref_t& paramType1,
+    const xqtref_t& paramType2,
+    const xqtref_t& paramType3,
+    const xqtref_t& paramType4,
+    const xqtref_t& paramType5,
+    const xqtref_t& paramType6,
+    const xqtref_t& paramType7,
+    const xqtref_t& returnType)
+  :
+  theQName(name),
+  theIsVariadic(false)
+{
+  theTypes.push_back(returnType);
+  theTypes.push_back(paramType1);
+  theTypes.push_back(paramType2);
+  theTypes.push_back(paramType3);
+  theTypes.push_back(paramType4);
+  theTypes.push_back(paramType5);
+  theTypes.push_back(paramType6);
+  theTypes.push_back(paramType7);
+}
+
+
+signature::signature(
+    const store::Item_t& name,
+    const xqtref_t& paramType1,
+    const xqtref_t& paramType2,
+    const xqtref_t& paramType3,
+    const xqtref_t& paramType4,
+    const xqtref_t& paramType5,
+    const xqtref_t& paramType6,
+    const xqtref_t& paramType7,
+    const xqtref_t& paramType8,
+    const xqtref_t& returnType)
+  :
+  theQName(name),
+  theIsVariadic(false)
+{
+  theTypes.push_back(returnType);
+  theTypes.push_back(paramType1);
+  theTypes.push_back(paramType2);
+  theTypes.push_back(paramType3);
+  theTypes.push_back(paramType4);
+  theTypes.push_back(paramType5);
+  theTypes.push_back(paramType6);
+  theTypes.push_back(paramType7);
+  theTypes.push_back(paramType8);
+}
+
+
+signature::signature(
+    const store::Item_t& name,
+    const std::vector<xqtref_t>& types,
+    const xqtref_t& returnType)
+  :
+  theQName(name),
+  theIsVariadic(false)
+{
+  theTypes.push_back(returnType);
+  std::copy(types.begin(), types.end(), std::back_inserter(theTypes));
+}
+
+
+void signature::serialize(::zorba::serialization::Archiver& ar)
+{
+  //serialize_baseclass(ar, (SimpleRCObject*)this);
+  ar & theQName;
+  ar & theTypes;
+  ar & theIsVariadic;
 }
 
 
 bool signature::equals(const TypeManager* tm, const signature& s) const
 {
-  if (arg_count() != s.arg_count())
+  if (paramCount() != s.paramCount())
     return false;
 
-  if (!qname_p->equals(s.qname_p.getp()))
+  if (!theQName->equals(s.theQName.getp()))
     return false;
 
   //std::cout << return_type()->toString() << std::endl;
   //std::cout << s.return_type()->toString() << std::endl;
 
-  if (!TypeOps::is_equal(tm, *return_type().getp(), *s.return_type().getp())) 
+  if (!TypeOps::is_equal(tm, *returnType().getp(), *s.returnType().getp())) 
   {
     return false;
   }
 
-  for (size_t i = 0; i < argv.size(); ++i) 
+  for (size_t i = 0; i < theTypes.size(); ++i) 
   {
-    if (!TypeOps::is_equal(tm, *argv[i].getp(), *s.argv[i].getp())) 
+    if (!TypeOps::is_equal(tm, *theTypes[i].getp(), *s.theTypes[i].getp())) 
     {
       return false;
     }

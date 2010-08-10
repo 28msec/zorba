@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ZORBA_SIGNATURE_H
-#define ZORBA_SIGNATURE_H
+#ifndef ZORBA_FUNCTIONS_SIGNATURE_H
+#define ZORBA_FUNCTIONS_SIGNATURE_H
 
 #include "zorbautils/checked_vector.h"
 
@@ -28,144 +28,141 @@ namespace zorba {
 
 /*******************************************************************************
   
-  By convention, argv[0]    = return type
-                 argv[1]    = first input argument type
-                 argv[2]    = second input argument type
+  By convention, theTypes[0]    = return type
+                 theTypes[1]    = first param type
+                 theTypes[2]    = second param type
                   ...       =  ...  
 
 ********************************************************************************/
-class signature_base: public SimpleRCObject 
+class signature: public SimpleRCObject 
 {
  protected:
-  bool variadic;
+  store::Item_t            theQName;
+  checked_vector<xqtref_t> theTypes;
+  bool                     theIsVariadic;
 
  public:
-  SERIALIZABLE_CLASS(signature_base)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(signature_base, SimpleRCObject)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    //serialize_baseclass(ar, (SimpleRCObject*)this);
-    ar & variadic;
-  }
-
-public:
-  signature_base() : variadic(false) {}
-
-  signature_base(bool _variadic) : variadic(_variadic) {}
-
-  bool is_variadic() const { return variadic; }
-};
-
-
-class signature : public signature_base
-{
-public:
-  store::Item_t            qname_p;
-  checked_vector<xqtref_t> argv;
-
-public:
   SERIALIZABLE_CLASS(signature)
-  SERIALIZABLE_CLASS_CONSTRUCTOR2(signature, signature_base)
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    signature_base* lBase = dynamic_cast<signature_base*>(this);
-    serialize_baseclass(ar, lBase);
-    ar & qname_p;
-    ar & argv;
-  }
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(signature, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  signature(store::Item_t name,
-            xqtref_t arg1,
-            bool variadic,
-            xqtref_t return_type);
+  signature(
+        const store::Item_t& name,
+        const xqtref_t& paramType1,
+        bool variadic,
+        const xqtref_t& returnType);
   
-  signature(store::Item_t name,
-            xqtref_t return_type);
+  signature(
+        const store::Item_t& name,
+        const xqtref_t& returnType);
   
-  signature(store::Item_t name,
-            xqtref_t arg1,
-            xqtref_t return_type);
+  signature(
+        const store::Item_t& name,
+        const xqtref_t& paramType1,
+        const xqtref_t& returnType);
   
-  signature(store::Item_t name,
-            xqtref_t arg1,
-            xqtref_t arg2,
-            xqtref_t return_type);
+  signature(
+        const store::Item_t& name,
+        const xqtref_t& paramType1,
+        const xqtref_t& paramType2,
+        const xqtref_t& returnType);
   
-  signature(store::Item_t name,
-            xqtref_t arg1,
-            xqtref_t arg2,
-            xqtref_t arg3,
-            xqtref_t return_type);
+  signature(
+        const store::Item_t& name,
+        const xqtref_t& paramType1,
+        const xqtref_t& paramType2,
+        const xqtref_t& paramType3,
+        const xqtref_t& returnType);
   
-  signature(store::Item_t name,
-            xqtref_t arg1,
-            xqtref_t arg2,
-            xqtref_t arg3,
-            xqtref_t arg4,
-            xqtref_t return_type);
+  signature(
+        const store::Item_t& name,
+        const xqtref_t& paramType1,
+        const xqtref_t& paramType2,
+        const xqtref_t& paramType3,
+        const xqtref_t& paramType4,
+        const xqtref_t& returnType);
 
-  signature(store::Item_t name,
-            xqtref_t arg1,
-            xqtref_t arg2,
-            xqtref_t arg3,
-            xqtref_t arg4,
-            xqtref_t arg5,            
-            xqtref_t return_type);  
+  signature(
+        const store::Item_t& name,
+        const xqtref_t& paramType1,
+        const xqtref_t& paramType2,
+        const xqtref_t& paramType3,
+        const xqtref_t& paramType4,
+        const xqtref_t& paramType5,            
+        const xqtref_t& returnType);  
 
-  signature(store::Item_t name,
-            xqtref_t arg1,
-            xqtref_t arg2,
-            xqtref_t arg3,
-            xqtref_t arg4,
-            xqtref_t arg5,
-            xqtref_t arg6,
-            xqtref_t return_type);
+  signature(
+        const store::Item_t& name,
+        const xqtref_t& paramType1,
+        const xqtref_t& paramType2,
+        const xqtref_t& paramType3,
+        const xqtref_t& paramType4,
+        const xqtref_t& paramType5,
+        const xqtref_t& paramType6,
+        const xqtref_t& returnType);
   
-  signature(store::Item_t name,
-            xqtref_t arg1,
-            xqtref_t arg2,
-            xqtref_t arg3,
-            xqtref_t arg4,
-            xqtref_t arg5,
-            xqtref_t arg6,
-            xqtref_t arg7,
-            xqtref_t return_type);
+  signature(
+        const store::Item_t& name,
+        const xqtref_t& paramType1,
+        const xqtref_t& paramType2,
+        const xqtref_t& paramType3,
+        const xqtref_t& paramType4,
+        const xqtref_t& paramType5,
+        const xqtref_t& paramType6,
+        const xqtref_t& paramType7,
+        const xqtref_t& returnType);
 
-  signature(store::Item_t name,
-            xqtref_t arg1,
-            xqtref_t arg2,
-            xqtref_t arg3,
-            xqtref_t arg4,
-            xqtref_t arg5,
-            xqtref_t arg6,
-            xqtref_t arg7,
-            xqtref_t arg8,
-            xqtref_t return_type);
+  signature(
+        const store::Item_t& name,
+        const xqtref_t& paramType1,
+        const xqtref_t& paramType2,
+        const xqtref_t& paramType3,
+        const xqtref_t& paramType4,
+        const xqtref_t& paramType5,
+        const xqtref_t& paramType6,
+        const xqtref_t& paramType7,
+        const xqtref_t& paramType8,
+        const xqtref_t& returnType);
 
-  signature(store::Item_t name,
-            const std::vector<xqtref_t>& argv,
-            xqtref_t return_type);
+  signature(
+        const store::Item_t& name,
+        const std::vector<xqtref_t>& paramTypes,
+        const xqtref_t& returnType);
 
-public:
-  const store::Item_t& get_name() const   { return qname_p; }
+  store::Item* getName() const   { return theQName.getp(); }
 
-  uint32_t arg_count() const 
+  bool isVariadic() const { return theIsVariadic; }
+
+  uint32_t paramCount() const 
   {
-    return is_variadic () ? VARIADIC_SIG_SIZE : argv.size() - 1;
+    return isVariadic() ? VARIADIC_SIG_SIZE : theTypes.size() - 1;
   }
+
+  xqtref_t const& operator[](int i) const 
+  {
+    return theTypes[theIsVariadic ? 1 : (i + 1)];
+  }
+
+  xqtref_t& operator[](int i) 
+  {
+    return theTypes[theIsVariadic ? 1 : (i + 1)]; 
+  }
+
+  xqtref_t const& returnType() const { return theTypes[0]; }
+
+  xqtref_t& returnType() { return theTypes[0]; }
 
   bool equals(const TypeManager* tm, const signature& s) const;
-
-  xqtref_t const& operator[](int i) const { return argv[variadic ? 1 : (i + 1)]; }
-
-  xqtref_t & operator[](int i)            { return argv[variadic ? 1 : (i + 1)]; }
-
-  xqtref_t const& return_type() const     { return argv[0]; }
-
-  xqtref_t & return_type()                { return argv[0]; }
 };
 
 } /* namespace zorba */
 #endif  /* ZORBA_SIGNATURE_H */
 
+/* vim:set ts=2 sw=2: */
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

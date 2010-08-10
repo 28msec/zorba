@@ -29,7 +29,7 @@ fn_error::fn_error(const signature& sig)
   :
   function(sig, FunctionConsts::FN_UNKNOWN)
 {
-  switch (sig.arg_count())
+  switch (sig.paramCount())
   {
   case 0:
     theKind = FunctionConsts::FN_ERROR_0;

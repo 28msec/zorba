@@ -58,7 +58,7 @@ class fn_zorba_util_random : public function
 public:
   fn_zorba_util_random(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 0 ?
+    theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_ZORBA_UTIL_RANDOM_0 :
                 FunctionConsts::FN_ZORBA_UTIL_RANDOM_1);
   
@@ -75,7 +75,7 @@ class fn_zorba_random_random : public function
 public:
   fn_zorba_random_random(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 0 ?
+    theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_ZORBA_RANDOM_RANDOM_0 :
                 FunctionConsts::FN_ZORBA_RANDOM_RANDOM_1);
   
@@ -92,7 +92,7 @@ class fn_zorba_util_uuid : public function
 public:
   fn_zorba_util_uuid(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 0 ?
+    theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_ZORBA_UTIL_UUID_0 :
                 FunctionConsts::FN_ZORBA_RANDOM_UUID_0);
   

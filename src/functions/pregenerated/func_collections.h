@@ -44,7 +44,7 @@ class fn_collection : public function
 public:
   fn_collection(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 0 ?
+    theKind = (sig.paramCount() == 0 ?
                 FunctionConsts::FN_COLLECTION_0 :
                 FunctionConsts::FN_COLLECTION_1);
   
@@ -108,7 +108,7 @@ class fn_zorba_ddl_create_collection : public function
 public:
   fn_zorba_ddl_create_collection(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_ZORBA_DDL_CREATE_COLLECTION_1 :
                 FunctionConsts::FN_ZORBA_DDL_CREATE_COLLECTION_2);
   
@@ -254,7 +254,7 @@ class fn_zorba_ddl_delete_node_first : public function
 public:
   fn_zorba_ddl_delete_node_first(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_ZORBA_DDL_DELETE_NODE_FIRST_1 :
                 FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_FIRST_2);
   
@@ -274,7 +274,7 @@ class fn_zorba_ddl_delete_node_last : public function
 public:
   fn_zorba_ddl_delete_node_last(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_ZORBA_DDL_DELETE_NODE_LAST_1 :
                 FunctionConsts::FN_ZORBA_DDL_DELETE_NODES_LAST_2);
   

@@ -2132,7 +2132,7 @@ void end_visit(fo_expr& v)
   else
   {
     ZORBA_ERROR_LOC_PARAM(XPST0017, loc,
-                          func->getSignature().get_name()->getStringValue(),
+                          func->getName()->getStringValue(),
                           argv.size());
   }
 }
@@ -2144,18 +2144,22 @@ bool begin_visit(instanceof_expr& v)
   return true;
 }
 
-void end_visit (instanceof_expr& v) {
+void end_visit(instanceof_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t p = pop_itstack ();
   push_itstack (new InstanceOfIterator (sctx, qloc, p, v.get_target_type ()));
 }
 
-bool begin_visit (treat_expr& v) {
+
+bool begin_visit(treat_expr& v) 
+{
   CODEGEN_TRACE_IN("");
   return true;
 }
 
-void end_visit (treat_expr& v) {
+void end_visit(treat_expr& v) 
+{
   CODEGEN_TRACE_OUT("");
   PlanIter_t arg;
   arg = pop_itstack();

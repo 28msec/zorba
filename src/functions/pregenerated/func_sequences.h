@@ -65,7 +65,7 @@ class fn_index_of : public function
 public:
   fn_index_of(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 2 ?
+    theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_INDEX_OF_2 :
                 FunctionConsts::FN_INDEX_OF_3);
   
@@ -109,7 +109,7 @@ class fn_distinct_values : public function
 public:
   fn_distinct_values(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 2 ?
+    theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_DISTINCT_VALUES_2 :
                 FunctionConsts::FN_DISTINCT_VALUES_1);
   
@@ -185,7 +185,7 @@ class fn_subsequence : public function
 public:
   fn_subsequence(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 2 ?
+    theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_SUBSEQUENCE_2 :
                 FunctionConsts::FN_SUBSEQUENCE_3);
   
@@ -211,7 +211,7 @@ class fn_zorba_subsequence_int : public function
 public:
   fn_zorba_subsequence_int(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 2 ?
+    theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_ZORBA_SUBSEQUENCE_INT_2 :
                 FunctionConsts::FN_ZORBA_SUBSEQUENCE_INT_3);
   
@@ -303,7 +303,7 @@ class fn_deep_equal : public function
 public:
   fn_deep_equal(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 2 ?
+    theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_DEEP_EQUAL_2 :
                 FunctionConsts::FN_DEEP_EQUAL_3);
   
@@ -349,7 +349,7 @@ class fn_sum : public function
 public:
   fn_sum(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_SUM_1 :
                 FunctionConsts::FN_SUM_2);
   
@@ -370,7 +370,7 @@ class fn_sum_double : public function
 public:
   fn_sum_double(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_SUM_DOUBLE_1 :
                 FunctionConsts::FN_SUM_DOUBLE_2);
   
@@ -386,7 +386,7 @@ class fn_sum_float : public function
 public:
   fn_sum_float(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_SUM_FLOAT_1 :
                 FunctionConsts::FN_SUM_FLOAT_2);
   
@@ -402,7 +402,7 @@ class fn_sum_decimal : public function
 public:
   fn_sum_decimal(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_SUM_DECIMAL_1 :
                 FunctionConsts::FN_SUM_DECIMAL_2);
   
@@ -418,7 +418,7 @@ class fn_sum_integer : public function
 public:
   fn_sum_integer(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_SUM_INTEGER_1 :
                 FunctionConsts::FN_SUM_INTEGER_2);
   
@@ -498,7 +498,7 @@ class fn_parse : public function
 public:
   fn_parse(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_PARSE_1 :
                 FunctionConsts::FN_PARSE_2);
   

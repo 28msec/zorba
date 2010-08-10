@@ -1522,15 +1522,13 @@ void bind_var(var_expr_t e, static_context* sctx)
 {
   assert(sctx != NULL);
 
-  const store::Item* qname = e->get_name();
-
   if(e->get_kind() == var_expr::let_var)
   {
-    sctx->bind_var(qname, e, e->get_loc(), XQST0039);
+    sctx->bind_var(e, e->get_loc(), XQST0039);
   }
   else
   {
-    sctx->bind_var(qname, e, e->get_loc(), XQST0049);
+    sctx->bind_var(e, e->get_loc(), XQST0049);
   }
 }
 
@@ -1634,18 +1632,17 @@ var_expr* lookup_var(
   such a binding exists already in any of these sctxs.
 ********************************************************************************/
 void bind_fn(
-    store::Item_t& qnameItem,
     function_t& f,
     ulong nargs,
     const QueryLoc& loc)
 {
-  theSctx->bind_fn(qnameItem, f, nargs, loc);
+  theSctx->bind_fn(f, nargs, loc);
 
-  theModulesInfo->globals->bind_fn(qnameItem, f, nargs, loc);
+  theModulesInfo->globals->bind_fn(f, nargs, loc);
 
   if (export_sctx != NULL)
   {
-    export_sctx->bind_fn(qnameItem, f, nargs, loc);
+    export_sctx->bind_fn(f, nargs, loc);
   }
 }
 
@@ -3329,7 +3326,7 @@ void* begin_visit(const VFO_DeclList& v)
     // Create bindings between (function qname item, arity) and function obj
     // in the current sctx of this module and, if this is a lib module, in its
     // export sctx as well.
-    bind_fn(qnameItem, f, nargs, loc);
+    bind_fn(f, nargs, loc);
   }
 
   return no_state;
@@ -3641,7 +3638,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
                          lookup_fn(v.get_name(), numParams, loc));
     ZORBA_ASSERT(udf != NULL);
 
-    xqtref_t returnType = udf->getSignature().return_type();
+    xqtref_t returnType = udf->getSignature().returnType();
 
     if (TypeOps::is_builtin_simple(CTX_TM, *returnType))
     {
@@ -3929,11 +3926,11 @@ void end_visit(const AST_IndexDecl& v, void* /*visit_state*/)
 
   // Register the index in the sctx of the current module. Raise error if such
   // a binding exists already in the sctx.
-  theSctx->bind_index(index->getName(), index, loc);
+  theSctx->bind_index(index, loc);
 
   // If this is a library module, register the index in the exported sctx as well.
   if (export_sctx != NULL)
-    export_sctx->bind_index(index->getName(), index, loc);
+    export_sctx->bind_index(index, loc);
 
   theSctx->call_index_callback(index);
 }
@@ -4802,11 +4799,11 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
     vic = new ValueIC(theSctx, qnameItem, collQnameItem, icIter, theCCB);
   }
 
-  theSctx->bind_ic(qnameItem, vic, loc);
+  theSctx->bind_ic(vic, loc);
 
   // if this is a library module, register in exported module as well
   if (export_sctx != NULL)
-    export_sctx->bind_ic(qnameItem, vic, loc);
+    export_sctx->bind_ic(vic, loc);
 }
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -8564,7 +8561,8 @@ void* begin_visit(const FunctionCall& v)
 
     const signature& sign = f->getSignature();
 
-    xqtref_t retType = sign.return_type();
+    xqtref_t retType = sign.returnType();
+
     if (!TypeOps::is_in_scope(tm, *retType))
     {
       if (theModuleNamespace->empty())

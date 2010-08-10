@@ -104,7 +104,7 @@ class fn_round_half_to_even : public function
 public:
   fn_round_half_to_even(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                 FunctionConsts::FN_ROUND_HALF_TO_EVEN_1 :
                 FunctionConsts::FN_ROUND_HALF_TO_EVEN_2);
   
@@ -120,7 +120,7 @@ class fn_format_number : public function
 public:
   fn_format_number(const signature& sig) : function(sig, FunctionConsts::FN_UNKNOWN)
   {
-    theKind = (sig.arg_count() == 2 ?
+    theKind = (sig.paramCount() == 2 ?
                 FunctionConsts::FN_FORMAT_NUMBER_2 :
                 FunctionConsts::FN_FORMAT_NUMBER_3);
   

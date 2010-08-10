@@ -304,10 +304,11 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
     }
 
     STACK_END(state);
-  } catch (error::ZorbaError& err) {
-    err.theStackTrace.push_back(error::ZorbaError::StackEntry_t(
-        theUDF->getSignature().get_name(),
-        loc));
+  }
+  catch (error::ZorbaError& err) 
+  {
+    err.theStackTrace.push_back(error::ZorbaError::StackEntry_t(theUDF->getName(),
+                                                                loc));
     throw err;
   }
 }

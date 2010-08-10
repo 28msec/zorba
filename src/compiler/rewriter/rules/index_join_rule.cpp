@@ -600,7 +600,7 @@ static void rewriteJoin(
 
   idx->setOrderModifiers(modifiers);
 
-  sctx->bind_index(qname, idx, loc);
+  sctx->bind_index(idx, loc);
 
   buildExpr = idx->getBuildExpr(rCtx.getCompilerCB(), loc);
 

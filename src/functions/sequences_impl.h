@@ -142,7 +142,7 @@ class fn_max : public function
 public:
   fn_max(const signature& sig) : function(sig)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                FunctionConsts::FN_MAX_1 :
                FunctionConsts::FN_MAX_2);
   }
@@ -159,7 +159,7 @@ class fn_min : public function
 public:
   fn_min(const signature& sig) : function(sig)
   {
-    theKind = (sig.arg_count() == 1 ?
+    theKind = (sig.paramCount() == 1 ?
                FunctionConsts::FN_MIN_1 :
                FunctionConsts::FN_MIN_2);
   }
