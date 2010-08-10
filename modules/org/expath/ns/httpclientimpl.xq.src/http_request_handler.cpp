@@ -207,6 +207,7 @@ namespace zorba { namespace http_client {
                      CURLFORM_BUFFERLENGTH, thePostDataString.length(),
                      CURLFORM_CONTENTHEADER, theHeaderLists.back(),
                      CURLFORM_END);
+      theHeaderLists.push_back(NULL);
     }
   }
 
