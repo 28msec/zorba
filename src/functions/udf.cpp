@@ -84,12 +84,34 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   //bool  save_plan = true;
   if(ar.is_serializing_out())
   {
-    try{
-      getPlan(ar.compiler_cb);
+    try
+    {
+      // We shouldn't try to optimize the body during the process of serializing
+      // the query plan, because udfs are serialized in some "random" order, and
+      // as a result, they will be optimized in this random order, instead of a
+      // bottom up order. This can have undesired effect, like const-folding
+      // exprs that contain calls to functions that are non-deterministic, or
+      // access the dynamic context.
+      //
+      // As a result, we don't call getPlan() unless the optimizer is off or
+      // the udf has been optimized already. If getPlan is not called, only
+      // the body expr of the udf will be serialized. 
+      //
+      // Note: The compiler attempts to collect and optimize all udfs that
+      // may actually be invoked during the execution of a query. However,
+      // some such udfs may go undetected; for example, udfs that appear
+      // inside eval statements. Only such undetected udfs are affected by
+      // this if condition.
+      if (ar.compiler_cb->theConfig.opt_level == CompilerCB::config::O0 ||
+          theIsOptimized)
+      {
+        getPlan(ar.compiler_cb);
+      }
     }
     catch(...)
     {
-      //cannot compile user defined function, maybe it is not even used, so don't fire an error yet
+      // cannot compile user defined function, maybe it is not even used,
+      // so don't fire an error yet
       //save_plan = false;
     }
   }
@@ -110,7 +132,7 @@ void user_function::serialize(::zorba::serialization::Archiver& ar)
   //ar & save_plan;
   //ar.set_is_temp_field(false);
   //if(save_plan)
-    ar & thePlan;
+  ar & thePlan;
   ar & theArgVarRefs;
 }
 
@@ -202,15 +224,8 @@ PlanIter_t user_function::getPlan(CompilerCB* ccb)
 {
   if (thePlan == NULL)
   {
-    // Don't optimize body if we are in the process of serializing the query
-    // plan. In such a case, udfs have their getPlan() method called in some
-    // "random" order, and they will be optimized in this random order, instead
-    // of a bottom up order. This can have undesired effect, like const-folding
-    // exprs that contain calls to functions that are non-deterministic, or
-    // access the dynamic context. 
     if (!theIsOptimized && 
-        ccb->theConfig.opt_level > CompilerCB::config::O0 &&
-        !ccb->theIsSerializingOut)
+        ccb->theConfig.opt_level > CompilerCB::config::O0)
     {
       expr_t body = getBody();
       RewriterContext rctx(ccb, body);

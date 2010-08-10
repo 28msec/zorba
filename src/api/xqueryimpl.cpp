@@ -971,6 +971,7 @@ void XQueryImpl::execute()
       store::Item_t lItem;
       bool more = lPlan->next(lItem);
       assert(more == false);
+      (void)more; // to avoid compiler warning in release mode
     }
     catch (...)
     {

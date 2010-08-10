@@ -36,7 +36,7 @@
 
 #else
 
-#define DEBUG_FN_DECL( fname, cnt ) (void) 0
+#define DEBUG_FN_DECL( fname, cnt ) (void)fname
 
 #endif
 
