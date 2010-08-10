@@ -49,7 +49,7 @@ class DrawStrokedPolyLineFunction : public zorba::imagemodule::ImageFunction
   {
     public:
       DrawStrokedPolyLineFunction(const ImageModule* aModule);
-      virtual String getLocalName() const { return "draw-filled-poly-line";}
+      virtual String getLocalName() const { return "draw-stroked-poly-line";}
 
       virtual ItemSequence_t
       evaluate(const StatelessExternalFunction::Arguments_t& args,
