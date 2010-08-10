@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+#include <string.h>
+#include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
+
 #include "geo_functions.h"
 
 #include <geos/geom/PrecisionModel.h>
@@ -425,7 +430,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     Iterator_t    polygon_children;
     Item          extint_item;
     int           nr_child = 0;
-    geos::geom::LinearRing    *exterior;
+    geos::geom::LinearRing    *exterior = NULL;
     std::vector<geos::geom::Geometry*>    *interior_vector = new std::vector<geos::geom::Geometry*>;
     polygon_children = lItem.getChildren();
     polygon_children->open();
@@ -1387,7 +1392,7 @@ SFRelateFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   zorba::String intersection_matrix;
   intersection_matrix = lItem3.getStringValue();
 
-  bool is_relate;                                                   
+  bool is_relate = false;                                                   
   try{
     is_relate = geos_geometry1->relate(geos_geometry2, intersection_matrix.c_str());                                    
   }catch(geos::util::GEOSException &excep)
