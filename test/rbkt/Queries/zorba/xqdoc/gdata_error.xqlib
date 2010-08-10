@@ -1,0 +1,38 @@
+(:~
+ :
+ : The description of this module must have the whitespaces
+ 
+ : normalized: 1) NL at top, middle &amp; end; 2) TABs in this
+ : line;			3) SPACES      here and after.         
+ :
+ :
+ : @see http://example.com
+ :)
+module namespace gdata="http://www.28msec.com/modules/gdata";
+
+
+(:~
+ : Google Login
+ : @param account This parameter will be deleted by the test query.
+ : @param password This description must have      
+ :        the whitespaces normalized.
+ :
+ : @see http://www.google.com
+ :)
+declare function gdata:login($account as xs:string*, $password as xs:string+, $service as xs:string?) as xs:boolean+
+{
+    let $result := rest1:post("https://www.google.com/accounts/ClientLogin", <payload content-type="multipart/form-data">
+                                                                                <part name="Email">{$account}</part>
+                                                                                <part name="Passwd">{$password}</part>
+                                                                                <part name="service">{$service}</part>
+                                                                                <part name="source">28msec.com</part>
+                                                                            </payload>)
+    return
+        if($result/rest:status-code/text()="200") then
+            block {
+                replace value of node $gdata:id with $account;
+                replace value of node $gdata:authToken with fn:substring-after($result/rest:payload/text(), "Auth=");
+                true();
+            }
+        else false()
+};

@@ -863,6 +863,9 @@ typedef enum
 
   XQP0036_BREAKITERATOR_CREATION_FAILED,
 
+  XQD0000_PREFIX_NOT_DECLARED,
+  XQD0001_DOCUMENT_NOT_VALID,
+
   //
   // Class Serialization errors
   //

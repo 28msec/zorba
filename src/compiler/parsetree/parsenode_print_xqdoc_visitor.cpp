@@ -179,7 +179,7 @@ private:
       }
 
     } catch (error::ZorbaError& e) {
-      ZORBA_ERROR_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR, 
+      ZORBA_ERROR_DESC_OSS(XQD0001_DOCUMENT_NOT_VALID, 
         "The xqdoc documentation contains an error that doesn't allow the document to be parsed as XML. "
         << e.theDescription << " '" << aString << "'");
     }
@@ -469,9 +469,10 @@ void end_visit(const FunctionCall& n, void*)
 
   xqpStringStore_t lNS = theNamespaces[lPrefix];
   if (!lNS) {
-    ZORBA_ERROR_DESC_OSS(XQP0000_DYNAMIC_RUNTIME_ERROR,
-       "Could not generate the xqDoc documentation; no namespace declared for prefix "
-       << lPrefix
+    ZORBA_ERROR_DESC_OSS(XQD0000_PREFIX_NOT_DECLARED,
+       "Could not generate the xqDoc documentation because the namespace for prefix '" 
+       << lPrefix << "' is not declared when calling function '" << lFuncName->get_localname()
+       << "' from " << n.get_location() << "."
     );
   }
 

@@ -225,6 +225,8 @@ bool ZorbaError::isXQueryDynamicError() const
 #ifndef ZORBA_NO_FULL_TEXT
           || (theErrorCode >= FTDY0016 && theErrorCode <= FTDY0020)
 #endif /* ZORBA_NO_FULL_TEXT */
+          || (theErrorCode >= XQD0000_PREFIX_NOT_DECLARED &&
+              theErrorCode <= XQD0001_DOCUMENT_NOT_VALID)
           ;
 }
 
