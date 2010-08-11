@@ -77,7 +77,7 @@ public:
 
   void getTypedValue(store::Item_t& val, store::Iterator_t& iter) const;
 
-  void castToLong(store::Item_t& result) const;
+  bool castToLong(store::Item_t& result) const;
 
   void coerceToDouble(store::Item_t& result, bool force, bool& lossy) const;
 };
@@ -273,39 +273,39 @@ protected:
   UntypedAtomicItem() {}
 
 public:
-  void castToUri(store::Item_t& result) const;
+  bool castToUri(store::Item_t& result) const;
 
-  void castToString(store::Item_t& result) const;
+  bool castToString(store::Item_t& result) const;
 
-  void castToDateTime(store::Item_t& result) const;
+  bool castToDateTime(store::Item_t& result) const;
 
-  void castToDate(store::Item_t& result) const;
+  bool castToDate(store::Item_t& result) const;
 
-  void castToTime(store::Item_t& result) const;
+  bool castToTime(store::Item_t& result) const;
 
-  void castToGYear(store::Item_t& result) const;
+  bool castToGYear(store::Item_t& result) const;
 
-  void castToGYearMonth(store::Item_t& result) const;
+  bool castToGYearMonth(store::Item_t& result) const;
 
-  void castToGMonthDay(store::Item_t& result) const;
+  bool castToGMonthDay(store::Item_t& result) const;
 
-  void castToGMonth(store::Item_t& result) const;
+  bool castToGMonth(store::Item_t& result) const;
 
-  void castToGDay(store::Item_t& result) const;
+  bool castToGDay(store::Item_t& result) const;
 
-  void castToDuration(store::Item_t& result) const;
+  bool castToDuration(store::Item_t& result) const;
 
-  void castToDouble(store::Item_t& result) const;
+  bool castToDouble(store::Item_t& result) const;
 
-  void castToDecimal(store::Item_t& result) const;
+  bool castToDecimal(store::Item_t& result) const;
 
-  void castToInteger(store::Item_t& result) const;
+  bool castToInteger(store::Item_t& result) const;
 
-  void castToHexBinary(store::Item_t& result) const;
+  bool castToHexBinary(store::Item_t& result) const;
 
-  void castToBase64Binary(store::Item_t& result) const;
+  bool castToBase64Binary(store::Item_t& result) const;
 
-  void castToBoolean(store::Item_t& result) const;
+  bool castToBoolean(store::Item_t& result) const;
 
   SchemaTypeCode getTypeCode() const { return XS_UNTYPED_ATOMIC; }
 

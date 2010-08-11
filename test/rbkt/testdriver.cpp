@@ -45,7 +45,7 @@
 #include "testdriver_comparator.h"
 
 
-#define ZORBA_TEST_PLAN_SERIALIZATION
+//#define ZORBA_TEST_PLAN_SERIALIZATION
 
 #define EXPECTED_ERROR  0
 #define UNEXPECTED_ERROR  6

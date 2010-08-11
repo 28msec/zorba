@@ -187,6 +187,10 @@ public:
 
   TypeManager* get_type_manager() const;
 
+  ulong getFlags() const { return theFlags1; }
+
+  void setFlags(ulong flags) { theFlags1 = flags; }
+
   expr_script_kind_t get_scripting_kind() const;
 
   bool is_updating() const;

@@ -30,12 +30,19 @@ return <person id = "{$x/@id}">{$x//city}</person>,
 for $x in auctions:probe-range-city(xs:QName("auctions:PersonCity"), "Foo")
 return <person id = "{$x/@id}">{$x//city}</person>,
 
-
 "
 
 ",
 
 for $x in auctions:probe-point-watch(xs:QName("auctions:PersonWatches"),
+                                     ("open_auction6", "open_auction2"))
+return <person id = "{$x/@id}">{$x//watches}</person>,
+
+"
+
+",
+
+for $x in auctions:probe-point-watch(xs:QName("auctions:PersonWatches2"),
                                      ("open_auction6", "open_auction2"))
 return <person id = "{$x/@id}">{$x//watches}</person>
 );

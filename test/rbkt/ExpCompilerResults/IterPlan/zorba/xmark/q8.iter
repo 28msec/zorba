@@ -22,67 +22,85 @@ Iterator tree for main query:
       </ChildAxisIterator>
     </HoistIterator>
   </LetVariable>
-  <ForVariable name="p">
-    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-      <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
-        <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
-          <LetVarIterator varname="auction"/>
-        </ChildAxisIterator>
-      </ChildAxisIterator>
-    </ChildAxisIterator>
-  </ForVariable>
-  <LetVariable name="$$opt_temp_1" materialize="true">
-    <HoistIterator>
-      <FnDataIterator>
-        <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
-          <ForVarIterator varname="p"/>
-        </AttributeAxisIterator>
-      </FnDataIterator>
-    </HoistIterator>
-  </LetVariable>
   <ReturnClause>
-    <ElementIterator>
-      <SingletonIterator value="xs:QName(,,item)"/>
-      <AttributeIterator qname="xs:QName(,,person)">
-        <EnclosedIterator attr_cont="true">
-          <FnDataIterator>
-            <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
-              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
-                <ForVarIterator varname="p"/>
+    <SequentialIterator>
+      <CreateInternalIndexIterator name="xs:QName(,,tempIndex0)">
+        <flwor::FLWORIterator>
+          <ForVariable name="$$opt_temp_2">
+            <UnhoistIterator>
+              <LetVarIterator varname="$$opt_temp_0"/>
+            </UnhoistIterator>
+          </ForVariable>
+          <ReturnClause>
+            <GeneralIndexEntryBuilderIterator>
+              <ForVarIterator varname="$$opt_temp_2"/>
+              <FnDataIterator>
+                <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+                  <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,buyer)" typename="*" nill allowed="0">
+                    <ForVarIterator varname="$$opt_temp_2"/>
+                  </ChildAxisIterator>
+                </AttributeAxisIterator>
+              </FnDataIterator>
+            </GeneralIndexEntryBuilderIterator>
+          </ReturnClause>
+        </flwor::FLWORIterator>
+      </CreateInternalIndexIterator>
+      <flwor::FLWORIterator>
+        <ForVariable name="p">
+          <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
+            <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,people)" typename="*" nill allowed="0">
+              <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,site)" typename="*" nill allowed="0">
+                <LetVarIterator varname="auction"/>
               </ChildAxisIterator>
             </ChildAxisIterator>
-          </FnDataIterator>
-        </EnclosedIterator>
-      </AttributeIterator>
-      <EnclosedIterator attr_cont="false">
-        <FnCountIterator>
-          <flwor::FLWORIterator>
-            <ForVariable name="t">
-              <UnhoistIterator>
-                <LetVarIterator varname="$$opt_temp_0"/>
-              </UnhoistIterator>
-            </ForVariable>
-            <WhereClause>
-              <CompareIterator>
+          </ChildAxisIterator>
+        </ForVariable>
+        <LetVariable name="$$opt_temp_1" materialize="true">
+          <HoistIterator>
+            <FnDataIterator>
+              <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,id)" typename="*" nill allowed="0">
+                <ForVarIterator varname="p"/>
+              </AttributeAxisIterator>
+            </FnDataIterator>
+          </HoistIterator>
+        </LetVariable>
+        <ReturnClause>
+          <ElementIterator>
+            <SingletonIterator value="xs:QName(,,item)"/>
+            <AttributeIterator qname="xs:QName(,,person)">
+              <EnclosedIterator attr_cont="true">
                 <FnDataIterator>
-                  <AttributeAxisIterator test kind="match_name_test" qname="xs:QName(,,person)" typename="*" nill allowed="0">
-                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,buyer)" typename="*" nill allowed="0">
-                      <ForVarIterator varname="t"/>
+                  <ChildAxisIterator test kind="match_text_test" qname="*" typename="*" nill allowed="0">
+                    <ChildAxisIterator test kind="match_name_test" qname="xs:QName(,,name)" typename="*" nill allowed="0">
+                      <ForVarIterator varname="p"/>
                     </ChildAxisIterator>
-                  </AttributeAxisIterator>
+                  </ChildAxisIterator>
                 </FnDataIterator>
-                <UnhoistIterator>
-                  <LetVarIterator varname="$$opt_temp_1"/>
-                </UnhoistIterator>
-              </CompareIterator>
-            </WhereClause>
-            <ReturnClause>
-              <ForVarIterator varname="t"/>
-            </ReturnClause>
-          </flwor::FLWORIterator>
-        </FnCountIterator>
-      </EnclosedIterator>
-    </ElementIterator>
+              </EnclosedIterator>
+            </AttributeIterator>
+            <EnclosedIterator attr_cont="false">
+              <FnCountIterator>
+                <flwor::FLWORIterator>
+                  <ForVariable name="t">
+                    <NodeSortIterator distinct="true" ascending="true">
+                      <IndexGeneralPointProbeIterator>
+                        <SingletonIterator value="xs:QName(,,tempIndex0)"/>
+                        <UnhoistIterator>
+                          <LetVarIterator varname="$$opt_temp_1"/>
+                        </UnhoistIterator>
+                      </IndexGeneralPointProbeIterator>
+                    </NodeSortIterator>
+                  </ForVariable>
+                  <ReturnClause>
+                    <ForVarIterator varname="t"/>
+                  </ReturnClause>
+                </flwor::FLWORIterator>
+              </FnCountIterator>
+            </EnclosedIterator>
+          </ElementIterator>
+        </ReturnClause>
+      </flwor::FLWORIterator>
+    </SequentialIterator>
   </ReturnClause>
 </flwor::FLWORIterator>
 

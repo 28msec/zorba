@@ -58,6 +58,7 @@ struct PredicateInfo
   ulong         theOuterVarId;
   expr        * theInnerOp;
   var_expr    * theInnerVar;
+  bool          theIsGeneral;
 };
 
 
@@ -184,6 +185,7 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
 
   static_context* sctx = predExpr->get_sctx();
   TypeManager* tm = sctx->get_typemanager();
+  RootTypeManager& rtm = GENV_TYPESYSTEM;
 
   // skip fn:boolean() wrapper
   while (true)
@@ -203,8 +205,17 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
     break;
   }
 
-  if (fn->comparisonKind() != CompareConsts::VALUE_EQUAL)
+  CompareConsts::CompareType opKind = fn->comparisonKind();
+
+  if (opKind != CompareConsts::VALUE_EQUAL && opKind != CompareConsts::GENERAL_EQUAL)
     return false;
+
+  predInfo.theIsGeneral = (opKind == CompareConsts::GENERAL_EQUAL);
+
+#if 0
+  if (predInfo.theIsGeneral)
+    return false;
+#endif
 
   expr* op1 = foExpr->get_arg(0);
   expr* op2 = foExpr->get_arg(1);
@@ -273,33 +284,49 @@ static bool isIndexJoinPredicate(RewriterContext& rCtx, PredicateInfo& predInfo)
   TypeConstants::quantifier_t outerQuant = TypeOps::quantifier(*outerType);
   TypeConstants::quantifier_t innerQuant = TypeOps::quantifier(*innerType);
 
-  // Normally, other rewrite rules should have added the necessary casting
-  // to the eq operands so that their static types have quantifiers ONE
-  // or QUESTION and the associated prime types are not xs:untypedAtomic.
-  // But just in case those rules have been disabled, we check again here
-  // and reject the hashjoin rewrite if these condition are violated.
-  if (innerQuant != TypeConstants::QUANT_ONE &&
-      innerQuant != TypeConstants::QUANT_QUESTION)
-    return false;
+  if (!predInfo.theIsGeneral)
+  {
+    // Normally, other rewrite rules should have added the necessary casting
+    // to the eq operands so that their static types have quantifiers ONE
+    // or QUESTION and the associated prime types are not xs:untypedAtomic.
+    // But just in case those rules have been disabled, we check again here
+    // and reject the hashjoin rewrite if these condition are violated.
 
-  if (outerQuant != TypeConstants::QUANT_ONE &&
-      outerQuant != TypeConstants::QUANT_QUESTION)
-    return false;
+    if (innerQuant != TypeConstants::QUANT_ONE &&
+        innerQuant != TypeConstants::QUANT_QUESTION)
+      return false;
 
-  // The type of the outer/inner operands in the join predicate must not be
-  // xs:untypedAtomic or xs:anyAtomic.
-  if (TypeOps::is_equal(tm, *primeOuterType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE) ||
-      TypeOps::is_equal(tm, *primeInnerType, *GENV_TYPESYSTEM.UNTYPED_ATOMIC_TYPE_ONE))
-    return false;
+    if (outerQuant != TypeConstants::QUANT_ONE &&
+        outerQuant != TypeConstants::QUANT_QUESTION)
+      return false;
 
-  if (TypeOps::is_equal(tm, *primeOuterType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE) ||
-      TypeOps::is_equal(tm, *primeInnerType, *GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE))
-    return false;
+    // The type of the outer/inner operands in the join predicate must not be
+    // xs:untypedAtomic or xs:anyAtomic.
+    if (TypeOps::is_equal(tm, *primeOuterType, *rtm.UNTYPED_ATOMIC_TYPE_ONE) ||
+        TypeOps::is_equal(tm, *primeInnerType, *rtm.UNTYPED_ATOMIC_TYPE_ONE))
+      return false;
 
-  // The type of the outer operand in the join predicate must be a subtype
-  // of the inner operand.
-  if (!TypeOps::is_subtype(tm, *outerType, *innerType))
-    return false;
+    if (TypeOps::is_equal(tm, *primeOuterType, *rtm.ANY_ATOMIC_TYPE_ONE) ||
+        TypeOps::is_equal(tm, *primeInnerType, *rtm.ANY_ATOMIC_TYPE_ONE))
+      return false;
+
+    // The type of the outer operand in the join predicate must be a subtype
+    // of the inner operand.
+    if (!TypeOps::is_subtype(tm, *outerType, *innerType))
+      return false;
+  }
+  else
+  {
+    // TODO: allow domain exprs that return atomic items?
+    if (! TypeOps::is_subtype(tm,
+                              *innerDomainExpr->get_return_type(),
+                              *rtm.ANY_NODE_TYPE_STAR))
+      return false;
+
+    if (innerDomainExpr->getProducesDistinctNodes() != expr::ANNOTATION_TRUE &&
+        innerDomainExpr->getProducesDistinctNodes() != expr::ANNOTATION_TRUE_FIXED)
+      return false;
+  }
 
   return true;
 }
@@ -560,12 +587,32 @@ static void rewriteJoin(
   //
   // Replace the expr defining the inner var with an index probe.
   //
-  fo_expr_t probeExpr = 
-  new fo_expr(sctx,
-              loc,
-              GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_INDEX_VALUE_POINT_PROBE_N),
-              qnameExpr,
-              const_cast<expr*>(predInfo.theOuterOp));
+  fo_expr_t probeExpr;
+
+  if (predInfo.theIsGeneral)
+  {
+    probeExpr = 
+    new fo_expr(sctx,
+                loc,
+                GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_INDEX_GENERAL_POINT_PROBE_N),
+                qnameExpr,
+                const_cast<expr*>(predInfo.theOuterOp));
+
+    probeExpr = 
+    new fo_expr(sctx,
+                loc,
+                GET_BUILTIN_FUNCTION(OP_SORT_DISTINCT_NODES_ASC_1),
+                probeExpr);
+  }
+  else
+  {
+    probeExpr = 
+    new fo_expr(sctx,
+                loc,
+                GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_INDEX_VALUE_POINT_PROBE_N),
+                qnameExpr,
+                const_cast<expr*>(predInfo.theOuterOp));
+  }
 
   fc->set_expr(probeExpr.getp());
 
@@ -574,20 +621,27 @@ static void rewriteJoin(
   //
   IndexDecl_t idx = new IndexDecl(sctx, loc, qname);
 
+  if (predInfo.theIsGeneral)
+    idx->setGeneral(true);
+
+  idx->setTemp(true);
+
   idx->setDomainExpr(domainExpr);
 
   idx->setDomainVariable(rCtx.createTempVar(sctx, loc, var_expr::for_var));
 
   idx->setDomainPositionVariable(rCtx.createTempVar(sctx, loc, var_expr::pos_var));
 
-  idx->setTemp(true);
-
   std::vector<expr_t> columnExprs(1);
   std::vector<xqtref_t> columnTypes(1);
   std::vector<OrderModifier> modifiers(1);
 
   columnExprs[0] = predInfo.theInnerOp;
-  columnTypes[0] = predInfo.theInnerOp->get_return_type();
+
+  columnTypes[0] = (predInfo.theIsGeneral ?
+                    NULL :
+                    predInfo.theInnerOp->get_return_type());
+
   modifiers[0].theAscending = true;
   modifiers[0].theEmptyLeast = true;
   modifiers[0].theCollation = sctx->get_default_collation(QueryLoc::null);
@@ -614,7 +668,12 @@ static void rewriteJoin(
   idx->setDomainExpr(NULL);
   idx->setDomainVariable(NULL);
 
-  //std::cout << "!!!!! Applied Hash Join !!!!!" << std::endl << std::endl;
+#if 0
+  if (predInfo.theIsGeneral)
+    std::cout << "!!!!! Applied General Hash Join !!!!!" << std::endl << std::endl;
+  else
+    std::cout << "!!!!! Applied Value Hash Join !!!!!" << std::endl << std::endl;
+#endif
 }
 
 

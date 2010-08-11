@@ -48,6 +48,8 @@ public:
 
   void addNode(store::Item_t& node, bool multikey, bool untyped);
 
+  void clear() { theNodes.clear(); }
+
   iterator begin() { return theNodes.begin(); }
 
   iterator end()   { return theNodes.end(); }

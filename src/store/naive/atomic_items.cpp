@@ -75,7 +75,7 @@ void AtomicItem::getTypedValue(store::Item_t& val, store::Iterator_t& iter) cons
   For numeric items or the untyped item: convert this item to a long item, 
   if possible, i.e., if the conversion is going to be lossless.
 ********************************************************************************/
-void AtomicItem::castToLong(store::Item_t& result) const
+bool AtomicItem::castToLong(store::Item_t& result) const
 {
   xqp_long longValue;
 
@@ -143,6 +143,8 @@ void AtomicItem::castToLong(store::Item_t& result) const
                           __FUNCTION__, typeid (*this).name ());
   }
   }
+
+  return (result != NULL);
 }
 
 
@@ -279,152 +281,161 @@ void AtomicItem::coerceToDouble(store::Item_t& result, bool force, bool& lossy) 
 /*******************************************************************************
   class UntypedAtomicItem
 ********************************************************************************/
-void UntypedAtomicItem::castToUri(store::Item_t& result) const
+bool UntypedAtomicItem::castToUri(store::Item_t& result) const
 {
+  result = NULL;
+
   try
   {
     URI uriVal(theValue);
-    GET_FACTORY().createAnyURI(result, uriVal.toString()->c_str());
+    return GET_FACTORY().createAnyURI(result, uriVal.toString()->c_str());
   }
   catch (error::ZorbaError& e)
   {
     result = NULL;
   }
+
+  return false;
 }
 
 
-void UntypedAtomicItem::castToString(store::Item_t& result) const
+bool UntypedAtomicItem::castToString(store::Item_t& result) const
 {
   xqpStringStore_t tmp(theValue);
-  GET_FACTORY().createString(result, tmp);
+  return GET_FACTORY().createString(result, tmp);
 }
 
 
-void UntypedAtomicItem::castToDateTime(store::Item_t& result) const
+bool UntypedAtomicItem::castToDateTime(store::Item_t& result) const
 {
-  GET_FACTORY().createDateTime(result, theValue);
+  return GET_FACTORY().createDateTime(result, theValue);
 }
 
 
-void UntypedAtomicItem::castToDate(store::Item_t& result) const
+bool UntypedAtomicItem::castToDate(store::Item_t& result) const
 {
-  GET_FACTORY().createDate(result, theValue);
+  return GET_FACTORY().createDate(result, theValue);
 }
 
 
-void UntypedAtomicItem::castToTime(store::Item_t& result) const
+bool UntypedAtomicItem::castToTime(store::Item_t& result) const
 {
-  GET_FACTORY().createTime(result, theValue);
+  return GET_FACTORY().createTime(result, theValue);
 }
 
 
-void UntypedAtomicItem::castToGYear(store::Item_t& result) const
+bool UntypedAtomicItem::castToGYear(store::Item_t& result) const
 {
-  GET_FACTORY().createGYear(result, theValue);
+  return GET_FACTORY().createGYear(result, theValue);
 }
 
 
-void UntypedAtomicItem::castToGYearMonth(store::Item_t& result) const
+bool UntypedAtomicItem::castToGYearMonth(store::Item_t& result) const
 {
-  GET_FACTORY().createGYearMonth(result, theValue);
+  return GET_FACTORY().createGYearMonth(result, theValue);
 }
 
 
-void UntypedAtomicItem::castToGMonthDay(store::Item_t& result) const
+bool UntypedAtomicItem::castToGMonthDay(store::Item_t& result) const
 {
-  GET_FACTORY().createGMonthDay(result, theValue);
+  return GET_FACTORY().createGMonthDay(result, theValue);
 }
 
 
-void UntypedAtomicItem::castToGMonth(store::Item_t& result) const
+bool UntypedAtomicItem::castToGMonth(store::Item_t& result) const
 {
-  GET_FACTORY().createGMonth(result, theValue);
+  return GET_FACTORY().createGMonth(result, theValue);
 }
 
 
-void UntypedAtomicItem::castToGDay(store::Item_t& result) const
+bool UntypedAtomicItem::castToGDay(store::Item_t& result) const
 {
-  GET_FACTORY().createGDay(result, theValue);
+  return GET_FACTORY().createGDay(result, theValue);
 }
 
 
-void UntypedAtomicItem::castToDuration(store::Item_t& result) const
+bool UntypedAtomicItem::castToDuration(store::Item_t& result) const
 {
-  GET_FACTORY().createDuration(result, theValue);
+  return GET_FACTORY().createDuration(result, theValue);
 }
 
 
-void UntypedAtomicItem::castToDouble(store::Item_t& result) const
+bool UntypedAtomicItem::castToDouble(store::Item_t& result) const
 {
   xqp_double doubleValue;
   if (NumConversions::strToDouble(theValue->c_str(), doubleValue))
   {
-    GET_FACTORY().createDouble(result, doubleValue);
+    return GET_FACTORY().createDouble(result, doubleValue);
   }
   else
   {
     result = NULL;
+    return false;
   }
 }
 
 
-void UntypedAtomicItem::castToDecimal(store::Item_t& result) const
+bool UntypedAtomicItem::castToDecimal(store::Item_t& result) const
 {
   xqp_decimal decValue;
   if (NumConversions::strToDecimal(theValue->c_str(), decValue))
   {
-    GET_FACTORY().createDecimal(result, decValue);
+    return GET_FACTORY().createDecimal(result, decValue);
   }
   else
   {
     result = NULL;
+    return false;
   }
 }
 
 
-void UntypedAtomicItem::castToInteger(store::Item_t& result) const
+bool UntypedAtomicItem::castToInteger(store::Item_t& result) const
 {
   xqp_integer intValue;
   if (NumConversions::strToInteger(theValue->c_str(), intValue))
   {
-    GET_FACTORY().createInteger(result, intValue);
+    return GET_FACTORY().createInteger(result, intValue);
   }
   else
   {
     result = NULL;
+    return false;
   }
 }
 
 
-void UntypedAtomicItem::castToHexBinary(store::Item_t& result) const
+bool UntypedAtomicItem::castToHexBinary(store::Item_t& result) const
 {
   Base16 value;
   if (Base16::parseString(theValue, value))
   {
-    GET_FACTORY().createHexBinary(result, value);
+    return GET_FACTORY().createHexBinary(result, value);
   }
   else
   {
     result = NULL;
+    return false;
   }
 }
 
 
-void UntypedAtomicItem::castToBase64Binary(store::Item_t& result) const
+bool UntypedAtomicItem::castToBase64Binary(store::Item_t& result) const
 {
   Base64 value;
   if (Base64::parseString(theValue, value))
   {
-    GET_FACTORY().createBase64Binary(result, value);
+    return GET_FACTORY().createBase64Binary(result, value);
   }
   else
   {
     result = NULL;
+    return false;
   }
 }
 
 
-void UntypedAtomicItem::castToBoolean(store::Item_t& result) const
+bool UntypedAtomicItem::castToBoolean(store::Item_t& result) const
 {
   xqpStringStore_t str = theValue->trim(" \t\r\n", 4);
   bool value = true;
@@ -436,10 +447,10 @@ void UntypedAtomicItem::castToBoolean(store::Item_t& result) const
   else if (!str->byteEqual("true", 4) && !str->byteEqual("1", 1))
   {
     result = NULL;
-    return;
+    return false;
   }
 
-  GET_FACTORY().createBoolean(result, value);
+  return GET_FACTORY().createBoolean(result, value);
 }
 
 

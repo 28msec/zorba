@@ -125,6 +125,7 @@ if (castItem !=  NULL)                                             \
   if (key == NULL) key = new store::IndexKey(1);                   \
   (*key)[0].transfer(castItem);                                    \
   found = found || insertInMap(key, node, theMaps[MAP_ID], true);  \
+  node = node2;                                                    \
 }
 
 
@@ -132,6 +133,7 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
 {
   bool found = false;
   store::Item_t castItem;
+  store::Item_t node2;
 
   AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
 
@@ -216,7 +218,8 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
 
     if (lossy)
     {
-      found = insertInMap(key, node, theMaps[XS_DECIMAL], false);
+      node2 = node;
+      found = insertInMap(key, node2, theMaps[XS_DECIMAL], false);
     }
 
     if (key == NULL) key = new store::IndexKey(1);
@@ -239,14 +242,19 @@ longmap:
     bool lossy;
     keyItem->coerceToDouble(castItem, false, lossy);
 
-    found = insertInMap(key, node, theMaps[XS_LONG], false);
-
     if (lossy)
     {
+      node2 = node;
+      found = insertInMap(key, node2, theMaps[XS_LONG], false);
+
       if (key == NULL) key = new store::IndexKey(1);
       (*key)[0].transfer(castItem);
 
       found = found || insertInMap(key, node, theMaps[XS_DOUBLE], false);
+    }
+    else
+    {
+      found = insertInMap(key, node, theMaps[XS_LONG], false);
     }
 
     return found;
@@ -259,147 +267,123 @@ longmap:
     rchandle<UntypedAtomicItem> untypedItem = 
     static_cast<UntypedAtomicItem*>((*key)[0].getp());
 
+    node2 = node;
+
     // cast to xs:string
     untypedItem->castToString(castItem);
     ADD_IN_MAP(XS_STRING);
 
     // try casting to xs:long
-    untypedItem->castToLong(castItem);
-    if (castItem != NULL)
+    if (untypedItem->castToLong(castItem))
     {
+      rchandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
+
       ADD_IN_MAP(XS_LONG);
 
       bool lossy;
-      untypedItem->coerceToDouble(castItem, false, lossy);
+      longItem->coerceToDouble(castItem, false, lossy);
       if (lossy)
       {
         ADD_IN_MAP(XS_DOUBLE);
       }
 
-      // may also be gYear, hexBinary, or boolean
-      untypedItem->castToGYear(castItem);
-      ADD_IN_MAP(XS_GYEAR);
-      untypedItem->castToHexBinary(castItem);
+      // may also be gYear, hexBinary, base64Binary, or boolean
+      if (untypedItem->castToGYear(castItem))
+        ADD_IN_MAP(XS_GYEAR);
+
+      if (untypedItem->castToHexBinary(castItem))
+        ADD_IN_MAP(XS_HEXBINARY);
+
+      if (untypedItem->castToBase64Binary(castItem))
+        ADD_IN_MAP(XS_BASE64BINARY);
+    }
+
+    // try casting to xs:decimal
+    else if (untypedItem->castToDecimal(castItem))
+    {
+      rchandle<DecimalItem> decimalItem = static_cast<DecimalItem*>(castItem.getp());
+
+      ADD_IN_MAP(XS_DOUBLE);
+
+      bool lossy;
+      decimalItem->coerceToDouble(castItem, true, lossy);
+      if (lossy)
+      {
+        ADD_IN_MAP(XS_DECIMAL);
+      }
+
+      // may also be hexBinary or base64Binary
+      if (untypedItem->castToHexBinary(castItem))
+        ADD_IN_MAP(XS_HEXBINARY);
+
+      if (untypedItem->castToBase64Binary(castItem))
+        ADD_IN_MAP(XS_BASE64BINARY);
+    }
+
+    // try casting to xs:double
+    else if (untypedItem->castToDouble(castItem))
+    {
+      ADD_IN_MAP(XS_DOUBLE);
+    }
+
+    // try casting to xs:datetime
+    else if (untypedItem->castToDateTime(castItem))
+    {
+      ADD_IN_MAP(XS_DATETIME);
+    }
+
+    // try casting to xs:date
+    else if (untypedItem->castToDate(castItem))
+    {
+      ADD_IN_MAP(XS_DATE);
+    }
+
+    // try casting to xs:time
+    else if (untypedItem->castToTime(castItem))
+    {
+      ADD_IN_MAP(XS_TIME);
+    }
+
+    // try casting to xs:gYearMonth
+    else if (untypedItem->castToGYearMonth(castItem))
+    {
+      ADD_IN_MAP(XS_GYEAR_MONTH);
+    }
+
+    // try casting to xs:gMonthDay
+    else if (untypedItem->castToGMonthDay(castItem))
+    {
+      ADD_IN_MAP(XS_GMONTH_DAY);
+    }
+
+    // try casting to xs:gDay
+    else if (untypedItem->castToGDay(castItem))
+    {
+      ADD_IN_MAP(XS_GDAY);
+    }
+
+    // try casting to xs:gMonth
+    else if (untypedItem->castToGMonth(castItem))
+    {
+      ADD_IN_MAP(XS_GMONTH);
+    }
+
+    // try casting to xs:duration
+    else if (untypedItem->castToDuration(castItem))
+    {
+      ADD_IN_MAP(XS_DURATION);
+    }
+
+    // try casting to xs:hexBinary
+    else if (untypedItem->castToHexBinary(castItem))
+    {
       ADD_IN_MAP(XS_HEXBINARY);
     }
-    else
+
+    // try casting to xs:base64Binary
+    else if (untypedItem->castToBase64Binary(castItem))
     {
-      // try casting to xs:decimal
-      untypedItem->castToDecimal(castItem);
-      if (castItem != NULL)
-      {
-        ADD_IN_MAP(XS_DOUBLE);
-
-        bool lossy;
-        untypedItem->coerceToDouble(castItem, true, lossy);
-        if (lossy)
-        {
-          ADD_IN_MAP(XS_DECIMAL);
-        }
-
-        // may also be hexBinary
-        untypedItem->castToHexBinary(castItem);
-        ADD_IN_MAP(XS_HEXBINARY);
-      }
-      else
-      {
-        // try casting to xs:double
-        untypedItem->castToDouble(castItem);
-        if (castItem != NULL)
-        {
-          ADD_IN_MAP(XS_DOUBLE);
-        }
-        else
-        {
-          // try casting to xs:datetime
-          untypedItem->castToDateTime(castItem);
-          if (castItem != NULL)
-          {
-            ADD_IN_MAP(XS_DATETIME);
-          }
-          else
-          {
-            // try casting to xs:date
-            untypedItem->castToDate(castItem);
-            if (castItem != NULL)
-            {
-              ADD_IN_MAP(XS_DATE);
-            }
-            else
-            {
-              // try casting to xs:time
-              untypedItem->castToTime(castItem);
-              if (castItem != NULL)
-              {
-                ADD_IN_MAP(XS_TIME);
-              }
-              else
-              {
-                // try casting to xs:gYearMonth
-                untypedItem->castToGYearMonth(castItem);
-                if (castItem != NULL)
-                {
-                  ADD_IN_MAP(XS_GYEAR_MONTH);
-                }
-                else
-                {
-                  // try casting to xs:gMonthDay
-                  untypedItem->castToGMonthDay(castItem);
-                  if (castItem != NULL)
-                  {
-                    ADD_IN_MAP(XS_GMONTH_DAY);
-                  }
-                  else
-                  {
-                    // try casting to xs:gDay
-                    untypedItem->castToGDay(castItem);
-                    if (castItem != NULL)
-                    {
-                      ADD_IN_MAP(XS_GDAY);
-                    }
-                    else
-                    {
-                      // try casting to xs:gMonth
-                      untypedItem->castToGMonth(castItem);
-                      if (castItem != NULL)
-                      {
-                        ADD_IN_MAP(XS_GMONTH);
-                      }
-                      else
-                      {
-                        // try casting to xs:duration
-                        untypedItem->castToDuration(castItem);
-                        if (castItem != NULL)
-                        {
-                          ADD_IN_MAP(XS_DURATION);
-                        }
-                        else
-                        {
-                          // try casting to xs:hexBinary
-                          untypedItem->castToHexBinary(castItem);
-                          if (castItem != NULL)
-                          {
-                            ADD_IN_MAP(XS_HEXBINARY);
-                          }
-                          else
-                          {
-                            // try casting to xs:hexBinary
-                            untypedItem->castToBase64Binary(castItem);
-                            if (castItem != NULL)
-                            {
-                              ADD_IN_MAP(XS_BASE64BINARY);
-                            }
-                          }
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+      ADD_IN_MAP(XS_BASE64BINARY);
     }
 
     return found;
@@ -486,6 +470,14 @@ GeneralHashProbeIterator::GeneralHashProbeIterator(const store::Index_t& index)
 }
 
 
+#define PROBE_MAP(MAP_ID)                                                           \
+{                                                                                   \
+  altKey[0].transfer(castItem);                                                     \
+  theResultSets.push_back(NULL);                                                    \
+  theIndex->theMaps[MAP_ID]->get(&altKey, theResultSets[theResultSets.size() - 1]); \
+}
+
+
 /******************************************************************************
 
 ********************************************************************************/
@@ -509,7 +501,8 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
                       key->toString());
   }
 
-  GeneralHashIndex::IndexMap* targetMap = NULL;
+  theResultSets.resize(1);
+  theResultSets[0] = NULL;
 
   if (theIndex->isTyped())
   {
@@ -520,6 +513,9 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
   }
   else
   {
+    bool lossy;
+    store::Item_t castItem;
+    store::IndexKey altKey(1);
     AtomicItem* keyItem = static_cast<AtomicItem*>((*key)[0].getp());
 
     if (keyItem->getBaseItem() != NULL)
@@ -534,26 +530,20 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
     {
     case XS_ANY_URI:
     {
-      targetMap = theIndex->theMaps[XS_ANY_URI];
-
-      if (targetMap != NULL)
+      if (theIndex->theMaps[XS_ANY_URI])
       {
-        targetMap->get(key, theResultSets[0]);
+        theIndex->theMaps[XS_ANY_URI]->get(key, theResultSets[0]);
       }
 
-      targetMap = theIndex->theMaps[XS_STRING];
-
-      if (targetMap != NULL)
+      if (theIndex->theMaps[XS_STRING] != NULL)
       {
-        store::Item_t stringItem;
+        store::Item_t castItem;
         xqpStringStore_t tmp = keyItem->getStringValue();
-        GET_FACTORY().createString(stringItem, tmp);
-        (*key)[0] = stringItem;
+        GET_FACTORY().createString(castItem, tmp);
 
-        theResultSets.push_back(NULL);
-
-        targetMap->get(key, theResultSets[1]);
+        PROBE_MAP(XS_STRING);
       }
+
       break;
     }
 
@@ -571,11 +561,9 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
     case XS_GDAY:
     case XS_GMONTH:
     {
-      targetMap = theIndex->theMaps[keyType];
-
-      if (targetMap != NULL)
+      if (theIndex->theMaps[keyType] != NULL)
       {
-        targetMap->get(key, theResultSets[0]);
+        theIndex->theMaps[keyType]->get(key, theResultSets[0]);
       }
 
       break;
@@ -585,11 +573,9 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
     case XS_YM_DURATION:
     case XS_DT_DURATION:
     {
-      targetMap = theIndex->theMaps[XS_DURATION];
-
-      if (targetMap != NULL)
+      if (theIndex->theMaps[XS_DURATION])
       {
-        targetMap->get(key, theResultSets[0]);
+        theIndex->theMaps[XS_DURATION]->get(key, theResultSets[0]);
       }
 
       break;
@@ -606,25 +592,18 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
     case XS_IDREF:
     case XS_ENTITY:
     {
-      targetMap = theIndex->theMaps[XS_STRING];
-
-      if (targetMap != NULL)
+      if (theIndex->theMaps[XS_STRING])
       {
-        targetMap->get(key, theResultSets[0]);
+        theIndex->theMaps[XS_STRING]->get(key, theResultSets[0]);
       }
 
-      targetMap = theIndex->theMaps[XS_ANY_URI];
-
-      if (targetMap != NULL)
+      if (theIndex->theMaps[XS_ANY_URI])
       {
-        store::Item_t uriItem;
+        store::Item_t castItem;
         xqpStringStore_t tmp = keyItem->getStringValue();
-        GET_FACTORY().createAnyURI(uriItem, tmp);
-        (*key)[0] = uriItem;
+        GET_FACTORY().createAnyURI(castItem, tmp);
 
-        theResultSets.push_back(NULL);
-
-        targetMap->get(key, theResultSets[1]);
+        PROBE_MAP(XS_ANY_URI);
       }
 
       break;
@@ -633,28 +612,14 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
     case XS_DOUBLE:
     case XS_FLOAT:
     {
-      targetMap = theIndex->theMaps[XS_DOUBLE];
-
-      if (targetMap != NULL)
+      if (theIndex->theMaps[XS_DOUBLE])
       {
-        targetMap->get(key, theResultSets[0]);
+        theIndex->theMaps[XS_DOUBLE]->get(key, theResultSets[0]);
       }
 
-      store::Item_t longItem;
-      keyItem->castToLong(longItem);
-
-      if (longItem != NULL)
+      if (theIndex->theMaps[XS_LONG] && keyItem->castToLong(castItem))
       {
-        targetMap = theIndex->theMaps[XS_LONG];
-
-        if (targetMap != NULL)
-        {
-          (*key)[0] = longItem;
-
-          theResultSets.push_back(NULL);
-
-          targetMap->get(key, theResultSets[1]);
-        }
+        PROBE_MAP(XS_LONG);
       }
 
       break;
@@ -668,49 +633,21 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
     case XS_POSITIVE_INTEGER:
     case XS_UNSIGNED_LONG:
     {
-      rchandle<AtomicItem> keyItem = static_cast<AtomicItem*>((*key)[0].getp());
+      keyItem->coerceToDouble(castItem, true, lossy);
 
-      store::Item_t doubleItem;
-      bool lossy;
-
-      keyItem->coerceToDouble(doubleItem, true, lossy);
-
-      targetMap = theIndex->theMaps[XS_DOUBLE];
-
-      if (targetMap != NULL)
+      if (lossy && theIndex->theMaps[XS_DECIMAL])
       {
-       (*key)[0] = doubleItem;
-
-        targetMap->get(key, theResultSets[0]);
+        theIndex->theMaps[XS_DECIMAL]->get(key, theResultSets[0]);
       }
 
-      targetMap = theIndex->theMaps[XS_LONG];
-
-      if (targetMap != NULL)
+      if (theIndex->theMaps[XS_DOUBLE])
       {
-        store::Item_t longItem;
-
-        keyItem->castToLong(longItem);
-
-        if (longItem != NULL)
-        {
-          (*key)[0] = longItem;
-
-          theResultSets.push_back(NULL);
-
-          targetMap->get(key, theResultSets[theResultSets.size() - 1]);
-        }
+        PROBE_MAP(XS_DOUBLE);
       }
 
-      targetMap = theIndex->theMaps[XS_DECIMAL];
-
-      if (lossy && targetMap != NULL)
+      if (theIndex->theMaps[XS_LONG] && keyItem->castToLong(castItem))
       {
-        (*key)[0] = keyItem;
-
-        theResultSets.push_back(NULL);
-
-        targetMap->get(key, theResultSets[theResultSets.size() - 1]);
+        PROBE_MAP(XS_LONG);
       }
 
       break;
@@ -724,29 +661,180 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
     case XS_UNSIGNED_SHORT:
     case XS_UNSIGNED_BYTE:
     {
-      targetMap = theIndex->theMaps[XS_LONG];
-
-      if (targetMap != NULL)
+      if (theIndex->theMaps[XS_LONG])
       {
-        targetMap->get(key, theResultSets[0]);
+        theIndex->theMaps[XS_LONG]->get(key, theResultSets[0]);
       }
 
-      targetMap = theIndex->theMaps[XS_DOUBLE];
-
-      if (targetMap != NULL)
+      if (theIndex->theMaps[XS_DOUBLE])
       {
-        store::Item_t doubleItem;
-        bool lossy;
-
-        keyItem->coerceToDouble(doubleItem, true, lossy);
-
-        (*key)[0] = doubleItem;
-
-        theResultSets.push_back(NULL);
-
-        targetMap->get(key, theResultSets[1]);
+        keyItem->coerceToDouble(castItem, true, lossy);
+        PROBE_MAP(XS_DOUBLE);
       }
 
+      break;
+    }
+
+    case XS_UNTYPED_ATOMIC:
+    {
+      rchandle<UntypedAtomicItem> untypedItem = static_cast<UntypedAtomicItem*>(keyItem);
+
+      // cast to xs:string
+      if (theIndex->theMaps[XS_STRING])
+      {
+        untypedItem->castToString(castItem); 
+        PROBE_MAP(XS_STRING);
+      }
+
+      // try casting to xs:long
+      if ((theIndex->theMaps[XS_LONG] ||
+           theIndex->theMaps[XS_DOUBLE]) &&
+          (untypedItem->castToLong(castItem), castItem != NULL))
+      {
+        rchandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
+
+        if (theIndex->theMaps[XS_LONG])
+          PROBE_MAP(XS_LONG);
+
+        if (theIndex->theMaps[XS_DOUBLE])
+        {
+          longItem->coerceToDouble(castItem, true, lossy);
+          PROBE_MAP(XS_DOUBLE);
+        }
+
+        // may also be gYear, hexBinary, or boolean
+        if (theIndex->theMaps[XS_GYEAR])
+        {
+          untypedItem->castToGYear(castItem);
+          PROBE_MAP(XS_GYEAR);
+        }
+
+        if (theIndex->theMaps[XS_HEXBINARY])
+        {
+          untypedItem->castToHexBinary(castItem); 
+          PROBE_MAP(XS_HEXBINARY);
+        }
+      }
+
+      // try casting to xs:decimal
+      else if ((theIndex->theMaps[XS_DECIMAL] ||
+                theIndex->theMaps[XS_LONG] ||
+                theIndex->theMaps[XS_DOUBLE]) &&
+               untypedItem->castToDecimal(castItem))
+      {
+        rchandle<DecimalItem> decimalItem = static_cast<DecimalItem*>(castItem.getp());
+
+        decimalItem->coerceToDouble(castItem, true, lossy);
+
+        if (theIndex->theMaps[XS_DOUBLE])
+        {
+          PROBE_MAP(XS_DOUBLE);
+        }
+
+        if (theIndex->theMaps[XS_LONG] && decimalItem->castToLong(castItem))
+        {
+          PROBE_MAP(XS_LONG);
+        }
+
+        if (lossy && theIndex->theMaps[XS_DECIMAL])
+        {
+          castItem.transfer(decimalItem);
+          PROBE_MAP(XS_DOUBLE);
+        }
+
+        // may also be hexBinary
+        if (theIndex->theMaps[XS_HEXBINARY])
+        {
+          untypedItem->castToHexBinary(castItem); 
+          PROBE_MAP(XS_HEXBINARY);
+        }
+      }
+
+      // try casting to xs:double
+      else if ((theIndex->theMaps[XS_LONG] || theIndex->theMaps[XS_DOUBLE]) &&
+               untypedItem->castToDouble(castItem))
+      {
+        rchandle<DoubleItem> doubleItem = static_cast<DoubleItem*>(castItem.getp());
+
+        if (theIndex->theMaps[XS_DOUBLE])
+          PROBE_MAP(XS_DOUBLE);
+
+        if (theIndex->theMaps[XS_LONG] && doubleItem->castToLong(castItem))
+        {
+          PROBE_MAP(XS_LONG);
+        }
+      }
+
+      // try casting to xs:datetime
+      else if (theIndex->theMaps[XS_DATETIME] &&
+               untypedItem->castToDateTime(castItem))
+      {
+        PROBE_MAP(XS_DATETIME);
+      }
+
+      // try casting to xs:date
+      else if (theIndex->theMaps[XS_DATE] &&
+               untypedItem->castToDate(castItem))
+      {
+        PROBE_MAP(XS_DATE);
+      }
+
+      // try casting to xs:time
+      else if (theIndex->theMaps[XS_TIME] &&
+               untypedItem->castToTime(castItem))
+      {
+        PROBE_MAP(XS_TIME);
+      }
+
+      // try casting to xs:gYearMonth
+      else if (theIndex->theMaps[XS_GYEAR_MONTH] &&
+               untypedItem->castToGYearMonth(castItem))
+      {
+        PROBE_MAP(XS_GYEAR_MONTH);
+      }
+
+      // try casting to xs:gMonthDay
+      else if (theIndex->theMaps[XS_GMONTH_DAY] &&
+               untypedItem->castToGMonthDay(castItem))
+      {
+        PROBE_MAP(XS_GMONTH_DAY);
+      }
+
+      // try casting to xs:gDay
+      else if (theIndex->theMaps[XS_GDAY] &&
+               untypedItem->castToGDay(castItem))
+      {
+        PROBE_MAP(XS_GDAY);
+      }
+
+      // try casting to xs:gMonth
+      else if (theIndex->theMaps[XS_GMONTH] &&
+               untypedItem->castToGMonth(castItem))
+      {
+        PROBE_MAP(XS_GMONTH);
+      }
+      
+      // try casting to xs:duration
+      else if (theIndex->theMaps[XS_DURATION] &&
+               untypedItem->castToDuration(castItem))
+      {
+        PROBE_MAP(XS_DURATION);
+      }
+      
+      // try casting to xs:hexBinary
+      else if (theIndex->theMaps[XS_HEXBINARY] &&
+               untypedItem->castToHexBinary(castItem))
+      {
+        PROBE_MAP(XS_HEXBINARY);
+      }
+      
+      // try casting to xs:base64Binary
+      else if (theIndex->theMaps[XS_BASE64BINARY] &&
+               untypedItem->castToBase64Binary(castItem))
+      {
+        PROBE_MAP(XS_BASE64BINARY);
+      }
+      
       break;
     }
 

@@ -234,7 +234,9 @@ static bool hoist_expressions(
 
 
 /*******************************************************************************
-
+  Try to hoist the given expr e out of some for loop that is located in some
+  flwor expr inside the stack of flwor exprs that is accessible via the "holder"
+  param.
 ********************************************************************************/
 static expr_t try_hoisting(
     RewriterContext& rCtx,
@@ -243,7 +245,7 @@ static expr_t try_hoisting(
     const ExprVarsMap& freevarMap,
     struct flwor_holder* holder)
 {
-  if (non_hoistable (e) ||
+  if (non_hoistable(e) ||
       e->contains_node_construction() ||
       is_enclosed_expr(e))
   {
@@ -260,7 +262,7 @@ static expr_t try_hoisting(
   int i = 0;
   bool found = false;
 
-  while(h->prev != NULL && !found)
+  while (h->prev != NULL && !found)
   {
     group_clause* gc = h->flwor->get_group_clause();
 
@@ -326,6 +328,9 @@ static expr_t try_hoisting(
                                GET_BUILTIN_FUNCTION(OP_HOIST_1),
                                e);
 
+  hoisted->setFlags(e->getFlags());
+  letvar->setFlags(e->getFlags());
+
   let_clause_t flref(new let_clause(e->get_sctx(),
                                     e->get_loc(),
                                     letvar,
@@ -353,6 +358,8 @@ static expr_t try_hoisting(
                                  new wrapper_expr(e->get_sctx(),
                                                   e->get_loc(),
                                                   letvar.getp()));
+  unhoisted->setFlags(e->getFlags());
+
   return unhoisted.getp();
 }
 

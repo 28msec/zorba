@@ -787,7 +787,7 @@ bool BasicItemFactory::createDuration(
     const xqpStringStore_t& value)
 {
   Duration d;
-  if (Duration::parseDuration(value, d))
+  if (Duration::parseDuration(value, d) == 0)
   {
     result = new DurationItem(&d);
     return true;
