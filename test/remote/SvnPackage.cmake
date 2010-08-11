@@ -172,17 +172,18 @@ function (svn_unpackage changefile svndir tmpdir svnlogfile changeslogfile
                    --query "data(info/entry/@path)"
                    --context-item "${chgdir}/svn-info.xml"
                    OUTPUT_VARIABLE clientroot)
+  # clientroot and the filepaths below are absolute paths from the
+  # client, which might be Windows-style paths with drive letters. The
+  # following is a horrific hack which lets us get the remote path
+  # component no matter which platform they came from. (Note: This
+  # only works on Linux, which is the platform the remote queue runs
+  # on. If we ever have a Windows remote queue machine, this will
+  # die.)
+  # 1. Stick a leading / on them, so Linux thinks they're absolute.
+  # 2. Convert to "CMake paths", which have forward-slashes.
+  # 3. Do relative_path as normal.
+  file (TO_CMAKE_PATH "/${clientroot}" clientroot)
   foreach (filepath ${deletefiles})
-    # These are absolute paths from the client, which might be
-    # Windows-style paths with drive letters. The following is a
-    # horrific hack which lets us get the remote path component no
-    # matter which platform they came from. (Note: This only works on
-    # Linux, which is the platform the remote queue runs on. If we
-    # ever have a Windows remote queue machine, this will die.)
-    # 1. Stick a leading / on them, so Linux thinks they're absolute.
-    # 2. Convert to "CMake paths", which have forward-slashes.
-    # 3. Do relative_path as normal.
-    file (TO_CMAKE_PATH "/${clientroot}" clientroot)
     file (TO_CMAKE_PATH "/${filepath}" filepath)
     file (RELATIVE_PATH relpath "${clientroot}" "${filepath}")
     execute_process (COMMAND "${svn}" delete "${svndir}/${relpath}"
