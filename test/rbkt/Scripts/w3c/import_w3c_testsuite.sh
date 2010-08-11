@@ -240,6 +240,15 @@ if ( $inlist ne "noinlist" || $urilist ne "nourilist" || $ctx ne "nocontext" ) {
   print SPEC "Args:";
   print SPECX "Args:";
 
+  # enable Dtd loader for tests using Dtd
+  if ( $name=~/^fn-id-dtd-/ ||
+       $name=~/^fn-idref-dtd-/
+     )
+  {
+    print SPEC  " --enable-dtd ";
+    print SPECX " --enable-dtd ";
+  }
+
   if ( $inlist ne "noinlist" ) {
     foreach (@inbnd) {
       my ($var, $srcid) = split /=/;

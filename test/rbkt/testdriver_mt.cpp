@@ -524,13 +524,7 @@ void* thread_main(void* param)
     //
     try
     {
-      bool enableDtd = false;
-      std::string ldtdStr = "dtd";
-      if ( querySpec.getEnableDtd() ||
-          relativeQueryFile.find(ldtdStr) != std::string::npos )
-        enableDtd = true;
-
-      createDynamicContext(driverContext, sctx, query, enableDtd);
+      createDynamicContext(driverContext, sctx, query, querySpec.getEnableDtd());
       
       Zorba_SerializerOptions lSerOptions;
       lSerOptions.ser_method = ZORBA_SERIALIZATION_METHOD_XML;
