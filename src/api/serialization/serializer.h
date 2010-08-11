@@ -101,7 +101,13 @@ namespace zorba
         const char* name,
         const char* value);
 
-    protected:
+      /**
+       * Get the serialization method.
+       *
+       * @return A value from the PARAMETER_VALUE_TYPE enum.
+       */
+      short
+      getSerializationMethod() const;
 
       typedef enum
       {
@@ -123,6 +129,8 @@ namespace zorba
 #endif
       } PARAMETER_VALUE_TYPE;
 
+    protected:
+
       error::ErrorManager* theErrorManager;
 
       // Serialization parameters
@@ -134,7 +142,7 @@ namespace zorba
       short int escape_uri_attributes;          // TODO: yes/no requires unicode normalization
       short int include_content_type;           // yes/no, implemented
       xqpStringStore_t media_type;              // string, implemented
-      short int method;                         // an expanded QName: "xml", "html", "xhtml", "text", "json" and "jsonml"  are handled
+      short int method;                         // an expanded QName: "xml", "html", "xhtml", "text", "json", "jsonml", and "binary"  are handled
       xqpStringStore_t normalization_form;      // TODO:   requires unicode normalization
       short int omit_xml_declaration;           // "yes" or "no", implemented
       short int standalone;                     // implemented

@@ -84,8 +84,8 @@ namespace zorba {
 
       virtual DirectoryIterator_t files() const = 0;
 
-      virtual void openInputStream(std::ifstream& aInStream) const = 0;
-      virtual void openOutputStream(std::ofstream& aOutStream, bool append = false) const = 0;
+	    virtual void openInputStream(std::ifstream& aInStream, bool binary = false) const = 0;
+      virtual void openOutputStream(std::ofstream& aOutStream, bool append = false, bool binary = false) const = 0;
 
       virtual time_t lastModified() const = 0;
 

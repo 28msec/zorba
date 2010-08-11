@@ -36,6 +36,9 @@ namespace zorba {
         Serializable* object,
         std::ostream& stream) const = 0;
 
+      virtual int
+      getSerializationMethod() const = 0;
+
       static Serializer_t
       createSerializer(const Zorba_SerializerOptions_t& options);
 

@@ -1759,6 +1759,11 @@ void serializer::setParameter(const char* aName, const char* aValue)
   }
 }
 
+short int
+serializer::getSerializationMethod() const {
+  return method;
+}
+
 
 void serializer::validate_parameters(void)
 {

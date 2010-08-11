@@ -58,6 +58,29 @@ SerializerImpl::serialize(Serializable* aObject, std::ostream& aOs) const
   theInternalSerializer.serialize((intern::Serializable*)&lWrapper, aOs);
 }
 
+int
+SerializerImpl::getSerializationMethod() const
+{
+  switch (theInternalSerializer.getSerializationMethod())
+  {
+  case serializer::PARAMETER_VALUE_HTML:
+    return ZORBA_SERIALIZATION_METHOD_HTML;
+  case serializer::PARAMETER_VALUE_XHTML:
+    return ZORBA_SERIALIZATION_METHOD_XHTML;
+  case serializer::PARAMETER_VALUE_TEXT:
+    return ZORBA_SERIALIZATION_METHOD_TEXT;
+  case serializer::PARAMETER_VALUE_JSON:
+    return ZORBA_SERIALIZATION_METHOD_JSON;
+  case serializer::PARAMETER_VALUE_JSONML:
+    return ZORBA_SERIALIZATION_METHOD_JSONML;
+  case serializer::PARAMETER_VALUE_BINARY:
+    return ZORBA_SERIALIZATION_METHOD_BINARY;
+  default:
+    return ZORBA_SERIALIZATION_METHOD_XML;
+  }
+}
+
+
 void
 SerializerImpl::setSerializationParameters(
   serializer&                       aInternalSerializer,

@@ -80,8 +80,8 @@ namespace zorba {
 
       DirectoryIterator_t files() const;
 
-      void openInputStream(std::ifstream& aInStream) const;
-      void openOutputStream(std::ofstream& aOutStream, bool append = false) const;
+	    void openInputStream(std::ifstream& aInStream, bool binary = false) const;
+      void openOutputStream(std::ofstream& aOutStream, bool append = false, bool binary = false) const;
 
       time_t lastModified() const;
 

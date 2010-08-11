@@ -339,7 +339,7 @@ FileImpl::files() const
 }
 
 void
-FileImpl::openInputStream(std::ifstream& aInStream) const
+FileImpl::openInputStream(std::ifstream& aInStream, bool binary) const
 {
   ZORBA_TRY
     std::string lPath(theInternalFile->get_path());
@@ -350,7 +350,13 @@ FileImpl::openInputStream(std::ifstream& aInStream) const
     if (!theInternalFile->is_file()) {
       ZORBA_ERROR_DESC_OSS(FODC0002, "\"" << lPath << "\" is not a file");
     }
-    aInStream.open(lPath.c_str(), std::ifstream::in);
+
+    std::ios_base::openmode lMode = std::ifstream::in;
+    if (binary) {
+      lMode |= std::ios_base::binary;
+    }
+    aInStream.open(lPath.c_str(), lMode);
+
     if (aInStream.is_open() == false) {
       ZORBA_ERROR_DESC_OSS(FODC0002, "File not accessible: " << lPath);
     }
@@ -358,7 +364,7 @@ FileImpl::openInputStream(std::ifstream& aInStream) const
 }
 
 void
-FileImpl::openOutputStream(std::ofstream& aOutStream, bool append) const
+FileImpl::openOutputStream(std::ofstream& aOutStream, bool append, bool binary) const
 {
   ZORBA_TRY
     std::string lPath(theInternalFile->get_path());
@@ -367,10 +373,13 @@ FileImpl::openOutputStream(std::ofstream& aOutStream, bool append) const
       ZORBA_ERROR_DESC_OSS(FODC0002, "\"" << lPath << "\" is not a file");
     }
 
-    std::ios_base::openmode lMode = append ? std::ios_base::app :
-        (std::ios_base::out | std::ios_base::trunc);
-
+    std::ios_base::openmode lMode = std::ifstream::out;
+    lMode |= append ? std::ios_base::app : std::ios_base::trunc;
+    if (binary) {
+      lMode |= std::ios_base::binary;
+    }
     aOutStream.open(lPath.c_str(), lMode);
+
     if (aOutStream.is_open() == false) {
       ZORBA_ERROR_DESC_OSS(FODC0002, "File not accessible: " << lPath);
     }

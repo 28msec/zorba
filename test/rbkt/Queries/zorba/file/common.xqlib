@@ -1,0 +1,148 @@
+module namespace commons = "http://www.zorba-xquery.com/modules/file/tests/commons";
+
+import module namespace file = "http://www.zorba-xquery.com/modules/file";
+import module namespace ser = "http://www.zorba-xquery.com/modules/serialize";
+
+declare function commons:error($messages as xs:string*) as xs:string* {
+  "
+************************************************************************
+ERROR:
+  Location:", file:path-to-full-path("."), "
+  Cause:",
+  $messages,
+  "
+************************************************************************
+"
+};
+
+(: ******************************** SIMPLE TESTS ******************************** :)
+
+declare sequential function commons:testExists($path as xs:string) as xs:string* {
+  if (file:exists($path)) then
+    "SUCCESS"
+  else
+    ("testExists failed for path:", $path)
+};
+
+declare sequential function commons:testMkdirs($path as xs:string) as xs:string* {
+  if (file:mkdirs($path)) then
+    "SUCCESS"
+  else
+    ("testMkdirs failed for path:", $path)  
+};
+
+declare sequential function commons:testWriteXml($path as xs:string, $xml as item()) as xs:string* {
+  file:write($path, $xml, ());
+  "SUCCESS";
+};
+
+declare sequential function commons:testReadAndCompareXml($path as xs:string, $xml as item()) as xs:string* {
+  let $x := file:read-xml($path)
+  return
+    if($x eq $xml) then 
+      "SUCCESS"
+    else
+      ("testReadXml failed for path:", $path, "compared with the reference xml:
+", ser:serialize($xml))
+};
+
+declare sequential function commons:testReadBinary($path as xs:string) as xs:base64Binary {
+  file:read($path)
+};
+
+declare sequential function commons:testRemoveNonEmptyDir($path as xs:string) as xs:string* {
+  try {
+    if (file:remove($path)) then
+      "SUCCESS"
+    else
+      ("testRemoveNonEmptyDir failed for path:", $path)
+  } catch * {
+    exit returning ("testRemoveNonEmptyDir failed (exception caught) for path:", $path)
+  };
+};
+
+declare sequential function commons:testRemoveFile($path as xs:string) as xs:string* {
+  if (file:remove($path)) then
+    "SUCCESS"
+  else
+    ("testRemoveFile failed for path:", $path)
+};
+
+declare sequential function commons:testWriteSerializeXml($path as xs:string, $xml as item()) as xs:string* {
+  file:write($path, $xml, <options method="xml" />/@*);
+  "SUCCESS";
+};
+
+declare sequential function commons:testRemoveDir($path as xs:string) as xs:string* {
+  if (file:remove($path)) then
+    "SUCCESS"
+  else
+    ("testRemoveDir failed for path:", $path)
+};
+
+
+(: ****************************** COMPOSITE TESTS ******************************* :)
+
+declare sequential function commons:testInitDir($dir as xs:string) as xs:string* {
+  (: ==================================================================== :)
+  (: the test directory must not exist :)
+  (: ========= :)
+  let $s := commons:testExists($dir)
+  return
+    if (commons:isSuccess($s)) then
+      exit returning ("testInitDir failed - directory already exists:", $dir)
+    else ();
+
+  (: ==================================================================== :)
+  (: it must be able to create the test directory :)
+  (: ========= :)
+  let $s := commons:testMkdirs($dir)
+  return 
+    if (fn:not(commons:isSuccess($s))) then
+      exit returning ("testInitDir failed - could not create directory:", $dir)
+    else ();
+
+  (: ==================================================================== :)
+  (: the test directory must exist :)
+  (: ========= :)
+  let $s := commons:testExists($dir)
+  return 
+    if (fn:not(commons:isSuccess($s))) then
+      exit returning ("testInitDir failed - directory must exists:", $dir)
+    else ();
+  (: ==================================================================== :)
+
+  "SUCCESS";
+};
+
+declare sequential function commons:testUnInitDir($dir as xs:string, $file as xs:string) as xs:string* {
+  (: ==================================================================== :)
+  (: delete the file first :)
+  (: ========= :)
+  let $s := commons:testRemoveFile($file)
+  return
+    if (fn:not(commons:isSuccess($s))) then
+      exit returning ("testUnInitDir failed - could not delete file:", $file)
+    else ();
+
+  (: ==================================================================== :)
+  (: delete the directory :)
+  (: ========= :)
+  let $s := commons:testRemoveDir($dir)
+  return
+    if (fn:not(commons:isSuccess($s))) then
+      exit returning ("testUnInitDir failed - could not delete directory:", $dir)
+    else ();
+  (: ==================================================================== :)
+
+  "SUCCESS";
+};
+
+(: ******************************* COMMON EXTRAS ******************************** :)
+
+declare function commons:isSuccess($status as xs:string*) as xs:boolean {
+  if (fn:count($status) eq 1 and $status eq "SUCCESS") then
+    fn:true()
+  else
+    fn:false()    
+};

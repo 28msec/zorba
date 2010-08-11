@@ -388,7 +388,7 @@ ReadFunction::evaluate(
   File_t lFile = File::createFile(lFileStr.c_str());
 
   std::ifstream lInStream;
-  lFile->openInputStream(lInStream);
+  lFile->openInputStream(lInStream, true);
 
   std::stringstream lStrStream;
   char lBuf[1024];
@@ -513,9 +513,14 @@ WriteFunction::evaluate(
   
   Serializer_t lSerializer = Serializer::createSerializer(aArgs.at(2));
 
+  bool lBinary = false;
+  if (lSerializer->getSerializationMethod() == ZORBA_SERIALIZATION_METHOD_BINARY) {
+    lBinary = true;
+  }
+
   // open the output stream in the desired write mode
   std::ofstream lOutStream;
-  lFile->openOutputStream(lOutStream, lAppend);
+  lFile->openOutputStream(lOutStream, lAppend, lBinary);
 
   // serialize the content
   lSerializer->serialize((Serializable*)aArgs[1], lOutStream);

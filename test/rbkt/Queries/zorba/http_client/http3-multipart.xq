@@ -21,6 +21,12 @@ return
   return
     <result>
       <number-of-bodies>{fn:count($res//http:body)}</number-of-bodies>
-      <headers>{$res//http:header[fn:not(fn:contains(@value/fn:data(.), "boundary"))]}</headers>
+      <headers>{
+        $res//http:header[fn:not(
+          fn:contains(data(@value), "boundary")
+            or
+          fn:contains(data(@name), "------")
+            or
+          fn:contains(data(@name), "Content-Length"))]}</headers>
     </result>
 

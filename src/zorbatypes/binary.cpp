@@ -111,8 +111,14 @@ void Base64::encode(std::istream& aStream, Base64& aResult)
 {
   std::vector<char> source, result;
 
-  while (aStream.good())
-    source.push_back((char)(aStream.get()));
+  char lC;
+  while (aStream.good()) {
+    aStream.get(lC);
+    if (!aStream.good()) {
+      break;
+    }
+    source.push_back(lC);
+  }
 
   encode(source, result);
   aResult.theData = result;
