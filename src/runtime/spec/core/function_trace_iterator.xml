@@ -22,9 +22,15 @@
 
     <zorba:member type="store::Item_t" name="theFunctionName"
       brief="stores the name of the function it substitutes"/>
+    <zorba:member type="QueryLoc" name="theFunctionLocation"
+      brief="stores the location of the function which it calls"/>
 
     <zorba:method return="void" name="setFunctionName" const="false">
       <zorba:param type="const store::Item_t&amp;" name="aFunctionName"/>
+    </zorba:method>
+
+    <zorba:method return="void" name="setFunctionLocation" const="false">
+      <zorba:param type="const QueryLoc&amp;" name="aFunctionLocation"/> 
     </zorba:method>
   </zorba:iterator>
 </zorba:iterators>

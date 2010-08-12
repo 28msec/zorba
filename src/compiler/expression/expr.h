@@ -1072,6 +1072,7 @@ class function_trace_expr : public expr
 protected:
   expr_t theExpr;
   store::Item_t theFunctionName;
+  QueryLoc theFunctionLocation;
 public:
   SERIALIZABLE_CLASS(function_trace_expr);
   SERIALIZABLE_CLASS_CONSTRUCTOR2(function_trace_expr, expr)
@@ -1102,6 +1103,16 @@ public:
   store::Item_t getFunctionName() const
   {
     return theFunctionName;
+  }
+
+  void setFunctionLocation(const QueryLoc& loc)
+  {
+    theFunctionLocation = loc;
+  }
+
+  const QueryLoc& getFunctionLocation() const
+  {
+    return theFunctionLocation;
   }
 };
 

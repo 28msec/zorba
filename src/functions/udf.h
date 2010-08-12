@@ -124,7 +124,9 @@ public:
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& argv,
-        AnnotationHolder& ann) const; 
+        AnnotationHolder& ann) const;
+
+  const QueryLoc& getLoc() const { return theLoc; }
 };
 
 

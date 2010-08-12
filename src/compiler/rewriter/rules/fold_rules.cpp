@@ -821,6 +821,7 @@ RULE_REWRITE_POST(InlineFunctions)
         {
           function_trace_expr* dummy = new function_trace_expr(body);
           dummy->setFunctionName(udf->getName());
+          dummy->setFunctionLocation(udf->getLoc());
           return dummy;
         }
         else 
