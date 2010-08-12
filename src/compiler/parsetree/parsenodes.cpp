@@ -1033,8 +1033,8 @@ XQUERY_ERROR AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
     return XQ_NO_ERROR;
 
   bool setUnique = false;
-  bool setOrdered = false;
-  bool setAutomatic = false;
+  bool setUsage = false;
+  bool setMaintenance = false;
 
   for (ulong i = 0; i < props->size(); ++i)
   {
@@ -1053,20 +1053,22 @@ XQUERY_ERROR AST_IndexDecl::validatePropertyList(DeclPropertyList* props)
     case StaticContextConsts::decl_value_range:
     case StaticContextConsts::decl_general_equality:
     case StaticContextConsts::decl_general_range:
-      if (setOrdered)
+    {
+      if (setUsage)
         return XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
 
-      setOrdered = true;
+      setUsage = true;
       break;
-
+    }
     case StaticContextConsts::decl_manual:
     case StaticContextConsts::decl_automatic:
-      if (setAutomatic)
+    {
+      if (setMaintenance)
         return XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES;
 
-      setAutomatic = true;
+      setMaintenance = true;
       break;
-
+    }
     default:
       return XDST0026_INDEX_INVALID_PROPERTY_VALUE;
     }

@@ -1322,6 +1322,8 @@ receive an error.
                       'non' 'unique' |
                       'value' 'range' |
                       'value' 'equality' |
+                      'general' 'range' |
+                      'general' 'equality' |
                       'automatically' 'maintained' |
                       'manually' 'maintained')*
 
@@ -1331,7 +1333,7 @@ receive an error.
 
   IndexKeyExpr ::= PathExpr
 
-  IndexKeyTypeDecl ::= 'as' AtomicType
+  IndexKeyTypeDecl ::= 'as' AtomicType OccurenceIndicator?
 
   AtomicType ::= QName
 
@@ -1367,7 +1369,8 @@ imported module (even if the declarations are consistent).
 
 Zorba 1.0 defines three index properties: <strong>uniqueness</strong> (with
 possible values 'unique' or 'non unique'), <strong>usage</strong> (with possible
-values 'value range' or 'value equality'), and <strong>maintenance mode</strong>
+values 'value range', 'value equality', 'general range', or 'general equality'),
+and <strong>maintenance mode</strong>
 (with possible values 'manually maintained' or 'automatically maintained'). The
 syntax allows the values for these properties to be listed in any order or not
 be specified at all. If not specified, the default values for uniqueness, usage,
@@ -1389,15 +1392,18 @@ href="#query_probe_1" title="probe-1">"probe-1"</a> and <a
 href="#query_no_probe_1" title="no-probe-1">"no-probe-1"</a> queries in \ref
 indexes_in_action are an example of such usage. As shown there, a value equality
 index supports the <a href="#probe_index_point"
-title="xqddf:probe-index-point">xqddf:probe-index-point</a> function.  A value
-range index can optimize expressions involving any kind of value comparison. The
+title="xqddf:probe-index-point">xqddf:probe-index-point</a> function.  A <strong>value
+range index</strong> can optimize expressions involving any kind of value comparison. The
 <a href="#query_probe_2" title="probe-2">"probe-2"</a> and <a
 href="#query_no_probe_2" title="no-probe-2">"no-probe-2"</a> queries in \ref
-indexes_in_action are an example of such usage. A <strong>value range
-index</strong> supports both the <a href="#probe_index_point"
-title="xqddf:probe-index-point">xqddf:probe-index-point</a> and the <a
-href="#probe_index_range"
+indexes_in_action are an example of such usage. A value range index supports
+both the <a href="#probe_index_point" title="xqddf:probe-index-point">
+xqddf:probe-index-point</a> and the <a href="#probe_index_range"
 title="xqddf:probe-index-range">xqddf:probe-index-range</a> functions.
+A <strong>general equality index</strong> can optimize expressions involving
+either value equality or general equality predicates. Finally, a <strong>general
+range index</strong> can optimize expressions involving any kind of value general
+comparison predicates.
 
 The maintenance mode specifies how index maintenance is done. Zorba 1.0 offers
 two maintenance modes: manual and automatic. For a <strong>manual
@@ -1516,7 +1522,7 @@ The create-index function is evaluated as follows:
   <li>If the given expanded QName does not identify an index among the
 statically known indexes in the static context of the invoking module, an error
 is raised [<a href="#ERRXDDY0021" title="err:XDDY0021">err:XDDY0021</a>].</li>
-  <li>If the given expanded QName identifies a collection that is available
+  <li>If the given expanded QName identifies an index that is available
 already, an error is raised [<a href="#ERRXDDY0022"
 title="err:XDDY0022">err:XDDY0022</a>].</li>
   <li>The result of the function is an empty XDM instance and a pending update

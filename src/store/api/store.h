@@ -130,10 +130,27 @@ public:
         bool aAcceptAtomics = false) = 0;
 		
   /** 
-   * Eliminate the duplicates in sequence of nodes produced by the given iterator
-   * @param iterator
+   * Create and return an iterator that eliminates the duplicate nodes in the
+   * set of nodes which are produced by the given input iterator.
+   *
+   * @param input The input iterator that produces the sequence over which
+   *        duplicate elimination will be performed.
+   * @param aAllowAtomics If true, the input sequence may consist of nodes only
+   *        or atomic values only. In the later case, no duplicate elimination
+   *        is performed. If false, then the input sequence must contain nodes
+   *        only.
    */
   virtual Iterator_t distinctNodes(Iterator*, bool aAllowAtomics = false) = 0;
+
+  /** 
+   * Create and return an iterator that makes sure the sequence produced by the
+   * given input iterator does not contain any duplicate nodes (it is assumed
+   * that the input iterator produces nodes only).
+   *
+   * @param input The input iterator that produces the sequence over which
+   *        duplicate nodes check will be performed.
+   */
+  virtual Iterator_t checkDistinctNodes(Iterator* input) = 0;
 
 #ifdef DATAGUIDE
   /**

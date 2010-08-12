@@ -123,8 +123,10 @@ function* op_node_sort_distinct::optimize(
       return GET_BUILTIN_FUNCTION(OP_DISTINCT_NODES_OR_ATOMICS_1); 
     }
     else if (distinct)
-    {
-      return GET_BUILTIN_FUNCTION(OP_DISTINCT_NODES_1); 
+    { 
+      return (getKind() == FunctionConsts::OP_CHECK_DISTINCT_NODES_1 ?
+              GET_BUILTIN_FUNCTION(OP_CHECK_DISTINCT_NODES_1) :
+              GET_BUILTIN_FUNCTION(OP_DISTINCT_NODES_1)); 
     }
     else if (noa)
     {
@@ -213,15 +215,25 @@ PlanIter_t op_node_sort_distinct::codegen(
   if (! sort)
   {
     if (distinct)
-      return new NodeDistinctIterator(sctx, loc, argv[0], noa);
+    {
+      bool check = (getKind() == FunctionConsts::OP_CHECK_DISTINCT_NODES_1);
+
+      return new NodeDistinctIterator(sctx, loc, argv[0], noa, check);
+    }
     else if (noa)
+    {
       return new EitherNodesOrAtomicsIterator(sctx, loc, argv);
+    }
     else
+    {
       return argv[0];
+    }
   }
   else
   {
-    return new NodeSortIterator(sctx, loc, argv[0],
+    return new NodeSortIterator(sctx,
+                                loc,
+                                argv[0],
                                 myActions[SORT_ASC],
                                 distinct,
                                 noa);
@@ -269,6 +281,38 @@ public:
   op_distinct_nodes(const signature& sig)
     :
     op_node_sort_distinct(sig, FunctionConsts::OP_DISTINCT_NODES_1)
+  {
+  }
+
+  const bool* action() const 
+  {
+    //                        sort_asc  sort_desc  distinct  noa
+    static const bool a[] = { false,    false,     true,     false };
+    return a;
+  }
+
+  bool propagatesSortedNodes(ulong producer) const
+  {
+    return producer == 0;
+  }
+
+  virtual FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
+};
+
+
+/*******************************************************************************
+  Check that the argument expr does not produce duplicate nodes. Used to wrap
+  the domain expr of a general index.
+********************************************************************************/
+class op_check_distinct_nodes : public op_node_sort_distinct
+{
+public:
+  op_check_distinct_nodes(const signature& sig)
+    :
+    op_node_sort_distinct(sig, FunctionConsts::OP_CHECK_DISTINCT_NODES_1)
   {
   }
 
@@ -655,6 +699,11 @@ void populateContext_DocOrder(static_context* sctx)
 
   DECL(sctx, op_distinct_nodes,
        (createQName(ZORBA_OP_NS,"op","distinct-nodes"),
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
+
+  DECL(sctx, op_check_distinct_nodes,
+       (createQName(ZORBA_OP_NS,"op","check-distinct-nodes"),
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
   

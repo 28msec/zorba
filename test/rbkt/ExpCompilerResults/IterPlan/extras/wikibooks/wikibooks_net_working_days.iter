@@ -86,22 +86,24 @@ Iterator tree for main query:
                   </CastIterator>
                 </GenericArithIterator_AddOperation>
               </ForVariable>
-              <ForVariable name="dow">
-                <NumArithIterator_ModOperation>
-                  <CastIterator type="xs:integer">
-                    <GenericArithIterator_DivideOperation>
-                      <GenericArithIterator_SubtractOperation>
-                        <CastIterator type="xs:date">
-                          <ForVarIterator varname="d"/>
-                        </CastIterator>
-                        <SingletonIterator value="1901-01-06"/>
-                      </GenericArithIterator_SubtractOperation>
-                      <SingletonIterator value="P1D"/>
-                    </GenericArithIterator_DivideOperation>
-                  </CastIterator>
-                  <SingletonIterator value="xs:integer(7)"/>
-                </NumArithIterator_ModOperation>
-              </ForVariable>
+              <LetVariable name="dow" materialize="true">
+                <FunctionTraceIterator>
+                  <NumArithIterator_ModOperation>
+                    <CastIterator type="xs:integer">
+                      <GenericArithIterator_DivideOperation>
+                        <GenericArithIterator_SubtractOperation>
+                          <CastIterator type="xs:date">
+                            <ForVarIterator varname="d"/>
+                          </CastIterator>
+                          <SingletonIterator value="1901-01-06"/>
+                        </GenericArithIterator_SubtractOperation>
+                        <SingletonIterator value="P1D"/>
+                      </GenericArithIterator_DivideOperation>
+                    </CastIterator>
+                    <SingletonIterator value="xs:integer(7)"/>
+                  </NumArithIterator_ModOperation>
+                </FunctionTraceIterator>
+              </LetVariable>
               <ReturnClause>
                 <ElementIterator>
                   <SingletonIterator value="xs:QName(,,tr)"/>

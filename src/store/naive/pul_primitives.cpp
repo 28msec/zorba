@@ -1034,7 +1034,20 @@ void UpdCreateIndex::apply()
 {
   SimpleStore* store = &GET_STORE();
 
-  theIndex = store->createIndex(theQName, theSpec, theSourceIter);
+  try
+  {
+    theIndex = store->createIndex(theQName, theSpec, theSourceIter);
+  }
+  catch(error::ZorbaError& e)
+  {
+    if (e.theErrorCode == STR0045_DUPLICATE_NODE_ERROR)
+    {
+      ZORBA_ERROR_PARAM(XDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, 
+                        theQName->getStringValue()->c_str(), "");
+    }
+
+    throw e;
+  }
 
   theIsApplied = true;
 }

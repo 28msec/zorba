@@ -66,54 +66,65 @@
 namespace zorba{
 
 #define PRINTER_VISITOR_DEFINITION(class)                \
-  void PrinterVisitor::beginVisit ( const class& a )  {                  \
+  void PrinterVisitor::beginVisit ( const class& a )     \
+  {                                                      \
     thePrinter.startBeginVisit(#class, ++theId);         \
     printCommons(  &a, theId );                          \
     thePrinter.endBeginVisit( theId);                    \
   }                                                      \
-  void PrinterVisitor::endVisit ( const class& ) {                       \
+  void PrinterVisitor::endVisit ( const class& )         \
+  {                                                      \
     thePrinter.startEndVisit();                          \
     thePrinter.endEndVisit();                            \
   }
 
 
 #define PRINTER_VISITOR_AXIS_DEFINITION(class)           \
-  void PrinterVisitor::beginVisit ( const class& a )  {                  \
+  void PrinterVisitor::beginVisit ( const class& a )     \
+  {                                                      \
     thePrinter.startBeginVisit(#class, ++theId);         \
     printCommons(&a, theId);                             \
     printNameOrKindTest(&a);                             \
     thePrinter.endBeginVisit( theId);                    \
   }                                                      \
-  void PrinterVisitor::endVisit ( const class& ) {                       \
+  void PrinterVisitor::endVisit ( const class& )         \
+  {                                                      \
     thePrinter.startEndVisit();                          \
     thePrinter.endEndVisit();                            \
   }
 
-void PrinterVisitor::beginVisit ( const SingletonIterator& a) {
+
+void PrinterVisitor::beginVisit(const SingletonIterator& a) 
+{
   thePrinter.startBeginVisit("SingletonIterator", ++theId);
   thePrinter.addAttribute("value", a.getValue()->show());
   printCommons( &a, theId );
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit ( const SingletonIterator&) {
-      thePrinter.startEndVisit();
-      thePrinter.endEndVisit();
-}
-
-void PrinterVisitor::beginVisit ( const EnclosedIterator& a ) {
-  thePrinter.startBeginVisit("EnclosedIterator", ++theId);
-  thePrinter.addAttribute("attr_cont", (a.getAttrContent() ? "true" :
-      "false"));
-  printCommons( &a, theId );
-  thePrinter.endBeginVisit(theId);
-}
-void PrinterVisitor::endVisit ( const EnclosedIterator& ) {
+void PrinterVisitor::endVisit(const SingletonIterator&) 
+{
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
-void PrinterVisitor::beginVisit ( const NodeSortIterator& a )
+
+void PrinterVisitor::beginVisit(const EnclosedIterator& a) 
+{
+  thePrinter.startBeginVisit("EnclosedIterator", ++theId);
+  thePrinter.addAttribute("attr_cont", (a.getAttrContent() ? "true" : "false"));
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit(theId);
+}
+
+void PrinterVisitor::endVisit(const EnclosedIterator&) 
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
+void PrinterVisitor::beginVisit(const NodeSortIterator& a)
 {
   thePrinter.startBeginVisit("NodeSortIterator", ++theId);
   printCommons(&a, theId);
@@ -122,11 +133,28 @@ void PrinterVisitor::beginVisit ( const NodeSortIterator& a )
   thePrinter.endBeginVisit( theId);
 }
 
-void PrinterVisitor::endVisit ( const NodeSortIterator& )
+void PrinterVisitor::endVisit(const NodeSortIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
+
+
+void PrinterVisitor::beginVisit(const NodeDistinctIterator& a)
+{
+  thePrinter.startBeginVisit("NodeDistinctIterator", ++theId);
+  printCommons(&a, theId);
+  thePrinter.addAttribute("allow-atomics", (a.getAtomics() ? "true" : "false"));
+  thePrinter.addAttribute("check-only", (a.getCheckDistinct() ? "true" : "false"));
+  thePrinter.endBeginVisit( theId);
+}
+
+void PrinterVisitor::endVisit(const NodeDistinctIterator&)
+{
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
 
 #if 0
 void PrinterVisitor::beginVisit ( const PathIterator& a )
@@ -892,7 +920,7 @@ void PrinterVisitor::beginVisitOrderByForVariable(
       str2 << " ";
   }
 
-  thePrinter.addAttribute("inputVar : ", str1.str());
+  thePrinter.addAttribute("inputVar", str1.str());
   if (! Properties::instance()->noTreeIds())
     thePrinter.addAttribute("referenced-by", str2.str());
 
@@ -927,7 +955,7 @@ void PrinterVisitor::beginVisitOrderByLetVariable(
       str2 << " ";
   }
 
-  thePrinter.addAttribute("inputVar : ", str1.str());
+  thePrinter.addAttribute("inputVar", str1.str());
   if (! Properties::instance()->noTreeIds())
     thePrinter.addAttribute("referenced-by", str2.str());
 
@@ -1133,15 +1161,13 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
     thePrinter.endEndVisit();
   }
 
-//PRINTER_VISITOR_DEFINITION (AttributeIterator)
-
   PRINTER_VISITOR_DEFINITION (DocumentIterator)
   PRINTER_VISITOR_DEFINITION (DocumentContentIterator)
   PRINTER_VISITOR_DEFINITION (CommentIterator)
   PRINTER_VISITOR_DEFINITION (PiIterator)
   PRINTER_VISITOR_DEFINITION (EmptyIterator)
   PRINTER_VISITOR_DEFINITION (IfThenElseIterator)
-  PRINTER_VISITOR_DEFINITION (NodeDistinctIterator)
+
   PRINTER_VISITOR_DEFINITION (InstanceOfIterator)
   PRINTER_VISITOR_DEFINITION (EitherNodesOrAtomicsIterator)
   PRINTER_VISITOR_DEFINITION (OpNumericUnaryIterator)

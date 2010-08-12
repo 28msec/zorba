@@ -1332,10 +1332,11 @@ void eval_expr::compute_scripting_kind()
   theScriptingKind = theExpr->get_scripting_kind();
 }
 
-function_trace_expr::~function_trace_expr() {}
 
-function_trace_expr::function_trace_expr(static_context *sctx,
-                                         const QueryLoc &loc, expr_t aChild)
+function_trace_expr::function_trace_expr(
+    static_context* sctx,
+    const QueryLoc& loc,
+    expr_t aChild)
   :
   expr(sctx, loc, aChild->get_expr_kind()),
   theExpr(aChild)
@@ -1345,6 +1346,7 @@ function_trace_expr::function_trace_expr(static_context *sctx,
   compute_return_type(false, &modified);
   compute_scripting_kind();
 }
+
 
 function_trace_expr::function_trace_expr(expr_t aExpr)
   :
@@ -1357,7 +1359,13 @@ function_trace_expr::function_trace_expr(expr_t aExpr)
   compute_scripting_kind();
 }
 
-void function_trace_expr::serialize(::zorba::serialization::Archiver &ar)
+
+function_trace_expr::~function_trace_expr() 
+{
+}
+
+
+void function_trace_expr::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar, (expr*)this);
   ar & theExpr;

@@ -3959,10 +3959,13 @@ void* begin_visit(const IndexKeyList& v)
                                   theRTM.ANY_NODE_TYPE_STAR,
                                   XDTY0010_INDEX_DOMAIN_TYPE_ERROR);
 
-  domainExpr = new fo_expr(theRootSctx,
-                           domainExpr->get_loc(),
-                           GET_BUILTIN_FUNCTION(OP_DISTINCT_NODES_1),
-                           domainExpr);
+  if (index->isGeneral())
+  {
+    domainExpr = new fo_expr(theRootSctx,
+                             domainExpr->get_loc(),
+                             GET_BUILTIN_FUNCTION(OP_CHECK_DISTINCT_NODES_1),
+                             domainExpr);
+  }
 
   std::string msg = "domain expr for index " + index->getName()->getStringValue()->str();
 

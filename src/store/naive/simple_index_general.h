@@ -64,7 +64,7 @@ class GeneralIndex : public IndexImpl
   friend class SimpleStore;
 
 protected:
-  store::Item   * theLastNode;
+  store::Item       * theLastNode;
 
 protected:
   GeneralIndex(

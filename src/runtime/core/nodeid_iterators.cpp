@@ -53,6 +53,30 @@ void NodeDistinctState::reset(PlanState& planState)
 }
 
 
+NodeDistinctIterator::NodeDistinctIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    PlanIter_t input,
+    bool acceptAtomics,
+    bool checkDistinct)
+  :
+  UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>(sctx, loc, input), 
+  theAcceptAtomics(acceptAtomics),
+  theCheckDistinct(checkDistinct)
+{
+}
+
+
+void NodeDistinctIterator::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar,
+  (UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>*)this);
+  
+  ar & theAcceptAtomics;
+  ar & theCheckDistinct;
+}
+
+
 void NodeDistinctIterator::openImpl(PlanState& planState, uint32_t& offset)
 {
   UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>::
@@ -63,7 +87,9 @@ void NodeDistinctIterator::openImpl(PlanState& planState, uint32_t& offset)
 
   store::Iterator_t input = new PlanIteratorWrapper(theChild, planState);
 
-  state->theStoreIterator = GENV.getStore().distinctNodes(input, theAcceptAtomics);
+  state->theStoreIterator = (theCheckDistinct ?
+                             GENV.getStore().checkDistinctNodes(input) :
+                             GENV.getStore().distinctNodes(input, theAcceptAtomics));
   state->theStoreIterator->open();
 }
 

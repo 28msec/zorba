@@ -1141,12 +1141,26 @@ store::Iterator_t SimpleStore::sortNodes(
   Create an iterator that eliminates the duplicate nodes in the set of items
   which is produced by the passed iterator
 ********************************************************************************/
-store::Iterator_t SimpleStore::distinctNodes(store::Iterator* input, bool aAllowAtomics)
+store::Iterator_t SimpleStore::distinctNodes(
+    store::Iterator* input,
+    bool aAllowAtomics)
 {
   if (aAllowAtomics)
     return new StoreNodeDistinctOrAtomicIterator(input);
   else
-    return new StoreNodeDistinctIterator(input);
+    return new StoreNodeDistinctIterator(input, false);
+}
+
+
+/*******************************************************************************
+  Create an iterator that checks for duplicate nodes in the set of nodes which
+  is produced by the passed iterator, and raises an error if any duplicates
+  are found. If no duplicates are found, the iterator simply passes on the
+  input nodes to its consumer.
+********************************************************************************/
+store::Iterator_t SimpleStore::checkDistinctNodes(store::Iterator* input)
+{
+  return new StoreNodeDistinctIterator(input, true);
 }
 
 

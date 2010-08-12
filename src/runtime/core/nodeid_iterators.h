@@ -24,7 +24,15 @@ namespace zorba
 {
 
 /*******************************************************************************
-  Preserves the order of input nodes
+  The behaviour of this iterator depends on the values of its 2 data members:
+  theAcceptAtomics and theCheckDistinct.
+
+  If theAcceptAtomics is true, then the iterator checks that its input sequence
+  contains atomic values only or nodes only. If it contains atomic values, the
+  iterator just passes on these values to its parent. If it contains nodes, the
+  iterator will either perform duplicate node elimination (if theCheckDistinct
+  is false), or check that there are no duplicate nodes (if theCheckDistinct is
+  true) and return an error if duplicates are found.
 ********************************************************************************/
 class NodeDistinctState : public PlanIteratorState
 {
@@ -43,6 +51,7 @@ class NodeDistinctIterator : public UnaryBaseIterator<NodeDistinctIterator,
 {
 private:
   bool theAcceptAtomics;
+  bool theCheckDistinct;
 
 public:
   SERIALIZABLE_CLASS(NodeDistinctIterator);
@@ -51,27 +60,21 @@ public:
   NodeDistinctIterator,
   UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>);
 
-  void serialize(::zorba::serialization::Archiver &ar)
-  {
-    serialize_baseclass(ar,
-    (UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>*)this);
-
-    ar & theAcceptAtomics;
-  }
+  void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   NodeDistinctIterator(
         static_context* sctx,
         const QueryLoc& loc,
         PlanIter_t input,
-        bool aAcceptAtomics = false)
-    :
-    UnaryBaseIterator<NodeDistinctIterator, NodeDistinctState>(sctx, loc, input), 
-    theAcceptAtomics(aAcceptAtomics)
-  {
-  }
+        bool acceptAtomics,
+        bool checkDistinct);
 
   ~NodeDistinctIterator() { }
+
+  bool getAtomics() const { return theAcceptAtomics; }
+
+  bool getCheckDistinct() const { return theCheckDistinct; }
 
   void accept(PlanIterVisitor& v) const;
 

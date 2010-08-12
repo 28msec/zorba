@@ -273,7 +273,9 @@ public:
         bool duplicateElemination,
         bool aAllowAtomics = false);
 
-  store::Iterator_t distinctNodes(store::Iterator*, bool aAllowAtomics = false);
+  store::Iterator_t distinctNodes(store::Iterator* input, bool aAllowAtomics);
+
+  store::Iterator_t checkDistinctNodes(store::Iterator* input); 
 
   bool getPathInfo(
         const store::Item* docUri,

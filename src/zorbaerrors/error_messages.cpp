@@ -303,6 +303,9 @@ DEF_ERR_CODE(STR0030_NODEID_ERROR, STR0030,
 DEF_ERR_CODE(STR0040_TYPE_ERROR,  STR0040,
 "Type error: /s")
 
+DEF_ERR_CODE(STR0045_DUPLICATE_NODE_ERROR, STR0045,
+"Duplicate node found in sequence which should not have any duplicates")
+
 DEF_ERR_CODE(STR0050_FUNCTION_NOT_IMPLEMENTED_FOR_ITEMTYPE, STR0050,
 "The function called {/s} is not available for the given item type {/s}.")
 
@@ -841,6 +844,9 @@ DEF_ERR_CODE(XDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, XDDY0026,
 
 DEF_ERR_CODE(XDDY0027_INDEX_MULTIPLE_CREATES, XDDY0027, 
 "Multiple calls to create-index function in the same snapshot for index /s.")
+
+DEF_ERR_CODE(XDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, XDDY0028,
+"The domain expression of the general index /s produces duplicate nodes.")
 
 
 DEF_ERR_CODE(XDDY0031_IC_IS_NOT_DECLARED, XDDY0031,
