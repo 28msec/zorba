@@ -7,9 +7,15 @@
       <ul>
         <li> \ref buildsystem
         <li> \ref compilers
-        <li> \ref packages
+        <li> \ref required
+        <li> \ref optional
         <li> \ref buildingzorba
         <li> \ref buildoptions
+      </ul>
+      <li> \ref buildcclient
+      <ul>
+        <li> \ref cclientunix
+        <li> \ref cclientwindows
       </ul>
       <li> \ref mac
       <ul>
@@ -29,34 +35,44 @@
 
 \subsection buildsystem Build System
 
-In order to build Zorba, you need the Cross-Platform Make CMake 2.4 or
-higher, but not CMake 2.6.3 which has a serious bug preventing Zorba
-build. You can download it from http://www.cmake.org/.
+In order to build Zorba, you need the Cross-Platform Make CMake 2.6 or
+higher (excepting CMake 2.6.3 which has a serious bug preventing Zorba
+build. You can download CMake from http://www.cmake.org/.
 
 \subsection compilers Compilers
 Zorba is tested with the following compilers:
-- GNU Compiler: GCC 3.4.x (32bit & 64bit) and GCC 4.x.x
-- Microsoft Compiler: MS VC++ 2005 and MS VC++ 2008
+- GNU Compiler: GCC 3.4.x (32-bit & 64-bit) and GCC 4.x.x
+- Microsoft Compiler: MS VC++ 2005, MS VC++ 2008, and MS VC++ 2010
 
 
-\subsection packages Packages
+\subsection required Required Packages
 In order to build Zorba, you need the following libraries and development headers to be installed:
 - Libxml2 2.2.16 or higher (http://xmlsoft.org/ )
   - Iconv 1.12 (used by Libxml2; http://www.gnu.org/software/libiconv/)
 - ICU4C 3.6 or higher (http://www.icu-project.org/)
-- Xerces-C 2.8.0 or 3.0.0 (http://xerces.apache.org/xerces-c/)
-- <em>Optional Packages</em>
-  - CURL 7.12 or higher (used to enable REST and HTTP; http://curl.haxx.se/)
-  - Tidy (used to enable tidy functions; http://tidy.sourceforge.net)
-  - LibXslt (used for compiling XQueryX code (http://xmlsoft.org/XSLT/); version 1.1.24 has been tested)
-  - IMAP CClient (http://www.washington.edu/imap/) used for email sending functions
-  - Java (http://java.sun.com/javase/downloads/index.jsp) + Apache FOP (http://xmlgraphics.apache.org/fop/download.html) if the FOP library should be used.
-- <em>Optional Packages that are required if you want to build language bindings</em>
-  - Swig (http://www.swig.org/download.html) + Java (http://java.sun.com/javase/downloads/index.jsp) for the Java language binding
-  - Swig (http://www.swig.org/download.html) + Ruby (http://www.ruby-lang.org/en/downloads/) for the Ruby language binding
-  - Swig (http://www.swig.org/download.html) + PHP (http://www.php.net/downloads.php) for the PHP language binding
-  - Swig (http://www.swig.org/download.html) + Python (http://www.python.org/download/) for the Python language binding
-- <em>Optional Packages that are required if you want to build the scanner and parser</em>
+- Xerces-C 2.8.0, 3.0.0 or higher (http://xerces.apache.org/xerces-c/)
+  - used for schema support
+  - <strong>required only if</strong> the <tt>ZORBA_NO_XMLSCHEMA</tt> build flag is not switched to <tt>OFF</tt>. Default is <tt>ON</tt>.
+
+\subsection optional Optional Packages
+- for REST and HTTP support:
+  - CURL 7.12 or higher (http://curl.haxx.se/)
+- for HTML tidy support:
+  - Tidy (http://tidy.sourceforge.net)
+- for compiling XQueryX code:
+  - LibXslt version 1.1.24 has been tested (http://xmlsoft.org/XSLT/)
+- for email sending functions:
+  - IMAP CClient (http://www.washington.edu/imap/)
+- if the FOP library is needed:
+  - Java (http://java.sun.com/javase/downloads/index.jsp)
+  - Apache FOP (http://xmlgraphics.apache.org/fop/download.html)
+- for <strong>language bindings</strong>:
+  - Swig (http://www.swig.org/download.html)
+  - Java (http://java.sun.com/javase/downloads/index.jsp) for the Java language binding
+  - Ruby (http://www.ruby-lang.org/en/downloads/) for the Ruby language binding
+  - PHP (http://www.php.net/downloads.php) for the PHP language binding
+  - Python (http://www.python.org/download/) for the Python language binding
+- if you want to build the scanner and parser
   - Flex 2.5.33 or higher (http://flex.sourceforge.net/)
   - Bison 2.4 or higher (http://www.gnu.org/software/bison/)
 
@@ -74,25 +90,55 @@ In order to build Zorba, you need the following libraries and development header
 - CMake supports multiple build configurations (e.g. Debug, Release, or MinSizeRel. By default, Zorba is build with the Release configuration. To change the build mode (to Debug, Release, RelWithDebInfo or MinSizeRel), you can pass an additional parameter to CMake, e.g. <tt>cmake -D CMAKE_BUILD_TYPE=Debug [ZORBA]</tt>.
 - Zorba has other options as well. You can tweak the performance and library footprint by enabling or disabling various features from Zorba. Details here \ref zorba_options.
 
-\section linux Note for Linux Users 
-On Linux 64Bit, you might discover a problem with the optional package cclient. E.g. on Ubuntu 64Bit, you might discover the following:
-\code
+\section buildcclient Building IMAP CClient
+
+Zorba provides email support using the CClient library part of the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>.
+
+\subsection cclientunix Unix/Linux/Mac OS
+Notes:
+- There are some known issues with the CClient packages that come with diffrent Linux distributions.
+- On x32 bit OpenSuse and also on x64 bit Ubuntu we noticed that the CClient shared library is broken (undefined symbol: mm_dlog).
+- Due to that fact that Mark Crispin (the creator of CClient library) does not support CClient as a shared library but only as a static library (see <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html#6.3" target="_blank">FAQs shared library</a>), we strongly suggest you want to get the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a> and compile it yourself.
+- On Linux 64-bit, you might discover a problem with the optional package cclient. E.g. on Ubuntu 64-bit, you might discover the following:
+  \code
 Linking CXX shared library libsmtp.so
-/usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/4.4.3/../../../../lib/libc-client.a(osdep.o): relocation R_X86_64_32 against `server_input_wait' can not be used when making a shared object; recompile with -fPIC
+/usr/bin/ld: /usr/lib/gcc/x86_64-linux-gnu/4.4.3/../../../../lib/libc-client.a(osdep.o): relocation R_X86_64_32 against
+  `server_input_wait' can not be used when making a shared object; recompile with -fPIC
 /usr/lib/gcc/x86_64-linux-gnu/4.4.3/../../../../lib/libc-client.a: could not read symbols: Bad value
-\endcode
-To fix this, you need to compile c-client yourself. The commands to compile c-client correctly are:
-\code
+  \endcode
+  To fix this, you need to compile CClient yourself. The commands to compile CClient correctly are:
+  \code
 cd <some_directory>
 wget ftp://ftp.cac.washington.edu/imap/imap-2007e.tar.gz
 tar -xf imap-2007e.tar.gz
 cd imap-2007e
 make slx EXTRACFLAGS="-I/usr/include/openssl -fPIC"
-\endcode
-Afterwards, you need to pass the variables CCLIENT_INCLUDE and CCLIENT_LIBRARY to cmake:
-\code
-cmake -DCCLIENT_INCLUDE=<some_directory>/imap-2007e/c-client/ -DCCLIENT_LIBRARY=<some_directory>/imap-2007e/c-client/c-client.a <path_to_zorba_srcs>
-\endcode
+  \endcode
+
+- Also please keep in mind that if SSL/TLS authentication is required by the SMTP server, then you first need to install <a href="http://www.openssl.org/" target="_blank">OpenSSL</a> and configure CClient to use it.
+- Make sure the name of the library is prefixed by 'lib' and suffixed with '.a' (for example libc-client.a on Linux/Unix or libc-client4.a on Mac OS).
+
+Use the following extra CMake arguments when building Zorba:
+\verbatim
+-D "CCLIENT_INCLUDE=path_to_imap_2007e\c-client"
+-D CCLIENT_LIBRARY=path_to_imap_2007e\c-client\libc-client.a"
+\endverbatim
+
+Here are some quick suggestions to build CClient on Linux:
+- x32-bit Linux: <tt>make lnp</tt>
+- x64-bit Linux: <tt>make lnp  EXTRACFLAGS="-I/usr/include/openssl -fPIC" EXTRAAUTHENTICATORS=gss</tt> in order to build with SSL and Kerberos support.<br /></ul>
+
+For more detailed build instructions please check out the <a href="http://www.washington.edu/imap/documentation" target="_blank">UW IMAP toolkit "Server Documentation"</a> and the <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html" target="_blank">UW IMAP FAQs.</a>
+
+\subsection cclientwindows Windows
+You must build the <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>.
+
+Use the following extra CMake arguments when building Zorba:
+\verbatim
+-D "CCLIENT_INCLUDE=path_to_imap_2007e\c-client"
+-D "CCLIENT_LIBRARY=path_to_imap_2007e\c-client\release\cclient.lib"
+\endverbatim
+
 
 \section mac Note for Mac OS Users 
 
@@ -163,51 +209,40 @@ This will remove the build path from the installed executables and
 libraries.  It will also add some symbolic links to the libraries.
 
 \section windows Notes for Windows Users
-- In order to compile Zorba on Windows, you need a working Visual Studio (Express) installation.
-- Additionally, you need the following packages to be installed for your Visual Studio installation. Make sure that the libraries are compiled for your version of Visual Studio.
-  -# CMake (http://www.cmake.org/)
-  -# Libxml2 and Iconv (http://www.zlatkovic.com/pub/libxml/) 
-  -# ICU (http://download.icu-project.org/files/icu4c/)
-  -# Xerces-C (http://xerces.apache.org/xerces-c/download.cgi)
-- Optional 
-  -# CURL (http://curl.haxx.se/download.html)(if you want to have REST support or call http URIs)
-  -# Tidy (http://dev.int64.org/tidy.html) (if you intend to use HTML files and have to transform them into syntactically valid XML)
-  -# Libxslt (http://www.zlatkovic.com/pub/libxml/)
-  -# IMAP CClient (http://www.washington.edu/imap/) used for email sending functions
-  -# Java (http://java.sun.com/javase/downloads/index.jsp) + Apache FOP (http://xmlgraphics.apache.org/fop/download.html) if the FOP library should be used.
-  -# <em>Optional Packages that are required if you want to build language bindings</em>
-    -# Swig (http://www.swig.org/download.html) + Java (http://java.sun.com/javase/downloads/index.jsp) for the Java language binding
-    -# Swig (http://www.swig.org/download.html) + Ruby (http://www.ruby-lang.org/en/downloads/) for the Ruby language binding
-    -# Swig (http://www.swig.org/download.html) + PHP (http://www.php.net/downloads.php) for the PHP language binding
-    -# Swig (http://www.swig.org/download.html) + Python (http://www.python.org/download/) for the Python language binding
-  -# <em>Optional Packages that are required if you want to build the scanner and parser</em>
-    -# Flex 2.5.33 or higher (http://flex.sourceforge.net/)
-    -# Bison 2.4 or higher (http://www.gnu.org/software/bison/)
-- In order to execute Zorba, please note that the paths to all of the installed libraries need to be included in the <tt>PATH</tt> environment variable.
-  \code path_to_libxml2\bin;path_to_icu\bin;path_to_iconv\bin;path_to_xerces\bin \endcode
-  To do this, right click on My Computer -> Properties -> Advanced -> Environment Variables and edit the PATH variable. Alternatively, you can also copy all the dlls
-  in the same directory as the zorba.exe file (or your own executable if you build an application that is using Zorba).
+- In order to compile Zorba on Windows, you need a working Visual Studio (Express) installation (2005, 2008, 2010).
+- Make sure that the libraries required for Zorba are built with the same version of Visual Studio that you use.
+- the Windows version of some required packages are distributed by other web sites (all of them are pointed to from the main package web sites indicated in the \ref required section):
+  - Libxml2 and Iconv: http://www.zlatkovic.com/libxml.en.html
+  - CURL: http://curl.haxx.se/download.html
+  - Tidy: http://dev.int64.org/tidy.html
+  - Libxslt: http://www.zlatkovic.com/pub/libxml/
+  - IMAP CClient: http://www.washington.edu/imap/
+- In order to execute Zorba, please note that the paths to all shared libraries (.dll) of all the installed/built packages need to be visible to the zorba executable. For this you have 3 choices:
+  - set the <tt>PATH</tt> environment variable before calling zorba
+    \code SET PATH=path_to_libxml2\bin;path_to_icu\bin;path_to_iconv\bin;path_to_xerces\bin;%PATH% \endcode
+  - include all the paths in the <tt>PATH</tt> environment variable for the current user/system. This can be done in Control Panel -> System -> Advanced (System Settings) -> Environment Variables... -> edit the PATH variable for either the current user or for the entire system.
+  - copy all the required dlls in the same directory as the zorba.exe file (or your own executable if you build an application that is using Zorba). Since not all the DLL's from the required packages are needed you can either execute Zorba or run the Dependency Walker to find out the needed DLL's.
 - Note, you can also use CMake's graphical interface. This can usually be found in Start menu. This eases up setup and makes it more intuitive.
 
 \subsection nmake Building Zorba using a NMake Project
 -# Start a Visual Studio Command Line
 -# Change the current working directory into the <tt>[ZORBA]</tt> directory.
--# The recommended way to build Zorba is by creating an <a href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F" target="_blank">out-of-source build</a>. We suggest to create the directory <tt>[ZORBA]/build</tt> and refer to this directory as <tt>[ZORBABUILD]</tt> in the following.
--# Execute CMake as follows <tt>cmake -G "NMake Makefiles" [ZORBA]</tt>. Unfortunately, CMake does not find all the development headers and libraries itself. Hence, you need to tell CMake where they are located. This can be done by the following command:
+-# It is not allowed to have <a href="http://www.cmake.org/Wiki/CMake_FAQ#What_is_an_.22out-of-source.22_build.3F" target="_blank">in-source builds</a>. So you must create a build directory (e.q. <tt>[ZORBA]/build</tt>). We refer to this directory as <tt>[ZORBABUILD]</tt> in the following steps.
+-# Change the current working directory into the <tt>[ZORBABUILD]</tt> directory.
+-# Execute CMake as follows <tt>cmake -G "NMake Makefiles" [ZORBA]</tt>. This will fail (unlike UNIX-based systems) because CMake does not find all the development headers and libraries itself on Windows platforms. Hence, you need to tell CMake where they are located. This can be done by the following command (<strong>Note</strong> that you might not need all the arguments if you don't use certain optional Zorba features):
 \code
-"cmake" 
--G "NMake Makefiles"
--D ICU_LIBRARY="path_to_icu\lib\icuuc.lib" 
--D ICU_DATA_LIBRARY="path_to_icu\lib\icudt.lib" 
--D ICU_I18N_LIBRARY="path_to_icu\lib\icuin.lib" 
--D ICU_INCLUDE="path_to_icu\include" 
--D ICONV_INCLUDE_DIR="path_to_iconv\include" 
--D ICONV_LIBRARY="path_to_iconv\lib\iconv.lib" 
--D LIBXML2_INCLUDE_DIR="path_to_libxml2\include" 
--D LIBXML2_LIBRARIES="path_to_libxml2\lib\libxml2.lib" 
--D XERCESC_INCLUDE="path_to_xerces\include" 
--D XERCESC_LIBRARY="path_to_xerces\lib\xerces-c_2.lib"
-..\
+"cmake" -G "NMake Makefiles"
+  -D ICU_LIBRARY="path_to_icu\lib\icuuc.lib" 
+  -D ICU_DATA_LIBRARY="path_to_icu\lib\icudt.lib" 
+  -D ICU_I18N_LIBRARY="path_to_icu\lib\icuin.lib" 
+  -D ICU_INCLUDE="path_to_icu\include" 
+  -D ICONV_INCLUDE_DIR="path_to_iconv\include" 
+  -D ICONV_LIBRARY="path_to_iconv\lib\iconv.lib" 
+  -D LIBXML2_INCLUDE_DIR="path_to_libxml2\include" 
+  -D LIBXML2_LIBRARIES="path_to_libxml2\lib\libxml2.lib" 
+  -D XERCESC_INCLUDE="path_to_xerces\include" 
+  -D XERCESC_LIBRARY="path_to_xerces\lib\xerces-c_2.lib"
+  ..
 \endcode
 
 If you need CURL (e.g. to have REST support) you have to point two CMake variables to CURL's include directory and the CURL library.

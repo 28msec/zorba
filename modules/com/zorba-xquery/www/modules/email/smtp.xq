@@ -24,12 +24,7 @@
  :   <li>Table of Contents 
  :     <ul>
  :       <li><a href="#intro_mail">1 Introduction</a></li>
- :       <li><a href="#configuring_mail">2 Configuring</a> 
- :         <ul>
- :           <li><a href="#mail_installation">2.1 Installation</a></li>
- :           <li><a href="#mail_option_declaration">2.2 Configuring SMTP parameters</a></li>
- :         </ul>
- :       </li>
+ :       <li><a href="#mail_option_declaration">2 Configuring SMTP parameters</a></li>
  :       <li><a href="#examples">3 Examples</a></li>
  :         <ul>
  :         <li><a href="#example_text">3.1 Composing text messages</a></li>
@@ -55,15 +50,18 @@
  :   <li><a href="#email_schema.xsd">Appendix B: email_schema.xsd</a></li>
  :   <li><a href="#mime_schema.xsd">Appendix C: mime_schema.xsd</a></li>
  : </ul>
+ :
+ :
  : <h2><a name="intro_mail">1 Introduction</a></h2>
- : Currently, Zorba provides functions for sending mime messages.<br/>
- : From all the possible <a href="http://www.iana.org/assignments/media-types/" target="_blank">MIME Media Types</a> zorba currently has support for sending the following types of messages:
+ : <p>Currently, Zorba provides functions for sending mime messages. From all the possible
+ : <a href="http://www.iana.org/assignments/media-types/" target="_blank">MIME Media Types</a>
+ : Zorba currently has support for sending the following types of messages:</p>
  : <ul>
  : <li><a href="http://www.iana.org/assignments/media-types/text/" target="_blank">text</a> (plain, html)</li>
  : <li><a href="http://www.iana.org/assignments/media-types/multipart/" target="_blank">multipart</a> (alternative, mixed, related)</li>
  : <li><a href="http://www.iana.org/assignments/media-types/image/" target="_blank">image</a> (gif, jpeg, png, tiff)</li>
  : </ul>
- : In other words you can send any combination of the followind types of messages:
+ : <p>In other words you can send any combination of the followind types of messages:</p>
  : <ul>
  :   <li>textual messages, the character sets are <strong>not</strong> restricted to US-ASCII (amongst the most common mime types are text/plain, text/html)</li>
  :   <li>several body messages each one an alternative of the same information, for example one body part in text/plain and another one in text/html (the mime type is multipart/alternative)</li>
@@ -71,39 +69,9 @@
  :   <li>messages with attachments (the mime type is multipart/mixed)</li>
  :   <li>Images (amongst the most common mime types are image/gif, image/jpeg, image/png, image/tiff)</li>
  : </ul>
- : <h2><a name="configuring_mail">2 Configuring</a></h2>
- : Zorba provides email support using the C-Client library part of <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a>.<br/>
- : <h3><a name="mail_installation">2.1 Installation</a></h3>
- : <ul><li><strong>Unix/Linux/Mac OS</strong></li>
- : There are some known issues with the CClient packages that come with diffrent Linux distributions.<br />
- : On x32 bit OpenSuse and also on x64 bit Ubuntu we noticed that the CClient shared library is broken (undefined symbol: mm_dlog).<br />
- : Due to that fact that Mark Crispin (the creator of CClient library) does not support CClient as a shared library but only as a static library (see <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html#6.3" target="_blank">FAQs shared library</a>),<br />
- : we strongly suggest you want to get <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a> and compile it yourself. <br /> <br />
- : Also please keep in mind that if SSL/TLS authentication is required buy the SMTP server then you first need to install <a href="http://www.openssl.org/" target="_blank">OpenSSL</a> and configure CClient to use it.<br />
- : Make sure the name of the library is prefixed by 'lib' and suffixed with '.a' (for example libc-client.a on Linux/Unix or libc-client4.a on Mac OS).<br/>
- : After that is done recompile Zorba after setting:
- : <pre class="fragment">
- : -D CCLIENT_INCLUDE="path_to_imap_2007e\c-client"
- : -D CCLIENT_LIBRARY="path_to_imap_2007e\c-client\libc-client.a"
- : </pre><br />
  :
- : Here are some quick suggestions to build CClient on Linux:<br />
- : <ul><li>x32 bit Linux</li><pre class="fragment">make lnp</pre><br />
- : <li>x64 bit Linux</li> 
- : <pre class="fragment">make lnp  EXTRACFLAGS="-I/usr/include/openssl -fPIC" EXTRAAUTHENTICATORS=gss</pre>
- : in order to build with SSL and Kerberos support.<br /></ul>
- : For more detailed build instructions please check out
- : <a href="http://www.washington.edu/imap/documentation" target="_blank">UW IMAP toolkit 'Server Documentation'</a> and
- : <a href="http://www.washington.edu/imap/IMAP-FAQs/index.html" target="_blank">UW IMAP FAQs.</a><br />
  :
- : <li><strong>Windows</strong></li>
- : We suggest compiling <a href="http://www.washington.edu/imap/" target="_blank">UW IMAP toolkit</a> and rebuilding Zorba after setting the following 2 flags: <br/>
- : <pre class="fragment">
- : -D CCLIENT_INCLUDE="path_to_imap_2007e\c-client"
- : -D CCLIENT_LIBRARY="path_to_imap_2007e\c-client\release\cclient.lib"
- : </pre>
- : </ul>
- : <h3><a name="mail_option_declaration">2.2 Configuring SMTP parameters</a></h3>
+ : <h2><a name="mail_option_declaration">2 Configuring SMTP parameters</a></h2>
  : The SMTP parameters have to be declared as options prior to calling the email functions:<br/><br/>
  : <pre class="fragment">
  : import module namespace smtp= 'http://www.zorba-xquery.com/modules/email/smtp';<br /><br />
@@ -114,20 +82,16 @@
  : 
  : These is the meaning of each parameter: <br/>
  : <ul><li><strong>SMTPServer</strong></li>
- :  The SMTP server has to be specified as a string in the following form: <br/>
- :  <em> remote_system_name [":" port] [flags] </em> <br/>
- :  a complete list of usage see <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/xqdoc/xhtml/com/zorba-xquery/www/modules/email/smtp.html#apendix_naming">Appendix A: SMTP server naming conventions</a>
- : For example: <br/>
+ :  The SMTP server has to be specified as a string in the following form:
+ : <tt>remote_system_name [":" port] [flags]</tt>. See <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/xqdoc/xhtml/com/zorba-xquery/www/modules/email/smtp.html#apendix_naming">Appendix A: SMTP server naming conventions</a> for more details. For example:
  :  <ul>
- :    <li>smtp.gmail.com:587/tls/novalidate-cert</li><br/>
- :    <li>[209.85.129.111]:587/tls/novalidate-cert</li><br/>
+ :    <li>smtp.gmail.com:587/tls/novalidate-cert</li>
+ :    <li>[209.85.129.111]:587/tls/novalidate-cert</li>
  :  </ul>
  : <li><strong>SMTPUser</strong></li>
- :  The remote username used to authenticate to the SMTP server. <br/>
- : Note: <br/>
- :  If you have specified a username in the SMTP server through <b>/user=</b> it will be overwritten by the one defined as SMTP username.
+ :  The remote username used to authenticate to the SMTP server. <b>Note</b>: if you have specified a username in the SMTP server through <b>/user=</b> it will be overwritten by the one defined as SMTP username.
  : <li><strong>SMTPPwd</strong></li>
- :  The remote username password used to authenticate to the SMTP server. <br/>
+ :  The remote username password used to authenticate to the SMTP server.
  : </ul>
  : <h2><a name="examples">3 Examples</a></h2>
  : Note: in the examples below, we assume that you have an email account at
