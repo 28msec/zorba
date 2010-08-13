@@ -115,6 +115,14 @@ public:
   size_t
   bytes() const;
 
+  /** \brief Returns the real number of characters in the string. 
+   *         Not including any null-termination, and withouth considering UTF-8 encodings.
+   *
+   * @return The number characters.
+   */
+  size_t
+  nr_of_chars() const;
+
   /** \brief True if the string has no characters.
    *
    * @return True if the string has no elements, false otherwise.

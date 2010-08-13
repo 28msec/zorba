@@ -28,13 +28,13 @@ namespace zorba { namespace encoding {
     public:
 
       static String
-      encode(String& aString);
+      encode(const String& aString);
 
       static String
       encode(std::istream& aStream);
 
       static String
-      decode(String& aString);
+      decode(const String& aString);
       
       static String
       decode(std::istream& aStream);  

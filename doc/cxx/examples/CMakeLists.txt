@@ -29,6 +29,7 @@ SET (API_EXAMPLES
   item_handler.cpp
   callback.cpp
   binary.cpp
+  string.cpp
   )
 
 SET(API_EXAMPLES ${API_EXAMPLES} debugger.cpp)

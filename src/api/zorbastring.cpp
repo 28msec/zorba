@@ -129,6 +129,12 @@ size_t String::bytes() const
 }
 
 
+size_t String::nr_of_chars() const
+{
+	return m_string->str().size();
+}
+
+
 bool String::empty()  const
 {
   return m_string->empty();

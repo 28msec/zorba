@@ -23,7 +23,7 @@
 
 namespace zorba { namespace encoding {
 
-String Base64::encode(String& aString) 
+String Base64::encode(const String& aString) 
 {
   std::stringstream lStream;
   lStream << aString;
@@ -36,7 +36,7 @@ String Base64::encode(std::istream& aStream)
   return zorba::Base64::encode(aStream).getp();
 }
 String
-Base64::decode(String& aString) {
+Base64::decode(const String& aString) {
   std::stringstream lStream;
   lStream << aString;
   return decode(lStream);
