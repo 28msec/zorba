@@ -195,7 +195,7 @@ public:
 
   virtual void mergeUpdates(Item* other) = 0;
 
-  virtual void applyUpdates() = 0;
+  virtual void applyUpdates(bool inheritNSBindings) = 0;
 
   virtual void checkTransformUpdates(
         const std::vector<Item*>& rootNodes) const = 0;

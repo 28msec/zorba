@@ -319,8 +319,11 @@ InScopePrefixesIterator::nextImpl(store::Item_t& result, PlanState& planState) c
     itemElem->getNamespaceBindings(state->theBindings);
     while (state->theCurrentPos < state->theBindings.size())
     {
-      ncname = state->theBindings[state->theCurrentPos].first;
-      STACK_PUSH(GENV_ITEMFACTORY->createNCName(result, ncname), state);
+      if (!state->theBindings[state->theCurrentPos].second->empty())
+      {
+        ncname = state->theBindings[state->theCurrentPos].first;
+        STACK_PUSH(GENV_ITEMFACTORY->createNCName(result, ncname), state);
+      }
       state->theCurrentPos++;
     }
   }

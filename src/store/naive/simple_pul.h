@@ -249,6 +249,7 @@ protected:
 
   std::vector<UpdatePrimitive*>      theValidationList;
 
+  bool                               theInheritNSBindings;
 
 public:
   PULImpl();
@@ -394,7 +395,7 @@ public:
   void mergeUpdates(store::Item* other);
 
   // apply
-  void applyUpdates();
+  void applyUpdates(bool inheritNSBindings);
 
   // utils
   void checkTransformUpdates(const std::vector<store::Item*>& rootNodes) const;
@@ -407,6 +408,8 @@ public:
         store::IndexEntryCreator* creator);
 
   void setValidator(store::SchemaValidator* validator);
+
+  bool inheritNSBindings() const { return theInheritNSBindings; }
 
   // integrity constraints related
   void setICChecker(store::ICChecker* icChecker);

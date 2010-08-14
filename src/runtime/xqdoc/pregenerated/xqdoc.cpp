@@ -87,3 +87,5 @@ XQDocContentIterator::~XQDocContentIterator() {}
 
 
 }
+
+

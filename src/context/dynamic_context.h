@@ -173,7 +173,7 @@ public:
   /**
    * Lists all active integrity constraints.
    */
-  virtual store::Iterator_t listActiveICNames();
+  store::Iterator_t listActiveICNames();
 
   /**
    * Returns IC object representing the integriti constraint.

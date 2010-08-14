@@ -122,7 +122,8 @@ PULImpl::PULImpl()
   theNoCollectionPul(NULL),
   theLastPul(NULL),
   theLastCollection(NULL),
-  theValidator(NULL) 
+  theValidator(NULL),
+  theInheritNSBindings(false)
 {
 }
 
@@ -1365,10 +1366,12 @@ void PULImpl::checkIC(const store::Item* collName)
 /*******************************************************************************
 
 ********************************************************************************/
-void PULImpl::applyUpdates()
+void PULImpl::applyUpdates(bool inheritNSBindings)
 {
   CollectionPulMap::iterator collIte = theCollectionPuls.begin();
   CollectionPulMap::iterator collEnd = theCollectionPuls.end();
+
+  theInheritNSBindings = inheritNSBindings;
 
   try
   {
@@ -1748,7 +1751,7 @@ void CollectionPul::applyUpdates()
 
       try
       {
-        validationPul->applyUpdates();
+        validationPul->applyUpdates(false);
       }
       catch (...)
       {

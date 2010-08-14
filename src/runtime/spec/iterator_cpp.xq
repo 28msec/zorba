@@ -185,9 +185,15 @@ declare function local:end-serializable-class-versions($name as xs:string) as xs
 declare variable $input external;
 declare variable $name as xs:string external;
 
-string-join((gen:add-copyright(),
-             local:get-include($input, $name),
-             'namespace zorba {',
-             local:get-iterators($input),
-             '}')
-             ,string-join(($gen:newline,$gen:newline),''))
+string-join
+(
+  (
+    gen:add-copyright(),
+    local:get-include($input, $name),
+    'namespace zorba {',
+    local:get-iterators($input),
+    '}',
+    $gen:newline
+  ),
+  string-join(($gen:newline,$gen:newline),'')
+)

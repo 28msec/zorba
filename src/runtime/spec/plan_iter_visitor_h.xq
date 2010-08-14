@@ -78,16 +78,30 @@ declare variable $files as xs:string external;
 let $temp1 := local:create-fwd-decl($files)
 let $temp2 := local:process-files($files,'class')
 return
-string-join((gen:add-copyright(),
-  gen:add-guard-open('runtime_visitors_plan_iter_visitor'),
-  local:create-include(),
-  'namespace zorba{',
+string-join
+(
+  (
+    gen:add-copyright(),
+    gen:add-guard-open('runtime_visitors_plan_iter_visitor'),
+    local:create-include(),
+    'namespace zorba{',
     $temp1,
     local:create-class(),
     $temp2,
-    string-join(($gen:indent,'}; //class PlanIterVisitor',
-    $gen:newline,
-  '} //namespace zorba',$gen:newline),''),
-  gen:add-guard-close()),
+    string-join
+    (
+      (
+        $gen:indent,
+        '}; //class PlanIterVisitor',
+        $gen:newline,
+        '} //namespace zorba', 
+        $gen:newline
+      ),
+      ''
+    ),
+    gen:add-guard-close(),
+    $gen:newline
+  ),
   string-join(($gen:newline),'
-'))
+')
+)

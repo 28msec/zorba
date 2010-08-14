@@ -59,7 +59,7 @@ xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) con
     const store::NsBindings& bindings = currentContext->theBindings;
     ulong numBindings = bindings.size();
 
-    for (ulong i = 0; i < numBindings; i++)
+    for (ulong i = 0; i < numBindings; ++i)
     {
       if (bindings[i].first->byteEqual(prefix))
         return bindings[i].second.getp();

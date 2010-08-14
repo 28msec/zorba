@@ -1048,9 +1048,14 @@ XmlNode* ElementNode::copyInternal(
   bool haveEmptyValue;
   bool inSubstGroup;
 
-  NsBindingsContext* parentNsContext = NULL;
+  NsBindingsContext* myParentNsContext = NULL;
+  NsBindingsContext* copyParentNsContext = NULL;
+
+  if (theParent && theParent->getNodeKind() == store::StoreConsts::elementNode)
+    myParentNsContext = static_cast<ElementNode*>(theParent)->getNsContext();
+
   if (parent && parent->getNodeKind() == store::StoreConsts::elementNode)
-    parentNsContext = reinterpret_cast<ElementNode*>(parent)->getNsContext();
+    copyParentNsContext = static_cast<ElementNode*>(parent)->getNsContext();
 
   NsBindingsContext* rootNsContext = NULL;
   if (rootParent && rootParent->getNodeKind() == store::StoreConsts::elementNode)
@@ -1096,9 +1101,8 @@ XmlNode* ElementNode::copyInternal(
       // from another ancestor).
       if (parent == rootParent ||
           theNsContext == NULL ||
-          (haveLocalBindings() &&
-           theNsContext->getParent() != parentNsContext) ||
-          theNsContext != parentNsContext)
+          (haveLocalBindings() && theNsContext->getParent() != myParentNsContext) ||
+          (!haveLocalBindings() && theNsContext != myParentNsContext))
       {
         if (theNsContext != NULL)
         {
@@ -1141,7 +1145,7 @@ XmlNode* ElementNode::copyInternal(
           copyNode->theFlags |= HaveLocalBindings;
         }
 
-        copyNode->setNsContext(parentNsContext);
+        copyNode->setNsContext(copyParentNsContext);
       }
     }
     else // ! nsPreserve
@@ -1555,14 +1559,16 @@ void ElementNode::getNamespaceBindings(
 {
   assert(bindings.empty());
 
+  bool foundEmptyNS = false;
+
   if (theNsContext != NULL)
   {
-    if(ns_scoping != store::StoreConsts::ONLY_PARENT_NAMESPACES)
+    if (ns_scoping != store::StoreConsts::ONLY_PARENT_NAMESPACES)
     {
       bindings = theNsContext->getBindings();
     }
 
-    if(ns_scoping == store::StoreConsts::ONLY_LOCAL_NAMESPACES)
+    if (ns_scoping == store::StoreConsts::ONLY_LOCAL_NAMESPACES)
       return;
 
     const NsBindingsContext* parentContext = theNsContext->getParent();
@@ -1586,6 +1592,9 @@ void ElementNode::getNamespaceBindings(
 
         if (j == currSize)
         {
+          if (!foundEmptyNS && parentBindings[i].second->empty())
+            foundEmptyNS = true;
+
           bindings.push_back(parentBindings[i]);
         }
       }
@@ -1593,6 +1602,8 @@ void ElementNode::getNamespaceBindings(
       parentContext = parentContext->getParent();
     }
   }
+
+  return;
 }
 
 

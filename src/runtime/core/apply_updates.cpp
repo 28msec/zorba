@@ -116,7 +116,8 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       // Apply updates
       pul->setValidator(&validator);
       pul->setICChecker(&icChecker);
-      pul->applyUpdates();
+      bool inherit = (theSctx->inherit_mode() == StaticContextConsts::inherit_ns);
+      pul->applyUpdates(inherit);
 
       // Rebuild the indices that must be rebuilt from scratch
       if (numIndices > 0)
@@ -137,7 +138,7 @@ bool ApplyIterator::nextImpl(store::Item_t& result, PlanState& planState) const
           }
         }
 
-        indexPul->applyUpdates();
+        indexPul->applyUpdates(inherit);
       }
     }
     catch (error::ZorbaError& e)

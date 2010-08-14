@@ -828,6 +828,14 @@ void InternalNode::insertChildren(UpdInsertChildren& upd, ulong pos)
 
     child->attach(this, pos + i);
     
+    if (getNodeKind() == store::StoreConsts::elementNode &&
+        child->getNodeKind() == store::StoreConsts::elementNode &&
+        upd.thePul->inheritNSBindings())
+    {
+      static_cast<ElementNode*>(child)->
+      setNsContext(static_cast<ElementNode*>(this)->getNsContext());
+    }
+
     upd.theNumApplied++;
   }
 
@@ -950,7 +958,9 @@ void ElementNode::insertAttributes(UpdInsertAttributes& upd)
     }
 
     if (addBindingForQName(attr->theName, true, false))
+    {
       upd.theNewBindings.push_back(attr->theName);
+    }
 
     attr->attach(this, numAttrs + i);
 
@@ -1077,6 +1087,14 @@ void InternalNode::replaceChild(UpdReplaceChild& upd)
     XmlNode* child = BASE_NODE(upd.theNewChildren[i]);
 
     child->attach(this, pos + i);
+
+    if (getNodeKind() == store::StoreConsts::elementNode &&
+        child->getNodeKind() == store::StoreConsts::elementNode &&
+        upd.thePul->inheritNSBindings())
+    {
+      static_cast<ElementNode*>(child)->
+      setNsContext(static_cast<ElementNode*>(this)->getNsContext());
+    }
 
     upd.theNumApplied++;
   }
