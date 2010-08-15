@@ -99,6 +99,8 @@ namespace zorba { namespace http_client {
     virtual void endMultipart();
     virtual void end();
 
+    bool isStatusOnly() const { return theStatusOnly; }
+
   private: //Helper functions
     void cleanUpBody();
     static std::pair<String, String> twinSplit(const String& aStr);

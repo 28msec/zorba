@@ -10,4 +10,4 @@ let $req := <h:request method="GET"
                override-media-type="text/html"
                status-only="true"/>
 let $res := http:read($req, ())
-return exists($res[1]//h:response[@status = "200"])
+return fn:not(exists($res[1]//*:body))

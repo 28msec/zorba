@@ -25,7 +25,8 @@ namespace zorba { namespace http_client {
   class CurlStreamBuffer : public std::streambuf
   {
   public:
-    CurlStreamBuffer(CURLM* aMultiHandle, CURL* aEasyHandle);
+    CurlStreamBuffer(CURLM* aMultiHandle, CURL* aEasyHandle,
+                     bool aStatusOnly = false);
     virtual ~CurlStreamBuffer();
 
     virtual int overflow(int c);
@@ -40,6 +41,7 @@ namespace zorba { namespace http_client {
     CURLM* MultiHandle;
     CURL* EasyHandle;
     InformDataRead *theInformer;
+    bool theStatusOnly;
 
     // callback called by curl
     static size_t

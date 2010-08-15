@@ -60,8 +60,10 @@ namespace zorba {
       String lOverrideContentType;
       if (lHandler.get())
         lHandler->getOverrideContentType(lOverrideContentType);
+      bool lStatusOnly =
+          lHandler.get() == NULL ? false : lHandler->isStatusOnly();
       HttpResponseParser lRespParser(lRespHandler, lCURL, lCURLM,
-        lOverrideContentType.c_str());
+        lOverrideContentType.c_str(), lStatusOnly);
       lRespParser.parse();
 
       if (lHeaderList) {

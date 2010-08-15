@@ -19,9 +19,10 @@
 #include <stdlib.h>
 
 namespace zorba { namespace http_client {
-  CurlStreamBuffer::CurlStreamBuffer(CURLM* aMultiHandle, CURL* aEasyHandle)
+  CurlStreamBuffer::CurlStreamBuffer(CURLM* aMultiHandle, CURL* aEasyHandle,
+                                     bool aStatusOnly)
     : std::streambuf(), MultiHandle(aMultiHandle), EasyHandle(aEasyHandle),
-    theInformer(0)
+    theInformer(0), theStatusOnly(aStatusOnly)
   {
     CurlErrorBuffer = new char[CURLOPT_ERRORBUFFER];
     memset(CurlErrorBuffer, 0, CURLOPT_ERRORBUFFER);
@@ -68,8 +69,13 @@ namespace zorba { namespace http_client {
     if (sbuffer->theInformer != 0) {
       sbuffer->theInformer->beforeRead();
     }
-    size_t result = sbuffer->sputn(buffer, size*nitems);
-    sbuffer->setg(sbuffer->eback(), sbuffer->gptr(), sbuffer->pptr());
+    size_t result;
+    if (!sbuffer->theStatusOnly) {
+      result = sbuffer->sputn(buffer, size*nitems);
+      sbuffer->setg(sbuffer->eback(), sbuffer->gptr(), sbuffer->pptr());
+    } else {
+      result = size*nitems;
+    }
     if (sbuffer->theInformer != 0) {
       sbuffer->theInformer->afterRead();
     }
