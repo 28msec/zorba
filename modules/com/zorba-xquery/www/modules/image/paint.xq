@@ -35,7 +35,7 @@ import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image
   : @error If the passed xs:base64Binary is not a valid image type.
   :)
 declare function paint:draw-line($image as xs:base64Binary, $start-x as xs:double, $start-y as xs:double, $end-x as xs:double, $end-y as xs:double, $stroke-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
-    paint:draw-poly-line($image, ($start-x, $end-x), ($start-y, $end-y), $stroke-color, (), $stroke-width, $anti-aliasing)
+    paint:draw-poly-line($image, ($start-x, $end-x), ($start-y, $end-y), $stroke-color, $stroke-width, $anti-aliasing)
 };
 
 
@@ -51,13 +51,14 @@ declare function paint:draw-line($image as xs:base64Binary, $start-x as xs:doubl
  : @param $x-values are the horizontal values of the different line segment starting/ending points. 
  : @param $y-values are the vertical values of the different line segment starting/ending points.
  : @param $stroke-color is a color as hex triplet of 3 bytes indicating the rgb values with leading '#' as xs:string (default is '#0000000', black)
- : @param $fill-color is the color with which to fill the poly-line. If no value is passed then the poly-line is not filled.
  : @param $stroke-width is the width of the line that should be painted (default is 1, equal or smaller than 1 will result in the thinnest possible line drawn).
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false).
  : @return A new image with the specified poly-line painted.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function paint:draw-poly-line($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-color as image:colorType?, $fill-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?)  as xs:base64Binary external;
+declare function paint:draw-poly-line($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-color as image:colorType?,  $stroke-width as xs:double?, $anti-aliasing as xs:boolean?)  as xs:base64Binary {
+  paint:draw-stroked-poly-line($image, $x-values, $y-values, 1, 0, $stroke-color, $stroke-width, $anti-aliasing); 
+};
 
 
 
@@ -221,13 +222,9 @@ declare function paint:draw-polygon($image as xs:base64Binary, $x-values as xs:d
  : @param $y is the vertical location of the text.
  : @param $font-family is the font with which to paint the text (default is Arial, if font family is passed that is not known to the system, then Arial is used).
  : @param $font-size is the size of the text to be painted (default is 12).  
- : @param $font-weight is the weight with which to paint the text (default is 400).
- : @param $font-style is the style for the font (default is 'Normal').
  : @param $text-color is a color with which the text should be painted (default is '#000000', black).
  : @return A new image with the specified text.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function paint:draw-text($image as xs:base64Binary, $text as xs:string, $x as xs:double, $y as xs:double, $font-family as xs:string, $font-size as xs:double?, $font-weight as image:fontWeightType?, $font-style as image:fontStyleType?,  $text-color as image:colorType?) as xs:base64Binary external;
-
-
+declare function paint:draw-text($image as xs:base64Binary, $text as xs:string, $x as xs:double, $y as xs:double, $font-family as xs:string, $font-size as xs:double?,  $text-color as image:colorType?) as xs:base64Binary external;
 

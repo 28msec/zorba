@@ -25,8 +25,6 @@ PaintModule::getExternalFunction(String aLocalname) const
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
     if (1 == 0) {
-    } else if (aLocalname.equals("draw-poly-line")) {
-      lFunc = new DrawPolyLineFunction(this); 
     } else if (aLocalname.equals("draw-stroked-poly-line")) {
       lFunc = new DrawStrokedPolyLineFunction(this);
     } else if (aLocalname.equals("draw-rectangle")) {

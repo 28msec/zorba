@@ -91,8 +91,6 @@ namespace zorba { namespace imagemodule {
           const StatelessExternalFunction::Arguments_t& args,
           int pos); 
       
-        
-      
 
       static void getOneColorArg(
            const StatelessExternalFunction::Arguments_t& aArgs,

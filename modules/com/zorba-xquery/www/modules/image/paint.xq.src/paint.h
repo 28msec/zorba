@@ -17,6 +17,8 @@
 #define ZORBA_IMAGEMODULE_PAINTMODULE_PAINT_H
 
 #include "image_function.h"
+#include <wand/MagickWand.h>
+
 
 namespace zorba { 
   
@@ -25,22 +27,6 @@ namespace zorba {
 
   namespace imagemodule { namespace paintmodule {
     
-
-//*****************************************************************************
-
-class DrawPolyLineFunction : public zorba::imagemodule::ImageFunction
-
-  {
-    public:
-      DrawPolyLineFunction(const ImageModule* aModule);
-      virtual String getLocalName() const { return "draw-poly-line";}
-
-      virtual ItemSequence_t
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-
-  };
 
 //*****************************************************************************
 

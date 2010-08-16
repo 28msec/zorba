@@ -1,0 +1,89 @@
+#include "draw_in_c.h"
+#include <wand/MagickWand.h>
+
+void *
+DrawPolygon(const void* aBlob, long* aLength, double aXValues[], double aYValues[], int aNumberOfPoints, std::string aStrokeColor, std::string aFillColor, double aStrokeWidth, bool aAntiAliasing) {
+  
+  MagickWandGenesis();
+  MagickWand * lMagickWand  = NewMagickWand();
+  MagickReadImageBlob(lMagickWand, aBlob, (size_t)aLength);
+  DrawingWand * lDrawingWand = NewDrawingWand();
+  PixelWand * lPixelWand = NewPixelWand();
+
+  PushDrawingWand(lDrawingWand);
+  PixelSetColor(lPixelWand, aStrokeColor.c_str());
+  DrawSetStrokeColor(lDrawingWand, lPixelWand);
+    
+  if (aFillColor.compare("opaque") == 0) {
+    DrawSetFillOpacity(lDrawingWand, 0);
+  } else {
+    PixelSetColor(lPixelWand, aFillColor.c_str());
+    DrawSetFillColor(lDrawingWand, lPixelWand);
+  }
+  if (aAntiAliasing) {
+    DrawSetStrokeAntialias(lDrawingWand, MagickTrue);
+  } else {
+    DrawSetStrokeAntialias(lDrawingWand, MagickFalse);
+  }
+  DrawSetStrokeWidth(lDrawingWand, aStrokeWidth);
+
+  ZorbaArrayAutoPointer<PointInfo> lPoints (new PointInfo[aNumberOfPoints]);
+  
+  for (int i = 0; i < aNumberOfPoints; i++) {
+       (lPoints.get())[i].x = aXValues[i];
+       (lPoints.get())[i].y = aYValues[i];
+  }
+  DrawPolygon(lDrawingWand, aNumberOfPoints, lPoints.get());
+  PopDrawingWand(lDrawingWand);
+  MagickDrawImage(lMagickWand, lDrawingWand);
+  size_t lBlobLength;
+  void *lResultPointer;
+  lResultPointer = (void *) MagickGetImageBlob(lMagickWand, &lBlobLength);
+  *aLength  =  (long) lBlobLength;
+  return lResultPointer;
+}  
+  
+void *
+DrawPolyLine(const void* aBlob, long* aLength, double aXValues[], double aYValues[], int aNumberOfPoints, std::string aStrokeColor, double aStrokeWidth, bool aAntiAliasing, double aStrokeArray[], int aNumberOfStrokeValues) 
+{
+  MagickWandGenesis();                                                                                                           
+  MagickWand * lMagickWand  = NewMagickWand();                                                                                   
+  MagickReadImageBlob(lMagickWand, aBlob, (size_t)aLength);                                                                      
+  DrawingWand * lDrawingWand = NewDrawingWand();
+  PixelWand * lPixelWand = NewPixelWand();
+
+  PushDrawingWand(lDrawingWand);                                                                                                 
+  PixelSetColor(lPixelWand, aStrokeColor.c_str());                                                                               
+  DrawSetStrokeColor(lDrawingWand, lPixelWand);
+  
+  // set fill opacity to 0 as we don't want Polylines to be filled ...
+  DrawSetFillOpacity(lDrawingWand, 0.0);
+
+  if (aAntiAliasing) {                                                                                                           
+    DrawSetStrokeAntialias(lDrawingWand, MagickTrue);                                                                            
+  } else {
+    DrawSetStrokeAntialias(lDrawingWand, MagickFalse);                                                                           
+  } 
+  DrawSetStrokeWidth(lDrawingWand, aStrokeWidth);   
+
+  ZorbaArrayAutoPointer<PointInfo> lPoints (new PointInfo[aNumberOfPoints]);                                                     
+  
+  for (int i = 0; i < aNumberOfPoints; i++) {                                                                                    
+       (lPoints.get())[i].x = aXValues[i];
+       (lPoints.get())[i].y = aYValues[i];                                                                                       
+  }    
+  if (aNumberOfStrokeValues > 0) {
+    DrawSetStrokeDashArray(lDrawingWand, aNumberOfStrokeValues, aStrokeArray);
+  }
+
+  DrawPolyline(lDrawingWand, aNumberOfPoints, lPoints.get()); 
+  PopDrawingWand(lDrawingWand);
+  MagickDrawImage(lMagickWand, lDrawingWand);
+  size_t lBlobLength;
+  void *lResultPointer;                                                                                                          
+  lResultPointer = (void *) MagickGetImageBlob(lMagickWand, &lBlobLength);                                                       
+  *aLength  =  (long) lBlobLength;
+  return lResultPointer;
+ 
+}
+

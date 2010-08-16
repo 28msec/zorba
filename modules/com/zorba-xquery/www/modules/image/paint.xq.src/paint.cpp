@@ -22,64 +22,12 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/zorba.h>
 #include "paint_module.h"
-
+#include "draw_in_c.h"
 
 
 namespace zorba {  namespace imagemodule { namespace paintmodule {
 
 using namespace zorba::imagemodule;  
-
-
-
-//*****************************************************************************
-
-DrawPolyLineFunction::DrawPolyLineFunction(const ImageModule* aModule) : ImageFunction(aModule)
-{
-}
-
-ItemSequence_t
-DrawPolyLineFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-
-  Magick::Image lImage;
-  ImageFunction::getOneImageArg(aArgs, 0, lImage);
-  std::list<Magick::Coordinate> lCoordinatesList;
-  Item lXItem;
-  Item lYItem;
-  while((aArgs[1]->next(lXItem)) && aArgs[2]->next(lYItem)) {
-    lCoordinatesList.push_back(Magick::Coordinate(lXItem.getDoubleValue(), lYItem.getDoubleValue()));
-  }
-
-  std::list<Magick::Drawable> lPolyLine;
-  // get background color, if none is passed then set background to be opaque.
-  double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 5);
-  lPolyLine.push_back(Magick::DrawableStrokeWidth(lStrokeWidth)); 
-  bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 6);
-  Magick::ColorRGB lStrokeColor;
-  ImageFunction::getOneColorArg(aArgs, 3, lStrokeColor);
-  lPolyLine.push_back(Magick::DrawableStrokeColor(lStrokeColor));
-  Item lFillColorItem;
-  if (!aArgs[4]->next(lFillColorItem)) {
-    lPolyLine.push_back(Magick::DrawableFillOpacity(0));
-  } else {
-    Magick::ColorRGB lFillColor;
-    ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
-    lPolyLine.push_back(Magick::DrawableFillColor(lFillColor));
-  }  
-  lPolyLine.push_back(Magick::DrawableStrokeAntialias(lAntiAlias));
-  // push the coordinates into the drawable list (if not, they don't get painted ...)
-  lPolyLine.push_back(Magick::DrawablePolyline(lCoordinatesList));
-  lPolyLine.push_back(Magick::DrawableFillColor(lImage.backgroundColor()));
-  lImage.draw(lPolyLine);
-  String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
-  Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
-  ImageFunction::checkIfItemIsNull(lItem);
-  return ItemSequence_t(new SingletonItemSequence(lItem));
-}
-
 
 //*****************************************************************************
 
@@ -93,39 +41,53 @@ DrawStrokedPolyLineFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aArgs, 0, lImage);
-  std::list<Magick::Coordinate> lCoordinatesList;
-  // get as much further coordinates as possible
-  Item lXItem;
-  Item lYItem;
-  while((aArgs[1]->next(lXItem)) && aArgs[2]->next(lYItem)) {
-    lCoordinatesList.push_back(Magick::Coordinate(lXItem.getDoubleValue(), lYItem.getDoubleValue()));
-  }
-
-  std::list<Magick::Drawable> lPolyLine;
-  // get stroke length and push it into poly-line
+  Magick::Blob lBlob;
+  lImage.write(&lBlob); 
+ 
   double lStrokeLength = ImageFunction::getOneDoubleArg(aArgs, 3);
   double lGapLength = ImageFunction::getOneDoubleArg(aArgs, 4);
-  double lPattern[] = {lStrokeLength, lGapLength, 0};
-  lPolyLine.push_back(Magick::DrawableDashArray(lPattern));
-  // check if a color was passed, if true, then set the stroke color  
-  Magick::ColorRGB lStrokeColor;             
-  ImageFunction::getOneColorArg(aArgs, 5, lStrokeColor);
-  lPolyLine.push_back(Magick::DrawableStrokeColor(lStrokeColor));
+  double lPattern[] = {lStrokeLength, lGapLength};
+  double lPatternLength;
+  if (lGapLength == 0) {
+    lPatternLength = 0;
+  } else {
+    lPatternLength = 2;
+  }
+ 
+  Item lXItem;
+  Item lYItem;
+  aArgs[1]->next(lXItem);
+  aArgs[2]->next(lYItem);
+  std::vector<double> lXValues;
+  std::vector<double> lYValues;
+  lXValues.push_back(lXItem.getDoubleValue());
+  lYValues.push_back(lYItem.getDoubleValue());
+  while (aArgs[1]->next(lXItem) && aArgs[2]->next(lYItem)) {
+    lXValues.push_back(lXItem.getDoubleValue());
+    lYValues.push_back(lYItem.getDoubleValue());
+  }
+
+  Item lArgsItem;
+  std::string lStrokeColor;
+  if (aArgs[5]->next(lArgsItem)) {
+    lStrokeColor = lArgsItem.getStringValue().c_str();
+  } else {
+    lStrokeColor = "black";
+  }
+
   double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 6);
-  lPolyLine.push_back(Magick::DrawableStrokeWidth(lStrokeWidth));
   bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 7);
-  lPolyLine.push_back(Magick::DrawableStrokeAntialias(lAntiAlias));
-  // push the coordinates into the drawable list (if not, they don't get painted ...)
-  lPolyLine.push_back(Magick::DrawablePolyline(lCoordinatesList));
-  lPolyLine.push_back(Magick::DrawableFillOpacity(0.0));
-  lImage.draw(lPolyLine);
-  String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
+  // use C function to effectively draw the polygon
+  long lBlobLength = (long) lBlob.length();
+  void * lBlobPointer = DrawPolyLine(lBlob.data(), &lBlobLength, &lXValues[0], &lYValues[0], lXValues.size(), lStrokeColor, lStrokeWidth, lAntiAlias, lPattern, lPatternLength);
+  Magick::Blob lBlobWithPolyLine(lBlobPointer, lBlobLength);
+  // now read the blob back into an image to pass it back as encoded string 
+  String lEncodedContent = ImageFunction::getEncodedStringFromBlob(lBlobWithPolyLine);
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
-  ImageFunction::checkIfItemIsNull(lItem);
-  return ItemSequence_t(new SingletonItemSequence(lItem));
+  ImageFunction::checkIfItemIsNull(lItem);  
+  return ItemSequence_t(new SingletonItemSequence(lItem));  
 }
 
 //*****************************************************************************
@@ -150,27 +112,25 @@ DrawRectangleFunction::evaluate(
   double lLowerRightY = ImageFunction::getOneDoubleArg(aArgs, 4);    
 
 
-  std::list<Magick::Drawable> lDrawable;
   // get stroke length and push it into poly-line
   Magick::ColorRGB lStrokeColor;             
   ImageFunction::getOneColorArg(aArgs, 5, lStrokeColor);
-  lDrawable.push_back(Magick::DrawableStrokeColor(lStrokeColor));
+  lImage.strokeColor(lStrokeColor);
   Item lFillColorItem;                           
-  if (!aArgs[6]->next(lFillColorItem)) {         
-    lDrawable.push_back(Magick::DrawableFillOpacity(0));
-  } else {                                       
+  if (aArgs[6]->next(lFillColorItem)) {         
     Magick::ColorRGB lFillColor;                 
     ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
-    lDrawable.push_back(Magick::DrawableFillColor(lFillColor));
-  } 
-
-
+    lImage.fillColor(lFillColor); 
+  } else {
+    Magick::ColorRGB lFillColor ("white");
+    lFillColor.alpha(1.0);
+    lImage.fillColor(lFillColor);
+ } 
   double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 7);
-  lDrawable.push_back(Magick::DrawableStrokeWidth(lStrokeWidth));
+  lImage.strokeWidth(lStrokeWidth); 
   bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 8);
-  lDrawable.push_back(Magick::DrawableStrokeAntialias(lAntiAlias));
-  lDrawable.push_back(Magick::DrawableRectangle(lUpperLeftX, lUpperLeftY, lLowerRightX, lLowerRightY));
-  lImage.draw(lDrawable);
+  lImage.strokeAntiAlias(lAntiAlias); 
+  lImage.draw(Magick::DrawableRectangle(lUpperLeftX, lUpperLeftY, lLowerRightX, lLowerRightY));
   String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
   ImageFunction::checkIfItemIsNull(lItem);
@@ -199,28 +159,28 @@ DrawRoundedRectangleFunction::evaluate(
   double lCornderWidth = ImageFunction::getOneDoubleArg(aArgs, 5);
   double lCornerHeight = ImageFunction::getOneDoubleArg(aArgs, 6);
 
-  std::list<Magick::Drawable> lDrawable;
   // get stroke length and push it into poly-line
   Magick::ColorRGB lStrokeColor;             
   ImageFunction::getOneColorArg(aArgs, 7, lStrokeColor);
-  lDrawable.push_back(Magick::DrawableStrokeColor(lStrokeColor));
+  lImage.strokeColor(lStrokeColor); 
   Item lFillColorItem;                           
   if (!aArgs[8]->next(lFillColorItem)) {         
-    lDrawable.push_back(Magick::DrawableFillOpacity(0));
+    Magick::ColorRGB lFillColor ("white");
+    lFillColor.alpha(1.0);
+    lImage.fillColor(lFillColor);
   } else {                                       
     Magick::ColorRGB lFillColor;                 
     ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
-    lDrawable.push_back(Magick::DrawableFillColor(lFillColor));
+    lImage.fillColor(lFillColor); 
   } 
 
 
-
   double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 9);
-  lDrawable.push_back(Magick::DrawableStrokeWidth(lStrokeWidth));
+  lImage.strokeWidth(lStrokeWidth); 
   bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 10);
-  lDrawable.push_back(Magick::DrawableStrokeAntialias(lAntiAlias));
-  lDrawable.push_back(Magick::DrawableRoundRectangle(lUpperLeftX, lUpperLeftY, lLowerRightX, lLowerRightY, lCornderWidth, lCornerHeight));
-  lImage.draw(lDrawable);
+  lImage.strokeAntiAlias(lAntiAlias); 
+  lImage.draw(Magick::DrawableRoundRectangle(lUpperLeftX, lUpperLeftY, lLowerRightX, lLowerRightY, lCornderWidth, lCornerHeight));
+  
   String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
   ImageFunction::checkIfItemIsNull(lItem);
@@ -248,26 +208,27 @@ DrawArcFunction::evaluate(
   double lPerimeterY = ImageFunction::getOneDoubleArg(aArgs, 4);
   double lStartDegrees = ImageFunction::getOneDoubleArg(aArgs, 5);
   double lEndDegrees = ImageFunction::getOneDoubleArg(aArgs, 6);
-  std::list<Magick::Drawable> lDrawable;
   // get stroke length and push it into poly-line
   Magick::ColorRGB lStrokeColor;             
   ImageFunction::getOneColorArg(aArgs, 7, lStrokeColor);
-  lDrawable.push_back(Magick::DrawableStrokeColor(lStrokeColor));
+  lImage.strokeColor(lStrokeColor);
   Item lFillColorItem;                           
   if (!aArgs[8]->next(lFillColorItem)) {         
-    lDrawable.push_back(Magick::DrawableFillOpacity(0));
+    Magick::ColorRGB lFillColor ("white");
+    lFillColor.alpha(1.0);
+    lImage.fillColor(lFillColor);
   } else {                                       
     Magick::ColorRGB lFillColor;                 
     ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
-    lDrawable.push_back(Magick::DrawableFillColor(lFillColor));
+    lImage.fillColor(lFillColor);   
   } 
 
   double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 9);
-  lDrawable.push_back(Magick::DrawableStrokeWidth(lStrokeWidth));
+  lImage.strokeWidth(lStrokeWidth); 
   bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 10);
-  lDrawable.push_back(Magick::DrawableStrokeAntialias(lAntiAlias));
-  lDrawable.push_back(Magick::DrawableEllipse(lXCoordinate, lYCoordinate, lPerimeterX, lPerimeterY, lStartDegrees, lEndDegrees));
-  lImage.draw(lDrawable);
+  lImage.strokeAntiAlias(lAntiAlias);
+  lImage.draw(Magick::DrawableEllipse(lXCoordinate, lYCoordinate, lPerimeterX, lPerimeterY, lStartDegrees, lEndDegrees));
+  
   String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
   ImageFunction::checkIfItemIsNull(lItem);
@@ -286,43 +247,51 @@ DrawPolygonFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-
+  
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aArgs, 0, lImage);
-  std::list<Magick::Coordinate> lCoordinatesList;
-  // get as much further coordinates as possible
+  Magick::Blob lBlob;
+  lImage.write(&lBlob);
   Item lXItem;
   Item lYItem;
-  while((aArgs[1]->next(lXItem)) && aArgs[2]->next(lYItem)) {
-    lCoordinatesList.push_back(Magick::Coordinate(lXItem.getDoubleValue(), lYItem.getDoubleValue()));
+  aArgs[1]->next(lXItem);
+  aArgs[2]->next(lYItem);
+  std::vector<double> lXValues;
+  std::vector<double> lYValues;
+  lXValues.push_back(lXItem.getDoubleValue());
+  lYValues.push_back(lYItem.getDoubleValue());
+  while (aArgs[1]->next(lXItem) && aArgs[2]->next(lYItem)) {
+    lXValues.push_back(lXItem.getDoubleValue());
+    lYValues.push_back(lYItem.getDoubleValue());
+  }  
+  Item lArgsItem;
+  std::string lStrokeColor;
+  if (aArgs[3]->next(lArgsItem)) {
+    lStrokeColor = lArgsItem.getStringValue().c_str();
+  } else {
+    lStrokeColor = "black";
   }
 
-  std::list<Magick::Drawable> lPolyLine;
-  // check if a color was passed, if true, then set the stroke color  
-  Magick::ColorRGB lStrokeColor;             
-  ImageFunction::getOneColorArg(aArgs, 3, lStrokeColor);
-  lPolyLine.push_back(Magick::DrawableStrokeColor(lStrokeColor));
-  Item lFillColorItem;                           
-  if (!aArgs[4]->next(lFillColorItem)) {         
-    lPolyLine.push_back(Magick::DrawableFillOpacity(0));
-  } else {                                       
-    Magick::ColorRGB lFillColor;                 
-    ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
-    lPolyLine.push_back(Magick::DrawableFillColor(lFillColor));
-  } 
-
+  std::string lFillColor;
+  if (aArgs[4]->next(lArgsItem)) {
+    lFillColor = lArgsItem.getStringValue().c_str();
+  } else {
+    lFillColor = "opaque";
+  }
   double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 5);
-  lPolyLine.push_back(Magick::DrawableStrokeWidth(lStrokeWidth));
+  
   bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 6);
-  lPolyLine.push_back(Magick::DrawableStrokeAntialias(lAntiAlias));
-  // push the coordinates into the drawable list (if not, they don't get painted ...)
-  lPolyLine.push_back(Magick::DrawablePolygon(lCoordinatesList));
-  lPolyLine.push_back(Magick::DrawableFillColor(lImage.backgroundColor()));
-  lImage.draw(lPolyLine);
-  String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
+    
+  // use C function to effectively draw the polygon
+  long lBlobLength = (long) lBlob.length();      
+  void * lBlobPointer = DrawPolygon(lBlob.data(), &lBlobLength, &lXValues[0], &lYValues[0], lXValues.size(), lStrokeColor, lFillColor, lStrokeWidth, lAntiAlias);
+  Magick::Blob lBlobWithPolygon(lBlobPointer, lBlobLength);
+  // now read the blob back into an image to pass it back as encoded string 
+  String lEncodedContent = ImageFunction::getEncodedStringFromBlob(lBlobWithPolygon);
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
   ImageFunction::checkIfItemIsNull(lItem);
   return ItemSequence_t(new SingletonItemSequence(lItem));
+
 }
 
 
@@ -349,57 +318,37 @@ DrawTextFunction::evaluate(
 
   double lFontSize = 12;
   int lFontWeight = 400;
-  Magick::StyleType lFontStyle = Magick::NormalStyle;
   // get values that are possibly just an empty sequence
   
   Item lItem;
   if (aArgs[5]->next(lItem)) {
     lFontSize = lItem.getDoubleValue();
   }
-  if (aArgs[6]->next(lItem)) {
-    lFontWeight = lItem.getIntValue();
-  }
-  if (aArgs[7]->next(lItem)) {
-    String lTemp = lItem.getStringValue();
-    if (lTemp.equals("Italic")) {
-      lFontStyle = Magick::ItalicStyle;
-    } else if (lTemp.equals("Oblique")) {
-      lFontStyle = Magick::ObliqueStyle;
-    }
-  }
   
   int lRed = 0;
   int lGreen = 0;
   int lBlue = 0;
 
-  if (aArgs[8]->next(lItem)) {
+  if (aArgs[6]->next(lItem)) {
     String lTmpString = lItem.getStringValue();
     sscanf(lTmpString.substring(1,2).c_str(), "%x", &lRed);
     sscanf(lTmpString.substring(3,2).c_str(), "%x", &lGreen);
     sscanf(lTmpString.substring(5,2).c_str(), "%x", &lBlue);
   }
 
-  
   // push all values into a drawable
-  std::list<Magick::Drawable> lDrawable;
-  lDrawable.push_back(Magick::DrawableStrokeAntialias(false));
-  lDrawable.push_back(Magick::DrawableStrokeColor(Magick::ColorRGB((double)lRed/255.0, (double)lGreen/255.0, (double)lBlue/255.0)));
-  lDrawable.push_back(Magick::DrawableFillColor(Magick::ColorRGB((double)lRed/255.0, (double)lGreen/255.0, (double)lBlue/255.0)));
-  lDrawable.push_back(Magick::DrawableFont(lFontFamily.c_str(), lFontStyle, lFontWeight, Magick::NormalStretch));
-  lDrawable.push_back(Magick::DrawableText(lXCoordinate, lYCoordinate, lText.c_str()));
-  lDrawable.push_back(Magick::DrawablePointSize(lFontSize));  
-  lImage.draw(lDrawable);
+  lImage.strokeAntiAlias(false);
+  lImage.strokeColor(Magick::ColorRGB((double)lRed/255.0, (double)lGreen/255.0, (double)lBlue/255.0));
+  lImage.fillColor(Magick::ColorRGB((double)lRed/255.0, (double)lGreen/255.0, (double)lBlue/255.0));
+  lImage.font(lFontFamily.c_str());
+  lImage.fontPointsize(lFontWeight);
+
+  lImage.draw(Magick::DrawableText(lXCoordinate, lYCoordinate, lText.c_str()));
   String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
   lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
   ImageFunction::checkIfItemIsNull(lItem);
   return ItemSequence_t(new SingletonItemSequence(lItem));
 }
-
-
-
-
-
-
 
 
 } /* namespace paintmodule */  } /* namespace imagemodule */ }  /* namespace zorba */
@@ -414,6 +363,4 @@ DrawTextFunction::evaluate(
 extern "C" DLL_EXPORT zorba::ExternalModule* createModule() {
   return new zorba::imagemodule::paintmodule::PaintModule();
 }
-
-
 
