@@ -19,10 +19,11 @@
 #include <sstream>
 #include <string>
 #include <zorba/empty_sequence.h>
+#include <zorba/base64.h>
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/zorba.h>
 #include "basic_module.h"
-
+#include "draw_in_c.h"
 
 namespace zorba { namespace imagemodule { namespace basicmodule {
 
@@ -83,27 +84,13 @@ TypeFunction::evaluate(
   const StaticContext*                          aSctxCtx,
   const DynamicContext*                         aDynCtx) const
 {
-
-  String lData;
-  bool lIsError = false;
-  // getOneString already checks if there is exactly one item at aPos ...
-  lData = ImageFunction::getOneStringArg(aArgs, 0);
-  Magick::Blob lBlob;
   Magick::Image lImage;
-  try {
-    lBlob.base64(lData.c_str());
-    lImage.read(lBlob);
-
-  } catch (Magick::Exception &aError)   {
-    lIsError = true;
-  }
-  // return empty sequence if we encounter an error  
-  if (lIsError) {
-    return ItemSequence_t(new EmptySequence());
-  }
-
-  String lResult;
-  lResult = lImage.magick();
+  ImageFunction::getOneImageArg(aArgs, 0, lImage);
+  Magick::Blob lBlob;
+  lImage.write(&lBlob); 
+  long lBlobLength = (long) lBlob.length();
+  std::string lImageType = GetImageType(lBlob.data(), &lBlobLength);
+  String lResult(lImageType);
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createString(lResult)));
 }

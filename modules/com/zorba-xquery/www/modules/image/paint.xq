@@ -102,7 +102,10 @@ declare function paint:draw-stroked-poly-line($image as xs:base64Binary, $x-valu
  : @return A new image with the specified rectangle painted.
  : @error If the passed xs:base64Binary is not a valid image type.
  :)
-declare function paint:draw-rectangle($image as xs:base64Binary, $upper-left-x as xs:double, $upper-left-y as xs:double, $lower-right-x as xs:double, $lower-right-y as xs:double, $stroke-color as image:colorType?, $fill-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary external;
+declare function paint:draw-rectangle($image as xs:base64Binary, $upper-left-x as xs:double, $upper-left-y as xs:double, $lower-right-x as xs:double, $lower-right-y as xs:double, $stroke-color as image:colorType?, $fill-color as image:colorType?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
+  paint:draw-rounded-rectangle($image, $upper-left-x, $upper-left-y, $lower-right-x, $lower-right-y, 0, 0, $stroke-color, $fill-color, $stroke-width, $anti-aliasing);
+
+};
 
 
  

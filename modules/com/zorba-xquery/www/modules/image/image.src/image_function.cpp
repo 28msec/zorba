@@ -297,10 +297,10 @@ ImageFunction::getOneOrMoreImageArg(const StatelessExternalFunction::Arguments_t
 void
 ImageFunction::getImageFromString(const String aString, Magick::Image& aImage) {
 
-  Magick::Blob lBlob;
+  String lDecodedContent = zorba::encoding::Base64::decode(aString);
+  Magick::Blob lBlob(lDecodedContent.c_str(), lDecodedContent.bytes());
 
   try {
-    lBlob.base64(aString.c_str());
     aImage.read(lBlob);
 
   } catch (Magick::Exception &error)   {

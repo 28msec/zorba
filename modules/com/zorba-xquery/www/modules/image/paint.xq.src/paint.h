@@ -46,21 +46,6 @@ class DrawStrokedPolyLineFunction : public zorba::imagemodule::ImageFunction
 
 //*****************************************************************************
 
-class DrawRectangleFunction : public zorba::imagemodule::ImageFunction
-
-  {
-    public:
-      DrawRectangleFunction(const ImageModule* aModule);
-      virtual String getLocalName() const { return "draw-rectangle";}
-
-      virtual ItemSequence_t
-      evaluate(const StatelessExternalFunction::Arguments_t& args,
-               const StaticContext* aSctxCtx,
-               const DynamicContext* aDynCtx) const;
-
-  };
-
-//*****************************************************************************
 
 class DrawRoundedRectangleFunction : public zorba::imagemodule::ImageFunction
 

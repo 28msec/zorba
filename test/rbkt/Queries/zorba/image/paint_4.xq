@@ -58,14 +58,6 @@ declare function local:test-draw-rectangle-green-red() as xs:boolean {
     return basic:equals($draw, $draw-ref)
 };
 
-(:~
- : @return true if the man:draw-rectangle function works.
- :)
-declare function local:test-draw-rectangle-green-red-wide() as xs:boolean {
-    let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, image:colorType("#00AF00"), image:colorType("#A10000"), 5, false())
-    let $draw-ref := file:read("images/paint/rectangleGreenRedWide.gif")
-    return basic:equals($draw, $draw-ref)
-};
 
 (:~
  : @return true if the man:draw-rectangle function works.
@@ -104,14 +96,6 @@ declare function local:test-draw-rounded-rectangle-blue-green() as xs:boolean {
     return basic:equals($draw, $draw-ref)
 };
 
-(:~
- : @return true if the man:draw-rounded-rectangle function works.
- :)
-declare sequential function local:test-draw-rounded-rectangle-wide() as xs:boolean {
-    let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, image:colorType("#0000FF"), image:colorType("#00FF00"), 3, ())
-    let $draw-ref := file:read("images/paint/rectangleRoundedWide.gif")
-    return basic:equals($draw, $draw-ref)
-};
 
 (:~
  : @return true if the man:draw-rounded-rectangle function works.
@@ -137,11 +121,6 @@ declare sequential function local:main() as xs:string* {
       exit returning local:error(("Drawing a green rectangle on an image failed."))
     else ();    
   
-  let $d := local:test-draw-rectangle-green-red-wide()
-  return
-    if (fn:not($d)) then
-      exit returning local:error(("Drawing a wide green rectangle filled with red on an image failed."))
-    else ();    
    
   let $e := local:test-draw-rectangle-anti-aliased()
   return
@@ -169,13 +148,6 @@ declare sequential function local:main() as xs:string* {
       exit returning local:error(("Drawing a blue rounded rectangle filled with green on an image failed."))
     else ();               
            
-  let $i := local:test-draw-rounded-rectangle-wide()
-  return
-    if (fn:not($i)) then
-      exit returning local:error(("Drawing a blue rounded rectangle with wide stroke filled with green on an image failed."))
-    else ();     
-    
-    
              
   let $j := local:test-draw-rounded-rectangle-anti-aliased()
   return

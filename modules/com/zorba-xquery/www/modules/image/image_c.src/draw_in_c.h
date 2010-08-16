@@ -8,6 +8,12 @@ void *
 DrawPolyLine(const void* aBlob, long* aLength, double aXValues[], double aYValues[], int aNumberOfPoints, std::string aStrokeColor, double aStrokeWidth, bool aAntiAliasing, double aStrokeArray[], int aNumberOfStrokeValues);
 
 
+void *
+DrawRoundedRect(const void* aBlob, long *aLength, double aUpperLeftX, double aUpperLeftY, double aLowerRightX, double aLowerRightY, double aCornerWidth, double aCornerHeight, std::string aStrokeColor, std::string aFillColor, double aStrokeWidth, bool aAntiAliasing);
+
+char *
+GetImageType(const void* aBlob, long* aLength);
+
 
 template<class T>
   class ZorbaArrayAutoPointer

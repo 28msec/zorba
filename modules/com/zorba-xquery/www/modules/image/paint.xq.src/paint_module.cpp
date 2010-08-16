@@ -27,8 +27,6 @@ PaintModule::getExternalFunction(String aLocalname) const
     if (1 == 0) {
     } else if (aLocalname.equals("draw-stroked-poly-line")) {
       lFunc = new DrawStrokedPolyLineFunction(this);
-    } else if (aLocalname.equals("draw-rectangle")) {
-      lFunc = new DrawRectangleFunction(this);
     } else if (aLocalname.equals("draw-rounded-rectangle")) {
       lFunc = new DrawRoundedRectangleFunction(this);
     } else if (aLocalname.equals("draw-arc")) {

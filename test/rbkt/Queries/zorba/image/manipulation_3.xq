@@ -57,7 +57,7 @@ declare function local:test-enhance() as xs:boolean {
  : @return true if the man:charcoal function works.
  :)
 declare function local:test-charcoal() as xs:boolean {
-    let $charcoaled := man:charcoal($local:jpg, -0.5, -0.5)
+    let $charcoaled := man:charcoal($local:jpg, 0.5, 0.5)
     let $charcoaled-ref := file:read("images/manipulation/charcoaledBird.jpg")
     return basic:equals($charcoaled, $charcoaled-ref)
 };

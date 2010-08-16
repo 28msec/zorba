@@ -34,7 +34,7 @@ ERROR:
  : @return true if the man:draw-poly-line function works.
  :)
 declare function local:test-draw-poly-line() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50, 200), (10, 80, 30, 200), (), (), (), ())
+    let $draw := paint:draw-poly-line($local:gif, (10,40,50, 200), (10, 80, 30, 200), (), (), ())
     let $draw-ref := file:read("images/paint/polyLine.gif")
     return basic:equals($draw, $draw-ref)
 };
@@ -43,7 +43,7 @@ declare function local:test-draw-poly-line() as xs:boolean {
  : @return true if the man:draw-poly-line function works.
  :)
 declare function local:test-draw-poly-line-anti-aliased() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#000000"), (), (), true())
+    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#000000"), (), true())
     let $draw-ref := file:read("images/paint/polyLineAntiAliased.gif")
     return basic:equals($draw,  $draw-ref)
 };
@@ -53,7 +53,7 @@ declare function local:test-draw-poly-line-anti-aliased() as xs:boolean {
  : @return true if the man:draw-poly-line function works.
  :)
 declare function local:test-draw-poly-line-red() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), (), (), true())
+    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), (), true())
     let $draw-ref := file:read("images/paint/polyLineRed.gif")
     return basic:equals($draw, $draw-ref)
 };
@@ -62,52 +62,11 @@ declare function local:test-draw-poly-line-red() as xs:boolean {
  : @return true if the man:draw-poly-line function works.
  :)
 declare function local:test-draw-poly-line-wide() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), (), (), 5, true())
+    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), (),  5, true())
     let $draw-ref := file:read("images/paint/polyLineWide.gif")
     return basic:equals($draw, $draw-ref)
 };
 
-
-
-(:~
- : @return true if the man:draw-filled-poly-line function works.
- :)
-declare sequential function local:test-draw-filled-poly-line() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), (), image:colorType("#000000"),  (), ())
-    let $draw-ref := file:read("images/paint/polyLineFilled.gif")
-    return basic:equals($draw, $draw-ref)
-};
-
-
-
-(:~
- : @return true if the man:draw-filled-poly-line function works.
- :)
-declare function local:test-draw-filled-poly-line-red() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), image:colorType("#000000"),  2, ())
-    let $draw-ref := file:read("images/paint/polyLineFilledRed.gif")
-    return basic:equals($draw, $draw-ref)
-};
-
-
-(:~
- : @return true if the man:draw-filled-poly-line function works.
- :)
-declare function local:test-draw-filled-poly-line-red-red() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), image:colorType("#FF0000"), (), ())
-    let $draw-ref := file:read("images/paint/polyLineFilledRedRed.gif")
-    return basic:equals($draw, $draw-ref)
-};
-
-
-(:~
- : @return true if the man:draw-filled-poly-line function works.
- :)
-declare function local:test-draw-filled-poly-line-red-red-anti-alias() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), image:colorType("#FF0000"), (), true())
-    let $draw-ref := file:read("images/paint/polyLineFilledRedRedAntiAliased.gif")
-    return basic:equals($draw,  $draw-ref)
-};
 
 
 declare sequential function local:main() as xs:string* {
@@ -136,32 +95,6 @@ declare sequential function local:main() as xs:string* {
     if (fn:not($d)) then
       exit returning local:error(("Drawing wide poly-line on an image failed."))
     else ();
-
-  let $e := local:test-draw-filled-poly-line()
-  return
-    if (fn:not($e)) then
-      exit returning local:error(("Drawing filled poly-line on an image failed."))
-    else ();
-
-
-  let $f := local:test-draw-filled-poly-line-red()
-  return
-    if (fn:not($f)) then
-      exit returning local:error(("Drawing filled poly-line with red stroke-color on an image failed."))
-    else ();
-
-  let $g := local:test-draw-filled-poly-line-red-red()
-  return
-    if (fn:not($g)) then
-      exit returning local:error(("Drawing filled poly-line with red stroke-color and red background color on an image failed."))
-    else ();
-
-  let $h := local:test-draw-filled-poly-line-red-red-anti-alias()
-  return
-    if (fn:not($h)) then
-      exit returning local:error(("Drawing filled poly-line with red stroke-color and red background color and anti-aliasing on an image failed."))
-    else ();
-
 
   (: If all went well ... make sure the world knows! :)
   "SUCCESS";

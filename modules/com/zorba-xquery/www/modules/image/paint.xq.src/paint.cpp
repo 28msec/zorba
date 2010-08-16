@@ -92,52 +92,6 @@ DrawStrokedPolyLineFunction::evaluate(
 
 //*****************************************************************************
 
-DrawRectangleFunction::DrawRectangleFunction(const ImageModule* aModule) : ImageFunction(aModule)
-{
-}
-
-
-ItemSequence_t
-DrawRectangleFunction::evaluate(
-  const StatelessExternalFunction::Arguments_t& aArgs,
-  const StaticContext*                          aSctxCtx,
-  const DynamicContext*                         aDynCtx) const
-{
-
-  Magick::Image lImage;
-  ImageFunction::getOneImageArg(aArgs, 0, lImage);
-  double lUpperLeftX = ImageFunction::getOneDoubleArg(aArgs, 1);
-  double lUpperLeftY = ImageFunction::getOneDoubleArg(aArgs, 2);
-  double lLowerRightX = ImageFunction::getOneDoubleArg(aArgs, 3);
-  double lLowerRightY = ImageFunction::getOneDoubleArg(aArgs, 4);    
-
-
-  // get stroke length and push it into poly-line
-  Magick::ColorRGB lStrokeColor;             
-  ImageFunction::getOneColorArg(aArgs, 5, lStrokeColor);
-  lImage.strokeColor(lStrokeColor);
-  Item lFillColorItem;                           
-  if (aArgs[6]->next(lFillColorItem)) {         
-    Magick::ColorRGB lFillColor;                 
-    ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
-    lImage.fillColor(lFillColor); 
-  } else {
-    Magick::ColorRGB lFillColor ("white");
-    lFillColor.alpha(1.0);
-    lImage.fillColor(lFillColor);
- } 
-  double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 7);
-  lImage.strokeWidth(lStrokeWidth); 
-  bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 8);
-  lImage.strokeAntiAlias(lAntiAlias); 
-  lImage.draw(Magick::DrawableRectangle(lUpperLeftX, lUpperLeftY, lLowerRightX, lLowerRightY));
-  String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
-  Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
-  ImageFunction::checkIfItemIsNull(lItem);
-  return ItemSequence_t(new SingletonItemSequence(lItem));
-}
-
-//*****************************************************************************
 
 DrawRoundedRectangleFunction::DrawRoundedRectangleFunction(const ImageModule* aModule) : ImageFunction(aModule)
 {
@@ -152,39 +106,43 @@ DrawRoundedRectangleFunction::evaluate(
 
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aArgs, 0, lImage);
+  Magick::Blob lBlob;
+  lImage.write(&lBlob);
   double lUpperLeftX = ImageFunction::getOneDoubleArg(aArgs, 1);
   double lUpperLeftY = ImageFunction::getOneDoubleArg(aArgs, 2);
   double lLowerRightX = ImageFunction::getOneDoubleArg(aArgs, 3);
   double lLowerRightY = ImageFunction::getOneDoubleArg(aArgs, 4);
-  double lCornderWidth = ImageFunction::getOneDoubleArg(aArgs, 5);
+  double lCornerWidth = ImageFunction::getOneDoubleArg(aArgs, 5);
   double lCornerHeight = ImageFunction::getOneDoubleArg(aArgs, 6);
-
-  // get stroke length and push it into poly-line
-  Magick::ColorRGB lStrokeColor;             
-  ImageFunction::getOneColorArg(aArgs, 7, lStrokeColor);
-  lImage.strokeColor(lStrokeColor); 
-  Item lFillColorItem;                           
-  if (!aArgs[8]->next(lFillColorItem)) {         
-    Magick::ColorRGB lFillColor ("white");
-    lFillColor.alpha(1.0);
-    lImage.fillColor(lFillColor);
-  } else {                                       
-    Magick::ColorRGB lFillColor;                 
-    ImageFunction::getColorFromString(lFillColorItem.getStringValue(), lFillColor);
-    lImage.fillColor(lFillColor); 
-  } 
-
-
-  double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 9);
-  lImage.strokeWidth(lStrokeWidth); 
-  bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 10);
-  lImage.strokeAntiAlias(lAntiAlias); 
-  lImage.draw(Magick::DrawableRoundRectangle(lUpperLeftX, lUpperLeftY, lLowerRightX, lLowerRightY, lCornderWidth, lCornerHeight));
   
-  String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
+  Item lArgsItem;
+  std::string lStrokeColor;
+  if (aArgs[7]->next(lArgsItem)) {
+    lStrokeColor = lArgsItem.getStringValue().c_str();
+  } else {
+    lStrokeColor = "black";
+  }
+
+  std::string lFillColor;
+  if (aArgs[8]->next(lArgsItem)) {
+    lFillColor = lArgsItem.getStringValue().c_str();
+  } else {
+    lFillColor = "opaque";
+  }
+  double lStrokeWidth = ImageFunction::getStrokeWidthArg(aArgs, 9);
+
+  bool lAntiAlias = ImageFunction::getAntiAliasingArg(aArgs, 10);
+
+  // use C function to effectively draw the polygon
+  long lBlobLength = (long) lBlob.length();
+  void * lBlobPointer = DrawRoundedRect(lBlob.data(), &lBlobLength, lUpperLeftX, lUpperLeftY, lLowerRightX, lLowerRightY, lCornerWidth, lCornerHeight, lStrokeColor, lFillColor, lStrokeWidth, lAntiAlias);
+  Magick::Blob lBlobWithPolygon(lBlobPointer, lBlobLength);
+  // now read the blob back into an image to pass it back as encoded string 
+  String lEncodedContent = ImageFunction::getEncodedStringFromBlob(lBlobWithPolygon);
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
   ImageFunction::checkIfItemIsNull(lItem);
   return ItemSequence_t(new SingletonItemSequence(lItem));
+
 }
 
 //*****************************************************************************
