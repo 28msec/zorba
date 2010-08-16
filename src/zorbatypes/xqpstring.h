@@ -767,6 +767,7 @@ private:
    std::ostream&
   operator<<(std::ostream& os, const zorba::xqpStringStore& src);
 
+  ZORBA_DLL_PUBLIC
    std::ostream&
   operator<<(std::ostream& os, const zorba::xqpStringStore_t src);
 
