@@ -20,6 +20,9 @@
 
 #include "store/naive/shared_types.h"
 #include "store/naive/text_node_content.h"
+#include "store/api/update_consts.h"
+#include "store/api/collection.h"
+#include "store/api/iterator.h"
 
 #include "store/api/index.h" // for index spec obj
 #include "store/api/ic.h" // for index spec obj
@@ -99,6 +102,7 @@ class UpdatePrimitive
   friend class CollectionPul;
   friend class XmlNode;
   friend class InternalNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   PULImpl        * thePul;
@@ -109,7 +113,7 @@ protected:
   bool             theRemoveType;
   TypeUndoList     theTypeUndoList;
 
-public:
+protected:
   UpdatePrimitive(PULImpl* pul, store::Item_t& target);
 
   UpdatePrimitive(CollectionPul* pul, store::Item_t& target);
@@ -118,6 +122,7 @@ public:
 
   UpdatePrimitive(CollectionPul* pul);
 
+public:
   virtual ~UpdatePrimitive();
 
   void addNodeForValidation(zorba::store::Item* node);
@@ -149,6 +154,7 @@ class UpdDelete : public UpdatePrimitive
   friend class CollectionPul;
   friend class XmlNode;
   friend class InternalNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   InternalNode   * theParent;
@@ -156,13 +162,14 @@ protected:
   store::Item_t    theRightSibling;
   xqpStringStore_t theLeftContent;
 
-public:
+protected:
   UpdDelete(CollectionPul* pul, store::Item_t& target)
     :
     UpdatePrimitive(pul, target)
   {
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_DELETE; 
@@ -211,6 +218,7 @@ class UpdInsertChildren : public UpdatePrimitive
   friend class CollectionPul;
   friend class XmlNode;
   friend class InternalNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   store::UpdateConsts::UpdPrimKind theKind;
@@ -220,7 +228,6 @@ protected:
   long                             theNumApplied;
   store::Item_t                    theMergedNode;
 
-public:
   UpdInsertChildren(
         CollectionPul* pul,
         store::UpdateConsts::UpdPrimKind kind,
@@ -228,6 +235,7 @@ public:
         store::Item_t& sibling,
         std::vector<store::Item_t>& children);
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const { return theKind; }
 
   void apply();
@@ -249,6 +257,7 @@ class UpdInsertAttributes : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class ElementNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   std::vector<store::Item_t>  theNewAttrs;
@@ -256,12 +265,12 @@ protected:
   ulong                       theNumApplied;
   std::vector<store::Item*>   theNewBindings;
 
-public:
   UpdInsertAttributes(
         CollectionPul* pul,
         store::Item_t& target,
         std::vector<store::Item_t>&  attrs);
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_INSERT_ATTRIBUTES;
@@ -281,6 +290,7 @@ class UpdReplaceAttribute : public UpdatePrimitive
   friend class PULImpl;
   friend class CollectionPul;
   friend class ElementNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   store::Item_t               theAttr;
@@ -290,13 +300,13 @@ protected:
   std::vector<store::Item*>   theNewBindings;
   ulong                       thePos;
 
-public:
   UpdReplaceAttribute(
         CollectionPul* pul,
         store::Item_t& target,
         store::Item_t& attr,
         std::vector<store::Item_t>& newAttrs);
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_ATTRIBUTE;
@@ -317,6 +327,7 @@ class UpdReplaceChild : public UpdatePrimitive
   friend class CollectionPul;
   friend class XmlNode;
   friend class InternalNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   store::Item_t               theChild;
@@ -327,13 +338,13 @@ protected:
   store::Item_t               theRightMergedNode;
   bool                        theIsTyped;
 
-public:
   UpdReplaceChild(
         CollectionPul* pul,
         store::Item_t& target,
         store::Item_t& child,
         std::vector<store::Item_t>& newChildren);
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_CHILD; 
@@ -353,6 +364,7 @@ class UpdReplaceElemContent : public UpdatePrimitive
   friend class PULImpl;
   friend class CollectionPul;
   friend class ElementNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   store::Item_t         theNewChild;
@@ -360,7 +372,6 @@ protected:
   std::vector<XmlNode*> theOldChildren;
   bool                  theIsTyped;
 
-public:
   UpdReplaceElemContent(
         CollectionPul* pul,
         store::Item_t& target,
@@ -372,6 +383,7 @@ public:
     theNewChild.transfer(newChild);
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_CONTENT; 
@@ -391,6 +403,7 @@ class UpdRenameElem : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class ElementNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   store::Item_t   theNewName;
@@ -399,7 +412,6 @@ protected:
   bool            theNewBinding;
   bool            theRestoreParentType;
 
-public:
   UpdRenameElem(
         CollectionPul* pul,
         store::Item_t& target,
@@ -412,6 +424,7 @@ public:
     theNewName.transfer(newName);
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_RENAME_ELEM; 
@@ -429,13 +442,13 @@ class UpdReplaceAttrValue : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class AttributeNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   xqpStringStore_t theNewValue;
 
   store::Item_t   theOldValue;
 
-public:
   UpdReplaceAttrValue(
         CollectionPul* pul,
         store::Item_t& target,
@@ -446,6 +459,7 @@ public:
     theNewValue.transfer(newValue);
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_ATTR_VALUE;
@@ -470,6 +484,7 @@ class UpdRenameAttr : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class AttributeNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   store::Item_t   theNewName;
@@ -478,7 +493,6 @@ protected:
   store::Item_t   theOldName;
   bool            theNewBinding;
 
-public:
   UpdRenameAttr(
         CollectionPul* pul,
         store::Item_t& target,
@@ -490,6 +504,7 @@ public:
     theNewName.transfer(newName);
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_RENAME_ATTR; 
@@ -508,6 +523,7 @@ class UpdReplaceTextValue : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class TextNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   xqpStringStore_t   theNewContent;
@@ -517,7 +533,6 @@ protected:
   TextNodeContent    theOldContent;
   bool               theIsTyped;
 
-public:
   UpdReplaceTextValue(
         CollectionPul* pul,
         store::Item_t& target,
@@ -529,6 +544,7 @@ public:
     theNewContent.transfer(newValue);
   }
 
+public:
   ~UpdReplaceTextValue();
 
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -548,12 +564,12 @@ class UpdReplacePiValue : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class PiNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   xqpStringStore_t   theNewValue;
   xqpStringStore_t   theOldValue;
 
-public:
   UpdReplacePiValue(
         CollectionPul* pul,
         store::Item_t& target,
@@ -564,6 +580,7 @@ public:
     theNewValue.transfer(newValue);
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_PI_VALUE;
@@ -581,12 +598,12 @@ class UpdRenamePi : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class PiNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   xqpStringStore_t   theNewName;
   xqpStringStore_t   theOldName;
 
-public:
   UpdRenamePi(
         CollectionPul* pul,
         store::Item_t& target,
@@ -597,6 +614,7 @@ public:
     theNewName.transfer(newName);
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_RENAME_PI; 
@@ -614,12 +632,12 @@ class UpdReplaceCommentValue : public UpdatePrimitive
 {
   friend class PULImpl;
   friend class CommentNode;
+  friend class PULPrimitiveFactory;
 
 protected:
   xqpStringStore_t   theNewValue;
   xqpStringStore_t   theOldValue;
 
-public:
   UpdReplaceCommentValue(
         CollectionPul* pul,
         store::Item_t& target,
@@ -630,6 +648,7 @@ public:
     theNewValue.transfer(newValue);
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_REPLACE_COMMENT_VALUE;
@@ -663,6 +682,7 @@ public:
 class UpdSetElementType : public UpdatePrimitive
 {
   friend class PULImpl;
+  friend class PULPrimitiveFactory;
 
 protected:
   store::Item_t            theTypeName;
@@ -673,7 +693,6 @@ protected:
   bool                     theHaveListValue;
   bool                     theIsInSubstitutionGroup;
 
-public:
   UpdSetElementType(
         PULImpl*       pul,
         store::Item_t& target,
@@ -696,6 +715,7 @@ public:
     theTypedValue.transfer(typedValue);
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_SET_ELEMENT_TYPE; 
@@ -712,13 +732,13 @@ public:
 class UpdSetAttributeType : public UpdatePrimitive
 {
   friend class PULImpl;
+  friend class PULPrimitiveFactory;
 
 protected:
   store::Item_t            theTypeName;
   store::Item_t            theTypedValue;
   bool                     theHaveListValue;
 
-public:
   UpdSetAttributeType(
         PULImpl*       pul,
         store::Item_t& target,
@@ -733,6 +753,7 @@ public:
     theTypedValue.transfer(typedValue);
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_SET_ATTRIBUTE_TYPE; 
@@ -756,13 +777,13 @@ public:
 class UpdPut : public UpdatePrimitive
 {
   friend class PULImpl;
+  friend class PULPrimitiveFactory;
 
 protected:
   store::Item_t theTargetUri;
 
   store::Item_t theOldDocument;
 
-public:
   UpdPut(PULImpl* pul, store::Item_t& target, store::Item_t& uri)
     :
     UpdatePrimitive(pul, target)
@@ -770,6 +791,7 @@ public:
     theTargetUri.transfer(uri);
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_PUT;
@@ -792,11 +814,12 @@ public:
 ********************************************************************************/ 
 class UpdCollection : public UpdatePrimitive
 {
+  friend class PULPrimitiveFactory;
+
 protected:
   store::Item_t               theName;
   std::vector<store::Item_t>  theNodes;
 
-public:
   UpdCollection(
         CollectionPul* pul,
         store::Item_t& name)
@@ -817,6 +840,7 @@ public:
         store::Item_t& name,
         std::vector<store::Item_t>& nodes);
 
+public:
   const store::Item* getName() const { return theName.getp(); }
 
   ulong numNodes() const { return theNodes.size(); }
@@ -830,7 +854,9 @@ public:
 ********************************************************************************/
 class UpdCreateCollection : public UpdCollection
 {
-public:
+  friend class PULPrimitiveFactory;
+
+protected:
   UpdCreateCollection(
         CollectionPul* pul,
         store::Item_t& name)
@@ -839,6 +865,7 @@ public:
   {
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_CREATE_COLLECTION;
@@ -854,10 +881,11 @@ public:
 ********************************************************************************/
 class UpdDeleteCollection : public UpdCollection
 {
+  friend class PULPrimitiveFactory;
+
 protected:
   store::Collection_t theCollection; // only used for undo
 
-public:
   UpdDeleteCollection(
         CollectionPul* pul,
         store::Item_t& name)
@@ -866,6 +894,7 @@ public:
   {
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_DELETE_COLLECTION;
@@ -881,10 +910,11 @@ public:
 ********************************************************************************/
 class UpdInsertIntoCollection : public UpdCollection
 {
+  friend class PULPrimitiveFactory;
+
 protected:
   ulong theNumApplied;
 
-public:
   UpdInsertIntoCollection(
         CollectionPul* pul,
         store::Item_t& name, 
@@ -895,6 +925,7 @@ public:
   {
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   {
     return store::UpdateConsts::UP_INSERT_INTO_COLLECTION;
@@ -910,10 +941,11 @@ public:
 ********************************************************************************/
 class UpdInsertFirstIntoCollection : public  UpdCollection
 {
+  friend class PULPrimitiveFactory;
+
 protected:
   ulong theNumApplied;
 
-public:
   UpdInsertFirstIntoCollection(
       CollectionPul* pul,
       store::Item_t& name,
@@ -924,6 +956,7 @@ public:
   {
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_INSERT_FIRST_INTO_COLLECTION;
@@ -939,10 +972,11 @@ public:
 ********************************************************************************/
 class UpdInsertLastIntoCollection : public  UpdCollection
 {
+  friend class PULPrimitiveFactory;
+
 protected:
   ulong theNumApplied;
 
-public:
   UpdInsertLastIntoCollection(
         CollectionPul* pul,
         store::Item_t& name,
@@ -953,6 +987,7 @@ public:
   {
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_INSERT_LAST_INTO_COLLECTION;
@@ -968,11 +1003,12 @@ public:
 ********************************************************************************/
 class UpdInsertBeforeIntoCollection : public  UpdCollection
 {
+  friend class PULPrimitiveFactory;
+
 protected:
   store::Item_t theFirstNode;
   ulong         theFirstPos;
 
-public:
   UpdInsertBeforeIntoCollection(
         CollectionPul* pul,
         store::Item_t& name,
@@ -983,6 +1019,7 @@ public:
   {
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_INSERT_BEFORE_INTO_COLLECTION;
@@ -998,11 +1035,12 @@ public:
 ********************************************************************************/
 class UpdInsertAfterIntoCollection : public  UpdCollection
 {
+  friend class PULPrimitiveFactory;
+
 protected:
   store::Item_t theFirstNode;
   ulong         theFirstPos;
 
-public:
   UpdInsertAfterIntoCollection(
         CollectionPul* pul,
         store::Item_t& name,
@@ -1013,6 +1051,7 @@ public:
   {
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_INSERT_AFTER_INTO_COLLECTION;
@@ -1028,6 +1067,8 @@ public:
 ********************************************************************************/
 class UpdDeleteNodesFromCollection: public  UpdCollection
 {
+  friend class PULPrimitiveFactory;
+
 protected:
   bool               theIsLast;
 
@@ -1035,8 +1076,6 @@ protected:
   std::vector<bool>  theFound;
   std::vector<ulong> thePositions;
 
-
-public:
   UpdDeleteNodesFromCollection(
         CollectionPul* pul,
         store::Item_t& name,
@@ -1049,6 +1088,7 @@ public:
   {
   }
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_REMOVE_FROM_COLLECTION;
@@ -1072,6 +1112,7 @@ public:
 class UpdCreateIndex : public  UpdatePrimitive
 {
   friend class PULImpl;
+  friend class PULPrimitiveFactory;
 
 protected:
   store::Item_t              theQName;
@@ -1080,13 +1121,13 @@ protected:
 
   store::Index_t             theIndex;
 
-public:
   UpdCreateIndex(
         PULImpl* pul,
         const store::Item_t& qname,
         const store::IndexSpecification& spec,
         store::Iterator* sourceIter);
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_CREATE_INDEX;
@@ -1105,15 +1146,16 @@ public:
 class UpdDeleteIndex : public  UpdatePrimitive
 {
   friend class PULImpl;
+  friend class PULPrimitiveFactory;
 
 protected:
   const store::Item_t  theQName;
 
   store::Index_t       theIndex;
 
-public:
   UpdDeleteIndex(PULImpl* pul, const store::Item_t& qname);
 
+public:
   store::UpdateConsts::UpdPrimKind getKind() const
   { 
     return store::UpdateConsts::UP_DROP_INDEX;
@@ -1130,6 +1172,7 @@ public:
 class UpdRefreshIndex : public  UpdatePrimitive
 {
   friend class PULImpl;
+  friend class PULPrimitiveFactory;
 
 protected:
   const store::Item_t  theQName;
@@ -1137,12 +1180,12 @@ protected:
 
   store::Index_t       theIndex;
 
-public:
   UpdRefreshIndex(
         PULImpl* pul,
         const store::Item_t& qname,
         store::Iterator* sourceIter);
 
+public:
   ~UpdRefreshIndex();
 
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -1168,17 +1211,18 @@ public:
 class UpdActivateIC : public  UpdatePrimitive
 {
   friend class PULImpl;
+  friend class PULPrimitiveFactory;
 
 protected:
   const store::Item_t  theQName;
   const store::Item_t  theCollectionName;
 
-public:
   UpdActivateIC(
         PULImpl* pul,
         const store::Item_t& aQName,
         const store::Item_t& aCollectionName);
 
+public:
   ~UpdActivateIC();
 
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -1197,19 +1241,20 @@ public:
 class UpdActivateForeignKeyIC : public  UpdatePrimitive
 {
   friend class PULImpl;
+  friend class PULPrimitiveFactory;
 
 protected:
   const store::Item_t  theQName;
   const store::Item_t  theFromCollectionName;
   const store::Item_t  theToCollectionName;
 
-public:
   UpdActivateForeignKeyIC(
         PULImpl* pul,
         const store::Item_t& qQName,
         const store::Item_t& aFromCollectionName,
         const store::Item_t& aToCollectionName);
 
+public:
   ~UpdActivateForeignKeyIC();
 
   store::UpdateConsts::UpdPrimKind getKind() const
@@ -1228,6 +1273,7 @@ public:
 class UpdDeActivateIC : public  UpdatePrimitive
 {
   friend class PULImpl;
+  friend class PULPrimitiveFactory;
 
 protected:
   const store::Item_t  theQName;
@@ -1235,11 +1281,11 @@ protected:
   store::Item_t        theToCollectionName;
   store::IC::ICKind    theICKind;
 
-public:
   UpdDeActivateIC(
         PULImpl* pul,
         const store::Item_t& qname);
 
+public:
   ~UpdDeActivateIC();
 
   store::UpdateConsts::UpdPrimKind getKind() const

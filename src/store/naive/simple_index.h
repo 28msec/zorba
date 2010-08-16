@@ -86,6 +86,9 @@ protected:
 public:
   IndexImpl(const store::Item_t& qname, const store::IndexSpecification& spec);
 
+  IndexImpl();
+
+public:
   virtual ~IndexImpl();
 
   store::Item* getName() const { return theQname.getp(); }

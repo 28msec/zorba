@@ -60,6 +60,7 @@ class FastXmlLoader;
 class Index;
 class BasicItemFactory;
 class NodeFactory;
+class PULPrimitiveFactory;
 
 typedef rchandle<XmlNode> XmlNode_t;
 
@@ -137,6 +138,7 @@ protected:
   BasicItemFactory            * theItemFactory;
   store::IteratorFactory      * theIteratorFactory;
   NodeFactory                 * theNodeFactory;
+  PULPrimitiveFactory         * thePULFactory;
 
   DocumentSet                   theDocuments;
   CollectionSet*                theCollections;
@@ -167,6 +169,8 @@ public:
   store::IteratorFactory* getIteratorFactory() const { return theIteratorFactory; }
 
   NodeFactory& getNodeFactory() const { return *theNodeFactory; }
+
+  PULPrimitiveFactory& getPULFactory() const { return *thePULFactory; }
 
   StringPool& getNamespacePool() const { return *theNamespacePool; }
 
@@ -329,6 +333,10 @@ protected:
   virtual BasicItemFactory* createItemFactory() const;
 
   virtual void destroyItemFactory(BasicItemFactory*) const;
+
+  virtual PULPrimitiveFactory* createPULPrimitiveFactory() const;
+
+  virtual void destroyPULPrimitiveFactory(PULPrimitiveFactory*) const;
 
   virtual CollectionSet* createCollectionSet() const;
 

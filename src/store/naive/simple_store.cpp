@@ -52,6 +52,7 @@
 #include "store/naive/item_iterator.h"
 #include "store/naive/node_factory.h"
 #include "store/naive/name_iterator.h"
+#include "store/naive/pul_primitive_factory.h"
 
 #ifdef ZORBA_STORE_MSDOM
 #include "store/naive/msdom_addon/import_msdom.h"
@@ -93,6 +94,7 @@ SimpleStore::SimpleStore()
   theItemFactory(NULL),
   theIteratorFactory(NULL),
   theNodeFactory(NULL),
+  thePULFactory(NULL),
   theDocuments(CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
   theCollections(0),
   theUriCollections(CollectionSet::DEFAULT_COLLECTION_MAP_SIZE, true),
@@ -149,6 +151,8 @@ void SimpleStore::init()
     theIteratorFactory = new SimpleIteratorFactory();
 
     theNodeFactory = createNodeFactory();
+
+    thePULFactory = createPULPrimitiveFactory();
 
     theTraceLevel = store::Properties::instance()->storeTraceLevel();
 
@@ -270,6 +274,12 @@ void SimpleStore::shutdown(bool soft)
 
     theDocuments.clear();
 
+    if (thePULFactory != NULL)
+    {
+      destroyPULPrimitiveFactory(thePULFactory);
+      thePULFactory = NULL;
+    }
+
     if (theNodeFactory != NULL)
     {
       destroyNodeFactory(theNodeFactory);
@@ -327,6 +337,25 @@ void SimpleStore::shutdown(bool soft)
   }
 }
 
+
+/*******************************************************************************
+
+*******************************************************************************/
+PULPrimitiveFactory*
+SimpleStore::createPULPrimitiveFactory() const
+{
+  return new PULPrimitiveFactory();
+}
+
+
+/*******************************************************************************
+
+*******************************************************************************/
+void
+SimpleStore::destroyPULPrimitiveFactory(PULPrimitiveFactory* f) const
+{
+  delete f;
+}
 
 /*******************************************************************************
 

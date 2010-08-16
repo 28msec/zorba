@@ -27,6 +27,7 @@ SET(ZORBA_STORE_IMPL_SRCS
     node_updates.cpp
     simple_pul.cpp
     pul_primitives.cpp
+    pul_primitive_factory.cpp
     atomic_items.cpp
     item_iterator.cpp
     node_iterators.cpp
