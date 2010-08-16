@@ -28,6 +28,7 @@ SET(CONTEXT_SRCS
     uri_resolver_wrapper.cpp
     dynamic_loader.cpp
     sctx_map_iterator.cpp
+    module_import_checker.cpp
     )
 
 SET(CONTEXT_BUILD_SRCS

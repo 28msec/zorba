@@ -30,6 +30,7 @@ SET (API_EXAMPLES
   callback.cpp
   binary.cpp
   string.cpp
+  module_import_check.cpp
   )
 
 SET(API_EXAMPLES ${API_EXAMPLES} debugger.cpp)

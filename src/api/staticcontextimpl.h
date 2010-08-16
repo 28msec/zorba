@@ -250,6 +250,12 @@ class StaticContextImpl : public StaticContext
   setDeclaredIndexCallback ( IndexCallback aCallbackFunction,
                              void* aCallbackData );
 
+  virtual void
+  addModuleImportChecker(ModuleImportChecker* aChecker);
+
+  virtual void
+  removeModuleImportChecker(ModuleImportChecker* aChecker);
+
 };
 
 } /* namespace zorba */

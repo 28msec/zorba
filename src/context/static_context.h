@@ -500,6 +500,8 @@ protected:
 
   std::vector<DecimalFormat_t>             * theDecimalFormats;
 
+  std::vector<ModuleImportChecker*>          theModuleImportCheckers;
+
 public:
   SERIALIZABLE_CLASS(static_context);
 
@@ -583,6 +585,14 @@ public:
   void get_module_paths(std::vector<std::string>& aModulePaths) const;
 
   void get_full_module_paths(std::vector<std::string>& aFullModulePaths) const;
+
+  // Module import checkers
+
+  void addModuleImportChecker(ModuleImportChecker* aChecker);
+
+  void removeModuleImportChecker(ModuleImportChecker* aChecker);
+
+  std::vector<ModuleImportChecker*> getAllModuleImportCheckers() const;
 
   //
   // Type management

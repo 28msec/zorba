@@ -1216,4 +1216,16 @@ StaticContextImpl::setDeclaredIndexCallback (
   theCtx->set_index_callback(aCallbackFunction, aCallbackData);
 }
 
+void
+StaticContextImpl::addModuleImportChecker(ModuleImportChecker* aChecker)
+{
+  theCtx->addModuleImportChecker(aChecker);
+}
+
+void
+StaticContextImpl::removeModuleImportChecker(ModuleImportChecker* aChecker)
+{
+  theCtx->removeModuleImportChecker(aChecker);
+}
+
 } /* namespace zorba */

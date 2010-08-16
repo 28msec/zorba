@@ -21,6 +21,7 @@
 
 #include <zorba/util/file.h>
 #include <zorba/external_module.h>
+#include <zorba/module_import_checker.h>
 
 #include "util/web/web.h"
 
@@ -406,6 +407,18 @@ std::istream* StandardModuleURIResolver::resolve(
     static_context& sctx,
     std::string& url)
 {
+  std::vector<ModuleImportChecker*> lCheckers = sctx.getAllModuleImportCheckers();
+  std::vector<ModuleImportChecker*>::iterator lIter = lCheckers.begin();
+  for (; lIter != lCheckers.end(); ++lIter) {
+    if (!(*lIter)->checkModuleUri(uri.c_str()))
+    {
+      xqpStringStore_t lErrorStr(new xqpStringStore(
+          "It is forbidden to import the module"));
+      lErrorStr->append(uri.c_str());
+      ZORBA_ERROR_DESC(XQP0029_MODULE_IMPORT_NOT_ALLOWED,
+                       lErrorStr);
+    }
+  }
   std::auto_ptr<std::istream> modfile(0); // result file
 
   // 1. check using registered module paths

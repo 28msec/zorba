@@ -67,6 +67,8 @@
 #include "store/api/item_factory.h"
 #include "store/api/iterator.h"
 
+#include "zorba/module_import_checker.h"
+
 
 using namespace std;
 
@@ -455,6 +457,14 @@ static_context::~static_context()
 
   if (theParent)
     RCHelper::removeReference(theParent);
+
+  {
+    std::vector<ModuleImportChecker*>::iterator i =
+        theModuleImportCheckers.begin();
+    for (; i != theModuleImportCheckers.end(); ++i) {
+      delete *i;
+    }
+  }
 }
 
 
@@ -1198,6 +1208,42 @@ void static_context::get_full_module_paths(std::vector<std::string>& paths) cons
   get_module_paths(paths);
 }
 
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  Module import chekcers                                                     //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+void static_context::addModuleImportChecker(ModuleImportChecker* aChecker)
+{
+  theModuleImportCheckers.push_back(aChecker);
+}
+
+void static_context::removeModuleImportChecker(ModuleImportChecker* aChecker)
+{
+  std::vector<ModuleImportChecker*> lCheckers = getAllModuleImportCheckers();
+  std::vector<ModuleImportChecker*>::iterator lIter =
+      lCheckers.begin();
+  for (; lIter != lCheckers.end(); ++lIter)
+  {
+    if (**lIter == *aChecker) {
+      theModuleImportCheckers.erase(lIter);
+    }
+  }
+}
+
+std::vector<ModuleImportChecker*> static_context::getAllModuleImportCheckers() const
+{
+  std::vector<ModuleImportChecker*> lResult;
+  lResult.insert(lResult.end(), theModuleImportCheckers.begin(),
+                 theModuleImportCheckers.end());
+  static_context* lParent = get_parent();
+  if (lParent) {
+    std::vector<ModuleImportChecker*> lC = lParent->getAllModuleImportCheckers();
+    lResult.insert(lResult.end(), lC.begin(), lC.end());
+  }
+  return lResult;
+}
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //

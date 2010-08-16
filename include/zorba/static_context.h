@@ -17,6 +17,7 @@
 #define XQP_STATIC_CONTEXT_API_H
 
 #include <zorba/config.h>
+#include <zorba/api_shared_types.h>
 #include <zorba/zorbastring.h>
 #include <zorba/typeident.h> 
 #include <zorba/static_context_consts.h>
@@ -467,6 +468,31 @@ namespace zorba {
       virtual void
       setDeclaredIndexCallback ( IndexCallback aCallbackFunction,
                                  void* aCallbackData ) = 0;
+
+      /**
+        * @brief Add a new ModuleImportChecker to this module.
+        *
+        * Module import checkers are used by zorba to allow users to deny
+        * the import of specific modules. This method adds such a module
+        * import checker to the current static context.
+        *
+        * @param aChecker The ModuleImportChecker which should be added to
+        *                 the current static context.
+        */
+      virtual void
+      addModuleImportChecker(ModuleImportChecker* aChecker) = 0;
+
+      /**
+        * @brief Removes aChecker from the current static contect.
+        *
+        * Will compare all currently registered module import checkers with
+        * aChecker by using the operator== and will remove all found module
+        * import checkers.
+        *
+        * @param aChecker The module import checker to remove.
+        */
+      virtual void
+      removeModuleImportChecker(ModuleImportChecker* aChecker) = 0;
   };
 } /* namespace zorba */
 #endif
