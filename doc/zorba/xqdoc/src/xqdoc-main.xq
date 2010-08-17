@@ -145,7 +145,6 @@ declare sequential function local:generateXQDocXhtml($indexPath as xs:string) as
   let $stepsFromIndex := fn:count(fn:tokenize($file, fn:concat("\", file:path-separator()))) - 2
   let $xmlFilePath := concat($xqdocXmlPath, file:path-separator(), $file)
   let $xhtmlFilePath := concat($xqdocXhtmlPath, file:path-separator(), fn:replace($file, "\.xml$", ".html"))
-  let $relativeXhtmlFilePath := fn:replace($file, "\.xml$", ".html")
   let $xhtmlFileDir := 
     let $segments := fn:tokenize($xhtmlFilePath, fn:concat("\", file:path-separator()))
     let $lastSegm := $segments[fn:count($segments)] 
@@ -183,14 +182,15 @@ declare sequential function local:gatherModules()
 {
   for $file in file:files($xqdocXmlPath, "\.xml$", fn:true())
   let $xmlFilePath := concat($xqdocXmlPath, file:path-separator(), $file)
-  let $relativeXhtmlFilePath := fn:replace($file, "\.xml$", ".html")
+  let $xhtmlRelativeFilePath := fn:replace($file, "\.xml$", ".html")
+  let $xhtmlRelativeFilePathSlash := fn:replace($xhtmlRelativeFilePath, fn:concat("\", file:path-separator()), "/")
   return
   try {
       let $xqdoc := local:removeInternalFunctionality(file:read-xml($xmlFilePath)/xqdoc:xqdoc)
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleUri := $moduleDoc/xqdoc:uri
       return block {
-        local:collectModule($moduleDoc, $relativeXhtmlFilePath);
+        local:collectModule($moduleDoc, $xhtmlRelativeFilePath);
         concat("
 SUCCESS: ", $moduleUri, " (", $xmlFilePath, ")");
       }

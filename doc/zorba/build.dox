@@ -120,8 +120,8 @@ make slx EXTRACFLAGS="-I/usr/include/openssl -fPIC"
 
 Use the following extra CMake arguments when building Zorba:
 \verbatim
--D "CCLIENT_INCLUDE=path_to_imap_2007e\c-client"
--D CCLIENT_LIBRARY=path_to_imap_2007e\c-client\libc-client.a"
+-D "CCLIENT_INCLUDE=path_to_imap-2007e\c-client"
+-D CCLIENT_LIBRARY=path_to_imap-2007e\c-client\libc-client.a"
 \endverbatim
 
 Here are some quick suggestions to build CClient on Linux:
@@ -135,8 +135,8 @@ You must build the <a href="http://www.washington.edu/imap/" target="_blank">UW 
 
 Use the following extra CMake arguments when building Zorba:
 \verbatim
--D "CCLIENT_INCLUDE=path_to_imap_2007e\c-client"
--D "CCLIENT_LIBRARY=path_to_imap_2007e\c-client\release\cclient.lib"
+-D "CCLIENT_INCLUDE=path_to_imap-2007e\c-client"
+-D "CCLIENT_LIBRARY=path_to_imap-2007e\c-client\release\cclient.lib"
 \endverbatim
 
 
