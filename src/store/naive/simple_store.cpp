@@ -297,16 +297,16 @@ void SimpleStore::shutdown(bool soft)
       ulong numTypes = theSchemaTypeNames.size();
       for (ulong i = 0; i < numTypes; i++)
         theSchemaTypeNames[i] = NULL;
-      
+
       delete theQNamePool;
       theQNamePool = NULL;
     }
-    
+
     if (theNamespacePool != NULL)
     {
       theEmptyNs = NULL;
       theXmlSchemaNs = NULL;
-      
+
       delete theNamespacePool;
       theNamespacePool = NULL;
     }
@@ -444,7 +444,7 @@ ulong SimpleStore::createTreeId()
 
 ********************************************************************************/
 XmlLoader* SimpleStore::getXmlLoader(error::ErrorManager* aErrorManager,
-    store::LoadProperties& loadProperties)
+    const store::LoadProperties& loadProperties)
 {
 #ifndef ZORBA_STORE_MSDOM
 
@@ -602,7 +602,7 @@ void SimpleStore::populateGeneralIndex(
           ZORBA_ERROR_PARAM(XDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION,
                             index->getName()->getStringValue(), "");
         }
-        
+
         while ((more = sourceIter->next(item)))
         {
           if (item->isNode())
@@ -659,12 +659,12 @@ store::Index_t SimpleStore::refreshIndex(
   if (!theIndices.get(non_const_items, index))
   {
     ZORBA_ERROR_PARAM(STR0002_INDEX_DOES_NOT_EXIST,
-                      qname->getStringValue()->c_str(), ""); 
+                      qname->getStringValue()->c_str(), "");
   }
 
   deleteIndex(qname);
 
-  try  
+  try
   {
     createIndex(qname, index->getSpecification(), sourceIter);
   }
@@ -997,7 +997,7 @@ store::Item_t SimpleStore::loadDocument(
     const xqpStringStore_t& baseUri,
     const xqpStringStore_t& docUri,
     std::istream& stream,
-    store::LoadProperties& loadProperties)
+    const store::LoadProperties& loadProperties)
 {
   if (docUri == NULL)
     return NULL;
@@ -1038,7 +1038,7 @@ store::Item_t SimpleStore::loadDocument(
     const xqpStringStore_t& baseUri,
     const xqpStringStore_t& docUri,
     std::istream* stream,
-    store::LoadProperties& loadProperties)
+    const store::LoadProperties& loadProperties)
 {
   store::Item_t docitem;
   try

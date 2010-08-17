@@ -342,7 +342,7 @@ bool
 DynamicContextImpl::setVariableAsDocument(
     const String& aVarName,
     const String& aDocUri,
-    LoadProperties& aLoadProperties)
+    const LoadProperties& aLoadProperties)
 {
   ZORBA_DCTX_TRY
   {
@@ -376,7 +376,7 @@ DynamicContextImpl::setVariableAsDocument(
     const String& aVarName,
     const String& aDocUri,
     std::auto_ptr<std::istream> aStream,
-    LoadProperties& aLoadProperties)
+    const LoadProperties& aLoadProperties)
 {
   ZORBA_DCTX_TRY
   {
@@ -476,7 +476,7 @@ bool
 DynamicContextImpl::setContextItemAsDocument(
     const String& aDocURI,
     std::auto_ptr<std::istream> aInStream,
-    LoadProperties& aLoadProperties)
+    const LoadProperties& aLoadProperties)
 {
   ZORBA_DCTX_TRY
   {
@@ -503,7 +503,7 @@ DynamicContextImpl::setContextItemAsDocument(
 bool
 DynamicContextImpl::setContextItemAsDocument(
     const String& aDocURI,
-    LoadProperties& aLoadProperties)
+    const LoadProperties& aLoadProperties)
 {
   ZORBA_DCTX_TRY
   {
@@ -689,7 +689,7 @@ bool DynamicContextImpl::getExternalFunctionParam (
 void DynamicContextImpl::validateIfNecesary(store::Item_t& docItem,
                                             xqpStringStore_t& docUri,
                                             store::Item_t& docUriItem,
-                                            LoadProperties& aLoadProperties)
+                                            const LoadProperties& aLoadProperties)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
     validation_mode_t lValidationMode = aLoadProperties.getValidationMode();
@@ -739,7 +739,7 @@ void DynamicContextImpl::validateIfNecesary(store::Item_t& docItem,
                                             xqpStringStore_t& docUri,
                                             xqpStringStore_t& baseUri,
                                             std::auto_ptr<std::istream> aInStream,
-                                            LoadProperties& aLoadProperties)
+                                            const LoadProperties& aLoadProperties)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
     validation_mode_t lValidationMode = aLoadProperties.getValidationMode();

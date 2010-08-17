@@ -20,6 +20,7 @@
 #include "zorbatypes/representations.h"
 
 #include "store/api/shared_types.h"
+#include "store/api/load_properties.h"
 
 
 namespace zorba 
@@ -31,7 +32,6 @@ SYNC_CODE(class Lock;)
 namespace store 
 {
 
-class LoadProperties;
 class IndexSpecification;
 class IteratorFactory;
 
@@ -221,7 +221,7 @@ public:
          const xqpStringStore_t& baseUri,
          const xqpStringStore_t& docUri,
          std::istream& stream,
-         LoadProperties& loadProperties) = 0;
+         const LoadProperties& loadProperties) = 0;
 
   /**
    * Load a document to the store. The document is loaded from an input stream.
@@ -241,7 +241,7 @@ public:
         const xqpStringStore_t& baseUri,
         const xqpStringStore_t& docUri,
         std::istream* stream,
-        LoadProperties& loadProperties) = 0;
+        const LoadProperties& loadProperties) = 0;
 
 
   /**
@@ -373,58 +373,6 @@ public:
    */
   virtual IC* getIC(const Item* icQName)  = 0;
 };
-
-
-/**
- * How should the document load be done
- */
-class LoadProperties
-{
-private:
-  bool theStoreDocument;
-  bool theEnableDtdLoader;
-
-public:
-  LoadProperties() : theStoreDocument(true), theEnableDtdLoader(false) {}
-  virtual ~LoadProperties() {}
-
-  /**
-   * Set the property storeDocument, it specifies whether the document
-   * should be kept in the store (i.e. added to the set of documents)
-   */
-  void setStoreDocument(bool aStoreDocument)
-  {
-    theStoreDocument = aStoreDocument;
-  }
-
-  /**
-   * Get the property storeDocument, it specifies whether the document
-   * should be kept in the store (i.e. added to the set of documents)
-   */
-  bool getStoreDocument()
-  {
-    return theStoreDocument;
-  }
-
-  /**
-   * Set the property enableDtd, it specifies whether the document's
-   * dtd should be enabled when loading
-   */
-  void setEnableDtd(bool aEnableDtdLoader)
-  {
-    theEnableDtdLoader = aEnableDtdLoader;
-  }
-
-  /**
-   * Get the property enableDtd, it specifies whether the document's
-   * dtd should be enabled when loading
-   */
-  bool getEnableDtd()
-  {
-    return theEnableDtdLoader;
-  }
-};
-
 
 } // namespace store
 } // namespace zorba

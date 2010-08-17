@@ -180,7 +180,7 @@ public:
 
   long getTraceLevel() const { return theTraceLevel; }
 
-  XmlLoader* getXmlLoader(error::ErrorManager*, store::LoadProperties& loadProperties);
+  XmlLoader* getXmlLoader(error::ErrorManager*, const store::LoadProperties& loadProperties);
 
   ulong createCollectionId();
 
@@ -253,13 +253,13 @@ public:
         const xqpStringStore_t& baseUri,
         const xqpStringStore_t& docUri,
         std::istream& stream,
-        store::LoadProperties& loadProperties);
+        const store::LoadProperties& loadProperties);
 
   store::Item_t loadDocument(
         const xqpStringStore_t& baseUri,
         const xqpStringStore_t& docUri,
         std::istream* stream,
-        store::LoadProperties& loadProperties);
+        const store::LoadProperties& loadProperties);
 
   void addNode(const xqpStringStore_t& uri, const store::Item_t& node);
 
@@ -279,7 +279,7 @@ public:
 
   store::Iterator_t distinctNodes(store::Iterator* input, bool aAllowAtomics);
 
-  store::Iterator_t checkDistinctNodes(store::Iterator* input); 
+  store::Iterator_t checkDistinctNodes(store::Iterator* input);
 
   bool getPathInfo(
         const store::Item* docUri,
@@ -321,7 +321,7 @@ protected:
   void initTypeNames();
 
   // function to create the node and item factory
-  // those functions are called from init and 
+  // those functions are called from init and
   // shutdown, respectively.
   // Having this functionality factorized allows
   // other to derive from the SimpleStore and

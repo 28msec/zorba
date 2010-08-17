@@ -100,14 +100,14 @@ public:
   setVariableAsDocument(
         const String& aQName,
         const String& xml_uri,
-        LoadProperties& aLoadProperties);
+        const LoadProperties& aLoadProperties);
 
   virtual bool
   setVariableAsDocument(
         const String& aQName,
         const String& aDocURI,
         std::auto_ptr<std::istream> aStream,
-        LoadProperties& aLoadProperties);
+        const LoadProperties& aLoadProperties);
 
   virtual bool
   setVariable(
@@ -141,11 +141,12 @@ public:
   setContextItemAsDocument(
         const String& aDocURI,
         std::auto_ptr<std::istream> aInStream,
-        LoadProperties& aLoadProperties);
+        const LoadProperties& aLoadProperties);
 
   virtual bool
-  setContextItemAsDocument(const String& aDocURI,
-                           LoadProperties& aLoadProperties);
+  setContextItemAsDocument(
+        const String& aDocURI,
+        const LoadProperties& aLoadProperties);
 
   virtual bool
   getContextItem(Item& aItem);
@@ -182,13 +183,13 @@ protected:
   void validateIfNecesary(store::Item_t& docItem,
                           xqpStringStore_t& docUri,
                           store::Item_t& docUriItem,
-                          LoadProperties& aLoadProperties);
+                          const LoadProperties& aLoadProperties);
 
   void validateIfNecesary(store::Item_t& docItem,
                           xqpStringStore_t& docUri,
                           xqpStringStore_t& baseUri,
                           std::auto_ptr<std::istream> aInStream,
-                          LoadProperties& aLoadProperties);
+                          const LoadProperties& aLoadProperties);
 };
 
 } /* namespace zorba */

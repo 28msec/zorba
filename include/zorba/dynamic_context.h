@@ -135,7 +135,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
   setVariableAsDocument ( const String& aQName,
                           const String& aDocURI,
                           std::auto_ptr<std::istream> aDocStream,
-                          LoadProperties& aLoadProperties) = 0;
+                          const LoadProperties& aLoadProperties) = 0;
 
   /** \brief Defines the external variable identified by aQName and assigns it the
    *         the document downloaded from Uri.
@@ -151,7 +151,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
   virtual bool
   setVariableAsDocument( const String& aQName,
                          const String& xml_uri,
-                         LoadProperties& aLoadProperties) = 0;
+                         const LoadProperties& aLoadProperties) = 0;
 
   /** \brief Returns the current value of an external
    * variable. Exactly one of the two return values (aItem or
@@ -216,7 +216,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
   virtual bool
   setContextItemAsDocument ( const String& aDocURI,
                              std::auto_ptr<std::istream> aDocStream,
-                             LoadProperties& aLoadProperties) = 0;
+                             const LoadProperties& aLoadProperties) = 0;
 
   /** \brief Defines the context item and assigns it the document downloaded from Uri.
    *
@@ -229,7 +229,7 @@ class ZORBA_DLL_PUBLIC DynamicContext
    */
   virtual bool
   setContextItemAsDocument ( const String& aDocURI,
-                             LoadProperties& aLoadProperties) = 0;
+                             const LoadProperties& aLoadProperties) = 0;
 
   /** \brief Returns the current value of the context item.
    *
@@ -365,7 +365,7 @@ public:
    * be validated in strict or lax mode using the in-scope schema definitions
    * that are found in the query's static context.
    */
-  validation_mode_t getValidationMode()
+  validation_mode_t getValidationMode() const
   {
     return theValidationMode;
   }
@@ -383,7 +383,7 @@ public:
    * Get the property enableDtd, it specifies whether the document's
    * dtd should be enabled when loading
    */
-  bool getEnableDtd()
+  bool getEnableDtd() const
   {
     return theEnableDtdLoader;
   }
