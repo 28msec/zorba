@@ -648,6 +648,13 @@ void FastXmlLoader::startElement(
 
       loader.theBindingsStack.push(elemNode->getNsContext());
     }
+    else if (pathStack.size() == 1)
+    {
+      elemNode->theNsContext = new NsBindingsContext;
+      elemNode->theFlags |= XmlNode::HaveLocalBindings;
+
+      loader.theBindingsStack.push(elemNode->theNsContext);
+    }
 
     // Process attributes
     if (numAttributes > 0)

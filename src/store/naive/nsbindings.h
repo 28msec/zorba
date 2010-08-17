@@ -36,6 +36,8 @@ private:
 public:
   NsBindingsContext() { }
 
+  NsBindingsContext(NsBindingsContext* parent);
+
   NsBindingsContext(ulong numBindings);
 
   NsBindingsContext(const store::NsBindings& bindings);
@@ -45,14 +47,19 @@ public:
   bool empty() const                           { return theBindings.empty(); }
 
   const store::NsBindings& getBindings() const { return theBindings; }
+
   store::NsBindings& getBindings()             { return theBindings; }
 
   void setParent(NsBindingsContext* p)         { theParent = p; }
+
   const NsBindingsContext* getParent() const   { return theParent.getp(); }
 
   xqpStringStore* findBinding(const xqpStringStore* prefix) const;
 
-  void addBinding(xqpStringStore* prefix, xqpStringStore* ns);
+  void addBinding(xqpStringStore* prefix, xqpStringStore* ns, bool soft = false);
+
+  void updateBinding(xqpStringStore* prefix, xqpStringStore* ns);
+
   void removeBinding(xqpStringStore* prefix, xqpStringStore* ns);
 };
 

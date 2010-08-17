@@ -964,6 +964,20 @@ void ElementNode::insertAttributes(UpdInsertAttributes& upd)
 
     attr->attach(this, numAttrs + i);
 
+    if (!upd.thePul->inheritNSBindings())
+    {
+      ulong numChildren = this->numChildren();
+
+      for (ulong i = 0; i < numChildren; ++i)
+      {
+        if (getChild(i)->getNodeKind() == store::StoreConsts::elementNode)
+        {
+          static_cast<ElementNode*>(getChild(i))->
+            uninheritBinding(theNsContext, attr->theName->getPrefix());
+        }
+      }  
+    }
+
     upd.theNumApplied++;
   }
 }
@@ -1020,10 +1034,26 @@ void ElementNode::replaceAttribute(UpdReplaceAttribute& upd)
         throw e;
     }
 
-    if (addBindingForQName(attr->theName, true, false))
+    bool newBinding = addBindingForQName(attr->theName, true, false);
+
+    if (newBinding)
       upd.theNewBindings.push_back(attr->theName);
   
     attr->attach(this, pos + i);
+
+    if (newBinding && !upd.thePul->inheritNSBindings())
+    {
+      ulong numChildren = this->numChildren();
+
+      for (ulong i = 0; i < numChildren; ++i)
+      {
+        if (getChild(i)->getNodeKind() == store::StoreConsts::elementNode)
+        {
+          static_cast<ElementNode*>(getChild(i))->
+            uninheritBinding(theNsContext, attr->theName->getPrefix());
+        }
+      }  
+    }
 
     upd.theNumApplied++;
   }
@@ -1236,6 +1266,21 @@ void ElementNode::replaceName(UpdRenameElem& upd)
   upd.theOldName.transfer(theName);
   theName.transfer(upd.theNewName);
 
+  if (upd.theNewBinding && 
+      (!upd.thePul->inheritNSBindings() ||  theName->getPrefix()->empty()))
+  {
+    ulong numChildren = this->numChildren();
+
+    for (ulong i = 0; i < numChildren; ++i)
+    {
+      if (getChild(i)->getNodeKind() == store::StoreConsts::elementNode)
+      {
+        static_cast<ElementNode*>(getChild(i))->
+          uninheritBinding(theNsContext, theName->getPrefix());
+      }
+    }  
+  }
+
   if (theParent &&
       (theTypeName == NULL ||
        theTypeName->equals(GET_STORE().theSchemaTypeNames[XS_UNTYPED]) ||
@@ -1320,6 +1365,20 @@ void AttributeNode::replaceName(UpdRenameAttr& upd)
     }
 
     upd.theNewBinding = parent->addBindingForQName(upd.theNewName, true, false);
+
+    if (upd.theNewBinding && !upd.thePul->inheritNSBindings())
+    {
+      ulong numChildren = parent->numChildren();
+
+      for (ulong i = 0; i < numChildren; ++i)
+      {
+        if (parent->getChild(i)->getNodeKind() == store::StoreConsts::elementNode)
+        {
+          static_cast<ElementNode*>(parent->getChild(i))->
+          uninheritBinding(parent->theNsContext, upd.theNewName->getPrefix());
+        }
+      }
+    }
   }
 
   upd.theOldName.transfer(theName);

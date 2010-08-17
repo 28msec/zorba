@@ -961,10 +961,23 @@ ElementNode::ElementNode(
         theFlags |= HaveLocalBindings;
       }
 
-      addBindingForQName(theName, false, true);
-
       if (parent && parent->getNodeKind() == store::StoreConsts::elementNode)
+      {
         setNsContext(reinterpret_cast<ElementNode*>(parent)->getNsContext());
+      }
+      else if (theNsContext == NULL)
+      {
+        // There is no parent or the parent is a doc node. Create an enpty 
+        // NsContext so that the (future) children of this node can inherit
+        // from this NsContext. This way, if "this" node gets later inserted
+        // under another node N and has to inherit the ns bindings of N, all
+        // descendants of "this" will also inherit N's bindings by simply
+        // setting this->theNsCntext->theParent to N->theNsContext.
+        theNsContext = new NsBindingsContext();
+        theFlags |= HaveLocalBindings;
+      }
+
+      addBindingForQName(theName, false, true);
     }
 
     // Note: Setting the base uri property of "this" involves the creation of an
@@ -1027,7 +1040,20 @@ ElementNode::ElementNode(
 
 
 /*******************************************************************************
+  This is a recursive function that copies a subtree rooted at node N and places
+  the copied subtree under the given "rootParent" node, making it the "pos"-th
+  child of "rootParent". 
 
+  N is "this" node during the 1st (non-recursive) invocation of this method. 
+  During this 1st invocation, "rootParent" and "parent" point to the same node
+  (which may be NULL), "pos" is the position under rootParent where the copied
+  subtree will be placed at, and "rootCopy" is NULL. 
+
+  During a recursive invocation, "parent" is the copy of the parent of "this",
+  and "pos" is always -1, indicating that the copy of "this" will be appended
+  to the children's list of "parent". 
+
+  "rootCopy" is the first copied node, i.e., the copy of node N. 
 ********************************************************************************/
 XmlNode* ElementNode::copyInternal(
     InternalNode*          rootParent,
@@ -1049,6 +1075,7 @@ XmlNode* ElementNode::copyInternal(
 
   NsBindingsContext* myParentNsContext = NULL;
   NsBindingsContext* copyParentNsContext = NULL;
+  NsBindingsContext* rootNsContext = NULL;
 
   if (theParent && theParent->getNodeKind() == store::StoreConsts::elementNode)
     myParentNsContext = static_cast<ElementNode*>(theParent)->getNsContext();
@@ -1056,7 +1083,6 @@ XmlNode* ElementNode::copyInternal(
   if (parent && parent->getNodeKind() == store::StoreConsts::elementNode)
     copyParentNsContext = static_cast<ElementNode*>(parent)->getNsContext();
 
-  NsBindingsContext* rootNsContext = NULL;
   if (rootParent && rootParent->getNodeKind() == store::StoreConsts::elementNode)
     rootNsContext = reinterpret_cast<ElementNode*>(rootParent)->getNsContext();
 
@@ -1099,23 +1125,22 @@ XmlNode* ElementNode::copyInternal(
       // not inherit ns bindings directly from its parent (but may inherit
       // from another ancestor).
       if (parent == rootParent ||
-          theNsContext == NULL ||
           (haveLocalBindings() && theNsContext->getParent() != myParentNsContext) ||
           (!haveLocalBindings() && theNsContext != myParentNsContext))
       {
-        if (theNsContext != NULL)
-        {
-          std::auto_ptr<NsBindingsContext> ctx(new NsBindingsContext());
-          getNamespaceBindings(ctx->getBindings());
+        store::NsBindings bindings;
+        getNamespaceBindings(bindings);
 
-          if (!ctx->empty())
-          {
-            copyNode->theNsContext = ctx.release();
-            copyNode->theFlags |= HaveLocalBindings;
-          }
+        if (!bindings.empty())
+        {
+          copyNode->theNsContext = new NsBindingsContext();
+          copyNode->theNsContext->getBindings().swap(bindings);
+          copyNode->theFlags |= HaveLocalBindings;
         }
 
-        if (rootParent && copymode.theNsInherit)
+        if (rootParent && 
+            rootParent->getNodeKind() == store::StoreConsts::elementNode &&
+            copymode.theNsInherit)
         {
           // If "this" does not belong to any namespace and the root parent
           // has a default ns binding, then undeclare this default binding.
@@ -1144,7 +1169,14 @@ XmlNode* ElementNode::copyInternal(
           copyNode->theFlags |= HaveLocalBindings;
         }
 
-        copyNode->setNsContext(copyParentNsContext);
+        if (parent && parent->getNodeKind() == store::StoreConsts::elementNode)
+          copyNode->setNsContext(copyParentNsContext);
+      }
+
+      if (copyNode->theNsContext == NULL)
+      {
+        copyNode->theNsContext = new NsBindingsContext();
+        copyNode->theFlags |= HaveLocalBindings;
       }
     }
     else // ! nsPreserve
@@ -1217,6 +1249,12 @@ XmlNode* ElementNode::copyInternal(
       if (copymode.theNsInherit && rootParent)
       {
         copyNode->setNsContext(rootNsContext);
+      }
+
+      if (copyNode->theNsContext == NULL)
+      {
+        copyNode->theNsContext = new NsBindingsContext();
+        copyNode->theFlags |= HaveLocalBindings;
       }
     }
 
@@ -1557,49 +1595,47 @@ void ElementNode::getNamespaceBindings(
     store::StoreConsts::NsScoping ns_scoping) const
 {
   assert(bindings.empty());
+  assert(theNsContext != NULL);
 
   bool foundEmptyNS = false;
 
-  if (theNsContext != NULL)
+  if (ns_scoping != store::StoreConsts::ONLY_PARENT_NAMESPACES)
   {
-    if (ns_scoping != store::StoreConsts::ONLY_PARENT_NAMESPACES)
+    bindings = theNsContext->getBindings();
+  }
+
+  if (ns_scoping == store::StoreConsts::ONLY_LOCAL_NAMESPACES)
+    return;
+
+  const NsBindingsContext* parentContext = theNsContext->getParent();
+
+  while (parentContext != NULL)
+  {
+    const store::NsBindings& parentBindings = parentContext->getBindings();
+    ulong parentSize = parentBindings.size();
+    ulong currSize = bindings.size();
+
+    // for each parent binding, add it to the result, if it doesn't have the
+    // same prefix as another binding that is already in the result.
+    for (ulong i = 0; i < parentSize; i++)
     {
-      bindings = theNsContext->getBindings();
-    }
-
-    if (ns_scoping == store::StoreConsts::ONLY_LOCAL_NAMESPACES)
-      return;
-
-    const NsBindingsContext* parentContext = theNsContext->getParent();
-
-    while (parentContext != NULL)
-    {
-      const store::NsBindings& parentBindings = parentContext->getBindings();
-      ulong parentSize = parentBindings.size();
-      ulong currSize = bindings.size();
-
-      // for each parent binding, add it to the result, if it doesn't have the
-      // same prefix as another binding that is already in the result.
-      for (ulong i = 0; i < parentSize; i++)
+      ulong j;
+      for (j = 0; j < currSize; j++)
       {
-        ulong j;
-        for (j = 0; j < currSize; j++)
-        {
-          if (bindings[j].first->byteEqual(parentBindings[i].first.getp()))
-            break;
-        }
-
-        if (j == currSize)
-        {
-          if (!foundEmptyNS && parentBindings[i].second->empty())
-            foundEmptyNS = true;
-
-          bindings.push_back(parentBindings[i]);
-        }
+        if (bindings[j].first->byteEqual(parentBindings[i].first.getp()))
+          break;
       }
-
-      parentContext = parentContext->getParent();
+      
+      if (j == currSize)
+      {
+        if (!foundEmptyNS && parentBindings[i].second->empty())
+          foundEmptyNS = true;
+        
+        bindings.push_back(parentBindings[i]);
+      }
     }
+    
+    parentContext = parentContext->getParent();
   }
 
   return;
@@ -1611,10 +1647,16 @@ void ElementNode::getNamespaceBindings(
 ********************************************************************************/
 void ElementNode::setNsContext(NsBindingsContext* parentCtx)
 {
+  assert(parentCtx != NULL);
+
   if (theNsContext == NULL)
+  {
     theNsContext = parentCtx;
+  }
   else if (theNsContext.getp() != parentCtx)
+  {
     theNsContext->setParent(parentCtx);
+  }
 }
 
 
@@ -1624,8 +1666,7 @@ void ElementNode::setNsContext(NsBindingsContext* parentCtx)
 ********************************************************************************/
 xqpStringStore* ElementNode::findBinding(const xqpStringStore* prefix) const
 {
-  if (theNsContext == NULL)
-    return NULL;
+  assert(theNsContext != NULL);
 
   return theNsContext->findBinding(prefix);
 }
@@ -1687,6 +1728,16 @@ bool ElementNode::addBindingForQName(
     }
     else if (!ns2->byteEqual(ns))
     {
+      if (ns2->empty())
+      {
+        if (!haveLocalBindings())
+        {
+          theNsContext = new NsBindingsContext(theNsContext.getp());
+        }
+
+        theNsContext->updateBinding(prefix, ns);
+      }
+
       if (replacePrefix)
       {
         //std::cout << "Prefix: " << prefix->str() << " ns: " << ns->c_str() << " ns2: " << ns2->c_str() << " local: " << qname->getLocalName()->str() << "\n";
@@ -1699,6 +1750,7 @@ bool ElementNode::addBindingForQName(
 
         GET_FACTORY().createQName(qname, ns, prefix, qname->getLocalName());
         addLocalBinding(prefix, ns);
+        return true;
       }
       else
       {
@@ -1757,7 +1809,7 @@ void ElementNode::addLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
   if (!haveLocalBindings())
   {
     NsBindingsContext* parent = theNsContext;
-    theNsContext = new NsBindingsContext(0);
+    theNsContext = new NsBindingsContext();
     theNsContext->setParent(parent);
   }
 
@@ -1777,6 +1829,37 @@ void ElementNode::removeLocalBinding(xqpStringStore* prefix, xqpStringStore* ns)
     theNsContext->removeBinding(prefix, ns);
 }
 
+#if 1
+/*******************************************************************************
+
+********************************************************************************/
+void ElementNode::uninheritBinding(
+    NsBindingsContext* rootNSCtx,
+    const xqpStringStore_t& prefix)
+{
+  if (theNsContext.getp() == rootNSCtx || theNsContext->getParent() == rootNSCtx)
+  {
+    if (theNsContext.getp() == rootNSCtx)
+    {
+      theNsContext = new NsBindingsContext;
+    }
+
+    xqpStringStore_t emptyStr = new xqpStringStore("");
+
+    theNsContext->addBinding(prefix.getp(), emptyStr.getp(), true);
+  }
+
+  ulong numChildren = this->numChildren();
+
+  for (ulong i = 0; i < numChildren; ++i)
+  {
+    if (getChild(i)->getNodeKind() == store::StoreConsts::elementNode)
+    {
+      static_cast<ElementNode*>(getChild(i))->uninheritBinding(rootNSCtx, prefix);
+    }
+  }  
+}
+#endif
 
 /*******************************************************************************
   Check if the ns binding implied by the given qname conflicts with the current
@@ -1796,14 +1879,6 @@ void ElementNode::checkNamespaceConflict(
     return;
 
   xqpStringStore* ns2 = findBinding(prefix);
-
-  if (ns2 == NULL && prefix->empty() && !ns->empty())
-  {
-    ZORBA_ERROR_DESC_OSS(ecode,
-                         "The implied namespace binding of " << qname->show()
-                         << " conflicts with namespace binding ["
-                         << prefix->str() << ", \"\"" << "]");
-  }
 
   if (ns2 != NULL && !ns2->byteEqual(ns))
   {

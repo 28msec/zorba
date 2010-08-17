@@ -963,7 +963,7 @@ void PULImpl::mergeUpdates(store::Item* other)
   while (otherIte != otherEnd)
   {
     theCollectionPuls[otherIte->first] = otherIte->second;
-    otherIte->second->thePul = this;
+    otherIte->second->switchPul(this);
     otherIte->second = NULL;
     ++otherIte;
   }
@@ -1532,6 +1532,35 @@ CollectionPul::~CollectionPul()
   }
 }
 
+
+/*******************************************************************************
+
+********************************************************************************/
+void CollectionPul::switchPul(PULImpl* pul)
+{
+  thePul = pul;
+
+  switchPulInPrimitivesList(theDoFirstList);
+  switchPulInPrimitivesList(theInsertList);
+  switchPulInPrimitivesList(theReplaceNodeList);
+  switchPulInPrimitivesList(theReplaceContentList);
+  switchPulInPrimitivesList(theDeleteList);
+  switchPulInPrimitivesList(theCreateCollectionList);
+  switchPulInPrimitivesList(theInsertIntoCollectionList);
+  switchPulInPrimitivesList(theDeleteFromCollectionList);
+  switchPulInPrimitivesList(theDeleteCollectionList);
+}
+
+
+void CollectionPul::switchPulInPrimitivesList(std::vector<UpdatePrimitive*>& list)
+{
+  std::vector<UpdatePrimitive*>::iterator ite = list.begin();
+  std::vector<UpdatePrimitive*>::iterator end = list.end();
+  for (; ite != end; ++ite)
+  {
+    (*ite)->thePul = thePul;
+  }
+}
 
 /*******************************************************************************
   The comparison function for sorting the entries of an IndexDelta by the doc node

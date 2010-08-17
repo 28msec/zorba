@@ -56,257 +56,266 @@ namespace zorba { namespace simplestore {
   class UpdActivateForeignKeyIC;
   class UpdDeActivateIC;
 
-  class PULPrimitiveFactory {
+class PULPrimitiveFactory 
+{
+ public:
+  virtual ~PULPrimitiveFactory() {}
 
-  public:
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdDelete*
-    createUpdDelete(CollectionPul* pul, store::Item_t& target);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdDelete*
+  createUpdDelete(CollectionPul* pul, store::Item_t& target);
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdInsertChildren*
-    createUpdInsertChildren(
-          CollectionPul* pul,
-          store::UpdateConsts::UpdPrimKind kind,
-          store::Item_t& target,
-          store::Item_t& sibling,
-          std::vector<store::Item_t>& children);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdInsertChildren*
+  createUpdInsertChildren(
+        CollectionPul* pul,
+        store::UpdateConsts::UpdPrimKind kind,
+        store::Item_t& target,
+        store::Item_t& sibling,
+        std::vector<store::Item_t>& children);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdInsertAttributes*
+  createUpdInsertAttributes(
+        CollectionPul* pul,
+        store::Item_t& target,
+        std::vector<store::Item_t>&  attrs);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdReplaceAttribute*
+  createUpdReplaceAttribute(
+        CollectionPul* pul,
+        store::Item_t& target,
+        store::Item_t& attr,
+        std::vector<store::Item_t>& newAttrs);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdReplaceChild*
+  createUpdReplaceChild(
+        CollectionPul* pul,
+        store::Item_t& target,
+        store::Item_t& child,
+        std::vector<store::Item_t>& newChildren);
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdInsertAttributes*
-    createUpdInsertAttributes(
-          CollectionPul* pul,
-          store::Item_t& target,
-          std::vector<store::Item_t>&  attrs);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdReplaceElemContent*
+  createUpdReplaceElemContent(
+        CollectionPul* pul,
+        store::Item_t& target,
+        store::Item_t& newChild);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdRenameElem*
+  createUpdRenameElem(
+        CollectionPul* pul,
+        store::Item_t& target,
+        store::Item_t& newName); 
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdReplaceAttribute*
-    createUpdReplaceAttribute(
-          CollectionPul* pul,
-          store::Item_t& target,
-          store::Item_t& attr,
-          std::vector<store::Item_t>& newAttrs);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdReplaceAttrValue*
+  createUpdReplaceAttrValue(
+        CollectionPul* pul,
+        store::Item_t& target,
+        xqpStringStore_t& newValue);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdRenameAttr*
+  createUpdRenameAttr(
+        CollectionPul* pul,
+        store::Item_t& target,
+        store::Item_t& newName);
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdReplaceChild*
-    createUpdReplaceChild(
-          CollectionPul* pul,
-          store::Item_t& target,
-          store::Item_t& child,
-          std::vector<store::Item_t>& newChildren);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdReplaceTextValue*
+  createUpdReplaceTextValue(
+        CollectionPul* pul,
+        store::Item_t& target,
+        xqpStringStore_t& newValue); 
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdReplacePiValue*
+  createUpdReplacePiValue(
+        CollectionPul* pul,
+        store::Item_t& target,
+        xqpStringStore_t& newValue);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdRenamePi*
+  createUpdRenamePi(
+        CollectionPul* pul,
+        store::Item_t& target,
+        xqpStringStore_t& newName); 
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdReplaceElemContent*
-    createUpdReplaceElemContent(
-          CollectionPul* pul,
-          store::Item_t& target,
-          store::Item_t& newChild);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdReplaceCommentValue*
+  createUpdReplaceCommentValue(
+        CollectionPul* pul,
+        store::Item_t& target,
+        xqpStringStore_t& newValue);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdSetElementType*
+  createUpdSetElementType(
+        PULImpl*       pul,
+        store::Item_t& target,
+        store::Item_t& typeName,
+        store::Item_t& typedValue,
+        bool           haveValue,
+        bool           haveEmptyValue,
+        bool           haveTypedValue,
+        bool           haveListValue,
+        bool           isInSubstitutionGroup);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdSetAttributeType*
+  createUpdSetAttributeType(
+        PULImpl*       pul,
+        store::Item_t& target,
+        store::Item_t& typeName,
+        store::Item_t& typedValue,
+        bool           haveListValue);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdPut*
+  createUpdPut(PULImpl* pul, store::Item_t& target, store::Item_t& uri);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdCreateCollection*
+  createUpdCreateCollection(
+        CollectionPul* pul,
+        store::Item_t& name);
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdRenameElem*
-    createUpdRenameElem(
-          CollectionPul* pul,
-          store::Item_t& target,
-          store::Item_t& newName); 
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdReplaceAttrValue*
-    createUpdReplaceAttrValue(
-          CollectionPul* pul,
-          store::Item_t& target,
-          xqpStringStore_t& newValue);
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdRenameAttr*
-    createUpdRenameAttr(
-          CollectionPul* pul,
-          store::Item_t& target,
-          store::Item_t& newName);
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdReplaceTextValue*
-    createUpdReplaceTextValue(
-          CollectionPul* pul,
-          store::Item_t& target,
-          xqpStringStore_t& newValue); 
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdReplacePiValue*
-    createUpdReplacePiValue(
-          CollectionPul* pul,
-          store::Item_t& target,
-          xqpStringStore_t& newValue);
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdRenamePi*
-    createUpdRenamePi(
-          CollectionPul* pul,
-          store::Item_t& target,
-          xqpStringStore_t& newName); 
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdReplaceCommentValue*
-    createUpdReplaceCommentValue(
-          CollectionPul* pul,
-          store::Item_t& target,
-          xqpStringStore_t& newValue);
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdSetElementType*
-    createUpdSetElementType(
-          PULImpl*       pul,
-          store::Item_t& target,
-          store::Item_t& typeName,
-          store::Item_t& typedValue,
-          bool           haveValue,
-          bool           haveEmptyValue,
-          bool           haveTypedValue,
-          bool           haveListValue,
-          bool           isInSubstitutionGroup);
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdSetAttributeType*
-    createUpdSetAttributeType(
-          PULImpl*       pul,
-          store::Item_t& target,
-          store::Item_t& typeName,
-          store::Item_t& typedValue,
-          bool           haveListValue);
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdPut*
-    createUpdPut(PULImpl* pul, store::Item_t& target, store::Item_t& uri);
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdCreateCollection*
-    createUpdCreateCollection(
-          CollectionPul* pul,
-          store::Item_t& name);
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdDeleteCollection*
-    createUpdDeleteCollection(
-          CollectionPul* pul,
-          store::Item_t& name);
-    
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdInsertIntoCollection*
-    createUpdInsertIntoCollection(
-          CollectionPul* pul,
-          store::Item_t& name, 
-          std::vector<store::Item_t>& nodes);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdDeleteCollection*
+  createUpdDeleteCollection(
+        CollectionPul* pul,
+        store::Item_t& name);
     
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdInsertFirstIntoCollection*
-    createUpdInsertFirstIntoCollection(
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdInsertIntoCollection*
+  createUpdInsertIntoCollection(
+        CollectionPul* pul,
+        store::Item_t& name, 
+        std::vector<store::Item_t>& nodes);
+  
+    
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdInsertFirstIntoCollection*
+  createUpdInsertFirstIntoCollection(
+      CollectionPul* pul,
+      store::Item_t& name,
+      std::vector<store::Item_t>& nodes);
+    
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdInsertLastIntoCollection*
+  createUpdInsertLastIntoCollection(
         CollectionPul* pul,
         store::Item_t& name,
         std::vector<store::Item_t>& nodes);
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdInsertLastIntoCollection*
-    createUpdInsertLastIntoCollection(
-          CollectionPul* pul,
-          store::Item_t& name,
-          std::vector<store::Item_t>& nodes);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdInsertBeforeIntoCollection*
+  createUpdInsertBeforeIntoCollection(
+        CollectionPul* pul,
+        store::Item_t& name,
+        store::Item_t& target,
+        std::vector<store::Item_t>& nodes);
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdInsertBeforeIntoCollection*
-    createUpdInsertBeforeIntoCollection(
-          CollectionPul* pul,
-          store::Item_t& name,
-          store::Item_t& target,
-          std::vector<store::Item_t>& nodes);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdInsertAfterIntoCollection*
+  createUpdInsertAfterIntoCollection(
+        CollectionPul* pul,
+        store::Item_t& name,
+        store::Item_t& target,
+        std::vector<store::Item_t>& nodes);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdDeleteNodesFromCollection*
+  createUpdDeleteNodesFromCollection(
+        CollectionPul* pul,
+        store::Item_t& name,
+        std::vector<store::Item_t>& nodes,
+        bool isLast);
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdInsertAfterIntoCollection*
-    createUpdInsertAfterIntoCollection(
-          CollectionPul* pul,
-          store::Item_t& name,
-          store::Item_t& target,
-          std::vector<store::Item_t>& nodes);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdCreateIndex*
+  createUpdCreateIndex(
+        PULImpl* pul,
+        const store::Item_t& qname,
+        const store::IndexSpecification& spec,
+        store::Iterator* sourceIter);
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdDeleteNodesFromCollection*
-    createUpdDeleteNodesFromCollection(
-          CollectionPul* pul,
-          store::Item_t& name,
-          std::vector<store::Item_t>& nodes,
-          bool isLast);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdDeleteIndex*
+  createUpdDeleteIndex(PULImpl* pul, const store::Item_t& qname);
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdCreateIndex*
-    createUpdCreateIndex(
-          PULImpl* pul,
-          const store::Item_t& qname,
-          const store::IndexSpecification& spec,
-          store::Iterator* sourceIter);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdRefreshIndex*
+  createUpdRefreshIndex(
+        PULImpl* pul,
+        const store::Item_t& qname,
+        store::Iterator* sourceIter);
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdDeleteIndex*
-    createUpdDeleteIndex(PULImpl* pul, const store::Item_t& qname);
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdActivateIC*
+  createUpdActivateIC(
+        PULImpl* pul,
+        const store::Item_t& aQName,
+        const store::Item_t& aCollectionName);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdActivateForeignKeyIC*
+  createUpdActivateForeignKeyIC(
+        PULImpl* pul,
+        const store::Item_t& qQName,
+        const store::Item_t& aFromCollectionName,
+        const store::Item_t& aToCollectionName);
+  
+  /***************************************************************************
+   ***************************************************************************/
+  virtual UpdDeActivateIC*
+  createUpdDeActivateIC(
+        PULImpl* pul,
+        const store::Item_t& qname);
+}; /* class PULPrimitiveFactory */
     
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdRefreshIndex*
-    createUpdRefreshIndex(
-          PULImpl* pul,
-          const store::Item_t& qname,
-          store::Iterator* sourceIter);
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdActivateIC*
-    createUpdActivateIC(
-          PULImpl* pul,
-          const store::Item_t& aQName,
-          const store::Item_t& aCollectionName);
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdActivateForeignKeyIC*
-    createUpdActivateForeignKeyIC(
-          PULImpl* pul,
-          const store::Item_t& qQName,
-          const store::Item_t& aFromCollectionName,
-          const store::Item_t& aToCollectionName);
-    
-    /***************************************************************************
-    ***************************************************************************/
-    virtual UpdDeActivateIC*
-    createUpdDeActivateIC(
-          PULImpl* pul,
-          const store::Item_t& qname);
-  }; /* class PULPrimitiveFactory */
 
 } /* namespace simplestore */ } /* namespace zorba */
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */

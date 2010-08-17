@@ -791,7 +791,7 @@ void DtdXmlLoader::startElement(
     // Process namespace bindings
     store::NsBindings& bindings = elemNode->getNsContext()->getBindings();
     int i = 0;
-    for (xmlNs  *ns = node->nsDef; ns != NULL; ns = ns->next)
+    for (xmlNs *ns = node->nsDef; ns != NULL; ns = ns->next)
     {
       const char* prefix = reinterpret_cast<const char*>(ns->prefix);
       const char* nsuri = reinterpret_cast<const char*>(ns->href);
@@ -809,8 +809,17 @@ void DtdXmlLoader::startElement(
       i++;
     }
 
-    if ( i>0 )
+    if ( i > 0 )
+    {
       loader.theBindingsStack.push(elemNode->getNsContext());
+    }
+    else if (pathStack.size() == 1)
+    {
+      elemNode->theNsContext = new NsBindingsContext;
+      elemNode->theFlags |= XmlNode::HaveLocalBindings;
+
+      loader.theBindingsStack.push(elemNode->theNsContext);
+    }
 
     // Process attributes
     i = 0;

@@ -20,6 +20,25 @@
 
 namespace zorba { namespace simplestore {
 
+
+/*******************************************************************************
+
+********************************************************************************/
+NsBindingsContext::NsBindingsContext(NsBindingsContext* parent)
+  :
+  theParent(parent)
+{
+
+#if 0
+  std::cout << "Create binding context1 " << this << "; with parent = "
+            << parent << std::endl;
+#endif
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 NsBindingsContext::NsBindingsContext(ulong numBindings)
 {
   theBindings.resize(numBindings);
@@ -30,6 +49,9 @@ NsBindingsContext::NsBindingsContext(ulong numBindings)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 NsBindingsContext::NsBindingsContext(const store::NsBindings& bindings)
   :
   theBindings(bindings)
@@ -41,6 +63,9 @@ NsBindingsContext::NsBindingsContext(const store::NsBindings& bindings)
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 NsBindingsContext::~NsBindingsContext()
 {
 #if 0
@@ -50,6 +75,9 @@ NsBindingsContext::~NsBindingsContext()
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) const
 {
   const NsBindingsContext* currentContext = this;
@@ -72,17 +100,27 @@ xqpStringStore* NsBindingsContext::findBinding(const xqpStringStore* prefix) con
 }
 
 
+/*******************************************************************************
+  Add a binding between the given prefix and ns uri in the local binings, if
+  such a binding does not exist already.
+
+  If the given prefix is bound already to a different uri, then the method is
+  a noop if soft is true, else it triggers a fatal assertion. 
+********************************************************************************/
 void NsBindingsContext::addBinding(
     xqpStringStore* prefix,
-    xqpStringStore* ns)
+    xqpStringStore* ns,
+    bool soft)
 {
+  assert(ns != NULL);
+
   ulong numBindings = theBindings.size();
 
-  for (ulong i = 0; i < numBindings; i++)
+  for (ulong i = 0; i < numBindings; ++i)
   {
     if (theBindings[i].first->byteEqual(prefix))
     {
-      if(!theBindings[i].second->byteEqual(ns))
+      if (!soft && !theBindings[i].second->byteEqual(ns))
       {
         ZORBA_FATAL(theBindings[i].second->byteEqual(ns), "");
       }
@@ -94,6 +132,35 @@ void NsBindingsContext::addBinding(
 }
 
 
+/*******************************************************************************
+  If a binding for the given prefix exists already among the local bindings of
+  "this", replace the associated ns uri with the given uri. Else, add a binding
+  for the given prefix and ns uri to the local bindings.
+********************************************************************************/
+void NsBindingsContext::updateBinding(
+    xqpStringStore* prefix,
+    xqpStringStore* ns)
+{
+  assert(ns != NULL);
+
+  ulong numBindings = theBindings.size();
+
+  for (ulong i = 0; i < numBindings; ++i)
+  {
+    if (theBindings[i].first->byteEqual(prefix))
+    {
+      theBindings[i].second = ns;
+      return;
+    }
+  }
+
+  theBindings.push_back(std::pair<xqpStringStore_t, xqpStringStore_t>(prefix, ns));
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 void NsBindingsContext::removeBinding(
     xqpStringStore* prefix,
     xqpStringStore* ns)

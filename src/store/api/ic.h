@@ -62,6 +62,8 @@ public:
 class ICChecker
 {
 public:
+  virtual ~ICChecker() {}
+
   virtual void check(const Item* collName) = 0;
 };
 

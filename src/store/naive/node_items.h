@@ -842,6 +842,10 @@ public:
         const store::Item* qname,
         XQUERY_ERROR       ecode) const;
 
+  void uninheritBinding(
+        NsBindingsContext* rootNSCtx,
+        const xqpStringStore_t& prefix);
+
   void checkUniqueAttr(const store::Item* attrName) const;
 
   void checkUniqueAttrs() const;
@@ -856,15 +860,19 @@ public:
   void removeAttributes(ulong pos, ulong numAttributes);
 
   void insertAttributes(UpdInsertAttributes& upd);
+
   void undoInsertAttributes(UpdInsertAttributes& upd);
 
   void replaceAttribute(UpdReplaceAttribute& upd);
+
   void restoreAttribute(UpdReplaceAttribute& upd);
 
   void replaceContent(UpdReplaceElemContent& upd);
+
   void restoreContent(UpdReplaceElemContent& upd);
 
   void replaceName(UpdRenameElem& upd);
+
   void restoreName(UpdRenameElem& upd);
 
 #ifndef ZORBA_NO_FULL_TEXT

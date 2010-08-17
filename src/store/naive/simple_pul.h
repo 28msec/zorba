@@ -171,6 +171,8 @@ public:
 
   ~CollectionPul();
 
+  void switchPul(PULImpl* pul);
+
   void applyUpdates();
 
   void finalizeUpdates();
@@ -182,6 +184,9 @@ public:
   void refreshIndices();
 
   void setAdjustTreePositions() { theAdjustTreePositions = true; }
+
+protected:
+  void switchPulInPrimitivesList(std::vector<UpdatePrimitive*>& list);
 };
 
 
