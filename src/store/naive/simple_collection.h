@@ -70,18 +70,20 @@ protected:
 
   SYNC_CODE(Latch               theLatch;)
 
+  SimpleCollection();
+
 public:
   SimpleCollection(store::Item_t& aName);
 
   virtual ~SimpleCollection();
 
-  ulong getId() const { return theId; }
+  virtual ulong getId() const { return theId; }
 
   const store::Item* getName() const { return theName.getp(); }
 
   ulong size() const { return theXmlTrees.size(); }
 
-  ulong createTreeId() { return theTreeCounter++; }
+  virtual ulong createTreeId() { return theTreeCounter++; }
 
   store::Iterator_t getIterator();
 
@@ -93,29 +95,29 @@ public:
         store::Item* node,
         long position = -1);
 
-  ulong addNodes(
+  virtual ulong addNodes(
         std::vector<store::Item_t>& nodes,
         const store::Item* aTargetNode,
         bool before);
 
-  bool removeNode(store::Item* node, ulong& pos);
+  virtual bool removeNode(store::Item* node, ulong& pos);
 
-  bool removeNode(ulong position);
+  virtual bool removeNode(ulong position);
 
-  ulong removeNodes(ulong position, ulong num);
+  virtual ulong removeNodes(ulong position, ulong num);
 
   bool findNode(const store::Item* node, ulong& position) const;
 
   store::Item_t nodeAt(ulong position);
 
-  void adjustTreePositions();
+  virtual void adjustTreePositions();
 
-  void getIndexes(std::vector<store::Index*>& indexes);
+  virtual void getIndexes(std::vector<store::Index*>& indexes);
 
   /**
      Returns active integrity constraints referencing this collection.
   */
-  void getActiveICs(std::vector<store::IC*>& ics);
+  virtual void getActiveICs(std::vector<store::IC*>& ics);
 };
 
 } // namespace store
