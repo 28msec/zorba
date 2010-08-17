@@ -49,12 +49,6 @@ bool FnPutIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
   consumeNext(node, theChildren[0].getp(), planState);
 
-  if (node->getNodeKind() != store::StoreConsts::elementNode &&
-      node->getNodeKind() != store::StoreConsts::documentNode)
-  {
-    ZORBA_ERROR_LOC(FOUP0001, loc);
-  }
-
   consumeNext(uriItem, theChildren[1].getp(), planState);
 
   uriString = uriItem->getStringValue();

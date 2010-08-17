@@ -615,15 +615,13 @@ void UpdPut::apply()
 
     if (theTarget->getNodeKind() != store::StoreConsts::documentNode)
     {
-      assert(theTarget->getNodeKind() == store::StoreConsts::elementNode);
-
-      ElementNode* elem =  static_cast<ElementNode*>(theTarget.getp());
+      XmlNode* target =  BASE_NODE(theTarget);
 
       DocumentNode* doc = GET_STORE().getNodeFactory().createDocumentNode();
-      doc->setTree(elem->getTree());
+      doc->setTree(target->getTree());
       doc->setOrdPath(NULL, 1, store::StoreConsts::documentNode);
 
-      doc->insertChild(elem, 0);
+      doc->insertChild(target, 0);
       doc->getTree()->setRoot(doc);
 
       store::Item_t docItem(doc);
