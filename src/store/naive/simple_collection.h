@@ -70,6 +70,9 @@ protected:
 
   SYNC_CODE(Latch               theLatch;)
 
+  // default constructor added in order to allow
+  // subclasses to instantiate a collection
+  // without name
   SimpleCollection();
 
 public:
@@ -77,14 +80,15 @@ public:
 
   virtual ~SimpleCollection();
 
+  // virtual to allow extension by subclasses
   virtual ulong getId() const { return theId; }
 
   const store::Item* getName() const { return theName.getp(); }
 
   ulong size() const { return theXmlTrees.size(); }
 
+  // virtual to allow extension by subclasses
   virtual ulong createTreeId() { return theTreeCounter++; }
-
   store::Iterator_t getIterator();
 
   store::Item_t loadDocument(
@@ -95,27 +99,34 @@ public:
         store::Item* node,
         long position = -1);
 
+  // virtual to allow extension by subclasses
   virtual ulong addNodes(
         std::vector<store::Item_t>& nodes,
         const store::Item* aTargetNode,
         bool before);
 
+  // virtual to allow extension by subclasses
   virtual bool removeNode(store::Item* node, ulong& pos);
 
+  // virtual to allow extension by subclasses
   virtual bool removeNode(ulong position);
 
+  // virtual to allow extension by subclasses
   virtual ulong removeNodes(ulong position, ulong num);
 
   bool findNode(const store::Item* node, ulong& position) const;
 
   store::Item_t nodeAt(ulong position);
 
+  // virtual to allow extension by subclasses
   virtual void adjustTreePositions();
 
+  // virtual to allow extension by subclasses
   virtual void getIndexes(std::vector<store::Index*>& indexes);
 
-  /**
-     Returns active integrity constraints referencing this collection.
+ /**
+  * Returns active integrity constraints referencing this collection.
+  * Virtual to allow extension by subclasses
   */
   virtual void getActiveICs(std::vector<store::IC*>& ics);
 };
