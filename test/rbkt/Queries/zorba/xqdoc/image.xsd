@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema 
+    targetNamespace="http://www.zorba-xquery.com/modules/image/image"
+    xmlns:http="http://expath.org/ns/http-client"
+    elementFormDefault="qualified"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema"> 
+    <xs:annotation xml:lang="en">
+        <xs:documentation>
+            This schema defines the different types used in the modules under:
+            http://www.zorba-xquery.com/modules/images/
+        </xs:documentation>
+    </xs:annotation>
+    
+    <xs:simpleType name="imageType">
+        <xs:annotation xml:lang="en">
+            <xs:documentation>
+                This type defines the different names that are allowed for image types.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="GIF"/>
+            <xs:enumeration value="PNG"/>
+            <xs:enumeration value="JPEG"/>
+            <xs:enumeration value="TIFF"/>
+        </xs:restriction>
+    </xs:simpleType>  
+</xs:schema>

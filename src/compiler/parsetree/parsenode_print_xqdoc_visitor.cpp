@@ -560,6 +560,20 @@ void end_visit(const ModuleImport& n, void*)
   theNamespaces[n.get_prefix()->c_str()] = n.get_uri();
 }
 
+// SchemaImport can also bind prefixes which may be used
+// in type constructors (i.e. function calls)
+XQDOC_NO_BEGIN_TAG (SchemaImport)
+
+void end_visit(const SchemaImport& n, void*)
+{
+  xqpStringStore_t lURI = n.get_uri();
+  xqpStringStore_t lPrefix;
+  if (!n.get_prefix()->get_default_bit()) {
+    lPrefix = n.get_prefix()->get_prefix();
+  }
+  theNamespaces[lPrefix->c_str()] = lURI;
+}
+
 XQDOC_NO_BEGIN_END_TAG (AdditiveExpr)
 XQDOC_NO_BEGIN_END_TAG (AndExpr)
 XQDOC_NO_BEGIN_END_TAG (AnyKindTest)
@@ -720,7 +734,6 @@ XQDOC_NO_BEGIN_END_TAG (ReverseAxis)
 XQDOC_NO_BEGIN_END_TAG (ReverseStep)
 XQDOC_NO_BEGIN_END_TAG (SchemaAttributeTest)
 XQDOC_NO_BEGIN_END_TAG (SchemaElementTest)
-XQDOC_NO_BEGIN_END_TAG (SchemaImport)
 XQDOC_NO_BEGIN_END_TAG (SchemaPrefix)
 XQDOC_NO_BEGIN_END_TAG (SequenceType)
 XQDOC_NO_BEGIN_END_TAG (SignList)

@@ -1,0 +1,13 @@
+module namespace testModule = 'http://www.example.com/testModule';
+
+import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image' at 'image.xsd';
+
+
+declare function testModule:test($image as image:imageType) {
+    ()
+};
+
+declare function testModule:test2 ($image as xs:string) {
+    testModule:test(image:imageType($image))
+};
+
