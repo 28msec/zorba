@@ -364,6 +364,18 @@ void ZorbaXML2CSVIterator::accept(PlanIterVisitor& v) const {
 
 ZorbaXML2CSVIterator::~ZorbaXML2CSVIterator() {}
 
+ZorbaXML2CSVIteratorState::ZorbaXML2CSVIteratorState() {}
+
+ZorbaXML2CSVIteratorState::~ZorbaXML2CSVIteratorState() {}
+
+
+void ZorbaXML2CSVIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void ZorbaXML2CSVIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </ZorbaXML2CSVIterator>
 
 
@@ -392,6 +404,18 @@ void ZorbaXML2CSVFILEIterator::accept(PlanIterVisitor& v) const {
 
 ZorbaXML2CSVFILEIterator::~ZorbaXML2CSVFILEIterator() {}
 
+ZorbaXML2CSVFILEIteratorState::ZorbaXML2CSVFILEIteratorState() {}
+
+ZorbaXML2CSVFILEIteratorState::~ZorbaXML2CSVFILEIteratorState() {}
+
+
+void ZorbaXML2CSVFILEIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void ZorbaXML2CSVFILEIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </ZorbaXML2CSVFILEIterator>
 
 
@@ -420,6 +444,18 @@ void ZorbaXML2TXTIterator::accept(PlanIterVisitor& v) const {
 
 ZorbaXML2TXTIterator::~ZorbaXML2TXTIterator() {}
 
+ZorbaXML2TXTIteratorState::ZorbaXML2TXTIteratorState() {}
+
+ZorbaXML2TXTIteratorState::~ZorbaXML2TXTIteratorState() {}
+
+
+void ZorbaXML2TXTIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void ZorbaXML2TXTIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </ZorbaXML2TXTIterator>
 
 
@@ -448,6 +484,18 @@ void ZorbaXML2TXTFILEIterator::accept(PlanIterVisitor& v) const {
 
 ZorbaXML2TXTFILEIterator::~ZorbaXML2TXTFILEIterator() {}
 
+ZorbaXML2TXTFILEIteratorState::ZorbaXML2TXTFILEIteratorState() {}
+
+ZorbaXML2TXTFILEIteratorState::~ZorbaXML2TXTFILEIteratorState() {}
+
+
+void ZorbaXML2TXTFILEIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+
+void ZorbaXML2TXTFILEIteratorState::reset(PlanState& planState) {
+  PlanIteratorState::reset(planState);
+}
 // </ZorbaXML2TXTFILEIterator>
 
 

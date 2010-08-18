@@ -33,6 +33,8 @@
 #include "store/api/iterator_factory.h"
 #include "fstream"
 #include "zorbatypes/codepoint_iterator.h"
+#include "zorbautils/checked_vector.h"
+#include "zorba/xquery.h"
 
 
 namespace zorba {
@@ -423,18 +425,31 @@ public:
  * Export XML to a Comma Separated Values text string.
  * Author: Zorba Team
  */
-class ZorbaXML2CSVIterator : public NaryBaseIterator<ZorbaXML2CSVIterator, PlanIteratorState>
+class ZorbaXML2CSVIteratorState : public PlanIteratorState
+{
+public:
+  checked_vector<XQuery_t> compiled_xpaths; //the list of compiled xpaths
+
+  ZorbaXML2CSVIteratorState();
+
+  ~ZorbaXML2CSVIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ZorbaXML2CSVIterator : public NaryBaseIterator<ZorbaXML2CSVIterator, ZorbaXML2CSVIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaXML2CSVIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2CSVIterator,
-    NaryBaseIterator<ZorbaXML2CSVIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaXML2CSVIterator, ZorbaXML2CSVIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaXML2CSVIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaXML2CSVIterator, ZorbaXML2CSVIteratorState>*)this);
   }
 
   ZorbaXML2CSVIterator(
@@ -442,7 +457,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<ZorbaXML2CSVIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<ZorbaXML2CSVIterator, ZorbaXML2CSVIteratorState>(sctx, loc, children)
   {}
 
   virtual ~ZorbaXML2CSVIterator();
@@ -457,18 +472,31 @@ public:
  * Export XML to a Comma Separated Values text file.
  * Author: Zorba Team
  */
-class ZorbaXML2CSVFILEIterator : public NaryBaseIterator<ZorbaXML2CSVFILEIterator, PlanIteratorState>
+class ZorbaXML2CSVFILEIteratorState : public PlanIteratorState
+{
+public:
+  checked_vector<XQuery_t> compiled_xpaths; //the list of compiled xpaths
+
+  ZorbaXML2CSVFILEIteratorState();
+
+  ~ZorbaXML2CSVFILEIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ZorbaXML2CSVFILEIterator : public NaryBaseIterator<ZorbaXML2CSVFILEIterator, ZorbaXML2CSVFILEIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaXML2CSVFILEIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2CSVFILEIterator,
-    NaryBaseIterator<ZorbaXML2CSVFILEIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaXML2CSVFILEIterator, ZorbaXML2CSVFILEIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaXML2CSVFILEIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaXML2CSVFILEIterator, ZorbaXML2CSVFILEIteratorState>*)this);
   }
 
   ZorbaXML2CSVFILEIterator(
@@ -476,7 +504,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<ZorbaXML2CSVFILEIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<ZorbaXML2CSVFILEIterator, ZorbaXML2CSVFILEIteratorState>(sctx, loc, children)
   {}
 
   virtual ~ZorbaXML2CSVFILEIterator();
@@ -491,18 +519,31 @@ public:
  * Export XML to a Column Separated Values text string.
  * Author: Zorba Team
  */
-class ZorbaXML2TXTIterator : public NaryBaseIterator<ZorbaXML2TXTIterator, PlanIteratorState>
+class ZorbaXML2TXTIteratorState : public PlanIteratorState
+{
+public:
+  checked_vector<XQuery_t> compiled_xpaths; //the list of compiled xpaths
+
+  ZorbaXML2TXTIteratorState();
+
+  ~ZorbaXML2TXTIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ZorbaXML2TXTIterator : public NaryBaseIterator<ZorbaXML2TXTIterator, ZorbaXML2TXTIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaXML2TXTIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2TXTIterator,
-    NaryBaseIterator<ZorbaXML2TXTIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaXML2TXTIterator, ZorbaXML2TXTIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaXML2TXTIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaXML2TXTIterator, ZorbaXML2TXTIteratorState>*)this);
   }
 
   ZorbaXML2TXTIterator(
@@ -510,7 +551,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<ZorbaXML2TXTIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<ZorbaXML2TXTIterator, ZorbaXML2TXTIteratorState>(sctx, loc, children)
   {}
 
   virtual ~ZorbaXML2TXTIterator();
@@ -525,18 +566,31 @@ public:
  * Export XML to a Column Separated Values text file.
  * Author: Zorba Team
  */
-class ZorbaXML2TXTFILEIterator : public NaryBaseIterator<ZorbaXML2TXTFILEIterator, PlanIteratorState>
+class ZorbaXML2TXTFILEIteratorState : public PlanIteratorState
+{
+public:
+  checked_vector<XQuery_t> compiled_xpaths; //the list of compiled xpaths
+
+  ZorbaXML2TXTFILEIteratorState();
+
+  ~ZorbaXML2TXTFILEIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class ZorbaXML2TXTFILEIterator : public NaryBaseIterator<ZorbaXML2TXTFILEIterator, ZorbaXML2TXTFILEIteratorState>
 { 
 public:
   SERIALIZABLE_CLASS(ZorbaXML2TXTFILEIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(ZorbaXML2TXTFILEIterator,
-    NaryBaseIterator<ZorbaXML2TXTFILEIterator, PlanIteratorState>);
+    NaryBaseIterator<ZorbaXML2TXTFILEIterator, ZorbaXML2TXTFILEIteratorState>);
 
   void serialize( ::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<ZorbaXML2TXTFILEIterator, PlanIteratorState>*)this);
+    (NaryBaseIterator<ZorbaXML2TXTFILEIterator, ZorbaXML2TXTFILEIteratorState>*)this);
   }
 
   ZorbaXML2TXTFILEIterator(
@@ -544,7 +598,7 @@ public:
     const QueryLoc& loc,
     std::vector<PlanIter_t>& children)
     : 
-    NaryBaseIterator<ZorbaXML2TXTFILEIterator, PlanIteratorState>(sctx, loc, children)
+    NaryBaseIterator<ZorbaXML2TXTFILEIterator, ZorbaXML2TXTFILEIteratorState>(sctx, loc, children)
   {}
 
   virtual ~ZorbaXML2TXTFILEIterator();

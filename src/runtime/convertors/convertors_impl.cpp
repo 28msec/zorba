@@ -1017,9 +1017,11 @@ ZorbaTXT2XMLFromFileIterator::nextImpl(store::Item_t& result,
 
 bool csv_write_line(store::Item_t node, 
                     checked_vector<xqpString> &xpaths, 
+                    checked_vector<zorba::XQuery_t> &compiled_xpaths,
                     bool write_header, 
                     checked_vector<xqpString>  &line,
-                    checked_vector<xqpString>  &header)
+                    checked_vector<xqpString>  &header,
+                    const QueryLoc           &loc)
 {
   line.clear();
   header.clear();
@@ -1028,21 +1030,41 @@ bool csv_write_line(store::Item_t node,
   {
     //select columns based on xpaths relative to the node
     checked_vector<xqpString>::iterator xpaths_it;
+    checked_vector<zorba::XQuery_t>::iterator xQuery_it;
     zorba::Zorba * engine = zorba::Zorba::getInstance(&GENV_STORE);
-    zorba::XQuery_t xQuery;
     zorba::Item     node_item(node.getp());
     zorba::Item     column_item;
     store::Item*    store_column;
     zorba::Iterator_t   result_it;
-    for(xpaths_it = xpaths.begin(); xpaths_it != xpaths.end(); xpaths_it++)
+    if(compiled_xpaths.size() == 0)
     {
-      xQuery = engine->createQuery();
-      zorba::String   qString((*xpaths_it).getStore());
-      xQuery->compile(qString);
-      zorba::DynamicContext* dctx = xQuery->getDynamicContext();
+      int i=0;
+      //first compile all xpaths
+      for(xpaths_it = xpaths.begin(); xpaths_it != xpaths.end(); xpaths_it++, i++)
+      {
+        zorba::XQuery_t xQuery;
+        xQuery = engine->createQuery();
+        zorba::String   qString((*xpaths_it).getStore());
+        try{
+          xQuery->compile(qString);
+        }catch(ZorbaException &e)
+        {
+          ZORBA_ERROR_LOC_PARAM_OSS(API0073_CONV_XML2CSV_PARAM,
+                              loc,
+                              "Error in xpath param " << i+1 << " : {", 
+                
+                              e.getErrorCodeAsString(e.getErrorCode()) << ": " << e.getDescription() << " }");
+        }
+        compiled_xpaths.push_back(xQuery);
+      }
+    }
+    for(xQuery_it = compiled_xpaths.begin(); xQuery_it != compiled_xpaths.end(); xQuery_it++)
+    {
+      zorba::DynamicContext* dctx = (*xQuery_it)->getDynamicContext();
       dctx->setContextItem(node_item);
-      result_it = xQuery->iterator();
+      result_it = (*xQuery_it)->iterator();
       result_it->open();
+      int nr_elems = 0;
       while(result_it->next(column_item))
       {
         store_column = Unmarshaller::getInternalItem(column_item);
@@ -1060,10 +1082,14 @@ bool csv_write_line(store::Item_t node,
         }
         xqpStringStore_t    column_value = store_column->getStringValue();
         line.push_back(xqpString(column_value));
+        nr_elems++;
       }
       result_it->close();
       result_it = NULL;
-      xQuery = NULL;
+      if(!nr_elems)
+      {
+        line.push_back(xqpString());
+      }
     }
   }
   else
@@ -1211,8 +1237,8 @@ bool
 ZorbaXML2CSVIterator::nextImpl(store::Item_t& result, 
                                PlanState& planState) const
 {
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  ZorbaXML2CSVIteratorState *state;
+  DEFAULT_STACK_INIT(ZorbaXML2CSVIteratorState, state, planState);
 
   {
     xqpString                  result_string;
@@ -1281,9 +1307,10 @@ ZorbaXML2CSVIterator::nextImpl(store::Item_t& result,
 
     while(consumeNext(result, theChildren[0].getp(), planState))
     {
-      if(!csv_write_line(result, xpaths, 
+      if(!csv_write_line(result, xpaths, state->compiled_xpaths,
                          (line_index == 0) && first_row_is_header, 
-                         line, header))
+                         line, header, 
+                         loc))
       {
        ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
                             loc,
@@ -1314,8 +1341,8 @@ bool
 ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result, 
                                    PlanState& planState) const
 {
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  ZorbaXML2CSVFILEIteratorState *state;
+  DEFAULT_STACK_INIT(ZorbaXML2CSVFILEIteratorState, state, planState);
 
   {
     checked_vector<xqpString>  line;
@@ -1405,9 +1432,10 @@ ZorbaXML2CSVFILEIterator::nextImpl(store::Item_t& result,
 
     while(consumeNext(result, theChildren[0].getp(), planState))
     {
-      if(!csv_write_line(result, xpaths, 
+      if(!csv_write_line(result, xpaths, state->compiled_xpaths,
                          (line_index == 0) && first_row_is_header, 
-                         line, header))
+                         line, header,
+                         loc))
       {
        ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
                             loc,
@@ -1436,8 +1464,8 @@ bool
 ZorbaXML2TXTIterator::nextImpl(store::Item_t& result, 
                                PlanState& planState) const
 {
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  ZorbaXML2TXTIteratorState *state;
+  DEFAULT_STACK_INIT(ZorbaXML2TXTIteratorState, state, planState);
 
   {
     xqpString                  result_string;
@@ -1492,9 +1520,9 @@ ZorbaXML2TXTIterator::nextImpl(store::Item_t& result,
 
     while(consumeNext(result, theChildren[0].getp(), planState))
     {
-      if(!csv_write_line(result, xpaths, 
+      if(!csv_write_line(result, xpaths, state->compiled_xpaths,
                          (line_index == 0) && first_row_is_header, 
-                         line, header))
+                         line, header, loc))
       {
        ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
                             loc,
@@ -1525,8 +1553,8 @@ bool
 ZorbaXML2TXTFILEIterator::nextImpl(store::Item_t& result, 
                                    PlanState& planState) const
 {
-  PlanIteratorState *state;
-  DEFAULT_STACK_INIT(PlanIteratorState, state, planState);
+  ZorbaXML2TXTFILEIteratorState *state;
+  DEFAULT_STACK_INIT(ZorbaXML2TXTFILEIteratorState, state, planState);
 
   {
     checked_vector<xqpString>  line;
@@ -1604,9 +1632,9 @@ ZorbaXML2TXTFILEIterator::nextImpl(store::Item_t& result,
 
     while(consumeNext(result, theChildren[0].getp(), planState))
     {
-      if(!csv_write_line(result, xpaths, 
+      if(!csv_write_line(result, xpaths, state->compiled_xpaths,
                          (line_index == 0) && first_row_is_header, 
-                         line, header))
+                         line, header, loc))
       {
        ZORBA_ERROR_LOC_PARAM(API0073_CONV_XML2CSV_PARAM,
                             loc,
