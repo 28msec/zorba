@@ -16,7 +16,6 @@
 
 #include <sstream>
 #include <map>
-#include <iostream>
 
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
@@ -25,8 +24,8 @@
 #include <zorba/singleton_item_sequence.h>
 #include <zorba/base64.h>
 
-#include "md5_impl.h"
 #include "sha1.h"
+#include "md5_impl.h"
 
 namespace zorba { namespace security {
 
@@ -105,7 +104,7 @@ public:
   }
 
   virtual String
-  getURI() const { return "http://www.zorba-xquery.com/modules/security/hash"; }
+  getURI() const { return "http://www.zorba-xquery.com/modules/security/sign"; }
 
   virtual StatelessExternalFunction*
   getExternalFunction(String aLocalname) const;
@@ -149,13 +148,15 @@ public:
   ~HashFunction(){}
 
   virtual String
-  getLocalName() const { return "hash-unchecked"; }
+  getLocalName() const { return "sign-internal"; }
 
   virtual zorba::ItemSequence_t
   evaluate(const Arguments_t& aArgs) const
   {
-    std::string lText = (getNodeText(aArgs, 0)).c_str();
-    std::string lAlg = (getOneStringArgument(aArgs, 1)).c_str();
+    std::string lValue = (getNodeText(aArgs, 0)).c_str();
+    std::string lKey = (getNodeText(aArgs, 1)).c_str();
+    std::string lAlg = (getOneStringArgument(aArgs, 2)).c_str();
+    std::string lText = lValue + lKey;
     zorba::String lHash;
     if (lAlg == "sha1") {
       CSHA1 lSha1;
@@ -165,13 +166,10 @@ public:
       char lRes[65];
       lSha1.GetHash((UINT_8 *)lRes);
       zorba::String lDigest(lRes);
-      std::cout << lData << std::endl;
       lHash = zorba::encoding::Base64::encode(lDigest);
-      std::cout << lHash << std::endl;
     } else {
       lHash = md5(lText);
     }
-    // implement here
     zorba::Item lItem;
     lItem = theModule->getItemFactory()->createString(lHash);
     return zorba::ItemSequence_t(new zorba::SingletonItemSequence(lItem));

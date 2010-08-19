@@ -23,6 +23,29 @@
 
 #include "file_module.h"
 
+#include <stdlib.h>
+#include <stdio.h>
+#ifdef WIN32
+#include <direct.h>
+#else
+#include <unistd.h>
+#endif
+
+static zorba::String getCurrentPath()
+{
+#ifdef WIN32
+  char* buffer = _getcwd(NULL, 0);
+#else
+  char buffer[2048];
+  getcwd(buffer, 2048);
+#endif
+  zorba::String result(buffer);
+#ifdef WIN32
+  free(buffer);
+#endif
+  return result;
+}
+
 namespace zorba { namespace filemodule {
 
 const std::string
@@ -165,25 +188,10 @@ FileFunction::getFilePathString(
 
     // if a relative path, we have to resolve it against the base URI
     if (!lAbsolutePath) {
-      // first encode the user input
-      // NOTE: this encodes also the allowed characters like '/', '&' but
-      //       we are only interested in resolving and obtaining a file
-      //       system path. The user input is NOT considered an URI!
-      //       The file system behave accordingly if wrong signs are used.
-      lFileArg = lFileArg.encodeForUri();
-
-      // resolve the relative path against the base URI
-      lFileArg = aSctxCtx->resolve(aSctxCtx->getBaseURI(), lFileArg);
-      
-      // remove the file scheme (Zorba returns no host)
-      int lIndex = FILE_SCHEMA.length();
-#ifdef WIN32
-      ++lIndex;
-#endif
-      lFileArg = lFileArg.substring(lIndex);
-      
-      // decode the path
-      lFileArg = lFileArg.decodeFromUri();
+      // resolve the relative path against the current working directory
+      //lFileArg = aSctxCtx->resolve(aSctxCtx->getBaseURI(), lFileArg);
+      zorba::String lCurrPath = getCurrentPath();
+      lFileArg = lCurrPath + File::getPathSeparator() + lFileArg;
     }
 
     // no other encoding or decoding if already an absolute path

@@ -367,3 +367,28 @@ declare sequential function file:write(
   $serializer-params as node()*,
   $append as xs:boolean
 ) external;
+
+(:~
+ : This is a helper function. Since relative paths are assumed to have its
+ : base directory on the current working directory, a user can still construct
+ : the uri of the directory where your base uri is in. This function assumes,
+ : that the base uri from the given item is a file uri. If it is not, this
+ : function can file or return senseless results.
+ :
+ : @param $node The node, where the base uri should read from (it uses
+ :              fn:base-uri to do so).
+ : @return The directory, where of the base uri of $node.
+ :)
+declare function file:dir-of-base-uri($node as node()) as xs:string
+{
+  fn:concat(
+    let $arg := fn:base-uri($node)
+    let $delim := "/"
+    return
+      if (matches($arg, $delim)) then 
+        replace($arg,
+                concat('^(.*)', $delim,'.*'),
+                       '$1')
+      else '',
+      "/")
+};

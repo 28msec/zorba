@@ -10,7 +10,16 @@ declare sequential function local:remove-date($xqdoc)
   exit returning $xqdoc;
 };
 
-let $content := file:read-text("gdata.xqlib")
+let $arg := fn:base-uri(<a/>)
+let $delim := "/"
+let $content := file:read-text(fn:concat(
+    if (matches($arg, replace($delim,
+                concat('^(.*)', replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1'),'.*'),
+                '$1')))
+       then replace($arg,
+                concat('^(.*)', replace($delim, '(\.|\[|\]|\\|\||\-|\^|\$|\?|\*|\+|\{|\}|\(|\))','\\$1'),'.*'),
+                '$1')
+       else '', "/gdata.xqlib"))
 let $xqdoc as schema-element(xqds:xqdoc) := 
   validate lax {
     xqd:xqdoc-content($content)
