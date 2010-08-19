@@ -59,6 +59,9 @@ namespace zorba {
   } \
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 DynamicContextImpl::DynamicContextImpl(const XQueryImpl* aQuery)
   :
   theQuery(aQuery)
@@ -68,11 +71,17 @@ DynamicContextImpl::DynamicContextImpl(const XQueryImpl* aQuery)
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 DynamicContextImpl::~DynamicContextImpl()
 {
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 bool DynamicContextImpl::setVariable(
     const String& aQName,
     const Item& aItem)
@@ -98,8 +107,10 @@ bool DynamicContextImpl::setVariable(
 }
 
 
-bool
-DynamicContextImpl::setVariable(
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariable(
     const String& aQName,
     const Iterator_t& aIterator )
 {
@@ -125,8 +136,10 @@ DynamicContextImpl::setVariable(
 }
 
 
-bool
-DynamicContextImpl::setVariable(
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariable(
     const String& aNamespace,
     const String& aLocalname,
     const Iterator_t& aIterator )
@@ -156,8 +169,10 @@ DynamicContextImpl::setVariable(
 }
 
 
-bool
-DynamicContextImpl::getVariable(
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::getVariable(
   const String& aNamespace,
   const String& aLocalname,
   Item& aItem,
@@ -191,86 +206,25 @@ DynamicContextImpl::getVariable(
   return false;
 }
 
-/** @deprecated Use setVariableAsDocument(... LoadProperties) */
-bool
-DynamicContextImpl::setVariableAsDocument(
+
+/****************************************************************************//**
+  @deprecated Use setVariableAsDocument(... LoadProperties)
+********************************************************************************/
+bool DynamicContextImpl::setVariableAsDocument(
     const String& aVarName,
     const String& aDocUri,
     validation_mode_t aMode)
 {
   LoadProperties lLoadProperties;
   lLoadProperties.setValidationMode(aMode);
-  return setVariableAsDocument(aVarName, aDocUri, lLoadProperties);
-//  ZORBA_DCTX_TRY
-//  {
-//    checkNoIterators();
-//
-//    TypeManager* tm = theStaticContext->get_typemanager();
-//    zorba::store::ItemFactory* factory = GENV_ITEMFACTORY;
-//    InternalDocumentURIResolver* uriResolver;
-//    uriResolver = theStaticContext->get_document_uri_resolver();
-//
-//    xqpStringStore_t docUri = Unmarshaller::getInternalString(aDocUri);
-//    store::Item_t docUriItem;
-//    factory->createAnyURI(docUriItem, docUri);
-//
-//    store::Item_t docItem;
-//    docItem = uriResolver->resolve(docUriItem, theStaticContext, true, false);
-//
-//    if(docItem.isNull())
-//      return false;
-//
-//#ifndef ZORBA_NO_XMLSCHEMA
-//
-//
-//
-//    if (!docItem->isValidated())
-//    {
-//      if (aMode != validate_skip)
-//      {
-//        store::Item_t validatedNode;
-//        store::Item_t typeName;
-//        QueryLoc loc;
-//
-//        ParseConstants::validation_mode_t mode = (aMode == validate_lax ?
-//                                                  ParseConstants::val_lax :
-//                                                  ParseConstants::val_strict);
-//
-//        bool success = Validator::effectiveValidationValue(validatedNode,
-//                                                           docItem,
-//                                                           typeName,
-//                                                           tm,
-//                                                           mode,
-//                                                           theStaticContext,
-//                                                           loc);
-//        ZORBA_ASSERT(success);
-//
-//        if (docItem != validatedNode)
-//        {
-//          GENV_STORE.deleteDocument(docUri);
-//          docItem = validatedNode;
-//          docItem->markValidated();
-//          GENV_STORE.addNode(docUri.getp(), docItem);
-//        }
-//      }
-//    }
-//    else if (tm->getSchema() == NULL || aMode == validate_skip)
-//    {
-//      GENV_STORE.deleteDocument(docUri);
-//      docItem = uriResolver->resolve(docUriItem, theStaticContext, true, false);
-//    }
-//#endif//ZORBA_NO_XMLSCHEMA
-//
-//
-//    return setVariable(aVarName, Item(docItem));
-//  }
-//  ZORBA_DCTX_CATCH
-//  return false;
+  return setVariableAsDocument(aVarName, aDocUri, lLoadProperties, false);
 }
 
-/** @deprecated Use setVariableAsDocument(... LoadProperties) */
-bool
-DynamicContextImpl::setVariableAsDocument(
+
+/****************************************************************************//**
+  @deprecated Use setVariableAsDocument(... LoadProperties)
+********************************************************************************/
+bool DynamicContextImpl::setVariableAsDocument(
     const String& aVarName,
     const String& aDocUri,
     std::auto_ptr<std::istream> aStream,
@@ -278,71 +232,18 @@ DynamicContextImpl::setVariableAsDocument(
 {
   LoadProperties lLoadProperties;
   lLoadProperties.setValidationMode(aMode);
-  return setVariableAsDocument(aVarName, aDocUri, aStream, lLoadProperties);
-//  ZORBA_DCTX_TRY
-//  {
-//    checkNoIterators();
-//
-//    TypeManager* tm = theStaticContext->get_typemanager();
-//
-//    xqpStringStore_t docUri = Unmarshaller::getInternalString(aDocUri);
-//    xqpStringStore_t baseUri = theStaticContext->get_base_uri();
-//
-//    store::Item_t docItem = GENV_STORE.loadDocument(baseUri, docUri, *(aStream.get()));
-//
-//#ifndef ZORBA_NO_XMLSCHEMA
-//    if (!docItem->isValidated())
-//    {
-//      if (aMode != validate_skip)
-//      {
-//        store::Item_t validatedNode;
-//        store::Item_t typeName;
-//        QueryLoc loc;
-//
-//        ParseConstants::validation_mode_t mode = (aMode == validate_lax ?
-//                                                  ParseConstants::val_lax :
-//                                                  ParseConstants::val_strict);
-//        bool success = Validator::effectiveValidationValue(validatedNode,
-//                                                           docItem,
-//                                                           typeName,
-//                                                           tm,
-//                                                           mode,
-//                                                           theStaticContext,
-//                                                           loc);
-//        ZORBA_ASSERT(success);
-//
-//        if (docItem != validatedNode)
-//        {
-//          GENV_STORE.deleteDocument(docUri);
-//          docItem = validatedNode;
-//          docItem->markValidated();
-//          GENV_STORE.addNode(docUri.getp(), docItem);
-//        }
-//      }
-//    }
-//    else if (tm->getSchema() == NULL || aMode == validate_skip)
-//    {
-//      GENV_STORE.deleteDocument(docUri);
-//      docItem = GENV_STORE.loadDocument(baseUri, docUri, *(aStream.get()));
-//    }
-//#endif
-//
-//    setVariable(aVarName, Item(docItem));
-//
-//
-//
-//    return true;
-//  }
-//  ZORBA_DCTX_CATCH
-//  return false;
+  return setVariableAsDocument(aVarName, aDocUri, aStream, lLoadProperties, false);
 }
 
 
-bool
-DynamicContextImpl::setVariableAsDocument(
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariableAsDocument(
     const String& aVarName,
     const String& aDocUri,
-    const LoadProperties& aLoadProperties)
+    const LoadProperties& aLoadProperties,
+    bool replaceDoc)
 {
   ZORBA_DCTX_TRY
   {
@@ -357,7 +258,7 @@ DynamicContextImpl::setVariableAsDocument(
     factory->createAnyURI(docUriItem, docUri);
 
     store::Item_t docItem;
-    docItem = uriResolver->resolve(docUriItem, theStaticContext, true, false);
+    docItem = uriResolver->resolve(docUriItem, theStaticContext, true, false, replaceDoc);
 
     if(docItem.isNull())
       return false;
@@ -371,12 +272,15 @@ DynamicContextImpl::setVariableAsDocument(
 }
 
 
-bool
-DynamicContextImpl::setVariableAsDocument(
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setVariableAsDocument(
     const String& aVarName,
     const String& aDocUri,
     std::auto_ptr<std::istream> aStream,
-    const LoadProperties& aLoadProperties)
+    const LoadProperties& aLoadProperties,
+    bool replaceDoc)
 {
   ZORBA_DCTX_TRY
   {
@@ -385,9 +289,16 @@ DynamicContextImpl::setVariableAsDocument(
     xqpStringStore_t docUri = Unmarshaller::getInternalString(aDocUri);
     xqpStringStore_t baseUri = theStaticContext->get_base_uri();
 
+    if (replaceDoc)
+      GENV_STORE.deleteDocument(docUri);
+
     store::LoadProperties lLoadProperties;
     lLoadProperties.setEnableDtd(aLoadProperties.getEnableDtd());
-    store::Item_t docItem = GENV_STORE.loadDocument(baseUri, docUri, *(aStream.get()), lLoadProperties);
+
+    store::Item_t docItem = GENV_STORE.loadDocument(baseUri,
+                                                    docUri,
+                                                    *(aStream.get()),
+                                                    lLoadProperties);
 
     validateIfNecesary(docItem, docUri, baseUri, aStream, aLoadProperties);
 
@@ -399,8 +310,10 @@ DynamicContextImpl::setVariableAsDocument(
 }
 
 
-bool
-DynamicContextImpl::setContextItem ( const Item& aItem )
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setContextItem(const Item& aItem)
 {
   ZORBA_DCTX_TRY
   {
@@ -417,66 +330,37 @@ DynamicContextImpl::setContextItem ( const Item& aItem )
   return false;
 }
 
-/** @deprecated Use setContextItemAsDocument(... LoadProperties) */
-bool
-DynamicContextImpl::setContextItemAsDocument(
+
+/****************************************************************************//**
+  @deprecated Use setContextItemAsDocument(... LoadProperties)
+********************************************************************************/
+bool DynamicContextImpl::setContextItemAsDocument(
     const String& aDocURI,
     std::auto_ptr<std::istream> aInStream)
 {
   LoadProperties aLoadProperties;
-  return setContextItemAsDocument(aDocURI, aInStream, aLoadProperties);
-//  ZORBA_DCTX_TRY
-//  {
-//    checkNoIterators();
-//
-//    xqpStringStore* docUri = Unmarshaller::getInternalString(aDocURI);
-//    xqpStringStore_t baseUri = theStaticContext->get_base_uri();
-//
-//    store::Item_t docItem = GENV_STORE.loadDocument(baseUri, docUri, *(aInStream.get()));
-//
-//    setContextItem ( Item(docItem) );
-//    return true;
-//  }
-//  ZORBA_DCTX_CATCH
-//  return false;
+  return setContextItemAsDocument(aDocURI, aInStream, aLoadProperties, false);
 }
 
-/** @deprecated Use setContextItemAsDocument(... LoadProperties) */
-bool
-DynamicContextImpl::setContextItemAsDocument(
-    const String& aDocURI)
+
+/****************************************************************************//**
+  @deprecated Use setContextItemAsDocument(... LoadProperties)
+********************************************************************************/
+bool DynamicContextImpl::setContextItemAsDocument(const String& aDocURI)
 {
   LoadProperties aLoadProperties;
-  return setContextItemAsDocument(aDocURI, aLoadProperties);
-//  ZORBA_DCTX_TRY
-//  {
-//    checkNoIterators();
-//
-//    xqpStringStore_t uriString = Unmarshaller::getInternalString(aDocURI);
-//
-//    InternalDocumentURIResolver* uri_resolver;
-//    uri_resolver = theStaticContext->get_document_uri_resolver();
-//
-//    store::Item_t uriItem;
-//    GENV_ITEMFACTORY->createAnyURI(uriItem, uriString);
-//
-//    store::Item_t docItem;
-//    docItem = uri_resolver->resolve(uriItem, theStaticContext, true, false);
-//
-//    if(docItem.isNull())
-//      return false;
-//
-//    return setContextItem(Item(docItem));
-//  }
-//  ZORBA_DCTX_CATCH
-//  return false;
+  return setContextItemAsDocument(aDocURI, aLoadProperties, false);
 }
 
-bool
-DynamicContextImpl::setContextItemAsDocument(
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setContextItemAsDocument(
     const String& aDocURI,
     std::auto_ptr<std::istream> aInStream,
-    const LoadProperties& aLoadProperties)
+    const LoadProperties& aLoadProperties,
+    bool aReplaceDoc)
 {
   ZORBA_DCTX_TRY
   {
@@ -488,22 +372,31 @@ DynamicContextImpl::setContextItemAsDocument(
     store::LoadProperties lLoadProperties;
     lLoadProperties.setEnableDtd(aLoadProperties.getEnableDtd());
 
-    store::Item_t docItem = GENV_STORE.loadDocument(baseUri, docUri, *(aInStream.get()),
-        lLoadProperties);
+    if (aReplaceDoc)
+      GENV_STORE.deleteDocument(docUri);
+
+    store::Item_t docItem = GENV_STORE.loadDocument(baseUri,
+                                                    docUri,
+                                                    *(aInStream.get()),
+                                                    lLoadProperties);
 
     // todo cezar should enable validation even for context items
     validateIfNecesary(docItem, docUri, baseUri, aInStream, aLoadProperties);
-    setContextItem ( Item(docItem) );
+    setContextItem(Item(docItem));
     return true;
   }
   ZORBA_DCTX_CATCH
   return false;
 }
 
-bool
-DynamicContextImpl::setContextItemAsDocument(
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setContextItemAsDocument(
     const String& aDocURI,
-    const LoadProperties& aLoadProperties)
+    const LoadProperties& aLoadProperties,
+    bool aReplaceDoc)
 {
   ZORBA_DCTX_TRY
   {
@@ -518,7 +411,7 @@ DynamicContextImpl::setContextItemAsDocument(
     GENV_ITEMFACTORY->createAnyURI(uriItem, docUri);
 
     store::Item_t docItem;
-    docItem = uri_resolver->resolve(uriItem, theStaticContext, true, false);
+    docItem = uri_resolver->resolve(uriItem, theStaticContext, true, false, aReplaceDoc);
 
     if(docItem.isNull())
       return false;
@@ -533,9 +426,10 @@ DynamicContextImpl::setContextItemAsDocument(
 }
 
 
-bool
-DynamicContextImpl::getContextItem (
-  Item& aItem)
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::getContextItem(Item& aItem)
 {
   ZORBA_DCTX_TRY
   {
@@ -552,8 +446,10 @@ DynamicContextImpl::getContextItem (
 }
 
 
-bool
-DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setCurrentDateTime(const Item& aDateTimeItem)
 {
   ZORBA_DCTX_TRY
   {
@@ -584,8 +480,10 @@ DynamicContextImpl::setCurrentDateTime( const Item& aDateTimeItem )
 }
 
 
-Item
-DynamicContextImpl::getCurrentDateTime( ) const
+/****************************************************************************//**
+
+********************************************************************************/
+Item DynamicContextImpl::getCurrentDateTime() const
 {
   ZORBA_DCTX_TRY
   {
@@ -596,8 +494,10 @@ DynamicContextImpl::getCurrentDateTime( ) const
 }
 
 
-bool
-DynamicContextImpl::setImplicitTimezone( int aTimezoneMinutes )
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::setImplicitTimezone(int aTimezoneMinutes)
 {
   ZORBA_DCTX_TRY
   {
@@ -611,6 +511,9 @@ DynamicContextImpl::setImplicitTimezone( int aTimezoneMinutes )
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 int DynamicContextImpl::getImplicitTimezone() const
 {
   ZORBA_DCTX_TRY
@@ -622,6 +525,9 @@ int DynamicContextImpl::getImplicitTimezone() const
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 bool DynamicContextImpl::setDefaultCollection(const Item& aCollectionUri)
 {
   ZORBA_DCTX_TRY
@@ -639,6 +545,9 @@ bool DynamicContextImpl::setDefaultCollection(const Item& aCollectionUri)
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 void DynamicContextImpl::checkNoIterators()
 {
   if (theQuery->theResultIterator && 
@@ -649,6 +558,9 @@ void DynamicContextImpl::checkNoIterators()
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 Item DynamicContextImpl::getDefaultCollection() const
 {
   ZORBA_DCTX_TRY
@@ -660,6 +572,9 @@ Item DynamicContextImpl::getDefaultCollection() const
 }
 
 
+/****************************************************************************//**
+
+********************************************************************************/
 bool DynamicContextImpl::addExternalFunctionParam(
   const String& aName,
   void* aValue)
@@ -673,7 +588,11 @@ bool DynamicContextImpl::addExternalFunctionParam(
   return false;
 }
 
-bool DynamicContextImpl::getExternalFunctionParam (
+
+/****************************************************************************//**
+
+********************************************************************************/
+bool DynamicContextImpl::getExternalFunctionParam(
   const String& aName,
   void*& aValue) const
 {
@@ -686,102 +605,116 @@ bool DynamicContextImpl::getExternalFunctionParam (
   return false;
 }
 
-void DynamicContextImpl::validateIfNecesary(store::Item_t& docItem,
-                                            xqpStringStore_t& docUri,
-                                            store::Item_t& docUriItem,
-                                            const LoadProperties& aLoadProperties)
+
+/****************************************************************************//**
+
+********************************************************************************/
+void DynamicContextImpl::validateIfNecesary(
+    store::Item_t& docItem,
+    xqpStringStore_t& docUri,
+    store::Item_t& docUriItem,
+    const LoadProperties& aLoadProperties)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-    validation_mode_t lValidationMode = aLoadProperties.getValidationMode();
-    TypeManager* tm = theStaticContext->get_typemanager();
+  validation_mode_t lValidationMode = aLoadProperties.getValidationMode();
+  TypeManager* tm = theStaticContext->get_typemanager();
 
-    if (!docItem->isValidated())
+  if (!docItem->isValidated())
+  {
+    if (lValidationMode != validate_skip)
     {
-      if (lValidationMode != validate_skip)
+      store::Item_t validatedNode;
+      store::Item_t typeName;
+      QueryLoc loc;
+
+      ParseConstants::validation_mode_t mode = (lValidationMode == validate_lax ?
+                                                ParseConstants::val_lax :
+                                                ParseConstants::val_strict);
+
+      bool success = Validator::effectiveValidationValue(validatedNode,
+                                                         docItem,
+                                                         typeName,
+                                                         tm,
+                                                         mode,
+                                                         theStaticContext,
+                                                         loc);
+      ZORBA_ASSERT(success);
+      
+      if (docItem != validatedNode)
       {
-        store::Item_t validatedNode;
-        store::Item_t typeName;
-        QueryLoc loc;
-
-        ParseConstants::validation_mode_t mode = (lValidationMode == validate_lax ?
-                                                  ParseConstants::val_lax :
-                                                  ParseConstants::val_strict);
-
-        bool success = Validator::effectiveValidationValue(validatedNode,
-                                                           docItem,
-                                                           typeName,
-                                                           tm,
-                                                           mode,
-                                                           theStaticContext,
-                                                           loc);
-        ZORBA_ASSERT(success);
-
-        if (docItem != validatedNode)
-        {
-          GENV_STORE.deleteDocument(docUri);
-          docItem = validatedNode;
-          docItem->markValidated();
-          GENV_STORE.addNode(docUri.getp(), docItem);
-        }
+        GENV_STORE.deleteDocument(docUri);
+        docItem = validatedNode;
+        docItem->markValidated();
+        GENV_STORE.addNode(docUri.getp(), docItem);
       }
     }
-    else if (tm->getSchema() == NULL || lValidationMode == validate_skip)
-    {
-      GENV_STORE.deleteDocument(docUri);
-      InternalDocumentURIResolver* uriResolver;
-      uriResolver = theStaticContext->get_document_uri_resolver();
-      docItem = uriResolver->resolve(docUriItem, theStaticContext, true, false);
-    }
+  }
+  else if (tm->getSchema() == NULL || lValidationMode == validate_skip)
+  {
+    GENV_STORE.deleteDocument(docUri);
+    InternalDocumentURIResolver* uriResolver;
+    uriResolver = theStaticContext->get_document_uri_resolver();
+    docItem = uriResolver->resolve(docUriItem, theStaticContext, true, false, false);
+  }
 #endif//ZORBA_NO_XMLSCHEMA
 }
 
-void DynamicContextImpl::validateIfNecesary(store::Item_t& docItem,
-                                            xqpStringStore_t& docUri,
-                                            xqpStringStore_t& baseUri,
-                                            std::auto_ptr<std::istream> aInStream,
-                                            const LoadProperties& aLoadProperties)
+
+/****************************************************************************//**
+
+********************************************************************************/
+void DynamicContextImpl::validateIfNecesary(
+    store::Item_t& docItem,
+    xqpStringStore_t& docUri,
+    xqpStringStore_t& baseUri,
+    std::auto_ptr<std::istream> aInStream,
+    const LoadProperties& aLoadProperties)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
-    validation_mode_t lValidationMode = aLoadProperties.getValidationMode();
-    TypeManager* tm = theStaticContext->get_typemanager();
+  validation_mode_t lValidationMode = aLoadProperties.getValidationMode();
+  TypeManager* tm = theStaticContext->get_typemanager();
 
-    if (!docItem->isValidated())
+  if (!docItem->isValidated())
+  {
+    if (lValidationMode != validate_skip)
     {
-      if (lValidationMode != validate_skip)
+      store::Item_t validatedNode;
+      store::Item_t typeName;
+      QueryLoc loc;
+
+      ParseConstants::validation_mode_t mode = (lValidationMode == validate_lax ?
+                                                ParseConstants::val_lax :
+                                                ParseConstants::val_strict);
+      bool success = Validator::effectiveValidationValue(validatedNode,
+                                                         docItem,
+                                                         typeName,
+                                                         tm,
+                                                         mode,
+                                                         theStaticContext,
+                                                         loc);
+      ZORBA_ASSERT(success);
+      
+      if (docItem != validatedNode)
       {
-        store::Item_t validatedNode;
-        store::Item_t typeName;
-        QueryLoc loc;
-
-        ParseConstants::validation_mode_t mode = (lValidationMode == validate_lax ?
-                                                  ParseConstants::val_lax :
-                                                  ParseConstants::val_strict);
-        bool success = Validator::effectiveValidationValue(validatedNode,
-                                                           docItem,
-                                                           typeName,
-                                                           tm,
-                                                           mode,
-                                                           theStaticContext,
-                                                           loc);
-        ZORBA_ASSERT(success);
-
-        if (docItem != validatedNode)
-        {
-          GENV_STORE.deleteDocument(docUri);
-          docItem = validatedNode;
-          docItem->markValidated();
-          GENV_STORE.addNode(docUri.getp(), docItem);
-        }
+        GENV_STORE.deleteDocument(docUri);
+        docItem = validatedNode;
+        docItem->markValidated();
+        GENV_STORE.addNode(docUri.getp(), docItem);
       }
     }
-    else if (tm->getSchema() == NULL || lValidationMode == validate_skip)
-    {
-      GENV_STORE.deleteDocument(docUri);
-      store::LoadProperties lStoreLoadProperties;
-      lStoreLoadProperties.setEnableDtd(aLoadProperties.getEnableDtd());
+  }
+  else if (tm->getSchema() == NULL || lValidationMode == validate_skip)
+  {
+    GENV_STORE.deleteDocument(docUri);
 
-      docItem = GENV_STORE.loadDocument(baseUri, docUri, *(aInStream.get()), lStoreLoadProperties);
-    }
+    store::LoadProperties lStoreLoadProperties;
+    lStoreLoadProperties.setEnableDtd(aLoadProperties.getEnableDtd());
+    
+    docItem = GENV_STORE.loadDocument(baseUri,
+                                      docUri,
+                                      *(aInStream.get()),
+                                      lStoreLoadProperties);
+  }
 #endif
 }
 

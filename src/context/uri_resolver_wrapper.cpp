@@ -76,8 +76,9 @@ DocumentURIResolverWrapper::DocumentURIResolverWrapper(DocumentURIResolver* aDoc
 store::Item_t DocumentURIResolverWrapper::resolve(
     const store::Item_t& aURI,
     static_context* aStaticContext,
-    bool validate,
+    bool validateUri,
     bool tidying,
+    bool replaceDoc,
     const store::Item_t& aTidyUserOpt)
 {
   StaticContextImpl  lOuterStaticContext(aStaticContext, 0);
@@ -86,13 +87,19 @@ store::Item_t DocumentURIResolverWrapper::resolve(
 
   // we have the ownership; it will be destroyed automatically once we leave this function
   std::auto_ptr<DocumentURIResolverResult> lResult = 
-    theDocResolver->resolve( lURIItem, &lOuterStaticContext,
-                             &XmlDataManagerSingleton::Instance(),
-                             validate, tidying, lTidyUserOpt);
+  theDocResolver->resolve(lURIItem, &lOuterStaticContext,
+                          &XmlDataManagerSingleton::Instance(),
+                          validateUri,
+                          tidying,
+                          replaceDoc,
+                          lTidyUserOpt);
   
-  if (lResult->getError() == URIResolverResult::UR_NOERROR) {
-      return Unmarshaller::getInternalItem(lResult->getDocument());
-  } else {
+  if (lResult->getError() == URIResolverResult::UR_NOERROR) 
+  {
+    return Unmarshaller::getInternalItem(lResult->getDocument());
+  }
+  else
+  {
     // handle errors
     handle_resolver_error(lResult.get());
   }

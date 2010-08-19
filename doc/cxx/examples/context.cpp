@@ -111,34 +111,65 @@ context_example_3(Zorba* aZorba)
 	return true;
 }
 
+
 /**
  * Example to show the use of document content as the value of an external variable.
  */
 bool
 context_example_4(Zorba* aZorba)
 {
+  std::ostringstream outStream1;
+  std::ostringstream outStream2;
 
-  std::auto_ptr<std::istream> lDocStream( 
+  std::auto_ptr<std::istream> lDocStream1( 
     new std::stringstream("<books><book>Book 1</book><book>Book 2</book></books>"));
 
-  XQuery_t lQuery = aZorba->compileQuery("declare variable $var external; $var//book");
+  std::auto_ptr<std::istream> lDocStream2( 
+    new std::stringstream("<books><book>Book 1.1</book><book>Book 2.2</book></books>"));
 
-  DynamicContext* lCtx = lQuery->getDynamicContext();
+  zorba::LoadProperties ldProps;
 
-  /* Parses the input stream and internally creates a datamodel instance
-   * that can be bound to the variable
-   * Note that ownership of the stream is transfered to the system using an auto_ptr.
-   */
-  lCtx->setVariableAsDocument("var", "books.xml", lDocStream);
+  try 
+  {
+    XQuery_t lQuery = aZorba->compileQuery("declare variable $doc external; $doc//book[1]/text()");
 
-  try {
-    std::cout << lQuery << std::endl;
-  } catch (DynamicException& e) {
-    std::cerr << e << std::endl;
+    DynamicContext* lCtx = lQuery->getDynamicContext();
+
+    // Parses the input stream and internally creates a datamodel instance
+    // that can be bound to the variable. Note that ownership of the stream
+    // is transfered to the system using an auto_ptr.
+    lCtx->setVariableAsDocument("doc", "books.xml", lDocStream1, ldProps);
+
+    outStream1 << lQuery << std::endl;
+    std::cout << outStream1.str() << std::endl;
+
+    // Reset the value of the $doc variable to the 2nd document. 
+    lCtx->setVariableAsDocument("doc", "books.xml", lDocStream2, ldProps, true);
+
+    outStream2 << lQuery << std::endl;
+    std::cout << outStream2.str() << std::endl;
+
+    if (outStream2.str() != "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\nBook 1.1\n")
+    {
+      std::cerr << "Test 4 failed with a wrong result : " << std::endl
+                << outStream2.str() << std::endl;
+      return false;
+    }
+  }
+  catch (ZorbaException& e) 
+  {
+    std::cerr << "Test 4 failed with exception : " << e << std::endl;
     return false;
   }
+  catch (...)
+  {
+    std::cerr << "Test 4 failed with unknown exception" << std::endl;
+    return false;
+  }
+
   return true;
 }
+
 
 /**
  * Example to show the use of document content as the value of the context item in

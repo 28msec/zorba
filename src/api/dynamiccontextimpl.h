@@ -81,6 +81,7 @@ public:
         const String& aQName,
         const Item& aItem );
 
+  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
   virtual bool
   setVariableAsDocument(
         const String& aQName,
@@ -95,19 +96,20 @@ public:
         std::auto_ptr<std::istream> aStream,
         validation_mode_t mode);
 
-  /** @deprecated Use setVariableAsDocument(... LoadProperties) */
   virtual bool
   setVariableAsDocument(
         const String& aQName,
         const String& xml_uri,
-        const LoadProperties& aLoadProperties);
+        const LoadProperties& aLoadProperties,
+        bool aReplaceDoc);
 
   virtual bool
   setVariableAsDocument(
         const String& aQName,
         const String& aDocURI,
         std::auto_ptr<std::istream> aStream,
-        const LoadProperties& aLoadProperties);
+        const LoadProperties& aLoadProperties,
+        bool aReplaceDoc);
 
   virtual bool
   setVariable(
@@ -141,12 +143,14 @@ public:
   setContextItemAsDocument(
         const String& aDocURI,
         std::auto_ptr<std::istream> aInStream,
-        const LoadProperties& aLoadProperties);
+        const LoadProperties& aLoadProperties,
+        bool aReplaceDoc);
 
   virtual bool
   setContextItemAsDocument(
         const String& aDocURI,
-        const LoadProperties& aLoadProperties);
+        const LoadProperties& aLoadProperties,
+        bool aReplaceDoc);
 
   virtual bool
   getContextItem(Item& aItem);

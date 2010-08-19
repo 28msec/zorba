@@ -1685,6 +1685,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
         result = theSctx->get_document_uri_resolver()->resolve(resolvedURIItem,
                                                                theSctx,
                                                                false,
+                                                               false,
                                                                false);
         fillTime(t0, t0user, planState);
       }
@@ -1718,6 +1719,7 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
     {
       doc = theSctx->get_document_uri_resolver()->resolve(uriItem,
                                                           theSctx,
+                                                          false,
                                                           false,
                                                           false);
     }

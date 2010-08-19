@@ -963,9 +963,6 @@ public:
         const XmlNode*         rootCopy,
         const store::CopyMode& copymode) const;
 
-  void setIsIdRefs()          { theFlags |= IsIdRefs; }
-  void resetIsIdRefs()        { theFlags &= ~IsIdRefs; }
-
   bool haveListValue() const  { return (theFlags & HaveListValue) != 0; }
   void resetHaveListValue()   { theFlags &= ~HaveListValue; }
   void setHaveListValue()     { theFlags |= HaveListValue; }

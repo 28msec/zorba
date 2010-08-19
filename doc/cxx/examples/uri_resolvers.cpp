@@ -40,20 +40,31 @@ class MyDocumentURIResolverResult : public DocumentURIResolverResult
     Item theDocument;
 };
 
+
 class MyDocumentURIResolver : public  DocumentURIResolver
 {
-  public:
-    virtual ~MyDocumentURIResolver() {}
+public:
+  virtual ~MyDocumentURIResolver() {}
 
-    virtual std::auto_ptr<DocumentURIResolverResult>
-        resolve(const Item& aURI, StaticContext* aStaticContext, XmlDataManager* aXmlDataManager, bool validate, bool tidying, const Item& tidyUserOpt)
+  virtual std::auto_ptr<DocumentURIResolverResult>
+  resolve(
+        const Item& aURI,
+        StaticContext* aStaticContext,
+        XmlDataManager* aXmlDataManager,
+        bool validate,
+        bool tidying,
+        bool replaceDoc,
+        const Item& tidyUserOpt)
     {
       std::auto_ptr<MyDocumentURIResolverResult> lResult(new MyDocumentURIResolverResult());
-      if (aURI.getStringValue() == "mydoc.xml") {
+      if (aURI.getStringValue() == "mydoc.xml") 
+      {
         // we have only one document
         lResult->theDocument = aXmlDataManager->getDocument(aURI.getStringValue());
         lResult->setError(URIResolverResult::UR_NOERROR);
-      } else {
+      }
+      else
+      {
         lResult->setError(URIResolverResult::UR_FODC0002);
         std::stringstream lErrorStream;
         lErrorStream << "Document could not be found " << aURI.getStringValue();
@@ -62,6 +73,7 @@ class MyDocumentURIResolver : public  DocumentURIResolver
       return std::auto_ptr<DocumentURIResolverResult>(lResult.release()); 
     }
 };
+
 
 bool 
 resolver_example_1(Zorba* aZorba)
@@ -82,10 +94,13 @@ resolver_example_1(Zorba* aZorba)
 
   lContext->setDocumentURIResolver(&lResolver);
 
-  try {
+  try 
+  {
     XQuery_t lQuery = aZorba->compileQuery("fn:doc('mydoc.xml')", lContext); 
     std::cout << lQuery << std::endl;
-  } catch (ZorbaException& e) {
+  }
+  catch (ZorbaException& e)
+  {
     std::cerr << e.getDescription() << std::endl;
   }
 

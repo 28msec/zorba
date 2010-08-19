@@ -94,8 +94,7 @@ void XmlDataManagerImpl::registerErrorHandler(ErrorHandler* aErrorHandler)
 }
 
 
-Item
-XmlDataManagerImpl::parseDocument(std::istream& aStream)
+Item XmlDataManagerImpl::parseDocument(std::istream& aStream)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
   ErrorHandler* aErrorHandler = 0;
@@ -109,8 +108,9 @@ XmlDataManagerImpl::parseDocument(std::istream& aStream)
 }
 
 
-Item
-XmlDataManagerImpl::loadDocument(const String& local_file_uri)
+Item XmlDataManagerImpl::loadDocument(
+    const String& local_file_uri,
+    bool replaceDoc)
 {
   ErrorHandler* aErrorHandler = NULL;
 
@@ -129,8 +129,10 @@ XmlDataManagerImpl::loadDocument(const String& local_file_uri)
 }
 
 
-Item
-XmlDataManagerImpl::loadDocument(const String& uri, std::istream& stream)
+Item XmlDataManagerImpl::loadDocument(
+    const String& uri,
+    std::istream& stream,
+    bool replaceDoc)
 {
   ErrorHandler* aErrorHandler = NULL;
 
@@ -139,6 +141,9 @@ XmlDataManagerImpl::loadDocument(const String& uri, std::istream& stream)
   ZORBA_DM_TRY
   {
     xqpStringStore_t lString = Unmarshaller::getInternalString(uri);
+
+    if (replaceDoc)
+      theStore->deleteDocument(lString);
 
     if ( ! stream.good() ) 
     {
@@ -152,8 +157,9 @@ XmlDataManagerImpl::loadDocument(const String& uri, std::istream& stream)
 }
 
 
-Item
-XmlDataManagerImpl::loadDocumentFromUri(const String& aUri)
+Item XmlDataManagerImpl::loadDocumentFromUri(
+    const String& aUri,
+    bool replaceDoc)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
 
@@ -172,7 +178,11 @@ XmlDataManagerImpl::loadDocumentFromUri(const String& aUri)
     item_factory->createAnyURI(uriItem, str_uri);
 
     store::Item_t   docItem;
-    docItem = uri_resolver->resolve(uriItem, &GENV_ROOT_STATIC_CONTEXT, true, false);
+    docItem = uri_resolver->resolve(uriItem,
+                                    &GENV_ROOT_STATIC_CONTEXT,
+                                    true,
+                                    false,
+                                    replaceDoc);
     
     if(docItem.isNull())
       return Item();
@@ -184,15 +194,13 @@ XmlDataManagerImpl::loadDocumentFromUri(const String& aUri)
 }
 
 
-Item
-XmlDataManagerImpl::getDocument(const String& uri)
+Item XmlDataManagerImpl::getDocument(const String& uri)
 {
   return getDocument(uri, theErrorHandler);
 }
 
 
-Item
-XmlDataManagerImpl::getDocument(const String& uri, ErrorHandler* aErrorHandler)
+Item XmlDataManagerImpl::getDocument(const String& uri, ErrorHandler* aErrorHandler)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
 
@@ -206,15 +214,13 @@ XmlDataManagerImpl::getDocument(const String& uri, ErrorHandler* aErrorHandler)
 }
 
 
-bool
-XmlDataManagerImpl::deleteDocument(const String& uri)
+bool XmlDataManagerImpl::deleteDocument(const String& uri)
 {
   return deleteDocument(uri, theErrorHandler);
 }
 
 
-bool
-XmlDataManagerImpl::deleteDocument(const String& uri, ErrorHandler* aErrorHandler)
+bool XmlDataManagerImpl::deleteDocument(const String& uri, ErrorHandler* aErrorHandler)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
 
@@ -242,15 +248,16 @@ void XmlDataManagerImpl::deleteAllDocuments()
   ZORBA_DM_CATCH
 }
 
-Collection_t
-XmlDataManagerImpl::createCollection(const String& uri)
+
+Collection_t XmlDataManagerImpl::createCollection(const String& uri)
 {
   return createCollection(uri, theErrorHandler);
 }
 
 
-Collection_t
-XmlDataManagerImpl::createCollection(const String& uri, ErrorHandler* aErrorHandler)
+Collection_t XmlDataManagerImpl::createCollection(
+    const String& uri,
+    ErrorHandler* aErrorHandler)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
 
@@ -265,15 +272,15 @@ XmlDataManagerImpl::createCollection(const String& uri, ErrorHandler* aErrorHand
 }
 
 
-Collection_t
-XmlDataManagerImpl::getCollection(const String& uri)
+Collection_t XmlDataManagerImpl::getCollection(const String& uri)
 {
   return getCollection(uri, theErrorHandler);
 }
 
 
-Collection_t
-XmlDataManagerImpl::getCollection(const String& uri, ErrorHandler* aErrorHandler)
+Collection_t XmlDataManagerImpl::getCollection(
+    const String& uri,
+    ErrorHandler* aErrorHandler)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
 
@@ -291,15 +298,15 @@ XmlDataManagerImpl::getCollection(const String& uri, ErrorHandler* aErrorHandler
 }
 
 
-bool
-XmlDataManagerImpl::deleteCollection(const String& uri)
+bool XmlDataManagerImpl::deleteCollection(const String& uri)
 {
   return deleteCollection(uri, theErrorHandler);
 }
 
 
-bool
-XmlDataManagerImpl::deleteCollection(const String& uri, ErrorHandler* aErrorHandler)
+bool XmlDataManagerImpl::deleteCollection(
+    const String& uri,
+    ErrorHandler* aErrorHandler)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
 

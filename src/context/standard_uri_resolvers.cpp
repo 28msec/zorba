@@ -44,12 +44,12 @@ namespace zorba
 /*******************************************************************************
 
 ********************************************************************************/
-store::Item_t
-StandardDocumentURIResolver::resolve(
+store::Item_t StandardDocumentURIResolver::resolve(
     const store::Item_t& aURI,
     static_context* aStaticContext,
-    bool validate,
+    bool validateUri,
     bool tidying,
+    bool replaceDoc,
     const store::Item_t& tidyUserOpt)
 {
   store::Item_t lResultDoc;
@@ -63,10 +63,13 @@ StandardDocumentURIResolver::resolve(
 
   xqpStringStore_t baseUri = aStaticContext->get_base_uri();
 
-  xqpString lURIString = xqpString(&*aURI->getStringValue());
-  URI lURI(lURIString.getStore(), validate);
+  URI lURI(lUriString, validateUri);
 
-  lResultDoc = lStore.getDocument(lURI.toString().getp());
+  if (replaceDoc)
+    lStore.deleteDocument(lURI.toString());
+  else
+    lResultDoc = lStore.getDocument(lURI.toString().getp());
+
   if (lResultDoc != NULL)
     return lResultDoc;
 
@@ -173,6 +176,7 @@ StandardDocumentURIResolver::resolve(
                          << lURI.toString()
                          << " . " << q);
   }
+
   if (lResultDoc == NULL)
   {
     ZORBA_ERROR_DESC_OSS(FODC0002,

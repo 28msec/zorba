@@ -76,7 +76,9 @@ namespace zorba {
        *
        */
       virtual Item 
-      loadDocument(const String& aURI, std::istream& aStream) = 0;
+      loadDocument(const String& aURI,
+                   std::istream& aStream,
+                   bool replaceDoc = false) = 0;
 
       /** \brief Load a document from a file.
        *
@@ -89,7 +91,7 @@ namespace zorba {
        *
        */
       virtual Item
-      loadDocument(const String& aUri) = 0;
+      loadDocument(const String& aUri, bool replaceDoc = false) = 0;
 
       /** \brief Load a document from a Uri.
        *
@@ -102,7 +104,7 @@ namespace zorba {
        *
        */
       virtual Item
-      loadDocumentFromUri(const String& aUri) = 0;
+      loadDocumentFromUri(const String& aUri, bool replaceDoc = false) = 0;
 
       /** \brief Get the document identified by the given URI.
        *

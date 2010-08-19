@@ -39,58 +39,43 @@ class XmlDataManagerImpl : public XmlDataManager
 {
 private:
   friend struct Loki::CreateUsingNew<XmlDataManagerImpl>;
+
   XmlDataManagerImpl();
 
   virtual ~XmlDataManagerImpl();
 
 public:
-  void
-  registerErrorHandler(ErrorHandler* aErrorHandler);
+  void registerErrorHandler(ErrorHandler* aErrorHandler);
 
-  Item
-  parseDocument(std::istream& aStream);
+  Item parseDocument(std::istream& aStream);
 
-  Item
-  loadDocument(const String& local_file_uri);
+  Item loadDocument(const String& local_file_uri, bool replaceDoc);
 
-  Item 
-  loadDocument(const String& uri, std::istream& stream);
+  Item loadDocument(const String& uri, std::istream& stream, bool eplaceDoc);
 
-  Item
-  loadDocumentFromUri(const String& aUri);
+  Item loadDocumentFromUri(const String& aUri, bool replaceDoc);
 
-  Item
-  getDocument(const String& uri);
+  Item getDocument(const String& uri);
 
-  Item
-  getDocument(const String& uri, ErrorHandler* aErrorHandler);
+  Item getDocument(const String& uri, ErrorHandler* aErrorHandler);
 
-  bool
-  deleteDocument(const String& uri);
+  bool deleteDocument(const String& uri);
 
-  bool
-  deleteDocument(const String& uri, ErrorHandler* aErrorHandler);
+  bool deleteDocument(const String& uri, ErrorHandler* aErrorHandler);
 
-  void 
-  deleteAllDocuments();
+  void  deleteAllDocuments();
 
-  Collection_t
-  createCollection(const String& uri);
+  Collection_t createCollection(const String& uri);
 
-  Collection_t
-  createCollection(const String& uri, ErrorHandler* aErrorHandler);
+  Collection_t createCollection(const String& uri, ErrorHandler* aErrorHandler);
 
-  Collection_t
-  getCollection(const String& uri);
+  Collection_t getCollection(const String& uri);
 
-  Collection_t
-  getCollection(const String& uri, ErrorHandler* aErrorHandler);
+  Collection_t getCollection(const String& uri, ErrorHandler* aErrorHandler);
 
-  bool
-  deleteCollection(const String& uri);
+  bool deleteCollection(const String& uri);
 
-  bool
-  deleteCollection(const String& uri, ErrorHandler* aErrorHandler);
+  bool deleteCollection(const String& uri, ErrorHandler* aErrorHandler);
 
  protected:
   store::Store           * theStore;
@@ -103,10 +88,11 @@ public:
 
 }; /* class XmlDataManagerImpl */
 
-  typedef
-  Loki::SingletonHolder<XmlDataManagerImpl,
-                        Loki::CreateUsingNew,
-                        Loki::DeletableSingleton> XmlDataManagerSingleton;
+
+typedef
+Loki::SingletonHolder<XmlDataManagerImpl,
+                      Loki::CreateUsingNew,
+                      Loki::DeletableSingleton> XmlDataManagerSingleton;
 
 } /* namespace zorba */
 #endif

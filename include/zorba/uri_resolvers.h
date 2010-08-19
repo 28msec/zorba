@@ -88,8 +88,9 @@ class ZORBA_DLL_PUBLIC DocumentURIResolver
   resolve(const Item& aURI,
           StaticContext* aStaticContext,
           XmlDataManager* aXmlDataManager,
-          bool validate,
+          bool validateUri,
           bool tidying,
+          bool replaceDoc = false,
           const Item& aTidyUserOpt = NULL) = 0;
 };
 

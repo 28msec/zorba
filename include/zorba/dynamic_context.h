@@ -77,8 +77,9 @@ class ZORBA_DLL_PUBLIC DynamicContext
   virtual bool
   setVariable( const String& aQName, const Iterator_t& aIterator ) = 0;
   
-  /** \brief Defines the external variable identified by aQName and assigns it the 
-   *         the document that results from reading and parsing the given istream.
+  /** \brief Sets the value of the external variable identified by aQName to the 
+   *         the document node that results from reading and parsing the xml
+   *         document in the given istream.
    *
    * @param aQName the QName that identifies the external variable.
    * @param aDocURI the URI that is used to reference the document in the XmlDataManager.
@@ -89,69 +90,83 @@ class ZORBA_DLL_PUBLIC DynamicContext
    *        be validated in strict or lax mode using the in-scope schema definitions
    *        that are found in the query's static context.
    * @return true if the variable has been set successfully, false otherwise.
-   * @throw ZorbaException if an error occured (e.g. the given Iterator
-   *        is not valid).
-   * @deprecated Use setVarableAsDocument method with LoadProperties param
-   */
-  virtual bool
-  setVariableAsDocument ( const String& aQName,
-                          const String& aDocURI, 
-                          std::auto_ptr<std::istream> aDocStream,
-                          validation_mode_t aMode = validate_skip) = 0;
-
-  /** \brief Defines the external variable identified by aQName and assigns it the 
-   *         the document downloaded from Uri.
+   * @throw ZorbaException if an error occured.
    *
-   * @param aQName the QName that identifies the external variable.
-   * @param aDocURI the source Uri and the URI that is used to reference the
-   *        document in the XmlDataManager.
-   * @param aMode the mode to validate the document with. If it is equal to 
-   *        validate_skip, no validation is done. Otherwise, the document will
-   *        be validated in strict or lax mode using the in-scope schema definitions
-   *        that are found in the query's static context.
-   * @return true if the variable has been set successfully, false otherwise.
-   * @throw ZorbaException if an error occured (e.g. the given Iterator 
-   *        is not valid).
    * @deprecated Use setVarableAsDocument method with LoadProperties param
    */
   virtual bool
   setVariableAsDocument( const String& aQName,
-                         const String& xml_uri,
+                         const String& aDocURI, 
+                         std::auto_ptr<std::istream> aDocStream,
                          validation_mode_t aMode = validate_skip) = 0;
 
-  /** \brief Defines the external variable identified by aQName and assigns it the
-   *         the document that results from reading and parsing the given istream.
+  /** \brief Sets the value of the external variable identified by aQName to the 
+   *         the document node that results from reading and parsing the xml
+   *         document downloaded from the given URI.
+   *
+   * @param aQName the QName that identifies the external variable.
+   * @param aDocURI the source URI, which is also used to reference the
+   *        document in the XmlDataManager.
+   * @param aMode the mode to validate the document with. If it is equal to 
+   *        validate_skip, no validation is done. Otherwise, the document will
+   *        be validated in strict or lax mode using the in-scope schema definitions
+   *        that are found in the query's static context.
+   * @return true if the variable has been set successfully, false otherwise.
+   * @throw ZorbaException if an error occured.
+   *
+   * @deprecated Use setVarableAsDocument method with LoadProperties param
+   */
+  virtual bool
+  setVariableAsDocument( const String& aQName,
+                         const String& aDocURI,
+                         validation_mode_t aMode = validate_skip) = 0;
+
+  /** \brief Sets the value of the external variable identified by aQName to the 
+   *         the document node that results from reading and parsing the xml
+   *         document in the given istream.
    *
    * @param aQName the QName that identifies the external variable.
    * @param aDocURI the URI that is used to reference the document in the XmlDataManager.
    * @param aDocStream the istream used to read the document from. Ownership
    *        of the input stream is transfered to the processor using an auto_ptr.
    * @param aLoadProperties properties used for loading the document.
+   * @param aReplaceDoc If a parsed document with the same URI exists in zorba's
+   *        store already, then if aReplaceDoc is false, the variable is set to
+   *        the root node of the existing document (i.e., no document is read from
+   *        the given stream); otherwise, if aReplaceDoc is true, the existing
+   *        document will be replaced by the document read from the given stream.    
    * @return true if the variable has been set successfully, false otherwise.
-   * @throw ZorbaException if an error occured (e.g. the given Iterator
-   *        is not valid).
-   */
-  virtual bool
-  setVariableAsDocument ( const String& aQName,
-                          const String& aDocURI,
-                          std::auto_ptr<std::istream> aDocStream,
-                          const LoadProperties& aLoadProperties) = 0;
-
-  /** \brief Defines the external variable identified by aQName and assigns it the
-   *         the document downloaded from Uri.
-   *
-   * @param aQName the QName that identifies the external variable.
-   * @param aDocURI the source Uri and the URI that is used to reference the
-   *        document in the XmlDataManager.
-   * @param aLoadProperties properties used for loading the document.
-   * @return true if the variable has been set successfully, false otherwise.
-   * @throw ZorbaException if an error occured (e.g. the given Iterator
-   *        is not valid).
+   * @throw ZorbaException if an error occured.
    */
   virtual bool
   setVariableAsDocument( const String& aQName,
-                         const String& xml_uri,
-                         const LoadProperties& aLoadProperties) = 0;
+                         const String& aDocURI,
+                         std::auto_ptr<std::istream> aDocStream,
+                         const LoadProperties& aLoadProperties,
+                         bool aReplaceDoc = false) = 0;
+  
+  /** \brief Sets the value of the external variable identified by aQName to the 
+   *         the document node that results from reading and parsing the xml
+   *         document retrieved from the given URI.
+   *
+   * @param aQName the QName that identifies the external variable.
+   * @param aDocURI the source Uri, which is also used to reference the
+   *        document in the XmlDataManager.
+   * @param aLoadProperties properties used for loading the document.
+   * @param aReplaceDoc If a parsed document with the same URI exists in zorba's
+   *        store already, then if aReplaceDoc is false, the variable is set to
+   *        the root node of the existing document (i.e., no document is retrieved
+   *        from the given doc URI); otherwise, if aReplaceDoc is true, the
+   *        existing document will be replaced by the document retrieved from the
+   *        given URI.    
+   * @return true if the variable has been set successfully, false otherwise.
+   * @throw ZorbaException if an error occured.
+   */
+  virtual bool
+  setVariableAsDocument( const String& aQName,
+                         const String& aDocURI,
+                         const LoadProperties& aLoadProperties,
+                         bool aReplaceDoc = false) = 0;
 
   /** \brief Returns the current value of an external
    * variable. Exactly one of the two return values (aItem or
@@ -167,8 +182,10 @@ class ZORBA_DLL_PUBLIC DynamicContext
    * @throw ZorbaException if an error occured (e.g. the given Iterator is not valid).
    */
   virtual bool
-  getVariable( const String& aNamespace, const String& aLocalname,
-    Item& aItem, Iterator_t& aIterator) = 0;
+  getVariable( const String& aNamespace,
+               const String& aLocalname,
+               Item& aItem,
+               Iterator_t& aIterator) = 0;
 
   /** \brief Defines the context item.
    *
@@ -179,14 +196,17 @@ class ZORBA_DLL_PUBLIC DynamicContext
   virtual bool
   setContextItem ( const Item& aItem ) = 0;
   
-  /** \brief Defines the context item and assigns it the document that results
-   *         from parsing the given input stream.
+  /** \brief Sets the value of the context item to the the document node that
+   *         results from reading and parsing the xml document in the given 
+   *         input stream.
    *
    * @param aDocURI the URI that is used to reference the document in the XmlDataManager.
    * @param aDocStream the istream used to read the document from. Ownership
    *        of the input stream is transfered to the processor using an auto_ptr.
    * @throw ZorbaException if an error occured (e.g. the input document could
    *        not be parsed).
+   *
+   * @deprecated Use setContextItemAsDocument method with LoadProperties param
    */
   virtual bool
   setContextItemAsDocument ( const String& aDocURI, 
@@ -200,36 +220,55 @@ class ZORBA_DLL_PUBLIC DynamicContext
    *        of the input stream is transfered to the processor using an auto_ptr.
    * @throw ZorbaException if an error occured (e.g. the input document could
    *        not be parsed).
+   *
+   * @deprecated Use setContextItemAsDocument method with LoadProperties param
    */
   virtual bool
   setContextItemAsDocument ( const String& aDocURI ) = 0;
   
-  /** \brief Defines the context item and assigns it the document that results
-   *         from parsing the given input stream.
+  /** \brief Sets the value of the context item to the the document node that
+   *         results from reading and parsing the xml document in the given 
+   *         input stream.
    *
    * @param aDocURI the URI that is used to reference the document in the XmlDataManager.
    * @param aDocStream the istream used to read the document from. Ownership
-   *        of the input stream is transfered to the processor using an auto_ptr.
+   *        of the input stream is transfered to the processor using an auto_ptr
+   * @param aReplaceDoc If a parsed document with the same URI exists in zorba's
+   *        store already, then if aReplaceDoc is false, the variable is set to
+   *        the root node of the existing document (i.e., no document is read from
+   *        the given stream); otherwise, if aReplaceDoc is true, the existing
+   *        document will be replaced by the document read from the given stream.    
+   * @return true if the variable has been set successfully, false otherwise.
    * @throw ZorbaException if an error occured (e.g. the input document could
    *        not be parsed).
    */
   virtual bool
   setContextItemAsDocument ( const String& aDocURI,
                              std::auto_ptr<std::istream> aDocStream,
-                             const LoadProperties& aLoadProperties) = 0;
+                             const LoadProperties& aLoadProperties,
+                             bool aReplaceDoc = false) = 0;
 
-  /** \brief Defines the context item and assigns it the document downloaded from Uri.
+  /** \brief Sets the value of the context item to the the document node that
+   *         results from reading and parsing the xml document retrieved from
+   *         the given URI.
    *
    * @param aDocURI the source Uri and the URI that is used to reference the
    *        document in the XmlDataManager.
    * @param aDocStream the istream used to read the document from. Ownership
    *        of the input stream is transfered to the processor using an auto_ptr.
+   * @param aReplaceDoc If a parsed document with the same URI exists in zorba's
+   *        store already, then if aReplaceDoc is false, the variable is set to
+   *        the root node of the existing document (i.e., no document is retrieved
+   *        from the given doc URI); otherwise, if aReplaceDoc is true, the
+   *        existing document will be replaced by the document retrieved from the
+   *        given URI.
    * @throw ZorbaException if an error occured (e.g. the input document could
    *        not be parsed).
    */
   virtual bool
   setContextItemAsDocument ( const String& aDocURI,
-                             const LoadProperties& aLoadProperties) = 0;
+                             const LoadProperties& aLoadProperties,
+                             bool aReplaceDoc = false) = 0;
 
   /** \brief Returns the current value of the context item.
    *
@@ -333,18 +372,28 @@ protected:
   virtual ~DynamicContext( ) {};
 };
 
+
 /**
- * How should the document load be done
+ * \brief The LoadProperties class stores various properties that affect
+ *        how a document load is done. A instanc eof this class is passed
+ *        as input to the setVariableAsDocument and setContextItemAsDocument
+ *        method of the DynamicContext class.
  */
 class LoadProperties
 {
 private:
   validation_mode_t theValidationMode;
-  bool theEnableDtdLoader;
+  bool              theEnableDtdLoader;
 
 public:
-  LoadProperties() : theValidationMode(validate_skip), theEnableDtdLoader(false) {}
-  virtual ~LoadProperties() {}
+  LoadProperties() 
+    : 
+    theValidationMode(validate_skip),
+    theEnableDtdLoader(false)
+  {
+  }
+
+  ~LoadProperties() {}
 
   /**
    * Set the property validationMode, it specifies what validation mode
@@ -371,8 +420,8 @@ public:
   }
 
   /**
-   * Set the property enableDtd, it specifies whether the document's
-   * dtd should be enabled when loading
+   * Set the property enableDtd, which specifies whether the document should be
+   * validated against its associated DTD (if any).
    */
   void setEnableDtd(bool aEnableDtdLoader)
   {
@@ -380,8 +429,8 @@ public:
   }
 
   /**
-   * Get the property enableDtd, it specifies whether the document's
-   * dtd should be enabled when loading
+   * Get the property enableDtd, which specifies whether the document should be
+   * validated against its associated DTD (if any).
    */
   bool getEnableDtd() const
   {

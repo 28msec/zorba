@@ -41,8 +41,9 @@ public:
   virtual store::Item_t resolve(
         const store::Item_t& aURI,
         static_context* aStaticContext,
-        bool validate,
+        bool validateUri,
         bool tidying,
+        bool replaceDoc,
         const store::Item_t& tidyUserOpt = NULL);
 };
 

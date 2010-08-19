@@ -31,10 +31,10 @@ namespace zorba {
 class ZORBA_DLL_PUBLIC PropertiesBase 
 {
 protected:
-  std::vector<std::string > __thePositionalArgs;
+  std::vector<std::string> thePositionalArgs;
 
 public:
-  virtual ~PropertiesBase () {}
+  virtual ~PropertiesBase() {}
 
   std::string load_all(
         const char* cfgFilename,
@@ -58,7 +58,7 @@ public:
     return load_env(env_pfx, get_all_options()); 
   }
 
-  std::string load_env(const std::string& env_pfx, const char **options);
+  std::string load_env(const std::string& env_pfx, const char** options);
 
   std::string load_file(const char* fname);
 
@@ -70,14 +70,14 @@ public:
 
   const std::vector<std::string>& getPositionalArgs() const
   {
-    return __thePositionalArgs;
+    return thePositionalArgs;
   }
 
   void copy_args (const char** argv) 
   {
     for (; *argv != NULL; ++argv) 
     {
-      __thePositionalArgs.push_back(*argv);
+      thePositionalArgs.push_back(*argv);
     }
   }
 

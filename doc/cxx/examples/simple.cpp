@@ -237,13 +237,14 @@ example_12(Zorba* aZorba)
   lIterator->open();
 
   Item lItem;
-  while ( lIterator->next(lItem) ) {
+  while ( lIterator->next(lItem) ) 
+  {
     Iterator_t lChildIter = lItem.getChildren();
 
     lChildIter->open();
     Item lChild;
-    while (lChildIter->next(lChild)) {
-
+    while (lChildIter->next(lChild)) 
+    {
       Item lNodeName;
       lChild.getNodeName(lNodeName);
       std::cout << "node name " << lNodeName.getStringValue() << std::endl;
@@ -252,7 +253,8 @@ example_12(Zorba* aZorba)
       lAttrIter->open();
 
       Item lAttr;
-      while (lAttrIter->next(lAttr)) {
+      while (lAttrIter->next(lAttr)) 
+      {
         std::cout << "  attribute value " << lAttr.getStringValue() << std::endl;
       }
       lAttrIter->close();
