@@ -93,6 +93,9 @@ SET(FOUND_XQTS 0)
 
 FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore)
 
+# Check if libgeos is found in order to determine whether
+# we have to skip the geo module tests
+FIND_PACKAGE(Geos)
 
 FOREACH(TESTFILE ${TESTFILES})
   # All testfile paths end in .xq or .xqx. Strip that part off to form
@@ -151,6 +154,14 @@ FOREACH(TESTFILE ${TESTFILES})
       SET (SKIP_TEST 1)
     ENDIF (NEEDS_MAGICK)
   ENDIF (NOT ImageMagick_FOUND)
+
+  # check if libgeos is found; skip the tests if not found
+  IF (NOT GEOS_FOUND)
+    STRING(REGEX MATCH "geo/" NEEDS_LIBGEOS "${TESTNAME}")
+    IF (NEEDS_LIBGEOS)
+      SET (SKIP_TEST 1)
+    ENDIF (NEEDS_LIBGEOS)
+  ENDIF (NOT GEOS_FOUND)
 
   IF(NOT SKIP_TEST)
 
@@ -237,10 +248,6 @@ IF (FOUND_XQTS)
 
 ENDIF (FOUND_XQTS)
 
-FIND_PACKAGE(Geos)
-IF(NOT GEOS_FOUND)
-  SET_TESTS_PROPERTIES (test/rbkt/zorba/geo/envelope1 PROPERTIES WILL_FAIL TRUE)
-ENDIF(NOT GEOS_FOUND)
 
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue
