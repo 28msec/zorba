@@ -39,6 +39,11 @@ MACRO (find_prereqs)
   if (NOT EXISTS ${ZORBA_EXE_SCRIPT})
     message (FATAL_ERROR "Zorba is required; not found. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE_SCRIPT})")
   endif (NOT EXISTS ${ZORBA_EXE_SCRIPT})
+  execute_process (COMMAND "${ZORBA_EXE_SCRIPT}" --omit-xml-declaration
+    --query "1+1" OUTPUT_VARIABLE ignored RESULT_VARIABLE result)
+  if (result)
+    message (FATAL_ERROR "Zorba is not functional. Specify -DZORBA_BUILD_DIR to point to your build directory if necessary. (${ZORBA_EXE_SCRIPT})")
+  endif (result)
 ENDMACRO (find_prereqs)
 
 
