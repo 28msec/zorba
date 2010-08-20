@@ -16,6 +16,14 @@
 #ifndef ZORBA_GET_CURRENT_LIB_SUFFIX_H
 #define ZORBA_GET_CURRENT_LIB_SUFFIX_H
 
+
+@GET_CURRENT_LIB_SUFFIX_CODE@
+                        
+
+#ifndef CURRENT_LIB_SUFFIX
+#define CURRENT_LIB_SUFFIX ""
+#endif
+
 namespace zorba 
 {
 
@@ -25,10 +33,10 @@ namespace zorba
  */
 const char* get_current_lib_suffix() 
 {
-  @GET_CURRENT_LIB_SUFFIX_CODE@
+  return CURRENT_LIB_SUFFIX;
 }
 
 
-}
+} /* namespace zorba */
 
 #endif

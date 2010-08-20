@@ -247,26 +247,42 @@ public:
 
   bool isULong() const
   {
+#ifndef ZORBA_NO_BIGNUMBERS
     return (theInteger.sign() >= 0 &&
             theInteger < MAPM::getMaxUInt64());
+#else
+    return false; 
+#endif
   }
 
   bool isLong() const
   {
+#ifndef ZORBA_NO_BIGNUMBERS
     return (theInteger < MAPM::getMaxInt64() &&
             theInteger > MAPM::getMinInt64());
+#else
+    return false; 
+#endif
   }
 
   bool isUInt() const
   {
+#ifndef ZORBA_NO_BIGNUMBERS
     return (theInteger.sign() >= 0 &&
             theInteger < MAPM::getMaxUInt32());
+#else
+    return false;
+#endif
   }
 
   bool isInt() const
   {
+#ifndef ZORBA_NO_BIGNUMBERS
     return (theInteger < MAPM::getMaxInt32() &&
             theInteger > MAPM::getMinInt32());
+#else
+    return false;
+#endif
   }
 
 private:

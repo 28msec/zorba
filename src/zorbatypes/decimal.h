@@ -213,40 +213,64 @@ public:
 
   bool isInteger() const
   {
+#ifndef ZORBA_NO_BIGNUMBERS
     return theDecimal.is_integer() != 0;
+#else
+    return false;
+#endif
   }
 
   bool isULong() const
   {
+#ifndef ZORBA_NO_BIGNUMBERS
     return (theDecimal.is_integer() &&
             theDecimal.sign() >= 0 &&
             theDecimal < MAPM::getMaxUInt64());
+#else
+    return false;
+#endif
   }
 
   bool isLong() const
   {
+#ifndef ZORBA_NO_BIGNUMBERS
     return (theDecimal.is_integer() && 
             theDecimal < MAPM::getMaxInt64() &&
             theDecimal > MAPM::getMinInt64());
+#else
+    return false;
+#endif
   }
 
   bool isUInt() const
   {
+#ifndef ZORBA_NO_BIGNUMBERS
     return (theDecimal.is_integer() &&
             theDecimal.sign() >= 0 &&
             theDecimal < MAPM::getMaxUInt32());
+#else
+    return false;
+#endif
   }
 
   bool isInt() const
   {
+#ifndef ZORBA_NO_BIGNUMBERS
     return (theDecimal.is_integer() && 
             theDecimal < MAPM::getMaxInt32() &&
             theDecimal > MAPM::getMinInt32());
+#else
+    return false;
+#endif
   }
 
   bool isNegative() const
   {
+#ifndef ZORBA_NO_BIGNUMBERS
     return theDecimal.sign() < 0;
+#else
+    return theDecimal < 0;
+#endif
   }
 
   int getValueAsInt() const;
