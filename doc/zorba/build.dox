@@ -17,6 +17,11 @@
         <li> \ref cclientunix
         <li> \ref cclientwindows
       </ul>
+      <li> \ref buildimagemagick
+      <ul>
+        <li> \ref imagemagickunix
+        <li> \ref imagemagickwindows
+      </ul>  
       <li> \ref mac
       <ul>
         <li> \ref universal
@@ -75,6 +80,9 @@ In order to build Zorba, you need the following libraries and development header
 - if you want to build the scanner and parser
   - Flex 2.5.33 or higher (http://flex.sourceforge.net/)
   - Bison 2.4 or higher (http://www.gnu.org/software/bison/)
+- for image manipulation support
+  - ImageMagick (http://www.imagemagick.org)
+  
 
 \subsection buildingzorba Building Zorba
 -# Install the Zorba source distribution (see \ref installation). The directory in which the Zorba
@@ -138,6 +146,21 @@ Use the following extra CMake arguments when building Zorba:
 -D "CCLIENT_INCLUDE=path_to_imap-2007e\c-client"
 -D "CCLIENT_LIBRARY=path_to_imap-2007e\c-client\release\cclient.lib"
 \endverbatim
+
+\section buildimagemagick Building ImageMagick
+
+Zorba provides image manipulation support using the ImageMagick Library (http://www.imagemagick.org)
+
+\subsection imagemagickunix Unix/Linux/Mac OSX
+
+For Linux/Unix systems, just use the package manager to install the magick++, magickwand, magickcore packets including the developer versions of these packets (which inlcude the header files).
+
+On OSX, use macports to install imagemagick.
+
+\subsection imagemagickwindows Windows
+
+For windows, just download the ImageMagick windows binary (Q8-windows-dll) and install it.
+
 
 
 \section mac Note for Mac OS Users 

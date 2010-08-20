@@ -3,15 +3,18 @@
  : 
  : @author Daniel Thomas
  :)
-import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
+import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basicschema';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace man = 'http://www.zorba-xquery.com/modules/image/manipulation';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
 
-declare variable $local:png as xs:base64Binary := file:read("images/bird.png");
-declare variable $local:gif as xs:base64Binary := file:read("images/bird.gif");
-declare variable $local:tiff as xs:base64Binary := file:read("images/bird.tiff");
-declare variable $local:jpg as xs:base64Binary := file:read("images/bird.jpg");
+declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
+
+
+declare variable $local:png as xs:base64Binary := file:read(concat($local:image-dir, "bird.png"));
+declare variable $local:gif as xs:base64Binary := file:read(concat($local:image-dir, "bird.gif"));
+declare variable $local:tiff as xs:base64Binary := file:read(concat($local:image-dir, "bird.tiff"));
+declare variable $local:jpg as xs:base64Binary := file:read(concat($local:image-dir, "bird.jpg"));
 
 
 (:~
@@ -37,7 +40,7 @@ ERROR:
  :)
 declare function local:test-resize() as xs:boolean {
     let $resized := man:resize($local:gif, xs:unsignedInt(500), xs:unsignedInt(600))
-    let $resized-ref as xs:base64Binary := file:read("images/manipulation/bigBird.gif")
+    let $resized-ref as xs:base64Binary := file:read(concat($local:image-dir, "manipulation/bigBird.gif"))
     return basic:equals($resized, $resized-ref)
 };
 
@@ -48,7 +51,7 @@ declare function local:test-resize() as xs:boolean {
  :)
 declare function local:test-zoom() as xs:boolean {
     let $zoomed := man:zoom($local:jpg, 2)
-    let $ref-zoomed := file:read("images/manipulation/zoomedBird.jpg")
+    let $ref-zoomed := file:read(concat($local:image-dir, "manipulation/zoomedBird.jpg"))
     return basic:equals($zoomed, $ref-zoomed)
 };
 
@@ -60,7 +63,7 @@ declare function local:test-zoom() as xs:boolean {
  :)
 declare function local:test-zoom-by-width() as xs:boolean {
     let $zoomed := man:zoom-by-width($local:jpg, xs:unsignedInt(268))
-    let $ref-zoomed := file:read("images/manipulation/zoomedBird.jpg")
+    let $ref-zoomed := file:read(concat($local:image-dir, "manipulation/zoomedBird.jpg"))
     return basic:equals($zoomed, $ref-zoomed)
 };
 
@@ -69,7 +72,7 @@ declare function local:test-zoom-by-width() as xs:boolean {
  :)
 declare function local:test-zoom-by-height() as xs:boolean {
     let $zoomed := man:zoom-by-height($local:jpg, xs:unsignedInt(320))
-    let $ref-zoomed := file:read("images/manipulation/zoomedBird.jpg")
+    let $ref-zoomed := file:read(concat($local:image-dir, "manipulation/zoomedBird.jpg"))
     return basic:equals($zoomed, $ref-zoomed)
 };
 
@@ -78,7 +81,7 @@ declare function local:test-zoom-by-height() as xs:boolean {
  :)
 declare function local:test-sub-image() as xs:boolean {
     let $sub := man:sub-image($local:jpg, xs:unsignedInt(20), xs:unsignedInt(20), xs:unsignedInt(200), xs:unsignedInt(30))
-    let $ref-sub := file:read("images/manipulation/subBird.jpg")
+    let $ref-sub := file:read(concat($local:image-dir, "manipulation/subBird.jpg"))
     return basic:equals($sub, $ref-sub)
 };
 
@@ -86,11 +89,10 @@ declare function local:test-sub-image() as xs:boolean {
  : @return true if the man:overlay function works.
  :)
 declare function local:test-overlay() {
-    let $ref-overlay:= file:read("images/manipulation/overlayBird.jpg")
-    let $ref-zoomed := file:read("images/manipulation/zoomedBird.jpg")
-        
+    let $ref-overlay:= file:read(concat($local:image-dir, "manipulation/overlayBird.jpg"))
+    let $ref-zoomed := file:read(concat($local:image-dir, "manipulation/zoomedBird.jpg"))
     return basic:equals(man:overlay($ref-zoomed, $local:png, xs:unsignedInt(50), xs:unsignedInt(50), 
-            image:compositeOperatorType("AtopCompositeOp")), $ref-overlay) 
+            "AtopCompositeOp"), $ref-overlay) 
 };
 
 

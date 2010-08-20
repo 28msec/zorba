@@ -1,14 +1,12 @@
 (:~
- : This module provides functions to handle animations of images. 
- : Please note that all images passed back by these functions described here are required to be written to disc as GIF.
+ : For internal use only.
  : 
  : @author Daniel Thomas
  : @version 0.1
  : @see http://www.zorba-xquery.com/modules/image/image
  : @see http://www.imagemagick.org/Magick++/
  :)
-module namespace anim = 'http://www.zorba-xquery.com/modules/image/animation';
-import module namespace animschema = 'http://www.zorba-xquery.com/modules/image/animationschema';
+module namespace anim = 'http://www.zorba-xquery.com/modules/image/animationschema';
 
  
 
@@ -20,11 +18,9 @@ import module namespace animschema = 'http://www.zorba-xquery.com/modules/image/
  : @param $delay specifies how long a given image shows in the animated GIF in 1/100 of a second.
  : @param $iterations specifies how many times the animation loop should be executed (0 for endless loop).
  : @return A new image that is an animated GIF composed out of the passed images.
- : @error If any of the passed xs:base64Binary is not a valid image.
+ : @error If any of the passed xs:base64Binary is not a valid image type.
  :)
-declare function anim:create-animated-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt) as xs:base64Binary {
-  animschema:create-animated-gif($images, $delay, $iterations)
-};
+declare function anim:create-animated-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt) as xs:base64Binary external; 
 
 
 (:~
@@ -36,11 +32,9 @@ declare function anim:create-animated-gif($images as xs:base64Binary+, $delay as
  : @param $iterations specifies how many times the animation loop should be executed (0 for endless loop).
  : @param $number-of-added-frames specifies how many frames shall be added to the passed frames for the morph effect.
  : @return A new image that is an animated GIF composed out of the passed images.
- : @error If any of the passed xs:base64Binary is not a valid image.
+ : @error If any of the passed xs:base64Binary is not a valid image type.
  :)
-declare function anim:create-morphed-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt, $number-of-added-frames as xs:unsignedInt) as xs:base64Binary {
-  animschema:create-morphed-gif($images, $delay, $iterations, $number-of-added-frames)
-};
+declare function anim:create-morphed-gif($images as xs:base64Binary+, $delay as xs:unsignedInt, $iterations as xs:unsignedInt, $number-of-added-frames as xs:unsignedInt) as xs:base64Binary external; 
 
 
 

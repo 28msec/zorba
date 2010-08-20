@@ -3,12 +3,15 @@
  : 
  : @author Daniel Thomas
  :)
-import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
+import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basicschema';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace man = 'http://www.zorba-xquery.com/modules/image/manipulation';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
 
-declare variable $local:jpg as xs:base64Binary := file:read("images/bird.jpg");
+declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
+
+
+declare variable $local:jpg as xs:base64Binary :=  file:read(concat($local:image-dir, "bird.jpg"));
 
 
 (:~
@@ -37,7 +40,7 @@ ERROR:
  :)
 declare function local:test-despeckle() as xs:boolean {
     let $despeckled := man:despeckle($local:jpg)
-    let $despeckled-ref := file:read("images/manipulation/despeckledBird.jpg")
+    let $despeckled-ref :=  file:read(concat($local:image-dir, "manipulation/despeckledBird.jpg"))
     return basic:equals($despeckled, $despeckled-ref)
 };
 
@@ -47,7 +50,7 @@ declare function local:test-despeckle() as xs:boolean {
  :)
 declare function local:test-enhance() as xs:boolean {
     let $enhanced := man:enhance(man:enhance($local:jpg))
-    let $enhanced-ref := file:read("images/manipulation/enhancedBird.jpg")
+    let $enhanced-ref :=  file:read(concat($local:image-dir, "manipulation/enhancedBird.jpg"))
     return basic:equals($enhanced, $enhanced-ref)
 };
 
@@ -58,7 +61,7 @@ declare function local:test-enhance() as xs:boolean {
  :)
 declare function local:test-charcoal() as xs:boolean {
     let $charcoaled := man:charcoal($local:jpg, 0.5, 0.5)
-    let $charcoaled-ref := file:read("images/manipulation/charcoaledBird.jpg")
+    let $charcoaled-ref :=  file:read(concat($local:image-dir, "manipulation/charcoaledBird.jpg"))
     return basic:equals($charcoaled, $charcoaled-ref)
 };
 
@@ -68,7 +71,7 @@ declare function local:test-charcoal() as xs:boolean {
  :)
 declare function local:test-solarize() as xs:boolean {
     let $solarized := man:solarize($local:jpg, 0.3)
-    let $solarized-ref := file:read("images/manipulation/solarizedBird.jpg")
+    let $solarized-ref :=  file:read(concat($local:image-dir, "manipulation/solarizedBird.jpg"))
     return basic:equals($solarized, $solarized-ref)
 };
 
@@ -86,13 +89,6 @@ declare sequential function local:main() as xs:string* {
     if (fn:not($b)) then
       exit returning local:error(("Enhancing of images failed."))
     else ();
-    
-  let $e := local:test-charcoal()
-  return
-    if (fn:not($e)) then
-      exit returning local:error(("Charcoal of images failed."))
-    else ();
-    
     
     
   let $g := local:test-solarize()

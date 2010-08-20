@@ -3,10 +3,13 @@
  : 
  : @author Daniel Thomas
  :)
-import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
+import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basicschema';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace paint = 'http://www.zorba-xquery.com/modules/image/paint';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
+declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
+
+
 
 declare variable $local:jpg as xs:base64Binary := basic:create(xs:unsignedInt(100), xs:unsignedInt(100), image:imageType("JPEG"));
 
@@ -35,7 +38,7 @@ ERROR:
  :)
 declare function local:test-draw-polygon() as xs:boolean {
     let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), (), (), (), ())
-    let $draw-ref := file:read("images/paint/polygon.jpg")
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polygon.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -43,8 +46,8 @@ declare function local:test-draw-polygon() as xs:boolean {
  : @return true if the man:draw-polygon function works.
  :)
 declare function local:test-draw-polygon-red() as xs:boolean {
-    let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), (), (), ())
-    let $draw-ref := file:read("images/paint/polygonRed.jpg")
+    let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), "#FF0000", (), (), ())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polygonRed.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -52,8 +55,8 @@ declare function local:test-draw-polygon-red() as xs:boolean {
  : @return true if the man:draw-polygon function works.
  :)
 declare function local:test-draw-polygon-red-green() as xs:boolean {
-    let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), image:colorType("#FF0000"),image:colorType("#00FF00"), (), ())
-    let $draw-ref := file:read("images/paint/polygonRedGreen.jpg")
+    let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), "#FF0000", "#00FF00", (), ())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polygonRedGreen.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -61,8 +64,8 @@ declare function local:test-draw-polygon-red-green() as xs:boolean {
  : @return true if the man:draw-polygon function works.
  :)
 declare function local:test-draw-polygon-wide() as xs:boolean {
-    let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), image:colorType("#FF0000"),image:colorType("#00FF00"), 3, ())
-    let $draw-ref := file:read("images/paint/polygonWide.jpg")
+    let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), "#FF0000", "#00FF00", 3, ())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polygonWide.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -71,8 +74,8 @@ declare function local:test-draw-polygon-wide() as xs:boolean {
  : @return true if the man:draw-polygon function works.
  :)
 declare function local:test-draw-polygon-anti-aliased() as xs:boolean {
-    let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), image:colorType("#FF0000"),image:colorType("#00FF00"), 3,true())
-    let $draw-ref := file:read("images/paint/polygonAntiAliased.jpg")
+    let $draw := paint:draw-polygon($local:jpg, (10,40,50), (10, 80, 30), "#FF0000", "#00FF00", 3,true())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polygonAntiAliased.jpg"))
     return basic:equals($draw, $draw-ref)
 };
 

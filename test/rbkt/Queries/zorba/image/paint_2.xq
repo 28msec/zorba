@@ -3,10 +3,13 @@
  : 
  : @author Daniel Thomas
  :)
-import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
+import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basicschema';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace paint = 'http://www.zorba-xquery.com/modules/image/paint';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
+
+declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
+
 
 declare variable $local:gif as xs:base64Binary := basic:create(xs:unsignedInt(100), xs:unsignedInt(100), image:imageType("GIF"));
 
@@ -35,7 +38,7 @@ ERROR:
  :)
 declare function local:test-draw-poly-line() as xs:boolean {
     let $draw := paint:draw-poly-line($local:gif, (10,40,50, 200), (10, 80, 30, 200), (), (), ())
-    let $draw-ref := file:read("images/paint/polyLine.gif")
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polyLine.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -43,8 +46,8 @@ declare function local:test-draw-poly-line() as xs:boolean {
  : @return true if the man:draw-poly-line function works.
  :)
 declare function local:test-draw-poly-line-anti-aliased() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#000000"), (), true())
-    let $draw-ref := file:read("images/paint/polyLineAntiAliased.gif")
+    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), "#000000", (), true())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineAntiAliased.gif"))
     return basic:equals($draw,  $draw-ref)
 };
 
@@ -53,8 +56,8 @@ declare function local:test-draw-poly-line-anti-aliased() as xs:boolean {
  : @return true if the man:draw-poly-line function works.
  :)
 declare function local:test-draw-poly-line-red() as xs:boolean {
-    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), image:colorType("#FF0000"), (), true())
-    let $draw-ref := file:read("images/paint/polyLineRed.gif")
+    let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), "#FF0000", (), true())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineRed.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -63,7 +66,7 @@ declare function local:test-draw-poly-line-red() as xs:boolean {
  :)
 declare function local:test-draw-poly-line-wide() as xs:boolean {
     let $draw := paint:draw-poly-line($local:gif, (10,40,50), (10, 80, 30), (),  5, true())
-    let $draw-ref := file:read("images/paint/polyLineWide.gif")
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineWide.gif"))
     return basic:equals($draw, $draw-ref)
 };
 

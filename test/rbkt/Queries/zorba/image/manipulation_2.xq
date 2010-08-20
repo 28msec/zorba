@@ -3,12 +3,15 @@
  : 
  : @author Daniel Thomas
  :)
-import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
+import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basicschema';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace man = 'http://www.zorba-xquery.com/modules/image/manipulation';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
 
-declare variable $local:jpg as xs:base64Binary := file:read("images/bird.jpg");
+declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
+
+
+declare variable $local:jpg as xs:base64Binary := file:read(concat($local:image-dir, "bird.jpg"));
 
 
 (:~
@@ -34,7 +37,7 @@ ERROR:
  :)
 declare function local:test-rotate() as xs:boolean {
     let $rotated := man:rotate($local:jpg, xs:int(180))
-    let $rotated-ref := file:read("images/manipulation/rotatedBird.jpg")
+    let $rotated-ref := file:read(concat($local:image-dir, "manipulation/rotatedBird.jpg"))
     return basic:equals($rotated, $rotated-ref)
 };
 
@@ -45,7 +48,7 @@ declare function local:test-rotate() as xs:boolean {
  :)
 declare function local:test-erase() as xs:boolean {
     let $erased := man:erase($local:jpg)
-    let $erased-ref := file:read("images/manipulation/erased.jpg")
+    let $erased-ref := file:read(concat($local:image-dir, "manipulation/erased.jpg"))
     return basic:equals($erased, $erased-ref)
 };
 
@@ -54,7 +57,7 @@ declare function local:test-erase() as xs:boolean {
  :)
 declare function local:test-flop() as xs:boolean {
     let $flopped := man:flop($local:jpg)
-    let $flopped-ref := file:read("images/manipulation/floppedBird.jpg")
+    let $flopped-ref := file:read(concat($local:image-dir, "manipulation/floppedBird.jpg"))
     return basic:equals($flopped, $flopped-ref)
 };
 
@@ -64,7 +67,7 @@ declare function local:test-flop() as xs:boolean {
  :)
 declare function local:test-flip() as xs:boolean {
     let $flipped := man:flip($local:jpg)
-    let $flipped-ref := file:read("images/manipulation/flippedBird.jpg")
+    let $flipped-ref := file:read(concat($local:image-dir, "manipulation/flippedBird.jpg"))
     return basic:equals($flipped, $flipped-ref)
 };
 
@@ -73,7 +76,7 @@ declare function local:test-flip() as xs:boolean {
  :)
 declare function local:test-trim() as xs:boolean {
     let $trimmed := man:trim($local:jpg)
-    let $trimmed-ref := file:read("images/manipulation/trimmedBird.jpg")
+    let $trimmed-ref := file:read(concat($local:image-dir, "manipulation/trimmedBird.jpg"))
     return basic:equals($trimmed, $trimmed-ref)
 };
 
@@ -84,7 +87,7 @@ declare function local:test-trim() as xs:boolean {
  :)
 declare function local:test-blur() as xs:boolean {
     let $blurred := man:blur($local:jpg, xs:int(8), xs:int(-4))
-    let $blurred-ref := file:read("images/manipulation/blurredBird.jpg")
+    let $blurred-ref := file:read(concat($local:image-dir, "manipulation/blurredBird.jpg"))
     return basic:equals($blurred, $blurred-ref)
 };
 

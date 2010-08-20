@@ -1,12 +1,15 @@
 (:~
  : Simple test module for the paint functions of the image library.
- : 
+ :
  : @author Daniel Thomas
  :)
-import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
+import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basicschema';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace paint = 'http://www.zorba-xquery.com/modules/image/paint';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
+
+declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
+
 
 declare variable $local:gif as xs:base64Binary := basic:create(xs:unsignedInt(100), xs:unsignedInt(100), image:imageType("GIF"));
 
@@ -35,7 +38,7 @@ ERROR:
  :)
 declare function local:test-draw-line() as xs:boolean {
     let $draw := paint:draw-line($local:gif, -20, -20, 80, 80, (), (), ())
-    let $draw-ref := file:read("images/paint/line.gif")
+    let $draw-ref := file:read(concat($local:image-dir,"paint/line.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -43,8 +46,8 @@ declare function local:test-draw-line() as xs:boolean {
  : @return true if the man:draw-line with passed red color (#6F0000) function works.
  :)
 declare function local:test-draw-line-color-red() {
-    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, image:colorType("#6F0000"), (), ())
-    let $draw-ref := file:read("images/paint/redLine.gif")
+    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, "#6F0000", (), ())
+    let $draw-ref := file:read(concat($local:image-dir,"paint/redLine.gif"))
     return basic:equals($draw, $draw-ref)
 
 };
@@ -53,8 +56,8 @@ declare function local:test-draw-line-color-red() {
  : @return true if the man:draw-line with passed green color (#006F00) function works.
  :)
 declare function local:test-draw-line-color-green() {
-    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, image:colorType("#006F00"), (), ())
-    let $draw-ref := file:read("images/paint/greenLine.gif")
+    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, "#006F00", (), ())
+    let $draw-ref := file:read(concat($local:image-dir,"paint/greenLine.gif"))
     return basic:equals($draw, $draw-ref)
 
 };
@@ -63,8 +66,8 @@ declare function local:test-draw-line-color-green() {
  : @return true if the man:draw-line with passed blue color (#00006F) function works.
  :)
 declare function local:test-draw-line-color-blue() {
-    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, image:colorType("#00006F"), (), ())
-    let $draw-ref := file:read("images/paint/blueLine.gif")
+    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, "#00006F", (), ())
+    let $draw-ref := file:read(concat($local:image-dir,"paint/blueLine.gif"))
     return basic:equals($draw, $draw-ref)
 
 };
@@ -73,9 +76,9 @@ declare function local:test-draw-line-color-blue() {
  : @return true if the man:draw-line with passed blue color (#00006F) function works.
  :)
 declare function local:test-stroke-width() {
-    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, image:colorType("#000000"), 10, false()) 
-    let $draw2 := paint:draw-line($draw, 30, 0, 70, 90, image:colorType("#FF00FF"), 1, false())    
-    let $draw2-ref := file:read("images/paint/wideLine.gif")
+    let $draw := paint:draw-line($local:gif, 0, 0, 80, 80, "#000000", 10, false()) 
+    let $draw2 := paint:draw-line($draw, 30, 0, 70, 90, "#FF00FF", 1, false())    
+    let $draw2-ref := file:read(concat($local:image-dir,"paint/wideLine.gif"))
     return basic:equals($draw2, $draw2-ref)
 
 };

@@ -4,14 +4,17 @@
  : @author Daniel Thomas
  :)
 import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
+import module namespace basicschema = 'http://www.zorba-xquery.com/modules/image/basicschema';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
-import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
+import module namespace err = 'http://www.zorba-xquery.com/modules/image/error';
+
+declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
 
 
-declare variable $local:png as xs:base64Binary := file:read("images/bird.png");
-declare variable $local:gif as xs:base64Binary := file:read("images/bird.gif");
-declare variable $local:tiff as xs:base64Binary := file:read("images/bird.tiff");
-declare variable $local:jpg as xs:base64Binary := file:read("images/bird.jpg");
+declare variable $local:png as xs:base64Binary := file:read(concat($local:image-dir, "bird.png"));
+declare variable $local:gif as xs:base64Binary := file:read(concat($local:image-dir, "bird.gif"));
+declare variable $local:tiff as xs:base64Binary := file:read(concat($local:image-dir, "bird.tiff"));
+declare variable $local:jpg as xs:base64Binary := file:read(concat($local:image-dir, "bird.jpg"));
 
 
 
@@ -52,16 +55,16 @@ declare function local:test-height() as xs:boolean {
 (:~
  : @return true if the basic:create function works.
  :)
-declare sequential function local:test-create() as xs:boolean {
-  let $blank-gif := basic:create(xs:unsignedInt(10), xs:unsignedInt(20), image:imageType("GIF"))
-  let $blank-png := basic:create(xs:unsignedInt(10), xs:unsignedInt(20), image:imageType("PNG"))
-  let $blank-jpg := basic:create(xs:unsignedInt(10), xs:unsignedInt(20), image:imageType("JPEG"))
-  let $blank-tiff := basic:create(xs:unsignedInt(10), xs:unsignedInt(20), image:imageType("TIFF"))
-  let $ref-gif := file:read("images/blank.gif")
-  let $ref-jpg := file:read("images/blank.jpg")
-  let $ref-tiff := file:read("images/blank.tiff")
-  let $ref-png := file:read("images/blank.png")
-  return (basic:equals($blank-gif, $ref-gif) and basic:equals($blank-png, $ref-png) and basic:equals($blank-jpg, $ref-jpg) and basic:equals($blank-tiff, $ref-tiff))
+declare function local:test-create() as xs:boolean {
+  let $blank-gif := basic:create(xs:unsignedInt(10), xs:unsignedInt(20), "GIF")
+  let $blank-png := basic:create(xs:unsignedInt(10), xs:unsignedInt(20), "PNG")
+  let $blank-jpg := basic:create(xs:unsignedInt(10), xs:unsignedInt(20), "JPEG")
+  let $blank-tiff := basic:create(xs:unsignedInt(10), xs:unsignedInt(20), "TIFF")
+  let $ref-gif := file:read(concat($local:image-dir, "blank.gif"))
+  let $ref-jpg := file:read(concat($local:image-dir, "blank.jpg"))
+  let $ref-tiff := file:read(concat($local:image-dir, "blank.tiff"))
+  let $ref-png := file:read(concat($local:image-dir, "blank.png"))
+  return (basicschema:equals($blank-gif, $ref-gif) and basicschema:equals($blank-png, $ref-png) and basicschema:equals($blank-jpg, $ref-jpg) and basicschema:equals($blank-tiff, $ref-tiff))
 };
 
 (:~
@@ -77,28 +80,34 @@ declare function local:test-type() as xs:boolean {
  : @return true if the basic:convert function works.
  :) 
 declare function local:test-convert() as xs:boolean {
-    let $png-to-jpeg := basic:convert($local:png, image:imageType("JPEG"))
-    let $png-to-tiff := basic:convert($local:png, image:imageType("TIFF"))
-    let $png-to-gif := basic:convert($local:png, image:imageType("GIF"))
-    return (basic:equals($png-to-jpeg, $local:jpg) and basic:equals($png-to-tiff, $local:tiff) and basic:equals($png-to-gif, $local:gif))
+    let $png-to-jpeg := basic:convert($local:png, "JPEG")
+    let $png-to-tiff := basic:convert($local:png, "TIFF")
+    let $png-to-gif := basic:convert($local:png, "GIF")
+    return (basicschema:equals($png-to-jpeg, $local:jpg) and basicschema:equals($png-to-tiff, $local:tiff) and basicschema:equals($png-to-gif, $local:gif))
 };
 
 (:~
  : @return true if the basic:compress function works.
  :) 
 declare function local:test-compress() as xs:boolean {
-    let $uncompressed := file:read("images/uncompressed.jpg")
+    let $uncompressed := file:read(concat($local:image-dir, "uncompressed.jpg"))
     let $compressed := basic:compress($uncompressed, xs:unsignedInt(20))
-    let $compressed-ref := file:read("images/compressed.jpg") 
-    return basic:equals($compressed, $compressed-ref)
+    let $compressed-ref := file:read(concat($local:image-dir, "compressed.jpg")) 
+    return basicschema:equals($compressed, $compressed-ref)
 };
 
 (:~
- : @return true if the basic:equals function works.
+ : @return true if the basicschema:equals function works.
  :)
 declare function local:test-equals() as xs:boolean {
-  (basic:equals($local:gif, $local:gif) and (not (basic:equals($local:gif, file:read("images/manipulation/gamma1Bird.gif")))))
+  (basicschema:equals($local:gif, $local:gif) and (not (basicschema:equals($local:gif, file:read(concat($local:image-dir, "manipulation/gamma1Bird.gif"))))))
 };
+
+
+
+
+
+
 
 declare sequential function local:main() as xs:string* {
 
@@ -154,6 +163,7 @@ declare sequential function local:main() as xs:string* {
     if (fn:not($g)) then
       exit returning local:error("Equals function not working properly")
     else ();  
+
 
   (: If all went well ... make sure the world knows! :)  
   "SUCCESS";

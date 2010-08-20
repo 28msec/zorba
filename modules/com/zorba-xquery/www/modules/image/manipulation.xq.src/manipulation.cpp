@@ -117,7 +117,9 @@ ZoomFunction::evaluate(
 
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aArgs, 0, lImage);
-  const double lRatio = ImageFunction::getOneDoubleArg(aArgs, 1);
+  double lRatio = ImageFunction::getOneDoubleArg(aArgs, 1);
+  if (lRatio <= 0)
+    lRatio = 1
   lImage.zoom(Magick::Geometry(lImage.columns()*lRatio, lImage.rows()*lRatio));
   String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());

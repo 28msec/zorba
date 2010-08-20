@@ -22,6 +22,7 @@
             <xs:enumeration value="PNG"/>
             <xs:enumeration value="JPEG"/>
             <xs:enumeration value="TIFF"/>
+            <xs:enumeration value="SVG"/>  
         </xs:restriction>
     </xs:simpleType>
 
@@ -103,17 +104,6 @@
         </xs:restriction>
     </xs:simpleType> 
     
-    <xs:simpleType name="fontStyleType">
-        <xs:annotation xml:lang="en">
-            <xs:documentation>
-                This type defines the weights that a text can take.
-            </xs:documentation>
-        </xs:annotation>
-        <xs:restriction base="xs:string">
-            <xs:enumeration value="Normal"/>
-            <xs:enumeration value="Italic"/>
-            <xs:enumeration value="Oblique"/>
-        </xs:restriction>
-    </xs:simpleType> 
+   
     
 </xs:schema>

@@ -3,10 +3,13 @@
  : 
  : @author Daniel Thomas
  :)
-import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
+import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basicschema';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace paint = 'http://www.zorba-xquery.com/modules/image/paint';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
+
+declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
+
 
 declare variable $local:gif as xs:base64Binary := basic:create(xs:unsignedInt(100), xs:unsignedInt(100), image:imageType("GIF"));
 
@@ -35,7 +38,7 @@ ERROR:
  :)
 declare function local:test-draw-rectangle() as xs:boolean {
     let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, (), (), (), false())
-    let $draw-ref := file:read("images/paint/rectangle.gif")
+    let $draw-ref := file:read(concat($local:image-dir, "paint/rectangle.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -43,8 +46,8 @@ declare function local:test-draw-rectangle() as xs:boolean {
  : @return true if the man:draw-rectangle function works.
  :)
 declare function local:test-draw-rectangle-green() as xs:boolean {
-    let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, image:colorType("#00AF00"), (), (), false())
-    let $draw-ref := file:read("images/paint/rectangleGreen.gif")
+    let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, "#00AF00", (), (), false())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/rectangleGreen.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -53,8 +56,8 @@ declare function local:test-draw-rectangle-green() as xs:boolean {
  : @return true if the man:draw-rectangle function works.
  :)
 declare function local:test-draw-rectangle-green-red() as xs:boolean {
-    let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, image:colorType("#00AF00"), image:colorType("#A10000"), (), false())
-    let $draw-ref := file:read("images/paint/rectangleGreenRed.gif")
+    let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, "#00AF00", "#A10000", (), false())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/rectangleGreenRed.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -63,8 +66,8 @@ declare function local:test-draw-rectangle-green-red() as xs:boolean {
  : @return true if the man:draw-rectangle function works.
  :)
 declare function local:test-draw-rectangle-anti-aliased() as xs:boolean {
-    let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, image:colorType("#00AF00"), image:colorType("#A10000"), 5, true())
-    let $draw-ref := file:read("images/paint/rectangleAntiAliased.gif")
+    let $draw := paint:draw-rectangle($local:gif, 20, 20, 50, 50, "#00AF00", "#A10000", 5, true())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/rectangleAntiAliased.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -73,7 +76,7 @@ declare function local:test-draw-rectangle-anti-aliased() as xs:boolean {
  :)
 declare function local:test-draw-rounded-rectangle() as xs:boolean {
     let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, (), (), (), ())
-    let $draw-ref := file:read("images/paint/rectangleRounded.gif")
+    let $draw-ref := file:read(concat($local:image-dir, "paint/rectangleRounded.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -81,8 +84,8 @@ declare function local:test-draw-rounded-rectangle() as xs:boolean {
  : @return true if the man:draw-rounded-rectangle function works.
  :)
 declare function local:test-draw-rounded-rectangle-blue() as xs:boolean {
-    let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, image:colorType("#0000FF"), (), (), ())
-    let $draw-ref := file:read("images/paint/rectangleRoundedBlue.gif")
+    let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, "#0000FF", (), (), ())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/rectangleRoundedBlue.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -91,8 +94,8 @@ declare function local:test-draw-rounded-rectangle-blue() as xs:boolean {
  : @return true if the man:draw-rounded-rectangle function works.
  :)
 declare function local:test-draw-rounded-rectangle-blue-green() as xs:boolean {
-    let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, image:colorType("#0000FF"), image:colorType("#00FF00"), (), ())
-    let $draw-ref := file:read("images/paint/rectangleRoundedBlueGreen.gif")
+    let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, "#0000FF", "#00FF00", (), ())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/rectangleRoundedBlueGreen.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -101,8 +104,8 @@ declare function local:test-draw-rounded-rectangle-blue-green() as xs:boolean {
  : @return true if the man:draw-rounded-rectangle function works.
  :)
 declare function local:test-draw-rounded-rectangle-anti-aliased() as xs:boolean {
-    let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, image:colorType("#0000FF"), image:colorType("#00FF00"), (), true())
-    let $draw-ref := file:read("images/paint/rectangleRoundedAntiAliased.gif")
+    let $draw := paint:draw-rounded-rectangle($local:gif, 20, 20, 50, 50, 10, 10, "#0000FF", "#00FF00", (), true())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/rectangleRoundedAntiAliased.gif"))
     return basic:equals($draw, $draw-ref)
 };
 

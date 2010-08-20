@@ -3,10 +3,13 @@
  : 
  : @author Daniel Thomas
  :)
-import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
+import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basicschema';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
 import module namespace paint = 'http://www.zorba-xquery.com/modules/image/paint';
 import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image';
+
+declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
+
 
 declare variable $local:gif as xs:base64Binary := basic:create(xs:unsignedInt(100), xs:unsignedInt(100), image:imageType("GIF"));
 
@@ -35,7 +38,7 @@ ERROR:
  :)
 declare function local:test-draw-stroked-poly-line() as xs:boolean {
     let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, (), (), ())
-    let $draw-ref := file:read("images/paint/polyLineStroked.gif")
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineStroked.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -44,8 +47,8 @@ declare function local:test-draw-stroked-poly-line() as xs:boolean {
  : @return true if the man:draw-stroked-poly-line function works.
  :)
 declare function local:test-draw-stroked-poly-line-blue() as xs:boolean {
-    let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, image:colorType("#0000FF"), (), ())
-    let $draw-ref := file:read("images/paint/polyLineStrokedBlue.gif")
+    let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, "#0000FF", (), ())
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineStrokedBlue.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -54,7 +57,7 @@ declare function local:test-draw-stroked-poly-line-blue() as xs:boolean {
  :)
 declare function local:test-draw-stroked-poly-line-wide() as xs:boolean {
     let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, (), 4, ())
-    let $draw-ref := file:read("images/paint/polyLineStrokedWide.gif")
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineStrokedWide.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
@@ -63,7 +66,7 @@ declare function local:test-draw-stroked-poly-line-wide() as xs:boolean {
  :)
 declare function local:test-draw-stroked-poly-line-anti-aliased() as xs:boolean {
     let $draw := paint:draw-stroked-poly-line($local:gif, (10,40,50), (10, 80, 30), 5, 2, (), (), true())
-    let $draw-ref := file:read("images/paint/polyLineStrokedAntiAliased.gif")
+    let $draw-ref := file:read(concat($local:image-dir, "paint/polyLineStrokedAntiAliased.gif"))
     return basic:equals($draw, $draw-ref)
 };
 
