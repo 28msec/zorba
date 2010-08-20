@@ -6,7 +6,6 @@
 import module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
 import module namespace basicschema = 'http://www.zorba-xquery.com/modules/image/basicschema';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
-import module namespace err = 'http://www.zorba-xquery.com/modules/image/error';
 
 declare variable $local:image-dir := fn:concat(file:dir-of-base-uri(<a/>), "images/");
 

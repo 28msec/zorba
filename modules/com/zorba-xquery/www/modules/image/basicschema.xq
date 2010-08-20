@@ -9,7 +9,6 @@
  :)
 module namespace basic = 'http://www.zorba-xquery.com/modules/image/basicschema';
 
-import module namespace err = 'http://www.zorba-xquery.com/modules/image/error';
 
 
 (:~
