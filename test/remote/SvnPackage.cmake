@@ -16,7 +16,6 @@
 # a single file, and for applying that file to a fresh SVN enlistment
 # elsewhere.
 
-
 MACRO (find_prereqs)
   # Definitely need svn here.
   FIND_PROGRAM(SVN_EXECUTABLE svn
