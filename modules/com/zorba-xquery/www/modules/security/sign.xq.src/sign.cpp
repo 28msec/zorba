@@ -188,7 +188,7 @@ StatelessExternalFunction* HashModule::getExternalFunction(
 {
   StatelessExternalFunction*& lFunc = theFunctions[aLocalname];
   if (!lFunc) {
-    if (aLocalname.equals("hash-unchecked")) {
+    if (aLocalname.equals("sign-internal")) {
       lFunc = new HashFunction(this);
     }
   }

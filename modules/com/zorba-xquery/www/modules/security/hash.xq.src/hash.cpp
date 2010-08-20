@@ -16,7 +16,6 @@
 
 #include <sstream>
 #include <map>
-#include <iostream>
 
 #include <zorba/zorba.h>
 #include <zorba/external_module.h>
@@ -165,9 +164,7 @@ public:
       char lRes[65];
       lSha1.GetHash((UINT_8 *)lRes);
       zorba::String lDigest(lRes);
-      std::cout << lData << std::endl;
       lHash = zorba::encoding::Base64::encode(lDigest);
-      std::cout << lHash << std::endl;
     } else {
       lHash = md5(lText);
     }

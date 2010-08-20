@@ -14,7 +14,5 @@
 
 GENERATE_MODULE_LIBRARY(hmac "")
 
-# QQQ temporarily removing these from the build until md5_impl 
-# build errors corrected
-#GENERATE_MODULE_LIBRARY(hash "")
-#GENERATE_MODULE_LIBRARY(sign "")
+GENERATE_MODULE_LIBRARY(hash "")
+GENERATE_MODULE_LIBRARY(sign "")

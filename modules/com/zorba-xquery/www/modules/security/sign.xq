@@ -15,9 +15,9 @@
 :)
 
 (:~
- : This library module provides simple security functions.
+ : This library module provides simple sign functions.
  :
- : @author Gabriel Petrovay
+ : @author Gabriel Petrovay, Markus Pilman
  : @version 1.0 
  :)
 module namespace sign="http://www.zorba-xquery.com/modules/security/sign";
@@ -35,9 +35,25 @@ import module namespace alg = "http://www.zorba-xquery.com/modules/security/algo
  : @return The MD5 hash value representing a the signed text content of the
  :         provided node.
  :)
-declare function sign:sign($value as node(), $key as xs:string) as xs:string
+declare function sign:md5($value as xs:string, $key as xs:string) as xs:string
 {
-  sign:sign($value, $key, "md5")
+  sign:sign-internal($value, $key, "md5")
+};
+
+(:~
+ : Signs the text content of a node with a user provided key. The sign
+ : operation is obtained by concatenating the key with the node's text content
+ : and hashing the resulting string. This operation uses SHA1 as the hashing
+ : algorithm.
+ :
+ : @param $value The node whose text content will be signed.
+ : @param $key The key to sign the node's text content.
+ : @return The SHA1 hash value representing a the signed text content of the
+ :         provided node.
+ :)
+declare function sign:sha1($value as xs:string, $key as xs:string) as xs:string
+{
+  sign:sign-internal($value, $key, "sha1")
 };
 
 (:~
@@ -54,13 +70,14 @@ declare function sign:sign($value as node(), $key as xs:string) as xs:string
  :         provided node.
  : @error An error is thrown if the hash algorithm is not supported.
  :)
-declare function sign:sign($value as node(), $key as xs:string, $alg as xs:string) as xs:string
+declare function sign:sign($value as xs:string, $key as xs:string, $alg as xs:string) as xs:string
 {
-  let $a = fn:lower-case($alg)
-  if ($a = $alg:supported-algorithms) then
-    sign:sign-internal($value, $key, $a)
-  else
-    fn:error($alg:unknown-algorithm)
+  let $a := fn:lower-case($alg)
+  return 
+    if ($a = $alg:supported-algorithms) then
+      sign:sign-internal($value, $key, $a)
+    else
+      fn:error($alg:unknown-algorithm)
 };
 
 (:~
@@ -75,6 +92,6 @@ declare function sign:sign($value as node(), $key as xs:string, $alg as xs:strin
  :         provided node.
  : @error An error is thrown if the hash algorithm is not supported.
  :)
-declare function sign:sign-internal($value as node(), $key as xs:string, $alg as xs:string) as xs:string external;
+declare function sign:sign-internal($valu as xs:string, $key as xs:string, $alg as xs:string) as xs:string external;
 
 
