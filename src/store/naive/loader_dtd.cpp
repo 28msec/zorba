@@ -962,9 +962,11 @@ void  DtdXmlLoader::endElement(
     void * ctx, 
     xmlNode *node)
 {
+#ifndef NDEBUG
   const xmlChar * lname =  node->name;
   const xmlChar * prefix = node->ns!=NULL ? node->ns->prefix : NULL;
   const xmlChar * uri =    node->ns!=NULL ? node->ns->href   : NULL;
+#endif
 
   DtdXmlLoader& loader = *(static_cast<DtdXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
