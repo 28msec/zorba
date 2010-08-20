@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef ZORBA_IMAGEMODULE_ANIMATIONMODULE_BASICMODULE_H
-#define ZORBA_IMAGEMODULE_ANIMATIONMODULE_BASICMODULE_H
+#ifndef ZORBA_IMAGEMODULE_BASICMODULE_BASICMODULE_H
+#define ZORBA_IMAGEMODULE_BASICMODULE_BASICMODULE_H
 
 #include <map>
 
@@ -23,9 +23,9 @@
 #include <zorba/external_module.h>
 #include "image_module.h"
 
-namespace zorba {  namespace imagemodule { namespace animationmodule {
+namespace zorba {  namespace imagemodule { namespace basicmodule {
 
-class AnimationModule : public ImageModule 
+class BasicModule : public ImageModule 
 {
 
   virtual StatelessExternalFunction*
@@ -33,18 +33,12 @@ class AnimationModule : public ImageModule
  
 
   virtual String
-  getURI() const { return "http://www.zorba-xquery.com/modules/image/animation"; }
+  getURI() const { return "http://www.zorba-xquery.com/modules/image/basicschema"; }
 
 };
 
-} /* namespace animationmodule */
+} /* namespace basicmodule */
 } /* namespace imagemodule */ 
 } /* namespace zorba */
 
-#endif /* ZORBA_IMAGEMODULE_ANIMATIONMODULE_BASICMODULE_H */
-
-/*
- * Local variables:
- * mode: c++
- * End:
- */
+#endif /* ZORBA_IMAGEMODULE_BASICMODULE_BASICMODULE_H */

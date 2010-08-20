@@ -112,9 +112,15 @@ ConvertFunction::evaluate(
 
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aArgs, 0 , lImage);
+      
   String lType;
   lType = ImageFunction::getOneStringArg(aArgs, 1);
-    
+  if (lType.equals("SVG"))
+    ImageFunction::throwError("Converting SVG images to other formats is not permitted", XPST0083);
+
+
+
+
   lImage.magick(lType.c_str()); // Set output format 
   String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage); 
   Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
