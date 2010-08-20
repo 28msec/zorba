@@ -25,10 +25,10 @@ SET(GEN_SCRIPT "${CMAKE_SOURCE_DIR}/cmake_modules/GenZorbaRuntime.cmake")
 #  EXTVARS: semicolon-separated list of foo=bar or foo:=bar external
 #    variable bindings.
 #
-#  SPEC_FILES: semicolon-separated list of spec files. These will all
-#    be added as dependencies for the generated file. The list will
-#    also be bound to the external variable $files to the query as a
-#    comma-separated list.
+#  SPEC_FILES: semicolon-separated list of spec files (relative to
+#    src/runtime/spec). These will all be added as dependencies for
+#    the generated file. The list will also be bound to the external
+#    variable $files to the query as a comma-separated list.
 #
 # EXTRA_DEPS: semicolon-separated list of other files to add as
 #    dependencies for the generated file.
@@ -36,6 +36,10 @@ SET(GEN_SCRIPT "${CMAKE_SOURCE_DIR}/cmake_modules/GenZorbaRuntime.cmake")
 # OUTPUT: Full path to output file (in binary directory).
 
 MACRO(ZORBA_RUNTIME_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
+  SET(ABSOLUTE_SPEC_FILES)
+  FOREACH(SPEC_FILE ${SPEC_FILES})
+    LIST(APPEND ABSOLUTE_SPEC_FILES "${SPEC_DIR}/${SPEC_FILE}")
+  ENDFOREACH(SPEC_FILE)
   ADD_CUSTOM_COMMAND(OUTPUT "${OUTPUT}"
     COMMAND "${CMAKE_COMMAND}"
     "-Dsource_dir=\"${CMAKE_SOURCE_DIR}\""
@@ -46,5 +50,5 @@ MACRO(ZORBA_RUNTIME_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
     "-Dextvars:STRING=\"${EXTVARS}\""
     "-Dfiles:STRING=\"${SPEC_FILES}\""
     "-P" "${GEN_SCRIPT}"
-    DEPENDS ${GEN_QUERY} ${SPEC_FILES} ${EXTRA_DEPS})
+    DEPENDS ${GEN_QUERY} ${ABSOLUTE_SPEC_FILES} ${EXTRA_DEPS})
 ENDMACRO(ZORBA_RUNTIME_GENERATOR)

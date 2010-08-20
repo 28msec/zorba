@@ -13,24 +13,18 @@
 # limitations under the License.
 SET(FUNCTIONS_SRCS)
 
-STRING(LENGTH "${CMAKE_SOURCE_DIR}/src/runtime/spec/" RUNTIME_SPEC_LENGTH)
-
-SET(CODEGEN_HEADER_GENERATOR
-  "${CMAKE_SOURCE_DIR}/src/runtime/spec/codegen-h.xq")
-SET(CODEGEN_SOURCE_GENERATOR
-  "${CMAKE_SOURCE_DIR}/src/runtime/spec/codegen-cpp.xq")
-SET(FUNCTION_HEADER_GENERATOR
-  "${CMAKE_SOURCE_DIR}/src/runtime/spec/function-enum.xq")
-SET(CODEGEN_MAPPINGS_FILE
-  "${CMAKE_SOURCE_DIR}/src/runtime/spec/mappings.xml")
-SET(CODEGEN_UTILS_FILE "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
+SET(CODEGEN_HEADER_GENERATOR     "${SPEC_DIR}/codegen-h.xq")
+SET(CODEGEN_SOURCE_GENERATOR     "${SPEC_DIR}/codegen-cpp.xq")
+SET(FUNCTION_HEADER_GENERATOR    "${SPEC_DIR}/function-enum.xq")
+SET(CODEGEN_MAPPINGS_FILE        "${SPEC_DIR}/mappings.xml")
+SET(CODEGEN_UTILS_FILE           "${SPEC_DIR}/utils.xq")
 
 # Generate function_enum.h, and mark function.h as depending on the
 # generated file so it will be built at appropriate times
 ZORBA_RUNTIME_GENERATOR(
   "${FUNCTION_HEADER_GENERATOR}"
   "" # No external variables for query
-  "${ABSOLUTE_SPEC_FILES}"
+  "${SPEC_FILES}"
   "${CODEGEN_UTILS_FILE}"
   "${CMAKE_BINARY_DIR}/src/functions/function_enum.h")
 SET_SOURCE_FILES_PROPERTIES(${CMAKE_SOURCE_DIR}/src/functions/function.h
@@ -47,14 +41,14 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
   # Generate .cpp and .h files. .cpp file depends on .h.
   ZORBA_RUNTIME_GENERATOR(
     "${CODEGEN_HEADER_GENERATOR}"
-    "file:=${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"    
-    "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
+    "file:=${SPEC_FILE}"    
+    "${SPEC_FILE}"
     "${CODEGEN_MAPPINGS_FILE};${CODEGEN_UTILS_FILE}"
     "${GEN_H}")
   ZORBA_RUNTIME_GENERATOR(
     "${CODEGEN_SOURCE_GENERATOR}"
-    "file:=${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE};mappings:=${CODEGEN_MAPPINGS_FILE}"    
-    "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}"
+    "file:=${SPEC_FILE};mappings:=${CODEGEN_MAPPINGS_FILE}"    
+    "${SPEC_FILE}"
     "${GEN_H};${CODEGEN_MAPPINGS_FILE};${CODEGEN_UTILS_FILE}"
     "${GEN_CPP}")
 

@@ -13,27 +13,20 @@
 # limitations under the License.
 SET(RUNTIME_SRCS)
 
-STRING(LENGTH "${CMAKE_SOURCE_DIR}/src/runtime/spec/" RUNTIME_SPEC_LENGTH)
+SET(RUNTIME_HEADER_GENERATOR          "${SPEC_DIR}/iterator_h.xq")
+SET(RUNTIME_CPP_GENERATOR             "${SPEC_DIR}/iterator_cpp.xq")
 
-SET(RUNTIME_HEADER_GENERATOR
-  "${CMAKE_SOURCE_DIR}/src/runtime/spec/iterator_h.xq")
-SET(RUNTIME_CPP_GENERATOR
-  "${CMAKE_SOURCE_DIR}/src/runtime/spec/iterator_cpp.xq")
-
-SET(PRINTER_VISITOR_HEADER_GENERATOR
-  "${CMAKE_SOURCE_DIR}/src/runtime/spec/printer_visitor_h.xq")
-SET(PRINTER_VISITOR_CPP_GENERATOR
-  "${CMAKE_SOURCE_DIR}/src/runtime/spec/printer_visitor_cpp.xq")
-SET(PLANITER_VISITOR_HEADER_GENERATOR
-  "${CMAKE_SOURCE_DIR}/src/runtime/spec/plan_iter_visitor_h.xq")
+SET(PRINTER_VISITOR_HEADER_GENERATOR  "${SPEC_DIR}/printer_visitor_h.xq")
+SET(PRINTER_VISITOR_CPP_GENERATOR     "${SPEC_DIR}/printer_visitor_cpp.xq")
+SET(PLANITER_VISITOR_HEADER_GENERATOR "${SPEC_DIR}/plan_iter_visitor_h.xq")
+SET(CODEGEN_UTILS_FILE                "${SPEC_DIR}/utils.xq")
 
 SET(PRINTER_VISITOR_HEADER_FILE
-  "${CMAKE_BINARY_DIR}/src/runtime/visitors/printer_visitor.h")
+  "${SPEC_BINARY_DIR}/visitors/printer_visitor.h")
 SET(PRINTER_VISITOR_CPP_FILE
-  "${CMAKE_BINARY_DIR}/src/runtime/visitors/printer_visitor.cpp")
+  "${SPEC_BINARY_DIR}/visitors/printer_visitor.cpp")
 SET(PLANITER_VISITOR_HEADER_FILE
-  "${CMAKE_BINARY_DIR}/src/runtime/visitors/planiter_visitor.h")
-SET(CODEGEN_UTILS_FILE "${CMAKE_SOURCE_DIR}/src/runtime/spec/utils.xq")
+  "${SPEC_BINARY_DIR}/visitors/planiter_visitor.h")
 
 
 FOREACH(SPEC_FILE ${SPEC_FILES})
@@ -41,20 +34,19 @@ FOREACH(SPEC_FILE ${SPEC_FILES})
   MATH(EXPR SPEC_PREFIX_LENGTH "${SPEC_FILE_NAME_LENGTH} - 4")
   STRING(SUBSTRING ${SPEC_FILE} 0 ${SPEC_PREFIX_LENGTH} SPEC_PREFIX)
 
-  SET(ABSOLUTE_SPEC_FILE_NAME "${CMAKE_SOURCE_DIR}/src/runtime/spec/${SPEC_FILE}")
   # Generate .cpp and .h files. .cpp depends on .h.
   ZORBA_RUNTIME_GENERATOR(
     "${RUNTIME_HEADER_GENERATOR}"
-    "name:=runtime/${SPEC_PREFIX};input=${ABSOLUTE_SPEC_FILE_NAME}"
-    "${ABSOLUTE_SPEC_FILE_NAME}"
+    "name:=runtime/${SPEC_PREFIX};input=${SPEC_FILE}"
+    "${SPEC_FILE}"
     "${CODEGEN_UTILS_FILE}"
-    "${CMAKE_BINARY_DIR}/src/runtime/${SPEC_PREFIX}.h")
+    "${SPEC_BINARY_DIR}/${SPEC_PREFIX}.h")
   ZORBA_RUNTIME_GENERATOR(
     "${RUNTIME_CPP_GENERATOR}"
-    "name:=runtime/${SPEC_PREFIX};input=${ABSOLUTE_SPEC_FILE_NAME}"
-    "${ABSOLUTE_SPEC_FILE_NAME}"
-    "${CMAKE_BINARY_DIR}/src/runtime/${SPEC_PREFIX}.h;${CODEGEN_UTILS_FILE}"
-    "${CMAKE_BINARY_DIR}/src/runtime/${SPEC_PREFIX}.cpp")
+    "name:=runtime/${SPEC_PREFIX};input=${SPEC_FILE}"
+    "${SPEC_FILE}"
+    "${SPEC_BINARY_DIR}/${SPEC_PREFIX}.h;${CODEGEN_UTILS_FILE}"
+    "${SPEC_BINARY_DIR}/${SPEC_PREFIX}.cpp")
 
   LIST(APPEND RUNTIME_SRCS 
     "${SPEC_PREFIX}.cpp"
@@ -68,21 +60,21 @@ ENDFOREACH(SPEC_FILE)
 ZORBA_RUNTIME_GENERATOR(
   "${PRINTER_VISITOR_HEADER_GENERATOR}"
   "" # No external variables for query
-  "${ABSOLUTE_SPEC_FILES}"
+  "${SPEC_FILES}"
   "${CODEGEN_UTILS_FILE}"
   "${PRINTER_VISITOR_HEADER_FILE}")
 
 ZORBA_RUNTIME_GENERATOR(
   "${PRINTER_VISITOR_CPP_GENERATOR}"
   "" # No external variables for query
-  "${ABSOLUTE_SPEC_FILES}"
+  "${SPEC_FILES}"
   "${PRINTER_VISITOR_HEADER_FILE};${PLANITER_VISITOR_HEADER_FILE};${CODEGEN_UTILS_FILE}"
   "${PRINTER_VISITOR_CPP_FILE}")
 
 ZORBA_RUNTIME_GENERATOR(
   "${PLANITER_VISITOR_HEADER_GENERATOR}"
   "" # No external variables for query
-  "${ABSOLUTE_SPEC_FILES}"
+  "${SPEC_FILES}"
   "${CODEGEN_UTILS_FILE}"
   "${PLANITER_VISITOR_HEADER_FILE}")
   
