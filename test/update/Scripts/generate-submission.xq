@@ -10,7 +10,7 @@ else
   validate {
     <test-suite-result>
        <implementation name="Zorba" 
-         version='1.0.0 (svn rev. 7881)'
+         version='1.5 (svn rev. 8737)'
          anonymous-result-column="false">
   
          <organization
@@ -42,18 +42,18 @@ else
       
          <implementation-defined-items>
            <implementation-defined-item                                                                                             
-              name="The revalidation modes that are supported by this implementation."
+              name="supportedRevalidationModes"
               value="lax, skip, strict" />
 
           <implementation-defined-item                                                                                             
-             name="The default revalidation mode for this implementation."
+             name="defaultRevalidationMode"
              value="lax" />
 
          </implementation-defined-items>
          
          <features>
-            <feature name='Minimum Conformance' supported='true' />
-            <feature name="Full Axis Feature" supported='true' />
+            <feature name='Minimal Conformance' supported='true' />
+            <feature name='Update Facility Static Typing Feature' supported='false' />
          </features>
          
          <context-properties>
@@ -67,8 +67,8 @@ else
 
        <syntax>XQuery</syntax>
 
-       <test-run dateRun="2010-02-14">
-          <test-suite version="1.0.0"/>
+       <test-run dateRun="2010-08-20">
+          <test-suite version="1.0.1"/>
           <transformation><p>Standard</p></transformation>
           <comparison><p>Standard</p></comparison>
           <otherComments><p>None</p></otherComments>

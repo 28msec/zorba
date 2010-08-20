@@ -29,7 +29,7 @@ endif ()
 file (STRINGS "${builddir}/Testing/TAG" _tag_content)
 list (GET _tag_content 0 ctest_tag)
 set (testfile "${builddir}/Testing/${ctest_tag}/Test.xml")
-MESSAGE(STATUS "using testresults from: ${testfile}")
+# MESSAGE(STATUS "using testresults from: ${testfile}")
 
 # Execute Zorba
 execute_process (COMMAND "${zorba}" --omit-xml-declaration --indent
