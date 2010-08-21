@@ -761,14 +761,15 @@ private:
 
 
   // xqpString::stream I/O operators
-   std::istream&
+  std::istream&
   operator>>(std::istream& is, zorba::xqpString utf8_src);
 
-   std::ostream&
+  ZORBA_DLL_PUBLIC
+  std::ostream&
   operator<<(std::ostream& os, const zorba::xqpStringStore& src);
 
   ZORBA_DLL_PUBLIC
-   std::ostream&
+  std::ostream&
   operator<<(std::ostream& os, const zorba::xqpStringStore_t src);
 
   ZORBA_DLL_PUBLIC
@@ -776,7 +777,7 @@ private:
   operator<<(std::ostream& os, zorba::xqpString utf8_src);
 
   //xqpString::concatenation operator+()
-   inline xqpString
+  inline xqpString
   operator+(xqpString lsrc, xqpString rsrc)
   {
     xqpString tmp (lsrc);
@@ -784,7 +785,7 @@ private:
     return tmp;
   }
 
-   inline xqpString
+  inline xqpString
   operator+(xqpString lsrc, const char* rsrc)
   {
     xqpString tmp (lsrc);
@@ -792,13 +793,13 @@ private:
     return tmp;
   }
 
-   inline xqpString
+  inline xqpString
   operator+(xqpString lsrc, const std::string &rsrc)
   {
     return lsrc + rsrc.c_str ();
   }
 
-   inline xqpString
+  inline xqpString
   operator+(const char* lsrc, xqpString rsrc)
   {
     xqpString tmp (lsrc);

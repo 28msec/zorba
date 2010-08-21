@@ -34,6 +34,6 @@ IF(GEOS_FOUND)
 INCLUDE_DIRECTORIES(${GEOS_INCLUDE_DIR})
 GENERATE_MODULE_LIBRARY(geo ${GEOS_LIBRARIES})
 ELSE(GEOS_FOUND)
-MESSAGE(ERROR "Geos Library Not Found. You need to install Geos library in order to compile the Geo Module.")
+MESSAGE(STATUS "Geos Library Not Found. You need to install Geos library in order to compile the Geo Module.")
 ENDIF(GEOS_FOUND)
 
