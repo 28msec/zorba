@@ -8,16 +8,16 @@
 : @version 1.0
 :)
 
-module namespace oauth-desktop = 'http://www.zorba-xquery.com/modules/oauth/desktop';
+module namespace oauth-desktop = 'http://www.zorba-xquery.com/modules/web-services/oauth/desktop';
 import module namespace io = "http://www.zorba-xquery.com/zorba/internal-functions";
 
 (:~
-: Resource Owner Authorization.
-:
-: @see http://tools.ietf.org/html/rfc5849#section-2.2
-: @param $oauth-token see <a href="http://tools.ietf.org/html/draft-hammer-http-token-auth-01" target="_blank">oauth token</a>
-: @return authorization string.
-:)
+ : Resource Owner Authorization.
+ :
+ : @see http://tools.ietf.org/html/rfc5849#section-2.2
+ : @param $oauth-token see <a href="http://tools.ietf.org/html/draft-hammer-http-token-auth-01" target="_blank">oauth token</a>
+ : @return authorization string.
+ :)
 declare sequential function oauth-desktop:authorize-twitter($oauth-token as xs:string) as xs:string
 {
   (:

@@ -1,19 +1,21 @@
 (:~
-: OAuth Client Module
-: This module provides the functions necessary to acquire access to the personal
-: resources of a user through the open standard called
-: <a href="http://oauth.net/" target="_blank">OAuth</a>.
-: The application/mashup creator does not need to know the
-: specifics of <a href="http://oauth.net/" target="_blank">OAuth</a> to use this module.
-: @author Stephanie Russell
-: @version 1.0
-:)
-module namespace oauth = 'http://www.zorba-xquery.com/modules/oauth/client';
+ : OAuth Client Module
+ : This module provides the functions necessary to acquire access to the personal
+ : resources of a user through the open standard called
+ : <a href="http://oauth.net/" target="_blank">OAuth</a>.
+ : The application/mashup creator does not need to know the
+ : specifics of <a href="http://oauth.net/" target="_blank">OAuth</a> to use this module.
+ : @author Stephanie Russell
+ : @version 1.0
+ :)
+ 
+module namespace oauth = 'http://www.zorba-xquery.com/modules/web-services/oauth/client';
 import module namespace ra = "http://www.zorba-xquery.com/modules/random";
 import module namespace hmac = "http://www.zorba-xquery.com/modules/security/hmac";
 import module namespace http-client = "http://expath.org/ns/http-client";
 import schema namespace http = "http://expath.org/ns/http-client";
 import module namespace date = "http://www.zorba-xquery.com/modules/datetime";
+
 (:~
  : Use err module functions for throwing errors.
  :)
@@ -23,14 +25,12 @@ declare namespace op = "http://www.zorba-xquery.org/options";
 
 declare option op:trace "disable";
 
-
 (:~
-: The timestamp is expressed in the number of seconds since January 1, 1970 00:00:00 GMT.
-:
-: @see http://tools.ietf.org/html/rfc5849#section-3.3
-: @return integer time in seconds since Unix epoch
-:)
-(:private:)
+ : The timestamp is expressed in the number of seconds since January 1, 1970 00:00:00 GMT.
+ :
+ : @see http://tools.ietf.org/html/rfc5849#section-3.3
+ : @return integer time in seconds since Unix epoch
+ :)
 declare function oauth:timestamp() as xs:decimal
 {
   let $current-dateTime := fn:adjust-dateTime-to-timezone(date:current-dateTime(), xs:dayTimeDuration('PT0H'))
@@ -39,14 +39,13 @@ declare function oauth:timestamp() as xs:decimal
 };
 
 (:~
-: This function returns a string key which is the client and temporary credential concatenated with an ampersand.
-:
-: @see http://tools.ietf.org/html/rfc5849#section-3.4.2
-: @param $oauth-consumer-secret Client credential referred to as the "consumer secret"
-: @param $oauth-token-secret Temporary credential referred to as the "oauth token secret"
-: @return String signing key
-:)
-(:private:)
+ : This function returns a string key which is the client and temporary credential concatenated with an ampersand.
+ :
+ : @see http://tools.ietf.org/html/rfc5849#section-3.4.2
+ : @param $oauth-consumer-secret Client credential referred to as the "consumer secret"
+ : @param $oauth-token-secret Temporary credential referred to as the "oauth token secret"
+ : @return String signing key
+ :)
 declare function oauth:key($oauth-consumer-secret as xs:string, $oauth-token-secret as xs:string?) as xs:string
 {
   concat($oauth-consumer-secret, "&amp;", 
@@ -56,30 +55,28 @@ declare function oauth:key($oauth-consumer-secret as xs:string, $oauth-token-sec
 };
 
 (:~
-: This function should return a new UUID every time the function is invoked.
-:
-: @see http://tools.ietf.org/html/rfc5849#section-3.3
-: @return random string
-:)
-(:private:)
+ : This function should return a new UUID every time the function is invoked.
+ :
+ : @see http://tools.ietf.org/html/rfc5849#section-3.3
+ : @return random string
+ :)
 declare function oauth:nonce() as xs:string
 {
   ra:uuid()
 };
 
 (:~
-: This function normalizes parameters into a single string.
-:
-: @see http://tools.ietf.org/html/rfc5849#section-3.4.1.3.2
-: @param $params Element containing OAuth specific parameters
-: @param $divide String, usually an equal sign(=)
-: @param $option Optional string, quotation mark '"' in the creation of the authorization header
-: @param $comma String, typically a comma (,) in the authorization header
-: @return string formatted specifically for the authorization header, or for parameterization
-:)
-(:private:)
+ : This function normalizes parameters into a single string.
+ :
+ : @see http://tools.ietf.org/html/rfc5849#section-3.4.1.3.2
+ : @param $params Element containing OAuth specific parameters
+ : @param $divide String, usually an equal sign(=)
+ : @param $option Optional string, quotation mark '"' in the creation of the authorization header
+ : @param $comma String, typically a comma (,) in the authorization header
+ : @return string formatted specifically for the authorization header, or for parameterization
+ :)
 declare function oauth:normalization($params as element()+, $divide as xs:string, $option as xs:string?,$comma as xs:string) as xs:string
-{ 
+{
   fn:string-join(
           for $param in $params//param
           let $k := $param/@key/data(.)
@@ -89,15 +86,14 @@ declare function oauth:normalization($params as element()+, $divide as xs:string
 };
 
 (:~
-: This function formats the authorization header.
-:
-: @see http://tools.ietf.org/html/rfc5849#section-3.5.1
-: @param $params Element containing OAuth specific parameters
-: @param $realm Realm that defines the protection space
-: @param $signature string signed signature
-: @return string authorization header
-:)
-(:private:)
+ : This function formats the authorization header.
+ :
+ : @see http://tools.ietf.org/html/rfc5849#section-3.5.1
+ : @param $params Element containing OAuth specific parameters
+ : @param $realm Realm that defines the protection space
+ : @param $signature string signed signature
+ : @return string authorization header
+ :)
 declare function oauth:authorization-header($params as element()+, $realm as xs:string, $signature as xs:string) as xs:string
 {
   concat('OAuth ', 
@@ -108,14 +104,13 @@ declare function oauth:authorization-header($params as element()+, $realm as xs:
 };
 
 (:~
-: This function constructs the Signature Base String; a consistent, reproducible concatenation of several of the HTTP request elements into a single string.
-: @see http://tools.ietf.org/html/rfc5849#section-3.4.1
-: @param $http-method string method for posting the request to the url
-: @param $base-uri string base-uri for request, access, or protected resources
-: @param $params Element containing OAuth specific parameters
-: @return signature base string formatted to create the signature
-:)
-(:private:)
+ : This function constructs the Signature Base String; a consistent, reproducible concatenation of several of the HTTP request elements into a single string.
+ : @see http://tools.ietf.org/html/rfc5849#section-3.4.1
+ : @param $http-method string method for posting the request to the url
+ : @param $base-uri string base-uri for request, access, or protected resources
+ : @param $params Element containing OAuth specific parameters
+ : @return signature base string formatted to create the signature
+ :)
 declare function oauth:signature-base-string($http-method as xs:string, $base-uri as xs:string, $params as element()+) as xs:string
 {
   let $base-string := concat($http-method, "&amp;", fn:encode-for-uri($base-uri), "&amp;",
@@ -129,83 +124,79 @@ declare function oauth:signature-base-string($http-method as xs:string, $base-ur
 };
 
 (:~
-: This function generates a signature string which becomes the "oauth_signature" parameter. The service provider verifies the signature as specified for each method.
-: @see http://tools.ietf.org/html/rfc5849#section-3.4
-: @param $base-string signature base string
-: @param $oauth-signature-method string signing method
-: @param $key string signing key
-: @return signature base string formatted to create the signature
-:)
-(:private:)
+ : This function generates a signature string which becomes the "oauth_signature" parameter. The service provider verifies the signature as specified for each method.
+ : @see http://tools.ietf.org/html/rfc5849#section-3.4
+ : @param $base-string signature base string
+ : @param $oauth-signature-method string signing method
+ : @param $key string signing key
+ : @return signature base string formatted to create the signature
+ :)
 declare function oauth:signature($base-string as xs:string, $oauth-signature-method as xs:string, $key as xs:string) as xs:string
 {
-   (:
+  (:
    : HMAC-SHA1
    : @see http://tools.ietf.org/html/rfc5849#section-3.4.2
    : uses the hmac-sha1 algorithm found here @see http://tools.ietf.org/html/rfc2104
    :)
   if($oauth-signature-method = "HMAC-SHA1")
   then hmac:sha1($base-string, $key)
-   (:
+  (:
    : RSA-SHA1
    : @see http://tools.ietf.org/html/rfc5849#section-3.4.3  
    :)
   else if($oauth-signature-method = "RSA-SHA1")
   then error($err:OC001, concat("Method not implemented yet: ", $oauth-signature-method))
   (:
-  : PLAINTEXT
-  : @see http://tools.ietf.org/html/rfc5849#section-3.4.4 
-  :)
+   : PLAINTEXT
+   : @see http://tools.ietf.org/html/rfc5849#section-3.4.4 
+   :)
   else if($oauth-signature-method = "PLAINTEXT")
   then $key
   else error($err:OC001, concat("Unsupported signing method: ", $oauth-signature-method))
 };
 
 (:~
-: This function takes an input string and parses the parameters into parameter elements.
-: @param $input string of parameters to be parsed into element parameters
-: @return element parameters
-:)
-(:private:)
+ : This function takes an input string and parses the parameters into parameter elements.
+ : @param $input string of parameters to be parsed into element parameters
+ : @return element parameters
+ :)
 declare function oauth:parse-parameters($input as xs:string) as element()+
 {
-    <parameters>{
-    for $param in fn:tokenize(replace($input, "&#xA;",""), "&amp;")
-    let $key-value := fn:tokenize($param, "=")
-    return <param key="{$key-value[1]}" value="{$key-value[2]}" />
-    }</parameters>
+  <parameters>{
+  for $param in fn:tokenize(replace($input, "&#xA;",""), "&amp;")
+  let $key-value := fn:tokenize($param, "=")
+  return <param key="{$key-value[1]}" value="{$key-value[2]}" />
+  }</parameters>
 };
 
 (:~
-: This function returns the string value of the parameters whose key matches a $string input.
-: @param $params element parameters
-: @param $string string as the "key" name
-: @return string value of the parameter with key $string
-:)
-(:public:)
+ : This function returns the string value of the parameters whose key matches a $string input.
+ : @param $params element parameters
+ : @param $string string as the "key" name
+ : @return string value of the parameter with key $string
+ :)
 declare function oauth:parameters($params as element()+,$string as xs:string) as xs:string
 {
-   for $param in $params//param
-   let $key := $param/@key/data(.)
-   let $value := $param/@value/data(.)
-   where $key = $string
-   return xs:string($value)
+  for $param in $params//param
+  let $key := $param/@key/data(.)
+  let $value := $param/@value/data(.)
+  where $key = $string
+  return xs:string($value)
 };
 
 (:~
-: This function makes the request, and sends it to the specified url using the specified http request method.
-:
-: @see http://tools.ietf.org/html/rfc5849#section-3.1
-: @param $consumer-secret Client Shared-Secret, also known as the consumer-secret 
-: @param $method HTTP request method (e.g., "GET", "POST", etc.)
-: @param $oauth-token-secret the temporary credentials shared-secret
-: @param $params Element containing OAuth specific parameters
-: @param $realm Realm that defines the protection space
-: @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
-: @param $url Target URL
-: @return -
-:)
-(:private:)
+ : This function makes the request, and sends it to the specified url using the specified http request method.
+ :
+ : @see http://tools.ietf.org/html/rfc5849#section-3.1
+ : @param $consumer-secret Client Shared-Secret, also known as the consumer-secret 
+ : @param $method HTTP request method (e.g., "GET", "POST", etc.)
+ : @param $oauth-token-secret the temporary credentials shared-secret
+ : @param $params Element containing OAuth specific parameters
+ : @param $realm Realm that defines the protection space
+ : @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
+ : @param $url Target URL
+ : @return -
+ :)
 declare sequential function oauth:http-request(
     $consumer-secret as xs:string,
     $method as xs:string,
@@ -229,21 +220,20 @@ declare sequential function oauth:http-request(
 };
 
 (:~
-: This function creates the parameters to be given to the http-request function. It parses the response into 
-: parameter elements if the response status is 200 (OK).
-:
-: @param $consumer-key Client Identifier, also known as the consumer-key
-: @param $consumer-secret Client Shared-Secret, also known as the consumer-secret
-: @param $method HTTP request method (e.g., "GET", "POST", etc.)
-: @param $oauth-token The temporary credentials identifier
-: @param $oauth-token-secret The temporary credentials shared-secret
-: @param $realm Realm that defines the protection space
-: @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
-: @param $url Target URL
-: @param $additional-parameters Parameters specific to a certain step (request-token, authorize, access-token, protected-resource) of the OAuth authorization
-: @return correctly parsed parameters, or an error if http response status is not 200 OK
-:)
-(:private:)
+ : This function creates the parameters to be given to the http-request function. It parses the response into 
+ : parameter elements if the response status is 200 (OK).
+ :
+ : @param $consumer-key Client Identifier, also known as the consumer-key
+ : @param $consumer-secret Client Shared-Secret, also known as the consumer-secret
+ : @param $method HTTP request method (e.g., "GET", "POST", etc.)
+ : @param $oauth-token The temporary credentials identifier
+ : @param $oauth-token-secret The temporary credentials shared-secret
+ : @param $realm Realm that defines the protection space
+ : @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
+ : @param $url Target URL
+ : @param $additional-parameters Parameters specific to a certain step (request-token, authorize, access-token, protected-resource) of the OAuth authorization
+ : @return correctly parsed parameters, or an error if http response status is not 200 OK
+ :)
 declare sequential function oauth:format-request(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
@@ -273,12 +263,11 @@ declare sequential function oauth:format-request(
 };
 
 (:~
-: This function finds the server-specific parameters. The specification states, "Servers MAY specify additional parameters..."
-: @see http://tools.ietf.org/html/rfc5849#section-2.1 
-: @param $request element containing the client's request
-: @return may return parsed parameters or empty sequence if there were no server specific parameters
-:)
-(:private:)
+ : This function finds the server-specific parameters. The specification states, "Servers MAY specify additional parameters..."
+ : @see http://tools.ietf.org/html/rfc5849#section-2.1
+ : @param $request element containing the client's request
+ : @return may return parsed parameters or empty sequence if there were no server specific parameters
+ :)
 declare function oauth:additional-parameters($request as element()+) as element()?
 {
   let $additional-parameters := 
@@ -304,13 +293,12 @@ declare function oauth:additional-parameters($request as element()+) as element(
 };
 
 (:~
-: This function allows the client to obtain a set of temporary credentials from the service provider by making an authenticated HTTP request to the Temporary Credential Request endpoint.
-: This function is provided for convenience.
-: @see http://tools.ietf.org/html/rfc5849#section-2.1
-: @param $request request element containing the client's request
-: @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
-:)
-(:public:)
+ : This function allows the client to obtain a set of temporary credentials from the service provider by making an authenticated HTTP request to the Temporary Credential Request endpoint.
+ : This function is provided for convenience.
+ : @see http://tools.ietf.org/html/rfc5849#section-2.1
+ : @param $request request element containing the client's request
+ : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
+ :)
 declare sequential function oauth:request-token($request as element(request)+) as element()+
 {
   let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
@@ -339,13 +327,12 @@ declare sequential function oauth:request-token($request as element(request)+) a
 };
 
 (:~
-: This function allows the client to obtain a set of token credentials from the service provider by making an authenticated HTTP request to the Token Request endpoint.
-: This function is provided for convenience.
-: @see http://tools.ietf.org/html/rfc5849#section-2.3
-: @param $request request element containing the client's request
-: @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
-:)
-(:public:)
+ : This function allows the client to obtain a set of token credentials from the service provider by making an authenticated HTTP request to the Token Request endpoint.
+ : This function is provided for convenience.
+ : @see http://tools.ietf.org/html/rfc5849#section-2.3
+ : @param $request request element containing the client's request
+ : @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
+ :)
 declare sequential function oauth:access-token($request as element(request)+) as element()+
 {
   let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
@@ -380,14 +367,13 @@ declare sequential function oauth:access-token($request as element(request)+) as
 };
 
 (:~
-: This function allows the client access to the protected resources of the user.
-: This function is provided for convenience.
-: @see http://tools.ietf.org/html/rfc5849#section-3
-: @param $protected-resource (Not schema-validated) http:request element with http method and href.
-: @param $request request element containing the client's request
-: @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
-:)
-(:public:)
+ : This function allows the client access to the protected resources of the user.
+ : This function is provided for convenience.
+ : @see http://tools.ietf.org/html/rfc5849#section-3
+ : @param $protected-resource (Not schema-validated) http:request element with http method and href.
+ : @param $request request element containing the client's request
+ : @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
+ :)
 declare sequential function oauth:protected-resource($protected-resource as element(http:request),$request as element(request)+) as element()+
 {
   let $consumer-key := oauth:parameters($request,"oauth_consumer_key")
@@ -417,20 +403,19 @@ declare sequential function oauth:protected-resource($protected-resource as elem
 };
 
 (:~
-: This function allows the client to obtain a set of temporary credentials from the service provider by making an authenticated HTTP request to the Temporary Credential Request endpoint.
-:
-: @see http://tools.ietf.org/html/rfc5849#section-2.1
-: @param $consumer-key Client Identifier, also known as the consumer-key
-: @param $consumer-secret Client Shared-Secret, also known as the consumer-secret
-: @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
-: @param $method HTTP request method (e.g., "GET", "POST", etc.) HTTP request method
-: @param $realm Realm that defines the protection space
-: @param $temporary-credential-request Target url for temporary credentials request
-: @param $callback-url Service provider redirects the user to this url after authorization. The parameter value MUST be set to "oob" (case sensitive), to indicate an out-of-band configuration.
-: @param $additional-parameters Parameters specific to a certain step (request-token) of the OAuth authorization
-: @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
-:)
-(:private:)
+ : This function allows the client to obtain a set of temporary credentials from the service provider by making an authenticated HTTP request to the Temporary Credential Request endpoint.
+ :
+ : @see http://tools.ietf.org/html/rfc5849#section-2.1
+ : @param $consumer-key Client Identifier, also known as the consumer-key
+ : @param $consumer-secret Client Shared-Secret, also known as the consumer-secret
+ : @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
+ : @param $method HTTP request method (e.g., "GET", "POST", etc.) HTTP request method
+ : @param $realm Realm that defines the protection space
+ : @param $temporary-credential-request Target url for temporary credentials request
+ : @param $callback-url Service provider redirects the user to this url after authorization. The parameter value MUST be set to "oob" (case sensitive), to indicate an out-of-band configuration.
+ : @param $additional-parameters Parameters specific to a certain step (request-token) of the OAuth authorization
+ : @return temporary credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
+ :)
 declare sequential function oauth:request-token(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
@@ -446,22 +431,21 @@ declare sequential function oauth:request-token(
 };
 
 (:~
-: This function allows the client to obtain a set of token credentials from the service provider by making an authenticated HTTP request to the Token Request endpoint.
-:
-: @see http://tools.ietf.org/html/rfc5849#section-2.3
-: @param $consumer-key Client Identifier, also known as the consumer-key
-: @param $consumer-secret Client Shared-Secret, also known as the consumer-secret
-: @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
-: @param $method HTTP request method (e.g., "GET", "POST", etc.)
-: @param $realm Realm that defines the protection space
-: @param $token-request-uri Target uri for token credentials request
-: @param $oauth-token The temporary credentials identifier
-: @param $oauth-token-secret the temporary credentials shared-secret
-: @param $oauth-verifier The verification code
-: @param $additional-parameters Parameters specific to a certain step (access-token) of the OAuth authorization
-: @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
-:)
-(:private:)
+ : This function allows the client to obtain a set of token credentials from the service provider by making an authenticated HTTP request to the Token Request endpoint.
+ :
+ : @see http://tools.ietf.org/html/rfc5849#section-2.3
+ : @param $consumer-key Client Identifier, also known as the consumer-key
+ : @param $consumer-secret Client Shared-Secret, also known as the consumer-secret
+ : @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
+ : @param $method HTTP request method (e.g., "GET", "POST", etc.)
+ : @param $realm Realm that defines the protection space
+ : @param $token-request-uri Target uri for token credentials request
+ : @param $oauth-token The temporary credentials identifier
+ : @param $oauth-token-secret the temporary credentials shared-secret
+ : @param $oauth-verifier The verification code
+ : @param $additional-parameters Parameters specific to a certain step (access-token) of the OAuth authorization
+ : @return token credentials correctly parsed as parameter elements, or an error if http response status is not 200 OK
+ :)
 declare sequential function oauth:access-token(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
@@ -479,21 +463,20 @@ declare sequential function oauth:access-token(
 };
 
 (:~
-: This function allows the client access to the protected resources of the user.
-:
-: @see http://tools.ietf.org/html/rfc5849#section-3
-: @param $consumer-key Client Identifier, also known as the consumer-key
-: @param $consumer-secret Client Shared-Secret, also known as the consumer-secret
-: @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
-: @param $method HTTP request method (e.g., "GET", "POST", etc.)
-: @param $realm Realm that defines the protection space
-: @param $url Target URL
-: @param $oauth-token The temporary credentials identifier
-: @param $oauth-token-secret the temporary credentials shared-secret
-: @param $additional-parameters Parameters specific to a certain step (protected-resource) of the OAuth authorization
-: @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
-:)
-(:private:)
+ : This function allows the client access to the protected resources of the user.
+ :
+ : @see http://tools.ietf.org/html/rfc5849#section-3
+ : @param $consumer-key Client Identifier, also known as the consumer-key
+ : @param $consumer-secret Client Shared-Secret, also known as the consumer-secret
+ : @param $signature-method Method with which the signing key is signed (typically HMAC-SHA1)
+ : @param $method HTTP request method (e.g., "GET", "POST", etc.)
+ : @param $realm Realm that defines the protection space
+ : @param $url Target URL
+ : @param $oauth-token The temporary credentials identifier
+ : @param $oauth-token-secret the temporary credentials shared-secret
+ : @param $additional-parameters Parameters specific to a certain step (protected-resource) of the OAuth authorization
+ : @return protected resources parsed as parameter elements, or an error if http response status is not 200 OK
+ :)
 declare sequential function oauth:protected-resource(
     $consumer-key as xs:string,
     $consumer-secret as xs:string,
