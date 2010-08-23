@@ -122,7 +122,8 @@ FOREACH (path "${CMAKE_PREFIX_PATH}")
   IF (EXISTS "${path}")
     MESSAGE("path entry: ${path}")
   ELSE (EXISTS "${path}")
-    MESSAGE("Non-existing path!: ${path}")
+    # Ignore non-existing paths
+    #   MESSAGE("Non-existing path!: ${path}")
   ENDIF (EXISTS "${path}")
 ENDFOREACH (path)
 

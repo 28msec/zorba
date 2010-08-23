@@ -157,6 +157,9 @@ FOREACH(INDEX RANGE ${BOUNDARY})
   # Build the Zorba STATIC library
   #
   IF (ZORBA_BUILD_STATIC_LIBRARY)
+    # Set the ar append flag to "q" instead of "r", which could create incomplete archives by replacing the files with the same names
+    SET(CMAKE_C_ARCHIVE_APPEND "<CMAKE_AR> <LINK_FLAGS> q <TARGET> <OBJECTS>")
+    SET(CMAKE_CXX_ARCHIVE_APPEND "<CMAKE_AR> <LINK_FLAGS> q <TARGET> <OBJECTS>")
 
     ADD_LIBRARY(zorba_${ZORBA_STORE_NAME}_static STATIC ${ZORBA_SRCS} ${STORE_SRCS})
     LIST(APPEND ZORBA_LIBRARY_INSTALL_LIST zorba_${ZORBA_STORE_NAME}_static)
@@ -168,7 +171,7 @@ FOREACH(INDEX RANGE ${BOUNDARY})
     # on windows, the static lib needs a different name because .lib is already generated when creating the .dll 
     # on unix, the static library can have the same name because it uses a different file suffix (e.g. .a)
     IF (UNIX)
-      SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES OUTPUT_NAME "zorba_${ZORBA_STORE_NAME}")  
+      SET_TARGET_PROPERTIES(zorba_${ZORBA_STORE_NAME}_static PROPERTIES OUTPUT_NAME "zorba_${ZORBA_STORE_NAME}")      
     ENDIF (UNIX)
   ENDIF (ZORBA_BUILD_STATIC_LIBRARY)
 
