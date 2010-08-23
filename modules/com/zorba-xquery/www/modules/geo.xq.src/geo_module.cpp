@@ -57,6 +57,12 @@ GeoModule::getExternalFunction(String aLocalname) const
     else if (aLocalname.equals("geometry-type")) {
       lFunc = new SFGeometryTypeFunction(this);
     }
+    else if (aLocalname.equals("num-geometries")) {
+      lFunc = new SFNumGeometriesFunction(this);
+    }
+    else if (aLocalname.equals("geometry-n")) {
+      lFunc = new SFGeometryNFunction(this);
+    }
     else if (aLocalname.equals("envelope")) {
       lFunc = new SFEnvelopeFunction(this);
     }

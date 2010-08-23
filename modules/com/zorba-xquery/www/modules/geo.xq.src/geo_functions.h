@@ -104,6 +104,8 @@ namespace zorba { namespace geomodule {
 DECLARE_GEOFUNCTION_CLASS(SFDimensionFunction, dimension)
 DECLARE_GEOFUNCTION_CLASS(SFCoordinateDimensionFunction, coordinate-dimension)
 DECLARE_GEOFUNCTION_CLASS(SFGeometryTypeFunction, geometry-type)
+DECLARE_GEOFUNCTION_CLASS(SFNumGeometriesFunction, num-geometries)
+DECLARE_GEOFUNCTION_CLASS(SFGeometryNFunction, geometry-n)
 DECLARE_GEOFUNCTION_CLASS(SFEnvelopeFunction, envelope)
 DECLARE_GEOFUNCTION_CLASS(SFAsTextFunction, as-text)
 DECLARE_GEOFUNCTION_CLASS(SFAsBinaryFunction, as-binary)

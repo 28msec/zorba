@@ -165,6 +165,29 @@ declare function zorba-geo:coordinate-dimension( $geometry as node()) as xs:inte
 declare function zorba-geo:geometry-type( $geometry as node()) as xs:string external;
 
 (:~
+ : Return the number of geometries in the collection, or 1 for non-collection. 
+ : 
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
+ :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @return number of geometries in collection
+ : @error XPTY0004 - unrecognized geometric object
+:)
+declare function zorba-geo:num-geometries( $geometry as node()) as xs:unsignedInt external;
+
+(:~
+ : Return the n-th geometry in the collection. 
+ : Return this geometry if it is not a collection.
+ : N is zero based.
+ : 
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
+ :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $n zero-based index in the collection
+ : @return n-th geometry in collection.
+ : @error XPTY0004 - unrecognized geometric object
+:)
+declare function zorba-geo:geometry-n( $geometry as node(), $n as xs:unsignedInt) as node() external;
+
+(:~
  : The envelope is the minimum bounding box of this geometry.
  : 
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,

@@ -965,6 +965,120 @@ SFGeometryTypeFunction::evaluate(const StatelessExternalFunction::Arguments_t& a
 }
 
 ///////////////////////////////////////////////////////////////////////
+ItemSequence_t 
+SFNumGeometriesFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
+         const StaticContext* aSctxCtx,
+         const DynamicContext* aDynCtx) const
+{
+  Item lItem;
+  gmlsf_types   geometric_type;
+  geometric_type = getGeometryNodeType(args, 0, lItem);
+
+  switch(geometric_type)
+  {
+  case GMLSF_INVALID:
+    {
+      std::stringstream lErrorMessage;
+      zorba::Item item_qname;
+      lItem.getNodeName(item_qname);
+      lErrorMessage << "Unrecognized geometric type for element " 
+           << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
+      throwError(lErrorMessage.str(), XPTY0004);
+    }
+    break;
+  default:
+    break;
+  }
+
+  geos::geom::Geometry  *geos_geometry;
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);
+
+  unsigned int num_geos;
+  try{
+  num_geos = geos_geometry->getNumGeometries();
+  delete geos_geometry;
+  }catch(geos::util::GEOSException &excep)                                              
+  {                                                                                     
+    delete geos_geometry;                                                               
+    std::stringstream lErrorMessage;                                                    
+    lErrorMessage << "Error in GEOS function getNumGeometries : " << excep.what();  
+    throwError(lErrorMessage.str(), XPTY0004);                                          
+  }                                                                                     
+
+  return ItemSequence_t(new SingletonItemSequence(
+     theModule->getItemFactory()->createUnsignedInt(num_geos)));
+}
+
+ItemSequence_t                                                                          
+SFGeometryNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,              
+         const StaticContext* aSctxCtx,                                                 
+         const DynamicContext* aDynCtx) const                                           
+{                                                                                       
+  Item lItem1;                                                                    
+  gmlsf_types   geometric_type1;                                                  
+  geometric_type1 = getGeometryNodeType(args, 0, lItem1);                         
+                                                                                  
+  switch(geometric_type1)                                                         
+  {                                                                               
+  case GMLSF_INVALID:                                                             
+    {                                                                             
+      std::stringstream lErrorMessage;                                            
+      zorba::Item item_qname1;
+      lItem1.getNodeName(item_qname1);
+      lErrorMessage << "Unrecognized geometric type for element "                 
+           << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
+      throwError(lErrorMessage.str(), XPTY0004);                                  
+    }                                                                             
+    break;                                                                        
+  default:                                                                        
+    break;                                                                        
+  }                                                                               
+                                                                                  
+  geos::geom::Geometry  *geos_geometry1;                                          
+  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1);            
+                                                                                  
+                                                                                        
+  Item lItem2;                                                                           
+  if (!args[1]->next(lItem2)) 
+  {
+    std::stringstream lErrorMessage;
+    lErrorMessage << "An empty-sequence is not allowed as second parameter";
+    throwError(lErrorMessage.str(), XPTY0004);
+  }
+
+  uint32_t n;
+  n = lItem2.getUnsignedIntValue();
+                                               
+  if(n >= geos_geometry1->getNumGeometries())
+  {
+    std::stringstream lErrorMessage;                                              
+    lErrorMessage << "Index n (" << n << ") is outside the range [0.." << geos_geometry1->getNumGeometries()-1 << "] ";  
+    delete geos_geometry1;                                                        
+    throwError(lErrorMessage.str(), XPTY0004);                                    
+  }
+  const geos::geom::Geometry  *geos_result;                                          
+  try{
+  geos_result = geos_geometry1->getGeometryN(n);                                    
+  }catch(geos::util::GEOSException &excep)                                        
+  {                                                                               
+    delete geos_geometry1;                                                        
+    std::stringstream lErrorMessage;                                              
+    lErrorMessage << "Error in GEOS function getGeometryN : " << excep.what();  
+    throwError(lErrorMessage.str(), XPTY0004);                                    
+  }                                                                               
+
+  zorba::Item   null_parent;                                                      
+  zorba::Item   result_item;                                                      
+  result_item = getGMLItemFromGeosGeometry(null_parent, geos_result);             
+  delete geos_geometry1;                                                          
+//  delete geos_result;                                                             
+                                                                                  
+  return ItemSequence_t(new SingletonItemSequence(result_item));                  
+}
+
+
+
+///////////////////////////////////////////////////////////////////////
 #define DEFINE_EVALUATE_ONE_GEOMETRY_RETURN_GEOMETRY(sfclass_name, geos_function_name)  \
 ItemSequence_t                                                                          \
 sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,              \
