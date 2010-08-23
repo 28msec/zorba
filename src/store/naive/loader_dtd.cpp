@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -227,7 +227,7 @@ long DtdXmlLoader::readPacket(std::istream& stream, char* buf, long size)
   }
   catch (...)
   {
-    ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
+    ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
                               STR0020_LOADER_IO_ERROR,
                               "Unknown exception");
   }
@@ -280,7 +280,7 @@ store::Item_t DtdXmlLoader::loadXml(
 
     if (numChars < 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
                                 STR0020_LOADER_IO_ERROR,
                                 "Unknown I/O error");
       abortload();
@@ -289,7 +289,7 @@ store::Item_t DtdXmlLoader::loadXml(
     }
     else if (numChars == 0)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, 
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager,
                                 STR0020_LOADER_IO_ERROR,
                                 "No input data.");
       delete[] theBuffer;
@@ -305,7 +305,7 @@ store::Item_t DtdXmlLoader::loadXml(
 
     if (ctxt == NULL)
     {
-      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0021_LOADER_PARSING_ERROR, 
+      ZORBA_ERROR_DESC_CONTINUE(theErrorManager, STR0021_LOADER_PARSING_ERROR,
                                 "Failed to initialize parser");
       delete[] theBuffer;
       abortload();
@@ -535,7 +535,7 @@ void DtdXmlLoader::startDocument(void * ctx)
 {
   DtdXmlLoader& loader = *(static_cast<DtdXmlLoader *>(ctx));
   ZORBA_LOADER_CHECK_ERROR(loader);
-  
+
   try
   {
     XmlNode* docNode = GET_STORE().getNodeFactory().createDocumentNode();
@@ -543,7 +543,7 @@ void DtdXmlLoader::startDocument(void * ctx)
     loader.setRoot(docNode);
     loader.theNodeStack.push(docNode);
     loader.theNodeStack.push(NULL);
-    
+
 #ifdef DATAGUIDE
     if (loader.theBuildDataGuide)
     {
@@ -598,7 +598,7 @@ void DtdXmlLoader::endDocument(void * ctx)
     // that libXml calls endDocument() without having called startDocument().
     if (stackSize == 0)
       return;
-  
+
     // Find the position of the 1st child of this doc node in the node stack
     firstChildPos = stackSize - 1;
     while (nodeStack[firstChildPos] != NULL)
@@ -673,7 +673,7 @@ void DtdXmlLoader::endDocument(void * ctx)
                  attribute values.
 ********************************************************************************/
 void DtdXmlLoader::startElement(
-    void * ctx, 
+    void * ctx,
     xmlNode *node)
 {
   //std::cout << "StartElement, name: " << node->name << std::endl; std::cout.flush();
@@ -704,11 +704,11 @@ void DtdXmlLoader::startElement(
     ulong numAttributes = (ulong)numAttrs;
     ulong numBindings = (ulong)numNamespaces;
 
-    // Construct node name 
+    // Construct node name
     store::Item_t nodeName = qnpool.insert(reinterpret_cast<const char*>(uri),
                                            reinterpret_cast<const char*>(prefix),
                                            reinterpret_cast<const char*>(lname));
-    
+
     // Create the element node and push it to the node stack
     ElementNode* elemNode = nfactory.createElementNode(nodeName,
                                                        numBindings,
@@ -830,62 +830,66 @@ void DtdXmlLoader::startElement(
     {
       //std::cout << "  att: " << attr->name << std::endl; std::cout.flush();
 
-      const char* at;
-
       const char* lname = reinterpret_cast<const char*>(attr->name);
       const char* prefix = reinterpret_cast<const char*>( attr->ns != NULL ? attr->ns->prefix : NULL);
       const char* uri = reinterpret_cast<const char*>( attr->ns != NULL ? attr->ns->href : NULL);
+      store::Item_t qname = qnpool.insert(uri, prefix, lname);
+      AttributeNode* attrNode = nfactory.createAttributeNode(qname);
 
       xmlChar *val = xmlGetProp(node, attr->name);
       const char* valu = reinterpret_cast<const char*>(val);
-
-      store::Item_t qname = qnpool.insert(uri, prefix, lname);
-
       xqpStringStore_t value = new xqpStringStore(valu);
+
+      store::Item_t typeName;
 
       store::Item_t typedValue;
       switch (attr->atype)
       {
         case 0:                       // libxml2 bug
         case XML_ATTRIBUTE_CDATA:
-          at = "CDATA";
           GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, value);
+          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "anySimpleType");
           break;
         case XML_ATTRIBUTE_ID:
-          at = "ID";
           GET_STORE().getItemFactory()->createID(typedValue, value);
+          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "ID");
           break;
         case XML_ATTRIBUTE_IDREF:
-          at = "IDREF";
           GET_STORE().getItemFactory()->createIDREF(typedValue, value);
+          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "IDREF");
+//          attrNode->setIsIdRefs();
           break;
         case XML_ATTRIBUTE_IDREFS:
-          at = "IDREFS";
           GET_STORE().getItemFactory()->createIDREFS(typedValue, value);
+          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "IDREFS");
+          attrNode->setHaveListValue();
+ //         attrNode->setIsIdRefs();
           break;
         case XML_ATTRIBUTE_ENTITY:
-          at = "ENTITY";
           GET_STORE().getItemFactory()->createENTITY(typedValue, value);
+          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "ENTITY");
           break;
         case XML_ATTRIBUTE_ENTITIES:
-          at = "ENTITIES";
           GET_STORE().getItemFactory()->createENTITIES(typedValue, value);
+          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "ENTITIES");
+          attrNode->setHaveListValue();
           break;
         case XML_ATTRIBUTE_NMTOKEN:
-          at = "NMTOKEN";
           GET_STORE().getItemFactory()->createNMTOKEN(typedValue, value);
+          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "NMTOKEN");
           break;
         case XML_ATTRIBUTE_NMTOKENS:
-          at = "NMTOKENS";
           GET_STORE().getItemFactory()->createNMTOKENS(typedValue, value);
-          break;
-        case XML_ATTRIBUTE_ENUMERATION:
-          at = "ENUM";
-          GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, value);
+          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "NMTOKENS");
+          attrNode->setHaveListValue();
           break;
         case XML_ATTRIBUTE_NOTATION:
-          at = "NOTATION";
           GET_STORE().getItemFactory()->createNOTATION(typedValue, value);
+          GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "NOTATION");
+          break;
+        case XML_ATTRIBUTE_ENUMERATION:
+          GET_STORE().getItemFactory()->createUntypedAtomic(typedValue, value);
+          //GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "ENUM");
           break;
         default:
           std::cout << "AssertError: unknown libxml2 attribute type: " <<
@@ -893,10 +897,10 @@ void DtdXmlLoader::startElement(
           ZORBA_ASSERT(false);
       }
 
-      AttributeNode* attrNode = nfactory.createAttributeNode(qname);
       attrNode->theParent = elemNode;
       attrNode->setId(loader.theTree, &loader.theOrdPath);
       attrNode->theTypedValue.transfer(typedValue);
+      attrNode->theTypeName.transfer(typeName);
 
       attrNodes.set(attrNode, i);
 
@@ -948,7 +952,7 @@ void DtdXmlLoader::startElement(
   }
 }
 
-  
+
 /*******************************************************************************
   SAX2 callback when an element end has been detected by the parser. It
   provides the expanded qname of the element.
@@ -959,7 +963,7 @@ void DtdXmlLoader::startElement(
   URI:       the element namespace name if available
 ********************************************************************************/
 void  DtdXmlLoader::endElement(
-    void * ctx, 
+    void * ctx,
     xmlNode *node)
 {
 #ifndef NDEBUG
@@ -1150,7 +1154,7 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
     loader.theOrdPath.nextChild();
 
     SYNC_CODE(cdataNode->theRCLockPtr = &loader.theTree->getRCLock();)
- 
+
     LOADER_TRACE2("CDATA Node = " << cdataNode << " content = "
                   << std::string(charp, len) << std::endl << " ordpath = "
                   << cdataNode->getOrdPath().show() << std::endl);
@@ -1175,8 +1179,8 @@ void DtdXmlLoader::cdataBlock(void * ctx, const xmlChar * ch, int len)
 
 ********************************************************************************/
 void DtdXmlLoader::processingInstruction(
-    void * ctx, 
-    const xmlChar * targetp, 
+    void * ctx,
+    const xmlChar * targetp,
     const xmlChar * data)
 {
   DtdXmlLoader& loader = *(static_cast<DtdXmlLoader *>( ctx ));
@@ -1188,7 +1192,7 @@ void DtdXmlLoader::processingInstruction(
     xqpStringStore_t content = new xqpStringStore(data?reinterpret_cast<const char*>(data):"");
     xqpStringStore_t target = new xqpStringStore(reinterpret_cast<const char*>(targetp));
 
-    XmlNode* piNode 
+    XmlNode* piNode
       = GET_STORE().getNodeFactory().createPiNode(target, content);
 
     if (loader.theNodeStack.empty())
@@ -1234,7 +1238,7 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
     const char* charp = reinterpret_cast<const char*>(ch);
     xqpStringStore_t content(new xqpStringStore(charp));
 
-    XmlNode* commentNode = 
+    XmlNode* commentNode =
         GET_STORE().getNodeFactory().createCommentNode(content);
 
     if (loader.theNodeStack.empty())
@@ -1266,7 +1270,7 @@ void DtdXmlLoader::comment(void * ctx, const xmlChar * ch)
 
 /*******************************************************************************
   Display and format an error messages, callback.
- 
+
    ctx:  an XML parser context
    msg:  the message to display/transmit
    ...:  extra parameters for the message display
@@ -1286,7 +1290,7 @@ void DtdXmlLoader::error(void * ctx, const char * msg, ... )
 
 /*******************************************************************************
    Display and format a warning messages, callback.
-  
+
    ctx:  an XML parser context
    msg:  the message to display/transmit
    ...:  extra parameters for the message display
@@ -1307,7 +1311,7 @@ void DtdXmlLoader::warning(void * ctx, const char * msg, ... )
 
 ********************************************************************************/
 xmlEntityPtr	DtdXmlLoader::getEntity(
-    void * ctx, 					 
+    void * ctx,
     const xmlChar * name)
 {
   DtdXmlLoader& loader = *(static_cast<DtdXmlLoader *>( ctx ));
@@ -1343,14 +1347,14 @@ void DtdXmlLoader::entityDecl(
 
 /*  if(type == XML_INTERNAL_PARAMETER_ENTITY)
   {
-    xmlAddDtdEntity(loader.ctxt->myDoc, 
+    xmlAddDtdEntity(loader.ctxt->myDoc,
                     name, type, publicId, systemId, content);
   }
 */
   /*
   if(type != XML_EXTERNAL_GENERAL_PARSED_ENTITY)
   {
-    ZORBA_ERROR_PARAM_CONTINUE_OSS(loader.theErrorManager, 
+    ZORBA_ERROR_PARAM_CONTINUE_OSS(loader.theErrorManager,
                               STR0020_LOADER_IO_ERROR,
                               "Cannot process entity  ", name);
   }
@@ -1362,7 +1366,7 @@ void DtdXmlLoader::entityDecl(
   xqpStringStore_t  entity_uri_string = entity_uri.toString();
   xqpStringStore_t  entity_path;
   entity_uri.get_path(entity_path);
-  
+
   char *entity_content = NULL;
   FILE *fentity = NULL;
   fentity = fopen(entity_path->c_str(), "rb");
@@ -1389,11 +1393,11 @@ void DtdXmlLoader::entityDecl(
 /*  //XmlNodePtr  entitylst;
   int retval;
   if((retval=xmlParseCtxtExternalEntity(loader.ctxt,
-    (xmlChar*)"file:///C:/xquery_development/XQTS_current/cat/AbbrAxes.xml",//(xmlChar*)entity_uri_string->c_str(), 
+    (xmlChar*)"file:///C:/xquery_development/XQTS_current/cat/AbbrAxes.xml",//(xmlChar*)entity_uri_string->c_str(),
                               systemId,
                               NULL)) != 0)
   {
-    ZORBA_ERROR_PARAM_CONTINUE_OSS(loader.theErrorManager, 
+    ZORBA_ERROR_PARAM_CONTINUE_OSS(loader.theErrorManager,
                               STR0020_LOADER_IO_ERROR,
                               "Cannot load entity  ", name);
   }

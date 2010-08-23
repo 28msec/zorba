@@ -124,7 +124,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/GeneralStringFunc/IRIToUR
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/GeneralStringFunc/IRIToURIfunc/K2-IRIToURIfunc-9
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocAvailableFunc/fn-doc-available-7
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-3
-test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqIDREFFunc/fn-idref-dtd-24
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocFunc/fn-doc-35
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocFunc/fn-doc-28
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqDocFunc/fn-doc-23

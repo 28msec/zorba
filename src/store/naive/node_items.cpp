@@ -967,7 +967,7 @@ ElementNode::ElementNode(
       }
       else if (theNsContext == NULL)
       {
-        // There is no parent or the parent is a doc node. Create an enpty 
+        // There is no parent or the parent is a doc node. Create an enpty
         // NsContext so that the (future) children of this node can inherit
         // from this NsContext. This way, if "this" node gets later inserted
         // under another node N and has to inherit the ns bindings of N, all
@@ -1042,18 +1042,18 @@ ElementNode::ElementNode(
 /*******************************************************************************
   This is a recursive function that copies a subtree rooted at node N and places
   the copied subtree under the given "rootParent" node, making it the "pos"-th
-  child of "rootParent". 
+  child of "rootParent".
 
-  N is "this" node during the 1st (non-recursive) invocation of this method. 
+  N is "this" node during the 1st (non-recursive) invocation of this method.
   During this 1st invocation, "rootParent" and "parent" point to the same node
   (which may be NULL), "pos" is the position under rootParent where the copied
-  subtree will be placed at, and "rootCopy" is NULL. 
+  subtree will be placed at, and "rootCopy" is NULL.
 
   During a recursive invocation, "parent" is the copy of the parent of "this",
   and "pos" is always -1, indicating that the copy of "this" will be appended
-  to the children's list of "parent". 
+  to the children's list of "parent".
 
-  "rootCopy" is the first copied node, i.e., the copy of node N. 
+  "rootCopy" is the first copied node, i.e., the copy of node N.
 ********************************************************************************/
 XmlNode* ElementNode::copyInternal(
     InternalNode*          rootParent,
@@ -1138,7 +1138,7 @@ XmlNode* ElementNode::copyInternal(
           copyNode->theFlags |= HaveLocalBindings;
         }
 
-        if (rootParent && 
+        if (rootParent &&
             rootParent->getNodeKind() == store::StoreConsts::elementNode &&
             copymode.theNsInherit)
         {
@@ -1625,16 +1625,16 @@ void ElementNode::getNamespaceBindings(
         if (bindings[j].first->byteEqual(parentBindings[i].first.getp()))
           break;
       }
-      
+
       if (j == currSize)
       {
         if (!foundEmptyNS && parentBindings[i].second->empty())
           foundEmptyNS = true;
-        
+
         bindings.push_back(parentBindings[i]);
       }
     }
-    
+
     parentContext = parentContext->getParent();
   }
 
@@ -1857,7 +1857,7 @@ void ElementNode::uninheritBinding(
     {
       static_cast<ElementNode*>(getChild(i))->uninheritBinding(rootNSCtx, prefix);
     }
-  }  
+  }
 }
 #endif
 

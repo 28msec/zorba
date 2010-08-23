@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,7 +24,7 @@
 #include "zorbatypes/representations.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
 namespace store
@@ -33,7 +33,7 @@ namespace store
 }
 
 
-namespace simplestore 
+namespace simplestore
 {
 
 class StringPool;
@@ -70,7 +70,7 @@ public:
         const char*    ln);
 
   bool createNCName(store::Item_t& result, xqpStringStore_t& value);
-        
+
 
   bool createAnyURI(store::Item_t& result, xqpStringStore_t& value);
   bool createAnyURI(store::Item_t& result, const char* value);
@@ -119,23 +119,23 @@ public:
   bool createDateTime(store::Item_t& result, const xqp_date* date, const xqp_time* time);
 
   bool createDateTime(store::Item_t& result, const xqp_dateTime* value);
- 
+
   bool createDateTime(store::Item_t& result, short year, short month, short day, short hour, short minute, double second);
 
   bool createDateTime(store::Item_t& result, short year , short month, short day, short hour, short minute, double second, short timeZone_hours);
 
   bool createDateTime(store::Item_t& result, const xqpStringStore_t& value);
-  
+
   bool createDateTime(store::Item_t& result, const store::Item_t&, const store::Item_t&);
 
   bool createDate(store::Item_t& result, const xqp_date* value);
-  
+
   bool createDate(store::Item_t& result, short year, short month, short day);
 
   bool createDate(store::Item_t& result, const xqpStringStore_t& value);
 
   bool createTime(store::Item_t& result, const xqp_time* value);
-  
+
   bool createTime(store::Item_t& result, const xqpStringStore_t& value);
 
   bool createTime(store::Item_t& result, short hour, short minute, double second );
@@ -161,7 +161,7 @@ public:
   bool createGMonthDay (store::Item_t& result,  short month, short day);
 
   bool createGYear (store::Item_t& result, const xqp_gYear* value);
-  
+
   bool createGYear (store::Item_t& result,  const xqpStringStore_t& value);
 
   bool createGYear (store::Item_t& result,  short year);
@@ -173,7 +173,7 @@ public:
   bool createGYearMonth (store::Item_t& result,  short year, short month);
 
   bool createDuration(store::Item_t& result, xqp_duration* value);
-  
+
   bool createDuration(store::Item_t& result, const xqpStringStore_t& value);
 
   bool createDuration(store::Item_t& result, short years, short months, short days, short hours, short minutes, double seconds);
@@ -304,6 +304,10 @@ public:
           const signature&,
           const store::Iterator_t&);
 
+private:
+  void splitToAtomicTextValues(
+          const xqpStringStore_t& textValue,
+          std::vector<xqp_string>& atomicTextValues);
 };
 
 } // namespace simplestore

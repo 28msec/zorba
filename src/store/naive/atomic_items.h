@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -147,7 +147,7 @@ public:
 
   xqpStringStore_t getStringValue() const { return theBaseItem->getStringValue(); }
 
-  void getStringValue(xqpStringStore_t& strval) const 
+  void getStringValue(xqpStringStore_t& strval) const
   {
     theBaseItem->getStringValue(strval);
   }
@@ -192,54 +192,54 @@ public:
 
   bool isPosOrNegInf() const { return theBaseItem->isPosOrNegInf(); }
 
-  const xqp_dateTime& getDateTimeValue() const 
+  const xqp_dateTime& getDateTimeValue() const
   {
-    return theBaseItem->getDateTimeValue(); 
+    return theBaseItem->getDateTimeValue();
   }
 
-  const xqp_date& getDateValue() const 
+  const xqp_date& getDateValue() const
   {
-    return theBaseItem->getDateValue(); 
+    return theBaseItem->getDateValue();
   }
 
-  const xqp_time& getTimeValue() const 
+  const xqp_time& getTimeValue() const
   {
-    return theBaseItem->getTimeValue(); 
+    return theBaseItem->getTimeValue();
   }
 
-  const xqp_gYearMonth& getGYearMonthValue() const 
+  const xqp_gYearMonth& getGYearMonthValue() const
   {
-    return theBaseItem->getGYearMonthValue(); 
+    return theBaseItem->getGYearMonthValue();
   }
 
-  const xqp_gYear& getGYearValue() const 
+  const xqp_gYear& getGYearValue() const
   {
-    return theBaseItem->getGYearValue(); 
+    return theBaseItem->getGYearValue();
   }
 
-  const xqp_gMonth& getGMonthValue() const 
+  const xqp_gMonth& getGMonthValue() const
   {
-    return theBaseItem->getGMonthValue(); 
+    return theBaseItem->getGMonthValue();
   }
 
-  const xqp_gMonthDay& getGMonthDayValue() const 
+  const xqp_gMonthDay& getGMonthDayValue() const
   {
-    return theBaseItem->getGMonthDayValue(); 
+    return theBaseItem->getGMonthDayValue();
   }
 
-  const xqp_gDay& getGDayValue() const 
+  const xqp_gDay& getGDayValue() const
   {
-    return theBaseItem->getGDayValue(); 
+    return theBaseItem->getGDayValue();
   }
 
-  const xqp_duration& getDurationValue() const 
+  const xqp_duration& getDurationValue() const
   {
-    return theBaseItem->getDurationValue(); 
+    return theBaseItem->getDurationValue();
   }
 
-  const xqp_dayTimeDuration& getDayTimeDurationValue() const 
+  const xqp_dayTimeDuration& getDayTimeDurationValue() const
   {
-    return theBaseItem->getDayTimeDurationValue(); 
+    return theBaseItem->getDayTimeDurationValue();
   }
 
   const xqp_yearMonthDuration& getYearMonthDurationValue() const
@@ -247,7 +247,7 @@ public:
     return theBaseItem->getYearMonthDurationValue();
   }
 
-  std::vector<xqp_string> getStringVectorValue() const 
+  std::vector<xqp_string> getStringVectorValue() const
   {
     return theBaseItem->getStringVectorValue();
   }
@@ -358,15 +358,15 @@ protected:
   uint16_t            thePrevFree;
 
 protected:
-  QNameItem() 
+  QNameItem()
     :
     thePosition(0),
     theNextFree(0),
-    thePrevFree(0) 
+    thePrevFree(0)
   {
     theUnion.theLocal = NULL;
   }
-  
+
   void free();
 
   bool isValid() const { return theUnion.theLocal != NULL; }
@@ -377,7 +377,7 @@ protected:
 
   bool isNormalized() const { return thePrefix->empty(); }
 
-  QNameItem* detachNormalized() 
+  QNameItem* detachNormalized()
   {
     assert(!isNormalized());
     QNameItem* qn = theUnion.theNormQN;
@@ -385,7 +385,7 @@ protected:
     return qn;
   }
 
-  void setNormalized(QNameItem* qn);  
+  void setNormalized(QNameItem* qn);
 
   void unsetNormalized();
 
@@ -550,7 +550,7 @@ public:
 /**
  * An <code>AtomicItemTokenizer</code> is-a Tokenizer::Callback TODO
  */
-class AtomicItemTokenizer : public Tokenizer::Callback 
+class AtomicItemTokenizer : public Tokenizer::Callback
 {
 public:
   typedef NaiveFTTokenIterator::FTTokens FTTokens;
@@ -760,7 +760,7 @@ protected:
 
 protected:
   DateTimeItem(const DateTime* aValue) : theValue(*aValue) { };
-  
+
   DateTimeItem() { };
 
 public:
@@ -779,7 +779,7 @@ public:
   const xqp_gMonthDay& getGMonthDayValue() const { return theValue; }
 
   const xqp_gDay& getGDayValue() const { return theValue; }
-  
+
   SchemaTypeCode getTypeCode() const;
 
   store::Item* getType() const;
@@ -881,7 +881,7 @@ protected:
 
 public:
 	xqp_double getDoubleValue() const { return theValue; }
-	
+
   bool isNaN() const;
   bool isPosOrNegInf() const;
 
@@ -918,7 +918,7 @@ public:
 
   xqp_string show() const;
 };
-	
+
 
 /*******************************************************************************
   class FloatItem
@@ -939,7 +939,7 @@ public:
   xqp_float getFloatValue() const { return theValue; }
 
   xqp_double getDoubleValue() const { return FloatCommons::parseFloat(theValue); }
-	
+
   bool isNaN() const;
 
   bool isPosOrNegInf() const;
@@ -996,7 +996,7 @@ public:
                            |               |         short
                      positiveInteger   unsignedLong    |
                                            |         byte
-                                       unsignedInt 
+                                       unsignedInt
                                            |
                                        unsingedShort
                                            |
@@ -1141,7 +1141,7 @@ protected:
   NonPositiveIntegerItem(const xqp_integer& aValue) : IntegerItem(aValue) {}
 
   NonPositiveIntegerItem() {}
-    
+
 public:
   SchemaTypeCode getTypeCode() const { return XS_NON_POSITIVE_INTEGER; }
 
@@ -1162,7 +1162,7 @@ protected:
   NegativeIntegerItem(const xqp_integer& aValue) : IntegerItem(aValue) {}
 
   NegativeIntegerItem() {}
-    
+
 public:
   SchemaTypeCode getTypeCode() const { return XS_NEGATIVE_INTEGER; }
 
@@ -1170,7 +1170,7 @@ public:
 
   xqp_string show() const;
 };
-  
+
 
 /*******************************************************************************
   class NonNegativeIntegerItem
@@ -1223,14 +1223,14 @@ public:
 /*******************************************************************************
   class LongItem
 ********************************************************************************/
-class LongItem : public AtomicItem 
+class LongItem : public AtomicItem
 {
   friend class BasicItemFactory;
   friend class AtomicItem;
 
 protected:
   xqp_long theValue;
-  
+
 protected:
   LongItem(xqp_long aValue) : theValue(aValue) {}
 
@@ -1240,7 +1240,7 @@ public:
   xqp_decimal getDecimalValue() const;
 
   xqp_integer getIntegerValue() const;
-  
+
   xqp_long getLongValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_LONG; }
@@ -1322,7 +1322,7 @@ public:
   xqp_long getLongValue() const { return static_cast<xqp_long>(theValue); }
 
   int32_t getIntValue() const { return theValue; }
-    
+
   SchemaTypeCode getTypeCode() const { return XS_INT; }
 
   store::Item* getType( ) const;
@@ -1376,8 +1376,8 @@ public:
 
 /*******************************************************************************
   class ShortItem
-********************************************************************************/  
-class ShortItem : public AtomicItem 
+********************************************************************************/
+class ShortItem : public AtomicItem
 {
   friend class BasicItemFactory;
   friend class AtomicItem;
@@ -1400,7 +1400,7 @@ public:
   xqp_int getIntValue() const { return static_cast<xqp_int>(theValue); }
 
   xqp_short getShortValue() const { return theValue; }
-  
+
   SchemaTypeCode getTypeCode() const { return XS_SHORT; }
 
   store::Item* getType() const;
@@ -1457,7 +1457,7 @@ public:
 /*******************************************************************************
   class ByteItem
 ********************************************************************************/
-class ByteItem : public AtomicItem 
+class ByteItem : public AtomicItem
 {
   friend class BasicItemFactory;
   friend class AtomicItem;
@@ -1465,7 +1465,7 @@ class ByteItem : public AtomicItem
 protected:
   xqp_byte theValue;
 
-protected:  
+protected:
   ByteItem(xqp_byte aValue) : theValue(aValue) {}
 
   ByteItem() {}
@@ -1480,7 +1480,7 @@ public:
   xqp_int getIntValue() const { return static_cast<xqp_int>(theValue); }
 
   xqp_short getShortValue() const { return static_cast<xqp_short>(theValue); }
-  
+
   xqp_byte getByteValue() const { return theValue; }
 
   SchemaTypeCode getTypeCode() const { return XS_BYTE; }
@@ -1539,14 +1539,14 @@ public:
 /*******************************************************************************
   class UnsignedLongItem
 ********************************************************************************/
-class UnsignedLongItem : public AtomicItem 
+class UnsignedLongItem : public AtomicItem
 {
   friend class BasicItemFactory;
   friend class AtomicItem;
 
 protected:
   xqp_ulong theValue;
-  
+
 protected:
   UnsignedLongItem(xqp_ulong aValue) : theValue(aValue) {}
 
@@ -1562,7 +1562,7 @@ protected:
   xqp_uinteger getUnsignedIntegerValue() const;
 
   xqp_ulong getUnsignedLongValue() const { return theValue; }
-  
+
   SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_LONG; }
 
   store::Item* getType() const;
@@ -1617,14 +1617,14 @@ protected:
 /*******************************************************************************
   class UnsignedIntItem
 ********************************************************************************/
-class UnsignedIntItem : public AtomicItem 
+class UnsignedIntItem : public AtomicItem
 {
   friend class BasicItemFactory;
   friend class AtomicItem;
 
 protected:
   xqp_uint theValue;
-  
+
 protected:
   UnsignedIntItem(xqp_uint aValue) : theValue(aValue) {}
 
@@ -1644,7 +1644,7 @@ public:
   xqp_ulong getUnsignedLongValue() const { return static_cast<xqp_ulong>(theValue); }
 
   xqp_uint getUnsignedIntValue() const { return theValue; }
-  
+
   SchemaTypeCode getTypeCode() const { return XS_UNSIGNED_INT; }
 
   store::Item* getType() const;
@@ -1698,7 +1698,7 @@ public:
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
- 
+
   xqp_string show() const;
 };
 
@@ -1706,14 +1706,14 @@ public:
 /*******************************************************************************
   class UnsignedShortItem
 ********************************************************************************/
-class UnsignedShortItem : public AtomicItem 
+class UnsignedShortItem : public AtomicItem
 {
   friend class BasicItemFactory;
   friend class AtomicItem;
 
 protected:
   xqp_ushort theValue;
-  
+
 protected:
   UnsignedShortItem(xqp_ushort aValue) : theValue(aValue) {}
 
@@ -1731,7 +1731,7 @@ public:
   xqp_ulong getUnsignedLongValue() const { return static_cast<xqp_ulong>(theValue); }
 
   xqp_uint getUnsignedIntValue() const { return static_cast<xqp_uint>(theValue); }
-  
+
   xqp_ushort getUnsignedShortValue() const { return theValue; }
 
   bool isNaN() const { return false; }
@@ -1797,7 +1797,7 @@ public:
 /*******************************************************************************
   class UnsignedByteItem
 ********************************************************************************/
-class UnsignedByteItem : public AtomicItem 
+class UnsignedByteItem : public AtomicItem
 {
   friend class BasicItemFactory;
   friend class AtomicItem;
@@ -1824,7 +1824,7 @@ public:
   xqp_uint getUnsignedIntValue() const { return static_cast<xqp_uint>(theValue); }
 
   xqp_ushort getUnsignedShortValue() const { return static_cast<xqp_ushort>(theValue); }
-  
+
   xqp_ubyte getUnsignedByteValue() const { return theValue; }
 
   bool isNaN() const { return false; }
@@ -1937,12 +1937,12 @@ public:
 
   xqp_string show() const;
 };
-  
+
 
 /*******************************************************************************
   class Base64BinaryItem
 ********************************************************************************/
-class Base64BinaryItem : public AtomicItem 
+class Base64BinaryItem : public AtomicItem
 {
   friend class BasicItemFactory;
 
@@ -1982,7 +1982,7 @@ public:
 /*******************************************************************************
   class HexBinaryItem
 ********************************************************************************/
-class HexBinaryItem : public AtomicItem 
+class HexBinaryItem : public AtomicItem
 {
   friend class BasicItemFactory;
 
@@ -2010,7 +2010,7 @@ public:
   {
     return theValue.equal(other->getHexBinaryValue());
   }
-  
+
   xqpStringStore_t getStringValue() const;
   void getStringValue(xqpStringStore_t& strval) const;
   void getStringValue(std::string& buf) const;
@@ -2035,7 +2035,7 @@ public:
   to it (and calling the virtual free() method on that pointer when the
   ErrorItem gets destroyed).
 ********************************************************************************/
-class ErrorItemNaive : public AtomicItem 
+class ErrorItemNaive : public AtomicItem
 {
   friend class BasicItemFactory;
 

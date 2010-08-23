@@ -140,10 +140,26 @@ bool BasicItemFactory::createNMTOKEN(store::Item_t& result, xqpStringStore_t& va
 
 bool BasicItemFactory::createNMTOKENS(
     store::Item_t& result,
-    xqpStringStore_t& /*value*/ )
+    xqpStringStore_t& value )
 {
-  result = NULL;
-  return false;
+  // split value string into tokens
+  std::vector<xqp_string> atomicTextValues;
+  splitToAtomicTextValues(value, atomicTextValues);
+
+  //create VectorItem with all tokens
+  std::vector<store::Item_t> typedValues;
+  for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
+  {
+    xqpStringStore_t tmp = atomicTextValues[i].getStore();
+    store::Item_t resultItem;
+    if ( createNMTOKENS(resultItem, tmp) )
+    {
+      typedValues.push_back(resultItem.getp());
+    }
+  }
+
+  result = new ItemVector(typedValues);
+  return true;
 }
 
 
@@ -174,10 +190,27 @@ bool BasicItemFactory::createIDREF(store::Item_t& result, xqpStringStore_t& valu
   return true;
 }
 
+
 bool BasicItemFactory::createIDREFS(store::Item_t& result, xqpStringStore_t& value )
 {
-  result = NULL;
-  return false;
+  // split value string into tokens
+  std::vector<xqp_string> atomicTextValues;
+  splitToAtomicTextValues(value, atomicTextValues);
+
+  //create VectorItem with all tokens
+  std::vector<store::Item_t> typedValues;
+  for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
+  {
+    xqpStringStore_t tmp = atomicTextValues[i].getStore();
+    store::Item_t resultItem;
+    if ( createIDREF(resultItem, tmp) )
+    {
+      typedValues.push_back(resultItem.getp());
+    }
+  }
+
+  result = new ItemVector(typedValues);
+  return true;
 }
 
 bool BasicItemFactory::createENTITY(store::Item_t& result, xqpStringStore_t& value )
@@ -188,8 +221,24 @@ bool BasicItemFactory::createENTITY(store::Item_t& result, xqpStringStore_t& val
 
 bool BasicItemFactory::createENTITIES(store::Item_t& result, xqpStringStore_t& value)
 {
-  result = NULL;
-  return false;
+  // split value string into tokens
+  std::vector<xqp_string> atomicTextValues;
+  splitToAtomicTextValues(value, atomicTextValues);
+
+  //create VectorItem with all tokens
+  std::vector<store::Item_t> typedValues;
+  for ( unsigned int i = 0; i < atomicTextValues.size() ; i++)
+  {
+    xqpStringStore_t tmp = atomicTextValues[i].getStore();
+    store::Item_t resultItem;
+    if ( createENTITY(resultItem, tmp) )
+    {
+      typedValues.push_back(resultItem.getp());
+    }
+  }
+
+  result = new ItemVector(typedValues);
+  return true;
 }
 
 
@@ -1363,6 +1412,30 @@ bool BasicItemFactory::createError(
 {
   result = new ErrorItemNaive(inError);
   return true;
+}
+
+void BasicItemFactory::splitToAtomicTextValues(
+          const xqpStringStore_t& textValue,
+          std::vector<xqp_string>& atomicTextValues)
+{
+  xqp_string normalizedTextValue(textValue->normalizeSpace());
+  checked_vector<uint32_t> codes = normalizedTextValue.getCodepoints();
+
+  xqpString::size_type start = 0;
+  xqpString::size_type i = 0;
+
+  while (i < codes.size())
+  {
+    if ( xqpStringStore::is_whitespace(codes[i]) )
+    {
+      atomicTextValues.push_back(normalizedTextValue.substr(start, i - start));
+      start = i+1;
+    }
+    i++;
+  }
+
+  if ( start < (i-1) )
+    atomicTextValues.push_back(normalizedTextValue.substr(start, i-start));
 }
 
 } // namespace simplestore
