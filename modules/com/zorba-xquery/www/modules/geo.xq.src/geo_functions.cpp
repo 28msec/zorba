@@ -993,11 +993,11 @@ SFNumGeometriesFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
   geos::geom::Geometry  *geos_geometry;
   geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);
 
-  unsigned int num_geos;
+  unsigned int num_geos = 0;
   try{
   num_geos = geos_geometry->getNumGeometries();
   delete geos_geometry;
-  }catch(geos::util::GEOSException &excep)                                              
+  }catch(std::exception &excep)                                              
   {                                                                                     
     delete geos_geometry;                                                               
     std::stringstream lErrorMessage;                                                    
@@ -1056,10 +1056,10 @@ SFGeometryNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
     delete geos_geometry1;                                                        
     throwError(lErrorMessage.str(), XPTY0004);                                    
   }
-  const geos::geom::Geometry  *geos_result;                                          
+  const geos::geom::Geometry  *geos_result = NULL;                                          
   try{
   geos_result = geos_geometry1->getGeometryN(n);                                    
-  }catch(geos::util::GEOSException &excep)                                        
+  }catch(std::exception &excep)                                        
   {                                                                               
     delete geos_geometry1;                                                        
     std::stringstream lErrorMessage;                                              
@@ -1108,10 +1108,10 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   geos::geom::Geometry  *geos_geometry;                                                 \
   geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);                     \
                                                                                         \
-  geos::geom::Geometry  *geos_result;                                                   \
+  geos::geom::Geometry  *geos_result = NULL;                                                   \
   try{                                                                                  \
     geos_result = geos_geometry->geos_function_name();                                  \
-  }catch(geos::util::GEOSException &excep)                                              \
+  }catch(std::exception &excep)                                              \
   {                                                                                     \
     delete geos_geometry;                                                               \
     std::stringstream lErrorMessage;                                                    \
@@ -1262,11 +1262,11 @@ SFIsSimpleFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   geos::geom::Geometry  *geos_geometry;
   geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);
 
-  bool is_simple;
+  bool is_simple = false;
   try{
   is_simple = geos_geometry->isSimple();
   delete geos_geometry;
-  }catch(geos::util::GEOSException &excep)                                              
+  }catch(std::exception &excep)                                              
   {                                                                                     
     delete geos_geometry;                                                               
     std::stringstream lErrorMessage;                                                    
@@ -1369,10 +1369,10 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   geos::geom::Geometry  *geos_geometry2;                                          \
   geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2);            \
                                                                                   \
-  bool retval;                                                                    \
+  bool retval = false;                                                            \
   try{                                                                            \
   retval = geos_geometry1->geos_function_name(geos_geometry2);                    \
-  }catch(geos::util::GEOSException &excep)                                        \
+  }catch(std::exception &excep)                                        \
   {                                                                               \
     delete geos_geometry1;                                                        \
     delete geos_geometry2;                                                        \
@@ -1451,10 +1451,10 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   geos::geom::Geometry  *geos_geometry2;                                          \
   geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2);            \
                                                                                   \
-  geos::geom::Geometry  *geos_result;                                             \
+  geos::geom::Geometry  *geos_result = NULL;                                             \
   try{                                                                            \
   geos_result = geos_geometry1->geos_function_name(geos_geometry2);               \
-  }catch(geos::util::GEOSException &excep)                                        \
+  }catch(std::exception &excep)                                        \
   {                                                                               \
     delete geos_geometry1;                                                        \
     delete geos_geometry2;                                                        \
@@ -1511,10 +1511,10 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   geos::geom::Geometry  *geos_geometry;                                                 \
   geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);                     \
                                                                                         \
-  double  retval;                                                                       \
+  double  retval = 0;                                                                   \
   try{                                                                                  \
   retval = geos_geometry->geos_function_name();                                         \
-  }catch(geos::util::GEOSException &excep)                                              \
+  }catch(std::exception &excep)                                              \
   {                                                                                     \
     delete geos_geometry;                                                               \
     std::stringstream lErrorMessage;                                                    \
@@ -1595,7 +1595,7 @@ SFRelateFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   bool is_relate = false;                                                   
   try{
     is_relate = geos_geometry1->relate(geos_geometry2, intersection_matrix.c_str());                                    
-  }catch(geos::util::GEOSException &excep)
+  }catch(std::exception &excep)
   {
     delete geos_geometry1;
     delete geos_geometry2;
@@ -1671,10 +1671,10 @@ SFIsWithinDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_
   double distance;
   distance = lItem3.getDoubleValue();
 
-  bool is_within_distance;                                                   
+  bool is_within_distance = false;                                                   
   try{
   is_within_distance = geos_geometry1->isWithinDistance(geos_geometry2, distance);                                    
-  }catch(geos::util::GEOSException &excep)                                        
+  }catch(std::exception &excep)                                        
   {                                                                               
     delete geos_geometry1;                                                        
     delete geos_geometry2;                                                        
@@ -1739,10 +1739,10 @@ SFDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2);            
                                                                                   
                                                                                         
-  double min_distance;                                                   
+  double min_distance = 0;                                                   
   try{
   min_distance = geos_geometry1->distance(geos_geometry2);                                    
-  }catch(geos::util::GEOSException &excep)                                        
+  }catch(std::exception &excep)                                        
   {                                                                               
     delete geos_geometry1;                                                        
     delete geos_geometry2;                                                        
@@ -1795,10 +1795,10 @@ SFBufferFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   double distance;
   distance = lItem2.getDoubleValue();
                                                                                         
-  geos::geom::Geometry  *geos_result;                                          
+  geos::geom::Geometry  *geos_result = NULL;                                          
   try{
   geos_result = geos_geometry1->buffer(distance);                                    
-  }catch(geos::util::GEOSException &excep)                                        
+  }catch(std::exception &excep)                                        
   {                                                                               
     delete geos_geometry1;                                                        
     std::stringstream lErrorMessage;                                              
