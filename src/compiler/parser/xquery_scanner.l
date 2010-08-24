@@ -905,7 +905,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
    |______________________________________________________________________*/
 
 <MODE_XML_COMMENT>"-->" { POP_STATE(); return token::XML_COMMENT_END; }
-<MODE_XML_COMMENT>{XMLCommentChar}* { TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng), yytext); }
+<MODE_XML_COMMENT>{XMLCommentChar}* { TRY_SVAL_TOKEN (XML_COMMENT_LITERAL, put(yytext, yyleng, 1), yytext); }
 
 
   /*______________________________________________________________________

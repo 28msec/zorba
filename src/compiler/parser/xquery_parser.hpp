@@ -1,8 +1,10 @@
-/* A Bison parser, made by GNU Bison 2.4.2.  */
+
+/* A Bison parser, made by GNU Bison 2.4.1.  */
 
 /* Skeleton interface for Bison LALR(1) parsers in C++
    
-      Copyright (C) 2002-2010 Free Software Foundation, Inc.
+      Copyright (C) 2002, 2003, 2004, 2005, 2006, 2007, 2008 Free Software
+   Foundation, Inc.
    
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -37,8 +39,8 @@
 
 /* "%code requires" blocks.  */
 
-/* Line 34 of lalr1.cc  */
-#line 31 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+/* Line 35 of lalr1.cc  */
+#line 31 "/home/mbrantner/zorba/trunk/src/compiler/parser/xquery_parser.y"
 
 
 #include <list>
@@ -68,8 +70,8 @@ typedef std::pair<std::string,std::string> string_pair_t;
 
 
 
-/* Line 34 of lalr1.cc  */
-#line 73 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+/* Line 35 of lalr1.cc  */
+#line 75 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -77,17 +79,23 @@ typedef std::pair<std::string,std::string> string_pair_t;
 #include "stack.hh"
 
 
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
 namespace zorba {
 
-/* Line 34 of lalr1.cc  */
-#line 84 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+/* Line 35 of lalr1.cc  */
+#line 89 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
 } // zorba
 
-/* Line 34 of lalr1.cc  */
-#line 91 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+/* Line 35 of lalr1.cc  */
+#line 99 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -129,10 +137,13 @@ do {							\
 #endif
 
 
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
 namespace zorba {
 
-/* Line 34 of lalr1.cc  */
-#line 136 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+/* Line 35 of lalr1.cc  */
+#line 147 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -143,8 +154,8 @@ namespace zorba {
     union semantic_type
     {
 
-/* Line 34 of lalr1.cc  */
-#line 152 "/home/colea/work/xquery/src/compiler/parser/xquery_parser.y"
+/* Line 35 of lalr1.cc  */
+#line 152 "/home/mbrantner/zorba/trunk/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -167,8 +178,8 @@ namespace zorba {
 
 
 
-/* Line 34 of lalr1.cc  */
-#line 172 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+/* Line 35 of lalr1.cc  */
+#line 183 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -663,10 +674,13 @@ namespace zorba {
     xquery_driver& driver;
   };
 
+/* Line 35 of lalr1.cc  */
+#line 1 "[Bison:b4_percent_define_default]"
+
 } // zorba
 
-/* Line 34 of lalr1.cc  */
-#line 670 "/home/colea/work/xquery/build_fast/src/compiler/parser/xquery_parser.hpp"
+/* Line 35 of lalr1.cc  */
+#line 684 "/home/mbrantner/zorba/build/src/compiler/parser/xquery_parser.hpp"
 
 
 
