@@ -89,10 +89,6 @@ ENDIF(${cxqNO} STRGREATER "0")
 # Flag to remember whether we found the XQTS here or not
 SET(FOUND_XQTS 0)
 
-# Set ImageMagick found which is needed to determine if we have to skip the image module checks
-
-FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore)
-
 # Check if libgeos is found in order to determine whether
 # we have to skip the geo module tests
 FIND_PACKAGE(Geos)
@@ -148,12 +144,16 @@ FOREACH(TESTFILE ${TESTFILES})
     ENDIF (NEEDS_FULL_TEXT)
   ENDIF (ZORBA_NO_FULL_TEXT)
   # Check if ImageMagick libraries are found, if not then skip tests
-  IF (NOT ImageMagick_FOUND)
+  IF (NOT ImageMagick_Magick++_FOUND OR
+      NOT ImageMagick_MagickCore_FOUND OR
+      NOT ImageMagick_MagickWand_FOUND)
     STRING(REGEX MATCH "image/" NEEDS_MAGICK "${TESTNAME}")
     IF (NEEDS_MAGICK)
       SET (SKIP_TEST 1)
     ENDIF (NEEDS_MAGICK)
-  ENDIF (NOT ImageMagick_FOUND)
+  ENDIF (NOT ImageMagick_Magick++_FOUND OR
+         NOT ImageMagick_MagickCore_FOUND OR
+         NOT ImageMagick_MagickWand_FOUND)
 
   # check if libgeos is found; skip the tests if not found
   IF (NOT GEOS_FOUND)

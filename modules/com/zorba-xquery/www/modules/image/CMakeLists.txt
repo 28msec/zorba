@@ -1,7 +1,6 @@
 FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore MagickWand)
 
-IF (ImageMagick_FOUND) 
-  MESSAGE(STATUS "Found ImageMagick:  ${ImageMagick_FOUND}")
+IF (ImageMagick_FOUND)
   MESSAGE(STATUS "Found ImageMagick include dirs ${ImageMagick_INCLUDE_DIRS}")
   MESSAGE(STATUS "Found ImageMagick libraries ${ImageMagick_LIBRARIES}")
 
@@ -16,7 +15,10 @@ IF (ImageMagick_FOUND)
   GENERATE_MODULE_LIBRARY(paintschema "image_c;image_commons;${ImageMagick_LIBRARIES}")
   GENERATE_MODULE_LIBRARY(animationschema "image_commons;${ImageMagick_LIBRARIES}")
 
-
 ELSE (ImageMagick_FOUND)
-    MESSAGE("ImageMagick not found -- if you want to use image handling functionality please install the ImageMagick library")
+  MESSAGE(STATUS "Magick++   component found: ${ImageMagick_Magick++_FOUND}")
+  MESSAGE(STATUS "MagickCore component found: ${ImageMagick_MagickCore_FOUND}")
+  MESSAGE(STATUS "MagickWand component found: ${ImageMagick_MagickWand_FOUND}")
+
+  MESSAGE(STATUS "If you want to use image handling functionality please install the ImageMagick library containing these 3 components: Magick++, MagickCore, MagickWand.\n Please note that on some OS ImageMagick and libMagick++ are 2 different packages and you need to install both of them.")
 ENDIF (ImageMagick_FOUND)
