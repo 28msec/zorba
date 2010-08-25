@@ -93,6 +93,10 @@ SET(FOUND_XQTS 0)
 # we have to skip the geo module tests
 FIND_PACKAGE(Geos)
 
+# Check if ImageMagick is found with all the 3 needed components: Magick++ MagickCore MagickWand
+# in order to determine whether we have to skip the image module tests
+FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore MagickWand)
+
 FOREACH(TESTFILE ${TESTFILES})
   # All testfile paths end in .xq or .xqx. Strip that part off to form
   # the test name.
