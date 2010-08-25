@@ -264,7 +264,7 @@ SIND_DeclList::SIND_DeclList(const QueryLoc& loc)
 }
 
 
-void SIND_DeclList::push_back(rchandle<parsenode> decl) 
+void SIND_DeclList::push_back(rchandle<parsenode> decl)
 {
   if (dynamic_cast<ModuleImport*>(decl.getp()) != NULL)
   {
@@ -1383,8 +1383,12 @@ void FLWORExpr::compute_general ()
       if (has_group || has_where || has_order)
         non_10 = general = true;
 
-      if (static_cast<const ForClause *> (cp)->is_outer ())
-        non_10 = general = true;
+      const ForClause* fc = static_cast<const ForClause*>(cp);
+      for (int j=0; j<fc->get_decl_count(); j++)
+      {
+        if (fc->get_vardecl_list()->operator[](j)->get_allowing_empty())
+          non_10 = general = true;
+      }
     }
     else if (typeid (*cp) == typeid (LetClause))
     {
@@ -1510,13 +1514,18 @@ void FLWORClauseList::accept( parsenode_visitor &v ) const
 // --------------
 ForClause::ForClause(
   const QueryLoc& loc_,
-  rchandle<VarInDeclList> _vardecl_list_h,
-  bool outer_)
+  rchandle<VarInDeclList> _vardecl_list_h)
 :
   ForOrLetClause(loc_),
   vardecl_list_h(_vardecl_list_h),
-  outer (outer_)
-{}
+  allowing_empty(false)
+{
+  for (unsigned int j=0; j<_vardecl_list_h->size(); j++)
+  {
+    if (_vardecl_list_h->operator[](j)->get_allowing_empty())
+      allowing_empty = true;
+  }
+}
 
 
 //-ForClause::
@@ -1562,11 +1571,13 @@ VarInDecl::VarInDecl(
   rchandle<SequenceType> typedecl_h,
   rchandle<PositionalVar> _posvar_h,
   rchandle<FTScoreVar> _ftscorevar_h,
-  rchandle<exprnode> valexpr_h)
+  rchandle<exprnode> valexpr_h,
+  bool _allowing_empty)
 :
   VarDeclWithInit (loc, varname, typedecl_h, valexpr_h),
   posvar_h(_posvar_h),
-  ftscorevar_h(_ftscorevar_h)
+  ftscorevar_h(_ftscorevar_h),
+  allowing_empty(_allowing_empty)
 {
 }
 

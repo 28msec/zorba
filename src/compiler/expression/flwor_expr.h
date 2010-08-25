@@ -181,7 +181,7 @@ class for_clause : public forletwin_clause
 protected:
   var_expr_t    thePosVarExpr;
   var_expr_t    theScoreVarExpr;
-  bool          theIsOuter;
+  bool          theAllowingEmpty;
 
 public:
   SERIALIZABLE_CLASS(for_clause)
@@ -201,9 +201,9 @@ public:
   ~for_clause();
 
 public:
-  bool is_outer() const { return theIsOuter; }
+  bool is_allowing_empty() const { return theAllowingEmpty; }
 
-  void set_outer(bool outer) { theIsOuter = outer; }
+  void set_allowing_empty(bool allowing_empty) { theAllowingEmpty = allowing_empty; }
 
   var_expr* get_pos_var() const;
 
@@ -645,7 +645,7 @@ public:
 
   expr* get_return_expr() const { return theReturnExpr.getp(); }
 
-  void set_return_expr(expr_t e) 
+  void set_return_expr(expr_t e)
   {
     theReturnExpr = e;
     compute_scripting_kind();

@@ -802,13 +802,13 @@ public:
   ---------------
 
   The numeric id of the last sctx that was added to theSctxMap of the query
-  (see api/xqueryimpl.h). 
+  (see api/xqueryimpl.h).
 
   theRootSctx :
   -------------
 
   The root sctx obj of the module that is being translated by this translator.
-  Every time an expr is created, theRootSctx is stored in the expr obj, so that 
+  Every time an expr is created, theRootSctx is stored in the expr obj, so that
  each expr will be executed in the appropriate sctx.
 
   theSctx :
@@ -819,7 +819,7 @@ public:
   theSctxList :
   -------------
 
-  A list of static contexts which need to be kept alive only during the 
+  A list of static contexts which need to be kept alive only during the
   translation of a module. It's managed in push_scope and pop_scope. In
   DEBUGGER mode, this list remains empty.
 
@@ -3013,11 +3013,11 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
       std::string compURL;
       auto_ptr<istream> modfile;
 
-      try 
+      try
       {
         modfile.reset(standardModuleResolver->resolve(compURI, *theSctx, compURL));
       }
-      catch (error::ZorbaError& e) 
+      catch (error::ZorbaError& e)
       {
         ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
       }
@@ -5195,7 +5195,7 @@ void* begin_visit(const ForClause& v)
 {
   TRACE_VISIT();
 
-  if (v.is_outer())
+  if (v.has_allowing_empty())
   {
     if (theSctx->xquery_version() < StaticContextConsts::xquery_version_1_1)
       ZORBA_ERROR_LOC_DESC(XPST0003, loc,
@@ -5212,14 +5212,11 @@ void end_visit(const ForClause& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 
-  if (v.is_outer())
+  if (v.has_allowing_empty())
   {
     ulong curClause = theFlworClausesStack.size() - 1;
     while(theFlworClausesStack[curClause] != NULL)
-    {
-      static_cast<for_clause*>(theFlworClausesStack[curClause].getp())->set_outer(true);
       --curClause;
-    }
 
     theFlworClausesStack.erase(theFlworClausesStack.begin() + curClause);
   }
@@ -5287,7 +5284,9 @@ void end_visit(const VarInDecl& v, void* /*visit_state*/)
                                   v.get_location(),
                                   varExpr,
                                   domainExpr,
-                                  posVarExpr);
+                                  posVarExpr,
+                                  NULL,
+                                  v.get_allowing_empty());
 
   theFlworClausesStack.push_back(fc);
 }
@@ -8418,7 +8417,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
                                  << ve->get_name()->getStringValue()->c_str()
                                  << " has type " << declaredType->toString()
                                  << ", which is not among the in-scope types"
-                                 << " of the main module."); 
+                                 << " of the main module.");
       }
       else
       {
@@ -8427,7 +8426,7 @@ void end_visit(const VarRef& v, void* /*visit_state*/)
                                  << ve->get_name()->getStringValue()->c_str()
                                  << " has type " << declaredType->toString()
                                  << ", which is not among the in-scope types"
-                                 << " of module " 
+                                 << " of module "
                                  << theModuleNamespace->c_str());
       }
     }
@@ -8553,7 +8552,7 @@ void* begin_visit(const FunctionCall& v)
       ZORBA_ERROR_LOC_DESC_OSS(XUST0001, loc,
                                "A sequantial function is called from a non sequential function");
     }
-    
+
     if (dynamic_cast<user_function*>(f) != NULL)
       thePrologGraph.addEdge(theCurrentPrologVFDecl, f);
   }
@@ -8575,7 +8574,7 @@ void* begin_visit(const FunctionCall& v)
                                  << f->getName()->getStringValue()->c_str()
                                  << " has type " << retType->toString()
                                  << ", which is not among the in-scope types"
-                                 << " of the main module."); 
+                                 << " of the main module.");
       }
       else
       {
@@ -8584,11 +8583,11 @@ void* begin_visit(const FunctionCall& v)
                                  << f->getName()->getStringValue()->c_str()
                                  << " has type " << retType->toString()
                                  << ", which is not among the in-scope types"
-                                 << " of module " 
+                                 << " of module "
                                  << theModuleNamespace->c_str());
       }
     }
-    
+
     ulong numParams = f->getArity();
 
     for (ulong i = 0; i < numParams; ++i)
@@ -8603,7 +8602,7 @@ void* begin_visit(const FunctionCall& v)
                                    << f->getName()->getStringValue()->c_str()
                                    << " has type " << type->toString()
                                    << ", which is not among the in-scope types"
-                                   << " of the main module."); 
+                                   << " of the main module.");
         }
         else
         {
@@ -8612,7 +8611,7 @@ void* begin_visit(const FunctionCall& v)
                                    << f->getName()->getStringValue()->c_str()
                                    << " has type " << type->toString()
                                    << ", which is not among the in-scope types"
-                                   << " of module " 
+                                   << " of module "
                                    << theModuleNamespace->c_str());
         }
       }
@@ -10180,7 +10179,7 @@ void end_visit (const AnyKindTest& v, void* /*visit_state*/) {
 
   // if the top of the stack is an axis step expr, add a node test expr to it.
   axis_step_expr* axisExpr = peek_nodestk_or_null ().dyn_cast<axis_step_expr> ();
-  if (axisExpr != NULL) 
+  if (axisExpr != NULL)
   {
     rchandle<match_expr> me = new match_expr(theRootSctx, loc);
     me->setTestKind(match_anykind_test);
@@ -11433,7 +11432,7 @@ void end_visit (const FTPrimaryWithOptions& v, void* /*visit_state*/) {
   TRACE_VISIT_OUT ();
 #ifndef ZORBA_NO_FULL_TEXT
   ftmatch_options *const mo = dynamic_cast<ftmatch_options*>( top_ftstack() );
-  if ( mo ) 
+  if ( mo )
     pop_ftstack();
   ftprimary *const p = dynamic_cast<ftprimary*>( pop_ftstack() );
   ZORBA_ASSERT( p );

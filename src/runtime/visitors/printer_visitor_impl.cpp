@@ -94,7 +94,7 @@ namespace zorba{
   }
 
 
-void PrinterVisitor::beginVisit(const SingletonIterator& a) 
+void PrinterVisitor::beginVisit(const SingletonIterator& a)
 {
   thePrinter.startBeginVisit("SingletonIterator", ++theId);
   thePrinter.addAttribute("value", a.getValue()->show());
@@ -102,14 +102,14 @@ void PrinterVisitor::beginVisit(const SingletonIterator& a)
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const SingletonIterator&) 
+void PrinterVisitor::endVisit(const SingletonIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
 }
 
 
-void PrinterVisitor::beginVisit(const EnclosedIterator& a) 
+void PrinterVisitor::beginVisit(const EnclosedIterator& a)
 {
   thePrinter.startBeginVisit("EnclosedIterator", ++theId);
   thePrinter.addAttribute("attr_cont", (a.getAttrContent() ? "true" : "false"));
@@ -117,7 +117,7 @@ void PrinterVisitor::beginVisit(const EnclosedIterator& a)
   thePrinter.endBeginVisit(theId);
 }
 
-void PrinterVisitor::endVisit(const EnclosedIterator&) 
+void PrinterVisitor::endVisit(const EnclosedIterator&)
 {
   thePrinter.startEndVisit();
   thePrinter.endEndVisit();
@@ -1099,6 +1099,19 @@ void PrinterVisitor::endVisit(const FTContainsIterator&) {
   thePrinter.endEndVisit();
 }
 
+void PrinterVisitor::beginVisit(const flwor::OuterForIterator& a) {
+  thePrinter.startBeginVisit("flwor::OuterForIterator", ++theId);
+  thePrinter.addAttribute("varname", a.getVarName()->getStringValue()->c_str());
+  printCommons(  &a, theId );
+  thePrinter.endBeginVisit(theId);
+}
+
+void PrinterVisitor::endVisit(const flwor::OuterForIterator&) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+
+
 #define TYPED_VAL_CMP( xqt )                                            \
 void PrinterVisitor::beginVisit ( const TypedValueCompareIterator<TypeConstants::XS_##xqt>& a){\
     thePrinter.startBeginVisit("TypedValueCompareIterator_" #xqt, ++theId); \
@@ -1183,7 +1196,6 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (flwor::TupleStreamIterator)
   PRINTER_VISITOR_DEFINITION (flwor::TupleSourceIterator)
   PRINTER_VISITOR_DEFINITION (flwor::ForIterator)
-  PRINTER_VISITOR_DEFINITION (flwor::OuterForIterator)
   PRINTER_VISITOR_DEFINITION (flwor::LetIterator)
   PRINTER_VISITOR_DEFINITION (flwor::WhereIterator)
   PRINTER_VISITOR_DEFINITION (flwor::CountIterator)

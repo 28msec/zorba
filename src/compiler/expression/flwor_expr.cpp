@@ -116,9 +116,9 @@ void forletwin_clause::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void forletwin_clause::set_expr(expr_t v) 
+void forletwin_clause::set_expr(expr_t v)
 {
-  theDomainExpr = v; 
+  theDomainExpr = v;
 }
 
 
@@ -140,12 +140,12 @@ for_clause::for_clause(
     expr_t domainExpr,
     varref_t posVarExpr,
     varref_t scoreVarExpr,
-    bool isOuter)
+    bool isAllowingEmpty)
   :
   forletwin_clause(sctx, loc, flwor_clause::for_clause, varExpr, domainExpr),
   thePosVarExpr(posVarExpr),
   theScoreVarExpr(scoreVarExpr),
-  theIsOuter(isOuter)
+  theAllowingEmpty(isAllowingEmpty)
 {
   if (thePosVarExpr != NULL)
     thePosVarExpr->set_flwor_clause(this);
@@ -174,8 +174,8 @@ for_clause::for_clause(
           xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
           if (TypeOps::is_equal(tm, *varType, *GENV_TYPESYSTEM.NONE_TYPE))
           {
-            ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, get_loc(), 
-                                     "Cannot treat " << domainType->toString() 
+            ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, get_loc(),
+                                     "Cannot treat " << domainType->toString()
                                      <<" as " << declaredType->toString());
           }
 
@@ -204,17 +204,17 @@ void for_clause::serialize(::zorba::serialization::Archiver& ar)
   serialize_baseclass(ar, (forletwin_clause*)this);
   ar & thePosVarExpr;
   ar & theScoreVarExpr;
-  ar & theIsOuter;
+  ar & theAllowingEmpty;
 }
 
 
-var_expr* for_clause::get_pos_var() const 
+var_expr* for_clause::get_pos_var() const
 {
-  return thePosVarExpr.getp(); 
+  return thePosVarExpr.getp();
 }
 
 
-var_expr* for_clause::get_score_var() const 
+var_expr* for_clause::get_score_var() const
 {
   return theScoreVarExpr.getp();
 }
@@ -265,7 +265,7 @@ flwor_clause_t for_clause::clone(expr::substitution_t& subst) const
                         domainCopy,
                         posvarCopy,
                         scorevarCopy,
-                        theIsOuter);
+                        theAllowingEmpty);
 }
 
 
@@ -301,8 +301,8 @@ let_clause::let_clause(
         xqtref_t varType = TypeOps::intersect_type(*domainType, *declaredType, tm);
         if (TypeOps::is_equal(tm, *varType, *GENV_TYPESYSTEM.NONE_TYPE))
         {
-          ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, get_loc(), 
-                                   "Cannot treat " << domainType->toString() 
+          ZORBA_ERROR_LOC_DESC_OSS(XPTY0004, get_loc(),
+                                   "Cannot treat " << domainType->toString()
                                    <<" as " << declaredType->toString());
         }
 
@@ -330,7 +330,7 @@ void let_clause::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-var_expr* let_clause::get_score_var() const 
+var_expr* let_clause::get_score_var() const
 {
   return theScoreVarExpr.getp();
 }
@@ -751,7 +751,7 @@ void where_clause::serialize(::zorba::serialization::Archiver& ar)
 }
 
 
-void where_clause::set_expr(expr_t where) 
+void where_clause::set_expr(expr_t where)
 {
   theWhereExpr = where;
 }
@@ -1050,7 +1050,7 @@ expr_t flwor_expr::clone(substitution_t& subst) const
 
   flwor_expr_t cloneFlwor = new flwor_expr(theSctx, get_loc(), theIsGeneral);
 
-  for (ulong i = 0; i < numClauses; ++i) 
+  for (ulong i = 0; i < numClauses; ++i)
   {
     flwor_clause_t cloneClause = theClauses[i]->clone(subst);
 

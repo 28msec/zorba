@@ -39,7 +39,7 @@
 /* "%code requires" blocks.  */
 
 /* Line 35 of lalr1.cc  */
-#line 35 "/home/colea/work/xquery_temp4/src/compiler/parser/xquery_parser.y"
+#line 35 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 
 
 #include <list>
@@ -70,7 +70,7 @@ typedef std::pair<std::string,std::string> string_pair_t;
 
 
 /* Line 35 of lalr1.cc  */
-#line 74 "/home/colea/work/xquery_temp4/build/src/compiler/parser/xquery_parser.hpp"
+#line 74 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 
 #include <string>
@@ -81,14 +81,14 @@ typedef std::pair<std::string,std::string> string_pair_t;
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 85 "/home/colea/work/xquery_temp4/build/src/compiler/parser/xquery_parser.hpp"
+#line 85 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
   class position;
   class location;
 
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 92 "/home/colea/work/xquery_temp4/build/src/compiler/parser/xquery_parser.hpp"
+#line 92 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 #include "location.hh"
 
@@ -133,7 +133,7 @@ do {							\
 namespace zorba {
 
 /* Line 35 of lalr1.cc  */
-#line 137 "/home/colea/work/xquery_temp4/build/src/compiler/parser/xquery_parser.hpp"
+#line 137 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
   /// A Bison parser.
   class xquery_parser
@@ -145,7 +145,7 @@ namespace zorba {
     {
 
 /* Line 35 of lalr1.cc  */
-#line 156 "/home/colea/work/xquery_temp4/src/compiler/parser/xquery_parser.y"
+#line 156 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
 
     zorba::parsenode *node;
     zorba::exprnode *expr;
@@ -169,7 +169,7 @@ namespace zorba {
 
 
 /* Line 35 of lalr1.cc  */
-#line 173 "/home/colea/work/xquery_temp4/build/src/compiler/parser/xquery_parser.hpp"
+#line 173 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -207,31 +207,31 @@ namespace zorba {
      DECLARE = 283,
      MODULE = 284,
      BLANK = 285,
-     BASE_URI = 286,
-     BOUNDARY_SPACE = 287,
-     COMMENT = 288,
-     CONSTRUCTION = 289,
-     COPY_NAMESPACES = 290,
-     COUNT = 291,
-     DETERMINISTIC = 292,
-     DOCUMENT = 293,
-     DOCUMENT_NODE = 294,
-     ELEMENT = 295,
-     EVAL = 296,
-     FOR = 297,
-     FUNCTION = 298,
-     IF = 299,
-     IMPORT = 300,
-     INSTANCE = 301,
-     LET = 302,
-     MOST = 303,
-     NEXT = 304,
-     NO = 305,
-     NONDETERMINISTIC = 306,
-     ONLY = 307,
-     OPTION = 308,
-     ORDERING = 309,
-     OUTER = 310,
+     ALLOWING = 286,
+     BASE_URI = 287,
+     BOUNDARY_SPACE = 288,
+     COMMENT = 289,
+     CONSTRUCTION = 290,
+     COPY_NAMESPACES = 291,
+     COUNT = 292,
+     DETERMINISTIC = 293,
+     DOCUMENT = 294,
+     DOCUMENT_NODE = 295,
+     ELEMENT = 296,
+     EVAL = 297,
+     FOR = 298,
+     FUNCTION = 299,
+     IF = 300,
+     IMPORT = 301,
+     INSTANCE = 302,
+     LET = 303,
+     MOST = 304,
+     NEXT = 305,
+     NO = 306,
+     NONDETERMINISTIC = 307,
+     ONLY = 308,
+     OPTION = 309,
+     ORDERING = 310,
      PREVIOUS = 311,
      PROCESSING_INSTRUCTION = 312,
      SCHEMA = 313,
@@ -587,8 +587,8 @@ namespace zorba {
     /// - if positive, shift that token.
     /// - if negative, reduce the rule which number is the opposite.
     /// - if zero, do what YYDEFACT says.
-    static const short int yytable_[];
-    static const short int yytable_ninf_;
+    static const unsigned short int yytable_[];
+    static const signed char yytable_ninf_;
 
     static const short int yycheck_[];
 
@@ -667,7 +667,7 @@ namespace zorba {
 } // zorba
 
 /* Line 35 of lalr1.cc  */
-#line 671 "/home/colea/work/xquery_temp4/build/src/compiler/parser/xquery_parser.hpp"
+#line 671 "/home/colea/work/xquery_temp1/build/src/compiler/parser/xquery_parser.hpp"
 
 
 

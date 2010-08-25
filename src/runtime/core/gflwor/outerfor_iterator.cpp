@@ -26,12 +26,36 @@
 
 using namespace zorba;
 
-namespace zorba 
+namespace zorba
 {
-namespace flwor 
+namespace flwor
 {
 SERIALIZABLE_CLASS_VERSIONS(OuterForIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(OuterForIterator)
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  OuterFor State                                                             //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
+
+void OuterForState::init(PlanState& planState)
+{
+  PlanIteratorState::init(planState);
+  thePosition = 0;
+}
+
+void OuterForState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  thePosition = 0;
+}
+
+/////////////////////////////////////////////////////////////////////////////////
+//                                                                             //
+//  OuterForIterator                                                           //
+//                                                                             //
+/////////////////////////////////////////////////////////////////////////////////
 
 // theChild0 --> TupleIterator
 // theChild1 --> InputIterator
@@ -42,19 +66,22 @@ OuterForIterator::OuterForIterator(
     store::Item* aVarName,
     PlanIter_t aTupleIterator,
     PlanIter_t aInput,
-    const std::vector<PlanIter_t>& aOuterForVars) 
+    const std::vector<PlanIter_t>& aOuterForVars,
+    const std::vector<PlanIter_t>& posRefs)
   :
-  BinaryBaseIterator<OuterForIterator, PlanIteratorState>(sctx,
+  BinaryBaseIterator<OuterForIterator, OuterForState>(sctx,
                                                           loc,
                                                           aTupleIterator,
                                                           aInput),
   theVarName (aVarName),
-  theOuterForVars(aOuterForVars)
+  theOuterForVars(aOuterForVars),
+  thePosVarRefs(posRefs)
 {
+  theHasPosVars = !thePosVarRefs.empty();
 }
-  
 
-OuterForIterator::~OuterForIterator() 
+
+OuterForIterator::~OuterForIterator()
 {
 }
 
@@ -62,27 +89,36 @@ OuterForIterator::~OuterForIterator()
 void OuterForIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass(ar,
-  (BinaryBaseIterator<OuterForIterator, PlanIteratorState>*)this);
-  
+    (BinaryBaseIterator<OuterForIterator, OuterForState>*)this);
+
   ar & theVarName;
+  ar & theHasPosVars;
   ar & theOuterForVars;
+  ar & thePosVarRefs;
 }
 
 
-bool OuterForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const 
+bool OuterForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
 {
   store::Item_t lItem;
+  store::Item_t lPosItem;
 
-  PlanIteratorState* lState;
-  DEFAULT_STACK_INIT(PlanIteratorState, lState, aPlanState);
+  OuterForState* lState;
+  DEFAULT_STACK_INIT(OuterForState, lState, aPlanState);
 
-  while (consumeNext(aResult, theChild0, aPlanState)) 
+  while (consumeNext(aResult, theChild0, aPlanState))
   {
     //using a if, to avoid an additional state
     if(consumeNext(lItem, theChild1, aPlanState))
     {
+      lState->reset(aPlanState);
       do
       {
+        if (theHasPosVars)
+        {
+          GENV_ITEMFACTORY->createInteger(lPosItem, Integer::parseInt(lState->incReturnPosition()));
+          bindVariables(lPosItem, thePosVarRefs, aPlanState);
+        }
         bindVariables(lItem, theOuterForVars, aPlanState);
         STACK_PUSH(true, lState);
       }
@@ -90,6 +126,11 @@ bool OuterForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
     }
     else
     {
+      if (theHasPosVars)
+      {
+        GENV_ITEMFACTORY->createInteger(lPosItem, Integer::parseInt(0));
+        bindVariables(lPosItem, thePosVarRefs, aPlanState);
+      }
       bindVariables(lItem, theOuterForVars, aPlanState);
       STACK_PUSH(true, lState);
     }
@@ -103,6 +144,6 @@ bool OuterForIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) c
 
 BINARY_ACCEPT(OuterForIterator);
 
-  
+
 } //Namespace flwor
 }//Namespace zorba

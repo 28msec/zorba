@@ -21,24 +21,41 @@
 #include "runtime/base/binarybase.h"
 
 
-namespace zorba 
+namespace zorba
 {
 
-namespace flwor 
+namespace flwor
 {
 
-class OuterForIterator : public BinaryBaseIterator<OuterForIterator, PlanIteratorState> 
+
+class OuterForState : public PlanIteratorState
+{
+private:
+  int thePosition;
+
+public:
+  void init(PlanState&);
+
+  void reset(PlanState&);
+
+  inline int incReturnPosition() {return ++thePosition;}
+};
+
+
+class OuterForIterator : public BinaryBaseIterator<OuterForIterator, OuterForState>
 {
 private:
   store::Item_t           theVarName;
+  bool                    theHasPosVars;
   std::vector<PlanIter_t> theOuterForVars;
+  std::vector<PlanIter_t> thePosVarRefs;
 
 public:
   SERIALIZABLE_CLASS(OuterForIterator);
 
   SERIALIZABLE_CLASS_CONSTRUCTOR2T(
-  OuterForIterator, 
-  BinaryBaseIterator<OuterForIterator, PlanIteratorState>);
+  OuterForIterator,
+  BinaryBaseIterator<OuterForIterator, OuterForState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -49,9 +66,12 @@ public:
         store::Item* aVarName,
         PlanIter_t aTupleIterator,
         PlanIter_t aInput,
-        const std::vector<PlanIter_t>& aOuterForVars);
-  
+        const std::vector<PlanIter_t>& aOuterForVars,
+        const std::vector<PlanIter_t>& posRefs);
+
   ~OuterForIterator();
+
+  store::Item* getVarName() const { return theVarName.getp(); }
 
   void accept(PlanIterVisitor& v) const;
 

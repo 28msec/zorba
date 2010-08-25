@@ -1872,14 +1872,14 @@ class ForClause : public ForOrLetClause
 {
 protected:
   rchandle<VarInDeclList> vardecl_list_h;
-  bool                    outer;
+  bool                    allowing_empty;
 
 public:
-  ForClause(const QueryLoc&, rchandle<VarInDeclList>, bool outer = false);
+  ForClause(const QueryLoc&, rchandle<VarInDeclList>);
 
   for_or_let_t for_or_let () const { return for_clause; }
 
-  bool is_outer () const { return outer; }
+  bool has_allowing_empty() const { return allowing_empty; }
 
   rchandle<VarInDeclList> get_vardecl_list() const { return vardecl_list_h; }
 
@@ -1919,6 +1919,7 @@ protected:
   rchandle<PositionalVar> posvar_h;
   rchandle<FTScoreVar>    ftscorevar_h;
   rchandle<exprnode>      valexpr_h;
+  bool                    allowing_empty;
 
 public:
   VarInDecl(
@@ -1927,11 +1928,14 @@ public:
     rchandle<SequenceType>,
     rchandle<PositionalVar>,
     rchandle<FTScoreVar>,
-    rchandle<exprnode>);
+    rchandle<exprnode>,
+    bool _allowing_empty);
 
   rchandle<PositionalVar> get_posvar() const { return posvar_h; }
 
   rchandle<FTScoreVar> get_ftscorevar() const { return ftscorevar_h; }
+
+  bool get_allowing_empty() const { return allowing_empty; }
 
   void accept(parsenode_visitor&) const;
 };

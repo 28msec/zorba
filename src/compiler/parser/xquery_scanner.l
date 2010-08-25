@@ -419,8 +419,8 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 "schema" { return token::SCHEMA; }
 "copy-namespaces" { return token::COPY_NAMESPACES; }
 "for" { return token::FOR; }
-"outer" { return token::OUTER; }
 "let" { return token::LET; }
+"allowing" { return token::ALLOWING; }
 "sliding" { return token::SLIDING; }
 "tumbling" { return token::TUMBLING; }
 "previous" { return token::PREVIOUS; }

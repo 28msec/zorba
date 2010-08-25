@@ -29,7 +29,7 @@
 %error-verbose
 
 // Expect 60 shift/reduce conflicts
-%expect 62
+%expect 60
 
 
 %code requires {
@@ -98,7 +98,7 @@ namespace zorba
 {
 namespace parser
 {
-  extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_ofor, *the_declare, *the_create;
+  extern const char *the_tumbling, *the_sliding, *the_start, *the_end, *the_only_end, *the_declare, *the_create;
 
 }
 }
@@ -189,7 +189,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* constant string tokens */
 %type <strval> WindowType
-%type <strval> ForStart
 %type <strval> FLWORWinCondType
 
 /* tokens that contain embedded string literals */
@@ -235,6 +234,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %token BLANK                            "'<blank>'"
 
+%token ALLOWING                         "'allowing'"
 %token BASE_URI                         "'base-uri'"
 %token BOUNDARY_SPACE                   "'boundary-space'"
 %token COMMENT                          "'comment'"
@@ -259,7 +259,6 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token ONLY                             "'only'"
 %token OPTION                           "'option'"
 %token ORDERING                         "'ordering'"
-%token OUTER                            "'outer'"
 %token PREVIOUS                         "'previous'"
 %token PROCESSING_INSTRUCTION           "'processing-instruction'"
 %token SCHEMA                           "'schema'"
@@ -543,7 +542,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 /* placeholder node for reducing UNRECOGNIZED and generating an error */
 /* ---------------------------- */
-//%type <node> UnrecognizedToken
+// %type <node> UnrecognizedToken
 
 
 /* left-hand sides: syntax only */
@@ -1199,7 +1198,8 @@ SIND_DeclList
             ((SIND_DeclList*)$1)->push_back( $3 );
             $$ = $1;
         }
-    |   SIND_DeclList ERROR SIND_Decl    //error catching
+    //  ============================ Improved error messages ============================
+    |   SIND_DeclList ERROR SIND_Decl
         {
             // error
             $$ = $1; $$ = $3; // to prevent the Bison warning
@@ -1223,6 +1223,7 @@ VFO_DeclList
             ((VFO_DeclList*)$1)->push_back( $3 );
             $$ = $1;
         }
+    //  ============================ Improved error messages ============================
     |   VFO_DeclList ERROR VFO_Decl    //error catching
         {
             $$ = $1; $$ = $3; // to prevent the Bison warning
@@ -2357,6 +2358,20 @@ ConcatExpr
             expr->push_back( $3 );
             $$ = expr;
         }
+    //  ============================ Improved error messages ============================
+        /*
+    |   // RangeExpr FilterExpr
+        ConcatExpr StepExpr SLASH GT
+        {
+            // error
+            $$ = $1; $$ = $2; // to prevent the Bison warning
+            @1.step();
+            driver.parserErr("syntax error, missing comma \",\" between expressions", @1);
+            error(@$, ""); // The error message will be taken from the driver
+            // YYERROR;
+            YYABORT;
+        }
+        */
     ;
 
 // [32]
@@ -2514,22 +2529,11 @@ FLWORClauseList
         }
   ;
 
-ForStart
-    :   FOR
-        {
-            $$ = NULL;
-        }
-    |   OUTER FOR
-        {
-            $$ = parser::the_ofor;
-        }
-    ;
-
 // [34]
 ForClause
-    :   ForStart DOLLAR VarInDeclList
+    :   FOR DOLLAR VarInDeclList
         {
-            $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3), $1 != NULL);
+            $$ = new ForClause(LOC(@$), dynamic_cast<VarInDeclList*>($3));
         }
     ;
 
@@ -2555,33 +2559,37 @@ VarInDeclList
 VarInDecl :
     QNAME  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), NULL, NULL, NULL, $3);
+      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), NULL, NULL, NULL, $3, false);
+    }
+  | QNAME  ALLOWING  _EMPTY  _IN  ExprSingle
+    {
+      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), NULL, NULL, NULL, $5, true);
     }
   | QNAME  TypeDeclaration  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$),
-                         static_cast<QName*>($1),
-                         dynamic_cast<SequenceType *>($2),
-                         NULL,NULL,
-                         $4);
+      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), dynamic_cast<SequenceType *>($2), NULL, NULL, $4, false);
+    }
+  | QNAME  TypeDeclaration  ALLOWING  _EMPTY  _IN  ExprSingle
+    {
+      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), dynamic_cast<SequenceType *>($2), NULL, NULL, $6, true);
     }
   | QNAME  PositionalVar  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$),
-                         static_cast<QName*>($1),
-                         NULL,
-                         dynamic_cast<PositionalVar*>($2),
-                         NULL,
-                         $4);
+      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), NULL, dynamic_cast<PositionalVar*>($2), NULL, $4, false);
+    }
+  | QNAME  ALLOWING  _EMPTY  PositionalVar  _IN  ExprSingle
+    {
+      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), NULL, dynamic_cast<PositionalVar*>($4), NULL, $6, true);
     }
   | QNAME  TypeDeclaration  PositionalVar  _IN  ExprSingle
     {
-      $$ = new VarInDecl(LOC(@$),
-                         static_cast<QName*>($1),
-                         dynamic_cast<SequenceType *>($2),
-                         dynamic_cast<PositionalVar*>($3),
-                         NULL,
-                         $5);
+      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<PositionalVar*>($3), NULL, $5, false);
+    }
+  | QNAME  TypeDeclaration  ALLOWING  _EMPTY  PositionalVar  _IN  ExprSingle
+    {
+      $$ = new VarInDecl(LOC(@$), static_cast<QName*>($1), dynamic_cast<SequenceType *>($2),
+                         dynamic_cast<PositionalVar*>($5), NULL, $7, true);
     }
 /* full-text extensions */
   | QNAME FTScoreVar _IN ExprSingle
@@ -2590,7 +2598,8 @@ VarInDecl :
                          static_cast<QName*>($1),
                          NULL,NULL,
                          dynamic_cast<FTScoreVar*>($2),
-                         $4);
+                         $4,
+                         false);
     }
   | QNAME  TypeDeclaration  FTScoreVar  _IN  ExprSingle
     {
@@ -2599,7 +2608,8 @@ VarInDecl :
                          dynamic_cast<SequenceType *>($2),
                          NULL,
                          dynamic_cast<FTScoreVar*>($3),
-                         $5);
+                         $5,
+                         false);
     }
   | QNAME  PositionalVar  FTScoreVar  _IN  ExprSingle
     {
@@ -2608,7 +2618,8 @@ VarInDecl :
                          NULL,
                          dynamic_cast<PositionalVar*>($2),
                          dynamic_cast<FTScoreVar*>($3),
-                         $5);
+                         $5,
+                         false);
     }
   | QNAME  TypeDeclaration  PositionalVar  FTScoreVar  _IN  ExprSingle
     {
@@ -2617,7 +2628,8 @@ VarInDecl :
                          dynamic_cast<SequenceType *>($2),
                          dynamic_cast<PositionalVar*>($3),
                          dynamic_cast<FTScoreVar*>($4),
-                         $6);
+                         $6,
+                         false);
     }
 ;
 
@@ -5341,8 +5353,7 @@ CatchExpr :
       $$ = new CatchExpr(LOC(@$),*$2, static_cast<QName*>($5), NULL, NULL, $7);
        delete $2;
     }
-  |
-    CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
+  | CATCH NameTestList LPAR DOLLAR QNAME COMMA DOLLAR QNAME RPAR BracedExpr
     {
        $$ = new CatchExpr(LOC(@$),
                           *$2,
@@ -6224,7 +6235,7 @@ FUNCTION_NAME
     |   VARIABLE                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("variable"))); }
     |   RETURN                  { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("return"))); }
     |   FOR                     { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("for"))); }
-    |   OUTER                   { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("outer"))); }
+    |   ALLOWING                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("allowing"))); }
     |   SLIDING                 { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("sliding"))); }
     |   TUMBLING                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("tumbling"))); }
     |   PREVIOUS                { $$ = new QName(LOC(@$), SYMTAB(SYMTAB_PUT("previous"))); }
@@ -6394,7 +6405,7 @@ namespace parser {
 
 const char *the_tumbling = "tumbling", *the_sliding = "sliding",
   *the_start = "start", *the_end = "end", *the_only_end = "only end",
-  *the_ofor = "ofor", *the_declare = "declare", *the_create = "create";
+  *the_declare = "declare", *the_create = "create";
 
 } // namespace parser
 
