@@ -28,6 +28,10 @@
 %define "parser_class_name" "xquery_parser"
 %error-verbose
 
+// Expect 60 shift/reduce conflicts
+%expect 62
+
+
 %code requires {
 
 #include <list>
