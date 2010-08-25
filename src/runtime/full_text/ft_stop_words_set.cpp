@@ -59,8 +59,8 @@ static ft_stop_table get_table( iso639_1::type code ) {
 ft_stop_words_set const*
 ft_stop_words_set::construct( ftstop_word_option const &option,
                               iso639_1::type code ) {
-  bool must_delete;
-  set_t *word_set;
+  bool must_delete = false;             // pointless init. to stifle warning
+  set_t *word_set = 0;                  // pointless init. to stifle warning
 
   switch ( option.get_mode() ) {
     case ft_stop_words_mode::with:
@@ -73,7 +73,6 @@ ft_stop_words_set::construct( ftstop_word_option const &option,
         // TODO: throw exception?
         return 0;
       }
-      must_delete = false;
       break;
     case ft_stop_words_mode::without:
       return 0;

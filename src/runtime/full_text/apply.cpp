@@ -324,7 +324,7 @@ static void match_tokens( FTTokenIterator &doc_tokens,
     FTTokenIterator::Mark_t mark( doc_tokens.pos() );
     FTToken const *dt;
     store::Item const *dt_item = 0;
-    bool ignore;
+    bool ignore = false;                // pointless init. to stifle warning
 
     if ( ignore_item ) {
       while ( (dt = doc_tokens.next()) ) {
@@ -340,7 +340,7 @@ static void match_tokens( FTTokenIterator &doc_tokens,
       }
     }
 
-    FTToken const *dt_start = 0, *dt_end;
+    FTToken const *dt_start = 0, *dt_end = 0;
     dt_item = 0;
     bool matched = false;
 
