@@ -93,9 +93,9 @@ SET(FOUND_XQTS 0)
 # we have to skip the geo module tests
 FIND_PACKAGE(Geos)
 
-# Check if ImageMagick is found with all the 3 needed components: Magick++ MagickCore MagickWand
-# in order to determine whether we have to skip the image module tests
-FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore MagickWand)
+# # Check if ImageMagick is found with all the 3 needed components: Magick++ MagickCore MagickWand
+# # in order to determine whether we have to skip the image module tests
+# FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore MagickWand)
 
 FOREACH(TESTFILE ${TESTFILES})
   # All testfile paths end in .xq or .xqx. Strip that part off to form
@@ -267,6 +267,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic1 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic3 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic4 2962715)
 
-EXPECTED_FAILURE(test/rbkt/zorba/image/paint_5 3052768)
+# EXPECTED_FAILURE(test/rbkt/zorba/image/paint_5 3052768)
 # --------------------------------------------------------------------------
 # vim:set et sw=2 ts=2:
