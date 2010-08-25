@@ -857,13 +857,11 @@ void DtdXmlLoader::startElement(
         case XML_ATTRIBUTE_IDREF:
           GET_STORE().getItemFactory()->createIDREF(typedValue, value);
           GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "IDREF");
-//          attrNode->setIsIdRefs();
           break;
         case XML_ATTRIBUTE_IDREFS:
           GET_STORE().getItemFactory()->createIDREFS(typedValue, value);
           GET_STORE().getItemFactory()->createQName(typeName, SimpleStore::XS_URI, "xs", "IDREFS");
           attrNode->setHaveListValue();
- //         attrNode->setIsIdRefs();
           break;
         case XML_ATTRIBUTE_ENTITY:
           GET_STORE().getItemFactory()->createENTITY(typedValue, value);

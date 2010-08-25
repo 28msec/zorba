@@ -153,7 +153,7 @@ void Schema::terminate()
 /*******************************************************************************
 
 *******************************************************************************/
-Schema::Schema(TypeManager* tm) 
+Schema::Schema(TypeManager* tm)
   :
   theTypeManager(tm)
 {
@@ -1350,8 +1350,8 @@ bool Schema::parseUserSimpleTypes(
     const xqtref_t& aTargetType,
     std::vector<store::Item_t>& resultList)
 {
-  //cout << "parseUserSimpleTypes: '" << textValue << "' to " <<
-  //  aTargetType->toString() << endl; cout.flush();
+//  cout << "parseUserSimpleTypes: '" << textValue << "' to " <<
+//    aTargetType->toString() << endl; cout.flush();
 
   if ( aTargetType->type_kind() != XQType::USER_DEFINED_KIND )
   {
@@ -1590,8 +1590,8 @@ bool Schema::parseUserListTypes(
 {
   ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
-  //cout << "parseUserListTypes: '" << textValue << "' to " <<
-  //  aTargetType->toString() << endl; cout.flush();
+//  cout << "parseUserListTypes: '" << textValue << "' to " <<
+//    aTargetType->toString() << endl; cout.flush();
 
   const UserDefinedXQType* udXQType =
     static_cast<const UserDefinedXQType*>(aTargetType.getp());
@@ -1625,8 +1625,8 @@ bool Schema::parseUserUnionTypes(
     const xqtref_t& aTargetType,
     std::vector<store::Item_t> &resultList)
 {
-    //cout << "parseUserUnionTypes: '" << textValue << "'" <<  " to " <<
-    //  aTargetType->toString() << endl; cout.flush();
+//    cout << "parseUserUnionTypes: '" << textValue << "'" <<  " to " <<
+//      aTargetType->toString() << endl; cout.flush();
 
     ZORBA_ASSERT( aTargetType->type_kind() == XQType::USER_DEFINED_KIND );
 
@@ -1680,21 +1680,21 @@ bool Schema::isCastableUserSimpleTypes(
   case UserDefinedXQType::ATOMIC_TYPE:
     return isCastableUserAtomicTypes( textValue, aTargetType );
     break;
-    
+
   case UserDefinedXQType::LIST_TYPE:
     return isCastableUserListTypes( textValue, aTargetType );
     break;
-    
+
   case UserDefinedXQType::UNION_TYPE:
     return isCastableUserUnionTypes( textValue, aTargetType );
     break;
-    
+
   case UserDefinedXQType::COMPLEX_TYPE:
   default:
     ZORBA_ASSERT( false);
     break;
   }
-  
+
   return false;;
 }
 

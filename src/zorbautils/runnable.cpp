@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -83,7 +83,7 @@ void zorba::Runnable::start()
 
 
 /*******************************************************************************
-  This method is invoked by the parent thread 
+  This method is invoked by the parent thread
 ********************************************************************************/
 void zorba::Runnable::terminate()
 {
@@ -97,7 +97,7 @@ retry:
   theCalledTerminate = true;
 #endif
 
-  if (theStatus == SUSPENDED) 
+  if (theStatus == SUSPENDED)
   {
 #ifdef WIN32
     TerminateThread(theThread, 0);
@@ -109,12 +109,12 @@ retry:
 
 #endif
   }
-  else if (theStatus == TERMINATED) 
+  else if (theStatus == TERMINATED)
   {
     theMutex.unlock();
     return;
   }
-  else if (theStatus == RUNNING) 
+  else if (theStatus == RUNNING)
   {
     // busy wait until the child thread terminates or suspends itself.
     theMutex.unlock();
@@ -125,7 +125,7 @@ retry:
 #endif
     goto retry;
   }
-  else 
+  else
   {
     assert(theStatus == IDLE);
   }
@@ -141,13 +141,13 @@ retry:
 
 
 /*******************************************************************************
-  This method is invoked by the parent thread 
+  This method is invoked by the parent thread
 ********************************************************************************/
 void zorba::Runnable::join()
 {
   theMutex.lock();
 
-  if (theStatus == TERMINATED || theStatus == IDLE) 
+  if (theStatus == TERMINATED || theStatus == IDLE)
   {
     theMutex.unlock();
     return;
@@ -176,7 +176,7 @@ void zorba::Runnable::suspend(unsigned long aTimeInMs /*= 0*/)
 {
 #ifdef WIN32
   theStatus = SUSPENDED;
-  if (aTimeInMs != 0) 
+  if (aTimeInMs != 0)
   {
     DWORD lTime = aTimeInMs;
     WaitForSingleObject(theThread, lTime);
@@ -265,7 +265,7 @@ zorba::Runnable::startImpl( void* params )
 /*******************************************************************************
   Called if the child thread reaches the end of the control flow or terminate
   is requested
-********************************************************************************/ 
+********************************************************************************/
 void zorba::Runnable::finishImpl()
 {
   theMutex.lock();
@@ -283,13 +283,13 @@ void zorba::Runnable::finishImpl()
   theMutex.unlock();
 
 #ifdef ZORBA_HAVE_PTHREAD_H
-  if (!theCalledTerminate && !theJoining) 
+  if (!theCalledTerminate && !theJoining)
   {
     pthread_detach(theThread);
   }
 #endif
 
-  if (theDeleteAfterRun) 
+  if (theDeleteAfterRun)
   {
     delete this;
   }

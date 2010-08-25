@@ -2406,12 +2406,30 @@ bool AttributeNode::isIdRefs() const
     for (ulong i = 0; i < numValues; ++i)
     {
       if (dynamic_cast<IDREFItemImpl*>(values.getItem(i)) != NULL)
+      {
         return true;
+      }
+      else if (dynamic_cast<UserTypedAtomicItemImpl*>(values.getItem(i)) != NULL)
+      {
+        UserTypedAtomicItemImpl* utai = dynamic_cast<UserTypedAtomicItemImpl*>(values.getItem(i));
+        if ( utai->getTypeCode() == XS_IDREF )
+          return true;
+        if ( (dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF )
+          return true;
+      }
     }
   }
   else if (dynamic_cast<IDREFItemImpl*>(theTypedValue.getp()) != NULL)
   {
     return true;
+  }
+  else if (dynamic_cast<UserTypedAtomicItemImpl*>(theTypedValue.getp()) != NULL)
+  {
+    UserTypedAtomicItemImpl* utai = dynamic_cast<UserTypedAtomicItemImpl*>(theTypedValue.getp());
+    if ( utai->getTypeCode() == XS_IDREF )
+      return true;
+    if ( (dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF )
+      return true;
   }
 
   return false;
@@ -2801,12 +2819,30 @@ bool TextNode::isIdRefsInternal() const
       for (ulong i = 0; i < numValues; ++i)
       {
         if (dynamic_cast<IDREFItemImpl*>(values.getItem(i)) != NULL)
+        {
           return true;
+        }
+        else if (dynamic_cast<UserTypedAtomicItemImpl*>(values.getItem(i)) != NULL)
+        {
+          UserTypedAtomicItemImpl* utai = dynamic_cast<UserTypedAtomicItemImpl*>(values.getItem(i));
+          if ( utai->getTypeCode() == XS_IDREF )
+            return true;
+          if ( (dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF )
+            return true;
+        }
       }
     }
     else if (dynamic_cast<IDREFItemImpl*>(value) != NULL)
     {
       return true;
+    }
+    else if (dynamic_cast<UserTypedAtomicItemImpl*>(value) != NULL)
+    {
+      UserTypedAtomicItemImpl* utai = dynamic_cast<UserTypedAtomicItemImpl*>(value);
+      if ( utai->getTypeCode() == XS_IDREF )
+        return true;
+      if ( (dynamic_cast<AtomicItem*>(utai->getBaseItem()))->getTypeCode() == XS_IDREF )
+        return true;
     }
   }
 
