@@ -339,6 +339,14 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
     const store::Item* i0,
     const store::Item* i1 )
 {
+  xqp_double d0 = i0->getDoubleValue();
+  xqp_double d1 = i1->getDoubleValue();
+
+  if ( d1 == Double::parseInt(0) )
+  {
+    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+  }
+
   if (i0->isNaN() || i1->isNaN()) {
     ZORBA_ERROR_LOC_DESC( FOAR0002, *loc,
                           "Division with doubles must not be done with NaNs");
@@ -351,14 +359,6 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_DOUBLE,TypeConstants::XS_
   if (i0->isPosOrNegInf()) {
     // idiv with +-INF divisor has 0 as result
     return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
-  }
-  
-  xqp_double d0 = i0->getDoubleValue();
-  xqp_double d1 = i1->getDoubleValue();
-
-  if ( d1 == Double::parseInt(0) )
-  {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
   }
 
   xqp_integer lInteger;
@@ -378,6 +378,13 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_F
     const store::Item* i0,
     const store::Item* i1)
 {
+  xqp_float f0 = i0->getFloatValue();
+  xqp_float f1 = i1->getFloatValue();
+  if ( f1 == xqp_float::parseInt(0) )
+  {
+    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
+  }
+
   if (i0->isNaN() || i1->isNaN()) 
   {
     ZORBA_ERROR_LOC_DESC(FOAR0002, *loc,
@@ -394,12 +401,6 @@ bool IntegerDivideOperation::compute<TypeConstants::XS_FLOAT,TypeConstants::XS_F
     return GENV_ITEMFACTORY->createInteger(result, Integer::parseInt((int32_t)0));
   }
 
-  xqp_float f0 = i0->getFloatValue();
-  xqp_float f1 = i1->getFloatValue();
-  if ( f1 == xqp_float::parseInt(0) )
-  {
-    ZORBA_ERROR_LOC_DESC( FOAR0001, *loc, "Division by zero (decimals)");
-  }
   xqp_integer lInteger;
   bool lBool = Integer::parseFloat( f0 / f1, lInteger);
   ZORBA_ASSERT(lBool);
