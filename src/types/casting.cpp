@@ -1133,9 +1133,13 @@ bool str_down(
     break;
   }
   case TypeConstants::XS_NCNAME:
-    if (GenericCast::instance()->castableToNCName(lString))
-      return aFactory->createNCName(result, lString);
+  {
+    xqpStringStore_t lNormStr = lString->normalizeSpace();
+    lNormStr = doTrim(lNormStr);
+    if (GenericCast::instance()->castableToNCName(lNormStr))
+      return aFactory->createNCName(result, lNormStr);
     break;
+  }
   case TypeConstants::XS_ID:
     if (GenericCast::instance()->castableToNCName(lString))
       return aFactory->createID(result, lString);
