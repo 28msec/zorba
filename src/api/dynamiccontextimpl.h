@@ -100,7 +100,7 @@ public:
   setVariableAsDocument(
         const String& aQName,
         const String& xml_uri,
-        const LoadProperties& aLoadProperties,
+        const XmlDataManager::LoadProperties& aLoadProperties,
         bool aReplaceDoc);
 
   virtual bool
@@ -108,7 +108,7 @@ public:
         const String& aQName,
         const String& aDocURI,
         std::auto_ptr<std::istream> aStream,
-        const LoadProperties& aLoadProperties,
+        const XmlDataManager::LoadProperties& aLoadProperties,
         bool aReplaceDoc);
 
   virtual bool
@@ -143,13 +143,13 @@ public:
   setContextItemAsDocument(
         const String& aDocURI,
         std::auto_ptr<std::istream> aInStream,
-        const LoadProperties& aLoadProperties,
+        const XmlDataManager::LoadProperties& aLoadProperties,
         bool aReplaceDoc);
 
   virtual bool
   setContextItemAsDocument(
         const String& aDocURI,
-        const LoadProperties& aLoadProperties,
+        const XmlDataManager::LoadProperties& aLoadProperties,
         bool aReplaceDoc);
 
   virtual bool
@@ -187,13 +187,13 @@ protected:
   void validateIfNecesary(store::Item_t& docItem,
                           xqpStringStore_t& docUri,
                           store::Item_t& docUriItem,
-                          const LoadProperties& aLoadProperties);
+                          const XmlDataManager::LoadProperties& aLoadProperties);
 
   void validateIfNecesary(store::Item_t& docItem,
                           xqpStringStore_t& docUri,
                           xqpStringStore_t& baseUri,
                           std::auto_ptr<std::istream> aInStream,
-                          const LoadProperties& aLoadProperties);
+                          const XmlDataManager::LoadProperties& aLoadProperties);
 };
 
 } /* namespace zorba */

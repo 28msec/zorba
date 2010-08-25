@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -33,7 +33,7 @@ class ErrorHandler;
 namespace store {
     class Store;
 }
-  
+
 
 class XmlDataManagerImpl : public XmlDataManager
 {
@@ -52,6 +52,14 @@ public:
   Item loadDocument(const String& local_file_uri, bool replaceDoc);
 
   Item loadDocument(const String& uri, std::istream& stream, bool eplaceDoc);
+
+  Item loadDocument(const String& local_file_uri,
+    const XmlDataManager::LoadProperties& aLoadProperties,
+    bool replaceDoc);
+
+  Item loadDocument(const String& uri, std::istream& stream,
+    const XmlDataManager::LoadProperties& aLoadProperties,
+    bool replaceDoc);
 
   Item loadDocumentFromUri(const String& aUri, bool replaceDoc);
 
@@ -79,9 +87,9 @@ public:
 
  protected:
   store::Store           * theStore;
-  
+
   ErrorHandler           * theErrorHandler;
-  
+
   bool                     theUserErrorHandler;
 
   SYNC_CODE(Latch          theLatch;)

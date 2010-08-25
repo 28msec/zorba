@@ -193,7 +193,7 @@ bool DynamicContextImpl::getVariable(
     {
       aItem = item;
     }
-    else if (! tempseq.isNull()) 
+    else if (! tempseq.isNull())
     {
       store::Iterator_t seqIter = tempseq->getIterator();
       Iterator_t lIt(new StoreIteratorImpl(seqIter, theQuery->theErrorHandler));
@@ -215,7 +215,7 @@ bool DynamicContextImpl::setVariableAsDocument(
     const String& aDocUri,
     validation_mode_t aMode)
 {
-  LoadProperties lLoadProperties;
+  XmlDataManager::LoadProperties lLoadProperties;
   lLoadProperties.setValidationMode(aMode);
   return setVariableAsDocument(aVarName, aDocUri, lLoadProperties, false);
 }
@@ -230,7 +230,7 @@ bool DynamicContextImpl::setVariableAsDocument(
     std::auto_ptr<std::istream> aStream,
     validation_mode_t aMode)
 {
-  LoadProperties lLoadProperties;
+  XmlDataManager::LoadProperties lLoadProperties;
   lLoadProperties.setValidationMode(aMode);
   return setVariableAsDocument(aVarName, aDocUri, aStream, lLoadProperties, false);
 }
@@ -242,7 +242,7 @@ bool DynamicContextImpl::setVariableAsDocument(
 bool DynamicContextImpl::setVariableAsDocument(
     const String& aVarName,
     const String& aDocUri,
-    const LoadProperties& aLoadProperties,
+    const XmlDataManager::LoadProperties& aLoadProperties,
     bool replaceDoc)
 {
   ZORBA_DCTX_TRY
@@ -279,7 +279,7 @@ bool DynamicContextImpl::setVariableAsDocument(
     const String& aVarName,
     const String& aDocUri,
     std::auto_ptr<std::istream> aStream,
-    const LoadProperties& aLoadProperties,
+    const XmlDataManager::LoadProperties& aLoadProperties,
     bool replaceDoc)
 {
   ZORBA_DCTX_TRY
@@ -338,7 +338,7 @@ bool DynamicContextImpl::setContextItemAsDocument(
     const String& aDocURI,
     std::auto_ptr<std::istream> aInStream)
 {
-  LoadProperties aLoadProperties;
+  XmlDataManager::LoadProperties aLoadProperties;
   return setContextItemAsDocument(aDocURI, aInStream, aLoadProperties, false);
 }
 
@@ -348,7 +348,7 @@ bool DynamicContextImpl::setContextItemAsDocument(
 ********************************************************************************/
 bool DynamicContextImpl::setContextItemAsDocument(const String& aDocURI)
 {
-  LoadProperties aLoadProperties;
+  XmlDataManager::LoadProperties aLoadProperties;
   return setContextItemAsDocument(aDocURI, aLoadProperties, false);
 }
 
@@ -359,7 +359,7 @@ bool DynamicContextImpl::setContextItemAsDocument(const String& aDocURI)
 bool DynamicContextImpl::setContextItemAsDocument(
     const String& aDocURI,
     std::auto_ptr<std::istream> aInStream,
-    const LoadProperties& aLoadProperties,
+    const XmlDataManager::LoadProperties& aLoadProperties,
     bool aReplaceDoc)
 {
   ZORBA_DCTX_TRY
@@ -395,7 +395,7 @@ bool DynamicContextImpl::setContextItemAsDocument(
 ********************************************************************************/
 bool DynamicContextImpl::setContextItemAsDocument(
     const String& aDocURI,
-    const LoadProperties& aLoadProperties,
+    const XmlDataManager::LoadProperties& aLoadProperties,
     bool aReplaceDoc)
 {
   ZORBA_DCTX_TRY
@@ -550,7 +550,7 @@ bool DynamicContextImpl::setDefaultCollection(const Item& aCollectionUri)
 ********************************************************************************/
 void DynamicContextImpl::checkNoIterators()
 {
-  if (theQuery->theResultIterator && 
+  if (theQuery->theResultIterator &&
       theQuery->theResultIterator->isOpen())
   {
     ZORBA_ERROR(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS);
@@ -613,7 +613,7 @@ void DynamicContextImpl::validateIfNecesary(
     store::Item_t& docItem,
     xqpStringStore_t& docUri,
     store::Item_t& docUriItem,
-    const LoadProperties& aLoadProperties)
+    const XmlDataManager::LoadProperties& aLoadProperties)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
   validation_mode_t lValidationMode = aLoadProperties.getValidationMode();
@@ -639,7 +639,7 @@ void DynamicContextImpl::validateIfNecesary(
                                                          theStaticContext,
                                                          loc);
       ZORBA_ASSERT(success);
-      
+
       if (docItem != validatedNode)
       {
         GENV_STORE.deleteDocument(docUri);
@@ -668,7 +668,7 @@ void DynamicContextImpl::validateIfNecesary(
     xqpStringStore_t& docUri,
     xqpStringStore_t& baseUri,
     std::auto_ptr<std::istream> aInStream,
-    const LoadProperties& aLoadProperties)
+    const XmlDataManager::LoadProperties& aLoadProperties)
 {
 #ifndef ZORBA_NO_XMLSCHEMA
   validation_mode_t lValidationMode = aLoadProperties.getValidationMode();
@@ -693,7 +693,7 @@ void DynamicContextImpl::validateIfNecesary(
                                                          theStaticContext,
                                                          loc);
       ZORBA_ASSERT(success);
-      
+
       if (docItem != validatedNode)
       {
         GENV_STORE.deleteDocument(docUri);
@@ -709,7 +709,7 @@ void DynamicContextImpl::validateIfNecesary(
 
     store::LoadProperties lStoreLoadProperties;
     lStoreLoadProperties.setEnableDtd(aLoadProperties.getEnableDtd());
-    
+
     docItem = GENV_STORE.loadDocument(baseUri,
                                       docUri,
                                       *(aInStream.get()),

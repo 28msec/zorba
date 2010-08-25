@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -45,7 +45,7 @@ namespace zorba {
 #define ZORBA_DM_TRY                                              \
   ErrorHandler* errorHandler = (aErrorHandler != 0 ?              \
                                 aErrorHandler : theErrorHandler); \
-  try  
+  try
 
 #define ZORBA_DM_CATCH                                  \
   catch (error::ZorbaError& e)                          \
@@ -62,7 +62,7 @@ namespace zorba {
   }
 
 
-XmlDataManagerImpl::XmlDataManagerImpl() 
+XmlDataManagerImpl::XmlDataManagerImpl()
 {
   theErrorHandler = new DefaultErrorHandler();
   theUserErrorHandler = false;
@@ -75,7 +75,7 @@ XmlDataManagerImpl::XmlDataManagerImpl()
 }
 
 
-XmlDataManagerImpl::~XmlDataManagerImpl() 
+XmlDataManagerImpl::~XmlDataManagerImpl()
 {
   if (!theUserErrorHandler)
     delete theErrorHandler;
@@ -101,7 +101,7 @@ Item XmlDataManagerImpl::parseDocument(std::istream& aStream)
   ZORBA_DM_TRY
   {
     xqpStringStore_t lTmp(new xqpStringStore(""));
-    return &*theStore->loadDocument(lTmp, lTmp, aStream, false); 
+    return &*theStore->loadDocument(lTmp, lTmp, aStream, false);
   }
   ZORBA_DM_CATCH
   return Item();
@@ -109,8 +109,28 @@ Item XmlDataManagerImpl::parseDocument(std::istream& aStream)
 
 
 Item XmlDataManagerImpl::loadDocument(
-    const String& local_file_uri,
-    bool replaceDoc)
+    const String& aLocalFileUri,
+    bool aReplaceDoc)
+{
+  XmlDataManager::LoadProperties loadProperties;
+  return loadDocument(aLocalFileUri, loadProperties, aReplaceDoc);
+}
+
+
+Item XmlDataManagerImpl::loadDocument(
+    const String& aUri,
+    std::istream& aStream,
+    bool aReplaceDoc)
+{
+  XmlDataManager::LoadProperties loadProperties;
+  return loadDocument(aUri, aStream, loadProperties, aReplaceDoc);
+}
+
+
+Item XmlDataManagerImpl::loadDocument(
+    const String& aLocalFileUri,
+    const XmlDataManager::LoadProperties& aLoadProperties,
+    bool aReplaceDoc)
 {
   ErrorHandler* aErrorHandler = NULL;
 
@@ -118,11 +138,11 @@ Item XmlDataManagerImpl::loadDocument(
 
   ZORBA_DM_TRY
   {
-    xqpStringStore* lString = Unmarshaller::getInternalString(local_file_uri);
+    xqpStringStore* lString = Unmarshaller::getInternalString(aLocalFileUri);
 
     std::ifstream lFileIn(lString->c_str());
 
-    return loadDocument(local_file_uri, lFileIn);
+    return loadDocument(aLocalFileUri, lFileIn, aLoadProperties, aReplaceDoc);
   }
   ZORBA_DM_CATCH
   return Item();
@@ -132,7 +152,8 @@ Item XmlDataManagerImpl::loadDocument(
 Item XmlDataManagerImpl::loadDocument(
     const String& uri,
     std::istream& stream,
-    bool replaceDoc)
+    const XmlDataManager::LoadProperties& aLoadProperties,
+    bool aReplaceDoc)
 {
   ErrorHandler* aErrorHandler = NULL;
 
@@ -142,24 +163,27 @@ Item XmlDataManagerImpl::loadDocument(
   {
     xqpStringStore_t lString = Unmarshaller::getInternalString(uri);
 
-    if (replaceDoc)
+    if (aReplaceDoc)
       theStore->deleteDocument(lString);
 
-    if ( ! stream.good() ) 
+    if ( ! stream.good() )
     {
       ZORBA_ERROR_DESC(API0015_CANNOT_OPEN_FILE, "cannot read from stream");
     }
 
-    return &*theStore->loadDocument(lString, lString, stream); 
+    store::LoadProperties loadProps;
+    loadProps.setEnableDtd( aLoadProperties.getEnableDtd() );
+
+    return &*theStore->loadDocument(lString, lString, stream, loadProps);
   }
   ZORBA_DM_CATCH
-  return Item(); 
+  return Item();
 }
 
 
 Item XmlDataManagerImpl::loadDocumentFromUri(
     const String& aUri,
-    bool replaceDoc)
+    bool aReplaceDoc)
 {
   SYNC_CODE(AutoLatch lock(theLatch, Latch::READ);)
 
@@ -182,8 +206,8 @@ Item XmlDataManagerImpl::loadDocumentFromUri(
                                     &GENV_ROOT_STATIC_CONTEXT,
                                     true,
                                     false,
-                                    replaceDoc);
-    
+                                    aReplaceDoc);
+
     if(docItem.isNull())
       return Item();
 
@@ -207,7 +231,7 @@ Item XmlDataManagerImpl::getDocument(const String& uri, ErrorHandler* aErrorHand
   ZORBA_DM_TRY
   {
     xqpStringStore_t lUri = Unmarshaller::getInternalString(uri);
-    return &*theStore->getDocument(lUri); 
+    return &*theStore->getDocument(lUri);
   }
   ZORBA_DM_CATCH
   return Item();
@@ -227,7 +251,7 @@ bool XmlDataManagerImpl::deleteDocument(const String& uri, ErrorHandler* aErrorH
   ZORBA_DM_TRY
   {
     xqpStringStore_t lUri = Unmarshaller::getInternalString(uri);
-    theStore->deleteDocument(lUri); 
+    theStore->deleteDocument(lUri);
     return true;
   }
   ZORBA_DM_CATCH
@@ -264,7 +288,7 @@ Collection_t XmlDataManagerImpl::createCollection(
   ZORBA_DM_TRY
   {
     xqpStringStore_t lUri = Unmarshaller::getInternalString(uri);
-    return Collection_t(new CollectionImpl(theStore->createUriCollection(lUri), 
+    return Collection_t(new CollectionImpl(theStore->createUriCollection(lUri),
                                            aErrorHandler));
   }
   ZORBA_DM_CATCH

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -97,11 +97,11 @@ bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aS
   const std::vector<std::string>& errors = errHandler.getErrorList();
   for(std::vector<std::string>::const_iterator i = errors.begin();
       i != errors.end();
-      ++i) 
+      ++i)
   {
     for(std::vector<std::string>::const_iterator j = aSpec->errorsBegin();
         j != aSpec->errorsEnd();
-        ++j) 
+        ++j)
     {
       if ((i->compare(*j) == 0) || (j->compare(star)) == 0)
         return true;
@@ -116,7 +116,7 @@ bool isErrorExpected(const TestErrorHandler& errHandler, const Specification* aS
 ********************************************************************************/
 void printErrors(const TestErrorHandler& errHandler, const char* msg, bool printInFile, std::ostream& output)
 {
-  if (!errHandler.errors()) 
+  if (!errHandler.errors())
   {
     return;
   }
@@ -141,14 +141,14 @@ void printErrors(const TestErrorHandler& errHandler, const char* msg, bool print
     else
       output << msg << ":" << std::endl;
   }
-  
+
   const std::vector<std::string>& errors = errHandler.getErrorList();
   const std::vector<zorba::String>& descs = errHandler.getErrorDescs();
 
   std::vector<std::string>::const_iterator codeIter = errors.begin();
   std::vector<zorba::String>::const_iterator descIter = descs.begin();
 
-  for(; codeIter != errors.end(); ++codeIter, ++descIter) 
+  for(; codeIter != errors.end(); ++codeIter, ++descIter)
   {
     assert (descIter != descs.end());
     if (printInFile)
@@ -169,7 +169,7 @@ Zorba_CompilerHints getCompilerHints()
 
   // ZORBA_OPTLEVEL=O0 | O1
   char* lOptLevel = getenv("ZORBA_OPTLEVEL");
-  if ( lOptLevel != NULL && strcmp(lOptLevel, "O0") == 0 ) 
+  if ( lOptLevel != NULL && strcmp(lOptLevel, "O0") == 0 )
   {
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
     //std::cout << "testdriver is using optimization level O0" << std::endl;
@@ -179,7 +179,7 @@ Zorba_CompilerHints getCompilerHints()
     lHints.opt_level = ZORBA_OPT_LEVEL_O1;
     //std::cout << "testdriver is using optimization level O1" << std::endl;
   }
-  return lHints; 
+  return lHints;
 }
 
 
@@ -239,7 +239,7 @@ zorba::Item createItem(DriverContext& driverCtx, std::string strValue)
     {
       //not supported
       std::cerr << "Type {" << type << "} not supported." << std::endl;
-      return  NULL; 
+      return  NULL;
     }
     else if(type == "anyURI")
       return itemfactory->createAnyURI(val);
@@ -271,38 +271,38 @@ void createDynamicContext(
 
   // Set the current date time such that tests that use fn:current-time
   // behave deterministically
-  if (spec.hasDateSet()) 
+  if (spec.hasDateSet())
   {
     zorba::Item lDateTimeItem = factory.createDateTime(spec.getDate());
 
     dctx->setCurrentDateTime(lDateTimeItem);
   }
 
-  if (spec.hasTimezoneSet()) 
+  if (spec.hasTimezoneSet())
   {
     int lTimezone = atoi(spec.getTimezone().c_str());
-    
+
     std::cerr << "timezone " << lTimezone << std::endl;
     dctx->setImplicitTimezone(lTimezone);
   }
 
-  if (spec.getDefaultCollection().size() != 0) 
-  {   
-    zorba::Item lDefaultCollection = factory.createAnyURI(spec.getDefaultCollection());   
-    dctx->setDefaultCollection(lDefaultCollection);   
+  if (spec.getDefaultCollection().size() != 0)
+  {
+    zorba::Item lDefaultCollection = factory.createAnyURI(spec.getDefaultCollection());
+    dctx->setDefaultCollection(lDefaultCollection);
   }
-  
+
   // Set external vars
   set_vars(driverCtx, dctx, enableDtd);
 
-  if (spec.hasInputQuery()) 
+  if (spec.hasInputQuery())
   {
     std::string inputqueryfile = spec.getInputQueryFile ();
     zorba::str_replace_all(inputqueryfile, "$RBKT_SRC_DIR", driverCtx.theRbktSourceDir);
 #ifdef MY_D_WIN32
     zorba::str_replace_all(inputqueryfile, "rbkt/Queries/w3c_testsuite/", "w3c_testsuite/Queries/");
 #endif
-      
+
     std::ifstream inputquery ( inputqueryfile.c_str() );
 
     if (!inputquery.is_open())
@@ -365,7 +365,7 @@ void set_var(
   //zorba::str_replace_all(val, "/", "\\");
 #endif
   //std::cout << "Setting variable " << name << " to value '" << val <<"'" << std::endl;
-  if (!inlineFile) 
+  if (!inlineFile)
   {
     zorba::Item lItem = createItem(driverCtx, val);
 		if(name != ".")
@@ -373,14 +373,14 @@ void set_var(
 		else
 			dctx->setContextItem(lItem);
   }
-  else 
+  else
   {
 #ifdef MY_D_WIN32
     std::cout << "Load xml " << val << std::endl;
 #endif
     const char *val_fname = val.c_str ();
     std::ifstream* is = new std::ifstream(val_fname);
-    if (! is || !is->is_open() ) 
+    if (! is || !is->is_open() )
     {
       std::cerr << "Could not open file `" << val_fname << "' for variable `"
                 << name << "'" << std::endl;
@@ -388,7 +388,7 @@ void set_var(
     }
 
 
-    zorba::LoadProperties lLoadProperties;
+    zorba::XmlDataManager::LoadProperties lLoadProperties;
     lLoadProperties.setEnableDtd(enableDtd);
 
     if(name != ".")
