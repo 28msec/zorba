@@ -20,5 +20,5 @@ ELSE (ImageMagick_FOUND)
   MESSAGE(STATUS "MagickCore component found: ${ImageMagick_MagickCore_FOUND}")
   MESSAGE(STATUS "MagickWand component found: ${ImageMagick_MagickWand_FOUND}")
 
-  MESSAGE(STATUS "If you want to use image handling functionality please install the ImageMagick library containing these 3 components: Magick++, MagickCore, MagickWand.\n Please note that on some OS ImageMagick and libMagick++ are 2 different packages and you need to install both of them.")
+  MESSAGE(STATUS "If you want to use image handling functionality please install the ImageMagick library containing these 3 components: Magick++, MagickCore, MagickWand.\n Please note that on some OS\n- ImageMagick and\n- libMagick++ (on OpenSuse) or ImageMagick-c++(on Fedora)\n are 2 different packages and you need to install both of them.")
 ENDIF (ImageMagick_FOUND)
