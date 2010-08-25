@@ -1129,6 +1129,11 @@ private:
   bool                      theForExpr;
 
 public:
+  SERIALIZABLE_CLASS(debugger_expr)
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(debugger_expr, eval_expr)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
   debugger_expr(
         static_context* sctx,
         const QueryLoc& loc,

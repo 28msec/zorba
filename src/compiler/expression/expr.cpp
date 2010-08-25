@@ -79,6 +79,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(function_trace_expr)
 SERIALIZABLE_CLASS_VERSIONS(eval_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(eval_expr)
 
+SERIALIZABLE_CLASS_VERSIONS(debugger_expr)
+END_SERIALIZABLE_CLASS_VERSIONS(debugger_expr)
+
 SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
 END_SERIALIZABLE_CLASS_VERSIONS(wrapper_expr)
 
@@ -1402,6 +1405,12 @@ void debugger_expr::store_local_variables(checked_vector<varref_t>& aScopedVaria
   }
 }
 
+void debugger_expr::serialize(::zorba::serialization::Archiver& ar)
+{
+  serialize_baseclass(ar, (eval_expr*)this);
+  ar & theGlobals;
+  ar & theForExpr;
+}
 
 
 
