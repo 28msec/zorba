@@ -22,6 +22,10 @@
 #include <zorba/serialization_callback.h>
 #include <zorba/store_manager.h>
 
+#ifdef WIN32
+#include <direct.h>
+#endif
+
 using namespace zorba;
 
 bool
@@ -53,6 +57,11 @@ debugger_serialization_example_1(Zorba* aZorba)
 	return true;
 }
 
+std::string
+replace_all(const std::string& aSrc, const std::string& aSearch, const std::string& aReplace)
+{
+}
+
 bool
 debugger_serialization_example_2(Zorba* aZorba)
 {
@@ -65,6 +74,14 @@ debugger_serialization_example_2(Zorba* aZorba)
     char* lCWD = get_current_dir_name();
 #else
     char* lCWD = _getcwd(0, 256);
+    std::string lStr(lCWD);
+    free(lCWD);
+    size_t lStart, lEnd = 0;
+
+    while ((lStart = lStr.find("\\", lEnd)) != std::string::npos) {
+      lEnd = lStart + 1;
+      lStr.replace(lStart, 1, "/");
+    }
 #endif
 
     lQueryStream
@@ -73,9 +90,6 @@ debugger_serialization_example_2(Zorba* aZorba)
       << "';" << std::endl
       << "g:add()";
 
-#ifndef UNIX
-    free(lCWD);
-#endif
 
     {
       XQuery_t lQuery = aZorba->createQuery();
