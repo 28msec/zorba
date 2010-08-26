@@ -157,7 +157,9 @@ void operator&(Archiver &ar, std::vector<T> *&obj)
     char  strtemp[20];
     sprintf(strtemp, "%d", (int)obj->size());
     bool is_ref;
-    is_ref = ar.add_compound_field("std::vector<T>*", 0, !FIELD_IS_CLASS, strtemp, obj, ARCHIVE_FIELD_IS_PTR);
+    is_ref = ar.add_compound_field("std::vector<T>*", 0, !FIELD_IS_CLASS, strtemp, obj, ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_IS_PTR);
+    if(ar.is_serialize_base_class())                                     
+      ar.set_serialize_base_class(false);                                
     if(!is_ref)
     {
       typename std::vector<T>::iterator  it;
@@ -189,6 +191,8 @@ void operator&(Archiver &ar, std::vector<T> *&obj)
       ar.read_end_current_level();
       return;
     }
+    if(ar.is_serialize_base_class())                                     
+      ar.set_serialize_base_class(false);                                
     void *new_obj;
     if(field_treat == ARCHIVE_FIELD_IS_PTR)
     {
@@ -321,6 +325,8 @@ void operator&(Archiver &ar, std::pair<T1, T2> *&obj)
     }
     bool is_ref;
     is_ref = ar.add_compound_field("std::pair<T1, T2>", 0, !FIELD_IS_CLASS, "", &obj, ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_IS_PTR);
+    if(ar.is_serialize_base_class())                                     
+      ar.set_serialize_base_class(false);                                
     if(!is_ref)
     {
       ar & obj->first;
@@ -349,6 +355,9 @@ void operator&(Archiver &ar, std::pair<T1, T2> *&obj)
       ar.read_end_current_level();
       return;
     }
+    if(ar.is_serialize_base_class())                                     
+      ar.set_serialize_base_class(false);                                
+
     void *new_obj;
     if(field_treat == ARCHIVE_FIELD_IS_PTR)
     {
@@ -394,6 +403,8 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
     }
     bool is_ref;
     is_ref = ar.add_compound_field("std::map<T1, T2>", 0, !FIELD_IS_CLASS, "", obj, ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_IS_PTR);
+    if(ar.is_serialize_base_class())                                     
+      ar.set_serialize_base_class(false);                                
     if(!is_ref)
     {
       ar.set_is_temp_field_one_level(true);
@@ -433,6 +444,8 @@ void operator&(Archiver &ar, std::map<T1, T2> *&obj)
       ar.read_end_current_level();
       return;
     }
+    if(ar.is_serialize_base_class())                                     
+      ar.set_serialize_base_class(false);                                
     void *new_obj;
     if(field_treat == ARCHIVE_FIELD_IS_PTR)
     {
@@ -556,7 +569,8 @@ void operator&(Archiver &ar, T &obj)
                                     T::class_versions[T::class_versions_count-1].class_version, 
                                     FIELD_IS_CLASS, "0",//strtemp, 
                                     (SerializeBaseClass*)&obj, 
-                                    ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_NORMAL);
+                                    //ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_NORMAL);
+                                    ARCHIVE_FIELD_NORMAL);
     if(!is_ref)
     {
       obj.serialize_internal(ar);
@@ -579,7 +593,8 @@ void operator&(Archiver &ar, T &obj)
     if(!retval && ar.get_read_optional_field())
       return;
     ar.check_class_field(retval, type, obj.get_class_name_str(), is_simple, is_class, field_treat, 
-                          ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_NORMAL, 
+                          //ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_NORMAL, 
+                          ARCHIVE_FIELD_NORMAL, 
                           id);
     ar.set_class_version(version);
     ar.register_reference(id, field_treat, (SerializeBaseClass*)&obj);

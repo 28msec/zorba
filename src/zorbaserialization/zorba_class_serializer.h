@@ -302,6 +302,8 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
                                     !FIELD_IS_CLASS, "0",//strtemp, 
                                     obj, 
                                     ar.is_serialize_base_class() ? ARCHIVE_FIELD_IS_BASECLASS : ARCHIVE_FIELD_IS_PTR);
+    if(ar.is_serialize_base_class())                                     
+      ar.set_serialize_base_class(false);                                
     if(!is_ref)
     {
       T *p = obj->getp();
@@ -343,6 +345,8 @@ void operator&(Archiver &ar, rchandle<T> *&obj)
       ar.read_end_current_level();
       return;
     }
+    if(ar.is_serialize_base_class())                                     
+      ar.set_serialize_base_class(false);                                
 
     if(ar.is_serialize_base_class())
     {
