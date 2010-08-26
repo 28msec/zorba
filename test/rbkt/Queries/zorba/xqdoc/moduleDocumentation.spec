@@ -1,1 +1,1 @@
-Args: -x modulesPath:=xs:string(../../../../../modules)
+Args: -x modulesPath:=xs:string($RBKT_SRC_DIR/../../modules)

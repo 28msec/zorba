@@ -71,6 +71,8 @@ declare function hash:hash($value as node(), $alg as xs:string) as xs:string
  : user - it does not check, if the requested algorithm is supported.
  :
  : @param $value The node whose text content will be hashed.
+ : @param $alg The algorithm to use for this hashing operation. Currently only
+ :        "MD5" and "SHA1" algorithms are available. This parameter is case insensitive.
  : @return The MD5 hash of the node's text content.
  :)
 declare function hash:hash-unchecked($value as node(), $alg as xs:string) as xs:string external;
