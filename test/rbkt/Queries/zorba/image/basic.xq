@@ -103,7 +103,13 @@ declare function local:test-equals() as xs:boolean {
 };
 
 
-
+(:~
+ : @return true if the basic:exif function works.
+ :)
+declare function local:test-exif() as xs:boolean {
+    let $exif := file:read(concat($local:image-dir, "exif.jpg"))
+   return ((basic:exif($exif, "PixelXDimension") eq "20") and fn:empty(basic:exif($exif, "supercalifragilisticexpialidocious")))
+};
 
 
 
@@ -163,6 +169,13 @@ declare sequential function local:main() as xs:string* {
       exit returning local:error("Equals function not working properly")
     else ();  
 
+
+  let $h := local:test-exif()
+  return 
+    if (fn:not($h)) then
+      exit returning local:error("Reading out exif information not working properly")
+    else ();
+    
 
   (: If all went well ... make sure the world knows! :)  
   "SUCCESS";

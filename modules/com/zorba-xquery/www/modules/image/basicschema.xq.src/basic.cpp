@@ -213,6 +213,36 @@ EqualsFunction::evaluate(
 }
 
 
+//*****************************************************************************
+
+ExifFunction::ExifFunction(const ImageModule* aModule) : ImageFunction(aModule)
+{
+}
+
+
+ItemSequence_t
+ExifFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  Magick::Image lImage;
+  ImageFunction::getOneImageArg(aArgs, 0, lImage);
+  String lTag = ImageFunction::getOneStringArg(aArgs, 1);
+  std::string lTagWithExif("EXIF:");
+  lTagWithExif += lTag.c_str(); 
+  String lResult = lImage.attribute(lTagWithExif); 
+  if (lResult == "") {
+    return ItemSequence_t(new EmptySequence());
+  }
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createString(lResult)));
+
+}
+
+
+
+
 } /* namespace basicmodule */  } /* namespace imagemodule */ }  /* namespace zorba */
 
 

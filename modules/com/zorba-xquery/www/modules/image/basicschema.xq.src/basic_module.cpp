@@ -40,7 +40,9 @@ BasicModule::getExternalFunction(String aLocalname) const
       lFunc = new CreateFunction(this); 
     } else if (aLocalname.equals("equals")) {
       lFunc = new EqualsFunction(this);
-    }   
+    } else if (aLocalname.equals("exif")) {
+      lFunc = new ExifFunction(this);
+    }  
   }
   return lFunc;
 }

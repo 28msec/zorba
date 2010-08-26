@@ -26,6 +26,9 @@
         </xs:restriction>
     </xs:simpleType>
 
+
+
+
    <xs:simpleType name="colorType">
        <xs:annotation xml:lang="en">
            <xs:documentation>

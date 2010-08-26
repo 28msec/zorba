@@ -140,6 +140,25 @@ class EqualsFunction : public zorba::imagemodule::ImageFunction
 
 
 
+//*****************************************************************************
+
+class ExifFunction : public zorba::imagemodule::ImageFunction
+  {
+    public:
+      ExifFunction(const ImageModule* aModule);
+      virtual String getLocalName() const { return "exif"; }
+
+      virtual ItemSequence_t
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+  };
+
+
+
+
+
 
 } /* namespace basicmodule */  } /* namespace imagemodule */ }  /* namespace zorba */
 

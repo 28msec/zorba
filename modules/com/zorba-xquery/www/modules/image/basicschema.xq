@@ -99,3 +99,18 @@ declare function basic:create($width as xs:unsignedInt, $height as xs:unsignedIn
  : @error If either of the passed xs:base64Binary do not contain a valid image.
  :)
 declare function basic:equals($image as xs:base64Binary, $other as xs:base64Binary) as xs:boolean external;
+
+
+
+
+(:~
+ : Reads a tag from the exif information stored in the image.
+ : This function will only work for JPEG and TIFF images and will return an empty sequence if no exif information matching the passed tag is found.
+ :
+ : @param $image is the image from which we want to read the exif information.
+ : @param $tag is the field name of the tag we want to search for (e.g. DateTime).
+ : @return A string containing the content of the matched exif tag or an empty sequence if no such information was found.
+ : @error If the passed xs:base64Binary is not a valid image type.
+ :)
+declare function basic:exif($image as xs:base64Binary, $tag as xs:string) as xs:string? external;
+
