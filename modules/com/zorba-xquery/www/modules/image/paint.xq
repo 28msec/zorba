@@ -31,6 +31,7 @@ import schema namespace image = 'http://www.zorba-xquery.com/modules/image/image
   : @param $anti-aliasing defines if anti-aliasing should be used (default is false).
   : @return A new image with the line painted as specified.
   : @error If the passed xs:base64Binary is not a valid image.
+  : @error If the passed color string  is not a valid color.
   :)
 declare function paint:draw-line($image as xs:base64Binary, $start-x as xs:double, $start-y as xs:double, $end-x as xs:double, $end-y as xs:double, $stroke-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
     paint:draw-poly-line($image, ($start-x, $end-x), ($start-y, $end-y), $stroke-color, $stroke-width, $anti-aliasing)
@@ -53,6 +54,7 @@ declare function paint:draw-line($image as xs:base64Binary, $start-x as xs:doubl
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false).
  : @return A new image with the specified poly-line painted.
  : @error If the passed xs:base64Binary is not a valid image.
+ : @error If the passed color string  is not a valid color.
  :)
 declare function paint:draw-poly-line($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-color as xs:string?,  $stroke-width as xs:double?, $anti-aliasing as xs:boolean?)  as xs:base64Binary {
   paint:draw-stroked-poly-line($image, $x-values, $y-values, 1, 0, $stroke-color, $stroke-width, $anti-aliasing); 
@@ -78,6 +80,7 @@ declare function paint:draw-poly-line($image as xs:base64Binary, $x-values as xs
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false).
  : @return A new image with the specified stroked poly-kube painted.
  : @error If the passed xs:base64Binary is not a valid image.
+ : @error If the passed color string  is not a valid color.
  :)
 declare function paint:draw-stroked-poly-line($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-length as xs:double, $gap-length as xs:double, $stroke-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
   paintschema:draw-stroked-poly-line($image, $x-values, $y-values, $stroke-length, $gap-length, image:colorType($stroke-color), $stroke-width, $anti-aliasing)
@@ -101,6 +104,7 @@ declare function paint:draw-stroked-poly-line($image as xs:base64Binary, $x-valu
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false).
  : @return A new image with the specified rectangle painted.
  : @error If the passed xs:base64Binary is not a valid image type.
+ : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-rectangle($image as xs:base64Binary, $upper-left-x as xs:double, $upper-left-y as xs:double, $lower-right-x as xs:double, $lower-right-y as xs:double, $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
   paint:draw-rounded-rectangle($image, $upper-left-x, $upper-left-y, $lower-right-x, $lower-right-y, 0, 0, $stroke-color, $fill-color, $stroke-width, $anti-aliasing);
@@ -125,6 +129,7 @@ declare function paint:draw-rectangle($image as xs:base64Binary, $upper-left-x a
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false).
  : @return A new image with the specified rectangle painted.
  : @error If the passed xs:base64Binary is not a valid image type.
+ : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-rounded-rectangle($image as xs:base64Binary, $upper-left-x as xs:double, $upper-left-y as xs:double, $lower-right-x as xs:double, $lower-right-y as xs:double, $corner-width as xs:double, $corner-height as xs:double, $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
   paintschema:draw-rounded-rectangle($image, $upper-left-x, $upper-left-y, $lower-right-x, $lower-right-y, $corner-width, $corner-height, image:colorType($stroke-color), image:colorType($fill-color), $stroke-width, $anti-aliasing)
@@ -146,6 +151,7 @@ declare function paint:draw-rounded-rectangle($image as xs:base64Binary, $upper-
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false). 
  : @return A new image with the specified circle painted.
  : @error If the passed xs:base64Binary is not a valid image type.
+ : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-circle($image as xs:base64Binary, $origin-x as xs:double, $origin-y as xs:double, $perimeter as xs:double,  $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
     paint:draw-ellipse($image, $origin-x, $origin-y, $perimeter, $perimeter, $stroke-color, $fill-color, $stroke-width, $anti-aliasing)
@@ -170,6 +176,7 @@ declare function paint:draw-circle($image as xs:base64Binary, $origin-x as xs:do
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false). 
  : @return A new image with the specified circle painted.
  : @error If the passed xs:base64Binary is not a valid image type.
+ : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-ellipse($image as xs:base64Binary, $origin-x as xs:double, $origin-y as xs:double, $perimeter-x as xs:double, $perimeter-y as xs:double,  $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
     paint:draw-arc($image, $origin-x, $origin-y, $perimeter-x, $perimeter-y, 0, 360, $stroke-color, $fill-color, $stroke-width, $anti-aliasing)
@@ -191,6 +198,7 @@ declare function paint:draw-ellipse($image as xs:base64Binary, $origin-x as xs:d
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false). 
  : @return A new image with the specified circle painted.
  : @error If the passed xs:base64Binary is not a valid image type.
+ : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-arc($image as xs:base64Binary, $origin-x as xs:double, $origin-y as xs:double, $perimeter-x as xs:double, $perimeter-y as xs:double, $start-degrees as xs:double, $end-degrees as xs:double,  $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
   paintschema:draw-arc($image, $origin-x, $origin-y, $perimeter-x, $perimeter-y, $start-degrees, $end-degrees, image:colorType($stroke-color), image:colorType($fill-color), $stroke-width, $anti-aliasing)
@@ -214,6 +222,7 @@ declare function paint:draw-arc($image as xs:base64Binary, $origin-x as xs:doubl
  : @param $anti-aliasing defines if anti-aliasing should be used (default is false). 
  : @return A new image with the specified polygon painted.
  : @error If the passed xs:base64Binary is not a valid image type.
+ : @error If any of the passed color strings are not valid colors.
  :)
 declare function paint:draw-polygon($image as xs:base64Binary, $x-values as xs:double+, $y-values as xs:double+, $stroke-color as xs:string?, $fill-color as xs:string?, $stroke-width as xs:double?, $anti-aliasing as xs:boolean?) as xs:base64Binary {
   paintschema:draw-polygon($image, $x-values, $y-values, image:colorType($stroke-color), image:colorType($fill-color), $stroke-width, $anti-aliasing)
@@ -233,6 +242,7 @@ declare function paint:draw-polygon($image as xs:base64Binary, $x-values as xs:d
  : @param $text-color is a color with which the text should be painted (default is '#000000', black).
  : @return A new image with the specified text.
  : @error If the passed xs:base64Binary is not a valid image type.
+ : @error If the passed color string  is not a valid color.
  :)
 declare function paint:draw-text($image as xs:base64Binary, $text as xs:string, $x as xs:double, $y as xs:double, $font-family as xs:string, $font-size as xs:double?,  $text-color as xs:string?) as xs:base64Binary {
   paintschema:draw-text($image, $text, $x, $y, $font-family, $font-size, image:colorType($text-color))
