@@ -71,7 +71,10 @@ debugger_serialization_example_2(Zorba* aZorba)
     std::ostringstream lQueryStream;
 
 #ifdef UNIX
-    char* lCWD = get_current_dir_name();
+    char lCWD[1024];
+    if (getcwd(lCWD, 1024) == NULL) {
+      return false;
+    }
 #else
     char* lCWD = _getcwd(0, 256);
     std::string lStr(lCWD);
