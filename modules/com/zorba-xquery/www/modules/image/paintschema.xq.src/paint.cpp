@@ -268,6 +268,8 @@ DrawTextFunction::evaluate(
 
   Magick::Image lImage;
   ImageFunction::getOneImageArg(aArgs, 0, lImage);
+  Magick::Blob lBlob;
+  lImage.write(&lBlob);
   String lText = ImageFunction::getOneStringArg(aArgs, 1);
   double lXCoordinate = ImageFunction::getOneDoubleArg(aArgs, 2);
   double lYCoordinate = ImageFunction::getOneDoubleArg(aArgs, 3); 
@@ -275,37 +277,28 @@ DrawTextFunction::evaluate(
   
 
   double lFontSize = 12;
-  int lFontWeight = 400;
   // get values that are possibly just an empty sequence
   
-  Item lItem;
-  if (aArgs[5]->next(lItem)) {
-    lFontSize = lItem.getDoubleValue();
+  Item lArgsItem;
+  if (aArgs[5]->next(lArgsItem)) {
+    lFontSize = lArgsItem.getDoubleValue();
   }
   
-  int lRed = 0;
-  int lGreen = 0;
-  int lBlue = 0;
-
-  if (aArgs[6]->next(lItem)) {
-    String lTmpString = lItem.getStringValue();
-    sscanf(lTmpString.substring(1,2).c_str(), "%x", &lRed);
-    sscanf(lTmpString.substring(3,2).c_str(), "%x", &lGreen);
-    sscanf(lTmpString.substring(5,2).c_str(), "%x", &lBlue);
+  std::string lColor = "#000000";
+  if (aArgs[6]->next(lArgsItem)) {
+    lColor = lArgsItem.getStringValue().c_str();
   }
 
   // push all values into a drawable
-  lImage.strokeAntiAlias(false);
-  lImage.strokeColor(Magick::ColorRGB((double)lRed/255.0, (double)lGreen/255.0, (double)lBlue/255.0));
-  lImage.fillColor(Magick::ColorRGB((double)lRed/255.0, (double)lGreen/255.0, (double)lBlue/255.0));
-  lImage.font(lFontFamily.c_str());
-  lImage.fontPointsize(lFontWeight);
 
-  lImage.draw(Magick::DrawableText(lXCoordinate, lYCoordinate, lText.c_str()));
-  String lEncodedContent = ImageFunction::getEncodedStringFromImage(lImage);
-  lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
+  long lBlobLength = (long) lBlob.length();
+  void * lBlobPointer = DrawText(lBlob.data(), &lBlobLength, lText.c_str(), lXCoordinate, lYCoordinate, lFontFamily.c_str(), lFontSize, lColor);
+  Magick::Blob lBlobWithText(lBlobPointer, lBlobLength);
+  String lEncodedContent = ImageFunction::getEncodedStringFromBlob(lBlobWithText);
+  Item lItem = theModule->getItemFactory()->createBase64Binary(lEncodedContent.c_str(), lEncodedContent.bytes());
   ImageFunction::checkIfItemIsNull(lItem);
   return ItemSequence_t(new SingletonItemSequence(lItem));
+
 }
 
 

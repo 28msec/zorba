@@ -11,6 +11,10 @@ DrawPolyLine(const void* aBlob, long* aLength, double aXValues[], double aYValue
 void *
 DrawRoundedRect(const void* aBlob, long *aLength, double aUpperLeftX, double aUpperLeftY, double aLowerRightX, double aLowerRightY, double aCornerWidth, double aCornerHeight, std::string aStrokeColor, std::string aFillColor, double aStrokeWidth, bool aAntiAliasing);
 
+
+void *
+DrawText(const void* aBlob, long* aLength, std::string aText, double aX, double aY, std::string aFont, double aFontSize, std::string aColor); 
+
 char *
 GetImageType(const void* aBlob, long* aLength);
 

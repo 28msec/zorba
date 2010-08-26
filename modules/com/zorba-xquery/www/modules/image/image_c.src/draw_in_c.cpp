@@ -132,7 +132,35 @@ DrawRoundedRect(const void* aBlob, long* aLength, double aUpperLeftX , double aU
 
 }
 
+void *
+DrawText(const void* aBlob, long* aLength, std::string aText, double aX, double aY, std::string aFont, double aFontSize, std::string aColor) {
+  MagickWandGenesis();
+  MagickWand * lMagickWand  = NewMagickWand();
+  const size_t lLength = (size_t) *aLength;
+  MagickReadImageBlob(lMagickWand, aBlob, lLength);
+  DrawingWand * lDrawingWand = NewDrawingWand();
+  PixelWand * lPixelWand = NewPixelWand();
 
+  PushDrawingWand(lDrawingWand);
+  PixelSetColor(lPixelWand, aColor.c_str());
+  DrawSetStrokeColor(lDrawingWand, lPixelWand);
+  DrawSetFont(lDrawingWand, aFont.c_str());
+  DrawSetFontSize(lDrawingWand, aFontSize);
+
+  DrawAnnotation(lDrawingWand, aX, aY, reinterpret_cast<const unsigned char *>(aText.c_str()));
+
+  PopDrawingWand(lDrawingWand);
+
+
+  MagickDrawImage(lMagickWand, lDrawingWand);
+  size_t lBlobLength;
+  void *lResultPointer;
+  lResultPointer = (void *) MagickGetImageBlob(lMagickWand, &lBlobLength);
+  *aLength  =  (long) lBlobLength;
+  return lResultPointer;
+
+
+}  
 
 
 char *
