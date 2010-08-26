@@ -163,9 +163,14 @@ public:
       lSha1.Final();
       char lRes[65];
       lSha1.GetHash((UINT_8 *)lRes);
-      lRes[20] = 0; // SHA1 is 20 bytes long
-      zorba::String lDigest(lRes);
-      lHash = zorba::encoding::Base64::encode(lDigest);
+
+      // SHA1 is always 20bytes long
+      // avoid using a stream here because it might contain 0's
+      // (i.e. be null terminated)
+      std::stringstream lTmp;
+      lTmp.write(lRes, 20);
+
+      lHash = zorba::encoding::Base64::encode(lTmp);
     } else {
       lHash = md5(lText);
     }
