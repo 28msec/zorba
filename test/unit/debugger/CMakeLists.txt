@@ -12,12 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/guestbook.xq ${CMAKE_CURRENT_BINARY_DIR}/guestbook.xq COPYONLY)
+
 # create the testing file and list of tests
 CREATE_TEST_SOURCELIST(DebuggerTests
     DebuggerTests.cpp
     test_debugger_protocol.cpp
     test_debugger_endianness.cpp
     test_debugger_server.cpp
+    test_debugger_serialization.cpp
 )
 
 INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/bin)
@@ -35,4 +38,3 @@ FOREACH (test ${TestsToRun})
   	SET (TestName "test/unit/debugger/${TName}")
         ZORBA_ADD_TEST_ALLSTORES("${TestName}" DebuggerTests ${TName})
 ENDFOREACH(test)
-
