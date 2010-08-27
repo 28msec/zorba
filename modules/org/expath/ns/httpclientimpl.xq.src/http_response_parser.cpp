@@ -248,14 +248,15 @@ namespace zorba { namespace http_client {
   {
     std::vector<char> source;
 
-    std::string lTest;
+    //std::string lTest;
     while (aStream.good()) {
       char lTestC = (char)(aStream.get());
       if (lTestC == -1)
         continue;
       source.push_back(lTestC);
-      lTest += lTestC;
+      //lTest += lTestC;
     }
+
     char* lInput = new char[source.size() + 1];
     std::vector<char>::iterator lIter;
     long pos = 0;

@@ -57,11 +57,6 @@ debugger_serialization_example_1(Zorba* aZorba)
 	return true;
 }
 
-std::string
-replace_all(const std::string& aSrc, const std::string& aSearch, const std::string& aReplace)
-{
-}
-
 bool
 debugger_serialization_example_2(Zorba* aZorba)
 {
