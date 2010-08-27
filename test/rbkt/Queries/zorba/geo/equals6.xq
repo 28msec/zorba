@@ -1,3 +1,9 @@
+(:
+Geo module test.
+Tests if two lines are equal, even if one line contains a duplicate point.
+Result: true
+:)
+
 import module namespace geo = "http://www.zorba-xquery.com/modules/geo";
 declare namespace gml="http://www.opengis.net/gml";
 

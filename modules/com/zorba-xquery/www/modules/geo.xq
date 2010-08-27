@@ -17,7 +17,7 @@
 (:~
  : Function library providing geo processing using Simple Features api over
  : GMLSF format. <br/>
- : It uses the GEOS external library, license LGPL.<br/>
+ : It uses the GEOS external library, license LGPL. Version 3.2.2 or above.<br/>
  : <br/>
  : The data format supported now is GMLSF 0/1. GMLSF 2 will be supported soon.<br/>
  : This is a subset of GML, and covers the basic geometries of Point, Line and Surface and collections of those.<br/>
@@ -182,7 +182,7 @@ declare function zorba-geo:num-geometries( $geometry as node()) as xs:unsignedIn
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
  :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
  : @param $n zero-based index in the collection
- : @return n-th geometry in collection.
+ : @return n-th geometry in collection. The node is a copy of the original node.
  : @error XPTY0004 - unrecognized geometric object
 :)
 declare function zorba-geo:geometry-n( $geometry as node(), $n as xs:unsignedInt) as node() external;
@@ -623,4 +623,146 @@ declare function zorba-geo:centroid( $geometry as node()) as node() external;
  : @error XPTY0004 - unrecognized geometric object
 :)
 declare function zorba-geo:interior-point( $geometry as node()) as node() external;
+
+
+
+
+
+
+(:~
+ : Returns the X coordinate of a Point.
+ : <br/>
+ :
+ : @param $point node of one of GMLSF objects: gml:Point
+ : @return the X coordinate
+ : @error XPTY0004 - unrecognized geometric object or not a gml:Point
+:)
+declare function zorba-geo:x( $point as node()) as xs:double external;
+
+(:~
+ : Returns the Y coordinate of a Point.
+ : <br/>
+ :
+ : @param $point node of one of GMLSF objects: gml:Point
+ : @return the Y coordinate
+ : @error XPTY0004 - unrecognized geometric object or not a gml:Point
+:)
+declare function zorba-geo:y( $point as node()) as xs:double external;
+
+(:~
+ : Returns the Z coordinate of a Point, if is 3D.
+ : <br/>
+ :
+ : @param $point node of one of GMLSF objects: gml:Point
+ : @return the Z coordinate
+ : @error XPTY0004 - unrecognized geometric object or not a gml:Point
+:)
+declare function zorba-geo:z( $point as node()) as xs:double external;
+
+
+
+
+
+
+
+(:~
+ : Returns the start Point of a line.
+ : <br/>
+ :
+ : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing
+ : @return the starting gml:Point
+ : @error XPTY0004 - unrecognized geometric object or not a line
+:)
+declare function zorba-geo:start-point( $line as node()) as node() external;
+
+(:~
+ : Returns the end Point of a line.
+ : <br/>
+ :
+ : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing
+ : @return the end gml:Point
+ : @error XPTY0004 - unrecognized geometric object or not a line
+:)
+declare function zorba-geo:end-point( $line as node()) as node() external;
+
+(:~
+ : Checks if the line is closed loop. That is, if the start Point is same with end Point.
+ : <br/>
+ :
+ : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing,
+ :      gml:MultiCurve
+ : @return true if the line is closed.
+ : @error XPTY0004 - unrecognized geometric object or not a line
+:)
+declare function zorba-geo:is-closed( $line as node()) as xs:boolean external;
+
+(:~
+ : Checks if the line is a ring. That is, if the line is closed and simple.
+ : <br/>
+ :
+ : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing
+ : @return true if the line is a closed ring.
+ : @error XPTY0004 - unrecognized geometric object or not a line
+:)
+declare function zorba-geo:is-ring( $line as node()) as xs:boolean external;
+
+(:~
+ : Return the number of Points in a line.
+ : <br/>
+ :
+ : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing
+ : @return number of points in the line
+ : @error XPTY0004 - unrecognized geometric object or not a line
+:)
+declare function zorba-geo:num-points( $line as node()) as xs:unsignedInt external;
+
+(:~
+ : Return the n-th Point in a line
+ : <br/>
+ :
+ : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing
+ : @param $n index in the list of nodes, zero based.
+ : @return n-th point in the line. The node is a copy of the original node.
+ : @error XPTY0004 - unrecognized geometric object or not a line
+:)
+declare function zorba-geo:point-n( $line as node(), $n as xs:unsignedInt) as node() external;
+
+
+
+
+
+
+(:~
+ : Return the exterior ring of a Polygon.
+ : <br/>
+ :
+ : @param $polygon node of one of GMLSF objects: gml:Polygon
+ : @return exterior ring as a gml:LinearRing
+ : @error XPTY0004 - unrecognized geometric object or not a polygon
+:)
+declare function zorba-geo:exterior-ring( $polygon as node()) as node() external;
+
+(:~
+ : Return the number of interior rings of a Polygon.
+ : <br/>
+ :
+ : @param $polygon node of one of GMLSF objects: gml:Polygon
+ : @return the number of interior rings
+ : @error XPTY0004 - unrecognized geometric object or not a polygon
+:)
+declare function zorba-geo:num-interior-ring( $polygon as node()) as xs:unsignedInt external;
+
+(:~
+ : Return the n-th interior ring of a Polygon.
+ : <br/>
+ :
+ : @param $polygon node of one of GMLSF objects: gml:Polygon
+ : @param $n index in the list of interior rings, zero based.
+ : @return n-th interior ring. The node is a copy of the original node.
+ : @error XPTY0004 - unrecognized geometric object or not a line
+:)
+declare function zorba-geo:interior-ring-n( $polygon as node(), $n as xs:unsignedInt) as node() external;
+
+
+
 

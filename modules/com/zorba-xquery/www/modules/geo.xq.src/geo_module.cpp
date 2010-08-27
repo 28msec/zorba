@@ -153,6 +153,42 @@ GeoModule::getExternalFunction(String aLocalname) const
     else if (aLocalname.equals("interior-point")) {
       lFunc = new SFInteriorPointFunction(this);
     }
+    else if (aLocalname.equals("x")) {
+      lFunc = new SFXFunction(this);
+    }
+    else if (aLocalname.equals("y")) {
+      lFunc = new SFYFunction(this);
+    }
+    else if (aLocalname.equals("z")) {
+      lFunc = new SFZFunction(this);
+    }
+    else if (aLocalname.equals("start-point")) {
+      lFunc = new SFStartPointFunction(this);
+    }
+    else if (aLocalname.equals("end-point")) {
+      lFunc = new SFEndPointFunction(this);
+    }
+    else if (aLocalname.equals("is-closed")) {
+      lFunc = new SFIsClosedFunction(this);
+    }
+    else if (aLocalname.equals("is-ring")) {
+      lFunc = new SFIsRingFunction(this);
+    }
+    else if (aLocalname.equals("num-points")) {
+      lFunc = new SFNumPointsFunction(this);
+    }
+    else if (aLocalname.equals("point-n")) {
+      lFunc = new SFPointNFunction(this);
+    }
+    else if (aLocalname.equals("exterior-ring")) {
+      lFunc = new SFExteriorRingFunction(this);
+    }
+    else if (aLocalname.equals("num-interior-ring")) {
+      lFunc = new SFNumInteriorRingFunction(this);
+    }
+    else if (aLocalname.equals("interior-ring-n")) {
+      lFunc = new SFInteriorRingNFunction(this);
+    }
   }
   return lFunc;
 }

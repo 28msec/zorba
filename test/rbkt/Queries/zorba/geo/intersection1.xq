@@ -1,3 +1,9 @@
+(:
+Geo module test.
+Compute the intersection between a group of lines and a point on one line.
+Result: 3.000000 3.000000
+:)
+
 import module namespace geo = "http://www.zorba-xquery.com/modules/geo";
 declare namespace gml="http://www.opengis.net/gml";
 

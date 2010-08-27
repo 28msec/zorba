@@ -136,8 +136,20 @@ DECLARE_GEOFUNCTION_CLASS(SFIsWithinDistanceFunction, is-within-distance)
 DECLARE_GEOFUNCTION_CLASS(SFCentroidFunction, centroid)
 DECLARE_GEOFUNCTION_CLASS(SFInteriorPointFunction, interior-point)
 
+DECLARE_GEOFUNCTION_CLASS(SFXFunction, x)
+DECLARE_GEOFUNCTION_CLASS(SFYFunction, y)
+DECLARE_GEOFUNCTION_CLASS(SFZFunction, z)
 
+DECLARE_GEOFUNCTION_CLASS(SFStartPointFunction, start-point)
+DECLARE_GEOFUNCTION_CLASS(SFEndPointFunction, end-point)
+DECLARE_GEOFUNCTION_CLASS(SFIsClosedFunction, is-closed)
+DECLARE_GEOFUNCTION_CLASS(SFIsRingFunction, is-ring)
+DECLARE_GEOFUNCTION_CLASS(SFNumPointsFunction, num-points)
+DECLARE_GEOFUNCTION_CLASS(SFPointNFunction, point-n)
 
+DECLARE_GEOFUNCTION_CLASS(SFExteriorRingFunction, exterior-ring)
+DECLARE_GEOFUNCTION_CLASS(SFNumInteriorRingFunction, num-interior-ring)
+DECLARE_GEOFUNCTION_CLASS(SFInteriorRingNFunction, interior-ring-n)
 } /* namespace geomodule */
 } /* namespace zorba */
 

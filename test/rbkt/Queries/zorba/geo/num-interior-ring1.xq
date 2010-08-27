@@ -1,20 +1,15 @@
-(:
-Geo module test.
-Compute the length of the boundary of a polygon. 
-The sum length of the external and internal rings is computed.
-Result: 120
-:)
-
 import module namespace geo = "http://www.zorba-xquery.com/modules/geo";
 declare namespace gml="http://www.opengis.net/gml";
 
-geo:length(<gml:Polygon>
+geo:num-interior-ring(<gml:Polygon>
               <gml:exterior>
                 <gml:LinearRing><gml:posList>
                 1 1 
                 20 1 
                 20 20 
-                1 20 
+                30 20
+                30 30 
+                1 30 
                 1 1
                 </gml:posList></gml:LinearRing>
               </gml:exterior>
@@ -37,4 +32,3 @@ geo:length(<gml:Polygon>
                 </gml:posList></gml:LinearRing>
               </gml:interior>
               </gml:Polygon>)
-              
