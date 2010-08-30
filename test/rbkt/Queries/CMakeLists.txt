@@ -125,6 +125,14 @@ FOREACH(TESTFILE ${TESTFILES})
       SET(SKIP_TEST 1)
     ENDIF(NEEDS_REST OR NEEDS_TIDY_AND_REST OR HTTP_CLIENT)
   ENDIF(NOT ZORBA_WITH_REST)
+  #at the moment we do not check for ZORBA_WITH_REST cmake param
+  #also we check for libtidy also because is it is not present HTTP module is not build
+  IF (NOT CURL_FOUND OR NOT LIBTIDY_FOUND)
+    STRING(REGEX MATCH "http_client|oauth|webservices" HTTP_CLIENT "${TESTNAME}")
+    IF(HTTP_CLIENT)
+      SET(SKIP_TEST 1)
+    ENDIF(HTTP_CLIENT)
+  ENDIF(NOT CURL_FOUND OR NOT LIBTIDY_FOUND)
   IF(NOT ZORBA_WITH_FILE_ACCESS)
     #these tests require the file module
     STRING(REGEX MATCH "file/" NEEDS_FILE "${TESTNAME}")
@@ -267,9 +275,9 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic1 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic3 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic4 2962715)
 
-IF (ZORBA_WITH_REST)
+IF (CURL_FOUND AND LIBTIDY_FOUND)
   EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 3054086)
-ENDIF (ZORBA_WITH_REST)
+ENDIF (CURL_FOUND AND LIBTIDY_FOUND)
 
 # --------------------------------------------------------------------------
 # vim:set et sw=2 ts=2:
