@@ -3,7 +3,6 @@
  : Please note that all images passed back by these functions described here are required to be written to disc as GIF.
  : 
  : @author Daniel Thomas
- : @version 0.1
  : @see http://www.zorba-xquery.com/modules/image/image
  : @see http://www.imagemagick.org/Magick++/
  :)

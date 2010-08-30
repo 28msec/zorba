@@ -10,7 +10,6 @@
  :
  : 
  : @author Daniel Thomas
- : @version 0.1
  :)
 module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
 

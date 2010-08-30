@@ -3,7 +3,6 @@
  : Note that these functions generally do not have any effects on SVG images.
  :
  : @author Daniel Thomas
- : @version 0.1
  : @see http://www.zorba-xquery.com/modules/image/image
  : @see http://www.imagemagick.org/Magick++/
  :)

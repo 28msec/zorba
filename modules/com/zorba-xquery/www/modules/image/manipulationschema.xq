@@ -2,7 +2,6 @@
  : For Internal use only.
  :
  : @author Daniel Thomas
- : @version 0.1
  : @see http://www.zorba-xquery.com/modules/image/image
  : @see http://www.imagemagick.org/Magick++/
  :)
