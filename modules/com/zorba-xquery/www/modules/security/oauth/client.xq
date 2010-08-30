@@ -233,6 +233,8 @@ declare sequential function oauth:http-request(
  : @param $url Target URL
  : @param $additional-parameters Parameters specific to a certain step (request-token, authorize, access-token, protected-resource) of the OAuth authorization
  : @return correctly parsed parameters, or an error if http response status is not 200 OK
+ : @error XQP0021(err:OC003) if we receive http 401 error from the server.
+ : @error XQP0021(err:OC004) if we receive http 500 error from the server.
  :)
 declare sequential function oauth:format-request(
     $consumer-key as xs:string,
