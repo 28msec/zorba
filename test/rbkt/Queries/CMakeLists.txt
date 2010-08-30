@@ -279,5 +279,11 @@ IF (CURL_FOUND AND LIBTIDY_FOUND)
   EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 3054086)
 ENDIF (CURL_FOUND AND LIBTIDY_FOUND)
 
+IF (ImageMagick_Magick++_FOUND AND
+    ImageMagick_MagickCore_FOUND AND
+    ImageMagick_MagickWand_FOUND)
+  EXPECTED_FAILURE(test/rbkt/zorba/image/basic 3056032)
+ENDIF ()
+
 # --------------------------------------------------------------------------
 # vim:set et sw=2 ts=2:
