@@ -14,4 +14,5 @@ return
 xqddf:refresh-index($xqddf-test:index2);
 (:xqddf:collection($xqddf-test:white-collection);:)
 
-xqddf:probe-index-range($xqddf-test:index2, 1, 3, fn:true(), fn:true(), fn:true(), fn:false())[1]; 
+xqddf:probe-index-range-value($xqddf-test:index2,
+                              1, 3, fn:true(), fn:true(), fn:true(), fn:false())[1]; 

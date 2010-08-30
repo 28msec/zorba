@@ -161,10 +161,10 @@
   class HoistIterator;
   class UnhoistIterator;
 
-class IndexRangeProbeIterator;
-class IndexValuePointProbeIterator;
-class IndexGeneralPointProbeIterator;
-class IndexGeneralRangeProbeIterator;
+class ProbeIndexPointValueIterator;
+class ProbeIndexPointGeneralIterator;
+class ProbeIndexRangeValueIterator;
+class ProbeIndexRangeGeneralIterator;
 class ValueIndexEntryBuilderIterator;
 class GeneralIndexEntryBuilderIterator;
 class RefreshIndexIterator;

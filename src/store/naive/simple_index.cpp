@@ -116,19 +116,19 @@ long IndexCompareFunction::compare(
       if (i1 != NULL)
         return +1;
     }
-    else if (i1 == IndexBoxConditionImpl::theNegInf)
+    else if (i1 == IndexBoxCondition::theNegInf)
     {
       return -1;
     }
-    else if (i1 == IndexBoxConditionImpl::thePosInf)
+    else if (i1 == IndexBoxCondition::thePosInf)
     {
       return +1;
     }
-    else if (i2 == IndexBoxConditionImpl::theNegInf)
+    else if (i2 == IndexBoxCondition::theNegInf)
     {
       return +1;
     }
-    else if (i2 == IndexBoxConditionImpl::thePosInf)
+    else if (i2 == IndexBoxCondition::thePosInf)
     {
       return -1;
     }
@@ -192,23 +192,23 @@ IndexImpl::~IndexImpl()
 /******************************************************************************
 
 ********************************************************************************/
-store::IndexPointCondition_t IndexImpl::createPointCondition()
+store::IndexCondition_t IndexImpl::createCondition(store::IndexCondition::Kind k)
 {
-  return new IndexPointConditionImpl(this);
+  switch (k)
+  {
+  case store::IndexCondition::POINT_VALUE:
+    return new IndexPointValueCondition(this);
+
+  case store::IndexCondition::POINT_GENERAL:
+    return new IndexPointGeneralCondition(this);
+
+  case store::IndexCondition::BOX_VALUE:
+    return new IndexBoxValueCondition(this);
+
+  default:
+    ZORBA_ASSERT(false);
+  }
 }
-
-
-/******************************************************************************
-
-********************************************************************************/
-store::IndexBoxCondition_t IndexImpl::createBoxCondition()
-{
-  return new IndexBoxConditionImpl(this);
-}
-
-
-
-
 
 
 
@@ -222,16 +222,16 @@ store::IndexBoxCondition_t IndexImpl::createBoxCondition()
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexPointConditionImpl::clear()
+void IndexPointCondition::clear()
 {
   theKey.clear();
 }
 
 
 /*******************************************************************************
-
+  Note: The runtime guarantees that the type of the item is appropriate
 ********************************************************************************/
-void IndexPointConditionImpl::pushItem(store::Item_t& item)
+void IndexPointCondition::pushItem(store::Item_t& item)
 {
   theKey.transfer_back(item);
 }
@@ -240,7 +240,22 @@ void IndexPointConditionImpl::pushItem(store::Item_t& item)
 /*******************************************************************************
 
 ********************************************************************************/
-bool IndexPointConditionImpl::test(const store::IndexKey& key) const
+void IndexPointCondition::pushRange(
+    store::Item_t& lower,
+    store::Item_t& upper,
+    bool haveLower,
+    bool haveUpper,
+    bool lowerIncl,
+    bool upperIncl)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+bool IndexPointCondition::test(const store::IndexKey& key) const
 {
   ulong numCols = theKey.size();
 
@@ -261,7 +276,7 @@ bool IndexPointConditionImpl::test(const store::IndexKey& key) const
 /*******************************************************************************
 
 ********************************************************************************/
-std::string IndexPointConditionImpl::toString() const
+std::string IndexPointCondition::toString() const
 {
   std::ostringstream str;
   str << *this;
@@ -272,12 +287,11 @@ std::string IndexPointConditionImpl::toString() const
 /*******************************************************************************
 
 ********************************************************************************/
-std::ostream& operator<<(std::ostream& os, const IndexPointConditionImpl& cond)
+std::ostream& operator<<(std::ostream& os, const IndexPointCondition& cond)
 {
   os << "{ " << cond.getKey() << " }";
   return os;
 }
-
 
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -288,14 +302,14 @@ std::ostream& operator<<(std::ostream& os, const IndexPointConditionImpl& cond)
 
 
 // TODO: proper initialization order is not guaranteed => use factory instead
-store::Item_t IndexBoxConditionImpl::theNegInf(new DecimalItem);
-store::Item_t IndexBoxConditionImpl::thePosInf(new DecimalItem);
+store::Item_t IndexBoxCondition::theNegInf(new DecimalItem);
+store::Item_t IndexBoxCondition::thePosInf(new DecimalItem);
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexBoxConditionImpl::clear()
+void IndexBoxCondition::clear()
 {
   theLowerBounds.clear();
   theUpperBounds.clear();
@@ -306,7 +320,16 @@ void IndexBoxConditionImpl::clear()
 /*******************************************************************************
 
 ********************************************************************************/
-void IndexBoxConditionImpl::pushRange(
+void IndexBoxCondition::pushItem(store::Item_t& item)
+{
+  ZORBA_ASSERT(false);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void IndexBoxCondition::pushRange(
     store::Item_t& lower,
     store::Item_t& upper,
     bool haveLower,
@@ -331,7 +354,7 @@ void IndexBoxConditionImpl::pushRange(
 /*******************************************************************************
 
 ********************************************************************************/
-bool IndexBoxConditionImpl::test(const store::IndexKey& key) const
+bool IndexBoxCondition::test(const store::IndexKey& key) const
 {
   ulong numCols = theLowerBounds.size();
 
@@ -367,7 +390,7 @@ bool IndexBoxConditionImpl::test(const store::IndexKey& key) const
 /*******************************************************************************
 
 ********************************************************************************/
-std::string IndexBoxConditionImpl::toString() const
+std::string IndexBoxCondition::toString() const
 {
   std::ostringstream str;
   str << *this;
@@ -378,7 +401,7 @@ std::string IndexBoxConditionImpl::toString() const
 /*******************************************************************************
 
 ********************************************************************************/
-std::ostream& operator<<(std::ostream& os, const IndexBoxConditionImpl& cond)
+std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond)
 {
   ulong numCols = cond.theLowerBounds.size();
 

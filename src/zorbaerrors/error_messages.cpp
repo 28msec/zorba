@@ -848,6 +848,9 @@ DEF_ERR_CODE(XDDY0027_INDEX_MULTIPLE_CREATES, XDDY0027,
 DEF_ERR_CODE(XDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, XDDY0028,
 "The domain expression of the general index /s produces duplicate nodes.")
 
+DEF_ERR_CODE(XDDY0029_INDEX_GENERAL_PROBE_NOT_ALLOWED, XDDY0029,
+"Index /s does not support general probes.")
+
 
 DEF_ERR_CODE(XDDY0031_IC_IS_NOT_DECLARED, XDDY0031,
              "An integrity constraint with URI /s is not declared.")

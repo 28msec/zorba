@@ -13,6 +13,6 @@ xqddf:insert-nodes($foo, doc("test2.xml"));
 
 xqddf:create-index($idx);
 
-xqddf:probe-index-point($idx, xs:long(501321));
+xqddf:probe-index-point-value($idx, xs:long(501321));
 
 

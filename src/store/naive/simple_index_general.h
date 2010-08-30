@@ -64,7 +64,7 @@ class GeneralIndex : public IndexImpl
   friend class SimpleStore;
 
 protected:
-  store::Item       * theLastNode;
+  store::Item   * theLastNode;
 
 protected:
   GeneralIndex(
@@ -85,7 +85,7 @@ protected:
 class GeneralHashIndex : public GeneralIndex
 {
   friend class SimpleStore;
-  friend class GeneralHashProbeIterator;
+  friend class ProbeHashGeneralIndexIterator;
 
   typedef HashMap<const store::IndexKey*,
                   GeneralIndexValue*,
@@ -105,12 +105,14 @@ protected:
 
   bool insert(
         store::IndexKey*& key,
-        store::Item_t& item);
+        store::Item_t& item,
+        bool multikey);
 
   bool insertInMap(
         store::IndexKey*& key,
         store::Item_t& node,
         IndexMap*& targetMap,
+        bool multikey,
         bool untyped);
 
   bool remove(
@@ -120,14 +122,22 @@ protected:
 
 
 /******************************************************************************
+  Iterator to probe a hash-based, general index. The probe itself may be a
+  value probe or a general probe.
 
+  theIndex      : The index to probe
+  theCondition  : The condition to satisfy. May be a POINT_VALUE or POINT_GENERAL
+                  condition.
+  theResultSets : The node sets associated with the keys that match the condition
+ 
 ********************************************************************************/
-class GeneralHashProbeIterator : public store::IndexProbeIterator
+class ProbeHashGeneralIndexIterator : public store::IndexProbeIterator
 {
 protected:
   rchandle<GeneralHashIndex>                 theIndex;
 
-  rchandle<IndexPointConditionImpl>          theCondition;
+  rchandle<IndexPointCondition>              theCondition;
+  store::IndexCondition::Kind                theProbeKind;
 
   std::vector<GeneralIndexValue*>            theResultSets;
   std::vector<GeneralIndexValue*>::iterator  theResultSetsIte;
@@ -136,7 +146,7 @@ protected:
   GeneralIndexValue::iterator                theEnd;
 
 public:
-  GeneralHashProbeIterator(const store::Index_t& index);
+  ProbeHashGeneralIndexIterator(const store::Index_t& index);
 
   void init(const store::IndexCondition_t& cond);
 

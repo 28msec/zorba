@@ -26,6 +26,18 @@ namespace simplestore
 {
 
 
+/******************************************************************************
+
+********************************************************************************/
+ValueIndex::ValueIndex(
+    const store::Item_t& qname,
+    const store::IndexSpecification& spec)
+  :
+  IndexImpl(qname, spec)
+{
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  Hash Map Value Index                                                       //
@@ -40,7 +52,7 @@ ValueHashIndex::ValueHashIndex(
     const store::Item_t& qname,
     const store::IndexSpecification& spec)
   :
-  IndexImpl(qname, spec),
+  ValueIndex(qname, spec),
   theCompFunction(theNumColumns, spec.theTimezone, theCollators),
   theMap(theCompFunction, 1024, spec.theIsThreadSafe)
 {
@@ -80,7 +92,10 @@ void ValueHashIndex::clear()
   in the index already, then the key itself is inserted as well. Return true
   if the key was already in the index, false otherwise
 ********************************************************************************/
-bool ValueHashIndex::insert(store::IndexKey*& key, store::Item_t& value)
+bool ValueHashIndex::insert(
+    store::IndexKey*& key,
+    store::Item_t& value,
+    bool multikey)
 {
   if (key->size() != theNumColumns)
   {
@@ -164,7 +179,7 @@ bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  HashProbeIterator                                                          //
+//  ProdeHashValueIndexIterator                                                //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -172,16 +187,16 @@ bool ValueHashIndex::remove(const store::IndexKey* key, store::Item_t& value)
 /******************************************************************************
 
 ********************************************************************************/
-void HashProbeIterator::init(const store::IndexCondition_t& cond)
+void ProbeHashValueIndexIterator::init(const store::IndexCondition_t& cond)
 {
-  if (cond->getKind() != store::IndexCondition::EXACT_KEY)
+  if (cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
     ZORBA_ERROR_PARAM(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
                       theIndex->getName()->getStringValue()->c_str(), 
                       cond->getKindString());
   }
 
-  theCondition = reinterpret_cast<IndexPointConditionImpl*>(cond.getp());
+  theCondition = reinterpret_cast<IndexPointValueCondition*>(cond.getp());
 
   store::IndexKey* key = &(theCondition->theKey);
 
@@ -205,7 +220,7 @@ void HashProbeIterator::init(const store::IndexCondition_t& cond)
 /******************************************************************************
 
 ********************************************************************************/
-void HashProbeIterator::open()
+void ProbeHashValueIndexIterator::open()
 {
   if (theResultSet)
     theIte = theResultSet->begin();
@@ -215,7 +230,7 @@ void HashProbeIterator::open()
 /******************************************************************************
 
 ********************************************************************************/
-void HashProbeIterator::reset()
+void ProbeHashValueIndexIterator::reset()
 {
   if (theResultSet)
     theIte = theResultSet->begin(); 
@@ -225,7 +240,7 @@ void HashProbeIterator::reset()
 /******************************************************************************
 
 ********************************************************************************/
-void HashProbeIterator::close()
+void ProbeHashValueIndexIterator::close()
 {
   theCondition = NULL;
   theResultSet = NULL;
@@ -235,7 +250,7 @@ void HashProbeIterator::close()
 /******************************************************************************
   TODO : need sync on result vector
 ********************************************************************************/
-bool HashProbeIterator::next(store::Item_t& result)
+bool ProbeHashValueIndexIterator::next(store::Item_t& result)
 {
   if (theResultSet && theIte != theEnd)
   {
@@ -262,7 +277,7 @@ STLMapIndex::STLMapIndex(
     const store::Item_t& qname,
     const store::IndexSpecification& spec)
   :
-  IndexImpl(qname, spec),
+  ValueIndex(qname, spec),
   theCompFunction(theNumColumns, spec.theTimezone, theCollators),
   theMap(theCompFunction)
 {
@@ -297,7 +312,10 @@ void STLMapIndex::clear()
 /******************************************************************************
 
 ********************************************************************************/
-bool STLMapIndex::insert(store::IndexKey*& key, store::Item_t& value)
+bool STLMapIndex::insert(
+    store::IndexKey*& key, 
+    store::Item_t& value,
+    bool multikey)
 {
   if (key->size() != theNumColumns)
   {
@@ -389,7 +407,7 @@ bool STLMapIndex::remove(const store::IndexKey* key, store::Item_t& value)
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  STLMapProbeIterator                                                        //
+//  ProbeTreeValueIndexIterator                                                //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
@@ -397,17 +415,25 @@ bool STLMapIndex::remove(const store::IndexKey* key, store::Item_t& value)
 /******************************************************************************
 
 ********************************************************************************/
-void STLMapProbeIterator::init(const store::IndexCondition_t& cond)
+void ProbeTreeValueIndexIterator::init(const store::IndexCondition_t& cond)
 {
-  if (cond->getKind() == store::IndexCondition::EXACT_KEY)
+  if (cond->getKind() != store::IndexCondition::BOX_VALUE &&
+      cond->getKind() != store::IndexCondition::POINT_VALUE)
   {
-    thePointCond = reinterpret_cast<IndexPointConditionImpl*>(cond.getp());
+    ZORBA_ERROR_PARAM(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
+                      theIndex->getName()->getStringValue()->c_str(), 
+                      cond->getKindString());
+  }
+
+  if (cond->getKind() == store::IndexCondition::POINT_VALUE)
+  {
+    thePointCond = reinterpret_cast<IndexPointValueCondition*>(cond.getp());
 
     initExact();
   }
   else
   {
-    theBoxCond = reinterpret_cast<IndexBoxConditionImpl*>(cond.getp());
+    theBoxCond = reinterpret_cast<IndexBoxValueCondition*>(cond.getp());
 
     initBox();
   }
@@ -417,7 +443,7 @@ void STLMapProbeIterator::init(const store::IndexCondition_t& cond)
 /******************************************************************************
 
 ********************************************************************************/
-void STLMapProbeIterator::initExact()
+void ProbeTreeValueIndexIterator::initExact()
 {
   const store::IndexKey& key = thePointCond->theKey;
 
@@ -445,7 +471,7 @@ void STLMapProbeIterator::initExact()
 /******************************************************************************
 
 ********************************************************************************/
-void STLMapProbeIterator::initBox()
+void ProbeTreeValueIndexIterator::initBox()
 {
   ulong numRanges = theBoxCond->numRanges();
 
@@ -475,7 +501,7 @@ void STLMapProbeIterator::initBox()
   store::IndexKey& lowerBounds = theBoxCond->theLowerBounds;
   store::IndexKey& upperBounds = theBoxCond->theUpperBounds;
 
-  const std::vector<IndexBoxConditionImpl::RangeFlags>& flags = 
+  const std::vector<IndexBoxCondition::RangeFlags>& flags = 
     theBoxCond->theRangeFlags;
 
   //
@@ -519,7 +545,7 @@ void STLMapProbeIterator::initBox()
       }
       else
       {
-        lowerBounds[i] = IndexBoxConditionImpl::theNegInf;
+        lowerBounds[i] = IndexBoxCondition::theNegInf;
       }
     }
 
@@ -532,7 +558,7 @@ void STLMapProbeIterator::initBox()
       }
       else
       {
-        upperBounds[i] = IndexBoxConditionImpl::thePosInf;
+        upperBounds[i] = IndexBoxCondition::thePosInf;
       }
     }
 
@@ -594,7 +620,7 @@ void STLMapProbeIterator::initBox()
 /******************************************************************************
 
 ********************************************************************************/
-void STLMapProbeIterator::open()
+void ProbeTreeValueIndexIterator::open()
 {
   if (theMapBegin != theIndex->theMap.end())
   {
@@ -610,7 +636,7 @@ void STLMapProbeIterator::open()
 /******************************************************************************
 
 ********************************************************************************/
-void STLMapProbeIterator::reset()
+void ProbeTreeValueIndexIterator::reset()
 {
   if (theMapBegin != theIndex->theMap.end())
   {
@@ -626,7 +652,7 @@ void STLMapProbeIterator::reset()
 /******************************************************************************
 
 ********************************************************************************/
-void STLMapProbeIterator::close()
+void ProbeTreeValueIndexIterator::close()
 {
   thePointCond = NULL;
   theBoxCond = NULL;
@@ -637,7 +663,7 @@ void STLMapProbeIterator::close()
 /******************************************************************************
   TODO : need sync on result vector
 ********************************************************************************/
-bool STLMapProbeIterator::next(store::Item_t& result)
+bool ProbeTreeValueIndexIterator::next(store::Item_t& result)
 {
   while (theResultSet != NULL)
   {

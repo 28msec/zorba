@@ -11,4 +11,4 @@ return
 xqddf:create-index($xqddf-test:index1);
 (:xqddf:collection($xqddf-test:white-collection);:)
 
-xqddf:probe-index-point($xqddf-test:index1, "United States")[1]; 
+xqddf:probe-index-point-value($xqddf-test:index1, "United States")[1]; 

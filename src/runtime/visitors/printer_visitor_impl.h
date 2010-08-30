@@ -276,10 +276,10 @@
   DECLARE_VISITOR (ZorbaFopIterator);
 #endif // ZORBA_WITH_FOP
 
-  DECLARE_VISITOR(IndexValuePointProbeIterator);
-  DECLARE_VISITOR(IndexGeneralPointProbeIterator);
-  DECLARE_VISITOR(IndexRangeProbeIterator);
-  DECLARE_VISITOR(IndexGeneralRangeProbeIterator);
+  DECLARE_VISITOR(ProbeIndexPointValueIterator);
+  DECLARE_VISITOR(ProbeIndexPointGeneralIterator);
+  DECLARE_VISITOR(ProbeIndexRangeValueIterator);
+  DECLARE_VISITOR(ProbeIndexRangeGeneralIterator);
   DECLARE_VISITOR(ValueIndexEntryBuilderIterator);
   DECLARE_VISITOR(GeneralIndexEntryBuilderIterator);
   DECLARE_VISITOR(RefreshIndexIterator);

@@ -133,13 +133,13 @@ public:
 };
 
 
-//fn-zorba-ddl:probe-index-point
-class fn_zorba_ddl_index_value_point_probe : public function
+//fn-zorba-ddl:probe-index-point-value
+class fn_zorba_ddl_probe_index_point_value : public function
 {
 public:
-  fn_zorba_ddl_index_value_point_probe(const signature& sig)
+  fn_zorba_ddl_probe_index_point_value(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_POINT_PROBE_N)
+    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_VALUE_N)
   {
   }
 
@@ -154,13 +154,13 @@ public:
 };
 
 
-//fn-zorba-ddl:general-probe-index-point
-class fn_zorba_ddl_index_general_point_probe : public function
+//fn-zorba-ddl:probe-index-point-general
+class fn_zorba_ddl_probe_index_point_general : public function
 {
 public:
-  fn_zorba_ddl_index_general_point_probe(const signature& sig)
+  fn_zorba_ddl_probe_index_point_general(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_INDEX_GENERAL_POINT_PROBE_N)
+    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_GENERAL_N)
   {
   }
 
@@ -171,13 +171,13 @@ public:
 
 
 
-//fn-zorba-ddl:probe-index-range
-class fn_zorba_ddl_index_value_range_probe : public function
+//fn-zorba-ddl:probe-index-range-value
+class fn_zorba_ddl_probe_index_range_value : public function
 {
 public:
-  fn_zorba_ddl_index_value_range_probe(const signature& sig)
+  fn_zorba_ddl_probe_index_range_value(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_RANGE_PROBE_N)
+    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_VALUE_N)
   {
   }
 
@@ -192,13 +192,13 @@ public:
 };
 
 
-//fn-zorba-ddl:general-probe-index-range
-class fn_zorba_ddl_index_general_range_probe : public function
+//fn-zorba-ddl:probe-index-range-general
+class fn_zorba_ddl_probe_index_range_general : public function
 {
 public:
-  fn_zorba_ddl_index_general_range_probe(const signature& sig)
+  fn_zorba_ddl_probe_index_range_general(const signature& sig)
     :
-    function(sig, FunctionConsts::FN_ZORBA_DDL_INDEX_GENERAL_RANGE_PROBE_N)
+    function(sig, FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_GENERAL_N)
   {
   }
 

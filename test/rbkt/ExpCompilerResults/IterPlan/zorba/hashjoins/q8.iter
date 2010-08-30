@@ -80,12 +80,12 @@ Iterator tree for main query:
               <FnCountIterator>
                 <flwor::FLWORIterator>
                   <ForVariable name="t">
-                    <IndexValuePointProbeIterator>
+                    <ProbeIndexPointValueIterator>
                       <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                       <UnhoistIterator>
                         <LetVarIterator varname="$$opt_temp_1"/>
                       </UnhoistIterator>
-                    </IndexValuePointProbeIterator>
+                    </ProbeIndexPointValueIterator>
                   </ForVariable>
                   <ReturnClause>
                     <ForVarIterator varname="t"/>

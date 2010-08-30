@@ -12,4 +12,4 @@ xqddf:insert-nodes($foo, doc("test3.xml"));
 
 xqddf:create-index($idx);
 
-xqddf:probe-index-point($idx, xs:long(68000));
+xqddf:probe-index-point-value($idx, xs:long(68000));

@@ -8,4 +8,4 @@
 
   xqddf:create-index($news-data:CityEmp);
 
-  xqddf:probe-index-point($news-data:CityEmp);
+  xqddf:probe-index-point-value($news-data:CityEmp);

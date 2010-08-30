@@ -119,17 +119,20 @@ GeneralHashIndex::~GeneralHashIndex()
 
 *******************************************************************************/
 
-#define ADD_IN_MAP(MAP_ID)                                         \
-if (castItem !=  NULL)                                             \
-{                                                                  \
-  if (key == NULL) key = new store::IndexKey(1);                   \
-  (*key)[0].transfer(castItem);                                    \
-  found = found || insertInMap(key, node, theMaps[MAP_ID], true);  \
-  node = node2;                                                    \
+#define ADD_IN_MAP(MAP_ID, untyped)                                            \
+if (castItem !=  NULL)                                                         \
+{                                                                              \
+  if (key == NULL) key = new store::IndexKey(1);                               \
+  (*key)[0].transfer(castItem);                                                \
+  found = found || insertInMap(key, node, theMaps[MAP_ID], multikey, untyped); \
+  node = node2;                                                                \
 }
 
 
-bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
+bool GeneralHashIndex::insert(
+    store::IndexKey*& key,
+    store::Item_t& node,
+    bool multikey)
 {
   bool found = false;
   store::Item_t castItem;
@@ -147,7 +150,7 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
 
   if (isTyped())
   {
-    return insertInMap(key, node, theSingleMap, false);
+    return insertInMap(key, node, theSingleMap, multikey, false);
   }
 
   switch (keyType)
@@ -167,14 +170,14 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
   case XS_HEXBINARY:
   case XS_BOOLEAN:
   {
-    return insertInMap(key, node, theMaps[keyType], false);
+    return insertInMap(key, node, theMaps[keyType], multikey, false);
   }
 
   case XS_DURATION:
   case XS_YM_DURATION:
   case XS_DT_DURATION:
   {
-    return insertInMap(key, node, theMaps[XS_DURATION], false);
+    return insertInMap(key, node, theMaps[XS_DURATION], multikey, false);
   }
 
   case XS_STRING:
@@ -188,13 +191,13 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
   case XS_IDREF:
   case XS_ENTITY:
   {
-    return insertInMap(key, node, theMaps[XS_STRING], false);
+    return insertInMap(key, node, theMaps[XS_STRING], multikey, false);
   }
 
   case XS_DOUBLE:
   case XS_FLOAT:
   {
-    return insertInMap(key, node, theMaps[XS_DOUBLE], false);
+    return insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
   }
 
   case XS_DECIMAL:
@@ -219,13 +222,13 @@ bool GeneralHashIndex::insert(store::IndexKey*& key, store::Item_t& node)
     if (lossy)
     {
       node2 = node;
-      found = insertInMap(key, node2, theMaps[XS_DECIMAL], false);
+      found = insertInMap(key, node2, theMaps[XS_DECIMAL], multikey, false);
     }
 
     if (key == NULL) key = new store::IndexKey(1);
     (*key)[0].transfer(castItem);
 
-    found = found || insertInMap(key, node, theMaps[XS_DOUBLE], false);
+    found = found || insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
 
     return found;
   }
@@ -245,16 +248,16 @@ longmap:
     if (lossy)
     {
       node2 = node;
-      found = insertInMap(key, node2, theMaps[XS_LONG], false);
+      found = insertInMap(key, node2, theMaps[XS_LONG], multikey, false);
 
       if (key == NULL) key = new store::IndexKey(1);
       (*key)[0].transfer(castItem);
 
-      found = found || insertInMap(key, node, theMaps[XS_DOUBLE], false);
+      found = found || insertInMap(key, node, theMaps[XS_DOUBLE], multikey, false);
     }
     else
     {
-      found = insertInMap(key, node, theMaps[XS_LONG], false);
+      found = insertInMap(key, node, theMaps[XS_LONG], multikey, false);
     }
 
     return found;
@@ -271,31 +274,31 @@ longmap:
 
     // cast to xs:string
     untypedItem->castToString(castItem);
-    ADD_IN_MAP(XS_STRING);
+    ADD_IN_MAP(XS_STRING, false);
 
     // try casting to xs:long
     if (untypedItem->castToLong(castItem))
     {
       rchandle<LongItem> longItem = static_cast<LongItem*>(castItem.getp());
 
-      ADD_IN_MAP(XS_LONG);
+      ADD_IN_MAP(XS_LONG, true);
 
       bool lossy;
       longItem->coerceToDouble(castItem, false, lossy);
       if (lossy)
       {
-        ADD_IN_MAP(XS_DOUBLE);
+        ADD_IN_MAP(XS_DOUBLE, true);
       }
 
       // may also be gYear, hexBinary, base64Binary, or boolean
       if (untypedItem->castToGYear(castItem))
-        ADD_IN_MAP(XS_GYEAR);
+        ADD_IN_MAP(XS_GYEAR, true);
 
       if (untypedItem->castToHexBinary(castItem))
-        ADD_IN_MAP(XS_HEXBINARY);
+        ADD_IN_MAP(XS_HEXBINARY, true);
 
       if (untypedItem->castToBase64Binary(castItem))
-        ADD_IN_MAP(XS_BASE64BINARY);
+        ADD_IN_MAP(XS_BASE64BINARY, true);
     }
 
     // try casting to xs:decimal
@@ -303,87 +306,87 @@ longmap:
     {
       rchandle<DecimalItem> decimalItem = static_cast<DecimalItem*>(castItem.getp());
 
-      ADD_IN_MAP(XS_DOUBLE);
+      ADD_IN_MAP(XS_DOUBLE, true);
 
       bool lossy;
       decimalItem->coerceToDouble(castItem, true, lossy);
       if (lossy)
       {
-        ADD_IN_MAP(XS_DECIMAL);
+        ADD_IN_MAP(XS_DECIMAL, true);
       }
 
       // may also be hexBinary or base64Binary
       if (untypedItem->castToHexBinary(castItem))
-        ADD_IN_MAP(XS_HEXBINARY);
+        ADD_IN_MAP(XS_HEXBINARY, true);
 
       if (untypedItem->castToBase64Binary(castItem))
-        ADD_IN_MAP(XS_BASE64BINARY);
+        ADD_IN_MAP(XS_BASE64BINARY, true);
     }
 
     // try casting to xs:double
     else if (untypedItem->castToDouble(castItem))
     {
-      ADD_IN_MAP(XS_DOUBLE);
+      ADD_IN_MAP(XS_DOUBLE, true);
     }
 
     // try casting to xs:datetime
     else if (untypedItem->castToDateTime(castItem))
     {
-      ADD_IN_MAP(XS_DATETIME);
+      ADD_IN_MAP(XS_DATETIME, true);
     }
 
     // try casting to xs:date
     else if (untypedItem->castToDate(castItem))
     {
-      ADD_IN_MAP(XS_DATE);
+      ADD_IN_MAP(XS_DATE, true);
     }
 
     // try casting to xs:time
     else if (untypedItem->castToTime(castItem))
     {
-      ADD_IN_MAP(XS_TIME);
+      ADD_IN_MAP(XS_TIME, true);
     }
 
     // try casting to xs:gYearMonth
     else if (untypedItem->castToGYearMonth(castItem))
     {
-      ADD_IN_MAP(XS_GYEAR_MONTH);
+      ADD_IN_MAP(XS_GYEAR_MONTH, true);
     }
 
     // try casting to xs:gMonthDay
     else if (untypedItem->castToGMonthDay(castItem))
     {
-      ADD_IN_MAP(XS_GMONTH_DAY);
+      ADD_IN_MAP(XS_GMONTH_DAY, true);
     }
 
     // try casting to xs:gDay
     else if (untypedItem->castToGDay(castItem))
     {
-      ADD_IN_MAP(XS_GDAY);
+      ADD_IN_MAP(XS_GDAY, true);
     }
 
     // try casting to xs:gMonth
     else if (untypedItem->castToGMonth(castItem))
     {
-      ADD_IN_MAP(XS_GMONTH);
+      ADD_IN_MAP(XS_GMONTH, true);
     }
 
     // try casting to xs:duration
     else if (untypedItem->castToDuration(castItem))
     {
-      ADD_IN_MAP(XS_DURATION);
+      ADD_IN_MAP(XS_DURATION, true);
     }
 
     // try casting to xs:hexBinary
     else if (untypedItem->castToHexBinary(castItem))
     {
-      ADD_IN_MAP(XS_HEXBINARY);
+      ADD_IN_MAP(XS_HEXBINARY, true);
     }
 
     // try casting to xs:base64Binary
     else if (untypedItem->castToBase64Binary(castItem))
     {
-      ADD_IN_MAP(XS_BASE64BINARY);
+      ADD_IN_MAP(XS_BASE64BINARY, true);
     }
 
     return found;
@@ -405,11 +408,10 @@ bool GeneralHashIndex::insertInMap(
     store::IndexKey*& key,
     store::Item_t& node,
     IndexMap*& targetMap,
+    bool multikey,
     bool untyped)
 {
   GeneralIndexValue* valueSet = NULL;
-
-  bool multikey = (node.getp() == theLastNode);
 
   if (targetMap == NULL)
     targetMap = new IndexMap(theCompFunction, 1024, theSpec.theIsThreadSafe);
@@ -423,7 +425,7 @@ bool GeneralHashIndex::insertInMap(
     }
     
     valueSet->addNode(node, multikey, untyped);
-    
+
     return true;
   }
 
@@ -452,15 +454,19 @@ bool GeneralHashIndex::remove(const store::IndexKey* key, store::Item_t& item)
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  GeneralHashProbeIterator                                                   //
+//  ProbeHashGeneralIndexIterator                                              //
+//                                                                             //
+//  Iterator to probe a general, hash-based index. The probe itself may be a   //
+//  value probe or a general probe.                                            //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
 /******************************************************************************
-
+  Create an 
 ********************************************************************************/
-GeneralHashProbeIterator::GeneralHashProbeIterator(const store::Index_t& index) 
+ProbeHashGeneralIndexIterator::ProbeHashGeneralIndexIterator(
+    const store::Index_t& index) 
   :
   theResultSets(1)
 {
@@ -479,18 +485,21 @@ GeneralHashProbeIterator::GeneralHashProbeIterator(const store::Index_t& index)
 
 
 /******************************************************************************
-
+  
 ********************************************************************************/
-void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
+void ProbeHashGeneralIndexIterator::init(const store::IndexCondition_t& cond)
 {
-  if (cond->getKind() != store::IndexCondition::EXACT_KEY)
+  theProbeKind = cond->getKind();
+
+  if (theProbeKind != store::IndexCondition::POINT_VALUE &&
+      theProbeKind != store::IndexCondition::POINT_GENERAL)
   {
     ZORBA_ERROR_PARAM(STR0007_INDEX_UNSUPPORTED_PROBE_CONDITION,
                       theIndex->getName()->getStringValue()->c_str(), 
                       cond->getKindString());
   }
 
-  theCondition = reinterpret_cast<IndexPointConditionImpl*>(cond.getp());
+  theCondition = reinterpret_cast<IndexPointCondition*>(cond.getp());
 
   store::IndexKey* key = &(theCondition->theKey);
 
@@ -677,6 +686,8 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
 
     case XS_UNTYPED_ATOMIC:
     {
+      ZORBA_ASSERT(theProbeKind == store::IndexCondition::POINT_GENERAL);
+
       rchandle<UntypedAtomicItem> untypedItem = static_cast<UntypedAtomicItem*>(keyItem);
 
       // cast to xs:string
@@ -850,7 +861,7 @@ void GeneralHashProbeIterator::init(const store::IndexCondition_t& cond)
 /******************************************************************************
 
 ********************************************************************************/
-void GeneralHashProbeIterator::open()
+void ProbeHashGeneralIndexIterator::open()
 {
   theResultSetsEnd = theResultSets.end();
   theResultSetsIte = theResultSets.begin();
@@ -871,7 +882,7 @@ void GeneralHashProbeIterator::open()
 /******************************************************************************
 
 ********************************************************************************/
-void GeneralHashProbeIterator::reset()
+void ProbeHashGeneralIndexIterator::reset()
 {
   open();
 }
@@ -880,7 +891,7 @@ void GeneralHashProbeIterator::reset()
 /******************************************************************************
 
 ********************************************************************************/
-void GeneralHashProbeIterator::close()
+void ProbeHashGeneralIndexIterator::close()
 {
 }
 
@@ -888,13 +899,31 @@ void GeneralHashProbeIterator::close()
 /******************************************************************************
   TODO : need sync on result vector
 ********************************************************************************/
-bool GeneralHashProbeIterator::next(store::Item_t& result)
+bool ProbeHashGeneralIndexIterator::next(store::Item_t& result)
 {
   while (theResultSetsIte != theResultSetsEnd)
   {
-    if (theIte != theEnd)
+    while (theIte != theEnd)
     {
       result = (*theIte).theNode;
+
+      if (theProbeKind == store::IndexCondition::POINT_VALUE)
+      {
+        if ((*theIte).theMultiKey)
+        {
+          ZORBA_ERROR_DESC_OSS(XPTY0004,
+                               "During a value probe on index "
+                               << theIndex->getName()->getStringValue()->c_str()
+                               << " a node was found that has more than one key values");
+        }
+
+        if ((*theIte).theUntyped)
+        {
+          ++theIte;
+          continue;
+        }
+      }
+
       ++theIte;
       return true;
     }

@@ -32,5 +32,5 @@ declare sequential function def:init()
 
 declare function def:query()
 {
-  xqddf:probe-index-point(xs:QName("def:user-by-uid"), 1)
+  xqddf:probe-index-point-value(xs:QName("def:user-by-uid"), 1)
 };

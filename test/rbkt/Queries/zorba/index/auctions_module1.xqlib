@@ -71,7 +71,7 @@ declare sequential function auctions:create-db()
 
 declare function auctions:probe-point-id($indexName as xs:QName, $id as xs:string)
 {
-  xqddf:probe-index-point($indexName, $id)
+  xqddf:probe-index-point-value($indexName, $id)
 };
 
 
@@ -81,19 +81,19 @@ declare function auctions:probe-point-id($indexName as xs:QName, $id as xs:strin
 
 declare function auctions:probe-range-id($indexName as xs:QName, $id as xs:string)
 {
-  xqddf:probe-index-range($indexName,
-                          $id,
-                          "",
-                          xs:boolean("true"), 
-                          xs:boolean("false"),
-                          xs:boolean("true"),
-                          xs:boolean("false"))
+  xqddf:probe-index-range-value($indexName,
+                                $id,
+                                "",
+                                xs:boolean("true"), 
+                                xs:boolean("false"),
+                                xs:boolean("true"),
+                                xs:boolean("false"))
 };
 
 
 declare function auctions:probe-point-city($indexName as xs:QName, $city as xs:string?)
 {
-  xqddf:probe-index-point($indexName, $city)
+  xqddf:probe-index-point-value($indexName, $city)
 };
 
 
@@ -103,13 +103,13 @@ declare function auctions:probe-point-city($indexName as xs:QName, $city as xs:s
 
 declare function auctions:probe-range-city($indexName as xs:QName, $city as xs:string)
 {
-  xqddf:probe-index-range($indexName,
-                          $city,
-                          "",
-                          xs:boolean("true"),
-                          xs:boolean("false"),
-                          xs:boolean("true"),
-                          xs:boolean("false"))
+  xqddf:probe-index-range-value($indexName,
+                                $city,
+                                "",
+                                xs:boolean("true"),
+                                xs:boolean("false"),
+                                xs:boolean("true"),
+                                xs:boolean("false"))
 };
 
 
@@ -122,6 +122,6 @@ declare function auctions:probe-point-watch(
     $indexName as xs:QName,
     $auctions as xs:string*)
 {
-  xqddf:general-probe-index-point($indexName, $auctions)
+  xqddf:probe-index-point-general($indexName, $auctions)
 };
 

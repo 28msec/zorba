@@ -1682,7 +1682,7 @@ void normalize_fo(fo_expr* foExpr)
 
   const function* func = foExpr->get_func();
 
-  if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_RANGE_PROBE_N &&
+  if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_VALUE_N &&
       (n == 0 || (n - 1) % 6 != 0))
   {
     const store::Item* qname = NULL;
@@ -1710,14 +1710,14 @@ void normalize_fo(fo_expr* foExpr)
 
     xqtref_t paramType;
 
-    if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_POINT_PROBE_N)
+    if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_VALUE_N)
     {
       if (i == 0)
         paramType = sign[i];
       else
         paramType = theRTM.ANY_ATOMIC_TYPE_ONE;
     }
-    else if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_RANGE_PROBE_N)
+    else if (func->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_VALUE_N)
     {
       if (i == 0)
         paramType = sign[i];
@@ -8910,8 +8910,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
 
     normalize_fo(foExpr);
 
-    if (f->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_RANGE_PROBE_N ||
-        f->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_VALUE_POINT_PROBE_N)
+    if (f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_VALUE_N ||
+        f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_VALUE_N)
     {
       FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_NODES_ASC_1;
 
@@ -8920,8 +8920,8 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                            BuiltinFunctionLibrary::getFunction(fkind),
                            foExpr);
     }
-    else if (f->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_GENERAL_POINT_PROBE_N ||
-             f->getKind() == FunctionConsts::FN_ZORBA_DDL_INDEX_GENERAL_RANGE_PROBE_N)
+    else if (f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_POINT_GENERAL_N ||
+             f->getKind() == FunctionConsts::FN_ZORBA_DDL_PROBE_INDEX_RANGE_GENERAL_N)
     {
       FunctionConsts::FunctionKind fkind = FunctionConsts::OP_SORT_DISTINCT_NODES_ASC_1;
 

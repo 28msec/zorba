@@ -15,7 +15,7 @@
 <watch open_auction="open_auction0"/>
 </watches></person><person id="person2"><watches>
 <watch open_auction="open_auction0"/>
-<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction8"/>
 <watch open_auction="open_auction2"/>
 <watch open_auction="open_auction4"/>
 </watches></person><person id="person3"><watches>
@@ -27,12 +27,12 @@
 </watches></person><person id="person7"><watches>
 <watch open_auction="open_auction10"/>
 <watch open_auction="open_auction6"/>
-<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction8"/>
 <watch open_auction="open_auction6"/>
 <watch open_auction="open_auction10"/>
 </watches></person><person id="person8"><watches>
 <watch open_auction="open_auction2"/>
-<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction8"/>
 <watch open_auction="open_auction8"/>
 <watch open_auction="open_auction8"/>
 <watch open_auction="open_auction2"/>
@@ -64,7 +64,7 @@
 <watch open_auction="open_auction0"/>
 </watches></person><person id="person2"><watches>
 <watch open_auction="open_auction0"/>
-<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction8"/>
 <watch open_auction="open_auction2"/>
 <watch open_auction="open_auction4"/>
 </watches></person><person id="person3"><watches>
@@ -76,12 +76,12 @@
 </watches></person><person id="person7"><watches>
 <watch open_auction="open_auction10"/>
 <watch open_auction="open_auction6"/>
-<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction8"/>
 <watch open_auction="open_auction6"/>
 <watch open_auction="open_auction10"/>
 </watches></person><person id="person8"><watches>
 <watch open_auction="open_auction2"/>
-<watch open_auction="open_auction7"/>
+<watch open_auction="open_auction8"/>
 <watch open_auction="open_auction8"/>
 <watch open_auction="open_auction8"/>
 <watch open_auction="open_auction2"/>
@@ -104,3 +104,23 @@
 <watch open_auction="open_auction4"/>
 </watches></person>
 
+<exception>Got exception, as expected</exception>
+
+<person id="person13">
+<name>Martti Halgason</name>
+<emailaddress>mailto:Halgason@bell-labs.com</emailaddress>
+<city>Havana</city>
+<phone>+0 (778) 41220156</phone>
+<profile income="41407.27">
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<interest category="category0"/>
+<gender>female</gender>
+<business>Yes</business>
+<age>20</age>
+</profile>
+<watches>
+<watch open_auction="open_auction7"/>
+</watches>
+</person>

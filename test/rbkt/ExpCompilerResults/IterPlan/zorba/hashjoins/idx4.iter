@@ -84,10 +84,10 @@ Iterator tree for main query:
                 </HoistIterator>
               </LetVariable>
               <ForVariable name="prefixP">
-                <IndexValuePointProbeIterator>
+                <ProbeIndexPointValueIterator>
                   <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                   <ForVarIterator varname="prefixE"/>
-                </IndexValuePointProbeIterator>
+                </ProbeIndexPointValueIterator>
               </ForVariable>
               <WhereClause>
                 <FnBooleanIterator>

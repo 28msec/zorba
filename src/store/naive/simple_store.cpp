@@ -580,14 +580,13 @@ void SimpleStore::populateGeneralIndex(
     ulong numColumns)
 {
   store::Item_t domainNode;
-  store::Item_t item;
+  store::Item_t firstKeyItem;
+  store::Item_t keyItem;
   store::IndexKey* key = NULL;
 
   GeneralIndex* index = static_cast<GeneralIndex*>(idx.getp());
 
   sourceIter->open();
-
-  index->startInsertSession();
 
   try
   {
@@ -603,22 +602,67 @@ void SimpleStore::populateGeneralIndex(
                             index->getName()->getStringValue(), "");
         }
 
-        while ((more = sourceIter->next(item)))
+        // Compute the keys of the current domain node. We must check whether
+        // the domain node has more than one key, before we do any insertions
+        // in the index.
+
+        // Compute 1st key, or next domain node
+        more = sourceIter->next(firstKeyItem);
+
+        if (!more || firstKeyItem->isNode())
         {
-          if (item->isNode())
+          // Current node has no keys, so we skip it
+          domainNode.transfer(firstKeyItem);
+          continue;
+        }
+
+        // Prepare to insert the 1st key. Note: we have to copy domainNode 
+        // rchandle because index->insert() will transfer the given node.
+        if (key == NULL)
+          key = new store::IndexKey(numColumns);
+            
+        store::Item_t node = domainNode;
+        (*key)[0].transfer(firstKeyItem);
+
+        // Compute 2nd key, or next domain node
+        more = sourceIter->next(keyItem);
+
+        if (!more || keyItem->isNode())
+        {
+          // Current domain node has exactly 1 key. So insert it in the
+          // index and continue with next domain node, if any.
+          index->insert(key, node, false);
+            
+          domainNode.transfer(keyItem);
+          continue;
+        }
+
+        // Current domain node has at least 2 keys. So insert them in the index.
+        index->insert(key, node, true);
+
+        if (key == NULL)
+          key = new store::IndexKey(numColumns);
+            
+        node = domainNode;
+        (*key)[0].transfer(keyItem);
+
+        index->insert(key, node, true);
+
+        // Compute next keys or next domain node.
+        while ((more = sourceIter->next(keyItem)))
+        {
+          if (keyItem->isNode())
           {
-            domainNode.transfer(item);
+            domainNode.transfer(keyItem);
             break;
           }
-
+            
           if (key == NULL)
             key = new store::IndexKey(numColumns);
-
-          (*key)[0].transfer(item);
-
-          // have to copy because index->insert() will transfer the given node
-          store::Item_t node = domainNode;
-
+              
+          (*key)[0].transfer(keyItem);
+          node = domainNode;
+          
           index->insert(key, node);
         }
       }
@@ -630,7 +674,6 @@ void SimpleStore::populateGeneralIndex(
       delete key;
 
     sourceIter->close();
-    index->stopInsertSession();
 
     throw;
   }
@@ -639,7 +682,6 @@ void SimpleStore::populateGeneralIndex(
     delete key;
 
   sourceIter->close();
-  index->stopInsertSession();
 }
 
 

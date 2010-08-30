@@ -39,7 +39,7 @@ typedef rchandle<IndexEntryCreator> IndexEntryCreator_t;
 
 
 /***************************************************************************//**
-  Specification for creating a value index.
+  Specification for creating a value or general index.
 
   theNumKeyColumns: The number of columns in each key.
   theKeyTypes     : The data types of the key columns. Each type must be a 
@@ -136,30 +136,181 @@ public:
 typedef std::vector<std::pair<store::Item_t, store::IndexKey*> > IndexDelta;
 
 
+/***************************************************************************//**
+
+  Class IndexCondition represents a search condition on the keys of an index.
+  An instance of IndexCondition is given as a parameter to the init() method 
+  of an IndexProbeIterator (see iterator.h), which can then iterate over the
+  items in the value of each index key that satisfies the condition.
+
+  There are 4 kinds of index conditions: 
+
+  POINT_VALUE :
+  -------------
+
+  It represents a condition that is satisfied by at most one index key tuple,
+  namely the index key tuple K (if it exists) that is equal, according to the
+  rules of value equality, to a user specified search key tuple. If any of
+  the domain items associated with K is also associated with another key tuples,
+  an error os raised.
+
+  POINT_GENERAL:
+  --------------
+
+  It represents a condition that is satisfied by all index keys that are equal,
+  according to the rules of general equality, to a user specified search key.
+  This condition is applicable to general indexes only.
+
+
+  BOX_VALUE :
+  -----------
+
+  It represents a condition that is satisfied by the index keys inside a
+  user-specified "box". 
+
+  Let M be the number of key columns. Then, an M-dimensional box is defined as
+  a conjuction of M range conditions on columns 0 to M-1. Each range condition
+  specifies a range of acceptable values for some key column. Specifically, a
+  range is defined as the set of all values X such that 
+
+  lower_bound <? X <? upper_bound, where <? is either the lt or the le operator.
+
+  The lower bound may be -INFINITY and the upper bound may be +INFINTY. 
+
+  BOX_GENERAL :
+  -------------
+
+********************************************************************************/
+class IndexCondition : public SimpleRCObject 
+{
+public:
+  typedef enum 
+  {
+    POINT_VALUE,
+    POINT_GENERAL,
+    BOX_VALUE,
+    BOX_GENERAL
+  } Kind;
+
+public:
+  virtual ~IndexCondition() {}
+
+  /**
+   * Clear the internal data of this condition object, so that it can be
+   * rebuilt and reused.
+   */
+  virtual void clear() = 0;
+
+  /**
+   *  Return the kind of the condition. 
+   */
+  virtual Kind getKind() const = 0;
+
+  /**
+   *  Return the kind of the condition as a string.
+   */
+  virtual std::string getKindString() const = 0;
+
+  /**
+   * This method applies to POINT_VALUE and POINT_GENERAL conditions only.
+   * The key associated with such conditions is built one item at a time using
+   * this method.
+   */
+  virtual void pushItem(Item_t& item) = 0;
+
+  /**
+   * The box associated with this condition is built one range at a time using
+   * the pushRange() method.
+   *
+   * @param lower The lower bound of the range. May be NULL, which indicates
+   *        either the empty sequence or -INFINITY. The haveLower parameter is
+   *        used to distinguish between these two cases.
+   * @param upper The upper bound of the range. May be NULL, which indicates
+   *        either the empty sequence or +INFINITY. The haveUpper parameter is
+   *        used to distinguish between these two cases.
+   * @param haveLower False if the lower bound is -INFINITY. True otherwise.
+   * @param haveUpper False if the upper bound is +INFINITY. True otherwise.
+   * @param lowerIncl True if the lower bound is included in the range. False
+   *        otherwise.
+   * @param upperIncl True if the upper bound is included in the range. False
+   *        otherwise.
+   */
+  virtual void pushRange(
+        Item_t& lower,
+        Item_t& upper,
+        bool haveLower,
+        bool haveUpper,
+        bool lowerIncl,
+        bool upperIncl) = 0;
+
+  /**
+   *  Check if a given index key satisfies this condition.
+   *
+   *  @param key The index key to test the condition on.
+   *  @return True is key satisfies the condition; false otherwise.
+   */
+  virtual bool test(const IndexKey& key) const = 0;
+
+  /**
+   *  Serialize this condition.
+   */
+  virtual std::string toString() const = 0;
+};
+
+
 /**************************************************************************//**
 
   Abstract index class. It represents both "value" and "general" indexes.
 
-  From the store's point of view, a "value index" is a container that implements
-  an N:1 mapping (i.e., a function) from item tuples to item bags. (In practice,
-  the mapping is 1:1, but the store does not enforce this). 
+  Value Indexes:
+  --------------
 
-  The tuples that appear in an index are referred to as "key tuples", and they
-  satisfy the following constraints:
+  From the store's point of view, a "value index" is a container that "stores"
+  a relation between tuples of atomic items (called key tuples) and items
+  (called domain items). The relationship is a function on the domain items,
+  i.e., for each domain item there is exactly one key tuple. In general, the
+  function is N:1, that is, several domain items may have the same key tuple.
+
+  The key tuples must satisfy the following constraints:
 
   1. All key tuples in a value index have the same fixed number of items, say M.
      Given this constraint, we can define the i-th "key column" of a value index
      as the set of items that appear in the i-th position of each key tuple. If
      an index has N tuples, then there are M key columns, each containing N items. 
-  2. All items in a key tuple are atomic items.
-  3. The items in each key column must be comparable with each other using the
+
+  2. The items in each key column must be comparable with each other using the
      Item::equals() method and/or the Item::compare() method. This implies that
      all items in a key column must belong to the same branch of the XMLSchema
-     type hierarchy.
+     type hierarchy. Furthermore, no key item may have type xs:untypedAtomic or
+     xs:anyAtomicType.
 
-  The bag of items associated with each key tuple is referred to as an "index 
-  value". The number of items in each index value can shrink or grow over time
-  independently from other index values. 
+  General Indexes:
+  ----------------
+
+  From the store's point of view, a "general index" is a container that "stores"
+  a relation between tuples of atomic items (called key tuples) and items
+  (called domain items). The relationship is N:M, that is, each domain item
+  may have more than one associated key tuples and several domain items may
+  be associated with the same key tuple.
+  
+  Let D be a domain item and K an associated key tuple. In the case of value
+  indexes, if K contains a key item whose type is xs:untypedAtomic, an error
+  is raised. In contrast, a general index casts the xs:untyped key item to
+  every other primitive xml-schema type and for each such successful cast,
+  creates a new key tuple by replacing the xs:untypedAtomic item with the
+  result of the cast. D is then associated with each of these new tuples. The
+  process is repeated until there are no xs:untypedAtomic key items in any
+  of the key tuples. Finally, the associations between D and the transformed
+  key tuples are stored in the index container.
+
+  After the above transformations, the key tuples must satisfy the same
+  constraints as the key tuples of value indexes.
+
+
+  It is expected that for both value and general indexes, the index container
+  is organized in a way that makes it efficient to find all the domain items
+  whose associated key tuple(s) satisfy a given search condition (see class
+  IndexCondition below).
 
 *******************************************************************************/
 class Index : public RCObject
@@ -198,149 +349,11 @@ public:
   virtual const XQPCollator* getCollator(ulong i) const = 0;
 
   /**
-   * Create an index condition for a exact-key probe (see class 
-   * IndexExactKeyCondition below)
+   * Create an index condition (see class IndexCondition below)
    */
-  virtual IndexPointCondition_t createPointCondition() = 0;
-
-  /**
-   * Create an index condition for a box probe (see class 
-   * IndexBoxCondition below)
-   */
-  virtual IndexBoxCondition_t createBoxCondition() = 0;
+  virtual IndexCondition_t createCondition(IndexCondition::Kind k) = 0;
 };
 
-
-/***************************************************************************//**
-
-  Class IndexCondition represents a condition on the keys of an index. An
-  instance of IndexCondition is given as a parameter to the init() method of
-  an IndexProbeIterator (see iterator.h), which can then iterate over the
-  items in the value of each index key that satisfies the condition.
-
-********************************************************************************/
-class IndexCondition : public SimpleRCObject 
-{
-public:
-  enum IndexConditionKind
-  {
-    EXACT_KEY,
-    BOX_SCAN
-  };
-
-public:
-  virtual ~IndexCondition() {}
-
-  /**
-   * Clear the internal data of this condition object, so that it can be
-   * rebuilt and reused.
-   */
-  virtual void clear() = 0;
-
-  /**
-   *  Return the kind of the condition. For now, there are only 2 kinds,
-   *  EXACT_KEY and BOX_SCAN, which are repesented by subclasses
-   *  IndexExactKeyCondition and IndexBoxCondition, respectively.
-   */
-  virtual IndexConditionKind getKind() const = 0;
-
-  /**
-   *  Return the kind of the condition as a string.
-   */
-  virtual std::string getKindString() const = 0;
-
-  /**
-   *  Check if a given index key satisfies this condition.
-   *
-   *  @param key The index key to test the condition on.
-   *  @return True is key satisfies the condition; false otherwise.
-   */
-  virtual bool test(const IndexKey& key) const = 0;
-
-  /**
-   *  Serialize this condition.
-   */
-  virtual std::string toString() const = 0;
-};
-
-
-/***************************************************************************//**
-
-  Class IndePointCondition represents a condition that is satisfied by at most
-  one index key, namely the index key (if it exists) that is equal to a user
-  specified key.
-
-  Note: IndexPointCondition is actually a special case of IndexBoxCondition,
-  but it is provided for convenience and because it saves some of the overhead
-  of IndexBoxCondition.
-
-********************************************************************************/
-class IndexPointCondition : public IndexCondition
-{
-public:
-  virtual ~IndexPointCondition() {}
-
-  IndexConditionKind getKind() const { return EXACT_KEY; }
-
-  std::string getKindString() const { return "EXACT_KEY"; }
-
-  /**
-   * The key associated with this condition is built one item at a time using
-   * the pushItem() method.
-   */
-  virtual void pushItem(Item_t& item) = 0;
-};
-
-
-/***************************************************************************//**
-
-  Class IndexBoxCondition represents a condition that is satisfied by the index
-  keys inside a user-specified "box". 
-
-  Let M be the number of key columns. Then, an M-dimensional box is defined as
-  a conjuction of M range conditions on columns 0 to M-1. Each range condition
-  specifies a range of acceptable values for some key column. Specifically, a
-  range is defined as the set of all values X such that 
-
-  lower_bound <? X <? upper_bound, where <? is either < or <=.
-
-  The lower bound may be -INFINITY and the upper bound may be +INFINTY. 
-
-********************************************************************************/
-class IndexBoxCondition : public IndexCondition
-{
-public:
-  virtual ~IndexBoxCondition() {}
-
-  IndexConditionKind getKind() const { return BOX_SCAN; }
-
-  std::string getKindString() const { return "BOX_SCAN"; }
-
-  /**
-   * The box associated with this condition is built one range at a time using
-   * the pushRange() method.
-   *
-   * @param lower The lower bound of the range. May be NULL, which indicates
-   *        either the empty sequence or -INFINITY. The haveLower parameter is
-   *        used to distinguish between these two cases.
-   * @param upper The upper bound of the range. May be NULL, which indicates
-   *        either the empty sequence or +INFINITY. The haveUpper parameter is
-   *        used to distinguish between these two cases.
-   * @param haveLower False if the lower bound is -INFINITY. True otherwise.
-   * @param haveUpper False if the upper bound is +INFINITY. True otherwise.
-   * @param lowerIncl True if the lower bound is included in the range. False
-   *        otherwise.
-   * @param upperIncl True if the upper bound is included in the range. False
-   *        otherwise.
-   */
-  virtual void pushRange(
-        Item_t& lower,
-        Item_t& upper,
-        bool haveLower,
-        bool haveUpper,
-        bool lowerIncl,
-        bool upperIncl) = 0;
-};
 
 
 /*******************************************************************************

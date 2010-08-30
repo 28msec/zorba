@@ -83,12 +83,12 @@ Iterator tree for main query:
                 <flwor::FLWORIterator>
                   <ForVariable name="t">
                     <NodeSortIterator distinct="true" ascending="true">
-                      <IndexGeneralPointProbeIterator>
+                      <ProbeIndexPointGeneralIterator>
                         <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                         <UnhoistIterator>
                           <LetVarIterator varname="$$opt_temp_1"/>
                         </UnhoistIterator>
-                      </IndexGeneralPointProbeIterator>
+                      </ProbeIndexPointGeneralIterator>
                     </NodeSortIterator>
                   </ForVariable>
                   <ReturnClause>

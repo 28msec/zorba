@@ -37,10 +37,24 @@ public:
 /******************************************************************************
 
 *******************************************************************************/
-class ValueHashIndex : public IndexImpl
+class ValueIndex : public IndexImpl
 {
   friend class SimpleStore;
-  friend class HashProbeIterator;
+
+protected:
+  ValueIndex(
+        const store::Item_t& qname,
+        const store::IndexSpecification& spec);
+};
+
+
+/******************************************************************************
+
+*******************************************************************************/
+class ValueHashIndex : public ValueIndex
+{
+  friend class SimpleStore;
+  friend class ProbeHashValueIndexIterator;
 
   typedef HashMap<const store::IndexKey*,
                   ValueIndexValue*,
@@ -50,38 +64,37 @@ private:
   IndexCompareFunction   theCompFunction;
   IndexMap               theMap;
 
-public:
-  void clear();
-
-  bool insert(store::IndexKey*& key, store::Item_t& item);
-
-  bool remove(const store::IndexKey* key, store::Item_t& item);
-
 protected:
   ValueHashIndex(
         const store::Item_t& qname,
         const store::IndexSpecification& spec);
 
   ~ValueHashIndex();
+
+  void clear();
+
+  bool insert(store::IndexKey*& key, store::Item_t& item, bool multikey = false);
+
+  bool remove(const store::IndexKey* key, store::Item_t& item);
 };
 
 
 /******************************************************************************
-
+  Iterator to probe a hash-based value index
 ********************************************************************************/
-class HashProbeIterator : public store::IndexProbeIterator
+class ProbeHashValueIndexIterator : public store::IndexProbeIterator
 {
 protected:
   rchandle<ValueHashIndex>               theIndex;
 
-  rchandle<IndexPointConditionImpl>      theCondition;
+  rchandle<IndexPointValueCondition>     theCondition;
 
   ValueIndexValue                      * theResultSet;
   ValueIndexValue::const_iterator        theIte;
   ValueIndexValue::const_iterator        theEnd;
 
 public:
-  HashProbeIterator(const store::Index_t& index) : theResultSet(NULL)
+  ProbeHashValueIndexIterator(const store::Index_t& index) : theResultSet(NULL)
   {
     theIndex = static_cast<ValueHashIndex*>(index.getp());
   }
@@ -101,10 +114,10 @@ public:
 /******************************************************************************
 
 ********************************************************************************/
-class STLMapIndex : public IndexImpl
+class STLMapIndex : public ValueIndex
 {
   friend class SimpleStore;
-  friend class STLMapProbeIterator;
+  friend class ProbeTreeValueIndexIterator;
 
   typedef std::pair<const store::IndexKey*, ValueIndexValue*> STLMapPair;
 
@@ -120,7 +133,7 @@ private:
 public:
   void clear();
 
-  bool insert(store::IndexKey*& key, store::Item_t& item);
+  bool insert(store::IndexKey*& key, store::Item_t& item, bool multikey = false);
 
   bool remove(const store::IndexKey* key, store::Item_t& item);
 
@@ -134,15 +147,15 @@ protected:
 
 
 /*******************************************************************************
-
+  Iterator to probe a tree-based value index
 ********************************************************************************/
-class STLMapProbeIterator : public store::IndexProbeIterator
+class ProbeTreeValueIndexIterator : public store::IndexProbeIterator
 {
 protected:
   rchandle<STLMapIndex>                    theIndex;
 
-  rchandle<IndexPointConditionImpl>        thePointCond;
-  rchandle<IndexBoxConditionImpl>          theBoxCond;
+  rchandle<IndexPointValueCondition>       thePointCond;
+  rchandle<IndexBoxValueCondition>         theBoxCond;
 
   bool                                     theDoExtraFiltering;
 
@@ -155,7 +168,7 @@ protected:
   ValueIndexValue::const_iterator          theEnd;
 
 public:
-  STLMapProbeIterator(const store::Index_t& index) 
+  ProbeTreeValueIndexIterator(const store::Index_t& index) 
     :
     theDoExtraFiltering(true),
     theResultSet(NULL)

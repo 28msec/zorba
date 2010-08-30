@@ -113,24 +113,27 @@ public:
 
   bool isGeneral() const { return theSpec.theIsGeneral; }
 
-  store::IndexPointCondition_t createPointCondition();
+  store::IndexCondition_t createCondition(store::IndexCondition::Kind k);
 
-  store::IndexBoxCondition_t createBoxCondition();
+  virtual bool insert(
+        store::IndexKey*& key,
+        store::Item_t& item,
+        bool multikey = false) = 0;
 
-  virtual bool insert(store::IndexKey*& key, store::Item_t& item) = 0;
-
-  virtual bool remove(const store::IndexKey* key, store::Item_t& item) = 0;
+  virtual bool remove(
+        const store::IndexKey* key,
+        store::Item_t& item) = 0;
 };
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class IndexPointConditionImpl : public store::IndexPointCondition
+class IndexPointCondition : public store::IndexCondition
 {
-  friend class STLMapProbeIterator;
-  friend class HashProbeIterator;
-  friend class GeneralHashProbeIterator;
+  friend class ProbeTreeValueIndexIterator;
+  friend class ProbeHashValueIndexIterator;
+  friend class ProbeHashGeneralIndexIterator;
 
 protected:
   rchandle<IndexImpl>   theIndex;
@@ -138,7 +141,7 @@ protected:
   ulong                 theNumColumns;
 
 public:
-  IndexPointConditionImpl(IndexImpl* idx) 
+  IndexPointCondition(IndexImpl* idx) 
     :
     theIndex(idx),
     theNumColumns(idx->getNumColumns())
@@ -151,24 +154,68 @@ public:
 
   void pushItem(store::Item_t& item);
 
+  void pushRange(
+        store::Item_t& lower,
+        store::Item_t& upper,
+        bool haveLower,
+        bool haveUpper,
+        bool lowerIncl,
+        bool upperIncl);
+
   bool test(const store::IndexKey& key) const;
 
   std::string toString() const;
 };
 
 
-std::ostream& operator<<(std::ostream& os, const IndexPointConditionImpl& cond);
+std::ostream& operator<<(std::ostream& os, const IndexPointCondition& cond);
 
 
 /*******************************************************************************
 
 ********************************************************************************/
-class IndexBoxConditionImpl : public store::IndexBoxCondition
+class IndexPointValueCondition : public IndexPointCondition
+{
+  friend class ProbeTreeValueIndexIterator;
+  friend class ProbeHashValueIndexIterator;
+  friend class ProbeHashGeneralIndexIterator;
+
+public:
+  IndexPointValueCondition(IndexImpl* idx) : IndexPointCondition(idx) { }
+
+  store::IndexCondition::Kind getKind() const { return POINT_VALUE; }
+
+  std::string getKindString() const { return "POINT_VALUE"; }
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class IndexPointGeneralCondition : public IndexPointCondition
+{
+  friend class ProbeTreeValueIndexIterator;
+  friend class ProbeHashValueIndexIterator;
+  friend class ProbeHashGeneralIndexIterator;
+
+public:
+  IndexPointGeneralCondition(IndexImpl* idx) : IndexPointCondition(idx) { }
+
+  store::IndexCondition::Kind getKind() const { return POINT_GENERAL; }
+
+  std::string getKindString() const { return "POINT_GENERAL"; }
+};
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class IndexBoxCondition : public store::IndexCondition
 {
   friend class STLMapIndex;
-  friend class STLMapProbeIterator;
+  friend class ProbeTreeValueIndexIterator;
 
-  friend std::ostream& operator<<(std::ostream& os, const IndexBoxConditionImpl& cond);
+  friend std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond);
 
 public:
   static store::Item_t  theNegInf;
@@ -189,17 +236,15 @@ protected:
   std::vector<RangeFlags>  theRangeFlags;
 
 public:
-  IndexBoxConditionImpl(IndexImpl* idx) : theIndex(idx) { }
+  IndexBoxCondition(IndexImpl* idx) : theIndex(idx) { }
 
   void clear();
-
-  IndexConditionKind getKind() const { return BOX_SCAN; }
-
-  std::string getKindString() const { return "BOX_SCAN"; }
 
   ulong numRanges() const { return theLowerBounds.size(); }
 
   bool test(const store::IndexKey& key) const;
+
+  void pushItem(store::Item_t& item);
 
   void pushRange(
         store::Item_t& lower,
@@ -213,7 +258,25 @@ public:
 };
 
 
-std::ostream& operator<<(std::ostream& os, const IndexBoxConditionImpl& cond); 
+std::ostream& operator<<(std::ostream& os, const IndexBoxCondition& cond);
+
+
+/*******************************************************************************
+
+********************************************************************************/
+class IndexBoxValueCondition : public IndexBoxCondition
+{
+  friend class STLMapIndex;
+  friend class ProbeTreeValueIndexIterator;
+
+public:
+  IndexBoxValueCondition(IndexImpl* idx) : IndexBoxCondition(idx) { }
+
+  store::IndexCondition::Kind getKind() const { return BOX_VALUE; }
+
+  std::string getKindString() const { return "BOX_VALUE"; }
+};
+ 
 
 
 

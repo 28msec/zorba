@@ -6,4 +6,4 @@
 
   xqddf:create-collection($news-data:employees);
 
-  xqddf:probe-index-point($news-data:CityEmp, "Paris");
+  xqddf:probe-index-point-value($news-data:CityEmp, "Paris");

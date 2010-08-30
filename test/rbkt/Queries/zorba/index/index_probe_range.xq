@@ -8,4 +8,5 @@
 
   xqddf:create-index($news-data:CityEmp);
 
-  xqddf:probe-index-range($news-data:CityEmp, 100, (), true(), false(), true(), false());
+  xqddf:probe-index-range-value($news-data:CityEmp,
+                                100, (), true(), false(), true(), false());

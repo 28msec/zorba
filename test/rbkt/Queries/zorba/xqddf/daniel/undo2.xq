@@ -20,7 +20,7 @@ block{
 xqddf:insert-nodes($xqddf-test:white-collection, <item><location>Earth3</location></item>);
 },
 block{
-xqddf:probe-index-point($xqddf-test:index1, "Earth3")[1]; 
+xqddf:probe-index-point-value($xqddf-test:index1, "Earth3")[1]; 
 },
 block{
 try{
@@ -35,5 +35,5 @@ block{
 </newline>
 },
 block{
-xqddf:probe-index-point($xqddf-test:index1, "Earth")[1]; 
+xqddf:probe-index-point-value($xqddf-test:index1, "Earth")[1]; 
 };

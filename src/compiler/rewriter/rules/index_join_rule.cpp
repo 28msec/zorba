@@ -594,7 +594,7 @@ static void rewriteJoin(
     probeExpr = 
     new fo_expr(sctx,
                 loc,
-                GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_INDEX_GENERAL_POINT_PROBE_N),
+                GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_PROBE_INDEX_POINT_GENERAL_N),
                 qnameExpr,
                 const_cast<expr*>(predInfo.theOuterOp));
 
@@ -609,7 +609,7 @@ static void rewriteJoin(
     probeExpr = 
     new fo_expr(sctx,
                 loc,
-                GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_INDEX_VALUE_POINT_PROBE_N),
+                GET_BUILTIN_FUNCTION(FN_ZORBA_DDL_PROBE_INDEX_POINT_VALUE_N),
                 qnameExpr,
                 const_cast<expr*>(predInfo.theOuterOp));
   }

@@ -14,4 +14,4 @@ return
 xqddf:refresh-index($xqddf-test:index2);
 (:xqddf:collection($xqddf-test:white-collection);:)
 
-xqddf:probe-index-point($xqddf-test:index2, 2)[1]; 
+xqddf:probe-index-point-value($xqddf-test:index2, 2)[1]; 

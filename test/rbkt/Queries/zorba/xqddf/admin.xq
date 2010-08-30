@@ -67,11 +67,12 @@ declare sequential function local:do()
   },
   block 
   {
-    xqddf:probe-index-point($news-data:CityEmp, "Paris")
+    xqddf:probe-index-point-value($news-data:CityEmp, "Paris")
   },
   block 
   {
-    xqddf:probe-index-range($news-data:ArtCountEmp, 100, (), true(), false(), true(), false())
+    xqddf:probe-index-range-value($news-data:ArtCountEmp,
+                                  100, (), true(), false(), true(), false())
   }
 };
 

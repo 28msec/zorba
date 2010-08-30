@@ -47,10 +47,10 @@ Iterator tree for main query:
                   <EnclosedIterator attr_cont="true">
                     <flwor::FLWORIterator>
                       <ForVariable name="a">
-                        <IndexValuePointProbeIterator>
+                        <ProbeIndexPointValueIterator>
                           <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                           <ForVarIterator varname="anzahl"/>
-                        </IndexValuePointProbeIterator>
+                        </ProbeIndexPointValueIterator>
                       </ForVariable>
                       <ReturnClause>
                         <ForVarIterator varname="anzahl"/>

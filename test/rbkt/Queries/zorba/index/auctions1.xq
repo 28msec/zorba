@@ -2,6 +2,8 @@
 import module namespace auctions = "http://www.w3.org/TestModules/auctions" at
                                    "auctions_module1.xqlib";
 
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+
 auctions:create-db();
 
 
@@ -44,5 +46,25 @@ return <person id = "{$x/@id}">{$x//watches}</person>,
 
 for $x in auctions:probe-point-watch(xs:QName("auctions:PersonWatches2"),
                                      ("open_auction6", "open_auction2"))
-return <person id = "{$x/@id}">{$x//watches}</person>
+return <person id = "{$x/@id}">{$x//watches}</person>,
+
+"
+
+",
+
+try
+{
+   xqddf:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction3")
+}
+catch *
+{
+  <exception>Got exception, as expected</exception>
+},
+
+"
+
+",
+
+xqddf:probe-index-point-value(xs:QName("auctions:PersonWatches2"), "open_auction7")
+
 );

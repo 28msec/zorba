@@ -63,15 +63,19 @@ store::IndexProbeIterator* SimpleIteratorFactory::createIndexProbeIterator(
 
   if (idx->isGeneral() && idx->isSorted())
     ZORBA_ASSERT(false);
+    //return new ProbeTreeGeneralIndexIterator(index);
 
+  // general, hash index
   else if (idx->isGeneral())
-    return new GeneralHashProbeIterator(index);
+    return new ProbeHashGeneralIndexIterator(index);
 
+  // value, tree index
   else if (idx->isSorted())
-    return new STLMapProbeIterator(index);
+    return new ProbeTreeValueIndexIterator(index);
 
+  // value, hash
   else
-    return new HashProbeIterator(index);
+    return new ProbeHashValueIndexIterator(index);
 }
 
 

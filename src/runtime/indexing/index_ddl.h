@@ -332,12 +332,12 @@ public:
 
 
 /******************************************************************************
-   probe-index-point($indexName as xs:QName,
-                     $key1      as anyAtomic?,
-                     ...,
-                     $keyN      as anyAtomic?) as node()*
- *********************************************************************************/
-class IndexValuePointProbeIteratorState : public PlanIteratorState
+   probe-index-point-value($indexName as xs:QName,
+                           $key1      as anyAtomic?,
+                           ...,
+                           $keyN      as anyAtomic?) as node()*
+********************************************************************************/
+class ProbeIndexPointValueIteratorState : public PlanIteratorState
 {
 public:
   const store::Item            * theQname; 
@@ -345,9 +345,9 @@ public:
   store::Index                 * theIndex; 
   store::IndexProbeIterator_t    theIterator;
 
-  IndexValuePointProbeIteratorState();
+  ProbeIndexPointValueIteratorState();
 
-  ~IndexValuePointProbeIteratorState();
+  ~ProbeIndexPointValueIteratorState();
 
   void init(PlanState&);
 
@@ -355,33 +355,34 @@ public:
 };
 
 
-class IndexValuePointProbeIterator : 
-public NaryBaseIterator<IndexValuePointProbeIterator, 
-                        IndexValuePointProbeIteratorState>
+class ProbeIndexPointValueIterator 
+  :
+  public NaryBaseIterator<ProbeIndexPointValueIterator,
+                          ProbeIndexPointValueIteratorState>
 {
 protected:
   bool theCheckKeyType;
 
 public:
-  SERIALIZABLE_CLASS(IndexValuePointProbeIterator);
+  SERIALIZABLE_CLASS(ProbeIndexPointValueIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexValuePointProbeIterator,
-  NaryBaseIterator<IndexValuePointProbeIterator, IndexValuePointProbeIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ProbeIndexPointValueIterator,
+  NaryBaseIterator<ProbeIndexPointValueIterator, ProbeIndexPointValueIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar)
   {
     serialize_baseclass(ar,
-    (NaryBaseIterator<IndexValuePointProbeIterator,
-                      IndexValuePointProbeIteratorState>*)this);
+    (NaryBaseIterator<ProbeIndexPointValueIterator,
+                      ProbeIndexPointValueIteratorState>*)this);
     ar & theCheckKeyType;
   }
 
-  IndexValuePointProbeIterator(
+  ProbeIndexPointValueIterator(
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children);
 
-  ~IndexValuePointProbeIterator();
+  ~ProbeIndexPointValueIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -390,44 +391,44 @@ public:
 
 
 /******************************************************************************
-   general-probe-index-point($indexName as xs:QName,
+   probe-index-point-general($indexName as xs:QName,
                              $key1      as anyAtomic*,
                               ...,
                              $keyN      as anyAtomic*) as node()*
 ********************************************************************************/
-class IndexGeneralPointProbeIteratorState : public IndexValuePointProbeIteratorState
+class ProbeIndexPointGeneralIteratorState : public ProbeIndexPointValueIteratorState
 {
 public:
-  store::IndexPointCondition_t theCondition;
+  store::IndexCondition_t theCondition;
 
 public:
-  IndexGeneralPointProbeIteratorState();
+  ProbeIndexPointGeneralIteratorState();
 
-  ~IndexGeneralPointProbeIteratorState();
+  ~ProbeIndexPointGeneralIteratorState();
 };
 
 
-class IndexGeneralPointProbeIterator : 
-public NaryBaseIterator<IndexGeneralPointProbeIterator, 
-                        IndexGeneralPointProbeIteratorState>
+class ProbeIndexPointGeneralIterator : 
+public NaryBaseIterator<ProbeIndexPointGeneralIterator, 
+                        ProbeIndexPointGeneralIteratorState>
 {
 protected:
   bool theCheckKeyType;
 
 public:
-  SERIALIZABLE_CLASS(IndexGeneralPointProbeIterator);
+  SERIALIZABLE_CLASS(ProbeIndexPointGeneralIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexGeneralPointProbeIterator,
-  NaryBaseIterator<IndexGeneralPointProbeIterator, IndexGeneralPointProbeIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ProbeIndexPointGeneralIterator,
+  NaryBaseIterator<ProbeIndexPointGeneralIterator, ProbeIndexPointGeneralIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
-  IndexGeneralPointProbeIterator(
+  ProbeIndexPointGeneralIterator(
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children);
 
-  ~IndexGeneralPointProbeIterator();
+  ~ProbeIndexPointGeneralIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -436,26 +437,26 @@ public:
 
 
 /*******************************************************************************
-   probe-index-range($indexName               as xs:QName,
-                     $range1LowerBound         as anyAtomic?,
-                     $range1UpperBound         as anyAtomic?,
-                     $range1HaveLowerBound     as boolean?,
-                     $range1HaveupperBound     as boolean?,
-                     $range1LowerBoundIncluded as boolean?,
-                     $range1upperBoundIncluded as boolean?,
-                     ....,
-                     $rangeNLowerBound         as anyAtomic?,
-                     $rangeNUpperBound         as anyAtomic?,
-                     $rangeNHaveLowerBound     as boolean?,
-                     $rangeNHaveupperBound     as boolean?,
-                     $rangeNLowerBoundIncluded as boolean?,
-                     $rangeNupperBoundIncluded as boolean?) as node()*
+   probe-index-range-value($indexName               as xs:QName,
+                           $range1LowerBound         as anyAtomic?,
+                           $range1UpperBound         as anyAtomic?,
+                           $range1HaveLowerBound     as boolean?,
+                           $range1HaveupperBound     as boolean?,
+                           $range1LowerBoundIncluded as boolean?,
+                           $range1upperBoundIncluded as boolean?,
+                           ....,
+                           $rangeNLowerBound         as anyAtomic?,
+                           $rangeNUpperBound         as anyAtomic?,
+                           $rangeNHaveLowerBound     as boolean?,
+                           $rangeNHaveupperBound     as boolean?,
+                           $rangeNLowerBoundIncluded as boolean?,
+                           $rangeNupperBoundIncluded as boolean?) as node()*
 
   theQname    : the name of the index
   theIndex    : the index to probe
   theIterator : the index probe iterator
 ********************************************************************************/
-class IndexRangeProbeIteratorState : public PlanIteratorState
+class ProbeIndexRangeValueIteratorState : public PlanIteratorState
 {
 public:
   const store::Item           * theQname;
@@ -463,9 +464,9 @@ public:
   store::IndexProbeIterator_t   theIterator;
 
 public:
-  IndexRangeProbeIteratorState();
+  ProbeIndexRangeValueIteratorState();
 
-  ~IndexRangeProbeIteratorState();
+  ~ProbeIndexRangeValueIteratorState();
 
   void init(PlanState&);
 
@@ -473,26 +474,28 @@ public:
 };
 
 
-class IndexRangeProbeIterator : public NaryBaseIterator<IndexRangeProbeIterator,
-                                                        IndexRangeProbeIteratorState>
+class ProbeIndexRangeValueIterator 
+  :
+  public NaryBaseIterator<ProbeIndexRangeValueIterator,
+                          ProbeIndexRangeValueIteratorState>
 {
 protected:
   bool theCheckKeyType;
 
 public:
-  SERIALIZABLE_CLASS(IndexRangeProbeIterator);
+  SERIALIZABLE_CLASS(ProbeIndexRangeValueIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexRangeProbeIterator,
-  NaryBaseIterator<IndexRangeProbeIterator, IndexRangeProbeIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ProbeIndexRangeValueIterator,
+  NaryBaseIterator<ProbeIndexRangeValueIterator, ProbeIndexRangeValueIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
-  IndexRangeProbeIterator(
+  ProbeIndexRangeValueIterator(
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children);
 
-  ~IndexRangeProbeIterator();
+  ~ProbeIndexRangeValueIterator();
 
   void accept(PlanIterVisitor& v) const;
 
@@ -501,7 +504,7 @@ public:
 
 
 /*******************************************************************************
-   general-probe-index-range($indexName                as xs:QName,
+   probe-index-range-general($indexName                as xs:QName,
                              $range1LowerBound         as anyAtomic?,
                              $range1UpperBound         as anyAtomic?,
                              $range1HaveLowerBound     as boolean,
@@ -510,27 +513,28 @@ public:
                              $range1upperBoundIncluded as boolean,
                             ) as node()*
 ********************************************************************************/
-class IndexGeneralRangeProbeIterator : 
-public NaryBaseIterator<IndexGeneralRangeProbeIterator, 
-                        IndexRangeProbeIteratorState>
+class ProbeIndexRangeGeneralIterator 
+  : 
+  public NaryBaseIterator<ProbeIndexRangeGeneralIterator, 
+                          ProbeIndexRangeValueIteratorState>
 {
 protected:
   bool theCheckKeyType;
 
 public:
-  SERIALIZABLE_CLASS(IndexGeneralRangeProbeIterator);
+  SERIALIZABLE_CLASS(ProbeIndexRangeGeneralIterator);
 
-  SERIALIZABLE_CLASS_CONSTRUCTOR2T(IndexGeneralRangeProbeIterator,
-  NaryBaseIterator<IndexGeneralRangeProbeIterator, IndexRangeProbeIteratorState>);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(ProbeIndexRangeGeneralIterator,
+  NaryBaseIterator<ProbeIndexRangeGeneralIterator, ProbeIndexRangeValueIteratorState>);
 
   void serialize(::zorba::serialization::Archiver& ar);
 
-  IndexGeneralRangeProbeIterator(
+  ProbeIndexRangeGeneralIterator(
         static_context* sctx,
         const QueryLoc& loc,
         std::vector<PlanIter_t>& children);
 
-  ~IndexGeneralRangeProbeIterator();
+  ~ProbeIndexRangeGeneralIterator();
 
   void accept(PlanIterVisitor& v) const;
 

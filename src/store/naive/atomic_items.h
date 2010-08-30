@@ -1006,7 +1006,7 @@ public:
 class DecimalItem : public AtomicItem
 {
   friend class BasicItemFactory;
-  friend class IndexBoxConditionImpl;
+  friend class IndexBoxCondition;
   friend class AtomicItem;
 
 protected:

@@ -78,47 +78,47 @@ PlanIter_t op_general_index_entry_builder::codegen(
 }
 
 
-PlanIter_t fn_zorba_ddl_index_value_point_probe::codegen(
+PlanIter_t fn_zorba_ddl_probe_index_point_value::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IndexValuePointProbeIterator(sctx, loc, argv);
+  return new ProbeIndexPointValueIterator(sctx, loc, argv);
 }
 
 
-PlanIter_t fn_zorba_ddl_index_general_point_probe::codegen(
+PlanIter_t fn_zorba_ddl_probe_index_point_general::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IndexGeneralPointProbeIterator(sctx, loc, argv);
+  return new ProbeIndexPointGeneralIterator(sctx, loc, argv);
 }
 
 
-PlanIter_t fn_zorba_ddl_index_value_range_probe::codegen(
+PlanIter_t fn_zorba_ddl_probe_index_range_value::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IndexRangeProbeIterator(sctx, loc, argv);
+  return new ProbeIndexRangeValueIterator(sctx, loc, argv);
 }
 
 
-PlanIter_t fn_zorba_ddl_index_general_range_probe::codegen(
+PlanIter_t fn_zorba_ddl_probe_index_range_general::codegen(
   CompilerCB*,
   static_context* sctx,
   const QueryLoc& loc,
   std::vector<PlanIter_t>& argv,
   AnnotationHolder& ann) const
 {
-  return new IndexGeneralRangeProbeIterator(sctx, loc, argv);
+  return new ProbeIndexRangeGeneralIterator(sctx, loc, argv);
 }
 
 
@@ -166,35 +166,35 @@ void populate_context_index_ddl(static_context* sctx)
       GENV_TYPESYSTEM.ITEM_TYPE_STAR));
 
 
-  DECL(sctx, fn_zorba_ddl_index_value_point_probe,
+  DECL(sctx, fn_zorba_ddl_probe_index_point_value,
       (createQName("http://www.zorba-xquery.com/modules/xqddf",
                    "fn-zorba-ddl",
-                   "probe-index-point"),
+                   "probe-index-point-value"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       true,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
-  DECL(sctx, fn_zorba_ddl_index_general_point_probe,
+  DECL(sctx, fn_zorba_ddl_probe_index_point_general,
       (createQName("http://www.zorba-xquery.com/modules/xqddf",
                    "fn-zorba-ddl",
-                   "general-probe-index-point"),
+                   "probe-index-point-general"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
 
-  DECL(sctx, fn_zorba_ddl_index_value_range_probe,
+  DECL(sctx, fn_zorba_ddl_probe_index_range_value,
       (createQName("http://www.zorba-xquery.com/modules/xqddf",
                    "fn-zorba-ddl",
-                   "probe-index-range"),
+                   "probe-index-range-value"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       true,
       GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR));
 
-  DECL(sctx, fn_zorba_ddl_index_general_range_probe,
+  DECL(sctx, fn_zorba_ddl_probe_index_range_general,
       (createQName("http://www.zorba-xquery.com/modules/xqddf",
                    "fn-zorba-ddl",
-                   "general-probe-index-range"),
+                   "probe-index-range-general"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,
       GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_STAR,

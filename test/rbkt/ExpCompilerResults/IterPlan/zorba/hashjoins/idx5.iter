@@ -46,7 +46,7 @@ Iterator tree for main query:
       <LetVariable name="test_old" materialize="true">
         <flwor::FLWORIterator>
           <ForVariable name="$$dot">
-            <IndexValuePointProbeIterator>
+            <ProbeIndexPointValueIterator>
               <SingletonIterator value="xs:QName(,,tempIndex0)"/>
               <CastIterator type="xs:string">
                 <PromoteIterator type="xs:anyAtomicType">
@@ -59,7 +59,7 @@ Iterator tree for main query:
                   </FnDataIterator>
                 </PromoteIterator>
               </CastIterator>
-            </IndexValuePointProbeIterator>
+            </ProbeIndexPointValueIterator>
           </ForVariable>
           <ReturnClause>
             <ForVarIterator varname="$$dot"/>
