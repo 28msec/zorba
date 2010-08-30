@@ -267,7 +267,9 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic1 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic3 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic4 2962715)
 
-EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 3054086)
+IF (ZORBA_WITH_REST)
+  EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 3054086)
+ENDIF (ZORBA_WITH_REST)
 
 # --------------------------------------------------------------------------
 # vim:set et sw=2 ts=2:
