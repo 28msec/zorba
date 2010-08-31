@@ -23,7 +23,10 @@
 #include <zorba/store_manager.h>
 
 #ifdef WIN32
-#include <direct.h>
+#  include <direct.h>
+#else
+#  include <unistd.h>
+#  include <stdlib.h>
 #endif
 
 using namespace zorba;
@@ -66,16 +69,16 @@ debugger_serialization_example_2(Zorba* aZorba)
     std::ostringstream lQueryStream;
 
 #ifdef UNIX
-    char lCWD[1024];
-    if (getcwd(lCWD, 1024) == NULL) {
-      return false;
-    }
+    char* lCWD = getcwd(0, 0);
+    std::cout << "blub " << lCWD << std::endl;
 #else
     char* lCWD = _getcwd(0, 256);
+#endif
     std::string lStr(lCWD);
     free(lCWD);
-    size_t lStart, lEnd = 0;
 
+#ifdef WIN32
+    size_t lStart, lEnd = 0;
     while ((lStart = lStr.find("\\", lEnd)) != std::string::npos) {
       lEnd = lStart + 1;
       lStr.replace(lStart, 1, "/");
@@ -84,7 +87,7 @@ debugger_serialization_example_2(Zorba* aZorba)
 
     lQueryStream
       << "import module namespace g = 'http://www.28msec.com/template/guestbook/guestbook'"
-      << " at 'file:///" << lCWD << "/guestbook.xq"
+      << " at 'file:///" << lStr << "/guestbook.xq"
       << "';" << std::endl
       << "g:add()";
 
