@@ -144,6 +144,7 @@ DrawText(const void* aBlob, long* aLength, std::string aText, double aX, double 
   PushDrawingWand(lDrawingWand);
   PixelSetColor(lPixelWand, aColor.c_str());
   DrawSetStrokeColor(lDrawingWand, lPixelWand);
+  DrawSetFillColor(lDrawingWand, lPixelWand);
   DrawSetFont(lDrawingWand, aFont.c_str());
   DrawSetFontSize(lDrawingWand, aFontSize);
 
