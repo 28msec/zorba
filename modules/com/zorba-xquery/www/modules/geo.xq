@@ -87,6 +87,7 @@
  :  </dd>
  : </dl><br/><br/>
  : Note: When using gml:posList, it is possible to replace this element with a list of gml:pos.<br/>
+ : Note: XLink referencing is not supported.<br/>
  : <br/>
  : For operations between two geometries, the DE-9IM matrix is used. The DE-9IM matrix is defined like this:
  : <table>
