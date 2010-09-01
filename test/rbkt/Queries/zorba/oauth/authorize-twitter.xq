@@ -1,5 +1,5 @@
-import module namespace oauth = "http://www.zorba-xquery.com/modules/security/oauth/client";
-import module namespace desktop = "http://www.zorba-xquery.com/modules/security/oauth/desktop";
+import module namespace oauth = "http://www.zorba-xquery.com/modules/oauth/client";
+import module namespace desktop = "http://www.zorba-xquery.com/modules/oauth/desktop";
 
 let $method := "GET"
 let $consumer-key := "AJNRLGd7aT0SvQMLjudog"

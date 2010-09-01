@@ -9,7 +9,7 @@
  : @version 1.0
  :)
  
-module namespace oauth = 'http://www.zorba-xquery.com/modules/security/oauth/client';
+module namespace oauth = 'http://www.zorba-xquery.com/modules/oauth/client';
 import module namespace ra = "http://www.zorba-xquery.com/modules/random";
 import module namespace hmac = "http://www.zorba-xquery.com/modules/security/hmac";
 import module namespace http-client = "http://expath.org/ns/http-client";
@@ -19,7 +19,7 @@ import module namespace date = "http://www.zorba-xquery.com/modules/datetime";
 (:~
  : Use err module functions for throwing errors.
  :)
-import module namespace err="http://www.zorba-xquery.com/modules/security/oauth/errors";
+import module namespace err="http://www.zorba-xquery.com/modules/oauth/errors";
 
 declare namespace op = "http://www.zorba-xquery.org/options";
 
