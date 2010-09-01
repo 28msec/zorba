@@ -108,7 +108,7 @@ declare function local:test-equals() as xs:boolean {
  :)
 declare function local:test-exif() as xs:boolean {
     let $exif := file:read(concat($local:image-dir, "exif.jpg"))
-   return ((basic:exif($exif, "PixelXDimension") eq "20") and fn:empty(basic:exif($exif, "supercalifragilisticexpialidocious")))
+   return ((basic:exif($exif, "ExifImageWidth") eq "20") and fn:empty(basic:exif($exif, "supercalifragilisticexpialidocious")))
 };
 
 
