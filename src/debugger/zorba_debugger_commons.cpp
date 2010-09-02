@@ -378,6 +378,7 @@ theCommons(lCommons)
 void DebuggerSingletonIterator::serialize(::zorba::serialization::Archiver& ar)
 {
   serialize_baseclass( ar, (NoaryBaseIterator<DebuggerSingletonIterator,PlanIteratorState>*)this );
+  ar & theCommons;
 }
 
 NOARY_ACCEPT(DebuggerSingletonIterator);
