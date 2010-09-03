@@ -57,6 +57,13 @@ namespace zorba { namespace geomodule {
         GMLSF_INVALID
       };
 
+      enum action_item{
+        BUILD_GEOS_GEOMETRY,
+        COUNT_CHILDREN,
+        GET_NTH_CHILD,
+        GET_EXTERIOR_RING,
+        GET_END_POINT
+      };
     protected:
       bool getChild(zorba::Item &lItem, const char *localname, const char *ns, 
                     zorba::Item &child_item) const;
@@ -78,7 +85,11 @@ namespace zorba { namespace geomodule {
       enum gmlsf_types getGmlSFGeometricType(Item item) const;
       enum gmlsf_types getGeometryNodeType(const StatelessExternalFunction::Arguments_t& args, int arg_pos, zorba::Item &lItem) const;
       
-      geos::geom::Geometry  *buildGeosGeometryFromItem(zorba::Item &lItem, enum GeoFunction::gmlsf_types geometric_type) const;
+      geos::geom::Geometry  *buildGeosGeometryFromItem(zorba::Item &lItem, 
+                                                      enum GeoFunction::gmlsf_types geometric_type,
+                                                      enum GeoFunction::action_item what_action = BUILD_GEOS_GEOMETRY,
+                                                      uint32_t *optional_child_index_or_count = NULL,
+                                                      zorba::Item *result_item = NULL) const;
       zorba::Item getGMLItemFromGeosGeometry(zorba::Item &parent, 
                                               const geos::geom::Geometry *geos_geometry,
                                               const char *tag_name = NULL) const;

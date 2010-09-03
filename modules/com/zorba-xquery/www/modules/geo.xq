@@ -167,6 +167,8 @@ declare function zorba-geo:geometry-type( $geometry as node()) as xs:string exte
 
 (:~
  : Return the number of geometries in the collection, or 1 for non-collection. 
+ : For gml:Point, gml:LineString, gml:LinearRing, gml:Polygon, return 1.
+ : For gml:Curve and gml:Surface, they are treated as geometric collections.
  : 
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
  :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
@@ -178,12 +180,13 @@ declare function zorba-geo:num-geometries( $geometry as node()) as xs:unsignedIn
 (:~
  : Return the n-th geometry in the collection. 
  : Return this geometry if it is not a collection.
- : N is zero based.
+ : For gml:Point, gml:LineString, gml:LinearRing, gml:Polygon, return this item if n is zero, otherwise error.
+ : For gml:Curve and gml:Surface, they are treated as geometric collections.
  : 
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
  :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
  : @param $n zero-based index in the collection
- : @return n-th geometry in collection. The node is a copy of the original node.
+ : @return n-th geometry in collection. The node is the original node, not a copy.
  : @error XPTY0004 - unrecognized geometric object
 :)
 declare function zorba-geo:geometry-n( $geometry as node(), $n as xs:unsignedInt) as node() external;
@@ -671,7 +674,7 @@ declare function zorba-geo:z( $point as node()) as xs:double external;
  : <br/>
  :
  : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing
- : @return the starting gml:Point
+ : @return the starting gml:Point, constructed with the first coordinates in the line.
  : @error XPTY0004 - unrecognized geometric object or not a line
 :)
 declare function zorba-geo:start-point( $line as node()) as node() external;
@@ -681,7 +684,7 @@ declare function zorba-geo:start-point( $line as node()) as node() external;
  : <br/>
  :
  : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing
- : @return the end gml:Point
+ : @return the end gml:Point, constructed with the last coordinates in the line.
  : @error XPTY0004 - unrecognized geometric object or not a line
 :)
 declare function zorba-geo:end-point( $line as node()) as node() external;
@@ -722,8 +725,8 @@ declare function zorba-geo:num-points( $line as node()) as xs:unsignedInt extern
  : <br/>
  :
  : @param $line node of one of GMLSF objects: gml:LineString, gml:LinearRing
- : @param $n index in the list of nodes, zero based.
- : @return n-th point in the line. The node is a copy of the original node.
+ : @param $n index in the list of coordinates, zero based.
+ : @return n-th point in the line. The node is gml:Point constructed with n-th coordinate from line.
  : @error XPTY0004 - unrecognized geometric object or not a line
 :)
 declare function zorba-geo:point-n( $line as node(), $n as xs:unsignedInt) as node() external;
@@ -738,7 +741,7 @@ declare function zorba-geo:point-n( $line as node(), $n as xs:unsignedInt) as no
  : <br/>
  :
  : @param $polygon node of one of GMLSF objects: gml:Polygon
- : @return exterior ring as a gml:LinearRing
+ : @return the original gml:LinearRing node for exterior ring
  : @error XPTY0004 - unrecognized geometric object or not a polygon
 :)
 declare function zorba-geo:exterior-ring( $polygon as node()) as node() external;
@@ -759,7 +762,7 @@ declare function zorba-geo:num-interior-ring( $polygon as node()) as xs:unsigned
  :
  : @param $polygon node of one of GMLSF objects: gml:Polygon
  : @param $n index in the list of interior rings, zero based.
- : @return n-th interior ring. The node is a copy of the original node.
+ : @return n-th interior ring. The node is the original node, not a copy.
  : @error XPTY0004 - unrecognized geometric object or not a line
 :)
 declare function zorba-geo:interior-ring-n( $polygon as node(), $n as xs:unsignedInt) as node() external;

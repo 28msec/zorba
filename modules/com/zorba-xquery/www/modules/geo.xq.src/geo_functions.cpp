@@ -328,38 +328,105 @@ void GeoFunction::readPosListCoordinates(zorba::Item &lItem, geos::geom::Coordin
   }
 }
 
-geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem, enum GeoFunction::gmlsf_types geometric_type) const
+geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem, 
+                                                              enum GeoFunction::gmlsf_types geometric_type,
+                                                              enum GeoFunction::action_item what_action,
+                                                              uint32_t *optional_child_index_or_count,
+                                                              zorba::Item *result_item) const
 {
   switch(geometric_type)
   {
   case GMLSF_POINT:
   {
-    double x, y;
-    readPointPosCoordinates(lItem, &x, &y);
-  	geos::geom::Coordinate c(x, y);
-    try{
-    return get_geometryFactory()->createPoint(c);
-    }catch(std::exception &excep)                                        
-    {                                                                               
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      double x, y;
+      readPointPosCoordinates(lItem, &x, &y);
+  	  geos::geom::Coordinate c(x, y);
+      try{
+      return get_geometryFactory()->createPoint(c);
+      }catch(std::exception &excep)                                        
+      {                                                                               
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GEOS function createPoint : " << excep.what();  
+        throwError(lErrorMessage.str(), XPTY0004);                                    
+      }                                                                               
+    }
+    else if(what_action == COUNT_CHILDREN)
+      (*optional_child_index_or_count) = 1;
+    else if(what_action == GET_NTH_CHILD)
+    {
+      if((*optional_child_index_or_count) == 0)
+        *result_item = lItem;
+    }
+    else
+    {
       std::stringstream lErrorMessage;                                              
-      lErrorMessage << "Error in GEOS function createPoint : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                    
-    }                                                                               
-  }
+      lErrorMessage << "Error in GMLSF_POINT";  
+      throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+    }
+  }break;
   case GMLSF_LINESTRING:
   {
     geos::geom::CoordinateSequence *cl = new geos::geom::CoordinateArraySequence();
     readPosListCoordinates(lItem, cl);
-    try{
-    return get_geometryFactory()->createLineString(cl);
-    }catch(std::exception &excep)                                        
-    {                                                                               
-      //delete cl;                                                        
+    uint32_t  last_index = cl->size()-1;
+    if(what_action == GET_END_POINT)
+    {
+      optional_child_index_or_count = &last_index;
+      what_action = GET_NTH_CHILD;
+    }
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      try{
+      return get_geometryFactory()->createLineString(cl);
+      }catch(std::exception &excep)                                        
+      {                                                                               
+        //delete cl;                                                        
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GEOS function createLineString : " << excep.what();  
+        throwError(lErrorMessage.str(), XPTY0004);                                    
+      }                                                                               
+    }
+    else if(what_action == COUNT_CHILDREN)
+    {
+      (*optional_child_index_or_count) = cl->size();
+      delete cl;
+    }
+    else if(what_action == GET_NTH_CHILD)
+    {
+      if((*optional_child_index_or_count) < cl->size())
+      {
+        Item  item_name;
+        Item  item_type;
+        zorba::Item   null_parent;                                                      
+        item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "Point");
+        std::vector<std::pair<String, String> >   ns_binding;
+        ns_binding.push_back(std::pair<String, String>("gml", "http://www.opengis.net/gml"));
+        item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
+        *result_item = theModule->getItemFactory()->createElementNode(null_parent, item_name, item_type, false, false, ns_binding);
+
+        zorba::Item pos_item;
+        item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
+        item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "pos");
+        pos_item = theModule->getItemFactory()->createElementNode(*result_item, item_name, item_type, false, false, ns_binding);
+        
+        char strtemp[100];
+        sprintf(strtemp, "%lf %lf", cl->getAt((*optional_child_index_or_count)).x, cl->getAt((*optional_child_index_or_count)).y);
+
+        zorba::Item text_item;
+        text_item = theModule->getItemFactory()->createTextNode(pos_item, strtemp);
+      }
+      delete cl;
+    }
+    else
+    {
+      delete cl;
       std::stringstream lErrorMessage;                                              
-      lErrorMessage << "Error in GEOS function createLineString : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                    
-    }                                                                               
-  }
+      lErrorMessage << "Error in GMLSF_LINESTRING";  
+      throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+    }
+  }break;
   case GMLSF_CURVE:
   {  //not supported in GEOS; emulate through Geometry Collection
     zorba::Item   segments_item;
@@ -369,9 +436,18 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       lErrorMessage << "gml:Curve node must have a gml:segments child";
       throwError(lErrorMessage.str(), XPTY0004);
     }
+    if(what_action == COUNT_CHILDREN)
+    {
+      (*optional_child_index_or_count) = 0;
+    }
+    int   child_nr = 0;
     Iterator_t    segments_children;
     Item          line_segment_item;
-    std::vector<geos::geom::Geometry*>    *segments_vector = new std::vector<geos::geom::Geometry*>;
+    std::vector<geos::geom::Geometry*>    *segments_vector;
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      segments_vector = new std::vector<geos::geom::Geometry*>;
+    }
     segments_children = segments_item.getChildren();
     segments_children->open();
     while(segments_children->next(line_segment_item))
@@ -401,38 +477,110 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         throwError(lErrorMessage.str(), XPTY0004);
       }
   	  
-      segments_vector->push_back(buildGeosGeometryFromItem(line_segment_item, GMLSF_LINESTRING));
-    }
-
-    try{
-    return get_geometryFactory()->createGeometryCollection(segments_vector);
-    }catch(std::exception &excep)                                        
-    {                      
-      std::vector<geos::geom::Geometry*>::iterator  vec_it;
-      for(vec_it = segments_vector->begin(); vec_it != segments_vector->end(); vec_it++)
+      if(what_action == BUILD_GEOS_GEOMETRY)
       {
-        delete (*vec_it);
+        segments_vector->push_back(buildGeosGeometryFromItem(line_segment_item, GMLSF_LINESTRING));
       }
-      delete segments_vector;                                                        
-      std::stringstream lErrorMessage;                                              
-      lErrorMessage << "Error in GEOS function createGeometryCollection for gml:Curve: " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                    
-    }                                                                               
-  }
+      else if(what_action == COUNT_CHILDREN)
+      {
+        (*optional_child_index_or_count)++;
+      }
+      else if(what_action == GET_NTH_CHILD)
+      {
+        if((*optional_child_index_or_count) == child_nr)
+        {
+          *result_item = line_segment_item;
+          return NULL;
+        }
+      }
+      else
+      {
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GMLSF_CURVE";  
+        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+      }
+      child_nr++;
+   }
+
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      try{
+      return get_geometryFactory()->createGeometryCollection(segments_vector);
+      }catch(std::exception &excep)                                        
+      {                      
+        std::vector<geos::geom::Geometry*>::iterator  vec_it;
+        for(vec_it = segments_vector->begin(); vec_it != segments_vector->end(); vec_it++)
+        {
+          delete (*vec_it);
+        }
+        delete segments_vector;                                                        
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GEOS function createGeometryCollection for gml:Curve: " << excep.what();  
+        throwError(lErrorMessage.str(), XPTY0004);                                    
+      }                                                                               
+    }
+  }break;
   case GMLSF_LINEARRING:
   {
     geos::geom::CoordinateSequence *cl = new geos::geom::CoordinateArraySequence();
     readPosListCoordinates(lItem, cl);
-    try{
-    return get_geometryFactory()->createLinearRing(cl);
-    }catch(std::exception &excep)                                        
-    {                                                                               
-      //delete cl;                                                        
+    uint32_t  last_index = cl->size()-1;
+    if(what_action == GET_END_POINT)
+    {
+      optional_child_index_or_count = &last_index;
+      what_action = GET_NTH_CHILD;
+    }
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      try{
+      return get_geometryFactory()->createLinearRing(cl);
+      }catch(std::exception &excep)                                        
+      {                                                                               
+        //delete cl;                                                        
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GEOS function createLinearRing : " << excep.what();  
+        throwError(lErrorMessage.str(), XPTY0004);                                    
+      }  
+    }
+    else if(what_action == COUNT_CHILDREN)
+    {
+      (*optional_child_index_or_count) = cl->size();
+      delete cl;
+    }
+    else if(what_action == GET_NTH_CHILD)
+    {
+      if((*optional_child_index_or_count) < cl->size())
+      {
+        Item  item_name;
+        Item  item_type;
+        zorba::Item   null_parent;                                                      
+        item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "Point");
+        std::vector<std::pair<String, String> >   ns_binding;
+        ns_binding.push_back(std::pair<String, String>("gml", "http://www.opengis.net/gml"));
+        item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
+        *result_item = theModule->getItemFactory()->createElementNode(null_parent, item_name, item_type, false, false, ns_binding);
+
+        zorba::Item pos_item;
+        item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
+        item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "pos");
+        pos_item = theModule->getItemFactory()->createElementNode(*result_item, item_name, item_type, false, false, ns_binding);
+        
+        char strtemp[100];
+        sprintf(strtemp, "%lf %lf", cl->getAt((*optional_child_index_or_count)).x, cl->getAt((*optional_child_index_or_count)).y);
+
+        zorba::Item text_item;
+        text_item = theModule->getItemFactory()->createTextNode(pos_item, strtemp);
+      }
+      delete cl;
+    }
+    else
+    {
+      delete cl;
       std::stringstream lErrorMessage;                                              
-      lErrorMessage << "Error in GEOS function createLinearRing : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                    
-    }                                                                               
-  }
+      lErrorMessage << "Error in GMLSF_LINEARRING";  
+      throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+    }
+  }break;
   case GMLSF_SURFACE:
   {  //not supported in GEOS; emulate through Geometry Collection
     zorba::Item   patches_item;
@@ -442,9 +590,18 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       lErrorMessage << "gml:Surface node must have a gml:patches child";
       throwError(lErrorMessage.str(), XPTY0004);
     }
+    if(what_action == COUNT_CHILDREN)
+    {
+      (*optional_child_index_or_count) = 0;
+    }
+    int   child_nr = 0;
     Iterator_t    patches_children;
     Item          polygon_patch_item;
-    std::vector<geos::geom::Geometry*>    *polygon_vector = new std::vector<geos::geom::Geometry*>;
+    std::vector<geos::geom::Geometry*>    *polygon_vector;
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      polygon_vector = new std::vector<geos::geom::Geometry*>;
+    }
     patches_children = patches_item.getChildren();
     patches_children->open();
     while(patches_children->next(polygon_patch_item))
@@ -468,31 +625,64 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         throwError(lErrorMessage.str(), XPTY0004);
       }
 
-      polygon_vector->push_back(buildGeosGeometryFromItem(polygon_patch_item, GMLSF_POLYGON));
+      if(what_action == BUILD_GEOS_GEOMETRY)
+      {
+        polygon_vector->push_back(buildGeosGeometryFromItem(polygon_patch_item, GMLSF_POLYGON));
+      }
+      else if(what_action == COUNT_CHILDREN)
+      {
+        (*optional_child_index_or_count)++;
+      }
+      else if(what_action == GET_NTH_CHILD)
+      {
+        if((*optional_child_index_or_count) == child_nr)
+        {
+          *result_item = polygon_patch_item;
+          return NULL;
+        }
+      }
+      else
+      {
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GMLSF_CURVE";  
+        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+      }
+      child_nr++;
     }
 
-    try{
-    return get_geometryFactory()->createGeometryCollection(polygon_vector);
-    }catch(std::exception &excep)                                        
-    {                                                                               
-      std::vector<geos::geom::Geometry*>::iterator  vec_it;
-      for(vec_it = polygon_vector->begin(); vec_it != polygon_vector->end(); vec_it++)
-      {
-        delete (*vec_it);
-      }
-      delete polygon_vector;                                                        
-      std::stringstream lErrorMessage;                                              
-      lErrorMessage << "Error in GEOS function createGeometryCollection for gml:Surface : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                    
-    }                                                                               
-  }
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      try{
+      return get_geometryFactory()->createGeometryCollection(polygon_vector);
+      }catch(std::exception &excep)                                        
+      {                                                                               
+        std::vector<geos::geom::Geometry*>::iterator  vec_it;
+        for(vec_it = polygon_vector->begin(); vec_it != polygon_vector->end(); vec_it++)
+        {
+          delete (*vec_it);
+        }
+        delete polygon_vector;                                                        
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GEOS function createGeometryCollection for gml:Surface : " << excep.what();  
+        throwError(lErrorMessage.str(), XPTY0004);                                    
+      }                                                                               
+    }
+  }break;
   case GMLSF_POLYGON:
   {
     Iterator_t    polygon_children;
     Item          extint_item;
     int           nr_child = 0;
     geos::geom::LinearRing    *exterior = NULL;
-    std::vector<geos::geom::Geometry*>    *interior_vector = new std::vector<geos::geom::Geometry*>;
+    std::vector<geos::geom::Geometry*>    *interior_vector;
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      interior_vector = new std::vector<geos::geom::Geometry*>;
+    }
+    else if(what_action == COUNT_CHILDREN)
+    {
+      (*optional_child_index_or_count) = 0;
+    }
     polygon_children = lItem.getChildren();
     polygon_children->open();
     while(polygon_children->next(extint_item))
@@ -524,7 +714,15 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
           lErrorMessage << "gml:Polygon/gml:exterior node must have a gml:LinearRing child";
           throwError(lErrorMessage.str(), XPTY0004);
         }
-        exterior = dynamic_cast<geos::geom::LinearRing*>(buildGeosGeometryFromItem(linearring_item, GMLSF_LINEARRING));
+        if(what_action == BUILD_GEOS_GEOMETRY)
+        {
+          exterior = dynamic_cast<geos::geom::LinearRing*>(buildGeosGeometryFromItem(linearring_item, GMLSF_LINEARRING));
+        }
+        else if(what_action == GET_EXTERIOR_RING)
+        {
+          *result_item = linearring_item;
+          return NULL;
+        }
       }
       else
       {
@@ -541,32 +739,64 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
           lErrorMessage << "gml:Polygon/gml:interior node must have a gml:LinearRing child";
           throwError(lErrorMessage.str(), XPTY0004);
         }
-        interior_vector->push_back(buildGeosGeometryFromItem(linearring_item, GMLSF_LINEARRING));
+        if(what_action == BUILD_GEOS_GEOMETRY)
+        {
+          interior_vector->push_back(buildGeosGeometryFromItem(linearring_item, GMLSF_LINEARRING));
+        }
+        else if(what_action == COUNT_CHILDREN)
+        {
+          (*optional_child_index_or_count)++;
+        }
+        else if(what_action == GET_NTH_CHILD)
+        {
+          if((*optional_child_index_or_count) == (nr_child-1))
+          {
+            *result_item = linearring_item;
+            return NULL;
+          }
+        }
+        else
+        {
+          std::stringstream lErrorMessage;                                              
+          lErrorMessage << "Error in GMLSF_POLYGON";  
+          throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+        }
       }
       nr_child++;
     }
-    try{
-    return get_geometryFactory()->createPolygon(exterior, interior_vector);
-    }catch(std::exception &excep)                                        
-    {      
-      delete exterior;
-      std::vector<geos::geom::Geometry*>::iterator  vec_it;
-      for(vec_it = interior_vector->begin(); vec_it != interior_vector->end(); vec_it++)
-      {
-        delete (*vec_it);
-      }
-      delete interior_vector;                                                        
-      std::stringstream lErrorMessage;                                              
-      lErrorMessage << "Error in GEOS function createPolygon : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                    
-    }                                                                               
-    
-  }
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      try{
+      return get_geometryFactory()->createPolygon(exterior, interior_vector);
+      }catch(std::exception &excep)                                        
+      {      
+        delete exterior;
+        std::vector<geos::geom::Geometry*>::iterator  vec_it;
+        for(vec_it = interior_vector->begin(); vec_it != interior_vector->end(); vec_it++)
+        {
+          delete (*vec_it);
+        }
+        delete interior_vector;                                                        
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GEOS function createPolygon : " << excep.what();  
+        throwError(lErrorMessage.str(), XPTY0004);                                    
+      }                                                                               
+    }    
+  }break;
   case GMLSF_MULTIPOINT:
   {
     Iterator_t    multipoint_children;
     Item          point_item;
-    std::vector<geos::geom::Geometry*>    *point_vector = new std::vector<geos::geom::Geometry*>;
+    std::vector<geos::geom::Geometry*>    *point_vector;
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      point_vector = new std::vector<geos::geom::Geometry*>;
+    }
+    else if(what_action == COUNT_CHILDREN)
+    {
+      (*optional_child_index_or_count) = 0;
+    }
+    int nr_child = 0;
     multipoint_children = lItem.getChildren();
     multipoint_children->open();
     while(multipoint_children->next(point_item))
@@ -586,32 +816,65 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       if(!item_name.byteEqual("Point", 5))
       {
         std::stringstream lErrorMessage;
-        lErrorMessage << "First child of gml:Polygon must be gml:Point";
+        lErrorMessage << "First child of gml:MultiPoint must be gml:Point";
         throwError(lErrorMessage.str(), XPTY0004);
       }
-      point_vector->push_back(buildGeosGeometryFromItem(point_item, GMLSF_POINT));
-    }
-    try{
-    return get_geometryFactory()->createMultiPoint(point_vector);
-    }catch(std::exception &excep)                                        
-    {                                                                               
-      std::vector<geos::geom::Geometry*>::iterator  vec_it;
-      for(vec_it = point_vector->begin(); vec_it != point_vector->end(); vec_it++)
+      if(what_action == BUILD_GEOS_GEOMETRY)
       {
-        delete (*vec_it);
+        point_vector->push_back(buildGeosGeometryFromItem(point_item, GMLSF_POINT));
       }
-      delete point_vector;
-      std::stringstream lErrorMessage;                                              
-      lErrorMessage << "Error in GEOS function createMultiPoint : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                    
-    }                                                                               
-
-  }
+      else if(what_action == COUNT_CHILDREN)
+      {
+        (*optional_child_index_or_count)++;
+      }
+      else if(what_action == GET_NTH_CHILD)
+      {
+        if((*optional_child_index_or_count) == nr_child)
+        {
+          *result_item = point_item;
+          return NULL;
+        }
+      }
+      else
+      {
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GMLSF_MULTIPOINT";  
+        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+      }
+      nr_child++;
+    }
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      try{
+      return get_geometryFactory()->createMultiPoint(point_vector);
+      }catch(std::exception &excep)                                        
+      {                                                                               
+        std::vector<geos::geom::Geometry*>::iterator  vec_it;
+        for(vec_it = point_vector->begin(); vec_it != point_vector->end(); vec_it++)
+        {
+          delete (*vec_it);
+        }
+        delete point_vector;
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GEOS function createMultiPoint : " << excep.what();  
+        throwError(lErrorMessage.str(), XPTY0004);                                    
+      }                                                                               
+    }
+  }break;
   case GMLSF_MULTICURVE:
   {
     Iterator_t    multicurve_children;
     Item          curve_item;
-    std::vector<geos::geom::Geometry*>    *curve_vector = new std::vector<geos::geom::Geometry*>;
+    std::vector<geos::geom::Geometry*>    *curve_vector;
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      curve_vector = new std::vector<geos::geom::Geometry*>;
+    }
+    else if(what_action == COUNT_CHILDREN)
+    {
+      (*optional_child_index_or_count) = 0;
+    }
+    int nr_child = 0;
     multicurve_children = lItem.getChildren();
     multicurve_children->open();
     while(multicurve_children->next(curve_item))
@@ -634,29 +897,62 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         lErrorMessage << "Children of gml:MultiCurve must be gml:LineString";
         throwError(lErrorMessage.str(), XPTY0004);
       }
-      curve_vector->push_back(buildGeosGeometryFromItem(curve_item, GMLSF_LINESTRING));
-    }
-    try{
-    return get_geometryFactory()->createMultiLineString(curve_vector);
-    }catch(std::exception &excep)                                        
-    {                                                                               
-      std::vector<geos::geom::Geometry*>::iterator  vec_it;
-      for(vec_it = curve_vector->begin(); vec_it != curve_vector->end(); vec_it++)
+      if(what_action == BUILD_GEOS_GEOMETRY)
       {
-        delete (*vec_it);
+        curve_vector->push_back(buildGeosGeometryFromItem(curve_item, GMLSF_LINESTRING));
       }
-      delete curve_vector;
-      std::stringstream lErrorMessage;                                              
-      lErrorMessage << "Error in GEOS function createMultiLineString : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                    
-    }                                                                               
-
-  }
+      else if(what_action == COUNT_CHILDREN)
+      {
+        (*optional_child_index_or_count)++;
+      }
+      else if(what_action == GET_NTH_CHILD)
+      {
+        if((*optional_child_index_or_count) == nr_child)
+        {
+          *result_item = curve_item;
+          return NULL;
+        }
+      }
+      else
+      {
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GMLSF_MULTICURVE";  
+        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+      }
+      nr_child++;
+    }
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      try{
+      return get_geometryFactory()->createMultiLineString(curve_vector);
+      }catch(std::exception &excep)                                        
+      {                                                                               
+        std::vector<geos::geom::Geometry*>::iterator  vec_it;
+        for(vec_it = curve_vector->begin(); vec_it != curve_vector->end(); vec_it++)
+        {
+          delete (*vec_it);
+        }
+        delete curve_vector;
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GEOS function createMultiLineString : " << excep.what();  
+        throwError(lErrorMessage.str(), XPTY0004);                                    
+      }                                                                               
+    }
+  }break;
   case GMLSF_MULTISURFACE:
   {
     Iterator_t    multisurface_children;
     Item          surface_item;
-    std::vector<geos::geom::Geometry*>    *surface_vector = new std::vector<geos::geom::Geometry*>;
+    std::vector<geos::geom::Geometry*>    *surface_vector;
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      surface_vector = new std::vector<geos::geom::Geometry*>;
+    }
+    else if(what_action == COUNT_CHILDREN)
+    {
+      (*optional_child_index_or_count) = 0;
+    }
+    int nr_child = 0;
     multisurface_children = lItem.getChildren();
     multisurface_children->open();
     while(multisurface_children->next(surface_item))
@@ -679,24 +975,48 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         lErrorMessage << "Children of gml:MultiSurface must be gml:Polygon";
         throwError(lErrorMessage.str(), XPTY0004);
       }
-      surface_vector->push_back(buildGeosGeometryFromItem(surface_item, GMLSF_POLYGON));
-    }
-    try{
-    return get_geometryFactory()->createMultiPolygon(surface_vector);
-    }catch(std::exception &excep)                                        
-    {                                                                               
-      std::vector<geos::geom::Geometry*>::iterator  vec_it;
-      for(vec_it = surface_vector->begin(); vec_it != surface_vector->end(); vec_it++)
+      if(what_action == BUILD_GEOS_GEOMETRY)
       {
-        delete (*vec_it);
+        surface_vector->push_back(buildGeosGeometryFromItem(surface_item, GMLSF_POLYGON));
       }
-      delete surface_vector;
-      std::stringstream lErrorMessage;                                              
-      lErrorMessage << "Error in GEOS function createMultiPolygon : " << excep.what();  
-      throwError(lErrorMessage.str(), XPTY0004);                                    
-    }                                                                               
-
-  }
+      else if(what_action == COUNT_CHILDREN)
+      {
+        (*optional_child_index_or_count)++;
+      }
+      else if(what_action == GET_NTH_CHILD)
+      {
+        if((*optional_child_index_or_count) == nr_child)
+        {
+          *result_item = surface_item;
+          return NULL;
+        }
+      }
+      else
+      {
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GMLSF_MULTICURVE";  
+        throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+      }
+      nr_child++;
+    }
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      try{
+      return get_geometryFactory()->createMultiPolygon(surface_vector);
+      }catch(std::exception &excep)                                        
+      {                                                                               
+        std::vector<geos::geom::Geometry*>::iterator  vec_it;
+        for(vec_it = surface_vector->begin(); vec_it != surface_vector->end(); vec_it++)
+        {
+          delete (*vec_it);
+        }
+        delete surface_vector;
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GEOS function createMultiPolygon : " << excep.what();  
+        throwError(lErrorMessage.str(), XPTY0004);                                    
+      }                                                                               
+    }
+  }break;
   case GMLSF_INVALID:
   default:
   {
@@ -1078,6 +1398,14 @@ SFNumGeometriesFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
 
   switch(geometric_type)
   {
+  case GMLSF_POINT:
+  case GMLSF_LINESTRING:
+  //case GMLSF_CURVE:
+  case GMLSF_LINEARRING:
+  //case GMLSF_SURFACE:
+  case GMLSF_POLYGON:
+    return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createUnsignedInt(1)));
   case GMLSF_INVALID:
     {
       std::stringstream lErrorMessage;
@@ -1092,20 +1420,8 @@ SFNumGeometriesFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
     break;
   }
 
-  geos::geom::Geometry  *geos_geometry;
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);
-
-  unsigned int num_geos = 0;
-  try{
-  num_geos = geos_geometry->getNumGeometries();
-  delete geos_geometry;
-  }catch(std::exception &excep)                                              
-  {                                                                                     
-    delete geos_geometry;                                                               
-    std::stringstream lErrorMessage;                                                    
-    lErrorMessage << "Error in GEOS function getNumGeometries : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                          
-  }                                                                                     
+  uint32_t    num_geos = 0;
+  buildGeosGeometryFromItem(lItem, geometric_type, COUNT_CHILDREN, &num_geos);
 
   return ItemSequence_t(new SingletonItemSequence(
      theModule->getItemFactory()->createUnsignedInt(num_geos)));
@@ -1136,10 +1452,6 @@ SFGeometryNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
     break;                                                                        
   }                                                                               
                                                                                   
-  geos::geom::Geometry  *geos_geometry1;                                          
-  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1);            
-                                                                                  
-                                                                                        
   Item lItem2;                                                                           
   if (!args[1]->next(lItem2)) 
   {
@@ -1151,31 +1463,34 @@ SFGeometryNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
   uint32_t n;
   n = lItem2.getUnsignedIntValue();
                                                
-  if(n >= geos_geometry1->getNumGeometries())
+  switch(geometric_type1)                                                         
+  {                                                                               
+  case GMLSF_POINT:
+  case GMLSF_LINESTRING:
+  //case GMLSF_CURVE:
+  case GMLSF_LINEARRING:
+  //case GMLSF_SURFACE:
+  case GMLSF_POLYGON:
+    if(n == 0)
+      return ItemSequence_t(new SingletonItemSequence(lItem1));                  
+    else
+    {
+      std::stringstream lErrorMessage;                                              
+      lErrorMessage << "Index n (" << n << ") is outside the range ";  
+      throwError(lErrorMessage.str(), XPTY0004);                                    
+    }
+  }
+
+  Item    nth_child;
+  buildGeosGeometryFromItem(lItem1, geometric_type1, GET_NTH_CHILD, &n, &nth_child);
+
+  if(nth_child.isNull())
   {
     std::stringstream lErrorMessage;                                              
-    lErrorMessage << "Index n (" << n << ") is outside the range [0.." << geos_geometry1->getNumGeometries()-1 << "] ";  
-    delete geos_geometry1;                                                        
+    lErrorMessage << "Index n (" << n << ") is outside the range ";  
     throwError(lErrorMessage.str(), XPTY0004);                                    
   }
-  const geos::geom::Geometry  *geos_result = NULL;                                          
-  try{
-  geos_result = geos_geometry1->getGeometryN(n);                                    
-  }catch(std::exception &excep)                                        
-  {                                                                               
-    delete geos_geometry1;                                                        
-    std::stringstream lErrorMessage;                                              
-    lErrorMessage << "Error in GEOS function getGeometryN : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
-  }                                                                               
-
-  zorba::Item   null_parent;                                                      
-  zorba::Item   result_item;                                                      
-  result_item = getGMLItemFromGeosGeometry(null_parent, geos_result);             
-  delete geos_geometry1;                                                          
-//  delete geos_result;                                                             
-                                                                                  
-  return ItemSequence_t(new SingletonItemSequence(result_item));                  
+  return ItemSequence_t(new SingletonItemSequence(nth_child));                  
 }
 
 
@@ -2017,69 +2332,106 @@ SFZFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
      theModule->getItemFactory()->createDouble(0.0)));                               
 }
 
-///////////////////////////////////////////////////////////////////////
-#define DEFINE_EVALUATE_ONE_LINE_RETURN_GEOMETRY(sfclass_name, geos_function_name)  \
-ItemSequence_t                                                                          \
-sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,              \
-         const StaticContext* aSctxCtx,                                                 \
-         const DynamicContext* aDynCtx) const                                           \
-{                                                                                       \
-  Item lItem;                                                                           \
-  gmlsf_types   geometric_type;                                                         \
-  geometric_type = getGeometryNodeType(args, 0, lItem);                                 \
-                                                                                        \
-  switch(geometric_type)                                                                \
-  {                                                                                     \
-  case GMLSF_INVALID:                                                                   \
-    {                                                                                   \
-      std::stringstream lErrorMessage;                                                  \
-      zorba::Item item_qname;                                                           \
-      lItem.getNodeName(item_qname);                                                    \
-      lErrorMessage << "Unrecognized geometric type for element "                       \
-           << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           \
-      throwError(lErrorMessage.str(), XPTY0004);                                        \
-    }                                                                                   \
-    break;                                                                              \
-  case GMLSF_LINESTRING:                                                                \
-  case GMLSF_LINEARRING:                                                                \
-    break;                                                                              \
-  default:                                                                              \
-    {                                                                                   \
-      std::stringstream lErrorMessage;                                                  \
-      zorba::Item item_qname;                                                           \
-      lItem.getNodeName(item_qname);                                                    \
-      lErrorMessage << "Geometry must be a line: "                                      \
-           << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           \
-      throwError(lErrorMessage.str(), XPTY0004);                                        \
-    }                                                                                   \
-    break;                                                                              \
-  }                                                                                     \
-                                                                                        \
-  geos::geom::Geometry  *geos_geometry;                                                 \
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);                     \
-  geos::geom::LineString   *geos_line = dynamic_cast<geos::geom::LineString*>(geos_geometry);    \
-                                                                                        \
-  geos::geom::Geometry  *geos_result = NULL;                                            \
-  try{                                                                                  \
-    geos_result = geos_line->geos_function_name();                                      \
-  }catch(std::exception &excep)                                                         \
-  {                                                                                     \
-    delete geos_geometry;                                                               \
-    std::stringstream lErrorMessage;                                                    \
-    lErrorMessage << "Error in GEOS function " #geos_function_name " : " << excep.what();  \
-    throwError(lErrorMessage.str(), XPTY0004);                                          \
-  }                                                                                     \
-                                                                                        \
-  zorba::Item   null_parent;                                                            \
-  zorba::Item   result_item;                                                            \
-  result_item = getGMLItemFromGeosGeometry(null_parent, geos_result);                   \
-  delete geos_geometry;                                                                 \
-                                                                                        \
-  return ItemSequence_t(new SingletonItemSequence(result_item));                        \
+
+ItemSequence_t                                                                          
+SFStartPointFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,              
+         const StaticContext* aSctxCtx,                                                 
+         const DynamicContext* aDynCtx) const                                           
+{                                                                                       
+  Item lItem1;                                                                    
+  gmlsf_types   geometric_type1;                                                  
+  geometric_type1 = getGeometryNodeType(args, 0, lItem1);                         
+                                                                                  
+  switch(geometric_type1)                                                         
+  {                                                                               
+  case GMLSF_INVALID:                                                             
+    {                                                                             
+      std::stringstream lErrorMessage;                                            
+      zorba::Item item_qname1;
+      lItem1.getNodeName(item_qname1);
+      lErrorMessage << "Unrecognized geometric type for element "                 
+           << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
+      throwError(lErrorMessage.str(), XPTY0004);                                  
+    }                                                                             
+    break;                                                                        
+  case GMLSF_LINESTRING:                                                                
+  case GMLSF_LINEARRING:                                                                
+    break;                                                                              
+  default:                                                                              
+    {                                                                                   
+      std::stringstream lErrorMessage;                                                  
+      zorba::Item item_qname1;                                                           
+      lItem1.getNodeName(item_qname1);                                                    
+      lErrorMessage << "Geometry must be a line: "                                      
+           << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << ".";           
+      throwError(lErrorMessage.str(), XPTY0004);                                        
+    }                                                                                   
+    break;                                                                              
+  }                                                                               
+                                                                                  
+  uint32_t n = 0;
+                                               
+  Item    nth_child;
+  buildGeosGeometryFromItem(lItem1, geometric_type1, GET_NTH_CHILD, &n, &nth_child);
+
+  if(nth_child.isNull())
+  {
+    std::stringstream lErrorMessage;                                              
+    lErrorMessage << "LineString has no points ";  
+    throwError(lErrorMessage.str(), XPTY0004);                                    
+  }
+                                                                                  
+  return ItemSequence_t(new SingletonItemSequence(nth_child));                  
 }
 
-DEFINE_EVALUATE_ONE_LINE_RETURN_GEOMETRY(SFStartPointFunction, getStartPoint)
-DEFINE_EVALUATE_ONE_LINE_RETURN_GEOMETRY(SFEndPointFunction, getEndPoint)
+ItemSequence_t                                                                          
+SFEndPointFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,              
+         const StaticContext* aSctxCtx,                                                 
+         const DynamicContext* aDynCtx) const                                           
+{                                                                                       
+  Item lItem1;                                                                    
+  gmlsf_types   geometric_type1;                                                  
+  geometric_type1 = getGeometryNodeType(args, 0, lItem1);                         
+                                                                                  
+  switch(geometric_type1)                                                         
+  {                                                                               
+  case GMLSF_INVALID:                                                             
+    {                                                                             
+      std::stringstream lErrorMessage;                                            
+      zorba::Item item_qname1;
+      lItem1.getNodeName(item_qname1);
+      lErrorMessage << "Unrecognized geometric type for element "                 
+           << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << " in first parameter.";    
+      throwError(lErrorMessage.str(), XPTY0004);                                  
+    }                                                                             
+    break;                                                                        
+  case GMLSF_LINESTRING:                                                                
+  case GMLSF_LINEARRING:                                                                
+    break;                                                                              
+  default:                                                                              
+    {                                                                                   
+      std::stringstream lErrorMessage;                                                  
+      zorba::Item item_qname1;                                                           
+      lItem1.getNodeName(item_qname1);                                                    
+      lErrorMessage << "Geometry must be a line: "                                      
+           << item_qname1.getPrefix() <<":"<<item_qname1.getLocalName() << ".";           
+      throwError(lErrorMessage.str(), XPTY0004);                                        
+    }                                                                                   
+    break;                                                                              
+  }                                                                               
+                                                                                  
+  Item    nth_child;
+  buildGeosGeometryFromItem(lItem1, geometric_type1, GET_END_POINT, NULL, &nth_child);
+
+  if(nth_child.isNull())
+  {
+    std::stringstream lErrorMessage;                                              
+    lErrorMessage << "LineString has no points ";  
+    throwError(lErrorMessage.str(), XPTY0004);                                    
+  }
+                                                                                  
+  return ItemSequence_t(new SingletonItemSequence(nth_child));                  
+}
 
 ///////////////////////////////////////////////////////////////////////
 #define DEFINE_EVALUATE_ONE_LINE_RETURN_ATOMIC(sfclass_name, geos_function_name, atomictype, createatomictype)       \
@@ -2140,7 +2492,50 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
 
 DEFINE_EVALUATE_ONE_LINE_RETURN_ATOMIC(SFIsClosedFunction, isClosed, bool, createBoolean)
 DEFINE_EVALUATE_ONE_LINE_RETURN_ATOMIC(SFIsRingFunction, isRing, bool, createBoolean)
-DEFINE_EVALUATE_ONE_LINE_RETURN_ATOMIC(SFNumPointsFunction, getNumPoints, unsigned int, createUnsignedInt)
+//DEFINE_EVALUATE_ONE_LINE_RETURN_ATOMIC(SFNumPointsFunction, getNumPoints, unsigned int, createUnsignedInt)
+
+ItemSequence_t                                                                          
+SFNumPointsFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,              
+         const StaticContext* aSctxCtx,                                                 
+         const DynamicContext* aDynCtx) const                                           
+{                                                                                       
+  Item lItem;                                                                           
+  gmlsf_types   geometric_type;                                                         
+  geometric_type = getGeometryNodeType(args, 0, lItem);                                 
+                                                                                        
+  switch(geometric_type)                                                         
+  {                                                                               
+  case GMLSF_INVALID:                                                             
+    {                                                                             
+      std::stringstream lErrorMessage;                                            
+      zorba::Item item_qname;
+      lItem.getNodeName(item_qname);
+      lErrorMessage << "Unrecognized geometric type for element "                 
+           << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << " in first parameter.";    
+      throwError(lErrorMessage.str(), XPTY0004);                                  
+    }                                                                             
+    break;                                                                        
+  case GMLSF_LINESTRING:                                                                
+  case GMLSF_LINEARRING:                                                                
+    break;                                                                              
+  default:                                                                              
+    {                                                                                   
+      std::stringstream lErrorMessage;                                                  
+      zorba::Item item_qname;                                                           
+      lItem.getNodeName(item_qname);                                                    
+      lErrorMessage << "Geometry must be a line: "                                      
+           << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";           
+      throwError(lErrorMessage.str(), XPTY0004);                                        
+    }                                                                                   
+    break;                                                                              
+  }                                                                               
+                                                                                        
+  uint32_t  num_children;
+  buildGeosGeometryFromItem(lItem, geometric_type, COUNT_CHILDREN, &num_children);
+
+  return ItemSequence_t(new SingletonItemSequence(                                      
+     theModule->getItemFactory()->createUnsignedInt(num_children)));                           
+}
 
 ItemSequence_t                                                                          
 SFPointNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,              
@@ -2178,10 +2573,6 @@ SFPointNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
     break;                                                                              
   }                                                                               
                                                                                   
-  geos::geom::Geometry  *geos_geometry1;                                          
-  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1);            
-  geos::geom::LineString   *geos_line = dynamic_cast<geos::geom::LineString*>(geos_geometry1);    \
-                                                                                  
                                                                                         
   Item lItem2;                                                                           
   if (!args[1]->next(lItem2)) 
@@ -2194,31 +2585,17 @@ SFPointNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   uint32_t n;
   n = lItem2.getUnsignedIntValue();
                                                
-  if(n >= geos_line->getNumPoints())
+  Item    nth_child;
+  buildGeosGeometryFromItem(lItem1, geometric_type1, GET_NTH_CHILD, &n, &nth_child);
+
+  if(nth_child.isNull())
   {
     std::stringstream lErrorMessage;                                              
-    lErrorMessage << "Index n (" << n << ") is outside the range [0.." << geos_line->getNumPoints()-1 << "] ";  
-    delete geos_geometry1;                                                        
+    lErrorMessage << "Index n (" << n << ") is outside the range ";  
     throwError(lErrorMessage.str(), XPTY0004);                                    
   }
-  const geos::geom::Geometry  *geos_result = NULL;                                          
-  try{
-  geos_result = geos_line->getPointN(n);                                    
-  }catch(std::exception &excep)                                        
-  {                                                                               
-    delete geos_geometry1;                                                        
-    std::stringstream lErrorMessage;                                              
-    lErrorMessage << "Error in GEOS function getPointN : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
-  }                                                                               
-
-  zorba::Item   null_parent;                                                      
-  zorba::Item   result_item;                                                      
-  result_item = getGMLItemFromGeosGeometry(null_parent, geos_result);             
-  delete geos_geometry1;                                                          
-//  delete geos_result;                                                             
                                                                                   
-  return ItemSequence_t(new SingletonItemSequence(result_item));                  
+  return ItemSequence_t(new SingletonItemSequence(nth_child));                  
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -2256,27 +2633,9 @@ SFExteriorRingFunction::evaluate(const StatelessExternalFunction::Arguments_t& a
     }                                                                                   
     break;                                                                              
   }                                                                                     
-                                                                                        
-  geos::geom::Geometry  *geos_geometry;                                                 
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);                     
-  geos::geom::Polygon   *geos_polygon = dynamic_cast<geos::geom::Polygon*>(geos_geometry);    
-                                                                                        
-  const geos::geom::Geometry  *geos_result = NULL;                                                   
-  try{                                                                                  
-    geos_result = geos_polygon->getExteriorRing();                                  
-  }catch(std::exception &excep)                                              
-  {                                                                                     
-    delete geos_geometry;                                                               
-    std::stringstream lErrorMessage;                                                    
-    lErrorMessage << "Error in GEOS function getExteriorRing: " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                          
-  }                                                                                     
-                                                                                        
-  zorba::Item   null_parent;                                                            
-  zorba::Item   result_item;                                                            
-  result_item = getGMLItemFromGeosGeometry(null_parent, geos_result);                   
-  delete geos_geometry;                                                                 
-  //delete geos_result;                                                                   
+      
+  Item  result_item;
+  buildGeosGeometryFromItem(lItem, geometric_type, GET_EXTERIOR_RING, NULL, &result_item);
                                                                                         
   return ItemSequence_t(new SingletonItemSequence(result_item));                        
 }
@@ -2316,23 +2675,11 @@ SFNumInteriorRingFunction::evaluate(const StatelessExternalFunction::Arguments_t
     break;                                                                              
   }                                                                                     
                                                                                         
-  geos::geom::Geometry  *geos_geometry;                                                 
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);                     
-  geos::geom::Polygon   *geos_polygon = dynamic_cast<geos::geom::Polygon*>(geos_geometry);    
-                                                                                        
-  unsigned int  retval = 0;                                                               
-  try{                                                                                  
-  retval = geos_polygon->getNumInteriorRing();                                             
-  }catch(std::exception &excep)                                                         
-  {                                                                                     
-    delete geos_geometry;                                                               
-    std::stringstream lErrorMessage;                                                    
-    lErrorMessage << "Error in GEOS function getNumInteriorRing : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                          
-  }                                                                                     
-                                                                                        
+  uint32_t  num_children;
+  buildGeosGeometryFromItem(lItem, geometric_type, COUNT_CHILDREN, &num_children);
+
   return ItemSequence_t(new SingletonItemSequence(                                      
-     theModule->getItemFactory()->createUnsignedInt(retval)));                           
+     theModule->getItemFactory()->createUnsignedInt(num_children)));                           
 }
 
 ItemSequence_t                                                                          
@@ -2370,9 +2717,6 @@ SFInteriorRingNFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
     break;                                                                              
   }                                                                               
                                                                                   
-  geos::geom::Geometry  *geos_geometry1;                                          
-  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1);            
-  geos::geom::Polygon   *geos_polygon = dynamic_cast<geos::geom::Polygon*>(geos_geometry1);    
                                                                                   
                                                                                         
   Item lItem2;                                                                           
@@ -2385,32 +2729,18 @@ SFInteriorRingNFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
 
   uint32_t n;
   n = lItem2.getUnsignedIntValue();
-                                               
-  if(n >= geos_polygon->getNumInteriorRing())
+                                      
+  Item    nth_child;
+  buildGeosGeometryFromItem(lItem1, geometric_type1, GET_NTH_CHILD, &n, &nth_child);
+
+  if(nth_child.isNull())
   {
     std::stringstream lErrorMessage;                                              
-    lErrorMessage << "Index n (" << n << ") is outside the range [0.." << geos_polygon->getNumInteriorRing()-1 << "] ";  
-    delete geos_geometry1;                                                        
+    lErrorMessage << "Index n (" << n << ") is outside the range ";  
     throwError(lErrorMessage.str(), XPTY0004);                                    
   }
-  const geos::geom::Geometry  *geos_result = NULL;                                          
-  try{
-  geos_result = geos_polygon->getInteriorRingN(n);                                    
-  }catch(std::exception &excep)                                        
-  {                                                                               
-    delete geos_geometry1;                                                        
-    std::stringstream lErrorMessage;                                              
-    lErrorMessage << "Error in GEOS function getPointN : " << excep.what();  
-    throwError(lErrorMessage.str(), XPTY0004);                                    
-  }                                                                               
-
-  zorba::Item   null_parent;                                                      
-  zorba::Item   result_item;                                                      
-  result_item = getGMLItemFromGeosGeometry(null_parent, geos_result);             
-  delete geos_geometry1;                                                          
-//  delete geos_result;                                                             
                                                                                   
-  return ItemSequence_t(new SingletonItemSequence(result_item));                  
+  return ItemSequence_t(new SingletonItemSequence(nth_child));                  
 }
 
 
