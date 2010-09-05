@@ -309,7 +309,7 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   {
     if (!err.theStackTrace.empty()) {
       const error::ZorbaError::StackEntry_t lLast = err.theStackTrace.back();
-      const QueryLoc& lLoc = lLast.second;
+      const QueryLoc& lLoc = lLast.first;
       const QueryLoc& lFunLoc = theUDF->getLoc();
       if (lLoc.getFilename() != lFunLoc.getFilename()) {
         throw err;
@@ -330,8 +330,9 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
       }
     }
     err.theStackTrace.push_back(error::ZorbaError::StackEntry_t(
-        theUDF->getName(),
-        loc));
+        loc,
+        std::pair<store::Item_t, unsigned int>(theUDF->getName(), theUDF->getArgVars().size()))
+    );
     throw err;
   }
 }

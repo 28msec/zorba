@@ -43,7 +43,8 @@ namespace error
 class ZORBA_DLL_PUBLIC ZorbaError : public ::zorba::serialization::SerializeBaseClass
 {
 public:
-  typedef std::pair<store::Item_t, QueryLoc> StackEntry_t;
+  //typedef std::pair<store::Item_t, QueryLoc> StackEntry_t;
+  typedef std::pair<QueryLoc, std::pair<store::Item_t, unsigned int> > StackEntry_t;
   typedef std::vector<StackEntry_t> StackTrace_t;
   xqpString             theLocalName;
   xqpString             thePrefix;

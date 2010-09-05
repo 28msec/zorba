@@ -1073,6 +1073,8 @@ protected:
   expr_t theExpr;
   store::Item_t theFunctionName;
   QueryLoc theFunctionLocation;
+  unsigned int theFunctionArity;
+
 public:
   SERIALIZABLE_CLASS(function_trace_expr);
   SERIALIZABLE_CLASS_CONSTRUCTOR2(function_trace_expr, expr)
@@ -1113,6 +1115,16 @@ public:
   const QueryLoc& getFunctionLocation() const
   {
     return theFunctionLocation;
+  }
+  
+  void setFunctionArity(unsigned int arity)
+  {
+    theFunctionArity = arity;
+  }
+
+  unsigned int getFunctionArity() const
+  {
+    return theFunctionArity;
   }
 };
 

@@ -47,6 +47,7 @@ class FunctionTraceIterator : public NaryBaseIterator<FunctionTraceIterator, Pla
 protected:
   store::Item_t theFunctionName; //stores the name of the function it substitutes
   QueryLoc theFunctionLocation; //stores the location of the function which it calls
+  unsigned int theFunctionArity; //stores the arity of the function being called
 public:
   SERIALIZABLE_CLASS(FunctionTraceIterator);
 
@@ -60,6 +61,7 @@ public:
 
     ar & theFunctionName;
     ar & theFunctionLocation;
+    ar & theFunctionArity;
   }
 
   FunctionTraceIterator(
@@ -69,7 +71,8 @@ public:
     : 
     NaryBaseIterator<FunctionTraceIterator, PlanIteratorState>(sctx, loc, children),
     theFunctionName(),
-    theFunctionLocation()
+    theFunctionLocation(),
+    theFunctionArity()
   {}
 
   virtual ~FunctionTraceIterator();
@@ -77,6 +80,7 @@ public:
 public:
   void setFunctionName(const store::Item_t& aFunctionName);
   void setFunctionLocation(const QueryLoc& aFunctionLocation);
+  void setFunctionArity(unsigned int arity);
   void accept(PlanIterVisitor& v) const;
 
   bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;

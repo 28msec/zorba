@@ -319,8 +319,9 @@ QueryException::StackTrace_t ZorbaError::getStackTrace() const
   QueryException::StackTrace_t lResult;
   for (locList_t::const_iterator i = theStackTrace.begin();
        i != theStackTrace.end(); ++i) {
-         lResult.push_back(QueryException::StackEntry_t(zorba::Item(i->first),
-                                        new QueryLocationImpl(i->second)));
+         lResult.push_back(QueryException::StackEntry_t(zorba::Item(i->second.first),
+                                        i->second.second,
+                                        new QueryLocationImpl(i->first)));
   }
   return lResult;
 }

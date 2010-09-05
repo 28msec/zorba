@@ -20,6 +20,47 @@
 
 namespace zorba {
 
+  std::ostream& print_stack_trace(const QueryException& aException,
+                                  std::ostream& aOut,
+                                  bool aAsXml)
+  {
+    ZorbaException::StackTrace_t lTrace = aException.getStackTrace();
+    if(!lTrace.empty()) {
+      QueryException::StackTrace_t::iterator it = lTrace.begin();
+      if(aAsXml) { aOut << "<stack>"; } 
+      for(; it != lTrace.end(); ++it) {
+        Item lName = it->getFunctionName();
+        unsigned int lArity = it->getFunctionArity();
+        QueryLocation_t lLocation = it->getLocation();
+        String lPrefix = lName.getPrefix();
+        if(aAsXml) {
+          aOut << "<call ";
+          if(lPrefix != "") {
+            aOut << " prefix=\"" << lPrefix << "\" ";
+          }
+          aOut << " arity=\"" << lArity << "\" ";
+          aOut << " ns=\"" << lName.getNamespace() << "\" ";
+          aOut << " localName=\"" << lName.getLocalName() << "\">";
+          aOut << "  <location ";
+          aOut << "fileName=\"" << lLocation->getFileName() << "\" ";  
+          aOut << "lineBegin=\"" << lLocation->getLineBegin() << "\" ";  
+          aOut << "lineEnd=\"" << lLocation->getLineEnd() << "\" ";  
+          aOut << "columnBegin=\"" << lLocation->getColumnBegin() << "\" ";  
+          aOut << "columnEnd=\"" << lLocation->getColumnEnd() << "\" ";  
+          aOut << "  />";
+          aOut << "</call>"; 
+        } else {
+	  String lFName = lPrefix == "" ? lName.getLocalName() : lPrefix + ":" + lName.getLocalName();
+          aOut << "=================================================" << std::endl;
+          aOut << lFName << "#" << lArity << " ( " << lName.getNamespace() << " ) " << std::endl;
+          aOut << lLocation->getFileName() << " at line " << lLocation->getLineBegin() << " column " << lLocation->getColumnBegin() << std::endl;
+        }
+      } 
+      if(aAsXml) { aOut << "</stack>"; } 
+    }
+    return aOut;
+  }
+
   std::ostream&
   ErrorPrinter::print(const QueryException& aException,
                       std::ostream&         aOut,
@@ -29,6 +70,7 @@ namespace zorba {
       if( !aAsXml ) {
         aOut << aException << " ";
         if( aIndent ) { aOut << std::endl; };
+        print_stack_trace(aException, aOut, aAsXml);
       }
       else {
         aOut << "<errors>";
@@ -46,6 +88,7 @@ namespace zorba {
         //description
         aOut << "<description>" << aException.getDescription().formatAsXML() << "</description>";
         if( aIndent ) aOut << std::endl << "  ";
+        print_stack_trace(aException, aOut, aAsXml);
         aOut << "</error>";
         if( aIndent ) aOut << std::endl;
         aOut << "</errors>";

@@ -1374,6 +1374,7 @@ void function_trace_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theExpr;
   ar & theFunctionName;
   ar & theFunctionLocation;
+  ar & theFunctionArity;
 }
 
 void function_trace_expr::compute_scripting_kind()

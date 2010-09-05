@@ -493,6 +493,7 @@ void end_visit(function_trace_expr& v)
   std::auto_ptr<FunctionTraceIterator> lDummyIter(
       new FunctionTraceIterator(sctx, qloc, argv));
   lDummyIter->setFunctionName(v.getFunctionName());
+  lDummyIter->setFunctionArity(v.getFunctionArity());
   lDummyIter->setFunctionLocation(v.getFunctionLocation());
   push_itstack(lDummyIter.release());
 }

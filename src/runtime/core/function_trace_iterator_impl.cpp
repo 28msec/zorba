@@ -19,7 +19,7 @@ bool FunctionTraceIterator::nextImpl(store::Item_t &result, PlanState &aPlanStat
   } catch (error::ZorbaError& err) {
     if (!err.theStackTrace.empty()) {
       const error::ZorbaError::StackEntry_t lLast = err.theStackTrace.back();
-      const QueryLoc& lLoc = lLast.second;
+      const QueryLoc& lLoc = lLast.first;
       if (lLoc.getFilename() != theFunctionLocation.getFilename()) {
         throw err;
       }
@@ -39,8 +39,9 @@ bool FunctionTraceIterator::nextImpl(store::Item_t &result, PlanState &aPlanStat
       }
     }
     err.theStackTrace.push_back(error::ZorbaError::StackEntry_t(
-        theFunctionName,
-        loc));
+        loc,
+        std::pair<store::Item_t, unsigned int>(theFunctionName, theFunctionArity))
+    );
     throw err;
   }
 }
@@ -53,6 +54,11 @@ void FunctionTraceIterator::setFunctionName(const store::Item_t& aFunctionName)
 void FunctionTraceIterator::setFunctionLocation(const QueryLoc &aFunctionLocation)
 {
   theFunctionLocation = aFunctionLocation;
+}
+
+void FunctionTraceIterator::setFunctionArity(unsigned int arity)
+{
+  theFunctionArity = arity;
 }
 
 } // namespace zorba

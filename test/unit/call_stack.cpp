@@ -49,12 +49,12 @@ bool test_call_stack1(Zorba* aZorba)
     ZorbaException::StackTrace_t lTrace = e.getStackTrace();
     if (lTrace.size() != 2)
       return false;
-    Item lQName = lTrace[0].first;
+    Item lQName = lTrace[0].getFunctionName();
     if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
       lResult = false;
     if (lQName.getLocalName() != "test")
       lResult = false;
-    lQName = lTrace[1].first;
+    lQName = lTrace[1].getFunctionName();
     if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
       lResult = false;
     if (lQName.getLocalName() != "test1")
@@ -92,12 +92,12 @@ bool test_call_stack2(Zorba* aZorba)
     ZorbaException::StackTrace_t lTrace = e.getStackTrace();
     if (lTrace.size() != 2)
       return false;
-    Item lQName = lTrace[0].first;
+    Item lQName = lTrace[0].getFunctionName();
     if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
       lResult = false;
     if (lQName.getLocalName() != "test")
       lResult = false;
-    lQName = lTrace[1].first;
+    lQName = lTrace[1].getFunctionName();
     if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
       lResult = false;
     if (lQName.getLocalName() != "test1")
@@ -131,7 +131,7 @@ bool test_call_stack3(Zorba* aZorba)
     ZorbaException::StackTrace_t lTrace = e.getStackTrace();
     if (lTrace.size() != 1)
       return false;
-    Item lQName = lTrace[0].first;
+    Item lQName = lTrace[0].getFunctionName();
     if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
       lResult = false;
     if (lQName.getLocalName() != "test")
@@ -163,7 +163,7 @@ bool test_call_stack4(Zorba* aZorba)
     ZorbaException::StackTrace_t lTrace = e.getStackTrace();
     if (lTrace.size() != 1)
       return false;
-    Item lQName = lTrace[0].first;
+    Item lQName = lTrace[0].getFunctionName();
     if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
       lResult = false;
     if (lQName.getLocalName() != "foo")

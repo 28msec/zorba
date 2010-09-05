@@ -26,12 +26,28 @@
 
 namespace zorba {
 
+class StackEntry {
+  private:
+    zorba::Item theFunctionName;
+    unsigned int theFunctionArity;
+    QueryLocation_t theLocation;
+
+  public:
+    StackEntry(zorba::Item aName, unsigned int arity, QueryLocation_t aLocation):
+      theFunctionName(aName), theFunctionArity(arity), theLocation(aLocation){}
+
+   const zorba::Item& getFunctionName() const { return theFunctionName; }
+   unsigned int getFunctionArity() const { return theFunctionArity; }
+   const QueryLocation_t getLocation() const { return theLocation; }
+};
+
 /** \brief Base class of all exceptions thrown by %Zorba.
  */
 class ZORBA_DLL_PUBLIC ZorbaException
 {
  public:
-  typedef std::pair<zorba::Item, QueryLocation_t> StackEntry_t;
+  //typedef std::pair<zorba::Item, QueryLocation_t> StackEntry_t;
+  typedef StackEntry StackEntry_t;
   typedef std::vector<StackEntry_t> StackTrace_t;
   /** \brief Destructor
    */

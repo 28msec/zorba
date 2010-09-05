@@ -259,26 +259,8 @@ SystemException::~SystemException() throw()
 
 std::ostream& operator<< (std::ostream& os, const ZorbaException& aException)
 {
-  os << "[" << ZorbaException::getErrorCodeAsString(aException.getErrorCode()) << "] "
+  return os << "[" << ZorbaException::getErrorCodeAsString(aException.getErrorCode()) << "] "
             << aException.getDescription();
-  ZorbaException::StackTrace_t lTrace = aException.getStackTrace();
-  if (!lTrace.empty()) {
-    os << std::endl << "Stack trace:" << std::endl;
-    for (QueryException::StackTrace_t::iterator i = lTrace.begin();
-         lTrace.end() != i; ++i)
-    {
-      QueryLocation_t loc = i->second;
-      Item name = i->first;
-      String functionName = name.getPrefix() == "" ? name.getLocalName() :
-                            name.getPrefix() + ":" + name.getLocalName();
-      os << "==================================================" << std::endl;
-      os << functionName << " ( " << name.getNamespace() << " )"<< std::endl;
-      os << loc->getFileName() << " at line " << loc->getLineBegin()
-          << " column " << loc->getColumnBegin() << std::endl;
-    }
-    os << std::endl;
-  }
-  return os;
 }
 
 
