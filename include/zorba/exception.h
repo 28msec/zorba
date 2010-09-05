@@ -26,7 +26,7 @@
 
 namespace zorba {
 
-class StackEntry {
+class ZORBA_DLL_PUBLIC StackEntry {
   private:
     zorba::Item theFunctionName;
     unsigned int theFunctionArity;
