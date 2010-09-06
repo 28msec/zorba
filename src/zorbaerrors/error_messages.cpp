@@ -509,6 +509,9 @@ DEF_ERR_CODE (XQST0071, XQST0071,
 DEF_ERR_CODE (XQST0073, XQST0073, 
 "The graph of module imports contains a cycle.")
 
+DEF_ERR_CODE (XQST0093, XQST0093, 
+"The graph of module imports contains a cycle.")
+
 DEF_ERR_CODE (XQST0075, XQST0075, 
 "An implementation that does not support the Validation Feature must raise a static error if it encounters a validate expression.")
 

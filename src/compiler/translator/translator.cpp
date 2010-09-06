@@ -2982,7 +2982,7 @@ void end_visit(const ModuleImport& v, void* /*visit_state*/)
     // Make sure that there are no cycles in a chain of module imports.
     set<string> mod_stk1 = theModulesStack;
     if (! mod_stk1.insert(compURI).second)
-      ZORBA_ERROR_LOC(XQST0073, loc);
+      ZORBA_ERROR_LOC(XQST0093, loc);
 
     // importedNS is the target namespace of the imported module, as declared
     // inside the module itself.

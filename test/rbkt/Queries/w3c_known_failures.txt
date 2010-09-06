@@ -76,8 +76,6 @@ test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/modules-21
 test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/modules-24
 test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/errata8-003
 test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/modules-26
-test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/errata8-001
-test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/errata8-002
 test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/modules-20
 test/rbkt/w3c_testsuite/XQuery/Modules/ModuleImport/modules-circular
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/MatchesFunc/fn-matches-38
