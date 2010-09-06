@@ -38,6 +38,13 @@ namespace zorba {
 
       virtual DocumentURIResolver*
       getDocumentURIResolver() const;
+
+      /**
+       * Get the i-th ModuleURIResolver that has been registered
+       * before serialization.
+       */
+      virtual ModuleURIResolver*
+      getModuleURIResolver(size_t i) const;
   };
 
 } /* namespace zorba */

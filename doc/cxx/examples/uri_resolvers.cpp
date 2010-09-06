@@ -20,6 +20,7 @@
 
 #include <zorba/zorba.h>
 #include <zorba/store_manager.h>
+#include <zorba/serialization_callback.h>
 
 #include <zorba/uri_resolvers.h>
 
@@ -244,6 +245,16 @@ public:
   }
 };
 
+class URIResolverSerializationCallback : public SerializationCallback
+{
+  public:
+    virtual ModuleURIResolver*
+    getModuleURIResolver(size_t /*i*/) const
+    {
+      return 0;
+    }
+};
+
 
 bool 
 resolver_example_3(Zorba* aZorba)
@@ -262,7 +273,23 @@ resolver_example_3(Zorba* aZorba)
     return false;
   }
 
-	return true;
+  // test if an error is raised if a module uri resolver is not
+  // available using the serialization callback
+  try {
+    XQuery_t lQuery = aZorba->compileQuery("import module namespace lm='http://www.zorba-xquery.com/mymodule'; lm:foo()", lContext); 
+
+    std::stringstream lSerializedQuery;
+    lQuery->saveExecutionPlan(lSerializedQuery,
+        ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+
+    URIResolverSerializationCallback lCallback; 
+    XQuery_t lQuery2 = aZorba->createQuery();
+    lQuery2->loadExecutionPlan(lSerializedQuery, &lCallback);
+    return false;
+  } catch (ZorbaException& e) {
+    std::cerr << e.getDescription() << std::endl;
+    return true;
+  }
 }
 
 int 

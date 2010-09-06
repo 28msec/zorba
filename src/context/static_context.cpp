@@ -474,16 +474,19 @@ static_context::~static_context()
 void static_context::serialize_resolvers(serialization::Archiver& ar)
 {
   bool lUserDocResolver, lUserColResolver;
+  size_t lNumModuleResolvers;
   if (ar.is_serializing_out())
   {
     // serialize out: remember whether a doc and collection
     //                resolver was registered by the user
     lUserDocResolver = ((theDocResolver != NULL) && (dynamic_cast<StandardDocumentURIResolver*>(theDocResolver) == NULL));
     lUserColResolver = ((theColResolver != NULL) && (dynamic_cast<StandardCollectionURIResolver*>(theColResolver) == NULL));
+    lNumModuleResolvers = theModuleResolvers.size();
 
 	  ar.set_is_temp_field(true);
     ar & lUserDocResolver;
     ar & lUserColResolver;
+    ar & lNumModuleResolvers;
 	  ar.set_is_temp_field(false);
   }
   else
@@ -496,14 +499,15 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
 	  ar.set_is_temp_field(true);
     ar & lUserDocResolver; // doc resolver passed by the user
     ar & lUserColResolver; // col resolver passed by the user
+    ar & lNumModuleResolvers; // number of module resolvers passed by the user
 	  ar.set_is_temp_field(false);
 
     // callback required but not available
-    if ((lUserDocResolver || lUserColResolver) && !lCallback)
+    if ((lUserDocResolver || lUserColResolver || lNumModuleResolvers) && !lCallback)
     {
       ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
                            "Couldn't load pre-compiled query because"
-                           << " a document or collection resolver"
+                           << " a document, collection, or module resolver"
                            << " is required but no SerializationCallback"
                            << " is given for retrieving these resolvers.");
     }
@@ -529,6 +533,18 @@ void static_context::serialize_resolvers(serialization::Archiver& ar)
                              " using the given SerializationCallback");
       }
       set_collection_uri_resolver(new CollectionURIResolverWrapper(lColResolver));
+    }
+    if (lNumModuleResolvers) {
+      for (size_t i = 0; i < lNumModuleResolvers; ++i) {
+        ModuleURIResolver* lModResolver = lCallback->getModuleURIResolver(i);
+        if (!lModResolver) {
+          ZORBA_ERROR_DESC_OSS(SRL0013_UNABLE_TO_LOAD_QUERY,
+                               "Couldn't load pre-compiled query because"
+                               " no module URI resolver could be retrieved"
+                               " using the given SerializationCallback");
+        }
+        add_module_uri_resolver(new ModuleURIResolverWrapper(lModResolver));
+      }
     }
   }
 }
