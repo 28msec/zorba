@@ -53,6 +53,7 @@ namespace zorba { namespace geomodule {
         GMLSF_MULTIPOINT,
         GMLSF_MULTICURVE,
         GMLSF_MULTISURFACE,
+        GMLSF_MULTIGEOMETRY,
 
         GMLSF_INVALID
       };

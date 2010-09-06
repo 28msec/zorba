@@ -109,6 +109,8 @@ enum GeoFunction::gmlsf_types GeoFunction::getGmlSFGeometricType(Item item) cons
     return GMLSF_MULTICURVE;
   else if(localname.byteEqual("MultiSurface", 12))
     return GMLSF_MULTISURFACE;
+  else if(localname.byteEqual("MultiGeometry", 13))///from GML3
+    return GMLSF_MULTIGEOMETRY;
   else
     return GMLSF_INVALID;
 }
@@ -1017,6 +1019,94 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       }                                                                               
     }
   }break;
+  case GMLSF_MULTIGEOMETRY:
+  {
+    Iterator_t    multigeometry_children;
+    Item          geometry_item;
+    std::vector<geos::geom::Geometry*>    *geometry_vector;
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      geometry_vector = new std::vector<geos::geom::Geometry*>;
+    }
+    else if(what_action == COUNT_CHILDREN)
+    {
+      (*optional_child_index_or_count) = 0;
+    }
+    int nr_child = 0;
+    multigeometry_children = lItem.getChildren();
+    multigeometry_children->open();
+    while(multigeometry_children->next(geometry_item))
+    {
+      if(geometry_item.getNodeKind() != store::StoreConsts::elementNode)
+        continue;
+      Item    item_qname;
+      geometry_item.getNodeName(item_qname);
+      String  item_namespace = item_qname.getNamespace();
+      if(!item_namespace.byteEqual("http://www.opengis.net/gml", 26))
+      {
+        std::stringstream lErrorMessage;
+        lErrorMessage << "Children of gml:MultiGeometry must be gml:geometryMember or gml:geometryMembers";
+        throwError(lErrorMessage.str(), XPTY0004);
+      }
+      String  item_name = item_qname.getLocalName();
+      if(item_name.byteEqual("geometryMember", 14) || item_name.byteEqual("geometryMembers", 15))
+      {
+        Iterator_t    member_children;
+        Item          member_item;
+        member_children = geometry_item.getChildren();
+        member_children->open();
+        while(member_children->next(member_item))
+        {
+          if(what_action == BUILD_GEOS_GEOMETRY)
+          {
+            geometry_vector->push_back(buildGeosGeometryFromItem(member_item, getGmlSFGeometricType(member_item)));
+          }
+          else if(what_action == COUNT_CHILDREN)
+          {
+            (*optional_child_index_or_count)++;
+          }
+          else if(what_action == GET_NTH_CHILD)
+          {
+            if((*optional_child_index_or_count) == nr_child)
+            {
+              *result_item = member_item;
+              return NULL;
+            }
+          }
+          else
+          {
+            std::stringstream lErrorMessage;                                              
+            lErrorMessage << "Error in GMLSF_MULTIGEOMETRY";  
+            throwError(lErrorMessage.str(), XQP0019_INTERNAL_ERROR);                                    
+          }
+          nr_child++;
+        }
+      }
+      else
+      {
+        std::stringstream lErrorMessage;
+        lErrorMessage << "Children of gml:MultiGeometry must be gml:geometryMember or gml:geometryMembers";
+        throwError(lErrorMessage.str(), XPTY0004);
+      }
+    }
+    if(what_action == BUILD_GEOS_GEOMETRY)
+    {
+      try{
+        return get_geometryFactory()->createGeometryCollection(geometry_vector);
+      }catch(std::exception &excep)                                        
+      {                                                                               
+        std::vector<geos::geom::Geometry*>::iterator  vec_it;
+        for(vec_it = geometry_vector->begin(); vec_it != geometry_vector->end(); vec_it++)
+        {
+          delete (*vec_it);
+        }
+        delete geometry_vector;
+        std::stringstream lErrorMessage;                                              
+        lErrorMessage << "Error in GEOS function createGeometryCollection : " << excep.what();  
+        throwError(lErrorMessage.str(), XPTY0004);                                    
+      }                                                                               
+    }
+  }break;
   case GMLSF_INVALID:
   default:
   {
@@ -1244,9 +1334,23 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
     }
     else
     {
-      std::stringstream lErrorMessage;
-      lErrorMessage << "Geometry Collections are not supported in GMLSF0/1";
-      throwError(lErrorMessage.str(), XPTY0004);
+      item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "MultiGeometry");
+      result_item = theModule->getItemFactory()->createElementNode(parent, item_name, item_type, false, false, ns_binding);
+
+      size_t    nr_geoms = geos_geometry->getNumGeometries();
+      for(size_t i=0;i<nr_geoms;i++)
+      {
+        zorba::Item geometryMember_item;
+        item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
+        item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "geometryMember");
+        geometryMember_item = theModule->getItemFactory()->createElementNode(result_item, item_name, item_type, false, false, ns_binding);
+        const geos::geom::Geometry  *member;
+        member = geos_geometry->getGeometryN(i);
+
+        zorba::Item   geometry_item;
+        geometry_item = getGMLItemFromGeosGeometry(geometryMember_item, member, NULL);
+      }
+      return result_item;
     }
   }
   default:
@@ -1271,40 +1375,23 @@ SFDimensionFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
   gmlsf_types   geometric_type;
   geometric_type = getGeometryNodeType(args, 0, lItem);
 
-  int   nr_dim = -1;
-  switch(geometric_type)
-  {
-  case GMLSF_POINT:
-    nr_dim = 0;break;
-  case GMLSF_LINESTRING:
-  case GMLSF_CURVE:
-    nr_dim = 1;break;
-  case GMLSF_LINEARRING:
-  case GMLSF_SURFACE:
-  case GMLSF_POLYGON:
-    nr_dim = 2;break;
-  case GMLSF_MULTIPOINT:
-    nr_dim = 0;break;
-  case GMLSF_MULTICURVE:
-    nr_dim = 1;break;
-  case GMLSF_MULTISURFACE:
-    nr_dim = 2;break;
-
-  case GMLSF_INVALID:
-  default:
-    {
-      std::stringstream lErrorMessage;
-      zorba::Item item_qname;
-      lItem.getNodeName(item_qname);
-      lErrorMessage << "Unrecognized geometric type for element " 
-           << item_qname.getPrefix() <<":"<<item_qname.getLocalName() << ".";
-      throwError(lErrorMessage.str(), XPTY0004);
-    }
-    break;
-  }
+  geos::geom::Geometry  *geos_geometry;                                                 
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);                     
+                                                                                        
+  geos::geom::Dimension::DimensionType   dim_type;                                                
+  try{                                                                                  
+    dim_type = geos_geometry->getDimension();                                  
+  }catch(std::exception &excep)                                              
+  {                                                                                     
+    delete geos_geometry;                                                               
+    std::stringstream lErrorMessage;                                                    
+    lErrorMessage << "Error in GEOS function getDimension : " << excep.what();  
+    throwError(lErrorMessage.str(), XPTY0004);                                          
+  }                                                                                     
+  delete geos_geometry;                                                               
 
   return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createInteger(nr_dim)));
+      theModule->getItemFactory()->createInteger((int)dim_type)));
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1368,6 +1455,8 @@ SFGeometryTypeFunction::evaluate(const StatelessExternalFunction::Arguments_t& a
    type_string = "MultiCurve";break;
   case GMLSF_MULTISURFACE:
    type_string = "MultiSurface";break;
+  case GMLSF_MULTIGEOMETRY:
+   type_string = "MultiGeometry";break;
 
   case GMLSF_INVALID:
   default:

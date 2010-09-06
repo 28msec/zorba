@@ -17,9 +17,9 @@
 (:~
  : Function library providing geo processing using Simple Features api over
  : GMLSF format. <br/>
- : It uses the GEOS external library, license LGPL. Version 3.2.2 or above.<br/>
+ : It uses the GEOS external library, license LGPL. Version 3.2.2 or above is required.<br/>
  : <br/>
- : The data format supported now is GMLSF 0/1. GMLSF 2 will be supported soon.<br/>
+ : The data format supported is GMLSF 0/1.<br/>
  : This is a subset of GML, and covers the basic geometries of Point, Line and Surface and collections of those.<br/>
  : GMLSF nodes have the namespace "http://www.opengis.net/gml".<br/>
  : <br/>
@@ -85,6 +85,16 @@
  :     &#160;&#160;[&lt;gml:Polygon&gt; ... &lt;/gml:Polygon&gt;]*<br/>
  :    &lt;/gml:MultiSurface&gt;
  :  </dd>
+ :  <dt><b>MultiGeometry (this is from GML 3 schema)</b></dt>
+ :  <dd>&lt;gml:MultiGeometry&gt;<br/>
+ :     &#160;&#160;[&lt;gml:geometryMember&gt;<br/>
+ :          &#160;&#160;&#160;&#160; ...one geometry...<br/>
+ :     &#160;&#160;&lt;/gml:geometryMember&gt;]*<br/>
+ :     &#160;&#160;[&lt;gml:geometryMembers&gt;<br/>
+ :          &#160;&#160;&#160;&#160; ...a list of geometries...<br/>
+ :     &#160;&#160;&lt;/gml:geometryMembers&gt;]?<br/>
+ :    &lt;/gml:MultiGeometry&gt;
+ :  </dd>
  : </dl><br/><br/>
  : Note: When using gml:posList, it is possible to replace this element with a list of gml:pos.<br/>
  : Note: XLink referencing is not supported.<br/>
@@ -136,8 +146,8 @@ module namespace zorba-geo = "http://www.zorba-xquery.com/modules/geo";
 (:~
  : Return the dimension of the geo object. 
  : 
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return 0 for point, 1 for line, 2 for surface.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -146,8 +156,8 @@ declare function zorba-geo:dimension( $geometry as node()) as xs:integer externa
 (:~
  : Return the coordinate dimension of the geo object. 
  : 
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return 2 for 2D, 3 for 3D. For now only 2D is supported.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -156,11 +166,11 @@ declare function zorba-geo:coordinate-dimension( $geometry as node()) as xs:inte
 (:~
  : Return the string type of geo object. 
  : 
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return "Point" for Point, "LineString" for LineString, "Curve" for Curve, "LinearRing" for LinearRing,
  :     "Surface" for Surface, "Polygon" for Polygon, "MultiPoint" for MultiPoint, "MultiCurve" for MultiCurve,
- :     "MultiSurface" for MultiSurface
+ :     "MultiSurface" for MultiSurface, "MultiGeometry" for MultiGeometry
  : @error XPTY0004 - unrecognized geometric object
 :)
 declare function zorba-geo:geometry-type( $geometry as node()) as xs:string external;
@@ -170,8 +180,8 @@ declare function zorba-geo:geometry-type( $geometry as node()) as xs:string exte
  : For gml:Point, gml:LineString, gml:LinearRing, gml:Polygon, return 1.
  : For gml:Curve and gml:Surface, they are treated as geometric collections.
  : 
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return number of geometries in collection
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -183,8 +193,8 @@ declare function zorba-geo:num-geometries( $geometry as node()) as xs:unsignedIn
  : For gml:Point, gml:LineString, gml:LinearRing, gml:Polygon, return this item if n is zero, otherwise error.
  : For gml:Curve and gml:Surface, they are treated as geometric collections.
  : 
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @param $n zero-based index in the collection
  : @return n-th geometry in collection. The node is the original node, not a copy.
  : @error XPTY0004 - unrecognized geometric object
@@ -194,8 +204,8 @@ declare function zorba-geo:geometry-n( $geometry as node(), $n as xs:unsignedInt
 (:~
  : The envelope is the minimum bounding box of this geometry.
  : 
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return A rectangle gml:Polygon with coordinates (minx, miny), (maxx, miny), (maxx, maxy), (minx, maxy), (minx, miny) <br/>
  :     Or a gml:Point for Point geometry.
  : @error XPTY0004 - unrecognized geometric object
@@ -206,8 +216,8 @@ declare function zorba-geo:envelope( $geometry as node()) as node() external;
  : Return the Well-known Text Representation of Geometry. 
  : This is defined in the Simple Features spec from OGC.
  : 
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return the Well-known Text Representation for the geo object.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -217,8 +227,8 @@ declare function zorba-geo:as-text( $geometry as node()) as xs:string external;
  : Return the Well-known Binary Representation of Geometry. 
  : This is defined in the Simple Features spec from OGC.
  : 
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return the Well-known Binary Representation for the geo object as hex string.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -227,8 +237,8 @@ declare function zorba-geo:as-binary( $geometry as node()) as xs:string external
 (:~
  : Checks if the argument is empty or not and if it is a valid geometry or not. 
  : 
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if $geometry is not a valid gmlsf object.
 :)
 declare function zorba-geo:is-empty( $geometry as node()?) as xs:boolean external;
@@ -236,7 +246,7 @@ declare function zorba-geo:is-empty( $geometry as node()?) as xs:boolean externa
 (:~
  : Checks if this geometric object has no anomalous geometric points, such
  :	as self intersection or self tangency. 
- : Does not work for gml:Curve and gml:Surface.
+ : Does not work for gml:Curve, gml:Surface and gml:MultiGeometry.
  : 
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString,
  :    gml:LinearRing, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
@@ -249,8 +259,8 @@ declare function zorba-geo:is-simple( $geometry as node()) as xs:boolean externa
  : Checks if this geometric object is 2D or 3D.<br/>
  : Only 2D objects are supported for now. 
  : 
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if $geometry is 3D. Result is hardcoded to false for now.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -264,10 +274,10 @@ declare function zorba-geo:is-3D( $geometry as node()) as xs:boolean external;
  : For a Polygon, the boundary is the set of exterior and interior rings.<br/>
  :<br/>
  : Note: For MultiCurve, the boundary processes only the first LineString.<br/>
- : Note: This operation is not supported for gml:Curve and gml:Surface.<br/>
+ : Note: This operation is not supported for gml:Curve, gml:Surface and gml:MultiGeometry.<br/>
  : 
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString,
+ :    gml:LinearRing, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
  : @return the boundary of a Geometry as a set of Geometries of the next lower dimension.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -279,10 +289,10 @@ declare function zorba-geo:boundary( $geometry as node()) as node() external;
  :<br/>
  : Note: Does not work for gml:Surface and gml:MultiSurface if they have multiple Polygons.<br/>
  : 
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if the DE-9IM intersection matrix for the two Geometrys is T*F**FFF*.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -297,10 +307,10 @@ declare function zorba-geo:equals( $geometry1 as node(),  $geometry2 as node()) 
  : <br/>
  : Unlike contains it does not distinguish between points in the boundary and in the interior of geometries.
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 covers geometry2.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -314,10 +324,10 @@ declare function zorba-geo:covers( $geometry1 as node(),  $geometry2 as node()) 
  :     FF*FF****.<br/>
  :  - geometry1 does not intersect geometry2<br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 and geometry2 are disjoint.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -328,10 +338,10 @@ declare function zorba-geo:disjoint( $geometry1 as node(),  $geometry2 as node()
  : This is true if disjoint returns false.
  : <br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 and geometry2 are disjoint.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -343,10 +353,10 @@ declare function zorba-geo:intersects( $geometry1 as node(),  $geometry2 as node
  : geometries is FT*******, F**T***** or F***T****.
  : <br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 touches geometry2.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -364,10 +374,10 @@ declare function zorba-geo:touches( $geometry1 as node(),  $geometry2 as node())
  : This applies for situations:  P/L, P/A, L/L, L/A, L/P, A/P and A/L.
  : For other situations it returns false.
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 crosses geometry2.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -379,10 +389,10 @@ declare function zorba-geo:crosses( $geometry1 as node(),  $geometry2 as node())
  : geometries is T*F**F***.
  : <br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 is within geometry2.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -393,10 +403,10 @@ declare function zorba-geo:within( $geometry1 as node(),  $geometry2 as node()) 
  : Returns true if within(geometry2, geometry1) is true.
  : <br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 contains geometry2.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -409,10 +419,10 @@ declare function zorba-geo:contains( $geometry1 as node(),  $geometry2 as node()
  :	 or * 1*T***T** (for two curves).
  : <br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return true if geometry1 overlaps geometry2.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -473,10 +483,10 @@ declare function zorba-geo:relate( $geometry1 as node(),  $geometry2 as node(), 
  : Compute the shortest distance between any two Points in geometry1 and geometry2.<br/>
  : <br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return minimum distance as xs:double.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -487,8 +497,8 @@ declare function zorba-geo:distance( $geometry1 as node(),  $geometry2 as node()
  :   from this geometric object is less than or equal to distance.<br/>
  : <br/>
  :
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @param $distance the distance from geometry, expressed in units of the current coordinate system
  : @return new geometry node.
  : @error XPTY0004 - unrecognized geometric object
@@ -500,8 +510,8 @@ declare function zorba-geo:buffer( $geometry as node(),  $distance as xs:double)
  : Actually returns the object of smallest dimension possible (possible Point or LineString).<br/>
  : <br/>
  :
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return the convex polygon node.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -513,10 +523,10 @@ declare function zorba-geo:convex-hull( $geometry as node()) as node() external;
  : For intersection of two polygons interiors, returns a polygon.
  : <br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return point set geometry node.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -527,10 +537,10 @@ declare function zorba-geo:intersection( $geometry1 as node(),  $geometry2 as no
  :    geometry1 and geometry2.<br/>
  : <br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return point set geometry node.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -541,10 +551,10 @@ declare function zorba-geo:union( $geometry1 as node(),  $geometry2 as node()) a
  :    geometry1 and geometry2. Points that are in geometry1 and are not in geometry2.<br/>
  : <br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return point set geometry node.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -556,10 +566,10 @@ declare function zorba-geo:difference( $geometry1 as node(),  $geometry2 as node
  :    and points that are in geometry2 and are not in geometry1.<br/>
  : <br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return point set geometry node.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -571,8 +581,8 @@ declare function zorba-geo:sym-difference( $geometry1 as node(),  $geometry2 as 
  : Returns zero for Point and Lines.<br/>
  : <br/>
  :
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return geometry area as xs:double.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -583,8 +593,8 @@ declare function zorba-geo:area( $geometry as node()) as xs:double external;
  : Returns zero for Points.<br/>
  : <br/>
  :
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return geometry length as xs:double.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -594,10 +604,10 @@ declare function zorba-geo:length( $geometry as node()) as xs:double external;
  : Checks if geometry2 is within a certain distance of geometry1.<br/>
  : <br/>
  :
- : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
- : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry1 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
+ : @param $geometry2 node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @param $distance the distance from geometry1, expressed in units of the current coordinate system
  : @return true if distance from geometry1 to geometry2 is less than $distance.
  : @error XPTY0004 - unrecognized geometric object
@@ -609,8 +619,8 @@ declare function zorba-geo:is-within-distance( $geometry1 as node(),  $geometry2
  : The result is not guaranteed to be on the surface. <br/>
  : <br/>
  :
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return centroid Point.
  : @error XPTY0004 - unrecognized geometric object
 :)
@@ -621,8 +631,8 @@ declare function zorba-geo:centroid( $geometry as node()) as node() external;
  : If it cannot be inside the geometry, then it will be on the boundary. <br/>
  : <br/>
  :
- : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve,
- :    gml:LinearRing, gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface
+ : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
+ :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
  : @return a Point inside the geometry.
  : @error XPTY0004 - unrecognized geometric object
 :)
