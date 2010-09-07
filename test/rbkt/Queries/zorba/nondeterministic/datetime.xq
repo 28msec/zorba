@@ -3,7 +3,7 @@ import module namespace datetime = "http://www.zorba-xquery.com/modules/datetime
 declare sequential function local:index()
 { 
   let $table :=
-      for $i in 1 to 100
+      for $i in 1 to 10000
       return
           block {
             declare $local:datetime;
