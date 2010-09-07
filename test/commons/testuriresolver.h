@@ -169,10 +169,13 @@ public:
 class TestSerializationCallback : public zorba::SerializationCallback
 {
   CollectionURIResolver *my_collection_resolver;
+  ModuleURIResolver *my_module_resolver;
   public:
-    TestSerializationCallback(CollectionURIResolver* my_collection_resolver)
+    TestSerializationCallback(CollectionURIResolver* my_collection_resolver,
+                              ModuleURIResolver* my_module_resolver)
     {
       this->my_collection_resolver = my_collection_resolver;
+      this->my_module_resolver = my_module_resolver;                                                                  
     }
                               
     virtual ~TestSerializationCallback() {}
@@ -188,6 +191,9 @@ class TestSerializationCallback : public zorba::SerializationCallback
 
     virtual DocumentURIResolver*
       getDocumentURIResolver() const {return NULL;}
+                                                                                                                      
+    virtual ModuleURIResolver*                                                                                        
+      getModuleURIResolver(size_t /*i*/) const { return my_module_resolver; }                                         
 };
 
 
