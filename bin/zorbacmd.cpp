@@ -29,6 +29,7 @@
 #endif
 
 #include <zorba/zorba.h>
+#include <zorba/file.h>
 
 #include <zorba/store_manager.h>
 
@@ -465,6 +466,15 @@ TimingInfo::print(std::ostream& os)
   return os;
 }
 
+void
+removeOutputFileIfNeeded(const ZorbaCMDProperties& lProperties) {
+  if (lProperties.outputFile().size() > 0) {
+    File_t lFile = zorba::File::createFile(lProperties.outputFile());
+    if (lFile->exists()) {
+      lFile->remove();
+    }
+  }
+}
 
 int
 compileAndExecute(
@@ -526,10 +536,10 @@ compileAndExecute(
         }
       } catch (zorba::QueryException& qe) {
         ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
-        return 5;
+        return 11;
       } catch (zorba::ZorbaException& ze) {
         std::cerr << ze << std::endl;
-        return 5;
+        return 12;
       }
 
       //
@@ -539,14 +549,14 @@ compileAndExecute(
       try {
         if ( ! populateDynamicContext(zorbaInstance, lDynamicContext, properties) ) {
           properties.printHelp(std::cout);
-          return 4;
+          return 21;
         }
       } catch (zorba::QueryException& qe) {
         ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
-        return 5;
+        return 22;
       } catch (zorba::ZorbaException& ze) {
         std::cerr << ze << std::endl;
-        return 6;
+        return 23;
       }
     }
 
@@ -576,10 +586,10 @@ compileAndExecute(
         }
       } catch (zorba::QueryException& qe) {
         ErrorPrinter::print(qe, std::cerr, properties.printErrorsAsXml(), lIndent);
-        return 5;
+        return 31;
       } catch (zorba::ZorbaException& ze) {
         std::cerr << ze << std::endl;
-        return 6;
+        return 32;
       }
     }
 
@@ -804,6 +814,10 @@ _tmain(int argc, _TCHAR* argv[])
                                      *lOutputStream,
                                      timing);
       if (status != 0) {
+        // reset the file handler (in case output option was provided)
+        // in order to delete the created output file
+        lFileStream.reset();
+        removeOutputFileIfNeeded(lProperties);
         return status;
       }
 

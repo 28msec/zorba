@@ -1,4 +1,8 @@
 Zorba - The XQuery Processor
+version x.y
+  * zorba executable deletes the output file (if one is provided) in case the execution fails
+  * changed the error codes returned by the zorba executable (using different codes for
+    different locations where the execution might fail)
 version 1.4
   * added a datetime library module with nondeterministic functions
   * new nondeterministic read functions in the http-client module
