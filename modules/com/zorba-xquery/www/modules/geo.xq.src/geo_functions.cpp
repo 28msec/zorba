@@ -561,7 +561,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     {
       (*optional_child_index_or_count) = 0;
     }
-    int   child_nr = 0;
+    unsigned int   child_nr = 0;
     Iterator_t    segments_children;
     Item          line_segment_item;
     std::vector<geos::geom::Geometry*>    *segments_vector;
@@ -740,7 +740,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     {
       (*optional_child_index_or_count) = 0;
     }
-    int   child_nr = 0;
+    unsigned int   child_nr = 0;
     Iterator_t    patches_children;
     Item          polygon_patch_item;
     std::vector<geos::geom::Geometry*>    *polygon_vector;
@@ -818,7 +818,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
   {
     Iterator_t    polygon_children;
     Item          extint_item;
-    int           nr_child = 0;
+    unsigned int           nr_child = 0;
     geos::geom::LinearRing    *exterior = NULL;
     std::vector<geos::geom::Geometry*>    *interior_vector;
     if(what_action == BUILD_GEOS_GEOMETRY)
@@ -942,7 +942,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     {
       (*optional_child_index_or_count) = 0;
     }
-    int nr_child = 0;
+    unsigned int nr_child = 0;
     multipoint_children = lItem.getChildren();
     multipoint_children->open();
     while(multipoint_children->next(point_item))
@@ -1020,7 +1020,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     {
       (*optional_child_index_or_count) = 0;
     }
-    int nr_child = 0;
+    unsigned int nr_child = 0;
     multicurve_children = lItem.getChildren();
     multicurve_children->open();
     while(multicurve_children->next(curve_item))
@@ -1098,7 +1098,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     {
       (*optional_child_index_or_count) = 0;
     }
-    int nr_child = 0;
+    unsigned int nr_child = 0;
     multisurface_children = lItem.getChildren();
     multisurface_children->open();
     while(multisurface_children->next(surface_item))
@@ -1176,7 +1176,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     {
       (*optional_child_index_or_count) = 0;
     }
-    int nr_child = 0;
+    unsigned int nr_child = 0;
     multigeometry_children = lItem.getChildren();
     multigeometry_children->open();
     while(multigeometry_children->next(geometry_item))
@@ -1749,6 +1749,8 @@ SFGeometryNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
       lErrorMessage << "Index n (" << n << ") is outside the range ";  
       throwError(lErrorMessage.str(), XPTY0004);                                    
     }
+    break;
+  default:break;
   }
 
   Item    nth_child;
