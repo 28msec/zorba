@@ -609,8 +609,11 @@ void PrologGraph::reorder_globals(std::list<global_binding>& prologVarBindings)
   std::set<const var_expr*> visited;
 
   std::stack<std::pair<ulong, const var_expr*> > todo;  // format: action code + var_expr
+  // need to declare the reverse end iterator here because of a bug in older gcc's
+  // (see http://gcc.gnu.org/bugzilla/show_bug.cgi?id=11729)
+  std::vector<const var_expr*>::const_reverse_iterator  lEnd = theVarDecls.rend();
   for (std::vector<const var_expr*>::const_reverse_iterator it = theVarDecls.rbegin();
-       it != theVarDecls.rend();
+       it != lEnd;
        ++it)
   {
     todo.push(std::pair<ulong, const var_expr*>(1, (*it)));
