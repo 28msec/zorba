@@ -432,11 +432,12 @@ expr* IndexDecl::getBuildExpr(CompilerCB* ccb, const QueryLoc& loc)
   // Clone the key exprs, replacing their references to the 2 domain variables
   // with the clones of these variables.
   //
-  subst[dot] = newdot;
-  subst[pos] = newpos;
-
   for(ulong i = 0; i < numKeys; ++i)
   {
+    subst.clear();
+    subst[dot] = newdot;
+    subst[pos] = newpos;
+
     clonedExprs[i+1] = theKeyExprs[i]->clone(subst);
   }
 
@@ -529,6 +530,8 @@ DocIndexer* IndexDecl::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   var_expr_t tempVar = new var_expr(sctx, dot->get_loc(), var_expr::prolog_var, qname);
   expr_t wrapperExpr = new wrapper_expr(sctx, dot->get_loc(), tempVar.getp());
 
+  tempVar->set_type(domainExpr->get_return_type());
+
   expr::substitution_t subst;
 
   subst[theDomainSourceExprs[0]] = wrapperExpr;
@@ -541,6 +544,15 @@ DocIndexer* IndexDecl::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   //
   var_expr_t newdot = new var_expr(sctx, dotloc, dot->get_kind(), dot->get_name());
   var_expr_t newpos = new var_expr(sctx, dotloc, pos->get_kind(), pos->get_name());
+
+  //
+  // Create for clause (this has to be done here so that the cloned dot var gets
+  // associated with the cloned domain expr; this is needed before cloning the
+  // key expr) :
+  //
+  // for $newdot at $newpos in new_domain_expr
+  //
+  for_clause_t fc = new for_clause(sctx, dotloc, newdot, newdom, newpos);
 
   //
   // Clone the key exprs, replacing their references to the 2 domain variables
@@ -561,8 +573,6 @@ DocIndexer* IndexDecl::getDocIndexer(CompilerCB* ccb, const QueryLoc& loc)
   // for $newdot at $newpos in new_domain_expr
   // return index-entry-builder($$newdot, new_key1_expr, ..., new_keyN_expr)
   //
-
-  for_clause* fc = new for_clause(sctx, dotloc, newdot, newdom, newpos);
 
   expr_t domainVarExpr = new wrapper_expr(sctx, loc, newdot.getp());
 
