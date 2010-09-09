@@ -1,0 +1,20 @@
+module namespace n = "http://www.28msec.com/test";
+
+import module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
+
+declare namespace d = "http://www.28msec.com/d/";
+
+declare collection n:foo as node();
+
+declare automatically maintained non unique value equality index n:index
+  on nodes xqddf:collection(xs:QName("n:foo"))
+  by (if (fn:data(d:userrecord/d:company)) then d:userrecord/d:company else "none") as xs:string;
+
+declare sequential function n:foo()
+{
+  xqddf:create-collection(xs:QName("n:foo"));
+  xqddf:create-index(xs:QName("n:index"));
+
+  xqddf:insert-nodes(xs:QName("n:foo"), <a/>);
+  1;
+};

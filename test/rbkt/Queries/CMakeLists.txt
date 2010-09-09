@@ -275,6 +275,8 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic1 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic3 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic4 2962715)
 
+EXPECTED_FAILURE(test/rbkt/zorba/xqddf/test4 3062703)
+
 IF (CURL_FOUND AND LIBTIDY_FOUND)
   EXPECTED_FAILURE(test/rbkt/zorba/http_client/http-read-html-tidy2 3054086)
 ENDIF (CURL_FOUND AND LIBTIDY_FOUND)
