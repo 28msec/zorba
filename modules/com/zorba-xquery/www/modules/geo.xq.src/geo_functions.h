@@ -70,11 +70,16 @@ namespace zorba { namespace geomodule {
                     zorba::Item &child_item) const;
       bool getChild(zorba::Iterator_t children, const char *localname, const char *ns, 
                     zorba::Item &child_item) const;
+      bool getAttribute(  zorba::Item &item, 
+                           const char *name, 
+                           const char *ns,
+                           zorba::Item &attr_item) const;
       bool checkOptionalAttribute(zorba::Item &item, const char *attr_name, const char *ns, const char *attr_value) const;
+      int get_srsDimension(zorba::Item &item, int prev_srsdimension) const;
       const geos::geom::GeometryFactory   *get_geometryFactory() const;
-      void readPointPosCoordinates(zorba::Item &lItem, double *x, double *y) const;
-      bool readPointPosCoordinates(zorba::Iterator_t children, double *x, double *y) const;
-      void readPosListCoordinates(zorba::Item &lItem, geos::geom::CoordinateSequence *cl) const;
+      void readPointPosCoordinates(zorba::Item &lItem, double *x, double *y, double *z, int &srs_dim) const;
+      bool readPointPosCoordinates(zorba::Iterator_t children, double *x, double *y, double *z, int &srs_dim) const;
+      void readPosListCoordinates(zorba::Item &lItem, geos::geom::CoordinateSequence *&cl, int &srs_dim) const;
 
     public:
       GeoFunction(const GeoModule* module);
@@ -88,6 +93,7 @@ namespace zorba { namespace geomodule {
       
       geos::geom::Geometry  *buildGeosGeometryFromItem(zorba::Item &lItem, 
                                                       enum GeoFunction::gmlsf_types geometric_type,
+                                                      int  srs_dim,
                                                       enum GeoFunction::action_item what_action = BUILD_GEOS_GEOMETRY,
                                                       uint32_t *optional_child_index_or_count = NULL,
                                                       zorba::Item *result_item = NULL) const;

@@ -26,30 +26,30 @@
  : Possible GMLSF geometric structures are:
  : <dl>
  :  <dt><b>Point</b></dt>
- :  <dd>&lt;gml:Point&gt;<br/>
- :    &#160;&#160;&lt;gml:pos&gt;double_x double_y &lt;/gml:pos&gt;<br/>
+ :  <dd>&lt;gml:Point [srsDimension='2|3']?&gt;<br/>
+ :    &#160;&#160;&lt;gml:pos [srsDimension='2|3']?&gt;double_x double_y &lt;/gml:pos&gt;<br/>
  :  &lt;/gml:Point&gt;</dd>
  :  <dt><b>LineString</b></dt>
- :  <dd>&lt;gml:LineString&gt;<br/>
- :    &#160;&#160;&lt;gml:posList&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;<br/>
+ :  <dd>&lt;gml:LineString [srsDimension='2|3']?&gt;<br/>
+ :    &#160;&#160;&lt;gml:posList [srsDimension='2|3']?&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;<br/>
  :    &lt;/gml:LineString&gt;</dd>
  :  <dt><b>Curve</b></dt>
- :  <dd>&lt;gml:Curve&gt;<br/>
+ :  <dd>&lt;gml:Curve [srsDimension='2|3']?&gt;<br/>
  :    &lt;gml:segments&gt; <br/>
- :    [&lt;gml:LineStringSegment interpolation="linear"&gt;<br/>
- :     &#160;&#160;&lt;gml:posList&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;<br/>
+ :    [&lt;gml:LineStringSegment interpolation="linear" [srsDimension='2|3']?&gt;<br/>
+ :     &#160;&#160;&lt;gml:posList [srsDimension='2|3']?&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;<br/>
  :     &lt;gml:LineStringSegment&gt;]*<br/>
  :    &lt;/gml:segments&gt;<br/>
  :    &lt;/gml:Curve&gt;
  :   </dd>
  :  <dt><b>LinearRing</b></dt>
- :  <dd>&lt;gml:LinearRing&gt;<br/>
- :   &#160;&#160;&lt;gml:posList&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;<br/>
+ :  <dd>&lt;gml:LinearRing [srsDimension='2|3']?&gt;<br/>
+ :   &#160;&#160;&lt;gml:posList [srsDimension='2|3']?&gt; double_x1 double_y1 double_x2 double_y2 ... &lt;/gml:posList&gt;<br/>
  :   &lt;/gml:LinearRing&gt;</dd>
  :  <dt><b>Surface</b></dt>
- :  <dd>&lt;gml:Surface&gt;<br/>
+ :  <dd>&lt;gml:Surface [srsDimension='2|3']?&gt;<br/>
  :    &lt;gml:patches&gt; <br/>
- :    [&lt;gml:PolygonPatch&gt;<br/>
+ :    [&lt;gml:PolygonPatch [srsDimension='2|3']?&gt;<br/>
  :     &#160;&#160;&lt;gml:exterior&gt;<br/>
  :     &#160;&#160;&#160;&#160;&lt;gml:LinearRing&gt; ... &lt;/gml:LinearRing&gt;<br/>
  :     &#160;&#160;&lt;/gml:exterior&gt;<br/>
@@ -61,7 +61,7 @@
  :    &lt;/gml:Surface&gt;
  :  </dd>
  :  <dt><b>Polygon</b></dt>
- :  <dd>&lt;gml:Polygon&gt;<br/>
+ :  <dd>&lt;gml:Polygon [srsDimension='2|3']?&gt;<br/>
  :     &#160;&#160;&lt;gml:exterior&gt;<br/>
  :     &#160;&#160;&#160;&#160;&lt;gml:LinearRing&gt; ... &lt;/gml:LinearRing&gt;<br/>
  :     &#160;&#160;&lt;/gml:exterior&gt;<br/>
@@ -71,22 +71,22 @@
  :    &lt;/gml:Polygon&gt;
  :  </dd>
  :  <dt><b>MultiPoint</b></dt>
- :  <dd>&lt;gml:MultiPoint&gt;<br/>
+ :  <dd>&lt;gml:MultiPoint [srsDimension='2|3']?&gt;<br/>
  :     &#160;&#160;[&lt;gml:Point&gt; ... &lt;/gml:Point&gt;]*<br/>
  :    &lt;/gml:MultiPoint&gt;
  :  </dd>
  :  <dt><b>MultiCurve</b></dt>
- :  <dd>&lt;gml:MultiCurve&gt;<br/>
+ :  <dd>&lt;gml:MultiCurve [srsDimension='2|3']?&gt;<br/>
  :     &#160;&#160;[&lt;gml:LineString&gt; ... &lt;/gml:LineString&gt;]*<br/>
  :    &lt;/gml:MultiCurve&gt;
  :  </dd>
  :  <dt><b>MultiSurface</b></dt>
- :  <dd>&lt;gml:MultiSurface&gt;<br/>
+ :  <dd>&lt;gml:MultiSurface [srsDimension='2|3']?&gt;<br/>
  :     &#160;&#160;[&lt;gml:Polygon&gt; ... &lt;/gml:Polygon&gt;]*<br/>
  :    &lt;/gml:MultiSurface&gt;
  :  </dd>
  :  <dt><b>MultiGeometry (this is from GML 3 schema)</b></dt>
- :  <dd>&lt;gml:MultiGeometry&gt;<br/>
+ :  <dd>&lt;gml:MultiGeometry [srsDimension='2|3']?&gt;<br/>
  :     &#160;&#160;[&lt;gml:geometryMember&gt;<br/>
  :          &#160;&#160;&#160;&#160; ...one geometry...<br/>
  :     &#160;&#160;&lt;/gml:geometryMember&gt;]*<br/>
@@ -98,6 +98,12 @@
  : </dl><br/><br/>
  : Note: When using gml:posList, it is possible to replace this element with a list of gml:pos.<br/>
  : Note: XLink referencing is not supported.<br/>
+ : Note: The <i>srsDimension</i> optional attribute specifies the coordinate dimension. The default value is 2 (for 2D).
+ :    Another possible value is 3 (for 3D) in which case every point has to have three double values (x, y, z).
+ :    This is an extension borrowed from GML 3 spec. <br/>
+ : The operations made on 3D objects work only on x-y coordinates, the z coordinate is not taken into account.
+ : When returning the result, the original z-coordinates of the points are preserved.
+ : For computed points, the z-coordinate is interpolated.<br/>
  : <br/>
  : For operations between two geometries, the DE-9IM matrix is used. The DE-9IM matrix is defined like this:
  : <table>
@@ -154,11 +160,12 @@ module namespace zorba-geo = "http://www.zorba-xquery.com/modules/geo";
 declare function zorba-geo:dimension( $geometry as node()) as xs:integer external;
 
 (:~
- : Return the coordinate dimension of the geo object. 
+ : Return the coordinate dimension of the geo object, as specified in the srsDimension attribute.<br/>
+ : Only two-dimensional and three-dimensional coordinates are supported.
  : 
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
- : @return 2 for 2D, 3 for 3D. For now only 2D is supported.
+ : @return 2 for 2D, 3 for 3D.
  : @error XPTY0004 - unrecognized geometric object
 :)
 declare function zorba-geo:coordinate-dimension( $geometry as node()) as xs:integer external;
@@ -256,12 +263,12 @@ declare function zorba-geo:is-empty( $geometry as node()?) as xs:boolean externa
 declare function zorba-geo:is-simple( $geometry as node()) as xs:boolean external;
 
 (:~
- : Checks if this geometric object is 2D or 3D.<br/>
- : Only 2D objects are supported for now. 
+ : Checks if this geometric object is 2D or 3D, as specified in srsDimension optional attribute.<br/>
+ : 
  : 
  : @param $geometry node of one of GMLSF objects: gml:Point, gml:LineString, gml:Curve, gml:LinearRing, 
  :    gml:Surface, gml:Polygon, gml:MultiPoint, gml:MultiCurve, gml:MultiSurface, gml:MultiGeometry
- : @return true if $geometry is 3D. Result is hardcoded to false for now.
+ : @return true if $geometry is 3D. 
  : @error XPTY0004 - unrecognized geometric object
 :)
 declare function zorba-geo:is-3D( $geometry as node()) as xs:boolean external;

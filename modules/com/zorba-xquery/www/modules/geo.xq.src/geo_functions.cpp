@@ -35,6 +35,7 @@
 #include <geos/geom/Coordinate.h>
 #include <geos/geom/CoordinateSequence.h>
 #include <geos/geom/CoordinateArraySequence.h>
+#include <geos/geom/CoordinateArraySequenceFactory.h>
 #include <geos/geom/IntersectionMatrix.h>
 #include <geos/io/WKBReader.h>
 #include <geos/io/WKBWriter.h>
@@ -169,13 +170,12 @@ bool GeoFunction::getChild(zorba::Iterator_t children, const char *localname, co
   return false;
 }
 
-bool GeoFunction::checkOptionalAttribute(zorba::Item &item, 
-                                         const char *name, 
-                                         const char *ns,
-                                         const char *value) const
+bool GeoFunction::getAttribute(  zorba::Item &item, 
+                                 const char *name, 
+                                 const char *ns,
+                                 zorba::Item &attr_item) const
 {
   Iterator_t    children;
-  zorba::Item   attr_item;
   children = item.getAttributes();
   children->open();
   while(children->next(attr_item))
@@ -187,22 +187,57 @@ bool GeoFunction::checkOptionalAttribute(zorba::Item &item,
     {
       continue;//next attr
     }
-    String  attr_ns= attr_qname.getNamespace();
-    if(!attr_ns.byteEqual(ns, strlen(ns)))
-    {
-      continue;//next attr
-    }
-    String  attr_value = attr_item.getStringValue();
-    if(!attr_value.byteEqual(value, strlen(value)))
+    if(!ns)
     {
       children->close();
-      return false;
+      return true;
+   }
+    String  attr_ns= attr_qname.getNamespace();
+    if(attr_ns.byteEqual(ns, strlen(ns)))
+    {
+      children->close();
+      return true;
     }
-    children->close();
-    return true;
   }
   children->close();
-  return true;
+  return false;
+}
+
+bool GeoFunction::checkOptionalAttribute(zorba::Item &item, 
+                                         const char *name, 
+                                         const char *ns,
+                                         const char *value) const
+{
+  zorba::Item attr_item;
+  if(!getAttribute(  item, 
+                     name, 
+                     ns,
+                     attr_item))
+     return true;
+  String  attr_value = attr_item.getStringValue();
+  return attr_value.byteEqual(value, strlen(value));
+}
+
+int GeoFunction::get_srsDimension(zorba::Item &item, int prev_srsdimension) const
+{
+  zorba::Item attr_item;
+  if(getAttribute(item, 
+                   "srsDimension", 
+                   NULL,
+                   attr_item))
+  {
+    String  attr_value = attr_item.getStringValue();
+    String  trimed_value = attr_value.trim();
+    int srs_dim = atoi(trimed_value.c_str());
+    if((srs_dim != 2) && (srs_dim != 3))
+    {
+      std::stringstream lErrorMessage;
+      lErrorMessage << "Geo module's supported values for srsDimension in GML are 2 and 3.";
+      throwError(lErrorMessage.str(), XPTY0004);
+    }
+    return srs_dim;
+  }
+  return prev_srsdimension;
 }
 
 const geos::geom::GeometryFactory   *GeoFunction::get_geometryFactory() const
@@ -213,12 +248,16 @@ const geos::geom::GeometryFactory   *GeoFunction::get_geometryFactory() const
   return geos::geom::GeometryFactory::getDefaultInstance();
 }
 
-void GeoFunction::readPointPosCoordinates(zorba::Item &lItem, double *x, double *y) const
+void GeoFunction::readPointPosCoordinates(zorba::Item &lItem, 
+                                          double *x, 
+                                          double *y,
+                                          double *z,
+                                          int &srs_dim) const
 {
   Iterator_t    children;
   children = lItem.getChildren();
   children->open();
-  bool retval = readPointPosCoordinates(children, x, y);
+  bool retval = readPointPosCoordinates(children, x, y, z, srs_dim);
   children->close();
   if(!retval)
   {
@@ -227,7 +266,12 @@ void GeoFunction::readPointPosCoordinates(zorba::Item &lItem, double *x, double 
     throwError(lErrorMessage.str(), XPTY0004);
   }
 }
-bool GeoFunction::readPointPosCoordinates(zorba::Iterator_t children, double *x, double *y) const
+
+bool GeoFunction::readPointPosCoordinates(zorba::Iterator_t children, 
+                                          double *x, 
+                                          double *y,
+                                          double *z,
+                                          int &srs_dim) const
 {
   zorba::Item   pos_item;
   if(!getChild(children, "pos", "http://www.opengis.net/gml", pos_item))
@@ -237,11 +281,13 @@ bool GeoFunction::readPointPosCoordinates(zorba::Iterator_t children, double *x,
     //throwError(lErrorMessage.str(), XPTY0004);
     return false;
   }
+  srs_dim = get_srsDimension(pos_item, srs_dim);
 
   String    pos_string;
   pos_string = pos_item.getStringValue();
   *x = 0;
   *y = 0;
+  *z = 0;
   const char *str = pos_string.c_str();
   while(((*str == ' ') ||
         (*str == '\t') ||
@@ -263,18 +309,41 @@ bool GeoFunction::readPointPosCoordinates(zorba::Iterator_t children, double *x,
       (*str != 0))
      str++;
   sscanf(str, "%lf", y);
+  if(srs_dim == 3)
+  {
+    while((*str != ' ') &&
+          (*str != '\t') &&
+          (*str != '\n') &&
+          (*str != '\r') &&
+          (*str != 0))
+       str++;
+    while(((*str == ' ') ||
+        (*str == '\t') ||
+        (*str == '\n') ||
+        (*str == '\r')) &&
+        (*str != 0))
+       str++;
+    sscanf(str, "%lf", z);
+  }
   return true;
 }
 
-void GeoFunction::readPosListCoordinates(zorba::Item &lItem, geos::geom::CoordinateSequence *cl) const
+void GeoFunction::readPosListCoordinates(zorba::Item &lItem, 
+                                         geos::geom::CoordinateSequence *&cl,
+                                         int &srs_dim) const
 {
   zorba::Item   poslist_item;
+  if(srs_dim != 3)
+    srs_dim = 2;
+  std::vector<geos::geom::Coordinate> *coords = new std::vector<geos::geom::Coordinate>;
   if(getChild(lItem, "posList", "http://www.opengis.net/gml", poslist_item))
   {
+    srs_dim = get_srsDimension(poslist_item, srs_dim);
+
     String    poslist_string;
     poslist_string = poslist_item.getStringValue();
-    double x, y;
-    bool load_x = true;
+    double x, y, z;
+    int load_x = 0;
     const char *str_poslist = poslist_string.c_str();
     while(((*str_poslist == ' ') ||
           (*str_poslist == '\t') ||
@@ -282,18 +351,27 @@ void GeoFunction::readPosListCoordinates(zorba::Item &lItem, geos::geom::Coordin
           (*str_poslist == '\r')) &&
           (*str_poslist != 0))
        str_poslist++;
-    x = 0; y = 0;
+    x = 0; y = 0; z = 0;
     while(str_poslist[0])
     {
-      if(load_x)
+      if(load_x == 0)
         x = atof(str_poslist);
-      else
+      else if(load_x == 1)
       {
         y = atof(str_poslist);
-        cl->add(geos::geom::Coordinate(x, y));
-        x = 0; y = 0;
+        if(srs_dim == 2)
+        {
+          coords->push_back(geos::geom::Coordinate(x, y));
+          x = 0; y = 0;
+        }
       }
-      load_x = !load_x;
+      else if(load_x == 2)
+      {
+        z = atof(str_poslist);
+        coords->push_back(geos::geom::Coordinate(x, y, z));
+        x = 0; y = 0; z = 0;
+      }
+      load_x = (load_x + 1)%srs_dim;
       while((*str_poslist != ' ') &&
             (*str_poslist != '\t') &&
             (*str_poslist != '\n') &&
@@ -313,10 +391,18 @@ void GeoFunction::readPosListCoordinates(zorba::Item &lItem, geos::geom::Coordin
     Iterator_t    children;
     children = lItem.getChildren();
     children->open();
-    double x = 0, y = 0;
-    while(readPointPosCoordinates(children, &x, &y))
+    double x = 0, y = 0, z = 0;
+    while(readPointPosCoordinates(children, &x, &y, &z, srs_dim))
     {
-      cl->add(geos::geom::Coordinate(x, y));
+      if(srs_dim == 3)
+      {
+        coords->push_back(geos::geom::Coordinate(x, y, z));
+      }
+      else
+      {
+        coords->push_back(geos::geom::Coordinate(x, y));
+      }
+      x = 0; y = 0; z = 0;
     }
     children->close();
   }
@@ -328,23 +414,30 @@ void GeoFunction::readPosListCoordinates(zorba::Item &lItem, geos::geom::Coordin
     lErrorMessage << item_qname.getLocalName() << " node must have a gml:posList child";
     throwError(lErrorMessage.str(), XPTY0004);
   }
+
+  cl = geos::geom::CoordinateArraySequenceFactory::instance()->create(coords, srs_dim);
 }
 
 geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem, 
                                                               enum GeoFunction::gmlsf_types geometric_type,
+                                                              int srs_dim,
                                                               enum GeoFunction::action_item what_action,
                                                               uint32_t *optional_child_index_or_count,
                                                               zorba::Item *result_item) const
 {
+  srs_dim = get_srsDimension(lItem, srs_dim);
+
   switch(geometric_type)
   {
   case GMLSF_POINT:
   {
     if(what_action == BUILD_GEOS_GEOMETRY)
     {
-      double x, y;
-      readPointPosCoordinates(lItem, &x, &y);
-  	  geos::geom::Coordinate c(x, y);
+      double x, y, z;
+      readPointPosCoordinates(lItem, &x, &y, &z, srs_dim);
+	    geos::geom::Coordinate c(x, y);
+      if(srs_dim == 3)
+        c.z = z;
       try{
       return get_geometryFactory()->createPoint(c);
       }catch(std::exception &excep)                                        
@@ -370,8 +463,8 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
   }break;
   case GMLSF_LINESTRING:
   {
-    geos::geom::CoordinateSequence *cl = new geos::geom::CoordinateArraySequence();
-    readPosListCoordinates(lItem, cl);
+    geos::geom::CoordinateSequence *cl = NULL;//new geos::geom::CoordinateArraySequence();
+    readPosListCoordinates(lItem, cl, srs_dim);
     uint32_t  last_index = cl->size()-1;
     if(what_action == GET_END_POINT)
     {
@@ -408,13 +501,39 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
         *result_item = theModule->getItemFactory()->createElementNode(null_parent, item_name, item_type, false, false, ns_binding);
 
+
         zorba::Item pos_item;
         item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
         item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "pos");
         pos_item = theModule->getItemFactory()->createElementNode(*result_item, item_name, item_type, false, false, ns_binding);
         
+        if(srs_dim == 3)
+        {
+          zorba::Item attr_value_item;
+          item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
+          item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "srsDimension");
+          char  strdim[10];
+          sprintf(strdim, "%d", srs_dim);
+          zorba::String   strvalue(strdim);
+          attr_value_item = theModule->getItemFactory()->createString(strvalue);
+          theModule->getItemFactory()->createAttributeNode(pos_item, item_name, item_type, attr_value_item);
+        }
         char strtemp[100];
-        sprintf(strtemp, "%lf %lf", cl->getAt((*optional_child_index_or_count)).x, cl->getAt((*optional_child_index_or_count)).y);
+        if(srs_dim == 3)
+        {
+          if(!ISNAN(cl->getAt((*optional_child_index_or_count)).z))
+            sprintf(strtemp, "%lf %lf %lf", cl->getAt((*optional_child_index_or_count)).x, 
+                                          cl->getAt((*optional_child_index_or_count)).y,
+                                          cl->getAt((*optional_child_index_or_count)).z);
+          else
+            sprintf(strtemp, "%lf %lf 0", cl->getAt((*optional_child_index_or_count)).x, 
+                                          cl->getAt((*optional_child_index_or_count)).y);
+        }
+        else
+        {
+          sprintf(strtemp, "%lf %lf", cl->getAt((*optional_child_index_or_count)).x, 
+                                      cl->getAt((*optional_child_index_or_count)).y);
+        }
 
         zorba::Item text_item;
         text_item = theModule->getItemFactory()->createTextNode(pos_item, strtemp);
@@ -481,7 +600,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
   	  
       if(what_action == BUILD_GEOS_GEOMETRY)
       {
-        segments_vector->push_back(buildGeosGeometryFromItem(line_segment_item, GMLSF_LINESTRING));
+        segments_vector->push_back(buildGeosGeometryFromItem(line_segment_item, GMLSF_LINESTRING, srs_dim));
       }
       else if(what_action == COUNT_CHILDREN)
       {
@@ -524,8 +643,8 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
   }break;
   case GMLSF_LINEARRING:
   {
-    geos::geom::CoordinateSequence *cl = new geos::geom::CoordinateArraySequence();
-    readPosListCoordinates(lItem, cl);
+    geos::geom::CoordinateSequence *cl = NULL;//new geos::geom::CoordinateArraySequence();
+    readPosListCoordinates(lItem, cl, srs_dim);
     uint32_t  last_index = cl->size()-1;
     if(what_action == GET_END_POINT)
     {
@@ -567,8 +686,33 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "pos");
         pos_item = theModule->getItemFactory()->createElementNode(*result_item, item_name, item_type, false, false, ns_binding);
         
+        if(srs_dim == 3)
+        {
+          zorba::Item attr_value_item;
+          item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
+          item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "srsDimension");
+          char  strdim[10];
+          sprintf(strdim, "%d", srs_dim);
+          zorba::String   strvalue(strdim);
+          attr_value_item = theModule->getItemFactory()->createString(strvalue);
+          theModule->getItemFactory()->createAttributeNode(pos_item, item_name, item_type, attr_value_item);
+        }
         char strtemp[100];
-        sprintf(strtemp, "%lf %lf", cl->getAt((*optional_child_index_or_count)).x, cl->getAt((*optional_child_index_or_count)).y);
+        if(srs_dim == 3)
+        {
+          if(!ISNAN(cl->getAt((*optional_child_index_or_count)).z))
+            sprintf(strtemp, "%lf %lf %lf", cl->getAt((*optional_child_index_or_count)).x, 
+                                          cl->getAt((*optional_child_index_or_count)).y,
+                                          cl->getAt((*optional_child_index_or_count)).z);
+          else
+            sprintf(strtemp, "%lf %lf 0", cl->getAt((*optional_child_index_or_count)).x, 
+                                          cl->getAt((*optional_child_index_or_count)).y);
+        }
+        else
+        {
+          sprintf(strtemp, "%lf %lf", cl->getAt((*optional_child_index_or_count)).x, 
+                                      cl->getAt((*optional_child_index_or_count)).y);
+        }
 
         zorba::Item text_item;
         text_item = theModule->getItemFactory()->createTextNode(pos_item, strtemp);
@@ -629,7 +773,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
 
       if(what_action == BUILD_GEOS_GEOMETRY)
       {
-        polygon_vector->push_back(buildGeosGeometryFromItem(polygon_patch_item, GMLSF_POLYGON));
+        polygon_vector->push_back(buildGeosGeometryFromItem(polygon_patch_item, GMLSF_POLYGON, srs_dim));
       }
       else if(what_action == COUNT_CHILDREN)
       {
@@ -718,7 +862,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         }
         if(what_action == BUILD_GEOS_GEOMETRY)
         {
-          exterior = dynamic_cast<geos::geom::LinearRing*>(buildGeosGeometryFromItem(linearring_item, GMLSF_LINEARRING));
+          exterior = dynamic_cast<geos::geom::LinearRing*>(buildGeosGeometryFromItem(linearring_item, GMLSF_LINEARRING, srs_dim));
         }
         else if(what_action == GET_EXTERIOR_RING)
         {
@@ -743,7 +887,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         }
         if(what_action == BUILD_GEOS_GEOMETRY)
         {
-          interior_vector->push_back(buildGeosGeometryFromItem(linearring_item, GMLSF_LINEARRING));
+          interior_vector->push_back(buildGeosGeometryFromItem(linearring_item, GMLSF_LINEARRING, srs_dim));
         }
         else if(what_action == COUNT_CHILDREN)
         {
@@ -823,7 +967,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       }
       if(what_action == BUILD_GEOS_GEOMETRY)
       {
-        point_vector->push_back(buildGeosGeometryFromItem(point_item, GMLSF_POINT));
+        point_vector->push_back(buildGeosGeometryFromItem(point_item, GMLSF_POINT, srs_dim));
       }
       else if(what_action == COUNT_CHILDREN)
       {
@@ -901,7 +1045,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       }
       if(what_action == BUILD_GEOS_GEOMETRY)
       {
-        curve_vector->push_back(buildGeosGeometryFromItem(curve_item, GMLSF_LINESTRING));
+        curve_vector->push_back(buildGeosGeometryFromItem(curve_item, GMLSF_LINESTRING, srs_dim));
       }
       else if(what_action == COUNT_CHILDREN)
       {
@@ -979,7 +1123,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
       }
       if(what_action == BUILD_GEOS_GEOMETRY)
       {
-        surface_vector->push_back(buildGeosGeometryFromItem(surface_item, GMLSF_POLYGON));
+        surface_vector->push_back(buildGeosGeometryFromItem(surface_item, GMLSF_POLYGON, srs_dim));
       }
       else if(what_action == COUNT_CHILDREN)
       {
@@ -1059,7 +1203,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
         {
           if(what_action == BUILD_GEOS_GEOMETRY)
           {
-            geometry_vector->push_back(buildGeosGeometryFromItem(member_item, getGmlSFGeometricType(member_item)));
+            geometry_vector->push_back(buildGeosGeometryFromItem(member_item, getGmlSFGeometricType(member_item), srs_dim));
           }
           else if(what_action == COUNT_CHILDREN)
           {
@@ -1138,22 +1282,36 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
   {
   case 	geos::geom::GEOS_POINT:
   {
-      item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "Point");
-      result_item = theModule->getItemFactory()->createElementNode(parent, item_name, item_type, false, false, ns_binding);
+    item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "Point");
+    result_item = theModule->getItemFactory()->createElementNode(parent, item_name, item_type, false, false, ns_binding);
 
-      zorba::Item pos_item;
+    zorba::Item pos_item;
+    item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
+    item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "pos");
+    pos_item = theModule->getItemFactory()->createElementNode(result_item, item_name, item_type, false, false, ns_binding);
+    
+    char strtemp[100];
+    const geos::geom::Coordinate  *c;
+    c = geos_geometry->getCoordinate();
+    if(geos_geometry->getCoordinateDimension() == 3)
+    {
+      zorba::Item attr_value_item;
       item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
-      item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "pos");
-      pos_item = theModule->getItemFactory()->createElementNode(result_item, item_name, item_type, false, false, ns_binding);
-      
-      char strtemp[100];
-      const geos::geom::Coordinate  *c;
-      c = geos_geometry->getCoordinate();
+      item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "srsDimension");
+      zorba::String   strvalue("3");
+      attr_value_item = theModule->getItemFactory()->createString(strvalue);
+      theModule->getItemFactory()->createAttributeNode(pos_item, item_name, item_type, attr_value_item);
+      if(!ISNAN(c->z))
+        sprintf(strtemp, "%lf %lf %lf", c->x, c->y, c->z);
+      else
+        sprintf(strtemp, "%lf %lf 0", c->x, c->y);
+    }
+    else
       sprintf(strtemp, "%lf %lf", c->x, c->y);
 
-      zorba::Item text_item;
-      text_item = theModule->getItemFactory()->createTextNode(pos_item, strtemp);
-      return result_item;
+    zorba::Item text_item;
+    text_item = theModule->getItemFactory()->createTextNode(pos_item, strtemp);
+    return result_item;
   }
 	/// a linestring
   case geos::geom::GEOS_LINESTRING:
@@ -1169,6 +1327,16 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
     item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "posList");
     pos_item = theModule->getItemFactory()->createElementNode(result_item, item_name, item_type, false, false, ns_binding);
     
+    int coord_dim = geos_geometry->getCoordinateDimension();
+    if(coord_dim == 3)
+    {
+      zorba::Item attr_value_item;
+      item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
+      item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "srsDimension");
+      zorba::String   strvalue("3");
+      attr_value_item = theModule->getItemFactory()->createString(strvalue);
+      theModule->getItemFactory()->createAttributeNode(pos_item, item_name, item_type, attr_value_item);
+    }
     char *strtemp;
     geos::geom::CoordinateSequence  *cs;
     cs = geos_geometry->getCoordinates();
@@ -1180,7 +1348,15 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
     strtemp2 += strlen(strtemp2);
     for(size_t i=0;i<cs_size;i++)
     {
-      sprintf(strtemp2, "%lf %lf\n", cs->getAt(i).x, cs->getAt(i).y);
+      if(coord_dim == 3)
+      {
+        if(!ISNAN(cs->getAt(i).z))
+          sprintf(strtemp2, "%lf %lf %lf\n", cs->getAt(i).x, cs->getAt(i).y, cs->getAt(i).z);
+        else
+          sprintf(strtemp2, "%lf %lf 0\n", cs->getAt(i).x, cs->getAt(i).y);
+      }
+      else
+        sprintf(strtemp2, "%lf %lf\n", cs->getAt(i).x, cs->getAt(i).y);
       strtemp2 += strlen(strtemp2);
     }
 
@@ -1376,7 +1552,7 @@ SFDimensionFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
   geometric_type = getGeometryNodeType(args, 0, lItem);
 
   geos::geom::Geometry  *geos_geometry;                                                 
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);                     
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);                     
                                                                                         
   geos::geom::Dimension::DimensionType   dim_type;                                                
   try{                                                                                  
@@ -1420,8 +1596,13 @@ SFCoordinateDimensionFunction::evaluate(const StatelessExternalFunction::Argumen
     break;
   }
 
+  geos::geom::Geometry  *geos_geometry;                                                 
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);   
+
+  int   coord_dim = geos_geometry->getCoordinateDimension();
+  delete geos_geometry;
   return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createInteger(2)));//hardcode the coordinate sistem for 2D
+      theModule->getItemFactory()->createInteger(coord_dim)));//hardcode the coordinate sistem for 2D
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1510,7 +1691,7 @@ SFNumGeometriesFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
   }
 
   uint32_t    num_geos = 0;
-  buildGeosGeometryFromItem(lItem, geometric_type, COUNT_CHILDREN, &num_geos);
+  buildGeosGeometryFromItem(lItem, geometric_type, -1, COUNT_CHILDREN, &num_geos);
 
   return ItemSequence_t(new SingletonItemSequence(
      theModule->getItemFactory()->createUnsignedInt(num_geos)));
@@ -1571,7 +1752,7 @@ SFGeometryNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
   }
 
   Item    nth_child;
-  buildGeosGeometryFromItem(lItem1, geometric_type1, GET_NTH_CHILD, &n, &nth_child);
+  buildGeosGeometryFromItem(lItem1, geometric_type1, -1, GET_NTH_CHILD, &n, &nth_child);
 
   if(nth_child.isNull())
   {
@@ -1612,7 +1793,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   }                                                                                     \
                                                                                         \
   geos::geom::Geometry  *geos_geometry;                                                 \
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);                     \
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);                     \
                                                                                         \
   geos::geom::Geometry  *geos_result = NULL;                                                   \
   try{                                                                                  \
@@ -1667,7 +1848,7 @@ SFAsTextFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   }
 
   geos::geom::Geometry  *geos_geometry;
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);
 
   std::string as_text;
   as_text = geos_geometry->toString();
@@ -1704,7 +1885,7 @@ SFAsBinaryFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   }
 
   geos::geom::Geometry  *geos_geometry;
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);
 
   std::ostringstream as_binary;
   as_binary << *geos_geometry;
@@ -1766,7 +1947,7 @@ SFIsSimpleFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   }
 
   geos::geom::Geometry  *geos_geometry;
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);
 
   bool is_simple = false;
   try{
@@ -1811,13 +1992,13 @@ SFIs3DFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   }
 
   geos::geom::Geometry  *geos_geometry;
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);
 
-  //To Be Implemented; now is only 2D
+  bool is_3D = (geos_geometry->getCoordinateDimension() == 3);
   delete geos_geometry;
 
   return ItemSequence_t(new SingletonItemSequence(
-     theModule->getItemFactory()->createBoolean(false)));
+     theModule->getItemFactory()->createBoolean(is_3D)));
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1870,10 +2051,10 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   }                                                                               \
                                                                                   \
   geos::geom::Geometry  *geos_geometry1;                                          \
-  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1);            \
+  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1, -1);            \
                                                                                   \
   geos::geom::Geometry  *geos_geometry2;                                          \
-  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2);            \
+  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2, -1);            \
                                                                                   \
   bool retval = false;                                                            \
   try{                                                                            \
@@ -1952,10 +2133,10 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   }                                                                               \
                                                                                   \
   geos::geom::Geometry  *geos_geometry1;                                          \
-  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1);            \
+  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1, -1);            \
                                                                                   \
   geos::geom::Geometry  *geos_geometry2;                                          \
-  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2);            \
+  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2, -1);            \
                                                                                   \
   geos::geom::Geometry  *geos_result = NULL;                                             \
   try{                                                                            \
@@ -2015,7 +2196,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   }                                                                                     \
                                                                                         \
   geos::geom::Geometry  *geos_geometry;                                                 \
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);                     \
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);                     \
                                                                                         \
   double  retval = 0;                                                                   \
   try{                                                                                  \
@@ -2081,10 +2262,10 @@ SFRelateFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   }                                                                               
                                                                                   
   geos::geom::Geometry  *geos_geometry1;                                          
-  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1);            
+  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1, -1);            
                                                                                   
   geos::geom::Geometry  *geos_geometry2;                                          
-  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2);            
+  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2, -1);            
                                                                                   
                                                                                         
   Item lItem3;                                                                           
@@ -2160,10 +2341,10 @@ SFIsWithinDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_
   }                                                                               
                                                                                   
   geos::geom::Geometry  *geos_geometry1;                                          
-  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1);            
+  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1, -1);            
                                                                                   
   geos::geom::Geometry  *geos_geometry2;                                          
-  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2);            
+  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2, -1);            
                                                                                   
                                                                                         
   Item lItem3;                                                                           
@@ -2239,10 +2420,10 @@ SFDistanceFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   }                                                                               
                                                                                   
   geos::geom::Geometry  *geos_geometry1;                                          
-  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1);            
+  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1, -1);            
                                                                                   
   geos::geom::Geometry  *geos_geometry2;                                          
-  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2);            
+  geos_geometry2 = buildGeosGeometryFromItem(lItem2, geometric_type2, -1);            
                                                                                   
                                                                                         
   double min_distance = 0;                                                   
@@ -2287,7 +2468,7 @@ SFBufferFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   }                                                                               
                                                                                   
   geos::geom::Geometry  *geos_geometry1;                                          
-  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1);            
+  geos_geometry1 = buildGeosGeometryFromItem(lItem1, geometric_type1, -1);            
                                                                                   
                                                                                         
   Item lItem2;                                                                           
@@ -2359,7 +2540,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   }                                                                                     \
                                                                                         \
   geos::geom::Geometry  *geos_geometry;                                                 \
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);                     \
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);                     \
   geos::geom::Point   *geos_point = dynamic_cast<geos::geom::Point*>(geos_geometry);    \
                                                                                         \
   double  retval = 0;                                                                   \
@@ -2461,7 +2642,7 @@ SFStartPointFunction::evaluate(const StatelessExternalFunction::Arguments_t& arg
   uint32_t n = 0;
                                                
   Item    nth_child;
-  buildGeosGeometryFromItem(lItem1, geometric_type1, GET_NTH_CHILD, &n, &nth_child);
+  buildGeosGeometryFromItem(lItem1, geometric_type1, -1, GET_NTH_CHILD, &n, &nth_child);
 
   if(nth_child.isNull())
   {
@@ -2510,7 +2691,7 @@ SFEndPointFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   }                                                                               
                                                                                   
   Item    nth_child;
-  buildGeosGeometryFromItem(lItem1, geometric_type1, GET_END_POINT, NULL, &nth_child);
+  buildGeosGeometryFromItem(lItem1, geometric_type1, -1, GET_END_POINT, NULL, &nth_child);
 
   if(nth_child.isNull())
   {
@@ -2561,7 +2742,7 @@ sfclass_name::evaluate(const StatelessExternalFunction::Arguments_t& args,      
   }                                                                                     \
                                                                                         \
   geos::geom::Geometry  *geos_geometry;                                                 \
-  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type);                     \
+  geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);                     \
   geos::geom::LineString   *geos_line = dynamic_cast<geos::geom::LineString*>(geos_geometry);    \
                                                                                         \
   atomictype  retval = 0;                                                               \
@@ -2620,7 +2801,7 @@ SFNumPointsFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
   }                                                                               
                                                                                         
   uint32_t  num_children;
-  buildGeosGeometryFromItem(lItem, geometric_type, COUNT_CHILDREN, &num_children);
+  buildGeosGeometryFromItem(lItem, geometric_type, -1, COUNT_CHILDREN, &num_children);
 
   return ItemSequence_t(new SingletonItemSequence(                                      
      theModule->getItemFactory()->createUnsignedInt(num_children)));                           
@@ -2675,7 +2856,7 @@ SFPointNFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   n = lItem2.getUnsignedIntValue();
                                                
   Item    nth_child;
-  buildGeosGeometryFromItem(lItem1, geometric_type1, GET_NTH_CHILD, &n, &nth_child);
+  buildGeosGeometryFromItem(lItem1, geometric_type1, -1, GET_NTH_CHILD, &n, &nth_child);
 
   if(nth_child.isNull())
   {
@@ -2724,7 +2905,7 @@ SFExteriorRingFunction::evaluate(const StatelessExternalFunction::Arguments_t& a
   }                                                                                     
       
   Item  result_item;
-  buildGeosGeometryFromItem(lItem, geometric_type, GET_EXTERIOR_RING, NULL, &result_item);
+  buildGeosGeometryFromItem(lItem, geometric_type, -1, GET_EXTERIOR_RING, NULL, &result_item);
                                                                                         
   return ItemSequence_t(new SingletonItemSequence(result_item));                        
 }
@@ -2765,7 +2946,7 @@ SFNumInteriorRingFunction::evaluate(const StatelessExternalFunction::Arguments_t
   }                                                                                     
                                                                                         
   uint32_t  num_children;
-  buildGeosGeometryFromItem(lItem, geometric_type, COUNT_CHILDREN, &num_children);
+  buildGeosGeometryFromItem(lItem, geometric_type, -1, COUNT_CHILDREN, &num_children);
 
   return ItemSequence_t(new SingletonItemSequence(                                      
      theModule->getItemFactory()->createUnsignedInt(num_children)));                           
@@ -2820,7 +3001,7 @@ SFInteriorRingNFunction::evaluate(const StatelessExternalFunction::Arguments_t& 
   n = lItem2.getUnsignedIntValue();
                                       
   Item    nth_child;
-  buildGeosGeometryFromItem(lItem1, geometric_type1, GET_NTH_CHILD, &n, &nth_child);
+  buildGeosGeometryFromItem(lItem1, geometric_type1, -1, GET_NTH_CHILD, &n, &nth_child);
 
   if(nth_child.isNull())
   {
