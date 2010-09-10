@@ -45,6 +45,7 @@
 #include <geos/util/IllegalArgumentException.h>
 #include <geos/opLinemerge.h>
 #include <geos/opPolygonize.h>
+#include <geos/version.h>
 #include <vector>
 #include <sstream>
 #include <iomanip>
@@ -54,6 +55,11 @@
 #include <zorba/singleton_item_sequence.h>
 
 #include "geo_module.h"
+
+#if GEOS_VERSION_MAJOR < 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR < 2) || \
+  (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR == 2 && GEOS_VERSION_PATCH < 2)
+#error Zorba geo module can be linked only with GEOS version 3.2.2 or above, preferably 3.3
+#endif
 
 namespace zorba { namespace geomodule {
 
@@ -335,10 +341,11 @@ void GeoFunction::readPosListCoordinates(zorba::Item &lItem,
   zorba::Item   poslist_item;
   if(srs_dim != 3)
     srs_dim = 2;
-  std::vector<geos::geom::Coordinate> *coords = new std::vector<geos::geom::Coordinate>;
   if(getChild(lItem, "posList", "http://www.opengis.net/gml", poslist_item))
   {
     srs_dim = get_srsDimension(poslist_item, srs_dim);
+    if(!cl)
+      cl = geos::geom::CoordinateArraySequenceFactory::instance()->create((std::size_t)0, srs_dim);
 
     String    poslist_string;
     poslist_string = poslist_item.getStringValue();
@@ -361,14 +368,14 @@ void GeoFunction::readPosListCoordinates(zorba::Item &lItem,
         y = atof(str_poslist);
         if(srs_dim == 2)
         {
-          coords->push_back(geos::geom::Coordinate(x, y));
+          cl->add(geos::geom::Coordinate(x, y));
           x = 0; y = 0;
         }
       }
       else if(load_x == 2)
       {
         z = atof(str_poslist);
-        coords->push_back(geos::geom::Coordinate(x, y, z));
+        cl->add(geos::geom::Coordinate(x, y, z));
         x = 0; y = 0; z = 0;
       }
       load_x = (load_x + 1)%srs_dim;
@@ -394,13 +401,16 @@ void GeoFunction::readPosListCoordinates(zorba::Item &lItem,
     double x = 0, y = 0, z = 0;
     while(readPointPosCoordinates(children, &x, &y, &z, srs_dim))
     {
+      if(!cl)
+        cl = geos::geom::CoordinateArraySequenceFactory::instance()->create((std::size_t)0, srs_dim);
+
       if(srs_dim == 3)
       {
-        coords->push_back(geos::geom::Coordinate(x, y, z));
+        cl->add(geos::geom::Coordinate(x, y, z));
       }
       else
       {
-        coords->push_back(geos::geom::Coordinate(x, y));
+        cl->add(geos::geom::Coordinate(x, y));
       }
       x = 0; y = 0; z = 0;
     }
@@ -415,7 +425,6 @@ void GeoFunction::readPosListCoordinates(zorba::Item &lItem,
     throwError(lErrorMessage.str(), XPTY0004);
   }
 
-  cl = geos::geom::CoordinateArraySequenceFactory::instance()->create(coords, srs_dim);
 }
 
 geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem, 
@@ -1293,6 +1302,7 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
     char strtemp[100];
     const geos::geom::Coordinate  *c;
     c = geos_geometry->getCoordinate();
+#if GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 2)
     if(geos_geometry->getCoordinateDimension() == 3)
     {
       zorba::Item attr_value_item;
@@ -1307,6 +1317,7 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
         sprintf(strtemp, "%lf %lf 0", c->x, c->y);
     }
     else
+#endif
       sprintf(strtemp, "%lf %lf", c->x, c->y);
 
     zorba::Item text_item;
@@ -1327,6 +1338,7 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
     item_name = theModule->getItemFactory()->createQName("http://www.opengis.net/gml", "gml", "posList");
     pos_item = theModule->getItemFactory()->createElementNode(result_item, item_name, item_type, false, false, ns_binding);
     
+#if GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 2)
     int coord_dim = geos_geometry->getCoordinateDimension();
     if(coord_dim == 3)
     {
@@ -1337,6 +1349,9 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
       attr_value_item = theModule->getItemFactory()->createString(strvalue);
       theModule->getItemFactory()->createAttributeNode(pos_item, item_name, item_type, attr_value_item);
     }
+#else
+    int coord_dim = 2;
+#endif
     char *strtemp;
     geos::geom::CoordinateSequence  *cs;
     cs = geos_geometry->getCoordinates();
@@ -1599,10 +1614,14 @@ SFCoordinateDimensionFunction::evaluate(const StatelessExternalFunction::Argumen
   geos::geom::Geometry  *geos_geometry;                                                 
   geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);   
 
+#if GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 2)
   int   coord_dim = geos_geometry->getCoordinateDimension();
+#else
+  int coord_dim = 2;//hardcode the coordinate sistem for 2D for GEOS 3.2.2
+#endif
   delete geos_geometry;
   return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createInteger(coord_dim)));//hardcode the coordinate sistem for 2D
+      theModule->getItemFactory()->createInteger(coord_dim)));
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -1996,7 +2015,11 @@ SFIs3DFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
   geos::geom::Geometry  *geos_geometry;
   geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);
 
+#if GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 2)
   bool is_3D = (geos_geometry->getCoordinateDimension() == 3);
+#else
+  bool is_3D = false;//for GEOS 3.2.2
+#endif
   delete geos_geometry;
 
   return ItemSequence_t(new SingletonItemSequence(
