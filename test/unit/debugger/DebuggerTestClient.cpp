@@ -31,91 +31,94 @@ using namespace std;
 using namespace zorba;
 
 namespace zorba {
-  DebuggerTestClient::DebuggerTestClient(int aRequestPort, int aEventPort, std::iostream& aQuery)
-    : m_request_port(aRequestPort),
-      m_event_port(aEventPort),
-      m_client(ZorbaDebuggerClient::createClient(aRequestPort, aEventPort)),
-      m_handler(new DebuggerTestHandler(m_client)),
-      m_query(aQuery)
-	{
-		m_client->registerEventHandler(m_handler);
-	}
 
-	DebuggerTestClient::~DebuggerTestClient()
-	{
-    delete m_client;
-    delete m_handler;
-	}
+DebuggerTestClient::DebuggerTestClient(int aRequestPort, int aEventPort, std::iostream& aQuery)
+  : m_request_port(aRequestPort),
+    m_event_port(aEventPort),
+    m_client(ZorbaDebuggerClient::createClient(aRequestPort, aEventPort)),
+    m_handler(new DebuggerTestHandler(m_client)),
+    m_query(aQuery)
+{
+	m_client->registerEventHandler(m_handler);
+}
 
-	void
-  DebuggerTestClient::run()
-	{
-		m_client->run();
-	}
+DebuggerTestClient::~DebuggerTestClient()
+{
+  delete m_client;
+  delete m_handler;
+}
 
-  void
-  DebuggerTestClient::eval(std::string anExpr)
-  {
-    String lStr(anExpr);
-    m_client->eval(lStr);
+void
+DebuggerTestClient::run()
+{
+	m_client->run();
+}
+
+void
+DebuggerTestClient::eval(std::string anExpr)
+{
+  String lStr(anExpr);
+  m_client->eval(lStr);
+}
+
+DebuggerTestHandler::DebugEvent
+DebuggerTestClient::getNextEvent()
+{
+	return m_handler->getNextEvent();
+}
+
+std::pair<String, std::list<std::pair<String, String> > >
+DebuggerTestClient::getLastEvent()
+{
+  return m_handler->getLastEvent();
+}
+
+void
+DebuggerTestClient::resume()
+{
+  m_client->resume();
+}
+
+QueryLocation_t
+DebuggerTestClient::addBreakpoint(std::string& aFile, unsigned int aLine)
+{
+  QueryLocation_t lLocation(m_client->addBreakpoint(aFile, aLine));
+  if(lLocation == NULL || lLocation->getLineBegin() == 0) {
+    std::cerr << "Couldn't find an expression to break in " << aFile << " at line " << aLine << "\n";
+  } else {
+    std::cerr << "Set breakpoint at: " <<  lLocation.get()->toString().c_str() << "\n";
   }
+  return lLocation;
+}
 
+QueryLocation_t
+DebuggerTestClient::getLocation() const
+{
+  return m_client->getLocation();
+}
 
-	DebuggerTestHandler::DebugEvent
-  DebuggerTestClient::getNextEvent()
-	{
-		return m_handler->getNextEvent();
-	}
+void
+DebuggerTestClient::terminate()
+{
+  m_client->terminate();
+}
 
-  std::pair<String, std::list<std::pair<String, String> > 
-  >
-  DebuggerTestClient::getLastEvent() {
-    return m_handler->getLastEvent();
+std::vector<std::string>
+DebuggerTestClient::getVariableNames()
+{
+  std::vector<std::string> lResult;
+  std::list<Variable> lVars = m_client->getAllVariables();
+  std::list<Variable>::iterator lIter;
+  for (lIter = lVars.begin(); lIter != lVars.end(); lIter++) {
+    lResult.push_back(lIter->getName().c_str());
   }
+  return lResult;
+}
 
-  void
-  DebuggerTestClient::resume()
-  {
-    m_client->resume();
-  }
-
-  QueryLocation_t
-  DebuggerTestClient::addBreakpoint( std::string nspace, unsigned int lNumber )
-  {
-    QueryLocation_t lLocation(m_client->addBreakpoint(nspace, lNumber));
-    if(lLocation == NULL || lLocation->getLineBegin() == 0) {
-      std::cerr << "Couldn't find an expression to break in " << nspace << " at line " << lNumber << "\n";
-    } else {
-      std::cerr << "Set breakpoint at: " <<  lLocation.get()->toString().c_str() << "\n";
-    }
-    return lLocation;
-  }
-
-  QueryLocation_t
-  DebuggerTestClient::getLocation() const
-  {
-    return m_client->getLocation();
-  }
-
-  void DebuggerTestClient::terminate()
-  {
-    m_client->terminate();
-  }
-
-  std::vector<std::string> DebuggerTestClient::getVariableNames()
-  {
-    std::vector<std::string> lResult;
-    std::list<Variable> lVars = m_client->getAllVariables();
-    std::list<Variable>::iterator lIter;
-    for (lIter = lVars.begin(); lIter != lVars.end(); lIter++) {
-      lResult.push_back(lIter->getName().c_str());
-    }
-    return lResult;
-  }
-
-  void DebuggerTestClient::clearBreakpoint( unsigned int aId )
-  {
-    m_client->clearBreakpoint(aId);
-  }
+void
+DebuggerTestClient::clearBreakpoint(std::string& aFile, unsigned int aLine)
+{
+  m_client->clearBreakpoint(aFile, aLine);
+}
 
 }

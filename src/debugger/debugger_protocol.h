@@ -64,17 +64,18 @@ const CommandSet DYNAMIC      = 0xf4;
 const CommandSet ENGINE_EVENT = 0xf8;
 
 /* Execution Commands */
-const Command RUN           = 0x01; 
-const Command SUSPEND       = 0x02;
-const Command RESUME        = 0x03;
-const Command TERMINATE     = 0x04;
-const Command STEP          = 0x05;
+const Command RUN       = 0x01; 
+const Command SUSPEND   = 0x02;
+const Command RESUME    = 0x03;
+const Command TERMINATE = 0x04;
+const Command STEP      = 0x05;
+const Command DETACH    = 0x06;
 
 /* Breakpoints Commands */
 const Command SET   = 0x01;
 const Command CLEAR = 0x02;
 
-/* Engine events Commands */
+/* Engine event Commands */
 const Command STARTED    = 0x01;
 const Command TERMINATED = 0x02;
 const Command SUSPENDED  = 0x03;
@@ -405,6 +406,19 @@ class ZORBA_DLL_PUBLIC SuspendMessage: public AbstractCommandMessage
 /**
  * 
  */
+class ZORBA_DLL_PUBLIC ResumeMessage: public AbstractCommandMessage
+{
+  public:
+    ResumeMessage();
+    
+    ResumeMessage( Byte * aMessage, const unsigned int aLength ); 
+    
+    virtual ~ResumeMessage();
+};
+
+/**
+ * 
+ */
 class ZORBA_DLL_PUBLIC TerminateMessage: public AbstractCommandMessage
 {
   public:
@@ -418,14 +432,14 @@ class ZORBA_DLL_PUBLIC TerminateMessage: public AbstractCommandMessage
 /**
  * 
  */
-class ZORBA_DLL_PUBLIC ResumeMessage: public AbstractCommandMessage
+class ZORBA_DLL_PUBLIC DetachMessage: public AbstractCommandMessage
 {
   public:
-    ResumeMessage();
+    DetachMessage();
+
+    DetachMessage( Byte * aMessage, const unsigned int aLength ); 
     
-    ResumeMessage( Byte * aMessage, const unsigned int aLength ); 
-    
-    virtual ~ResumeMessage();
+    virtual ~DetachMessage();
 };
 
 /**

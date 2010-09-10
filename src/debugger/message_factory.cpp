@@ -64,6 +64,8 @@ namespace zorba {
             return true;
           case TERMINATE:
             return true;
+          case DETACH:
+            return true;
           case STEP:
             return true;
           }
@@ -218,6 +220,8 @@ AbstractMessage* MessageFactory::buildMessage(TCPSocket * aSocket)
             return new ResumeMessage( aMessage, aLength );
           case TERMINATE:
             return new TerminateMessage( aMessage, aLength );
+          case DETACH:
+            return new DetachMessage( aMessage, aLength );
           case STEP:
             return new StepMessage( aMessage, aLength );
           }

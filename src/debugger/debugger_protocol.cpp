@@ -362,6 +362,17 @@ SuspendMessage::SuspendMessage( Byte * aMessage, const unsigned int aLength ):
 SuspendMessage::~SuspendMessage(){}
 
 /**
+ * Resume message
+ */
+ResumeMessage::ResumeMessage():
+  AbstractCommandMessage( EXECUTION, RESUME ){}
+
+ResumeMessage::ResumeMessage( Byte * aMessage, const unsigned int aLength ):
+  AbstractCommandMessage( aMessage, aLength ){}
+
+ResumeMessage::~ResumeMessage(){}
+
+/**
  * Terminate message
  */
 TerminateMessage::TerminateMessage():
@@ -373,15 +384,15 @@ TerminateMessage::TerminateMessage( Byte * aMessage, const unsigned int aLength 
 TerminateMessage::~TerminateMessage(){}
 
 /**
- * Resume message
+ * Detach message
  */
-ResumeMessage::ResumeMessage():
-  AbstractCommandMessage( EXECUTION, RESUME ){}
+DetachMessage::DetachMessage():
+  AbstractCommandMessage( EXECUTION, DETACH ){}
 
-ResumeMessage::ResumeMessage( Byte * aMessage, const unsigned int aLength ):
+DetachMessage::DetachMessage( Byte * aMessage, const unsigned int aLength ):
   AbstractCommandMessage( aMessage, aLength ){}
 
-ResumeMessage::~ResumeMessage(){}
+DetachMessage::~DetachMessage(){}
 
 /**
  * Step message

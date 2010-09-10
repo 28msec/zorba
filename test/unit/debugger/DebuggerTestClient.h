@@ -54,10 +54,10 @@ public:
   getLastEvent();
 
   QueryLocation_t
-  addBreakpoint(std::string fileName, unsigned int aNumber);
+  addBreakpoint(std::string& fileName, unsigned int aNumber);
 
   void
-  clearBreakpoint(unsigned int aId);
+  clearBreakpoint(std::string& fileName, unsigned int aNumber);
 
   QueryLocation_t
   getLocation() const;

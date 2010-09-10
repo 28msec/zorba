@@ -174,6 +174,7 @@ namespace zorba {
     void resumeQuery();
     void resumeRuntime();
     void terminateRuntime();
+    void detachRuntime();
 
     /**
     * @brief Executes a step command on the runtime.

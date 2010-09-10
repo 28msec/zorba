@@ -147,7 +147,9 @@ namespace zorba {
     {
       DebuggerTestClient client(lPorts.first, lPorts.second, qs);
 
-      QueryLocation_t loc = client.addBreakpoint("test.xq", 1);
+      std::string lFile("test.xq");
+      std::cout << "Adding breakpoint in file \"" << lFile << "\" at line 1" << std::endl;
+      QueryLocation_t loc = client.addBreakpoint(lFile, 1);
       if (loc == NULL) {
         return -1;
       }
@@ -237,7 +239,9 @@ namespace zorba {
     {
       DebuggerTestClient client(lPorts.first, lPorts.second, qs);
 
-      QueryLocation_t loc = client.addBreakpoint("test.xq", 1);
+      std::string lFile("test.xq");
+      std::cout << "Adding breakpoint in file \"" << lFile << "\" at line 1" << std::endl;
+      QueryLocation_t loc = client.addBreakpoint(lFile, 1);
       if (loc == NULL) {
         return -1;
       }
@@ -266,6 +270,124 @@ namespace zorba {
 
   } // int test_resume
 
+  int test_clear_pending(Zorba* lZorba) {
+
+    std::stringstream qs;
+    qs << "for $x in 1 to 3" << std::endl;
+    qs << "let $y := 2 * $x" << std::endl;
+    qs << "return $y" << std::endl;
+
+    std::ostringstream lRes;
+    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+
+    std::pair<short, short> lPorts = getRandomPorts();
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    DebuggerServerRunnable lServer(lQuery, lRes, "127.0.0.1", lPorts.first,
+      lPorts.second, lSerOptions);
+    lServer.start();
+
+    sleep(1);
+
+    DebuggerTestClient client(lPorts.first, lPorts.second, qs);
+
+    std::string lFile("test.xq");
+    std::cout << "Adding breakpoint in file \"" << lFile << "\" at line 1" << std::endl;
+    QueryLocation_t loc = client.addBreakpoint(lFile, 1);
+    if (loc == NULL) {
+      std::cerr << "Invalid query location received when setting a breakpoint" << std::endl;
+      return -1;
+    }
+    std::cout << "Breakpoint pending at location " << loc << std::endl;
+
+    client.clearBreakpoint(lFile, 1);
+    std::cout << "Clearing breakpoint from file \"" << lFile << "\" at line 1" << std::endl;
+
+    client.run();
+
+    DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
+
+    while (evt != DebuggerTestHandler::TERMINATED) {
+      if (evt == DebuggerTestHandler::SUSPENDED) {
+        std::cerr << "The query must not break after the breakpoint was cleared" << std::endl;
+        client.terminate();
+        lServer.join();
+        return -1;
+      }
+      evt = client.getNextEvent();
+      sleep(1);
+    }
+
+    client.terminate();
+    lServer.join();
+    return 0;
+
+  } // int test_clear_pending
+
+  int test_clear_set(Zorba* lZorba) {
+
+    std::stringstream qs;
+    qs << "for $x in 1 to 3" << std::endl;
+    qs << "let $y := 2 * $x" << std::endl;
+    qs << "return $y" << std::endl;
+
+    std::ostringstream lRes;
+    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+
+    std::pair<short, short> lPorts = getRandomPorts();
+    Zorba_SerializerOptions lSerOptions;
+    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
+    DebuggerServerRunnable lServer(lQuery, lRes, "127.0.0.1", lPorts.first,
+      lPorts.second, lSerOptions);
+    lServer.start();
+
+    sleep(1);
+
+    DebuggerTestClient client(lPorts.first, lPorts.second, qs);
+
+    std::string lFile("test.xq");
+    std::cout << "Adding breakpoint in file \"" << lFile << "\" at line 2" << std::endl;
+    QueryLocation_t loc = client.addBreakpoint(lFile, 2);
+    if (loc == NULL) {
+      std::cerr << "Invalid query location received when setting a breakpoint" << std::endl;
+      return -1;
+    }
+    std::cout << "Breakpoint set at location " << loc << std::endl;
+
+    client.run();
+
+    DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
+
+    bool lCleared = false;
+    while (evt != DebuggerTestHandler::TERMINATED) {
+      if (evt == DebuggerTestHandler::SUSPENDED) {
+        if (!lCleared) {
+          client.clearBreakpoint(lFile, 2);
+          std::cout << "Clearing breakpoint from file \"" << lFile << "\" at line 2" << std::endl;
+          lCleared = true;
+
+          client.resume();
+          evt = client.getNextEvent();
+          sleep(1);
+          continue; 
+        }
+
+        std::cerr << "The query must not break after the breakpoint was cleared" << std::endl;
+        client.terminate();
+        lServer.join();
+        return -1;
+      }
+
+      evt = client.getNextEvent();
+      sleep(1);
+    }
+
+    client.terminate();
+    lServer.join();
+    return 0;
+
+  } // test_clear_set
+
   int test_vars(Zorba* aZorba) {
     std::stringstream qs;
     qs << "declare function local:test() {" << std::endl;
@@ -291,7 +413,9 @@ namespace zorba {
 
     DebuggerTestClient client(lPorts.first, lPorts.second, qs);
 
-    QueryLocation_t loc = client.addBreakpoint("test.xq", 4);
+    std::string lFile("test.xq");
+    std::cout << "Adding breakpoint in file \"" << lFile << "\" at line 4" << std::endl;
+    QueryLocation_t loc = client.addBreakpoint(lFile, 4);
     if (loc == NULL) {
       client.terminate();
       lServer.join();
@@ -349,7 +473,9 @@ namespace zorba {
 
     DebuggerTestClient client(lPorts.first, lPorts.second, qs);
 
-    QueryLocation_t loc = client.addBreakpoint("test.xq", 2);
+    std::string lFile("test.xq");
+    std::cout << "Adding breakpoint in file \"" << lFile << "\" at line 2" << std::endl;
+    QueryLocation_t loc = client.addBreakpoint(lFile, 2);
     if (loc == NULL) {
       client.terminate();
       lServer.join();
@@ -409,7 +535,9 @@ namespace zorba {
 
     DebuggerTestClient client(lPorts.first, lPorts.second, qs);
 
-    QueryLocation_t loc = client.addBreakpoint("test.xq", 2);
+    std::string lFile("test.xq");
+    std::cout << "Adding breakpoint in file \"" << lFile << "\" at line 2" << std::endl;
+    QueryLocation_t loc = client.addBreakpoint(lFile, 2);
     if (loc == NULL) {
       return -1;
     }
@@ -470,69 +598,6 @@ namespace zorba {
 
   } // int test_eval
 
-  int test_clear(Zorba* lZorba) {
-
-    std::stringstream qs;
-    qs << "declare function local:test() {" << std::endl;
-    qs << "  let $x := 1" << std::endl;
-    qs << "  return" << std::endl;
-    qs << "    if (fn:true()) then" << std::endl;
-    qs << "      $x" << std::endl;
-    qs << "    else 0" << std::endl;
-    qs << "};" << std::endl;
-    qs << "local:test()" << std::endl;
-
-    std::ostringstream lRes;
-    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
-
-    std::pair<short, short> lPorts = getRandomPorts();
-    Zorba_SerializerOptions lSerOptions;
-    lSerOptions.omit_xml_declaration = ZORBA_OMIT_XML_DECLARATION_YES;
-    DebuggerServerRunnable lServer(lQuery, lRes, "127.0.0.1", lPorts.first,
-      lPorts.second, lSerOptions);
-    lServer.start();
-
-    sleep(1);
-
-    {
-      DebuggerTestClient client(lPorts.first, lPorts.second, qs);
-
-      QueryLocation_t loc = client.addBreakpoint("test.xq", 4);
-      if (loc == NULL) {
-        return -1;
-      }
-      std::cout << "Breakpoint set at location " << loc << std::endl;
-
-      client.clearBreakpoint(1);
-      std::cout << "Breakpoint set at location 1 cleared" << std::endl;
-
-      client.run();
-
-      DebuggerTestHandler::DebugEvent evt = client.getNextEvent();
-
-      while (evt != DebuggerTestHandler::TERMINATED) {
-        if (evt == DebuggerTestHandler::SUSPENDED) {
-          return -1;
-        }
-        evt = client.getNextEvent();
-        sleep(1);
-      }
-
-    }
-
-    lServer.join();
-
-    std::cout << "Result:\n" << lRes.str() << std::endl;
-
-    if (lRes.str() != "<a>Hello World</a>") {
-      std::cerr << "Result does not match expected result" << std::endl;
-      return -1;
-    }
-
-    return 0;
-
-  } // int test_clear
-
 } /* namespace zorba */
 
 int test_debugger_server (int argc, char* argv[]) {
@@ -560,6 +625,18 @@ int test_debugger_server (int argc, char* argv[]) {
   std::cout << "---------------------" << std::endl;
   std::cout << "executing test_resume" << std::endl;
   if (zorba::test_resume(lZorba) != 0) {
+    return 1;
+  }
+
+  std::cout << "---------------------" << std::endl;
+  std::cout << "executing test_clear_pending" << std::endl;
+  if (zorba::test_clear_pending(lZorba) != 0) {
+    return 1;
+  }
+
+  std::cout << "---------------------" << std::endl;
+  std::cout << "executing test_clear_set" << std::endl;
+  if (zorba::test_clear_set(lZorba) != 0) {
     return 1;
   }
 

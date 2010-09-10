@@ -250,6 +250,9 @@ ZorbaDebuggerRuntime::execCommands()
   case TERMINATE:
     terminateRuntime();
     return true;
+  case DETACH:
+    detachRuntime();
+    return true;
   case STEP:
     step();
     break;
@@ -393,6 +396,17 @@ void ZorbaDebuggerRuntime::terminateRuntime()
     theCommunicator->sendEvent(&lEvent);
   }
   theExecStatus = QUERY_TERMINATED;
+}
+
+void ZorbaDebuggerRuntime::detachRuntime()
+{
+  AutoLock lLock(theLock, Lock::WRITE);
+  //theWrapper->theStateBlock->theHasToQuit = true;
+  if (theExecStatus == QUERY_SUSPENDED) {
+    resume();
+  } else if (theExecStatus == QUERY_IDLE) {
+  }
+  theExecStatus = QUERY_DETACHED; 
 }
 
 ReplyMessage* ZorbaDebuggerRuntime::getAllVariables()

@@ -53,7 +53,8 @@ ZorbaDebuggerServer::run()
   theCommunicator->handshake();
 
   // Until the query execution has ended
-  while (theRuntime->getExecutionStatus() != QUERY_TERMINATED) {
+  while (theRuntime->getExecutionStatus() != QUERY_TERMINATED &&
+        theRuntime->getExecutionStatus() != QUERY_DETACHED) {
     std::auto_ptr<AbstractCommandMessage> lMessage(theCommunicator->handleTCPClient());
     if (lMessage.get() != NULL) {
        if (lMessage->isExecutionCommand() && lMessage->getCommand() == RUN) {

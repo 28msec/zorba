@@ -39,12 +39,12 @@ namespace zorba{
   class TCPSocket;
   class TCPServerSocket;
 
-  ZORBA_THREAD_RETURN listenEvents( void * aClient );
+  ZORBA_THREAD_RETURN listenEvents(void* aClient);
 
-  class ZorbaDebuggerClientImpl: public ZorbaDebuggerClient
+  class ZorbaDebuggerClientImpl : public ZorbaDebuggerClient
   {
     friend
-    ZORBA_THREAD_RETURN listenEvents( void * aClient );
+    ZORBA_THREAD_RETURN listenEvents(void* aClient);
 
     public:
       ZorbaDebuggerClientImpl(std::string aServerAddress = "127.0.0.1",
@@ -53,7 +53,7 @@ namespace zorba{
 
       virtual ~ZorbaDebuggerClientImpl();
 
-      ZorbaDebuggerClient* registerEventHandler( DebuggerEventHandler * anEventHandler );
+      ZorbaDebuggerClient* registerEventHandler(DebuggerEventHandler* anEventHandler);
       
       bool isQueryRunning() const;
 
@@ -71,29 +71,33 @@ namespace zorba{
 
       bool terminate();
 
+      void detach();
+
       bool stepInto();
 
       bool stepOut();
 
       bool stepOver();
 
-      bool addBreakpoint( const String &anExpr );
+      bool addBreakpoint(const String& anExpr);
 
-      QueryLocation_t addBreakpoint( const String &aFileName, const unsigned int aLineNo );
+      QueryLocation_t addBreakpoint(const String& aFile, const unsigned int aLineNo);
 
-      QueryLocation_t addBreakpoint( const unsigned int aLineNo );
+      QueryLocation_t addBreakpoint(const unsigned int aLineNo);
 
       std::map<unsigned int, String> getBreakpoints() const;
 
-      bool clearBreakpoint( unsigned int anId );
+      bool clearBreakpoint(unsigned int anId);
 
-      bool clearBreakpoints( std::list<unsigned int> &Ids );
+      bool clearBreakpoint(const String& aUri, unsigned int aLineNo);
+
+      bool clearBreakpoints(std::list<unsigned int>& Ids);
 
       bool clearBreakpoints();
       
       QueryLocation_t getLocation() const;
 
-      bool eval( String &anExpr ) const;
+      bool eval(String& anExpr) const;
 
       std::list<Variable> getAllVariables(bool data = false) const;
       
@@ -117,7 +121,7 @@ namespace zorba{
     protected:
       static unsigned int theLastId;
 
-      DebuggerEventHandler * theEventHandler;
+      DebuggerEventHandler* theEventHandler;
 
       QueryLoc theRemoteLocation;
 
@@ -129,7 +133,7 @@ namespace zorba{
 
       mutable Lock    theExecutionStatusLock;
 
-      Thread *theEventListener;
+      Thread* theEventListener;
 
       std::map<unsigned int, String> theBreakpoints;
 
@@ -137,9 +141,9 @@ namespace zorba{
 
       bool handshake();
 
-      ReplyMessage* send( AbstractCommandMessage * aMessage ) const;
+      ReplyMessage* send(AbstractCommandMessage* aMessage) const;
 
-      void send( std::string aMessage ) const;
+      void send(std::string aMessage) const;
   };
 }//end of namespace
 #endif

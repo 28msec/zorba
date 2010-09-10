@@ -81,7 +81,7 @@ namespace zorba {
       String theType;
       std::list<std::pair<String, String> > theData;
     public:
-      Variable( String &aName, String &aType, std::list<std::pair<String, String> > data )
+      Variable(String& aName, String& aType, std::list<std::pair<String, String> > data)
         : theName(aName), theType(aType), theData(data) {}
       
       virtual ~Variable(){}
@@ -119,7 +119,7 @@ namespace zorba {
        * @return ZorbaDebuggerClient the newly created debugger client instance.
        */
       static ZorbaDebuggerClient*
-      createClient( unsigned short aRequestPortno = 8000, unsigned short aEventPortno = 9000 );
+      createClient(unsigned short aRequestPortno = 8000, unsigned short aEventPortno = 9000);
 
       /** \brief Gets a new instance of Zorba debugger client.
        *
@@ -138,7 +138,7 @@ namespace zorba {
        * @return ZorbaDebuggerClient the newly created debugger client instance.
        */
        static ZorbaDebuggerClient*
-       createClient(std::string aServerAddress, unsigned short aRequestPortno = 8000, unsigned short aEventPortno = 9000 );
+       createClient(std::string aServerAddress, unsigned short aRequestPortno = 8000, unsigned short aEventPortno = 9000);
 
 
       /** \brief Register a debugger event handler to which runtime events on the remote 
@@ -148,7 +148,7 @@ namespace zorba {
        * from the remote debugger server.
        */
       virtual ZorbaDebuggerClient*
-      registerEventHandler( DebuggerEventHandler *aDebuggerEventHandler ) = 0;
+      registerEventHandler(DebuggerEventHandler *aDebuggerEventHandler) = 0;
      
       /** \brief Indicates if the query is running.
        *
@@ -202,6 +202,12 @@ namespace zorba {
       virtual bool
       terminate() = 0;
 
+      /** \brief Detach this client from the debugger server
+       *
+       */
+      virtual void
+      detach() = 0;
+
       /** \brief Step into the function call.
        *
        */
@@ -227,7 +233,7 @@ namespace zorba {
        * @return the location where the breakpoint has been set.
        */
       virtual QueryLocation_t
-      addBreakpoint( const String &aFileName, const unsigned int aLineNo ) = 0;
+      addBreakpoint(const String& aFileName, const unsigned int aLineNo) = 0;
 
       /** \brief Set a new breakpoint in the main query.
        *
@@ -235,7 +241,7 @@ namespace zorba {
        * @return the location where the breakpoint has been set.
        */
       virtual QueryLocation_t
-      addBreakpoint( const unsigned int aLineNo ) = 0;
+      addBreakpoint(const unsigned int aLineNo) = 0;
 
       /** \brief Set a new watchpoint.
        * 
@@ -245,7 +251,7 @@ namespace zorba {
        * @param anExpr String XQuery expression to be evaluated.
        */
       virtual bool
-      addBreakpoint( const String &anExpr ) = 0;
+      addBreakpoint(const String& anExpr) = 0;
 
       /** \brief Remove a breakpoint or watchpoint of the given id
        *
@@ -253,7 +259,16 @@ namespace zorba {
        * @return true if the breakpoint id is correct.
        */
       virtual bool
-      clearBreakpoint( unsigned int anId ) = 0;
+      clearBreakpoint(unsigned int anId) = 0;
+
+      /** \brief Remove a breakpoint given it's location.
+       *
+       * @param aFileName String Filename of the query or module.
+       * @param aLineNo unsigned int Line number in the file.
+       * @return true if the breakpoint id is correct.
+       */
+      virtual bool
+      clearBreakpoint(const String& aFileName, unsigned int aLineNo) = 0;
 
       /** \brief Remove a breakpoint or watchpoint of the given collection of ids
        *
@@ -261,7 +276,7 @@ namespace zorba {
        * @return true if all breakpoint ids are correct.
        */
       virtual bool
-      clearBreakpoints( std::list<unsigned int> &Ids ) = 0;
+      clearBreakpoints(std::list<unsigned int>& Ids) = 0;
       
       /** \brief Get all breakpoints set on the remote query.
        *
@@ -292,7 +307,7 @@ namespace zorba {
        * the client with the result or an error description if an error happened during evaluation.
        */
       virtual bool
-      eval( String &anExpr ) const = 0;
+      eval(String& anExpr) const = 0;
 
       /** \brief Get all variables that are in scope in the remote query.
        *
