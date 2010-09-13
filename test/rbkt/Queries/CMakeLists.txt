@@ -96,6 +96,9 @@ FIND_PACKAGE(Geos)
 # Check if ImageMagick is found with all the 3 needed components: Magick++ MagickCore MagickWand
 # in order to determine whether we have to skip the image module tests
 FIND_PACKAGE(ImageMagick COMPONENTS Magick++ MagickCore MagickWand)
+# Check if the C-Client is installed (needed for imap module tests)
+FIND_PACKAGE(CClient)
+
 
 FOREACH(TESTFILE ${TESTFILES})
   # All testfile paths end in .xq or .xqx. Strip that part off to form
@@ -166,6 +169,14 @@ FOREACH(TESTFILE ${TESTFILES})
   ENDIF (NOT ImageMagick_Magick++_FOUND OR
          NOT ImageMagick_MagickCore_FOUND OR
          NOT ImageMagick_MagickWand_FOUND)
+
+  # Check if CClient libraries are found, if not then skip the imap tests
+  IF (NOT CCLIENT_FOUND) 
+    STRING(REGEX MATCH "imap/" NEEDS_CCLIENT "${TESTNAME}")
+    IF (NEEDS_CCLIENT)
+      SET (SKIP_TEST 1)
+    ENDIF (NEEDS_CCLIENT)
+  ENDIF (NOT CCLIENT_FOUND)
 
   # check if libgeos is found; skip the tests if not found
   IF (NOT GEOS_FOUND)

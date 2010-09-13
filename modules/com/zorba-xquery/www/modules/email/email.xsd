@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.zorba-xquery.org/modules/email/email"
+  xmlns:tns="http://www.zorba-xquery.org/modules/email/email" 
+ elementFormDefault="qualified">
+
+              
+              
+ <!-- definition of simple elements -->
+ <simpleType name="emailAddressType">
+ <restriction base="string">
+ <pattern value="[^@]+@[^\.]+\..+"/>
+ </restriction>
+ </simpleType>
+
+              
+ <!-- definition of complex elements -->
+ <complexType name="emailAddress" >
+ <sequence>
+ <element name="name" type="string" maxOccurs="1" minOccurs="0"/>
+ <element name="email" type="tns:emailAddressType" maxOccurs="1" minOccurs="1"/>
+ </sequence>
+ </complexType>
+
+              
+ <complexType name="recipientType" >
+ <sequence>
+ <choice>
+ <element name="to" type="tns:emailAddress"/>
+ <element name="cc" type="tns:emailAddress"/>
+ <element name="bcc" type="tns:emailAddress"/>
+ </choice>
+ </sequence>
+ </complexType>
+
+              
+ <complexType name="envelopeType" >
+ <sequence>
+ <element name="remail" type="string" maxOccurs="1" minOccurs="0"/>
+ <element name="date" type="dateTime" maxOccurs="1" minOccurs="0"/>
+ <element name="from" type="tns:emailAddress" maxOccurs="1" minOccurs="1"/>
+ <element name="sender" type="tns:emailAddress" maxOccurs="1" minOccurs="0"/>
+ <element name="replyTo" type="tns:emailAddress" maxOccurs="1" minOccurs="0"/>
+ <element name="subject" type="string" maxOccurs="1" minOccurs="0"/>
+ <element name="recipient" type="tns:recipientType" maxOccurs="unbounded" minOccurs="1"/>
+ <element name="messageId" type="string" maxOccurs="1" minOccurs="0"/>
+ </sequence>
+ </complexType>
+
+
+ <element name="envelope" type="tns:envelopeType" /> 
+              
+ </schema>
