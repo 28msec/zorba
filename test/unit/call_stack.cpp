@@ -201,6 +201,66 @@ bool test_call_stack5(Zorba* aZorba)
   return lResult;
 }
 
+bool test_call_stack6(Zorba* aZorba)
+{
+  bool lResult = true;
+  std::stringstream lStream;
+  lStream << "declare function local:foo($x)" << std::endl;
+  lStream << "{" << std::endl;
+  lStream << "  $x" << std::endl;
+  lStream << "};" << std::endl;
+  lStream << "" << std::endl;
+  lStream << "declare function local:bar($x)" << std::endl;
+  lStream << "{" << std::endl;
+  lStream << "  local:foo($x)" << std::endl;
+  lStream << "};" << std::endl;
+  lStream << "" << std::endl;
+  lStream << "let $x := fn:error(xs:QName('local:foo'))" << std::endl;
+  lStream << "return local:bar($x)" << std::endl;
+  XQuery_t lQuery = aZorba->compileQuery(lStream);
+  try {
+    std::stringstream lQueryResult;
+    lQueryResult << lQuery;
+  } catch (ZorbaException& e) {
+    ZorbaException::StackTrace_t lTrace = e.getStackTrace();
+    if (lTrace.size() != 0)
+      lResult = false;
+  } catch (...) {
+    lResult = false;
+  }
+  return lResult;
+}
+
+bool test_call_stack7(Zorba* aZorba)
+{
+  bool lResult = true;
+  std::stringstream lStream;
+  lStream << "declare function local:foo($x)";
+  lStream << "{";
+  lStream << "  $x";
+  lStream << "};";
+  lStream << "";
+  lStream << "declare function local:bar($x)";
+  lStream << "{";
+  lStream << "  local:foo($x)";
+  lStream << "};";
+  lStream << "";
+  lStream << "let $x := fn:error(xs:QName('local:foo'))";
+  lStream << "return local:bar($x)";
+  XQuery_t lQuery = aZorba->compileQuery(lStream);
+  try {
+    std::stringstream lQueryResult;
+    lQueryResult << lQuery;
+  } catch (ZorbaException& e) {
+    ZorbaException::StackTrace_t lTrace = e.getStackTrace();
+    if (lTrace.size() != 0)
+      lResult = false;
+  } catch (...) {
+    lResult = false;
+  }
+  return lResult;
+}
+
 int call_stack (int argc, char* argv[])
 {
   void* lStore = zorba::StoreManager::getStore();
@@ -218,7 +278,13 @@ int call_stack (int argc, char* argv[])
   if (!test_call_stack4(lZorba))
     return 1;
   std::cout << "test5" << std::endl;
-  //if (!test_call_stack5(lZorba))
-    //return 1;
+  if (!test_call_stack5(lZorba))
+    return 1;
+  std::cout << "test6" << std::endl;
+  if (!test_call_stack6(lZorba))
+    return 1;
+  std::cout << "test7" << std::endl;
+  if (!test_call_stack7(lZorba))
+    return 1;
   return 0;
 }

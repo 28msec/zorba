@@ -495,6 +495,7 @@ void end_visit(function_trace_expr& v)
   lDummyIter->setFunctionName(v.getFunctionName());
   lDummyIter->setFunctionArity(v.getFunctionArity());
   lDummyIter->setFunctionLocation(v.getFunctionLocation());
+  lDummyIter->setFunctionCallLocation(v.getFunctionCallLocation());
   push_itstack(lDummyIter.release());
 }
 

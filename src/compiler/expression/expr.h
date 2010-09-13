@@ -1073,6 +1073,7 @@ protected:
   expr_t theExpr;
   store::Item_t theFunctionName;
   QueryLoc theFunctionLocation;
+  QueryLoc theFunctionCallLocation;
   unsigned int theFunctionArity;
 
 public:
@@ -1115,6 +1116,16 @@ public:
   const QueryLoc& getFunctionLocation() const
   {
     return theFunctionLocation;
+  }
+
+  void setFunctionCallLocation(const QueryLoc& loc)
+  {
+    theFunctionCallLocation = loc;
+  }
+
+  const QueryLoc& getFunctionCallLocation() const
+  {
+    return theFunctionCallLocation;
   }
   
   void setFunctionArity(unsigned int arity)

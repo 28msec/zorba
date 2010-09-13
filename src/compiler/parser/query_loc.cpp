@@ -80,7 +80,6 @@ std::ostream& operator<<(std::ostream& aOstr, const QueryLoc& aQueryLoc)
   return aOstr;
 }
 
-
 bool QueryLoc::equals(const QueryLoc& loc) const
 {
   std::stringstream lFile;
