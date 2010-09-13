@@ -175,6 +175,14 @@ public:
    */
   double
   getDoubleValue() const;
+  
+  /** \brief Get the long value of the Item.
+   *
+   * @return Item the long value of the Item.
+   * @throw ZorbaException if an error occured.
+   */
+  int64_t  
+  getLongValue() const;
 
   /** \brief Get the effective boolean value of the Item.
    *

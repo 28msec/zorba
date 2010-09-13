@@ -235,6 +235,21 @@ double Item::getDoubleValue() const
   return 0;
 }
 
+
+xqp_long Item::getLongValue() const
+{
+  ITEM_TRY
+    
+    SYNC_CODE(AutoLock lock(GENV_STORE.getGlobalLock(), Lock::READ);)
+
+    return m_item->getLongValue();
+
+  ITEM_CATCH
+  return 0;  
+  
+}
+
+
 Item Item::getEBV() const
 {
   ITEM_TRY
