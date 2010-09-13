@@ -307,28 +307,28 @@ bool UDFunctionCallIterator::nextImpl(store::Item_t& result, PlanState& planStat
   }
   catch (error::ZorbaError& err) 
   {
-    if (!err.theStackTrace.empty()) {
-      const error::ZorbaError::StackEntry_t lLast = err.theStackTrace.back();
-      const QueryLoc& lLoc = lLast.first;
-      const QueryLoc& lFunLoc = theUDF->getLoc();
-      if (lLoc.getFilename() != lFunLoc.getFilename()) {
-        throw err;
-      }
-      if (lLoc.getLineBegin() > lFunLoc.getLineBegin()) {
-        throw err;
-      }
-      if (lLoc.getLineBegin() == lFunLoc.getLineBegin()
-        && lLoc.getColumnBegin() > lFunLoc.getColumnBegin()) {
-        throw err;
-      }
-      if (lLoc.getLineEnd() < lFunLoc.getLineEnd()) {
-        throw err;
-      }
-      if (lLoc.getLineEnd() == lFunLoc.getLineEnd()
-        && lLoc.getColumnEnd() > lFunLoc.getColumnEnd()) {
-        throw err;
-      }
-    }
+//    if (!err.theStackTrace.empty()) {
+//      const error::ZorbaError::StackEntry_t lLast = err.theStackTrace.back();
+//      const QueryLoc& lLoc = lLast.first;
+//      const QueryLoc& lFunLoc = theUDF->getLoc();
+//      if (lLoc.getFilename() != lFunLoc.getFilename()) {
+//        throw err;
+//      }
+//      if (lLoc.getLineBegin() > lFunLoc.getLineBegin()) {
+//        throw err;
+//      }
+//      if (lLoc.getLineBegin() == lFunLoc.getLineBegin()
+//        && lLoc.getColumnBegin() > lFunLoc.getColumnBegin()) {
+//        throw err;
+//      }
+//      if (lLoc.getLineEnd() < lFunLoc.getLineEnd()) {
+//        throw err;
+//      }
+//      if (lLoc.getLineEnd() == lFunLoc.getLineEnd()
+//        && lLoc.getColumnEnd() > lFunLoc.getColumnEnd()) {
+//        throw err;
+//      }
+//    }
     err.theStackTrace.push_back(error::ZorbaError::StackEntry_t(
         loc,
         std::pair<store::Item_t, unsigned int>(theUDF->getName(), theUDF->getArgVars().size()))

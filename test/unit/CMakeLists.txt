@@ -73,6 +73,4 @@ FOREACH (test ${TestsToRun})
   ZORBA_ADD_TEST_ALLSTORES(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
 
-EXPECTED_FAILURE(test/unit/call_stack 3042403)
-
 ADD_SUBDIRECTORY(debugger)

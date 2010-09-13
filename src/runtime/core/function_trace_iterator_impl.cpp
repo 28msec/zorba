@@ -17,29 +17,8 @@ bool FunctionTraceIterator::nextImpl(store::Item_t &result, PlanState &aPlanStat
     }
     STACK_END(lState);
   } catch (error::ZorbaError& err) {
-    if (!err.theStackTrace.empty()) {
-      const error::ZorbaError::StackEntry_t lLast = err.theStackTrace.back();
-      const QueryLoc& lLoc = lLast.first;
-      if (lLoc.getFilename() != theFunctionLocation.getFilename()) {
-        throw err;
-      }
-      if (lLoc.getLineBegin() > theFunctionLocation.getLineBegin()) {
-        throw err;
-      }
-      if (lLoc.getLineBegin() == theFunctionLocation.getLineBegin()
-        && lLoc.getColumnBegin() > theFunctionLocation.getColumnBegin()) {
-        throw err;
-      }
-      if (lLoc.getLineEnd() < theFunctionLocation.getLineEnd()) {
-        throw err;
-      }
-      if (lLoc.getLineEnd() == theFunctionLocation.getLineEnd()
-        && lLoc.getColumnEnd() > theFunctionLocation.getColumnEnd()) {
-        throw err;
-      }
-    }
     err.theStackTrace.push_back(error::ZorbaError::StackEntry_t(
-        loc,
+        theFunctionLocation,
         std::pair<store::Item_t, unsigned int>(theFunctionName, theFunctionArity))
     );
     throw err;
