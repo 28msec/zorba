@@ -117,10 +117,7 @@ ImapFunction::getOneMessageNumber(
 {
   Item lItem;
   aArgs[aPos]->next(lItem);
-  String lResultAsString = lItem.getStringValue();
-  
-  return strtoul(lResultAsString.c_str(), NULL, 10);
-
+  return lItem.getLongValue();
 }
 
 
