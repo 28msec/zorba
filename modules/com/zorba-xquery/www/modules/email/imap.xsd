@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
-  xmlns="http://www.zorba-xquery.com/modules/email/imap/"
+  xmlns:imap="http://www.zorba-xquery.com/modules/email/imap"
     targetNamespace="http://www.zorba-xquery.com/modules/email/imap"> 
 
 
@@ -37,23 +37,9 @@
     </xs:sequence>      
 </xs:complexType>    
 
-
-
-<xs:complexType name="messageType">
-    <xs:sequence>
-        <xs:element name="uniqueIdentifier" type="xs:int"/> 
-        <xs:element name="messageSequenceNumber" type="xs:int" />
-        <xs:element name="flags" type="xs:string" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="internalDate" type="xs:dateTime" />
-        <xs:element name="messageSize" type="xs:int" />
-        <xs:element name="envelopeStructure" type="xs:string" />
-        <xs:element name="bodyStructure" type="xs:string" />
-        <xs:element name="message" type="xs:string" />
-    </xs:sequence>
-    
-    
-</xs:complexType>
-
+<xs:element name="mailbox" type="imap:mailboxType" />
+<xs:element name="status" type="imap:statusType" />
+<xs:element name="hostInfo" type="imap:hostInfoType" />
 
 
 </xs:schema>

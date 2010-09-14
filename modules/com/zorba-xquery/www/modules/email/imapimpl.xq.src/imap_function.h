@@ -60,12 +60,20 @@ namespace zorba { namespace emailmodule {
      static bool
      getOneBoolArg(const StatelessExternalFunction::Arguments_t& args,
                    int pos);
-      
+     
+      /*
+       * Converts a dateTime string as returned by the c-client (e.g. Tue, 24
+       * Aug 2010 16:26:10 +0200'DD) into a xs:dateTime format.
+       */ 
+      static std::string
+      getDateTime(const std::string& aCClientDateTime); 
+
+
     /*
      * Creates a simple named  node containing a text node.
      */
     static void
-    createInnerNodeWithText(const ImapModule* aModule, Item aParent, const std::string& aName, const std::string& aType, const std::string& aContent);
+    createInnerNodeWithText(const ImapModule* aModule, Item aParent, const std::string& aNamespace, const std::string& aPrefix,  const std::string& aName, const std::string& aType, const std::string& aContent);
 
      /*
       * Creates a simple email address node as defined in email.xsd

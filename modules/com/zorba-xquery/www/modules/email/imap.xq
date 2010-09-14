@@ -26,17 +26,20 @@ import schema namespace email = 'http://www.zorba-xquery.com/modules/email/email
  : @error If the status can not be read for any reason.
  :
  :)
-declare function imap:status($host-info as element(imaps:hostInfoType), $mailbox as xs:string) as element(imaps:statusType) {
-  let $status := imapimpl:status($host-info, $mailbox)
+declare function imap:status($host-info as element(imaps:hostInfo), $mailbox as xs:string) as element(imaps:status) {
+  let $status := imapimpl:status(validate {$host-info}, $mailbox)
   let $status-sequence := fn:tokenize($status, ',')
   return
-      <imaps:statusType>
-          <imaps:messages>{$status-sequence[1]}</imaps:messages>
-          <imaps:recent>{$status-sequence[2]}</imaps:recent>
-          <imaps:unseen>{$status-sequence[3]}</imaps:unseen>
-          <imaps:uidnext>{$status-sequence[4]}</imaps:uidnext>
-          <imaps:uidvalidity>{$status-sequence[5]}</imaps:uidvalidity>
-      </imaps:statusType> 
+      validate {
+        <imaps:status>
+          <messages>{$status-sequence[1]}</messages>
+          <recent>{$status-sequence[2]}</recent>
+          <unseen>{$status-sequence[3]}</unseen>
+          <uidnext>{$status-sequence[4]}</uidnext>
+          <uidvalidity>{$status-sequence[5]}</uidvalidity>
+        </imaps:status> 
+      
+      }
 };
 
 (:~
@@ -48,8 +51,8 @@ declare function imap:status($host-info as element(imaps:hostInfoType), $mailbox
  : @error If it wasn't possible to create a connection to the IMAP server.
  : @error If the passed credentials were rejected by the IMAP server.
  :)
-declare sequential function imap:create($host-info as element(imaps:hostInfoType), $mailbox-name as xs:string)  as xs:boolean {
-  imapimpl:create($host-info, $mailbox-name) 
+declare sequential function imap:create($host-info as element(imaps:hostInfo), $mailbox-name as xs:string)  as xs:boolean {
+  imapimpl:create(validate {$host-info}, $mailbox-name) 
 };
 
 (:~
@@ -62,8 +65,8 @@ declare sequential function imap:create($host-info as element(imaps:hostInfoType
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If there is no mailbox with the specified name.
  :)
-declare sequential function imap:delete($host-info as element(imaps:hostInfoType), $mailbox-name as xs:string)  as xs:boolean {
-  imapimpl:delete($host-info, $mailbox-name)
+declare sequential function imap:delete($host-info as element(imaps:hostInfo), $mailbox-name as xs:string)  as xs:boolean {
+  imapimpl:delete(validate {$host-info}, $mailbox-name)
 };
 
 (:~
@@ -77,8 +80,8 @@ declare sequential function imap:delete($host-info as element(imaps:hostInfoType
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If there is no mailbox with with the specified name ($mailbox-old). 
  :)
-declare sequential function imap:rename($host-info as element(imaps:hostInfoType), $mailbox-old as xs:string, $mailbox-new as xs:string) as xs:boolean {
-  imapimpl:rename($host-info, $mailbox-old, $mailbox-new) 
+declare sequential function imap:rename($host-info as element(imaps:hostInfo), $mailbox-old as xs:string, $mailbox-new as xs:string) as xs:boolean {
+  imapimpl:rename(validate {$host-info}, $mailbox-old, $mailbox-new) 
 };
 
 (:~
@@ -92,14 +95,16 @@ declare sequential function imap:rename($host-info as element(imaps:hostInfoType
  : @error If it wasn't possible to create a connection to the IMAP server.
  : @error If the passed credentials were rejected by the IMAP server.
  :)
-declare function imap:list($host-info as element(imaps:hostInfoType), $mailbox-ref as xs:string, $pattern as xs:string, $only-subscribed as xs:boolean) as element(imaps:mailboxType)* {
-  let $mailbox-sequence := imapimpl:list($host-info, $mailbox-ref, $pattern, $only-subscribed)
+declare function imap:list($host-info as element(imaps:hostInfo), $mailbox-ref as xs:string, $pattern as xs:string, $only-subscribed as xs:boolean) as element(imaps:mailbox)* {
+  let $mailbox-sequence := imapimpl:list(validate {$host-info}, $mailbox-ref, $pattern, $only-subscribed)
   for $mailbox in $mailbox-sequence
   return
-  <imaps:mailboxType>
-    <imaps:hostName>{$host-info/imaps:hostName/text()}</imaps:hostName>
-    <imaps:mailboxName>{fn:substring-after($mailbox, '}')}</imaps:mailboxName>
-  </imaps:mailboxType>
+  validate {
+    <imaps:mailbox>
+      <hostName>{$host-info/imaps:hostName/text()}</hostName>
+      <mailboxName>{fn:substring-after($mailbox, '}')}</mailboxName>
+    </imaps:mailbox>
+  }
 };
 
 (:~
@@ -112,8 +117,8 @@ declare function imap:list($host-info as element(imaps:hostInfoType), $mailbox-r
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If the specified mailbox does not exist.
  :)
-declare sequential function imap:subscribe($host-info as element(imaps:hostInfoType), $mailbox as xs:string) as xs:boolean {
-  imapimpl:subscribe($host-info, $mailbox)
+declare sequential function imap:subscribe($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:boolean {
+  imapimpl:subscribe(validate {$host-info}, $mailbox)
 };
 
 
@@ -127,8 +132,8 @@ declare sequential function imap:subscribe($host-info as element(imaps:hostInfoT
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If the specified mailbox does not exist.
  :)
-declare sequential function imap:unsubscribe($host-info as element(imaps:hostInfoType), $mailbox as xs:string) as xs:boolean {
-  imapimpl:unsubscribe($host-info, $mailbox)
+declare sequential function imap:unsubscribe($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:boolean {
+  imapimpl:unsubscribe(validate {$host-info}, $mailbox)
 };
 
 (:~
@@ -141,8 +146,8 @@ declare sequential function imap:unsubscribe($host-info as element(imaps:hostInf
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If the specified mailbox does not exist.
  :) 
-declare sequential function imap:expunge($host-info as element(imaps:hostInfoType), $mailbox as xs:string) as xs:boolean {
-  imapimpl:expunge($host-info, $mailbox)
+declare sequential function imap:expunge($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:boolean {
+  imapimpl:expunge(validate {$host-info}, $mailbox)
 };
 
 (:~
@@ -161,8 +166,8 @@ declare sequential function imap:expunge($host-info as element(imaps:hostInfoTyp
  : @error If the specified mailbox does not exist.
  : @error If the syntax of the passed criteria is incorrect.  
  :)
-declare function imap:search($host-info as element(imaps:hostInfoType), $mailbox as xs:string, $criteria as xs:string, $uid as xs:boolean?) as xs:long*{
-  imapimpl:search($host-info, $mailbox, $criteria, $uid)
+declare function imap:search($host-info as element(imaps:hostInfo), $mailbox as xs:string, $criteria as xs:string, $uid as xs:boolean?) as xs:long*{
+  imapimpl:search(validate {$host-info}, $mailbox, $criteria, $uid)
 }; 
 
 (:~
@@ -181,8 +186,8 @@ declare function imap:search($host-info as element(imaps:hostInfoType), $mailbox
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message numbers don't exist.
  :)
-declare sequential function imap:copy($host-info as element(imaps:hostInfoType), $mailbox-from as xs:string, $mailbox-to as xs:string, $messages as xs:long+, $uid as xs:boolean?) as xs:boolean {
-  imapimpl:copy($host-info, $mailbox-from, $mailbox-to, $messages, $uid, true());
+declare sequential function imap:copy($host-info as element(imaps:hostInfo), $mailbox-from as xs:string, $mailbox-to as xs:string, $messages as xs:long+, $uid as xs:boolean?) as xs:boolean {
+  imapimpl:copy(validate {$host-info}, $mailbox-from, $mailbox-to, $messages, $uid, true());
 };
 
 (:~
@@ -201,8 +206,8 @@ declare sequential function imap:copy($host-info as element(imaps:hostInfoType),
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message numbers don't exist.
  :)
-declare sequential function imap:move($host-info as element(imaps:hostInfoType), $mailbox-from as xs:string, $mailbox-to as xs:string, $messages as xs:long+, $uid as xs:boolean?) as xs:boolean {
-  imapimpl:copy($host-info, $mailbox-from, $mailbox-to, $messages, $uid, false());
+declare sequential function imap:move($host-info as element(imaps:hostInfo), $mailbox-from as xs:string, $mailbox-to as xs:string, $messages as xs:long+, $uid as xs:boolean?) as xs:boolean {
+  imapimpl:copy(validate {$host-info}, $mailbox-from, $mailbox-to, $messages, $uid, false());
 };
 
 (:~
@@ -218,7 +223,7 @@ declare sequential function imap:move($host-info as element(imaps:hostInfoType),
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist.
  :) 
-declare function imap:fetch-envelope($host-info as element(imaps:hostInfoType), $mailbox as xs:string, $message-number as xs:long) as element() { 
-  imapimpl:fetch-envelope($host-info , $mailbox , $message-number ) 
+declare function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as element() { 
+    validate { imapimpl:fetch-envelope( validate { $host-info }, $mailbox , $message-number ) } 
 };
 

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.zorba-xquery.org/modules/email/email"
-  xmlns:tns="http://www.zorba-xquery.org/modules/email/email" 
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+  targetNamespace="http://www.zorba-xquery.com/modules/email/email"
+  xmlns:tns="http://www.zorba-xquery.com/modules/email/email" 
  elementFormDefault="qualified">
 
               
@@ -8,7 +9,7 @@
  <!-- definition of simple elements -->
  <simpleType name="emailAddressType">
  <restriction base="string">
- <pattern value="[^@]+@[^\.]+\..+"/>
+ <pattern value="[^@]+@[^\.]+\..+"/>  
  </restriction>
  </simpleType>
 

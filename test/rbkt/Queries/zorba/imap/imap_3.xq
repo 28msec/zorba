@@ -14,7 +14,7 @@ import schema namespace imaps = 'http://www.zorba-xquery.com/modules/email/imap'
 (:~
  : Defines the host info including the name of the host, username and password for a specific user.
  :)
-declare variable $local:host-info as element(imaps:hostInfoType) := (<imaps:hostInfoType><imaps:hostName>mail.messagingengine.com</imaps:hostName><imaps:userName>zorbaimap@fastmail.fm</imaps:userName><imaps:password>1openssl!</imaps:password></imaps:hostInfoType>);
+declare variable $local:host-info as element(imaps:hostInfo) := (<imaps:hostInfo><hostName>mail.messagingengine.com</hostName><userName>zorbaimap@fastmail.fm</userName><password>1openssl!</password></imaps:hostInfo>);
 
 
 

@@ -18,7 +18,7 @@
 #include <sstream>
 #include <zorba/zorba.h>
 #include "imap_module.h"
-
+#include <map>
 
 namespace zorba { namespace emailmodule {
 
@@ -144,11 +144,51 @@ ImapFunction::getOneBoolArg(
 }
 
 
+std::string
+ImapFunction::getDateTime(const std::string& aCClientDateTime) {
+  std::stringstream lResult;    
+  std::stringstream lDateTimeStream(aCClientDateTime);
+  std::string lBuffer;
+  std::vector<std::string> lTokens;
+  while (lDateTimeStream >> lBuffer) { 
+    lTokens.push_back(lBuffer);
+  }
+  // YYYY-MM-DDThh:mm:ss, first push YYYY
+  lResult << lTokens[3] << "-";
+  // then push MM
+  // build up map for Months
+  std::map<std::string, std::string> lMonths;
+  lMonths.insert(std::pair<std::string, std::string> ("Jan", "01"));
+  lMonths.insert(std::pair<std::string, std::string> ("Feb", "02"));
+  lMonths.insert(std::pair<std::string, std::string> ("Mar", "03"));
+  lMonths.insert(std::pair<std::string, std::string> ("Apr", "04"));
+  lMonths.insert(std::pair<std::string, std::string> ("May", "05"));
+  lMonths.insert(std::pair<std::string, std::string> ("Jun", "06"));
+  lMonths.insert(std::pair<std::string, std::string> ("Jul", "07"));
+  lMonths.insert(std::pair<std::string, std::string> ("Aug", "08"));
+  lMonths.insert(std::pair<std::string, std::string> ("Sep", "09"));
+  lMonths.insert(std::pair<std::string, std::string> ("Okt", "10"));
+  lMonths.insert(std::pair<std::string, std::string> ("Nov", "11"));
+  lMonths.insert(std::pair<std::string, std::string> ("Dez", "12"));
+    
+  lResult << lMonths.find(lTokens[2])->second << "-";
+  // then push DD
+  lResult << lTokens[1] << "T";
+  // now hh:mm:ss
+  lResult << lTokens[4].substr(0,2) << ":" << lTokens[4].substr(3,2) << ":" << lTokens[4].substr(6,2);
+
+  return lResult.str();
+  
+
+
+}  
+
+
 void
-ImapFunction::createInnerNodeWithText(const ImapModule* aModule, Item aParent, const std::string& aName, const std::string& aType, const std::string& aContent) {
+ImapFunction::createInnerNodeWithText(const ImapModule* aModule, Item aParent, const std::string& aNamespace, const std::string& aPrefix, const std::string& aName, const std::string& aType, const std::string& aContent) {
    std::vector<std::pair<String, String> > null_binding; 
-  Item lName = aModule->getItemFactory()->createQName("", aName);
-  Item lType = aModule->getItemFactory()->createQName("", aType);
+  Item lName = aModule->getItemFactory()->createQName(aNamespace, aPrefix, aName);
+  Item lType = aModule->getItemFactory()->createQName(aNamespace,  aType);
   Item lItem = aModule->getItemFactory()->createElementNode(aParent, lName, lType, false, false, null_binding);
   aModule->getItemFactory()->createTextNode(lItem, String(aContent));
 }  
@@ -163,10 +203,10 @@ ImapFunction::createEmailAddressNode(const ImapModule* aModule, Item aParent, co
  
   Item lItem = aModule->getItemFactory()->createElementNode(aParent, lName, lType, false, false, ns_binding);
   if (aPersonal) {
-    createInnerNodeWithText(aModule, lItem, "name", "string", aPersonal);
+    createInnerNodeWithText(aModule, lItem, "http://www.zorba-xquery.com/modules/email/email", "email", "name", "string", aPersonal);
   }
   if ((aMailbox) && (aHost)) {
-    createInnerNodeWithText(aModule, lItem, "email", "string", std::string(aMailbox) + std::string(aHost));  
+    createInnerNodeWithText(aModule, lItem, "http://www.zorba-xquery.com/modules/email/email", "email", "email", "string", std::string(aMailbox) + "@" + std::string(aHost));  
   }
 }
 
@@ -174,8 +214,8 @@ ImapFunction::createEmailAddressNode(const ImapModule* aModule, Item aParent, co
 
 void 
 ImapFunction::createRecipentNode(const ImapModule* aModule, Item aParent, const std::string& aName, const char* aPersonal, const char* aMailbox, const char* aHost) {                    
-  Item lType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "recipentType");                                                                    
-  Item lName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email",  "recipent");                           
+  Item lType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "recipientType");                                                                    
+  Item lName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email",  "recipient");                           
   
   std::vector<std::pair<String, String> >  ns_binding;                                        
     ns_binding.push_back(std::pair<String, String>("email", "http://www.zorba-xquery.com/modules/email/email"));

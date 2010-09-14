@@ -407,11 +407,11 @@ FetchEnvelopeFunction::evaluate(
 
   // create the remail node if needed 
   if (lEnvelope->remail) {
-    ImapFunction::createInnerNodeWithText(theModule, lParent, "remail", "string", lEnvelope->remail);
+    ImapFunction::createInnerNodeWithText(theModule, lParent, "http://www.zorba-xquery.com/modules/email/email", "email",  "remail", "string", lEnvelope->remail);
   }
-  // create the date node if needed
+  /* create the date node if needed */
   if (lEnvelope->date) {
-    ImapFunction::createInnerNodeWithText(theModule, lParent, "date", "dateTime", reinterpret_cast<const char*>(lEnvelope->date));
+    ImapFunction::createInnerNodeWithText(theModule, lParent, "http://www.zorba-xquery.com/modules/email/email", "",  "date", "string", ImapFunction::getDateTime(reinterpret_cast<const char*>(lEnvelope->date)));
   }
   // create from node if needed
   if (lEnvelope->from) {
@@ -427,13 +427,9 @@ FetchEnvelopeFunction::evaluate(
   }
   // create subject node
   if (lEnvelope->subject) {
-    ImapFunction::createInnerNodeWithText(theModule, lParent, "subject", "string", lEnvelope->subject);
+    ImapFunction::createInnerNodeWithText(theModule, lParent, "http://www.zorba-xquery.com/modules/email/email", "email",  "subject", "string", lEnvelope->subject);
   }
 
-  // create messageId node
-  if (lEnvelope->message_id) {
-    ImapFunction::createInnerNodeWithText(theModule, lParent, "messageId", "string", lEnvelope->message_id);
-  }
   ADDRESS* lRecipents;
   if (lEnvelope->to) {
     ImapFunction::createRecipentNode(theModule, lParent, "to", lEnvelope->to->personal, lEnvelope->to->mailbox, lEnvelope->to->host);
@@ -457,7 +453,13 @@ FetchEnvelopeFunction::evaluate(
        ImapFunction::createRecipentNode(theModule, lParent, "bcc", lEnvelope->bcc->personal, lEnvelope->bcc->mailbox, lEnvelope->bcc->host);
     }
   }  
+
+  // create messageId node
+  if (lEnvelope->message_id) {
+    ImapFunction::createInnerNodeWithText(theModule, lParent,  "http://www.zorba-xquery.com/modules/email/email", "email",  "messageId", "string", lEnvelope->message_id);
+  }
  
+
   return ItemSequence_t(new SingletonItemSequence(lParent));
 }
 

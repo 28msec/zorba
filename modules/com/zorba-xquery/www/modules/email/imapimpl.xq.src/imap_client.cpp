@@ -288,7 +288,11 @@ namespace zorba { namespace emailmodule {
         mail_criteria_string(&lSearchProgram->keyword, &lNext);
       } else if (*lIterator == "LARGER") {
         lIterator++;
-        unsigned long lLargerValue = strtoul((char *)(*lIterator).c_str(), NIL, 10);
+        // get the unsigned long value that should follow the Keyword LARGER
+        std::stringstream lLargerValueStream;
+        lLargerValueStream << (*lIterator).c_str();
+        unsigned long lLargerValue; 
+        lLargerValueStream >> lLargerValue;
         lSearchProgram->larger = lLargerValue;
       } else if (*lIterator == "NEW") {
         // according to the specification, this is equivalent to recent unseen
@@ -314,7 +318,10 @@ namespace zorba { namespace emailmodule {
         mail_criteria_date(&lSearchProgram->sentsince, &lNext);
       } else if (*lIterator == "SMALLER") {
         lIterator++;
-        unsigned long lSmallerValue = strtoul((char *)(*lIterator).c_str(), NIL, 10);
+        std::stringstream lSmallerValueStream;
+        lSmallerValueStream << (*lIterator).c_str();
+        unsigned long lSmallerValue;
+        lSmallerValueStream >> lSmallerValue;
         lSearchProgram->smaller = lSmallerValue;
       } else if (*lIterator == "SUBJECT") {
         char *lNext = getNextStringAsChar(++lIterator);
