@@ -192,6 +192,8 @@ void XQueryImpl::serialize(::zorba::serialization::Archiver& ar)
 
     theCompilerCB->theErrorManager = theErrorManager;
   }
+  
+  ar & theIsDebugMode;
 }
 
 
