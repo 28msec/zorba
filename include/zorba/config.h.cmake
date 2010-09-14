@@ -66,6 +66,7 @@
 #cmakedefine ZORBA_HAVE_INT32_T
 #cmakedefine ZORBA_HAVE_MS_INT32
 #cmakedefine ZORBA_HAVE_MS_UINT32
+#cmakedefine ZORBA_HAVE_INT64_T
 
 
 /* rest support */
@@ -161,6 +162,10 @@
 #  ifdef ZORBA_HAVE_MS_INT32
      typedef __int32  int32_t;
 #  endif
+#endif
+
+#ifndef ZORBA_HAVE_INT64_T
+     typedef __int64  int64_t;
 #endif
 
 #endif

@@ -100,6 +100,7 @@ CHECK_TYPE_SIZE("int32_t" ZORBA_HAVE_INT32_T)
 CHECK_TYPE_SIZE("uint32_t" ZORBA_HAVE_UINT32_T) 
 CHECK_TYPE_SIZE("unsigned __int32" ZORBA_HAVE_MS_UINT32) 
 CHECK_TYPE_SIZE("__int32" ZORBA_HAVE_MS_INT32) 
+CHECK_TYPE_SIZE("int64_t" ZORBA_HAVE_INT64_T) 
 
 
 ################################################################################
