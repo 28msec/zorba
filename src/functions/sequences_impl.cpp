@@ -612,6 +612,27 @@ public:
   DEFAULT_NARY_CODEGEN(FnIdIterator);
 };
 
+/*******************************************************************************
+  XPath and XQuery Functions and Operators 1.1
+  14.5.3 fn:element-with-id
+********************************************************************************/
+class fn_element_with_id : public function
+{
+public:
+  fn_element_with_id(const signature& sig) : function(sig) {}
+
+  FunctionConsts::AnnotationValue producesSortedNodes() const
+  {
+    return FunctionConsts::YES;
+  }
+
+  FunctionConsts::AnnotationValue producesDistinctNodes() const
+  {
+    return FunctionConsts::YES;
+  }
+
+  DEFAULT_NARY_CODEGEN(FnIdIterator);
+};
 
 /*******************************************************************************
   15.5.3 fn:idref
@@ -690,6 +711,13 @@ void populate_context_sequences_impl(static_context* sctx)
 
   DECL(sctx, fn_id,
        (createQName(XQUERY_FN_NS,"fn","id"),
+        GENV_TYPESYSTEM.STRING_TYPE_STAR,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
+        GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR)
+      );
+
+  DECL(sctx, fn_element_with_id,
+       (createQName(XQUERY_FN_NS,"fn","element-with-id"),
         GENV_TYPESYSTEM.STRING_TYPE_STAR,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_ONE,
         GENV_TYPESYSTEM.ANY_NODE_TYPE_STAR)

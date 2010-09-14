@@ -8762,7 +8762,7 @@ void end_visit(const FunctionCall& v, void* /*visit_state*/)
                                      GENV_TYPESYSTEM.ANY_URI_TYPE_ONE));
       return;
     }
-    else if (*localName == "id")
+    else if (*localName == "id" || *localName == "element-with-id")
     {
       if (numArgs == 1)
       {
