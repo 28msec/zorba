@@ -54,7 +54,7 @@ namespace zorba { namespace http_client {
     }
 
   public: // callback functions
-    static int getByte(void* aData)
+    static int TIDY_CALL getByte(void* aData)
     {
       TidyReader* lReader = static_cast<TidyReader*>(aData);
       if (lReader->theBuffer.empty())
@@ -66,13 +66,13 @@ namespace zorba { namespace http_client {
       }
     }
 
-    static void ungetByte(void* aData, byte aByte)
+    static void TIDY_CALL ungetByte(void* aData, byte aByte)
     {
       TidyReader* lReader = static_cast<TidyReader*>(aData);
       lReader->theBuffer.push_back(aByte);
     }
 
-    static Bool isEof(void* aData)
+    static Bool TIDY_CALL isEof(void* aData)
     {
       TidyReader* lReader = static_cast<TidyReader*>(aData);
       return lReader->theStream->eof() ? yes : no;
