@@ -59,9 +59,6 @@ namespace http_client {
   private:
     void registerHandler();
     void parseStatusAndMessage(std::string aHeader);
-    std::string replaceCodes(std::string aStr);
-    std::string lookUpCode(std::string aCode);
-    void fillCodeMap();
     Item createXmlItem(std::istream& aStream);
     Item createHtmlItem(std::istream& aStream);
     Item createTextItem(std::istream& aStream);
