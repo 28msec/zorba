@@ -40,6 +40,14 @@ MACRO(ZORBA_RUNTIME_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
   FOREACH(SPEC_FILE ${SPEC_FILES})
     LIST(APPEND ABSOLUTE_SPEC_FILES "${SPEC_DIR}/${SPEC_FILE}")
   ENDFOREACH(SPEC_FILE)
+  # CMake is annoyingly limited when it comes to lists. There's no way
+  # (that I know of) to create a list where any item contains a
+  # semicolon. Since some of our arguments contain semicolons, we
+  # cannot create a variable to hold the arguments to CMake
+  # here. Therefore, we must duplicate them. It is important for
+  # testing purposes that the arguments to CMAKE_COMMAND in both
+  # ADD_CUSTOM_COMMAND() and ADD_TEST() here be the same, except for
+  # -Dtest_only.
   ADD_CUSTOM_COMMAND(OUTPUT "${OUTPUT}"
     COMMAND "${CMAKE_COMMAND}"
     "-Dsource_dir=\"${CMAKE_SOURCE_DIR}\""
@@ -50,5 +58,16 @@ MACRO(ZORBA_RUNTIME_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
     "-Dextvars:STRING=\"${EXTVARS}\""
     "-Dfiles:STRING=\"${SPEC_FILES}\""
     "-P" "${GEN_SCRIPT}"
-    DEPENDS ${GEN_QUERY} ${ABSOLUTE_SPEC_FILES} ${EXTRA_DEPS})
+    DEPENDS ${GEN_QUERY} ${ABSOLUTE_SPEC_FILES} ${EXTRA_DEPS}
+    ${GEN_SCRIPT} ${CMAKE_SOURCE_DIR}/cmake_modules/ZorbaRuntimeGenerator.cmake)
+  ADD_TEST("RuntimeGeneratorTest-${OUTPUT}" "${CMAKE_COMMAND}"
+    "-Dsource_dir=${CMAKE_SOURCE_DIR}"
+    "-Dbinary_dir=${CMAKE_BINARY_DIR}"
+    "-Dzorba_exe=${ZORBA_EXE_SCRIPT}" 
+    "-Dquery=${GEN_QUERY}" 
+    "-Dgen_file=${OUTPUT}"
+    "-Dextvars:STRING=${EXTVARS}"
+    "-Dfiles:STRING=${SPEC_FILES}"
+    "-Dtest_only:BOOLEAN=TRUE"
+    "-P" "${GEN_SCRIPT}")
 ENDMACRO(ZORBA_RUNTIME_GENERATOR)
