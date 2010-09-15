@@ -89,17 +89,30 @@ public:
     return (theFlags & flag) != 0;
   }
 
-  bool isDeterministic() const 
+  bool isDeterministic() const
   {
     return testFlag(FunctionConsts::isDeterministic);
   }
 
-  void setDeterministic(bool v) 
+  void setDeterministic(bool v)
   {
     if (v)
       setFlag(FunctionConsts::isDeterministic);
     else
       resetFlag(FunctionConsts::isDeterministic);
+  }
+
+  bool isPrivate() const
+  {
+    return testFlag(FunctionConsts::isPrivate);
+  }
+
+  void setPrivate(bool v)
+  {
+    if (v)
+      setFlag(FunctionConsts::isPrivate);
+    else
+      resetFlag(FunctionConsts::isPrivate);
   }
 
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }

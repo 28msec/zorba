@@ -1,5 +1,5 @@
 declare namespace extern = "urn:extern";
-declare nondeterministic function extern:nondeterm() external;
+declare %nondeterministic function extern:nondeterm() external;
 
 declare function local:func()
 {

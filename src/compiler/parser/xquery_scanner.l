@@ -360,6 +360,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 "$" { return token::DOLLAR; }
 "#" { return token::HASH; }
 "::" { return token::DOUBLE_COLON; }
+"%" { return token::PERCENTAGE; }
 
 "declare" {
   std::string lDocComment = theDriver->theDocComment.str();

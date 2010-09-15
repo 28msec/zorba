@@ -57,7 +57,7 @@ declare sequential function httpclientimpl:http-send-request-impl (
  :
  : @return @see http://www.expath.org/mod/http-client;read
  :)
-declare nondeterministic function httpclientimpl:http-read-impl (
+declare %nondeterministic function httpclientimpl:http-read-impl (
   $request as element(http:request)?,
   $href as xs:string?,
   $bodies as item()*

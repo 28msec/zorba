@@ -41,6 +41,9 @@ namespace zorba {
 class AbbrevForwardStep;
 class AdditiveExpr;
 class AndExpr;
+class Annotation;
+class AnnotationList;
+class AnnotationLiteralList;
 class AnyKindTest;
 class AposAttrContentList;
 class AposAttrValueContent;
@@ -217,6 +220,7 @@ class SchemaPrefix;
 class SequenceType;
 class SignList;
 class SingleType;
+class StringLiteral;
 class SwitchCaseClause;
 class SwitchCaseClauseList;
 class SwitchCaseOperandList;
@@ -257,19 +261,25 @@ public:
 };
 
 
-class VarNameAndType
+class VarNameAndType : public XQDocumentable
 {
 public:
   rchandle<QName>        theName;
   rchandle<SequenceType> theType;
+  rchandle<AnnotationList> annotations_h;
 
-
-  VarNameAndType(rchandle<QName> name, rchandle<SequenceType> type)
+  VarNameAndType(const QueryLoc& loc_, rchandle<QName> name, rchandle<SequenceType> type, rchandle<AnnotationList> annotations)
     :
+    XQDocumentable(loc_),
     theName(name),
-    theType(type)
+    theType(type),
+    annotations_h(annotations)
   {
   }
+
+  rchandle<AnnotationList> get_annotations() const { return annotations_h; }
+
+  void accept(parsenode_visitor&) const;
 };
 
 
@@ -1000,8 +1010,10 @@ public:
 class VarDecl : public VarDeclWithInit
 {
 protected:
+  rchandle<AnnotationList> annotations_h;
   bool ext;
   bool global;
+  bool isPrivate;
 
 public:
   VarDecl(
@@ -1009,6 +1021,7 @@ public:
     rchandle<QName> varname,
     rchandle<SequenceType> type_decl,
     rchandle<exprnode> init_expr,
+    rchandle<AnnotationList> annotations,
     bool external = false);
 
   bool is_extern () const { return ext; }
@@ -1016,6 +1029,75 @@ public:
   bool is_global () const { return global; }
 
   void set_global (bool global_) { global = global_; }
+
+  bool is_private() const { return isPrivate; }
+
+  rchandle<AnnotationList> get_annotations() const { return annotations_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+/*******************************************************************************
+  [27] Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
+
+********************************************************************************/
+class Annotation : public parsenode
+{
+protected:
+  rchandle<QName>        qname_h;
+  rchandle<AnnotationLiteralList> literal_list_h;
+
+public:
+  Annotation(const QueryLoc& loc,
+             QName* qname,
+             AnnotationLiteralList* literal_list);
+
+  rchandle<QName> get_qname() const { return qname_h; }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class AnnotationList : public parsenode
+{
+protected:
+  std::vector<rchandle<Annotation> > annotations_hv;
+
+public:
+  AnnotationList(const QueryLoc& loc, Annotation* annotation);
+
+  void push_back(rchandle<Annotation> annotation_h) { annotations_hv.push_back(annotation_h); }
+
+  rchandle<Annotation> operator[](int i) const { return annotations_hv[i]; }
+
+  std::vector<rchandle<Annotation> >::const_iterator begin() const { return annotations_hv.begin(); }
+
+  std::vector<rchandle<Annotation> >::const_iterator end() const { return annotations_hv.end(); }
+
+  std::vector<rchandle<Annotation> >::size_type size() const { return annotations_hv.size(); }
+
+  void accept(parsenode_visitor&) const;
+};
+
+
+class AnnotationLiteralList : public parsenode
+{
+protected:
+  std::vector<rchandle<exprnode> > literals_hv;
+
+public:
+  AnnotationLiteralList(const QueryLoc& loc_, exprnode* literal);
+
+  void push_back(rchandle<exprnode> literal_h) { literals_hv.push_back(literal_h); }
+
+  rchandle<exprnode> operator[](int i) const { return literals_hv[i]; }
+
+  std::vector<rchandle<exprnode> >::const_iterator begin() const { return literals_hv.begin(); }
+
+  std::vector<rchandle<exprnode> >::const_iterator end() const { return literals_hv.end(); }
+
+  std::vector<rchandle<exprnode> >::size_type size() const { return literals_hv.size(); }
 
   void accept(parsenode_visitor&) const;
 };
@@ -1072,7 +1154,11 @@ protected:
   rchandle<exprnode> body_h;
   rchandle<SequenceType> return_type_h;
   ParseConstants::function_type_t theKind;
+  rchandle<AnnotationList> annotations_h;
   bool theDeterministic;
+  bool thePrivate;
+
+  void parse_annotations();
 
 public:
   FunctionDecl(
@@ -1082,7 +1168,7 @@ public:
         rchandle<SequenceType>,
         rchandle<exprnode>,
         ParseConstants::function_type_t type,
-        bool deterministic);
+        rchandle<AnnotationList> annotations);
 
   rchandle<QName> get_name() const { return name_h; }
 
@@ -1096,11 +1182,17 @@ public:
 
   ParseConstants::function_type_t get_kind() const { return theKind; }
 
+  rchandle<AnnotationList> get_annotations() const { return annotations_h; }
+
+  void set_annotations(rchandle<AnnotationList> annotations);
+
   void set_kind(ParseConstants::function_type_t t) { theKind = t; }
 
   void set_deterministic(bool v)  { theDeterministic = v; }
 
   bool is_deterministic() const { return theDeterministic; }
+
+  bool is_private() const { return thePrivate; }
 
   void accept(parsenode_visitor&) const;
 };
@@ -3752,7 +3844,22 @@ public:
 
 /*******************************************************************************
   [108] Literal ::= NumericLiteral | StringLiteral
+  [126] Literal ::= NumericLiteral | StringLiteral  (XQuery 1.1)
+
 ********************************************************************************/
+// Used by Annotations classes
+class Literal : public exprnode
+{
+protected:
+  rchandle<NumericLiteral> numeric_literal;
+  rchandle<StringLiteral> string_literal;
+  int type;                                     // =0 -> Numeric, =1 -> String
+
+public:
+  Literal(exprnode* expression);
+
+  void accept(parsenode_visitor&) const;
+};
 
 
 /*******************************************************************************

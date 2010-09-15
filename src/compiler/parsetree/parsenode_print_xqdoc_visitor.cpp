@@ -179,7 +179,7 @@ private:
       }
 
     } catch (error::ZorbaError& e) {
-      ZORBA_ERROR_DESC_OSS(XQD0001_DOCUMENT_NOT_VALID, 
+      ZORBA_ERROR_DESC_OSS(XQD0001_DOCUMENT_NOT_VALID,
         "The xqdoc documentation contains an error that doesn't allow the document to be parsed as XML. "
         << e.theDescription << " '" << aString << "'");
     }
@@ -207,7 +207,7 @@ protected:
   xqpStringStore_t    theBaseURI;
   xqpStringStore_t    theVersion;
   store::NsBindings   theNSBindings;
-  
+
   store::ItemFactory* theFactory;
 
   string        theQuery;
@@ -246,7 +246,7 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
   theFactory->createQName(lModuleQName, theXQDocNS, theXQDocPrefix, "module");
 
   store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
-    
+
   // create the prolog
   // <xqdoc><control><date/><version/></control>
   theFactory->createElementNode(
@@ -295,7 +295,7 @@ void print(const parsenode* p, const store::Item_t& aDateTime)
 
   theFactory->createTextNode(lVersionText, lVersionElem, -1, theVersion);
 
-    
+
   p->accept(*this);
 
 }
@@ -330,7 +330,7 @@ void end_visit(const DefaultNamespaceDecl& n, void* /*visit_state*/)
     theNamespaces[""] = n.get_default_namespace();
 }
 
-// TODO: main module 
+// TODO: main module
 XQDOC_NO_BEGIN_END_TAG (MainModule)
 
 void *begin_visit(const ModuleDecl& n) {
@@ -421,7 +421,7 @@ void end_visit(const FunctionDecl& n, void* /*visit_state*/)
       n.get_return_type(),
       0,
       n.get_kind(),
-      n.is_deterministic());
+      n.get_annotations());
 
   FunctionIndex lIndex = print_parsetree_xquery(lSig, &lFunctionDeclClone);
 
@@ -470,7 +470,7 @@ void end_visit(const FunctionCall& n, void*)
   xqpStringStore_t lNS = theNamespaces[lPrefix];
   if (!lNS) {
     ZORBA_ERROR_DESC_OSS(XQD0000_PREFIX_NOT_DECLARED,
-       "Could not generate the xqDoc documentation because the namespace for prefix '" 
+       "Could not generate the xqDoc documentation because the namespace for prefix '"
        << lPrefix << "' is not declared when calling function '" << lFuncName->get_localname()
        << "' from " << n.get_location() << "."
     );
@@ -529,6 +529,7 @@ void end_visit(const VarDecl& n, void*)
   print_comment(lVariableElem, n.getComment());
 }
 
+XQDOC_NO_BEGIN_END_TAG (VarNameAndType)
 
 XQDOC_NO_BEGIN_TAG (ModuleImport)
 
@@ -576,6 +577,9 @@ void end_visit(const SchemaImport& n, void*)
 
 XQDOC_NO_BEGIN_END_TAG (AdditiveExpr)
 XQDOC_NO_BEGIN_END_TAG (AndExpr)
+XQDOC_NO_BEGIN_END_TAG (Annotation)
+XQDOC_NO_BEGIN_END_TAG (AnnotationList)
+XQDOC_NO_BEGIN_END_TAG (AnnotationLiteralList)
 XQDOC_NO_BEGIN_END_TAG (AnyKindTest)
 XQDOC_NO_BEGIN_END_TAG (AposAttrContentList)
 XQDOC_NO_BEGIN_END_TAG (AposAttrValueContent)
@@ -687,6 +691,7 @@ XQDOC_NO_BEGIN_END_TAG (IntersectExceptExpr)
 XQDOC_NO_BEGIN_END_TAG (ItemType)
 XQDOC_NO_BEGIN_END_TAG (LetClause)
 XQDOC_NO_BEGIN_END_TAG (LibraryModule)
+XQDOC_NO_BEGIN_END_TAG (Literal)
 XQDOC_NO_BEGIN_END_TAG (Module)
 XQDOC_NO_BEGIN_END_TAG (MultiplicativeExpr)
 XQDOC_NO_BEGIN_END_TAG (NamespaceDecl)

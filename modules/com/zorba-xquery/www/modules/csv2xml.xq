@@ -117,7 +117,7 @@ declare function zorba-csv:csv-to-xml($csv as xs:string) as node()*
  : @error API0072 - if there are more fields on a line than they are in the header 
  :                   (if first_row_is_header is set to true)
 :)
-declare nondeterministic function zorba-csv:csv-file-to-xml( $csv_file as xs:string,
+declare %nondeterministic function zorba-csv:csv-file-to-xml( $csv_file as xs:string,
                               $first_row_is_header as xs:boolean,
                               $separator as xs:string,
                               $quote_char as xs:string,
@@ -151,7 +151,7 @@ declare nondeterministic function zorba-csv:csv-file-to-xml( $csv_file as xs:str
  : @error API0072 - if there are more fields on a line than they are in the header 
  :                   (if first_row_is_header is set to true)
 :)
-declare nondeterministic function zorba-csv:txt-file-to-xml( $csv_file as xs:string,
+declare %nondeterministic function zorba-csv:txt-file-to-xml( $csv_file as xs:string,
                               $first_row_is_header as xs:boolean,
                               $columns_positions as xs:integer+,
                               $row_node as xs:QName,

@@ -5,6 +5,9 @@ version x.y
   * changed the error codes returned by the zorba executable (using different codes for
     different locations where the execution might fail)
   * Removed the XQuery 1.1 "outer for" construct, and replaced it with "allowing empty"
+  * Added the XQuery 1.1 functions and variables annotations. Removed the "deterministic" 
+    and "nondeterministic" keywords, which were replaced by the "%deterministic" and 
+    "%nondeterministic" annotations.
 
 version 1.4
   * added a datetime library module with nondeterministic functions

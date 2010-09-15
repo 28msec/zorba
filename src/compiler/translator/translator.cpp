@@ -2440,6 +2440,19 @@ void end_visit(const LibraryModule& v, void* /*visit_state*/)
   push_nodestack(wrap_in_globalvar_assign(create_seq(loc)));
 }
 
+/*******************************************************************************
+  [126] Literal ::= NumericLiteral | StringLiteral  (XQuery 1.1)
+********************************************************************************/
+void* begin_visit(const Literal& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const Literal& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+}
 
 /******************************************************************************
   [5] ModuleDecl ::= MODULE NAMESPACE  NCNAME  EQ  URI_LITERAL  SEMI
@@ -3273,6 +3286,8 @@ void* begin_visit(const VFO_DeclList& v)
         // update the isDeterministic flag with the value found in the func_decl
         f->setDeterministic(func_decl->is_deterministic());
 
+        f->setPrivate(func_decl->is_private());
+
         // continue with the next declaration, because we don't add already
         // built-in functions to the static context
         continue;
@@ -3310,6 +3325,7 @@ void* begin_visit(const VFO_DeclList& v)
                                 scriptKind,
                                 func_decl->is_deterministic(),
                                 ef);
+      f->setPrivate(func_decl->is_private());
       break;
     }
     case ParseConstants::fn_sequential:
@@ -3401,6 +3417,8 @@ void* begin_visit(const VarDecl& v)
   if (v.is_global())
   {
     ve = create_var(loc, qnameItem, var_expr::prolog_var);
+    if (v.is_private())
+      ve->set_private(true);
 
     thePrologGraph.addVarVertex(ve);
     theCurrentPrologVFDecl = PrologGraphVertex(ve);
@@ -3466,6 +3484,58 @@ void end_visit(const VarDecl& v, void* /*visit_state*/)
     push_nodestack(ve.getp());
     push_nodestack(initExpr);
   }
+}
+
+void* begin_visit(const VarNameAndType& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const VarNameAndType& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+}
+
+
+/*******************************************************************************
+  [27] Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
+********************************************************************************/
+void* begin_visit(const Annotation& v)
+{
+  TRACE_VISIT();
+
+  if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
+    ZORBA_ERROR_LOC (XPST0003, loc);
+
+  return no_state;
+}
+
+void end_visit(const Annotation& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+}
+
+void* begin_visit(const AnnotationList& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const AnnotationList& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
+}
+
+void* begin_visit(const AnnotationLiteralList& v)
+{
+  TRACE_VISIT();
+  return no_state;
+}
+
+void end_visit(const AnnotationLiteralList& v, void* /*visit_state*/)
+{
+  TRACE_VISIT_OUT();
 }
 
 
@@ -3658,7 +3728,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
 
     udf->setBody(body);
     udf->setArgVars(args);
-
+    udf->setPrivate(v.is_private());
     break;
   }
   case ParseConstants::fn_extern:

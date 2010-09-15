@@ -677,6 +677,55 @@ void OptionDecl::accept( parsenode_visitor &v ) const
   END_VISITOR();
 }
 
+/*******************************************************************************
+  [27] Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
+********************************************************************************/
+Annotation::Annotation(const QueryLoc& loc_,
+                       QName* qname,
+                       AnnotationLiteralList* literal_list)
+  :
+  parsenode(loc_),
+  qname_h(qname),
+  literal_list_h(literal_list)
+{
+}
+
+void Annotation::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
+AnnotationList::AnnotationList(const QueryLoc& loc_,
+                               Annotation* annotation)
+  :
+  parsenode(loc_)
+{
+  push_back(annotation);
+}
+
+void AnnotationList::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
+
+AnnotationLiteralList::AnnotationLiteralList(const QueryLoc& loc_,
+                                         exprnode* literal)
+  :
+  parsenode(loc_)
+{
+  push_back(literal);
+}
+
+void AnnotationLiteralList::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
+
 
 /*******************************************************************************
   [26] VarDecl ::= "declare" "variable" "$" QName TypeDeclaration?
@@ -693,12 +742,21 @@ VarDecl::VarDecl(
     rchandle<QName> varname,
     rchandle<SequenceType> type_decl,
     rchandle<exprnode> init_expr,
+    rchandle<AnnotationList> annotations,
     bool external)
   :
   VarDeclWithInit(loc, varname, type_decl, init_expr),
+  annotations_h(annotations),
   ext(external),
-  global(true)
+  global(true),
+  isPrivate(false)
 {
+  if (annotations_h != NULL)
+    for (unsigned int i=0; i<annotations_h->size(); i++)
+    {
+      if (annotations_h->operator[](i)->get_qname()->get_qname() == "private")
+        isPrivate = true;
+    }
 }
 
 
@@ -707,6 +765,13 @@ void VarDecl::accept( parsenode_visitor &v ) const
   BEGIN_VISITOR();
   ACCEPT(theType);
   ACCEPT(initexpr_h);
+  END_VISITOR();
+}
+
+
+void VarNameAndType::accept(parsenode_visitor& v) const
+{
+  BEGIN_VISITOR();
   END_VISITOR();
 }
 
@@ -760,7 +825,7 @@ FunctionDecl::FunctionDecl(
     rchandle<SequenceType> _return_type_h,
     rchandle<exprnode> _body_h,
     enum ParseConstants::function_type_t _type,
-    bool deterministic)
+    rchandle<AnnotationList> annotations)
   :
   XQDocumentable(loc_),
   name_h(_name_h),
@@ -768,8 +833,11 @@ FunctionDecl::FunctionDecl(
   body_h(_body_h),
   return_type_h(_return_type_h),
   theKind(_type),
-  theDeterministic(deterministic)
+  annotations_h(annotations),
+  theDeterministic(true),
+  thePrivate(false)
 {
+  parse_annotations();
 }
 
 
@@ -786,6 +854,26 @@ void FunctionDecl::accept( parsenode_visitor &v ) const
 int FunctionDecl::get_param_count() const
 {
   return paramlist_h == NULL ? 0 : paramlist_h->size ();
+}
+
+
+void FunctionDecl::set_annotations(rchandle<AnnotationList> annotations)
+{
+   annotations_h = annotations;
+   parse_annotations();
+}
+
+
+void FunctionDecl::parse_annotations()
+{
+  if (annotations_h != NULL)
+    for (unsigned int i=0; i<annotations_h->size(); i++)
+    {
+      if (annotations_h->operator[](i)->get_qname()->get_qname() == "nondeterministic")
+        theDeterministic = false;
+      if (annotations_h->operator[](i)->get_qname()->get_qname() == "private")
+        thePrivate = true;
+    }
 }
 
 
@@ -3221,6 +3309,26 @@ void PredicateList::accept( parsenode_visitor &v ) const
 
 // [85] Literal
 // ------------
+Literal::Literal(exprnode* expression)
+  :
+  exprnode(expression->get_location()),
+  type(0)
+{
+  StringLiteral* sl = dynamic_cast<StringLiteral*>(expression);
+  if (sl != NULL)
+  {
+    string_literal = sl;
+    type = 1;
+  }
+  else
+    numeric_literal = expression;
+}
+
+void Literal::accept( parsenode_visitor &v ) const
+{
+  BEGIN_VISITOR();
+  END_VISITOR();
+}
 
 
 // [86] NumericLiteral

@@ -79,7 +79,8 @@ var_expr::var_expr(
   theName(name),
   theDeclaredType(NULL),
   theFlworClause(NULL),
-  theCopyClause(NULL)
+  theCopyClause(NULL),
+  theIsPrivate(false)
 {
   theVarCounterMutex.lock();
   theUniqueId = theVarCounter++;
@@ -103,6 +104,7 @@ void var_expr::serialize(::zorba::serialization::Archiver& ar)
   ar & theFlworClause;
   ar & theCopyClause;
   ar & theUniqueId;
+  ar & theIsPrivate;
   if(!ar.is_serializing_out())
   {
     theVarCounterMutex.lock();

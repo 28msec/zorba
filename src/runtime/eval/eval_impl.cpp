@@ -66,6 +66,7 @@ static PlanIter_t compile(
                                 new QName(loc, varnames[i]->getStringValue()->str()),
                                 NULL,
                                 NULL,
+                                NULL,
                                 true));
   }
   // TODO: give eval'ed code the types of the variables (for optimization)

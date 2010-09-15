@@ -377,6 +377,8 @@ void *begin_visit(const VarDecl &n)
     return no_state;
 }
 
+BEGIN_END_TAG (VarNameAndType)
+
 void *begin_visit(const VarGetsDecl &n)
 {
     INDENT;
@@ -652,6 +654,9 @@ END_TAG(DynamicFunctionInvocation)
 END_TAG (AbbrevForwardStep)
 BEGIN_END_TAG (AdditiveExpr)
 BEGIN_END_TAG (AndExpr)
+BEGIN_END_TAG (Annotation)
+BEGIN_END_TAG (AnnotationList)
+BEGIN_END_TAG (AnnotationLiteralList)
 BEGIN_END_TAG (AnyKindTest)
 BEGIN_END_TAG (AposAttrContentList)
 BEGIN_END_TAG (AposAttrValueContent)
@@ -723,6 +728,7 @@ BEGIN_END_TAG (IntersectExceptExpr)
 BEGIN_END_TAG (ItemType)
 BEGIN_END_TAG (LetClause)
 BEGIN_END_TAG (LibraryModule)
+BEGIN_END_TAG (Literal)
 END_TAG (MainModule )
 BEGIN_END_TAG (Module)
 END_TAG (ModuleDecl)

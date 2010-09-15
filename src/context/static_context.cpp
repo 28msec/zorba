@@ -111,20 +111,20 @@ void BaseUriInfo::serialize(::zorba::serialization::Archiver& ar)
 /**************************************************************************//**
 
 *******************************************************************************/
-FunctionInfo::FunctionInfo() 
+FunctionInfo::FunctionInfo()
   :
   theIsDisabled(false)
 {
 }
 
 
-FunctionInfo::FunctionInfo(const function_t& f, bool disabled) 
+FunctionInfo::FunctionInfo(const function_t& f, bool disabled)
   :
   theFunction(f),
   theIsDisabled(disabled)
 {
 }
-  
+
 
 FunctionInfo::FunctionInfo(::zorba::serialization::Archiver& ar)
   :
@@ -666,7 +666,7 @@ void static_context::serialize(::zorba::serialization::Archiver& ar)
   ar.set_serialize_only_for_eval(false);
 
   ar & theCollectionMap;
-  
+
   ar & theW3CCollectionMap;
   ar & theDefaultW3CCollectionType;
 
@@ -1874,7 +1874,7 @@ function* static_context::lookup_fn(
       }
 
       std::vector<FunctionInfo>* fv = NULL;
-      
+
       if (sctx->theFunctionArityMap != NULL &&
           sctx->theFunctionArityMap->get(qname2, fv))
       {
@@ -1934,16 +1934,16 @@ void static_context::get_functions(
         }
       }
     }
-    
+
     if (sctx->theFunctionArityMap != NULL)
     {
       FunctionArityMap::iterator ite = sctx->theFunctionArityMap->begin();
       FunctionArityMap::iterator end = sctx->theFunctionArityMap->end();
-      
+
       for (; ite != end; ++ite)
       {
         std::vector<FunctionInfo>* fv = (*ite).second;
-        
+
         ulong numFunctions = fv->size();
         for (ulong i = 0; i < numFunctions; ++i)
         {
@@ -3129,7 +3129,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       var_expr_t ve = ite.getValue();
 
 #if 0
-      // This check has been moved to the translator (in the translation of 
+      // This check has been moved to the translator (in the translation of
       // a VarRef).
       xqtref_t type = ve->get_return_type();
       if (!TypeOps::is_in_scope(get_typemanager(), *type))
@@ -3141,7 +3141,8 @@ void static_context::import_module(const static_context* module, const QueryLoc&
       }
 #endif
 
-      bind_var(ve, loc, XQST0049);
+      if (!ve->is_private())
+        bind_var(ve, loc, XQST0049);
     }
   }
 
@@ -3161,7 +3162,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
     {
       function_t f = (*ite).second.theFunction;
 #if 0
-      // This check has been moved to the translator (in the translation of 
+      // This check has been moved to the translator (in the translation of
       // a FunctionCall).
       const signature& sign = f->getSignature();
       ulong numArgs = f->getArity();
@@ -3177,7 +3178,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
                                    << " of the importing module");
         }
       }
-      
+
       xqtref_t type = sign.return_type();
       if (!TypeOps::is_in_scope(get_typemanager(), *type))
       {
@@ -3187,7 +3188,8 @@ void static_context::import_module(const static_context* module, const QueryLoc&
                                  << " of the importing module");
       }
 #endif
-      bind_fn(f, f->getArity(), loc);
+      if (!f->isPrivate())
+        bind_fn(f, f->getArity(), loc);
     }
   }
 
@@ -3212,7 +3214,7 @@ void static_context::import_module(const static_context* module, const QueryLoc&
         function_t f = (*fv)[i].theFunction;
 
 #if 0
-      // This check has been moved to the translator (in the translation of 
+      // This check has been moved to the translator (in the translation of
       // a FunctionCall).
         const signature& sign = f->getSignature();
         ulong numArgs = f->getArity();

@@ -79,6 +79,8 @@ class XQDocumentable: public parsenode
       }
       return theComment;
     }
+
+    std::string getCommentString() const { return theStringComment; }
 };
 
 /**

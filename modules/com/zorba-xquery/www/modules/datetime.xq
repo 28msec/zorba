@@ -31,7 +31,7 @@ module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";
  :
  : @return the non-stable datetime value
  :)
-declare nondeterministic function datetime:current-dateTime ( ) as xs:dateTime external;
+declare %nondeterministic function datetime:current-dateTime ( ) as xs:dateTime external;
 
 (:~
  : Return the current time value.
@@ -40,7 +40,7 @@ declare nondeterministic function datetime:current-dateTime ( ) as xs:dateTime e
  :
  : @return the non-stable time value
  :)
-declare nondeterministic function datetime:current-time ( ) as xs:time external;
+declare %nondeterministic function datetime:current-time ( ) as xs:time external;
 
 (:~
  : Return the current date value.
@@ -49,4 +49,4 @@ declare nondeterministic function datetime:current-time ( ) as xs:time external;
  :
  : @return the non-stable date value
  :)
-declare nondeterministic function datetime:current-date ( ) as xs:date external;
+declare %nondeterministic function datetime:current-date ( ) as xs:date external;

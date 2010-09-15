@@ -374,6 +374,7 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token BY                               "'by'"
 %token GROUP                            "'group'"
 %token PARENT                           "'parent'"
+%token PERCENTAGE                       "'%'"
 %token PI_BEGIN                         "'<?'"
 %token PI_END                           "'?>'"
 %token PLUS                             "'+'"
@@ -550,6 +551,9 @@ static void print_token_value(FILE *, int, YYSTYPE);
 
 %type <node> AbbrevForwardStep
 %type <node> AnyKindTest
+%type <node> Annotation
+%type <node> AnnotationList
+%type <node> AnnotationLiteralList
 %type <node> AposAttrContentList
 %type <node> opt_AposAttrContentList
 %type <node> AposAttrValueContent
@@ -870,7 +874,7 @@ template<typename T> inline void release_hack( T *ref ) {
 %}
 
 // parsenodes
-%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating FunctionDeclSequential Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
+%destructor { release_hack( $$ ); } AbbrevForwardStep AnyKindTest Annotation AnnotationList AnnotationLiteralList AposAttrContentList opt_AposAttrContentList AposAttrValueContent ArgList AtomicType AttributeTest BaseURIDecl BoundarySpaceDecl CaseClause CaseClauseList CommentTest ConstructionDecl CopyNamespacesDecl DefaultCollationDecl DefaultNamespaceDecl DirAttr DirAttributeList DirAttributeValue DirElemContentList DocumentTest ElementTest EmptyOrderDecl WindowClause ForClause ForLetWinClause FLWORClauseList ForwardAxis ForwardStep FunctionDecl FunctionDecl2 FunctionDeclSimple FunctionDeclUpdating FunctionDeclSequential Import ItemType KindTest LetClause LibraryModule MainModule /* Module */ ModuleDecl ModuleImport NameTest NamespaceDecl NodeComp NodeTest OccurrenceIndicator OptionDecl GroupByClause GroupSpecList GroupSpec GroupCollationSpec OrderByClause OrderCollationSpec OrderDirSpec OrderEmptySpec OrderModifier OrderSpec OrderSpecList OrderingModeDecl PITest Param ParamList PositionalVar Pragma Pragma_list PredicateList QVarInDecl QVarInDeclList QuoteAttrValueContent QuoteAttrContentList opt_QuoteAttrContentList ReverseAxis ReverseStep SIND_Decl SIND_DeclList SchemaAttributeTest SchemaElementTest SchemaImport SchemaPrefix SequenceType Setter SignList SingleType TextTest TypeDeclaration TypeName TypeName_WITH_HOOK URILiteralList ValueComp CollectionDecl DeclProperty DeclPropertyList NodeModifier IndexDecl IndexKeySpec IndexKeyList IntegrityConstraintDecl CtxItemDecl CtxItemDecl2 CtxItemDecl3 CtxItemDecl4 VarDecl VarGetsDecl VarGetsDeclList VarInDecl VarInDeclList WindowVarDecl WindowVars WindowVars2 WindowVars3 FLWORWinCond EvalVarDecl EvalVarDeclList VersionDecl VFO_Decl VFO_DeclList BlockDecls BlockVarDeclList BlockVarDecl WhereClause CountClause Wildcard DecimalFormatDecl TypedFunctionTest AnyFunctionTest TypeList SwitchCaseClause SwitchCaseClauseList SwitchCaseOperandList
 
 // parsenodes: Full-Text
 %destructor { release_hack( $$ ); } FTAnd FTAnyallOption FTBigUnit FTCaseOption FTContent FTDiacriticsOption FTDistance FTExtensionOption FTExtensionSelection FTIgnoreOption opt_FTIgnoreOption FTLanguageOption FTMatchOption FTMatchOptions opt_FTMatchOptions FTMildNot FTOptionDecl FTOr FTOrder FTPosFilter FTPrimary FTPrimaryWithOptions FTRange FTScope FTScoreVar FTSelection FTStemOption FTStopWords FTStopWordOption FTStopWordsInclExcl FTThesaurusID FTThesaurusOption FTTimes opt_FTTimes FTUnaryNot FTUnit FTWeight FTWildCardOption FTWindow FTWords FTWordsValue
@@ -1613,37 +1617,49 @@ CtxItemDecl4
 // ------------
 
 VarNameAndType :
-    DOLLAR QNAME
+    DECLARE VARIABLE DOLLAR QNAME
     {
-      $$ = new VarNameAndType(static_cast<QName*>($2), NULL);
+      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($4), NULL, NULL);
+      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
     }
-  | DOLLAR QNAME TypeDeclaration
+  | DECLARE VARIABLE DOLLAR QNAME TypeDeclaration
     {
-      $$ = new VarNameAndType(static_cast<QName*>($2),
-                              dynamic_cast<SequenceType *>($3));
+      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($4), dynamic_cast<SequenceType *>($5), NULL);
+      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
+    }
+  | DECLARE AnnotationList VARIABLE DOLLAR QNAME
+    {
+      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($5), NULL, static_cast<AnnotationList*>($2));
+      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
+    }
+  | DECLARE AnnotationList VARIABLE DOLLAR QNAME TypeDeclaration
+    {
+      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($5), dynamic_cast<SequenceType *>($6), static_cast<AnnotationList*>($2));
+      dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
     }
   ;
 
+
 VarDecl :
-    DECLARE VARIABLE VarNameAndType GETS ExprSingle
+    VarNameAndType GETS ExprSingle
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
-      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, $5);
-      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
+      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, $3, nt->get_annotations());
+      dynamic_cast<VarDecl*>($$)->setComment(nt->getCommentString());
     }
-|   DECLARE  VARIABLE  VarNameAndType EXTERNAL
+  | VarNameAndType EXTERNAL
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
-      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, NULL, true);
-      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
+      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, NULL, nt->get_annotations(), true);
+      dynamic_cast<VarDecl*>($$)->setComment(nt->getCommentString());
     }
-|   DECLARE  VARIABLE  VarNameAndType EXTERNAL GETS ExprSingle
+  | VarNameAndType EXTERNAL GETS ExprSingle
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($3));
-      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, $6, true);
-      dynamic_cast<VarDecl*>($$)->setComment(SYMTAB($1));
+      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
+      $$ = new VarDecl(LOC(@$), nt->theName, nt->theType, $4, nt->get_annotations(), true);
+      dynamic_cast<VarDecl*>($$)->setComment(nt->getCommentString());
     }
-;
+  ;
 
 DeclPropertyList
     :   DeclProperty
@@ -2059,21 +2075,31 @@ BlockVarDeclList
 
 
 BlockVarDecl:
-    VarNameAndType
+    DOLLAR QNAME
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
-      VarDecl* vd = new VarDecl(LOC(@$), nt->theName, nt->theType, NULL);
+      VarDecl* vd = new VarDecl(LOC(@$), static_cast<QName*>($2), NULL, NULL, NULL);
       vd->set_global(false);
       $$ = vd;
     }
-  | VarNameAndType GETS ExprSingle
+  | DOLLAR QNAME TypeDeclaration
     {
-      std::auto_ptr<VarNameAndType> nt(dynamic_cast<VarNameAndType *>($1));
-      VarDecl* vd = new VarDecl(LOC(@$), nt->theName, nt->theType, $3);
+      VarDecl* vd = new VarDecl(LOC(@$), static_cast<QName*>($2), dynamic_cast<SequenceType*>($3), NULL, NULL);
       vd->set_global(false);
       $$ = vd;
-        }
-    ;
+    }
+  | DOLLAR QNAME GETS ExprSingle
+    {
+      VarDecl* vd = new VarDecl(LOC(@$), static_cast<QName*>($2), NULL, $4, NULL);
+      vd->set_global(false);
+      $$ = vd;
+    }
+  | DOLLAR QNAME TypeDeclaration GETS ExprSingle
+    {
+      VarDecl* vd = new VarDecl(LOC(@$), static_cast<QName*>($2), dynamic_cast<SequenceType*>($3), $5, NULL);
+      vd->set_global(false);
+      $$ = vd;
+    }
+  ;
 
 
 AssignExpr
@@ -2113,12 +2139,55 @@ FlowCtlStatement
         }
     ;
 
+
+AnnotationList
+    :   Annotation
+        {
+            $$ = new AnnotationList( LOC(@$), static_cast<Annotation*>($1));
+        }
+    |   AnnotationList Annotation
+        {
+            static_cast<AnnotationList*>($1)->push_back(static_cast<Annotation*>($2));
+            $$ = $1;
+        }
+    ;
+
+Annotation
+    :   PERCENTAGE QNAME
+        {
+            $$ = new Annotation( LOC(@$), static_cast<QName*>($2), NULL);
+        }
+    |   PERCENTAGE QNAME LPAR AnnotationLiteralList RPAR
+        {
+            $$ = new Annotation( LOC(@$), static_cast<QName*>($2), static_cast<AnnotationLiteralList*>($4));
+        }
+    ;
+
+AnnotationLiteralList
+    :   Literal
+        {
+            $$ = new AnnotationLiteralList( LOC(@$), $1);
+        }
+    |   AnnotationLiteralList COMMA Literal
+        {
+            static_cast<AnnotationLiteralList*>($1)->push_back($3);
+            $$ = $1;
+        }
+    ;
+
 FunctionDecl
     :   DECLARE FunctionDecl2
         {
-            dynamic_cast<FunctionDecl*>($2)->setComment( SYMTAB($1) );
+            static_cast<FunctionDecl*>($2)->setComment( SYMTAB($1) );
             $$ = $2;
         }
+    |   DECLARE AnnotationList FunctionDecl2
+        {
+            static_cast<FunctionDecl*>($3)->setComment( SYMTAB($1) );
+            static_cast<FunctionDecl*>($3)->set_annotations(static_cast<AnnotationList*>($2));
+            $$ = $3;
+        }
+        /* TODO: delete
     |   DECLARE NONDETERMINISTIC FunctionDecl2
         {
             FunctionDecl* fd = dynamic_cast<FunctionDecl*>($3);
@@ -2148,6 +2217,7 @@ FunctionDecl
             fd->setComment( SYMTAB($1) );
             $$ = $3;
         }
+        */
   ;
 
 FunctionDecl2 :
@@ -2179,7 +2249,7 @@ FunctionDeclSimple :
                             &* $3->ret,
                             $4,
                             ParseConstants::fn_read,
-                            true);
+                            NULL);
       delete $3;
     }
   | FUNCTION FUNCTION_NAME FunctionSig EXTERNAL
@@ -2190,7 +2260,7 @@ FunctionDeclSimple :
                             &* $3->ret,
                             NULL,
                             ParseConstants::fn_extern,
-                            true);
+                            NULL);
       delete $3;
     }
   ;
@@ -2205,7 +2275,7 @@ FunctionDeclSequential :
                             &* $4->ret,
                             $5,
                             ParseConstants::fn_sequential,
-                            true);
+                            NULL);
       delete $4;
     }
   | SEQUENTIAL FUNCTION FUNCTION_NAME FunctionSig EXTERNAL
@@ -2216,7 +2286,7 @@ FunctionDeclSequential :
                             &* $4->ret,
                             NULL,
                             ParseConstants::fn_extern_sequential,
-                            true);
+                            NULL);
       delete $4;
     }
   ;
@@ -2231,7 +2301,7 @@ FunctionDeclUpdating :
                             &* $4->ret,
                             $6,
                             ParseConstants::fn_update,
-                            true);
+                            NULL);
       delete $4;
     }
   | UPDATING FUNCTION FUNCTION_NAME FunctionSig EXTERNAL
@@ -2242,7 +2312,7 @@ FunctionDeclUpdating :
                             &* $4->ret,
                             NULL,
                             ParseConstants::fn_extern_update,
-                            true);
+                            NULL);
       delete $4;
     }
   ;

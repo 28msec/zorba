@@ -67,7 +67,7 @@ module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
  : @error An error is thrown if no module is located at the
  :        given URL or the module could not be parsed.
  :)
-declare nondeterministic function xqd:xqdoc(
+declare %nondeterministic function xqd:xqdoc(
   $module-url as xs:string
 ) as element() external;
 

@@ -15,7 +15,7 @@ import schema namespace email = 'http://www.zorba-xquery.com/modules/email/email
  : @error If the status can not be read for any reason.
  :
  :)
-declare nondeterministic function imap:status($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:string* external;
+declare %nondeterministic function imap:status($host-info as element(imaps:hostInfo), $mailbox as xs:string) as xs:string* external;
   
 (:~
  : For internal use only. 
@@ -63,7 +63,7 @@ declare sequential function imap:rename($host-info as element(imaps:hostInfo), $
  : @error If it wasn't possible to create a connection to the IMAP server.
  : @error If the passed credentials were rejected by the IMAP server.
  :)
-declare nondeterministic function imap:list($host-info as element(imaps:hostInfo), $mailbox-ref as xs:string, $pattern as xs:string, $only-suscribed as xs:boolean) as xs:string* external;
+declare %nondeterministic function imap:list($host-info as element(imaps:hostInfo), $mailbox-ref as xs:string, $pattern as xs:string, $only-suscribed as xs:boolean) as xs:string* external;
 
 
 (:~
@@ -118,7 +118,7 @@ declare sequential function imap:expunge($host-info as element(imaps:hostInfo), 
  : @error If the specified mailbox does not exist.
  : @error If the syntax of the passed criteria is incorrect.  
  :)
-declare nondeterministic function imap:search($host-info as element(imaps:hostInfo), $mailbox as xs:string, $criteria as xs:string, $uid as xs:boolean?) as xs:long* external;
+declare %nondeterministic function imap:search($host-info as element(imaps:hostInfo), $mailbox as xs:string, $criteria as xs:string, $uid as xs:boolean?) as xs:long* external;
 
 
 (:~
@@ -153,5 +153,5 @@ declare sequential function imap:copy($host-info as element(imaps:hostInfo), $ma
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist.
  :)
-declare nondeterministic function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as element() external; 
+declare %nondeterministic function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as element() external; 
 

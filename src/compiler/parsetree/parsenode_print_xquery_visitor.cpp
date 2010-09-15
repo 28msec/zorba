@@ -79,6 +79,11 @@ void* begin_visit(const AbbrevForwardStep& n)
 
 DEFAULT_END_VISIT(AbbrevForwardStep)
 
+DEFAULT_VISIT (Annotation)
+
+DEFAULT_VISIT (AnnotationList)
+
+DEFAULT_VISIT (AnnotationLiteralList)
 
 DEFAULT_BEGIN_VISIT (AnyKindTest)
 
@@ -101,7 +106,7 @@ void* begin_visit(const AposAttrValueContent& n)
   else
   {
     n.get_common_content()->accept(*this);
-      }
+  }
   return 0;
 }
 
@@ -362,48 +367,48 @@ void* begin_visit(const EmptyOrderDecl& n)
 
 DEFAULT_END_VISIT (EmptyOrderDecl)
 
-    void* begin_visit(const ForClause& n)
-    {
-      os << "for $";
-      n.get_vardecl_list()->accept(*this);
-      return 0;
-    }
-    DEFAULT_END_VISIT (ForClause)
+void* begin_visit(const ForClause& n)
+{
+  os << "for $";
+  n.get_vardecl_list()->accept(*this);
+  return 0;
+}
+DEFAULT_END_VISIT (ForClause)
 
-    DEFAULT_VISIT (FLWORClauseList) //@checked
+DEFAULT_VISIT (FLWORClauseList) //@checked
 
-    void* begin_visit(const ForwardAxis& n)
-    {
-      switch(n.get_axis())
-      {
-        case ParseConstants::axis_child:
-          os << "child";
-          break;
-        case ParseConstants::axis_descendant:
-          os << "descendant";
-          break;
-        case ParseConstants::axis_attribute:
-          os << "attribute";
-          break;
-        case ParseConstants::axis_self:
-          os << "self";
-          break;
-        case ParseConstants::axis_descendant_or_self:
-          os << "descendant-or-self";
-          break;
-        case ParseConstants::axis_following_sibling:
-          os << "following-sibling";
-          break;
-        case ParseConstants::axis_following:
-          os << "following";
-          break;
-      }
-      os << "::";
-      return no_state;
-    }
-    DEFAULT_END_VISIT (ForwardAxis)
+void* begin_visit(const ForwardAxis& n)
+{
+  switch(n.get_axis())
+  {
+    case ParseConstants::axis_child:
+      os << "child";
+      break;
+    case ParseConstants::axis_descendant:
+      os << "descendant";
+      break;
+    case ParseConstants::axis_attribute:
+      os << "attribute";
+      break;
+    case ParseConstants::axis_self:
+      os << "self";
+      break;
+    case ParseConstants::axis_descendant_or_self:
+      os << "descendant-or-self";
+      break;
+    case ParseConstants::axis_following_sibling:
+      os << "following-sibling";
+      break;
+    case ParseConstants::axis_following:
+      os << "following";
+      break;
+  }
+  os << "::";
+  return no_state;
+}
+DEFAULT_END_VISIT (ForwardAxis)
 
-    DEFAULT_VISIT (ForwardStep)//@checked
+DEFAULT_VISIT (ForwardStep)//@checked
 
 
 void* begin_visit(const FunctionDecl& n)
@@ -520,104 +525,106 @@ DEFAULT_END_VISIT (GeneralComp)
       }
       return no_state;
     }
-    DEFAULT_END_VISIT (LetClause)
+DEFAULT_END_VISIT (LetClause)
 
-    DEFAULT_VISIT (LibraryModule) //@checked
+DEFAULT_VISIT (LibraryModule) //@checked
 
-    DEFAULT_VISIT (MainModule) //@checked
+DEFAULT_VISIT (Literal)
 
-    DEFAULT_VISIT (Module) //@checked
+DEFAULT_VISIT (MainModule) //@checked
 
-    void* begin_visit(const ModuleDecl& n)
-    {
-      os << "module namespace " << n.get_prefix() << "=" << n.get_target_namespace() << ';';
-      return 0;
-    }
-    DEFAULT_END_VISIT (ModuleDecl)
+DEFAULT_VISIT (Module) //@checked
 
-    void* begin_visit(const ModuleImport& n)
-    {
-      os << "import module ";
-      if(!n.get_prefix()->empty())
-      {
-        os << "namespace " << n.get_prefix()->c_str() << "=";
-      }
-      os << n.get_uri();
-      if(n.get_at_list())
-      {
-        n.get_at_list()->accept(*this);
-      }
-      return 0;
-    }
-    DEFAULT_END_VISIT (ModuleImport)
+void* begin_visit(const ModuleDecl& n)
+{
+  os << "module namespace " << n.get_prefix() << "=" << n.get_target_namespace() << ';';
+  return 0;
+}
+DEFAULT_END_VISIT (ModuleDecl)
 
-    void* begin_visit(const NameTest& n)
-    {
-      if(n.getQName() != 0)
-      {
-        os << n.getQName()->get_qname();
-      } else {
-        n.getWildcard()->accept(*this);
-      }
-      return no_state;
-    }
-    DEFAULT_END_VISIT (NameTest)
+void* begin_visit(const ModuleImport& n)
+{
+  os << "import module ";
+  if(!n.get_prefix()->empty())
+  {
+    os << "namespace " << n.get_prefix()->c_str() << "=";
+  }
+  os << n.get_uri();
+  if(n.get_at_list())
+  {
+    n.get_at_list()->accept(*this);
+  }
+  return 0;
+}
+DEFAULT_END_VISIT (ModuleImport)
 
-    DEFAULT_VISIT (NamespaceDecl)
+void* begin_visit(const NameTest& n)
+{
+  if(n.getQName() != 0)
+  {
+    os << n.getQName()->get_qname();
+  } else {
+    n.getWildcard()->accept(*this);
+  }
+  return no_state;
+}
+DEFAULT_END_VISIT (NameTest)
 
-    void* begin_visit(const NodeComp& n)
-    {
-      switch(n.get_type())
-      {
-        case ParseConstants::op_is:
-          os << "is";
-          break;
-        case ParseConstants::op_precedes:
-          os << "<<";
-          break;
-        case ParseConstants::op_follows:
-          os << ">>";
-          break;
-      }
-      return no_state;
-    }
-    DEFAULT_END_VISIT (NodeComp)
+DEFAULT_VISIT (NamespaceDecl)
 
-    void* begin_visit(const OccurrenceIndicator& n)
-    {
-      switch(n.get_type())
-      {
-        case ParseConstants::occurs_never:
-          break;
-        case ParseConstants::occurs_exactly_one:
-          break;
-        case ParseConstants::occurs_optionally:
-          os << '?';
-          break;
-        case ParseConstants::occurs_zero_or_more:
-          os << '*';
-          break;
-        case ParseConstants::occurs_one_or_more:
-          os << '+';
-          break;
-      }
-      return no_state;
-    }
-    DEFAULT_END_VISIT (OccurrenceIndicator)
+void* begin_visit(const NodeComp& n)
+{
+  switch(n.get_type())
+  {
+    case ParseConstants::op_is:
+      os << "is";
+      break;
+    case ParseConstants::op_precedes:
+      os << "<<";
+      break;
+    case ParseConstants::op_follows:
+      os << ">>";
+      break;
+  }
+  return no_state;
+}
+DEFAULT_END_VISIT (NodeComp)
 
-    void* begin_visit(const OptionDecl& n)
-    {
-      os << "declare option " << n.get_qname()->get_qname() << ' ' << n.get_val() << ';';
-      return 0;
-    }
-    DEFAULT_END_VISIT (OptionDecl)
+void* begin_visit(const OccurrenceIndicator& n)
+{
+  switch(n.get_type())
+  {
+    case ParseConstants::occurs_never:
+      break;
+    case ParseConstants::occurs_exactly_one:
+      break;
+    case ParseConstants::occurs_optionally:
+      os << '?';
+      break;
+    case ParseConstants::occurs_zero_or_more:
+      os << '*';
+      break;
+    case ParseConstants::occurs_one_or_more:
+      os << '+';
+      break;
+  }
+  return no_state;
+}
+DEFAULT_END_VISIT (OccurrenceIndicator)
 
-    void* begin_visit(const GroupByClause& n)
-    {
-      os << "group by ";
-      return no_state;
-    }
-    DEFAULT_END_VISIT (GroupByClause)
+void* begin_visit(const OptionDecl& n)
+{
+  os << "declare option " << n.get_qname()->get_qname() << ' ' << n.get_val() << ';';
+  return 0;
+}
+DEFAULT_END_VISIT (OptionDecl)
+
+void* begin_visit(const GroupByClause& n)
+{
+  os << "group by ";
+  return no_state;
+}
+DEFAULT_END_VISIT (GroupByClause)
 
     void* begin_visit(const GroupSpecList& n)
     {
@@ -1030,6 +1037,8 @@ DEFAULT_END_VISIT (ParamList)
       return 0;
     }
     DEFAULT_END_VISIT (VarDecl)
+
+    DEFAULT_VISIT (VarNameAndType)
 
     void* begin_visit(const VarGetsDecl& n)
     {

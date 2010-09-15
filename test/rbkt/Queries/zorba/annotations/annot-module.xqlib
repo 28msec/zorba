@@ -1,0 +1,34 @@
+
+module namespace ann = "annotations";
+
+declare %private variable $ann:private-var := 1;
+
+declare %public variable $ann:public-var := 1;
+
+declare variable $ann:default-var := 1;
+
+
+declare %private function ann:private-func()
+{
+  1
+};
+
+declare %public function ann:public-func()
+{
+  1
+};
+
+declare function ann:default-func()
+{
+  1
+};
+
+declare function ann:indirect-private-func()
+{
+  ann:private-func()
+};
+
+declare function ann:indirect-private-var()
+{
+  $ann:private-var
+};

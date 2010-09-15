@@ -136,6 +136,8 @@ typedef enum
   OP_NUMERIC_INTEGER_DIVIDE_2,
   OP_NUMERIC_MOD_2,
 
+  OP_NOTATION_EQUAL_2,
+
   OP_UNARY_PLUS_1,
   OP_UNARY_MINUS_1,
   OP_DOUBLE_UNARY_PLUS_1,
@@ -189,7 +191,8 @@ typedef enum
   DoDistinct    = 1,   // Used by fn:zore-or-one and fn:exaclty-one
   SkipCodeGen   = 2,
   hasFnNamespace = 4,
-  isDeterministic = 8
+  isDeterministic = 8,
+  isPrivate = 16
 } AnnotationFlags;
 
 };

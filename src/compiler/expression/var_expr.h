@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,7 +36,7 @@ typedef rchandle<var_expr> var_expr_t;
 /******************************************************************************
 
   var_expr represents a variable. There is one var_expr for each distinct
-  variable declared anywhere inside a query body or prolog. 
+  variable declared anywhere inside a query body or prolog.
 
   var_expr represents both the var declaration and all references of the var.
   However, each distinct reference to a var is wrapped in wrapper_expr. For
@@ -44,14 +44,14 @@ typedef rchandle<var_expr> var_expr_t;
 
        F               G
        |               |
-   wrapper_expr    wrapper_expr 
+   wrapper_expr    wrapper_expr
          \             /
           \           /
            var_expr($x)
-  
+
 
   For context vars with a defining expr, the mapping between the var qname and
-  the defining expr is explicitly stored by creating an 
+  the defining expr is explicitly stored by creating an
   fn:ctxvar-assign(qname_expr, def_expr) expr (see method
   wrap_in_globalvar_assign() in translator.cpp).
 
@@ -59,23 +59,23 @@ typedef rchandle<var_expr> var_expr_t;
   stored in the associated clause (see theForletClause data member below).
 
   theKind        : The kind of the variable (see var_kind enum below)
-  theVarName     : The fully expanded qname of the var (qname item) 
+  theVarName     : The fully expanded qname of the var (qname item)
   theStaticType  : The static type of the variable
   theFlworClause : If this is a var declared in flwor clause, theFlworClause
                    points to the defining clause. That clause also contains
                    the defining expr for the var and a pointer back to this
-                   var_exr. 
+                   var_exr.
   theCopyClause  : If this is a var declared in a copy clause of a transform
-                   expr, theCopyClause points to that clause. That clause 
+                   expr, theCopyClause points to that clause. That clause
                    contains the defining expr for the var and a pointer back
-                   to this var_exr. 
+                   to this var_exr.
 *******************************************************************************/
-class var_expr : public expr 
+class var_expr : public expr
 {
   friend class expr;
 
 public:
-  enum var_kind 
+  enum var_kind
   {
     eval_var,
 
@@ -95,7 +95,7 @@ public:
     copy_var,
 
     catch_var,
-    
+
     prolog_var,
 
     local_var,
@@ -117,6 +117,8 @@ protected:
 
   flwor_clause * theFlworClause;
   copy_clause  * theCopyClause;
+
+  bool           theIsPrivate; // prolog_vars can be private
 
 public:
   SERIALIZABLE_CLASS(var_expr)
@@ -146,6 +148,10 @@ public:
   void set_type(xqtref_t t);
 
   void set_flwor_clause(flwor_clause* c) { theFlworClause = c; }
+
+  bool is_private() const { return theIsPrivate; }
+
+  void set_private(bool v) { theIsPrivate = v; }
 
   flwor_clause* get_flwor_clause() const { return theFlworClause; }
 
