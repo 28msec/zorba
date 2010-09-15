@@ -212,6 +212,8 @@ static void print_token_value(FILE *, int, YYSTYPE);
 %token <sval> COMP_ATTRIBUTE_QNAME_LBRACE   "'attribute QName {'"
 %token <sval> COMP_PI_NCNAME_LBRACE         "'processing-instruction NCName {'"
 %token <sval> QNAME_SVAL                    "'QName'"
+%token <sval> ANNOTATION_QNAME_SVAL         "'%QName'"
+
 %token <sval> QUOTE_ATTR_CONTENT            "'quote attribute content'"
 %token <sval> STRING_LITERAL                "'STRING'"
 %token <sval> XML_COMMENT_LITERAL           "'XML comment'"
@@ -2153,13 +2155,13 @@ AnnotationList
     ;
 
 Annotation
-    :   PERCENTAGE QNAME
+    :   ANNOTATION_QNAME_SVAL
         {
-            $$ = new Annotation( LOC(@$), static_cast<QName*>($2), NULL);
+            $$ = new Annotation( LOC(@$), new QName(LOC(@$), SYMTAB($1)), NULL);
         }
-    |   PERCENTAGE QNAME LPAR AnnotationLiteralList RPAR
+    |   ANNOTATION_QNAME_SVAL LPAR AnnotationLiteralList RPAR
         {
-            $$ = new Annotation( LOC(@$), static_cast<QName*>($2), static_cast<AnnotationLiteralList*>($4));
+            $$ = new Annotation( LOC(@$), new QName(LOC(@$), SYMTAB($1)), static_cast<AnnotationLiteralList*>($3));
         }
     ;
 

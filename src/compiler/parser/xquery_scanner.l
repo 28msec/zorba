@@ -244,12 +244,17 @@ NCNameChar            ({Letter}|{Digit}|[._-])
 
 NCName                ({NCNameStartChar}{NCNameChar}*)
 
-
   /*_____________________________________________________________________
    |
    |  QName definition
    |______________________________________________________________________*/
 QName       ({NCName}":")?{NCName}
+
+  /*_____________________________________________________________________
+   |
+   |  Annotation QName definition
+   |______________________________________________________________________*/
+AnnotationQName "%"({NCName}":")?{NCName}
 
   /*_____________________________________________________________________
    |
@@ -663,6 +668,8 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 {NCName}":*"                  { TRY_SVAL_TOKEN(ELEM_WILDCARD, put_ncname(yytext, yyleng-2), yytext); }
 
 {QName}                       { TRY_SVAL_TOKEN(QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
+
+{AnnotationQName}             { TRY_SVAL_TOKEN(ANNOTATION_QNAME_SVAL, put_qname(yytext+1, yyleng-1), yytext+1); /* skip the % sign */ }
 
 "*:"{NCName}                  { TRY_SVAL_TOKEN (PREFIX_WILDCARD, put_ncname(yytext+2, yyleng-2), yytext); }
 
