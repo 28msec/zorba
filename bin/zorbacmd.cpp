@@ -492,6 +492,13 @@ compileAndExecute(
 
   Zorba_CompilerHints lHints;
 
+  // default is O1 in the Zorba_CompilerHints constructor
+  if (properties.optimizationLevel() == "O0") {
+    lHints.opt_level = ZORBA_OPT_LEVEL_O0;
+  } else if (properties.optimizationLevel() == "O2") {
+    lHints.opt_level = ZORBA_OPT_LEVEL_O2;
+  }
+
   // default is false
   if (properties.libModule()) {
     lHints.lib_module = true;
