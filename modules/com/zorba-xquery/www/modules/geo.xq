@@ -105,6 +105,9 @@
  : When returning the result, the original z-coordinates of the points are preserved.
  : For computed points, the z-coordinate is interpolated.<br/>
  : <br/>
+ : The coordinates values have to be in cartesian coordinates, not in polar coordinates. <br/>
+ : Converting between coordinate systems and doing projections from polar to cartesian is outside the scope of this geo module. <br/>
+ : <br/>
  : For operations between two geometries, the DE-9IM matrix is used. The DE-9IM matrix is defined like this:
  : <table>
  :	<tr>
