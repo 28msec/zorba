@@ -10,7 +10,7 @@ else
   validate {
     <test-suite-result>
        <implementation name="Zorba" 
-         version='1.5 (svn rev. 8737)'
+         version='1.5 (svn rev. 8827)'
          anonymous-result-column="false">
   
          <organization
@@ -65,19 +65,39 @@ else
             
        </implementation>
 
-       <syntax>XQuery</syntax>
+       <syntax>XQueryX</syntax>
 
-       <test-run dateRun="2010-08-20">
-          <test-suite version="1.0.1"/>
+       <test-run dateRun="2010-10-16">
+          <test-suite version="current"/>
           <transformation><p>Standard</p></transformation>
           <comparison><p>Standard</p></comparison>
-          <otherComments><p>None</p></otherComments>
+          <otherComments><p>XQUTS version taken from CVS as of 13 Sept.</p></otherComments>
        </test-run>
 
        {
          for $test in $ctests/*:Site/*:Testing/*:Test
          let $testname := fn:tokenize(fn:data($test/*:Name), "/")[last()]
          return
+         if(fn:exists(fn:index-of(('revalidation-declaration-01-fail','revalidation-declaration-03-fail','revalidation-declaration-05-fail','revalidate-valtrans-ins-003'
+         ,'fn-put-003-fail','fn-put-004-fail','fn-put-005-fail','fn-put-006-fail'),$testname))) then
+          <test-case
+             name="{$testname}"
+             result="not applicable"
+             comment="this test was not run by Zorba: please consult the 'Guidelines for Running the XML Query Update Test Suite' for more details."
+           />
+          else if (fn:contains(fn:data($test),'StaticTypingFeature')) then
+          <test-case
+             name="{$testname}"
+             result="not applicable"
+             comment="Zorba does not support the 'Update Facility Static Typing Feature'"
+           />
+          else if ($testname = 'namespace-errors-q16') then
+          <test-case
+             name="{$testname}"
+             result="pass"
+             comment="Zorba reports the correct result. For details please see 'http://www.w3.org/Bugs/Public/show_bug.cgi?id=10432'"
+           />
+          else
            <test-case
              name="{$testname}"
              result="{fn:substring(fn:data($test/@Status), 0, 5)}"
