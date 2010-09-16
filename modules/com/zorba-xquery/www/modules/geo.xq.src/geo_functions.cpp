@@ -427,6 +427,124 @@ void GeoFunction::readPosListCoordinates(zorba::Item &lItem,
 
 }
 
+int GeoFunction::getCoordinateDimension(const geos::geom::Geometry *geos_geometry) const
+{
+  if(!geos_geometry)
+    return 2;
+  switch(geos_geometry->getGeometryTypeId())
+  {
+  case 	geos::geom::GEOS_POINT:
+  {
+    const geos::geom::Coordinate  *c;
+    c = geos_geometry->getCoordinate();
+      if(!ISNAN(c->z))
+        return 3;
+      else
+        return 2;
+  }
+	/// a linestring
+  case geos::geom::GEOS_LINESTRING:
+	/// a linear ring (linestring with 1st point == last point)
+  case geos::geom::GEOS_LINEARRING:
+  {
+    geos::geom::CoordinateSequence  *cs;
+    cs = geos_geometry->getCoordinates();
+    size_t    cs_size = cs->getSize();
+    for(size_t i=0;i<cs_size;i++)
+    {
+      if(!ISNAN(cs->getAt(i).z))
+        return 3;
+    }
+    return 2;
+  }
+	/// a polygon
+  case geos::geom::GEOS_POLYGON:
+  {
+    const geos::geom::LineString*   exterior_ring;
+    const geos::geom::Polygon   *polygon = dynamic_cast<const geos::geom::Polygon*>(geos_geometry);
+    exterior_ring = polygon->getExteriorRing();
+    int exterior_dim = getCoordinateDimension(exterior_ring);
+    if(exterior_dim == 3)
+      return 3;
+
+    size_t interior_rings = polygon->getNumInteriorRing();
+    for(size_t i=0;i<interior_rings;i++)
+    {
+      const geos::geom::LineString*   interior_ring;
+      interior_ring = polygon->getInteriorRingN(i);
+      int interior_dim = getCoordinateDimension(interior_ring);
+      if(interior_dim == 3)
+        return 3;
+    }
+    return 2;
+  }
+	/// a collection of points
+  case geos::geom::GEOS_MULTIPOINT:
+  {
+    size_t    nr_geoms = geos_geometry->getNumGeometries();
+    for(size_t i=0;i<nr_geoms;i++)
+    {
+      const geos::geom::Geometry  *point;
+      point = geos_geometry->getGeometryN(i);
+      if(getCoordinateDimension(point) == 3)
+        return 3;
+    }
+    return 2;
+  }
+	/// a collection of linestrings
+  case geos::geom::GEOS_MULTILINESTRING:
+  {
+    size_t    nr_geoms = geos_geometry->getNumGeometries();
+    for(size_t i=0;i<nr_geoms;i++)
+    {
+      const geos::geom::Geometry  *linestring;
+      linestring = geos_geometry->getGeometryN(i);
+      if(getCoordinateDimension(linestring) == 3)
+        return 3;
+    }
+    return 2;
+  }
+	/// a collection of polygons
+  case geos::geom::GEOS_MULTIPOLYGON:
+  {
+    size_t    nr_geoms = geos_geometry->getNumGeometries();
+    for(size_t i=0;i<nr_geoms;i++)
+    {
+      const geos::geom::Geometry  *polygon;
+      polygon = geos_geometry->getGeometryN(i);
+      if(getCoordinateDimension(polygon) == 3)
+        return 3;
+    }
+    return 2;
+  }
+	/// a collection of heterogeneus geometries
+  case geos::geom::GEOS_GEOMETRYCOLLECTION:
+  {
+    //can be either gml:Surface or gml:Curve
+    size_t    nr_geoms = geos_geometry->getNumGeometries();
+    if(!nr_geoms)
+      return 2;//unreachable
+    for(size_t i=0;i<nr_geoms;i++)
+    {
+      const geos::geom::Geometry *child;
+      child = geos_geometry->getGeometryN(i);
+      if(getCoordinateDimension(child) == 3)
+        return 3;
+    }
+    return 2;
+  }
+  default:
+  {
+    std::stringstream lErrorMessage;
+    lErrorMessage << "Geometry type " << geos_geometry->getGeometryType() << " is not supported";
+    throwError(lErrorMessage.str(), XPTY0004);
+  }
+  }
+
+  return 2;
+}
+
+
 geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem, 
                                                               enum GeoFunction::gmlsf_types geometric_type,
                                                               int srs_dim,
@@ -1304,6 +1422,9 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
     c = geos_geometry->getCoordinate();
 #if GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 2)
     if(geos_geometry->getCoordinateDimension() == 3)
+#else
+    if(getCoordinateDimension(geos_geometry) == 3)
+#endif
     {
       zorba::Item attr_value_item;
       item_type = theModule->getItemFactory()->createQName("http://www.w3.org/2001/XMLSchema", "untyped");
@@ -1317,7 +1438,6 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
         sprintf(strtemp, "%lf %lf 0", c->x, c->y);
     }
     else
-#endif
       sprintf(strtemp, "%lf %lf", c->x, c->y);
 
     zorba::Item text_item;
@@ -1340,6 +1460,9 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
     
 #if GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 2)
     int coord_dim = geos_geometry->getCoordinateDimension();
+#else
+    int coord_dim = getCoordinateDimension(geos_geometry);
+#endif
     if(coord_dim == 3)
     {
       zorba::Item attr_value_item;
@@ -1349,9 +1472,6 @@ zorba::Item GeoFunction::getGMLItemFromGeosGeometry(zorba::Item &parent,
       attr_value_item = theModule->getItemFactory()->createString(strvalue);
       theModule->getItemFactory()->createAttributeNode(pos_item, item_name, item_type, attr_value_item);
     }
-#else
-    int coord_dim = 2;
-#endif
     char *strtemp;
     geos::geom::CoordinateSequence  *cs;
     cs = geos_geometry->getCoordinates();
@@ -1617,7 +1737,7 @@ SFCoordinateDimensionFunction::evaluate(const StatelessExternalFunction::Argumen
 #if GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 2)
   int   coord_dim = geos_geometry->getCoordinateDimension();
 #else
-  int coord_dim = 2;//hardcode the coordinate sistem for 2D for GEOS 3.2.2
+  int coord_dim = getCoordinateDimension(geos_geometry);
 #endif
   delete geos_geometry;
   return ItemSequence_t(new SingletonItemSequence(
@@ -2018,7 +2138,7 @@ SFIs3DFunction::evaluate(const StatelessExternalFunction::Arguments_t& args,
 #if GEOS_VERSION_MAJOR > 3 || (GEOS_VERSION_MAJOR == 3 && GEOS_VERSION_MINOR > 2)
   bool is_3D = (geos_geometry->getCoordinateDimension() == 3);
 #else
-  bool is_3D = false;//for GEOS 3.2.2
+  bool is_3D = (getCoordinateDimension(geos_geometry) == 3);//for GEOS 3.2.2
 #endif
   delete geos_geometry;
 

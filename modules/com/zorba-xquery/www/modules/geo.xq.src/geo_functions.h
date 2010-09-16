@@ -80,6 +80,7 @@ namespace zorba { namespace geomodule {
       void readPointPosCoordinates(zorba::Item &lItem, double *x, double *y, double *z, int &srs_dim) const;
       bool readPointPosCoordinates(zorba::Iterator_t children, double *x, double *y, double *z, int &srs_dim) const;
       void readPosListCoordinates(zorba::Item &lItem, geos::geom::CoordinateSequence *&cl, int &srs_dim) const;
+      int getCoordinateDimension(const geos::geom::Geometry *geos_geometry) const;
 
     public:
       GeoFunction(const GeoModule* module);
