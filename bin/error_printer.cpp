@@ -17,6 +17,7 @@
 
 #include <ostream>
 #include "zorba/exception.h"
+#include "zorba/util/uri.h"
 
 namespace zorba {
 
@@ -33,6 +34,10 @@ namespace zorba {
         unsigned int lArity = it->getFunctionArity();
         QueryLocation_t lLocation = it->getLocation();
         String lPrefix = lName.getPrefix();
+        String lFileName = lLocation->getFileName();
+        if (lFileName.startsWith("file:")) {
+          lFileName = URIHelper::decodeFileURI(lFileName);
+        }
         if(aAsXml) {
           aOut << "<call ";
           if(lPrefix != "") {
@@ -42,7 +47,7 @@ namespace zorba {
           aOut << " ns=\"" << lName.getNamespace() << "\" ";
           aOut << " localName=\"" << lName.getLocalName() << "\">";
           aOut << "  <location ";
-          aOut << "fileName=\"" << lLocation->getFileName() << "\" ";  
+          aOut << "fileName=\"" << lFileName << "\" ";
           aOut << "lineBegin=\"" << lLocation->getLineBegin() << "\" ";  
           aOut << "lineEnd=\"" << lLocation->getLineEnd() << "\" ";  
           aOut << "columnBegin=\"" << lLocation->getColumnBegin() << "\" ";  
@@ -50,10 +55,10 @@ namespace zorba {
           aOut << "  />";
           aOut << "</call>"; 
         } else {
-	  String lFName = lPrefix == "" ? lName.getLocalName() : lPrefix + ":" + lName.getLocalName();
+          String lFName = lPrefix == "" ? lName.getLocalName() : lPrefix + ":" + lName.getLocalName();
           aOut << "=================================================" << std::endl;
           aOut << lFName << "#" << lArity << " ( " << lName.getNamespace() << " ) " << std::endl;
-          aOut << lLocation->getFileName() << " at line " << lLocation->getLineBegin() << " column " << lLocation->getColumnBegin() << std::endl;
+          aOut << lFileName << " at line " << lLocation->getLineBegin() << " column " << lLocation->getColumnBegin() << std::endl;
         }
       } 
       if(aAsXml) { aOut << "</stack>"; } 

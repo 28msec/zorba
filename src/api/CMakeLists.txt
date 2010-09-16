@@ -46,6 +46,7 @@ SET(API_SRCS
     fileimpl.cpp
     serializerimpl.cpp
     base64impl.cpp
+    uriimpl.cpp
     )
 
 ADD_SRC_SUBFOLDER(API_SRCS serialization API_SERIALIZATION_SRCS)
