@@ -983,7 +983,10 @@ ElementNode::ElementNode(
     // Note: Setting the base uri property of "this" involves the creation of an
     // attribute node having "this" as the parent. So, if addBaseUriProperty()
     // fails, we must manually remove that attribute to avoid memory leak.
-    if (baseUri != NULL)
+    //
+    // bugfix: the baseUri can also be empty (not only NULL); if so, this is
+    // asserted in addBaseUriProperty but shouldn't (see test file/validate.xq)
+    if (baseUri != NULL && !baseUri->empty())
     {
       xqpStringStore_t dummy;
       addBaseUriProperty(baseUri, dummy);

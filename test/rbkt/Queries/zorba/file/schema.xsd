@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema targetNamespace="http://www.evaluescience.com/schemas/schema"
+           xmlns = "http://www.evaluescience.com/schemas/schema"
+           xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+             
+    <xs:complexType name="Group">
+        <xs:sequence>
+    		<xs:element name="description" type="xs:string"></xs:element>
+    		<xs:element name="rolename" type="xs:string" maxOccurs="1" minOccurs="0"></xs:element>
+    	</xs:sequence>
+
+    	<xs:attribute name="id" type="xs:string"></xs:attribute>
+    	<xs:attribute name="open" type="xs:boolean"></xs:attribute>
+    	<xs:attribute name="content" type="xs:string"></xs:attribute>
+    	<xs:attribute name="isrole" type="xs:boolean"></xs:attribute>
+    </xs:complexType>
+
+    <xs:element name="group" type="Group"></xs:element>
+
+</xs:schema>

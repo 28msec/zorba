@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<d:sdds xmlns:d="http://www.evaluescience.com/schemas/schema">
+  <d:collection name="Group">
+    <d:group id="admin" content="sys_group_admin" open="true">
+      <d:description>System Administration</d:description>
+    </d:group>
+    <d:group id="anybody" content="sys_group_anybody" open="true">
+      <d:description>Any user of the system</d:description>
+    </d:group>
+    <d:group id="management" content="sys_group_management" open="true" isrole="true">
+      <d:description>evalueSCIENCE management</d:description>
+      <d:rolename>Management</d:rolename>
+    </d:group>
+    <d:group id="client" content="sys_group_customer" open="true" isrole="true">
+      <d:description>Clients of evalueSCIENCE</d:description>
+      <d:rolename>Client</d:rolename>
+    </d:group>
+    <d:group id="advisory_board" content="sys_group_advisoryboard" open="true" isrole="true">
+      <d:description>Advisory Board members</d:description>
+      <d:rolename>Advisory Board</d:rolename>
+    </d:group>
+    <d:group id="experts" content="sys_group_experts" open="true" isrole="true">
+      <d:description>Experts of evalueSCIENCE</d:description>
+      <d:rolename>Expert</d:rolename>
+    </d:group>
+    <d:group id="accounting" content="sys_group_accounting" open="true">
+      <d:description>Accounting and Billing</d:description>
+    </d:group>
+  </d:collection>
+</d:sdds>
