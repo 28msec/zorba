@@ -39,7 +39,7 @@ protected:
   bool theTraceParsing;
   bool theTraceScanning;
   bool theUseSerializer;
-  bool theOptimizer;
+  int theOptimizer;
   std::string theResultFile;
   std::string theDebugFile;
   bool theAbort;
@@ -80,7 +80,7 @@ protected:
     theTraceParsing = false;
     theTraceScanning = false;
     theUseSerializer = false;
-    theOptimizer = true;
+    theOptimizer = 1;
     theAbort = false;
     thePrintQuery = false;
     thePrintTime = false;
@@ -114,7 +114,7 @@ public:
   const bool &traceParsing () const { return theTraceParsing; }
   const bool &traceScanning () const { return theTraceScanning; }
   const bool &useSerializer () const { return theUseSerializer; }
-  const bool &optimizer () const { return theOptimizer; }
+  const int &optimizer () const { return theOptimizer; }
   const std::string &resultFile () const { return theResultFile; }
   const std::string &debugFile () const { return theDebugFile; }
   const bool &abort () const { return theAbort; }
@@ -328,7 +328,7 @@ public:
 "--trace-parsing, -p\ntrace parsing\n\n"
 "--trace-scanning, -s\ntrace scanning\n\n"
 "--use-serializer, -r\nuse serializer\n\n"
-"--optimizer, -O\noptimization level (1=enabled (default), 0=off)\n\n"
+"--optimizer, -O\noptimization level (0, 1 or 2 - 1 is default)\n\n"
 "--result-file, -o\nresult file\n\n"
 "--debug-file\nlog file for debugging information\n\n"
 "--abort\nabort when fatal error happens\n\n"

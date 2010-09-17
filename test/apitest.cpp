@@ -93,9 +93,19 @@ int _tmain(int argc, _TCHAR* argv[])
     return 4;
   }
   Zorba_CompilerHints chints;
-  chints.opt_level = (lProp->optimizer () ?
-                      ZORBA_OPT_LEVEL_O1:
-                      ZORBA_OPT_LEVEL_O0);
+  switch (lProp->optimizer()) {
+  case 0:
+    chints.opt_level = ZORBA_OPT_LEVEL_O0;
+    break;
+  case 1:
+    chints.opt_level = ZORBA_OPT_LEVEL_O1;
+    break;
+  case 2:
+    chints.opt_level = ZORBA_OPT_LEVEL_O1;
+    break;
+  default:
+    chints.opt_level = ZORBA_OPT_LEVEL_O1;
+  }
 
   // output file (either a file or the standard out if no file is specified)
   auto_ptr<ostream> outputFile (lProp->resultFile ().empty ()

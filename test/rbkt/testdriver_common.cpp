@@ -167,12 +167,16 @@ Zorba_CompilerHints getCompilerHints()
 {
   Zorba_CompilerHints lHints;
 
-  // ZORBA_OPTLEVEL=O0 | O1
+  // ZORBA_OPTLEVEL=O0 | O1 | O2
   char* lOptLevel = getenv("ZORBA_OPTLEVEL");
   if ( lOptLevel != NULL && strcmp(lOptLevel, "O0") == 0 )
   {
     lHints.opt_level = ZORBA_OPT_LEVEL_O0;
     //std::cout << "testdriver is using optimization level O0" << std::endl;
+  }
+  else if ( lOptLevel != NULL && strcmp(lOptLevel, "O2") == 0) {
+    lHints.opt_level = ZORBA_OPT_LEVEL_O2;
+    //std::cout << "testdriver is using optimization level O2" << std::endl;
   }
   else
   {

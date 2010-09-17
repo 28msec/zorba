@@ -56,8 +56,9 @@ std::string ZorbaCMDProperties::check_args () {
       return "Only ordered and unordered are allowed as values for the option ordering-mode";
   }
 
-  if ( ! (theOptimizationLevel.compare("O0") == 0 || theOptimizationLevel.compare("O1") == 0 ))
-    return "only O0 or O1 are allowed as values for the option opt-level";
+  if ( ! (theOptimizationLevel.compare("O0") == 0 || theOptimizationLevel.compare("O1") == 0
+    || theOptimizationLevel.compare("O2") == 0 ) )
+    return "only O0, O1 and O2 are allowed as values for the option opt-level";
 
   for (std::vector<std::string>::const_iterator lIter = theExternalVariable.begin();
        lIter != theExternalVariable.end(); ++lIter) 

@@ -54,10 +54,20 @@ bool test_call_stack1(Zorba* aZorba)
       lResult = false;
     if (lQName.getLocalName() != "test")
       lResult = false;
+    QueryLocation_t lLocation = lTrace[0].getLocation();
+    if (lLocation->getLineBegin() != 8)
+      lResult = false;
+    if (lLocation->getColumnBegin() != 3)
+      lResult = false;
     lQName = lTrace[1].getFunctionName();
+    lLocation = lTrace[1].getLocation();
     if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
       lResult = false;
     if (lQName.getLocalName() != "test1")
+      lResult = false;
+    if (lLocation->getLineBegin() != 11)
+      lResult = false;
+    if (lLocation->getColumnBegin() != 1)
       lResult = false;
   } catch (...) {
     lResult = false;
@@ -97,10 +107,20 @@ bool test_call_stack2(Zorba* aZorba)
       lResult = false;
     if (lQName.getLocalName() != "test")
       lResult = false;
+    QueryLocation_t lLocation = lTrace[0].getLocation();
+    if (lLocation->getLineBegin() != 8)
+      lResult = false;
+    if (lLocation->getColumnBegin() != 3)
+      lResult = false;
     lQName = lTrace[1].getFunctionName();
+    lLocation = lTrace[1].getLocation();
     if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
       lResult = false;
     if (lQName.getLocalName() != "test1")
+      lResult = false;
+    if (lLocation->getLineBegin() != 11)
+      lResult = false;
+    if (lLocation->getColumnBegin() != 1)
       lResult = false;
   } catch (...) {
     lResult = false;
@@ -136,6 +156,11 @@ bool test_call_stack3(Zorba* aZorba)
       lResult = false;
     if (lQName.getLocalName() != "test")
       lResult = false;
+    QueryLocation_t lLocation = lTrace[0].getLocation();
+    if (lLocation->getLineBegin() != 7)
+      lResult = false;
+    if (lLocation->getColumnBegin() != 8)
+      lResult = false;
   } catch (...) {
     lResult = false;
   }
@@ -167,6 +192,11 @@ bool test_call_stack4(Zorba* aZorba)
     if (lQName.getNamespace() != "http://www.w3.org/2005/xquery-local-functions")
       lResult = false;
     if (lQName.getLocalName() != "foo")
+      lResult = false;
+    QueryLocation_t lLocation = lTrace[0].getLocation();
+    if (lLocation->getLineBegin() != 9)
+      lResult = false;
+    if (lLocation->getColumnBegin() != 8)
       lResult = false;
   } catch (...) {
     lResult = false;

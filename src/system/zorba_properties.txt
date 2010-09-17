@@ -1,7 +1,7 @@
       ("trace-parsing,p", "trace parsing")
       ("trace-scanning,s", "trace scanning")
       ("use-serializer,r", "use serializer")
-      ("optimizer,O", po::value<bool> ()->default_value (true), "optimization level (1=enabled (default), 0=off)")
+      ("optimizer,O", po::value<int> ()->default_value (1), "optimization level (0, 1 or 2 - 1 is default)")
       ("result-file,o", po::value<std::string>(), "result file")
       ("debug-file", po::value<std::string>(), "log file for debugging information")
       ("abort", "abort when fatal error happens")
