@@ -8623,7 +8623,7 @@ void* begin_visit(const FunctionCall& v)
         ! theCurrentPrologVFDecl.getFunction()->isSequential())
     {
       ZORBA_ERROR_LOC_DESC_OSS(XUST0001, loc,
-                               "A sequantial function is called from a non sequential function");
+                               "A sequential function is called from a non sequential function");
     }
 
     if (dynamic_cast<user_function*>(f) != NULL)
