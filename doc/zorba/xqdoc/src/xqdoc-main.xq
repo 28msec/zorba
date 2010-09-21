@@ -21,13 +21,27 @@ declare variable $examplePath as xs:string* := (
 (:~
  : This variable contains categories in the left menu
  :)
-declare variable $moduleCategories as xs:string* := (
-'http://expath.org/ns',
-'http://www.zorba-xquery.com/modules',
-'http://www.w3.org/2005'
-);
+declare variable $leftMenu := 
+<menu>
+  <category1 name="http://expath.org/ns" uri="http://expath.org/ns" />
+  <category1 name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules">
+    <category2 name="email" uri="http://www.zorba-xquery.com/modules/email" />
+    <category2 name="excel" uri="http://www.zorba-xquery.com/modules/excel" />
+    <category2 name="image" uri="http://www.zorba-xquery.com/modules/image" />
+    <category2 name="introspection" uri="http://www.zorba-xquery.com/modules/introspection" />
+    <category2 name="security" uri="http://www.zorba-xquery.com/modules/security" />
+    <category2 name="oauth" uri="http://www.zorba-xquery.com/modules/oauth" />
+    <category2 name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" last="true">
+      <category3 name="google" uri="http://www.zorba-xquery.com/modules/webservices/google" />
+      <category3 name="yahoo" uri="http://www.zorba-xquery.com/modules/webservices/yahoo" last="true" />
+    </category2>
+  </category1> 
+  <category1 name="http://www.w3.org/2005" uri="http://www.w3.org/2005" last="true"/>
+</menu>;
 
 declare variable $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>XQuery Libraries</strong></span></ul>;
+
+declare variable $table := <ul/>;
 
 (:~
  : This variable contains the modules directory path in the source directory.
@@ -156,7 +170,7 @@ declare sequential function local:generateXQDocXhtml($indexPath as xs:string) as
       let $moduleName := $moduleDoc/xqdoc:name
       let $moduleUri := $moduleDoc/xqdoc:uri
       let $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>XQuery Libraries</strong></span></ul> 
-      let $menu := local:createLeftMenu($menu, $moduleUri)
+      let $menu := local:createLeftMenu($menu, $moduleUri, $leftMenu)
       let $xhtml := xqdg:doc($xqdoc, $menu)
       return block {
         file:mkdirs($xhtmlFileDir, false());
@@ -210,48 +224,89 @@ declare sequential function local:collectModule ($module, $relativeFileName as x
 
 (:~
  : This function returns the left menu needed in the index.html and also all the XHTML module pages.
+ :
  :)
-declare sequential function local:createLeftMenu($menu, $moduleUri)
+declare sequential function local:createLeftMenu($menu, $moduleUri, $categories)
 {
-  for $cat in $moduleCategories
+  for $cat1 in $categories/category1
+  let $last1 := if(fn:exists($cat1/@last)) then fn:boolean(fn:data($cat1/@last)) else fn:false()
   return block {
-    if(fn:index-of($moduleCategories, $cat) = fn:count($moduleCategories)) then
-      insert nodes <li class='expandable lastExpandable'><div class='hitarea expandable-hitarea'>{' '}</div>
-      <span class='leftMenu'>{$cat}</span>
-          <ul style='display: none;'>
-          {
-          for $module in $indexCollector/module
-          order by fn:data($module/@uri)
-          return block {
-            if(fn:starts-with(fn:string($module/@uri),$cat) and fn:not($module/@uri = $moduleUri)) then
-              <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</a></li>
-            else if(fn:starts-with(fn:string($module/@uri),$cat) and ($module/@uri = $moduleUri)) then
-              <li><span class="leftmenu_active">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</span></li>  
-            else ()
-            };
-          }
-          </ul></li> 
-      as last into $menu
-    else
-      insert nodes <li class='expandable'><div class="hitarea expandable-hitarea">{' '}</div>
-      <span class='leftMenu'>{$cat}</span>
-          <ul style='display: none;'>
-          {
-          for $module in $indexCollector/module
-          order by fn:data($module/@uri)
-          return block {
-            if(fn:starts-with(fn:string($module/@uri),$cat) and fn:not($module/@uri = $moduleUri)) then
-              <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</a></li>
-            else if(fn:starts-with(fn:string($module/@uri),$cat) and ($module/@uri = $moduleUri)) then
-              <li><span class="leftmenu_active">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</span></li>  
-            else ()
-            };
-          }
-          </ul></li> 
-      as last into $menu
+    local:createCategory($menu, $moduleUri, $cat1, $last1);
+    for $cat2 in $cat1/category2
+    let $last2 := if(fn:exists($cat2/@last)) then fn:boolean(fn:data($cat2/@last)) else fn:false()
+    let $menu2 := $menu/li[fn:last()]/ul
+    return block {
+      local:createCategory($menu2, $moduleUri, $cat2, $last2);
+      for $cat3 in $cat2/category3
+      let $last3 := if(fn:exists($cat3/@last)) then fn:boolean(fn:data($cat3/@last)) else fn:false()
+      let $menu3 := $menu/li[fn:last()]/ul/li[fn:last()]/ul
+      return block {
+        local:createCategory($menu3, $moduleUri, $cat3, $last3);
+      };
+    };
   };
-
+  
   $menu;
+  
+};
+
+
+(:~
+ : This is a helper function used to add a category and the modules belonging to it to a node in the menu
+ :
+ : @param $menu the node in the menu where the new category will be added as the last node
+ : @param $moduleUri the name of this module will be highlighted in red as this is the current selected item in the menu
+ : @param $category the node in the $leftMenu variable that will be added to the $menu
+ : @param $last bool indicating if this is the last item in the $menu node needed in order to set the treeview control
+ :)
+declare sequential function local:createCategory($menu, $moduleUri, $category, $last as xs:boolean)
+{
+  block {
+  if($last) then
+    insert nodes <li class='expandable lastExpandable'><div class='hitarea expandable-hitarea'>{' '}</div>
+    <span class='leftMenu'>{data($category/@name)}</span>
+    <ul style='display: none;'>
+    {
+     for $module in $indexCollector/module
+      order by fn:data($module/@uri)
+      return block {
+        if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
+           and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))
+           and fn:not($module/@uri = $moduleUri)) then
+          <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</a></li>
+        else if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
+                and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))
+                and ($module/@uri = $moduleUri)) then
+          <li><span class="leftmenu_active">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</span></li>
+        else ()
+        };      
+    }    
+    </ul></li>
+    as last into $menu
+  else
+    insert nodes <li class='expandable'><div class="hitarea expandable-hitarea">{' '}</div>
+    <span class='leftMenu'>{data($category/@name)}</span>
+    <ul style='display: none;'>
+    {
+      for $module in $indexCollector/module
+      order by fn:data($module/@uri)
+      return block {
+        if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
+           and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))
+           and fn:not($module/@uri = $moduleUri)) then
+          <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</a></li>
+        else if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
+                and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))
+                and ($module/@uri = $moduleUri)) then
+          <li><span class="leftmenu_active">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</span></li>
+        else ()
+        };      
+    }    
+    </ul></li>
+    as last into $menu
+    };
+
+   $menu;
 };
 
 declare sequential function local:getFilePath ($filename as xs:string) as xs:string*
@@ -323,30 +378,45 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
   $xhtml;
 };
 
-declare function local:createModuleTable() {
-  <ul>
-  {
-    for $cat in $moduleCategories
-    return 
-      (
-        <li> { $cat }
-          <ul>
-          {
-            for $module in $indexCollector/module
-            order by fn:data($module/@uri)
-            return
-              if (fn:starts-with(fn:string($module/@uri), $cat))
-              then
-                <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat($cat,'/'))}</a></li>
-              else ()
-          }
-          </ul>
-        </li>
-      )
-   }
-   </ul>
+declare sequential function local:createModuleTable() {
+  for $cat1 in $leftMenu/category1
+  return block {
+    local:createModuleHelper($table, $cat1);
+    for $cat2 in $cat1/category2
+    let $table2 := $table/li[fn:last()]/ul
+    return block {
+      local:createModuleHelper($table2, $cat2);
+      for $cat3 in $cat2/category3
+      let $table3 := $table/li[fn:last()]/ul/li[fn:last()]/ul
+      return block {
+        local:createModuleHelper($table3, $cat3);
+      };
+    };
+  };
+  
+  $table;
 };
 
+declare sequential function local:createModuleHelper($table, $category)
+{
+  block {
+    insert nodes <li>{data($category/@name)}
+    <ul>
+    {
+     for $module in $indexCollector/module
+      order by fn:data($module/@uri)
+      return
+        if(fn:starts-with(fn:string($module/@uri),data($category/@uri))
+           and fn:not(fn:contains (fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/')),'/'))) then
+          <li><a href="{$module/@file}">{fn:substring-after(data($module/@uri),fn:concat(data($category/@uri),'/'))}</a></li>
+        else ()
+    }    
+    </ul></li>
+    as last into $table
+    };
+
+   $table;
+};
 
 (:~
  : This function reads, updates and returns the new index.html.
@@ -371,6 +441,7 @@ declare sequential function local:generateIndexHtml($indexPath as xs:string, $me
         $indexHtmlDoc;
     }
 };
+
 
 (: generate the XQDoc XML for all the modules :)
 if (file:mkdirs($xqdocXmlPath, false())) then
@@ -399,7 +470,7 @@ let $menu := <ul class="treeview" id="documentation">
                <span class="leftMenu"><strong>XQuery Libraries</strong>
                </span>
              </ul> 
-let $menu := local:createLeftMenu($menu, "index.html")
+let $menu := local:createLeftMenu($menu, "index.html", $leftMenu)
 let $modules := local:createModuleTable()
 let $doc := local:generateIndexHtml($indexHtmlPath, $menu, $modules)
 return local:configure-xhtml($doc/*:html, 0)

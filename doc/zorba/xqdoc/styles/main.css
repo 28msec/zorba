@@ -41,7 +41,7 @@ a.screenshot img  {
 }
 
 li{
-    padding: 6px 5px;
+    padding: 2px 1px;
 }
 
 
@@ -74,7 +74,8 @@ a:hover , a:active {
 div#leftMenu{
     float: left;
     width: 280px;
-    padding: 10px;
+    padding: 7.5px;
+    border-right: 1px solid #808080;
 }
 
 div#leftMenu h1{
@@ -221,4 +222,3 @@ div.subsubsection {
     margin-top: 6px;
     font-weight: bold;
 }
-
