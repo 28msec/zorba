@@ -66,7 +66,11 @@ ImapModule::getExternalFunction(String aLocalname) const
       lFunc = new FetchSubjectFunction(this);
     } else if (aLocalname.equals("fetch-from")) {
       lFunc = new FetchFromFunction(this);
-    } 
+    } else if (aLocalname.equals("fetch-uid")) {
+      lFunc = new FetchUidFunction(this);
+    } else if (aLocalname.equals("fetch-message-sequence-number")) {
+      lFunc = new FetchMessageSequenceNumberFunction(this);
+    }
   }
   return lFunc;
 }

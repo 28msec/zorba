@@ -200,6 +200,33 @@ declare %nondeterministic function imap:fetch-subject($host-info as element(imap
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist. 
  :)
-declare function imap:fetch-from($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:string external;
+declare %nondeterministic function imap:fetch-from($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:string external;
 
+(:~
+ : Fetches the unique identifier for a given message sequence number.
+ :
+ : @param $host-info describes the IMAP host, username and password.
+ : @param $mailbox is the mailbox for which we want to get the unique identifier of a message sequence number.
+ : @param $message-number is the message sequence number for which we want the unique identifier.
+ : @return the unique identifier of the given message sequence number.
+ : @error If it wasn't possible to create a connection to the IMAP server.
+ : @error If the passed credentials were rejected by the IMAP server.
+ : @error If any of the specified mailbox does not exist.
+ : @error If any of the passed message number does not exist.
+ :)
+declare %nondeterministic function imap:fetch-uid($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:long external;
+
+(:~
+ : Fetches the message sequence number for a given unique identifier.
+ :
+ : @param $host-info describes the IMAP host, username and password.
+ : @param $mailbox is the mailbox for which we want to get the message sequence number of an unique identifier.
+ : @param $message-number is the unique identifier for which we want the message sequence number.
+ : @return the message sequence number of the of the given unique identifier.
+ : @error If it wasn't possible to create a connection to the IMAP server.
+ : @error If the passed credentials were rejected by the IMAP server.
+ : @error If any of the specified mailbox does not exist.
+ : @error If any of the passed message number does not exist. 
+ :)
+declare %nondeterministic function imap:fetch-message-sequence-number($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:long external;
  

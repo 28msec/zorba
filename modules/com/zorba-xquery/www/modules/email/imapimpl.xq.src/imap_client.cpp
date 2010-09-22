@@ -291,7 +291,30 @@ namespace zorba { namespace emailmodule {
     return std::string(lResult);
   }
 
+  long                            
+  ImapClient::convertNumber(const std::string& aHost,
+                const std::string& aUserName,
+                const std::string& aPassword,
+                const std::string& aMailbox,
+                const unsigned long aMessageNumber,
+                const bool aUid) {
+    
+    setUserName(aUserName);
+    setPassword(aPassword);
+    MAILSTREAM *lSource = NIL;
+    #include "linkage.c"
 
+    std::string lHost = "{" + aHost + "}" + aMailbox;
+    lSource = mail_open(NIL, const_cast<char*>(lHost.c_str()), OP_DEBUG);
+
+    if (aUid) {
+      return mail_uid(lSource, aMessageNumber);
+    } else {
+      return mail_msgno(lSource, aMessageNumber);
+    }
+
+
+  }
 
   ENVELOPE* 
   ImapClient::fetchStructure(const std::string& aHost, 

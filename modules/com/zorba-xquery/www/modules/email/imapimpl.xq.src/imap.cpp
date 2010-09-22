@@ -20,9 +20,9 @@
 #include <zorba/vector_item_sequence.h>
 #include <zorba/empty_sequence.h>
 #include <sstream>
+#include <algorithm>
 #include "imap_module.h"
 #include "imap_client.h"
-#include <algorithm>
 #include <string>
 #include "c-client.h"
 
@@ -446,6 +446,57 @@ FetchFromFunction::evaluate(
 
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createString(lResult)));
+}
+
+
+//*****************************************************************************
+
+FetchUidFunction::FetchUidFunction(const ImapModule* aModule)
+  : ImapFunction(aModule)
+{
+}
+
+ItemSequence_t
+FetchUidFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  std::string lHostName;
+  std::string lUserName;
+  std::string lPassword;
+  ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
+  String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+  unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
+  unsigned long lResult = ImapClient::Instance().convertNumber(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber, true);
+
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createLong(lResult)));
+}
+
+//*****************************************************************************
+
+FetchMessageSequenceNumberFunction::FetchMessageSequenceNumberFunction(const ImapModule* aModule)
+  : ImapFunction(aModule)
+{
+}
+
+ItemSequence_t
+FetchMessageSequenceNumberFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  std::string lHostName;
+  std::string lUserName;
+  std::string lPassword;
+  ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
+  String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+  unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
+  unsigned long lResult = ImapClient::Instance().convertNumber(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber, false);
+
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createLong(lResult)));
 }
 
 

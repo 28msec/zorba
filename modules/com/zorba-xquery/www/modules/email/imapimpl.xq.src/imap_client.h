@@ -56,7 +56,12 @@ namespace zorba
 
       std::vector<std::string> list(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aReferencePath, const std::string& aPattern, bool aOnlySuscribed);
       
-      std::vector<long> search(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aMailbox, const std::string& aCriteria, bool aUid);
+      std::vector<long> search(const std::string& aHost, 
+                               const std::string& aUserName, 
+                               const std::string& aPassword, 
+                               const std::string& aMailbox, 
+                               const std::string& aCriteria, 
+                               bool aUid);
      
       ENVELOPE* fetchEnvelope(const std::string& aHost, 
                               const std::string& aUserName, 
@@ -99,13 +104,19 @@ namespace zorba
 
        std::string
        fetchFrom(const std::string& aHost,
+                 const std::string& aUserName,
+                 const std::string& aPassword,
+                 const std::string& aMailbox,
+                 const unsigned long aMessageNumber);
+
+
+      long
+      convertNumber(const std::string& aHost,
                     const std::string& aUserName,
                     const std::string& aPassword,
                     const std::string& aMailbox,
-                    const unsigned long aMessageNumber);
-
-
-
+                    const unsigned long aMessageNumber,
+                    const bool aUid);
 
       /*
        * Generates a search_program out of an IMAP_rv4 complient vector of strings.

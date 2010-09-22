@@ -253,6 +253,43 @@ namespace zorba {
   };
 
 
+ //*****************************************************************************
+
+  class FetchUidFunction: public ImapFunction
+  {
+    public:
+      FetchUidFunction(const ImapModule* aModule);
+
+      virtual String
+      getLocalName() const { return "fetch-uid"; }
+
+      virtual ItemSequence_t
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+
+  };
+ //*****************************************************************************
+
+  class FetchMessageSequenceNumberFunction: public ImapFunction
+  {
+    public:
+      FetchMessageSequenceNumberFunction(const ImapModule* aModule);
+
+      virtual String
+      getLocalName() const { return "fetch-message-sequence-number"; }
+
+      virtual ItemSequence_t
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+
+  };
+
+
+
 
  //*****************************************************************************
 
