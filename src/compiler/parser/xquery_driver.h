@@ -69,10 +69,12 @@ public:
 	parsenode* get_expr() { return expr_p; }
 
   static QueryLoc createQueryLoc(const location& aLoc);
-  
+
   // Error generators
   ZorbaParserError* unrecognizedCharErr(const char* _error_token, const location& loc);
   ZorbaParserError* unterminatedCommentErr(const location& loc);
+  ZorbaParserError* unterminatedElementConstructor(const location& loc);
+  ZorbaParserError* noClosingTagForElementConstructor(const location& loc);
   ZorbaParserError* unrecognizedToken(const char* _error_token, const location& loc);
   ZorbaParserError* invalidCharRef(const char* _error_token, const location& loc);
   ZorbaParserError* parserErr(const std::string& _message, const location& loc);

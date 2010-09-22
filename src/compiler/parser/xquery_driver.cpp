@@ -101,6 +101,18 @@ ZorbaParserError* xquery_driver::unterminatedCommentErr(const location& loc)
   return parserError;
 }
 
+ZorbaParserError* xquery_driver::unterminatedElementConstructor(const location& loc)
+{
+  parserError = new ZorbaParserError("syntax error, unexpected end of file, unterminated direct element constructor", loc);
+  return parserError;
+}
+
+ZorbaParserError* xquery_driver::noClosingTagForElementConstructor(const location& loc)
+{
+  parserError = new ZorbaParserError("syntax error, unexpected end of file, no closing tag for direct element constructor", loc);
+  return parserError;
+}
+
 ZorbaParserError* xquery_driver::unrecognizedToken(const char* _error_token, const location& loc)
 {
   parserError = new ZorbaParserError(std::string("syntax error, unexpected \"") + _error_token + "\"", loc);

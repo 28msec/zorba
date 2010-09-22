@@ -863,6 +863,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_START_TAG>"/>" { POP_STATE(); return token::EMPTY_TAG_END; }
 <MODE_START_TAG>{QName} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng), yytext); }
 <MODE_START_TAG>{CatchAll} { yylval->err = getDriver()->unrecognizedCharErr(yytext, *yylloc); return token::UNRECOGNIZED; }
+<MODE_START_TAG><<EOF>> { yylval->err = getDriver()->unterminatedElementConstructor(*yylloc); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________
@@ -890,6 +891,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 <MODE_ELEMENT_CONTENT>{CharRef}+ { TRY_CHARREF_LITERAL(CHAR_REF_LITERAL, put_charref, yytext, yyleng); }
 <MODE_ELEMENT_CONTENT>"{{" { return token::DOUBLE_LBRACE; }
 <MODE_ELEMENT_CONTENT>"}}" { return token::DOUBLE_RBRACE; }
+<MODE_ELEMENT_CONTENT><<EOF>> { yylval->err = getDriver()->noClosingTagForElementConstructor(*yylloc); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________
