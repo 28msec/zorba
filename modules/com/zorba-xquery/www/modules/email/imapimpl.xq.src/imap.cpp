@@ -22,6 +22,7 @@
 #include <sstream>
 #include "imap_module.h"
 #include "imap_client.h"
+#include <algorithm>
 #include <string>
 #include "c-client.h"
 
