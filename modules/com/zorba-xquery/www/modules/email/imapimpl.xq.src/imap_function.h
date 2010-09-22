@@ -61,30 +61,63 @@ namespace zorba { namespace emailmodule {
      getOneBoolArg(const StatelessExternalFunction::Arguments_t& args,
                    int pos);
      
-      /*
-       * Converts a dateTime string as returned by the c-client (e.g. Tue, 24
-       * Aug 2010 16:26:10 +0200'DD) into a xs:dateTime format.
-       */ 
-      static std::string
-      getDateTime(const std::string& aCClientDateTime); 
+    /*
+     * Converts a dateTime string as returned by the c-client (e.g. Tue, 24
+     * Aug 2010 16:26:10 +0200'DD) into a xs:dateTime format.
+     */ 
+    static std::string
+    getDateTime(const std::string& aCClientDateTime); 
 
+    static std::string
+    getContentType(const unsigned short aType, const char* aSubtype);
+
+    static std::string
+    getEncoding(const unsigned short aEncoding);
 
     /*
      * Creates a simple named  node containing a text node.
      */
     static void
-    createInnerNodeWithText(const ImapModule* aModule, Item aParent, const std::string& aNamespace, const std::string& aPrefix,  const std::string& aName, const std::string& aType, const std::string& aContent);
+    createInnerNodeWithText(const ImapModule* aModule, 
+                            Item& aParent, 
+                            const std::string& aNamespace, 
+                            const std::string& aPrefix,  
+                            const std::string& aName, 
+                            const std::string& aType, 
+                            const std::string& aContent);
 
+    static void
+    createBodyNode(const ImapModule* aModule,
+                   Item& aParent,
+                   const std::string& aContent,
+                   const std::string& aSerialization);
+ 
+     
      /*
       * Creates a simple email address node as defined in email.xsd
       */
     static void
-    createEmailAddressNode(const ImapModule* aModule, Item aParent, const std::string& aName, const char * aPersonal, const char* aMailbox, const char* aHost);
+    createEmailAddressNode(const ImapModule* aModule, 
+                           Item& aParent, 
+                           const std::string& aName, 
+                           const char * aPersonal, 
+                           const char* aMailbox, 
+                           const char* aHost);
 
     static void
-    createRecipentNode(const ImapModule* aModule, Item aParent, const std::string& aName, const char * aPersonal, const char* aMailbox, const char* aHost);
+    createRecipentNode(const ImapModule* aModule, 
+                       Item& aParent, 
+                       const std::string& aName, 
+                       const char * aPersonal, 
+                       const char* aMailbox, 
+                       const char* aHost);
 
-      
+    static void 
+    createContentTypeNode(const ImapModule* aModule,
+                          Item& aParent,
+                          const std::string& aValue,
+                          const std::string& aCharset,
+                          const std::string& aTransferEncoding);
 
 
     public:

@@ -1,53 +1,126 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema" 
-  targetNamespace="http://www.zorba-xquery.com/modules/email/email"
-  xmlns:tns="http://www.zorba-xquery.com/modules/email/email" 
- elementFormDefault="qualified">
+targetNamespace="http://www.zorba-xquery.com/modules/email/email"
+xmlns:tns="http://www.zorba-xquery.com/modules/email/email" 
+elementFormDefault="qualified">
 
-              
-              
+
+            
+            
+<!-- definition of simple elements -->
+<simpleType name="emailAddressType">
+<restriction base="string">
+<pattern value="[^@]+@[^\.]+\..+"/>  
+</restriction>
+</simpleType>
+
+            
+<!-- definition of complex elements -->
+<complexType name="emailAddress" >
+<sequence>
+<element name="name" type="string" maxOccurs="1" minOccurs="0"/>
+<element name="email" type="tns:emailAddressType" maxOccurs="1" minOccurs="1"/>
+</sequence>
+</complexType>
+
+            
+<complexType name="recipientType" >
+<sequence>
+<choice>
+<element name="to" type="tns:emailAddress"/>
+<element name="cc" type="tns:emailAddress"/>
+<element name="bcc" type="tns:emailAddress"/>
+</choice>
+</sequence>
+</complexType>
+
+            
+<complexType name="envelopeType" >
+<sequence>
+<element name="remail" type="string" maxOccurs="1" minOccurs="0"/>
+<element name="date" type="dateTime" maxOccurs="1" minOccurs="0"/>
+<element name="from" type="tns:emailAddress" maxOccurs="1" minOccurs="1"/>
+<element name="sender" type="tns:emailAddress" maxOccurs="1" minOccurs="0"/>
+<element name="replyTo" type="tns:emailAddress" maxOccurs="1" minOccurs="0"/>
+<element name="subject" type="string" maxOccurs="1" minOccurs="0"/>
+<element name="recipient" type="tns:recipientType" maxOccurs="unbounded" minOccurs="1"/>
+<element name="messageId" type="string" maxOccurs="1" minOccurs="0"/>
+</sequence>
+</complexType>
+
+
+<complexType name="messageType"> 
+<sequence>
+<element name="envelope" type="tns:envelopeType" maxOccurs="1" minOccurs="1"/>
+<element name="mimeVersion" type="string" maxOccurs="1" minOccurs="1" default="1.0"/>
+<element name="contentType" type="tns:contentType" maxOccurs="1" minOccurs="1" />
+<element name="body" type="tns:bodyTypeChoice" maxOccurs="1" minOccurs="1"/>
+</sequence>
+</complexType>
+
+
+ <element name="Message" type="tns:messageType"/>
+
+ <element name="envelope" type="tns:envelopeType" /> 
+
+
+  <!-- mime definitions -->
+
+
  <!-- definition of simple elements -->
- <simpleType name="emailAddressType">
+ <simpleType name="contentTypeValue">
  <restriction base="string">
- <pattern value="[^@]+@[^\.]+\..+"/>  
+ <pattern value="[a-zA-Z]+/[a-zA-Z]+((\-|\+|\.)[a-zA-Z]+)*"/>
  </restriction>
  </simpleType>
 
-              
- <!-- definition of complex elements -->
- <complexType name="emailAddress" >
+
+ <simpleType name="cteType">
+ <restriction base="string">
+ <pattern value="ENC7BIT|ENC8BIT|ENCBINARY|ENCBASE64|ENCQUOTEDPRINTABLE|ENCOTHER"/>
+ </restriction>
+ </simpleType>
+
+
+
+<!-- definition of complex elements -->
+ <complexType name="contentType">
  <sequence>
- <element name="name" type="string" maxOccurs="1" minOccurs="0"/>
- <element name="email" type="tns:emailAddressType" maxOccurs="1" minOccurs="1"/>
+ <element name="value" type="tns:contentTypeValue" maxOccurs="1" minOccurs="1" default="text/plain"/>
+<!-- possibly charset is just unneeded --> 
+<element name="charset" type="string" maxOccurs="1" minOccurs="1" default="us-ascii"/>
+ <element name="contentTransferEncoding" type="tns:cteType" maxOccurs="1" minOccurs="1" default="ENC7BIT"/>
+ </sequence>
+ </complexType>
+
+ 
+ <complexType name="bodyType">
+  <simpleContent> 
+    <extension base="string">
+        <attribute name="serialization" type="string" />
+    </extension>
+  </simpleContent>
+</complexType>
+
+              
+ <complexType name="innerMessageType">
+ <sequence>
+ <element name="contentType" type="tns:contentType" maxOccurs="1" minOccurs="1"/>
+ <element name="body" type="string" maxOccurs="1" minOccurs="1"/>
  </sequence>
  </complexType>
 
               
- <complexType name="recipientType" >
+ <complexType name="bodyTypeChoice">
  <sequence>
  <choice>
- <element name="to" type="tns:emailAddress"/>
- <element name="cc" type="tns:emailAddress"/>
- <element name="bcc" type="tns:emailAddress"/>
+ <element name="body" type="tns:bodyType" maxOccurs="1" minOccurs="1"/>
+ <element name="multipart" type="tns:innerMessageType" minOccurs="1" maxOccurs="unbounded"/>
  </choice>
  </sequence>
  </complexType>
 
-              
- <complexType name="envelopeType" >
- <sequence>
- <element name="remail" type="string" maxOccurs="1" minOccurs="0"/>
- <element name="date" type="dateTime" maxOccurs="1" minOccurs="0"/>
- <element name="from" type="tns:emailAddress" maxOccurs="1" minOccurs="1"/>
- <element name="sender" type="tns:emailAddress" maxOccurs="1" minOccurs="0"/>
- <element name="replyTo" type="tns:emailAddress" maxOccurs="1" minOccurs="0"/>
- <element name="subject" type="string" maxOccurs="1" minOccurs="0"/>
- <element name="recipient" type="tns:recipientType" maxOccurs="unbounded" minOccurs="1"/>
- <element name="messageId" type="string" maxOccurs="1" minOccurs="0"/>
- </sequence>
- </complexType>
 
 
- <element name="envelope" type="tns:envelopeType" /> 
-              
+
  </schema>

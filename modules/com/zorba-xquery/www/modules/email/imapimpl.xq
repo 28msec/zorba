@@ -6,6 +6,7 @@ module namespace imap = 'http://www.zorba-xquery.com/modules/email/imapimpl';
 import schema namespace imaps = 'http://www.zorba-xquery.com/modules/email/imap';
 import schema namespace email = 'http://www.zorba-xquery.com/modules/email/email';
 
+
 (:~
  : For internal use only.
  :
@@ -146,12 +147,28 @@ declare sequential function imap:copy($host-info as element(imaps:hostInfo), $ma
  : 
  : @param $host-info describes the IMAP host, username and password.
  : @param $mailbox is the mailbox in which to search for the message.
- : @param $message-number is the message for which to fetch the envelope (depending on $uid either as message sequence number or unique identifier).
+ : @param $message-number is the message for which to fetch the envelope. 
  : @return the envelope of the requested message.
  : @error If it wasn't possible to create a connection to the IMAP server.
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist.
  :)
-declare %nondeterministic function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as element() external; 
+declare %nondeterministic function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as element(email:envelope) external; 
+
+(:~
+ : Fetches a whole message.
+ : 
+ : @param $host-info describes the IMAP host, username and password.
+ : @param $mailbox is the mailbox in which to search for the message.
+ : @param $message-number is the message to fetch, denoted either by its sequence number or unique identifier.
+ : @param $uid defines if the passed $message-number should be interpreted as sequence number (false, default) or unique identifier.
+ : @return the message with the passed message number.
+ : @error If it wasn't possible to create a connection to the IMAP server.
+ : @error If the passed credentials were rejected by the IMAP server.
+ : @error If any of the specified mailbox does not exist.
+ : @error If any of the passed message number does not exist.
+ :)
+declare %nondeterministic function imap:fetch-message($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean) as element() external; 
+
 

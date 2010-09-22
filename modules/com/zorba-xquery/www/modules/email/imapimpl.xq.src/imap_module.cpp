@@ -60,7 +60,9 @@ ImapModule::getExternalFunction(String aLocalname) const
       lFunc = new CopyFunction(this);
     } else if (aLocalname.equals("fetch-envelope")) {
       lFunc = new FetchEnvelopeFunction(this);
-    } 
+    } else if (aLocalname.equals("fetch-message")) {
+      lFunc = new FetchMessageFunction(this);
+    }   
   }
   return lFunc;
 }

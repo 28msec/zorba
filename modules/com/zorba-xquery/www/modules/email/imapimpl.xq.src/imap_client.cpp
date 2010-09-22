@@ -192,7 +192,13 @@ namespace zorba { namespace emailmodule {
   }
 
   std::vector<long>
-  ImapClient::search(const std::string& aHost, const std::string& aUsername, const std::string& aPassword, const std::string& aMailbox, const std::string& aCriteria, bool aUid) {
+  ImapClient::search(const std::string& aHost, 
+                     const std::string& aUsername, 
+                     const std::string& aPassword, 
+                     const std::string& aMailbox, 
+                     const std::string& aCriteria, 
+                     bool aUid) {
+
     setUserName(aUsername);
     setPassword(aPassword);
     MAILSTREAM *lSource = NIL;
@@ -223,7 +229,12 @@ namespace zorba { namespace emailmodule {
   }
 
   ENVELOPE * 
-  ImapClient::fetchEnvelope(const std::string& aHost, const std::string& aUsername, const std::string& aPassword, const std::string& aMailbox, unsigned long aMessageNumber) {
+  ImapClient::fetchEnvelope(const std::string& aHost, 
+                            const std::string& aUsername, 
+                            const std::string& aPassword, 
+                            const std::string& aMailbox, 
+                            unsigned long aMessageNumber) 
+  {
     setUserName(aUsername);
     setPassword(aPassword);
     MAILSTREAM *lSource = NIL;
@@ -238,7 +249,69 @@ namespace zorba { namespace emailmodule {
 
   }
 
+  ENVELOPE* 
+  ImapClient::fetchStructure(const std::string& aHost, 
+                             const std::string& aUserName, 
+                             const std::string& aPassword, 
+                             const std::string& aMailbox, 
+                             BODY** aBody,  
+                             unsigned long aMessageNumber, 
+                             bool aUid) 
+  {
+    setUserName(aUserName);
+    setPassword(aPassword);
+    MAILSTREAM* lSource = NIL;
+    #include "linkage.c"
+    *aBody = mail_newbody(); 
+    std::string lHost = "{" + aHost + "}" + aMailbox;
+    lSource = mail_open(NIL,  const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    
+    ENVELOPE * lResult = mail_fetchstructure_full (lSource, aMessageNumber, aBody, (aUid ? FT_UID : NIL));
+  
+    return lResult;
 
+  }
+
+  std::string 
+  ImapClient::fetchText(const std::string& aHost, 
+                        const std::string& aUserName,
+                        const std::string& aPassword,
+                        const std::string& aMailbox,
+                        unsigned long aMessageNumber,
+                        bool aUid)
+  {
+    setUserName(aUserName);
+    setPassword(aPassword);
+    MAILSTREAM* lSource = NIL;
+    #include "linkage.c"
+    std::string lHost = "{" + aHost + "}" + aMailbox;
+    lSource = mail_open(NIL,  const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    unsigned long lLenght;
+    return std::string(mail_fetchtext_full(lSource, aMessageNumber, &lLenght, (aUid ? FT_UID : NIL))); 
+    
+  }  
+
+
+  std::string
+  ImapClient::fetchBodyFull(const std::string& aHost,
+                            const std::string& aUserName,
+                            const std::string& aPassword,
+                            const std::string& aMailbox,
+                            const unsigned long aMessageNumber,
+                            const std::string& aSection,
+                            const bool aUid) 
+  {
+    setUserName(aUserName);
+    setPassword(aPassword);
+    MAILSTREAM* lSource = NIL;
+    #include "linkage.c"
+    std::string lHost = "{" + aHost + "}" + aMailbox;
+    lSource = mail_open(NIL,  const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    unsigned long lLenght;
+    // convert section int into char
+    return std::string(mail_fetchbody_full(lSource, aMessageNumber, const_cast<char*>(aSection.c_str()), &lLenght, (aUid ? FT_UID : NIL)));
+ 
+  } 
 
   SEARCHPGM*
   ImapClient::search_criteria(std::vector<std::string> aCriteria) {

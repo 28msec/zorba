@@ -60,6 +60,28 @@ namespace zorba
      
       ENVELOPE* fetchEnvelope(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aMailbox, unsigned long aMessageNumber );
 
+      ENVELOPE* fetchStructure(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aMailbox, BODY** aBody,  unsigned long aMessageNumber, bool aUid);
+     
+      std::string fetchText(const std::string& aHost, 
+                            const std::string& aUserName,
+                            const std::string& aPassword,
+                            const std::string& aMailbox,
+                            unsigned long aMesssageNumber,
+                            bool aUid);
+
+
+      std::string
+      fetchBodyFull(const std::string& aHost,
+                            const std::string& aUserName,
+                            const std::string& aPassword,
+                            const std::string& aMailbox,
+                            const unsigned long aMessageNumber,
+                            const std::string& aSection,
+                            const bool aUid); 
+
+
+
+
       /*
        * Generates a search_program out of an IMAP_rv4 complient vector of strings.
        * The search program is then used by the mail_search_full function which hasn't got a built in parser.

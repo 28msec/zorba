@@ -387,86 +387,226 @@ FetchEnvelopeFunction::evaluate(
   std::string lPassword;
   ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
   String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
-  // find out if we are working with uid's instead of sequence numbers.
 
   unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);  
-
-  ENVELOPE* lEnvelope =  ImapClient::Instance().fetchEnvelope(lHostName.c_str(), lUserName.c_str(), lPassword.c_str(), lMailbox.c_str(), lMessageNumber);
   
+  Item lParent; 
+  FetchMessageFunction::getMessage(theModule, lParent, lHostName.c_str(), lUserName.c_str(), lPassword.c_str(), lMailbox.c_str(), lMessageNumber, false, true);  
+
+  return ItemSequence_t(new SingletonItemSequence(lParent));
+}
+
+//*****************************************************************************               
+                                                                                              
+FetchMessageFunction::FetchMessageFunction(const ImapModule* aModule)                       
+  : ImapFunction(aModule)                                                                     
+{                                                                                             
+}      
+
+ItemSequence_t
+FetchMessageFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+std::string lHostName;  std::string lUserName;  std::string lPassword;
+  ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
+  String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+
+  unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
+
+  bool lUid = ImapFunction::getOneBoolArg(aArgs, 3);
+  
+  Item lParent;
+  FetchMessageFunction::getMessage(theModule, lParent, lHostName.c_str(), lUserName.c_str(), lPassword.c_str
+(), lMailbox.c_str(), lMessageNumber, lUid, false);
+
+  return ItemSequence_t(new SingletonItemSequence(lParent));
+
+}
+
+
+void
+FetchMessageFunction::getMessage(const ImapModule* aModule, 
+                                 Item& aParent,
+                                 const std::string& aHostName, 
+                                 const std::string& aUserName, 
+                                 const std::string& aPassword, 
+                                 const std::string& aMailbox, 
+                                 const unsigned long aMessageNumber, 
+                                 const bool aUid, 
+                                 const bool aOnlyEnvelope)
+{
+ 
+  ENVELOPE* lEnvelope;
+  BODY* lBody;
+  if (aOnlyEnvelope) {
+    // only fetch envelope
+    lEnvelope =  ImapClient::Instance().fetchEnvelope(aHostName, aUserName, aPassword, aMailbox, aMessageNumber);
+  } else {
+    lEnvelope = ImapClient::Instance().fetchStructure(aHostName, aUserName, aPassword, aMailbox, &lBody, aMessageNumber, aUid);
+  }
+
+  std::vector<std::pair<String, String> >   ns_binding;
+  ns_binding.push_back(std::pair<String, String>("email", "http://www.zorba-xquery.com/modules/email/email"));
+ 
+  /* First construct the envelope (depending on aOnlyEnvelope we may be finished then) */
+  Item lEnvelopeItem;
   std::string lErrorMessage = ImapClient::Instance().getError();
   if (lErrorMessage.size() != 0) {
     ImapFunction::throwImapError(lErrorMessage);
   }
   // begin construction of envelope 
-  std::vector<std::pair<String, String> >   ns_binding;
-  ns_binding.push_back(std::pair<String, String>("email", "http://www.zorba-xquery.com/modules/email/email"));
-  Item lItemName = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "envelope");
-  Item lItemType = theModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "envelopeType");
-  Item lParent = NULL;
-  lParent =  theModule->getItemFactory()->createElementNode(lParent, lItemName, lItemType, false, false, ns_binding);
+  Item lEnvelopeName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "envelope");
+  Item lEnvelopeType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "envelopeType");
+ 
+  Item lNullItem;
+  /* if we only want the envelope, then create it with a null parent, else create the message and use it as parent */
+  if (aOnlyEnvelope) {
+    lEnvelopeItem =  aModule->getItemFactory()->createElementNode(lNullItem, lEnvelopeName, lEnvelopeType, false, false, ns_binding);
+  } else {
+    Item lMessageName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "Message");
+    Item lMessageType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "messageType");
+    aParent =  aModule->getItemFactory()->createElementNode(lNullItem, lMessageName, lMessageType, false, false, ns_binding);
+    lEnvelopeItem =  aModule->getItemFactory()->createElementNode(aParent, lEnvelopeName, lEnvelopeType, false, false, ns_binding);
+  }
 
   // create the remail node if needed 
   if (lEnvelope->remail) {
-    ImapFunction::createInnerNodeWithText(theModule, lParent, "http://www.zorba-xquery.com/modules/email/email", "email",  "remail", "string", lEnvelope->remail);
+    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "http://www.zorba-xquery.com/modules/email/email", "email",  "remail", "string", lEnvelope->remail);
   }
   /* create the date node if needed */
   if (lEnvelope->date) {
-    ImapFunction::createInnerNodeWithText(theModule, lParent, "http://www.zorba-xquery.com/modules/email/email", "",  "date", "string", ImapFunction::getDateTime(reinterpret_cast<const char*>(lEnvelope->date)));
+    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "http://www.zorba-xquery.com/modules/email/email", "",  "date", "string", ImapFunction::getDateTime(reinterpret_cast<const char*>(lEnvelope->date)));
   }
   // create from node if needed
   if (lEnvelope->from) {
-    ImapFunction::createEmailAddressNode(theModule, lParent, "from", lEnvelope->from->personal, lEnvelope->from->mailbox, lEnvelope->from->host);
+    ImapFunction::createEmailAddressNode(aModule, lEnvelopeItem, "from", lEnvelope->from->personal, lEnvelope->from->mailbox, lEnvelope->from->host);
   }
-  // create sender node if needed
-  if (lEnvelope->sender) {
-    ImapFunction::createEmailAddressNode(theModule, lParent, "sender", lEnvelope->sender->personal, lEnvelope->sender->mailbox, lEnvelope->sender->host);
-  }
+  // create sender node if needed  
+  if (lEnvelope->sender) {    ImapFunction::createEmailAddressNode(aModule, lEnvelopeItem, "sender", lEnvelope->sender->personal, lEnvelope->sender->mailbox, lEnvelope->sender->host);  }
   // create replyTo node if needed
   if (lEnvelope->reply_to) {
-    ImapFunction::createEmailAddressNode(theModule, lParent, "replyTo", lEnvelope->reply_to->personal, lEnvelope->reply_to->mailbox, lEnvelope->reply_to->host);
+    ImapFunction::createEmailAddressNode(aModule, lEnvelopeItem, "replyTo", lEnvelope->reply_to->personal, lEnvelope->reply_to->mailbox, lEnvelope->reply_to->host);
   }
   // create subject node
   if (lEnvelope->subject) {
-    ImapFunction::createInnerNodeWithText(theModule, lParent, "http://www.zorba-xquery.com/modules/email/email", "email",  "subject", "string", lEnvelope->subject);
+    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem, "http://www.zorba-xquery.com/modules/email/email", "email",  "subject", "string", lEnvelope->subject);
   }
-
+   
   ADDRESS* lRecipents;
   if (lEnvelope->to) {
-    ImapFunction::createRecipentNode(theModule, lParent, "to", lEnvelope->to->personal, lEnvelope->to->mailbox, lEnvelope->to->host);
+    ImapFunction::createRecipentNode(aModule, lEnvelopeItem, "to", lEnvelope->to->personal, lEnvelope->to->mailbox, lEnvelope->to->host);
     lRecipents = lEnvelope->to;
     while ((lRecipents = lRecipents->next)) {
-       ImapFunction::createRecipentNode(theModule, lParent, "to", lEnvelope->to->personal, lEnvelope->to->mailbox, lEnvelope->to->host);
-    } 
+       ImapFunction::createRecipentNode(aModule, lEnvelopeItem, "to", lEnvelope->to->personal, lEnvelope->to->mailbox, lEnvelope->to->host);
+    }
   }
- 
+
   if (lEnvelope->cc) {
-    ImapFunction::createRecipentNode(theModule, lParent, "cc", lEnvelope->cc->personal, lEnvelope->cc->mailbox, lEnvelope->cc->host);
+    ImapFunction::createRecipentNode(aModule, lEnvelopeItem, "cc", lEnvelope->cc->personal, lEnvelope->cc->mailbox, lEnvelope->cc->host);
     lRecipents = lEnvelope->cc;
     while ((lRecipents = lRecipents->next)) {
-       ImapFunction::createRecipentNode(theModule, lParent, "cc", lEnvelope->cc->personal, lEnvelope->cc->mailbox, lEnvelope->cc->host);
+       ImapFunction::createRecipentNode(aModule, lEnvelopeItem, "cc", lEnvelope->cc->personal, lEnvelope->cc->mailbox, lEnvelope->cc->host);
     }
-  }  
- 
+  }
+
   if ((lRecipents = lEnvelope->bcc)) {
-    ImapFunction::createRecipentNode(theModule, lParent, "bcc", lEnvelope->bcc->personal, lEnvelope->bcc->mailbox, lEnvelope->bcc->host);
+    ImapFunction::createRecipentNode(aModule, lEnvelopeItem, "bcc", lEnvelope->bcc->personal, lEnvelope->bcc->mailbox, lEnvelope->bcc->host);
     while ((lRecipents = lRecipents->next)) {
-       ImapFunction::createRecipentNode(theModule, lParent, "bcc", lEnvelope->bcc->personal, lEnvelope->bcc->mailbox, lEnvelope->bcc->host);
+       ImapFunction::createRecipentNode(aModule, lEnvelopeItem, "bcc", lEnvelope->bcc->personal, lEnvelope->bcc->mailbox, lEnvelope->bcc->host);
     }
-  }  
+  }
 
   // create messageId node
   if (lEnvelope->message_id) {
-    ImapFunction::createInnerNodeWithText(theModule, lParent,  "http://www.zorba-xquery.com/modules/email/email", "email",  "messageId", "string", lEnvelope->message_id);
+    ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem,  "http://www.zorba-xquery.com/modules/email/email", "email",  "messageId", "string", lEnvelope->message_id);
   }
- 
+  // if we only want the envelope, then here is a good place to stop
+  if (aOnlyEnvelope) {
+    aParent = lEnvelopeItem;
+    return;
+  } 
 
-  return ItemSequence_t(new SingletonItemSequence(lParent));
+  /* if we want the whole message, then build it together */
+  
+  /* <email:mimeVersion>1.0</email:mimeVersion> */
+  ImapFunction::createInnerNodeWithText(aModule, aParent,  "http://www.zorba-xquery.com/modules/email/email", "email", "mimeVersion", "string", "1.0");
+  
+
+  ImapFunction::createContentTypeNode(aModule, aParent, ImapFunction::getContentType(lBody->type, lBody->subtype), "us-ascii", ImapFunction::getEncoding(lBody->encoding));
+
+ 
+  // make a tolower version of the subtype
+  
+  std::string lSubType(lBody->subtype);
+  std::transform(lSubType.begin(), lSubType.end(), lSubType.begin(), tolower);
+  
+   
+  /* creating the <body> node */ 
+  Item lBodyName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "body");
+  Item lBodyType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "bodyTypeChoice");
+  Item lBodyItem = aModule->getItemFactory()->createElementNode(aParent, lBodyName, lBodyType, false, false, ns_binding); 
+  /* in case of non-multipart, just add the body to the message */
+  if (lBody->type != TYPEMULTIPART) {
+      // in this case just get the whole text body
+      std::string lBodyContent = ImapClient::Instance().fetchText(aHostName, aUserName, aPassword, aMailbox, aMessageNumber, aUid);  
+      ImapFunction::createBodyNode(aModule, lBodyItem, lBodyContent, lSubType);  
+  } else if (lBody->type == TYPEMULTIPART) {
+      // needed for creating multipart items
+      Item lMultipartParentName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipart");
+      Item lMultipartParentType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "innerMessageType");
+      Item lMultipartParent; 
+      // using a vector instead of a stack, because including stack will clash with the c-client include ... 
+      std::vector<BODY*> lBodies;
+      std::vector<Item> lParents;
+      std::vector<std::string> lSections;
+      lSections.push_back("");  
+      lBodies.push_back(lBody);
+      lParents.push_back(lBodyItem);
+      
+      BODY* lCurrentBody;
+      Item lCurrentParent;
+      std::string lCurrentSection; 
+      // iterate and create all nodes (doing this recursive would have been nicer, but seems impossible without making a function containing a c-client structure in its signature, which seems impossible)
+      while (lBodies.size() > 0) {
+        lCurrentBody = lBodies.front();
+        lCurrentParent = lParents.front();
+        lCurrentSection = lSections.front(); 
+        lSections.erase(lSections.begin());
+        lParents.erase(lParents.begin()); 
+        lBodies.erase(lBodies.begin());
+        if (lCurrentBody->type != TYPEMULTIPART) {
+           std::string lSubType(lCurrentBody->subtype);                                                                  
+           std::transform(lSubType.begin(), lSubType.end(), lSubType.begin(), tolower);
+           lCurrentSection.erase(lCurrentSection.end() - 1);
+           std::string lBodyContent = ImapClient::Instance().fetchBodyFull(aHostName, aUserName, aPassword, aMailbox, aMessageNumber, lCurrentSection, aUid);  
+           ImapFunction::createBodyNode(aModule, lCurrentParent, lBodyContent, lSubType); 
+        } else {
+          lMultipartParent = aModule->getItemFactory()->createElementNode(lCurrentParent, lMultipartParentName, lMultipartParentType, false, false, ns_binding);
+
+          PART* lPart = lCurrentBody->nested.part;
+          lBodies.insert(lBodies.begin(), &lPart->body);
+          lParents.insert(lParents.begin(), lMultipartParent);      
+          lSections.insert(lSections.begin(), lCurrentSection + "1.");
+          for (int j = 1; lPart->next; j++) {
+            lPart = lPart->next; 
+            std::stringstream lConverter;
+            lConverter << j+1 << "."; 
+            lSections.insert(lSections.begin() + j, lCurrentSection + lConverter.str());
+            lConverter.clear(); 
+            lBodies.insert(lBodies.begin() +j, &lPart->body);
+            lParents.insert(lParents.begin(), lMultipartParent);
+          }
+        }
+      } 
+    }
 }
 
 
-
-
 } /* namespace emailmodule */ } /* namespace zorba */
+
+
 
 #ifdef WIN32
 #  define DLL_EXPORT __declspec(dllexport)

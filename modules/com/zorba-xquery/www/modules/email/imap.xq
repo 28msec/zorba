@@ -227,3 +227,23 @@ declare function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mai
     validate { imapimpl:fetch-envelope( validate { $host-info }, $mailbox , $message-number ) } 
 };
 
+
+(:~
+ : Fetches a whole message.
+ : 
+ : @param $host-info describes the IMAP host, username and password.
+ : @param $mailbox is the mailbox in which to search for the message.
+ : @param $message-number is the message to fetch, denoted either by its sequence number or unique identifier.
+ : @param $uid defines if the passed $message-number should be interpreted as sequence number (false, default) or unique identifier.
+ : @return the message with the passed message number.
+ : @error If it wasn't possible to create a connection to the IMAP server.
+ : @error If the passed credentials were rejected by the IMAP server.
+ : @error If any of the specified mailbox does not exist.
+ : @error If any of the passed message number does not exist.
+ :)
+declare function imap:fetch-message($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean) as element(email:Message) {
+  validate { imapimpl:fetch-message($host-info, $mailbox, $message-number, $uid) }
+}; 
+
+
+
