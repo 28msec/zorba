@@ -249,6 +249,50 @@ namespace zorba { namespace emailmodule {
 
   }
 
+  std::string                    
+  ImapClient::fetchSubject(const std::string& aHost,
+               const std::string& aUserName,
+               const std::string& aPassword,
+               const std::string& aMailbox,
+               const unsigned long aMessageNumber) {
+
+    setUserName(aUserName);
+    setPassword(aPassword);
+    MAILSTREAM *lSource = NIL;
+    #include "linkage.c"
+
+    std::string lHost = "{" + aHost + "}" + aMailbox; 
+    lSource = mail_open(NIL, const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    
+    char lResult[30];
+    mail_fetchsubject(lResult, lSource, aMessageNumber, (unsigned long) 30); 
+    return std::string(lResult);
+  }
+
+
+
+  std::string
+  ImapClient::fetchFrom(const std::string& aHost,
+               const std::string& aUserName,
+               const std::string& aPassword,
+               const std::string& aMailbox,
+               const unsigned long aMessageNumber) {
+
+    setUserName(aUserName);
+    setPassword(aPassword);
+    MAILSTREAM *lSource = NIL;
+    #include "linkage.c"
+
+    std::string lHost = "{" + aHost + "}" + aMailbox;
+    lSource = mail_open(NIL, const_cast<char*>(lHost.c_str()), OP_DEBUG);
+
+    char lResult[30];
+    mail_fetchfrom(lResult, lSource, aMessageNumber, (unsigned long) 30);
+    return std::string(lResult);
+  }
+
+
+
   ENVELOPE* 
   ImapClient::fetchStructure(const std::string& aHost, 
                              const std::string& aUserName, 

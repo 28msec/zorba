@@ -48,12 +48,29 @@ declare sequential function local:test-suscribe() as xs:boolean {
 };
 
 (:~
- : @return true if the imap:list function works.
+ : @return true if the imap:unsuscribe function works.
  :)
 declare sequential function local:test-unsuscribe() as xs:boolean {
   let $x := imap:unsubscribe($local:host-info, "INBOX.Test")
   return local:not-exists-suscribed("INBOX.Test")
 };
+
+(:~
+ : @return true if the imap:fetch-subject function works.
+ :)
+declare function local:test-fetch-subject() as xs:boolean {
+  let $x := imap:fetch-subject($local:host-info, "INBOX", xs:long(1))
+  return ($x eq "test")
+};
+
+(:~
+ : @return true if the imap:fetch-from function works.
+ :)
+declare function local:test-fetch-from() as xs:boolean {
+  let $x := imap:fetch-from($local:host-info, "INBOX", xs:long(1))
+  return (fn:starts-with($x, "root"))
+};
+
 
 
 declare function local:exists-suscribed($mailbox as xs:string) as xs:boolean {
@@ -96,8 +113,20 @@ declare sequential function local:main() as xs:string* {
   else ();
  
 
+  let $c := local:test-fetch-subject()
+  return
+    if (fn:not($c)) then
+      exit returning local:error(("Fetching subject of a message failed."))
+    else ();
+ 
 
-  
+  let $d := local:test-fetch-from()
+  return
+    if (fn:not($d)) then
+      exit returning local:error(("Fetching 'from' string of a message failed."))
+    else ();
+
+ 
    
   (: If all went well ... make sure the world knows! :)  
   "SUCCESS";

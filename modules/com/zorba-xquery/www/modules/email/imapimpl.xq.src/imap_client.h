@@ -58,9 +58,19 @@ namespace zorba
       
       std::vector<long> search(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aMailbox, const std::string& aCriteria, bool aUid);
      
-      ENVELOPE* fetchEnvelope(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aMailbox, unsigned long aMessageNumber );
+      ENVELOPE* fetchEnvelope(const std::string& aHost, 
+                              const std::string& aUserName, 
+                              const std::string& aPassword, 
+                              const std::string& aMailbox, 
+                              unsigned long aMessageNumber );
 
-      ENVELOPE* fetchStructure(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aMailbox, BODY** aBody,  unsigned long aMessageNumber, bool aUid);
+      ENVELOPE* fetchStructure(const std::string& aHost, 
+                               const std::string& aUserName, 
+                               const std::string& aPassword, 
+                               const std::string& aMailbox, 
+                               BODY** aBody,  
+                               unsigned long aMessageNumber, 
+                               bool aUid);
      
       std::string fetchText(const std::string& aHost, 
                             const std::string& aUserName,
@@ -72,12 +82,27 @@ namespace zorba
 
       std::string
       fetchBodyFull(const std::string& aHost,
-                            const std::string& aUserName,
-                            const std::string& aPassword,
-                            const std::string& aMailbox,
-                            const unsigned long aMessageNumber,
-                            const std::string& aSection,
-                            const bool aUid); 
+                    const std::string& aUserName,
+                    const std::string& aPassword,
+                    const std::string& aMailbox,
+                    const unsigned long aMessageNumber,
+                    const std::string& aSection,
+                    const bool aUid); 
+
+
+       std::string
+       fetchSubject(const std::string& aHost,
+                    const std::string& aUserName,
+                    const std::string& aPassword,
+                    const std::string& aMailbox,
+                    const unsigned long aMessageNumber);
+
+       std::string
+       fetchFrom(const std::string& aHost,
+                    const std::string& aUserName,
+                    const std::string& aPassword,
+                    const std::string& aMailbox,
+                    const unsigned long aMessageNumber);
 
 
 

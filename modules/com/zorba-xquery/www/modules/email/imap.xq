@@ -242,8 +242,43 @@ declare function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mai
  : @error If any of the passed message number does not exist.
  :)
 declare function imap:fetch-message($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean) as element(email:Message) {
-  validate { imapimpl:fetch-message($host-info, $mailbox, $message-number, $uid) }
+  validate { imapimpl:fetch-message(validate {$host-info}, $mailbox, $message-number, $uid) }
 }; 
 
+(:~
+ : Fetches the subject for a message.
+ : Please note that this function only works with message sequence numbers, not with unique identifiers.
+ : Only the first 30 characters of a subject are fetched. 
+ :
+ : @param $host-info describes the IMAP host, username and password.
+ : @param $mailbox is the mailbox for which we want to get the subject of a message.
+ : @param $message-number denotes the message for which we want the subject.
+ : @return the subject of the specified message.
+ : @error If it wasn't possible to create a connection to the IMAP server.
+ : @error If the passed credentials were rejected by the IMAP server.
+ : @error If any of the specified mailbox does not exist.
+ : @error If any of the passed message number does not exist.
+ :)
+declare function imap:fetch-subject($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:string {
+  imapimpl:fetch-subject(validate {$host-info}, $mailbox, $message-number)
+};
 
+(:~
+ : Fetches the 'from' string of a message.
+ : Please note that this function only words with message sequence numbers, not with unique identifiers.
+ : Only the first 30 characters of a 'from' string are fetched.
+ : 
+ : @param $host-info describes the IMAP host, username and password.
+ : @param $mailbox is the mailbox for which we want to get the 'from' string of a message.
+ : @param $message-number denotes the message for which we want the 'from' string.
+ : @return the 'from' string of the specified message.
+ : @error If it wasn't possible to create a connection to the IMAP server.
+ : @error If the passed credentials were rejected by the IMAP server.
+ : @error If any of the specified mailbox does not exist.
+ : @error If any of the passed message number does not exist.
+ :)
+declare function imap:fetch-from($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:string
+{
+  imapimpl:fetch-from(validate {$host-info}, $mailbox, $message-number)
+};
 

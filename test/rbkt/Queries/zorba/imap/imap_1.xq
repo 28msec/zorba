@@ -9,6 +9,7 @@
  :)
 import module namespace imap = 'http://www.zorba-xquery.com/modules/email/imap';
 import module namespace file = 'http://www.zorba-xquery.com/modules/file';
+import module namespace random = 'http://www.zorba-xquery.com/modules/random';
 import schema namespace imaps = 'http://www.zorba-xquery.com/modules/email/imap';
 
 (:~
@@ -36,7 +37,7 @@ ERROR:
 "
 };
 
-
+declare variable $local:mailbox := concat("INBOX.", substring(random:uuid(), 0, 4));
 
 
 (:~
@@ -60,19 +61,19 @@ declare sequential function local:test-list() as xs:boolean {
  : @return true if the imap:create function works.
  :)
 declare sequential function local:test-create() as xs:boolean {
-    imap:create($local:host-info, "INBOX.Test") 
+    imap:create($local:host-info, $local:mailbox) 
 };
 
 (:~
  : @return true if the imap:create function works.
  :)
 declare sequential function local:test-delete() as xs:boolean {
-    imap:delete($local:host-info, "INBOX.Test") 
+    imap:delete($local:host-info, $local:mailbox) 
 };
 
 
 declare sequential function local:test-rename() as xs:boolean {
-  imap:rename($local:host-info, "INBOX.Test", "INBOX.Test2")
+  imap:rename($local:host-info, $local:mailbox, "INBOX.Test2")
 };
 
 (:~
@@ -91,6 +92,7 @@ declare function local:not-exists($mailbox as xs:string) as xs:boolean {
 
 declare sequential function local:main() as xs:string* {
 
+
   let $a := local:test-status()
   return
     if (fn:not($a)) then
@@ -106,8 +108,8 @@ declare sequential function local:main() as xs:string* {
 
 
     (: makes very, very sure there is no INBOX.Test :)
-    if (local:exists("INBOX.Test")) then
-      imap:delete($local:host-info, "INBOX.Test")
+    if (local:exists($local:mailbox)) then
+      imap:delete($local:host-info, $local:mailbox)
     else ();
 
 
@@ -121,8 +123,8 @@ declare sequential function local:main() as xs:string* {
 
   
    (: make very, very sure there is a  INBOX.Test :)
-  if (local:not-exists("INBOX.Test")) then
-    imap:create($local:host-info, "INBOX.Test")
+  if (local:not-exists($local:mailbox)) then
+    imap:create($local:host-info, $local:mailbox) 
   else ();
 
     
@@ -134,8 +136,8 @@ declare sequential function local:main() as xs:string* {
     else ();
 
   (: make very, very sure there is a INBOX.Test :)
-  if (local:not-exists("INBOX.Test")) then
-    imap:create($local:host-info, "INBOX.Test")
+  if (local:not-exists($local:mailbox)) then
+    imap:create($local:host-info, $local:mailbox)
   else ();
 
   
@@ -153,8 +155,8 @@ declare sequential function local:main() as xs:string* {
      else ();
 
   (: makes very, very sure  to delete the INBOX.Test again :)
-  if (local:exists("INBOX.Test")) then
-    imap:delete($local:host-info, "INBOX.Test")
+  if (local:exists($local:mailbox)) then
+    imap:delete($local:host-info, $local:mailbox)
   else ();
 
   (: make very, very sure there is no  INBOX.Test2 :)

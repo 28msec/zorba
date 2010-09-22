@@ -396,6 +396,61 @@ FetchEnvelopeFunction::evaluate(
   return ItemSequence_t(new SingletonItemSequence(lParent));
 }
 
+
+//*****************************************************************************
+
+FetchSubjectFunction::FetchSubjectFunction(const ImapModule* aModule)
+  : ImapFunction(aModule)
+{
+}
+
+ItemSequence_t
+FetchSubjectFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  std::string lHostName;
+  std::string lUserName;
+  std::string lPassword;
+  ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
+  String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+  unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
+  String lResult = ImapClient::Instance().fetchSubject(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber);
+
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createString(lResult)));
+}
+
+//*****************************************************************************
+
+FetchFromFunction::FetchFromFunction(const ImapModule* aModule)
+  : ImapFunction(aModule)
+{
+}
+
+ItemSequence_t
+FetchFromFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  std::string lHostName;
+  std::string lUserName;
+  std::string lPassword;
+  ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
+  String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+  unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
+  String lResult = ImapClient::Instance().fetchFrom(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber);
+
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createString(lResult)));
+}
+
+
+
+
+
 //*****************************************************************************               
                                                                                               
 FetchMessageFunction::FetchMessageFunction(const ImapModule* aModule)                       
