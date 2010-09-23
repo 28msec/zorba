@@ -691,7 +691,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     unsigned int   child_nr = 0;
     Iterator_t    segments_children;
     Item          line_segment_item;
-    std::vector<geos::geom::Geometry*>    *segments_vector;
+    std::vector<geos::geom::Geometry*>    *segments_vector = NULL;
     if(what_action == BUILD_GEOS_GEOMETRY)
     {
       segments_vector = new std::vector<geos::geom::Geometry*>;
@@ -870,7 +870,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     unsigned int   child_nr = 0;
     Iterator_t    patches_children;
     Item          polygon_patch_item;
-    std::vector<geos::geom::Geometry*>    *polygon_vector;
+    std::vector<geos::geom::Geometry*>    *polygon_vector = NULL;
     if(what_action == BUILD_GEOS_GEOMETRY)
     {
       polygon_vector = new std::vector<geos::geom::Geometry*>;
@@ -947,7 +947,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
     Item          extint_item;
     unsigned int           nr_child = 0;
     geos::geom::LinearRing    *exterior = NULL;
-    std::vector<geos::geom::Geometry*>    *interior_vector;
+    std::vector<geos::geom::Geometry*>    *interior_vector = NULL;
     if(what_action == BUILD_GEOS_GEOMETRY)
     {
       interior_vector = new std::vector<geos::geom::Geometry*>;
@@ -1060,7 +1060,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
   {
     Iterator_t    multipoint_children;
     Item          point_item;
-    std::vector<geos::geom::Geometry*>    *point_vector;
+    std::vector<geos::geom::Geometry*>    *point_vector = NULL;
     if(what_action == BUILD_GEOS_GEOMETRY)
     {
       point_vector = new std::vector<geos::geom::Geometry*>;
@@ -1138,7 +1138,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
   {
     Iterator_t    multicurve_children;
     Item          curve_item;
-    std::vector<geos::geom::Geometry*>    *curve_vector;
+    std::vector<geos::geom::Geometry*>    *curve_vector = NULL;
     if(what_action == BUILD_GEOS_GEOMETRY)
     {
       curve_vector = new std::vector<geos::geom::Geometry*>;
@@ -1216,7 +1216,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
   {
     Iterator_t    multisurface_children;
     Item          surface_item;
-    std::vector<geos::geom::Geometry*>    *surface_vector;
+    std::vector<geos::geom::Geometry*>    *surface_vector = NULL;
     if(what_action == BUILD_GEOS_GEOMETRY)
     {
       surface_vector = new std::vector<geos::geom::Geometry*>;
@@ -1294,7 +1294,7 @@ geos::geom::Geometry  *GeoFunction::buildGeosGeometryFromItem(zorba::Item &lItem
   {
     Iterator_t    multigeometry_children;
     Item          geometry_item;
-    std::vector<geos::geom::Geometry*>    *geometry_vector;
+    std::vector<geos::geom::Geometry*>    *geometry_vector = NULL;
     if(what_action == BUILD_GEOS_GEOMETRY)
     {
       geometry_vector = new std::vector<geos::geom::Geometry*>;
@@ -1689,7 +1689,7 @@ SFDimensionFunction::evaluate(const StatelessExternalFunction::Arguments_t& args
   geos::geom::Geometry  *geos_geometry;                                                 
   geos_geometry = buildGeosGeometryFromItem(lItem, geometric_type, -1);                     
                                                                                         
-  geos::geom::Dimension::DimensionType   dim_type;                                                
+  geos::geom::Dimension::DimensionType   dim_type = geos::geom::Dimension::DONTCARE;                                                
   try{                                                                                  
     dim_type = geos_geometry->getDimension();                                  
   }catch(std::exception &excep)                                              
