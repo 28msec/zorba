@@ -71,7 +71,15 @@ declare function local:test-fetch-from() as xs:boolean {
   return (fn:starts-with($x, "root"))
 };
 
+declare function local:test-fetch-uid() as xs:boolean {
+  let $x := imap:fetch-uid($local:host-info, "INBOX", xs:long(1))
+  return ($x eq 1)
+};
 
+declare function local:test-fetch-message-sequence-number() as xs:boolean {
+  let $x := imap:fetch-message-sequence-number($local:host-info, "INBOX", xs:long(1))
+  return ($x eq 1)
+};
 
 declare function local:exists-suscribed($mailbox as xs:string) as xs:boolean {
   let $list := imap:list($local:host-info, "", $mailbox, true())
@@ -124,6 +132,18 @@ declare sequential function local:main() as xs:string* {
   return
     if (fn:not($d)) then
       exit returning local:error(("Fetching 'from' string of a message failed."))
+    else ();
+
+  let $e := local:test-fetch-uid()
+  return
+    if (fn:not($e)) then
+      exit returning local:error(("Fetching the unique identifier for a  message sequence number failed."))
+    else ();
+
+  let $f := local:test-fetch-message-sequence-number()
+  return
+    if (fn:not($f)) then
+      exit returning local:error(("Fetching the message sequence number for an unique identifier failed."))
     else ();
 
  

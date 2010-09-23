@@ -300,6 +300,8 @@ declare function imap:fetch-uid($host-info as element(imaps:hostInfo), $mailbox 
   imapimpl:fetch-uid(validate {$host-info}, $mailbox, $message-number)
 };
 
+
+
 (:~
  : Fetches the message sequence number for a given unique identifier.
  :

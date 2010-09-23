@@ -40,21 +40,63 @@ namespace zorba
         return lInstance;
       }
 
-      void status(const std::string& aHost, const std::string& aUsername, const std::string& aPassword, const std::string& aMailbox);
 
-      bool create(const std::string& aHost, const std::string& aUsername, const std::string& aPassword, const std::string& aMailboxName);
+      MAILSTREAM* getMailStream(const std::string& aHost,
+                                const std::string& aUsername,
+                                const std::string& aPassword,
+                                const std::string& aMailbox,
+                                const bool aFullOpen);
 
-      bool delete_mailbox(const std::string& aHost, const std::string& aUsername, const std::string& aPassword, const std::string& aMailboxName);
 
-      bool rename(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aMailboxFromName, const std::string& aMailboxToName);
+      void status(const std::string& aHost, 
+                  const std::string& aUsername, 
+                  const std::string& aPassword, 
+                  const std::string& aMailbox);
 
-      bool subscription(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aMailbox, bool subscribe);
+      bool create(const std::string& aHost, 
+                  const std::string& aUsername, 
+                  const std::string& aPassword, 
+                  const std::string& aMailboxName);
 
-      bool expunge(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aMailbox);
+      bool delete_mailbox(const std::string& aHost, 
+                          const std::string& aUsername, 
+                          const std::string& aPassword, 
+                          const std::string& aMailboxName);
 
-      bool copy(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aMailboxFrom, const std::string& aMailboxTo, const std::string& aMessageNumbers, bool aUid, bool aCopy);
+      bool rename(const std::string& aHost, 
+                  const std::string& aUserName, 
+                  const std::string& aPassword, 
+                  const std::string& aMailboxFromName, 
+                  const std::string& aMailboxToName);
 
-      std::vector<std::string> list(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aReferencePath, const std::string& aPattern, bool aOnlySuscribed);
+      bool subscription(const std::string& aHost, 
+                        const std::string& aUserName, 
+                        const std::string& aPassword, 
+                        const std::string& aMailbox, 
+                        bool subscribe);
+
+      bool expunge(const std::string& aHost, 
+                   const std::string& aUserName, 
+                   const std::string& aPassword, 
+                   const std::string& aMailbox);
+
+      bool copy(const std::string& aHost, 
+                const std::string& aUserName, 
+                const std::string& aPassword, 
+                const std::string& aMailboxFrom, 
+                const std::string& aMailboxTo, 
+                const std::string& aMessageNumbers, 
+                bool aUid, 
+                bool aCopy);
+
+
+
+      std::vector<std::string> list(const std::string& aHost, 
+                                    const std::string& aUserName, 
+                                    const std::string& aPassword, 
+                                    const std::string& aReferencePath, 
+                                    const std::string& aPattern, 
+                                    bool aOnlySuscribed);
       
       std::vector<long> search(const std::string& aHost, 
                                const std::string& aUserName, 
@@ -156,12 +198,26 @@ namespace zorba
     private:
       //ctor, dtor, copy ctor are all hidden
       ImapClient() {
-        theErrorMessage.clear();
       };
-      ~ImapClient() {};
+      ~ImapClient() {
+      // make sure that theMailstream is not open! 
+        if (theMailstream) {
+          mail_close(theMailstream);
+          theMailstream = NIL;
+        }
+      
+      };
+      
+      
       ImapClient(ImapClient const&) {};
       std::string theUserName;
       std::string thePassword;
+     
+      // the current mailstream, in future versions this could be a mailstream pool ... 
+      MAILSTREAM* theMailstream;
+      
+      // the Host of the current mailstream
+      std::string theHost;
       
       // string containing error message
       std::string theErrorMessage;

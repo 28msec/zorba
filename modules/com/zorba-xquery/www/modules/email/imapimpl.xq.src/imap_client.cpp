@@ -41,153 +41,163 @@ namespace zorba { namespace emailmodule {
   ImapClient::getPassword() {
     return thePassword;
   }
-  
+ 
+  MAILSTREAM* 
+  ImapClient::getMailStream(const std::string& aHost,
+                            const std::string& aUsername,
+                            const std::string& aPassword,                                
+                            const std::string& aMailbox,
+                            const bool aFullOpen) {
+      
+      std::string lHostAndMailbox = "{" + aHost + "}" + aMailbox;
+      // check if theMailstream is open already and exaclty the same as the old one
+      if ((theMailstream) && 
+         (theUserName.compare(aUsername) == 0) && 
+         (thePassword.compare(aPassword) == 0) && 
+         (lHostAndMailbox.compare(theMailstream->original_mailbox) == 0) && 
+         ((aFullOpen ? NIL : T) == theMailstream->halfopen))  {
+          // do nothing, theMailstream will be returned at the end of the function
+      } else if ((theMailstream) && (theHost.compare(aHost) == 0)) {
+        // use old stream to same host, but open new
+        setUserName(aUsername);
+        setPassword(aPassword);
+        mail_open(theMailstream, const_cast<char*>(lHostAndMailbox.c_str()), (aFullOpen ? NIL : OP_HALFOPEN));
+      } else {
+        // make a new mailstream according to the passed values
+        setUserName(aUsername);
+        setPassword(aPassword);
+        theHost = aHost;
+        theMailstream = mail_open(NIL, const_cast<char*>(lHostAndMailbox.c_str()), (aFullOpen ? NIL : OP_HALFOPEN));
+      }
+      return theMailstream;
+
+  }
+
+
   void 
-  ImapClient::status (const std::string& aHost, const std::string& aUsername, const std::string& aPassword, const std::string& aMailbox) {
-    setUserName(aUsername);
-    setPassword(aPassword); 
-    MAILSTREAM *lSource = NIL;
+  ImapClient::status (const std::string& aHost, 
+                      const std::string& aUsername, 
+                      const std::string& aPassword, 
+                      const std::string& aMailbox) 
+  {
     #include "linkage.c"
+    std::string lHostAndMailbox = "{" + aHost + "}" + aMailbox;
+    MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, false);
+    mail_status (lSource, const_cast<char*>(lHostAndMailbox.c_str()), SA_MESSAGES | SA_RECENT | SA_UNSEEN | SA_UIDNEXT | SA_UIDVALIDITY);
+  }
 
-    std::string lHost = "{" + aHost + "}" + aMailbox;
-    lSource = mail_open (NIL, const_cast<char*>(lHost.c_str()), NIL);
-    mail_status (lSource, const_cast<char*>(lHost.c_str()), SA_MESSAGES | SA_RECENT | SA_UNSEEN | SA_UIDNEXT | SA_UIDVALIDITY);
-    
-    // clean up the mess
-    if (lSource) { mail_close (lSource); }
+  bool
+  ImapClient::create (const std::string& aHost, 
+                      const std::string& aUsername, 
+                      const std::string& aPassword, 
+                      const std::string& aMailbox) {
    
-  }
-
-  bool
-  ImapClient::create (const std::string& aHost, const std::string& aUsername, const std::string& aPassword, const std::string& aMailbox) {
-    setUserName(aUsername);
-    setPassword(aPassword); 
-    MAILSTREAM *lSource = NIL;
-    #include "linkage.c"
-    
-    std::string lHost = "{" + aHost + "}";
-    lSource = mail_open (NIL, const_cast<char*>(lHost.c_str()),  OP_DEBUG | OP_HALFOPEN);
-    std::string lFullName = lHost + aMailbox; 
-    bool lResult = (mail_create (lSource, const_cast<char*>(lFullName.c_str())) == T);
-    
-    // clean up the mess
-    if (lSource) { mail_close (lSource); }
-    return lResult;
+    #include "linkage.c" 
+    MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, false); 
+    std::string lFullName = "{" + aHost + "}" + aMailbox; 
+    return (mail_create (lSource, const_cast<char*>(lFullName.c_str())) == T);
   }
 
 
   bool
-  ImapClient::delete_mailbox (const std::string& aHost, const std::string& aUsername, const std::string& aPassword, const  std::string& aMailbox) {
-    setUserName(aUsername);
-    setPassword(aPassword);
-    MAILSTREAM *lSource = NIL;
-    #include "linkage.c"
+  ImapClient::delete_mailbox (const std::string& aHost, 
+                              const std::string& aUsername, 
+                              const std::string& aPassword, 
+                              const  std::string& aMailbox) {
 
-    std::string lHost = "{" + aHost + "}";
-    lSource = mail_open (NIL, const_cast<char*>(lHost.c_str()), OP_HALFOPEN | OP_DEBUG);
-    std::string lFullName = lHost + aMailbox;
-
-    bool lResult = (mail_delete(lSource, const_cast<char*>(lFullName.c_str())) == T);
-
-    // clean up the mess
-    if (lSource) {  mail_close (lSource); }
-    return lResult;
+     #include "linkage.c"                                 
+    MAILSTREAM *lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, false);
+    std::string lFullName = "{" + aHost + "}" + aMailbox;
+    return (mail_delete(lSource, const_cast<char*>(lFullName.c_str())) == T);
   }
 
   bool 
-  ImapClient::rename (const std::string& aHost, const std::string& aUsername, const  std::string& aPassword, const std::string& aFromMailbox, const std::string& aToMailbox) {
-    setUserName(aUsername);
-    setPassword(aPassword);
-    MAILSTREAM *lSource = NIL;
-    #include "linkage.c"
+  ImapClient::rename (const std::string& aHost, 
+                      const std::string& aUsername, 
+                      const  std::string& aPassword, 
+                      const std::string& aFromMailbox, 
+                      const std::string& aToMailbox) {
 
-    std::string lHost = "{" + aHost + "}";
-    lSource = mail_open (NIL, const_cast<char*>(lHost.c_str()), OP_HALFOPEN | OP_DEBUG);
+    #include "linkage.c"
+    MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, "", false);
+    std::string lHost = "{" + aHost + "}"; 
     std::string lFullNameOld = lHost + aFromMailbox;
     std::string lFullNameNew = lHost + aToMailbox;
-    bool lResult = (mail_rename(lSource, const_cast<char*>(lFullNameOld.c_str()), const_cast<char*>( lFullNameNew.c_str())) == T);
-
-    // clean up the mess
-    if (lSource) {  mail_close (lSource); }
-    return lResult;
-
+    return (mail_rename(lSource, const_cast<char*>(lFullNameOld.c_str()), const_cast<char*>( lFullNameNew.c_str())) == T);
   } 
 
   bool 
-  ImapClient::subscription(const std::string& aHost, const std::string& aUsername, const std::string& aPassword, const std::string& aMailbox, bool subscribe) {
-    setUserName(aUsername);
-    setPassword(aPassword);
-    MAILSTREAM *lSource = NIL;
-    #include "linkage.c"
+  ImapClient::subscription(const std::string& aHost,  
+                           const std::string& aUsername, 
+                           const std::string& aPassword, 
+                           const std::string& aMailbox, 
+                           bool subscribe) {
 
+    #include "linkage.c"
     std::string lHost = "{" + aHost + "}";
-    lSource = mail_open (NIL, const_cast<char*>(lHost.c_str()), OP_HALFOPEN | OP_DEBUG);
+    MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, false); 
     std::string lFullName = lHost + aMailbox;
-    bool lResult = false;
     if (subscribe) {
-      lResult = (mail_subscribe(lSource, const_cast<char*>(lFullName.c_str())) == T);
+      return (mail_subscribe(lSource, const_cast<char*>(lFullName.c_str())) == T);
     } else {
-      lResult = (mail_unsubscribe(lSource, const_cast<char*>(lFullName.c_str())) == T);
+      return (mail_unsubscribe(lSource, const_cast<char*>(lFullName.c_str())) == T);
     }
-    // clean up the mess
-    if (lSource) { mail_close (lSource); }
-    return lResult;
   }
 
     
   bool
-  ImapClient::expunge(const std::string& aHost, const std::string& aUsername, const std::string& aPassword, const std::string& aMailbox) {
-    setUserName(aUsername);
-    setPassword(aPassword);
-    MAILSTREAM *lSource = NIL;
-    #include "linkage.c"
+  ImapClient::expunge(const std::string& aHost, 
+                      const std::string& aUsername, 
+                      const std::string& aPassword, 
+                      const std::string& aMailbox) {
 
+    #include "linkage.c"
     std::string lHost = "{" + aHost + "}" + aMailbox;
-    lSource = mail_open (NIL, const_cast<char*>(lHost.c_str()), OP_DEBUG);
-    
-    // clean up the mess
+    MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, true); 
     if (lSource) {  mail_expunge(lSource); }
-    if (lSource) { mail_close(lSource); }
     return true;
   }
 
 
   std::vector<std::string> 
-  ImapClient::list(const std::string& aHost, const std::string& aUsername, const std::string& aPassword, const std::string& aReferencePath, const std::string& aPattern, bool aOnlySuscribed) {
-    setUserName(aUsername);
-    setPassword(aPassword);
-    MAILSTREAM *lSource = NIL;
+  ImapClient::list(const std::string& aHost, 
+                   const std::string& aUsername, 
+                   const std::string& aPassword, 
+                   const std::string& aReferencePath, 
+                   const std::string& aPattern, 
+                   bool aOnlySuscribed) {
+    
     #include "linkage.c"
-
     /* IMPORTANT: make sure that the vector of listed mailboxes is empty! */
     theListedMailboxes.clear();
 
     std::string lHost = "{" + aHost + "}";
-    lSource = mail_open (NIL, const_cast<char*>(lHost.c_str()), OP_HALFOPEN | OP_DEBUG);
+    MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, "", false); 
     std::string lFullPath = lHost + aReferencePath;
     if (aOnlySuscribed) {
       mail_lsub(lSource, const_cast<char*>(lFullPath.c_str()), const_cast<char*>(aPattern.c_str()));
     } else {
       mail_list(lSource,  const_cast<char*>(lFullPath.c_str()), const_cast<char*>(aPattern.c_str()));
-
     }
-    if (lSource) { mail_close(lSource); }
-    
+    // theListedMailbox is filled through the mm_list or mm_listsub callback functions
     return theListedMailboxes;
   }  
 
   bool 
-  ImapClient::copy(const std::string& aHost, const std::string& aUserName, const std::string& aPassword, const std::string& aMailboxFrom, const std::string& aMailboxTo, const std::string& aMessageNumbers, bool aUid, bool aCopy) {
-    setUserName(aUserName);
-    setPassword(aPassword);
-    MAILSTREAM *lSource = NIL;
+  ImapClient::copy(const std::string& aHost, 
+                   const std::string& aUserName, 
+                   const std::string& aPassword, 
+                   const std::string& aMailboxFrom, 
+                   const std::string& aMailboxTo, 
+                   const std::string& aMessageNumbers, 
+                   bool aUid,   
+                   bool aCopy) {
+    
     #include "linkage.c"
     
     std::string lHost = "{" + aHost + "}" + aMailboxFrom;
-    lSource = mail_open (NIL, const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailboxFrom, true); 
     long  lLongResult =  mail_copy_full(lSource,  const_cast<char*>(aMessageNumbers.c_str()),  const_cast<char*>(aMailboxTo.c_str()), (aUid ? SE_UID : NIL) | (aCopy ? CP_MOVE : NIL));
-    // clean up mess
-    if (lSource) { mail_close(lSource); } 
     return (lLongResult == T);
   }
 
@@ -199,21 +209,16 @@ namespace zorba { namespace emailmodule {
                      const std::string& aCriteria, 
                      bool aUid) {
 
-    setUserName(aUsername);
-    setPassword(aPassword);
-    MAILSTREAM *lSource = NIL;
     #include "linkage.c"
   
     /* IMPORTANT: make sure that the vector of found sequence numbers is empty! */
     theFoundSequenceNumbers.clear();
 
-    std::string lHost = "{" + aHost + "}";
-    lSource = mail_open (NIL, const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, "", true); 
     /* First, tokenize the criteria so that we can work on it */
     std::stringstream lToTokenize(aCriteria);
     std::string lBuffer;
     std::vector<std::string> lTokens;
-    
 
     SEARCHPGM * lSearchProgram;
     while(lToTokenize >> lBuffer) {
@@ -224,7 +229,6 @@ namespace zorba { namespace emailmodule {
     mail_search_full(lSource, NIL,  lSearchProgram, (aUid ? SE_UID : NIL) | SE_NOPREFETCH); 
     /* clean up, don't leave a mess */
     mail_free_searchpgm(&lSearchProgram); 
-    if (lSource) { mail_close(lSource); }
     return theFoundSequenceNumbers;
   }
 
@@ -235,34 +239,24 @@ namespace zorba { namespace emailmodule {
                             const std::string& aMailbox, 
                             unsigned long aMessageNumber) 
   {
-    setUserName(aUsername);
-    setPassword(aPassword);
-    MAILSTREAM *lSource = NIL;
     #include "linkage.c"
 
-    std::string lHost = "{" + aHost + "}" + aMailbox;
-    lSource = mail_open(NIL,  const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, true); 
     
-    ENVELOPE * lResult = mail_fetchenvelope(lSource, aMessageNumber);
-    
-    return lResult;
-
+    return mail_fetchenvelope(lSource, aMessageNumber);
   }
 
   std::string                    
   ImapClient::fetchSubject(const std::string& aHost,
-               const std::string& aUserName,
-               const std::string& aPassword,
-               const std::string& aMailbox,
-               const unsigned long aMessageNumber) {
+                           const std::string& aUserName,
+                           const std::string& aPassword,
+                           const std::string& aMailbox,
+                           const unsigned long aMessageNumber) {
 
-    setUserName(aUserName);
-    setPassword(aPassword);
-    MAILSTREAM *lSource = NIL;
     #include "linkage.c"
 
     std::string lHost = "{" + aHost + "}" + aMailbox; 
-    lSource = mail_open(NIL, const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true); 
     
     char lResult[30];
     mail_fetchsubject(lResult, lSource, aMessageNumber, (unsigned long) 30); 
@@ -273,18 +267,14 @@ namespace zorba { namespace emailmodule {
 
   std::string
   ImapClient::fetchFrom(const std::string& aHost,
-               const std::string& aUserName,
-               const std::string& aPassword,
-               const std::string& aMailbox,
-               const unsigned long aMessageNumber) {
+                        const std::string& aUserName,
+                        const std::string& aPassword,
+                        const std::string& aMailbox,
+                        const unsigned long aMessageNumber) {
 
-    setUserName(aUserName);
-    setPassword(aPassword);
-    MAILSTREAM *lSource = NIL;
     #include "linkage.c"
 
-    std::string lHost = "{" + aHost + "}" + aMailbox;
-    lSource = mail_open(NIL, const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true); 
 
     char lResult[30];
     mail_fetchfrom(lResult, lSource, aMessageNumber, (unsigned long) 30);
@@ -293,19 +283,15 @@ namespace zorba { namespace emailmodule {
 
   long                            
   ImapClient::convertNumber(const std::string& aHost,
-                const std::string& aUserName,
-                const std::string& aPassword,
-                const std::string& aMailbox,
-                const unsigned long aMessageNumber,
-                const bool aUid) {
+                            const std::string& aUserName,
+                            const std::string& aPassword,
+                            const std::string& aMailbox,
+                            const unsigned long aMessageNumber,
+                            const bool aUid) {
     
-    setUserName(aUserName);
-    setPassword(aPassword);
-    MAILSTREAM *lSource = NIL;
     #include "linkage.c"
 
-    std::string lHost = "{" + aHost + "}" + aMailbox;
-    lSource = mail_open(NIL, const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true); 
 
     if (aUid) {
       return mail_uid(lSource, aMessageNumber);
@@ -325,14 +311,10 @@ namespace zorba { namespace emailmodule {
                              unsigned long aMessageNumber, 
                              bool aUid) 
   {
-    setUserName(aUserName);
-    setPassword(aPassword);
-    MAILSTREAM* lSource = NIL;
     #include "linkage.c"
     *aBody = mail_newbody(); 
-    std::string lHost = "{" + aHost + "}" + aMailbox;
-    lSource = mail_open(NIL,  const_cast<char*>(lHost.c_str()), OP_DEBUG);
-    
+    MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true);    
+ 
     ENVELOPE * lResult = mail_fetchstructure_full (lSource, aMessageNumber, aBody, (aUid ? FT_UID : NIL));
   
     return lResult;
@@ -347,15 +329,10 @@ namespace zorba { namespace emailmodule {
                         unsigned long aMessageNumber,
                         bool aUid)
   {
-    setUserName(aUserName);
-    setPassword(aPassword);
-    MAILSTREAM* lSource = NIL;
     #include "linkage.c"
-    std::string lHost = "{" + aHost + "}" + aMailbox;
-    lSource = mail_open(NIL,  const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true); 
     unsigned long lLenght;
     return std::string(mail_fetchtext_full(lSource, aMessageNumber, &lLenght, (aUid ? FT_UID : NIL))); 
-    
   }  
 
 
@@ -368,12 +345,8 @@ namespace zorba { namespace emailmodule {
                             const std::string& aSection,
                             const bool aUid) 
   {
-    setUserName(aUserName);
-    setPassword(aPassword);
-    MAILSTREAM* lSource = NIL;
     #include "linkage.c"
-    std::string lHost = "{" + aHost + "}" + aMailbox;
-    lSource = mail_open(NIL,  const_cast<char*>(lHost.c_str()), OP_DEBUG);
+    MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true); 
     unsigned long lLenght;
     // convert section int into char
     return std::string(mail_fetchbody_full(lSource, aMessageNumber, const_cast<char*>(aSection.c_str()), &lLenght, (aUid ? FT_UID : NIL)));
@@ -634,7 +607,6 @@ namespace zorba { namespace emailmodule {
   void mm_log (char *string,long errflg)
   {
 
-    std::cout << "Log: " << string << std::endl;
     switch ((short) errflg) {
     case NIL:
        
