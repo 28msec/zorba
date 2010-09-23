@@ -767,25 +767,38 @@ void populateContext_Numerics(static_context* sctx)
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
         GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
+  /*
+      XPath 2.0 Specification 
+      http://www.w3.org/TR/xpath20/#id-arithmetic says that:
+      If the atomized operand is an empty sequence, the result 
+      of the arithmetic expression is an empty sequence, and the 
+      implementation need not evaluate the other operand or 
+      apply the operator.
+
+      Thus the arithmetic operators allow for empty sequences 
+      as parameters and return results, contrary to the signature
+      of these functions as described in XQuery and XPath Functions
+      Specification.
+  */
   DECL(sctx, op_numeric_unary_minus,
        (createQName(XQUERY_OP_NS,"op", "unary-minus"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, op_double_unary_minus,
        (createQName(ZORBA_OP_NS,"fn-zorba", "double-minus"),
-        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 
   DECL(sctx, op_numeric_unary_plus,
        (createQName(XQUERY_OP_NS,"op", "unary-plus"),
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE,
-        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_ONE));
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION,
+        GENV_TYPESYSTEM.ANY_ATOMIC_TYPE_QUESTION));
 
   DECL(sctx, op_double_unary_plus,
        (createQName(ZORBA_OP_NS,"fn-zorba", "double-plus"),
-        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE,
-        GENV_TYPESYSTEM.DOUBLE_TYPE_ONE));
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION,
+        GENV_TYPESYSTEM.DOUBLE_TYPE_QUESTION));
 }
 
   
