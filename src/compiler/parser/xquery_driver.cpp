@@ -50,7 +50,7 @@ namespace zorba
 
 ZorbaParserError::ZorbaParserError(std::string _msg, const location& aLoc)
   :
-  msg(_msg), loc(xquery_driver::createQueryLoc(aLoc))
+  msg(_msg), loc(xquery_driver::createQueryLocStatic(aLoc))
 {
 }
 ZorbaParserError::ZorbaParserError(std::string _msg, const QueryLoc& aLoc)
@@ -224,6 +224,17 @@ void xquery_driver::set_expr(parsenode* e_p)
 }
 
 QueryLoc xquery_driver::createQueryLoc(const location& aLoc)
+{
+  QueryLoc lLoc;
+  lLoc.setFilename(theFilename);
+  lLoc.setLineBegin(aLoc.begin.line);
+  lLoc.setColumnBegin(aLoc.begin.column);
+  lLoc.setLineEnd(aLoc.end.line);
+  lLoc.setColumnEnd(aLoc.end.column);
+  return lLoc;
+}
+
+QueryLoc xquery_driver::createQueryLocStatic(const location& aLoc)
 {
   QueryLoc lLoc;
   lLoc.setFilename(aLoc.begin.filename->c_str());

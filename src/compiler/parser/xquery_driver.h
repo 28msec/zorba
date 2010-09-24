@@ -68,7 +68,8 @@ public:
 	void set_expr(parsenode* e_p);
 	parsenode* get_expr() { return expr_p; }
 
-  static QueryLoc createQueryLoc(const location& aLoc);
+  QueryLoc createQueryLoc(const location& aLoc);
+  static QueryLoc createQueryLocStatic(const location& aLoc);
 
   // Error generators
   ZorbaParserError* unrecognizedCharErr(const char* _error_token, const location& loc);
