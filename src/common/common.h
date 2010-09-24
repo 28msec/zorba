@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+#ifndef __COMMON_H__
+#define __COMMON_H__
 #include <cassert>
 #include "zorbamisc/config/platform.h"
 
@@ -24,3 +26,5 @@
   #define SYNC_CODE(x)    
   #define SYNC_PARAM2(x)
 #endif
+
+#endif //__COMMON_H__
