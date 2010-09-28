@@ -1733,6 +1733,9 @@ bool FnDocAvailableIterator::nextImpl(store::Item_t& result, PlanState& planStat
     }
     STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, doc != NULL), state);
   }
+  else
+    // return false if input is the empty sequence
+    STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, false), state);
 
   STACK_END (state);
 }
