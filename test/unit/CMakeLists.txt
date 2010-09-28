@@ -39,7 +39,7 @@ IF(WIN32)
     external_function.cpp
     no_folding.cpp
     debug_iter_serialization.cpp
-    #ordpath_big.cpp
+    ordpath_big.cpp
   )
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
@@ -53,7 +53,7 @@ ELSE(WIN32)
     external_function.cpp
     no_folding.cpp
     debug_iter_serialization.cpp
-    #ordpath_big.cpp
+    ordpath_big.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )

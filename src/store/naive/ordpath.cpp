@@ -1183,7 +1183,9 @@ std::string OrdPath::serialize() const
   if (len == 0)
     return str.str().c_str();
 
-  if (isLocal() && len == MAX_EMBEDDED_BYTE_LEN)
+  bool local = isLocal();
+
+  if (local && len == MAX_EMBEDDED_BYTE_LEN)
     buf[MAX_EMBEDDED_BYTE] &= 0xFE;
 
   for (ulong i = 0; i < len; i++)
@@ -1195,7 +1197,7 @@ std::string OrdPath::serialize() const
     str << std::hex << (unsigned short)buf[i];
   }
 
-  if (isLocal() && len == MAX_EMBEDDED_BYTE_LEN)
+  if (local && len == MAX_EMBEDDED_BYTE_LEN)
     buf[MAX_EMBEDDED_BYTE] |= 0x1;
 
   return str.str().c_str();
