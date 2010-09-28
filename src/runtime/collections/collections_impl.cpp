@@ -128,7 +128,7 @@ bool FnCollectionIterator::nextImpl(store::Item_t& result, PlanState& planState)
     }
     catch (error::ZorbaError&) 
     {
-      ZORBA_ERROR_LOC_DESC(FODC0002, loc, "Error retrieving resource.");
+      ZORBA_ERROR_LOC_DESC(FODC0004, loc, "Passed argument is not a valid xs:anyURI.");
     }
   }
   else 

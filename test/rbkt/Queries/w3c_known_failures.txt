@@ -100,7 +100,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K-ReplaceFunc-7
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/GeneralStringFunc/IRIToURIfunc/K2-IRIToURIfunc-8
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/GeneralStringFunc/IRIToURIfunc/K2-IRIToURIfunc-9
-test/rbkt/w3c_testsuite/XQuery/Functions/NodeSeqFunc/SeqCollectionFunc/fn-collection-3
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeFunc/NodeLangFunc/K2-NodeLangFunc-2
 test/rbkt/w3c_testsuite/XQuery/Functions/TraceFunc/fn-trace-10
 test/rbkt/w3c_testsuite/XQuery/Functions/TraceFunc/fn-trace-4
@@ -122,8 +121,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/TraceFunc/fn-trace-15
 test/rbkt/w3c_testsuite/XQuery/Functions/TraceFunc/fn-trace-3
 test/rbkt/w3c_testsuite/XQuery/Functions/TraceFunc/fn-trace-8
 test/rbkt/w3c_testsuite/XQuery/Functions/TraceFunc/fn-trace-9
-test/rbkt/w3c_testsuite/XQuery/Functions/SeqFunc/NodeSeqFunc/SeqCollectionFunc/K2-SeqCollectionFunc-2
-test/rbkt/w3c_testsuite/XQuery/Functions/SeqFunc/NodeSeqFunc/SeqCollectionFunc/K2-SeqCollectionFunc-1
 test/rbkt/w3c_testsuite/XQuery/Functions/SeqFunc/NodeSeqFunc/SeqDocFunc/K2-SeqDocFunc-7
 test/rbkt/w3c_testsuite/XQuery/Functions/SeqFunc/NodeSeqFunc/SeqDocFunc/K2-SeqDocFunc-8
 test/rbkt/w3c_testsuite/XQuery/Functions/SeqFunc/AggregateSeqFunc/SeqSUMFunc/fn-sum-9
