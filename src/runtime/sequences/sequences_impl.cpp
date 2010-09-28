@@ -1674,7 +1674,10 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       catch (error::ZorbaError& e)
       {
-        ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+        if(e.theErrorCode == XQST0046) //the value of a URILiteral is of nonzero length and is not in the lexical space of xs:anyURI.
+          ZORBA_ERROR_LOC_DESC(FODC0005, loc, e.theDescription);
+        else
+          ZORBA_ERROR_LOC_DESC(FODC0002, loc, e.theDescription);
       }
 
       try
@@ -1691,7 +1694,7 @@ bool FnDocIterator::nextImpl(store::Item_t& result, PlanState& planState) const
       }
       catch (error::ZorbaError& e)
       {
-        ZORBA_ERROR_LOC_DESC(e.theErrorCode, loc, e.theDescription);
+        ZORBA_ERROR_LOC_DESC(FODC0002, loc, e.theDescription);
       }
 
       STACK_PUSH(true, state);
