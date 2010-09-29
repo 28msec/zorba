@@ -23,20 +23,20 @@ declare variable $examplePath as xs:string* := (
  :)
 declare variable $leftMenu := 
 <menu>
-  <category1 name="http://expath.org/ns" uri="http://expath.org/ns" />
-  <category1 name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules">
-    <category2 name="email" uri="http://www.zorba-xquery.com/modules/email" />
-    <category2 name="excel" uri="http://www.zorba-xquery.com/modules/excel" />
-    <category2 name="image" uri="http://www.zorba-xquery.com/modules/image" />
-    <category2 name="introspection" uri="http://www.zorba-xquery.com/modules/introspection" />
-    <category2 name="security" uri="http://www.zorba-xquery.com/modules/security" />
-    <category2 name="oauth" uri="http://www.zorba-xquery.com/modules/oauth" />
-    <category2 name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" last="true">
-      <category3 name="google" uri="http://www.zorba-xquery.com/modules/webservices/google" />
-      <category3 name="yahoo" uri="http://www.zorba-xquery.com/modules/webservices/yahoo" last="true" />
-    </category2>
-  </category1> 
-  <category1 name="http://www.w3.org/2005" uri="http://www.w3.org/2005" last="true"/>
+  <category name="http://expath.org/ns" uri="http://expath.org/ns" />
+  <category name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules">
+    <category name="email" uri="http://www.zorba-xquery.com/modules/email" />
+    <category name="excel" uri="http://www.zorba-xquery.com/modules/excel" />
+    <category name="image" uri="http://www.zorba-xquery.com/modules/image" />
+    <category name="introspection" uri="http://www.zorba-xquery.com/modules/introspection" />
+    <category name="security" uri="http://www.zorba-xquery.com/modules/security" />
+    <category name="oauth" uri="http://www.zorba-xquery.com/modules/oauth" />
+    <category name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" last="true">
+      <category name="google" uri="http://www.zorba-xquery.com/modules/webservices/google" />
+      <category name="yahoo" uri="http://www.zorba-xquery.com/modules/webservices/yahoo" last="true" />
+    </category>
+  </category>
+  <category name="http://www.w3.org/2005" uri="http://www.w3.org/2005" last="true"/>
 </menu>;
 
 declare variable $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>XQuery Libraries</strong></span></ul>;
@@ -228,16 +228,16 @@ declare sequential function local:collectModule ($module, $relativeFileName as x
  :)
 declare sequential function local:createLeftMenu($menu, $moduleUri, $categories)
 {
-  for $cat1 in $categories/category1
+  for $cat1 in $categories/category
   let $last1 := if(fn:exists($cat1/@last)) then fn:boolean(fn:data($cat1/@last)) else fn:false()
   return block {
     local:createCategory($menu, $moduleUri, $cat1, $last1);
-    for $cat2 in $cat1/category2
+    for $cat2 in $cat1/category
     let $last2 := if(fn:exists($cat2/@last)) then fn:boolean(fn:data($cat2/@last)) else fn:false()
     let $menu2 := $menu/li[fn:last()]/ul
     return block {
       local:createCategory($menu2, $moduleUri, $cat2, $last2);
-      for $cat3 in $cat2/category3
+      for $cat3 in $cat2/category
       let $last3 := if(fn:exists($cat3/@last)) then fn:boolean(fn:data($cat3/@last)) else fn:false()
       let $menu3 := $menu/li[fn:last()]/ul/li[fn:last()]/ul
       return block {
@@ -379,14 +379,14 @@ declare sequential function local:configure-xhtml ($xhtml, $stepsFromIndex as xs
 };
 
 declare sequential function local:createModuleTable() {
-  for $cat1 in $leftMenu/category1
+  for $cat1 in $leftMenu/category
   return block {
     local:createModuleHelper($table, $cat1);
-    for $cat2 in $cat1/category2
+    for $cat2 in $cat1/category
     let $table2 := $table/li[fn:last()]/ul
     return block {
       local:createModuleHelper($table2, $cat2);
-      for $cat3 in $cat2/category3
+      for $cat3 in $cat2/category
       let $table3 := $table/li[fn:last()]/ul/li[fn:last()]/ul
       return block {
         local:createModuleHelper($table3, $cat3);
