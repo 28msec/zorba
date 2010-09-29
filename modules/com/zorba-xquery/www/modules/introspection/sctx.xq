@@ -333,3 +333,13 @@ declare function sctx:copy-namespaces-mode() as xs:string+ external;
  :         or the empty sequence otherwise.
  :)
 declare function sctx:option($name as xs:QName) as xs:string? external;
+
+(:~
+ : Retrieves the list of annotations declared for the given function.
+ :
+ : @param $name the name of the function
+ : @param $arity the number of arguments the function takes
+ : @return the list of annotations
+ :)
+declare function sctx:function-annotations($name as xs:QName, $arity as xs:integer) as xs:QName* external;
+

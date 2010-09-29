@@ -1198,6 +1198,56 @@ public:
 };
 
 
+/**
+ * 
+ *      sc:option
+ *    
+ * Author: Zorba Team
+ */
+class FunctionAnnotationsIteratorState : public PlanIteratorState
+{
+public:
+  const function* theFunction; //the function
+  ulong thePosition; //current position
+
+  FunctionAnnotationsIteratorState();
+
+  ~FunctionAnnotationsIteratorState();
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+class FunctionAnnotationsIterator : public NaryBaseIterator<FunctionAnnotationsIterator, FunctionAnnotationsIteratorState>
+{ 
+public:
+  SERIALIZABLE_CLASS(FunctionAnnotationsIterator);
+
+  SERIALIZABLE_CLASS_CONSTRUCTOR2T(FunctionAnnotationsIterator,
+    NaryBaseIterator<FunctionAnnotationsIterator, FunctionAnnotationsIteratorState>);
+
+  void serialize( ::zorba::serialization::Archiver& ar)
+  {
+    serialize_baseclass(ar,
+    (NaryBaseIterator<FunctionAnnotationsIterator, FunctionAnnotationsIteratorState>*)this);
+  }
+
+  FunctionAnnotationsIterator(
+    static_context* sctx,
+    const QueryLoc& loc,
+    std::vector<PlanIter_t>& children)
+    : 
+    NaryBaseIterator<FunctionAnnotationsIterator, FunctionAnnotationsIteratorState>(sctx, loc, children)
+  {}
+
+  virtual ~FunctionAnnotationsIterator();
+
+  void accept(PlanIterVisitor& v) const;
+
+  bool nextImpl(store::Item_t& result, PlanState& aPlanState) const;
+};
+
+
 }
 #endif
 /*

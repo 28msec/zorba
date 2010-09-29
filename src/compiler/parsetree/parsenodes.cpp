@@ -680,9 +680,9 @@ void OptionDecl::accept( parsenode_visitor &v ) const
 /*******************************************************************************
   [27] Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
 ********************************************************************************/
-Annotation::Annotation(const QueryLoc& loc_,
+AnnotationParsenode::AnnotationParsenode(const QueryLoc& loc_,
                        QName* qname,
-                       AnnotationLiteralList* literal_list)
+                       AnnotationLiteralListParsenode* literal_list)
   :
   parsenode(loc_),
   qname_h(qname),
@@ -690,29 +690,29 @@ Annotation::Annotation(const QueryLoc& loc_,
 {
 }
 
-void Annotation::accept( parsenode_visitor &v ) const
+void AnnotationParsenode::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
 }
 
 
-AnnotationList::AnnotationList(const QueryLoc& loc_,
-                               Annotation* annotation)
+AnnotationListParsenode::AnnotationListParsenode(const QueryLoc& loc_,
+                               AnnotationParsenode* annotation)
   :
   parsenode(loc_)
 {
   push_back(annotation);
 }
 
-void AnnotationList::accept( parsenode_visitor &v ) const
+void AnnotationListParsenode::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
 }
 
 
-AnnotationLiteralList::AnnotationLiteralList(const QueryLoc& loc_,
+AnnotationLiteralListParsenode::AnnotationLiteralListParsenode(const QueryLoc& loc_,
                                          exprnode* literal)
   :
   parsenode(loc_)
@@ -720,7 +720,7 @@ AnnotationLiteralList::AnnotationLiteralList(const QueryLoc& loc_,
   push_back(literal);
 }
 
-void AnnotationLiteralList::accept( parsenode_visitor &v ) const
+void AnnotationLiteralListParsenode::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
   END_VISITOR();
@@ -742,7 +742,7 @@ VarDecl::VarDecl(
     rchandle<QName> varname,
     rchandle<SequenceType> type_decl,
     rchandle<exprnode> init_expr,
-    rchandle<AnnotationList> annotations,
+    rchandle<AnnotationListParsenode> annotations,
     bool external)
   :
   VarDeclWithInit(loc, varname, type_decl, init_expr),
@@ -825,7 +825,7 @@ FunctionDecl::FunctionDecl(
     rchandle<SequenceType> _return_type_h,
     rchandle<exprnode> _body_h,
     enum ParseConstants::function_type_t _type,
-    rchandle<AnnotationList> annotations)
+    rchandle<AnnotationListParsenode> annotations)
   :
   XQDocumentable(loc_),
   name_h(_name_h),
@@ -857,7 +857,7 @@ int FunctionDecl::get_param_count() const
 }
 
 
-void FunctionDecl::set_annotations(rchandle<AnnotationList> annotations)
+void FunctionDecl::set_annotations(rchandle<AnnotationListParsenode> annotations)
 {
    annotations_h = annotations;
    parse_annotations();

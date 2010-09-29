@@ -79,6 +79,7 @@ LIST(APPEND FUNCTIONS_SRCS
     library.cpp
     Numerics.cpp
     signature.cpp
+    annotation.cpp
     InternalOperators.cpp
     nodeid_internal.cpp
     func_numerics_impl.cpp

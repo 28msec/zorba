@@ -869,6 +869,40 @@ OptionIterator::~OptionIterator() {}
 // </OptionIterator>
 
 
+// <FunctionAnnotationsIterator>
+const char* FunctionAnnotationsIterator::class_name_str = "FunctionAnnotationsIterator";
+FunctionAnnotationsIterator::class_factory<FunctionAnnotationsIterator>
+FunctionAnnotationsIterator::g_class_factory;
+
+const serialization::ClassVersion 
+FunctionAnnotationsIterator::class_versions[] ={{ 1, 0x000905, false}};
+
+const int FunctionAnnotationsIterator::class_versions_count =
+sizeof(FunctionAnnotationsIterator::class_versions)/sizeof(struct serialization::ClassVersion);
+
+void FunctionAnnotationsIterator::accept(PlanIterVisitor& v) const {
+  v.beginVisit(*this);
+
+  std::vector<PlanIter_t>::const_iterator lIter = theChildren.begin();
+  std::vector<PlanIter_t>::const_iterator lEnd = theChildren.end();
+  for ( ; lIter != lEnd; ++lIter ){
+    (*lIter)->accept(v);
+  }
+
+  v.endVisit(*this);
+}
+
+FunctionAnnotationsIterator::~FunctionAnnotationsIterator() {}
+
+FunctionAnnotationsIteratorState::FunctionAnnotationsIteratorState() {}
+
+
+void FunctionAnnotationsIteratorState::init(PlanState& planState) {
+  PlanIteratorState::init(planState);
+}
+// </FunctionAnnotationsIterator>
+
+
 
 }
 

@@ -1631,12 +1631,12 @@ VarNameAndType :
     }
   | DECLARE AnnotationList VARIABLE DOLLAR QNAME
     {
-      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($5), NULL, static_cast<AnnotationList*>($2));
+      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($5), NULL, static_cast<AnnotationListParsenode*>($2));
       dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
     }
   | DECLARE AnnotationList VARIABLE DOLLAR QNAME TypeDeclaration
     {
-      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($5), dynamic_cast<SequenceType *>($6), static_cast<AnnotationList*>($2));
+      $$ = new VarNameAndType(LOC(@$), static_cast<QName*>($5), dynamic_cast<SequenceType *>($6), static_cast<AnnotationListParsenode*>($2));
       dynamic_cast<VarNameAndType*>($$)->setComment(SYMTAB($1));
     }
   ;
@@ -2145,11 +2145,11 @@ FlowCtlStatement
 AnnotationList
     :   Annotation
         {
-            $$ = new AnnotationList( LOC(@$), static_cast<Annotation*>($1));
+            $$ = new AnnotationListParsenode( LOC(@$), static_cast<AnnotationParsenode*>($1));
         }
     |   AnnotationList Annotation
         {
-            static_cast<AnnotationList*>($1)->push_back(static_cast<Annotation*>($2));
+            static_cast<AnnotationListParsenode*>($1)->push_back(static_cast<AnnotationParsenode*>($2));
             $$ = $1;
         }
     ;
@@ -2157,22 +2157,22 @@ AnnotationList
 Annotation
     :   ANNOTATION_QNAME_SVAL
         {
-            $$ = new Annotation( LOC(@$), new QName(LOC(@$), SYMTAB($1)), NULL);
+            $$ = new AnnotationParsenode( LOC(@$), new QName(LOC(@$), SYMTAB($1)), NULL);
         }
     |   ANNOTATION_QNAME_SVAL LPAR AnnotationLiteralList RPAR
         {
-            $$ = new Annotation( LOC(@$), new QName(LOC(@$), SYMTAB($1)), static_cast<AnnotationLiteralList*>($3));
+            $$ = new AnnotationParsenode( LOC(@$), new QName(LOC(@$), SYMTAB($1)), static_cast<AnnotationLiteralListParsenode*>($3));
         }
     ;
 
 AnnotationLiteralList
     :   Literal
         {
-            $$ = new AnnotationLiteralList( LOC(@$), $1);
+            $$ = new AnnotationLiteralListParsenode( LOC(@$), $1);
         }
     |   AnnotationLiteralList COMMA Literal
         {
-            static_cast<AnnotationLiteralList*>($1)->push_back($3);
+            static_cast<AnnotationLiteralListParsenode*>($1)->push_back($3);
             $$ = $1;
         }
     ;
@@ -2186,7 +2186,7 @@ FunctionDecl
     |   DECLARE AnnotationList FunctionDecl2
         {
             static_cast<FunctionDecl*>($3)->setComment( SYMTAB($1) );
-            static_cast<FunctionDecl*>($3)->set_annotations(static_cast<AnnotationList*>($2));
+            static_cast<FunctionDecl*>($3)->set_annotations(static_cast<AnnotationListParsenode*>($2));
             $$ = $3;
         }
         /* TODO: delete

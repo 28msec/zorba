@@ -3285,8 +3285,8 @@ void* begin_visit(const VFO_DeclList& v)
 
         // update the isDeterministic flag with the value found in the func_decl
         f->setDeterministic(func_decl->is_deterministic());
-
         f->setPrivate(func_decl->is_private());
+        f->setAnnotations(new AnnotationList(func_decl->get_annotations()));
 
         // continue with the next declaration, because we don't add already
         // built-in functions to the static context
@@ -3326,6 +3326,7 @@ void* begin_visit(const VFO_DeclList& v)
                                 func_decl->is_deterministic(),
                                 ef);
       f->setPrivate(func_decl->is_private());
+      f->setAnnotations(new AnnotationList(func_decl->get_annotations()));
       break;
     }
     case ParseConstants::fn_sequential:
@@ -3501,7 +3502,7 @@ void end_visit(const VarNameAndType& v, void* /*visit_state*/)
 /*******************************************************************************
   [27] Annotation ::= "%" EQName  ("(" Literal  ("," Literal)* ")")?
 ********************************************************************************/
-void* begin_visit(const Annotation& v)
+void* begin_visit(const AnnotationParsenode& v)
 {
   TRACE_VISIT();
 
@@ -3511,29 +3512,29 @@ void* begin_visit(const Annotation& v)
   return no_state;
 }
 
-void end_visit(const Annotation& v, void* /*visit_state*/)
+void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 }
 
-void* begin_visit(const AnnotationList& v)
+void* begin_visit(const AnnotationListParsenode& v)
 {
   TRACE_VISIT();
   return no_state;
 }
 
-void end_visit(const AnnotationList& v, void* /*visit_state*/)
+void end_visit(const AnnotationListParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 }
 
-void* begin_visit(const AnnotationLiteralList& v)
+void* begin_visit(const AnnotationLiteralListParsenode& v)
 {
   TRACE_VISIT();
   return no_state;
 }
 
-void end_visit(const AnnotationLiteralList& v, void* /*visit_state*/)
+void end_visit(const AnnotationLiteralListParsenode& v, void* /*visit_state*/)
 {
   TRACE_VISIT_OUT();
 }
@@ -3729,6 +3730,7 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
     udf->setBody(body);
     udf->setArgVars(args);
     udf->setPrivate(v.is_private());
+    udf->setAnnotations(new AnnotationList(v.get_annotations()));
     break;
   }
   case ParseConstants::fn_extern:

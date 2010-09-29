@@ -55,7 +55,7 @@ function::function(const signature& sig)
 
   setDeterministic(true);
 
-  zorba::serialization::Archiver& ar = 
+  zorba::serialization::Archiver& ar =
   *::zorba::serialization::ClassSerializer::getInstance()->
   getArchiverForHardcodedObjects();
 

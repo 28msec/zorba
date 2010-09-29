@@ -300,6 +300,16 @@ PlanIter_t fn_zorba_introspect_sctx_option::codegen(
   return new OptionIterator(sctx, loc, argv);
 }
 
+PlanIter_t fn_zorba_introspect_sctx_function_annotations::codegen(
+  CompilerCB*,
+  static_context* sctx,
+  const QueryLoc& loc,
+  std::vector<PlanIter_t>& argv,
+  AnnotationHolder& ann) const
+{
+  return new FunctionAnnotationsIterator(sctx, loc, argv);
+}
+
 void populate_context_sctx(static_context* sctx)
 {
   DECL(sctx, fn_zorba_introspect_sctx_is_declared_collection,
@@ -442,6 +452,13 @@ void populate_context_sctx(static_context* sctx)
       (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","option"),
       GENV_TYPESYSTEM.QNAME_TYPE_ONE,
       GENV_TYPESYSTEM.STRING_TYPE_QUESTION));
+
+
+  DECL(sctx, fn_zorba_introspect_sctx_function_annotations,
+      (createQName("http://www.zorba-xquery.com/modules/introspection/sctx","fn-zorba-introspect-sctx","function-annotations"),
+      GENV_TYPESYSTEM.QNAME_TYPE_ONE,
+      GENV_TYPESYSTEM.INTEGER_TYPE_ONE,
+      GENV_TYPESYSTEM.QNAME_TYPE_STAR));
 
 }
 

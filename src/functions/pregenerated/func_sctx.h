@@ -416,6 +416,20 @@ public:
 };
 
 
+//fn-zorba-introspect-sctx:function-annotations
+class fn_zorba_introspect_sctx_function_annotations : public function
+{
+public:
+  fn_zorba_introspect_sctx_function_annotations(const signature& sig)
+    :
+    function(sig, FunctionConsts::FN_ZORBA_INTROSPECT_SCTX_FUNCTION_ANNOTATIONS_2)
+  {
+  }
+
+  CODEGEN_DECL();
+};
+
+
 } //namespace zorba
 
 

@@ -250,6 +250,8 @@ namespace zorba{
 
     class OptionIterator;
 
+    class FunctionAnnotationsIterator;
+
     class SqrtIterator;
 
     class ExpIterator;
@@ -809,6 +811,9 @@ public:
 
     virtual void beginVisit ( const OptionIterator& ) = 0;
     virtual void endVisit   ( const OptionIterator& ) = 0;
+
+    virtual void beginVisit ( const FunctionAnnotationsIterator& ) = 0;
+    virtual void endVisit   ( const FunctionAnnotationsIterator& ) = 0;
 
     virtual void beginVisit ( const SqrtIterator& ) = 0;
     virtual void endVisit   ( const SqrtIterator& ) = 0;

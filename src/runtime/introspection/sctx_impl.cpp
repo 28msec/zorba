@@ -17,6 +17,7 @@
 
 #include "zorbaerrors/Assert.h"
 #include "zorbaerrors/error_messages.h"
+#include "zorbatypes/numconversions.h"
 
 #include "system/globalenv.h"
 
@@ -37,6 +38,7 @@
 #include "store/api/iterator.h"
 #include "store/api/collection.h"
 #include "store/api/store.h"
+
 
 #ifndef ZORBA_NO_XMLSCHEMA
 #include "types/schema/xercesIncludes.h"
@@ -1151,5 +1153,51 @@ OptionIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState)
   }
   STACK_END (lState);
 }
+
+/*******************************************************************************
+********************************************************************************/
+FunctionAnnotationsIteratorState::~FunctionAnnotationsIteratorState()
+{
+}
+
+void FunctionAnnotationsIteratorState::reset(PlanState& planState)
+{
+  PlanIteratorState::reset(planState);
+  theFunction = NULL;
+  thePosition = 0;
+}
+
+bool
+FunctionAnnotationsIterator::nextImpl(store::Item_t& aResult, PlanState& aPlanState) const
+{
+  FunctionAnnotationsIteratorState *lState;
+  store::Item_t      lName;
+  store::Item_t      lArity;
+  store::Item_t      temp;
+  xqp_int            arity;
+
+  DEFAULT_STACK_INIT(FunctionAnnotationsIteratorState, lState, aPlanState);
+
+  consumeNext(lName, theChildren[0].getp(), aPlanState);
+  consumeNext(lArity, theChildren[1].getp(), aPlanState);
+
+  NumConversions::integerToInt(lArity->getIntegerValue(), arity);
+  lState->theFunction = theSctx->lookup_fn(lName.getp(), arity);
+  lState->thePosition = 0;
+  if (lState->theFunction != NULL && lState->theFunction->getAnnotationList() == NULL)   // no annotations
+    lState->theFunction = NULL;
+
+  while (lState->theFunction != NULL
+         &&
+         lState->thePosition < lState->theFunction->getAnnotationList()->size())
+  {
+    temp = lState->theFunction->getAnnotationList()->getAnnotation(lState->thePosition)->getQName();
+    STACK_PUSH(GENV_ITEMFACTORY->createQName(aResult, temp->getNamespace()->c_str(), temp->getPrefix()->c_str(), temp->getLocalName()->c_str()), lState);
+    ++lState->thePosition;
+  }
+
+  STACK_END (lState);
+}
+
 
 } /* namespace zorba */

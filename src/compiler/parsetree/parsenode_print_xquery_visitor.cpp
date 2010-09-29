@@ -79,11 +79,11 @@ void* begin_visit(const AbbrevForwardStep& n)
 
 DEFAULT_END_VISIT(AbbrevForwardStep)
 
-DEFAULT_VISIT (Annotation)
+DEFAULT_VISIT (AnnotationParsenode)
 
-DEFAULT_VISIT (AnnotationList)
+DEFAULT_VISIT (AnnotationListParsenode)
 
-DEFAULT_VISIT (AnnotationLiteralList)
+DEFAULT_VISIT (AnnotationLiteralListParsenode)
 
 DEFAULT_BEGIN_VISIT (AnyKindTest)
 

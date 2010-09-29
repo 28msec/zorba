@@ -380,6 +380,9 @@ namespace zorba {
     void beginVisit( const OptionIterator& );
     void endVisit  ( const OptionIterator& );
 
+    void beginVisit( const FunctionAnnotationsIterator& );
+    void endVisit  ( const FunctionAnnotationsIterator& );
+
     void beginVisit( const SqrtIterator& );
     void endVisit  ( const SqrtIterator& );
 

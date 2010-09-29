@@ -22,6 +22,7 @@
 
 #include "functions/function_consts.h"
 #include "functions/signature.h"
+#include "functions/annotation.h"
 
 #include "compiler/parser/parse_constants.h"
 #include "compiler/parser/query_loc.h"
@@ -47,10 +48,12 @@ protected:
 	signature                    theSignature;
   FunctionConsts::FunctionKind theKind;
   uint32_t                     theFlags;
+  AnnotationList_t             theAnnotationList;
+
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(function)
-  SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, theSignature)
+  SERIALIZABLE_ABSTRACT_CLASS(function);
+  SERIALIZABLE_CLASS_CONSTRUCTOR3(function, SimpleRCObject, theSignature);
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
@@ -118,6 +121,10 @@ public:
   bool isUpdating() const { return getUpdateType() == UPDATE_EXPR; }
 
   bool isSequential() const { return getUpdateType() == SEQUENTIAL_EXPR; }
+
+  void setAnnotations(AnnotationList_t annotations) { theAnnotationList = annotations; }
+
+  const AnnotationList* getAnnotationList() const { return theAnnotationList.getp(); }
 
   virtual bool isBuiltin() const { return true; }
 

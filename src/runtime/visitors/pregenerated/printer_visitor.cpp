@@ -1660,6 +1660,20 @@ void PrinterVisitor::endVisit ( const OptionIterator& ) {
 // </OptionIterator>
 
 
+// <FunctionAnnotationsIterator>
+void PrinterVisitor::beginVisit ( const FunctionAnnotationsIterator& a) {
+  thePrinter.startBeginVisit("FunctionAnnotationsIterator", ++theId);
+  printCommons( &a, theId );
+  thePrinter.endBeginVisit( theId );
+}
+
+void PrinterVisitor::endVisit ( const FunctionAnnotationsIterator& ) {
+  thePrinter.startEndVisit();
+  thePrinter.endEndVisit();
+}
+// </FunctionAnnotationsIterator>
+
+
 // <SqrtIterator>
 void PrinterVisitor::beginVisit ( const SqrtIterator& a) {
   thePrinter.startBeginVisit("SqrtIterator", ++theId);

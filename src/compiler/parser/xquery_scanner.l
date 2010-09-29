@@ -904,6 +904,7 @@ PragmaChars                         ({NonSharpPragmaChar}|"#"+{NonSharpNonParPra
 
 <MODE_END_TAG>">" { POP_STATE(); return token::TAG_END; }
 <MODE_END_TAG>{QName}{S} { TRY_SVAL_TOKEN (QNAME_SVAL, put_qname(yytext, yyleng, false, true), yytext); }
+<MODE_END_TAG><<EOF>> { yylval->err = getDriver()->noClosingTagForElementConstructor(*yylloc); return token::UNRECOGNIZED; }
 
 
   /*______________________________________________________________________

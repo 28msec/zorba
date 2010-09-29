@@ -606,4 +606,31 @@
 
 </zorba:iterator>
 
+<!--
+/*******************************************************************************
+*******************************************************************************/
+-->
+<zorba:iterator name="FunctionAnnotationsIterator">
+
+    <zorba:description author="Zorba Team">
+      sc:option
+    </zorba:description>
+
+    <zorba:function>
+      <zorba:signature localname="function-annotations"
+                       prefix="fn-zorba-introspect-sctx">
+        <zorba:param>xs:QName</zorba:param>
+        <zorba:param>xs:integer</zorba:param>
+        <zorba:output>xs:QName*</zorba:output>
+      </zorba:signature>
+    </zorba:function>
+    
+    <zorba:state generateReset="false" generateDestructor="false">
+      <zorba:member type="const function*" name="theFunction"
+                  brief="the function"/>
+      <zorba:member type="ulong" name="thePosition" brief="current position"/>
+    </zorba:state>
+
+</zorba:iterator>
+
 </zorba:iterators>

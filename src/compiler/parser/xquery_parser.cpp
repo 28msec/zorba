@@ -3702,7 +3702,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 1633 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.varnametype) = new VarNameAndType(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(5) - (5)].expr)), NULL, static_cast<AnnotationList*>((yysemantic_stack_[(5) - (2)].node)));
+      (yyval.varnametype) = new VarNameAndType(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(5) - (5)].expr)), NULL, static_cast<AnnotationListParsenode*>((yysemantic_stack_[(5) - (2)].node)));
       dynamic_cast<VarNameAndType*>((yyval.varnametype))->setComment(SYMTAB((yysemantic_stack_[(5) - (1)].sval)));
     }
     break;
@@ -3712,7 +3712,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 1638 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-      (yyval.varnametype) = new VarNameAndType(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(6) - (5)].expr)), dynamic_cast<SequenceType *>((yysemantic_stack_[(6) - (6)].node)), static_cast<AnnotationList*>((yysemantic_stack_[(6) - (2)].node)));
+      (yyval.varnametype) = new VarNameAndType(LOC((yyloc)), static_cast<QName*>((yysemantic_stack_[(6) - (5)].expr)), dynamic_cast<SequenceType *>((yysemantic_stack_[(6) - (6)].node)), static_cast<AnnotationListParsenode*>((yysemantic_stack_[(6) - (2)].node)));
       dynamic_cast<VarNameAndType*>((yyval.varnametype))->setComment(SYMTAB((yysemantic_stack_[(6) - (1)].sval)));
     }
     break;
@@ -4464,7 +4464,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 2147 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-            (yyval.node) = new AnnotationList( LOC((yyloc)), static_cast<Annotation*>((yysemantic_stack_[(1) - (1)].node)));
+            (yyval.node) = new AnnotationListParsenode( LOC((yyloc)), static_cast<AnnotationParsenode*>((yysemantic_stack_[(1) - (1)].node)));
         }
     break;
 
@@ -4473,7 +4473,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 2151 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-            static_cast<AnnotationList*>((yysemantic_stack_[(2) - (1)].node))->push_back(static_cast<Annotation*>((yysemantic_stack_[(2) - (2)].node)));
+            static_cast<AnnotationListParsenode*>((yysemantic_stack_[(2) - (1)].node))->push_back(static_cast<AnnotationParsenode*>((yysemantic_stack_[(2) - (2)].node)));
             (yyval.node) = (yysemantic_stack_[(2) - (1)].node);
         }
     break;
@@ -4483,7 +4483,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 2159 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-            (yyval.node) = new Annotation( LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval))), NULL);
+            (yyval.node) = new AnnotationParsenode( LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(1) - (1)].sval))), NULL);
         }
     break;
 
@@ -4492,7 +4492,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 2163 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-            (yyval.node) = new Annotation( LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (1)].sval))), static_cast<AnnotationLiteralList*>((yysemantic_stack_[(4) - (3)].node)));
+            (yyval.node) = new AnnotationParsenode( LOC((yyloc)), new QName(LOC((yyloc)), SYMTAB((yysemantic_stack_[(4) - (1)].sval))), static_cast<AnnotationLiteralListParsenode*>((yysemantic_stack_[(4) - (3)].node)));
         }
     break;
 
@@ -4501,7 +4501,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 2170 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-            (yyval.node) = new AnnotationLiteralList( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr));
+            (yyval.node) = new AnnotationLiteralListParsenode( LOC((yyloc)), (yysemantic_stack_[(1) - (1)].expr));
         }
     break;
 
@@ -4510,7 +4510,7 @@ namespace zorba {
 /* Line 678 of lalr1.cc  */
 #line 2174 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
-            static_cast<AnnotationLiteralList*>((yysemantic_stack_[(3) - (1)].node))->push_back((yysemantic_stack_[(3) - (3)].expr));
+            static_cast<AnnotationLiteralListParsenode*>((yysemantic_stack_[(3) - (1)].node))->push_back((yysemantic_stack_[(3) - (3)].expr));
             (yyval.node) = (yysemantic_stack_[(3) - (1)].node);
         }
     break;
@@ -4531,7 +4531,7 @@ namespace zorba {
 #line 2187 "/home/colea/work/xquery_temp1/src/compiler/parser/xquery_parser.y"
     {
             static_cast<FunctionDecl*>((yysemantic_stack_[(3) - (3)].node))->setComment( SYMTAB((yysemantic_stack_[(3) - (1)].sval)) );
-            static_cast<FunctionDecl*>((yysemantic_stack_[(3) - (3)].node))->set_annotations(static_cast<AnnotationList*>((yysemantic_stack_[(3) - (2)].node)));
+            static_cast<FunctionDecl*>((yysemantic_stack_[(3) - (3)].node))->set_annotations(static_cast<AnnotationListParsenode*>((yysemantic_stack_[(3) - (2)].node)));
             (yyval.node) = (yysemantic_stack_[(3) - (3)].node);
         }
     break;
