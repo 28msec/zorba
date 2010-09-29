@@ -136,7 +136,10 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   if(consumeNext(item, theChildren[0].getp(), planState))
   {
     reqLang = item->getStringValue().getp();
-    
+
+    if(NULL != node && node->getNodeKind () == store::StoreConsts::attributeNode)
+      node = node->getParent();
+
     if (consumeNext(node, theChildren[1].getp(), planState)) {
       for(;
         NULL != node && node->getNodeKind () == store::StoreConsts::elementNode && ! found;
@@ -155,7 +158,7 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   }
 
   STACK_PUSH(GENV_ITEMFACTORY->createBoolean(result, found), state);
-  
+
   STACK_END (state);
 }
 
