@@ -95,7 +95,7 @@ bool URI::is_unreserved_char(uint32_t c)
 ********************************************************************************/
 bool URI::is_path_character(uint32_t c)
 {
-  std::string lPathChracters(";/:@&=+$,");
+  std::string lPathChracters(";/\\:@&=+$,");
   return ((c<128) && lPathChracters.find((char)c) != std::string::npos);
 }
 
