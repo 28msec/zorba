@@ -128,6 +128,7 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   store::Item*      attrName;
   store::Iterator_t theAttributes;
   bool              found = false;
+  bool              searchParent = true;
   xqpStringStore_t  reqLang;
 
   PlanIteratorState *state;
@@ -137,19 +138,17 @@ bool FnLangIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   {
     reqLang = item->getStringValue().getp();
 
-    if(NULL != node && node->getNodeKind () == store::StoreConsts::attributeNode)
-      node = node->getParent();
-
     if (consumeNext(node, theChildren[1].getp(), planState)) {
+
       for(;
-        NULL != node && node->getNodeKind () == store::StoreConsts::elementNode && ! found;
+        NULL != node && node->getNodeKind () == store::StoreConsts::elementNode && ! found && searchParent;
         node = node->getParent())
       {
         for ((theAttributes = node->getAttributes())->open ();
              ! found && theAttributes->next(attr); ) {
           attrName = attr->getNodeName();
-          found = (attrName->getLocalName()->byteEqual("lang", 4) &&
-                   attrName->getNamespace()->byteEqual(XML_NS, strlen(XML_NS)) &&
+          searchParent = !(attrName->getLocalName()->byteEqual("lang", 4) && attrName->getNamespace()->byteEqual(XML_NS, strlen(XML_NS)));
+          found = (!searchParent &&
                    xqp_string(attr->getStringValue()).matches(xqp_string("^" + reqLang->str() + "(-|$)"), "i"));
         }
         theAttributes->close();
