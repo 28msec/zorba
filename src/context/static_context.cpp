@@ -1489,23 +1489,26 @@ void static_context::get_namespace_bindings(
 
   while (sctx != NULL)
   {
-    if (theNamespaceBindings != NULL)
+    if (sctx->theNamespaceBindings != NULL)
     {
-      NamespaceBindings::iterator ite = theNamespaceBindings->begin();
-      NamespaceBindings::iterator end = theNamespaceBindings->end();
-      for (; ite !=  end; ++ite)
+      for (NamespaceBindings::iterator ite = sctx->theNamespaceBindings->begin();
+           ite != sctx->theNamespaceBindings->end();
+           ++ite)
       {
         std::pair<xqpStringStore_t, xqpStringStore_t> binding = (*ite);
+
+        // Ignore duplicates
         xqpStringStore* prefix = binding.first.getp();
         ulong numBindings = bindings.size();
-        ulong i = 0;
-        for (; i < numBindings; ++i)
-        {
+        bool found = 0;
+        for (unsigned int i = 0; i < numBindings; ++i)
           if (bindings[i].first->byteEqual(prefix))
+          {
+            found = 1;
             break;
-        }
+          }
 
-        if (i == numBindings)
+        if (!found)
           bindings.push_back(binding);
       }
     }
