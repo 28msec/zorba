@@ -56,7 +56,7 @@ namespace zorba { namespace emailmodule {
          (thePassword.compare(aPassword) == 0) && 
          (lHostAndMailbox.compare(theMailstream->original_mailbox) == 0) && 
          ((aFullOpen ? NIL : T) == theMailstream->halfopen))  {
-          // do nothing, theMailstream will be returned at the end of the function
+         // do nothing, theMailstream will be returned at the end of the function
       } else if ((theMailstream) && (theHost.compare(aHost) == 0)) {
         // use old stream to same host, but open new
         setUserName(aUsername);
@@ -333,7 +333,30 @@ namespace zorba { namespace emailmodule {
     MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true); 
     unsigned long lLenght;
     return std::string(mail_fetchtext_full(lSource, aMessageNumber, &lLenght, (aUid ? FT_UID : NIL))); 
-  }  
+  } 
+
+
+  std::string 
+  ImapClient::fetchFlags(const std::string& aHost,
+                       const std::string& aUserName,
+                       const std::string& aPassword,
+                       const std::string& aMailbox,
+                       unsigned long aMessageNumber,
+                       bool aUid) {
+
+    #include "linkage.c"
+    MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true);
+    char* lSequenceNumber;
+    std::stringstream lConverter;
+    lConverter << aMessageNumber;
+    lConverter >> lSequenceNumber; 
+    mail_fetchflags_full(lSource, lSequenceNumber, (aUid ? FT_UID : NIL));  
+    return "nnn";
+
+  }
+
+
+ 
 
 
   std::string

@@ -123,8 +123,17 @@ namespace zorba
                             const std::string& aUserName,
                             const std::string& aPassword,
                             const std::string& aMailbox,
-                            unsigned long aMesssageNumber,
+                            unsigned long aMessgetNumber,
                             bool aUid);
+
+      std::string fetchFlags(const std::string& aHost,
+                             const std::string& aUserName,
+                             const std::string& aPassword,
+                             const std::string& aMailbox,
+                             unsigned long aMessageNumber,
+                             bool aUid);
+
+
 
 
       std::string
@@ -207,7 +216,6 @@ namespace zorba
         }
       
       };
-      
       
       ImapClient(ImapClient const&) {};
       std::string theUserName;

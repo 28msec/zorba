@@ -229,4 +229,20 @@ declare %nondeterministic function imap:fetch-uid($host-info as element(imaps:ho
  : @error If any of the passed message number does not exist. 
  :)
 declare %nondeterministic function imap:fetch-message-sequence-number($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:long external;
- 
+
+
+(:~
+ : Fetches the flags for a given message number denoted by its message sequence number or optionally by its unique identifier.
+ : 
+ : @param $host-info describes the IMAP host, username and password.
+ : @param $mailbox is the mailbox for which to get the flags.
+ : @param $message-number is, depending on $uid, either the message sequence number or the unique identifier of a message.
+ : @param $uid when true, the passed message number is interpreted as unique identifier, otherwise as message sequence number.
+ : @return the flags for the message corresponding to the passed message number.
+ : @error If it wasn't possible to create a connection to the IMAP server.
+ : @error If the passed credentials were rejected by the IMAP server.
+ : @error If any of the specified mailbox does not exist.
+ : @error If any of the passed message number does not exist. 
+ :)
+declare %nondeterministic function imap:fetch-flags($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean?) as xs:boolean+ external;
+

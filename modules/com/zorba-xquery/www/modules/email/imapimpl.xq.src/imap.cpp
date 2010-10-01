@@ -350,7 +350,9 @@ CopyFunction::evaluate(
   // find out if we are working with uid's instead of sequence numbers.
   bool lUid = false;
   Item lItem;
-  if (aArgs[4]->next(lItem)) {
+  if
+
+   (aArgs[4]->next(lItem)) {
     lUid = lItem.getBooleanValue();
   }
   bool lCopy = false;
@@ -447,6 +449,43 @@ FetchFromFunction::evaluate(
   return ItemSequence_t(new SingletonItemSequence(
       theModule->getItemFactory()->createString(lResult)));
 }
+
+
+//*****************************************************************************
+
+FetchFlagsFunction::FetchFlagsFunction(const ImapModule* aModule)
+  : ImapFunction(aModule)
+{
+}
+
+ItemSequence_t
+FetchFlagsFunction::evaluate(
+  const StatelessExternalFunction::Arguments_t& aArgs,
+  const StaticContext*                          aSctxCtx,
+  const DynamicContext*                         aDynCtx) const
+{
+  std::string lHostName;
+  std::string lUserName;
+  std::string lPassword;
+  ImapFunction::getHostUserPassword(aArgs, 0, lHostName, lUserName, lPassword);
+  String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
+  unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
+  bool lUid = false;
+  Item lItem;
+  if (aArgs[3]->next(lItem)) {
+    lUid = lItem.getBooleanValue();
+  }
+  
+
+  String lResult = ImapClient::Instance().fetchFrom(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber);
+
+  return ItemSequence_t(new SingletonItemSequence(
+      theModule->getItemFactory()->createString(lResult)));
+}
+
+
+
+
 
 
 //*****************************************************************************
@@ -641,73 +680,74 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
   ImapFunction::createInnerNodeWithText(aModule, aParent,  "http://www.zorba-xquery.com/modules/email/email", "email", "mimeVersion", "string", "1.0");
   
 
-  ImapFunction::createContentTypeNode(aModule, aParent, ImapFunction::getContentType(lBody->type, lBody->subtype), "us-ascii", ImapFunction::getEncoding(lBody->encoding));
-
  
   // make a tolower version of the subtype
   
   std::string lSubType(lBody->subtype);
   std::transform(lSubType.begin(), lSubType.end(), lSubType.begin(), tolower);
-  
    
   /* creating the <body> node */ 
-  Item lBodyName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "body");
-  Item lBodyType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "bodyTypeChoice");
-  Item lBodyItem = aModule->getItemFactory()->createElementNode(aParent, lBodyName, lBodyType, false, false, ns_binding); 
+  static Item lBodyName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "body");
+  static Item lBodyType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "bodyTypeChoice");
+  static Item lBodyItem = aModule->getItemFactory()->createElementNode(aParent, lBodyName, lBodyType, false, false, ns_binding); 
   /* in case of non-multipart, just add the body to the message */
-  if (lBody->type != TYPEMULTIPART) {
-      // in this case just get the whole text body
-      std::string lBodyContent = ImapClient::Instance().fetchText(aHostName, aUserName, aPassword, aMailbox, aMessageNumber, aUid);  
-      ImapFunction::createBodyNode(aModule, lBodyItem, lBodyContent, lSubType);  
-  } else if (lBody->type == TYPEMULTIPART) {
-      // needed for creating multipart items
-      Item lMultipartParentName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipart");
-      Item lMultipartParentType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "innerMessageType");
-      Item lMultipartParent; 
-      // using a vector instead of a stack, because including stack will clash with the c-client include ... 
-      std::vector<BODY*> lBodies;
-      std::vector<Item> lParents;
-      std::vector<std::string> lSections;
-      lSections.push_back("");  
-      lBodies.push_back(lBody);
-      lParents.push_back(lBodyItem);
       
-      BODY* lCurrentBody;
-      Item lCurrentParent;
-      std::string lCurrentSection; 
-      // iterate and create all nodes (doing this recursive would have been nicer, but seems impossible without making a function containing a c-client structure in its signature, which seems impossible)
-      while (lBodies.size() > 0) {
-        lCurrentBody = lBodies.front();
-        lCurrentParent = lParents.front();
-        lCurrentSection = lSections.front(); 
-        lSections.erase(lSections.begin());
-        lParents.erase(lParents.begin()); 
-        lBodies.erase(lBodies.begin());
-        if (lCurrentBody->type != TYPEMULTIPART) {
-           std::string lSubType(lCurrentBody->subtype);                                                                  
-           std::transform(lSubType.begin(), lSubType.end(), lSubType.begin(), tolower);
-           lCurrentSection.erase(lCurrentSection.end() - 1);
-           std::string lBodyContent = ImapClient::Instance().fetchBodyFull(aHostName, aUserName, aPassword, aMailbox, aMessageNumber, lCurrentSection, aUid);  
-           ImapFunction::createBodyNode(aModule, lCurrentParent, lBodyContent, lSubType); 
-        } else {
-          lMultipartParent = aModule->getItemFactory()->createElementNode(lCurrentParent, lMultipartParentName, lMultipartParentType, false, false, ns_binding);
+  static Item lMultipartParentName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipart");
+  static Item lMultipartParentType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "multipartType");
+  Item lMultipartParent; 
+      // using a vector instead of a stack, because including stack will clash with the c-client include ... 
+  std::vector<BODY*> lBodies;
+  lBodies.push_back(lBody);
+  std::vector<Item> lParents;
+  lParents.push_back(lBodyItem);
+  std::vector<std::string> lSections;
+  lSections.push_back("");  
+  
+  /* make sure that the special case of a completely non-multipart message is handled correctly */
+  bool lNoMultipart = false;
+  if (lBody->type != TYPEMULTIPART) {
+    lNoMultipart = true;
+  }
 
-          PART* lPart = lCurrentBody->nested.part;
-          lBodies.insert(lBodies.begin(), &lPart->body);
-          lParents.insert(lParents.begin(), lMultipartParent);      
-          lSections.insert(lSections.begin(), lCurrentSection + "1.");
-          for (int j = 1; lPart->next; j++) {
-            lPart = lPart->next; 
-            std::stringstream lConverter;
-            lConverter << j+1 << "."; 
-            lSections.insert(lSections.begin() + j, lCurrentSection + lConverter.str());
-            lConverter.clear(); 
-            lBodies.insert(lBodies.begin() +j, &lPart->body);
-            lParents.insert(lParents.begin(), lMultipartParent);
-          }
-        }
-      } 
-    }
+  BODY* lCurrentBody;
+  Item lCurrentParent;
+  std::string lCurrentSection; 
+  // iterate and create all nodes (doing this recursive would have been nicer, but seems impossible without making a function containing a c-client structure in its signature, which seems impossible)
+  while (lBodies.size() > 0) {
+    lCurrentBody = lBodies.front();
+    lCurrentParent = lParents.front();
+    lCurrentSection = lSections.front(); 
+    lSections.erase(lSections.begin());
+    lParents.erase(lParents.begin()); 
+    lBodies.erase(lBodies.begin());
+    if (lCurrentBody->type != TYPEMULTIPART) {
+      std::string lSubType(lCurrentBody->subtype);                                                                  
+      std::transform(lSubType.begin(), lSubType.end(), lSubType.begin(), tolower);
+      // make sure that we haven't got a empty string (happens if there is no multipart in this message)
+      if (lCurrentSection.size() != 0) {
+        lCurrentSection.erase(lCurrentSection.end() - 1);
+      }
+      std::string lBodyContent = ImapClient::Instance().fetchBodyFull(aHostName, aUserName, aPassword, aMailbox, aMessageNumber, lNoMultipart ? "1" : lCurrentSection, aUid);  
+      ImapFunction::createContentNode(aModule, lCurrentParent, lBodyContent, ImapFunction::getContentType(lCurrentBody->type, lCurrentBody->subtype), "us-ascii", ImapFunction::getEncoding(lCurrentBody->encoding)); 
+ 
+    } else {
+      lMultipartParent = aModule->getItemFactory()->createElementNode(lCurrentParent, lMultipartParentName, lMultipartParentType, false, false, ns_binding);
+      ImapFunction::createContentTypeAttributes(aModule, lMultipartParent, ImapFunction::getContentType(lCurrentBody->type, lCurrentBody->subtype), "us-ascii", ImapFunction::getEncoding(lCurrentBody->encoding)); 
+      PART* lPart = lCurrentBody->nested.part;
+      lBodies.insert(lBodies.begin(), &lPart->body);
+      lParents.insert(lParents.begin(), lMultipartParent);      
+      lSections.insert(lSections.begin(), lCurrentSection + "1.");
+      for (int j = 1; lPart->next; ++j) {
+        lPart = lPart->next; 
+        std::stringstream lConverter;
+        lConverter << j+1 << "."; 
+        lSections.insert(lSections.begin() + j, lCurrentSection + lConverter.str());
+        lConverter.clear(); 
+        lBodies.insert(lBodies.begin() +j, &lPart->body);
+        lParents.insert(lParents.begin(), lMultipartParent);
+      }
+    } 
+  }
 }
 
 

@@ -218,6 +218,26 @@ namespace zorba {
 
  //*****************************************************************************
 
+  class FetchFlagsFunction : public ImapFunction
+  {
+    public:
+      FetchFlagsFunction(const ImapModule* aModule);
+
+      virtual String
+      getLocalName() const { return "fetch-flags"; }
+
+      virtual ItemSequence_t
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+
+  };
+
+
+
+ //*****************************************************************************
+
   class FetchSubjectFunction : public ImapFunction
   {
     public:

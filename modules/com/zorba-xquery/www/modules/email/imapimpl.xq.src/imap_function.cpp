@@ -169,12 +169,15 @@ ImapFunction::getDateTime(const std::string& aCClientDateTime) {
   lMonths.insert(std::pair<std::string, std::string> ("Jul", "07"));
   lMonths.insert(std::pair<std::string, std::string> ("Aug", "08"));
   lMonths.insert(std::pair<std::string, std::string> ("Sep", "09"));
-  lMonths.insert(std::pair<std::string, std::string> ("Okt", "10"));
+  lMonths.insert(std::pair<std::string, std::string> ("Oct", "10"));
   lMonths.insert(std::pair<std::string, std::string> ("Nov", "11"));
   lMonths.insert(std::pair<std::string, std::string> ("Dez", "12"));
     
   lResult << lMonths.find(lTokens[2])->second << "-";
-  // then push DD
+  // then push DD (and make sure that its DD and not just D)
+  if (lTokens[1].size() == 1) {
+    lResult << 0;
+  }
   lResult << lTokens[1] << "T";
   // now hh:mm:ss
   lResult << lTokens[4].substr(0,2) << ":" << lTokens[4].substr(3,2) << ":" << lTokens[4].substr(6,2);
@@ -270,21 +273,23 @@ ImapFunction::createInnerNodeWithText(const ImapModule* aModule,
 
 
 void
-ImapFunction::createBodyNode(const ImapModule* aModule, 
-                             Item& aParent,
-                             const std::string& aContent,
-                             const std::string& aSerialization)
+ImapFunction::createContentNode(const ImapModule* aModule,
+                   Item& aParent,
+                   const std::string& aContent,
+                   const std::string& aContentType,
+                   const std::string& aCharset,
+                   const std::string& aContentTransferEncoding)
+
 {  
- 
+
+  static Item lNullItem;
+   
   std::vector<std::pair<String, String> > null_binding;
-  Item lName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "body");
-  Item lType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "bodyType" );
+  Item lName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "content");
+  Item lType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "contentType" );
   Item lItem = aModule->getItemFactory()->createElementNode(aParent, lName, lType, false, false, null_binding);
-  Item lAttributeName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "serialization");
-  Item lAttributeType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "string");
-  Item lNullItem;
-  Item lAttributeText = aModule->getItemFactory()->createTextNode(lNullItem, String(aSerialization));  
-  Item lAttribute = aModule->getItemFactory()->createAttributeNode(lItem, lAttributeName, lAttributeType, lAttributeText); 
+  
+  createContentTypeAttributes(aModule, lItem, aContentType, aCharset, aContentTransferEncoding);
 
   aModule->getItemFactory()->createTextNode(lItem, String(aContent));
 
@@ -339,27 +344,31 @@ ImapFunction::createRecipentNode(const ImapModule* aModule,
   
 
 void 
-ImapFunction::createContentTypeNode(const ImapModule* aModule,
-                                    Item& aParent,
-                                    const std::string& aValue,
-                                    const std::string& aCharset,
-                                    const std::string& aTransferEncoding) {
+ImapFunction::createContentTypeAttributes(const ImapModule* aModule,
+                                          Item& aParent,
+                                          const std::string& aContentType,
+                                          const std::string& aCharset,
+                                          const std::string& aContentTransferEncoding) {
 
-  std::vector<std::pair<String, String> >  ns_binding;
-  ns_binding.push_back(std::pair<String, String>("email", "http://www.zorba-xquery.com/modules/email/email"));
+  static Item lNullItem;
+  /* build the value attribute */
+  Item lContentTypeName = aModule->getItemFactory()->createQName("", "", "contentType");
+  Item lContentTypeType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "contentTypeValue");
+  Item lContentTypeText = aModule->getItemFactory()->createTextNode(lNullItem, String(aContentType));
+  aModule->getItemFactory()->createAttributeNode(aParent, lContentTypeName, lContentTypeType, lContentTypeText);
 
+  /* build the charset attribute */
+  Item lCharsetName = aModule->getItemFactory()->createQName("", "", "charset");
+  Item lCharsetType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "string");
+  Item lCharsetText = aModule->getItemFactory()->createTextNode(lNullItem, String(aCharset));
+  aModule->getItemFactory()->createAttributeNode(aParent, lCharsetName, lCharsetType, lCharsetText);
 
-  Item lContentTypeName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "contentType");
-  Item lContentTypeType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", "contentType");
-  Item lContentTypeItem = aModule->getItemFactory()->createElementNode(aParent, lContentTypeName, lContentTypeType, false, false, ns_binding);
-
-  createInnerNodeWithText(aModule, lContentTypeItem, "http://www.zorba-xquery.com/modules/email/email", "email", "value", "contentTypeValue", aValue);
-
-  createInnerNodeWithText(aModule, lContentTypeItem, "http://www.zorba-xquery.com/modules/email/email", "email", "charset", "string", aCharset);
-
-  createInnerNodeWithText(aModule, lContentTypeItem, "http://www.zorba-xquery.com/modules/email/email", "email", "contentTransferEncoding", "cteType", aTransferEncoding);
+  /* build the contentTransferEncoding attribute */
+  Item lContentTransferName = aModule->getItemFactory()->createQName("", "", "contentTransferEncoding");
+  Item lContentTransferType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "cteType");
+  Item lContentTransferText = aModule->getItemFactory()->createTextNode(lNullItem, String(aContentTransferEncoding));
+  aModule->getItemFactory()->createAttributeNode(aParent, lContentTransferName, lContentTransferType, lContentTransferText);
  
-  
 
 }
 

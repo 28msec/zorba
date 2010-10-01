@@ -87,10 +87,12 @@ namespace zorba { namespace emailmodule {
                             const std::string& aContent);
 
     static void
-    createBodyNode(const ImapModule* aModule,
+    createContentNode(const ImapModule* aModule,
                    Item& aParent,
                    const std::string& aContent,
-                   const std::string& aSerialization);
+                   const std::string& contentType,
+                   const std::string& charset,
+                   const std::string& contentTransferEncoding);
  
      
      /*
@@ -113,7 +115,7 @@ namespace zorba { namespace emailmodule {
                        const char* aHost);
 
     static void 
-    createContentTypeNode(const ImapModule* aModule,
+    createContentTypeAttributes(const ImapModule* aModule,
                           Item& aParent,
                           const std::string& aValue,
                           const std::string& aCharset,

@@ -53,7 +53,6 @@ elementFormDefault="qualified">
 <sequence>
 <element name="envelope" type="tns:envelopeType" maxOccurs="1" minOccurs="1"/>
 <element name="mimeVersion" type="string" maxOccurs="1" minOccurs="1" default="1.0"/>
-<element name="contentType" type="tns:contentType" maxOccurs="1" minOccurs="1" />
 <element name="body" type="tns:bodyTypeChoice" maxOccurs="1" minOccurs="1"/>
 </sequence>
 </complexType>
@@ -82,40 +81,33 @@ elementFormDefault="qualified">
  </simpleType>
 
 
-
-<!-- definition of complex elements -->
  <complexType name="contentType">
- <sequence>
- <element name="value" type="tns:contentTypeValue" maxOccurs="1" minOccurs="1" default="text/plain"/>
-<!-- possibly charset is just unneeded --> 
-<element name="charset" type="string" maxOccurs="1" minOccurs="1" default="us-ascii"/>
- <element name="contentTransferEncoding" type="tns:cteType" maxOccurs="1" minOccurs="1" default="ENC7BIT"/>
- </sequence>
- </complexType>
-
- 
- <complexType name="bodyType">
   <simpleContent> 
     <extension base="string">
-        <attribute name="serialization" type="string" />
+        <attribute name="contentType" type="tns:contentTypeValue" />
+        <attribute name="charset" type="string" default="us-ascii" />
+        <attribute name="contentTransferEncoding" type="tns:cteType" default="ENC7BIT" />
     </extension>
   </simpleContent>
 </complexType>
 
               
- <complexType name="innerMessageType">
- <sequence>
- <element name="contentType" type="tns:contentType" maxOccurs="1" minOccurs="1"/>
- <element name="body" type="string" maxOccurs="1" minOccurs="1"/>
- </sequence>
+ <complexType name="multipartType">
+ <choice maxOccurs="unbounded">
+ <element name="content" type="tns:contentType"  minOccurs="1"/>
+ <element name="multipart" type="tns:multipartType"  minOccurs="1"/>
+ </choice>  
+   <attribute name="contentType" type="tns:contentTypeValue" />
+   <attribute name="charset" type="string" default="us-ascii" /> 
+   <attribute name="contentTransferEncoding" type="tns:cteType" default="ENC7BIT" />
  </complexType>
 
               
  <complexType name="bodyTypeChoice">
  <sequence>
  <choice>
- <element name="body" type="tns:bodyType" maxOccurs="1" minOccurs="1"/>
- <element name="multipart" type="tns:innerMessageType" minOccurs="1" maxOccurs="unbounded"/>
+ <element name="content" type="tns:contentType" maxOccurs="1" minOccurs="1"/>
+ <element name="multipart" type="tns:multipartType" minOccurs="1" maxOccurs="1"/>
  </choice>
  </sequence>
  </complexType>

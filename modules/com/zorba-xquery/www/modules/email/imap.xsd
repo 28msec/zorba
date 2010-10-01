@@ -37,9 +37,22 @@
     </xs:sequence>      
 </xs:complexType>    
 
+
+<xs:complexType name="flagsType">
+    <xs:sequence>
+      <xs:element name="seen" type="xs:boolean" />
+      <xs:element name="deleted" type="xs:boolean" />
+      <xs:element name="flagged" type="xs:boolean" />
+      <xs:element name="answered" type="xs:boolean" />
+      <xs:element name="old" type="xs:boolean" />
+      <xs:element name="draft" type="xs:boolean" />
+    </xs:sequence>
+</xs:complexType>
+
+
 <xs:element name="mailbox" type="imap:mailboxType" />
 <xs:element name="status" type="imap:statusType" />
 <xs:element name="hostInfo" type="imap:hostInfoType" />
-
+<xs:element name="flags" type="imap:flagsType" />
 
 </xs:schema>
