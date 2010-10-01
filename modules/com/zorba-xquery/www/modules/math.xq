@@ -222,6 +222,29 @@ declare function math:atanh($arg as xs:double) as xs:double external;
 declare function math:pi() as xs:double external;
 
 (:~
+ : Convert angle from degrees to radians. <br/>
+ : The parameter is first converted to value range of (-360, 360).
+ : 
+ : @param $deg angle in  degrees
+ : @return value in radians (-2PI, 2PI)
+ :)
+declare function math:deg-to-rad($deg as xs:double) as xs:double
+{
+  ($deg mod 360) * 2 * math:pi() div 360
+};
+
+(:~
+ : Convert angle from radians to degrees. <br/>
+ : 
+ : @param $rad value in radians
+ : @return value in degrees (-360, 360)
+ :)
+declare function math:rad-to-deg($rad as xs:double) as xs:double
+{
+  ($rad * 360 div 2 div math:pi()) mod 360
+};
+
+(:~
  : Checks if the double value is positive or negative infinite.
  :
  : @param $arg the double to be checked
