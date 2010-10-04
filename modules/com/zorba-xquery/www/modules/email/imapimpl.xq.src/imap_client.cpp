@@ -336,7 +336,7 @@ namespace zorba { namespace emailmodule {
   } 
 
 
-  std::string 
+  void 
   ImapClient::fetchFlags(const std::string& aHost,
                        const std::string& aUserName,
                        const std::string& aPassword,
@@ -350,8 +350,9 @@ namespace zorba { namespace emailmodule {
     std::stringstream lConverter;
     lConverter << aMessageNumber;
     lConverter >> lSequenceNumber; 
+    theFlags.clear(); 
+    // this call triggers the mm_flags callback which then populates theFlags. 
     mail_fetchflags_full(lSource, lSequenceNumber, (aUid ? FT_UID : NIL));  
-    return "nnn";
 
   }
 
@@ -587,6 +588,18 @@ namespace zorba { namespace emailmodule {
     theFoundSequenceNumbers.push_back(aSequenceNumber);
   }
 
+  void 
+  ImapClient::addFlag(int aFlag) {
+    theFlags.push_back(aFlag);
+  }
+
+      
+  std::vector<int> 
+  ImapClient::getFlags() {
+    return theFlags;
+  }
+
+
 } /* emailmodule */ } /* zorba */
 
 
@@ -596,7 +609,36 @@ namespace zorba { namespace emailmodule {
   }
   void mm_exists (MAILSTREAM *stream,unsigned long number) {}
   void mm_expunged (MAILSTREAM *stream,unsigned long number) {}
-  void mm_flags (MAILSTREAM *stream,unsigned long number) {}
+  
+  /*
+   * Callback for when mail_fetchflags(_full) is called.
+   */ 
+  void mm_flags (MAILSTREAM *stream,unsigned long number) {
+    int flagNumber; 
+    switch(number) {
+      case fSEEN : 
+        flagNumber = 1;  
+      break;
+      case fDELETED : 
+        flagNumber = 2;
+      break;
+      case fFLAGGED :
+        flagNumber = 3;
+      break;
+      case fANSWERED :
+        flagNumber = 4;
+      break;
+      case fOLD :
+        flagNumber = 5;
+      break;
+      case fDRAFT :
+        flagNumber = 6;
+      break;  
+    }
+    if (flagNumber > 0) {
+      zorba::emailmodule::ImapClient::Instance().addFlag(flagNumber);
+    }
+  }
 
   /* Callback for when mail_list or mail_listsub are called ... */
   void mm_list (MAILSTREAM *stream,int delimiter,char *mailbox, long attributes) {

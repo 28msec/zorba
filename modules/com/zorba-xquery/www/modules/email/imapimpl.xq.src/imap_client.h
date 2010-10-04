@@ -126,12 +126,12 @@ namespace zorba
                             unsigned long aMessgetNumber,
                             bool aUid);
 
-      std::string fetchFlags(const std::string& aHost,
-                             const std::string& aUserName,
-                             const std::string& aPassword,
-                             const std::string& aMailbox,
-                             unsigned long aMessageNumber,
-                             bool aUid);
+      void fetchFlags(const std::string& aHost,
+                      const std::string& aUserName,
+                      const std::string& aPassword,
+                      const std::string& aMailbox,
+                      unsigned long aMessageNumber,
+                      bool aUid);
 
 
 
@@ -200,6 +200,9 @@ namespace zorba
     
       void addFoundSequenceNumber(long aSequenceNumber);
       
+      void addFlag(int aFlag);
+
+      std::vector<int> getFlags();
       
       void addListedMailbox(const std::string& aListedMail);
       
@@ -238,7 +241,7 @@ namespace zorba
       unsigned long theUIDValidity;
       std::vector<std::string> theListedMailboxes;
       std::vector<long> theFoundSequenceNumbers;
-
+      std::vector<int> theFlags;
     };
 
   }//namespace email

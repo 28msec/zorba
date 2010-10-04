@@ -476,11 +476,18 @@ FetchFlagsFunction::evaluate(
     lUid = lItem.getBooleanValue();
   }
   
+  // null parent
+  Item lParent;
+  
+  ImapClient::Instance().fetchFlags(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber, lUid);
+  
+  std::vector<int> lFlags = ImapClient::Instance().getFlags();
 
-  String lResult = ImapClient::Instance().fetchFrom(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber);
+  Item lFlagsItem;
+  
+  ImapFunction::createFlagsNode(theModule, lParent, lFlagsItem, lFlags);
 
-  return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createString(lResult)));
+  return ItemSequence_t(new SingletonItemSequence(lFlagsItem));
 }
 
 
@@ -748,6 +755,7 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
       }
     } 
   }
+
 }
 
 

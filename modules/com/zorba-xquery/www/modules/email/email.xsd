@@ -5,6 +5,28 @@ xmlns:tns="http://www.zorba-xquery.com/modules/email/email"
 elementFormDefault="qualified">
 
 
+ <complexType name="emptyType">
+  <complexContent>
+   <restriction base="anyType">
+   </restriction>
+  </complexContent>
+ </complexType>
+
+
+ <complexType name="flagsType">
+  <all>
+   <element name="seen" type="tns:emptyType"/>
+   <element name="deleted" type="tns:emptyType" />
+   <element name="flagged" type="tns:emptyType" />
+   <element name="answered" type="tns:emptyType" />
+   <element name="old" type="tns:emptyType" />
+   <element name="draft" type="tns:emptyType" />        
+  </all>           
+  
+ </complexType>    
+ 
+ <element name="flags" type="tns:flagsType"/>
+ 
             
             
 <!-- definition of simple elements -->
@@ -52,6 +74,7 @@ elementFormDefault="qualified">
 <complexType name="messageType"> 
 <sequence>
 <element name="envelope" type="tns:envelopeType" maxOccurs="1" minOccurs="1"/>
+<!-- <element name="flags" type="tns:flagsType" maxOccurs="1" minOccurs="0" /> -->
 <element name="mimeVersion" type="string" maxOccurs="1" minOccurs="1" default="1.0"/>
 <element name="body" type="tns:bodyTypeChoice" maxOccurs="1" minOccurs="1"/>
 </sequence>

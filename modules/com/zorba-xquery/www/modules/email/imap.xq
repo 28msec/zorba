@@ -293,7 +293,7 @@ declare function imap:fetch-from($host-info as element(imaps:hostInfo), $mailbox
  : @error If it wasn't possible to create a connection to the IMAP server.
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If any of the specified mailbox does not exist.
- : @error If any of the passed message number does not exist.
+ : @error If the passed message number does not exist.
  :)
 declare function imap:fetch-uid($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:long
 {
@@ -312,7 +312,7 @@ declare function imap:fetch-uid($host-info as element(imaps:hostInfo), $mailbox 
  : @error If it wasn't possible to create a connection to the IMAP server.
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If any of the specified mailbox does not exist.
- : @error If any of the passed message number does not exist.
+ : @error If the passed message number does not exist.
  :)
 declare function imap:fetch-message-sequence-number($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as xs:long
 {
@@ -320,5 +320,22 @@ declare function imap:fetch-message-sequence-number($host-info as element(imaps:
 };
 
 
-
+(:~
+ : Fetches the flags of a message.
+ :
+ : @param $host-info describes the IMAP host, username and password.
+ : @param $mailbox is the mailbox containing the specified message.
+ : @param $message-number is either the message sequence number or the unique identifier of the message.
+ : @param $uid defines if the message number shall be intepreted as message sequence number (default) or unique identifier.
+ : @return the flags of the specified message.
+ : @error If it wasn't possible to create a connection to the IMAP server.
+ : @error If the passed credentials were rejected by the IMAP server.
+ : @error If any of the specified mailbox does not exist.
+ : @error If the passed message number does not exist.
+ :)
+declare function imap:fetch-flags($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean?) as element(imaps:flagType) 
+{
+  validate { imapimpl:fetch-flags(validate{$host-info}, $mailbox, $message-number, $uid) }
+};
+ 
 
