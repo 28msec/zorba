@@ -146,10 +146,8 @@ test/rbkt/w3c_testsuite/XQuery/SchemaImport/SchemaImportProlog/modules-schema-co
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/PathExprSI/step-expr-si-2
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/SeqExprCastSI/notation-cast-3
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/MiscFunctions/fn-element-with-id-5
-test/rbkt/w3c_testsuite/XQuery/SchemaImport/MiscFunctions/fn-element-with-id-4
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/MiscFunctions/fn-element-with-id-2
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/MiscFunctions/fn-element-with-id-3
-test/rbkt/w3c_testsuite/XQuery/SchemaImport/MiscFunctions/fn-element-with-id-1
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-11
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-9
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-13

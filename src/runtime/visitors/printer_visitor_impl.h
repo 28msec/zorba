@@ -209,6 +209,7 @@
   DECLARE_VISITOR (OpNumericUnaryIterator)
   DECLARE_VISITOR (OpDoubleUnaryIterator)
   DECLARE_VISITOR (FnIdIterator)
+  DECLARE_VISITOR (FnElementWithIdIterator)
   DECLARE_VISITOR (FnIdRefIterator)
   DECLARE_VISITOR (TextIterator)
   DECLARE_VISITOR (FnDateTimeConstructorIterator)

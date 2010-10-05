@@ -98,13 +98,13 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
-//  15.5 Functions and Operators that Generate Sequences                       //
+//  14.5 Functions and Operators that Generate Sequences                       //
 //                                                                             //
 /////////////////////////////////////////////////////////////////////////////////
 
 
 /*******************************************************************************
-  15.5.2 fn:id
+  14.5.2 fn:id
 ********************************************************************************/
 class FnIdIteratorState : public DescendantAxisState
 {
@@ -122,9 +122,27 @@ public:
 
 NARY_ITER_STATE(FnIdIterator, FnIdIteratorState);
 
+/*******************************************************************************
+  14.5.3 fn:element-with-id
+********************************************************************************/
+class FnElementWithIdIteratorState : public DescendantAxisState
+{
+public:
+  bool                                theIsInitialized;
+  std::vector<xqpStringStore_t>       theIds;
+  store::Item_t                       theDocNode;
+
+  rchandle<store::AttributesIterator> theAttrsIte;
+
+  void init(PlanState&);
+  void reset(PlanState&);
+};
+
+
+NARY_ITER_STATE(FnElementWithIdIterator, FnElementWithIdIteratorState);
 
 /*******************************************************************************
-  15.5.3 fn:idref
+  14.5.4 fn:idref
 ********************************************************************************/
 class FnIdRefIteratorState : public DescendantAxisState
 {

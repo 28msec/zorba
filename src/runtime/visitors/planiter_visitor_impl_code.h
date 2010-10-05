@@ -179,6 +179,8 @@
 
   PLAN_ITER_VISITOR (FnIdIterator);
 
+  PLAN_ITER_VISITOR (FnElementWithIdIterator);
+
   PLAN_ITER_VISITOR (FnIdRefIterator);
 
   PLAN_ITER_VISITOR (FnMinMaxIterator);

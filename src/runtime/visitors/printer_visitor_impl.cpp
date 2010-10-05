@@ -1186,6 +1186,7 @@ void PrinterVisitor::endVisit ( const TypedValueCompareIterator<TypeConstants::X
   PRINTER_VISITOR_DEFINITION (OpNumericUnaryIterator)
   PRINTER_VISITOR_DEFINITION (OpDoubleUnaryIterator)
   PRINTER_VISITOR_DEFINITION (FnIdIterator)
+  PRINTER_VISITOR_DEFINITION (FnElementWithIdIterator);
   PRINTER_VISITOR_DEFINITION (FnIdRefIterator)
   PRINTER_VISITOR_DEFINITION (TextIterator)
   PRINTER_VISITOR_DEFINITION (FnDateTimeConstructorIterator)

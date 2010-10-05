@@ -93,6 +93,7 @@
   class OpDoubleUnaryIterator;
 
   class FnIdIterator;
+  class FnElementWithIdIterator;
   class FnIdRefIterator;
   class FnDistinctValuesIterator;
   class FnMinMaxIterator;

@@ -631,7 +631,7 @@ public:
     return FunctionConsts::YES;
   }
 
-  DEFAULT_NARY_CODEGEN(FnIdIterator);
+  DEFAULT_NARY_CODEGEN(FnElementWithIdIterator);
 };
 
 /*******************************************************************************

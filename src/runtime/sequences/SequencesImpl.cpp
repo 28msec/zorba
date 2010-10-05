@@ -61,12 +61,17 @@ END_SERIALIZABLE_CLASS_VERSIONS(FnMinMaxIterator)
 SERIALIZABLE_CLASS_VERSIONS(FnIdIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnIdIterator)
 
+SERIALIZABLE_CLASS_VERSIONS(FnElementWithIdIterator)
+END_SERIALIZABLE_CLASS_VERSIONS(FnElementWithIdIterator)
+
 SERIALIZABLE_CLASS_VERSIONS(FnIdRefIterator)
 END_SERIALIZABLE_CLASS_VERSIONS(FnIdRefIterator)
 
 NARY_ACCEPT(FnMinMaxIterator);
 
 NARY_ACCEPT(FnIdIterator);
+
+NARY_ACCEPT(FnElementWithIdIterator);
 
 NARY_ACCEPT(FnIdRefIterator);
 
@@ -259,7 +264,7 @@ FnMinMaxIterator::nextImpl(store::Item_t& result, PlanState& planState) const
 
 
 /*******************************************************************************
-  15.5.2 fn:id
+  14.5.2 fn:id
 ********************************************************************************/
 void FnIdIteratorState::init(PlanState& planState)
 {
@@ -391,9 +396,143 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
   STACK_END (state);
 }
 
+/*******************************************************************************
+  14.5.3 fn:element-with-id
+********************************************************************************/
+void FnElementWithIdIteratorState::init(PlanState& planState)
+{
+  DescendantAxisState::init(planState);
+  theIsInitialized = false;
+  theAttrsIte = GENV_ITERATOR_FACTORY->createAttributesIterator();
+  assert(theIds.empty());
+  assert(theDocNode == NULL);
+}
+
+
+void FnElementWithIdIteratorState::reset(PlanState& planState)
+{
+  DescendantAxisState::reset(planState);
+  theIsInitialized = false;
+  theIds.clear();
+  theDocNode = NULL;
+}
+
+
+bool FnElementWithIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
+{
+  store::Item_t  id;
+  store::Item*   child = 0;
+  store::Item*   attr = 0;
+  store::Item_t  tmp;
+  bool           isMatchingId;
+  ulong i;
+
+  FnElementWithIdIteratorState *state;
+  DEFAULT_STACK_INIT(FnElementWithIdIteratorState, state, planState);
+
+  if (!state->theIsInitialized)
+  {
+    while (consumeNext(id, theChildren[0], planState))
+    {
+      state->theIds.push_back(id->getStringValue());
+    }
+
+    if(!consumeNext(state->theDocNode, theChildren[1], planState))
+    {
+      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
+                           "No target document for fn:id function");
+    }
+
+    while (state->theDocNode->getParent() != NULL)
+    {
+      state->theDocNode = state->theDocNode->getParent();
+    }
+
+    if (state->theDocNode->getNodeKind() != store::StoreConsts::documentNode)
+    {
+      ZORBA_ERROR_LOC_DESC(FODC0001, loc,
+                           "No target document for fn:id function");
+    }
+
+    state->push(state->theDocNode);
+
+    state->theIsInitialized = true;
+  }
+
+  while (true)
+  {
+    while ((child = state->top()->next()) == NULL)
+    {
+      state->pop();
+      if (state->empty())
+        break;
+    }
+
+    if (child == NULL)
+      break;
+
+    if (child->getNodeKind() != store::StoreConsts::elementNode)
+      continue;
+
+    tmp = child;
+    state->push(tmp);
+
+    isMatchingId = false;
+
+    if (child->isId())
+    {
+      for (i = 0; i < state->theIds.size(); ++i)
+      {
+        if (child->getStringValue()->equals(state->theIds[i]))
+        {
+          result = child->getParent();
+          if(result) {
+            STACK_PUSH(true, state);
+            isMatchingId = true;
+          }
+          break;
+        }
+      }
+    }
+    else
+    {
+      tmp = child;
+      state->theAttrsIte->init(tmp);
+      state->theAttrsIte->open();
+
+      attr = state->theAttrsIte->next();
+
+      while (attr != NULL)
+      {
+        if (attr->isId())
+        {
+          for (i = 0; i < state->theIds.size(); ++i)
+          {
+            if (attr->getStringValue()->equals(state->theIds[i]))
+            {
+              result = child;
+              STACK_PUSH(true, state);
+              isMatchingId = true;
+              break;
+            }
+          }
+        }
+
+        if (isMatchingId)
+          break;
+
+        attr = state->theAttrsIte->next();
+      }
+
+      state->theAttrsIte->close();
+    }
+  }
+
+  STACK_END (state);
+}
 
 /*******************************************************************************
-  15.5.3 fn:idref
+  14.5.4 fn:idref
 ********************************************************************************/
 void FnIdRefIteratorState::init(PlanState& planState)
 {
