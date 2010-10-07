@@ -2613,7 +2613,7 @@ XQPCollator* static_context::get_collator(
   {
     if (sctx->theCollationMap != NULL)
     {
-      CollationMap::iterator ite = sctx->theCollationMap->find(uri);
+      CollationMap::iterator ite = sctx->theCollationMap->find(resolvedURI);
 
       if (ite != sctx->theCollationMap->end())
       {
@@ -2625,7 +2625,7 @@ XQPCollator* static_context::get_collator(
   }
 
   ZORBA_ERROR_LOC_DESC_OSS(FOCH0002, loc,
-                           "Collation " << uri << " not found in static context.");
+                           "Collation " << resolvedURI << " not found in static context.");
   return NULL;
 }
 

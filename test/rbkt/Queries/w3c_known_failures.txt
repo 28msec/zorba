@@ -15,7 +15,6 @@ test/rbkt/w3c_testsuite/XQuery/FunctX/functx-functx-id-from-element/functx-funct
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-all
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-tokenize/functx-fn-tokenize-7
 test/rbkt/w3c_testsuite/XQuery/FunctX/functx-fn-namespace-uri-for-prefix/functx-fn-namespace-uri-for-prefix-all
-test/rbkt/w3c_testsuite/XQuery/Expressions/FLWORExpr/OrderbyExpr/OrderbyExprWith/orderBy60
 test/rbkt/w3c_testsuite/XQuery/Expressions/FLWORExpr/ForExpr/ForExprWithout/K-ForExprWithout-49
 test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-10
 test/rbkt/w3c_testsuite/XQuery/Expressions/PrimaryExpr/Literals/K2-Literals-9
