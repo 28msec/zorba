@@ -24,6 +24,7 @@
 #include <iostream>
 #include <map>
 #include <cstdlib>
+#include <sstream>
 
 #ifdef WIN32
 #include <Windows.h>
@@ -88,7 +89,13 @@ namespace zorba {
     qs << "<a>Hello World</a>";
 
     std::ostringstream lRes;
-    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+    std::stringstream lState;
+    {
+      XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+      lQuery->saveExecutionPlan(lState, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+    }
+    XQuery_t lQuery = lZorba->createQuery();
+    lQuery->loadExecutionPlan(lState);
 
     std::pair<short, short> lPorts = getRandomPorts();
     Zorba_SerializerOptions lSerOptions;
@@ -133,7 +140,13 @@ namespace zorba {
     qs << "else 2" << std::endl;
 
     std::ostringstream lRes;
-    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+    std::stringstream lState;
+    {
+      XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+      lQuery->saveExecutionPlan(lState, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+    }
+    XQuery_t lQuery = lZorba->createQuery();
+    lQuery->loadExecutionPlan(lState);
 
     std::pair<short, short> lPorts = getRandomPorts();
     Zorba_SerializerOptions lSerOptions;
@@ -193,7 +206,14 @@ namespace zorba {
     qs << "else 0" << std::endl;
 
     std::ostringstream lRes;
-    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+    std::stringstream lState;
+    {
+      XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+      lQuery->saveExecutionPlan(lState, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+    }
+    XQuery_t lQuery = lZorba->createQuery();
+    lQuery->loadExecutionPlan(lState);
+
 
     std::pair<short, short> lPorts = getRandomPorts();
     Zorba_SerializerOptions lSerOptions;
@@ -224,7 +244,14 @@ namespace zorba {
     qs << "else 2" << std::endl;
 
     std::ostringstream lRes;
-    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+    std::stringstream lState;
+    {
+      XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+      lQuery->saveExecutionPlan(lState, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+    }
+    XQuery_t lQuery = lZorba->createQuery();
+    lQuery->loadExecutionPlan(lState);
+
 
     std::pair<short, short> lPorts = getRandomPorts();
     Zorba_SerializerOptions lSerOptions;
@@ -278,7 +305,14 @@ namespace zorba {
     qs << "return $y" << std::endl;
 
     std::ostringstream lRes;
-    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+    std::stringstream lState;
+    {
+      XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+      lQuery->saveExecutionPlan(lState, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+    }
+    XQuery_t lQuery = lZorba->createQuery();
+    lQuery->loadExecutionPlan(lState);
+
 
     std::pair<short, short> lPorts = getRandomPorts();
     Zorba_SerializerOptions lSerOptions;
@@ -332,7 +366,14 @@ namespace zorba {
     qs << "return $y" << std::endl;
 
     std::ostringstream lRes;
-    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+    std::stringstream lState;
+    {
+      XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+      lQuery->saveExecutionPlan(lState, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+    }
+    XQuery_t lQuery = lZorba->createQuery();
+    lQuery->loadExecutionPlan(lState);
+
 
     std::pair<short, short> lPorts = getRandomPorts();
     Zorba_SerializerOptions lSerOptions;
@@ -400,7 +441,14 @@ namespace zorba {
     qs << "local:test()" << std::endl;
 
     std::ostringstream lRes;
-    XQuery_t lQuery = createDebuggableQuery(aZorba, qs);
+    std::stringstream lState;
+    {
+      XQuery_t lQuery = createDebuggableQuery(aZorba, qs);
+      lQuery->saveExecutionPlan(lState, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+    }
+    XQuery_t lQuery = aZorba->createQuery();
+    lQuery->loadExecutionPlan(lState);
+
 
     std::pair<short, short> lPorts = getRandomPorts();
     Zorba_SerializerOptions lSerOptions;
@@ -460,7 +508,14 @@ namespace zorba {
        << "return $i" << std::endl;
 
     std::ostringstream lRes;
-    XQuery_t lQuery = createDebuggableQuery(aZorba, qs);
+    std::stringstream lState;
+    {
+      XQuery_t lQuery = createDebuggableQuery(aZorba, qs);
+      lQuery->saveExecutionPlan(lState, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+    }
+    XQuery_t lQuery = aZorba->createQuery();
+    lQuery->loadExecutionPlan(lState);
+
 
     std::pair<short, short> lPorts = getRandomPorts();
     Zorba_SerializerOptions lSerOptions;
@@ -522,7 +577,14 @@ namespace zorba {
     qs << "return $x" << std::endl;
 
     std::ostringstream lRes;
-    XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+    std::stringstream lState;
+    {
+      XQuery_t lQuery = createDebuggableQuery(lZorba, qs);
+      lQuery->saveExecutionPlan(lState, ZORBA_USE_BINARY_ARCHIVE, SAVE_UNUSED_FUNCTIONS);
+    }
+    XQuery_t lQuery = lZorba->createQuery();
+    lQuery->loadExecutionPlan(lState);
+
 
     std::pair<short, short> lPorts = getRandomPorts();
     Zorba_SerializerOptions lSerOptions;

@@ -40,6 +40,7 @@ IF(WIN32)
     no_folding.cpp
     debug_iter_serialization.cpp
     ordpath_big.cpp
+    uri_file_decoding_test.cpp
   )
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
@@ -54,6 +55,7 @@ ELSE(WIN32)
     no_folding.cpp
     debug_iter_serialization.cpp
     ordpath_big.cpp
+    uri_file_decoding_test.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )
@@ -74,5 +76,7 @@ FOREACH (test ${TestsToRun})
   SET (TestName "test/unit/${TName}")
   ZORBA_ADD_TEST_ALLSTORES(${TestName} UnitTests ${TName})
 ENDFOREACH(test)
+
+EXPECTED_FAILURE(test/unit/uri_file_decoding_test 123)
 
 ADD_SUBDIRECTORY(debugger)
