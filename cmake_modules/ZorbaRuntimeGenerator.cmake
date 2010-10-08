@@ -63,7 +63,7 @@ MACRO(ZORBA_RUNTIME_GENERATOR GEN_QUERY EXTVARS SPEC_FILES EXTRA_DEPS OUTPUT)
   ADD_TEST("RuntimeGeneratorTest-${OUTPUT}" "${CMAKE_COMMAND}"
     "-Dsource_dir=${CMAKE_SOURCE_DIR}"
     "-Dbinary_dir=${CMAKE_BINARY_DIR}"
-    "-Dzorba_exe=${ZORBA_EXE_SCRIPT}" 
+    "-Dzorba_exe=${ZORBA_EXE_SCRIPT_CMAKE}" 
     "-Dquery=${GEN_QUERY}" 
     "-Dgen_file=${OUTPUT}"
     "-Dextvars:STRING=${EXTVARS}"
