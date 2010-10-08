@@ -301,20 +301,24 @@ namespace zorba { namespace http_client {
 
   static void checkOption(Bool ok)
   {
-    if (ok != yes)
-      ExternalFunctionData::createZorbaException(API0036_TIDY_ERROR,
-                                                 "Could not set a Tidy option",
+    if (ok != yes) {
+      ZorbaException e = ExternalFunctionData::createZorbaException(API0036_TIDY_ERROR,
+                                                 "Could not set Tidy option",
                                                  __FILE__,
                                                  __LINE__);
+			throw e;
+		}
   }
 
   static void checkRC(int rc, const char* errMsg)
   {
-    if (rc > 1)
-      ExternalFunctionData::createZorbaException(API0036_TIDY_ERROR,
+    if (rc > 1) {
+      ZorbaException e = ExternalFunctionData::createZorbaException(API0036_TIDY_ERROR,
                                                  errMsg,
                                                  __FILE__,
                                                  __LINE__);
+			throw e;
+		}
   }
 
   zorba::Item HttpResponseParser::createHtmlItem( std::istream& aStream )
@@ -336,7 +340,7 @@ namespace zorba { namespace http_client {
     checkOption(ok);
     ok = setTidyOption(tDoc, "char-encoding", "utf8");
     checkOption(ok);
-    ok = setTidyOption(tDoc, "new-line", "LF");
+    ok = setTidyOption(tDoc, "newline", "LF");
     checkOption(ok);
     ok = setTidyOption(tDoc, "tidy-mark", "no");
     checkOption(ok);
