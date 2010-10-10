@@ -15,12 +15,12 @@ elementFormDefault="qualified">
 
  <complexType name="flagsType">
   <all>
-   <element name="seen" type="tns:emptyType"/>
-   <element name="deleted" type="tns:emptyType" />
-   <element name="flagged" type="tns:emptyType" />
-   <element name="answered" type="tns:emptyType" />
-   <element name="old" type="tns:emptyType" />
-   <element name="draft" type="tns:emptyType" />        
+   <element name="seen" type="tns:emptyType" maxOccurs="1" minOccurs="0"/>
+   <element name="deleted" type="tns:emptyType" maxOccurs="1" minOccurs="0"/>
+   <element name="flagged" type="tns:emptyType" maxOccurs="1" minOccurs="0"/>
+   <element name="answered" type="tns:emptyType" maxOccurs="1" minOccurs="0" />
+   <element name="old" type="tns:emptyType" maxOccurs="1" minOccurs="0"/>
+   <element name="draft" type="tns:emptyType" maxOccurs="1" minOccurs="0"/>        
   </all>           
   
  </complexType>    
@@ -74,8 +74,8 @@ elementFormDefault="qualified">
 <complexType name="messageType"> 
 <sequence>
 <element name="envelope" type="tns:envelopeType" maxOccurs="1" minOccurs="1"/>
-<!-- <element name="flags" type="tns:flagsType" maxOccurs="1" minOccurs="0" /> -->
 <element name="mimeVersion" type="string" maxOccurs="1" minOccurs="1" default="1.0"/>
+<element name="flags" type="tns:flagsType" maxOccurs="1" minOccurs="0" />  
 <element name="body" type="tns:bodyTypeChoice" maxOccurs="1" minOccurs="1"/>
 </sequence>
 </complexType>

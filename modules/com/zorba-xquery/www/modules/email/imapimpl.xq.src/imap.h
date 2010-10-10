@@ -235,6 +235,24 @@ namespace zorba {
   };
 
 
+ //*****************************************************************************
+
+  class SetFlagsFunction : public ImapFunction
+  {
+    public:
+      SetFlagsFunction(const ImapModule* aModule);
+
+      virtual String
+      getLocalName() const { return "set-flags"; }
+
+      virtual ItemSequence_t
+      evaluate(const StatelessExternalFunction::Arguments_t& args,
+               const StaticContext* aSctxCtx,
+               const DynamicContext* aDynCtx) const;
+
+      static std::vector<int> 
+      getFlagsVector(const StatelessExternalFunction::Arguments_t& aArgs);
+  };
 
  //*****************************************************************************
 

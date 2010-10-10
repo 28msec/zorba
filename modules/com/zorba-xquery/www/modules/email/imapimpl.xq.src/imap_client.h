@@ -133,6 +133,13 @@ namespace zorba
                       unsigned long aMessageNumber,
                       bool aUid);
 
+      void setFlags(const std::string& aHost,
+                    const std::string& aUserName,
+                    const std::string& aPassword,
+                    const std::string& aMailbox,
+                    const unsigned long aMessageNumber,
+                    const std::vector<int>& aFlagsVector,
+                    const bool aUid);
 
 
 
@@ -204,6 +211,7 @@ namespace zorba
 
       std::vector<int> getFlags();
       
+      void clearFlags();
       void addListedMailbox(const std::string& aListedMail);
       
 

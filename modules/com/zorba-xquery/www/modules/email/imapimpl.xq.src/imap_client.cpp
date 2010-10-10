@@ -18,6 +18,10 @@
 #include <stdio.h>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
+#pragma GCC diagnostic ignored "-Wwrite-strings"
+
+
 
 namespace zorba { namespace emailmodule {
 
@@ -67,7 +71,7 @@ namespace zorba { namespace emailmodule {
         setUserName(aUsername);
         setPassword(aPassword);
         theHost = aHost;
-        theMailstream = mail_open(NIL, const_cast<char*>(lHostAndMailbox.c_str()), (aFullOpen ? NIL : OP_HALFOPEN));
+        theMailstream = mail_open(NIL, const_cast<char*>(lHostAndMailbox.c_str()),  (aFullOpen ? NIL : OP_HALFOPEN));
       }
       return theMailstream;
 
@@ -92,7 +96,7 @@ namespace zorba { namespace emailmodule {
                       const std::string& aPassword, 
                       const std::string& aMailbox) {
    
-    #include "linkage.c" 
+    #include "linkage.c"
     MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, false); 
     std::string lFullName = "{" + aHost + "}" + aMailbox; 
     return (mail_create (lSource, const_cast<char*>(lFullName.c_str())) == T);
@@ -105,7 +109,7 @@ namespace zorba { namespace emailmodule {
                               const std::string& aPassword, 
                               const  std::string& aMailbox) {
 
-     #include "linkage.c"                                 
+    #include "linkage.c"
     MAILSTREAM *lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, false);
     std::string lFullName = "{" + aHost + "}" + aMailbox;
     return (mail_delete(lSource, const_cast<char*>(lFullName.c_str())) == T);
@@ -194,7 +198,7 @@ namespace zorba { namespace emailmodule {
                    bool aCopy) {
     
     #include "linkage.c"
-    
+ 
     std::string lHost = "{" + aHost + "}" + aMailboxFrom;
     MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailboxFrom, true); 
     long  lLongResult =  mail_copy_full(lSource,  const_cast<char*>(aMessageNumbers.c_str()),  const_cast<char*>(aMailboxTo.c_str()), (aUid ? SE_UID : NIL) | (aCopy ? CP_MOVE : NIL));
@@ -210,7 +214,7 @@ namespace zorba { namespace emailmodule {
                      bool aUid) {
 
     #include "linkage.c"
-  
+ 
     /* IMPORTANT: make sure that the vector of found sequence numbers is empty! */
     theFoundSequenceNumbers.clear();
 
@@ -240,7 +244,6 @@ namespace zorba { namespace emailmodule {
                             unsigned long aMessageNumber) 
   {
     #include "linkage.c"
-
     MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, true); 
     
     return mail_fetchenvelope(lSource, aMessageNumber);
@@ -330,6 +333,7 @@ namespace zorba { namespace emailmodule {
                         bool aUid)
   {
     #include "linkage.c"
+
     MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true); 
     unsigned long lLenght;
     return std::string(mail_fetchtext_full(lSource, aMessageNumber, &lLenght, (aUid ? FT_UID : NIL))); 
@@ -345,20 +349,79 @@ namespace zorba { namespace emailmodule {
                        bool aUid) {
 
     #include "linkage.c"
+
+
     MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true);
-    char* lSequenceNumber;
+    std::string lSequenceNumber;
     std::stringstream lConverter;
     lConverter << aMessageNumber;
     lConverter >> lSequenceNumber; 
+    char* lSequence = const_cast<char*>(lSequenceNumber.c_str());
+
     theFlags.clear(); 
     // this call triggers the mm_flags callback which then populates theFlags. 
-    mail_fetchflags_full(lSource, lSequenceNumber, (aUid ? FT_UID : NIL));  
+    mail_fetchflags_full(lSource, lSequence, (aUid ? FT_UID : NIL));  
 
   }
 
 
- 
+  void
+  ImapClient::setFlags(const std::string& aHost,
+                       const std::string& aUserName,
+                       const std::string& aPassword,
+                       const std::string& aMailbox,
+                       const unsigned long aMessageNumber,
+                       const std::vector<int>& aFlagsVector,
+                       const bool aUid) {
 
+
+    #include "linkage.c"
+    MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true);
+    std::string lSequenceNumber;
+    std::stringstream lConverter;
+    lConverter << aMessageNumber;
+    lConverter >> lSequenceNumber;
+    char* lSequence = const_cast<char*>(lSequenceNumber.c_str());
+    std::stringstream lAddFlags;
+    std::stringstream lRemoveFlags;
+    
+
+    
+    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 1) != aFlagsVector.end()) {
+       mail_setflag_full(lSource, lSequence, "\\Seen",  (aUid ? ST_UID : NIL));
+    } else {
+       mail_clearflag_full(lSource, lSequence, "\\Seen",  (aUid ? ST_UID : NIL));
+    }
+
+    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 2) != aFlagsVector.end()) {
+      mail_setflag_full(lSource, lSequence, "\\Deleted",  (aUid ? ST_UID : NIL)); 
+    } else {
+      mail_setflag_full(lSource, lSequence, "\\Deleted",  (aUid ? ST_UID : NIL)); 
+    }
+    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 3) != aFlagsVector.end()) {
+      mail_setflag_full(lSource, lSequence, "\\Flagged",  (aUid ? ST_UID : NIL)); 
+    } else {
+      mail_setflag_full(lSource, lSequence, "\\Flagged",  (aUid ? ST_UID : NIL)); 
+    } 
+
+    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 4) != aFlagsVector.end()) {
+      mail_setflag_full(lSource, lSequence, "\\Answered",  (aUid ? ST_UID : NIL)); 
+    } else {
+      mail_setflag_full(lSource, lSequence, "\\Answered",  (aUid ? ST_UID : NIL)); 
+    }
+    /*
+    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 5) != aFlagsVector.end()) {
+      mail_setflag_full(lSource, &lSequenceNumber, "\\Old",  (aUid ? ST_UID : NIL)); 
+    } else {
+      mail_setflag_full(lSource, &lSequenceNumber, "\\Old",  (aUid ? ST_UID : NIL)); 
+    }
+    */
+    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 6) != aFlagsVector.end()) {
+      mail_setflag_full(lSource, lSequence, "\\Draft",  (aUid ? ST_UID : NIL)); 
+    } else {
+      mail_setflag_full(lSource, lSequence, "\\Draft",  (aUid ? ST_UID : NIL)); 
+    }
+  }
 
   std::string
   ImapClient::fetchBodyFull(const std::string& aHost,
@@ -599,6 +662,11 @@ namespace zorba { namespace emailmodule {
     return theFlags;
   }
 
+  void
+  ImapClient::clearFlags() {
+    theFlags.clear();
+  } 
+
 
 } /* emailmodule */ } /* zorba */
 
@@ -717,4 +785,5 @@ namespace zorba { namespace emailmodule {
   }
 
 
+#pragma GCC diagnostic warning "-Wwrite-strings"
 

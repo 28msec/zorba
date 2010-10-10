@@ -298,8 +298,7 @@ ImapFunction::createFlagsNode(const ImapModule* aModule,
 
     Item lOneFlagName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", lFlagName);
     Item lOneFlagType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "emptyType");
-    Item lOneFlag = aModule->getItemFactory()->createElementNode(aFlags, lOneFlagName, lOneFlagType, false, false, ns_binding);
-    aModule->getItemFactory()->createTextNode(lOneFlag, "1");
+    Item lOneFlag = aModule->getItemFactory()->createElementNode(aFlags, lOneFlagName, lOneFlagType, false, true, ns_binding);
   }
 
 

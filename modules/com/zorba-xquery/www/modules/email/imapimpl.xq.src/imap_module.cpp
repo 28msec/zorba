@@ -72,7 +72,9 @@ ImapModule::getExternalFunction(String aLocalname) const
       lFunc = new FetchMessageSequenceNumberFunction(this);
     } else if (aLocalname.equals("fetch-flags")) {
       lFunc = new FetchFlagsFunction(this);
-    }
+    } else if (aLocalname.equals("set-flags")) {
+      lFunc = new SetFlagsFunction(this);
+    }  
   }
   return lFunc;
 }

@@ -244,5 +244,24 @@ declare %nondeterministic function imap:fetch-message-sequence-number($host-info
  : @error If any of the specified mailbox does not exist.                                                                                          
  : @error If the passed message number does not exist.                                                                                             
  :)                                                                                                                                                
-declare %nondeterministic function imap:fetch-flags($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean?) as element(email:flagType) external;
+declare %nondeterministic function imap:fetch-flags($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean?) as element(email:flags) external;
+
+
+
+(:~
+ : Sets the flags for a given message.
+ : The flags are set AND unset according to the passed flagType.
+ :
+ : @param $host-info describes the IMAP host, username and password.
+ : @param $mailbox is the mailbox containing the specified message.
+ : @param $message-number is either the message sequence number or the unique identifier of the message (depending on the value of $uid).
+ : @param $flags defines which flags should be set for this message.
+ : @param $uid defines if the message number shall be intepreted as message sequence number (default) or unique identifier.
+ : @return true if the setting and unsetting of flags went well.
+ : @error If it wasn't possible to create a connection to the IMAP server.
+ : @error If the passed credentials were rejected by the IMAP server.
+ : @error If any of the specified mailbox does not exist.
+ : @error If the passed message number does not exist.
+ :)
+declare sequential function imap:set-flags($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $flags as element(email:flags), $uid as xs:boolean?) as xs:boolean external; 
 
