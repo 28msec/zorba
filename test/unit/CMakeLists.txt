@@ -25,6 +25,11 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/fold_mod1.xq ${CMAKE_CURRENT_BINARY_D
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/fold_mod2.xq ${CMAKE_CURRENT_BINARY_DIR}/fold_mod2.xq)
 CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/fold_main.xq ${CMAKE_CURRENT_BINARY_DIR}/fold_main.xq)
 
+#belongs to test ext_in_opt.cpp
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_in_opt.xq ${CMAKE_CURRENT_BINARY_DIR}/ext_in_opt.xq)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_in_opt.xqlib ${CMAKE_CURRENT_BINARY_DIR}/ext_in_opt.xqlib)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/ext_in_opt2.xqlib ${CMAKE_CURRENT_BINARY_DIR}/ext_in_opt2.xqlib)
+
 IF(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
@@ -42,6 +47,7 @@ IF(WIN32)
     debug_iter_serialization.cpp
     ordpath_big.cpp
     uri_file_decoding_test.cpp
+    ext_in_opt.cpp
   )
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
@@ -58,6 +64,7 @@ ELSE(WIN32)
     debug_iter_serialization.cpp
     ordpath_big.cpp
     uri_file_decoding_test.cpp
+    ext_in_opt.cpp
   # multithread_simple.cpp
   # multithread_stress_test.cpp
  )
@@ -80,5 +87,6 @@ FOREACH (test ${TestsToRun})
 ENDFOREACH(test)
 
 EXPECTED_FAILURE(test/unit/uri_file_decoding_test 123)
+EXPECTED_FAILURE(test/unit/ext_in_opt 3078666)
 
 ADD_SUBDIRECTORY(debugger)

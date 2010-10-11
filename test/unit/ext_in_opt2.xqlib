@@ -1,0 +1,3 @@
+module namespace mod2 = "http://www.zorba-xquery.com/mod2";
+
+declare function mod2:bar($x as xs:string) as xs:string external;
