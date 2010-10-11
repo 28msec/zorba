@@ -37,6 +37,7 @@ IF(WIN32)
     call_stack.cpp
     test_static_context.cpp
     external_function.cpp
+    serializer.cpp
     no_folding.cpp
     debug_iter_serialization.cpp
     ordpath_big.cpp
@@ -52,6 +53,7 @@ ELSE(WIN32)
     call_stack.cpp
     test_static_context.cpp
     external_function.cpp
+    serializer.cpp
     no_folding.cpp
     debug_iter_serialization.cpp
     ordpath_big.cpp
