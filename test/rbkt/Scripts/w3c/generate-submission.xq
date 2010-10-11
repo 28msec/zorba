@@ -10,7 +10,7 @@ else
   validate {
     <test-suite-result>
        <implementation name="Zorba" 
-         version='1.4.0 (svn rev. 8626)'
+         version='1.4.0 (svn rev. 8998)'
          anonymous-result-column="false">
   
          <organization
@@ -82,21 +82,28 @@ else
 
        <syntax>XQuery</syntax>
 
-       <test-run dateRun="2010-07-22">
+       <test-run dateRun="2010-10-11">
           <test-suite version="current"/>
           <transformation><p>Standard</p></transformation>
           <comparison><p>Standard</p></comparison>
-          <otherComments><p>None</p></otherComments>
+          <otherComments><p>XQTS taken from W3C CVS as of 2010-10-11.</p></otherComments>
        </test-run>
 
-       {
-         for $test in $ctests/*:Site/*:Testing/*:Test
-         let $testname := fn:tokenize(fn:data($test/*:Name), "/")[last()]
-         return
-           <test-case
-             name="{$testname}"
-             result="{fn:substring(fn:data($test/@Status), 0, 5)}"
-           />
+      {
+        for $test in $ctests/*:Site/*:Testing/*:Test
+        let $testname := fn:tokenize(fn:data($test/*:Name), "/")[last()]
+        return
+        if (fn:contains(fn:data($test),'StaticTyping')) then
+          <test-case
+            name="{$testname}"
+            result="not applicable"
+            comment="Zorba does not support the 'Static Typing Feature'"
+          />
+        else
+          <test-case
+            name="{$testname}"
+            result="{fn:substring(fn:data($test/@Status), 0, 5)}"
+          />
        }
     </test-suite-result>
   }
