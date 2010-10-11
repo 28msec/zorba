@@ -326,7 +326,7 @@ bool FnIdIterator::nextImpl(store::Item_t& result, PlanState& planState) const
     state->theIsInitialized = true;
   }
 
-  while (true)
+	while (true)
   {
     while ((child = state->top()->next()) == NULL)
     {

@@ -64,11 +64,12 @@ public:
 
   ~AtomicItem() {}
 
-  bool isNode() const   { return false; }
-  bool isAtomic() const { return true; }
-  bool isPul() const    { return false; }
-  bool isTuple() const  { return false; }
-  bool isError() const  { return false; }
+  bool isNode() const     { return false; }
+  bool isAtomic() const   { return true;  }
+  bool isList() const     { return false; }
+  bool isPul() const      { return false; }
+  bool isTuple() const    { return false; }
+  bool isError() const    { return false; }
   bool isFunction() const { return false; }
 
   store::Item_t getAtomizationValue() const;
@@ -252,7 +253,7 @@ public:
     return theBaseItem->getStringVectorValue();
   }
 
-  xqp_string show() const { return theBaseItem->show(); }
+  xqp_string show() const { return "UserTypedAtomicItemImpl [" +theBaseItem->show() + "]"; }
 };
 
 

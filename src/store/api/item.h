@@ -95,24 +95,35 @@ public:
 
   /**
    *  @return  "true" if the item is a node
+   * Use cast to XmlNode class
    */
   virtual bool 
   isNode() const = 0;
 
   /**
    *  @return  "true" if the item is an atomic value
+   * Use cast to AtomicItem class
    */
   virtual bool 
   isAtomic() const = 0;
 
   /**
+   * @return  "true" if the item is an list of atomic values
+   * Use cast to ItemVector class
+   */
+  virtual bool 
+  isList() const = 0;
+
+  /**
    *  @return  "true" if the item is a pending update list
+   * Use cast to PUL class
    */
   virtual bool 
   isPul() const = 0;
 
   /**
    * @return "true" if the item is a tuple.
+   * Use cast to TupleItem class
    */
   virtual bool
   isTuple() const = 0;
@@ -125,6 +136,7 @@ public:
 
   /**
    * @return "true" if the item is a function.
+   * Use cast to FunctionItem class
    */
   virtual bool
   isFunction() const = 0;

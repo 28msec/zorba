@@ -54,6 +54,7 @@ public:
 
   bool isNode() const     { return false; }
   bool isAtomic() const   { return false; }
+  bool isList() const     { return false; }
   bool isPul() const      { return true; }
   bool isTuple() const    { return false; }
   bool isError() const    { return false; }

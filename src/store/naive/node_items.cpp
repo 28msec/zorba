@@ -1374,14 +1374,14 @@ bool ElementNode::haveTypedTypedValue() const
 
 ********************************************************************************/
 bool ElementNode::isId() const
-{
+{	
   if (numChildren() == 1 &&
       getChild(0)->getNodeKind() == store::StoreConsts::textNode)
   {
-    if (reinterpret_cast<TextNode*>(getChild(0))->isIdInternal())
+		if (reinterpret_cast<TextNode*>(getChild(0))->isIdInternal())
       return true;
-  }
-
+	}
+  
   return false;
 }
 
@@ -2798,9 +2798,11 @@ store::Item_t TextNode::getAtomizationValue() const
 ********************************************************************************/
 bool TextNode::isIdInternal() const
 {
-  if (isTyped() && dynamic_cast<IDItemImpl*>(getValue()) != NULL)
+  if (isTyped() && 
+    (static_cast<AtomicItem*>(getValue()))->isAtomic() && 
+    (static_cast<AtomicItem*>(getValue()))->getTypeCode() == XS_ID)
     return true;
-
+		
   return false;
 }
 

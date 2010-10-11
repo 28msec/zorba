@@ -125,7 +125,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/QNameFunc/InScopePrefixesFunc/K2-InScop
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-28
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-sc-9
 test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-sc-8
-test/rbkt/w3c_testsuite/XQuery/SchemaValidation/ValidateExpression/validateexpr-27
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/CopyNamespacesProlog/K2-CopyNamespacesProlog-9
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/VariableProlog/ExternalVariablesWith/K2-ExternalVariablesWith-22
 test/rbkt/w3c_testsuite/XQuery/exprSeqTypes/PrologExpr/BaseURIProlog/K2-BaseURIProlog-5
@@ -144,9 +143,6 @@ test/rbkt/w3c_testsuite/XQuery/StaticTyping/STFunctions/ST-Data001
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/SchemaImportProlog/modules-schema-context
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/PathExprSI/step-expr-si-2
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/SeqExprCastSI/notation-cast-3
-test/rbkt/w3c_testsuite/XQuery/SchemaImport/MiscFunctions/fn-element-with-id-5
-test/rbkt/w3c_testsuite/XQuery/SchemaImport/MiscFunctions/fn-element-with-id-2
-test/rbkt/w3c_testsuite/XQuery/SchemaImport/MiscFunctions/fn-element-with-id-3
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-11
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-9
 test/rbkt/w3c_testsuite/XQuery/SchemaImport/NotationEQSI/Comp-notation-13

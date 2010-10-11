@@ -74,6 +74,15 @@ void ItemVector::getStringValue(std::string& buf) const
   }
 }
 
+xqp_string ItemVector::show() const
+{
+	std::string res = "ItemVector size:";
+	res += size() + " [";
+	for ( ulong i=0; i<size(); i++)
+		res += getItem(i)->show() + ", ";
+	return res + "]"; 
+}
+
 
 } // namespace store
 } // namespace zorba

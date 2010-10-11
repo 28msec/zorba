@@ -89,7 +89,7 @@ InputSource* SchemaLocationEntityResolver::resolveEntity(
     const XMLCh* const publicId,
     const XMLCh* const systemID)
 {
-  TRACE("pId: " << StrX(publicId) << "  sId: " << StrX(systemID) );;
+  TRACE("pId: " << StrX(publicId) << "  sId: " << StrX(systemID) );
 
 
   if (XMLString::compareString(systemID, theLogicalURI) == 0)
@@ -628,7 +628,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
 
       store::Item_t qname;
       GENV_ITEMFACTORY->createQName(qname, strUri, lPrefix, lLocal);
-
+      TRACE("createXQType " << qname->getStringValue() );
 
       switch ( xsSimpleTypeDef->getVariety() )
       {
@@ -651,7 +651,7 @@ xqtref_t Schema::createXQTypeFromTypeDefinition(
                                                  TypeConstants::QUANT_ONE,
                                                  UserDefinedXQType::ATOMIC_TYPE,
                                                  XQType::SIMPLE_CONTENT_KIND));
-
+        TRACE("created atomic " << qname->getStringValue() << " base:" << baseXQType->toString());
         result = xqType;
       }
       break;
@@ -1548,6 +1548,8 @@ bool Schema::parseUserAtomicTypes(
   if (GenericCast::castToAtomic(baseItem, textValue, baseType, theTypeManager))
   {
     store::Item_t tTypeQName = udXQType->get_qname();
+		
+    //TRACE("factory '" << baseItem->getStringValue() << "' type " << tTypeQName->getStringValue() << "  base:" << baseType->toString());
     return GENV_ITEMFACTORY->
         createUserTypedAtomicItem(result, baseItem, tTypeQName);
   }

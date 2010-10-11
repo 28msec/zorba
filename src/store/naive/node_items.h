@@ -431,6 +431,7 @@ public:
 
   bool isNode() const     { return true; }
   bool isAtomic() const   { return false; }
+  bool isList() const     { return false; }
   bool isPul() const      { return false; }
   bool isTuple() const    { return false; }
   bool isError() const    { return false; }

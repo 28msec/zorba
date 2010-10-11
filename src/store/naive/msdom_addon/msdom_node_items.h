@@ -283,8 +283,9 @@ public:
   // Item methods
   //
 
-  bool isNode() const       { return true; }
+  bool isNode() const       { return true;  }
   bool isAtomic() const     { return false; }
+  bool isList() const       { return false; }
   bool isPul() const        { return false; }
   bool isTuple() const      { return false; }
 
