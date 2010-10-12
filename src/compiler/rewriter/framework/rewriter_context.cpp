@@ -27,7 +27,6 @@ RewriterContext::RewriterContext(CompilerCB* aCompilerCB, expr_t root)
   theCCB(aCompilerCB),
   theRoot(root),
   m_tempvarCounter(0),
-  m_tempIndexCounter(0),
   theVarIdMap(NULL),
   theIdVarMap(NULL),
   theExprVarsMap(NULL)

@@ -68,7 +68,6 @@ public:
   expr_t                       theRoot;
 
   int                          m_tempvarCounter;
-  int                          m_tempIndexCounter;
 
   VarIdMap                   * theVarIdMap;
   IdVarMap                   * theIdVarMap;

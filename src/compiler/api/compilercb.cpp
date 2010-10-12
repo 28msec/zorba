@@ -103,7 +103,8 @@ CompilerCB::CompilerCB(
   theDebuggerCommons(0),
   theIsLoadProlog(false),
   theIsUpdating(false),
-  theTimeout(timeout)
+  theTimeout(timeout),
+  theTempIndexCounter(0)
 {
 }
 
@@ -119,7 +120,8 @@ CompilerCB::CompilerCB(const CompilerCB& cb)
   theIsUpdating(false),
   theIsSerializingOut(false),
   theConfig(cb.theConfig),
-  theTimeout(cb.theTimeout)
+  theTimeout(cb.theTimeout),
+  theTempIndexCounter(0)
 {
 }
 
@@ -151,6 +153,7 @@ void CompilerCB::serialize(::zorba::serialization::Archiver& ar)
   }
   ar & theConfig;
   ar & theTimeout;
+  ar & theTempIndexCounter;
 }
 
 

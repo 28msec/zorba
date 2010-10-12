@@ -4,11 +4,12 @@ declare namespace xq="http://www.xqdoc.org/1.0";
 
 declare function local:print-external-functions-invoked($function as element()) as element()*
 {
-    let $furis := for $x in distinct-values(for $f in $function/xq:invoked/xq:uri return string($f))
-                  order by string($x)
-                  return string($x)
-    for $furi in $furis
-    return
+  let $furis := for $x in distinct-values(for $f in $function/xq:invoked/xq:uri
+                                          return string($f))
+                order by string($x)
+                return string($x)
+  for $furi in $furis
+  return
        <tr>
         <td valign="top">{$furi}</td>
         <td valign="top">
@@ -18,19 +19,20 @@ declare function local:print-external-functions-invoked($function as element()) 
                       return $y
         for $name in $names
         return 1
-         }
-         </td>
+        }
+        </td>
        </tr>
 };
 
 
 declare function local:print-internal-functions-invoked($function as element()) as element()*
 {
-    let $furis := for $x in distinct-values(for $f in $function/xq:invoked/xq:uri return string($f))
-                  order by string($x)
-                  return string($x)
-    for $furi in $furis
-    return
+  let $furis := for $x in distinct-values(for $f in $function/xq:invoked/xq:uri
+                                          return string($f))
+                order by string($x)
+                return string($x)
+  for $furi in $furis
+  return
        <tr>
         <td valign="top">{$furi}</td>
         <td valign="top">
@@ -40,9 +42,11 @@ declare function local:print-internal-functions-invoked($function as element()) 
                       return $y
         for $name in $names
         return 1
-         }
-         </td>
+        }
+        </td>
        </tr>
 };
 
-local:print-external-functions-invoked(<foo/>), local:print-internal-functions-invoked(<bar/>)
+
+local:print-external-functions-invoked(<foo/>),
+local:print-internal-functions-invoked(<bar/>)

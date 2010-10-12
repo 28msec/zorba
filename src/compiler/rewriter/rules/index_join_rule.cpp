@@ -452,7 +452,7 @@ static void rewriteJoin(
   // Create the index name and the "create-index()" expr
   //
   std::ostringstream os;
-  os << "tempIndex" << rCtx.m_tempIndexCounter++;
+  os << "tempIndex" << rCtx.theCCB->theTempIndexCounter++;
 
   store::Item_t qname;
   GENV_ITEMFACTORY->createQName(qname, "", "", os.str().c_str());

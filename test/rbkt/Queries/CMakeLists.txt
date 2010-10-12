@@ -287,7 +287,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic3 2962715)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/daniel/eic4 2962715)
 
 EXPECTED_FAILURE(test/rbkt/zorba/paths/path25 3069853)
-EXPECTED_FAILURE(test/rbkt/zorba/index/two-automatic-indexes 3071677)
 
 EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-101 3071699)
 

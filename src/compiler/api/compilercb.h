@@ -64,6 +64,10 @@ class static_context;
   - theIsUpdating :
   Set to true if the root expr of the query or eval expr is an updating expr. 
 
+  - theTempIndexCounter :
+  A counter used to create unique names for temporary (query-specific) indexes
+  created to perform hashjoins (see rewriter/rules/index_join_rule.cpp).
+
   - theConfig.lib_module :
   If true, then if the query string that is given by the user is a library
   module, zorba will wrap it in a dummy main module and compile/execute that
@@ -123,6 +127,8 @@ public:
   config                              theConfig;
 
   long                                theTimeout;
+
+  ulong                               theTempIndexCounter;
 
 public:
   SERIALIZABLE_CLASS(CompilerCB);
