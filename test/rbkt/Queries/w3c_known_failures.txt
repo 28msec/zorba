@@ -94,8 +94,6 @@ test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFu
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K2-ReplaceFunc-7
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K2-ReplaceFunc-6
 test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/MatchStringFunc/ReplaceFunc/K-ReplaceFunc-7
-test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/GeneralStringFunc/IRIToURIfunc/K2-IRIToURIfunc-8
-test/rbkt/w3c_testsuite/XQuery/Functions/AllStringFunc/GeneralStringFunc/IRIToURIfunc/K2-IRIToURIfunc-9
 test/rbkt/w3c_testsuite/XQuery/Functions/NodeFunc/NodeLangFunc/K2-NodeLangFunc-2
 test/rbkt/w3c_testsuite/XQuery/Functions/TraceFunc/fn-trace-10
 test/rbkt/w3c_testsuite/XQuery/Functions/TraceFunc/fn-trace-4

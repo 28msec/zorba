@@ -273,7 +273,7 @@ bool xqpStringStore::is_Invalid_in_IRI(uint32_t cp)
   if(0x3C == cp || 0x3E == cp || 0x22 == cp ||
      0x7B == cp || 0x7D == cp || 0x7C == cp ||
      0x5C == cp || 0X5E == cp || 0x60 == cp ||
-     0x20 == cp)
+     0x20 == cp || cp < 0x20 || 0x7E < cp)
   {
     ret = true;
   }
@@ -1189,7 +1189,7 @@ xqpStringStore_t xqpStringStore::iriToUri() const
       for(int j = 0; j < length;++j)
       {
         cp = mask8(*prev);
-        sprintf(seq, "%%%X", cp);
+        sprintf(seq, ((cp>16)?"%%%X":"%%0%X"), cp);
         newStr->theString += seq;
         prev++;
         }
