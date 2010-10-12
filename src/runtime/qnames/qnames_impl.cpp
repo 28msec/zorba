@@ -282,7 +282,7 @@ NamespaceUriForPrefixIterator::nextImpl(store::Item_t& result, PlanState& planSt
     }
   }
 
-  if( resNs != NULL && !resNs->empty() )
+  if( resNs != NULL )
     STACK_PUSH( GENV_ITEMFACTORY->createString(result, resNs), state );
 
   STACK_END (state);
