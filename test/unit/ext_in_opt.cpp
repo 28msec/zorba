@@ -32,7 +32,7 @@
 
 using namespace zorba;
 
-namespace zorba { namespace ext_in_opt {
+namespace zorba { namespace ext_in_opt_ns {
 
 bool theGetExtFuncParamDidntWork = false;
 
@@ -106,7 +106,7 @@ ext_in_opt(int argc, char* argv[])
     std::ifstream lIn("ext_in_opt.xq");
     assert(lIn.good());
     std::ostringstream lOut;
-    ext_in_opt::ExtModule lMod;
+    ext_in_opt_ns::ExtModule lMod;
 
     {
       StaticContext_t lSctx = lZorba->createStaticContext();
@@ -137,7 +137,7 @@ ext_in_opt(int argc, char* argv[])
 
   lZorba->shutdown();
   zorba::StoreManager::shutdownStore(lStore);
-  if (ext_in_opt::theGetExtFuncParamDidntWork)
+  if (ext_in_opt_ns::theGetExtFuncParamDidntWork)
     // the external function parameter "num" was not available
     return 5;
   else if (!lCorrectError)
