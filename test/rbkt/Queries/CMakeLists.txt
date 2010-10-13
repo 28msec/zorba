@@ -290,6 +290,6 @@ EXPECTED_FAILURE(test/rbkt/zorba/paths/path25 3069853)
 
 EXPECTED_FAILURE(test/rbkt/zorba/HigherOrder/hof-101 3071699)
 
-EXPECTED_FAILURE(test/rbkt/zorba/socialito/query1 3081418)
+EXPECTED_FAILURE(test/rbkt/zorba/gflwor/gflwor_ex6 3081418)
 # --------------------------------------------------------------------------
 # vim:set et sw=2 ts=2:
