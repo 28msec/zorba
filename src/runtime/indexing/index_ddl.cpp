@@ -196,22 +196,8 @@ bool CreateInternalIndexIterator::nextImpl(
 
   if (planState.dctx()->getIndex(indexDecl->getName()))
     planState.dctx()->unbindIndex(indexDecl->getName());
-  planState.dctx()->bindIndex(indexDecl->getName(), storeIndex);
 
-  /* If the index existed already, it will be deleted first, so no exception will be thrown.
-  try
-  {
-    if (planState.dctx()->getIndex(indexDecl->getName())
-      planState.dctx()->unbindIndex(indexDecl->getName());
-    planState.dctx()->bindIndex(indexDecl->getName(), storeIndex);
-  }
-  catch(...)
-  {
-    // Dynamic context raises error if index exists already
-    GENV_STORE.deleteIndex(indexDecl->getName());
-    throw;
-  }
-  */
+  planState.dctx()->bindIndex(indexDecl->getName(), storeIndex);
 
   STACK_END (state);
 }
@@ -572,6 +558,11 @@ void ProbeIndexPointValueIteratorState::reset(PlanState& state)
   {
     theIterator->close();
   }
+
+  theQname = 0;
+  theIndexDecl = 0;
+  theIndex = 0;
+  theIterator = NULL;
 }
 
 

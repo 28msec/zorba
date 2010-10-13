@@ -1,0 +1,321 @@
+<xqdoc:xqdoc xmlns:xqdoc="http://www.xqdoc.org/1.0">
+<xqdoc:control>
+<xqdoc:date>2010-09-23T09:56:17.389+02:00</xqdoc:date>
+<xqdoc:version>1.0</xqdoc:version>
+</xqdoc:control>
+<xqdoc:module type="library">
+<xqdoc:uri>http://www.xqdoc.org/xqdoc/lib/user</xqdoc:uri>
+<xqdoc:name/>
+<xqdoc:comment>
+<xqdoc:description>
+  This library module encapsulates user management.  When a user
+  registers (creates a username/password), this information is stored
+  as an XML document.  This module handles all access to the retrieval
+  of this user information from the repository.  There is currently no
+  Schema defined for the user records ... it was felt this is not
+  necessary since all access to the usage information is encapsulated
+  in this module and the XML record is created within this module.
+</xqdoc:description>
+<xqdoc:author>Darin McBeath</xqdoc:author>
+<xqdoc:version>1.0</xqdoc:version>
+<xqdoc:since>September 28, 2010</xqdoc:since>
+</xqdoc:comment>
+</xqdoc:module>
+<xqdoc:imports>
+<xqdoc:import>
+<xqdoc:uri>http://www.xqdoc.org/xqdoc/lib/session</xqdoc:uri>
+</xqdoc:import>
+<xqdoc:import>
+<xqdoc:uri>http://www.xqdoc.org/xqdoc/lib/variables</xqdoc:uri>
+</xqdoc:import>
+<xqdoc:import>
+<xqdoc:uri>http://www.zorba-xquery.com/modules/xqddf</xqdoc:uri>
+</xqdoc:import>
+</xqdoc:imports>
+<xqdoc:variables>
+<xqdoc:variable>
+<xqdoc:uri>USERS</xqdoc:uri>
+</xqdoc:variable>
+<xqdoc:variable>
+<xqdoc:uri>USERNAME</xqdoc:uri>
+</xqdoc:variable>
+<xqdoc:variable>
+<xqdoc:uri>PASSWORD</xqdoc:uri>
+</xqdoc:variable>
+<xqdoc:variable>
+<xqdoc:uri>PASSWORD1</xqdoc:uri>
+</xqdoc:variable>
+<xqdoc:variable>
+<xqdoc:uri>PASSWORD2</xqdoc:uri>
+</xqdoc:variable>
+<xqdoc:variable>
+<xqdoc:uri>USER</xqdoc:uri>
+</xqdoc:variable>
+</xqdoc:variables>
+<xqdoc:functions>
+<xqdoc:function>
+<xqdoc:comment>
+<xqdoc:description>
+ Add a new user to the repository.  This function will be generally used by
+ the register feature but could also be leveraged by some admin features
+ down the road.
+</xqdoc:description>
+<xqdoc:param>$username Username for the user</xqdoc:param>
+<xqdoc:param>$password Password for the user</xqdoc:param>
+<xqdoc:error>
+User already exists, Invalid username, Invalid password
+</xqdoc:error>
+</xqdoc:comment>
+<xqdoc:name arity="2">insert</xqdoc:name>
+<xqdoc:signature>
+declare updating function user:insert($username as xs:string, $password as xs:string)
+</xqdoc:signature>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2001/XMLSchema</xqdoc:uri>
+<xqdoc:name arity="1">QName</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="2">QName</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="2">concat</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="0">current-date</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="0">current-time</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="1">empty</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="2">error</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="1">normalize-space</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="1">string-length</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.xqdoc.org/xqdoc/lib/user</xqdoc:uri>
+<xqdoc:name arity="1">retrieve</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.zorba-xquery.com/modules/xqddf</xqdoc:uri>
+<xqdoc:name arity="2">insert-nodes-last</xqdoc:name>
+</xqdoc:invoked>
+</xqdoc:function>
+<xqdoc:function>
+<xqdoc:comment>
+<xqdoc:description>
+ Delete a user from the repository.  This function would be an internal
+ administrative function and would not be exposed to the general public.
+ This function is currently not used in the application.
+</xqdoc:description>
+<xqdoc:param>$username Username for the user</xqdoc:param>
+<xqdoc:error>User does not exist</xqdoc:error>
+</xqdoc:comment>
+<xqdoc:name arity="1">delete</xqdoc:name>
+<xqdoc:signature>
+declare updating function user:delete($username as xs:string)
+</xqdoc:signature>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="2">QName</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="2">concat</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="1">empty</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="2">error</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.xqdoc.org/xqdoc/lib/user</xqdoc:uri>
+<xqdoc:name arity="1">retrieve</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.zorba-xquery.com/modules/xqddf</xqdoc:uri>
+<xqdoc:name arity="2">delete-nodes</xqdoc:name>
+</xqdoc:invoked>
+</xqdoc:function>
+<xqdoc:function>
+<xqdoc:comment>
+<xqdoc:description>
+ Retrieve all user records.  This would be an internal administrative function and
+ would not be exposed to the general public.  This function is currently not used
+ used in the application.
+</xqdoc:description>
+<xqdoc:return>Sequence of user elements</xqdoc:return>
+</xqdoc:comment>
+<xqdoc:name arity="0">retrieve</xqdoc:name>
+<xqdoc:signature>declare function user:retrieve() as element(user)*</xqdoc:signature>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.zorba-xquery.com/modules/xqddf</xqdoc:uri>
+<xqdoc:name arity="1">collection</xqdoc:name>
+</xqdoc:invoked>
+</xqdoc:function>
+<xqdoc:function>
+<xqdoc:comment>
+<xqdoc:description>
+ Helper method to retrieve a user record based on the username.
+</xqdoc:description>
+<xqdoc:param>$username Username for the user</xqdoc:param>
+<xqdoc:return>
+User record or empty sequence if no matching record found
+</xqdoc:return>
+</xqdoc:comment>
+<xqdoc:name arity="1">retrieve</xqdoc:name>
+<xqdoc:signature>
+declare function user:retrieve($username as xs:string) as element(user)?
+</xqdoc:signature>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.zorba-xquery.com/modules/xqddf</xqdoc:uri>
+<xqdoc:name arity="1">collection</xqdoc:name>
+</xqdoc:invoked>
+</xqdoc:function>
+<xqdoc:function>
+<xqdoc:comment>
+<xqdoc:description>
+ Helper method to retrieve a user record based on the username
+ and password.  This function is used internally during login
+ to validate a user's credentials.
+</xqdoc:description>
+<xqdoc:param>$username Username for the user</xqdoc:param>
+<xqdoc:param>$password Password for the user</xqdoc:param>
+<xqdoc:return>
+User record or empty sequence if no matching record found
+</xqdoc:return>
+</xqdoc:comment>
+<xqdoc:name arity="2">retrieve</xqdoc:name>
+<xqdoc:signature>
+declare function user:retrieve($username as xs:string, $password as xs:string) as element(user)?
+</xqdoc:signature>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.zorba-xquery.com/modules/xqddf</xqdoc:uri>
+<xqdoc:name arity="1">collection</xqdoc:name>
+</xqdoc:invoked>
+</xqdoc:function>
+<xqdoc:function>
+<xqdoc:comment>
+<xqdoc:description>
+ Validate the passed username/password against the repository of valid users.  If there
+ is a match, then login the user by creating a client side cookie.
+</xqdoc:description>
+<xqdoc:param>$username Username for the user</xqdoc:param>
+<xqdoc:param>$password Password for the user</xqdoc:param>
+<xqdoc:return>
+True/False indicating whether the login was successful.
+</xqdoc:return>
+<xqdoc:error>No match for the submitted username/password</xqdoc:error>
+</xqdoc:comment>
+<xqdoc:name arity="2">login</xqdoc:name>
+<xqdoc:signature>
+declare sequential function user:login($username as xs:string, $password as xs:string) as xs:boolean
+</xqdoc:signature>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="2">QName</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="2">concat</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="1">empty</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="2">error</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="0">true</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.xqdoc.org/xqdoc/lib/session</xqdoc:uri>
+<xqdoc:name arity="2">set-cookie</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.xqdoc.org/xqdoc/lib/user</xqdoc:uri>
+<xqdoc:name arity="2">retrieve</xqdoc:name>
+</xqdoc:invoked>
+</xqdoc:function>
+<xqdoc:function>
+<xqdoc:comment>
+<xqdoc:description>
+ Get the current user that has been authenticated.  If
+ the user has not authenticated, then the empty string
+ will be returned.  The current user is extracted from
+ the client-side cookie that has previously been set.
+</xqdoc:description>
+<xqdoc:return>Current username or empty string</xqdoc:return>
+</xqdoc:comment>
+<xqdoc:name arity="0">current-user</xqdoc:name>
+<xqdoc:signature>declare function user:current-user() as xs:string?</xqdoc:signature>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.xqdoc.org/xqdoc/lib/session</xqdoc:uri>
+<xqdoc:name arity="1">get-cookie</xqdoc:name>
+</xqdoc:invoked>
+</xqdoc:function>
+<xqdoc:function>
+<xqdoc:comment>
+<xqdoc:description>
+ Logout the authenticated user.  This will remove the
+ client side session cookie information associated with
+ the user.
+</xqdoc:description>
+<xqdoc:return>
+True/False indicating whether the logout was successful.
+</xqdoc:return>
+</xqdoc:comment>
+<xqdoc:name arity="0">logout</xqdoc:name>
+<xqdoc:signature>
+declare sequential function user:logout() as xs:boolean
+</xqdoc:signature>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="0">true</xqdoc:name>
+</xqdoc:invoked>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.xqdoc.org/xqdoc/lib/session</xqdoc:uri>
+<xqdoc:name arity="2">set-cookie</xqdoc:name>
+</xqdoc:invoked>
+</xqdoc:function>
+<xqdoc:function>
+<xqdoc:comment>
+<xqdoc:description>
+ Get the Username for the specified User element.  This is
+ equivalent to a simple accessor method associated with
+ a user element record.
+</xqdoc:description>
+<xqdoc:param>$user User element</xqdoc:param>
+<xqdoc:return>Username</xqdoc:return>
+</xqdoc:comment>
+<xqdoc:name arity="1">get-username</xqdoc:name>
+<xqdoc:signature>
+declare function user:get-username($user as element(user)) as xs:string
+</xqdoc:signature>
+<xqdoc:invoked>
+<xqdoc:uri>http://www.w3.org/2005/xpath-functions</xqdoc:uri>
+<xqdoc:name arity="1">string</xqdoc:name>
+</xqdoc:invoked>
+</xqdoc:function>
+</xqdoc:functions>
+</xqdoc:xqdoc>
