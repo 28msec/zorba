@@ -67,6 +67,7 @@ ADD_CUSTOM_TARGET(xqdoc
     --omit-xml-declaration
     -f
     -q "\"${CMAKE_CURRENT_SOURCE_DIR}/src/xqdoc-main.xq\""
+    -e "\"leftMenu=${CMAKE_CURRENT_SOURCE_DIR}/src/categories.xml\""
     -e "\"modulesPath:=${CMAKE_SOURCE_DIR}/modules\""
     -e "\"xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}\""
     -e "\"indexHtmlPath:=${CMAKE_CURRENT_BINARY_DIR}/templates/index.html\""

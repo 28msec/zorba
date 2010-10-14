@@ -21,23 +21,7 @@ declare variable $examplePath as xs:string* := (
 (:~
  : This variable contains categories in the left menu
  :)
-declare variable $leftMenu := 
-<menu>
-  <category name="http://expath.org/ns" uri="http://expath.org/ns" />
-  <category name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules">
-    <category name="email" uri="http://www.zorba-xquery.com/modules/email" />
-    <category name="excel" uri="http://www.zorba-xquery.com/modules/excel" />
-    <category name="image" uri="http://www.zorba-xquery.com/modules/image" />
-    <category name="introspection" uri="http://www.zorba-xquery.com/modules/introspection" />
-    <category name="security" uri="http://www.zorba-xquery.com/modules/security" />
-    <category name="oauth" uri="http://www.zorba-xquery.com/modules/oauth" />
-    <category name="webservices" uri="http://www.zorba-xquery.com/modules/webservices" last="true">
-      <category name="google" uri="http://www.zorba-xquery.com/modules/webservices/google" />
-      <category name="yahoo" uri="http://www.zorba-xquery.com/modules/webservices/yahoo" last="true" />
-    </category>
-  </category>
-  <category name="http://www.w3.org/2005" uri="http://www.w3.org/2005" last="true"/>
-</menu>;
+declare variable $leftMenu external;
 
 declare variable $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>XQuery Libraries</strong></span></ul>;
 
@@ -442,6 +426,11 @@ declare sequential function local:generateIndexHtml($indexPath as xs:string, $me
     }
 };
 
+(:
+  Set backward compatibility non-external $leftMenu variable
+  declare variable $leftMenu := <menu .. />; 
+:)
+set $leftMenu := $leftMenu/menu;
 
 (: generate the XQDoc XML for all the modules :)
 if (file:mkdirs($xqdocXmlPath, false())) then
