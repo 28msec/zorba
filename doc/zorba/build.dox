@@ -244,7 +244,8 @@ libraries.  It will also add some symbolic links to the libraries.
   - set the <tt>PATH</tt> environment variable before calling zorba
     \code SET PATH=path_to_libxml2\bin;path_to_icu\bin;path_to_iconv\bin;path_to_xerces\bin;%PATH% \endcode
   - include all the paths in the <tt>PATH</tt> environment variable for the current user/system. This can be done in Control Panel -> System -> Advanced (System Settings) -> Environment Variables... -> edit the PATH variable for either the current user or for the entire system.
-  - copy all the required dlls in the same directory as the zorba.exe file (or your own executable if you build an application that is using Zorba). Since not all the DLL's from the required packages are needed you can either execute Zorba or run the Dependency Walker to find out the needed DLL's.
+  - copy all the required DLLs in the same directory as the zorba.exe file (or your own executable if you build an application that is using Zorba). Since not all the DLL's from the required packages are needed you can either execute Zorba or run the Dependency Walker to find out the needed DLL's.
+  - copy all the required DLLs in one directory. Set the ZORBA_REQUIRED_DLLS_PATH Cmake variable to point to that directory.
 - Note, you can also use CMake's graphical interface. This can usually be found in Start menu. This eases up setup and makes it more intuitive.
 
 \subsection nmake Building Zorba using a NMake Project

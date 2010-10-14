@@ -1,8 +1,15 @@
 INCLUDE(InstallRequiredSystemLibraries)
 
 SET(ZORBA_REQUIRED_DLLS_PATH "" CACHE PATH "Set this variable to the dir containing the third-party dlls used by zorba")
-FILE(TO_CMAKE_PATH ${ZORBA_REQUIRED_DLLS_PATH} CMAKE_ZORBA_REQUIRED_DLLS_PATH)
-FILE(GLOB Zorba_DLLS ${CMAKE_ZORBA_REQUIRED_DLLS_PATH}/*.dll)
-INSTALL(PROGRAMS ${Zorba_DLLS} DESTINATION bin)
+
+IF(EXISTS ${ZORBA_REQUIRED_DLLS_PATH})
+  FILE(TO_CMAKE_PATH ${ZORBA_REQUIRED_DLLS_PATH} CMAKE_ZORBA_REQUIRED_DLLS_PATH)
+  FILE(GLOB Zorba_DLLS ${CMAKE_ZORBA_REQUIRED_DLLS_PATH}/*.dll)
+  INSTALL(PROGRAMS ${Zorba_DLLS} DESTINATION bin)
+ELSE(EXISTS ${ZORBA_REQUIRED_DLLS_PATH})
+  MESSAGE(STATUS "
+ZORBA_REQUIRED_DLLS_PATH variable is not set: please read the 'Notes for Windows Users' from the 'Build' documentation page to make sure you have made all necessary steps needed for running Zorba.
+")
+ENDIF(EXISTS ${ZORBA_REQUIRED_DLLS_PATH})
 
 
