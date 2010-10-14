@@ -862,6 +862,10 @@ void ProbeIndexRangeValueIteratorState::reset(PlanState& state)
   {
     theIterator->close();
   }
+
+  theQname = 0;
+  theIndex = 0;
+  theIterator = NULL;
 }
 
 

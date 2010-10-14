@@ -3862,6 +3862,13 @@ void end_visit(const CollectionDecl& v, void* /*visit_state*/)
   // Expand the collection qname (error is raised if qname resolution fails).
   store::Item_t lExpandedQName;
   expand_function_qname(lExpandedQName, lName, lName->get_location());
+
+  if (*lExpandedQName->getNamespace() != *theModuleNamespace)
+  {
+    ZORBA_ERROR_LOC_PARAM(XDST0007_COLLECTION_DECL_IN_FOREIGN_MODULE, loc,
+                          lName->get_qname(), "");
+  }
+
   // Get the static type of the root nodes
   xqtref_t lNodeType;
   xqtref_t lCollectionType;

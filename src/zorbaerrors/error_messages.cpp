@@ -690,6 +690,10 @@ DEF_ERR_CODE(XDST0005_COLLECTION_PROPERTIES_CONFLICT, XDST0005,
 DEF_ERR_CODE(XDST0006_COLLECTION_INVALID_PROPERTY_VALUE, XDST0006,
 "The declaratrion for collection /s contains an invalid property value: /s")
 
+DEF_ERR_CODE(XDST0007_COLLECTION_DECL_IN_FOREIGN_MODULE, XDST0007, 
+"The declaration for collection /s specifies a qname whose namespace is not the same as the target namespace of the containing library module.")
+
+
 DEF_ERR_CODE(XDST0021_INDEX_ALREADY_DECLARED, XDST0021,
 "An index with name /s is already declared in the same module")
 
