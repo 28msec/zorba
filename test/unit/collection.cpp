@@ -8,7 +8,7 @@
 #include <zorba/exception.h>
 
 
-int collection(int argc, char** argv)
+int collection(int argc, char* argv[])
 {
   void* store = zorba::StoreManager::getStore();
   zorba::Zorba* z = zorba::Zorba::getInstance(store);
