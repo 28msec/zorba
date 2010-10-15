@@ -739,6 +739,10 @@ DEF_ERR_CODE(XDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE, XDST0034,
 DEF_ERR_CODE(XDST0035_INDEX_GENERAL_MULTIKEY, XDST0035,
 "Index /s cannot be both a general index and have more than one key expressions")
 
+DEF_ERR_CODE(XDST0036_INDEX_DECL_IN_FOREIGN_MODULE, XDST0036, 
+"The declaration for index /s specifies a qname whose namespace is not the same as the target namespace of the containing library module.")
+
+
 DEF_ERR_CODE(XDST0041_IC_IS_ALREADY_DECLARED, XDST0041,
              "An integrity constraint with URI /s is declared already.")
 
@@ -760,6 +764,8 @@ DEF_ERR_CODE(XDST0046_IC_HAS_INVALID_DATA_SOURCE, XDST0046,
 DEF_ERR_CODE(XDST0047_IC_NOT_DETERMINISTIC, XDST0047,
              "The integrity constraint with URI /s has a non deterministic definition.")
 
+DEF_ERR_CODE(XDST0048_IC_DECL_IN_FOREIGN_MODULE, XDST0048, 
+"The declaration for integrity constraint /s specifies a qname whose namespace is not the same as the target namespace of the containing library module.")
 
 
 //

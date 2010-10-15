@@ -134,11 +134,11 @@ Iterator tree for main query:
                   <AttributeIterator qname="xs:QName(,,count)">
                     <EnclosedIterator attr_cont="true">
                       <FnCountIterator>
-                        <NodeDistinctIterator>
-                          <IndexGeneralPointProbeIterator>
+                        <NodeDistinctIterator allow-atomics="false" check-only="false">
+                          <ProbeIndexPointGeneralIterator>
                             <SingletonIterator value="xs:QName(,,tempIndex0)"/>
                             <ForVarIterator varname="term"/>
-                          </IndexGeneralPointProbeIterator>
+                          </ProbeIndexPointGeneralIterator>
                         </NodeDistinctIterator>
                       </FnCountIterator>
                     </EnclosedIterator>

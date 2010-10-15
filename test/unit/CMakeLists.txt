@@ -96,6 +96,5 @@ FOREACH (test ${TestsToRun})
 ENDFOREACH(test)
 
 EXPECTED_FAILURE(test/unit/uri_file_decoding_test 123)
-EXPECTED_FAILURE(test/unit/ext_in_opt 3078666)
 
 ADD_SUBDIRECTORY(debugger)

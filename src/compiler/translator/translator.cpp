@@ -3984,6 +3984,12 @@ void* begin_visit(const AST_IndexDecl& v)
   store::Item_t qnameItem;
   expand_function_qname(qnameItem, qname, qname->get_location());
 
+  if (*qnameItem->getNamespace() != *theModuleNamespace)
+  {
+    ZORBA_ERROR_LOC_PARAM(XDST0036_INDEX_DECL_IN_FOREIGN_MODULE, loc,
+                          qname->get_qname(), "");
+  }
+
   IndexDecl_t index = new IndexDecl(theSctx, loc, qnameItem);
   index->setGeneral(v.isGeneral());
   index->setUnique(v.isUnique());
@@ -4854,6 +4860,11 @@ void end_visit(const IntegrityConstraintDecl& v, void* /*visit_state*/)
   store::Item_t qnameItem;
   expand_function_qname(qnameItem, qname, qname->get_location());
 
+  if (*qnameItem->getNamespace() != *theModuleNamespace)
+  {
+    ZORBA_ERROR_LOC_PARAM(XDST0048_IC_DECL_IN_FOREIGN_MODULE, loc,
+                          qname->get_qname(), "");
+  }
 
   ValueIC_t vic;
   if ( v.getICKind() == IntegrityConstraintDecl::foreign_key )

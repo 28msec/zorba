@@ -36,6 +36,7 @@ namespace zorba { namespace ext_in_opt_ns {
 
 bool theGetExtFuncParamDidntWork = false;
 
+
 class ExtFunction : public NonePureStatelessExternalFunction
 {
 public:
@@ -52,8 +53,10 @@ public:
     // testing if the function paramegter num is available or not
     if (!dctx->getExternalFunctionParam("num", lParam))
       theGetExtFuncParamDidntWork = true;
+
     int* lNum = static_cast<int*>(lParam);
     std::cout << "ExtFunction::evaluate: " << *lNum << std::endl;
+
     return ItemSequence_t(new EmptySequence());
   }
 };
@@ -73,17 +76,18 @@ public:
   }
 };
 
+
 class MySerializationCallback : public SerializationCallback
 {
-  protected:
-    ExtModule theMod;
-
-  public:
-    virtual ExternalModule*
-    getExternalModule(const String& aURI) const
-    {
-      return const_cast<ExtModule*>(&theMod);
-    }
+protected:
+  ExtModule theMod;
+  
+public:
+  virtual ExternalModule*
+  getExternalModule(const String& aURI) const
+  {
+    return const_cast<ExtModule*>(&theMod);
+  }
 };
 
 
@@ -123,20 +127,29 @@ ext_in_opt(int argc, char* argv[])
       lDynContext->addExternalFunctionParam("num", &lNum);
       std::cout << lQuery << std::endl;
     }
-  } catch (QueryException& qe) {
+  }
+  catch (QueryException& qe)
+  {
     if (qe.getErrorCode() == XPTY0004)
+    {
       // the error XPTY0004 is the correct result of the query
       lCorrectError = true;
+    }
     else
+    {
       std::cerr << qe << std::endl;
       return 3;
-  } catch (ZorbaException& e) {
+    }
+  }
+  catch (ZorbaException& e)
+  {
     std::cerr << e << std::endl;
     return 4;
   }
 
   lZorba->shutdown();
   zorba::StoreManager::shutdownStore(lStore);
+
   if (ext_in_opt_ns::theGetExtFuncParamDidntWork)
     // the external function parameter "num" was not available
     return 5;

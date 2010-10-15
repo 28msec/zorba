@@ -153,7 +153,16 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
 
   // Loop Hoisting
   if (Properties::instance()->loopHoisting())
-    driverHoistExprsOutOfLoops.rewrite(rCtx);
+  {
+    bool hoist_modified = driverHoistExprsOutOfLoops.rewrite(rCtx);
+
+    // Mark exprs again time because hoisting may have created new exprs.
+    if (hoist_modified)
+    {
+      RuleOnceDriver<MarkExprs> driverMarkExpr;
+      driverMarkExpr.rewrite(rCtx);
+    }
+  }
 
   // Index Joins
   if (Properties::instance()->inferJoins())
@@ -196,6 +205,10 @@ bool DefaultOptimizer::rewrite(RewriterContext& rCtx)
           std::cout << "After index join : " << std::endl;
           rCtx.getRoot()->put(std::cout) << std::endl;
         }
+
+        // Mark exprs again because index joins may have created new exprs.
+        RuleOnceDriver<MarkExprs> driverMarkExpr;
+        driverMarkExpr.rewrite(rCtx);
       }
     }
     while (local_modified);
