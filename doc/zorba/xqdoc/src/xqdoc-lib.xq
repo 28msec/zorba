@@ -113,7 +113,7 @@ declare sequential function doc2html:removeInternalFunctionality($xqdoc as node(
 declare sequential function doc2html:generateXQDocXhtml(
   $indexPath      as xs:string, $xqdocXmlPath   as xs:string,
   $xqdocXhtmlPath as xs:string, $leftMenu as element(menu),
-  $modulesPath    as xs:string
+  $modulesPath    as xs:string, $menu as element(ul)
 ) as xs:string* {
   let $indexHtmlDoc := file:read-xml($indexPath)
   return
@@ -131,7 +131,6 @@ declare sequential function doc2html:generateXQDocXhtml(
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleName := $moduleDoc/xqdoc:name
       let $moduleUri := $moduleDoc/xqdoc:uri
-      let $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>XQuery Libraries</strong></span></ul> 
       let $menu := doc2html:createLeftMenu($menu, $moduleUri, $leftMenu)
       let $xhtml := xqdg:doc($xqdoc, $menu)
       return block {
@@ -464,7 +463,7 @@ declare sequential function doc2html:main(
   (
     doc2html:clearFolder($xqdocXhtmlPath,"xqdoc\.html$"),
     doc2html:gatherModules($xqdocXmlPath),
-    doc2html:generateXQDocXhtml($indexHtmlPath, $xqdocXmlPath, $xqdocXhtmlPath, $leftMenu, $modulePath)
+    doc2html:generateXQDocXhtml($indexHtmlPath, $xqdocXmlPath, $xqdocXhtmlPath, $leftMenu, $modulePath, $menu)
   )
   else
     error()
