@@ -1600,8 +1600,6 @@ void ElementNode::getNamespaceBindings(
   assert(bindings.empty());
   assert(theNsContext != NULL);
 
-  bool foundEmptyNS = false;
-
   if (ns_scoping != store::StoreConsts::ONLY_PARENT_NAMESPACES)
   {
     bindings = theNsContext->getBindings();
@@ -1620,10 +1618,10 @@ void ElementNode::getNamespaceBindings(
 
     // for each parent binding, add it to the result, if it doesn't have the
     // same prefix as another binding that is already in the result.
-    for (ulong i = 0; i < parentSize; i++)
+    for (ulong i = 0; i < parentSize; ++i)
     {
       ulong j;
-      for (j = 0; j < currSize; j++)
+      for (j = 0; j < currSize; ++j)
       {
         if (bindings[j].first->byteEqual(parentBindings[i].first.getp()))
           break;
@@ -1631,9 +1629,6 @@ void ElementNode::getNamespaceBindings(
 
       if (j == currSize)
       {
-        if (!foundEmptyNS && parentBindings[i].second->empty())
-          foundEmptyNS = true;
-
         bindings.push_back(parentBindings[i]);
       }
     }

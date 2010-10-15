@@ -336,18 +336,34 @@ bool ElementIterator::nextImpl(store::Item_t& result, PlanState& planState) cons
     state->baseUri = theSctx->get_base_uri();
     if (state->baseUri->empty())
       ZORBA_ERROR_LOC(XPST0001, loc);
-  }
 
-  // Create the element node and push it to the construction path.
-  GENV_ITEMFACTORY->createElementNode(result,
-                                      parent,
-                                      -1,
-                                      nodeName,
-                                      typeName,
-                                      true,
-                                      false,
-                                      theLocalBindings->get_bindings(),
-                                      state->baseUri);
+    store::NsBindings bindings;
+    theLocalBindings->getAllBindings(bindings);
+
+    // Create the element node and push it to the construction path.
+    GENV_ITEMFACTORY->createElementNode(result,
+                                        parent,
+                                        -1,
+                                        nodeName,
+                                        typeName,
+                                        true,
+                                        false,
+                                        bindings,
+                                        state->baseUri);
+  }
+  else
+  {
+    // Create the element node and push it to the construction path.
+    GENV_ITEMFACTORY->createElementNode(result,
+                                        parent,
+                                        -1,
+                                        nodeName,
+                                        typeName,
+                                        true,
+                                        false,
+                                        theLocalBindings->getLocalBindings(),
+                                        state->baseUri);
+  }
   path.push(result);
 
   // Compute the attributes and children of the element node

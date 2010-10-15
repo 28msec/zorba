@@ -26,6 +26,9 @@ END_SERIALIZABLE_CLASS_VERSIONS(namespace_context)
 
 
 
+/*******************************************************************************
+
+********************************************************************************/
 namespace_context::namespace_context(static_context *sctx, store::NsBindings& bindings)
   :
   m_sctx(sctx)
@@ -37,7 +40,10 @@ namespace_context::namespace_context(static_context *sctx, store::NsBindings& bi
 }
 
 
-void namespace_context::serialize(::zorba::serialization::Archiver &ar)
+/*******************************************************************************
+
+********************************************************************************/
+void namespace_context::serialize(::zorba::serialization::Archiver& ar)
 {
   //serialize_baseclass(ar, (SimpleRCObject*)this);
   ar & m_sctx;
@@ -45,7 +51,10 @@ void namespace_context::serialize(::zorba::serialization::Archiver &ar)
   ar & m_bindings;
 }
   
-    
+
+/*******************************************************************************
+
+********************************************************************************/
 void namespace_context::bind_ns(
     const xqpStringStore_t& prefix,
     const xqpStringStore_t& ns)
@@ -54,6 +63,9 @@ void namespace_context::bind_ns(
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 bool namespace_context::findBinding(
     const xqpStringStore_t& aPrefix,
     xqpStringStore_t& aNamespace)
@@ -95,6 +107,44 @@ bool namespace_context::findBinding(
     return found;
   }
 }
+
+
+/*******************************************************************************
+  Collect all the in-scope bindings into the given vector
+********************************************************************************/
+void namespace_context::getAllBindings(store::NsBindings& bindings) const
+{
+  bindings = m_bindings;
+
+  const namespace_context* parentContext = m_parent;
+
+  while (parentContext)
+  {
+    const store::NsBindings& parentBindings = parentContext->m_bindings;
+    ulong parentSize = parentBindings.size();
+    ulong currSize = bindings.size();
+
+    // for each parent binding, add it to the result, if it doesn't have the
+    // same prefix as another binding that is already in the result.
+    for (ulong i = 0; i < parentSize; ++i)
+    {
+      ulong j;
+      for (j = 0; j < currSize; ++j)
+      {
+        if (bindings[j].first->byteEqual(parentBindings[i].first.getp()))
+          break;
+      }
+
+      if (j == currSize)
+      {
+        bindings.push_back(parentBindings[i]);
+      }
+    }
+
+    parentContext = parentContext->m_parent;
+  }
+}
+
 
 }
 /* vim:set ts=2 sw=2: */

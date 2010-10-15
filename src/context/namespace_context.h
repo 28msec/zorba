@@ -68,9 +68,11 @@ public:
   
   void bind_ns(const xqpStringStore_t& prefix, const xqpStringStore_t& ns);
 
-  const bindings_t& get_bindings() const { return m_bindings; }
-
   bool findBinding(const xqpStringStore_t& aPrefix, xqpStringStore_t& aNamespace);
+
+  const bindings_t& getLocalBindings() const { return m_bindings; }
+
+  void getAllBindings(store::NsBindings& bindings) const;
 };
 
 }

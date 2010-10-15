@@ -1502,11 +1502,13 @@ void static_context::get_namespace_bindings(
         ulong numBindings = bindings.size();
         bool found = 0;
         for (unsigned int i = 0; i < numBindings; ++i)
+        {
           if (bindings[i].first->byteEqual(prefix))
           {
             found = 1;
             break;
           }
+        }
 
         if (!found)
           bindings.push_back(binding);
