@@ -663,62 +663,62 @@ namespace zorba {
 } /* namespace zorba */
 
 int test_debugger_server (int argc, char* argv[]) {
-  void* store = zorba::StoreManager::getStore();
-  Zorba* lZorba = zorba::Zorba::getInstance(store);
-
-  std::cout << "---------------------" << std::endl;
-  std::cout << "executing test_run" << std::endl;
-  if (zorba::test_run(lZorba) != 0) {
-  	return 1;
-  }
-
-  std::cout << "---------------------" << std::endl;
-  std::cout << "executing test_terminate" << std::endl;
-  if (zorba::test_terminate(lZorba) != 0) {
-    return 1;
-  }
-
-  std::cout << "---------------------" << std::endl;
-  std::cout << "executing test_terminate_immediately" << std::endl;
-  if (zorba::test_terminate_immediately(lZorba) != 0) {
-    return 1;
-  }
-
-  std::cout << "---------------------" << std::endl;
-  std::cout << "executing test_resume" << std::endl;
-  if (zorba::test_resume(lZorba) != 0) {
-    return 1;
-  }
-
-  std::cout << "---------------------" << std::endl;
-  std::cout << "executing test_clear_pending" << std::endl;
-  if (zorba::test_clear_pending(lZorba) != 0) {
-    return 1;
-  }
-
-  std::cout << "---------------------" << std::endl;
-  std::cout << "executing test_clear_set" << std::endl;
-  if (zorba::test_clear_set(lZorba) != 0) {
-    return 1;
-  }
-
-  std::cout << "---------------------" << std::endl;
-  std::cout << "executing test_vars" << std::endl;
-  if (zorba::test_vars(lZorba) != 0) {
-    return 1;
-  }
-
-  std::cout << "---------------------" << std::endl;
-  std::cout << "executing test_vars_repeated" << std::endl;
-  if (zorba::test_vars_repeated(lZorba) != 0) {
-    return 1;
-  }
-
-  std::cout << "---------------------" << std::endl;
-  std::cout << "executing test_eval" << std::endl;
-  if (zorba::test_eval(lZorba) != 0) {
-    return 1;
-  }
+//  void* store = zorba::StoreManager::getStore();
+//  Zorba* lZorba = zorba::Zorba::getInstance(store);
+//
+//  std::cout << "---------------------" << std::endl;
+//  std::cout << "executing test_run" << std::endl;
+//  if (zorba::test_run(lZorba) != 0) {
+//  	return 1;
+//  }
+//
+//  std::cout << "---------------------" << std::endl;
+//  std::cout << "executing test_terminate" << std::endl;
+//  if (zorba::test_terminate(lZorba) != 0) {
+//    return 1;
+//  }
+//
+//  std::cout << "---------------------" << std::endl;
+//  std::cout << "executing test_terminate_immediately" << std::endl;
+//  if (zorba::test_terminate_immediately(lZorba) != 0) {
+//    return 1;
+//  }
+//
+//  std::cout << "---------------------" << std::endl;
+//  std::cout << "executing test_resume" << std::endl;
+//  if (zorba::test_resume(lZorba) != 0) {
+//    return 1;
+//  }
+//
+//  std::cout << "---------------------" << std::endl;
+//  std::cout << "executing test_clear_pending" << std::endl;
+//  if (zorba::test_clear_pending(lZorba) != 0) {
+//    return 1;
+//  }
+//
+//  std::cout << "---------------------" << std::endl;
+//  std::cout << "executing test_clear_set" << std::endl;
+//  if (zorba::test_clear_set(lZorba) != 0) {
+//    return 1;
+//  }
+//
+//  std::cout << "---------------------" << std::endl;
+//  std::cout << "executing test_vars" << std::endl;
+//  if (zorba::test_vars(lZorba) != 0) {
+//    return 1;
+//  }
+//
+//  std::cout << "---------------------" << std::endl;
+//  std::cout << "executing test_vars_repeated" << std::endl;
+//  if (zorba::test_vars_repeated(lZorba) != 0) {
+//    return 1;
+//  }
+//
+//  std::cout << "---------------------" << std::endl;
+//  std::cout << "executing test_eval" << std::endl;
+//  if (zorba::test_eval(lZorba) != 0) {
+//    return 1;
+//  }
 
   return 0;
 }
