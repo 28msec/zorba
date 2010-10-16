@@ -113,7 +113,7 @@ declare sequential function doc2html:removeInternalFunctionality($xqdoc as node(
 declare sequential function doc2html:generateXQDocXhtml(
   $indexPath      as xs:string, $xqdocXmlPath   as xs:string,
   $xqdocXhtmlPath as xs:string, $leftMenu as element(menu),
-  $modulesPath    as xs:string, $menu as element(ul)
+  $modulesPath    as xs:string
 ) as xs:string* {
   let $indexHtmlDoc := file:read-xml($indexPath)
   return
@@ -131,6 +131,7 @@ declare sequential function doc2html:generateXQDocXhtml(
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleName := $moduleDoc/xqdoc:name
       let $moduleUri := $moduleDoc/xqdoc:uri
+      let $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>{string($leftMenu/@title)}</strong></span></ul> 
       let $menu := doc2html:createLeftMenu($menu, $moduleUri, $leftMenu)
       let $xhtml := xqdg:doc($xqdoc, $menu)
       return block {
@@ -413,7 +414,7 @@ declare sequential function doc2html:main(
   $indexHtmlPath as xs:string
 ) {
   let $leftMenu :=
-  <menu>
+  <menu title="XQuery Libraries">
   <category name="http://expath.org/ns" uri="http://expath.org/ns" />
   <category name="http://www.zorba-xquery.com/modules" uri="http://www.zorba-xquery.com/modules">
     <category name="email" uri="http://www.zorba-xquery.com/modules/email" />
@@ -432,7 +433,7 @@ declare sequential function doc2html:main(
   let $menu :=
   <ul class="treeview" id="documentation">
     <span class="leftMenu">
-      <strong>XQuery Libraries</strong>
+      <strong>{string($leftMenu/@title)}</strong>
     </span>
   </ul>
   return doc2html:main($menu, $leftMenu, $modulePath, $xqdocBuildPath, $indexHtmlPath)
@@ -463,7 +464,7 @@ declare sequential function doc2html:main(
   (
     doc2html:clearFolder($xqdocXhtmlPath,"xqdoc\.html$"),
     doc2html:gatherModules($xqdocXmlPath),
-    doc2html:generateXQDocXhtml($indexHtmlPath, $xqdocXmlPath, $xqdocXhtmlPath, $leftMenu, $modulePath, $menu)
+    doc2html:generateXQDocXhtml($indexHtmlPath, $xqdocXmlPath, $xqdocXhtmlPath, $leftMenu, $modulePath)
   )
   else
     error()
