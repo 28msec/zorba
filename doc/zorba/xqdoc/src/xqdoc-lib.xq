@@ -268,7 +268,15 @@ declare sequential function doc2html:createCategory($menu, $moduleUri, $category
     </ul></li>
     as last into $menu
     };
-
+   
+   for $module in $category/module
+   let $link :=
+     if($module/@uri = $moduleUri) then 
+       <li><span class="leftmenu_active">{string($module/@name)}</span></li>
+     else 
+       <li><a href="{$doc2html:indexCollector/module[@uri=$module/@uri]/@file}">{string($module/@name)}</a></li>
+   return insert node $link as last into $menu//li[@class="expandable" and .//span/text()=$category/@name]/ul;
+    
    $menu;
 };
 
