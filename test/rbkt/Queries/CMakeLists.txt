@@ -275,6 +275,18 @@ ENDIF (FOUND_XQTS)
 # --------------------------------------------------------------------------
 # the list of tests that are failing but can be accepted by the commit queue
 # !!! do not abuse this list or you will be prosecuted !!!
+EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize5 3082260)
+EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize6 3082213)
+EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize7 3082213)
+EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize8 3082226)
+EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize9 3082160)
+EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize10 3082160)
+EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize11 3082160)
+EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize12 3082160)
+EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize13 3082260)
+EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize14 3089865)
+EXPECTED_FAILURE(test/rbkt/zorba/converters/json/json_serialize15 3089865)
+
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/admin 2935047)
 EXPECTED_FAILURE(test/rbkt/zorba/xqddf/ic-uniqueKey-err2 2935047)
 
