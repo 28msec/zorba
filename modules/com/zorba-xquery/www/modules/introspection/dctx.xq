@@ -17,7 +17,9 @@
 (:~
  : Intospection Module for the Dynamic Context
  :
- : @version 1.0
+ : @see http://www.w3.org/TR/xquery-11/#id-xq-evaluation-context-components
+ : @author Nicolae Brinza
+ :
  :)
 module namespace dctx = "http://www.zorba-xquery.com/modules/introspection/dctx";
 

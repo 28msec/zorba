@@ -15,6 +15,10 @@
 :)
 
 (:~
+ : Node reference functions
+ :
+ : @author Matthias Brantner
+ :
  :)
 module namespace ref = "http://www.zorba-xquery.com/modules/node-reference";
 

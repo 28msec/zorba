@@ -2,7 +2,7 @@
  : Yahoo Module for the commons
  : This module wraps a set of functions used by other Yahoo modules.
  : @author Stephanie Russell
- : @version 1.0
+ :
  :)
 
 module namespace yahoo = 'http://www.zorba-xquery.com/modules/webservices/yahoo/shared';

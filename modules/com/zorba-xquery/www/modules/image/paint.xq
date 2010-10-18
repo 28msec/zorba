@@ -4,6 +4,7 @@
  : Colors have to be in hexidecimal rgb  with leading '#', e.g. '#000000' for black.
  :
  : @author Daniel Thomas
+ :
  :)
 module namespace paint = 'http://www.zorba-xquery.com/modules/image/paint';
 import module namespace paintschema = 'http://www.zorba-xquery.com/modules/image/paintschema';

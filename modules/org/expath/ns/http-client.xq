@@ -41,8 +41,7 @@
  : Sequential functions are only allowed to be invoked in certain places (e.g.
  : only from functions which are declared as sequential themselves).
  : In contrast, the http:read() functions are not declared as sequential -
- : they are declared as nondeterministic though (see
- : <a href="http://www.w3.org/TR/xquery-11/">XQuery 1.1</a>), which
+ : they are declared as nondeterministic though, which
  : means that several calls may return different results.
  : HTTP requests performed using these functions are <b>not</b> allowed to have
  : side effects.
@@ -184,6 +183,8 @@
  : </p>
  :
  : @author Markus Pilman
+ : @see <a href="http://www.w3.org/TR/xquery-11/#FunctionDeclns">XQuery 1.1: Function Declaration</a>
+ :
  :)
 module namespace http = "http://expath.org/ns/http-client";
 

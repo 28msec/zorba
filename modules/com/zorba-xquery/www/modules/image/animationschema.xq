@@ -1,6 +1,6 @@
 (:~
  : For internal use only.
- : 
+ :
  : @author Daniel Thomas
  : @see http://www.zorba-xquery.com/modules/image/image
  : @see http://www.imagemagick.org/Magick++/

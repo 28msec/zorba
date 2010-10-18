@@ -2,7 +2,8 @@
  : Yahoo! Weather Module
  : This module wraps many of the Yahoo! Weather APIs listed on <a href="http://developer.yahoo.com/weather/" target="_blank">http://developer.yahoo.com/weather/</a>.
  : @author Stephanie Russell
- : @version 1.0
+ : @see <a href="http://developer.yahoo.com/weather/" target="_blank">http://developer.yahoo.com/weather/</a>
+ :
  :)
 
 module namespace yahoo = 'http://www.zorba-xquery.com/modules/webservices/yahoo/weather';

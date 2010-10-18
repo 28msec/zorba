@@ -18,7 +18,6 @@
  : Base64 encoding and decoding
  :
  : @author Matthias Brantner
- : @version 1.0
  :
  :)
 module namespace base64 = "http://www.zorba-xquery.com/modules/base64";

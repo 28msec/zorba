@@ -15,8 +15,10 @@
 :)
 
 (:~
+ : This is the description of the hmac module
+ :
  : @author William Candillon
- : @version 1.0
+ :
  :)
 module namespace hmac = "http://www.zorba-xquery.com/modules/security/hmac";
 

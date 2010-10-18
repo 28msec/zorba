@@ -1,7 +1,8 @@
 (:~
  : This module provides functions for accessing and manipulating imap mailservers.
  :
- : @author Daniel Thomas 
+ : @author Daniel Thomas
+ :
  :)
 module namespace imap = 'http://www.zorba-xquery.com/modules/email/imap';
 import module namespace imapimpl = 'http://www.zorba-xquery.com/modules/email/imapimpl';

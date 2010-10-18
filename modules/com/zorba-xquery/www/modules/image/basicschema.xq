@@ -1,5 +1,4 @@
 (:~
- :
  : Internal module, only intended for internal use in zorba.
  :
  : @author Daniel Thomas

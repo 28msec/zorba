@@ -18,7 +18,7 @@
  : This library module provides simple sign functions.
  :
  : @author Gabriel Petrovay, Markus Pilman
- : @version 1.0 
+ :
  :)
 module namespace sign="http://www.zorba-xquery.com/modules/security/sign";
 

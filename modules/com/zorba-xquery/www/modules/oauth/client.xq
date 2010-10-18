@@ -6,9 +6,10 @@
  : The application/mashup creator does not need to know the
  : specifics of <a href="http://oauth.net/" target="_blank">OAuth</a> to use this module.
  : @author Stephanie Russell
- : @version 1.0
+ : @see <a href="http://oauth.net/" target="_blank">OAuth</a>
+ :
  :)
- 
+
 module namespace oauth = 'http://www.zorba-xquery.com/modules/oauth/client';
 import module namespace ra = "http://www.zorba-xquery.com/modules/random";
 import module namespace hmac = "http://www.zorba-xquery.com/modules/security/hmac";

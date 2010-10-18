@@ -20,11 +20,11 @@
  : take an HTML document (a string) as parameter, tidy it in order to result in
  : valid XHTML, and return this XHTML document as a document-node.
  : </p>
- : 
- : <p>
- : The functions use the <a href="http://tidy.sourceforge.net/">Tidy Library Project</a>
- : for the tidy process.
- : </p>
+ :
+ :
+ : @author Sorin Nasoi
+ : @see <a href="http://tidy.sourceforge.net/">Tidy Library Project</a>
+ :
  :)
 module namespace tidy = "http://www.zorba-xquery.com/modules/tidy";
 

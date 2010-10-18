@@ -19,7 +19,6 @@
  : defined by Microsoft Excel, under Information Functions.
  :
  : @author Sorin Nasoi
- : @version 1.0
  :
  : @see <a href="http://office.microsoft.com/en-us/excel/CH062528261033.aspx"
  : target="_blank">Excel Documentation: Information Functions</a>

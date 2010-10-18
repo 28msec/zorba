@@ -7,6 +7,8 @@
  : http://www.xml.dvint.com/docs/XQueryXMLSyntax.pdf</a>.</p>
  :
  : @author www.w3c.org
+ : @see http://www.w3.org/TR/xpath-functions-11/
+ :
  :)
 module namespace  fn = "http://www.w3.org/2005/xpath-functions";
 

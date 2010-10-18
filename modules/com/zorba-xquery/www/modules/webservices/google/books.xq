@@ -2,7 +2,8 @@
  : Google Books Services Module
  : This module wraps a few of the Google Book Search APIs listed on <a href="http://code.google.com/apis/books/" target="_blank">http://code.google.com/apis/books/</a>
  : @author Stephanie Russell
- : @version 1.0
+ : @see <a href="http://code.google.com/apis/books/" target="_blank">http://code.google.com/apis/books/</a>
+ :
  :)
 
 module namespace google = 'http://www.zorba-xquery.com/modules/webservices/google/books';

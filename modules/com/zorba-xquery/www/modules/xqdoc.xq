@@ -51,8 +51,9 @@
  : XML representation. 
  : </p>
  :
- : @see <a href="http://xqdoc.org/">http://xqdoc.org/</a>
+ : @see <a href="http://xqdoc.org/" target="_blank">xqDoc project</a>
  : @author Gabriel Petrovay
+ :
  :)
 module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 

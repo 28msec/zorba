@@ -18,7 +18,6 @@
  : Module that defines the errors raised in the excel modules.
  :
  : @author Sorin Nasoi, Daniel Turcanu
- : @version 1.0
  :)
 module namespace  excel-err = "http://www.zorba-xquery.com/modules/excel/errors" ;
 

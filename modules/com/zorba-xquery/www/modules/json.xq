@@ -51,45 +51,6 @@
   : target="_blank">Parsing JSON into XQuery</a>.
   : In this article, he describes the following recursive mapping declarations.
   : </p>
-  : <p><table border="1">
-  :   <tr>
-  :     <td><b>JSON</b> </td><td><b>type(JSON)</b> </td><td><b>toXML(JSON)</b></td></tr>
-  :   <tr>
-  :     <td>JSON</td>
-  :     <td>N/A</td>
-  :     <td>&lt;json type="type(JSON)"&gt;toXML(JSON)&lt;/json&gt;</td>
-  :   </tr>
-  :   <tr>
-  :     <td>{ "key1": value1, "key2": value2 }</td>
-  :     <td>object </td>
-  :     <td>&lt;pair name="key1" type="type(value1)"&gt;toXML(value1)&lt;/pair&gt;&lt;pair name="key2" type="type(value2)"&gt;toXML(value2)&lt;/pair&gt;</td>
-  :   </tr>
-  :   <tr>
-  :     <td>[ value1, value2 ]</td>
-  :     <td>array </td>
-  :     <td>&lt;item type="type(value1)"&gt;toXML(value1)&lt;/item&gt;&lt;item type="type(value2)"&gt;toXML(value2)&lt;/item&gt;</td>
-  :   </tr>
-  :   <tr>
-  :     <td>"value"</td>
-  :     <td>string</td>
-  :     <td>value</td>
-  :   </tr>
-  :   <tr>
-  :     <td>number</td>
-  :     <td>number</td>
-  :     <td>number</td>
-  :   </tr>
-  :   <tr>
-  :     <td>true/false</td>
-  :     <td>boolean</td>
-  :     <td>true/false</td>
-  :   </tr>
-  :   <tr>
-  :     <td>null</td>
-  :     <td>null</td>
-  :     <td>empty</td>
-  :   </tr>
-  : </table></p>
   :
   : <p>Zorba implements the simple mapping in two functions:
   : <ul>
@@ -119,13 +80,16 @@
   :
   : @author Sorin Nasoi
   :
+  : @see <a href="http://snelson.org.uk/archives/2008/02/parsing_json_in.php#more">Mapping proposed by John Snelson</a>
+  : @see <a href="http://jsonml.org" target="_blank">JSonML</a>
+  :
   :)
 module namespace json = "http://www.zorba-xquery.com/modules/json";
 
 (:~
  : This function parses a JSON string and returns an XDM instance according
  : to the simple JSON-XDM mapping described above.
- : 
+ :
  : <p><b>Query:</b></p>
  : <pre><code>
  : json:parse('{

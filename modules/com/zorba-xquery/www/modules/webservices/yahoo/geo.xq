@@ -2,7 +2,8 @@
  : Yahoo! GeoPlanet™ Module
  : This module wraps many of the Yahoo! GeoPlanet™ APIs listed on <a href="http://developer.yahoo.com/geo/geoplanet/" target="_blank">http://developer.yahoo.com/geo/geoplanet/</a>.
  : @author Stephanie Russell
- : @version 1.0
+ : @see <a href="http://developer.yahoo.com/geo/geoplanet/" target="_blank">http://developer.yahoo.com/geo/geoplanet/</a>
+ :
  :)
 
 module namespace yahoo = 'http://www.zorba-xquery.com/modules/webservices/yahoo/geo';

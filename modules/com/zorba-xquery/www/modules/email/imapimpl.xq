@@ -1,6 +1,8 @@
 (:~
  : This module is for internal use only. 
- : 
+ :
+ : @author Daniel Thomas
+ :
  :)
 module namespace imap = 'http://www.zorba-xquery.com/modules/email/imapimpl';
 import schema namespace imaps = 'http://www.zorba-xquery.com/modules/email/imap';

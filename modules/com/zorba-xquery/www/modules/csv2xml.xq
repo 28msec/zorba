@@ -19,7 +19,6 @@
  : Function library providing convertors from CSV/TXT to XML and back.
  : The functions are optimized to work with large amounts of data, in a streaming way.
  :
- : @version 1.0 
  : @author Daniel Turcanu
  :)
 module namespace zorba-csv = "http://www.zorba-xquery.com/modules/csv2xml";

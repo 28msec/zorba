@@ -19,7 +19,6 @@
  : defined by Microsoft Excel, under Engineering Functions.
  :
  : @author Sorin Nasoi
- : @version 1.0
  :
  : @see <a href="http://office.microsoft.com/en-us/excel/CH062528241033.aspx"
  : target="_blank">Excel Documentation: Engineering Functions</a>

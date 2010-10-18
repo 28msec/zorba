@@ -30,11 +30,34 @@ declare sequential function local:testXQDoc($modulesPath as xs:string) {
         else if (matches($file, "\.xq$")) then (
             let $xqdoc := xqd:xqdoc(file:path-to-uri($filePath))/self::xqdoc:xqdoc
             return (
+                local:test-module($xqdoc),
                 local:test-functions($xqdoc),
                 local:test-variables($xqdoc)
             )            
         )
         else ()
+};
+
+declare function local:test-module(
+  $xqdoc as element(xqdoc:xqdoc)
+) as xs:string* {
+  let $module := $xqdoc/xqdoc:module/xqdoc:comment
+  let $hasDescription := exists($module/xqdoc:description)
+  let $hasAuthor := exists($module/xqdoc:author)
+
+  return (
+    (: Test for module description :)
+    if (not($hasDescription)) then
+      concat("ERROR: Missing module description
+  Module: ", $xqdoc/xqdoc:module/xqdoc:uri)
+    else
+      () ,
+    (: Test for module author :)
+    if (not($hasAuthor)) then
+      concat("ERROR: Missing module author name
+  Module: ", $xqdoc/xqdoc:module/xqdoc:uri)
+    else
+      () )
 };
 
 declare function local:test-functions(

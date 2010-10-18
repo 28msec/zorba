@@ -1,15 +1,15 @@
 (:~
  : This module provides basic functions for handling images including conversion between different formats.
  : Supported image formats are:
- : 
+ :
  : GIF
  : JPEG
  : PNG
  : TIFF
  : SVG
  :
- : 
  : @author Daniel Thomas
+ :
  :)
 module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';
 

@@ -18,7 +18,7 @@
  : This library module provides simple file system I/O operations.
  :
  : @author Gabriel Petrovay
- : @version 1.0 
+ :
  :)
 module namespace file = "http://www.zorba-xquery.com/modules/file";
 

@@ -1,7 +1,7 @@
 (:~
  : This module provides functions to handle animations of images. 
  : Please note that all images passed back by these functions described here are required to be written to disc as GIF.
- : 
+ :
  : @author Daniel Thomas
  : @see http://www.zorba-xquery.com/modules/image/image
  : @see http://www.imagemagick.org/Magick++/
@@ -9,9 +9,9 @@
 module namespace anim = 'http://www.zorba-xquery.com/modules/image/animation';
 import module namespace animschema = 'http://www.zorba-xquery.com/modules/image/animationschema';
 
- 
 
- 
+
+
 (:~
  : Creates an animated GIF image from the passed $images. The width and height of the first passed image will be used.
  :

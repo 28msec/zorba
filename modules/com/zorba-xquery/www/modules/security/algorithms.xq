@@ -15,8 +15,10 @@
 :)
 
 (:~
+ : This is the description of the algorithms module
+ :
  : @author Markus Pilman
- : @version 1.0
+ :
  :)
 module namespace alg = "http://www.zorba-xquery.com/modules/security/algorithms";
 

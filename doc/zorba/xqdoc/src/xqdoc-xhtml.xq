@@ -4,7 +4,7 @@ import module namespace util = "http://www.zorba-xquery.com/zorba/util-functions
 
 declare namespace xqdoc = "http://www.xqdoc.org/1.0";
 
-declare function xhtml:doc($xqdoc, $menu)
+declare function xhtml:doc($xqdoc, $menu, $indexCollector)
 {
 <html>
   <head>
@@ -35,7 +35,7 @@ declare function xhtml:doc($xqdoc, $menu)
     <div id="leftMenu">
     {$menu}
     </div>
-    <div id="rightcontent">{xhtml:body($xqdoc)}
+    <div id="rightcontent">{xhtml:body($xqdoc, $indexCollector)}
     </div>
   </div>
   </body>
@@ -50,12 +50,14 @@ declare function xhtml:header($xqdoc)
     </head>
 };
 
-declare function xhtml:body($xqdoc)
+declare function xhtml:body($xqdoc, $indexCollector)
 {
     <body>
         <h1>{xhtml:module-uri($xqdoc)}</h1>
-        {
+        {            
             xhtml:module-description($xqdoc/xqdoc:module),
+            xhtml:module-dependencies($xqdoc, $indexCollector),
+            xhtml:module-external-specifications($xqdoc/xqdoc:module),
             xhtml:module-variables($xqdoc/xqdoc:variables),
             xhtml:module-function-summary($xqdoc/xqdoc:functions),
             xhtml:module-functions($xqdoc/xqdoc:functions)
@@ -106,23 +108,41 @@ declare function xhtml:errors($comment) {
 };
 
 declare function xhtml:annotations($comment) {
-    let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated")))]
-    return
-        for $annotation in $annotations
-        let $annName := local-name($annotation)
-        return ( 
-            <div class="subsubsection">{
-              concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
-            }</div>,    
-(: ********************************************************** :)
-(: this hack should be replaced with links everywhere in text :)
-            (: replace the @see nodes that start with http:// with HTML a tag :)
-            if(($annName = "see") and fn:count($annotation/node()) eq 1 and fn:starts-with(fn:lower-case($annotation/node()), "http://")) then
-              <p class="annotationText">{<a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a>}</p>
-(: ********************************************************** :)
-            else
-              <p class="annotationText">{$annotation/node()}</p>
-        )
+  let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated")))]
+  return
+    for $annotation in $annotations
+    let $annName := local-name($annotation)
+    return 
+    ( 
+      <div class="subsubsection">{
+        concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
+      }</div>,    
+(: **********************************************************     :)
+(: this hack should be replaced with links everywhere in text     :)
+(: replace the @see nodes that start with http:// with HTML a tag :)
+      if(($annName = "see") 
+          and fn:count($annotation/node()) eq 1 
+          and fn:starts-with(fn:lower-case($annotation/node()), "http://") 
+         ) then
+        <p class="annotationText">{<a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a>}</p>
+(: **********************************************************     :)
+    else
+        <p class="annotationText">{$annotation/node()}</p>
+    )
+};
+
+declare function xhtml:annotationsModule($comment) {
+  let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated", "see")))]
+  return
+    for $annotation in $annotations
+    let $annName := local-name($annotation)
+    return 
+    ( 
+      <div class="subsubsection">{
+        concat(upper-case(substring($annName, 1, 1)), substring($annName, 2), ":")
+      }</div>,    
+      <p class="annotationText">{$annotation/node()}</p>
+    )
 };
 
 
@@ -135,8 +155,7 @@ declare function xhtml:return($comment) {
         ) else ()
 };
 
-declare function xhtml:description($comment)
-{
+declare function xhtml:description($comment) {
      <p>{
         if ($comment/xqdoc:description) then
             $comment/xqdoc:description/node()
@@ -145,11 +164,53 @@ declare function xhtml:description($comment)
      }</p>
 };
 
-declare function xhtml:module-description($module)
-{
+declare function xhtml:module-dependencies($xqdoc, $indexCollector) {
+  
+    if (fn:count($xqdoc/xqdoc:imports/xqdoc:import) > 0) then
+      (<div class="section"><span class="section" id="module_dependencies">Module Dependencies</span></div>,
+      xhtml:imports($xqdoc, $indexCollector))
+    else
+      ()
+  
+};
+
+declare function xhtml:imports($xqdoc, $indexCollector) {
+  <p>This is a list of imported modules:<ul>
+  {
+    for $import in $xqdoc/xqdoc:imports/xqdoc:import
+      return
+      if (exists($indexCollector/module[@uri=$import/xqdoc:uri/text()])) then
+        <li><a href="{$indexCollector/module[@uri=$import/xqdoc:uri/text()]/@file}">{string($import/xqdoc:uri/text())}</a></li>
+      else
+        string($import/xqdoc:uri/text())
+  }
+  </ul></p>
+};
+
+declare function xhtml:module-description($module) {
     (<div class="section"><span class="section" id="module_description">Module Description</span></div>,
      xhtml:description($module/xqdoc:comment),
-     xhtml:annotations($module/xqdoc:comment))
+     xhtml:annotationsModule($module/xqdoc:comment))
+};
+
+declare function xhtml:module-external-specifications($module) {
+  if(fn:count($module/xqdoc:comment/xqdoc:*[(local-name(.) = ("see"))]) >0) then
+    (<div class="section"><span class="section" id="external_specifications">External Specifications</span></div>,
+    <p>For more details please check out these resources:<ul>
+    {
+      let $annotations := $module/xqdoc:comment/xqdoc:*[(local-name(.) = ("see"))]
+      return
+        for $annotation in $annotations
+          return
+          if(fn:count($annotation/node()) eq 1 
+             and fn:starts-with(fn:lower-case($annotation/node()), "http://") ) then
+            <li><a href="{$annotation/node()}" target="_blank">{$annotation/node()}</a></li>
+          else
+            <li>{$annotation/node()}</li>
+    }
+    </ul></p>)
+  else
+  ()
 };
 
 declare function xhtml:module-variables($variables)

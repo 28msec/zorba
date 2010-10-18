@@ -2,7 +2,8 @@
  : Yahoo! Search Services Module
  : This module wraps many of the Yahoo! Search APIs listed on <a href="http://developer.yahoo.com/search/web/webSearch.html" target="_blank">http://developer.yahoo.com/search/web/webSearch.html</a>.
  : @author Stephanie Russell
- : @version 1.0
+ : @see <a href="http://developer.yahoo.com/search/web/webSearch.html" target="_blank">http://developer.yahoo.com/search/web/webSearch.html</a>
+ :
  :)
 
 module namespace yahoo = 'http://www.zorba-xquery.com/modules/webservices/yahoo/search';

@@ -17,6 +17,9 @@
 (:~
  : A module that provides several functions for generating (pseudo-)random
  : numbers and strings.
+ :
+ : @author Matthias Brantner
+ :
  :)
 module namespace random = "http://www.zorba-xquery.com/modules/random";
 

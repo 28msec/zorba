@@ -5,7 +5,9 @@
 : The application/mashup creator does not need to know the specifics of
 :<a href="http://oauth.net/" target="_blank">OAuth</a> to use this module.
 : @author Stephanie Russell
-: @version 1.0
+: @see <a href="http://oauth.net/" target="_blank">OAuth</a>
+: @see <a href="http://tools.ietf.org/html/draft-hammer-http-token-auth-01" target="_blank">OAuth token</a>
+:
 :)
 
 module namespace oauth-desktop = 'http://www.zorba-xquery.com/modules/oauth/desktop';
@@ -15,7 +17,7 @@ import module namespace io = "http://www.zorba-xquery.com/zorba/internal-functio
  : Resource Owner Authorization.
  :
  : @see http://tools.ietf.org/html/rfc5849#section-2.2
- : @param $oauth-token see <a href="http://tools.ietf.org/html/draft-hammer-http-token-auth-01" target="_blank">oauth token</a>
+ : @param $oauth-token see <a href="http://tools.ietf.org/html/draft-hammer-http-token-auth-01" target="_blank">OAuth token</a>
  : @return authorization string.
  :)
 declare sequential function oauth-desktop:authorize-twitter($oauth-token as xs:string) as xs:string

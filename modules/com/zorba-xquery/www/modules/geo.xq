@@ -143,7 +143,6 @@
  :  - 0, 1, 2 gives the expected dimension of the result (point, curve, surface)<br/>
  : <br/><br/>
  :
- : @version 1.0 
  : @author Daniel Turcanu
  :
  : @see http://www.opengeospatial.org/standards/sfa

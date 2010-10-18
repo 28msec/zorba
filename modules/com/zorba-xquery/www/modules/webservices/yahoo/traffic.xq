@@ -2,7 +2,8 @@
  : Yahoo! Traffic Module
  : This module wraps many of the Yahoo! Traffic APIs listed on <a href="http://developer.yahoo.com/traffic/" target="_blank">http://developer.yahoo.com/traffic/</a>.
  : @author Stephanie Russell
- : @version 1.0
+ : @see <a href="http://developer.yahoo.com/traffic/" target="_blank">http://developer.yahoo.com/traffic/</a>
+ :
  :)
 
 module namespace yahoo = 'http://www.zorba-xquery.com/modules/webservices/yahoo/traffic';

@@ -23,7 +23,7 @@
  :
  : @spec XQuery Specification: January 2007
  : @author Daniel Turcanu
- : @version 1.0 
+ :
  :)
 module namespace  excel = "http://www.zorba-xquery.com/modules/excel/math" ;
 

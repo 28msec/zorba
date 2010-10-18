@@ -25,9 +25,8 @@ declare variable $doc2html:table := <ul/>;
 declare variable $doc2html:stepBacks as xs:string := "../../../../../../../../../../../../../../../../../../../../";
 
 (:~
- : This variable contains the to the index.html main page
+ : This variable contains all the modules names part of the left menu
  :)
-
 declare variable $doc2html:indexCollector := <modules/>;
 
 declare function doc2html:getFileName($moduleURI as xs:string) as xs:string
@@ -133,7 +132,7 @@ declare sequential function doc2html:generateXQDocXhtml(
       let $moduleUri := $moduleDoc/xqdoc:uri
       let $menu := <ul class="treeview" id="documentation"><span class="leftMenu"><strong>{string($leftMenu/@title)}</strong></span></ul> 
       let $menu := doc2html:createLeftMenu($menu, $moduleUri, $leftMenu)
-      let $xhtml := xqdg:doc($xqdoc, $menu)
+      let $xhtml := xqdg:doc($xqdoc, $menu, $doc2html:indexCollector)
       return block {
         file:mkdirs($xhtmlFileDir, false());
 

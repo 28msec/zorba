@@ -18,7 +18,6 @@
  : XSLT 2.0 and XQuery 1.0 Serialization Module
  :
  : @author Matthias Brantner, Gabriel Petrovay
- : @version 1.0
  :
  : @see <a href="http://www.w3.org/TR/xslt-xquery-serialization/"
  : target="_blank">XSLT 2.0 and XQuery 1.0 Serialization</a>

@@ -17,7 +17,9 @@
 (:~
  : DDL Module defined in the XQuery Data Definition Facility
  :
- : @version 1.0 
+ : @author Nicolae Brinza
+ : @see <a href="http://www.zorba-xquery.com/doc/zorba-latest/zorba/html/XQDDF.html" target="_blank">The Zorba 1.0 Data Definition Facility</a>
+ :
  :)
 module namespace xqddf = "http://www.zorba-xquery.com/modules/xqddf";
 

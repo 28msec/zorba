@@ -17,10 +17,12 @@
 (:~
  : This module provides functions to retrieve the current dateTime.
  : In contrast to the current-dateTime functions specified in
- : "XQuery Functions and Operators" (see http://www.w3.org/TR/xpath-functions/#context)
- : the functions in this module are nondeterministic. That is, they do not
- : return the current-dateTime from the dynamic context but return the actual
- : value.
+ : "XQuery Functions and Operators" the functions in this module are nondeterministic.
+ : That is, they do not return the current-dateTime from the dynamic context but return the actual value.
+ :
+ : @author Matthias Brantner
+ : @see http://www.w3.org/TR/xpath-functions/#context
+ :
  :)
 module namespace datetime = "http://www.zorba-xquery.com/modules/datetime";
 

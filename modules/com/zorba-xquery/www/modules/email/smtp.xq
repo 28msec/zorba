@@ -17,8 +17,6 @@
 (:~
  : This is a library module that provides functions for sending emails.
  :
- : @author Sorin Nasoi
- : @version 1.0
  :
  : <ul>
  :   <li>Table of Contents 
@@ -475,6 +473,8 @@
  :     &lt;/complexType&gt;<br /><br />
  : 
  : &lt;/schema&gt; <br /></pre><br />
+ :
+ : @author Sorin Nasoi
  :
  :)
 module namespace smtp = "http://www.zorba-xquery.com/modules/email/smtp";

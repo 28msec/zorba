@@ -19,7 +19,8 @@
  :
  : @see http://www.w3.org/TR/xquery/#id-xq-static-context-components
  :
- : @version 1.0
+ : @author Nicolae Brinza
+ :
  :)
 
 module namespace sctx = "http://www.zorba-xquery.com/modules/introspection/sctx";

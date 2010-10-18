@@ -2,7 +2,8 @@
  : Google YouTube Services Module
  : This module wraps a few of the Google YouTube APIs listed on <a href="http://code.google.com/apis/youtube/overview.html" target="_blank">http://code.google.com/apis/youtube/overview.html</a>
  : @author Stephanie Russell
- : @version 1.0
+ : @see <a href="http://code.google.com/apis/youtube/overview.html" target="_blank">http://code.google.com/apis/youtube/overview.html</a>
+ :
  :)
 
 module namespace google = 'http://www.zorba-xquery.com/modules/webservices/google/youtube';

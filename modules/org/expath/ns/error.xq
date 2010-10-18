@@ -17,8 +17,8 @@
 (:~
  : This module defines all errors for the http-client module.
  :
- : @version Candidate 9 January 2010
  : @author Markus Pilman
+ :
  :)
 module namespace err = "http://expath.org/ns/error";
 

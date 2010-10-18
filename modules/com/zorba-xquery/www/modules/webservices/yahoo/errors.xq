@@ -18,7 +18,7 @@
  : Module that defines the errors raised in Yahoo! modules.
  :
  : @author Stephanie Russell
- : @version 1.0
+ :
  :)
 module namespace  err = "http://www.zorba-xquery.com/modules/webservices/yahoo/errors" ;
 

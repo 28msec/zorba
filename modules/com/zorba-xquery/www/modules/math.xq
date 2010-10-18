@@ -17,7 +17,6 @@
 (:~
  : Extensive math library.
  :
- : @version 1.0 
  : @author Daniel Turcanu, Dan Muresan
  :)
 module namespace math = "http://www.zorba-xquery.com/modules/math";
