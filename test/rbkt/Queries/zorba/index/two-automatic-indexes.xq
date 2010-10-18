@@ -1,3 +1,4 @@
+(: this test exists to cover bug #3071677 "temporary index declared twice". :)
 xquery version "1.0";
 
 declare namespace xq="http://www.xqdoc.org/1.0";
