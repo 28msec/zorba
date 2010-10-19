@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -34,6 +34,7 @@ namespace zorba {
   class ItemSequence;
   class Collection;
   class Function;
+  class Annotation;
   class SerializationCallback;
   class File;
   class DirectoryIterator;
@@ -52,6 +53,7 @@ namespace zorba {
   typedef zorba::SmartPtr<TypeIdentifier>             TypeIdentifier_t;
   typedef zorba::SmartPtr<Collection>                 Collection_t;
   typedef zorba::SmartPtr<Function>                   Function_t;
+  typedef zorba::SmartPtr<Annotation>                 Annotation_t;
   typedef zorba::SmartPtr<File>                       File_t;
   typedef zorba::SmartPtr<DirectoryIterator>          DirectoryIterator_t;
   typedef zorba::SmartPtr<Serializer>                 Serializer_t;
@@ -59,7 +61,7 @@ namespace zorba {
   // auto pointer (used for transfering ownership of the return type of external functions)
   typedef std::auto_ptr<ItemSequence>                   ItemSequence_t;
 
-  // data handlers 
+  // data handlers
   class Item;
   class String;
 

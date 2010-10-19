@@ -21,38 +21,92 @@
 #include "common/shared_types.h"
 #include "compiler/semantic_annotations/annotation_holder.h"
 #include "compiler/parsetree/parsenodes.h"
+#include "zorba/annotation.h"
 
 namespace zorba
 {
 
-class AnnotationLiteral : public SimpleRCObject
-{
-public:
-  SERIALIZABLE_ABSTRACT_CLASS(AnnotationLiteral);
-  void serialize(::zorba::serialization::Archiver& ar);
-
-public:
-  AnnotationLiteral();
-  virtual ~AnnotationLiteral();
-};
+class AnnotationLiteral;
+class AnnotationInternal;
+class AnnotationList;
 
 
-class Annotation : public SimpleRCObject
+typedef rchandle<AnnotationList> AnnotationList_t;
+
+
+/*******************************************************************************
+  AnnotationImpl
+
+  the class backing up the Annotation class from the Zorba API
+********************************************************************************/
+class AnnotationImpl : public Annotation
 {
 protected:
   store::Item_t                               theQName;
   std::vector<rchandle<AnnotationLiteral> >   theLiteralList;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(Annotation);
+  AnnotationImpl(const AnnotationInternal* annotation);
+
+  virtual Item getQName() const;
+
+  virtual unsigned int getLiteralsCount() const;
+
+  virtual Item getLiteral(unsigned int i) const;
+
+  virtual ~AnnotationImpl() {};
+};
+
+/*******************************************************************************
+
+********************************************************************************/
+class AnnotationLiteral : public SimpleRCObject
+{
+friend class AnnotationInternal;
+friend class AnnotationImpl;
+
+protected:
+  store::Item_t                               theLiteral;
+
+  AnnotationLiteral(const AnnotationLiteral* literal);
+  AnnotationLiteral(const StringLiteral* stringLiteral);
+  AnnotationLiteral(const NumericLiteral* numericLiteral);
+
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(AnnotationLiteral);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationLiteral, SimpleRCObject)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
-  Annotation(const AnnotationParsenode* annotation);
+  store::Item_t getLiteral() const;
+  virtual ~AnnotationLiteral() {};
+};
 
-  store::Item* getQName() const;
 
-  virtual ~Annotation() { };
+/*******************************************************************************
+
+********************************************************************************/
+class AnnotationInternal : public SimpleRCObject
+{
+friend class AnnotationList;
+
+protected:
+  store::Item_t                               theQName;
+  std::vector<rchandle<AnnotationLiteral> >   theLiteralList;
+
+  AnnotationInternal(const AnnotationParsenode* annotation);      // used by AnnotationList
+
+public:
+  SERIALIZABLE_ABSTRACT_CLASS(AnnotationInternal);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationInternal, SimpleRCObject)
+  void serialize(::zorba::serialization::Archiver& ar);
+
+public:
+  const store::Item* getQName() const;
+  unsigned int getLiteralsCount() const;
+  const AnnotationLiteral* getLiteral(unsigned int index) const;
+
+  virtual ~AnnotationInternal() { };
 };
 
 
@@ -62,25 +116,23 @@ public:
 class AnnotationList : public SimpleRCObject
 {
 protected:
-  std::vector<rchandle<Annotation> > theAnnotationList;
+  std::vector<rchandle<AnnotationInternal> > theAnnotationList;
 
 public:
   SERIALIZABLE_ABSTRACT_CLASS(AnnotationList);
+  SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationList, SimpleRCObject)
   void serialize(::zorba::serialization::Archiver& ar);
 
 public:
   AnnotationList() {};
-
   AnnotationList(const AnnotationListParsenode* annotations);
 
   unsigned int size() const { return theAnnotationList.size(); }
-  const Annotation* getAnnotation(unsigned int index) const;
+  const AnnotationInternal* getAnnotation(unsigned int index) const;
 
 	virtual ~AnnotationList() {}
 };
 
-
-typedef rchandle<AnnotationList> AnnotationList_t;
 
 
 } /* namespace zorba */

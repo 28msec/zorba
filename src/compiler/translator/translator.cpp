@@ -3507,7 +3507,7 @@ void* begin_visit(const AnnotationParsenode& v)
   TRACE_VISIT();
 
   if (theSctx->xquery_version() <= StaticContextConsts::xquery_version_1_0)
-    ZORBA_ERROR_LOC (XPST0003, loc);
+    ZORBA_ERROR_LOC(XPST0003, loc);
 
   return no_state;
 }
@@ -3520,6 +3520,33 @@ void end_visit(const AnnotationParsenode& v, void* /*visit_state*/)
 void* begin_visit(const AnnotationListParsenode& v)
 {
   TRACE_VISIT();
+
+  // validate the Annotations list
+  bool have_public_or_private = false;
+  bool have_determ_or_nondeterm = false;
+
+  for (unsigned int i=0; i<v.size(); i++)
+  {
+    if (v[i]->get_qname()->get_localname()->equals(xqpString("public").theStrStore)
+        ||
+        v[i]->get_qname()->get_localname()->equals(xqpString("private").theStrStore))
+    {
+      if (have_public_or_private)
+        ZORBA_ERROR_LOC(XQST0106, loc);
+
+      have_public_or_private = true;
+    }
+    else if (v[i]->get_qname()->get_localname()->equals(xqpString("deterministic").theStrStore)
+             ||
+             v[i]->get_qname()->get_localname()->equals(xqpString("nondeterministic").theStrStore))
+    {
+      if (have_determ_or_nondeterm)
+        ZORBA_ERROR_LOC(XQST0106, loc);
+
+      have_determ_or_nondeterm = true;
+    }
+  }
+
   return no_state;
 }
 
@@ -3634,7 +3661,18 @@ void end_visit(const FunctionDecl& v, void* /*visit_state*/)
   bool is_external = (lFuncType == ParseConstants::fn_extern ||
                       lFuncType == ParseConstants::fn_extern_update ||
                       lFuncType == ParseConstants::fn_extern_sequential);
-  if (! is_external)
+
+  if (!is_external && v.get_annotations() != NULL
+      &&
+      (v.get_annotations()->has_deterministic() || v.get_annotations()->has_nondeterministic()))
+  {
+    if (v.get_annotations()->has_deterministic())
+      ZORBA_ERROR_LOC_DESC(XPST0003, loc, "Only external functions may be declared deterministic");
+    else
+      ZORBA_ERROR_LOC_DESC(XPST0003, loc, "Only external functions may be declared nondeterministic");
+  }
+
+  if (!is_external)
     body = pop_nodestack();
 
   if (v.get_return_type() != NULL)

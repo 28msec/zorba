@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -26,7 +26,7 @@ SERIALIZABLE_CLASS_VERSIONS(ZorbaError)
 END_SERIALIZABLE_CLASS_VERSIONS(ZorbaError)
 
 
-std::string ZorbaError::toString(const XQUERY_ERROR& code) 
+std::string ZorbaError::toString(const XQUERY_ERROR& code)
 {
   return ErrorMessages::getNameForErrorCode(code);
 }
@@ -116,9 +116,9 @@ ZorbaError::~ZorbaError()
 }
 
 
-void ZorbaError::free() 
-{ 
-  delete this; 
+void ZorbaError::free()
+{
+  delete this;
 }
 
 
@@ -153,12 +153,12 @@ void ZorbaError::setQueryLocation(
 
 bool ZorbaError::hasQueryLocation()
 {
-  return !(theQueryFileName.empty() && theQueryLine == 0 && 
+  return !(theQueryFileName.empty() && theQueryLine == 0 &&
            theQueryColumn == 0);
 }
 
 
-std::string ZorbaError::toString() 
+std::string ZorbaError::toString()
 {
   std::ostringstream strstream;
 
@@ -197,18 +197,18 @@ bool ZorbaError::isXPathStaticError() const
     ;
 }
 
-      
+
 bool ZorbaError::isXPathDynamicError() const
 {
   return  (XPDY0002 <= theErrorCode && theErrorCode <= XPDY0050);
 }
 
-      
-bool ZorbaError::isXPathTypeError() const 
+
+bool ZorbaError::isXPathTypeError() const
 {
   return XPTY0004 <= theErrorCode && theErrorCode <= XPTY0020;
 }
-      
+
 
 bool ZorbaError::isXQueryDynamicError() const
 {
@@ -230,10 +230,10 @@ bool ZorbaError::isXQueryDynamicError() const
           ;
 }
 
-  
+
 bool ZorbaError::isXQueryStaticError() const
 {
-  return ((XQST0009 <= theErrorCode && theErrorCode <= XQST0093) ||
+  return ((XQST0009 <= theErrorCode && theErrorCode <= XQST0106) ||
           (XUST0001 <= theErrorCode && theErrorCode <= XUST0003) ||
 #ifndef ZORBA_NO_FULL_TEXT
           theErrorCode == FTST0019 ||
@@ -247,7 +247,7 @@ bool ZorbaError::isXQueryStaticError() const
           ;
 }
 
-  
+
 bool ZorbaError::isXQueryTypeError() const
 {
   return ((XQTY0023 <= theErrorCode && theErrorCode <= XQTY0086) ||
@@ -256,27 +256,27 @@ bool ZorbaError::isXQueryTypeError() const
           theErrorCode == XUTY0022 ||
           (XDTY0000_MIN < theErrorCode && theErrorCode < XDTY0000_MAX));
 }
-    
+
 
 bool ZorbaError::isFunctionError() const
 {
   return FOER0000 <= theErrorCode && theErrorCode <= FOUP0002;
 }
-  
+
 
 
 bool ZorbaError::isSerializationError() const
 {
   return SENR0001 <= theErrorCode && theErrorCode <= SEPM0016;
 }
-    
- 
+
+
 bool ZorbaError::isStaticError() const
 {
   return isXPathStaticError() || isXQueryStaticError();
 }
-    
-  
+
+
 bool ZorbaError::isDynamicError() const
 {
   return isXPathDynamicError() || isXQueryDynamicError() || isFunctionError();

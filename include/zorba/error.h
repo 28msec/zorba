@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -179,7 +179,7 @@ typedef enum
   // the value of the name expression in a computed element or attribute
   // constructor or rename expression cannot be converted to an expanded
   // QName (for example, because it contains a namespace prefix not found
-  // in statically known namespaces.) 
+  // in statically known namespaces.)
 
   XQDY0084,
   // the element validated by a validate statement does not have a top-level
@@ -257,7 +257,7 @@ typedef enum
   // (Not currently used.)
 
   XQST0038,
-  // a Prolog contains more than one default collation declaration, or the 
+  // a Prolog contains more than one default collation declaration, or the
   //value specified by a default collation declaration is not present in
   // statically known collations.
 
@@ -414,6 +414,13 @@ typedef enum
   XQST0096,
   // It is a static error for a query prolog to contain two decimal formats with
   // the same name, or to contain two default decimal formats.
+
+  XQST0106,
+  // It is a static error if a function's annotations contain more than one
+  // annotation named %private or %public.
+  // It is a static error if a function's annotations contain more than one
+  // annotation named %deterministic or %nondeterministic.
+
 
   //
   // XQuery Type erros
@@ -681,7 +688,7 @@ typedef enum
 
   FOTY0012, //Argument node does not have a typed value.
 
-  FOTY0013, // Argument to fn:data() contains a node that does not have a typed value. 
+  FOTY0013, // Argument to fn:data() contains a node that does not have a typed value.
 
   FOTY0014, // The argument to fn:string() is a function item
 
@@ -704,24 +711,24 @@ typedef enum
   // node or a namespace node.
 
   SERE0003,
-  // It is an error if the serializer is unable to satisfy the rules for 
-  // either a well-formed XML document entity or a well-formed XML external 
-  // general parsed entity, or both, except for content modified by the 
+  // It is an error if the serializer is unable to satisfy the rules for
+  // either a well-formed XML document entity or a well-formed XML external
+  // general parsed entity, or both, except for content modified by the
   // character expansion phase of serialization.
 
   SEPM0004,
-  // It is an error to specify the doctype-system parameter, or to specify 
-  // the standalone parameter with a value other than omit, if the instance 
-  // of the data model contains text nodes or multiple element nodes as 
+  // It is an error to specify the doctype-system parameter, or to specify
+  // the standalone parameter with a value other than omit, if the instance
+  // of the data model contains text nodes or multiple element nodes as
   // children of the root node.
 
   SERE0005,
   // It is an error if the serialized result would contain an NCName Names
-  // that contains a character that is not permitted by the version of 
+  // that contains a character that is not permitted by the version of
   // Namespaces in XML specified by the version parameter.
 
   SERE0006,
-  // It is an error if the serialized result would contain a character 
+  // It is an error if the serialized result would contain a character
   // that is not permitted by the version of XML specified by the version
   // parameter.
 
@@ -911,7 +918,7 @@ typedef enum
   API0011_INVALID_VARIABLE_QNAME,
   API0012_INVALID_INDEX,
   API0013_INAPPROPRIATE_VARIABLE_VALUE,
-  API0014_INVALID_ARGUMENT, 
+  API0014_INVALID_ARGUMENT,
   API0015_CANNOT_OPEN_FILE,
   API0016_CANNOT_CREATE_COLLECTION,
   API0017_CANNOT_LOAD_DOCUMENT,

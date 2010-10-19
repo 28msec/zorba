@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -36,9 +36,9 @@ struct err_msg_wrapper
     const char *err_msg[MAX_ZORBA_ERROR_CODE + 1];
 
   public:
-  err_msg_wrapper () 
+  err_msg_wrapper ()
   {
-#ifdef WIN32  
+#ifdef WIN32
 #define DEF_ERR_CODE( code, name, msg )          \
   canonical_err_names [ code ] = _strdup(#name); \
   err_msg [code] = _strdup(msg);
@@ -48,7 +48,7 @@ struct err_msg_wrapper
   err_msg [code] = strdup(msg);
 #endif
 
-    for (int i = 0; i < MAX_ZORBA_ERROR_CODE; i++) 
+    for (int i = 0; i < MAX_ZORBA_ERROR_CODE; i++)
     {
       canonical_err_names [i] = NULL;
       err_msg [i] = NULL;
@@ -184,31 +184,31 @@ DEF_ERR_CODE(API0042_ITERATOR_QUERY_IS_CLOSED, API0042,
 "Cannot perform operation on iterator because it has been closed")
 
 
-DEF_ERR_CODE(API0020_DOCUMENT_ALREADY_EXISTS, API0020, 
+DEF_ERR_CODE(API0020_DOCUMENT_ALREADY_EXISTS, API0020,
 "Another document with uri {/s} exists in the store already.")
 
-DEF_ERR_CODE(API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021, 
+DEF_ERR_CODE(API0021_ITEM_TO_LOAD_IS_NOT_NODE, API0021,
 "The uri {/s} does not identify an XML node")
 
-DEF_ERR_CODE(API0025_END_OF_SEQUENCE, API0025_END_OF_SEQUENCE, 
+DEF_ERR_CODE(API0025_END_OF_SEQUENCE, API0025_END_OF_SEQUENCE,
 "Reached the end of the sequence")
 
-DEF_ERR_CODE(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS, API0027, 
+DEF_ERR_CODE(API0027_CANNOT_UPDATE_DCTX_WITH_ITERATORS, API0027,
 "The query dynamic context cannot be updated because there are result iterators on the query")
 
-DEF_ERR_CODE(API0028_INVALID_NODE_URI, API0028, 
+DEF_ERR_CODE(API0028_INVALID_NODE_URI, API0028,
 "The uri {/s} is not a valid node reference")
 
-DEF_ERR_CODE(API0030_NO_NODE_AT_GIVEN_POSITION, API0030, 
+DEF_ERR_CODE(API0030_NO_NODE_AT_GIVEN_POSITION, API0030,
 "There is no node at the given position {/s}, the collection has fewer nodes.");
 
-DEF_ERR_CODE(API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, API0033, 
+DEF_ERR_CODE(API0033_FILE_OR_FOLDER_DOES_NOT_EXIST, API0033,
 "File or folder {/s} does not exist.");
 
-DEF_ERR_CODE(API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034, 
+DEF_ERR_CODE(API0034_FILE_OR_FOLDER_CANNOT_BE_OPENED, API0034,
 "File or folder {/s} could not be opened.");
 
-DEF_ERR_CODE(API0035_COLLECTION_CANNOT_BE_SERIALIZED, API0035, 
+DEF_ERR_CODE(API0035_COLLECTION_CANNOT_BE_SERIALIZED, API0035,
 "Collection {/s} can not be serialized.");
 
 DEF_ERR_CODE(API0036_TIDY_ERROR, API0036, "Error in Tidy library: {/s}.");
@@ -218,37 +218,37 @@ DEF_ERR_CODE(API0037_TIDY_ERROR_SET_OPTION, API0037, "Could not set option {/s} 
 DEF_ERR_CODE(API0050_REST_ERROR_HEADER, API0050, "Invalid value passed for header parameter.");
 DEF_ERR_CODE(API0051_REST_ERROR_PAYLOAD, API0051, "Invalid value passed for payload parameter.");
 
-DEF_ERR_CODE(API0060_CONV_JSON_PARSE, API0060, 
+DEF_ERR_CODE(API0060_CONV_JSON_PARSE, API0060,
 "Could not parse the Json string {/s}. Reason: {/s}.");
 
 DEF_ERR_CODE(API0061_CONV_JSON_SERIALIZE, API0061,
 "Could not serialize the element with string representation {/s}. Error: {/s}");
 
-DEF_ERR_CODE(API0062_CONV_JSON_PARAM, API0062, 
+DEF_ERR_CODE(API0062_CONV_JSON_PARAM, API0062,
 "Parameter with string representation {/s} is not an element node.");
 
-DEF_ERR_CODE(API0063_CONV_JSON_ML_PARSE, API0063, 
+DEF_ERR_CODE(API0063_CONV_JSON_ML_PARSE, API0063,
 "Could not parse the JsonML string {/s} reason: {/s}.");
 
-DEF_ERR_CODE(API0064_CONV_JSON_ML_SERIALIZE, API0064, 
+DEF_ERR_CODE(API0064_CONV_JSON_ML_SERIALIZE, API0064,
 "Could not serialize the element with string representation {/s}. Error: {/s}");
 
-DEF_ERR_CODE(API0065_CONV_JSON_ML_PARAM, API0065, 
+DEF_ERR_CODE(API0065_CONV_JSON_ML_PARAM, API0065,
 "Parameter with string representation {/s} is not an element node.");
 
-DEF_ERR_CODE(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED, API0066, 
+DEF_ERR_CODE(API0066_JSON_SEQUENCE_CANNOT_BE_SERIALIZED, API0066,
 "Cannot serialize a sequence with more than one element if the 'json' or 'jsonml' method was selected.")
 
 DEF_ERR_CODE(API0070_INVALID_SERIALIZATION_METHOD_FOR_SAX, API0070,
 "Invalid serialization method. Only XML output can issue SAX event notifications. Therefore, only the following serialization methods are allowed: xml, xhtml, jsonml")
 
-DEF_ERR_CODE(API0071_CONV_CSV2XML_PARAM, API0071, 
+DEF_ERR_CODE(API0071_CONV_CSV2XML_PARAM, API0071,
 "Invalid parameter in csv import: /s /s")
 
-DEF_ERR_CODE(API0072_CONV_CSV2XML_TOO_MANY_FIELDS, API0072, 
+DEF_ERR_CODE(API0072_CONV_CSV2XML_TOO_MANY_FIELDS, API0072,
 "CSV import error: first row is header but one of the subsequent rows contains more fields than the header")
 
-DEF_ERR_CODE(API0073_CONV_XML2CSV_PARAM, API0073, 
+DEF_ERR_CODE(API0073_CONV_XML2CSV_PARAM, API0073,
 "CSV export error: /s /s")
 
 //
@@ -291,7 +291,7 @@ DEF_ERR_CODE(STR0011_COLLECTION_NON_ROOT_NODE, STR0011,
 DEF_ERR_CODE(STR0012_COLLECTION_ITEM_MUST_BE_A_NODE, STR0012,
 "A non-node item is involved in an operation on collection /s.");
 
-DEF_ERR_CODE(STR0020_LOADER_IO_ERROR, STR0020, 
+DEF_ERR_CODE(STR0020_LOADER_IO_ERROR, STR0020,
 "Loader I/O error: /s")
 
 DEF_ERR_CODE(STR0021_LOADER_PARSING_ERROR, STR0021,
@@ -497,37 +497,37 @@ DEF_ERR_CODE (XQST0067, XQST0067, "Prolog contains more than one construction de
 
 DEF_ERR_CODE (XQST0068, XQST0068, "Prolog contains more than one boundary-space declaration.")
 
-DEF_ERR_CODE (XQST0069, XQST0069, 
+DEF_ERR_CODE (XQST0069, XQST0069,
 "Prolog contains more than one empty order declaration.")
 
-DEF_ERR_CODE (XQST0070, XQST0070, 
+DEF_ERR_CODE (XQST0070, XQST0070,
 "Namespace URI is bound to a predefined prefix")
 
-DEF_ERR_CODE (XQST0071, XQST0071, 
+DEF_ERR_CODE (XQST0071, XQST0071,
 "Namespace declaration attributes of a direct element constructor do not have distinct names.")
 
-DEF_ERR_CODE (XQST0073, XQST0073, 
+DEF_ERR_CODE (XQST0073, XQST0073,
 "The graph of module imports contains a cycle.")
 
-DEF_ERR_CODE (XQST0093, XQST0093, 
+DEF_ERR_CODE (XQST0093, XQST0093,
 "The graph of module imports contains a cycle.")
 
-DEF_ERR_CODE (XQST0075, XQST0075, 
+DEF_ERR_CODE (XQST0075, XQST0075,
 "An implementation that does not support the Validation Feature must raise a static error if it encounters a validate expression.")
 
-DEF_ERR_CODE (XQST0076, XQST0076, 
+DEF_ERR_CODE (XQST0076, XQST0076,
 "A collation subclause in an order by clause of a FLWOR expression does not identify a collation that is present in statically known collations.")
 
-DEF_ERR_CODE (XQST0079, XQST0079, 
+DEF_ERR_CODE (XQST0079, XQST0079,
 "An extension expression contains neither a pragma that is recognized by the implementation nor an expression enclosed in curly braces.")
 
-DEF_ERR_CODE (XQST0085, XQST0085, 
+DEF_ERR_CODE (XQST0085, XQST0085,
 "The namespace URI in a namespace declaration attribute is a zero-length string, and the implementation does not support [XML Names 1.1].")
 
-DEF_ERR_CODE (XQST0087, XQST0087, 
+DEF_ERR_CODE (XQST0087, XQST0087,
 "the encoding specified in a Version Declaration does not conform to the definition of EncName specified in [XML 1.0].")
 
-DEF_ERR_CODE (XQST0088, XQST0088, 
+DEF_ERR_CODE (XQST0088, XQST0088,
 "The literal that specifies the target namespace in a module import or a module declaration is of zero length.")
 
 DEF_ERR_CODE (XQST0089, XQST0089,
@@ -539,18 +539,21 @@ DEF_ERR_CODE (XQST0090, XQST0090,
 DEF_ERR_CODE(XQST0096, XQST0096,
 "It is a static error for a query prolog to contain two decimal formats with the same name, or to contain two default decimal formats.")
 
+DEF_ERR_CODE(XQST0106, XQST0106,
+"It is a static error if a function's annotations contain more than one annotation named %private or %public or more than one annotation named %deterministic or %nondeterministic.")
+
 
 //
 // XQTY
 //
 
-DEF_ERR_CODE (XQTY0030, XQTY0030, 
+DEF_ERR_CODE (XQTY0030, XQTY0030,
 "The argument of a validate expression does not evaluate to exactly one document or element node.")
 
-DEF_ERR_CODE (XQTY0086, XQTY0086, 
+DEF_ERR_CODE (XQTY0086, XQTY0086,
 "The typed value of a copied element or attribute node is namespace-sensitive when construction mode is preserve and copy-namespaces mode is no-preserve.")
 
-DEF_ERR_CODE (XQTY0024, XQTY0024, 
+DEF_ERR_CODE (XQTY0024, XQTY0024,
 "It is a type error if the content sequence in an element constructor contains an attribute node following a node that is not an attribute node.")
 
 
@@ -675,10 +678,10 @@ DEF_ERR_CODE(SRL0014_INFINITE_CIRCULAR_DEPENDENCIES, SRL0014, "Plan serializatio
 DEF_ERR_CODE(XDST0001_COLLECTION_ALREADY_DECLARED, XDST0001,
 "A collection with name /s is already declared in the same module")
 
-DEF_ERR_CODE(XDST0002_COLLECTION_ALREADY_IMPORTED, XDST0002, 
+DEF_ERR_CODE(XDST0002_COLLECTION_ALREADY_IMPORTED, XDST0002,
 "A collection with name /s that is imported from module /s is already declared in the importing module.")
 
-DEF_ERR_CODE(XDST0003_COLLECTION_DECL_IN_MAIN_MODULE, XDST0003, 
+DEF_ERR_CODE(XDST0003_COLLECTION_DECL_IN_MAIN_MODULE, XDST0003,
 "A collection declaration cannot appear in a main module.")
 
 DEF_ERR_CODE(XDST0004_COLLECTION_MULTIPLE_PROPERTY_VALUES, XDST0004,
@@ -690,17 +693,17 @@ DEF_ERR_CODE(XDST0005_COLLECTION_PROPERTIES_CONFLICT, XDST0005,
 DEF_ERR_CODE(XDST0006_COLLECTION_INVALID_PROPERTY_VALUE, XDST0006,
 "The declaratrion for collection /s contains an invalid property value: /s")
 
-DEF_ERR_CODE(XDST0007_COLLECTION_DECL_IN_FOREIGN_MODULE, XDST0007, 
+DEF_ERR_CODE(XDST0007_COLLECTION_DECL_IN_FOREIGN_MODULE, XDST0007,
 "The declaration for collection /s specifies a qname whose namespace is not the same as the target namespace of the containing library module.")
 
 
 DEF_ERR_CODE(XDST0021_INDEX_ALREADY_DECLARED, XDST0021,
 "An index with name /s is already declared in the same module")
 
-DEF_ERR_CODE(XDST0022_INDEX_ALREADY_IMPORTED, XDST0022, 
+DEF_ERR_CODE(XDST0022_INDEX_ALREADY_IMPORTED, XDST0022,
 "An index with name /s that is imported from module /s is already declared in the importing module.")
 
-DEF_ERR_CODE(XDST0023_INDEX_DECL_IN_MAIN_MODULE, XDST0023, 
+DEF_ERR_CODE(XDST0023_INDEX_DECL_IN_MAIN_MODULE, XDST0023,
 "An index declaration cannot appear in a main module.")
 
 DEF_ERR_CODE(XDST0024_INDEX_MULTIPLE_PROPERTY_VALUES, XDST0024,
@@ -739,7 +742,7 @@ DEF_ERR_CODE(XDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE, XDST0034,
 DEF_ERR_CODE(XDST0035_INDEX_GENERAL_MULTIKEY, XDST0035,
 "Index /s cannot be both a general index and have more than one key expressions")
 
-DEF_ERR_CODE(XDST0036_INDEX_DECL_IN_FOREIGN_MODULE, XDST0036, 
+DEF_ERR_CODE(XDST0036_INDEX_DECL_IN_FOREIGN_MODULE, XDST0036,
 "The declaration for index /s specifies a qname whose namespace is not the same as the target namespace of the containing library module.")
 
 
@@ -764,7 +767,7 @@ DEF_ERR_CODE(XDST0046_IC_HAS_INVALID_DATA_SOURCE, XDST0046,
 DEF_ERR_CODE(XDST0047_IC_NOT_DETERMINISTIC, XDST0047,
              "The integrity constraint with URI /s has a non deterministic definition.")
 
-DEF_ERR_CODE(XDST0048_IC_DECL_IN_FOREIGN_MODULE, XDST0048, 
+DEF_ERR_CODE(XDST0048_IC_DECL_IN_FOREIGN_MODULE, XDST0048,
 "The declaration for integrity constraint /s specifies a qname whose namespace is not the same as the target namespace of the containing library module.")
 
 
@@ -785,40 +788,40 @@ DEF_ERR_CODE(XDTY0011_INDEX_KEY_TYPE_ERROR, XDTY0011,
 // XQuery Data Definition Facility - Dynamic Errors
 //
 
-DEF_ERR_CODE(XDDY0001_COLLECTION_NOT_DECLARED, XDDY0001, 
+DEF_ERR_CODE(XDDY0001_COLLECTION_NOT_DECLARED, XDDY0001,
 "Collection /s is not declared in the static context.")
 
-DEF_ERR_CODE(XDDY0002_COLLECTION_EXISTS_ALREADY, XDDY0002, 
+DEF_ERR_CODE(XDDY0002_COLLECTION_EXISTS_ALREADY, XDDY0002,
 "Collection /s exists already.")
 
-DEF_ERR_CODE(XDDY0003_COLLECTION_DOES_NOT_EXIST, XDDY0003, 
+DEF_ERR_CODE(XDDY0003_COLLECTION_DOES_NOT_EXIST, XDDY0003,
 "Collection /s does not exist.")
 
-DEF_ERR_CODE(XDDY0004_COLLECTION_CONST_UPDATE, XDDY0004, 
+DEF_ERR_CODE(XDDY0004_COLLECTION_CONST_UPDATE, XDDY0004,
 "Cannot update const collection /s.")
 
-DEF_ERR_CODE(XDDY0005_COLLECTION_APPEND_BAD_INSERT, XDDY0005, 
+DEF_ERR_CODE(XDDY0005_COLLECTION_APPEND_BAD_INSERT, XDDY0005,
 "Illegal insert in append-only collection /s.")
 
-DEF_ERR_CODE(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, XDDY0006, 
+DEF_ERR_CODE(XDDY0006_COLLECTION_QUEUE_BAD_INSERT, XDDY0006,
 "Illegal insert in queue collection /s.")
 
-DEF_ERR_CODE(XDDY0007_COLLECTION_APPEND_BAD_DELETE, XDDY0007, 
+DEF_ERR_CODE(XDDY0007_COLLECTION_APPEND_BAD_DELETE, XDDY0007,
 "Illegal delete from append-only collection /s.")
 
-DEF_ERR_CODE(XDDY0008_COLLECTION_QUEUE_BAD_DELETE, XDDY0008, 
+DEF_ERR_CODE(XDDY0008_COLLECTION_QUEUE_BAD_DELETE, XDDY0008,
 "Illegal delete from queue collection /s.")
 
-DEF_ERR_CODE(XDDY0009_COLLECTION_QUEUE_BAD_DELETE, XDDY0009, 
+DEF_ERR_CODE(XDDY0009_COLLECTION_QUEUE_BAD_DELETE, XDDY0009,
 "Not all the nodes to delete are at the beginning of queue collection /s.")
 
 DEF_ERR_CODE(XDDY0010_COLLECTION_CONST_NODE_UPDATE, XDDY0010,
 "Illegal update of node in collection /s, whose nodes are read-only.")
 
-DEF_ERR_CODE(XDDY0011_COLLECTION_NODE_NOT_FOUND, XDDY0011, 
+DEF_ERR_CODE(XDDY0011_COLLECTION_NODE_NOT_FOUND, XDDY0011,
 "Node is not contained in collection /s.")
 
-DEF_ERR_CODE(XDDY0012_COLLECTION_UNORDERED_BAD_INSERT, XDDY0012, 
+DEF_ERR_CODE(XDDY0012_COLLECTION_UNORDERED_BAD_INSERT, XDDY0012,
 "Illegal insert in unordered collection /s.")
 
 DEF_ERR_CODE(XDDY0013_COLLECTION_BAD_DESTROY_INDEXES, XDDY0013,
@@ -830,7 +833,7 @@ DEF_ERR_CODE(XDDY0014_COLLECTION_BAD_DESTROY_ICS, XDDY0014,
 DEF_ERR_CODE(XDDY0015_COLLECTION_BAD_DESTROY_NODES, XDDY0015,
 "Cannot delete collection /s because there are references on its nodes.")
 
-DEF_ERR_CODE(XDDY0016_COLLECTION_MULTIPLE_CREATES, XDDY0016, 
+DEF_ERR_CODE(XDDY0016_COLLECTION_MULTIPLE_CREATES, XDDY0016,
 "Multiple calls to create-collection function in the same snapshot for collection /s.")
 
 
@@ -840,13 +843,13 @@ DEF_ERR_CODE(XDDY0020_INDEX_DOMAIN_NODE_NOT_IN_COLLECTION, XDDY0020,
 DEF_ERR_CODE(XDDY0021_INDEX_IS_NOT_DECLARED, XDDY0021,
 "Index /s is not declared in the static context.")
 
-DEF_ERR_CODE(XDDY0022_INDEX_EXISTS_ALREADY, XDDY0022, 
+DEF_ERR_CODE(XDDY0022_INDEX_EXISTS_ALREADY, XDDY0022,
 "Index /s exists already.")
 
-DEF_ERR_CODE(XDDY0023_INDEX_DOES_NOT_EXIST, XDDY0023, 
+DEF_ERR_CODE(XDDY0023_INDEX_DOES_NOT_EXIST, XDDY0023,
 "Index /s does not exist.")
 
-DEF_ERR_CODE(XDDY0024_INDEX_UNIQUE_VIOLATION, XDDY0024, 
+DEF_ERR_CODE(XDDY0024_INDEX_UNIQUE_VIOLATION, XDDY0024,
 "The uniqueness property of index /s is violated.")
 
 DEF_ERR_CODE(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, XDDY0025,
@@ -855,7 +858,7 @@ DEF_ERR_CODE(XDDY0025_INDEX_WRONG_NUMBER_OF_PROBE_ARGS, XDDY0025,
 DEF_ERR_CODE(XDDY0026_INDEX_RANGE_PROBE_NOT_ALLOWED, XDDY0026,
 "Index /s does not support range probes.")
 
-DEF_ERR_CODE(XDDY0027_INDEX_MULTIPLE_CREATES, XDDY0027, 
+DEF_ERR_CODE(XDDY0027_INDEX_MULTIPLE_CREATES, XDDY0027,
 "Multiple calls to create-index function in the same snapshot for index /s.")
 
 DEF_ERR_CODE(XDDY0028_INDEX_DOMAIN_HAS_DUPLICATE_NODES, XDDY0028,
@@ -877,7 +880,7 @@ DEF_ERR_CODE(XDDY0033_IC_NOT_MET, XDDY0033,
 
 #undef DEF_ERR_CODE
 
-    for (int i = 0; i < MAX_ZORBA_ERROR_CODE; ++i) 
+    for (int i = 0; i < MAX_ZORBA_ERROR_CODE; ++i)
     {
       if (canonical_err_names [i] == NULL)
 #ifdef WIN32
@@ -900,7 +903,7 @@ DEF_ERR_CODE(XDDY0033_IC_NOT_MET, XDDY0033,
 
   ~err_msg_wrapper()
   {
-    for (int i = 0; i < MAX_ZORBA_ERROR_CODE; ++i) 
+    for (int i = 0; i < MAX_ZORBA_ERROR_CODE; ++i)
     {
       if (canonical_err_names[i] != NULL)
       {
@@ -934,11 +937,11 @@ static const struct err_msg_wrapper& get_err_msg_wrapper()
 
 
 std::string
-ErrorMessages::getMessageForErrorCode(const XQUERY_ERROR& e) 
+ErrorMessages::getMessageForErrorCode(const XQUERY_ERROR& e)
 {
   ZORBA_ASSERT (e < MAX_ZORBA_ERROR_CODE);
   return get_err_msg_wrapper().get_err_msg(e);
-} 
+}
 
 
 std::string
@@ -957,7 +960,7 @@ ErrorMessages::getNameForErrorCode(const XQUERY_ERROR& code)
 
 
 XQUERY_ERROR
-ErrorMessages::getErrorCodeForName(const std::string& name) 
+ErrorMessages::getErrorCodeForName(const std::string& name)
 {
   const err_msg_wrapper& err_wrapper = get_err_msg_wrapper();
   // TODO: use a map or hashmap
@@ -1006,8 +1009,8 @@ DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code)
     case ::zorba::ZorbatypesError::FOCH0002:
       return FOCH0002;
       break;
-      
-      
+
+
     case ::zorba::ZorbatypesError::FOCH0003:
       return FOCH0003;
       break;
@@ -1039,7 +1042,7 @@ DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code)
       return FODT0003;
       break;
 
-      
+
     case ::zorba::ZorbatypesError::FONS0004:
       return FONS0004;
       break;
@@ -1071,7 +1074,7 @@ DecodeZorbatypesError(::zorba::ZorbatypesError::ErrorCode code)
       return FORG0009;
       break;
 
-      
+
     case ::zorba::ZorbatypesError::FORX0001:
       return FORX0001;
       break;

@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -35,6 +35,7 @@
 #include "context/static_context.h"
 #include "context/static_context_consts.h"
 #include "context/uri_resolver_wrapper.h"
+#include "functions/function.h"
 
 #include "system/globalenv.h"
 
@@ -61,7 +62,7 @@ StaticContextImpl::StaticContextImpl(ErrorHandler* aErrorHandler)
 {
   theCtx = GENV.getRootStaticContext().create_child_context();
 
-  if ( ! theErrorHandler ) 
+  if ( ! theErrorHandler )
   {
     theErrorHandler = new DefaultErrorHandler();
     theUserErrorHandler = false;
@@ -80,7 +81,7 @@ StaticContextImpl::StaticContextImpl(static_context* aCtx, ErrorHandler* aErrorH
   theErrorHandler(aErrorHandler),
   theUserErrorHandler(true)
 {
-  if ( ! theErrorHandler ) 
+  if ( ! theErrorHandler )
   {
     theErrorHandler = new DefaultErrorHandler();
     theUserErrorHandler = false;
@@ -107,7 +108,7 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
   // if it's a default error handler, we need to create a new
   // one since every context has it's own non-user error handler
   // which he also needs to delete
-  if ( ! theUserErrorHandler ) 
+  if ( ! theUserErrorHandler )
   {
     theErrorHandler = new DefaultErrorHandler();
   }
@@ -116,7 +117,7 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
 
   for (iter1 = aStaticContext.theModuleWrappers.begin();
        iter1 != aStaticContext.theModuleWrappers.end();
-       ++iter1) 
+       ++iter1)
   {
     addModuleURIResolver(iter1->first);
   }
@@ -125,7 +126,7 @@ StaticContextImpl::StaticContextImpl(const StaticContextImpl& aStaticContext)
 
   for (iter2 = aStaticContext.theSchemaWrappers.begin();
        iter2 != aStaticContext. theSchemaWrappers.end();
-       ++iter2) 
+       ++iter2)
   {
     addSchemaURIResolver(iter2->first);
   }
@@ -139,7 +140,7 @@ StaticContextImpl::~StaticContextImpl()
 {
   for (std::map<ModuleURIResolver*, ModuleURIResolverWrapper*>::iterator
         lIter = theModuleWrappers.begin();
-        lIter != theModuleWrappers.end(); ++lIter) 
+        lIter != theModuleWrappers.end(); ++lIter)
   {
       theCtx->remove_module_uri_resolver(lIter->second);
       delete lIter->second;
@@ -148,7 +149,7 @@ StaticContextImpl::~StaticContextImpl()
   theModuleWrappers.clear();
   for (std::map<SchemaURIResolver*, SchemaURIResolverWrapper*>::iterator
         lIter = theSchemaWrappers.begin();
-        lIter != theSchemaWrappers.end(); ++lIter) 
+        lIter != theSchemaWrappers.end(); ++lIter)
   {
       theCtx->remove_schema_uri_resolver(lIter->second);
       delete lIter->second;
@@ -166,7 +167,7 @@ StaticContextImpl::~StaticContextImpl()
 ********************************************************************************/
 StaticContext_t StaticContextImpl::createChildContext() const
 {
-  try 
+  try
   {
     StaticContext_t lContext(new StaticContextImpl(*this));
     return lContext;
@@ -186,7 +187,7 @@ StaticContext_t StaticContextImpl::createChildContext() const
 /*******************************************************************************
 
 ********************************************************************************/
-bool   
+bool
 StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
 {
   ZORBA_TRY
@@ -203,10 +204,10 @@ StaticContextImpl::addNamespace( const String& aPrefix, const String& aURI )
 /*******************************************************************************
 
 ********************************************************************************/
-String   
+String
 StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
 {
-  try 
+  try
   {
     xqpStringStore_t lPrefix = Unmarshaller::getInternalString(aPrefix);
     QueryLoc loc;
@@ -218,7 +219,7 @@ StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
-  catch (std::exception& e) 
+  catch (std::exception& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
@@ -229,7 +230,7 @@ StaticContextImpl::getNamespaceURIByPrefix( const String& aPrefix ) const
 /*******************************************************************************
 
 ********************************************************************************/
-bool   
+bool
 StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
 {
   ZORBA_TRY
@@ -245,10 +246,10 @@ StaticContextImpl::setDefaultElementAndTypeNamespace( const String& aURI )
 /*******************************************************************************
 
 ********************************************************************************/
-String   
+String
 StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
 {
-  try 
+  try
   {
     return theCtx->default_elem_type_ns().getp();
   }
@@ -267,7 +268,7 @@ StaticContextImpl::getDefaultElementAndTypeNamespace( ) const
 /*******************************************************************************
 
 ********************************************************************************/
-bool   
+bool
 StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
 {
   ZORBA_TRY
@@ -283,18 +284,18 @@ StaticContextImpl::setDefaultFunctionNamespace( const String& aURI )
 /*******************************************************************************
 
 ********************************************************************************/
-String   
+String
 StaticContextImpl::getDefaultFunctionNamespace( ) const
 {
-  try 
+  try
   {
     return theCtx->default_function_ns().getp();
   }
-  catch (error::ZorbaError& e) 
+  catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
-  catch (std::exception& e) 
+  catch (std::exception& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
@@ -322,7 +323,7 @@ void StaticContextImpl::setDefaultCollation( const String& URI )
 {
   ZORBA_TRY
     xqpStringStore* lURI = Unmarshaller::getInternalString(URI);
-    theCtx->set_default_collation(lURI->str(), QueryLoc::null); 
+    theCtx->set_default_collation(lURI->str(), QueryLoc::null);
   ZORBA_CATCH
 }
 
@@ -332,7 +333,7 @@ void StaticContextImpl::setDefaultCollation( const String& URI )
 ********************************************************************************/
 String StaticContextImpl::getDefaultCollation() const
 {
-  try 
+  try
   {
     return theCtx->get_default_collation(QueryLoc::null);
   }
@@ -402,17 +403,17 @@ bool StaticContextImpl::setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode )
 ********************************************************************************/
 xpath1_0compatib_mode_t StaticContextImpl::getXPath1_0CompatibMode( ) const
 {
-  try 
+  try
   {
     return (theCtx->xpath_compatibility() == StaticContextConsts::xpath1_0_only?
             xpath1_0 :
             xpath2_0);
   }
-  catch (error::ZorbaError& e) 
+  catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
-  catch (std::exception& e) 
+  catch (std::exception& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
   }
@@ -423,7 +424,7 @@ xpath1_0compatib_mode_t StaticContextImpl::getXPath1_0CompatibMode( ) const
 /*******************************************************************************
 
 ********************************************************************************/
-bool   
+bool
 StaticContextImpl::setConstructionMode( construction_mode_t mode )
 {
   ZORBA_TRY
@@ -437,7 +438,7 @@ StaticContextImpl::setConstructionMode( construction_mode_t mode )
 }
 
 
-construction_mode_t  
+construction_mode_t
 StaticContextImpl::getConstructionMode( ) const
 {
   try {
@@ -452,7 +453,7 @@ StaticContextImpl::getConstructionMode( ) const
 }
 
 
-bool   
+bool
 StaticContextImpl::setOrderingMode( ordering_mode_t mode )
 {
   ZORBA_TRY
@@ -466,7 +467,7 @@ StaticContextImpl::setOrderingMode( ordering_mode_t mode )
 }
 
 
-ordering_mode_t  
+ordering_mode_t
 StaticContextImpl::getOrderingMode( ) const
 {
   try {
@@ -480,7 +481,7 @@ StaticContextImpl::getOrderingMode( ) const
 }
 
 
-bool   
+bool
 StaticContextImpl::setDefaultOrderForEmptySequences(order_empty_mode_t mode )
 {
   ZORBA_TRY
@@ -494,7 +495,7 @@ StaticContextImpl::setDefaultOrderForEmptySequences(order_empty_mode_t mode )
 }
 
 
-order_empty_mode_t   
+order_empty_mode_t
 StaticContextImpl::getDefaultOrderForEmptySequences( ) const
 {
   try {
@@ -509,7 +510,7 @@ StaticContextImpl::getDefaultOrderForEmptySequences( ) const
 }
 
 
-bool   
+bool
 StaticContextImpl::setBoundarySpacePolicy( boundary_space_mode_t mode )
 {
   ZORBA_TRY
@@ -523,7 +524,7 @@ StaticContextImpl::setBoundarySpacePolicy( boundary_space_mode_t mode )
 }
 
 
-boundary_space_mode_t  
+boundary_space_mode_t
 StaticContextImpl::getBoundarySpacePolicy( ) const
 {
   try {
@@ -536,10 +537,10 @@ StaticContextImpl::getBoundarySpacePolicy( ) const
   }
   return preserve_space;
 }
-  
 
-bool   
-StaticContextImpl::setCopyNamespacesMode( preserve_mode_t preserve, 
+
+bool
+StaticContextImpl::setCopyNamespacesMode( preserve_mode_t preserve,
                                           inherit_mode_t inherit )
 {
   ZORBA_TRY
@@ -558,8 +559,8 @@ StaticContextImpl::setCopyNamespacesMode( preserve_mode_t preserve,
 }
 
 
-void   
-StaticContextImpl::getCopyNamespacesMode( preserve_mode_t& preserve, 
+void
+StaticContextImpl::getCopyNamespacesMode( preserve_mode_t& preserve,
                                           inherit_mode_t& inherit ) const
 {
   ZORBA_TRY
@@ -571,28 +572,28 @@ StaticContextImpl::getCopyNamespacesMode( preserve_mode_t& preserve,
 }
 
 
-bool   
+bool
 StaticContextImpl::setBaseURI( const String& aBaseURI )
 {
-  try 
+  try
   {
     xqpStringStore_t lBaseURI = Unmarshaller::getInternalString(aBaseURI);
     xqpStringStore_t lBaseURI2 = lBaseURI;
-    
+
     if(!GenericCast::instance()->isCastable(lBaseURI,
                                             &*GENV_TYPESYSTEM.ANY_URI_TYPE_ONE,
-                                            &GENV_TYPESYSTEM)) 
+                                            &GENV_TYPESYSTEM))
     {
       ZORBA_ERROR_DESC(XQP0020_INVALID_URI, lBaseURI);
     }
     theCtx->set_base_uri(lBaseURI2, false);
   }
-  catch (error::ZorbaError& e) 
+  catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
     return false;
   }
-  catch (std::exception& e) 
+  catch (std::exception& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e.what());
     return false;
@@ -604,10 +605,10 @@ StaticContextImpl::setBaseURI( const String& aBaseURI )
 /*******************************************************************************
 
 ********************************************************************************/
-String   
+String
 StaticContextImpl::getBaseURI( ) const
 {
-  try 
+  try
   {
     xqpStringStore_t lBaseURI = theCtx->get_base_uri();
     return lBaseURI.getp();
@@ -654,10 +655,10 @@ StaticContextImpl::setRevalidationMode(validation_mode_t aMode)
 /*******************************************************************************
 
 ********************************************************************************/
-bool 
+bool
 StaticContextImpl::registerModule(ExternalModule* aModule)
 {
-  try 
+  try
   {
     theCtx->bind_external_module(aModule);
   }
@@ -676,11 +677,11 @@ StaticContextImpl::registerModule(ExternalModule* aModule)
 void
 StaticContextImpl::setDocumentURIResolver(DocumentURIResolver* aDocumentURIResolver)
 {
-  try 
+  try
   {
     theCtx->set_document_uri_resolver(new DocumentURIResolverWrapper(aDocumentURIResolver));
-  } 
-  catch (error::ZorbaError& e) 
+  }
+  catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -725,7 +726,7 @@ StaticContextImpl::getDocumentType(const String& aDocUri) const
 {
   xqtref_t xqType = theCtx->lookup_document(Unmarshaller::getInternalString(aDocUri));
   TypeIdentifier_t type = NULL;
-  if (xqType == NULL) 
+  if (xqType == NULL)
   {
     return NULL;
   }
@@ -740,11 +741,11 @@ StaticContextImpl::getDocumentType(const String& aDocUri) const
 void
 StaticContextImpl::setCollectionURIResolver(CollectionURIResolver* aCollectionUriResolver)
 {
-  try 
+  try
   {
     theCtx->set_collection_uri_resolver(new CollectionURIResolverWrapper(aCollectionUriResolver));
-  } 
-  catch (error::ZorbaError& e) 
+  }
+  catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -772,7 +773,7 @@ void
 StaticContextImpl::setCollectionType(const String& aCollectionUri, TypeIdentifier_t type)
 {
   xqtref_t xqType = NULL;
-  if (type != NULL) 
+  if (type != NULL)
   {
     xqType = theCtx->get_typemanager()->create_type(*type);
   }
@@ -789,7 +790,7 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
 {
   const XQType* xqType = theCtx->lookup_w3c_collection(Unmarshaller::getInternalString(aCollectionUri));
   TypeIdentifier_t type = NULL;
-  if (xqType == NULL) 
+  if (xqType == NULL)
   {
     return NULL;
   }
@@ -803,10 +804,10 @@ StaticContextImpl::getCollectionType(const String& aCollectionUri) const
 void
 StaticContextImpl::addModuleURIResolver(ModuleURIResolver* aModuleUriResolver)
 {
-  try 
+  try
   {
     // do nothing if the resolver is already registered
-    if (theModuleWrappers[aModuleUriResolver]) 
+    if (theModuleWrappers[aModuleUriResolver])
     {
       return;
     }
@@ -834,7 +835,7 @@ std::vector<ModuleURIResolver*>
 StaticContextImpl::getModuleURIResolvers() const
 {
   std::vector<ModuleURIResolver*> lResolvers;
-  try 
+  try
   {
     // get all resovlers (from the internal context upwards to its parent)
     std::vector<InternalModuleURIResolver*> lResolverWrappers;
@@ -842,17 +843,17 @@ StaticContextImpl::getModuleURIResolvers() const
 
     // create a vector containing the pointers to all resolvers
     // owned by the user
-    for (std::vector<InternalModuleURIResolver*>::iterator lIter 
+    for (std::vector<InternalModuleURIResolver*>::iterator lIter
           = lResolverWrappers.begin();
-         lIter != lResolverWrappers.end(); ++lIter) 
+         lIter != lResolverWrappers.end(); ++lIter)
     {
-      ModuleURIResolverWrapper* lWrapper 
+      ModuleURIResolverWrapper* lWrapper
         = dynamic_cast<ModuleURIResolverWrapper*>(*lIter);
       assert(lWrapper);
       lResolvers.push_back(lWrapper->theModuleResolver);
     }
   }
-  catch (error::ZorbaError& e) 
+  catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -920,7 +921,7 @@ StaticContextImpl::addSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver)
 {
   try {
     // do nothing if the resolver is already registered
-    if (theSchemaWrappers[aSchemaUriResolver]) 
+    if (theSchemaWrappers[aSchemaUriResolver])
     {
       return;
     }
@@ -972,7 +973,7 @@ StaticContextImpl::removeSchemaURIResolver(SchemaURIResolver* aSchemaUriResolver
 bool
 StaticContextImpl::containsFunction(
     const String& aFnNameUri,
-    const String& aFnNameLocal, 
+    const String& aFnNameLocal,
     int arity) const
 {
   xqpStringStore_t prefix = new xqpStringStore("");
@@ -1003,7 +1004,7 @@ StaticContextImpl::findFunctions(const Item& aQName, std::vector<Function_t>& aF
     theCtx->find_functions(lQName, lInternalFunctions);
 
     for (std::vector<function*>::const_iterator lIter = lInternalFunctions.begin();
-         lIter != lInternalFunctions.end(); ++lIter) 
+         lIter != lInternalFunctions.end(); ++lIter)
     {
       Function_t lFunc(new FunctionImpl(*lIter, theErrorHandler));
       aFunctions.push_back(lFunc);
@@ -1029,6 +1030,28 @@ StaticContextImpl::disableFunction(const Item& aQName, int arity)
   theCtx->unbind_fn(Unmarshaller::getInternalItem(aQName), arity);
 }
 
+void
+StaticContextImpl::getFunctionAnnotations(const Item& aQName, int arity, std::vector<Annotation_t>& aAnnotations) const
+{
+  aAnnotations.clear();
+  const function* f = theCtx->lookup_fn(Unmarshaller::getInternalItem(aQName), arity);
+  if (f == NULL)
+    return;
+
+  const AnnotationList* ann_list = f->getAnnotationList();
+  if (ann_list == NULL)
+    return;
+
+  try
+  {
+    for (unsigned int i=0; i<ann_list->size(); i++)
+      aAnnotations.push_back(new AnnotationImpl(ann_list->getAnnotation(i)));
+  }
+  catch (error::ZorbaError& e)
+  {
+    ZorbaImpl::notifyError(theErrorHandler, e);
+  }
+}
 
 void
 StaticContextImpl::setContextItemStaticType(TypeIdentifier_t type)
@@ -1045,7 +1068,7 @@ TypeIdentifier_t
 StaticContextImpl::getContextItemStaticType() const
 {
   xqtref_t type = theCtx->get_context_item_type();
-  if (type == NULL) 
+  if (type == NULL)
   {
     return NULL;
   }
@@ -1070,15 +1093,15 @@ StaticContextImpl::resetTraceStream()
 bool
 StaticContextImpl::getOption(const Item& aQName, String& aOptionValue) const
 {
-  try 
+  try
   {
     const store::Item* lQName = Unmarshaller::getInternalItem(aQName);
     xqpStringStore_t lOption;
-    if (theCtx->lookup_option(lQName, lOption)) 
+    if (theCtx->lookup_option(lQName, lOption))
     {
       aOptionValue = String(lOption);
       return true;
-    } 
+    }
     else
     {
       return false;
@@ -1095,14 +1118,14 @@ StaticContextImpl::getOption(const Item& aQName, String& aOptionValue) const
 void
 StaticContextImpl::declareOption(const Item& aQName, const String& aOptionValue)
 {
-  try 
+  try
   {
     const store::Item* lQName = Unmarshaller::getInternalItem(aQName);
     xqpStringStore_t lOptionValue = Unmarshaller::getInternalString(aOptionValue);
-    
+
     theCtx->bind_option(lQName, lOptionValue);
   }
-  catch (error::ZorbaError& e) 
+  catch (error::ZorbaError& e)
   {
     ZorbaImpl::notifyError(theErrorHandler, e);
   }
@@ -1120,32 +1143,32 @@ void StaticContextImpl::loadProlog(
 
   // Copy theSctxMap of the internal query into "this". When "this" is then passed
   // as an input to a user query Q, theSctxMap of Q will be initialized as a copy
-  // of this->theSctxMap. 
+  // of this->theSctxMap.
   theSctxMap = impl.theSctxMap;
 }
 
 
 void StaticContextImpl::setModulePaths(const std::vector<String>& aModulePaths)
 {
-  try 
+  try
   {
     std::vector<std::string> lModulePaths;
 
     for (std::vector<String>::const_iterator lIter = aModulePaths.begin();
-         lIter != aModulePaths.end(); ++lIter) 
+         lIter != aModulePaths.end(); ++lIter)
     {
-      if (lIter->length() != 0) 
+      if (lIter->length() != 0)
       {
         lModulePaths.push_back(Unmarshaller::getInternalString(*lIter)->c_str());
         std::string& lPath = lModulePaths.back();
-        if (lPath.rfind(filesystem_path::get_path_separator()) != std::string::npos) 
+        if (lPath.rfind(filesystem_path::get_path_separator()) != std::string::npos)
         {
           lPath.append(filesystem_path::get_path_separator());
         }
       }
 
     }
-    
+
     theCtx->set_module_paths(lModulePaths);
   }
   catch (error::ZorbaError& e)
@@ -1190,7 +1213,7 @@ StaticContextImpl::getFullModulePaths( std::vector<String>& aFullModulePaths ) c
 
 
 String
-StaticContextImpl::resolve(const String& aBaseUri, const String& aRelativeURI) const 
+StaticContextImpl::resolve(const String& aBaseUri, const String& aRelativeURI) const
 {
   xqpStringStore_t lBaseUri = Unmarshaller::getInternalString(aBaseUri);
   xqpStringStore_t lRelativeUri = Unmarshaller::getInternalString(aRelativeURI);

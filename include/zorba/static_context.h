@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -19,11 +19,12 @@
 #include <zorba/config.h>
 #include <zorba/api_shared_types.h>
 #include <zorba/zorbastring.h>
-#include <zorba/typeident.h> 
+#include <zorba/typeident.h>
 #include <zorba/static_context_consts.h>
 #include <zorba/options.h>  // for compiler hints class
 #include <vector>
 #include <zorba/function.h>
+#include <zorba/annotation.h>
 #include <zorba/smart_ptr.h>
 
 namespace zorba {
@@ -55,7 +56,7 @@ namespace zorba {
        *
        * This function compiles the prolog passed as first parameter and loads
        * all declarations and definitions into this static context.
-       * 
+       *
        * The static context extended by this prolog can then be used for creating
        * a compiling a new query.
        *
@@ -69,11 +70,11 @@ namespace zorba {
        *         of the given static context.
        *
        * A child static context carries the same context as it's parent but
-       * can override any information. 
+       * can override any information.
        */
       virtual StaticContext_t
       createChildContext() const = 0;
-      
+
       /** \brief Add a pair (prefix, URI) to the statically known namespaces that
        *         are available during query compilation.
        *
@@ -85,9 +86,9 @@ namespace zorba {
        *          false otherwise.
        *  @throw ZorbaException if an error occures.
        */
-      virtual bool   
+      virtual bool
       addNamespace( const String& aPrefix, const String& aURI ) = 0;
-      
+
       /** \brief Get the namespace URI for a given prefix.
        *
        * @param aPrefix the prefix for which to retrieve the namespace URI.
@@ -96,10 +97,10 @@ namespace zorba {
        *         registered.
        * @throw ZorbaException if an error occured (e.g. no URI could be found for the given prefix).
        */
-      virtual String   
+      virtual String
       getNamespaceURIByPrefix( const String& aPrefix ) const = 0;
 
-      /** \brief Set the default element and type namespace 
+      /** \brief Set the default element and type namespace
        *         (see http://www.w3.org/TR/xquery/#static_context)
        *
        * @param aURI of the default element and type namespace URI.
@@ -107,18 +108,18 @@ namespace zorba {
        *         if an ErrorHandler has been registered.
        * @throw ZorbaException if an error occured.
        */
-      virtual bool   
+      virtual bool
       setDefaultElementAndTypeNamespace( const String& aURI ) = 0;
-      
+
       /** \brief Get the default element and type namespace URI.
        *
        * @return String the URI for the default element and type namespace.
        * @throw ZorbaException if an error occured.
        */
-      virtual String   
+      virtual String
       getDefaultElementAndTypeNamespace( ) const = 0;
 
-      /** \brief Set the default functionnamespace 
+      /** \brief Set the default functionnamespace
        *         (see http://www.w3.org/TR/xquery/#static_context)
        *
        * @param aURI of the default function namespace.
@@ -126,16 +127,16 @@ namespace zorba {
        *         if an ErrorHandler has been registered.
        * @throw ZorbaException if an error occured.
        */
-      virtual bool   
+      virtual bool
       setDefaultFunctionNamespace( const String& aURI ) = 0;
-      
+
       /** \brief Get the default function namespace.
        *
        * @return String the URI of the default function namespace.
        *         ErrorHandler has been registered.
        * @throw ZorbaException if an error occured.
        */
-      virtual String   
+      virtual String
       getDefaultFunctionNamespace( ) const = 0;
 
       /** \brief Adds a collation URI.
@@ -152,46 +153,46 @@ namespace zorba {
        * Internally, ICU is used for comparing strings. For detailed description see
        * http://www.icu-project.org/apiref/icu4c/classCollator.html
        * and http://www.icu-project.org/apiref/icu4c/classLocale.html
-       * 
+       *
        * @param aURI the URI of the collation.
        * @throw ZorbaException if an error occured (e.g. the URI was not a valid
        *        collation URI).
        */
-      virtual void   
+      virtual void
       addCollation( const String& aURI ) = 0;
 
       /** \brief Set the URI of the default collation.
        *         (see http://www.w3.org/TR/xquery/#static_context)
        *
        * @param aURI URI of the default collation.
-       * @throw ZorbaException if an error occured (e.g., the URI does not 
+       * @throw ZorbaException if an error occured (e.g., the URI does not
        *        identify a collation among the statically known collations.
        */
-      virtual void   
+      virtual void
       setDefaultCollation( const String& aURI ) = 0;
 
       /** \brief Get the URI of the default collation
        *
        * @return String the URI of the default collation.
        */
-      virtual String 
+      virtual String
       getDefaultCollation() const = 0;
 
       /** \brief Set the XQuery processing mode (version 1.0 or 1.1).
-       *         
+       *
        *
        * @param aMode the XQuery version.
        * @return true if the version was set, false otherwise.
        */
-      virtual bool   
+      virtual bool
       setXQueryVersion( xquery_version_t aMode ) = 0;
 
       /** \brief Get the XQuery processing mode (version 1.0 or 1.1).
-       *         
+       *
        *
        * @return xquery_version_t the XQuery version processing mode.
        */
-      virtual xquery_version_t  
+      virtual xquery_version_t
       getXQueryVersion( ) const = 0;
 
       /** \brief Set the XPath 1.0 compatibility mode.
@@ -200,7 +201,7 @@ namespace zorba {
        * @param aMode the XPath 1.0 compatibility mode.
        * @return true if the mode was set, false otherwise.
        */
-      virtual bool   
+      virtual bool
       setXPath1_0CompatibMode( xpath1_0compatib_mode_t aMode ) = 0;
 
       /** \brief Get the XPath 1.0 compatibility mode.
@@ -208,7 +209,7 @@ namespace zorba {
        *
        * @return xpath1_0compatib_mode_t the XPath 1.0 compatibility mode.
        */
-      virtual xpath1_0compatib_mode_t  
+      virtual xpath1_0compatib_mode_t
       getXPath1_0CompatibMode( ) const = 0;
 
       /** \brief Set the construction mode.
@@ -217,7 +218,7 @@ namespace zorba {
        * @param aMode the construction mode.
        * @return true if the mode was set, false otherwise.
        */
-      virtual bool   
+      virtual bool
       setConstructionMode( construction_mode_t aMode ) = 0;
 
       /** \brief Get the construction mode.
@@ -225,7 +226,7 @@ namespace zorba {
        *
        * @return construction_mode_t the construction mode.
        */
-      virtual construction_mode_t  
+      virtual construction_mode_t
       getConstructionMode( ) const = 0;
 
       /** \brief Set the ordering mode.
@@ -234,7 +235,7 @@ namespace zorba {
        * @param aMode the ordering mode.
        * @return true if the mode was set, false otherwise.
        */
-      virtual bool   
+      virtual bool
       setOrderingMode( ordering_mode_t aMode ) = 0;
 
       /** \brief Get the ordering mode.
@@ -242,7 +243,7 @@ namespace zorba {
        *
        * @return ordering_mode_t the ordering mode.
        */
-      virtual ordering_mode_t  
+      virtual ordering_mode_t
       getOrderingMode( ) const = 0;
 
       /** \brief Set the default order for the empty sequence.
@@ -251,7 +252,7 @@ namespace zorba {
        * @param aMode the default order for the empty sequence.
        * @return true if the mode was set, false otherwise.
        */
-      virtual bool   
+      virtual bool
       setDefaultOrderForEmptySequences( order_empty_mode_t aMode ) = 0;
 
       /** \brief Get the default order for the empty sequence.
@@ -259,7 +260,7 @@ namespace zorba {
        *
        * @return order_empty_mode_t the ordering mode.
        */
-      virtual order_empty_mode_t   
+      virtual order_empty_mode_t
       getDefaultOrderForEmptySequences( ) const = 0;
 
       /** \brief Set the boundary space policy.
@@ -268,7 +269,7 @@ namespace zorba {
        * @param aMode the boundary space policy.
        * @return true if the mode was set, false otherwise.
        */
-      virtual bool   
+      virtual bool
       setBoundarySpacePolicy( boundary_space_mode_t aMode) = 0;
 
       /** \brief Get the boundary space policy.
@@ -276,7 +277,7 @@ namespace zorba {
        *
        * @return boundary_space_mode_t the boundary space policy.
        */
-      virtual boundary_space_mode_t  
+      virtual boundary_space_mode_t
       getBoundarySpacePolicy( ) const = 0;
 
       /** \brief Set the copy namespace mode.
@@ -286,8 +287,8 @@ namespace zorba {
        * @param aInherit the inherit mode.
        * @return true if the mode was set, false otherwise.
        */
-      virtual bool   
-      setCopyNamespacesMode( preserve_mode_t aPreserve, 
+      virtual bool
+      setCopyNamespacesMode( preserve_mode_t aPreserve,
                              inherit_mode_t aInherit ) = 0;
 
       /** \brief Get the copy namespace mode.
@@ -296,8 +297,8 @@ namespace zorba {
        * @return aPreserve the preserve mode.
        * @return aInherit the inherit mode.
        */
-      virtual void   
-      getCopyNamespacesMode( preserve_mode_t& aPreserve, 
+      virtual void
+      getCopyNamespacesMode( preserve_mode_t& aPreserve,
                              inherit_mode_t& aInherit ) const = 0;
 
       /** \brief Set the base URI.
@@ -306,14 +307,14 @@ namespace zorba {
        * @param aBaseURI the base URI as String.
        * @return true if the base URI has been set, false otherwise.
        */
-      virtual bool   
+      virtual bool
       setBaseURI( const String& aBaseURI ) = 0;
 
       /** \brief Get the base URI.
        *
        * @return String the base URI.
        */
-      virtual String   
+      virtual String
       getBaseURI( ) const = 0;
 
       /** \brief Get the revalidation mode.
@@ -339,7 +340,7 @@ namespace zorba {
        * @param aModule the module object
        * @return true if the module has been set, false otherwise.
        */
-      virtual bool 
+      virtual bool
       registerModule(ExternalModule* aModule) = 0;
 
       virtual void
@@ -403,6 +404,9 @@ namespace zorba {
       virtual void
       disableFunction(const Item& aQName, int arity) = 0;
 
+      virtual void
+      getFunctionAnnotations(const Item& aQName, int arity, std::vector<Annotation_t>& aAnnotations) const = 0;
+
       /** \brief Set the type of the context item.
        */
       virtual void
@@ -417,7 +421,7 @@ namespace zorba {
        *
        * Sets the output stream that is used by the fn:trace function to the given output stream.
        * The default stream is std::cerr.
-       * 
+       *
        */
       virtual void
       setTraceStream(std::ostream&) = 0;

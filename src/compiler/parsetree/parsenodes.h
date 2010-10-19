@@ -1055,6 +1055,8 @@ public:
 
   rchandle<QName> get_qname() const { return qname_h; }
 
+  rchandle<AnnotationLiteralListParsenode> get_literals() const { return literal_list_h; };
+
   void accept(parsenode_visitor&) const;
 };
 
@@ -1076,6 +1078,10 @@ public:
   std::vector<rchandle<AnnotationParsenode> >::const_iterator end() const { return annotations_hv.end(); }
 
   std::vector<rchandle<AnnotationParsenode> >::size_type size() const { return annotations_hv.size(); }
+
+  bool has_deterministic() const;
+
+  bool has_nondeterministic() const;
 
   void accept(parsenode_visitor&) const;
 };
@@ -3850,13 +3856,25 @@ public:
 // Used by Annotations classes
 class Literal : public exprnode
 {
+public:
+  typedef enum
+  {
+    NUMERIC_LITERAL = 0,
+    STRING_LITERAL = 1
+  } LITERAL_TYPE;
+
 protected:
   rchandle<NumericLiteral> numeric_literal;
   rchandle<StringLiteral> string_literal;
-  int type;                                     // =0 -> Numeric, =1 -> String
+  LITERAL_TYPE type;                              // =0 -> Numeric, =1 -> String
+
 
 public:
   Literal(exprnode* expression);
+
+  LITERAL_TYPE get_type() const { return type; };
+  rchandle<NumericLiteral> get_numeric_literal() const { return numeric_literal; }
+  rchandle<StringLiteral> get_string_literal() const { return string_literal; }
 
   void accept(parsenode_visitor&) const;
 };

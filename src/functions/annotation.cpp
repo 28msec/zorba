@@ -18,44 +18,178 @@
 #include "store/api/item.h"
 #include "system/globalenv.h"
 #include "store/api/item_factory.h"
+#include "zorbaerrors/Assert.h"
+#include "compiler/parser/parse_constants.h"
 
 
 namespace zorba
 {
-SERIALIZABLE_CLASS_VERSIONS(Annotation)
-END_SERIALIZABLE_CLASS_VERSIONS(Annotation)
+SERIALIZABLE_CLASS_VERSIONS(AnnotationLiteral)
+END_SERIALIZABLE_CLASS_VERSIONS(AnnotationLiteral)
 
+SERIALIZABLE_CLASS_VERSIONS(AnnotationInternal)
+END_SERIALIZABLE_CLASS_VERSIONS(AnnotationInternal)
 
 SERIALIZABLE_CLASS_VERSIONS(AnnotationList)
-END_SERIALIZABLE_CLASS_VERSIONS(AnnotationList)
+END_SERIALIZABLE_CLASS_VERSIONS(AnnotationList);
+
+/*******************************************************************************
+
+********************************************************************************/
+AnnotationImpl::AnnotationImpl(const AnnotationInternal* annotation)
+{
+  theQName = annotation->getQName();
+
+  for (unsigned int i=0; i<annotation->getLiteralsCount(); i++)
+    theLiteralList.push_back(new AnnotationLiteral(annotation->getLiteral(i)));
+}
+
+Item AnnotationImpl::getQName() const
+{
+  Item lQName(theQName);
+  return lQName;
+}
+
+unsigned int AnnotationImpl::getLiteralsCount() const
+{
+  return theLiteralList.size();
+}
+
+Item AnnotationImpl::getLiteral(unsigned int i) const
+{
+  if (i >= theLiteralList.size())
+    return Item(NULL);
+
+  Item lItem(theLiteralList[i]->getLiteral());
+  return lItem;
+}
+
+/*******************************************************************************
+
+********************************************************************************/
+AnnotationLiteral::AnnotationLiteral(const AnnotationLiteral* literal)
+{
+  if (literal != NULL)
+    theLiteral = literal->getLiteral();
+}
+
+AnnotationLiteral::AnnotationLiteral(const StringLiteral* stringLiteral)
+{
+  ZORBA_ASSERT(stringLiteral != NULL);
+
+  xqpStringStore_t temp = new xqpStringStore(stringLiteral->get_strval());
+  GENV_ITEMFACTORY->createString(theLiteral, temp);
+}
+
+AnnotationLiteral::AnnotationLiteral(const NumericLiteral* numericLiteral)
+{
+  ZORBA_ASSERT(numericLiteral != NULL);
+
+  switch (numericLiteral->get_type())
+  {
+  case ParseConstants::num_integer:
+    GENV_ITEMFACTORY->createInteger(theLiteral, numericLiteral->get<xqp_integer>());
+    break;
+
+  case ParseConstants::num_decimal:
+    GENV_ITEMFACTORY->createDecimal(theLiteral, numericLiteral->get<xqp_decimal>());
+    break;
+
+  case ParseConstants::num_double:
+    GENV_ITEMFACTORY->createDouble(theLiteral, numericLiteral->get<xqp_double>());
+    break;
+  }
+}
+
+store::Item_t AnnotationLiteral::getLiteral() const
+{
+  return theLiteral;
+}
+
+void AnnotationLiteral::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theLiteral;
+}
 
 
-Annotation::Annotation(const AnnotationParsenode* annotation)
+/*******************************************************************************
+
+********************************************************************************/
+AnnotationInternal::AnnotationInternal(const AnnotationParsenode* annotation)
 {
   GENV_ITEMFACTORY->createQName(theQName,
     "",
     annotation->get_qname()->get_prefix()->c_str(),
     annotation->get_qname()->get_localname()->c_str());
+
+  if (annotation->get_literals() != NULL)
+  {
+    for (unsigned int i=0; i<annotation->get_literals()->size(); i++)
+    {
+      exprnode* node = annotation->get_literals()->operator[](i).getp();
+
+      StringLiteral* str = dynamic_cast<StringLiteral*>(node);
+      if (str != NULL)
+      {
+        theLiteralList.push_back(new AnnotationLiteral(str));
+        continue;
+      }
+
+      NumericLiteral* num = dynamic_cast<NumericLiteral*>(node);
+      if (num != NULL)
+      {
+        theLiteralList.push_back(new AnnotationLiteral(num));
+        continue;
+      }
+    }
+  }
+  else
+  {
+    rchandle<AnnotationLiteral> literal_h = new AnnotationLiteral((AnnotationLiteral*)NULL);
+    GENV_ITEMFACTORY->createBoolean(literal_h->theLiteral, true);
+    theLiteralList.push_back(literal_h.release());
+  }
 }
 
-store::Item* Annotation::getQName() const
+const store::Item* AnnotationInternal::getQName() const
 {
   return theQName.getp();
 }
 
-void Annotation::serialize(::zorba::serialization::Archiver& ar)
+unsigned int AnnotationInternal::getLiteralsCount() const
 {
-  ar & theQName;
+  return theLiteralList.size();
 }
 
+const AnnotationLiteral* AnnotationInternal::getLiteral(unsigned int index) const
+{
+  if (index < theLiteralList.size())
+    return theLiteralList[index];
+  else
+    return NULL;
+}
+
+void AnnotationInternal::serialize(::zorba::serialization::Archiver& ar)
+{
+  ar & theQName;
+  ar & theLiteralList;
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
 AnnotationList::AnnotationList(const AnnotationListParsenode* annotations)
 {
   if (annotations != NULL)
-    for (unsigned int i=0; annotations != NULL && i<annotations->size(); i++)
-      theAnnotationList.push_back(new Annotation(annotations->operator[](i)));
+  {
+    for (unsigned int i=0; i<annotations->size(); i++)
+      if (annotations->operator[](i) != NULL)
+        theAnnotationList.push_back(new AnnotationInternal(annotations->operator[](i)));
+  }
 }
 
-const Annotation* AnnotationList::getAnnotation(unsigned int index) const
+const AnnotationInternal* AnnotationList::getAnnotation(unsigned int index) const
 {
   if (index < theAnnotationList.size())
     return theAnnotationList[index];

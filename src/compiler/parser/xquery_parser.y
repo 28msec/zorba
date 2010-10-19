@@ -2189,37 +2189,6 @@ FunctionDecl
             static_cast<FunctionDecl*>($3)->set_annotations(static_cast<AnnotationListParsenode*>($2));
             $$ = $3;
         }
-        /* TODO: delete
-    |   DECLARE NONDETERMINISTIC FunctionDecl2
-        {
-            FunctionDecl* fd = dynamic_cast<FunctionDecl*>($3);
-            if (fd->get_kind() != ParseConstants::fn_extern &&
-                fd->get_kind() != ParseConstants::fn_extern_sequential &&
-                fd->get_kind() != ParseConstants::fn_extern_update)
-            {
-              delete $3;
-              error(@$, "Only external functions may be declared nondeterministic");
-              YYERROR;
-            }
-            fd->setComment( SYMTAB($1) );
-            fd->set_deterministic(false);
-            $$ = $3;
-        }
-    |   DECLARE DETERMINISTIC FunctionDecl2
-        {
-            FunctionDecl* fd = dynamic_cast<FunctionDecl*>($3);
-            if (fd->get_kind() != ParseConstants::fn_extern &&
-                fd->get_kind() != ParseConstants::fn_extern_sequential &&
-                fd->get_kind() != ParseConstants::fn_extern_update)
-            {
-              delete $3;
-              error(@$, "Only external functions may be declared deterministic");
-              YYERROR;
-            }
-            fd->setComment( SYMTAB($1) );
-            $$ = $3;
-        }
-        */
   ;
 
 FunctionDecl2 :

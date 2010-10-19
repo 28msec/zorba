@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -359,6 +359,11 @@ namespace zorbac {
         // M1: such that each module directly depends on the next
         // module in the sequence (informally, if case M1: depends on
         // itself through some chain of module dependencies.)
+      case XQST0106:
+        // It is a static error if a function's annotations contain more than one
+        // annotation named %private or %public.
+        // It is a static error if a function's annotations contain more than one
+        // annotation named %deterministic or %nondeterministic.
 
         return XQC_STATIC_ERROR;
 
@@ -590,37 +595,37 @@ namespace zorbac {
         // Input value too large for decimal.
       case FOCA0002:
         // Invalid lexical value.
-      case FOCA0003: 
+      case FOCA0003:
         // Input value too large for integer.
-      case FOCA0005: 
+      case FOCA0005:
         // NaN supplied as float/double value.
-      case FOCA0006: 
+      case FOCA0006:
         // String to be cast to decimal has too many digits of precision.
-      case FOCH0001: 
+      case FOCH0001:
         // Code point not valid.
-      case FOCH0002: 
+      case FOCH0002:
         // Unsupported collation.
-      case FOCH0003: 
+      case FOCH0003:
         // Unsupported normalization form.
-      case FOCH0004: 
+      case FOCH0004:
         // Collation does not support collation units.
 
         return XQC_INVALID_ARGUMENT;
 
 
-      case FODC0001: 
+      case FODC0001:
         // No context document.
 
         return XQC_NO_CURRENT_ITEM;
 
 
-      case FODC0002: 
+      case FODC0002:
         // Error retrieving resource.
 
         return XQC_DYNAMIC_ERROR;
 
 
-      case FODC0003: 
+      case FODC0003:
         // Function stability not defined.
 
 
@@ -629,59 +634,59 @@ namespace zorbac {
         return XQC_INTERNAL_ERROR;
 
 
-      case FODC0004: 
+      case FODC0004:
         // Invalid argument to fn:collection.
-      case FODC0005: 
+      case FODC0005:
         // Invalid argument to fn:doc or fn:doc-available.
 
         return XQC_INVALID_ARGUMENT;
 
 
-      case FODT0001: 
+      case FODT0001:
         //  = 140, //Overflow/underflow in date/time operation.
-      case FODT0002: 
+      case FODT0002:
         // Overflow/underflow in duration operation.
 
         return XQC_DYNAMIC_ERROR;
 
 
-      case FODT0003: 
+      case FODT0003:
         // Invalid timezone value.
-      case FONS0004: 
+      case FONS0004:
         // No namespace found for prefix.
-      case FONS0005: 
+      case FONS0005:
         // Base-uri not defined in the static context.
-      case FORG0001: 
+      case FORG0001:
         // Invalid value for cast/constructor.
-      case FORG0002: 
+      case FORG0002:
         // Invalid argument to fn:resolve-uri().
-      case FORG0003: 
+      case FORG0003:
         // fn:zero-or-one called with a sequence containing more than one item.
-      case FORG0004: 
+      case FORG0004:
         // fn:one-or-more called with a sequence containing no items.
-      case FORG0005: 
+      case FORG0005:
         // fn:exactly-one called with a sequence containing zero or
         // more than one item.
-      case FORG0006: 
+      case FORG0006:
         // Invalid argument type.
-      case FORG0008: 
+      case FORG0008:
         // Both arguments to fn:dateTime have a specified timezone.
-      case FORG0009: 
+      case FORG0009:
         // Error in resolving a relative URI against a base URI in
         // fn:resolve-uri.
 
         return XQC_INVALID_ARGUMENT;
 
 
-      case FORX0001: 
+      case FORX0001:
         // Invalid regular expression flags
-      case FORX0002: 
+      case FORX0002:
         // Invalid regular expression.
-      case FORX0003: 
+      case FORX0003:
         // Regular expression matches zero-length string.
-      case FORX0004: 
+      case FORX0004:
         // Invalid replacement string.
-      case FOTY0012: 
+      case FOTY0012:
         // Argument node does not have a typed value.
 
         return XQC_INVALID_ARGUMENT;
@@ -966,7 +971,7 @@ namespace zorbac {
       case XDST0033_INDEX_NON_SIMPLE_EXPR:
       case XDST0034_INDEX_CANNOT_DO_AUTOMATIC_MAINTENANCE:
 
-      case XDST0041_IC_IS_ALREADY_DECLARED: 
+      case XDST0041_IC_IS_ALREADY_DECLARED:
       case XDST0042_MULTI_VALUED_IC_KEY:
       case XDST0043_NON_ATOMIC_IC_KEY:
       case XDST0044_IC_DECL_IN_MAIN_MODULE:
@@ -986,8 +991,8 @@ namespace zorbac {
       case XDDY0010_COLLECTION_CONST_NODE_UPDATE:
       case XDDY0011_COLLECTION_NODE_NOT_FOUND:
 
-      case XDDY0031_IC_IS_NOT_DECLARED: 
-      case XDDY0032_IC_IS_NOT_ACTIVATED: 
+      case XDDY0031_IC_IS_NOT_DECLARED:
+      case XDDY0032_IC_IS_NOT_ACTIVATED:
       case XDDY0033_IC_NOT_MET:
 
         return XQC_INVALID_ARGUMENT;

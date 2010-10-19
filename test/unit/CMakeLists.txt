@@ -40,16 +40,12 @@ CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/collection2.xqlib ${CMAKE_CURRENT_BIN
 IF(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
-    itemfactory.cpp
-    xmldatamanager.cpp
     uri.cpp
     multiple_runs.cpp
     runnable.cpp
     plan_serializer.cpp
     call_stack.cpp
-    test_static_context.cpp
     external_function.cpp
-    serializer.cpp
     no_folding.cpp
     debug_iter_serialization.cpp
     ordpath_big.cpp
@@ -60,14 +56,10 @@ IF(WIN32)
 ELSE(WIN32)
   CREATE_TEST_SOURCELIST(UnitTests
     UnitTests.cpp
-    itemfactory.cpp
-    xmldatamanager.cpp
     uri.cpp
     plan_serializer.cpp
     call_stack.cpp
-    test_static_context.cpp
     external_function.cpp
-    serializer.cpp
     no_folding.cpp
     debug_iter_serialization.cpp
     ordpath_big.cpp

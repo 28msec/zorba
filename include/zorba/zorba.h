@@ -4,7 +4,7 @@
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -41,10 +41,10 @@ namespace zorba {
 /**
  * The Zorba class is the single point of access to the %Zorba engine.
  * There exists one instance of the Zorba class per process.
- * It can be used to (1) create and compile queries, (2) create static contexts, 
+ * It can be used to (1) create and compile queries, (2) create static contexts,
  * (3) provides access to the XmlDataManager, and (4) provides access to the ItemFactory.
  */
-class ZORBA_DLL_PUBLIC Zorba 
+class ZORBA_DLL_PUBLIC Zorba
 {
  public:
 
@@ -61,12 +61,12 @@ class ZORBA_DLL_PUBLIC Zorba
    * @return Zorba the singleton Zorba object
    *
    */
-  static Zorba* 
+  static Zorba*
   getInstance(void* store);
 
   /** \brief Get information about the used version of %Zorba.
    *
-   * @return Version informatino about the used %Zorba version.
+   * @return Version information about the used %Zorba version.
    */
   static const Version&
   version();
@@ -90,11 +90,11 @@ class ZORBA_DLL_PUBLIC Zorba
    * After shutdown has been called, any calls to zorba are invalid.
    *
    * getInstance may be used to reinitialize the engine.
-   * 
+   *
    */
-  virtual void 
+  virtual void
   shutdown() = 0;
-  
+
   /** \brief Creates an XQuery object.
    *
    * This methods creates an XQuery object without implicitliy assigning it
@@ -110,7 +110,7 @@ class ZORBA_DLL_PUBLIC Zorba
    */
   virtual XQuery_t
   createQuery(ErrorHandler* aErrorHandler = 0) = 0;
-      
+
   /** \brief Creates and compiles an XQuery object.
    *
    * This methods creates an XQuery object and compiles the query string
@@ -120,7 +120,7 @@ class ZORBA_DLL_PUBLIC Zorba
    * an ErrorHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
    * If not ErrorHandler is given, exceptions are thrown for each of these errors.
-   * 
+   *
    * @param aQuery the query string for the new XQuery object.
    * @param aErrorHandler the ErrorHandler to which errors should be reported.
    * @return XQuery the newly created and compiled XQuery object.
@@ -138,7 +138,7 @@ class ZORBA_DLL_PUBLIC Zorba
    * an ErrorHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
    * If not ErrorHandler is given, exceptions are thrown for each of these errors.
-   * 
+   *
    * @param aQuery the query string for the new XQuery object.
    * @param aContext the StaticContext that contains information used for compiling the query.
    * @param aErrorHandler the ErrorHandler to which errors should be reported.
@@ -146,7 +146,7 @@ class ZORBA_DLL_PUBLIC Zorba
    */
   virtual XQuery_t
   compileQuery(const String& aQuery,
-               const StaticContext_t& aContext, 
+               const StaticContext_t& aContext,
                ErrorHandler* aErrorHandler = 0) = 0;
 
   /** \brief Creates and compiles an XQuery object using the given CompilerHints.
@@ -159,7 +159,7 @@ class ZORBA_DLL_PUBLIC Zorba
    * an ErrorHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
    * If not ErrorHandler is given, exceptions are thrown for each of these errors.
-   * 
+   *
    * @param aQuery the query string for the new XQuery object.
    * @param aCompilerHints the CompilerHints used to compile the query.
    * @param aErrorHandler the ErrorHandler to which errors should be reported.
@@ -167,9 +167,9 @@ class ZORBA_DLL_PUBLIC Zorba
    */
   virtual XQuery_t
   compileQuery(const String& aQuery,
-               const Zorba_CompilerHints_t& aCompilerHints, 
+               const Zorba_CompilerHints_t& aCompilerHints,
                ErrorHandler* aErrorHandler = 0) = 0;
-  
+
   /** \brief Creates and compiles an XQuery object using the given
    * CompilerHints and StaticContext.
    *
@@ -182,7 +182,7 @@ class ZORBA_DLL_PUBLIC Zorba
    * an ErrorHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
    * If not ErrorHandler is given, exceptions are thrown for each of these errors.
-   * 
+   *
    * @param aQuery the query string for the new XQuery object.
    * @param aContext the StaticContext that contains information used for compiling the query.
    * @param aCompilerHints the CompilerHints used to compile the query.
@@ -191,7 +191,7 @@ class ZORBA_DLL_PUBLIC Zorba
    */
   virtual XQuery_t
   compileQuery(const String& aQuery,
-               const StaticContext_t& aContext, 
+               const StaticContext_t& aContext,
                const Zorba_CompilerHints_t& aCompilerHints,
                ErrorHandler* aErrorHandler = 0) = 0;
 
@@ -204,14 +204,14 @@ class ZORBA_DLL_PUBLIC Zorba
    * an ErrorHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
    * If not ErrorHandler is given, exceptions are thrown for each of these errors.
-   * 
+   *
    * @param aQuery the input stream providing the query.
    * @param aErrorHandler the ErrorHandler to which errors should be reported.
    * @return XQuery the newly created and compiled XQuery object.
    */
   virtual XQuery_t
   compileQuery(std::istream& aQuery, ErrorHandler* aErrorHandler = 0) = 0;
-  
+
   /** \brief Creates and compiles an XQuery object using a StaticContext.
    *
    * This methods creates an XQuery object and compiles the query that is
@@ -223,7 +223,7 @@ class ZORBA_DLL_PUBLIC Zorba
    * an ErrorHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
    * If not ErrorHandler is given, exceptions are thrown for each of these errors.
-   * 
+   *
    * @param aQuery the input stream providing the query.
    * @param aContext the StaticContext that contains information used for compiling the query.
    * @param aErrorHandler the ErrorHandler to which errors should be reported.
@@ -231,10 +231,10 @@ class ZORBA_DLL_PUBLIC Zorba
    */
   virtual XQuery_t
   compileQuery(std::istream& aQuery,
-               const StaticContext_t& aContext, 
+               const StaticContext_t& aContext,
                ErrorHandler* aErrorHandler = 0) = 0;
 
-  /** \brief Creates and compiles an XQuery object using the given CompilerHints. 
+  /** \brief Creates and compiles an XQuery object using the given CompilerHints.
    *
    * This methods creates an XQuery object and compiles the query that is
    * passed to this method as an input stream. Compilation and optimization
@@ -244,7 +244,7 @@ class ZORBA_DLL_PUBLIC Zorba
    * an ErrorHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
    * If not ErrorHandler is given, exceptions are thrown for each of these errors.
-   * 
+   *
    * @param aQuery the input stream providing the query.
    * @param aCompilerHints the CompilerHints used to compile the query.
    * @param aErrorHandler the ErrorHandler to which errors should be reported.
@@ -252,11 +252,11 @@ class ZORBA_DLL_PUBLIC Zorba
    */
   virtual XQuery_t
   compileQuery(std::istream& aQuery,
-               const Zorba_CompilerHints_t& aCompilerHints, 
+               const Zorba_CompilerHints_t& aCompilerHints,
                ErrorHandler* aErrorHandler = 0) = 0;
 
   /** \brief Creates and compiles an XQuery object using the given
-   * CompilerHints and StaticContext. 
+   * CompilerHints and StaticContext.
    *
    * This methods creates an XQuery object and compiles the query that is
    * passed to this method as an input stream. Compilation and optimization
@@ -267,7 +267,7 @@ class ZORBA_DLL_PUBLIC Zorba
    * an ErrorHandler is passed as parameter, each error that occurs during
    * compiling or executing the query, is reported to the passed error handler.
    * If not ErrorHandler is given, exceptions are thrown for each of these errors.
-   * 
+   *
    * @param aQuery the input stream providing the query.
    * @param aContext the StaticContext that contains information used for compiling the query.
    * @param aCompilerHints the CompilerHints used to compile the query.
@@ -276,23 +276,23 @@ class ZORBA_DLL_PUBLIC Zorba
    */
   virtual XQuery_t
   compileQuery(std::istream& aQuery,
-               const StaticContext_t& aContext, 
+               const StaticContext_t& aContext,
                const Zorba_CompilerHints_t& aCompilerHints,
                ErrorHandler* aErrorHandler = 0) = 0;
 
   /** \brief Creates a new StaticContext.
-   * 
+   *
    * The method returns a StaticContext object that can be used
    * for compiling a query. Instances of the StaticContext class are
    * returned as a smart pointer.
    * That is, objects of type StaticContext_t are reference counted object
    * to an dynamically allocated StaticContext object. Hence, each object can h
-   * have multiple owners. The object is deleted if nobody holds on to an StaticContext_t 
+   * have multiple owners. The object is deleted if nobody holds on to an StaticContext_t
    * object anymore.
    *
    * Optionally, this method takes an ErrorHandler as parameter. In the case
    * an ErrorHandler is passed as parameter, each error that occurs during
-   * setting or getting information out of the StaticContext, is reported to the passed 
+   * setting or getting information out of the StaticContext, is reported to the passed
    * ErrorHandler.
    * If not ErrorHandler is given, exceptions are thrown for each of these errors.
    *
@@ -321,7 +321,7 @@ class ZORBA_DLL_PUBLIC Zorba
 
 } /* namespace zorba */
 
-/** 
+/**
  * \example simple.cpp
  *  This is a simple example that demonstrate how to create, compile, and execute queries.
  *
@@ -330,17 +330,17 @@ class ZORBA_DLL_PUBLIC Zorba
  *  to load files, create collection, etc.
  *
  * \example context.cpp
- *  This file demonstrates how the ItemFactory can be used to create new Items and 
+ *  This file demonstrates how the ItemFactory can be used to create new Items and
  *  bind the Items to external variables in the dynamic context of a query.
  *
  * \example errors.cpp
- *  This file demonstrates how error management and handling is done in Zorba. 
+ *  This file demonstrates how error management and handling is done in Zorba.
  *
  * \example serialization.cpp
  * This file shows examples of how to serialize query results, for example as XML.
  *
  * \example sax2.cpp
- * An example showing XML serialization that is performed using SAX2. 
+ * An example showing XML serialization that is performed using SAX2.
  *
  * \example external_functions.cpp
  * This file shows some simple examples of external functions.

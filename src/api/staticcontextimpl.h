@@ -1,12 +1,12 @@
 /*
  * Copyright 2006-2008 The FLWOR Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,7 +16,7 @@
 #ifndef ZORBA_API_STATIC_CONTEXT_IMPL_H
 #define ZORBA_API_STATIC_CONTEXT_IMPL_H
 
-#include <zorba/typeident.h> 
+#include <zorba/typeident.h>
 #include <zorba/static_context.h>
 #include <zorba/api_shared_types.h>
 #include <map>
@@ -49,7 +49,7 @@ class StaticContextImpl : public StaticContext
   friend class Unmarshaller; // needs to get the context out of this class
   friend class XQueryImpl;   // needed for accessing theSctxMap
 
- protected:
+protected:
   static_context_t                    theCtx;
 
   std::map<short, static_context_t>   theSctxMap;
@@ -63,10 +63,10 @@ class StaticContextImpl : public StaticContext
   std::map<SchemaURIResolver*,
            SchemaURIResolverWrapper*> theSchemaWrappers;
 
- private:
+private:
   StaticContextImpl(const StaticContextImpl&);
 
- public:
+public:
   StaticContextImpl(ErrorHandler*);
 
   StaticContextImpl(static_context*, ErrorHandler*);
@@ -76,77 +76,77 @@ class StaticContextImpl : public StaticContext
   void loadProlog(const String&, const Zorba_CompilerHints_t &hints);
 
   StaticContext_t createChildContext() const;
-      
+
   bool addNamespace( const String& prefix, const String& URI );
-      
+
   String getNamespaceURIByPrefix( const String& prefix ) const;
 
   bool setDefaultElementAndTypeNamespace( const String& URI );
-      
+
   String getDefaultElementAndTypeNamespace( ) const;
 
   bool setDefaultFunctionNamespace( const String& URI );
-      
-  virtual String   
+
+  virtual String
   getDefaultFunctionNamespace( ) const;
 
-  virtual void   
+  virtual void
   addCollation( const String& URI );
 
-  virtual void   
+  virtual void
   setDefaultCollation( const String& URI );
 
-  virtual String 
+  virtual String
   getDefaultCollation() const;
 
-  virtual bool   
+  virtual bool
   setXQueryVersion(xquery_version_t mode);
 
-  virtual xquery_version_t  
+  virtual xquery_version_t
   getXQueryVersion() const;
 
-  virtual bool   
+  virtual bool
   setXPath1_0CompatibMode( xpath1_0compatib_mode_t mode );
 
-  virtual xpath1_0compatib_mode_t  
+  virtual xpath1_0compatib_mode_t
   getXPath1_0CompatibMode( ) const;
 
-  virtual bool   
+  virtual bool
   setConstructionMode( construction_mode_t );
 
-  virtual construction_mode_t  
+  virtual construction_mode_t
   getConstructionMode( ) const;
 
-  virtual bool   
+  virtual bool
   setOrderingMode( ordering_mode_t );
 
-  virtual ordering_mode_t  
+  virtual ordering_mode_t
   getOrderingMode( ) const;
 
-  virtual bool   
+  virtual bool
   setDefaultOrderForEmptySequences( order_empty_mode_t );
 
-  virtual order_empty_mode_t   
+  virtual order_empty_mode_t
   getDefaultOrderForEmptySequences( ) const;
 
-  virtual bool   
+  virtual bool
   setBoundarySpacePolicy( boundary_space_mode_t );
 
-  virtual boundary_space_mode_t  
+  virtual boundary_space_mode_t
   getBoundarySpacePolicy( ) const;
 
-  virtual bool   
-  setCopyNamespacesMode( preserve_mode_t preserve, 
+  virtual bool
+  setCopyNamespacesMode( preserve_mode_t preserve,
                          inherit_mode_t inherit );
 
-  virtual void   
-  getCopyNamespacesMode( preserve_mode_t& preserve, 
+  virtual void
+  getCopyNamespacesMode( preserve_mode_t& preserve,
                          inherit_mode_t& inherit ) const;
 
   virtual bool
   setBaseURI( const String& baseURI );
 
-  virtual String   
+  virtual String
   getBaseURI( ) const;
 
   virtual validation_mode_t
@@ -155,7 +155,7 @@ class StaticContextImpl : public StaticContext
   virtual void
   setRevalidationMode(validation_mode_t aMode);
 
-  virtual bool 
+  virtual bool
   registerModule(ExternalModule* aModule);
 
   virtual void
@@ -206,11 +206,14 @@ class StaticContextImpl : public StaticContext
   virtual void
   findFunctions(const Item& aQName, std::vector<Function_t>& aFunctions) const;
 
-  void
+  virtual void
   disableFunction(const Function_t& aFunction);
 
-  void
+  virtual void
   disableFunction(const Item& aQName, int arity);
+
+  virtual void
+  getFunctionAnnotations(const Item& aQName, int arity, std::vector<Annotation_t>& aAnnotations) const;
 
   virtual void
   setContextItemStaticType(TypeIdentifier_t type);

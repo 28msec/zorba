@@ -705,6 +705,24 @@ AnnotationListParsenode::AnnotationListParsenode(const QueryLoc& loc_,
   push_back(annotation);
 }
 
+bool AnnotationListParsenode::has_deterministic() const
+{
+  for (unsigned int i=0; i<annotations_hv.size(); i++)
+    if (annotations_hv[i]->get_qname()->get_localname()->equals(xqpString("deterministic").theStrStore))
+      return true;
+
+  return false;
+}
+
+bool AnnotationListParsenode::has_nondeterministic() const
+{
+  for (unsigned int i=0; i<annotations_hv.size(); i++)
+    if (annotations_hv[i]->get_qname()->get_localname()->equals(xqpString("nondeterministic").theStrStore))
+      return true;
+
+  return false;
+}
+
 void AnnotationListParsenode::accept( parsenode_visitor &v ) const
 {
   BEGIN_VISITOR();
@@ -765,6 +783,7 @@ void VarDecl::accept( parsenode_visitor &v ) const
   BEGIN_VISITOR();
   ACCEPT(theType);
   ACCEPT(initexpr_h);
+  ACCEPT(annotations_h);
   END_VISITOR();
 }
 
@@ -847,6 +866,7 @@ void FunctionDecl::accept( parsenode_visitor &v ) const
   ACCEPT (paramlist_h);
   ACCEPT (return_type_h);
   ACCEPT (body_h);
+  ACCEPT (annotations_h);
   END_VISITOR();
 }
 
@@ -3312,13 +3332,15 @@ void PredicateList::accept( parsenode_visitor &v ) const
 Literal::Literal(exprnode* expression)
   :
   exprnode(expression->get_location()),
-  type(0)
+  numeric_literal(NULL),
+  string_literal(NULL),
+  type((LITERAL_TYPE)0)
 {
   StringLiteral* sl = dynamic_cast<StringLiteral*>(expression);
   if (sl != NULL)
   {
     string_literal = sl;
-    type = 1;
+    type = (LITERAL_TYPE)1;
   }
   else
     numeric_literal = expression;
