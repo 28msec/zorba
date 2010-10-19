@@ -73,7 +73,7 @@ protected:
   AnnotationLiteral(const NumericLiteral* numericLiteral);
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(AnnotationLiteral);
+  SERIALIZABLE_CLASS(AnnotationLiteral);
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationLiteral, SimpleRCObject)
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -97,7 +97,7 @@ protected:
   AnnotationInternal(const AnnotationParsenode* annotation);      // used by AnnotationList
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(AnnotationInternal);
+  SERIALIZABLE_CLASS(AnnotationInternal);
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationInternal, SimpleRCObject)
   void serialize(::zorba::serialization::Archiver& ar);
 
@@ -119,7 +119,7 @@ protected:
   std::vector<rchandle<AnnotationInternal> > theAnnotationList;
 
 public:
-  SERIALIZABLE_ABSTRACT_CLASS(AnnotationList);
+  SERIALIZABLE_CLASS(AnnotationList);
   SERIALIZABLE_CLASS_CONSTRUCTOR2(AnnotationList, SimpleRCObject)
   void serialize(::zorba::serialization::Archiver& ar);
 

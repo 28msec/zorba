@@ -103,7 +103,7 @@ void function::serialize(::zorba::serialization::Archiver& ar)
   ar & theSignature;
   SERIALIZE_ENUM(FunctionConsts::FunctionKind, theKind);
   ar & theFlags;
-  // ar & theAnnotationList;  // TODO: this line should be enabled
+  ar & theAnnotationList;
 }
 
 
