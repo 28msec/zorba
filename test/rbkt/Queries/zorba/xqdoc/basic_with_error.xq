@@ -1,5 +1,5 @@
 import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
-import schema namespace xqds = "http://www.xqdoc.org/1.0" at "xqdoc-1.0.xsd";
+import schema namespace xqds = "http://www.xqdoc.org/1.0";
 
 try { 
   xqd:xqdoc("gdata_error.xqlib")

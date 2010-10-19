@@ -70,6 +70,7 @@ ADD_CUSTOM_TARGET(xqdoc
     -e "\"modulesPath:=${CMAKE_SOURCE_DIR}/modules\""
     -e "\"xqdocBuildPath:=${CMAKE_CURRENT_BINARY_DIR}\""
     -e "\"indexHtmlPath:=${CMAKE_CURRENT_BINARY_DIR}/templates/index.html\""
+    --module-path "\"${CMAKE_CURRENT_SOURCE_DIR}/src\""
     -o "\"${CMAKE_CURRENT_BINARY_DIR}/xhtml/index.html\""
   DEPENDS
     ${XQDOC_DEPENDS}

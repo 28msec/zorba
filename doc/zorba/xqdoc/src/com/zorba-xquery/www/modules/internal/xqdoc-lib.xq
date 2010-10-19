@@ -1,11 +1,11 @@
-module namespace doc2html = "http://www.zorba-xquery.com/modules/xqdoc2html";
+module namespace doc2html = "http://www.zorba-xquery.com/modules/internal/xqdoc-lib";
 
 import module namespace file = "http://www.zorba-xquery.com/modules/file";
 import module namespace xqd = "http://www.zorba-xquery.com/modules/xqdoc";
 
-import module namespace xqdg = "http://www.zorba-xquery.com/modules/internal/xqdoc-xhtml" at "xqdoc-xhtml.xq";
+import module namespace xqdg = "http://www.zorba-xquery.com/modules/internal/xqdoc-xhtml";
 
-import schema namespace xqdoc = "http://www.xqdoc.org/1.0" at "xqdoc-1.0.xsd";
+import schema namespace xqdoc = "http://www.xqdoc.org/1.0";
 
 declare copy-namespaces preserve, inherit;
 
