@@ -29,6 +29,14 @@
 	<xsd:simpleType name="uri">
 		<xsd:restriction base="xsd:string"/>
 	</xsd:simpleType>
+  
+  <xsd:complexType name="uriImport">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="isSchema" type="xsd:boolean"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
 
   <!-- Simple type for defining the names associated
        with a module. -->
@@ -68,7 +76,8 @@
 	     @error ....... error
 	     @deprecated .. deprecated
 	     @since ....... since
-	     @see ......... see -->	  
+	     @see ......... see
+       @library...... library -->	  
 	<xsd:complexType name="comment">
 		<xsd:sequence>
 			<xsd:element name="description" type="mixed-text" minOccurs="0"/>
@@ -80,6 +89,7 @@
 			<xsd:element name="deprecated" type="mixed-text" minOccurs="0"/>
 			<xsd:element name="see" type="mixed-text" minOccurs="0" maxOccurs="unbounded"/>
 			<xsd:element name="since" type="mixed-text" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element name="library" type="mixed-text" minOccurs="0" maxOccurs="unbounded"/>
 		</xsd:sequence>
 	</xsd:complexType>
 
@@ -153,7 +163,7 @@
 			<xsd:element name="import" minOccurs="0" maxOccurs="unbounded">
 				<xsd:complexType>
 					<xsd:sequence>
-						<xsd:element name="uri" type="uri"/>
+						<xsd:element name="uri" type="uriImport"/>
 						<xsd:element name="comment" type="comment" minOccurs="0"/>
 					</xsd:sequence>
 				</xsd:complexType>

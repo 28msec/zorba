@@ -29,6 +29,11 @@ declare variable $doc2html:stepBacks as xs:string := "../../../../../../../../..
  :)
 declare variable $doc2html:indexCollector := <modules/>;
 
+(:~
+ : This variable contains all the schemas imported bythe modules
+ :)
+declare variable $doc2html:schemasCollector := <schemas/>;
+
 declare function doc2html:getFileName($moduleURI as xs:string) as xs:string
 {
     replace(
@@ -89,7 +94,6 @@ SUCCESS: ", $moduleUri, " (", ()(:$xqdocFileName:), ")");
 FAILED: ", $moduleUri, " (", ()(:$xqdocFileName:), ")")
     }
 };
-
 
 (:~
  : This function removes the internal functionality from an XQDoc XML node.
@@ -166,7 +170,7 @@ declare sequential function doc2html:gatherModules(
       let $moduleDoc := $xqdoc/xqdoc:module
       let $moduleUri := $moduleDoc/xqdoc:uri
       return block {
-        doc2html:collectModule($moduleDoc, $xhtmlRelativeFilePath);
+        doc2html:collectModule($moduleDoc, $xhtmlRelativeFilePath, $doc2html:indexCollector);
         concat("
 SUCCESS: ", $moduleUri, " (", $xmlFilePath, ")");
       }
@@ -176,11 +180,11 @@ FAILED: ", $xmlFilePath)
     }  
 };
 
-declare sequential function doc2html:collectModule ($module, $relativeFileName as xs:string) {
+declare sequential function doc2html:collectModule ($module, $relativeFileName as xs:string, $collector) {
     let $moduleName := $module/xqdoc:name,
         $moduleUri := $module/xqdoc:uri
     return
-        insert node <module uri="{$moduleUri/text()}" file="{$relativeFileName}" /> as last into $doc2html:indexCollector;
+        insert node <module uri="{$moduleUri/text()}" file="{$relativeFileName}" /> as last into $collector;
     ();
 };    
 
@@ -464,7 +468,8 @@ declare sequential function doc2html:main(
     error()
   ;
   
-  (: generate the XQDoc XHTML for all the modules :)
+   
+  (: generate the XQDoc XHTML for all the modules :) 
   let $absoluteXhtmlDir := concat($xqdocBuildPath, "/xhtml")
   return
   if (file:mkdirs($absoluteXhtmlDir, false())) then
@@ -482,4 +487,5 @@ declare sequential function doc2html:main(
   let $doc := doc2html:generateIndexHtml($indexHtmlPath, $menu, $modules)
   return doc2html:configure-xhtml($doc/*:html, 0, $modulePath)
   ;
+ 
 };

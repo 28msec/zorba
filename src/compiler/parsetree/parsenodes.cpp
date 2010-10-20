@@ -518,7 +518,7 @@ SchemaImport::SchemaImport(
     const std::string& uri,
     rchandle<URILiteralList> at_list)
   :
-  parsenode(loc),
+  XQDocumentable(loc),
   thePrefix(prefix),
   theUri(new xqpStringStore(uri)),
   theAtList(at_list)

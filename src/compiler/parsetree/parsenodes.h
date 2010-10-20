@@ -732,7 +732,7 @@ public:
   [23] SchemaImport ::= "import" "schema" SchemaPrefix? URILiteral
                         ("at"  URILiteralList)?
 ********************************************************************************/
-class SchemaImport : public parsenode
+class SchemaImport : public XQDocumentable
 {
 protected:
   rchandle<SchemaPrefix>   thePrefix;

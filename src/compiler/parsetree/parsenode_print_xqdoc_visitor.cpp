@@ -544,8 +544,8 @@ XQDOC_NO_BEGIN_TAG (ModuleImport)
 
 void end_visit(const ModuleImport& n, void*)
 {
-  store::Item_t lImportQName, lUriQName;
-  store::Item_t lImportElem, lUriElem, lUriText;
+  store::Item_t lImportQName, lUriQName, lTypeQName;
+  store::Item_t lImportElem, lUriElem, lUriText, lTypeAttr;
 
   theFactory->createQName(lImportQName, theXQDocNS, theXQDocPrefix, "import");
   theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
@@ -563,6 +563,15 @@ void end_visit(const ModuleImport& n, void*)
   xqpStringStore_t lUriString(new xqpStringStore(n.get_uri()->c_str()));
   theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
 
+  theFactory->createQName(lTypeQName, "", "", "isSchema");
+
+  store::Item_t lAttrValue;
+  xqpStringStore_t lAttrString(new xqpStringStore("false"));
+  theFactory->createString(lAttrValue, lAttrString);
+
+  theFactory->createAttributeNode(
+      lTypeAttr, lUriElem, -1, lTypeQName, lTypeName, lAttrValue);
+
   print_comment(lImportElem, n.getComment());
 
   // collect prefix -> uri mappings for properly
@@ -576,6 +585,38 @@ XQDOC_NO_BEGIN_TAG (SchemaImport)
 
 void end_visit(const SchemaImport& n, void*)
 {
+  store::Item_t lImportQName, lUriQName, lTypeQName;
+  store::Item_t lImportElem, lUriElem, lUriText, lTypeAttr;
+
+  theFactory->createQName(lImportQName, theXQDocNS, theXQDocPrefix, "import");
+  theFactory->createQName(lUriQName, theXQDocNS, theXQDocPrefix, "uri");
+
+  store::Item_t lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lImportElem, theImports, -1, lImportQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  lTypeName = GENV_TYPESYSTEM.XS_UNTYPED_QNAME;
+  theFactory->createElementNode(
+      lUriElem, lImportElem, -1, lUriQName, lTypeName,
+      true, false, theNSBindings, theBaseURI);
+
+  xqpStringStore_t lUriString(new xqpStringStore(n.get_uri()->c_str()));
+  theFactory->createTextNode(lUriText, lUriElem, -1, lUriString);
+
+  theFactory->createQName(lTypeQName, "", "", "isSchema");
+
+  store::Item_t lAttrValue;
+  xqpStringStore_t lAttrString(new xqpStringStore("true"));
+  theFactory->createString(lAttrValue, lAttrString);
+
+  theFactory->createAttributeNode(
+      lTypeAttr, lUriElem, -1, lTypeQName, lTypeName, lAttrValue);
+
+  print_comment(lImportElem, n.getComment());
+
+  // collect prefix -> uri mappings for properly
+  // reporting function invocations (see FunctionCall)
   xqpStringStore_t lURI = n.get_uri();
   xqpStringStore_t lPrefix;
   if (!n.get_prefix()->get_default_bit()) {

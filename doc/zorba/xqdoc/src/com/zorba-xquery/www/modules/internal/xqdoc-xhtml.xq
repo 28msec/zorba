@@ -175,20 +175,29 @@ declare function xhtml:module-dependencies($xqdoc, $indexCollector) {
 
 declare function xhtml:imports($xqdoc, $indexCollector) {
   (
-  if (fn:count($xqdoc/xqdoc:imports/xqdoc:import) > 0) then
-    <p>This is a list of imported modules:<ul>
+  if (fn:count($xqdoc/xqdoc:imports/xqdoc:import//xqdoc:uri[@isSchema = "false"]) > 0) then
+    <p>Imported modules:<ul>
     {
-      for $import in $xqdoc/xqdoc:imports/xqdoc:import
-        return
-        if (exists($indexCollector/module[@uri=$import/xqdoc:uri/text()])) then
-          <li><a href="{$indexCollector/module[@uri=$import/xqdoc:uri/text()]/@file}">{string($import/xqdoc:uri/text())}</a></li>
+      for $import in $xqdoc/xqdoc:imports/xqdoc:import//xqdoc:uri[@isSchema = "false"]
+      return
+        if (exists($indexCollector/module[@uri=$import/text()])) then
+          <li><a href="{$indexCollector/module[@uri=$import/text()]/@file}">{string($import/text())}</a></li>
         else
-          string($import/xqdoc:uri/text())
+          <li>{string($import/text())}</li>
+    }
+    </ul></p>
+  else (),
+  if (fn:count($xqdoc/xqdoc:imports/xqdoc:import//xqdoc:uri[@isSchema = "true"]) > 0) then
+    <p>Imported schemas:<ul>
+    {
+      for $import in $xqdoc/xqdoc:imports/xqdoc:import//xqdoc:uri[@isSchema = "true"]
+      return
+          <li>{string($import/text())}</li>
     }
     </ul></p>
   else (),
   if (fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:*[(local-name(.) = ("library"))]) > 0) then
-    <p>This is the list of external C++ library dependencies:<ul>
+    <p>External C++ library dependencies:<ul>
       {
       for $library in $xqdoc/xqdoc:module/xqdoc:comment/xqdoc:*[(local-name(.) = ("library"))]
         return

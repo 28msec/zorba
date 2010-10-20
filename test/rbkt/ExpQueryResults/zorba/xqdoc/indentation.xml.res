@@ -6,7 +6,7 @@
   <xqdoc:module/>
   <xqdoc:imports>
     <xqdoc:import>
-      <xqdoc:uri>http://www.zorba-xquery.com/modules/xqdoc</xqdoc:uri>
+      <xqdoc:uri isSchema="false">http://www.zorba-xquery.com/modules/xqdoc</xqdoc:uri>
     </xqdoc:import>
   </xqdoc:imports>
   <xqdoc:variables/>
