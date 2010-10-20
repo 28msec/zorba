@@ -231,13 +231,15 @@ ExifFunction::evaluate(
   String lTag = ImageFunction::getOneStringArg(aArgs, 1);
   std::string lTagWithExif("EXIF:");
   lTagWithExif += lTag.c_str(); 
-  String lResult = lImage.attribute(lTagWithExif); 
-  if (lResult == "") {
+  Magick::Blob lBlob;
+  lImage.write(&lBlob); 
+  long lBlobLength = (long) lBlob.length();
+  std::string lExifValue = GetExifValue(lBlob.data(), &lBlobLength, lTagWithExif);
+  if (lExifValue == "") {
     return ItemSequence_t(new EmptySequence());
   }
   return ItemSequence_t(new SingletonItemSequence(
-      theModule->getItemFactory()->createString(lResult)));
-
+      theModule->getItemFactory()->createString(String(lExifValue)))); 
 }
 
 

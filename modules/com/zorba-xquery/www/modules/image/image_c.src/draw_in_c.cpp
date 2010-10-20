@@ -174,3 +174,21 @@ GetImageType(const void* aBlob, long* aLength) {
   return lResult;
 }
 
+
+
+std::string
+GetExifValue(const void* aBlob, long* aLength, std::string& aExifTag) {
+  MagickWandGenesis();                                                                                                           
+  MagickWand * lMagickWand  = NewMagickWand(); 
+  const size_t lLength = (size_t) *aLength;
+  MagickReadImageBlob(lMagickWand, aBlob, lLength);
+  char * lResult = MagickGetImageProperty(lMagickWand, aExifTag.c_str());
+  if (lResult == NULL) {
+  std::string lNothing("");
+  return lNothing;
+  }
+  std::string lStringResult (lResult);
+  return lStringResult;
+}
+
+

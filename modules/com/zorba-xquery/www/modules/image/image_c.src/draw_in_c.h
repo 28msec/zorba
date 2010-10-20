@@ -18,6 +18,9 @@ DrawText(const void* aBlob, long* aLength, std::string aText, double aX, double 
 char *
 GetImageType(const void* aBlob, long* aLength);
 
+std::string
+GetExifValue(const void* aBlob, long* aLength, std::string& aExifTag);
+
 
 template<class T>
   class ZorbaArrayAutoPointer
