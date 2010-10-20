@@ -4,7 +4,7 @@
  :
  : @author Daniel Thomas
  : @see http://www.zorba-xquery.com/modules/image/image
- : @see http://www.imagemagick.org/Magick++/
+ : @library <a href="http://www.imagemagick.org/Magick++/">Magick++ C++ Library</a>
  :)
 module namespace anim = 'http://www.zorba-xquery.com/modules/image/animation';
 import module namespace animschema = 'http://www.zorba-xquery.com/modules/image/animationschema';

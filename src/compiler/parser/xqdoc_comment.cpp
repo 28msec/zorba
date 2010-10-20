@@ -116,7 +116,7 @@ XQDocComment::parseAnnotation(const std::string& aLine)
     theDeprecated = true;
     theDeprecatedComment = lValue;
   } else if("author" == lName || "since" == lName ||
-      "see" == lName || "param" == lName || "error" == lName) {
+      "see" == lName || "param" == lName || "error" == lName || "library" == lName) {
     XQDocAnnotation lAnnotation(lName, lValue);
     theAnnotations.push_back(lAnnotation);
   }

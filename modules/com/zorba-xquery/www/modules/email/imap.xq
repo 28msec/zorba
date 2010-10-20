@@ -2,6 +2,7 @@
  : This module provides functions for accessing and manipulating imap mailservers.
  :
  : @author Daniel Thomas
+ : @library <a href="http://www.washington.edu/imap/">c‑client Library part of UW IMAP toolkit</a>
  :
  :)
 module namespace imap = 'http://www.zorba-xquery.com/modules/email/imap';

@@ -21,6 +21,7 @@
  :
  : @see http://www.expath.org/mod/http-client
  : @author Markus Pilman
+ : @library <a href="http://curl.haxx.se/">cURL Library</a>
  :
  :)
 module namespace httpclientimpl = 'http://expath.org/ns/httpclientimpl';

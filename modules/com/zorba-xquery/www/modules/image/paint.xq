@@ -4,6 +4,7 @@
  : Colors have to be in hexidecimal rgb  with leading '#', e.g. '#000000' for black.
  :
  : @author Daniel Thomas
+ : @library <a href="http://www.imagemagick.org/Magick++/">Magick++ C++ Library</a>
  :
  :)
 module namespace paint = 'http://www.zorba-xquery.com/modules/image/paint';

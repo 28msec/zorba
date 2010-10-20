@@ -9,6 +9,7 @@
  : SVG
  :
  : @author Daniel Thomas
+ : @library <a href="http://www.imagemagick.org/Magick++/">Magick++ C++ Library</a>
  :
  :)
 module namespace basic = 'http://www.zorba-xquery.com/modules/image/basic';

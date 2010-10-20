@@ -148,6 +148,7 @@
  : @see http://www.opengeospatial.org/standards/sfa
  : @see http://www.opengeospatial.org/standards/gml
  : @see http://trac.osgeo.org/geos/
+ : @library <a href="http://trac.osgeo.org/geos/">GEOS (Geometry Engine - Open Source)</a>
  :)
 module namespace zorba-geo = "http://www.zorba-xquery.com/modules/geo";
 

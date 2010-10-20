@@ -475,6 +475,7 @@
  : &lt;/schema&gt; <br /></pre><br />
  :
  : @author Sorin Nasoi
+ : @library <a href="http://www.washington.edu/imap/">c‑client Library part of UW IMAP toolkit</a>
  :
  :)
 module namespace smtp = "http://www.zorba-xquery.com/modules/email/smtp";

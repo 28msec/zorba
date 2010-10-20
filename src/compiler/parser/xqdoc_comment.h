@@ -34,6 +34,7 @@ namespace zorba {
     TYPE_DEPRECATED,
     TYPE_SEE,
     TYPE_SINCE,
+    TYPE_LIBRARY,
     TYPE_UNKNOWN
   };
 
@@ -67,6 +68,8 @@ namespace zorba {
           theType = TYPE_SEE;
         } else if(theName == "since") {
           theType = TYPE_SINCE;
+        } else if(theName == "library") {
+          theType = TYPE_LIBRARY;
         } else {
           theType = TYPE_UNKNOWN;
         }

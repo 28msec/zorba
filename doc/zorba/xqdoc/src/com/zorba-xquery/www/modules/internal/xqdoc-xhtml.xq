@@ -132,7 +132,7 @@ declare function xhtml:annotations($comment) {
 };
 
 declare function xhtml:annotationsModule($comment) {
-  let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated", "see")))]
+  let $annotations := $comment/xqdoc:*[not((local-name(.) = ("description", "param", "return", "error", "deprecated", "see", "library")))]
   return
     for $annotation in $annotations
     let $annName := local-name($annotation)
@@ -165,26 +165,38 @@ declare function xhtml:description($comment) {
 };
 
 declare function xhtml:module-dependencies($xqdoc, $indexCollector) {
-  
-    if (fn:count($xqdoc/xqdoc:imports/xqdoc:import) > 0) then
-      (<div class="section"><span class="section" id="module_dependencies">Module Dependencies</span></div>,
-      xhtml:imports($xqdoc, $indexCollector))
-    else
-      ()
-  
+  if (fn:count($xqdoc/xqdoc:imports/xqdoc:import) > 0 or
+      fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:*[(local-name(.) = ("library"))]) > 0) then
+    (<div class="section"><span class="section" id="module_dependencies">Module Dependencies</span></div>,
+    xhtml:imports($xqdoc, $indexCollector))
+  else
+    ()
 };
 
 declare function xhtml:imports($xqdoc, $indexCollector) {
-  <p>This is a list of imported modules:<ul>
-  {
-    for $import in $xqdoc/xqdoc:imports/xqdoc:import
-      return
-      if (exists($indexCollector/module[@uri=$import/xqdoc:uri/text()])) then
-        <li><a href="{$indexCollector/module[@uri=$import/xqdoc:uri/text()]/@file}">{string($import/xqdoc:uri/text())}</a></li>
-      else
-        string($import/xqdoc:uri/text())
-  }
-  </ul></p>
+  (
+  if (fn:count($xqdoc/xqdoc:imports/xqdoc:import) > 0) then
+    <p>This is a list of imported modules:<ul>
+    {
+      for $import in $xqdoc/xqdoc:imports/xqdoc:import
+        return
+        if (exists($indexCollector/module[@uri=$import/xqdoc:uri/text()])) then
+          <li><a href="{$indexCollector/module[@uri=$import/xqdoc:uri/text()]/@file}">{string($import/xqdoc:uri/text())}</a></li>
+        else
+          string($import/xqdoc:uri/text())
+    }
+    </ul></p>
+  else (),
+  if (fn:count($xqdoc/xqdoc:module/xqdoc:comment/xqdoc:*[(local-name(.) = ("library"))]) > 0) then
+    <p>This is the list of external C++ library dependencies:<ul>
+      {
+      for $library in $xqdoc/xqdoc:module/xqdoc:comment/xqdoc:*[(local-name(.) = ("library"))]
+        return
+         <li>{$library/node()}</li>
+      }
+    </ul></p>
+  else ()
+  )
 };
 
 declare function xhtml:module-description($module) {

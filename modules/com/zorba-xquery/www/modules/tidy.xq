@@ -23,7 +23,7 @@
  :
  :
  : @author Sorin Nasoi
- : @see <a href="http://tidy.sourceforge.net/">Tidy Library Project</a>
+ : @library <a href="http://tidy.sourceforge.net/">Tidy C++ Library</a>
  :
  :)
 module namespace tidy = "http://www.zorba-xquery.com/modules/tidy";

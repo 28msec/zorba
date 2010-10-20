@@ -66,6 +66,7 @@ private:
       list<XQDocAnnotation> lErrorAnn;
       list<XQDocAnnotation> lSeeAnn;
       list<XQDocAnnotation> lSinceAnn;
+      list<XQDocAnnotation> lLibraryAnn;
 
       for (lIt = lAnnotations.begin(); lIt != lAnnotations.end(); ++lIt) {
         const XQDocAnnotation lAnnotation = *lIt;
@@ -79,6 +80,8 @@ private:
           lAuthorAnn.push_back(lAnnotation);
         } else if (lAnnotation.getName() == "since") {
           lSinceAnn.push_back(lAnnotation);
+        } else if (lAnnotation.getName() == "library") {
+          lLibraryAnn.push_back(lAnnotation);
         }
       }
 
@@ -139,6 +142,12 @@ private:
       for (lIt = lSinceAnn.begin(); lIt != lSinceAnn.end(); ++lIt) {
         const XQDocAnnotation lAnnotation = *lIt;
         printCommentFragment(lCommentElem, lAnnotation.getValue(), "since");
+      }
+
+      // library
+      for (lIt = lLibraryAnn.begin(); lIt != lLibraryAnn.end(); ++lIt) {
+        const XQDocAnnotation lAnnotation = *lIt;
+        printCommentFragment(lCommentElem, lAnnotation.getValue(), "library");
       }
     }
   }
