@@ -52,6 +52,19 @@ declare function local:test-search-subject() as xs:boolean {
   not(empty(imap:search($local:host-info, "INBOX", "SUBJECT test", false())))
 };
 
+declare function local:test-search-body() as xs:boolean {
+  not(empty(imap:search($local:host-info, "INBOX", "BODY really", false())))
+
+};
+
+declare function local:test-search-cc() as xs:boolean {
+  not(empty(imap:search($local:host-info, "INBOX", "CC zorbaimap@fastmail.fm", false())))
+};
+
+
+declare function local:test-search-sentbefore() as xs:boolean {
+  not(empty(imap:search($local:host-info, "INBOX", "SENTBEFORE 10102010", false())))
+};
 
 declare sequential function local:main() as xs:string* {
 
@@ -70,6 +83,23 @@ declare sequential function local:main() as xs:string* {
     else ();
 
 
+  let $c := local:test-search-body()
+  return
+    if (fn:not($c)) then
+      exit returning local:error(("Searching for word in BODY failed."))
+    else ();
+
+  let $d := local:test-search-cc()
+  return
+    if (fn:not($d)) then
+      exit returning local:error(("Searching for word in CC failed."))
+    else ();
+
+  let $e := local:test-search-sentbefore()
+  return
+    if (fn:not($e)) then
+      exit returning local:error(("Searching for mails sent before a soecific date failed."))
+    else ();
 
 
    

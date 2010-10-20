@@ -271,37 +271,33 @@ ImapFunction::createFlagsNode(const ImapModule* aModule,
   aFlags = aModule->getItemFactory()->createElementNode(aParent, lFlagsName, lFlagsType, false, false, ns_binding);
 
 
-  std::vector<int>::iterator lFlagsIterator;
   std::string lFlagName;
-  for (lFlagsIterator = aFlagsVector.begin(); lFlagsIterator != aFlagsVector.end(); ++lFlagsIterator) {
-    int lFlagNumber = *lFlagsIterator;
-    switch (lFlagNumber) {
-      case 1 :
-        lFlagName = "seen";
-      break;
-      case 2 :
-        lFlagName = "deleted";
-      break;
-      case 3 :
-        lFlagName = "flagged";
-      break;
-      case 4 :
-        lFlagName = "answered";
-      break;
-      case 5 :
-        lFlagName = "old";
-      break;
-      case 6 :
-        lFlagName = "draft";
-      break;
+  for (int i = 0; i < 5; ++i) {
+    int lFlagNumber = aFlagsVector[i];
+    if (lFlagNumber == 1) {
+      switch (i) {
+        case 0 :
+          lFlagName = "seen";
+        break;
+        case 1 :
+          lFlagName = "deleted";
+        break;
+        case 2 :
+          lFlagName = "flagged";
+        break;
+        case 3 :
+          lFlagName = "answered";
+        break;
+        case 4 :
+          lFlagName = "draft";
+        break;
+      }
+      
+      Item lOneFlagName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", lFlagName);
+      Item lOneFlagType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "emptyType");
+      Item lOneFlag = aModule->getItemFactory()->createElementNode(aFlags, lOneFlagName, lOneFlagType, false, true, ns_binding);
     }
-
-    Item lOneFlagName = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "email", lFlagName);
-    Item lOneFlagType = aModule->getItemFactory()->createQName("http://www.zorba-xquery.com/modules/email/email", "emptyType");
-    Item lOneFlag = aModule->getItemFactory()->createElementNode(aFlags, lOneFlagName, lOneFlagType, false, true, ns_binding);
   }
-
-
 }
 
 

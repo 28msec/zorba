@@ -250,8 +250,8 @@ namespace zorba {
                const StaticContext* aSctxCtx,
                const DynamicContext* aDynCtx) const;
 
-      static std::vector<int> 
-      getFlagsVector(const StatelessExternalFunction::Arguments_t& aArgs);
+      static void 
+      getFlagsVector(const StatelessExternalFunction::Arguments_t& aArgs, std::vector<int>& aFlags);
   };
 
  //*****************************************************************************

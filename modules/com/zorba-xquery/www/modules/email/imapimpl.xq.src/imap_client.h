@@ -109,15 +109,18 @@ namespace zorba
                               const std::string& aUserName, 
                               const std::string& aPassword, 
                               const std::string& aMailbox, 
-                              unsigned long aMessageNumber );
+                              unsigned long aMessageNumber,
+                              std::vector<int>& aFlags,
+                              const bool aUid);
 
       ENVELOPE* fetchStructure(const std::string& aHost, 
                                const std::string& aUserName, 
                                const std::string& aPassword, 
                                const std::string& aMailbox, 
                                BODY** aBody,  
-                               unsigned long aMessageNumber, 
-                               bool aUid);
+                               unsigned long aMessageNumber,
+                               bool aUid,
+                               std::vector<int>& aFlags);
      
       std::string fetchText(const std::string& aHost, 
                             const std::string& aUserName,
@@ -131,7 +134,9 @@ namespace zorba
                       const std::string& aPassword,
                       const std::string& aMailbox,
                       unsigned long aMessageNumber,
-                      bool aUid);
+                      std::vector<int>& aFlags,
+                      const bool aUid);
+
 
       void setFlags(const std::string& aHost,
                     const std::string& aUserName,
@@ -207,17 +212,14 @@ namespace zorba
     
       void addFoundSequenceNumber(long aSequenceNumber);
       
-      void addFlag(int aFlag);
-
-      std::vector<int> getFlags();
       
-      void clearFlags();
       void addListedMailbox(const std::string& aListedMail);
       
 
     private:
       //ctor, dtor, copy ctor are all hidden
       ImapClient() {
+        theFlags.assign(6, 0);
       };
       ~ImapClient() {
       // make sure that theMailstream is not open! 

@@ -150,14 +150,15 @@ declare sequential function imap:copy($host-info as element(imaps:hostInfo), $ma
  : 
  : @param $host-info describes the IMAP host, username and password.
  : @param $mailbox is the mailbox in which to search for the message.
- : @param $message-number is the message for which to fetch the envelope. 
+ : @param $message-number is the message for which to fetch the envelope.
+ : @param $uid defines if the passed $message-number should be interpreted as message sequence number (false, default) or unique identifier
  : @return the envelope of the requested message.
  : @error If it wasn't possible to create a connection to the IMAP server.
  : @error If the passed credentials were rejected by the IMAP server.
  : @error If any of the specified mailbox does not exist.
  : @error If any of the passed message number does not exist.
  :)
-declare %nondeterministic function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long) as element(email:envelope) external; 
+declare %nondeterministic function imap:fetch-envelope($host-info as element(imaps:hostInfo), $mailbox as xs:string, $message-number as xs:long, $uid as xs:boolean?) as element(email:envelope) external; 
 
 (:~
  : Fetches a whole message.

@@ -65,13 +65,13 @@ namespace zorba { namespace emailmodule {
         // use old stream to same host, but open new
         setUserName(aUsername);
         setPassword(aPassword);
-        mail_open(theMailstream, const_cast<char*>(lHostAndMailbox.c_str()), (aFullOpen ? NIL : OP_HALFOPEN));
+        mail_open(theMailstream, const_cast<char*>(lHostAndMailbox.c_str()),  (aFullOpen ? NIL : OP_HALFOPEN));
       } else {
         // make a new mailstream according to the passed values
         setUserName(aUsername);
         setPassword(aPassword);
         theHost = aHost;
-        theMailstream = mail_open(NIL, const_cast<char*>(lHostAndMailbox.c_str()),  (aFullOpen ? NIL : OP_HALFOPEN));
+        theMailstream = mail_open(NIL, const_cast<char*>(lHostAndMailbox.c_str()), (aFullOpen ? NIL : OP_HALFOPEN));
       }
       return theMailstream;
 
@@ -241,12 +241,40 @@ namespace zorba { namespace emailmodule {
                             const std::string& aUsername, 
                             const std::string& aPassword, 
                             const std::string& aMailbox, 
-                            unsigned long aMessageNumber) 
+                            unsigned long aMessageNumber,
+                            std::vector<int>& aFlagsVector,
+                            const bool aUid) 
   {
     #include "linkage.c"
     MAILSTREAM* lSource = getMailStream(aHost, aUsername, aPassword, aMailbox, true); 
     
-    return mail_fetchenvelope(lSource, aMessageNumber);
+    if (aUid) {
+      aMessageNumber = mail_uid(lSource, aMessageNumber);
+    }
+ 
+    ENVELOPE* lResult = mail_fetchenvelope(lSource, aMessageNumber);
+    
+
+    MESSAGECACHE* lCache = mail_elt(lSource, aMessageNumber);
+
+    if (lCache->seen == 1) {
+      aFlagsVector[0] = 1;
+    }
+    if (lCache->deleted == 1) {
+      aFlagsVector[1] = 1;
+    }
+    if (lCache->flagged == 1) {
+      aFlagsVector[2] = 1;
+    }
+    if (lCache->answered == 1) {
+      aFlagsVector[3] = 1;
+    }
+    if (lCache->draft == 1) {
+      aFlagsVector[4] = 1;
+    }
+ 
+    return  lResult;
+    
   }
 
   std::string                    
@@ -312,14 +340,37 @@ namespace zorba { namespace emailmodule {
                              const std::string& aMailbox, 
                              BODY** aBody,  
                              unsigned long aMessageNumber, 
-                             bool aUid) 
+                             bool aUid,
+                             std::vector<int>& aFlagsVector) 
   {
     #include "linkage.c"
     *aBody = mail_newbody(); 
     MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true);    
  
     ENVELOPE * lResult = mail_fetchstructure_full (lSource, aMessageNumber, aBody, (aUid ? FT_UID : NIL));
-  
+      
+    if (aUid) {
+      aMessageNumber = mail_uid(lSource, aMessageNumber);
+    }
+
+    MESSAGECACHE* lCache = mail_elt(lSource, aMessageNumber);
+
+    if (lCache->seen == 1) {
+      aFlagsVector[0] = 1;
+    }
+    if (lCache->deleted == 1) {
+      aFlagsVector[1] = 1;
+    }
+    if (lCache->flagged == 1) {
+      aFlagsVector[2] = 1;
+    }
+    if (lCache->answered == 1) {
+      aFlagsVector[3] = 1;
+    }
+    if (lCache->draft == 1) {
+      aFlagsVector[4] = 1;
+    }
+
     return lResult;
 
   }
@@ -342,28 +393,52 @@ namespace zorba { namespace emailmodule {
 
   void 
   ImapClient::fetchFlags(const std::string& aHost,
-                       const std::string& aUserName,
-                       const std::string& aPassword,
-                       const std::string& aMailbox,
-                       unsigned long aMessageNumber,
-                       bool aUid) {
+                         const std::string& aUserName,
+                         const std::string& aPassword,
+                         const std::string& aMailbox,
+                         unsigned long aMessageNumber,
+                         std::vector<int>& aFlagsVector,
+                         const bool aUid) {
 
     #include "linkage.c"
 
 
     MAILSTREAM* lSource = getMailStream(aHost, aUserName, aPassword, aMailbox, true);
+    // convert aMessageNumber to message sequence number if necessary     
     std::string lSequenceNumber;
     std::stringstream lConverter;
     lConverter << aMessageNumber;
     lConverter >> lSequenceNumber; 
     char* lSequence = const_cast<char*>(lSequenceNumber.c_str());
+   
 
-    theFlags.clear(); 
-    // this call triggers the mm_flags callback which then populates theFlags. 
+ 
+    // update cache for this message (could have changed because of a call to setFlags) 
     mail_fetchflags_full(lSource, lSequence, (aUid ? FT_UID : NIL));  
+    
+    if (aUid) {
+      aMessageNumber = mail_uid(lSource, aMessageNumber); 
+    }     
 
+    MESSAGECACHE* lCache = mail_elt(lSource, aMessageNumber);
+
+    if (lCache->seen == 1) {
+      aFlagsVector[0] = 1;
+    }
+    if (lCache->deleted == 1) {
+      aFlagsVector[1] = 1;
+    }
+    if (lCache->flagged == 1) {
+      aFlagsVector[2] = 1;
+    } 
+    if (lCache->answered == 1) {
+      aFlagsVector[3] = 1;
+    }
+    if (lCache->draft == 1) {
+      aFlagsVector[4] = 1;
+    }
+   
   }
-
 
   void
   ImapClient::setFlags(const std::string& aHost,
@@ -382,44 +457,33 @@ namespace zorba { namespace emailmodule {
     lConverter << aMessageNumber;
     lConverter >> lSequenceNumber;
     char* lSequence = const_cast<char*>(lSequenceNumber.c_str());
-    std::stringstream lAddFlags;
-    std::stringstream lRemoveFlags;
     
-
-    
-    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 1) != aFlagsVector.end()) {
-       mail_setflag_full(lSource, lSequence, "\\Seen",  (aUid ? ST_UID : NIL));
+    if (aFlagsVector[0] == 1) {
+       mail_setflag_full(lSource, lSequence, "\\Seen",  (aUid ? ST_UID : NIL) );
     } else {
-       mail_clearflag_full(lSource, lSequence, "\\Seen",  (aUid ? ST_UID : NIL));
+       mail_clearflag_full(lSource, lSequence, "\\Seen",  (aUid ? ST_UID : NIL ) );
     }
 
-    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 2) != aFlagsVector.end()) {
+    if (aFlagsVector[1] == 1) {
       mail_setflag_full(lSource, lSequence, "\\Deleted",  (aUid ? ST_UID : NIL)); 
     } else {
-      mail_setflag_full(lSource, lSequence, "\\Deleted",  (aUid ? ST_UID : NIL)); 
+      mail_clearflag_full(lSource, lSequence, "\\Deleted",  (aUid ? ST_UID : NIL)); 
     }
-    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 3) != aFlagsVector.end()) {
+    if (aFlagsVector[2] == 1) { 
       mail_setflag_full(lSource, lSequence, "\\Flagged",  (aUid ? ST_UID : NIL)); 
     } else {
-      mail_setflag_full(lSource, lSequence, "\\Flagged",  (aUid ? ST_UID : NIL)); 
+      mail_clearflag_full(lSource, lSequence, "\\Flagged",  (aUid ? ST_UID : NIL)); 
     } 
 
-    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 4) != aFlagsVector.end()) {
+    if (aFlagsVector[3] == 1) {
       mail_setflag_full(lSource, lSequence, "\\Answered",  (aUid ? ST_UID : NIL)); 
     } else {
-      mail_setflag_full(lSource, lSequence, "\\Answered",  (aUid ? ST_UID : NIL)); 
+      mail_clearflag_full(lSource, lSequence, "\\Answered",  (aUid ? ST_UID : NIL)); 
     }
-    /*
-    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 5) != aFlagsVector.end()) {
-      mail_setflag_full(lSource, &lSequenceNumber, "\\Old",  (aUid ? ST_UID : NIL)); 
-    } else {
-      mail_setflag_full(lSource, &lSequenceNumber, "\\Old",  (aUid ? ST_UID : NIL)); 
-    }
-    */
-    if (std::find(aFlagsVector.begin(), aFlagsVector.end(), 6) != aFlagsVector.end()) {
+    if (aFlagsVector[4] == 1) {
       mail_setflag_full(lSource, lSequence, "\\Draft",  (aUid ? ST_UID : NIL)); 
     } else {
-      mail_setflag_full(lSource, lSequence, "\\Draft",  (aUid ? ST_UID : NIL)); 
+      mail_clearflag_full(lSource, lSequence, "\\Draft",  (aUid ? ST_UID : NIL)); 
     }
   }
 
@@ -651,22 +715,6 @@ namespace zorba { namespace emailmodule {
     theFoundSequenceNumbers.push_back(aSequenceNumber);
   }
 
-  void 
-  ImapClient::addFlag(int aFlag) {
-    theFlags.push_back(aFlag);
-  }
-
-      
-  std::vector<int> 
-  ImapClient::getFlags() {
-    return theFlags;
-  }
-
-  void
-  ImapClient::clearFlags() {
-    theFlags.clear();
-  } 
-
 
 } /* emailmodule */ } /* zorba */
 
@@ -682,30 +730,6 @@ namespace zorba { namespace emailmodule {
    * Callback for when mail_fetchflags(_full) is called.
    */ 
   void mm_flags (MAILSTREAM *stream,unsigned long number) {
-    int flagNumber; 
-    switch(number) {
-      case fSEEN : 
-        flagNumber = 1;  
-      break;
-      case fDELETED : 
-        flagNumber = 2;
-      break;
-      case fFLAGGED :
-        flagNumber = 3;
-      break;
-      case fANSWERED :
-        flagNumber = 4;
-      break;
-      case fOLD :
-        flagNumber = 5;
-      break;
-      case fDRAFT :
-        flagNumber = 6;
-      break;  
-    }
-    if (flagNumber > 0) {
-      zorba::emailmodule::ImapClient::Instance().addFlag(flagNumber);
-    }
   }
 
   /* Callback for when mail_list or mail_listsub are called ... */

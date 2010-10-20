@@ -392,9 +392,16 @@ FetchEnvelopeFunction::evaluate(
   String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
 
   unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);  
-  
+ 
+  bool lUid = false;
+  Item lItem;
+  if (aArgs[3]->next(lItem)) {
+    lUid = lItem.getBooleanValue();
+  }
+
+
   Item lParent; 
-  FetchMessageFunction::getMessage(theModule, lParent, lHostName.c_str(), lUserName.c_str(), lPassword.c_str(), lMailbox.c_str(), lMessageNumber, false, true);  
+  FetchMessageFunction::getMessage(theModule, lParent, lHostName.c_str(), lUserName.c_str(), lPassword.c_str(), lMailbox.c_str(), lMessageNumber, lUid, true);  
 
   std::string lErrorMessage = ImapClient::Instance().getError();
   if (lErrorMessage.size() != 0) {
@@ -497,19 +504,17 @@ FetchFlagsFunction::evaluate(
   
   // null parent
   Item lParent;
-  
-  ImapClient::Instance().fetchFlags(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber, lUid);
+  std::vector<int> lFlags(6, 0);
+
+  ImapClient::Instance().fetchFlags(lHostName, lUserName, lPassword, lMailbox.c_str(), lMessageNumber,lFlags, lUid);
  
   std::string lErrorMessage = ImapClient::Instance().getError();
   if (lErrorMessage.size() != 0) {
     ImapFunction::throwImapError(lErrorMessage);
   }
 
- 
-  std::vector<int> lFlags = ImapClient::Instance().getFlags();
 
   Item lFlagsItem;
-  
   ImapFunction::createFlagsNode(theModule, lParent, lFlagsItem, lFlags);
 
   return ItemSequence_t(new SingletonItemSequence(lFlagsItem));
@@ -536,7 +541,8 @@ SetFlagsFunction::evaluate(
   String lMailbox = ImapFunction::getOneStringArg(aArgs, 1);
   unsigned long lMessageNumber = ImapFunction::getOneMessageNumber(aArgs, 2);
     
-  std::vector<int> lFlags = SetFlagsFunction::getFlagsVector(aArgs); 
+  std::vector<int> lFlags(6, 0);
+  SetFlagsFunction::getFlagsVector(aArgs, lFlags); 
 
   bool lUid = false;
   Item lItem;
@@ -555,9 +561,8 @@ SetFlagsFunction::evaluate(
       theModule->getItemFactory()->createBoolean(true)));
 }
 
-std::vector<int>
-SetFlagsFunction::getFlagsVector(const StatelessExternalFunction::Arguments_t& aArgs) {
-  std::vector<int> lFlags;
+void
+SetFlagsFunction::getFlagsVector(const StatelessExternalFunction::Arguments_t& aArgs, std::vector<int>& aFlags) {
   
   Item lFlagsNode;
   aArgs[3]->next(lFlagsNode);
@@ -571,25 +576,21 @@ SetFlagsFunction::getFlagsVector(const StatelessExternalFunction::Arguments_t& a
     /* checking for ending of name as it is not sure how the prefix looks like */
     if (lName.endsWith("n")) {
       // seen
-      lFlags.push_back(1); 
+      aFlags[0] = 1; 
     } else if (lName.endsWith("ted")) {
       // deleted
-      lFlags.push_back(2);
+      aFlags[1] = 1;
     } else if (lName.endsWith("ged")) {
       // flagged
-      lFlags.push_back(3);
+      aFlags[2] = 1;
     } else if (lName.endsWith("red")) {
       // answered
-      lFlags.push_back(4);
-    } else if (lName.endsWith("ld")) {
-      // old
-      lFlags.push_back(5);
+      aFlags[3] = 1;
     } else if (lName.endsWith("ft")) {
       // draft
-      lFlags.push_back(6);
+      aFlags[4] = 1;
     }
   }
-  return lFlags;
 }
 
 
@@ -690,16 +691,15 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
 {
  
  
-
+  std::vector<int> lFlags(6,0);
   ENVELOPE* lEnvelope;
   BODY* lBody;
   if (aOnlyEnvelope) {
     // only fetch envelope
-    lEnvelope =  ImapClient::Instance().fetchEnvelope(aHostName, aUserName, aPassword, aMailbox, aMessageNumber);
+    lEnvelope =  ImapClient::Instance().fetchEnvelope(aHostName, aUserName, aPassword, aMailbox, aMessageNumber, lFlags, aUid);
   } else {
     // the flags vector in the imap client will be filled by this call, so clear it
-    ImapClient::Instance().clearFlags();  
-    lEnvelope = ImapClient::Instance().fetchStructure(aHostName, aUserName, aPassword, aMailbox, &lBody, aMessageNumber, aUid);
+    lEnvelope = ImapClient::Instance().fetchStructure(aHostName, aUserName, aPassword, aMailbox, &lBody, aMessageNumber, aUid, lFlags);
   }
  
   std::vector<std::pair<String, String> >   ns_binding;
@@ -777,6 +777,10 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
   if (lEnvelope->message_id) {
     ImapFunction::createInnerNodeWithText(aModule, lEnvelopeItem,  "http://www.zorba-xquery.com/modules/email/email", "email",  "messageId", "string", lEnvelope->message_id);
   }
+  Item lFlagsItem;
+  // create flags node
+  ImapFunction::createFlagsNode(aModule, lEnvelopeItem, lFlagsItem, lFlags);
+
   // if we only want the envelope, then here is a good place to stop
   if (aOnlyEnvelope) {
     aParent = lEnvelopeItem;
@@ -788,10 +792,6 @@ FetchMessageFunction::getMessage(const ImapModule* aModule,
   /* <email:mimeVersion>1.0</email:mimeVersion> */
   ImapFunction::createInnerNodeWithText(aModule, aParent,  "http://www.zorba-xquery.com/modules/email/email", "email", "mimeVersion", "string", "1.0");
   
-  /* <email:flags>...</email:flags> */
-  std::vector<int> flags = ImapClient::Instance().getFlags();
-  Item lFlagsItem;
-  ImapFunction::createFlagsNode(aModule, aParent, lFlagsItem, flags); 
  
   // make a tolower version of the subtype
   
