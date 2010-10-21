@@ -25,6 +25,8 @@
 
 namespace zorba { namespace simplestore {
 
+
+
 /////////////////////////////////////////////////////////////////////////////////
 //                                                                             //
 //  class OrdPath                                                              //
@@ -191,9 +193,9 @@ OrdPath::OrdPath(const unsigned char* str, ulong strLen)
   unsigned char* buf;
   bool isLocal;
 
-  // bugfix
   // The string length should always be even (each buffer entry is encoded in two digits)
   ZORBA_FATAL(strLen % 2 == 0, "");
+
   ulong byteLen = strLen / 2;
 
   if (byteLen > MAX_BYTE_LEN)
@@ -321,13 +323,12 @@ OrdPath& OrdPath::operator=(const OrdPathStack& ops)
     memcpy(getRemoteData(), ops.theBuffer, len);
 
     ZORBA_ASSERT(!isLocal());
-    //std::cout << "REMOTE ORDPATH !!! " << show() << std::endl;
   }
   else
   {
     reset();
 
-    for (ulong i = 0; i < len; i++)
+    for (ulong i = 0; i < len; ++i)
       theBuffer.local[i] = ops.theBuffer[i];
 
     markLocal();
@@ -362,6 +363,9 @@ ulong OrdPath::getLocalBitLength(ulong& byteLen) const
 }
 
 
+/*******************************************************************************
+
+********************************************************************************/
 ulong OrdPath::getRemoteBitLength(ulong& byteLen) const
 {
   byteLen = getRemoteByteLength();
@@ -503,7 +507,8 @@ int OrdPath::operator>(const OrdPath& other) const
 
 
 /*******************************************************************************
-
+  Determine the position of the "other" ordpath relative to "this" ordpath.
+  The result is one of: PRECEDING, ANCESTOR, SELF, DESCENDANT, or FOLLOWING
 ********************************************************************************/
 OrdPath::RelativePosition OrdPath::getRelativePosition(const OrdPath& other) const
 {
@@ -606,21 +611,24 @@ OrdPath::RelativePosition OrdPath::getRelativePosition(const OrdPath& other) con
   Compress a dewey id into an ordpath.
   NOTE: This method is used for debugging only!
 ********************************************************************************/
-void OrdPath::compress(const std::vector<long>& dewey)
+void OrdPath::compress(const DeweyID& dewey)
 {
   if (! compressLocal(dewey))
     compressRemote(dewey);
 }
 
 
-bool OrdPath::compressLocal(const std::vector<long>& dewey)
+/*******************************************************************************
+
+********************************************************************************/
+bool OrdPath::compressLocal(const DeweyID& dewey)
 {
   reset();
 
   ulong bitLen = 0;
 
   ulong numComps = dewey.size();
-  for (ulong i = 0; i < numComps; i++)
+  for (ulong i = 0; i < numComps; ++i)
   {
     if (! pushComp(getLocalData(), MAX_EMBEDDED_BIT_LEN, dewey[i], bitLen))
       return false;
@@ -632,7 +640,10 @@ bool OrdPath::compressLocal(const std::vector<long>& dewey)
 }
 
 
-void OrdPath::compressRemote(const std::vector<long>& dewey)
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPath::compressRemote(const DeweyID& dewey)
 {
   reset();
 
@@ -645,7 +656,7 @@ void OrdPath::compressRemote(const std::vector<long>& dewey)
     memset(databuf, 0, MAX_BYTE_LEN);
 
     ulong numComps = dewey.size();
-    for (ulong i = 0; i < numComps; i++)
+    for (ulong i = 0; i < numComps; ++i)
     {
       bool success = pushComp(databuf, MAX_BIT_LEN, dewey[i], bitLen);
       ZORBA_ASSERT(success);
@@ -694,7 +705,7 @@ void OrdPath::insertBeforeOrAfter(
     OrdPath&       result)
 {
   ulong numComps = 0;
-  long dewey[MAX_NUM_COMPS];
+  int32_t dewey[MAX_NUM_COMPS];
   ulong offsets[MAX_NUM_COMPS];
   ulong bitLen;
   ulong byteLen;
@@ -706,11 +717,33 @@ void OrdPath::insertBeforeOrAfter(
   // Decompress the last level-component of sibling.
   sibling.decompress(parentBitLen, dewey, offsets, numComps, bitLen);
 
-  long newcomp = dewey[numComps-1] + (before ? - 2 : 2);
+  int32_t newcomp = dewey[numComps-1];
+
+  if (before)
+  {
+    if ( newcomp < -INT32_MAX + 2)
+    {
+      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+                       "A nodeid component is too large to be encoded");
+    }
+
+    newcomp += -2;
+  }
+  else
+  {
+    if ( newcomp > INT32_MAX - 2)
+    {
+      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+                       "A nodeid component is too large to be encoded");
+    }
+
+    newcomp += 2;
+  }
 
   ulong newBits;
   uint32_t dummy;
-  bitsNeeded(newcomp, newBits, dummy);
+  uint64_t dummy2;
+  bitsNeeded(newcomp, newBits, dummy, dummy2);
 
   ulong commonBitLen = offsets[numComps-1];
   ulong commonByteLen = (commonBitLen + 7) / 8;
@@ -764,12 +797,12 @@ void OrdPath::insertInto(
 
   ulong numComps1 = 0;
   ulong bitLen1 = 0;
-  long dewey1[MAX_NUM_COMPS];
+  int32_t dewey1[MAX_NUM_COMPS];
   ulong offsets1[MAX_NUM_COMPS];
 
   ulong numComps2 = 0;
   ulong bitLen2 = 0;
-  long dewey2[MAX_BYTE_LEN];
+  int32_t dewey2[MAX_BYTE_LEN];
   ulong offsets2[MAX_BYTE_LEN];
 
   // decompress the last level-comp of sib1
@@ -786,8 +819,8 @@ void OrdPath::insertInto(
     ZORBA_ASSERT(compPos < numComps1 && compPos < numComps2);
   }
 
-  long comp1 = dewey1[compPos];
-  long comp2 = dewey2[compPos];
+  int32_t comp1 = dewey1[compPos];
+  int32_t comp2 = dewey2[compPos];
   bool odd1 = (comp1 % 2 != 0);
   bool odd2 = (comp2 % 2 != 0);
 
@@ -795,11 +828,12 @@ void OrdPath::insertInto(
 
   ulong diff = comp2 - comp1;
 
-  long newcomp1;
-  long newcomp2 = 0;
+  int32_t newcomp1;
+  int32_t newcomp2 = 0;
   ulong commonBitLen;
   ulong newBits;
   uint32_t dummy;
+  uint64_t dummy2;
 
   bool copy1 = true;
 
@@ -812,7 +846,7 @@ void OrdPath::insertInto(
     if (newcomp1 % 2 == 0)
       newcomp1++;
 
-    bitsNeeded(newcomp1, newBits, dummy);
+    bitsNeeded(newcomp1, newBits, dummy, dummy2);
   }
   // Else if comp1 and comp2 are 2 consecutive odd numbers...
   else if (odd1 && odd2)
@@ -822,7 +856,7 @@ void OrdPath::insertInto(
     newcomp1 = comp1 + 1;
     newcomp2 = 1;
 
-    bitsNeeded(newcomp1, newBits, dummy);
+    bitsNeeded(newcomp1, newBits, dummy, dummy2);
     newBits += 2;
   }
   // Else if comp1 is odd and comp2 == comp1 + 1, keep comp2 and add
@@ -832,12 +866,29 @@ void OrdPath::insertInto(
     commonBitLen = offsets2[compPos+1];
 
     newcomp1 = dewey2[compPos+1];
-    if (newcomp1 % 2 == 0)
-      newcomp1 -= 1;
-    else
-      newcomp1 -= 2;
 
-    bitsNeeded(newcomp1, newBits, dummy);
+    if (newcomp1 % 2 == 0)
+    {
+      if (newcomp1 < -INT32_MAX + 1)
+      {
+        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+                         "A nodeid component is too large to be encoded");
+      }
+
+      newcomp1 -= 1;
+    }
+    else
+    {
+      if (newcomp1 < -INT32_MAX + 2)
+      {
+        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+                         "A nodeid component is too large to be encoded");
+      }
+
+      newcomp1 -= 2;
+    }
+
+    bitsNeeded(newcomp1, newBits, dummy, dummy2);
     copy1 = false;
   }
   // Else if comp2 is odd and comp1 == comp2 - 1, keep comp1 and add
@@ -847,12 +898,29 @@ void OrdPath::insertInto(
     commonBitLen = offsets1[compPos+1];
 
     newcomp1 = dewey1[compPos+1];
-    if (newcomp1 % 2 == 0)
-      newcomp1 += 1;
-    else
-      newcomp1 += 2;
 
-    bitsNeeded(newcomp1, newBits, dummy);
+    if (newcomp1 % 2 == 0)
+    {
+      if (newcomp1 > INT32_MAX - 1)
+      {
+        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+                         "A nodeid component is too large to be encoded");
+      } 
+
+      newcomp1 += 1;
+    }
+    else
+    {
+      if (newcomp1 > INT32_MAX - 2)
+      {
+        ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+                         "A nodeid component is too large to be encoded");
+      }
+
+      newcomp1 += 2;
+    }
+
+    bitsNeeded(newcomp1, newBits, dummy, dummy2);
   }
   else
   {
@@ -886,6 +954,7 @@ void OrdPath::insertInto(
 
   bool success = result.pushComp(data, bitLen, newcomp1, commonBitLen);
   ZORBA_ASSERT(success);
+
   if (newcomp2 != 0)
   {
     success = result.pushComp(data, bitLen, newcomp2, commonBitLen);
@@ -909,21 +978,19 @@ void OrdPath::insertInto(
 bool OrdPath::pushComp(
     unsigned char* data,
     ulong maxBitLen,
-    long value,
+    int32_t value,
     ulong& bitLen)
 {
   assert(maxBitLen >= bitLen);
 
   uint32_t eval;
+  uint64_t eval2;
   ulong bitsNeeded;
 
+  OrdPath::bitsNeeded(value, bitsNeeded, eval, eval2);
+
   ulong byteIndex = bitLen / 8;
-
-  ulong bitsAvailable = 8 - bitLen % 8;
-  if (bitsAvailable == 0)
-    bitsAvailable = 8;
-
-  OrdPath::bitsNeeded(value, bitsNeeded, eval);
+  ulong bitsAvailable = 8 - bitLen % 8; // # bits available in the "current" byte.
 
   ulong bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
   if (bytesNeeded > MAX_BYTE_LEN)
@@ -938,25 +1005,44 @@ bool OrdPath::pushComp(
 
   bitLen += bitsNeeded;
 
-  do
+  if (eval2 != 0)
   {
-    ulong bitsUsed = (bitsNeeded < bitsAvailable ?
-                      bitsNeeded : bitsAvailable);
+    eval = static_cast<uint32_t>(eval2 >> 32);
 
-    unsigned char byte = (unsigned char)
-                         ((eval & OrdPath::theValueMasks[bitsUsed]) >>
-                          (32 - bitsAvailable));
+    if (value >= 0)
+    {
+      appendEncodedComp(eval, 9, byteIndex, bitsAvailable, data);
 
-    data[byteIndex] |= byte;
-    eval = eval << bitsUsed;
-    bitsNeeded -= bitsUsed;
-    bitsAvailable -= bitsUsed;
-    ulong zerone = (bitsAvailable + 7) / 8;
-    bitsAvailable = bitsAvailable * zerone + 8 * (1 - zerone);
-    byteIndex += (1 - zerone);
+      ++byteIndex;
+
+      --bitsAvailable;
+      if (bitsAvailable == 0)
+      {
+        bitsAvailable = 8;
+        ++byteIndex;
+      }
+    }
+    else
+    {
+      appendEncodedComp(eval, 10, byteIndex, bitsAvailable, data);
+
+      if (bitsAvailable <= 2)
+      {
+        byteIndex += 2;
+        bitsAvailable += 6;
+      }
+      else
+      {
+        ++byteIndex;
+        bitsAvailable -= 2;
+      }
+    }
+
+    bitsNeeded = 32;
+    eval = static_cast<uint32_t>(eval2);
   }
-  while (bitsNeeded > 0);
 
+  appendEncodedComp(eval, bitsNeeded, byteIndex, bitsAvailable, data);
   return true;
 }
 
@@ -965,9 +1051,10 @@ bool OrdPath::pushComp(
   Append a given component value to "this", expanding, if necessary, theBuffer
   of "this" to accomodate the new comp.
 ********************************************************************************/
-void OrdPath::appendComp(long value)
+void OrdPath::appendComp(int32_t value)
 {
   uint32_t eval;
+  uint64_t eval2;
 
   ulong byteLen;
   ulong bitLen;
@@ -983,7 +1070,7 @@ void OrdPath::appendComp(long value)
   byteIndex = bitLen / 8;
   bitsAvailable = 8 - bitLen % 8;
 
-  OrdPath::bitsNeeded(value, bitsNeeded, eval);
+  OrdPath::bitsNeeded(value, bitsNeeded, eval, eval2);
 
   ulong bytesNeeded = byteIndex + (bitsNeeded + 15 - bitsAvailable) / 8;
   if (bytesNeeded > OrdPath::MAX_BYTE_LEN)
@@ -995,10 +1082,14 @@ void OrdPath::appendComp(long value)
 
   if (bitLen + bitsNeeded <= MAX_EMBEDDED_BIT_LEN)
   {
+    // The ordpath is local and will remain local after the append
     data = getLocalData();
   }
   else if (isLocal || (bytesNeeded > byteLen))
   {
+    // The ordpath is local but will become remote after the append, or
+    // the ordpath is remote already but is buffer must be extended to 
+    // acommodate the append.
     unsigned char* newbuf = new unsigned char[bytesNeeded + 1];
     memset(newbuf, 0, bytesNeeded+1);
     newbuf[0] = (unsigned char)(bytesNeeded);
@@ -1022,28 +1113,82 @@ void OrdPath::appendComp(long value)
   }
   else
   {
+    // The ordpath is remote already and its buffer has enough bits available
+    // to acommodate the append.
     data = getRemoteData();
   }
 
   ZORBA_FATAL(byteIndex <= bytesNeeded, "");
 
+  if (eval2 != 0)
+  {
+    eval = static_cast<uint32_t>(eval2 >> 32);
+
+    if (value >= 0)
+    {
+      appendEncodedComp(eval, 9, byteIndex, bitsAvailable, data);
+
+      ++byteIndex;
+
+      --bitsAvailable;
+      if (bitsAvailable == 0)
+      {
+        bitsAvailable = 8;
+        ++byteIndex;
+      }
+    }
+    else
+    {
+      appendEncodedComp(eval, 10, byteIndex, bitsAvailable, data);
+
+      if (bitsAvailable <= 2)
+      {
+        byteIndex += 2;
+        bitsAvailable += 6;
+      }
+      else
+      {
+        ++byteIndex;
+        bitsAvailable -= 2;
+      }
+    }
+
+    bitsNeeded = 32;
+    eval = static_cast<uint32_t>(eval2);
+  }
+
+  appendEncodedComp(eval, bitsNeeded, byteIndex, bitsAvailable, data);
+}
+
+
+/*******************************************************************************
+
+********************************************************************************/
+void OrdPath::appendEncodedComp(
+    uint32_t eval,
+    ulong bitsNeeded,
+    ulong byteIndex,
+    ulong bitsAvailable,
+    unsigned char* data)
+{
   do
   {
-    ulong bitsUsed = (bitsNeeded < bitsAvailable ?
-                      bitsNeeded : bitsAvailable);
+    // Number of bits to consume in the current iteration
+    ulong bitsToUse = (bitsNeeded < bitsAvailable ?
+                       bitsNeeded : bitsAvailable);
 
     unsigned char byte = (unsigned char)
-                         ((eval & OrdPath::theValueMasks[bitsUsed]) >>
+                         ((eval & OrdPath::theValueMasks[bitsToUse]) >>
                           (32 - bitsAvailable));
 
     data[byteIndex] |= byte;
-    eval = eval << bitsUsed;
-    bitsNeeded -= bitsUsed;
-    bitsAvailable -= bitsUsed;
-    ulong zerone = (bitsAvailable + 7) / 8;
-    bitsAvailable = bitsAvailable * zerone + 8 * (1 - zerone);
-    byteIndex += (1 - zerone);
-    ZORBA_FATAL(byteIndex <= bytesNeeded, "");
+
+    eval = eval << bitsToUse;
+
+    bitsNeeded -= bitsToUse;
+    bitsAvailable = 8;
+    ++byteIndex;
+    //ZORBA_FATAL(byteIndex <= bytesNeeded, "");
   }
   while (bitsNeeded > 0);
 }
@@ -1052,60 +1197,80 @@ void OrdPath::appendComp(long value)
 /*******************************************************************************
   Static method
 ********************************************************************************/
-void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
+void OrdPath::bitsNeeded(
+    int32_t value,
+    ulong& bitsNeeded,
+    uint32_t& eval,
+    uint64_t& eval2)
 {
+  eval2 = 0;
+
   if (value < 0)
   {
-    value = -value;
+    assert(value > INT32_MIN);
+    assert(value == -(-value));
 
-    if (value < OrdPath::DEFAULT_FAN_OUT)
+    // value in [-31, -1] --> use pre-computed values
+    if (value > -OrdPath::DEFAULT_FAN_OUT)
     {
-      bitsNeeded = OrdPath::theNegV2LMap[value];
-      eval = OrdPath::theNegV2EVMap[value] << 16;
+      bitsNeeded = OrdPath::theNegV2LMap[-value];
+      eval = OrdPath::theNegV2EVMap[-value] << 16;
     }
-    else if (value < 277)
+    // value in [-276, -/21] --> 6 bits for code + 8 bits for data
+    else if (value > -277)
     {
       bitsNeeded = 14;
 
-      value = 276 - value;
+      value = 276 + value;
       eval = ((uint32_t)value) << 24;
       eval >>= 6;
       eval |= 0x04000000;
     }
-    else if (value < 4373)
+    // value in [-4372, -277] --> 7 bits for code + 12 bits for data
+    else if (value > -4373)
     {
       bitsNeeded = 19;
 
-      value = 2372 - value;
+      value = 4372 + value;
       eval = ((uint32_t)value) << 20;
       eval >>= 7;
       eval |= 0x02000000;
     }
-    else if (value < 69909)
+    // value in [-69908, -4373] --> 8 bits for code + 16 bits for data
+    else if (value > -69909)
     {
       bitsNeeded = 24;
 
-      value = 69908 - value;
+      value = 69908 + value;
       eval = ((uint32_t)value) << 16;
       eval >>= 8;
       eval |= 0x01000000;
     }
-    else if (value < 1118485)
+    // value in [-1118484, -69909] --> 9 bits for code + 20 bits for data
+    else if (value > -1118485)
     {
       bitsNeeded = 29;
 
-      value = 1118484 - value;
+      value = 1118484 + value;
       eval = ((uint32_t)value) << 12;
       eval >>= 9;
       eval |= 0x00800000;
     }
+    // value in [-INT32_MAX, -1118485] --> 9 bits for code + 20 bits for data
     else
     {
-      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
-                       "A nodeid component is too large to be encoded");
-      return;
+      // 10 bits for code + 32 bits for data
+      bitsNeeded = 42;
+
+      value = INT32_MAX + value;
+
+      eval2 = 0x00400000;
+      eval2 <<= 32;
+      eval2 |= value;
     }
   }
+
+  // value in [0, 31] --> use pre-computed values
   else if (value < OrdPath::DEFAULT_FAN_OUT)
   {
     bitsNeeded = OrdPath::thePosV2LMap[value];
@@ -1113,6 +1278,7 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
   }
   else
   {
+    // value in [24, 279] --> 5 bits for code + 8 bits for data
     if (value < 280)
     {
       bitsNeeded = 13;
@@ -1122,6 +1288,7 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
       eval >>= 5;
       eval |= 0xF0000000;
     }
+    // value in [280, 4375] --> 6 bits for code + 12 bits for data
     else if (value < 4376)
     {
       bitsNeeded = 18;
@@ -1131,6 +1298,7 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
       eval >>= 6;
       eval |= 0xF8000000;
     }
+    // value in [4376, 69911] --> 7 bits for code + 16 bits for data
     else if (value < 69912)
     {
       bitsNeeded = 23;
@@ -1140,29 +1308,25 @@ void OrdPath::bitsNeeded(long value, ulong& bitsNeeded, uint32_t& eval)
       eval >>= 7;
       eval |= 0xFC000000;
     }
+    // value in [69912, 1,118,487] --> 8 bits for code + 20 bits for data
     else if (value < 1118488)
     {
       bitsNeeded = 28;
 
       value -= 69912;
-      eval = ((uint32_t)value) << 12;
+      eval = ((uint32_t)value) << 12; // 32 - 20 = 12
       eval >>= 8;
       eval |= 0xFE000000;
     }
-    else if (value < 3215640)
-    {
-      bitsNeeded = 30;
-
-      value -= 1118488;
-      eval = ((uint32_t)value) << 11;
-      eval >>= 9;
-      eval |= 0xFF000000;
-    }
+    // value in [1,118,488, INT32_MAX] --> 9 bits for code + 32 bits for data
     else
     {
-      ZORBA_ERROR_DESC( STR0030_NODEID_ERROR,
-                       "A nodeid component is too large to be encoded");
-      return;
+      bitsNeeded = 41;
+
+      value -= 1118488;
+      eval2 = 0xFF000000;
+      eval2 <<= 32;
+      eval2 |= value;
     }
   }
 }
@@ -1188,7 +1352,7 @@ std::string OrdPath::serialize() const
   if (local && len == MAX_EMBEDDED_BYTE_LEN)
     buf[MAX_EMBEDDED_BYTE] &= 0xFE;
 
-  for (ulong i = 0; i < len; i++)
+  for (ulong i = 0; i < len; ++i)
   {
     // bugfix: Add a leading 0 if one-digit
     // Each output should always be two-digit
@@ -1232,12 +1396,12 @@ std::string OrdPath::show() const
 
   ulong numComps = 0;
   ulong bitSize = 0;
-  long deweyid[MAX_NUM_COMPS];
+  int32_t deweyid[MAX_NUM_COMPS];
   ulong offsets[MAX_NUM_COMPS];
 
   decompress(0, deweyid, offsets, numComps, bitSize);
 
-  for (ulong i = 0; i < numComps; i++)
+  for (ulong i = 0; i < numComps; ++i)
   {
     str << std::dec << deweyid[i];
     if (i < numComps-1)
@@ -1249,11 +1413,13 @@ std::string OrdPath::show() const
 
 
 /*******************************************************************************
-
+  Decompress all the components that appear after a given starting offset
+  within the ordpath data buffer (it is assumed that startOffset points to 
+  the start of some component).
 ********************************************************************************/
 void OrdPath::decompress(
-    ulong  startOffset,
-    long*  deweyid,
+    ulong startOffset,
+    int32_t* deweyid,
     ulong* compOffsets,
     ulong& numComps,
     ulong& bitLen) const
@@ -1263,26 +1429,26 @@ void OrdPath::decompress(
   ulong byteIndex = startOffset / 8;
   ulong bitIndex = startOffset % 8;
 
-  ulong len;
+  ulong byteLen;
   unsigned char* data;
   bool isLocal = this->isLocal();
 
   if (isLocal)
   {
-    len = getLocalByteLength();
+    byteLen = getLocalByteLength();
     memcpy(tmpbuf, theBuffer.local, MAX_EMBEDDED_BYTE_LEN);
     data = tmpbuf;
     tmpbuf[MAX_EMBEDDED_BYTE] &= 0xFE;
   }
   else
   {
-    len = getRemoteByteLength();
+    byteLen = getRemoteByteLength();
     data = getRemoteData();
   }
 
   bitLen = byteIndex * 8 + bitIndex;
 
-  while (byteIndex < len - 1)
+  while (byteIndex < byteLen - 1)
   {
     unsigned char byte0 = data[byteIndex] & theByteMasks[bitIndex][0];
     unsigned char byte1 = data[byteIndex+1] & theByteMasks[bitIndex][1];
@@ -1293,7 +1459,7 @@ void OrdPath::decompress(
   }
 
   // Treat the last byte
-  if (byteIndex == len - 1)
+  if (byteIndex == byteLen - 1)
   {
     unsigned char lastByte = data[byteIndex];
     ZORBA_FATAL(lastByte != 0, "");
@@ -1325,7 +1491,7 @@ void OrdPath::decodeByte(
     ulong&         byteIndex,
     ulong&         bitIndex,
     unsigned char  byte,
-    long*          deweyid,
+    int32_t*       deweyid,
     ulong*         compOffsets,
     ulong&         numComps)
 { 
@@ -1333,25 +1499,34 @@ void OrdPath::decodeByte(
 
   switch (byte)
   {
-  case 0:    // 0000 0000   00000000 ...            (29/9,20)
+  case 0:    // 0000 0000   00000000 ...            (29/9,20 or 42/10,32)
   {
     ADVANCE(bitLen, byteIndex, bitIndex, 9);
-    extractValue(data, bitLen, byteIndex, bitIndex, 20, -1118484, deweyid[numComps]);
-    numComps += 1;    
+
+    if (data[byteIndex] >> (7 - bitIndex) == 0)
+    {
+      ADVANCE(bitLen, byteIndex, bitIndex, 1);
+      extractValue(data, bitLen, byteIndex, bitIndex, 32, -INT32_MAX, deweyid[numComps]);
+    }
+    else
+    {
+      extractValue(data, bitLen, byteIndex, bitIndex, 20, -1118484, deweyid[numComps]);
+    }
+    ++numComps;    
     break;
   }
   case 1:    // 0000 0001   00000001,...            (24/8,16)
   {
     ADVANCE(bitLen, byteIndex, bitIndex, 8);
     extractValue(data, bitLen, byteIndex, bitIndex, 16, -69908, deweyid[numComps]);
-    numComps += 1;
+    ++numComps;
     break;
   }
   case 2:    // 0000 0010   0000001,0...            (19/7,12)
   {
     ADVANCE(bitLen, byteIndex, bitIndex, 7);
     extractValue(data, bitLen, byteIndex, bitIndex, 12, -4372, deweyid[numComps]);
-    numComps += 1;
+    ++numComps;
     break;
   }
   case 3:    // 0000 0011   0000001,1...            (19/7,12)
@@ -3664,10 +3839,10 @@ void OrdPath::decodeByte(
     numComps += 1;
     break;
   }
-  case 255:   // 1111 1111   11111111 0,...         (29/9,20)
+  case 255:   // 1111 1111   11111111 0,...         (41/9,32)
   {
     ADVANCE(bitLen, byteIndex, bitIndex, 9);
-    extractValue(data, bitLen, byteIndex, bitIndex, 21, 1118488, deweyid[numComps]);
+    extractValue(data, bitLen, byteIndex, bitIndex, 32, 1118488, deweyid[numComps]);
     numComps += 1;
     break;
   }
@@ -3688,9 +3863,9 @@ void OrdPath::extractValue(
     ulong& bitLen,
     ulong& byteIndex,
     ulong& bitIndex,
-    ulong  numBits,
-    long   baseValue,
-    long&  result)
+    ulong numBits,
+    int32_t baseValue,
+    int32_t& result)
 {
   bitLen += numBits;
 
@@ -3712,7 +3887,7 @@ void OrdPath::extractValue(
 
   ulong numBytes = numBits / 8;
 
-  for (ulong i = 0; i < numBytes; i++)
+  for (ulong i = 0; i < numBytes; ++i)
   {
     result <<= 8;
     result |= data[byteIndex];
@@ -3780,7 +3955,7 @@ ulong OrdPathStack::getByteLength() const
 
 
 /*******************************************************************************
-
+  
 ********************************************************************************/
 void OrdPathStack::pushChild()
 {
@@ -3794,7 +3969,7 @@ void OrdPathStack::pushChild()
 
   theDeweyId[theNumComps] = 1;
   theCompLens[theNumComps] = 2;
-  theNumComps++;
+  ++theNumComps;
 
   if (theBitsAvailable >= 2)
   {
@@ -3822,11 +3997,18 @@ void OrdPathStack::pushChild()
 void OrdPathStack::popChild()
 {
   // Pop the last uncompressed component.
-  theNumComps--;
+  --theNumComps;
   if (theNumComps == 0)
     return;
 
-  // Increment the last uncompressed component by 2.
+  // Increment the last uncompressed component by 2 (if possible).
+
+  if (theDeweyId[theNumComps - 1] > INT32_MAX - 2)
+  {
+    ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+                     "A nodeid component is too large to be encoded");
+  }
+
   theDeweyId[theNumComps - 1] += 2;
 
   // Pop the last 2 compressed components
@@ -3840,7 +4022,7 @@ void OrdPathStack::popChild()
   if (numBytes > 0)
     memset(&theBuffer[theByteIndex+1], 0, numBytes);
 
-  // Increment the last compressed component by 2.
+  // Push a compressed component that is equal to the last uncompressed component.
   compressComp(theNumComps - 1, theDeweyId[theNumComps - 1]);
 }
 
@@ -3852,7 +4034,14 @@ void OrdPathStack::nextChild()
 {
   ZORBA_ASSERT(theNumComps > 0);
 
-  // Increment the last uncompressed component by 2.
+  // Increment the last uncompressed component by 2 (if possible).
+
+  if (theDeweyId[theNumComps - 1] > INT32_MAX - 2)
+  {
+    ZORBA_ERROR_DESC(STR0030_NODEID_ERROR, 
+                     "A nodeid component is too large to be encoded");
+  }
+
   theDeweyId[theNumComps - 1] += 2;
 
   // Pop the last compressed component
@@ -3866,7 +4055,7 @@ void OrdPathStack::nextChild()
   if (numBytes > 0)
     memset(&theBuffer[theByteIndex+1], 0, numBytes);
 
-  // Increment the last compressed component by 2.
+  // Push a compressed component that is equal to the last uncompressed component.
   compressComp(theNumComps - 1, theDeweyId[theNumComps - 1]);
 }
 
@@ -3874,62 +4063,15 @@ void OrdPathStack::nextChild()
 /*******************************************************************************
 
 ********************************************************************************/
-void OrdPathStack::compressComp(ulong comp, long value)
+void OrdPathStack::compressComp(ulong comp, int32_t value)
 {
   uint32_t eval;
+  bool overflow = false;
   ulong bitsNeeded;
 
   if (value < 0)
   {
-    value = -value;
-
-    if (value < OrdPath::DEFAULT_FAN_OUT)
-    {
-      bitsNeeded = OrdPath::theNegV2LMap[value];
-      eval = OrdPath::theNegV2EVMap[value] << 16;
-    }
-    else if (value < 277)
-    {
-      theCompLens[comp] = (unsigned char)(bitsNeeded = 14);
-
-      value = 276 - value;
-      eval = ((uint32_t)value) << 24;
-      eval >>= 6;
-      eval |= 0x04000000;
-    }
-    else if (value < 4373)
-    {
-      theCompLens[comp] = (unsigned char)(bitsNeeded = 19);
-
-      value = 2372 - value;
-      eval = ((uint32_t)value) << 20;
-      eval >>= 7;
-      eval |= 0x02000000;
-    }
-    else if (value < 69909)
-    {
-      theCompLens[comp] = (unsigned char)(bitsNeeded = 24);
-
-      value = 69908 - value;
-      eval = ((uint32_t)value) << 16;
-      eval >>= 8;
-      eval |= 0x01000000;
-    }
-    else if (value < 1118485)
-    {
-      theCompLens[comp] = (unsigned char)(bitsNeeded = 29);
-
-      value = 1118484 - value;
-      eval = ((uint32_t)value) << 12;
-      eval >>= 9;
-      eval |= 0x00080000;
-    }
-    else
-    {
-      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
-                       "A nodeid component is too large to be encoded");
-      return;
-    }
+    ZORBA_ASSERT(false);
   }
   else if (value < OrdPath::DEFAULT_FAN_OUT)
   {
@@ -3974,20 +4116,13 @@ void OrdPathStack::compressComp(ulong comp, long value)
       eval >>= 8;
       eval |= 0xFE000000;
     }
-    else if (value < 3215640)
-    {
-      theCompLens[comp] = (unsigned char)(bitsNeeded = 30); // 9 + 21
-
-      value -= 1118488;
-      eval = ((uint32_t)value) << 11;
-      eval >>= 9;
-      eval |= 0xFF000000;
-    }
     else
     {
-      ZORBA_ERROR_DESC(STR0030_NODEID_ERROR,
-                       "A nodeid component is too large to be encoded");
-      return;
+      theCompLens[comp] = (unsigned char)(bitsNeeded = 41); // 9 + 32
+
+      value -= 1118488;
+      eval = (uint32_t)value;
+      overflow = true;
     }
   }
 
@@ -4002,6 +4137,30 @@ void OrdPathStack::compressComp(ulong comp, long value)
     return;
   }
 
+  if (overflow)
+  {
+    // push 1111 1111 0 into the ordpath
+    unsigned char byte = 0xFF;
+    byte = byte >> 8 - theBitsAvailable;
+
+    theBuffer[theByteIndex] |= byte;
+    ++theByteIndex;
+
+    byte = 0xFF;
+    byte <<= theBitsAvailable;
+
+    theBuffer[theByteIndex] = byte;
+
+    bitsNeeded -= 9;
+
+    --theBitsAvailable;
+    if (theBitsAvailable == 0)
+    {
+      theBitsAvailable = 8;
+      ++theByteIndex;
+    }
+  }
+
   do
   {
     ulong bitsUsed = (bitsNeeded < theBitsAvailable ?
@@ -4012,13 +4171,15 @@ void OrdPathStack::compressComp(ulong comp, long value)
                           (32 - theBitsAvailable));
 
     theBuffer[theByteIndex] |= byte;
+
     eval = eval << bitsUsed;
     bitsNeeded -= bitsUsed;
+
     theBitsAvailable -= bitsUsed;
     if (theBitsAvailable == 0 && bitsNeeded > 0)
     {
       theBitsAvailable = 8;
-      theByteIndex ++;
+      ++theByteIndex;
     }
   }
   while (bitsNeeded > 0);

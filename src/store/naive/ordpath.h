@@ -47,6 +47,9 @@ public:
   }
   RelativePosition;
 
+
+  typedef std::vector<int32_t> DeweyID;
+
 public:
   static const ulong MAX_BYTE_LEN = 255;
   static const ulong MAX_BIT_LEN = MAX_BYTE_LEN * 8;
@@ -100,13 +103,21 @@ protected:
   static bool pushComp(
         unsigned char* buf,
         ulong          maxBitSize,
-        long           value,
+        int32_t        value,
         ulong&         bitSize);
 
   static void bitsNeeded(
-        long      value, 
-        ulong&    bitsNeeded,
-        uint32_t& eval);
+        int32_t    value, 
+        ulong&     bitsNeeded,
+        uint32_t&  eval,
+        uint64_t&  eval2);
+
+  static void appendEncodedComp(
+        uint32_t       eval,
+        ulong          bitsNeeded,
+        ulong          byteIndex,
+        ulong          bitsAvailable,
+        unsigned char* data);
 
   static void insertBeforeOrAfter(
         bool           before,
@@ -120,7 +131,7 @@ protected:
         ulong&         byteIndex,
         ulong&         bitIndex,
         unsigned char  byte,
-        long*          deweyid,
+        int32_t*       deweyid,
         ulong*         compOffsets,
         ulong&         numComps);
 
@@ -130,8 +141,8 @@ protected:
         ulong&         byteIndex,
         ulong&         bitIndex,
         ulong          numBits,
-        long           baseValue,
-        long&          result);
+        int32_t        baseValue,
+        int32_t&       result);
 
 
 public:
@@ -150,6 +161,7 @@ public:
   }
 
   bool isValid() const { return getByteLength() != 0; }
+
   uint32_t hash() const;
 
   void setAsRoot();
@@ -163,18 +175,21 @@ public:
 
   RelativePosition getRelativePosition(const OrdPath& other) const;
 
-  void compress(const std::vector<long>& dewey);
+  void compress(const DeweyID& dewey);
 
-  void appendComp(long value);
+  void appendComp(int32_t value);
 
   std::string serialize() const;
+
   std::string show() const;
 
 protected:
 
-  bool isLocal() const   {  return theBuffer.local[MAX_EMBEDDED_BYTE] & 0x1; }
-  void markLocal()       { theBuffer.local[MAX_EMBEDDED_BYTE] |= 0x1; }
-  void markRemote()      { theBuffer.local[MAX_EMBEDDED_BYTE] &= 0xFE; }
+  bool isLocal() const {  return theBuffer.local[MAX_EMBEDDED_BYTE] & 0x1; }
+
+  void markLocal() { theBuffer.local[MAX_EMBEDDED_BYTE] |= 0x1; }
+
+  void markRemote() { theBuffer.local[MAX_EMBEDDED_BYTE] &= 0xFE; }
 
   unsigned char* getRemoteBuffer() const 
   {
@@ -255,7 +270,7 @@ protected:
     if (theBuffer.local[MAX_EMBEDDED_BYTE] != 1)
       return MAX_EMBEDDED_BYTE_LEN;
 
-    for (long i = MAX_EMBEDDED_BYTE-1; i >= 0; i--)
+    for (long i = MAX_EMBEDDED_BYTE-1; i >= 0; --i)
     {
       if (theBuffer.local[i] != 0)
         return i+1;
@@ -280,15 +295,16 @@ protected:
 
   ulong getRemoteBitLength(ulong& byteLen) const;
 
-  bool compressLocal(const std::vector<long>& dewey);
-  void compressRemote(const std::vector<long>& dewey);
+  bool compressLocal(const DeweyID& dewey);
+
+  void compressRemote(const DeweyID& dewey);
 
   void decompress(
-        ulong   startOffset,
-        long*   deweyid,
-        ulong*  compOffsets,
-        ulong&  numComps,
-        ulong&  bitSize) const;
+        ulong startOffset,
+        int32_t* deweyid,
+        ulong* compOffsets,
+        ulong& numComps,
+        ulong& bitSize) const;
 };
 
 
@@ -310,7 +326,7 @@ class OrdPathStack
 protected:
   ulong         theNumComps;
 
-  long          theDeweyId[OrdPath::MAX_NUM_COMPS];
+  int32_t       theDeweyId[OrdPath::MAX_NUM_COMPS];
 
   unsigned char theCompLens[OrdPath::MAX_NUM_COMPS];
 
@@ -325,7 +341,7 @@ public:
 
   void init();
 
-  ulong getNumComps() const   { return theNumComps; }
+  ulong getNumComps() const { return theNumComps; }
   
   ulong getByteLength() const;
 
@@ -339,7 +355,7 @@ private:
   OrdPathStack(const OrdPathStack& other);
   OrdPathStack& operator=(const OrdPathStack& other);
 
-  void compressComp(ulong comp, long value);
+  void compressComp(ulong comp, int32_t value);
 };
 
 
@@ -347,3 +363,9 @@ private:
 } // namespace zorba
 
 #endif
+
+/*
+ * Local variables:
+ * mode: c++
+ * End:
+ */
