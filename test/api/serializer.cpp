@@ -64,7 +64,7 @@ test_serialization_error(Zorba* aZorba)
 int
 serializer(int argc, char* argv[]) 
 {
-  Zorba* lZorba = Zorba::getInstance(zorba::StoreManager::getStore());
+  //Zorba* lZorba = Zorba::getInstance(zorba::StoreManager::getStore());
 
   //if (!test_serialization_error(lZorba)) {
   //  return 1;
